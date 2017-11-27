@@ -1,0 +1,42 @@
+.TH getwateruse 3  "January 9, 2013" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+getwateruse \- Get water use data
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+Bool getwateruse(Wateruse \fIwateruse\fB,Cell \fIgrid[]\fB,int \fIyear\fB,const Config *\fIconfig\fB);\fP
+
+.fi
+.SH DESCRIPTION
+Function reads water use data for specified year.
+The arguments of \fBgetwateruse\fP are:
+.TP
+.I wateruse
+Pointer to water use data.  Must be initialized by \fBinitwateruse()\fP.
+.TP
+.I grid
+Cell grid array allocated and initialized by \fBnewgrid()\fP.
+.TP
+.I year
+Sets year water use data is read.
+.TP
+.I config
+LPJmL configuration data. Must be read by \fBreadconfig()\fP.
+
+.SH RETURN VALUE
+Upon successful completion FALSE is returned and TRUE on error.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+readconfig(3), initwateruse(3), freewateruse(3), newgrid(3)

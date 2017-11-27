@@ -1,0 +1,29 @@
+.TH pnet_reverse 3  "October 21, 2008" "version 1.0.003" "Pnet programmers manual"
+.SH NAME
+pnet_reverse \-  Reverse direction of all connections
+.SH SYNOPSIS
+.nf
+\fB#include <mpi.h>
+#include "pnet.h"
+
+int pnet_reverse(Pnet\fP *\fIpnet\fB);\fP
+.fi
+.SH DESCRIPTION
+Function reverses direction of all connections.
+
+Connection have to be added before by calls of \fBpnet_addconnect\fP. Function must be called before
+\fBpnet_setup\fP.
+The argument of \fBpnet_reverse\fP is:
+.TP
+.I pnet
+Pointer to initialized Pnet struct 
+.SH RETURN VALUE
+Upon successful completion \fBPNET_OK\fP is returned.
+.SH ERRORS
+.TP
+.B PNET_ALLOC_ERR
+Cannot allocate memory.
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+pnet_exchg(3), pnet_init(3), pnet_addconnect(3), pnet_setup(3), pnet_free(3),  pnet_lo(3), pnet_hi(3), pnet_nodes(3)

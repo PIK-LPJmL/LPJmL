@@ -1,0 +1,42 @@
+.TH fprintflux 3  "January 9, 2013" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+fprintflux, printflux \- Print global carbon and water fluxes
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+void fprintflux(FILE *\fIfile\fB,const Config *\fIconfig\fB,Flux \fIflux\fB,Real cflux_total\fB);
+void printflux(const Config *\fIconfig\fB,Flux \fIflux\fB,Real \fIcflux_total\fB);
+
+.fi
+.SH DESCRIPTION
+Function prints global carbon and water fluxes. \fBprintflux()\fP writes output to standard output.
+The arguments of \fBfprintflux\fP are:
+.TP
+.I file
+File pointer to output stream.
+.TP
+.I config
+LPJmL configuration data. Must be read by \fBreadconfig()\fP. 
+.TP
+.I flux
+Global carbon and water fluxes. Must be calculated by \fBflux_sum()\fP.
+.TP
+.I cflux_total
+Total flux of carbon. Must be calculated by \fBflux_sum()\fP.
+.SH RETURN VALUE
+None.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+flux_sum(3), readconfig(3)

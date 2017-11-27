@@ -1,0 +1,42 @@
+.TH pnet_inindex 3  "October 21, 2008" "version 1.0.003" "Pnet programmers manual"
+.SH NAME
+pnet_inindex \- Get index for input buffer
+.SH SYNOPSIS
+.nf
+\fB#include <mpi.h>
+#include "pnet.h"
+
+int pnet_inindex(const Pnet\fP *\fIpnet\fB,int \fInode\fP, int \fIindex\fB);\fP
+.fi
+.SH DESCRIPTION
+Function returns index of in input buffer for specified node and connection. Function is implemented as a macro.
+The arguments of \fBpnet_inindex\fP are:
+.TP
+.I pnet
+Pointer to initialized Pnet struct 
+.TP
+.I node
+Index of node. Must be pnet_lo(pnet)<=node<=pnet_hi(pnet).
+.TP
+.I index
+Index in connection list of specified node. Must be 0<=index<pnet_inlen(pnet,node).
+.SH RETURN VALUE
+Upon successful completion index in input buffer is returned.
+.SH EXAMPLE
+.nf
+float *in,*out,*node;
+Pnet *pnet;
+int i,j;
+out=(float *)pnet_output(pnet);
+in=(float *)pnet_input(pnet);
+for(i=0;i<pnet_outlen(pnet);i++)
+  out[i]=node[pnet_outindex(pnet,i)];
+pnet_exchg();
+for(i=pnet_lo(pnet);i<=pnet_hi(pnet);i++)
+  for(j=0;j<pnet_inlen(pnet,i);j++)
+    node[i]+=in[pnet_inindex(pnet,i,j)];
+.fi
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+pnet_inlen(3),pnet_init(3), pnet_free(3), pnet_setup(3), pnet_lo(3), pnet_hi(3), pnet_nodes(3)

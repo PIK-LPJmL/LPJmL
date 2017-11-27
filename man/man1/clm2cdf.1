@@ -1,0 +1,58 @@
+.TH clm2cdf 1  "March 4, 2013" "version 1.0.001" "USER COMMANDS"
+.SH NAME
+clm2cdf \- convert CLM files into NetCDF files
+.SH SYNOPSIS
+.B clm2cdf
+[\-scale factor] [\-cellsize size] [\-int] [\-landuse] [\-compress level] [\-units u] [\-descr d]
+.I varname gridfile clmfile netcdffile
+.SH DESCRIPTION
+Program converts CLM input data into NetCDF input data. 
+.SH OPTIONS
+.TP
+\-scale factor
+scaling factor for CLM version 1 files. Default is one
+.TP
+\-cellsize size
+set cell size of grid file to size
+.TP
+\-int
+set data type in CLM file to int, default is short 
+.TP
+-landuse
+convert land-use input data
+.TP
+\-compress level
+compression level for NetCDF4 files
+.TP
+\-units u
+set units in NetCDF file
+.TP
+\-descr d
+set long name in NetCDF file
+.TP
+varname
+variable name in NetCDF file
+.TP
+.I gridfile    
+filename of grid data file
+.TP
+.I clmfile
+filename of CLM data file
+.TP
+.I netcdffile     
+filename of NetCDF file created
+.SH EXAMPLES
+.TP
+Create data file for temperature:
+.B clm2cdf
+-units Celsius -descr temperature temp grid.bin tmp.clm tmp.nc
+.PP
+.SH EXIT STATUS
+.B clm2cdf
+returns a zero exit status if the NetCDF file is created.
+Non zero is returned in case of failure.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+
+.SH SEE ALSO
+bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

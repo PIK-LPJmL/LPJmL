@@ -1,0 +1,26 @@
+.TH printheader 1  "October 10, 2008" "version 1.0.002" "USER COMMANDS"
+.SH NAME
+printheader \- Print header of clm files for LPJmL                   
+.SH SYNOPSIS
+.B printheader
+\fIclmfile\fP ...
+.SH DESCRIPTION
+Program prints file header of clm data files for LPJmL.
+.SH OPTIONS
+.I clmfile
+filename of clm data file(s)
+.SH EXAMPLE
+.TP
+Print headers of all clm files in the current directory:
+.B printheader
+*.clm
+.PP
+.SH EXIT STATUS
+.B printheader
+returns a zero exit status if header of clm file could be read.
+Non zero is returned in case of failure.
+.SH AUTHOR
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+
+.SH SEE ALSO
+lpjml(1), cru2clm(1), grid2clm(1), cft2clm(1), clm(5)

@@ -1,0 +1,34 @@
+#################################################################################
+##                                                                             ##
+##          M  a  k  e  f  i  l  e  .  m  p  i  c  h                           ##
+##                                                                             ##
+##   Make include file for compiler and os specific settings                   ##
+##   Compile and link options for Gnu compiler gcc                             ##
+##   Parallel MPI is enabled using MPICH                                       ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+##                                                                             ##
+#################################################################################
+
+CC	= mpicc
+DEBUGFLAGS  = -g
+OPTFLAGS= -O3
+WFLAG	= -Wall -m64
+LPJFLAGS  = -DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE
+O	= o
+A	= a
+E	=
+AR	= ar
+ARFLAGS	= r 
+RM	= rm 
+RMFLAGS	= -f
+LIBS	= -lm 
+LINKMAIN= mpicc
+LINK	= cc -m64
+MKDIR	= mkdir -p
+SLASH	= /
+VIEWPRG	= lpjserver

@@ -1,0 +1,35 @@
+.TH isopen 3  "January 19, 2009" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+isopen \- Determines whether output file is open
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+Bool isopen(const Outputfile *\fIoutput\fB,int \fIindex\fB);
+
+.fi
+.SH DESCRIPTION
+Function determines whether output data file has been successfully opened.
+The arguments of \fBisopen\fP are:
+.TP
+.I output
+Pointer to initialized output data. \fIoutput\fP must be initialized by \fBfopenoutput()\fP.
+.TP
+.I index
+Index of output data file to be checked.
+.SH RETURN VALUE
+Function returns TRUE if output for \fIindex\fP has been opened, FALSE otherwise.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+fopenoutput(3), fcloseoutput(3)

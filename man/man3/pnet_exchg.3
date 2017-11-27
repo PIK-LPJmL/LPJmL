@@ -1,0 +1,22 @@
+.TH pnet_exchg 3  "October 21, 2008" "version 1.0.003" "Pnet programmers manual"
+.SH NAME
+pnet_exchg \- Exchange input and output data
+.SH SYNOPSIS
+.nf
+\fB#include <mpi.h>
+#include "pnet.h"
+
+void pnet_exchg(Pnet\fP *\fIpnet\fB);\fP
+.fi
+.SH DESCRIPTION
+Function call collective communication function \fB\MPI_AlltoAllv\fP in order to exchange the data from the output to the input buffer. Is implemented as a macro. Must be called after \fBpnet_setup\fP.
+The argument of \fBpnet_setup\fP is:
+.TP
+.I pnet
+Pointer to initialized Pnet struct 
+.SH RETURN VALUE
+None
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+pnet_setup(3), pnet_init(3), pnet_addconnect(3), pnet_free(3),  pnet_lo(3), pnet_hi(3), pnet_nodes(3)

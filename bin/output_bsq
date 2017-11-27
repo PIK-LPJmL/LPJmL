@@ -1,0 +1,91 @@
+#!/bin/ksh
+
+#############################################################################
+##                                                                         ##
+##         o  u  t  p  u  t  _  b  s  q                                    ##
+##                                                                         ##
+## ksh script to create bsq output files from LPJ-C output                 ##
+##                                                                         ##
+## Usage:  output_bsq [-inpath dir] [-outpath dir] [-nyear]                ##
+##                                                                         ##
+## Last change: 15.10.2008                                                 ##
+##                                                                         ##
+#############################################################################
+
+inpath=output
+outpath=output
+nyear=103
+if [ $# -gt 0 ]
+then 
+  if [ $1 = "-inpath" ]
+  then
+    if [ $# -lt 2 ]
+    then
+      echo >&2 Error: input directory  missing
+      echo >&2 Usage: $0 [-inpath dir] [-outpath dir] [-nyear n]
+      exit 1
+    fi
+    shift 1
+    inpath=$1
+    shift 1
+  fi
+fi
+if [ $# -gt 0 ]
+then 
+  if [ $1 = "-outpath" ]
+  then
+    if [ $# -lt 2 ]
+    then
+      echo >&2 Error: output directory  missing
+      echo >&2 Usage: $0 [-inpath dir] [-outpath dir] [-nyear n]
+      exit 1
+    fi
+    shift 1
+    outpath=$1
+    shift 1
+  fi
+fi
+if [ $# -gt 0 ]
+then 
+  if [ $1 = "-nyear" ]
+  then
+    if [ $# -lt 2 ]
+    then
+      echo >&2 Error: Number of years missing
+      echo >&2 Usage: $0 [-inpath dir] [-outpath dir] [-nyear n]
+      exit 1
+    fi
+    shift 1
+    nyear=$1
+    shift 1
+  fi
+fi
+
+cat2bsq -o $outpath/grid.out -type short -bands 1 $inpath/grid_*out
+let bands=nyear*10
+cat2bsq -o $outpath/fpc.bin -bands $bands $inpath/fpc_*.bin
+let bands=nyear*12
+cat2bsq -o $outpath/mnpp.bin -bands $bands $inpath/mnpp_*.bin
+cat2bsq -o $outpath/mrh.bin -bands $bands $inpath/mrh_*.bin
+cat2bsq -o $outpath/mtransp.bin -bands $bands $inpath/mtransp_*.bin
+cat2bsq -o $outpath/mrunoff.bin -bands $bands $inpath/mrunoff_*.bin
+cat2bsq -o $outpath/mdischarge.bin -bands $bands $inpath/mdischarge_*.bin
+cat2bsq -o $outpath/mirrig.bin -bands $bands $inpath/mirrig_*.bin
+cat2bsq -o $outpath/mevap.bin -bands $bands $inpath/mevap_*.bin
+cat2bsq -o $outpath/mswc1.bin -bands $bands $inpath/mswc1_*.bin
+cat2bsq -o $outpath/mswc2.bin -bands $bands $inpath/mswc2_*.bin
+cat2bsq -o $outpath/firec.bin -bands $nyear $inpath/firec_*.bin
+cat2bsq -o $outpath/firef.bin -bands $nyear $inpath/firef_*.bin
+cat2bsq -o $outpath/vegc.bin -bands $nyear $inpath/vegc_*.bin
+cat2bsq -o $outpath/soilc.bin -bands $nyear $inpath/soilc_*.bin
+cat2bsq -o $outpath/litc.bin -bands $nyear $inpath/litc_*.bin
+cat2bsq -o $outpath/flux_estab.bin -bands $nyear $inpath/flux_estab_*.bin
+cat2bsq -o $outpath/flux_harvest.bin -bands $nyear $inpath/flux_harvest_*.bin
+let bands=nyear*22
+cat2bsq -o $outpath/sdate.bin -type short -bands $bands $inpath/sdate_*.bin
+let bands=nyear*33
+cat2bsq -o $outpath/pft_npp.bin -bands $bands $inpath/pft_npp_*.bin
+cat2bsq -o $outpath/waterstress.bin -bands $bands $inpath/waterstress_*.bin
+let bands=nyear*24
+cat2bsq -o $outpath/pft_harvest.bin -bands $bands $inpath/pft_harvest_*.bin
+cat2bsq -o $outpath/pft_rharvest.bin -bands $bands $inpath/pft_rharvest_*.bin

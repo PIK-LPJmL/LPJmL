@@ -1,0 +1,22 @@
+.TH pnet_free 3  "October 21, 2008" "version 1.0.003" "Pnet programmers manual"
+.SH NAME
+pnet_free \- Deallocate memory of Pnet struct
+.SH SYNOPSIS
+.nf
+\fB#include <mpi.h>
+#include "pnet.h"
+
+void pnet_free(Pnet\fP *\fIpnet\fB);\fP
+.fi
+.SH DESCRIPTION
+Function frees allocated memory. Must be the last call.
+The argument of \fBpnet_free\fP is:
+.TP
+.I pnet
+Pointer to initialized Pnet struct 
+.SH RETURN VALUE
+None
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+pnet_setup(3), pnet_init(3), pnet_addconnect(3), pnet_lo(3), pnet_hi(3), pnet_nodes(3)

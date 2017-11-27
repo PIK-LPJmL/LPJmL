@@ -1,0 +1,23 @@
+.TH close_socket 3  "January 28, 2009" "version 1.0.001" "Socket library manual"
+.SH NAME
+closeint_socket \- close open socket
+.SH SYNOPSIS
+.nf
+\fB#include "types.h"
+#include "channel.h"
+
+void close_socket(Socket *\fIsocket\fB);\fP
+
+.fi
+.SH DESCRIPTION
+Function closes open socket.
+The argument of \fBclose_socket\fP is:
+.TP
+.I socket
+Pointer to socket. Socket must be opened by \fBopen_socket()\fP or \fBconnect_socket()\fP.
+.SH RETURN VALUE
+None.
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+open_socket(3), connect_socket(3)

@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<LINK REL="stylesheet" HREF="style.css" TYPE="text/css">
+<TITLE>input.conf</TITLE>
+</HEAD>
+<BODY>
+<H2>Default input data file for LPJmL</H2>
+<pre class="tree">
+<i>/*********************************************************************/
+/*                                                                   */
+/*                 i  n  p  u  t  .  c  o  n  f                      */
+/*                                                                   */
+/* Configuration file for input dataset for LPJ C Version 4.0.001    */
+/*                                                                   */
+/* Last change 13.12.2012                                            */
+/*                                                                   */
+/*********************************************************************/</i>
+
+#include "include/conf.h" <i>/* include constant definitions */</i>
+#undef LPJ
+
+RAW /data/biosx/LPJ/input_longheader/soil_new_67420.bin
+0.5  0.5 /* resolution in degrees */
+CLM2 /data/biosx/LPJ/input_longheader/grid.bin 
+RAW /data/biosx/LPJ/cru06/drainclass.bin
+#ifdef WITH_LANDUSE
+CLM2 /data/biosx/LPJ/input_longheader/cow_mg_2006_full.bin
+CLM2 /data/biosx/LPJ/input_longheader/cft1700_2005_bioenergy_sc.bin
+#endif
+#ifdef RIVER_ROUTING
+RAW /data/biosx/LPJ/cru06/lakes.bin
+CLM2 /data/biosx/LPJ/input_longheader/drainage.bin
+#ifdef WITH_LANDUSE
+CLM2 /data/biosx/LPJ/input_longheader/neighb_irrigation.bin
+#ifdef WITH_RESERVOIRS
+CLM2 /data/biosx/LPJ/input_longheader/elevation.bin
+CLM2 /data/biosx/LPJ/input_longheader/reservoir_info_grand5.bin
+#endif
+#endif
+#endif
+CLM2 /data/biosx/LPJ/input_longheader/cru_ts_3_10.1901.2009.tmp.clm
+CLM2 /data/biosx/LPJ/input_longheader/gpcc_cru09_prec_monthly_1901_2009.clm
+CLM2 /data/biosx/LPJ/input_longheader/cru_ts_3_10.1901.2009.cld.clm
+#ifdef WITH_SPITFIRE
+CLM2 /data/biosx/LPJ/input_longheader/mwindspeed_1860-2100_67420.clm
+CLM /data/biosx/LPJ/input_longheader/cru_ts_3_10.1901.2009.dtr.clm            <i>/* diurnal temp. range */</i>
+CLM2 /data/biosx/LPJ/input_longheader/mlightning.clm
+CLM2 /data/biosx/LPJ/input_longheader/human_ignition.clm
+#endif
+#if defined(WITH_SPITFIRE) || defined(WITH_FIREWOOD)
+#if defined(FROM_RESTART)
+CLM2 /data/biosx/LPJ/input_longheader/popdens_HYDE_1901_2010_bi.clm 
+#endif
+#endif
+TXT /data/biosx/LPJ/input_longheader/co2_1841-2010.dat
+
+#ifdef ISRANDOM
+
+CLM2 /data/biosx/LPJ/input_longheader/gpcc_cru09_wet_monthly_1901_2009.clm
+
+#endif
+
+</pre>
+</body>

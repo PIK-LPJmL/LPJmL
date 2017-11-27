@@ -1,0 +1,34 @@
+.TH regridlpj 1  "February 28, 2013" "version 1.0.001" "USER COMMANDS"
+.SH NAME
+regridlpj \- regrid CRU input data set for selected countries
+.SH SYNOPSIS
+.B regridlpj
+[\-dir path] 
+.I filesuffix outfile countrycode ...
+.SH DESCRIPTION
+Program regrids CRU input files for selected countries and creates corresponding input configuration file. 
+.SH OPTIONS
+.TP
+\-dir path
+set directory for regridded input files
+.TP
+.I filesuffix
+File suffix for regridded input files and configuration file
+.TP
+.I countrycode
+ISO 3166-1 alpha-3 abbreviations for countries or rountry 
+codes as numbers defined in
+.I include/managepar.h
+.SH EXAMPLES
+.TP
+Create input data files for USA:
+.B regridlpj
+usa USA
+.PP
+.SH EXIT STATUS
+Non zero is returned in case of failure.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+
+.SH SEE ALSO
+getcountry(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5) 

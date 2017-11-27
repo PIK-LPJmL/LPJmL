@@ -1,0 +1,52 @@
+.TH pnet_addconnect 3  "October 21, 2008" "version 1.0.003" "Pnet programmers manual"
+.SH NAME
+pnet_addconnect \- Add connection to network
+.SH SYNOPSIS
+.nf
+\fB#include <mpi.h>
+#include "pnet.h"
+
+int pnet_addconnect(Pnet\fP *\fIpnet\fB, int \fIto\fB,int \fIfrom\fB);\fP
+.fi
+.SH DESCRIPTION
+The function adds a connection to the network. Must be called after \fBpnet_init\fP and before
+\fBpnet_setup\fP.
+The arguments of \fBpnet_addconnect\fP are:
+.TP
+.I pnet
+Pointer to initialized Pnet struct 
+.TP
+.I to
+Target node of connection
+.TP
+.I from
+Source node of connection
+.SH RETURN VALUE
+Upon successful completion PNET_OK is returned.
+.SH ERRORS
+.TP
+.B PNET_TO_INDEX_ERR
+target node is not in the range of pnet_lo(pnet),...,pnet_hi(pnet).
+.TP
+.B PNET_FROM_INDEX_ERR
+Source node is not in the range of 0,...,pnet_nodes(pnet)-1.
+.TP
+.B PNET_ALLOC_ERR
+Cannot allocate memory for connection.
+.SH EXAMPLE
+.TP
+Create network with all to all connections
+.nf
+Pnet *pnet;
+int i,j;
+MPI_Init(&argc,&argv);
+pnet=pnet_init(MPI_COMM_WORLD,MPI_FLOAT,100)
+for(i=pnet_lo(pnet);i<=pnet_hi(pnet);i++)
+  for(j=0;j<100;j++)
+    pnet_addconnect(pnet,i,j); 
+pnet_setup(pnet);
+.fi
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+pnet_init(3), pnet_free(3), pnet_setup(3), pnet_lo(3), pnet_hi(3), pnet_nodes(3)

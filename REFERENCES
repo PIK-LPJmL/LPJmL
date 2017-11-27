@@ -1,0 +1,98 @@
+ -----------------------------------------------------------------------------
+                                 REFERENCES
+ -----------------------------------------------------------------------------
+ Biemans, H, Haddeland, I, Kabat, P, Ludwig, F, Hutjes, RWA, Heinke, J, 
+   von Bloh, W, & Gerten, D 2011  Impact of reservoirs on river discharge and
+   irrigation water supply during the 20th century, Water Resour. Res., 47,
+   W03509, doi:10.1029/2009WR008929.
+ Bondeau A, Smith P, Zaehle S, Schaphoff S, Lucht W, Cramer W, Gerten D, 
+   Lotze-Campen H, Mueller, C, Reichstein M, Smith B 2007 Modelling the role
+   of agriculture for the 20th century global terrestrial carbon balance.
+   Global Change Biology 13, doi: 10.1111/j.1365-2486.2006.01305.x
+ Carslaw, HS & Jaeger JC 1959 Conduction of Heat in Solids, Oxford University
+   Press, London
+ Collatz, GJ, Ball, JT, Grivet C & Berry, JA 1991 Physiological and
+   environmental regulation of stomatal conductance, photosynthesis and
+   transpiration: a model that includes a laminar boundary layer. Agricultural
+   and Forest Meteorology 54: 107-136
+ Collatz, GJ, Ribas-Carbo, M & Berry, JA 1992 Coupled photosynthesis-stomatal
+   conductance models for leaves of C4 plants. Australian Journal of Plant
+   Physiology 19: 519-538
+ Farquhar GD & von Caemmerer 1982 Modelling of photosynthetic response to
+   environmental conditions. In: Lange, OL, Nobel PS, Osmond CB, Ziegler H
+   (eds) Physiological Plant Ecology II: Water Relations and Carbon
+   Assimilation, Vol 12B. Springer, Berlin, pp 549-587.
+ Foley J A 1995 An equilibrium model of the terrestrial carbon budget.
+   Tellus 47B: 310-319
+ Gerten D, Schaphoff S, Haberlandt U, Lucht W, Sitch S 2004 Terrestrial
+   vegetation and water balance: hydrological evaluation of a dynamic global
+   vegetation model.  Journal of Hydrology 286: 249-270 
+ Harper JL 1977 Population Biology of Plants, Academic Press, London
+ Haxeltine A & Prentice IC 1996 BIOME3: an equilibrium terrestrial biosphere
+   model based on ecophysiological constraints, resource availability, and
+   competition among plant functional types. Global Biogeochemical Cycles 10:
+   693-709
+ Haxeltine A & Prentice IC 1996a A general model for the light-use efficiency
+   of primary production. Functional Ecology 10: 551-561
+ Henderson-Sellers, A & Robinson, PJ 1986 Contemporary Climatology. Longman,
+   Essex.
+ Jaegermeyr J, Gerten D, Heinke J, Schaphoff S., Kumm M & Lucht W 2015 Water
+   savings potentials of irrigation systems: global simulation of processes
+   and linkages. Hydrol. Earth Syst. Sci 19: 3073-3091
+ Jarvis, PG & McNaughton KG 1986 Stomatal control of transpiration: scaling up
+   from leaf to region. Advances in Ecological Research 15: 1-49
+ Jury WA, Gardner WR & Gardner WH 1991 Soil Physics 5th ed, John Wiley, NY
+ Larcher W 1983 Physiological Plant Ecology, 2nd ed, Springer-Verlag, Berlin
+ Lloyd, J & Taylor JA 1994 On the temperature dependence of soil respiration
+   Functional Ecology 8: 315-323
+ Monsi, M & Saeki, T 1953 Ueber den Lichtfaktor in den Pflanzengesellschaften
+   und seine Bedeutung fuer die Stoffproduktion. Japanese Journal of Botany
+   14: 22-52
+ Monteith, JL & Unsworth, MH 1990 Principles of Environmental Physics, 2nd ed,
+   Arnold, London
+ Prentice, IC, Sykes, MT & Cramer W 1993 A simulation model for the transient
+   effects of climate change on forest landscapes. Ecological Modelling 65:
+   51-70.
+ Press, WH, Teukolsky, SA, Vetterling, WT & Flannery, BT. 1986. Numerical
+   Recipes in FORTRAN, 2nd ed. Cambridge University Press, Cambridge
+ Reich, PB, Walters, MB & Ellsworth, DS 1997. From tropics to tundra: global
+   convergence in plant functioning. Proceedings of the National Academy of
+   Sciences USA 94: 13730-13734.
+ Rost, S, Gerten, D, Bondeau, A, Lucht, W, Rohwer, J & Schaphoff, S 2008
+   Agricultural green and blue water consumption and its influence on the 
+   global water system. Water Resources Research 44: W09405
+ Ryan, GR 1991 Effects of climate change on plant respiration. Ecological 
+   applications 1: 157-167
+ Schaphoff, S, Heyder, U, Ostberg, S, Gerten, D, Heinke, J, Lucht, W 2013
+   Contribution of permafrost soils to the global carbon budget.
+   Environ. Res. Lett. 8, 014026.
+ Shinozaki, K, Yoda, K, Hozumi, K & Kira, T 1964 A quantitative analysis of
+   plant form - the pipe model theory. I. basic analyses. Japanese Journal of
+   Ecology 14: 97-105
+ Shinozaki, K, Yoda, K, Hozumi, K & Kira, T 1964 A quantitative analysis of
+   plant form - the pipe model theory. II. further evidence of the theory and
+   its application in forest ecology. Japanese Journal of Ecology 14: 133-139
+ Sitch S, Smith B, Prentice IC, Arneth A, Bondeau A, Cramer W, Kaplan J, Levis S, 
+   Lucht, W, Sykes M, Thonicke K, Venevsky S 2003 Evaluation of ecosystem dynamics, 
+   plant geography and terrestrial carbon cycling in the LPJ Dynamic Vegetation
+   Model.  Global Change Biology 9: 161-185
+ Sprugel, DG, Ryan, MG, Brooks, JR, Vogt, KA, Martin, TA, Respiration from the
+   organ level to the stand (in press '93 ---> look up)
+ Thonicke K, Spessa A, Prentice IC, Harrison SP, Dong L & Carmona-Moreno C 2010 
+   The influence of vegetation, fire spread and fire behaviour on biomass
+   burning and trace gas emissions: results from a process-based model.
+   Biogeoscience 7(6):1991-2011
+ van Duin, RHA 1963 The influence of soil management on the temperature
+   wave near the surface. Tech Bull 29 Inst for Land and Water Management
+   Research, Wageningen, Netherlands
+ von Bloh, W, Rost, S, Gerten, D & Lucht, W 2010 Efficient parallelization of a
+   dynamic global vegetation model with river routing. Environmental Modelling &
+   Software 25: 685-690
+ Waha K, van Bussel LGJ, Mueller C, Bondeau A 2012 Climate-driven simulation of
+   global crop sowing dates. Global Ecology and Biogeography, 21,2,
+   pp. 247-259, doi: 10.1111/j.1466-8238.2011.00678.x
+ Waring, RH Schroeder, PE & Oren, R 1982 Application of the pipe model theory
+   to predict canopy leaf area. Canadian Journal of Forest Research 12:
+   556-560  
+
+ ----------------------------------------------------------------------------

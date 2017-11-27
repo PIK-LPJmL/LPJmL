@@ -1,0 +1,32 @@
+.TH cdf2soil 1  "July 4, 2013" "version 1.0.001" "USER COMMANDS"
+.SH NAME
+cdf2soil \- convert NetCDF file into binary file
+.SH SYNOPSIS
+.B cdf2soil
+netcdffile gridfile soilfile 
+.SH DESCRIPTION
+Program converts NetCDF input data into soil code or binary input data. 
+.SH OPTIONS
+.TP
+.I netcdffile     
+filename of NetCDF file(s) convertes
+.TP
+.I gridfile    
+filename of grid data file written
+.TP
+.I soildfile    
+filename of soil code data file written
+.SH EXAMPLES
+.TP
+.B cdf2soil
+soilcode.nc  grid.clm soilcode.bin
+.PP
+.SH EXIT STATUS
+.B cdf2soil
+returns a zero exit status if the soil code file is created.
+Non zero is returned in case of failure.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+
+.SH SEE ALSO
+cdf2clm(1), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

@@ -1,0 +1,3 @@
+rem set search path for LPJmL commands
+
+path=%path%;%lpjroot%\bin

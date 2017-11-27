@@ -1,0 +1,47 @@
+.TH newgrid 3  "January 9, 2013" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+newgrid \- Allocates LPJ grid cells
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+Cell *newgrid(Config *\fIconfig\fB,const Standtype \fIstandtype\fB[],
+              int \fInstand\fB,int \fInpft\fB,int \fIncft\fB);\fP
+
+.fi
+.SH DESCRIPTION
+Function allocates grid cells and reads soil code,
+country code and coordinates. If restart filename is set state 
+of grid cells is recovered from a restart file.    
+The arguments of \fBnewgrid\fP are:
+.TP
+.I config
+Pointer to LPJmL configuration data. Must be read by \fBreadconfig()\fP.
+.TP
+.I standtype
+Array of stand type definitions.
+.TP
+.I nstand
+Number of stand types.
+.TP
+.I npft
+Number of natural plant functional types.
+.TP
+.I ncft
+Number of crop plant functional types.
+.SH RETURN VALUE
+Upon successful completion pointer to allocated grid is returned and NULL in case of failure.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+readconfig(3), freegrid(3) 

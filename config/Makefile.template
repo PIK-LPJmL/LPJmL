@@ -1,0 +1,27 @@
+#################################################################################
+##                                                                             ##
+##           M  a  k  e  f  i  l  e  .  t  e  m  p  l  a  t  e                 ##
+##                                                                             ##
+##   Template of makefile for programs using the LPJ libraries                 ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+##                                                                             ##
+#################################################################################
+
+include ${LPJROOT}/Makefile.inc
+
+LIB	= $(LPJROOT)/lib
+
+INC	= $(LPJROOT)/include
+
+LPJLIBS = $(LIB)/liblpj.$A  $(LIB)/libsoil.$A $(LIB)/libimage.$A\
+          $(LIB)/libtree.$A  $(LIB)/libgrass.$A  $(LIB)/liblanduse.$A\
+          $(LIB)/libclimate.$A $(LIB)/libnum.$A $(LIB)/libtools.$A\
+          $(LIB)/libcrop.$A $(LIB)/libpnet.$A $(LIB)/libsocket.$A
+
+.c.$O:
+	$(CC) $(CFLAGS) -I$(INC) -c $*.c

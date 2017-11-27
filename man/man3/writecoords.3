@@ -1,0 +1,44 @@
+.TH writecoords 3  "January 9, 2013" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+writecoords \- Write coordinate file
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+int writecoords(Outputfile *\fIoutput\fB,
+                int \fIindex\fB,
+                Cell \fIgrid\fB[],
+                const Config *\fIconfig\fB   
+               );\fP
+
+.fi
+.SH DESCRIPTION
+Function writes coordinate data for LPJmL grid. Only cell coordinates with valid soil code are written.  The arguments of \fBwritecoords\fP are:
+.TP
+.I output
+Pointer to initialized output data. \fIoutput\fP must be initialized by \fBfopenoutput()\fP.
+.TP
+.I index
+Set index of output.
+.TP
+.I grid
+Cell grid array allocated and initialized by \fBnewgrid()\fP.
+.TP
+.I config
+LPJmL configuration data. Must be read by \fBreadconfig()\fP.
+.SH RETURN VALUE
+Upon successful completion the number of coordinates written is returned.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+readconfig(3), fopenoutput(3), newgrid(3), fcloseoutput(3), isopen(3), writecountrycode(3), writeregioncode(3)

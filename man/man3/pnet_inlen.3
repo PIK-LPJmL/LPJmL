@@ -1,0 +1,25 @@
+.TH pnet_inlen 3  "October 21, 2008" "version 1.0.003" "Pnet programmers manual"
+.SH NAME
+pnet_inlen \- Get number of connections
+.SH SYNOPSIS
+.nf
+\fB#include <mpi.h>
+#include "pnet.h"
+
+int pnet_inlen(const Pnet\fP *\fIpnet\fB,int \fInode\fB);\fP
+.fi
+.SH DESCRIPTION
+Function returns number of connections for specified local node. Function is implemented as a macro.
+The arguments of \fBpnet_inlen\fP are:
+.TP
+.I pnet
+Pointer to initialized Pnet struct 
+.TP
+.I node
+Index of node. Must be pnet_lo(pnet)<=node<=pnet_hi(pnet).
+.SH RETURN VALUE
+Upon successful completion number of connections is returned.
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+pnet_inindex(3), pnet_outlen(3), pnet_outindex(3), pnet_init(3), pnet_free(3), pnet_setup(3), pnet_hi(3), pnet_nodes(3)

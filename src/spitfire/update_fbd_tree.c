@@ -1,0 +1,41 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                     u p d a t e _ f b d _ t r e e .  c                         \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Kirsten Thonicke                                                           \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+#include "lpj.h"
+
+void update_fbd_tree(Litter* litter,Real fuelbulkdensity,Real carbon,
+                     int fuelclass)
+{
+  Real ratio,fuel;
+  if(carbon<=0)
+    return; /* no change in fbd, if carbon is lost*/
+  fuel=litter_ag_tree(litter,fuelclass);
+
+  if(fuel>carbon)
+  {
+    ratio = carbon/fuel;
+    litter->avg_fbd[fuelclass]=litter->avg_fbd[fuelclass]*(1-ratio)
+                               +fuelbulkdensity*ratio;
+  }
+  else if(fuel>1e-8)
+    litter->avg_fbd[fuelclass]=fuelbulkdensity;
+  else
+    litter->avg_fbd[fuelclass]=0;
+  if (litter->avg_fbd[fuelclass] < 0 || litter->avg_fbd[fuelclass] > 30){
+    printf("litter->avg_fbd=%.5f carbon=%.5f litter= %.5f fuelclass=%d\n",
+           litter->avg_fbd[fuelclass],carbon,fuel,fuelclass);
+    fflush(stdout);
+  }
+} /* of 'update_fbd_tree' */

@@ -1,0 +1,18 @@
+Pnet library files
+
+Implementation is described in:
+W. von Bloh, 2008. Sequential and Parallel Implementation of
+Networks. In P. beim Graben, C. Zhou, M. Thiel, and J. Kurths
+(eds.), Lectures in Supercomputational Neuroscience, Dynamics in
+Complex Brain Networks, Springer, New York, 279-318.             
+
+Filename             Description
+-------------------- ------------------------------------------
+intlist.c            Implementation of integer value array
+pnet_addconnect.c    Add connection to network
+pnet_free.c          Frees allocated memoty
+pnet_init.c          Initializes network
+pnet_reverse.c       Reverses directions of network
+pnet_setup.c         Setup communication pattern for network
+pnet_strerror.c      Returns error string
+-------------------- ------------------------------------------

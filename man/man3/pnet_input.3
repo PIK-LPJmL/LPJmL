@@ -1,0 +1,22 @@
+.TH pnet_input 3  "October 21, 2008" "version 1.0.003" "Pnet programmers manual"
+.SH NAME
+pnet_input \- Get pointer to input buffer
+.SH SYNOPSIS
+.nf
+\fB#include <mpi.h>
+#include "pnet.h"
+
+void *pnet_input(const Pnet\fP *\fIpnet\fB);\fP
+.fi
+.SH DESCRIPTION
+Function returns pointer to input buffer. Function is implemented as a macro.
+The argument of \fBpnet_input\fP is:
+.TP
+.I pnet
+Pointer to initialized Pnet struct 
+.SH RETURN VALUE
+Upon successful completion pointer to input buffer is returned.
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+pnet_init(3), pnet_free(3), pnet_setup(3), pnet_hi(3), pnet_nodes(3)

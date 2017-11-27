@@ -1,0 +1,34 @@
+#!/bin/sh
+###############################################################################
+##                                                                           ##
+##                    b  a  c  k  t  r  a  c  e                              ##
+##                                                                           ##
+##    sh script to write out backtrace from core file                        ##
+##    Usage: backtrace [exe [core]]                                          ##
+##                                                                           ##
+##    written by Werner von Bloh, PIK Potsdam                                ##
+##                                                                           ##
+##    Last change: 24.11.2008                                                ##
+##                                                                           ##
+###############################################################################
+
+if [ $# -lt 1 ]
+then
+  exe=$LPJROOT/bin/lpjml
+else
+  exe=$1
+fi
+if [ $# -lt 2 ]
+then
+  core=core
+else
+  core=$2
+fi
+if test -f $core
+then
+  gdb ${exe} --core ${core} --batch --quiet \
+          -ex "thread apply all bt full" \
+          -ex "quit"
+else
+  echo >&2 "Error: core file does not exist"
+fi

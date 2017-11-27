@@ -1,0 +1,95 @@
+.TH lpjcheck 1  "April 27, 2009" "version 4.0.001" "USER COMMANDS"
+.SH NAME
+lpjcheck \- Checks syntax of LPJmL configuration files 
+.SH SYNOPSIS
+.B lpjcheck
+[\-h] [\-q] [-vv] [\-param] [-pp cmd] [\-output {write|gather|mpi2|socket=hostname[:port]}] [\-outpath \fIdir\fP]
+[\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
+[\fIfilename\fP]
+.SH DESCRIPTION
+Program checks the syntax of LPJmL configuration files. It is checked additionally whether all input files and output directories are present. 
+\fBlpjcheck\fP will print the total amount of disk space used for the output files.
+.SH OPTIONS
+.TP
+\-h
+display a short help text
+.TP
+\-q
+Only error messages are displayed, other output is suppressed.
+.TP
+\-vv
+verbosely print the actual values during reading of the configuration files.
+.TP
+\-param
+Print LPJmL parameter.
+.TP
+\-pp cmd
+Set preprocessor program to cmd. Default is \fBcpp -P\fP.
+.TP
+\-output {gather|mpi2|socket=hostname[:port]}
+use the given output method to write data to disk. Valid output methods are
+write, mpi2, gather, and socket. The default output method for the MPI version is gather sending all output to the root task, while the default method for the sequential code is write. 
+The methods gather and mpi2 are only valid for the MPI version of the code.
+.TP
+\-outpath \fIdir\fP
+set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
+.TP
+\-inpath \fIdir\fP
+set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
+.TP
+\-Dmacro[=value]
+define macro for the preprocessor of the configuration file
+.TP
+\-I\fIdir\fP
+define include directory for the preprocessor of the configuration file
+.TP
+.I filename
+name of configuration file, default is \fIlpjml.conf\fP.
+.SH EXAMPLES
+.TP
+Check default configuration file with input files located in the scratch file system
+.B lpjcheck
+\-input /scratch/02/lpj
+.PP
+.SH ENVIRONMENT
+.TP
+LPJCONFIG
+default LPJmL configuration filename
+.TP
+LPJPREP 
+defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP. Same as '-pp' option.
+.TP
+LPJROOT
+defines the root directory for LPJmL. This directory is added to the
+include directories of the preprocessor
+.TP
+LPJINPATH
+Path appended to the input filenames. Only done for filenames without absolute path.
+.TP
+LPJOPTIONS     
+runtime options for the preprocessor of LPJmL configuration files
+.TP
+LPJOUTPATH
+Path appended to the output filenames. Only done for filenames without absolute path.
+.TP
+LPJRESTARTPATH
+Path appended to the restart filenames. Only done for filenames without absolute path.
+.TP
+LPJOUTPUT 
+Default method for generating output files. Valid values
+are write, mpi2, gather, and socket.
+
+.SH EXIT STATUS
+.B
+lpjcheck
+returns a zero exit status if the configuration file has no syntax errors and all input files and output directories exist.
+Non zero is returned in case of failure.
+.SH AUTHOR
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de)
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+lpjml(1), lpjsubmit(1), lpjml.conf(5)

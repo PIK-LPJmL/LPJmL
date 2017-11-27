@@ -1,0 +1,41 @@
+.TH initinput 3  "June 15, 2009" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+initinput \- initialize input data
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+Bool initinput(Input *\fIinput\fB,const Cell \fIgrid[]\fB,int \fIncft\fB,const Config *\fIconfig\fB);\fP
+
+.fi
+.SH DESCRIPTION
+Function initializes input data and opens related files specified in the LPJmL configuration.
+The arguments of \fBinitinput\fP are:
+.TP
+.I input
+Pointer to input to be initialized.
+.TP
+.I grid
+Cell grid array allocated and initialized by \fBnewgrid()\fP.
+.TP
+.I ncft
+Number of crop plant functional types.
+.TP
+.I config
+Pointer to LPJmL configuration data. Must be read by \fBreadconfig()\fP.
+.SH RETURN VALUE
+Upon successful completion FALSE is returned  and TRUE in case of failure.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+freeinput(3), initclimate(3), initlanduse(3), initwateruse(3), initpopdens(3), freeclimate(3), readconfig(3), iterate(3) 

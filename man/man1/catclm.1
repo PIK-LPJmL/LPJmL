@@ -1,0 +1,36 @@
+.TH catclm 1  "January 29, 2016" "version 3.5.003" "USER COMMANDS"
+.SH NAME
+catclm \- concatenate LPJmL climate data files
+.SH SYNOPSIS
+.B catclm [\-longheader] [\-size4]
+\fIinfile\fP ... \fIoutfile\fP
+.SH DESCRIPTION
+Program concatenates climate data files in clm format.
+.SH OPTIONS
+.TP
+\-longheader
+Long (version 2) header assumed for clm files
+.TP
+\-size4
+Size of data is set to 4 bytes, default is 2 bytes
+.TP
+.I infile
+Filename(s) of clm files to concatenate
+.TP
+.I outfile
+Filename of concatenated clm file
+.SH EXAMPLE
+.TP
+Create clm data file from two clm files:
+.B catclm
+temp_1901-2003.bin temp_2004-2055.clm temp_1901-2055.clm
+.PP
+.SH EXIT STATUS
+.B catclm
+returns a zero exit status if the clm file is created.
+Non zero is returned in case of failure.
+.SH AUTHOR
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de)
+
+.SH SEE ALSO
+lpjml(1), cutclm(1), txt2clm(1), grid2clm(1), cft2clm(1), clm(5)

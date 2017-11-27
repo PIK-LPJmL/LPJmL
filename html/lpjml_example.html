@@ -1,0 +1,275 @@
+<HTML>
+<HEAD>
+<LINK REL="stylesheet" HREF="style.css" TYPE="text/css">
+<TITLE> lpjml.conf</TITLE>
+</HEAD>
+<BODY>
+<H1> Default LPJmL configuration file</H1>
+<PRE class="tree">
+<I>/*********************************************************************/
+/*                                                                   */
+/*                   l  p  j  m  l  .  c  o  n  f                    */
+/*                                                                   */
+/* Default configuration file for LPJmL C Version 4.0.001            */
+/*                                                                   */
+/* Configuration file is divided into five sections:                 */
+/*                                                                   */
+/*  I.   <A HREF="#first">Simulation description and type section</A>                     */
+/*  II.  <A HREF="#second">Input parameter section</A>                                     */
+/*  III. <A HREF="#third">Input data section</A>                                          */
+/*  IV.  <A HREF="#forth">Output data section</A>                                         */
+/*  V.   <a href="#fifth">Run settings section</A>                                        */
+/*                                                                   */
+/* Last change: $Date:: 2014-10-01 12:16:09 +0200 (Wed, 01 Oct 201#$ */
+/* By         : $Author:: sibylls                         $          */
+/*                                                                   */
+/*********************************************************************/</I>
+
+#include "include/conf.h" <I>/* include constant definitions */</I>
+
+#define RIVER_ROUTING <I>/* river routing enabled; exclude this line to disable river routing */</I>
+#define ISRANDOM      <I>/* random generation of daily precipitation */</I>
+#define WITH_LAIMAX_CFT 
+#define WITH_GRIDBASED  <I>/* grid based PFT output enabled */</I>
+#define WITH_LANDUSE LANDUSE <I>/* landuse options: NO_LANDUSE (natural vegetation), LANDUSE (cropfracs from input), CONST_LANDUSE (landuse extent fixed, year specified in param.par), ALL_CROPS (all crops cultivated in all cells, requires POT_IRRIGATION) */</I>
+#define IRRIGATION LIM_IRRIGATION <I>/* irrigation options: NO_IRRIGATION (irrigated cropfracs added to rain-fed), LIM_IRRIGATION (requires #define RIVER_ROUTING), POT_IRRIGATION, ALL_IRRIGATION (rain-fed cropfracs added to irrigation) */</I> 
+
+<I>/*===================================================================*/
+/*  <A NAME="first">I.</A> Simulation description and type section                       */
+/*===================================================================*/</I>
+
+"LPJmL benchmark" <I>/* Simulation description **/</I>
+LPJML             <I>/* Simulation type with managed land use */</I>
+#ifdef ISRANDOM
+RANDOM_PREC <I>/* Random weather generator for precipitation enabled */</I>
+RANDOM_SEED <I>/* seed for random number generator */</I>
+#else
+INTERPOLATE_PREC
+#endif
+#ifdef WITH_SPITFIRE
+SPITFIRE
+POPULATION
+#else
+FIRE                 <I>/* fire disturbance enabled */</I>
+#endif
+#ifdef WITH_FIREWOOD
+FIREWOOD
+#else
+NO_FIREWOOD
+#endif
+#if defined(WITH_SPITFIRE) || defined (WITH_FIREWOOD)
+POPULATION
+#else
+NO_POPULATION
+#endif
+#ifdef USE_BURNTAREA
+PRESCRIBE_BURNTAREA
+#else
+NO_PRESCRIBE_BURNTAREA
+#endif
+#ifdef USE_LANDCOVER
+LANDCOVERFPC <I>/* LANDCOVEREST to prescribe establishment or LANDCOVERFPC to prescribe maximum FPC */</I>
+#else
+NO_LANDCOVER
+#endif
+#ifdef GSI_PHENOLOGY
+NEW_PHENOLOGY
+#else
+OLD_PHENOLOGY
+#endif
+#ifdef RIVER_ROUTING
+DRAINAGE
+#else
+NO_DRAINAGE
+#endif
+#ifdef WITH_LANDUSE
+#if WITH_LANDUSE == CONST_LANDUSE
+CONST_LANDUSE                  <I>/* constant land use */</I>
+#else 
+LANDUSE                        <I>/* land use enabled */</I>
+#endif
+IRRIGATION
+#ifdef WITH_LAIMAX_CFT
+LAIMAX_CFT <I>/* laimax values from manage parameter file */</I>
+#else
+LAIMAX_INTERPOLATE
+#endif
+#ifdef RIVER_ROUTING
+#ifdef WITH_RESERVOIRS
+NO_RESERVOIR
+#else
+NO_RESERVOIR <I>/* no dam reservoirs */</I>
+#endif
+#endif
+#ifdef WITH_FIXED_GRASS_PFT 
+GRASS_FIXED_PFT
+#else
+NO_GRASS_FIXED_PFT
+#endif
+#else
+NO_LANDUSE
+#endif
+#ifdef WITH_WATERUSE
+WATERUSE
+#else
+NO_WATERUSE
+#endif
+
+<I>/*===================================================================*/</I>
+<I>/*  <A NAME="second">II.</A> Input parameter section                                      */</I>
+<I>/*===================================================================*/</I>
+
+#include "<A HREF="param_example.html">param.conf</A>"         <I>/* Input parameter file */</I>
+
+<I>/*===================================================================*/</I>
+<I>/*  <A NAME="third">III.</A> Input data section                                          */</I>
+<I>/*===================================================================*/</I>
+
+#include "<A HREF="input_example.html">input.conf</A>"    <I>/* Input files of CRU dataset */</I>
+
+#ifdef WITH_WATERUSE
+CLM input/wateruse1901_2003.bin <I>/* water consumption for industry, household and livestock */</I>
+#endif
+
+<I>/*===================================================================*/</I>
+<I>/*  <A NAME="forth">IV.</A> Output data section                                          */</I>
+<I>/*===================================================================*/</I>
+
+#ifdef WITH_GRIDBASED
+GRIDBASED
+#define SUFFIX grid.bin
+#else
+PFTBASED
+#define SUFFIX pft.bin
+#endif
+
+#ifndef FROM_RESTART
+
+END	            <I>/* no output files */</I>
+
+#else
+
+<I>/*
+ID                  fmt filename
+------------------- --- --------------------------------------------------*/</I>
+GRID                RAW output/grid.bin
+FPC                 RAW output/fpc.bin 
+MNPP                RAW output/mnpp.bin
+MGPP                RAW output/mgpp.bin
+MRH                 RAW output/mrh.bin
+MTRANSP             RAW output/mtransp.bin
+MRUNOFF             RAW output/mrunoff.bin
+MDISCHARGE          RAW output/mdischarge.bin
+MEVAP               RAW output/mevap.bin
+MINTERC             RAW output/minterc.bin
+MSWC1               RAW output/mswc1.bin
+MSWC2               RAW output/mswc2.bin
+MIRRIG              RAW output/mirrig.bin
+FIREC               RAW output/firec.bin
+FIREF               RAW output/firef.bin
+VEGC                RAW output/vegc.bin
+SOILC               RAW output/soilc.bin
+LITC                RAW output/litc.bin
+PFT_GCGP            RAW output/waterstress.bin 
+PFT_NPP             RAW output/pft_npp.SUFFIX
+#ifdef WITH_LANDUSE
+FLUX_ESTAB          RAW output/flux_estab.bin
+HARVEST             RAW output/flux_harvest.bin
+SDATE               RAW output/sdate.bin
+PFT_HARVEST         RAW output/pft_harvest.SUFFIX
+PFT_RHARVEST        RAW output/pft_rharvest.SUFFIX
+CFTFRAC             RAW output/cftfrac.bin 
+CFT_CONSUMP_WATER_G RAW output/cft_consump_water_g.bin 
+CFT_CONSUMP_WATER_B RAW output/cft_consump_water_b.bin 
+MRETURN_FLOW_B      RAW output/mreturn_flow_b.bin
+#endif
+APREC               RAW output/aprec.bin
+#ifdef RIVER_ROUTING
+INPUT_LAKE          RAW output/input_lake.bin
+MEVAP_LAKE          RAW output/mevap_lake.bin
+ADISCHARGE          RAW output/adischarge.bin
+#endif
+#ifdef DAILY_OUTPUT
+D_LAI               RAW output/d_lai.bin
+D_PHEN              RAW output/d_phen.bin
+D_CLEAF             RAW output/d_cleaf.bin
+D_CROOT             RAW output/d_croot.bin
+D_CSO               RAW output/d_cso.bin
+D_CPOOL             RAW output/d_cpool.bin
+D_WDF               RAW output/d_wdf.bin
+D_GROWINGDAY        RAW output/d_growingday.bin
+D_PVD               RAW output/d_pvd.bin
+D_PHU               RAW output/d_phu.bin
+D_FPHU              RAW output/d_fphu.bin
+D_LAIMAXAD          RAW output/d_laimax_adjusted.bin
+D_LAINPPDEF         RAW output/d_laimaxnppdeficit.bin
+D_HUSUM             RAW output/d_husum.bin
+D_VDSUM             RAW output/d_vdsum.bin
+D_WSCAL             RAW output/d_wscal.bin
+D_NPP               RAW output/d_npp.bin
+D_GPP               RAW output/d_gpp.bin
+D_RD                RAW output/d_rd.bin
+D_RROOT             RAW output/d_rroot.bin
+D_RSO               RAW output/d_rso.bin
+D_RPOOL             RAW output/d_rpool.bin
+D_GRESP             RAW output/d_gresp.bin
+D_TRANS             RAW output/d_trans.bin
+D_EVAP              RAW output/d_evap.bin
+D_PREC              RAW output/d_prec.bin
+D_PERC              RAW output/d_perc.bin
+D_IRRIG             RAW output/d_irrig.bin
+D_W0                RAW output/d_w0.bin
+D_W1                RAW output/d_w1.bin
+D_WEVAP             RAW output/d_wevap.bin
+D_HI                RAW output/d_hi.bin
+D_FHIOPT            RAW output/d_fhiopt.bin
+D_HIMIND            RAW output/d_himind.bin
+D_FROOT             RAW output/d_froot.bin
+D_TEMP              RAW output/d_temp.bin
+D_SUN               RAW output/d_sun.bin
+D_PAR               RAW output/d_par.bin
+D_PET               RAW output/d_pet.bin
+#endif                                             <I>/*
+------------------- --- --------------------------------------------------*/</I>
+END
+#ifdef DAILY_OUTPUT
+TEMPERATE_CEREALS  <I>/* CFT for daily output */</I>
+DAILY_RAINFED      <I>/* irrigation flag for daily output */</I>
+#endif
+#endif
+
+<I>/*===================================================================*/</I>
+<I>/*  <A NAME="fifth">V.</A> Run settings section                                          */</I>
+<I>/*===================================================================*/</I>
+
+ALL   <I>/* all grid cells */</I>
+
+#ifndef FROM_RESTART
+
+1000  <I>/* spinup years */</I>
+<I>/* exclude next line in case of 0 spinup years */</I>
+30   <I>/* cycle length during spinup (yr) */</I>
+1901 <I>/* first year of simulation */</I>
+1901 <I>/* last year of simulation */</I>
+NO_RESTART <I>/* do not start from restart file */</I>
+RESTART <I>/* create restart file: the last year of simulation=restart-year */</I>
+restart/restart.lpj <I>/* filename of restart file */</I>
+1900 <I>/* write restart at year; exclude line in case of no restart to be written */</I>
+
+#else
+
+0    <I>/* no spinup years */</I>
+<I>/* exclude next line in case of 0 spinup years */</I>
+<I>/*30    cycle length during spinup (yr) */</I>
+1901 <I>/* first year of simulation */</I>
+2003 <I>/* last year of simulation */</I>
+RESTART <I>/* start from restart file */</I>
+restart/restart.lpj <I>/* filename of restart file */</I>
+RESTART <I>/* create restart file */</I>
+restart/restart_final.lpj <I>/* filename of restart file */</I>
+2000 <I>/* write restart at year; exclude line in case of no restart to be written */</I>
+
+#endif
+</PRE>
+</BODY>
+</HTML>

@@ -1,0 +1,22 @@
+.TH pnet_hi 3  "October 21, 2008" "version 1.0.003" "Pnet programmers manual"
+.SH NAME
+pnet_hi \- Get upper bound for local sublattice
+.SH SYNOPSIS
+.nf
+\fB#include <mpi.h>
+#include "pnet.h"
+
+int pnet_hi(const Pnet\fP *\fIpnet\fB);\fP
+.fi
+.SH DESCRIPTION
+Function returns upper bound for local sublattice. Function is implemented as a macro.
+The argument of \fBpnet_hi\fP is:
+.TP
+.I pnet
+Pointer to initialized Pnet struct 
+.SH RETURN VALUE
+Upon successful completion upper bound is returned.
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+pnet_init(3), pnet_free(3), pnet_setup(3), pnet_lo(3), pnet_nodes(3)

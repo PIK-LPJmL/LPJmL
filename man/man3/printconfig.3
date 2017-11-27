@@ -1,0 +1,36 @@
+.TH fprintconfig 3  "January 9, 2013" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+fprintconfig, printconfig \- Print LPJmL configuration
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+void fprintconfig(FILE *\fIfile\fB,const Config *\fIconfig\fB);
+void printconfig(const Config *\fIconfig\fB);
+
+.fi
+.SH DESCRIPTION
+Function print LPJmL configuration. \fBprintconfig()\fP writes output to standard output.
+The arguments of \fBfprintconfig\fP are:
+.TP
+.I file
+File pointer to output stream.
+.TP
+.I config
+LPJmL configuration data. Must be read by \fBreadconfig()\fP. 
+.SH RETURN VALUE
+None.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+readconfig(3), initmpiconfig(3), initconfig(3),freeconfig(3)

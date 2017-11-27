@@ -1,0 +1,42 @@
+.TH cdf2clm 1  "June 26, 2013" "version 1.0.001" "USER COMMANDS"
+.SH NAME
+cdf2clm \- convert NetCDF files into CLM files
+.SH SYNOPSIS
+.B cdf2clm
+[\-scale factor] [\-units u] [\-var name] [\-o clmfile] 
+gridfile clmfile ...
+.SH DESCRIPTION
+Program converts NetCDF input data into CLM input data. 
+.SH OPTIONS
+.TP
+\-scale factor
+scaling factor for CLM files. Default is one
+\-units u
+set units in NetCDF file
+.TP
+\-var name 
+variable name in NetCDF file
+.TP
+.I -o clmfile
+filename of CLM data file written. Default is out.clm
+.TP
+.I gridfile    
+filename of grid data file
+.TP
+.I netcdffile     
+filename of NetCDF file(s) converted
+.SH EXAMPLES
+.TP
+Create data file for temperature:
+.B cdf2clm
+-units celsius -var tas -o temp1901-2010.clm  grid.clm tmp*.nc
+.PP
+.SH EXIT STATUS
+.B cdf2clm
+returns a zero exit status if the CLM file is created.
+Non zero is returned in case of failure.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+
+.SH SEE ALSO
+clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

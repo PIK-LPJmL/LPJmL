@@ -1,0 +1,42 @@
+.TH failonerror 3  "January 9, 2013" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+failonerror \- Prints error message and terminates program
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+void failonerror(const Config *\fIconfig\fB,int \fIrc\fB,int \fIerrcode\fB,const char *\fImsg\fB);
+
+.fi
+.SH DESCRIPTION
+Function writes out error message and terminates program. The parallel version checks the return code on all tasks and prints error message only on task zero.  
+The arguments of \fBfailonerror\fP are:
+.TP
+.I config
+LPJmL configuration data. Must be initialized by \fBinitmpiconfig()\fP or \fBinitconfig()\fP.
+.TP
+.I rc
+Return code of last function call. Program will be terminated if value on any task is greater than zero.
+.TP
+.I errcode
+Value returned from main program. 
+.TP
+.I msg
+Error message printed on error stream.
+
+.SH RETURN VALUE
+None.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+initconfig(3), initmpiconfig(3)

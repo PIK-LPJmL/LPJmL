@@ -1,0 +1,27 @@
+.TH pnet_init 3  "October 21, 2008" "version 1.0.003" "Pnet programmers manual"
+.SH NAME
+pnet_init \- Initialize Pnet datatype
+.SH SYNOPSIS
+.nf
+\fB#include <mpi.h>
+#include "pnet.h"
+
+Pnet *pnet_init(MPI_Comm\fP \fIcomm\fB, MPI_Datatype \fIdatatype\fB, int \fInodes\fB);\fP
+.fi
+.SH DESCRIPTION
+The Pnet library is used for MPI parallelization of networks. The function has to be called after the initialization of MPI. The arguments of \fBpnet_init\fP are:
+.TP
+.I comm 
+MPI communicator
+.TP
+.I datatype
+MPI datatype network for data transfer
+.TP
+.I nodes
+Number of nodes in the network.
+.SH RETURN VALUE
+Upon successful completion of \fBpnet_init\fP a pointer to allocated Pnet struct is returned and NULL in case of failure.
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+pnet_free(3), pnet_setup(3), pnet_nodes(3) 

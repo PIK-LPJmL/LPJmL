@@ -1,0 +1,34 @@
+.TH setclm 1  "January 08, 2013" "version 1.0.001" "USER COMMANDS"
+.SH NAME
+setclm \- set value in header of clm files for LPJmL                   
+.SH SYNOPSIS
+.B setclm
+{id|version|order|firstyear|nyear|firstcell|ncell|nbands} \fIvalue\fP \fIclmfile\fP
+
+.SH DESCRIPTION
+Program sets file header and data stored in clm data files for LPJmL. 
+.SH OPTIONS
+.TP
+{id|version|order|firstyear|nyear|firstcell|ncell|nbands} 
+Define record to be set
+.TP
+.I value
+value written in clm file
+.TP
+.I clmfile
+filename of clm data file
+.SH EXAMPLE
+.TP
+Set version of clm file to 2:
+.B setclm 
+version 2 tmp.clm
+.PP
+.SH EXIT STATUS
+.B setclm
+return a zero exit status if value in clm file could be set.
+Non zero is returned in case of failure.
+.SH AUTHOR
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+
+.SH SEE ALSO
+printclm(1), printheader(1), cru2clm(1), grid2clm(1), cft2clm(1), clm(5)
