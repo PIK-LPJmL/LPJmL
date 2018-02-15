@@ -128,6 +128,16 @@ Makefile.cluster2015 - Intel C-compiler and Intel MPI on HLRS2015 cluster at PIK
 Makefile.mpich       - GNU C-Compiler and MPI Chameleon settings
 Makefile.win32       - Windows settings (used by configure.bat)
 
+We are interested in learning how much and where LPJmL is used. 
+For that we have included a call-home function in configure.sh and in the Makefile. 
+For technical reasons, we only track the execution of configure.sh and model builds using the makefiles, not model runs. 
+No personal data is recorded that could be used to identify users, 
+only the country in which the scripts/Makefiles are executed and the repository source 
+(PIK gitlab open source repository, PIK's internal gitlab repository, PIK's internal SVN repository).
+You can find the usage statistics online at https://goo.gl/#analytics/goo.gl/DYv3KW/all_time. 
+If you don't want to contribute to the usage statistics, please run configure.sh with the option -nofeedback
+or disable the option directly in src/Makefile.
+
 Compilation flags
 
 Compilation of LPJmL is customized by definition of macros in the LPJFLAGS
