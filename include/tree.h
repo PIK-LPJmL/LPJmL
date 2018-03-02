@@ -96,7 +96,7 @@ extern void phenology_tree(Pft *,Real,int,Bool);
 extern Bool fwrite_tree(FILE *,const Pft *);
 extern void fprint_tree(FILE *,const Pft *);
 extern Bool fread_tree(FILE *,Pft *,Bool);
-extern Bool fscanpft_tree(FILE *,Pftpar *,Verbosity);
+extern Bool fscanpft_tree(LPJfile *,Pftpar *,Verbosity);
 extern Bool isneg_tree(const Pft *);
 extern Real establishment_tree(Pft *,Real,Real,int);
 extern void init_tree(Pft *);

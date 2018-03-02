@@ -97,40 +97,40 @@ clean:
 $(OBJS): $(HDRS)
 
 .c.$O: 
-	$(CC) $(CFLAGS) -I$(INC) -c $*.c
+	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c
 
 bin2cdf.$O: bin2cdf.c
-	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) -c bin2cdf.c
+	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) $(JSON_INC) -c bin2cdf.c
 
 $(BIN)/bin2cdf$E: bin2cdf.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/bin2cdf$E bin2cdf.$O $(LPJLIBS) $(LIBS)
 
 cdf2clm.$O: cdf2clm.c
-	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) -c cdf2clm.c
+	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) $(JSON_INC) -c cdf2clm.c
 
 $(BIN)/cdf2clm$E: cdf2clm.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/cdf2clm$E cdf2clm.$O $(LPJLIBS) $(LIBS)
 
 soil2cdf.$O: soil2cdf.c
-	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) -c soil2cdf.c
+	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) $(JSON_INC) -c soil2cdf.c
 
 $(BIN)/soil2cdf$E: soil2cdf.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/soil2cdf$E soil2cdf.$O $(LPJLIBS) $(LIBS)
 
 clm2cdf.$O: clm2cdf.c
-	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) -c clm2cdf.c
+	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) $(JSON_INC) -c clm2cdf.c
 
 $(BIN)/clm2cdf$E: clm2cdf.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/clm2cdf$E clm2cdf.$O $(LPJLIBS) $(LIBS)
 
 cdf2soil.$O: cdf2soil.c
-	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) -c cdf2soil.c
+	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) $(JSON_INC) -c cdf2soil.c
 
 $(BIN)/cdf2soil$E: cdf2soil.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/cdf2soil$E cdf2soil.$O $(LPJLIBS) $(LIBS)
 
 cdf2coord.$O: cdf2coord.c
-	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) -c cdf2coord.c
+	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) $(JSON_INC) -c cdf2coord.c
 
 $(BIN)/cdf2coord$E: cdf2coord.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/cdf2coord$E cdf2coord.$O $(LPJLIBS) $(LIBS)

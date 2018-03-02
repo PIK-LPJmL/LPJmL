@@ -35,33 +35,30 @@ Real midlayer[NSOILLAYER];
 Real logmidlayer[NSOILLAYER];   /*log10(midlayer[l]/midlayer[NSOILLAYER-2]), for vertical soc profile*/
 Real fbd_fac[NFUELCLASS];
 
-unsigned int fscansoilpar(FILE *file,        /**< file  pointer */
+unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
                           Soilpar **soilpar, /**< Pointer to Soilpar array */
                           Verbosity verb     /**< verbosity level (NO_ERR,ERR,VERB) */
                          )                   /** \return number of elements in array */
 {
+  LPJfile arr,item;
   unsigned int nsoil,n,id;
   int l;
   String s;
   Soilpar *soil;
   if (verb>=VERB) puts("// soil parameters");
+  if(fscanrealarray(file,soildepth,NSOILLAYER,"soildepth",verb))
+    return 0;
+  if(fscanrealarray(file,layerbound,NSOILLAYER,"layerbound",verb))
+    return 0;
   for(l=0;l<NSOILLAYER;l++)
-    if(fscanreal(file,soildepth+l,"soildepth",verb))
-      return 0;
-  for(l=0;l<NSOILLAYER;l++)
-  {
-    if(fscanreal(file,layerbound+l,"layerbound",verb))
-      return 0;
     midlayer[l]=l>0?(layerbound[l-1]+soildepth[l]/2.):soildepth[l]/2.;
-  }
   foreachsoillayer(l)
   {
     logmidlayer[l]=log10(midlayer[l]/midlayer[NSOILLAYER-2]);
   }
-  for(l=0;l<NFUELCLASS;l++)
-    if(fscanreal(file,fbd_fac+l,"fbd_fac",verb))
-      return 0;
-  if(fscanuint(file,&nsoil,"nsoil",verb))
+  if(fscanrealarray(file,fbd_fac,NFUELCLASS,"fbd_fac",verb))
+    return 0;
+  if(fscanarray(file,&arr,&nsoil,TRUE,"soilpar",verb))
     return 0;
   if(nsoil<1)
   {
@@ -76,7 +73,8 @@ unsigned int fscansoilpar(FILE *file,        /**< file  pointer */
     (*soilpar)[n].type=UNDEF;
   for(n=0;n<nsoil;n++)
   {
-    if(fscanuint(file,&id,"soiltype",verb))
+    fscanarrayindex(&arr,&item,n,verb);
+    if(fscanuint(&item,&id,"id",verb))
       return 0;
     if(id>=nsoil)
     {
@@ -91,20 +89,19 @@ unsigned int fscansoilpar(FILE *file,        /**< file  pointer */
         fprintf(stderr,"ERROR177: Soil type=%u in line %d of '%s' has been already defined in fscansoilpar().\n",id,getlinecount(),getfilename());
       return 0;
     }
-    if(fscanstring(file,s,verb!=NO_ERR))
+    if(fscanstring(&item,s,"name",verb))
     {
       if(verb)
         readstringerr("name");
       return 0;
     }
-    if (verb>=VERB) printf("SOIL_NAME %s\n", s);
     soil->name=strdup(s);
     check(soil->name);
     soil->type=id;
-    fscanreal2(verb,file,&soil->Ks,"Ks");
-    fscanreal2(verb,file,&soil->Sf,"Sf");
-    fscanreal2(verb,file,&soil->wpwp,"w_pwp");
-    fscanreal2(verb,file,&soil->wfc,"w_fc");
+    fscanreal2(verb,&item,&soil->Ks,"Ks");
+    fscanreal2(verb,&item,&soil->Sf,"Sf");
+    fscanreal2(verb,&item,&soil->wpwp,"w_pwp");
+    fscanreal2(verb,&item,&soil->wfc,"w_fc");
     if(soil->wfc>1)
     {
       if(verb)
@@ -119,7 +116,7 @@ unsigned int fscansoilpar(FILE *file,        /**< file  pointer */
                 soil->wfc-soil->wpwp,getlinecount(),getfilename(),soil->name,soil->wfc,soil->wpwp);
       return 0;
     }
-    fscanreal2(verb,file,&soil->wsat,"w_sat");
+    fscanreal2(verb,&item,&soil->wsat,"w_sat");
     if(soil->wsat<=0 || soil->wsat>1)
     {
       if(verb)
@@ -156,7 +153,7 @@ unsigned int fscansoilpar(FILE *file,        /**< file  pointer */
     soil->wsats[BOTTOMLAYER]=0.006*soildepth[BOTTOMLAYER];
     soil->bulkdens[BOTTOMLAYER]=(1-soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER])*MINERALDENS;
     soil->k_dry[BOTTOMLAYER]=0.039*pow(soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER],-2.2);
-    fscanint2(verb,file,&soil->hsg,"hsg");
+    fscanint2(verb,&item,&soil->hsg,"hsg");
     if(soil->hsg<1 || soil->hsg>NHSG)
     {
       if(verb)
@@ -164,12 +161,12 @@ unsigned int fscansoilpar(FILE *file,        /**< file  pointer */
                 soil->hsg,soil->name);
       return 0;
     }
-    fscanreal2(verb,file,&soil->tdiff_0,"tdiff_0");
-    fscanreal2(verb,file,&soil->tdiff_15,"tdiff_15");
-    fscanreal2(verb,file,&soil->tdiff_100,"tdiff_100");
-    fscanreal2(verb,file,&soil->tcond_pwp,"cond_pwp");
-    fscanreal2(verb,file,&soil->tcond_100,"cond_100");
-    fscanreal2(verb,file,&soil->tcond_100_ice,"cond_100_ice");
+    fscanreal2(verb,&item,&soil->tdiff_0,"tdiff_0");
+    fscanreal2(verb,&item,&soil->tdiff_15,"tdiff_15");
+    fscanreal2(verb,&item,&soil->tdiff_100,"tdiff_100");
+    fscanreal2(verb,&item,&soil->tcond_pwp,"cond_pwp");
+    fscanreal2(verb,&item,&soil->tcond_100,"cond_100");
+    fscanreal2(verb,&item,&soil->tcond_100_ice,"cond_100_ice");
 
   } /* of 'for(n=0;...)' */
   return n;

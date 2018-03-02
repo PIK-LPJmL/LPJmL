@@ -44,7 +44,7 @@ extern void closecoord(Coordfile);
 extern Bool writecoord(FILE *,const Coord *);
 extern Bool writefloatcoord(FILE *,const Coord *);
 extern Real cellarea(const Coord *,const Coord *);
-extern Bool fscancoord(FILE *,Coord *,Verbosity);
+extern Bool fscancoord(LPJfile *,Coord *,Verbosity);
 extern int numcoord(const Coordfile);
 extern void getcellsizecoord(float *,float *,const Coordfile);
 extern char *sprintcoord(String,const Coord *);

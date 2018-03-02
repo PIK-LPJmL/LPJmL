@@ -20,7 +20,11 @@
 
 #define LPJCHECK_VERSION "1.0.002"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
+#ifdef USE_JSON
+#define dflt_conf_filename "lpjml.js" /* Default LPJ configuration file */
+#else
 #define dflt_conf_filename "lpjml.conf" /* Default LPJ configuration file */
+#endif
 #ifdef USE_MPI
 #define USAGE "Usage: %s [-h] [-q] [-param] [-vv]\n"\
               "       [-output {mpi2|gather|socket=hostname[:port]}]\n"\
@@ -73,7 +77,7 @@ int main(int argc,char **argv)
              "-vv              verbosely print the actual values during reading of the\n"
              "                 configuration files\n"
              "-param           print LPJ parameter\n"
-             "-pp cmd          set preprocessor program. Default is 'cpp -P'\n"
+             "-pp cmd          set preprocessor program. Default is 'cpp'\n"
 #ifdef USE_MPI
              "-output method   output method. Must be mpi2, gather, socket.\n"
              "                 Default is gather.\n"

@@ -16,19 +16,22 @@
 
 #include "lpj.h"
 
-Bool fscanemissionfactor(FILE *file,Tracegas *emissionfactor,Verbosity verb)
+Bool fscanemissionfactor(LPJfile *file,Tracegas *emissionfactor,const char *key,Verbosity verb)
 {
-  if(fscanreal(file,&emissionfactor->co2,"emiss. factor co2",verb))
+  LPJfile f;
+  if(fscanstruct(file,&f,key,verb))
     return TRUE;
-  if(fscanreal(file,&emissionfactor->co,"emiss. factor co",verb))
+  if(fscanreal(&f,&emissionfactor->co2,"co2",verb))
     return TRUE;
-  if(fscanreal(file,&emissionfactor->ch4,"emiss. factor ch4",verb))
+  if(fscanreal(&f,&emissionfactor->co,"co",verb))
     return TRUE;
-  if(fscanreal(file,&emissionfactor->voc,"emiss. factor voc",verb))
+  if(fscanreal(&f,&emissionfactor->ch4,"ch4",verb))
     return TRUE;
-  if(fscanreal(file,&emissionfactor->tpm,"emiss. factor tpm",verb))
+  if(fscanreal(&f,&emissionfactor->voc,"voc",verb))
     return TRUE;
-  if(fscanreal(file,&emissionfactor->nox,"emiss. factor nox",verb))
+  if(fscanreal(&f,&emissionfactor->tpm,"tpm",verb))
+    return TRUE;
+  if(fscanreal(&f,&emissionfactor->nox,"nox",verb))
     return TRUE;
   emissionfactor->co2*=1e-3;
   emissionfactor->co*=1e-3;

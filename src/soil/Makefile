@@ -25,7 +25,8 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           soilwater.$O soilcarbon.$O litter_ag_tree.$O litter_ag_grass.$O\
           moistfactor.$O litter_ag_sum_quick.$O freesoilpar.$O moisture2soilice.$O\
           soilconduct.$O soilheatcap.$O soilice2moisture.$O getlag.$O convert_water.$O\
-          getstate.$O initsoiltemp.$O infil_perc_rain.$O infil_perc_irr.$O
+          getstate.$O initsoiltemp.$O infil_perc_rain.$O infil_perc_irr.$O\
+          fscanpool.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -46,7 +47,7 @@ $(LIBDIR)/$(LIB): $(OBJS)
 $(OBJS): $(HDRS)
 
 .c.$O: 
-	$(CC) $(CFLAGS) -I$(INC) -c $*.c
+	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c
 
 clean: 
 	$(RM) $(RMFLAGS) $(OBJS)

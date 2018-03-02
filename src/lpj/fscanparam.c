@@ -20,62 +20,68 @@
   if(fscanreal(file,var,name,verbosity)) return TRUE; 
 #define fscanparamint(file,var,name) \
   if(fscanint(file,var,name,verbosity)) return TRUE;
+#define fscanparambool(file,var,name) \
+  if(fscanbool(file,var,name,verbosity)) return TRUE;
+#define fscanparampool(file,var,name) \
+  if(fscanpool(file,var,name,verbosity)) return TRUE;
 
 Param param; /* global LPJ parameter */
 
-Bool fscanparam(FILE  *file,         /**< File pointer to text file */
+Bool fscanparam(LPJfile  *file,         /**< File pointer to text file */
                 const Config *config /**< LPJ configuration */
                )                     /** \return TRUE on error  */
 {
+  LPJfile f;
   Verbosity verbosity;
   verbosity=(isroot(*config))  ? config->scan_verbose : NO_ERR;
   if(verbosity>=VERB)
     printf("// LPJ parameters\n");
-  fscanparamreal(file,&param.k_litter10,"k_litter10");
-  fscanparamreal(file,&param.k_soil10.fast,"fast k_soil10");
-  fscanparamreal(file,&param.k_soil10.slow,"slow k_soil10");
-  fscanparamreal(file,&param.maxsnowpack,"max snow pack");
-  fscanparamreal(file,&param.soildepth_evap,"soildepth_evap");
-  fscanparamreal(file,&param.co2_p,"co2_p");
-  fscanparamreal(file,&param.k,"k");
-  fscanparamreal(file,&param.theta,"theta");
-  fscanparamreal(file,&param.k_beer,"k_beer");
-  fscanparamreal(file,&param.alphac3,"alphac3");
-  fscanparamreal(file,&param.alphac4,"alphac4");
-  fscanparamreal(file,&param.bc3,"bc3");
-  fscanparamreal(file,&param.bc4,"bc4");
-  fscanparamreal(file,&param.r_growth,"r_growth");
-  fscanparamreal(file,&param.GM,"GM");
-  fscanparamreal(file,&param.ALPHAM,"ALPHAM");
-  fscanparamreal(file,&param.ko25,"ko25");
-  fscanparamreal(file,&param.kc25,"kc25");
-  fscanparamreal(file,&param.atmfrac,"atmfrac");
-  fscanparamreal(file,&param.fastfrac,"fastfrac");
-  fscanparamreal(file,&param.k_mort,"k_mort");
+  if(fscanstruct(file,&f,"param",verbosity))
+    return TRUE;
+  fscanparamreal(&f,&param.k_litter10,"k_litter10");
+  fscanparampool(&f,&param.k_soil10,"k_soil10");
+  fscanparamreal(&f,&param.maxsnowpack,"maxsnowpack");
+  fscanparamreal(&f,&param.soildepth_evap,"soildepth_evap");
+  fscanparamreal(&f,&param.co2_p,"co2_p");
+  fscanparamreal(&f,&param.k,"k");
+  fscanparamreal(&f,&param.theta,"theta");
+  fscanparamreal(&f,&param.k_beer,"k_beer");
+  fscanparamreal(&f,&param.alphac3,"alphac3");
+  fscanparamreal(&f,&param.alphac4,"alphac4");
+  fscanparamreal(&f,&param.bc3,"bc3");
+  fscanparamreal(&f,&param.bc4,"bc4");
+  fscanparamreal(&f,&param.r_growth,"r_growth");
+  fscanparamreal(&f,&param.GM,"GM");
+  fscanparamreal(&f,&param.ALPHAM,"ALPHAM");
+  fscanparamreal(&f,&param.ko25,"ko25");
+  fscanparamreal(&f,&param.kc25,"kc25");
+  fscanparamreal(&f,&param.atmfrac,"atmfrac");
+  fscanparamreal(&f,&param.fastfrac,"fastfrac");
+  fscanparamreal(&f,&param.k_mort,"k_mort");
   
   if(config->withlanduse!=NO_LANDUSE)
   {
-    fscanparamreal(file,&param.aprec_lim,"aprec_lim");
-    fscanparamreal(file,&param.irrig_threshold_c3_dry,"irrig_threshold_c3_dry");
-    fscanparamreal(file,&param.irrig_threshold_c3_humid,
+    fscanparamreal(&f,&param.aprec_lim,"aprec_lim");
+    fscanparamreal(&f,&param.irrig_threshold_c3_dry,"irrig_threshold_c3_dry");
+    fscanparamreal(&f,&param.irrig_threshold_c3_humid,
                    "irrig_threshold_c3_humid");
-    fscanparamreal(file,&param.irrig_threshold_c4,"irrig_threshold_c4");
-    fscanparamreal(file,&param.irrig_threshold_rice,"irrig_threshold_rice");
-    fscanparamreal(file,&param.irrigation_soilfrac,"irrigation_soilfrac");
-    fscanparamreal(file,&param.ec_canal[0],"canal_conveyance_eff_sand");
-    fscanparamreal(file,&param.ec_canal[1],"canal_conveyance_eff_loam");
-    fscanparamreal(file,&param.ec_canal[2],"canal_conveyance_eff_clay");
-    fscanparamreal(file,&param.ec_pipe,"pipe_conveyance_eff");
+    fscanparamreal(&f,&param.irrig_threshold_c4,"irrig_threshold_c4");
+    fscanparamreal(&f,&param.irrig_threshold_rice,"irrig_threshold_rice");
+    fscanparamreal(&f,&param.irrigation_soilfrac,"irrig_soilfrac");
+    fscanparamreal(&f,&param.ec_canal[0],"canal_conveyance_eff_sand");
+    fscanparamreal(&f,&param.ec_canal[1],"canal_conveyance_eff_loam");
+    fscanparamreal(&f,&param.ec_canal[2],"canal_conveyance_eff_clay");
+    fscanparamreal(&f,&param.ec_pipe,"pipe_conveyance_eff");
     param.sat_level[0]=0; /* default value */
-    fscanparamreal(file,&param.sat_level[1],"saturation_level_surf");
-    fscanparamreal(file,&param.sat_level[2],"saturation_level_sprink");
-    fscanparamreal(file,&param.sat_level[3],"saturation_level_drip");
-    fscanparamreal(file,&param.drip_evap,"drip_evap_reduction");
-    fscanparamreal(file,&param.laimax,"laimax");
-    fscanparamint(file,&param.intercrop,"intercrop");
-    fscanparamint(file,&param.remove_residuals,"remove_residuals");
-    fscanparamint(file,&param.sdate_fixyear,"sdate_fixyear");
-    fscanparamint(file,&param.landuse_year_const,"landuse_year_const");
+    fscanparamreal(&f,&param.sat_level[1],"saturation_level_surf");
+    fscanparamreal(&f,&param.sat_level[2],"saturation_level_sprink");
+    fscanparamreal(&f,&param.sat_level[3],"saturation_level_drip");
+    fscanparamreal(&f,&param.drip_evap,"drip_evap_reduction");
+    fscanparamreal(&f,&param.laimax,"laimax");
+    fscanparambool(&f,&param.intercrop,"intercrop");
+    fscanparambool(&f,&param.remove_residuals,"remove_residuals");
+    fscanparamint(&f,&param.sdate_fixyear,"sdate_fixyear");
+    fscanparamint(&f,&param.landuse_year_const,"landuse_year_const");
   }
   param.k_litter10/=NDAYYEAR;
   param.k_soil10.fast/=NDAYYEAR;

@@ -56,8 +56,8 @@ typedef struct
 
 /* Declaration of functions */
 
-extern int fscancountrypar(FILE *,Countrypar **,int,Verbosity);
-extern int fscanregionpar(FILE *,Regionpar **,Verbosity);
+extern int fscancountrypar(LPJfile *,Countrypar **,int,Verbosity);
+extern int fscanregionpar(LPJfile *,Regionpar **,Verbosity);
 extern void fprintcountrypar(FILE *,const Countrypar *,int,int);
 extern void fprintregionpar(FILE *,const Regionpar[],int);
 extern void initmanage(Manage *, const Countrypar *, const Regionpar *,int,

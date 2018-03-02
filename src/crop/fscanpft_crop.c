@@ -33,7 +33,7 @@
     return TRUE; \
   }
 #define fscanpftlimit(verb,file,var,pft,name) \
-  if(fscanlimit(file,var,verb)) \
+  if(fscanlimit(file,var,name,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR112: Cannot read limit '%s' of CFT '%s' in %s().\n",name,pft,__FUNCTION__); \
@@ -48,40 +48,43 @@
     return TRUE; \
   }
 
-static Bool fscancropdate(FILE *file,Initdate *initdate,Verbosity verb)
+static Bool fscancropdate(LPJfile *file,Initdate *initdate,Verbosity verb)
 {
-  if(fscanint(file,&initdate->sdatenh,"date northern hemisphere",verb))
+  if(fscanint(file,&initdate->sdatenh,"sdatenh",verb))
     return TRUE;
-  if(fscanint(file,&initdate->sdatesh,"date southern hemisphere",verb))
+  if(fscanint(file,&initdate->sdatesh,"sdatesh",verb))
     return TRUE;
   return FALSE;
 } /* of 'fscancropdate' */
 
 #define fscancropphys2(verb,file,var,pft,name)\
-  if(fscancropphys(file,var,verb))\
+  if(fscancropphys(file,var,name,verb))\
   {\
     if(verb)\
     fprintf(stderr,"ERROR114: Cannot read cropphys '%s' of CFT '%s' in %s().\n",name,pft,__FUNCTION__); \
     return TRUE; \
   }
 
-static Bool fscancropphys(FILE *file,Cropphys *phys,Verbosity verb)
+static Bool fscancropphys(LPJfile *file,Cropphys *phys,const char *name,Verbosity verb)
 {
-  if(fscanreal(file,&phys->root,"root",verb))
+  LPJfile item;
+  if(fscanstruct(file,&item,name,verb))
     return TRUE;
-  if(fscanreal(file,&phys->so,"so",verb))
+  if(fscanreal(&item,&phys->root,"root",verb))
     return TRUE;
-  if(fscanreal(file,&phys->pool,"pool",verb))
+  if(fscanreal(&item,&phys->so,"so",verb))
+    return TRUE;
+  if(fscanreal(&item,&phys->pool,"pool",verb))
     return TRUE;
   if(phys->root<=0 || phys->so<=0 || phys->pool<=0)
     return TRUE;
   return FALSE;
 } /* of 'fscancropphys' */
 
-Bool fscanpft_crop(FILE *file,           /**< file pointer */
-                   Pftpar *pft,          /**< Pointer to Pftpar array */
-                   Verbosity verb        /**< verbosity level (NO_ERR,ERR,VERB) */
-                  )                      /** \return TRUE on error */
+Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
+                   Pftpar *pft,    /**< Pointer to Pftpar array */
+                   Verbosity verb  /**< verbosity level (NO_ERR,ERR,VERB) */
+                  )                /** \return TRUE on error */
 {
   Pftcroppar *crop;
   pft->newpft=new_crop;
@@ -116,45 +119,40 @@ Bool fscanpft_crop(FILE *file,           /**< file pointer */
               crop->calcmethod_sdate,pft->name);
     return TRUE;
   }
-  fscancropdate2(verb,file,&crop->initdate,pft->name,"init date");
+  fscancropdate2(verb,file,&crop->initdate,pft->name,"init_date");
   fscanpftint(verb,file,&crop->hlimit,pft->name,
-              "max length of crop cycle");
+              "hlimit");
   fscanpftint(verb,file,&crop->fallow_days,pft->name,
-              "fallow period after harvest");
+              "fallow_days");
   fscanpftreal(verb,file,&crop->temp_fall,pft->name,
-               "temperature threshold for fall");
+               "temp_fall");
   fscanpftreal(verb,file,&crop->temp_spring,pft->name,
-               "temperature threshold for spring");
+               "temp_spring");
   fscanpftreal(verb,file,&crop->temp_vern,pft->name,
-               "temperature threshold for vernalization");
-  fscanpftlimit(verb,file,&crop->trg,pft->name,"vernalization temperature");
-  fscanpftreal(verb,file,&crop->pvd,pft->name,"number of vernalising days");
+               "temp_vern");
+  fscanpftlimit(verb,file,&crop->trg,pft->name,"trg");
+  fscanpftreal(verb,file,&crop->pvd,pft->name,"pvd");
   fscanpftreal(verb,file,&crop->psens,pft->name,
-               "photoperiod sensitivity");
-  fscanpftreal(verb,file,&crop->pb,pft->name,"photoperiod basal");
-  fscanpftreal(verb,file,&crop->ps,pft->name,"photoperiod saturated");
+               "psens");
+  fscanpftreal(verb,file,&crop->pb,pft->name,"pb");
+  fscanpftreal(verb,file,&crop->ps,pft->name,"ps");
   fscanpftlimit(verb,file,&crop->phuw,pft->name,
-                "potential heat units winter");
+                "phuw");
   fscanpftlimit(verb,file,&crop->phus,pft->name,
-                "potential heat units summer");
-  fscanpftreal(verb,file,&crop->phu_par,pft->name,
-               "parameter for determining the variability of phu");
-  fscanpftlimit(verb,file,&crop->basetemp,pft->name,"base temperature");
+                "phus");
+  fscanpftreal(verb,file,&crop->phu_par,pft->name,"phu_par");
+  fscanpftlimit(verb,file,&crop->basetemp,pft->name,"basetemp");
   fscanpftreal(verb,file,&crop->fphuc,pft->name,
-               "growing season to the first point");
-  fscanpftreal(verb,file,&crop->flaimaxc,pft->name,
-               "plant maximal LAI to the first point");
-  fscanpftreal(verb,file,&crop->fphuk,pft->name,
-               "growing season to the second point");
-  fscanpftreal(verb,file,&crop->flaimaxk,pft->name,
-               "plant maximal LAI to the second point");
-  fscanpftreal(verb,file,&crop->fphusen,pft->name,"growing period");
-  fscanpftreal(verb,file,&crop->flaimaxharvest,pft->name,
-               "maximal LAI at harvest");
-  fscanpftreal(verb,file,&crop->laimax,pft->name,"maximal LAI");
-  fscanpftreal(verb,file,&crop->laimin,pft->name,"minimal LAI");
-  fscanpftreal(verb,file,&crop->hiopt,pft->name,"optimum harvest index");
-  fscanpftreal(verb,file,&crop->himin,pft->name,"minimum harvest index");
+               "fphuc");
+  fscanpftreal(verb,file,&crop->flaimaxc,pft->name,"flaimaxc");
+  fscanpftreal(verb,file,&crop->fphuk,pft->name,"fphuk");
+  fscanpftreal(verb,file,&crop->flaimaxk,pft->name,"flaimaxk");
+  fscanpftreal(verb,file,&crop->fphusen,pft->name,"fphusen");
+  fscanpftreal(verb,file,&crop->flaimaxharvest,pft->name,"flaimaxharvest");
+  fscanpftreal(verb,file,&crop->laimax,pft->name,"laimax");
+  fscanpftreal(verb,file,&crop->laimin,pft->name,"laimin");
+  fscanpftreal(verb,file,&crop->hiopt,pft->name,"hiopt");
+  fscanpftreal(verb,file,&crop->himin,pft->name,"himin");
   fscanpftreal(verb,file,&crop->shapesenescencenorm,pft->name,
                "shapesenescencenorm");
   fscancropphys2(verb,file,&crop->cn_ratio,pft->name,"cn_ratio");

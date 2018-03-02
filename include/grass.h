@@ -57,7 +57,7 @@ extern void phenology_grass(Pft *,Real,int,Bool);
 extern Bool fwrite_grass(FILE *,const Pft *);
 extern void fprint_grass(FILE *,const Pft *);
 extern Bool fread_grass(FILE *,Pft *,Bool);
-extern Bool fscanpft_grass(FILE *,Pftpar *,Verbosity);
+extern Bool fscanpft_grass(LPJfile *,Pftpar *,Verbosity);
 extern Real establishment_grass(Pft *,Real,Real,int);
 extern Real vegc_sum_grass(const Pft *);
 extern Real agb_grass(const Pft *);

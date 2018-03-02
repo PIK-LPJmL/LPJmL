@@ -282,7 +282,7 @@ Real cellarea(const Coord *coord, /**< cell coordinate */
   return (111194.9*resol->lat)*(111194.9*resol->lon)*cos(deg2rad(coord->lat));
 } /* of 'cellarea' */
 
-Bool fscancoord(FILE *file,    /**< File pointer of text file */
+Bool fscancoord(LPJfile *file,    /**< File pointer of text file */
                 Coord *coord,  /**< cell coordinate read */
                 Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                )               /** \return TRUE on error */

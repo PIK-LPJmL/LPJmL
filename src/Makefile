@@ -92,9 +92,9 @@ clean:
 $(OBJ): $(HDRS)
 
 .c.$O: 
-	$(CC) $(CFLAGS) -I$(INC) -c $*.c
+	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c
 
 
 $(EXE): $(LPJLIBS) $(OBJ)
-	$(CC) $(CFLAGS) -I$(INC) -c getbuild.c
+	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c getbuild.c
 	$(LINKMAIN) $(LNOPTS)$(EXE) $(OBJ) $(LPJLIBS) $(LIBS) getbuild.$O 

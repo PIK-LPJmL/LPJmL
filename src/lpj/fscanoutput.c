@@ -29,14 +29,14 @@ static Bool isopenoutput(int id,const Outputvar output[],int n)
   return FALSE; /* not found */
 } /* of 'isopenoutput' */
 
-Bool fscanoutput(FILE *file,        /**< File pointer to text file */
+Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
                  Config *config,    /**< LPJ configuration */
                  int nout_max       /**< maximum number of output files */
                 )                   /** \return TRUE on error */
 {
-  String name;
+  LPJfile arr,item;
   Bool isdaily;
-  int count,flag;
+  int count,flag,size,index;
   Verbosity verbosity;
   verbosity=isroot(*config) ? config->scan_verbose : NO_ERR;
   config->outputvars=newvec(Outputvar,nout_max);
@@ -45,12 +45,19 @@ Bool fscanoutput(FILE *file,        /**< File pointer to text file */
     printallocerr("outputvars");
     return TRUE;
   }
-  count=0;
+  count=index=0;
   isdaily=FALSE;
-  fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
-  while(count<=nout_max)
+  size=nout_max;
+  if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))
   {
-    fscanint2(file,&flag,"out index");
+    config->n_out=0;
+    return FALSE;
+  }
+  fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
+  while(count<=nout_max && index<size)
+  {
+    fscanarrayindex(&arr,&item,index,verbosity);
+    fscanint2(&item,&flag,"id");
     if(flag==END)  /* end marker read? */
       break;  
     else if(count==nout_max)
@@ -61,20 +68,25 @@ Bool fscanoutput(FILE *file,        /**< File pointer to text file */
     }
     else
     {
-      if(readfilename(file,&config->outputvars[count].filename,config->outputdir,FALSE,verbosity))
-        break;
+      if(readfilename(&item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,verbosity))
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR231: Cannot read filename for output '%s'.\n",
+                  (flag<0 || flag>=nout_max) ?"N/A" : config->outnames[flag].name);
+        return TRUE;
+      }
       if(flag<0 || flag>=nout_max)
       {
         if(verbosity)
           fprintf(stderr,
                   "ERROR161: Invalid value=%d in line %d of '%s' for index of output file '%s'.\n",
-                  flag,getlinecount(),getfilename(),name);
+                  flag,getlinecount(),getfilename(),config->outputvars[count].filename.name);
       }
       else if(isopenoutput(flag,config->outputvars,count))
       {
         if(verbosity)
-          fprintf(stderr,"WARNING006: Output file is opened twice in line %d of '%s', will be ignored.\n",
-                getlinecount(),getfilename());
+          fprintf(stderr,"WARNING006: Output file for '%s' is opened twice in line %d of '%s', will be ignored.\n",
+                config->outnames[flag].name,getlinecount(),getfilename());
       }
       else if(config->outputvars[count].filename.fmt==CLM2)
       {
@@ -104,11 +116,12 @@ Bool fscanoutput(FILE *file,        /**< File pointer to text file */
         }
       }
     }
+    index++;
   }
   if(config->sim_id==LPJML && isdaily)
   {
-    fscanint2(file,&config->crop_index,"crop index");
-    fscanint2(file,&config->crop_irrigation,"crop irrigation");
+    fscanint2(file,&config->crop_index,"crop_index");
+    fscanint2(file,&config->crop_irrigation,"crop_irrigation");
     if (config->crop_index == TROPICAL_HERBACEOUS) config->crop_index = TEMPERATE_HERBACEOUS; /* for managed grassland the key for daily output is C3_PERENNIAL_GRASS */
   }
   else

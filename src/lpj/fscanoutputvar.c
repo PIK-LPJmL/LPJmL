@@ -20,23 +20,24 @@
 #define fscanint2(file,var,name) if(fscanint(file,var,name,verb)) return NULL;
 #define fscanfloat2(file,var,name) if(fscanfloat(file,var,name,verb)){ return NULL;}
 #define fscanname(file,var,name) {              \
-    if(fscanstring(file,var,verb!=NO_ERR)) {                 \
+    if(fscanstring(file,var,name,verb)) {                 \
       if(verb) readstringerr(name);  \
       return NULL;                              \
     }                                              \
-    if(verb>=VERB)    \
-      printf("%s %s\n", name, var);                     \
   }
 
-Variable *fscanoutputvar(FILE *file,    /**< File pointer to text file */
+Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
                          int nout_max,  /**< maximum number of output files */
                          Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                         )               /** \return TRUE on error */
 {
+  LPJfile arr,item;
   String name;
   Variable *outnames;
-  int index,i;
+  int index,i,size;
   if (verb>=VERB) puts("// Output parameters");
+  if(fscanarray(file,&arr,&size,FALSE,"outputvar",verb))
+    return NULL;
   outnames=newvec(Variable,nout_max);
   if(outnames==NULL)
     return NULL;
@@ -44,7 +45,8 @@ Variable *fscanoutputvar(FILE *file,    /**< File pointer to text file */
     outnames[i].name=NULL; 
   for(i=0;i<nout_max;i++)
   {
-    fscanint2(file,&index,"id");
+    fscanarrayindex(&arr,&item,i,verb);
+    fscanint2(&item,&index,"id");
     if(index<0 || index>=nout_max)
     {
       if(verb)
@@ -58,15 +60,15 @@ Variable *fscanoutputvar(FILE *file,    /**< File pointer to text file */
         fprintf(stderr,"ERROR202: Index %d in line %d of '%s' already used for output description.\n",index,getlinecount(),getfilename());
       return NULL;
     }
-    fscanname(file,name,"name");
+    fscanname(&item,name,"name");
     outnames[index].name=strdup(name);
-    fscanname(file,name,"var");
+    fscanname(&item,name,"var");
     outnames[index].var=strdup(name);
-    fscanname(file,name,"description");
+    fscanname(&item,name,"descr");
     outnames[index].descr=strdup(name);
-    fscanname(file,name,"unit");
+    fscanname(&item,name,"unit");
     outnames[index].unit=strdup(name);
-    fscanfloat2(file,&outnames[index].scale,"scale");
+    fscanfloat2(&item,&outnames[index].scale,"scale");
   }
   return outnames;
 } /* of 'fscanoutputvar' */

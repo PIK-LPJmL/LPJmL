@@ -26,7 +26,7 @@
   }
 
 #define fscangrassphys2(verb,file,var,pft,name) \
-  if(fscangrassphys(file,var,verb))\
+  if(fscangrassphys(file,var,name,verb))\
   { \
     if(verb)\
     fprintf(stderr,"ERROR111: Cannot read '%s' of PFT '%s' in %s().\n",name,pft,__FUNCTION__); \
@@ -34,18 +34,21 @@
   }
 
 
-static Bool fscangrassphys(FILE *file,Grassphys *phys,Verbosity verb)
+static Bool fscangrassphys(LPJfile *file,Grassphys *phys,const char *name,Verbosity verb)
 {
-  if(fscanreal(file,&phys->leaf,"leaf",verb))
+  LPJfile item;
+  if(fscanstruct(file,&item,name,verb))
     return TRUE;
-  if(fscanreal(file,&phys->root,"root",verb))
+  if(fscanreal(&item,&phys->leaf,"leaf",verb))
+    return TRUE;
+  if(fscanreal(&item,&phys->root,"root",verb))
     return TRUE;
   if(phys->leaf<=0 ||  phys->root<=0)
     return TRUE;
   return FALSE;
 } /* of 'fscangrassphys' */
 
-Bool fscanpft_grass(FILE *file,    /**< file pointer */
+Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
                     Pftpar *pft,   /**< Pointer to Pftpar array */
                     Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                    )               /** \return TRUE on error  */

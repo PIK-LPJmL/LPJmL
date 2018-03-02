@@ -101,6 +101,39 @@ static int fscanspace(FILE *file /* file pointer of a text file       */
   return c;
 } /* of 'fscanspace' */
 
+Bool fscanline(FILE *file,String s)
+{
+  int c;
+  int len;
+  c=fscanspace(file);
+  if(c==EOF)
+  {
+    s[0]='\n';
+    return TRUE;
+  }
+  s[0]=(char)c;
+  len=1;
+  while((c=fgetc(file))!=EOF)
+  {
+    if(len==STRING_LEN)
+    {
+      s[len]='\0';
+      return TRUE;
+    }
+    if(c=='\n')
+    {
+      s[len++]=c;
+      s[len]='\0';
+      line_count++;
+      line_pos=0;
+      return FALSE;
+    }
+    s[len++]=(char)c; /* add character to string */
+    line_pos++;
+  }
+  return FALSE;
+} /* of 'fscanline' */
+
 Bool fscantoken(FILE *file, /**< file pointer of a text file         */
                 String s    /**< pointer to a char array of dimension
                                  STRING_LEN+1                        */
@@ -139,39 +172,67 @@ Bool fscantoken(FILE *file, /**< file pointer of a text file         */
   return FALSE;
 } /* of 'fscantoken' */
 
-Bool fscanstring(FILE *file, /**< file pointer of a text file         */
+Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
                  String s,   /**< pointer to a char array of dimension
                                   STRING_LEN+1                        */
-                 Bool isout  /**< enable error output */
+                 const char *name, /**< name of string                */
+                 Verbosity verb  /**< enable error output */
                 )            /** \return TRUE on error                */
 {
   int c;
   int len;
+#ifdef USE_JSON
+  struct json_object *item;
+  const char *str;
+  if(file->isjson)
+  {
+    if(!json_object_object_get_ex(file->file.obj,name,&item))
+    {
+      if(verb)
+        fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
+      return TRUE;
+    }
+    if(json_object_get_type(item)!=json_type_string)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR226: Type of '%s' is not string.\n",name);
+      return TRUE;
+    }
+    str=json_object_get_string(item);
+    strncpy(s,str,STRING_LEN);
+    s[STRING_LEN]='\0';
+    if (verb >= VERB)
+      printf("\"%s\" : \"%s\"\n",name,s);
+    return FALSE;
+  }
+#endif
   /* searching for first occurrence of non-whitespace character  */
-  c=fscanspace(file);
+  c=fscanspace(file->file.file);
   if(c=='\"') /* opening '"' found? */
   {
     len=0;
-    while((c=fgetc(file))!=EOF)
+    while((c=fgetc(file->file.file))!=EOF)
     {
       line_pos++;
       if(c=='\"') /* closing '"' found? */
       {
         s[len]='\0';  /* yes, return with success */
+        if(verb>=VERB)
+          printf("\"%s\" : \"%s\"\n",name,s);
         return FALSE;
       }
       else if(len==STRING_LEN)  /* string too long? */
       {
-        if(isout)
+        if(verb)
           fprintf(stderr,"ERROR103: String too long in line %d of '%s'.\n",line_count,incfile);
       
         break;
       }
       else if(c=='\\') /* backslash found? */
       {
-        if((c=fgetc(file))==EOF) /* yes, read next character */
+        if((c=fgetc(file->file.file))==EOF) /* yes, read next character */
         {
-          if(isout)
+          if(verb)
             fprintf(stderr,"ERROR103: EOF reached reading string in line %d of '%s'.\n",line_count,incfile);
           s[len]='\0';
           return TRUE;
@@ -192,7 +253,7 @@ Bool fscanstring(FILE *file, /**< file pointer of a text file         */
               line_pos++;
               break;
             default:
-              if(isout)
+              if(verb)
                 fprintf(stderr,"ERROR103: Invalid control character '\\%c' reading string in line %d of '%s'.\n",(char)c,line_count,incfile);
               s[len]='\0';
               return TRUE;
@@ -209,7 +270,7 @@ Bool fscanstring(FILE *file, /**< file pointer of a text file         */
   {
     s[0]=(char)c;
     len=1;
-    while((c=fgetc(file))!=EOF)
+    while((c=fgetc(file->file.file))!=EOF)
     {
       if(isspace(c))
       {
@@ -221,11 +282,13 @@ Bool fscanstring(FILE *file, /**< file pointer of a text file         */
         else
           line_pos++;
         s[len]='\0';  /* yes, return with success */
+        if(verb>=VERB)
+          printf("\"%s\" : \"%s\"\n",name,s);
         return FALSE;
       }
       else if(len==STRING_LEN)  /* string too long? */
       {
-        if(isout)
+        if(verb)
           fprintf(stderr,"ERROR103: String too long in line %d of '%s'.\n",line_count,incfile);
         s[len]='\0';  /* terminate string */
         return TRUE;
@@ -237,9 +300,11 @@ Bool fscanstring(FILE *file, /**< file pointer of a text file         */
       }
     }
     s[len]='\0';
+    if(verb>=VERB)
+      printf("\"%s\" : \"%s\"\n",name,s);
     return FALSE;
   }
-  if(c==EOF && isout)
+  if(c==EOF && verb)
     fprintf(stderr,"ERROR103: EOF reached reading string in line %d of '%s'.\n",line_count,incfile);
   s[len]='\0';  /* terminate string */
   return TRUE;

@@ -63,6 +63,6 @@ extern Param param;
 
 /* Declaration of functions */
 
-extern Bool fscanparam(FILE *,const Config *);
+extern Bool fscanparam(LPJfile *,const Config *);
 
 #endif

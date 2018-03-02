@@ -129,7 +129,7 @@ extern void laimax_manage(Manage *,const Pftpar [],int,int,int);
 extern Bool fwrite_crop(FILE *,const Pft *);
 extern void fprint_crop(FILE *,const Pft *);
 extern Bool fread_crop(FILE *,Pft *,Bool);
-extern Bool fscanpft_crop(FILE *,Pftpar *,Verbosity);
+extern Bool fscanpft_crop(LPJfile *,Pftpar *,Verbosity);
 extern Real establishment_crop(Pft *,Real,Real,int);
 extern void init_crop(Pft *);
 extern Real vegc_sum_crop(const Pft *);

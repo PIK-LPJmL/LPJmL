@@ -47,7 +47,7 @@ $(LIBDIR)/$(LIB): $(OBJS)
 $(OBJS): $(HDRS)
 
 .c.$O: 
-	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) -c $*.c
+	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) $(JSON_INC) -c $*.c
 
 clean: 
 	$(RM) $(RMFLAGS) $(OBJS) 

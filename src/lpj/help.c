@@ -68,7 +68,7 @@ void help(const char *progname, /**< program filename */
           "-vv              verbosely print the actual values during reading of the\n"
           "                 configuration files\n"
           "-param           print LPJmL parameter\n"
-          "-pp cmd          set preprocessor program. Default is 'cpp -P'\n"
+          "-pp cmd          set preprocessor program. Default is 'cpp'\n"
 #ifdef WITH_FPE
           "-fpe             enable floating point exceptions\n"
 #endif

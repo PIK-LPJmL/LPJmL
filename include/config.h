@@ -172,12 +172,12 @@ extern void freeconfig(Config *);
 extern void fprintconfig(FILE *,const Config *,int,int);
 extern Bool filesexist(Config,int,int,Bool);
 extern long long outputfilesize(int,int,const Config *);
-extern Variable *fscanoutputvar(FILE *,int,Verbosity);
+extern Variable *fscanoutputvar(LPJfile *,int,Verbosity);
 extern void freeoutputvar(Variable *,int);
-extern Bool fscanoutput(FILE *,Config *,int);
+extern Bool fscanoutput(LPJfile *,Config *,int);
 extern Bool readconfig(Config *,const char *,Fscanpftparfcn [],int,int,int *,
                        char ***,const char *);
-extern Bool fscanconfig(Config *,FILE *,Fscanpftparfcn [],int,int);
+extern Bool fscanconfig(Config *,LPJfile *,Fscanpftparfcn [],int,int);
 extern void fprintparam(FILE *,int,int,const Config *);
 extern void fprintfiles(FILE *,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
@@ -186,7 +186,6 @@ extern void fprintincludes(FILE *,const char *,int,char **);
 /* Definition of macros */
 
 #define printconfig(config,npft,ncft) fprintconfig(stdout,config,npft,ncft)
-#define closeconfig(fp) pclose(fp)
 #define iswriterestart(config) ((config)->write_restart_filename!=NULL)
 #define isreadrestart(config) ((config)->restart_filename!=NULL)
 #ifdef USE_MPI

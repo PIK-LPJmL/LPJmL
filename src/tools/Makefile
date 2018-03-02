@@ -29,7 +29,8 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           fprinttime.$O newmat.$O freemat.$O readrealvec.$O\
           fscanuint.$O readintvec.$O readfloatvec.$O readuintvec.$O\
           catstrvec.$O strdate.$O openmetafile.$O fscansize.$O fscanfcns.$O\
-          fscaninteof.$O fputprintable.$O
+          fscaninteof.$O fputprintable.$O fscanrealarray.$O fscanstruct.$O\
+          fscanarray.$O fscanarrayindex.$O fscanbool.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -50,10 +51,10 @@ $(LIBDIR)/$(LIB): $(OBJS)
 $(OBJS): $(HDRS)
 
 printflags.$O: printflags.c
-	$(CC) $(CFLAGS) -DCFLAGS='"$(LPJFLAGS)"' -I$(INC) -c $*.c
+	$(CC) $(CFLAGS) -DCFLAGS='"$(LPJFLAGS)"' -I$(INC) $(JSON_INC) -c $*.c
 
 .c.$O: 
-	$(CC) $(CFLAGS) -I$(INC) -c $*.c
+	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c
 
 clean: 
 	$(RM) $(RMFLAGS) $(OBJS) 

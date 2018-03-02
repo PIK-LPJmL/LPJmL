@@ -85,10 +85,18 @@
 #define NTYPES 3 /* number of plant functional types: grass, tree, annual_crop */
 #define NSTANDTYPES 9 /* number of stand types / land use types as defined in landuse.h*/
 
+#ifdef USE_JSON
+#define dflt_conf_filename_ml "lpjml.js" /* Default LPJ configuration file
+                                            if called by lpjml */
+#define dflt_conf_filename "lpj.js" /* Default LPJ configuration file
+                                       if called by lpj */
+#else
 #define dflt_conf_filename_ml "lpjml.conf" /* Default LPJ configuration file
                                               if called by lpjml */
 #define dflt_conf_filename "lpj.conf" /* Default LPJ configuration file
                                          if called by lpj */
+#endif
+
 int main(int argc,char **argv)
 {
   Outputfile *output; /* Output file array */

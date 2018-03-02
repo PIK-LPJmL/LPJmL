@@ -209,14 +209,14 @@ typedef struct Pftpar Pftpar;
  * pointer.
  */
 
-typedef Bool (*Fscanpftparfcn)(FILE *,Pftpar *,Verbosity);
+typedef Bool (*Fscanpftparfcn)(LPJfile *,Pftpar *,Verbosity);
 
 /* Declaration of functions */
 
 extern void newpft(Pft *,Stand *,const Pftpar *,int,int);
 extern void freepft(Pft *);
 extern void freepftpar(Pftpar [],int);
-extern int* fscanpftpar(FILE *,Pftpar **,const Fscanpftparfcn [],int,Verbosity);
+extern int* fscanpftpar(LPJfile *,Pftpar **,const Fscanpftparfcn [],int,Verbosity);
 extern Real temp_stress(const Pftpar *,Real,Real);
 extern Real photosynthesis(Real *,Real *,int,Real,Real,Real,Real,Real ,Real);
 extern Bool survive(const Pftpar *,const Climbuf *);
@@ -237,9 +237,9 @@ extern void noadjust(Litter *,Pft *,Real,Real);
 extern void nomix_veg(Pft *,Real);
 extern Bool establish(Real,const Pftpar *,const Climbuf *);
 extern Real noestablishment(Pft *,Real,Real,int);
-extern Bool fscanlimit(FILE *,Limit *,Verbosity);
-extern Bool fscanemissionfactor(FILE *,Tracegas *,Verbosity);
-extern Bool fscanphenparam(FILE *,Phen_param *,Verbosity);
+extern Bool fscanlimit(LPJfile *,Limit *,const char *,Verbosity);
+extern Bool fscanemissionfactor(LPJfile *,Tracegas *,const char *,Verbosity);
+extern Bool fscanphenparam(LPJfile *,Phen_param *,const char *,Verbosity);
 extern Real fire_sum(const Litter *,Real);
 extern void fprintpftpar(FILE *,const Pftpar []);
 extern void output_daily(Daily_outputs *,const Pft *,Real,Real);

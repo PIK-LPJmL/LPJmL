@@ -16,15 +16,19 @@
 
 #include "lpj.h"
 
-Bool readfilename(FILE *file,         /**< pointer to text file read */
+Bool readfilename(LPJfile *file,         /**< pointer to text file read */
                   Filename *filename, /**< returns filename and format */
+                  const char *key,
                   const char *path,   /**< path added to filename or NULL */
                   Bool isvar,         /**< variable name supplied */
                   Verbosity verb      /**< verbosity level (NO_ERR,ERR,VERB) */
                  )                    /** \return TRUE on error */
 {
+  LPJfile f;
   String name;
-  if(fscanint(file,&filename->fmt,"format",verb))
+  if(fscanstruct(file,&f,key,verb))
+    return TRUE;
+  if(fscanint(&f,&filename->fmt,"fmt",verb))
     return TRUE;
   if(filename->fmt<0 || filename->fmt>CDF)
   {
@@ -40,7 +44,7 @@ Bool readfilename(FILE *file,         /**< pointer to text file read */
   }
   if(isvar && filename->fmt==CDF)
   {
-    if(fscanstring(file,name,verb!=NO_ERR))
+    if(fscanstring(&f,name,"var",verb))
     {
       if(verb)
         readstringerr("variable");
@@ -48,8 +52,6 @@ Bool readfilename(FILE *file,         /**< pointer to text file read */
     }
     else
     {
-      if(verb>=VERB)
-        printf("variable %s\n",name);
       filename->var=strdup(name);
       if(filename->var==NULL)
       {
@@ -60,15 +62,13 @@ Bool readfilename(FILE *file,         /**< pointer to text file read */
   }
   else
     filename->var=NULL;
-  if(fscanstring(file,name,verb!=NO_ERR))
+  if(fscanstring(&f,name,"name",verb))
   {
     if(verb)
       readstringerr("filename");
     free(filename->var);
     return TRUE;
   }
-  if(verb>=VERB)
-    printf("filename %s\n",name);
   filename->name=addpath(name,path); /* add path to filename */
   if(filename->name==NULL)
   {
