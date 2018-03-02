@@ -51,7 +51,7 @@ $(LIBDIR)/$(LIB): $(OBJS)
 $(OBJS): $(HDRS)
 
 printflags.$O: printflags.c
-	$(CC) $(CFLAGS) -DCFLAGS='"$(LPJFLAGS)"' -I$(INC) $(JSON_INC) -c $*.c
+	$(CC) $(CFLAGS) -DCFLAGS='"$(LPJFLAGS)"' -I$(INC) -c $*.c
 
 .c.$O: 
 	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c

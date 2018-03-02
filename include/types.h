@@ -16,9 +16,9 @@
 #define TYPES_H
 
 #include <time.h>
-#ifdef USE_JSON
-#include <json-c/json.h>
-#endif
+//#ifdef USE_JSON
+//#include <json-c/json.h>
+//#endif
 
 /* Definition of constants */
 

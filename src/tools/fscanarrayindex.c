@@ -18,6 +18,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#ifdef USE_JSON
+#include <json-c/json.h>
+#endif
 #include "types.h"
 
 Bool fscanarrayindex(LPJfile *file, /**< pointer to a LPJ file             */

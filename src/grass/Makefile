@@ -44,7 +44,7 @@ $(LIBDIR)/$(LIB): $(OBJS)
 $(OBJS): $(HDRS)
 
 .c.$O: 
-	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c
+	$(CC) $(CFLAGS) -I$(INC) -c $*.c
 clean:
 	$(RM) $(RMFLAGS) $(OBJS)
 	(cd $(LIBDIR) && $(RM) $(RMFLAGS) $(LIB))

@@ -18,6 +18,9 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#ifdef USE_JSON
+#include <json-c/json.h>
+#endif
 #include "types.h"
 
 static int line_count; /* line number currently read */

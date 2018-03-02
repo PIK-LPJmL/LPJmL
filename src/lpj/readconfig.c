@@ -15,6 +15,9 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
+#ifdef USE_JSON
+#include <json-c/json.h>
+#endif
 #include "lpj.h"
 
 static void closeconfig(LPJfile *file)

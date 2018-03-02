@@ -16,6 +16,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#ifdef USE_JSON
+#include <json-c/json.h>
+#endif
 #include "types.h"
 
 Bool fscanstruct(LPJfile *file,    /**< pointer to LPJ file               */

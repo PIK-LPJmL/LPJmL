@@ -39,7 +39,7 @@ $(LIBDIR)/$(LIB): $(OBJS)
 $(OBJS): $(INC)/channel.h $(INC)/types.h $(INC)/swap.h
 
 .c.$O:
-	$(CC) -c $(CFLAGS) -I$(INC) $(JSON_INC) $*.c
+	$(CC) -c $(CFLAGS) -I$(INC) $*.c
 
 clean:
 	$(RM) $(RMFLAGS) $(OBJS)
