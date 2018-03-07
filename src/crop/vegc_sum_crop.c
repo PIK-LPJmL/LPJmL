@@ -22,11 +22,3 @@ Real vegc_sum_crop(const Pft *pft /**< pointer to PFT data */
   crop=pft->data;
   return phys_sum_crop(crop->ind)*pft->nind;
 } /* of 'vegc_sum_crop' */
-
-Real agb_crop(const Pft *pft /**< pointer to PFT data */
-             )               /** \return aboveground crop carbon (gC/m2) */
-{
-  const Pftcrop *crop;
-  crop=pft->data;
-  return (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind;
-} /* of 'agb_crop' */

@@ -21,10 +21,3 @@ Real vegc_sum_grass(const Pft *pft)
   grass=pft->data;
   return phys_sum_grass(grass->ind)*pft->nind;
 } /* of 'vegc_sum_grass' */
-
-Real agb_grass(const Pft *pft)
-{
-  const Pftgrass *grass;
-  grass=pft->data;
-  return grass->ind.leaf*pft->nind;
-} /* of 'agb_grass' */

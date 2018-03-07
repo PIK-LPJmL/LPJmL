@@ -21,10 +21,3 @@ Real vegc_sum_tree(const Pft *pft)
   tree=pft->data;
   return (phys_sum_tree(tree->ind)-tree->ind.debt)*pft->nind-tree->turn_litt.leaf;
 } /* of 'vegc_sum_tree' */
-
-Real agb_tree(const Pft *pft)
-{
-  const Pfttree *tree;
-  tree=pft->data;
-  return (agb_tree_sum(tree->ind)-tree->ind.debt)*pft->nind-tree->turn_litt.leaf;
-} /* of 'agb_tree' */
