@@ -62,12 +62,10 @@ static Cdf *create_cdf(const char *filename,
     free(cdf);
     return NULL;
   }
-  lon[0]=(float)array->lon_min;
-  for(i=1;i<array->nlon;i++)
-    lon[i]=lon[i-1]+(float)header.cellsize_lon;
-  lat[0]=(float)array->lat_min;
-  for(i=1;i<array->nlat;i++)
-    lat[i]=lat[i-1]+(float)header.cellsize_lat;
+  for(i=0;i<array->nlon;i++)
+    lon[i]=array->lon_min+i*header.cellsize_lon;
+  for(i=0;i<array->nlat;i++)
+    lat[i]=array->lat_min+i*header.cellsize_lat;
   year=newvec(int,(landuse) ?  header.nyear : header.nyear*header.nbands);
   if(year==NULL)
   {
