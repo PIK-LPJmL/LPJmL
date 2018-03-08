@@ -24,12 +24,14 @@
 
 # Shared objects (inc. Windows DLLs)
 *.dll
+*.DLL
 *.so
 *.so.*
 *.dylib
 
 # Executables
 *.exe
+*.EXE
 *.out
 *.app
 *.i*86
@@ -41,15 +43,25 @@
 *.su
 *.idb
 *.pdb
+core
+core.*
+vgcore.*
 
 # input files
 *.dat
+*.DAT
 *.clm
+*.CLM
 *.clm2
+*.CLM2
 *.clm3
+*.CLM3
 *.nc
+*.NC
 *.nc4
+*.NC4
 *.dat
+*.DAT
 
 # output files
 *.lpj
@@ -59,12 +71,25 @@
 *.Rdata
 *.rdata
 *.m
+*.N
 *.csv
+*.CSV
+
+# Common desktop formats
 *.xls
+*.XLS
 *.xlsx
+*.XLSX
 *.pdf
+*.PDF
 *.doc
+*.DOC
 *.docx
+*.DOCX
+*.odt
+*.ODT
+*.ods
+*.ODS
 
 Makefile.inc
 # binaries
@@ -118,5 +143,3 @@ bin/soil2cdf
 bin/txt2clm
 bin/txt2grid
 bin/water_use_input
-
-
