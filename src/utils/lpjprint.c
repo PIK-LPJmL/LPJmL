@@ -25,7 +25,11 @@
 #define PRINTLPJ_VERSION "1.0.017"
 #define NTYPES 3
 #define NSTANDTYPES 9 /* number of stand types */
+#ifdef USE_JSON
+#define dflt_conf_filename "lpjml.js"
+#else
 #define dflt_conf_filename "lpjml.conf"
+#endif
 #define USAGE "Usage: %s [-h] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename [-check] [start [end]]]\n"
 
