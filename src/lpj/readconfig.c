@@ -79,12 +79,14 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
           break;
       }
     }
+    pclose(file);
     json_tokener_free(tok);
     if(json_error!=json_tokener_success)
     {
       if(verbosity)
-        fprintf(stderr,"ERROR228: Cannot parse json file '%s' in line %d, %s\n",
-                getfilename(),getlinecount()-1,json_tokener_error_desc(json_error));
+        fprintf(stderr,"ERROR228: Cannot parse json file '%s' in line %d, %s.\n",
+                getfilename(),getlinecount()-1,(json_error==json_tokener_continue) ? "missing closing '}'" : json_tokener_error_desc(json_error));
+      json_object_put(lpjfile.file.obj);
       return TRUE;
     }
     if(fscanstring(&lpjfile,s,"sim_name",verbosity))
