@@ -1,34 +1,34 @@
 #!/bin/sh
-###############################################################################
-##                                                                           ##
-##                    b  a  c  k  t  r  a  c  e                              ##
-##                                                                           ##
-##    sh script to write out backtrace from core file                        ##
-##    Usage: backtrace [exe [core]]                                          ##
-##                                                                           ##
-##    written by Werner von Bloh, PIK Potsdam                                ##
-##                                                                           ##
-##    Last change: 24.11.2008                                                ##
-##                                                                           ##
-###############################################################################
+#################################################################################
+##                                                                             ##
+##                    b  a  c  k  t  r  a  c  e                                ##
+##                                                                             ##
+##    sh script to write out backtrace from core file                          ##
+##    Usage: backtrace [core]                                                  ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+##                                                                             ##
+#################################################################################
 
 if [ $# -lt 1 ]
 then
-  exe=$LPJROOT/bin/lpjml
-else
-  exe=$1
-fi
-if [ $# -lt 2 ]
-then
   core=core
 else
-  core=$2
+  core=$1
+fi
+if [ "$LPJROOT" == "" ]
+then
+  exe=bin/lpjml
+else
+  exe=$LPJROOT/bin/lpjml
 fi
 if test -f $core
 then
-  gdb ${exe} --core ${core} --batch --quiet \
-          -ex "thread apply all bt full" \
-          -ex "quit"
+  gdb  -ex "bt" -ex "q"  -q $exe $core
 else
-  echo >&2 "Error: core file does not exist"
+  echo >&2 "Error: core file '$core' does not exist"
 fi
