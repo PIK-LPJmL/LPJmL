@@ -18,8 +18,8 @@
 "input" :
 {
   "soil" : { "fmt" : CDF, "var" : "soilcode", "name" : "cru_netcdf/soil_new_67420.nc"},
-  "country" : { "fmt" : CDF, "var" : "country", "name" : "cru_netcdf/cow_mg_2006_full.nc"},
-  "region" : { "fmt" : CDF, "var" : "region", "name" : "cru_netcdf/reg_mg_2006_full.nc"},
+  "countrycode" : { "fmt" : CDF, "var" : "country", "name" : "cru_netcdf/cow_mg_2006_full.nc"},
+  "regioncode" : { "fmt" : CDF, "var" : "region", "name" : "cru_netcdf/reg_mg_2006_full.nc"},
   "landuse" : { "fmt" : CDF, "var" :  "landfrac", "name" : "cru_netcdf/cft1700_2005_irrigation_systems_64bands.nc"},
   "temp" : { "fmt" : CDF, "var" : "temp", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.tmp.nc"},
   "prec" : { "fmt" : CDF, "var" : "prec", "name" : "cru_netcdf/gpcc_cru09_prec_monthly_1901_2009.nc"},
