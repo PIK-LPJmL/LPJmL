@@ -36,8 +36,15 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
   Variable *outnames;
   int index,i,size;
   if (verb>=VERB) puts("// Output parameters");
+  size=nout_max;
   if(fscanarray(file,&arr,&size,FALSE,"outputvar",verb))
     return NULL;
+  if(size!=nout_max)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR232: Number of items=%d in 'outputvars' array does not match %d, check NOUT in 'include/conf.h'.\n",size,nout_max);
+    return NULL;
+  }
   outnames=newvec(Variable,nout_max);
   if(outnames==NULL)
     return NULL;
