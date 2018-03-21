@@ -65,12 +65,8 @@ static Bool isnetcdfinput(const Config *config)
   }
   if(config->ispopulation && config->popdens_filename.fmt==CDF)
     return TRUE;
-#ifdef NEW_GRASS
   if(config->grassfix_filename.name!=NULL && config->grassfix_filename.fmt==CDF)
     return TRUE;
-  if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
-    return TRUE;
-#endif
   if(config->withlanduse!=NO_LANDUSE)
   {
     if(config->countrycode_filename.fmt==CDF)
