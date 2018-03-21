@@ -23,14 +23,22 @@
   if(fscanreal(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read PFT '%s' in %s().\n",pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR110: Cannot read real '%s' of PFT '%s' in %s().\n",name,pft,__FUNCTION__); \
     return NULL; \
   }
+#define fscanpftrealarray(verb,file,var,size,pft,name) \
+  if(fscanrealarray(file,var,size,name,verb))\
+  { \
+    if(verb)\
+    fprintf(stderr,"ERROR110: Cannot read array '%s' of PFT '%s'.\n",name,pft); \
+    return NULL; \
+  }
+
 #define fscanpftint(verb,file,var,pft,name) \
   if(fscanint(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read PFT '%s' in %s().\n",pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR110: Cannot read int '%s' of PFT '%s' in %s().\n",name,pft,__FUNCTION__); \
     return NULL; \
   }
 #define fscanpftlimit(verb,file,var,pft,name) \
@@ -138,7 +146,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     }
     else if(pft->cultivation_type==BIOMASS)
       isbiomass=TRUE;
-    fscanrealarray(&item,pft->cn,NHSG,"cn",verb);
+    fscanpftrealarray(verb,&item,pft->cn,NHSG,pft->name,"cn");
     fscanpftreal(verb,&item,&pft->beta_root,pft->name,"beta_root");
     totalroots=1 - pow(pft->beta_root,layerbound[BOTTOMLAYER-1]/10);
     pft->rootdist[0]=(1 - pow(pft->beta_root,layerbound[0]/10))/totalroots;
