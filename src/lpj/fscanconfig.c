@@ -348,14 +348,19 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwnet");
       scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
       break;
+    case RADIATION_LWDOWN:
+      scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwdown");
+      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
+      break;
     case CLOUDINESS:
       scanclimatefilename(&input,&config->cloud_filename,config->inputdir,config->sim_id==LPJML_FMS,"cloud");
       break;
-    case SWDOWN:
+    case RADIATION_SWONLY:
       scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
       break;
     default:
-      fprintf(stderr,"ERROR213: Invalid setting %d for radiation in line %d of '%s'.\n",config->with_radiation,getlinecount(),getfilename());
+      if(verbose)
+        fprintf(stderr,"ERROR213: Invalid setting %d for radiation in line %d of '%s'.\n",config->with_radiation,getlinecount(),getfilename());
       return TRUE;
   }
   if(config->fire==SPITFIRE)
