@@ -435,7 +435,6 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       if(isout)
         fprintf(stderr,"ERROR405: No variable found in '%s'.\n",filename);
       closecoord_netcdf(coord);
-      free(coord);
       return NULL;
     }
   }
@@ -445,7 +444,6 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       fprintf(stderr,"ERROR406: Cannot find variable '%s' in '%s'.\n",
               var,filename);
     closecoord_netcdf(coord);
-    free(coord);
     return NULL;
   }
   nc_inq_varndims(coord->ncid,coord->varid,&ndims);
@@ -455,7 +453,6 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
               ndims,filename);
     closecoord_netcdf(coord);
-    free(coord);
     return NULL;
   }
   dimids=newvec(int,ndims);
@@ -463,7 +460,6 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
   {
     printallocerr("dimids");
     closecoord_netcdf(coord);
-    free(coord);
     return NULL;
   }
   nc_inq_vardimid(coord->ncid,coord->varid,dimids);
@@ -533,7 +529,6 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     free(coord->lon);
     free(coord->lat);
     closecoord_netcdf(coord);
-    free(coord);
     return NULL;
   }
   nc_inq_vartype(coord->ncid,coord->varid,&type);
@@ -576,7 +571,6 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       free(coord->lon);
       free(coord->lat);
       closecoord_netcdf(coord);
-      free(coord);
       return NULL;
   }
   if(rc)
