@@ -242,7 +242,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkdatafile(&config,&config.popdens_filename);
   if(config.grassfix_filename.name!=NULL)
     bad+=checkinputfile(&config,&config.grassfix_filename);
-  if(config.fire==SPITFIRE)
+  if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
     bad+=checkclmfile(&config,&config.wind_filename);
     bad+=checkclmfile(&config,&config.tamp_filename);

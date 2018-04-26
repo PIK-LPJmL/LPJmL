@@ -133,7 +133,12 @@
   MFIREC "mfirec" "FireC" "fire carbon emission" "gC/m2/month" 1.0
   MNFIRE "mnfire" "nfire" "number of fires" "" 1.0
   MFIREDI "mfiredi" "firedi" "fire danger index" "" 1.0
-  MFIREEMISSION "mfireemission" "fireemission" "" "" 1.0
+  MFIREEMISSION_CO2 "mfireemission_co2" "co2_emission" "CO2 fire emission" "g/m2/month" 1.0
+  MFIREEMISSION_CO "mfireemission_co" "co_emission" "CO fire emission" "g/m2/month" 1.0
+  MFIREEMISSION_CH4 "mfireemission_ch4" "ch4_emission" "CH4 fire emission" "g/m2/month" 1.0
+  MFIREEMISSION_VOC "mfireemission_voc" "voc_emission" "VOC fire emission" "g/m2/month" 1.0
+  MFIREEMISSION_TPM "mfireemission_tpm" "tpm_emission" "TPM fire emission" "g/m2/month" 1.0
+  MFIREEMISSION_NOX "mfireemission_nox" "nox_emission" "NOX fire emission" "g/m2/month" 1.0
   FLUX_FIREWOOD "flux_firewood" "flux_firewood" "wood fire emissions" "gC/m2/yr" 1.0
   RHARVEST_BURNT "rharvest_burnt" "rharvest_burnt" "residual burnt carbon" "gC/m2/yr" 1.0
   RHARVEST_BURNT_IN_FIELD "rharvest_burntinfield" "rharvest_burntinfield" "" "gC/m2/yr" 1.0

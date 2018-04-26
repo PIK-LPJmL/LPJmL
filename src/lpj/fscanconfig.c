@@ -363,17 +363,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         fprintf(stderr,"ERROR213: Invalid setting %d for radiation in line %d of '%s'.\n",config->with_radiation,getlinecount(),getfilename());
       return TRUE;
   }
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     scanclimatefilename(&input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,"wind");
-    scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,"tamp");
-#ifdef TMAX_SPITFIRE
-    if(config->tamp_filename.fmt==CDF)
+    scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,(config->fire==SPITFIRE_TMAX) ? "tmin" : "tamp");
+    if(config->fire==SPITFIRE_TMAX)
     {
       scanclimatefilename(&input,&config->tmax_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmax");
     }
     else
-#endif
       config->tmax_filename.name=NULL;
     scanclimatefilename(&input,&config->lightning_filename,config->inputdir,FALSE,"lightning");
     scanclimatefilename(&input,&config->human_ignition_filename,

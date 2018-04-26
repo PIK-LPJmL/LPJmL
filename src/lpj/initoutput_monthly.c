@@ -25,7 +25,9 @@ void initoutput_monthly(Output *output /**< Output data */
   output->mrunoff=output->mpet=output->mwateramount=
   output->mdischarge=output->mevap=output->mevap_b=output->minterc=output->minterc_b=output->mirrig=output->mwd_unsustainable=
   output->mevap_lake=output->mreturn_flow_b=output->mevap_res=output->munmet_demand=
-  output->mprec_res=output->mnfire=output->mfireemission=
+  output->mprec_res=output->mnfire=output->mfireemission.co2=
+  output->mfireemission.co=output->mfireemission.ch4=output->mfireemission.voc=
+  output->mfireemission.tpm= output->mfireemission.nox=
   output->mburntarea=output->mlakevol=output->mlaketemp=
   output->mfirec=output->mfiredi=output->mtemp_image=output->mprec_image=
   output->msun_image=output->mwet_image=output->mres_storage=

@@ -72,7 +72,7 @@ void fprintfiles(FILE *file,   /**< File pointer to text output file */
   else
     fprintfilename(file,config->cloud_filename);
   fprintf(file,"%s\n",config->co2_filename.name);
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fprintfilename(file,config->tamp_filename);
     if(config->tamp_filename.fmt==CDF)

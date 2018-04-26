@@ -63,21 +63,24 @@ void dailyclimate(Dailyclimate *daily,    /**< */
   }
   if(climate->data.tamp!=NULL)
   {
-#ifdef TMAX_SPITFIRE
-    daily->tmin=(climate->file_tamp.isdaily) ?  climate->data.tamp[cell*NDAYYEAR+day-1] : interpolate(getcelltamp(climate,cell),month,dayofmonth);
-    daily->tmax=(climate->file_tmax.isdaily) ?  climate->data.tmax[cell*NDAYYEAR+day-1] : interpolate(getcelltmax(climate,cell),month,dayofmonth);
-#else
-    tamp=(climate->file_tamp.isdaily) ?  climate->data.tamp[cell*NDAYYEAR+day-1] : interpolate(getcelltamp(climate,cell),month,dayofmonth);
-    daily->tmin=daily->temp-tamp*0.5;
-    daily->tmax=daily->temp+tamp*0.5;
-#endif
+    if(climate->data.tmax!=NULL)
+    {
+      daily->tmin=(climate->file_tamp.isdaily) ?  climate->data.tamp[cell*NDAYYEAR+day-1] : interpolate(getcelltamp(climate,cell),month,dayofmonth);
+      daily->tmax=(climate->file_tmax.isdaily) ?  climate->data.tmax[cell*NDAYYEAR+day-1] : interpolate(getcelltmax(climate,cell),month,dayofmonth);
+    }
+    else
+    {
+      tamp=(climate->file_tamp.isdaily) ?  climate->data.tamp[cell*NDAYYEAR+day-1] : interpolate(getcelltamp(climate,cell),month,dayofmonth);
+      daily->tmin=daily->temp-tamp*0.5;
+      daily->tmax=daily->temp+tamp*0.5;
+    }
   }
   if(climate->data.lightning!=NULL)
   {
     if(climate->file_lightning.isdaily)
       daily->lightning=climate->data.lightning[cell*NDAYYEAR+day-1];
     else
-      daily->lightning=interpolate(getcelllightning(climate,cell),month,dayofmonth);
+      daily->lightning=interpolate(getcelllightning(climate,cell),month,dayofmonth)*ndaymonth1[month];
   }
   if(climate->file_prec.fmt!=FMS)
   {
