@@ -67,6 +67,7 @@
 #define NO_FIRE 0
 #define FIRE 1
 #define SPITFIRE 2
+#define SPITFIRE_TMAX 3
 #define NO_PRESCRIBE_BURNTAREA 0
 #define PRESCRIBE_BURNTAREA 1
 #define NO_LANDCOVER 0
@@ -80,7 +81,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 206            /* number of output files */
+#define NOUT 211            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -192,7 +193,7 @@
 #define MFIREC 100
 #define MNFIRE 101
 #define MFIREDI 102
-#define MFIREEMISSION 103
+#define MFIREEMISSION_CO2 103
 #define MFAPAR 104
 #define FLUX_FIREWOOD 105
 #define RHARVEST_BURNT 106
@@ -295,6 +296,11 @@
 #define AGB 203
 #define MLAKEVOL 204
 #define MLAKETEMP 205
+#define MFIREEMISSION_CO 206
+#define MFIREEMISSION_CH4 207
+#define MFIREEMISSION_VOC 208
+#define MFIREEMISSION_TPM 209
+#define MFIREEMISSION_NOX 210
 
 #define RANDOM_SEED 0
 

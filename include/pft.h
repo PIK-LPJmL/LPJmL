@@ -43,6 +43,7 @@ typedef struct
   Real moist_10_100hr;
   Real mw_weight;
   Real sigma;
+  Real CME;
 } Fuel;
 
 typedef struct
@@ -52,17 +53,8 @@ typedef struct
   Real non_combust;
   Real pot_fc_lg_c3; /**< Biomass of C3 grass in g/m2 */
   Real pot_fc_lg_c4; /**< Biomass of C4 grass in g/m2 */
+  Real CME;
 } Livefuel;
-
-typedef struct
-{
-  Real co2;
-  Real co;
-  Real ch4;
-  Real voc;
-  Real tpm;
-  Real nox;
-} Tracegas;
 
 typedef struct
 {
