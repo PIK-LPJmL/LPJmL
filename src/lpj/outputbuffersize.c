@@ -79,7 +79,7 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
         case MSWC1: case MSWC2: case MIRRIG: case MWD_UNSUST: case MUNMET_DEMAND:
         case MRETURN_FLOW_B: case MEVAP_LAKE: case MGPP: case MEVAP_RES:
         case MPREC_RES: case MFIREC: case MNFIRE: case MFIREDI:
-        case MFIREEMISSION: case MBURNTAREA: case MSOILTEMP1: case MSOILTEMP2:
+        case MFIREEMISSION_CO2: case MBURNTAREA: case MSOILTEMP1: case MSOILTEMP2:
         case MSOILTEMP3: case MSOILTEMP4: case MSOILTEMP5: case MSOILTEMP6:
         case MTEMP_IMAGE: case MPREC_IMAGE: case MSUN_IMAGE: case MWET_IMAGE: 
         case MPREC: case MRAIN: case MSNOWF: case MMELT: case MSWE: case MSNOWRUNOFF:
@@ -90,7 +90,10 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
         case MWD_LOCAL: case MWD_NEIGHB: case MWD_RES: case MWD_RETURN:
         case MCONV_LOSS_EVAP: case MCONV_LOSS_DRAIN: case MRES_DEMAND: case MTARGET_RELEASE: case MRES_STORAGE: case MSTOR_RETURN:
         case MRES_CAP: case MGCONS_RF: case MGCONS_IRR:
-      case MROOTMOIST: case MLAKEVOL: case MLAKETEMP:
+        case MROOTMOIST: case MLAKEVOL: case MLAKETEMP:
+        case MFIREEMISSION_CO: case MFIREEMISSION_CH4: case MFIREEMISSION_VOC:
+        case MFIREEMISSION_TPM: case MFIREEMISSION_NOX:
+
           sum+=sizeof(float)*NMONTH*size;
           break;
       } /* of 'switch' */

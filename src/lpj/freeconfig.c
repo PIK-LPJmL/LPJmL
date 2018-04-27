@@ -79,7 +79,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(config->popdens_filename);
   if(config->grassfix_filename.name!=NULL)
     freefilename(config->grassfix_filename);
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     freefilename(config->wind_filename);
     freefilename(config->tamp_filename);

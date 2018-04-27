@@ -314,13 +314,53 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
        fvec[count++]=(float)grid[cell].output.mfiredi;
      writemonth(output,MFIREDI,fvec,year,month,config);
   }
-  if(output->files[MFIREEMISSION].isopen)
+  if(output->files[MFIREEMISSION_CO2].isopen)
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
      if(!grid[cell].skip)
-       fvec[count++]=(float)grid[cell].output.mfireemission;
-     writemonth(output,MFIREEMISSION,fvec,year,month,config);
+       fvec[count++]=(float)grid[cell].output.mfireemission.co2;
+     writemonth(output,MFIREEMISSION_CO2,fvec,year,month,config);
+  }
+  if(output->files[MFIREEMISSION_CO].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+     if(!grid[cell].skip)
+       fvec[count++]=(float)grid[cell].output.mfireemission.co;
+     writemonth(output,MFIREEMISSION_CO,fvec,year,month,config);
+  }
+  if(output->files[MFIREEMISSION_CH4].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+     if(!grid[cell].skip)
+       fvec[count++]=(float)grid[cell].output.mfireemission.ch4;
+     writemonth(output,MFIREEMISSION_CH4,fvec,year,month,config);
+  }
+  if(output->files[MFIREEMISSION_VOC].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+     if(!grid[cell].skip)
+       fvec[count++]=(float)grid[cell].output.mfireemission.voc;
+     writemonth(output,MFIREEMISSION_VOC,fvec,year,month,config);
+  }
+  if(output->files[MFIREEMISSION_TPM].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+     if(!grid[cell].skip)
+       fvec[count++]=(float)grid[cell].output.mfireemission.tpm;
+     writemonth(output,MFIREEMISSION_TPM,fvec,year,month,config);
+  }
+  if(output->files[MFIREEMISSION_NOX].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+     if(!grid[cell].skip)
+       fvec[count++]=(float)grid[cell].output.mfireemission.nox;
+     writemonth(output,MFIREEMISSION_NOX,fvec,year,month,config);
   }
   if(output->files[MBURNTAREA].isopen)
   {

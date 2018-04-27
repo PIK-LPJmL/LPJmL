@@ -76,6 +76,16 @@ typedef struct
 
 typedef struct
 {
+  Real co2;
+  Real co;
+  Real ch4;
+  Real voc;
+  Real tpm;
+  Real nox;
+} Tracegas;
+
+typedef struct
+{
   Real mnpp;             /**< Monthly NPP (gC/m2) */
   Real mgpp;             /**< Monthly GPP (gC/m2) */
   Real mrh;              /**< monthly heterotrophic respiration (gC/m2) */
@@ -98,7 +108,7 @@ typedef struct
   Real mfirec;           /**< monthly fire carbon emissions (gC/m2)*/
   Real mnfire;           /**< monthly number of fires */
   Real mfiredi;          /**< monthly fire danger index */
-  Real mfireemission;    /**< monthly fire emissions */
+  Tracegas mfireemission;    /**< monthly fire emissions */
   Real mburntarea; /**< monthly burnt area */
   Real mprec_image;      /**< monthly precipitation received from IMAGE [mm/month]*/
   Real mtemp_image;      /**< monthly temperature received from IMAGE [K] */
@@ -217,6 +227,7 @@ typedef struct
   Real mphen_water;        /**< monthly phenology water limiting function */
   Real mwscal;             /**< monthly water scalar */
   Real dcflux;             /**< daily carbon flux from LPJ to atmosphere (gC/m2/day) */
+  Real dwflux;             /**< daily water flux from LPJ to atmosphere (kg/m2/day) */
   Real mirrig_rw;          /**< monthly supplementary rain water irrigation in mm */
   Real mlakevol;           /**< monthly mean lake content volume in dm3 */
   Real mlaketemp;          /**< monthly mean lake surface temperature in deg C */

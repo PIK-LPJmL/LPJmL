@@ -52,7 +52,7 @@ static Bool isnetcdfinput(const Config *config)
   }
   else if(config->cloud_filename.fmt==CDF)
     return TRUE;
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
     if(config->tamp_filename.fmt==CDF)
        return TRUE;
@@ -65,8 +65,12 @@ static Bool isnetcdfinput(const Config *config)
   }
   if(config->ispopulation && config->popdens_filename.fmt==CDF)
     return TRUE;
+#ifdef NEW_GRASS
   if(config->grassfix_filename.name!=NULL && config->grassfix_filename.fmt==CDF)
     return TRUE;
+  if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
+    return TRUE;
+#endif
   if(config->withlanduse!=NO_LANDUSE)
   {
     if(config->countrycode_filename.fmt==CDF)
@@ -167,10 +171,10 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,"random precipitation");
   if(config->fire)
   {
-    len=printsim(file,len,&count,(config->fire==SPITFIRE) ? "spitfire" : "fire");
-    if(config->fire==SPITFIRE && config->ispopulation)
+    len=printsim(file,len,&count,(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)  ? "spitfire" : "fire");
+    if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->ispopulation)
       len=printsim(file,len,&count,"and population");
-    if(config->fire==SPITFIRE && config->prescribe_burntarea)
+    if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
       len=printsim(file,len,&count,"prescribe burntarea");
   }
   if(config->river_routing)
@@ -269,9 +273,9 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   else
     printinputfile(file,"cloud",&config->cloud_filename,iscdfinput);
   printinputfile(file,"co2",&config->co2_filename,iscdfinput);
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    if(config->tamp_filename.fmt==CDF && config->tmax_filename.name!=NULL)
+    if(config->tmax_filename.name!=NULL)
     {
       printinputfile(file,"temp min",&config->tamp_filename,iscdfinput);
       printinputfile(file,"temp max",&config->tmax_filename,iscdfinput);
