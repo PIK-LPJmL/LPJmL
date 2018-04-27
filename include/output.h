@@ -227,7 +227,9 @@ typedef struct
   Real mphen_water;        /**< monthly phenology water limiting function */
   Real mwscal;             /**< monthly water scalar */
   Real dcflux;             /**< daily carbon flux from LPJ to atmosphere (gC/m2/day) */
+#ifdef COUPLING_WITH_FMS
   Real dwflux;             /**< daily water flux from LPJ to atmosphere (kg/m2/day) */
+#endif
   Real mirrig_rw;          /**< monthly supplementary rain water irrigation in mm */
   Real mlakevol;           /**< monthly mean lake content volume in dm3 */
   Real mlaketemp;          /**< monthly mean lake surface temperature in deg C */

@@ -212,7 +212,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           else1.4.2016  changed the grid initialization in newgrid.c such that we have here no problem anymore, since the lakefraction now is nearly zero everywhere. */
           {
             cell->output.mevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
-            cell->output.dwflux+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
             cell->discharge.dmass_lake=max(cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac,0.0);
           }
       }
@@ -220,7 +219,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
     {
     cell->output.mevap_lake+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
+#ifdef COUPLING_WITH_FMS
     cell->output.dwflux+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
+#endif
     cell->discharge.dmass_lake=max(cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac,0.0);
     }
 
