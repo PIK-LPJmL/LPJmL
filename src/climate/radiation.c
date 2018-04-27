@@ -31,7 +31,7 @@ void radiation(Real *daylength,       /**< daylength (h) */
   switch(with_radiation)
   {
     case CLOUDINESS:
-      petpar(daylength,par,&climate->swdown,eeq,lat,day,climate->temp,
+      petpar(daylength,par,eeq,&climate->swdown,lat,day,climate->temp,
              climate->sun,beta);
       break;
     case RADIATION:
