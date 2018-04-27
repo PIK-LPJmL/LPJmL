@@ -33,7 +33,7 @@
   "swdown" :       { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/swdown_erainterim_1901-2011.clm"},
   "cloud":         { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.cld.dat.clm"},
   "wind":          { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/mwindspeed_1860-2100_67420.clm"},
-  "tamp":          { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm  "}, /* diurnal temp. range */
+  "tamp":          { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
   "lightning" :    { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/mlightning.clm"},
   "human_ignition": { "fmt" : CLM, "name" : "/p/projects/lpjml/input/historical/input_VERSION2/human_ignition.clm"},
   "popdens" :      { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/popdens_HYDE3_1901_2011_bi.clm"},
