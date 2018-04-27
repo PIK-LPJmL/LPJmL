@@ -907,7 +907,7 @@
     {
       "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
       "base" : 4.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
-      "tau" : 0.01011,      /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+      "tau" : 0.01011       /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
