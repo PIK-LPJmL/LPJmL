@@ -35,18 +35,21 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h
 
 CONF	= lpjml.conf input.conf param.conf lpj.conf\
-          lpjml_image.conf\
+          lpjml_image.conf input_crumonthly.conf\
           lpjml_netcdf.conf input_netcdf.conf lpjml_fms.conf input_fms.conf
 
-DATA    = par/*.par
+JSON	= lpjml.js input_crumonthly.js param.js lpj.js\
+          lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js
+
+DATA    = par/*.par par/*.js
 
 SCRIPTS	= configure.bat configure.sh\
           bin/output_bsq bin/lpjsubmit_aix bin/lpjsubmit_intel\
           bin/lpjsubmit_mpich bin/lpjrun bin/backtrace\
-          bin/filetypes.vim bin/regridlpj
+          bin/filetypes.vim bin/regridlpj bin/lpjsubmit_slurm
 
-FILES	= Makefile config/* AUTHORS INSTALL VERSION LICENSE magic.mgc\
-          $(CONF) $(DATA) $(HDRS) $(SCRIPTS)
+FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE\
+          $(CONF) $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
 
 main: 
 	$(MKDIR) lib
@@ -105,8 +108,8 @@ tar:
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
             src/socket/*.c html/*.html html/*.css src/reservoir/Makefile\
             src/image/Makefile src/image/*.c src/reservoir/*.c\
-            src/pnet/Makefile REFERENCES COPYRIGHT README doc/* src/utils/*.c src/utils/Makefile\
-            src/spitfire/Makefile src/spitfire/*.c R/*.r src/netcdf/Makefile src/netcdf/*.c\
+            src/pnet/Makefile REFERENCES COPYRIGHT README src/utils/*.c src/utils/Makefile\
+            src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c
 	    gzip -f lpjml-4.0.001.tar
 
@@ -115,13 +118,13 @@ zipfile:
 	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
             man/man3/*.3 man/man5/*.5\
 	    src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\
-	    src/image/Makefile src/image/*.c R/*.r\
+	    src/image/Makefile src/image/*.c\
 	    src/landuse/*.c src/landuse/Makefile src/lpj/*.c src/lpj/Makefile\
 	    src/numeric/*.c src/numeric/Makefile src/soil/*.c src/soil/Makefile\
 	    src/tools/*.c src/tools/Makefile src/tree/*.c src/tree/Makefile\
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
             src/socket/*.c src/reservoir/Makefile\
             src/image/*.c src/image/Makefile src/reservoir/*.c\
-            src/pnet/Makefile REFERENCES COPYRIGHT README doc src/utils/*.c src/utils/Makefile\
+            src/pnet/Makefile REFERENCES COPYRIGHT README src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c
