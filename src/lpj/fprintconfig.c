@@ -56,6 +56,8 @@ static Bool isnetcdfinput(const Config *config)
   {
     if(config->tamp_filename.fmt==CDF)
        return TRUE;
+    if(config->fire==SPITFIRE_TMAX && config->tmax_filename.fmt==CDF)
+       return TRUE;
     if(config->wind_filename.fmt==CDF)
        return TRUE;
     if(config->lightning_filename.fmt==CDF)
@@ -65,12 +67,8 @@ static Bool isnetcdfinput(const Config *config)
   }
   if(config->ispopulation && config->popdens_filename.fmt==CDF)
     return TRUE;
-#ifdef NEW_GRASS
   if(config->grassfix_filename.name!=NULL && config->grassfix_filename.fmt==CDF)
     return TRUE;
-  if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
-    return TRUE;
-#endif
   if(config->withlanduse!=NO_LANDUSE)
   {
     if(config->countrycode_filename.fmt==CDF)
@@ -321,10 +319,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       printinputfile(file,"neighbour",&config->neighb_irrig_filename,iscdfinput);
   }
   if(config->sim_id==LPJML_FMS)
-    fprintf(file,"runoff2ocean_map  %-4s %-8s %s\n",
-            fmt[config->runoff2ocean_filename.fmt],
-            (config->runoff2ocean_filename.var==NULL) ? "": config->runoff2ocean_filename.var,
-            config->runoff2ocean_filename.name);
+    printinputfile(file,"runoff2ocean_map",&config->runoff2ocean_filename,iscdfinput);
   if(config->wateruse_filename.name!=NULL)
     printinputfile(file,"wateruse",&config->wateruse_filename,iscdfinput);
   if(iscdfinput)
