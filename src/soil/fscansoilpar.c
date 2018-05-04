@@ -18,15 +18,19 @@
 
 #define UNDEF (-1)
 
-#define fscanreal2(verb,file,var,name)\
+#define fscanreal2(verb,file,var,soil,name)\
   if(fscanreal(file,var,name,verb))\
   {\
+    if(verb) \
+      fprintf(stderr,"ERROR110: Cannot read real '%s' for soil type '%s'.\n",name,soil);\
     return 0;\
   }
-#define fscanint2(verb,file,var,name) \
+#define fscanint2(verb,file,var,soil,name) \
   if(fscanint(file,var,name,verb))\
   {\
-    return 0; \
+    if(verb) \
+      fprintf(stderr,"ERROR110: Cannot read int '%s' for soil type '%s'.\n",name,soil);\
+    return 0;\
   }
 
 Real soildepth[NSOILLAYER];
@@ -98,36 +102,36 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     soil->name=strdup(s);
     check(soil->name);
     soil->type=id;
-    fscanreal2(verb,&item,&soil->Ks,"Ks");
-    fscanreal2(verb,&item,&soil->Sf,"Sf");
-    fscanreal2(verb,&item,&soil->wpwp,"w_pwp");
-    fscanreal2(verb,&item,&soil->wfc,"w_fc");
+    fscanreal2(verb,&item,&soil->Ks,soil->name,"Ks");
+    fscanreal2(verb,&item,&soil->Sf,soil->name,"Sf");
+    fscanreal2(verb,&item,&soil->wpwp,soil->name,"w_pwp");
+    fscanreal2(verb,&item,&soil->wfc,soil->name,"w_fc");
     if(soil->wfc>1)
     {
       if(verb)
-        fprintf(stderr,"ERROR215: wfc=%g>1 in line %d of '%s' for soil type %s\n",
+        fprintf(stderr,"ERROR215: wfc=%g>1 in line %d of '%s' for soil type '%s'.\n",
                 soil->wfc,getlinecount(),getfilename(),soil->name);
       return 0;
     }
     if(soil->wfc-soil->wpwp<0)
     {
       if(verb)
-        fprintf(stderr,"ERROR213: whc=%g<0 in line %d of '%s' for soil type %s, wfc=%g, wpwp=%g\n",
+        fprintf(stderr,"ERROR213: whc=%g<0 in line %d of '%s' for soil type '%s', wfc=%g, wpwp=%g\n",
                 soil->wfc-soil->wpwp,getlinecount(),getfilename(),soil->name,soil->wfc,soil->wpwp);
       return 0;
     }
-    fscanreal2(verb,&item,&soil->wsat,"w_sat");
+    fscanreal2(verb,&item,&soil->wsat,soil->name,"w_sat");
     if(soil->wsat<=0 || soil->wsat>1)
     {
       if(verb)
-        fprintf(stderr,"ERROR220: wsat=%g in line %d of '%s' not in (0,1] for soil type %s\n",
+        fprintf(stderr,"ERROR220: wsat=%g in line %d of '%s' not in (0,1] for soil type '%s'.\n",
                 soil->wsat,getlinecount(),getfilename(),soil->name);
       return 0;
     }
     if(soil->wsat<=soil->wfc)
     {
       if(verb)
-        fprintf(stderr,"ERROR216: wsat=%g <= wfc=%g in line %d of '%s' for soil type %s\n",
+        fprintf(stderr,"ERROR216: wsat=%g <= wfc=%g in line %d of '%s' for soil type '%s'.\n",
                 soil->wsat,soil->wfc,getlinecount(),getfilename(),soil->name);
       return 0;
     }
@@ -153,7 +157,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     soil->wsats[BOTTOMLAYER]=0.006*soildepth[BOTTOMLAYER];
     soil->bulkdens[BOTTOMLAYER]=(1-soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER])*MINERALDENS;
     soil->k_dry[BOTTOMLAYER]=0.039*pow(soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER],-2.2);
-    fscanint2(verb,&item,&soil->hsg,"hsg");
+    fscanint2(verb,&item,&soil->hsg,soil->name,"hsg");
     if(soil->hsg<1 || soil->hsg>NHSG)
     {
       if(verb)
@@ -161,12 +165,12 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
                 soil->hsg,soil->name);
       return 0;
     }
-    fscanreal2(verb,&item,&soil->tdiff_0,"tdiff_0");
-    fscanreal2(verb,&item,&soil->tdiff_15,"tdiff_15");
-    fscanreal2(verb,&item,&soil->tdiff_100,"tdiff_100");
-    fscanreal2(verb,&item,&soil->tcond_pwp,"cond_pwp");
-    fscanreal2(verb,&item,&soil->tcond_100,"cond_100");
-    fscanreal2(verb,&item,&soil->tcond_100_ice,"cond_100_ice");
+    fscanreal2(verb,&item,&soil->tdiff_0,soil->name,"tdiff_0");
+    fscanreal2(verb,&item,&soil->tdiff_15,soil->name,"tdiff_15");
+    fscanreal2(verb,&item,&soil->tdiff_100,soil->name,"tdiff_100");
+    fscanreal2(verb,&item,&soil->tcond_pwp,soil->name,"cond_pwp");
+    fscanreal2(verb,&item,&soil->tcond_100,soil->name,"cond_100");
+    fscanreal2(verb,&item,&soil->tcond_100_ice,soil->name,"cond_100_ice");
 
   } /* of 'for(n=0;...)' */
   return n;
