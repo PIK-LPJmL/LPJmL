@@ -31,7 +31,6 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   Real fuel_consump,deadfuel_consump,livefuel_consump,livefuel_consump_pft;
   Real total_firec,surface_fi;
   Fuel fuel;
-  Real CME;
   Bool isdead;
   int p;
   Output *output;
@@ -128,7 +127,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
 #ifdef WITH_FIRE_MOISTURE
       emission.co2+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.co2 * (livefuel->CME/0.94);
       emission.co+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.co * (2- livefuel->CME/0.94);
-#elseif
+#else
       emission.co2+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.co2;
       emission.co+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.co;
 #endif
