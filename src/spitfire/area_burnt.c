@@ -43,7 +43,7 @@ Real area_burnt(Real fire_danger_index, Real num_fires, Real windsp_cover,
     lb_grass=fpc_total[GRASS]*(1.1+pow(windsp_cover,0.464));
     length_breath_ratio=lb_tree+lb_grass;
     free(fpc_total);
-    if (length_breath_ratio > 8) 
+    if (length_breath_ratio > 8)
       length_breath_ratio = 8;
   }
 
