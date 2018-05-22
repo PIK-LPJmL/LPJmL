@@ -34,7 +34,6 @@ Real area_burnt(Real fire_danger_index, Real num_fires, Real windsp_cover,
   else
   {
     windsp_cover*=0.06; /* Conversion of units from m/min to km/h of windspeed */
-    
     base=1.0-(exp(-0.03*windsp_cover));
     /* total tree fpc and total grass fpc for dampening effect on wind speed */
     fpc_total=newvec(Real,ntypes);
