@@ -33,7 +33,8 @@ Real area_burnt(Real fire_danger_index, Real num_fires, Real windsp_cover,
     length_breath_ratio = 1;
   else
   {
-    windsp_cover*=0.06;
+    windsp_cover*=0.06; /* Conversion of units from m/min to km/h of windspeed */
+    
     base=1.0-(exp(-0.03*windsp_cover));
     /* total tree fpc and total grass fpc for dampening effect on wind speed */
     fpc_total=newvec(Real,ntypes);
@@ -43,7 +44,7 @@ Real area_burnt(Real fire_danger_index, Real num_fires, Real windsp_cover,
     lb_grass=fpc_total[GRASS]*(1.1+pow(windsp_cover,0.464));
     length_breath_ratio=lb_tree+lb_grass;
     free(fpc_total);
-    if (length_breath_ratio > 8)
+    if (length_breath_ratio > 8) 
       length_breath_ratio = 8;
   }
 
@@ -55,7 +56,7 @@ Real area_burnt(Real fire_danger_index, Real num_fires, Real windsp_cover,
      *  fire duration as a function of daily fire danger index
      */
     fire_durat=241.0/(1.0+(240*exp(-11.06*fire_danger_index)));
-    dbf = (ros_backward+ros_forward) * fire_durat;  /* in min */
+    dbf = (ros_backward+ros_forward) * fire_durat;  /* in min , dbf in m*/
     d_area_burnt = (num_fires * M_PI_4/length_breath_ratio * dbf*dbf)*1e-4;
   }
   return d_area_burnt;

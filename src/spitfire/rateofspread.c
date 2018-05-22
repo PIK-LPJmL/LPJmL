@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define MINER_DAMP 0.41739
+#define MINER_DAMP 0.41739 //0.17*pow(Se,-0.19), Se=1% (effective mineral content)
 #define PART_DENS 513.0
 #define heat_content_fuel 18000.0
   
@@ -39,14 +39,15 @@ Real rateofspread(Real windsp_cover,Fuel *fuel)
   eps=(fuel->sigma <= 0.00001) ?  0 : exp(-4.528 / fuel->sigma);
 
   /* Parameters dependent of surface to volume ratio */
-  a=8.9033*pow(fuel->sigma, -0.7913);
+ 
+  a=(8.9033*pow(fuel->sigma, -0.7913));
   b=0.15988*pow(fuel->sigma, 0.54);
   c=7.47*exp(-0.8711 * pow(fuel->sigma, 0.55));
   e=0.715*exp(-0.01094 * fuel->sigma);
 
-  /* converts wind_speed (m/min) to ft/min
+  /* converts wind_speed (m/min) to ft/min 
    * for input into Rothermel's formula for phi_wind in the ROS S/R */
-  wind_forward=3.281*windsp_cover; 
+  wind_forward=3.281*windsp_cover;
 
   /* Effect of wind speed */
   phi_wind=(bet <= 0) ?  0 : c*pow(wind_forward,b)*pow(bet,-e); 
@@ -79,6 +80,6 @@ Real rateofspread(Real windsp_cover,Fuel *fuel)
     U_front = 0;
   else
     U_front=(ir * xi * (1.0 + phi_wind)) / (fuel->char_dens_fuel_ave * eps * q_ig);
-
+   
   return U_front;
 } /* of 'rateofspread' */
