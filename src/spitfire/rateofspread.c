@@ -79,6 +79,5 @@ Real rateofspread(Real windsp_cover,Fuel *fuel)
     U_front = 0;
   else
     U_front=(ir * xi * (1.0 + phi_wind)) / (fuel->char_dens_fuel_ave * eps * q_ig);
-   
   return U_front;
 } /* of 'rateofspread' */
