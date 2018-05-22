@@ -16,7 +16,7 @@
 include ../../Makefile.inc
 
 OBJS    = area_burnt.$O firedangerindex.$O popdens.$O humanignition.$O\
-      fraction_of_consumption.$O fuel_consumption_1hr.$O\
+          fraction_of_consumption.$O fuel_consumption_1hr.$O\
           initfuel.$O deadfuel_consumption.$O\
           initignition.$O update_nesterov.$O\
           litter_update_fire.$O surface_fire_intensity.$O\
