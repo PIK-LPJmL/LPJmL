@@ -39,8 +39,7 @@ Real rateofspread(Real windsp_cover,Fuel *fuel)
   eps=(fuel->sigma <= 0.00001) ?  0 : exp(-4.528 / fuel->sigma);
 
   /* Parameters dependent of surface to volume ratio */
- 
-  a=(8.9033*pow(fuel->sigma, -0.7913));
+  a=8.9033*pow(fuel->sigma, -0.7913);
   b=0.15988*pow(fuel->sigma, 0.54);
   c=7.47*exp(-0.8711 * pow(fuel->sigma, 0.55));
   e=0.715*exp(-0.01094 * fuel->sigma);
