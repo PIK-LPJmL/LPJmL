@@ -44,7 +44,7 @@ Real rateofspread(Real windsp_cover,Fuel *fuel)
   c=7.47*exp(-0.8711 * pow(fuel->sigma, 0.55));
   e=0.715*exp(-0.01094 * fuel->sigma);
 
-  /* converts wind_speed (m/min) to ft/min 
+  /* converts wind_speed (m/min) to ft/min
    * for input into Rothermel's formula for phi_wind in the ROS S/R */
   wind_forward=3.281*windsp_cover;
 
