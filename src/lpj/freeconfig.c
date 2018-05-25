@@ -29,6 +29,9 @@ void freeconfig(Config *config /**< LPJmL configuration */
   if(config->soil_filename.fmt!=CDF)
     freefilename(config->coord_filename);
   freefilename(config->soil_filename);
+  free(config->outputdir);
+  free(config->inputdir);
+  free(config->restartdir);
   free(config->arglist);
   free(config->sim_name);
   if(config->river_routing)

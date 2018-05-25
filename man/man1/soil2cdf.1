@@ -3,11 +3,14 @@
 soil2cdf \- convert binary files into NetCDF files
 .SH SYNOPSIS
 .B soil2cdf
-[\-cellsize size] [\-compress level] [\-descr d]
+[\-global] [\-cellsize size] [\-compress level] [\-descr d]
 .I varname gridfile soilfile netcdffile
 .SH DESCRIPTION
 Program converts binary input files into NetCDF file.
 .SH OPTIONS
+.TP
+\-global
+use global grid for NetCDF file
 .TP
 \-cellsize size
 set cell size in grid file to size

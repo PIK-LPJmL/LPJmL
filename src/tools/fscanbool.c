@@ -77,7 +77,7 @@ Bool fscanbool(LPJfile *file,    /**< pointer to LPJ file */
     else
       fputs("EOF reached.\n",stderr);
   }
-  else  if(verb >= VERB)
-      printf("\"%s\" : %s\n", name, bool2str(*value));
+  else if(verb >= VERB)
+    printf("\"%s\" : %s\n", name, bool2str(*value));
   return rc;
 } /* of 'fscanbool' */

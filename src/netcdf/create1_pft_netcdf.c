@@ -34,18 +34,21 @@ Bool create1_pft_netcdf(Netcdf *cdf,
                         const char *descr,    /**< description of output variable */
                         const char *units,    /**< unit of output variable */
                         Type type,            /**< type of output variable */
+                        int n,                /**< number of samples per year (1/12/365) */
                         const Coord_array *array, /**< coordinate array */
+                        int year,            /**< simulation year (AD) */
                         const Config *config  /**< LPJ configuration */
                        )                      /** \return TRUE on error */
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   String s;
   time_t t;
-  int i,rc,imiss=MISSING_VALUE_INT,size;
+  int i,rc,imiss=MISSING_VALUE_INT,size,*days;
   short smiss=MISSING_VALUE_SHORT;
   float *lon,*lat,miss=config->missing_value,*layer;
-  int dim[3];
+  int dim[4];
   int lon_dim_id,lat_dim_id,lon_var_id,lat_var_id,pft_dim_id,pft_var_id;
+  int time_dim_id,time_var_id;
   char **pftnames;
 #ifndef USE_NETCDF4
   int dimids[2],pft_len_id;
@@ -71,7 +74,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     return TRUE;
   }
   size=outputsize(index,npft,config->nbiomass,ncft);
-  if(index==SOILC_LAYER)
+  if(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC)
   {
     layer=newvec(float,size);
     if(layer==NULL)
@@ -83,14 +86,47 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     }
     layer[0]=0;
     for(i=1;i<size;i++)
-     layer[i]=(float)soildepth[i-1];
+     layer[i]=(float)layerbound[i-1];
   }
   else layer=NULL;
   for(i=0;i<array->nlon;i++)
     lon[i]=array->lon_min+i*config->resolution.lon;
   for(i=0;i<array->nlat;i++)
     lat[i]=array->lat_min+i*config->resolution.lat;
-
+  if(n>1)
+  {
+    days=newvec(int,n);
+    if(days==NULL)
+    {
+      free(lon);
+      free(lat);
+      printallocerr("time");
+      return TRUE;
+    }
+    switch(n)
+    {
+      case 12:
+        for(i=0;i<12;i++)
+          if(i==0)
+            days[0]=ndaymonth[i]-1;
+          else
+            days[i]=days[i-1]+ndaymonth[i];
+        break;
+    case NDAYYEAR:
+      for(i=0;i<n;i++)
+        days[i]=i;
+      break;
+    default:
+      fputs("ERROR425: Invalid value for number of data points per year.\n",
+            stderr);
+      free(days);
+      free(lon);
+      free(lat);
+      return TRUE;
+    }
+  }
+  else
+    days=NULL;
   cdf->index=array;
 #ifdef USE_NETCDF4
   rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
@@ -107,20 +143,34 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     return TRUE;
   }
   error(rc);
-  rc=nc_def_dim(cdf->ncid,(index==SOILC_LAYER) ? "nsoil" : "npft",size,&pft_dim_id);
+  rc=nc_def_dim(cdf->ncid,(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC) ? "layer" : "npft",size,&pft_dim_id);
   error(rc);
   rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&lat_dim_id);
   error(rc);
   rc=nc_def_dim(cdf->ncid,LON_DIM_NAME,array->nlon,&lon_dim_id);
   error(rc);
-  dim[0]=pft_dim_id;
-  dim[1]=lat_dim_id;
-  dim[2]=lon_dim_id;
-  if(index==SOILC_LAYER)
+  if(n>1)
+  {
+    rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,n,&time_dim_id);
+    error(rc);
+    dim[0]=time_dim_id;
+    dim[1]=pft_dim_id;
+    dim[2]=lat_dim_id;
+    dim[3]=lon_dim_id;
+  }
+  else
+  {
+    dim[0]=pft_dim_id;
+    dim[1]=lat_dim_id;
+    dim[2]=lon_dim_id;
+  }
+  if(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC)
   {
     rc=nc_def_var(cdf->ncid,"layer",NC_FLOAT,1,&pft_dim_id,&pft_var_id);
     error(rc);
     rc=nc_put_att_text(cdf->ncid,pft_var_id,"units",strlen("mm"),"mm");
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,pft_var_id,"long_name",strlen("soil depth"),"soil depth");
   }
   else
   {
@@ -172,8 +222,19 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lon_var_id,"axis",strlen("X"),"X");
   error(rc);
-  rc=nc_def_var(cdf->ncid,name,nctype[type],3,dim,&cdf->varid);
+  rc=nc_def_var(cdf->ncid,name,nctype[type],(n>1) ? 4 : 3,dim,&cdf->varid);
   error(rc);
+  if(n>1)
+  {
+    rc=nc_def_var(cdf->ncid,TIME_NAME,NC_INT,1,&time_dim_id,&time_var_id);
+    error(rc);
+    snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",year);
+    rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
+    error(rc);
+    rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen("noleap"),
+                       "noleap");
+    error(rc);
+  }
 #ifdef USE_NETCDF4
   if(config->compress)
   {
@@ -219,7 +280,12 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   error(rc);
   rc=nc_enddef(cdf->ncid);
   error(rc);
-  if(index==SOILC_LAYER)
+  if(n>1)
+  {
+    rc=nc_put_var_int(cdf->ncid,time_var_id,days);
+    error(rc);
+  }
+  if(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC)
   {
     rc=nc_put_var_float(cdf->ncid,pft_var_id,layer);
     error(rc);
@@ -249,6 +315,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   free(layer);
   free(lat);
   free(lon);
+  free(days);
   return FALSE;
 #else
   fputs("ERROR401: NetCDF output is not supported by this version of LPJmL.\n",stderr);

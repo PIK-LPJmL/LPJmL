@@ -4,6 +4,7 @@ backtrace (1) - print backtrace from core
 bin2cdf (1) - convert binary output files into NetCDF files
 cat2bsq (1) - concatenate output files from distributed LPJmL simulations
 catclm (1) - concatenate LPJmL climate data files
+cdf2bin(1) - convert NetCDF files into raw binary data
 cdf2clm (1) - convert NetCDF files into CLM files
 cdf2soil (1) - convert NetCDF file into binary file
 cft2clm (1) - convert binary landuse data files to clm data files for LPJmL

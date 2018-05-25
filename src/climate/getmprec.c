@@ -22,5 +22,5 @@ Real getmprec(const Climate *climate, /**< pointer to climate data */
               int month               /**< month (0..11) */
              )                        /** \return monthly averaged precipitation (mm) */
 {
-  return (climate->file_prec.isdaily) ? climbuf->mprec : (getcellprec(climate,cell))[month];
+  return isdaily(climate->file_prec) ? climbuf->mprec : (getcellprec(climate,cell))[month];
 } /* of 'getmprec' */

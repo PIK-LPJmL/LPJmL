@@ -14,7 +14,11 @@
 
 #include "lpj.h"
 
-Coord_array *createindex(const Coord *grid,int ngrid,Coord resolution)
+Coord_array *createindex(const Coord *grid, /**< coordinate array of LPJ grid */
+                         int ngrid,         /**< size of coordinate array */
+                         Coord resolution,  /**< lon, lat resolution (deg) */
+                         Bool global        /**< use global grid */
+                        )                   /** \return pointer to lat, lon, index  arrays or NULL */
 {
   Coord_array *array;
   Real lon_max,lat_max;
@@ -29,18 +33,28 @@ Coord_array *createindex(const Coord *grid,int ngrid,Coord resolution)
     free(array);
     return NULL;
   }
-  array->lon_min=array->lat_min=1000;
-  lon_max=lat_max=-1000;
-  for(cell=0;cell<ngrid;cell++)
+  if(global)
   {
-    if(array->lon_min>grid[cell].lon)
-      array->lon_min=grid[cell].lon;
-    if(lon_max<grid[cell].lon)
-      lon_max=grid[cell].lon;
-    if(array->lat_min>grid[cell].lat)
-      array->lat_min=grid[cell].lat;
-    if(lat_max<grid[cell].lat)
-      lat_max=grid[cell].lat;
+    array->lon_min=-180+0.5*resolution.lon;
+    lon_max=180-0.5*resolution.lon;
+    array->lat_min=-90+0.5*resolution.lat;
+    lat_max=90-0.5*resolution.lat;
+  }
+  else
+  {
+    array->lon_min=array->lat_min=1000;
+    lon_max=lat_max=-1000;
+    for(cell=0;cell<ngrid;cell++)
+    {
+      if(array->lon_min>grid[cell].lon)
+        array->lon_min=grid[cell].lon;
+      if(lon_max<grid[cell].lon)
+        lon_max=grid[cell].lon;
+      if(array->lat_min>grid[cell].lat)
+        array->lat_min=grid[cell].lat;
+      if(lat_max<grid[cell].lat)
+        lat_max=grid[cell].lat;
+    }
   }
   array->nlon=(int)((lon_max-array->lon_min)/resolution.lon+0.5)+1;
   array->nlat=(int)((lat_max-array->lat_min)/resolution.lat+0.5)+1;

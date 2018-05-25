@@ -16,9 +16,6 @@
 #define TYPES_H
 
 #include <time.h>
-//#ifdef USE_JSON
-//#include <json-c/json.h>
-//#endif
 
 /* Definition of constants */
 
@@ -93,10 +90,11 @@ extern Bool fscanreal(LPJfile *,Real *,const char *,Verbosity);
 extern Bool fscanbool(LPJfile *,Bool *,const char *,Verbosity);
 extern Bool fscanrealarray(LPJfile *,Real *,int,const char *,Verbosity);
 extern Bool fscanstring(LPJfile *,String,const char *,Verbosity);
-extern Bool fscanstruct(LPJfile *,LPJfile *,const char *,Verbosity);
+extern Bool fscanstruct(const LPJfile *,LPJfile *,const char *,Verbosity);
 extern Bool fscanarray(LPJfile *,LPJfile *,int *,Bool,const char *,Verbosity);
-extern Bool fscanarrayindex(LPJfile *,LPJfile *,int,Verbosity);
-extern Bool fscanline(FILE *,String);
+extern Bool fscanarrayindex(const LPJfile *,LPJfile *,int,Verbosity);
+extern Bool iskeydefined(const LPJfile *,const char *);
+extern Bool fscanline(FILE *,char [],int,Verbosity);
 extern Bool fscantoken(FILE *,String);
 extern char *sysname(void);
 extern char *getpath(const char *);

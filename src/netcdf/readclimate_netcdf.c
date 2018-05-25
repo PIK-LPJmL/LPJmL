@@ -75,7 +75,7 @@ static Bool openfile(Climatefile *file,int year,const Config *config)
   if(rc)
     return TRUE;
 #ifdef USE_MPI
-  MPI_Bcast(&file->type,1,MPI_INT,0,config->comm);
+  MPI_Bcast(&file->datatype,1,MPI_INT,0,config->comm);
   MPI_Bcast(&file->nlon,sizeof(size_t),MPI_BYTE,0,config->comm);
   MPI_Bcast(&file->nlat,sizeof(size_t),MPI_BYTE,0,config->comm);
   MPI_Bcast(&file->is360,1,MPI_INT,0,config->comm);
@@ -110,7 +110,7 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
   size_t offsets[3];
   size_t counts[3];
   String line;
-  size=(file->isdaily) ? NDAYYEAR : NMONTH;
+  size=isdaily(*file) ? NDAYYEAR : NMONTH;
   if(file->oneyear)
   {
     if(openfile(file,year,config))
@@ -120,14 +120,14 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
   else
   {
     offsets[0]=year*size;
-    if(file->isdaily && file->isleap)
+    if(isdaily(*file) && file->isleap)
       offsets[0]+=nleapyears(file->firstyear,year+file->firstyear);
   }
   offsets[1]=offsets[2]=0;
   counts[0]=size;
   counts[1]=file->nlat;
   counts[2]=file->nlon;
-  switch(file->type)
+  switch(file->datatype)
   {
     case LPJ_FLOAT:
       f=newvec(float,size*file->nlon*file->nlat);
@@ -181,7 +181,7 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
             if(f[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.f)
             {
               fprintf(stderr,"ERROR423: Missing value for cell=%d (%s) at %s %d.\n",
-                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),(file->isdaily) ? "day" : "month",i+1);
+                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),isdaily(*file) ? "day" : "month",i+1);
               free(f);
               if(file->oneyear && isroot(*config))
                 nc_close(file->ncid);
@@ -190,7 +190,7 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
             else if(isnan(f[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]))
             {
               fprintf(stderr,"ERROR434: Invalid value for cell=%d (%s) at %s %d.\n",
-                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),(file->isdaily) ? "day" : "month",i+1);
+                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),isdaily(*file) ? "day" : "month",i+1);
               free(f);
               if(file->oneyear && isroot(*config))
                 nc_close(file->ncid);
@@ -254,7 +254,7 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
             if(d[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.f)
             {
               fprintf(stderr,"ERROR423: Missing value for cell=%d (%s) at %s %d.\n",
-                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),(file->isdaily) ? "day" : "month",i+1);
+                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),isdaily(*file) ? "day" : "month",i+1);
               free(d);
               if(file->oneyear && isroot(*config))
                 nc_close(file->ncid);
@@ -263,7 +263,7 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
             else if(isnan(d[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]))
             {
               fprintf(stderr,"ERROR434: Invalid value for cell=%d (%s) at %s %d.\n",
-                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),(file->isdaily) ? "day" : "month",i+1);
+                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),isdaily(*file) ? "day" : "month",i+1);
               free(d);
               if(file->oneyear && isroot(*config))
                 nc_close(file->ncid);
@@ -326,7 +326,7 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
             if(s[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.s)
             {
               fprintf(stderr,"ERROR423: Missing value for cell=%d (%s) at %s %d.\n",
-                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),(file->isdaily) ? "day" : "month",i+1);
+                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),isdaily(*file) ? "day" : "month",i+1);
               free(s);
               if(file->oneyear && isroot(*config))
                 nc_close(file->ncid);
@@ -369,7 +369,7 @@ Bool readintclimate_netcdf(Climatefile *file,   /* climate data file */
   size_t offsets[3];
   size_t counts[3];
   String line;
-  size=(file->isdaily) ? NDAYYEAR : NMONTH;
+  size=isdaily(*file) ? NDAYYEAR : NMONTH;
   if(file->oneyear)
   {
     if(openfile(file,year,config))
@@ -379,14 +379,14 @@ Bool readintclimate_netcdf(Climatefile *file,   /* climate data file */
   else
   {
     offsets[0]=year*size;
-    if(file->isdaily && file->isleap)
+    if(isdaily(*file) && file->isleap)
       offsets[0]+=nleapyears(file->firstyear,year+file->firstyear);
   }
   offsets[1]=offsets[2]=0;
   counts[0]=size;
   counts[1]=file->nlat;
   counts[2]=file->nlon;
-  switch(file->type)
+  switch(file->datatype)
   {
     case LPJ_INT:
       f=newvec(int,size*file->nlon*file->nlat);
@@ -440,7 +440,7 @@ Bool readintclimate_netcdf(Climatefile *file,   /* climate data file */
             if(f[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.i)
             {
               fprintf(stderr,"ERROR423: Missing value for cell=%d (%s) at %s %d.\n",
-                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),(file->isdaily) ? "day" : "month",i+1);
+                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),isdaily(*file) ? "day" : "month",i+1);
               free(f);
               if(file->oneyear && isroot(*config))
                 nc_close(file->ncid);
@@ -503,7 +503,7 @@ Bool readintclimate_netcdf(Climatefile *file,   /* climate data file */
             if(s[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.s)
             {
               fprintf(stderr,"ERROR423: Missing value for cell=%d (%s) at %s %d.\n",
-                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),(file->isdaily) ? "day" : "month",i+1);
+                      cell+config->startgrid,sprintcoord(line,&grid[cell].coord),isdaily(*file) ? "day" : "month",i+1);
               free(s);
               if(file->oneyear && isroot(*config))
                 nc_close(file->ncid);
@@ -546,7 +546,7 @@ int checkvalidclimate_netcdf(Climatefile *file,   /* climate data file */
   size_t offsets[3];
   size_t counts[3];
   String line;
-  size=(file->isdaily) ? NDAYYEAR : NMONTH;
+  size=isdaily(*file) ? NDAYYEAR : NMONTH;
   if(file->oneyear)
   {
     if(openfile(file,year,config))
@@ -556,7 +556,7 @@ int checkvalidclimate_netcdf(Climatefile *file,   /* climate data file */
   else
   {
     offsets[0]=year*size;
-    if(file->isdaily && file->isleap)
+    if(isdaily(*file) && file->isleap)
       offsets[0]+=nleapyears(file->firstyear,year+file->firstyear);
   }
   offsets[1]=offsets[2]=0;
@@ -564,7 +564,7 @@ int checkvalidclimate_netcdf(Climatefile *file,   /* climate data file */
   counts[1]=file->nlat;
   counts[2]=file->nlon;
   count=0;
-  switch(file->type)
+  switch(file->datatype)
   {
     case LPJ_FLOAT:
       f=newvec(float,size*file->nlon*file->nlat);

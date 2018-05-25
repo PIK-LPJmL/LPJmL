@@ -20,7 +20,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-scale s] [-cellsize size] [-int] [-landuse] [-notime]\n       [-compress level] [-units u] [-descr d] name gridfile clmfile netcdffile\n"
+#define USAGE "Usage: %s [-scale s] [-global] [-cellsize size] [-int] [-landuse] [-notime]\n       [-compress level] [-units u] [-descr d] name gridfile clmfile netcdffile\n"
 
 typedef struct
 {
@@ -316,7 +316,7 @@ int main(int argc,char **argv)
   String headername;
   float *data;
   int i,j,k,ngrid,version,iarg,compress;
-  Bool swap,isint,landuse,notime;
+  Bool swap,isint,landuse,notime,isglobal;
   float *f,scale,cellsize_lon,cellsize_lat;
   char *units,*descr,*endptr,*arglist;
   Filename filename;
@@ -327,6 +327,7 @@ int main(int argc,char **argv)
   isint=FALSE;
   landuse=FALSE;
   notime=FALSE;
+  isglobal=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -340,6 +341,8 @@ int main(int argc,char **argv)
         }
         units=argv[++iarg];
       }
+      else if(!strcmp(argv[iarg],"-global"))
+        isglobal=TRUE;
       else if(!strcmp(argv[iarg],"-int"))
         isint=TRUE;
       else if(!strcmp(argv[iarg],"-notime"))
@@ -491,7 +494,7 @@ int main(int argc,char **argv)
     fclose(file);
     return EXIT_FAILURE;
   }
-  index=createindex(grid,ngrid,res);
+  index=createindex(grid,ngrid,res,isglobal);
   if(index==NULL)
     return EXIT_FAILURE;
   free(grid);

@@ -20,6 +20,8 @@
 #endif
 #include "lpj.h"
 
+#define LINE_LEN 1024 /* maximum line length in JSON file + 1  */
+
 static void closeconfig(LPJfile *file)
 {
 #ifdef USE_JSON
@@ -46,6 +48,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   String s;
   Verbosity verbosity;
 #ifdef USE_JSON
+  char line[LINE_LEN];
   enum json_tokener_error json_error;
   struct json_tokener *tok;
 #endif
@@ -69,11 +72,11 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     lpjfile.isjson=TRUE;     /* yes, we have to parse it */
     tok=json_tokener_new();
     lpjfile.file.obj=json_tokener_parse_ex(tok,s,strlen(s));
-    while(!fscanline(file,s))  /* read line from file */
+    while(!fscanline(file,line,LINE_LEN,verbosity))  /* read line from file */
     {
-      if(s[0]!='#')
+      if(line[0]!='#')
       {
-        lpjfile.file.obj=json_tokener_parse_ex(tok,s,strlen(s));
+        lpjfile.file.obj=json_tokener_parse_ex(tok,line,strlen(line));
         json_error=json_tokener_get_error(tok);
         if(json_error!=json_tokener_continue)
           break;
@@ -104,11 +107,12 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
 #endif
   }
   else
-     lpjfile.isjson=FALSE;
+    lpjfile.isjson=FALSE;
   config->sim_name=strdup(s);
   if(config->sim_name==NULL)
   {
     printallocerr("sim_name");
+    closeconfig(&lpjfile);
     return TRUE;
   }
   if(fscanint(&lpjfile,&config->sim_id,"sim_id",verbosity))

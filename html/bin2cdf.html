@@ -12,8 +12,8 @@
 
      <B>SYNOPSIS</B>
           <B>soil2cdf</B> [-cellsize size] [-compress level] [-descr d]
-          [-units u] {-swap] [-short] [-nitem n} [-ispft] [-firstyear
-          y] <I>varname</I> <I>gridfile</I> <I>binfile</I> <I>netcdffile</I>
+          [-units u] [-global] {-swap] [-short] [-nitem n} [-ispft]
+          [-firstyear y] <I>varname</I> <I>gridfile</I> <I>binfile</I> <I>netcdffile</I>
 
      <B>DESCRIPTION</B>
           Program converts binary output files into NetCDF file.
@@ -30,6 +30,9 @@
 
           -units u
                set units in NetCDF file
+
+          -global
+               use global grid for NetCDF file
 
           -swap
                change byte order in binary file
@@ -79,9 +82,6 @@
 
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="soil2cdf.html">soil2cdf(1)</A></B>, <B><A HREF="clm2cdf.html">clm2cdf(1)</A></B>, <B><A HREF="country2cdf.html">country2cdf(1)</A></B>, <B><A HREF="lpjml.html">lpjml(1)</A></B>
-
-
-
 
 
 

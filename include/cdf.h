@@ -52,6 +52,8 @@ typedef struct cdf
   float missing_value;
 } Netcdf;
 
+typedef enum { DAY,MONTH,YEAR } Time;
+
 typedef struct
 {
   int firstyear;    /**< first year of climate data (AD) */
@@ -59,7 +61,7 @@ typedef struct
   long long offset; /**< file offset in bytes */
   long long size;   /**< size of dataset for each year in bytes */
   int nyear;        /**< number of years of climate data */
-  Bool isdaily;     /**< daily values (TRUE/FALSE) */
+  Time time_step;   /**< time steps (DAY/MONTH/YEAR) */
   Bool ready;       /**< data was already averaged */
   Bool swap;        /**< byte order has to be changed (TRUE/FALSE) */
   FILE *file;       /**< file pointer */
@@ -72,10 +74,9 @@ typedef struct
   const char *units;/**< variable units or NULL */
   Bool oneyear;     /**< one file for each year (TRUE/FALSE) */
   size_t var_len;
-  int ncid;
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
+  int ncid;
   int varid;
-  Type type;
   Bool isleap;      /**< leap days in file (TRUE/FALSE) */
   Bool is360;       /**< lon coordinates are in [0,360] (TRUE/FALSE) */
   size_t nlon,nlat; /**< dimensions of longitude/latitude */
@@ -115,10 +116,10 @@ extern Bool openclimate_netcdf(Climatefile *,const char *,const char *,
 extern Bool mpi_openclimate_netcdf(Climatefile *,const char *,const char *,
                                    const char *,const Config *);
 extern Bool create_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,
-                              const char *,const char *,Type,
+                              const char *,const char *,Type,int,
                               const Coord_array *,const Config *);
 extern Bool create1_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,
-                              const char *,const char *,Type,
+                              const char *,const char *,Type,int,
                               const Coord_array *,const Config *);
 extern Bool close_netcdf(Netcdf *);
 extern Bool readclimate_netcdf(Climatefile *,Real *,const Cell *,int,
@@ -177,5 +178,9 @@ extern Bool mpi_write_netcdf(const Netcdf *,void *,MPI_Datatype,int,int,
 extern Bool mpi_write_pft_netcdf(const Netcdf *,void *,MPI_Datatype,int,
                                  int,int,int [],int [],int,MPI_Comm);
 #endif
+
+/* Definition of macros */
+
+#define isdaily(climate) ((climate).time_step==DAY)
 
 #endif

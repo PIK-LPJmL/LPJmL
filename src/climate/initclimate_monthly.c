@@ -20,7 +20,7 @@ void initclimate_monthly(const Climate *climate, /**< Pointer to climate data */
                          int month               /**< month (0..11) */
                         )                        /** \return void */
 {
-  if(!climate->file_prec.isdaily && israndomprec(climate))
+  if(!isdaily(climate->file_prec) && israndomprec(climate))
     prdaily(climbuf->dval_prec,ndaymonth[month],
             (getcellprec(climate,cell))[month],
             (getcellwet(climate,cell))[month]);

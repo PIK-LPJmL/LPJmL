@@ -120,18 +120,28 @@ Coord_array *createcoord(Outputfile *output,
     }
     else
     {
-      array->lon_min=array->lat_min=1000;
-      lon_max=lat_max=-1000;
-      for(cell=0;cell<config->total;cell++)
+      if(config->global_netcdf)
       {
-        if(array->lon_min>lon[cell])
-          array->lon_min=lon[cell]; 
-        if(lon_max<lon[cell])
-          lon_max=lon[cell]; 
-        if(array->lat_min>lat[cell])
-          array->lat_min=lat[cell]; 
-        if(lat_max<lat[cell])
-          lat_max=lat[cell];
+        array->lon_min=-180+0.5*config->resolution.lon;
+        lon_max=180-0.5*config->resolution.lon;
+        array->lat_min=-90+0.5*config->resolution.lat;
+        lat_max=90-0.5*config->resolution.lat;;
+      }
+      else
+      {
+        array->lon_min=array->lat_min=1000;
+        lon_max=lat_max=-1000;
+        for(cell=0;cell<config->total;cell++)
+        {
+          if(array->lon_min>lon[cell])
+            array->lon_min=lon[cell]; 
+          if(lon_max<lon[cell])
+            lon_max=lon[cell]; 
+          if(array->lat_min>lat[cell])
+            array->lat_min=lat[cell]; 
+          if(lat_max<lat[cell])
+            lat_max=lat[cell];
+        }
       }
       array->nlon=(int)((lon_max-array->lon_min)/config->resolution.lon+0.5)+1;
       array->nlat=(int)((lat_max-array->lat_min)/config->resolution.lat+0.5)+1;

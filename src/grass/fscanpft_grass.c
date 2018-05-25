@@ -21,7 +21,7 @@
   if(fscanreal(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read PFT '%s' in %s().\n",pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR110: Cannot read float '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 
@@ -29,7 +29,7 @@
   if(fscangrassphys(file,var,name,verb))\
   { \
     if(verb)\
-    fprintf(stderr,"ERROR111: Cannot read '%s' of PFT '%s' in %s().\n",name,pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR111: Cannot read '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 
@@ -82,7 +82,13 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   grass=new(Pftgrasspar);
   check(grass);
   pft->data=grass;
-  pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;
+  pft->data=grass;
+  if(iskeydefined(file,"sla"))
+  {
+    fscanreal2(verb,file,&pft->sla,pft->name,"sla");
+  }
+  else
+    pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;
   fscangrassphys2(verb,file,&grass->turnover,pft->name,"turnover");
   grass->turnover.leaf=1.0/grass->turnover.leaf;
   grass->turnover.root=1.0/grass->turnover.root;

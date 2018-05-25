@@ -21,11 +21,11 @@
 #endif
 #include "types.h"
 
-Bool fscanstruct(LPJfile *file,    /**< pointer to LPJ file               */
-                 LPJfile  *s,      /**< pointer to LPJ file struct        */
-                 const char *name, /**< name of variable                  */
-                 Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
-                )                  /** \return TRUE on error              */
+Bool fscanstruct(const LPJfile *file, /**< pointer to LPJ file               */
+                 LPJfile  *s,         /**< pointer to LPJ file struct        */
+                 const char *name,    /**< name of variable                  */
+                 Verbosity verb       /**< verbosity level (NO_ERR,ERR,VERB) */
+                )                     /** \return TRUE on error              */
 {
 #ifdef USE_JSON
   struct json_object *item;
