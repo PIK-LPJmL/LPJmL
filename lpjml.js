@@ -42,7 +42,7 @@
   "river_routing" : true,
   "permafrost" : true,
 #ifdef FROM_RESTART
-  "population" : true,
+  "population" : false,
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "reservoir" : true,
   "wateruse" : true,
