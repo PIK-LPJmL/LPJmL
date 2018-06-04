@@ -119,7 +119,7 @@ extern Bool create_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,
                               const char *,const char *,Type,int,
                               const Coord_array *,const Config *);
 extern Bool create1_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,
-                              const char *,const char *,Type,int,
+                              const char *,const char *,Type,int,int,
                               const Coord_array *,const Config *);
 extern Bool close_netcdf(Netcdf *);
 extern Bool readclimate_netcdf(Climatefile *,Real *,const Cell *,int,
@@ -161,8 +161,6 @@ extern size_t getindexsize_netcdf(const Input_netcdf);
 extern Bool readinput_netcdf(const Input_netcdf,Real *,const Coord *);
 extern Bool readintinput_netcdf(const Input_netcdf,int *,const Coord *);
 extern Bool readshortinput_netcdf(const Input_netcdf,short *,const Coord *);
-extern Bool setvarinput_netcdf(Input_netcdf,const char *,const char *,
-                               const char *,int,const Config *);
 extern Input_netcdf dupinput_netcdf(const Input_netcdf);
 extern Type getinputtype_netcdf(const Input_netcdf);
 extern Bool getlatlon_netcdf(Climatefile *,const char *,const Config *);

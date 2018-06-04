@@ -63,7 +63,7 @@ Input_netcdf dupinput_netcdf(const Input_netcdf input)
   return copy;
 } /* of 'dupinput_netcdf' */
 
-Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const char *var,
+static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const char *var,
                         const char *units,int vardim,const Config *config)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)

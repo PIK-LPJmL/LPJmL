@@ -54,7 +54,7 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
     config->n_out=0;
     return FALSE;
   }
-  config->global_netcdf;
+  config->global_netcdf=FALSE;
   if(iskeydefined(file,"global_netcdf"))
   {
     if(fscanbool(file,&config->global_netcdf,"global_netcdf",verbosity))

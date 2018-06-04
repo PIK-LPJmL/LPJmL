@@ -35,8 +35,8 @@ Bool create1_pft_netcdf(Netcdf *cdf,
                         const char *units,    /**< unit of output variable */
                         Type type,            /**< type of output variable */
                         int n,                /**< number of samples per year (1/12/365) */
-                        const Coord_array *array, /**< coordinate array */
                         int year,            /**< simulation year (AD) */
+                        const Coord_array *array, /**< coordinate array */
                         const Config *config  /**< LPJ configuration */
                        )                      /** \return TRUE on error */
 {
