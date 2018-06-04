@@ -87,6 +87,7 @@ extern Real fpc_tree(Pft *);
 extern Real fpar_tree(const Pft *);
 extern Real alphaa_tree(const Pft *);
 extern void litter_update_tree(Litter *, Pft *,Real);
+extern void litter_update_fire_tree(Litter *, Pft *,Real);
 extern void allometry_tree(Pft *pft);
 extern Bool allocation_tree(Litter *,Pft *,Real *);
 extern Real lai_tree(const Pft *);
