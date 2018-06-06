@@ -1,0 +1,173 @@
+<HTML>
+<HEAD>
+<TITLE>lpjliveview.1</TITLE>
+</HEAD>
+<BODY>
+<H1>lpjliveview.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          lpjliveview - Graphical live view of a LPJmL simulation
+
+     <B>SYNOPSIS</B>
+          <B>lpjliveview</B> [-output socket=:port] [-outpath <I>dir</I>] [-inpath
+          <I>dir</I>] [[-Dmacro[=value]] [-I<I>dir</I>] ...] [<I>filename</I> [-display
+          disp] [-step n] [-scale min max] [variable]]
+
+     <B>DESCRIPTION</B>
+          Program display a global map for output variables of a LPJmL
+          simulation run on a X11 window. Data sent from <B>lpjml</B> is also
+          stored in files as specified in the LPJmL configuration
+          file. After the last simulation year has been shown all
+          years are displayed repeatedly until a key is pressed. <B>lpjml</B>
+          must be started with '-output socket=<I>hostname</I>' option to
+          enable a connection with <B>lpjliveview</B> running on host
+          <I>hostname</I>.
+
+     <B>OPTIONS</B>
+          -output socket=:port
+               set the port of the TCP/IP connection where the program
+               listens. Default value is 2222. Be sure to configure
+               the firewall appropriately.
+
+          -outpath <I>dir</I>
+               set the output directory path. The path is added to the
+               output filenames if they do not contain an absolute
+               path.
+
+          -inpath <I>dir</I>
+               set the input directory path. The path is added to the
+               input filenames if they do not contain an absolute
+               path.
+
+          -Dmacro[=value]
+               define macro for the preprocessor of the configuration
+               file
+
+          -I<I>dir</I>
+               define include directory for the preprocessor of the
+               configuration file
+
+          <I>filename</I>
+               name of configuration file, default is <I>lpjml</I>.<I>conf</I>.
+
+          -display disp
+               Set X11 display.
+
+          -step n
+               Set number of colors in output.
+
+          -scale min max
+               Set scaling of output data.
+
+          variable
+               Select output variable. Valid variables are firec,
+               firef, vegc, soilc, litc,mg_vegc, mg_soilc, mg_litc,
+               aprec, input_lake, adischarge, flux_estab, harvest,
+               prod_turnover, deforest_emis, mnpp, d_npp, mrh,
+               mtransp, mrunoff, mdischarge, mevap, minterc, mswc1,
+               mswc2, mirrig, mreturn_flow_b, mevap_lake, d_lai,
+               d_phen, d_cleaf, d_croot, d_cso, d_cpool, d_wdf,
+               d_growingday, d_pvd, d_phu, d_fphu, d_laimaxad,
+               d_lainppdeficit, d_husum", d_vdsum, d_wscal, d_npp,
+               d_gpp, d_rd, d_rroot, d_rso", d_rpool, d_gresp,
+               d_trans, d_evap", d_prec, d_perc, d_irrig, d_w0, d_w1,
+               d_wevap, d_hi, d_hiopt, d_himind, d_froot, d_temp,
+               d_sun, d_par, d_daylength, d_pet. Default is vegc.
+
+     <B>EXAMPLES</B>
+     results for vegetation carbon on host aix:
+          Start simulation on compute cluster with 128 tasks and view
+               <B>lpjliveview</B> -DFROM_RESTART &amp;
+               <B>lpjsubmit</B> 128 -output socket=aix -DFROM_RESTART
+
+     <B>ENVIRONMENT</B>
+          LPJCONFIG
+               default LPJmL configuration filename
+
+          LPJPREP
+               defines preprocessor command for LPJmL configuration
+               file, default is <B>cpp</B> <B>-P</B>.
+
+          LPJROOT
+               defines the root directory for LPJmL. This directory is
+               added to the include directories of the preprocessor
+
+          LPJOUTPUT
+               set port of TCP/IP connection.
+
+          LPJINPATH
+               Path appended to the input filenames. Only done for
+               filenames without absolute path.
+
+          LPJOPTIONS
+               runtime options for the preprocessor of LPJmL
+               configuration files
+
+          LPJOUTPATH
+               Path appended to the output filenames. Only done for
+               filenames without absolute path.
+
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>lpjliveview</B> returns a zero exit status if the output has
+          been displayed and the  output files have been created.  Non
+          zero is returned in case of failure.
+
+     <B>AUTHOR</B>
+          Werner von Bloh (Werner.von.Bloh@pik-potsdam.de)
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="lpj.html">lpj(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

@@ -1,0 +1,35 @@
+.TH getpopdens 3  "January 9, 2013" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+getpopdens \- Get population density data
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+Bool getpopdens(const Popdens \fIpopdens\fB,int \fIyear\fB);\fP
+
+.fi
+.SH DESCRIPTION
+Function reads population density data for specified year.
+The arguments of \fBgetpopdens\fP are:
+.TP
+.I popdens
+Pointer to population density data.  Must be initialized by \fBinitpopdens()\fP.
+.TP
+.I year
+Sets year data is read.
+.SH RETURN VALUE
+Upon successful completion FALSE is returned and TRUE on error.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+initpopdens(3), freepopdens(3)

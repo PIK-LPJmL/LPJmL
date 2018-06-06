@@ -1,0 +1,32 @@
+.TH isroot 3  "January 19, 2009" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+isroot \- Determines whether task is root task
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+Bool isroot(Config \fIconfig\fB);
+
+.fi
+.SH DESCRIPTION
+Function determines whether MPI task is root task. Returns always TRUE in the sequential version. Is implemented as a macro.
+The argument of \fBisroot\fP is:
+.TP
+.I config
+LPJmL configuration data. Must be initialized by \fBinitmpiconfig()\fP or \fBinitconfig()\fP.
+.SH RETURN VALUE
+Returns TRUE if MPI task is root task, FALSE otherwise.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+initconfig(3)

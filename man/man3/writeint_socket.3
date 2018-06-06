@@ -1,0 +1,29 @@
+.TH writeint_socket 3  "January 28, 2009" "version 1.0.001" "Socket library manual"
+.SH NAME
+writeint_socket \- write integers to socket
+.SH SYNOPSIS
+.nf
+\fB#include "types.h"
+#include "channel.h"
+
+Bool writeint_socket(Socket *\fIsocket\fB,const int *\fIdata\fB,int \fIn\fB);\fP
+
+.fi
+.SH DESCRIPTION
+Function writes integer data to open socket.
+The arguments of \fBwriteint_socket\fP are:
+.TP
+.I socket
+Pointer to socket. Socket must be opened by \fBopen_socket()\fP or \fBconnect_socket()\fP.
+.TP
+.I data
+Integer data to write from socket.
+.TP
+.I n
+Number of integer values to write.
+.SH RETURN VALUE
+Upon successful completion FALSE is returned and TRUE on failure.
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+writefloat_socket(3), close_socket(3), open_socket(3), connect_socket(3), readint_socket(3)

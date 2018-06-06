@@ -1,0 +1,25 @@
+.TH open_socket 3  "January 28, 2009" "version 1.0.001" "Socket library manual"
+.SH NAME
+open_socket \- opens server socket and starts listening
+.SH SYNOPSIS
+.nf
+\fB#include "types.h"
+#include "channel.h"
+
+Socket *open_socket(int \fIport\fB,int \fIwait\fB);\fP
+
+.fi
+.SH DESCRIPTION
+The arguments of \fBopen_socket\fP are:
+.TP
+.I port
+Set port number of TCP/IP connection.
+.TP
+.I wait
+Set maximum time to wait for connection (sec). If zero wait for unlimited time.
+.SH RETURN VALUE
+Pointer to socket is returned on success and NULL in case of failure.
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+close_socket(3), connect_socket(3)

@@ -1,0 +1,19 @@
+.TH inst_pikd.sh 1  "December 5, 2008" "version 3.4.018" "USER COMMANDS"
+.SH NAME
+inst_pikd.sh \- Set environmental variables for accessing the PIK Oracle database.
+.SH SYNOPSIS
+ .
+.B inst_pikd.sh
+.SH DESCRIPTION
+Script sets environmental variables used by the Oracle database. The script has to be called before the \fBdb2clm\fP program is built and used. The call of
+.TI
+  . $LPJROOT/bin/inst_pikd.sh
+
+should be added to the 
+.I ~./profile 
+ 
+.SH AUTHOR
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de)
+
+.SH SEE ALSO
+db2clm(1), lpjml(1)

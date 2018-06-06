@@ -1,0 +1,365 @@
+ _     ____     _           _     
+| |   |  _ \   | |_ __ ___ | |    
+| |   | |_) |  | | '_ ` _ \| |    
+| |___|  __/ |_| | | | | | | |___ 
+|_____|_|   \___/|_| |_| |_|_____| Version 4.0.001
+
+
+Installation of LPJmL C Version 4.0.001
+=======================================
+
+Installation for Unix-like systems
+----------------------------------
+
+This text describes how to install LPJmL on your system. 
+The code has been tested for AIX, Linux, Mac OS X, and Windows 
+with cygwin and Microsoft C compiler (sequential version without MPI). 
+Cygwin is a Linux-like environment for Windows (http://www.cygwin.com)
+On Mac OS the xcode suite must be installed in order to have the gcc 
+compiler.
+
+create LPJmL directory:
+
+mkdir lpjml
+
+Go to LPJmL directory:
+
+cd lpjml
+
+untar source and data files
+
+gzip -cd lpjml-4.0.001.tar.gz|tar -xf -
+gzip -cd cru.tar.gz|tar -xf -
+
+Directory tree after extracting the tar files:
+
+--lpjml
+  |
+  +-config        : OS- and compiler-specific Makefiles
+  |
+  +-bin           : Directory for executables and shell scripts
+  |
+  +-R             : Scripts for R statistical package
+  |
+  +-man           : Manual pages root directory
+  | |
+  | +-man1        : Manual pages for programs and scripts
+  | |
+  | +-man3        : Manual pages for functions
+  | |
+  | +-man5        : Manual pages for file formats
+  |
+  +--html         : Documentation and man pages in HTML format
+  |
+  +--doc          : Documentation
+  |
+  +--par          : Parameter files for PFTs and soils
+  |
+  +--input        : input data set for climate
+  |
+  +--output       : output data (created by make test)
+  |
+  +--restart      : restart data (created by make test)
+  |
+  +--lib          : library files (created by make)
+  |
+  +--include      : include files
+  |
+  +--src          : source tree
+     |
+     +--numeric   : source for numerical routines
+     |
+     +--tools     : source for tools
+     |
+     +--pnet      : source for library for distributed networks
+     |
+     +--climate   : climate code 
+     |
+     +--lpj       : lpj functions
+     |
+     +--soil      : soil code
+     |
+     +--grass     : grass PFT code
+     |
+     +--tree      : tree PFT code
+     |
+     +--crop      : crop PFT code
+     |
+     +--landuse   : land use code
+     |
+     +--spitfire  : spitfire fire code
+     |
+     +--reservoir : reservoir code
+     |
+     +--socket    : socket communication library 
+     |
+     +--image     : coupler to IMAGE model 
+     |
+     +--netcdf    : NetCDF output functions
+     |
+     +--utils     : utility programs
+         
+Configure for your operating system
+
+On the HLRS2015 cluster at PIK you have to set several modules for compilation and linking:
+
+module load gmp/4.3.2
+module load mpi/intel/5.1.1
+module load compiler/intel/15.0.3
+module load compiler/gnu/4.9.2
+module load netcdf-c/4.3.3.1/serial udunits/2.2.19 expat/2.1.0
+
+./configure.sh
+
+If configure script exits with message "Unsupported operating system",
+Makefile.$osname is created from Makefile.gcc and probably has to be 
+modified for your operating system/compiler.
+If the configure script finds a MPI environment a parallel version of lpjml is built.
+The configure script creates a copy of the following OS-specific makefiles from
+directory config:
+
+Makefile.aix         - IBM AIX settings (xlc compiler)
+Makefile.aix_mpi     - IBM AIX and MPI environment
+Makefile.gcc         - GNU C-compiler settings
+Makefile.darwin_gcc  - GNU C-compiler settings for MacOS X
+Makefile.intel       - Intel C-compiler settings
+Makefile.intel_mpi   - Intel C-compiler and Intel MPI settings
+Makefile.cluster2015 - Intel C-compiler and Intel MPI on HLRS2015 cluster at PIK
+Makefile.mpich       - GNU C-Compiler and MPI Chameleon settings
+Makefile.win32       - Windows settings (used by configure.bat)
+
+Compilation flags
+
+Compilation of LPJmL is customized by definition of macros in the LPJFLAGS
+section of Makefile.inc:
+
+LPJFLAGS= -Dflag1 ...
+
+Flag                Description
+------------------- ------------------------------------------------------------
+COUPLING_WITH_FMS   enable coupling to FMS
+DAILY_ESTABLISHMENT Enable daily establishment 
+DEBUG               diagnostic output is generated for debugging purposes
+DOUBLE_HARVEST      adding correct sequencing of harvest events
+IMAGE               include coupler to IMAGE model
+LINEAR_DECAY        use linearized functions for litter decay
+MICRO_HEATING       Enable microbial heating
+SAFE                code is compiled with additional checks
+STORECLIMATE        store climate data in memory for spin up phase
+USE_MPI             compile parallel version of LPJmL
+USE_NETCDF          enable NetCDF input/output
+USE_NETCDF4         enable NetCDF version 4 input/output
+USE_RAND48          use drand48() random number generator
+USE_UDUNITS         enable unit conversion in NetCDF files
+WITH_FPE            floating point exceptions are enabled for debugging purposes
+------------------- ------------------------------------------------------------
+
+Create executables:
+
+make    
+
+One executable in directory bin is created: 
+
+lpjml    - LPJmL simulation code
+
+Utility programs are compiled by 
+
+make utils
+
+The following programs are created in the bin directory:
+
+lpjcat      - concatenates LPJmL restart files.
+lpjcheck    - checks syntax of LPJmL configuration files.
+cru2clm     - converts CRU data into file format suitable for LPJmL.
+printheader - prints file header of LPJmL input data files.
+lpjprint    - prints content of restart file to stdout.
+txt2clm     - converts CRU data files into LPJmL climate data files.
+              CRU data files have to be in the format specified in
+              http://www.cru.uea.ac.uk/~timm/grid/CRU_TS_2_1.html. 
+
+The binaries can be copied in an installation directory by invoking
+
+make install
+
+The necessary parameter and include files will be copied, too.
+The target directory must be specified by setting the environment variable LPJROOT:
+
+export LPJROOT=<installation directory>
+
+
+Environment variables
+
+The following environment variables are used by LPJmL:
+
+LPJCONFIG      - default LPJmL configuration filename
+LPJPREP        - defines preprocessor command for LPJmL configuration  file, default
+                 is "cpp -P"
+LPJROOT        - defines the root directory for LPJmL. This directory is added to the 
+                 include directories of the preprocessor
+LPJIMAGE       - sets host where IMAGE is running
+LPJWAITIMAGE   - sets time to wait for connection to IMAGE model
+LPJINPATH      - Path append to the input filenames. Only done for filenames
+                 without absolute path.
+LPJRESTARTPATH - Path append to the restart filenames. Only done for filenames
+                 without absolute path.
+LPJOPTIONS     - cpp runtime options for LPJmL
+LPJOUTPATH     - Path appended to the output filenames. Only done for filenames
+                 without absolute path.
+LPJOUTPUT      - Default method for generating output files. Valid values
+                 are write, mpi2, gather, and socket. 
+
+Create output and restart directory:
+
+make test
+
+On the compute cluster at PIK it is better to create symbolic links of the 
+input, output, and restart directory to the parallel GPFS filesystem /scratch.
+This improves performance in particular for the parallel code. 
+
+Man pages
+---------
+
+Manual pages for the man command are located in the $LPJROOT/man directory. Setting the
+environment variable MANPATH to:
+
+export MANPATH=$MANPATH:$LPJROOT/man
+
+will enable help.
+
+Invoking
+
+apropos lpj
+
+yields list of man pages related to LPJmL.
+
+Running the code
+---------------- 
+ 
+Sequential version can be started by invoking:
+
+./bin/lpjml 
+
+If you run lpjml outside the root directory of LPJmL, the following environment
+variable should be set:
+
+export LPJROOT=$HOME/lpjml
+
+Then all includes are found. You can include the bin directory in the search path:
+
+export PATH=$PATH:$LPJROOT/bin
+
+Script lpj_paths.sh is defined in bin setting all environment variables. Put
+
+. <Path to LPJmL root dir>/lpj_paths.sh
+
+in your profile. Then LPJROOT, PATH and MANPATH are set accordingly.
+
+Runtime options of lpjml
+
+The following runtime options are defined: 
+
+-Iincludepath     - Adds include path for LPJmL configuration file
+-Dmacro[=value]   - Defines macro
+-h                - print usage of lpjml
+-l                - print license
+-v                - print compiler used and LPJmL flags set
+-vv               - verbosely print the actual values during reading of the
+                    configuration files
+-param            - print LPJmL parameter for soils and PFTs
+-fpe              - enable floating point exceptions
+-image host       - set host where IMAGE model is running. Option is only
+                    available for the IMAGE version
+-wait time        - set time to wait for connection to IMAGE model
+-output method    - Method for generating output files. Valid values for method
+                    are mpi2, gather, and socket. Methods mpi2 and
+                    gather are only available for the MPI version
+-inpath dir       - input directory path
+-outpath dir      - output directory path
+-restartpath dir  - restart directory path
+
+The first two options will be sent to the preprocessor.
+
+For the parallel version SLURM and LoadLeveler files for Linux and AIX are provided. 
+A job can be submitted by invoking the bin/lpjsubmit script:
+
+bin/lpjsubmit ntasks LPJmL_args...
+
+Templates for customized LoadLeveler job control files are in the
+loadl directory:
+
+lpjml_aix.jcf    -- for AIX with POE
+lpjml_intel.jcf  -- for Linux with Intel MPI
+lpjml_mpich.jcf  -- for Linux with MPICH
+
+Depending on your MPI version installed the program can be started interactively:
+
+mpirun -np 32 ./bin/lpjml
+
+Error codes
+-----------
+
+If lpjml fails an error message is displayed in the following format
+
+ERRORxxx: message
+
+where xxx is the error code returned. The following error codes are defined:
+
+Error code Description                                 Error type
+---------- ------------------------------------------- ----------
+         1 Error reading configuration                   External
+         2 Error initializing input data                 External
+         3 Error initializing grid                       External
+         4 Invalid carbon balance                        Internal
+         5 Invalid water balance                         Internal
+         6 Negative discharge                            Internal
+         7 Negative fire probability                     Internal
+         8 Negative soil moisture                        Internal
+         9 Error allocating memory                       External
+        10 Negative stand fraction                       Internal
+        11 Stand fraction sum error                      Internal
+        12 List is empty in dellistitem                  Internal
+        13 Index out of range in dellistitem             Internal
+        15 Invalid year in getco2()                      External
+        16 Crop fraction >1                              Internal
+        17 No natural stand for deforest                 Internal
+        18 Wrong cultivation type                        Internal
+        19 Floating point error                          Internal
+        21 PFT list is not empty in setaside             Internal
+        22 Negative establishment rate                   Internal
+        23 Output channel is broken in socket connection External
+        24 Sending data to IMAGE model failed            External
+        25 Opening connection to IMAGE model failed      External
+        26 Not enough setaside stand created             Internal
+        27 Forest left after deforestation               Internal
+        28 Outflow reservoir error                       Internal
+        29 Permafrost error                              Internal
+        30 Global waterbalance error                     Internal
+        31 Cannot store climate data                     External
+        32 NO FMS coupler                                External
+        33 Cannot initialize soil temperature            External
+---------- --------------------------------------------- --------
+
+External errors are caused by invalid or missing input files while internal 
+errors are caused by problems inside the LPJ code. The latter will cause a core
+dump and have to be fixed by program changes. Some errors will only be generated
+if -DSAFE is set in the compile options of Makefile.inc.
+
+Installation for Windows XP without cygwin
+------------------------------------------
+
+The code without MPI has been tested on Windows XP using the free Microsoft 
+C++ compiler and nmake. The Microsoft SDK has to be installed, too.  All necessary
+programs can be downloaded from the Microsoft webpage.
+
+Unzip the source and data files
+
+configure makefile:
+
+configure.bat
+
+If the compiler does not find the system libraries, the library path defined in 
+Makefile.inc has to be modified. 
+
+create lpjml executable:
+
+nmake 

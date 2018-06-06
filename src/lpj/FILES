@@ -1,0 +1,97 @@
+LPJ library files
+
+Filename                Description
+----------------------- -------------------------------------------------------
+cflux_sum.c             Calculate total carbon flux
+check_fluxes.c          check carbon and water balance
+check_stand_fracs.c     check stand fractions
+climbuf.c
+drain.c                 calculates daily drainage
+equilsom.c
+establish.c
+establishmentpft.c
+fcloseoutput.c          close output files
+firepft.c
+flux_sum.c              calculate total carbon and water flux
+fopenoutput.c           open output files
+fpc_sum.c
+fprintcell.c            print cell data to file in ASCII format
+fprintconfig.c          print LPJ configuration data in ASCII format
+fprintflux.c            print global carbon and water fluxes
+fprintpft.c             printf PFT data in ASCII format
+fprintstand.c           print stand in ASCII format
+freadcell.c             read cell data from file
+freadpft.c              read PFT data
+freadstand.c            read stand data
+freecell.c
+freeconfig.c
+freegrid.c
+freeoutput.c            free output data
+freeoutputdaily.c
+freeoutputmonthly.c
+freepft.c
+freepftpar.c            deallocates PFT parameter array
+freewateruse.c
+fscanconfig.c           read LPJ configuration from file
+fscaninput.c            read LPJ configuration from file
+fscanlimit.c            read PFT limit parameter 
+fscanpftpar.c           read PFT parameter from file
+fwritecell.c            write cell data
+fwriteoutput_annual.c
+fwriteoutput_daily2.c
+fwriteoutput_daily.c
+fwriteoutput_monthly2.c
+fwriteoutput_monthly.c
+fwriteoutput_pft.c      write PFT specific output data
+fwritepft.c             write PFT data
+fwriterestart.c         write restart file
+fwritestand.c           write stand data
+getwateruse.c           read wateruse data from file
+gp.c
+gp_sum.c
+init_annual.c
+initdrain.c
+initgdd.c
+initoutput_annual.c     initialize annual output data to zero
+initoutput.c            allocate output data
+initoutput_daily.c      initialize daily output data to zero
+initoutput_monthly.c    initialize monthly output data to zero
+initwateruse.c
+interception.c
+ismonthlyoutput.c
+iterate.c
+iterateyear.c           iteration for one year of cell array
+killpft.c
+light.c
+nep_sum.c
+newgrid.c               allocate and initialie cell array 
+newoutputmonthly.c
+newpft.c
+noadjust.c              Default adjustment function
+noestablishment.c       Default establishment function
+nofire.c
+noinit.c
+nolight.c
+nomix_veg.c
+nomortality.c           Default mortality function 
+noreproduction.c        Default reproduction function
+noturnover.c            Default turnover function 
+nowdf.c                 Default water deficit function
+openconfig.c            open LPJ configuration file
+outputbuffersize.c      
+output_daily.c
+output_gbw.c            updates output for consumptive green and blue water use
+outputsize.c
+pftlist.c               PFT list datatype implementation
+photosynthesis.c        photosynthesis model adapted from Faquar
+standlist.c             stand list datatype implemeentation
+temp_stress.c           temperature stress model
+update_annual.c         annual update of cell
+update_daily.c          daily update of cell
+updategdd.c
+update_monthly.c        monthly update of cell
+update_outputdaily.c
+update_outputmonthly.c
+water_stressed.c        waterstress model
+writecoords.c           write coordinate data
+----------------------- -------------------------------------------------------

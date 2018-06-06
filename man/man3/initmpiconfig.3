@@ -1,0 +1,35 @@
+.TH initmpiconfig 3  "January 19, 2009" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+initmpiconfig \- Initialize LPJmL configuration for the MPI version
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+void initmpiconfig(Config *\fIconfig\fB,MPI_Comm \fIcomm\fB);
+
+.fi
+.SH DESCRIPTION
+Function initializes LPJmL configuration and determines the number of tasks and rank.
+The arguments of \fBinitmpiconfig\fP are:
+.TP
+.I config
+Pointer to LPJmL configuration data.
+.TP
+.I comm
+MPI communicator. Use MPI_COMM_WORLD to use all processors.
+.SH RETURN VALUE
+None
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+readconfig(3), initconfig(3), freeconfig(3)

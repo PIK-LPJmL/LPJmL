@@ -1,0 +1,65 @@
+.TH printharvest 1  "March 13, 2009" "version 3.5.002" "USER COMMANDS"
+.SH NAME
+printharvest \- Print global harvested carbon for crops and managed grasslands 
+.SH SYNOPSIS
+.B printharvest
+[\-h] [\-inpath \fIdir\fP] [\-outpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
+.SH DESCRIPTION
+Program prints total harvested carbon of a LPJmL model run. The LPJmL configuration file is read in in order to find the location and name of the harvest data file.
+.SH OPTIONS
+.TP
+\-h
+display a short help text
+.TP
+\-inpath \fIdir\fP
+set the input directory path. The path is added to the input filenames if they do not contain an absolute path.
+.TP
+\-outpath \fIdir\fP
+set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
+.TP
+\-Dmacro{=value]
+define macro for the preprocessor of the configuration file
+.TP
+\-I\fIdir\fP
+define include directory for the preprocessor of the configuration file
+.TP
+.I filename
+name of configuration file, default is \fIlpjml.conf\fP.
+
+.SH EXAMPLE
+.TP
+Print harvest carbon with default configuration file.
+.B printharvest
+\-D FROM_RESTART
+.PP
+.SH ENVIRONMENT
+.TP
+LPJCONFIG
+default LPJmL configuration filename
+.TP
+LPJPREP 
+defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP.
+.TP
+LPJROOT
+defines the root directory for LPJmL. This directory is added to the
+include directories of the preprocessor
+.TP
+LPJINPATH
+Path appended to the input filenames. Only done for filenames without absolute path.
+.TP
+LPJOPTIONS     
+runtime options for the preprocessor of LPJmL configuration files
+.TP
+LPJOUTPATH
+Path appended to the output filenames. Only done for filenames without absolute path.
+
+.SH EXIT STATUS
+.B
+printharvest
+returns a zero exit status if the harvested carbon has been printed.
+Non zero is returned in case of failure.
+.SH AUTHOR
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de)
+
+.SH SEE ALSO
+lpjml(1), lpjml.conf(5)

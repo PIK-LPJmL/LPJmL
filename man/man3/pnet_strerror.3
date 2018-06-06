@@ -1,0 +1,18 @@
+.TH pnet_strerror 3  "October 22, 2008" "version 1.0.003" "Pnet programmers manual"
+.SH NAME
+pnet_strerror \- Return string describing Pnet error
+.SH SYNOPSIS
+.nf
+\fB#include <mpi.h>
+#include "pnet.h"
+
+char *pnet_strerror(void)
+.fi
+.SH DESCRIPTION
+Function returns pointer to string describing the Pnet error
+.SH RETURN VALUE
+Upon successful completion error message string is returned.
+.SH AUTHOR
+Werner von Bloh (bloh@pik-potsdam.de)
+.SH SEE ALSO
+pnet_init(3), pnet_free(3), pnet_setup(3), pnet_hi(3), pnet_nodes(3)

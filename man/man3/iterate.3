@@ -1,0 +1,52 @@
+.TH iterate 3  "January 9, 2013" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+iterate \- Main time loop for LPJmL
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+int iterate(Outputfile *\fIoutput\fB,
+            Cell \fIgrid\fB[],
+            Input \fIinput\fB,
+            int \fInpft\fB, int \fIncft\fB,           
+            const Config *\fIconfig\fB   
+           );\fP
+
+.fi
+.SH DESCRIPTION
+Function provides main time loop for LPJmL. In each time step the global carbon and water fluxes are printed.
+The arguments of \fBiterate\fP are:
+.TP
+.I output
+Pointer to initialized output data. \fIoutput\fP must be initialized by \fBfopenoutput()\fP.
+.TP
+.I grid
+Cell grid array allocated and initialized by \fBnewgrid()\fP.
+.TP
+.I input
+Input data initialized by \fBinitinput()\fP.
+.TP
+.I npft
+Number of natural plant functional types.
+.TP
+.I ncft
+Number of crop plant functional types.
+.TP
+.I config
+LPJmL configuration data. Must be read by \fBreadconfig()\fP.
+.SH RETURN VALUE
+Upon successful completion the last simulation year +1 is returned.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+readconfig(3), fopenoutput(3), newgrid(3), initinput(3), iterateyear(3), fwriterestart(3), flux_sum(3), fprintflux(3)

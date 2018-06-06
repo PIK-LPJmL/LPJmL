@@ -1,0 +1,46 @@
+.TH soil2cdf 1  "March 4, 2013" "version 1.0.001" "USER COMMANDS"
+.SH NAME
+soil2cdf \- convert binary files into NetCDF files
+.SH SYNOPSIS
+.B soil2cdf
+[\-cellsize size] [\-compress level] [\-descr d]
+.I varname gridfile soilfile netcdffile
+.SH DESCRIPTION
+Program converts binary input files into NetCDF file.
+.SH OPTIONS
+.TP
+\-cellsize size
+set cell size in grid file to size
+.TP
+\-compress level
+compression level for NetCDF4 files
+.TP
+\-descr d
+set long name in NetCDF file
+.TP
+varname
+variable name in NetCDF file
+.TP
+.I gridfile    
+filename of grid data file
+.TP
+.I soilfile
+filename of binary soil data file
+.TP
+.I netcdffile     
+filename of NetCDF file created
+.SH EXAMPLES
+.TP
+Create data file for soil:
+.B soil2cdf
+soilcode grid.bin soil.bin soil.nc
+.PP
+.SH EXIT STATUS
+.B soil2cdf
+returns a zero exit status if the NetCDF file is created.
+Non zero is returned in case of failure.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+
+.SH SEE ALSO
+clm2cdf(1), country2cdf(1), bin2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

@@ -1,0 +1,30 @@
+.TH backtrace 1  "November 28, 2008" "version 3.4.018" "USER COMMANDS"
+.SH NAME
+backtrace \- Print backtrace from core file
+.SH SYNOPSIS
+.B backtrace 
+[\fIexe\fP [\fIcore\fP]]
+.SH DESCRIPTION
+Script prints backtrace from core file using the \fBgdb\fP debugger. Full information of
+failed program is obtained if it was compiled with \fBconfigure.sh -debug\fP option.
+.SH OPTIONS
+.TP
+\fIexe\fP
+Name of the executable. Default name is \fI$LPJROOT/bin/lpjml\fP.
+.TP
+\fIcore\fP
+Name of the core file. Default name is \fIcore\fP.
+.SH ENVIRONMENT
+.TP
+LPJROOT
+defines the root directory for LPJmL.
+.SH EXIT STATUS
+.B backtrace
+returns a zero exit status if backtrace has been printed.
+Non zero is returned in case of failure.
+ 
+.SH AUTHOR
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de)
+
+.SH SEE ALSO
+lpjml(1), configure.sh(1), gdb(1), core(5)

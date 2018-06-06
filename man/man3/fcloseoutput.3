@@ -1,0 +1,35 @@
+.TH fcloseoutput 3  "January 09, 2013" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+fcloseoutput \- closes LPJmL output files
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+void fcloseoutput(Outputfile *\fIoutput\fB,const Config *\fIconfig\fB);\fP
+
+.fi
+.SH DESCRIPTION
+Function closes output files specified in the LPJmL configuration.
+The arguments of \fBfcloseoutput\fP are:
+.TP
+.I output
+Pointer to output data opened by \fBfopenoutput\fP.
+.TP
+.I config
+Pointer to LPJmL configuration data. Must be read by \fBreadconfig()\fP.
+.SH RETURN VALUE
+None
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+fopenoutput(3), isopen(3), readconfig(3) 

@@ -1,0 +1,32 @@
+#!/bin/sh
+###############################################################################
+##                                                                           ##
+##                        l  p  j  r  u  n                                   ##
+##                                                                           ##
+##    sh script to run parallel LPJmL program interactively. Script calls    ##
+##    mpirun defined in MPICH. Works on Apple MacOS X                        ##
+##                                                                           ##
+##    Usage: lpjrun ntasks [LPJargs...]                                      ##
+##                                                                           ##
+##    written by Werner von Bloh, PIK Potsdam                                ##
+##                                                                           ##
+##    Last change: 10.10.2008                                                ##
+##                                                                           ##
+###############################################################################
+
+if [ $# -lt 1 ]
+then
+  echo >&2 Error: Number of tasks missing
+  echo >&2 Usage: $0 ntasks [args...]
+  exit 1
+fi
+if [ "$LPJROOT" = "" ]
+then
+  echo >&2 Error: environment variable LPJROOT is not set
+  echo >&2 "Set by export LPJROOT=<path to lpjml directory>"
+  exit 1
+fi
+ntasks=$1
+shift 1
+args=$*
+mpirun -np $ntasks $LPJROOT/bin/lpjml $args

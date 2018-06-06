@@ -1,0 +1,66 @@
+.TH cru2clm 1  "January 14, 2013" "version 1.0.002" "USER COMMANDS"
+.SH NAME
+cru2clm \- convert raw binary data files to clm data files for LPJmL
+.SH SYNOPSIS
+.B cru2clm
+[\-h] [\-firstyear first] [\-lastyear last] [\-nyear n] [\-scale s] [\-firstcell f] [\-ncell n] [\-nbands n] [\-swap] [\-yearcell]
+.I  crufile clmfile
+.SH DESCRIPTION
+Program converts raw binary data file consisting of 16bit integer values into a file format suitable for LPJmL. It is primarily intended to convert climate data files from the Climate Research Unit (CRU).
+.SH OPTIONS
+.TP
+\-h
+display a short help text
+.TP
+\-firstyear first
+first year in CRU file (default is 1901)
+.TP
+\-lastyear last
+last year in CRU file
+.TP
+\-nyear n
+number of years in CRU file (default is 103)
+.TP
+\-scale s
+set scale to s (default is 1)
+.TP
+\-firstcell f
+first cell in data file (default 0)
+.TP
+-ncell  n
+number of cells in data file (default is 67420)
+.TP
+\-nbands n
+number of bands in data/output file (default is 12)
+.TP
+\-swap
+change byte order in CRU file
+.TP
+\-yearcell 
+does not revert order in CRU file
+.TP
+.I crufile    
+filename of binary CRU data file
+.TP
+.I clmfile     
+filename of clm data file written
+.SH EXAMPLES
+.TP
+Create clm data file from CRU dataset changing byte order:
+.B cru2clm
+\-swap tmp_1901-2003.bin tmp2003.clm
+.PP
+.SH EXIT STATUS
+.B cru2clm
+returns a zero exit status if the clm file is created.
+Non zero is returned in case of failure.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+
+.SH SEE ALSO
+lpjml(1), asc2clm(1), txt2clm(1), grid2clm(1), cft2clm(1), catclm(1), clm(5)

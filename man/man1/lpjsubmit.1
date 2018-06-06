@@ -1,0 +1,79 @@
+.TH lpjsubmit 1  "August 16, 2013" "version 4.0.001" "USER COMMANDS"
+.SH NAME
+lpjsubmit \- Submit parallel SLURM/LoadLeveler job for LPJmL simulations 
+.SH SYNOPSIS
+.B lpjsubmit
+[\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] ntasks [args ...]
+.SH DESCRIPTION
+Script creates SLURM/LoadLeveler job control file \fIjob.jcf\fP and submits the job to the LoadLeveler queue via
+.B
+llsubmit
+or to SLURM via
+.B
+sbatch
+for the LPJmL simulation program. Before submitting syntax of configuration file is checked by calling the
+.B
+lpjcheck
+program. Can only be used for the MPI version of \fBlpjml\fP.
+.SH OPTIONS
+.TP
+\-class c
+set the SLURM/LoadLeveler class to which the job will be submitted. Default class is 'short'. Valid classes can be obtained by the
+.B llclass
+command.
+.TP
+\-group g
+set the SLURM/LoadLeveler group. Default group is 'bios-x'. Valid groups are user-specific and set in the \fI/home/loadl/LoadL_admin\fP file.
+.TP
+\-wtime time
+set wall clock limit of LoadLeveler job. time must be in the format hh:mm:ss.
+.TP
+\-blocking n
+set blocking (number of tasks per node) for parallel job to n. Default is unlimited.
+.TP
+\-o output
+set filename of output file, default is \fIlpjml.$(cluster).out\fP.
+.TP
+\-e error
+set filename of error file, default is \fIlpjml.$(cluster).err\fP.
+
+.TP
+\-q
+only error messages are displayed, other output is suppressed.
+.TP
+\-nocheck
+does not check input files and output directories.
+.TP
+ntasks
+set the number of parallel MPI tasks.
+.TP
+args
+set command line arguments for the 
+.B
+lpjml
+program.
+.SH EXAMPLE
+.TP
+Submit job with 32 parallel MPI tasks starting from a restart file with a wall clock limit of 1h:
+.B lpjsubmit
+-wtime 1:00:00 32 -DFROM_RESTART
+.PP
+.SH ENVIRONMENT
+.TP
+LPJROOT
+defines the root directory for LPJmL. The variable has to be defined before calling 
+\fBlpjsubmit\fP. This is usually done by the \fBlpj_paths.sh\fP script.
+
+.SH EXIT STATUS
+.B lpjsubmit 
+returns a zero exit status if job has been submitted.
+Non zero is returned in case of failure.
+.SH AUTHOR
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de)
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+lpjml(1), lpjcheck(1), lpj_paths.sh(1), lpjml.conf(5)

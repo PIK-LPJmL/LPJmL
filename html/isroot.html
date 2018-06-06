@@ -1,0 +1,64 @@
+<HTML>
+<BODY>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          isroot - Determines whether task is root task
+
+     <B>SYNOPSIS</B>
+          <B>#include</B> <B>"lpj.h"</B>
+
+          <B>Bool</B> <B>isroot(Config</B> <I>config</I><B>);</B>
+
+
+     <B>DESCRIPTION</B>
+          Function determines whether MPI task is root task. Returns
+          always TRUE in the sequential version. Is implemented as a
+          macro.  The argument of <B>isroot</B> is:
+
+          <I>config</I>
+               LPJmL configuration data. Must be initialized by
+               <B>initmpiconfig()</B> or <B>initconfig()</B>.
+
+     <B>RETURN</B> <B>VALUE</B>
+          Returns TRUE if MPI task is root task, FALSE otherwise.
+
+     <B>AUTHORS</B>
+          Werner von Bloh (Werner.von.Bloh@pik-potsdam.de), Sibyll
+          Schaphoff (Sibyll.Schaphoff@pik-potsdam.de), Stefanie Rost
+          (Jachner) (Stefanie.Rost@pik-potsdam.de), Marlies
+          Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de), Tim
+          Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de), Christoph
+          Mueller (Christoph.Mueller@pik-potsdam.de) Jens Heinke
+          (Jens.Heinke@pik-potsdam.de), Hester Biemans
+          (Hester.Biemans@wur.nl), Kirsten Thonicke
+          (Kirsten.Thonicke@pik-potsdam.de), Ursula Heyder
+          (Ursula.Heyder@pik-potsdam.de),
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="initconfig.html">initconfig(3)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

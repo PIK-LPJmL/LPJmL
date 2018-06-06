@@ -1,0 +1,32 @@
+.TH freeconfig 3  "January 9, 2013" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+freeconfig \- Deallocate memory for LPJmL configuration
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+void freeconfig(Config *\fIconfig\fB);
+
+.fi
+.SH DESCRIPTION
+Function deallocates memory for LPJmL configuration.
+The argument of \fBfreeconfig\fP is:
+.TP
+.I config
+LPJmL configuration data. 
+.SH RETURN VALUE
+None.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
+Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
+Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
+Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
+Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
+Jens Heinke (Jens.Heinke@pik-potsdam.de),
+Hester Biemans (Hester.Biemans@wur.nl),
+Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
+Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+.SH SEE ALSO
+readconfig(3), initconfig(3), initmpiconfig(3)

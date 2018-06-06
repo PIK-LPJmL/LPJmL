@@ -1,0 +1,44 @@
+.TH getcountry 1  "March 2, 2013" "version 1.0.001" "USER COMMANDS"
+.SH NAME
+getcountry \- extract grid cells for specified countries
+.SH SYNOPSIS
+.B getcountry
+[\-list] [\-longheader] 
+.I countryfile gridfile outfile countrycode ...
+.SH DESCRIPTION
+Program extracts country grid cells from grid file. 
+.SH OPTIONS
+.TP
+\-list
+print list of country codes defined
+.TP
+\-longheader
+set long header in grid and country code file
+.TP
+.I countryfile
+country code file
+.TP
+.I gridfile    
+filename of binary grid data file
+.TP
+.I outfile     
+filename of grid data file written
+.TP
+.I countrycode
+ISO 3166-1 alpha-3 abbreviations for countries. or country codes as numbers defined in 
+.I include/managepar.h
+.SH EXAMPLES
+.TP
+Create grid data file for USA:
+.B getcountry
+grid.bin grid_usa.clm USA
+.PP
+.SH EXIT STATUS
+.B getcountry
+returns a zero exit status if the grid file is created.
+Non zero is returned in case of failure.
+.SH AUTHORS
+Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+
+.SH SEE ALSO
+regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

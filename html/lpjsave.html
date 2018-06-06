@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>lpjsave.1</TITLE>
+</HEAD>
+<BODY>
+<H1>lpjsave.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          lpjsave - Save input/output files of LPJmL using Tivoli
+          Storage Manager TSM
+
+     <B>SYNOPSIS</B>
+          <B>lpjsave</B> [-h] [-virtualnode node] [-password pw] [-descr
+          string] [-noinput] [-pp cmd] [-outpath <I>dir</I>] [-inpath <I>dir</I>]
+          [-restartpath <I>dir</I>] [[-Dmacro[=value]] [-I<I>dir</I>] ...]
+          [<I>filename</I>]
+
+     <B>DESCRIPTION</B>
+          Shell script saves all input and output files of LPJmL
+          configuration files into TSM archive. Needs TSM to be
+          installed.
+
+     <B>OPTIONS</B>
+          -h   display a short help text
+
+          -virtualnode node
+               Virtual node of TSM
+
+          -password pw
+               Password of TSM account
+
+          -descr string
+               Description of archive stored in TSM
+
+          -noinput
+               does not save input data files
+
+          -pp cmd
+               Set preprocessor program to cmd. Default is <B>cpp</B> <B>-P</B>.
+
+          -outpath <I>dir</I>
+               set the output directory path. The path is added to the
+               output filenames if they do not contain an absolute
+               path.
+
+          -inpath <I>dir</I>
+               set the input directory path. The path is added to the
+               input filenames if they do not contain an absolute
+               path.
+
+          -Dmacro[=value]
+               define macro for the preprocessor of the configuration
+               file
+
+          -I<I>dir</I>
+               define include directory for the preprocessor of the
+               configuration file
+
+          <I>filename</I>
+               name of configuration file, default is <I>lpjml</I>.<I>conf</I>.
+
+     <B>EXAMPLES</B>
+          Archive files without input files.
+               <B>lpjsave</B> -virtualnode node -password pd -descr "LPJmL
+               results" -noinput -DFROM_RESTART lpjml.conf
+
+     <B>ENVIRONMENT</B>
+          LPJCONFIG
+               default LPJmL configuration filename
+
+          LPJPREP
+               defines preprocessor command for LPJmL configuration
+               file, default is <B>cpp</B> <B>-P</B>. Same as '-pp' option.
+
+          LPJROOT
+               defines the root directory for LPJmL. This directory is
+               added to the include directories of the preprocessor
+
+          LPJINPATH
+               Path appended to the input filenames. Only done for
+               filenames without absolute path.
+
+          LPJOPTIONS
+               runtime options for the preprocessor of LPJmL
+               configuration files
+
+          LPJOUTPATH
+               Path appended to the output filenames. Only done for
+               filenames without absolute path.
+
+          LPJRESTARTPATH
+               Path appended to the restart filenames. Only done for
+               filenames without absolute path.
+
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>Non</B> <B>zero</B> <B>is</B> <B>returned</B> <B>in</B> <B>case</B> <B>of</B> <B>failure.</B>
+
+     <B>AUTHOR</B>
+          Werner von Bloh (Werner.von.Bloh@pik-potsdam.de)
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="lpjcheck.html">lpjcheck(1)</A></B>, <B><A HREF="lpjfiles.html">lpjfiles(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>
