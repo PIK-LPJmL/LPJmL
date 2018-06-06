@@ -1,4 +1,4 @@
-README LPJmL
+# LPJmL
 
 This file contains some basic information on the open source distribution of the computer simulation model LPJmL.
 LPJmL is developed and maintained at the Potsdam Institute for Climate Impact Research (PIK) in Potsdam, Germany.
