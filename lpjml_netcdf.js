@@ -38,7 +38,7 @@
 "fire" : FIRE,                 /* fire disturbance enabled */
 "firewood" : false,
 #ifdef FROM_RESTART
-"population" : true,
+"population" : false,
 "landuse" : LANDUSE,
 #else
 "population" : false,
