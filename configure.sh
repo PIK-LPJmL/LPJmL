@@ -240,10 +240,6 @@ export LPJINPATH=$inpath
 
 # include manpages of LPJmL
 
-# set path for input files
-
-export LPJINPATH=$inpath
-
 export MANPATH=\$MANPATH:\$LPJROOT/man
 
 # define alias
