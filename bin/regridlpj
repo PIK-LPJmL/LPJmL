@@ -1,17 +1,19 @@
 #!/bin/sh
-###############################################################################
-##                                                                           ##
-##                  r  e  g  r  i  d  l  p  j                                ##
-##                                                                           ##
-##    sh script to regrid input files to specified countries                 ##
-##                                                                           ##
-##    Usage: regridlpj [-dir path] filesuffix countrycode ...                ##
-##                                                                           ##
-##    written by Werner von Bloh, PIK Potsdam                                ##
-##                                                                           ##
-##    Last change: 03.03.2013                                                ##
-##                                                                           ##
-###############################################################################
+#################################################################################
+##                                                                             ##
+##                  r  e  g  r  i  d  l  p  j                                  ##
+##                                                                             ##
+##    sh script to regrid input files to specified countries                   ##
+##                                                                             ##
+##    Usage: regridlpj [-dir path] filesuffix countrycode ...                  ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+##                                                                             ##
+#################################################################################
 
 if [ $# -lt 2 ]
 then

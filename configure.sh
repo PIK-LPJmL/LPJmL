@@ -207,22 +207,26 @@ then
 fi
 echo LPJROOT	= $prefix >>Makefile.inc
 cat >bin/lpj_paths.sh <<EOF
-###############################################################################
-##                                                                           ##
-##          l  p  j  _  p  a  t  h  s  .  s  h                               ##
-##                                                                           ##
-##    sh script to set environment variables for LPJmL. A call to this       ##
-##    script has to be put in ~/.profile in the following way:               ##
-##                                                                           ##
-##    . \$LPJROOT/bin/lpj_paths.sh                                            ##
-##                                                                           ##
-##    LPJROOT has to be set to your root directory of LPJmL                  ##
-##                                                                           ##
-##    Written by Werner von Bloh, PIK Potsdam                                ##
-##                                                                           ##
-##    Created: $(date +"%d.%m.%Y")                                                    ##
-##                                                                           ##
-###############################################################################
+#################################################################################
+##                                                                             ##
+##          l  p  j  _  p  a  t  h  s  .  s  h                                 ##
+##                                                                             ##
+##    sh script to set environment variables for LPJmL. A call to this         ##
+##    script has to be put in ~/.profile in the following way:                 ##
+##                                                                             ##
+##    . \$LPJROOT/bin/lpj_paths.sh                                              ##
+##                                                                             ##
+##    LPJROOT has to be set to your root directory of LPJmL                    ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+##                                                                             ##
+##    Created: $(date +"%d.%m.%Y")                                                      ##
+##                                                                             ##
+#################################################################################
 
 export LPJROOT=$prefix # change here to your directory
 
@@ -250,22 +254,25 @@ EOF
 chmod +x bin/lpj_paths.sh
 
 cat >bin/lpj_paths.csh <<EOF
-###############################################################################
-##                                                                           ##
-##          l  p  j  _  p  a  t  h  s  .  c  s  h                            ##
-##                                                                           ##
-##    csh script to set environment variables for LPJmL. A call to this      ##
-##    script has to be put in ~/.cshrc in the following way:                 ##
-##                                                                           ##
-##    source \$LPJROOT/bin/lpj_paths.csh                                     ##
-##                                                                           ##
-##    LPJROOT has to be set to your root directory of LPJmL                  ##
-##                                                                           ##
-##    Written by Werner von Bloh, PIK Potsdam                                ##
-##                                                                           ##
-##    Created: $(date +"%d.%m.%Y")                                                    ##
-##                                                                           ##
-###############################################################################
+#################################################################################
+##                                                                             ##
+##          l  p  j  _  p  a  t  h  s  .  c  s  h                              ##
+##                                                                             ##
+##    csh script to set environment variables for LPJmL. A call to this        ##
+##    script has to be put in ~/.cshrc in the following way:                   ##
+##                                                                             ##
+##    source \$LPJROOT/bin/lpj_paths.csh                                        ##
+##                                                                             ##
+##    LPJROOT has to be set to your root directory of LPJmL                    ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+##                                                                             ##
+##    Created: $(date +"%d.%m.%Y")                                                      ##
+##                                                                             ##
+#################################################################################
 
 setenv LPJROOT $prefix # change here to your directory
 
