@@ -71,7 +71,6 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
                                     fuel.char_alpha_fuel,
                                     stand->cell->ignition.nesterov_max,
                                     &stand->pftlist);
-  output->mfiredi+=fire_danger_index;
   human_ignition=humanignition(popdens,&stand->cell->ignition);
   num_fires=wildfire_ignitions(fire_danger_index,
                                human_ignition+climate->lightning*CG*LER,
