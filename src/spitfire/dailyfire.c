@@ -92,7 +92,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   }
   if(stand->cell->afire_frac > 1.0)
   {
-    burnt_area = stand->cell->coord.area * 1e-4 * stand->frac - stand->cell->output.mburntarea + burnt_area;
+    burnt_area = stand->cell->coord.area * 1e-4 * stand->frac - stand->aburntarea;
     fire_frac = 1.0 - stand->cell->afire_frac + fire_frac;
     stand->cell->afire_frac = 1.0;
     fflush(stdout);
@@ -104,6 +104,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   /* if not enough surface fire energy to sustain burning */
   if(surface_fi<50)  //&& !prescribe_burntarea)
   {
+    stand->cell->afire_frac-=fire_frac;
     num_fires=0;
     burnt_area=0;
     fire_frac=0;
