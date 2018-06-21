@@ -368,7 +368,10 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     {
       if(config->compress)
         fprintf(file,"Compression level for NetCDF: %d\n",config->compress);
-      fprintf(file,"Missing value in NetCDF:      %g\n",config->missing_value);
+      fprintf(file,"Missing value in NetCDF:      %g\n"
+                   "NetCDF grid:                  %s\n",
+              config->missing_value,
+              config->global_netcdf ? "global" : "local");
     }
     fprintf(file,"%*s Fmt Unit         Type   Filename\n",-size,"Variable");
     frepeatch(file,'-',size);

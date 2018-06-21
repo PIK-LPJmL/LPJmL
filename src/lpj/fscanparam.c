@@ -27,7 +27,7 @@
 
 Param param; /* global LPJ parameter */
 
-Bool fscanparam(LPJfile  *file,         /**< File pointer to text file */
+Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
                 const Config *config /**< LPJ configuration */
                )                     /** \return TRUE on error  */
 {

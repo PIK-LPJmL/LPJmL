@@ -47,7 +47,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
     for(i=0;i<nvars;i++)
     {
       nc_inq_varname(file->ncid,i,name);
-      if(strcmp(name,LON_NAME) && strcmp(name,LAT_NAME) && strcmp(name,TIME_NAME))
+      if(strcmp(name,LON_NAME) && strcmp(name,LAT_NAME) && strcmp(name,TIME_NAME) && strcmp(name,"NamePFT"))
       {
         file->varid=i;
         break;
@@ -94,7 +94,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
       nc_get_att_text(file->ncid,file->varid,"units",fromstr);
       fromstr[len]='\0';
       /* if unit for precipitation is mm convert it to kg/m2/day */
-      if(!file->isdaily && !strcmp(units,"kg/m2/day"))
+      if(!isdaily(*file) && !strcmp(units,"kg/m2/day"))
         units="kg/m2/month";
       if(!strcmp(fromstr,"mm")|| !strcmp(fromstr,"mm/day"))
       {
@@ -117,7 +117,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         }
         else
         {
-          if(strstr(units,"day")!=NULL && !file->isdaily)
+          if(strstr(units,"day")!=NULL && !isdaily(*file))
           {
             newstr=malloc(strlen(units)+3);
             if(newstr==NULL)
@@ -166,7 +166,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         if(rc)
           file->missing_value.i=MISSING_VALUE_INT;
       }
-      file->type=LPJ_INT;
+      file->datatype=LPJ_INT;
       break;
     case NC_FLOAT:
       rc=nc_get_att_float(file->ncid,file->varid,"missing_value",&file->missing_value.f);
@@ -176,7 +176,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         if(rc)
           file->missing_value.f=config->missing_value;
       }
-      file->type=LPJ_FLOAT;
+      file->datatype=LPJ_FLOAT;
       break;
     case NC_SHORT:
       rc=nc_get_att_short(file->ncid,file->varid,"missing_value",&file->missing_value.s);
@@ -186,7 +186,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         if(rc)
           file->missing_value.s=MISSING_VALUE_SHORT;
       }
-      file->type=LPJ_SHORT;
+      file->datatype=LPJ_SHORT;
       break;
     case NC_DOUBLE:
       rc=nc_get_att_double(file->ncid,file->varid,"missing_value",&file->missing_value.d);
@@ -196,7 +196,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         if(rc)
           file->missing_value.d=config->missing_value;
       }
-      file->type=LPJ_DOUBLE;
+      file->datatype=LPJ_DOUBLE;
       break;
     default:
       if(isroot(*config))

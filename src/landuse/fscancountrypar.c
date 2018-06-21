@@ -18,7 +18,7 @@
   if(fscanreal(file,var,name,verb))\
   {\
     if(verb)\
-      fprintf(stderr,"ERROR102: Cannot read country '%s' in %s()\n",country,__FUNCTION__);\
+      fprintf(stderr,"ERROR102: Cannot read float '%s' for country '%s'.\n",name,country);\
     return 0;\
   }
 
@@ -73,7 +73,11 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
       country->laimax_cft=newvec(Real,ncft);
       check(country->laimax_cft);
       if(fscanrealarray(&item,country->laimax_cft,ncft,"laimax",verb))
-         return 0;
+      {
+        if(verb)
+          fprintf(stderr,"ERROR102: Cannot read array 'laimax' for country '%s'.\n",country->name);  
+        return 0;
+      }
     }
     else
     {

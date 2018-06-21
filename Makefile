@@ -48,7 +48,7 @@ SCRIPTS	= configure.bat configure.sh\
           bin/lpjsubmit_mpich bin/lpjrun bin/backtrace\
           bin/filetypes.vim bin/regridlpj bin/lpjsubmit_slurm
 
-FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE\
+FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET\
           $(CONF) $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
 
 main: 
@@ -108,7 +108,7 @@ tar:
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
             src/socket/*.c html/*.html html/*.css src/reservoir/Makefile\
             src/image/Makefile src/image/*.c src/reservoir/*.c\
-            src/pnet/Makefile REFERENCES COPYRIGHT README src/utils/*.c src/utils/Makefile\
+            src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c
 	    gzip -f lpjml-4.0.001.tar
@@ -125,6 +125,6 @@ zipfile:
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
             src/socket/*.c src/reservoir/Makefile\
             src/image/*.c src/image/Makefile src/reservoir/*.c\
-            src/pnet/Makefile REFERENCES COPYRIGHT README src/utils/*.c src/utils/Makefile\
+            src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c

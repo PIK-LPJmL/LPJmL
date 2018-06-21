@@ -1,18 +1,20 @@
 #!/bin/sh
-###############################################################################
-##                                                                           ##
-##                        l  p  j  r  u  n                                   ##
-##                                                                           ##
-##    sh script to run parallel LPJmL program interactively. Script calls    ##
-##    mpirun defined in MPICH. Works on Apple MacOS X                        ##
-##                                                                           ##
-##    Usage: lpjrun ntasks [LPJargs...]                                      ##
-##                                                                           ##
-##    written by Werner von Bloh, PIK Potsdam                                ##
-##                                                                           ##
-##    Last change: 10.10.2008                                                ##
-##                                                                           ##
-###############################################################################
+#################################################################################
+##                                                                             ##
+##                        l  p  j  r  u  n                                     ##
+##                                                                             ##
+##    sh script to run parallel LPJmL program interactively. Script calls      ##
+##    mpirun defined in MPICH. Works on Apple MacOS X                          ##
+##                                                                             ##
+##    Usage: lpjrun ntasks [LPJargs...]                                        ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+##                                                                             ##
+#################################################################################
 
 if [ $# -lt 1 ]
 then

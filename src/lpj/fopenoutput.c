@@ -60,6 +60,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                              config->outnames[config->outputvars[index].id].descr,
                              config->outnames[config->outputvars[index].id].unit,
                              getoutputtype(config->outputvars[index].id),
+                             getnyear(config->outputvars[index].id),
                              array,config);
 } /* of 'create' */
 
@@ -394,6 +395,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                            config->outnames[config->outputvars[i].id].descr,
                            config->outnames[config->outputvars[i].id].unit,
                            getoutputtype(config->outputvars[i].id),
+                           getnyear(config->outputvars[i].id),year,
                                output->index,config);
 
         }

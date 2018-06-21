@@ -93,8 +93,10 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
         case MROOTMOIST: case MLAKEVOL: case MLAKETEMP:
         case MFIREEMISSION_CO: case MFIREEMISSION_CH4: case MFIREEMISSION_VOC:
         case MFIREEMISSION_TPM: case MFIREEMISSION_NOX:
-
           sum+=sizeof(float)*NMONTH*size;
+          break;
+        case MSOILTEMP: case MSWC:
+          sum+=sizeof(float)*NMONTH*size*NSOILLAYER;
           break;
       } /* of 'switch' */
   return sum;

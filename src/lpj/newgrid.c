@@ -339,7 +339,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           fprintf(stderr,"WARNING009: Invalid countrycode=%d or regioncode=%d with valid soilcode in cell (not skipped)\n",code.country,code.region);
         else
           initmanage(&grid[i].ml.manage,config->countrypar+code.country,
-                     config->regionpar+code.region,npft,ncft,config->isconstlai);
+                     config->regionpar+code.region,npft,ncft,
+                     config->laimax_interpolate==CONST_LAI_MAX);
       }
 
       if(config->grassfix_filename.name != NULL)

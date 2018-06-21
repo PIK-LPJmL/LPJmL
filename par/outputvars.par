@@ -30,6 +30,7 @@
   MEVAP_B "mevap_b" "evap_b" "monthly evaporation of irrigation water" "mm/month" 1.0
   MINTERC "minterc" "interc" "monthly interception" "mm/month" 1.0
   MINTERC_B "minterc_b" "interc_b" "monthly blue interception" "mm/month" 1.0
+  MSWC "mswc" "SWC" "fractional saturation of soil water content" "" 1.0
   MSWC1 "mswc1" "SWC1" "fractional saturation of soil water content in layer 1" "" 1.0
   MSWC2 "mswc2" "SWC2" "fractional saturation of soil water content in layer 2" "" 1.0
   FIREC "firec" "FireC" "fire carbon emission" "gC/m2/yr" 1.0
@@ -153,6 +154,7 @@
   PRODUCT_POOL_SLOW "product_pool_slow" "product_pool_slow" "carbon in the slow product pool" "gC/m2" 1.0
   LUC_IMAGE "luc_image" "luc_image" "" "" 1.0
   MAXTHAW_DEPTH "maxthaw_depth" "maxthaw_depth" "maximum thawing depth" "mm" 1.0
+  MSOILTEMP "msoiltemp" "soiltemp" "soil temperature" "Celsius" 1.0
   MSOILTEMP1 "msoiltemp1" "soiltemp1" "soil temperature in layer 1" "Celsius" 1.0
   MSOILTEMP2 "msoiltemp2" "soiltemp2" "soil temperature in layer 2" "Celsius" 1.0
   MSOILTEMP3 "msoiltemp3" "soiltemp3" "soil temperature in layer 3" "Celsius" 1.0

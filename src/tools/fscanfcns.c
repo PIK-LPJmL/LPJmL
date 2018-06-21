@@ -104,34 +104,40 @@ static int fscanspace(FILE *file /* file pointer of a text file       */
   return c;
 } /* of 'fscanspace' */
 
-Bool fscanline(FILE *file,String s)
+Bool fscanline(FILE *file,    /**< pointer to text file */
+               char line[],   /**< line to read */
+               int size,      /**< size of line */
+               Verbosity verb /**< verbosity level */
+              )               /** \return TRUE on error or end of file */
 {
   int c;
   int len;
   c=fscanspace(file);
   if(c==EOF)
   {
-    s[0]='\n';
+    line[0]='\0';
     return TRUE;
   }
-  s[0]=(char)c;
+  line[0]=(char)c;
   len=1;
   while((c=fgetc(file))!=EOF)
   {
-    if(len==STRING_LEN)
+    if(len==size-1)
     {
-      s[len]='\0';
+      if(verb)
+        fprintf(stderr,"ERROR103: Line too long in line %d of '%s'.\n",line_count,incfile);
+      line[len]='\0';
       return TRUE;
     }
     if(c=='\n')
     {
-      s[len++]=c;
-      s[len]='\0';
-      line_count++;
+      line[len++]=(char)c;
+      line[len]='\0';
+      line_count++; /* increase line number */
       line_pos=0;
       return FALSE;
     }
-    s[len++]=(char)c; /* add character to string */
+    line[len++]=(char)c; /* add character to string */
     line_pos++;
   }
   return FALSE;
@@ -202,6 +208,8 @@ Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
       return TRUE;
     }
     str=json_object_get_string(item);
+    if(strlen(str)>STRING_LEN && verb)
+      fprintf(stderr,"ERROR103: String too long for name '%s', truncated.\n",name);
     strncpy(s,str,STRING_LEN);
     s[STRING_LEN]='\0';
     if (verb >= VERB)

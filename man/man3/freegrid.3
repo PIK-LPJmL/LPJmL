@@ -5,7 +5,7 @@ freegrid \- Deallocate memory of LPJmL grid
 .nf
 \fB#include "lpj.h"
 
-void freegrid(Cell \fIgrid\fB[],int \fInpft\fB,const Config *\fIconfig\fB);\fP
+void freegrid(Cell \fIgrid\fB[],const Config *\fIconfig\fB,int \fInpft\fB);\fP
 
 .fi
 .SH DESCRIPTION
@@ -15,24 +15,19 @@ The arguments of \fBfreegrid\fP are:
 .I grid
 Cell grid array allocated and initialized by \fBnewgrid()\fP.
 .TP
-.I npft
-Number of natural plant functional types.
-.TP
 .I config
 LPJmL configuration data. Must be read by \fBreadconfig()\fP.
+.I npft
+Number of natural plant functionial types.
 .SH RETURN VALUE
 None
 .SH AUTHORS
-Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
-Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
-Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
-Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
-Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
-Christoph Mueller (Christoph.Mueller@pik-potsdam.de)
-Jens Heinke (Jens.Heinke@pik-potsdam.de),
-Hester Biemans (Hester.Biemans@wur.nl),
-Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
-Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
 readconfig(3), newgrid(3)

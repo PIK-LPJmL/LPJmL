@@ -21,7 +21,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE 999
-#define USAGE "%s [-scale s] [-compress level] [-descr d] name gridfile soilfile netcdffile\n"
+#define USAGE "%s [-scale s] [-global] [-compress level] [-descr d] name gridfile soilfile netcdffile\n"
 
 typedef struct
 {
@@ -188,8 +188,10 @@ int main(int argc,char **argv)
   char *descr,*endptr,*cmdline;
   float lon,lat;
   Filename filename;
+  Bool isglobal;
   descr=NULL;
   compress=0;
+  isglobal=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -203,6 +205,8 @@ int main(int argc,char **argv)
         }
         descr=argv[++iarg];
       }
+      else if(!strcmp(argv[iarg],"-global"))
+        isglobal=TRUE;
       else if(!strcmp(argv[iarg],"-compress"))
       {
         if(argc==iarg+1)
@@ -264,7 +268,7 @@ int main(int argc,char **argv)
     fclose(file);
     return EXIT_FAILURE;
   }
-  index=createindex(grid,ngrid,res);
+  index=createindex(grid,ngrid,res,isglobal);
   if(index==NULL)
     return EXIT_FAILURE;
   free(grid);

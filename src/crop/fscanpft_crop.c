@@ -22,21 +22,21 @@
   if(fscanreal(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read CFT '%s' in %s().\n",pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR110: Cannot read float '%s' for CFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 #define fscanpftint(verb,file,var,pft,name) \
   if(fscanint(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read CFT '%s' in %s().\n",pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR110: Cannot read int '%s' for CFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 #define fscanpftlimit(verb,file,var,pft,name) \
   if(fscanlimit(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR112: Cannot read limit '%s' of CFT '%s' in %s().\n",name,pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR112: Cannot read limit '%s' for CFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 
@@ -44,7 +44,7 @@
   if(fscancropdate(file,var,verb))\
   {\
     if(verb)\
-    fprintf(stderr,"ERROR112: Cannot read '%s' of CFT '%s' in %s().\n",name,pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR112: Cannot read '%s' for CFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 
@@ -61,7 +61,7 @@ static Bool fscancropdate(LPJfile *file,Initdate *initdate,Verbosity verb)
   if(fscancropphys(file,var,name,verb))\
   {\
     if(verb)\
-    fprintf(stderr,"ERROR114: Cannot read cropphys '%s' of CFT '%s' in %s().\n",name,pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR114: Cannot read cropphys '%s' for CFT '%s').\n",name,pft); \
     return TRUE; \
   }
 
@@ -111,7 +111,12 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   pft->data=crop;
   fscanpftint(verb,file,&crop->calcmethod_sdate,pft->name,
               "calcmethod_sdate");
-  pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;   //"A photothermal model of leaf area index for greenhouse crops Xu etal.  "
+  if(iskeydefined(file,"sla"))
+  {
+    fscanpftreal(verb,file,&pft->sla,pft->name,"sla");
+  }
+  else
+    pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;   //"A photothermal model of leaf area index for greenhouse crops Xu etal.  "
   if(crop->calcmethod_sdate<0 ||  crop->calcmethod_sdate>MULTICROP)
   {
     if(verb)

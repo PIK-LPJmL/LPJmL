@@ -116,9 +116,9 @@ int main(int argc,char **argv)
   standtype[SETASIDE_IR]=setaside_ir_stand;
   standtype[AGRICULTURE]=agriculture_stand;
   standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand,
-  standtype[BIOMASS_TREE]=biomass_tree_stand,
-  standtype[BIOMASS_GRASS]=biomass_grass_stand,
+  standtype[GRASSLAND]=grassland_stand;
+  standtype[BIOMASS_TREE]=biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=biomass_grass_stand;
   standtype[KILL]=kill_stand;
 
 

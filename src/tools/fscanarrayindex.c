@@ -23,7 +23,7 @@
 #endif
 #include "types.h"
 
-Bool fscanarrayindex(LPJfile *file, /**< pointer to a LPJ file             */
+Bool fscanarrayindex(const LPJfile *file, /**< pointer to a LPJ file             */
                      LPJfile  *s,   /**< real value read from file         */
                      int index,     /**< index in array                    */
                      Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */

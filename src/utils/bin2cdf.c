@@ -21,7 +21,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-firstyear y] [-nitem n] [-cellsize size] [-ispft] [-swap]\n       [-short] [-compress level] [-units u] [-descr d] varname gridfile\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-firstyear y] [-nitem n] [-cellsize size] [-ispft] [-swap]\n       [-global] [-short] [-compress level] [-units u] [-descr d] varname gridfile\n       binfile netcdffile\n"
 
 typedef struct
 {
@@ -357,12 +357,12 @@ int main(int argc,char **argv)
   float *data;
   short *data_short;
   int i,j,ngrid,iarg,compress;
-  Bool swap,ispft,isshort;
+  Bool swap,ispft,isshort,isglobal;
   float cellsize;
   char *units,*descr,*endptr,*cmdline;
   units=descr=NULL;
   compress=0;
-  swap=FALSE;
+  swap=isglobal=FALSE;
   res.lon=res.lat=header.cellsize_lon=header.cellsize_lat=0.5;
   header.firstyear=1901;
   header.nbands=1;
@@ -385,6 +385,8 @@ int main(int argc,char **argv)
         ispft=TRUE;
       else if(!strcmp(argv[iarg],"-short"))
         isshort=TRUE;
+      else if(!strcmp(argv[iarg],"-global"))
+        isglobal=TRUE;
       else if(!strcmp(argv[iarg],"-swap"))
         swap=TRUE;
       else if(!strcmp(argv[iarg],"-descr"))
@@ -512,7 +514,7 @@ int main(int argc,char **argv)
     if(getfilesize(argv[iarg+2]) % (sizeof(float)*ngrid*header.nbands))
       fprintf(stderr,"Warning: file size of '%s' is not multiple bands %d and number of cells %d.\n",argv[iarg+2],header.nbands,ngrid);
   }
-  index=createindex(grid,ngrid,res);
+  index=createindex(grid,ngrid,res,isglobal);
   if(index==NULL)
     return EXIT_FAILURE;
   free(grid);

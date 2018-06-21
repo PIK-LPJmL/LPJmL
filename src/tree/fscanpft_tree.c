@@ -21,21 +21,21 @@
   if(fscanreal(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read PFT '%s' in %s().\n",pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR110: Cannot read float '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 #define fscanint2(verb,file,var,pft,name) \
   if(fscanint(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read PFT '%s' in %s().\n",pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR110: Cannot read int '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 #define fscantreephys2(verb,file,var,pft,name)\
   if(fscantreephys(file,var,name,verb))\
   {\
     if(verb)\
-    fprintf(stderr,"ERROR111: Cannot read '%s' of PFT '%s' in %s().\n",name,pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR111: Cannot read '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 
@@ -101,10 +101,17 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
     return TRUE;
   }
   fscantreephys2(verb,file,&tree->turnover,pft->name,"turnover");
-  if(tree->leaftype==BROADLEAVED)
-    pft->sla=2e-4*pow(10,2.20-0.4*log10(pft->longevity*12))/CCpDM;
+  if(iskeydefined(file,"sla"))
+  {
+    fscanreal2(verb,file,&pft->sla,pft->name,"sla");
+  }
   else
-    pft->sla=2e-4*pow(10,2.08-0.4*log10(pft->longevity*12))/CCpDM;
+  {
+    if(tree->leaftype==BROADLEAVED)
+      pft->sla=2e-4*pow(10,2.20-0.4*log10(pft->longevity*12))/CCpDM;
+    else
+      pft->sla=2e-4*pow(10,2.08-0.4*log10(pft->longevity*12))/CCpDM;
+  }
   tree->turnover.root=1.0/tree->turnover.root;
   tree->turnover.sapwood=1.0/tree->turnover.sapwood;
   tree->turnover.leaf=1.0/tree->turnover.leaf;

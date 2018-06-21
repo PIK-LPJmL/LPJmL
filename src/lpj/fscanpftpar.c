@@ -23,14 +23,14 @@
   if(fscanreal(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read real '%s' of PFT '%s' in %s().\n",name,pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR110: Cannot read real '%s' for PFT '%s'.\n",name,pft); \
     return NULL; \
   }
 #define fscanpftrealarray(verb,file,var,size,pft,name) \
   if(fscanrealarray(file,var,size,name,verb))\
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read array '%s' of PFT '%s'.\n",name,pft); \
+    fprintf(stderr,"ERROR110: Cannot read array '%s' for PFT '%s'.\n",name,pft); \
     return NULL; \
   }
 
@@ -38,28 +38,28 @@
   if(fscanint(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read int '%s' of PFT '%s' in %s().\n",name,pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR110: Cannot read int '%s' for PFT '%s').\n",name,pft); \
     return NULL; \
   }
 #define fscanpftlimit(verb,file,var,pft,name) \
   if(fscanlimit(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR112: Cannot read limit '%s' of PFT '%s' in %s().\n",name,pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR112: Cannot read limit '%s' for PFT '%s'.\n",name,pft); \
     return NULL; \
   }
 #define fscanpftphenpar(verb,file,var,pft,name) \
   if(fscanphenparam(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR112: Cannot read phenology param '%s' of PFT '%s' in %s().\n",name,pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR112: Cannot read phenology param '%s' for PFT '%s'.\n",name,pft); \
     return NULL; \
   }
 #define fscanpftemissionfactor(verb,file,var,pft,name) \
   if(fscanemissionfactor(file,var,name,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR128: Cannot read emission factor '%s' of PFT '%s' in %s().\n",name,pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR128: Cannot read emission factor '%s' for PFT '%s'.\n",name,pft); \
     return NULL; \
   }
 

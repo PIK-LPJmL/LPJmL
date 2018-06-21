@@ -57,7 +57,6 @@ Bool freadlitter(FILE *file, /**< File pointer to binary file */
         litter->bg=NULL;
         return TRUE;
       }
-      litter->ag[i].pft=pftpar+b;
       if(freadreal((Real *)&litter->ag[i].trait,sizeof(Trait)/sizeof(Real),
                    swap,file)!=sizeof(Trait)/sizeof(Real))
         return TRUE;
