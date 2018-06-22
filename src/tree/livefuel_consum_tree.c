@@ -45,7 +45,7 @@ Real livefuel_consum_tree(Litter *litter,
   tree->ind.leaf *= (1-livefuel->disturb*1);
   tree->ind.sapwood -= livefuel->disturb*sapwood_consum;
   tree->ind.heartwood -= livefuel->disturb*heartwood_consum;
-  if(pft->bm_inc>0)
+  if(fabs(pft->bm_inc)>epsilon)
   { 
     litter->ag[pft->litter].trait.leaf+=pft->bm_inc*fire_nind_kill/pft->nind;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,pft->bm_inc*fire_nind_kill/pft->nind,0);
@@ -64,6 +64,7 @@ Real livefuel_consum_tree(Litter *litter,
     else
       live_consum_tree+=pft->bm_inc;
     *isdead=TRUE;
+    litter_update_tree(litter,pft,pft->nind);
   }
   else
     *isdead=FALSE;
