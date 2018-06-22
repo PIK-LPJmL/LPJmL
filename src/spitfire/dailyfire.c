@@ -84,18 +84,17 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   else
     burnt_area = area_burnt(fire_danger_index, num_fires, windsp_cover, ros_forward, ntypes, &stand->pftlist);
   fire_frac=burnt_area*1e4 / (stand->cell->coord.area * stand->frac);  /*in m2*/
-  stand->cell->afire_frac+=fire_frac;
   if(fire_frac > 1.0)
   {
     burnt_area = stand->cell->coord.area*1e-4 * stand->frac; /*burnt area in ha*/
     fire_frac = 1.0;
   }
+  stand->cell->afire_frac+=fire_frac;
   if(stand->cell->afire_frac > 1.0)
   {
-    burnt_area = stand->cell->coord.area * 1e-4 * stand->frac - stand->aburntarea;
     fire_frac = 1.0 - stand->cell->afire_frac + fire_frac;
+    burnt_area = stand->cell->coord.area * 1e-4 * stand->frac* fire_frac; 
     stand->cell->afire_frac = 1.0;
-    fflush(stdout);
   }
   /*fuel consumption in gBiomass/m2 for calculation of surface fire intensity*/
   fuel_consump=deadfuel_consumption(&stand->soil.litter,&fuel,fire_frac);
