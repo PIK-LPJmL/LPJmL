@@ -33,7 +33,7 @@ static int checkfile(const char *filename)
     return 0;
 } /* of 'checkfile' */
 
-static int checkinputfile(const Config *config,const Filename *filename)
+static int checkinputfile(const Config *config,const Filename *filename,size_t len)
 {
   FILE *file;
   Header header;
@@ -44,7 +44,7 @@ static int checkinputfile(const Config *config,const Filename *filename)
   size_t offset;
   if(filename->fmt==CDF)
   {
-    input=openinput_netcdf(filename->name,filename->var,NULL,-1,config);
+    input=openinput_netcdf(filename->name,filename->var,NULL,len,config);
     if(input==NULL)
       return 1;
     closeinput_netcdf(input);
@@ -52,9 +52,17 @@ static int checkinputfile(const Config *config,const Filename *filename)
   else
   {
     file=openinputfile(&header,&swap,filename,headername,&version,&offset,config);
+    if(len==0)
+      len=1;
+    
     if(file==NULL)
       return 1;
     fclose(file);
+    if(header.nbands!=len)
+    {
+      fprintf(stderr,"ERROR228: Number of bands %d in '%s' is not '%d'.\n",header.nbands,filename->name,(int)len);
+      return 1;
+    }
   }
   return 0;
 }
@@ -233,15 +241,15 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkcoordfile(&config,&config.soil_filename);
   if(config.river_routing)
   {
-    bad+=checkinputfile(&config,&config.drainage_filename);
-    bad+=checkinputfile(&config,&config.lakes_filename);
+    bad+=checkinputfile(&config,&config.drainage_filename,(config.drainage_filename.fmt==CDF) ? 0 : 2);
+    bad+=checkinputfile(&config,&config.lakes_filename,0);
     if(config.withlanduse!=NO_LANDUSE)
-      bad+=checkinputfile(&config,&config.neighb_irrig_filename);
+      bad+=checkinputfile(&config,&config.neighb_irrig_filename,0);
   }
   if(config.ispopulation)
     bad+=checkdatafile(&config,&config.popdens_filename);
   if(config.grassfix_filename.name!=NULL)
-    bad+=checkinputfile(&config,&config.grassfix_filename);
+    bad+=checkinputfile(&config,&config.grassfix_filename,0);
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
     bad+=checkclmfile(&config,&config.wind_filename);
@@ -249,7 +257,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.tamp_filename.fmt==CDF && config.tmax_filename.name!=NULL)
       bad+=checkclmfile(&config,&config.tmax_filename);
     bad+=checkclmfile(&config,&config.lightning_filename);
-    bad+=checkinputfile(&config,&config.human_ignition_filename);
+    bad+=checkinputfile(&config,&config.human_ignition_filename,0);
   }
   if(config.wateruse_filename.name!=NULL)
     bad+=checkdatafile(&config,&config.wateruse_filename);
@@ -275,11 +283,17 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkdatafile(&config,&config.landuse_filename);
     if(config.sdate_option==PRESCRIBED_SDATE)
       bad+=checkclmfile(&config,&config.sdate_filename);
-    bad+=checkinputfile(&config,&config.countrycode_filename);
+    if(config.countrycode_filename.fmt==CDF)
+    {
+      bad+=checkinputfile(&config,&config.countrycode_filename,0);
+      bad+=checkinputfile(&config,&config.regioncode_filename,0);
+    }
+    else
+      bad+=checkinputfile(&config,&config.countrycode_filename,2);
     if(config.reservoir)
     {
-      bad+=checkinputfile(&config,&config.elevation_filename);
-      bad+=checkinputfile(&config,&config.reservoir_filename);
+      bad+=checkinputfile(&config,&config.elevation_filename,0);
+      bad+=checkinputfile(&config,&config.reservoir_filename,10);
     }
   }
   badout=0;

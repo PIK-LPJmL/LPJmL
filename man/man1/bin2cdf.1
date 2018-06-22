@@ -3,7 +3,7 @@
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B soil2cdf
-[\-cellsize size] [\-compress level] [\-descr d] [\-units u] {-swap] [\-short] [\-nitem n} [\-ispft] [\-firstyear y]
+[\-cellsize size] [\-compress level] [\-descr d] [\-units u] [-global] {-swap] [\-short] [\-nitem n} [\-ispft] [\-firstyear y]
 .I varname gridfile binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
@@ -20,6 +20,9 @@ set long name in NetCDF file
 .TP
 \-units u
 set units in NetCDF file
+.TP
+\-global
+use global grid for NetCDF file
 .TP
 \-swap 
 change byte order in binary file
@@ -61,8 +64,14 @@ Convert monthly data:
 .B bin2cdf
 returns a zero exit status if the NetCDF file is created.
 Non zero is returned in case of failure.
+
 .SH AUTHORS
-Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
 soil2cdf(1), clm2cdf(1), country2cdf(1), lpjml(1)

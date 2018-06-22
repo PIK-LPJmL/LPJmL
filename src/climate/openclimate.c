@@ -31,7 +31,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   file->fmt=filename->fmt;
   if(filename->fmt==FMS)
   {
-    file->isdaily=TRUE;
+    file->time_step=DAY;
     file->firstyear=config->firstyear;
     return FALSE;
   }
@@ -60,21 +60,31 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
         free(s);
       }
 #ifdef USE_MPI
-      MPI_Bcast(&file->isdaily,1,MPI_INT,0,config->comm);
+      MPI_Bcast(&file->time_step,1,MPI_INT,0,config->comm);
 #endif
-      if(isroot(*config))
-        free_netcdf(file->ncid);
+      closeclimate_netcdf(file,isroot(*config));
       file->oneyear=TRUE;
       file->units=units;
       file->nyear=last-file->firstyear+1;
       if(file->filename==NULL)
         return TRUE;
-      file->n=(file->isdaily) ? NDAYYEAR*config->ngridcell : NMONTH*config->ngridcell;
+      file->n=isdaily(*file) ? NDAYYEAR*config->ngridcell : NMONTH*config->ngridcell;
       file->var=filename->var;
       return FALSE;
     }
     else
-      return mpi_openclimate_netcdf(file,filename->name,filename->var,units,config);
+    {
+      if(mpi_openclimate_netcdf(file,filename->name,filename->var,units,config))
+        return TRUE;
+      if(file->var_len>1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+                  (int)file->var_len,filename->name);
+        return TRUE;
+      }
+      return FALSE;
+    }
   }
   if((file->file=openinputfile(&header,&file->swap,
                                filename,
@@ -113,7 +123,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   else
     file->offset=(config->startgrid-header.firstcell)*header.nbands*
                  typesizes[file->datatype]+headersize(headername,version)+offset;
-  file->isdaily=(header.nbands==NDAYYEAR);
+  file->time_step=(header.nbands==NDAYYEAR) ? DAY : MONTH;
   file->size=header.ncell*header.nbands*typesizes[file->datatype];
   file->n=header.nbands*config->ngridcell;
   return FALSE;

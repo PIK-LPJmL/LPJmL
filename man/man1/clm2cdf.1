@@ -3,11 +3,14 @@
 clm2cdf \- convert CLM files into NetCDF files
 .SH SYNOPSIS
 .B clm2cdf
-[\-scale factor] [\-cellsize size] [\-int] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d]
+[\-global] [\-scale factor] [\-cellsize size] [\-int] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d]
 .I varname gridfile clmfile netcdffile
 .SH DESCRIPTION
 Program converts CLM input data into NetCDF input data. 
 .SH OPTIONS
+.TP
+\-global
+use global grid for NetCDF file
 .TP
 \-scale factor
 scaling factor for CLM version 1 files. Default is one

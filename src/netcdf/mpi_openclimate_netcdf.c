@@ -40,8 +40,9 @@ Bool mpi_openclimate_netcdf(Climatefile *file,    /**< climate data file */
     return TRUE;
 #ifdef USE_MPI
   /* broadcast necessary data */
-  MPI_Bcast(&file->type,1,MPI_INT,0,config->comm);
-  MPI_Bcast(&file->isdaily,1,MPI_INT,0,config->comm);
+  MPI_Bcast(&file->datatype,1,MPI_INT,0,config->comm);
+  MPI_Bcast(&file->var_len,sizeof(size_t),MPI_BYTE,0,config->comm);
+  MPI_Bcast(&file->time_step,1,MPI_INT,0,config->comm);
   MPI_Bcast(&file->isleap,1,MPI_INT,0,config->comm);
   MPI_Bcast(&file->n,1,MPI_INT,0,config->comm);
   MPI_Bcast(&file->firstyear,1,MPI_INT,0,config->comm);

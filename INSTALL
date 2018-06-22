@@ -39,8 +39,6 @@ Directory tree after extracting the tar files:
   |
   +-bin           : Directory for executables and shell scripts
   |
-  +-R             : Scripts for R statistical package
-  |
   +-man           : Manual pages root directory
   | |
   | +-man1        : Manual pages for programs and scripts
@@ -50,8 +48,6 @@ Directory tree after extracting the tar files:
   | +-man5        : Manual pages for file formats
   |
   +--html         : Documentation and man pages in HTML format
-  |
-  +--doc          : Documentation
   |
   +--par          : Parameter files for PFTs and soils
   |
@@ -109,6 +105,10 @@ module load compiler/intel/15.0.3
 module load compiler/gnu/4.9.2
 module load netcdf-c/4.3.3.1/serial udunits/2.2.19 expat/2.1.0
 
+or you can simply load the lpjml module:
+
+module load lpjml
+
 ./configure.sh
 
 If configure script exits with message "Unsupported operating system",
@@ -156,11 +156,13 @@ LINEAR_DECAY        use linearized functions for litter decay
 MICRO_HEATING       Enable microbial heating
 SAFE                code is compiled with additional checks
 STORECLIMATE        store climate data in memory for spin up phase
+USE_JSON            enable JSON format for LPJmL configuration files
 USE_MPI             compile parallel version of LPJmL
 USE_NETCDF          enable NetCDF input/output
 USE_NETCDF4         enable NetCDF version 4 input/output
 USE_RAND48          use drand48() random number generator
 USE_UDUNITS         enable unit conversion in NetCDF files
+WITH_FIRE_MOISTURE  enable moisture dependent fire emissions
 WITH_FPE            floating point exceptions are enabled for debugging purposes
 ------------------- ------------------------------------------------------------
 
@@ -203,7 +205,7 @@ The following environment variables are used by LPJmL:
 
 LPJCONFIG      - default LPJmL configuration filename
 LPJPREP        - defines preprocessor command for LPJmL configuration  file, default
-                 is "cpp -P"
+                 is "cpp"
 LPJROOT        - defines the root directory for LPJmL. This directory is added to the 
                  include directories of the preprocessor
 LPJIMAGE       - sets host where IMAGE is running
@@ -293,13 +295,6 @@ For the parallel version SLURM and LoadLeveler files for Linux and AIX are provi
 A job can be submitted by invoking the bin/lpjsubmit script:
 
 bin/lpjsubmit ntasks LPJmL_args...
-
-Templates for customized LoadLeveler job control files are in the
-loadl directory:
-
-lpjml_aix.jcf    -- for AIX with POE
-lpjml_intel.jcf  -- for Linux with Intel MPI
-lpjml_mpich.jcf  -- for Linux with MPICH
 
 Depending on your MPI version installed the program can be started interactively:
 

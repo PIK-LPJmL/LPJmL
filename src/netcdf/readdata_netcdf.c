@@ -43,7 +43,7 @@ Bool readdata_netcdf(const Climatefile *file,Real data[],const Cell grid[],
     start=1;
   counts[start]=file->nlat;
   counts[start+1]=file->nlon;
-  switch(file->type)
+  switch(file->datatype)
   {
     case LPJ_FLOAT:
       f=newvec(float,file->nlon*file->nlat*file->var_len);

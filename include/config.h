@@ -94,9 +94,10 @@ typedef struct
   Regionpar *regionpar;
   Outputvar *outputvars;
   int n_out;     /**< number of output files */
-  Bool laimax_interpolate;
+  int laimax_interpolate;
   int crop_index;
   Bool crop_irrigation;
+  Bool global_netcdf;     /** enable global grid for NetCDF output */
   Bool landuse_restart;   /**< land use enabled in restart file */
   int sdate_option_restart; /**< sdate option in restart file */
   Bool param_out;               /**< print LPJmL parameter */
@@ -137,7 +138,6 @@ typedef struct
   Bool new_phenology;	/**< new phenology enabled */
   Bool from_restart;   /**< reading from restart */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
-  Bool isconstlai;     /**< constant LAI max */
   Bool initsoiltemp;
   Pnet *route;         /**< river routing network */
   Pnet *irrig_neighbour; /**< irrigation neighbour network */

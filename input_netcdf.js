@@ -15,6 +15,8 @@
 
 #include "include/conf.h" /* include constant definitions */
 
+"inpath" : "/p/projects/biodiversity",
+
 "input" :
 {
   "soil" : { "fmt" : CDF, "var" : "soilcode", "name" : "cru_netcdf/soil_new_67420.nc"},

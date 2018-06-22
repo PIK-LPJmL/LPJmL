@@ -36,7 +36,8 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
 {
   LPJfile arr,item;
   Bool isdaily;
-  int count,flag,size,index;
+  int count,flag,size,index,ntotpft;
+  String outpath;
   Verbosity verbosity;
   verbosity=isroot(*config) ? config->scan_verbose : NO_ERR;
   config->outputvars=newvec(Outputvar,nout_max);
@@ -52,6 +53,19 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
   {
     config->n_out=0;
     return FALSE;
+  }
+  config->global_netcdf=FALSE;
+  if(iskeydefined(file,"global_netcdf"))
+  {
+    if(fscanbool(file,&config->global_netcdf,"global_netcdf",verbosity))
+      return TRUE;
+  }
+  if(iskeydefined(file,"outpath"))
+  {
+    if(fscanstring(file,outpath,"outpath",verbosity))
+      return TRUE;
+    free(config->outputdir);
+    config->outputdir=strdup(outpath);
   }
   fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
   while(count<=nout_max && index<size)
@@ -120,7 +134,15 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
   }
   if(config->sim_id==LPJML && isdaily)
   {
+    ntotpft=config->npft[GRASS]+config->npft[TREE]+config->npft[CROP];
     fscanint2(file,&config->crop_index,"crop_index");
+    if(config->crop_index<0 || config->crop_index>=ntotpft)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR166: Invalid value for crop index=%d in line %d of '%s'.\n",
+                config->crop_index,getlinecount(),getfilename());
+      return TRUE;
+    }
     fscanint2(file,&config->crop_irrigation,"crop_irrigation");
     if (config->crop_index == TROPICAL_HERBACEOUS) config->crop_index = TEMPERATE_HERBACEOUS; /* for managed grassland the key for daily output is C3_PERENNIAL_GRASS */
   }

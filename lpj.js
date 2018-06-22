@@ -35,7 +35,7 @@
 "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
 "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE */
 #ifdef FROM_RESTART
-"population" : true,      /* used by SPITFIRE model */
+"population" : false,      /* used by SPITFIRE model */
 #else
 "population" : false,
 #endif

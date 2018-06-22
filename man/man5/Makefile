@@ -1,17 +1,16 @@
-########################################################################
-##                                                                    ##
-##               M  a  k  e  f  i  l  e                               ##
-##                                                                    ##
-##   Makefile to create HTML files from man pages                     ##
-##                                                                    ##
-##   written by Werner von Bloh                                       ##
-##   Potsdam Institute for Climate Impact Research                    ##
-##   P.O. Box 60 12 03                                                ##
-##   14412 Potsdam/Germany                                            ##
-##                                                                    ##
-##   Last change: 05.01.2009                                          ##
-##                                                                    ##
-########################################################################
+#################################################################################
+##                                                                             ##
+##                        M  a  k  e  f  i  l  e                               ##
+##                                                                             ##
+##   Makefile to create HTML files from man pages                              ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+##                                                                             ##
+#################################################################################
 
 
 SRC	= clm.5 lpj.conf.5 lpjml.conf.5 lpjml_image.conf.5

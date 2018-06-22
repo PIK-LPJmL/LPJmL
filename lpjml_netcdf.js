@@ -38,7 +38,7 @@
 "fire" : FIRE,                 /* fire disturbance enabled */
 "firewood" : false,
 #ifdef FROM_RESTART
-"population" : true,
+"population" : false,
 "landuse" : LANDUSE,
 #else
 "population" : false,
@@ -81,6 +81,8 @@
 #endif
 
 #ifdef FROM_RESTART
+
+"global_netcdf" : false,  /* global NetCDF grid (TRUE/FALSE) */
 
 "output" : [
 

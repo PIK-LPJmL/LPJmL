@@ -156,6 +156,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
 #endif
   fscanint2(file,&config->fire,"fire");
+  if(config->fire<NO_FIRE || config->fire>SPITFIRE_TMAX)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR166: Invalid value for fire=%d in line %d of '%s'.\n",
+              config->fire,getlinecount(),getfilename());
+    return TRUE;
+  }
   if(config->sim_id==LPJ)
     config->firewood=NO_FIREWOOD;
   else
@@ -180,6 +187,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->sim_id!=LPJ)
   {
     fscanint2(file,&config->withlanduse,"landuse");
+    if(config->withlanduse<NO_LANDUSE || config->withlanduse>ALL_CROPS)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR166: Invalid value for landuse=%d in line %d of '%s'.\n",
+                config->withlanduse,getlinecount(),getfilename());
+      return TRUE;
+    }
     if(config->withlanduse!=NO_LANDUSE)
     {
       fscanint2(file,&config->sdate_option,"sowing_date_option");
@@ -199,7 +213,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       }
       fscanint2(file,&config->laimax_interpolate,"laimax_interpolate");
-      config->isconstlai=(config->laimax_interpolate==CONST_LAI_MAX);
       if(config->river_routing)
         fscanbool2(file,&config->reservoir,"reservoir");
       fscanbool2(file,&grassfix,"grassland_fixed_pft");
@@ -288,6 +301,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   /*=================================================================*/
 
   if (verbose>=VERB) puts("// III. input data section");
+  if(iskeydefined(file,"inpath"))
+  {
+    if(fscanstring(file,name,"inpath",verbose))
+      return TRUE;
+    free(config->inputdir);
+    config->inputdir=strdup(name);
+  }
   if(fscanstruct(file,&input,"input",verbose))
     return TRUE;
   scanclimatefilename(&input,&config->soil_filename,config->inputdir,FALSE,"soil");
@@ -449,6 +469,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   /*=================================================================*/
 
   if (verbose>=VERB) puts("// V. run settings");
+  if(iskeydefined(file,"restartpath"))
+  {
+    if(fscanstring(file,name,"restartpath",verbose))
+      return TRUE;
+    free(config->restartdir);
+    config->restartdir=strdup(name);
+  }
   fscanint2(file,&config->startgrid,"startgrid");
   if(config->startgrid==ALL)
   {

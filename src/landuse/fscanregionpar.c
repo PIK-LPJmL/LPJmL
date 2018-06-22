@@ -18,7 +18,7 @@
   if(fscanreal(file,var,name,verb))\
   {\
     if(verb)\
-      fprintf(stderr,"ERROR102: Cannot read region '%s' in %s()\n",region,__FUNCTION__);\
+      fprintf(stderr,"ERROR102: Cannot read float '%s' for region '%s'.\n",name,region);\
     return 0;\
   }
 

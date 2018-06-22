@@ -143,3 +143,4 @@ bin/soil2cdf
 bin/txt2clm
 bin/txt2grid
 bin/water_use_input
+bin/cdf2bin

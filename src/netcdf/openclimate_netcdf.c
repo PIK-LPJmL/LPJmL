@@ -30,7 +30,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   char *s,*c,*unit,*name;
-  int rc,var_id,time_id,ndims;
+  int rc,var_id,time_id,ndims,*dimids;
   int *time;
   int m=0,d=0;
   double *date;
@@ -47,7 +47,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   }
   rc=nc_inq_varid(file->ncid,"time",&var_id);
   if(rc)
-  rc=nc_inq_varid(file->ncid,"TIME",&var_id);
+    rc=nc_inq_varid(file->ncid,"TIME",&var_id);
   error("time",rc);
   rc=nc_inq_varndims(file->ncid,var_id,&ndims);
   error("time dim",rc);
@@ -70,9 +70,33 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
     }
     nc_get_att_text(file->ncid, var_id, "units",s);
     s[len]='\0';
-    if(!strcmp("day as %Y%m%d.%f",s))
+    if(!strcmp("Years",s)|| !strcmp("years",s))
     {
-      file->isdaily=TRUE;
+      file->time_step=YEAR;
+      time=newvec(int,time_len);
+      if(time==NULL)
+      {
+        printallocerr("time");
+        free_netcdf(file->ncid);
+        free(s);
+        return TRUE;
+      }
+      rc=nc_get_var_int(file->ncid,var_id,time);
+      if(rc)
+      {
+        fprintf(stderr,"ERROR417: Cannot read time in '%s': %s.\n",
+                filename,nc_strerror(rc));
+        free(time);
+        free_netcdf(file->ncid);
+        free(s);
+        return TRUE;
+      }
+      file->firstyear=time[0];
+      free(time);
+    }
+    else if(!strcmp("day as %Y%m%d.%f",s))
+    {
+      file->time_step=DAY;
       date=newvec(double,time_len);
       if(date==NULL)
       {
@@ -141,19 +165,24 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         free(s);
         return TRUE;
       }
-      if(!strcmp(name,"days"))
+      if(!strcmp(name,"years"))
       {
-        file->isdaily=(time[1]-time[0]==1);
+        file->time_step=YEAR;
+        file->firstyear+=time[0];
+      }
+      else if(!strcmp(name,"days"))
+      {
+        file->time_step=(time[1]-time[0]==1) ? DAY : MONTH;
         file->firstyear+=time[0]/NDAYYEAR;
       }
       else if(strstr(name,"months")!=NULL)
       {
-        file->isdaily=FALSE;
+        file->time_step=MONTH;
         file->firstyear+=time[0]/12;
       }
       else if(!strcmp(name,"hours"))
       {
-        file->isdaily=(time[1]-time[0]==24);
+        file->time_step=(time[1]-time[0]==24) ? DAY : MONTH;
         file->firstyear+=time[0]/NDAYYEAR/24;
       }
       else
@@ -226,16 +255,12 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       return TRUE;
     }
     free(s);
-    if(!strcmp(unit,"months"))
-    {
-      file->n=config->ngridcell*NMONTH;
-      file->isdaily=FALSE;
-    }
+    if(!strcmp(unit,"years"))
+      file->time_step=YEAR;
+    else if(!strcmp(unit,"months"))
+      file->time_step=MONTH;
     else if(!strcmp(unit,"days"))
-    {
-      file->n=config->ngridcell*NDAYYEAR;
-      file->isdaily=TRUE;
-    }
+      file->time_step=DAY;
     else
     {
       free(unit);
@@ -245,15 +270,20 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
     }
     free(unit);
   }
-  if(file->isdaily)
-  { 
-    file->nyear=time_len/NDAYYEAR;
-    file->n=config->ngridcell*NDAYYEAR;
-  }
-  else
+  switch(file->time_step)
   {
-    file->nyear=time_len/NMONTH;
-    file->n=config->ngridcell*NMONTH;
+    case DAY:
+      file->nyear=time_len/NDAYYEAR;
+      file->n=config->ngridcell*NDAYYEAR;
+      break;
+    case MONTH:
+      file->nyear=time_len/NMONTH;
+      file->n=config->ngridcell*NMONTH;
+      break;
+    case YEAR:
+      file->nyear=time_len;
+      file->n=config->ngridcell;
+      break;
   }
   if(getvar_netcdf(file,filename,var,units,config))
   {
@@ -266,12 +296,27 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
     return TRUE;
   }
   nc_inq_varndims(file->ncid,file->varid,&ndims);
-  if(ndims!=3)
+  if(ndims!=3 && ndims!=4)
   {
     fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
             ndims,filename);
     free_netcdf(file->ncid);
     return TRUE;
+  }
+  if(ndims==3)
+    file->var_len=1;
+  else
+  {
+    dimids=newvec(int,ndims);
+    if(dimids==NULL)
+    {
+      printallocerr("dimids");
+      free_netcdf(file->ncid);
+      return TRUE;
+    }
+    nc_inq_vardimid(file->ncid,file->varid,dimids);
+    nc_inq_dimlen(file->ncid,dimids[1],&file->var_len);
+    free(dimids);
   }
   return FALSE;
 #else

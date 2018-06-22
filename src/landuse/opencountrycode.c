@@ -35,13 +35,14 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
     header.ncell=0;
     header.cellsize_lon=header.cellsize_lat=0.5;
     file=openmetafile(&header,swap,&h_offset,filename->name,isout);
+    if(file==NULL)
+      return NULL;
     if(header.nbands!=2)
     {
       if(isout)
         fprintf(stderr,"ERROR218: Number of bands=%d in description file '%s' is not 2.\n",
                 header.nbands,filename->name);
-      if(file!=NULL)
-        fclose(file);                                                       
+      fclose(file);
       return NULL;
     }
     *type=header.datatype;
@@ -68,6 +69,14 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
     {
       if(isout)
         fprintf(stderr,"ERROR154: Invalid header in '%s'.\n",filename->name);
+      fclose(file);                                                       
+      return NULL;
+    }
+    if(header.nbands!=2)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR218: Number of bands=%d in countrycode file '%s' is not 2.\n",
+                header.nbands,filename->name);
       fclose(file);                                                       
       return NULL;
     }
