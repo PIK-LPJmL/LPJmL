@@ -40,6 +40,7 @@
 #ifdef FROM_RESTART
 "population" : false,
 "landuse" : LANDUSE,
+ "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
 #else
 "population" : false,
 "landuse" : NO_LANDUSE,
@@ -51,10 +52,16 @@
 "permafrost" : true,
 "irrigation" : POT_IRRIGATION,
 "sowing_date_option" : FIXED_SDATE,
+"sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
 "laimax_interpolate" : LAIMAX_CFT, /* laimax values from manage parameter file */
+"laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
 "reservoir" : false,
 "grassland_fixed_pft" : false,
 "wateruse" : false,
+"intercrop" : true,                   /* intercrops on setaside */
+"remove_residuals" : false,           /* remove residuals */
+"residues_fire" : false,              /* fire in residuals */
+
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
