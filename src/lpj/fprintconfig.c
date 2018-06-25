@@ -189,7 +189,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     switch(config->withlanduse)
     {
       case CONST_LANDUSE:
-        snprintf(s,STRING_LEN," const landuse set to year %d, ",param.landuse_year_const);
+        snprintf(s,STRING_LEN," const landuse set to year %d, ",config->landuse_year_const);
         len=printsim(file,len,&count,s);
         break;
       case ALL_CROPS:
@@ -200,6 +200,21 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     } /* of switch */
     len=fputstring(file,len,irrig[config->irrig_scenario],78);
     len=fputstring(file,len," irrigation",78);
+    if(config->intercrop)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"intercropping",78);
+    }
+    if(config->remove_residuals)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"remove residuals",78);
+    }
+    if(config->residues_fire)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"fire in residuals",78);
+    }
     if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
     {
       len+=fprintf(file,", ");
@@ -208,14 +223,14 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     else if(config->laimax_interpolate==CONST_LAI_MAX)
     {
       len+=fprintf(file,", ");
-      snprintf(s,STRING_LEN,"const LAImax=%.1f",param.laimax);
+      snprintf(s,STRING_LEN,"const LAImax=%.1f",config->laimax);
       len=fputstring(file,len,s,78);
     }
     if(config->sdate_option==FIXED_SDATE)
     {
       len=fputstring(file,len,", ",78);
       count++;
-      snprintf(s,STRING_LEN,"fixed sowing date after %d",param.sdate_fixyear);
+      snprintf(s,STRING_LEN,"fixed sowing date after %d",config->sdate_fixyear);
       len=fputstring(file,len,s,78);
     }
     else if(config->sdate_option==PRESCRIBED_SDATE)

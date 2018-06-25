@@ -19,9 +19,6 @@
 
 /* Definition of constants */
 
-#define RESIDUES_FIRE FALSE   /* use parameters for agricultural fires */
-#define RESIDUES_IN_SOIL 0.1  /* minimum residues in soil*/
-
 #define MINLGP 4              /* minimum length of growing period, used in calc_seasonality */
 #define DEFAULT_MONTH 1       /* default setting if no sowing month can be found in calc_seasonality*/
 #define MIN_PREC 0.1          /* minimum daily precipitation (mm) at a wet day - definition from CRU*/
@@ -136,7 +133,7 @@ extern Real vegc_sum_crop(const Pft *);
 extern Real agb_crop(const Pft *);
 extern void free_crop(Pft *);
 extern void phen_variety(Pft *,int,Real,int,Bool);
-extern void harvest_crop(Output *,Stand *,Pft *,int,int,Bool);
+extern void harvest_crop(Output *,Stand *,Pft *,int,int,Bool,Bool,Bool);
 extern void adapt_crop_type(Real [],Real,const Pftpar [],int,int,int);
 extern Real wdf_crop(Pft *,Real,Real);
 extern void fprintpar_crop(FILE *,const Pftpar *);

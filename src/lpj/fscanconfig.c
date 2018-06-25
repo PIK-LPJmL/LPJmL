@@ -17,6 +17,7 @@
 #include "lpj.h"
 
 #define fscanint2(file,var,name) if(fscanint(file,var,name,verbose)) return TRUE;
+#define fscanreal2(file,var,name) if(fscanreal(file,var,name,verbose)) return TRUE;
 #define fscanbool2(file,var,name) if(fscanbool(file,var,name,verbose)) return TRUE;
 #define fscanname(file,var,name) {              \
     if(fscanstring(file,var,name,verbose)) {                 \
@@ -196,6 +197,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->withlanduse!=NO_LANDUSE)
     {
+      if(config->withlanduse==CONST_LANDUSE)
+        fscanint2(file,&config->landuse_year_const,"landuse_year_const");
       fscanint2(file,&config->sdate_option,"sowing_date_option");
       if(config->sdate_option<0 || config->sdate_option>PRESCRIBED_SDATE)
       {
@@ -204,6 +207,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                   config->sdate_option,getlinecount(),getfilename());
         return TRUE;
       }
+      if(config->sdate_option==FIXED_SDATE)
+        fscanint2(file,&config->sdate_fixyear,"sdate_fixyear");
       fscanint2(file,&config->irrig_scenario,"irrigation");
       if(config->irrig_scenario<0 || config->irrig_scenario>ALL_IRRIGATION)
       {
@@ -212,7 +217,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                   config->irrig_scenario,getlinecount(),getfilename());
         return TRUE;
       }
+      fscanbool2(file,&config->intercrop,"intercrop");
+      fscanbool2(file,&config->remove_residuals,"remove_residuals");
+      fscanbool2(file,&config->residues_fire,"residues_fire");
       fscanint2(file,&config->laimax_interpolate,"laimax_interpolate");
+      if(config->laimax_interpolate==CONST_LAI_MAX)
+        fscanreal2(file,&config->laimax,"laimax");
       if(config->river_routing)
         fscanbool2(file,&config->reservoir,"reservoir");
       fscanbool2(file,&grassfix,"grassland_fixed_pft");

@@ -228,7 +228,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
   }
   else
     landuse->sdate.file=NULL;
-  landuse->intercrop=param.intercrop;
+  landuse->intercrop=config->intercrop;
   return landuse;
 } /* of 'initlanduse' */
 

@@ -26,6 +26,8 @@ void harvest_crop(Output *output,        /**< Output data */
                   Pft *pft,              /**< PFT variables */
                   int npft,              /**< number of natural PFTs */
                   int ncft,              /**< number of crop PFTs */
+                  Bool remove_residuals, /**< remove residuals after harvest (TRUE/FALSE) */
+                  Bool residues_fire,    /**< fire in residuals after harvest (TRUE/FALSE) */
                   Bool pft_output_scaled /**< pft-specific output scaled with
                                               stand->frac (TRUE/FALSE) */
                  )
@@ -37,26 +39,26 @@ void harvest_crop(Output *output,        /**< Output data */
   Real fuelratio,bifratio,factor;
   data=stand->data;
   crop=pft->data;
-  stand->soil.litter.ag[pft->litter].trait.leaf+=(crop->ind.leaf+crop->ind.pool)*RESIDUES_IN_SOIL;
-  if(!RESIDUES_FIRE)
+  stand->soil.litter.ag[pft->litter].trait.leaf+=(crop->ind.leaf+crop->ind.pool)*param.residues_in_soil;
+  if(!residues_fire)
   {
     harvest.residuals_burnt=harvest.residuals_burntinfield=0;
-    factor=(1-RESIDUES_IN_SOIL);
+    factor=(1-param.residues_in_soil);
   }
   else
   {
     fuelratio=stand->cell->ml.manage.regpar->fuelratio; /* burn outside of field */
     bifratio=stand->cell->ml.manage.regpar->bifratio; /* burn in field */
-    if(bifratio+fuelratio>(1-RESIDUES_IN_SOIL))
+    if(bifratio+fuelratio>(1-param.residues_in_soil))
     {
-      bifratio*=(1-RESIDUES_IN_SOIL);
-      fuelratio*=(1-RESIDUES_IN_SOIL);
+      bifratio*=(1-param.residues_in_soil);
+      fuelratio*=(1-param.residues_in_soil);
     }
-    factor=1-RESIDUES_IN_SOIL-fuelratio-bifratio;
+    factor=1-param.residues_in_soil-fuelratio-bifratio;
     harvest.residuals_burnt=(crop->ind.leaf+crop->ind.pool)*fuelratio;
     harvest.residuals_burntinfield=(crop->ind.leaf+crop->ind.pool)*bifratio;
   }
-  if(param.remove_residuals)
+  if(remove_residuals)
     harvest.residual=(crop->ind.leaf+crop->ind.pool)*factor;
   else
   {

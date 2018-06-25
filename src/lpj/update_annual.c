@@ -34,8 +34,8 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
     update_reservoir_annual(cell);
   annual_climbuf(&cell->climbuf);
   if(config->sdate_option==NO_FIXED_SDATE ||
-    (config->sdate_option==FIXED_SDATE && year<=param.sdate_fixyear)||
-    (config->sdate_option==PRESCRIBED_SDATE && year<=param.sdate_fixyear))
+    (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear)||
+    (config->sdate_option==PRESCRIBED_SDATE && year<=config->sdate_fixyear))
     cell->climbuf.atemp_mean20_fix=cell->climbuf.atemp_mean20;
 
   /* count number of years without harvest

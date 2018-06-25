@@ -66,6 +66,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"saturation level sprink:\t%g\n",param.sat_level[2]);
     fprintf(file,"saturation level drip:\t%g\n",param.sat_level[3]);
     fprintf(file,"drip evap. reduction:\t%g\n",param.drip_evap);
+    fprintf(file,"residues in soil:\t%g\n",param.residues_in_soil);
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config->soilpar,config->nsoil);

@@ -25,7 +25,7 @@ Real sowing(Cell *cell,          /**< cell pointer */
 {
   Real flux_estab;
   if(config->sdate_option==NO_FIXED_SDATE ||
-    (config->sdate_option==FIXED_SDATE && year<=param.sdate_fixyear))
+    (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear))
   {
     update_fallowdays(cell->ml.cropdates,cell->coord.lat,day,ncft);
     /* calling reduced calc_cropdates for computing vern_date20 as needed for vernalization */
