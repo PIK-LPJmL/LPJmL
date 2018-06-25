@@ -207,7 +207,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                   config->sdate_option,getlinecount(),getfilename());
         return TRUE;
       }
-      if(config->sdate_option==FIXED_SDATE)
+      if(config->sdate_option==FIXED_SDATE || config->sdate_option==PRESCRIBED_SDATE)
         fscanint2(file,&config->sdate_fixyear,"sdate_fixyear");
       fscanint2(file,&config->irrig_scenario,"irrigation");
       if(config->irrig_scenario<0 || config->irrig_scenario>ALL_IRRIGATION)
