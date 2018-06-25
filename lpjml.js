@@ -22,7 +22,6 @@
 
 #include "include/conf.h" /* include constant definitions */
 
-#define BENCHMARK_LAI 5 /* also set value here directly (1 to 7), not in /par/lpjparam.js */
 //#define DAILY_OUTPUT  /* enables daily output */
 
 {   /* LPJmL configuration in JSON format */
