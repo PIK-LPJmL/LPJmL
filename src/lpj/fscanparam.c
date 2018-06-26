@@ -77,11 +77,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(&f,&param.sat_level[2],"saturation_level_sprink");
     fscanparamreal(&f,&param.sat_level[3],"saturation_level_drip");
     fscanparamreal(&f,&param.drip_evap,"drip_evap_reduction");
-    fscanparamreal(&f,&param.laimax,"laimax");
-    fscanparambool(&f,&param.intercrop,"intercrop");
-    fscanparambool(&f,&param.remove_residuals,"remove_residuals");
-    fscanparamint(&f,&param.sdate_fixyear,"sdate_fixyear");
-    fscanparamint(&f,&param.landuse_year_const,"landuse_year_const");
+    fscanparamreal(&f,&param.residues_in_soil,"residues_in_soil");
   }
   param.k_litter10/=NDAYYEAR;
   param.k_soil10.fast/=NDAYYEAR;

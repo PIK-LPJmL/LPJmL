@@ -50,11 +50,7 @@ typedef struct
   Real ec_pipe;      /**< conveyance efficiency for pressurized irrigation systems */
   Real sat_level[4];   /**< saturation level for the three irrigation systems (surf,sprink,drip) */
   Real drip_evap;        /**< reduction of drip soil evap */
-  Real laimax;     /**< maximum LAI */
-  Bool intercrop;
-  Bool remove_residuals;
-  int sdate_fixyear;    /**< year in which sowing dates shall be fixed */
-  int landuse_year_const; /**< year landuse is fixed for LANDUSE_CONST case */
+  Real residues_in_soil;  /**> minimum residues in soil*/
 } Param;
 
 /* Declaration of global variable */

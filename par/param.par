@@ -48,13 +48,5 @@
 0.55      /* saturation level sprinkler irrigation*/
 0.05      /* saturation level drip irrigation*/
 0.6       /* reduction of drip soil evap */
-#ifdef BENCHMARK_LAI
-BENCHMARK_LAI         /* maximum LAI */
-#else
-5         /* maximum LAI */
-#endif
-1         /* intercrops on setaside (0:FALSE, 1:TRUE) */
-0         /* remove residuals (0:FALSE, 1:TRUE) */
-1970      /* year in which sowing dates shall be fixed */
-2000      /* set landuse year for LANDUSE_CONST case */
+0.1       /* minimum residues in soil*/
 #endif

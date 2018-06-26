@@ -95,11 +95,16 @@ typedef struct
   Outputvar *outputvars;
   int n_out;     /**< number of output files */
   int laimax_interpolate;
+  Real laimax;        /**< maximum LAI for benchmark */
   int crop_index;
   Bool crop_irrigation;
   Bool global_netcdf;     /** enable global grid for NetCDF output */
   Bool landuse_restart;   /**< land use enabled in restart file */
   int sdate_option_restart; /**< sdate option in restart file */
+  int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
+  Bool intercrop;               /**< intercropping (TRUE/FALSE) */
+  Bool remove_residuals;
+  Bool residues_fire;   /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
   Verbosity scan_verbose;       /**< option -vv 2: verbosely print the read values during fscanconfig. default 1; 0 would supress even error messages */
   int compress;           /**< compress NetCDF output (0: no compression) */
@@ -138,6 +143,7 @@ typedef struct
   Bool new_phenology;	/**< new phenology enabled */
   Bool from_restart;   /**< reading from restart */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
+  int sdate_fixyear;    /**< year in which sowing dates shall be fixed */
   Bool initsoiltemp;
   Pnet *route;         /**< river routing network */
   Pnet *irrig_neighbour; /**< irrigation neighbour network */

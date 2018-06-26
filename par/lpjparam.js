@@ -48,9 +48,5 @@
   "saturation_level_sprink" : 0.55,   /* saturation level sprinkler irrigation*/
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
-  "laimax" : BENCHMARK_LAI,    /* maximum LAI */
-  "intercrop" : true,          /* intercrops on setaside */
-  "remove_residuals" : false,  /* remove residuals */
-  "sdate_fixyear" : 1970,      /* year in which sowing dates shall be fixed */
-  "landuse_year_const" : 2000  /* set landuse year for LANDUSE_CONST case */
+  "residues_in_soil" : 0.1            /* minimum residues in soil*/
 },

@@ -125,7 +125,7 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
     /*if constant landuse, all dams as in landuse year (but 'built' before)*/
     if(config->withlanduse==CONST_LANDUSE)
     {
-      if(reservoir.year>0 && reservoir.year<=param.landuse_year_const)
+      if(reservoir.year>0 && reservoir.year<=config->landuse_year_const)
         reservoir.year=1;
     }
 

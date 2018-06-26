@@ -22,7 +22,6 @@
 
 #include "include/conf.h" /* include constant definitions */
 
-#define BENCHMARK_LAI 5 /* also set value here directly (1 to 7), not in /par/lpjparam.js */
 //#define DAILY_OUTPUT  /* enables daily output */
 
 {   /* LPJmL configuration in JSON format */
@@ -44,6 +43,7 @@
 #ifdef FROM_RESTART
   "population" : false,
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
+  "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
   "wateruse" : true,
 #else
@@ -55,9 +55,14 @@
   "prescribe_burntarea" : false,
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANCOVEREST */
   "sowing_date_option" : FIXED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
+  "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
+  "intercrop" : true,                   /* intercrops on setaside */
+  "remove_residuals" : false,           /* remove residuals */
+  "residues_fire" : false,              /* fire in residuals */
   "irrigation" : LIM_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
   "laimax_interpolate" : LAIMAX_CFT,    /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
+  "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "grassland_fixed_pft" : false,
 
 /*===================================================================*/
