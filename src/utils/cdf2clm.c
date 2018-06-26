@@ -156,7 +156,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
           fprintcoord(stderr,coords+cell);
           fprintf(stderr,") ");
           printindex(i,file->time_step,file->var_len);
-          fprintf(stderr,"d.\n");
+          fprintf(stderr,".\n");
           free(f);
           nc_close(file->ncid);
           return TRUE;
@@ -167,7 +167,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
           fprintcoord(stderr,coords+cell);
           fprintf(stderr,") ");
           printindex(i,file->time_step,file->var_len);
-          fprintf(stderr,"d.\n");
+          fprintf(stderr,".\n");
           free(f);
           nc_close(file->ncid);
           return TRUE;
@@ -182,7 +182,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
           fprintcoord(stderr,coords+cell);
           fprintf(stderr,") ");
           printindex(i,file->time_step,file->var_len);
-          fprintf(stderr,"d.\n");
+          fprintf(stderr,".\n");
           free(d);
           nc_close(file->ncid);
           return TRUE;
@@ -193,7 +193,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
           fprintcoord(stderr,coords+cell);
           fprintf(stderr,") ");
           printindex(i,file->time_step,file->var_len);
-          fprintf(stderr,"d.\n");
+          fprintf(stderr,".\n");
           free(d);
           nc_close(file->ncid);
           return TRUE;
