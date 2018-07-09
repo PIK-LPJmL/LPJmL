@@ -151,7 +151,7 @@
   { "id" : MWET_IMAGE, "name": "mwet_image", "var" :  "wet", "descr" :  "wet days received from IMAGE", "unit" : "day", "scale" : 1.0},
   { "id" : FBURN, "name": "fburn", "var" :  "fburn", "descr" :  "fraction of deforested wood burnt", "unit" : "", "scale" : 1.0},
   { "id" : FTIMBER, "name": "ftimber", "var" :  "ftimber", "descr" :  "fraction of deforested wood harvested as timber", "unit" : "", "scale" : 1.0},
-  { "id" : TIMBER_HARVEST, "name": "timber_harvest", "var" :  "timber_harvest", "descr" :  "carbon harvested as timber", "unit" : "gC/m2/yr", "scale" : 1.0},
+  { "id" : TIMBER_HARVESTC, "name": "timber_harvestc", "var" :  "timber_harvestc", "descr" :  "carbon harvested as timber", "unit" : "gC/m2/yr", "scale" : 1.0},
   { "id" : PRODUCT_POOL_FAST, "name": "product_pool_fast", "var" :  "product_pool_fast", "descr" :  "carbon in the fast product pool", "unit" : "gC/m2", "scale" : 1.0},
   { "id" : PRODUCT_POOL_SLOW, "name": "product_pool_slow", "var" :  "product_pool_slow", "descr" :  "carbon in the slow product pool", "unit" : "gC/m2", "scale" : 1.0},
   { "id" : LUC_IMAGE, "name": "luc_image", "var" :  "luc_image", "descr" :  "", "unit" : "", "scale" : 1.0},

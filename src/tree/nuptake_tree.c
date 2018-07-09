@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml/lpjml                             \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -16,13 +16,13 @@
 #include "tree.h"
 #include "agriculture.h"
 
-Real nuptake_tree(Pft *pft,
+Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
                   Real *n_plant_demand,
                   Real *ndemand_leaf,
-                  int npft,
+                  int npft,             /**< number of natural PFTs */
                   int nbiomass,
-                  int ncft
-                 )
+                  int ncft              /**< number of crop PFTs */
+                 )                      /** \return nitrogen uptake (gN/m2/day) */
 {
 
   Pfttree *tree;

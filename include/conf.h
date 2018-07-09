@@ -221,7 +221,7 @@
 #define MWET_IMAGE 127          
 #define FBURN 128      
 #define FTIMBER 129          
-#define TIMBER_HARVEST 130          
+#define TIMBER_HARVESTC 130          
 #define PRODUCT_POOL_FAST 131          
 #define PRODUCT_POOL_SLOW 132          
 #define LUC_IMAGE 133          

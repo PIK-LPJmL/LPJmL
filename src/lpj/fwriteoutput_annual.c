@@ -647,13 +647,13 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         vec[count++]=(float)(grid[cell].output.ftimber);
     writeannual(output,FTIMBER,vec,year,config);
   }
-  if(output->files[TIMBER_HARVEST].isopen)
+  if(output->files[TIMBER_HARVESTC].isopen)
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
         vec[count++]=(float)(grid[cell].output.timber_harvest.carbon);
-    writeannual(output,TIMBER_HARVEST,vec,year,config);
+    writeannual(output,TIMBER_HARVESTC,vec,year,config);
   }
   if(output->files[PRODUCT_POOL_FAST].isopen)
   {

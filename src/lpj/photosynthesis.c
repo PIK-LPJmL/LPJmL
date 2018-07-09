@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml/lpjml                             \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -46,15 +46,15 @@
 
 Real photosynthesis(Real *agd,
                     Real *rd,
-                    Real *vm,      /* maximum catalytic capacity of Rubisco (gC/m2/day)
+                    Real *vm,      /**< maximum catalytic capacity of Rubisco (gC/m2/day)
                                       if zero actual value will be returned */
-                    int path,      /* Path (C3/C4) */
+                    int path,      /**< Path (C3/C4) */
                     Real lambda,
                     Real tstress,
-                    Real co2,      /* atmospheric CO2 partial pressure (Pa) */
-                    Real temp,     /* temperature (deg C) */
+                    Real co2,      /**< atmospheric CO2 partial pressure (Pa) */
+                    Real temp,     /**< temperature (deg C) */
                     Real apar,
-                    Real daylength /* daylength (h) */
+                    Real daylength /**< daylength (h) */
                    )
 {
   static Real ko,kc,tau,pi,c1,c2;

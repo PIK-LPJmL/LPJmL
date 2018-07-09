@@ -44,6 +44,7 @@
 "new_phenology": true,
 "river_routing" : true,
 "permafrost" : true,
+"with_nitrogen2 : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml/lpjml                             \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -18,11 +18,11 @@
 
 #define LINES_PER_HEADER 25 
 
-void fprintflux(FILE *file,          /* Output file pointer */
-                Flux flux,           /* Carbon and water fluxes */
-                Real cflux_total,    /* Total carbon flux  (gC) */
-                int year,            /* Simulation year (AD) */
-                const Config *config /* LPJ configuration */
+void fprintflux(FILE *file,          /**< Output file pointer */
+                Flux flux,           /**< Carbon and water fluxes */
+                Real cflux_total,    /**< Total carbon flux  (gC) */
+                int year,            /**< Simulation year (AD) */
+                const Config *config /**< LPJ configuration */
                )
 {
   int i,tabs;

@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml/lpjml                             \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -34,11 +34,11 @@ static void solve(Real *a,Real *b,Real *c,Real *d,
   *d=(-c1*n4*r1*r2*r3-c2*n4*r2*r3-c3*n4*r1*r3+c4*m*r1*r2+c4*n1*r1*r2+c4*n2*r1*r2+c4*n3*r1*r2)/nominator;
 }
 
-void allocation_daily_crop(Pft *pft, /* PFT variables */
-                           Real npp, /* net primary production (gC/m2) */ 
-                           Real wdf,  /* water deficit fraction */
+void allocation_daily_crop(Pft *pft, /**< PFT variables */
+                           Real npp, /**< net primary production (gC/m2) */ 
+                           Real wdf,  /**< water deficit fraction */
                            Bool with_nitrogen,
-                           Daily_outputs* output /* daily output data */
+                           Daily_outputs* output /**< daily output data */
                           )
 {
   Pftcrop *crop;

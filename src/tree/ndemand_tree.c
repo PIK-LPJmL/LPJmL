@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml/lpjml                             \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -16,15 +16,15 @@
 #include "tree.h"
 #include "agriculture.h"
 
-Real ndemand_tree(const Pft *pft,     /* pointer to PFT */
-                  Real *ndemand_leaf, /* N demand of leaf (gN/m2) */
-                  Real vmax,          /* vmax (gC/m2/day) */
-                  Real daylength,     /* day length (h) */
-                  Real temp,          /* temperature (deg C) */
-                  int npft,           /* number of natural PFTs */
-                  int nbiomass,       /* number of biomass types */
-                  int ncft            /* number of crop PFTs */
-                 )                    /* returns total N demand  (gN/m2) */
+Real ndemand_tree(const Pft *pft,     /**< pointer to PFT */
+                  Real *ndemand_leaf, /**< N demand of leaf (gN/m2) */
+                  Real vmax,          /**< vmax (gC/m2/day) */
+                  Real daylength,     /**< day length (h) */
+                  Real temp,          /**< temperature (deg C) */
+                  int npft,           /**< number of natural PFTs */
+                  int nbiomass,       /**< number of biomass types */
+                  int ncft            /**< number of crop PFTs */
+                 )                    /** \return total N demand  (gN/m2) */
 {
   Real nc_ratio;
   Irrigation *data;
