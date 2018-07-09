@@ -15,7 +15,8 @@
 #include "lpj.h"
 #include "grass.h"
 
-Real fire_grass(Pft * UNUSED(pft),Real * UNUSED(fireprob))
+Stocks fire_grass(Pft * UNUSED(pft),Real * UNUSED(fireprob))
 {
-  return 0;
+  Stocks stocks={0,0};
+  return stocks;
 } /* of 'fire_grass' */

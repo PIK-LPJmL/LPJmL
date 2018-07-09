@@ -33,7 +33,7 @@ Bool freadresdata(FILE *file,  /**< pointer to restart file */
   cell->ml.reservoirfrac=((Real)cell->ml.resdata->reservoir.area)*1000*1000/cell->coord.area; /*area in km2 to m2 */
   /* read from restart file */
   freadreal1(&cell->ml.reservoirfrac,swap,file);
-  freadreal1(&cell->ml.resdata->c_pool,swap,file);
+  freadreal((Real *)&cell->ml.resdata->pool,sizeof(Stocks)/sizeof(Real),swap,file);
   freadreal1(&cell->ml.resdata->dmass,swap,file);
   freadreal1(&cell->ml.resdata->k_rls,swap,file);
   freadreal1(&cell->ml.resdata->target_release_year,swap,file);

@@ -21,20 +21,27 @@
 #define HARVEST_EFFICIENCY_SAP 0.65
 
 
-Real coppice_tree(Pft *pft)
+Stocks coppice_tree(Pft *pft)
 {
   Pfttree *tree;
-  Real harvest=0.0;
-  Real leaf_old;
+  Stocks harvest={0,0};
+  Stocks leaf_old;
   tree=pft->data;
 
-  harvest=(((tree->ind.sapwood*HARVEST_EFFICIENCY_SAP+tree->ind.heartwood*HARVEST_EFFICIENCY)-tree->ind.debt)*pft->nind);
-  leaf_old=tree->ind.leaf;
-  tree->ind.heartwood*=1-HARVEST_EFFICIENCY;
-  tree->ind.sapwood*=1-HARVEST_EFFICIENCY_SAP;
-  tree->ind.debt=0;
-  tree->ind.leaf=8000*tree->ind.sapwood/(wooddens*tree->height*pft->par->sla);
-  harvest+=(leaf_old-tree->ind.leaf)*pft->nind;
+  harvest.carbon=(((tree->ind.sapwood.carbon*HARVEST_EFFICIENCY_SAP+tree->ind.heartwood.carbon*HARVEST_EFFICIENCY)-tree->ind.debt.carbon)*pft->nind);
+  harvest.nitrogen=(((tree->ind.sapwood.nitrogen*HARVEST_EFFICIENCY_SAP+tree->ind.heartwood.nitrogen*HARVEST_EFFICIENCY)-tree->ind.debt.nitrogen)*pft->nind);
+  leaf_old.carbon=tree->ind.leaf.carbon;
+  leaf_old.nitrogen=tree->ind.leaf.nitrogen;
+  tree->ind.heartwood.carbon*=1-HARVEST_EFFICIENCY;
+  tree->ind.sapwood.carbon*=1-HARVEST_EFFICIENCY_SAP;
+  tree->ind.debt.carbon=0;
+  tree->ind.leaf.carbon=8000*tree->ind.sapwood.carbon/(wooddens*tree->height*pft->par->sla);
+  harvest.carbon+=(leaf_old.carbon-tree->ind.leaf.carbon)*pft->nind;
+  tree->ind.heartwood.nitrogen*=1-HARVEST_EFFICIENCY;
+  tree->ind.sapwood.nitrogen*=1-HARVEST_EFFICIENCY_SAP;
+  tree->ind.debt.nitrogen=0;
+  tree->ind.leaf.nitrogen=8000*tree->ind.sapwood.nitrogen/(wooddens*tree->height*pft->par->sla);
+  harvest.nitrogen+=(leaf_old.nitrogen-tree->ind.leaf.nitrogen)*pft->nind;
   /* Call allometry to adjust height and crownarea */
   allometry_tree(pft);
   fpc_tree(pft);

@@ -59,10 +59,14 @@ typedef struct
   Filename neighb_irrig_filename;
   Filename coord_filename;
   Filename soil_filename;
+  Filename soilph_filename;
   Filename river_filename;
   Filename countrycode_filename;
   Filename regioncode_filename;
   Filename landuse_filename;
+  Filename fertilizer_nr_filename;
+  Filename no3deposition_filename;
+  Filename nh4deposition_filename;
   char *restart_filename;
   Filename lakes_filename;
   Filename wateruse_filename;
@@ -98,11 +102,13 @@ typedef struct
   Real laimax;        /**< maximum LAI for benchmark */
   int crop_index;
   Bool crop_irrigation;
-  Bool global_netcdf;     /** enable global grid for NetCDF output */
+  Bool with_nitrogen;      /**< enable nitrogen cycle */
+  Bool global_netcdf;     /**< enable global grid for NetCDF output */
   Bool landuse_restart;   /**< land use enabled in restart file */
   int sdate_option_restart; /**< sdate option in restart file */
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
+  Bool istimber;
   Bool remove_residuals;
   Bool residues_fire;   /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */

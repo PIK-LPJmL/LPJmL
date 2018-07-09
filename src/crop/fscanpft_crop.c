@@ -65,10 +65,20 @@ static Bool fscancropdate(LPJfile *file,Initdate *initdate,Verbosity verb)
     return TRUE; \
   }
 
+#define fscancropratio2(verb,file,var,pft,name)\
+  if(fscancropratio(file,var,name,verb))\
+  {\
+    if(verb)\
+    fprintf(stderr,"ERROR114: Cannot read cropphys '%s' of CFT '%s'.\n",name,pft); \
+    return TRUE; \
+  }
+
 static Bool fscancropphys(LPJfile *file,Cropphys *phys,const char *name,Verbosity verb)
 {
   LPJfile item;
   if(fscanstruct(file,&item,name,verb))
+    return TRUE;
+  if(fscanreal(&item,&phys->leaf,"leaf",verb))
     return TRUE;
   if(fscanreal(&item,&phys->root,"root",verb))
     return TRUE;
@@ -76,10 +86,26 @@ static Bool fscancropphys(LPJfile *file,Cropphys *phys,const char *name,Verbosit
     return TRUE;
   if(fscanreal(&item,&phys->pool,"pool",verb))
     return TRUE;
-  if(phys->root<=0 || phys->so<=0 || phys->pool<=0)
+  if(phys->leaf<=0 || phys->root<=0 || phys->so<=0 || phys->pool<=0)
     return TRUE;
   return FALSE;
 } /* of 'fscancropphys' */
+
+static Bool fscancropratio(LPJfile *file,Cropratio *ratio,const char *name,Verbosity verb)
+{
+  LPJfile item;
+  if(fscanstruct(file,&item,name,verb))
+    return TRUE;
+  if(fscanreal(&item,&ratio->root,"root",verb))
+    return TRUE;
+  if(fscanreal(&item,&ratio->so,"so",verb))
+    return TRUE;
+  if(fscanreal(&item,&ratio->pool,"pool",verb))
+    return TRUE;
+  if(ratio->root<=0 || ratio->so<=0 || ratio->pool<=0)
+    return TRUE;
+  return FALSE;
+} /* of 'fscancropratio' */
 
 Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
                    Pftpar *pft,    /**< Pointer to Pftpar array */
@@ -99,6 +125,7 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   pft->alphaa_manage=alphaa_crop;
   pft->free=free_crop;
   pft->vegc_sum=vegc_sum_crop;
+  pft->vegn_sum=vegn_sum_crop;
   pft->wdf=wdf_crop;
   pft->fprintpar=fprintpar_crop;
   pft->livefuel_consumption=NULL;
@@ -106,6 +133,9 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   pft->turnover_daily=NULL;
   pft->albedo_pft=albedo_crop;
   pft->agb=agb_crop;
+  pft->nuptake=nuptake_crop;
+  pft->ndemand=ndemand_crop;
+  pft->vmaxlimit=vmaxlimit_crop;
   crop=new(Pftcroppar);
   check(crop);
   pft->data=crop;
@@ -161,9 +191,11 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   fscanpftreal(verb,file,&crop->shapesenescencenorm,pft->name,
                "shapesenescencenorm");
   fscancropphys2(verb,file,&crop->cn_ratio,pft->name,"cn_ratio");
-  crop->cn_ratio.root=pft->respcoeff*param.k/crop->cn_ratio.root;
-  crop->cn_ratio.so=pft->respcoeff*param.k/crop->cn_ratio.so;
-  crop->cn_ratio.pool=pft->respcoeff*param.k/crop->cn_ratio.pool;
+  fscancropratio2(verb,file,&crop->ratio,pft->name,"ratio");
+  crop->cn_ratio.leaf=1/crop->cn_ratio.leaf;
+  crop->cn_ratio.root=1/crop->cn_ratio.root;
+  crop->cn_ratio.so=1/crop->cn_ratio.so;
+  crop->cn_ratio.pool=1/crop->cn_ratio.pool;
   return FALSE;
 } /* of 'fscanpft_crop' */
 

@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                 v  e  g  c  _  s  u  m  _  t  r  e  e  .  c                    \n**/
+/**                 v  e  g  _  s  u  m  _  t  r  e  e  .  c                       \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -19,5 +19,12 @@ Real vegc_sum_tree(const Pft *pft)
 {
   const Pfttree *tree;
   tree=pft->data;
-  return (phys_sum_tree(tree->ind)-tree->ind.debt)*pft->nind-tree->turn_litt.leaf;
+  return (phys_sum_tree(tree->ind)-tree->ind.debt.carbon+tree->excess_carbon)*pft->nind-tree->turn_litt.leaf.carbon;
 } /* of 'vegc_sum_tree' */
+
+Real vegn_sum_tree(const Pft *pft)
+{
+  const Pfttree *tree;
+  tree=pft->data;
+  return (phys_sum_tree_n(tree->ind)-tree->ind.debt.nitrogen)*pft->nind+pft->bm_inc.nitrogen;
+} /* of 'vegn_sum_tree' */

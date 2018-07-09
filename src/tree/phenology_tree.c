@@ -44,44 +44,57 @@ void phenology_tree(Pft *pft,    /**< pointer to PFT variables */
       {
          if(!tree->isphen)
          {
-           if (tree->turn.leaf!=treepar->sapl.leaf*treepar->turnover.leaf)
+           if (tree->turn.leaf.carbon!=treepar->sapl.leaf.carbon*treepar->turnover.leaf)
            {
-             tree->turn.leaf+=tree->ind.leaf*treepar->turnover.leaf;
-             tree->turn_litt.leaf+=tree->ind.leaf*treepar->turnover.leaf*pft->nind;
-             pft->stand->soil.litter.ag[pft->litter].trait.leaf+=tree->ind.leaf*treepar->turnover.leaf*pft->nind;
-             update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf*treepar->turnover.leaf*pft->nind,0);
+             tree->turn.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf;
+             tree->turn.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf;
+             tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+             tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
+             pft->stand->soil.litter.ag[pft->litter].trait.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+             pft->stand->soil.litter.ag[pft->litter].trait.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->par->fn_turnover;
+             tree->turn_nbminc+= tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*(1-pft->par->fn_turnover);
+
+             update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind,0);
            }
-          pft->phen=0.0;
+           pft->phen=0.0;
          }
          tree->isphen=TRUE;
       }
       /* cold-induced senescence;
          works only for linearly interpolated, monthly temperature data! */
-      if(dtemp<0 && pft->aphen>treepar->aphen_min && !tree->isphen && tree->turn.leaf<epsilon)
+      if(dtemp<0 && pft->aphen>treepar->aphen_min && !tree->isphen && tree->turn.leaf.carbon<epsilon)
       {
         tree->isphen=TRUE;
         pft->phen=pft->gdd=0.0;
-        if (tree->turn.leaf!=treepar->sapl.leaf*treepar->turnover.leaf)
+        if (tree->turn.leaf.carbon!=treepar->sapl.leaf.carbon*treepar->turnover.leaf)
         {
-          tree->turn.leaf+=tree->ind.leaf*treepar->turnover.leaf;
-          tree->turn_litt.leaf+=tree->ind.leaf*treepar->turnover.leaf*pft->nind;
-          pft->stand->soil.litter.ag[pft->litter].trait.leaf+=tree->ind.leaf*treepar->turnover.leaf*pft->nind;
-          update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf*treepar->turnover.leaf*pft->nind,0);
+          tree->turn.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf;
+          tree->turn.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf;
+          tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+          tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
+          pft->stand->soil.litter.ag[pft->litter].trait.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+          pft->stand->soil.litter.ag[pft->litter].trait.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->par->fn_turnover;
+          tree->turn_nbminc+= tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*(1-pft->par->fn_turnover);
+          update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind,0);
         }
       }
       break;
     case RAINGREEN:
-     if(tree->aphen_raingreen>80 && !tree->isphen && tree->turn.leaf<epsilon && pft->phen<epsilon)
-     {
-           tree->isphen=TRUE;
-           if (tree->turn.leaf!=treepar->sapl.leaf*treepar->turnover.leaf)
-           {
-             tree->turn.leaf+=tree->ind.leaf*treepar->turnover.leaf;
-             tree->turn_litt.leaf+=tree->ind.leaf*treepar->turnover.leaf*pft->nind;
-             pft->stand->soil.litter.ag[pft->litter].trait.leaf+=tree->ind.leaf*treepar->turnover.leaf*pft->nind;
-             update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf*treepar->turnover.leaf*pft->nind,0);
-           }
-     }
+      if(tree->aphen_raingreen>80 && !tree->isphen && tree->turn.leaf.carbon<epsilon && pft->phen<epsilon)
+      {
+        tree->isphen=TRUE;
+        if (tree->turn.leaf.carbon!=treepar->sapl.leaf.carbon*treepar->turnover.leaf)
+        {
+          tree->turn.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf;
+          tree->turn.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf;
+          tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+          tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
+          pft->stand->soil.litter.ag[pft->litter].trait.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
+          pft->stand->soil.litter.ag[pft->litter].trait.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->par->fn_turnover;
+          tree->turn_nbminc+= tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*(1-pft->par->fn_turnover);
+          update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind,0);
+        }
+      }
 
       if(pft->wscal<getpftpar(pft,minwscal))
         pft->phen=0.0;
@@ -94,10 +107,14 @@ void phenology_tree(Pft *pft,    /**< pointer to PFT variables */
       break;
     case EVERGREEN:
       pft->phen=1;
-      tree->turn.leaf+=tree->ind.leaf*treepar->turnover.leaf/NDAYYEAR;
-      tree->turn_litt.leaf+=tree->ind.leaf*treepar->turnover.leaf/NDAYYEAR*pft->nind;
-      pft->stand->soil.litter.ag[pft->litter].trait.leaf+=tree->ind.leaf*treepar->turnover.leaf/NDAYYEAR*pft->nind;
-      update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf*treepar->turnover.leaf/NDAYYEAR*pft->nind,0);
+      tree->turn.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR;
+      tree->turn.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR;
+      tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind;
+      tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR*pft->nind;
+      pft->stand->soil.litter.ag[pft->litter].trait.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind;
+      pft->stand->soil.litter.ag[pft->litter].trait.leaf.nitrogen+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
+      tree->turn_nbminc+= tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*(1-pft->par->fn_turnover)/NDAYYEAR;
+      update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind,0);
       break;
   } /* of 'switch' */
   if ((pft->stand->cell->coord.lat>=0.0 && day==NDAYYEAR) ||

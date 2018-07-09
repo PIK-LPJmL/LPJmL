@@ -19,14 +19,16 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           getlag.$O temp_response.$O fscansoilpar.$O soiltemp.$O laketemp.$O snow.$O\
           fire_sum.$O fire_prob.$O freadsoil.$O fwritesoil.$O fprintsoil.$O\
           freesoilpar.$O seeksoilcode.$O freadsoilcode.$O getnsoilcode.$O\
-          fopensoilcode.$O litter_ag_sum.$O littersum.$O fprintlitter.$O\
+          fopensoilcode.$O litter_ag_sum.$O littercarbon.$O fprintlitter.$O\
           freadlitter.$O fwritelitter.$O newsoil.$O freesoil.$O copysoil.$O\
           findlitter.$O addlitter.$O freelitter.$O fprintsoilpar.$O\
           soilwater.$O soilcarbon.$O litter_ag_tree.$O litter_ag_grass.$O\
           moistfactor.$O litter_ag_sum_quick.$O freesoilpar.$O moisture2soilice.$O\
           soilconduct.$O soilheatcap.$O soilice2moisture.$O getlag.$O convert_water.$O\
           getstate.$O initsoiltemp.$O infil_perc_rain.$O infil_perc_irr.$O\
-          fscanpool.$O
+          fscanpoolpar.$O denitrification.$O biologicalNfixation.$O\
+          litter_ag_nitrogen_tree.$O soilstocks.$O litterstocks.$O\
+          checklitter.$O getrootdist.$O nuptake_temp_fcn.$O volatilization.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

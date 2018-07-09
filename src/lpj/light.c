@@ -74,7 +74,7 @@ void light(Stand *stand,        /**< Pointer to stand */
         {
           h=(min(fpc_total[TREE],FPC_TREE_MAX)+fpc_total[GRASS]-1.0)/fpc_total[GRASS];
           excess=h*pft->fpc;
-          light_grass(&stand->soil.litter,pft,excess,fpc_total[GRASS]);
+          light_grass(&stand->soil.litter,pft,excess);
         }
         break;
     } /* of 'switch' */
@@ -89,7 +89,7 @@ void light(Stand *stand,        /**< Pointer to stand */
       {
           h=(min(fpc_total[TREE],FPC_TREE_MAX)+fpc_total[GRASS]-1.0)/fpc_total[GRASS];
           excess=h*pft->fpc;
-          light_grass(&stand->soil.litter,pft,excess,fpc_total[GRASS]);
+          light_grass(&stand->soil.litter,pft,excess);
       }
     }
     fpc_all=fpc_sum(fpc_total,ntypes,&stand->pftlist)-epsilon;

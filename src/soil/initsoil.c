@@ -27,13 +27,23 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
   soil->par=soilpar;
   forrootsoillayer(l)
   {
-    soil->cpool[l].fast=soil->cpool[l].slow=soil->k_mean[l].fast=soil->k_mean[l].slow=0.0;
+    soil->pool[l].fast.carbon=soil->pool[l].slow.carbon=soil->k_mean[l].fast=soil->k_mean[l].slow=0.0;
+    if(soilpar->type==ROCK || soilpar->type==ICE)
+      soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=soil->NH4[l]=soil->NO3[l]=0.0;
+    else
+    {
+      soil->pool[l].slow.nitrogen=1000*(soildepth[l]/layerbound[BOTTOMLAYER]);
+      soil->pool[l].fast.nitrogen=1000*(soildepth[l]/layerbound[BOTTOMLAYER]);
+      soil->pool[l].slow.carbon=soil->pool[l].slow.nitrogen*soil->par->cn_ratio;
+      soil->pool[l].fast.carbon=soil->pool[l].fast.nitrogen*soil->par->cn_ratio;
+      soil->NH4[l]=soil->NO3[l]=soil->pool[l].slow.nitrogen/20;
+    }
     soil->c_shift_fast[l]=newvec(Real,ntotpft);
     checkptr(soil->c_shift_fast[l]);
     soil->c_shift_slow[l]=newvec(Real,ntotpft);
     checkptr(soil->c_shift_slow[l]);
   }
-  soil->YEDOMA=soil->alag=soil->amp=soil->meanw1=soil->decomp_litter_mean=0.0;
+  soil->YEDOMA=soil->alag=soil->amp=soil->meanw1=soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
   soil->snowpack=0.0;
 #ifdef MICRO_HEATING
   soil->litter.decomC=0.0;
@@ -57,14 +67,14 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
   }
   for (p=0;p<ntotpft;p++)
   {
-    soil->c_shift_fast[0][p]=1;
-    soil->c_shift_slow[0][p]=1;
+    soil->c_shift_fast[0][p]=0.7;
+    soil->c_shift_slow[0][p]=0.7;
   }
   for (l=1;l<LASTLAYER;l++)
     for (p=0;p<ntotpft;p++)
     {
-      soil->c_shift_fast[l][p]=0;
-      soil->c_shift_slow[l][p]=0;
+      soil->c_shift_fast[l][p]=0.3/(LASTLAYER-1);
+      soil->c_shift_slow[l][p]=0.3/(LASTLAYER-1);
     }
   soil->maxthaw_depth=2;
   soil->mean_maxthaw=layerbound[BOTTOMLAYER];

@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/** Contact: https://gitlab.pik-potsdam.de/lpjml/lpjml                             \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -18,11 +18,11 @@
 
 #define LINES_PER_HEADER 25 
 
-void fprintflux(FILE *file,          /**< Output file pointer */
-                Flux flux,           /**< Carbon and water fluxes */
-                Real cflux_total,    /**< Total carbon flux  (gC) */
-                int year,            /**< Simulation year (AD) */
-                const Config *config /**< LPJmL configuration */
+void fprintflux(FILE *file,          /* Output file pointer */
+                Flux flux,           /* Carbon and water fluxes */
+                Real cflux_total,    /* Total carbon flux  (gC) */
+                int year,            /* Simulation year (AD) */
+                const Config *config /* LPJ configuration */
                )
 {
   int i,tabs;
@@ -43,6 +43,12 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     else
       frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 8 : 12);
     fputs("Water (km3)",file);
+    if(config->with_nitrogen)
+    {
+      if(config->river_routing)
+        frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 4 : 8);
+      fputs("                Nitrogen (TgN)",file);
+    }
     fputs("\n       ",file);
     frepeatch(file,'-',tabs*8-1);
     if(config->withlanduse!=NO_LANDUSE)
@@ -51,6 +57,8 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" --------------------------",file);
     if(config->river_routing)
       fputs("-----------",file);
+    if(config->with_nitrogen)
+      fputs(" --------------------------------",file);
     fputc('\n',file);
     if(year<config->firstyear)
       fputs("Spinup ",file);
@@ -62,11 +70,13 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     if(config->withlanduse!=NO_LANDUSE)
       fputs(" harvest",file);
     fputs(" total  ",file);
-    fputs(" transp     evap    interc",file);
+    fputs(" transp     evap    interc ",file);
     if(config->withlanduse!=NO_LANDUSE)
-      fputs("  wd",file);
+      fputs(" wd     ",file);
     if(config->river_routing)
-      fputs((config->withlanduse!=NO_LANDUSE) ? "      discharge" : "   discharge",file);
+      fputs(" discharge ",file);
+    if(config->with_nitrogen)
+      fputs(" nuptake ndemand  nlosses ninflux",file);
     fputc('\n',file);
     fputs("------",file);
     for(i=0;i<tabs;i++)
@@ -76,6 +86,8 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" -------",file);
     if(config->river_routing)
       fputs(" ----------",file);
+    if(config->with_nitrogen)
+      fputs(" ------- -------- ------- -------",file);
     fputc('\n',file);
   }
   /* print data */
@@ -91,5 +103,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     fprintf(file," %7.1f",flux.wd*1e-12);
   if(config->river_routing)
     fprintf(file," %10.1f",flux.discharge*1e-12);
+  if(config->with_nitrogen)
+    fprintf(file," %7.1f %8.1f %7.1f %7.1f",flux.n_uptake*1e-12,flux.n_demand*1e-12,flux.n_outflux*1e-12,flux.n_influx*1e-12);
   fputc('\n',file);
 } /* of 'fprintflux' */

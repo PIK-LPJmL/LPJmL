@@ -37,7 +37,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
   Real mort,bm_delta,heatstress,nind_kill,mort_max;
   Pfttree *tree;
   tree=pft->data;
-  bm_delta=pft->bm_inc/pft->nind-turnover_ind;
+  bm_delta=pft->bm_inc.carbon/pft->nind-turnover_ind;
   if(bm_delta<0)
    bm_delta=0;
   if (pft->par->cultivation_type==BIOMASS)
@@ -49,7 +49,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
   if (pft->prescribe_fpc)
     mort = 0.0;
   else
-    mort=mort_max/(1+param.k_mort*bm_delta/tree->ind.leaf/pft->par->sla);
+    mort=mort_max/(1+param.k_mort*bm_delta/tree->ind.leaf.carbon/pft->par->sla);
   if(mtemp_max>(isdaily) ? pft->par->twmax_daily : pft->par->twmax)
   {
     heatstress=tree->gddtw/ramp_gddtw;
@@ -60,8 +60,9 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
   else
     heatstress=0;
   nind_kill=(mort>1) ? pft->nind : pft->nind*mort;
-  pft->nind-=nind_kill;
   litter_update_tree(litter,pft,nind_kill);
+  pft->bm_inc.nitrogen*=(pft->nind-nind_kill)/pft->nind;
+  pft->nind-=nind_kill;
   fpc_tree(pft);
   return isneg_tree(pft);
 } /* of 'mortality_tree' */

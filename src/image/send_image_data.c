@@ -111,12 +111,12 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
         printf("NEP isnan in cell %d\n",cell);
         fflush(stdout);
       }
-      if(isnan(grid[cell].output.flux_estab))
+      if(isnan(grid[cell].output.flux_estab.carbon))
       {
         printf("flux estab isnan in cell %d\n",cell);
         fflush(stdout);
       }
-      if(isnan(grid[cell].output.flux_harvest))
+      if(isnan(grid[cell].output.flux_harvest.carbon))
       {
         printf("flux harvest isnan in cell %d\n",cell);
         fflush(stdout);
@@ -128,8 +128,8 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
       }
 #endif
 #ifdef SENDSEP
-      nep_image[cell]=(float)(grid[cell].balance.nep+grid[cell].output.flux_estab);
-      harvest_agric_image[cell]=(float)grid[cell].output.flux_harvest;
+      nep_image[cell]=(float)(grid[cell].balance.nep+grid[cell].output.flux_estab.carbon);
+      harvest_agric_image[cell]=(float)grid[cell].output.flux_harvest.carbon;
       harvest_biofuel_image[cell]=(float)grid[cell].ml.image_data->biomass_yield_annual;
       harvest_timber_image[cell]=(float)grid[cell].output.timber_harvest;
       product_turnover_fast_image[cell]=(float)grid[cell].ml.image_data->prod_turn_fast;
@@ -137,8 +137,8 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
       trad_biofuel_image[cell]=(float)grid[cell].output.trad_biofuel;
       rh_image[cell]=(float)grid[cell].ml.image_data->arh;
 #else
-      nep_image[cell]=(float)(grid[cell].balance.nep+grid[cell].output.flux_estab-grid[cell].output.flux_harvest)
-        -grid[cell].balance.biomass_yield;
+      nep_image[cell]=(float)(grid[cell].balance.nep+grid[cell].output.flux_estab.carbon-grid[cell].output.flux_harvest.carbon)
+        -grid[cell].balance.biomass_yield.carbon;
 #endif
       /* timber harvest is computed in IMAGE based on LPJmL carbon pools, 
          not the extraction is a carbon flux to the atmosphere but the product-pool 
@@ -146,9 +146,9 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
       /* traditional biofuel emissions are to be overwritten in IMAGE, so DO sent here */
       /* -grid[cell].output.timber_harvest*/ 
       /*-grid[cell].output.prod_turnover);*/
-      fire_image[cell]=(float)grid[cell].output.firec;
-      npp_image[cell]=(float)(grid[cell].ml.image_data->anpp+grid[cell].output.flux_estab);
-      fireemission_deforest_image[cell]=(float)grid[cell].output.deforest_emissions;
+      fire_image[cell]=(float)grid[cell].output.fire.carbon;
+      npp_image[cell]=(float)(grid[cell].ml.image_data->anpp+grid[cell].output.flux_estab.carbon);
+      fireemission_deforest_image[cell]=(float)grid[cell].output.deforest_emissions.carbon;
 #ifdef DEBUG_IMAGE
       if(grid[cell].coord.lon>-2.5 && grid[cell].coord.lon<-2.0 && grid[cell].coord.lat>48.0 && grid[cell].coord.lat<48.5)
       {
@@ -174,38 +174,38 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
                * Do not use for productivity assessments! */
               /* assume 2/3 of sapwood to be aboveground */
               biomass_image[cell].stems+=(float)
-                ((tree->ind.heartwood+tree->ind.sapwood*0.66667)*0.84)
+                ((tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*0.66667)*0.84)
                 *(float)stand->frac*(float)pft->nind;
               biomass_image[cell].branches+=(float)
-                ((tree->ind.heartwood+tree->ind.sapwood*0.66667)*0.16)
+                ((tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*0.66667)*0.16)
                 *(float)stand->frac*(float)pft->nind;
               biomass_image[cell].leaves+=(float)
-                tree->ind.leaf*(float)stand->frac*(float)pft->nind;
+                tree->ind.leaf.carbon*(float)stand->frac*(float)pft->nind;
               biomass_image[cell].roots+=(float)
-                (tree->ind.root+tree->ind.sapwood*0.33333)*(float)stand->frac*(float)pft->nind;
+                (tree->ind.root.carbon+tree->ind.sapwood.carbon*0.33333)*(float)stand->frac*(float)pft->nind;
               break;
             case GRASS:
               grass=pft->data;
               biomass_image[cell].leaves+=(float)
-                grass->ind.leaf*(float)stand->frac*(float)pft->nind;
+                grass->ind.leaf.carbon*(float)stand->frac*(float)pft->nind;
               biomass_image[cell].roots+=(float)
-                grass->ind.root*(float)stand->frac*(float)pft->nind;
+                grass->ind.root.carbon*(float)stand->frac*(float)pft->nind;
               break;
             case CROP:
               crop=pft->data;
               biomass_image[cell].leaves+=(float)
-                (crop->ind.leaf+crop->ind.so+crop->ind.pool)*(float)stand->frac*(float)pft->nind;
+                (crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*(float)stand->frac*(float)pft->nind;
               biomass_image[cell].roots+=(float)
-                crop->ind.root*(float)stand->frac*(float)pft->nind;
+                crop->ind.root.carbon*(float)stand->frac*(float)pft->nind;
               break;
           } /* of switch */
-        biomass_image[cell].litter+=(float)littersum(&stand->soil.litter)*
+        biomass_image[cell].litter+=(float)littercarbon(&stand->soil.litter)*
                                     (float)stand->frac;
         for(i=0;i<LASTLAYER;i++){
           biomass_image[cell].humus+=(float)
-            stand->soil.cpool[i].fast*(float)stand->frac;
+            stand->soil.pool[i].fast.carbon*(float)stand->frac;
           biomass_image[cell].charcoal+=(float)
-            stand->soil.cpool[i].slow*(float)stand->frac;
+            stand->soil.pool[i].slow.carbon*(float)stand->frac;
         }
       } /* for each stand */
       biomass_image[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast;

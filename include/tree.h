@@ -32,19 +32,30 @@
 
 typedef struct
 {
+  Real sapwood,root;
+} Treeratio;
+
+typedef struct
+{
   Real leaf,sapwood,root;
+} Treephyspar;
+
+typedef struct
+{
+  Stocks leaf,sapwood,root;
 } Treephys;
 
 typedef struct
 {
-  Real leaf,sapwood,heartwood,root,debt;
+  Stocks leaf,sapwood,heartwood,root,debt;
 } Treephys2;
 
 typedef struct
 {
   int leaftype;			    /**< par16*/
-  Treephys turnover;		    /**< turnover period (years) (9,11,12)*/
-  Treephys cn_ratio;		    /**< C:N mass ratio (13-15) */
+  Treephyspar turnover;		    /**< turnover period (years) (9,11,12)*/
+  Treephyspar cn_ratio;		    /**< C:N mass ratio (13-15) */
+  Treeratio ratio;                  /**< C:N ratio relative to leaf ratio */
   Real crownarea_max;		    /**< tree maximum crown area (m2) (20)*/
   Treephys2 sapl;                   /**< sapling */
   Real sapling_C;		    /**< sapling C per (m2)*/
@@ -66,43 +77,48 @@ typedef struct
 
 typedef struct
 {
-  Real height;            /**< tree height (m) */
-  Real crownarea;         /**< crown area (m2) */
-  Real barkthickness;     /**< bark thickness Kirsten */
+  Real height;          /**< tree height (m) */
+  Real crownarea;       /**< crown area (m2) */
+  Real barkthickness;   /**< bark thickness Kirsten */
   Real gddtw;
   Real aphen_raingreen;
-  Bool isphen;            /** <only used for summergreen trees*/
+  Bool isphen;          /**< only used for summergreen trees*/
   Treephys turn;
   Treephys turn_litt;
   Treephys2 ind;
+  Treephyspar falloc;
+  Real turn_nbminc;      /**< storage for recovered nitrogen from turnover */
+  Real excess_carbon;   /**< gC/ind; storage for carbon that cannot be allocated under given N limitation */
+
 } Pfttree;
 
 /* Declaration of functions */
 
 extern void new_tree(Pft *,int,int);
 extern Pft *newpftage(Pftpar *,int);
-extern Real npp_tree(Pft *,Real,Real,Real);
+extern Real npp_tree(Pft *,Real,Real,Real,Bool);
 extern Bool mortality_tree(Litter *,Pft *,Real,Real,Bool);
 extern Real fpc_tree(Pft *);
 extern Real fpar_tree(const Pft *);
-extern Real alphaa_tree(const Pft *);
+extern Real alphaa_tree(const Pft *,int);
 extern void litter_update_tree(Litter *, Pft *,Real);
 extern void litter_update_fire_tree(Litter *, Pft *,Real);
 extern void allometry_tree(Pft *pft);
 extern Bool allocation_tree(Litter *,Pft *,Real *);
 extern Real lai_tree(const Pft *);
 extern Real actual_lai_tree(const Pft *);
-extern Real turnover_tree(Litter *,Pft *);
+extern Stocks turnover_tree(Litter *,Pft *);
 extern void phenology_tree(Pft *,Real,int,Bool);
 extern Bool fwrite_tree(FILE *,const Pft *);
 extern void fprint_tree(FILE *,const Pft *);
 extern Bool fread_tree(FILE *,Pft *,Bool);
 extern Bool fscanpft_tree(LPJfile *,Pftpar *,Verbosity);
 extern Bool isneg_tree(const Pft *);
-extern Real establishment_tree(Pft *,Real,Real,int);
+extern Stocks establishment_tree(Pft *,Real,Real,int);
 extern void init_tree(Pft *);
-extern Real fire_tree(Pft *,Real *);
+extern Stocks fire_tree(Pft *,Real *);
 extern Real vegc_sum_tree(const Pft *);
+extern Real vegn_sum_tree(const Pft *);
 extern Real agb_tree(const Pft *);
 extern void mix_veg_tree(Pft *,Real);
 extern void free_tree(Pft *);
@@ -111,20 +127,25 @@ extern void adjust_tree(Litter *,Pft *,Real,Real);
 extern void reduce_tree(Litter *,Pft *,Real);
 extern void fprintpar_tree(FILE *,const Pftpar *);
 extern void output_daily_tree(Daily_outputs *,const Pft *);
-extern Real livefuel_consum_tree(Litter *,Pft *,const Fuel *,Livefuel *,
-                                 Bool *,Real,Real);
-extern Bool annual_tree(Stand *,Pft *,Real *,Bool);
-extern Real coppice_tree(Pft *);
+extern Stocks livefuel_consum_tree(Litter *,Pft *,const Fuel *,Livefuel *,
+                                   Bool *,Real,Real);
+extern Bool annual_tree(Stand *,Pft *,Real *,Bool,Bool);
+extern Stocks coppice_tree(Pft *);
 extern void albedo_tree(Pft *,Real,Real);
 extern void turnover_monthly_tree(Litter *,Pft *);
 extern void turnover_daily_tree(Litter *,Pft *,Real,Bool);
+extern Real nuptake_tree(Pft *,Real *,Real *,int,int,int);
+extern Real ndemand_tree(const Pft *,Real *,Real,Real,Real,int,int,int);
+extern Real vmaxlimit_tree(const Pft *,Real,Real);
+extern void nitrogen_allocation_tree(Real *,Real *,Real *,Stocks,Stocks,Stocks,Real,Real,Real);
 
 /* Definitions of macros */
 
 #define istree(pft) (getpftpar(pft,type)==TREE)
 #define israingreen(pft) getpftpar(pft,phenology)==RAINGREEN
-#define fprinttreephys2(file,phys,nind) fprintf(file,"%6.2f %6.2f %6.2f %6.2f %6.2f (gC/m2)",phys.leaf*nind,phys.sapwood*nind,phys.heartwood*nind,phys.root*nind,phys.debt*nind)
-#define phys_sum_tree(ind) (ind.leaf+ind.root+ind.heartwood+ind.sapwood)
-#define agb_tree_sum(ind) (ind.leaf+ind.heartwood+ind.sapwood*0.66)
+#define fprinttreephys2(file,phys,nind) fprintf(file,"%6.2f %6.2f %6.2f %6.2f %6.2f (gC/m2) %6.2f %6.2f %6.2f %6.2f %6.2f (NC/m2)",phys.leaf.carbon*nind,phys.sapwood.carbon*nind,phys.heartwood.carbon*nind,phys.root.carbon*nind,phys.debt.carbon*nind,phys.leaf.nitrogen*nind,phys.sapwood.nitrogen*nind,phys.heartwood.nitrogen*nind,phys.root.nitrogen*nind,phys.debt.nitrogen*nind)
+#define phys_sum_tree(ind) (ind.leaf.carbon+ind.root.carbon+ind.heartwood.carbon+ind.sapwood.carbon)
+#define phys_sum_tree_n(ind) (ind.leaf.nitrogen+ind.root.carbon+ind.heartwood.nitrogen+ind.sapwood.nitrogen)
+#define agb_tree_sum(ind) (ind.leaf.carbon+ind.heartwood.carbon+ind.sapwood.carbon*0.66)
 
 #endif

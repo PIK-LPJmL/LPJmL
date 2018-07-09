@@ -14,16 +14,16 @@
 
 #include "lpj.h"
 
-Real sowing(Cell *cell,          /**< cell pointer */
-            Real prec,           /**< precipitation (mm) */
-            int day,             /**< day (1..365) */
-            int year,            /**< year (AD) */
-            int npft,            /**< number of natural PFTs */
-            int ncft,            /**< number of crop PFTs */
-            const Config *config /**< LPJ configuration */
-           )                     /** \return establishment flux (gC/m2) */
+Stocks sowing(Cell *cell,          /**< cell pointer */
+              Real prec,           /**< precipitation (mm) */
+              int day,             /**< day (1..365) */
+              int year,            /**< year (AD) */
+              int npft,            /**< number of natural PFTs */
+              int ncft,            /**< number of crop PFTs */
+              const Config *config /**< LPJ configuration */
+             )                     /** \return establishment flux (gC/m2,g/N/m2) */
 {
-  Real flux_estab;
+  Stocks flux_estab;
   if(config->sdate_option==NO_FIXED_SDATE ||
     (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear))
   {

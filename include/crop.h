@@ -25,6 +25,10 @@
 
 /* Declaration of datatypes */
 
+typedef struct
+{
+  Real root,so,pool;
+} Cropratio;
 
 typedef struct
 {
@@ -33,12 +37,12 @@ typedef struct
 
 typedef struct
 {
-  Real root,so,pool;
+  Real leaf,root,so,pool;
 } Cropphys;
 
 typedef struct
 {
-  Real root,so,pool,leaf;
+  Stocks root,so,pool,leaf;
 } Cropphys2;
 
 typedef struct
@@ -71,6 +75,7 @@ typedef struct
   Real himin;               /**< minimum harvest index HI reached at harvest*/
   Real shapesenescencenorm; /**< parameter for calculating the fraction of maximal LAI */
   Cropphys cn_ratio;        /**< C:N mass ratio for root, storage organ, and pool */
+  Cropratio ratio;          /**< relative C:N ratio for root, storage organ and pool */
 } Pftcroppar;
 
 
@@ -93,6 +98,10 @@ typedef struct
   Real laimax_adjusted;     /**< adjusted maximum lai */
   Real lai_nppdeficit;      /**< LAI reduction due to insufficient NPP */
   Real demandsum;
+  Real ndemandsum;
+  Real nuptakesum;
+  Real nfertilizer;         /* fertilizer amount */
+  Real vscal_sum;
   Real supplysum;
 #ifdef DOUBLE_HARVEST
   Real petsum;
@@ -113,11 +122,11 @@ typedef struct
 /* Declaration of functions */
 
 extern void new_crop(Pft *,int,int);
-extern void allocation_daily_crop(Pft *,Real, Real,Daily_outputs *);
-extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,Daily_outputs *);
+extern void allocation_daily_crop(Pft *,Real, Real,Bool with_nitrogen,Daily_outputs *);
+extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,Bool with_nitrogen,Daily_outputs *);
 extern Real fpc_crop(Pft *);
 extern Real fpar_crop(const Pft *);
-extern Real alphaa_crop(const Pft *);
+extern Real alphaa_crop(const Pft *,int);
 extern void litter_update_crop(Litter *,Pft *,Real);
 extern Real lai_crop(const Pft *);
 extern Real actual_lai_crop(const Pft *);
@@ -127,9 +136,10 @@ extern Bool fwrite_crop(FILE *,const Pft *);
 extern void fprint_crop(FILE *,const Pft *);
 extern Bool fread_crop(FILE *,Pft *,Bool);
 extern Bool fscanpft_crop(LPJfile *,Pftpar *,Verbosity);
-extern Real establishment_crop(Pft *,Real,Real,int);
+extern Stocks establishment_crop(Pft *,Real,Real,int);
 extern void init_crop(Pft *);
 extern Real vegc_sum_crop(const Pft *);
+extern Real vegn_sum_crop(const Pft *);
 extern Real agb_crop(const Pft *);
 extern void free_crop(Pft *);
 extern void phen_variety(Pft *,int,Real,int,Bool);
@@ -141,11 +151,16 @@ extern void output_daily_crop(Daily_outputs *,const Pft *,Real,Real);
 extern void calc_seasonality(Cell *,int,int,const Config *);
 extern void albedo_crop(Pft *,Real,Real);
 extern void double_harvest(int, Real *, Real *, Real);
+extern Real nuptake_crop(Pft *,Real *,Real *,int,int,int);
+extern Real ndemand_crop(const Pft *,Real *,Real,Real,Real,int,int,int);
+extern Real vmaxlimit_crop(const Pft *,Real,Real);
+
 
 /* Definitions of macros */
 
 #define iscrop(pft) (getpftpar(pft,type)==CROP)
-#define phys_sum_crop(ind) (ind.leaf+ind.root+ind.so+ind.pool)
-#define fprintcropphys2(file,phys,nind) fprintf(file,"%.2f %.2f %.2f %.2f (gC/m2)",phys.leaf*nind,phys.so*nind,phys.pool*nind,phys.root*nind)
+#define phys_sum_crop(ind) (ind.leaf.carbon+ind.root.carbon+ind.so.carbon+ind.pool.carbon)
+#define phys_sum_crop_n(ind) (ind.leaf.nitrogen+ind.root.nitrogen+ind.so.nitrogen+ind.pool.nitrogen)
+#define fprintcropphys2(file,phys,nind) fprintf(file,"%.2f %.2f %.2f %.2f (gC/m2) %.2f %.2f %.2f %.2f (gN/m2)",phys.leaf.carbon*nind,phys.so.carbon*nind,phys.pool.carbon*nind,phys.root.carbon*nind,phys.leaf.nitrogen*nind,phys.so.nitrogen*nind,phys.pool.nitrogen*nind,phys.root.nitrogen*nind)
 
 #endif

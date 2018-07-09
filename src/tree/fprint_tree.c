@@ -31,5 +31,6 @@ void fprint_tree(FILE *file,const Pft *pft)
     fprintf(file,"Aphen raingreen:\t%g\n",tree->aphen_raingreen);
   fprintf(file,"Cmass:\t\t");
   fprinttreephys2(file,tree->ind,pft->nind);
-  fprintf(file,"\n");
+  fprintf(file,"\nExcess carbon:\t%g (gC/m2)\n",tree->excess_carbon*pft->nind);
+  fprintf(file,"falloc:\t\t%g %g %g\n",tree->falloc.leaf,tree->falloc.root,tree->falloc.sapwood);
 } /* of 'fprint_tree' */

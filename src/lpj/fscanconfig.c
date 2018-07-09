@@ -140,6 +140,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->seed=0;
+  fscanbool2(file,&config->with_nitrogen,"with_nitrogen");
   fscanint2(file,&config->with_radiation,"radiation");
   if(config->with_radiation<CLOUDINESS || config->with_radiation>RADIATION_LWDOWN)
   {
@@ -218,6 +219,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       }
       fscanbool2(file,&config->intercrop,"intercrop");
+      fscanbool2(file,&config->istimber,"istimber");
       fscanbool2(file,&config->remove_residuals,"remove_residuals");
       fscanbool2(file,&config->residues_fire,"residues_fire");
       fscanint2(file,&config->laimax_interpolate,"laimax_interpolate");
@@ -337,6 +339,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       scanclimatefilename(&input,&config->sdate_filename,config->inputdir,FALSE,"sdate");
     }
+    if(config->with_nitrogen)
+    {
+      scanclimatefilename(&input,&config->fertilizer_nr_filename,config->inputdir,FALSE,"fertilizer_nr");
+    }
     if(grassfix == GRASS_FIXED_PFT)
     {
       scanclimatefilename(&input,&config->grassfix_filename,config->inputdir,FALSE,"grassland_fixed_pft");
@@ -393,9 +399,20 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         fprintf(stderr,"ERROR213: Invalid setting %d for radiation in line %d of '%s'.\n",config->with_radiation,getlinecount(),getfilename());
       return TRUE;
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  if(config->with_nitrogen)
+  {
+    scanclimatefilename(&input,&config->no3deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"no3deposition");
+    scanclimatefilename(&input,&config->nh4deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"nh4deposition");
+    scanclimatefilename(&input,&config->soilph_filename,config->inputdir,config->sim_id==LPJML_FMS,"soilpH");
+  }
+  else
+    config->no3deposition_filename.name=config->nh4deposition_filename.name=config->soilph_filename.name=NULL;
+  if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     scanclimatefilename(&input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,"wind");
+  }
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  {
     scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,(config->fire==SPITFIRE_TMAX) ? "tmin" : "tamp");
     if(config->fire==SPITFIRE_TMAX)
     {

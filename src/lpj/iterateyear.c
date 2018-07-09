@@ -56,7 +56,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 #ifdef IMAGE
   istimber=(config->start_imagecoupling!=INT_MAX);
 #else
-  istimber=FALSE;
+  istimber=config->istimber;
 #endif
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)

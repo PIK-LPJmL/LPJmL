@@ -24,6 +24,8 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_consump_water_b);
   free(output->growing_period);  
   free(output->pft_npp);
+  free(output->pft_nuptake);
+  free(output->pft_ndemand);
   free(output->pft_gcgp);
   free(output->gcgp_count);
   free(output->fpc);
@@ -47,6 +49,11 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_conv_loss_drain);
   free(output->cft_luc_image);
   free(output->cft_irrig_events);
+  free(output->cft_leaf);
+  free(output->cft_root);
+  free(output->cft_veg);
+  free(output->cft_nlimit);
+  free(output->cft_laimax);
 #ifdef DOUBLE_HARVEST
   free(output->cftfrac2);
   free(output->sdate2);
@@ -75,8 +82,9 @@ void freeoutput(Output *output /**< Output data */
   output->pft_harvest=NULL;
   output->cft_consump_water_g=output->cft_consump_water_b=output->cft_pet=NULL;
   output->cft_transp=output->cft_transp_b=output->cft_evap=output->cft_evap_b=output->cft_interc=output->cft_interc_b=
-    output->cft_return_flow_b=output->cft_nir=output->cft_temp=output->cft_prec=output->cft_srad=output->cft_fpar=
-    output->cft_aboveground_biomass=output->cft_conv_loss_evap=output->cft_conv_loss_drain=NULL;
+    output->cft_return_flow_b=output->cft_nir=output->cft_temp=output->cft_prec=output->cft_srad=output->cft_fpar=NULL;
+  output->cft_aboveground_biomass=NULL;
+  output->cft_conv_loss_evap=output->cft_conv_loss_drain=NULL;
   output->growing_period=NULL;
   output->cft_irrig_events=NULL;
   output->pft_npp=output->fpc=output->cftfrac=output->cft_airrig=output->cft_luc_image=NULL;

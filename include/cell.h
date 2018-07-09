@@ -54,15 +54,20 @@ typedef struct
   Real nep;                 /**< annual NEP (gC/m2) */
   Real awater_flux;         /**< annual water flux (mm) */
   Real aprec;               /**< annual precipitation (mm) */
-  Real totc;                /**< total carbon (gC/m2) */
-  Real biomass_yield;       /**< harvested biomass (gC/m2)*standfrac*/
-  Real estab_storage_tree[2];  /**< carbon taken out from annual NPP to satisfy tree establishment rate */
-  Real estab_storage_grass[2]; /**< carbon taken out from annual NPP to satisfy grass establishment rate */
+  Stocks tot;                /**< total carbon and nitrogen (C/m2) */
+  Stocks biomass_yield;      /**< harvested biomass (gC/m2)*standfrac*/
+  Stocks estab_storage_tree[2];  /**< carbon taken out from annual NPP to satisfy tree establishment rate */
+  Stocks estab_storage_grass[2]; /**< carbon taken out from annual NPP to satisfy grass establishment rate */
   Real totw;                /**< total water (mm) */
   Real surface_storage;     /**< total water in surface storages (dm3) */
   Real soil_storage;        /**< total water in soil storages (dm3) */
   Real total_reservoir_out; /**< total water extracted from reservoirs (dm3) */
   Real total_irrig_from_reservoir; /**< total water added to fields from reservoirs (dm3)*/
+  Real n_influx;            /**< all N inputs: deposition, fertilizer, BNF */
+  Real n_outflux;           /**< all N outputs: n2onit, n2odenit, n2denit, leaching */
+  Real n_demand;            /**< N demand by plants (gN)*/
+  Real n_uptake;
+
 } Balance;
 
 typedef struct celldata *Celldata;
@@ -89,6 +94,7 @@ Received 19 November 1997; accepted 15 January 1999*/
   Real snowpool_above_lake; /**<temporarily storing the snow mass on a lake*/
 
 #endif
+  Real soilph;              /**< soil pH */
   Bool skip;                /**< Invalid soil code in cell (TRUE/FALSE) */
   Managed_land ml;          /**< Managed land */
   Output output;            /**< Output data */
@@ -138,7 +144,7 @@ extern void killstand(Cell *,const Pftpar [],int,Bool,int);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);
-extern Bool readcelldata(Celldata,Coord *,unsigned int *,Intcoord *,int,Config *);
+extern Bool readcelldata(Celldata,Coord *,unsigned int *,Real *,Intcoord *,int,Config *);
 extern void closecelldata(Celldata);
 extern Real albedo(Cell *, Real , Real );
 

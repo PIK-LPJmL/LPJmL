@@ -40,9 +40,10 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   Pft *pft;
   Real *fpc_inc,*fpc_inc2,*fpc_type;
   Real fpc_total;
-  Real acflux_estab=0;
-  Real estab_store=0;
-  Real yield=0.0;
+  Stocks acflux_estab={0,0};
+  Stocks estab_store={0,0};
+  Stocks yield={0,0};
+  Stocks acflux_return;
   Pfttreepar *treepar;
   Irrigation *irrigation;
 
@@ -80,15 +81,18 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
       if(istree(pft))
       {
         treepar=pft->par->data;
-        if (stand->cell->balance.estab_storage_tree[irrigation->irrigation]<treepar->sapling_C*stand->frac && pft->bm_inc>100)
+        if (stand->cell->balance.estab_storage_tree[irrigation->irrigation].carbon<treepar->sapling_C*stand->frac && pft->bm_inc.carbon>100)
         {
-          estab_store=pft->bm_inc*0.03;
-          pft->bm_inc-=estab_store;
-          stand->cell->balance.estab_storage_tree[irrigation->irrigation]+=estab_store*stand->frac;
+          estab_store.carbon=pft->bm_inc.carbon*0.03;
+          estab_store.nitrogen=pft->bm_inc.nitrogen*0.03;
+          pft->bm_inc.carbon-=estab_store.carbon;
+          pft->bm_inc.nitrogen-=estab_store.nitrogen;
+          stand->cell->balance.estab_storage_tree[irrigation->irrigation].carbon+=estab_store.carbon*stand->frac;
+          stand->cell->balance.estab_storage_tree[irrigation->irrigation].nitrogen+=estab_store.nitrogen*stand->frac;
         }
       }
 
-      if(annualpft(stand,pft,fpc_inc+p,isdaily))
+      if(annualpft(stand,pft,fpc_inc+p,config->new_phenology,isdaily))
       {
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
@@ -125,21 +129,30 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
       if(stand->growing_time>=treepar->rotation && stand->growing_time%treepar->rotation==0)
       {
         yield=coppice_tree(pft);
-        if(stand->cell->balance.estab_storage_tree[irrigation->irrigation]<0)
+        if(stand->cell->balance.estab_storage_tree[irrigation->irrigation].carbon<0)
         {
-          yield+=stand->cell->balance.estab_storage_tree[irrigation->irrigation];
-          stand->cell->balance.estab_storage_tree[irrigation->irrigation]-=stand->cell->balance.estab_storage_tree[irrigation->irrigation]*stand->frac;
+          yield.carbon+=stand->cell->balance.estab_storage_tree[irrigation->irrigation].carbon;
+          yield.nitrogen+=stand->cell->balance.estab_storage_tree[irrigation->irrigation].nitrogen;
+          stand->cell->balance.estab_storage_tree[irrigation->irrigation].carbon-=stand->cell->balance.estab_storage_tree[irrigation->irrigation].carbon*stand->frac;
+          stand->cell->balance.estab_storage_tree[irrigation->irrigation].nitrogen-=stand->cell->balance.estab_storage_tree[irrigation->irrigation].nitrogen*stand->frac;
         }
 #ifdef IMAGE
         /* communicate bm tree yield every year as fraction of rotation length */
-        stand->cell->ml.image_data->store_bmtree_yield=yield;
+        stand->cell->ml.image_data->store_bmtree_yield=yield.carbon;
 #endif
-        stand->cell->balance.biomass_yield+=yield*stand->frac;
+        stand->cell->balance.biomass_yield.carbon+=yield.carbon*stand->frac;
+        stand->cell->balance.biomass_yield.nitrogen+=yield.nitrogen*stand->frac;
         if(config->pft_output_scaled)
-          stand->cell->output.pft_harvest[rbtree(ncft)+irrigation->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest+=yield*stand->frac;
+        {
+          stand->cell->output.pft_harvest[rbtree(ncft)+irrigation->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest.carbon+=yield.carbon*stand->frac;
+          stand->cell->output.pft_harvest[rbtree(ncft)+irrigation->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest.nitrogen+=yield.nitrogen*stand->frac;
+        }
         else
-          stand->cell->output.pft_harvest[rbtree(ncft)+irrigation->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest+=yield;
+        {
+          stand->cell->output.pft_harvest[rbtree(ncft)+irrigation->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest.carbon+=yield.carbon;
+          stand->cell->output.pft_harvest[rbtree(ncft)+irrigation->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest.nitrogen+=yield.nitrogen;
 
+        }
         stand->growing_time=0;
       }
     }
@@ -156,7 +169,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
        ((config->pftpar[p].type==TREE && config->pftpar[p].cultivation_type==BIOMASS) ||
         (config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)))
     {
-      if(!present[p] && (estab_store<epsilon || config->pftpar[p].type!=TREE) && (fpc_type[TREE]<0.7 || config->pftpar[p].type==GRASS)) {
+      if(!present[p] && (estab_store.carbon<epsilon || config->pftpar[p].type!=TREE) && (fpc_type[TREE]<0.7 || config->pftpar[p].type==GRASS)) {
         addpft(stand,config->pftpar+p,year,0);
         n_est[config->pftpar[p].type]++;
       }
@@ -180,14 +193,18 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
         treepar=pft->par->data;
         if(pft->nind<treepar->k_est && stand->age<treepar->max_rotation_length)
         {
-          acflux_estab+=establishment(pft,fpc_total,fpc_type[pft->par->type],
+          acflux_return=establishment(pft,fpc_total,fpc_type[pft->par->type],
                                         n_est[pft->par->type]);
+          acflux_estab.carbon+=acflux_return.carbon;
+          acflux_estab.nitrogen+=acflux_return.nitrogen;
           fpc_inc2[p]=pft->fpc+fpc_total-1;
         }
       }
       else
       {
-        acflux_estab+=establishment(pft,fpc_total,fpc_type[pft->par->type],n_est[pft->par->type]);
+        acflux_return=establishment(pft,fpc_total,fpc_type[pft->par->type],n_est[pft->par->type]);
+        acflux_estab.carbon+=acflux_return.carbon;
+        acflux_estab.nitrogen+=acflux_return.nitrogen;
       }
   }
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
@@ -202,11 +219,12 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)
       reduce(&stand->soil.litter,pft,fpc_total);
-  stand->cell->balance.estab_storage_tree[irrigation->irrigation]-=acflux_estab*stand->frac;
-  acflux_estab=0;
+  stand->cell->balance.estab_storage_tree[irrigation->irrigation].carbon-=acflux_estab.carbon*stand->frac;
+  acflux_estab.carbon=acflux_estab.nitrogen=0;
 
-  stand->cell->output.flux_estab+=acflux_estab*stand->frac;
-  stand->cell->output.dcflux-=acflux_estab*stand->frac;
+  stand->cell->output.flux_estab.carbon+=acflux_estab.carbon*stand->frac;
+  stand->cell->output.flux_estab.nitrogen+=acflux_estab.nitrogen*stand->frac;
+  stand->cell->output.dcflux-=acflux_estab.carbon*stand->frac;
 
   foreachpft(pft,p,&stand->pftlist)
     if(istree(pft))

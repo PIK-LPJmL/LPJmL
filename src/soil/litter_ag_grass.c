@@ -23,6 +23,6 @@ Real litter_ag_grass(const Litter *litter /**< pointer to litter data */
   sum=0;
   for(l=0;l<litter->n;l++)
     if(litter->ag[l].pft->type==GRASS || litter->ag[l].pft->type==CROP)
-      sum+=litter->ag[l].trait.leaf;
+      sum+=litter->ag[l].trait.leaf.carbon;
   return sum;
 } /* of 'litter_ag_grass' */

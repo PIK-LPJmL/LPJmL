@@ -36,7 +36,7 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
                         int npft,   /**< number of natural PFTs */
                         int ncft,   /**< number of crop PFTs   */
                         int UNUSED(year), /**< simulation year */
-                        Bool UNUSED(withdailyoutput),
+                        Bool withdailyoutput,
                         Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                         const Config *config /**< LPJ config */
                        ) /** \return runoff (mm) */
@@ -130,12 +130,12 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
   /* soil inflow: infiltration and percolation */
   if(irrig_apply>epsilon)
   {
-    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b);
+    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config);
     /* count irrigation events*/
     output->cft_irrig_events[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++;
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b);
+  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,withdailyoutput,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -151,14 +151,15 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
  */
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
-                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,config->permafrost);
+                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,
+                       npft,ncft,config);
    if(stand->cell->ml.landfrac[data->irrigation].biomass_tree>0.0 &&
       gp_pft[getpftpar(pft,id)]>0.0)
    {
      output->gcgp_count[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++;
      output->pft_gcgp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
    }
-   npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd);
+   npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
    output->mnpp+=npp*stand->frac;
    output->dcflux-=npp*stand->frac;
    output->mgpp+=gpp*stand->frac;

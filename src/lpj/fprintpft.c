@@ -25,8 +25,10 @@ void fprintpft(FILE *file,    /**< pointer to text file */
   fprintf(file,"nind:\t\t%g (1/m2)\n",pft->nind);
   fprintf(file,"wscal:\t\t%g\n",pft->wscal_mean);
   fprintf(file,"aphen:\t\t%g\n",pft->aphen);
-  fprintf(file,"bminc:\t\t%g (gC/m2)\n",pft->bm_inc);
+  fprintf(file,"bminc:\t\t%g (gC/m2) %g (gN/m2)\n",pft->bm_inc.carbon,
+          pft->bm_inc.nitrogen);
   fprintf(file,"gdd:\t\t%g\n",pft->gdd); 
+  fprintf(file,"Nleaf:\t\t%g (gN/m2)\n",pft->nleaf);
   /* Print type specific variables */
   pft->par->fprint(file,pft);
 } /* of 'fprintpft' */

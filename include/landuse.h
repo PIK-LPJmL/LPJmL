@@ -43,6 +43,7 @@ typedef enum {NO_SEASONALITY, PREC, PRECTEMP, TEMP, TEMPPREC} Seasonality;
 typedef struct
 {
   Landfrac *landfrac;     /**< land use fractions */
+  Landfrac *fertilizer_nr;   /**< reactive nitrogen fertilizer */
   Irrig_system *irrig_system; /**< irrigation system type (SURF=1,SPRINK=2,DRIP=3) */
   Manage manage;
   Cropdates *cropdates;
@@ -86,17 +87,17 @@ extern Bool fwritelandfrac(FILE *,const Landfrac [2],int);
 extern Bool freadlandfrac(FILE *,Landfrac [2],int,Bool);
 extern Real landfrac_sum(const Landfrac [2],int,Bool);
 extern Real crop_sum_frac(Landfrac *,int,Real,Bool);
-extern Real cultivate(Cell *,const Pftpar *,int,Real,Bool,int,Bool,Stand *,
-                      Bool,int,int,int,int);
+extern Stocks cultivate(Cell *,const Pftpar *,int,Real,Bool,int,Bool,Stand *,
+                      Bool,int,int,int,int,int);
 extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int);
 extern Bool getlanduse(Landuse,Cell *,int,int,const Config *);
 extern void landusechange(Cell *,const Pftpar[],int,int,int,Bool,Bool,int,Bool);
 extern Bool setaside(Cell *,Stand *,const Pftpar[],Bool,int,Bool,int);
-extern Real sowing_season(Cell *,int,int,int,Real,int,const Config *);
-extern Real sowing_prescribe(Cell *,int,int,int,int,const Config *);
-extern Real sowing(Cell *,Real,int,int,int,int,const Config *);
+extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
+extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
+extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
 extern void deforest(Cell *,Real,const Pftpar [],Bool,int,Bool,Bool,Bool,int,int,Real);
-extern Real woodconsum(Stand*,Real);
+extern Stocks woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Real,Real [],Real);
 extern void irrig_amount_river(Cell *,const Config *);
 extern void irrig_amount(Stand *,Bool,int,int);

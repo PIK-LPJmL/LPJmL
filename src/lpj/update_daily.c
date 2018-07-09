@@ -18,6 +18,8 @@
 #include "natural.h"
 #include "agriculture.h"
 
+#define length 1.0 /* characteristic length (m) */
+
 void update_daily(Cell *cell,            /**< cell pointer           */
                   Real co2,              /**< atmospheric CO2 (ppmv) */
                   Real popdensity,       /**< population density (capita/km2) */
@@ -40,12 +42,14 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real gtemp_soil[NSOILLAYER]; /* value of soil temperature response function */
   Real temp_bs;    /* temperature beneath snow */
   Real prec_energy; /* energy from temperature difference between rain and soil [J/m2]*/
-  Real flux_estab=0;
+  Stocks flux_estab={0,0};
   Real evap=0;
-  Real hetres=0;
+  Stocks hetres={0,0};
   Real *gp_pft;
   Stand *stand;
   Pft *pft;
+  Real bnf;
+  Real nh3;
   int l;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
@@ -111,9 +115,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     foreachsoillayer(l)
       cell->output.msoiltemp[l]+=stand->soil.temp[l]*ndaymonth1[month]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
-    hetres=littersom(&stand->soil,gtemp_soil);
-    cell->output.mrh+=hetres*stand->frac;
-    cell->output.dcflux+=hetres*stand->frac;
+    hetres=littersom(stand,gtemp_soil);
+    cell->output.mrh+=hetres.carbon*stand->frac;
+    cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
+    cell->output.dcflux+=hetres.carbon*stand->frac;
     if (withdailyoutput)
     {
       switch(stand->type->landusetype)
@@ -121,7 +126,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         case GRASSLAND:
           if (cell->output.daily.cft == TEMPERATE_HERBACEOUS)
           {
-            cell->output.daily.rh  += hetres;
+            cell->output.daily.rh  += hetres.carbon;
             cell->output.daily.swe += stand->soil.snowpack;
           }
           break;
@@ -129,14 +134,14 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           foreachpft(pft,p,&stand->pftlist)
             if (pft->par->id == cell->output.daily.cft)
             {
-              cell->output.daily.rh  = hetres;
+              cell->output.daily.rh  = hetres.carbon;
               cell->output.daily.swe = stand->soil.snowpack;
             }
           break;
         case NATURAL:
           if (cell->output.daily.cft == ALLNATURAL)
           {
-            cell->output.daily.rh  += hetres;
+            cell->output.daily.rh  += hetres.carbon;
             cell->output.daily.swe += stand->soil.snowpack;
           }
           break;
@@ -148,11 +153,56 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     if(config->fire==FIRE && climate.temp>0)
       stand->fire_sum+=fire_sum(&stand->soil.litter,stand->soil.w[0]);
+    if(config->with_nitrogen)
+    {
+      if(stand->soil.par->type==ROCK)
+      {
+        stand->cell->output.mn_leaching+=climate.nh4deposition*stand->frac;
+        stand->cell->output.mn_leaching+=climate.no3deposition*stand->frac;
+      }
+      else
+      {
+        /*adding daily N deposition to upper soil layer*/
+        stand->soil.NH4[0]+=climate.nh4deposition;
+        stand->soil.NO3[0]+=climate.no3deposition;
+      }
+      cell->balance.n_influx+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+#ifdef DEBUG_N
+      printf("BEFORE_STRESS[%s], day %d: ",stand->type->name,day);
+      for(l=0;l<NSOILLAYER-1;l++)
+        printf("%g ",stand->soil.NO3[l]);
+      printf("\n");
+#endif
+#ifdef DEBUG_N
+      printf("AFTER_STRESS: ");
+      for(l=0;l<NSOILLAYER-1;l++)
+        printf("%g ",stand->soil.NO3[l]);
+      printf("\n");
+#endif
+
+    } /* of if(config->with_nitrogen) */
     gp_stand=gp_sum(&stand->pftlist,co2,climate.temp,par,daylength,
-                    &gp_stand_leafon,gp_pft,&fpc_total_stand);
+                    &gp_stand_leafon,gp_pft,&fpc_total_stand,config->laimax_interpolate);
+    if(config->with_nitrogen)
+    {
+      bnf=biologicalnfixation(stand);
+      stand->soil.NH4[0]+=bnf;
+      cell->output.mbnf+=bnf*stand->frac;
+    }
     runoff=daily_stand(stand,co2,&climate,day,daylength,gp_pft,
                        gtemp_air,gtemp_soil[0],gp_stand,gp_stand_leafon,eeq,par,
                        melt,npft,ncft,year,withdailyoutput,intercrop,config);
+    if(config->with_nitrogen)
+    {
+      denitrification(stand);
+      nh3=volatilization(stand->soil.NH4[0],climate.windspeed,climate.temp,
+                         length,cell->soilph);
+      if(nh3>stand->soil.NH4[0])
+        nh3=stand->soil.NH4[0];
+      stand->soil.NH4[0]-=nh3;
+      cell->output.mn_volatilization+=nh3*stand->frac;
+      cell->balance.n_outflux+=nh3*stand->frac;
+    }
 
     cell->discharge.drunoff+=runoff*stand->frac;
     climate.prec=prec_save;
@@ -235,7 +285,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 #endif
   /* Establishment fluxes are area weighted in subroutines */
-  cell->output.flux_estab+=flux_estab;
-  cell->output.dcflux-=flux_estab;
+  cell->output.flux_estab.nitrogen+=flux_estab.nitrogen;
+  cell->output.flux_estab.carbon+=flux_estab.carbon;
+  cell->output.dcflux-=flux_estab.carbon;
   free(gp_pft);
 } /* of 'update_daily' */

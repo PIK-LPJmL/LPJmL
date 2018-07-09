@@ -23,7 +23,7 @@
     return NULL;}
 #define fscanname(file,var,name,out) {              \
     if(fscanstring(file,var,name,verb)) {                 \
-    if(verb) fprintf(stderr,"ERRROR229: Cannot read string '%s' for output '%s'.\n",name,out);\
+    if(verb) fprintf(stderr,"ERRROR229: Cannot read string '%s' for output '%s'.\n",name,out==NULL ? "N/A" : out);\
       return NULL;                              \
     }                                              \
   }

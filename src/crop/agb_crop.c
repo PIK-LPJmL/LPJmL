@@ -19,5 +19,5 @@ Real agb_crop(const Pft *pft)
 {
   const Pftcrop *crop;
   crop=pft->data;
-  return (crop->ind.leaf+crop->ind.so+crop->ind.pool)*pft->nind;
+  return (crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*pft->nind;
 } /* of 'agb_crop' */

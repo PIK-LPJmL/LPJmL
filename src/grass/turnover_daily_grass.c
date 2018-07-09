@@ -27,8 +27,10 @@ void turnover_daily_grass(Litter *litter,
   {
     grass=pft->data;
     grasspar=pft->par->data;
-    grass->turn.leaf+=grass->ind.leaf*grasspar->turnover.leaf/NDAYYEAR;
-    litter->ag[pft->litter].trait.leaf+=grass->ind.leaf*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
-    update_fbd_grass(litter,pft->par->fuelbulkdensity,grass->ind.leaf*grasspar->turnover.leaf/NDAYYEAR*pft->nind);
+    grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
+    grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
+    litter->ag[pft->litter].trait.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+    litter->ag[pft->litter].trait.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+    update_fbd_grass(litter,pft->par->fuelbulkdensity,grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind);
   }
 } /* of 'turnover_daily_grass' */

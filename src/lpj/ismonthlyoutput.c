@@ -22,6 +22,8 @@ Bool ismonthlyoutput(int index /**< Output index */
   switch(index)
   {
     case MNPP: case MRH: case MRUNOFF: case MDISCHARGE:
+    case MLEACHING: case MN2O_NIT:
+    case MN2O_DENIT: case MN2_EMIS: case MBNF:
     case MTRANSP: case MTRANSP_B: case MWATERAMOUNT: case MROOTMOIST:
     case MEVAP: case MEVAP_B: case MINTERC: case MINTERC_B: case MPET: case MSWC1: case MSWC2: case MIRRIG:
     case MRETURN_FLOW_B: case MEVAP_LAKE: case MGPP: case MEVAP_RES:
@@ -30,6 +32,7 @@ Bool ismonthlyoutput(int index /**< Output index */
     case MWET_IMAGE: case MSOILTEMP1: case MSOILTEMP2: case MSOILTEMP3:
     case MSOILTEMP4: case MSOILTEMP5: case MSOILTEMP6: case MWD_UNSUST: case MUNMET_DEMAND:
     case MPREC: case MRAIN: case MSNOWF: case MMELT: case MSWE: case MSNOWRUNOFF:
+    case MNUPTAKE: case MN_MINERALIZATION: case MN_IMMO: case MN_VOLATILIZATION:
     case MRUNOFF_SURF: case MRUNOFF_LAT: case MSEEPAGE: case MIRRIG_RW:
     case MFAPAR: case MALBEDO:
     case MPHEN_TMIN: case MPHEN_TMAX: case MPHEN_LIGHT: case MPHEN_WATER: case MWSCAL:

@@ -32,6 +32,7 @@ Real npp_crop(Pft *pft, /**< PFT variables */
               Real assim,  /**< assimilation (gC/m2) */
               Bool *negbm, /**< on return: biomass is negative */
               Real wdf,     /**< water deficit fraction */
+              Bool with_nitrogen, /**< with nitrogen (TRUE,FALSE) */
               Daily_outputs *output  /**< daily output structure */
              ) /** \return net primary productivity (gC/m2) */
 {
@@ -39,40 +40,58 @@ Real npp_crop(Pft *pft, /**< PFT variables */
   const Pftcroppar *par;
   Real npp;
   Real rosoresp,presp,gresp;
+  Cropratio cn;
   Irrigation *data;
   data=pft->stand->data;
   crop=pft->data;
   par=pft->par->data;
+  if(with_nitrogen && crop->ind.root.carbon>epsilon)
+    cn.root=crop->ind.root.nitrogen/crop->ind.root.carbon;
+  else
+    cn.root=par->cn_ratio.root;
+  if(with_nitrogen && crop->ind.so.carbon>epsilon)
+    cn.so=crop->ind.so.nitrogen/crop->ind.so.carbon;
+  else
+    cn.so=par->cn_ratio.so;
+  if(with_nitrogen && crop->ind.pool.carbon>epsilon)
+    cn.pool=crop->ind.pool.nitrogen/crop->ind.pool.carbon;
+  else
+    cn.pool=par->cn_ratio.pool;
 
-  rosoresp=crop->ind.root*par->cn_ratio.root*gtemp_soil
-           +crop->ind.so*par->cn_ratio.so*gtemp_air;
-  presp=crop->ind.pool*par->cn_ratio.pool*gtemp_air;
+  rosoresp=crop->ind.root.carbon*pft->par->respcoeff*param.k*cn.root*gtemp_soil
+           +crop->ind.so.carbon*pft->par->respcoeff*param.k*cn.so*gtemp_air;
+  presp=crop->ind.pool.carbon*pft->par->respcoeff*param.k*cn.pool*gtemp_air;
   /* pools can't be negative any more as LAI growth and SO allocation is limited by NPP now */
   gresp=(assim-rosoresp-presp)*param.r_growth;
   if(gresp<0.0)
     gresp=0.0;
   npp=assim-rosoresp-presp-gresp;
-  if((pft->bm_inc+npp <=0.0001) ||
+  if((pft->bm_inc.carbon+npp <=0.0001) ||
       (crop->lai-crop->lai_nppdeficit<=0 && !crop->senescence))
   {
     *negbm=TRUE;
-    crop->ind.pool+=npp;
-    pft->bm_inc+=npp; 
+    crop->ind.pool.carbon+=npp;
+    pft->bm_inc.carbon+=npp; 
   } 
   else 
-    allocation_daily_crop(pft,npp,wdf,output);
+    allocation_daily_crop(pft,npp,wdf,with_nitrogen,output);
   if(output!=NULL && output->cft==pft->par->id &&
      output->irrigation==data->irrigation)
   {
-    output->rroot=crop->ind.root*par->cn_ratio.root*gtemp_soil;
-    output->rso=crop->ind.so*par->cn_ratio.so*gtemp_air;
+    output->rroot=crop->ind.root.carbon*pft->par->respcoeff*param.k*cn.root*gtemp_soil;
+    output->rso=crop->ind.so.carbon*cn.so*gtemp_air;
     output->rpool=presp;
     output->gresp=gresp;
     output->npp=npp;
-    output->cleaf=crop->ind.leaf;
-    output->croot=crop->ind.root;
-    output->cso=crop->ind.so;
-    output->cpool=crop->ind.pool;
+    output->cleaf=crop->ind.leaf.carbon;
+    output->croot=crop->ind.root.carbon;
+    output->cso=crop->ind.so.carbon;
+    output->cpool=crop->ind.pool.carbon;
+    output->nleaf=crop->ind.leaf.nitrogen;
+    output->npool=crop->ind.pool.nitrogen;
+    output->nso=crop->ind.so.nitrogen;
+    output->nroot=crop->ind.root.nitrogen;
+
     output->wdf=wdf;
     output->wscal=pft->wscal;
   }

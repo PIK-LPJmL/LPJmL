@@ -98,9 +98,13 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       else
         output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_aboveground_biomass+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        output->cft_aboveground_biomass2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind);
+        &output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].carbon,
+        &output->cft_aboveground_biomass2[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].carbon,
+        (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        &output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].nitrogen,
+        &output->cft_aboveground_biomass2[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].nitrogen,
+        (crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*pft->nind);
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_pet+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_pet2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
@@ -142,8 +146,10 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         crop->tempsum);
 #else
-      output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)]=
-        (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind;
+      output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].carbon=
+        (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;
+      output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].nitrogen=
+        (crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
 #endif
       harvest_crop(output,stand,pft,npft,ncft,config->remove_residuals,config->residues_fire,
@@ -231,13 +237,13 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   /* INFILTRATION and PERCOLATION */
   if(irrig_apply>epsilon)
   {
-    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b);
+    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config);
     /* count irrigation events*/
     pft=getpft(&stand->pftlist,0);
     output->cft_irrig_events[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b);
+  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,withdailyoutput,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -253,7 +259,8 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
-                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,config->permafrost);
+                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,
+                       npft,ncft,config);
     if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)
       output_daily_crop(&output->daily,pft,gpp,rd);
 
@@ -262,7 +269,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       output->gcgp_count[pft->par->id-config->nbiomass+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++;
       output->pft_gcgp[pft->par->id-config->nbiomass+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
-    npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd,&negbm,wdf,&output->daily);
+    npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd,&negbm,wdf,config->with_nitrogen,&output->daily);
     output->mnpp+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
     output->mgpp+=gpp*stand->frac;
@@ -317,7 +324,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_aboveground_biomass+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_aboveground_biomass2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
-        (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind);
+        (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind);
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_pet+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_pet2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
@@ -359,8 +366,8 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         crop->tempsum);
 #else
-      output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)]=
-        (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind;
+      output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].carbon=
+        (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
 #endif
       harvest_crop(output,stand,pft,npft,ncft,config->remove_residuals,config->residues_fire,

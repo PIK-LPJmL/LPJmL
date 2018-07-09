@@ -19,5 +19,5 @@ Real agb_tree(const Pft *pft)
 {
   const Pfttree *tree;
   tree=pft->data;
-  return (agb_tree_sum(tree->ind)-tree->ind.debt)*pft->nind-tree->turn_litt.leaf;
+  return (agb_tree_sum(tree->ind)-tree->ind.debt.carbon)*pft->nind-tree->turn_litt.leaf.carbon;
 } /* of 'agb_tree' */

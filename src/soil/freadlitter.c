@@ -32,7 +32,7 @@ Bool freadlitter(FILE *file, /**< File pointer to binary file */
   if(litter->n)
   {
     litter->ag=newvec(Litteritem,litter->n);
-    litter->bg=newvec(Real,litter->n);
+    litter->bg=newvec(Stocks,litter->n);
     if(litter->ag==NULL || litter->bg==NULL)
       return TRUE;
     for(i=0;i<litter->n;i++)
@@ -60,7 +60,7 @@ Bool freadlitter(FILE *file, /**< File pointer to binary file */
       if(freadreal((Real *)&litter->ag[i].trait,sizeof(Trait)/sizeof(Real),
                    swap,file)!=sizeof(Trait)/sizeof(Real))
         return TRUE;
-      freadreal1(&litter->bg[i],swap,file);
+      freadreal((Real *)(&litter->bg[i]),sizeof(Stocks)/sizeof(Real),swap,file);
     }
   }
   else

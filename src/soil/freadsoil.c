@@ -28,7 +28,7 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   soil->par=soilpar;
   forrootsoillayer(l)
   {
-    freadreal((Real *)&soil->cpool[l],sizeof(Pool)/sizeof(Real),swap,file);
+    freadreal((Real *)&soil->pool[l],sizeof(Pool)/sizeof(Real),swap,file);
     soil->c_shift_fast[l]=newvec(Real,ntotpft);
     if(soil->c_shift_fast[l]==NULL)
       return TRUE;
@@ -40,6 +40,8 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   }
   if(freadlitter(file,&soil->litter,pftpar,ntotpft,swap))
     return TRUE;
+  freadreal(soil->NO3,LASTLAYER,swap,file);
+  freadreal(soil->NH4,LASTLAYER,swap,file);
   freadreal(soil->w,NSOILLAYER,swap,file);
   freadreal1(&soil->w_evap,swap,file);
   freadreal(soil->w_fw,NSOILLAYER,swap,file);
@@ -60,7 +62,7 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   forrootsoillayer(l)
    soil->k_mean[l].fast=soil->k_mean[l].slow=0;
   soil->count=0;
-  soil->decomp_litter_mean=0;
+  soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0;
 #ifdef MICRO_HEATING
   soil->litter.decomC=0;
 #endif

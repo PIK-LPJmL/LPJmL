@@ -21,7 +21,7 @@ typedef Real (*Bisectfcn)(Real,void *);
 
 /* Declaration of functions */
 
-extern Real bisect(Real (*)(Real,void *),Real,Real,void *,Real,Real,int); /* find zero */
+extern Real bisect(Real (*)(Real,void *),Real,Real,void *,Real,Real,int,int *); /* find zero */
 extern Real leftmostzero(Real (*)(Real,void *),Real,Real,void *,Real,Real,int); /* find leftmost zero */
 extern void linreg(Real *,Real *,const Real[],int); /* linear regression */
 extern void setseed(int); /* set seed of random number generator */

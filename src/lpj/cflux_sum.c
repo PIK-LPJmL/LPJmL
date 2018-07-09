@@ -24,8 +24,8 @@ Real cflux_sum(const Cell grid[],   /**< array of grid cells */
   Real sum,sum_total;
   sum=sum_total=0;
   for(cell=0;cell<config->ngridcell;cell++)
-    sum+=(grid[cell].balance.nep-grid[cell].output.firec-grid[cell].output.flux_firewood+grid[cell].output.flux_estab
-          -grid[cell].output.flux_harvest-grid[cell].balance.biomass_yield)*grid[cell].coord.area;
+    sum+=(grid[cell].balance.nep-grid[cell].output.fire.carbon-grid[cell].output.flux_firewood.carbon+grid[cell].output.flux_estab.carbon
+          -grid[cell].output.flux_harvest.carbon-grid[cell].balance.biomass_yield.carbon)*grid[cell].coord.area;
 #ifdef USE_MPI
   /*
    * Use global reduce operation in order to sum carbon fluxes of all

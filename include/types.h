@@ -82,6 +82,12 @@ typedef struct
   } file;
   Bool isjson;
 } LPJfile;
+
+typedef struct
+{
+  Real carbon;
+  Real nitrogen;
+} Stocks;
  
 /* Declaration of functions */
 

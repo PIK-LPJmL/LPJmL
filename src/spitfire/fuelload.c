@@ -75,11 +75,11 @@ void fuelload(Stand *stand,
     if(isgrass(pft))
     {
       grass=pft->data;
-      livegrass += c2biomass((grass->ind.leaf * pft->nind )* pft->phen);
+      livegrass += c2biomass((grass->ind.leaf.carbon * pft->nind )* pft->phen);
       if(pft->par->path==C3)
-        livefuel->pot_fc_lg_c3 = c2biomass(grass->ind.leaf*pft->nind*pft->phen);
+        livefuel->pot_fc_lg_c3 = c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
       else
-        livefuel->pot_fc_lg_c4 = c2biomass(grass->ind.leaf*pft->nind*pft->phen);
+        livefuel->pot_fc_lg_c4 = c2biomass(grass->ind.leaf.carbon*pft->nind*pft->phen);
     }
   }
   fuel->char_net_fuel = net_fuel +(1.0-MINER_TOT)*livegrass*1e-3;  /*in kg biomass */

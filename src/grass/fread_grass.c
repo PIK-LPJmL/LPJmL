@@ -26,6 +26,8 @@ Bool fread_grass(FILE *file, /**< pointer to binary file */
   if(grass==NULL)
     return TRUE;
   freadreal((Real *)&grass->turn,sizeof(Grassphys)/sizeof(Real),swap,file);
+  freadreal((Real *)&grass->max_leaf,1,swap,file);
+  freadreal(&grass->excess_carbon,1,swap,file);
   freadreal((Real *)&grass->ind,sizeof(Grassphys)/sizeof(Real),swap,file);
-  return freadreal((Real *)&grass->max_leaf,1,swap,file)!=1;
+  return freadreal((Real *)&grass->falloc,sizeof(Grassphyspar)/sizeof(Real),swap,file)!=sizeof(Grassphyspar)/sizeof(Real);
 } /* of 'fread_grass' */

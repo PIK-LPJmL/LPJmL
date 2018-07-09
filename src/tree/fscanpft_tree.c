@@ -32,15 +32,24 @@
     return TRUE; \
   }
 #define fscantreephys2(verb,file,var,pft,name)\
-  if(fscantreephys(file,var,name,verb))\
+  if(fscantreephyspar(file,var,name,verb))\
   {\
     if(verb)\
     fprintf(stderr,"ERROR111: Cannot read '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 
-static Bool fscantreephys(LPJfile *file,Treephys *phys,const char *name,
-                          Verbosity verb)
+#define fscanratio2(verb,file,var,pft,name)\
+  if(fscanratio(file,var,name,verb))\
+  {\
+    if(verb)\
+    fprintf(stderr,"ERROR111: Cannot read '%s' for PFT '%s'.\n",name,pft); \
+    return TRUE; \
+  }
+
+
+static Bool fscantreephyspar(LPJfile *file,Treephyspar *phys,const char *name,
+                             Verbosity verb)
 {
   LPJfile s;
   if(fscanstruct(file,&s,name,verb))
@@ -54,7 +63,22 @@ static Bool fscantreephys(LPJfile *file,Treephys *phys,const char *name,
   if(phys->leaf<=0 || phys->sapwood<=0 || phys->root<=0)
     return TRUE;
   return FALSE;
-} /* of 'fscantreephys' */
+} /* of 'fscantreephyspar' */
+
+static Bool fscanratio(LPJfile *file,Treeratio *ratio,const char *name,
+                       Verbosity verb)
+{
+  LPJfile s;
+  if(fscanstruct(file,&s,name,verb))
+    return TRUE;
+  if(fscanreal(&s,&ratio->sapwood,"sapwood",verb))
+    return TRUE;
+  if(fscanreal(&s,&ratio->root,"root",verb))
+    return TRUE;
+  if(ratio->sapwood<=0 || ratio->root<=0)
+    return TRUE;
+  return FALSE;
+} /* of 'fscanratio' */
 
 Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
                    Pftpar *pft,   /**< Pointer to Pftpar array */
@@ -81,6 +105,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   pft->actual_lai=actual_lai_tree;
   pft->free=free_tree;
   pft->vegc_sum=vegc_sum_tree;
+  pft->vegn_sum=vegn_sum_tree;
   pft->adjust=adjust_tree;
   pft->reduce=reduce_tree;
   pft->fprintpar=fprintpar_tree;
@@ -88,8 +113,11 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   pft->turnover_monthly=turnover_monthly_tree;
   pft->turnover_daily=turnover_daily_tree;
   pft->albedo_pft=albedo_tree;
-  tree=new(Pfttreepar);
+  pft->nuptake=nuptake_tree;
+  pft->ndemand=ndemand_tree;
+  pft->vmaxlimit=vmaxlimit_tree;
   pft->agb=agb_tree;
+  tree=new(Pfttreepar);
   check(tree);
   pft->data=tree;
   fscanint2(verb,file,&tree->leaftype,pft->name,"leaftype");
@@ -116,8 +144,10 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   tree->turnover.sapwood=1.0/tree->turnover.sapwood;
   tree->turnover.leaf=1.0/tree->turnover.leaf;
   fscantreephys2(verb,file,&tree->cn_ratio,pft->name,"cn_ratio");
-  tree->cn_ratio.sapwood=pft->respcoeff*param.k/tree->cn_ratio.sapwood;
-  tree->cn_ratio.root=pft->respcoeff*param.k/tree->cn_ratio.root;
+  tree->cn_ratio.leaf=1/tree->cn_ratio.leaf;
+  tree->cn_ratio.sapwood=1/tree->cn_ratio.sapwood;
+  tree->cn_ratio.root=1/tree->cn_ratio.root;
+  fscanratio2(verb,file,&tree->ratio,pft->name,"ratio");
   fscanreal2(verb,file,&tree->crownarea_max,pft->name,"crownarea_max");
   fscanreal2(verb,file,&wood_sapl,pft->name,"wood_sapl");
   if(pft->phenology==SUMMERGREEN)
@@ -146,15 +176,18 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   fscanreal2(verb,file,&tree->k_est,pft->name,"k_est");
   fscanint2(verb,file,&tree->rotation,pft->name,"rotation");
   fscanint2(verb,file,&tree->max_rotation_length,pft->name,"max_rotation_length");
-  tree->sapl.leaf=pow(pft->lai_sapl*tree->allom1*pow(wood_sapl,reinickerp)*
+  tree->sapl.leaf.carbon=pow(pft->lai_sapl*tree->allom1*pow(wood_sapl,reinickerp)*
                   pow(4*pft->sla/M_PI/k_latosa,reinickerp*0.5)/pft->sla,
                   2/(2-reinickerp));
-  stemdiam=wood_sapl*sqrt(4*tree->sapl.leaf*pft->sla/M_PI/k_latosa);
+  stemdiam=wood_sapl*sqrt(4*tree->sapl.leaf.carbon*pft->sla/M_PI/k_latosa);
   height_sapl=tree->allom2*pow(stemdiam,tree->allom3);
-  tree->sapl.sapwood=wooddens*height_sapl*tree->sapl.leaf*pft->sla/k_latosa;
-  tree->sapl.heartwood=(wood_sapl-1)*tree->sapl.sapwood;
-  tree->sapl.root=(1.0/pft->lmro_ratio)*tree->sapl.leaf;
+  tree->sapl.sapwood.carbon=wooddens*height_sapl*tree->sapl.leaf.carbon*pft->sla/k_latosa;
+  tree->sapl.heartwood.carbon=(wood_sapl-1)*tree->sapl.sapwood.carbon;
+  tree->sapl.root.carbon=(1.0/pft->lmro_ratio)*tree->sapl.leaf.carbon;
   tree->sapling_C=phys_sum_tree(tree->sapl)*tree->k_est;
-
+  tree->sapl.leaf.nitrogen=tree->sapl.leaf.carbon*tree->cn_ratio.leaf;
+  tree->sapl.heartwood.nitrogen=tree->sapl.heartwood.carbon*tree->cn_ratio.sapwood;
+  tree->sapl.sapwood.nitrogen=tree->sapl.sapwood.carbon*tree->cn_ratio.sapwood;
+  tree->sapl.root.nitrogen=tree->sapl.root.carbon*tree->cn_ratio.root;
   return FALSE;
 } /* of 'fscanpft_tree' */

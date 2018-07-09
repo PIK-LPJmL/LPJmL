@@ -76,6 +76,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   String s;
   Pftpar *pft;
   Real totalroots;
+  Limit cnratio;
   Bool isbiomass;
   if (verb>=VERB) puts("// PFT parameters");
   /* Read total number of defined PFTs */
@@ -223,6 +224,20 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,&subitem,&pft->k_litter10.wood,pft->name,"wood");
     fscanpftreal(verb,&item,&pft->k_litter10.q10_wood,pft->name,
                  "k_litter10_q10_wood");
+    fscanpftreal(verb,&item,&pft->vmax_up,pft->name,"vmax_up");
+    fscanpftreal(verb,&item,&pft->kNmin,pft->name,"kNmin");
+    fscanpftreal(verb,&item,&pft->KNmin,pft->name,"KNmin");
+    fscanpftlimit(verb,&item,&cnratio,pft->name,"cnratio_leaf");
+    pft->ncleaf.low=1/cnratio.high;
+    pft->ncleaf.high=1/cnratio.low;
+    fscanpftreal(verb,&item,&pft->knstore,pft->name,"knstore");
+    fscanpftreal(verb,&item,&pft->fn_turnover,pft->name,"fn_turnover");
+    if(pft->fn_turnover<0 || pft->fn_turnover>1.)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR201: Invalid value %g for path of PFT '%s'.\n",pft->fn_turnover,pft->name);
+      return NULL;
+    }
     fscanpftreal(verb,&item,&pft->windspeed,pft->name,"windspeed_dampening");
     fscanpftreal(verb,&item,&pft->roughness,pft->name,
                  "roughness_length");

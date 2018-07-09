@@ -89,6 +89,19 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
   }
   else
     store->burntarea=NULL;
+   if(climate->data.no3deposition!=NULL)
+  {
+    store->no3deposition=newvec(Real,climate->file_no3deposition.n*nyear);
+  }
+  else
+    store->no3deposition=NULL;
+  if(climate->data.nh4deposition!=NULL)
+  {
+    store->nh4deposition=newvec(Real,climate->file_nh4deposition.n*nyear);
+    checkptr(store->nh4deposition);
+  }
+  else
+    store->nh4deposition=NULL;
   if(climate->data.lightning!=NULL)
   {
     store->lightning=newvec(Real,climate->file_lightning.n);
@@ -156,6 +169,18 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
       for(j=0;j<climate->file_burntarea.n;j++)
         store->burntarea[count++]=climate->data.burntarea[j];
     }
+    if(store->no3deposition!=NULL)
+    {
+      count=climate->file_no3deposition.n*(year-firstyear);
+      for(j=0;j<climate->file_no3deposition.n;j++)
+        store->no3deposition[count++]=climate->data.no3deposition[j];
+    }
+    if(store->nh4deposition!=NULL)
+    {
+      count=climate->file_nh4deposition.n*(year-firstyear);
+      for(j=0;j<climate->file_nh4deposition.n;j++)
+        store->nh4deposition[count++]=climate->data.nh4deposition[j];
+    }
   }
   return FALSE;
 } /* of 'storeclimate' */
@@ -221,6 +246,18 @@ void restoreclimate(Climate *climate,         /**< pointer to climate data */
     for(i=0;i<climate->file_burntarea.n;i++)
       climate->data.burntarea[i]=store->burntarea[index++];
   }
+  if(store->no3deposition!=NULL)
+  {
+    index=year*climate->file_no3deposition.n;
+    for(i=0;i<climate->file_no3deposition.n;i++)
+      climate->data.no3deposition[i]=store->no3deposition[index++];
+  }
+  if(store->nh4deposition!=NULL)
+  {
+    index=year*climate->file_nh4deposition.n;
+    for(i=0;i<climate->file_nh4deposition.n;i++)
+      climate->data.nh4deposition[i]=store->nh4deposition[index++];
+  }
 } /* of 'restoreclimate' */
 
 void moveclimate(Climate *climate,  /**< Pointer to climate data */
@@ -246,4 +283,8 @@ void moveclimate(Climate *climate,  /**< Pointer to climate data */
     climate->data.tamp=store->tamp+climate->file_tamp.n*year;
   if(climate->data.burntarea!=NULL)
     climate->data.burntarea=store->burntarea+climate->file_burntarea.n*year;
+  if(climate->data.no3deposition!=NULL)
+    climate->data.no3deposition=store->no3deposition+climate->file_no3deposition.n*year;
+  if(climate->data.nh4deposition!=NULL)
+    climate->data.nh4deposition=store->nh4deposition+climate->file_nh4deposition.n*year;
 } /* of 'moveclimate' */

@@ -57,8 +57,8 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
   } 
   if(!cell->skip)
   {
-    freadreal(cell->balance.estab_storage_tree,2,swap,file);
-    freadreal(cell->balance.estab_storage_grass,2,swap,file);
+    freadreal((Real *)cell->balance.estab_storage_tree,2*sizeof(Stocks)/sizeof(Real),swap,file);
+    freadreal((Real *)cell->balance.estab_storage_grass,2*sizeof(Stocks)/sizeof(Real),swap,file);
 
     /* cell has valid soilcode */
     freadreal1(&cell->discharge.waterdeficit,swap,file);
@@ -96,7 +96,9 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     if(freadint(cell->ml.gs,2*ncft,swap,file)!=2*ncft)
       return TRUE;
     if(cell->ml.landfrac!=NULL && config->landuse_restart)
-      return freadlandfrac(file,cell->ml.landfrac,ncft,swap);
+      freadlandfrac(file,cell->ml.landfrac,ncft,swap);
+    if(cell->ml.fertilizer_nr!=NULL && config->landuse_restart)
+      freadlandfrac(file,cell->ml.fertilizer_nr,ncft,swap);
   }
   return FALSE;
 } /* of 'freadcell' */

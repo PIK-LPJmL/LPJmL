@@ -23,28 +23,26 @@ void allocation_today(Stand *setasidestand, /**< pointer to setaside stand */
   int p,npft;
   Real *fpc_inc;
   Pft *pft;
-  foreachpft(pft,p,&setasidestand->pftlist)
-  {
-    /* only grass PFTs are established on setaside stand */
-    if(allocation_grass(&setasidestand->soil.litter,pft))
-    {
-      /* kill PFT from list of established PFTs */
-      litter_update_grass(&setasidestand->soil.litter,pft,pft->nind);
-      delpft(&setasidestand->pftlist,p);
-      p--; /* adjust loop variable */
-    }
-    else
-      pft->bm_inc=0;
-  } /* of foreachpft */
-  /* separate calculation of grass FPC after all grass PFTs have been updated */
-  npft=getnpft(&setasidestand->pftlist);
+  npft=getnpft(&setasidestand->pftlist); /* get number of established PFTs */
   if(npft>0) /* nonzero? */
   {
     fpc_inc=newvec(Real,npft);
     check(fpc_inc);
     foreachpft(pft,p,&setasidestand->pftlist)
-      if(pft->par->type==GRASS)
-        fpc_inc[p]=fpc_grass(pft);
+    {
+      /* only grass PFTs are established on setaside stand */
+      if(allocation_grass(&setasidestand->soil.litter,pft,fpc_inc+p))
+      {
+        /* kill PFT from list of established PFTs */
+        fpc_inc[p]=fpc_inc[getnpft(&setasidestand->pftlist)-1]; /*moved here by W. von Bloh */
+        litter_update_grass(&setasidestand->soil.litter,pft,pft->nind);
+        delpft(&setasidestand->pftlist,p);
+        p--; /* adjust loop variable */
+      }
+      else
+       // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
+       pft->bm_inc.carbon=0;
+    } /* of foreachpft */
     light(setasidestand,ntypes,fpc_inc);
     free(fpc_inc);
   }

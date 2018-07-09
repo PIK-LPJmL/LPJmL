@@ -17,7 +17,8 @@
 
 void init_grass(Pft *pft)
 {
-  pft->bm_inc=0;
+  pft->nleaf=0;
+  pft->bm_inc.carbon=pft->wscal_mean=pft->vscal=0;
   pft->nind=1;
 #ifdef DAILY_ESTABLISHMENT
   pft->established=FALSE;

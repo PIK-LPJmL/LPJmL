@@ -31,7 +31,7 @@ typedef struct
 
 extern Real area_burnt(Real,Real,Real,Real, int,const Pftlist *);
 extern Real deadfuel_consumption(const Litter *,Fuel *, Real);
-extern Real fuel_consum_total(const Litter *,const Fuel *);
+extern Stocks fuel_consum_total(const Litter *,const Fuel *);
 extern Real firedangerindex(Real,Real,Real,const Pftlist *);
 extern Real firemortality_tree(Pft *,const Fuel *,Livefuel *,Real,Real);
 extern void fraction_of_consumption(Fuel *);
@@ -44,7 +44,7 @@ extern Bool readpopdens(Popdens,int,const Cell *,const Config *);
 extern Real humanignition(Real,Ignition *);
 extern Bool initignition(Cell *,const Config *);
 extern Popdens initpopdens(const Config *);          
-extern Real litter_update_fire(Litter *,Tracegas *,const Fuel *);
+extern Stocks litter_update_fire(Litter *,Tracegas *,const Fuel *);
 extern Real rateofspread(Real,Fuel *);
 extern Real surface_fire_intensity(Real, Real, Real);
 extern void update_fbd_tree(Litter*,Real,Real,int);

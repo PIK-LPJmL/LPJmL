@@ -33,12 +33,12 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   Pft *pft;
   Real *fpc_inc;
   Real fire_frac;
-  Real firec;
   Real fpc_obs_cor;
+  Stocks flux;
 #ifndef DAILY_ESTABLISHMENT
-  Real acflux_estab;
+  Stocks acflux_estab;
 #endif
-  Real firewood=0;
+  Stocks firewood={0,0};
 
   pft_len=getnpft(&stand->pftlist); /* get number of established PFTs */
   if(pft_len>0)
@@ -61,7 +61,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
              pft->bm_inc,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
       
-      if(annualpft(stand,pft,fpc_inc+p,isdaily))
+      if(annualpft(stand,pft,fpc_inc+p,config->new_phenology,isdaily))
       {
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
@@ -82,7 +82,8 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     if(year>=config->firstyear && config->firewood==FIREWOOD)
     {
       firewood=woodconsum(stand,popdens);
-      stand->cell->output.flux_firewood+=firewood*stand->frac;
+      stand->cell->output.flux_firewood.carbon+=firewood.carbon*stand->frac;
+      stand->cell->output.flux_firewood.nitrogen+=firewood.nitrogen*stand->frac;
       foreachpft(pft,p,&stand->pftlist)
         if(pft->nind<epsilon)
         {
@@ -99,15 +100,23 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   {  
     fire_frac=fire_prob(&stand->soil.litter,stand->fire_sum);
     stand->cell->output.firef+=1.0/fire_frac;
-    firec=firepft(&stand->soil.litter,
-                  &stand->pftlist,fire_frac)*stand->frac;
-    stand->cell->output.firec+=firec;
-    stand->cell->output.dcflux+=firec;
+    flux=firepft(&stand->soil.litter,
+                  &stand->pftlist,fire_frac);
+    stand->cell->output.fire.carbon+=flux.carbon*stand->frac;
+    if(flux.nitrogen<0)
+      stand->cell->output.fire.nitrogen+=flux.nitrogen*stand->frac;
+    else
+    {
+      stand->cell->output.fire.nitrogen+=flux.nitrogen*stand->frac*(1-param.q_ash);
+      stand->soil.NO3[0]+=flux.nitrogen*param.q_ash;
+    }
+    stand->cell->output.dcflux+=flux.carbon*stand->frac;
   }
 #ifndef DAILY_ESTABLISHMENT
   acflux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
-  stand->cell->output.flux_estab+=acflux_estab*stand->frac;
-  stand->cell->output.dcflux-=acflux_estab*stand->frac;
+  stand->cell->output.flux_estab.carbon+=acflux_estab.carbon*stand->frac;
+  stand->cell->output.flux_estab.nitrogen+=acflux_estab.nitrogen*stand->frac;
+  stand->cell->output.dcflux-=acflux_estab.carbon*stand->frac;
 #endif
   foreachpft(pft,p,&stand->pftlist)
   {

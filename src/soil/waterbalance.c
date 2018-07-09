@@ -71,22 +71,14 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   if (*evap>(w_evap-w_evap_ice))
     *evap=w_evap-w_evap_ice;
 
-  *evap=min(*evap,eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet); /*close the energy balance*/
+  //*evap=min(*evap,eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet); /*close the energy balance*/
 
   if(stand->type->landusetype!=NATURAL && data_irrig->irrigation && data_irrig->irrig_system==DRIP)
     *evap*=(1-(param.drip_evap*(1-*frac_g_evap))); /*reduced blue soil evaporation in case of DRIP irrigation */
 
   /*if gc exceeds 60 mm/s evap is negative after the former line*/
   if(*evap<0)
-  {
-    if(*evap<-epsilon)
-    {
-      fprintf(stderr,"ERROR212: Cell (%s) has negative evaporation, evap= %3.5f -> truncated to zero.\n",
-              sprintcoord(line,&stand->cell->coord),*evap);
-      fflush(stderr);
-    }
     *evap=0;
-  }
 
   evap_ratio=(w_evap-w_evap_ice>0) ? *evap/(w_evap-w_evap_ice) : 1;
 

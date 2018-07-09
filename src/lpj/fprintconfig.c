@@ -52,13 +52,25 @@ static Bool isnetcdfinput(const Config *config)
   }
   else if(config->cloud_filename.fmt==CDF)
     return TRUE;
+  if(config->with_nitrogen)
+  {
+    if(config->no3deposition_filename.fmt==CDF)
+      return TRUE;
+    if(config->nh4deposition_filename.fmt==CDF)
+      return TRUE;
+    if(config->soilph_filename.fmt==CDF)
+      return TRUE;
+  }
+  if(config->with_nitrogen || config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
+  {
+    if(config->wind_filename.fmt==CDF)
+       return TRUE;
+  }
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
     if(config->tamp_filename.fmt==CDF)
        return TRUE;
     if(config->fire==SPITFIRE_TMAX && config->tmax_filename.fmt==CDF)
-       return TRUE;
-    if(config->wind_filename.fmt==CDF)
        return TRUE;
     if(config->lightning_filename.fmt==CDF)
        return TRUE;
@@ -77,6 +89,9 @@ static Bool isnetcdfinput(const Config *config)
       return TRUE;
     if(config->sdate_option==PRESCRIBED_SDATE && config->sdate_filename.fmt==CDF)
       return TRUE;
+    if(config->with_nitrogen && config->fertilizer_nr_filename.fmt==CDF)
+      return TRUE;
+     
   }
   if(config->reservoir)
   {
@@ -177,6 +192,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   }
   if(config->river_routing)
     len=printsim(file,len,&count,"river routing");
+  if(config->with_nitrogen)
+    len=printsim(file,len,&count,"nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
   if(config->prescribe_landcover)
@@ -205,6 +222,11 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       len+=fprintf(file,", ");
       len=fputstring(file,len,"intercropping",78);
     }
+    if(config->istimber)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"timber",78);
+    }
     if(config->remove_residuals)
     {
       len+=fprintf(file,", ");
@@ -225,6 +247,11 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       len+=fprintf(file,", ");
       snprintf(s,STRING_LEN,"const LAImax=%.1f",config->laimax);
       len=fputstring(file,len,s,78);
+    }
+    else if(config->laimax_interpolate==LAIMAX_PAR)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"pft.par LAImax",78);
     }
     if(config->sdate_option==FIXED_SDATE)
     {
@@ -285,7 +312,15 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   }
   else
     printinputfile(file,"cloud",&config->cloud_filename,iscdfinput);
+  if(config->with_nitrogen)
+  {
+    printinputfile(file,"no3_depo",&config->no3deposition_filename,iscdfinput);
+    printinputfile(file,"nh4_depo",&config->nh4deposition_filename,iscdfinput);
+    printinputfile(file,"soilpH",&config->soilph_filename,iscdfinput);
+  }
   printinputfile(file,"co2",&config->co2_filename,iscdfinput);
+  if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    printinputfile(file,"windspeed",&config->wind_filename,iscdfinput);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->tmax_filename.name!=NULL)
@@ -295,7 +330,6 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     }
     else
       printinputfile(file,"temp ampl",&config->tamp_filename,iscdfinput);
-    printinputfile(file,"windspeed",&config->wind_filename,iscdfinput);
     printinputfile(file,"lightning",&config->lightning_filename,iscdfinput);
     printinputfile(file,"human ign",&config->human_ignition_filename,iscdfinput);
   }
@@ -316,6 +350,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       printinputfile(file,"landuse",&config->landuse_filename,iscdfinput);
     if(config->sdate_option==PRESCRIBED_SDATE)
       printinputfile(file,"sdates",&config->sdate_filename,iscdfinput);
+    if(config->with_nitrogen)
+      printinputfile(file,"fertilizer",&config->fertilizer_nr_filename,iscdfinput);
   }
   if(config->reservoir)
   {

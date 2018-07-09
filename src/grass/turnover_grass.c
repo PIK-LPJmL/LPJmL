@@ -24,10 +24,11 @@
  *
  */
 
-Real turnover_grass(Litter *litter, /* Litter pool */
-                    Pft *pft,       /* Pointer to PFT variables */
-                    Real fraction   /* fraction of annual turnover (0..1) */
-                   )                /* returns turnover (gC/m2) */
+Stocks turnover_grass(Litter *litter, /**< Litter pool */
+                      Pft *pft,       /**< Pointer to PFT variables */
+                      Bool new_phenology, /**< new phenology (TRUE/FALSE) */
+                      Real fraction   /**< fraction of annual turnover (0..1) */
+                     )                /** \return turnover (gC/m2,gN/m2) */
 {
   Pftgrass *grass;
   const Pftgrasspar *grasspar;
@@ -36,33 +37,53 @@ Real turnover_grass(Litter *litter, /* Litter pool */
   grass=pft->data;
   grasspar=getpftpar(pft,data);
   /* reproduction */
-  if(pft->bm_inc>0)
+  if(pft->bm_inc.carbon>0)
   {
-    reprod=pft->bm_inc*grasspar->reprod_cost*fraction;
-    litter->ag[pft->litter].trait.leaf+=reprod;
-    pft->bm_inc     -= reprod;
+    reprod=pft->bm_inc.carbon*grasspar->reprod_cost*fraction;
+    litter->ag[pft->litter].trait.leaf.carbon+=reprod;
+    pft->bm_inc.carbon     -= reprod;
   }
+  if(pft->bm_inc.nitrogen>0)
+  {
+    reprod=pft->bm_inc.nitrogen*grasspar->reprod_cost*fraction;
+    litter->ag[pft->litter].trait.leaf.nitrogen+=reprod;
+    pft->bm_inc.nitrogen     -= reprod;
+  }
+
   /* turnover */
 #ifndef YEARLY_TURNOVER
   if (pft->stand->type->landusetype==NATURAL)
   {
     gturn.root=grass->turn.root;
     gturn.leaf=grass->turn.leaf;
-    grass->turn.root=grass->turn.leaf=0.0;
-
+    grass->turn.root.carbon=grass->turn.leaf.carbon=0.0;
+    grass->turn.root.nitrogen=grass->turn.leaf.nitrogen=0.0;
+    if(new_phenology)
+      litter->ag[pft->litter].trait.leaf.nitrogen-=gturn.leaf.nitrogen*pft->nind*(1-pft->par->fn_turnover);
   }
   else
 #endif 
  {
 
-    gturn.root=grass->ind.root*grasspar->turnover.root*fraction;
-    gturn.leaf=grass->ind.leaf*grasspar->turnover.leaf*fraction;
-    litter->ag[pft->litter].trait.leaf+=gturn.leaf*pft->nind;
-    update_fbd_grass(litter,pft->par->fuelbulkdensity,gturn.leaf*pft->nind);
-    litter->bg[pft->litter]+=gturn.root*pft->nind;
+    gturn.root.carbon=grass->ind.root.carbon*grasspar->turnover.root*fraction;
+    gturn.root.nitrogen=grass->ind.root.nitrogen*grasspar->turnover.root*fraction;
+    gturn.leaf.carbon=grass->ind.leaf.carbon*grasspar->turnover.leaf*fraction;
+    gturn.leaf.nitrogen=grass->ind.leaf.nitrogen*grasspar->turnover.leaf*fraction;
+    litter->ag[pft->litter].trait.leaf.carbon+=gturn.leaf.carbon*pft->nind;
+    litter->ag[pft->litter].trait.leaf.nitrogen+=gturn.leaf.nitrogen*pft->nind;
+    update_fbd_grass(litter,pft->par->fuelbulkdensity,gturn.leaf.carbon*pft->nind);
+    litter->bg[pft->litter].carbon+=gturn.root.carbon*pft->nind;
+    litter->bg[pft->litter].nitrogen+=gturn.root.nitrogen*pft->nind;
   }
-  grass->ind.leaf-= gturn.leaf;
-  grass->ind.root-= gturn.root;
-  
-  return gturn.leaf+gturn.root;
+  grass->ind.leaf.carbon-= gturn.leaf.carbon;
+  grass->ind.leaf.nitrogen-= gturn.leaf.nitrogen;
+  grass->ind.root.carbon-= gturn.root.carbon;
+  grass->ind.root.nitrogen-= gturn.root.nitrogen;
+  pft->bm_inc.nitrogen+= (gturn.root.nitrogen+gturn.leaf.nitrogen)*pft->nind*(1-pft->par->fn_turnover);
+  /* turnover of excess carbon as root exudates */
+  litter->bg[pft->litter].carbon+=grass->excess_carbon*pft->nind*grasspar->turnover.root;
+  grass->excess_carbon-=grass->excess_carbon*grasspar->turnover.root;
+  gturn.leaf.carbon+=gturn.root.carbon;
+  gturn.leaf.nitrogen+=gturn.root.nitrogen;
+  return gturn.leaf;
 } /* of 'turnover_grass' */

@@ -23,9 +23,24 @@ Real litter_ag_sum(const Litter *litter /**< pointer to litter data */
   sum=0;
   for(l=0;l<litter->n;l++)
   {
-    sum+=litter->ag[l].trait.leaf;
+    sum+=litter->ag[l].trait.leaf.carbon;
     for(i=0;i<NFUELCLASS;i++)
-      sum+=litter->ag[l].trait.wood[i];
+      sum+=litter->ag[l].trait.wood[i].carbon;
   }
   return sum;
 } /* of litter_ag_sum */
+
+
+Real litter_ag_sum_n(const Litter *litter)
+{
+  int i,l;
+  Real sum;
+  sum=0;
+  for(l=0;l<litter->n;l++)
+  {
+    sum+=litter->ag[l].trait.leaf.nitrogen;
+    for(i=0;i<NFUELCLASS;i++)
+      sum+=litter->ag[l].trait.wood[i].nitrogen;
+  }
+  return sum;
+} /* of litter_ag_sum_n */

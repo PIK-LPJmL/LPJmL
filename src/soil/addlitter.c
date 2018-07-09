@@ -23,14 +23,19 @@ int addlitter(Litter *litter,    /**< pointer to litter */
   litter->ag=(Litteritem *)realloc(litter->ag,
                                    sizeof(Litteritem)*(litter->n+1));
   check(litter->ag);
-  litter->bg=(Real *)realloc(litter->bg,
-                                   sizeof(Real)*(litter->n+1));
+  litter->bg=(Stocks *)realloc(litter->bg,
+                                   sizeof(Stocks)*(litter->n+1));
   check(litter->bg);
   litter->ag[litter->n].pft=pft;
-  litter->ag[litter->n].trait.leaf=0;
-  litter->bg[litter->n]=0;
+  litter->ag[litter->n].trait.leaf.carbon=0;
+  litter->ag[litter->n].trait.leaf.nitrogen=0;
+  litter->bg[litter->n].carbon=0;
+  litter->bg[litter->n].nitrogen=0;
   for(i=0;i<NFUELCLASS;i++)
-    litter->ag[litter->n].trait.wood[i]=0;
+  {
+    litter->ag[litter->n].trait.wood[i].carbon=0;
+    litter->ag[litter->n].trait.wood[i].nitrogen=0;
+  }
   litter->n++;
   return litter->n;
 } /* of 'addlitter' */

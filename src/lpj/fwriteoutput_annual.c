@@ -261,15 +261,23 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.firec;
+        vec[count++]=(float)grid[cell].output.fire.carbon;
     writeannual(output,FIREC,vec,year,config);
+  }
+  if(output->files[FIREN].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+        vec[count++]=(float)grid[cell].output.fire.nitrogen;
+    writeannual(output,FIREN,vec,year,config);
   }
   if(output->files[FLUX_FIREWOOD].isopen)
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.flux_firewood;
+        vec[count++]=(float)grid[cell].output.flux_firewood.carbon;
     writeannual(output,FLUX_FIREWOOD,vec,year,config);
   }
   if(output->files[FIREF].isopen)
@@ -305,9 +313,9 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         foreachstand(stand,s,grid[cell].standlist)
         {
           for(p=0;p<stand->soil.litter.n;p++)
-            vec[count]+=(float)(stand->soil.litter.bg[p]*stand->frac);
+            vec[count]+=(float)(stand->soil.litter.bg[p].carbon*stand->frac);
           forrootsoillayer(l)
-            vec[count]+=(float)((stand->soil.cpool[l].slow+stand->soil.cpool[l].fast)*stand->frac);
+            vec[count]+=(float)((stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac);
         }
         count++;
       }
@@ -323,7 +331,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         foreachstand(stand,s,grid[cell].standlist)
         {
           forrootsoillayer(l)
-            vec[count]+=(float)((stand->soil.cpool[l].slow)*stand->frac);
+            vec[count]+=(float)((stand->soil.pool[l].slow.carbon)*stand->frac);
           vec[count]+=(float)(stand->soil.YEDOMA*stand->frac);
         }
         count++;
@@ -344,6 +352,104 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
       writeannual(output,LITC,vec,year,config);
   }
+  if(output->files[VEGN].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        foreachstand(stand,s,grid[cell].standlist)
+          /*if(stand->type->landusetype==NATURAL) */
+            foreachpft(pft,p,&stand->pftlist)
+               vec[count]+=(float)(vegn_sum(pft)*stand->frac);
+        count++;
+      }
+    writeannual(output,VEGN,vec,year,config);
+  }
+  if(output->files[SOILN].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        foreachstand(stand,s,grid[cell].standlist)
+        {
+          for(p=0;p<stand->soil.litter.n;p++)
+            vec[count]+=(float)(stand->soil.litter.bg[p].nitrogen*stand->frac);
+          forrootsoillayer(l)
+            vec[count]+=(float)((stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac);
+        }
+        count++;
+      }
+    writeannual(output,SOILN,vec,year,config);
+  }
+  if(output->files[SOILN_SLOW].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        foreachstand(stand,s,grid[cell].standlist)
+        {
+          forrootsoillayer(l)
+            vec[count]+=(float)((stand->soil.pool[l].slow.nitrogen)*stand->frac);
+          /*vec[count]+=(float)(stand->soil.YEDOMA*stand->frac);*/
+        }
+        count++;
+      }
+    writeannual(output,SOILN_SLOW,vec,year,config);
+  }
+  if(output->files[LITN].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        foreachstand(stand,s,grid[cell].standlist)
+          /* if(stand->type->landusetype==NATURAL) */
+            vec[count]+=(float)(litter_ag_sum_n(&stand->soil.litter)*stand->frac);
+        count++;
+      }
+      writeannual(output,LITN,vec,year,config);
+  }
+  if(output->files[SOILNO3].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        foreachstand(stand,s,grid[cell].standlist)
+        {
+          forrootsoillayer(l)
+            vec[count]+=(float)((stand->soil.NO3[l])*stand->frac);
+          /*vec[count]+=(float)(stand->soil.YEDOMA*stand->frac);*/
+        }
+        count++;
+      }
+    writeannual(output,SOILNO3,vec,year,config);
+  }
+  if(output->files[SOILNH4].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        foreachstand(stand,s,grid[cell].standlist)
+        {
+          forrootsoillayer(l)
+            vec[count]+=(float)((stand->soil.NH4[l])*stand->frac);
+          /*vec[count]+=(float)(stand->soil.YEDOMA*stand->frac);*/
+        }
+        count++;
+      }
+      writeannual(output,SOILNH4,vec,year,config);
+  }
   if(output->files[MAXTHAW_DEPTH].isopen)
   {
     count=0;
@@ -357,39 +463,70 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
       writeannual(output,MAXTHAW_DEPTH,vec,year,config);
   }
-  if(output->files[FLUX_ESTAB].isopen)
+  if(output->files[FLUX_ESTABC].isopen)
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.flux_estab;
-    writeannual(output,FLUX_ESTAB,vec,year,config);
+        vec[count++]=(float)grid[cell].output.flux_estab.carbon;
+    writeannual(output,FLUX_ESTABC,vec,year,config);
   }
-  if(output->files[HARVEST].isopen)
+  if(output->files[FLUX_ESTABN].isopen)
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.flux_harvest;
-      writeannual(output,HARVEST,vec,year,config);
+        vec[count++]=(float)grid[cell].output.flux_estab.nitrogen;
+    writeannual(output,FLUX_ESTABN,vec,year,config);
   }
-  if(output->files[RHARVEST_BURNT].isopen)
+  if(output->files[HARVESTC].isopen)
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.flux_rharvest_burnt;
-      writeannual(output,RHARVEST_BURNT,vec,year,config);
+        vec[count++]=(float)grid[cell].output.flux_harvest.carbon;
+      writeannual(output,HARVESTC,vec,year,config);
   }
-  if(output->files[RHARVEST_BURNT_IN_FIELD].isopen)
+  if(output->files[HARVESTN].isopen)
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.flux_rharvest_burnt_in_field;
-      writeannual(output,RHARVEST_BURNT_IN_FIELD,vec,year,config);
+        vec[count++]=(float)grid[cell].output.flux_harvest.nitrogen;
+      writeannual(output,HARVESTN,vec,year,config);
   }
-
+  if(output->files[RHARVEST_BURNTC].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+        vec[count++]=(float)grid[cell].output.flux_rharvest_burnt.carbon;
+      writeannual(output,RHARVEST_BURNTC,vec,year,config);
+  }
+  if(output->files[RHARVEST_BURNT_IN_FIELDC].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+        vec[count++]=(float)grid[cell].output.flux_rharvest_burnt_in_field.carbon;
+      writeannual(output,RHARVEST_BURNT_IN_FIELDC,vec,year,config);
+  }
+  if(output->files[RHARVEST_BURNTN].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+        vec[count++]=(float)grid[cell].output.flux_rharvest_burnt.nitrogen;
+      writeannual(output,RHARVEST_BURNTN,vec,year,config);
+  }
+  if(output->files[RHARVEST_BURNT_IN_FIELDN].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+        vec[count++]=(float)grid[cell].output.flux_rharvest_burnt_in_field.nitrogen;
+      writeannual(output,RHARVEST_BURNT_IN_FIELDN,vec,year,config);
+  }
   if(output->files[MG_VEGC].isopen)
   {
     count=0;
@@ -417,9 +554,9 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
             if(stand->type->landusetype!=NATURAL)
             {
               for(p=0;p<stand->soil.litter.n;p++)
-                vec[count]+=(float)(stand->soil.litter.bg[p]*stand->frac);
+                vec[count]+=(float)(stand->soil.litter.bg[p].carbon*stand->frac);
               forrootsoillayer(l)
-              vec[count]+=(float)((stand->soil.cpool[l].slow+stand->soil.cpool[l].fast)*stand->frac);
+              vec[count]+=(float)((stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac);
             }
           }
           count++;
@@ -475,7 +612,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.deforest_emissions);
+        vec[count++]=(float)(grid[cell].output.deforest_emissions.carbon);
     writeannual(output,DEFOREST_EMIS,vec,year,config);
   }
   if(output->files[TRAD_BIOFUEL].isopen)
@@ -515,7 +652,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.timber_harvest);
+        vec[count++]=(float)(grid[cell].output.timber_harvest.carbon);
     writeannual(output,TIMBER_HARVEST,vec,year,config);
   }
   if(output->files[PRODUCT_POOL_FAST].isopen)
@@ -580,6 +717,22 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         count++;
       }
     writeannual(output,AGB,vec,year,config);
+  }
+  if(output->files[NEGC_FLUXES].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+        vec[count++]=(float)(grid[cell].output.neg_fluxes.nitrogen);
+    writeannual(output,NEGC_FLUXES,vec,year,config);
+  }
+  if(output->files[NEGN_FLUXES].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+        vec[count++]=(float)(grid[cell].output.neg_fluxes.nitrogen);
+    writeannual(output,NEGN_FLUXES,vec,year,config);
   }
   free(vec);
 } /* of 'fwriteoutput_annual' */

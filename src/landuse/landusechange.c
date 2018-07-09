@@ -87,7 +87,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
                     )
 {
   int s,pos,p;
-  Real flux_estab;
+  Stocks flux_estab;
   Pft *pft;
   Stand *setasidestand,*natstand,*mixstand;
   
@@ -132,9 +132,10 @@ static void regrowth(Cell *cell, /* pointer to cell */
      
     flux_estab=establishmentpft(natstand,
                                 pftpar,npft,ntypes,
-                                PREC_MAX,year)*natstand->frac;
-    cell->output.flux_estab+=flux_estab;
-    cell->output.dcflux-=flux_estab;
+                                PREC_MAX,year);
+    cell->output.flux_estab.carbon+=flux_estab.carbon*natstand->frac;
+    cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*natstand->frac;
+    cell->output.dcflux-=flux_estab.carbon*natstand->frac;
   }
 }/* of 'regrowth' */
 
@@ -152,7 +153,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
                           )
 {
   int s,p,pos,q,t;
-  Real flux_estab=0;
+  Stocks flux_estab={0,0};
   int *n_est;
   Pft *pft;
   Irrigation *data;
@@ -247,10 +248,12 @@ static void landexpansion(Cell *cell,            /* cell pointer */
         flux_estab=establishment(pft,0,0,n_est[pft->par->type]);
         if (pft->par->cultivation_type==BIOMASS)
         {
-          cell->balance.estab_storage_tree[data->irrigation]-=flux_estab*mixstand->frac;
-          flux_estab=0;
+          cell->balance.estab_storage_tree[data->irrigation].carbon-=flux_estab.carbon*mixstand->frac;
+          cell->balance.estab_storage_tree[data->irrigation].nitrogen-=flux_estab.nitrogen*mixstand->frac;
+          flux_estab.carbon=flux_estab.nitrogen=0;
         }
-        cell->output.flux_estab+=flux_estab*mixstand->frac;
+        cell->output.flux_estab.carbon+=flux_estab.carbon*mixstand->frac;
+        cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*mixstand->frac;
       } /* of foreachpft */
       free(n_est);
     }

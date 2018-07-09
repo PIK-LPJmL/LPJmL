@@ -42,6 +42,7 @@ typedef struct
   Real mpet20[NMONTH]; /* 20-year average monthly precip */
   Real mtemp20[NMONTH]; /* 20-year average monthly precip */
   Real mtemp_min20; /*20-year average of coldest month temperature*/
+  Real aetp_mean;       /*20-year average of evapotranspiration of the cell*/
 } Climbuf;
 
 /* Definitions of macros */
@@ -55,7 +56,7 @@ extern Bool new_climbuf(Climbuf *);
 extern void init_climbuf(Climbuf *);
 extern void daily_climbuf(Climbuf *,Real);
 extern void monthly_climbuf(Climbuf *,Real,Real,Real,int);
-extern void annual_climbuf(Climbuf *);
+extern void annual_climbuf(Climbuf *,Real);
 extern Bool fwriteclimbuf(FILE *,const Climbuf *);
 extern Bool freadclimbuf(FILE *,Climbuf *,Bool);
 extern void freeclimbuf(Climbuf *);

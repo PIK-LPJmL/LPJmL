@@ -20,10 +20,10 @@ Bool isneg_tree(const Pft *pft)
   Pfttree *tree;
   tree=pft->data;
 #ifdef DEBUG3
-  printf("isneg: %g %g %g %g %g %g %g %g\n",tree->ind.leaf*pft->nind,tree->ind.root*pft->nind,
-         tree->ind.sapwood*pft->nind,tree->ind.heartwood*pft->nind,tree->ind.debt*pft->nind,pft->fpc,pft->nind,pft->bm_inc);
+  printf("isneg: %g %g %g %g %g %g %g %g\n",tree->ind.leaf.carbon*pft->nind,tree->ind.root.carbon*pft->nind,
+         tree->ind.sapwood.carbon*pft->nind,tree->ind.heartwood.carbon*pft->nind,tree->ind.debt.carbon*pft->nind,pft->fpc,pft->nind,pft->bm_inc.carbon);
 #endif
-  return ((tree->ind.leaf+tree->ind.root+tree->ind.sapwood+tree->ind.heartwood-tree->ind.debt)<0.0 
-         || tree->ind.root<0.0 || tree->ind.leaf<0.0 || tree->ind.sapwood<0.0 || tree->ind.heartwood<0.0
+  return ((tree->ind.leaf.carbon+tree->ind.root.carbon+tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-tree->ind.debt.carbon)<0.0 
+         || tree->ind.root.carbon<0.0 || tree->ind.leaf.carbon<0.0 || tree->ind.sapwood.carbon<0.0 || tree->ind.heartwood.carbon<0.0
          ||pft->fpc<=1e-20 || pft->nind<=1e-16);
 } /* of 'isneg_tree' */

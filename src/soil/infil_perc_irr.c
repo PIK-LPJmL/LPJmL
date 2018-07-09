@@ -17,9 +17,13 @@
 #include "lpj.h"
 #include "agriculture.h"
 
+#define NPERCO 0.4  /*controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
+
 Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
                     Real infil,         /**< infiltration water (mm) */
-                    Real *return_flow_b /**< blue water return flow (mm) */
+                    Real *return_flow_b, /**< blue water return flow (mm) */
+                    Bool withdailyoutput,
+                    const Config *config /**< LPJ configuration */
                    )                    /** \return water runoff (mm) */
 {
   Real runoff;
@@ -31,9 +35,20 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
   Real outflux,grunoff,inactive_water[NSOILLAYER];
   Real runoff_surface,freewater,soildepth_irrig,deficit;
   Soil *soil;
-  int l;
+  Real srunoff;
+  Real lrunoff; /* intermediate variable for leaching of lateral runoff */
+  Real NO3surf=0; /* amount of nitrate transported with surface runoff gN/m2 */
+  Real NO3perc_ly=0; /* nitrate leached to next lower layer with percolation gN/m2 */
+  Real NO3lat=0; /* amount of nitrate transported with lateral runoff gN/m2 */
+  Real w_mobile=0; /* Water mixing with nutrient in layer mmH2O */
+  Real concNO3_mobile; /* concentration of nitrate in solution gN/mm */
+  Real vno3; /* temporary for calculating concNO3_mobile */
+  Real ww; /* temporary for calculating concNO3_mobile */
+
+  int l,p;
   Real updated_soil_water=0,previous_soil_water[NSOILLAYER];
   Irrigation *data_irrig;
+  Pft *pft;
   String line;
   data_irrig=stand->data;
 
@@ -51,8 +66,8 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
 
   while(infil > epsilon || freewater > epsilon)
   {
+    NO3perc_ly=0;
     freewater=0.0;
-
     slug=min(4,infil);
     infil=infil-slug;
     if(data_irrig->irrig_system==SPRINK || data_irrig->irrig_system==DRIP)
@@ -60,6 +75,7 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
     else
       influx=slug*pow(1-(soil->w[0]*soil->par->whcs[0]+soil->w_fw[0]+soil->ice_depth[0]+soil->ice_fw[0])/(soil->par->wsats[0]-soil->par->wpwps[0]),(1/soil_infil));
     runoff_surface+=slug - influx;
+    srunoff=slug-influx; /*surface runoff used for leaching */
     *return_flow_b+=slug - influx;
     frac_g_influx=0; /* first layer has only blue influx, but lower layers with percolation have mixed frac_g_influx */
 
@@ -93,6 +109,7 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
         soil->w[l]+=(soil->w_fw[l]+influx)/soil->par->whcs[l];
         soil->w_fw[l]=0.0;
         influx=0.0;
+        lrunoff=0;
         inactive_water[l]=soil->ice_depth[l]+soil->par->wpwps[l]+soil->ice_fw[l];
 
         /*update frac_g to influx */
@@ -111,6 +128,7 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
           grunoff=(soil->w[l]*soil->par->whcs[l])-((soildepth[l]-soil->freeze_depth[l])*(soil->par->wsat-soil->par->wpwp));
           soil->w[l]-=grunoff/soil->par->whcs[l];
           runoff+=grunoff;
+          lrunoff+=grunoff;
           *return_flow_b+=grunoff*(1-stand->frac_g[l]);
         }
         if((inactive_water[l]+soil->w[l]*soil->par->whcs[l])>soil->par->wsats[l])
@@ -118,6 +136,7 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
           grunoff=(inactive_water[l]+soil->w[l]*soil->par->whcs[l])-soil->par->wsats[l];
           soil->w[l]-=grunoff/soil->par->whcs[l];
           runoff+=grunoff;
+          lrunoff+=grunoff;
           *return_flow_b+=grunoff*(1-stand->frac_g[l]);
         }
 
@@ -157,9 +176,63 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
               frac_g_influx=stand->frac_g[l];
               soil->perc_energy[l+1]=((soil->temp[l]-soil->temp[l+1])*perc*1e-3)*c_water;
             }
+            if(config->with_nitrogen)
+            {
+              /* determination of nitrate concentration in mobile water */
+              w_mobile=vno3=concNO3_mobile=0;
+              /* w_mobile as in Neitsch et al. 2005: Eq. 4:2.1.3 */
+              w_mobile = perc + srunoff + lrunoff;
+              if (w_mobile > epsilon)
+              {
+                ww = -w_mobile / ((1 - soil->par->anion_excl) * soil->par->wsats[l]);  /* Eq 4:2.1.2 */
+                //ww = -w_mobile / (soil->par->wsats[l]-soil->par->wpwps[l]);
+                vno3 = soil->NO3[l] * (1 - exp(ww));
+                concNO3_mobile = max(vno3/w_mobile, 0);
+              }
+              /* nitrate movement with percolation */
+              /* nitrate percolating from overlying layer */
+
+              soil->NO3[l] += NO3perc_ly;
+              NO3perc_ly=0;
+              /* calculate nitrate in surface runoff */
+              if(l==0)
+              {
+                NO3surf = NPERCO * concNO3_mobile * srunoff; /* Eq. 4:2.1.5 */
+                NO3surf = min(NO3surf, soil->NO3[l]);
+                soil->NO3[l] -= NO3surf;
+              }
+              else
+                NO3surf=0;
+
+              srunoff=0.0; /* not used for lower soil layers */
+              if (l==0)
+                NO3lat = NPERCO * concNO3_mobile * lrunoff; /* Eq. 4:2.1.6 */
+              else
+                NO3lat = concNO3_mobile * lrunoff; /* Eq. 4:2.1.7 */
+              NO3lat = min(NO3lat, soil->NO3[l]);
+              soil->NO3[l] -= NO3lat;
+
+              /* nitrate percolating from this layer */
+              NO3perc_ly = concNO3_mobile * perc;  /*Eq 4:2.1.8*/
+              NO3perc_ly = min(NO3perc_ly,soil->NO3[l]);
+              soil->NO3[l] -= NO3perc_ly;
+
+              stand->cell->output.mn_leaching+=(NO3surf + NO3lat)*stand->frac;
+            } /* end of if(config->with_nitrogen) */
           } /*end percolation*/
         } /* if soil depth > freeze_depth */
       } /* soil layer loop */
+      stand->cell->output.mn_leaching+=NO3perc_ly*stand->frac;
+      if(withdailyoutput && (stand->type->landusetype==NATURAL && ALLNATURAL==stand->cell->output.daily.cft))
+        stand->cell->output.daily.leaching+=NO3perc_ly;
+      if(withdailyoutput && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND))
+      {
+        foreachpft(pft,p,&stand->pftlist)
+        {
+          if(pft->par->id==stand->cell->output.daily.cft)
+            stand->cell->output.daily.leaching=NO3perc_ly;
+        }
+      }
     } /* if not drip */
   } /* while infil > 0 */
 
@@ -208,6 +281,13 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
   }while((soildepth_irrig-=soildepth[l-1])>0);
 
   stand->cell->output.munmet_demand+=deficit; /* daily irrigation deficit in mm*/
+
+#ifdef SAFE
+  if(config->with_nitrogen)
+    forrootsoillayer(l)
+      if (soil->NO3[l]<-epsilon)
+        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"infil_prec_irr: Cell (%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
+#endif
 
   /* write outputs */
   stand->cell->output.mseepage+=outflux*stand->frac; /* bottom layer percolation*/

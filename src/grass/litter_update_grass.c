@@ -15,17 +15,19 @@
 #include "lpj.h"
 #include "grass.h"
 
-void litter_update_grass(Litter *litter, /* Litter pool */
-                         Pft *pft,       /* PFT variables */
-                         Real frac      /* fraction (0..1) */
+void litter_update_grass(Litter *litter, /**< Litter pool */
+                         Pft *pft,       /**< PFT variables */
+                         Real frac       /**< fraction (0..1) */
                         )
 {
   Pftgrass *grass;
   grass=pft->data;
   
-  litter->ag[pft->litter].trait.leaf+=grass->ind.leaf*frac;
+  litter->ag[pft->litter].trait.leaf.carbon+=grass->ind.leaf.carbon*frac;
+  litter->ag[pft->litter].trait.leaf.nitrogen+=grass->ind.leaf.nitrogen*frac;
+  litter->ag[pft->litter].trait.leaf.nitrogen+=pft->bm_inc.nitrogen*frac;
   update_fbd_grass(litter,pft->par->fuelbulkdensity,
-                   grass->ind.leaf*frac);
-  litter->bg[pft->litter]+=grass->ind.root*frac;
-
+                   grass->ind.leaf.carbon*frac);
+  litter->bg[pft->litter].carbon+=grass->ind.root.carbon*frac;
+  litter->bg[pft->litter].nitrogen+=grass->ind.root.nitrogen*frac;
 } /* of 'litter_update_grass' */

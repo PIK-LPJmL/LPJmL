@@ -34,7 +34,7 @@
   }
 
 
-static Bool fscangrassphys(LPJfile *file,Grassphys *phys,const char *name,Verbosity verb)
+static Bool fscangrassphys(LPJfile *file,Grassphyspar *phys,const char *name,Verbosity verb)
 {
   LPJfile item;
   if(fscanstruct(file,&item,name,verb))
@@ -73,12 +73,16 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   pft->init=init_grass;
   pft->free=free_grass;
   pft->vegc_sum=vegc_sum_grass;
+  pft->vegn_sum=vegn_sum_grass;
   pft->fprintpar=fprintpar_grass;
   pft->livefuel_consumption=livefuel_consum_grass;
   pft->turnover_monthly=turnover_monthly_grass;
   pft->turnover_daily=turnover_daily_grass;
   pft->albedo_pft=albedo_grass;
   pft->agb=agb_grass;
+  pft->nuptake=nuptake_grass;
+  pft->ndemand=ndemand_grass;
+  pft->vmaxlimit=vmaxlimit_grass;
   grass=new(Pftgrasspar);
   check(grass);
   pft->data=grass;
@@ -93,12 +97,13 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   grass->turnover.leaf=1.0/grass->turnover.leaf;
   grass->turnover.root=1.0/grass->turnover.root;
   fscangrassphys2(verb,file,&grass->cn_ratio,pft->name,"cn_ratio");
+  fscanreal2(verb,file,&grass->ratio,pft->name,"ratio");
   fscanreal2(verb,file,&grass->reprod_cost,pft->name,"reprod_cost");
-  grass->cn_ratio.leaf=pft->respcoeff*param.k/grass->cn_ratio.leaf;
-  grass->cn_ratio.root=pft->respcoeff*param.k/grass->cn_ratio.root;
+  grass->cn_ratio.leaf=1/grass->cn_ratio.leaf;
+  grass->cn_ratio.root=1/grass->cn_ratio.root;
   grass->sapl.leaf=pft->lai_sapl/pft->sla;
   grass->sapl.root=(1.0/pft->lmro_ratio)*grass->sapl.leaf;
-  grass->sapling_C=phys_sum_grass(grass->sapl);
+  grass->sapling_C=grass->sapl.leaf+grass->sapl.root;
 
   return FALSE;
 } /* of 'fscanpft_grass' */

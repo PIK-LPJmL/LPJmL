@@ -29,7 +29,10 @@ Bool fread_tree(FILE *file,Pft *pft,Bool swap)
   freadreal1(&tree->aphen_raingreen,swap,file);
   freadint1(&tree->isphen,swap,file);
   freadreal((Real *)&tree->turn,sizeof(Treephys)/sizeof(Real),swap,file);
-  tree->turn_litt.leaf=tree->turn_litt.root=0;
-  return freadreal((Real *)&tree->ind,sizeof(Treephys2)/sizeof(Real),swap,file)!=sizeof(Treephys2)/sizeof(Real);
- /* fpc_tree(pft); */
+  tree->turn_litt.leaf.carbon=tree->turn_litt.root.carbon=0;
+  tree->turn_litt.leaf.nitrogen=tree->turn_litt.root.nitrogen=0;
+  freadreal1(&tree->turn_nbminc,swap,file);
+  freadreal((Real *)&tree->ind,sizeof(Treephys2)/sizeof(Real),swap,file);
+  freadreal1(&tree->excess_carbon,swap,file);
+  return freadreal((Real *)&tree->falloc,sizeof(Treephyspar)/sizeof(Real),swap,file)!=sizeof(Treephyspar)/sizeof(Real);
 } /* of 'fread_tree' */

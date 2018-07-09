@@ -90,7 +90,7 @@ int main(int argc,char **argv)
     area[i]=cellarea(&coord,&config.resolution);
   }
   fclose(file);
-  index=findfile2(config.outputvars,config.n_out,PFT_HARVEST);
+  index=findfile2(config.outputvars,config.n_out,PFT_HARVESTC);
   if(index==NOT_FOUND)
   {
     fprintf(stderr,"Error: No harvest file was written in simulation.\n");

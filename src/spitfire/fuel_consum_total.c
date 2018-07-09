@@ -14,16 +14,17 @@
 
 #include "lpj.h"
 
-Real fuel_consum_total(const Litter *litter,const Fuel *fuel)
+Stocks fuel_consum_total(const Litter *litter,const Fuel *fuel)
 {
   int i,l;
-  Real fuel_consum;
-  fuel_consum=0;
+  Stocks fuel_consum;
+  fuel_consum.carbon=fuel_consum.nitrogen=0;
   for(l=0;l<litter->n;l++)
   {
-    fuel_consum += fuel->deadfuel_consum[0]*litter->ag[l].trait.leaf;
+    fuel_consum.carbon += fuel->deadfuel_consum[0]*litter->ag[l].trait.leaf.carbon;
+    fuel_consum.nitrogen += fuel->deadfuel_consum[0]*litter->ag[l].trait.leaf.nitrogen;
     for (i=0;i<NFUELCLASS;i++)
-      fuel_consum += fuel->deadfuel_consum[i]*litter->ag[l].trait.wood[i];
+      fuel_consum.nitrogen += fuel->deadfuel_consum[i]*litter->ag[l].trait.wood[i].nitrogen;
   }
   return fuel_consum;
 } /* of 'fuel_consum_total' */ 

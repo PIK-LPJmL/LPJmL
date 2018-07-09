@@ -36,11 +36,11 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
 #ifndef DAILY_ESTABLISHMENT
   Real fpc_total;
   Bool *present;
-  Real acflux_estab;
+  Stocks acflux_estab,stocks;
   int n_est=0;
   present=newvec(Bool,npft);
   check(present);
-  acflux_estab=0;
+  acflux_estab.carbon=acflux_estab.nitrogen=0;
   for(p=0;p<npft;p++)
     present[p]=FALSE;
 #endif
@@ -58,7 +58,7 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
 #ifndef DAILY_ESTABLISHMENT
     present[pft->par->id]=TRUE;
 #endif
-    if(annual_grass(stand,pft,&fpc_inc,isdaily))
+    if(annual_grass(stand,pft,&fpc_inc,config->new_phenology,isdaily))
     {
       /* PFT killed, delete from list of established PFTs */
       litter_update_grass(&stand->soil.litter,pft,pft->nind);
@@ -91,11 +91,16 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
     }
     fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
     foreachpft(pft,p,&stand->pftlist)
-     if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
-      acflux_estab+=establishment_grass(pft,fpc_total,fpc_type[pft->par->type],n_est);
+      if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
+      {
+        stocks=establishment_grass(pft,fpc_total,fpc_type[pft->par->type],n_est);
+        acflux_estab.carbon+=stocks.carbon;
+        acflux_estab.nitrogen+=stocks.nitrogen;
+      }
 
-    stand->cell->output.flux_estab+=acflux_estab*stand->frac;
-    stand->cell->output.dcflux-=acflux_estab*stand->frac;
+    stand->cell->output.flux_estab.carbon+=acflux_estab.carbon*stand->frac;
+    stand->cell->output.flux_estab.nitrogen+=acflux_estab.nitrogen*stand->frac;
+    stand->cell->output.dcflux-=acflux_estab.carbon*stand->frac;
   }
 #endif
 

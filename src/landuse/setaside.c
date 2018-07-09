@@ -23,9 +23,15 @@ void mixsoil(Stand *stand1,const Stand *stand2)
   Real water1,water2;
   forrootsoillayer(l)
   {
-    mixpool(stand1->soil.cpool[l].fast,stand2->soil.cpool[l].fast,
+    mixpool(stand1->soil.NH4[l],stand2->soil.NH4[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.NO3[l],stand2->soil.NO3[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.pool[l].fast.carbon,stand2->soil.pool[l].fast.carbon,
             stand1->frac,stand2->frac);
-    mixpool(stand1->soil.cpool[l].slow,stand2->soil.cpool[l].slow,
+    mixpool(stand1->soil.pool[l].slow.carbon,stand2->soil.pool[l].slow.carbon,
+            stand1->frac,stand2->frac);
+    mixpool(stand1->soil.pool[l].fast.nitrogen,stand2->soil.pool[l].fast.nitrogen,
+            stand1->frac,stand2->frac);
+    mixpool(stand1->soil.pool[l].slow.nitrogen,stand2->soil.pool[l].slow.nitrogen,
             stand1->frac,stand2->frac);
     mixpool(stand1->soil.k_mean[l].fast,stand2->soil.k_mean[l].fast,
             stand1->frac,stand2->frac);
@@ -37,24 +43,40 @@ void mixsoil(Stand *stand1,const Stand *stand2)
     index=findlitter(&stand1->soil.litter,stand2->soil.litter.ag[l].pft);
     if(index==NOT_FOUND)
       index=addlitter(&stand1->soil.litter,stand2->soil.litter.ag[l].pft)-1;
-    mixpool(stand1->soil.litter.ag[index].trait.leaf,
-            stand2->soil.litter.ag[l].trait.leaf,stand1->frac,stand2->frac);
-    mixpool(stand1->soil.litter.bg[index],stand2->soil.litter.bg[l],
+    mixpool(stand1->soil.litter.ag[index].trait.leaf.carbon,
+            stand2->soil.litter.ag[l].trait.leaf.carbon,stand1->frac,stand2->frac);
+    mixpool(stand1->soil.litter.ag[index].trait.leaf.nitrogen,
+            stand2->soil.litter.ag[l].trait.leaf.nitrogen,stand1->frac,stand2->frac);
+    mixpool(stand1->soil.litter.bg[index].carbon,stand2->soil.litter.bg[l].carbon,
+          stand1->frac,stand2->frac);
+    mixpool(stand1->soil.litter.bg[index].nitrogen,stand2->soil.litter.bg[l].nitrogen,
           stand1->frac,stand2->frac);
     for(i=0;i<NFUELCLASS;i++)
-      mixpool(stand1->soil.litter.ag[index].trait.wood[i],
-              stand2->soil.litter.ag[l].trait.wood[i],stand1->frac,stand2->frac);
+    {
+      mixpool(stand1->soil.litter.ag[index].trait.wood[i].carbon,
+              stand2->soil.litter.ag[l].trait.wood[i].carbon,stand1->frac,stand2->frac);
+      mixpool(stand1->soil.litter.ag[index].trait.wood[i].nitrogen,
+              stand2->soil.litter.ag[l].trait.wood[i].nitrogen,stand1->frac,stand2->frac);
+    }
   }
   for(l=0;l<stand1->soil.litter.n;l++)
     if(findlitter(&stand2->soil.litter,stand1->soil.litter.ag[l].pft)==NOT_FOUND)
     {
-      mixpool(stand1->soil.litter.ag[l].trait.leaf,0,
+      mixpool(stand1->soil.litter.ag[l].trait.leaf.carbon,0,
               stand1->frac,stand2->frac);
-      mixpool(stand1->soil.litter.bg[l],0,
+      mixpool(stand1->soil.litter.ag[l].trait.leaf.nitrogen,0,
+              stand1->frac,stand2->frac);
+      mixpool(stand1->soil.litter.bg[l].carbon,0,
+              stand1->frac,stand2->frac);
+      mixpool(stand1->soil.litter.bg[l].nitrogen,0,
               stand1->frac,stand2->frac);
       for(i=0;i<NFUELCLASS;i++)
-        mixpool(stand1->soil.litter.ag[l].trait.wood[i],0,
+      {
+        mixpool(stand1->soil.litter.ag[l].trait.wood[i].carbon,0,
                 stand1->frac,stand2->frac);
+        mixpool(stand1->soil.litter.ag[l].trait.wood[i].nitrogen,0,
+                stand1->frac,stand2->frac);
+      }
     }
   for(i=0;i<=NFUELCLASS;i++)
     mixpool(stand1->soil.litter.avg_fbd[i],stand2->soil.litter.avg_fbd[i],
@@ -62,7 +84,9 @@ void mixsoil(Stand *stand1,const Stand *stand2)
 
   mixpool(stand1->soil.meanw1,stand2->soil.meanw1,
           stand1->frac,stand2->frac);
-  mixpool(stand1->soil.decomp_litter_mean,stand2->soil.decomp_litter_mean,
+  mixpool(stand1->soil.decomp_litter_mean.carbon,stand2->soil.decomp_litter_mean.carbon,
+          stand1->frac,stand2->frac);
+  mixpool(stand1->soil.decomp_litter_mean.nitrogen,stand2->soil.decomp_litter_mean.nitrogen,
           stand1->frac,stand2->frac);
 
   /* snowpack is independent of fraction */
@@ -127,7 +151,7 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
 {
   int s,p,n_est;
   Pft *pft;
-  Real flux_estab;
+  Stocks flux_estab,stocks;
   Irrigation *data;
 
   s=findlandusetype(cell->standlist,irrig? SETASIDE_IR : SETASIDE_RF);
@@ -159,10 +183,15 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
           n_est++;
         }
       }
-      flux_estab=0.0;
+      flux_estab.carbon=flux_estab.nitrogen=0.0;
       foreachpft(pft,p,&cropstand->pftlist)
-        flux_estab+=establishment(pft,0,0,n_est);
-      cell->output.flux_estab+=flux_estab*cropstand->frac;
+      {
+        stocks=establishment(pft,0,0,n_est);
+        flux_estab.carbon+=stocks.carbon;
+        flux_estab.nitrogen+=stocks.nitrogen;
+      }
+      cell->output.flux_estab.carbon+=flux_estab.carbon*cropstand->frac;
+      cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*cropstand->frac;
     }
   }
   return FALSE;

@@ -30,6 +30,8 @@ void freeclimatedata(Climatedata *data /**< pointer to climate data */
   free(data->tamp);
   free(data->burntarea);
   free(data->lightning);
+  free(data->no3deposition);
+  free(data->nh4deposition);
 } /* of 'freeclimatedata' */
 
 void freeclimate(Climate *climate, /**< pointer to climate data */
@@ -56,6 +58,10 @@ void freeclimate(Climate *climate, /**< pointer to climate data */
       closeclimatefile(&climate->file_wet,isroot);
    if(climate->data.burntarea!=NULL)
        closeclimatefile(&climate->file_burntarea,isroot);
+   if(climate->data.no3deposition!=NULL)
+      closeclimatefile(&climate->file_no3deposition,isroot);
+    if(climate->data.nh4deposition!=NULL)
+      closeclimatefile(&climate->file_nh4deposition,isroot);
 #ifdef IMAGE
     if(climate->file_temp_var.file!=NULL)
       closeclimatefile(&climate->file_temp_var,isroot);

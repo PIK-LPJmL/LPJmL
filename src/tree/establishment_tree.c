@@ -15,11 +15,12 @@
 #include "lpj.h"
 #include "tree.h"
 
-Real establishment_tree(Pft *pft,Real UNUSED(fpc_total),
-                        Real fpc_type,int n_est)
+Stocks establishment_tree(Pft *pft,Real UNUSED(fpc_total),
+                          Real fpc_type,int n_est)
 {
 
-  Real nind_old,acflux_est=0;
+  Real nind_old;
+  Stocks acflux_est={0,0};
   Real est_pft;
   /* establishment rate for a particular PFT on modelled area
    * basis (for trees, indiv/m2; for grasses, fraction of
@@ -35,7 +36,7 @@ Real establishment_tree(Pft *pft,Real UNUSED(fpc_total),
   if (fpc_type>=FPC_TREE_MAX || n_est<=epsilon)
   {
     allometry_tree(pft);
-    return 0.0;
+    return acflux_est;
   }
   if (pft->par->cultivation_type== BIOMASS)
     est_nind=treepar->k_est-pft->nind;
@@ -53,20 +54,22 @@ Real establishment_tree(Pft *pft,Real UNUSED(fpc_total),
     pft->nind=0.0;
   pft->nind+=est_pft;
   /* Account for flux from the atmosphere to new saplings */
-  acflux_est=phys_sum_tree(treepar->sapl)*est_pft;
+  acflux_est.carbon=phys_sum_tree(treepar->sapl)*est_pft;
+  acflux_est.nitrogen=phys_sum_tree_n(treepar->sapl)*est_pft;
 
   /* Adjust average individual C biomass based on average biomass and density of the new saplings*/
-  tree->ind.leaf=(tree->ind.leaf*nind_old+treepar->sapl.leaf*est_pft)/pft->nind;
-  tree->ind.root=(tree->ind.root*nind_old+treepar->sapl.root*est_pft)/pft->nind;
-  tree->ind.sapwood=(tree->ind.sapwood*nind_old+treepar->sapl.sapwood*est_pft)/pft->nind;
-  tree->ind.heartwood=(tree->ind.heartwood*nind_old+treepar->sapl.heartwood*est_pft)/pft->nind;
-  tree->ind.debt=tree->ind.debt*nind_old/pft->nind;
-  if((pft->par->phenology==SUMMERGREEN || pft->par->phenology==RAINGREEN) && nind_old==0){
-    tree->turn.leaf+=treepar->sapl.leaf*treepar->turnover.leaf;
-    tree->turn_litt.leaf+=treepar->sapl.leaf*treepar->turnover.leaf*pft->nind;
-    pft->stand->soil.litter.ag[pft->litter].trait.leaf+=treepar->sapl.leaf*treepar->turnover.leaf*pft->nind;
-    update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,(treepar->sapl.leaf*treepar->turnover.leaf*pft->nind),0); //have - before treepar->sapl.leaf deleted
-  }
+  tree->ind.leaf.carbon=(tree->ind.leaf.carbon*nind_old+treepar->sapl.leaf.carbon*est_pft)/pft->nind;
+  tree->ind.root.carbon=(tree->ind.root.carbon*nind_old+treepar->sapl.root.carbon*est_pft)/pft->nind;
+  tree->ind.sapwood.carbon=(tree->ind.sapwood.carbon*nind_old+treepar->sapl.sapwood.carbon*est_pft)/pft->nind;
+  tree->ind.heartwood.carbon=(tree->ind.heartwood.carbon*nind_old+treepar->sapl.heartwood.carbon*est_pft)/pft->nind;
+  tree->ind.debt.carbon=tree->ind.debt.carbon*nind_old/pft->nind;
+  tree->excess_carbon*=nind_old/pft->nind;
+  /* do the same for N */
+  tree->ind.leaf.nitrogen=(tree->ind.leaf.nitrogen*nind_old+treepar->sapl.leaf.nitrogen*est_pft)/pft->nind;
+  tree->ind.root.nitrogen=(tree->ind.root.nitrogen*nind_old+treepar->sapl.root.nitrogen*est_pft)/pft->nind;
+  tree->ind.sapwood.nitrogen=(tree->ind.sapwood.nitrogen*nind_old+treepar->sapl.sapwood.nitrogen*est_pft)/pft->nind;
+  tree->ind.heartwood.nitrogen=(tree->ind.heartwood.nitrogen*nind_old+treepar->sapl.heartwood.nitrogen*est_pft)/pft->nind;
+  tree->ind.debt.nitrogen=tree->ind.debt.nitrogen*nind_old/pft->nind;
   allometry_tree(pft);
   fpc_tree(pft);
   return acflux_est;

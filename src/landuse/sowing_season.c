@@ -16,18 +16,18 @@
 #include "crop.h"
 #include "agriculture.h"
 
-Real sowing_season(Cell *cell,            /**< pointer to cell */
-                   int day,               /**< day (1..365) */
-                   int npft,              /**< number of natural PFTs  */
-                   int ncft,              /**< number of crop PFTs */
-                   Real dprec,            /**< today's precipitation (mm) */
-                   int year,              /**< simulation year (AD) */
-                   const Config *config   /**< LPJ settings */
-                  )                       /** \return establish flux (gC/m2) */
+Stocks sowing_season(Cell *cell,            /**< pointer to cell */
+                     int day,               /**< day (1..365) */
+                     int npft,              /**< number of natural PFTs  */
+                     int ncft,              /**< number of crop PFTs */
+                     Real dprec,            /**< today's precipitation (mm) */
+                     int year,              /**< simulation year (AD) */
+                     const Config *config   /**< LPJ settings */
+                    )                       /** \return establish flux (gC/m2,gN/m2) */
 {
   Bool alloc_today_rf=FALSE, alloc_today_ir=FALSE,istimber;
   int cft,m,mm,dayofmonth,month,s,s2;
-  Real flux_estab=0;
+  Stocks flux_estab={0,0},stocks;
   const Pftcroppar *croppar;
   Stand *setasidestand;
 
@@ -64,11 +64,13 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                 allocation_today(setasidestand, config->ntypes);
                 alloc_today_rf=TRUE;
               }
-              flux_estab+=cultivate(cell,config->pftpar+npft+cft,
-                                    cell->ml.cropdates[cft].vern_date20,
-                                    cell->ml.landfrac[0].crop[cft],FALSE,day,FALSE,
-                                    setasidestand,istimber,config->irrig_scenario,
-                                    npft+ncft,cft,year);
+              stocks=cultivate(cell,config->pftpar+npft+cft,
+                               cell->ml.cropdates[cft].vern_date20,
+                               cell->ml.landfrac[0].crop[cft],FALSE,day,FALSE,
+                               setasidestand,istimber,config->irrig_scenario,
+                               npft,ncft,cft,year);
+              flux_estab.carbon+=stocks.carbon;
+              flux_estab.nitrogen+=stocks.nitrogen;
 #ifndef DOUBLE_HARVEST
               cell->output.sdate[cft]=day;
 #endif
@@ -89,11 +91,13 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                 allocation_today(setasidestand,config->ntypes);
                 alloc_today_ir=TRUE;
               }
-              flux_estab+=cultivate(cell,config->pftpar+npft+cft,
-                                    cell->ml.cropdates[cft].vern_date20,
-                                    cell->ml.landfrac[1].crop[cft],TRUE,day,FALSE,
-                                    setasidestand,istimber,config->irrig_scenario,
-                                    npft+ncft,cft,year);
+              stocks=cultivate(cell,config->pftpar+npft+cft,
+                               cell->ml.cropdates[cft].vern_date20,
+                               cell->ml.landfrac[1].crop[cft],TRUE,day,FALSE,
+                               setasidestand,istimber,config->irrig_scenario,
+                               npft,ncft,cft,year);
+              flux_estab.carbon+=stocks.carbon;
+              flux_estab.nitrogen+=stocks.nitrogen;
 #ifndef DOUBLE_HARVEST
               cell->output.sdate[cft+ncft]=day;
 #endif
@@ -121,11 +125,13 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                 allocation_today(setasidestand,config->ntypes);
                 alloc_today_rf=TRUE;
               }
-              flux_estab+=cultivate(cell,config->pftpar+npft+cft,
-                                    cell->ml.cropdates[cft].vern_date20,
-                                    cell->ml.landfrac[0].crop[cft],FALSE,day,FALSE,
-                                    setasidestand,istimber,config->irrig_scenario,
-                                    npft+ncft,cft,year);
+              stocks=cultivate(cell,config->pftpar+npft+cft,
+                               cell->ml.cropdates[cft].vern_date20,
+                               cell->ml.landfrac[0].crop[cft],FALSE,day,FALSE,
+                               setasidestand,istimber,config->irrig_scenario,
+                               npft,ncft,cft,year);
+              flux_estab.carbon+=stocks.carbon;
+              flux_estab.nitrogen+=stocks.nitrogen;
 #ifndef DOUBLE_HARVEST
               cell->output.sdate[cft]=day;
 #endif
@@ -149,11 +155,13 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                 allocation_today(setasidestand,config->ntypes);
                 alloc_today_ir=TRUE;
               }
-              flux_estab+=cultivate(cell,config->pftpar+npft+cft,
-                                    cell->ml.cropdates[cft].vern_date20,
-                                    cell->ml.landfrac[1].crop[cft],TRUE,day,FALSE,
-                                    setasidestand,istimber,config->irrig_scenario,
-                                    npft+ncft,cft,year);
+              stocks=cultivate(cell,config->pftpar+npft+cft,
+                               cell->ml.cropdates[cft].vern_date20,
+                               cell->ml.landfrac[1].crop[cft],TRUE,day,FALSE,
+                               setasidestand,istimber,config->irrig_scenario,
+                               npft,ncft,cft,year);
+              flux_estab.carbon+=stocks.carbon;
+              flux_estab.nitrogen+=stocks.nitrogen;
 #ifndef DOUBLE_HARVEST
               cell->output.sdate[cft+ncft]=day;
 #endif
@@ -189,11 +197,13 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                     allocation_today(setasidestand, config->ntypes);
                     alloc_today_rf=TRUE;
                   }
-                  flux_estab+=cultivate(cell,config->pftpar+npft+cft,
-                                        cell->ml.cropdates[cft].vern_date20,
-                                        cell->ml.landfrac[0].crop[cft],FALSE,day,TRUE,
-                                        setasidestand,istimber,config->irrig_scenario,
-                                        npft+ncft,cft,year);
+                  stocks=cultivate(cell,config->pftpar+npft+cft,
+                                   cell->ml.cropdates[cft].vern_date20,
+                                   cell->ml.landfrac[0].crop[cft],FALSE,day,TRUE,
+                                   setasidestand,istimber,config->irrig_scenario,
+                                   npft,ncft,cft,year);
+                  flux_estab.carbon+=stocks.carbon;
+                  flux_estab.nitrogen+=stocks.nitrogen;
 #ifndef DOUBLE_HARVEST
                   cell->output.sdate[cft]=day;
 #endif
@@ -213,11 +223,13 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                   allocation_today(setasidestand, config->ntypes);
                   alloc_today_rf=TRUE;
                 }
-                flux_estab+=cultivate(cell,config->pftpar+npft+cft,
-                                      cell->ml.cropdates[cft].vern_date20,
-                                      cell->ml.landfrac[0].crop[cft],FALSE,day,FALSE,
-                                      setasidestand,istimber,config->irrig_scenario,
-                                      npft+ncft,cft,year);
+                stocks=cultivate(cell,config->pftpar+npft+cft,
+                                 cell->ml.cropdates[cft].vern_date20,
+                                 cell->ml.landfrac[0].crop[cft],FALSE,day,FALSE,
+                                 setasidestand,istimber,config->irrig_scenario,
+                                 npft,ncft,cft,year);
+                flux_estab.carbon+=stocks.carbon;
+                flux_estab.nitrogen+=stocks.nitrogen;
 #ifndef DOUBLE_HARVEST
                 cell->output.sdate[cft]=day;
 #endif
@@ -251,11 +263,13 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                     allocation_today(setasidestand, config->ntypes);
                     alloc_today_ir=TRUE;
                   }
-                  flux_estab+=cultivate(cell,config->pftpar+npft+cft,
-                                        cell->ml.cropdates[cft].vern_date20,
-                                        cell->ml.landfrac[1].crop[cft],TRUE,day,TRUE,
-                                        setasidestand,istimber,config->irrig_scenario,
-                                        npft+ncft,cft,year);
+                  stocks=cultivate(cell,config->pftpar+npft+cft,
+                                   cell->ml.cropdates[cft].vern_date20,
+                                   cell->ml.landfrac[1].crop[cft],TRUE,day,TRUE,
+                                   setasidestand,istimber,config->irrig_scenario,
+                                   npft,ncft,cft,year);
+                  flux_estab.carbon+=stocks.carbon;
+                  flux_estab.nitrogen+=stocks.nitrogen;
 #ifndef DOUBLE_HARVEST
                   cell->output.sdate[cft+ncft]=day;
 #endif
@@ -275,11 +289,13 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                   allocation_today(setasidestand, config->ntypes);
                   alloc_today_ir=TRUE;
                 }
-                flux_estab+=cultivate(cell,config->pftpar+npft+cft,
-                                      cell->ml.cropdates[cft].vern_date20,
-                                      cell->ml.landfrac[1].crop[cft],TRUE,day,FALSE,
-                                      setasidestand,istimber,config->irrig_scenario,
-                                      npft+ncft,cft,year);
+                stocks=cultivate(cell,config->pftpar+npft+cft,
+                                 cell->ml.cropdates[cft].vern_date20,
+                                 cell->ml.landfrac[1].crop[cft],TRUE,day,FALSE,
+                                 setasidestand,istimber,config->irrig_scenario,
+                                 npft,ncft,cft,year);
+                flux_estab.carbon+=stocks.carbon;
+                flux_estab.nitrogen+=stocks.nitrogen;
 #ifndef DOUBLE_HARVEST
                 cell->output.sdate[cft+ncft]=day;
 #endif

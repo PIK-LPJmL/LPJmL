@@ -32,6 +32,11 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->hdate);
   output->pft_npp=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->pft_npp);
+  output->pft_npp=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
+  check(output->pft_npp);
+  output->pft_nuptake=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
+  check(output->pft_nuptake);
+  output->pft_ndemand=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
   output->pft_gcgp=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->pft_gcgp);
   output->gcgp_count=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
@@ -74,7 +79,7 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_prec);
   output->cft_srad=newvec(Real,2*(ncft+NGRASS));
   checkptr(output->cft_srad);
-  output->cft_aboveground_biomass=newvec(Real,2*(ncft+NGRASS));
+  output->cft_aboveground_biomass=newvec(Stocks,2*(ncft+NGRASS));
   checkptr(output->cft_aboveground_biomass);
   output->cft_airrig=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->cft_airrig);
@@ -86,6 +91,16 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_conv_loss_evap);
   output->cft_conv_loss_drain=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->cft_conv_loss_drain);
+  output->cft_leaf=newvec(Stocks,2*(ncft+NGRASS+NBIOMASSTYPE));
+  checkptr(output->cft_leaf);
+  output->cft_root=newvec(Stocks,2*(ncft+NGRASS+NBIOMASSTYPE));
+  checkptr(output->cft_root);
+  output->cft_veg=newvec(Stocks,2*(ncft+NGRASS+NBIOMASSTYPE));
+  checkptr(output->cft_veg);
+  output->cft_nlimit=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE));
+  checkptr(output->cft_nlimit);
+  output->cft_laimax = newvec(Real, 2 * (ncft + NGRASS + NBIOMASSTYPE));
+  checkptr(output->cft_laimax);
 #ifdef DOUBLE_HARVEST
   output->sdate2=newvec(int,2*ncft); /* allocate memory for output */
   checkptr(output->sdate2);
@@ -119,7 +134,7 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_prec2);
   output->cft_srad2=newvec(Real,2*(ncft+NGRASS));
   checkptr(output->cft_srad2);
-  output->cft_aboveground_biomass2=newvec(Real,2*(ncft+NGRASS));
+  output->cft_aboveground_biomass2=newvec(Stocks,2*(ncft+NGRASS));
   checkptr(output->cft_aboveground_biomass2);
 #endif  
   initoutput_annual(output, npft, nbiomass,ncft);

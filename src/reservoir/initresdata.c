@@ -33,7 +33,7 @@ void initresdata(Cell *cell /**< pointer to cell */
   cell->ml.resdata->mean_demand=0.0;
   cell->ml.resdata->mean_volume=0.0;
   cell->ml.reservoirfrac=((Real)cell->ml.resdata->reservoir.area)*1000*1000/cell->coord.area; /*area in km2 to m2 */
-  cell->ml.resdata->c_pool=0.0; /*initialize c pool with 0. */
+  cell->ml.resdata->pool.carbon=cell->ml.resdata->pool.nitrogen =0.0; /*initialize C and N pool with 0. */
   if(cell->ml.reservoirfrac>1-cell->lakefrac)
     cell->ml.reservoirfrac=(1.0-cell->lakefrac);
   for(j=0;j<NMONTH;j++)

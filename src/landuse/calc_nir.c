@@ -36,7 +36,7 @@ void calc_nir(Stand *stand, /**< pointer to non-natural stand */
     
     if(pft->stand->type->landusetype==AGRICULTURE)
     {
-      supply=pft->par->emax*wr*(1-exp(-1.0*pft->par->sla*((Pftcrop *)pft->data)->ind.root));
+      supply=pft->par->emax*wr*(1-exp(-1.0*pft->par->sla*((Pftcrop *)pft->data)->ind.root.carbon));
       demand=(gp_stand>0 && pft->phen>0 && fpar(pft)>0) ? eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/(gp_stand/pft->phen*fpar(pft))) : 0;
     }
     else

@@ -25,9 +25,9 @@ Real moistfactor(const Litter *litter  /**< Litter pool */
   moistfactor=0;
   for(p=0;p<litter->n;p++)
   {
-    sum=litter->ag[p].trait.leaf;
+    sum=litter->ag[p].trait.leaf.carbon;
     for(i=0;i<NFUELCLASS;i++)
-      sum+=litter->ag[p].trait.wood[i];
+      sum+=litter->ag[p].trait.wood[i].carbon;
     moistfactor+=litter->ag[p].pft->flam*sum;
   }
   return moistfactor/litter_sum;

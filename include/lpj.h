@@ -28,7 +28,7 @@
 #ifndef LPJ_H /* Already included? */
 #define LPJ_H
 
-#define LPJ_VERSION  "4.0.001"
+#define LPJ_VERSION  "5.1.001"
 
 /* Necessary header files */
 
@@ -44,6 +44,8 @@
 #ifdef USE_MPI
 #include <mpi.h> /* Include MPI header for parallel program */
 #endif
+
+/* Definition of datatypes */
 
 typedef struct cell Cell;   /* forward declaration of cell */
 typedef struct stand Stand; /* forward declaration of stand */

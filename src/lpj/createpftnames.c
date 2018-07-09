@@ -43,7 +43,10 @@ char **createpftnames(int index,           /**< output index */
           strcat(pftnames[i+ncft],pftpar[npft+i].name);
         }
         break;
-    case PFT_NPP: case PFT_GCGP:
+    case PFT_NPP: case PFT_GCGP: case PFT_NUPTAKE: case PFT_NDEMAND:
+    case PFT_VEGC: case PFT_VEGN: case PFT_CLEAF: case PFT_NLEAF:
+    case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
+    case PFT_CHAWO: case PFT_NHAWO: case PFT_LAIMAX: case PFT_NLIMIT:
       for(i=0;i<npft-nbiomass;i++)
         pftnames[i]=strdup(pftpar[i].name);
       incr=npft-nbiomass;
@@ -67,12 +70,13 @@ char **createpftnames(int index,           /**< output index */
         incr+=2;
       } 
       break;
-    case PFT_HARVEST: case PFT_RHARVEST: case CFT_CONSUMP_WATER_G: case CFT_EVAP: case CFT_EVAP_B:
+    case PFT_HARVESTC: case PFT_RHARVESTC: case CFT_CONSUMP_WATER_G: case CFT_EVAP: case CFT_EVAP_B:
     case CFT_CONSUMP_WATER_B: case CFTFRAC: case CFT_AIRRIG: case CFT_FPAR: case CFT_IRRIG_EVENTS:
     case CFT_TRANSP: case CFT_TRANSP_B: case CFT_INTERC: case CFT_INTERC_B: case CFT_RETURN_FLOW_B:
     case CFT_CONV_LOSS_EVAP: case CFT_CONV_LOSS_DRAIN: case CFT_NIR:
-    case PFT_HARVEST2: case PFT_RHARVEST2: case CFT_EVAP2: case CFT_TRANSP2: case CFT_INTERC2:
-    case CFT_NIR2: case CFT_AIRRIG2: case CFTFRAC2:
+    case PFT_HARVESTN: case PFT_RHARVESTN:
+    case PFT_HARVESTC2: case PFT_RHARVESTC2: case CFT_EVAP2: case CFT_TRANSP2: case CFT_INTERC2:
+    case CFT_NIR2: case CFT_AIRRIG2: case CFTFRAC2: case PFT_HARVESTN2: case PFT_RHARVESTN2:
       incr=0;
       for(i=0;i<2;i++)
       {
@@ -95,9 +99,9 @@ char **createpftnames(int index,           /**< output index */
       }
       break;
     case GROWING_PERIOD:case CFT_TEMP:case CFT_PREC:
-    case CFT_SRAD: case CFT_ABOVEGBM:
+    case CFT_SRAD: case CFT_ABOVEGBMC: case CFT_ABOVEGBMN:
     case GROWING_PERIOD2: case CFT_TEMP2: case CFT_PREC2:
-    case CFT_SRAD2: case CFT_ABOVEGBM2: case CFT_PET: case CFT_PET2:
+    case CFT_SRAD2: case CFT_ABOVEGBMC2:  case CFT_ABOVEGBMN2 :case CFT_PET: case CFT_PET2:
       incr=0;
       for(i=0;i<2;i++)
       {

@@ -49,7 +49,19 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           param.k,param.theta,param.k_beer,param.alphac3,param.alphac4,
           param.bc3,param.bc4,param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,param.k_mort);
-
+  if(config->with_nitrogen)
+    fprintf(file,"k_max:\t\t%g (1/d)\n"
+            "k_2:\t\t%g\n"
+            "p:\t\t%g\n"
+            "N0:\t\t%g (mgN/gC)\n"
+             "k_temp:\t\t%g\n"
+            "denit threshold:\t%g\n"
+            "min_c_bnf:\t%g (gC/m2)\n"
+            "q_ash:\t\t%g\n"
+             "sapwood_rec:\t%g\n"
+             "par_sink_limit:\t%g\n",
+            param.k_max,param.k_2,param.p,param.n0,param.k_temp,param.denit_threshold,
+            param.min_c_bnf,param.q_ash,param.sapwood_recovery,param.par_sink_limit);
   if(config->withlanduse!=NO_LANDUSE)
   {
     fprintf(file,"annual prec lim:\t%g\n",param.aprec_lim);

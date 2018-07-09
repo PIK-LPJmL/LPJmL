@@ -307,7 +307,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   for(i=0;i<config->ngridcell;i++)
   {
     /* read cell coordinate and soil code from file */
-    if(readcelldata(celldata,&grid[i].coord,&soilcode,&grid[i].discharge.runoff2ocean_coord,i,config))
+    if(readcelldata(celldata,&grid[i].coord,&soilcode,&grid[i].soilph,&grid[i].discharge.runoff2ocean_coord,i,config))
       return NULL;
 
     if(config->countrypar!=NULL)
@@ -393,9 +393,11 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     /* Init cells */
     grid[i].ml.dam=FALSE;
     grid[i].ml.cropfrac_rf=grid[i].ml.cropfrac_ir=grid[i].ml.reservoirfrac=0;
-    grid[i].balance.totw=grid[i].balance.totc=0.0;
-    grid[i].balance.estab_storage_tree[0]=grid[i].balance.estab_storage_tree[1]=100.0;
-    grid[i].balance.estab_storage_grass[0]=grid[i].balance.estab_storage_grass[1]=20.0;
+    grid[i].balance.totw=grid[i].balance.tot.carbon=grid[i].balance.tot.nitrogen=0.0;
+    grid[i].balance.estab_storage_tree[0].carbon=grid[i].balance.estab_storage_tree[1].carbon=100.0;
+    grid[i].balance.estab_storage_tree[0].nitrogen=grid[i].balance.estab_storage_tree[1].nitrogen=10.0;
+    grid[i].balance.estab_storage_grass[0].carbon=grid[i].balance.estab_storage_grass[1].carbon=20.0;
+    grid[i].balance.estab_storage_grass[0].nitrogen=grid[i].balance.estab_storage_grass[1].nitrogen=2.0;
     grid[i].balance.surface_storage=grid[i].balance.soil_storage=0.0;
     grid[i].discharge.waterdeficit=0.0;
     grid[i].discharge.wateruse=0;
@@ -417,7 +419,14 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       grid[i].ml.landfrac=newvec(Landfrac,2);
       checkptr(grid[i].ml.landfrac);
       newlandfrac(grid[i].ml.landfrac,ncft);
-
+      if(config->with_nitrogen)
+      {
+        grid[i].ml.fertilizer_nr=newvec(Landfrac,2);
+        checkptr(grid[i].ml.fertilizer_nr);
+        newlandfrac(grid[i].ml.fertilizer_nr,ncft);
+      }
+      else
+        grid[i].ml.fertilizer_nr=NULL;
       grid[i].ml.irrig_system=newvec(Irrig_system,1);
       checkptr(grid[i].ml.irrig_system);
       grid[i].ml.irrig_system->crop=newvec(int,ncft);
@@ -433,6 +442,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     else
     {
       grid[i].ml.landfrac=NULL;
+      grid[i].ml.fertilizer_nr=NULL;
       grid[i].ml.irrig_system=NULL;
     }
     if(file_restart==NULL)

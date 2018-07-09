@@ -22,16 +22,16 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
              )                     /** \return total flux (gC) */
 {
   int cell;
-  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   for(cell=0;cell<config->ngridcell;cell++)
   {
     if(!grid[cell].skip)
     {
       flux.area+=grid[cell].coord.area;
       flux.nep+=grid[cell].balance.nep*grid[cell].coord.area;
-      flux.fire+=(grid[cell].output.firec+grid[cell].output.flux_firewood)*grid[cell].coord.area;
-      flux.estab+=grid[cell].output.flux_estab*grid[cell].coord.area;
-      flux.harvest+=(grid[cell].output.flux_harvest+grid[cell].balance.biomass_yield)*grid[cell].coord.area;
+      flux.fire+=(grid[cell].output.fire.carbon+grid[cell].output.flux_firewood.carbon)*grid[cell].coord.area;
+      flux.estab+=grid[cell].output.flux_estab.carbon*grid[cell].coord.area;
+      flux.harvest+=(grid[cell].output.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon)*grid[cell].coord.area;
       flux.transp+=grid[cell].output.atransp*grid[cell].coord.area;
       flux.evap+=grid[cell].output.aevap*grid[cell].coord.area;
       flux.interc+=grid[cell].output.ainterc*grid[cell].coord.area;
@@ -47,6 +47,10 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.total_reservoir_out+=grid[cell].balance.total_reservoir_out;
       flux.total_irrig_from_reservoir+=grid[cell].balance.total_irrig_from_reservoir;
       flux.wateruse+=grid[cell].output.awateruse_hil;
+      flux.n_demand+=grid[cell].balance.n_demand*grid[cell].coord.area;
+      flux.n_uptake+=grid[cell].balance.n_uptake*grid[cell].coord.area;
+      flux.n_influx+=grid[cell].balance.n_influx*grid[cell].coord.area;
+      flux.n_outflux+=grid[cell].balance.n_outflux*grid[cell].coord.area;
     }
     flux.discharge+=grid[cell].output.adischarge;
     flux.delta_surface_storage+=grid[cell].output.surface_storage-grid[cell].balance.surface_storage;

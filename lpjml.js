@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 4.0.001                         \n**/
+/** Default configuration file for LPJmL C Version 5.1.001                         \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -40,12 +40,14 @@
   "new_phenology": true,    /* GSI phenology enabled */
   "river_routing" : true,
   "permafrost" : true,
+  "with_nitrogen" : true,
 #ifdef FROM_RESTART
   "population" : false,
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
   "wateruse" : true,
+  "istimber" : false,
 #else
   "population" : false,
   "landuse" : NO_LANDUSE,
@@ -120,7 +122,7 @@ ID                         Fmt                    filename
     { "id" : VEGC,             "file" : { "fmt" : RAW, "name" : "output/vegc.bin"}},
     { "id" : SOILC,            "file" : { "fmt" : RAW, "name" : "output/soilc.bin"}},
     { "id" : LITC,             "file" : { "fmt" : RAW, "name" : "output/litc.bin"}},
-    { "id" : FLUX_ESTAB,       "file" : { "fmt" : RAW, "name" : "output/flux_estab.bin"}},
+    { "id" : FLUX_ESTABC,      "file" : { "fmt" : RAW, "name" : "output/flux_estabc.bin"}},
     { "id" : MPHEN_TMIN,       "file" : { "fmt" : RAW, "name" : "output/mphen_tmin.bin"}},
     { "id" : MPHEN_TMAX,       "file" : { "fmt" : RAW, "name" : "output/mphen_tmax.bin"}},
     { "id" : MPHEN_LIGHT,      "file" : { "fmt" : RAW, "name" : "output/mphen_light.bin"}},
@@ -132,9 +134,9 @@ ID                         Fmt                    filename
 #endif
     { "id" : MDISCHARGE,       "file" : { "fmt" : RAW, "name" : "output/mdischarge.bin"}},
     { "id" : MWATERAMOUNT,     "file" : { "fmt" : RAW, "name" : "output/mwateramount.bin"}},
-    { "id" : HARVEST,          "file" : { "fmt" : RAW, "name" : "output/flux_harvest.bin"}},
+    { "id" : HARVESTC,         "file" : { "fmt" : RAW, "name" : "output/flux_harvestc.bin"}},
     { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : "output/sdate.bin"}},
-    { "id" : PFT_HARVEST,      "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvest.SUFFIX)}},
+    { "id" : PFT_HARVESTC,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestc.SUFFIX)}},
     { "id" : CFTFRAC,          "file" : { "fmt" : RAW, "name" : "output/cftfrac.bin"}},
     { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : "output/seasonality.bin"}},
 #ifdef DAILY_OUTPUT

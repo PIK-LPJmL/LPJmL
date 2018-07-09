@@ -24,7 +24,7 @@ Harvest harvest_grass(Stand *stand, /**< pointer to stand */
                      )              /** \return harvested grass (gC/m2) */
 {
   Harvest harvest;
-  Harvest sum={0,0,0,0};
+  Harvest sum={{0,0},{0,0},{0,0},{0,0}};
   Pftgrass *grass;
   Pft *pft;
   int p;
@@ -32,10 +32,13 @@ Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
-    harvest.harvest=grass->ind.leaf*hfrac;
-    grass->ind.leaf*=(1-hfrac);
-    sum.harvest+=harvest.harvest;
-    grass->max_leaf = grass->ind.leaf;
+    harvest.harvest.carbon=grass->ind.leaf.carbon*hfrac;
+    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac;
+    grass->ind.leaf.carbon*=(1-hfrac);
+    grass->ind.leaf.nitrogen*=(1-hfrac);
+    sum.harvest.carbon+=harvest.harvest.carbon;
+    sum.harvest.nitrogen+=harvest.harvest.nitrogen;
+    grass->max_leaf = grass->ind.leaf.carbon;
     pft->phen=0.3;
     pft->gdd=30;
   }
@@ -50,8 +53,9 @@ Harvest harvest_stand(Output *output, /**< Output data */
   Harvest harvest;
 
   harvest=harvest_grass(stand,hfrac);
-  output->flux_harvest+=(harvest.harvest+harvest.residual)*stand->frac;
-  output->dcflux+=(harvest.harvest+harvest.residual)*stand->frac;
+  output->flux_harvest.carbon+=(harvest.harvest.carbon+harvest.residual.carbon)*stand->frac;
+  output->flux_harvest.nitrogen+=(harvest.harvest.nitrogen+harvest.residual.nitrogen)*stand->frac;
+  output->dcflux+=(harvest.harvest.carbon+harvest.residual.carbon)*stand->frac;
   return harvest;
 
 } /* of 'harvest_stand' */

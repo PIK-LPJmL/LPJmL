@@ -33,8 +33,9 @@ Bool annual_biomass_grass(Stand *stand,         /* Pointer to stand */
   int p;
   Bool *present;
   Pft *pft;
-  Real fpc_inc,estab_store;
-  Real acflux_estab;
+  Real fpc_inc;
+  Stocks estab_store;
+  Stocks acflux_estab,stocks;
   int n_est=0;
   Real fpc_total,*fpc_type;
   Irrigation *irrigation;
@@ -45,7 +46,7 @@ Bool annual_biomass_grass(Stand *stand,         /* Pointer to stand */
   check(fpc_type);
   present=newvec(Bool,npft);
   check(present);
-  acflux_estab=estab_store=0;
+  acflux_estab.carbon=estab_store.carbon=acflux_estab.nitrogen=estab_store.nitrogen=0;
   for(p=0;p<npft;p++)
     present[p]=FALSE;
 
@@ -59,13 +60,16 @@ Bool annual_biomass_grass(Stand *stand,         /* Pointer to stand */
 
     present[pft->par->id]=TRUE;
     grasspar=pft->par->data;
-    if (stand->cell->balance.estab_storage_grass[irrigation->irrigation]<grasspar->sapling_C*0.01)
+    if (stand->cell->balance.estab_storage_grass[irrigation->irrigation].carbon<grasspar->sapling_C*0.01)
     {
-      estab_store=pft->bm_inc*0.001;
-      pft->bm_inc-=estab_store;
-      stand->cell->balance.estab_storage_grass[irrigation->irrigation]+=estab_store*stand->frac;
+      estab_store.carbon=pft->bm_inc.carbon*0.001;
+      estab_store.nitrogen=pft->bm_inc.nitrogen*0.001;
+      pft->bm_inc.carbon-=estab_store.carbon;
+      pft->bm_inc.nitrogen-=estab_store.nitrogen;
+      stand->cell->balance.estab_storage_grass[irrigation->irrigation].carbon+=estab_store.carbon*stand->frac;
+      stand->cell->balance.estab_storage_grass[irrigation->irrigation].nitrogen+=estab_store.nitrogen*stand->frac;
     }
-    if(annual_grass(stand,pft,&fpc_inc,isdaily))
+    if(annual_grass(stand,pft,&fpc_inc,config->new_phenology,isdaily))
     {
       /* PFT killed, delete from list of established PFTs */
       litter_update_grass(&stand->soil.litter,pft,pft->nind);
@@ -92,14 +96,15 @@ Bool annual_biomass_grass(Stand *stand,         /* Pointer to stand */
 
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
-   if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
-    acflux_estab+=establishment_grass(pft,fpc_total,fpc_type[pft->par->type],n_est);
+    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
+    {
+      stocks=establishment_grass(pft,fpc_total,fpc_type[pft->par->type],n_est);
+      acflux_estab.carbon+=stocks.carbon;
+      acflux_estab.nitrogen+=stocks.nitrogen;
+    }
 
-  stand->cell->balance.estab_storage_grass[irrigation->irrigation]-=acflux_estab*stand->frac;
-  acflux_estab=0;
-
-  stand->cell->output.flux_estab+=acflux_estab*stand->frac;
-  stand->cell->output.dcflux-=acflux_estab*stand->frac;
+  stand->cell->balance.estab_storage_grass[irrigation->irrigation].carbon-=acflux_estab.carbon*stand->frac;
+  stand->cell->balance.estab_storage_grass[irrigation->irrigation].nitrogen-=acflux_estab.nitrogen*stand->frac;
 
   stand->cell->output.soil_storage+=(irrigation->irrig_stor+irrigation->irrig_amount)*stand->frac*stand->cell->coord.area;
 

@@ -19,7 +19,7 @@ Bool fwriteresdata(FILE *file,       /**< pointer to restart file */
                    )                 /** \return TRUE on error */
 {
   fwrite(&cell->ml.reservoirfrac,sizeof(Real),1,file);
-  fwrite(&cell->ml.resdata->c_pool,sizeof(Real),1,file);
+  fwrite(&cell->ml.resdata->pool,sizeof(Stocks),1,file);
   fwrite(&cell->ml.resdata->dmass,sizeof(Real),1,file);
   fwrite(&cell->ml.resdata->k_rls,sizeof(Real),1,file);
   fwrite(&cell->ml.resdata->target_release_year,sizeof(Real), 1,file);

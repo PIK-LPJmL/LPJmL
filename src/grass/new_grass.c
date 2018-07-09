@@ -23,12 +23,20 @@ void new_grass(Pft *pft,         /**< pointer to PFT variables */
               )        
 {
   Pftgrass *grass;
+  Pftgrasspar *grasspar;
   grass=new(Pftgrass);
   check(grass);
   pft->data=grass;
-  pft->bm_inc=pft->wscal_mean=pft->phen=0;
+  grasspar=pft->par->data;
+  pft->bm_inc.carbon=pft->wscal_mean=pft->phen=0;
+  pft->bm_inc.nitrogen=0;
   pft->stand->growing_days=0;
   grass->max_leaf=0;
+  grass->excess_carbon=0;
+  pft->vmax=0;
   pft->nind=1;
-  grass->ind.leaf=grass->ind.root=grass->turn.leaf=grass->turn.root=0;
+  grass->falloc.leaf=grasspar->sapl.leaf/(grasspar->sapl.leaf+grasspar->sapl.root);
+  grass->falloc.root=grasspar->sapl.root/(grasspar->sapl.leaf+grasspar->sapl.root);
+  grass->ind.leaf.carbon=grass->ind.root.carbon=grass->turn.leaf.carbon=grass->turn.root.carbon=0;
+  grass->ind.leaf.nitrogen=grass->ind.root.nitrogen=grass->turn.leaf.nitrogen=grass->turn.root.nitrogen=0;
 } /* of 'new_grass' */

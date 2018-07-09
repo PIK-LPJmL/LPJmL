@@ -102,7 +102,14 @@ void freeconfig(Config *config /**< LPJmL configuration */
     if(config->countrycode_filename.fmt==CDF)
       freefilename(config->regioncode_filename);
   }
-  
+   if(config->with_nitrogen)
+  {
+    freefilename(config->no3deposition_filename);
+    freefilename(config->nh4deposition_filename);
+    freefilename(config->soilph_filename);
+    if(config->withlanduse!=NO_LANDUSE)
+      freefilename(config->fertilizer_nr_filename);
+  }
   if(config->prescribe_landcover != NO_LANDCOVER)
     freefilename(config->landcover_filename);
     

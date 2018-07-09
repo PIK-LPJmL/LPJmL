@@ -248,11 +248,18 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   if(config.ispopulation)
     bad+=checkdatafile(&config,&config.popdens_filename);
+  if(config.with_nitrogen)
+  {
+    bad+=checkclmfile(&config,&config.no3deposition_filename);
+    bad+=checkclmfile(&config,&config.nh4deposition_filename);
+    bad+=checkinputfile(&config,&config.soilph_filename,0);
+  }
   if(config.grassfix_filename.name!=NULL)
     bad+=checkinputfile(&config,&config.grassfix_filename,0);
+  if(config.with_nitrogen || config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
+    bad+=checkclmfile(&config,&config.wind_filename);
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
-    bad+=checkclmfile(&config,&config.wind_filename);
     bad+=checkclmfile(&config,&config.tamp_filename);
     if(config.tamp_filename.fmt==CDF && config.tmax_filename.name!=NULL)
       bad+=checkclmfile(&config,&config.tmax_filename);
@@ -295,6 +302,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.elevation_filename,0);
       bad+=checkinputfile(&config,&config.reservoir_filename,10);
     }
+    if(config.with_nitrogen)
+      bad+=checkclmfile(&config,&config.fertilizer_nr_filename);
   }
   badout=0;
   oldpath=strdup("");

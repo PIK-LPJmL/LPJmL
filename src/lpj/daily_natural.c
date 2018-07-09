@@ -31,7 +31,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
                    Real par,   /**< photosynthetic active radiation flux */
                    Real melt,  /**< melting water (mm) */
                    int npft,   /**< number of natural PFTs */
-                   int UNUSED(ncft), /**< number of crop PFTs   */
+                   int ncft, /**< number of crop PFTs   */
                    int year,         /**< simulation year (AD) */
                    Bool withdailyoutput, /**< daily output enabled */
                    Bool UNUSED(intercrop), /**< enabled intercropping */
@@ -53,7 +53,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   Real gc_pft;
 
 #ifdef DAILY_ESTABLISHMENT
-  Real acflux_estab = 0;
+  Stocks acflux_estab = {0,0};
 #endif
   Soil *soil;
   soil = &stand->soil;
@@ -91,7 +91,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   }
 
   /* soil inflow: infiltration and percolation */
-  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b);
+  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,withdailyoutput,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -102,14 +102,14 @@ Real daily_natural(Stand *stand, /**< stand pointer */
  */
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
-                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,config->permafrost);
+                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,npft,ncft,config);
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
       output->gcgp_count[pft->par->id]++;
       output->pft_gcgp[pft->par->id]+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
 
-    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd);
+    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
     if (withdailyoutput){
       if (output->daily.cft == ALLNATURAL)
         output->daily.npp+=npp;
@@ -161,7 +161,14 @@ Real daily_natural(Stand *stand, /**< stand pointer */
       }
     output->daily.interc=intercep_stand*stand->frac;
   }
-
+  foreachsoillayer(l){
+    output->mswc[l]+=(stand->soil.w[l]*stand->soil.par->whcs[l]+stand->soil.w_fw[l]+stand->soil.par->wpwps[l]+
+                   stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.par->wsats[l]*stand->frac*(1.0/(1-stand->cell->lakefrac));
+    output->daily.nh4+=stand->soil.NH4[l];
+    output->daily.no3+=stand->soil.NO3[l];
+    output->daily.nsoil_fast+=stand->soil.pool[l].fast.nitrogen;
+    output->daily.nsoil_slow+=stand->soil.pool[l].slow.nitrogen;
+  }
   forrootsoillayer(l)
   {
     output->mtransp+=aet_stand[l]*stand->frac;
@@ -178,8 +185,9 @@ Real daily_natural(Stand *stand, /**< stand pointer */
     acflux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
   else if (year>911)
     acflux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
-  output->flux_estab+=acflux_estab*stand->frac;
-  output->dcflux-=acflux_estab*stand->frac;
+  output->flux_estab.carbon+=acflux_estab.carbon*stand->frac;
+  output->flux_estab.nitrogen+=acflux_estab.nitrogen*stand->frac;
+  output->dcflux-=acflux_estab.carbon*stand->frac;
 #endif
 
   free(wet);

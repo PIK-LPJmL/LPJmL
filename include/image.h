@@ -94,8 +94,8 @@ typedef struct
   Real fburnt;             /* fraction of deforested wood burnt */
   Real timber_frac;        /* fraction of gridcell harvested for timber */
   Real deforest_emissions; /* carbon emissions from deforested wood burnt [gC/m2]*/
-  Pool timber_f;           /* fraction that enters fast and slow product pool */
-  Pool timber;             /* fast and slow timber pool [gC/m2] */
+  Poolpar timber_f;        /* fraction that enters fast and slow product pool */
+  Poolpar timber;          /* fast and slow timber pool [gC/m2] */
   Real timber_turnover;    /* annual sum of decayed product pool [gC/m2] */
   Real anpp;               /* annual NPP (gC/m2) */
   Real arh;                /* annual Rh (gC/m2) */

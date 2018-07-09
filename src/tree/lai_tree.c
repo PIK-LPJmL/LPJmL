@@ -21,7 +21,7 @@ Real lai_tree(const Pft *pft)
   tree=pft->data;
     
   return (tree->crownarea>0.0) ? 
-         tree->ind.leaf*getpftpar(pft,sla)/tree->crownarea : 0;
+         tree->ind.leaf.carbon*getpftpar(pft,sla)/tree->crownarea : 0;
 } /* of 'lai_tree' */
 /*
 - this function is called in fpc_tree() and returns the maximum lai of a tree (last year's LAI)
@@ -33,7 +33,7 @@ Real actual_lai_tree(const Pft *pft)
   tree=pft->data;
     
   return (tree->crownarea>0.0) ? 
-    tree->ind.leaf*getpftpar(pft,sla)/tree->crownarea*pft->phen : 0;
+    tree->ind.leaf.carbon*getpftpar(pft,sla)/tree->crownarea*pft->phen : 0;
 } /* of 'lai_tree' */
 /*
 - this function is called in interception() and returns the actual lai of a tree (multiplied with phen)

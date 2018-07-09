@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**             v  e  g  c  _  s  u  m  _  c  r  o  p  .  c                        \n**/
+/**                            f  _  l  a  i  .  c                                 \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function implements equation C11 in Smith et al. (2014)                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,12 +15,12 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "crop.h"
 
-Real vegc_sum_crop(const Pft *pft /**< pointer to PFT data */
-                  )               /** \return crop carbon (gC/m2) */
+#define k_l 0.08 /* changed from 0.12 in Smith et al. (2014) */
+
+Real f_lai(Real lai)
 {
-  const Pftcrop *crop;
-  crop=pft->data;
-  return phys_sum_crop(crop->ind)*pft->nind;
-} /* of 'vegc_sum_crop' */
+  if(lai<1.0)
+    return max(0.1,lai);
+  return exp(k_l*min(lai,7));
+} /* of 'f_lai' */

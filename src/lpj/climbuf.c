@@ -31,6 +31,7 @@ Bool new_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
   if(climbuf->min==NULL)
     return TRUE;
   climbuf->atemp_mean=0;
+  climbuf->aetp_mean=0;
   climbuf->atemp=0;
   climbuf->atemp_mean20=-9999;
   climbuf->atemp_mean20_fix=0;
@@ -83,12 +84,14 @@ void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
   climbuf->atemp+=mtemp*k;
 } /* of 'monthly_climbuf' */
 
-void annual_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
+void annual_climbuf(Climbuf *climbuf,/**< pointer to climate buffer */
+                    Real aetp        /**< annual evopotranspiration (mm) */
                    )
 {
   updatebuffer(climbuf->min,climbuf->temp_min);
   updatebuffer(climbuf->max,climbuf->temp_max);
   climbuf->atemp_mean20 = (climbuf->atemp_mean20<-9998) ? climbuf->atemp : (1-kk)*climbuf->atemp_mean20+kk*climbuf->atemp;
+  climbuf->aetp_mean=(1-kk)*climbuf->aetp_mean+kk*aetp;
   climbuf->atemp=0;
   climbuf->mtemp_min20 = getbufferavg(climbuf->min);
 } /* of 'annual_climbuf' */
@@ -100,6 +103,7 @@ Bool fwriteclimbuf(FILE *file, /**< pointer to binary file */
   fwrite(&climbuf->temp_max,sizeof(Real),1,file);
   fwrite(&climbuf->temp_min,sizeof(Real),1,file);
   fwrite(&climbuf->atemp_mean,sizeof(Real),1,file);
+  fwrite(&climbuf->aetp_mean,sizeof(Real),1,file);
   fwrite(&climbuf->atemp_mean20,sizeof(Real),1,file);
   fwrite(&climbuf->atemp_mean20_fix,sizeof(Real),1,file);
   fwrite(&climbuf->gdd5,sizeof(Real),1,file);
@@ -120,6 +124,7 @@ Bool freadclimbuf(FILE *file,  /**< pointer to binary file */
   freadreal1(&climbuf->temp_max,swap,file);
   freadreal1(&climbuf->temp_min,swap,file);
   freadreal1(&climbuf->atemp_mean,swap,file);
+  freadreal1(&climbuf->aetp_mean,swap,file);
   freadreal1(&climbuf->atemp_mean20,swap,file);
   freadreal1(&climbuf->atemp_mean20_fix,swap,file);
   freadreal1(&climbuf->gdd5,swap,file);

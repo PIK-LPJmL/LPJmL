@@ -25,16 +25,10 @@ Bool fwrite_tree(FILE *file,const Pft *pft)
   fwrite1(&tree->gddtw,sizeof(Real),file);
   fwrite1(&tree->aphen_raingreen,sizeof(Real),file);
   fwrite1(&tree->isphen,sizeof(int),file);
-  fwrite1(&tree->turn.leaf,sizeof(Real),file);
-  fwrite1(&tree->turn.sapwood,sizeof(Real),file);
-  fwrite1(&tree->turn.root,sizeof(Real),file);
-  fwrite1(&tree->ind.leaf,sizeof(Real),file);
-  fwrite1(&tree->ind.sapwood,sizeof(Real),file);
-  fwrite1(&tree->ind.heartwood,sizeof(Real),file);
-  fwrite1(&tree->ind.root,sizeof(Real),file);
-  fwrite1(&tree->ind.debt,sizeof(Real),file);
-
+  fwrite1(&tree->turn,sizeof(Treephys),file);
+  fwrite1(&tree->turn_nbminc,sizeof(Real),file);
+  fwrite1(&tree->ind,sizeof(Treephys2),file);
+  fwrite1(&tree->excess_carbon,sizeof(Real),file);
+  fwrite1(&tree->falloc,sizeof(Treephyspar),file);
   return FALSE;
-
-/*  return fwrite(tree,sizeof(Pfttree),1,file)!=1;*/
 } /* of 'fwrite_tree' */

@@ -24,12 +24,14 @@ Bool fwritesoil(FILE *file, /**< pointer to binary file */
   int l;
   forrootsoillayer(l)
   {
-    fwrite1(&soil->cpool[l],sizeof(Pool),file);
+    fwrite1(&soil->pool[l],sizeof(Pool),file);
     fwriten(soil->c_shift_fast[l],sizeof(Real),ntotpft,file);
     fwriten(soil->c_shift_slow[l],sizeof(Real),ntotpft,file);
   }
   if(fwritelitter(file,&soil->litter))
     return TRUE;
+  fwriten(soil->NO3,sizeof(Real),LASTLAYER,file);
+  fwriten(soil->NH4,sizeof(Real),LASTLAYER,file);
   fwriten(soil->w,sizeof(Real),NSOILLAYER,file);
   fwrite1(&soil->w_evap,sizeof(Real),file);
   fwriten(soil->w_fw,sizeof(Real),NSOILLAYER,file);

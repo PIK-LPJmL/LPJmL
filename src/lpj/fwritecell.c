@@ -61,9 +61,9 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
     }
     if(!grid[cell].skip)
     {
-      if(fwrite(grid[cell].balance.estab_storage_tree,sizeof(Real),2,file)!=2)
+      if(fwrite(grid[cell].balance.estab_storage_tree,sizeof(Stocks),2,file)!=2)
         break;
-      if(fwrite(grid[cell].balance.estab_storage_grass,sizeof(Real),2,file)!=2)
+      if(fwrite(grid[cell].balance.estab_storage_grass,sizeof(Stocks),2,file)!=2)
         break;
       if(fwrite(&grid[cell].discharge.waterdeficit,sizeof(Real),1,file)!=1)
         break;
@@ -89,6 +89,8 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(grid[cell].ml.landfrac!=NULL)
         fwritelandfrac(file,grid[cell].ml.landfrac,ncft);
+      if(grid[cell].ml.fertilizer_nr!=NULL)
+        fwritelandfrac(file,grid[cell].ml.fertilizer_nr,ncft);
     }
   } /* of 'for(cell=...)' */
   return cell;

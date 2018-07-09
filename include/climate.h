@@ -35,6 +35,8 @@ typedef struct
   Real *lwnet;   /**< long wave net downward flux (W m-2) */
   Real *swdown;  /**< short wave downward flux component (W m-2) */
   Real *burntarea;	/**< burnt area (ha) */
+  Real *no3deposition; /**< dry and wet N deposition (gN m-2) */
+  Real *nh4deposition; /**< dry and wet N deposition (gN m-2) */
 } Climatedata;
 
 typedef struct Dailyclimate
@@ -49,6 +51,8 @@ typedef struct Dailyclimate
   Real lwnet;      /**< long wave net downward flux (W/m2) */
   Real swdown;     /**< short wave downward flux component (W/m2) */
   Real burntarea;  /**< burnt area (ha) */
+  Real no3deposition; /**< nitrogen deposition  (gN/m2/day) */
+  Real nh4deposition; /**< nitrogen deposition  (gN/m2/day) */
   Bool isdailytemp; /**< temperature data are true daily data */
 } Dailyclimate;
 
@@ -66,6 +70,7 @@ typedef struct
   Climatefile file_temp,file_prec,file_wet; /**< file pointers */
   Climatefile file_cloud,file_lwnet,file_swdown;
   Climatefile file_wind,file_tamp,file_tmax,file_lightning;
+  Climatefile file_no3deposition,file_nh4deposition;
 #ifdef IMAGE
   Climatefile file_temp_var,file_prec_var;
 #endif
@@ -86,6 +91,8 @@ typedef struct
 #define getcelltmax(climate,cell) climate->data.tmax+(cell)*NMONTH
 #define getcelllightning(climate,cell) climate->data.lightning+(cell)*NMONTH
 #define getcellburntarea(climate,cell) climate->data.burntarea+(cell)*NMONTH
+#define getcellno3deposition(climate,cell) climate->data.no3deposition+(cell)*NMONTH
+#define getcellnh4deposition(climate,cell) climate->data.nh4deposition+(cell)*NMONTH
 #define getprec(cell,d) (cell).climbuf.dval_prec[(d)+1]
 #define israndomprec(climate) ((climate)->data.wet!=NULL)
 

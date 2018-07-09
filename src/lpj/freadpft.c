@@ -43,17 +43,20 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
   pft->fpc_obs=0;
   freadreal1(&pft->wscal,swap,file);
   freadreal1(&pft->wscal_mean,swap,file);
+  freadreal1(&pft->vscal,swap,file);
   freadreal1(&pft->aphen,swap,file);
   freadreal1(&pft->phen,swap,file);
   /* read class-dependent PFT variables */
   if(pft->par->fread(file,pft,swap))
     return TRUE;
-  freadreal1(&pft->bm_inc,swap,file);
+  freadreal((Real *)&pft->bm_inc,sizeof(Stocks)/sizeof(Real),swap,file);
   freadreal1(&pft->nind,swap,file);
   freadreal1(&pft->gdd,swap,file); 
   freadreal1(&pft->fpc,swap,file);
   freadreal1(&pft->albedo,swap,file);
   freadreal1(&pft->fapar,swap,file);
+  freadreal1(&pft->nleaf,swap,file);
+  pft->nlimit=pft->vmax=0;
   if(fread(&id,sizeof(id),1,file)!=1)
     return TRUE;
   pft->litter=id;

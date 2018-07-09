@@ -25,8 +25,9 @@ void copysoil(Soil *dst,       /**< destination */
   dst->par=src->par;
   forrootsoillayer(l)
   {
-    dst->cpool[l].fast=src->cpool[l].fast;
-    dst->cpool[l].slow=src->cpool[l].slow;
+    dst->pool[l]=src->pool[l];
+    dst->NH4[l]=src->NH4[l];
+    dst->NO3[l]=src->NO3[l];
     dst->k_mean[l].slow=src->k_mean[l].slow;
     dst->k_mean[l].fast=src->k_mean[l].fast;
     for(p=0;p<ntotpft;p++)
@@ -52,7 +53,7 @@ void copysoil(Soil *dst,       /**< destination */
   {
     dst->litter.ag=newvec(Litteritem,src->litter.n);
     check(dst->litter.ag);
-    dst->litter.bg=newvec(Real,src->litter.n);
+    dst->litter.bg=newvec(Stocks,src->litter.n);
     check(dst->litter.bg);
     for(i=0;i<src->litter.n;i++)
     {

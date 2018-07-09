@@ -15,21 +15,25 @@
 #include "lpj.h"
 #include "grass.h"
 
-Real livefuel_consum_grass(Litter * UNUSED(litter),Pft *pft,
-                           const Fuel * UNUSED(fuel),
-                           Livefuel *livefuel,
-                           Bool *isdead,Real UNUSED(surface_fi),
-                           Real fire_frac)
+Stocks livefuel_consum_grass(Litter * UNUSED(litter),Pft *pft,
+                             const Fuel * UNUSED(fuel),
+                             Livefuel *livefuel,
+                             Bool *isdead,Real UNUSED(surface_fi),
+                             Real fire_frac)
 {
 
   Pftgrass *grass;
-  Real livefuel_consum;
+  Stocks livefuel_consum;
   /*  livegrass consumption */
   grass=pft->data;
-  livefuel_consum = fuel_consumption_1hr(livefuel->dlm_livegrass,fire_frac)*grass->ind.leaf*pft->nind;
+  livefuel_consum.carbon = fuel_consumption_1hr(livefuel->dlm_livegrass,fire_frac)*grass->ind.leaf.carbon*pft->nind;
+  livefuel_consum.nitrogen = fuel_consumption_1hr(livefuel->dlm_livegrass,fire_frac)*grass->ind.leaf.nitrogen*pft->nind;
   /* livegrass update */
   if (pft->nind > 0)
-    grass->ind.leaf -= livefuel_consum / pft->nind;
+  {
+    grass->ind.leaf.carbon -= livefuel_consum.carbon / pft->nind;
+    grass->ind.leaf.nitrogen -= livefuel_consum.nitrogen / pft->nind;
+  }
   *isdead=FALSE;
   return livefuel_consum;
 } /* of 'livefuel_consum_grass' */

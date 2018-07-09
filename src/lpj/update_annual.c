@@ -28,11 +28,13 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
                    const Config *config    /**< LPJ configuration */
                   )
 {
-  int s;
+  int s,p;
+  Pft *pft;
   Stand *stand;
+  Stocks litter_neg;
   if(cell->ml.dam)
     update_reservoir_annual(cell);
-  annual_climbuf(&cell->climbuf);
+  annual_climbuf(&cell->climbuf,cell->output.aevap+cell->output.atransp);
   if(config->sdate_option==NO_FIXED_SDATE ||
     (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear)||
     (config->sdate_option==PRESCRIBED_SDATE && year<=config->sdate_fixyear))
@@ -54,6 +56,9 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
       stand->landcover = landcover;
 
     stand->soil.mean_maxthaw=(stand->soil.mean_maxthaw-stand->soil.mean_maxthaw/CLIMBUFSIZE)+stand->soil.maxthaw_depth/CLIMBUFSIZE;
+    if(!config->with_nitrogen)
+      foreachpft(pft,p,&stand->pftlist)
+        pft->vscal=NDAYYEAR;
     if(annual_stand(stand,npft,ncft,popdens,year,isdaily,intercrop,config))
     {
       /* stand has to be deleted */
@@ -62,7 +67,12 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
     }
   } /* of foreachstand */
   foreachstand(stand,s,cell->standlist)
+  {
+    litter_neg=checklitter(&stand->soil.litter);
+    cell->output.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
+    cell->output.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
     stand->cell->output.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
+  }
   cell->output.fpc[0] = 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;
 #ifdef IMAGE
   cell->output.prod_turnover=product_turnover(cell->ml.image_data);

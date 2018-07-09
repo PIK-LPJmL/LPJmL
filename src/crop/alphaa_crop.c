@@ -15,12 +15,13 @@
 #include "lpj.h"
 #include "crop.h"
 
-Real alphaa_crop(const Pft *pft /**< pointer to PFT data */
-                )               /** \return alpha_a */
+Real alphaa_crop(const Pft *pft, int lai_opt)
 {
   Real laimax;
-  if(pft->stand->cell->ml.manage.laimax==NULL)                             
-    laimax=0;                                                           
+  if(lai_opt==LAIMAX_PAR)
+    return pft->par->alphaa;
+  if(pft->stand->cell->ml.manage.laimax==NULL)
+    laimax=0;
   else
     laimax=pft->stand->cell->ml.manage.laimax[pft->par->id];
   laimax= (laimax<=7) ? laimax : 7;

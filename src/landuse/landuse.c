@@ -46,7 +46,9 @@ struct landuse
   Bool allcrops;       /**< all crops establish (TRUE/FALSE) */
   int nbands;          /**< number of data items per cell */
   int nbands_sdate;    /**< number of data items per cell for sowing dates */
+  int nbands_fertilizer_nr; /**< number of data items per cell for fertilizer nr data */
   Climatefile landuse; /**< file pointer */
+  Climatefile fertilizer_nr; /**< file pointer to nitrogen fertilizer file */
   Climatefile sdate;   /**< file pointer to prescribed sdates */
 };                     /**< definition of opaque datatype Landuse */
 
@@ -228,6 +230,112 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
   }
   else
     landuse->sdate.file=NULL;
+   if(config->with_nitrogen)
+  {
+    /* read fertilizer data */
+    landuse->fertilizer_nr.fmt=config->fertilizer_nr_filename.fmt;
+    if(config->fertilizer_nr_filename.fmt==CDF)
+    {
+      if(opendata_netcdf(&landuse->fertilizer_nr,config->fertilizer_nr_filename.name,config->fertilizer_nr_filename.var,NULL,config))
+      {
+        if(landuse->landuse.fmt==CDF)
+          closeclimate_netcdf(&landuse->landuse,isroot(*config));
+        else
+          fclose(landuse->landuse.file);
+        if(landuse->sdate.file!=NULL)
+        {
+          if(landuse->sdate.fmt==CDF)
+            closeclimate_netcdf(&landuse->sdate,isroot(*config));
+          else
+            fclose(landuse->sdate.file);
+        }
+        free(landuse);
+        return NULL;
+      }
+      if(landuse->fertilizer_nr.var_len!=2*(ncft+NGRASS+NBIOMASSTYPE))
+      {
+        closeclimate_netcdf(&landuse->fertilizer_nr,isroot(*config));
+        if(isroot(*config))
+          fprintf(stderr,
+          "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
+          (int)landuse->fertilizer_nr.var_len);
+        if(landuse->landuse.fmt==CDF)
+          closeclimate_netcdf(&landuse->landuse,isroot(*config));
+        else
+          fclose(landuse->landuse.file);
+        if(landuse->sdate.file!=NULL)
+        {
+          if(landuse->sdate.fmt==CDF)
+            closeclimate_netcdf(&landuse->sdate,isroot(*config));
+          else
+            fclose(landuse->sdate.file);
+        }
+        free(landuse);
+        return NULL;
+      }
+    }
+    else
+    {
+      if((landuse->fertilizer_nr.file=openinputfile(&header,&landuse->fertilizer_nr.swap,
+                                                    &config->fertilizer_nr_filename,headername,
+                                                    &version,&offset,config))==NULL)
+      {
+        if(landuse->landuse.fmt==CDF)
+          closeclimate_netcdf(&landuse->landuse,isroot(*config));
+        else
+          fclose(landuse->landuse.file);
+        if(landuse->sdate.file!=NULL)
+        {
+          if(landuse->sdate.fmt==CDF)
+            closeclimate_netcdf(&landuse->sdate,isroot(*config));
+          else
+            fclose(landuse->sdate.file);
+        }
+        free(landuse);
+        return NULL;
+      }
+      if(config->fertilizer_nr_filename.fmt==RAW)
+      {
+        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE);
+        landuse->fertilizer_nr.datatype=LPJ_SHORT;
+        landuse->fertilizer_nr.offset=config->startgrid*header.nbands*sizeof(short);
+      }
+      else
+      {
+        if(header.nbands!=2*(ncft+NGRASS+NBIOMASSTYPE))
+        {
+          if(landuse->landuse.fmt==CDF)
+            closeclimate_netcdf(&landuse->landuse,isroot(*config));
+          else
+            fclose(landuse->landuse.file);
+          if(landuse->sdate.file!=NULL)
+          {
+            if(landuse->sdate.fmt==CDF)
+              closeclimate_netcdf(&landuse->sdate,isroot(*config));
+            else
+              fclose(landuse->sdate.file);
+          }
+          fclose(landuse->fertilizer_nr.file);
+          if(isroot(*config))
+            fprintf(stderr,
+            "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
+            header.nbands);
+          free(landuse);
+          return(NULL);
+        }
+        landuse->fertilizer_nr.datatype=header.datatype;
+        landuse->fertilizer_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version)+offset;
+      }
+      landuse->fertilizer_nr.firstyear=header.firstyear;
+      landuse->fertilizer_nr.nyear=header.nyear;
+      landuse->fertilizer_nr.size=header.ncell*header.nbands*typesizes[header.datatype];
+      landuse->fertilizer_nr.n=config->ngridcell*header.nbands;
+      landuse->nbands_fertilizer_nr=header.nbands;
+      landuse->fertilizer_nr.scalar=header.scalar;
+    }
+  }
+  else
+    landuse->fertilizer_nr.file=NULL;
   landuse->intercrop=config->intercrop;
   return landuse;
 } /* of 'initlanduse' */
@@ -315,7 +423,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                 const Config *config /**< LPJ configuration */
                )                     /** \return TRUE on error */
 {
-  int i,j,p,count,cell;
+  int i,j,p,count,cell,yearf;
   Real sum,*data;
   int *dates;
   /* so far, read prescribed sdates only once at the beginning of each simulation */
@@ -642,9 +750,79 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
              sum+1,cell+config->startgrid);
     }
   } /* for(cell=0;...) */
-
   if(!landuse->allcrops)
     free(data);
+  if(config->with_nitrogen)
+  {
+  /* assigning fertilizer Nr data */
+  yearf=year-landuse->fertilizer_nr.firstyear;
+  if(yearf>=landuse->fertilizer_nr.nyear)
+    yearf=landuse->fertilizer_nr.nyear-1;
+  else if(yearf<0)
+    yearf=0;
+  if(landuse->fertilizer_nr.fmt==CDF)
+  {
+    data=newvec(Real,config->ngridcell*landuse->fertilizer_nr.var_len);
+    if(data==NULL)
+    {
+      printallocerr("data");
+      return TRUE;
+    }
+    if(readdata_netcdf(&landuse->fertilizer_nr,data,grid,yearf,config))
+    {
+      fprintf(stderr,
+              "ERROR149: Cannot read fertilizer of year %d in getlanduse().\n",
+              yearf+landuse->fertilizer_nr.firstyear);
+      fflush(stderr);
+      return TRUE;
+    }
+  }
+  else
+  {
+    if(fseek(landuse->fertilizer_nr.file,(long long)yearf*landuse->fertilizer_nr.size+landuse->fertilizer_nr.offset,SEEK_SET))
+    {
+      fprintf(stderr,
+              "ERROR148: Cannot seek fertilizer Nr to year %d in getlanduse().\n",
+              yearf+landuse->fertilizer_nr.firstyear);
+      fflush(stderr);
+      return TRUE;
+    }
+    data=newvec(Real,landuse->fertilizer_nr.n);
+    if(data==NULL)
+    {
+      printallocerr("data");
+      return TRUE;
+    }
+    if(readrealvec(landuse->fertilizer_nr.file,data,0,landuse->fertilizer_nr.scalar,landuse->fertilizer_nr.n,landuse->fertilizer_nr.swap,landuse->fertilizer_nr.datatype))
+    {
+      fprintf(stderr,
+        "ERROR149: Cannot read fertilizer Nr of year %d in getlanduse().\n",
+        yearf+landuse->fertilizer_nr.firstyear);
+      fflush(stderr);
+      free(data);
+      return TRUE;
+    }
+  }
+  count=0;
+  for(cell=0;cell<config->ngridcell;cell++)
+  {
+    for(i=0;i<WIRRIG;i++)
+    {
+      for(j=0;j<ncft;j++)
+        grid[cell].ml.fertilizer_nr[i].crop[j]=data[count++];
+      for(j=0;j<NGRASS;j++)
+        grid[cell].ml.fertilizer_nr[i].grass[j]=data[count++];
+      if(landuse->nbands_fertilizer_nr!=2*(ncft+NGRASS))
+      {
+        grid[cell].ml.fertilizer_nr[i].biomass_grass=data[count++];
+        grid[cell].ml.fertilizer_nr[i].biomass_tree=data[count++];
+      }
+      else
+        grid[cell].ml.fertilizer_nr[i].biomass_grass=grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
+    }
+  } /* for(cell=0;...) */
+  free(data);
+  } 
   return FALSE;
 } /* of 'getlanduse' */
 
@@ -673,6 +851,13 @@ void freelanduse(Landuse landuse, /**< pointer to landuse data */
         closeclimate_netcdf(&landuse->sdate,isroot);
       else
         fclose(landuse->sdate.file);
+    }
+    if(landuse->fertilizer_nr.file!=NULL)
+    {
+      if(landuse->fertilizer_nr.fmt==CDF)
+        closeclimate_netcdf(&landuse->fertilizer_nr,isroot);
+      else
+        fclose(landuse->fertilizer_nr.file);
     }
     free(landuse);
   }

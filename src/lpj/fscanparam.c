@@ -22,8 +22,8 @@
   if(fscanint(file,var,name,verbosity)) return TRUE;
 #define fscanparambool(file,var,name) \
   if(fscanbool(file,var,name,verbosity)) return TRUE;
-#define fscanparampool(file,var,name) \
-  if(fscanpool(file,var,name,verbosity)) return TRUE;
+#define fscanparampoolpar(file,var,name) \
+  if(fscanpoolpar(file,var,name,verbosity)) return TRUE;
 
 Param param; /* global LPJ parameter */
 
@@ -39,7 +39,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   if(fscanstruct(file,&f,"param",verbosity))
     return TRUE;
   fscanparamreal(&f,&param.k_litter10,"k_litter10");
-  fscanparampool(&f,&param.k_soil10,"k_soil10");
+  fscanparampoolpar(&f,&param.k_soil10,"k_soil10");
   fscanparamreal(&f,&param.maxsnowpack,"maxsnowpack");
   fscanparamreal(&f,&param.soildepth_evap,"soildepth_evap");
   fscanparamreal(&f,&param.co2_p,"co2_p");
@@ -57,8 +57,17 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.kc25,"kc25");
   fscanparamreal(&f,&param.atmfrac,"atmfrac");
   fscanparamreal(&f,&param.fastfrac,"fastfrac");
+  fscanparamreal(&f,&param.k_max,"k_max");
+  fscanparamreal(&f,&param.k_2,"k_2");
   fscanparamreal(&f,&param.k_mort,"k_mort");
-  
+  fscanparamreal(&f,&param.p,"p");
+  fscanparamreal(&f,&param.n0,"n0");
+  fscanparamreal(&f,&param.k_temp,"k_temp");
+  fscanparamreal(&f,&param.denit_threshold,"denit_threshold");
+  fscanparamreal(&f,&param.min_c_bnf,"min_c_bnf");
+  fscanparamreal(&f,&param.par_sink_limit,"par_sink_limit");
+  fscanparamreal(&f,&param.q_ash,"q_ash");
+  fscanparamreal(&f,&param.sapwood_recovery,"sapwood_recovery");
   if(config->withlanduse!=NO_LANDUSE)
   {
     fscanparamreal(&f,&param.aprec_lim,"aprec_lim");

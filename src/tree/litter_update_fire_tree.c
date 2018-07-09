@@ -28,16 +28,22 @@ void litter_update_fire_tree(Litter *litter, /**< Litter pool */
   tree=pft->data;
   treepar=pft->par->data;
   
-  litter->ag[pft->litter].trait.leaf+=tree->ind.leaf*frac;
+  litter->ag[pft->litter].trait.leaf.carbon+=tree->ind.leaf.carbon*frac;
+  litter->ag[pft->litter].trait.leaf.nitrogen+=tree->ind.leaf.nitrogen*frac;
+  if(pft->nind>0)
+    litter->ag[pft->litter].trait.leaf.nitrogen+=pft->bm_inc.nitrogen/pft->nind*frac;
   for(i=0;i<NFUELCLASS;i++)
   {
-    litter->ag[pft->litter].trait.wood[i]+=(tree->ind.sapwood+tree->ind.heartwood-
-                                  tree->ind.debt)*frac*treepar->fuelfrac[i];
+    litter->ag[pft->litter].trait.wood[i].carbon+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+                                  tree->ind.debt.carbon)*frac*treepar->fuelfrac[i];
+    litter->ag[pft->litter].trait.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+                                  tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i];
     update_fbd_tree(litter,pft->par->fuelbulkdensity,
-                    (tree->ind.sapwood+tree->ind.heartwood-tree->ind.debt)
+                    (tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-tree->ind.debt.carbon)
                *frac*treepar->fuelfrac[i],i);
   }
-  litter->bg[pft->litter]+=tree->ind.root*frac;
-  update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf*treepar->turnover.leaf*frac,0); //CHECK
+  litter->bg[pft->litter].carbon+=tree->ind.root.carbon*frac;
+  litter->bg[pft->litter].nitrogen+=tree->ind.root.nitrogen*frac;
+  update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*frac,0); //CHECK
 
 } /* of 'litter_update_fire_tree' */

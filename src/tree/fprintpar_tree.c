@@ -26,15 +26,16 @@ void fprintpar_tree(FILE *file,const Pftpar *par)
   fprintf(file,"leaftype:\t%s\n"
                "turnover:\t%g %g %g (yr)\n"
                "C:N ratio:\t%g %g %g\n"
+               "rel. C:N ratio:\t%g %g\n"
                "max crownarea:\t%g (m2)\n"
                "sapling:\t%g %g %g %g (gC/m2/yr)\n"
                "allometry:\t%g %g %g %g\n",
           leaftype[partree->leaftype],
           1/partree->turnover.leaf,1/partree->turnover.sapwood,1/partree->turnover.root,
-          partree->cn_ratio.leaf,par->respcoeff*param.k/partree->cn_ratio.sapwood,
-          par->respcoeff*param.k/partree->cn_ratio.root,
+          1/partree->cn_ratio.leaf,1/partree->cn_ratio.sapwood,
+          1/partree->cn_ratio.root,partree->ratio.sapwood,partree->ratio.root,
           partree->crownarea_max,
-          partree->sapl.leaf,partree->sapl.sapwood,partree->sapl.heartwood,partree->sapl.root,
+          partree->sapl.leaf.carbon,partree->sapl.sapwood.carbon,partree->sapl.heartwood.carbon,partree->sapl.root.carbon,
           partree->allom1,partree->allom2,partree->allom3,partree->allom4);
   if(par->phenology==SUMMERGREEN)
     fprintf(file,"aphen:\t\t%g %g\n",partree->aphen_min,partree->aphen_max);

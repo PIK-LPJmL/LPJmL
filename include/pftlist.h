@@ -27,13 +27,13 @@ typedef struct
 
 extern int delpft(Pftlist *,int);
 extern void freepftlist(Pftlist *);
-extern Real gp_sum(const Pftlist *,Real,Real,Real,Real,Real *,Real [],Real *);
+extern Real gp_sum(const Pftlist *,Real,Real,Real,Real,Real *,Real [],Real *,int);
 extern Real fpc_sum(Real [],int,const Pftlist *);
 extern int fwritepftlist(FILE *,const Pftlist *);
 extern void fprintpftlist(FILE *,const Pftlist *);
 extern Bool freadpftlist(FILE *,Stand *,Pftlist *,const Pftpar[],int,
                          Bool);
-extern Real firepft(Litter *,Pftlist *,Real);
+extern Stocks firepft(Litter *,Pftlist *,Real);
 extern void newpftlist(Pftlist *);
 extern int addpft(Stand *,const Pftpar *,int,int);
 

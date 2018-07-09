@@ -23,15 +23,15 @@
 #include "tree.h"
 #include "grass.h"
 
-Real establishmentpft(Stand *stand,        /**< Stand pointer  */
-                      const Pftpar *pftpar,/**< PFT parameter array */
-                      int npft,            /**< number of PFTs */
-                      int ntypes,          /**< number of different PFT classes */
-                      Real aprec,          /**< annual precipitation (mm) */
-                      int year             /**< simulation year (AD) */
-                     )  /** \return establishment flux (gC/m2) */
+Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
+                        const Pftpar *pftpar,/**< PFT parameter array */
+                        int npft,            /**< number of PFTs */
+                        int ntypes,          /**< number of different PFT classes */
+                        Real aprec,          /**< annual precipitation (mm) */
+                        int year             /**< simulation year (AD) */
+                       )  /** \return establishment flux (gC/m2,gN/m2) */
 {
-  Real acflux_est;
+  Stocks acflux_est={0,0},stocks;
   Real fpc_total,*fpc_type, fpc_obs_cor;
   int *n_est;
   Bool *present;
@@ -47,7 +47,6 @@ Real establishmentpft(Stand *stand,        /**< Stand pointer  */
     present[p]=FALSE;
   foreachpft(pft,p,&stand->pftlist)
     present[pft->par->id]=TRUE;
-  acflux_est=0.0;
 #ifdef DEBUG2
   printf("ESTAB %s: %g %d\n",stand->type->name,stand->frac,stand->prescribe_landcover);
   printf("Number of pfts: %d\n",stand->pftlist.n);
@@ -93,11 +92,15 @@ Real establishmentpft(Stand *stand,        /**< Stand pointer  */
         !pft->established &&
 #endif
         establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf)))
-      acflux_est+=establishment(pft,fpc_total,fpc_type[pft->par->type],
-                                n_est[pft->par->type]);
+    {
+      stocks=establishment(pft,fpc_total,fpc_type[pft->par->type],
+                           n_est[pft->par->type]);
+      acflux_est.carbon+=stocks.carbon;
+      acflux_est.nitrogen+=stocks.nitrogen;
 #ifdef DAILY_ESTABLISHMENT
       pft->established=TRUE;
 #endif
+    }
   }
   fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
@@ -107,11 +110,15 @@ Real establishmentpft(Stand *stand,        /**< Stand pointer  */
         !pft->established &&
 #endif
         establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
-      acflux_est+=establishment(pft,fpc_total,fpc_type[pft->par->type],
+    {
+      stocks=establishment(pft,fpc_total,fpc_type[pft->par->type],
                                 n_est[pft->par->type]);
+      acflux_est.carbon+=stocks.carbon;
+      acflux_est.nitrogen+=stocks.nitrogen;
 #ifdef DAILY_ESTABLISHMENT
       pft->established=TRUE;
 #endif
+    }
   }
 
 #ifdef DAILY_ESTABLISHMENT

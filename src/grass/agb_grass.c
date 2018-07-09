@@ -19,5 +19,5 @@ Real agb_grass(const Pft *pft)
 {
   const Pftgrass *grass;
   grass=pft->data;
-  return (grass->ind.leaf)*pft->nind;
+  return grass->ind.leaf.carbon*pft->nind;
 } /* of 'agb_grass' */

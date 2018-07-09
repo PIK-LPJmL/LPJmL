@@ -32,13 +32,16 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
       switch(config->outputvars[i].id)
       {
         case FIREC: case FLUX_FIREWOOD: case MAXTHAW_DEPTH: case FIREF:
-        case FLUX_ESTAB: case HARVEST: case VEGC: case MG_VEGC: case AGB:
-        case SOILC: case MG_SOILC: case LITC: case MG_LITC: case APREC:
+        case FLUX_ESTABC: case FLUX_ESTABN: case HARVESTC: case HARVESTN:
+        case VEGC: case VEGN: case MG_VEGC: case AGB:
+        case SOILC: case SOILN: case MG_SOILC: case LITC: case LITN: case MG_LITC: case APREC:
         case INPUT_LAKE: case PROD_TURNOVER: case DEFOREST_EMIS:
+        case SOILN_SLOW: case SOILNO3: case SOILNH4:
         case AFRAC_WD_UNSUST: case ACONV_LOSS_EVAP: case ACONV_LOSS_DRAIN: case SOILC_SLOW: case AWATERUSE_HIL:
+        case NEGC_FLUXES: case NEGN_FLUXES:
           sum+=size*sizeof(float);
           break;
-        case SOILC_LAYER:
+        case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER:
             sum+=size*LASTLAYER*sizeof(float);
             break;
         case ADISCHARGE:
@@ -51,23 +54,27 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
         case CFT_IRRIG_EVENTS:
           sum+=size*(ncft+NGRASS+NBIOMASSTYPE)*2*sizeof(short);
           break;
-        case PFT_NPP: case PFT_GCGP:
+        case PFT_NUPTAKE: case PFT_NDEMAND:
+        case PFT_VEGC: case PFT_VEGN: case PFT_CLEAF: case PFT_NLEAF:
+        case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
+        case PFT_CHAWO: case PFT_NHAWO:
+        case PFT_NPP: case PFT_GCGP: case PFT_LAIMAX: case PFT_NLIMIT:
           sum+=sizeof(float)*size*((npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
           break;
         case GROWING_PERIOD: case GROWING_PERIOD2:
         case CFT_TEMP:case CFT_PREC:
-        case CFT_SRAD: case CFT_ABOVEGBM:
+        case CFT_SRAD: case CFT_ABOVEGBMC: case CFT_ABOVEGBMN:
         case CFT_TEMP2:case CFT_PREC2: 
-        case CFT_SRAD2:case CFT_ABOVEGBM2:
+        case CFT_SRAD2:case CFT_ABOVEGBMC2: case CFT_ABOVEGBMN2:
         case CFT_PET: case CFT_PET2:
           sum+=sizeof(float)*size*(ncft+NGRASS)*2;
           break;
-        case PFT_HARVEST: case PFT_RHARVEST: case CFT_CONSUMP_WATER_G:
+        case PFT_HARVESTC: case PFT_HARVESTN: case PFT_RHARVESTC: case PFT_RHARVESTN: case CFT_CONSUMP_WATER_G:
         case CFT_CONSUMP_WATER_B: case CFTFRAC: case CFT_TRANSP: case CFT_TRANSP_B: 
         case CFT_EVAP: case CFT_EVAP_B: case CFT_NIR: case CFT_NIR2:
         case CFT_INTERC: case CFT_INTERC_B: case CFT_RETURN_FLOW_B: case LUC_IMAGE: 
         case CFT_FPAR: case CFT_AIRRIG: case CFT_CONV_LOSS_EVAP: case CFT_CONV_LOSS_DRAIN:
-        case CFT_INTERC2: case PFT_HARVEST2: case PFT_RHARVEST2: case CFT_TRANSP2: 
+        case CFT_INTERC2: case PFT_HARVESTC2: case PFT_HARVESTN2: case PFT_RHARVESTC2: case PFT_RHARVESTN2: case CFT_TRANSP2: 
         case CFTFRAC2: case CFT_EVAP2: case CFT_AIRRIG2:
           sum+=sizeof(float)*size*(ncft+NGRASS+NBIOMASSTYPE)*2;
           break;
@@ -87,9 +94,12 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
         case MSWC3: case MSWC4: case MSWC5: case MWATERAMOUNT:
         case MFAPAR: case MALBEDO:
         case MPHEN_TMIN: case MPHEN_TMAX: case MPHEN_LIGHT: case MPHEN_WATER: case MWSCAL:
+        case MNUPTAKE: case MLEACHING: case MN2O_DENIT: case MN2O_NIT:
+        case MN2_EMIS: case MBNF:
+        case MRES_CAP: case MGCONS_RF: case MGCONS_IRR: case MBCONS_IRR:
+        case MN_MINERALIZATION: case MN_IMMO: case MN_VOLATILIZATION:
         case MWD_LOCAL: case MWD_NEIGHB: case MWD_RES: case MWD_RETURN:
         case MCONV_LOSS_EVAP: case MCONV_LOSS_DRAIN: case MRES_DEMAND: case MTARGET_RELEASE: case MRES_STORAGE: case MSTOR_RETURN:
-        case MRES_CAP: case MGCONS_RF: case MGCONS_IRR:
         case MROOTMOIST: case MLAKEVOL: case MLAKETEMP:
         case MFIREEMISSION_CO: case MFIREEMISSION_CH4: case MFIREEMISSION_VOC:
         case MFIREEMISSION_TPM: case MFIREEMISSION_NOX:

@@ -15,41 +15,54 @@
 #include "lpj.h"
 #include "tree.h"
 
-Real timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
-                    Soil *soil,      /**< Litter pool */
-                    Pool *timber,
-                    Pool f,        /**< fractions for timber distribution */
-                    Real ftimber,
-                    Real standfrac,
-                    Real *nind,          /**< cannot use pft->nind, since pft is on different stand */
-                    Real *trad_biofuel
-                    )              /** \return harvested carbon (gC/m2) */
+Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
+                      Soil *soil,      /**< Litter pool */
+                      Poolpar *timber,
+                      Poolpar f,     /**< fractions for timber distribution */
+                      Real ftimber,
+                      Real standfrac,
+                      Real *nind,          /**< cannot use pft->nind, since pft is on different stand */
+                      Real *trad_biofuel
+                     )              /** \return harvested carbon (gC/m2) */
 {
   int i;
   const Pfttree *tree;
   const Pfttreepar *treepar;
-  Real harvest;
+  Stocks harvest={0,0};
   Real biofuel;
   tree=pft->data;
   treepar=pft->par->data;
   if(ftimber<epsilon)
-    return(0.);
+    return harvest;
   /* transfer wood to product pools, assume 2/3 of sapwood to be above-ground */
-  harvest=(tree->ind.heartwood+tree->ind.sapwood*2.0/3.0)*
+  harvest.carbon=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0)*
                  ftimber*(*nind)*standfrac;
-  timber->slow+=harvest*f.slow;
-  timber->fast+=harvest*f.fast;
+  harvest.nitrogen=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*
+                 ftimber*(*nind)*standfrac;
+#ifdef IMAGE
+  timber->slow+=harvest.carbon*f.slow;
+  timber->fast+=harvest.carbon*f.fast;
   biofuel=1.0-f.slow-f.fast;
-  *trad_biofuel+=harvest*biofuel*0.9;
+  *trad_biofuel+=harvest.carbon*biofuel*0.9;
   /* 10% of traditional biofuel is assumed to enter fast soil pool -- may not be scaled with standfrac!*/
-  soil->cpool[0].fast+=harvest*biofuel*0.1/standfrac;
+#else
+  biofuel=0;
+#endif
+  soil->pool[0].fast.carbon+=harvest.carbon*biofuel*0.1/standfrac;
+  soil->pool[0].fast.nitrogen+=harvest.nitrogen*biofuel*0.1/standfrac;
   /* transfer non-harvested wood, leaves, and roots of trees cut to litter */
-  soil->litter.ag[pft->litter].trait.leaf+=tree->ind.leaf*ftimber*(*nind);
+  soil->litter.ag[pft->litter].trait.leaf.carbon+=tree->ind.leaf.carbon*ftimber*(*nind);
+  soil->litter.ag[pft->litter].trait.leaf.nitrogen+=tree->ind.leaf.nitrogen*ftimber*(*nind);
   for(i=0;i<NFUELCLASS;i++)
-    soil->litter.ag[pft->litter].trait.wood[i]+=(tree->ind.sapwood/3.0-tree->ind.debt)*
+  {
+    soil->litter.ag[pft->litter].trait.wood[i].carbon+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon)*
                                          ftimber*(*nind)*treepar->fuelfrac[i];
-  soil->litter.bg[pft->litter]+=tree->ind.root*ftimber*(*nind);
+    soil->litter.ag[pft->litter].trait.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*
+                                         ftimber*(*nind)*treepar->fuelfrac[i];
+  }
+  soil->litter.bg[pft->litter].carbon+=tree->ind.root.carbon*ftimber*(*nind);
+  soil->litter.bg[pft->litter].nitrogen+=tree->ind.root.nitrogen*ftimber*(*nind);
   /* update carbon pools by reducing nind by number of trees cut */
   *nind*=(1-ftimber);
-  return(harvest);
+  return harvest;
 } /* of 'timber_harvest' */

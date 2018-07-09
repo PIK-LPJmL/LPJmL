@@ -1,9 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                l  i  t  t  e  r  s  u  m  .  c                                 \n**/
+/**                s  t  a  n  d  s  t  o  c  k  s  .  c                           \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
-/**     Function computes sum of all litter pools                                  \n**/
+/**                                                                                \n**/
+/**     Function computes total carbon and nitrogen in stand                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,18 +16,17 @@
 
 #include "lpj.h"
 
-Real littersum(const Litter *litter /**< pointer to litter data */
-              )                     /** \return litter carbon (gC/m2) */
+Stocks standstocks(const Stand *stand /**< pointer to stand */
+                  )                   /** \return stocks sum (gC/m2,gN/m2) */
 {
-  int i,l;
-  Real sum;
-  sum=0;
-  for(l=0;l<litter->n;l++)
+  int p;
+  const Pft *pft;
+  Stocks tot;
+  tot=soilstocks(&stand->soil); /* get stocks in soil */
+  foreachpft(pft,p,&stand->pftlist)
   {
-    sum+=litter->ag[l].trait.leaf;
-    for(i=0;i<NFUELCLASS;i++)
-      sum+=litter->ag[l].trait.wood[i];
-    sum+=litter->bg[l];
+    tot.carbon+=vegc_sum(pft); /* sum up carbon in PFTs */
+    tot.nitrogen+=vegn_sum(pft); /* sum up nitrogen in PFTs */
   }
-  return sum;
-} /* of 'littersum' */
+  return tot;
+} /* of 'standstocks' */

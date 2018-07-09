@@ -67,8 +67,24 @@ typedef struct
   Real runoff;
   Real rh;
   Real interc;
+  Real nuptake;
+  Real n2o_denit;
+  Real n2o_nit;
+  Real n2_denit;
+  Real leaching;
+  Real bnf;
+  Real nleaf;
+  Real nroot;
+  Real nso;
+  Real npool;
+  Real no3;
+  Real nh4;
+  Real nsoil_slow;
+  Real nsoil_fast;
   Real assim;
   Real rot_mode;
+  Real nlimit;
+  Real vscal;
   Real pet;
   int cft;
   Bool irrigation;
@@ -104,7 +120,7 @@ typedef struct
   Real mpet;             /**< Monthly PET (mm) */
   Real mswc[NSOILLAYER]; /**< monthly soil water content*/
   Real mrootmoist;        /**< monthly plant available water for evapotranspiration fractional*/
-  Real firec;            /**< annual fire carbon emissions (gC/m2)*/
+  Stocks fire;           /**< annual fire carbon and nitrogen emissions (g/m2)*/
   Real mfirec;           /**< monthly fire carbon emissions (gC/m2)*/
   Real mnfire;           /**< monthly number of fires */
   Real mfiredi;          /**< monthly fire danger index */
@@ -115,10 +131,10 @@ typedef struct
   Real msun_image;       /**< monthly cloudiness received from IMAGE [% sunshine = 100-%cloud]*/
   Real mwet_image;       /**< monthly wet days received from IMAGE [days/month]*/
   Real firef;            /**< fire frequency */
-  Real flux_estab;       /**< establishment flux (gC/m2) */
-  Real flux_harvest;     /**< harvest flux (gC/m2) */
-  Real flux_rharvest_burnt; /**< crop residuals burnt outside of field (gC/m2)*/
-  Real flux_rharvest_burnt_in_field; /*crop residuals burnt in field (gC/m2)*/
+  Stocks flux_estab;     /**< establishment flux (gC/m2,gN/m2) */
+  Stocks flux_harvest;   /**< harvest flux (gC/m2,g/N/m2) */
+  Stocks flux_rharvest_burnt; /**< crop residuals burnt outside of field (gC/m2,gN/m2)*/
+  Stocks flux_rharvest_burnt_in_field; /*crop residuals burnt in field (gC/m2,gN/m2)*/
   Real mirrig;           /**< Monthly irrigation (mm) */
   Real airrig;           /**< Yearly irrigation (mm) */
   Real mwd_unsustainable; /**< Monthly withdrawal from unsustainable source (mm) */
@@ -143,7 +159,7 @@ typedef struct
   Real *cft_temp2;          /**< cft specific temperature sum (day degC) */
   Real *cft_prec2;          /**< cft specific precipitation (mm) */  
   Real *cft_srad2;          /**< cft specific short-wave radiation (W/m2) */
-  Real *cft_aboveground_biomass2; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
+  Stocks *cft_aboveground_biomass2; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
   Real *cftfrac2;           /**< cft fraction */
 #endif
   Real *pft_npp;         /**< Pft specific NPP (gC/m2) */
@@ -198,17 +214,19 @@ typedef struct
   Real *cft_temp;          /**< cft specific temperature sum (day degC) */
   Real *cft_prec;          /**< cft specific precipitation (mm) */  
   Real *cft_srad;          /**< cft specific short-wave radiation (W/m2) */
-  Real *cft_aboveground_biomass; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
+  Stocks *cft_aboveground_biomass; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
+  Real *pft_nuptake;       /* nitrogen uptake per PFT */
+  Real *pft_ndemand;       /* nitrogen demand per PFT */
   Real *cft_conv_loss_evap; /**< cft specific evaporative conveyance losses (mm) */
   Real *cft_conv_loss_drain; /**< cft specific drainage conveyance losses (mm) */
   int  *cft_irrig_events;  /**< number of irrigation days within growing season */
   Real prod_turnover;      /**< carbon emissions from product turnover [gC/m2/a] in IMAGE coupling */
-  Real deforest_emissions; /**< carbon emissions from deforested wood burnt [gC/m2/a] in IMAGE coupling */
+  Stocks deforest_emissions; /**< carbon emissions from deforested wood burnt [gC/m2/a] in IMAGE coupling */
   Real trad_biofuel;       /**< carbon emissions from traditional biofuel burnt [gC/m2/a] in IMAGE coupling */
-  Real flux_firewood;      /**< carbon emissions from domestic wood use [gC/m2/a]*/
+  Stocks flux_firewood;    /**< carbon and nitrogen emissions from domestic wood use [gC/m2/a]*/
   Real fburn;              /**< fraction of deforested wood burnt [0-1]*/
   Real ftimber;            /**< fraction of deforested wood harvested as timber [0-1]*/
-  Real timber_harvest;     /**< carbon harvested as timber [gC/m2/a] */
+  Stocks timber_harvest;   /**< carbon and nitrogen harvested as timber [C/m2/a] */
   Real product_pool_fast;  /**< carbon in the fast product pool */
   Real product_pool_slow;  /**< carbon in the slow product pool */
   Real *cft_luc_image;     /**< LUC data received by IMAGE [0-1], CFT specific */
@@ -233,6 +251,21 @@ typedef struct
   Real mirrig_rw;          /**< monthly supplementary rain water irrigation in mm */
   Real mlakevol;           /**< monthly mean lake content volume in dm3 */
   Real mlaketemp;          /**< monthly mean lake surface temperature in deg C */
+  Real mn_uptake;          /**< monthly N uptake gN/m2 */
+  Real mn_leaching;        /**< monthly N leached to groundwater gN/m2 */
+  Real mn2o_denit;         /**< monthly N2O emissions from denitrification gN/m2 */
+  Real mn2o_nit;           /**< monthly N2O emissions from nitrification gN/m2 */
+  Real mn2_emissions;      /**< monthly N2 emissions gN/m2 */
+  Real mbnf;               /**< monthly biological N fixation gN/m2 */
+  Real mn_mineralization;  /**< monthly N mineralization rate gN/m2 */
+  Real mn_volatilization;  /**< monthly N volatilization rate gN/m2 */
+  Real mn_immo;            /**< monthly N immobilization rate gN/m2 */
+  Stocks neg_fluxes;       /**< negative carbon and nitrogen fluxes which occur for negative allocation; needed for balance check*/
+  Stocks *cft_leaf;
+  Stocks *cft_veg;
+  Stocks *cft_root;
+  Real *cft_nlimit;
+  Real *cft_laimax;
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 
@@ -259,6 +292,11 @@ typedef struct
   Real area;                  /**< Total area (m2) */
   Real total_reservoir_out;   /**< Total water extracted from reservoirs for irrigation */
   Real total_irrig_from_reservoir; /*Total water added to fields from reservoirs */
+  Real n_demand;              /**< total N demand by plants */
+  Real n_uptake;              /**< total N uptake by plants */
+  Real n_influx;              /**< total N inputs */
+  Real n_outflux;             /**< total N losses */
+
 } Flux;
 
 typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;

@@ -15,48 +15,61 @@
 
 #define max_frac 1.0
 
-static Real vegc_tree(const Pft *pft)
+static Stocks veg_tree(const Pft *pft)
 {
-  Real vegc_tree;
+  Stocks vegc_tree;
   Pfttree *tree;
   tree=pft->data;
-  vegc_tree=tree->ind.sapwood*2.0/3.0*pft->nind+(tree->ind.heartwood-tree->ind.debt)*pft->nind;  /* [gC/m2] */
+  vegc_tree.carbon=tree->ind.sapwood.carbon*2.0/3.0*pft->nind+(tree->ind.heartwood.carbon-tree->ind.debt.carbon)*pft->nind;  /* [gC/m2] */
+  vegc_tree.nitrogen=tree->ind.sapwood.nitrogen*2.0/3.0*pft->nind+(tree->ind.heartwood.nitrogen-tree->ind.debt.nitrogen)*pft->nind;  /* [gC/m2] */
   return vegc_tree;
 } /* of 'vegc_tree' */
 
-static Real woodconsum_tree(Pft *pft,Real restconsum,Litter *litter)
+static Stocks woodconsum_tree(Pft *pft,Real restconsum,Litter *litter)
 {
 /* uses equation: disturb/pft->nind = restconsum/(tree_ind*pft->nind);  */
 /*               [#indiv]/[#indiv]     [gC/m2]  /      [gC/m2]          */
 
-  Real flux,vegctree,disturb;
+  Stocks vegctree;
+  Stocks flux={0,0};
+  Real disturb;
   Pfttree *tree;
   tree=pft->data;
-  flux=vegctree=disturb=0;
+  disturb=0;
 
-  vegctree=vegc_tree(pft); /* [gC/m2] */
+  vegctree=veg_tree(pft); /* [gC/m2] */
 
-  disturb=restconsum/vegctree*pft->nind;  /* number of individuals that need to be killed to meet the demand*/
+  disturb=restconsum/vegctree.carbon*pft->nind;  /* number of individuals that need to be killed to meet the demand*/
   if(disturb>pft->nind)
     disturb=pft->nind;
   if(disturb<epsilon)
-    return 0;
-  flux=disturb/pft->nind*vegctree;    /* wood only [gC/m2] */
-  litter->bg[pft->litter]+=(disturb*tree->ind.root+disturb*tree->ind.sapwood/3.0);
-  litter->bg[pft->litter]+=(1-max_frac)*flux;
-  litter->ag[pft->litter].trait.leaf+=disturb*tree->ind.leaf; /* cannot be burned, send to litter*/
-  update_fbd_tree(litter,pft->par->fuelbulkdensity,disturb*tree->ind.leaf,0);
+    return flux;
+  flux.carbon=disturb/pft->nind*vegctree.carbon;    /* wood only [gC/m2] */
+  flux.nitrogen=disturb/pft->nind*vegctree.nitrogen;    /* wood only [gN/m2] */
+  litter->bg[pft->litter].carbon+=(disturb*tree->ind.root.carbon+disturb*tree->ind.sapwood.carbon/3.0);
+  litter->bg[pft->litter].nitrogen+=(disturb*tree->ind.root.nitrogen+disturb*tree->ind.sapwood.nitrogen/3.0);
+  litter->bg[pft->litter].carbon+=(1-max_frac)*flux.carbon;
+  litter->bg[pft->litter].nitrogen+=(1-max_frac)*flux.nitrogen;
+  litter->ag[pft->litter].trait.leaf.carbon+=disturb*tree->ind.leaf.carbon; /* cannot be burned, send to litter*/
+  litter->ag[pft->litter].trait.leaf.nitrogen+=disturb*tree->ind.leaf.nitrogen; /* cannot be burned, send to litter*/
+  update_fbd_tree(litter,pft->par->fuelbulkdensity,disturb*tree->ind.leaf.carbon,0);
   pft->nind-=disturb;
-
-  return flux*max_frac; /* harvested wood [gC/m2] */
+  flux.carbon*=max_frac;
+  flux.nitrogen*=max_frac;
+  return flux; /* harvested wood [gC/m2, gN/m2] */
 } /* of 'woodconsum_tree' */
 
-Real woodconsum(Stand *stand, /**< pointer to stand */
-                Real popdens  /**< population density (persons/km2) */
-               )              /**< wood and litter consumed (g/C2) */
+Stocks woodconsum(Stand *stand, /**< pointer to stand */
+                  Real popdens  /**< population density (persons/km2) */
+                 )              /**< wood and litter consumed (g/C2,gN/m2) */
 {
-  Real flux,flux_tree,flux_litter,litter_frac,woodconsumption,restconsum;
-  Real sum_litter,woodconsum;
+  Real litter_frac,woodconsumption,restconsum;
+  Real woodconsum;
+  Stocks stocks;
+  Stocks sum_litter={0,0};
+  Stocks flux={0,0};
+  Stocks flux_tree={0,0};
+  Stocks flux_litter={0,0};
   int i,j,p,*index,temp;
   Real *vegc;
   Pft *pft;
@@ -66,8 +79,7 @@ Real woodconsum(Stand *stand, /**< pointer to stand */
   index=newvec(int,getnpft(&stand->pftlist));
   check(index);
 
-  flux=flux_tree=flux_litter=litter_frac=woodconsumption=restconsum=0;
-  sum_litter=0;
+  litter_frac=woodconsumption=restconsum=0;
   for(i=0;i<getnpft(&stand->pftlist);i++)
   {
     vegc[i]=0;
@@ -78,22 +90,32 @@ Real woodconsum(Stand *stand, /**< pointer to stand */
   woodconsumption=biomass2c(woodconsum)/stand->frac*popdens/1000*NDAYYEAR;
 
   for(i=1;i<NFUELCLASS;++i)
-    sum_litter+=litter_ag_tree(&stand->soil.litter,i);
-  /* calculate litter flux and reduce the litter */
-  if(sum_litter>=0.00001 && stand->frac>=0.00001)
   {
-    litter_frac=min(max_frac,woodconsumption/sum_litter);
-    flux_litter=sum_litter*litter_frac;
+    sum_litter.carbon+=litter_ag_tree(&stand->soil.litter,i);
+    sum_litter.nitrogen+=litter_ag_nitrogen_tree(&stand->soil.litter,i);
+  }
+  /* calculate litter flux and reduce the litter */
+  if(sum_litter.carbon>=0.00001 && stand->frac>=0.00001)
+  {
+    litter_frac=min(max_frac,woodconsumption/sum_litter.carbon);
+    flux_litter.carbon=sum_litter.carbon*litter_frac;
+    flux_litter.nitrogen=sum_litter.nitrogen*litter_frac;
     for(i=0;i<stand->soil.litter.n;i++)
       for(j=1;j<NFUELCLASS;j++)
-        stand->soil.litter.ag[i].trait.wood[j]*=(1-litter_frac);
+      {
+        stand->soil.litter.ag[i].trait.wood[j].carbon*=(1-litter_frac);
+        stand->soil.litter.ag[i].trait.wood[j].nitrogen*=(1-litter_frac);
+      }
   }
-  restconsum=woodconsumption-flux_litter;
+  restconsum=woodconsumption-flux_litter.carbon;
   if(restconsum > epsilon)
   {
     foreachpft(pft,p,&stand->pftlist)
       if(istree(pft))
-        vegc[p]=vegc_tree(pft);
+      {
+        stocks=veg_tree(pft);
+        vegc[p]=stocks.carbon;
+      }
 
     /* sort vegc in descending order, store order in index */
     for(i=getnpft(&stand->pftlist)-1;i>0;i--)
@@ -115,13 +137,16 @@ Real woodconsum(Stand *stand, /**< pointer to stand */
       flux=woodconsum_tree(getpft(&stand->pftlist,index[i]),restconsum,
                            &stand->soil.litter);
 
-      restconsum-=flux;
-      flux_tree+=flux;
+      restconsum-=flux.carbon;
+      flux_tree.carbon+=flux.carbon;
+      flux_tree.nitrogen+=flux.nitrogen;
     }
   }
   free(vegc);
   free(index);
-  return flux_tree+flux_litter;
+  flux_tree.carbon+=flux_litter.carbon;
+  flux_tree.nitrogen+=flux_litter.nitrogen;
+  return flux_tree;
 } /* of 'woodconsum' */
 
 /* called in annual_natural() */

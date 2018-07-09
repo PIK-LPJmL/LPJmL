@@ -28,8 +28,10 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
 {
   Real fire_danger_index,human_ignition,num_fires,windsp_cover,ros_forward;
   Real burnt_area,fire_frac;
-  Real fuel_consump,deadfuel_consump,livefuel_consump,livefuel_consump_pft;
-  Real total_firec,surface_fi;
+  Real fuel_consump;
+  Stocks deadfuel_consump,livefuel_consump,livefuel_consump_pft;
+  Real surface_fi;
+  Stocks total_fire;
   Fuel fuel;
   Bool isdead;
   int p;
@@ -107,7 +109,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     num_fires=0;
     burnt_area=0;
     fire_frac=0;
-    deadfuel_consump=0;
+    deadfuel_consump.carbon=deadfuel_consump.nitrogen=0;
   }
   else
   {
@@ -116,7 +118,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
 
   fraction_of_consumption(&fuel);
 
-  livefuel_consump=0;
+  livefuel_consump.carbon=livefuel_consump.nitrogen=0;
   foreachpft(pft,p,&stand->pftlist)
   {
     if(surface_fi>50)
@@ -124,18 +126,19 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
       livefuel_consump_pft=pft->par->livefuel_consumption(&stand->soil.litter, pft,
                                                           &fuel, livefuel, &isdead, surface_fi, fire_frac);
 #ifdef WITH_FIRE_MOISTURE
-      emission.co2+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.co2 * (livefuel->CME/0.94);
-      emission.co+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.co * (2- livefuel->CME/0.94);
+      emission.co2+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co2 * (livefuel->CME/0.94);
+      emission.co+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co * (2- livefuel->CME/0.94);
 #else
-      emission.co2+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.co2;
-      emission.co+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.co;
+      emission.co2+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co2;
+      emission.co+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co;
 #endif
-      emission.ch4+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.ch4;
-      emission.voc+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.voc;
-      emission.tpm+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.tpm;
-      emission.nox+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.nox;
+      emission.ch4+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.ch4;
+      emission.voc+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.voc;
+      emission.tpm+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.tpm;
+      emission.nox+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.nox;
      
-      livefuel_consump+=livefuel_consump_pft;
+      livefuel_consump.carbon+=livefuel_consump_pft.carbon;
+      livefuel_consump.nitrogen+=livefuel_consump_pft.nitrogen;
       if(isdead)
       {
         delpft(&stand->pftlist, p);
@@ -143,16 +146,19 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
       }
     }
   }
-  total_firec = (deadfuel_consump + livefuel_consump) * stand->frac;
+  total_fire.carbon = (deadfuel_consump.carbon + livefuel_consump.carbon) * stand->frac;
+  total_fire.nitrogen = (deadfuel_consump.nitrogen + livefuel_consump.nitrogen) * stand->frac;
 
   /* write SPITFIRE outputs to LPJ output structures */
   output->mfiredi +=fire_danger_index;
   output->mnfire +=num_fires;
   output->firef += fire_frac;
   output->mburntarea += burnt_area; /*ha*/
-  output->firec+= total_firec;
-  output->dcflux+=total_firec;
-  output->mfirec+= total_firec;
+  output->fire.carbon+= total_fire.carbon;
+  output->fire.nitrogen+=total_fire.nitrogen*stand->frac*(1-param.q_ash);
+  stand->soil.NO3[0]+=total_fire.nitrogen*param.q_ash;
+  output->dcflux+=total_fire.carbon;
+  output->mfirec+= total_fire.carbon;
   output->mfireemission.co2+=emission.co2*stand->frac;
   output->mfireemission.co+=emission.co*stand->frac;
   output->mfireemission.ch4+=emission.ch4*stand->frac;

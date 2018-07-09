@@ -83,7 +83,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
 
   for(i=0;i<config->ngridcell;i++)
   {
-    if(readcelldata(celldata,&grid.coord,&soilcode,&grid.discharge.runoff2ocean_coord,i,config))
+    if(readcelldata(celldata,&grid.coord,&soilcode,&grid.soilph,&grid.discharge.runoff2ocean_coord,i,config))
       break;
     if(config->countrypar!=NULL)
     {
@@ -115,7 +115,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     }
     /* Init cells */
     grid.ml.cropfrac_rf=grid.ml.cropfrac_ir=0;
-    grid.balance.totw=grid.balance.totc=0.0;
+    grid.balance.totw=grid.balance.tot.carbon=grid.balance.tot.nitrogen=0.0;
     grid.discharge.dmass_lake=0.0;
     grid.discharge.next=0;
     grid.ml.fraction=NULL;

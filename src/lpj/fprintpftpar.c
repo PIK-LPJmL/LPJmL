@@ -81,6 +81,12 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
                "flam:\t\t%g\n"
                "k_litter10:\t%g %g (1/yr)\n"
                "k_litter10_q10_wood:\t%g\n"
+               "vmax_up:\t%g (gN/kgC)\n"
+               "kNmin:\t\t%g\n"
+               "KNmin:\t\t%g\n"
+               "CNleaf:\t\t%g %g\n"
+               "kNstore:\t%g\n"
+               "fN_turnover:\t%g\n"
                "soc_k:\t\t%g\n"
                "alpha_fuelp:\t%g\n"
                "fuel bulk dens.:\t%g (kg/m3)\n"
@@ -102,6 +108,8 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
           pftpar->aprec_min,
           pftpar->flam,pftpar->k_litter10.leaf*NDAYYEAR,
           pftpar->k_litter10.wood*NDAYYEAR,pftpar->k_litter10.q10_wood,
+          pftpar->vmax_up,pftpar->kNmin,pftpar->KNmin,1/pftpar->ncleaf.high,
+          1/pftpar->ncleaf.low,pftpar->knstore,pftpar->fn_turnover,
           pftpar->soc_k,pftpar->alpha_fuelp,
           pftpar->fuelbulkdensity,pftpar->emissionfactor.co2,
           pftpar->emissionfactor.co,pftpar->emissionfactor.ch4,

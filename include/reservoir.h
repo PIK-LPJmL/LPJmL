@@ -64,7 +64,7 @@ typedef struct
                           higher than one eg the day after rain because of the
                           even release through the month*/
 
-  Real c_pool;           /* pool where the carbon is stored from the land
+  Stocks pool;           /* pool where the carbon and nitrogen is stored from the land
                             that has been taken by the reservoir */
 } Resdata;
 

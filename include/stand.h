@@ -59,9 +59,9 @@ typedef struct landcover *Landcover;
 /* Declaration of functions */
 
 extern Bool fwritestand(FILE *,const Stand *,int);
-extern void fprintstand(FILE *,const Stand *);
+extern void fprintstand(FILE *,const Stand *,const Pftpar[],int);
 extern int fwritestandlist(FILE *,const Standlist,int);
-extern void fprintstandlist(FILE *,const Standlist);
+extern void fprintstandlist(FILE *,const Standlist,const Pftpar[],int);
 extern Stand *freadstand(FILE *,Cell *,const Pftpar[],int,
                          const Soilpar *,const Standtype [],int,Bool);
 extern Standlist freadstandlist(FILE *,Cell *,const Pftpar [],int,
@@ -78,15 +78,20 @@ extern int findstand(const Standlist, Landusetype, Bool);
 extern int findlandusetype(const Standlist,Landusetype);
 extern void allocation_today(Stand *, int);
 extern void light(Stand *,int,const Real[]);
-extern Real establishmentpft(Stand *,const Pftpar[],int,int,Real,int);
+extern Stocks establishmentpft(Stand *,const Pftpar[],int,int,Real,int);
 extern Real standcarbon(const Stand *);
+extern Stocks standstocks(const Stand *);
 extern void cutpfts(Stand *);
 extern Harvest harvest_grass(Stand *,Real);
 extern Real roughnesslength(const Standlist);
 extern void waterbalance(Stand *,Real [BOTTOMLAYER],Real [BOTTOMLAYER],Real *,Real *,Real,Real,
                          Real,Real *);
-extern Real infil_perc_irr(Stand *,Real,Real *);
-extern Real infil_perc_rain(Stand *,Real,Real *);
+extern Real water_stressed(Pft *,Real [LASTLAYER],Real,Real,
+                           Real,Real *,Real *,Real *,Real,Real,
+                           Real,Real,Real,Real *,int,int,const Config *);
+
+extern Real infil_perc_irr(Stand *,Real,Real *,Bool,const Config *);
+extern Real infil_perc_rain(Stand *,Real,Real *,Bool,const Config *);
 extern Real albedo_stand(Stand *);                            
 extern Landcover initlandcover(int,const Config *);
 extern Bool readlandcover(Landcover,const Cell *,int,const Config *);
@@ -97,7 +102,6 @@ extern void freelandcover(Landcover,Bool);
 
 #define getstand(list,index) ((Stand *)getlistitem(list,index))
 #define foreachstand(stand,i,list) for(i=0;i<getlistlen(list) && (stand=getstand(list,i));i++)
-#define printstandlist(standlist,pftlist) fprintstandlist(stdout,standlist,pftlist)
 
 /*
  * The following macros allow to call the stand-specific functions like virtual

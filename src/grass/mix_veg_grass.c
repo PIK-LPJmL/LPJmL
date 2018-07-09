@@ -20,11 +20,16 @@ void mix_veg_grass(Pft *pft,Real scaler)
   Pftgrass *grass;
   grass=pft->data;
   
-  grass->ind.leaf*=scaler;
-  grass->ind.root*=scaler;
-  grass->turn.root*=scaler;
-  grass->turn.leaf*=scaler;
+  grass->ind.leaf.carbon*=scaler;
+  grass->ind.leaf.nitrogen*=scaler;
+  grass->ind.root.carbon*=scaler;
+  grass->ind.root.nitrogen*=scaler;
+  grass->turn.root.carbon*=scaler;
+  grass->turn.root.nitrogen*=scaler;
+  grass->turn.leaf.carbon*=scaler;
+  grass->turn.leaf.nitrogen*=scaler;
 
-  pft->bm_inc*=scaler;
+  pft->bm_inc.carbon*=scaler;
+  pft->bm_inc.nitrogen*=scaler;
   
 } /* of 'mix_veg_grass' */

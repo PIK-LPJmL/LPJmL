@@ -27,13 +27,13 @@ Real litter_ag_tree(const Litter *litter, /**< pointer to litter data */
   {
     for(l=0;l<litter->n;l++)
       if(litter->ag[l].pft->type==TREE)
-        sum+=litter->ag[l].trait.leaf+litter->ag[l].trait.wood[0];
+        sum+=litter->ag[l].trait.leaf.carbon+litter->ag[l].trait.wood[0].carbon;
   }
   else
   {
     for(l=0;l<litter->n;l++)
       if(litter->ag[l].pft->type==TREE)
-        sum+=litter->ag[l].trait.wood[fuel];
+        sum+=litter->ag[l].trait.wood[fuel].carbon;
   }
   return sum;
 } /* of litter_ag_tree */

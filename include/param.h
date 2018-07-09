@@ -20,7 +20,7 @@
 typedef struct
 {
   Real k_litter10;
-  Pool k_soil10;
+  Poolpar k_soil10;
   Real maxsnowpack; /**< max. snow pack (mm) */
   Real soildepth_evap; /**< depth of sublayer at top of upper soil layer (mm) */
   Real co2_p;       /**< pre-industrial CO2 concentration (ppm) */
@@ -38,7 +38,15 @@ typedef struct
   Real kc25;          /**< Michaelis constant for CO2 (Pa) at 25 deg C */
   Real atmfrac;      /**< fraction of decomposed litter emitted as CO2 to the atmosphere */
   Real fastfrac;     /**< fraction of soil-bound decomposed litter entering the intermediate soil carbon pool */
+  Real k_max;        /**< maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
+  Real k_2;          /**< fraction of nitrified N lost as N20 flux Parton, 2001*/
+
   Real k_mort;       /**< coefficient of growth efficiency in mortality equation (k_mort2) */
+  Real p;            /**< regression coefficent from Haxeltine and Prentice : N=p Vmax+n0 */
+  Real n0;           /**< regressionn coefficient from Haxltine and Prentice */
+  Real denit_threshold; /**< denitrificaton threshold */
+  Real q_ash;        /**< fraction of nitrogen going to litter after fire */
+  Real sapwood_recovery; /**< recovery of sapwood nitrogen */
   /* IRRIGATION */
   Real aprec_lim;    /**< annual precipitation limit for C3 irrigation threshold */
   Real irrig_threshold_c3_dry; /**< soil moisture irrigation threshold for C3 crops, annual precip < aprec_lim */
@@ -50,7 +58,11 @@ typedef struct
   Real ec_pipe;      /**< conveyance efficiency for pressurized irrigation systems */
   Real sat_level[4];   /**< saturation level for the three irrigation systems (surf,sprink,drip) */
   Real drip_evap;        /**< reduction of drip soil evap */
-  Real residues_in_soil;  /**> minimum residues in soil*/
+  Real residues_in_soil;  /**< minimum residues in soil*/
+  Real nfert_split;     /**< threshold fertilizer input for split application */
+  Real min_c_bnf;
+  Real par_sink_limit;  /**< Michaelis-Menten scaling of sink limitation */
+  Real k_temp;          /**< factor of temperature dependence of nitrogen demand for Rubisco activity */
 } Param;
 
 /* Declaration of global variable */

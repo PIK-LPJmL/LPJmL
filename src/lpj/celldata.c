@@ -20,6 +20,7 @@
 
 struct celldata
 {
+  Bool with_nitrogen;
   int soil_fmt;
   union
   {
@@ -33,6 +34,19 @@ struct celldata
     } bin;
     Coord_netcdf cdf;
   } soil;
+  int soilph_fmt;
+  union
+  {
+    struct
+    {
+      Bool swap;
+      size_t offset;
+      float scalar;
+      Type type;
+      FILE *file;
+    } bin;
+    Input_netcdf cdf;
+  } soilph;
   struct
   {
     Bool swap;
@@ -94,6 +108,60 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       return NULL;
     }
   }
+  if(config->with_nitrogen)
+  {
+    celldata->soilph_fmt=config->soilph_filename.fmt;
+    celldata->with_nitrogen=TRUE;
+    if(config->soilph_filename.fmt==CDF)
+    {
+      celldata->soilph.cdf=openinput_netcdf(config->soilph_filename.name,
+                                            config->soilph_filename.var,
+                                            NULL,0,config);
+      if(celldata->soilph.cdf==NULL)
+      {
+        if(isroot(*config))
+          printfopenerr(config->soilph_filename.name);
+        if(config->soil_filename.fmt==CDF)
+          closecoord_netcdf(celldata->soil.cdf);
+        else
+        {
+          closecoord(celldata->soil.bin.file_coord);
+          fclose(celldata->soil.bin.file);
+        }
+        free(celldata);
+        return NULL;
+      }
+    }
+    else
+    {
+      celldata->soilph.bin.file=openinputfile(&header,&celldata->soilph.bin.swap,
+                                              &config->soilph_filename,
+                                              headername,
+                                              &version,&celldata->soilph.bin.offset,config);
+      if(celldata->soilph.bin.file==NULL)
+      {
+        if(isroot(*config))
+          printfopenerr(config->soilph_filename.name);
+        if(config->soil_filename.fmt==CDF)
+          closecoord_netcdf(celldata->soil.cdf);
+        else
+        {
+          closecoord(celldata->soil.bin.file_coord);
+          fclose(celldata->soil.bin.file);
+        }
+        free(celldata);
+        return NULL;
+      }
+      if(version==1)
+        celldata->soilph.bin.scalar=0.01;
+      else
+        celldata->soilph.bin.scalar=header.scalar;
+      celldata->soilph.bin.type=header.datatype;
+    }
+
+  }
+  else
+    celldata->with_nitrogen=FALSE;
   if(config->sim_id==LPJML_FMS)
   {
     celldata->runoff2ocean_map.file=openinputfile(&header,&celldata->runoff2ocean_map.swap,
@@ -153,6 +221,19 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
       return TRUE;
     }
   }
+  if(celldata->with_nitrogen)
+  {
+    if(celldata->soilph_fmt!=CDF &&
+       fseek(celldata->soilph.bin.file,startgrid*typesizes[celldata->soilph.bin.type],SEEK_CUR))
+    {
+      /* seeking to position of first grid cell failed */
+      fprintf(stderr,
+              "ERROR107: Cannot seek in soilpH file to position %d.\n",
+              startgrid);
+      return TRUE;
+    }
+
+  }
   if(celldata->runoff2ocean_map.file!=NULL)
     fseek(celldata->runoff2ocean_map.file,startgrid*sizeof(Intcoord)+celldata->runoff2ocean_map.offset,SEEK_CUR);
   return FALSE;
@@ -161,6 +242,7 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
 Bool readcelldata(Celldata celldata, /**< pointer to celldata */
                   Coord *coord,      /**< lon,lat coordinate */
                   unsigned int *soilcode,     /**< soil code */
+                  Real *soil_ph,                /**< soil pH */
                   Intcoord *runoff2ocean_coord, /**< coordinate for runoff */
                   int cell,          /**< cell index */
                   Config *config     /**< LPJmL configuration */
@@ -194,6 +276,27 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
       return TRUE;
     }
   }
+   if(config->with_nitrogen)
+  {
+    if(celldata->soilph_fmt==CDF)
+    {
+      if(readinput_netcdf(celldata->soilph.cdf,soil_ph,coord))
+      {
+        fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+                config->soilph_filename.name,cell+config->startgrid);
+        return TRUE;
+      }
+    }
+    else
+    {
+      if(readrealvec(celldata->soilph.bin.file,soil_ph,0,celldata->soilph.bin.scalar,1,celldata->soilph.bin.swap,celldata->soilph.bin.type))
+      {
+        fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+                config->soilph_filename.name,cell+config->startgrid);
+        return TRUE;
+      }
+    }
+  }
   if(celldata->runoff2ocean_map.file!=NULL)
   {
     fread(runoff2ocean_coord,sizeof(Intcoord),1,celldata->runoff2ocean_map.file);
@@ -215,6 +318,13 @@ void closecelldata(Celldata celldata /**< pointer to celldata */
   {
     closecoord(celldata->soil.bin.file_coord);
     fclose(celldata->soil.bin.file);
+  }
+  if(celldata->with_nitrogen)
+  {
+    if(celldata->soilph_fmt==CDF)
+      closeinput_netcdf(celldata->soilph.cdf);
+    else
+      fclose(celldata->soilph.bin.file);
   }
   if(celldata->runoff2ocean_map.file!=NULL)
     fclose(celldata->runoff2ocean_map.file);

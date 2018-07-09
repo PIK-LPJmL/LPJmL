@@ -23,7 +23,9 @@ void turnover_monthly_grass(Litter *litter,Pft *pft)
   {
     grasspar=pft->par->data;
     grass=pft->data;
-    grass->turn.root+=grass->ind.root*grasspar->turnover.root/NMONTH;
-    litter->bg[pft->litter]+=grass->ind.root*grasspar->turnover.root/NMONTH*pft->nind;
+    grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH;
+    grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH;
+    litter->bg[pft->litter].carbon+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH*pft->nind;
+    litter->bg[pft->litter].nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH*pft->nind;
   }
 } /* of 'turnover_monthly_grass' */

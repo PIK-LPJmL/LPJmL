@@ -22,12 +22,13 @@ Real gp_sum(const Pftlist *pftlist, /**< Pft list */
             Real daylength,        /**< daylength (h) */
             Real *gp_stand_leafon, /**< pot. canopy conduct.at full leaf cover */
             Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs*/
-            Real *fpc              /**< total FPC of all PFTs */
+            Real *fpc,             /**< total FPC of all PFTs */
+            int lai_opt
            )
 {
   int p;
   Pft *pft;
-  Real agd,adtmm,gp,gp_stand,rd,fpc_total;
+  Real agd,adtmm,gp,gp_stand,rd,fpc_total,vmax;
   *gp_stand_leafon=gp=*fpc=gp_stand=0;
   if(daylength<1e-20)
   {
@@ -37,27 +38,32 @@ Real gp_sum(const Pftlist *pftlist, /**< Pft list */
   }
   foreachpft(pft,p,pftlist)
   {
+    pft->vmax=0;
+    vmax=0;
     if(pft->par->type==CROP){
-      adtmm=photosynthesis(&agd,&rd,pft->par->path,LAMBDA_OPT,
+      adtmm=photosynthesis(&agd,&rd,&vmax,pft->par->path,LAMBDA_OPT,
                          temp_stress(pft->par,temp,daylength),ppm2Pa(co2),
                          temp,
-                         par*(1-getpftpar(pft, albedo_leaf))*fpar_crop(pft)*alphaa(pft),
+                         par*(1-getpftpar(pft, albedo_leaf))*fpar_crop(pft)*alphaa(pft,lai_opt),
                          daylength);
       gp=(1.6*adtmm/(ppm2bar(co2)*(1.0-LAMBDA_OPT)*hour2sec(daylength)))+
                     pft->par->gmin*fpar_crop(pft);
       gp_stand+=gp;
       gp_pft[getpftpar(pft,id)]=gp;
-    }else{
-      adtmm=photosynthesis(&agd,&rd,pft->par->path,LAMBDA_OPT,
+    }
+    else
+    {
+      adtmm=photosynthesis(&agd,&rd,&vmax,pft->par->path,LAMBDA_OPT,
                          temp_stress(pft->par,temp,daylength),ppm2Pa(co2),
                          temp,
-                         par*pft->fpc*alphaa(pft)*(1-getpftpar(pft, albedo_leaf)),
+                         par*pft->fpc*alphaa(pft,lai_opt)*(1-getpftpar(pft, albedo_leaf)),
                          daylength);
       gp=(1.6*adtmm/(ppm2bar(co2)*(1.0-LAMBDA_OPT)*hour2sec(daylength)))+
                       pft->par->gmin*pft->fpc;
       gp_pft[getpftpar(pft,id)]=gp*pft->phen;
       gp_stand+=gp*pft->phen;
     }
+    pft->vmax=vmax;
     *fpc+=pft->fpc;
     *gp_stand_leafon+=gp;                                                       // TODO /pft->phen included
   }

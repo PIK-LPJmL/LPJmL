@@ -16,10 +16,14 @@
 
 "input" :
 {
-  "soil" :         { "fmt" : META, "name" : "/p/projects/lpjml/input/historical/input_VERSION2/soil.descr"},
-  "coord" :        { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/grid.bin"},
-  "countrycode" :  { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/cow_mg_2006_full.bin"},
-  "landuse" :      { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
+  "soil" :          { "fmt" : META, "name" : "/p/projects/lpjml/input/historical/input_VERSION2/soil.descr"},
+  "coord" :         { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/grid.bin"},
+  "countrycode" :   { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/cow_mg_2006_full.bin"},
+  "no3deposition" : {"fmt" : CLM, "name" : "/p/projects/biodiversity/input_VERSION2/no3_deposition_rcp8p5.clm"},
+  "nh4deposition" : {"fmt" : CLM, "name" : "/p/projects/biodiversity/input_VERSION2/nh4_deposition_rcp8p5.clm"},
+  "soilpH" :        {"fmt" : CLM, "name" : "/p/projects/biodiversity/input_VERSION2/soil_ph.clm"},
+  "landuse" :       { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
+  "fertilizer_nr" : { "fmt" : CLM,  "name" : "/p/projects/biodiversity/input_VERSION2/fertilizer_ggcmi.clm2"},
   /* insert prescribed sdate file name here */
   "grassland_fixed_pft" : { "fmt" : RAW, "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.bin"},
   "lakes" :        { "fmt" : META, "name" : "/p/projects/lpjml/input/historical/input_VERSION2/glwd_lakes_and_rivers.descr"},
