@@ -23,7 +23,7 @@ Stocks fire_tree(Pft *pft,Real *fireprob)
   tree=pft->data;
   disturb=(1-pft->par->resist)**fireprob;
   flux.carbon=disturb*pft->nind*(tree->ind.leaf.carbon+tree->ind.sapwood.carbon+
-                          tree->ind.heartwood.carbon-tree->ind.debt.carbon+tree->ind.root.carbon);
+                          tree->ind.heartwood.carbon-tree->ind.debt.carbon+tree->ind.root.carbon+tree->excess_carbon);
   flux.nitrogen=disturb*pft->nind*(tree->ind.leaf.nitrogen+tree->ind.sapwood.nitrogen+
                           tree->ind.heartwood.nitrogen-tree->ind.debt.nitrogen+tree->ind.root.nitrogen);
   flux.nitrogen+=pft->bm_inc.nitrogen*disturb;

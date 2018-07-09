@@ -18,9 +18,8 @@
 void adjust_tree(Litter *litter,Pft *pft,Real tree_fpc, Real fpc_max)
 {
 
-  Real frac,fpc_end,nind_old;
+  Real frac,fpc_end,nind_old,nind_new;
   int i;
-
 
   if(tree_fpc>fpc_max)
   {
@@ -33,7 +32,12 @@ void adjust_tree(Litter *litter,Pft *pft,Real tree_fpc, Real fpc_max)
       pft->nind*=frac;
       fpc_tree(pft);
     }
-    litter_update_tree(litter,pft,nind_old-pft->nind);
+    nind_new=pft->nind;
+    pft->nind=nind_old;
+    litter_update_tree(litter,pft,nind_old-nind_new);
+    if(pft->nind>0)
+      pft->bm_inc.nitrogen*=(pft->nind-nind_old+nind_new)/pft->nind;
+    pft->nind=nind_new;
 /*printf("PFT:%s fpc_obs=%g fpc=%g\n",pft->par->name, pft->fpc_obs, pft->fpc);*/
 
   }

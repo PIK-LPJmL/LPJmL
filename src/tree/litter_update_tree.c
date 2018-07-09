@@ -44,7 +44,7 @@ void litter_update_tree(Litter *litter, /**< Litter pool */
   for(i=0;i<NFUELCLASS;i++)
   {
     litter->ag[pft->litter].trait.wood[i].carbon+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
-                                  tree->ind.debt.carbon)*frac*treepar->fuelfrac[i];
+                                  tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i];
     litter->ag[pft->litter].trait.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
                                   tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i];
     update_fbd_tree(litter,pft->par->fuelbulkdensity,
