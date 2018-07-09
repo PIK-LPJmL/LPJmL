@@ -24,6 +24,7 @@ Bool fwritepft(FILE *file,    /**< File pointer to binary file */
   Byte b;
   b=(Byte)pft->par->id;
   fwrite1(&b,sizeof(b),file);
+  fwrite(&pft->phen_gsi,sizeof(Phenology),1,file);
   fwrite1(&pft->wscal,sizeof(Real),file);
   fwrite1(&pft->wscal_mean,sizeof(Real),file);
   fwrite1(&pft->vscal,sizeof(Real),file);
