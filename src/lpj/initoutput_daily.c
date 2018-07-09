@@ -29,5 +29,10 @@ void initoutput_daily(Daily_outputs *output /**< Daily output data */
     output->vdsum=output->w0=output->w1=output->wdf=output->wevap=
     output->wscal=output->temp=output->sun=output->par=output->pet=
     output->daylength=output->swe=output->discharge=output->runoff=
-    output->rh=output->interc=0.0;
+    output->rh=output->interc=
+    output->nuptake=output->n2o_denit=output->n2o_nit=output->n2_denit=
+    output->leaching=output->bnf=output->nleaf=output->nroot=output->nso=
+    output->npool=output->no3=output->nh4=output->nsoil_slow=
+    output->nsoil_fast=output->assim=
+    output->nlimit=output->vscal=0.0;
 } /* of 'initoutput_daily' */
