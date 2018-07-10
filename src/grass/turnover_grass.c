@@ -70,10 +70,10 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     gturn.leaf.carbon=grass->ind.leaf.carbon*grasspar->turnover.leaf*fraction;
     gturn.leaf.nitrogen=grass->ind.leaf.nitrogen*grasspar->turnover.leaf*fraction;
     litter->ag[pft->litter].trait.leaf.carbon+=gturn.leaf.carbon*pft->nind;
-    litter->ag[pft->litter].trait.leaf.nitrogen+=gturn.leaf.nitrogen*pft->nind;
+    litter->ag[pft->litter].trait.leaf.nitrogen+=gturn.leaf.nitrogen*pft->nind*pft->par->fn_turnover;
     update_fbd_grass(litter,pft->par->fuelbulkdensity,gturn.leaf.carbon*pft->nind);
     litter->bg[pft->litter].carbon+=gturn.root.carbon*pft->nind;
-    litter->bg[pft->litter].nitrogen+=gturn.root.nitrogen*pft->nind;
+    litter->bg[pft->litter].nitrogen+=gturn.root.nitrogen*pft->nind*pft->par->fn_turnover;
   }
   grass->ind.leaf.carbon-= gturn.leaf.carbon;
   grass->ind.leaf.nitrogen-= gturn.leaf.nitrogen;

@@ -21,7 +21,7 @@ void turnover_monthly_tree(Litter *litter,Pft *pft)
   Pfttreepar *treepar;  
   treepar=pft->par->data;
   tree=pft->data;
-    tree->turn.root.carbon+=tree->ind.root.carbon*treepar->turnover.root/NMONTH;
+  tree->turn.root.carbon+=tree->ind.root.carbon*treepar->turnover.root/NMONTH;
   tree->turn_litt.root.carbon+=tree->ind.root.carbon*treepar->turnover.root/NMONTH*pft->nind;
   litter->bg[pft->litter].carbon+=tree->ind.root.carbon*treepar->turnover.root/NMONTH*pft->nind;
   tree->turn.root.nitrogen+=tree->ind.root.nitrogen*treepar->turnover.root/NMONTH;

@@ -34,6 +34,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
   ftimber=min(1,cell->ml.image_data->timber_frac/standfrac);
 #else
   Poolpar frac1,frac2;
+  ftimber=1;
   frac1.fast=frac2.fast=1.0;
   frac1.slow=frac2.slow=0.0;
 #endif
@@ -90,8 +91,8 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         fflush(stdout);
 #endif
         stocks=timber_burn(pft,cell->ml.image_data->fburnt,&soil->litter,nind);
-        cell->output.deforest_emissions.carbon+=stocks.carbon*stand->frac;
-        cell->output.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*stand->frac;
+        cell->output.deforest_emissions.carbon+=stocks.carbon*standfrac;
+        cell->output.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
         soil->NO3[0]+=stocks.nitrogen*param.q_ash*stand->frac;
 #endif
       } /* if tree */

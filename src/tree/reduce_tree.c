@@ -17,10 +17,11 @@
 
 void reduce_tree(Litter *litter,Pft *pft,Real factor) 
 {
-  pft->nind/=factor;
   pft->fpc/=factor;
-  litter_update_tree(litter,pft,pft->nind*factor-pft->nind); 
-  
+  litter_update_tree(litter,pft,pft->nind-pft->nind/factor);
+  if(pft->nind>0)
+    pft->bm_inc.nitrogen/=factor;
+  pft->nind/=factor;
 } /* of 'reduce_tree' */
 
 /**************************************************************************************/

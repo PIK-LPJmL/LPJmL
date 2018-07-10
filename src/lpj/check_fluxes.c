@@ -54,8 +54,10 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 
   balance.carbon=cell->balance.nep-cell->output.fire.carbon-cell->output.flux_firewood.carbon+cell->output.flux_estab.carbon-cell->output.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-cell->output.neg_fluxes.carbon;
   /* for IMAGE but can also be used without IMAGE */
-  balance.nitrogen=cell->balance.n_influx-cell->output.fire.nitrogen-cell->output.flux_firewood.nitrogen+cell->output.flux_estab.nitrogen-cell->output.flux_harvest.nitrogen-cell->balance.biomass_yield.nitrogen-delta_tot.nitrogen-cell->output.neg_fluxes.nitrogen-cell->output.deforest_emissions.nitrogen-cell->output.timber_harvest.nitrogen;
   balance.carbon-=cell->output.deforest_emissions.carbon+cell->output.prod_turnover+cell->output.trad_biofuel+cell->output.timber_harvest.carbon;
+  balance.nitrogen=cell->balance.n_influx-cell->output.fire.nitrogen-cell->balance.n_outflux+cell->output.flux_estab.nitrogen-
+    cell->balance.biomass_yield.nitrogen-cell->output.flux_harvest.nitrogen-delta_tot.nitrogen-cell->output.neg_fluxes.nitrogen-cell->output.deforest_emissions.nitrogen-cell->output.timber_harvest.nitrogen;
+
   if(year>config->firstyear+1 && fabs(balance.carbon)>1)
   {
 #ifdef IMAGE
@@ -83,7 +85,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          "                            estab_storage_grass: %.2f %.2f estab_storage_tree %.2f %.2f\n"
          "                            deforest_emissions: %.2f product_turnover: %.2f\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.nep,cell->output.fire.carbon,
-         cell->output.flux_estab.carbon,cell->output.flux_harvest.carbon,delta_tot.carbon,cell->balance.biomass_yield,
+         cell->output.flux_estab.carbon,cell->output.flux_harvest.carbon,delta_tot.carbon,cell->balance.biomass_yield.carbon,
          cell->balance.estab_storage_grass[0].carbon,cell->balance.estab_storage_grass[1].carbon,cell->balance.estab_storage_tree[0].carbon,cell->balance.estab_storage_tree[1].carbon,
          cell->output.deforest_emissions.carbon,cell->output.prod_turnover);
 #endif

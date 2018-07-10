@@ -28,10 +28,10 @@ void light_tree(Litter *litter,Pft *pft,Real excess)
     nind_kill=0;
   else
   {
-    nind_kill=(excess<1e-20) ? 0 : pft->nind*(excess/pft->fpc); 
-    pft->nind-=nind_kill;
+    nind_kill=(excess<1e-20) ? 0 : pft->nind*(excess/pft->fpc);
     litter_update_tree(litter,pft,nind_kill);
     pft->bm_inc.nitrogen*=(pft->nind-nind_kill)/pft->nind;
+    pft->nind-=nind_kill;
   }
   fpc_tree(pft);
 

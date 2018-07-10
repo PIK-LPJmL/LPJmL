@@ -138,7 +138,7 @@ Bool allocation_grass(Litter *litter, /**< litter pool */
         }
         litter->ag[pft->litter].trait.leaf.carbon += leaf_carbon_lastday - grass->ind.leaf.carbon;
         update_fbd_grass(litter, pft->par->fuelbulkdensity,
-          leaf_carbon_lastday - grass->ind.leaf.carbon);
+                         leaf_carbon_lastday - grass->ind.leaf.carbon);
       }
     }
   }

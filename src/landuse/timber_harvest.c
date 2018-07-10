@@ -55,7 +55,7 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   soil->litter.ag[pft->litter].trait.leaf.nitrogen+=tree->ind.leaf.nitrogen*ftimber*(*nind);
   for(i=0;i<NFUELCLASS;i++)
   {
-    soil->litter.ag[pft->litter].trait.wood[i].carbon+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon)*
+    soil->litter.ag[pft->litter].trait.wood[i].carbon+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon+tree->excess_carbon)*
                                          ftimber*(*nind)*treepar->fuelfrac[i];
     soil->litter.ag[pft->litter].trait.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*
                                          ftimber*(*nind)*treepar->fuelfrac[i];

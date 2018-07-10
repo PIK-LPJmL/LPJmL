@@ -106,8 +106,10 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     return TRUE;
 #endif
   }
-  else
-    lpjfile.isjson=FALSE;
+#ifdef USE_JSON
+  else if(verbosity)
+    printf("REMARK101: File format of '%s' is deprecated, please use JSON format instead.\n",config->filename);
+#endif
   config->sim_name=strdup(s);
   if(config->sim_name==NULL)
   {

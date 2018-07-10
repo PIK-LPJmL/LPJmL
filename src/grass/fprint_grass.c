@@ -20,7 +20,7 @@ void fprint_grass(FILE *file,const Pft *pft)
 {
   Pftgrass *grass;
   grass=pft->data;
-  fprintf(file,"Cmass:\t\t");
+  fprintf(file,"Mass:\t\t");
   fprintgrassphys(file,grass->ind);
   fprintf(file,"\n");
   fprintf(file,"\nExcess carbon:\t%g (gC/m2)\n",grass->excess_carbon);

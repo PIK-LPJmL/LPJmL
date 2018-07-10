@@ -153,7 +153,8 @@ Bool allocation_tree(Litter *litter, /**< litter pool */
   }
   vscal=min(1,pft->vscal/NDAYYEAR);
   bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
-  lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/365);
+  bm_inc_ind.nitrogen=pft->bm_inc.nitrogen/pft->nind;
+  lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/NDAYYEAR);
   treepar=pft->par->data;
   tinc_ind.heartwood.carbon=tinc_ind.debt.carbon=0.0;
   tinc_ind.heartwood.nitrogen=tinc_ind.debt.nitrogen=0.0;

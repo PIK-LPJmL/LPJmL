@@ -33,7 +33,8 @@ Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   {
     grass=pft->data;
     harvest.harvest.carbon=grass->ind.leaf.carbon*hfrac;
-    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac;
+    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*0.25;
+    pft->stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*0.75;
     grass->ind.leaf.carbon*=(1-hfrac);
     grass->ind.leaf.nitrogen*=(1-hfrac);
     sum.harvest.carbon+=harvest.harvest.carbon;

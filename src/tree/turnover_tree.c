@@ -77,6 +77,9 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   update_fbd_tree(litter,pft->par->fuelbulkdensity,turn.leaf.carbon*pft->nind-tree->turn_litt.leaf.carbon,0);
   litter->bg[pft->litter].carbon+=turn.root.carbon*pft->nind-tree->turn_litt.root.carbon;
   litter->bg[pft->litter].nitrogen+=turn.root.nitrogen*pft->nind-tree->turn_litt.root.nitrogen;
+  /* turnover of excess carbon as root exudates */
+  litter->bg[pft->litter].carbon+=tree->excess_carbon*pft->nind*treepar->turnover.root;
+  tree->excess_carbon-=tree->excess_carbon*treepar->turnover.root;
   tree->turn.root.carbon=tree->turn.leaf.carbon=tree->turn_litt.leaf.carbon=tree->turn_litt.root.carbon=0.0;
   tree->turn.root.nitrogen=tree->turn.leaf.nitrogen=tree->turn_litt.leaf.nitrogen=tree->turn_litt.root.nitrogen=0.0;
   turn.sapwood.carbon=tree->ind.sapwood.carbon*treepar->turnover.sapwood;

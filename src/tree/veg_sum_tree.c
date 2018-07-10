@@ -26,5 +26,5 @@ Real vegn_sum_tree(const Pft *pft)
 {
   const Pfttree *tree;
   tree=pft->data;
-  return (phys_sum_tree_n(tree->ind)-tree->ind.debt.nitrogen)*pft->nind+pft->bm_inc.nitrogen;
+  return (phys_sum_tree_n(tree->ind)-tree->ind.debt.nitrogen)*pft->nind+pft->bm_inc.nitrogen-tree->turn_litt.leaf.nitrogen;
 } /* of 'vegn_sum_tree' */
