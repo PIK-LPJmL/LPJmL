@@ -62,7 +62,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   {
     if ((stand->prescribe_landcover !=NO_LANDCOVER &&  pftpar[p].cultivation_type==NONE && stand->landcover[p] > 0 && stand->type->landusetype==NATURAL) ||
         (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pftpar[p].aprec_min && pftpar[p].cultivation_type==NONE &&
-       pftpar[p].type==TREE && establish(stand->cell->gdd[p],pftpar+p,&stand->cell->climbuf)))
+       establish(stand->cell->gdd[p],pftpar+p,&stand->cell->climbuf)))
     {
       if(!present[p])
         addpft(stand,pftpar+p,year,0);
