@@ -261,7 +261,7 @@ extern Real biologicalnfixation(const Stand *);
 extern void leaching(Soil *,const Real);
 extern Real volatilization(Real,Real,Real,Real,Real);
 extern Real nuptake_temp_fcn(Real);
-extern Real denitrification(Stand *);
+extern void denitrification(Stand *);
 extern void getrootdist(Real [],const Real[],Real);
 extern Stocks checklitter(Litter *);
 
