@@ -84,7 +84,10 @@ Bool allocation_grass(Litter *litter, /**< litter pool */
       {
         inc_ind.root.carbon=bm_inc_ind.carbon;
         inc_ind.leaf.carbon=(grass->ind.root.carbon+inc_ind.root.carbon)*lmtorm-grass->ind.leaf.carbon;
-        litter->ag[pft->litter].trait.leaf.carbon+=-inc_ind.leaf.carbon*pft->nind;
+        if(litter->ag[pft->litter].trait.leaf.carbon>=inc_ind.leaf.carbon*pft->nind)
+         litter->ag[pft->litter].trait.leaf.carbon+=-inc_ind.leaf.carbon*pft->nind;
+      else
+         pft->stand->cell->output.flux_estab.carbon+=inc_ind.leaf.carbon*pft->nind*pft->stand->frac;
         update_fbd_grass(litter,pft->par->fuelbulkdensity,
           -inc_ind.leaf.carbon*pft->nind);
       }

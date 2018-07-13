@@ -261,6 +261,8 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     tot_before.nitrogen+=cell->ml.resdata->pool.nitrogen;
     tot_before.carbon+=cell->output.timber_harvest.carbon;
     tot_before.nitrogen+=cell->output.timber_harvest.nitrogen;
+    tot_before.carbon+=cell->output.deforest_emissions.carbon;
+    tot_before.nitrogen+=cell->output.deforest_emissions.nitrogen;
 
 
     /* cut cut entire natural stand if lakefraction+reservoir fraction equals 1 */
@@ -361,6 +363,8 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     tot_after.nitrogen+=cell->ml.resdata->pool.nitrogen;
     tot_after.carbon+=cell->output.timber_harvest.carbon;
     tot_after.nitrogen+=cell->output.timber_harvest.nitrogen;
+    tot_after.carbon+=cell->output.deforest_emissions.carbon;
+    tot_after.nitrogen+=cell->output.deforest_emissions.nitrogen;
     /* check if the same */
     balanceW=totw_before-totw_after;
     balance.carbon=tot_before.carbon-tot_after.carbon;

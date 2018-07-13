@@ -58,5 +58,6 @@
   "saturation_level_sprink" : 0.55,   /* saturation level sprinkler irrigation*/
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
-  "residues_in_soil" : 0.1            /* minimum residues in soil*/
+  "residues_in_soil" : 0.1,           /* minimum residues in soil*/
+  "fburnt" : 0                        /* fraction of trees burnt at deforestation */
 },

@@ -28,8 +28,8 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
   Real nind;
   Real ftimber; /* fraction harvested for timber */
   Stocks harvest;
+  Stocks stocks;
 #ifdef IMAGE
-  Stock stocks;
   Bool tharvest=FALSE;
   ftimber=min(1,cell->ml.image_data->timber_frac/standfrac);
 #else
@@ -91,10 +91,12 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         fflush(stdout);
 #endif
         stocks=timber_burn(pft,cell->ml.image_data->fburnt,&soil->litter,nind);
+#else
+        stocks=timber_burn(pft,param.fburnt,&soil->litter,nind);
+#endif
         cell->output.deforest_emissions.carbon+=stocks.carbon*standfrac;
         cell->output.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
-        soil->NO3[0]+=stocks.nitrogen*param.q_ash*stand->frac;
-#endif
+        soil->NO3[0]+=stocks.nitrogen*param.q_ash*standfrac;
       } /* if tree */
     } /* is timber */
 #ifdef DEBUG_IMAGE
