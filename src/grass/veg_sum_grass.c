@@ -27,4 +27,4 @@ Real vegn_sum_grass(const Pft *pft)
   const Pftgrass *grass;
   grass=pft->data;
   return phys_sum_grass_n(grass->ind)*pft->nind+pft->bm_inc.nitrogen;
-} /* of 'vegc_sum_grass' */
+} /* of 'vegn_sum_grass' */

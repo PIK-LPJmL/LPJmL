@@ -122,7 +122,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   }
 
 #ifdef DAILY_ESTABLISHMENT
-  if(acflux_est>0) /* any establishment occured? */
+  if(acflux_est.carbon>0) /* any establishment occured? */
   {
 #endif
   /* separate calculation of grass FPC after all grass PFTs have been updated */

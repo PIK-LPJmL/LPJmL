@@ -112,7 +112,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   else
     climate->data.wet=NULL;
-  if(config->with_nitrogen)
+  if(config->with_nitrogen && config->with_nitrogen!=UNLIM_NITROGEN)
   {
     if(openclimate(&climate->file_no3deposition,&config->no3deposition_filename,"g/m2/day",LPJ_FLOAT,config))
     {
@@ -383,11 +383,11 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       return NULL;
     }
   }
-  if(config->with_nitrogen)
+  if(config->with_nitrogen && config->with_nitrogen!=UNLIM_NITROGEN)
   {
     if((climate->data.no3deposition=newvec(Real,climate->file_no3deposition.n))==NULL)
     {
-      printallocerr("temp");
+      printallocerr("no3deposition");
       free(climate->co2.data);
       free(climate->data.prec);
       free(climate->data.temp);
@@ -396,7 +396,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if((climate->data.nh4deposition=newvec(Real,climate->file_nh4deposition.n))==NULL)
     {
-      printallocerr("temp");
+      printallocerr("nh4deposition");
       free(climate->co2.data);
       free(climate->data.prec);
       free(climate->data.temp);

@@ -54,10 +54,13 @@ static Bool isnetcdfinput(const Config *config)
     return TRUE;
   if(config->with_nitrogen)
   {
-    if(config->no3deposition_filename.fmt==CDF)
-      return TRUE;
-    if(config->nh4deposition_filename.fmt==CDF)
-      return TRUE;
+    if(config->with_nitrogen!=UNLIM_NITROGEN)
+    {
+      if(config->no3deposition_filename.fmt==CDF)
+        return TRUE;
+      if(config->nh4deposition_filename.fmt==CDF)
+        return TRUE;
+    }
     if(config->soilph_filename.fmt==CDF)
       return TRUE;
   }
@@ -89,7 +92,7 @@ static Bool isnetcdfinput(const Config *config)
       return TRUE;
     if(config->sdate_option==PRESCRIBED_SDATE && config->sdate_filename.fmt==CDF)
       return TRUE;
-    if(config->with_nitrogen && config->fertilizer_nr_filename.fmt==CDF)
+    if(config->with_nitrogen && config->fertilizer_input && config->fertilizer_nr_filename.fmt==CDF)
       return TRUE;
      
   }
@@ -193,7 +196,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   if(config->river_routing)
     len=printsim(file,len,&count,"river routing");
   if(config->with_nitrogen)
-    len=printsim(file,len,&count,"nitrogen limitation");
+    len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
   if(config->prescribe_landcover)
@@ -314,8 +317,11 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"cloud",&config->cloud_filename,iscdfinput);
   if(config->with_nitrogen)
   {
-    printinputfile(file,"no3_depo",&config->no3deposition_filename,iscdfinput);
-    printinputfile(file,"nh4_depo",&config->nh4deposition_filename,iscdfinput);
+    if(config->with_nitrogen!=UNLIM_NITROGEN)
+    {
+      printinputfile(file,"no3_depo",&config->no3deposition_filename,iscdfinput);
+      printinputfile(file,"nh4_depo",&config->nh4deposition_filename,iscdfinput);
+    }
     printinputfile(file,"soilpH",&config->soilph_filename,iscdfinput);
   }
   printinputfile(file,"co2",&config->co2_filename,iscdfinput);
@@ -350,7 +356,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       printinputfile(file,"landuse",&config->landuse_filename,iscdfinput);
     if(config->sdate_option==PRESCRIBED_SDATE)
       printinputfile(file,"sdates",&config->sdate_filename,iscdfinput);
-    if(config->with_nitrogen)
+    if(config->with_nitrogen && config->fertilizer_input)
       printinputfile(file,"fertilizer",&config->fertilizer_nr_filename,iscdfinput);
   }
   if(config->reservoir)

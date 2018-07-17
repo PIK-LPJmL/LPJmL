@@ -39,7 +39,7 @@ void initoutput_monthly(Output *output /**< Output data */
   output->mfapar=output->malbedo=0.0;
   output->mphen_tmin = output->mphen_tmax = output->mphen_light = output->mphen_water = output->mwscal = 0.0;
   output->mbnf=output->mn_leaching=output->mn_uptake=output->mn2o_denit=
-    output->mn2o_nit=output->mn2_emissions=output->mn_mineralization=
+    output->mn2o_nit=output->mn2_emissions=output->mn_mineralization=output->mn_volatilization=
     output->mn_immo=0.0;
 
   for(l=0;l<NSOILLAYER;l++)

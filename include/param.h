@@ -64,6 +64,7 @@ typedef struct
   Real par_sink_limit;  /**< Michaelis-Menten scaling of sink limitation */
   Real k_temp;          /**< factor of temperature dependence of nitrogen demand for Rubisco activity */
   Real fburnt;          /**< fraction of trees burnt at deforestation */
+  Real ftimber;         /**< timber fraction at deforestation */
 } Param;
 
 /* Declaration of global variable */

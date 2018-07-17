@@ -230,7 +230,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
   }
   else
     landuse->sdate.file=NULL;
-   if(config->with_nitrogen)
+  if(config->with_nitrogen && config->fertilizer_input)
   {
     /* read fertilizer data */
     landuse->fertilizer_nr.fmt=config->fertilizer_nr_filename.fmt;
@@ -754,6 +754,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     free(data);
   if(config->with_nitrogen)
   {
+    if(config->fertilizer_input)
+    {
   /* assigning fertilizer Nr data */
   yearf=year-landuse->fertilizer_nr.firstyear;
   if(yearf>=landuse->fertilizer_nr.nyear)
@@ -822,6 +824,19 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
   } /* for(cell=0;...) */
   free(data);
+  }
+  else
+    for(cell=0;cell<config->ngridcell;cell++)
+    for(i=0;i<WIRRIG;i++)
+    {
+      for(j=0;j<ncft;j++)
+        grid[cell].ml.fertilizer_nr[i].crop[j]=0;
+      for(j=0;j<NGRASS;j++)
+        grid[cell].ml.fertilizer_nr[i].grass[j]=0;
+      grid[cell].ml.fertilizer_nr[i].biomass_grass=0;
+      grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
+    }
+
   } 
   return FALSE;
 } /* of 'getlanduse' */

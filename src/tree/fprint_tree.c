@@ -29,7 +29,7 @@ void fprint_tree(FILE *file,const Pft *pft)
                tree->gddtw);
   if(pft->par->phenology==RAINGREEN)
     fprintf(file,"Aphen raingreen:\t%g\n",tree->aphen_raingreen);
-  fprintf(file,"Cmass:\t\t");
+  fprintf(file,"Mass:\t\t");
   fprinttreephys2(file,tree->ind,pft->nind);
   fprintf(file,"\nExcess carbon:\t%g (gC/m2)\n",tree->excess_carbon*pft->nind);
   fprintf(file,"falloc:\t\t%g %g %g\n",tree->falloc.leaf,tree->falloc.root,tree->falloc.sapwood);

@@ -25,5 +25,5 @@ Bool isneg_tree(const Pft *pft)
 #endif
   return ((tree->ind.leaf.carbon+tree->ind.root.carbon+tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-tree->ind.debt.carbon)<0.0 
          || tree->ind.root.carbon<0.0 || tree->ind.leaf.carbon<0.0 || tree->ind.sapwood.carbon<0.0 || tree->ind.heartwood.carbon<0.0
-         ||pft->fpc<=1e-20 || pft->nind<=1e-16);
+         ||pft->fpc<=1e-20 || pft->nind<=1e-20);
 } /* of 'isneg_tree' */

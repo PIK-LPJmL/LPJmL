@@ -40,12 +40,6 @@ void allometry_tree(Pft *pft /**< Pointer to tree PFT */
     tree->ind.sapwood.carbon=tree->ind.leaf.carbon*treepar->height_max*wooddens*pft->par->sla/
                       k_latosa;
     tree->ind.heartwood.carbon+=sm_ind_temp-tree->ind.sapwood.carbon;
-#if 0
-    m_ind_temp=tree->ind.sapwood.nitrogen;
-    tree->ind.sapwood.nitrogen=tree->ind.leaf.nitrogen*treepar->height_max*wooddens*pft->par->sla/
-                      k_latosa;
-    tree->ind.heartwood.nitrogen+=sm_ind_temp-tree->ind.sapwood.nitrogen;
-#endif
   } 
   allometry=treepar->allom1*pow(tree->height/treepar->allom2,reinickerp/treepar->allom3);
   /* bark thickness for fire mortality [cm] */

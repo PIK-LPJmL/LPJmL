@@ -88,6 +88,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(&f,&param.drip_evap,"drip_evap_reduction");
     fscanparamreal(&f,&param.residues_in_soil,"residues_in_soil");
     fscanparamreal(&f,&param.fburnt,"fburnt");
+    fscanparamreal(&f,&param.ftimber,"ftimber");
   }
   param.k_litter10/=NDAYYEAR;
   param.k_soil10.fast/=NDAYYEAR;

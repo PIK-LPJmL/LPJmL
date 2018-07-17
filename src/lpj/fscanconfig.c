@@ -140,7 +140,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->seed=0;
-  fscanbool2(file,&config->with_nitrogen,"with_nitrogen");
+  fscanint2(file,&config->with_nitrogen,"with_nitrogen");
   fscanint2(file,&config->with_radiation,"radiation");
   if(config->with_radiation<CLOUDINESS || config->with_radiation>RADIATION_LWDOWN)
   {
@@ -219,6 +219,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       }
       fscanbool2(file,&config->intercrop,"intercrop");
+      if(config->with_nitrogen)
+      {
+        fscanbool2(file,&config->fertilizer_input,"fertilizer_input");
+      }
       fscanbool2(file,&config->istimber,"istimber");
       fscanbool2(file,&config->remove_residuals,"remove_residuals");
       fscanbool2(file,&config->residues_fire,"residues_fire");
@@ -339,7 +343,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       scanclimatefilename(&input,&config->sdate_filename,config->inputdir,FALSE,"sdate");
     }
-    if(config->with_nitrogen)
+    if(config->with_nitrogen && config->fertilizer_input)
     {
       scanclimatefilename(&input,&config->fertilizer_nr_filename,config->inputdir,FALSE,"fertilizer_nr");
     }
@@ -401,8 +405,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->with_nitrogen)
   {
-    scanclimatefilename(&input,&config->no3deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"no3deposition");
-    scanclimatefilename(&input,&config->nh4deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"nh4deposition");
+    if(config->with_nitrogen!=UNLIM_NITROGEN)
+    {
+      scanclimatefilename(&input,&config->no3deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"no3deposition");
+      scanclimatefilename(&input,&config->nh4deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"nh4deposition");
+    }
     scanclimatefilename(&input,&config->soilph_filename,config->inputdir,config->sim_id==LPJML_FMS,"soilpH");
   }
   else

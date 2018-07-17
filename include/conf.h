@@ -48,6 +48,9 @@
 #define NO_PERM 0
 #define NEW_PERC 1
 #define OLD_PERC 0
+#define NO_NITROGEN 0
+#define LIM_NITROGEN 1
+#define UNLIM_NITROGEN 2
 #define NO_WATERUSE 0
 #define WATERUSE 1
 #define RADIATION_LWDOWN 3

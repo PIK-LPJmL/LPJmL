@@ -18,7 +18,7 @@
 
 void fprint_grass(FILE *file,const Pft *pft)
 {
-  Pftgrass *grass;
+  const Pftgrass *grass;
   grass=pft->data;
   fprintf(file,"Mass:\t\t");
   fprintgrassphys(file,grass->ind);

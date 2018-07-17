@@ -50,6 +50,7 @@
 "new_phenology": false,
 "river_routing": false,
 "permafrost" : true,
+"with_nitrogen": NO_NITROGEN,
 "irrigation" : POT_IRRIGATION,
 "sowing_date_option" : FIXED_SDATE,
 "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
@@ -61,7 +62,7 @@
 "intercrop" : true,                   /* intercrops on setaside */
 "remove_residuals" : false,           /* remove residuals */
 "residues_fire" : false,              /* fire in residuals */
-
+"istimber": false,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

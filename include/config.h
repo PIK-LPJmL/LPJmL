@@ -102,7 +102,8 @@ typedef struct
   Real laimax;        /**< maximum LAI for benchmark */
   int crop_index;
   Bool crop_irrigation;
-  Bool with_nitrogen;      /**< enable nitrogen cycle */
+  int with_nitrogen;      /**< enable nitrogen cycle */
+  Bool fertilizer_input; 
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
   Bool landuse_restart;   /**< land use enabled in restart file */
   int sdate_option_restart; /**< sdate option in restart file */

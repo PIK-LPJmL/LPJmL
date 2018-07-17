@@ -80,6 +80,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"drip evap. reduction:\t%g\n",param.drip_evap);
     fprintf(file,"residues in soil:\t%g\n",param.residues_in_soil);
     fprintf(file,"fraction burnt:\t%g\n",param.fburnt);
+    fprintf(file,"timber fraction:\t%g\n",param.ftimber);
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config->soilpar,config->nsoil);

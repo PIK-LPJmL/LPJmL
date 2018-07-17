@@ -35,10 +35,18 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   Stocks sum={0,0};
   Treephys turn;
   Real reprod,cmass_excess,payback;
+#ifdef CHECK_BALANCE
+  Stocks sum_before,sum_after;
+#endif
   tree=pft->data;
   treepar=getpftpar(pft,data);
   if(pft->nind<epsilon)
     return sum;
+#ifdef CHECK_BALANCE
+  sum_before=litterstocks(litter);
+  sum_before.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon;
+  sum_before.nitrogen+=vegn_sum_tree(pft)+tree->turn_nbminc;
+#endif
   cmass_excess=0;
   /* reproduction */
   if(pft->bm_inc.carbon>=0)
@@ -48,8 +56,8 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     update_fbd_tree(litter,pft->par->fuelbulkdensity,reprod,0);
     pft->bm_inc.carbon-=reprod;
     reprod=pft->bm_inc.nitrogen*treepar->reprod_cost;
-    litter->ag[pft->litter].trait.leaf.nitrogen+=reprod;
-    pft->bm_inc.nitrogen-=reprod;
+    //litter->ag[pft->litter].trait.leaf.nitrogen+=reprod;
+    //pft->bm_inc.nitrogen-=reprod;
     if(israingreen(pft))
     {
       /* TODO what to do about N here? */
@@ -124,5 +132,15 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   
   sum.carbon=turn.leaf.carbon+turn.sapwood.carbon+turn.root.carbon;
   sum.nitrogen=turn.leaf.nitrogen+turn.sapwood.nitrogen+turn.root.nitrogen;
+#ifdef CHECK_BALANCE
+  sum_after=litterstocks(litter);
+  sum_after.carbon+=vegc_sum_tree(pft)+pft->bm_inc.carbon;
+  sum_after.nitrogen+=vegn_sum_tree(pft);
+  if(fabs(sum_after.carbon-sum_before.carbon)>epsilon)
+    fail(INVALID_CARBON_BALANCE_ERR,TRUE,"Carbon balance error %g!=%g in turnover_tree()",sum_after.carbon,sum_before.carbon);
+  if(fabs(sum_after.nitrogen-sum_before.nitrogen)>0.1)
+    fail(INVALID_NITROGEN_BALANCE_ERR,TRUE,"Nitrogen balance error %g!=%g in turnover_tree() for %s",sum_after.nitrogen,sum_before.nitrogen,pft->par->name);
+
+#endif
   return sum;
 } /* of 'turnover_tree' */

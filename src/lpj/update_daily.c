@@ -155,18 +155,32 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       stand->fire_sum+=fire_sum(&stand->soil.litter,stand->soil.w[0]);
     if(config->with_nitrogen)
     {
-      if(stand->soil.par->type==ROCK)
+      if(config->with_nitrogen==UNLIM_NITROGEN)
       {
-        stand->cell->output.mn_leaching+=climate.nh4deposition*stand->frac;
-        stand->cell->output.mn_leaching+=climate.no3deposition*stand->frac;
+        if(stand->soil.par->type==ROCK)
+          stand->cell->output.mn_leaching+=2000*stand->frac;
+        else
+        {
+          stand->soil.NH4[0]+=1000;
+          stand->soil.NO3[0]+=1000;
+        }
+        cell->balance.n_influx+=2000*stand->frac;
       }
       else
       {
-        /*adding daily N deposition to upper soil layer*/
-        stand->soil.NH4[0]+=climate.nh4deposition;
-        stand->soil.NO3[0]+=climate.no3deposition;
+        if(stand->soil.par->type==ROCK)
+        {
+          stand->cell->output.mn_leaching+=climate.nh4deposition*stand->frac;
+          stand->cell->output.mn_leaching+=climate.no3deposition*stand->frac;
+        }
+        else
+        {
+          /*adding daily N deposition to upper soil layer*/
+          stand->soil.NH4[0]+=climate.nh4deposition;
+          stand->soil.NO3[0]+=climate.no3deposition;
+        }
+        cell->balance.n_influx+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
       }
-      cell->balance.n_influx+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
 #ifdef DEBUG_N
       printf("BEFORE_STRESS[%s], day %d: ",stand->type->name,day);
       for(l=0;l<NSOILLAYER-1;l++)

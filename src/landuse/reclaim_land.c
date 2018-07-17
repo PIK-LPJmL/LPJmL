@@ -79,7 +79,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         }
 #endif
 #else
-        harvest=timber_harvest(pft,soil,&frac1,frac2,ftimber,standfrac,&nind,&cell->output.trad_biofuel);
+        harvest=timber_harvest(pft,soil,&frac1,frac2,param.ftimber,standfrac,&nind,&cell->output.trad_biofuel);
 #endif
         cell->output.timber_harvest.carbon+=harvest.carbon;
         cell->output.timber_harvest.nitrogen+=harvest.nitrogen;

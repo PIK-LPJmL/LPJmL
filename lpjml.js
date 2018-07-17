@@ -35,12 +35,12 @@
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
-  "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE */
+  "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
   "river_routing" : true,
   "permafrost" : true,
-  "with_nitrogen" : true,
+  "with_nitrogen" : LIM_NITROGEN, /* other options NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
 #ifdef FROM_RESTART
   "population" : false,
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */

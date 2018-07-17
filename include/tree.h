@@ -145,7 +145,7 @@ extern void nitrogen_allocation_tree(Real *,Real *,Real *,Stocks,Stocks,Stocks,R
 #define israingreen(pft) getpftpar(pft,phenology)==RAINGREEN
 #define fprinttreephys2(file,phys,nind) fprintf(file,"%6.2f %6.2f %6.2f %6.2f %6.2f (gC/m2) %6.2f %6.2f %6.2f %6.2f %6.2f (NC/m2)",phys.leaf.carbon*nind,phys.sapwood.carbon*nind,phys.heartwood.carbon*nind,phys.root.carbon*nind,phys.debt.carbon*nind,phys.leaf.nitrogen*nind,phys.sapwood.nitrogen*nind,phys.heartwood.nitrogen*nind,phys.root.nitrogen*nind,phys.debt.nitrogen*nind)
 #define phys_sum_tree(ind) (ind.leaf.carbon+ind.root.carbon+ind.heartwood.carbon+ind.sapwood.carbon)
-#define phys_sum_tree_n(ind) (ind.leaf.nitrogen+ind.root.carbon+ind.heartwood.nitrogen+ind.sapwood.nitrogen)
+#define phys_sum_tree_n(ind) (ind.leaf.nitrogen+ind.root.nitrogen+ind.heartwood.nitrogen+ind.sapwood.nitrogen)
 #define agb_tree_sum(ind) (ind.leaf.carbon+ind.heartwood.carbon+ind.sapwood.carbon*0.66)
 
 #endif

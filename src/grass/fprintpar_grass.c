@@ -23,9 +23,11 @@ void fprintpar_grass(FILE *file,const Pftpar *par)
   pargrass=par->data;
   fprintf(file,"turnover:\t%g %g (yr)\n"
                "C:N ratio:\t%g %g\n"
+               "rel. ratio:\t%g\n"
                "reprod cost:\t%g\n",
           pargrass->turnover.leaf,pargrass->turnover.root,
-          par->respcoeff*param.k/pargrass->cn_ratio.leaf,
-          par->respcoeff*param.k/pargrass->cn_ratio.root,
+          1/pargrass->cn_ratio.leaf,
+          1/pargrass->cn_ratio.root,
+          pargrass->ratio,
           pargrass->reprod_cost);
 } /* of 'fprintpar_grass' */
