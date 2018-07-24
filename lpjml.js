@@ -38,7 +38,7 @@
   "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE */
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
-  "river_routing" : true,
+  "river_routing" : false,
   "permafrost" : true,
 #ifdef FROM_RESTART
   "population" : false,
@@ -154,6 +154,7 @@ ID                         Fmt                    filename
     { "id" : MSOILTEMP3,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp3.bin"}},
     { "id" : SOILC_LAYER,      "file" : { "fmt" : RAW, "name" : "output/soilc_layer.bin"}},
     { "id" : AGB,              "file" : { "fmt" : RAW, "name" : "output/agb.bin"}},
+    { "id" : AGB_TREE,         "file" : { "fmt" : RAW, "name" : "output/agb_tree.bin"}},
     { "id" : MRETURN_FLOW_B,   "file" : { "fmt" : RAW, "name" : "output/mreturn_flow_b.bin"}},
     { "id" : MTRANSP_B,        "file" : { "fmt" : RAW, "name" : "output/mtransp_b.bin"}},
     { "id" : MEVAP_B,          "file" : { "fmt" : RAW, "name" : "output/mevap_b.bin"}},
@@ -173,8 +174,8 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : ALL, /* 27410, 67208 60400 all grid cells */
-  "endgrid" : ALL,
+  "startgrid" : 27410, /* 27410, 67208 60400 all grid cells */
+  "endgrid" : 27410,
 
 #ifndef FROM_RESTART
 

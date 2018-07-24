@@ -32,7 +32,7 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
       switch(config->outputvars[i].id)
       {
         case FIREC: case FLUX_FIREWOOD: case MAXTHAW_DEPTH: case FIREF:
-        case FLUX_ESTAB: case HARVEST: case VEGC: case MG_VEGC: case AGB:
+        case FLUX_ESTAB: case HARVEST: case VEGC: case MG_VEGC: case AGB: case AGB_TREE:
         case SOILC: case MG_SOILC: case LITC: case MG_LITC: case APREC:
         case INPUT_LAKE: case PROD_TURNOVER: case DEFOREST_EMIS: case ABURNTAREA:
         case AFRAC_WD_UNSUST: case ACONV_LOSS_EVAP: case ACONV_LOSS_DRAIN: case SOILC_SLOW: case AWATERUSE_HIL:

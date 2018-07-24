@@ -232,6 +232,7 @@
   { "id" : SYEAR, "name": "syear", "var" :  "syear", "descr" :  "year of sowing", "unit" : "", "scale" : 1.0},
   { "id" : SYEAR2, "name": "syear2", "var" :  "syear2", "descr" :  "year of sowing 2nd season", "unit" : "", "scale" : 1.0},
   { "id" : AGB, "name": "agb", "var" :  "AGB", "descr" :  "above ground biomass", "unit" : "gC/m2", "scale" : 1.0},
+  { "id" : AGB_TREE, "name": "agb_TREE", "var" :  "AGB_TREE", "descr" :  "above ground tree biomass", "unit" : "gC/m2", "scale" : 1.0},
   { "id" : MLAKEVOL, "name": "mlakevol", "var" :  "lakevol", "descr" :  "lake content volume", "unit" : "dm3", "scale" : 1.0},
   { "id" : MLAKETEMP, "name": "mlaketemp", "var" :  "laketemp", "descr" :  "lake surface temperature", "unit" : "deg C", "scale" : 1.0}
 ],
