@@ -27,7 +27,7 @@ void initoutput_annual(Output *output, /**< Output data */
   output->input_lake=output->flux_firewood=output->flux_rharvest_burnt=output->flux_rharvest_burnt_in_field=0;
   output->atransp=output->aevap=output->ainterc=output->airrig=output->aconv_loss_evap=output->aconv_loss_drain=output->awateruse_hil=0;
   output->awd_unsustainable=output->aevap_lake=output->aevap_res=0;
-  output->soil_storage=0;
+  output->soil_storage=output->aburntarea=0;
   output->prod_turnover=output->deforest_emissions=output->fburn=output->ftimber=output->timber_harvest=0;
   output->product_pool_fast=output->product_pool_slow=output->trad_biofuel=0;
 

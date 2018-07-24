@@ -189,7 +189,8 @@
   MRUNOFF_SURF "mrunoff_surf" "runoff_surf" "surface runoff" "mm/month" 1.0
   MRUNOFF_LAT "mrunoff_lat" "runoff_lat" "lateral runoff" "mm/month" 1.0
   MSEEPAGE "mseepage" "seepage" "seepage water" "mm/month" 1.0
-  MBURNTAREA "mburntarea" "burntarea" "area burnt" "hectare" 1.0
+  MBURNTAREA "mburntarea" "burntarea" "monthly area burnt" "hectare" 1.0
+  ABURNTAREA "aburntarea" "burntarea" "yearly area burnt" "hectare" 1.0
   SOILC_SLOW "soilc_slow" "soilc_slow" "slow soil carbon" "gC/m2" 1.0
   MSWC3 "mswc3" "SWC3" "fractional saturation of soil water content in layer 3" "" 1.0
   MSWC4 "mswc4" "SWC4" "fractional saturation of soil water content in layer 4" "" 1.0
