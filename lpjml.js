@@ -125,10 +125,11 @@ ID                         Fmt                    filename
     { "id" : MPHEN_TMAX,       "file" : { "fmt" : RAW, "name" : "output/mphen_tmax.bin"}},
     { "id" : MPHEN_LIGHT,      "file" : { "fmt" : RAW, "name" : "output/mphen_light.bin"}},
     { "id" : MPHEN_WATER,      "file" : { "fmt" : RAW, "name" : "output/mphen_water.bin"}},
-#ifdef WITH_SPITFIRE
     { "id" : MFIREC,           "file" : { "fmt" : RAW, "name" : "output/mfirec.bin"}},
+#ifdef WITH_SPITFIRE
     { "id" : MNFIRE,           "file" : { "fmt" : RAW, "name" : "output/mnfire.bin"}},
     { "id" : MBURNTAREA,       "file" : { "fmt" : RAW, "name" : "output/mburnt_area.bin"}},
+    { "id" : ABURNTAREA,       "file" : { "fmt" : RAW, "name" : "output/aburnt_area.bin"}},
 #endif
     { "id" : MDISCHARGE,       "file" : { "fmt" : RAW, "name" : "output/mdischarge.bin"}},
     { "id" : MWATERAMOUNT,     "file" : { "fmt" : RAW, "name" : "output/mwateramount.bin"}},
