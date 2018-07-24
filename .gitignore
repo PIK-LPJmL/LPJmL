@@ -66,6 +66,8 @@ vgcore.*
 # output files
 *.lpj
 *.bin
+*.err
+*.out
 
 # processed files
 *.Rdata
