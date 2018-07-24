@@ -33,7 +33,7 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
       {
         case FIREC: case FLUX_FIREWOOD: case MAXTHAW_DEPTH: case FIREF:
         case FLUX_ESTABC: case FLUX_ESTABN: case HARVESTC: case HARVESTN:
-        case VEGC: case VEGN: case MG_VEGC: case AGB: case ABURNTAREA:
+        case VEGC: case VEGN: case MG_VEGC: case AGB: case AGB_TREE: case ABURNTAREA:
         case SOILC: case SOILN: case MG_SOILC: case LITC: case LITN: case MG_LITC: case APREC:
         case INPUT_LAKE: case PROD_TURNOVER: case DEFOREST_EMIS:
         case SOILN_SLOW: case SOILNO3: case SOILNH4:

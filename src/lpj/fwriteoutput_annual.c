@@ -726,6 +726,21 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output,AGB,vec,year,config);
   }
+  if(output->files[AGB_TREE].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        foreachstand(stand,s,grid[cell].standlist)
+            foreachpft(pft,p,&stand->pftlist)
+               if(istree(pft))
+                 vec[count]+=(float)(agb_tree(pft)*stand->frac);
+        count++;
+      }
+    writeannual(output,AGB_TREE,vec,year,config);
+  }
   if(output->files[NEGC_FLUXES].isopen)
   {
     count=0;
