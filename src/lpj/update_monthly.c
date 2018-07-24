@@ -61,7 +61,8 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   cell->output.mswe*=ndaymonth1[month];
   cell->output.aconv_loss_evap+=cell->output.mconv_loss_evap;
   cell->output.aconv_loss_drain+=cell->output.mconv_loss_drain;
-  #ifdef IMAGE
+  cell->output.aburntarea+=cell->output.mburntarea;
+#ifdef IMAGE
   cell->ml.image_data->anpp+=cell->output.mnpp;
   cell->ml.image_data->arh+=cell->output.mrh;
 #endif

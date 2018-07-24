@@ -124,7 +124,7 @@ int main(int argc,char **argv)
   }
   for(i=0;i<ngrid2;i++)
   {
-    if(i %(ngrid2/10)==0)
+    if(ngrid2>10 && (i %(ngrid2/10)==0))
     {
       printf("\b\b\b\b\b%3d%%]",(i/(ngrid2/10))*10);
       fflush(stdout);

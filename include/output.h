@@ -124,8 +124,9 @@ typedef struct
   Real mfirec;           /**< monthly fire carbon emissions (gC/m2)*/
   Real mnfire;           /**< monthly number of fires */
   Real mfiredi;          /**< monthly fire danger index */
-  Tracegas mfireemission; /**< monthly fire emissions of trace gases */
+  Tracegas mfireemission;    /**< monthly fire emissions */
   Real mburntarea;       /**< monthly burnt area */
+  Real aburntarea;       /**< yearly burnt area */
   Real mprec_image;      /**< monthly precipitation received from IMAGE [mm/month]*/
   Real mtemp_image;      /**< monthly temperature received from IMAGE [K] */
   Real msun_image;       /**< monthly cloudiness received from IMAGE [% sunshine = 100-%cloud]*/

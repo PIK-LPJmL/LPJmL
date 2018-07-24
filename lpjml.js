@@ -166,6 +166,7 @@ ID                         Fmt                    filename
     { "id" : MFIREC,           "file" : { "fmt" : RAW, "name" : "output/mfirec.bin"}},
     { "id" : MNFIRE,           "file" : { "fmt" : RAW, "name" : "output/mnfire.bin"}},
     { "id" : MBURNTAREA,       "file" : { "fmt" : RAW, "name" : "output/mburnt_area.bin"}},
+    { "id" : ABURNTAREA,       "file" : { "fmt" : RAW, "name" : "output/aburnt_area.bin"}},
 #endif
     { "id" : MDISCHARGE,       "file" : { "fmt" : RAW, "name" : "output/mdischarge.bin"}},
     { "id" : MWATERAMOUNT,     "file" : { "fmt" : RAW, "name" : "output/mwateramount.bin"}},

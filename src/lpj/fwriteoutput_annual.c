@@ -272,6 +272,14 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         vec[count++]=(float)grid[cell].output.fire.nitrogen;
     writeannual(output,FIREN,vec,year,config);
   }
+  if(output->files[ABURNTAREA].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+        vec[count++]=(float)grid[cell].output.aburntarea;
+    writeannual(output,ABURNTAREA,vec,year,config);
+  }
   if(output->files[FLUX_FIREWOOD].isopen)
   {
     count=0;
