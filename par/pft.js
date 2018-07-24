@@ -1343,7 +1343,7 @@
     "min_temprange" : -1000.,/* min_temprange 34*/
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
-    "alphaa" : ALPHA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+    "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.21,   /* albedo of green leaves */
     "albedo_stem" : 0.15,   /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
