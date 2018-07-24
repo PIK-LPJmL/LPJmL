@@ -20,7 +20,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
                   Real *n_plant_demand,
                   Real *ndemand_leaf,
                   int npft,             /**< number of natural PFTs */
-                  int nbiomass,
+                  int nbiomass,         /**< number of biomass PFTs */
                   int ncft              /**< number of crop PFTs */
                  )                      /** \return nitrogen uptake (gN/m2/day) */
 {
@@ -49,9 +49,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   {
     totn=(soil->NO3[l]+soil->NH4[l]);
     if(totn>0 && soil->temp[l]>0)
-    //if(totn>0)
     {
-      //up_temp_f = max((0.0326 + 0.0035 * pow(soil->temp[l],1.652) - pow((soil->temp[l]/41.748),7.19)),0); /*Eq. C5 in Smith et al. 2014*/
       up_temp_f = nuptake_temp_fcn(soil->temp[l]);
       //up_temp_f=1;
       NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin +totn/(totn+pft->par->KNmin*soil->par->wsat*soildepth[l]/1000))* up_temp_f * f_NCplant * (tree->ind.root.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.root)/1000; //Smith et al. Eq. C14-C15, Navail=totn

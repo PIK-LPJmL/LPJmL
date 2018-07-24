@@ -33,7 +33,7 @@
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
-"fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE */
+"fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
 #ifdef FROM_RESTART
 "population" : false,      /* used by SPITFIRE model */
 #else
@@ -44,8 +44,7 @@
 "new_phenology": true,
 "river_routing" : true,
 "permafrost" : true,
-"with_nitrogen" : LIM_NITROGEN,
-"unlimited_nitrogen" : false,
+"with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

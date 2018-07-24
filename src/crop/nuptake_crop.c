@@ -48,7 +48,6 @@ Real nuptake_crop(Pft *pft,
 
   NCplant = (crop->ind.leaf.nitrogen + crop->ind.root.nitrogen) / (crop->ind.leaf.carbon + crop->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
   f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1); /*Eq.10, Zaehle&Friend 2010 Supplementary*/
-  //f_NCplant=1;
 #ifdef DEBUG_N
   printf("f_NCplant=%g\n",f_NCplant);
 #endif
@@ -60,13 +59,8 @@ Real nuptake_crop(Pft *pft,
     if(totn > 0 && soil->temp[l]>0)
     //if(totn > 0)
     {
-      //up_temp_f = max((0.0326 + 0.0035 * pow(soil->temp[l],1.652) - pow((soil->temp[l]/41.748),7.19)),0); /*Eq. C5 in Smith et al. 2014*/
       up_temp_f = nuptake_temp_fcn(soil->temp[l]);
-      //up_temp_f=1;
-      //NO3_up = pft->par->vmax_up * totn[l] * (pft->par->kNmin + (1/(totn[l]*pft->par->KNmin))) * up_temp_f * f_NCplant * crop->ind.root.carbon; /*Eq.8, Zaehle&Friend 2010 Supplementary*/
       NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin +totn/(totn+pft->par->KNmin*soil->par->wsat*soildepth[l]/1000))* up_temp_f * f_NCplant * (crop->ind.root.carbon*pft->nind)/1000; //Smith et al. Eq. C14-C15, Navail=totn
-      //NO3_up = 2*pft->par->vmax_up* up_temp_f * (crop->ind.root.carbon*pft->nind)/1000; //Smith et al. Eq. C14-C15, Navail=totn
-      //NO3_up = 2*pft->par->vmax_up*up_temp_f ; //Smith et al. Eq. C14-C15, Navail=totn
 #ifdef DEBUG_N
       printf("layer %d NO3_up=%g\n",l,NO3_up);
 #endif
@@ -132,7 +126,6 @@ Real nuptake_crop(Pft *pft,
         pft->vscal = 1;
       else
         pft->vscal = min(1, (*ndemand_leaf / (ndemand_leaf_opt / (1 + pft->par->knstore)))); /*eq. C20 in Smith et al. 2014, Biogeosciences */
-      //*ndemand_leaf=*n_plant_demand/(1+(crop->ind.root.carbon/croppar->ratio.root+crop->ind.pool.carbon/croppar->ratio.pool+crop->ind.so.carbon/croppar->ratio.so)/crop->ind.leaf.carbon); /*these parameters need to be in pft.par and need to be checked as well)*/
     }
   }
   else
@@ -142,9 +135,6 @@ Real nuptake_crop(Pft *pft,
   printf("ndemand=%g,ndemand_opt=%g\n",*ndemand_leaf,ndemand_leaf_opt);
 #endif
 
-  //crop->ndemandsum+=max(0,*n_plant_demand-pft->bm_inc.nitrogen);
-  //crop->nuptakesum+=n_uptake;
-  //printf("nuptake_crop uptake_sum %g uptake %g\n",crop->nuptakesum,n_uptake);
    pft->stand->cell->output.pft_nuptake[(pft->par->id-nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=n_uptake;
    pft->stand->cell->balance.n_uptake+=n_uptake*pft->stand->frac;
    if(pft->par->id==pft->stand->cell->output.daily.cft && data->irrigation==pft->stand->cell->output.daily.irrigation)

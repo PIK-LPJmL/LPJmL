@@ -3,7 +3,8 @@
 /**                l  i  t  t  e  r  _  a  g  _  s  u  m  .  c                     \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
-/**     Function computes sum of all above-ground litter pools                     \n**/
+/**                                                                                \n**/
+/**     Function computes sum of all above-ground litter carbon pools              \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/

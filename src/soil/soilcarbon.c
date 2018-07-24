@@ -33,6 +33,6 @@ Real soilcarbon_slow(const Soil *soil /**< pointer to soil data */
   Real carbon=0;
   int l;
   forrootsoillayer(l)
-     carbon+=soil->pool[l].slow.carbon;
+    carbon+=soil->pool[l].slow.carbon;
   return carbon;
 } /* of 'soilcarbon_slow' */

@@ -43,29 +43,20 @@ Real nuptake_grass(Pft *pft,
   grasspar=pft->par->data;
   ndemand_leaf_opt=*ndemand_leaf;
 
- // NCplant = (grass->ind.leaf.nitrogen + grass->ind.root.nitrogen + pft->bm_inc.nitrogen*(1-pft->par->knstore)*grass->falloc.root + pft->bm_inc.nitrogen*(1-pft->par->knstore)*grass->falloc.leaf) / (grass->ind.leaf.carbon+ grass->ind.root.carbon + pft->bm_inc.carbon*grass->falloc.leaf + pft->bm_inc.carbon*grass->falloc.root);         ; /* Plant's mobile nitrogen concentration */
   NCplant = (grass->ind.leaf.nitrogen+ grass->ind.root.nitrogen) / (grass->ind.leaf.carbon+ grass->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
-  //NCplant = (pft->bm_inc.nitrogen*(1-pft->par->knstore)*grass->falloc.root + pft->bm_inc.nitrogen*(1-pft->par->knstore)*grass->falloc.leaf) / (pft->bm_inc.carbon*grass->falloc.leaf + pft->bm_inc.carbon*grass->falloc.root);         ; /* Plant's mobile nitrogen concentration */
 
   f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1);
-  //printf("low,high,%g %g\n",pft->par->ncleaf.low,pft->par->ncleaf.high);
-  //printf("f_NCplant=%g, NCplant=%g\n",f_NCplant,NCplant);
   /* reducing uptake according to availability */
   nsum=0;
   forrootsoillayer(l)
   {
     totn=(soil->NO3[l]+soil->NH4[l]);
     if(totn>0 && soil->temp[l]>0)
-    //if(totn>0)
     {
-      //up_temp_f = max((0.0326 + 0.0035 * pow(soil->temp[l],1.652) - pow((soil->temp[l]/41.748),7.19)),0); /*Eq. C5 in Smith et al. 2014*/
       /*Thornley 1991*/
       up_temp_f = nuptake_temp_fcn(soil->temp[l]);
-      //up_temp_f=1;
-      //NO3_up2 = pft->par->vmax_up*1.0e-6 * totn * (pft->par->kNmin + (1/(totn*pft->par->KNmin))) * up_temp_f * f_NCplant * grass->ind.root.carbon; /*this formulation leeds to wrong uptake*/
       NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin+totn/(totn+pft->par->KNmin*soil->par->wsat*soildepth[l]/1000))* up_temp_f * f_NCplant * grass->ind.root.carbon*pft->nind/1000;
       /* reducing uptake according to availability */
-      //printf("fNO3_p=%g 2:%g totn %g u_temp= %g carbon_root: %g vmax: %g  %g\n",NO3_up,NO3_up2 ,totn,up_temp_f,grass->ind.root.carbon ,pft->par->vmax_up,(pft->par->kNmin+totn/(totn+pft->par->KNmin*allwater(soil,l)*soildepth[l]/1000)));
      if(NO3_up>totn)
         NO3_up=totn;
       n_uptake+=NO3_up*rootdist_n[l];

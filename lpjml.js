@@ -47,7 +47,6 @@
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
   "wateruse" : true,
-  "istimber" : false,
 #else
   "population" : false,
   "landuse" : NO_LANDUSE,
@@ -65,7 +64,8 @@
   "laimax_interpolate" : CONST_LAI_MAX, /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
-  "fertilizer_input" : true,
+  "fertilizer_input" : true,            /* enable fertilizer input */
+  "istimber" : false,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
 
@@ -172,7 +172,7 @@ ID                         Fmt                    filename
     { "id" : MWATERAMOUNT,     "file" : { "fmt" : RAW, "name" : "output/mwateramount.bin"}},
     { "id" : HARVESTC,         "file" : { "fmt" : RAW, "name" : "output/flux_harvestc.bin"}},
     { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : "output/sdate.bin"}},
-    { "id" : PFT_HARVESTC,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestc.SUFFIX)}},
+    { "id" : PFT_HARVESTC,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvest.SUFFIX)}},
     { "id" : CFTFRAC,          "file" : { "fmt" : RAW, "name" : "output/cftfrac.bin"}},
     { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : "output/seasonality.bin"}},
 #ifdef DAILY_OUTPUT
