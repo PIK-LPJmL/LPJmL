@@ -85,13 +85,14 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
   if(climate->data.burntarea!=NULL)
   {
     store->burntarea=newvec(Real,climate->file_burntarea.n*nyear);
-    check(store->burntarea);
+    checkptr(store->burntarea);
   }
   else
     store->burntarea=NULL;
-   if(climate->data.no3deposition!=NULL)
+  if(climate->data.no3deposition!=NULL)
   {
     store->no3deposition=newvec(Real,climate->file_no3deposition.n*nyear);
+    checkptr(store->no3deposition);
   }
   else
     store->no3deposition=NULL;
