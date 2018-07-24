@@ -256,6 +256,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   if(config.grassfix_filename.name!=NULL)
     bad+=checkinputfile(&config,&config.grassfix_filename,0);
+  if(config.grassharvest_filename.name!=NULL)
+    bad+=checkinputfile(&config,&config.grassharvest_filename,0);
   if(config.with_nitrogen || config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
     bad+=checkclmfile(&config,&config.wind_filename);
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)

@@ -37,7 +37,7 @@
   "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
   "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
-  "new_phenology": true,    /* GSI phenology enabled */
+  "new_phenology": false,    /* GSI phenology enabled */
   "river_routing" : true,
   "permafrost" : true,
   "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
@@ -62,10 +62,12 @@
   "remove_residuals" : false,           /* remove residuals */
   "residues_fire" : false,              /* fire in residuals */
   "irrigation" : LIM_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
-  "laimax_interpolate" : LAIMAX_CFT,    /* laimax values from manage parameter file, */
+  "laimax_interpolate" : CONST_LAI_MAX, /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
+  "fertilizer_input" : true,
   "grassland_fixed_pft" : false,
+  "grass_harvest_options" : false,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -122,7 +124,8 @@ ID                         Fmt                    filename
     { "id" : VEGC,             "file" : { "fmt" : RAW, "name" : "output/vegc.bin"}},
     { "id" : SOILC,            "file" : { "fmt" : RAW, "name" : "output/soilc.bin"}},
     { "id" : LITC,             "file" : { "fmt" : RAW, "name" : "output/litc.bin"}},
-    { "id" : FLUX_ESTABC,      "file" : { "fmt" : RAW, "name" : "output/flux_estabc.bin"}},
+    { "id" : FLUX_ESTABC,      "file" : { "fmt" : RAW, "name" : "output/flux_estab.bin"}},
+    { "id" : PFT_VEGC,         "file" : { "fmt" : RAW, "name" : "output/pft_vegc.bin"}},
     { "id" : MPHEN_TMIN,       "file" : { "fmt" : RAW, "name" : "output/mphen_tmin.bin"}},
     { "id" : MPHEN_TMAX,       "file" : { "fmt" : RAW, "name" : "output/mphen_tmax.bin"}},
     { "id" : MPHEN_LIGHT,      "file" : { "fmt" : RAW, "name" : "output/mphen_light.bin"}},
@@ -186,9 +189,6 @@ ID                         Fmt                    filename
     { "id" : MSOILTEMP2,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp2.bin"}},
     { "id" : MSOILTEMP3,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp3.bin"}},
     { "id" : SOILC_LAYER,      "file" : { "fmt" : RAW, "name" : "output/soilc_layer.bin"}},
-    { "id" : SOILN_LAYER,      "file" : { "fmt" : RAW, "name" : "output/soiln_layer.bin"}},
-    { "id" : SOILNO3_LAYER,    "file" : { "fmt" : RAW, "name" : "output/soilno3_layer.bin"}},
-    { "id" : SOILNH4_LAYER,    "file" : { "fmt" : RAW, "name" : "output/soilnh4_layer.bin"}},
     { "id" : AGB,              "file" : { "fmt" : RAW, "name" : "output/agb.bin"}},
     { "id" : MRETURN_FLOW_B,   "file" : { "fmt" : RAW, "name" : "output/mreturn_flow_b.bin"}},
     { "id" : MTRANSP_B,        "file" : { "fmt" : RAW, "name" : "output/mtransp_b.bin"}},

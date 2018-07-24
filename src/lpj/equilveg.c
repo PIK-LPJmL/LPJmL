@@ -40,7 +40,8 @@ void equilveg(Cell *cell /**< pointer to cell */
       stand->soil.k_mean[l].fast=0.0;
       stand->soil.k_mean[l].slow=0.0;
     }
-    foreachpft(pft,p,&stand->pftlist){
+    foreachpft(pft,p,&stand->pftlist)
+    {
       if(istree(pft))
       {
         tree=pft->data;

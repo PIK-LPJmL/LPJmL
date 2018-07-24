@@ -79,6 +79,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"saturation level drip:\t%g\n",param.sat_level[3]);
     fprintf(file,"drip evap. reduction:\t%g\n",param.drip_evap);
     fprintf(file,"residues in soil:\t%g\n",param.residues_in_soil);
+    fprintf(file,"nfert split:\t%g\n",param.nfert_split);
     fprintf(file,"fraction burnt:\t%g\n",param.fburnt);
     fprintf(file,"timber fraction:\t%g\n",param.ftimber);
   }

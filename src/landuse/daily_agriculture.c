@@ -82,6 +82,18 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 
   foreachpft(pft,p,&stand->pftlist)
   {
+    if(!config->with_nitrogen){
+      pft->vscal=1;
+    } else {
+      /* trigger 2nd fertilization */
+      crop=pft->data;
+      if(crop->fphu>0.4 && crop->nfertilizer>0){
+        pft->stand->soil.NO3[0]+=crop->nfertilizer*0.5;
+        pft->stand->soil.NH4[0]+=crop->nfertilizer*0.5;
+        pft->stand->cell->balance.n_influx+=crop->nfertilizer*pft->stand->frac;
+        crop->nfertilizer=0;
+      }
+    }
     if(phenology_crop(pft,climate->temp,daylength))
     {
       if(pft->par->id==output->daily.cft

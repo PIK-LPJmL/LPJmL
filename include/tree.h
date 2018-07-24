@@ -37,6 +37,11 @@ typedef struct
 
 typedef struct
 {
+  Stocks leaf,root;
+} Treeturn;
+
+typedef struct
+{
   Real leaf,sapwood,root;
 } Treephyspar;
 
@@ -83,13 +88,12 @@ typedef struct
   Real gddtw;
   Real aphen_raingreen;
   Bool isphen;          /**< only used for summergreen trees*/
-  Treephys turn;
-  Treephys turn_litt;
+  Treeturn turn;
+  Treeturn turn_litt;
   Treephys2 ind;
   Treephyspar falloc;
-  Real turn_nbminc;      /**< storage for recovered nitrogen from turnover */
+  Real turn_nbminc;     /**< storage for recovered nitrogen from turnover */
   Real excess_carbon;   /**< gC/ind; storage for carbon that cannot be allocated under given N limitation */
-
 } Pfttree;
 
 /* Declaration of functions */

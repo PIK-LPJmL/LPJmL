@@ -35,6 +35,7 @@ void new_grass(Pft *pft,         /**< pointer to PFT variables */
   grass->excess_carbon=0;
   pft->vmax=0;
   pft->nind=1;
+  pft->stand->growing_days=0;
   grass->falloc.leaf=grasspar->sapl.leaf/(grasspar->sapl.leaf+grasspar->sapl.root);
   grass->falloc.root=grasspar->sapl.root/(grasspar->sapl.leaf+grasspar->sapl.root);
   grass->ind.leaf.carbon=grass->ind.root.carbon=grass->turn.leaf.carbon=grass->turn.root.carbon=0;

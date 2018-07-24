@@ -70,6 +70,7 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   pft->establishment=establishment_grass;
   pft->reduce=reduce_grass;
   pft->actual_lai=actual_lai_grass;
+  pft->lai=lai_grass;
   pft->init=init_grass;
   pft->free=free_grass;
   pft->vegc_sum=vegc_sum_grass;

@@ -888,19 +888,22 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   if(output->files[PFT_LAIMAX].isopen)
   {
     outindex(output,PFT_LAIMAX,config->rank);
-    for (i = 0; i < (npft - config->nbiomass); i++)
+    for(i = 0; i < (npft - config->nbiomass); i++)
     {
       count = 0;
-      for (cell = 0; cell < config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell = 0; cell < config->ngridcell; cell++)
+      {
+        if(!grid[cell].skip)
+        {
           fvec[count] = 0;
-          foreachstand(stand, s, grid[cell].standlist) {
-            if (stand->type->landusetype == NATURAL) { /* ignoring setaside stands here */
-              foreachpft(pft, p, &stand->pftlist) {
-                if (i == pft->par->id) {
-                  if (isgrass(pft)) fvec[count] = (float)lai_grass(pft);
-                  else fvec[count] = (float)lai_tree(pft);
-                }
+          foreachstand(stand, s, grid[cell].standlist)
+          {
+            if(stand->type->landusetype == NATURAL)
+            { /* ignoring setaside stands here */
+              foreachpft(pft, p, &stand->pftlist) 
+              {
+                if(i == pft->par->id)
+                  fvec[count] = (float)pft->par->lai(pft);
               }
             }
           } /* stand */

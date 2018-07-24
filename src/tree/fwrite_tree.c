@@ -25,7 +25,7 @@ Bool fwrite_tree(FILE *file,const Pft *pft)
   fwrite1(&tree->gddtw,sizeof(Real),file);
   fwrite1(&tree->aphen_raingreen,sizeof(Real),file);
   fwrite1(&tree->isphen,sizeof(int),file);
-  fwrite1(&tree->turn,sizeof(Treephys),file);
+  fwrite1(&tree->turn,sizeof(Treeturn),file);
   fwrite1(&tree->turn_nbminc,sizeof(Real),file);
   fwrite1(&tree->ind,sizeof(Treephys2),file);
   fwrite1(&tree->excess_carbon,sizeof(Real),file);

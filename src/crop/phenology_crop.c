@@ -112,7 +112,9 @@ Bool phenology_crop(Pft *pft,       /**< pointer to PFT variables */
   
   if(!crop->senescence)
   {
-    lai_inc=(crop->lai-lai00)*pft->wscal;
+    /* scale daily LAI increment with minimum of wscal and vscal as simplest approach
+       we could also compute how much N we have to support how much leaf area with optimal C/N ratios */
+    lai_inc=(crop->lai-lai00)*min(pft->wscal,pft->vscal);
     crop->lai=lai_inc+lai0;
   }
   

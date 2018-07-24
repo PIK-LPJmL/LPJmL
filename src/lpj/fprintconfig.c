@@ -84,6 +84,8 @@ static Bool isnetcdfinput(const Config *config)
     return TRUE;
   if(config->grassfix_filename.name!=NULL && config->grassfix_filename.fmt==CDF)
     return TRUE;
+  if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
+    return TRUE;
   if(config->withlanduse!=NO_LANDUSE)
   {
     if(config->countrycode_filename.fmt==CDF)
@@ -272,6 +274,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   }
   if(config->grassfix_filename.name!=NULL)
     len=printsim(file,len,&count,"grassland fixed PFT");
+  if(config->grassharvest_filename.name!=NULL)
+    len=printsim(file,len,&count,"grassland harvest options");
   if(config->firewood)
     len=printsim(file,len,&count,"wood fires");
   if(config->reservoir)
@@ -347,6 +351,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"landcover",&config->landcover_filename,iscdfinput);
   if(config->grassfix_filename.name!=NULL)
     printinputfile(file,"Grassfix",&config->grassfix_filename,iscdfinput);
+  if(config->grassharvest_filename.name!=NULL)
+    printinputfile(file,"Grassharvest",&config->grassharvest_filename,iscdfinput);
   if(config->withlanduse!=NO_LANDUSE)
   {
     printinputfile(file,"countries",&config->countrycode_filename,iscdfinput);

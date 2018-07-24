@@ -43,7 +43,7 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
   int p,l;
   Pft *pft;
   Output *output;
-  Harvest harvest={0,0,0,0};
+  Harvest harvest={{0,0},{0,0},{0,0},{0,0}};
   Real aet_stand[LASTLAYER];
   Real green_transp[LASTLAYER];
   Real evap,evap_blue,rd,gpp,frac_g_evap,runoff,wet_all,intercept,sprink_interc;

@@ -118,7 +118,6 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
   {
     wr+=rootdist_n[l]*pft->stand->soil.w[l];
     roots+=rootdist_n[l];
-    /*printf("wr=%lf rootdist=%lf w=%lf\n",wr,rootdist_n[l],pft->stand->soil.w[l]);*/
   }
 
   if(*wet>0.99)
@@ -127,11 +126,6 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
   if(pft->stand->type->landusetype==AGRICULTURE)
   {
     supply=pft->par->emax*wr*(1-exp(-1.0*pft->par->sla*((Pftcrop *)pft->data)->ind.root.carbon));
-    //if (pft->phen>0)
-    //{
-    //  gp_stand=gp_stand/pft->phen*fpar(pft);
-    //  gp_pft=gp_pft/pft->phen*fpar(pft);
-   // }
   }
   else
   {
@@ -145,7 +139,6 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
 
   if(pet>0 && gp_stand_leafon>0 && pft->fpc>0)
   {
-    /*pft->wscal=(pft->par->emax*wr*pft->fpc)/(pet*ALPHAM/(1+GM/(gp_stand_leafon+pft->par->gmin*pft->fpc)));*/
     pft->wscal=(pft->par->emax*wr)/(pet*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand_leafon));
     if(pft->wscal>1)
       pft->wscal=1;
@@ -173,7 +166,6 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
     if (aet_tmp[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
     {
       aet_cor+=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l]-aet_layer[l];
-      //printf("aet_layer[%d]=%g,aet=%g,aet_cor=%g\n",l,aet_layer[l],aet,aet_cor);
       isless=TRUE;
     }
     else
@@ -194,7 +186,6 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
   }
   else
     gc=0;
-  /*gpd=hour2sec(daylength)*(gc-pft->par->gmin*pft->fpc*pft->phen);*/
 
   if(pft->stand->type->landusetype==AGRICULTURE)
     gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft))*pft->fpc;
@@ -212,7 +203,6 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
     data.daylength=daylength;
     data.vmax=pft->vmax;
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);
-/*     lambda=zbrent((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,EPSILON,&data); */
     vmax=pft->vmax;
     adtmm=photosynthesis(&agd,rd,&vmax,data.path,lambda,data.tstress,data.co2,
                    temp,data.apar,daylength);

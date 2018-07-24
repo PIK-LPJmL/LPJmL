@@ -19,6 +19,20 @@
 #include "agriculture.h"
 #include "grassland.h"
 
+static const int mowingDays[] = {152, 335}; // mowing on fixed dates 1-june or 1-dec
+
+Bool isMowingDay(int aDay)
+{
+  int i;
+  int len = sizeof(mowingDays)/sizeof(int);
+  for (i=0; i < len; i++)
+  {
+    if (aDay == mowingDays[i])
+      return TRUE;
+  }
+  return FALSE;
+}
+
 Real daily_grassland(Stand *stand, /**< stand pointer */
                      Real co2,   /**< atmospheric CO2 (ppmv) */
                      const Dailyclimate *climate, /**< Daily climate values */
@@ -60,7 +74,6 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   Irrigation *data;
   Pftgrass *grass;
   Real hfrac=0.5;
-  Real cleaf=0,cleaf_max=0;
   irrig_apply=0.0;
 
   data=stand->data;
@@ -224,21 +237,49 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   /* daily harvest check*/
   isphen=FALSE;
   hfrac=0.0;
-  /* cleaf and cleaf_max for all grass PFTs */
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
-    cleaf+=grass->ind.leaf.carbon;
-    cleaf_max+=grass->max_leaf;
-  }
-  if(day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365)
-  {
-    if(cleaf>cleaf_max)
+    switch(stand->cell->ml.grass_scenario)
     {
-      isphen=TRUE;
-      hfrac=1-1000/(1000+cleaf);
-    }
-  }
+      case GS_DEFAULT: // default
+        grass->max_leaf=max(grass->max_leaf,grass->ind.leaf.carbon);
+        if(grass->ind.leaf.carbon>=100)
+        {
+          isphen=TRUE;
+          hfrac=0.75;
+        }
+        else if(grass->ind.leaf.carbon>1 && grass->ind.leaf.carbon<(0.75*grass->max_leaf))
+        {
+          isphen=TRUE;
+          hfrac=0.75;
+          if(grass->ind.leaf.carbon*(1-hfrac)<1)
+            hfrac=1-1/grass->ind.leaf.carbon;
+        }
+        break;
+      case GS_MOWING: // mowing
+        if (isMowingDay(day))
+        {
+          if (grass->ind.leaf.carbon > STUBBLE_HEIGHT_MOWING) // 5 cm or 25 g.C.m-2 threshold
+            isphen=TRUE;
+        }
+        break;
+      case GS_GRAZING_EXT: /* ext. grazing  */
+        stand->cell->ml.rotation.rotation_mode = RM_UNDEFINED;
+        if (grass->ind.leaf.carbon > STUBBLE_HEIGHT_GRAZING_EXT) /* minimum threshold */
+        {
+          isphen=TRUE;
+          stand->cell->ml.rotation.rotation_mode = RM_GRAZING;
+          stand->cell->ml.nr_of_lsus_ext = STOCKING_DENSITY_EXT;
+        }
+        break;
+      case GS_GRAZING_INT: /* int. grazing */
+        if ((grass->ind.leaf.carbon > STUBBLE_HEIGHT_GRAZING_INT) || (stand->cell->ml.rotation.rotation_mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
+          isphen=TRUE;
+        break;
+    } /* of switch */
+  } /* of foreachpft() */
+
   if(isphen)
   {
     harvest=harvest_stand(output,stand,hfrac);

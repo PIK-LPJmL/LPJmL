@@ -102,6 +102,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   pft->establishment=establishment_tree;
   pft->init=init_tree;
   pft->fire=fire_tree;
+  pft->lai=lai_tree;
   pft->actual_lai=actual_lai_tree;
   pft->free=free_tree;
   pft->vegc_sum=vegc_sum_tree;

@@ -162,6 +162,7 @@ typedef struct Pft
     Stocks (*establishment)(struct Pft *,Real,Real,int);
     Stocks (*fire)(struct Pft *,Real *);
     Real (*actual_lai)(const struct Pft *);
+    Real (*lai)(const struct Pft *);
     void (*adjust)(Litter *,struct Pft *,Real,Real);
     void (*reduce)(Litter *,struct Pft *,Real);
     void (*free)(struct Pft *);

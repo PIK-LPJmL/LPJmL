@@ -85,7 +85,7 @@ void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
 } /* of 'monthly_climbuf' */
 
 void annual_climbuf(Climbuf *climbuf,/**< pointer to climate buffer */
-                    Real aetp        /**< annual evopotranspiration (mm) */
+                    Real aetp        /**< annual evapotranspiration (mm) */
                    )
 {
   updatebuffer(climbuf->min,climbuf->temp_min);
@@ -96,7 +96,7 @@ void annual_climbuf(Climbuf *climbuf,/**< pointer to climate buffer */
   climbuf->mtemp_min20 = getbufferavg(climbuf->min);
 } /* of 'annual_climbuf' */
 
-Bool fwriteclimbuf(FILE *file, /**< pointer to binary file */
+Bool fwriteclimbuf(FILE *file,            /**< pointer to binary file */
                    const Climbuf *climbuf /**< pointer to climate buffer written */
                   )                       /** \return TRUE on error */
 {
@@ -116,10 +116,10 @@ Bool fwriteclimbuf(FILE *file, /**< pointer to binary file */
   return fwritebuffer(file,climbuf->max);
 } /* of 'fwriteclimbuf' */
 
-Bool freadclimbuf(FILE *file,  /**< pointer to binary file */
+Bool freadclimbuf(FILE *file,       /**< pointer to binary file */
                   Climbuf *climbuf, /**< pointer to climate buffer read */
-                  Bool swap /**< byte order has to be swapped (TRUE/FALSE) */
-                 ) /** \return TRUE on error */
+                  Bool swap         /**< byte order has to be swapped (TRUE/FALSE) */
+                 )                  /** \return TRUE on error */
 {
   freadreal1(&climbuf->temp_max,swap,file);
   freadreal1(&climbuf->temp_min,swap,file);

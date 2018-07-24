@@ -39,6 +39,16 @@ typedef struct
 } Irrig_system;
 
 typedef enum {NO_SEASONALITY, PREC, PRECTEMP, TEMP, TEMPPREC} Seasonality;
+typedef enum {GS_DEFAULT, GS_MOWING, GS_GRAZING_EXT, GS_GRAZING_INT, GS_NONE} GrassScenarioType;
+typedef enum {RM_UNDEFINED, RM_GRAZING, RM_RECOVERY} RotationModeType;
+
+typedef struct
+{
+  int grazing_days;
+  int recovery_days;
+  int paddocks;
+  RotationModeType rotation_mode;
+} Rotation;
 
 typedef struct
 {
@@ -61,6 +71,11 @@ typedef struct
   Real mdemand;           /**< monthly irrigation demand */
   Bool dam;               /**< dam inside cell (TRUE/FALSE) */
   int fixed_grass_pft;              /**< fix C3 or C4 for GRASS pft */
+  GrassScenarioType grass_scenario; /* 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
+  Real nr_of_lsus_ext;              /* nr of livestock units for extensive grazing */
+  Real nr_of_lsus_int;              /* nr of livestock units for intensive grazing */
+  Rotation rotation;                /* rotation mode and parameters for intensive grazing */
+
 #ifdef IMAGE
   Image_data *image_data; /**< pointer to IMAGE data structure */
 #endif

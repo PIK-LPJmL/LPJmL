@@ -73,8 +73,6 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
     {
       soil->pool[l].slow.carbon=soil->pool[l].fast.carbon=0;
       soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=0;
-
-
       for(p=0;p<ntotpft;p++)
       {
         socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
@@ -157,5 +155,4 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
   free(k_mean);
   free(c0);
   free(sum);
-
 } /* of 'equilsoil' */

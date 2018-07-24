@@ -124,8 +124,8 @@ typedef struct
   Real mfirec;           /**< monthly fire carbon emissions (gC/m2)*/
   Real mnfire;           /**< monthly number of fires */
   Real mfiredi;          /**< monthly fire danger index */
-  Tracegas mfireemission;    /**< monthly fire emissions */
-  Real mburntarea; /**< monthly burnt area */
+  Tracegas mfireemission; /**< monthly fire emissions of trace gases */
+  Real mburntarea;       /**< monthly burnt area */
   Real mprec_image;      /**< monthly precipitation received from IMAGE [mm/month]*/
   Real mtemp_image;      /**< monthly temperature received from IMAGE [K] */
   Real msun_image;       /**< monthly cloudiness received from IMAGE [% sunshine = 100-%cloud]*/
@@ -221,12 +221,12 @@ typedef struct
   Real *cft_conv_loss_drain; /**< cft specific drainage conveyance losses (mm) */
   int  *cft_irrig_events;  /**< number of irrigation days within growing season */
   Real prod_turnover;      /**< carbon emissions from product turnover [gC/m2/a] in IMAGE coupling */
-  Stocks deforest_emissions; /**< carbon emissions from deforested wood burnt [gC/m2/a] in IMAGE coupling */
+  Stocks deforest_emissions; /**< carbon and nitrogen emissions from deforested wood burnt [g/m2/a] in IMAGE coupling */
   Real trad_biofuel;       /**< carbon emissions from traditional biofuel burnt [gC/m2/a] in IMAGE coupling */
-  Stocks flux_firewood;    /**< carbon and nitrogen emissions from domestic wood use [gC/m2/a]*/
+  Stocks flux_firewood;    /**< carbon and nitrogen emissions from domestic wood use [g/m2/a]*/
   Real fburn;              /**< fraction of deforested wood burnt [0-1]*/
   Real ftimber;            /**< fraction of deforested wood harvested as timber [0-1]*/
-  Stocks timber_harvest;   /**< carbon and nitrogen harvested as timber [C/m2/a] */
+  Stocks timber_harvest;   /**< carbon and nitrogen harvested as timber [g/m2/a] */
   Real product_pool_fast;  /**< carbon in the fast product pool */
   Real product_pool_slow;  /**< carbon in the slow product pool */
   Real *cft_luc_image;     /**< LUC data received by IMAGE [0-1], CFT specific */

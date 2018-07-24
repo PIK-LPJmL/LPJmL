@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j   .  j  s                                            \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 4.0.001 without land use                \n**/
+/** Configuration file for LPJmL C Version 5.1.001 without land use                \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -44,7 +44,8 @@
 "new_phenology": true,
 "river_routing" : true,
 "permafrost" : true,
-"with_nitrogen2 : true,
+"with_nitrogen" : LIM_NITROGEN,
+"unlimited_nitrogen" : false,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -92,11 +93,44 @@ ID                         Fmt                    filename
 { "id" : VEGC,             "file" : { "fmt" : RAW, "name" : "output/vegc.bin"}},
 { "id" : SOILC,            "file" : { "fmt" : RAW, "name" : "output/soilc.bin"}},
 { "id" : LITC,             "file" : { "fmt" : RAW, "name" : "output/litc.bin"}},
-{ "id" : FLUX_ESTAB,       "file" : { "fmt" : RAW, "name" : "output/flux_estab.bin"}},
+{ "id" : FLUX_ESTABC,      "file" : { "fmt" : RAW, "name" : "output/flux_estab.bin"}},
+{ "id" : PFT_VEGC,         "file" : { "fmt" : RAW, "name" : "output/pft_vegc.bin"}},
 { "id" : MPHEN_TMIN,       "file" : { "fmt" : RAW, "name" : "output/mphen_tmin.bin"}},
 { "id" : MPHEN_TMAX,       "file" : { "fmt" : RAW, "name" : "output/mphen_tmax.bin"}},
 { "id" : MPHEN_LIGHT,      "file" : { "fmt" : RAW, "name" : "output/mphen_light.bin"}},
 { "id" : MPHEN_WATER,      "file" : { "fmt" : RAW, "name" : "output/mphen_water.bin"}},
+{ "id" : VEGN,             "file" : { "fmt" : RAW, "name" : "output/vegn.bin"}},
+{ "id" : SOILN,            "file" : { "fmt" : RAW, "name" : "output/soiln.bin"}},
+{ "id" : LITN,             "file" : { "fmt" : RAW, "name" : "output/litn.bin"}},
+{ "id" : SOILN_LAYER,      "file" : { "fmt" : RAW, "name" : "output/soiln_layer.bin"}},
+{ "id" : SOILNO3_LAYER,    "file" : { "fmt" : RAW, "name" : "output/soilno3_layer.bin"}},
+{ "id" : SOILNH4_LAYER,    "file" : { "fmt" : RAW, "name" : "output/soilnh4_layer.bin"}},
+{ "id" : SOILN_SLOW,       "file" : { "fmt" : RAW, "name" : "output/soiln_slow.bin"}},
+{ "id" : SOILNH4,          "file" : { "fmt" : RAW, "name" : "output/soilnh4.bin"}},
+{ "id" : SOILNO3,          "file" : { "fmt" : RAW, "name" : "output/soilno3.bin"}},
+{ "id" : PFT_NUPTAKE,      "file" : { "fmt" : RAW, "name" : "output/pft_nuptake.bin"}},
+{ "id" : MNUPTAKE,         "file" : { "fmt" : RAW, "name" : "output/mnuptake.bin"}},
+{ "id" : MLEACHING,        "file" : { "fmt" : RAW, "name" : "output/mleaching.bin"}},
+{ "id" : MN2O_DENIT,       "file" : { "fmt" : RAW, "name" : "output/mn2o_denit.bin"}},
+{ "id" : MN2O_NIT,         "file" : { "fmt" : RAW, "name" : "output/mn2o_nit.bin"}},
+{ "id" : MN2_EMIS,         "file" : { "fmt" : RAW, "name" : "output/mn2_emis.bin"}},
+{ "id" : MBNF,             "file" : { "fmt" : RAW, "name" : "output/mbnf.bin"}},
+{ "id" : MN_IMMO,          "file" : { "fmt" : RAW, "name" : "output/mn_immo.bin"}},
+{ "id" : PFT_NDEMAND,      "file" : { "fmt" : RAW, "name" : "output/pft_ndemand.bin"}},
+{ "id" : FIREN,            "file" : { "fmt" : RAW, "name" : "output/firen.bin"}},
+{ "id" : MN_MINERALIZATION,"file" : { "fmt" : RAW, "name" : "output/mn_mineralization.bin"}},
+{ "id" : MN_VOLATILIZATION,"file" : { "fmt" : RAW, "name" : "output/mn_volatilization.bin"}},
+{ "id" : PFT_NLIMIT,       "file" : { "fmt" : RAW, "name" : "output/pft_nlimit.bin"}},
+{ "id" : PFT_VEGN,         "file" : { "fmt" : RAW, "name" : "output/pft_vegn.bin"}},
+{ "id" : PFT_CLEAF,        "file" : { "fmt" : RAW, "name" : "output/pft_cleaf.bin"}},
+{ "id" : PFT_NLEAF,        "file" : { "fmt" : RAW, "name" : "output/pft_nleaf.bin"}},
+{ "id" : PFT_LAIMAX,       "file" : { "fmt" : RAW, "name" : "output/pft_laimax.bin"}},
+{ "id" : PFT_CROOT,        "file" : { "fmt" : RAW, "name" : "output/pft_croot.bin"}},
+{ "id" : PFT_NROOT,        "file" : { "fmt" : RAW, "name" : "output/pft_nroot.bin"}},
+{ "id" : PFT_CSAPW,        "file" : { "fmt" : RAW, "name" : "output/pft_csapw.bin"}},
+{ "id" : PFT_NSAPW,        "file" : { "fmt" : RAW, "name" : "output/pft_nsapw.bin"}},
+{ "id" : PFT_CHAWO,        "file" : { "fmt" : RAW, "name" : "output/pft_chawo.bin"}},
+{ "id" : PFT_NHAWO,        "file" : { "fmt" : RAW, "name" : "output/pft_nhawo.bin"}},
 #ifdef WITH_SPITFIRE
 { "id" : MFIREC,           "file" : { "fmt" : RAW, "name" : "output/mfirec.bin"}},
 { "id" : MNFIRE,           "file" : { "fmt" : RAW, "name" : "output/mnfire.bin"}},

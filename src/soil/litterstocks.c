@@ -16,7 +16,8 @@
 
 #include "lpj.h"
 
-Stocks litterstocks(const Litter *litter)
+Stocks litterstocks(const Litter *litter /**< pointer to litter pools */
+                   )                     /** \return total carbon and nitrogen (gC/m2, gN/m2) */
 {
   int i,l;
   Stocks sum={0,0};
