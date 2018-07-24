@@ -81,7 +81,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 214            /* number of output files */
+#define NOUT 215            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -304,6 +304,7 @@
 #define MSOILTEMP 211
 #define MSWC 212
 #define ABURNTAREA 213
+#define AGB_TREE 214
 #define RANDOM_SEED 0
 
 #endif

@@ -230,5 +230,6 @@
   SYEAR "syear" "syear" "year of sowing" "" 1.0
   SYEAR2 "syear2" "syear2" "year of sowing 2nd season" "" 1.0
   AGB "agb" "AGB" "above ground biomass" "gC/m2" 1.0
+  AGB_TREE "agb_tree" "AGB_TREE" "above ground tree biomass" "gC/m2" 1.0
   MLAKEVOL "mlakevol" "lakevol" "lake content volume" "dm3" 1.0
   MLAKETEMP "mlaketemp" "laketemp" "lake surface temperature" "deg C" 1.0
