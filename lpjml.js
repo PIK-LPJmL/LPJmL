@@ -38,7 +38,7 @@
   "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE */
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
-  "river_routing" : false,
+  "river_routing" : true,
   "permafrost" : true,
 #ifdef FROM_RESTART
   "population" : false,
@@ -174,8 +174,8 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : 27410, /* 27410, 67208 60400 all grid cells */
-  "endgrid" : 27410,
+  "startgrid" : ALL, /* 27410, 67208 60400 all grid cells */
+  "endgrid" : ALL,
 
 #ifndef FROM_RESTART
 
