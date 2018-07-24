@@ -1,20 +1,18 @@
-/***************************************************************************/
-/**                                                                       **/
-/**             l i t t e r _ a g _ n i t r o g e n _ t r e e . c         **/
-/**                                                                       **/
-/**     C implementation of LPJ, derived from the Fortran/C++ version     **/
-/**                                                                       **/
-/**     Function computes sum of all above-ground litter pools for trees  **/
-/**                                                                       **/
-/**     written by Werner von Bloh, Sibyll Schaphoff                      **/
-/**     Potsdam Institute for Climate Impact Research                     **/
-/**     PO Box 60 12 03                                                   **/
-/**     14412 Potsdam/Germany                                             **/
-/**                                                                       **/
-/**     Last change: $Date:: 2014-06-23 09:39:33 +0200 (Mon, 23 Jun 201#$ **/
-/**     By         : $Author:: bloh                            $          **/
-/**                                                                       **/
-/***************************************************************************/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**             l i t t e r _ a g _ n i t r o g e n _ t r e e . c                  \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/** Function computes sum of all above-ground nitrogen litter pools for trees      \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include "lpj.h"
 
