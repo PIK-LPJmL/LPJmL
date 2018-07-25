@@ -27,8 +27,8 @@
   "bc3" : 0.015,             /* bc3 leaf respiration as fraction of Vmax for C3 plants */
   "bc4" : 0.035,             /* bc4 leaf respiration as fraction of Vmax for C4 plants */
   "r_growth" : 0.25,         /* r_growth */
-  "GM" : 3.26,               /* GM empirical parameter in demand function */
-  "ALPHAM" : 1.391,          /* ALPHAM Priestley-Taylor coefficient*/ 
+  "GM" : 2.41,               /* GM empirical parameter in demand function */
+  "ALPHAM" : 1.485,          /* ALPHAM Priestley-Taylor coefficient*/ 
   "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */
   "kc25" : 30.,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.6,           /* atmfrac */
