@@ -134,6 +134,13 @@ void harvest_crop(Output *output,        /**< Output data */
   output->cftfrac[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]=stand->frac;
 #endif
 
+  output->cft_leaf[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].nitrogen+=crop->ind.leaf.nitrogen;
+  output->cft_nlimit[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=pft->nlimit;
+  output->cft_leaf[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].carbon+=crop->ind.leaf.carbon;
+  output->cft_root[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].nitrogen+=crop->ind.root.nitrogen;
+  output->cft_root[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].carbon+=crop->ind.root.carbon;
+  output->cft_veg[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].nitrogen+=vegn_sum(pft);
+  output->cft_veg[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].carbon+=vegc_sum(pft);
 
   output->flux_harvest.carbon+=(harvest.harvest.carbon+harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon)*stand->frac;
   output->flux_harvest.nitrogen+=(harvest.harvest.nitrogen+harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen)*stand->frac;

@@ -50,7 +50,7 @@ void fprintpar_crop(FILE *file, /**< pointer to text file */
                "min, max LAI:\t%g %g\n"
                "opt,min hi:\t%g %g\n"
                "shapesenescencenorm:\t%g\n"
-               "C:N ratio:\t%g%g %g %g\n"
+               "C:N ratio:\t%g %g %g %g\n"
                "rel. C:N ratio:\t%g %g %g\n",
           calcmethod[croppar->calcmethod_sdate],
           croppar->initdate.sdatenh,croppar->initdate.sdatesh,

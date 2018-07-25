@@ -54,12 +54,12 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             "k_2:\t\t%g\n"
             "p:\t\t%g\n"
             "N0:\t\t%g (mgN/gC)\n"
-             "k_temp:\t\t%g\n"
+            "k_temp:\t\t%g\n"
             "denit threshold:\t%g\n"
             "min_c_bnf:\t%g (gC/m2)\n"
             "q_ash:\t\t%g\n"
-             "sapwood_rec:\t%g\n"
-             "par_sink_limit:\t%g\n",
+            "sapwood_rec:\t%g\n"
+            "par_sink_limit:\t%g\n",
             param.k_max,param.k_2,param.p,param.n0,param.k_temp,param.denit_threshold,
             param.min_c_bnf,param.q_ash,param.sapwood_recovery,param.par_sink_limit);
   if(config->withlanduse!=NO_LANDUSE)

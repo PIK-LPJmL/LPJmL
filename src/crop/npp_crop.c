@@ -79,7 +79,7 @@ Real npp_crop(Pft *pft, /**< PFT variables */
      output->irrigation==data->irrigation)
   {
     output->rroot=crop->ind.root.carbon*pft->par->respcoeff*param.k*cn.root*gtemp_soil;
-    output->rso=crop->ind.so.carbon*cn.so*gtemp_air;
+    output->rso=crop->ind.so.carbon*pft->par->respcoeff*param.k*par->cn_ratio.so*gtemp_air;
     output->rpool=presp;
     output->gresp=gresp;
     output->npp=npp;

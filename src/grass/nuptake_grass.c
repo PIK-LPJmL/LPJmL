@@ -16,13 +16,13 @@
 #include "grass.h"
 #include "agriculture.h"
 
-Real nuptake_grass(Pft *pft,
-                   Real *n_plant_demand,
-                   Real *ndemand_leaf,
-                   int npft,
-                   int nbiomass,
-                   int ncft
-                  )
+Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
+                   Real *n_plant_demand, /**< total N plant demand */
+                   Real *ndemand_leaf,   /**< N demand of leafs */
+                   int npft,             /**< number of natural PFTs */
+                   int nbiomass,         /**< number of biomass PFTs */
+                   int ncft              /**< number of crop PFTs */
+                  )                      /** \return nitrogen uptake (gN/m2/day) */
 {
   Soil *soil;
   Pftgrass *grass;

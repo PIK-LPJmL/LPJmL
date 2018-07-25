@@ -17,8 +17,8 @@
 #include "agriculture.h"
 
 Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
-                  Real *n_plant_demand,
-                  Real *ndemand_leaf,
+                  Real *n_plant_demand, /**< total N plant demand */
+                  Real *ndemand_leaf,   /**< N demand of leafs */
                   int npft,             /**< number of natural PFTs */
                   int nbiomass,         /**< number of biomass PFTs */
                   int ncft              /**< number of crop PFTs */
@@ -104,7 +104,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
     pft->vscal+=1;
   else
    pft->vscal+=min(1,*ndemand_leaf/(ndemand_leaf_opt/(1+pft->par->knstore))); /*eq. C20 in Smith et al. 2014, Biogeosciences */
-   if(pft->stand->type->landusetype==BIOMASS_TREE)
+  if(pft->stand->type->landusetype==BIOMASS_TREE)
   {
     data=pft->stand->data;
     pft->stand->cell->output.pft_nuptake[(npft-nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */

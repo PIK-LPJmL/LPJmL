@@ -442,7 +442,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         }
         else
         {
-          if(readintvec(grassharvest_file.file,&grid[i].ml.grass_scenario,1,grassharvest_datatype,swap_grassharvest))
+          if(readintvec(grassharvest_file.file,(int *)(&grid[i].ml.grass_scenario),1,swap_grassharvest,grassharvest_datatype))
           {
             fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
                     config->grassharvest_filename.name,i+config->startgrid);
@@ -501,6 +501,9 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #ifdef COUPLING_WITH_FMS
     grid[i].laketemp=0;
 #endif
+    grid[i].ml.rotation.grazing_days=grid[i].ml.rotation.paddocks=0;
+    grid[i].ml.rotation.recovery_days=0;
+    grid[i].ml.rotation.rotation_mode=RM_UNDEFINED;
     if(config->withlanduse!=NO_LANDUSE)
     {
       grid[i].ml.landfrac=newvec(Landfrac,2);

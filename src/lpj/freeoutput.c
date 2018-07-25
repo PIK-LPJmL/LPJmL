@@ -68,6 +68,7 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_prec2);
   free(output->cft_srad2);
   free(output->cft_aboveground_biomass2);
+  free(output->growing_period2);
   free(output->cft_airrig2);
   free(output->syear);
   free(output->syear2);
