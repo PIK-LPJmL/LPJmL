@@ -38,14 +38,24 @@ Stocks livefuel_consum_tree(Litter *litter,
   /*      5% of 1000hr fuel involved in crown kill */
   sapwood_consum.carbon = tree->ind.sapwood.carbon *(treepar->fuelfrac[0] + treepar->fuelfrac[1]  +
                                treepar->fuelfrac[2] * 0.05);
+  sapwood_consum.nitrogen = tree->ind.sapwood.nitrogen *(treepar->fuelfrac[0] + treepar->fuelfrac[1]  +
+                               treepar->fuelfrac[2] * 0.05);
   heartwood_consum.carbon = tree->ind.heartwood.carbon *(treepar->fuelfrac[0] + treepar->fuelfrac[1] +
                                          treepar->fuelfrac[2] * 0.05);
+  heartwood_consum.nitrogen = tree->ind.heartwood.nitrogen *(treepar->fuelfrac[0] + treepar->fuelfrac[1] +
+                                         treepar->fuelfrac[2] * 0.05);
   live_consum_tree.carbon = livefuel->disturb * (tree->ind.leaf.carbon*1 + sapwood_consum.carbon + heartwood_consum.carbon)*pft->nind;  /*gC/m2*/
+  live_consum_tree.nitrogen = livefuel->disturb * (tree->ind.leaf.nitrogen*1 + sapwood_consum.nitrogen + heartwood_consum.nitrogen)*pft->nind;  /*gC/m2*/
   live_consum_tree.carbon+=pft->bm_inc.carbon*min(1,livefuel->disturb*1);
+  live_consum_tree.carbon+=pft->bm_inc.nitrogen*min(1,livefuel->disturb*1);
   pft->bm_inc.carbon*=(1-min(1,livefuel->disturb*1));
+  pft->bm_inc.nitrogen*=(1-min(1,livefuel->disturb*1));
   tree->ind.leaf.carbon *= (1-livefuel->disturb*1);
   tree->ind.sapwood.carbon -= livefuel->disturb*sapwood_consum.carbon;
   tree->ind.heartwood.carbon -= livefuel->disturb*heartwood_consum.carbon;
+  tree->ind.leaf.nitrogen *= (1-livefuel->disturb*1);
+  tree->ind.sapwood.nitrogen -= livefuel->disturb*sapwood_consum.nitrogen;
+  tree->ind.heartwood.nitrogen -= livefuel->disturb*heartwood_consum.nitrogen;
   if(fabs(pft->bm_inc.carbon)>epsilon)
   { 
     litter->ag[pft->litter].trait.leaf.carbon+=pft->bm_inc.carbon*fire_nind_kill/pft->nind;
