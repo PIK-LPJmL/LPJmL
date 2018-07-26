@@ -199,7 +199,10 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
     data.path=pft->par->path;
     data.temp=temp;
     data.co2=ppm2Pa(co2);
-    data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->laimax_interpolate)*fpar(pft);
+    if(pft->par->type==CROP)
+      data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->laimax_interpolate)*fpar(pft); /** par calculation do not include albedo*/
+    else
+      data.apar = par*alphaa(pft,config->laimax_interpolate)*pft->fapar;                              /** fapar calculation of trees and grass already include albedo*/
     data.daylength=daylength;
     data.vmax=pft->vmax;
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);
