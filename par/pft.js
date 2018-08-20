@@ -941,7 +941,7 @@
     "k_litter10_q10_wood" : 1., /* Q10_wood */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+    "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -1023,7 +1023,7 @@
     "k_litter10_q10_wood" : 1., /* Q10_wood */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+    "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -1105,7 +1105,7 @@
     "k_litter10_q10_wood" : 1., /* Q10_wood */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+    "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
@@ -1389,7 +1389,7 @@
     "k_litter10_q10_wood" : 1., /* Q10_wood */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+    "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
