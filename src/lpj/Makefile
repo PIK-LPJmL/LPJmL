@@ -42,7 +42,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O \
           ismonthlyoutput.$O initmpiconfig.$O fscanparam.$O fprintparam.$O\
           fprintpftpar.$O help.$O copyright.$O initinput.$O freeinput.$O\
           natural.$O daily_natural.$O fread_natural.$O fprint_natural.$O\
-          annual_natural.$O standcarbon.$O fwrite_natural.$O celldata.$O\
+          annual_natural.$O fwrite_natural.$O celldata.$O\
           fscanemissionfactor.$O check_balance.$O transfer_function.$O\
           fprintfiles.$O roughnesslength.$O closeoutput_yearly.$O\
           getnbiomass.$O getextension.$O albedo_stand.$O phenology_gsi.$O\

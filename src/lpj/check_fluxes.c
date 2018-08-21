@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function checks for water and carbon balance in a cell                     \n**/
+/**     Function checks for water, nitrogen and carbon balance in a cell           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -17,7 +17,7 @@
 #include "lpj.h"
 #include "agriculture.h"
 
-#define FAIL
+#define FAIL   /* program is stopped if balance error occures */
 
 void check_fluxes(Cell *cell,          /**< cell pointer */
                   int year,            /**< simulation year (AD) */
@@ -128,8 +128,11 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   }
   balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux;
   if(year>config->firstyear+1 && fabs(balanceW)>1.5)
-   // fail(INVALID_WATER_BALANCE_ERR,TRUE,"y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f\n",
+#ifdef FAIL
+    fail(INVALID_WATER_BALANCE_ERR,TRUE,"y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f\n",
+#else
     fprintf(stderr,"y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f\n",
+#endif
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceW,cell->balance.totw,totw,
          cell->balance.awater_flux,cell->balance.aprec);
   cell->balance.totw=totw;

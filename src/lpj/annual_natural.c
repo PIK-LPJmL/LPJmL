@@ -58,7 +58,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #ifdef DEBUG2
       printf("PFT:%s fpc_inc=%g fpc=%g\n",pft->par->name,fpc_inc[p],pft->fpc);
       printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
-             pft->bm_inc,vegc_sum(pft),soilcarbon(&stand->soil));
+             pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
       
       if(annualpft(stand,pft,fpc_inc+p,config->new_phenology,isdaily))

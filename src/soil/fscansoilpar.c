@@ -175,18 +175,20 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     fscanreal2(verb,&item,&soil->a_denit,soil->name,"a_denit");
     fscanreal2(verb,&item,&soil->b_denit,soil->name,"b_denit");
     fscanreal2(verb,&item,&soil->anion_excl,soil->name,"anion_excl");
-    fscanreal2(verb,&item,&soil->nitvol_factor_temp,soil->name,"nitvol_temp_factor");
-    fscanreal2(verb,&item,&soil->vol_cation_exchange,soil->name,"vol_cation_exchange");
-    fscanreal2(verb,&item,&soil->denit_water_threshold,soil->name,"denit_water_threshold");
     fscanreal2(verb,&item,&soil->a_nit,soil->name,"a_nit");
     fscanreal2(verb,&item,&soil->b_nit,soil->name,"b_nit");
     fscanreal2(verb,&item,&soil->c_nit,soil->name,"c_nit");
     fscanreal2(verb,&item,&soil->d_nit,soil->name,"d_nit");
+    soil->m_nit=soil->a_nit-soil->c_nit;
+    if(soil->m_nit==0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR199: a_nit=%g must not be equal c_nit=%g  in soil '%s'.\n",
+                soil->a_nit,soil->c_nit,soil->name);
+      return 0;
+    }
     soil->z_nit=soil->d_nit*(soil->b_nit-soil->a_nit)/(soil->a_nit-soil->c_nit);
     soil->n_nit=soil->a_nit-soil->b_nit;
-    soil->m_nit=soil->a_nit-soil->c_nit;
-    //fscanreal2(verb,&item,&soil->C_corr,soil->name,"C_corr");
-    //fscanreal2(verb,&item,&soil->bd,soil->name,"bd");
     fscanreal2(verb,&item,&soil->cn_ratio,soil->name,"cn_ratio");
 
   } /* of 'for(n=0;...)' */

@@ -79,7 +79,6 @@ extern int findlandusetype(const Standlist,Landusetype);
 extern void allocation_today(Stand *, int);
 extern void light(Stand *,int,const Real[]);
 extern Stocks establishmentpft(Stand *,const Pftpar[],int,int,Real,int);
-extern Real standcarbon(const Stand *);
 extern Stocks standstocks(const Stand *);
 extern void cutpfts(Stand *);
 extern Harvest harvest_grass(Stand *,Real);

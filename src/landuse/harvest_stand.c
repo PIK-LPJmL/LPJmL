@@ -49,7 +49,7 @@ Harvest harvest_grass(Stand *stand, /**< pointer to stand */
 static Harvest harvest_grass_mowing(Stand *stand)
 {
   Harvest harvest;
-  Harvest sum={0,0,0,0,0,0,0,0};
+  Harvest sum={{0,0},{0,0},{0,0},{0,0}};
   Pftgrass *grass;
   Pft *pft;
   int p;
@@ -68,9 +68,10 @@ static Harvest harvest_grass_mowing(Stand *stand)
   }
   return sum;
 } /* of 'harvest_grass_mowing' */
+
 static Harvest harvest_grass_grazing_ext(Stand *stand)
 {
-  Harvest sum={0,0,0,0,0,0,0,0};
+  Harvest sum={{0,0},{0,0},{0,0},{0,0}};
   Pftgrass *grass;
   Pft *pft;
   int p;
@@ -123,7 +124,7 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
 
 static Harvest harvest_grass_grazing_int(Stand *stand)
 {
-  Harvest sum={0,0,0,0,0,0,0,0};
+  Harvest sum={{0,0},{0,0},{0,0},{0,0}};
   Pftgrass *grass;
   Pft *pft;
   int p;

@@ -145,9 +145,6 @@ typedef struct
   Real tdiff_15;  /**< thermal diffusivity (mm^2/s) at 15% whc */
   Real tdiff_100; /**< thermal diffusivity (mm^2/s) at field capacity (100% whc) */
   Real tcond_pwp, tcond_100, tcond_100_ice; /**< thermal conductivity [W/m/K]*/
-  Real nitvol_factor_temp; /*Nitrification-volatilization temperature factor*/
-  Real vol_cation_exchange; /* volatilization cation exchange factor */
-  Real denit_water_threshold;
   Real z_nit;
   Real a_nit;
   Real b_nit;
