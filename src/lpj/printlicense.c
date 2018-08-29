@@ -46,7 +46,6 @@ void printlicense(void)
     strcpy(path,lpjroot);
     strcat(path,"/");
     strcat(path,LICENSE_NAME);
-    in=fopen(path,"r");
   }
   file=popen("more","w");
   if(file==NULL)
