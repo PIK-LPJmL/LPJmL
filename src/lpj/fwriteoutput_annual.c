@@ -24,7 +24,7 @@ static void writeannual(Outputfile *output,int index,float data[],int year,
   MPI_Status status;
 #endif
   for(i=0;i<config->count;i++)
-    data[i]*=(float)config->outnames[index].scale;
+    data[i]=(float)(config->outnames[index].scale*data[i]+config->outnames[index].offset);
 #ifdef USE_MPI
   switch(output->method)
   {
@@ -158,7 +158,7 @@ static void writeannualall(Outputfile *output,int index,float data[],int year,
   MPI_Status status;
 #endif
   for(i=0;i<config->ngridcell;i++)
-    data[i]*=(float)config->outnames[index].scale;
+    data[i]=(float)(config->outnames[index].scale*data[i]+config->outnames[index].offset);
 #ifdef USE_MPI
   switch(output->method)
   {

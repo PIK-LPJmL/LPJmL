@@ -23,7 +23,7 @@ static void writemonth(Outputfile *output,int index,float *data,int year,
   MPI_Status status;
 #endif
   for(i=0;i<config->count;i++)
-    data[i]*=config->outnames[index].scale;
+    data[i]=config->outnames[index].scale*data[i]+config->outnames[index].offset;
 #ifdef USE_MPI
   switch(output->method)
   {
@@ -94,7 +94,7 @@ static void writemonth2(Outputfile *output,int index,float *data,int year,
   MPI_Status status;
 #endif
   for(i=0;i<config->count;i++)
-    data[i]*=config->outnames[index].scale;
+    data[i]=config->outnames[index].scale*data[i]+config->outnames[index].offset;
 #ifdef USE_MPI
   switch(output->method)
   {
