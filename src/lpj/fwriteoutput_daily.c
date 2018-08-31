@@ -22,7 +22,7 @@ static void writeday(Outputfile *output,int index,float *data,int year,int day,
 #endif
   int i;
   for(i=0;i<config->count;i++)
-    data[i]*=config->outnames[index].scale;
+    data[i]=config->outnames[index].scale*data[i]+config->outnames[index].offset;
 #ifdef USE_MPI
   switch(output->method)
   {
