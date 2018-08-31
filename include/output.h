@@ -309,6 +309,7 @@ typedef struct
   char *descr; /**< description */
   char *unit;  /**< units */
   float scale;
+  float offset;
 } Variable;
 
 /* Declaration of variables */

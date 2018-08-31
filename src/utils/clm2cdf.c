@@ -20,7 +20,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-scale s] [-global] [-cellsize size] [-int] [-landuse] [-notime]\n       [-compress level] [-units u] [-descr d] name gridfile clmfile netcdffile\n"
+#define USAGE "Usage: %s [-scale s] [-global] [-cellsize size] [-int] [-float]\n       [-landuse] [-notime] [-compress level] [-units u] [-descr d]\n       name gridfile clmfile netcdffile\n"
 
 typedef struct
 {
@@ -315,19 +315,22 @@ int main(int argc,char **argv)
   Header header;
   String headername;
   float *data;
+  Type type;
   int i,j,k,ngrid,version,iarg,compress;
-  Bool swap,isint,landuse,notime,isglobal;
+  Bool swap,landuse,notime,isglobal,istype;
   float *f,scale,cellsize_lon,cellsize_lat;
   char *units,*descr,*endptr,*arglist;
+  const char *progname;
   Filename filename;
   units=descr=NULL;
   scale=1.0;
   compress=0;
   cellsize_lon=cellsize_lat=0;
-  isint=FALSE;
+  istype=FALSE;
   landuse=FALSE;
   notime=FALSE;
   isglobal=FALSE;
+  progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -335,8 +338,8 @@ int main(int argc,char **argv)
       {
         if(argc==iarg+1)
         {
-          fprintf(stderr,"Missing argument after option '-units'.\n"
-                 USAGE,argv[0]);
+          fprintf(stderr,"Error: Missing argument after option '-units'.\n"
+                 USAGE,progname);
           return EXIT_FAILURE;
         }
         units=argv[++iarg];
@@ -344,7 +347,15 @@ int main(int argc,char **argv)
       else if(!strcmp(argv[iarg],"-global"))
         isglobal=TRUE;
       else if(!strcmp(argv[iarg],"-int"))
-        isint=TRUE;
+      {
+        istype=TRUE;
+        type=LPJ_INT;
+      }
+      else if(!strcmp(argv[iarg],"-float"))
+      {
+        istype=TRUE;
+        type=LPJ_FLOAT;
+      }
       else if(!strcmp(argv[iarg],"-notime"))
         notime=TRUE;
       else if(!strcmp(argv[iarg],"-landuse"))
@@ -353,8 +364,8 @@ int main(int argc,char **argv)
       {
         if(argc==iarg+1)
         {
-          fprintf(stderr,"Missing argument after option '-descr'.\n"
-                 USAGE,argv[0]);
+          fprintf(stderr,"Error: Missing argument after option '-descr'.\n"
+                 USAGE,progname);
           return EXIT_FAILURE;
         }
         descr=argv[++iarg];
@@ -363,14 +374,14 @@ int main(int argc,char **argv)
       {
         if(argc==iarg+1)
         {
-          fprintf(stderr,"Missing argument after option '-scale'.\n"
-                  USAGE,argv[0]);
+          fprintf(stderr,"Error: Missing argument after option '-scale'.\n"
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         scale=(float)strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-scale'.\n",argv[iarg]);
+          fprintf(stderr,"Error: Invalid number '%s' for option '-scale'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
       }
@@ -378,14 +389,14 @@ int main(int argc,char **argv)
       {
         if(argc==iarg+1)
         {
-          fprintf(stderr,"Missing argument after option '-cellsize'.\n"
-                  USAGE,argv[0]);
+          fprintf(stderr,"Error: Missing argument after option '-cellsize'.\n"
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         cellsize_lon=cellsize_lat=(float)strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-cellsize'.\n",argv[iarg]);
+          fprintf(stderr,"Error: Invalid number '%s' for option '-cellsize'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
       }
@@ -394,21 +405,21 @@ int main(int argc,char **argv)
       {
         if(argc==iarg+1)
         {
-          fprintf(stderr,"Missing argument after option '-compress'.\n"
-                  USAGE,argv[0]);
+          fprintf(stderr,"Error: Missing argument after option '-compress'.\n"
+                  USAGE,progname);
           return EXIT_FAILURE;
         }
         compress=strtol(argv[++iarg],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-compress'.\n",argv[iarg]);
+          fprintf(stderr,"Error: Invalid number '%s' for option '-compress'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
       }
       else
       {
-        fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[iarg],argv[0]);
+        fprintf(stderr,"Error: Invalid option '%s'.\n"
+                USAGE,argv[iarg],progname);
         return EXIT_FAILURE;
       }
     }
@@ -416,8 +427,8 @@ int main(int argc,char **argv)
       break;
   if(argc<iarg+4)
   {
-    fprintf(stderr,"Missing arguments.\n"
-            USAGE,argv[0]);
+    fprintf(stderr,"Error: Missing arguments.\n"
+            USAGE,progname);
     return EXIT_FAILURE;
   }
   filename.fmt=CLM;
@@ -459,7 +470,7 @@ int main(int argc,char **argv)
   if(version==1)
     header.scalar=scale;
   if(version<3)
-    header.datatype=(isint)  ? LPJ_INT : LPJ_SHORT;
+    header.datatype=(istype)  ? type  : LPJ_SHORT;
   if(notime && (header.nyear>1 || (!landuse && header.nbands>1)))
   {
     fprintf(stderr,"No time axis set, but number of time steps>1 in '%s'.\n",

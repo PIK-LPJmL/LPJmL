@@ -78,6 +78,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     fscanname(&item,name,"unit",outnames[index].name);
     outnames[index].unit=strdup(name);
     fscanfloat2(&item,&outnames[index].scale,"scale",outnames[index].name);
+    fscanfloat2(&item,&outnames[index].offset,"offset",outnames[index].name);
   }
   return outnames;
 } /* of 'fscanoutputvar' */

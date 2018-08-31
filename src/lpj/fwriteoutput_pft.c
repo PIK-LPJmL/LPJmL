@@ -34,7 +34,7 @@ static void writepft(Outputfile *output,int n,float *data,int size,int year,
   MPI_Status status;
 #endif
   for(i=0;i<config->count;i++)
-    data[i]*=config->outnames[n].scale;
+    data[i]=config->outnames[n].scale*data[i]+config->outnames[n].offset;
 #ifdef USE_MPI
   switch(output->method)
   {
