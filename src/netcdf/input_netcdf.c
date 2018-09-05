@@ -360,7 +360,10 @@ Input_netcdf openinput_netcdf(const char *filename, /**< filename */
     return NULL;
   }
   input->lon_min=dim[0];
-  input->lon_res=(dim[input->lon_len-1]-dim[0])/(input->lon_len-1);
+  if(input->lon_len==1)
+    input->lon_res=config->resolution.lon;
+  else
+    input->lon_res=(dim[input->lon_len-1]-dim[0])/(input->lon_len-1);
   if(fabs(input->lon_res-config->resolution.lon)/config->resolution.lon>1e-3)
   {
     if(isroot(*config))
@@ -404,7 +407,13 @@ Input_netcdf openinput_netcdf(const char *filename, /**< filename */
     free(input);
     return NULL;
   }
-  if(dim[1]>dim[0])
+  if(input->lat_len==1)
+  {
+    input->lat_min=dim[0];
+    input->lat_res=config->resolution.lat;
+    input->offset=0;
+  }
+  else if(dim[1]>dim[0])
   {
     input->lat_min=dim[0];
     input->lat_res=(dim[input->lat_len-1]-dim[0])/(input->lat_len-1);
