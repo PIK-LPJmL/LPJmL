@@ -350,6 +350,11 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
+    if(data.time_step==MISSING_TIME)
+    {
+      fprintf(stderr,"ERROR436: Time axis missing in '%s'.\n",argv[j]);
+      return EXIT_FAILURE;
+    }
     if(readdata(&data,file,grid,&config))
     {
       fprintf(stderr,"Error reading '%s'.\n",argv[j]);
