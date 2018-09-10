@@ -30,16 +30,16 @@ static void printindex(size_t i,Time time,size_t var_len)
     case DAY:
       fprintf(stderr,"at day %d",(int)(i/var_len)+1);
       if(var_len>1)
-        fprintf(stderr," and item %d",(int)(var_len));
+        fprintf(stderr," and item %d",(int)(i % var_len)+1);
       break;
     case MONTH:
       fprintf(stderr,"at month %d",(int)(i/var_len)+1);
       if(var_len>1)
-        fprintf(stderr," and item %d",(int)(var_len));
+        fprintf(stderr," and item %d",(int)(i % var_len)+1);
       break;
-    case YEAR:
+    case YEAR: case MISSING_TIME:
       if(var_len>1)
-        fprintf(stderr,"at item %d",(int)(var_len));
+        fprintf(stderr,"at item %d",(int)(i % var_len)+1);
       break;
   }
 }
