@@ -160,6 +160,8 @@ int main(int argc,char **argv)
   Bool rc,isout;
   char *endptr;
   const char *progname;
+  const char *title[4];
+  String line;
   Fscanpftparfcn scanfcn[NTYPES]={fscanpft_grass,fscanpft_tree,fscanpft_crop};
   Standtype standtype[NSTANDTYPES];
 
@@ -168,9 +170,9 @@ int main(int argc,char **argv)
   standtype[SETASIDE_IR]=setaside_ir_stand;
   standtype[AGRICULTURE]=agriculture_stand;
   standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand,
-  standtype[BIOMASS_TREE]=biomass_tree_stand,
-  standtype[BIOMASS_GRASS]=biomass_grass_stand,
+  standtype[GRASSLAND]=grassland_stand;
+  standtype[BIOMASS_TREE]=biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=biomass_grass_stand;
   standtype[KILL]=kill_stand;
 
   progname=strippath(argv[0]);
@@ -190,7 +192,13 @@ int main(int argc,char **argv)
            "end              index of last grid cell to print\n");
     return EXIT_SUCCESS;
   }
-  printf("**** %s Version %s (" __DATE__ ") ****\n",progname,PRINTLPJ_VERSION);
+  snprintf(line,78-10,
+           "%s Version " PRINTLPJ_VERSION " (" __DATE__ ")",progname);
+  title[0]=line;
+  title[1]="Printing restart file for LPJmL Version " LPJ_VERSION;
+  title[2]="(C) Potsdam Institute for Climate Impact Research (PIK),";
+  title[3]="see COPYRIGHT file";
+  banner(title,4,78);
   initconfig(&config);
   if(readconfig(&config,dflt_conf_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
     fail(READ_CONFIG_ERR,FALSE,"Error opening config");
