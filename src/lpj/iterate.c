@@ -34,6 +34,8 @@
 #ifndef _WIN32
 #include <unistd.h>
 #include <signal.h>
+#else
+#define unlink _unlink
 #endif
 
 static Bool ischeckpoint;
