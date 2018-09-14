@@ -31,6 +31,18 @@
 
 #include "lpj.h"
 
+#ifndef _WIN32
+#include <unistd.h>
+#include <signal.h>
+#endif
+
+static Bool ischeckpoint;
+
+static void handler(int UNUSED(num))
+{
+  ischeckpoint=TRUE;
+} /* of 'handler' */
+
 int iterate(Outputfile *output,  /**< Output file data */
             Cell grid[],         /**< cell grid array */
             Input input,         /**< input data: climate, land use, water use */
@@ -41,8 +53,14 @@ int iterate(Outputfile *output,  /**< Output file data */
 {
   Real co2,cflux_total;
   Flux flux;
-  int year,landuse_year,wateruse_year;
+  int year,landuse_year,wateruse_year,startyear;
   Bool rc;
+  ischeckpoint=FALSE;
+#ifndef _WIN32
+  if(config->checkpoint_restart_filename!=NULL)
+    signal(SIGTERM,handler);
+#endif
+
 #ifdef STORECLIMATE
   Climatedata store,data_save;
   if(config->nspinup)
@@ -60,9 +78,11 @@ int iterate(Outputfile *output,  /**< Output file data */
     rc=initsoiltemp(input.climate,grid,config);
     failonerror(config,rc,INITSOILTEMP_ERR,"Initialization of soil temperature failed");
   }
-
+  startyear=(config->ischeckpoint) ? config->checkpointyear+1 : config->firstyear-config->nspinup;
   /* main loop over spinup + simulation years  */
-  for(year=config->firstyear-config->nspinup;year<=config->lastyear;year++)
+  if(isroot(*config) && config->ischeckpoint)
+    printf("Starting from checkpoint file '%s'.\n",config->checkpoint_restart_filename);
+  for(year=startyear;year<=config->lastyear;year++)
   {
 #ifdef IMAGE
     if(year>=config->start_imagecoupling)
@@ -207,8 +227,24 @@ int iterate(Outputfile *output,  /**< Output file data */
              "Problem with writing maps for transfer to IMAGE");
     }
 #endif
+    if(config->checkpoint_restart_filename!=NULL)
+    {
+#ifdef USE_MPI
+      MPI_Bcast(&ischeckpoint,1,MPI_INT,0,config->comm);
+#endif
+      if(ischeckpoint)
+      {
+        if(isroot(*config))
+          printf("SIGTERM catched, restart file '%s' written.\n",config->checkpoint_restart_filename);
+        fwriterestart(grid,npft,ncft,year,config->checkpoint_restart_filename,config); /* write restart file */
+#ifdef USE_MPI
+        MPI_Finalize();
+#endif
+        exit(EXIT_SUCCESS);
+      }
+    }
     if(iswriterestart(config) && year==config->restartyear)
-      fwriterestart(grid,npft,ncft,year,config); /* write restart file */
+      fwriterestart(grid,npft,ncft,year,config->write_restart_filename,config); /* write restart file */
   } /* of 'for(year=...)' */
 #ifdef STORECLIMATE
   if(config->nspinup && (config->lastyear<input.climate->firstyear || year<input.climate->firstyear))
@@ -218,5 +254,7 @@ int iterate(Outputfile *output,  /**< Output file data */
     freeclimatedata(&store); /* free data not used anymore */
   }
 #endif
+  if(year>config->lastyear && config->ischeckpoint)
+    unlink(config->checkpoint_restart_filename); /* delete checkpoint file */
   return year;
 } /* of 'iterate' */

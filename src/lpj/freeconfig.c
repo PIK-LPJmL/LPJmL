@@ -74,6 +74,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     free(config->outputvars[i].filename.name);
   free(config->outputvars);
   free(config->restart_filename);
+  free(config->checkpoint_restart_filename);
   free(config->write_restart_filename);
   freepftpar(config->pftpar,ivec_sum(config->npft,config->ntypes));
   freesoilpar(config->soilpar,config->nsoil);

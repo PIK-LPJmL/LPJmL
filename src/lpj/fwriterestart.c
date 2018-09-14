@@ -26,6 +26,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
                    int npft,            /**< number of natural PFTs   */
                    int ncft,            /**< number of crop PFTs      */
                    int year,            /**< year                     */
+                   const char *filename,/**< filename of restart file */
                    const Config *config /**< LPJ configuration        */
                   )                     /** \return TRUE on error     */
 {
@@ -39,7 +40,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   Restartheader restartheader;
   if(isroot(*config))
     /* create file */
-    file=fopen(config->write_restart_filename,"wb");
+    file=fopen(filename,"wb");
   else
   {
 #ifdef USE_MPI
@@ -53,11 +54,11 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     }
 #endif
     /* append file */
-    file=fopen(config->write_restart_filename,"r+b");
+    file=fopen(config->filename,"r+b");
   }
   if(file==NULL)
   {
-    printfcreateerr(config->write_restart_filename);
+    printfcreateerr(filename);
 #ifdef USE_MPI
     iserror=TRUE;
     if(config->rank<config->ntask-1)
@@ -95,7 +96,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   if(fwritecell(file,index,grid,config->ngridcell,ncft,npft,config->sdate_option,config->river_routing)!=config->ngridcell)
   {
     fprintf(stderr,"ERROR153: Cannot write data in restart file '%s': %s\n",
-            config->write_restart_filename,strerror(errno));
+            filename,strerror(errno));
     free(index);
     fclose(file);
 #ifdef USE_MPI

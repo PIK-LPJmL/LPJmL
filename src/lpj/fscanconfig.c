@@ -551,6 +551,19 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->restart_filename=NULL;
+  if(iskeydefined(file,"checkpoint_filename"))
+  {
+    if(config->n_out)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR290: Checkpointing with output files is not supported.\n");
+      return TRUE;
+    }
+    fscanname(file,name,"checkpoint_filename");
+    config->checkpoint_restart_filename=addpath(name,config->restartdir);
+  }
+  else
+    config->checkpoint_restart_filename=NULL;
   fscanbool2(file,&restart,"write_restart");
   if(restart)
   {
