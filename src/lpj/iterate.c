@@ -229,6 +229,8 @@ int iterate(Outputfile *output,  /**< Output file data */
              "Problem with writing maps for transfer to IMAGE");
     }
 #endif
+    if(iswriterestart(config) && year==config->restartyear)
+      fwriterestart(grid,npft,ncft,year,config->write_restart_filename,config); /* write restart file */
     if(config->checkpoint_restart_filename!=NULL)
     {
 #ifdef USE_MPI
@@ -245,8 +247,6 @@ int iterate(Outputfile *output,  /**< Output file data */
         exit(EXIT_SUCCESS);
       }
     }
-    if(iswriterestart(config) && year==config->restartyear)
-      fwriterestart(grid,npft,ncft,year,config->write_restart_filename,config); /* write restart file */
   } /* of 'for(year=...)' */
 #ifdef STORECLIMATE
   if(config->nspinup && (config->lastyear<input.climate->firstyear || year<input.climate->firstyear))
