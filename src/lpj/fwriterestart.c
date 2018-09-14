@@ -54,7 +54,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     }
 #endif
     /* append file */
-    file=fopen(config->filename,"r+b");
+    file=fopen(filename,"r+b");
   }
   if(file==NULL)
   {
