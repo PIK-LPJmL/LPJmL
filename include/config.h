@@ -126,6 +126,9 @@ typedef struct
   int offset;
 #endif
   char *write_restart_filename; /**< filename of restart file */
+  char *checkpoint_restart_filename; /**< filename of checkpoint restart file */
+  Bool ischeckpoint;      /**< run from checkpoint file ? (TRUE/FALSE) */
+  int checkpointyear;     /**< year stored in restart file */
   Pftpar *pftpar;         /**< PFT parameter array */
   int restartyear; /**< year restart file is written */
   int ntypes;    /**< number of PFT classes */

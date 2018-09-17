@@ -334,7 +334,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   }
   config->initsoiltemp=FALSE;
   /* If FROM_RESTART open restart file */
-  if(config->restart_filename==NULL)
+  config->ischeckpoint=config->checkpoint_restart_filename!=NULL  && getfilesize(config->checkpoint_restart_filename)!=-1;
+  if(config->restart_filename==NULL && !config->ischeckpoint)
   {
     file_restart=NULL;
     if(config->permafrost)
@@ -342,7 +343,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   }
   else
   {
-    file_restart=openrestart(config->restart_filename,config,npft+ncft,&swap_restart);
+    file_restart=openrestart((config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,config,npft+ncft,&swap_restart);
     if(file_restart==NULL)
     {
       free(grid);
