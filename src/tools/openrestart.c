@@ -110,7 +110,9 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
     fclose(file);
     return NULL;
   }
-  if(config->nspinup==0 && header.firstyear!=config->firstyear-1 &&
+  if(config->ischeckpoint)
+    config->checkpointyear=header.firstyear;
+  else if(config->nspinup==0 && header.firstyear!=config->firstyear-1 &&
      isroot(*config))
     fprintf(stderr,
             "WARNING005: Year of restartfile=%d not equal start year=%d-1.\n",
