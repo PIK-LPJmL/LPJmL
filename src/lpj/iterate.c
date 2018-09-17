@@ -42,7 +42,7 @@ static Bool ischeckpoint;
 
 static void handler(int UNUSED(num))
 {
-  ischeckpoint=TRUE;
+  ischeckpoint=TRUE; /* SIGTERM received, set global flag to TRUE */
 } /* of 'handler' */
 
 int iterate(Outputfile *output,  /**< Output file data */
@@ -57,11 +57,6 @@ int iterate(Outputfile *output,  /**< Output file data */
   Flux flux;
   int year,landuse_year,wateruse_year,startyear;
   Bool rc;
-  ischeckpoint=FALSE;
-#ifndef _WIN32
-  if(config->checkpoint_restart_filename!=NULL)
-    signal(SIGTERM,handler);
-#endif
 
 #ifdef STORECLIMATE
   Climatedata store,data_save;
@@ -80,6 +75,11 @@ int iterate(Outputfile *output,  /**< Output file data */
     rc=initsoiltemp(input.climate,grid,config);
     failonerror(config,rc,INITSOILTEMP_ERR,"Initialization of soil temperature failed");
   }
+  ischeckpoint=FALSE;
+#ifndef _WIN32
+  if(config->checkpoint_restart_filename!=NULL) 
+    signal(SIGTERM,handler); /* enable checkpointing by setting signal handler */
+#endif
   startyear=(config->ischeckpoint) ? config->checkpointyear+1 : config->firstyear-config->nspinup;
   /* main loop over spinup + simulation years  */
   if(isroot(*config) && config->ischeckpoint)
