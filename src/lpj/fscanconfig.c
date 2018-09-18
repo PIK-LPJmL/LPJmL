@@ -121,7 +121,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
  {
   String name;
   LPJfile input;
-  int restart,endgrid,israndom,wateruse,grassfix;
+  int restart,endgrid,israndom,wateruse,grassfix,i;
   Verbosity verbose;
 
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
@@ -553,12 +553,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->restart_filename=NULL;
   if(iskeydefined(file,"checkpoint_filename"))
   {
-    if(config->n_out)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR290: Checkpointing with output files is not supported.\n");
-      return TRUE;
-    }
     fscanname(file,name,"checkpoint_filename");
     config->checkpoint_restart_filename=addpath(name,config->restartdir);
   }

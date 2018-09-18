@@ -57,6 +57,32 @@ Bool create_pft_netcdf(Netcdf *cdf,
     return TRUE;
   }
   cdf->missing_value=config->missing_value;
+  if(config->ischeckpoint)
+  {
+    if(cdf->state==ONEFILE || cdf->state==CREATE)
+    {
+#ifdef USE_NETCDF4
+      rc=nc_open(filename,NC_WRITE|(config->compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
+#else
+      rc=nc_open(filename,NC_WRITE|NC_CLOBBER,&cdf->ncid);
+#endif
+      if(rc)
+      {
+        fprintf(stderr,"ERROR426: Cannot open file '%s': %s.\n",
+                filename,nc_strerror(rc));
+        return TRUE;
+      }
+    }
+    rc=nc_inq_varid(cdf->ncid,name,&cdf->varid);
+    if(rc)
+    {
+      fprintf(stderr,"ERROR426: Cannot get variable '%s': %s.\n",
+              name,nc_strerror(rc));
+      return TRUE;
+    }
+    cdf->index=array;
+    return FALSE;
+  }
   nyear=config->lastyear-config->firstyear+1;
   lon=newvec(float,array->nlon);
   if(lon==NULL)

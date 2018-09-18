@@ -109,56 +109,66 @@ static void openfile(Outputfile *output,const Cell grid[],
     switch(config->outputvars[i].filename.fmt)
     {
        case CLM:
-        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
-          printfcreateerr(config->outputvars[i].filename.name);
+        if(config->ischeckpoint)
+        {
+          if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"ab"))==NULL)
+            printfopenerr(config->outputvars[i].filename.name);
+          else
+            output->files[config->outputvars[i].id].isopen=TRUE;
+          }
         else
         {
-          output->files[config->outputvars[i].id].isopen=TRUE;
-          header.firstyear=config->firstyear;
-          if(config->outputvars[i].id==ADISCHARGE)
-            header.ncell=config->nall;
-          else
-            header.ncell=config->total;
-          header.firstcell=config->firstgrid;
-          header.cellsize_lon=(float)config->resolution.lon;
-          header.cellsize_lat=(float)config->resolution.lat;
-          header.scalar=1;
-          if(config->outputvars[i].id==GRID)
-          {
-            header.datatype=LPJ_SHORT;
-            header.nbands=2;
-            header.nyear=1;
-            header.order=CELLYEAR;
-            fwriteheader(output->files[config->outputvars[i].id].fp.file,
-                         &header,LPJGRID_HEADER,LPJGRID_VERSION);
-          }
+          if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
+            printfcreateerr(config->outputvars[i].filename.name);
           else
           {
-            header.order=CELLSEQ;
-            header.nbands=getnyear(config->outputvars[i].id);
-            if(header.nbands==1)
-              header.nbands=outputsize(config->outputvars[i].id,
-                                       config->npft[GRASS]+config->npft[TREE],
-                                       config->nbiomass,
-                                       config->npft[CROP]);
-            header.nyear=config->lastyear-config->firstyear+1;
-            if(config->outputvars[i].id==SDATE || config->outputvars[i].id==HDATE || config->outputvars[i].id==SEASONALITY)
-              header.datatype=LPJ_SHORT;
+            output->files[config->outputvars[i].id].isopen=TRUE;
+            header.firstyear=config->firstyear;
+            if(config->outputvars[i].id==ADISCHARGE)
+              header.ncell=config->nall;
             else
-              header.datatype=LPJ_FLOAT;
-            fwriteheader(output->files[config->outputvars[i].id].fp.file,
-                         &header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
+              header.ncell=config->total;
+            header.firstcell=config->firstgrid;
+            header.cellsize_lon=(float)config->resolution.lon;
+            header.cellsize_lat=(float)config->resolution.lat;
+            header.scalar=1;
+            if(config->outputvars[i].id==GRID)
+            {
+              header.datatype=LPJ_SHORT;
+              header.nbands=2;
+              header.nyear=1;
+              header.order=CELLYEAR;
+              fwriteheader(output->files[config->outputvars[i].id].fp.file,
+                           &header,LPJGRID_HEADER,LPJGRID_VERSION);
+            }
+            else
+            {
+              header.order=CELLSEQ;
+              header.nbands=getnyear(config->outputvars[i].id);
+              if(header.nbands==1)
+                header.nbands=outputsize(config->outputvars[i].id,
+                                         config->npft[GRASS]+config->npft[TREE],
+                                         config->nbiomass,
+                                         config->npft[CROP]);
+              header.nyear=config->lastyear-config->firstyear+1;
+              if(config->outputvars[i].id==SDATE || config->outputvars[i].id==HDATE || config->outputvars[i].id==SEASONALITY)
+                header.datatype=LPJ_SHORT;
+              else
+                header.datatype=LPJ_FLOAT;
+              fwriteheader(output->files[config->outputvars[i].id].fp.file,
+                           &header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
+            }
           }
         }
         break;
       case RAW:
-        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
+        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,(config->ischeckpoint) ? "ab" : "wb"))==NULL)
           printfcreateerr(config->outputvars[i].filename.name);
         else
           output->files[config->outputvars[i].id].isopen=TRUE;
         break;
       case TXT:
-        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"w"))==NULL)
+        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,(config->ischeckpoint) ? "a" : "w"))==NULL)
           printfcreateerr(config->outputvars[i].filename.name);
         else
           output->files[config->outputvars[i].id].isopen=TRUE;

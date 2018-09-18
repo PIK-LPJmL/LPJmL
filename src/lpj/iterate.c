@@ -241,6 +241,7 @@ int iterate(Outputfile *output,  /**< Output file data */
         if(isroot(*config))
           printf("SIGTERM catched, restart file '%s' written.\n",config->checkpoint_restart_filename);
         fwriterestart(grid,npft,ncft,year,config->checkpoint_restart_filename,config); /* write restart file */
+        fcloseoutput(output,config);
 #ifdef USE_MPI
         MPI_Finalize();
 #endif
