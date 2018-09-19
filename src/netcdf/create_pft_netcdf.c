@@ -57,10 +57,12 @@ Bool create_pft_netcdf(Netcdf *cdf,
     return TRUE;
   }
   cdf->missing_value=config->missing_value;
+  cdf->index=array;
   if(config->ischeckpoint)
   {
     if(cdf->state==ONEFILE || cdf->state==CREATE)
     {
+      /* start from checkpoint file, output files exist and have to be opened */
 #ifdef USE_NETCDF4
       rc=nc_open(filename,NC_WRITE|(config->compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
 #else
@@ -80,7 +82,6 @@ Bool create_pft_netcdf(Netcdf *cdf,
               name,nc_strerror(rc));
       return TRUE;
     }
-    cdf->index=array;
     return FALSE;
   }
   nyear=config->lastyear-config->firstyear+1;
@@ -152,7 +153,6 @@ Bool create_pft_netcdf(Netcdf *cdf,
       free(lat);
       return TRUE;
   }
-  cdf->index=array;
 #ifdef USE_NETCDF4
   rc=nc_create(filename,NC_CLOBBER|NC_NETCDF4,&cdf->ncid);
 #else
