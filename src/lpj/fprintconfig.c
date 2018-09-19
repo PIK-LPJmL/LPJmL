@@ -346,7 +346,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   if(iswriterestart(config))
     fprintf(file,"Writing restart file '%s' after year %d.\n",
             config->write_restart_filename,config->restartyear);
-  if(config->checkpoint_restart_filename!=NULL)
+  if(ischeckpointrestart(config))
     fprintf(file,"Checkpoint restart file: '%s'.\n",
             config->checkpoint_restart_filename);
 

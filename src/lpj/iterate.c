@@ -34,8 +34,6 @@
 #ifndef _WIN32
 #include <unistd.h>
 #include <signal.h>
-#else
-#define unlink _unlink
 #endif
 
 static Bool ischeckpoint;
@@ -77,7 +75,7 @@ int iterate(Outputfile *output,  /**< Output file data */
   }
   ischeckpoint=FALSE;
 #ifndef _WIN32
-  if(config->checkpoint_restart_filename!=NULL) 
+  if(ischeckpointrestart(config)) 
     signal(SIGTERM,handler); /* enable checkpointing by setting signal handler */
 #endif
   startyear=(config->ischeckpoint) ? config->checkpointyear+1 : config->firstyear-config->nspinup;
@@ -231,7 +229,7 @@ int iterate(Outputfile *output,  /**< Output file data */
 #endif
     if(iswriterestart(config) && year==config->restartyear)
       fwriterestart(grid,npft,ncft,year,config->write_restart_filename,config); /* write restart file */
-    if(year<config->lastyear && config->checkpoint_restart_filename!=NULL)
+    if(year<config->lastyear && ischeckpointrestart(config))
     {
 #ifdef USE_MPI
       MPI_Bcast(&ischeckpoint,1,MPI_INT,0,config->comm);
