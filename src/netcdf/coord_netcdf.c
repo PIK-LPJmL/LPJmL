@@ -22,6 +22,8 @@
 #define error(var,rc) if(rc){ if(isout) fprintf(stderr,"ERROR403: Cannot read '%s' in '%s': %s.\n",var,filename,nc_strerror(rc)); nc_close(coord->ncid); free(coord); return NULL;}
 #endif
 
+#define MISSING_VALUE_FLOAT -9999.
+
 struct coord_netcdf
 {
   int ncid;
@@ -32,6 +34,7 @@ struct coord_netcdf
     Byte b;
     int i;
     short s;
+    float f;
   } missing_value;
   float *lon;
   float *lat;
@@ -58,6 +61,7 @@ int numcoord_netcdf(const Coord_netcdf coord)
   int count;
   size_t i;
   short *soil;
+  float *fsoil;
   int *isoil,rc;
   Byte *bsoil;
   count=0;
@@ -83,6 +87,25 @@ int numcoord_netcdf(const Coord_netcdf coord)
         if(soil[i]!=coord->missing_value.s)
           count++;
       free(soil);
+      break;
+    case LPJ_FLOAT:
+      fsoil=newvec(float,coord->lat_len*coord->lon_len);
+      if(fsoil==NULL)
+      {
+        printallocerr("soil");
+        return -1;
+      }
+      if(rc=nc_get_var_float(coord->ncid,coord->varid,fsoil))
+      {
+        fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
+                nc_strerror(rc));
+        free(fsoil);
+        return -1;
+      }
+      for(i=0;i<coord->lat_len*coord->lon_len;i++)
+        if(fsoil[i]!=coord->missing_value.f)
+          count++;
+      free(fsoil);
       break;
     case LPJ_INT:
       isoil=newvec(int,coord->lat_len*coord->lon_len);
@@ -136,6 +159,7 @@ int *getindexcoord_netcdf(const Coord_netcdf coord)
   size_t i;
   int *index;
   short *soil;
+  float *fsoil;
   int *isoil;
   Byte *bsoil;
   count=0;
@@ -165,6 +189,26 @@ int *getindexcoord_netcdf(const Coord_netcdf coord)
         else
           index[i]=count++;
       free(soil);
+      break;
+   case LPJ_FLOAT:
+      fsoil=newvec(float,coord->lat_len*coord->lon_len);
+      if(fsoil==NULL)
+      {
+        free(index);
+        return NULL;
+      }
+      if(nc_get_var_float(coord->ncid,coord->varid,fsoil))
+      {
+        free(index);
+        free(fsoil);
+        return NULL;
+      }
+      for(i=0;i<coord->lat_len*coord->lon_len;i++)
+        if(fsoil[i]==coord->missing_value.f)
+          index[i]=-1;
+        else
+          index[i]=count++;
+      free(fsoil);
       break;
     case LPJ_INT:
       isoil=newvec(int,coord->lat_len*coord->lon_len);
@@ -220,6 +264,7 @@ Bool seekcoord_netcdf(Coord_netcdf coord,int pos)
   short soil;
   int isoil,rc;
   Byte bsoil;
+  float fsoil;
   int count;
   count=0;
   if(coord==NULL)
@@ -237,6 +282,25 @@ Bool seekcoord_netcdf(Coord_netcdf coord,int pos)
             return TRUE;
           }
           if(soil!=coord->missing_value.s)
+          {
+            if(count==pos)
+              return FALSE;
+            else
+              count++;
+          }
+        }
+      break;
+    case LPJ_FLOAT:
+      for(coord->offsets[0]=0;coord->offsets[0]<coord->lat_len;coord->offsets[0]++)
+        for(coord->offsets[1]=0;coord->offsets[1]<coord->lon_len;coord->offsets[1]++)
+        {
+          if(rc=nc_get_vara_float(coord->ncid,coord->varid,coord->offsets,counts,&fsoil))
+          {
+            fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
+                    nc_strerror(rc));
+            return TRUE;
+          }
+          if(fsoil!=coord->missing_value.f)
           {
             if(count==pos)
               return FALSE;
@@ -294,6 +358,7 @@ Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned in
   short data;
   int idata,rc;
   Byte bdata;
+  float fdata;
   size_t counts[2]={1,1};
   if(coord==NULL || c==NULL)
     return TRUE;
@@ -323,6 +388,36 @@ Bool readcoord_netcdf(Coord_netcdf coord,Coord *c,const Coord *resol,unsigned in
              else
                coord->offsets[1]++;
              *soil=data;
+             return FALSE;
+          }
+        }
+        coord->offsets[1]=0;
+      }
+      break;
+    case LPJ_FLOAT:
+      for(;coord->offsets[0]<coord->lat_len;coord->offsets[0]++)
+      {
+        for(;coord->offsets[1]<coord->lon_len;coord->offsets[1]++)
+        {
+          if(rc=nc_get_vara_float(coord->ncid,coord->varid,coord->offsets,counts,&fdata))
+          {
+            fprintf(stderr,"ERROR410: Cannot read soilcode: %s.\n",
+                    nc_strerror(rc));
+            return TRUE;
+          }
+          if(fdata!=coord->missing_value.f)
+          {
+             c->lat=coord->lat[coord->offsets[0]];
+             c->lon=coord->lon[coord->offsets[1]];
+             c->area=cellarea(c,resol);
+             if(coord->offsets[1]==coord->lon_len-1)
+             {
+               coord->offsets[1]=0;
+               coord->offsets[0]++;
+             }
+             else
+               coord->offsets[1]++;
+             *soil=(int)fdata;
              return FALSE;
           }
         }
@@ -434,7 +529,8 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     {
       if(isout)
         fprintf(stderr,"ERROR405: No variable found in '%s'.\n",filename);
-      closecoord_netcdf(coord);
+      nc_close(coord->ncid);
+      free(coord);
       return NULL;
     }
   }
@@ -443,7 +539,8 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     if(isout)
       fprintf(stderr,"ERROR406: Cannot find variable '%s' in '%s'.\n",
               var,filename);
-    closecoord_netcdf(coord);
+    nc_close(coord->ncid);
+    free(coord);
     return NULL;
   }
   nc_inq_varndims(coord->ncid,coord->varid,&ndims);
@@ -452,14 +549,16 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     if(isout)
       fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
               ndims,filename);
-    closecoord_netcdf(coord);
+    nc_close(coord->ncid);
+    free(coord);
     return NULL;
   }
   dimids=newvec(int,ndims);
   if(dimids==NULL)
   {
     printallocerr("dimids");
-    closecoord_netcdf(coord);
+    nc_close(coord->ncid);
+    free(coord);
     return NULL;
   }
   nc_inq_vardimid(coord->ncid,coord->varid,dimids);
@@ -471,7 +570,8 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
               name,filename,nc_strerror(rc));
     free(dimids);
-    closecoord_netcdf(coord);
+    nc_close(coord->ncid);
+    free(coord);
     return NULL;
   }
   nc_inq_dimlen(coord->ncid,dimids[ndims-1],&coord->lon_len);
@@ -526,8 +626,6 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
     if(isout)
       fprintf(stderr,"ERROR404: Cannot read latitude in '%s': %s.\n",
               filename,nc_strerror(rc));
-    free(coord->lon);
-    free(coord->lat);
     closecoord_netcdf(coord);
     return NULL;
   }
@@ -543,6 +641,16 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
           coord->missing_value.i=MISSING_VALUE_INT;
       }
       coord->type=LPJ_INT;
+      break;
+    case NC_FLOAT:
+      rc=nc_get_att_float(coord->ncid,coord->varid,"missing_value",&coord->missing_value.f);
+      if(rc)
+      {
+        rc=nc_get_att_float(coord->ncid,coord->varid,"_FillValue",&coord->missing_value.f);
+        if(rc)
+          coord->missing_value.f=MISSING_VALUE_FLOAT;
+      }
+      coord->type=LPJ_FLOAT;
       break;
     case NC_SHORT:
       rc=nc_get_att_short(coord->ncid,coord->varid,"missing_value",&coord->missing_value.s);
@@ -568,8 +676,6 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
       if(isout)
         fprintf(stderr,"ERROR428: Invalid data type of %s in '%s'.\n",
                 (var==NULL) ? name :var,filename);
-      free(coord->lon);
-      free(coord->lat);
       closecoord_netcdf(coord);
       return NULL;
   }
