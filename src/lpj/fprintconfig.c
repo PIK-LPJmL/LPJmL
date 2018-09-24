@@ -359,7 +359,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
             config->image_outport,config->wait_image);
 
 #endif
-  fprintf(file,"Random Seed: %d\n",config->seed);
+  if(config->wet_filename.name!=NULL)
+    fprintf(file,"Random seed: %d\n",config->seed);
   if(config->n_out)
   {
     size=strlen("Variable");
