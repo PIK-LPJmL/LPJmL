@@ -80,7 +80,7 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,con
     return TRUE;
   }
   return FALSE;
-} /* of 'readfilename2' */
+} /* of 'readclimatefilename' */
 
 
 static void divide(int *start, /**< index of first grid cell */
@@ -121,7 +121,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
  {
   String name;
   LPJfile input;
-  int restart,endgrid,israndom,wateruse,grassfix,i;
+  int restart,endgrid,israndom,wateruse,grassfix;
   Verbosity verbose;
 
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
@@ -159,7 +159,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   fscanint2(file,&config->fire,"fire");
   if(config->fire<NO_FIRE || config->fire>SPITFIRE_TMAX)
   {
-    if(isroot(*config))
+    if(verbose)
       fprintf(stderr,"ERROR166: Invalid value for fire=%d in line %d of '%s'.\n",
               config->fire,getlinecount(),getfilename());
     return TRUE;
@@ -175,7 +175,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   fscanint2(file,&config->prescribe_landcover,"prescribe_landcover");
   if(config->prescribe_landcover<NO_LANDCOVER || config->prescribe_landcover>LANDCOVERFPC)
   {
-    if(isroot(*config))
+    if(verbose)
       fprintf(stderr,"ERROR166: Invalid value for prescribe landcover=%d in line %d of '%s'.\n",
               config->prescribe_landcover,getlinecount(),getfilename());
     return TRUE;
@@ -230,7 +230,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     fscanbool2(file,&wateruse,"wateruse");
     if(wateruse && config->withlanduse==NO_LANDUSE)
     {
-      if(isroot(*config))
+      if(verbose)
         fputs("ERROR224: Wateruse without landuse set.\n",stderr);
       return TRUE;
     }
