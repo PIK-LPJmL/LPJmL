@@ -109,7 +109,7 @@ static void openfile(Outputfile *output,const Cell grid[],
     switch(config->outputvars[i].filename.fmt)
     {
        case CLM:
-        if(config->ischeckpoint)
+        if(config->ischeckpoint && config->outputvars[i].id!=GRID  && config->outputvars[i].id!=COUNTRY && config->outputvars[i].id!=REGION)
         {
           if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"ab"))==NULL)
             printfopenerr(config->outputvars[i].filename.name);
@@ -162,13 +162,13 @@ static void openfile(Outputfile *output,const Cell grid[],
         }
         break;
       case RAW:
-        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,(config->ischeckpoint) ? "ab" : "wb"))==NULL)
+        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,(config->ischeckpoint && config->outputvars[i].id!=GRID  && config->outputvars[i].id!=COUNTRY && config->outputvars[i].id!=REGION) ? "ab" : "wb"))==NULL)
           printfcreateerr(config->outputvars[i].filename.name);
         else
           output->files[config->outputvars[i].id].isopen=TRUE;
         break;
       case TXT:
-        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,(config->ischeckpoint) ? "a" : "w"))==NULL)
+        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,(config->ischeckpoint && config->outputvars[i].id!=GRID  && config->outputvars[i].id!=COUNTRY && config->outputvars[i].id!=REGION) ? "a" : "w"))==NULL)
           printfcreateerr(config->outputvars[i].filename.name);
         else
           output->files[config->outputvars[i].id].isopen=TRUE;
