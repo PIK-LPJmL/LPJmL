@@ -495,7 +495,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
                    swap_restart,config))
       {
         fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                config->restart_filename,i+config->startgrid);
+                (config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,i+config->startgrid);
         return NULL;
       }
       if(!grid[i].skip)
