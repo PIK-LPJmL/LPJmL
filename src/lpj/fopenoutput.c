@@ -33,7 +33,9 @@ static int getnyear(int index)
   return 1;
 } /* of 'getnyear' */
 
-static size_t getsize(int index,const Config *config)
+static size_t getsize(int index,           /* index of output file */
+                      const Config *config /* LPJ configuration */
+                     )                     /* get size of output written in one year */
 {
   size_t size;
   size=getnyear(config->outputvars[index].id);
@@ -41,7 +43,9 @@ static size_t getsize(int index,const Config *config)
                    config->npft[GRASS]+config->npft[TREE],
                    config->nbiomass,
                    config->npft[CROP]);
-  if(config->outputvars[index].id==SDATE || config->outputvars[index].id==HDATE || config->outputvars[index].id==SEASONALITY)
+  if(config->outputvars[index].id==SDATE 
+     || config->outputvars[index].id==HDATE
+     || config->outputvars[index].id==SEASONALITY)
     size*=sizeof(short);
   else
     size*=sizeof(float);
