@@ -27,7 +27,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   Real balanceW,totw;
   Stand *stand;
   String line;
-  int s,i;
+  int s,i,startyear;
 
 #ifdef IMAGE
   int p;
@@ -50,7 +50,11 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   balanceC=cell->balance.nep-cell->output.firec-cell->output.flux_firewood+cell->output.flux_estab-cell->output.flux_harvest-cell->balance.biomass_yield-delta_totc;
   /* for IMAGE but can also be used without IMAGE */
   balanceC-=cell->output.deforest_emissions+cell->output.prod_turnover+cell->output.trad_biofuel;
-  if(year>config->firstyear+1 && fabs(balanceC)>1)
+  if(config->ischeckpoint)
+    startyear=max(config->firstyear,config->checkpointyear)+1;
+  else
+    startyear=config->firstyear+1;
+  if(year>startyear && fabs(balanceC)>1)
   {
 #ifdef IMAGE
     foreachstand(stand,s,cell->standlist)
@@ -95,7 +99,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
        totw+=cell->ml.resdata->dfout_irrigation_daily[i]/cell->coord.area;
   }
   balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux;
-  if(year>config->firstyear+1 && fabs(balanceW)>1.5)
+  if(year>startyear && fabs(balanceW)>1.5)
    // fail(INVALID_WATER_BALANCE_ERR,TRUE,"y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f\n",
     fprintf(stderr,"y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceW,cell->balance.totw,totw,

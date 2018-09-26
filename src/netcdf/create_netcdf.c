@@ -49,6 +49,7 @@ Bool create_netcdf(Netcdf *cdf,
     return TRUE;
   }
   cdf->missing_value=config->missing_value;
+  cdf->index=array;
   nyear=config->lastyear-config->firstyear+1;
   if(cdf->state==APPEND || cdf->state==CLOSE)
   {
@@ -59,6 +60,33 @@ Bool create_netcdf(Netcdf *cdf,
      cdf->time_var_id=cdf->root->time_var_id;
      cdf->lat_var_id=cdf->root->lat_var_id;
      cdf->lon_var_id=cdf->root->lon_var_id;
+  }
+  if(config->ischeckpoint)
+  {
+    if(cdf->state==ONEFILE || cdf->state==CREATE)
+    {
+      /* start from checkpoint file, output files exist and have to be opened */
+#ifdef USE_NETCDF4
+      rc=nc_open(filename,NC_WRITE|(config->compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
+#else
+      rc=nc_open(filename,NC_WRITE|NC_CLOBBER,&cdf->ncid);
+#endif
+      if(rc)
+      {
+        fprintf(stderr,"ERROR426: Cannot open file '%s': %s.\n",
+                filename,nc_strerror(rc));
+        return TRUE;
+      }
+    }
+    /* get id of output variable */
+    rc=nc_inq_varid(cdf->ncid,name,&cdf->varid);
+    if(rc)
+    {
+      fprintf(stderr,"ERROR426: Cannot get variable '%s': %s.\n",
+              name,nc_strerror(rc));
+      return TRUE;
+    }
+    return FALSE;
   }
   if(cdf->state==ONEFILE || cdf->state==CLOSE)
   {
@@ -121,7 +149,6 @@ Bool create_netcdf(Netcdf *cdf,
         return TRUE;
     }
   }
-  cdf->index=array;
   if(cdf->state==ONEFILE || cdf->state==CREATE)
   {
 #ifdef USE_NETCDF4

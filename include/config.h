@@ -195,6 +195,7 @@ extern void fprintincludes(FILE *,const char *,int,char **);
 /* Definition of macros */
 
 #define printconfig(config,npft,ncft) fprintconfig(stdout,config,npft,ncft)
+#define ischeckpointrestart(config) ((config)->checkpoint_restart_filename!=NULL)
 #define iswriterestart(config) ((config)->write_restart_filename!=NULL)
 #define isreadrestart(config) ((config)->restart_filename!=NULL)
 #ifdef USE_MPI

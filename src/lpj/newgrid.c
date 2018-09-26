@@ -272,7 +272,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   }
   config->initsoiltemp=FALSE;
   /* If FROM_RESTART open restart file */
-  config->ischeckpoint=config->checkpoint_restart_filename!=NULL  && getfilesize(config->checkpoint_restart_filename)!=-1;
+  config->ischeckpoint=ischeckpointrestart(config) && getfilesize(config->checkpoint_restart_filename)!=-1;
   if(config->restart_filename==NULL && !config->ischeckpoint)
   {
     file_restart=NULL;

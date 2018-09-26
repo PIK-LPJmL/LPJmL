@@ -22,14 +22,18 @@ void check_balance(Flux flux,           /**< global carbon and water fluxes */
 {
 
   Real balance=0;
+  int startyear;
 
   if(config->river_routing)
     balance=flux.prec+flux.wd_unsustainable-flux.evap-flux.transp-flux.interc-flux.evap_lake-flux.evap_res
             -flux.discharge-flux.conv_loss_evap-flux.delta_surface_storage-flux.delta_soil_storage-flux.wateruse;
 
   balance=(flux.area>0) ? balance/flux.area : 0.0;
-
-  if(year>config->firstyear+1 && fabs(balance)>1e-3)
+  if(config->ischeckpoint)
+    startyear=max(config->firstyear,config->checkpointyear)+1;
+  else
+    startyear=config->firstyear+1;
+  if(year>startyear && fabs(balance)>1e-3)
   {
     fail(INVALID_WATER_BALANCE_ERR,TRUE,"y: %d GlobW_BALANCE-error: %.5f prec:%.2f wd_unsustainable:%.2f vapour_flux:%.2f discharge:%.2f delta_storage:%.2f\n",
          year,balance*flux.area,flux.prec,flux.wd_unsustainable,
