@@ -79,7 +79,7 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
   if(restartheader.landuse && (config->withlanduse==NO_LANDUSE))
   {
     if(isroot(*config))
-      fputs("ERROR180: Land-use setting is different in restart file.\n",stderr);
+      fprintf(stderr,"ERROR180: Land-use setting is different in restart file '%s'.\n",filename);
     fclose(file);
     return NULL;
   }
@@ -111,7 +111,17 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
     return NULL;
   }
   if(config->ischeckpoint)
+  {
     config->checkpointyear=header.firstyear;
+    if(config->checkpointyear<config->firstyear-config->nspinup 
+       || config->checkpointyear>config->lastyear)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR233: Year %d in checkpoint file '%s' outside simulation years.\n",config->checkpointyear,filename);
+      fclose(file);
+      return NULL;
+    }
+  }
   else if(config->nspinup==0 && header.firstyear!=config->firstyear-1 &&
      isroot(*config))
     fprintf(stderr,
