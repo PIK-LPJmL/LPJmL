@@ -157,6 +157,7 @@ then
  
 #SBATCH --ntasks=$ntask
 #SBATCH --qos=$class
+#SBATCH --signal=15@180
 #SBATCH -J LPJmL40
 EOF
 echo "#SBATCH --comment=\"LPJmL Version" $(cat $LPJROOT/VERSION) "args:" $args"\"" >>slurm.jcf
