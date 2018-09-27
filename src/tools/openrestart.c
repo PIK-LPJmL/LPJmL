@@ -55,7 +55,7 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
     fclose(file);
     return NULL;
   }
-  if(header.cellsize_lon!=config->resolution.lon)
+  if(fabs(header.cellsize_lon-config->resolution.lon)/config->resolution.lon>1e-3)
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR154: Cell size longitude %g different from %g in %s file '%s'.\n",
@@ -63,7 +63,7 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
     fclose(file);
     return NULL;
   }
-  if(header.cellsize_lat!=config->resolution.lat)
+  if(fabs(header.cellsize_lat-config->resolution.lat)/config->resolution.lat>1e-3)
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR154: Cell size latitude %g different from %g in %s file '%s'.\n",
