@@ -148,6 +148,18 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     return TRUE;
   }
 #endif
+  if(iskeydefined(&lpjfile,"version"))
+  {
+    if(fscanstring(&lpjfile,s,"version",verbosity))
+    {
+      if(verbosity)
+        fputs("ERROR121: Cannot read version.\n",stderr);
+      closeconfig(&lpjfile);
+      return TRUE;
+    }
+    if(verbosity && strncmp(s,LPJ_VERSION,strlen(s)))
+      fprintf(stderr,"WARNING025: Expected LPJ version '%s' does not match '" LPJ_VERSION "'.\n",s);
+  }
   /* Read LPJ configuration */
   if(fscanconfig(config,&lpjfile,scanfcn,ntypes,nout))
   {

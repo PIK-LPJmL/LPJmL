@@ -30,6 +30,7 @@
 
 "sim_name" : "LPJ run with PNV",   /* Simulation description */
 "sim_id"   : LPJ,         /* LPJML Simulation with natural vegetation only */
+"version"  : "4.0",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
