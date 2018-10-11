@@ -45,6 +45,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   Real aet_stand[LASTLAYER];
   Real green_transp[LASTLAYER];
   Real evap,evap_blue,rd,gpp,frac_g_evap,runoff,wet_all,intercept,sprink_interc;
+  Real rw_apply; /*applied irrigation water from rainwater harvesting storage, counted as green water */
   Real *wet; /* wet from pftlist */
   Real return_flow_b; /* irrigation return flows from surface runoff, lateral runoff and percolation (mm)*/
   Real cover_stand;
@@ -63,7 +64,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   data=stand->data;
   negbm=FALSE;
   output=&stand->cell->output;
-  cover_stand=intercep_stand=intercep_stand_blue=wet_all=intercept=sprink_interc=rainmelt=irrig_apply=0.0;
+  cover_stand=intercep_stand=intercep_stand_blue=wet_all=rw_apply=intercept=sprink_interc=rainmelt=irrig_apply=0.0;
   evap=evap_blue=runoff=return_flow_b=0.0;
   if(getnpft(&stand->pftlist)>0)
   {
@@ -228,16 +229,20 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   irrig_apply-=intercep_stand_blue;
   rainmelt-=(intercep_stand-intercep_stand_blue);
 
+  /* rain-water harvesting*/
+  if(!data->irrigation && config->rw_manage && rainmelt<5)
+    rw_apply=rw_irrigation(stand,gp_stand,wet,eeq); /* Note: RWH supplementary irrigation is here considered green water */
+
   /* INFILTRATION and PERCOLATION */
   if(irrig_apply>epsilon)
   {
-    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b);
+    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,config->rw_manage);
     /* count irrigation events*/
     pft=getpft(&stand->pftlist,0);
     output->cft_irrig_events[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b);
+  runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,config->rw_manage);
 
   foreachpft(pft,p,&stand->pftlist)
   {

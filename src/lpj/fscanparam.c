@@ -78,6 +78,15 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(&f,&param.sat_level[3],"saturation_level_drip");
     fscanparamreal(&f,&param.drip_evap,"drip_evap_reduction");
     fscanparamreal(&f,&param.residues_in_soil,"residues_in_soil");
+    if(config->rw_manage)
+    {
+      fscanparamreal(&f,&param.esoil_reduction,"esoil_reduction");
+      fscanparamreal(&f,&param.rw_buffer_max,"rw_buffer_max");
+      fscanparamreal(&f,&param.frac_ro_stored,"frac_ro_stored");
+      fscanparamreal(&f,&param.rw_irrig_thres,"rw_irrig_thres");
+      fscanparamreal(&f,&param.soil_infil,"soil_infil");
+      fscanparamreal(&f,&param.yield_gap_bridge,"yield_gap_bridge");
+    }
   }
   param.k_litter10/=NDAYYEAR;
   param.k_soil10.fast/=NDAYYEAR;

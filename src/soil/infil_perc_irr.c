@@ -19,7 +19,8 @@
 
 Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
                     Real infil,         /**< infiltration water (mm) */
-                    Real *return_flow_b /**< blue water return flow (mm) */
+                    Real *return_flow_b, /**< blue water return flow (mm) */
+                    Bool rw_manage       /* do rain water management? (TRUE/FALSE) */
                    )                    /** \return water runoff (mm) */
 {
   Real runoff;
@@ -41,6 +42,13 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
   influx=grunoff=perc=frac_g_influx=freewater=0.0;
   runoff_surface=runoff=outflux=0;
   soil_infil=2;
+   /*infiltration*/
+  if(rw_manage)
+    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE)
+      soil_infil=param.soil_infil; /* parameter to increase soil infiltration rate */
+  if(soil_infil<2)
+    soil_infil=2;
+
 
   for(l=0;l<NSOILLAYER;l++)
   {

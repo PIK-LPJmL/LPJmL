@@ -220,6 +220,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fscanbool2(file,&config->intercrop,"intercrop");
       fscanbool2(file,&config->remove_residuals,"remove_residuals");
       fscanbool2(file,&config->residues_fire,"residues_fire");
+      fscanbool2(file,&config->rw_manage,"rw_manage");
       fscanint2(file,&config->laimax_interpolate,"laimax_interpolate");
       if(config->laimax_interpolate==CONST_LAI_MAX)
         fscanreal2(file,&config->laimax,"laimax");

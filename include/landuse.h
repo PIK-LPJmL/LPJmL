@@ -98,6 +98,7 @@ extern Real sowing(Cell *,Real,int,int,int,int,const Config *);
 extern void deforest(Cell *,Real,const Pftpar [],Bool,int,Bool,Bool,Bool,int,int,Real);
 extern Real woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Real,Real [],Real);
+extern Real rw_irrigation(Stand *,Real,const Real [],Real);
 extern void irrig_amount_river(Cell *,const Config *);
 extern void irrig_amount(Stand *,Bool,int,int);
 extern void mixsetaside(Stand *,Stand *,Bool);

@@ -65,6 +65,6 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   soil->litter.decomC=0;
 #endif
   soil->YEDOMA=0;
-  soil->snowheight=soil->snowfraction=0;
+  soil->snowheight=soil->snowfraction=soil->rw_buffer=0;
   return (freadreal1(&soil->meanw1,swap,file)!=1);
 } /* of 'freadsoil' */
