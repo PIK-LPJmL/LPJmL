@@ -54,6 +54,7 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   freadreal1(&soil->mean_maxthaw,swap,file);
   freadreal1(&soil->alag,swap,file);
   freadreal1(&soil->amp,swap,file);
+  freadreal1(&soil->rw_buffer,swap,file);
 #ifdef MICRO_HEATING
   foreachsoillayer(l) soil->decomC[l]=soil->micro_heating[l]=0;
 #endif
@@ -65,6 +66,6 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   soil->litter.decomC=0;
 #endif
   soil->YEDOMA=0;
-  soil->snowheight=soil->snowfraction=soil->rw_buffer=0;
+  soil->snowheight=soil->snowfraction=0;
   return (freadreal1(&soil->meanw1,swap,file)!=1);
 } /* of 'freadsoil' */
