@@ -217,7 +217,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
 
   /* calculate water balance */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
-               &frac_g_evap);
+               &frac_g_evap,config->rw_manage);
   /* allocation, turnover and harvest AFTER photosynthesis */
   stand->growing_days = 1;
   /* turnover must happen before allocation */

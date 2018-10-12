@@ -84,7 +84,7 @@ extern void cutpfts(Stand *);
 extern Harvest harvest_grass(Stand *,Real);
 extern Real roughnesslength(const Standlist);
 extern void waterbalance(Stand *,Real [BOTTOMLAYER],Real [BOTTOMLAYER],Real *,Real *,Real,Real,
-                         Real,Real *);
+                         Real,Real *,Bool);
 extern Real infil_perc_irr(Stand *,Real,Real *,Bool);
 extern Real infil_perc_rain(Stand *,Real,Real *,Bool);
 extern Real albedo_stand(Stand *);                            
