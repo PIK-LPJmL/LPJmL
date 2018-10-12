@@ -91,7 +91,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   }
 
   /* soil inflow: infiltration and percolation */
-  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b);
+  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,config->rw_manage);
 
   foreachpft(pft,p,&stand->pftlist)
   {

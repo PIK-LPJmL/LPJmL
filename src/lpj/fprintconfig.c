@@ -198,6 +198,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       default:
         len=printsim(file,len,&count,"land use, ");
     } /* of switch */
+    if(config->rw_manage)
+      len=printsim(file,len,&count,"rainwater management, ");
     len=fputstring(file,len,irrig[config->irrig_scenario],78);
     len=fputstring(file,len," irrigation",78);
     if(config->intercrop)

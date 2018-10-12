@@ -44,6 +44,7 @@ Bool fwritesoil(FILE *file, /**< pointer to binary file */
   fwrite1(&soil->mean_maxthaw,sizeof(Real),file);
   fwrite1(&soil->alag,sizeof(Real),file);
   fwrite1(&soil->amp,sizeof(Real),file);
+  fwrite1(&soil->rw_buffer,sizeof(Real),file);
   fwrite1(&soil->meanw1,sizeof(Real),file);
   return FALSE;
 } /* of 'fwritesoil' */

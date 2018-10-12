@@ -62,7 +62,7 @@
 "intercrop" : true,                   /* intercrops on setaside */
 "remove_residuals" : false,           /* remove residuals */
 "residues_fire" : false,              /* fire in residuals */
-
+"rw_manage" : false,                  /* rain water management */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
