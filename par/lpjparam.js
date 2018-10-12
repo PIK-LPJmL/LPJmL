@@ -48,5 +48,11 @@
   "saturation_level_sprink" : 0.55,   /* saturation level sprinkler irrigation*/
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
-  "residues_in_soil" : 0.1            /* minimum residues in soil*/
+  "residues_in_soil" : 0.1,           /* minimum residues in soil*/
+  "esoil_reduction" : 0.0,            /* reduction of soil evaporation */
+  "rw_buffer_max" : 0.0,              /* size of rainwater harvesting tank [mm] */
+  "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */
+  "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
+  "soil_infil" : 2.0,                 /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
+  "yield_gap_bridge" : 0.0            /* factor by which laimax value is closed (7 - country-value)*factor */
 },
