@@ -185,6 +185,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->reservoir=FALSE;
   fscanbool2(file,&config->permafrost,"permafrost");
   config->sdate_option=NO_FIXED_SDATE;
+  config->rw_manage=FALSE;
   if(config->sim_id!=LPJ)
   {
     fscanint2(file,&config->withlanduse,"landuse");
