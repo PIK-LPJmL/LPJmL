@@ -179,7 +179,7 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
 
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
-               &frac_g_evap);
+               &frac_g_evap,config->rw_manage);
 
   if(data->irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
     calc_nir(stand,gp_stand,wet,eeq);

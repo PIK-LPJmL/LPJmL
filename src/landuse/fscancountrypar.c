@@ -24,12 +24,13 @@
 
 int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
                     Countrypar **countrypar, /**< Pointer to countrypar array */
+                    Bool rw_manage,          /**< rain water management options (TRUE/FALSE) */
                     int ncft,                /**< number of CFTs or zero */
                     Verbosity verb           /**< verbosity level (NO_ERR,ERR,VERB) */
                    )                         /** \return number of elements in array */
 {
   LPJfile arr,item;
-  int ncountries,n,id;
+  int i,ncountries,n,id;
   String s;
   Countrypar *country;
   ncountries = 1;
@@ -78,6 +79,10 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
           fprintf(stderr,"ERROR102: Cannot read array 'laimax' for country '%s'.\n",country->name);  
         return 0;
       }
+      /*in case rw_manage: increases laimax by bridge gap factor*/
+      if(rw_manage)
+        for(i=0;i<ncft;i++)
+          country->laimax_cft[i]+=(7-country->laimax_cft[i])*param.yield_gap_bridge;
     }
     else
     {

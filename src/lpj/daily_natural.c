@@ -137,7 +137,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
 
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
-               &frac_g_evap);
+               &frac_g_evap,FALSE);
 
   if(withdailyoutput)
   {
