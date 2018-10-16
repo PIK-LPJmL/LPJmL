@@ -251,7 +251,7 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
           }
           for(i=0;i<size;i++)
           {
-            if(d[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.f)
+            if(d[file->nlon*(i*file->nlat+offsets[1])+offsets[2]]==file->missing_value.d)
             {
               fprintf(stderr,"ERROR423: Missing value for cell=%d (%s) at %s %d.\n",
                       cell+config->startgrid,sprintcoord(line,&grid[cell].coord),isdaily(*file) ? "day" : "month",i+1);
