@@ -22,7 +22,7 @@
 #include "biomass_tree.h"
 #include "biomass_grass.h"
 
-#define PRINTLPJ_VERSION "1.0.017"
+#define PRINTLPJ_VERSION "1.0.018"
 #define NTYPES 3
 #define NSTANDTYPES 9 /* number of stand types */
 #ifdef USE_JSON
@@ -77,10 +77,13 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
   }
   /* If FROM_RESTART open restart file */
   config->count=0;
-  file_restart=openrestart(config->write_restart_filename,config,npft+ncft,&swap);
+  file_restart=openrestart((config->ischeckpoint) ? config->checkpoint_restart_filename : config->write_restart_filename,config,npft+ncft,&swap);
   if(file_restart==NULL)
     return TRUE;
 
+  if(config->ischeckpoint)
+    printf("Printing checkpoint file '%s' for year %d.\n",
+           config->checkpoint_restart_filename,config->checkpointyear);
   for(i=0;i<config->ngridcell;i++)
   {
     if(readcelldata(celldata,&grid.coord,&soilcode,&grid.soilph,&grid.discharge.runoff2ocean_coord,i,config))
@@ -160,6 +163,8 @@ int main(int argc,char **argv)
   Bool rc,isout;
   char *endptr;
   const char *progname;
+  const char *title[4];
+  String line;
   Fscanpftparfcn scanfcn[NTYPES]={fscanpft_grass,fscanpft_tree,fscanpft_crop};
   Standtype standtype[NSTANDTYPES];
 
@@ -168,9 +173,9 @@ int main(int argc,char **argv)
   standtype[SETASIDE_IR]=setaside_ir_stand;
   standtype[AGRICULTURE]=agriculture_stand;
   standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand,
-  standtype[BIOMASS_TREE]=biomass_tree_stand,
-  standtype[BIOMASS_GRASS]=biomass_grass_stand,
+  standtype[GRASSLAND]=grassland_stand;
+  standtype[BIOMASS_TREE]=biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=biomass_grass_stand;
   standtype[KILL]=kill_stand;
 
   progname=strippath(argv[0]);
@@ -190,12 +195,19 @@ int main(int argc,char **argv)
            "end              index of last grid cell to print\n");
     return EXIT_SUCCESS;
   }
-  printf("**** %s Version %s (" __DATE__ ") ****\n",progname,PRINTLPJ_VERSION);
+  snprintf(line,78-10,
+           "%s Version " PRINTLPJ_VERSION " (" __DATE__ ")",progname);
+  title[0]=line;
+  title[1]="Printing restart file for LPJmL Version " LPJ_VERSION;
+  title[2]="(C) Potsdam Institute for Climate Impact Research (PIK),";
+  title[3]="see COPYRIGHT file";
+  banner(title,4,78);
   initconfig(&config);
   if(readconfig(&config,dflt_conf_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
     fail(READ_CONFIG_ERR,FALSE,"Error opening config");
   printf("Simulation: %s\n",config.sim_name);
-  if(config.write_restart_filename==NULL)
+  config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;
+  if(!config.ischeckpoint && config.write_restart_filename==NULL)
   {
     fprintf(stderr,"No restart file written.\n");
     return EXIT_FAILURE;

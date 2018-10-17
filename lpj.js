@@ -196,7 +196,7 @@ ID                         Fmt                    filename
 "lastyear" : 2011, /* last year of simulation */
 "restart" :  true, /* start from restart file */
 "restart_filename" : "restart/restart_1900_nv_stdfire.lpj", /* filename of restart file */
-"write_restart" : false, /* create restart file */
+"write_restart" : false /* do not create restart file */
 
 #endif
 }

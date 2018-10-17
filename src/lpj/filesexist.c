@@ -284,7 +284,16 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkfile(config.co2_filename.name);
   if(config.wet_filename.name!=NULL)
     bad+=checkclmfile(&config,&config.wet_filename);
-  if(config.restart_filename!=NULL)
+  if(ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1)
+  {
+    config.ischeckpoint=TRUE;
+    if(checkrestartfile(&config,config.checkpoint_restart_filename))
+      bad++;
+    else
+      printf("Starting from checkpoint file '%s' in year %d.\n",
+             config.checkpoint_restart_filename,config.checkpointyear);
+  }
+  else if(config.restart_filename!=NULL)
     bad+=checkrestartfile(&config,config.restart_filename);
   if(config.withlanduse!=NO_LANDUSE)
   {

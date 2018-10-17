@@ -56,6 +56,13 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
   influx=grunoff=perc=frac_g_influx=freewater=0.0;
   runoff_surface=runoff=outflux=0;
   soil_infil=2;
+   /*infiltration*/
+  if(config->rw_manage)
+    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE)
+      soil_infil=param.soil_infil; /* parameter to increase soil infiltration rate */
+  if(soil_infil<2)
+    soil_infil=2;
+
 
   for(l=0;l<NSOILLAYER;l++)
   {

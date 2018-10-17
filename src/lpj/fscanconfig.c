@@ -80,7 +80,7 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,con
     return TRUE;
   }
   return FALSE;
-} /* of 'readfilename2' */
+} /* of 'readclimatefilename' */
 
 
 static void divide(int *start, /**< index of first grid cell */
@@ -160,7 +160,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   fscanint2(file,&config->fire,"fire");
   if(config->fire<NO_FIRE || config->fire>SPITFIRE_TMAX)
   {
-    if(isroot(*config))
+    if(verbose)
       fprintf(stderr,"ERROR166: Invalid value for fire=%d in line %d of '%s'.\n",
               config->fire,getlinecount(),getfilename());
     return TRUE;
@@ -176,7 +176,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   fscanint2(file,&config->prescribe_landcover,"prescribe_landcover");
   if(config->prescribe_landcover<NO_LANDCOVER || config->prescribe_landcover>LANDCOVERFPC)
   {
-    if(isroot(*config))
+    if(verbose)
       fprintf(stderr,"ERROR166: Invalid value for prescribe landcover=%d in line %d of '%s'.\n",
               config->prescribe_landcover,getlinecount(),getfilename());
     return TRUE;
@@ -186,6 +186,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->reservoir=FALSE;
   fscanbool2(file,&config->permafrost,"permafrost");
   config->sdate_option=NO_FIXED_SDATE;
+  config->rw_manage=FALSE;
   if(config->sim_id!=LPJ)
   {
     fscanint2(file,&config->withlanduse,"landuse");
@@ -226,6 +227,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fscanbool2(file,&config->istimber,"istimber");
       fscanbool2(file,&config->remove_residuals,"remove_residuals");
       fscanbool2(file,&config->residues_fire,"residues_fire");
+      fscanbool2(file,&config->rw_manage,"rw_manage");
       fscanint2(file,&config->laimax_interpolate,"laimax_interpolate");
       if(config->laimax_interpolate==CONST_LAI_MAX)
         fscanreal2(file,&config->laimax,"laimax");
@@ -237,7 +239,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     fscanbool2(file,&wateruse,"wateruse");
     if(wateruse && config->withlanduse==NO_LANDUSE)
     {
-      if(isroot(*config))
+      if(verbose)
         fputs("ERROR224: Wateruse without landuse set.\n",stderr);
       return TRUE;
     }
@@ -281,7 +283,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->withlanduse!=NO_LANDUSE)
   {
     /* landuse enabled */
-    if((config->ncountries=fscancountrypar(file,&config->countrypar,(config->laimax_interpolate==LAIMAX_CFT) ? config->npft[CROP] : 0,verbose))==0)
+    if((config->ncountries=fscancountrypar(file,&config->countrypar,config->rw_manage,(config->laimax_interpolate==LAIMAX_CFT) ? config->npft[CROP] : 0,verbose))==0)
     {
       if(verbose)
         fputs("ERROR230: Cannot read country parameter.\n",stderr);
@@ -586,12 +588,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->restart_filename=NULL;
   if(iskeydefined(file,"checkpoint_filename"))
   {
-    if(config->n_out)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR290: Checkpointing with output files is not supported.\n");
-      return TRUE;
-    }
     fscanname(file,name,"checkpoint_filename");
     config->checkpoint_restart_filename=addpath(name,config->restartdir);
   }

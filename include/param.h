@@ -65,6 +65,12 @@ typedef struct
   Real k_temp;          /**< factor of temperature dependence of nitrogen demand for Rubisco activity */
   Real fburnt;          /**< fraction of trees burnt at deforestation */
   Real ftimber;         /**< timber fraction at deforestation */
+  Real esoil_reduction; /**< reduction of soil evaporation */
+  Real rw_buffer_max;   /**< size of rainwater harvesting tank */
+  Real frac_ro_stored;  /**< fraction of surface runoff stored in tank */
+  Real rw_irrig_thres;  /**< threshold to apply rw_irrigation */
+  Real soil_infil;      /**< soil infiltration improvement */
+  Real yield_gap_bridge; /**< yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
 } Param;
 
 /* Declaration of global variable */

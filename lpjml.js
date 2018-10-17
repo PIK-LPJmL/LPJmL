@@ -63,6 +63,7 @@
   "irrigation" : LIM_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
   "laimax_interpolate" : CONST_LAI_MAX, /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
+  "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : true,            /* enable fertilizer input */
   "istimber" : false,
@@ -214,6 +215,7 @@ ID                         Fmt                    filename
   "startgrid" : ALL, /* 27410, 67208 60400 all grid cells */
   "endgrid" : ALL,
 
+  //"checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
 #ifndef FROM_RESTART
 
   "nspinup" : 5000,  /* spinup years */

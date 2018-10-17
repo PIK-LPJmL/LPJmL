@@ -48,12 +48,18 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
   Real updated_soil_water=0,previous_soil_water[NSOILLAYER];
   Pft *pft;
   String line;
+  Irrigation *data_irrig;
+  data_irrig=stand->data;
 
   soil=&stand->soil;
+  soil_infil=2; /* default to draw square root for infiltration factor*/
   influx=grunoff=perc=frac_g_influx=freewater=0.0;
   runoff_surface=runoff=outflux=0;
-  soil_infil=2; /* default to draw square root for infiltration factor*/
-
+  if(config->rw_manage)
+    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE)
+      soil_infil=param.soil_infil; /* parameter to increase soil infiltration rate */
+  if(soil_infil<2)
+    soil_infil=2;
 
   for(l=0;l<NSOILLAYER;l++)
   {
@@ -248,6 +254,19 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
       if (soil->NO3[l]<-epsilon)
         fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"infil_prec_rain: Cell(%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
 #endif
+
+  /* Rainwater Harvesting: store part of surface runoff for supplementary irrigation */
+  if(config->rw_manage && ((stand->type->landusetype==AGRICULTURE && !data_irrig->irrigation) || stand->type->landusetype==SETASIDE_RF))
+  {
+    soil->rw_buffer+=param.frac_ro_stored*runoff_surface;
+    runoff_surface-=param.frac_ro_stored*runoff_surface;
+    if(soil->rw_buffer > param.rw_buffer_max)
+    {
+      runoff_surface+=soil->rw_buffer - param.rw_buffer_max;
+      soil->rw_buffer=param.rw_buffer_max;
+      //printf("Warning! rw_buffer has reached maximum capacity\n");
+    }
+  }
 
   /*writing output*/
   stand->cell->output.mseepage+=outflux*stand->frac;

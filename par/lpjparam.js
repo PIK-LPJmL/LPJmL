@@ -61,5 +61,11 @@
   "nfert_split" : 5,                  /* threshold fertilizer input for split application */
   "residues_in_soil" : 0.1,           /* minimum residues in soil*/
   "fburnt" : 0,                       /* fraction of trees burnt at deforestation */
-  "ftimber" : 1                       /* timber fraction at deforestation */
+  "ftimber" : 1,                      /* timber fraction at deforestation */
+  "esoil_reduction" : 0.0,            /* reduction of soil evaporation */
+  "rw_buffer_max" : 0.0,              /* size of rainwater harvesting tank [mm] */
+  "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */
+  "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
+  "soil_infil" : 2.0,                 /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
+  "yield_gap_bridge" : 0.0            /* factor by which laimax value is closed (7 - country-value)*factor */
 },

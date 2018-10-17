@@ -29,7 +29,8 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   Real balanceW,totw;
   Stand *stand;
   String line;
-  int s,i;
+  int s,i,startyear;
+
   int p;
   Pft *pft;
   /* carbon balance check */
@@ -59,8 +60,12 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   balance.carbon-=cell->output.deforest_emissions.carbon+cell->output.prod_turnover+cell->output.trad_biofuel+cell->output.timber_harvest.carbon;
   balance.nitrogen=cell->balance.n_influx-cell->output.fire.nitrogen-cell->balance.n_outflux+cell->output.flux_estab.nitrogen-
     cell->balance.biomass_yield.nitrogen-cell->output.flux_harvest.nitrogen-delta_tot.nitrogen-cell->output.neg_fluxes.nitrogen-cell->output.deforest_emissions.nitrogen-cell->output.timber_harvest.nitrogen;
+  if(config->ischeckpoint)
+    startyear=max(config->firstyear,config->checkpointyear)+1;
+  else
+    startyear=config->firstyear+1;
 
-  if(year>config->firstyear+1 && fabs(balance.carbon)>1)
+  if(year>startyear && fabs(balance.carbon)>1)
   {
 #ifdef IMAGE
     foreachstand(stand,s,cell->standlist)
@@ -92,7 +97,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->output.deforest_emissions.carbon,cell->output.prod_turnover);
 #endif
   }
-  if(config->with_nitrogen && year>config->firstyear+1 && fabs(balance.nitrogen)>.2)
+  if(config->with_nitrogen && year>startyear && fabs(balance.nitrogen)>.2)
   {
 #ifdef FAIL
     fail(INVALID_NITROGEN_BALANCE_ERR,TRUE,
@@ -127,7 +132,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
        totw+=cell->ml.resdata->dfout_irrigation_daily[i]/cell->coord.area;
   }
   balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux;
-  if(year>config->firstyear+1 && fabs(balanceW)>1.5)
+  if(year>startyear && fabs(balanceW)>1.5)
 #ifdef FAIL
     fail(INVALID_WATER_BALANCE_ERR,TRUE,"y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f\n",
 #else

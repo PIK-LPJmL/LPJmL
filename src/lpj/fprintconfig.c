@@ -220,6 +220,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       default:
         len=printsim(file,len,&count,"land use, ");
     } /* of switch */
+    if(config->rw_manage)
+      len=printsim(file,len,&count,"rainwater management, ");
     len=fputstring(file,len,irrig[config->irrig_scenario],78);
     len=fputstring(file,len," irrigation",78);
     if(config->intercrop)
@@ -394,7 +396,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   if(iswriterestart(config))
     fprintf(file,"Writing restart file '%s' after year %d.\n",
             config->write_restart_filename,config->restartyear);
-  if(config->checkpoint_restart_filename!=NULL)
+  if(ischeckpointrestart(config))
     fprintf(file,"Checkpoint restart file: '%s'.\n",
             config->checkpoint_restart_filename);
 
@@ -407,7 +409,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
             config->image_outport,config->wait_image);
 
 #endif
-  fprintf(file,"Random Seed: %d\n",config->seed);
+  if(config->wet_filename.name!=NULL)
+    fprintf(file,"Random seed: %d\n",config->seed);
   if(config->n_out)
   {
     size=strlen("Variable");

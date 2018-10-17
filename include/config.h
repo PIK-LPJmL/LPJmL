@@ -164,6 +164,7 @@ typedef struct
   int withlanduse;
   Bool reservoir;
   int irrig_scenario; /**< irrigation scenario (NO:0, LIM:1, POT:2, ALL:3, IRRIG on RAINFED: 4) */
+  Bool rw_manage;     /**< rain-water management enabled: reduced soil evaporation + rain-water harvesting */
   Bool pft_output_scaled; /**< PFT output grid scaled */
   int with_radiation; /**< input of radiation components (CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN) */
   Bool prescribe_burntarea;	/**< use input to prescribe burnt area to SPITFIRE? */
@@ -203,6 +204,7 @@ extern void fprintincludes(FILE *,const char *,int,char **);
 /* Definition of macros */
 
 #define printconfig(config,npft,ncft) fprintconfig(stdout,config,npft,ncft)
+#define ischeckpointrestart(config) ((config)->checkpoint_restart_filename!=NULL)
 #define iswriterestart(config) ((config)->write_restart_filename!=NULL)
 #define isreadrestart(config) ((config)->restart_filename!=NULL)
 #ifdef USE_MPI
