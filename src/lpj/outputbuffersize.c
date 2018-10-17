@@ -26,7 +26,7 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
   size=(long long)config->count*(config->lastyear-config->firstyear+1);
   sum=0;
   for(i=0;i<config->n_out;i++)
-    if(config->outputvars[i].id>=D_LAI && config->outputvars[i].id<=D_PET)
+    if(isdailyoutput(config->outputvars[i].id))
       sum+=size*NDAYYEAR*sizeof(float);
     else
       switch(config->outputvars[i].id)
