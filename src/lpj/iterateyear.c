@@ -186,11 +186,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                        cell,month),month);
     } /* of 'for(cell=0;...)' */
 
-#ifdef IMAGE
-    if(year>=config->firstyear-istimber*10)
-#else
     if(year>=config->outputyear)
-#endif
       /* write out monthly output */
       fwriteoutput_monthly(output,grid,month,year,config);
 
@@ -231,11 +227,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     }
   } /* of for(cell=0,...) */
 
-#ifdef IMAGE
-  if(year>=config->firstyear-istimber*10)
-#else
   if(year>=config->outputyear)
-#endif
   {
     /* write out annual output */
     fwriteoutput_annual(output,grid,year,config);
