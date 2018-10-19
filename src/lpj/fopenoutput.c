@@ -139,11 +139,11 @@ static void openfile(Outputfile *output,const Cell grid[],
           else
           {
             output->files[config->outputvars[i].id].isopen=TRUE;
-            if(config->checkpointyear>=config->firstyear)
+            if(config->checkpointyear>=config->outputyear)
             {
               fseek(output->files[config->outputvars[i].id].fp.file,
                     headersize(LPJGRID_HEADER,LPJGRID_VERSION)+
-                    getsize(i,config)*(config->checkpointyear-config->firstyear+1),SEEK_SET);
+                    getsize(i,config)*(config->checkpointyear-config->outputyear+1),SEEK_SET);
             }
             else
               fseek(output->files[config->outputvars[i].id].fp.file,
@@ -157,7 +157,7 @@ static void openfile(Outputfile *output,const Cell grid[],
           else
           {
             output->files[config->outputvars[i].id].isopen=TRUE;
-            header.firstyear=config->firstyear;
+            header.firstyear=config->outputyear;
             if(config->outputvars[i].id==ADISCHARGE)
               header.ncell=config->nall;
             else
@@ -183,7 +183,7 @@ static void openfile(Outputfile *output,const Cell grid[],
                                         config->npft[GRASS]+config->npft[TREE],
                                         config->nbiomass,
                                         config->npft[CROP]);
-              header.nyear=config->lastyear-config->firstyear+1;
+              header.nyear=config->lastyear-config->outputyear+1;
               if(config->outputvars[i].id==SDATE || config->outputvars[i].id==HDATE || config->outputvars[i].id==SEASONALITY)
                 header.datatype=LPJ_SHORT;
               else
@@ -202,10 +202,10 @@ static void openfile(Outputfile *output,const Cell grid[],
           else
           {
             output->files[config->outputvars[i].id].isopen=TRUE;
-            if(config->checkpointyear>=config->firstyear)
+            if(config->checkpointyear>=config->outputyear)
             {
               fseek(output->files[config->outputvars[i].id].fp.file,
-                    getsize(i,config)*(config->checkpointyear-config->firstyear+1),SEEK_SET);
+                    getsize(i,config)*(config->checkpointyear-config->outputyear+1),SEEK_SET);
             }
           }
         }
