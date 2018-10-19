@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes out PFT specific output data                               \n**/
+/**     Function writes PFT-specific output into file                              \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -29,6 +29,22 @@
     }\
   }
 
+#define writeoutputshortvar(index,name,n) if(isopen(output,index))\
+  {\
+    outindex(output,index,config->rank);\
+    vec=newvec(short,config->count);\
+    check(vec);\
+    for(i=0;i<n;i++)\
+    {\
+      count=0;\
+      for(cell=0;cell<config->ngridcell;cell++)\
+        if(!grid[cell].skip)\
+          vec[count++]=(short)grid[cell].output.name[i];\
+      writeshortpft(output,index,vec,n,year,i,config);\
+    }\
+    free(vec);\
+  }
+
 static void outindex(Outputfile *output,int index,int rank)
 {
   if(output->method==LPJ_SOCKET && rank==0)
@@ -50,7 +66,7 @@ static void writepft(Outputfile *output,int n,float *data,int size,int year,
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[n].fp.mpi_file,
-                        ((year-config->firstyear)*size+index)*config->total+config->offset,
+                        ((year-config->outputyear)*size+index)*config->total+config->offset,
                         data,config->count,MPI_FLOAT,&status);
       break;
     case LPJ_GATHER:
@@ -66,7 +82,7 @@ static void writepft(Outputfile *output,int n,float *data,int size,int year,
           break;
         case CDF:
           mpi_write_pft_netcdf(&output->files[n].fp.cdf,data,MPI_FLOAT,config->total,
-                               output->files[n].oneyear ? NO_TIME : year-config->firstyear,
+                               output->files[n].oneyear ? NO_TIME : year-config->outputyear,
                                index,
                                output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -92,7 +108,7 @@ static void writepft(Outputfile *output,int n,float *data,int size,int year,
         break;
       case CDF:
         write_pft_float_netcdf(&output->files[n].fp.cdf,data,
-                               output->files[n].oneyear ? NO_TIME : year-config->firstyear,
+                               output->files[n].oneyear ? NO_TIME : year-config->outputyear,
                                index,config->count);
         break;
     }
@@ -112,7 +128,7 @@ static void writeshortpft(Outputfile *output,int n,short *data,int size,
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[n].fp.mpi_file,
-                        ((year-config->firstyear)*size+index)*config->total+config->offset,
+                        ((year-config->outputyear)*size+index)*config->total+config->offset,
                         data,config->count,MPI_SHORT,&status);
       break;
     case LPJ_GATHER:
@@ -128,7 +144,7 @@ static void writeshortpft(Outputfile *output,int n,short *data,int size,
           break;
         case CDF:
           mpi_write_pft_netcdf(&output->files[n].fp.cdf,data,MPI_SHORT,config->total,
-                               year-config->firstyear,index,
+                               year-config->outputyear,index,
                                output->counts,output->offsets,config->rank,config->comm);
           break;
       }
@@ -154,7 +170,7 @@ static void writeshortpft(Outputfile *output,int n,short *data,int size,
         break;
       case CDF:
         write_pft_short_netcdf(&output->files[n].fp.cdf,data,
-                               year-config->firstyear,index,config->count);
+                               year-config->outputyear,index,config->count);
         break;
     }
   else
@@ -174,37 +190,8 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   short *vec;
   float *fvec;
   Stand* stand;
-  if(isopen(output,SDATE))
-  {
-    outindex(output,SDATE,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<ncft*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.sdate[i];
-      writeshortpft(output,SDATE,vec,2*ncft,year,i,config);
-    }
-    free(vec);
-  }
-  if(isopen(output,HDATE))
-  {
-    outindex(output,HDATE,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<ncft*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.hdate[i];
-      writeshortpft(output,HDATE,vec,2*ncft,year,i,config);
-    }
-    free(vec);
-  }
-  
+  writeoutputshortvar(SDATE,sdate,2*ncft);
+  writeoutputshortvar(HDATE,hdate,2*ncft);
   fvec=newvec(float,config->count);
   check(fvec);
   writeoutputvar(PFT_NPP,pft_npp,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
@@ -284,21 +271,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputvar(CFT_EVAP_B,cft_evap_b,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(CFT_INTERC,cft_interc,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(CFT_RETURN_FLOW_B,cft_return_flow_b,2*(ncft+NGRASS+NBIOMASSTYPE));
-  if(isopen(output,CFT_IRRIG_EVENTS))
-  {
-    outindex(output,CFT_IRRIG_EVENTS,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.cft_irrig_events[i];
-      writeshortpft(output,CFT_IRRIG_EVENTS,vec,2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
-    }
-    free(vec);
-  }
+  writeoutputshortvar(CFT_IRRIG_EVENTS,cft_irrig_events,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(CFT_NIR,cft_nir,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(CFT_TEMP,cft_temp,2*(ncft+NGRASS));
   writeoutputvar(CFT_PREC,cft_prec,2*(ncft+NGRASS));
@@ -347,67 +320,10 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputvar(CFT_ABOVEGBM2,cft_aboveground_biomass2,2*(ncft+NGRASS));
   writeoutputvar(CFTFRAC2,cftfrac2,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(CFT_AIRRIG2,cft_airrig2,2*(ncft+NGRASS+NBIOMASSTYPE));
-  if(isopen(output,SDATE2))
-  {
-    outindex(output,SDATE2,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<ncft*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.sdate2[i];
-      writeshortpft(output,SDATE2,vec,2*ncft,year,i,config);
-    }
-    free(vec);
-  }
-  if(isopen(output,HDATE2))
-  {
-    outindex(output,HDATE2,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<ncft*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.hdate2[i];
-      writeshortpft(output,HDATE2,vec,2*ncft,year,i,config);
-    }
-    free(vec);
-  }
-  if(isopen(output,SYEAR))
-  {
-    outindex(output,SYEAR,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<ncft*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.syear[i];
-      writeshortpft(output,SYEAR,vec,2*ncft,year,i,config);
-    }
-    free(vec);
-  }
-  if(isopen(output,SYEAR2))
-  {
-    outindex(output,SYEAR2,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<ncft*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.syear2[i];
-      writeshortpft(output,SYEAR2,vec,2*ncft,year,i,config);
-    }
-    free(vec);
-  }
-
+  writeoutputshortvar(SDATE2,sdate2,2*ncft);
+  writeoutputshortvar(HDATE2,hdate2,2*ncft);
+  writeoutputshortvar(SYEAR,syear,2*ncft);
+  writeoutputshortvar(SYEAR2,syear2,2*ncft);
 #endif
   free(fvec);
 } /* of 'fwriteoutput_pft' */

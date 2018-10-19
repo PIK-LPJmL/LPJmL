@@ -191,10 +191,10 @@ int iterate(Outputfile *output,  /**< Output file data */
       }
     }
     /* perform iteration for one year */
-    if(year>=config->firstyear)
+    if(year>=config->outputyear)
       openoutput_yearly(output,year,config);
     iterateyear(output,grid,input,co2,npft,ncft,year,config);
-    if(year>=config->firstyear)
+    if(year>=config->outputyear)
       closeoutput_yearly(output,config);
     /* calculating total carbon and water fluxes collected from all tasks */
     cflux_total=flux_sum(&flux,grid,config);

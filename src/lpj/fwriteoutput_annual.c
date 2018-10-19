@@ -39,7 +39,7 @@ static void writeannual(Outputfile *output,int index,float data[],int year,
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[index].fp.mpi_file,
-         (year-config->firstyear)*config->total+config->offset,data,config->count,
+         (year-config->outputyear)*config->total+config->offset,data,config->count,
                         MPI_FLOAT,&status);
       break;
     case LPJ_GATHER:
@@ -55,7 +55,7 @@ static void writeannual(Outputfile *output,int index,float data[],int year,
           break;
         case CDF:
           mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->total,
-                           output->files[index].oneyear ? NO_TIME : year-config->firstyear,
+                           output->files[index].oneyear ? NO_TIME : year-config->outputyear,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
       }
@@ -82,7 +82,7 @@ static void writeannual(Outputfile *output,int index,float data[],int year,
         break;
       case CDF:
         write_float_netcdf(&output->files[index].fp.cdf,data,
-                           output->files[index].oneyear ? NO_TIME : year-config->firstyear,
+                           output->files[index].oneyear ? NO_TIME : year-config->outputyear,
                            config->count);
         break;
     }
@@ -103,7 +103,7 @@ static void writeshortannual(Outputfile *output,int index,short data[],int year,
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[index].fp.mpi_file,
-         (year-config->firstyear)*config->total+config->offset,data,config->count,
+         (year-config->outputyear)*config->total+config->offset,data,config->count,
                         MPI_SHORT,&status);
       break;
     case LPJ_GATHER:
@@ -119,7 +119,7 @@ static void writeshortannual(Outputfile *output,int index,short data[],int year,
           break;
         case CDF:
           mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,config->total,
-                           output->files[index].oneyear ? NO_TIME : year-config->firstyear,
+                           output->files[index].oneyear ? NO_TIME : year-config->outputyear,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
       }
@@ -146,7 +146,7 @@ static void writeshortannual(Outputfile *output,int index,short data[],int year,
         break;
       case CDF:
         write_short_netcdf(&output->files[index].fp.cdf,data,
-                           output->files[index].oneyear ? NO_TIME : year-config->firstyear,
+                           output->files[index].oneyear ? NO_TIME : year-config->outputyear,
                            config->count);
         break;
     }
@@ -173,7 +173,7 @@ static void writeannualall(Outputfile *output,int index,float data[],int year,
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[index].fp.mpi_file,
-        (year-config->firstyear)*config->nall+config->offset,data,config->ngridcell,
+        (year-config->outputyear)*config->nall+config->offset,data,config->ngridcell,
                         MPI_FLOAT,&status);
       break;
     case LPJ_GATHER:
@@ -194,7 +194,7 @@ static void writeannualall(Outputfile *output,int index,float data[],int year,
           break;
         case CDF:
           mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->nall,
-                           output->files[index].oneyear ? NO_TIME : year-config->firstyear,
+                           output->files[index].oneyear ? NO_TIME : year-config->outputyear,
                            counts,offsets,config->rank,config->comm);
           break;
       }
@@ -229,7 +229,7 @@ static void writeannualall(Outputfile *output,int index,float data[],int year,
         break;
       case CDF:
         write_float_netcdf(&output->files[index].fp.cdf,data,
-                           output->files[index].oneyear ? NO_TIME : year-config->firstyear,
+                           output->files[index].oneyear ? NO_TIME : year-config->outputyear,
                            config->ngridcell);
         break;
     }

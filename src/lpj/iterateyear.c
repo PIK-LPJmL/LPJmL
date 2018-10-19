@@ -164,7 +164,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           wateruse(grid,npft,ncft,config);
       }
 
-      if(output->withdaily && year>=config->firstyear)
+      if(output->withdaily && year>=config->outputyear)
         fwriteoutput_daily(output,grid,day-1,year,config);
 
       day++;
@@ -189,7 +189,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 #ifdef IMAGE
     if(year>=config->firstyear-istimber*10)
 #else
-    if(year>=config->firstyear)
+    if(year>=config->outputyear)
 #endif
       /* write out monthly output */
       fwriteoutput_monthly(output,grid,month,year,config);
@@ -234,7 +234,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 #ifdef IMAGE
   if(year>=config->firstyear-istimber*10)
 #else
-  if(year>=config->firstyear)
+  if(year>=config->outputyear)
 #endif
   {
     /* write out annual output */

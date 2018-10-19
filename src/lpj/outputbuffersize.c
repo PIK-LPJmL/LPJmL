@@ -23,7 +23,7 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
 {
   long long sum,size;
   int i;
-  size=(long long)config->count*(config->lastyear-config->firstyear+1);
+  size=(long long)config->count*(config->lastyear-config->outputyear+1);
   sum=0;
   for(i=0;i<config->n_out;i++)
     if(isdailyoutput(config->outputvars[i].id))

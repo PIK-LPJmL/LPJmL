@@ -28,7 +28,7 @@ static void writeday(Outputfile *output,int index,float *data,int year,int day,
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[index].fp.mpi_file,
-                        ((long)(year-config->firstyear)*NDAYYEAR+day)*config->total+config->offset,
+                        ((long)(year-config->outputyear)*NDAYYEAR+day)*config->total+config->offset,
                         data,config->count,MPI_FLOAT,&status);
       break;
     case LPJ_GATHER:
@@ -44,7 +44,7 @@ static void writeday(Outputfile *output,int index,float *data,int year,int day,
           break;
         case CDF:
           mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->total,
-                           output->files[index].oneyear ? day : (year-config->firstyear)*NDAYYEAR+day,
+                           output->files[index].oneyear ? day : (year-config->outputyear)*NDAYYEAR+day,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
       }
@@ -76,7 +76,7 @@ static void writeday(Outputfile *output,int index,float *data,int year,int day,
         break;
       case CDF:
         write_float_netcdf(&output->files[index].fp.cdf,data,
-                           output->files[index].oneyear ? day : (year-config->firstyear)*NDAYYEAR+day,
+                           output->files[index].oneyear ? day : (year-config->outputyear)*NDAYYEAR+day,
                            config->count);
         break;
     }

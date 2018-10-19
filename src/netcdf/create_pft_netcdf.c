@@ -84,7 +84,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
     }
     return FALSE;
   }
-  nyear=config->lastyear-config->firstyear+1;
+  nyear=config->lastyear-config->outputyear+1;
   lon=newvec(float,array->nlon);
   if(lon==NULL)
   {
@@ -131,7 +131,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   {
     case 1:
       for(i=0;i<nyear;i++)
-        year[i]=config->firstyear+i;
+        year[i]=config->outputyear+i;
       break;
     case 12:
       for(i=0;i<nyear;i++)
@@ -222,7 +222,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen("year"),"year");
   else
   {
-    snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->firstyear);
+    snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->outputyear);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(s),s);
     error(rc);
     rc=nc_put_att_text(cdf->ncid,time_var_id,"calendar",strlen("noleap"),

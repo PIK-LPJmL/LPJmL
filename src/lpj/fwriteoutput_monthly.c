@@ -40,7 +40,7 @@ static void writemonth(Outputfile *output,int index,float *data,int year,
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[index].fp.mpi_file,
-                        ((year-config->firstyear)*NMONTH+month)*config->total+config->offset,
+                        ((year-config->outputyear)*NMONTH+month)*config->total+config->offset,
                         data,config->count,MPI_FLOAT,&status);
       break;
     case LPJ_GATHER:
@@ -57,7 +57,7 @@ static void writemonth(Outputfile *output,int index,float *data,int year,
         case CDF:
           mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,
                            config->total,
-                           output->files[index].oneyear ? month : (year-config->firstyear)*12+month,
+                           output->files[index].oneyear ? month : (year-config->outputyear)*12+month,
                            output->counts,output->offsets,config->rank,
                            config->comm);
           break;
@@ -90,7 +90,7 @@ static void writemonth(Outputfile *output,int index,float *data,int year,
         break;
       case CDF:
         write_float_netcdf(&output->files[index].fp.cdf,data,
-                           output->files[index].oneyear ? month : (year-config->firstyear)*12+month,
+                           output->files[index].oneyear ? month : (year-config->outputyear)*12+month,
                            config->count);
         break;
     }
@@ -111,7 +111,7 @@ static void writemonth2(Outputfile *output,int index,float *data,int year,
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[index].fp.mpi_file,
-                        ((year-config->firstyear)*NMONTH*nlayer+month*nlayer+layer)*config->total+config->offset,
+                        ((year-config->outputyear)*NMONTH*nlayer+month*nlayer+layer)*config->total+config->offset,
                         data,config->count,MPI_FLOAT,&status);
       break;
     case LPJ_GATHER:
@@ -128,7 +128,7 @@ static void writemonth2(Outputfile *output,int index,float *data,int year,
         case CDF:
           mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,
                                config->total,
-                               output->files[index].oneyear ? month : (year-config->firstyear)*12+month,
+                               output->files[index].oneyear ? month : (year-config->outputyear)*12+month,
                                layer,
                                output->counts,output->offsets,config->rank,
                                config->comm);
@@ -162,7 +162,7 @@ static void writemonth2(Outputfile *output,int index,float *data,int year,
         break;
       case CDF:
         write_pft_float_netcdf(&output->files[index].fp.cdf,data,
-                               output->files[index].oneyear ? month : (year-config->firstyear)*12+month,
+                               output->files[index].oneyear ? month : (year-config->outputyear)*12+month,
                                layer,
                                config->count);
         break;

@@ -371,9 +371,10 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
          size<strlen(config->outnames[config->outputvars[i].id].name))
         size=strlen(config->outnames[config->outputvars[i].id].name);
     fprintf(file,"Number of output files:       %d\n"
+                 "Output written in year:       %d\n"
                  "Byte order in output files:   %s\n"
                  "Output method:                %s",
-            config->n_out,
+            config->n_out,config->outputyear,
             bigendian() ? "big endian" : "little endian",
             method[config->outputmethod]);
     if(config->outputmethod==LPJ_SOCKET)
