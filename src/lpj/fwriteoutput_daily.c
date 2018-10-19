@@ -98,7 +98,7 @@ void fwriteoutput_daily(Outputfile *output, /**< Output data */
   index=0;
   for(i=D_LAI;i<=D_PET;i++)
   {
-    if(output->files[i].isopen)
+    if(isopen(output,i))
     {
       count=0;
       for(cell=0;cell<config->ngridcell;cell++)
