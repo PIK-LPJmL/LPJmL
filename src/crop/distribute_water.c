@@ -29,11 +29,12 @@
 #include "lpj.h"
 #include "agriculture.h"
 
-void distribute_water(Cell *cell,             /* cell pointer */
-                      int irrig_scenario,     /* irrigation scenario */
-                      Bool pft_output_scaled,
-                      int npft,               /* number of natural PFTs */
-                      int ncft                /* number of crop PFTs */
+void distribute_water(Cell *cell,             /**< cell pointer */
+                      int irrig_scenario,     /**< irrigation scenario */
+                      Bool pft_output_scaled, /**< pft-specific output scaled with
+                                                   stand->frac (TRUE/FALSE) */
+                      int npft,               /**< number of natural PFTs */
+                      int ncft                /**< number of crop PFTs */
                      )
 {
   int s,p,l,m,count;

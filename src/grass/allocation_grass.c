@@ -16,9 +16,9 @@
 #include "grass.h"
 #include "landuse.h"
 
-Bool allocation_grass(Litter *litter, /* litter pool */
-                      Pft *pft        /* pointer to PFT */
-                     )                /* return TRUE on death */
+Bool allocation_grass(Litter *litter, /**< litter pool */
+                      Pft *pft        /**< pointer to PFT */
+                     )                /** \return TRUE on death */
 {
   Real bm_inc_ind,lmtorm,lmtormscal;
   Grassphys inc_ind;
