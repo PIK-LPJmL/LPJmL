@@ -542,7 +542,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(verbose)
       fprintf(stderr,"ERROR105: First simulation year=%d greater than last simulation year=%d.\n",
-            config->firstyear-config->nspinup,config->lastyear);
+              config->firstyear-config->nspinup,config->lastyear);
     return TRUE;
   }
   if(iskeydefined(file,"outputyear"))
@@ -553,6 +553,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(verbose)
         fprintf(stderr,"ERROR230: First year output is written=%d greater than last simulation year=%d.\n",
                 config->outputyear,config->lastyear);
+      return TRUE;
+    }
+    else if(config->outputyear<config->firstyear-config->nspinup)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR230: First year output is written=%d less than first simulation year=%d.\n",
+                config->outputyear,config->firstyear-config->nspinup);
       return TRUE;
     }
   }
