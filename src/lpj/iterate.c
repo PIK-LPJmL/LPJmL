@@ -53,16 +53,17 @@ int iterate(Outputfile *output,  /**< Output file data */
 {
   Real co2,cflux_total;
   Flux flux;
-  int year,landuse_year,wateruse_year,startyear;
+  int year,landuse_year,wateruse_year,startyear,firstspinupyear;
   Bool rc;
 
+  firstspinupyear=(config->isfirstspinupyear) ?  config->firstspinupyear : input.climate->firstyear;
 #ifdef STORECLIMATE
   Climatedata store,data_save;
   if(config->nspinup)
   {
     /* climate for the first nspinyear years is stored in memory
        to avoid reading repeatedly from disk */
-    rc=storeclimate(&store,input.climate, grid,input.climate->firstyear,config->nspinyear,config);
+    rc=storeclimate(&store,input.climate, grid,firstspinupyear,config->nspinyear,config);
     failonerror(config,rc,STORE_CLIMATE_ERR,"Storage of climate failed");
 
     data_save=input.climate->data;
@@ -96,7 +97,7 @@ int iterate(Outputfile *output,  /**< Output file data */
       moveclimate(input.climate,&store,
                   (year-config->firstyear+config->nspinup) % config->nspinyear);
 #else
-      getclimate(input.climate,grid,input.climate->firstyear+(year-config->firstyear+config->nspinup) % config->nspinyear,config);
+      getclimate(input.climate,grid,firstspinupyear+(year-config->firstyear+config->nspinup) % config->nspinyear,config);
 #endif
     else
     {
@@ -203,7 +204,7 @@ int iterate(Outputfile *output,  /**< Output file data */
       /* output of total carbon flux and water on stdout on root task */
       printflux(flux,cflux_total,year,config);
       if(output->method==LPJ_SOCKET && output->socket!=NULL &&
-         year>=config->firstyear)
+         year>=config->outputyear)
         output_flux(output,flux);
       fflush(stdout); /* force output to console */
 #ifdef SAFE

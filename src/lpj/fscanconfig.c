@@ -526,8 +526,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
            config->ntask);
   config->ngridcell=endgrid-config->startgrid+1;
   fscanint2(file,&config->nspinup,"nspinup");
+  config->isfirstspinupyear=FALSE;
   if(config->nspinup)
+  {
     fscanint2(file,&config->nspinyear,"nspinyear");
+    if(iskeydefined(file,"firstspinupyear"))
+    {
+      fscanint2(file,&config->firstspinupyear,"firstspinupyear");
+      config->isfirstspinupyear=TRUE;
+    }
+  }
   fscanint2(file,&config->firstyear,"firstyear");
   fscanint2(file,&config->lastyear,"lastyear");
 #ifdef IMAGE

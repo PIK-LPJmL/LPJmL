@@ -430,9 +430,13 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   else
     fputs("No output files written.\n",file);
   if(config->nspinup)
+  {
+    if(config->isfirstspinupyear)
+      fprintf(file,"First spinup year:           %6d\n",config->firstspinupyear);
     fprintf(file,"Spinup years:                %6d\n"
             "Cycle length during spinup:  %6d\n",
              config->nspinup,config->nspinyear);
+  }
   else
     fputs("No spinup years.\n",file);
   fprintf(file,"First year:                  %6d\n"
