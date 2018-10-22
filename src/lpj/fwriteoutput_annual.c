@@ -21,7 +21,7 @@
     count=0;\
     for(cell=0;cell<config->ngridcell;cell++)\
       if(!grid[cell].skip)\
-        vec[count++]=(float)grid[cell].output.name;\
+        vec[count++]=(float)(grid[cell].output.name);\
     writeannual(output,index,vec,year,config);\
   }
 
@@ -341,7 +341,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       {
         vec[count]=0;
         foreachstand(stand,s,grid[cell].standlist)
-            vec[count]+=(float)(stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
+          vec[count]+=(float)(stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
         count++;
       }
       writeannual(output,MAXTHAW_DEPTH,vec,year,config);
@@ -361,7 +361,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         foreachstand(stand,s,grid[cell].standlist)
           if(stand->type->landusetype!=NATURAL)
             foreachpft(pft,p,&stand->pftlist)
-               vec[count]+=(float)(vegc_sum(pft)*stand->frac);
+              vec[count]+=(float)(vegc_sum(pft)*stand->frac);
         count++;
       }
       writeannual(output,MG_VEGC,vec,year,config);
@@ -380,7 +380,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
               for(p=0;p<stand->soil.litter.n;p++)
                 vec[count]+=(float)(stand->soil.litter.bg[p]*stand->frac);
               forrootsoillayer(l)
-              vec[count]+=(float)((stand->soil.cpool[l].slow+stand->soil.cpool[l].fast)*stand->frac);
+                vec[count]+=(float)((stand->soil.cpool[l].slow+stand->soil.cpool[l].fast)*stand->frac);
             }
           }
           count++;
@@ -430,7 +430,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.awd_unsustainable/((grid[cell].output.airrig+
+         vec[count++]=(float)(grid[cell].output.awd_unsustainable/((grid[cell].output.airrig+
             grid[cell].output.aconv_loss_evap + grid[cell].output.aconv_loss_drain)*grid[cell].coord.area));
     writeannual(output,AFRAC_WD_UNSUST,vec,year,config);
   }
@@ -444,8 +444,8 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       {
         vec[count]=0;
         foreachstand(stand,s,grid[cell].standlist)
-            foreachpft(pft,p,&stand->pftlist)
-               vec[count]+=(float)(agb(pft)*stand->frac);
+          foreachpft(pft,p,&stand->pftlist)
+            vec[count]+=(float)(agb(pft)*stand->frac);
         count++;
       }
     writeannual(output,AGB,vec,year,config);
@@ -458,9 +458,9 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       {
         vec[count]=0;
         foreachstand(stand,s,grid[cell].standlist)
-            foreachpft(pft,p,&stand->pftlist)
-               if(istree(pft))
-                 vec[count]+=(float)(agb_tree(pft)*stand->frac);
+          foreachpft(pft,p,&stand->pftlist)
+            if(istree(pft))
+              vec[count]+=(float)(agb_tree(pft)*stand->frac);
         count++;
       }
     writeannual(output,AGB_TREE,vec,year,config);
