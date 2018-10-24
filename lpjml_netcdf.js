@@ -32,7 +32,7 @@
 
 "sim_name" : "LPJmL Run", /* Simulation description */
 "sim_id"   : LPJML,       /* LPJML Simulation type with managed land use */
-"version"  : "4.0",       /* LPJmL version expected */
+"version"  : "5.1",       /* LPJmL version expected */
 "random_prec" : true, /* Random weather generator for precipitation enabled */
 "random_seed" : 2, /* seed for random number generator */
 "radiation" : CLOUDINESS,
