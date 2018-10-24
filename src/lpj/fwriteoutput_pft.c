@@ -204,7 +204,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputvar(PFT_NPP,pft_npp,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
   writeoutputvar(PFT_NUPTAKE,pft_nuptake,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
   writeoutputvar(PFT_NDEMAND,pft_ndemand,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
-  if(output->files[PFT_NLIMIT].isopen)
+  if(isopen(output,PFT_NLIMIT))
   {
     outindex(output,PFT_NLIMIT,config->rank);
     for (i = 0; i < (npft - config->nbiomass); i++)
@@ -239,7 +239,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output, PFT_NLIMIT, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
     }
   }
-  if(output->files[PFT_VEGC].isopen)
+  if(isopen(output,PFT_VEGC))
   {
     outindex(output,PFT_VEGC,config->rank);
     for (i = 0; i < (npft - config->nbiomass); i++)
@@ -274,7 +274,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output, PFT_VEGC, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
     }
   }
-  if(output->files[PFT_VEGN].isopen)
+  if(isopen(output,PFT_VEGN))
   {
     outindex(output,PFT_VEGN,config->rank);
     for (i = 0; i < (npft - config->nbiomass); i++)
@@ -309,7 +309,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output, PFT_VEGN, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
     }
   }
-  if(output->files[PFT_CLEAF].isopen)
+  if(isopen(output,PFT_CLEAF))
   {
     outindex(output,PFT_CLEAF,config->rank);
     for (i = 0; i < (npft - config->nbiomass); i++)
@@ -351,7 +351,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output, PFT_CLEAF, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
     }
   }
-  if(output->files[PFT_NLEAF].isopen)
+  if(isopen(output,PFT_NLEAF))
   {
     outindex(output,PFT_NLEAF,config->rank);
     for (i = 0; i < (npft - config->nbiomass); i++)
@@ -487,7 +487,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,SOILC_LAYER,fvec,BOTTOMLAYER,year,i,config);
     }
   }
-  if(output->files[SOILN_LAYER].isopen)
+  if(isopen(output,SOILN_LAYER))
   {
     outindex(output,SOILN_LAYER,config->rank);
     forrootsoillayer(i)
@@ -511,7 +511,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,SOILN_LAYER,fvec,BOTTOMLAYER,year,i,config);
     }
   }
-  if (output->files[SOILNO3_LAYER].isopen)
+  if(isopen(output,SOILNO3_LAYER))
   {
     outindex(output, SOILNO3_LAYER, config->rank);
     forrootsoillayer(i)
@@ -532,7 +532,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output, SOILNO3_LAYER, fvec, BOTTOMLAYER, year, i, config);
     }
   }
-  if (output->files[SOILNH4_LAYER].isopen)
+  if(isopen(output,SOILNH4_LAYER))
   {
     outindex(output, SOILNH4_LAYER, config->rank);
     forrootsoillayer(i)
@@ -597,7 +597,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
     }
   }
   /* ATTENTION! Due to allocation rules, this writes away next year's LAImax for trees and grasses */
-  if(output->files[PFT_LAIMAX].isopen)
+  if(isopen(output,PFT_LAIMAX))
   {
     outindex(output,PFT_LAIMAX,config->rank);
     for(i = 0; i < (npft - config->nbiomass); i++)
@@ -636,7 +636,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output, PFT_LAIMAX, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
     }
   }
-  if(output->files[PFT_NROOT].isopen)
+  if(isopen(output,PFT_NROOT))
   {
     outindex(output,PFT_NROOT,config->rank);
     for (i = 0; i < (npft - config->nbiomass); i++)
@@ -678,7 +678,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output, PFT_NROOT, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
     }
   }
-  if(output->files[PFT_NSAPW].isopen)
+  if(isopen(output,PFT_NSAPW))
   {
     outindex(output,PFT_NSAPW,config->rank);
     for(i=0;i<(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
@@ -716,7 +716,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       }
       writepft(output,PFT_NSAPW,fvec,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);    }
   }
-  if(output->files[PFT_NHAWO].isopen)
+  if(isopen(output,PFT_NHAWO))
   {
     outindex(output,PFT_NHAWO,config->rank);
     for(i=0;i<(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
@@ -755,7 +755,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,PFT_NHAWO,fvec,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
-  if(output->files[PFT_CROOT].isopen)
+  if(isopen(output,PFT_CROOT))
   {
     outindex(output,PFT_CROOT,config->rank);
     for (i = 0; i < (npft - config->nbiomass); i++)
@@ -797,7 +797,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output, PFT_CROOT, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
     }
   }
-  if(output->files[PFT_CSAPW].isopen)
+  if(isopen(output,PFT_CSAPW))
   {
     outindex(output,PFT_CSAPW,config->rank);
     for(i=0;i<(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
@@ -835,7 +835,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       }
       writepft(output,PFT_CSAPW,fvec,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);    }
   }
-  if(output->files[PFT_CHAWO].isopen)
+  if(isopen(output,PFT_CHAWO))
   {
     outindex(output,PFT_CHAWO,config->rank);
     for(i=0;i<(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
@@ -875,7 +875,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
     }
   }
 #ifdef DOUBLE_HARVEST
-  if(output->files[PFT_HARVESTC2].isopen)
+  if(isopen(output,PFT_HARVESTC2))
   {
     outindex(output,PFT_HARVESTC2,config->rank);
     for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
@@ -887,7 +887,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,PFT_HARVESTC2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
-  if(output->files[PFT_HARVESTN2].isopen)
+  if(isopen(output,PFT_HARVESTN2))
   {
     outindex(output,PFT_HARVESTN2,config->rank);
     for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
@@ -899,7 +899,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,PFT_HARVESTN2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
-  if(output->files[PFT_RHARVESTC2].isopen)
+  if(isopen(output,PFT_RHARVESTC2))
   {
     outindex(output,PFT_RHARVESTC2,config->rank);
     for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
@@ -911,7 +911,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,PFT_RHARVESTC2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
-  if(output->files[PFT_RHARVESTN2].isopen)
+  if(isopen(output,PFT_RHARVESTN2))
   {
     outindex(output,PFT_RHARVESTN2,config->rank);
     for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
@@ -939,7 +939,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputshortvar(HDATE2,hdate2,2*ncft);
   writeoutputshortvar(SYEAR,syear,2*ncft);
   writeoutputshortvar(SYEAR2,syear2,2*ncft);
-  if(output->files[CFT_ABOVEGBMC2].isopen)
+  if(isopen(output,CFT_ABOVEGBMC2))
   {
     outindex(output,CFT_ABOVEGBMC2,config->rank);
     for(i=0;i<(ncft+NGRASS)*2;i++)
@@ -951,7 +951,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,CFT_ABOVEGBMC2,fvec,2*(ncft+NGRASS),year,i,config);
     }
   }
-  if(output->files[CFT_ABOVEGBMN2].isopen)
+  if(isopen(output,CFT_ABOVEGBMN2))
   {
     outindex(output,CFT_ABOVEGBMN2,config->rank);
     for(i=0;i<(ncft+NGRASS)*2;i++)

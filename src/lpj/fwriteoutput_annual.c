@@ -334,7 +334,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
       writeannual(output,LITC,vec,year,config);
   }
-  if(output->files[VEGN].isopen)
+  if(isopen(output,VEGN))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -349,7 +349,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output,VEGN,vec,year,config);
   }
-  if(output->files[SOILN].isopen)
+  if(isopen(output,SOILN))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -367,7 +367,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output,SOILN,vec,year,config);
   }
-  if(output->files[SOILN_SLOW].isopen)
+  if(isopen(output,SOILN_SLOW))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -384,7 +384,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output,SOILN_SLOW,vec,year,config);
   }
-  if(output->files[LITN].isopen)
+  if(isopen(output,LITN))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -398,7 +398,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
       writeannual(output,LITN,vec,year,config);
   }
-  if(output->files[SOILNO3].isopen)
+  if(isopen(output,SOILNO3))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -415,7 +415,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output,SOILNO3,vec,year,config);
   }
-  if(output->files[SOILNH4].isopen)
+  if(isopen(output,SOILNH4))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
