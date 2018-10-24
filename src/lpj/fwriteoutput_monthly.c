@@ -212,9 +212,11 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
   writeoutputvar(MROOTMOIST,mrootmoist);
   writeoutputvar(MIRRIG,mirrig);
   writeoutputvar(MRETURN_FLOW_B,mreturn_flow_b);
+  writeoutputvar(MEVAP_LAKE,mevap_lake);
   writeoutputvar(MEVAP_RES,mevap_res);
   writeoutputvar(MPREC_RES,mprec_res);
   writeoutputvar(MFIREC,mfirec);
+  writeoutputvar(MNFIRE,mnfire);
   writeoutputvar(MFIREDI,mfiredi);
   writeoutputvar(MFIREEMISSION_CO2,mfireemission.co2);
   writeoutputvar(MFIREEMISSION_CO,mfireemission.co);
@@ -258,8 +260,11 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
   writeoutputvar(MWD_UNSUST,mwd_unsustainable);
   writeoutputvar(MUNMET_DEMAND,munmet_demand);
   writeoutputvar(MWD_LOCAL,mwd_local);
+  writeoutputvar(MWD_NEIGHB,mwd_neighb);
   writeoutputvar(MWD_RES,mwd_res);
   writeoutputvar(MWD_RETURN,mwd_return);
+  writeoutputvar(MCONV_LOSS_EVAP,mconv_loss_evap);
+  writeoutputvar(MCONV_LOSS_DRAIN,mconv_loss_drain);
   writeoutputvar(MSTOR_RETURN,mstor_return);
   writeoutputvar(MPREC,mprec);
   writeoutputvar(MRAIN,mrain);

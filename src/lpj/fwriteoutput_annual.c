@@ -536,6 +536,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
             grid[cell].output.aconv_loss_evap + grid[cell].output.aconv_loss_drain)*grid[cell].coord.area));
     writeannual(output,AFRAC_WD_UNSUST,vec,year,config);
   }
+  writeoutputvar(ACONV_LOSS_EVAP,aconv_loss_evap);
   writeoutputvar(ACONV_LOSS_DRAIN,aconv_loss_drain);
   writeoutputvar(AWATERUSE_HIL,awateruse_hil);
   if(isopen(output,AGB))
