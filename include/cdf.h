@@ -52,7 +52,7 @@ typedef struct cdf
   float missing_value;
 } Netcdf;
 
-typedef enum { DAY,MONTH,YEAR } Time;
+typedef enum { MISSING_TIME,DAY,MONTH,YEAR } Time;
 
 typedef struct
 {

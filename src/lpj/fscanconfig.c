@@ -526,8 +526,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
            config->ntask);
   config->ngridcell=endgrid-config->startgrid+1;
   fscanint2(file,&config->nspinup,"nspinup");
+  config->isfirstspinupyear=FALSE;
   if(config->nspinup)
+  {
     fscanint2(file,&config->nspinyear,"nspinyear");
+    if(iskeydefined(file,"firstspinupyear"))
+    {
+      fscanint2(file,&config->firstspinupyear,"firstspinupyear");
+      config->isfirstspinupyear=TRUE;
+    }
+  }
   fscanint2(file,&config->firstyear,"firstyear");
   fscanint2(file,&config->lastyear,"lastyear");
 #ifdef IMAGE
@@ -542,9 +550,29 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(verbose)
       fprintf(stderr,"ERROR105: First simulation year=%d greater than last simulation year=%d.\n",
-            config->firstyear-config->nspinup,config->lastyear);
+              config->firstyear-config->nspinup,config->lastyear);
     return TRUE;
   }
+  if(iskeydefined(file,"outputyear"))
+  {
+    fscanint2(file,&config->outputyear,"outputyear");
+    if(config->outputyear>config->lastyear)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR230: First year output is written=%d greater than last simulation year=%d.\n",
+                config->outputyear,config->lastyear);
+      return TRUE;
+    }
+    else if(config->outputyear<config->firstyear-config->nspinup)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR230: First year output is written=%d less than first simulation year=%d.\n",
+                config->outputyear,config->firstyear-config->nspinup);
+      return TRUE;
+    }
+  }
+  else
+    config->outputyear=config->firstyear;
   fscanbool2(file,&config->from_restart,"restart");
   if(config->from_restart)
   {

@@ -30,16 +30,16 @@ static void printindex(size_t i,Time time,size_t var_len)
     case DAY:
       fprintf(stderr,"at day %d",(int)(i/var_len)+1);
       if(var_len>1)
-        fprintf(stderr," and item %d",(int)(var_len));
+        fprintf(stderr," and item %d",(int)(i % var_len)+1);
       break;
     case MONTH:
       fprintf(stderr,"at month %d",(int)(i/var_len)+1);
       if(var_len>1)
-        fprintf(stderr," and item %d",(int)(var_len));
+        fprintf(stderr," and item %d",(int)(i % var_len)+1);
       break;
-    case YEAR:
+    case YEAR: case MISSING_TIME:
       if(var_len>1)
-        fprintf(stderr,"at item %d",(int)(var_len));
+        fprintf(stderr,"at item %d",(int)(i % var_len)+1);
       break;
   }
 }
@@ -54,7 +54,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
   int cell,rc;
   float *f;
   double *d;
-  int index;
+  int index,start;
   size_t i,size;
   size_t offsets[4];
   size_t counts[4];
@@ -66,22 +66,28 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
     case MONTH:
       size=NMONTH;
       break;
-    case YEAR:
+    case YEAR: case MISSING_TIME:
       size=1;
       break;
   }
-  offsets[0]=year*size;
-  if(isdaily(*file) && file->isleap)
-    offsets[0]+=nleapyears(file->firstyear,year+file->firstyear);
-  counts[0]=size;
+  if(file->time_step==MISSING_TIME)
+    start=0;
+  else
+  {
+    start=1;
+    offsets[0]=year*size;
+    if(isdaily(*file) && file->isleap)
+      offsets[0]+=nleapyears(file->firstyear,year+file->firstyear);
+    counts[0]=size;
+  }
   if(file->var_len>1)
   {
-    offsets[1]=0;
-    counts[1]=file->var_len;
-    index=2;
+    offsets[start]=0;
+    counts[start]=file->var_len;
+    index=start+1;
   }
   else
-    index=1;
+    index=start;
   offsets[index]=offsets[index+1]=0;
   counts[index]=file->nlat;
   counts[index+1]=file->nlon;
@@ -391,7 +397,7 @@ int main(int argc,char **argv)
         case MONTH:
           header.nbands=NMONTH*climate.var_len;
           break; 
-        case YEAR:
+        case YEAR: case MISSING_TIME:
           header.nbands=climate.var_len;
           break;
       }

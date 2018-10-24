@@ -17,7 +17,9 @@
 #include "lpj.h"
 #include "tree.h"
 
-void fprintpar_tree(FILE *file,const Pftpar *par)
+void fprintpar_tree(FILE *file,       /**< pointer to text file */
+                    const Pftpar *par /**< pointer to tree PFT parameter */
+                  )
 {
   int i;
   char *leaftype[]={"broadleaved","needleleaved","any leaved"};

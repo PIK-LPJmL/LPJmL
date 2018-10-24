@@ -15,7 +15,8 @@
 #include "lpj.h"
 #include "crop.h"
 
-Real agb_crop(const Pft *pft)
+Real agb_crop(const Pft *pft /**< pointer to crop  PFT */
+             )               /** \return above-ground crop carbon (gC/m2) */
 {
   const Pftcrop *crop;
   crop=pft->data;

@@ -124,7 +124,7 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
         }
         else
         {
-          if(flag>=D_LAI && flag<=D_PET)
+          if(isdailyoutput(flag))
             isdaily=TRUE;
           count++;
         }
