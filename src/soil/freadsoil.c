@@ -58,10 +58,9 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
 #ifdef MICRO_HEATING
   foreachsoillayer(l) soil->decomC[l]=soil->micro_heating[l]=0;
 #endif
-  forrootsoillayer(l)
-   soil->k_mean[l].fast=soil->k_mean[l].slow=0;
-  soil->count=0;
-  soil->decomp_litter_mean=0;
+  freadreal((Real *)soil->k_mean,LASTLAYER*sizeof(Pool)/sizeof(Real),swap,file);
+  freadreal1(&soil->decomp_litter_mean,swap,file);
+  freadint1(&soil->count,swap,file);
 #ifdef MICRO_HEATING
   soil->litter.decomC=0;
 #endif
