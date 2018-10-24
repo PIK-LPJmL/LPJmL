@@ -268,6 +268,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputvar(CFT_PET,cft_pet,2*(ncft+NGRASS));
   writeoutputvar(CFT_TRANSP,cft_transp,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(CFT_TRANSP_B,cft_transp_b,2*(ncft+NGRASS+NBIOMASSTYPE));
+  writeoutputvar(CFT_EVAP,cft_evap,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(CFT_EVAP_B,cft_evap_b,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(CFT_INTERC,cft_interc,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(CFT_RETURN_FLOW_B,cft_return_flow_b,2*(ncft+NGRASS+NBIOMASSTYPE));
