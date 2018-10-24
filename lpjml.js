@@ -32,6 +32,7 @@
 
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : LPJML,       /* LPJML Simulation type with managed land use */
+  "version"  : "4.0",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -233,6 +234,7 @@ ID                         Fmt                    filename
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 2011, /* last year of simulation */
+  "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */

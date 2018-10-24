@@ -16,9 +16,9 @@
 
 #include "lpj.h"
 
-Bool readfilename(LPJfile *file,         /**< pointer to text file read */
+Bool readfilename(LPJfile *file,      /**< pointer to text file read */
                   Filename *filename, /**< returns filename and format */
-                  const char *key,
+                  const char *key,    /**< name of json object */
                   const char *path,   /**< path added to filename or NULL */
                   Bool isvar,         /**< variable name supplied */
                   Verbosity verb      /**< verbosity level (NO_ERR,ERR,VERB) */

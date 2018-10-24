@@ -4,6 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Function reads tree-specific PFT variables from restart file               \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -15,7 +17,10 @@
 #include "lpj.h"
 #include "tree.h"
 
-Bool fread_tree(FILE *file,Pft *pft,Bool swap)
+Bool fread_tree(FILE *file, /**< pointer to binary file */
+                Pft *pft,   /**< pointer to PFT read */
+                Bool swap   /**< Byte order has to be changed (TRUE/FALSE) */
+               )            /** \return TRUE on error */
 {
   Pfttree *tree;
   tree=new(Pfttree);

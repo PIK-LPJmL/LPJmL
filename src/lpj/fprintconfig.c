@@ -419,9 +419,10 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
          size<strlen(config->outnames[config->outputvars[i].id].name))
         size=strlen(config->outnames[config->outputvars[i].id].name);
     fprintf(file,"Number of output files:       %d\n"
+                 "Output written in year:       %d\n"
                  "Byte order in output files:   %s\n"
                  "Output method:                %s",
-            config->n_out,
+            config->n_out,config->outputyear,
             bigendian() ? "big endian" : "little endian",
             method[config->outputmethod]);
     if(config->outputmethod==LPJ_SOCKET)
@@ -477,9 +478,13 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   else
     fputs("No output files written.\n",file);
   if(config->nspinup)
+  {
+    if(config->isfirstspinupyear)
+      fprintf(file,"First spinup year:           %6d\n",config->firstspinupyear);
     fprintf(file,"Spinup years:                %6d\n"
             "Cycle length during spinup:  %6d\n",
              config->nspinup,config->nspinyear);
+  }
   else
     fputs("No spinup years.\n",file);
   fprintf(file,"First year:                  %6d\n"

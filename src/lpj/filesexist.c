@@ -284,6 +284,14 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkfile(config.co2_filename.name);
   if(config.wet_filename.name!=NULL)
     bad+=checkclmfile(&config,&config.wet_filename);
+#ifdef IMAGE
+  if(config.sim_id==LPJML_IMAGE)
+  {
+    bad+=checkclmfile(&config,&config.temp_var_filename);
+    bad+=checkclmfile(&config,&config.prec_var_filename);
+    bad+=checkclmfile(&config,&config.prodpool_init_filename);
+  }
+#endif
   if(ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1)
   {
     config.ischeckpoint=TRUE;

@@ -17,7 +17,7 @@
 
 void litter_update_grass(Litter *litter, /**< Litter pool */
                          Pft *pft,       /**< PFT variables */
-                         Real frac       /**< fraction (0..1) */
+                         Real frac       /**< fraction added to litter (0..1) */
                         )
 {
   Pftgrass *grass;

@@ -47,6 +47,9 @@ Bool fwritesoil(FILE *file, /**< pointer to binary file */
   fwrite1(&soil->alag,sizeof(Real),file);
   fwrite1(&soil->amp,sizeof(Real),file);
   fwrite1(&soil->rw_buffer,sizeof(Real),file);
+  fwrite(soil->k_mean,sizeof(Poolpar),LASTLAYER,file);
+  fwrite1(&soil->decomp_litter_mean,sizeof(Stocks),file);
+  fwrite1(&soil->count,sizeof(int),file);
   fwrite1(&soil->meanw1,sizeof(Real),file);
   return FALSE;
 } /* of 'fwritesoil' */

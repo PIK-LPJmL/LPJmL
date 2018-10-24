@@ -139,6 +139,9 @@ typedef struct
   int nspinyear; /**< cycle length during spinup (yr) */
   int lastyear;  /**< last simulation year (AD) */
   int firstyear; /**< first simulation year (AD) */
+  int outputyear; /**< first year for output (AD) */
+  Bool isfirstspinupyear; /**< set first year for climate in spinup (TRUE/FALSE) */
+  int firstspinupyear;   /**< first year for climate in spinup */
   int total;     /**< total number of grid cells with valid soilcode */
   int nall;      /**< total number of grid cells */
   int rank;      /**< my rank */

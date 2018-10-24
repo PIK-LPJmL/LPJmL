@@ -47,15 +47,15 @@ void fprintstandlist(FILE *file,                /**< Pointer to text file */
   }
 } /* of 'fprintstandlist' */
 
-Standlist freadstandlist(FILE *file,/* File pointer to binary file */
-                         Cell *cell, /* Cell pointer */
-                         const Pftpar pftpar[], /* pft parameter array */
-                         int ntotpft, /* total number of PFTs */
-                         const Soilpar *soilpar,/* soil parameter */
+Standlist freadstandlist(FILE *file,            /**< File pointer to binary file */
+                         Cell *cell,            /**< Cell pointer */
+                         const Pftpar pftpar[], /**< pft parameter array */
+                         int ntotpft,           /**< total number of PFTs */
+                         const Soilpar *soilpar,/**< soil parameter */
                          const Standtype standtype[],
-                         int nstand, /* number of stand types */
-                         Bool swap /* Byte order has to be changed */
-                        ) /* returns allocated stand list or NULL */
+                         int nstand,            /**< number of stand types */
+                         Bool swap              /**< Byte order has to be changed */
+                        ) /** \return allocated stand list or NULL */
 {
   /* Function reads stand list from file */
   int s;
@@ -83,9 +83,9 @@ Standlist freadstandlist(FILE *file,/* File pointer to binary file */
   return standlist;
 } /* of 'freadstandlist' */
 
-int addstand(const Standtype *type, /* stand type */
-             Cell *cell             /* cell pointer */
-            )           /* returns new number of stands */
+int addstand(const Standtype *type, /**< stand type */
+             Cell *cell             /**< cell pointer */
+            )                       /** \return new number of stands */
 {
    /* Function adds stand to list */
    Stand *stand;
@@ -102,7 +102,7 @@ int addstand(const Standtype *type, /* stand type */
    return getlistlen(cell->standlist);
 } /* of 'addstand' */
 
-void initstand(Stand *stand /* Pointer to stand */
+void initstand(Stand *stand /**< Pointer to stand */
               )
 {
   /* Function initializes stand */
@@ -112,7 +112,8 @@ void initstand(Stand *stand /* Pointer to stand */
   stand->landcover=NULL;
 } /* of 'initstand' */
 
-void freestand(Stand *stand)
+void freestand(Stand *stand /**< Pointer to stand */
+              )
 {
   freepftlist(&stand->pftlist); /* free list of established PFTs */
   freesoil(&stand->soil);
@@ -121,9 +122,9 @@ void freestand(Stand *stand)
   free(stand);
 } /* of 'freestand'  */
  
-int delstand(Standlist list, /* stand list */
-             int index       /* index of stand to be deleted */
-            )                /* return new number of stands */
+int delstand(Standlist list, /**< stand list */
+             int index       /**< index of stand to be deleted */
+            )                /** \return new number of stands */
 {
   /* Function deletes stand from list */
   Stand *stand;
@@ -132,7 +133,8 @@ int delstand(Standlist list, /* stand list */
   return dellistitem(list,index);
 } /* of 'delstand' */
 
-void freestandlist(Standlist standlist)
+void freestandlist(Standlist standlist /**< stand list */
+                  )
 {
   int s;
   Stand *stand;

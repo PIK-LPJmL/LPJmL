@@ -4,6 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/** Function writes tree specific PFT variables into restart file                  \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -15,7 +17,9 @@
 #include "lpj.h"
 #include "tree.h"
 
-Bool fwrite_tree(FILE *file,const Pft *pft)
+Bool fwrite_tree(FILE *file,    /**< pointer to binary file */
+                 const Pft *pft /**< pointer to tree PFT */
+                )               /** \return TRUE on error */
 {
   const Pfttree *tree;
   tree=pft->data;

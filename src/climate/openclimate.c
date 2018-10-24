@@ -63,6 +63,12 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       MPI_Bcast(&file->time_step,1,MPI_INT,0,config->comm);
 #endif
       closeclimate_netcdf(file,isroot(*config));
+      if(file->time_step==MISSING_TIME)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR436: Time axis missing in '%s'.\n",file->filename);
+        return TRUE;
+      }
       file->oneyear=TRUE;
       file->units=units;
       file->nyear=last-file->firstyear+1;
@@ -76,6 +82,12 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     {
       if(mpi_openclimate_netcdf(file,filename->name,filename->var,units,config))
         return TRUE;
+      if(file->time_step==MISSING_TIME)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR436: Time axis missing in '%s'.\n",filename->name);
+        return TRUE;
+      }
       if(file->var_len>1)
       {
         if(isroot(*config))

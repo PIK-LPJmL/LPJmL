@@ -52,10 +52,14 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
   if (verb>=VERB) puts("// soil parameters");
   if(fscanrealarray(file,soildepth,NSOILLAYER,"soildepth",verb))
     return 0;
-  if(fscanrealarray(file,layerbound,NSOILLAYER,"layerbound",verb))
-    return 0;
-  for(l=0;l<NSOILLAYER;l++)
-    midlayer[l]=l>0?(layerbound[l-1]+soildepth[l]/2.):soildepth[l]/2.;
+  /* calculate layerbound and midlayer from soildepth */
+  layerbound[0]=soildepth[0];
+  midlayer[0]=soildepth[0]*0.5;
+  for(l=1;l<NSOILLAYER;l++)
+  {
+    layerbound[l]=layerbound[l-1]+soildepth[l];
+    midlayer[l]=layerbound[l-1]+soildepth[l]*0.5;
+  }
   foreachsoillayer(l)
   {
     logmidlayer[l]=log10(midlayer[l]/midlayer[NSOILLAYER-2]);

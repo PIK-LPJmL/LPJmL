@@ -15,7 +15,9 @@
 #include "lpj.h"
 #include "tree.h"
 
-Real alphaa_tree(const Pft *pft,int UNUSED(lai_opt))
+Real alphaa_tree(const Pft *pft, /**< pointer to tree PFT */
+                 int UNUSED(lai_opt)
+                )               /** \return alpha_a (0..1) */
 {
   Pfttree *tree;
   Real scaler=1.0;

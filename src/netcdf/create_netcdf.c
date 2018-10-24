@@ -50,7 +50,7 @@ Bool create_netcdf(Netcdf *cdf,
   }
   cdf->missing_value=config->missing_value;
   cdf->index=array;
-  nyear=config->lastyear-config->firstyear+1;
+  nyear=config->lastyear-config->outputyear+1;
   if(cdf->state==APPEND || cdf->state==CLOSE)
   {
      cdf->ncid=cdf->root->ncid;
@@ -126,7 +126,7 @@ Bool create_netcdf(Netcdf *cdf,
         break;
       case 1:
         for(i=0;i<nyear;i++)
-          year[i]=config->firstyear+i;
+          year[i]=config->outputyear+i;
         break;
       case 12:
         for(i=0;i<nyear;i++)
@@ -197,7 +197,7 @@ Bool create_netcdf(Netcdf *cdf,
       rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen("Years"),"Years");
     else if(n>1)
     {
-      snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->firstyear);
+      snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->outputyear);
       rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(s),s);
       error(rc);
       rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"calendar",strlen("noleap"),

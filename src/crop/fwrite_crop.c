@@ -19,7 +19,7 @@
 
 Bool fwrite_crop(FILE *file, /**< pointer to file data */
                  const Pft *pft /**< pointer to PFT data */
-                )
+                )               /** \return TRUE on error */
 {
   return (fwrite(pft->data,sizeof(Pftcrop),1,file)!=1);
 } /* of 'fwrite_crop' */

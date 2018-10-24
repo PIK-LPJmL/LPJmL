@@ -248,7 +248,8 @@ int main(int argc,char **argv)
     {
       rc=nc_get_vara_float(ncid,var_id,offsets,counts,&data);
       error(rc);
-      if(data!=missing_value)
+      if((!isnan(missing_value) && data!=missing_value) ||
+          (isnan(missing_value) && !isnan(data)))
       {
         if(isfloat)
         {

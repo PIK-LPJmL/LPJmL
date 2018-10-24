@@ -24,16 +24,6 @@
   10000.      /* soil depth layer (mm) */
 ],
 
-"layerbound" :
-[
-200.,         /* layerbound (mm) */
-500.,         /* layerbound (mm) */
-1000.,        /* layerbound (mm) */
-2000.,        /* layerbound (mm) */
-3000.,        /* layerbound (mm) */
-13000.        /* layerbound (mm) */
-],
-
 "fbd_fac" : [1., 1.2, 1.4, 0.], /* fuel bulk density factors */
 
 "soilpar" :

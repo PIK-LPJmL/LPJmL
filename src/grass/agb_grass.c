@@ -4,6 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Function calculates above-ground vegetation carbon of tree PFTs            \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -15,7 +17,8 @@
 #include "lpj.h"
 #include "grass.h"
 
-Real agb_grass(const Pft *pft)
+Real agb_grass(const Pft *pft /**< pointer to grass PFT */
+              )               /** \return above-ground vegetation carbon (gC/m2) */
 {
   const Pftgrass *grass;
   grass=pft->data;
