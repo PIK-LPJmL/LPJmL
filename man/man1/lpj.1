@@ -1,14 +1,14 @@
-.TH lpjml 1  "October 28, 2008" "version 3.4.017" "USER COMMANDS"
+.TH lpjml 1  "August 1, 2017" "version 4.0.001" "USER COMMANDS"
 .SH NAME
-lpj, lpjml \- Dynamic global vegetation model with managed land use and river routing
+lpj, lpjml \- Dynamic global vegetation model with managed land and river routing
 .SH SYNOPSIS
 .B lpjml
-[\-h] [\-v] [-vv] [-fpe] [\-output {gather|mpi2|buffer}] [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [\-wait time] [\-output {write|gather|mpi2|socket=hostname[:port]}] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
 
 .B lpj
-[\-h] [\-v] [-vv] [-fpe] [\-output {gather|mpi2|buffer}] [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [\-wait time] [\-output {write|gather|mpi2|socket=hostname[:port]}] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
 .SH DESCRIPTION
@@ -20,11 +20,14 @@ annual atmospheric CO2 concentration and soil texture class. The
 simulation for each grid cell begins from "bare ground",
 requiring a "spin up" (under non-transient climate) of c. 1000
 years to develop equilibrium vegetation and soil structure. A restart
-file can be created to save compute time for the spin-up phase. 
+file can be created to save compute time for the spin-up phase. If the Message Passing Interface (MPI) library is available a parallel version of the program is built. If -DIMAGE flag is set in \fIMakefile.inc\fP coupling the IMAGE model via the TDT library is enabled.
 .SH OPTIONS
 .TP
 \-h
-display a short help text
+print a short help text
+.TP
+\-l
+print the license file
 .TP
 \-v
 print information about program version, operating system, compiler used, and compiler flags set.
@@ -32,12 +35,24 @@ print information about program version, operating system, compiler used, and co
 \-vv
 verbosely print the actual values during reading of the configuration files.
 .TP
+\-param
+print LPJmL parameter for soils and PFTs.
+.TP
+\-pp cmd
+set preprocessor program to cmd. Default is \fBcpp -P\fP.
+.TP
 \-fpe
 enable floating point exceptions. A core file is generated in case of an arithmetic error. Option is only available if \fBlpjml\fP has been compiled with -DWITH_FPE flag.
 .TP
-\-output {gather|mpi2|buffer}
-use the given output method to write data to disk. Valid output methods are
-gather, mpi2, and buffer. The default output method is gather sending all output to the root task. If memory allocation fails use other output method. Method mpi2 uses MPI-2 parallel file functions, while method buffer stores all output in memory.  If memory allocation fails for buffer use other output method. The option is only valid for the MPI version of the code.  
+\-image host[:inport[,outport]]
+set host where IMAGE model is running. Default is localhost. inport and outport are the port numbers for ingoing and outgoing data. Default port numbers are 2225 and 2224, respectively. This option is only available for the IMAGE version of the code.
+.TP
+\-wait time
+set time to wait for connection to IMAGE model. Time is measured in seconds. Default value is 10 sec. This option is only available for the IMAGE version of the code.
+.TP
+\-output {gather|mpi2|socket=hostname[:port]]}
+use the given output method to write data to disk or to a output channel. Valid output methods are write,
+gather, mpi2, and socket. The default output method for the MPI version is gather sending all output to the root task, while the default method is write for the sequential version of the code. Method mpi2 uses MPI-2 parallel file functions, while output method socket sends output data via a TCP/IP socket to a remote host hostname. Default port is 2222. \fBlpjliveview\fP is a program to display output variables on a X11 display at run time. The mpi2 and gather output methods are only valid for the MPI version of the code.  
 .TP
 \-outpath \fIdir\fP
 set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
@@ -55,7 +70,7 @@ define macro for the preprocessor of the configuration file
 define include directory for the preprocessor of the configuration file
 .TP
 .I filename
-name of configuration file, default is \fIlpjml.conf\fP for \fBlpjml\fP and \fIlpj.conf\fP for \fBlpj\fP.
+name of configuration file, default is \fIlpjml.js\fP for \fBlpjml\fP and \fIlpj.js\fP for \fBlpj\fP.
 .SH EXAMPLES
 .TP
 Perform simulation with input from the /scratch file system:
@@ -63,9 +78,14 @@ Perform simulation with input from the /scratch file system:
 \-inpath /scratch/02/lpj
 .PP
 .TP
+Perform simulation with output sent to host aix:
+.B lpjml
+\-output socket=aix
+.PP
+.TP
 Start simulation from restart file with floating point exceptions enabled:
 .B lpjml
-\-DFROM_RESTART \-fpe lpjml.conf
+\-DFROM_RESTART \-fpe lpjml.js
 .PP
 For running the MPI version of the program on more than one task the
 .B lpjsubmit
@@ -76,12 +96,18 @@ LPJCONFIG
 default LPJmL configuration filename
 .TP
 LPJPREP 
-defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP.
+defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP. Same as '-pp' option.
 .TP
 LPJROOT
 defines the root directory for LPJmL. This directory is added to the
 include directories of the preprocessor. Invoking \fBlpj_paths.sh\fP or \fBlpj_paths.csh\fP will set this
 environment variable correctly.
+.TP
+LPJIMAGE
+sets the host where IMAGE model is running. Same as '-image' option.
+.TP
+LPJWAITIMAGE
+sets time to wait for connection to IMAGE model. Same as in '-wait' option.
 .TP
 LPJINPATH
 path appended to the input filenames. Only done for filenames without absolute path. Same as '-inpath \fIdir\fP' option.
@@ -97,7 +123,7 @@ path appended to the restart filenames. Only done for filenames without absolute
 .TP
 LPJOUTPUT
 default method for generating output files. Valid values
-are mpi2, buffer, gather. Used by the MPI version only. Same as '-output method' option.
+are mpi2, gather, and socket. Same as '-output method' option.
 
 .SH EXIT STATUS
 .B lpjml
@@ -113,86 +139,100 @@ ERRORxxx: message, program terminated unsuccessfully
 where xxx is the return code of the program. The following error codes are defined:
 .TP
 ERROR001 
-Error reading configuration. Check syntax of configuration file. 
+Error reading configuration. Check syntax of configuration file. External error
 .TP
 ERROR002 
-Error initializing climate. Check whether all input files are present.
+Error initializing input. Check whether all input files are present. External error
 .TP
 ERROR003 
-Error initializing land use, check for missing input file.
+Error initializing grid, check for missing input files. External error
 .TP
 ERROR004 
-Error initializing water use, check for missing input file.
-.TP
-ERROR005 
-Error initializing grid, check for missing input files.
-.TP
-ERROR006 
-Error initializing drainage, check for missing input files.
-.TP
-ERROR007 
 Invalid carbon balance. Internal error
 .TP
-ERROR008 
+ERROR005 
 Invalid water balance. Internal error
 .TP
-ERROR009 
+ERROR006 
 Negative discharge. Internal error
 .TP
-ERROR010 
+ERROR007 
 Negative fire probability. Internal error.
 .TP
-ERROR011 
+ERROR008 
 Negative soil moisture. Internal error
 .TP
-ERROR012 
-Error allocating memory. Rerun parallel program on more MPI tasks to reduce memory per task.
+ERROR009 
+Error allocating memory. Rerun parallel program on more MPI tasks to reduce memory per task. External error
 .TP
-ERROR013 
+ERROR010 
 Negative stand fraction. Internal error.
 .TP
-ERROR014 
-Stand fraction sum error. Can be caused by invalid restart file.
+ERROR011 
+Stand fraction sum error. Can be caused by invalid restart file. External error
+.TP
+ERROR012 
+List is empty in \fBdellistitem()\fP. Internal error.
+.TP
+ERROR013 
+Index out of range in \fBdellistitem()\fP. Internal error
+.TP
+ERROR014
+Error in \fBnewlanduse()\fP. Can be caused by invalid restart file. External error
 .TP
 ERROR015 
-List is empty in dellistitem. Internal error.
+Invalid year in \fBgetco2()\fP. CO2 data file is too short. External error
 .TP
 ERROR016 
-Index out of range in dellistitem. Internal error
-.TP
-ERROR017
-Error in newlanduse. Can be caused by invalid restart file.
-.TP
-ERROR018 
-Invalid year in 'getco2'. CO2 data file is too short.
-.TP
-ERROR019 
 Crop fraction >1. Internal error.
 .TP
-ERROR020 
-No natural stand for deforest. Internal error.
+ERROR017 
+No natural stand for \fBdeforest()\fP. Internal error.
 .TP
-ERROR021 
+ERROR018 
 Wrong cultivation type. Internal error.
 .TP
+ERROR019 
+Floating point error occurred. Floating point exceptions will only be thrown if -fpe option is set. This is in particular useful if NaNs appear in the output files.  Internal error.
+.TP
+ERROR021 
+PFT list is not empty in \fBsetaside()\fP. Internal error.
+.TP
 ERROR022 
-Invalid discharge. Internal error.
-.TP
-ERROR023 
-Cannot allocate buffer memory. Rerun program with option '-output mpi2' or '-output gather'. The total amount of memory allocated for the output buffers can be obtained by invoking \fBlpjcheck\fP. The buffer size has to be divided by the number of MPI tasks.
-.TP
-ERROR024 
-PFT list is not empty in setaside. Internal error.
-.TP
-ERROR025 
 Negative establishment rate. Internal error.
 .TP
-ERROR026 
-Floating point error occurred. Floating point exceptions will only be thrown if -fpe option is set. This is in particular useful if NaNs appear in the output files.  Internal error.
+ERROR023
+Output channel is broken. This error is only raised if '-output socket' option is set. It is usually caused by a premature end of the corresponding live view program. External error.
+.TP
+ERROR024
+Error sending data to the IMAGE model. This error can only be raised if LPJmL is compiled with the -DIMAGE flag set in \fIMakefile.inc\fP. External error.
+.TP
+ERROR025
+Error opening connection to IMAGE model. This error can only be raised if LPJmL is compiled with the -DIMAGE flag set in \fIMakefile.inc\fP. External error.
+.TP
+ERROR026
+Not enough setaside stand created to put the reservoir. Internal error.
+.TP
+ERROR027
+Forest left after deforestation. Internal error.
+.TP
+ERROR028
+Outflow reservoir error. Internal error. 
+.TP
+ERROR029
+Error in permafrost module. Internal error.
+-TP
+ERROR030
+Error in global water balance. Internal error. 
 .PP
+ERROR031
+Error in store climate function. 
+ERROR032
+No FMS coupler supported.
+
 Internal errors will generate a core dump and have to be fixed by changes in the code. A "post-mortem" analysis can be made by calling 
 
-\fBgdb\fP $LPJROOT/bin/lpjml core 
+\fBgdb\fP $LPJROOT/bin/lpjml core
 
 It is recommended to compile the code without optimization and inlining making the inspection of the core file easier. Configure in $LPJROOT with
 
@@ -206,7 +246,11 @@ will do the job. If no core file is generated set the user limit for core files:
 
 \fBulimit\fP -c unlimited
 
-Some of these errors are only raised if the -DSAFE flag has been set in \fIMakefile.inc\fP. The flags set at compile time can be obtained by invoking \fBlpjml -v\fP.
+Some of these errors are only raised if the -DSAFE flag has been set in \fIMakefile.inc\fP. The flags set at compile time can be obtained by invoking \fBlpjml -v\fP. After the core file has been created a backtrace of the failed program can be obtained by calling
+
+\fBbacktrace\fP
+
+Without any arguments \fBlpjml\fP will be inspected and the call tree displayed using the core file in the working directory.
 
 .SH AUTHORS
 
@@ -217,8 +261,6 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjsubmit(1), lpjcheck(1), cru2clm(1), txt2clm(1), grid2clm(1), cft2clm(1), lpjdistribute(1), lpjdistribute_river(1), lpjcat(1), lpjprint(1), printheader(1), cat2bsq(1), output_bsq(1), lpj_paths.sh(1), lpj_paths.csh(1), newpft.sh(1), lpjml.conf(5), lpj.conf(5), clm(5)
+lpjsubmit(1), lpjcheck(1), configure.sh(1), backtrace(1), cru2clm(1), txt2clm(1), grid2clm(1), cft2clm(1), lpjcat(1), lpjprint(1), printharvest(1), printclm(1), printheader(1), cat2bsq(1), output_bsq(1), lpj_paths.sh(1), lpj_paths.csh(1), lpjml.conf(5), lpj.conf(5), lpjml_image.conf(5), clm(5)
 .TP
-The LPJ & LPJmL Web Distribution Portal:
-http://www.pik-potsdam.de/lpj
-
+Contact: https://github.com/PIK-LPJmL/LPJmL /lpjml
