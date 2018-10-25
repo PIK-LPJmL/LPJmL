@@ -1,19 +1,20 @@
 #!/bin/sh
-###############################################################################
-##                                                                           ##
-##          l  p  j   s  u  b  m  i  t  _  m  p  i  c  h                     ##
-##                                                                           ##
-##    sh script to generate and submit parallel LoadLeveler jobs.            ##
-##                                                                           ##
-##    Usage: lpjsubmit [-class c] [-group] g] [-wtime time] [-q] ntask       ##
-##                     [LPJargs...]                                          ##
-##                                                                           ##
-##    written by Werner von Bloh, PIK Potsdam                                ##
-##                                                                           ##
-##    Last change: $Date:: 2015-06-22 14:23:08 +0200 (Mon, 22 Jun 201#$      ##
-##    By         : $Author:: bloh                            $               ##
-##                                                                           ##
-###############################################################################
+#################################################################################
+##                                                                             ##
+##          l  p  j   s  u  b  m  i  t  _  m  p  i  c  h                       ##
+##                                                                             ##
+##    sh script to generate and submit parallel LoadLeveler jobs.              ##
+##                                                                             ##
+##    Usage: lpjsubmit [-class c] [-group] g] [-wtime time] [-q] ntask         ##
+##                     [LPJargs...]                                            ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
+##                                                                             ##
+#################################################################################
 
 if [ $# -lt 1 ]
 then
