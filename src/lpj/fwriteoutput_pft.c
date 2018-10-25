@@ -32,6 +32,19 @@
     }\
   }
 
+#define writeoutputvaritem(index,name,item,n) if(isopen(output,index))\
+  {\
+    outindex(output,index,config->rank);\
+    for(i=0;i<n;i++)\
+    {\
+      count=0;\
+      for(cell=0;cell<config->ngridcell;cell++)\
+        if(!grid[cell].skip)\
+          fvec[count++]=(float)grid[cell].output.name[i].item;\
+      writepft(output,index,fvec,n,year,i,config);\
+    }\
+  }
+
 #define writeoutputshortvar(index,name,n) if(isopen(output,index))\
   {\
     outindex(output,index,config->rank);\
@@ -411,54 +424,10 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,PFT_GCGP,fvec,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
-  if(isopen(output,PFT_HARVESTC))
-  {
-    outindex(output,PFT_HARVESTC,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.pft_harvest[i].harvest.carbon;
-      writepft(output,PFT_HARVESTC,fvec,2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
-    }
-  }
-  if(isopen(output,PFT_RHARVESTC))
-  {
-    outindex(output,PFT_RHARVESTC,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.pft_harvest[i].residual.carbon;
-      writepft(output,PFT_RHARVESTC,fvec,2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
-    }
-  }
-  if(isopen(output,PFT_HARVESTN))
-  {
-    outindex(output,PFT_HARVESTN,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.pft_harvest[i].harvest.nitrogen;
-      writepft(output,PFT_HARVESTN,fvec,2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
-    }
-  }
-  if(isopen(output,PFT_RHARVESTN))
-  {
-    outindex(output,PFT_RHARVESTN,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.pft_harvest[i].residual.nitrogen;
-      writepft(output,PFT_RHARVESTN,fvec,2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
-    }
-  }
+  writeoutputvaritem(PFT_HARVESTC,pft_harvest,harvest.carbon,2*(ncft+NGRASS+NBIOMASSTYPE));
+  writeoutputvaritem(PFT_HARVESTN,pft_harvest,harvest.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE));
+  writeoutputvaritem(PFT_RHARVESTC,pft_harvest,residual.carbon,2*(ncft+NGRASS+NBIOMASSTYPE));
+  writeoutputvaritem(PFT_RHARVESTN,pft_harvest,residual.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(CFT_CONSUMP_WATER_G,cft_consump_water_g,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(CFT_CONSUMP_WATER_B,cft_consump_water_b,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(GROWING_PERIOD,growing_period,2*(ncft+NGRASS));
@@ -572,30 +541,8 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputvar(CFT_AIRRIG,cft_airrig,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(CFT_FPAR,cft_fpar,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(LUC_IMAGE,cft_luc_image,2*(ncft+NGRASS+NBIOMASSTYPE));
-  if(isopen(output,CFT_ABOVEGBMC))
-  {
-    outindex(output,CFT_ABOVEGBMC,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_aboveground_biomass[i].carbon;
-      writepft(output,CFT_ABOVEGBMC,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(isopen(output,CFT_ABOVEGBMN))
-  {
-    outindex(output,CFT_ABOVEGBMN,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_aboveground_biomass[i].nitrogen;
-      writepft(output,CFT_ABOVEGBMN,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
+  writeoutputvaritem(CFT_ABOVEGBMC,cft_aboveground_biomass,carbon,2*(ncft+NGRASS));
+  writeoutputvaritem(CFT_ABOVEGBMN,cft_aboveground_biomass,nitrogen,2*(ncft+NGRASS));
   /* ATTENTION! Due to allocation rules, this writes away next year's LAImax for trees and grasses */
   if(isopen(output,PFT_LAIMAX))
   {
@@ -875,55 +822,10 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
     }
   }
 #ifdef DOUBLE_HARVEST
-  if(isopen(output,PFT_HARVESTC2))
-  {
-    outindex(output,PFT_HARVESTC2,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.pft_harvest2[i].harvest.carbon;
-      writepft(output,PFT_HARVESTC2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
-    }
-  }
-  if(isopen(output,PFT_HARVESTN2))
-  {
-    outindex(output,PFT_HARVESTN2,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.pft_harvest2[i].harvest.nitrogen;
-      writepft(output,PFT_HARVESTN2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
-    }
-  }
-  if(isopen(output,PFT_RHARVESTC2))
-  {
-    outindex(output,PFT_RHARVESTC2,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.pft_harvest2[i].residual.carbon;
-      writepft(output,PFT_RHARVESTC2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
-    }
-  }
-  if(isopen(output,PFT_RHARVESTN2))
-  {
-    outindex(output,PFT_RHARVESTN2,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.pft_harvest2[i].residual.nitrogen;
-      writepft(output,PFT_RHARVESTN2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
-    }
-  }
-
+  writeoutputvaritem(PFT_HARVESTC2,pft_harvest2,harvest.carbon,2*(ncft+NGRASS+NBIOMASSTYPE));
+  writeoutputvaritem(PFT_HARVESTN2,pft_harvest2,harvest.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE));
+  writeoutputvaritem(PFT_RHARVESTC2,pft_harvest2,residual.carbon,2*(ncft+NGRASS+NBIOMASSTYPE));
+  writeoutputvaritem(PFT_RHARVESTN2,pft_harvest2,residual.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(GROWING_PERIOD2,growing_period2,2*(ncft+NGRASS));
   writeoutputvar(CFT_PET2,cft_pet2,2*(ncft+NGRASS));
   writeoutputvar(CFT_TRANSP2,cft_transp2,2*(ncft+NGRASS+NBIOMASSTYPE));
@@ -939,30 +841,8 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputshortvar(HDATE2,hdate2,2*ncft);
   writeoutputshortvar(SYEAR,syear,2*ncft);
   writeoutputshortvar(SYEAR2,syear2,2*ncft);
-  if(isopen(output,CFT_ABOVEGBMC2))
-  {
-    outindex(output,CFT_ABOVEGBMC2,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_aboveground_biomass2[i].carbon;
-      writepft(output,CFT_ABOVEGBMC2,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(isopen(output,CFT_ABOVEGBMN2))
-  {
-    outindex(output,CFT_ABOVEGBMN2,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_aboveground_biomass2[i].nitrogen;
-      writepft(output,CFT_ABOVEGBMN2,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
+  writeoutputvaritem(CFT_ABOVEGBMC2,cft_aboveground_biomass2,carbon,2*(ncft+NGRASS));
+  writeoutputvaritem(CFT_ABOVEGBMN2,cft_aboveground_biomass2,nitrogen,2*(ncft+NGRASS));
 #endif
   free(fvec);
 } /* of 'fwriteoutput_pft' */
@@ -981,4 +861,4 @@ PFT  CFT    PASTURE/OTHEr   BIOMASS-GRASS   BIOMASS-TREE    CFT_irr   PASTURE_ir
 CFT    PASTURE/OTHEr   BIOMASS-GRASS   BIOMASS-TREE    CFT_irr   PASTURE_irr  biomass-irr
 
 
-*/      
+*/
