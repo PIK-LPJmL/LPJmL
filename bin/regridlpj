@@ -3,22 +3,22 @@
 ##                                                                             ##
 ##                  r  e  g  r  i  d  l  p  j                                  ##
 ##                                                                             ##
-##    sh script to regrid input files to specified countries                   ##
+##    sh script to regrid input files to specified countries or grid file      ##
 ##                                                                             ##
-##    Usage: regridlpj [-dir path] filesuffix countrycode ...                  ##
+##    Usage: regridlpj [-dir path] filesuffix [countrycode ...]                ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
 ## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
 ## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
-## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 ##                                                                             ##
 #################################################################################
 
-if [ $# -lt 2 ]
+if [ $# -lt 1 ]
 then
   echo >&2 Error: Missing arguments 
-  echo >&2 Usage: $0 [-dir path] suffix countrycode ...
+  echo >&2 Usage: $0 [-dir path] suffix [countrycode ...]
   exit 1
 fi
 if [ $1 = "-dir" ]
@@ -29,19 +29,31 @@ then
 else
   dir=$PWD
 fi
-
-if [ $# -lt 2 ]
+if [ $# -lt 1 ]
 then
   echo >&2 Error: Missing arguments 
-  echo >&2 Usage: $0 [-dir path] suffix countrycode ...
+  echo >&2 Usage: $0 [-dir path] suffix [countrycode ...]
   exit 1
 fi
 name=$1
 shift 1
-if getcountry $LPJINPATH/input_VERSION2/cow_mg_2006_full.bin  $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $* ;
+if [ $# -gt 0 ]
 then
-  regridsoil -same  $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/soil_new_67420.bin $dir/soil_$name.bin
-  regridsoil -same  /input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/glwd_lakes_and_rivers.bin $dir/lakes_$name.bin
+  if getcountry $LPJINPATH/input_VERSION2/cow_mg_2006_full.bin  $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $* ;
+  then
+    echo regridding for countries $*
+  else
+    exit 1
+  fi
+else
+  if [ "$dir" != $PWD ]
+  then
+    cp grid_$name.clm $dir
+  fi
+fi
+if  regridsoil -same  $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/soil_new_67420.bin $dir/soil_$name.bin
+then
+  regridsoil -same  $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/glwd_lakes_and_rivers.bin $dir/lakes_$name.bin
   regridclm -same -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/mlightning.clm $dir/lightning_$name.clm
   regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/human_ignition.clm $dir/human_ignition_$name.clm
   regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/popdens_HYDE_1901_2010_bi.clm $dir/popdens_$name.clm
@@ -102,6 +114,39 @@ TXT input_VERSION2/co2_1841-2010.dat
 CLM $dir/wet_$name.clm
 
 #endif
+EOF
+  cat << EOF >input_$name.js
+/*********************************************************************/
+/*                                                                   */
+/*                 i  n  p  u  t  .  j  s                            */
+/*                                                                   */
+/* Configuration file for input dataset for LPJ C Version 4.0.001    */
+/*                                                                   */
+/* Created: $(date +"%d.%m.%Y")                                               */
+/*                                                                   */
+/*********************************************************************/
+
+#include "include/conf.h" /* include constant definitions */
+
+"input" :
+{
+  "soil" : { "fmt" : RAW, "name" : "$dir/soil_$name.bin"},
+  "coord" : { "fmt" : CLM, "name" : "$dir/grid_$name.clm"},
+  "countrycode" : { "fmt" : CLM, "name" : "$dir/country_$name.clm"},
+  "landuse": { "fmt" : CLM, "name" : "$dir/landuse_$name.clm"},
+  "temp" : { "fmt" : CLM, "name" : "$dir/tmp_$name.clm"},
+  "prec" : { "fmt" : CLM, "name" : "$dir/prec_$name.clm"},
+  "lwnet" : { "fmt" : CLM, "name" : "$dir/lwnet_$name.clm"},
+  "swdown" : { "fmt" : CLM, "name" : "$dir/swdown_$name.clm"},
+  "cloud" : { "fmt" : CLM, "name" : "$dir/cld_$name.clm"},
+  "wind" : { "fmt" : CLM, "name" : "$dir/windspeed_$name.clm"},
+  "tamp" : { "fmt" : CLM, "name" : "$dir/tamp_$name.clm"},
+  "lightning" : { "fmt" : CLM, "name" : "$dir/lightning_$name.clm"},
+  "human_ignition" : { "fmt" : CLM, "name" : "$dir/human_ignition_$name.clm"},
+  "popdens" : { "fmt" : CLM, "name" : "$dir/popdens_$name.clm "},
+  "co2" : { "fmt" : TXT, "name" : "/p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2012.dat"},
+  "wetdays" : { "fmt" : CLM, "name" : "$dir/wet_$name.clm"}
+},
 EOF
 else
   exit 1
