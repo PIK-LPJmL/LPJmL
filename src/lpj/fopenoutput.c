@@ -22,40 +22,6 @@ static void handler(int UNUSED(num))
   fail(SOCKET_ERR,FALSE,"Output channel is broken"); 
 } /* of 'handler' */
 
-static int getnyear(int index)
-{
-  if(index==REGION || index==COUNTRY || index==GRID)
-    return 0;
-  if(ismonthlyoutput(index))
-    return 12;
-  if(isdailyoutput(index)) 
-    return NDAYYEAR;
-  return 1;
-} /* of 'getnyear' */
-
-static size_t getsize(int index,           /* index of output file */
-                      const Config *config /* LPJ configuration */
-                     )                     /* get size of output written in one year */
-{
-  size_t size;
-  size=getnyear(config->outputvars[index].id);
-  size*=outputsize(config->outputvars[index].id,
-                   config->npft[GRASS]+config->npft[TREE],
-                   config->nbiomass,
-                   config->npft[CROP]);
-  if(config->outputvars[index].id==SDATE 
-     || config->outputvars[index].id==HDATE
-     || config->outputvars[index].id==SEASONALITY)
-    size*=sizeof(short);
-  else
-    size*=sizeof(float);
-  if(config->outputvars[index].id==ADISCHARGE)
-    size*=config->nall;
-  else
-    size*=config->total;
-  return size;
-} /* of 'getsize' */
-
 static Bool create(Netcdf *cdf,const char *filename,int index,
                    Coord_array *array,const Config *config)
 {
@@ -184,10 +150,7 @@ static void openfile(Outputfile *output,const Cell grid[],
                                         config->nbiomass,
                                         config->npft[CROP]);
               header.nyear=config->lastyear-config->outputyear+1;
-              if(config->outputvars[i].id==SDATE || config->outputvars[i].id==HDATE || config->outputvars[i].id==SEASONALITY)
-                header.datatype=LPJ_SHORT;
-              else
-                header.datatype=LPJ_FLOAT;
+              header.datatype=getoutputtype(config->outputvars[i].id);
               fwriteheader(output->files[config->outputvars[i].id].fp.file,
                            &header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
             }

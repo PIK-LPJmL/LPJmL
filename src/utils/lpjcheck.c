@@ -18,7 +18,7 @@
 #include "tree.h"
 #include "crop.h"
 
-#define LPJCHECK_VERSION "1.0.002"
+#define LPJCHECK_VERSION "1.0.003"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 #ifdef USE_JSON
 #define dflt_conf_filename "lpjml.js" /* Default LPJ configuration file */
@@ -124,12 +124,12 @@ int main(int argc,char **argv)
     }
     if(config.n_out)
     {
-      config.count=config.ngridcell;
+      config.nall=config.total=config.ngridcell;
       printf("Estimated disk usage for output: ");
-      printintf((int)(outputfilesize(config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config)/(1024*1204)));
+      printintf((int)(outputfilesize(&config)/(1024*1204)));
       printf(" MByte\n");
     }
-    rc=(filesexist(config,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],isout)) ? EXIT_FAILURE : EXIT_SUCCESS;
+    rc=(filesexist(config,isout)) ? EXIT_FAILURE : EXIT_SUCCESS;
   }
   return rc;
 } /* of 'main' */
