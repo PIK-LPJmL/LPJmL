@@ -108,12 +108,12 @@ static void openfile(Outputfile *output,const Cell grid[],
             if(config->checkpointyear>=config->outputyear)
             {
               fseek(output->files[config->outputvars[i].id].fp.file,
-                    headersize(LPJGRID_HEADER,LPJGRID_VERSION)+
+                    headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION)+
                     getsize(i,config)*(config->checkpointyear-config->outputyear+1),SEEK_SET);
             }
             else
               fseek(output->files[config->outputvars[i].id].fp.file,
-                    headersize(LPJGRID_HEADER,LPJGRID_VERSION),SEEK_SET);
+                    headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION),SEEK_SET);
           }
         }
         else
