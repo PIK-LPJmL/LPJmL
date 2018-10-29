@@ -223,8 +223,6 @@ static int checkcoordfile(Config *config,const Filename *filename)
 } /* of 'checkcoordfile' */
 
 Bool filesexist(Config config, /**< LPJmL configuration */
-                int npft,      /**< number of natural PFTs */
-                int ncft,      /**< number of crop PFTs */
                 Bool isout     /**< write output on stdout (TRUE/FALSE) */
                )               /** \return TRUE on error */
 {
@@ -327,7 +325,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   badout=0;
   oldpath=strdup("");
   if(config.n_out)
-    size=outputfilesize(npft,ncft,&config);
+    size=outputfilesize(&config);
   for(i=0;i<config.n_out;i++)
   {
     path=getpath(config.outputvars[i].filename.name);

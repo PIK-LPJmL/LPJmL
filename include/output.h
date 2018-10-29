@@ -323,7 +323,7 @@ extern void initoutput_daily(Daily_outputs *);
 extern void freeoutput(Output *);
 extern int outputsize(int,int,int,int);
 extern Type getoutputtype(int);
-
+extern int getnyear(int);
 #ifdef USE_MPI
 extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,
                      int *,int,MPI_Comm);
