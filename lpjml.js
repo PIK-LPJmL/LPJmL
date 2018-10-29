@@ -179,7 +179,10 @@ ID                         Fmt                    filename
   "startgrid" : ALL, /* 27410, 67208 60400 all grid cells */
   "endgrid" : ALL,
 
-  //"checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
+#ifdef CHECKPOINT
+  "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
+#endif
+
 #ifndef FROM_RESTART
 
   "nspinup" : 5000,  /* spinup years */
