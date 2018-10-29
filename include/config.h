@@ -183,8 +183,8 @@ extern void initconfig(Config *);
 extern FILE* openconfig(Config *,const char *,int *,char***,const char*);
 extern void freeconfig(Config *);
 extern void fprintconfig(FILE *,const Config *,int,int);
-extern Bool filesexist(Config,int,int,Bool);
-extern long long outputfilesize(int,int,const Config *);
+extern Bool filesexist(Config,Bool);
+extern long long outputfilesize(const Config *);
 extern Variable *fscanoutputvar(LPJfile *,int,Verbosity);
 extern void freeoutputvar(Variable *,int);
 extern Bool fscanoutput(LPJfile *,Config *,int);
@@ -195,6 +195,7 @@ extern void fprintparam(FILE *,int,int,const Config *);
 extern void fprintfiles(FILE *,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);
+extern size_t getsize(int,const Config *);
 
 /* Definition of macros */
 
