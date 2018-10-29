@@ -16,11 +16,11 @@
 
 #include "lpj.h"
 
-#define fscanint2(file,var,name) if(fscanint(file,var,name,verbose)) return TRUE;
-#define fscanreal2(file,var,name) if(fscanreal(file,var,name,verbose)) return TRUE;
-#define fscanbool2(file,var,name) if(fscanbool(file,var,name,verbose)) return TRUE;
+#define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verbose)) return TRUE;
+#define fscanreal2(file,var,name) if(fscanreal(file,var,name,FALSE,verbose)) return TRUE;
+#define fscanbool2(file,var,name) if(fscanbool(file,var,name,FALSE,verbose)) return TRUE;
 #define fscanname(file,var,name) {              \
-    if(fscanstring(file,var,name,verbose)) {                 \
+    if(fscanstring(file,var,name,FALSE,verbose)) {                 \
       if(verbose) readstringerr(name);  \
       return TRUE;                              \
     }                                              \
@@ -134,7 +134,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   fscanbool2(file,&israndom,"random_prec");
   if(israndom)
   {
-    fscanint2(file,&config->seed,"random_seed");
+    config->seed=RANDOM_SEED;
+    if(fscanint(file,&config->seed,"random_seed",TRUE,verbose))
+      return TRUE;
     if(config->seed==RANDOM_SEED)
       config->seed=time(NULL);
   }
@@ -171,8 +173,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     fscanbool2(file,&config->firewood,"firewood");
   }
   fscanbool2(file,&config->ispopulation,"population");
-  fscanbool2(file,&config->prescribe_burntarea,"prescribe_burntarea");
-  fscanint2(file,&config->prescribe_landcover,"prescribe_landcover");
+  config->prescribe_burntarea=FALSE;
+  if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",TRUE,verbose))
+    return TRUE;
+  config->prescribe_landcover=NO_LANDCOVER;
+  if(fscanint(file,&config->prescribe_landcover,"prescribe_landcover",TRUE,verbose))
+    return TRUE;
   if(config->prescribe_landcover<NO_LANDCOVER || config->prescribe_landcover>LANDCOVERFPC)
   {
     if(verbose)
@@ -219,15 +225,22 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       }
       fscanbool2(file,&config->intercrop,"intercrop");
-      fscanbool2(file,&config->remove_residuals,"remove_residuals");
-      fscanbool2(file,&config->residues_fire,"residues_fire");
-      fscanbool2(file,&config->rw_manage,"rw_manage");
+      config->remove_residuals=FALSE;
+      if(fscanbool(file,&config->remove_residuals,"remove_residuals",TRUE,verbose))
+        return TRUE;
+      config->residues_fire=FALSE;
+      if(fscanbool(file,&config->residues_fire,"residues_fire",TRUE,verbose))
+        return TRUE;
+      if(fscanbool(file,&config->rw_manage,"rw_manage",TRUE,verbose))
+        return TRUE;
       fscanint2(file,&config->laimax_interpolate,"laimax_interpolate");
       if(config->laimax_interpolate==CONST_LAI_MAX)
         fscanreal2(file,&config->laimax,"laimax");
       if(config->river_routing)
         fscanbool2(file,&config->reservoir,"reservoir");
-      fscanbool2(file,&grassfix,"grassland_fixed_pft");
+      grassfix=FALSE;
+      if(fscanbool(file,&grassfix,"grassland_fixed_pft",TRUE,verbose))
+        return TRUE;
     }
     fscanbool2(file,&wateruse,"wateruse");
     if(wateruse && config->withlanduse==NO_LANDUSE)
@@ -294,12 +307,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->countrypar=NULL;
     config->regionpar=NULL;
   }
-  fscanint2(file,&config->compress,"compress");
+  config->compress=0;
+  if(fscanint(file,&config->compress,"compress",TRUE,verbose))
+    return TRUE;
 #ifdef USE_NETCDF
   if(config->compress)
     fputs("WARNING403: Compression of NetCDF files is not supported in this version of NetCDF.\n",stderr);
 #endif
-  if(fscanfloat(file,&config->missing_value,"missing_value",verbose))
+  config->missing_value=MISSING_VALUE_FLOAT;
+  if(fscanfloat(file,&config->missing_value,"missing_value",TRUE,verbose))
     return TRUE;
   config->outnames=fscanoutputvar(file,NOUT,verbose);
   if(config->outnames==NULL)
@@ -315,7 +331,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if (verbose>=VERB) puts("// III. input data section");
   if(iskeydefined(file,"inpath"))
   {
-    if(fscanstring(file,name,"inpath",verbose))
+    if(fscanstring(file,name,"inpath",FALSE,verbose))
       return TRUE;
     free(config->inputdir);
     config->inputdir=strdup(name);
@@ -483,12 +499,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if (verbose>=VERB) puts("// V. run settings");
   if(iskeydefined(file,"restartpath"))
   {
-    if(fscanstring(file,name,"restartpath",verbose))
+    if(fscanstring(file,name,"restartpath",FALSE,verbose))
       return TRUE;
     free(config->restartdir);
     config->restartdir=strdup(name);
   }
-  fscanint2(file,&config->startgrid,"startgrid");
+  config->startgrid=ALL; /* set default value */
+  if(fscanint(file,&config->startgrid,"startgrid",TRUE,verbose))
+    return TRUE;
   if(config->startgrid==ALL)
   {
     config->startgrid=0;
@@ -505,7 +523,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       endgrid--;
   }
   else
-    fscanint2(file,&endgrid,"endgrid");
+  {
+    endgrid=config->startgrid;
+    if(fscanint(file,&endgrid,"endgrid",TRUE,verbose))
+      return TRUE;
+  }
   if(endgrid<config->startgrid)
   {
     if(verbose)

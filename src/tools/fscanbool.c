@@ -25,6 +25,7 @@
 Bool fscanbool(LPJfile *file,    /**< pointer to LPJ file */
                Bool *value,      /**< boolean to be read from file */
                const char *name, /**< variable name */
+               Bool withdefault, /**< allow default values */ 
                Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
              )                   /** \return TRUE on error */
 {
@@ -37,9 +38,18 @@ Bool fscanbool(LPJfile *file,    /**< pointer to LPJ file */
   {
     if(!json_object_object_get_ex(file->file.obj,name,&item))
     {
-      if(verb)
-        fprintf(stderr,"ERROR225: Name '%s' for boolean not found.\n",name);
-      return TRUE;
+      if(withdefault)
+      {
+        if(verb)
+          fprintf(stderr,"WARNING027: Name '%s' for boolean not found, set to %s.\n",name,bool2str(*value));
+        return FALSE;
+      }
+      else
+      {
+        if(verb)
+          fprintf(stderr,"ERROR225: Name '%s' for boolean not found.\n",name);
+        return TRUE;
+      }
     }
     if(json_object_get_type(item)!=json_type_boolean)
     {

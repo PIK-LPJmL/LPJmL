@@ -25,9 +25,9 @@ Bool fscanlimit(LPJfile *file,  /**< pointer to LPJ file */
   LPJfile f;
   if(fscanstruct(file,&f,name,verb))
     return TRUE;
-  if(fscanreal(&f,&limit->low,"low",verb))
+  if(fscanreal(&f,&limit->low,"low",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&limit->high,"high",verb))
+  if(fscanreal(&f,&limit->high,"high",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscanlimit' */

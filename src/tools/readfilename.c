@@ -28,7 +28,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   String name;
   if(fscanstruct(file,&f,key,verb))
     return TRUE;
-  if(fscanint(&f,&filename->fmt,"fmt",verb))
+  if(fscanint(&f,&filename->fmt,"fmt",FALSE,verb))
     return TRUE;
   if(filename->fmt<0 || filename->fmt>CDF)
   {
@@ -44,7 +44,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   }
   if(isvar && filename->fmt==CDF)
   {
-    if(fscanstring(&f,name,"var",verb))
+    if(fscanstring(&f,name,"var",FALSE,verb))
     {
       if(verb)
         readstringerr("variable");
@@ -62,7 +62,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   }
   else
     filename->var=NULL;
-  if(fscanstring(&f,name,"name",verb))
+  if(fscanstring(&f,name,"name",FALSE,verb))
   {
     if(verb)
       readstringerr("filename");

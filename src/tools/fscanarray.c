@@ -55,7 +55,7 @@ Bool fscanarray(LPJfile *file,    /**< pointer to a LPJ file             */
 #endif
   *s=*file;
   if(readsize)
-    return fscanint(file,size,"size",verb);
+    return fscanint(file,size,"size",FALSE,verb);
   else
     return FALSE;
 } /* of 'fscanarray' */

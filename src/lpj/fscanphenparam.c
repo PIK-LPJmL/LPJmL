@@ -25,11 +25,11 @@ Bool fscanphenparam(LPJfile *file,       /**< pointer to LPJ file */
   LPJfile f;
   if(fscanstruct(file,&f,key,verb))
     return TRUE;
-  if(fscanreal(&f,&phenpar->sl,"slope",verb))
+  if(fscanreal(&f,&phenpar->sl,"slope",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&phenpar->base,"base",verb))
+  if(fscanreal(&f,&phenpar->base,"base",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&phenpar->tau,"tau",verb))
+  if(fscanreal(&f,&phenpar->tau,"tau",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscanphenparam' */

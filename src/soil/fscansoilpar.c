@@ -19,14 +19,14 @@
 #define UNDEF (-1)
 
 #define fscanreal2(verb,file,var,soil,name)\
-  if(fscanreal(file,var,name,verb))\
+  if(fscanreal(file,var,name,FALSE,verb))\
   {\
     if(verb) \
       fprintf(stderr,"ERROR110: Cannot read real '%s' for soil type '%s'.\n",name,soil);\
     return 0;\
   }
 #define fscanint2(verb,file,var,soil,name) \
-  if(fscanint(file,var,name,verb))\
+  if(fscanint(file,var,name,FALSE,verb))\
   {\
     if(verb) \
       fprintf(stderr,"ERROR110: Cannot read int '%s' for soil type '%s'.\n",name,soil);\
@@ -82,7 +82,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
   for(n=0;n<nsoil;n++)
   {
     fscanarrayindex(&arr,&item,n,verb);
-    if(fscanuint(&item,&id,"id",verb))
+    if(fscanuint(&item,&id,"id",FALSE,verb))
       return 0;
     if(id>=nsoil)
     {
@@ -97,7 +97,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
         fprintf(stderr,"ERROR177: Soil type=%u in line %d of '%s' has been already defined in fscansoilpar().\n",id,getlinecount(),getfilename());
       return 0;
     }
-    if(fscanstring(&item,s,"name",verb))
+    if(fscanstring(&item,s,"name",FALSE,verb))
     {
       if(verb)
         readstringerr("name");
