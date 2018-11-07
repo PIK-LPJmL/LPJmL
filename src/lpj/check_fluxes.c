@@ -67,7 +67,12 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
                p,pft->par->name,vegc_sum(pft));
       fflush(stdout);
     } /* of 'foreachstand' */
-    fail(INVALID_CARBON_BALANCE_ERR,TRUE,"y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f firec: %.2f flux_estab: %.2f flux_harvest: %.2f delta_totc: %.2f\ndeforest_emissions: %.2f product_turnover: %.2f trad_biofuel: %.2f product pools %.2f %.2f timber_harvest %.2f ftimber %.2f fburn %.2f\n",
+#ifdef NO_FAIL
+    fprintf(stderr,"ERROR004: "
+#else
+    fail(INVALID_CARBON_BALANCE_ERR,TRUE,
+#endif
+          "y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f firec: %.2f flux_estab: %.2f flux_harvest: %.2f delta_totc: %.2f\ndeforest_emissions: %.2f product_turnover: %.2f trad_biofuel: %.2f product pools %.2f %.2f timber_harvest %.2f ftimber %.2f fburn %.2f\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceC,cell->balance.nep,
          cell->output.firec,
          cell->output.flux_estab,cell->output.flux_harvest,delta_totc,
@@ -75,7 +80,12 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->ml.image_data->timber.slow,cell->ml.image_data->timber.fast,cell->output.timber_harvest,
          cell->ml.image_data->timber_f,cell->ml.image_data->fburnt);
 #else
-    fail(INVALID_CARBON_BALANCE_ERR,TRUE,"y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f\n"
+#ifdef NO_FAIL
+    fprintf(stderr,"ERROR004: "
+#else
+    fail(INVALID_CARBON_BALANCE_ERR,TRUE,
+#endif
+         "y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f\n"
          "                            firec: %.2f flux_estab: %.2f \n"
          "                            flux_harvest: %.2f delta_totc: %.2f biomass_yield: %.2f\n"
          "                            estab_storage_grass: %.2f %.2f estab_storage_tree %.2f %.2f\n"
@@ -100,8 +110,12 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   }
   balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux;
   if(year>startyear && fabs(balanceW)>1.5)
-   // fail(INVALID_WATER_BALANCE_ERR,TRUE,"y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f\n",
-    fprintf(stderr,"y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f\n",
+#ifdef NO_FAIL
+    fprintf(stderr,"ERROR005: "
+#else
+    fail(INVALID_WATER_BALANCE_ERR,TRUE,
+#endif
+         "y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceW,cell->balance.totw,totw,
          cell->balance.awater_flux,cell->balance.aprec);
   cell->balance.totw=totw;
