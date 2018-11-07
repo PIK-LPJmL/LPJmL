@@ -18,7 +18,7 @@ one-year time step. The name derives from the three locations \fBL\fPund-\fBP\fP
 temperature, total precipitation and percentage of full sunshine,
 annual atmospheric CO2 concentration and soil texture class. The
 simulation for each grid cell begins from "bare ground",
-requiring a "spin up" (under non-transient climate) of c. 1000
+requiring a "spin up" (under non-transient climate) of c. 5000
 years to develop equilibrium vegetation and soil structure. A restart
 file can be created to save compute time for the spin-up phase. If the Message Passing Interface (MPI) library is available a parallel version of the program is built. If -DIMAGE flag is set in \fIMakefile.inc\fP coupling the IMAGE model via the TDT library is enabled.
 .SH OPTIONS
@@ -221,14 +221,21 @@ Outflow reservoir error. Internal error.
 .TP
 ERROR029
 Error in permafrost module. Internal error.
--TP
+.TP
 ERROR030
 Error in global water balance. Internal error. 
-.PP
+.TP
 ERROR031
 Error in store climate function. 
+.TP
 ERROR032
 No FMS coupler supported.
+.TP
+ERROR033
+Error initializing soil temperature
+.TP
+ERROR034
+Invalid radiation model
 
 Internal errors will generate a core dump and have to be fixed by changes in the code. A "post-mortem" analysis can be made by calling 
 

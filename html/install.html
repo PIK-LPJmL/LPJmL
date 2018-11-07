@@ -40,8 +40,6 @@ Directory tree after extracting the tar files:</p>
 |
 +-bin           : Directory for executables and shell scripts
 |
-+-R             : Scripts for R statistical package
-|
 +-man           : Manual pages root directory
 | |
 | +-man1        : Manual pages for programs and scripts
@@ -52,53 +50,45 @@ Directory tree after extracting the tar files:</p>
 |
 +--html         : Documentation and man pages in HTML format
 |
-+--doc          : Documentation
-|
 +--par          : Parameter files for PFTs and soils
-|
-+--input        : input data set for climate
-|
-+--output       : output data (created by make test)
-|
-+--restart      : restart data (created by make test)
 |
 +--lib          : library files (created by make)
 |
 +--include      : include files
 |
 +--src          : source tree
-|
-+--numeric   : source for numerical routines
-|
-+--tools     : source for tools
-|
-+--pnet      : source for library for distributed networks
-|
-+--climate   : climate code 
-|
-+--lpj       : lpj functions
-|
-+--soil      : soil code
-|
-+--grass     : grass PFT code
-|
-+--tree      : tree PFT code
-|
-+--crop      : crop PFT code
-|
-+--landuse   : land use code
-|
-+--spitfire  : spitfire fire code
-|
-+--reservoir : reservoir code
-|
-+--socket    : socket communication library
-|
-+--image     : Coupler to IMAGE model
-|
-+--netcdf    : NetCDF output functions
-|
-+--utils     : utility programs
+   |
+   +--numeric   : source for numerical routines
+   |
+   +--tools     : source for tools
+   |
+   +--pnet      : source for library for distributed networks
+   |
+   +--climate   : climate code 
+   |
+   +--lpj       : lpj functions
+   |
+   +--soil      : soil code
+   |
+   +--grass     : grass PFT code
+   |
+   +--tree      : tree PFT code
+   |
+   +--crop      : crop PFT code
+   |
+   +--landuse   : land use code
+   |
+   +--spitfire  : spitfire fire code
+   |
+   +--reservoir : reservoir code
+   |
+   +--socket    : socket communication library
+   |
+   +--image     : Coupler to IMAGE model
+   |
+   +--netcdf    : NetCDF output functions
+   |
+   +--utils     : utility programs
 </pre>
 
 Configure for your operating system</p>
@@ -110,7 +100,7 @@ module load lpjml
 
 <pre class="example">
 % ./configure.sh
-Configuring LPJmL 3.5.003...
+Configuring LPJmL 4.0.001...
 Operating system is Linux
 Intel MPI found
 Create executables with make all
@@ -245,6 +235,23 @@ LINEAR_DECAY
 <td>
 use linearized functions for litter decay
 </td>
+</tr>
+<tr>
+<td>
+MICRO_HEATING
+</td>
+<td>
+Enable microbial heating
+</td>
+</tr>
+<tr>
+<td>
+NO_FAIL
+</td>
+<td>
+lpjm does not terminate on balance errors
+</td>
+</tr>
 <tr>
 <td>
 SAFE
@@ -331,14 +338,6 @@ The following programs are created in the <tt>bin</tt> directory:</p>
 </tr>
 <tr>
 <td>
-<A HREF="lpjliveview.html"><tt>lpjliveview</tt></A>
-</td>
-<td>Live view on screen of simulation output. lpjml must be started
-with '-output socket=hostname' option.
-</td>
-</tr>
-<tr>
-<td>
 <A HREF="cft2clm.html"><tt>cft2clm</tt></A>
 </td>
 <td>
@@ -398,7 +397,7 @@ CRU data files have to be in the format specified
 </table>
 An installation directory can be defined during configuration:
 <pre class="example">
-./configure.sh -prefix /data/biosx/lpjml-3.5.003
+./configure.sh -prefix /data/biosx/lpjml-4.0.001
 </pre>
 Then the binaries can be copied in the installation directory by invoking</p>
 <pre class="example">
@@ -593,13 +592,6 @@ restart directory path
 </table>
 The first two options will be sent to the preprocessor.
 
-The shell script <tt><A HREF="lpjdistribute.html">lpjdistribute</A></tt> can be used to create <tt>*.conf</tt> files in order to 
-divide the simulation into pieces for the sequential version:</p>
-
-<pre class="example">
-lpjdistribute &lt;number of pieces&gt; [&lt;number of grid cells&gt;]
-</pre>
-
 For the parallel version LoadLeveler files for Linux and AIX are provided. 
 A job can be submitted by invoking the <tt><A HREF="lpjsubmit.html">lpjsubmit</A></tt> script:</p>
 <pre class="example">
@@ -617,7 +609,7 @@ Depending on your MPI version installed the program can be started interactively
 ****       | |___|  __/ |_| | | | | | | |___  |__   _|  _  | |_| |        ****
 ****       |_____|_|   \___/|_| |_| |_|_____|    |_|   (_)  \___/         ****
 ****                                                                      ****
-****              lpjml C Version 4.0.001-3352 (Aug  1 2017)              ****
+****                lpjml C Version 4.0.001 (Nov  6 2018)                 ****
 ****    Dynamic global vegetation model with natural and managed land     ****
 ****                     Compiled for Linux with MPI                      ****
 ****       (C) Potsdam Institute for Climate Impact Research (PIK),       ****
@@ -630,87 +622,113 @@ Depending on your MPI version installed the program can be started interactively
 ****                                                                      ****
 ******************************************************************************
 
-Running for user bloh on login01 at Tue Aug  1 15:33:19 2017
-Reading configuration from 'lpjml.conf' with options '-DFROM_RESTART'.
+Running for user user on cs-e14c05b07 at Tue Nov  6 20:14:43 2018
+Reading configuration from 'lpjml.js' with options '-DFROM_RESTART'.
 ==============================================================================
 Simulation "LPJmL Run" running on 256 tasks
-Simulation with random precipitation, fire, permafrost,
-land use, potential irrigation.
-Working directory: /home/bloh/lpjtrunk
-Starting from restart file 'restart/restart_1900_nv_stdfire.lpj'.
+Simulation with random precipitation, fire, river routing, permafrost,
+new phenology, land use, limited irrigation, intercropping,
+fixed sowing date after 1970, dam reservoirs, water use.
+Working directory: /home/user/git/lpjml
+Starting from restart file '/p/tmp/user/lpjml/restart/restart_1840_nv_stdfire.lpj'.
 Input files:
-Variable   Fmt Varname  Filename
----------- --- -------- ------------------------------------------------------
-soil       raw          /data/biosx/LPJ/cru06/soil.bin
-coord      clm          /data/biosx/LPJ/cru06/grid.bin
-drainclass raw          /data/biosx/LPJ/cru06/drainclass.bin
-temp       clm          /data/biosx/LPJ/cru06/tmp.clm
-prec       clm          /data/biosx/LPJ/cru06/pre.clm
-pintensity clm          /data/biosx/LPJ/cru06/pintensity.clm
-cloud      clm          /data/biosx/LPJ/cru06/cld.clm
-co2        txt          /data/biosx/LPJ/cru06/co2_1901-2007.dat
-countries  clm          /data/biosx/LPJ/cru06/cow_mg_2006.bin
-landuse    clm          /data/biosx/LPJ/input_new/cft1700_2005_16cfts_SR.bin
-wetdays    clm          /data/biosx/LPJ/cru06/wet.clm
----------- --- -------- ------------------------------------------------------
-Writing restart file 'restart/restart_1900_crop_stdfire.lpj' after year 1900.
-Number of output files:       21
+Variable   Fmt  Filename
+---------- ---- --------------------------------------------------------------
+soil       meta /p/projects/lpjml/input/historical/input_VERSION2/soil.descr
+coord      clm  /p/projects/lpjml/input/historical/input_VERSION2/grid.bin
+temp       clm  /p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm
+prec       clm  /p/projects/lpjml/input/historical/CRUDATA_TS3_23/gpcc_v7_cruts3_23_precip_1901_2013.clm
+lwnet      clm  /p/projects/lpjml/input/historical/input_VERSION2/lwnet_erainterim_1901-2011.clm
+swdown     clm  /p/projects/lpjml/input/historical/input_VERSION2/swdown_erainterim_1901-2011.clm
+co2        txt  /p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2012.dat
+countries  clm  /p/projects/lpjml/input/historical/input_VERSION2/cow_mg_2006_full.bin
+landuse    clm  /p/projects/lpjml/input/historical/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin
+elevation  clm  /p/projects/lpjml/input/historical/input_VERSION2/elevation.bin
+reservoir  clm  /p/projects/lpjml/input/historical/input_VERSION2/reservoir_info_grand5.bin
+wetdays    clm  /p/projects/lpjml/input/historical/CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm
+drainage   clm  /p/projects/lpjml/input/historical/input_VERSION2/drainagestn.bin
+lakes      meta /p/projects/lpjml/input/historical/input_VERSION2/glwd_lakes_and_rivers.descr
+neighbour  clm  /p/projects/lpjml/input/historical/input_VERSION2/neighb_irrig_stn.bin
+wateruse   clm  /p/projects/lpjml/input/historical/input_VERSION2/wateruse_1900_2000.bin
+---------- ---- --------------------------------------------------------------
+Writing restart file '/p/tmp/user/lpjml/restart/restart_1900_crop_stdfire.lpj' after year 1900.
+Random seed: 2
+Number of output files:       45
+Output written in year:       1901
 Byte order in output files:   little endian
-Output method: gathered
-Variable    Fmt Unit         Type   Filename
------------ --- ------------ ------ ------------------------------------------
-grid        raw       degree  short output/grid.bin
-fpc         cdf            -  float output/fpc.nc
-mnpp        cdf  gC/m2/month  float output/mnpp.nc
-mgpp        cdf  gC/m2/month  float output/mgpp.nc
-mrh         cdf  gC/m2/month  float output/mrh.nc
-mfpar       cdf            -  float output/mfpar.nc
-mtransp     cdf     mm/month  float output/mtransp.nc
-mrunoff     cdf     mm/month  float output/mrunoff.nc
-mevap       cdf     mm/month  float output/mevap.nc
-minterc     cdf     mm/month  float output/minterc.nc
-mswc1       cdf           mm  float output/mswc1.nc
-mswc2       cdf           mm  float output/mswc2.nc
-firec       cdf     gC/m2/yr  float output/firec.nc
-firef       cdf         1/yr  float output/firef.nc
-vegc        cdf        gC/m2  float output/vegc.nc
-soilc       cdf       kgC/m2  float output/soilc.nc
-litc        cdf        gC/m2  float output/litc.nc
-flux_estab  cdf     gC/m2/yr  float output/flux_estab.nc
-harvest     cdf     gC/m2/yr  float output/flux_harvest.nc
-pft_harvest cdf     gC/m2/yr  float output/pft_harvest.pft.nc
-cftfrac     cdf            -  float output/cftfrac.nc
------------ --- ------------ ------ ------------------------------------------
+Output method:                gathered
+Variable         Fmt Unit         Type   Filename
+---------------- --- ------------ ------ -------------------------------------
+            grid raw       degree  short /p/tmp/user/lpjml/output/grid.bin
+             fpc raw            -  float /p/tmp/user/lpjml/output/fpc.bin
+            mnpp raw  gC/m2/month  float /p/tmp/user/lpjml/output/mnpp.bin
+            mgpp raw  gC/m2/month  float /p/tmp/user/lpjml/output/mgpp.bin
+             mrh raw  gC/m2/month  float /p/tmp/user/lpjml/output/mrh.bin
+          mfapar raw            -  float /p/tmp/user/lpjml/output/mfapar.bin
+         mtransp raw     mm/month  float /p/tmp/user/lpjml/output/mtransp.bin
+         mrunoff raw     mm/month  float /p/tmp/user/lpjml/output/mrunoff.bin
+           mevap raw     mm/month  float /p/tmp/user/lpjml/output/mevap.bin
+         minterc raw     mm/month  float /p/tmp/user/lpjml/output/minterc.bin
+           mswc1 raw            -  float /p/tmp/user/lpjml/output/mswc1.bin
+           mswc2 raw            -  float /p/tmp/user/lpjml/output/mswc2.bin
+           firec raw     gC/m2/yr  float /p/tmp/user/lpjml/output/firec.bin
+           firef raw           yr  float /p/tmp/user/lpjml/output/firef.bin
+            vegc raw        gC/m2  float /p/tmp/user/lpjml/output/vegc.bin
+           soilc raw        gC/m2  float /p/tmp/user/lpjml/output/soilc.bin
+            litc raw        gC/m2  float /p/tmp/user/lpjml/output/litc.bin
+      flux_estab raw     gC/m2/yr  float /p/tmp/user/lpjml/output/flux_estab.bin
+      mphen_tmin raw            -  float /p/tmp/user/lpjml/output/mphen_tmin.bin
+      mphen_tmax raw            -  float /p/tmp/user/lpjml/output/mphen_tmax.bin
+     mphen_light raw            -  float /p/tmp/user/lpjml/output/mphen_light.bin
+     mphen_water raw            -  float /p/tmp/user/lpjml/output/mphen_water.bin
+          mfirec raw  gC/m2/month  float /p/tmp/user/lpjml/output/mfirec.bin
+      mdischarge raw        hm3/d  float /p/tmp/user/lpjml/output/mdischarge.bin
+    mwateramount raw          hm3  float /p/tmp/user/lpjml/output/mwateramount.bin
+         harvest raw     gC/m2/yr  float /p/tmp/user/lpjml/output/flux_harvest.bin
+           sdate raw            -  short /p/tmp/user/lpjml/output/sdate.bin
+     pft_harvest raw     gC/m2/yr  float /p/tmp/user/lpjml/output/pft_harvest.pft.bin
+         cftfrac raw            -  float /p/tmp/user/lpjml/output/cftfrac.bin
+     seasonality raw            -  short /p/tmp/user/lpjml/output/seasonality.bin
+            mpet raw     mm/month  float /p/tmp/user/lpjml/output/mpet.bin
+         malbedo raw            -  float /p/tmp/user/lpjml/output/malbedo.bin
+   maxthaw_depth raw           mm  float /p/tmp/user/lpjml/output/maxthaw_depth.bin
+      msoiltemp1 raw      Celsius  float /p/tmp/user/lpjml/output/msoiltemp1.bin
+      msoiltemp2 raw      Celsius  float /p/tmp/user/lpjml/output/msoiltemp2.bin
+      msoiltemp3 raw      Celsius  float /p/tmp/user/lpjml/output/msoiltemp3.bin
+     soilc_layer raw        gC/m2  float /p/tmp/user/lpjml/output/soilc_layer.bin
+             agb raw        gC/m2  float /p/tmp/user/lpjml/output/agb.bin
+        agb_TREE raw        gC/m2  float /p/tmp/user/lpjml/output/agb_tree.bin
+  mreturn_flow_b raw     mm/month  float /p/tmp/user/lpjml/output/mreturn_flow_b.bin
+       mtransp_b raw     mm/month  float /p/tmp/user/lpjml/output/mtransp_b.bin
+         mevap_b raw     mm/month  float /p/tmp/user/lpjml/output/mevap_b.bin
+       minterc_b raw     mm/month  float /p/tmp/user/lpjml/output/mintec_b.bin
+ aconv_loss_evap raw        mm/yr  float /p/tmp/user/lpjml/output/aconv_loss_evap.bin
+aconv_loss_drain raw        mm/yr  float /p/tmp/user/lpjml/output/aconv_loss_drain.bin
+---------------- --- ------------ ------ -------------------------------------
 Spinup years:                   390
 Cycle length during spinup:      30
 First year:                    1901
-Last year:                     2006
+Last year:                     2011
 Number of grid cells:         67420
 ==============================================================================
-Invalid soil code in 8221 cells.
 Simulation begins...
 
-  Carbon flux (GtC)                        Water (km3)
---------------------------------------- ----------------------------------
-Spinup NEP     estab   fire    harvest total   transp     evap    interc  wd
------- ------- ------- ------- ------- ------- ---------- ------- ------- -------
-1511   1.501   0.035   2.880   0.941  -2.285    38904.6 11267.0  6164.6    42.8
-1512   4.581   0.039   2.854   0.882   0.883    40345.6  9377.3  6026.2    19.6
-1513   8.343   0.034   2.858   0.928   4.591    42931.2  8257.5  6324.6    19.5
-1895   5.057   0.092   3.005   3.241  -1.097    41048.9  9708.0  6208.7   402.8
-1896   4.440   0.093   3.108   3.264  -1.840    40719.4  9421.6  6157.5   408.8
-1897   5.420   0.093   2.953   3.385  -0.825    41137.3  9570.0  6379.0   421.2
-1898   4.767   0.094   3.099   3.415  -1.653    40487.9  9437.5  6225.7   427.8
-1899   4.396   0.095   3.195   3.247  -1.951    40203.3  9265.7  6165.1   442.0
-1900   4.745   0.095   3.087   3.385  -1.632    40936.6  9858.3  6073.5   442.1
+                  Carbon flux (GtC)                                Water (km3)
+       --------------------------------------- ---------------------------------------------
+Spinup NEP     estab   fire    harvest total   transp     evap    interc  wd      discharge
+------ ------- ------- ------- ------- ------- ---------- ------- ------- ------- ----------
+  1511   2.088   0.004   3.620   0.000  -1.528    47957.3  9976.7  6895.2     0.0    51348.1
+  1512  -1.062   0.036   3.629   0.095  -4.750    45776.6 11529.4  6555.8    20.8    50481.0
+  1513   2.715   0.035   3.613   0.458  -1.321    47354.0 11195.4  6634.2    22.1    50551.0
+  1514   4.357   0.035   3.229   0.739   0.423    48562.6 10554.8  6682.2    23.1    50039.0
 ...
-2004  14.578   0.166   2.684  10.105   1.955    39398.7 12500.4  6838.8  2338.6
-2005  12.729   0.166   2.906   9.744   0.245    38922.7 12371.3  6835.9  2348.9
-2006  14.443   0.166   2.652   9.823   2.134    39089.3 12688.4  6930.5  2325.7
+  2009  13.477   0.162   3.074   8.476   2.090    47712.6  9357.4  8168.6  2496.7    52281.5
+  2010  14.199   0.162   3.069   8.765   2.528    48559.7 10116.4  8488.2  2356.5    54515.1
+  2011  15.201   0.162   3.063   8.667   3.633    48735.4  9536.9  8527.0  2577.8    56086.4
 Simulation ended.
-lpjml successfully terminated, 59199 grid cells processed.
-Wall clock time:	2361 sec, 8e-05 sec/cell/year.
-Total wall clock time:	2478 sec
+lpjml successfully terminated, 67420 grid cells processed.
+Wall clock time:        1776 sec, 5.3e-05 sec/cell/year.
+Total wall clock time:  1778 sec (00:29:38).
 </pre>
 
 <h3>Error codes</h3>

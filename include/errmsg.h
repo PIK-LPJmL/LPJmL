@@ -51,8 +51,7 @@
 #define STORE_CLIMATE_ERR 31
 #define NO_FMS_ERR 32
 #define INITSOILTEMP_ERR 33
-#define RW_MANAGE_ERR 34
-#define INVALID_RADIATION_ERR 35
+#define INVALID_RADIATION_ERR 34
 
 /* Definition of macros */
 
