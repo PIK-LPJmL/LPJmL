@@ -343,7 +343,7 @@ Error code Description                                 Error type
         31 Cannot store climate data                     External
         32 NO FMS coupler                                External
         33 Cannot initialize soil temperature            External
-        34 Invalid radiation module                      External
+        34 Invalid radiation module                      Internal
 ---------- --------------------------------------------- --------
 
 External errors are caused by invalid or missing input files while internal 

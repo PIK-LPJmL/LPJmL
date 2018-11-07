@@ -79,13 +79,13 @@
 /*  <A NAME="second">II.</A> Input parameter section                                      */
 /*===================================================================*/
 
-#include "param.js"    /* Input parameter file */
+#include "<A HREF="param_example.html">param.js</A>"    /* Input parameter file */
 
 /*===================================================================*/
 /*  <A NAME="third">III.</A> Input data section                                          */
 /*===================================================================*/
 
-#include "input_crumonthly.js"    /* Input files of CRU dataset */
+#include "<A HREF="input_example.html">input_crumonthly.js</A>"    /* Input files of CRU dataset */
 
 /*===================================================================*/
 /*  <A NAME="forth">IV.</A> Output data section                                          */
@@ -194,6 +194,7 @@ ID                         Fmt                    filename
 #ifndef FROM_RESTART
 
   "nspinup" : 5000,  /* spinup years */
+  "firstspinupyear" : 1901,  /* first year for climate in spinup */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
@@ -205,6 +206,7 @@ ID                         Fmt                    filename
 #else
 
   "nspinup" : 390,   /* spinup years */
+  "firstspinupyear" : 1901,  /* first year for climate in spinup */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 2011, /* last year of simulation */

@@ -270,6 +270,14 @@ Store climate input data in memory for spin up phase
 </tr>
 <tr>
 <td>
+USE_JSON
+</td>
+<td>
+enable JSON format for LPJmL configuration files
+</td>
+</tr>
+<tr>
+<td>
 USE_MPI
 </td>
 <td>
@@ -338,7 +346,89 @@ The following programs are created in the <tt>bin</tt> directory:</p>
 </tr>
 <tr>
 <td>
-<A HREF="cft2clm.html"><tt>cft2clm</tt></A>
+<A HREF="adddrain.html">
+<tt>adddrain</tt>
+</A>
+</td>
+<td>
+Adds river basin to coordinate file
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="asc2clm.html">
+<tt>asc2clm</tt>
+</A>
+</td>
+<td>
+Convert CRU ASCII files to clm data files for LPJmL
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="backtrace.html">
+<tt>backtrace</tt>
+</A>
+</td>
+<td>
+Create backtrace from core file
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="bin2cdf.html">
+<tt>bin2cdf</tt>
+</A>
+</td>
+<td>
+Convert binary output files into NetCDF files
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="catclm.html">
+<tt>catclm</tt>
+</A>
+</td>
+<td>
+Concatenate climate data files
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cdf2bin.html">
+<tt>cdf2bin</tt>
+</A>
+</td>
+<td>
+Convert NetCDF files into raw binary data
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cdf2clm.html">
+<tt>cdf2clm</tt>
+</A>
+</td>
+<td>
+convert NetCDF files into CLM files
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cdf2soil.html">
+<tt>cdf2soil</tt>
+</A>
+</td>
+<td>
+convert NetCDF file into binary file
+<br></td>
+</tr>
+
+<tr>
+<td>
+<A HREF="cft2clm.html">
+<tt>cft2clm</tt></A>
 </td>
 <td>
 convert binary land use data files to clm data files for LPJmL
@@ -346,53 +436,141 @@ convert binary land use data files to clm data files for LPJmL
 </tr>
 <tr>
 <td>
-<tt><A HREF="lpjcat.html">lpjcat</A></tt>
+<A HREF="clm2cdf.html">
+<tt>clm2cdf</tt></A>
 </td>
 <td>
-concatenates LPJmL restart files.
-</td>
+convert CLM files into NetCDF files
+<br></td>
 </tr>
 <tr>
 <td>
-<tt><A HREF="lpjcheck.html">lpjcheck</A></tt>
+<A HREF="cru2clm.html">
+<tt>cru2clm</tt>
+</A>
 </td>
 <td>
-checks syntax of LPJmL configuration files.
-</td>
+convert raw binary data files to clm data files for LPJmL
+<br></td>
 </tr>
 <tr>
 <td>
-<tt><A HREF="cru2clm.html">cru2clm</A></tt>
+<A HREF="cutclm.html">
+<tt>cutclm</tt>
+</A>
 </td>
 <td>
-converts CRU data into file format suitable for LPJmL.
-</td>
+Cuts climate data files
+<br></td>
 </tr>
 <tr>
 <td>
-<tt><A HREF="printheader.html">printheader</A></tt>
+<A HREF="grid2clm.html">
+<tt>grid2clm</tt>
+</A>
 </td>
 <td>
-prints file header of LPJmL input data files.
-</td>
+convert grid data file to clm data files for LPJmL
+<br></td>
 </tr>
 <tr>
 <td>
-<tt><A HREF="lpjprint.html">lpjprint</A></tt>
+<A HREF="lpjcat.html">
+<tt>lpjcat</tt>
+</A>
 </td>
 <td>
-prints content of restart file to stdout.
+Concatenates restart files from distributed LPJmL simulations.
+<br></tr>
+<tr>
+<td>
+<A HREF="lpjcheck.html">
+<tt>lpjcheck</tt>
+</A>
 </td>
+<td>
+Checks syntax of LPJmL configuration files 
+<br></td>
 </tr>
 <tr>
 <td>
-<tt><A HREF="txt2clm.html">txt2clm</A></tt>
+<A HREF="lpj.html">
+<tt>lpj</tt>
+</A>
 </td>
 <td>
-converts CRU data files into LPJmL climate data files.
-CRU data files have to be in the format specified 
-<A HREF"http://www.cru.uea.ac.uk/~timm/grid/CRU_TS_2_1.html">here</A>. 
+Dynamic global vegetation model with river routing
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="lpjfiles.html">
+<tt>lpjfiles</tt>
+</A>
 </td>
+<td>
+Print list of input/output files of LPJmL
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="lpjml.html">
+<tt>lpjml</tt>
+</A>
+</td>
+<td>
+Dynamic global vegetation model with managed landuse and river routing
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="lpjprint.html">
+<tt>lpjprint</tt>
+</A>
+</td>
+<td>
+Print contents of restart file of LPJmL model runs 
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="lpjrun.html">
+<tt>lpjrun</tt>
+</A>
+</td>
+<td>
+Run parallel LPJmL program interactively.
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="printheader.html">
+<tt>printheader</tt>
+</A>
+</td>
+<td>
+Print header of clm files for LPJmL                   
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="txt2clm.html">
+<tt>txt2clm</tt>
+</A>
+</td>
+<td>
+Convert CRU ASCII files to clm data files for LPJmL
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cat2bsq.html">
+<tt>cat2bsq</tt>
+</A>
+</td>
+<td>
+Concatenates output files from distributed LPJmL simulations
+<br></td>
 </tr>
 </table>
 An installation directory can be defined during configuration:
@@ -989,7 +1167,15 @@ Cannot initialize soil temperature
 </td><td>
 External
 </td></tr>
-/</table>
+<tr>
+<td align="right">
+34
+</td><td>
+Invalid radition model  
+</td><td>
+Internal
+</td></tr>
+</table>
 
 External errors are caused by invalid or missing input files while internal 
 errors are caused by problems inside the LPJmL code. The latter will cause a core
@@ -997,11 +1183,10 @@ dump and have to be fixed by program changes. Some errors will only be generated
 if -DSAFE is set in the compile options of <tt>Makefile.inc</tt>. The options set at compile time can be obtained by invoking
 <pre class="example">
 % lpjml -v
-lpjml C Version 4.0.001-3352 (Aug  1 2017)
+lpjml C Version 4.0.001 (Nov  7 2018)
 Operating system: Linux, little endian
 Compiler:         Intel C version 15.00, 64 bit
-Build number:     1320
-Compile flags:    "-DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DSTORECLIMATE -DUSE_NETCDF -DUSE_UDUNITS "
+Compile flags:    "-DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DSTORECLIMATE -DUSE_NETCDF -DUSE_UDUNITS -DUSE_JSON "
 </pre>
 It is recommended to compile the code without optimization
 and inlining making the inspection of the core file easier.
@@ -1217,7 +1402,7 @@ Explorer and select rebuild or build.
 </ul>
 
 <address>
-Last change: 15 November 2017 by Werner von Bloh, PIK Potsdam
+Last change: 7 November 2018 by Werner von Bloh, PIK Potsdam
 </address>
 </BODY>
 </HTML>
