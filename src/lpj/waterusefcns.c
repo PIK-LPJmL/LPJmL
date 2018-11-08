@@ -102,6 +102,14 @@ Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
 {
   int cell;
   Real *data;
+  if(config->wateruse==ALL_WATERUSE)
+  {
+    /* first and last wateruse data is used outside available wateruse data */
+    if(year<=wateruse->file.firstyear)
+      year=wateruse->file.firstyear;
+    else if(year>=wateruse->file.firstyear+wateruse->file.nyear)
+      year=wateruse->file.firstyear+wateruse->file.nyear-1;
+  }
   if(year>=wateruse->file.firstyear && year<wateruse->file.firstyear+wateruse->file.nyear)
   {
     if(wateruse->file.fmt==CDF)

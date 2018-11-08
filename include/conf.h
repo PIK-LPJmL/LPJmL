@@ -48,9 +48,10 @@
 #define NEW_PERC 1
 #define OLD_PERC 0
 #define NO_WATERUSE 0
+#define WATERUSE 1
+#define ALL_WATERUSE 2
 #define NO_RWMANAGEMENT 0
 #define RWMANAGEMENT 1
-#define WATERUSE 1
 #define RADIATION_LWDOWN 3
 #define RADIATION_SWONLY 2
 #define RADIATION 1

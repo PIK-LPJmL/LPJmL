@@ -106,7 +106,7 @@ void fprintfiles(FILE *file,   /**< File pointer to text output file */
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,"%s\n",config->neighb_irrig_filename.name);
   }
-  if(config->wateruse_filename.name!=NULL)
+  if(config->wateruse)
     fprintf(file,"%s\n",config->wateruse_filename.name);
   }
   if(iswriterestart(config))

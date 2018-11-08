@@ -121,7 +121,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
  {
   String name;
   LPJfile input;
-  int restart,endgrid,israndom,wateruse,grassfix;
+  int restart,endgrid,israndom,grassfix;
   Verbosity verbose;
 
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
@@ -242,8 +242,24 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscanbool(file,&grassfix,"grassland_fixed_pft",TRUE,verbose))
         return TRUE;
     }
-    fscanbool2(file,&wateruse,"wateruse");
-    if(wateruse && config->withlanduse==NO_LANDUSE)
+    if(isboolean(file,"wateruse"))
+    {
+      if(isroot(*config))
+        fputs("WARNING028: Type of 'wateruse' is boolean, converted to int.\n",stderr);
+      fscanbool2(file,&config->wateruse,"wateruse");
+    }
+    else
+    {
+      fscanint2(file,&config->wateruse,"wateruse");
+      if(config->wateruse<NO_WATERUSE || config->wateruse>ALL_WATERUSE)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR166: Invalid value for wateruse=%d in line %d of '%s'.\n",
+                  config->wateruse,getlinecount(),getfilename());
+        return TRUE;
+      }
+    }
+    if(config->wateruse && config->withlanduse==NO_LANDUSE)
     {
       if(verbose)
         fputs("ERROR224: Wateruse without landuse set.\n",stderr);
@@ -253,7 +269,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   else
   {
     config->withlanduse=NO_LANDUSE;
-    wateruse=NO_WATERUSE;
+    config->wateruse=NO_WATERUSE;
   }
   /*=================================================================*/
   /* II. Reading input parameter section                             */
@@ -464,12 +480,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #endif
   else
     config->wet_filename.name=NULL;
-  if(wateruse==WATERUSE)
+  if(config->wateruse)
   {
     scanclimatefilename(&input,&config->wateruse_filename,config->inputdir,FALSE,"wateruse");
   }
-  else
-    config->wateruse_filename.name=NULL;
 #ifdef IMAGE
   if(config->sim_id==LPJML_IMAGE)
   {

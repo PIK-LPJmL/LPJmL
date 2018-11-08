@@ -100,6 +100,7 @@ typedef struct
   Bool crop_irrigation;
   Bool global_netcdf;     /** enable global grid for NetCDF output */
   Bool landuse_restart;   /**< land use enabled in restart file */
+  int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart; /**< sdate option in restart file */
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
