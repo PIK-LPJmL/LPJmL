@@ -65,7 +65,6 @@
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
-  "nonzero_wateruse" : false,           /* if true wateruse is nonzero outside available data */
   "grassland_fixed_pft" : false,
 
 /*===================================================================*/
