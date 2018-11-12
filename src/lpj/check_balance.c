@@ -35,7 +35,7 @@ void check_balance(Flux flux,           /**< global carbon and water fluxes */
     startyear=config->firstyear+1;
   if(year>startyear && fabs(balance)>1e-3)
   {
-#ifdef NO_FAIL
+#ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR030: "
 #else
     fail(INVALID_WATER_BALANCE_ERR,TRUE,

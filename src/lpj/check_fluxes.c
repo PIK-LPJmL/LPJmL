@@ -67,7 +67,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
                p,pft->par->name,vegc_sum(pft));
       fflush(stdout);
     } /* of 'foreachstand' */
-#ifdef NO_FAIL
+#ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR004: "
 #else
     fail(INVALID_CARBON_BALANCE_ERR,TRUE,
@@ -80,7 +80,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->ml.image_data->timber.slow,cell->ml.image_data->timber.fast,cell->output.timber_harvest,
          cell->ml.image_data->timber_f,cell->ml.image_data->fburnt);
 #else
-#ifdef NO_FAIL
+#ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR004: "
 #else
     fail(INVALID_CARBON_BALANCE_ERR,TRUE,
@@ -110,7 +110,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   }
   balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux;
   if(year>startyear && fabs(balanceW)>1.5)
-#ifdef NO_FAIL
+#ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR005: "
 #else
     fail(INVALID_WATER_BALANCE_ERR,TRUE,
