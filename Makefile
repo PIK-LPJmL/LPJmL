@@ -63,6 +63,7 @@ all: main utils
 install: all
 	$(MKDIR) $(LPJROOT)/bin
 	$(MKDIR) $(LPJROOT)/include
+	$(MKDIR) $(LPJROOT)/html
 	$(MKDIR) $(LPJROOT)/lib
 	$(MKDIR) $(LPJROOT)/par
 	$(MKDIR) $(LPJROOT)/man/man1
@@ -71,6 +72,7 @@ install: all
 	chmod 755 $(LPJROOT)
 	chmod 755 $(LPJROOT)/bin
 	chmod 755 $(LPJROOT)/include
+	chmod 755 $(LPJROOT)/html
 	chmod 755 $(LPJROOT)/lib
 	chmod 755 $(LPJROOT)/par
 	chmod 755 $(LPJROOT)/man
@@ -78,11 +80,11 @@ install: all
 	chmod 755 $(LPJROOT)/man/man5
 	chmod 755 $(LPJROOT)/man/man3
 	install bin/* $(LPJROOT)/bin
+	install -m 644 html/* $(LPJROOT)/html
 	install -m 644 $(HDRS) $(LPJROOT)/include
 	install -m 644 lib/* $(LPJROOT)/lib
 	install -m 644 $(DATA) $(LPJROOT)/par
-	install -m 644 INSTALL VERSION AUTHORS Makefile.inc config/Makefile.template\
-                       $(JCFFILE) lpjml.conf input.conf param.conf $(LPJROOT)
+	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT $(CONF) $(JSON) $(LPJROOT)
 	install -m 644 man/whatis $(LPJROOT)/man
 	install -m 644 man/man1/*.1 $(LPJROOT)/man/man1
 	install -m 644 man/man5/*.5 $(LPJROOT)/man/man5
