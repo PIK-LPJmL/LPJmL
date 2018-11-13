@@ -291,7 +291,10 @@ Bool filesexist(Config config, /**< LPJmL configuration */
              config.checkpoint_restart_filename,config.checkpointyear);
   }
   else if(config.restart_filename!=NULL)
+  {
+    config.ischeckpoint=FALSE;
     bad+=checkrestartfile(&config,config.restart_filename);
+  }
   if(config.withlanduse!=NO_LANDUSE)
   {
     if(config.withlanduse!=ALL_CROPS)
