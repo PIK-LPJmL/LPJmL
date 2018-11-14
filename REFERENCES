@@ -88,6 +88,10 @@
  von Bloh, W, Rost, S, Gerten, D & Lucht, W 2010 Efficient parallelization of a
    dynamic global vegetation model with river routing. Environmental Modelling &
    Software 25: 685-690
+ von Bloh, W, Schaphoff, S, Mueller, C,Rolinski, S, Waha, K & Zaehle, S 2018
+   Implementing the nitrogen cycle into the dynamic global vegetation,
+   hydrology, and crop growth model LPJmL (version 5.0).
+   Geoscientific Model Development 11, 2789-2812
  Waha K, van Bussel LGJ, Mueller C, Bondeau A 2012 Climate-driven simulation of
    global crop sowing dates. Global Ecology and Biogeography, 21,2,
    pp. 247-259, doi: 10.1111/j.1466-8238.2011.00678.x

@@ -38,7 +38,7 @@
   "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
   "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
-  "new_phenology": false,    /* GSI phenology enabled */
+  "new_phenology": true,    /* GSI phenology enabled */
   "river_routing" : true,
   "permafrost" : true,
   "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
@@ -67,7 +67,7 @@
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : true,            /* enable fertilizer input */
-  "istimber" : false,
+  "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
 
