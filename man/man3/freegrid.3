@@ -5,7 +5,7 @@ freegrid \- Deallocate memory of LPJmL grid
 .nf
 \fB#include "lpj.h"
 
-void freegrid(Cell \fIgrid\fB[],const Config *\fIconfig\fB,int \fInpft\fB);\fP
+void freegrid(Cell \fIgrid\fB[],int \fInpft\fB,const Config *\fIconfig\fB);\fP
 
 .fi
 .SH DESCRIPTION
@@ -15,10 +15,11 @@ The arguments of \fBfreegrid\fP are:
 .I grid
 Cell grid array allocated and initialized by \fBnewgrid()\fP.
 .TP
-.I config
-LPJmL configuration data. Must be read by \fBreadconfig()\fP.
 .I npft
 Number of natural plant functionial types.
+.TP
+.I config
+LPJmL configuration data. Must be read by \fBreadconfig()\fP.
 .SH RETURN VALUE
 None
 .SH AUTHORS

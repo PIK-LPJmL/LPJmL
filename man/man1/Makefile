@@ -13,7 +13,7 @@
 #################################################################################
 
 
-SRC	= cat2bsq.1 lpj.1 lpjml.1 txt2grid.1\
+SRC	= cat2bsq.1 lpjml.1 txt2grid.1\
           cft2clm.1 lpjcat.1 lpj_paths.csh.1 lpjsubmit.1 printheader.1\
           configure.sh.1 lpjcheck.1 lpj_paths.sh.1 txt2clm.1\
           cru2clm.1 lpjprint.1 output_bsq.1 asc2clm.1\
