@@ -35,7 +35,12 @@ void check_balance(Flux flux,           /**< global carbon and water fluxes */
     startyear=config->firstyear+1;
   if(year>startyear && fabs(balance)>1e-3)
   {
-    fail(INVALID_WATER_BALANCE_ERR,TRUE,"y: %d GlobW_BALANCE-error: %.5f prec:%.2f wd_unsustainable:%.2f vapour_flux:%.2f discharge:%.2f delta_storage:%.2f\n",
+#ifdef NO_FAIL_BALANCE
+    fprintf(stderr,"ERROR030: "
+#else
+    fail(INVALID_WATER_BALANCE_ERR,TRUE,
+#endif
+         "y: %d GlobW_BALANCE-error: %.5f prec:%.2f wd_unsustainable:%.2f vapour_flux:%.2f discharge:%.2f delta_storage:%.2f\n",
          year,balance*flux.area,flux.prec,flux.wd_unsustainable,
          (flux.evap+flux.transp+flux.interc+flux.evap_lake+flux.evap_res+flux.conv_loss_evap),
          flux.discharge,(flux.delta_surface_storage+flux.delta_soil_storage));

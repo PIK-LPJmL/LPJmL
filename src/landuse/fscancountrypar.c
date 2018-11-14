@@ -15,7 +15,7 @@
 #define UNDEF (-1)
 
 #define fscanreal2(verb,file,var,name,country)\
-  if(fscanreal(file,var,name,verb))\
+  if(fscanreal(file,var,name,FALSE,verb))\
   {\
     if(verb)\
       fprintf(stderr,"ERROR102: Cannot read float '%s' for country '%s'.\n",name,country);\
@@ -44,7 +44,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
   for(n=0;n<ncountries;n++)
   {
     fscanarrayindex(&arr,&item,n,verb);
-    if(fscanint(&item,&id,"id",verb))
+    if(fscanint(&item,&id,"id",FALSE,verb))
       return 0;
     if(id<0 || id>=ncountries)
     {
@@ -60,7 +60,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
                 "ERROR178: Country number=%d in line %d of '%s' has been already defined.\n",id,getlinecount(),getfilename());
       return 0;
     }
-    if(fscanstring(&item,s,"name",verb))  /*reads country name*/
+    if(fscanstring(&item,s,"name",FALSE,verb))  /*reads country name*/
     {
       if(verb)
         readstringerr("name");
@@ -90,7 +90,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
       fscanreal2(verb,&item,&country->laimax_tempcer,"laimax_tempcer",country->name);
       fscanreal2(verb,&item,&country->laimax_maize,"laimax_maize",country->name);
     }
-    if(fscanint(&item,&country->default_irrig_system,"default_irrig_system",verb))
+    if(fscanint(&item,&country->default_irrig_system,"default_irrig_system",FALSE,verb))
       return 0;
     if(country->default_irrig_system<1 || country->default_irrig_system>3)
     {

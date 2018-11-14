@@ -17,11 +17,11 @@
 #include "lpj.h"
 
 #define fscanparamreal(file,var,name) \
-  if(fscanreal(file,var,name,verbosity)) return TRUE; 
+  if(fscanreal(file,var,name,FALSE,verbosity)) return TRUE; 
 #define fscanparamint(file,var,name) \
-  if(fscanint(file,var,name,verbosity)) return TRUE;
+  if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparambool(file,var,name) \
-  if(fscanbool(file,var,name,verbosity)) return TRUE;
+  if(fscanbool(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparampool(file,var,name) \
   if(fscanpool(file,var,name,verbosity)) return TRUE;
 

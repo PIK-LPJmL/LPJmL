@@ -18,14 +18,14 @@
 #include "tree.h"
 
 #define fscanreal2(verb,file,var,pft,name) \
-  if(fscanreal(file,var,name,verb)) \
+  if(fscanreal(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR110: Cannot read float '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 #define fscanint2(verb,file,var,pft,name) \
-  if(fscanint(file,var,name,verb)) \
+  if(fscanint(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR110: Cannot read int '%s' for PFT '%s'.\n",name,pft); \
@@ -45,11 +45,11 @@ static Bool fscantreephys(LPJfile *file,Treephys *phys,const char *name,
   LPJfile s;
   if(fscanstruct(file,&s,name,verb))
     return TRUE;
-  if(fscanreal(&s,&phys->leaf,"leaf",verb))
+  if(fscanreal(&s,&phys->leaf,"leaf",FALSE,verb))
     return TRUE;
-  if(fscanreal(&s,&phys->sapwood,"sapwood",verb))
+  if(fscanreal(&s,&phys->sapwood,"sapwood",FALSE,verb))
     return TRUE;
-  if(fscanreal(&s,&phys->root,"root",verb))
+  if(fscanreal(&s,&phys->root,"root",FALSE,verb))
     return TRUE;
   if(phys->leaf<=0 || phys->sapwood<=0 || phys->root<=0)
     return TRUE;

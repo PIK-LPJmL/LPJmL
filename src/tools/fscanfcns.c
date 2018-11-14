@@ -185,6 +185,7 @@ Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
                  String s,   /**< pointer to a char array of dimension
                                   STRING_LEN+1                        */
                  const char *name, /**< name of string                */
+                 Bool with_default, /**< allow default value */
                  Verbosity verb  /**< enable error output */
                 )            /** \return TRUE on error                */
 {
@@ -197,9 +198,18 @@ Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
   {
     if(!json_object_object_get_ex(file->file.obj,name,&item))
     {
-      if(verb)
-        fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
-      return TRUE;
+      if(with_default)
+      {
+        if(verb)
+          fprintf(stderr,"WARNING027: Name '%s' for string not found, set to '%s'.\n",name,s);
+        return FALSE;
+      }
+      else
+      {
+        if(verb)
+          fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
+        return TRUE;
+      }
     }
     if(json_object_get_type(item)!=json_type_string)
     {

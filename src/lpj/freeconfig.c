@@ -55,7 +55,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     }
     pnet_free(config->route);
   }
-  if(config->wateruse_filename.name!=NULL)
+  if(config->wateruse)
     freefilename(config->wateruse_filename);
   freefilename(config->temp_filename);
   freefilename(config->prec_filename);

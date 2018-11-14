@@ -5,8 +5,8 @@ fprintflux, printflux \- Print global carbon and water fluxes
 .nf
 \fB#include "lpj.h"
 
-void fprintflux(FILE *\fIfile\fB,const Config *\fIconfig\fB,Flux \fIflux\fB,Real cflux_total\fB);
-void printflux(const Config *\fIconfig\fB,Flux \fIflux\fB,Real \fIcflux_total\fB);
+void fprintflux(FILE *\fIfile\fB,Flux \fIflux\fB,Real cflux_total\fB,const Config *\fIconfig\fB);
+void printflux(Flux \fIflux\fB,Real \fIcflux_total\fB,const Config *\fIconfig\fB);
 
 .fi
 .SH DESCRIPTION
@@ -16,14 +16,14 @@ The arguments of \fBfprintflux\fP are:
 .I file
 File pointer to output stream.
 .TP
-.I config
-LPJmL configuration data. Must be read by \fBreadconfig()\fP. 
-.TP
 .I flux
 Global carbon and water fluxes. Must be calculated by \fBflux_sum()\fP.
 .TP
 .I cflux_total
 Total flux of carbon. Must be calculated by \fBflux_sum()\fP.
+.TP
+.I config
+LPJmL configuration data. Must be read by \fBreadconfig()\fP. 
 .SH RETURN VALUE
 None.
 .SH AUTHORS

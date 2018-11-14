@@ -46,15 +46,15 @@
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
-  "wateruse" : true,
+  "wateruse" : WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
 #else
   "population" : false,
   "landuse" : NO_LANDUSE,
   "reservoir" : false,
-  "wateruse" : false,
+  "wateruse" : NO_WATERUSE,
 #endif
   "prescribe_burntarea" : false,
-  "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANCOVEREST */
+  "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : FIXED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
   "intercrop" : true,                   /* intercrops on setaside */
@@ -179,7 +179,10 @@ ID                         Fmt                    filename
   "startgrid" : ALL, /* 27410, 67208 60400 all grid cells */
   "endgrid" : ALL,
 
-  //"checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
+#ifdef CHECKPOINT
+  "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
+#endif
+
 #ifndef FROM_RESTART
 
   "nspinup" : 5000,  /* spinup years */

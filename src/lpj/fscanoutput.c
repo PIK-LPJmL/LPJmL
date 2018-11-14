@@ -17,7 +17,7 @@
 
 #include "lpj.h"
 
-#define fscanint2(file,var,name) if(fscanint(file,var,name,verbosity)) return TRUE;
+#define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
 
 static Bool isopenoutput(int id,const Outputvar output[],int n)
 {
@@ -57,12 +57,12 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
   config->global_netcdf=FALSE;
   if(iskeydefined(file,"global_netcdf"))
   {
-    if(fscanbool(file,&config->global_netcdf,"global_netcdf",verbosity))
+    if(fscanbool(file,&config->global_netcdf,"global_netcdf",FALSE,verbosity))
       return TRUE;
   }
   if(iskeydefined(file,"outpath"))
   {
-    if(fscanstring(file,outpath,"outpath",verbosity))
+    if(fscanstring(file,outpath,"outpath",FALSE,verbosity))
       return TRUE;
     free(config->outputdir);
     config->outputdir=strdup(outpath);

@@ -66,6 +66,7 @@ vgcore.*
 # output files
 *.lpj
 *.bin
+*.err
 
 # processed files
 *.Rdata
@@ -90,6 +91,10 @@ vgcore.*
 *.ODT
 *.ods
 *.ODS
+
+# compressed files
+*.gz
+*.zip
 
 Makefile.inc
 # binaries

@@ -479,7 +479,7 @@ void lpj_init_
 
   rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
-  rc=initinput(&input,grid,config.npft[CROP],&config);
+  rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
 
@@ -1254,8 +1254,6 @@ void lpj_update_
     const Bool happynewyear = newmoon && 0 == month;
     const Bool silvester = (goodnight && yesterday != -1  /* not before the first simulation year */
                              && 11 == month && 30 == dayofmonth);
-    Real *landcover;
-    int p;
     assert(42 == *fortytwo); /* make sure that number of parameters matches between F90 and C */
 
     /* TODO: the ``real work'' of daily updates is called only once per day
@@ -1329,15 +1327,14 @@ void lpj_update_
       {
         calc_seasonality(grid,npft,ncft,&config);
         if(config.withlanduse==CONST_LANDUSE || config.withlanduse==ALL_CROPS) /* constant landuse? */
-          landuse_year=param.landuse_year_const;
-        else if(year>2000)			/* 2 lines added to use year 2000 landuse after 2000 if climate data is used */
-          landuse_year=2000;
+          landuse_year=config.landuse_year_const;
         else
           landuse_year=year;
         /* under constand landuse also keep wateruse at landuse_year_const */
         if(config.withlanduse==CONST_LANDUSE)
-          wateruse_year=param.landuse_year_const;
-        else wateruse_year=year;
+          wateruse_year=config.landuse_year_const;
+        else
+           wateruse_year=year;
 #ifdef IMAGE
         if(year>=config.start_imagecoupling)
         {
@@ -1379,7 +1376,17 @@ void lpj_update_
           /*return year*/ abort();
         }
       }
-      if(year>=config.firstyear)
+      if(config.prescribe_landcover != NO_LANDCOVER)
+      {
+        if(readlandcover(input.landcover,grid,year,&config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in readlandcover().\n");
+          fflush(stderr);
+          /*return year*/ abort();
+        }
+      }
+
+      if(year>=config.outputyear)
         openoutput_yearly(output,year,&config);
 
     } /* if (happynewyear) */
@@ -1404,9 +1411,6 @@ void lpj_update_
           istimber=FALSE;
 #endif
           intercrop=getintercrop(input.landuse);
-          setting.prescribe_landcover=config.prescribe_landcover;
-          setting.prescribe_burntarea=config.prescribe_burntarea;
-          setting.new_phenology=config.new_phenology;
           for(cell=0;cell<config.ngridcell;cell++)
           {
             grid[cell].output.adischarge=0;
@@ -1419,7 +1423,7 @@ void lpj_update_
                 if(grid[cell].lakefrac<1)
                 {
                   /* calculate landuse change */
-                  if(!config.isconstlai)
+                  if(config.laimax_interpolate!=CONST_LAI_MAX)
                     laimax_manage(&grid[cell].ml.manage,config.pftpar+npft,npft,ncft,year);
                   if(year>config.firstyear-config.nspinup)
                     landusechange(grid+cell,config.pftpar,npft,ncft,config.ntypes,
@@ -1563,14 +1567,14 @@ void lpj_update_
             if(input.landuse!=NULL || input.wateruse!=NULL)
               withdrawal_demand(grid,&config);
 
-            drain(grid,&config,month);
+            drain(grid,month,&config);
 
             if(input.landuse!=NULL || input.wateruse!=NULL)
               wateruse(grid,npft,ncft,&config);
 
           }
 
-          if(output->withdaily && year>=config.firstyear)
+          if(output->withdaily && year>=config.outputyear)
             fwriteoutput_daily(output,grid,dayofyear-1,year,&config);
 
           /******* prepare OUTPUT for land_lad ****************************************         \n**/
@@ -1735,31 +1739,19 @@ void lpj_update_
 #endif
           } /* of 'for(cell=0;...)' */
 
-#ifdef IMAGE
-          if(year>=config.firstyear-istimber*10)
-#else
-            if(year>=config.firstyear)
-#endif
+            if(year>=config.outputyear)
               /* write out monthly output */
               fwriteoutput_monthly(output,grid,month,year,&config);
 
         } /* if (monthend) */ /* of 'foreachmonth */
 
         if (silvester) { /* from iterateyear_river() */
-          if (setting.prescribe_landcover > 0)
-          {
-            landcover=newvec(Real,npft);
-            for (p=0; p<(npft-config.nbiomass); p++)
-              landcover[p] = input.landcover->lcfrac[cell*(npft-config.nbiomass)+p];
-          }
-          else
-            landcover = NULL;
 
           for(cell=0;cell<config.ngridcell;cell++)
           {
             if(!grid[cell].skip)
             {
-              update_annual(grid+cell,npft,ncft,popdens,year,(setting.prescribe_landcover!=NO_LANDCOVER) ? input.landcover->lcfrac+cell*(npft-config.nbiomass) : NULL,intercrop,&config);
+              update_annual(grid+cell,npft,ncft,popdens,year,(config.prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell): NULL,TRUE,intercrop,&config);
 #ifdef SAFE
               check_fluxes(grid+cell,year,cell,&config);
 #endif
@@ -1790,12 +1782,7 @@ void lpj_update_
                 grid[cell].output.surface_storage+=grid[cell].ml.resdata->dfout_irrigation_daily[i];
             }
           } /* of for(cell=0,...) */
-          free(landcover); 
-#ifdef IMAGE
-          if(year>=config.firstyear-istimber*10)
-#else
-            if(year>=config.firstyear)
-#endif
+            if(year>=config.outputyear)
             {
               /* write out annual output */
               fwriteoutput_annual(output,grid,year,&config);
@@ -1812,7 +1799,7 @@ void lpj_update_
     }
 
     if (silvester) { /* from iterate() */
-      if(year>=config.firstyear)
+      if(year>=config.outputyear)
       closeoutput_yearly(output,&config);
 
       /* calculating total carbon and water fluxes collected from all tasks */
@@ -1822,7 +1809,7 @@ void lpj_update_
         /* output of total carbon flux and water on stdout on root task */
         printflux(flux,cflux_total,year,&config);
         if(output->method==LPJ_SOCKET && output->socket!=NULL &&
-           year>=config.firstyear)
+           year>=config.outputyear)
           output_flux(output,flux);
         fflush(stdout); /* force output to console */
 #ifdef SAFE
@@ -1847,7 +1834,7 @@ void lpj_update_
       }
 #endif
       if(iswriterestart(&config) && year==config.restartyear)
-        fwriterestart(grid,npft,ncft,year,&config); /* write restart file */
+        fwriterestart(grid,npft,ncft,year,config.write_restart_filename,&config); /* write restart file */
     } /* if (silvester) */
 
     yesterday = dayofmonth;
