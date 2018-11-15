@@ -266,7 +266,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkclmfile(&config,&config.lightning_filename);
     bad+=checkinputfile(&config,&config.human_ignition_filename,0);
   }
-  if(config.wateruse_filename.name!=NULL)
+  if(config.wateruse)
     bad+=checkdatafile(&config,&config.wateruse_filename);
   bad+=checkclmfile(&config,&config.temp_filename);
   bad+=checkclmfile(&config,&config.prec_filename);
@@ -300,7 +300,10 @@ Bool filesexist(Config config, /**< LPJmL configuration */
              config.checkpoint_restart_filename,config.checkpointyear);
   }
   else if(config.restart_filename!=NULL)
+  {
+    config.ischeckpoint=FALSE;
     bad+=checkrestartfile(&config,config.restart_filename);
+  }
   if(config.withlanduse!=NO_LANDUSE)
   {
     if(config.withlanduse!=ALL_CROPS)

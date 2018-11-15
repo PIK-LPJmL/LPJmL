@@ -20,7 +20,7 @@
 #define UNDEF (-1)
 
 #define fscanpftreal(verb,file,var,pft,name) \
-  if(fscanreal(file,var,name,verb)) \
+  if(fscanreal(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR110: Cannot read real '%s' for PFT '%s'.\n",name,pft); \
@@ -35,7 +35,7 @@
   }
 
 #define fscanpftint(verb,file,var,pft,name) \
-  if(fscanint(file,var,name,verb)) \
+  if(fscanint(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR110: Cannot read int '%s' for PFT '%s').\n",name,pft); \
@@ -101,7 +101,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   {
     fscanarrayindex(&arr,&item,n,verb);
     /* Read pft->id, defined in pftpar.h */
-    if(fscanint(&item,&id,"id",verb))
+    if(fscanint(&item,&id,"id",FALSE,verb))
       return NULL;
     if(id<0 || id>=count)
     {
@@ -121,7 +121,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     pft->id=id;
 
     /* Read pft->name */
-    if(fscanstring(&item,s,"name",verb))
+    if(fscanstring(&item,s,"name",FALSE,verb))
     {
       if(verb)
         readstringerr("name");

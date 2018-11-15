@@ -59,7 +59,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   verbosity=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   lpjfile.file.file=file;
   lpjfile.isjson=FALSE; 
-  if(fscanstring(&lpjfile,s,"sim_name",verbosity))
+  if(fscanstring(&lpjfile,s,"sim_name",FALSE,verbosity))
   {
     if(verbosity)
       fputs("ERROR121: Cannot read simulation name.\n",stderr);
@@ -92,7 +92,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
       json_object_put(lpjfile.file.obj);
       return TRUE;
     }
-    if(fscanstring(&lpjfile,s,"sim_name",verbosity))
+    if(fscanstring(&lpjfile,s,"sim_name",FALSE,verbosity))
     {
       if(verbosity)
         fputs("ERROR121: Cannot read simulation name.\n",stderr);
@@ -121,7 +121,8 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     closeconfig(&lpjfile);
     return TRUE;
   }
-  if(fscanint(&lpjfile,&config->sim_id,"sim_id",verbosity))
+  config->sim_id=LPJML;
+  if(fscanint(&lpjfile,&config->sim_id,"sim_id",TRUE,verbosity))
   {
     closeconfig(&lpjfile);
     return TRUE;
@@ -150,7 +151,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
 #endif
   if(iskeydefined(&lpjfile,"version"))
   {
-    if(fscanstring(&lpjfile,s,"version",verbosity))
+    if(fscanstring(&lpjfile,s,"version",FALSE,verbosity))
     {
       if(verbosity)
         fputs("ERROR121: Cannot read version.\n",stderr);

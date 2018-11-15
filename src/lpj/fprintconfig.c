@@ -121,7 +121,7 @@ static Bool isnetcdfinput(const Config *config)
   if(config->prescribe_landcover && config->landcover_filename.fmt==CDF)
     return TRUE;
 
-  if(config->wateruse_filename.name!=NULL && config->wateruse_filename.fmt==CDF)
+  if(config->wateruse && config->wateruse_filename.fmt==CDF)
     return TRUE;
   return FALSE;
 } /* of 'isnetcdfinput' */
@@ -282,8 +282,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,"wood fires");
   if(config->reservoir)
     len=printsim(file,len,&count,"dam reservoirs");
-  if(config->wateruse_filename.name!=NULL)
-    len=printsim(file,len,&count,"water use");
+  if(config->wateruse)
+    len=printsim(file,len,&count,(config->wateruse==ALL_WATERUSE) ? "always water use" : "water use");
   if(count)
     fputs(".\n",file);
   fprintf(file,"Working directory: %s\n",getdir());
@@ -385,7 +385,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   }
   if(config->sim_id==LPJML_FMS)
     printinputfile(file,"runoff2ocean_map",&config->runoff2ocean_filename,iscdfinput);
-  if(config->wateruse_filename.name!=NULL)
+  if(config->wateruse)
     printinputfile(file,"wateruse",&config->wateruse_filename,iscdfinput);
   if(iscdfinput)
     fputs("---------- ---- -------- -----------------------------------------------------\n",file);

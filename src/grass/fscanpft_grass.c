@@ -18,7 +18,7 @@
 #include "grass.h"
 
 #define fscanreal2(verb,file,var,pft,name) \
-  if(fscanreal(file,var,name,verb)) \
+  if(fscanreal(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR110: Cannot read float '%s' for PFT '%s'.\n",name,pft); \
@@ -39,9 +39,9 @@ static Bool fscangrassphys(LPJfile *file,Grassphyspar *phys,const char *name,Ver
   LPJfile item;
   if(fscanstruct(file,&item,name,verb))
     return TRUE;
-  if(fscanreal(&item,&phys->leaf,"leaf",verb))
+  if(fscanreal(&item,&phys->leaf,"leaf",FALSE,verb))
     return TRUE;
-  if(fscanreal(&item,&phys->root,"root",verb))
+  if(fscanreal(&item,&phys->root,"root",FALSE,verb))
     return TRUE;
   if(phys->leaf<=0 ||  phys->root<=0)
     return TRUE;

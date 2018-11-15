@@ -33,15 +33,14 @@
 "sim_name" : "LPJmL Run", /* Simulation description */
 "sim_id"   : LPJML,       /* LPJML Simulation type with managed land use */
 "version"  : "5.1",       /* LPJmL version expected */
-"random_prec" : true, /* Random weather generator for precipitation enabled */
-"random_seed" : 2, /* seed for random number generator */
+"random_prec" : true,     /* Random weather generator for precipitation enabled */
+"random_seed" : 2,        /* seed for random number generator */
 "radiation" : CLOUDINESS,
-"fire" : FIRE,                 /* fire disturbance enabled */
+"fire" : FIRE,            /* fire disturbance enabled */
 "firewood" : false,
 #ifdef FROM_RESTART
 "population" : false,
 "landuse" : LANDUSE,
- "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
 #else
 "population" : false,
 "landuse" : NO_LANDUSE,
@@ -55,12 +54,13 @@
 "irrigation" : POT_IRRIGATION,
 "sowing_date_option" : FIXED_SDATE,
 "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
-"laimax_interpolate" : LAIMAX_CFT, /* laimax values from manage parameter file */
+"laimax_interpolate" : LAIMAX_CFT,    /* laimax values from manage parameter file */
 "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
 "reservoir" : false,
 "grassland_fixed_pft" : false,
-"wateruse" : false,
+"wateruse" : NO_WATERUSE,
 "intercrop" : true,                   /* intercrops on setaside */
+"landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
 "remove_residuals" : false,           /* remove residuals */
 "residues_fire" : false,              /* fire in residuals */
 "istimber": false,
@@ -182,6 +182,10 @@ ID                         Fmt                    filename
 /*===================================================================*/
 
 "startgrid" : ALL, /* 27410 67208 60400 all grid cells */
+
+#ifdef CHECKPOINT
+"checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
+#endif
 
 #ifndef FROM_RESTART
 

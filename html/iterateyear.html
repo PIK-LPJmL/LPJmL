@@ -3,12 +3,12 @@
 <PRE>
 <!-- Manpage converted by man2html 3.0.1 -->
      <B>NAME</B>
-          iterateyear - year time loop for LPJmL without river routing
+          iterateyear - year time loop for LPJmL
 
      <B>SYNOPSIS</B>
           <B>#include</B> <B>"lpj.h"</B>
 
-          <B>Bool</B> <B>iterateyear(Outputfile</B> <B>*</B><I>output</I><B>,</B>
+          <B>void</B> <B>iterateyear(Outputfile</B> <B>*</B><I>output</I><B>,</B>
                            <B>Cell</B> <I>grid</I><B>[],</B>
                            <B>Input</B> <I>input</I><B>,</B>
                            <B>Real</B> <I>co2</I><B>,</B>
@@ -19,8 +19,8 @@
 
 
      <B>DESCRIPTION</B>
-          Function performs year time loop for LPJmL without river
-          routing.  The arguments of <B>iterateyear</B> are:
+          Function performs year time loop for LPJmL The arguments of
+          <B>iterateyear</B> are:
 
           <I>output</I>
                Pointer to initialized output data. <I>output</I> must be
@@ -43,8 +43,7 @@
                LPJmL configuration data. Must be read by <B>readconfig()</B>.
 
      <B>RETURN</B> <B>VALUE</B>
-          Upon successful completion FALSE is returned and TRUE on
-          failure.
+          None
 
 
      <B>AUTHORS</B>

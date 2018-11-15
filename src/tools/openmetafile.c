@@ -58,7 +58,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
   while(!fscantoken(file.file.file,key))
     if(!strcmp(key,"firstcell"))
     {
-      if(fscanint(&file,&header->firstcell,"firstcell",isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->firstcell,"firstcell",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);
@@ -67,7 +67,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"ncell"))
     {
-      if(fscanint(&file,&header->ncell,"ncell",isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->ncell,"ncell",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);
@@ -76,7 +76,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"firstyear"))
     {
-      if(fscanint(&file,&header->firstyear,"firstyear",isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->firstyear,"firstyear",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);
@@ -85,7 +85,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"lastyear"))
     {
-      if(fscanint(&file,&header->nyear,"firstyear",isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->nyear,"firstyear",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);
@@ -95,7 +95,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"nyear"))
     {
-      if(fscanint(&file,&header->nyear,"nyear",isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->nyear,"nyear",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);
@@ -104,7 +104,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"nbands"))
     {
-      if(fscanint(&file,&header->nbands,"nbands",isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->nbands,"nbands",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);
@@ -113,7 +113,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"offset"))
     {
-      if(fscansize(&file,offset,"offset",isout ? ERR : NO_ERR))
+      if(fscansize(&file,offset,"offset",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);
@@ -122,7 +122,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"scalar"))
     {
-      if(fscanfloat(&file,&header->scalar,"scalar",isout ? ERR : NO_ERR))
+      if(fscanfloat(&file,&header->scalar,"scalar",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);
@@ -131,13 +131,13 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"cellsize"))
     {
-      if(fscanfloat(&file,&header->cellsize_lon,"cellsize_lon",isout ? ERR : NO_ERR))
+      if(fscanfloat(&file,&header->cellsize_lon,"cellsize_lon",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);
         return NULL;
       }
-      if(fscanfloat(&file,&header->cellsize_lat,"cellsize_lat",isout ? ERR : NO_ERR))
+      if(fscanfloat(&file,&header->cellsize_lat,"cellsize_lat",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);
@@ -146,7 +146,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"datatype"))
     {
-      if(fscanstring(&file,value,"datatype",isout ? ERR : NO_ERR))
+      if(fscanstring(&file,value,"datatype",FALSE,isout ? ERR : NO_ERR))
       {
         if(isout)
           readstringerr("datatype");
@@ -167,7 +167,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"endian"))
     {
-      if(fscanstring(&file,value,"endian",isout ? ERR : NO_ERR))
+      if(fscanstring(&file,value,"endian",FALSE,isout ? ERR : NO_ERR))
       {
         if(isout)
           readstringerr("endian");
@@ -190,7 +190,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"file"))
     {
-      if(fscanstring(&file,value,"file",isout ? ERR : NO_ERR))
+      if(fscanstring(&file,value,"file",FALSE,isout ? ERR : NO_ERR))
       {
         if(isout)
           readstringerr("file");
@@ -202,7 +202,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"remark"))
     {
-      if(fscanstring(&file,value,"remark",isout ? ERR : NO_ERR))
+      if(fscanstring(&file,value,"remark",FALSE,isout ? ERR : NO_ERR))
       {
         if(isout)
           readstringerr("remark");

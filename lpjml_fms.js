@@ -52,7 +52,8 @@
 "laimax_interpolate" : LAIMAX_CFT, /* laimax values from manage parameter file */
 "reservoir" : false,
 "grassland_fixed_pft" : false,
-"wateruse" : false,
+"wateruse" : NO_WATERUSE,
+"rw_manage" : false,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

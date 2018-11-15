@@ -8,7 +8,7 @@
      <B>SYNOPSIS</B>
           <B>#include</B> <B>"lpj.h"</B>
 
-          <B>void</B> <B>freeclimate(Climate</B> <B>*</B><I>climate</I><B>);</B>
+          <B>void</B> <B>freeclimate(Climate</B> <B>*</B><I>climate</I><B>,Bool</B> <I>isroot</I><B>);</B>
 
 
      <B>DESCRIPTION</B>
@@ -18,6 +18,9 @@
           <I>climate</I>
                Pointer to climate data.  Must be initialized by
                <B>initclimate()</B>.
+
+          <I>isroot</I>
+               task is root task.
 
      <B>RETURN</B> <B>VALUE</B>
           None.
@@ -34,9 +37,6 @@
 
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="initclimate.html">initclimate(3)</A></B>, <B><A HREF="getclimate.html">getclimate(3)</A></B>
-
-
-
 
 
 

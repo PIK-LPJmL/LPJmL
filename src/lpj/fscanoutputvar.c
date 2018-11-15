@@ -17,12 +17,12 @@
 
 #include "lpj.h"
 
-#define fscanint2(file,var,name) if(fscanint(file,var,name,verb)) return NULL;
-#define fscanfloat2(file,var,name,out) if(fscanfloat(file,var,name,verb)){ \
+#define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verb)) return NULL;
+#define fscanfloat2(file,var,name,out) if(fscanfloat(file,var,name,TRUE,verb)){ \
     if(verb) fprintf(stderr,"ERRROR229: Cannot read float '%s' for output '%s'.\n",name,out);\
     return NULL;}
 #define fscanname(file,var,name,out) {              \
-    if(fscanstring(file,var,name,verb)) {                 \
+    if(fscanstring(file,var,name,FALSE,verb)) {                 \
     if(verb) fprintf(stderr,"ERRROR229: Cannot read string '%s' for output '%s'.\n",name,out==NULL ? "N/A" : out);\
       return NULL;                              \
     }                                              \
@@ -77,7 +77,9 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     outnames[index].descr=strdup(name);
     fscanname(&item,name,"unit",outnames[index].name);
     outnames[index].unit=strdup(name);
+    outnames[index].scale=1.0;
     fscanfloat2(&item,&outnames[index].scale,"scale",outnames[index].name);
+    outnames[index].offset=0.0;
     fscanfloat2(&item,&outnames[index].offset,"offset",outnames[index].name);
   }
   return outnames;

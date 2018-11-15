@@ -25,6 +25,7 @@
 Bool fscansize(LPJfile *file,    /**< pointer to LPJ file */
                size_t *value,    /**< value to be read from file */
                const char *name, /**< variable name */
+               Bool with_default, /**< allow default value */
                Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
               )                  /** \return TRUE on error */
 {
@@ -37,9 +38,18 @@ Bool fscansize(LPJfile *file,    /**< pointer to LPJ file */
   {
     if(!json_object_object_get_ex(file->file.obj,name,&item))
     {
-      if(verb)
-        fprintf(stderr,"ERROR225: Name '%s' for size not found.\n",name);
-      return TRUE;
+      if(with_default)
+      {
+        if(verb)
+          fprintf(stderr,"WARNING027: Name '%s' for size not found, set to %llu.\n",name,(unsigned long long)*value);
+        return FALSE;
+      }
+      else
+      {
+        if(verb)
+          fprintf(stderr,"ERROR225: Name '%s' for size not found.\n",name);
+        return TRUE;
+      }
     }
     if(json_object_get_type(item)!=json_type_int)
     {

@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**               f  s  c  a  n  p  o  o  l  .  c                                  \n**/
+/**               f  s  c  a  n  p  o  o  l  p  a  r  .  c                         \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -25,9 +25,9 @@ Bool fscanpoolpar(LPJfile *file,    /**< pointer to LPJ file */
   LPJfile f;
   if(fscanstruct(file,&f,name,verb))
     return TRUE;
-  if(fscanreal(&f,&pool->fast,"fast",verb))
+  if(fscanreal(&f,&pool->fast,"fast",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&pool->slow,"slow",verb))
+  if(fscanreal(&f,&pool->slow,"slow",FALSE,verb))
     return TRUE;
   return FALSE;
-} /* of 'fscanpool' */
+} /* of 'fscanpoolpar' */

@@ -11,7 +11,8 @@
           configure.sh - Configure LPJmL
 
      <B>SYNOPSIS</B>
-          <B>configure.sh</B> [-h] [-prefix <I>dir</I>] [-debug] [-nompi]
+          <B>configure.sh</B> [-h] [-nofeedback] [-prefix <I>dir</I>] [-debug] [-
+          nompi]
 
      <B>DESCRIPTION</B>
           Script configures LPJmL for specific OS and compiler. File
@@ -24,6 +25,10 @@
 
      <B>OPTIONS</B>
           -h   display a short help text.
+
+          -nofeedback
+               sends no feedback for usage statistics to PIK, see
+               https://goo.gl/#analytics/goo.gl/DYv3KW/all_time
 
           -prefix <I>dir</I>
                Set installation directory for LPJmL. Default is
@@ -38,9 +43,8 @@
                Do not build the MPI version of the code.
 
      <B>EXAMPLE</B>
-     <I>3</I>.<I>5</I>.<I>002</I>:
-          Configure LPJmL with installation directory /<I>data</I>/<I>biosx</I>/<I>lpjml</I>-
-               <B>./configure.sh</B> -prefix /data/biosx/lpjml-3.5.002
+          Configure LPJmL with installation directory /<I>data</I>/<I>biosx</I>/<I>lpjml</I>:
+               <B>./configure.sh</B> -prefix /data/biosx/lpjml
 
           Then <B>make</B> <B>install</B> will install LPJmL in the target directory
           specified by '-prefix'.
@@ -59,13 +63,9 @@
           (C) Potsdam Institute for Climate Impact Research (PIK), see
           COPYRIGHT file
 
+
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="lpj_paths.sh.html">lpj_paths.sh(1)</A></B>, <B><A HREF="lpj_paths.csh.html">lpj_paths.csh(1)</A></B>, <B><A HREF="lpjml.html">lpjml(1)</A></B>
-
-
-
-
-
 
 
 

@@ -26,6 +26,7 @@
 Bool fscanfloat(LPJfile *file,    /**< pointer to LPJ file */
                 float *value,     /**< float to be read from file */
                 const char *name, /**< name of variable */
+                Bool with_default, /**< allow default value */
                 Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
                )                  /** \return TRUE on error */
 {
@@ -38,9 +39,18 @@ Bool fscanfloat(LPJfile *file,    /**< pointer to LPJ file */
   {
     if(!json_object_object_get_ex(file->file.obj,name,&item))
     {
-      if(verb)
-        fprintf(stderr,"ERROR225: Name '%s' for real not found.\n",name);
-      return TRUE;
+      if(with_default)
+      {
+        if(verb)
+          fprintf(stderr,"WARNING027: Name '%s' for float not found, set to %g.\n",name,*value);
+        return FALSE;
+      }
+      else
+      {
+        if(verb)
+          fprintf(stderr,"ERROR225: Name '%s' for real not found.\n",name);
+        return TRUE;
+      }
     }
     if(json_object_get_type(item)!=json_type_double)
     {

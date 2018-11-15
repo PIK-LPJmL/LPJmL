@@ -83,7 +83,7 @@ Bool fscanrealarray(LPJfile *file,    /**< pointer to LPJ file */
   }
 #endif
   for(i=0;i<size;i++)
-    if(fscanreal(file,value+i,key,verb))
+    if(fscanreal(file,value+i,key,FALSE,verb))
        return TRUE;
   return FALSE;
 } /* of 'fscanrealarray' */ 

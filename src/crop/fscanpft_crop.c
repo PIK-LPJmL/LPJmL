@@ -19,14 +19,14 @@
 #include "grass.h"
 
 #define fscanpftreal(verb,file,var,pft,name) \
-  if(fscanreal(file,var,name,verb)) \
+  if(fscanreal(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR110: Cannot read float '%s' for CFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 #define fscanpftint(verb,file,var,pft,name) \
-  if(fscanint(file,var,name,verb)) \
+  if(fscanint(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR110: Cannot read int '%s' for CFT '%s'.\n",name,pft); \
@@ -50,9 +50,9 @@
 
 static Bool fscancropdate(LPJfile *file,Initdate *initdate,Verbosity verb)
 {
-  if(fscanint(file,&initdate->sdatenh,"sdatenh",verb))
+  if(fscanint(file,&initdate->sdatenh,"sdatenh",FALSE,verb))
     return TRUE;
-  if(fscanint(file,&initdate->sdatesh,"sdatesh",verb))
+  if(fscanint(file,&initdate->sdatesh,"sdatesh",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscancropdate' */
@@ -78,13 +78,13 @@ static Bool fscancropphys(LPJfile *file,Cropphys *phys,const char *name,Verbosit
   LPJfile item;
   if(fscanstruct(file,&item,name,verb))
     return TRUE;
-  if(fscanreal(&item,&phys->leaf,"leaf",verb))
+  if(fscanreal(&item,&phys->leaf,"leaf",FALSE,verb))
     return TRUE;
-  if(fscanreal(&item,&phys->root,"root",verb))
+  if(fscanreal(&item,&phys->root,"root",FALSE,verb))
     return TRUE;
-  if(fscanreal(&item,&phys->so,"so",verb))
+  if(fscanreal(&item,&phys->so,"so",FALSE,verb))
     return TRUE;
-  if(fscanreal(&item,&phys->pool,"pool",verb))
+  if(fscanreal(&item,&phys->pool,"pool",FALSE,verb))
     return TRUE;
   if(phys->leaf<=0 || phys->root<=0 || phys->so<=0 || phys->pool<=0)
     return TRUE;
@@ -96,11 +96,11 @@ static Bool fscancropratio(LPJfile *file,Cropratio *ratio,const char *name,Verbo
   LPJfile item;
   if(fscanstruct(file,&item,name,verb))
     return TRUE;
-  if(fscanreal(&item,&ratio->root,"root",verb))
+  if(fscanreal(&item,&ratio->root,"root",FALSE,verb))
     return TRUE;
-  if(fscanreal(&item,&ratio->so,"so",verb))
+  if(fscanreal(&item,&ratio->so,"so",FALSE,verb))
     return TRUE;
-  if(fscanreal(&item,&ratio->pool,"pool",verb))
+  if(fscanreal(&item,&ratio->pool,"pool",FALSE,verb))
     return TRUE;
   if(ratio->root<=0 || ratio->so<=0 || ratio->pool<=0)
     return TRUE;

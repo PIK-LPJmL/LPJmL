@@ -245,7 +245,7 @@ extern Bool fscanlimit(LPJfile *,Limit *,const char *,Verbosity);
 extern Bool fscanemissionfactor(LPJfile *,Tracegas *,const char *,Verbosity);
 extern Bool fscanphenparam(LPJfile *,Phen_param *,const char *,Verbosity);
 extern Real fire_sum(const Litter *,Real);
-extern void fprintpftpar(FILE *,const Pftpar []);
+extern void fprintpftpar(FILE *,const Pftpar [],int);
 extern void output_daily(Daily_outputs *,const Pft *,Real,Real);
 extern void equilsoil(Soil *, int, const Pftpar []);
 extern void noturnover_monthly(Litter *,Pft *);

@@ -92,14 +92,15 @@ typedef struct
 /* Declaration of functions */
 
 extern void fail(int,Bool,const char *,...);
-extern Bool fscanreal(LPJfile *,Real *,const char *,Verbosity);
-extern Bool fscanbool(LPJfile *,Bool *,const char *,Verbosity);
+extern Bool fscanreal(LPJfile *,Real *,const char *,Bool,Verbosity);
+extern Bool fscanbool(LPJfile *,Bool *,const char *,Bool,Verbosity);
 extern Bool fscanrealarray(LPJfile *,Real *,int,const char *,Verbosity);
-extern Bool fscanstring(LPJfile *,String,const char *,Verbosity);
+extern Bool fscanstring(LPJfile *,String,const char *,Bool,Verbosity);
 extern Bool fscanstruct(const LPJfile *,LPJfile *,const char *,Verbosity);
 extern Bool fscanarray(LPJfile *,LPJfile *,int *,Bool,const char *,Verbosity);
 extern Bool fscanarrayindex(const LPJfile *,LPJfile *,int,Verbosity);
 extern Bool iskeydefined(const LPJfile *,const char *);
+extern Bool isboolean(const LPJfile *,const char *);
 extern Bool fscanline(FILE *,char [],int,Verbosity);
 extern Bool fscantoken(FILE *,String);
 extern char *sysname(void);
@@ -125,10 +126,10 @@ extern char *mkfilename(const char *);
 extern int findstr(const char *,const char *const *,int);
 extern Bool checkfmt(const char *,char);
 extern int fputstring(FILE *,int,const char *,int);
-extern Bool fscanint(LPJfile *,int *,const char *,Verbosity);
-extern Bool fscansize(LPJfile *,size_t *,const char *,Verbosity);
-extern Bool fscanuint(LPJfile *,unsigned int *,const char *,Verbosity);
-extern Bool fscanfloat(LPJfile *,float *,const char *,Verbosity);
+extern Bool fscanint(LPJfile *,int *,const char *,Bool,Verbosity);
+extern Bool fscansize(LPJfile *,size_t *,const char *,Bool,Verbosity);
+extern Bool fscanuint(LPJfile *,unsigned int *,const char *,Bool,Verbosity);
+extern Bool fscanfloat(LPJfile *,float *,const char *,Bool,Verbosity);
 extern void fprinttime(FILE *,int);
 extern Bool readrealvec(FILE *,Real *,Real,Real,size_t,Bool,Type);
 extern Bool readfloatvec(FILE *,float *,float,size_t,Bool,Type);

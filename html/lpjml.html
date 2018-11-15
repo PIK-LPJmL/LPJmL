@@ -34,7 +34,7 @@
           sunshine, annual atmospheric CO2 concentration and soil
           texture class. The simulation for each grid cell begins from
           "bare ground", requiring a "spin up" (under non-transient
-          climate) of c. 1000 years to develop equilibrium vegetation
+          climate) of c. 5000 years to develop equilibrium vegetation
           and soil structure. A restart file can be created to save
           compute time for the spin-up phase. If the Message Passing
           Interface (MPI) library is available a parallel version of
@@ -291,41 +291,53 @@
                Outflow reservoir error. Internal error.
 
           ERROR029
-               Error in permafrost module. Internal error.  -TP
-               ERROR030 Error in global water balance. Internal error.
+               Error in permafrost module. Internal error.
 
-          ERROR031 Error in store climate function. ERROR032 No FMS
-          coupler supported.
+          ERROR030
+               Error in global water balance. Internal error.
 
-          Internal errors will generate a core dump and have to be
-          fixed by changes in the code. A "post-mortem" analysis can
-          be made by calling
+          ERROR031
+               Error in store climate function.
 
-          <B>gdb</B> $LPJROOT/bin/lpjml core
+          ERROR032
+               No FMS coupler supported.
 
-          It is recommended to compile the code without optimization
-          and inlining making the inspection of the core file easier.
-          Configure in $LPJROOT with
+          ERROR033
+               Error initializing soil temperature
 
-          <B>configure.sh</B> -debug
-          <B>make</B> clean
-          <B>make</B>
+          ERROR034
+               Invalid radiation model. Internal error
 
-          will do the job. If no core file is generated set the user
-          limit for core files:
+               Internal errors will generate a core dump and have to
+               be fixed by changes in the code. A "post-mortem"
+               analysis can be made by calling
 
-          <B>ulimit</B> -c unlimited
+               <B>gdb</B> $LPJROOT/bin/lpjml core
 
-          Some of these errors are only raised if the -DSAFE flag has
-          been set in <I>Makefile</I>.<I>inc</I>. The flags set at compile time can
-          be obtained by invoking <B>lpjml</B> <B>-v</B>. After the core file has
-          been created a backtrace of the failed program can be
-          obtained by calling
+               It is recommended to compile the code without
+               optimization and inlining making the inspection of the
+               core file easier. Configure in $LPJROOT with
 
-          <B>backtrace</B>
+               <B>configure.sh</B> -debug
+               <B>make</B> clean
+               <B>make</B>
 
-          Without any arguments <B>lpjml</B> will be inspected and the call
-          tree displayed using the core file in the working directory.
+               will do the job. If no core file is generated set the
+               user limit for core files:
+
+               <B>ulimit</B> -c unlimited
+
+               Some of these errors are only raised if the -DSAFE flag
+               has been set in <I>Makefile</I>.<I>inc</I>. The flags set at compile
+               time can be obtained by invoking <B>lpjml</B> <B>-v</B>. After the
+               core file has been created a backtrace of the failed
+               program can be obtained by calling
+
+               <B>backtrace</B>
+
+               Without any arguments <B>lpjml</B> will be inspected and the
+               call tree displayed using the core file in the working
+               directory.
 
 
      <B>AUTHORS</B>
@@ -346,18 +358,6 @@
           <B><A HREF="lpjml_image.conf.html">lpjml_image.conf(5)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
 
           Contact: https://github.com/PIK-LPJmL/LPJmL /lpjml
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

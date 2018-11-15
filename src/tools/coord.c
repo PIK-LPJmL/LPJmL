@@ -289,9 +289,9 @@ Bool fscancoord(LPJfile *file, /**< pointer to text file */
                 Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                )               /** \return TRUE on error */
 {
-  if(fscanreal(file,&coord->lon,"longitude",verb))
+  if(fscanreal(file,&coord->lon,"longitude",FALSE,verb))
     return TRUE;
-  if(fscanreal(file,&coord->lat,"latitude",verb))
+  if(fscanreal(file,&coord->lat,"latitude",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscancoord' */

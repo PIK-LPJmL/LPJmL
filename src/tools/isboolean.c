@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**               f  s  c  a  n  p  h  e  n  p  a  r  a  m  .  c                   \n**/
+/**                   i  s  b  o  o  l  e  a  n  .  c                              \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions reads phenology parameter from configuration file                \n**/
+/**     Function determines whether JSON keyword is of type boolean                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,22 +14,29 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#ifdef USE_JSON
+#include <json-c/json.h>
+#endif
+#include "types.h"
 
-Bool fscanphenparam(LPJfile *file,       /**< pointer to LPJ file */
-                    Phen_param *phenpar, /**< on return phenology params read */
-                    const char *key,     /**< name of phenology parameter */
-                    Verbosity verb       /**< verbosity level (NO_ERR,ERR,VERB) */
-                   )                     /** \return TRUE on error */
+Bool isboolean(const LPJfile *file, /**< pointer to LPJ file */
+               const char *name     /**< variable name */
+              )                     /** \return TRUE if type is bool */
 {
-  LPJfile f;
-  if(fscanstruct(file,&f,key,verb))
-    return TRUE;
-  if(fscanreal(&f,&phenpar->sl,"slope",FALSE,verb))
-    return TRUE;
-  if(fscanreal(&f,&phenpar->base,"base",FALSE,verb))
-    return TRUE;
-  if(fscanreal(&f,&phenpar->tau,"tau",FALSE,verb))
-    return TRUE;
-  return FALSE;
-} /* of 'fscanphenparam' */
+#ifdef USE_JSON
+  struct json_object *item;
+  if(file->isjson)
+  {
+    if(!json_object_object_get_ex(file->file.obj,name,&item))
+      return FALSE;
+    return (json_object_get_type(item)==json_type_boolean);
+  }
+  else
+   return FALSE;
+#else
+   return FALSE;
+#endif
+} /* of 'isboolean' */

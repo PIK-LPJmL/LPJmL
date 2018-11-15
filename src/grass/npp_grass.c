@@ -19,7 +19,7 @@ Real npp_grass(Pft *pft, /**< PFT variables */
                Real UNUSED(gtemp_air), /**< value of air temperature response function */
                Real gtemp_soil, /**< value of soil temperature response function */
                Real assim,   /**< assimilation (gC/m2) */
-               Bool with_nitrogen
+               Bool with_nitrogen /**< with nitrogen (TRUE/FALSE) */
               ) /** \return net primary productivity (gC/m2) */
 {
   Pftgrass *grass;

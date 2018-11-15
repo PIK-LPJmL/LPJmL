@@ -434,6 +434,14 @@ FILE *openconfig(Config *config,      /**< configuration struct */
       break;
   }
   config->filename=(i==*argc)  ? dflt_filename : (*argv)[i++];
+  /* check whether config file exists */
+  if(getfilesize(config->filename)==-1)
+  {
+    if(isroot(*config))
+      printfopenerr(config->filename);
+    free(options);
+    return NULL;
+  }
   /* adjust argc and argv */
   *argv+=i;
   *argc-=i;

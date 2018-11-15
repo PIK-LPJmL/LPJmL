@@ -50,7 +50,7 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
     /**
     * find start year in co2-file
     **/
-    if(fscanint(&file,&yr,"year",isout ? ERR : NO_ERR) || fscanreal(&file,co2->data,"co2",isout ? ERR : NO_ERR))
+    if(fscanint(&file,&yr,"year",FALSE,isout ? ERR : NO_ERR) || fscanreal(&file,co2->data,"co2",FALSE,isout ? ERR : NO_ERR))
     {
       if(isout)
         fprintf(stderr,"ERROR129: Cannot read CO2 data in first line of '%s'.\n",
@@ -71,7 +71,7 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
         fclose(file.file.file);
         return TRUE;
       }
-      if(fscaninteof(file.file.file,&yr,"year",&iseof,isout) || fscanreal(&file,co2->data+co2->nyear,"co2",isout ? ERR : NO_ERR))
+      if(fscaninteof(file.file.file,&yr,"year",&iseof,isout) || fscanreal(&file,co2->data+co2->nyear,"co2",FALSE,isout ? ERR : NO_ERR))
 
       {
         if(iseof)

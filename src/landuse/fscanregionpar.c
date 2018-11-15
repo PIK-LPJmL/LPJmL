@@ -15,7 +15,7 @@
 #define UNDEF (-1)
 
 #define fscanreal2(verb,file,var,name,region)\
-  if(fscanreal(file,var,name,verb))\
+  if(fscanreal(file,var,name,FALSE,verb))\
   {\
     if(verb)\
       fprintf(stderr,"ERROR102: Cannot read float '%s' for region '%s'.\n",name,region);\
@@ -42,7 +42,7 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
   for(n=0;n<nregions;n++)
   {
     fscanarrayindex(&arr,&item,n,verb);
-    if(fscanint(&item,&id,"id",verb))
+    if(fscanint(&item,&id,"id",FALSE,verb))
       return 0;
     if(id<0 || id>=nregions)
     {
@@ -59,7 +59,7 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
                 "ERROR179: Region number=%d in line %d of '%s' has been already defined in fscanregionpar().\n",id,getlinecount(),getfilename());
       return 0;
     }
-    if(fscanstring(&item,s,"name",verb))
+    if(fscanstring(&item,s,"name",FALSE,verb))
     {
       if(verb)
         readstringerr("name");

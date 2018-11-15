@@ -21,7 +21,8 @@ Real alphaa_grass(const Pft *pft,int UNUSED(lai_opt))
   Real scaler=1.0;
   grass=pft->data;
 
-  if((grass->ind.leaf.carbon+grass->excess_carbon*grass->falloc.leaf)>10){
+  if((grass->ind.leaf.carbon+grass->excess_carbon*grass->falloc.leaf)>10)
+  {
     scaler=grass->ind.leaf.nitrogen/(grass->ind.leaf.carbon+grass->excess_carbon*grass->falloc.leaf) /
            pft->par->ncleaf.low;
     if(scaler>1)
