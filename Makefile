@@ -34,14 +34,10 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/biomass_tree.h\
           $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h
 
-CONF	= lpjml.conf input.conf param.conf lpj.conf\
-          lpjml_image.conf input_crumonthly.conf\
-          lpjml_netcdf.conf input_netcdf.conf lpjml_fms.conf input_fms.conf
-
 JSON	= lpjml.js input_crumonthly.js param.js lpj.js\
           lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js
 
-DATA    = par/*.par par/*.js
+DATA    = par/*.js
 
 SCRIPTS	= configure.bat configure.sh\
           bin/output_bsq bin/lpjsubmit_aix bin/lpjsubmit_intel\
@@ -49,7 +45,7 @@ SCRIPTS	= configure.bat configure.sh\
           bin/filetypes.vim bin/regridlpj bin/lpjsubmit_slurm
 
 FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET\
-          $(CONF) $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
+          $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
 
 main: 
 	$(MKDIR) lib
@@ -84,7 +80,7 @@ install: all
 	install -m 644 $(HDRS) $(LPJROOT)/include
 	install -m 644 lib/* $(LPJROOT)/lib
 	install -m 644 $(DATA) $(LPJROOT)/par
-	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT $(CONF) $(JSON) $(LPJROOT)
+	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT $(JSON) $(LPJROOT)
 	install -m 644 man/whatis $(LPJROOT)/man
 	install -m 644 man/man1/*.1 $(LPJROOT)/man/man1
 	install -m 644 man/man5/*.5 $(LPJROOT)/man/man5
@@ -98,7 +94,7 @@ clean:
 	(cd src  && $(MAKE) clean)
 
 tar: 
-	tar -cf lpjml-4.0.001.tar $(FILES) src/Makefile src/*.c\
+	tar -cf lpjml-5.1.001.tar $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c\
             man/man1/*.1 man/man3/*.3 man/man5/*.5 man/whatis\
             man/man1/Makefile man/man3/Makefile man/man5/Makefile man/Makefile\
@@ -113,10 +109,10 @@ tar:
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c
-	    gzip -f lpjml-4.0.001.tar
+	    gzip -f lpjml-5.1.001.tar
 
 zipfile: 
-	zip -l lpjml-4.0.001.zip $(FILES) src/Makefile src/*.c\
+	zip -l lpjml-5.1.001.zip $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
             man/man3/*.3 man/man5/*.5\
 	    src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\
