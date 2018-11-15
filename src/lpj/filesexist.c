@@ -248,8 +248,11 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkdatafile(&config,&config.popdens_filename);
   if(config.with_nitrogen)
   {
-    bad+=checkclmfile(&config,&config.no3deposition_filename);
-    bad+=checkclmfile(&config,&config.nh4deposition_filename);
+    if(config.with_nitrogen==LIM_NITROGEN)
+    {
+      bad+=checkclmfile(&config,&config.no3deposition_filename);
+      bad+=checkclmfile(&config,&config.nh4deposition_filename);
+    }
     bad+=checkinputfile(&config,&config.soilph_filename,0);
   }
   if(config.grassfix_filename.name!=NULL)
