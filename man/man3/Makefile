@@ -21,12 +21,12 @@ SRC	= pnet_addconnect.3 pnet_hi.3 pnet_input.3 pnet_outlen.3 pnet_strerror.3\
           initpopdens.3 initinput.3 writefloat_socket.3 close_image.3\
           close_socket.3 connect_socket.3 failonerror.3 fcloseoutput.3\
           flux_sum.3 fopenoutput.3 fprintconfig.3 fprintflux.3\
-          freeclimate.3 freeconfig.3 freegrid.3 freeinput.3\
+          freeclimate.3 freeconfig.3 freegrid.3 freeinput.3 freepopdens.3\
           freelanduse.3 freewateruse.3 fwriterestart.3 getclimate.3\
           getco2.3 getlanduse.3 getwateruse.3 initconfig.3 isopen.3\
-          isroot.3 iterateyear.3 open_image.3 open_socket.3\
+          isroot.3 iterateyear.3 open_image.3 open_socket.3 printlicense.3\
           printflags.3 readint_socket.3 writecoords.3 writecountrycode.3\
-          writeregioncode.3 writeint_socket.3 initmpiconfig.3
+          writeregioncode.3 writeint_socket.3 initmpiconfig.3 readpopdens.3
 
 
 HTMLDIR	= ../../html

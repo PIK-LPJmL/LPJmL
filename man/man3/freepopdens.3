@@ -1,0 +1,32 @@
+.TH freepodens 3  "November 15, 2018" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+freepopdens \- Closes file and deallocates population density data
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+void freepopdens(Popdens \fIpopdens\fB,Bool \fIisroot\fB);
+
+.fi
+.SH DESCRIPTION
+Function closes open file and deallocates population density data.
+The arguments of \fBfreepopdens\fP are:
+.TP
+.I popdens
+Pointer to population density data.  Must be initialized by \fBinitpopdens()\fP.
+.TP
+.I isroot
+task is root task.
+.SH RETURN VALUE
+None.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+initpopdens(3), readpopdens(3), getpopdens(3)

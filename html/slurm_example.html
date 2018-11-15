@@ -45,6 +45,8 @@ mkdir -p $LPJRESTARTPATH/restart
 export I_MPI_PMI_LIBRARY=/p/system/slurm/lib/libpmi.so
 ulimit -c unlimited
 
+# run LPJmL for spinup and transient
+
 if srun $LPJROOT/bin/lpjml lpjml.js
 then
   srun --propagate $LPJROOT/bin/lpjml -DFROM_RESTART lpjml.js
