@@ -308,36 +308,36 @@
           ERROR034
                Invalid radiation model. Internal error
 
-               Internal errors will generate a core dump and have to
-               be fixed by changes in the code. A "post-mortem"
-               analysis can be made by calling
 
-               <B>gdb</B> $LPJROOT/bin/lpjml core
+          Internal errors will generate a core dump and have to be
+          fixed by changes in the code. A "post-mortem" analysis can
+          be made by calling
 
-               It is recommended to compile the code without
-               optimization and inlining making the inspection of the
-               core file easier. Configure in $LPJROOT with
+          <B>gdb</B> $LPJROOT/bin/lpjml core
 
-               <B>configure.sh</B> -debug
-               <B>make</B> clean
-               <B>make</B>
+          It is recommended to compile the code without optimization
+          and inlining making the inspection of the core file easier.
+          Configure in $LPJROOT with
 
-               will do the job. If no core file is generated set the
-               user limit for core files:
+          <B>configure.sh</B> -debug
+          <B>make</B> clean
+          <B>make</B>
 
-               <B>ulimit</B> -c unlimited
+          will do the job. If no core file is generated set the user
+          limit for core files:
 
-               Some of these errors are only raised if the -DSAFE flag
-               has been set in <I>Makefile</I>.<I>inc</I>. The flags set at compile
-               time can be obtained by invoking <B>lpjml</B> <B>-v</B>. After the
-               core file has been created a backtrace of the failed
-               program can be obtained by calling
+          <B>ulimit</B> -c unlimited
 
-               <B>backtrace</B>
+          Some of these errors are only raised if the -DSAFE flag has
+          been set in <I>Makefile</I>.<I>inc</I>. The flags set at compile time can
+          be obtained by invoking <B>lpjml</B> <B>-v</B>. After the core file has
+          been created a backtrace of the failed program can be
+          obtained by calling
 
-               Without any arguments <B>lpjml</B> will be inspected and the
-               call tree displayed using the core file in the working
-               directory.
+          <B>backtrace</B>
+
+          Without any arguments <B>lpjml</B> will be inspected and the call
+          tree displayed using the core file in the working directory.
 
 
      <B>AUTHORS</B>
