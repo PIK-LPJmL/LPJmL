@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE  "Usage: %s [-var name] [-index i] [-float] [scale s] netcdffile coordfile\n"
+#define USAGE  "Usage: %s [-var name] [-index i] [-float] [-scale s] netcdffile coordfile\n"
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
 #include <netcdf.h>
