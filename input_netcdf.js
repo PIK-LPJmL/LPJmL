@@ -26,7 +26,7 @@
   "temp" : { "fmt" : CDF, "var" : "temp", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.tmp.nc"},
   "prec" : { "fmt" : CDF, "var" : "prec", "name" : "cru_netcdf/gpcc_cru09_prec_monthly_1901_2009.nc"},
   "cloud" : { "fmt" : CDF, "var" : "cloud", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.cld.nc"},
-  "windspeed" : { "fmt" : CDF, "var" : "windspeed", "name" : "cru_netcdf/mwindspeed_1860-2100_67420.nc"},
+  "wind" : { "fmt" : CDF, "var" : "windspeed", "name" : "cru_netcdf/mwindspeed_1860-2100_67420.nc"},
   "tamp" : { "fmt" : CDF, "var" : "tamp", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.dtr.nc"},           /* diurnal temp. range */
   "lightning" : { "fmt" : CDF, "var" : "lightning", "name" : "cru_netcdf/lightning.nc"},
   "human_ignition" : { "fmt" : CDF, "var" : "human_ignition", "name" : "cru_netcdf/human_ignition.nc"},
