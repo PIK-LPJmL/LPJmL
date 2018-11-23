@@ -63,6 +63,7 @@
 "remove_residuals" : false,           /* remove residuals */
 "residues_fire" : false,              /* fire in residuals */
 "rw_manage" : false,                  /* rain water management */
+"check_climate" : true,               /* check climate input before start */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

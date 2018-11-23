@@ -26,7 +26,10 @@ Bool fread_tree(FILE *file, /**< pointer to binary file */
   tree=new(Pfttree);
   pft->data=tree;
   if(tree==NULL)
+  {
+    printallocerr("tree");
     return TRUE;
+  }
   freadreal1(&tree->height,swap,file);
   freadreal1(&tree->crownarea,swap,file);
   freadreal1(&tree->barkthickness,swap,file);

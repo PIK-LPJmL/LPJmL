@@ -210,9 +210,11 @@ int main(int argc,char **argv)
   rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
-  rc=checkvalidclimate(input.climate,grid,&config);
-  failonerror(&config,rc,INIT_INPUT_ERR,
-              "Check of climate data failed");
+  if(config.check_climate)
+  {
+    rc=checkvalidclimate(input.climate,grid,&config);
+    failonerror(&config,rc,INIT_INPUT_ERR,"Check of climate data failed");
+  }
   /* open output files */  
   output=fopenoutput(grid,NOUT,&config);
 

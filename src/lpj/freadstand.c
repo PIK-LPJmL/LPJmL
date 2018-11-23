@@ -30,7 +30,10 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
   Byte landusetype;
   stand=new(Stand);
   if(stand==NULL)
+  {
+    printallocerr("stand");
     return NULL;
+  }
   stand->cell=cell;
   if(freadpftlist(file,stand,&stand->pftlist,pftpar,ntotpft,swap))
   {
@@ -40,7 +43,6 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
   initstand(stand);
   if(freadsoil(file,&stand->soil,soilpar,pftpar,ntotpft,swap))
   {
-    freepftlist(&stand->pftlist);
     free(stand);
     return NULL;
   }
