@@ -18,6 +18,7 @@
 #include "lpj.h"
 
 static Bool checkvalid(Climatefile *climate, /**< climate data file */
+                       const char *filename, /**< filename */
                        Cell grid[],          /**< LPJ grid */
                        Config *config        /**< LPJ configuration */
                       )                      /** \return TRUE on error */
@@ -64,17 +65,17 @@ static Bool checkvalid(Climatefile *climate, /**< climate data file */
     if(config->total==0)
     {
       if(isroot(*config))
-        fputs("ERROR207: No cell with valid climate data found.\n",stderr);
+        fprintf(stderr,"ERROR207: No cell with valid climate data found in '%s'.\n",filename);
       return TRUE;
     }
     if(isroot(*config) && invalid_total)
-      fprintf(stderr,"WARNING008: No climate data for %d cells, will be skipped.\n",
-              invalid_total);
+      fprintf(stderr,"WARNING008: No climate data for %d cells in '%s', will be skipped.\n",
+              invalid_total,filename);
   }
   return FALSE;
 } /* of 'checkvalid' */
 
-Bool checkvalidclimate(Climate *climate, /**< pointer to climate file */
+Bool checkvalidclimate(Climate *climate, /**< pointer to climate data */
                        Cell grid[],      /**< LPJ grid */
                        Config *config    /**< LPJ configuration */
                       )                  /** \return TRUE on error */
@@ -82,7 +83,52 @@ Bool checkvalidclimate(Climate *climate, /**< pointer to climate file */
   /**
   * check data in temperature file
   **/
-  if(checkvalid(&climate->file_temp,grid,config))
+  if(checkvalid(&climate->file_temp,config->temp_filename.name,grid,config))
     return TRUE;
+  if(checkvalid(&climate->file_prec,config->prec_filename.name,grid,config))
+    return TRUE;
+  switch(config->with_radiation)
+  {
+    case RADIATION: case RADIATION_LWDOWN:
+      if(checkvalid(&climate->file_lwnet,config->lwnet_filename.name,grid,config))
+        return TRUE;
+      if(checkvalid(&climate->file_swdown,config->swdown_filename.name,grid,config))
+        return TRUE;
+      break;
+    case CLOUDINESS:
+      if(checkvalid(&climate->file_cloud,config->cloud_filename.name,grid,config))
+        return TRUE;
+      break;
+    case RADIATION_SWONLY:
+      if(checkvalid(&climate->file_swdown,config->swdown_filename.name,grid,config))
+        return TRUE;
+      break;
+  }
+  if(config->wet_filename.name!=NULL)
+  {
+    if(checkvalid(&climate->file_wet,config->wet_filename.name,grid,config))
+      return TRUE;
+  }
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  {
+    if(checkvalid(&climate->file_wind,config->wind_filename.name,grid,config))
+      return TRUE;
+    if(checkvalid(&climate->file_tamp,config->tamp_filename.name,grid,config))
+      return TRUE;
+    if(config->fire==SPITFIRE_TMAX)
+    {
+      if(checkvalid(&climate->file_tmax,config->tmax_filename.name,grid,config))
+        return TRUE;
+    }
+    if(checkvalid(&climate->file_lightning,config->lightning_filename.name,grid,config))
+      return TRUE;
+  }
+  if(config->with_nitrogen==LIM_NITROGEN)
+  {
+    if(checkvalid(&climate->file_no3deposition,config->no3deposition_filename.name,grid,config))
+      return TRUE;
+    if(checkvalid(&climate->file_nh4deposition,config->nh4deposition_filename.name,grid,config))
+      return TRUE;
+  }
   return FALSE;
 } /* of 'checkvalidclimate' */

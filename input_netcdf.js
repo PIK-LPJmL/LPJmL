@@ -20,13 +20,17 @@
 "input" :
 {
   "soil" : { "fmt" : CDF, "var" : "soilcode", "name" : "cru_netcdf/soil_new_67420.nc"},
+  "no3deposition" : { "fmt" : CDF, "var" : "no3dep",  "name" : "cru_netcdf/no3_deposition_rcp8p5.nc"},
+  "nh4deposition" : { "fmt" : CDF,  "var" : "nh4dep", "name" : "cru_netcdf/nh4_deposition_rcp8p5.nc"},
+  "soilpH" :        { "fmt" : CDF,  "var" : "soilph", "name" : "cru_netcdf/soil_ph.nc"},
   "countrycode" : { "fmt" : CDF, "var" : "country", "name" : "cru_netcdf/cow_mg_2006_full.nc"},
   "regioncode" : { "fmt" : CDF, "var" : "region", "name" : "cru_netcdf/reg_mg_2006_full.nc"},
   "landuse" : { "fmt" : CDF, "var" :  "landfrac", "name" : "cru_netcdf/cft1700_2005_irrigation_systems_64bands.nc"},
+  "fertilizer_nr" : { "fmt" : CDF,  "var" : "nfert", "name" : "cru_netcdf/fertilizer_ggcmi.nc"},
   "temp" : { "fmt" : CDF, "var" : "temp", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.tmp.nc"},
   "prec" : { "fmt" : CDF, "var" : "prec", "name" : "cru_netcdf/gpcc_cru09_prec_monthly_1901_2009.nc"},
   "cloud" : { "fmt" : CDF, "var" : "cloud", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.cld.nc"},
-  "windspeed" : { "fmt" : CDF, "var" : "windspeed", "name" : "cru_netcdf/mwindspeed_1860-2100_67420.nc"},
+  "wind" : { "fmt" : CDF, "var" : "windspeed", "name" : "cru_netcdf/mwindspeed_1860-2100_67420.nc"},
   "tamp" : { "fmt" : CDF, "var" : "tamp", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.dtr.nc"},           /* diurnal temp. range */
   "lightning" : { "fmt" : CDF, "var" : "lightning", "name" : "cru_netcdf/lightning.nc"},
   "human_ignition" : { "fmt" : CDF, "var" : "human_ignition", "name" : "cru_netcdf/human_ignition.nc"},

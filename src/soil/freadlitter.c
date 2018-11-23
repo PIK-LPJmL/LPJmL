@@ -34,7 +34,10 @@ Bool freadlitter(FILE *file, /**< File pointer to binary file */
     litter->ag=newvec(Litteritem,litter->n);
     litter->bg=newvec(Stocks,litter->n);
     if(litter->ag==NULL || litter->bg==NULL)
+    {
+      printallocerr("litter");
       return TRUE;
+    }
     for(i=0;i<litter->n;i++)
     {
       if(fread(&b,sizeof(b),1,file)!=1)

@@ -63,7 +63,10 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
   /* Read number of stands */
   standlist=new(List);
   if(standlist==NULL)
+  {
+    printallocerr("standlist");
     return NULL;
+  }
   if(freadint1(&standlist->n,swap,file)!=1)
   {
     free(standlist);
@@ -72,6 +75,7 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
   standlist->data=newvec(void *,standlist->n);
   if(standlist->data==NULL)
   {
+    printallocerr("standlist");
     free(standlist);
     return NULL;
   }

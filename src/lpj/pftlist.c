@@ -95,6 +95,7 @@ Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
     pftlist->pft=newvec(Pft,pftlist->n);
     if(pftlist->pft==NULL)
     {
+      printallocerr("pftlist");
       pftlist->n=0;
       return TRUE;
     }

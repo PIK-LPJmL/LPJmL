@@ -35,7 +35,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   int m=0,d=0;
   double *date;
   size_t len,time_len;
-  Bool isopen;
+  Bool isopen,isdim;
   if(filename==NULL || file==NULL)
     return TRUE;
   rc=open_netcdf(filename,&file->ncid,&isopen);
@@ -314,8 +314,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       free_netcdf(file->ncid);
       return TRUE;
     }
-    if(ndims==2)
-      file->var_len=1;
+    isdim=(ndims==3);
   }
   else
   {
@@ -326,10 +325,9 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       free_netcdf(file->ncid);
       return TRUE;
     }
-    if(ndims==3)
-      file->var_len=1;
+    isdim=(ndims==4);
   }
-  if(file->var_len>1)
+  if(isdim)
   {
     dimids=newvec(int,ndims);
     if(dimids==NULL)
@@ -342,6 +340,8 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
     nc_inq_dimlen(file->ncid,dimids[1],&file->var_len);
     free(dimids);
   }
+  else
+    file->var_len=1;
   return FALSE;
 #else
   fputs("ERROR401: NetCDF input is not supported by this version of LPJmL.\n",stderr);

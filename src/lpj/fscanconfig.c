@@ -360,6 +360,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   /*=================================================================*/
 
   if (verbose>=VERB) puts("// III. input data section");
+  config->check_climate=FALSE;
+  if(iskeydefined(file,"check_climate"))
+  {
+    fscanbool2(file,&config->check_climate,"check_climate");
+  }
   if(iskeydefined(file,"inpath"))
   {
     if(fscanstring(file,name,"inpath",FALSE,verbose))

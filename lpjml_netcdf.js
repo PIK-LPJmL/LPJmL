@@ -50,7 +50,7 @@
 "new_phenology": false,
 "river_routing": false,
 "permafrost" : true,
-"with_nitrogen": NO_NITROGEN,
+"with_nitrogen": LIM_NITROGEN,
 "irrigation" : POT_IRRIGATION,
 "sowing_date_option" : FIXED_SDATE,
 "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
@@ -65,6 +65,7 @@
 "residues_fire" : false,              /* fire in residuals */
 "istimber": false,
 "rw_manage" : false,                  /* rain water management */
+"check_climate" : true,               /* check climate input before start */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
