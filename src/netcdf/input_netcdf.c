@@ -240,7 +240,9 @@ static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const cha
       }
       else
       {
+        utIni(&to);
         utScan(units,&to);
+        utIni(&from);
         utScan(fromstr,&from);
         if(utConvert(&from,&to,&input->slope,&input->intercept))
         {

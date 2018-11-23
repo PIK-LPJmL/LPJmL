@@ -108,6 +108,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
       }
       else
       {
+        utIni(&from);
         if(utScan(fromstr,&from))
         {
           if(isroot(*config))
@@ -129,11 +130,15 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
             strncpy(newstr,units,strlen(units)-3);
             newstr[strlen(units)-3]='\0';
             strcat(newstr,"month");
+            utIni(&to);
             utScan(newstr,&to);
             free(newstr);
           }
           else
+          {
+            utIni(&to);
             utScan(units,&to);
+          }
           if(utConvert(&from,&to,&file->slope,&file->intercept))
           {
             if(isroot(*config))
