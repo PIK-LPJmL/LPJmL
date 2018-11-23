@@ -22,7 +22,10 @@ Cropdates *freadcropdates(FILE *file, /**< Pointer to binary file */
   Cropdates *cropdates;
   cropdates=newvec(Cropdates,ncft);
   if(cropdates==NULL)
+  {
+    printallocerr("cropdates");
     return NULL;
+  }
   freadint((int *)cropdates,sizeof(Cropdates)/sizeof(int)*ncft,swap,file);
   return cropdates;
 } /* of 'freadcropdates' */

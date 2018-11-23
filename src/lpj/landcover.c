@@ -33,8 +33,11 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
   int i,version,len;
   
   landcover=new(struct landcover);
-  if(landcover==NULL)  
+  if(landcover==NULL)
+  {
+    printallocerr("landcover");
     return NULL;
+  }
   landcover->file.fmt=config->landcover_filename.fmt;
   if(config->landcover_filename.fmt==CDF)
   {

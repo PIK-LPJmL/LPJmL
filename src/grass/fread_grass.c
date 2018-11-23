@@ -24,7 +24,10 @@ Bool fread_grass(FILE *file, /**< pointer to binary file */
   grass=new(Pftgrass);
   pft->data=grass;
   if(grass==NULL)
+  {
+    printallocerr("grass");
     return TRUE;
+  }
   freadreal((Real *)&grass->turn,sizeof(Grassphys)/sizeof(Real),swap,file);
   freadreal((Real *)&grass->ind,sizeof(Grassphys)/sizeof(Real),swap,file);
   return freadreal((Real *)&grass->max_leaf,1,swap,file)!=1;

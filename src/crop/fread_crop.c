@@ -26,7 +26,10 @@ Bool fread_crop(FILE *file, /**< file pointer */
   crop=new(Pftcrop);
   pft->data=crop;
   if(crop==NULL)
+  {
+    printallocerr("crop");
     return TRUE;
+  }
   freadint1(&crop->wtype,swap,file);
   freadint1(&crop->growingdays,swap,file);
   freadreal1(&crop->pvd,swap,file);
