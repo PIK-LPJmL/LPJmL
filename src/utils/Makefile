@@ -24,7 +24,8 @@ OBJS    = cru2clm.$O cvrtsoil.$O grid2clm.$O cfts26_lu2clm.$O drainage.$O\
           printharvest.$O printreservoir.$O lpjserver.$O setclm.$O getcountry.$O\
           regridclm.$O regridsoil.$O cdf2coord.$O cdf2soil.$O lpjfiles.$O\
           joingrid.$O clm2cdf.$O soil2cdf.$O cdf2clm.$O bin2cdf.$O adddrain.$O\
-          getcellindex.$O copyheader.$O addheader.$O mathclm.$O cutclm.$O
+          getcellindex.$O copyheader.$O addheader.$O mathclm.$O cutclm.$O\
+          cvrtclm.$O
 
 SRC    = cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           river_sections_input_grid.c river_sections_input_soil.c\
@@ -36,7 +37,7 @@ SRC    = cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           printreservoir.c lpjserver.c setclm.c getcountry.c regridclm.c\
           cdf2soil.c lpjfiles.c asc2clm.c joingrid.c clm2cdf.c soil2cdf.c\
           cdf2clm.c bin2cdf.c adddrain.c txt2grid.c getcellindex.c\
-          copyheader.c addheader.c mathclm.c cutclm.c cdf2bin.c
+          copyheader.c addheader.c mathclm.c cutclm.c cdf2bin.c cvrtclm.c
 
 INC     = ../../include
 
@@ -78,7 +79,7 @@ all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/printharvest$E $(BIN)/lpjprint$E $(BIN)/regridsoil$E\
      $(BIN)/cdf2clm$E $(BIN)/bin2cdf$E $(BIN)/adddrain$E $(BIN)/txt2grid$E\
      $(BIN)/getcellindex$E $(BIN)/copyheader$E $(BIN)/addheader$E\
-     $(BIN)/mathclm$E $(BIN)/cutclm$E
+     $(BIN)/mathclm$E $(BIN)/cutclm$E $(BIN)/cvrtclm$E
 
 clean:
 	$(RM) $(RMFLAGS) $(OBJS)
@@ -92,7 +93,7 @@ clean:
             printreservoir$E setclm$E getcountry$E regridclm$E regridsoil$E\
             cdf2soil$E lpjfiles$E asc2clm$E joingrid$E clm2cdf$E soil2cdf$E\
             cff2clm$E bin2cdf$E adddrain$E txt2grid$E getcellindex$E\
-            copyheader$E addheader$E mathclm$E cutclm$E cdf2bin$E)
+            copyheader$E addheader$E mathclm$E cutclm$E cdf2bin$E cvrtclm$E)
 
 $(OBJS): $(HDRS)
 
@@ -143,6 +144,9 @@ $(BIN)/cdf2coord$E: cdf2coord.$O $(LPJLIBS)
 
 $(BIN)/joingrid$E: joingrid.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/joingrid$E joingrid.$O $(LIBDIR)/libtools.$A $(LIBS)
+
+$(BIN)/cvrtclm$E: cvrtclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/cvrtclm$E cvrtclm.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/addheader$E: addheader.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/addheader$E addheader.$O $(LPJLIBS) $(LIBS)
