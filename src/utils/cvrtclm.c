@@ -166,7 +166,7 @@ int main(int argc,char **argv)
         break;
       case 8:
         freadlong(buffer,BUFSIZE/8,swap,infile);
-        break;        
+        break;
       default:
         fread(buffer,1,BUFSIZE,infile);
     }
@@ -199,7 +199,7 @@ int main(int argc,char **argv)
     }
   }
   free(buffer);
-  fclose(infile); 
-  fclose(outfile); 
+  fclose(infile);
+  fclose(outfile);
   return EXIT_SUCCESS;
 } /* of 'main' */
