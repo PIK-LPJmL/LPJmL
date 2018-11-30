@@ -27,7 +27,8 @@ int main(int argc,char **argv)
   String id;
   const char *progname;
   char *endptr;
-  int i,index;
+  int index;
+  size_t i,size;
   struct stat filestat;
   void *buffer;
   Type datatype;
@@ -154,7 +155,8 @@ int main(int argc,char **argv)
     printallocerr("buffer");
     return EXIT_FAILURE;
   }
-  for(i=0;i<filestat.st_size / BUFSIZE;i++)
+  size=filestat.st_size-headersize(id,version);
+  for(i=0;i<size / BUFSIZE;i++)
   {
     switch(typesizes[header.datatype])
     {
@@ -176,23 +178,23 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
-  if(filestat.st_size % BUFSIZE>0)
+  if(size % BUFSIZE>0)
   {
     switch(typesizes[header.datatype])
     {
       case 2:
-        freadshort(buffer,(filestat.st_size % BUFSIZE)/2,swap,infile);
+        freadshort(buffer,(size % BUFSIZE)/2,swap,infile);
         break;
       case 4:
-        freadint(buffer,(filestat.st_size % BUFSIZE)/4,swap,infile);
+        freadint(buffer,(size % BUFSIZE)/4,swap,infile);
         break;
       case 8:
-        freadlong(buffer,(filestat.st_size % BUFSIZE)/8,swap,infile);
+        freadlong(buffer,(size % BUFSIZE)/8,swap,infile);
         break;
       default:
-        fread(buffer,1,filestat.st_size % BUFSIZE,infile);
+        fread(buffer,1,size % BUFSIZE,infile);
     }
-    if(fwrite(buffer,1,filestat.st_size % BUFSIZE,outfile)!=filestat.st_size % BUFSIZE)
+    if(fwrite(buffer,1,size % BUFSIZE,outfile)!=size % BUFSIZE)
     {
       fprintf(stderr,"Error writing data in '%s'.\n",argv[index+1]);
       return EXIT_FAILURE;
