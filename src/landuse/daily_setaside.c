@@ -103,7 +103,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   rainmelt=climate->prec+melt;
   if(rainmelt<0)
     rainmelt=0.0;
-  runoff+=infil_perc_rain(stand,rainmelt-intercep_stand,&return_flow_b);
+  runoff+=infil_perc_rain(stand,rainmelt-intercep_stand,&return_flow_b,config->rw_manage);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -138,7 +138,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
 
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
-               &frac_g_evap);
+               &frac_g_evap,config->rw_manage);
 
   if(withdailyoutput)
   {

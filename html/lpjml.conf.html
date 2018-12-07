@@ -84,7 +84,7 @@
                             CONST_LAI_MAX | LAIMAX_INTERPOLATE | LAIMAX_CFT
                             NO_RESERVOIR | RESERVOIR
                             NO_GRASS_FIXED_PFT | GRASS_FIXED_PFT
-               NO_WATERUSE | WATERUSE
+               NO_WATERUSE | WATERUSE | ALL_WATERUSE
 
           II. Input parameter section
                LPJ, PFT and soil parameters are defined here. If land
@@ -100,60 +100,57 @@
                by the <B>cru2clm</B> (climate data), <B>grid2clm</B> (grid
                coordinates) and <B>cft2clm</B> (land use data) command:
 
-               CDF variable (string) soilcode filename (string) | RAW|CLM|CLM2 soil filename (string)
-                                                                  RAW|CLM|CLM2 coordinates filename (string)
+               CDF variable (string) soilcode filename (string) | RAW|CLM|CLM2|META soil filename (string)
+                                                                  RAW|CLM|CLM2|META coordinates filename (string)
                #ifdef WITH_LANDUSE
-               RAW|CLM|CLM2 country and region code filename (string) | CDF variable (string) country code filename (string)
+               RAW|CLM|CLM2|META country and region code filename (string) | CDF variable (string) country code filename (string)
                                                                       | CDF variable (string) region code filename (string)
-               RAW|CLM|CLM2 land use data filename (string) | CDF variable (string) land use data filename (string)
+               RAW|CLM|CLM2|META land use data filename (string) | CDF variable (string) land use data filename (string)
                #ifdef READ_SDATES
-               RAW|CLM|CLM2|CDF  sowing dates filename (string)
+               RAW|CLM|CLM2|CDF|META  sowing dates filename (string)
                #endif
                #ifdef WITH_FIXED_GRASS_PFT
                RAW  grass fixed filename (string)
                #endif
-               #ifdef WITH_GRASS_SCENARIOS
-               RAW|CLM|CLM2|CDF  grass harvest scenario filename (string)
-               #endif
                #endif
                #ifdef RIVER_ROUTING
-               RAW|CLM|CLM2|CDF lake fraction filename (string)
-               RAW|CLM river routing filename (string)
+               RAW|CLM|CLM2|CDF|META lake fraction filename (string)
+               RAW|CLM|META river routing filename (string)
                #ifdef WITH_LANDUSE
-               RAW|CLM|CLM2|CDF neighbor irrigation filename (string)
+               RAW|CLM|CLM2|CDF|META neighbor irrigation filename (string)
                #ifdef WITH_RESERVOIRS
-               RAW|CLM|CLM2|CDF elevation filename (string)
-               RAW|CLM|CLM2 reservoir info filename (string)
+               RAW|CLM|CLM2|CDF|META elevation filename (string)
+               RAW|CLM|CLM2|META reservoir info filename (string)
                #endif
                #endif
                #endif
-               RAW|CLM|CLM2|CDF temperature data filename (string)
-               RAW|CLM|CLM2|CDF precipitation data filename (string)
+               RAW|CLM|CLM2|CDF|META temperature data filename (string)
+               RAW|CLM|CLM2|CDF|META precipitation data filename (string)
                #ifdef USE_RADIATION
-               RAW|CLM|CLM2|CDF long wave net flux data filename (string)
-               RAW|CLM|CLM2|CDF short wave down flux data filename (string)
+               RAW|CLM|CLM2|CDF|META long wave net flux data filename (string)
+               RAW|CLM|CLM2|CDF|META short wave down flux data filename (string)
                #else
-               RAW|CLM|CLM2|CDF cloudiness data filename (string)
+               RAW|CLM|CLM2|CDF|META cloudiness data filename (string)
                #endif
                #ifdef WITH_SPITFIRE
-               RAW|CLM|CLM2|CDF windspeed data filename (string)
-               RAW|CLM|CLM2|CDF temperature amplitude data filename (string) | CDF minimum temperature data filename  (string)
-                                                                      CDF maximum temperature data filename (string)
-               RAW|CLM|CLM2|CDF lightning data filename (string)
-               RAW|CLM|CLM2|CDF human ignition data filename (string)
+               RAW|CLM|CLM2|CDF|META windspeed data filename (string)
+               RAW|CLM|CLM2|CDF|META temperature amplitude data filename (string) | CDF minimum temperature data filename  (string)
+                                                                                    CDF maximum temperature data filename (string)
+               RAW|CLM|CLM2|CDF|META lightning data filename (string)
+               RAW|CLM|CLM2|CDF|META human ignition data filename (string)
                #endif
                #if defined(WITH_SPITFIRE) || defined(WITH_FIREWOOD)
                #endif
-               RAW|CLM|CLM2|CDF population density filename (string)
+               RAW|CLM|CLM2|CDF|META population density filename (string)
                #ifdef USE_BURNTAREA
-               RAW|CLM|CLM2|CDF burnt area filename (string)
+               RAW|CLM|CLM2|CDF|META burnt area filename (string)
                #endif
                #ifdef USE_LANDCOVER
-               RAW|CLM|CLM2|CDF land cover filename (string)
+               RAW|CLM|CLM2|CDF|META land cover filename (string)
                #endif
                TXT CO2 data filename (string)
                #ifdef ISRANDOM
-               RAW|CLM|CLM2|CDF number of wet days filename (string)
+               RAW|CLM|CLM2|CDF|META number of wet days filename (string)
                #endif
 
           IV. Output data section
@@ -302,68 +299,19 @@
           D_LAI, D_PHEN, D_CLEAF, D_CROOT, D_CSO, D_CPOOL, D_WDF,
             Daily output data.
 
+
      <B>AUTHORS</B>
-          Werner von Bloh (Werner.von.Bloh@pik-potsdam.de), Sibyll
-          Schaphoff (Sibyll.Schaphoff@pik-potsdam.de), Stefanie Rost
-          (Jachner) (Stefanie.Rost@pik-potsdam.de), Marlies
-          Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de), Tim
-          Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de), Christoph
-          Mueller (Christoph.Mueller@pik-potsdam.de) Jens Heinke
-          (Jens.Heinke@pik-potsdam.de), Hester Biemans
-          (Hester.Biemans@wur.nl), Kirsten Thonicke
-          (Kirsten.Thonicke@pik-potsdam.de), Ursula Heyder
-          (Ursula.Heyder@pik-potsdam.de),
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
 
 
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="grid2clm.html">grid2clm(1)</A></B>, <B><A HREF="cft2clm.html">cft2clm(1)</A></B>, <B><A HREF="lpj.conf.html">lpj.conf(5)</A></B>,
           <B><A HREF="clm.html">clm(5)</A></B>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -48,7 +48,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
           else if (acos_dl>1.0)
             acos_dl=1.0;
           dl=2*acos(acos_dl)/0.2618;
-          if(climate->file_temp.isdaily)
+          if(isdaily(climate->file_temp))
           {
             temp=0;
             foreachdayofmonth(dayofmonth,month)
@@ -57,7 +57,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
           }
           else
             temp=(getcelltemp(climate,cell))[month];
-          if(climate->file_prec.isdaily)
+          if(isdaily(climate->file_prec))
           {
             prec=0;
             foreachdayofmonth(dayofmonth,month)

@@ -46,9 +46,21 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   }
   else
     iscpp=FALSE;
-  config->outputdir=getenv(LPJOUTPUT);
-  config->inputdir=getenv(LPJINPUT);
-  config->restartdir=getenv(LPJRESTART);
+  pos=getenv(LPJOUTPUT);
+  if(pos==NULL)
+    config->outputdir=NULL;
+  else
+    config->outputdir=strdup(pos);
+  pos=getenv(LPJINPUT);
+  if(pos==NULL)
+    config->inputdir=NULL;
+  else
+    config->inputdir=strdup(pos);
+  pos=getenv(LPJRESTART);
+  if(pos==NULL)
+    config->restartdir=NULL;
+  else
+    config->restartdir=strdup(pos);
   env_options=getenv(LPJOUTPUTMETHOD);
   config->port=DEFAULT_PORT;
   config->param_out=FALSE;
@@ -286,7 +298,10 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           return NULL;
         }
         else
-           config->inputdir=(*argv)[++i];
+        {
+          free(config->inputdir);
+          config->inputdir=strdup((*argv)[++i]);
+        }
       }
       else if(!strcmp((*argv)[i],"-outpath"))
       {
@@ -303,7 +318,10 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           return NULL;
         }
         else
-           config->outputdir=(*argv)[++i];
+        {
+          free(config->outputdir);
+          config->outputdir=strdup((*argv)[++i]);
+        }
       }
       else if(!strcmp((*argv)[i],"-restartpath"))
       {
@@ -319,7 +337,10 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           return NULL;
         }
         else
-           config->restartdir=(*argv)[++i];
+        {
+          free(config->restartdir);
+          config->restartdir=strdup((*argv)[++i]);
+        }
       }
 #ifdef WITH_FPE
       else if(!strcmp((*argv)[i],"-fpe"))
@@ -413,6 +434,14 @@ FILE *openconfig(Config *config,      /**< configuration struct */
       break;
   }
   config->filename=(i==*argc)  ? dflt_filename : (*argv)[i++];
+  /* check whether config file exists */
+  if(getfilesize(config->filename)==-1)
+  {
+    if(isroot(*config))
+      printfopenerr(config->filename);
+    free(options);
+    return NULL;
+  }
   /* adjust argc and argv */
   *argv+=i;
   *argc-=i;

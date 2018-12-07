@@ -18,7 +18,7 @@ one-year time step. The name derives from the three locations \fBL\fPund-\fBP\fP
 temperature, total precipitation and percentage of full sunshine,
 annual atmospheric CO2 concentration and soil texture class. The
 simulation for each grid cell begins from "bare ground",
-requiring a "spin up" (under non-transient climate) of c. 1000
+requiring a "spin up" (under non-transient climate) of c. 5000
 years to develop equilibrium vegetation and soil structure. A restart
 file can be created to save compute time for the spin-up phase. If the Message Passing Interface (MPI) library is available a parallel version of the program is built. If -DIMAGE flag is set in \fIMakefile.inc\fP coupling the IMAGE model via the TDT library is enabled.
 .SH OPTIONS
@@ -70,7 +70,7 @@ define macro for the preprocessor of the configuration file
 define include directory for the preprocessor of the configuration file
 .TP
 .I filename
-name of configuration file, default is \fIlpjml.conf\fP for \fBlpjml\fP and \fIlpj.conf\fP for \fBlpj\fP.
+name of configuration file, default is \fIlpjml.js\fP for \fBlpjml\fP and \fIlpj.js\fP for \fBlpj\fP.
 .SH EXAMPLES
 .TP
 Perform simulation with input from the /scratch file system:
@@ -85,7 +85,7 @@ Perform simulation with output sent to host aix:
 .TP
 Start simulation from restart file with floating point exceptions enabled:
 .B lpjml
-\-DFROM_RESTART \-fpe lpjml.conf
+\-DFROM_RESTART \-fpe lpjml.js
 .PP
 For running the MPI version of the program on more than one task the
 .B lpjsubmit
@@ -221,15 +221,23 @@ Outflow reservoir error. Internal error.
 .TP
 ERROR029
 Error in permafrost module. Internal error.
--TP
+.TP
 ERROR030
 Error in global water balance. Internal error. 
-.PP
+.TP
 ERROR031
 Error in store climate function. 
+.TP
 ERROR032
 No FMS coupler supported.
+.TP
+ERROR033
+Error initializing soil temperature
+.TP
+ERROR034
+Invalid radiation model. Internal error
 
+.P
 Internal errors will generate a core dump and have to be fixed by changes in the code. A "post-mortem" analysis can be made by calling 
 
 \fBgdb\fP $LPJROOT/bin/lpjml core
@@ -253,22 +261,14 @@ Some of these errors are only raised if the -DSAFE flag has been set in \fIMakef
 Without any arguments \fBlpjml\fP will be inspected and the call tree displayed using the core file in the working directory.
 
 .SH AUTHORS
-Werner von Bloh (Werner.von.Bloh@pik-potsdam.de),
-Sibyll Schaphoff (Sibyll.Schaphoff@pik-potsdam.de),
-Stefanie Rost (Jachner) (Stefanie.Rost@pik-potsdam.de),
-Marlies Gumpenberger (Marlies.Gumpenberger@pik-potsdam.de),
-Tim Beringer (Erbrecht) (Tim.Beringer@pik-potsdam.de),
-Christoph Mueller (Christoph.Mueller@pik-potsdam.de),
-Jens Heinke (Jens.Heinke@pik-potsdam.de),
-Hester Biemans (Hester.Biemans@wur.nl),
-Kirsten Thonicke (Kirsten.Thonicke@pik-potsdam.de),
-Ursula Heyder (Ursula.Heyder@pik-potsdam.de),
+
+For authors and contributors see AUTHORS file
 
 .SH COPYRIGHT
 
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjsubmit(1), lpjcheck(1), lpjliveview(1), configure.sh(1), backtrace(1), cru2clm(1), txt2clm(1), grid2clm(1), cft2clm(1), lpjcat(1), lpjprint(1), printharvest(1), printclm(1), printheader(1), cat2bsq(1), output_bsq(1), lpj_paths.sh(1), lpj_paths.csh(1), lpjml.conf(5), lpj.conf(5), lpjml_image.conf(5), clm(5)
+lpjsubmit(1), lpjcheck(1), configure.sh(1), backtrace(1), cru2clm(1), txt2clm(1), grid2clm(1), cft2clm(1), lpjcat(1), lpjprint(1), printharvest(1), printclm(1), printheader(1), cat2bsq(1), output_bsq(1), lpj_paths.sh(1), lpj_paths.csh(1), lpjml.conf(5), lpj.conf(5), lpjml_image.conf(5), clm(5)
 .TP
 Contact: https://github.com/PIK-LPJmL/LPJmL /lpjml

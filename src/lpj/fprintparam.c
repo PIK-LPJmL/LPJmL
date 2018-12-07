@@ -66,6 +66,17 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"saturation level sprink:\t%g\n",param.sat_level[2]);
     fprintf(file,"saturation level drip:\t%g\n",param.sat_level[3]);
     fprintf(file,"drip evap. reduction:\t%g\n",param.drip_evap);
+    fprintf(file,"residues in soil:\t%g\n",param.residues_in_soil);
+    if(config->rw_manage)
+    {
+      fprintf(file,"esoil reduction:\t%g\n",param.esoil_reduction);
+      fprintf(file,"rw buffer max:\t\t%g\n",param.rw_buffer_max);
+      fprintf(file,"frac to stored:\t\t%g\n",param.frac_ro_stored);
+      fprintf(file,"rw irrig thres:\t\t%g\n",param.rw_irrig_thres);
+      fprintf(file,"soil infil:\t\t%g\n",param.soil_infil);
+      fprintf(file,"yield gap bridge:\t%g\n",param.yield_gap_bridge);
+    }
+
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config->soilpar,config->nsoil);

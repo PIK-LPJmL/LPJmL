@@ -24,6 +24,7 @@
 
 #define error(var,rc) if(rc) {if(isroot(*config))fprintf(stderr,"ERROR403: Cannot read '%s' in '%s': %s.\n",var,filename,nc_strerror(rc)); nc_close(input->ncid); free(input); return NULL;}
 #endif
+#define checkptr(ptr) if(ptr==NULL) {printallocerr(#ptr); return TRUE; }
 
 struct input_netcdf
 {
@@ -33,6 +34,7 @@ struct input_netcdf
   double slope,intercept;
   size_t offset;
   size_t lon_len,lat_len;
+  size_t var_len;
   Type type;
   union
   {
@@ -63,11 +65,12 @@ Input_netcdf dupinput_netcdf(const Input_netcdf input)
   return copy;
 } /* of 'dupinput_netcdf' */
 
-Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const char *var,
-                        const char *units,int vardim,const Config *config)
+static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const char *var,
+                               const char *units,const Config *config)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int i,rc,nvars,ndims;
+  int *dimids;
   size_t len;
   nc_type type;
   char *fromstr;
@@ -106,16 +109,28 @@ Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const char *var,
               var,filename);
     return TRUE;
   }
-  if(vardim>=0)
+  nc_inq_varndims(input->ncid,input->varid,&ndims);
+  if(ndims==2)
+    input->var_len=0;
+  else if (ndims==3)
   {
-    nc_inq_varndims(input->ncid,input->varid,&ndims);
-    if(ndims!=2+vardim)
+    dimids=newvec(int,ndims);
+    if(dimids==NULL)
     {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
-                ndims,filename);
+      printallocerr("dimids");
+      free_netcdf(input->ncid);
       return TRUE;
     }
+    nc_inq_vardimid(input->ncid,input->varid,dimids);
+    nc_inq_dimlen(input->ncid,dimids[0],&input->var_len);
+    free(dimids);
+  }
+  else
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+              ndims,filename);
+    return TRUE;
   }
   nc_inq_vartype(input->ncid,input->varid,&type);
   switch(type)
@@ -225,7 +240,9 @@ Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const char *var,
       }
       else
       {
+        utIni(&to);
         utScan(units,&to);
+        utIni(&from);
         utScan(fromstr,&from);
         if(utConvert(&from,&to,&input->slope,&input->intercept))
         {
@@ -251,16 +268,16 @@ Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const char *var,
 #endif
 } /* of 'setvarinput_netcdf' */
  
-Input_netcdf openinput_netcdf(const char *filename, /* filename */
-                              const char *var,      /* variable name or NULL */
-                              const char *units,    /* units or NULL */
-                              int vardim,           /* dim of variable */
-                              const Config *config  /* LPJ configuration */
-                             )
+Input_netcdf openinput_netcdf(const char *filename, /**< filename */
+                              const char *var,      /**< variable name or NULL */
+                              const char *units,    /**< units or NULL */
+                              size_t len,           /**< dim of variable */
+                              const Config *config  /**< LPJ configuration */
+                             )                      /** \return NULL on error */
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   Input_netcdf input;
-  int rc,var_id,*dimids,ndims;
+  int rc,var_id,*dimids,ndims,index;
   char name[NC_MAX_NAME+1];
   float *dim;
   if(filename==NULL)
@@ -283,22 +300,24 @@ Input_netcdf openinput_netcdf(const char *filename, /* filename */
     free(input);
     return NULL;
   }
-  if(setvarinput_netcdf(input,filename,var,units,vardim,config))
+  if(setvarinput_netcdf(input,filename,var,units,config))
   {
     nc_close(input->ncid);
     free(input);
     return NULL;
   }
-  nc_inq_varndims(input->ncid,input->varid,&ndims);
-  if(ndims<2)
+  if(len!=input->var_len)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
-              ndims,filename);
+      fprintf(stderr,"ERROR433: Invalid length %d of vector.\n",(int)input->var_len);
     nc_close(input->ncid);
     free(input);
     return NULL;
   }
+  if(input->var_len==0)
+    input->var_len=1;
+  index=(input->var_len>1) ? 1 : 0;
+  nc_inq_varndims(input->ncid,input->varid,&ndims);
   dimids=newvec(int,ndims);
   if(dimids==NULL)
   {
@@ -308,7 +327,7 @@ Input_netcdf openinput_netcdf(const char *filename, /* filename */
     return NULL;
   }
   nc_inq_vardimid(input->ncid,input->varid,dimids);
-  nc_inq_dimname(input->ncid,dimids[1],name);
+  nc_inq_dimname(input->ncid,dimids[index+1],name);
   rc=nc_inq_varid(input->ncid,name,&var_id);
   if(rc)
   {
@@ -320,7 +339,7 @@ Input_netcdf openinput_netcdf(const char *filename, /* filename */
     free(input);
     return NULL;
   }
-  nc_inq_dimlen(input->ncid,dimids[1],&input->lon_len);
+  nc_inq_dimlen(input->ncid,dimids[index+1],&input->lon_len);
   dim=newvec(float,input->lon_len);
   if(dim==NULL)
   {
@@ -343,8 +362,11 @@ Input_netcdf openinput_netcdf(const char *filename, /* filename */
     return NULL;
   }
   input->lon_min=dim[0];
-  input->lon_res=(dim[input->lon_len-1]-dim[0])/(input->lon_len-1);
-  if(input->lon_res!=config->resolution.lon)
+  if(input->lon_len==1)
+    input->lon_res=config->resolution.lon;
+  else
+    input->lon_res=(dim[input->lon_len-1]-dim[0])/(input->lon_len-1);
+  if(fabs(input->lon_res-config->resolution.lon)/config->resolution.lon>1e-3)
   {
     if(isroot(*config))
       fprintf(stderr,"WARNING405: Incompatible resolution %g for longitude in '%s', not %g.\n",input->lon_res,filename,config->resolution.lon);
@@ -354,7 +376,7 @@ Input_netcdf openinput_netcdf(const char *filename, /* filename */
     //return NULL;
   }
   free(dim);
-  nc_inq_dimname(input->ncid,dimids[0],name);
+  nc_inq_dimname(input->ncid,dimids[index],name);
   rc=nc_inq_varid(input->ncid,name,&var_id);
   if(rc)
   {
@@ -366,7 +388,7 @@ Input_netcdf openinput_netcdf(const char *filename, /* filename */
     free(input);
     return NULL;
   }
-  nc_inq_dimlen(input->ncid,dimids[0],&input->lat_len);
+  nc_inq_dimlen(input->ncid,dimids[index],&input->lat_len);
   free(dimids);
   dim=newvec(float,input->lat_len);
   if(dim==NULL)
@@ -387,7 +409,13 @@ Input_netcdf openinput_netcdf(const char *filename, /* filename */
     free(input);
     return NULL;
   }
-  if(dim[1]>dim[0])
+  if(input->lat_len==1)
+  {
+    input->lat_min=dim[0];
+    input->lat_res=config->resolution.lat;
+    input->offset=0;
+  }
+  else if(dim[1]>dim[0])
   {
     input->lat_min=dim[0];
     input->lat_res=(dim[input->lat_len-1]-dim[0])/(input->lat_len-1);
@@ -399,7 +427,7 @@ Input_netcdf openinput_netcdf(const char *filename, /* filename */
     input->lat_res=(dim[0]-dim[input->lat_len-1])/(input->lat_len-1);
     input->offset=input->lat_len-1;
   }
-  if(input->lat_res!=config->resolution.lat)
+  if(fabs(input->lat_res-config->resolution.lat)/config->resolution.lat>1e-3)
   {
     if(isroot(*config))
       fprintf(stderr,"WARNING406: Incompatible resolution %g for latitude in '%s', not %g.\n",input->lat_res,filename,config->resolution.lat);
@@ -456,96 +484,140 @@ Bool readinput_netcdf(const Input_netcdf input,Real *data,
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int rc;
-  float f;
-  double d;
-  short s;
-  int i;
-  size_t offsets[2];
-  size_t counts[2]={1,1};
+  float *f;
+  double *d;
+  short *s;
+  int *in;
+  int index;
+  size_t i;
+  size_t offsets[3];
+  size_t counts[3]={1,1,1};
   String line;
   if(input==NULL || data==NULL)
   {
     fputs("ERROR424: Invalid data pointer in readinput_netcdf().\n",stderr);
     return TRUE;
   }
-  if(input->offset)
-    offsets[0]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
+  if(input->var_len>1)
+  {
+    counts[0]=input->var_len;
+    offsets[0]=0;
+    index=1;
+  }
   else
-    offsets[0]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
-  offsets[1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+    index=0;
+  if(input->offset)
+    offsets[index]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
+  else
+    offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
+  offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
   switch(input->type)
   {
     case LPJ_FLOAT:
-      if((rc=nc_get_vara_float(input->ncid,input->varid,offsets,counts,&f)))
+      f=newvec(float,input->var_len);
+      checkptr(f);
+      if((rc=nc_get_vara_float(input->ncid,input->varid,offsets,counts,f)))
       {
         fprintf(stderr,"ERROR415: Cannot read float data for cell (%s): %s.\n",
                 sprintcoord(line,coord),nc_strerror(rc));
+        free(f);
         return TRUE;
       }
-      if(f==input->missing_value.f)
+      for(i=0;i<input->var_len;i++)
       {
-        fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
-                sprintcoord(line,coord));
-        return TRUE;
+        if(f[i]==input->missing_value.f)
+        {
+          fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
+                  sprintcoord(line,coord));
+          free(f);
+          return TRUE;
+        }
+        else if(isnan(f[i]))
+        {
+          fprintf(stderr,"ERROR434: Invalid value for cell (%s).\n",
+                  sprintcoord(line,coord));
+          free(f);
+          return TRUE;
+        }
+        data[i]=input->slope*f[i]+input->intercept;
       }
-      else if(isnan(f))
-      {
-        fprintf(stderr,"ERROR434: Invalid value for cell (%s).\n",
-                sprintcoord(line,coord));
-        return TRUE;
-      }
-      *data=input->slope*f+input->intercept;
+      free(f);
       break;
     case LPJ_DOUBLE:
-      if((rc=nc_get_vara_double(input->ncid,input->varid,offsets,counts,&d)))
+      d=newvec(double,input->var_len);
+      checkptr(d);
+      if((rc=nc_get_vara_double(input->ncid,input->varid,offsets,counts,d)))
       {
         fprintf(stderr,"ERROR415: Cannot read double data for cell (%s): %s.\n",
                 sprintcoord(line,coord),nc_strerror(rc));
+        free(d);
         return TRUE;
       }
-      if(d==input->missing_value.d)
+      for(i=0;i<input->var_len;i++)
       {
-        fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
-                sprintcoord(line,coord));
-        return TRUE;
+        if(d[i]==input->missing_value.d)
+        {
+          fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
+                  sprintcoord(line,coord));
+          free(d);
+          return TRUE;
+        }
+        else if(isnan(d[i]))
+        {
+          fprintf(stderr,"ERROR434: Invalid value for cell (%s).\n",
+                  sprintcoord(line,coord));
+          free(d);
+          return TRUE;
+        }
+        data[i]=input->slope*d[i]+input->intercept;
       }
-      else if(isnan(d))
-      {
-        fprintf(stderr,"ERROR434: Invalid value for cell (%s).\n",
-                sprintcoord(line,coord));
-        return TRUE;
-      }
-      *data=input->slope*d+input->intercept;
+      free(d);
       break;
     case LPJ_INT:
-      if((rc=nc_get_vara_int(input->ncid,input->varid,offsets,counts,&i)))
+      in=newvec(int,input->var_len);
+      checkptr(in);
+      if((rc=nc_get_vara_int(input->ncid,input->varid,offsets,counts,in)))
       {
         fprintf(stderr,"ERROR415: Cannot read int data for cell (%s): %s.\n",
                 sprintcoord(line,coord),nc_strerror(rc));
+        free(in);
         return TRUE;
       }
-      if(i==input->missing_value.i)
+      for(i=0;i<input->var_len;i++)
       {
-        fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
-                sprintcoord(line,coord));
-        return TRUE;
+        if(in[i]==input->missing_value.i)
+        {
+          fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
+                  sprintcoord(line,coord));
+          free(in);
+          return TRUE;
+        }
+        data[i]=input->slope*in[i]+input->intercept;
       }
-      *data=input->slope*i+input->intercept;
+      free(in);
       break;
     case LPJ_SHORT:
-      if((rc=nc_get_vara_short(input->ncid,input->varid,offsets,counts,&s)))
+      s=newvec(short,input->var_len);
+      checkptr(s);
+      if((rc=nc_get_vara_short(input->ncid,input->varid,offsets,counts,s)))
       {
         fprintf(stderr,"ERROR434: Invalid value for cell (%s).\n",
                 sprintcoord(line,coord));
+        free(s);
         return TRUE;
       }
-      if(s==input->missing_value.s)
+      for(i=0;i<input->var_len;i++)
       {
-        fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
-                sprintcoord(line,coord));
-        return TRUE;
+        if(s[i]==input->missing_value.s)
+        {
+          fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
+                  sprintcoord(line,coord));
+          free(s);
+          return TRUE;
+        }
+        data[i]=input->slope*s[i]+input->intercept;
       }
-      *data=input->slope*s+input->intercept;
+      free(s);
       break;
     default:
       fputs("ERROR428: Invalid data type in NetCDF file.\n",stderr);
@@ -561,21 +633,30 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
                          const Coord *coord)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
-  int rc;
-  short s;
-  size_t offsets[2];
-  size_t counts[2]={1,1};
+  int rc,index;
+  short *s;
+  size_t i;
+  size_t offsets[3];
+  size_t counts[3]={1,1,1};
   String line;
   if(input==NULL || data==NULL)
   {
     fputs("ERROR424: Invalid data pointer in readintinput_netcdf().\n",stderr);
     return TRUE;
   }
-  if(input->offset)
-    offsets[0]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
+  if(input->var_len>1)
+  {
+    counts[0]=input->var_len;
+    offsets[0]=0;
+    index=1;
+  }
   else
-    offsets[0]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
-  offsets[1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+    index=0;
+  if(input->offset)
+    offsets[index]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
+  else
+    offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
+  offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
   switch(input->type)
   {
     case LPJ_INT:
@@ -585,27 +666,36 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
                 sprintcoord(line,coord),nc_strerror(rc));
         return TRUE;
       }
-      if(*data==input->missing_value.i)
-      {
-        fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
-                sprintcoord(line,coord));
-        return TRUE;
-      }
+      for(i=0;i<input->var_len;i++)
+        if(data[i]==input->missing_value.i)
+        {
+          fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
+                  sprintcoord(line,coord));
+          return TRUE;
+        }
       break;
     case LPJ_SHORT:
-      if((rc=nc_get_vara_short(input->ncid,input->varid,offsets,counts,&s)))
+      s=newvec(short,input->var_len);
+      checkptr(s);
+      if((rc=nc_get_vara_short(input->ncid,input->varid,offsets,counts,s)))
       {
         fprintf(stderr,"ERROR415: Cannot read short data for cell (%s): %s.\n",
                 sprintcoord(line,coord),nc_strerror(rc));
+        free(s);
         return TRUE;
       }
-      if(s==input->missing_value.s)
+      for(i=0;i<input->var_len;i++)
       {
-        fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
-                sprintcoord(line,coord));
-        return TRUE;
+        if(s[i]==input->missing_value.s)
+        {
+          fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
+                  sprintcoord(line,coord));
+          free(s);
+          return TRUE;
+        }
+        data[i]=s[i];
       }
-      *data=s;
+      free(s);
       break;
     default:
       fputs("ERROR428: Invalid data type in NetCDF file.\n",stderr);
@@ -621,32 +711,41 @@ Bool readshortinput_netcdf(const Input_netcdf input,short *data,
                            const Coord *coord)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
-  int rc;
-  size_t offsets[2];
-  size_t counts[2]={1,1};
+  int rc,index;
+  size_t i;
+  size_t offsets[3];
+  size_t counts[3]={1,1,1};
   String line;
   if(input==NULL || data==NULL)
   {
     fputs("ERROR424: Invalid data pointer in readshortinput_netcdf().\n",stderr);
     return TRUE;
   }
-  if(input->offset)
-    offsets[0]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
+  if(input->var_len>1)
+  {
+    counts[0]=input->var_len;
+    offsets[0]=0;
+    index=1;
+  }
   else
-    offsets[0]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
-  offsets[1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(input->offset)
+    offsets[index]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
+  else
+    offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
+  offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
   if((rc=nc_get_vara_short(input->ncid,input->varid,offsets,counts,data)))
   {
     fprintf(stderr,"ERROR415: Cannot read short data for cell (%s): %s.\n",
             sprintcoord(line,coord),nc_strerror(rc));
     return TRUE;
   }
-  if(*data==input->missing_value.s)
-  {
-    fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
-            sprintcoord(line,coord));
-    return TRUE;
-  }
+  for(i=0;i<input->var_len;i++)
+    if(data[i]==input->missing_value.s)
+    {
+      fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
+              sprintcoord(line,coord));
+      return TRUE;
+    }
   return FALSE;
 #else
   return TRUE;

@@ -15,7 +15,7 @@
 #include "lpj.h"
 #include <sys/stat.h>
 
-#define USAGE "Usage: %s [-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n]\n       [-firstcell n] [-nbands n] [-order n] [-version n] [-cellsize s]\n       [-scale s] [-id s] [-type t] binfile clmfile\n" 
+#define USAGE "Usage: %s [-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n]\n       [-firstcell n] [-nbands n] [-order n] [-version n] [-cellsize s]\n       [-scale s] [-id s] [-type {byte|short|int|float|double}] binfile clmfile\n"
 
 #define BUFSIZE (1024*1024) /* size of read buffer */
 
@@ -27,7 +27,8 @@ int main(int argc,char **argv)
   char *id;
   const char *progname;
   char *endptr;
-  int i,index,len;
+  int i,index;
+  size_t len;
   struct stat filestat;
   void *buffer;
   Bool swap;
@@ -43,6 +44,7 @@ int main(int argc,char **argv)
   header.order=CELLYEAR;
   header.scalar=1;
   header.datatype=LPJ_SHORT;
+  len=typesizes[header.datatype];
   header.cellsize_lon=header.cellsize_lat=0.5;
   swap=FALSE;
   for(index=1;index<argc;index++)
@@ -230,19 +232,16 @@ int main(int argc,char **argv)
           fprintf(stderr,"Argument missing for option '-type'.\n");
           return EXIT_FAILURE;
         }
-        header.datatype=(Type)strtol(argv[++index],&endptr,10);
-        if(*endptr!='\0')
+        i=findstr(argv[++index],typenames,5);
+        if(i==NOT_FOUND)
         {
-          fprintf(stderr,"Invalid number '%s' for option '-type'.\n",argv[index]);
+          fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"
+                  USAGE,argv[index],progname);
           return EXIT_FAILURE;
         }
-        if(header.datatype<0 || header.datatype>LPJ_DOUBLE)
-        {
-          fputs("Invalid datatype.\n",stderr);
-          return EXIT_FAILURE;
-        }
+        header.datatype=(Type)i;
+        len=typesizes[header.datatype];
       }
-
       else if(!strcmp(argv[index],"-id"))
       {
         if(index==argc-1)
@@ -252,7 +251,7 @@ int main(int argc,char **argv)
         }
         id=argv[++index];
         if(strncmp(id,"LPJ",3))
-          fputs("Warning: header string does not start with 'LPJ'.\n",stderr); 
+          fputs("Warning: Header string does not start with 'LPJ'.\n",stderr);
       }
       else if(!strcmp(argv[index],"-swap"))
         swap=TRUE;
@@ -271,32 +270,29 @@ int main(int argc,char **argv)
             USAGE,progname);
     return EXIT_FAILURE;
   }
+  if(!strcmp(argv[index],argv[index+1]))
+  {
+    fputs("Error: source and destination filename are the same.\n",stderr);
+    return EXIT_FAILURE;
+  }
   infile=fopen(argv[index],"rb");
   if(infile==NULL)
   {
     fprintf(stderr,"Error opening '%s': %s.\n",argv[index],strerror(errno));
     return EXIT_FAILURE;
   }
+  fstat(fileno(infile),&filestat);
+  if(filestat.st_size!=(long long)header.ncell*header.nbands*header.nyear*len)
+  {
+     fprintf(stderr,"Error: File size of '%s' is not multiple of nyear*nbands*ncell*%d.\n",argv[index],(int)len);
+     fclose(infile);
+     return EXIT_FAILURE;
+  }
   outfile=fopen(argv[index+1],"wb");
   if(outfile==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",argv[index+1],strerror(errno));
     return EXIT_FAILURE;
-  }
-  len=0;
-  fstat(fileno(infile),&filestat);
-  if(filestat.st_size % (long long)header.ncell*header.nbands*header.nyear!=0)
-  {
-    fprintf(stderr,"Warning: File size of '%s' is not multiple of nyear*nbands*ncell.\n",argv[index]);
-    if(swap)
-      fputs("Data will not be swapped.\n",stderr);
-  }
-  else
-  {
-    len=filestat.st_size/header.ncell/header.nbands/header.nyear;
-    printf("Size of data: %d bytes\n",len);
-    if(swap && len!=1 && len!=2 && len!=4)
-      fputs("Warning: Data will not be swapped.\n",stderr);
   }
   fwriteheader(outfile,&header,id,version);
   buffer=malloc(BUFSIZE);
@@ -311,10 +307,13 @@ int main(int argc,char **argv)
     {
       case 2:
         freadshort(buffer,BUFSIZE/2,swap,infile);
-        break;        
+        break;
       case 4:
         freadint(buffer,BUFSIZE/4,swap,infile);
-        break;        
+        break;
+      case 8:
+        freadlong(buffer,BUFSIZE/8,swap,infile);
+        break;
       default:
         fread(buffer,1,BUFSIZE,infile);
     }
@@ -330,10 +329,13 @@ int main(int argc,char **argv)
     {
       case 2:
         freadshort(buffer,(filestat.st_size % BUFSIZE)/2,swap,infile);
-        break;        
+        break;
       case 4:
         freadint(buffer,(filestat.st_size % BUFSIZE)/4,swap,infile);
-        break;        
+        break;
+      case 8:
+        freadlong(buffer,(filestat.st_size % BUFSIZE)/8,swap,infile);
+        break;
       default:
         fread(buffer,1,filestat.st_size % BUFSIZE,infile);
     }
@@ -344,7 +346,7 @@ int main(int argc,char **argv)
     }
   }
   free(buffer);
-  fclose(infile); 
-  fclose(outfile); 
+  fclose(infile);
+  fclose(outfile);
   return EXIT_SUCCESS;
 } /* of 'main' */

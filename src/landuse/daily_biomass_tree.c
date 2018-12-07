@@ -130,12 +130,12 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
   /* soil inflow: infiltration and percolation */
   if(irrig_apply>epsilon)
   {
-    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b);
+    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,config->rw_manage);
     /* count irrigation events*/
     output->cft_irrig_events[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++;
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b);
+  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,config->rw_manage);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -179,7 +179,7 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
 
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
-               &frac_g_evap);
+               &frac_g_evap,config->rw_manage);
 
   if(data->irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
     calc_nir(stand,gp_stand,wet,eeq);

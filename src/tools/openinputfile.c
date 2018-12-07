@@ -95,7 +95,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
     *swap=FALSE;
     header->firstcell=0;
     header->ncell=config->nall;
-    header->nbands=0;
+    header->nbands=1;
     header->scalar=1;
     header->datatype=LPJ_SHORT;
     *version=0;

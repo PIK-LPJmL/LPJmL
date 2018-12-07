@@ -33,8 +33,11 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
   int i,version,len;
   
   landcover=new(struct landcover);
-  if(landcover==NULL)  
+  if(landcover==NULL)
+  {
+    printallocerr("landcover");
     return NULL;
+  }
   landcover->file.fmt=config->landcover_filename.fmt;
   if(config->landcover_filename.fmt==CDF)
   {
@@ -47,6 +50,7 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR225: Number of bands=%d is not %d\n",(int)landcover->file.var_len,npft-config->nbiomass);
+      closeclimate_netcdf(&landcover->file,isroot(*config));
       free(landcover);
       return NULL;
     }

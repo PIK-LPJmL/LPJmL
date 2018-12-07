@@ -15,25 +15,27 @@
 #define UNDEF (-1)
 
 #define fscanreal2(verb,file,var,name,country)\
-  if(fscanreal(file,var,name,verb))\
+  if(fscanreal(file,var,name,FALSE,verb))\
   {\
     if(verb)\
-      fprintf(stderr,"ERROR102: Cannot read country '%s' in %s()\n",country,__FUNCTION__);\
+      fprintf(stderr,"ERROR102: Cannot read float '%s' for country '%s'.\n",name,country);\
     return 0;\
   }
 
-int fscancountrypar(FILE *file,              /**< file pointer */
+int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
                     Countrypar **countrypar, /**< Pointer to countrypar array */
+                    Bool rw_manage,          /**< rain water management options (TRUE/FALSE) */
                     int ncft,                /**< number of CFTs or zero */
                     Verbosity verb           /**< verbosity level (NO_ERR,ERR,VERB) */
                    )                         /** \return number of elements in array */
 {
-  int ncountries,n,id,i;
+  LPJfile arr,item;
+  int i,ncountries,n,id;
   String s;
   Countrypar *country;
   ncountries = 1;
   if (verb>=VERB) puts("// Country parameters");
-  if(fscanint(file,&ncountries,"ncountries",verb))
+  if(fscanarray(file,&arr,&ncountries,TRUE,"countrypar",verb))
     return 0;
   *countrypar=newvec(Countrypar,ncountries);
   check(*countrypar);
@@ -41,7 +43,8 @@ int fscancountrypar(FILE *file,              /**< file pointer */
    (*countrypar)[n].id=UNDEF;
   for(n=0;n<ncountries;n++)
   {
-    if(fscanint(file,&id,"countrynumber",verb))
+    fscanarrayindex(&arr,&item,n,verb);
+    if(fscanint(&item,&id,"id",FALSE,verb))
       return 0;
     if(id<0 || id>=ncountries)
     {
@@ -57,14 +60,12 @@ int fscancountrypar(FILE *file,              /**< file pointer */
                 "ERROR178: Country number=%d in line %d of '%s' has been already defined.\n",id,getlinecount(),getfilename());
       return 0;
     }
-    if(fscanstring(file,s,verb!=NO_ERR))  /*reads country name*/
+    if(fscanstring(&item,s,"name",FALSE,verb))  /*reads country name*/
     {
       if(verb)
         readstringerr("name");
       return 0;
     }
-    if(verb>=VERB)
-      printf("COUNTRY_NAME %s\n",s);
     country->name=strdup(s);
     check(country->name);
     country->id=id;
@@ -72,19 +73,24 @@ int fscancountrypar(FILE *file,              /**< file pointer */
     {
       country->laimax_cft=newvec(Real,ncft);
       check(country->laimax_cft);
-
-      for(i=0;i<ncft;i++)
+      if(fscanrealarray(&item,country->laimax_cft,ncft,"laimax",verb))
       {
-        fscanreal2(verb,file,&country->laimax_cft[i],"laimax_cft",country->name); /*reads for all 12 cfts laimax value*/
+        if(verb)
+          fprintf(stderr,"ERROR102: Cannot read array 'laimax' for country '%s'.\n",country->name);  
+        return 0;
       }
+      /*in case rw_manage: increases laimax by bridge gap factor*/
+      if(rw_manage)
+        for(i=0;i<ncft;i++)
+          country->laimax_cft[i]+=(7-country->laimax_cft[i])*param.yield_gap_bridge;
     }
     else
     {
       country->laimax_cft=NULL;
-      fscanreal2(verb,file,&country->laimax_tempcer,"laimax_tempcer",country->name);
-      fscanreal2(verb,file,&country->laimax_maize,"laimax_maize",country->name);
+      fscanreal2(verb,&item,&country->laimax_tempcer,"laimax_tempcer",country->name);
+      fscanreal2(verb,&item,&country->laimax_maize,"laimax_maize",country->name);
     }
-    if(fscanint(file,&country->default_irrig_system,"default_irrig_system",verb))
+    if(fscanint(&item,&country->default_irrig_system,"default_irrig_system",FALSE,verb))
       return 0;
     if(country->default_irrig_system<1 || country->default_irrig_system>3)
     {

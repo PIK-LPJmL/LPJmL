@@ -15,12 +15,15 @@
 #include "lpj.h"
 #include "tree.h"
 
-void adjust_tree(Litter *litter,Pft *pft,Real tree_fpc, Real fpc_max)
+void adjust_tree(Litter *litter, /**< pointer to litter */
+                 Pft *pft,       /** pointer to tree PFT */
+                 Real tree_fpc,  /**< tree foliage projective cover */
+                 Real fpc_max    /**< maximum foliage projectove cover */
+                )
 {
 
   Real frac,fpc_end,nind_old;
   int i;
-
 
   if(tree_fpc>fpc_max)
   {

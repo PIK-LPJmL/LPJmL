@@ -49,9 +49,9 @@ int delpft(Pftlist *pftlist, /**< PFT list */
   return pftlist->n;
 } /* of 'delpft ' */
 
-int fwritepftlist(FILE *file, /**< file pointer of binary file */
+int fwritepftlist(FILE *file,            /**< file pointer of binary file */
                   const Pftlist *pftlist /**< PFT list */
-                 )            /** \return number of PFTs written */
+                 )                       /** \return number of PFTs written */
 {
   Byte b;
   int p;
@@ -75,13 +75,13 @@ void fprintpftlist(FILE *file,            /**< pointer of text file */
     fprintpft(file,pftlist->pft+p);
 } /* of 'fprintpftlist' */
 
-Bool freadpftlist(FILE *file, /* file pointer of a binary file */
-                  Stand *stand, /* Stand pointer */
-                  Pftlist *pftlist, /* PFT list */
-                  const Pftpar pftpar[], /* PFT parameter array */
-                  int ntotpft,   /* total number of PFTs */
-                  Bool swap   /* if true data is in different byte order */
-                 )            /* returns TRUE on error */
+Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
+                  Stand *stand,          /**< Stand pointer */
+                  Pftlist *pftlist,      /**< PFT list */
+                  const Pftpar pftpar[], /**< PFT parameter array */
+                  int ntotpft,           /**< total number of PFTs */
+                  Bool swap              /**< if true data is in different byte order */
+                 )                       /** \return TRUE on error */
 {
   Byte b;
   int p;
@@ -95,6 +95,7 @@ Bool freadpftlist(FILE *file, /* file pointer of a binary file */
     pftlist->pft=newvec(Pft,pftlist->n);
     if(pftlist->pft==NULL)
     {
+      printallocerr("pftlist");
       pftlist->n=0;
       return TRUE;
     }

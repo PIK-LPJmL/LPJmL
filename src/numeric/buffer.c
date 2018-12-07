@@ -90,11 +90,15 @@ Buffer freadbuffer(FILE *file, /**< file pointer */
     return NULL;
   buffer=new(struct buffer);
   if(buffer==NULL)
+  {
+    printallocerr("buffer");
     return NULL;
+  }
   buffer->size=size;
   buffer->data=newvec(Real,buffer->size);
   if(buffer->data==NULL)
   {
+    printallocerr("buffer");
     free(buffer);
     return NULL;
   }

@@ -170,8 +170,9 @@ typedef struct
   Real mean_maxthaw;
   Real decomp_litter_mean;
   int count;
-  Real YEDOMA;          /**< g/m2 */
-  Litter litter;      /**< Litter pool */
+  Real YEDOMA;       /**< g/m2 */
+  Litter litter;     /**< Litter pool */
+  Real rw_buffer;    /**< available rain water amount in buffer (mm) */
 } Soil;
 
 struct Pftpar; /* forward declaration */
@@ -185,7 +186,8 @@ extern void convert_water(Soil*,int,Real*);
 extern void copysoil(Soil *,const Soil *, int);
 extern int findlitter(const Litter *,const struct Pftpar *);
 extern Real fire_prob(const Litter *,Real);
-extern unsigned int fscansoilpar(FILE *,Soilpar **,Verbosity);
+extern unsigned int fscansoilpar(LPJfile *,Soilpar **,Verbosity);
+extern Bool fscanpool(LPJfile *,Pool *,const char *,Verbosity);
 extern Bool freadlitter(FILE *,Litter *,const struct Pftpar *,int,Bool);
 extern Bool freadsoil(FILE *,Soil *,const Soilpar *,const struct Pftpar *,int,Bool);
 extern Bool freadsoilcode(FILE *,unsigned int *,Bool,Type);

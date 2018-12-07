@@ -19,7 +19,11 @@
 
 #define LPJFILES_VERSION "1.0.002"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
+#ifdef USE_JSON
+#define dflt_conf_filename "lpjml.js" /* Default LPJ configuration file */
+#else
 #define dflt_conf_filename "lpjml.conf" /* Default LPJ configuration file */
+#endif
 #define USAGE "Usage: %s [-h] [-noinput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
 

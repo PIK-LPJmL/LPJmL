@@ -27,11 +27,13 @@ Real firedangerindex(Real char_moist_factor,
   int p,n;
   alpha_fuelp_ave=0;
   n=getnpft(pftlist);
-  foreachpft(pft,p,pftlist)
-    alpha_fuelp_ave+=pft->par->alpha_fuelp;
-
-  alpha_fuelp_ave/=n;
-
+  if(n>0)
+  {
+    foreachpft(pft,p,pftlist)
+      alpha_fuelp_ave+=pft->par->alpha_fuelp;
+  
+    alpha_fuelp_ave/=n; 
+  } 
 #ifdef SAFE
   if(char_alpha_fuel < 0)
     fprintf(stderr,"char_alpha_fuel %f in firedangerindex\n",char_alpha_fuel);
@@ -42,5 +44,10 @@ Real firedangerindex(Real char_moist_factor,
   else
     d_fdi = (0.0 > (1.0-(1.0 / char_moist_factor * (exp(-alpha_fuelp_ave * nesterov_accum)))) ?
              0 : (1.0-(1.0 / char_moist_factor * (exp(-alpha_fuelp_ave * nesterov_accum)))));
+
+  //d_fdi = (0.0 > (1.0-(1.0 / char_moist_factor * (exp(-alpha_fuelp * nesterov_accum)))) ?
+    //        0 : (1.0-(1.0 / char_moist_factor * (exp(-alpha_fuelp * nesterov_accum)))));
+  //printf("char_moist_factor:%g, firedangeindex:%g \n",char_moist_factor,d_fdi);
+
   return d_fdi;
 } /* of 'firedangerindex' */

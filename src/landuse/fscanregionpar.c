@@ -15,23 +15,24 @@
 #define UNDEF (-1)
 
 #define fscanreal2(verb,file,var,name,region)\
-  if(fscanreal(file,var,name,verb))\
+  if(fscanreal(file,var,name,FALSE,verb))\
   {\
     if(verb)\
-      fprintf(stderr,"ERROR102: Cannot read region '%s' in %s()\n",region,__FUNCTION__);\
+      fprintf(stderr,"ERROR102: Cannot read float '%s' for region '%s'.\n",name,region);\
     return 0;\
   }
 
-int fscanregionpar(FILE *file,            /**< file pointer */
+int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
                    Regionpar **regionpar, /**< Pointer to regionpar array */
                    Verbosity verb         /**< verbosity level (NO_ERR,ERR,VERB) */
                   )                       /** \return number of elements in array */
 {
+  LPJfile arr,item;
   int nregions,n,id;
   String s;
   Regionpar *region;
   if (verb>=VERB) puts("// Region parameters");
-  if(fscanint(file,&nregions,"nregions",verb))
+  if(fscanarray(file,&arr,&nregions,TRUE,"regionpar",verb))
     return 0;
 
   *regionpar=newvec(Regionpar,nregions);
@@ -40,7 +41,8 @@ int fscanregionpar(FILE *file,            /**< file pointer */
     (*regionpar)[n].id=UNDEF;
   for(n=0;n<nregions;n++)
   {
-    if(fscanint(file,&id,"region number",verb))
+    fscanarrayindex(&arr,&item,n,verb);
+    if(fscanint(&item,&id,"id",FALSE,verb))
       return 0;
     if(id<0 || id>=nregions)
     {
@@ -57,20 +59,18 @@ int fscanregionpar(FILE *file,            /**< file pointer */
                 "ERROR179: Region number=%d in line %d of '%s' has been already defined in fscanregionpar().\n",id,getlinecount(),getfilename());
       return 0;
     }
-    if(fscanstring(file,s,verb!=NO_ERR))
+    if(fscanstring(&item,s,"name",FALSE,verb))
     {
       if(verb)
         readstringerr("name");
       return 0;
     }
-    if(verb>=VERB)
-      printf("REGION_NAME %s\n",s);
     region->name=strdup(s);
     check(region->name);
     region->id=id;
-    fscanreal2(verb,file,&region->fuelratio,"fuelratio",region->name);
-    fscanreal2(verb,file,&region->bifratio,"bifratio",region->name);
-    fscanreal2(verb,file,&region->woodconsum,"woodconsum",region->name);
+    fscanreal2(verb,&item,&region->fuelratio,"fuelratio",region->name);
+    fscanreal2(verb,&item,&region->bifratio,"bifratio",region->name);
+    fscanreal2(verb,&item,&region->woodconsum,"woodconsum",region->name);
 
   } /* of 'for(n=0;...)' */
   return n;

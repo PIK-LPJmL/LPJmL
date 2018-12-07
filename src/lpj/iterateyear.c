@@ -71,7 +71,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         if(grid[cell].lakefrac<1)
         {
           /* calculate landuse change */
-          if(!config->isconstlai)
+          if(config->laimax_interpolate!=CONST_LAI_MAX)
             laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
           if(year>config->firstyear-config->nspinup)
             landusechange(grid+cell,config->pftpar,npft,ncft,config->ntypes,
@@ -164,7 +164,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           wateruse(grid,npft,ncft,config);
       }
 
-      if(output->withdaily && year>=config->firstyear)
+      if(output->withdaily && year>=config->outputyear)
         fwriteoutput_daily(output,grid,day-1,year,config);
 
       day++;
@@ -186,11 +186,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                        cell,month),month);
     } /* of 'for(cell=0;...)' */
 
-#ifdef IMAGE
-    if(year>=config->firstyear-istimber*10)
-#else
-    if(year>=config->firstyear)
-#endif
+    if(year>=config->outputyear)
       /* write out monthly output */
       fwriteoutput_monthly(output,grid,month,year,config);
 
@@ -210,8 +206,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(year>config->firstyear)
       {
         printf("year=%d\n",year);
-        printf("cell=%d\n",cell);
-        printcell(grid+cell,1,ncft,input.landuse!=NULL,TRUE);
+        printf("cell=%d\n",cell+config->startgrid);
+        printcell(grid+cell,1,npft,ncft,config);
       }
 #endif
       if(config->nspinup>veg_equil_year &&
@@ -231,11 +227,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     }
   } /* of for(cell=0,...) */
 
-#ifdef IMAGE
-  if(year>=config->firstyear-istimber*10)
-#else
-  if(year>=config->firstyear)
-#endif
+  if(year>=config->outputyear)
   {
     /* write out annual output */
     fwriteoutput_annual(output,grid,year,config);

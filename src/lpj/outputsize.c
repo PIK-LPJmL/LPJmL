@@ -16,11 +16,11 @@
 
 #include "lpj.h"
 
-int outputsize(int index, /**< output index */
-               int npft,  /**< number of natural PFTs */
-               int nbiomass,  /**< number of biomass PFTs */
-               int ncft   /**< number of crop PFTs */
-              )           /** \return number of items per cell */
+int outputsize(int index,    /**< output index */
+               int npft,     /**< number of natural PFTs */
+               int nbiomass, /**< number of biomass PFTs */
+               int ncft      /**< number of crop PFTs */
+              )              /** \return number of items per cell */
 {
   switch(index)
   {
@@ -43,6 +43,8 @@ int outputsize(int index, /**< output index */
       return (ncft+NGRASS+NBIOMASSTYPE)*2;
     case FPC:
       return npft-nbiomass+1;
+    case MSOILTEMP: case MSWC:
+      return NSOILLAYER;
     case SOILC_LAYER:
       return LASTLAYER;
     case GROWING_PERIOD: case CFT_TEMP:case CFT_PREC:

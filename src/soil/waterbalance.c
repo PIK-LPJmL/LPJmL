@@ -25,7 +25,8 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
                   Real wet_all,
                   Real eeq,                 /**< equilibrium evapotranspiration (mm) */
                   Real cover,
-                  Real *frac_g_evap         /**< green water share of soil evaporation */
+                  Real *frac_g_evap,        /**< green water share of soil evaporation */
+                  Bool rw_manage            /**< do rain water management? (TRUE/FALSE) */
                  )                          /* \return water runoff (mm) */
 {
   Real w_evap=0,w_evap_ice=0,whcs_evap=0,soildepth_evap=param.soildepth_evap,evap_ratio,green_evap=0,marginal;
@@ -75,7 +76,8 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
 
   if(stand->type->landusetype!=NATURAL && data_irrig->irrigation && data_irrig->irrig_system==DRIP)
     *evap*=(1-(param.drip_evap*(1-*frac_g_evap))); /*reduced blue soil evaporation in case of DRIP irrigation */
-
+  if(rw_manage)
+    *evap*=(1-param.esoil_reduction); /* reduced soil evaporation */
   /*if gc exceeds 60 mm/s evap is negative after the former line*/
   if(*evap<0)
   {

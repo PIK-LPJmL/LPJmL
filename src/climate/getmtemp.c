@@ -22,5 +22,5 @@ Real getmtemp(const Climate *climate, /**< pointer to climate data */
               int month               /**< month (0..11) */
              )                        /** \return monthly averaged temperature (deg C) */
 {
-  return (climate->file_temp.isdaily) ? climbuf->mtemp/ndaymonth[month] : (getcelltemp(climate,cell))[month];
+  return isdaily(climate->file_temp) ? climbuf->mtemp/ndaymonth[month] : (getcelltemp(climate,cell))[month];
 } /* of 'getmtemp' */

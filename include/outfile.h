@@ -58,6 +58,6 @@ extern void closeoutput_yearly(Outputfile *,const Config *);
 extern void fcloseoutput(Outputfile *,const Config *);
 extern Coord_array *createcoord(Outputfile *,const Cell *,const Config *);
 extern Coord_array *createcoord_all(const Cell *,const Config *);
-extern Coord_array *createindex(const Coord *,int,Coord);
+extern Coord_array *createindex(const Coord *,int,Coord,Bool);
 extern void outputnames(Outputfile *,const Config *);
 #endif

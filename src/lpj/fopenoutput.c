@@ -22,17 +22,6 @@ static void handler(int UNUSED(num))
   fail(SOCKET_ERR,FALSE,"Output channel is broken"); 
 } /* of 'handler' */
 
-static int getnyear(int index)
-{
-  if(index==REGION || index==COUNTRY || index==GRID)
-    return 0;
-  if(ismonthlyoutput(index))
-    return 12;
-  if(isdailyoutput(index)) 
-    return NDAYYEAR;
-  return 1;
-} /* of 'getnyear' */
-
 static Bool create(Netcdf *cdf,const char *filename,int index,
                    Coord_array *array,const Config *config)
 {
@@ -60,6 +49,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                              config->outnames[config->outputvars[index].id].descr,
                              config->outnames[config->outputvars[index].id].unit,
                              getoutputtype(config->outputvars[index].id),
+                             getnyear(config->outputvars[index].id),
                              array,config);
 } /* of 'create' */
 
@@ -108,56 +98,90 @@ static void openfile(Outputfile *output,const Cell grid[],
     switch(config->outputvars[i].filename.fmt)
     {
        case CLM:
-        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
-          printfcreateerr(config->outputvars[i].filename.name);
+        if(config->ischeckpoint && config->outputvars[i].id!=GRID  && config->outputvars[i].id!=COUNTRY && config->outputvars[i].id!=REGION)
+        {
+          if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"r+b"))==NULL)
+            printfopenerr(config->outputvars[i].filename.name);
+          else
+          {
+            output->files[config->outputvars[i].id].isopen=TRUE;
+            if(config->checkpointyear>=config->outputyear)
+            {
+              fseek(output->files[config->outputvars[i].id].fp.file,
+                    headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION)+
+                    getsize(i,config)*(config->checkpointyear-config->outputyear+1),SEEK_SET);
+            }
+            else
+              fseek(output->files[config->outputvars[i].id].fp.file,
+                    headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION),SEEK_SET);
+          }
+        }
         else
         {
-          output->files[config->outputvars[i].id].isopen=TRUE;
-          header.firstyear=config->firstyear;
-          if(config->outputvars[i].id==ADISCHARGE)
-            header.ncell=config->nall;
-          else
-            header.ncell=config->total;
-          header.firstcell=config->firstgrid;
-          header.cellsize_lon=(float)config->resolution.lon;
-          header.cellsize_lat=(float)config->resolution.lat;
-          header.scalar=1;
-          if(config->outputvars[i].id==GRID)
-          {
-            header.datatype=LPJ_SHORT;
-            header.nbands=2;
-            header.nyear=1;
-            header.order=CELLYEAR;
-            fwriteheader(output->files[config->outputvars[i].id].fp.file,
-                         &header,LPJGRID_HEADER,LPJGRID_VERSION);
-          }
+          if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
+            printfcreateerr(config->outputvars[i].filename.name);
           else
           {
-            header.order=CELLSEQ;
-            header.nbands=getnyear(config->outputvars[i].id);
-            if(header.nbands==1)
-              header.nbands=outputsize(config->outputvars[i].id,
-                                       config->npft[GRASS]+config->npft[TREE],
-                                       config->nbiomass,
-                                       config->npft[CROP]);
-            header.nyear=config->lastyear-config->firstyear+1;
-            if(config->outputvars[i].id==SDATE || config->outputvars[i].id==HDATE || config->outputvars[i].id==SEASONALITY)
-              header.datatype=LPJ_SHORT;
+            output->files[config->outputvars[i].id].isopen=TRUE;
+            header.firstyear=config->outputyear;
+            if(config->outputvars[i].id==ADISCHARGE)
+              header.ncell=config->nall;
             else
-              header.datatype=LPJ_FLOAT;
-            fwriteheader(output->files[config->outputvars[i].id].fp.file,
-                         &header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
+              header.ncell=config->total;
+            header.firstcell=config->firstgrid;
+            header.cellsize_lon=(float)config->resolution.lon;
+            header.cellsize_lat=(float)config->resolution.lat;
+            header.scalar=1;
+            if(config->outputvars[i].id==GRID)
+            {
+              header.datatype=LPJ_SHORT;
+              header.nbands=2;
+              header.nyear=1;
+              header.order=CELLYEAR;
+              fwriteheader(output->files[config->outputvars[i].id].fp.file,
+                           &header,LPJGRID_HEADER,LPJGRID_VERSION);
+            }
+            else
+            {
+              header.order=CELLSEQ;
+              header.nbands=getnyear(config->outputvars[i].id);
+              header.nbands*=outputsize(config->outputvars[i].id,
+                                        config->npft[GRASS]+config->npft[TREE],
+                                        config->nbiomass,
+                                        config->npft[CROP]);
+              header.nyear=config->lastyear-config->outputyear+1;
+              header.datatype=getoutputtype(config->outputvars[i].id);
+              fwriteheader(output->files[config->outputvars[i].id].fp.file,
+                           &header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
+            }
           }
         }
         break;
       case RAW:
-        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
-          printfcreateerr(config->outputvars[i].filename.name);
+        if(config->ischeckpoint && config->outputvars[i].id!=GRID  && config->outputvars[i].id!=COUNTRY && config->outputvars[i].id!=REGION)
+        {
+          if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"r+b"))==NULL)
+            printfopenerr(config->outputvars[i].filename.name);
+          else
+          {
+            output->files[config->outputvars[i].id].isopen=TRUE;
+            if(config->checkpointyear>=config->outputyear)
+            {
+              fseek(output->files[config->outputvars[i].id].fp.file,
+                    getsize(i,config)*(config->checkpointyear-config->outputyear+1),SEEK_SET);
+            }
+          }
+        }
         else
-          output->files[config->outputvars[i].id].isopen=TRUE;
+        {
+          if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
+            printfcreateerr(config->outputvars[i].filename.name);
+          else
+            output->files[config->outputvars[i].id].isopen=TRUE;
+        }
         break;
       case TXT:
-        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"w"))==NULL)
+        if((output->files[config->outputvars[i].id].fp.file=fopen(filename,(config->ischeckpoint && config->outputvars[i].id!=GRID  && config->outputvars[i].id!=COUNTRY && config->outputvars[i].id!=REGION) ? "a" : "w"))==NULL)
           printfcreateerr(config->outputvars[i].filename.name);
         else
           output->files[config->outputvars[i].id].isopen=TRUE;
@@ -301,8 +325,7 @@ Outputfile *fopenoutput(const Cell grid[], /**< LPJ grid */
 #endif
     if(output->files[config->outputvars[i].id].compress)
       free(filename);
-    if(output->files[config->outputvars[i].id].isopen &&
-       config->outputvars[i].id>=D_LAI && config->outputvars[i].id<=D_PET)
+    if(output->files[config->outputvars[i].id].isopen && isdailyoutput(config->outputvars[i].id))
       output->withdaily=TRUE;
   }
   return output;
@@ -394,6 +417,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                            config->outnames[config->outputvars[i].id].descr,
                            config->outnames[config->outputvars[i].id].unit,
                            getoutputtype(config->outputvars[i].id),
+                           getnyear(config->outputvars[i].id),year,
                                output->index,config);
 
         }
@@ -401,8 +425,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
 #ifdef USE_MPI
      MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,0,config->comm);
 #endif
-     if(output->files[config->outputvars[i].id].isopen &&
-       config->outputvars[i].id>=D_LAI && config->outputvars[i].id<=D_PET)
+     if(output->files[config->outputvars[i].id].isopen && isdailyoutput(config->outputvars[i].id))
       output->withdaily=TRUE;
    }
 } /* of 'openoutput_yearly */

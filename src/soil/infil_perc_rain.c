@@ -19,7 +19,8 @@
 
 Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
                      Real infil,         /**< rainfall + melting water - interception_stand (mm) + rw_irrig */
-                     Real *return_flow_b /**< blue water return flow (mm) */
+                     Real *return_flow_b, /**< blue water return flow (mm) */
+                     Bool rw_manage       /**< do rain water management? (TRUE/FALSE) */
                     )                    /** \return water runoff (mm) */
 {
   Real runoff;
@@ -34,12 +35,18 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
   int l;
   Real updated_soil_water=0,previous_soil_water[NSOILLAYER];
   String line;
+  Irrigation *data_irrig;
+  data_irrig=stand->data;
 
   soil=&stand->soil;
+  soil_infil=2; /* default to draw square root for infiltration factor*/
   influx=grunoff=perc=frac_g_influx=freewater=0.0;
   runoff_surface=runoff=outflux=0;
-  soil_infil=2; /* default to draw square root for infiltration factor*/
-
+  if(rw_manage)
+    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE)
+      soil_infil=param.soil_infil; /* parameter to increase soil infiltration rate */
+  if(soil_infil<2)
+    soil_infil=2;
 
   for(l=0;l<NSOILLAYER;l++)
   {
@@ -168,6 +175,19 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
    }
 #endif
   } /* soil layer loop */
+
+  /* Rainwater Harvesting: store part of surface runoff for supplementary irrigation */
+  if(rw_manage && ((stand->type->landusetype==AGRICULTURE && !data_irrig->irrigation) || stand->type->landusetype==SETASIDE_RF))
+  {
+    soil->rw_buffer+=param.frac_ro_stored*runoff_surface;
+    runoff_surface-=param.frac_ro_stored*runoff_surface;
+    if(soil->rw_buffer > param.rw_buffer_max)
+    {
+      runoff_surface+=soil->rw_buffer - param.rw_buffer_max;
+      soil->rw_buffer=param.rw_buffer_max;
+      //printf("Warning! rw_buffer has reached maximum capacity\n");
+    }
+  }
 
   /*writing output*/
   stand->cell->output.mseepage+=outflux*stand->frac;

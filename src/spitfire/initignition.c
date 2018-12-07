@@ -81,6 +81,8 @@ Bool initignition(Cell grid[],         /* LPJ grid */
       }
       if(grid[cell].ignition.human<0)
         grid[cell].ignition.human=0;
+      grid[cell].ignition.human/=365;
+
       grid[cell].ignition.nesterov_accum=0;
       grid[cell].ignition.nesterov_max=0;
       grid[cell].ignition.nesterov_day=0;

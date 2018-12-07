@@ -1,0 +1,42 @@
+.TH readpopdens 3  "November 15, 2018" "version 4.0.001" "LPJmL programmers manual"
+.SH NAME
+readpopdens \- Read population density data from file
+.SH SYNOPSIS
+.nf
+\fB#include "lpj.h"
+
+Bool readpopdens(const Popdens \fIpopdens\fB,
+                 int \fIyear\fB,
+                 const Cell \fIgrid[]\fB,
+                 const Config *\fIconfig\fB);\fP
+
+.fi
+.SH DESCRIPTION
+Function reads population density data for specified year.
+The arguments of \fBreadpopdens\fP are:
+.TP
+.I popdens
+Pointer to population density data.  Must be initialized by \fBinitpopdens()\fP.
+.TP
+.I year
+Sets year data is read.
+.TP
+.I grid
+Cell grid array allocated and initialized by \fBnewgrid()\fP.
+.TP
+.I config
+LPJmL configuration data. Must be read by \fBreadconfig()\fP.
+
+.SH RETURN VALUE
+Upon successful completion FALSE is returned and TRUE on error.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+initpopdens(3), getpopdens(3), freepopdens(3)

@@ -1,17 +1,19 @@
 #!/bin/sh
-###############################################################################
-##                                                                           ##
-##                 l  p  j  s  u  b  m  i  t  _  a  i  x                     ##
-##                                                                           ##
-##    sh script to generate and submit LoadLeveler job.                      ##
-##                                                                           ##
-##    Usage: lpjsubmit [-class c] ntask [LPJ args...]                        ##
-##                                                                           ##
-##    written by Werner von Bloh, PIK Potsdam                                ##
-##                                                                           ##
-##    Last change: 22.09.2008                                                ##
-##                                                                           ##
-###############################################################################
+#################################################################################
+##                                                                             ##
+##                 l  p  j  s  u  b  m  i  t  _  a  i  x                       ##
+##                                                                             ##
+##    sh script to generate and submit LoadLeveler job.                        ##
+##                                                                             ##
+##    Usage: lpjsubmit [-class c] ntask [LPJ args...]                          ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
+##                                                                             ##
+#################################################################################
 
 if [ $# -lt 1 ]
 then

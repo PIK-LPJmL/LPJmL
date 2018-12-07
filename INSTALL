@@ -39,8 +39,6 @@ Directory tree after extracting the tar files:
   |
   +-bin           : Directory for executables and shell scripts
   |
-  +-R             : Scripts for R statistical package
-  |
   +-man           : Manual pages root directory
   | |
   | +-man1        : Manual pages for programs and scripts
@@ -50,8 +48,6 @@ Directory tree after extracting the tar files:
   | +-man5        : Manual pages for file formats
   |
   +--html         : Documentation and man pages in HTML format
-  |
-  +--doc          : Documentation
   |
   +--par          : Parameter files for PFTs and soils
   |
@@ -109,6 +105,10 @@ module load compiler/intel/15.0.3
 module load compiler/gnu/4.9.2
 module load netcdf-c/4.3.3.1/serial udunits/2.2.19 expat/2.1.0
 
+or you can simply load the lpjml module:
+
+module load lpjml
+
 ./configure.sh
 
 If configure script exits with message "Unsupported operating system",
@@ -128,6 +128,16 @@ Makefile.cluster2015 - Intel C-compiler and Intel MPI on HLRS2015 cluster at PIK
 Makefile.mpich       - GNU C-Compiler and MPI Chameleon settings
 Makefile.win32       - Windows settings (used by configure.bat)
 
+We are interested in learning how much and where LPJmL is used. 
+For that we have included a call-home function in configure.sh and in the Makefile. 
+For technical reasons, we only track the execution of configure.sh and model builds using the makefiles, not model runs. 
+No personal data is recorded that could be used to identify users, 
+only the country in which the scripts/Makefiles are executed and the repository source 
+(PIK gitlab open source repository, PIK's internal gitlab repository, PIK's internal SVN repository).
+You can find the usage statistics online at https://goo.gl/#analytics/goo.gl/DYv3KW/all_time. 
+If you don't want to contribute to the usage statistics, please run configure.sh with the option -nofeedback
+or disable the option directly in src/Makefile.
+
 Compilation flags
 
 Compilation of LPJmL is customized by definition of macros in the LPJFLAGS
@@ -144,13 +154,16 @@ DOUBLE_HARVEST      adding correct sequencing of harvest events
 IMAGE               include coupler to IMAGE model
 LINEAR_DECAY        use linearized functions for litter decay
 MICRO_HEATING       Enable microbial heating
+NO_FAIL_BALANCE     lpjml does not terminate on balance errors
 SAFE                code is compiled with additional checks
 STORECLIMATE        store climate data in memory for spin up phase
+USE_JSON            enable JSON format for LPJmL configuration files
 USE_MPI             compile parallel version of LPJmL
 USE_NETCDF          enable NetCDF input/output
 USE_NETCDF4         enable NetCDF version 4 input/output
 USE_RAND48          use drand48() random number generator
 USE_UDUNITS         enable unit conversion in NetCDF files
+WITH_FIRE_MOISTURE  enable moisture dependent fire emissions
 WITH_FPE            floating point exceptions are enabled for debugging purposes
 ------------------- ------------------------------------------------------------
 
@@ -193,7 +206,7 @@ The following environment variables are used by LPJmL:
 
 LPJCONFIG      - default LPJmL configuration filename
 LPJPREP        - defines preprocessor command for LPJmL configuration  file, default
-                 is "cpp -P"
+                 is "cpp"
 LPJROOT        - defines the root directory for LPJmL. This directory is added to the 
                  include directories of the preprocessor
 LPJIMAGE       - sets host where IMAGE is running
@@ -284,13 +297,6 @@ A job can be submitted by invoking the bin/lpjsubmit script:
 
 bin/lpjsubmit ntasks LPJmL_args...
 
-Templates for customized LoadLeveler job control files are in the
-loadl directory:
-
-lpjml_aix.jcf    -- for AIX with POE
-lpjml_intel.jcf  -- for Linux with Intel MPI
-lpjml_mpich.jcf  -- for Linux with MPICH
-
 Depending on your MPI version installed the program can be started interactively:
 
 mpirun -np 32 ./bin/lpjml
@@ -337,6 +343,7 @@ Error code Description                                 Error type
         31 Cannot store climate data                     External
         32 NO FMS coupler                                External
         33 Cannot initialize soil temperature            External
+        34 Invalid radiation module                      Internal
 ---------- --------------------------------------------- --------
 
 External errors are caused by invalid or missing input files while internal 

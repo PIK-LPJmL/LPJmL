@@ -15,7 +15,8 @@
 #include "lpj.h"
 #include "tree.h"
 
-Real alphaa_tree(const Pft *pft)
+Real alphaa_tree(const Pft *pft /**< pointer to tree PFT */
+                )               /** \return alpha_a (0..1) */
 {
   return pft->par->alphaa;
 } /* of 'alphaa_tree' */

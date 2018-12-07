@@ -15,7 +15,9 @@
 #################################################################################
 
 include Makefile.inc
-
+ifdef CALLHOME
+CH:=$(shell wget https://goo.gl/DYv3KW --header="User-Agent: Mozilla/5.0 (LPJmL 4.0.001 internal gitlab make; U; Intel Mac OS X; en-US; rv:1.8.1.12) Gecko/20080219 Navigator/9.0.0.6" -O /dev/null)
+endif
 INC     = include
 
 HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
@@ -33,18 +35,21 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h
 
 CONF	= lpjml.conf input.conf param.conf lpj.conf\
-          lpjml_image.conf\
+          lpjml_image.conf input_crumonthly.conf\
           lpjml_netcdf.conf input_netcdf.conf lpjml_fms.conf input_fms.conf
 
-DATA    = par/*.par
+JSON	= lpjml.js input_crumonthly.js param.js lpj.js\
+          lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js
+
+DATA    = par/*.par par/*.js
 
 SCRIPTS	= configure.bat configure.sh\
           bin/output_bsq bin/lpjsubmit_aix bin/lpjsubmit_intel\
           bin/lpjsubmit_mpich bin/lpjrun bin/backtrace\
-          bin/filetypes.vim bin/regridlpj
+          bin/filetypes.vim bin/regridlpj bin/lpjsubmit_slurm
 
-FILES	= Makefile config/* AUTHORS INSTALL VERSION LICENSE magic.mgc\
-          $(CONF) $(DATA) $(HDRS) $(SCRIPTS)
+FILES	= Makefile config/* README AUTHORS INSTALL VERSION LICENSE STYLESHEET\
+          $(CONF) $(JSON) $(DATA) $(HDRS) $(SCRIPTS)
 
 main: 
 	$(MKDIR) lib
@@ -58,6 +63,7 @@ all: main utils
 install: all
 	$(MKDIR) $(LPJROOT)/bin
 	$(MKDIR) $(LPJROOT)/include
+	$(MKDIR) $(LPJROOT)/html
 	$(MKDIR) $(LPJROOT)/lib
 	$(MKDIR) $(LPJROOT)/par
 	$(MKDIR) $(LPJROOT)/man/man1
@@ -66,6 +72,7 @@ install: all
 	chmod 755 $(LPJROOT)
 	chmod 755 $(LPJROOT)/bin
 	chmod 755 $(LPJROOT)/include
+	chmod 755 $(LPJROOT)/html
 	chmod 755 $(LPJROOT)/lib
 	chmod 755 $(LPJROOT)/par
 	chmod 755 $(LPJROOT)/man
@@ -73,11 +80,11 @@ install: all
 	chmod 755 $(LPJROOT)/man/man5
 	chmod 755 $(LPJROOT)/man/man3
 	install bin/* $(LPJROOT)/bin
+	install -m 644 html/* $(LPJROOT)/html
 	install -m 644 $(HDRS) $(LPJROOT)/include
 	install -m 644 lib/* $(LPJROOT)/lib
 	install -m 644 $(DATA) $(LPJROOT)/par
-	install -m 644 INSTALL VERSION AUTHORS Makefile.inc config/Makefile.template\
-                       $(JCFFILE) lpjml.conf input.conf param.conf $(LPJROOT)
+	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT $(CONF) $(JSON) $(LPJROOT)
 	install -m 644 man/whatis $(LPJROOT)/man
 	install -m 644 man/man1/*.1 $(LPJROOT)/man/man1
 	install -m 644 man/man5/*.5 $(LPJROOT)/man/man5
@@ -103,8 +110,8 @@ tar:
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
             src/socket/*.c html/*.html html/*.css src/reservoir/Makefile\
             src/image/Makefile src/image/*.c src/reservoir/*.c\
-            src/pnet/Makefile REFERENCES COPYRIGHT README doc/* src/utils/*.c src/utils/Makefile\
-            src/spitfire/Makefile src/spitfire/*.c R/*.r src/netcdf/Makefile src/netcdf/*.c\
+            src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
+            src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c
 	    gzip -f lpjml-4.0.001.tar
 
@@ -113,13 +120,13 @@ zipfile:
 	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
             man/man3/*.3 man/man5/*.5\
 	    src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\
-	    src/image/Makefile src/image/*.c R/*.r\
+	    src/image/Makefile src/image/*.c\
 	    src/landuse/*.c src/landuse/Makefile src/lpj/*.c src/lpj/Makefile\
 	    src/numeric/*.c src/numeric/Makefile src/soil/*.c src/soil/Makefile\
 	    src/tools/*.c src/tools/Makefile src/tree/*.c src/tree/Makefile\
             src/lpj/FILES src/pnet/*.c src/pnet/FILES src/socket/Makefile\
             src/socket/*.c src/reservoir/Makefile\
             src/image/*.c src/image/Makefile src/reservoir/*.c\
-            src/pnet/Makefile REFERENCES COPYRIGHT README doc src/utils/*.c src/utils/Makefile\
+            src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c

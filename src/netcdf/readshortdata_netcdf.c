@@ -41,7 +41,7 @@ Bool readshortdata_netcdf(const Climatefile *file,short data[],const Cell grid[]
     f=NULL;
     rc=TRUE;
   }
-  else if(file->type==LPJ_SHORT)
+  else if(file->datatype==LPJ_SHORT)
   {
     f=newvec(short,file->nlon*file->nlat*file->var_len);
     if(f==NULL)

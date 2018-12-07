@@ -28,7 +28,7 @@ Adds river basin to coordinate file
 </A>
 </td>
 <td>
-Convert CRU ASCII files to clm data files for LPJmL
+Convert ARC/Info ASCII files to clm data files for LPJmL
 <br></td>
 </tr>
 <tr>
@@ -63,12 +63,32 @@ Concatenate climate data files
 </tr>
 <tr>
 <td>
+<A HREF="cdf2bin.html">
+<tt>cdf2bin</tt> (1)
+</A>
+</td>
+<td>
+Convert NetCDF files into raw binary data
+<br></td>
+</tr>
+<tr>
+<td>
 <A HREF="cdf2clm.html">
 <tt>cdf2clm</tt> (1)
 </A>
 </td>
 <td>
 convert NetCDF files into CLM files
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cdf2coord.html">
+<tt>cdf2coord</tt> (1)
+</A>
+</td>
+<td>
+Extract CLM grid file from NetCDF file
 <br></td>
 </tr>
 <tr>
@@ -128,6 +148,16 @@ convert raw binary data files to clm data files for LPJmL
 </td>
 <td>
 Cuts climate data files
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="cvrtclm.html">
+<tt>cvrtclm</tt> (1)
+</A>
+</td>
+<td>
+Converts version of clm file to latest version 3
 <br></td>
 </tr>
 <tr>
@@ -211,27 +241,27 @@ Run parallel LPJmL program interactively.
 </tr>
 <tr>
 <td>
-<A HREF="lpjsave.html">
-<tt>lpjsave</tt> (1)
-</A>
-</td>
-<td>
-Save input/output files of LPJmL using Tivoli Storage Manager TSM
-</td>
-</tr>
-<tr>
-<td>
 <A HREF="lpjsubmit.html">
 <tt>lpjsubmit</tt> (1)
 </A>
 </td>
 <td>
-Submit parallel LoadLeveler job for LPJmL simulation 
+Submit parallel LoadLeveler/SLURM job for LPJmL simulation 
 <br></td>
 </tr>
 <tr>
 <td>
-<A HREF="printheader.html">
+<A HREF="printclm.html">
+<tt>printclm</tt> (1)
+</A>
+</td>
+<td>
+Print contents of clm files for LPJmL                   
+<br></td>
+</tr>
+<tr>
+<td>
+<A HREF="printclm.html">
 <tt>printheader</tt> (1)
 </A>
 </td>
@@ -249,6 +279,17 @@ Print header of clm files for LPJmL
 Convert CRU ASCII files to clm data files for LPJmL
 <br></td>
 </tr>
+<tr>
+<td>
+<A HREF="txt2grid.html">
+<tt>txt2grid</tt> (1)
+</A>
+</td>
+<td>
+Convert text files to clm grid data files for LPJmL
+<br></td>
+</tr>
+<tr>
 <tr>
 <td>
 <A HREF="cat2bsq.html">
@@ -393,6 +434,10 @@ Configuration file for LPJmL runs with natural vegetation
   <td> closes file and deallocates land use data</td>
 </tr>
 <tr>
+  <td> <A HREF="freepopdens.html"> freepopdens (3) </A> </td>
+  <td> closes file and deallocates population density data</td>
+</tr>
+<tr>
   <td> <A HREF="freewateruse.html"> freewateruse (3) </A> </td>
   <td> closes file and deallocates water use data</td>
 </tr>
@@ -485,8 +530,16 @@ Configuration file for LPJmL runs with natural vegetation
   <td>  prints LPJmL compilation flags and compiler used</td>
 </tr>
 <tr>
+  <td> <A HREF="printlicense.html"> printlicense (3) </A> </td>
+  <td>  prints LPJmL license</td>
+</tr>
+<tr>
   <td> <A HREF="readconfig.html"> readconfig (3) </A> </td>
   <td>  reads LPJmL configuration</td>
+</tr>
+<tr>
+  <td> <A HREF="readpopdens.html"> readpodens (3) </A> </td>
+  <td>  read population density data from file</td>
 </tr>
 <tr>
   <td> <A HREF="writecoords.html"> writecoords (3) </A> </td>
@@ -678,7 +731,7 @@ Return string describing Pnet error
 </table>
 <p>
 <address>
-Last change: 1 August 2017 by Werner von Bloh, PIK Potsdam
+Last change: 7 November 2018 by Werner von Bloh, PIK Potsdam
 </address>
 </BODY>
 </HTML>

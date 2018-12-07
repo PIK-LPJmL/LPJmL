@@ -26,10 +26,12 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           fwriteheader.$O getcounts.$O getfiledate.$O fscanint.$O\
           iserror.$O mpi_write_txt.$O mkfilename.$O stripsuffix.$O\
           hassuffix.$O checkfmt.$O findstr.$O fputstring.$O fscanfloat.$O\
-          fprinttime.$O newmat.$O freemat.$O readrealvec.$O\
+          fprinttime.$O newmat.$O freemat.$O readrealvec.$O readfilename.$O\
           fscanuint.$O readintvec.$O readfloatvec.$O readuintvec.$O\
           catstrvec.$O strdate.$O openmetafile.$O fscansize.$O fscanfcns.$O\
-          fscaninteof.$O fputprintable.$O
+          fscaninteof.$O fputprintable.$O fscanrealarray.$O fscanstruct.$O\
+          fscanarray.$O fscanarrayindex.$O fscanbool.$O iskeydefined.$O\
+          isboolean.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -53,7 +55,7 @@ printflags.$O: printflags.c
 	$(CC) $(CFLAGS) -DCFLAGS='"$(LPJFLAGS)"' -I$(INC) -c $*.c
 
 .c.$O: 
-	$(CC) $(CFLAGS) -I$(INC) -c $*.c
+	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c
 
 clean: 
 	$(RM) $(RMFLAGS) $(OBJS) 

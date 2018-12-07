@@ -29,6 +29,9 @@ void freeconfig(Config *config /**< LPJmL configuration */
   if(config->soil_filename.fmt!=CDF)
     freefilename(config->coord_filename);
   freefilename(config->soil_filename);
+  free(config->outputdir);
+  free(config->inputdir);
+  free(config->restartdir);
   free(config->arglist);
   free(config->sim_name);
   if(config->river_routing)
@@ -52,7 +55,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     }
     pnet_free(config->route);
   }
-  if(config->wateruse_filename.name!=NULL)
+  if(config->wateruse)
     freefilename(config->wateruse_filename);
   freefilename(config->temp_filename);
   freefilename(config->prec_filename);
@@ -71,6 +74,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     free(config->outputvars[i].filename.name);
   free(config->outputvars);
   free(config->restart_filename);
+  free(config->checkpoint_restart_filename);
   free(config->write_restart_filename);
   freepftpar(config->pftpar,ivec_sum(config->npft,config->ntypes));
   freesoilpar(config->soilpar,config->nsoil);
@@ -79,7 +83,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(config->popdens_filename);
   if(config->grassfix_filename.name!=NULL)
     freefilename(config->grassfix_filename);
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     freefilename(config->wind_filename);
     freefilename(config->tamp_filename);

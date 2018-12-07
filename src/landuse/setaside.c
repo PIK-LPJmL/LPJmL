@@ -97,6 +97,7 @@ void mixsoil(Stand *stand1,const Stand *stand2)
           stand2->frac);
   mixpool(stand1->soil.alag,stand2->soil.alag,stand1->frac,stand2->frac);
   mixpool(stand1->soil.amp,stand2->soil.amp,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.rw_buffer,stand2->soil.rw_buffer,stand1->frac,stand2->frac);
 } /* of 'mixsoil' */
 
 void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop)

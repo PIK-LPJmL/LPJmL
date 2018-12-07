@@ -29,25 +29,32 @@ Real livefuel_consum_tree(Litter *litter,
   Real sapwood_consum,heartwood_consum,fire_nind_kill;
   tree=pft->data;
   treepar=pft->par->data;
+ 
+ 
   fire_nind_kill=firemortality_tree(pft,fuel,livefuel,surface_fi,fire_frac);
-
+ 
   /* tree biomass consumption from postfire mortality*/
   /*      5% of 1000hr fuel involved in crown kill */
-
   sapwood_consum = tree->ind.sapwood *(treepar->fuelfrac[0] + treepar->fuelfrac[1]  +
                                treepar->fuelfrac[2] * 0.05);
   heartwood_consum = tree->ind.heartwood *(treepar->fuelfrac[0] + treepar->fuelfrac[1] +
                                          treepar->fuelfrac[2] * 0.05);
-  live_consum_tree = livefuel->disturb * (tree->ind.leaf +
-                     sapwood_consum + heartwood_consum)*pft->nind;  /*gC/m2*/
-
-  tree->ind.leaf *= (1-livefuel->disturb);
+  live_consum_tree = livefuel->disturb * (tree->ind.leaf*1 + sapwood_consum + heartwood_consum)*pft->nind;  /*gC/m2*/
+  live_consum_tree+=pft->bm_inc*min(1,livefuel->disturb*1);
+  pft->bm_inc*=(1-min(1,livefuel->disturb*1));
+  tree->ind.leaf *= (1-livefuel->disturb*1);
   tree->ind.sapwood -= livefuel->disturb*sapwood_consum;
   tree->ind.heartwood -= livefuel->disturb*heartwood_consum;
-  litter_update_tree(litter,pft,fire_nind_kill);
+  if(fabs(pft->bm_inc)>epsilon)
+  { 
+    litter->ag[pft->litter].trait.leaf+=pft->bm_inc*fire_nind_kill/pft->nind;
+    update_fbd_tree(litter,pft->par->fuelbulkdensity,pft->bm_inc*fire_nind_kill/pft->nind,0);
+    pft->bm_inc*=(pft->nind-fire_nind_kill)/pft->nind;
+  }
+  
+  litter_update_fire_tree(litter,pft,fire_nind_kill);
   pft->nind-=fire_nind_kill;
-
-  if (fire_nind_kill > 0 && pft->nind == 0)
+  if (fire_nind_kill > 0 && pft->nind < epsilon)
   {
     if(pft->bm_inc>0)
     {
@@ -57,6 +64,7 @@ Real livefuel_consum_tree(Litter *litter,
     else
       live_consum_tree+=pft->bm_inc;
     *isdead=TRUE;
+    litter_update_tree(litter,pft,pft->nind);
   }
   else
     *isdead=FALSE;

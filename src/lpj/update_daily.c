@@ -69,7 +69,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     flux_estab=sowing(cell,climate.prec,day,year,npft,ncft,config); 
   cell->discharge.drunoff=0.0;
 
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     update_nesterov(cell,&climate);
   foreachstand(stand,s,cell->standlist)
   {
@@ -78,7 +78,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     cell->output.malbedo += beta * stand->frac;
 
-    if(config->fire==SPITFIRE && cell->afire_frac<1)
+    if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& cell->afire_frac<1)
       dailyfire_stand(stand,&livefuel,popdensity,&climate,config->ntypes,config->prescribe_burntarea);
     if(config->permafrost)
     {
@@ -189,9 +189,41 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     /* lake waterbalance */
     cell->discharge.dmass_lake+=climate.prec*cell->coord.area*cell->lakefrac;
     cell->output.input_lake+=climate.prec*cell->coord.area*cell->lakefrac;
-
+#ifdef COUPLING_WITH_FMS
+    if(cell->discharge.next==-1 && cell->lakefrac>=0.999)
+      /*this if statement allows to identify the caspian sea to be an evaporating surface by lakefrac map of lpj and river rooting DDM30 map*/
+      /*this does nolonger make sense if discharge next is nolonger -1 (a parameterization of a river rooting map for the casp sea is possebly used
+        which is DDM30-coarsemask-zerofill.asc in /p/projects/climber3/gengel/POEM/mom5.0.2/exp/.../Data_for_LPJ), hence discharge next is not -1*/
+      {
+        /*here evaporation for casp sea is computed*/
+        cell->output.mevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
+        cell->output.dwflux+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
+        cell->discharge.dmass_lake=cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac;
+      }
+    else if(cell->discharge.next==-9)/*discharge for ocean cells, that are threated as land by lpj on land lad resolution is computed here*/
+      {
+        /*
+        if (cell->coord.lat<-60) //we have to exclude antarctica here since cells there have cell->discharge.next==-9 and lakefrac1 following initialization.  They should not contribute to evap of lakes here
+          {
+            cell->output.mevap_lake+=0;
+            cell->discharge.dmass_lake=0.0;
+          }
+            
+          else1.4.2016  changed the grid initialization in newgrid.c such that we have here no problem anymore, since the lakefraction now is nearly zero everywhere. */
+          {
+            cell->output.mevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
+            cell->discharge.dmass_lake=max(cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac,0.0);
+          }
+      }
+    else
+#endif
+    {
     cell->output.mevap_lake+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
+#ifdef COUPLING_WITH_FMS
+    cell->output.dwflux+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
+#endif
     cell->discharge.dmass_lake=max(cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac,0.0);
+    }
 
     cell->output.mlakevol+=cell->discharge.dmass_lake*ndaymonth1[month];
   } /* of 'if(river_routing)' */

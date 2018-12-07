@@ -272,7 +272,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   }
   config->initsoiltemp=FALSE;
   /* If FROM_RESTART open restart file */
-  if(config->restart_filename==NULL)
+  config->ischeckpoint=ischeckpointrestart(config) && getfilesize(config->checkpoint_restart_filename)!=-1;
+  if(config->restart_filename==NULL && !config->ischeckpoint)
   {
     file_restart=NULL;
     if(config->permafrost)
@@ -280,7 +281,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   }
   else
   {
-    file_restart=openrestart(config->restart_filename,config,npft+ncft,&swap_restart);
+    file_restart=openrestart((config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,config,npft+ncft,&swap_restart);
     if(file_restart==NULL)
     {
       free(grid);
@@ -339,7 +340,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           fprintf(stderr,"WARNING009: Invalid countrycode=%d or regioncode=%d with valid soilcode in cell (not skipped)\n",code.country,code.region);
         else
           initmanage(&grid[i].ml.manage,config->countrypar+code.country,
-                     config->regionpar+code.region,npft,ncft,config->isconstlai);
+                     config->regionpar+code.region,npft,ncft,
+                     config->laimax_interpolate==CONST_LAI_MAX,config->laimax);
       }
 
       if(config->grassfix_filename.name != NULL)
@@ -493,7 +495,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
                    swap_restart,config))
       {
         fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                config->restart_filename,i+config->startgrid);
+                (config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,i+config->startgrid);
         return NULL;
       }
       if(!grid[i].skip)
@@ -594,7 +596,7 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
     if(initreservoir(grid,config))
       return NULL;
   }
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(initignition(grid,config))
       return NULL;

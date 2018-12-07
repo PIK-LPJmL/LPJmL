@@ -41,9 +41,16 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
   if(config->popdens_filename.fmt==CDF)
   {
     if(opendata_netcdf(&popdens->file,config->popdens_filename.name,
-                       config->popdens_filename.var,
-                       "km-2",config))
+                       config->popdens_filename.var,"km-2",config))
     {
+      free(popdens);
+      return NULL;
+    }
+    if(popdens->file.var_len>1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR408: Invalid number of dimensions %d in population density file '%s'.\n",
+                (int)popdens->file.var_len,config->popdens_filename.name);
       free(popdens);
       return NULL;
     }

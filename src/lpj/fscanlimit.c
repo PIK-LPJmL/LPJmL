@@ -16,14 +16,18 @@
 
 #include "lpj.h"
 
-Bool fscanlimit(FILE *file,  /**< pointer to text file */
+Bool fscanlimit(LPJfile *file,  /**< pointer to LPJ file */
                 Limit *limit, /**< on return limit read */
+                const char *name, /**< name of limit variable */
                 Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                )             /** \return TRUE on error */
 {
-  if(fscanreal(file,&limit->low,"low limit",verb))
+  LPJfile f;
+  if(fscanstruct(file,&f,name,verb))
     return TRUE;
-  if(fscanreal(file,&limit->high,"high limit",verb))
+  if(fscanreal(&f,&limit->low,"low",FALSE,verb))
+    return TRUE;
+  if(fscanreal(&f,&limit->high,"high",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscanlimit' */

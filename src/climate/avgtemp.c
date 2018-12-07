@@ -22,7 +22,7 @@ Real avgtemp(const Climate *climate, /**< pointer to climate data */
 {
   int i,n;
   Real avg;
-  n=(climate->file_temp.isdaily)  ? NDAYYEAR : NMONTH;
+  n=isdaily(climate->file_temp) ? NDAYYEAR : NMONTH;
   avg=0;
   for(i=0;i<n;i++)
     avg+=climate->data.temp[cell*n+i];

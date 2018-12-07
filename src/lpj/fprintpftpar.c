@@ -42,6 +42,7 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
                "nmax:\t\t%g (mg/g)\n"
                "resist:\t\t%g\n"
                "longevity:\t%g (yr)\n"
+               "SLA:\t\t%g (m2/gC)\n"
                "lmro ratio:\t%g\n"
                "ramp:\t\t%g\n"
                "LAI sapl:\t%g\n"
@@ -67,8 +68,8 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
                "light_sl:\t%g\n"
                "light_base:\t%g\n"
                "light_tau:\t%g\n"
-               "wcal_sl:\t%g\n"
-               "wsal_base:\t%g\n"
+               "wscal_sl:\t%g\n"
+               "wscal_base:\t%g\n"
                "wscal_tau:\t%g\n"
                "mort_max:\t%g (1/yr)\n"
                "phenology:\t%s\n"
@@ -89,7 +90,7 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
           pftpar->beta_root,
           pftpar->minwscal,pftpar->gmin,pftpar->respcoeff,pftpar->nmax,
           pftpar->resist,
-          pftpar->longevity,pftpar->lmro_ratio,1.0/pftpar->ramp,
+          pftpar->longevity,pftpar->sla,pftpar->lmro_ratio,1.0/pftpar->ramp,
           pftpar->lai_sapl,pftpar->gdd5min,
           pftpar->twmax,pftpar->twmax_daily,pftpar->gddbase,pftpar->min_temprange,
           pftpar->emax,pftpar->intc,

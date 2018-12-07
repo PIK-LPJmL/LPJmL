@@ -1,0 +1,121 @@
+<HTML>
+<HEAD>
+<TITLE>cdf2bin.1</TITLE>
+</HEAD>
+<BODY>
+<H1>cdf2bin.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          cdf2bin - convert NetCDF files into raw binary data
+
+     <B>SYNOPSIS</B>
+          <B>cdf2bin</B> [-v] [-swap] [-units u] [-var name] [-clm]
+          [-cellsize size [-o binfile] gridfile netcdffile ...
+
+     <B>DESCRIPTION</B>
+          Program converts NetCDF output data into raw binary output
+          data data.
+
+     <B>OPTIONS</B>
+          -v   print name of netcdf files
+
+          -swap
+               byte order of grid file has to be swapped -units u
+               units to convert data from NetCDF file
+
+          -var name
+               variable name in NetCDF file
+
+          -clm gridfile is in CLM format, raw be default
+
+          -cellsize size
+               cell size in grid file, default is 0.5
+
+          -o binfile
+               filename of raw binary data file written. Default is
+               out.bin
+
+          <I>gridfile</I>
+               filename of binaray grid data file consisting of short
+               values
+
+          <I>netcdffile</I>
+               filename of NetCDF file(s) converted
+
+     <B>EXAMPLES</B>
+          Create output file for vegetation carbon:
+               <B>cdf2bin</B> -var vegc -o vegc1901-2010.bin  grid.bin
+               vegc.nc
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>cdf2bin</B> returns a zero exit status if the binary file is
+          created.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="bin2cdf.html">bin2cdf(1)</A></B>, <B><A HREF="country2cdf.html">country2cdf(1)</A></B>, <B><A HREF="regridlpj.html">regridlpj(1)</A></B>, <B><A HREF="lpjml.html">lpjml(1)</A></B>,
+          <B><A HREF="txt2clm.html">txt2clm(1)</A></B>, <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

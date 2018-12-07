@@ -94,12 +94,20 @@ typedef struct
   Regionpar *regionpar;
   Outputvar *outputvars;
   int n_out;     /**< number of output files */
-  Bool laimax_interpolate;
+  int laimax_interpolate;
+  Real laimax;        /**< maximum LAI for benchmark */
   int crop_index;
   Bool crop_irrigation;
+  Bool global_netcdf;     /** enable global grid for NetCDF output */
   Bool landuse_restart;   /**< land use enabled in restart file */
+  int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart; /**< sdate option in restart file */
+  int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
+  Bool intercrop;               /**< intercropping (TRUE/FALSE) */
+  Bool remove_residuals;
+  Bool residues_fire;   /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
+  Bool check_climate; /**< check climate input data for NetCDF files */
   Verbosity scan_verbose;       /**< option -vv 2: verbosely print the read values during fscanconfig. default 1; 0 would supress even error messages */
   int compress;           /**< compress NetCDF output (0: no compression) */
   float missing_value;    /**< Missing value in NetCDF files */
@@ -112,6 +120,9 @@ typedef struct
   int offset;
 #endif
   char *write_restart_filename; /**< filename of restart file */
+  char *checkpoint_restart_filename; /**< filename of checkpoint restart file */
+  Bool ischeckpoint;      /**< run from checkpoint file ? (TRUE/FALSE) */
+  int checkpointyear;     /**< year stored in restart file */
   Pftpar *pftpar;         /**< PFT parameter array */
   int restartyear; /**< year restart file is written */
   int ntypes;    /**< number of PFT classes */
@@ -122,6 +133,9 @@ typedef struct
   int nspinyear; /**< cycle length during spinup (yr) */
   int lastyear;  /**< last simulation year (AD) */
   int firstyear; /**< first simulation year (AD) */
+  int outputyear; /**< first year for output (AD) */
+  Bool isfirstspinupyear; /**< set first year for climate in spinup (TRUE/FALSE) */
+  int firstspinupyear;   /**< first year for climate in spinup */
   int total;     /**< total number of grid cells with valid soilcode */
   int nall;      /**< total number of grid cells */
   int rank;      /**< my rank */
@@ -137,7 +151,7 @@ typedef struct
   Bool new_phenology;	/**< new phenology enabled */
   Bool from_restart;   /**< reading from restart */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
-  Bool isconstlai;     /**< constant LAI max */
+  int sdate_fixyear;    /**< year in which sowing dates shall be fixed */
   Bool initsoiltemp;
   Pnet *route;         /**< river routing network */
   Pnet *irrig_neighbour; /**< irrigation neighbour network */
@@ -147,6 +161,7 @@ typedef struct
   int withlanduse;
   Bool reservoir;
   int irrig_scenario; /**< irrigation scenario (NO:0, LIM:1, POT:2, ALL:3, IRRIG on RAINFED: 4) */
+  Bool rw_manage;     /**< rain-water management enabled: reduced soil evaporation + rain-water harvesting */
   Bool pft_output_scaled; /**< PFT output grid scaled */
   int with_radiation; /**< input of radiation components (CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN) */
   Bool prescribe_burntarea;	/**< use input to prescribe burnt area to SPITFIRE? */
@@ -170,23 +185,24 @@ extern void initconfig(Config *);
 extern FILE* openconfig(Config *,const char *,int *,char***,const char*);
 extern void freeconfig(Config *);
 extern void fprintconfig(FILE *,const Config *,int,int);
-extern Bool filesexist(Config,int,int,Bool);
-extern long long outputfilesize(int,int,const Config *);
-extern Variable *fscanoutputvar(FILE *,int,Verbosity);
+extern Bool filesexist(Config,Bool);
+extern long long outputfilesize(const Config *);
+extern Variable *fscanoutputvar(LPJfile *,int,Verbosity);
 extern void freeoutputvar(Variable *,int);
-extern Bool fscanoutput(FILE *,Config *,int);
+extern Bool fscanoutput(LPJfile *,Config *,int);
 extern Bool readconfig(Config *,const char *,Fscanpftparfcn [],int,int,int *,
                        char ***,const char *);
-extern Bool fscanconfig(Config *,FILE *,Fscanpftparfcn [],int,int);
+extern Bool fscanconfig(Config *,LPJfile *,Fscanpftparfcn [],int,int);
 extern void fprintparam(FILE *,int,int,const Config *);
 extern void fprintfiles(FILE *,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);
+extern size_t getsize(int,const Config *);
 
 /* Definition of macros */
 
 #define printconfig(config,npft,ncft) fprintconfig(stdout,config,npft,ncft)
-#define closeconfig(fp) pclose(fp)
+#define ischeckpointrestart(config) ((config)->checkpoint_restart_filename!=NULL)
 #define iswriterestart(config) ((config)->write_restart_filename!=NULL)
 #define isreadrestart(config) ((config)->restart_filename!=NULL)
 #ifdef USE_MPI

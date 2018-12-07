@@ -17,19 +17,24 @@
 #include "lpj.h"
 #include "tree.h"
 
-void fprint_tree(FILE *file,const Pft *pft)
+void fprint_tree(FILE *file,     /**< pointer to text file */
+                 const Pft *pft  /**< pointer to tree PFT */
+                )
 {
-  Pfttree *tree;
+  const Pfttree *tree;
   tree=pft->data;
   fprintf(file,"Height:\t\t%g (m)\n"
                "Crown area:\t%g (m2)\n"
                "Bark thickness:\t%g (cm)\n"
+               "isphen:\t\t%s\n"
                "Gddtw:\t\t%g\n",
-               tree->height,tree->crownarea,tree->barkthickness,
+               tree->height,tree->crownarea,tree->barkthickness,bool2str(tree->isphen),
                tree->gddtw);
   if(pft->par->phenology==RAINGREEN)
     fprintf(file,"Aphen raingreen:\t%g\n",tree->aphen_raingreen);
-  fprintf(file,"Cmass:\t\t");
+  fprintf(file,"Turn:\t\t%6.2f %6.2f %6.2f (gC/m2)\n",
+          tree->turn.leaf,tree->turn.sapwood,tree->turn.root);
+  fputs("Cmass:\t\t",file);
   fprinttreephys2(file,tree->ind,pft->nind);
-  fprintf(file,"\n");
+  fputc('\n',file);
 } /* of 'fprint_tree' */

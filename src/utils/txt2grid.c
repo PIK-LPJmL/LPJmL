@@ -20,7 +20,7 @@
 
 #include "lpj.h"
 
-#define TXT2GRID_VERSION "1.0.002"
+#define TXT2GRID_VERSION "1.0.003"
 #define USAGE "Usage: txt2grid [-h] [-fmt s] [-skip n] [-cellsize size] [-float] gridfile clmfile\n"
 
 int main(int argc,char **argv)
@@ -135,8 +135,16 @@ int main(int argc,char **argv)
   header.firstcell=0;
   header.firstyear=0;
   header.nyear=1;
-  header.scalar=0.01;
-  header.datatype=(isfloat) ? LPJ_FLOAT : LPJ_SHORT;
+  if(isfloat)
+  {
+   header.scalar=1;
+   header.datatype=LPJ_FLOAT;
+  }
+  else
+  {
+    header.scalar=0.01;
+    header.datatype=LPJ_SHORT;
+  }
   gridfile=fopen(argv[i+1],"wb");
   if(gridfile==NULL)
   {
@@ -156,7 +164,10 @@ int main(int argc,char **argv)
     }
     header.ncell++;
   }
-  printf("Number of grid cells: %d\n",header.ncell);
+  if(header.ncell==0)
+    fprintf(stderr,"Error: No grid cells written to '%s'.\n",argv[i+1]);
+  else
+    printf("Number of grid cells: %d\n",header.ncell);
   rewind(gridfile);
   fwriteheader(gridfile,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   fclose(gridfile);

@@ -76,6 +76,16 @@ typedef struct
 
 typedef struct
 {
+  Real co2;
+  Real co;
+  Real ch4;
+  Real voc;
+  Real tpm;
+  Real nox;
+} Tracegas;
+
+typedef struct
+{
   Real mnpp;             /**< Monthly NPP (gC/m2) */
   Real mgpp;             /**< Monthly GPP (gC/m2) */
   Real mrh;              /**< monthly heterotrophic respiration (gC/m2) */
@@ -98,8 +108,9 @@ typedef struct
   Real mfirec;           /**< monthly fire carbon emissions (gC/m2)*/
   Real mnfire;           /**< monthly number of fires */
   Real mfiredi;          /**< monthly fire danger index */
-  Real mfireemission;    /**< monthly fire emissions */
-  Real mburntarea; /**< monthly burnt area */
+  Tracegas mfireemission;    /**< monthly fire emissions */
+  Real mburntarea;       /**< monthly burnt area */
+  Real aburntarea;       /**< yearly burnt area */
   Real mprec_image;      /**< monthly precipitation received from IMAGE [mm/month]*/
   Real mtemp_image;      /**< monthly temperature received from IMAGE [K] */
   Real msun_image;       /**< monthly cloudiness received from IMAGE [% sunshine = 100-%cloud]*/
@@ -217,6 +228,9 @@ typedef struct
   Real mphen_water;        /**< monthly phenology water limiting function */
   Real mwscal;             /**< monthly water scalar */
   Real dcflux;             /**< daily carbon flux from LPJ to atmosphere (gC/m2/day) */
+#ifdef COUPLING_WITH_FMS
+  Real dwflux;             /**< daily water flux from LPJ to atmosphere (kg/m2/day) */
+#endif
   Real mirrig_rw;          /**< monthly supplementary rain water irrigation in mm */
   Real mlakevol;           /**< monthly mean lake content volume in dm3 */
   Real mlaketemp;          /**< monthly mean lake surface temperature in deg C */
@@ -257,6 +271,7 @@ typedef struct
   char *descr; /**< description */
   char *unit;  /**< units */
   float scale;
+  float offset;
 } Variable;
 
 /* Declaration of variables */
@@ -270,7 +285,7 @@ extern void initoutput_daily(Daily_outputs *);
 extern void freeoutput(Output *);
 extern int outputsize(int,int,int,int);
 extern Type getoutputtype(int);
-
+extern int getnyear(int);
 #ifdef USE_MPI
 extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,
                      int *,int,MPI_Comm);

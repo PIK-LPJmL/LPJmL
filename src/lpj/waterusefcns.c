@@ -43,6 +43,16 @@ Wateruse initwateruse(const Config *config /**< LPJmL configuration */
       free(wateruse);
       return NULL;
     }
+    if(wateruse->file.var_len!=1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR218: Number of bands=%d in wateruse file '%s' is not 1.\n",
+                (int)wateruse->file.var_len,config->wateruse_filename.name);
+
+      closeclimate_netcdf(&wateruse->file,isroot(*config));
+      free(wateruse);
+      return NULL;
+    }
   }
   else
   {
@@ -92,6 +102,14 @@ Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
 {
   int cell;
   Real *data;
+  if(config->wateruse==ALL_WATERUSE)
+  {
+    /* first and last wateruse data is used outside available wateruse data */
+    if(year<=wateruse->file.firstyear)
+      year=wateruse->file.firstyear;
+    else if(year>=wateruse->file.firstyear+wateruse->file.nyear)
+      year=wateruse->file.firstyear+wateruse->file.nyear-1;
+  }
   if(year>=wateruse->file.firstyear && year<wateruse->file.firstyear+wateruse->file.nyear)
   {
     if(wateruse->file.fmt==CDF)
