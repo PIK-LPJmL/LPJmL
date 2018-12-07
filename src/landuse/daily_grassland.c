@@ -71,6 +71,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   Real npp; /* net primary productivity (gC/m2) */
   Real gc_pft,gcgp;
   Real wdf; /* water deficit fraction */
+  Real allcarbon;
   Bool isphen;
   Irrigation *data;
   Pftgrass *grass;
@@ -233,11 +234,18 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
   /* allocation, turnover and harvest AFTER photosynthesis */
-  stand->growing_days = 1;
-  /* turnover must happen before allocation */
+  allcarbon = 0.0;
   foreachpft(pft,p,&stand->pftlist)
-    turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)stand->growing_days/NDAYYEAR);
-  allocation_today(stand,config->ntypes);
+    allcarbon += pft->bm_inc.carbon;
+  if (fabs(allcarbon) > 1.0)
+  {
+    foreachpft(pft,p,&stand->pftlist)
+      turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)stand->growing_days/NDAYYEAR);
+    allocation_today(stand,config->ntypes);
+    stand->growing_days = 1;
+  }
+  else
+    stand->growing_days += 1;
 
   /* daily harvest check*/
   isphen=FALSE;
@@ -248,30 +256,30 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
     switch(stand->cell->ml.grass_scenario)
     {
       case GS_DEFAULT: // default
-        grass->max_leaf=max(grass->max_leaf,grass->ind.leaf.carbon);
-        if(grass->ind.leaf.carbon>=100)
+        grass->max_leaf=max(grass->max_leaf,allcarbon);
+        if(allcarbon>=100)
         {
           isphen=TRUE;
           hfrac=0.75;
         }
-        else if(grass->ind.leaf.carbon>1 && grass->ind.leaf.carbon<(0.75*grass->max_leaf))
+        else if(allcarbon>1 && grass->ind.leaf.carbon<(0.75*grass->max_leaf))
         {
           isphen=TRUE;
           hfrac=0.75;
-          if(grass->ind.leaf.carbon*(1-hfrac)<1)
-            hfrac=1-1/grass->ind.leaf.carbon;
+          if(allcarbon*(1-hfrac)<1)
+            hfrac=1-1/allcarbon;
         }
         break;
       case GS_MOWING: // mowing
         if (isMowingDay(day))
         {
-          if (grass->ind.leaf.carbon > STUBBLE_HEIGHT_MOWING) // 5 cm or 25 g.C.m-2 threshold
+          if (allcarbon > STUBBLE_HEIGHT_MOWING) // 5 cm or 25 g.C.m-2 threshold
             isphen=TRUE;
         }
         break;
       case GS_GRAZING_EXT: /* ext. grazing  */
         stand->cell->ml.rotation.rotation_mode = RM_UNDEFINED;
-        if (grass->ind.leaf.carbon > STUBBLE_HEIGHT_GRAZING_EXT) /* minimum threshold */
+        if (allcarbon > STUBBLE_HEIGHT_GRAZING_EXT) /* minimum threshold */
         {
           isphen=TRUE;
           stand->cell->ml.rotation.rotation_mode = RM_GRAZING;
@@ -279,7 +287,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
         }
         break;
       case GS_GRAZING_INT: /* int. grazing */
-        if ((grass->ind.leaf.carbon > STUBBLE_HEIGHT_GRAZING_INT) || (stand->cell->ml.rotation.rotation_mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
+        if ((allcarbon > STUBBLE_HEIGHT_GRAZING_INT) || (stand->cell->ml.rotation.rotation_mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
           isphen=TRUE;
         break;
     } /* of switch */
