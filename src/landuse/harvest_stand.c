@@ -33,14 +33,14 @@ Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   {
     grass=pft->data;
     harvest.harvest.carbon=grass->ind.leaf.carbon*hfrac;
-    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*0.25;
-    pft->stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*0.75;
+    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*0.0; /*0.25*/
+    pft->stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*1.0;
     grass->ind.leaf.carbon*=(1-hfrac);
     grass->ind.leaf.nitrogen*=(1-hfrac);
     sum.harvest.carbon+=harvest.harvest.carbon;
     sum.harvest.nitrogen+=harvest.harvest.nitrogen;
     grass->max_leaf = grass->ind.leaf.carbon;
-    pft->phen=0.3;
+    pft->phen=1; /*0.3;*/
     pft->gdd=30;
   }
   return sum;
@@ -203,7 +203,7 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
 
 Harvest harvest_stand(Output *output, /**< Output data */
                       Stand *stand,   /**< pointer to grassland stand */
-                      Real hfrac      /**< harvest fraction */
+					  Real hfrac      /**< harvest fraction */
                      )                /** \return harvested carbon (gC/m2) */
 {
   Harvest harvest;
