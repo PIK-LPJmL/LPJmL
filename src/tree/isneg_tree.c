@@ -15,7 +15,8 @@
 #include "lpj.h"
 #include "tree.h"
 
-Bool isneg_tree(const Pft *pft)
+Bool isneg_tree(const Pft *pft /**< pointer to tree PFT */
+               )               /** \return TRUE if one pool size is negative */
 {
   Pfttree *tree;
   tree=pft->data;
