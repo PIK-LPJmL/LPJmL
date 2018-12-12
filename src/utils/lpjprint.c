@@ -159,6 +159,11 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       freelandfrac(grid.ml.landfrac);
       free(grid.ml.landfrac);
     }
+    if(grid.ml.fertilizer_nr!=NULL)
+    {
+      freelandfrac(grid.ml.fertilizer_nr);
+      free(grid.ml.fertilizer_nr);
+    }
     freecell(&grid,npft,config->river_routing);
   } /* of for(i=0;...) */
   fclose(file_restart);
