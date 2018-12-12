@@ -72,12 +72,22 @@ void fprintfiles(FILE *file,   /**< File pointer to text output file */
   else
     fprintfilename(file,config->cloud_filename);
   fprintf(file,"%s\n",config->co2_filename.name);
+  if(config->with_nitrogen)
+  {
+    if(config->with_nitrogen!=UNLIM_NITROGEN)
+    {
+      fprintfilename(file,config->no3deposition_filename);
+      fprintfilename(file,config->nh4deposition_filename);
+    }
+    fprintf(file,"%s\n",config->soilph_filename.name);
+  }
+  if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    fprintfilename(file,config->wind_filename);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fprintfilename(file,config->tamp_filename);
-    if(config->tamp_filename.fmt==CDF)
+    if(config->tmax_filename.name!=NULL)
       fprintfilename(file,config->tmax_filename);
-    fprintfilename(file,config->wind_filename);
     fprintfilename(file,config->lightning_filename);
     fprintfilename(file,config->human_ignition_filename);
   }
@@ -92,6 +102,8 @@ void fprintfiles(FILE *file,   /**< File pointer to text output file */
       fprintf(file,"%s\n",config->landuse_filename.name);
     if(config->sdate_option==PRESCRIBED_SDATE)
       fprintf(file,"%s\n",config->sdate_filename.name);
+    if(config->with_nitrogen && config->fertilizer_input)
+      fprintfilename(file,config->fertilizer_nr_filename);
   }
   if(config->reservoir)
     fprintf(file,"%s\n"
