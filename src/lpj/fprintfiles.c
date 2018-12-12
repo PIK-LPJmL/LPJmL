@@ -38,15 +38,12 @@ static void fprintfilename(FILE *file,Filename filename)
     fprintf(file,"%s\n",filename.name);
 } /* of 'fprintfilename' */
 
-void fprintfiles(FILE *file,   /**< File pointer to text output file */
-                 Bool withinput, /**< list input data files (TRUE/FALSE) */
+void fprintfiles(FILE *file,          /**< pointer to text output file */
+                 Bool withinput,      /**< list input data files (TRUE/FALSE) */
                  const Config *config /**< LPJmL configuration */
                 )
 {
-  char *lpjroot;
   int i,j;
-  lpjroot=getenv(LPJROOT);
-  fprintf(file,"%s/lpjml-" LPJ_VERSION ".tar.gz\n",(lpjroot==NULL) ? "." : lpjroot);
   if(isreadrestart(config))
     fprintf(file,"%s\n",config->restart_filename);
   if(withinput)

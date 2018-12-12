@@ -64,7 +64,7 @@ int main(int argc,char **argv)
              "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
              "-Idir            directory to search for include files\n"
              "filename         configuration filename. Default is '%s'\n\n"
-             "Copyright (c) 2008-2012, PIK Potsdam\n",
+             "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
              dflt_conf_filename);
       if(file!=stdout)
         pclose(file);
