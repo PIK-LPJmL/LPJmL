@@ -84,7 +84,7 @@ osname=$(uname)
 
 if test -d /p ;
 then
-  inpath=/home/sibylls/CLIMATE_INPUT
+  inpath=/p/projects/lpjml/input/historical
 else
   inpath=""
   echo >&2 No input directory found, LPJINPATH has to be set
