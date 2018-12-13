@@ -30,7 +30,7 @@ void new_grass(Pft *pft,         /**< pointer to PFT variables */
   grasspar=pft->par->data;
   pft->bm_inc.carbon=pft->wscal_mean=pft->phen=0;
   pft->bm_inc.nitrogen=0;
-  pft->stand->growing_days=0;
+  grass->growing_days=0;
   grass->max_leaf=0;
   grass->excess_carbon=0;
   pft->vmax=0;

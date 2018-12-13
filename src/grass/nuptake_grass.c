@@ -90,7 +90,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
         }
       }
   }
-  if(*n_plant_demand*(1-pft->par->knstore)>vegn_sum_grass(pft))
+  if(*n_plant_demand/(1+pft->par->knstore)>vegn_sum_grass(pft))
   {
     *n_plant_demand=vegn_sum_grass(pft);
     NC_actual=vegn_sum_grass(pft)/vegc_sum_grass(pft);

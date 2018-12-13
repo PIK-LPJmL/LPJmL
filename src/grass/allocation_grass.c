@@ -29,17 +29,27 @@ Bool allocation_grass(Litter *litter, /**< litter pool */
   Real leaf_carbon_lastday, root_carbon_lastday;
   Real leaf_nitrogen_lastday, root_nitrogen_lastday;
   Real a;
+  int growing_days;
   grasspar=pft->par->data;
   grass=pft->data;
 
   bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
   bm_inc_ind.nitrogen=pft->bm_inc.nitrogen/pft->nind;
-  vscal=min(1,pft->vscal/pft->stand->growing_days);
-  lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/pft->stand->growing_days);
-
-  if (pft->stand->growing_days>epsilon)
+  if(pft->stand->type->landusetype!=GRASSLAND && pft->stand->type->landusetype!=BIOMASS_GRASS) 
+    growing_days=NDAYYEAR;
+  else
   {
-    lmtormscal = pft->wscal_mean/pft->stand->growing_days;
+	  growing_days=grass->growing_days;
+	  grass->growing_days=1;
+  }
+
+  vscal=min(1,pft->vscal/growing_days);
+  vscal=1; //pft->wscal_mean=1;
+  lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/growing_days);
+
+  if (growing_days>epsilon)
+  {
+    lmtormscal = pft->wscal_mean/growing_days;
     lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,lmtormscal);
   }
   else

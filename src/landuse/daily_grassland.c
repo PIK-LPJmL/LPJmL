@@ -79,8 +79,12 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   Real cleaf=0.0;
   Real cleaf_max=0.0;
   irrig_apply=0.0;
+  int n_pft;
+  Real *fpc_inc;
+  n_pft=getnpft(&stand->pftlist); /* get number of established PFTs */
 
   data=stand->data;
+  stand->growing_days++;
   output=&stand->cell->output;
   evap=evap_blue=cover_stand=intercep_stand=intercep_stand_blue=wet_all=rw_apply=intercept=sprink_interc=rainmelt=intercep_pft=0.0;
   runoff=return_flow_b=0.0;
@@ -238,18 +242,38 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
   /* allocation, turnover and harvest AFTER photosynthesis */
-  allcarbon = 0.0;
-  foreachpft(pft,p,&stand->pftlist)
-    allcarbon += pft->bm_inc.carbon;
-  if (fabs(allcarbon) > 1.0)
+  if(n_pft>0) /* nonzero? */
   {
+    fpc_inc=newvec(Real,n_pft);
+    check(fpc_inc);
+
     foreachpft(pft,p,&stand->pftlist)
-      turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)stand->growing_days/NDAYYEAR);
-    allocation_today(stand,config->ntypes);
-    stand->growing_days = 1;
+    {
+      grass=pft->data;
+      if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
+      {
+        turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
+        if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p))
+        {
+          /* kill PFT from list of established PFTs */
+          fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */
+          litter_update_grass(&stand->soil.litter,pft,pft->nind);
+          delpft(&stand->pftlist,p);
+          p--; /* adjust loop variable */
+        }
+        else
+         // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
+         pft->bm_inc.carbon=0;
+       }
+       else
+       {
+         grass->growing_days++;
+         fpc_inc[p]=0;
+       }
+    }
+    light(stand,config->ntypes,fpc_inc);
+    free(fpc_inc);
   }
-  else
-    stand->growing_days += 1;
 
   /* daily harvest check*/
   isphen=FALSE;
@@ -265,14 +289,23 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   switch(stand->cell->ml.grass_scenario)
   {
     case GS_DEFAULT: // default
-      if(day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365)
-      {
-        if(cleaf>cleaf_max)
+//      if(day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365)
+//      {
+        if(cleaf>cleaf_max && stand->growing_days>=20)
         {
+          fpc_inc=newvec(Real,n_pft);
+          check(fpc_inc);
           isphen=TRUE;
-          hfrac=1-1000/(1000+cleaf);
+          hfrac=1-500/(500+cleaf);
+          foreachpft(pft,p,&stand->pftlist){
+        	  grass=pft->data;
+              turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
+           }
+          allocation_today(stand,config->ntypes);
+          light(stand,config->ntypes,fpc_inc);
+          free(fpc_inc);
          }
-       }
+//       }
        break;
     case GS_MOWING: // mowing
       if (isMowingDay(day))
@@ -349,7 +382,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
         output->daily.pet+=eeq*PRIESTLEY_TAYLOR;
       }
   }
-
+   
   if(data->irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
     calc_nir(stand,gp_stand,wet,eeq);
 

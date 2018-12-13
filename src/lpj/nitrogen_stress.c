@@ -23,14 +23,15 @@ Real nitrogen_stress(Pft *pft,         /**< PFT */
                     )                  /** \return total N demand (gN/m2) */
 {
   Real nplant_demand,ndemand_leaf;
-  Real ndemand_leaf_opt;
-  nplant_demand=0;
+  Real ndemand_leaf_opt,nplant_demand_opt;
+  nplant_demand_opt=nplant_demand=0;
   if(pft->bm_inc.carbon>0)
   {
     nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,daylength,temp,npft,nbiomass,ncft)*(1+pft->par->knstore);
     ndemand_leaf_opt=ndemand_leaf;
+    nplant_demand_opt=nplant_demand;
     /* calculation of limitation in ndemad_leaf is missing */
-    if(nplant_demand>pft->bm_inc.nitrogen || pft->bm_inc.nitrogen<2)
+    if(nplant_demand>pft->bm_inc.nitrogen || pft->bm_inc.nitrogen<2)  //nuptake happens always if nitrogen bm_inc< 2
       pft->stand->cell->output.mn_uptake+=nuptake(pft,&nplant_demand,&ndemand_leaf,npft,nbiomass,ncft)*pft->stand->frac;
     else if(pft->stand->type->landusetype!=AGRICULTURE)
       pft->vscal+=1;
@@ -38,8 +39,8 @@ Real nitrogen_stress(Pft *pft,         /**< PFT */
     if(ndemand_leaf_opt>ndemand_leaf)
     {
       pft->vmax=vmaxlimit(pft,daylength,temp);
-#ifdef DEBUG_N
-      printf("vmax_limit=%g  vscal=%g\n\n",pft->vmax,pft->vscal);
+#ifdef NDEBUG
+      printf("PFT: %s vmax_limit=%g  vscal=%g ndemand_leaf_opt:%g nleaf:%g nplant_demand_opt:%g nplant_demand:%g\n\n",pft->par->name,pft->vmax,pft->vscal,ndemand_leaf_opt,ndemand_leaf,nplant_demand_opt,nplant_demand);
 #endif
     }
   }

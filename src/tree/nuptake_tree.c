@@ -88,7 +88,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
         }
       }
   }
-  if(*n_plant_demand*(1-pft->par->knstore)>(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind))   /*HERE RECALCULATION OF N-demand TO N-supply*/
+  if(*n_plant_demand/(1+pft->par->knstore)>(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind))   /*HERE RECALCULATION OF N-demand TO N-supply*/
   {
     *n_plant_demand=(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind);
     NC_actual=(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind)/(vegc_sum_tree(pft)-tree->ind.heartwood.carbon*pft->nind);

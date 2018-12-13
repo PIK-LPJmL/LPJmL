@@ -232,6 +232,7 @@ Harvest harvest_stand(Output *output, /**< Output data */
   output->flux_harvest.carbon+=(harvest.harvest.carbon+harvest.residual.carbon)*stand->frac;
   output->flux_harvest.nitrogen+=(harvest.harvest.nitrogen+harvest.residual.nitrogen)*stand->frac;
   output->dcflux+=(harvest.harvest.carbon+harvest.residual.carbon)*stand->frac;
+  stand->growing_days=0;
   return harvest;
 }
  /* of 'harvest_stand' */

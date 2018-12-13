@@ -967,7 +967,7 @@
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.35,     /* leaf longevity 10*/
-    "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
+    "lmro_ratio" : 0.8,     /* lmro_ratio 18*/
     "ramp" : 100.,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
