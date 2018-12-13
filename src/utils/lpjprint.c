@@ -128,9 +128,20 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     {
       grid.ml.landfrac=newvec(Landfrac,2);
       newlandfrac(grid.ml.landfrac,ncft);
+      if(config->with_nitrogen)
+      {
+        grid.ml.fertilizer_nr=newvec(Landfrac,2);
+        newlandfrac(grid.ml.fertilizer_nr,ncft);
+      }
+      else
+        grid.ml.fertilizer_nr=NULL;
+
     }
     else
+    {
       grid.ml.landfrac=NULL;
+      grid.ml.fertilizer_nr=NULL;
+    }
     initoutput(&grid.output,config->crop_index,config->crop_irrigation,npft,config->nbiomass,ncft);
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
 
@@ -147,6 +158,11 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     {
       freelandfrac(grid.ml.landfrac);
       free(grid.ml.landfrac);
+    }
+    if(grid.ml.fertilizer_nr!=NULL)
+    {
+      freelandfrac(grid.ml.fertilizer_nr);
+      free(grid.ml.fertilizer_nr);
     }
     freecell(&grid,npft,config->river_routing);
   } /* of for(i=0;...) */

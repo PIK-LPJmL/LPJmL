@@ -22,7 +22,7 @@
 
 #include "include/conf.h" /* include constant definitions */
 
-#define DAILY_OUTPUT  /* enables daily output */
+//#define DAILY_OUTPUT  /* enables daily output */
 
 {   /* LPJmL configuration in JSON format */
 
@@ -38,8 +38,8 @@
   "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
   "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
-  "new_phenology": false,    /* GSI phenology enabled */
-  "river_routing" : false,
+  "new_phenology": true,    /* GSI phenology enabled */
+  "river_routing" : true,
   "permafrost" : true,
   "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
 #ifdef FROM_RESTART
@@ -98,7 +98,7 @@
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
 
-  "crop_index" : TEMPERATE_HERBACEOUS,  /* TEMPERATE_CEREALS CFT for daily output */
+  "crop_index" : TEMPERATE_CEREALS,  /* CFT for daily output */
   "crop_irrigation" : DAILY_RAINFED, /* irrigation flag for daily output */
 
 #ifdef FROM_RESTART
@@ -175,17 +175,12 @@ ID                         Fmt                    filename
     { "id" : HARVESTC,         "file" : { "fmt" : RAW, "name" : "output/flux_harvestc.bin"}},
     { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : "output/sdate.bin"}},
     { "id" : PFT_HARVESTC,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvest.SUFFIX)}},
-    { "id" : PFT_HARVESTN,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestn.SUFFIX)}},
     { "id" : CFTFRAC,          "file" : { "fmt" : RAW, "name" : "output/cftfrac.bin"}},
     { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : "output/seasonality.bin"}},
 #ifdef DAILY_OUTPUT
     { "id" : D_NPP,            "file" : { "fmt" : RAW, "name" : "output/d_npp.bin"}},
     { "id" : D_GPP,            "file" : { "fmt" : RAW, "name" : "output/d_gpp.bin"}},
     { "id" : D_RH,             "file" : { "fmt" : RAW, "name" : "output/d_rh.bin"}},
-    { "id" : D_CLEAF,          "file" : { "fmt" : RAW, "name" : "output/d_cleaf.bin"}},
-    { "id" : D_CROOT,          "file" : { "fmt" : RAW, "name" : "output/d_croot.bin"}},
-    { "id" : D_NLEAF,          "file" : { "fmt" : RAW, "name" : "output/d_nleaf.bin"}},
-    { "id" : D_NROOT,          "file" : { "fmt" : RAW, "name" : "output/d_nroot.bin"}},
     { "id" : D_TRANS,          "file" : { "fmt" : RAW, "name" : "output/d_trans.bin"}},
     { "id" : D_INTERC,         "file" : { "fmt" : RAW, "name" : "output/d_interc.bin"}},
     { "id" : D_EVAP,           "file" : { "fmt" : RAW, "name" : "output/d_evap.bin"}},
@@ -218,8 +213,8 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : 28396, /* 27410, 67208 60400 all grid cells */
-  "endgrid" : 28396,
+  "startgrid" : ALL, /* 27410, 67208 60400 all grid cells */
+  "endgrid" : ALL,
 
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
@@ -238,16 +233,16 @@ ID                         Fmt                    filename
 
 #else
 
-  "nspinup" : 0,   /* spinup years */
-  "nspinyear" : 0,  /* cycle length during spinup (yr)*/
+  "nspinup" : 390,   /* spinup years */
+  "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 2011, /* last year of simulation */
   "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_2000_crop_stdfire.lpj", /* filename of restart file */
-  "restart_year": 2000 /* write restart at year */
+  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
+  "restart_year": 1900 /* write restart at year */
 
 #endif
 }
