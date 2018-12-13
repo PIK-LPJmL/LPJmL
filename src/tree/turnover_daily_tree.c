@@ -15,8 +15,10 @@
 #include "lpj.h"
 #include "tree.h"
 
-void turnover_daily_tree(Litter *litter,Pft *pft,Real temp,
-                         Bool isdaily /**< daily temperature data? */
+void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
+                         Pft *pft,       /**< pointer to tree PFT */
+                         Real temp,      /**< air temperature (deg C) */
+                         Bool isdaily    /**< daily temperature data? */
                         )
 {
   Pfttree *tree;

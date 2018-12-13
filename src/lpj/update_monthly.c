@@ -23,10 +23,8 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
                     int month    /**< month (0..11) */
                    )
 {
-#ifndef YEARLY_TURNOVER
   int p;
   Pft *pft;
-#endif
   int s,l;
   Stand *stand;
 
@@ -36,10 +34,8 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   foreachstand(stand,s,cell->standlist)
   {
     getlag(&stand->soil,month);
-#ifndef YEARLY_TURNOVER
     foreachpft(pft,p,&stand->pftlist)
       turnover_monthly(&stand->soil.litter,pft);
-#endif
   } /* of foreachstand */
   for(l=0;l<NSOILLAYER;l++)
     cell->output.mswc[l]*=ndaymonth1[month];
