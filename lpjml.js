@@ -38,7 +38,7 @@
   "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
   "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
-  "new_phenology": true,    /* GSI phenology enabled */
+  "new_phenology": false,    /* GSI phenology enabled */
   "river_routing" : false,
   "permafrost" : true,
   "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */

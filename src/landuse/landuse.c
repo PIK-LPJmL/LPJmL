@@ -704,7 +704,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       /* 1: surface, 2: sprinkler, 3: drip irrigation */
 
 
-/*      sum=landfrac_sum(grid[cell].ml.landfrac,ncft,FALSE)+landfrac_sum(grid[cell].ml.landfrac,ncft,TRUE);
+      sum=landfrac_sum(grid[cell].ml.landfrac,ncft,FALSE)+landfrac_sum(grid[cell].ml.landfrac,ncft,TRUE);
 
       for(j=0;j<ncft;j++)
       {
@@ -719,17 +719,17 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         grid[cell].ml.irrig_system->grass[j]=grid[cell].ml.manage.par->default_irrig_system;
       }
 
-      grid[cell].ml.landfrac[1].biomass_grass=0.25;
-      grid[cell].ml.landfrac[0].biomass_grass=0.25;
+      grid[cell].ml.landfrac[1].biomass_grass=0.0;
+      grid[cell].ml.landfrac[0].biomass_grass=0.0;
       grid[cell].ml.irrig_system->biomass_grass=grid[cell].ml.manage.par->default_irrig_system;
-      grid[cell].ml.landfrac[1].biomass_tree=0.25;
-      grid[cell].ml.landfrac[0].biomass_tree=0.25;
+      grid[cell].ml.landfrac[1].biomass_tree=0.0;
+      grid[cell].ml.landfrac[0].biomass_tree=0.0;
       grid[cell].ml.irrig_system->biomass_tree=grid[cell].ml.manage.par->default_irrig_system;
 
       grid[cell].ml.landfrac[1].grass[1]=0.0;
-      grid[cell].ml.landfrac[0].grass[0]=0.0;
+      grid[cell].ml.landfrac[0].grass[0]=1.0;
       //if (sum>1.00001) grid[cell].ml.landfrac[0].grass[0]=1.0;
-*/
+
       /* END DEBUG */
 
       sum=landfrac_sum(grid[cell].ml.landfrac,ncft,FALSE)+landfrac_sum(grid[cell].ml.landfrac,ncft,TRUE);
