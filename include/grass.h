@@ -47,6 +47,7 @@ typedef struct
   Real excess_carbon;
   Grassphys ind;
   Grassphyspar falloc;
+  int growing_days;
 } Pftgrass;
 
 /* Declaration of functions */

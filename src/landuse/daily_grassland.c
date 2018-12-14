@@ -71,7 +71,6 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   Real npp; /* net primary productivity (gC/m2) */
   Real gc_pft,gcgp;
   Real wdf; /* water deficit fraction */
-  Real allcarbon;
   Bool isphen;
   Irrigation *data;
   Pftgrass *grass;
@@ -310,13 +309,13 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
     case GS_MOWING: // mowing
       if (isMowingDay(day))
       {
-        if (allcarbon > STUBBLE_HEIGHT_MOWING) // 5 cm or 25 g.C.m-2 threshold
+        if (cleaf > STUBBLE_HEIGHT_MOWING) // 5 cm or 25 g.C.m-2 threshold
           isphen=TRUE;
       }
       break;
     case GS_GRAZING_EXT: /* ext. grazing  */
       stand->cell->ml.rotation.rotation_mode = RM_UNDEFINED;
-      if (allcarbon > STUBBLE_HEIGHT_GRAZING_EXT) /* minimum threshold */
+      if (cleaf > STUBBLE_HEIGHT_GRAZING_EXT) /* minimum threshold */
       {
         isphen=TRUE;
         stand->cell->ml.rotation.rotation_mode = RM_GRAZING;
@@ -324,7 +323,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
       }
       break;
     case GS_GRAZING_INT: /* int. grazing */
-      if ((allcarbon > STUBBLE_HEIGHT_GRAZING_INT) || (stand->cell->ml.rotation.rotation_mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
+      if ((cleaf > STUBBLE_HEIGHT_GRAZING_INT) || (stand->cell->ml.rotation.rotation_mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
         isphen=TRUE;
       break;
   } /* of switch */

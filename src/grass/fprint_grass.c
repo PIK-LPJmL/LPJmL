@@ -25,7 +25,7 @@ void fprint_grass(FILE *file,    /**< pointer to text file */
   grass=pft->data;
   fputs("Mass:\t\t",file);
   fprintgrassphys(file,grass->ind);
-  fputc('\n',file);
   fprintf(file,"\nExcess carbon:\t%g (gC/m2)\n",grass->excess_carbon);
+  fprintf(file,"growing_days:\t%d\n",grass->growing_days);
   fprintf(file,"falloc:\t\t%g %g\n",grass->falloc.leaf,grass->falloc.root);
 } /* of 'fprint_grass' */
