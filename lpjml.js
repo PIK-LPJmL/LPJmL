@@ -172,7 +172,7 @@ ID                         Fmt                    filename
 #endif
     { "id" : MDISCHARGE,       "file" : { "fmt" : RAW, "name" : "output/mdischarge.bin"}},
     { "id" : MWATERAMOUNT,     "file" : { "fmt" : RAW, "name" : "output/mwateramount.bin"}},
-    { "id" : HARVESTC,         "file" : { "fmt" : RAW, "name" : "output/flux_harvestc.bin"}},
+    { "id" : HARVESTC,         "file" : { "fmt" : RAW, "name" : "output/flux_harvest.bin"}},
     { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : "output/sdate.bin"}},
     { "id" : PFT_HARVESTC,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvest.SUFFIX)}},
     { "id" : CFTFRAC,          "file" : { "fmt" : RAW, "name" : "output/cftfrac.bin"}},
