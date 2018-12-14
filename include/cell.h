@@ -82,11 +82,11 @@ struct cell
 
 Albedo models for snow and ice on a freshwater lake
 Heather E. Henneman, Heinz G. Stefan
-St. Anthony Falls Laboratory, Department of CiÕil Engineering, UniÕersity of Minnesota, Minneapolis, MN 55414, USA
+St. Anthony Falls Laboratory, Department of Civil Engineering, University of Minnesota, Minneapolis, MN 55414, USA
 Received 19 November 1997; accepted 15 January 1999*/
 
-  Real albedo_lake; /**<for a changing albedo of lakes*/
-  Real snowpool_above_lake; /**<temporarily storing the snow mass on a lake*/
+  Real albedo_lake;         /**< for a changing albedo of lakes*/
+  Real snowpool_above_lake; /**< temporarily storing the snow mass on a lake*/
 
 #endif
   Bool skip;                /**< Invalid soil code in cell (TRUE/FALSE) */
