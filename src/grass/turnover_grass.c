@@ -51,7 +51,6 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   }
 
   /* turnover */
-#ifndef YEARLY_TURNOVER
   if (pft->stand->type->landusetype==NATURAL)
   {
     gturn.root=grass->turn.root;
@@ -62,9 +61,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
       litter->ag[pft->litter].trait.leaf.nitrogen-=gturn.leaf.nitrogen*pft->nind*(1-pft->par->fn_turnover);
   }
   else
-#endif 
- {
-
+  {
     gturn.root.carbon=grass->ind.root.carbon*grasspar->turnover.root*fraction;
     gturn.root.nitrogen=grass->ind.root.nitrogen*grasspar->turnover.root*fraction;
     gturn.leaf.carbon=grass->ind.leaf.carbon*grasspar->turnover.leaf*fraction;

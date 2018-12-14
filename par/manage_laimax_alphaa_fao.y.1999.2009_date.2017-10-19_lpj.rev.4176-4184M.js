@@ -3,7 +3,7 @@
 /**  manage_laimax_alphaa_fao.y.1999.2009_date.2017-10-19_lpj.rev.4176-4184M.js    \n**/
 /**                                                                                \n**/
 /**     management parameter data with maximum LAI values for all crops            \n**/
-/**               LPJmL Version 4.0.001                                            \n**/
+/**               LPJmL Version 5.1.001                                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/

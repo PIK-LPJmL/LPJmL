@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              s  o  i  l  _  r  o  c  k  _  i  c  e  .  j  s                    \n**/
 /**                                                                                \n**/
-/**  Soil parameter data for LPJmL version 4.0.001                                 \n**/
+/**  Soil parameter data for LPJmL version 4.0.002                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/

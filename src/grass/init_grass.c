@@ -4,6 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Function initializes annual variables                                      \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -15,7 +17,8 @@
 #include "lpj.h"
 #include "grass.h"
 
-void init_grass(Pft *pft)
+void init_grass(Pft *pft /**< pointer to grass PFT */
+               )
 {
   pft->nleaf=0;
   pft->bm_inc.carbon=pft->wscal_mean=pft->vscal=0;
