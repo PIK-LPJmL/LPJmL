@@ -1,0 +1,35 @@
+.TH manage2js 1  "December 18, 2018" "version 1.0.001" "USER COMMANDS"
+.SH NAME
+manage2js \- convert management  *.par files to JSON file
+.SH SYNOPSIS
+.B manage2js
+.I laimaxfile managefile
+.SH DESCRIPTION
+Program converts management parameter files into JSON file. Converted file output is redirected to standard output. Comments have to be deleted from parameter file.
+.SH OPTIONS
+.TP
+laimaxfile
+Parameter file containing LAImax values for all crop types
+.TP
+managefile
+Parameter file containing LAImax values for temperate cereals and maize and EP and EC values
+.SH EXAMPLES
+.TP
+Create data file for temperature:
+.B manage2js
+manage_laimax.par manage.par >manage.js
+.SH EXIT STATUS
+.B manage2js
+returns a zero exit status if output was converted successfully.
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+See AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
