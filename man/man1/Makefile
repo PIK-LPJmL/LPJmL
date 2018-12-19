@@ -21,7 +21,7 @@ SRC	= cat2bsq.1 lpjml.1 txt2grid.1\
           backtrace.1 catclm.1 printclm.1 adddrain.1\
           printreservoir.1 printharvest.1 setclm.1 lpjfiles.1\
           regridlpj.1 cdf2clm.1 clm2cdf.1 soil2cdf.1 cdf2soil.1 bin2cdf.1\
-          cutclm.1 cvrtclm.1
+          cutclm.1 cvrtclm.1 manage2js.1
 
 HTMLDIR	= ../../html
 HTML	= $(SRC:%.1=$(HTMLDIR)/%.html)
