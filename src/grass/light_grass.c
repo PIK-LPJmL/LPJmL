@@ -15,7 +15,7 @@
 #include "lpj.h"
 #include "grass.h"
 
-void light_grass(Litter *litter,Pft *pft,Real excess)
+void light_grass(Litter *litter,Pft *pft,Real excess, Real fpc_total_grass)
 
 {
   Grassphys  m_kill; /* reduction in grass PFT mass to reduce grass cover
@@ -25,7 +25,7 @@ void light_grass(Litter *litter,Pft *pft,Real excess)
   grass=pft->data;
   
   lm_old=grass->ind.leaf;
-  grass->ind.leaf.carbon=-2.0*log(1.0-(pft->fpc-excess))/getpftpar(pft,sla);
+  grass->ind.leaf.carbon=-2.0*log(1.0-(pft->fpc-excess*pft->fpc/fpc_total_grass))/getpftpar(pft,sla);
   if(grass->ind.leaf.nitrogen>0)
     grass->ind.leaf.nitrogen=-2.0*log(1.0-(pft->fpc-excess))/getpftpar(pft,sla)*grass->ind.leaf.nitrogen/lm_old.carbon;
   m_kill.leaf.carbon=lm_old.carbon-grass->ind.leaf.carbon;

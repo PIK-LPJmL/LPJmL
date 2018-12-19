@@ -56,7 +56,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
                     Real *gc_pft,
                     Real *rd,
                     Real *wet,
-                    Real pet,  /**< potential evapotranspiration (mm) */
+                    Real eeq,  /**< equilibrium evapotranspiration (mm) */
                     Real co2,  /**< Atmospheric CO2 partial pressure (ppmv) */
                     Real temp, /**< Temperature (deg C) */
                     Real par,  /**< photosynthetic active radiation (J/m2/day) */
@@ -68,7 +68,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
                    ) /** \return gross primary productivity (gC/m2) */
 {
   int l,i,iter;
-  Real supply,supply_pft,demand,demand_pft,wr,lambda,gpd,agd,gc,aet,aet_cor;
+  Real supply,supply_pft,demand,demand_pft,wr,lambda,gpd,agd,gc,aet,aet_cor,aet_frac;
   Data data;
   Real roots,vmax;
   Real rootdist_n[LASTLAYER];
@@ -81,6 +81,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
   Irrigation *irrig;
 
   wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
+  aet_frac=1.;
   forrootsoillayer(l)
     rootdist_n[l]=pft->par->rootdist[l];
   if(config->permafrost)
@@ -125,7 +126,12 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
 
   if(pft->stand->type->landusetype==AGRICULTURE)
   {
-    supply=pft->par->emax*wr*(1-exp(-1.0*pft->par->sla*((Pftcrop *)pft->data)->ind.root.carbon));
+    supply=pft->par->emax*wr*(1-exp(-0.04*((Pftcrop *)pft->data)->ind.root.carbon));
+    if (pft->phen>0)
+    {
+       gp_stand=gp_stand/pft->phen*fpar(pft);
+       gp_pft=gp_pft/pft->phen*fpar(pft);
+    }
   }
   else
   {
@@ -133,13 +139,13 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
   }
 
   supply_pft=supply*pft->fpc;
-  demand=(gp_stand>0) ? (1.0-*wet)*pet*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
-  demand_pft=(gp_pft>0) ? (1.0-*wet)*pet*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_pft) : 0;
+  demand=(gp_stand>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
+  demand_pft=(gp_pft>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_pft) : 0;
   *wdf=wdf(pft,demand,supply);
 
-  if(pet>0 && gp_stand_leafon>0 && pft->fpc>0)
+  if(eeq>0 && gp_stand_leafon>0 && pft->fpc>0)
   {
-    pft->wscal=(pft->par->emax*wr)/(pet*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand_leafon));
+    pft->wscal=(pft->par->emax*wr)/(eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand_leafon));
     if(pft->wscal>1)
       pft->wscal=1;
   }
@@ -150,9 +156,9 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
 
   if(supply_pft>=demand_pft)
     *gc_pft=gp_pft;
-  else if(pet>0)
+  else if(eeq>0)
   {
-    *gc_pft=(param.GM*param.ALPHAM)*supply_pft/((1.0-*wet)*pet*param.ALPHAM-supply_pft);
+    *gc_pft=(param.GM*param.ALPHAM)*supply_pft/((1.0-*wet)*eeq*param.ALPHAM-supply_pft);
     if(*gc_pft<0)
       *gc_pft=0;
   }
@@ -160,35 +166,48 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
     *gc_pft=0;
 
   aet=(wr>0) ? min(supply,demand)/wr*pft->fpc : 0;
+  if (aet>0 && pft->fpc>epsilon)
+  {
   for (l=0;l<LASTLAYER;l++)
-  {
-    aet_tmp[l]=aet_layer[l]+aet*rootdist_n[l]*pft->stand->soil.w[l];
-    if (aet_tmp[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
-    {
-      aet_cor+=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l]-aet_layer[l];
-      isless=TRUE;
-    }
-    else
-      aet_cor+=aet_tmp[l];
+     {
+       aet_frac=1;
+       if(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
+       {
+         aet_frac=(pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])/(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc);
+       }
+       aet_tmp[l]=aet_layer[l]+aet*rootdist_n[l]*pft->stand->soil.w[l]*aet_frac;
+       if (aet_tmp[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
+       {
+         aet_cor+=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l]-aet_layer[l];
+         if(aet_cor<epsilon) aet_cor=0;
+       }
+       else
+       {
+         aet_cor+=aet*rootdist_n[l]*pft->stand->soil.w[l]*aet_frac;
+       }
+     }
   }
-  if (isless==TRUE && aet_cor<aet)
-  {
-    supply=aet_cor*wr/pft->fpc;
-    aet=aet_cor;
-  }
+   else
+     aet_cor=0;
+
+  aet=(wr>0) ? aet_cor/wr : 0;
+  if (pft->fpc>epsilon && aet>0)
+    supply=aet*wr/pft->fpc;
+  else
+        supply=0;
   if(supply>=demand)
     gc=gp_stand;
-  else if(pet>0)
+  else if(eeq>0)
   {
-    gc=(param.GM*param.ALPHAM)*supply/((1.0-*wet)*pet*param.ALPHAM-supply);
+    gc=(param.GM*param.ALPHAM)*supply/((1.0-*wet)*eeq*param.ALPHAM-supply);
     if(gc<0)
       gc=0;
   }
   else
     gc=0;
 
-  if(pft->stand->type->landusetype==AGRICULTURE)
-    gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft))*pft->fpc;
+  if(pft->par->type==CROP)
+    gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft));
   else
     gpd=hour2sec(daylength)*(gc-pft->par->gmin*pft->phen)*pft->fpc;
 
@@ -220,10 +239,10 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
                      temp,data.apar,daylength);
       gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                     pft->par->gmin*fpar(pft);
-      demand=(gc>0) ? (1-*wet)*pet*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
+      demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
       if(gc_new-gc>0.01 &&  demand-supply_pft>0.1)
       {
-         gc=(param.GM*param.ALPHAM)*supply_pft/((1.0-*wet)*pet*param.ALPHAM-supply_pft);
+         gc=(param.GM*param.ALPHAM)*supply_pft/((1.0-*wet)*eeq*param.ALPHAM-supply_pft);
          if(gc<0)
            gc=0;
          if(pft->stand->type->landusetype==AGRICULTURE)
@@ -237,7 +256,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
                              temp,data.apar,daylength);
         gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                       pft->par->gmin*fpar(pft);
-        demand=(gc>0) ? (1-*wet)*pet*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
+        demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
       }
       aet=(wr>0) ? demand*fpar(pft)/wr :0 ;
 

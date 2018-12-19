@@ -498,7 +498,7 @@
     "tmin" :
     {
       "slope" : 0.2591,     /* new phenology: slope of cold-temperature limiting function */
-      "base" : 13.69,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "base" : 5.69,        /* new phenology: inflection point of cold-temperature limiting function (deg C), originally 13.69 from Forkel etal. */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
@@ -801,20 +801,20 @@
     "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 0.15,       /* new phenology: slope of cold-temperature limiting function */
+      "slope" : 0.21,       /* new phenology: slope of cold-temperature limiting function 0.15 */
       "base" : -4.165,      /* new phenology: inflection point of cold-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
-      "slope" : 0.24,        /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "slope" : 1.24,        /* new phenology: slope of warm-temperature limiting function tmax_sl 0.24*/
       "base" : 44.6,         /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2            /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
-      "slope" : 95,          /* new phenology: slope of light limiting function */
-      "base" : 130.1,        /* new phenology: inflection point of light limiting function (Wm-2) */
+      "slope" : 58,          /* new phenology: slope of light limiting function 95 */
+      "base" : 59.78,        /* new phenology: inflection point of light limiting function (Wm-2)130.1  */
       "tau" : 0.2            /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
@@ -1092,8 +1092,8 @@
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : ANY,      /* phenology */
     "path" : C3,            /* pathway */
-    "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
+    "temp_photos" : { "low" : 15., "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : -2.6 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38184,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : ALPHA_FUELP_EXTRATROP, /* scaling factor fire danger index */

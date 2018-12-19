@@ -75,7 +75,7 @@ extern void mix_veg_grass(Pft *,Real);
 extern Stocks fire_grass(Pft *,Real *);
 extern void init_grass(Pft *);
 extern void free_grass(Pft *);
-extern void light_grass(Litter *,Pft *,Real);
+extern void light_grass(Litter *,Pft *,Real,Real);
 extern void adjust_grass(Litter *,Pft *,Real,Real);
 extern void reduce_grass(Litter *,Pft *,Real);
 extern void fprintpar_grass(FILE *,const Pftpar *);
