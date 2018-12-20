@@ -16,23 +16,39 @@
 
 //#define alpha_fuelp 0.000337
 
+#define a -7.90298
+#define b 5.02808
+#define c -1.3816e-7
+#define d 11.344
+#define f 8.1328e-3
+#define h 3.49149
+#define Ts 373.16  /* water boiling point temperature in Kelvin Todo: dependend on altitude (pressure) */
+#define cR 2   /* day/mm */
+
 Real firedangerindex(Real char_moist_factor,
                      Real char_alpha_fuel,
                      Real nesterov_accum,
-                     const Pftlist *pftlist
+                     const Pftlist *pftlist,
+		     Real humidity,
+		     Real avgprec,
+		     int fid,
+		     Real temp
                     )
 {
-  Real d_fdi,alpha_fuelp_ave;
+  Real d_fdi,alpha_fuelp_ave,fpc_sum=0;
+  Real  temperature, RH, VD, R, Z, vpd_sum;
+
   const Pft *pft;
   int p,n;
   alpha_fuelp_ave=0;
   n=getnpft(pftlist);
+  if (fid == NESTEROV_INDEX)
+  {
   if(n>0)
   {
     foreachpft(pft,p,pftlist)
-      alpha_fuelp_ave+=pft->par->alpha_fuelp;
-  
-    alpha_fuelp_ave/=n; 
+       alpha_fuelp_ave+=pft->par->alpha_fuelp;
+    alpha_fuelp_ave/=n;
   } 
 #ifdef SAFE
   if(char_alpha_fuel < 0)
@@ -44,10 +60,41 @@ Real firedangerindex(Real char_moist_factor,
   else
     d_fdi = (0.0 > (1.0-(1.0 / char_moist_factor * (exp(-alpha_fuelp_ave * nesterov_accum)))) ?
              0 : (1.0-(1.0 / char_moist_factor * (exp(-alpha_fuelp_ave * nesterov_accum)))));
+  }
 
-  //d_fdi = (0.0 > (1.0-(1.0 / char_moist_factor * (exp(-alpha_fuelp * nesterov_accum)))) ?
-    //        0 : (1.0-(1.0 / char_moist_factor * (exp(-alpha_fuelp * nesterov_accum)))));
-  //printf("char_moist_factor:%g, firedangeindex:%g \n",char_moist_factor,d_fdi);
 
+if (fid == WVPD_INDEX)
+{
+  vpd_sum=0;
+  fpc_sum=0;
+
+  /*Goff and Gratch: coefficient z of saturation vapor pressure*/
+  temperature = temp + 273.16;	       
+  Z =( a * (Ts/temperature -1) + b * log(Ts/temperature) + c * (pow(10,pow(d,(1-(Ts/temperature))))-1) + f * (pow(10,-pow(h,(Ts/temperature)-1))-1));
+  
+  /*conversion of specific humidity to relative humidity*/
+  RH= 0.263 * 1013.25 * humidity *1/(exp(17.67*temp/(temperature-29.65)));
+  
+  /* average precipitation over one month to avoid unrealistically high flammability fluctuations in time steps with very low or zero precipitation */
+   R = avgprec; /* letzten monat aufsummieren und durch num month teilen (units: mm/day) */
+   if (RH > 1)
+      RH = 1;
+  
+  /*calculation of vegetation density and average alpha_fuelp as skaling factor for VPD*/
+  if(n>0)
+    {
+      foreachpft(pft,p,pftlist)
+      {
+        vpd_sum=pft->par->vpd_par*pft->fpc;
+        fpc_sum+=pft->fpc;
+      }
+      vpd_sum/=fpc_sum;
+    }
+  VD = fpc_sum; /* todo implement lai or fpc?*/
+   
+  /*calculation of Vapor Pressure Deficite (VPD) */
+   d_fdi =  pow(10,Z) * (1-RH) * VD * exp(-cR * R);
+   d_fdi*= vpd_sum;
+}
   return d_fdi;
 } /* of 'firedangerindex' */

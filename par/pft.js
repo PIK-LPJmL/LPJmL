@@ -28,8 +28,6 @@
 #define FLAM_GRASS 0.3
 #endif
 #define K_LITTER10 0.97       /* now only used for crops and value a middle value of C4 grasses; need to be updated with TRY-database*/
-#define ALPHA_FUELP_TROP 0.0000334
-#define ALPHA_FUELP_EXTRATROP 0.0000667
 #define APREC_MIN 100.0
 #define ALLOM1 100.0
 #define ALLOM2 40.0
@@ -109,7 +107,8 @@
     "temp_photos" : { "low" : 25., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : 15.5, "high" : 1000. }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38009,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 25.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1580.0, "co" :  103.0, "ch4" : 6.80, "voc" : 8.10, "tpm" : 8.50, "nox" : 1.999}, /* emission factors */
     "aprec_min" : APREC_MIN,  /* minimum annual precipitation to establish */
@@ -202,7 +201,8 @@
     "temp_photos" : { "low" : 25., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : 15.5, "high" : 1000. }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.51395,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 13.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -295,7 +295,8 @@
     "temp_photos" : { "low" : 20., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -2.0, "high" : 22.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.32198,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_EXTRATROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /*scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/    
     "fuelbulkdensity" : 25.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -388,7 +389,8 @@
     "temp_photos" : { "low" : 20., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : 3.0, "high" : 18.8 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.43740,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -481,7 +483,8 @@
     "temp_photos" : { "low" : 20., "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -17.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28880,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_EXTRATROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -576,7 +579,8 @@
     "temp_photos" : { "low" : 15., "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -32.5, "high" : -2. }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_EXTRATROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 25.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -669,7 +673,8 @@
     "temp_photos" : { "low" : 15., "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000, "high" : -2. }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_EXTRATROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -764,7 +769,8 @@
     "temp_photos" : { "low" : 15., "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -46, "high" : -5.4 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_EXTRATROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -859,7 +865,8 @@
     "temp_photos" : { "low" : 20., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : 7.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.46513,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_EXTRATROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : 100,                        /* minimum annual precipitation to establish */
@@ -934,7 +941,8 @@
     "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -39.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38184,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_EXTRATROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 4.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 100,       /* minimum annual precipitation to establish */
@@ -1009,7 +1017,8 @@
     "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : -2.6 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38184,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_EXTRATROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 4.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -1084,7 +1093,8 @@
     "temp_photos" : { "low" : 25., "high" : 38. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : 7.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38009,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.000034, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 13.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -1177,7 +1187,8 @@
     "temp_photos" : { "low" : 15., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -30.0, "high" : 8 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28880,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_EXTRATROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -1272,7 +1283,8 @@
     "temp_photos" : { "low" : 15., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -40.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.46513,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_EXTRATROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -1347,7 +1359,8 @@
     "temp_photos" : { "low" : 12., "high" : 17. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 0,        /* minimum annual precipitation to establish */
@@ -1445,7 +1458,8 @@
     "temp_photos" : { "low" : 20., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 0,        /* minimum annual precipitation to establish */
@@ -1543,7 +1557,8 @@
     "temp_photos" : { "low" : 21., "high" : 26. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 0,        /* minimum annual precipitation to establish */
@@ -1641,7 +1656,8 @@
     "temp_photos" : { "low" : 20., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 0,        /* minimum annual precipitation to establish */
@@ -1739,7 +1755,8 @@
     "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 0,        /* minimum annual precipitation to establish */
@@ -1837,7 +1854,8 @@
     "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 0,        /* minimum annual precipitation to establish */
@@ -1935,7 +1953,8 @@
     "temp_photos" : { "low" : 20., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 0,        /* minimum annual precipitation to establish */
@@ -2033,7 +2052,8 @@
     "temp_photos" : { "low" : 25., "high" : 32. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 0,        /* minimum annual precipitation to establish */
@@ -2131,7 +2151,8 @@
     "temp_photos" : { "low" : 28., "high" : 32. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 0,        /* minimum annual precipitation to establish */
@@ -2229,7 +2250,8 @@
     "temp_photos" : { "low" : 20., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 0,        /* minimum annual precipitation to establish */
@@ -2327,7 +2349,8 @@
     "temp_photos" : { "low" : 12., "high" : 17. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 0,        /* minimum annual precipitation to establish */
@@ -2425,7 +2448,8 @@
     "temp_photos" : { "low" : 18., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : ALPHA_FUELP_TROP, /* scaling factor fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 2.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : 0,        /* minimum annual precipitation to establish */

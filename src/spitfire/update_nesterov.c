@@ -22,8 +22,7 @@ void update_nesterov(Cell *cell, /**< pointer to cell */
                      const Dailyclimate *climate /**< daily climate data */
                     )
 {
-
-  if (climate->prec >= 3.0 || (climate->tmin - 4.0) <= 0) 
+  if (climate->prec >= 3.0 || (climate->tmin - 4.0) <= 0)
     cell->ignition.nesterov_accum=0;
   else
     cell->ignition.nesterov_accum += nesterovindex(climate->tmin,climate->tmax);

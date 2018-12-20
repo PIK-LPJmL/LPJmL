@@ -26,6 +26,7 @@ void freeclimatedata(Climatedata *data /**< pointer to climate data */
   free(data->lwnet);
   free(data->swdown);
   free(data->wet);
+  free(data->humid);
   free(data->wind);
   free(data->tamp);
   free(data->burntarea);
@@ -48,6 +49,8 @@ void freeclimate(Climate *climate, /**< pointer to climate data */
       closeclimatefile(&climate->file_lwnet,isroot);
     if(climate->data.swdown!=NULL)
       closeclimatefile(&climate->file_swdown,isroot);
+    if(climate->data.humid!=NULL)
+      closeclimatefile(&climate->file_humid,isroot);
     if(climate->data.wind!=NULL)
       closeclimatefile(&climate->file_wind,isroot);
     if(climate->data.tamp!=NULL)

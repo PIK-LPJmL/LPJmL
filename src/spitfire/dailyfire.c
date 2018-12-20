@@ -20,10 +20,10 @@
 
 void dailyfire(Stand *stand,            /**< pointer to stand */
                Livefuel *livefuel,
-               Real popdens,            /**< population density (capita/km2) */
+               Real popdens, /**< population density (capita/km2) */
+	       Real avgprec,
                const Dailyclimate *climate, /**< daily climate data */
-               int ntypes,              /**< number of PFT classes */
-               Bool prescribe_burntarea /**< prescribed burnt area (TRUE/FALSE) */
+               const Config *config /**< prescribed burnt area (TRUE/FALSE) */
               )
 {
   Real fire_danger_index,human_ignition,num_fires,windsp_cover,ros_forward;
@@ -40,7 +40,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   initfuel(&fuel);
 
   /*use maximum Nesterov index in previous 90 days for fire simulations if burnt area is prescribed */
-  if (prescribe_burntarea)
+  if (config->prescribe_burntarea)
   {
     if (stand->cell->ignition.nesterov_accum > stand->cell->ignition.nesterov_max)
     {
@@ -70,7 +70,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   fire_danger_index=firedangerindex(fuel.char_moist_factor,
                                     fuel.char_alpha_fuel,
                                     stand->cell->ignition.nesterov_max,
-                                    &stand->pftlist);
+                                    &stand->pftlist,climate->humid,avgprec,config->fdi, climate->temp);
   human_ignition=humanignition(popdens,&stand->cell->ignition);
   num_fires=wildfire_ignitions(fire_danger_index,
                                human_ignition+climate->lightning*CG*LER,
@@ -79,10 +79,10 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   ros_forward=rateofspread(windsp_cover,&fuel);
 
   /* use prescribed burnt area or calculate burnt area */
-  if (prescribe_burntarea)
+  if (config->prescribe_burntarea)
     burnt_area = climate->burntarea;
   else
-    burnt_area = area_burnt(fire_danger_index, num_fires, windsp_cover, ros_forward, ntypes, &stand->pftlist);
+    burnt_area = area_burnt(fire_danger_index, num_fires, windsp_cover, ros_forward, config->ntypes, &stand->pftlist);
   fire_frac=burnt_area*1e4 / (stand->cell->coord.area * stand->frac);  /*in m2*/
   if(fire_frac > 1.0)
   {
@@ -99,7 +99,6 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   /*fuel consumption in gBiomass/m2 for calculation of surface fire intensity*/
   fuel_consump=deadfuel_consumption(&stand->soil.litter,&fuel,fire_frac);
   surface_fi=surface_fire_intensity(fuel_consump, fire_frac, ros_forward);
-
   /* if not enough surface fire energy to sustain burning */
   if(surface_fi<50)  //&& !prescribe_burntarea)
   {
@@ -134,7 +133,6 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
       emission.voc+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.voc;
       emission.tpm+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.tpm;
       emission.nox+=c2biomass(livefuel_consump_pft)*pft->par->emissionfactor.nox;
-     
       livefuel_consump+=livefuel_consump_pft;
       if(isdead)
       {
@@ -143,6 +141,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
       }
     }
   }
+
   total_firec = (deadfuel_consump + livefuel_consump) * stand->frac;
 
   /* write SPITFIRE outputs to LPJ output structures */

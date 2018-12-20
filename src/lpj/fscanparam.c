@@ -58,7 +58,10 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.atmfrac,"atmfrac");
   fscanparamreal(&f,&param.fastfrac,"fastfrac");
   fscanparamreal(&f,&param.k_mort,"k_mort");
-  
+  fscanparamreal(&f,&param.firedura,"firedura");
+  fscanparamreal(&f,&param.fire_intens,"fire_intens");
+  fscanparamreal(&f,&param.hum_ign,"hum_ign");
+ 
   if(config->withlanduse!=NO_LANDUSE)
   {
     fscanparamreal(&f,&param.aprec_lim,"aprec_lim");
@@ -78,6 +81,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(&f,&param.sat_level[3],"saturation_level_drip");
     fscanparamreal(&f,&param.drip_evap,"drip_evap_reduction");
     fscanparamreal(&f,&param.residues_in_soil,"residues_in_soil");
+    fscanparamreal(&f,&param.fburn,"fburn");
     if(config->rw_manage)
     {
       fscanparamreal(&f,&param.esoil_reduction,"esoil_reduction");

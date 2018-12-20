@@ -21,7 +21,7 @@ Real surface_fire_intensity(Real fuel_consump,
                             Real ros_forward)
 {
   Real surface_intens;
-  if (fire_frac <= 0.000001)
+  if (fire_frac <= param.fire_intens)
     surface_intens = 0;
   else
   {

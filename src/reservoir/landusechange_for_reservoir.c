@@ -250,7 +250,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     foreachstand(stand,s,cell->standlist)
       totc_before+=standcarbon(stand)*stand->frac;
     totc_before+=cell->ml.resdata->c_pool;
-
+    totc_before+=cell->output.deforest_emissions;
 
     /* cut cut entire natural stand if lakefraction+reservoir fraction equals 1 */
     if(difffrac>=1-cell->lakefrac-minnatfrac_res)
@@ -343,6 +343,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     foreachstand(stand,s,cell->standlist)
       totc_after+=standcarbon(stand)*stand->frac;
     totc_after+=cell->ml.resdata->c_pool;
+    totc_after+=cell->output.deforest_emissions;
     /* check if the same */
     balanceW=totw_before-totw_after;
     balanceC=totc_before-totc_after;

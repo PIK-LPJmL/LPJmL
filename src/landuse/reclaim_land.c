@@ -94,6 +94,10 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
       fflush(stdout);
     }
 #endif
+#ifndef IMAGE
+    if(pft->par->type==TREE)
+      cell->output.deforest_emissions+=timber_burn(pft,param.fburn,&soil->litter,nind)*standfrac;
+#endif
 
     /* rest goes to litter */
     litter_update(&soil->litter,pft,nind);

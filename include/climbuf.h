@@ -27,6 +27,7 @@ typedef struct
 {
   Real gdd5; /* number of days with temp > 5 deg C */
   Real temp[NDAYS];
+  Real prec[NDAYS];
   Real dval_prec[NDAYS+1]; /* daily precipitation values (mm) */
   Real temp_min; /* minimum annual temperature (deg C) */
   Real temp_max; /* maximum annual temperature (deg C) */
@@ -53,7 +54,8 @@ typedef struct
 
 extern Bool new_climbuf(Climbuf *);
 extern void init_climbuf(Climbuf *);
-extern void daily_climbuf(Climbuf *,Real);
+extern void daily_climbuf(Climbuf *,Real,Real);
+extern Real getavgprec(const Climbuf *);
 extern void monthly_climbuf(Climbuf *,Real,Real,Real,int);
 extern void annual_climbuf(Climbuf *);
 extern Bool fwriteclimbuf(FILE *,const Climbuf *);

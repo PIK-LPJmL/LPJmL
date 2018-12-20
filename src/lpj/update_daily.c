@@ -44,6 +44,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real evap=0;
   Real hetres=0;
   Real *gp_pft;
+  Real avgprec;
   Stand *stand;
   Pft *pft;
   int l;
@@ -59,8 +60,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   updategdd(cell->gdd,config->pftpar,npft,climate.temp);
   cell->balance.aprec+=climate.prec;
   gtemp_air=temp_response(climate.temp);
-  daily_climbuf(&cell->climbuf,climate.temp);
-
+  daily_climbuf(&cell->climbuf,climate.temp,climate.prec);
+  avgprec=getavgprec(&cell->climbuf);
   cell->output.mprec+=climate.prec;
   cell->output.msnowf+=climate.temp<tsnow ? climate.prec : 0;
   cell->output.mrain+=climate.temp<tsnow ? 0 : climate.prec;
@@ -79,7 +80,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.malbedo += beta * stand->frac;
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& cell->afire_frac<1)
-      dailyfire_stand(stand,&livefuel,popdensity,&climate,config->ntypes,config->prescribe_burntarea);
+	dailyfire_stand(stand,&livefuel,popdensity,avgprec,&climate,config);    
     if(config->permafrost)
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,
