@@ -40,7 +40,7 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
                          const Config *config /**< LPJ config */
                         )            /** \return runoff (mm) */
 {
-  int p,l;
+  int p,l,n_pft;
   Pft *pft;
   Output *output;
   Harvest harvest={{0,0},{0,0},{0,0},{0,0}};
@@ -60,13 +60,15 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
   Bool isphen;
   Irrigation *data;
   Pftgrass *grass;
+  Real *fpc_inc;
   irrig_apply=0.0;
 
   soil = &stand->soil;
   data=stand->data;
   output=&stand->cell->output;
   evap=evap_blue=cover_stand=intercep_stand=intercep_stand_blue=runoff=return_flow_b=wet_all=intercept=sprink_interc=0;
-  if(getnpft(&stand->pftlist)>0)
+  n_pft=getnpft(&stand->pftlist);
+  if(n_pft>0)
   {
     wet=newvec(Real,getnpft(&stand->pftlist)); /* wet from pftlist */
     check(wet);
@@ -184,12 +186,38 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
                &frac_g_evap,config->rw_manage);
 
   /* allocation, turnover and harvest AFTER photosynthesis */
-  stand->growing_days = 1;
-  /* turnover must happen before allocation */
-  foreachpft(pft,p,&stand->pftlist)
-    turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)stand->growing_days/NDAYYEAR);
-  allocation_today(stand,config->ntypes);
+  if(n_pft>0)
+  {
+    fpc_inc=newvec(Real,n_pft);
+    check(fpc_inc);
 
+    foreachpft(pft,p,&stand->pftlist)
+    {
+      grass=pft->data;
+      if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
+      {
+        turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
+        if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p))
+        {
+          /* kill PFT from list of established PFTs */
+          fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */
+          litter_update_grass(&stand->soil.litter,pft,pft->nind);
+          delpft(&stand->pftlist,p);
+          p--; /* adjust loop variable */
+        }
+        else
+         // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
+         pft->bm_inc.carbon=0;
+       }
+       else
+       {
+         grass->growing_days++;
+         fpc_inc[p]=0;
+       }
+    }
+    light(stand,config->ntypes,fpc_inc);
+    free(fpc_inc);
+  }
   /* daily turnover and harvest check*/
   isphen=FALSE;
   foreachpft(pft,p,&stand->pftlist)
