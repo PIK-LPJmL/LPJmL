@@ -218,7 +218,9 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
 
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)
-      reduce(&stand->soil.litter,pft,fpc_total);
+      if(pft->par->type==GRASS)
+        reduce(&stand->soil.litter,pft,fpc_type[GRASS]/(1+fpc_type[GRASS]-fpc_total));
+
   stand->cell->balance.estab_storage_tree[irrigation->irrigation].carbon-=acflux_estab.carbon*stand->frac;
   acflux_estab.carbon=acflux_estab.nitrogen=0;
 
