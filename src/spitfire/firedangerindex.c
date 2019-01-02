@@ -85,7 +85,7 @@ if (fid == WVPD_INDEX)
     {
       foreachpft(pft,p,pftlist)
       {
-        vpd_sum=pft->par->vpd_par*pft->fpc;
+        vpd_sum+=pft->par->vpd_par*pft->fpc;
         fpc_sum+=pft->fpc;
       }
       vpd_sum/=fpc_sum;

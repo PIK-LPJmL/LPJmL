@@ -185,7 +185,7 @@ ID                         Fmt                    filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 500,  /* spinup years */
+  "nspinup" : 5000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1948, /* first year of simulation */
   "lastyear" : 1948, /* last year of simulation */
@@ -196,7 +196,7 @@ ID                         Fmt                    filename
 
 #else
 
-  "nspinup" : 90,   /* spinup years */
+  "nspinup" : 390,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1948, /* first year of simulation */
   "lastyear" : 2017, /* last year of simulation */
