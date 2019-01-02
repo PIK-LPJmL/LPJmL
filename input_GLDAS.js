@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**       i  n  p  u  t  _  c  r  u  m  o  n  t  h  l  y  .  j  s                  \n**/
+/**       i  n  p  u  t  _  G  L  D  A  S  .  j  s                                 \n**/
 /**                                                                                \n**/
 /** Configuration file for input dataset for LPJ C Version 4.0.001                 \n**/
 /**                                                                                \n**/
