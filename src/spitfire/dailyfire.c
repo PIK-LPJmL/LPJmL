@@ -51,7 +51,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     else
     {
       /* if actual NI is lower than previous NI, don't change maximum and NI but increase its age by 1 day */
-      stand->cell->ignition.nesterov_day += 1;
+      stand->cell->ignition.nesterov_day++;
     }
     if (stand->cell->ignition.nesterov_day > 90)
     {
@@ -69,7 +69,8 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   fuelload(stand, &fuel, livefuel, stand->cell->ignition.nesterov_max);
   fire_danger_index=firedangerindex(fuel.char_moist_factor,
                                     stand->cell->ignition.nesterov_max,
-                                    &stand->pftlist,climate->humid,avgprec,config->fdi, climate->temp);
+                                    &stand->pftlist,climate->humid,
+                                    avgprec,config->fdi,climate->temp);
   human_ignition=humanignition(popdens,&stand->cell->ignition);
   num_fires=wildfire_ignitions(fire_danger_index,
                                human_ignition+climate->lightning*CG*LER,

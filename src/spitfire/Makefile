@@ -23,7 +23,8 @@ OBJS    = area_burnt.$O firedangerindex.$O\
           litter_update_fire.$O surface_fire_intensity.$O\
           wildfire_ignitions.$O fuelload.$O rateofspread.$O\
           windspeed_fpc.$O update_fbd_tree.$O fuel_consum_total.$O\
-          update_fbd_grass.$O dailyfire.$O
+          update_fbd_grass.$O dailyfire.$O fwriteignition.$O freadignition.$O\
+          fprintignition.$O
          
 INC     = ../../include
 LIBDIR  = ../../lib

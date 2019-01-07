@@ -24,7 +24,7 @@ typedef struct
   Real human;
   Real nesterov_accum;
   Real nesterov_max;  /* maximum nesterov index */
-  Real nesterov_day;  /* number of days since the last nesterov_max value was set */
+  int nesterov_day;  /* number of days since the last nesterov_max value was set */
 } Ignition;
 
 /* Declaration of functions */
@@ -53,6 +53,9 @@ extern Real wildfire_ignitions(Real,Real,Real);
 extern Real windspeed_fpc(Real,const Pftlist *);
 extern void dailyfire(Stand *,Livefuel *,Real,Real,const Dailyclimate *,const Config *);
 extern void update_nesterov(Cell *,const Dailyclimate *);
+extern Bool fwriteignition(FILE *,const Ignition *);
+extern Bool freadignition(FILE *,Ignition *,Bool);
+extern void fprintignition(FILE *,const Ignition *);
 
 /* Definition of constants */
 
