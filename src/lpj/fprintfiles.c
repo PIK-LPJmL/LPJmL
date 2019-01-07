@@ -75,6 +75,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     if(config->tmax_filename.name!=NULL)
       fprintfilename(file,config->tmax_filename);
     fprintfilename(file,config->wind_filename);
+    if(config->fdi==WVPD_INDEX)
+      fprintfilename(file,config->humid_filename);
     fprintfilename(file,config->lightning_filename);
     fprintfilename(file,config->human_ignition_filename);
   }

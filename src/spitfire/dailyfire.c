@@ -68,7 +68,6 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
 
   fuelload(stand, &fuel, livefuel, stand->cell->ignition.nesterov_max);
   fire_danger_index=firedangerindex(fuel.char_moist_factor,
-                                    fuel.char_alpha_fuel,
                                     stand->cell->ignition.nesterov_max,
                                     &stand->pftlist,climate->humid,avgprec,config->fdi, climate->temp);
   human_ignition=humanignition(popdens,&stand->cell->ignition);

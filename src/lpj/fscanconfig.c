@@ -175,6 +175,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
     fscanint2(file,&config->fdi,"fdi");
+    if(config->fdi<0 || config->fdi>WVPD_INDEX)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR166: Invalid value for fdi=%d in line %d of '%s'.\n",
+                config->fdi,getlinecount(),getfilename());
+      return TRUE;
+    }
   }
   fscanbool2(file,&config->ispopulation,"population");
   config->prescribe_burntarea=FALSE;

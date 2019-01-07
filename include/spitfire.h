@@ -32,7 +32,7 @@ typedef struct
 extern Real area_burnt(Real,Real,Real,Real, int,const Pftlist *);
 extern Real deadfuel_consumption(const Litter *,Fuel *, Real);
 extern Real fuel_consum_total(const Litter *,const Fuel *);
-extern Real firedangerindex(Real,Real,Real,const Pftlist *, Real, Real, int, Real);
+extern Real firedangerindex(Real,Real,const Pftlist *, Real, Real, int, Real);
 extern Real firemortality_tree(Pft *,const Fuel *,Livefuel *,Real,Real);
 extern void fraction_of_consumption(Fuel *);
 extern Real fuel_consumption_1hr(Real, Real);

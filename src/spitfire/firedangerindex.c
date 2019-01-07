@@ -26,7 +26,6 @@
 #define cR 2   /* day/mm */
 
 Real firedangerindex(Real char_moist_factor,
-                     Real char_alpha_fuel,
                      Real nesterov_accum,
                      const Pftlist *pftlist,
 		     Real humidity,
@@ -36,65 +35,60 @@ Real firedangerindex(Real char_moist_factor,
                     )
 {
   Real d_fdi,alpha_fuelp_ave,fpc_sum=0;
-  Real  temperature, RH, VD, R, Z, vpd_sum;
+  Real temperature, RH, VD, R, Z, vpd_sum;
 
   const Pft *pft;
   int p,n;
-  alpha_fuelp_ave=0;
   n=getnpft(pftlist);
-  if (fid == NESTEROV_INDEX)
+  switch(fid)
   {
-  if(n>0)
-  {
-    foreachpft(pft,p,pftlist)
-       alpha_fuelp_ave+=pft->par->alpha_fuelp;
-    alpha_fuelp_ave/=n;
-  } 
-#ifdef SAFE
-  if(char_alpha_fuel < 0)
-    fprintf(stderr,"char_alpha_fuel %f in firedangerindex\n",char_alpha_fuel);
-#endif
-  /* Calculate Fire Danger Index */
-  if(nesterov_accum <= 0 || char_moist_factor <=0)
-    d_fdi = 0;
-  else
-    d_fdi = (0.0 > (1.0-(1.0 / char_moist_factor * (exp(-alpha_fuelp_ave * nesterov_accum)))) ?
-             0 : (1.0-(1.0 / char_moist_factor * (exp(-alpha_fuelp_ave * nesterov_accum)))));
-  }
-
-
-if (fid == WVPD_INDEX)
-{
-  vpd_sum=0;
-  fpc_sum=0;
-
-  /*Goff and Gratch: coefficient z of saturation vapor pressure*/
-  temperature = temp + 273.16;	       
-  Z =( a * (Ts/temperature -1) + b * log(Ts/temperature) + c * (pow(10,pow(d,(1-(Ts/temperature))))-1) + f * (pow(10,-pow(h,(Ts/temperature)-1))-1));
-  
-  /*conversion of specific humidity to relative humidity*/
-  RH= 0.263 * 1013.25 * humidity *1/(exp(17.67*temp/(temperature-29.65)));
-  
-  /* average precipitation over one month to avoid unrealistically high flammability fluctuations in time steps with very low or zero precipitation */
-   R = avgprec; /* letzten monat aufsummieren und durch num month teilen (units: mm/day) */
-   if (RH > 1)
-      RH = 1;
-  
-  /*calculation of vegetation density and average alpha_fuelp as skaling factor for VPD*/
-  if(n>0)
-    {
-      foreachpft(pft,p,pftlist)
+    case NESTEROV_INDEX:
+      alpha_fuelp_ave=0;
+      if(n>0)
       {
-        vpd_sum+=pft->par->vpd_par*pft->fpc;
-        fpc_sum+=pft->fpc;
+        foreachpft(pft,p,pftlist)
+          alpha_fuelp_ave+=pft->par->alpha_fuelp;
+        alpha_fuelp_ave/=n;
+      } 
+      /* Calculate Fire Danger Index */
+      if(nesterov_accum <= 0 || char_moist_factor <=0)
+        d_fdi = 0;
+      else
+        d_fdi = (0.0 > (1.0-(1.0 / char_moist_factor * (exp(-alpha_fuelp_ave * nesterov_accum)))) ?
+                 0 : (1.0-(1.0 / char_moist_factor * (exp(-alpha_fuelp_ave * nesterov_accum)))));
+      break;
+    case WVPD_INDEX:
+      vpd_sum=0;
+      fpc_sum=0;
+
+      /*Goff and Gratch: coefficient z of saturation vapor pressure*/
+      temperature = temp + 273.16;
+      Z =( a * (Ts/temperature -1) + b * log(Ts/temperature) + c * (pow(10,pow(d,(1-(Ts/temperature))))-1) + f * (pow(10,-pow(h,(Ts/temperature)-1))-1));
+  
+      /*conversion of specific humidity to relative humidity*/
+      RH= 0.263 * 1013.25 * humidity *1/(exp(17.67*temp/(temperature-29.65)));
+  
+      /* average precipitation over one month to avoid unrealistically high flammability fluctuations in time steps with very low or zero precipitation */
+       R = avgprec; /* letzten monat aufsummieren und durch num month teilen (units: mm/day) */
+       if (RH > 1)
+         RH = 1;
+  
+      /*calculation of vegetation density and average alpha_fuelp as skaling factor for VPD*/
+      if(n>0)
+      {
+        foreachpft(pft,p,pftlist)
+        {
+          vpd_sum+=pft->par->vpd_par*pft->fpc;
+          fpc_sum+=pft->fpc;
+        }
+        vpd_sum/=fpc_sum;
       }
-      vpd_sum/=fpc_sum;
-    }
-  VD = fpc_sum; /* todo implement lai or fpc?*/
+      VD = fpc_sum; /* todo implement lai or fpc?*/
    
-  /*calculation of Vapor Pressure Deficite (VPD) */
-   d_fdi =  pow(10,Z) * (1-RH) * VD * exp(-cR * R);
-   d_fdi*= vpd_sum;
-}
+      /*calculation of Vapor Pressure Deficite (VPD) */
+      d_fdi = pow(10,Z) * (1-RH) * VD * exp(-cR * R);
+      d_fdi*= vpd_sum;
+      break;
+  }  /* of 'switch' */
   return d_fdi;
 } /* of 'firedangerindex' */
