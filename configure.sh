@@ -232,7 +232,7 @@ export LPJROOT=$prefix # change here to your directory
 
 # set search path for LPJmL commands
 
-export PATH=\$PATH:\$LPJROOT/bin
+export PATH=\$LPJROOT/bin:\$PATH
 
 # set path for input files
 

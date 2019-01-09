@@ -1,4 +1,4 @@
-.TH clm 5  "November 30, 2015" "version 5.1.001" "FILE FORMATS"
+.TH clm 5  "December 14, 2018" "version 5.1.001" "FILE FORMATS"
 .SH NAME
 clm \- Input data files for LPJmL runs
 .SH DESCRIPTION
@@ -27,7 +27,7 @@ ncell
 (4 byte integer, number of grid cells represented)
 .TP
 nbands
-(4 byte integer)
+(4 byte integer, number of items per cell)
 .TP
 cellsize_lon
 (4 byte float, longitude cellsize in deg)
@@ -127,4 +127,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjml(1), cru2clm(1), txt2clm(1), catclm(1), grid2clm(1), cft2clm(1), printclm(1), printheader(1)
+lpjml(1), cru2clm(1), txt2clm(1), catclm(1), cvrtclm(1), grid2clm(1), cft2clm(1), printclm(1), printheader(1)
