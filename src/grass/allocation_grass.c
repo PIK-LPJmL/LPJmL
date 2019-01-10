@@ -22,7 +22,7 @@ Bool allocation_grass(Litter *litter, /**< litter pool */
                      )                /** \return TRUE on death */
 {
   Stocks bm_inc_ind={0,0};
-  Real lmtorm,lmtormscal,vscal;
+  Real lmtorm,vscal;
   Grassphys inc_ind;
   Pftgrass *grass;
   const Pftgrasspar *grasspar;
@@ -39,18 +39,15 @@ Bool allocation_grass(Litter *litter, /**< litter pool */
     growing_days=NDAYYEAR;
   else
   {
-	  growing_days=grass->growing_days;
-	  grass->growing_days=1;
+    growing_days=grass->growing_days;
+    grass->growing_days=1;
   }
 
-  vscal=min(1,pft->vscal/growing_days);
-  vscal=1; //pft->wscal_mean=1;
-  lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/growing_days);
-
-  if (growing_days>epsilon)
+  if (growing_days>0)
   {
-    lmtormscal = pft->wscal_mean/growing_days;
-    lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,lmtormscal);
+    vscal=min(1,pft->vscal/growing_days);
+    //vscal=1; //pft->wscal_mean=1;
+    lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/growing_days);
   }
   else
     lmtorm=getpftpar(pft,lmro_ratio);
