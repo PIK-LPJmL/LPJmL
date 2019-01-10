@@ -62,8 +62,8 @@
   "remove_residuals" : false,           /* remove residuals */
   "residues_fire" : false,              /* fire in residuals */
   "irrigation" : LIM_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
-  "laimax_interpolate" : CONST_LAI_MAX, /* laimax values from manage parameter file, */
-                                        /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
+  "laimax_interpolate" : LAIMAX_PAR, /* laimax values from manage parameter file, */
+                                        /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : true,            /* enable fertilizer input */
