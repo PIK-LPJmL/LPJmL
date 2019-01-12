@@ -44,16 +44,16 @@ Stocks livefuel_consum_tree(Litter *litter,
                                          treepar->fuelfrac[2] * 0.05);
   heartwood_consum.nitrogen = tree->ind.heartwood.nitrogen *(treepar->fuelfrac[0] + treepar->fuelfrac[1] +
                                          treepar->fuelfrac[2] * 0.05);
-  live_consum_tree.carbon = livefuel->disturb * (tree->ind.leaf.carbon*1 + sapwood_consum.carbon + heartwood_consum.carbon)*pft->nind;  /*gC/m2*/
-  live_consum_tree.nitrogen = livefuel->disturb * (tree->ind.leaf.nitrogen*1 + sapwood_consum.nitrogen + heartwood_consum.nitrogen)*pft->nind;  /*gC/m2*/
+  live_consum_tree.carbon = livefuel->disturb * (tree->ind.leaf.carbon + sapwood_consum.carbon + heartwood_consum.carbon)*pft->nind;  /*gC/m2*/
+  live_consum_tree.nitrogen = livefuel->disturb * (tree->ind.leaf.nitrogen + sapwood_consum.nitrogen + heartwood_consum.nitrogen)*pft->nind;  /*gC/m2*/
   live_consum_tree.carbon+=pft->bm_inc.carbon*min(1,livefuel->disturb*1);
-  live_consum_tree.carbon+=pft->bm_inc.nitrogen*min(1,livefuel->disturb*1);
-  pft->bm_inc.carbon*=(1-min(1,livefuel->disturb*1));
-  pft->bm_inc.nitrogen*=(1-min(1,livefuel->disturb*1));
-  tree->ind.leaf.carbon *= (1-livefuel->disturb*1);
+  live_consum_tree.nitrogen+=pft->bm_inc.nitrogen*min(1,livefuel->disturb);
+  pft->bm_inc.carbon*=(1-min(1,livefuel->disturb));
+  pft->bm_inc.nitrogen*=(1-min(1,livefuel->disturb));
+  tree->ind.leaf.carbon *= (1-livefuel->disturb);
   tree->ind.sapwood.carbon -= livefuel->disturb*sapwood_consum.carbon;
   tree->ind.heartwood.carbon -= livefuel->disturb*heartwood_consum.carbon;
-  tree->ind.leaf.nitrogen *= (1-livefuel->disturb*1);
+  tree->ind.leaf.nitrogen *= (1-livefuel->disturb);
   tree->ind.sapwood.nitrogen -= livefuel->disturb*sapwood_consum.nitrogen;
   tree->ind.heartwood.nitrogen -= livefuel->disturb*heartwood_consum.nitrogen;
   if(fabs(pft->bm_inc.carbon)>epsilon)
@@ -62,7 +62,6 @@ Stocks livefuel_consum_tree(Litter *litter,
     update_fbd_tree(litter,pft->par->fuelbulkdensity,pft->bm_inc.carbon*fire_nind_kill/pft->nind,0);
     pft->bm_inc.carbon*=(pft->nind-fire_nind_kill)/pft->nind;
   }
-  
   litter_update_fire_tree(litter,pft,fire_nind_kill);
   pft->nind-=fire_nind_kill;
   if (fire_nind_kill > 0 && pft->nind < epsilon)

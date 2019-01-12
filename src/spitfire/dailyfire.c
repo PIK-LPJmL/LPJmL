@@ -147,7 +147,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     }
   }
   total_fire.carbon = (deadfuel_consump.carbon + livefuel_consump.carbon) * stand->frac;
-  total_fire.nitrogen = (deadfuel_consump.nitrogen + livefuel_consump.nitrogen) * stand->frac;
+  total_fire.nitrogen = (deadfuel_consump.nitrogen + livefuel_consump.nitrogen);
 
   /* write SPITFIRE outputs to LPJ output structures */
   output->mfiredi +=fire_danger_index;
@@ -155,7 +155,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   output->firef += fire_frac;
   output->mburntarea += burnt_area; /*ha*/
   output->fire.carbon+= total_fire.carbon;
-  output->fire.nitrogen+=total_fire.nitrogen*stand->frac*(1-param.q_ash);
+  output->fire.nitrogen+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;
   stand->soil.NO3[0]+=total_fire.nitrogen*param.q_ash;
   output->dcflux+=total_fire.carbon;
   output->mfirec+= total_fire.carbon;

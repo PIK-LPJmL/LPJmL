@@ -34,7 +34,10 @@ Real ndemand_tree(const Pft *pft,     /**< pointer to PFT */
   tree=pft->data; 
   treepar=pft->par->data;
  *ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+param.n0*0.001*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind);
-  nc_ratio=tree->ind.leaf.nitrogen/tree->ind.leaf.carbon;
+  if(tree->ind.leaf.carbon==0)
+    nc_ratio=pft->par->ncleaf.low;
+  else
+    nc_ratio=tree->ind.leaf.nitrogen/tree->ind.leaf.carbon;
   if(nc_ratio>pft->par->ncleaf.high)
     nc_ratio=pft->par->ncleaf.high;
   else if(nc_ratio<pft->par->ncleaf.low)

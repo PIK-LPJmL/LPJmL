@@ -31,7 +31,10 @@ void litter_update_fire_tree(Litter *litter, /**< Litter pool */
   litter->ag[pft->litter].trait.leaf.carbon+=tree->ind.leaf.carbon*frac;
   litter->ag[pft->litter].trait.leaf.nitrogen+=tree->ind.leaf.nitrogen*frac;
   if(pft->nind>0)
+  {
     litter->ag[pft->litter].trait.leaf.nitrogen+=pft->bm_inc.nitrogen/pft->nind*frac;
+    pft->bm_inc.nitrogen*=(pft->nind-frac)/pft->nind;
+  }
   for(i=0;i<NFUELCLASS;i++)
   {
     litter->ag[pft->litter].trait.wood[i].carbon+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-

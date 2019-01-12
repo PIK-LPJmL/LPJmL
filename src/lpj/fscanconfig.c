@@ -246,6 +246,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscanbool(file,&config->rw_manage,"rw_manage",TRUE,verbose))
         return TRUE;
       fscanint2(file,&config->laimax_interpolate,"laimax_interpolate");
+      if(config->laimax_interpolate<0 || config->laimax_interpolate>LAIMAX_PAR)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR166: Invalid value for laimax_interpolate=%d in line %d of '%s'.\n",
+                  config->laimax_interpolate,getlinecount(),getfilename());
+        return TRUE;
+      }
       if(config->laimax_interpolate==CONST_LAI_MAX)
         fscanreal2(file,&config->laimax,"laimax");
       if(config->river_routing)
