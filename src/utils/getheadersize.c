@@ -72,6 +72,7 @@ int main(int argc,char **argv)
       fclose(file);
       return EXIT_FAILURE;
     }
+    fclose(file);
     if(argc-iarg>1)
       printf("%s: ",argv[i]);
     printf("%zu\n",headersize(id,version));
