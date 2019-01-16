@@ -1,0 +1,35 @@
+.TH headersize 1  "January 15, 2019" "version 4.0.002" "USER COMMANDS"
+.SH NAME
+headersize \- print header size of clm files
+.SH SYNOPSIS
+.B headersize [\-version v]
+\fIclmfile\fP ...
+.SH DESCRIPTION
+File header of clm files is read and size of header in bytes printed. 
+.SH OPTIONS
+.TP
+\-version v
+version of clm file set to v, by default version is read from file
+.TP
+.I infile
+Filename(s) of clm files
+.TP
+Print header size of clm data file:
+.B headersize
+temp_1901-2003.clm
+.PP
+.SH EXIT STATUS
+.B headersize
+returns a zero exit status if file header of clm file can be read.
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+printclm(1), lpjml(1), catclm(1), txt2clm(1), grid2clm(1), cft2clm(1), clm(5)

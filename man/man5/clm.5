@@ -72,19 +72,19 @@ climate data
 (all monthly values, 4 files + 1 file with atmospheric CO2 concentrations)
 
 - temperature [scaled: degree Celsius*10]
-  size of header: 38 bytes
+  size of header: 43 bytes
 
 - precipitation [mm/month]
-  size of header: 38 bytes
+  size of header: 43 bytes
 
 - cloudiness [%]
   for internal computation of radiation
-  size of header: 38 bytes
+  size of header: 43 bytes
 
 - wet days
   number of wet days per month (needed only, if your are using the
   "weather generator", that distributes rain within month randomly)
-  size of header: 38 bytes
+  size of header: 43 bytes
 
 - atmospheric carbon dioxide [ppmv]
   global annual mean CO2 concentration as ASCII file
@@ -127,4 +127,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-lpjml(1), cru2clm(1), txt2clm(1), catclm(1), cvrtclm(1), grid2clm(1), cft2clm(1), printclm(1), printheader(1)
+lpjml(1), cru2clm(1), txt2clm(1), catclm(1), cvrtclm(1), grid2clm(1), cft2clm(1), printclm(1), printheader(1), headersize(1)
