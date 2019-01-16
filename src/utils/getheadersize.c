@@ -19,7 +19,7 @@
 int main(int argc,char **argv)
 {
   char *endptr;
-  int i,iarg,version,version_set;
+  int i,iarg,version,version_set,rc;
   Bool swap;
   version_set=READ_VERSION;
   Header header;
@@ -58,24 +58,28 @@ int main(int argc,char **argv)
           USAGE,stderr);
     return EXIT_FAILURE;
   }
+  rc=EXIT_SUCCESS;
   for(i=iarg;i<argc;i++)
   {
     file=fopen(argv[i],"rb");
     if(file==NULL)
     {
-      fprintf(stderr,"Error opening '%s': %s\n",argv[i],strerror(errno));
-      return EXIT_FAILURE;
+      fprintf(stderr,"Error opening '%s': %s.\n",argv[i],strerror(errno));
+      rc=EXIT_FAILURE;
+      continue;
     }
     version=version_set;
     if(freadanyheader(file,&header,&swap,id,&version))
     {
+      fprintf(stderr,"Error reading header in '%s'.\n",argv[i]);
       fclose(file);
-      return EXIT_FAILURE;
+      rc=EXIT_FAILURE;
+      continue;
     }
     fclose(file);
     if(argc-iarg>1)
       printf("%s: ",argv[i]);
     printf("%zu\n",headersize(id,version));
   }
-  return EXIT_SUCCESS;
+  return rc;
 } /* of 'main' */
