@@ -630,7 +630,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   else
   {
     config->restart_filename=NULL;
-    if(isroot(*config) && config->nspinup<soil_equil_year)
+    if(verbose && config->nspinup<soil_equil_year)
       fprintf(stderr,"WARNING031: Number of spinup years less than %d necessary for soil equilibration.\n",soil_equil_year);
   }
   if(iskeydefined(file,"checkpoint_filename"))
