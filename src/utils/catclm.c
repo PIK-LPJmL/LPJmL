@@ -114,20 +114,21 @@ int main(int argc,char **argv)
     }
     else
     {
-      firstversion=setversion;
-      if(freadanyheader(in,&header,&swap,id,&firstversion))
+      version=setversion;
+      if(freadanyheader(in,&header,&swap,id,&version))
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+index]);
         return EXIT_FAILURE;
       }
-      filesize=getfilesize(argv[index])-headersize(id,firstversion);
-      if(filesize!=((firstversion==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nyear)
+      filesize=getfilesize(argv[index])-headersize(id,version);
+      if(filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nyear)
       {
         fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[index]);
         return EXIT_FAILURE;
       }
-      fseek(out,headersize(id,firstversion),SEEK_SET);
+      fseek(out,headersize(id,version),SEEK_SET);
       firstyear=header.firstyear;
+      firstversion=version;
     }
     if(version==3)
       size=typesizes[header.datatype];
