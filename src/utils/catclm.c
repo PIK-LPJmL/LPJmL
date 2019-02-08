@@ -27,7 +27,7 @@ int main(int argc,char **argv)
   Byte *bvals;
   long long *lvals;
   Bool swap;
-  size_t size;
+  size_t size,filesize;
   size=2;
   setversion=READ_VERSION;
   for(index=1;index<argc;index++)
@@ -75,6 +75,12 @@ int main(int argc,char **argv)
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+index]);
         return EXIT_FAILURE;
       }
+      filesize=getfilesize(argv[index+i])-headersize(id,version);
+      if(filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nyear)
+      {
+        fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[index+i]);
+        return EXIT_FAILURE;
+      }
       if(version==3 && header.datatype!=oldheader.datatype)
       {
         fprintf(stderr,"Error: Different datatype in '%s'.\n",argv[i+index]);
@@ -112,6 +118,12 @@ int main(int argc,char **argv)
       if(freadanyheader(in,&header,&swap,id,&version))
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+index]);
+        return EXIT_FAILURE;
+      }
+      filesize=getfilesize(argv[index])-headersize(id,version);
+      if(filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nyear)
+      {
+        fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[index]);
         return EXIT_FAILURE;
       }
       fseek(out,headersize(id,version),SEEK_SET);
