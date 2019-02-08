@@ -20,7 +20,7 @@ int main(int argc,char **argv)
 {
   Header header,oldheader;
   String id;
-  int i,j,k,firstyear,version,n,setversion,index;
+  int i,j,k,firstyear,version,n,setversion,index,firstversion;
   FILE *in,*out;
   short *values;
   int *ivals;
@@ -114,19 +114,19 @@ int main(int argc,char **argv)
     }
     else
     {
-      version=setversion;
-      if(freadanyheader(in,&header,&swap,id,&version))
+      firstversion=setversion;
+      if(freadanyheader(in,&header,&swap,id,&firstversion))
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+index]);
         return EXIT_FAILURE;
       }
-      filesize=getfilesize(argv[index])-headersize(id,version);
-      if(filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nyear)
+      filesize=getfilesize(argv[index])-headersize(id,firstversion);
+      if(filesize!=((firstversion==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nyear)
       {
         fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[index]);
         return EXIT_FAILURE;
       }
-      fseek(out,headersize(id,version),SEEK_SET);
+      fseek(out,headersize(id,firstversion),SEEK_SET);
       firstyear=header.firstyear;
     }
     if(version==3)
@@ -218,7 +218,7 @@ int main(int argc,char **argv)
   header.nyear=header.firstyear+header.nyear-firstyear;
   header.firstyear=firstyear;
   rewind(out);
-  fwriteheader(out,&header,id,version);
+  fwriteheader(out,&header,id,firstversion);
   fclose(out);
   return EXIT_SUCCESS;
 } /* of 'main' */
