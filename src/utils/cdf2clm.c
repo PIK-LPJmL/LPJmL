@@ -424,7 +424,7 @@ int main(int argc,char **argv)
         fprintf(stderr,"Time axis is different in '%s'.\n",argv[j]);
         return EXIT_FAILURE;
       }
-     if (var_len=!climate.var_len)
+      if (var_len!=climate.var_len)
       {
         fprintf(stderr,"Dimension is different in '%s'.\n",argv[j]);
         return EXIT_FAILURE;
