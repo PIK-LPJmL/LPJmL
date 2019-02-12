@@ -1,9 +1,9 @@
-.TH adddrain 1  "August 19, 2013" "version 1.0.001" "USER COMMANDS"
+.TH adddrain 1  "January 8, 2019" "version 1.0.001" "USER COMMANDS"
 .SH NAME
 adddrain \- adds river basin to coordinate file
 .SH SYNOPSIS
 .B adddrain
-[\-longheader] 
+[\-longheader] [\-downstream] [\-short]
 .I coord_all.clm coord.clm drainage.clm coord_basin.clm
 .SH DESCRIPTION
 Program creates new coordinate file with cells added that are part of the river basin. This has to be done for simulations with river routing enabled. 
@@ -11,6 +11,12 @@ Program creates new coordinate file with cells added that are part of the river 
 .TP
 \-longheader
 Long (version 2) header assumed for CLM files
+.TP
+\-downstream
+By default only cell from upstream are added. Enabling this flags also cells from downstream will be added 
+.TP
+\-short
+The datatype of coordinate data is set to short, default is float
 .TP
 .I coord_all.clm
 Global coordinate file
@@ -25,8 +31,8 @@ River routing file corresponding to coord_all.clm
 New coordinate file created
 .SH EXAMPLES
 .TP
-.B adddrain
-/iplex/01/2012/open/input_VERSION2/grid.bin coord.clm /iplex/01/2012/open/input_VERSION2/drainage.bin coord_basin.clm
+.B adddrain -short
+grid.clm coord.clm drainage.clm coord_basin.clm
 .PP
 .SH EXIT STATUS
 Non zero is returned in case of failure.

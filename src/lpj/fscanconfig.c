@@ -251,7 +251,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(isboolean(file,"wateruse"))
     {
-      if(isroot(*config))
+      if(verbose)
         fputs("WARNING028: Type of 'wateruse' is boolean, converted to int.\n",stderr);
       fscanbool2(file,&config->wateruse,"wateruse");
     }
@@ -334,7 +334,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscanint(file,&config->compress,"compress",TRUE,verbose))
     return TRUE;
 #ifdef USE_NETCDF
-  if(config->compress)
+  if(config->compress && verbose)
     fputs("WARNING403: Compression of NetCDF files is not supported in this version of NetCDF.\n",stderr);
 #endif
   config->missing_value=MISSING_VALUE_FLOAT;

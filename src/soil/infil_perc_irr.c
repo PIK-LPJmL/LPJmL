@@ -176,8 +176,9 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
     /*reallocate water above field capacity to freewater */
     if (soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>1)
     {
-      soil->w_fw[l]=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]-1)*soil->par->whcs[l];
-      soil->w[l]-=soil->w_fw[l]/soil->par->whcs[l];
+      freewater=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]-1)*soil->par->whcs[l];
+      soil->w_fw[l]+=freewater;
+      soil->w[l]-=freewater/soil->par->whcs[l];
     }
     if (fabs(soil->w_fw[l])<epsilon)
       soil->w_fw[l]=0;
