@@ -275,7 +275,7 @@ setenv LPJROOT $prefix # change here to your directory
 
 # set search path for LPJmL commands
 
-setenv PATH \$LPJROOT/bin:\$PATH
+setenv PATH \$LPJROOT/bin\:\$PATH
 
 # set path for input files
 
@@ -283,7 +283,7 @@ setenv LPJINPATH $inpath
 
 # include manpages of LPJmL
 
-setenv MANPATH \$LPJROOT/man:\$MANPATH
+setenv MANPATH \$LPJROOT/man\:\$MANPATH
 
 # define alias
 
