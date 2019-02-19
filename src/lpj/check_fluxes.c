@@ -71,7 +71,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     foreachstand(stand,s,cell->standlist)
     {
       printf("C-balance on stand %d LUT %s, standfrac %g litter %g timber_frac %g\n",
-        s,stand->type->name,stand->frac,littersum(&stand->soil.litter),cell->ml.image_data->timber_frac);
+        s,stand->type->name,stand->frac,littercarbon(&stand->soil.litter),cell->ml.image_data->timber_frac);
       fflush(stdout);
       foreachpft(pft,p,&stand->pftlist)
         printf("pft %d, %s, vegc %g\n",
@@ -134,9 +134,9 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   }
   if(cell->ml.dam)
   {
-     totw+=cell->ml.resdata->dmass/cell->coord.area;/*+cell->resdata->dfout_irrigation/cell->coord.area; */
-     for(i=0;i<NIRRIGDAYS;i++)
-       totw+=cell->ml.resdata->dfout_irrigation_daily[i]/cell->coord.area;
+    totw+=cell->ml.resdata->dmass/cell->coord.area;/*+cell->resdata->dfout_irrigation/cell->coord.area; */
+    for(i=0;i<NIRRIGDAYS;i++)
+      totw+=cell->ml.resdata->dfout_irrigation_daily[i]/cell->coord.area;
   }
   balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux;
   if(year>startyear && fabs(balanceW)>1.5)
