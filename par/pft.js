@@ -238,7 +238,6 @@
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
-    "windspeed_dampening" : 0.4, /* windspeed dampening */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
     "leaftype" : BROADLEAVED,  /* leaftype */
