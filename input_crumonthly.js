@@ -20,7 +20,7 @@
 {
   "soil" :         { "fmt" : META, "name" : "input_VERSION2/soil.descr"},
   "coord" :        { "fmt" : CLM,  "name" : "input_VERSION2/grid.bin"},
-  "countrycode" :  { "fmt" : CLM,  "name" : "input_VERSION2/cow_mg_2006_full.bin"},
+  "countrycode" :  { "fmt" : CLM,  "name" : "input_VERSION2/cow_full_2018.bin"},
   "landuse" :      { "fmt" : CLM,  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   /* insert prescribed sdate file name here */
   "grassland_fixed_pft" : { "fmt" : RAW, "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.bin"},
