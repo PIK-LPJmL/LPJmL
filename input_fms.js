@@ -19,7 +19,7 @@
 {
   "soil" : { "fmt" : RAW, "name" : "/p/projects/climber3/petri/POEM/exp/CM2M_coarse_BLING_LPJ_05/Data-For-LPJ/Soil/soil_new.bin"},
   "coord" : { "fmt" : CLM, "name" :  "/p/projects/climber3/petri/POEM/exp/CM2M_coarse_BLING_LPJ_05/Data-For-LPJ/grid.bin"},
-  "country" : { "fmt" : CLM, "name" : "input_VERSION2/cow_mg_2006_full.bin"},
+  "country" : { "fmt" : CLM, "name" : "input_VERSION2/cow_full_2018.bin"},
   "landuse" : { "fmt" : CLM, "name" : "input_VERSION2/cft1700_2005_bioenergy_sc.bin"},
   "lakes" : { "fmt" : RAW, "name" : "/p/projects/climber3/petri/POEM/exp/CM2M_coarse_BLING_LPJ_05/Data-For-LPJ/Lakes/glwd_lakes-90881.bin"},
   "drainage" : { "fmt" : CLM, "name" : "/p/projects/climber3/petri/POEM/exp/CM2M_coarse_BLING_LPJ_05/Data-For-LPJ/Rivers/drainage.bin"},
