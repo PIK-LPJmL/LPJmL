@@ -240,11 +240,12 @@ export LPJINPATH=$inpath
 
 # include manpages of LPJmL
 
-export MANPATH=\$MANPATH:\$LPJROOT/man
+export MANPATH=$LPJROOT/man:\$MANPATH
 
 # define alias
 
 alias printheader="printclm -data"
+alias lpjml='lpjml.sh'
 EOF
 
 chmod +x bin/lpj_paths.sh
@@ -274,7 +275,7 @@ setenv LPJROOT $prefix # change here to your directory
 
 # set search path for LPJmL commands
 
-setenv PATH \$PATH:\$LPJROOT/bin
+setenv PATH \$LPJROOT/bin\:\$PATH
 
 # set path for input files
 
@@ -282,7 +283,12 @@ setenv LPJINPATH $inpath
 
 # include manpages of LPJmL
 
-setenv MANPATH \$MANPATH:\$LPJROOT/man
+setenv MANPATH \$LPJROOT/man\:\$MANPATH
+
+# define alias
+
+alias printheader "printclm -data"
+alias lpjml 'lpjml.sh'
 EOF
 ln -sf lpjml bin/lpj
 chmod +x bin/lpj_paths.csh

@@ -642,7 +642,7 @@ This improves performance in particular for the parallel code. </p>
 
 <H3>Man pages</h3>
 
-Manual pages for the <tt>man</tt> command are located in the <tt>$LPJROOT/man</tt> directory. The MANPAPTH variable is set by the <tt>lpj_paths.sh</tt> script.
+Manual pages for the <tt>man</tt> command are located in the <tt>$LPJROOT/man</tt> directory. The MANPATH variable is set by the <tt>lpj_paths.sh</tt> script.
 HTML versions of the manual pages are located <A HREF="manpages.html">here</A>.
 
 Invoking</p>
@@ -660,7 +660,7 @@ Sequential version can be started by invoking:</p>
 <pre class="example">
 ./bin/lpjml 
 </pre>
-By default the configuration file <tt>lpjml.conf</tt> is read. The contents of this file can be viewed <A HREF="lpjml_example.html">here</A>.
+By default the configuration file <tt>lpjml.js</tt> is read. The contents of this file can be viewed <A HREF="lpjml_example.html">here</A>.
 If you run <tt>lpjml</tt> outside the root directory of LPJmL, the following environment
 variable should be set (done by <tt>lpj_paths.sh</tt>):</p>
 
@@ -783,7 +783,7 @@ enable floating point exceptions
 <tr><td>
 -image host
 </td><td>
-set host where IMAGE model is running. Default is 'localhost'. Option is only availabel for the IMAGE version.
+set host where IMAGE model is running. Default is 'localhost'. Option is only available for the IMAGE version.
 </td></tr>
 <tr><td>
 -wait time
@@ -815,7 +815,7 @@ restart directory path
 </table>
 The first two options will be sent to the preprocessor.
 
-For the parallel version LoadLeveler files for Linux and AIX are provided. 
+For the parallel version SLURM and LoadLeveler files for Linux and AIX are provided.
 A job can be submitted by invoking the <tt><A HREF="lpjsubmit.html">lpjsubmit</A></tt> script:</p>
 <pre class="example">
 lpjsubmit ntasks LPJmL_args...
