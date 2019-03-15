@@ -20,8 +20,8 @@
 "input" :
 {
   "soil" : { "fmt" : "cdf", "var" : "soilcode", "name" : "cru_netcdf/soil_new_67420.nc"},
-  "countrycode" : { "fmt" : "cdf", "var" : "country", "name" : "cru_netcdf/cow_mg_2006_full.nc"},
-  "regioncode" : { "fmt" : "cdf", "var" : "region", "name" : "cru_netcdf/reg_mg_2006_full.nc"},
+  "countrycode" : { "fmt" : "cdf", "var" : "country", "name" : "cru_netcdf/cow_full_2018.nc"},
+  "regioncode" : { "fmt" : "cdf", "var" : "region", "name" : "cru_netcdf/reg_full_2018.nc"},
   "landuse" : { "fmt" : "cdf", "var" :  "landfrac", "name" : "cru_netcdf/cft1700_2005_irrigation_systems_64bands.nc"},
   "temp" : { "fmt" : "cdf", "var" : "temp", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.tmp.nc"},
   "prec" : { "fmt" : "cdf", "var" : "prec", "name" : "cru_netcdf/gpcc_cru09_prec_monthly_1901_2009.nc"},
@@ -32,7 +32,6 @@
   "human_ignition" : { "fmt" : "cdf", "var" : "human_ignition", "name" : "cru_netcdf/human_ignition.nc"},
   "popdens" : { "fmt" : "cdf", "var" : "popdens", "name" : "cru_netcdf/popdens_HYDE_1901_2010_bi.nc "},
   "co2" : { "fmt" : "txt", "name" : "input_VERSION2/co2_1841-2010.dat"},
-
   "wetdays" : { "fmt" : "cdf", "var" : "wet", "name" : "cru_netcdf/gpcc_cru09_wet_monthly_1901_2009.nc"},
   "wateruse" : { "fmt" : "cdf", "var" : "wateruse", "name" : "cru_netcdf/wateruse_1900_2000.nc"} /* water consumption for industry, household and livestock */
 },
