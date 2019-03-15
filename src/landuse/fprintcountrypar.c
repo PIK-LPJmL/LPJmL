@@ -18,7 +18,6 @@ void fprintcountrypar(FILE *file, /**< pointer to text file */
                       int ncft      /**< number of crop PFTs */
                      )
 {
-  char *irrigsys[]={"SURF","SPRINK","DRIP"};
   int i,j;
   fputs("Country                                     ",file);
   if(countrypar[0].laimax_cft!=NULL)
@@ -43,7 +42,7 @@ void fprintcountrypar(FILE *file, /**< pointer to text file */
     else
       fprintf(file," %6.1g %5.1g",countrypar[i].laimax_tempcer,
               countrypar[i].laimax_maize);
-    fprintf(file," %s\n",irrigsys[countrypar[i].default_irrig_system-1]);
+    fprintf(file," %s\n",irrigsys[countrypar[i].default_irrig_system]);
   }
   fputs("--------------------------------------------",file);
   if(countrypar[0].laimax_cft!=NULL)

@@ -63,6 +63,10 @@
     return NULL; \
   }
 
+char *phenology[]={"evergreen","raingreen","summergreen","any","cropgreen"};
+char *cultivation_type[]={"none","biomass","annual crop"};
+char *path[]={"no pathway","C3","C4"};
+
 int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  Pftpar **pftpar,     /**< Pointer to PFT parameter array */
                  const Fscanpftparfcn scanfcn[], /**< array of PFT-specific scan
@@ -131,11 +135,10 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
 
     /* Read pft->type, defined in pftpar.h */
     fscanpftint(verb,&item,&pft->type,pft->name,"type");
-    fscanpftint(verb,&item,&pft->cultivation_type,pft->name,"cultivation_type");
-    if(pft->cultivation_type<0 || pft->cultivation_type>ANNUAL_CROP)
+    if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,3,FALSE,verb))
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid value %d for cultivation type of PFT '%s' in line %d of '%s'.\n",pft->cultivation_type,pft->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR201: Invalid value for cultivation type of PFT '%s'.\n",pft->name);
       return NULL;
     }
     if(isbiomass && pft->cultivation_type==NONE)
@@ -184,18 +187,16 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftphenpar(verb,&item,&pft->wscal,pft->name,"wscal");
     fscanpftreal(verb,&item,&pft->mort_max,pft->name,"mort_max");
 
-    fscanpftint(verb,&item,&pft->phenology,pft->name,"phenology");
-    if(pft->phenology<0 || pft->phenology>CROPGREEN)
+    if(fscankeywords(&item,&pft->phenology,"phenology",phenology,5,FALSE,verb))
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid value %d for phenology of PFT '%s' in line %d of '%s'.\n",pft->phenology,pft->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR201: Invalid value for phenology of PFT '%s'.\n",pft->name);
       return NULL;
     }
-    fscanpftint(verb,&item,&pft->path,pft->name,"path");
-    if(pft->path<0 || pft->path>C4)
+    if(fscankeywords(&item,&pft->path,"path",path,3,FALSE,verb))
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid value %d for path of PFT '%s' in line %d of '%s'.\n",pft->path,pft->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR201: Invalid value for path of PFT '%s'.\n",pft->name);
       return NULL;
     }
     fscanpftlimit(verb,&item,&pft->temp_co2,pft->name,"temp_co2");

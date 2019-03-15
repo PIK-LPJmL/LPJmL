@@ -54,6 +54,8 @@ typedef struct
   Real *laimax;             /* maximum crop specific LAI */
 } Manage;
 
+extern char *irrigsys[];
+
 /* Declaration of functions */
 
 extern int fscancountrypar(LPJfile *,Countrypar **,Bool,int,Verbosity);

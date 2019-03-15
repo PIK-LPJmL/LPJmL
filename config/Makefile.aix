@@ -17,7 +17,7 @@
 CC	= xlc
 DEBUGFLAGS  = -g -ma
 OPTFLAGS  = -O2 -qipa  -qarch=pwr4 -qtune=pwr4 -ma
-LPJFLAGS  = -DUSE_RAND48 -DWITH_FPE -DUSE_NETCDF
+LPJFLAGS  = -DUSE_RAND48 -DWITH_FPE -DUSE_NETCDF -D_LARGE_FILES
 NETCDF_INC      = -I/usr/local/include
 NETCDF_LIB      = /usr/local/lib
 O	= o

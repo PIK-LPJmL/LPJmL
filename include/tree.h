@@ -77,6 +77,8 @@ typedef struct
   Treephys2 ind;
 } Pfttree;
 
+extern char *leaftype[];
+
 /* Declaration of functions */
 
 extern void new_tree(Pft *,int,int);

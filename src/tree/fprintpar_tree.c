@@ -22,7 +22,6 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
                   )
 {
   int i;
-  char *leaftype[]={"broadleaved","needleleaved","any leaved"};
   const Pfttreepar *partree;
   partree=par->data;
   fprintf(file,"leaftype:\t%s\n"

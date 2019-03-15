@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define EPSILON 0.1  /* min precision of solution in bisection method */
+#define EPSILON 0.001  /* min precision of solution in bisection method */
 
 typedef struct
 {
@@ -47,7 +47,7 @@ static Real fcn(Real lambda,Data *data)
 
 } /* of 'fcn' */
 
-Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
+Real water_stressed(Pft *pft, /**< pointer to PFT variables */
                     Real aet_layer[LASTLAYER],       
                     Real gp_stand,
                     Real gp_stand_leafon, /**< pot. canopy conduct. at full leaf cover */

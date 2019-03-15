@@ -197,7 +197,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if (config->prescribe_burntarea)
     {
-      if(openclimate(&climate->file_burntarea,&config->burntarea_filename,(config->burntarea_filename.fmt==CDF) ? NULL : NULL,LPJ_SHORT,config))
+      if(openclimate(&climate->file_burntarea,&config->burntarea_filename,(config->burntarea_filename.fmt==CDF) ?  (char *)NULL : (char *)NULL,LPJ_SHORT,config))
       {
         closeclimatefile(&climate->file_lightning,isroot(*config));
         closeclimatefile(&climate->file_tmax,isroot(*config));

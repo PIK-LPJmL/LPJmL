@@ -48,6 +48,8 @@
 /* #pragma warning ( disable : 869 )*/ /* disable warning about unused parameter */
 #endif
 
+#define N_FMT 7 /* number of format types for input/output files */
+
 /* Definition of datatypes */
 
 typedef double Real; /* Default floating point type in LPJ */
@@ -60,6 +62,7 @@ typedef char String[STRING_LEN+1];
 
 extern size_t typesizes[];
 extern char *typenames[];
+extern char *fmt[N_FMT];
 
 typedef enum {LPJ_BYTE,LPJ_SHORT,LPJ_INT,LPJ_FLOAT,LPJ_DOUBLE} Type;
 typedef enum {NO_ERR, ERR, VERB } Verbosity;
@@ -95,8 +98,11 @@ extern Bool fscanarray(LPJfile *,LPJfile *,int *,Bool,const char *,Verbosity);
 extern Bool fscanarrayindex(const LPJfile *,LPJfile *,int,Verbosity);
 extern Bool iskeydefined(const LPJfile *,const char *);
 extern Bool isboolean(const LPJfile *,const char *);
+extern Bool isstring(const LPJfile *,const char *);
 extern Bool fscanline(FILE *,char [],int,Verbosity);
 extern Bool fscantoken(FILE *,String);
+extern Bool fscankeywords(LPJfile *,int *,const char *,const char *const *,
+                          int,Bool,Verbosity);
 extern char *sysname(void);
 extern char *getpath(const char *);
 extern char *gethost(void);

@@ -18,9 +18,9 @@
 
 #define LPJ 0          /* LPJ simulation with natural vegetation only */
 #define LPJML 1        /* LPJ simulation with managed land */
-#define LPJML_IMAGE 4  /* LPJ simulation with managed land coupled to IMAGE
+#define LPJML_IMAGE 2  /* LPJ simulation with managed land coupled to IMAGE
                           model */
-#define LPJML_FMS 5  /* LPJ simulation with managed land coupled to FMS */
+#define LPJML_FMS 3  /* LPJ simulation with managed land coupled to FMS */
 #define LANDUSE 1
 #define NO_LANDUSE 0
 #define CONST_LANDUSE 3
@@ -56,7 +56,6 @@
 #define RADIATION_SWONLY 2
 #define RADIATION 1
 #define CLOUDINESS 0
-#define SWDOWN 2
 #define ALL -1
 #define RAW 0
 #define CLM 1

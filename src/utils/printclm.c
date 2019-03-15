@@ -24,7 +24,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
 {
   FILE *file;
   time_t mod_date;
-  long long size;
+  uint64_t size;
+  //long long size;
   Header header;
   Restartheader restartheader;
   String id;
@@ -120,13 +121,13 @@ static void printclm(const char *filename,int output,int nbands,int version,
     if(version<3)
       type=LPJ_FLOAT;
     size=getfilesize(filename)-headersize(id,version)-sizeof(int)*header.ncell;
-    if(size!=typesizes[type]*header.ncell*header.nbands*header.nyear)
+    if(size!=(long long)typesizes[type]*header.ncell*header.nbands*header.nyear)
       fputs("Warning: file length does not match header.\n",stderr);
   }
   else if(!isrestart && !isreservoir)
   {
     size=getfilesize(filename)-headersize(id,version);
-    if(size!=typesizes[type]*header.ncell*header.nbands*header.nyear)
+    if(size!=(long long)typesizes[type]*header.ncell*header.nbands*header.nyear)
       fputs("Warning: file length does not match header.\n",stderr);
   }
   if((output & NO_DATA)==0)

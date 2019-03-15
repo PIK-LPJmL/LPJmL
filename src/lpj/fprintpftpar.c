@@ -21,9 +21,6 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
                  )
 {
   int i;
-  char *phenology[]={"evergreen","raingreen","summergreen","any","cropgreen"};
-  char *cultivation_type[]={"none","biomass","annual crop"};
-  char *path[]={"no pathway","C3","C4"};
   fputs("------------------------------------------------------------------------------\n",file);
   fprintf(file,"Id:\t\t%d\n"
                "Name:\t\t%s\n"

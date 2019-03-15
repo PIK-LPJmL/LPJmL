@@ -132,8 +132,6 @@ static void printoutname(FILE *file,const char *filename,Bool isoneyear,
     fputs(filename,file);
 } /* of printoutname' */
 
-static char *fmt[]={"raw","clm","clm2","txt","fms","meta","cdf"};
-
 static void printinputfile(FILE *file,const char *descr,const Filename *filename,
                            int width)
 {

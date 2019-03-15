@@ -193,7 +193,7 @@ int main(int argc,char **argv)
   if(config.sim_id==LPJML_FMS)
   {
     if(isroot(config))
-      fputs("ERROR032: FMS coupler not supported.\n",stderr);
+      fputs("ERROR032: FMS coupler not supported in standalone version.\n",stderr);
     return NO_FMS_ERR;
   }
 #ifdef IMAGE

@@ -56,6 +56,8 @@ static Bool fscantreephys(LPJfile *file,Treephys *phys,const char *name,
   return FALSE;
 } /* of 'fscantreephys' */
 
+char *leaftype[]={"broadleaved","needleleaved","any leaved"};
+
 Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
                    Pftpar *pft,   /**< Pointer to Pftpar array */
                    Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
@@ -92,12 +94,11 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   pft->agb=agb_tree;
   check(tree);
   pft->data=tree;
-  fscanint2(verb,file,&tree->leaftype,pft->name,"leaftype");
-  if(tree->leaftype<0 || tree->leaftype>ANYLEAVED)
+  if(fscankeywords(file,&tree->leaftype,"leaftype",leaftype,3,FALSE,verb))
   {
     if(verb)
-      fprintf(stderr,"ERROR201: Invalid value %d for leaf type of PFT '%s'.\n",
-              tree->leaftype,pft->name);
+      fprintf(stderr,"ERROR201: Invalid value for leaf type of PFT '%s'.\n",
+              pft->name);
     return TRUE;
   }
   fscantreephys2(verb,file,&tree->turnover,pft->name,"turnover");

@@ -18,6 +18,7 @@
 #include "lpj.h"
 
 #define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
+#define fscanbool2(file,var,name) if(fscanbool(file,var,name,FALSE,verbosity)) return TRUE;
 
 static Bool isopenoutput(int id,const Outputvar output[],int n)
 {
@@ -29,15 +30,33 @@ static Bool isopenoutput(int id,const Outputvar output[],int n)
   return FALSE; /* not found */
 } /* of 'isopenoutput' */
 
-Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
-                 Config *config,    /**< LPJ configuration */
-                 int nout_max       /**< maximum number of output files */
-                )                   /** \return TRUE on error */
+static int findid(const char *name,const Variable var[],int size)
+{
+  int i;
+  for(i=0;i<size;i++)
+    if(!strcmp(name,var[i].name))
+      return i;
+  return NOT_FOUND;
+} /* of 'findid' */
+
+static int findpftid(const char *name,const Pftpar pftpar[],int ntotpft)
+{
+  int p;
+  for(p=0;p<ntotpft;p++)
+    if(!strcmp(name,pftpar[p].name))
+      return pftpar[p].id;
+  return NOT_FOUND;
+} /* of 'findpftid' */
+
+Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
+                 Config *config, /**< LPJ configuration */
+                 int nout_max    /**< maximum number of output files */
+                )                /** \return TRUE on error */
 {
   LPJfile arr,item;
   Bool isdaily;
   int count,flag,size,index,ntotpft;
-  String outpath;
+  String outpath,name;
   Verbosity verbosity;
   verbosity=isroot(*config) ? config->scan_verbose : NO_ERR;
   config->outputvars=newvec(Outputvar,nout_max);
@@ -67,13 +86,34 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
     free(config->outputdir);
     config->outputdir=strdup(outpath);
   }
-  fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
+  if(iskeydefined(file,"pft_output_scaled"))
+  {
+    fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
+  }
+  else
+  {
+    fscanbool2(file,&config->pft_output_scaled,"grid_scaled");
+  }
   while(count<=nout_max && index<size)
   {
     fscanarrayindex(&arr,&item,index,verbosity);
-    fscanint2(&item,&flag,"id");
+    if(isstring(&item,"id"))
+    {
+      fscanstring(&item,name,"id",FALSE,verbosity);
+      flag=findid(name,config->outnames,nout_max);
+      if(flag==NOT_FOUND)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR166: Id '%s' not defined for output.\n",name);
+        return TRUE;
+      }
+    }
+    else
+    {
+      fscanint2(&item,&flag,"id");
+    }
     if(flag==END)  /* end marker read? */
-      break;  
+      break;
     else if(count==nout_max)
     {
       if(verbosity)
@@ -136,16 +176,31 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
   if(config->sim_id==LPJML && isdaily)
   {
     ntotpft=config->npft[GRASS]+config->npft[TREE]+config->npft[CROP];
-    fscanint2(file,&config->crop_index,"crop_index");
-    if(config->crop_index<0 || config->crop_index>=ntotpft)
+    if(isstring(file,"crop_index"))
     {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR166: Invalid value for crop index=%d in line %d of '%s'.\n",
-                config->crop_index,getlinecount(),getfilename());
-      return TRUE;
+      fscanstring(file,name,"crop_index",FALSE,verbosity);
+      config->crop_index=findpftid(name,config->pftpar,ntotpft);
+      if(config->crop_index==NOT_FOUND)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR166: Invalid crop index '%s' for daily output.\n",name);
+        return TRUE;
+      }
     }
-    fscanint2(file,&config->crop_irrigation,"crop_irrigation");
-    if (config->crop_index == TROPICAL_HERBACEOUS) config->crop_index = TEMPERATE_HERBACEOUS; /* for managed grassland the key for daily output is C3_PERENNIAL_GRASS */
+    else
+    {
+      fscanint2(file,&config->crop_index,"crop_index");
+      if(config->crop_index<0 || config->crop_index>=ntotpft)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR166: Invalid value for crop index=%d in line %d of '%s'.\n",
+                  config->crop_index,getlinecount(),getfilename());
+        return TRUE;
+      }
+    }
+    fscanbool2(file,&config->crop_irrigation,"crop_irrigation");
+    if (config->crop_index == TROPICAL_HERBACEOUS)
+      config->crop_index = TEMPERATE_HERBACEOUS; /* for managed grassland the key for daily output is C3_PERENNIAL_GRASS */
   }
   else
   {

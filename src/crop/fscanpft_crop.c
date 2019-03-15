@@ -81,6 +81,9 @@ static Bool fscancropphys(LPJfile *file,Cropphys *phys,const char *name,Verbosit
   return FALSE;
 } /* of 'fscancropphys' */
 
+char *calcmethod[]={"no calc","prec calc","temp wtyp calc","temp styp calc",
+                    "temp prec calc","multi crop"};
+
 Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
                    Pftpar *pft,    /**< Pointer to Pftpar array */
                    Verbosity verb  /**< verbosity level (NO_ERR,ERR,VERB) */
@@ -109,19 +112,17 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   crop=new(Pftcroppar);
   check(crop);
   pft->data=crop;
-  fscanpftint(verb,file,&crop->calcmethod_sdate,pft->name,
-              "calcmethod_sdate");
   if(iskeydefined(file,"sla"))
   {
     fscanpftreal(verb,file,&pft->sla,pft->name,"sla");
   }
   else
     pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;   //"A photothermal model of leaf area index for greenhouse crops Xu etal.  "
-  if(crop->calcmethod_sdate<0 ||  crop->calcmethod_sdate>MULTICROP)
+  if(fscankeywords(file,&crop->calcmethod_sdate,"calcmethod_sdate",calcmethod,6,FALSE,verb))
   {
     if(verb)
-      fprintf(stderr,"ERROR201: Invalid value %d for calcmethod_sdate of CFT '%s'.\n",
-              crop->calcmethod_sdate,pft->name);
+      fprintf(stderr,"ERROR201: Invalid value for calcmethod_sdate of CFT '%s'.\n",
+              pft->name);
     return TRUE;
   }
   fscancropdate2(verb,file,&crop->initdate,pft->name,"init_date");
