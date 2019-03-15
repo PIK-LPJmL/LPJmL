@@ -1,16 +1,18 @@
-/***************************************************************************/
-/**                                                                       **/
-/**                  m  a  n  a  g  e  p  a  r  .  h                      **/
-/**                                                                       **/
-/**     country codes for management practices                            **/
-/**                                                                       **/
-/**     Potsdam Institute for Climate Impact Research                     **/
-/**     PO Box 60 12 03                                                   **/
-/**     14412 Potsdam/Germany                                             **/
-/**                                                                       **/
-/**     Last change: 20.02.18, Stephen Wirth                       **/
-/**                                                                       **/
-/***************************************************************************/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                        m  a  n  a  g  e  p  a  r  .  h                         \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Country codes for management practices                                     \m**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #ifndef MANAGEPAR_H /* Already included? */
 #define MANAGEPAR_H
