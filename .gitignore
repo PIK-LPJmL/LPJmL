@@ -46,6 +46,7 @@
 core
 core.*
 vgcore.*
+core-*
 
 # input files
 *.dat
