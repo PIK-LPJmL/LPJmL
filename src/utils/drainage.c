@@ -180,6 +180,8 @@ int main(int argc,char **argv)
   grid_filename.fmt=fmt;
   grid_filename.name=argv[1];
   grid_file=opencoord(&grid_filename, TRUE);
+  if(grid_file==NULL)
+    return EXIT_FAILURE;
   getcellsizecoord(&lon,&lat,grid_file);
   resol.lon=lon;
   resol.lat=lat;
