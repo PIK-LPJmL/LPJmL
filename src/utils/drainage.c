@@ -292,8 +292,8 @@ int main(int argc,char **argv)
 
   c1=c2=c3=c4=c5=c6=0;
   progress = (int)(cols*rows*0.01);
-  fprintf(stdout, "Processing %d * %d cells in '%s'\n", cols, rows, argv[2]);
-  fprintf(stdout, "LPJmL grid '%s' has %d cells\n", argv[1], numcoord(grid_file));
+  printf("Processing %d * %d cells in '%s'\n", cols, rows, argv[2]);
+  printf("LPJmL grid '%s' has %d cells\n", argv[1], numcoord(grid_file));
   /* read full DDM data to be able to search for follow-up cells */
   for(ilat=rows-1;ilat>=0;ilat--)
   {
@@ -366,7 +366,7 @@ int main(int argc,char **argv)
         }
         if(ilonnew < 0 || ilonnew >= cols || ilatnew < 0 || ilatnew >= rows)
         {
-          fprintf(stdout, "Error: destination cell (%d, %d) outside geographical extent of DDM\n", ilonnew, ilatnew);
+          fprintf(stderr, "Error: destination cell (%d, %d) outside geographical extent of DDM\n", ilonnew, ilatnew);
           next_value = nodata;
         }
         else
@@ -397,7 +397,7 @@ int main(int argc,char **argv)
           }
           if(ilonnew < 0 || ilonnew >= cols || ilatnew < 0 || ilatnew >= rows)
           {
-            fprintf(stdout, "Error: destination cell (%d, %d) outside geographical extent of DDM\n", ilonnew, ilatnew);
+            fprintf(stderr, "Error: destination cell (%d, %d) outside geographical extent of DDM\n", ilonnew, ilatnew);
             next_value = nodata;
           }
           else
@@ -447,9 +447,12 @@ int main(int argc,char **argv)
   }
   fclose(ofp);
   closecoord(grid_file);
-  printf("DDM cells with value= %d cells found in LPJmL grid= %d intermediate cells in LPJmL grid= %d outflow cells in LPJmL grid= %d fill values left in LPJmL grid= %d\n",c2,c3,c4, c5, c6);
+  printf("DDM cells with value:             %d\n"
+         "Cells found in LPJmL grid:        %d\n"
+         "Intermediate cells in LPJmL grid: %d\n"
+         "Outflow cells in LPJmL grid:      %d\n"
+         "Fill values left in LPJmL grid:   %d\n",c2,c3,c4, c5, c6);
   free(drain);
   free(ddm_data);
-
   return EXIT_SUCCESS;
 } /* of 'main' */
