@@ -65,71 +65,71 @@ static double distHaversine(double lat1,
   return d;
 }
 
-int cellmatch(int ilon, int ilat, int ncell, Drain *drain)
+static int cellmatch(int ilon, int ilat, int ncell, Drain *drain)
 {
-	int i;
-	for(i=0;i<ncell;i++)
-	{
-		if(fabs(ilat-drain[i].ilat)< 0.1 && fabs(ilon-drain[i].ilon) < 0.1)
-			return i;
-	}
-	return LPJ_outflow;
-}
+  int i;
+  for(i=0;i<ncell;i++)
+  {
+    if(fabs(ilat-drain[i].ilat)< 0.1 && fabs(ilon-drain[i].ilon) < 0.1)
+      return i;
+  }
+  return LPJ_outflow;
+} /* of 'cellmatch' */
 
-Bool newindex(int ilon, int ilat, int value, int *ilonnew, int *ilatnew)
+static Bool newindex(int ilon, int ilat, int value, int *ilonnew, int *ilatnew)
 {
-	switch(value)
-	{
-		case DDM_outflow:
-		case DDM_internalsink:
-			/* outflow */
-			*ilonnew=ilon;
-			*ilatnew=ilat;
-			return FALSE;
-		case DDM_E:
-    	/* east */
+  switch(value)
+  {
+    case DDM_outflow:
+    case DDM_internalsink:
+      /* outflow */
+      *ilonnew=ilon;
+      *ilatnew=ilat;
+      return FALSE;
+    case DDM_E:
+      /* east */
       *ilatnew=ilat;
       *ilonnew=ilon+1;
       return FALSE;
-		case DDM_SE:
-    	/* southeast */
+    case DDM_SE:
+      /* southeast */
       *ilatnew=ilat-1;
       *ilonnew=ilon+1;
       return FALSE;
-		case DDM_S:
-    	/* south */
+    case DDM_S:
+      /* south */
       *ilatnew=ilat-1;
       *ilonnew=ilon;
       return FALSE;
-		case DDM_SW:
-    	/* southwest */
+    case DDM_SW:
+       /* southwest */
       *ilatnew=ilat-1;
       *ilonnew=ilon-1;
       return FALSE;
-		case DDM_W:
-    	/* west */
+    case DDM_W:
+      /* west */
       *ilatnew=ilat;
       *ilonnew=ilon-1;
       return FALSE;
-		case DDM_NW:
-    	/* northwest */
+    case DDM_NW:
+      /* northwest */
       *ilatnew=ilat+1;
       *ilonnew=ilon-1;
       return FALSE;
-		case DDM_N:
-    	/* north */
+    case DDM_N:
+      /* north */
       *ilatnew=ilat+1;
       *ilonnew=ilon;
       return FALSE;
-		case DDM_NE:
-    	/* northeast */
+    case DDM_NE:
+      /* northeast */
       *ilatnew=ilat+1;
       *ilonnew=ilon+1;
       return FALSE;
-		default:
-			return TRUE;
-	}
-}
+    default:
+      return TRUE;
+  } /* of switch */
+} /* of 'newindex' */
 
 int main(int argc,char **argv)
 {  
@@ -152,7 +152,7 @@ int main(int argc,char **argv)
   float lon,lat;
   if(argc>1 && !strcmp(argv[1],"-longheader"))
   {
-  	fmt=CLM2;
+    fmt=CLM2;
     argc--;
     argv++;
   } 
@@ -228,8 +228,8 @@ int main(int argc,char **argv)
   }
   if(rbuf2 <= 0)
   {
-  	fprintf(stderr,"Error: invalid cellsize %f in '%s'.\n", rbuf2, argv[2]);
-  	return EXIT_FAILURE;
+    fprintf(stderr,"Error: invalid cellsize %f in '%s'.\n", rbuf2, argv[2]);
+    return EXIT_FAILURE;
   }
   /* printf("cellsize=%d\n",width); */
   fscanf(mfp,"%*s %d",&nodata);
@@ -240,12 +240,12 @@ int main(int argc,char **argv)
   /* check if resolution matches */
   if(resol.lon/rbuf2 > 1.0001 || resol.lon/rbuf2 < 0.9999 || resol.lat/rbuf2 > 1.0001 || resol.lat/rbuf2 < 0.9999)
   {
-  	fprintf(stderr,"Error: resolution mismatch between '%s' and '%s': %f different from (%f, %f).\n", argv[2], argv[1], rbuf2, resol.lon, resol.lat);
-  	return EXIT_FAILURE;
+    fprintf(stderr,"Error: resolution mismatch between '%s' and '%s': %f different from (%f, %f).\n", argv[2], argv[1], rbuf2, resol.lon, resol.lat);
+    return EXIT_FAILURE;
   }
   /* set resolution of output file to grid resolution */
-  header.cellsize_lon = resol.lon;
-  header.cellsize_lat = resol.lat;
+  header.cellsize_lon = (float)resol.lon;
+  header.cellsize_lat = (float)resol.lat;
 
   drain=newvec(Drain,numcoord(grid_file));
   if(drain==NULL)
@@ -263,8 +263,8 @@ int main(int argc,char **argv)
     {
       fprintf(stderr, "Error: Unexpected end of grid file '%s' in cell %d", argv[1], i);
       closecoord(grid_file);
-      close(ofp);
-      close(mfp);
+      fclose(ofp);
+      fclose(mfp);
       return EXIT_FAILURE;
     }
     drain[i].lon= coord.lon;
@@ -275,8 +275,8 @@ int main(int argc,char **argv)
     {
       fprintf(stderr, "Error: cell %d in '%s' (%.5f E, %.5f N) is outside the geographical extent of '%s' (%.5f - %.5f E, %.5f - %.5f N)\n.", i, argv[1], coord.lon, coord.lat, argv[2], xcorner, xcorner+rbuf2*cols, ycorner, ycorner+rbuf2*rows);
       closecoord(grid_file);
-      close(ofp);
-      close(mfp);
+      fclose(ofp);
+      fclose(mfp);
       return EXIT_FAILURE;
     }
   }
@@ -310,124 +310,125 @@ int main(int argc,char **argv)
   fclose(mfp);
   for(ilat=0;ilat<rows;ilat++)
   {
-  	for(ilon=0;ilon<cols;ilon++)
-  	{
-  		value=ddm_data[ilat*cols+ilon];
+    for(ilon=0;ilon<cols;ilon++)
+    {
+      value=ddm_data[ilat*cols+ilon];
       c1++; /* running counter */
       if(c1 >= progress)
       {
-      	fprintf(stdout, "%.1f%s... ", c1*100.0/(cols*rows), "%");
-      	progress+=(int)(cols*rows*0.01);
-      	fflush(stdout);
+        printf("%.1f%s... ", c1*100.0/(cols*rows), "%");
+        progress+=(int)(cols*rows*0.01);
+        fflush(stdout);
       }
 
-      if(value == nodata) continue; /* no need to look for matching LPJ cell if fill value in DDM */
+      if(value == nodata)
+        continue; /* no need to look for matching LPJ cell if fill value in DDM */
       c2++; /* counter for DDM cells without fill value */
       if(value == DDM_outflow || value == DDM_internalsink)
       {
-      	if((i = cellmatch(ilon, ilat, numcoord(grid_file), drain)) >= 0)
-      	{
-        	drain[i].r.index=(value==DDM_outflow ? LPJ_outflow : LPJ_internalsink);
-        	drain[i].r.len=0;
-        	c5++; /* counter for outflow cells */
-        	c3++; /* counter for DDM cells found in LPJ grid */
-      	} /* else
-      		fprintf(stdout, "Outflow cell (%d, %d) not found in LPJmL grid\n", ilon, ilat); */
+        if((i = cellmatch(ilon, ilat, numcoord(grid_file), drain)) >= 0)
+        {
+          drain[i].r.index=(value==DDM_outflow ? LPJ_outflow : LPJ_internalsink);
+          drain[i].r.len=0;
+          c5++; /* counter for outflow cells */
+          c3++; /* counter for DDM cells found in LPJ grid */
+        } /* else
+     fprintf(stdout, "Outflow cell (%d, %d) not found in LPJmL grid\n", ilon, ilat); */
       }
       ilonnew=ilon;
       ilatnew=ilat;
       if(value != DDM_outflow && value != nodata && value != DDM_internalsink)
       {
-      	if((i = cellmatch(ilon, ilat, numcoord(grid_file), drain)) < 0)
-      	{
-      		/* cell not in LPJ grid */
-      		// fprintf(stdout, "Intermediate cell (%d, %d) not found in LPJmL grid\n", ilon, ilat);
-      		continue; /* skip to next ilon iteration */
-      	}
-      	c3++;
-      	if(newindex(ilon, ilat, value, &ilonnew, &ilatnew))
-      	{
-      		fprintf(stderr, "Error: invalid drainage direction value %d in cell (%d, %d). Skipping cell\n", value, ilon, ilat);
-      		continue;
-      	}
+        if((i = cellmatch(ilon, ilat, numcoord(grid_file), drain)) < 0)
+        {
+          /* cell not in LPJ grid */
+          // fprintf(stdout, "Intermediate cell (%d, %d) not found in LPJmL grid\n", ilon, ilat);
+          continue; /* skip to next ilon iteration */
+        }
+        c3++;
+        if(newindex(ilon, ilat, value, &ilonnew, &ilatnew))
+        {
+          fprintf(stderr, "Error: invalid drainage direction value %d in cell (%d, %d). Skipping cell\n", value, ilon, ilat);
+          continue;
+        }
         /* check for flow direction crossing date line */
         if(ilonnew < 0 && xcorner < -179.999999)
         {
-        	if(xcorner+cols*rbuf2 > 179.999999)
-        		ilonnew=cols-1;
+          if(xcorner+cols*rbuf2 > 179.999999)
+            ilonnew=cols-1;
         }
         if(ilonnew >= cols && xcorner+cols*rbuf2 > 179.999999)
         {
-        	if(xcorner < -179.999999)
-        		ilonnew = 0;
+          if(xcorner < -179.999999)
+            ilonnew = 0;
         }
         if(ilonnew < 0 || ilonnew >= cols || ilatnew < 0 || ilatnew >= rows)
         {
-        	fprintf(stdout, "Error: destination cell (%d, %d) outside geographical extent of DDM\n", ilonnew, ilatnew);
-        	next_value = nodata;
+          fprintf(stdout, "Error: destination cell (%d, %d) outside geographical extent of DDM\n", ilonnew, ilatnew);
+          next_value = nodata;
         }
         else
-        	next_value = ddm_data[ilatnew*cols+ilonnew]; /* drainage direction of following cell */
+          next_value = ddm_data[ilatnew*cols+ilonnew]; /* drainage direction of following cell */
 
         while((j = cellmatch(ilonnew, ilatnew, numcoord(grid_file), drain)) < 0 && next_value != DDM_outflow && next_value != DDM_internalsink && next_value != nodata)
         {
-        	fprintf(stdout, "Destination cell (%d, %d) of (%d, %d) not found in LPJmL grid. Searching DDM further down-stream\n", ilonnew, ilatnew, ilon, ilat);
-        	/* destination cell not in LPJ grid (cellmatch() < 0), but destination cell in DDM (next_values > 0)
-        	 * get next cell according to DDM
-        	 */
-        	if(newindex(ilonnew, ilatnew, next_value, &ilonnew, &ilatnew))
-        	{
-        		fprintf(stderr, "Invalid drainage direction value %d in cell (%d, %d). Setting to nodata value\n", value, ilonnew, ilatnew);
-        		next_value = nodata;
-        		break;
-        	}
+          fprintf(stdout, "Destination cell (%d, %d) of (%d, %d) not found in LPJmL grid. Searching DDM further down-stream\n", ilonnew, ilatnew, ilon, ilat);
+          /* destination cell not in LPJ grid (cellmatch() < 0), but destination cell in DDM (next_values > 0)
+           * get next cell according to DDM
+           */
+          if(newindex(ilonnew, ilatnew, next_value, &ilonnew, &ilatnew))
+          {
+            fprintf(stderr, "Invalid drainage direction value %d in cell (%d, %d). Setting to nodata value\n", value, ilonnew, ilatnew);
+            next_value = nodata;
+            break;
+          }
           /* check for flow direction crossing date line */
           if(ilonnew < 0 && xcorner < -179.999999)
           {
-          	if(xcorner+cols*rbuf2 > 179.999999)
-          		ilonnew=cols-1;
+            if(xcorner+cols*rbuf2 > 179.999999)
+              ilonnew=cols-1;
           }
           if(ilonnew >= cols && xcorner+cols*rbuf2 > 179.999999)
           {
-          	if(xcorner < -179.999999)
-          		ilonnew = 0;
+            if(xcorner < -179.999999)
+              ilonnew = 0;
           }
           if(ilonnew < 0 || ilonnew >= cols || ilatnew < 0 || ilatnew >= rows)
           {
-          	fprintf(stdout, "Error: destination cell (%d, %d) outside geographical extent of DDM\n", ilonnew, ilatnew);
-          	next_value = nodata;
+            fprintf(stdout, "Error: destination cell (%d, %d) outside geographical extent of DDM\n", ilonnew, ilatnew);
+            next_value = nodata;
           }
           else
-          	next_value = ddm_data[ilatnew*cols+ilonnew]; /* drainage direction of following cell */
+            next_value = ddm_data[ilatnew*cols+ilonnew]; /* drainage direction of following cell */
         }
         /* j now has the index of an LPJ cell, or a following DDM cell is an outflow cell / nodata value */
         if(j>=0)
         {
-        	/* cell found */
-        	drain[i].r.index=j;
-        	drain[i].r.len=(int)distHaversine(drain[i].lat*M_PI/180,drain[j].lat*M_PI/180,drain[i].lon*M_PI/180,drain[j].lon*M_PI/180);
-        	c4++;
+          /* cell found */
+          drain[i].r.index=j;
+          drain[i].r.len=(int)distHaversine(drain[i].lat*M_PI/180,drain[j].lat*M_PI/180,drain[i].lon*M_PI/180,drain[j].lon*M_PI/180);
+          c4++;
         }
         else
         {
-        	switch (next_value)
-        	{
-        	case DDM_outflow:
-        		drain[i].r.index = LPJ_outflow;
-          	c5++;
-        		break;
-        	case DDM_internalsink:
-        		drain[i].r.index = LPJ_internalsink;
-          	c5++;
-        		break;
-        	default:
-        		/* note: nodata should not happen, points to error in DDM */
-        		drain[i].r.index = LPJ_nodata;
-        	}
+          switch (next_value)
+          {
+            case DDM_outflow:
+              drain[i].r.index = LPJ_outflow;
+              c5++;
+              break;
+            case DDM_internalsink:
+              drain[i].r.index = LPJ_internalsink;
+              c5++;
+              break;
+            default:
+              /* note: nodata should not happen, points to error in DDM */
+              drain[i].r.index = LPJ_nodata;
+          }
         }
       } /* end value > 0 */
-    }          /* end of ilon-loop */
-  }            /* end of ilat-loop */
+    } /* end of ilon-loop */
+  } /* end of ilat-loop */
 
   /* HEADER */
   header.ncell=numcoord(grid_file);
@@ -440,7 +441,7 @@ int main(int argc,char **argv)
     /* write binary file */
     fwrite(&drain[i].r,sizeof(Routing),1,ofp);
     if(drain[i].r.index == LPJ_nodata)
-    	c6++;
+      c6++;
   }
   fclose(ofp);
   closecoord(grid_file);
