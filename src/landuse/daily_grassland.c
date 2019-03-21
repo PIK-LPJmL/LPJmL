@@ -21,7 +21,7 @@
 
 static const int mowingDays[] = {152, 335}; // mowing on fixed dates 1-june or 1-dec
 
-Bool isMowingDay(int aDay)
+static Bool isMowingDay(int aDay)
 {
   int i;
   int len = sizeof(mowingDays)/sizeof(int);
@@ -31,7 +31,7 @@ Bool isMowingDay(int aDay)
       return TRUE;
   }
   return FALSE;
-}
+} /* of 'isMowingDay' */
 
 Real daily_grassland(Stand *stand, /**< stand pointer */
                      Real co2,   /**< atmospheric CO2 (ppmv) */
@@ -49,7 +49,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
                      int npft,   /**< number of natural PFTs */
                      int ncft,   /**< number of crop PFTs   */
                      int UNUSED(year), /**< simulation year */
-                     Bool withdailyoutput,
+                     Bool withdailyoutput, /**< enable daily output */
                      Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                      const Config *config /**< LPJ config */
                     )            /** \return runoff (mm) */
@@ -252,7 +252,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
       if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
       {
         turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
-        if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p))
+        if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config->with_nitrogen))
         {
           /* kill PFT from list of established PFTs */
           fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */
@@ -288,24 +288,22 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   switch(stand->cell->ml.grass_scenario)
   {
     case GS_DEFAULT: // default
-//      if(day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365)
-//      {
-        if(cleaf>cleaf_max && stand->growing_days>=20)
+      if(cleaf>cleaf_max && stand->growing_days>=20)
+      {
+        fpc_inc=newvec(Real,n_pft);
+        check(fpc_inc);
+        isphen=TRUE;
+        hfrac=1-500/(500+cleaf);
+        foreachpft(pft,p,&stand->pftlist)
         {
-          fpc_inc=newvec(Real,n_pft);
-          check(fpc_inc);
-          isphen=TRUE;
-          hfrac=1-500/(500+cleaf);
-          foreachpft(pft,p,&stand->pftlist){
-        	  grass=pft->data;
-              turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
-           }
-          allocation_today(stand,config->ntypes);
-          light(stand,config->ntypes,fpc_inc);
-          free(fpc_inc);
-         }
-//       }
-       break;
+          grass=pft->data;
+          turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
+        }
+        allocation_today(stand,config->ntypes,config->with_nitrogen);
+        light(stand,config->ntypes,fpc_inc);
+        free(fpc_inc);
+      }
+      break;
     case GS_MOWING: // mowing
       if (isMowingDay(day))
       {
@@ -403,17 +401,25 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   {
     output->pft_harvest[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest.carbon+=harvest.harvest.carbon*stand->cell->ml.landfrac[data->irrigation].grass[0];
     output->pft_harvest[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest.carbon+=harvest.harvest.carbon*stand->cell->ml.landfrac[data->irrigation].grass[1];
+    output->pft_harvest[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest.nitrogen+=harvest.harvest.nitrogen*stand->cell->ml.landfrac[data->irrigation].grass[0];
+    output->pft_harvest[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest.nitrogen+=harvest.harvest.nitrogen*stand->cell->ml.landfrac[data->irrigation].grass[1];
 
     output->pft_harvest[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].residual.carbon+=harvest.residual.carbon*stand->cell->ml.landfrac[data->irrigation].grass[0];
     output->pft_harvest[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].residual.carbon+=harvest.residual.carbon*stand->cell->ml.landfrac[data->irrigation].grass[1];
+    output->pft_harvest[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].residual.nitrogen+=harvest.residual.nitrogen*stand->cell->ml.landfrac[data->irrigation].grass[0];
+    output->pft_harvest[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].residual.nitrogen+=harvest.residual.nitrogen*stand->cell->ml.landfrac[data->irrigation].grass[1];
   }
   else
   {
     output->pft_harvest[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest.carbon+=harvest.harvest.carbon;
     output->pft_harvest[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest.carbon+=harvest.harvest.carbon;
+    output->pft_harvest[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest.nitrogen+=harvest.harvest.nitrogen;
+    output->pft_harvest[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest.nitrogen+=harvest.harvest.nitrogen;
 
     output->pft_harvest[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].residual.carbon+=harvest.residual.carbon;
     output->pft_harvest[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].residual.carbon+=harvest.residual.carbon;
+    output->pft_harvest[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].residual.nitrogen+=harvest.residual.nitrogen;
+    output->pft_harvest[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].residual.nitrogen+=harvest.residual.nitrogen;
   }
 
     /* harvested area */
