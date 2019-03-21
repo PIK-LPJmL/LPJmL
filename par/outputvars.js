@@ -17,7 +17,7 @@
 
 "outputvar" :
 [
-  /* id           name            variable(NetCDF) description             unit               scale */
+  /* id           name            variable(NetCDF) description             unit               scale          offset */
   { "id" : GRID, "name" : "grid", "var" : "soil", "descr" : "coordinates", "unit" : "degree", "scale" : 1.0, "offset" : 0.0},
   { "id" : FPC, "name" : "fpc", "var" : "FPC", "descr" : "foliage projected cover", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MNPP, "name": "mnpp", "var" : "NPP", "descr" : "monthly NPP", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
@@ -40,6 +40,8 @@
   { "id" : VEGC, "name": "vegc", "var" : "VegC", "descr" : "vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILC, "name": "soilc", "var" : "SoilC", "descr" : "total soil carbon density", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITC, "name": "litc", "var" : "LitC", "descr" : "litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : ALITFALLC, "name": "alitfalc", "var" : "litfallc", "descr" : "litter fall carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : ALITFALLN, "name": "alitfaln", "var" : "litfalln", "descr" : "litter fall nitrogen", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : FLUX_ESTABC, "name": "flux_estabc", "var" : "estabc", "descr" : "establishment flux", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : PFT_NPP, "name": "pft_npp", "var" : "NPP", "descr" : "PFT-specific NPP", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : PFT_GCGP, "name": "pft_gcgp", "var" : "GCGP", "descr" : "PFT-specific water stress", "unit" : "", "scale" : 1.0, "offset" : 0.0},
@@ -298,5 +300,4 @@
   { "id" : PFT_NLIMIT, "name": "pft_nlimit", "var": "nlimit", "descr": "ratio N-constrained to unconstrained vmax", "unit": "-", "scale": 1.0, "offset" : 0.0},
   { "id" : SOILNO3_LAYER, "name": "soilno3_layer", "var": "SoilNO3", "descr": "soil NO3 nitrogen in layer", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
   { "id" : SOILNH4_LAYER, "name": "soilnh4_layer", "var": "SoilNH4", "descr": "soil NH4 nitrogen in layer", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0}
-
 ],

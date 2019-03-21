@@ -34,7 +34,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   Bool *present;
   Pft *pft;
   Real fpc_inc;
-  Stocks acflux_estab,stocks;
+  Stocks flux_estab,stocks;
   int n_est=0;
   Real fpc_total,*fpc_type;
   Irrigation *irrigation;
@@ -43,7 +43,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   check(fpc_type);
   present=newvec(Bool,npft);
   check(present);
-  acflux_estab.carbon=acflux_estab.nitrogen=0;
+  flux_estab.carbon=flux_estab.nitrogen=0;
   for(p=0;p<npft;p++)
     present[p]=FALSE;
 
@@ -54,11 +54,11 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
 #ifdef DEBUG2
     printf("PFT:%s fpc=%g\n",pft->par->name,pft->fpc);
     printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
-           pft->bm_inc,vegc_sum(pft),soilcarbon(&stand->soil));
+           pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
 
     present[pft->par->id]=TRUE;
-    if(annual_grass(stand,pft,&fpc_inc,config->new_phenology,isdaily))
+    if(annual_grass(stand,pft,&fpc_inc,config->new_phenology,config->with_nitrogen,isdaily))
     {
       /* PFT killed, delete from list of established PFTs */
       litter_update_grass(&stand->soil.litter,pft,pft->nind);
@@ -91,12 +91,12 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
     if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
     {
       stocks=establishment_grass(pft,fpc_total,fpc_type[pft->par->type],n_est);
-      acflux_estab.carbon+=stocks.carbon;
-      acflux_estab.nitrogen+=stocks.nitrogen;
+      flux_estab.carbon+=stocks.carbon;
+      flux_estab.nitrogen+=stocks.nitrogen;
     }
-  stand->cell->output.flux_estab.carbon+=acflux_estab.carbon*stand->frac;
-  stand->cell->output.flux_estab.nitrogen+=acflux_estab.nitrogen*stand->frac;
-  stand->cell->output.dcflux-=acflux_estab.carbon*stand->frac;
+  stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 
   stand->cell->output.soil_storage+=(irrigation->irrig_stor+irrigation->irrig_amount)*stand->frac*stand->cell->coord.area;
 

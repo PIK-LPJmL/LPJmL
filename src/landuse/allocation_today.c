@@ -14,10 +14,10 @@
 
 #include "lpj.h"
 #include "grass.h"
-#include "landuse.h"
 
 void allocation_today(Stand *setasidestand, /**< pointer to setaside stand */
-                      int ntypes /**< number of different PFT classes */
+                      int ntypes,           /**< number of different PFT classes */
+                      int with_nitrogen     /**< nitrogen cycle enabled */
                      )
 {
   int p,npft;
@@ -31,7 +31,7 @@ void allocation_today(Stand *setasidestand, /**< pointer to setaside stand */
     foreachpft(pft,p,&setasidestand->pftlist)
     {
       /* only grass PFTs are established on setaside stand */
-      if(allocation_grass(&setasidestand->soil.litter,pft,fpc_inc+p))
+      if(allocation_grass(&setasidestand->soil.litter,pft,fpc_inc+p,with_nitrogen))
       {
         /* kill PFT from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&setasidestand->pftlist)-1]; /*moved here by W. von Bloh */

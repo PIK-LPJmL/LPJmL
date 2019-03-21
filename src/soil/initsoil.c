@@ -20,7 +20,8 @@
 
 Bool initsoil(Soil *soil,             /**< Pointer to soil data */
               const Soilpar *soilpar, /**< soil parameter array */
-              int ntotpft             /**< number of PFT including crops*/
+              int ntotpft,            /**< number of PFT including crops*/
+              Bool with_nitrogen      /**< nitrogen cycle enabled? (TRUE/FALSE) */
              )                        /** \return TRUE on error */
 {
   int l,p;
@@ -28,7 +29,7 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
   forrootsoillayer(l)
   {
     soil->pool[l].fast.carbon=soil->pool[l].slow.carbon=soil->k_mean[l].fast=soil->k_mean[l].slow=0.0;
-    if(soilpar->type==ROCK || soilpar->type==ICE)
+    if(!with_nitrogen || soilpar->type==ROCK || soilpar->type==ICE)
       soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=soil->NH4[l]=soil->NO3[l]=0.0;
     else
     {
@@ -65,17 +66,34 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
     soil->decomC[l]=0;
 #endif
   }
-  for (p=0;p<ntotpft;p++)
+  if(with_nitrogen)
   {
-    soil->c_shift_fast[0][p]=0.7;
-    soil->c_shift_slow[0][p]=0.7;
-  }
-  for (l=1;l<LASTLAYER;l++)
     for (p=0;p<ntotpft;p++)
     {
-      soil->c_shift_fast[l][p]=0.3/(LASTLAYER-1);
-      soil->c_shift_slow[l][p]=0.3/(LASTLAYER-1);
+      soil->c_shift_fast[0][p]=0.7;
+      soil->c_shift_slow[0][p]=0.7;
     }
+    for (l=1;l<LASTLAYER;l++)
+      for (p=0;p<ntotpft;p++)
+      {
+        soil->c_shift_fast[l][p]=0.3/(LASTLAYER-1);
+        soil->c_shift_slow[l][p]=0.3/(LASTLAYER-1);
+      }
+  }
+  else
+  {
+    for (p=0;p<ntotpft;p++)
+    {
+      soil->c_shift_fast[0][p]=1;
+      soil->c_shift_slow[0][p]=1;
+    }
+    for (l=1;l<LASTLAYER;l++)
+      for (p=0;p<ntotpft;p++)
+      {
+        soil->c_shift_fast[l][p]=0;
+        soil->c_shift_slow[l][p]=0;
+      }
+  }
   soil->maxthaw_depth=2;
   soil->mean_maxthaw=layerbound[BOTTOMLAYER];
   for(l=0;l<NSOILLAYER+1;++l)

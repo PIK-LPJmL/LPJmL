@@ -90,9 +90,9 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   }
   else layer=NULL;
   for(i=0;i<array->nlon;i++)
-    lon[i]=array->lon_min+i*config->resolution.lon;
+    lon[i]=(float)(array->lon_min+i*config->resolution.lon);
   for(i=0;i<array->nlat;i++)
-    lat[i]=array->lat_min+i*config->resolution.lat;
+    lat[i]=(float)(array->lat_min+i*config->resolution.lat);
   if(n>1)
   {
     days=newvec(int,n);

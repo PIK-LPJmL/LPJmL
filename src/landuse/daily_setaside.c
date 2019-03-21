@@ -34,9 +34,9 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
                    Real par,   /**< photosynthetic active radiation flux */
                    Real melt,  /**< melting water (mm) */
                    int npft,   /**< number of natural PFTs */
-                   int UNUSED(ncft),   /**< number of crop PFTs   */
+                   int ncft,   /**< number of crop PFTs   */
                    int year,           /**< simulation year (AD) */
-                   Bool withdailyoutput,
+                   Bool withdailyoutput, /**< enable daily output */
                    Bool intercrop, /**< enable intercropping (TRUE/FALSE) */
                    const Config *config /**< LPJ config */
                   ) /** \return runoff (mm) */
@@ -54,7 +54,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   Real npp; /* net primary productivity (gC/m2) */
   Real wdf; /* water deficit fraction */
   Real gc_pft;
-  Stocks acflux_estab = {0,0};
+  Stocks flux_estab = {0,0};
   Stocks stocks;
   int n_est;
   Bool *present;
@@ -113,17 +113,16 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
      *  respiration, including conversion from FPC to grid cell basis.
      *
      */
-
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
-                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,config->permafrost);
+                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,npft,ncft,config);
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
       output->gcgp_count[pft->par->id]++;
       output->pft_gcgp[pft->par->id]+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
 
-    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd);
+    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
     output->mnpp+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
     output->mgpp+=gpp*stand->frac;
@@ -174,7 +173,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   n_est=0;
   if(intercrop)
   {
-    acflux_estab.carbon=acflux_estab.nitrogen=0;
+    flux_estab.carbon=flux_estab.nitrogen=0;
     for(p=0;p<npft;p++)
     {
       if(config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE /* still correct?? */ && (!present[p]) &&
@@ -186,8 +185,8 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
       if(!pft->established)
       {
         stocks=establishment_grass(pft,0,0,n_est);
-        acflux_estab.carbon+=stocks.carbon;
-        acflux_estab.nitrogen+=stocks.nitrogen;
+        flux_estab.carbon+=stocks.carbon;
+        flux_estab.nitrogen+=stocks.nitrogen;
         pft->established=TRUE;
       }
 
@@ -195,9 +194,9 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
     foreachpft(pft,p,&stand->pftlist)
       fpc_grass(pft);
 
-    output->flux_estab.carbon+=acflux_estab.carbon*stand->frac;
-    output->flux_estab.nitrogen+=acflux_estab.nitrogen*stand->frac;
-    output->dcflux-=acflux_estab.carbon*stand->frac;
+    output->flux_estab.carbon+=flux_estab.carbon*stand->frac;
+    output->flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+    output->dcflux-=flux_estab.carbon*stand->frac;
   }
   free(present);
   /* end new block for daily establishment */

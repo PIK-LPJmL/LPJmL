@@ -16,7 +16,7 @@
 #include "tree.h"
 
 void adjust_tree(Litter *litter, /**< pointer to litter */
-                 Pft *pft,       /** pointer to tree PFT */
+                 Pft *pft,       /**< pointer to tree PFT */
                  Real tree_fpc,  /**< tree foliage projective cover */
                  Real fpc_max    /**< maximum foliage projectove cover */
                 )

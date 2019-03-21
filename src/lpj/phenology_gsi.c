@@ -37,9 +37,10 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
   pft->phen_gsi.tmax += ( 1 / (1 + exp(tmaxpar.sl * (temp - tmaxpar.base))) - pft->phen_gsi.tmax) * tmaxpar.tau;
 
   /* photosynthetic active radiation response function */
-  if(-lightpar.sl * (light - lightpar.base)<200)
-   pft->phen_gsi.light += ( 1 / (1 + exp(-lightpar.sl * (light - lightpar.base))) - pft->phen_gsi.light) * lightpar.tau;
-
+  if(-lightpar.sl * (light - lightpar.base)<200) /* check to avoid overflow in exp function */
+    pft->phen_gsi.light += ( 1 / (1 + exp(-lightpar.sl * (light - lightpar.base))) - pft->phen_gsi.light) * lightpar.tau;
+  else
+    pft->phen_gsi.light -=pft->phen_gsi.light * lightpar.tau;
   /* water availability response function */
   pft->phen_gsi.wscal += ( 1 / (1 + exp(-wscalpar.sl * (pft->wscal*100 - wscalpar.base))) - pft->phen_gsi.wscal) * wscalpar.tau;
 

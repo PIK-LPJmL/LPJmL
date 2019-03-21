@@ -59,39 +59,47 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
                )                     /** \return TRUE on error */
 {
   Real *wet;
-  int i,index;
+  int i,index,year_climate,year_depos;
   Bool rc;
-  if(readclimate(&climate->file_temp,climate->data.temp,0,climate->file_temp.scalar,grid,year,config))
+  if(config->const_climate)
+    year_climate=climate->firstyear+(year-config->firstyear) % 30;
+  else
+    year_climate=year;
+  if(config->const_deposition)
+    year_depos=climate->firstyear+(year-config->firstyear) % 30;
+  else
+    year_depos=year;
+  if(readclimate(&climate->file_temp,climate->data.temp,0,climate->file_temp.scalar,grid,year_climate,config))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR131: Cannot read temperature of year %d in getclimate().\n",
-              year);
+              year_climate);
     return TRUE;
   }
-  if(readclimate(&climate->file_prec,climate->data.prec,0,climate->file_prec.scalar,grid,year,config))
+  if(readclimate(&climate->file_prec,climate->data.prec,0,climate->file_prec.scalar,grid,year_climate,config))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR131: Cannot read precipitation of year %d in getclimate().\n",
-              year);
+              year_climate);
     return TRUE;
   }
   if(climate->data.tmax!=NULL)
   {
-    if(readclimate(&climate->file_tmax,climate->data.tmax,0,climate->file_tmax.scalar,grid,year,config))
+    if(readclimate(&climate->file_tmax,climate->data.tmax,0,climate->file_tmax.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR131: Cannot read tmax of year %d in getclimate().\n",
-                year);
+                year_climate);
       return TRUE;
     }
   }
   if(climate->data.sun!=NULL)
   {
-    if(readclimate(&climate->file_cloud,climate->data.sun,100,-climate->file_cloud.scalar,grid,year,config))
+    if(readclimate(&climate->file_cloud,climate->data.sun,100,-climate->file_cloud.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR131: Cannot read cloudiness of year %d in getclimate().\n",
-                year);
+                year_climate);
       return TRUE;
     }
     if(config->cloud_filename.fmt==CDF)
@@ -100,41 +108,41 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.lwnet!=NULL)
   {
-    if(readclimate(&climate->file_lwnet,climate->data.lwnet,0,climate->file_lwnet.scalar,grid,year,config))
+    if(readclimate(&climate->file_lwnet,climate->data.lwnet,0,climate->file_lwnet.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR131: Cannot read lwnet of year %d in getclimate().\n",
-                year);
+                year_climate);
       return TRUE;
     }
   }
   if(climate->data.swdown!=NULL)
   {
-    if(readclimate(&climate->file_swdown,climate->data.swdown,0,climate->file_swdown.scalar,grid,year,config))
+    if(readclimate(&climate->file_swdown,climate->data.swdown,0,climate->file_swdown.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR131: Cannot read swdown of year %d in getclimate().\n",
-                year);
+                year_climate);
       return TRUE;
     }
   }
   if(climate->data.wind!=NULL)
   {
-    if(readclimate(&climate->file_wind,climate->data.wind,0,climate->file_wind.scalar,grid,year,config))
+    if(readclimate(&climate->file_wind,climate->data.wind,0,climate->file_wind.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR131: Cannot read wind of year %d in getclimate().\n",
-                year);
+                year_climate);
       return TRUE;
     }
   }
   if(climate->data.tamp!=NULL)
   {
-    if(readclimate(&climate->file_tamp,climate->data.tamp,0,climate->file_tamp.scalar,grid,year,config))
+    if(readclimate(&climate->file_tamp,climate->data.tamp,0,climate->file_tamp.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR131: Cannot read %s of year %d in getclimate().\n",
-                (config->tamp_filename.fmt==CDF) ? "tmin" : "tamp",year);
+                (config->tamp_filename.fmt==CDF) ? "tmin" : "tamp",year_climate);
       return TRUE;
     }
   }
@@ -150,7 +158,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.no3deposition!=NULL)
   {
-    if(readclimate(&climate->file_no3deposition,climate->data.no3deposition,0,climate->file_no3deposition.scalar,grid,year,config))
+    if(readclimate(&climate->file_no3deposition,climate->data.no3deposition,0,climate->file_no3deposition.scalar,grid,year_depos,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR131: Cannot read no3deposition of year %d in getclimate().\n",
@@ -160,7 +168,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.nh4deposition!=NULL)
   {
-    if(readclimate(&climate->file_nh4deposition,climate->data.nh4deposition,0,climate->file_nh4deposition.scalar,grid,year,config))
+    if(readclimate(&climate->file_nh4deposition,climate->data.nh4deposition,0,climate->file_nh4deposition.scalar,grid,year_depos,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR131: Cannot read nh4deposition of year %d in getclimate().\n",
@@ -170,20 +178,20 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.wet!=NULL)
   {
-    index=year-climate->file_wet.firstyear;
+    index=year_climate-climate->file_wet.firstyear;
     if(index<0)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR130: Invalid year %d in getclimate().\n",year);
+        fprintf(stderr,"ERROR130: Invalid year %d in getclimate().\n",year_climate);
       return TRUE;
     }
     if(index<climate->file_wet.nyear)
     {
-      if(readclimate(&climate->file_wet,climate->data.wet,0,climate->file_wet.scalar,grid,year,config))
+      if(readclimate(&climate->file_wet,climate->data.wet,0,climate->file_wet.scalar,grid,year_climate,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR131: Cannot read wet days of year %d in getclimate().\n",
-                  year);
+                  year_climate);
         return TRUE;
       }
       climate->file_wet.ready=FALSE;

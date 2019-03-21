@@ -40,10 +40,10 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   Pft *pft;
   Real *fpc_inc,*fpc_inc2,*fpc_type;
   Real fpc_total;
-  Stocks acflux_estab={0,0};
+  Stocks flux_estab={0,0};
   Stocks estab_store={0,0};
   Stocks yield={0,0};
-  Stocks acflux_return;
+  Stocks flux_return;
   Pfttreepar *treepar;
   Irrigation *irrigation;
 
@@ -75,7 +75,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
 #ifdef DEBUG2
       printf("PFT:%s fpc_inc=%g fpc=%g\n",pft->par->name,fpc_inc[p],pft->fpc);
       printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
-             pft->bm_inc,vegc_sum(pft),soilcarbon(&stand->soil));
+             pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
       
       if(istree(pft))
@@ -92,7 +92,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
         }
       }
 
-      if(annualpft(stand,pft,fpc_inc+p,config->new_phenology,isdaily))
+      if(annualpft(stand,pft,fpc_inc+p,config->new_phenology,config->with_nitrogen,isdaily))
       {
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
@@ -155,7 +155,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
         }
         stand->growing_time=0;
       }
-    }
+    } /* of foreachpft */
 #ifdef IMAGE
     /* communicate bm tree yield every year as fraction of rotation length */
     stand->cell->ml.image_data->biomass_yield_annual+=stand->cell->ml.image_data->store_bmtree_yield*stand->frac/treepar->rotation;
@@ -169,51 +169,58 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
        ((config->pftpar[p].type==TREE && config->pftpar[p].cultivation_type==BIOMASS) ||
         (config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)))
     {
-      if(!present[p] && (estab_store.carbon<epsilon || config->pftpar[p].type!=TREE) && (fpc_type[TREE]<0.7 || config->pftpar[p].type==GRASS)) {
+      if(!present[p] && (estab_store.carbon<epsilon || config->pftpar[p].type!=TREE) && (fpc_type[TREE]<0.7 || config->pftpar[p].type==GRASS))
+      {
         addpft(stand,config->pftpar+p,year,0);
         n_est[config->pftpar[p].type]++;
       }
-      if(present[p])  n_est[config->pftpar[p].type]++;
+      if(present[p])
+        n_est[config->pftpar[p].type]++;
     }
 
   }
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   pft_len=getnpft(&stand->pftlist);
-  if(pft_len>0){
+  if(pft_len>0)
+  {
     fpc_inc2=newvec(Real,pft_len);
     check(fpc_inc2);
   }
-  foreachpft(pft,p,&stand->pftlist) fpc_inc2[p]=0;
+  foreachpft(pft,p,&stand->pftlist)
+    fpc_inc2[p]=0;
 
   foreachpft(pft,p,&stand->pftlist)
   {
     if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
+    {
       if (istree(pft))
       {
         treepar=pft->par->data;
         if(pft->nind<treepar->k_est && stand->age<treepar->max_rotation_length)
         {
-          acflux_return=establishment(pft,fpc_total,fpc_type[pft->par->type],
-                                        n_est[pft->par->type]);
-          acflux_estab.carbon+=acflux_return.carbon;
-          acflux_estab.nitrogen+=acflux_return.nitrogen;
+          flux_return=establishment(pft,fpc_total,fpc_type[pft->par->type],
+                                    n_est[pft->par->type]);
+          flux_estab.carbon+=flux_return.carbon;
+          flux_estab.nitrogen+=flux_return.nitrogen;
           fpc_inc2[p]=pft->fpc+fpc_total-1;
         }
       }
       else
       {
-        acflux_return=establishment(pft,fpc_total,fpc_type[pft->par->type],n_est[pft->par->type]);
-        acflux_estab.carbon+=acflux_return.carbon;
-        acflux_estab.nitrogen+=acflux_return.nitrogen;
+        flux_return=establishment(pft,fpc_total,fpc_type[pft->par->type],n_est[pft->par->type]);
+        flux_estab.carbon+=flux_return.carbon;
+        flux_estab.nitrogen+=flux_return.nitrogen;
       }
-  }
+    }
+  } /* of foreachpft */
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
-  if(fpc_total>1.0) light(stand,config->ntypes,fpc_inc2);
+  if(fpc_total>1.0)
+    light(stand,config->ntypes,fpc_inc2);
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);  
 
   if (fpc_total>1.0)
-   foreachpft(pft,p,&stand->pftlist)
-    adjust(&stand->soil.litter,pft,fpc_type[pft->par->type],FPC_MAX);
+    foreachpft(pft,p,&stand->pftlist)
+      adjust(&stand->soil.litter,pft,fpc_type[pft->par->type],FPC_MAX);
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
 
   if (fpc_total>1.0)
@@ -221,13 +228,13 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
       if(pft->par->type==GRASS)
         reduce(&stand->soil.litter,pft,fpc_type[GRASS]/(1+fpc_type[GRASS]-fpc_total));
 
-  stand->cell->balance.estab_storage_tree[irrigation->irrigation].carbon-=acflux_estab.carbon*stand->frac;
-  stand->cell->balance.estab_storage_tree[irrigation->irrigation].nitrogen-=acflux_estab.nitrogen*stand->frac;
-  acflux_estab.carbon=acflux_estab.nitrogen=0;
+  stand->cell->balance.estab_storage_tree[irrigation->irrigation].carbon-=flux_estab.carbon*stand->frac;
+  stand->cell->balance.estab_storage_tree[irrigation->irrigation].nitrogen-=flux_estab.nitrogen*stand->frac;
+  flux_estab.carbon=flux_estab.nitrogen=0;
 
-  stand->cell->output.flux_estab.carbon+=acflux_estab.carbon*stand->frac;
-  stand->cell->output.flux_estab.nitrogen+=acflux_estab.nitrogen*stand->frac;
-  stand->cell->output.dcflux-=acflux_estab.carbon*stand->frac;
+  stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 
   foreachpft(pft,p,&stand->pftlist)
     if(istree(pft))
@@ -242,7 +249,8 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   free(present);
   free(fpc_type);
   free(n_est);
-  if(pft_len>0) free(fpc_inc2);
+  if(pft_len>0)
+    free(fpc_inc2);
   if(isdead)
   {
     cutpfts(stand);

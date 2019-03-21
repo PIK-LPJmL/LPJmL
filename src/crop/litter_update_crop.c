@@ -21,15 +21,19 @@ void litter_update_crop(Litter *litter, /**< Litter pools */
                        )
 {
   Pftcrop *crop;
-  
+  Output *output;  
   crop=pft->data;
-  
+  output=&pft->stand->cell->output; 
   litter->ag[pft->litter].trait.leaf.carbon+=(crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*frac;
+  output->alittfall.carbon+=(crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*frac*pft->stand->frac;
   litter->ag[pft->litter].trait.leaf.nitrogen+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*frac;
+  output->alittfall.nitrogen+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*frac*pft->stand->frac;
   update_fbd_grass(litter,pft->par->fuelbulkdensity,
                    (crop->ind.leaf.carbon+crop->ind.so.carbon+crop->ind.pool.carbon)*frac);
   litter->bg[pft->litter].carbon+=crop->ind.root.carbon*frac;
+  output->alittfall.carbon+=crop->ind.root.carbon*frac*pft->stand->frac;
   litter->bg[pft->litter].nitrogen+=crop->ind.root.nitrogen*frac;
+  output->alittfall.nitrogen+=crop->ind.root.nitrogen*frac*pft->stand->frac;
 
 #ifdef DEBUG3
   printf("%s ag=%.2f bg=%.2f ind.so=%.2f ind.leaf=%.2f ind.pool=%.2f ind.root=%.2f pft->bm_inc_%.2f\n",

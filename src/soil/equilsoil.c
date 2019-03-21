@@ -142,7 +142,7 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
     soil->count=0;
     soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
   }
-   else 
+  else
   { /* if there is no carbon, remove mineral N from initialization */
     forrootsoillayer(l)
     {

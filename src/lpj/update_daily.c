@@ -196,7 +196,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     } /* of if(config->with_nitrogen) */
     gp_stand=gp_sum(&stand->pftlist,co2,climate.temp,par,daylength,
-                    &gp_stand_leafon,gp_pft,&fpc_total_stand,config->laimax_interpolate);
+                    &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
     if(config->with_nitrogen)
     {
       bnf=biologicalnfixation(stand);

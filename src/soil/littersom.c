@@ -32,10 +32,10 @@
 
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
-#define INTERC 0.0402
-#define MOIST_3 -5.005
-#define MOIST_2 4.269
-#define MOIST  0.718
+#define INTERC 0.04021601
+#define MOIST_3 -5.00505434
+#define MOIST_2 4.26937932
+#define MOIST  0.71890122
 #define CN_ratio_fast 8
 #define CN_ratio_slow 12
 #define k_N 5e-3 /* Michaelis-Menten parameter k_S,1/2 (gN/m3) */
@@ -58,7 +58,7 @@ static Real f_ph(Real ph)
 
 Stocks littersom(Stand *stand,               /**< pointer to stand data */
                  Real gtemp_soil[NSOILLAYER] /**< respiration coefficents */
-                ) /** \return docomposed carbon/nitrogen (g/m2) */
+                ) /** \return decomposed carbon/nitrogen (g/m2) */
 {
 
   Real response[LASTLAYER],response_wood;
@@ -77,20 +77,14 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
   Real F_N2O=0;                /* soil nitrification rate gN *m-2*d-1*/
   Real F_Nmineral;  /* net mineralization flux gN *m-2*d-1*/
   Real fac_wfps, fac_temp;
-
+  String line;
   soil=&stand->soil;
   flux.nitrogen=0;
-  forrootsoillayer(l) response[l]=0.0;
+  foreachsoillayer(l) response[l]=0.0;
   decom_litter.carbon=decom_litter.nitrogen=soil_cflux=yedoma_flux=decom_sum.carbon=decom_sum.nitrogen=0.0;
 
-  forrootsoillayer(l)
+  foreachsoillayer(l)
   {
-#ifdef SAFE
-    if(soil->NO3[l]<-epsilon)
-      fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"littersom: Negative soil NO3=%g in layer %d in cell (%.2f %.2f) before update",soil->NO3[l],l,stand->cell->coord.lat,stand->cell->coord.lon);
-    if(soil->NH4[l]<-epsilon)
-      fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"littersom: Negative soil NH4=%g in layer %d in cell (%.2f %.2f) before update",soil->NH4[l],l,stand->cell->coord.lat,stand->cell->coord.lon);
-#endif
     if(gtemp_soil[l]>0)
     {
       if (soil->par->wsats[l]-soil->ice_depth[l]-soil->ice_fw[l]-(soil->par->wpwps[l]*soil->ice_pwp[l])>epsilon)
@@ -108,6 +102,12 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
 
       if(l<LASTLAYER)
       {
+#ifdef SAFE
+        if(soil->NO3[l]<-epsilon)
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"littersom: Negative soil NO3=%g in layer %d in cell (%s) before update",soil->NO3[l],l,sprintcoord(line,&stand->cell->coord));
+        if(soil->NH4[l]<-epsilon)
+          fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"littersom: Negative soil NH4=%g in layer %d in cell (%s) before update",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
+#endif
 #ifdef LINEAR_DECAY
         flux_soil[l].slow.carbon=max(0,soil->pool[l].slow.carbon*param.k_soil10.slow*response[l]);
         flux_soil[l].fast.carbon=max(0,soil->pool[l].fast.carbon*param.k_soil10.fast*response[l]);
@@ -137,7 +137,7 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
         soil->NH4[l]+=F_Nmineral*(1-k_l);
 #ifdef SAFE
         if(soil->NH4[l]<-epsilon)
-           fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4=%g in layer %d in cell (%.2f,%.2f) at mineralization",soil->NH4[l],l,stand->cell->coord.lat,stand->cell->coord.lon);
+          fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4=%g in layer %d in cell (%s) at mineralization",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
         soil->NO3[l]+=F_Nmineral*k_l;
         stand->cell->output.mn_mineralization+=F_Nmineral*stand->frac;
@@ -160,7 +160,7 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
         }
       }
     }
-  } /* end forrootsoillayer */
+  } /* end foreachsoillayer */
 
   /*
    *   Calculate daily decomposition rates (k, /month) as a function of
@@ -227,7 +227,7 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
           soil->NH4[l]+=F_Nmineral*(1-k_l);
 #ifdef SAFE
           if(soil->NH4[l]<-epsilon)
-             fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4=%g in layer %d in cell (%.2f,%.2f) at mineralization",soil->NH4[l],l,stand->cell->coord.lat,stand->cell->coord.lon);
+            fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4=%g in layer %d in cell (%s) at mineralization",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
           soil->NO3[l]+=F_Nmineral*k_l;
           stand->cell->output.mn_mineralization+=F_Nmineral*stand->frac;
@@ -246,9 +246,9 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
             soil->NO3[l]-=n_immo*soil->NO3[l]/N_sum;
 #ifdef SAFE
             if(soil->NO3[l]<-epsilon)
-              fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"littersom: Negative soil NO3=%g in layer %d in cell (%.2f %.2f) at immobilization",soil->NO3[l],l,stand->cell->coord.lat,stand->cell->coord.lon);
+              fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Negative soil NO3=%g in layer %d in cell (%s) at immobilization in littersom()",soil->NO3[l],l,sprintcoord(line,&stand->cell->coord));
             if(soil->NH4[l]<-epsilon)
-              fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4=%g in layer %d in cell (%.2f,%.2f) at immobolization",soil->NH4[l],l,stand->cell->coord.lat,stand->cell->coord.lon);
+              fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4=%g in layer %d in cell (%s) at immobilization in littersom()",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
           }
         }
@@ -266,9 +266,9 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
             soil->NO3[l]-=n_immo*soil->NO3[l]/N_sum;
 #ifdef SAFE
             if(soil->NO3[l]<-epsilon)
-              fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"littersom: Negative soil NO3=%g in layer %d in cell (%.2f %.2f) at immobilization",soil->NO3[l],l,stand->cell->coord.lat,stand->cell->coord.lon);
+              fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Negative soil NO3=%g in layer %d in cell (%s) at immobilization in littersom()",soil->NO3[l],l,sprintcoord(line,&stand->cell->coord));
             if(soil->NH4[l]<-epsilon)
-              fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4=%g in layer %d in cell (%.2f,%.2f) at immobolization",soil->NH4[l],l,stand->cell->coord.lat,stand->cell->coord.lon);
+              fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4=%g in layer %d in cell (%s) at immobilization in littersom()",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
           }
         }

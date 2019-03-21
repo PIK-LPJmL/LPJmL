@@ -4,6 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Function recalculates foliage projective cover (FPC) of grass              \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -15,7 +17,8 @@
 #include "lpj.h"
 #include "grass.h"
 
-Real fpc_grass(Pft *pft)
+Real fpc_grass(Pft *pft /**< pointer to grass PFT */
+              )         /** \return positive change in FPC */
 {
   Real fpc_old;
   fpc_old=pft->fpc;

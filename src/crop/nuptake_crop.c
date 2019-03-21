@@ -19,7 +19,7 @@
 Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
                   Real *n_plant_demand, /**< total N plant demand */
                   Real *ndemand_leaf,   /**< N demand of leafs */
-                  int npft,             /**< number of natural PFTs */
+                  int UNUSED(npft),     /**< number of natural PFTs */
                   int nbiomass,         /**< number of biomass PFTs */
                   int ncft              /**< number of crop PFTs */
                  )                      /** \return nitrogen uptake (gN/m2/day) */

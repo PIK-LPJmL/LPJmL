@@ -70,19 +70,33 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
         fprintf(file,"Cropfrac (rf/ir):\t%g\t%g\n",grid[cell].ml.cropfrac_rf,grid[cell].ml.cropfrac_ir);
         fprintcropdates(file,grid[cell].ml.cropdates,config->pftpar+npft,ncft);
       }
-      fputs("Establ. stock for biomass:\n"
-            "Type  RF     IR              RF     IR\n",file);
-      fprintf(file,"tree  %6.2f %6.2f (gC/m2) %6.2f %6.2f (gN/m2)\n",
-              grid[cell].balance.estab_storage_tree[0].carbon,
-              grid[cell].balance.estab_storage_tree[1].carbon,
-              grid[cell].balance.estab_storage_tree[0].nitrogen,
-              grid[cell].balance.estab_storage_tree[1].nitrogen);
-      fprintf(file,"grass %6.2f %6.2f (gC/m2) %6.2f %6.2f (gN/m2)\n",
-              grid[cell].balance.estab_storage_grass[0].carbon,
-              grid[cell].balance.estab_storage_grass[1].carbon,
-              grid[cell].balance.estab_storage_grass[0].nitrogen,
-              grid[cell].balance.estab_storage_grass[1].nitrogen);
-      fprintstandlist(file,grid[cell].standlist,config->pftpar,npft+ncft);
+      if(config->with_nitrogen)
+      {
+        fputs("Establ. stock for biomass:\n"
+              "Type  RF     IR              RF     IR\n",file);
+        fprintf(file,"tree  %6.2f %6.2f (gC/m2) %6.2f %6.2f (gN/m2)\n",
+                grid[cell].balance.estab_storage_tree[0].carbon,
+                grid[cell].balance.estab_storage_tree[1].carbon,
+                grid[cell].balance.estab_storage_tree[0].nitrogen,
+                grid[cell].balance.estab_storage_tree[1].nitrogen);
+        fprintf(file,"grass %6.2f %6.2f (gC/m2) %6.2f %6.2f (gN/m2)\n",
+                grid[cell].balance.estab_storage_grass[0].carbon,
+                grid[cell].balance.estab_storage_grass[1].carbon,
+                grid[cell].balance.estab_storage_grass[0].nitrogen,
+                grid[cell].balance.estab_storage_grass[1].nitrogen);
+      }
+      else
+      {
+        fputs("Establ. stock for biomass:\n"
+              "Type  RF     IR\n",file);
+        fprintf(file,"tree  %6.2f %6.2f (gC/m2)\n",
+                grid[cell].balance.estab_storage_tree[0].carbon,
+                grid[cell].balance.estab_storage_tree[1].carbon);
+        fprintf(file,"grass %6.2f %6.2f (gC/m2)\n",
+                grid[cell].balance.estab_storage_grass[0].carbon,
+                grid[cell].balance.estab_storage_grass[1].carbon);
+      }
+      fprintstandlist(file,grid[cell].standlist,config->pftpar,npft+ncft,config->with_nitrogen);
     }
   } /* of 'for(cell=...)' */
 } /* of 'fprintcell' */

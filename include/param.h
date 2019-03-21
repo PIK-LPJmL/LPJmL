@@ -42,8 +42,10 @@ typedef struct
   Real k_2;          /**< fraction of nitrified N lost as N20 flux Parton, 2001*/
 
   Real k_mort;       /**< coefficient of growth efficiency in mortality equation (k_mort2) */
+  Real temp_response_a; /**< parameter in temperature response fucntion */
+  Real temp_response_b; /**< parameter in temperature response fucntion */
   Real p;            /**< regression coefficent from Haxeltine and Prentice : N=p Vmax+n0 */
-  Real n0;           /**< regressionn coefficient from Haxltine and Prentice */
+  Real n0;           /**< regression coefficient from Haxltine and Prentice */
   Real denit_threshold; /**< denitrificaton threshold */
   Real q_ash;        /**< fraction of nitrogen going to litter after fire */
   Real sapwood_recovery; /**< recovery of sapwood nitrogen */

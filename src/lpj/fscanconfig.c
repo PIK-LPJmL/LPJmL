@@ -51,13 +51,13 @@ static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const cha
   if(name->fmt==CDF)
   {
     if(verbose)
-      fprintf(stderr,"ERROR197: NetCDF is not supported for input '%s' in line %d of '%s' in this version of LPJmL.\n",name->name,getlinecount(),getfilename());
+      fprintf(stderr,"ERROR197: NetCDF is not supported for input '%s' in this version of LPJmL.\n",name->name);
     return TRUE;
   }
   else if(name->fmt==TXT)
   {
     if(verbose)
-      fprintf(stderr,"ERROR197: text file is not supported for input '%s' in line %d of '%s' in this version of LPJmL.\n",name->name,getlinecount(),getfilename());
+      fprintf(stderr,"ERROR197: text file is not supported for input '%s' in this version of LPJmL.\n",name->name);
     return TRUE;
   }
   return FALSE;
@@ -70,13 +70,13 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,con
   if(!isfms && name->fmt==FMS)
   {
     if(verbose)
-      fprintf(stderr,"ERROR197: FMS coupler not allowed for input in line %d of '%s'.\n",getlinecount(),getfilename());
+      fprintf(stderr,"ERROR197: FMS coupler not allowed for input '%s'.\n",name->name);
     return TRUE;
   }
   if(name->fmt==TXT)
   {
     if(verbose)
-      fprintf(stderr,"ERROR197: text file is not supported for input '%s' in line %d of '%s' in this version of LPJmL.\n",name->name,getlinecount(),getfilename());
+      fprintf(stderr,"ERROR197: text file is not supported for input '%s' in this version of LPJmL.\n",name->name);
     return TRUE;
   }
   return FALSE;
@@ -149,7 +149,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->with_radiation<CLOUDINESS || config->with_radiation>RADIATION_LWDOWN)
   {
     if(verbose)
-      fprintf(stderr,"ERROR219: Invalid radiation model %d in line %d of '%s'.\n",config->with_radiation,getlinecount(),getfilename());
+      fprintf(stderr,"ERROR219: Invalid radiation model %d.\n",config->with_radiation);
     return TRUE;
   }
 #ifdef IMAGE
@@ -165,8 +165,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->fire<NO_FIRE || config->fire>SPITFIRE_TMAX)
   {
     if(verbose)
-      fprintf(stderr,"ERROR166: Invalid value for fire=%d in line %d of '%s'.\n",
-              config->fire,getlinecount(),getfilename());
+      fprintf(stderr,"ERROR166: Invalid value for fire=%d.\n",config->fire);
     return TRUE;
   }
   if(config->sim_id==LPJ)
@@ -185,8 +184,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->prescribe_landcover<NO_LANDCOVER || config->prescribe_landcover>LANDCOVERFPC)
   {
     if(verbose)
-      fprintf(stderr,"ERROR166: Invalid value for prescribe landcover=%d in line %d of '%s'.\n",
-              config->prescribe_landcover,getlinecount(),getfilename());
+      fprintf(stderr,"ERROR166: Invalid value for prescribe landcover=%d.\n",
+              config->prescribe_landcover);
     return TRUE;
   }
   fscanbool2(file,&config->new_phenology,"new_phenology");
@@ -195,14 +194,23 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   fscanbool2(file,&config->permafrost,"permafrost");
   config->sdate_option=NO_FIXED_SDATE;
   config->rw_manage=FALSE;
+  config->const_climate=FALSE;
+  if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
+    return TRUE;
+  config->const_deposition=FALSE;
+  if(config->with_nitrogen==LIM_NITROGEN)
+  {
+    if(fscanbool(file,&config->const_deposition,"const_deposition",TRUE,verbose))
+      return TRUE;
+  }
   if(config->sim_id!=LPJ)
   {
     fscanint2(file,&config->withlanduse,"landuse");
     if(config->withlanduse<NO_LANDUSE || config->withlanduse>ALL_CROPS)
     {
       if(verbose)
-        fprintf(stderr,"ERROR166: Invalid value for landuse=%d in line %d of '%s'.\n",
-                config->withlanduse,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR166: Invalid value for landuse=%d.\n",
+                config->withlanduse);
       return TRUE;
     }
     if(config->withlanduse!=NO_LANDUSE)
@@ -213,8 +221,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->sdate_option<0 || config->sdate_option>PRESCRIBED_SDATE)
       {
         if(verbose)
-          fprintf(stderr,"ERROR166: Invalid value for sowing date option=%d in line %d of '%s'.\n",
-                  config->sdate_option,getlinecount(),getfilename());
+          fprintf(stderr,"ERROR166: Invalid value for sowing date option=%d.\n",
+                  config->sdate_option);
         return TRUE;
       }
       if(config->sdate_option==FIXED_SDATE || config->sdate_option==PRESCRIBED_SDATE)
@@ -223,8 +231,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->irrig_scenario<0 || config->irrig_scenario>ALL_IRRIGATION)
       {
         if(verbose)
-          fprintf(stderr,"ERROR166: Invalid value for irrigation scenario=%d in line %d of '%s'.\n",
-                  config->irrig_scenario,getlinecount(),getfilename());
+          fprintf(stderr,"ERROR166: Invalid value for irrigation scenario=%d.\n",
+                  config->irrig_scenario);
         return TRUE;
       }
       fscanbool2(file,&config->intercrop,"intercrop");
@@ -249,8 +257,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->laimax_interpolate<0 || config->laimax_interpolate>LAIMAX_PAR)
       {
         if(verbose)
-          fprintf(stderr,"ERROR166: Invalid value for laimax_interpolate=%d in line %d of '%s'.\n",
-                  config->laimax_interpolate,getlinecount(),getfilename());
+          fprintf(stderr,"ERROR166: Invalid value for laimax_interpolate=%d.\n",
+                  config->laimax_interpolate);
         return TRUE;
       }
       if(config->laimax_interpolate==CONST_LAI_MAX)
@@ -276,8 +284,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->wateruse<NO_WATERUSE || config->wateruse>ALL_WATERUSE)
       {
         if(verbose)
-          fprintf(stderr,"ERROR166: Invalid value for wateruse=%d in line %d of '%s'.\n",
-                  config->wateruse,getlinecount(),getfilename());
+          fprintf(stderr,"ERROR166: Invalid value for wateruse=%d.\n",
+                  config->wateruse);
         return TRUE;
       }
     }
@@ -463,7 +471,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       break;
     default:
       if(verbose)
-        fprintf(stderr,"ERROR213: Invalid setting %d for radiation in line %d of '%s'.\n",config->with_radiation,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR213: Invalid setting %d for radiation.\n",config->with_radiation);
       return TRUE;
   }
   if(config->with_nitrogen)

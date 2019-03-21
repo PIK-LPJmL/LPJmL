@@ -15,7 +15,10 @@
 #include "lpj.h"
 #include "crop.h"
 
-Real alphaa_crop(const Pft *pft, int lai_opt)
+Real alphaa_crop(const Pft *pft,            /**< pointer to crop PFT */
+                 int UNUSED(with_nitrogen), /**< nitrogen cycle enabled */
+                 int lai_opt                /**< LAImax option */
+                )                           /** \return alpha_a (0..1) */
 {
   Real laimax;
   if(lai_opt==LAIMAX_PAR)

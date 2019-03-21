@@ -265,6 +265,8 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
   }
   vec=newvec(float,config->ngridcell);
   check(vec);
+  writeoutputvar(ALITFALLC,alittfall.carbon);
+  writeoutputvar(ALITFALLN,alittfall.nitrogen);
   writeoutputvar(FIREC,fire.carbon);
   writeoutputvar(FIREN,fire.nitrogen);
   writeoutputvar(ABURNTAREA,aburntarea);

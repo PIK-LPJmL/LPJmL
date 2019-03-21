@@ -4,6 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Function calculates daily net primary productivity of trees                \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -15,12 +17,12 @@
 #include "lpj.h"
 #include "tree.h"
 
-Real npp_tree(Pft *pft, /**< PFT variables */
-              Real gtemp_air, /**< value of air temperature response function */
-              Real gtemp_soil, /**< value of soil temperature response function */
-              Real assim,  /**< assimilation (gC/m2) */
-              Bool with_nitrogen /**< with nitrogen */
-             ) /* \return net primary productivity (gC/m2) */
+Real npp_tree(Pft *pft,         /**< PFT variables */
+              Real gtemp_air,   /**< value of air temperature response function */
+              Real gtemp_soil,  /**< value of soil temperature response function */
+              Real assim,       /**< assimilation (gC/m2) */
+              int with_nitrogen /**< with nitrogen */
+             )                  /** \return net primary productivity (gC/m2) */
 {
   Pfttree *tree;
   const Pfttreepar *par;

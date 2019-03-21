@@ -203,7 +203,7 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
 
 Harvest harvest_stand(Output *output, /**< Output data */
                       Stand *stand,   /**< pointer to grassland stand */
-					  Real hfrac      /**< harvest fraction */
+                      Real hfrac      /**< harvest fraction */
                      )                /** \return harvested carbon (gC/m2) */
 {
   Harvest harvest;

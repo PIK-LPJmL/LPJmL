@@ -32,22 +32,26 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
 {
   Pftgrass *grass;
   const Pftgrasspar *grasspar;
+  Output *output;
   Real reprod;
   Grassphys gturn;
   grass=pft->data;
   grasspar=getpftpar(pft,data);
+  output=&pft->stand->cell->output;
   /* reproduction */
   if(pft->bm_inc.carbon>0)
   {
     reprod=pft->bm_inc.carbon*grasspar->reprod_cost*fraction;
     litter->ag[pft->litter].trait.leaf.carbon+=reprod;
-    pft->bm_inc.carbon     -= reprod;
+    output->alittfall.carbon+=reprod*pft->stand->frac;
+    pft->bm_inc.carbon-=reprod;
   }
   if(pft->bm_inc.nitrogen>0)
   {
     reprod=pft->bm_inc.nitrogen*grasspar->reprod_cost*fraction;
     litter->ag[pft->litter].trait.leaf.nitrogen+=reprod;
-    pft->bm_inc.nitrogen     -= reprod;
+    output->alittfall.nitrogen+=reprod*pft->stand->frac;
+    pft->bm_inc.nitrogen-=reprod;
   }
 
   /* turnover */
@@ -58,7 +62,10 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     grass->turn.root.carbon=grass->turn.leaf.carbon=0.0;
     grass->turn.root.nitrogen=grass->turn.leaf.nitrogen=0.0;
     if(new_phenology)
+    {
       litter->ag[pft->litter].trait.leaf.nitrogen-=gturn.leaf.nitrogen*pft->nind*(1-pft->par->fn_turnover);
+      output->alittfall.nitrogen-=gturn.leaf.nitrogen*pft->nind*(1-pft->par->fn_turnover)*pft->stand->frac;
+    }
   }
   else
   {
@@ -67,10 +74,14 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     gturn.leaf.carbon=grass->ind.leaf.carbon*grasspar->turnover.leaf*fraction;
     gturn.leaf.nitrogen=grass->ind.leaf.nitrogen*grasspar->turnover.leaf*fraction;
     litter->ag[pft->litter].trait.leaf.carbon+=gturn.leaf.carbon*pft->nind;
+    output->alittfall.carbon+=gturn.leaf.carbon*pft->nind*pft->stand->frac;
     litter->ag[pft->litter].trait.leaf.nitrogen+=gturn.leaf.nitrogen*pft->nind*pft->par->fn_turnover;
+    output->alittfall.nitrogen+=gturn.leaf.nitrogen*pft->nind*pft->par->fn_turnover*pft->stand->frac;
     update_fbd_grass(litter,pft->par->fuelbulkdensity,gturn.leaf.carbon*pft->nind);
     litter->bg[pft->litter].carbon+=gturn.root.carbon*pft->nind;
+    output->alittfall.carbon+=gturn.root.carbon*pft->nind*pft->stand->frac;
     litter->bg[pft->litter].nitrogen+=gturn.root.nitrogen*pft->nind*pft->par->fn_turnover;
+    output->alittfall.nitrogen+=gturn.root.nitrogen*pft->nind*pft->par->fn_turnover*pft->stand->frac;
   }
   grass->ind.leaf.carbon-= gturn.leaf.carbon;
   grass->ind.leaf.nitrogen-= gturn.leaf.nitrogen;
@@ -79,6 +90,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   pft->bm_inc.nitrogen+= (gturn.root.nitrogen+gturn.leaf.nitrogen)*pft->nind*(1-pft->par->fn_turnover);
   /* turnover of excess carbon as root exudates */
   litter->bg[pft->litter].carbon+=grass->excess_carbon*pft->nind*grasspar->turnover.root;
+  output->alittfall.carbon+=grass->excess_carbon*pft->nind*grasspar->turnover.root*pft->stand->frac;
   grass->excess_carbon-=grass->excess_carbon*grasspar->turnover.root;
   gturn.leaf.carbon+=gturn.root.carbon;
   gturn.leaf.nitrogen+=gturn.root.nitrogen;

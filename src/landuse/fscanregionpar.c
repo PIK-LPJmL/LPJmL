@@ -48,7 +48,7 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,
-                "ERROR126: Invalid range of region number=%d in line %d of '%s' in fscanregionpar().\n",id,getlinecount(),getfilename());
+                "ERROR126: Invalid range of region number=%d in fscanregionpar().\n",id);
       return 0;
     }
     region=(*regionpar)+id;
@@ -56,7 +56,7 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,
-                "ERROR179: Region number=%d in line %d of '%s' has been already defined in fscanregionpar().\n",id,getlinecount(),getfilename());
+                "ERROR179: Region number=%d has been already defined in fscanregionpar().\n",id);
       return 0;
     }
     if(fscanstring(&item,s,"name",FALSE,verb))

@@ -15,8 +15,11 @@
 #include "lpj.h"
 #include "grass.h"
 
-Stocks establishment_grass(Pft *pft,Real fpc_total,
-                           Real UNUSED(fpc_type),int n_est) 
+Stocks establishment_grass(Pft *pft,              /**< pointer to grass PFT data */
+                           Real fpc_total,        /**< total sum of FPC */
+                           Real UNUSED(fpc_type), /**< FPC of grass PFTs */
+                           int n_est              /**< number of established grass PFTs */
+                          ) /** \return establishment flux (gC/m2, gN/m2) */
 {
 
   Pftgrass *grass;
@@ -28,7 +31,7 @@ Stocks establishment_grass(Pft *pft,Real fpc_total,
    * PFT on modelled area basis (for trees, indiv/m2; for 
    * grasses, fraction of modelled area colonised)
    */
-  Stocks acflux_est;
+  Stocks flux_est;
   if(n_est>0)
   {
     grass=pft->data;
@@ -36,8 +39,8 @@ Stocks establishment_grass(Pft *pft,Real fpc_total,
     est_pft=(1.0-fpc_total)/(Real)n_est;
     /* Account for flux from atmosphere to grass regeneration */
 
-    acflux_est.carbon=(grasspar->sapl.leaf+grasspar->sapl.root)*est_pft;
-    acflux_est.nitrogen=acflux_est.carbon*grasspar->cn_ratio.leaf;
+    flux_est.carbon=(grasspar->sapl.leaf+grasspar->sapl.root)*est_pft;
+    flux_est.nitrogen=flux_est.carbon*grasspar->cn_ratio.leaf;
 
     /* Add regeneration biomass to overall biomass */
 
@@ -48,7 +51,7 @@ Stocks establishment_grass(Pft *pft,Real fpc_total,
     pft->nleaf=grass->ind.leaf.nitrogen;
   }
   else
-    acflux_est.carbon=acflux_est.nitrogen=0;
+    flux_est.carbon=flux_est.nitrogen=0;
   fpc_grass(pft);
-  return acflux_est;
+  return flux_est;
 } /* of 'establishment_grass' */

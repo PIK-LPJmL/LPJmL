@@ -4,6 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Function calculates vegetation carbon and nitrogen of crop PFTs            \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -29,5 +31,5 @@ Real vegn_sum_crop(const Pft *pft /**< pointer to PFT data */
   const Pftcrop *crop;
   crop=pft->data;
   return phys_sum_crop_n(crop->ind)*pft->nind;
-} /* of 'vegc_sum_crop' */
+} /* of 'vegn_sum_crop' */
 

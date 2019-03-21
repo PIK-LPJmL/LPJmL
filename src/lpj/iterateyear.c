@@ -233,4 +233,4 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     fwriteoutput_annual(output,grid,year,config);
     fwriteoutput_pft(output,grid,npft,ncft,year,config);
   }
-} /* of 'iterateyear_river' */
+} /* of 'iterateyear' */

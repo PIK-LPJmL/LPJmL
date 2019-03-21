@@ -100,21 +100,21 @@ typedef struct
 
 extern void new_tree(Pft *,int,int);
 extern Pft *newpftage(Pftpar *,int);
-extern Real npp_tree(Pft *,Real,Real,Real,Bool);
+extern Real npp_tree(Pft *,Real,Real,Real,int);
 extern Bool mortality_tree(Litter *,Pft *,Real,Real,Bool);
 extern Real fpc_tree(Pft *);
 extern Real fpar_tree(const Pft *);
-extern Real alphaa_tree(const Pft *,int);
+extern Real alphaa_tree(const Pft *,int,int);
 extern void litter_update_tree(Litter *, Pft *,Real);
 extern void litter_update_fire_tree(Litter *, Pft *,Real);
 extern void allometry_tree(Pft *pft);
-extern Bool allocation_tree(Litter *,Pft *,Real *);
+extern Bool allocation_tree(Litter *,Pft *,Real *,int);
 extern Real lai_tree(const Pft *);
 extern Real actual_lai_tree(const Pft *);
 extern Stocks turnover_tree(Litter *,Pft *);
 extern void phenology_tree(Pft *,Real,int,Bool);
 extern Bool fwrite_tree(FILE *,const Pft *);
-extern void fprint_tree(FILE *,const Pft *);
+extern void fprint_tree(FILE *,const Pft *,int);
 extern Bool fread_tree(FILE *,Pft *,Bool);
 extern Bool fscanpft_tree(LPJfile *,Pftpar *,Verbosity);
 extern Bool isneg_tree(const Pft *);
@@ -133,7 +133,7 @@ extern void fprintpar_tree(FILE *,const Pftpar *);
 extern void output_daily_tree(Daily_outputs *,const Pft *);
 extern Stocks livefuel_consum_tree(Litter *,Pft *,const Fuel *,Livefuel *,
                                    Bool *,Real,Real);
-extern Bool annual_tree(Stand *,Pft *,Real *,Bool,Bool);
+extern Bool annual_tree(Stand *,Pft *,Real *,Bool,int,Bool);
 extern Stocks coppice_tree(Pft *);
 extern void albedo_tree(Pft *,Real,Real);
 extern void turnover_monthly_tree(Litter *,Pft *);
@@ -147,7 +147,8 @@ extern void nitrogen_allocation_tree(Real *,Real *,Real *,Stocks,Stocks,Stocks,R
 
 #define istree(pft) (getpftpar(pft,type)==TREE)
 #define israingreen(pft) getpftpar(pft,phenology)==RAINGREEN
-#define fprinttreephys2(file,phys,nind) fprintf(file,"%6.2f %6.2f %6.2f %6.2f %6.2f (gC/m2) %6.2f %6.2f %6.2f %6.2f %6.2f (NC/m2)",phys.leaf.carbon*nind,phys.sapwood.carbon*nind,phys.heartwood.carbon*nind,phys.root.carbon*nind,phys.debt.carbon*nind,phys.leaf.nitrogen*nind,phys.sapwood.nitrogen*nind,phys.heartwood.nitrogen*nind,phys.root.nitrogen*nind,phys.debt.nitrogen*nind)
+#define fprinttreephys2(file,phys,nind) fprintf(file,"%6.2f %6.2f %6.2f %6.2f %6.2f (gC/m2) %6.2f %6.2f %6.2f %6.2f %6.2f (gN/m2)",phys.leaf.carbon*nind,phys.sapwood.carbon*nind,phys.heartwood.carbon*nind,phys.root.carbon*nind,phys.debt.carbon*nind,phys.leaf.nitrogen*nind,phys.sapwood.nitrogen*nind,phys.heartwood.nitrogen*nind,phys.root.nitrogen*nind,phys.debt.nitrogen*nind)
+#define fprinttreephys2carbon(file,phys,nind) fprintf(file,"%6.2f %6.2f %6.2f %6.2f %6.2f (gC/m2)",phys.leaf.carbon*nind,phys.sapwood.carbon*nind,phys.heartwood.carbon*nind,phys.root.carbon*nind,phys.debt.carbon*nind)
 #define phys_sum_tree(ind) (ind.leaf.carbon+ind.root.carbon+ind.heartwood.carbon+ind.sapwood.carbon)
 #define phys_sum_tree_n(ind) (ind.leaf.nitrogen+ind.root.nitrogen+ind.heartwood.nitrogen+ind.sapwood.nitrogen)
 #define agb_tree_sum(ind) (ind.leaf.carbon+ind.heartwood.carbon+ind.sapwood.carbon*0.66)

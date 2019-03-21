@@ -264,16 +264,16 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
       fprintf(stderr,"Cell (%s) infil perc frac_g error frac_g=  %3.12f standtype= %s\n",sprintcoord(line,&stand->cell->coord),stand->frac_g[l],stand->type->name);
       fflush(stderr);
     }
-   if (soil->w[l]<0)
-   {
-    fprintf(stderr,"Cell (%s) icedepth[%d]= %3.8f fw_ice= %.6f w_fw=%.6f w=%.6f soilwater=%.6f wsats=%.6f whcs=%f\n",
-            sprintcoord(line,&stand->cell->coord),l,soil->ice_depth[l],soil->ice_fw[l],soil->w_fw[l],soil->w[l]*soil->par->whcs[l],
-            allwater(soil,l)+allice(soil,l),soil->par->wsats[l],soil->par->whcs[l]);
-    fflush(stderr);
-    fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,
-         "Cell (%s) Soil-moisture %d negative: %g, lutype %s soil_type %s in infil_perc_irr\n",
-         sprintcoord(line,&stand->cell->coord),l,soil->w[l],stand->type->name,soil->par->name);
-   }
+    if (soil->w[l]<0)
+    {
+      fprintf(stderr,"Cell (%s) icedepth[%d]= %3.8f fw_ice= %.6f w_fw=%.6f w=%.6f soilwater=%.6f wsats=%.6f whcs=%f\n",
+              sprintcoord(line,&stand->cell->coord),l,soil->ice_depth[l],soil->ice_fw[l],soil->w_fw[l],soil->w[l]*soil->par->whcs[l],
+              allwater(soil,l)+allice(soil,l),soil->par->wsats[l],soil->par->whcs[l]);
+      fflush(stderr);
+      fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,
+           "Cell (%s) Soil-moisture %d negative: %g, lutype %s soil_type %s in infil_perc_irr\n",
+           sprintcoord(line,&stand->cell->coord),l,soil->w[l],stand->type->name,soil->par->name);
+    }
 #endif
   } /* soil layer loop */
 

@@ -17,8 +17,9 @@
 #include "lpj.h"
 #include "crop.h"
 
-void fprint_crop(FILE *file,    /**< pointer to text file */
-                 const Pft *pft /**< pointer to PFT data to print */
+void fprint_crop(FILE *file,       /**< pointer to text file */
+                 const Pft *pft,   /**< pointer to PFT data to print */
+                 int with_nitrogen /**< nitrogen cycle enabled */
                 )
 {
   const Pftcrop *crop;
@@ -34,7 +35,10 @@ void fprint_crop(FILE *file,    /**< pointer to text file */
   fprintf(file,"Vdsum:\t\t%g\n",crop->vdsum);
   fprintf(file,"Fphu:\t\t%g\n",crop->fphu);
   fprintf(file,"Ind:\t\t");
-  fprintcropphys2(file,crop->ind,pft->nind);
+  if(with_nitrogen)
+    fprintcropphys2(file,crop->ind,pft->nind);
+  else
+    fprintcropphys2carbon(file,crop->ind,pft->nind);
   fprintf(file,"\nLAImax:\t%g\n",crop->flaimax);
   fprintf(file,"LAI:\t\t%g\n",crop->lai);
   fprintf(file,"LAI000:\t\t%g\n",crop->lai000);

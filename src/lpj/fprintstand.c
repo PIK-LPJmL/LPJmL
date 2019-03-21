@@ -19,7 +19,8 @@
 void fprintstand(FILE *file,           /**< Pointer to text file */
                  const Stand *stand,   /**< Stand pointer */
                  const Pftpar *pftpar, /**< PFT parameter array */
-                 int ntotpft           /**< total number of PFTs */
+                 int ntotpft,          /**< total number of PFTs */
+                 int with_nitrogen     /**< nitrogen cycle enabled */
                 )
 {
   int l;
@@ -28,10 +29,10 @@ void fprintstand(FILE *file,           /**< Pointer to text file */
   fprintf(file,"Standage: \t%d (yr)\n",stand->age);
   /* print stand-specific data */
   stand->type->fprint(file,stand);
-  fprintsoil(file,&stand->soil,pftpar,ntotpft);
+  fprintsoil(file,&stand->soil,pftpar,ntotpft,with_nitrogen);
   fputs("Frac_g:\t\t",file);
   for(l=0;l<NSOILLAYER;l++)
     fprintf(file,"%.2f ",stand->frac_g[l]);
   fputc('\n',file);
-  fprintpftlist(file,&stand->pftlist);
+  fprintpftlist(file,&stand->pftlist,with_nitrogen);
 } /* of 'fprintstand' */

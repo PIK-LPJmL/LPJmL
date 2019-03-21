@@ -15,7 +15,11 @@
 #include "lpj.h"
 #include "grass.h"
 
-void light_grass(Litter *litter,Pft *pft,Real excess, Real fpc_total_grass)
+void light_grass(Litter *litter,      /**< pointer to litter pools */
+                 Pft *pft,            /**< pointer to grass PFT */
+                 Real excess,         /**< excess in FPC */
+                 Real fpc_total_grass /**< sum of all grass FPCs */
+                )
 
 {
   Grassphys  m_kill; /* reduction in grass PFT mass to reduce grass cover

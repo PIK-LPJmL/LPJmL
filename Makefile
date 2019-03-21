@@ -34,8 +34,8 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/biomass_tree.h\
           $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h
 
-JSON	= lpjml.js input_crumonthly.js param.js lpj.js\
-          lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js
+JSON	= lpjml.js input_crumonthly.js param.js lpj.js param_non.js\
+          lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js lpjml_non.js
 
 DATA    = par/*.js
 
@@ -60,7 +60,6 @@ install: all
 	$(MKDIR) $(LPJROOT)/bin
 	$(MKDIR) $(LPJROOT)/include
 	$(MKDIR) $(LPJROOT)/html
-	$(MKDIR) $(LPJROOT)/lib
 	$(MKDIR) $(LPJROOT)/par
 	$(MKDIR) $(LPJROOT)/man/man1
 	$(MKDIR) $(LPJROOT)/man/man5
@@ -69,7 +68,6 @@ install: all
 	chmod 755 $(LPJROOT)/bin
 	chmod 755 $(LPJROOT)/include
 	chmod 755 $(LPJROOT)/html
-	chmod 755 $(LPJROOT)/lib
 	chmod 755 $(LPJROOT)/par
 	chmod 755 $(LPJROOT)/man
 	chmod 755 $(LPJROOT)/man/man1
@@ -78,7 +76,6 @@ install: all
 	install bin/* $(LPJROOT)/bin
 	install -m 644 html/* $(LPJROOT)/html
 	install -m 644 $(HDRS) $(LPJROOT)/include
-	install -m 644 lib/* $(LPJROOT)/lib
 	install -m 644 $(DATA) $(LPJROOT)/par
 	install -m 644 README INSTALL VERSION AUTHORS LICENSE COPYRIGHT $(JSON) $(LPJROOT)
 	install -m 644 man/whatis $(LPJROOT)/man

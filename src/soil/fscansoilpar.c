@@ -71,8 +71,8 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
   if(nsoil<1)
   {
     if(verb)
-      fprintf(stderr,"ERROR170: Invalid value for number of soil types=%u in line %d of '%s'\n",
-              nsoil,getlinecount(),getfilename());
+      fprintf(stderr,"ERROR170: Invalid value for number of soil types=%u.\n",
+              nsoil);
     return 0;
   }
   *soilpar=newvec(Soilpar,nsoil);
@@ -87,14 +87,14 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     if(id>=nsoil)
     {
       if(verb)
-        fprintf(stderr,"ERROR115: Invalid range of soil type=%u in line %d of '%s' in fscansoilpar(), valid range is [0,%u].\n",id,getlinecount(),getfilename(),nsoil-1);
+        fprintf(stderr,"ERROR115: Invalid range of soil type=%u in fscansoilpar(), valid range is [0,%u].\n",id,nsoil-1);
       return 0;
     }
     soil=(*soilpar)+id;
     if(soil->type!=UNDEF)
     {
       if(verb)
-        fprintf(stderr,"ERROR177: Soil type=%u in line %d of '%s' has been already defined in fscansoilpar().\n",id,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR177: Soil type=%u has been already defined in fscansoilpar().\n",id);
       return 0;
     }
     if(fscanstring(&item,s,"name",FALSE,verb))
@@ -113,30 +113,30 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     if(soil->wfc>1)
     {
       if(verb)
-        fprintf(stderr,"ERROR215: wfc=%g>1 in line %d of '%s' for soil type '%s'.\n",
-                soil->wfc,getlinecount(),getfilename(),soil->name);
+        fprintf(stderr,"ERROR215: wfc=%g>1 for soil type '%s'.\n",
+                soil->wfc,soil->name);
       return 0;
     }
     if(soil->wfc-soil->wpwp<0)
     {
       if(verb)
-        fprintf(stderr,"ERROR213: whc=%g<0 in line %d of '%s' for soil type '%s', wfc=%g, wpwp=%g\n",
-                soil->wfc-soil->wpwp,getlinecount(),getfilename(),soil->name,soil->wfc,soil->wpwp);
+        fprintf(stderr,"ERROR213: whc=%g<0 for soil type '%s', wfc=%g, wpwp=%g\n",
+                soil->wfc-soil->wpwp,soil->name,soil->wfc,soil->wpwp);
       return 0;
     }
     fscanreal2(verb,&item,&soil->wsat,soil->name,"w_sat");
     if(soil->wsat<=0 || soil->wsat>1)
     {
       if(verb)
-        fprintf(stderr,"ERROR220: wsat=%g in line %d of '%s' not in (0,1] for soil type '%s'.\n",
-                soil->wsat,getlinecount(),getfilename(),soil->name);
+        fprintf(stderr,"ERROR220: wsat=%g not in (0,1] for soil type '%s'.\n",
+                soil->wsat,soil->name);
       return 0;
     }
     if(soil->wsat<=soil->wfc)
     {
       if(verb)
-        fprintf(stderr,"ERROR216: wsat=%g <= wfc=%g in line %d of '%s' for soil type '%s'.\n",
-                soil->wsat,soil->wfc,getlinecount(),getfilename(),soil->name);
+        fprintf(stderr,"ERROR216: wsat=%g <= wfc=%g for soil type '%s'.\n",
+                soil->wsat,soil->wfc,soil->name);
       return 0;
     }
     soil->beta_soil=-2.655/log10(soil->wfc/soil->wsat);

@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**        d  a  i  l  y  f  i  r  e                                               \n**/
+/**        d  a  i  l  y  f  i  r  e  .  c                                         \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -15,8 +15,9 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#define CG 0.2 /*cloud to ground flashes ratio */
-#define LER 0.04 /*efficiency in starting fires */
+
+#define CG 0.2   /* cloud to ground flashes ratio */
+#define LER 0.04 /* efficiency in starting fires */
 
 void dailyfire(Stand *stand,            /**< pointer to stand */
                Livefuel *livefuel,

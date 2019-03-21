@@ -64,15 +64,16 @@ int fwritepftlist(FILE *file,            /**< file pointer of binary file */
   return p;
 } /* of 'fwritepftlist' */
 
-void fprintpftlist(FILE *file,            /**< pointer of text file */
-                   const Pftlist *pftlist /**< PFT list */
+void fprintpftlist(FILE *file,             /**< pointer of text file */
+                   const Pftlist *pftlist, /**< PFT list */
+                   int with_nitrogen       /**< nitrogen cycle enabled */
                   )
 {
   int p;
   /* Write data of all Pfts in list in a human readable form */
   fprintf(file,"Number of PFTs: %d\n",pftlist->n);
   for(p=0;p<pftlist->n;p++)
-    fprintpft(file,pftlist->pft+p);
+    fprintpft(file,pftlist->pft+p,with_nitrogen);
 } /* of 'fprintpftlist' */
 
 Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */

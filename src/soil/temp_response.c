@@ -24,11 +24,13 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+
 #define e0 308.56   /* parameter in Arrhenius temp response function */
 
 Real temp_response(Real temp /**< air or soil temperature (deg C) */
                   )          /** \return respiration temperature response */
 {
   //return (temp>=-40.0) ? exp(e0*(1.0/56.02-1.0/(temp+46.02))) : 0.0;
-  return (temp>=-40.0) ? exp(e0*(1.0/66.02-1.0/(temp+56.02))) : 0.0;
+  //return (temp>=-40.0) ? exp(e0*(1.0/66.02-1.0/(temp+56.02))) : 0.0;
+  return (temp>=-40.0) ? exp(e0*(1.0/param.temp_response_a-1.0/(temp+param.temp_response_b))) : 0.0;
 } /* of 'temp_response' */

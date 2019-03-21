@@ -17,15 +17,24 @@
 #include "lpj.h"
 #include "grass.h"
 
-void fprint_grass(FILE *file,    /**< pointer to text file */
-                  const Pft *pft /**< pointer to grass PFT */
+void fprint_grass(FILE *file,       /**< pointer to text file */
+                  const Pft *pft,   /**< pointer to grass PFT */
+                  int with_nitrogen /**< nitrogen cycle enabled */
                  )
 {
   const Pftgrass *grass;
   grass=pft->data;
-  fputs("Mass:\t\t",file);
-  fprintgrassphys(file,grass->ind);
-  fprintf(file,"\nExcess carbon:\t%g (gC/m2)\n",grass->excess_carbon);
   fprintf(file,"growing_days:\t%d\n",grass->growing_days);
-  fprintf(file,"falloc:\t\t%g %g\n",grass->falloc.leaf,grass->falloc.root);
+  fputs("Mass:\t\t",file);
+  if(with_nitrogen)
+  {
+    fprintgrassphys(file,grass->ind);
+    fprintf(file,"\nExcess carbon:\t%g (gC/m2)\n",grass->excess_carbon);
+    fprintf(file,"falloc:\t\t%g %g\n",grass->falloc.leaf,grass->falloc.root);
+  }
+  else
+  {
+    fprintgrassphyscarbon(file,grass->ind);
+    fputc('\n',file);
+  }
 } /* of 'fprint_grass' */

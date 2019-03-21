@@ -35,7 +35,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
                        int npft,   /**< number of natural PFTs */
                        int ncft,   /**< number of crop PFTs   */
                        int UNUSED(year), /**< simulation year */
-                       Bool withdailyoutput,
+                       Bool withdailyoutput, /**< enable daily output */
                        Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                        const Config *config /**< LPJ config */
                       )            /** \return runoff (mm) */
@@ -273,7 +273,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
  *  respiration, including conversion from FPC to grid cell basis.
  *
  */
-
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,

@@ -4,6 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Function calculates daily net primary productivity of grass                \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -15,12 +17,12 @@
 #include "lpj.h"
 #include "grass.h"
 
-Real npp_grass(Pft *pft, /**< PFT variables */
+Real npp_grass(Pft *pft,               /**< PFT variables */
                Real UNUSED(gtemp_air), /**< value of air temperature response function */
-               Real gtemp_soil, /**< value of soil temperature response function */
-               Real assim,   /**< assimilation (gC/m2) */
-               Bool with_nitrogen /**< with nitrogen (TRUE/FALSE) */
-              ) /** \return net primary productivity (gC/m2) */
+               Real gtemp_soil,        /**< value of soil temperature response function */
+               Real assim,             /**< assimilation (gC/m2) */
+               int with_nitrogen       /**< with nitrogen (TRUE/FALSE) */
+              )                        /** \return net primary productivity (gC/m2) */
 {
   Pftgrass *grass;
   const Pftgrasspar *par;
@@ -35,7 +37,7 @@ Real npp_grass(Pft *pft, /**< PFT variables */
   gresp=(assim-mresp)*param.r_growth;
   if (gresp<0.0) gresp=0.0;
 #ifdef DEBUG3
-  printf("mresp=%g gresp=%g assim=%g bminc=%g\n",mresp,gresp,assim,pft->bm_inc);
+  printf("mresp=%g gresp=%g assim=%g bminc=%g\n",mresp,gresp,assim,pft->bm_inc.carbon);
 #endif
   npp=assim-mresp-gresp;
   pft->bm_inc.carbon+=npp;

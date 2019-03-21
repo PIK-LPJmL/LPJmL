@@ -73,8 +73,6 @@ Real photosynthesis(Real *agd,
     {
       ko=param.ko25*pow(q10ko,(temp-25)*0.1);
       kc=param.kc25*pow(q10kc,(temp-25)*0.1);
-      /*ko=ko25*exp((log(q10ko))*(temp-25)*0.1);
-      kc=kc25*exp((log(q10kc))*(temp-25)*0.1); */
       fac=kc*(1+po2/ko);
       tau=tau25*pow(q10tau,(temp-25)*0.1); /*reflects the abiltiy of Rubisco to discriminate between CO2 and O2*/
       /*tau=tau25*exp((log(q10tau))*(temp-25)*0.1);*/
@@ -167,7 +165,7 @@ Real photosynthesis(Real *agd,
 
     and=*agd-*rd;
     if(and<0)
-       and=0;
+      and=0;
 
     /*     Total daytime net photosynthesis, Adt, gC/m2/day
      *     Eqn 19, Haxeltine & Prentice 1996

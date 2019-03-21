@@ -131,7 +131,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   if(config->sim_id!=LPJML && config->sim_id!=LPJ && config->sim_id!=LPJML_IMAGE)
   {
     if(verbosity)
-      fprintf(stderr,"ERROR123: Invalid simulation type in line %d of '%s', must be 'LPJML' or 'LPJ' or 'LPJML_IMAGE'.\n",getlinecount(),getfilename());
+      fprintf(stderr,"ERROR123: Invalid simulation type, must be 'LPJML' or 'LPJ' or 'LPJML_IMAGE'.\n");
     closeconfig(&lpjfile);
     return TRUE;
   }
@@ -143,7 +143,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
       if(config->sim_id==LPJML_IMAGE)
         fputs("ERROR219: LPJmL has to be compiled with '-DIMAGE' for simulation type 'LPJML_IMAGE'.\n",stderr);
       else
-        fprintf(stderr,"ERROR123: Invalid simulation type in line %d of '%s', must be 'LPJML', 'LPJML_FMS' or 'LPJ'.\n",getlinecount(),getfilename());
+        fprintf(stderr,"ERROR123: Invalid simulation type, must be 'LPJML', 'LPJML_FMS' or 'LPJ'.\n");
     }
     closeconfig(&lpjfile);
     return TRUE;

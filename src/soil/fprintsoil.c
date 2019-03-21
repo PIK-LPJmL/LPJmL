@@ -19,7 +19,8 @@
 void fprintsoil(FILE *file,           /**< pointer to text file */
                 const Soil *soil,     /**< pointer to soil variables to print */
                 const Pftpar *pftpar, /**< PFT parameter array */
-                int ntotpft           /**< total number of PFTs */
+                int ntotpft,          /**< total number of PFTs */
+                int with_nitrogen     /**< nitrogen cycle enabled */
                )
 {
   int l,p;
@@ -65,34 +66,54 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   forrootsoillayer(l)
     fputs(" -----",file);
   fputc('\n',file);
-  fputs("Stock pools:\n"
-        "\tlayer slow (gC/m2) fast (gC/m2) slow (gN/m2) fast (gN/m2)\n"
-        "\t----- ------------ ------------ ------------ ------------\n",file);
-  forrootsoillayer(l)
+  if(with_nitrogen)
   {
-    fprintf(file,"\t%5d %12.2f %12.2f %12.2f %12.2f\n",
-            l,soil->pool[l].slow.carbon,soil->pool[l].fast.carbon,
-            soil->pool[l].slow.nitrogen,soil->pool[l].fast.nitrogen);
-    sum.slow.carbon+=soil->pool[l].slow.carbon;
-    sum.fast.carbon+=soil->pool[l].fast.carbon;
-    sum.fast.nitrogen+=soil->pool[l].fast.nitrogen;
-    sum.slow.nitrogen+=soil->pool[l].slow.nitrogen;
+    fputs("Stock pools:\n"
+          "\tlayer slow (gC/m2) fast (gC/m2) slow (gN/m2) fast (gN/m2)\n"
+          "\t----- ------------ ------------ ------------ ------------\n",file);
+    forrootsoillayer(l)
+    {
+      fprintf(file,"\t%5d %12.2f %12.2f %12.2f %12.2f\n",
+              l,soil->pool[l].slow.carbon,soil->pool[l].fast.carbon,
+              soil->pool[l].slow.nitrogen,soil->pool[l].fast.nitrogen);
+      sum.slow.carbon+=soil->pool[l].slow.carbon;
+      sum.fast.carbon+=soil->pool[l].fast.carbon;
+      sum.fast.nitrogen+=soil->pool[l].fast.nitrogen;
+      sum.slow.nitrogen+=soil->pool[l].slow.nitrogen;
 
-/*  fprintf(file,"k_mean:\t %.2f %.2f\n",soil->k_mean[l].slow,soil->k_mean[l].fast); */
+  /*  fprintf(file,"k_mean:\t %.2f %.2f\n",soil->k_mean[l].slow,soil->k_mean[l].fast); */
+    }
+    fputs("\t----- ------------ ------------ ------------ ------------\n",file);
+    fprintf(file,"\tTOTAL %12.2f %12.2f %12.2f %12.2f\n",
+            sum.slow.carbon,sum.fast.carbon,sum.slow.nitrogen,sum.fast.nitrogen);
+
+    fputs("\n\tlayer NO3 (gN/m2) NH4 (gN/m2)\n"
+          "\t----- ----------- -----------\n",file);
+    forrootsoillayer(l)
+      fprintf(file,"\t%5d %11.4f %11.4f\n",l,soil->NO3[l],soil->NH4[l]);
   }
-  fputs("\t----- ------------ ------------ ------------ ------------\n",file);
-  fprintf(file,"\tTOTAL %12.2f %12.2f %12.2f %12.2f\n",
-          sum.slow.carbon,sum.fast.carbon,sum.slow.nitrogen,sum.fast.nitrogen);
-
-  fputs("\n\tlayer NO3 (gN/m2) NH4 (gN/m2)\n"
-        "\t----- ----------- -----------\n",file);
-  forrootsoillayer(l)
-    fprintf(file,"\t%5d %11.4f %11.4f\n",l,soil->NO3[l],soil->NH4[l]);
+  else
+  {
+    fputs("Carbon pools:\n"
+          "\tlayer slow (gC/m2) fast (gC/m2)\n"
+          "\t----- ------------ ------------\n",file);
+    forrootsoillayer(l)
+    {
+      fprintf(file,"\t%5d %12.2f %12.2f\n",
+              l,soil->pool[l].slow.carbon,soil->pool[l].fast.carbon);
+      sum.slow.carbon+=soil->pool[l].slow.carbon;
+      sum.fast.carbon+=soil->pool[l].fast.carbon;
+    }
+    fputs("\t----- ------------ ------------\n",file);
+    fprintf(file,"\tTOTAL %12.2f %12.2f\n",
+            sum.slow.carbon,sum.fast.carbon);
+  }
   fprintf(file,"\nRootlayer:\t%d\n",l);
   fprintf(file,"Decomp_mean carbon:\t%.2f (gC/m2)\n",soil->decomp_litter_mean.carbon);
-  fprintf(file,"Decomp_mean nitrogen:\t%.2f (gC/m2)",soil->decomp_litter_mean.nitrogen);
+  if(with_nitrogen)
+    fprintf(file,"Decomp_mean nitrogen:\t%.2f (gC/m2)",soil->decomp_litter_mean.nitrogen);
   fputs("\nLitter:",file);
-  fprintlitter(file,&soil->litter);
+  fprintlitter(file,&soil->litter,with_nitrogen);
   fprintf(file,"\nmean maxthaw:\t%.2f (mm)\n",soil->mean_maxthaw);
   fputs("Layer       ",file);
   for(l=0;l<NSOILLAYER+1;l++)

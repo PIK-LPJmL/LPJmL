@@ -68,9 +68,12 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
   } /* of foreachstand */
   foreachstand(stand,s,cell->standlist)
   {
-    litter_neg=checklitter(&stand->soil.litter);
-    cell->output.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
-    cell->output.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
+    if(config->with_nitrogen)
+    {
+      litter_neg=checklitter(&stand->soil.litter);
+      cell->output.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
+      cell->output.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
+    }
     stand->cell->output.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   }
   cell->output.fpc[0] = 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;

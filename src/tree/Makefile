@@ -35,7 +35,7 @@ LIB     = libtree.$A
 
 HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/soil.h $(INC)/climate.h $(INC)/date.h $(INC)/pft.h\
-          $(INC)/pftpar.h $(INC)/types.h $(INC)/tree.h\
+          $(INC)/pftpar.h $(INC)/types.h $(INC)/tree.h $(INC)/output.h\
           $(INC)/errmsg.h $(INC)/numeric.h $(INC)/param.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h $(INC)/stand.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h\

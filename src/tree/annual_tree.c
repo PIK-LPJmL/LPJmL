@@ -15,17 +15,18 @@
 #include "lpj.h"
 #include "tree.h"
 
-Bool annual_tree(Stand *stand,  /**< pointer to stand */
-                 Pft *pft,      /**< pointer to PFT */
-                 Real *fpc_inc, /**< FPC increment */
+Bool annual_tree(Stand *stand,       /**< pointer to stand */
+                 Pft *pft,           /**< pointer to PFT */
+                 Real *fpc_inc,      /**< FPC increment */
                  Bool UNUSED(new_phenology),
-                 Bool isdaily   /**< daily temperature data (TRUE/FALSE) */
-                )               /** \return TRUE on death */
+                 int with_nitrogen, /**< with nitrogen (TRUE/FALSE) */
+                 Bool isdaily        /**< daily temperature data (TRUE/FALSE) */
+                )                    /** \return TRUE on death */
 {
   Stocks turnover_ind;
   Bool isdead;
   turnover_ind=turnover_tree(&stand->soil.litter,pft);
-  isdead=allocation_tree(&stand->soil.litter,pft,fpc_inc);
+  isdead=allocation_tree(&stand->soil.litter,pft,fpc_inc,with_nitrogen);
   if(!isdead)
   {
     isdead=mortality_tree(&stand->soil.litter,pft,turnover_ind.carbon,

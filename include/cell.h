@@ -54,10 +54,10 @@ typedef struct
   Real nep;                 /**< annual NEP (gC/m2) */
   Real awater_flux;         /**< annual water flux (mm) */
   Real aprec;               /**< annual precipitation (mm) */
-  Stocks tot;                /**< total carbon and nitrogen (C/m2) */
-  Stocks biomass_yield;      /**< harvested biomass (gC/m2)*standfrac*/
-  Stocks estab_storage_tree[2];  /**< carbon taken out from annual NPP to satisfy tree establishment rate */
-  Stocks estab_storage_grass[2]; /**< carbon taken out from annual NPP to satisfy grass establishment rate */
+  Stocks tot;                /**< total carbon and nitrogen (g/m2) */
+  Stocks biomass_yield;      /**< harvested biomass (gC/m2, gN/m2)*standfrac*/
+  Stocks estab_storage_tree[2];  /**< carbon and nitrogen taken out from annual NPP to satisfy tree establishment rate */
+  Stocks estab_storage_grass[2]; /**< carbon and nitrogen taken out from annual NPP to satisfy grass establishment rate */
   Real totw;                /**< total water (mm) */
   Real surface_storage;     /**< total water in surface storages (dm3) */
   Real soil_storage;        /**< total water in soil storages (dm3) */
@@ -66,7 +66,7 @@ typedef struct
   Real n_influx;            /**< all N inputs: deposition, fertilizer, BNF */
   Real n_outflux;           /**< all N outputs: n2onit, n2odenit, n2denit, leaching */
   Real n_demand;            /**< N demand by plants (gN)*/
-  Real n_uptake;
+  Real n_uptake;            /**< N uptake by plants (gN) */
 
 } Balance;
 

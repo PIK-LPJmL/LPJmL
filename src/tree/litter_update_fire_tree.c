@@ -25,28 +25,38 @@ void litter_update_fire_tree(Litter *litter, /**< Litter pool */
   int i;
   const Pfttreepar *treepar;
   Pfttree *tree;
+  Output *output;
   tree=pft->data;
   treepar=pft->par->data;
-  
+  output=&pft->stand->cell->output; 
   litter->ag[pft->litter].trait.leaf.carbon+=tree->ind.leaf.carbon*frac;
+  output->alittfall.carbon+=tree->ind.leaf.carbon*frac*pft->stand->frac;
   litter->ag[pft->litter].trait.leaf.nitrogen+=tree->ind.leaf.nitrogen*frac;
+  output->alittfall.nitrogen+=tree->ind.leaf.nitrogen*frac*pft->stand->frac;
   if(pft->nind>0)
   {
     litter->ag[pft->litter].trait.leaf.nitrogen+=pft->bm_inc.nitrogen/pft->nind*frac;
+    output->alittfall.nitrogen+=pft->bm_inc.nitrogen/pft->nind*frac*pft->stand->frac;
     pft->bm_inc.nitrogen*=(pft->nind-frac)/pft->nind;
   }
   for(i=0;i<NFUELCLASS;i++)
   {
     litter->ag[pft->litter].trait.wood[i].carbon+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
                                   tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i];
+    output->alittfall.carbon+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+                                  tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i]*pft->stand->frac;
     litter->ag[pft->litter].trait.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
                                   tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i];
+    output->alittfall.nitrogen+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+                                  tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i]*pft->stand->frac;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,
                     (tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-tree->ind.debt.carbon)
                *frac*treepar->fuelfrac[i],i);
   }
   litter->bg[pft->litter].carbon+=tree->ind.root.carbon*frac;
+  output->alittfall.carbon+=tree->ind.root.carbon*frac*pft->stand->frac;
   litter->bg[pft->litter].nitrogen+=tree->ind.root.nitrogen*frac;
+  output->alittfall.nitrogen+=tree->ind.root.nitrogen*frac*pft->stand->frac;
   update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*frac,0); //CHECK
 
 } /* of 'litter_update_fire_tree' */

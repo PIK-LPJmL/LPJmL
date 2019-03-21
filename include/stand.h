@@ -59,9 +59,9 @@ typedef struct landcover *Landcover;
 /* Declaration of functions */
 
 extern Bool fwritestand(FILE *,const Stand *,int);
-extern void fprintstand(FILE *,const Stand *,const Pftpar[],int);
+extern void fprintstand(FILE *,const Stand *,const Pftpar[],int,int);
 extern int fwritestandlist(FILE *,const Standlist,int);
-extern void fprintstandlist(FILE *,const Standlist,const Pftpar[],int);
+extern void fprintstandlist(FILE *,const Standlist,const Pftpar[],int,int);
 extern Stand *freadstand(FILE *,Cell *,const Pftpar[],int,
                          const Soilpar *,const Standtype [],int,Bool);
 extern Standlist freadstandlist(FILE *,Cell *,const Pftpar [],int,
@@ -76,7 +76,7 @@ extern Bool check_lu(const Standlist ,Real,int,Bool);
 extern void check_stand_fracs(const Cell *,Real);
 extern int findstand(const Standlist, Landusetype, Bool);
 extern int findlandusetype(const Standlist,Landusetype);
-extern void allocation_today(Stand *, int);
+extern void allocation_today(Stand *,int,int);
 extern void light(Stand *,int,const Real[]);
 extern Stocks establishmentpft(Stand *,const Pftpar[],int,int,Real,int);
 extern Stocks standstocks(const Stand *);

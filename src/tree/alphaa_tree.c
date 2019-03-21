@@ -15,24 +15,27 @@
 #include "lpj.h"
 #include "tree.h"
 
-Real alphaa_tree(const Pft *pft, /**< pointer to tree PFT */
-                 int UNUSED(lai_opt)
-                )               /** \return alpha_a (0..1) */
+Real alphaa_tree(const Pft *pft,     /**< pointer to tree PFT */
+                 int with_nitrogen,  /**< nitrogen cycle enabled */
+                 int UNUSED(lai_opt) /**< LAImax option */
+                )                    /** \return alpha_a (0..1) */
 {
   Pfttree *tree;
   Real scaler=1.0;
-  tree=pft->data;
-  /* sink-limitation: downscale alphaa if there is too much carbon that cannot be allocated under
-     given N limitation*/
-  if((tree->ind.leaf.carbon+tree->excess_carbon*tree->falloc.leaf)>10){
-    /*scaler=tree->ind.sapwood.nitrogen/(tree->ind.sapwood.carbon+tree->excess_carbon) /
-           pft->par->ncleaf.low*treepar->ratio.sapwood;*/
-    scaler=tree->ind.leaf.nitrogen/(tree->ind.leaf.carbon+tree->excess_carbon*tree->falloc.leaf) /
-           pft->par->ncleaf.low;
-    if(scaler>1)
-      scaler=1.0;
-    else
-      scaler=(1+param.par_sink_limit)*scaler/(scaler+param.par_sink_limit);
+  if(with_nitrogen)
+  {
+    tree=pft->data;
+    /* sink-limitation: downscale alphaa if there is too much carbon that cannot be allocated under
+       given N limitation*/
+    if((tree->ind.leaf.carbon+tree->excess_carbon*tree->falloc.leaf)>10)
+    {
+      scaler=tree->ind.leaf.nitrogen/(tree->ind.leaf.carbon+tree->excess_carbon*tree->falloc.leaf) /
+             pft->par->ncleaf.low;
+      if(scaler>1)
+        scaler=1.0;
+      else
+        scaler=(1+param.par_sink_limit)*scaler/(scaler+param.par_sink_limit);
+    }
   }
   return pft->par->alphaa*scaler;
 } /* of 'alphaa_tree' */

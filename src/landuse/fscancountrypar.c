@@ -49,7 +49,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
     if(id<0 || id>=ncountries)
     {
       if(verb)
-        fprintf(stderr,"ERROR125: Invalid range=%d of 'countrynumber' in line %d of '%s'.\n",id,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR125: Invalid range=%d of 'countrynumber'.\n",id);
       return 0;
     }
     country=(*countrypar)+id;
@@ -57,7 +57,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,
-                "ERROR178: Country number=%d in line %d of '%s' has been already defined.\n",id,getlinecount(),getfilename());
+                "ERROR178: Country number=%d has been already defined.\n",id);
       return 0;
     }
     if(fscanstring(&item,s,"name",FALSE,verb))  /*reads country name*/
@@ -95,7 +95,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
     if(country->default_irrig_system<1 || country->default_irrig_system>3)
     {
       if(verb)
-        fprintf(stderr,"ERROR215: Default irrigation system=%d is not defined within 1 to 3 for %s in line %d of '%s'.\n",country->default_irrig_system,country->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR215: Default irrigation system=%d is not defined within 1 to 3 for %s.\n",country->default_irrig_system,country->name);
        return 0;
     }
   } /* of 'for(n=0;...)' */

@@ -16,8 +16,9 @@
 
 #include "lpj.h"
 
-void fprintpft(FILE *file,    /**< pointer to text file */
-               const Pft *pft /**< pointer to PFT variables */
+void fprintpft(FILE *file,       /**< pointer to text file */
+               const Pft *pft,   /**< pointer to PFT variables */
+               int with_nitrogen /**< nitrogen cycle enabled */
               )
 {
   fprintf(file,"tmin phen.:\t%g\n"
@@ -32,10 +33,15 @@ void fprintpft(FILE *file,    /**< pointer to text file */
   fprintf(file,"wscal_mean:\t\t%g\n",pft->wscal_mean);
   fprintf(file,"vscal:\t\t%g\n",pft->vscal);
   fprintf(file,"aphen:\t\t%g\n",pft->aphen);
-  fprintf(file,"bminc:\t\t%g (gC/m2) %g (gN/m2)\n",pft->bm_inc.carbon,
-          pft->bm_inc.nitrogen);
+  if(with_nitrogen)
+  {
+    fprintf(file,"bminc:\t\t%g (gC/m2) %g (gN/m2)\n",pft->bm_inc.carbon,
+            pft->bm_inc.nitrogen);
+    fprintf(file,"Nleaf:\t\t%g (gN/m2)\n",pft->nleaf);
+  }
+  else
+    fprintf(file,"bminc:\t\t%g (gC/m2)\n",pft->bm_inc.carbon);
   fprintf(file,"gdd:\t\t%g\n",pft->gdd); 
-  fprintf(file,"Nleaf:\t\t%g (gN/m2)\n",pft->nleaf);
   /* Print type specific variables */
-  pft->par->fprint(file,pft);
+  pft->par->fprint(file,pft,with_nitrogen);
 } /* of 'fprintpft' */

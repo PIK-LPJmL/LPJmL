@@ -53,18 +53,18 @@ typedef struct
 /* Declaration of functions */
 
 extern void new_grass(Pft *,int,int);
-extern Real npp_grass(Pft *,Real,Real,Real,Bool);
+extern Real npp_grass(Pft *,Real,Real,Real,int);
 extern Real fpc_grass(Pft *);
 extern Real fpar_grass(const Pft *);
-extern Real alphaa_grass(const Pft *,int);
+extern Real alphaa_grass(const Pft *,int,int);
 extern void litter_update_grass(Litter *, Pft*,Real);
-extern Bool allocation_grass(Litter *,Pft *,Real *);
+extern Bool allocation_grass(Litter *,Pft *,Real *,int);
 extern Real lai_grass(const Pft *);
 extern Real actual_lai_grass(const Pft *);
 extern Stocks turnover_grass(Litter *,Pft *,Bool,Real);
 extern void phenology_grass(Pft *,Real,int,Bool);
 extern Bool fwrite_grass(FILE *,const Pft *);
-extern void fprint_grass(FILE *,const Pft *);
+extern void fprint_grass(FILE *,const Pft *,int);
 extern Bool fread_grass(FILE *,Pft *,Bool);
 extern Bool fscanpft_grass(LPJfile *,Pftpar *,Verbosity);
 extern Stocks establishment_grass(Pft *,Real,Real,int);
@@ -81,7 +81,7 @@ extern void reduce_grass(Litter *,Pft *,Real);
 extern void fprintpar_grass(FILE *,const Pftpar *);
 extern Stocks livefuel_consum_grass(Litter *,Pft *,const Fuel *,Livefuel *,
                                     Bool *,Real, Real);
-extern Bool annual_grass(Stand *,Pft *,Real *,Bool,Bool);
+extern Bool annual_grass(Stand *,Pft *,Real *,Bool,int,Bool);
 extern Harvest harvest_stand(Output *,Stand *,Real);
 extern void turnover_monthly_grass(Litter *,Pft *);
 extern void turnover_daily_grass(Litter *,Pft *,Real,Bool);
@@ -94,6 +94,7 @@ extern Real vmaxlimit_grass(const Pft *,Real,Real);
 
 #define isgrass(pft) (getpftpar(pft,type)==GRASS)
 #define fprintgrassphys(file,phys) fprintf(file,"%.2f %.2f (gC/m2) %.2f %.2f (gN/m2)",phys.leaf.carbon,phys.root.carbon,phys.leaf.nitrogen,phys.root.nitrogen)
+#define fprintgrassphyscarbon(file,phys) fprintf(file,"%.2f %.2f (gC/m2)",phys.leaf.carbon,phys.root.carbon)
 #define phys_sum_grass(ind) (ind.leaf.carbon+ind.root.carbon)
 #define phys_sum_grass_n(ind) (ind.leaf.nitrogen+ind.root.nitrogen)
 

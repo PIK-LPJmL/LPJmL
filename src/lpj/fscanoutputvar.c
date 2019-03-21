@@ -59,14 +59,14 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     if(index<0 || index>=nout_max)
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid index %d in line %d of '%s' for output description.\n",
-               index,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR201: Invalid index %d for output description.\n",
+               index);
       return NULL;
     }
     if(outnames[index].name!=NULL)
     {
       if(verb)
-        fprintf(stderr,"ERROR202: Index %d in line %d of '%s' already used for output description.\n",index,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR202: Index %d already used for output description.\n",index);
       return NULL;
     }
     fscanname(&item,name,"name",outnames[index].name);

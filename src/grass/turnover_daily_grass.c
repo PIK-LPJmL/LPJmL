@@ -23,14 +23,18 @@ void turnover_daily_grass(Litter *litter,
 {
   Pftgrass *grass;
   Pftgrasspar *grasspar;
+  Output *output;
   if(pft->stand->type->landusetype==NATURAL)
   {
     grass=pft->data;
     grasspar=pft->par->data;
+    output=&pft->stand->cell->output;
     grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
     grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
     litter->ag[pft->litter].trait.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+    output->alittfall.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac;
     litter->ag[pft->litter].trait.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+    output->alittfall.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac;
     update_fbd_grass(litter,pft->par->fuelbulkdensity,grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind);
   }
 } /* of 'turnover_daily_grass' */

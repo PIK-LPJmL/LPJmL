@@ -1,0 +1,1360 @@
+agriculture.h:#define AGRICULTURE_H
+agriculture.h:#define NOIRRIG 0
+agriculture.h:#define SURF 1
+agriculture.h:#define SPRINK 2
+agriculture.h:#define DRIP 3
+biomass_grass.h:#define BIOMASS_GRASS_H
+biomass_tree.h:#define BIOMASS_TREE_H
+biomes.h:#define BIOMES_H
+biomes.h:#define BOREAL_DECIDUOUS_FOREST 1
+biomes.h:#define BOREAL_EVERGREEN_FOREST 2
+biomes.h:#define TEMPERATE_BOREAL_MIXED_FOREST 3
+biomes.h:#define TEMPERATE_CONIFEROUS_FOREST 4
+biomes.h:#define TEMPERATE_DECIDUOUS_FOREST 5
+biomes.h:#define TEMPERATE_BROADLEAVED_EVERGREEN_FOREST 6
+biomes.h:#define TEMPERATE_MIXED_FOREST 7
+biomes.h:#define TROPICAL_SEASONAL_FOREST 8
+biomes.h:#define TROPICAL_RAIN_FOREST 9
+biomes.h:#define TROPCIAL_DECIDUOUS_FOREST 10
+biomes.h:#define MOIST_SAVANNAH 11
+biomes.h:#define DRY_SAVANNAH 12
+biomes.h:#define TROPICAL_GRASS 13
+biomes.h:#define SHRUB 14
+biomes.h:#define ARID_SHRUB_STEPPE 15
+biomes.h:#define WOOD_TUNDRA 16
+biomes.h:#define TUNDRA 17
+biomes.h:#define COOL_GRASS 18
+biomes.h:#define DESERT 19
+biomes.h:#define ARCTIC_TUNDRA TUNDRA /* no differentiation for IMAGE */
+biomes.h:#define XERIC_SHRUBS SHRUB /* no differentiation for IMAGE */ 
+biomes.h:#define TALL_GRASSLAND 0
+biomes.h:#define SHORT_GRASSLAND 0
+biomes.h:#define ARCTIC_TUNDRA 20
+biomes.h:#define XERIC_SHRUBS 21
+biomes.h:#define TALL_GRASSLAND 22
+biomes.h:#define SHORT_GRASSLAND 23
+biomes.h:#define MANAGED_LAND 24
+buffer.h:#define BUFFER_H
+cdf.h:#define CDF_H
+cdf.h:#define MISSING_VALUE_FLOAT -1e32
+cdf.h:#define MISSING_VALUE_SHORT -9999
+cdf.h:#define MISSING_VALUE_INT -999999
+cdf.h:#define MISSING_VALUE_BYTE 99
+cdf.h:#define NO_TIME -1
+cdf.h:#define LON_NAME "longitude"
+cdf.h:#define LAT_NAME "latitude"
+cdf.h:#define TIME_NAME "time"
+cdf.h:#define LON_DIM_NAME "longitude"
+cdf.h:#define LAT_DIM_NAME "latitude"
+cdf.h:#define TIME_DIM_NAME "time"
+cdf.h:#if defined(USE_NETCDF) || defined(USE_NETCDF4)
+cdf.h:#define isdaily(climate) ((climate).time_step==DAY)
+cell.h:#define CELL_H
+cell.h:#define printcell(cell,n,npft,ncft,config) fprintcell(stdout,cell,n,npft,ncft,config)
+channel.h:#define CHANNEL_H
+channel.h:#define writeshort_socket(socket,data,n) write_socket(socket,data,(n)*sizeof(short))
+channel.h:#define writeint_socket(socket,data,n) write_socket(socket,data,(n)*sizeof(int))
+channel.h:#define writelong_socket(socket,data,n) write_socket(socket,data,(n)*sizeof(long long))
+channel.h:#define writedouble_socket(socket,data,n) write_socket(socket,data,(n)*sizeof(double))
+channel.h:#define writefloat_socket(socket,data,n) write_socket(socket,data,(n)*sizeof(float))
+channel.h:#define isinvalid_socket(socket) ((socket)==INVALID_SOCKET)
+channel.h:#define isinvalid_socket(socket) ((socket)<0)
+climate.h:#define CLIMATE_H
+climate.h:#define COLDEST_DAY_NHEMISPHERE 14
+climate.h:#define COLDEST_DAY_SHEMISPHERE 195
+climate.h:#define getcelltemp(climate,cell) climate->data.temp+(cell)*NMONTH
+climate.h:#define getcellprec(climate,cell) climate->data.prec+(cell)*NMONTH
+climate.h:#define getcellsun(climate,cell) climate->data.sun+(cell)*NMONTH
+climate.h:#define getcelllwnet(climate,cell) climate->data.lwnet+(cell)*NMONTH
+climate.h:#define getcellswdown(climate,cell) climate->data.swdown+(cell)*NMONTH
+climate.h:#define getcellwet(climate,cell) climate->data.wet+(cell)*NMONTH
+climate.h:#define getcellwind(climate,cell) climate->data.wind+(cell)*NMONTH
+climate.h:#define getcelltamp(climate,cell) climate->data.tamp+(cell)*NMONTH
+climate.h:#define getcelltmax(climate,cell) climate->data.tmax+(cell)*NMONTH
+climate.h:#define getcelllightning(climate,cell) climate->data.lightning+(cell)*NMONTH
+climate.h:#define getcellburntarea(climate,cell) climate->data.burntarea+(cell)*NMONTH
+climate.h:#define getcellno3deposition(climate,cell) climate->data.no3deposition+(cell)*NMONTH
+climate.h:#define getcellnh4deposition(climate,cell) climate->data.nh4deposition+(cell)*NMONTH
+climate.h:#define getprec(cell,d) (cell).climbuf.dval_prec[(d)+1]
+climate.h:#define israndomprec(climate) ((climate)->data.wet!=NULL)
+climbuf.h:#define CLIMBUF_H
+climbuf.h:#define CLIMBUFSIZE 20 /* size of climate buffer */
+climbuf.h:#define NDAYS 31       /* maximum number of days in a month */
+climbuf.h:#define NDAYS_PREC 10
+climbuf.h:#define initgdd5(climbuf) climbuf.gdd5=0
+climbuf.h:#define updategdd5(climbuf,temp) if(temp>5) (*climbuf).gdd5++
+conf.h:#define CONF_H
+conf.h:#define LPJ 0          /* LPJ simulation with natural vegetation only */
+conf.h:#define LPJML 1        /* LPJ simulation with managed land */
+conf.h:#define LPJML_IMAGE 4  /* LPJ simulation with managed land coupled to IMAGE
+conf.h:#define LPJML_FMS 5  /* LPJ simulation with managed land coupled to FMS */
+conf.h:#define LANDUSE 1
+conf.h:#define NO_LANDUSE 0
+conf.h:#define CONST_LANDUSE 3
+conf.h:#define ALL_CROPS 4
+conf.h:#define NO_FIXED_SDATE 0
+conf.h:#define FIXED_SDATE 1
+conf.h:#define PRESCRIBED_SDATE 2
+conf.h:#define NO_IRRIGATION 0
+conf.h:#define LIM_IRRIGATION 1
+conf.h:#define POT_IRRIGATION 2
+conf.h:#define ALL_IRRIGATION 3
+conf.h:#define GRASS_HARVEST_OPTIONS 1 
+conf.h:#define NO_GRASS_HARVEST_OPTIONS 0 
+conf.h:#define GRASS_FIXED_PFT 1 
+conf.h:#define NO_GRASS_FIXED_PFT 0 
+conf.h:#define LAIMAX_CFT 0
+conf.h:#define LAIMAX_INTERPOLATE 1
+conf.h:#define CONST_LAI_MAX 2
+conf.h:#define LAIMAX_PAR 3
+conf.h:#define NO_RESERVOIR 0
+conf.h:#define RESERVOIR 1
+conf.h:#define NO_DRAINAGE 0
+conf.h:#define DRAINAGE 1
+conf.h:#define PERM 1
+conf.h:#define NO_PERM 0
+conf.h:#define NEW_PERC 1
+conf.h:#define OLD_PERC 0
+conf.h:#define NO_NITROGEN 0
+conf.h:#define LIM_NITROGEN 1
+conf.h:#define UNLIM_NITROGEN 2
+conf.h:#define NO_WATERUSE 0
+conf.h:#define WATERUSE 1
+conf.h:#define ALL_WATERUSE 2
+conf.h:#define NO_RWMANAGEMENT 0
+conf.h:#define RWMANAGEMENT 1
+conf.h:#define RADIATION_LWDOWN 3
+conf.h:#define RADIATION_SWONLY 2
+conf.h:#define RADIATION 1
+conf.h:#define CLOUDINESS 0
+conf.h:#define SWDOWN 2
+conf.h:#define ALL -1
+conf.h:#define RAW 0
+conf.h:#define CLM 1
+conf.h:#define CLM2 2
+conf.h:#define TXT 3
+conf.h:#define FMS 4
+conf.h:#define META 5
+conf.h:#define CDF 6
+conf.h:#define RESTART 1
+conf.h:#define NO_RESTART 0
+conf.h:#define NO_FIRE 0
+conf.h:#define FIRE 1
+conf.h:#define SPITFIRE 2
+conf.h:#define SPITFIRE_TMAX 3
+conf.h:#define NO_PRESCRIBE_BURNTAREA 0
+conf.h:#define PRESCRIBE_BURNTAREA 1
+conf.h:#define NO_LANDCOVER 0
+conf.h:#define LANDCOVEREST 1
+conf.h:#define LANDCOVERFPC 2
+conf.h:#define OLD_PHENOLOGY 0
+conf.h:#define NEW_PHENOLOGY 1
+conf.h:#define NO_POPULATION 0
+conf.h:#define POPULATION 1
+conf.h:#define NO_FIREWOOD 0
+conf.h:#define FIREWOOD 1
+conf.h:#define RANDOM_PREC 1
+conf.h:#define INTERPOLATE_PREC 0
+conf.h:#define NOUT 276           /* number of output files */
+conf.h:#define END -1              /* end marker for output files */
+conf.h:#define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
+conf.h:#define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
+conf.h:#define DAILY_IRRIG 1       /* daily outputs for irrigated crop */
+conf.h:#define DAILY_RAINFED 0     /* daily outputs for rain-fed crop */
+conf.h:#define CONST_PREC 2
+conf.h:#define GRID 0          
+conf.h:#define FPC 1          
+conf.h:#define MNPP 2          
+conf.h:#define MGPP 3          
+conf.h:#define MRH 4          
+conf.h:#define MTRANSP 5          
+conf.h:#define MRUNOFF 6          
+conf.h:#define MDISCHARGE 7          
+conf.h:#define MEVAP 8          
+conf.h:#define MINTERC 9          
+conf.h:#define MSWC1 10          
+conf.h:#define MSWC2 11          
+conf.h:#define FIREC 12          
+conf.h:#define FIREF 13          
+conf.h:#define VEGC 14          
+conf.h:#define SOILC 15          
+conf.h:#define LITC 16          
+conf.h:#define FLUX_ESTABC 17          
+conf.h:#define FLUX_ESTAB FLUX_ESTABC
+conf.h:#define PFT_NPP 18          
+conf.h:#define PFT_GCGP 19          
+conf.h:#define HARVEST HARVESTC
+conf.h:#define HARVESTC 20          
+conf.h:#define MIRRIG 21          
+conf.h:#define SDATE 22          
+conf.h:#define PFT_HARVESTC 23          
+conf.h:#define PFT_HARVEST PFT_HARVESTC
+conf.h:#define PFT_RHARVESTC 24          
+conf.h:#define PFT_RHARVEST PFT_RHARVESTC
+conf.h:#define COUNTRY 25          
+conf.h:#define REGION 26          
+conf.h:#define MG_VEGC 27          
+conf.h:#define MG_SOILC 28          
+conf.h:#define MG_LITC 29          
+conf.h:#define APREC 30          
+conf.h:#define INPUT_LAKE 31          
+conf.h:#define MRETURN_FLOW_B 32          
+conf.h:#define MEVAP_LAKE 33          
+conf.h:#define ADISCHARGE 34          
+conf.h:#define CFTFRAC 35          
+conf.h:#define CFT_CONSUMP_WATER_G 36          
+conf.h:#define CFT_CONSUMP_WATER_B 37          
+conf.h:#define PROD_TURNOVER 38          
+conf.h:#define DEFOREST_EMIS 39          
+conf.h:#define AIRRIG 40          
+conf.h:#define CFT_AIRRIG 41          
+conf.h:#define HDATE 42          
+conf.h:#define GROWING_PERIOD 43          
+conf.h:#define CFT_PET 44          
+conf.h:#define CFT_TRANSP 45          
+conf.h:#define CFT_EVAP 46          
+conf.h:#define CFT_INTERC 47          
+conf.h:#define CFT_NIR 48          
+conf.h:#define CFT_TEMP 49          
+conf.h:#define CFT_PREC 50          
+conf.h:#define D_LAI 51          
+conf.h:#define D_PHEN 52          
+conf.h:#define D_CLEAF 53          
+conf.h:#define D_CROOT 54          
+conf.h:#define D_CSO 55          
+conf.h:#define D_CPOOL 56          
+conf.h:#define D_WDF 57          
+conf.h:#define D_GROWINGDAY 58          
+conf.h:#define D_PVD 59          
+conf.h:#define D_PHU 60          
+conf.h:#define D_FPHU 61          
+conf.h:#define D_LAIMAXAD 62          
+conf.h:#define D_LAINPPDEF 63          
+conf.h:#define D_HUSUM 64          
+conf.h:#define D_VDSUM 65          
+conf.h:#define D_WSCAL 66          
+conf.h:#define D_NPP 67          
+conf.h:#define D_GPP 68          
+conf.h:#define D_RD 69          
+conf.h:#define D_RROOT 70          
+conf.h:#define D_RSO 71          
+conf.h:#define D_RPOOL 72          
+conf.h:#define D_GRESP 73          
+conf.h:#define D_TRANS 74          
+conf.h:#define D_EVAP 75          
+conf.h:#define D_PREC 76          
+conf.h:#define D_PERC 77          
+conf.h:#define D_IRRIG 78          
+conf.h:#define D_W0 79          
+conf.h:#define D_W1 80          
+conf.h:#define D_WEVAP 81          
+conf.h:#define D_HI 82          
+conf.h:#define D_FHIOPT 83          
+conf.h:#define D_HIMIND 84          
+conf.h:#define D_FROOT 85          
+conf.h:#define D_TEMP 86          
+conf.h:#define D_SUN 87          
+conf.h:#define D_PAR 88          
+conf.h:#define D_DAYLENGTH 89          
+conf.h:#define D_SWE 90          
+conf.h:#define D_DISCHARGE 91          
+conf.h:#define D_RUNOFF 92          
+conf.h:#define D_RH 93          
+conf.h:#define D_INTERC 94          
+conf.h:#define D_NUPTAKE 95          
+conf.h:#define D_N2O_DENIT 96          
+conf.h:#define D_N2O_NIT 97          
+conf.h:#define D_N2_DENIT 98          
+conf.h:#define D_LEACHING 99          
+conf.h:#define D_BNF 100          
+conf.h:#define D_NLEAF 101          
+conf.h:#define D_NROOT 102          
+conf.h:#define D_NSO 103          
+conf.h:#define D_NPOOL 104          
+conf.h:#define D_NO3 105          
+conf.h:#define D_NH4 106          
+conf.h:#define D_NSOIL_SLOW 107          
+conf.h:#define D_NSOIL_FAST 108          
+conf.h:#define D_ASSIM 109          
+conf.h:#define D_ROT_MODE 110          
+conf.h:#define D_NLIMIT 111          
+conf.h:#define D_VSCAL 112          
+conf.h:#define D_PET 113 /* last daily output ID; Insert additional output before! */
+conf.h:#define MEVAP_RES 114          
+conf.h:#define MPREC_RES 115          
+conf.h:#define MFIREC 116          
+conf.h:#define MNFIRE 117          
+conf.h:#define MFIREDI 118          
+conf.h:#define MFIREEMISSION_CO2 119          
+conf.h:#define MFAPAR 120          
+conf.h:#define FLUX_FIREWOOD 121          
+conf.h:#define RHARVEST_BURNTC 122          
+conf.h:#define RHARVEST_BURNT_IN_FIELDC 123          
+conf.h:#define MTEMP_IMAGE 124          
+conf.h:#define MPREC_IMAGE 125          
+conf.h:#define MSUN_IMAGE 126          
+conf.h:#define MWET_IMAGE 127          
+conf.h:#define FBURN 128      
+conf.h:#define FTIMBER 129          
+conf.h:#define TIMBER_HARVESTC 130          
+conf.h:#define PRODUCT_POOL_FAST 131          
+conf.h:#define PRODUCT_POOL_SLOW 132          
+conf.h:#define LUC_IMAGE 133          
+conf.h:#define MAXTHAW_DEPTH 134          
+conf.h:#define MSOILTEMP1 135          
+conf.h:#define MSOILTEMP2 136          
+conf.h:#define MSOILTEMP3 137          
+conf.h:#define MSOILTEMP4 138          
+conf.h:#define MSOILTEMP5 139          
+conf.h:#define MSOILTEMP6 140          
+conf.h:#define MRES_STORAGE 141          
+conf.h:#define MRES_DEMAND 142          
+conf.h:#define MTARGET_RELEASE 143          
+conf.h:#define MRES_CAP 144          
+conf.h:#define SEASONALITY 145          
+conf.h:#define MPET 146          
+conf.h:#define TRAD_BIOFUEL 147          
+conf.h:#define AFRAC_WD_UNSUST 148          
+conf.h:#define MWD_UNSUST 149          
+conf.h:#define ACONV_LOSS_EVAP 150          
+conf.h:#define MWD_LOCAL 151          
+conf.h:#define MWD_NEIGHB 152          
+conf.h:#define MWD_RES 153          
+conf.h:#define MWD_RETURN 154          
+conf.h:#define MCONV_LOSS_EVAP 155          
+conf.h:#define MPREC 156          
+conf.h:#define MRAIN 157          
+conf.h:#define MSNOWF 158          
+conf.h:#define MMELT 159          
+conf.h:#define MSNOWRUNOFF 160          
+conf.h:#define MSWE 161          
+conf.h:#define SOILC_LAYER 162          
+conf.h:#define MRUNOFF_SURF 163          
+conf.h:#define MRUNOFF_LAT 164          
+conf.h:#define MSEEPAGE 165          
+conf.h:#define MBURNTAREA 166          
+conf.h:#define SOILC_SLOW 167          
+conf.h:#define MSWC3 168          
+conf.h:#define MSWC4 169          
+conf.h:#define MSWC5 170          
+conf.h:#define MROOTMOIST 171          
+conf.h:#define CFT_SRAD 172          
+conf.h:#define CFT_ABOVEGBMC 173
+conf.h:#define MGCONS_RF 174          
+conf.h:#define MGCONS_IRR 175          
+conf.h:#define MBCONS_IRR 176          
+conf.h:#define AWATERUSE_HIL 177          
+conf.h:#define MWATERAMOUNT 178          
+conf.h:#define CFT_ABOVEGBMN 179          
+conf.h:#define PFT_HARVESTN 180          
+conf.h:#define PFT_RHARVESTN 181          
+conf.h:#define RHARVEST_BURNTN 182          
+conf.h:#define RHARVEST_BURNT_IN_FIELDN 183          
+conf.h:#define FLUX_ESTABN 184          
+conf.h:#define VEGN 185          
+conf.h:#define SOILN 186          
+conf.h:#define LITN 187          
+conf.h:#define SOILNH4 188          
+conf.h:#define SOILNO3 189          
+conf.h:#define HARVESTN 190          
+conf.h:#define SOILN_LAYER 191          
+conf.h:#define SOILN_SLOW 192          
+conf.h:#define PFT_NUPTAKE 193          
+conf.h:#define MNUPTAKE 194          
+conf.h:#define MLEACHING 195          
+conf.h:#define MN2O_DENIT 196          
+conf.h:#define MN2O_NIT 197          
+conf.h:#define MN2_EMIS 198          
+conf.h:#define MBNF 199          
+conf.h:#define PFT_NDEMAND 200          
+conf.h:#define MN_MINERALIZATION 201          
+conf.h:#define FIREN 202          
+conf.h:#define MN_IMMO 203          
+conf.h:#define PFT_CLEAF 204          
+conf.h:#define PFT_NLEAF 205          
+conf.h:#define PFT_VEGC 206          
+conf.h:#define PFT_VEGN 207          
+conf.h:#define MIRRIG_RW 208          
+conf.h:#define MTRANSP_B 209          
+conf.h:#define CFT_TRANSP_B 210          
+conf.h:#define MUNMET_DEMAND 211          
+conf.h:#define CFT_FPAR 212          
+conf.h:#define MEVAP_B 213          
+conf.h:#define MINTERC_B 214          
+conf.h:#define CFT_EVAP_B 215          
+conf.h:#define CFT_INTERC_B 216          
+conf.h:#define CFT_RETURN_FLOW_B 217          
+conf.h:#define CFT_IRRIG_EVENTS 218          
+conf.h:#define CFT_CONV_LOSS_EVAP 219          
+conf.h:#define CFT_CONV_LOSS_DRAIN 220
+conf.h:#define MSTOR_RETURN 221          
+conf.h:#define MCONV_LOSS_DRAIN 222          
+conf.h:#define ACONV_LOSS_DRAIN 223          
+conf.h:#define NEGN_FLUXES 224          
+conf.h:#define NEGC_FLUXES 225          
+conf.h:#define PFT_LAIMAX 226          
+conf.h:#define PFT_CROOT 227          
+conf.h:#define PFT_NROOT 228          
+conf.h:#define PFT_CSAPW 229          
+conf.h:#define PFT_NSAPW 230          
+conf.h:#define PFT_CHAWO 231          
+conf.h:#define PFT_NHAWO 232          
+conf.h:#define HDATE2 233          
+conf.h:#define SDATE2 234          
+conf.h:#define PFT_HARVESTC2 235          
+conf.h:#define PFT_HARVEST2 PFT_HARVESTC2
+conf.h:#define PFT_RHARVESTC2 236
+conf.h:#define PFR_RHARVEST2 PFT_RHARVESTC2
+conf.h:#define GROWING_PERIOD2 237          
+conf.h:#define CFT_PET2 238          
+conf.h:#define CFT_TRANSP2 239          
+conf.h:#define CFT_EVAP2 240          
+conf.h:#define CFT_INTERC2 241          
+conf.h:#define CFT_NIR2 242          
+conf.h:#define CFT_TEMP2 243          
+conf.h:#define CFT_PREC2 244          
+conf.h:#define CFT_SRAD2 245          
+conf.h:#define CFT_ABOVEGBMC2 246          
+conf.h:#define CFTFRAC2 247          
+conf.h:#define CFT_AIRRIG2 248          
+conf.h:#define SYEAR 249          
+conf.h:#define SYEAR2 250          
+conf.h:#define PFT_HARVESTN2 251          
+conf.h:#define PFT_RHARVESTN2 252          
+conf.h:#define CFT_ABOVEGBMN2 253          
+conf.h:#define MN_VOLATILIZATION 254          
+conf.h:#define PFT_NLIMIT 255          
+conf.h:#define SOILNO3_LAYER 256          
+conf.h:#define SOILNH4_LAYER 257
+conf.h:#define MWSCAL 258
+conf.h:#define AGB 259
+conf.h:#define MLAKEVOL 260
+conf.h:#define MLAKETEMP 261
+conf.h:#define MFIREEMISSION_CO 262
+conf.h:#define MFIREEMISSION_CH4 263
+conf.h:#define MFIREEMISSION_VOC 264
+conf.h:#define MFIREEMISSION_TPM 265
+conf.h:#define MFIREEMISSION_NOX 266
+conf.h:#define MSOILTEMP 267
+conf.h:#define MSWC 268
+conf.h:#define MALBEDO 269
+conf.h:#define MPHEN_TMIN 270
+conf.h:#define MPHEN_TMAX 271
+conf.h:#define MPHEN_LIGHT 272
+conf.h:#define MPHEN_WATER 273
+conf.h:#define ABURNTAREA 274
+conf.h:#define AGB_TREE 275
+conf.h:#define RANDOM_SEED 0
+config.h:#define CONFIG_H
+config.h:#define printconfig(config,npft,ncft) fprintconfig(stdout,config,npft,ncft)
+config.h:#define ischeckpointrestart(config) ((config)->checkpoint_restart_filename!=NULL)
+config.h:#define iswriterestart(config) ((config)->write_restart_filename!=NULL)
+config.h:#define isreadrestart(config) ((config)->restart_filename!=NULL)
+config.h:#define isroot(config) ((config).rank==0)
+config.h:#define isroot(config) TRUE
+config.h:#define printparam(config,npft,ncft) fprintparam(stdout,config,npft,ncft)
+config.h:#define printfiles(isinput,config) fprintfiles(stdout,isinput,config)
+config.h:#define printincludes(name,argc,argv) fprintincludes(stdout,name,argc,argv)
+coord.h:#define COORD_H
+coord.h:#define printcoord(coord) fprintcoord(stdout,coord)
+cpl.h:#define CPL_H
+cpl.h:#define cpl_toarr(cpl,src,dst,type) MPI_Alltoallv(src,cpl->inlen,cpl->indisp,type,dst,cpl->outlen,cpl->outdisp,type,cpl->comm)
+cpl.h:#define cpl_togrid(cpl,src,dst,type) MPI_Alltoallv(src,cpl->outlen,cpl->outdisp,type,dst,cpl->inlen,cpl->indisp,type,cpl->comm)
+cpl.h:#define cpl_toarr(cpl,src,dst,size) memcpy(src,dst,cpl->outsize*(size))
+cpl.h:#define cpl_togrid(cpl,src,dst,size) memcpy(src,dst,cpl->outsize*(size))
+cpl.h:#define cpl_index(cpl,i) cpl->index[i]
+cpl.h:#define cpl_src_index(cpl,i) cpl->src_index[i]
+cpl.h:#define cpl_xcoord(cpl,i) cpl->coord[i].x
+cpl.h:#define cpl_ycoord(cpl,i) cpl->coord[i].y
+cpl.h:#define cpl_size(cpl) cpl->outsize
+crop.h:#define CROP_H
+crop.h:#define MINLGP 4              /* minimum length of growing period, used in calc_seasonality */
+crop.h:#define DEFAULT_MONTH 1       /* default setting if no sowing month can be found in calc_seasonality*/
+crop.h:#define MIN_PREC 0.1          /* minimum daily precipitation (mm) at a wet day - definition from CRU*/
+crop.h:#define iscrop(pft) (getpftpar(pft,type)==CROP)
+crop.h:#define phys_sum_crop(ind) (ind.leaf.carbon+ind.root.carbon+ind.so.carbon+ind.pool.carbon)
+crop.h:#define phys_sum_crop_n(ind) (ind.leaf.nitrogen+ind.root.nitrogen+ind.so.nitrogen+ind.pool.nitrogen)
+crop.h:#define fprintcropphys2(file,phys,nind) fprintf(file,"%.2f %.2f %.2f %.2f (gC/m2) %.2f %.2f %.2f %.2f (gN/m2)",phys.leaf.carbon*nind,phys.so.carbon*nind,phys.pool.carbon*nind,phys.root.carbon*nind,phys.leaf.nitrogen*nind,phys.so.nitrogen*nind,phys.pool.nitrogen*nind,phys.root.nitrogen*nind)
+crop.h:#define fprintcropphys2carbon(file,phys,nind) fprintf(file,"%.2f %.2f %.2f %.2f (gC/m2)",phys.leaf.carbon*nind,phys.so.carbon*nind,phys.pool.carbon*nind,phys.root.carbon*nind)
+cropdates.h:#define CROPDATES_H
+cropdates.h:#define NODATA -999
+date.h:#define DATE_H
+date.h:#define NMONTH 12 /* number of months in a year */
+date.h:#define NDAYYEAR 365 /* number of days in a year */
+date.h:#define NSECONDSDAY 86400 /* number of seconds per day */
+date.h:#define foreachmonth(month) for(month=0;month<NMONTH;month++)
+date.h:#define foreachdayofmonth(day,month) for(day=0;day<ndaymonth[month];day++)
+discharge.h:#define DISCHARGE_H
+discharge.h:#define v 86400.0 /* velocity (m/d) */
+discharge.h:#define kr 0.001 /* lake outflow coefficient (1/d) */
+discharge.h:#define H 5 /* maximum active lake storage depth (m) */
+discharge.h:#define TSTEP (1.0/8.0)   /* time step in drain (d) */
+discharge.h:#define SEGLEN 10000       /* length of river segment treated as a single storage in m */
+discharge.h:#define TAU (SEGLEN/v)     /* time constant for a single storage in d */
+errmsg.h:#define ERRMSG_H
+errmsg.h:#define READ_CONFIG_ERR 1
+errmsg.h:#define INIT_INPUT_ERR 2
+errmsg.h:#define INIT_GRID_ERR 3
+errmsg.h:#define INVALID_CARBON_BALANCE_ERR 4
+errmsg.h:#define INVALID_WATER_BALANCE_ERR 5
+errmsg.h:#define NEGATIVE_DISCHARGE_ERR 6
+errmsg.h:#define INVALID_FIRE_PROB_ERR 7
+errmsg.h:#define NEGATIVE_SOIL_MOISTURE_ERR 8
+errmsg.h:#define ALLOC_MEMORY_ERR 9
+errmsg.h:#define NEGATIVE_STAND_FRAC_ERR 10
+errmsg.h:#define STAND_FRAC_SUM_ERR 11
+errmsg.h:#define IS_EMPTY_ERR 12
+errmsg.h:#define OUT_OF_RANGE_ERR 13
+errmsg.h:#define INVALID_YEAR_ERR 15
+errmsg.h:#define CROP_FRACTION_ERR 16
+errmsg.h:#define NO_NATURAL_STAND_ERR 17
+errmsg.h:#define WRONG_CULTIVATION_TYPE_ERR 18
+errmsg.h:#define FPE_ERR 19
+errmsg.h:#define ALLOC_BUFFER_ERR 20
+errmsg.h:#define LIST_NOT_EMPTY_ERR 21
+errmsg.h:#define NEGATIVE_ESTABLISHMENT_ERR 22
+errmsg.h:#define SOCKET_ERR 23
+errmsg.h:#define SEND_IMAGE_ERR 24
+errmsg.h:#define OPEN_IMAGE_ERR 25
+errmsg.h:#define NO_SETASIDE_ERR 26
+errmsg.h:#define FOREST_LEFT_ERR 27
+errmsg.h:#define OUTFLOW_RESERVOIR_ERR 28
+errmsg.h:#define PERM_ERR 29
+errmsg.h:#define GLOBAL_WATER_BALANCE_ERR 30
+errmsg.h:#define STORE_CLIMATE_ERR 31
+errmsg.h:#define NO_FMS_ERR 32
+errmsg.h:#define INITSOILTEMP_ERR 33
+errmsg.h:#define INVALID_RADIATION_ERR 34
+errmsg.h:#define NEGATIVE_SOIL_NO3_ERR 35
+errmsg.h:#define NEGATIVE_SOIL_NH4_ERR 36
+errmsg.h:#define INVALID_NITROGEN_BALANCE_ERR 37
+errmsg.h:#define printfopenerr(filename) fprintf(stderr,"ERROR100: Cannot open file '%s' in %s(): %s.\n",filename,__FUNCTION__,strerror(errno))
+errmsg.h:#define printfcreateerr(filename) fprintf(stderr,"ERROR100: Cannot create file '%s' in %s(): %s.\n",filename,__FUNCTION__,strerror(errno))
+errmsg.h:#define printallocerr(ptr) fprintf(stderr,"ERROR009: Cannot allocate memory for '%s' in %s().\n",ptr,__FUNCTION__)
+errmsg.h:#define readstringerr(var) fprintf(stderr,"ERROR103: Cannot read string '%s' in %s().\n",var,__FUNCTION__)
+grass.h:#define GRASS_H
+grass.h:#define isgrass(pft) (getpftpar(pft,type)==GRASS)
+grass.h:#define fprintgrassphys(file,phys) fprintf(file,"%.2f %.2f (gC/m2) %.2f %.2f (gN/m2)",phys.leaf.carbon,phys.root.carbon,phys.leaf.nitrogen,phys.root.nitrogen)
+grass.h:#define fprintgrassphyscarbon(file,phys) fprintf(file,"%.2f %.2f (gC/m2)",phys.leaf.carbon,phys.root.carbon)
+grass.h:#define phys_sum_grass(ind) (ind.leaf.carbon+ind.root.carbon)
+grass.h:#define phys_sum_grass_n(ind) (ind.leaf.nitrogen+ind.root.nitrogen)
+grassland.h:#define DEMAND_COW_INT 4000.0         // [g.C.day-1] same for extensive and intensive grazing;
+grassland.h:#define DEMAND_COW_EXT 4000.0         // corresponds to 8.9 kg DW which is in between the observed values of 6 and 12.
+grassland.h:#define STUBBLE_HEIGHT_MOWING 25      // [g.C.m-2] equals 5 cm. The leaf biomass remaining on paddock after mowing.
+grassland.h:#define STOCKING_DENSITY_EXT 0.5      // [LSU.ha-1] (LiveStockUnit). Stocking densities for
+grassland.h:#define STOCKING_DENSITY_INT 1.2      // both grazing systems are rough estimates.
+grassland.h:#define MANURE 0.25                   // [-] 25 % portion of grazed biomass going to the fast soil litter pool; literature value
+grassland.h:#define MAX_PADDOCKS 16               // Rough estimate from Faustzahlen.
+grassland.h:#define MAX_ROTATION_LENGTH 50        // [days] Rough estimate when usually rotations take 20 to 35 days
+grassland.h:#define MIN_ROTATION_LENGTH 5         // [days] Rough estimate
+grassland.h:#define GRAZING_STUBBLE 5             // [g.C.m-2] Grazing stops when less than this threshold is left in the leaves
+grassland.h:#define STUBBLE_HEIGHT_GRAZING_EXT 5  // [g.C.m-2] Minimal threshold to start extensive grazing
+grassland.h:#define STUBBLE_HEIGHT_GRAZING_INT 40 // [g.C.m-2] equals 7-8 cm. Threshold to start intensive grazing
+header.h:#define HEADER_H
+header.h:#define RESTART_HEADER "LPJRESTART"
+header.h:#define RESTART_VERSION 18
+header.h:#define LPJ_CLIMATE_HEADER "LPJCLIM"
+header.h:#define LPJ_CLIMATE_VERSION 3
+header.h:#define LPJ_LANDUSE_HEADER "LPJLUSE"
+header.h:#define LPJ_LANDUSE_VERSION 3
+header.h:#define LPJ_SOWING_HEADER "LPJSOWD"
+header.h:#define LPJ_SOWING_VERSION 3
+header.h:#define LPJGRID_HEADER "LPJGRID"
+header.h:#define LPJGRID_VERSION 3
+header.h:#define LPJDRAIN_HEADER "LPJDRAI"
+header.h:#define LPJDRAIN_VERSION 3
+header.h:#define LPJEXTFLOW_HEADER "LPJFLOW"
+header.h:#define LPJEXTFLOW_VERSION 3
+header.h:#define LPJ_COUNTRY_HEADER "LPJ_COW"
+header.h:#define LPJ_COUNTRY_VERSION 3
+header.h:#define LPJWATERUSE_HEADER "LPJWUSE"
+header.h:#define LPJWATERUSE_VERSION 3
+header.h:#define LPJNEIGHB_IRRIG_HEADER "LPJNIRR"
+header.h:#define LPJNEIGHB_IRRIG_VERSION 3
+header.h:#define LPJSOIL_HEADER "LPJSOIL"
+header.h:#define LPJSOIL_VERSION 3
+header.h:#define LPJRESERVOIR_HEADER "LPJDAMS"
+header.h:#define LPJRESERVOIR_VERSION 3
+header.h:#define LPJELEVATION_HEADER "LPJELEV"
+header.h:#define LPJELEVATION_VERSION 3
+header.h:#define LPJ_POPDENS_HEADER "LPJPOPD"
+header.h:#define LPJ_POPDENS_VERSION 3
+header.h:#define LPJ_PRODINI_HEADER "LPJPROD"
+header.h:#define LPJ_PRODINI_VERSION 3
+header.h:#define LPJ_LAKEFRAC_HEADER "LPJLAKE"
+header.h:#define LPJ_LAKEFRAC_VERSION 3
+header.h:#define LPJOUTPUT_HEADER "LPJ_OUT"
+header.h:#define LPJOUTPUT_VERSION 3
+header.h:#define LPJ_LANDCOVER_HEADER "LPJLCOV"
+header.h:#define LPJ_LANDCOVER_VERSION 3
+header.h:#define LPJ_FERTILIZER_HEADER "LPJFERT"
+header.h:#define LPJ_FERTILIZZER_VERSION 3
+header.h:#define LPJ_SOILPH_HEADER "LPJ_SPH"
+header.h:#define LPJ_SOILPH_VERSION 3
+header.h:#define CELLYEAR 1
+header.h:#define YEARCELL 2
+header.h:#define CELLINDEX 3
+header.h:#define CELLSEQ 4
+header.h:#define READ_VERSION -1
+header.h:#define printheader(header) fprintheader(stdout,header)
+image.h:#define IMAGE_H
+image.h:#define PRODUCT_FAST 0.1
+image.h:#define PRODUCT_SLOW 0.01
+image.h:#define LPJIMAGE "LPJIMAGE"  /* Environment variable for IMAGE coupler */
+image.h:#define LPJWAITIMAGE "LPJWAITIMAGE"  /* time to wait for IMAGE connection */
+image.h:#define DEFAULT_IMAGE_HOST "localhost" /* Default host for IMAGE model */
+image.h:#define DEFAULT_IMAGE_INPORT 2225  /* Default port for ingoing connection */
+image.h:#define DEFAULT_IMAGE_OUTPORT 2224 /* Default port for outgoing connection */
+image.h:#define WAIT_IMAGE 12000             /* wait for IMAGE connection (sec) */
+input.h:#define INPUT_H
+intlist.h:#define INTLIST_H
+intlist.h:#define isemptyintlist(list) ((list)->n==0)
+landuse.h:#define LANDUSE_H
+landuse.h:#define mixpool(pool1,pool2,frac1,frac2) pool1=(pool1*frac1+pool2*frac2)/(frac1+frac2)
+landuse.h:#define rothers(ncft) ncft
+landuse.h:#define rmgrass(ncft) (ncft+1)
+landuse.h:#define rbgrass(ncft) (ncft+2)
+landuse.h:#define rbtree(ncft) (ncft+3)
+list.h:#define LIST_H
+list.h:#define foreachlistitem(i,list) for(i=0;i<(list)->n;i++)
+list.h:#define getlistitem(list,index) (list)->data[index]
+list.h:#define isempty(list) ((list)->n==0)
+list.h:#define getlistlen(list) (list)->n
+lpj.h:#define LPJ_H
+lpj.h:#define LPJ_VERSION  "5.1.001"
+lpj.h:#define LPJROOT "LPJROOT"            /* LPJ root directory */
+lpj.h:#define LPJPREP "LPJPREP"            /* preprocessor command */
+lpj.h:#define LPJCONFIG "LPJCONFIG"        /* default LPJ configuration filename */
+lpj.h:#define LPJOPTIONS "LPJOPTIONS"      /* LPJ runtime options */
+lpj.h:#define LPJINPUT "LPJINPATH"         /* path for input files */
+lpj.h:#define LPJOUTPUT "LPJOUTPATH"       /* path for output files */
+lpj.h:#define LPJRESTART "LPJRESTARTPATH"  /* path for restart file */
+lpj.h:#define LPJOUTPUTMETHOD "LPJOUTPUT"  /* default output method */
+lpj.h:#define failonerror(config,rc,errorcode,msg) if(rc) fail(errorcode,FALSE,msg)
+lpj.h:#define iserror(rc,config) rc
+lpj.h:#define printflux(flux,total,year,config) fprintflux(stdout,flux,total,year,config)
+manage.h:#define MANAGE_H
+manage.h:  /* parameters defined for each country */
+manage.h:} Regionpar; /* parameters defined for each region */
+manage.h:#define fwritecountrycode(file,code,n) fwrite(code,sizeof(Code),n,file)
+manage.h:#define seekcountrycode(file,index,type,offset) fseek(file,offset+(index)*typesizes[type]*2,SEEK_SET)
+managepar.h:#define MANAGEPAR_H
+managepar.h:#define    Afghanistan 0
+managepar.h:#define    Albania    1
+managepar.h:#define    Algeria    2
+managepar.h:#define    American_Samoa 3
+managepar.h:#define    Angola 4
+managepar.h:#define    Argentina 5
+managepar.h:#define    Armenia    6
+managepar.h:#define    Austria    7
+managepar.h:#define    Azerbaijan 8
+managepar.h:#define    Bahamas_The 9
+managepar.h:#define    Bangladesh 10
+managepar.h:#define    Belgium    11
+managepar.h:#define    Belize 12
+managepar.h:#define    Benin 13
+managepar.h:#define    Bhutan 14
+managepar.h:#define    Bolivia    15
+managepar.h:#define    Bosnia_and_Herzegovina 16
+managepar.h:#define    Botswana 17
+managepar.h:#define    Brunei 18
+managepar.h:#define    Bulgaria 19
+managepar.h:#define    Burkina_Faso 20
+managepar.h:#define    Burundi    21
+managepar.h:#define    Byelarus 22
+managepar.h:#define    Cambodia 23
+managepar.h:#define    Cameroon 24
+managepar.h:#define    Cape_Verde 25
+managepar.h:#define    Cayman_Islands 26
+managepar.h:#define    Central_African_Republic 27
+managepar.h:#define    Chad 28
+managepar.h:#define    Chile 29
+managepar.h:#define    Colombia 30
+managepar.h:#define    Comoros    31
+managepar.h:#define    Congo_Brazzaville 32
+managepar.h:#define    Cook_Islands 33
+managepar.h:#define    Costa_Rica 34
+managepar.h:#define    Croatia    35
+managepar.h:#define    Cuba 36
+managepar.h:#define    Cyprus 37
+managepar.h:#define    Czech_Republic 38
+managepar.h:#define    Denmark    39
+managepar.h:#define    Djibouti 40
+managepar.h:#define    Dominican_Republic 41
+managepar.h:#define    Ecuador    42
+managepar.h:#define    Egypt 43
+managepar.h:#define    El_Salvador 44
+managepar.h:#define    Equatorial_Guinea 45
+managepar.h:#define    Eritrea    46
+managepar.h:#define    Estonia    47
+managepar.h:#define    Ethiopia 48
+managepar.h:#define    Falkland_Islands_or_Islas_Malvinas 49
+managepar.h:#define    Faroe_Islands 50
+managepar.h:#define    Federated_States_of_Micronesia 51
+managepar.h:#define    Fiji 52
+managepar.h:#define    Finland    53
+managepar.h:#define    France 54
+managepar.h:#define    French_Guiana 55
+managepar.h:#define    French_Polynesia 56
+managepar.h:#define    French_Southern_and_Antarctica_Lands 57
+managepar.h:#define    Gabon 58
+managepar.h:#define    Gambia_The 59
+managepar.h:#define    Georgia    60
+managepar.h:#define    Germany    61
+managepar.h:#define    Ghana 62
+managepar.h:#define    Greece 63
+managepar.h:#define    Greenland 64
+managepar.h:#define    Guadeloupe 65
+managepar.h:#define    Guatemala 66
+managepar.h:#define    Guinea 67
+managepar.h:#define    Guinea_Bissau 68
+managepar.h:#define    Guyana 69
+managepar.h:#define    Haiti 70
+managepar.h:#define    Honduras 71
+managepar.h:#define    Hungary    72
+managepar.h:#define    Iceland    73
+managepar.h:#define    Indonesia 74
+managepar.h:#define    Iran 75
+managepar.h:#define    Iraq 76
+managepar.h:#define    Ireland    77
+managepar.h:#define    Israel 78
+managepar.h:#define    Italy 79
+managepar.h:#define    Ivory_Coast 80
+managepar.h:#define    Jamaica    81
+managepar.h:#define    Japan 82
+managepar.h:#define    Jordan 83
+managepar.h:#define    Kazakhstan 84
+managepar.h:#define    Kenya 85
+managepar.h:#define    Kiribati 86
+managepar.h:#define    Kuwait 87
+managepar.h:#define    Kyrgyzstan 88
+managepar.h:#define    Laos 89
+managepar.h:#define    Latvia 90
+managepar.h:#define    Lebanon    91
+managepar.h:#define    Lesotho    92
+managepar.h:#define    Liberia    93
+managepar.h:#define    Libya 94
+managepar.h:#define    Lithuania 95
+managepar.h:#define    Luxembourg 96
+managepar.h:#define    Macedonia 97
+managepar.h:#define    Madagascar 98
+managepar.h:#define    Malawi 99
+managepar.h:#define    Malaysia 100
+managepar.h:#define    Maldives 101
+managepar.h:#define    Mali 102
+managepar.h:#define    Marshall_Islands 103
+managepar.h:#define    Mauritania 104
+managepar.h:#define    Mauritius 105
+managepar.h:#define    Mexico 106
+managepar.h:#define    Moldova    107
+managepar.h:#define    Mongolia 108
+managepar.h:#define    Montenegro 109
+managepar.h:#define    Morocco    110
+managepar.h:#define    Mozambique 111
+managepar.h:#define    Myanmar_or_Burma 112
+managepar.h:#define    Namibia    113
+managepar.h:#define    Nepal 114
+managepar.h:#define    Netherlands 115
+managepar.h:#define    New_Caledonia 116
+managepar.h:#define    New_Zealand 117
+managepar.h:#define    Nicaragua 118
+managepar.h:#define    Niger 119
+managepar.h:#define    Nigeria    120
+managepar.h:#define    North_Korea 121
+managepar.h:#define    Northern_Mariana_Islands 122
+managepar.h:#define    Norway 123
+managepar.h:#define    Oman 124
+managepar.h:#define    Pakistan 125
+managepar.h:#define    Panama 126
+managepar.h:#define    Papua_New_Guinea 127
+managepar.h:#define    Paraguay 128
+managepar.h:#define    Peru 129
+managepar.h:#define    Philippines 130
+managepar.h:#define    Pitcairn_Islands 131
+managepar.h:#define    Poland 132
+managepar.h:#define    Portugal 133
+managepar.h:#define    Puerto_Rico 134
+managepar.h:#define    Qatar 135
+managepar.h:#define    Reunion    136
+managepar.h:#define    Romania    137
+managepar.h:#define    Rwanda 138
+managepar.h:#define    Sao_Tome_and_Principe 139
+managepar.h:#define    Saudi_Arabia 140
+managepar.h:#define    Senegal    141
+managepar.h:#define    Serbia 142
+managepar.h:#define    Sierra_Leone 143
+managepar.h:#define    Slovakia 144
+managepar.h:#define    Slovenia 145
+managepar.h:#define    Solomon_Islands    146
+managepar.h:#define    Somalia    147
+managepar.h:#define    South_Africa 148
+managepar.h:#define    South_Georgia_and_the_South_Sandwich_Islands 149
+managepar.h:#define    South_Korea 150
+managepar.h:#define    Spain 151
+managepar.h:#define    Sri_Lanka 152
+managepar.h:#define    St_Vincent_and_the_Grenadines 153
+managepar.h:#define    Sudan 154
+managepar.h:#define    Suriname 155
+managepar.h:#define    Svalbard 156
+managepar.h:#define    Swaziland 157
+managepar.h:#define    Sweden 158
+managepar.h:#define    Switzerland 159
+managepar.h:#define    Syria 160
+managepar.h:#define    Taiwan 161
+managepar.h:#define    Tajikistan 162
+managepar.h:#define    Tanzania_United_Republic_of 163
+managepar.h:#define    Thailand 164
+managepar.h:#define    Togo 165
+managepar.h:#define    Tokelau    166
+managepar.h:#define    Trinidad_and_Tobago 167
+managepar.h:#define    Tunisia    168
+managepar.h:#define    Turkey 169
+managepar.h:#define    Turkmenistan 170
+managepar.h:#define    Tuvalu 171
+managepar.h:#define    Uganda 172
+managepar.h:#define    Ukraine    173
+managepar.h:#define    United_Arab_Emirates 174
+managepar.h:#define    United_Kingdom 175
+managepar.h:#define    Uruguay    176
+managepar.h:#define    Uzbekistan 177
+managepar.h:#define    Vanuatu    178
+managepar.h:#define    Venezuela 179
+managepar.h:#define    Vietnam    180
+managepar.h:#define    Virgin_Islands 181
+managepar.h:#define    Wake_Islands 182
+managepar.h:#define    West_Bank 183
+managepar.h:#define    Western_Sahara 184
+managepar.h:#define    Western_Samoa 185
+managepar.h:#define    Yemen 186
+managepar.h:#define    Zaire_DR_Congo 187
+managepar.h:#define    Zambia 188
+managepar.h:#define    Zimbabwe 189
+managepar.h:#define    Australia 190
+managepar.h:#define    Brazil 191
+managepar.h:#define    Canada 192
+managepar.h:#define    China 193
+managepar.h:#define    India 194
+managepar.h:#define    Russia 195
+managepar.h:#define    United_States 196
+managepar.h:#define    New_South_Wales    190
+managepar.h:#define    Northern_Territory 191
+managepar.h:#define    Queensland 192
+managepar.h:#define    South_Australia    193
+managepar.h:#define    Tasmania 194
+managepar.h:#define    Victoria 195
+managepar.h:#define    Western_Australia 196
+managepar.h:#define    Acre 197
+managepar.h:#define    Alagoas    198
+managepar.h:#define    Amapa 199
+managepar.h:#define    Amazonas 200
+managepar.h:#define    Bahia 201
+managepar.h:#define    Ceara 202
+managepar.h:#define    Distrito_Federal 203
+managepar.h:#define    Espirito_Santo 204
+managepar.h:#define    Goias 205
+managepar.h:#define    Litigated_Zone 206
+managepar.h:#define    Mato_Grosso_do_Sul 207
+managepar.h:#define    Minas_Gerais 208
+managepar.h:#define    Mato_Grosso 209
+managepar.h:#define    Maranhao 210
+managepar.h:#define    Paraiba    211
+managepar.h:#define    Parana 212
+managepar.h:#define    Para 213
+managepar.h:#define    Piaui 214
+managepar.h:#define    Pernambuco 215
+managepar.h:#define    Rio_de_Janeiro 216
+managepar.h:#define    Rio_Grande_do_Norte 217
+managepar.h:#define    Rio_Grande_do_Sul 218
+managepar.h:#define    Rondonia 219
+managepar.h:#define    Roraima    220
+managepar.h:#define    Santa_Catarina 221
+managepar.h:#define    Sao_Paulo 222
+managepar.h:#define    Sergipe    223
+managepar.h:#define    Tocantins 224
+managepar.h:#define    Alberta    225
+managepar.h:#define    British_Columbia 226
+managepar.h:#define    Manitoba 227
+managepar.h:#define    New_Brunswick 228
+managepar.h:#define    Nova_Scotia 229
+managepar.h:#define    Northwest_Territories 230
+managepar.h:#define    Newfoundland 231
+managepar.h:#define    Ontario    232
+managepar.h:#define    Prince_Edward_Island 233
+managepar.h:#define    Quebec 234
+managepar.h:#define    Saskatchewan 235
+managepar.h:#define    Yukon_Territory    236
+managepar.h:#define    Anhui_Sheng 237
+managepar.h:#define    Beijing_Shi 238
+managepar.h:#define    Fujian_Sheng 239
+managepar.h:#define    Gansu_Sheng 240
+managepar.h:#define    Guangdong_Sheng    241
+managepar.h:#define    Guangxizhuangzu_Zizhiqu    242
+managepar.h:#define    Guizhou_Sheng 243
+managepar.h:#define    Hainan_Sheng 244
+managepar.h:#define    Hebei_Sheng 245
+managepar.h:#define    Heilongjiang_Sheng 246
+managepar.h:#define    Henan_Sheng 247
+managepar.h:#define    Hongkong 248
+managepar.h:#define    Hubei_Sheng 249
+managepar.h:#define    Hunan_Sheng 250
+managepar.h:#define    Jiangsu_Sheng 251
+managepar.h:#define    Jiangxi_Sheng 252
+managepar.h:#define    Jilin_Sheng 253
+managepar.h:#define    Liaoning_Sheng 254
+managepar.h:#define    Neimenggu_Zizhiqu 255
+managepar.h:#define    Ningxiahuizu_Zizhiqu 256
+managepar.h:#define    Qinghai_Sheng 257
+managepar.h:#define    Shaanxi_Sheng 258
+managepar.h:#define    Shandong_Sheng 259
+managepar.h:#define    Shanghai_Shi 260
+managepar.h:#define    Shanxi_Sheng 261
+managepar.h:#define    Sichuan_Sheng 262
+managepar.h:#define    Tianjin_Shi 263
+managepar.h:#define    Xinjiangweiwu_erzu_Zizhiqu 264
+managepar.h:#define    Xizang_Zizhiqu 265
+managepar.h:#define    Yunnan_Sheng 266
+managepar.h:#define    Zhejiang_Sheng 267
+managepar.h:#define    Andaman_and_Nicobar_Islands 268
+managepar.h:#define    Andhra_Pradesh 269
+managepar.h:#define    Arunachal_Pradesh 270
+managepar.h:#define    Assam 271
+managepar.h:#define    Bihar 272
+managepar.h:#define    Chandigarh 273
+managepar.h:#define    Gujarat    274
+managepar.h:#define    Haryana    275
+managepar.h:#define    Himachal_Pradesh 276
+managepar.h:#define    Jammu_and_Kashmir 277
+managepar.h:#define    Karnataka 278
+managepar.h:#define    Kerala 279
+managepar.h:#define    Madhya_Pradesh 280
+managepar.h:#define    Maharashtra 281
+managepar.h:#define    Manipur    282
+managepar.h:#define    Meghalaya 283
+managepar.h:#define    Mizoram    284
+managepar.h:#define    Nagaland 285
+managepar.h:#define    Orissa 286
+managepar.h:#define    Punjab 287
+managepar.h:#define    Rajasthan 288
+managepar.h:#define    Sikkim 289
+managepar.h:#define    Tamil_Nadu 290
+managepar.h:#define    Tripura    291
+managepar.h:#define    Uttar_Pradesh 292
+managepar.h:#define    West_Bengal 293
+managepar.h:#define    Adygea 294
+managepar.h:#define    Aga_Buryatia 295
+managepar.h:#define    Altay 296
+managepar.h:#define    Amur 297
+managepar.h:#define    Arctic_Island 298
+managepar.h:#define    Arkhangelsk 299
+managepar.h:#define    Astrakhan 300
+managepar.h:#define    Bashkortostan 301
+managepar.h:#define    Belgorod 302
+managepar.h:#define    Bryansk    303
+managepar.h:#define    Buryatia 304
+managepar.h:#define    Chechnya 305
+managepar.h:#define    Chelyabinsk 306
+managepar.h:#define    Chita 307
+managepar.h:#define    Chukotka 308
+managepar.h:#define    Chuvashia_or_Chavash 309
+managepar.h:#define    Dagestan 310
+managepar.h:#define    Evenk 311
+managepar.h:#define    Irkutsk    312
+managepar.h:#define    Ivanovo    313
+managepar.h:#define    Jewish 314
+managepar.h:#define    Kabardino_Balkaria 315
+managepar.h:#define    Kaliningrad 316
+managepar.h:#define    Kalmykia_Khalmg_Tan 317
+managepar.h:#define    Kaluga 318
+managepar.h:#define    Kamchatka 319
+managepar.h:#define    Karachay_Cherkessia 320
+managepar.h:#define    Karelia    321
+managepar.h:#define    Kemerovo 322
+managepar.h:#define    Khabarovsk 323
+managepar.h:#define    Khakassia 324
+managepar.h:#define    Khant_Mansiysk 325
+managepar.h:#define    Kirov 326
+managepar.h:#define    Komi 327
+managepar.h:#define    Komi_Permyak 328
+managepar.h:#define    Koryak 329
+managepar.h:#define    Kostroma 330
+managepar.h:#define    Krasnodar 331
+managepar.h:#define    Krasnoyarsk 332
+managepar.h:#define    Kurgan 333
+managepar.h:#define    Kursk 334
+managepar.h:#define    Leningrad 335
+managepar.h:#define    Lipetsk    336
+managepar.h:#define    Magadan    337
+managepar.h:#define    Mari_El    338
+managepar.h:#define    Mordovia 339
+managepar.h:#define    Moscow 340
+managepar.h:#define    Murmansk 341
+managepar.h:#define    Nenetsk    342
+managepar.h:#define    Nizhniy_Novgorod 343
+managepar.h:#define    North_Ossetia_Alani 344
+managepar.h:#define    Novgorod 345
+managepar.h:#define    Novosibirsk 346
+managepar.h:#define    Omsk 347
+managepar.h:#define    Orel 348
+managepar.h:#define    Orenburg 349
+managepar.h:#define    Penza 350
+managepar.h:#define    Perm 351
+managepar.h:#define    Primorskiy 352
+managepar.h:#define    Pskov 353
+managepar.h:#define    Rostov 354
+managepar.h:#define    Ryazan 355
+managepar.h:#define    Sakha_or_Yakutia 356
+managepar.h:#define    Sakhalin 357
+managepar.h:#define    Samara 358
+managepar.h:#define    Saratov    359
+managepar.h:#define    Smolensk 360
+managepar.h:#define    St_Petersburg 361
+managepar.h:#define    Stavropol 362
+managepar.h:#define    Sverdlovsk 363
+managepar.h:#define    Tambov 364
+managepar.h:#define    Tatarstan 365
+managepar.h:#define    Taymyr_or_Dolgano_Nenets 366
+managepar.h:#define    Tomsk 367
+managepar.h:#define    Tula 368
+managepar.h:#define    Tver 369
+managepar.h:#define    Tyumen 370
+managepar.h:#define    Tyva_or_Tuva 371
+managepar.h:#define    Udmurtia 372
+managepar.h:#define    Ulyanovsk 373
+managepar.h:#define    Ust_Orda_Buryat    374
+managepar.h:#define    Vladimir 375
+managepar.h:#define    Volgograd 376
+managepar.h:#define    Vologda    377
+managepar.h:#define    Voronezh 378
+managepar.h:#define    Wrangel_Island 379
+managepar.h:#define    Yamalo_Nenetsk 380
+managepar.h:#define    Yaroslavl 381
+managepar.h:#define    water 382
+managepar.h:#define    Alabama    383
+managepar.h:#define    Alaska 384
+managepar.h:#define    Arizona    385
+managepar.h:#define    Arkansas 386
+managepar.h:#define    California 387
+managepar.h:#define    Colorado 388
+managepar.h:#define    Connecticut 389
+managepar.h:#define    Delaware 390
+managepar.h:#define    Florida    391
+managepar.h:#define    US_Georgia 392
+managepar.h:#define    Hawaii 393
+managepar.h:#define    Idaho 394
+managepar.h:#define    Illinois 395
+managepar.h:#define    Indiana    396
+managepar.h:#define    Iowa 397
+managepar.h:#define    Kansas 398
+managepar.h:#define    Kentucky 399
+managepar.h:#define    Louisiana 400
+managepar.h:#define    Maine 401
+managepar.h:#define    Maryland 402
+managepar.h:#define    Massachusetts 403
+managepar.h:#define    Michigan 404
+managepar.h:#define    Minnesota 405
+managepar.h:#define    Mississippi 406
+managepar.h:#define    Missouri 407
+managepar.h:#define    Montana    408
+managepar.h:#define    Nebraska 409
+managepar.h:#define    Nevada    410
+managepar.h:#define    New_Hampshire 411
+managepar.h:#define    New_Jersey 412
+managepar.h:#define    New_Mexico 413
+managepar.h:#define    New_York 414
+managepar.h:#define    North_Carolina 415
+managepar.h:#define    North_Dakota 416
+managepar.h:#define    Ohio 417
+managepar.h:#define    Oklahoma 418
+managepar.h:#define    Oregon    419
+managepar.h:#define    Pennsylvania 420
+managepar.h:#define    Rhode_Island 421
+managepar.h:#define    South_Carolina 422
+managepar.h:#define    South_Dakota 423
+managepar.h:#define    Tennessee 424
+managepar.h:#define    Texas 425
+managepar.h:#define    Utah 426
+managepar.h:#define    Vermont    427
+managepar.h:#define    Virginia 428
+managepar.h:#define    Washington 429
+managepar.h:#define    West_Virginia 430
+managepar.h:#define    Wisconsin 431
+managepar.h:#define    Wyoming    432
+natural.h:#define NATURAL_H
+numeric.h:#define NUMERIC_H
+numeric.h:/* if drand48(),srand48() functions are not defined, use randfrac,setseed instead */
+numeric.h:#define drand48() randfrac()
+numeric.h:#define srand48(seed) setseed(seed)
+outfile.h:#define OUTFILE_H
+output.h:#define OUTPUT_H
+output.h:#define DEFAULT_PORT 2222 /* default port for socket connection */
+output.h:#define isopen(output,index) output->files[index].isopen
+output.h:#define output_flux(output,flux) writedouble_socket(output->socket,(Real *)&flux,sizeof(Flux)/sizeof(Real))
+output.h:#define isdailyoutput(index) (index>=D_LAI && index<=D_PET)
+param.h:#define PARAM_H
+pft.h:#define PFT_H
+pft.h:#define NO_WDF -9
+pft.h:#define PREC_MAX 1e38
+pft.h:#define LAMBDA_OPT 0.8  /* optimal Ci/Ca ratio */
+pft.h:#define NHSG 4 /* number of hydrological soil groups */
+pft.h:#define CCpDM 0.4763 /*leaf carbon content per dry mass  Kattge et al. 2011*/
+pft.h:#define isphoto(tstress) (tstress>=1e-2)
+pft.h:#define getpftpar(pft,val) (pft)->par->val
+pft.h:#define newgdd(npft) newvec(Real,npft)
+pft.h:#define fpar(pft) pft->par->fpar(pft)
+pft.h:#define turnover_monthly(litter,pft) pft->par->turnover_monthly(litter,pft)
+pft.h:#define turnover_daily(litter,pft,temp,isdaily) pft->par->turnover_daily(litter,pft,temp,isdaily)
+pft.h:#define alphaa(pft,with_nitrogen,lai_opt) pft->par->alphaa_manage(pft,with_nitrogen,lai_opt)
+pft.h:#define npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen) pft->par->npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen)
+pft.h:#define leaf_phenology(pft,temp,day,isdaily) pft->par->leaf_phenology(pft,temp,day,isdaily)
+pft.h:#define litter_update(litter,pft,frac) pft->par->litter_update(litter,pft,frac)
+pft.h:#define fire(pft,fireprob) pft->par->fire(pft,fireprob)
+pft.h:#define actual_lai(pft) pft->par->actual_lai(pft)
+pft.h:#define init(pft) pft->par->init(pft)
+pft.h:#define vegc_sum(pft) pft->par->vegc_sum(pft)
+pft.h:#define vegn_sum(pft) pft->par->vegn_sum(pft)
+pft.h:#define agb(pft) pft->par->agb(pft)
+pft.h:#define mix_veg(pft,scaler) pft->par->mix_veg(pft,scaler)
+pft.h:#define adjust(litter,pft,fpc,fpc_max) pft->par->adjust(litter,pft,fpc,fpc_max)
+pft.h:#define reduce(litter,pft,fpc) pft->par->reduce(litter,pft,fpc)
+pft.h:#define wdf(pft,demand,supply) pft->par->wdf(pft,demand,supply)
+pft.h:#define establishment(pft,fpc_total,fpc,n_est) pft->par->establishment(pft,fpc_total,fpc,n_est)
+pft.h:#define annualpft(stand,pft,fpc_inc,newphen,nitrogen,isdaily) pft->par->annual(stand,pft,fpc_inc,newphen,nitrogen,isdaily)
+pft.h:#define albedo_pft(pft,snowheight,snowfraction) pft->par->albedo_pft(pft,snowheight,snowfraction)
+pft.h:#define nuptake(pft,n_plant_demand,ndemand_leaf,npft,nbiomass,ncft) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,nbiomass,ncft)
+pft.h:#define ndemand(pft,nleaf,vcmax,daylength,temp,npft,nbiomass,ncft) pft->par->ndemand(pft,nleaf,vcmax,daylength,temp,npft,nbiomass,ncft)
+pft.h:#define vmaxlimit(pft,daylength,temp) pft->par->vmaxlimit(pft,daylength,temp)
+pftlist.h:#define PFTLIST_H
+pftlist.h:#define getpft(pftlist,i) ((pftlist)->pft+(i))
+pftlist.h:#define foreachpft(pft,i,pftlist) for(i=0;i<getnpft(pftlist) && (pft=getpft(pftlist,i));i++)
+pftlist.h:#define getnpft(pftlist) (pftlist)->n
+pftlist.h:#define printpftlist(pftlist) fprintpftlist(stdout,pftlist)
+pftpar.h:#define PFTPAR_H
+pftpar.h:#define EVERGREEN 0
+pftpar.h:#define RAINGREEN 1
+pftpar.h:#define SUMMERGREEN 2
+pftpar.h:#define ANY 3
+pftpar.h:#define CROPGREEN 4
+pftpar.h:#define NOPATHWAY 0
+pftpar.h:#define C3 1
+pftpar.h:#define C4 2
+pftpar.h:#define BROADLEAVED 0
+pftpar.h:#define NEEDLELEAVED 1
+pftpar.h:#define ANYLEAVED 2
+pftpar.h:#define GRASS 0
+pftpar.h:#define TREE 1
+pftpar.h:#define CROP 2
+pftpar.h:#define NONE 0
+pftpar.h:#define BIOMASS 1
+pftpar.h:#define ANNUAL_CROP 2
+pftpar.h:#define TROPICAL_BROADLEAVED_EVERGREEN_TREE 0
+pftpar.h:#define TROPICAL_BROADLEAVED_RAINGREEN_TREE 1
+pftpar.h:#define TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE 2
+pftpar.h:#define TEMPERATE_BROADLEAVED_EVERGREEN_TREE 3
+pftpar.h:#define TEMPERATE_BROADLEAVED_SUMMERGREEN_TREE 4
+pftpar.h:#define BOREAL_NEEDLELEAVED_EVERGREEN_TREE 5
+pftpar.h:#define BOREAL_BROADLEAVED_SUMMERGREEN_TREE 6
+pftpar.h:#define BOREAL_NEEDLELEAVED_SUMMERGREEN_TREE 7
+pftpar.h:#define TROPICAL_HERBACEOUS 8
+pftpar.h:#define TEMPERATE_HERBACEOUS 9
+pftpar.h:#define POLAR_HERBACEOUS 10
+pftpar.h:#define BIOENERGY_TROPICAL_TREE 11
+pftpar.h:#define BIOENERGY_TEMPERATE_TREE 12
+pftpar.h:#define BIOENERGY_C4_GRASS 13
+pftpar.h:#define TEMPERATE_CEREALS 14
+pftpar.h:#define RICE 15
+pftpar.h:#define MAIZE 16
+pftpar.h:#define TROPICAL_CEREALS 17
+pftpar.h:#define PULSES 18
+pftpar.h:#define TEMPERATE_ROOTS 19
+pftpar.h:#define TROPICAL_ROOTS 20
+pftpar.h:#define OIL_CROPS_SUNFLOWER 21
+pftpar.h:#define OIL_CROPS_SOYBEAN 22
+pftpar.h:#define OIL_CROPS_GROUNDNUT 23
+pftpar.h:#define OIL_CROPS_RAPESEED 24
+pftpar.h:#define SUGARCANE 25
+pftpar.h:#define NO_CALC_SDATE 0
+pftpar.h:#define PREC_CALC_SDATE 1
+pftpar.h:#define TEMP_WTYP_CALC_SDATE 2
+pftpar.h:#define TEMP_STYP_CALC_SDATE 3
+pftpar.h:#define TEMP_PREC_CALC_SDATE 4
+pftpar.h:#define MULTICROP 5
+pftpar.h:#define NGRASS 2 /* OTHERS + MANAGED GRASSLAND */
+pftpar.h:#define NBIOMASSTYPE 2 /* TREE + GRASS */
+pftpar.h:#define WIRRIG 2
+pftpar.h:#define ALLNATURAL -1 /* ensures summing daily outputs for all natural vegetation pfts */
+pnet.h:#define PNET_H
+pnet.h:#define PNET_VERSION "1.0.003"
+pnet.h:#define PNET_ALLOC_ERR 1      /* error allocating memory */
+pnet.h:#define PNET_TO_INDEX_ERR 2   /* invalid to index */
+pnet.h:#define PNET_FROM_INDEX_ERR 3 /* invalid from index */
+pnet.h:#define PNET_NULL_PTR_ERR 4   /* NULL pointer error */
+pnet.h:#define PNET_OK 0             /* code for successful operation */
+pnet.h:#define pnet_exchg(pnet) MPI_Alltoallv(pnet->outbuffer,pnet->outlen,pnet->outdisp,pnet->type,pnet->inbuffer,pnet->inlen,pnet->indisp,pnet->type,pnet->comm)
+pnet.h:#define pnet_exchg(pnet) memcpy(pnet->inbuffer,pnet->outbuffer,pnet->size*pnet->inlen[0])
+pnet.h:#define pnet_foreach(pnet,i) for(i=pnet->lo;i<=pnet->hi;i++)
+pnet.h:#define pnet_taskid(pnet) pnet->taskid
+pnet.h:#define pnet_lo(pnet) pnet->lo
+pnet.h:#define pnet_hi(pnet) pnet->hi
+pnet.h:#define pnet_nodes(pnet) pnet->n
+pnet.h:#define pnet_input(pnet) pnet->inbuffer
+pnet.h:#define pnet_output(pnet) pnet->outbuffer
+pnet.h:#define pnet_outlen(pnet) pnet->outsize
+pnet.h:#define pnet_inindex(pnet,i,j) pnet->connect[i].index[j]
+pnet.h:#define pnet_outindex(pnet,i) pnet->outindex[i]
+pnet.h:#define pnet_inlen(pnet,i) pnet->connect[i].n
+pnet.h:#define pnet_isin(pnet,i) (pnet->lo<=i && pnet->hi>=i)
+queue.h:#define QUEUE_T
+reservoir.h:#define RESERVOIR_H
+reservoir.h:#define HIST_YEARS 20 /* the amount of years for the history of the reservoir*/
+reservoir.h:#define ALPHA 0.85 /*constant for definition of target release (Hanasaki, 2006) */
+reservoir.h:#define NIRRIGDAYS 5 /* size of irrigation buffer */
+reservoir.h:#define NPURPOSE 5
+reservoir.h:#define ENV_FLOW 0.1 /*fraction of mean monthly flow that is always released to the river */
+soil.h:#define SOIL_H
+soil.h:#define NSOILLAYER 6 /* Number of soil layers */
+soil.h:#define LASTLAYER (NSOILLAYER-1)
+soil.h:#define FRACGLAYER NSOILLAYER
+soil.h:#define BOTTOMLAYER (NSOILLAYER-1)
+soil.h:#define NFUELCLASS 4 /* Number of fuel classes */
+soil.h:#define TOPLAYER 0
+soil.h:#define SNOWLAYER NSOILLAYER
+soil.h:#define veg_equil_year 990
+soil.h:#define soil_equil_year veg_equil_year+1320
+soil.h:#define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
+soil.h:#define c_water 4.2e6 /* J/m3/K */
+soil.h:#define c_ice   2.1e6 /* J/m3/K */
+soil.h:#define c_snow  2.1e6 /* snow heat capacity (J/ton/K) */
+soil.h:#define m_heat  4.0e4  /*J/gC microb. heating*/
+soil.h:#define lambda_snow 0.2
+soil.h:#define th_diff_snow (lambda_snow/snowheatcap) /* thermal diffusivity of snow [m2/s]*/
+soil.h:#define snow_density     0.3   /*ton/m3*/
+soil.h:#define snowheatcap     6.3e5  /*c_snow*snow_density [J/m3/K]*/
+soil.h:#define c_soilheatcapdry 1.2e6/*1.2e6   J/m3/K */
+soil.h:#define c_albsnow        0.65 /* Albedo of snow (0-1) */
+soil.h:#define c_albsoil        0.30 /* Albedo of bare soil (0-1). Should be soil and soil moisture dependent */
+soil.h:#define c_albwater       0.10 /* Albedo of water (0-1). */
+soil.h:#define c_snowcanopyfrac  0.40 /* Maximum snow cover fraction in the canopy (with leaves) */
+soil.h:#define c_watertosnow    6.70 /* Conversion factor from water to snowdepth, i.e. 1 cm water equals 6.7 cm of snow. Taken from RAKMO and personal communication with KNMI. */
+soil.h:#define c_mineral 1.9259e6 /* [J/m3/K] after deVries 1963*/
+soil.h:#define c_water2ice 0.3e9 /* the energy that is needed/released during water/ice conversion (J/m3)*/
+soil.h:#define tsnow 0.0
+soil.h:#define admit_air 5.7009
+soil.h:#define T_zero 0   /* [deg C] */
+soil.h:#define maxheatsteps 100
+soil.h:#define NSTEP_DAILY 1
+soil.h:#define LAG_CONV (NDAYYEAR*0.5*M_1_PI)  /* conversion factor for oscillation
+soil.h:#define MINERALDENS 2700 /* mineral density in kg/m3*/
+soil.h:#define ORGDENS 1400     /* density of organic soil substances [kg/m3]*/
+soil.h:#define PRIESTLEY_TAYLOR 1.32 /* Priestley-Taylor coefficient */
+soil.h:#define SOILDEPTH_IRRIG 500 /*size of layer considered for calculation of irrigation ammount*/
+soil.h:#define CDN 1.2         /* shape factor for denitrification from SWAT; beta_denit eq 3:1.4.1, SWAT Manual 2009 , take smaller value as it seems to be to high 1.4 originally*/
+soil.h:#define getsoilpar(soil,var) (soil)->par->var
+soil.h:#define foreachsoillayer(l) for(l=0;l<NSOILLAYER;l++)
+soil.h:#define forrootmoist(l) for(l=0;l<3;l++)                   /* here defined for the first 1 m*/
+soil.h:#define forrootsoillayer(l) for(l=0;l<LASTLAYER;l++)
+soil.h:#define allice(soil,l) (soil->ice_depth[l]+soil->par->wpwps[l]*soil->ice_pwp[l]+soil->ice_fw[l])
+soil.h:#define allwater(soil,l) (soil->w[l]*soil->par->whcs[l]+soil->par->wpwps[l]*(1-soil->ice_pwp[l])+soil->w_fw[l])
+soil.h:#define timestep2sec(timestep,steps) (24.0*3600.0*((timestep)/(steps))) /* convert timestep --> sec */
+soil.h:#define fprintpool(file,pool) fprintf(file,"%.2f %.2f",pool.slow,pool.fast)
+soil.h:#define f_temp(soiltemp) exp(-(soiltemp-18.79)*(soiltemp-18.79)/(2*5.26*5.26)) /* Parton et al 2001*/
+soil.h:#define f_NH4(nh4) (1-exp(-0.0105*(nh4))) /* Parton et al 1996 */
+soilpar.h:#define COARSE 0
+soilpar.h:#define MEDIUM 1
+soilpar.h:#define FINE_NONVERTISOL 2
+soilpar.h:#define MEDIUM_COARSE 3
+soilpar.h:#define FINE_COARSE 4
+soilpar.h:#define FINE_MEDIUM 5
+soilpar.h:#define FINE_MEDIUM_COARSE 6
+soilpar.h:#define ORGANIC 7
+soilpar.h:#define FINE_VERTISOL 8
+soilpar.h:#define Cl 0
+soilpar.h:#define SiCl 1
+soilpar.h:#define SaCl 2
+soilpar.h:#define ClLo 3
+soilpar.h:#define SiClLo 4
+soilpar.h:#define SaClLo 5
+soilpar.h:#define Lo 6
+soilpar.h:#define SiLo 7
+soilpar.h:#define SaLo 8
+soilpar.h:#define Si 9
+soilpar.h:#define LoSa 10
+soilpar.h:#define Sa 11
+soilpar.h:#define ROCK 12
+soilpar.h:#define ICE 13
+spitfire.h:#define SPITFIRE_H
+spitfire.h:#define MINER_TOT 0.055
+stand.h:#define STAND_H
+stand.h:#define getstand(list,index) ((Stand *)getlistitem(list,index))
+stand.h:#define foreachstand(stand,i,list) for(i=0;i<getlistlen(list) && (stand=getstand(list,i));i++)
+stand.h:#define daily_stand(stand,co2,climate,day,daylength,gp_pft,gtemp_air,gtemp_soil,gp_stand,gp_stand_leafon,eeq,par,melt,npft,ncft,year,withdaily,intercrop,config) stand->type->daily(stand,co2,climate,day,daylength,gp_pft,gtemp_air,gtemp_soil,gp_stand,gp_stand_leafon,eeq,par,melt,npft,ncft,year,withdaily,intercrop,config)
+stand.h:#define annual_stand(stand,npft,ncft,popdens,year,isdaily,intercrop,config) stand->type->annual(stand,npft,ncft,popdens,year,isdaily,intercrop,config)
+stand.h:#define dailyfire_stand(stand,livefuel,popdens,climate,ntypes,setting) if(stand->type->dailyfire!=NULL) stand->type->dailyfire(stand,livefuel,popdens,climate,ntypes,setting)
+swap.h:#define SWAP_H
+swap.h:#define freadint1(data,swap,file) freadint(data,1,swap,file)
+swap.h:#define freadreal1(data,swap,file) freadreal(data,1,swap,file)
+swap.h:#define freadshort1(data,swap,file) freadshort(data,1,swap,file)
+swap.h:#define freadlong1(data,swap,file) freadlong(data,1,swap,file)
+tree.h:#define TREE_H
+tree.h:#define reinickerp 1.6
+tree.h:#define k_latosa 4e3      /* leaf area to sapwood area */
+tree.h:#define wooddens 2e5      /* wood density (gC/m3) */
+tree.h:#define FPC_TREE_MAX 0.99
+tree.h:#define FPC_TREE_MAX 0.95 /* maximum foliage projective cover for trees */
+tree.h:#define istree(pft) (getpftpar(pft,type)==TREE)
+tree.h:#define israingreen(pft) getpftpar(pft,phenology)==RAINGREEN
+tree.h:#define fprinttreephys2(file,phys,nind) fprintf(file,"%6.2f %6.2f %6.2f %6.2f %6.2f (gC/m2) %6.2f %6.2f %6.2f %6.2f %6.2f (NC/m2)",phys.leaf.carbon*nind,phys.sapwood.carbon*nind,phys.heartwood.carbon*nind,phys.root.carbon*nind,phys.debt.carbon*nind,phys.leaf.nitrogen*nind,phys.sapwood.nitrogen*nind,phys.heartwood.nitrogen*nind,phys.root.nitrogen*nind,phys.debt.nitrogen*nind)
+tree.h:#define fprinttreephys2carbon(file,phys,nind) fprintf(file,"%6.2f %6.2f %6.2f %6.2f %6.2f (gC/m2)",phys.leaf.carbon*nind,phys.sapwood.carbon*nind,phys.heartwood.carbon*nind,phys.root.carbon*nind,phys.debt.carbon*nind)
+tree.h:#define phys_sum_tree(ind) (ind.leaf.carbon+ind.root.carbon+ind.heartwood.carbon+ind.sapwood.carbon)
+tree.h:#define phys_sum_tree_n(ind) (ind.leaf.nitrogen+ind.root.nitrogen+ind.heartwood.nitrogen+ind.sapwood.nitrogen)
+tree.h:#define agb_tree_sum(ind) (ind.leaf.carbon+ind.heartwood.carbon+ind.sapwood.carbon*0.66)
+types.h:#define TYPES_H
+types.h:#define epsilon 1.0E-6 /* a minimal value -- check if neglegible */
+types.h:#define NOT_FOUND -1
+types.h:#ifndef TRUE    /* Check whether TRUE or FALSE are already defined */
+types.h:#define TRUE 1
+types.h:#define FALSE 0
+types.h:#define STRING_LEN 255 /* Maximum length of default strings  */
+types.h:#ifndef isnan /* isnan is already defined in math.h of Microsoft Visual Studio 2015, but not in 2010 */
+types.h:#define isnan(x) (x!=x)
+types.h:#define snprintf sprintf_s
+types.h:#define strdup _strdup
+types.h:#define fileno _fileno
+types.h:#define unlink _unlink
+types.h:#define pclose _pclose
+types.h:#define popen _popen
+types.h:#define alloca _alloca
+types.h:extern Bool iskeydefined(const LPJfile *,const char *);
+types.h:#elif defined(__GNUC__)
+types.h:# define UNUSED(x) UNUSED_ ## x __attribute__((unused))
+types.h:#elif defined(__LCLINT__)
+types.h:# define UNUSED(x) /*@unused@*/ x
+types.h:# define UNUSED(x) x
+types.h:#define repeatch(c,count) frepeatch(stdout,c,count)
+types.h:#define banner(s,size,w) fbanner(stdout,s,size,w)
+types.h:#define newvec(type,size) (type *)malloc(sizeof(type)*(size))
+types.h:#define newvec2(type,lo,hi) (type *)malloc(sizeof(type)*(hi-(lo)+1))-(lo)
+types.h:#define newmatrix(type,ysize,xsize) (type **)newmat(sizeof(type),ysize,xsize)
+types.h:#define freevec(ptr,lo,hi) free(ptr+lo)
+types.h:#define check(ptr) if((ptr)==NULL) fail(ALLOC_MEMORY_ERR,FALSE,"Cannot allocate memory for '%s' in %s()",#ptr,__FUNCTION__)
+types.h:#define printintf(i) fprintintf(stdout,i)
+types.h:#define new(type) (type *)malloc(sizeof(type))
+types.h:#ifndef min         /* min macro defined? */
+types.h:#define min(a,b) (((a)<(b)) ?  (a) : (b))
+types.h:#ifndef max         /* max macro defined? */
+types.h:#define max(a,b) (((a)>(b)) ?  (a) : (b))
+types.h:#define fwriten(var,size,n,file) if(fwrite(var,size,n,file)!=n) return TRUE
+types.h:#define fwrite1(var,size,file) fwriten(var,size,1,file)
+types.h:#define bool2str(b) ((b) ? "true" : "false")
+types.h:#define printtime(s) fprinttime(stdout,s)
+units.h:#define UNITS_H
+units.h:#define deg2rad(deg) ((deg)*M_PI*.00555555555555555555) /* Convert degree -> radian */
+units.h:#define rad2deg(rad) ((rad)*180*M_1_PI) /* Convert radian -> degree */
+units.h:#define degCtoK(deg) ((deg)+273.15)  /* Convert deg C --> Kelvin */
+units.h:#define ppm2bar(ppm) ((ppm)*1e-6)      /* Convert ppmv --> bar */
+units.h:#define ppm2Pa(ppm) ((ppm)*1e-1)      /* Convert ppmv --> Pa */
+units.h:#define day2sec(sec) ((sec)*86400.0)      /* Convert day --> sec */
+units.h:#define hour2sec(hour) ((hour)*3600)      /* Convert hour --> sec */
+units.h:#define day2hour(day) ((day)*24)          /* Convert day --> hour */
+units.h:#define hour2day(hour) ((hour)*.04166666666666666666) /* Convert hour --> day */
+units.h:#define c2biomass(c) ((c)*2.22222222222222222222) /* convert Carbon to Biomass */
+units.h:#define biomass2c(c) ((c)*0.45)      /* convert Biomass to carbon */

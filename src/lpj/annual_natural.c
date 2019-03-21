@@ -36,7 +36,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   Real fpc_obs_cor;
   Stocks flux;
 #ifndef DAILY_ESTABLISHMENT
-  Stocks acflux_estab;
+  Stocks flux_estab;
 #endif
   Stocks firewood={0,0};
 
@@ -61,7 +61,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
              pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
       
-      if(annualpft(stand,pft,fpc_inc+p,config->new_phenology,isdaily))
+      if(annualpft(stand,pft,fpc_inc+p,config->new_phenology,config->with_nitrogen,isdaily))
       {
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
@@ -100,8 +100,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   {  
     fire_frac=fire_prob(&stand->soil.litter,stand->fire_sum);
     stand->cell->output.firef+=1.0/fire_frac;
-    flux=firepft(&stand->soil.litter,
-                  &stand->pftlist,fire_frac);
+    flux=firepft(&stand->soil.litter,&stand->pftlist,fire_frac);
     stand->cell->output.fire.carbon+=flux.carbon*stand->frac;
     if(flux.nitrogen<0)
       stand->cell->output.fire.nitrogen+=flux.nitrogen*stand->frac;
@@ -113,24 +112,23 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     stand->cell->output.dcflux+=flux.carbon*stand->frac;
   }
 #ifndef DAILY_ESTABLISHMENT
-  acflux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
-  stand->cell->output.flux_estab.carbon+=acflux_estab.carbon*stand->frac;
-  stand->cell->output.flux_estab.nitrogen+=acflux_estab.nitrogen*stand->frac;
-  stand->cell->output.dcflux-=acflux_estab.carbon*stand->frac;
+  flux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
+  stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 #endif
   foreachpft(pft,p,&stand->pftlist)
   {
-  
     /* if land cover is prescribed: reduce FPC and Nind of PFT if observed value is exceeded */
     if (pft->prescribe_fpc)
     {
       /* correct prescribed observed FPC value by fraction of natural vegetation stand to reach prescribed value */
-      fpc_obs_cor = pft->fpc_obs + (1 - stand->frac) * pft->fpc_obs;;
+      fpc_obs_cor = pft->fpc_obs + (1 - stand->frac) * pft->fpc_obs;
       if (fpc_obs_cor > 0.99)
         fpc_obs_cor = 0.99;
       if (pft->fpc > fpc_obs_cor)
-           pft->fpc = fpc_obs_cor;
-     }
+        pft->fpc = fpc_obs_cor;
+    }
     stand->cell->output.fpc[getpftpar(pft,id)+1]=pft->fpc;
   }
   return FALSE;

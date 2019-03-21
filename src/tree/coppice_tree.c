@@ -21,7 +21,8 @@
 #define HARVEST_EFFICIENCY_SAP 0.65
 
 
-Stocks coppice_tree(Pft *pft)
+Stocks coppice_tree(Pft *pft /**< pointer to tree PFT */
+                   )         /** \return harvest (gC/m2,gN/m2) */
 {
   Pfttree *tree;
   Stocks harvest={0,0};

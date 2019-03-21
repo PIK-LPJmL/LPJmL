@@ -25,13 +25,13 @@ void denitrification(Stand *stand  /**< pointer to stand */
   Real Corg;
   Soil *soil;
   int l;
-#ifdef DEBUG
+  soil=&stand->soil;
+#ifdef DEBUG_N
   printf("NBEFORE");
   for(l=0;l<NSOILLAYER-1;l++)
     printf("%g ",soil->NO3[l]);
   printf("\n");
 #endif
-  soil=&stand->soil;
   
   forrootsoillayer(l)
   {
@@ -45,9 +45,9 @@ void denitrification(Stand *stand  /**< pointer to stand */
       FT=0.0;
     else
       FT=0.0326;
-#ifdef DEBUG
+#ifdef DEBUG_N
     printf("w=(%g + %g + %g  + %g + %g )/ %g\n",soil->par->wpwps[l],soil->w[l]*soil->par->whcs[l],soil->ice_depth[l],
-         soil->w_fw[l],soil->ice_fw[l],soil->par->wsats[l]);
+           soil->w_fw[l],soil->ice_fw[l],soil->par->wsats[l]);
 #endif
     denit_t = (soil->par->wpwps[l]+soil->w[l]*soil->par->whcs[l]+soil->ice_depth[l]+
       soil->w_fw[l]+soil->ice_fw[l])/soil->par->wsats[l]; /* denitrification threshold dependent on water filled pore space */
@@ -55,13 +55,15 @@ void denitrification(Stand *stand  /**< pointer to stand */
     /* Version without threshold*/
     N_denit = 0.0;
     N2O_denit = 0.0;
-    if(soil->temp[l]<=45.9){
+    if(soil->temp[l]<=45.9)
+    {
       FW = 6.664096e-10*exp(21.12912*denit_t); /* newly fitted parameters on curve with threshold */
       TCDF = 1-exp(-CDN*FT*Corg);
       N_denit = FW*TCDF*soil->NO3[l];
     }
 #ifdef SAFE
-    if((FW*TCDF)>1.0 && N_denit>(soil->NO3[l]-epsilon*10)){
+    if((FW*TCDF)>1.0 && N_denit>(soil->NO3[l]-epsilon*10))
+    {
       fprintf(stdout,"too large denitrification in layer %d: N_denit %g FW %g TCDF %g NO3 %g FT %g Corg %g\n",l,N_denit,FW,TCDF,soil->NO3[l],FT,Corg);
       fflush(stdout);
 
@@ -84,7 +86,7 @@ void denitrification(Stand *stand  /**< pointer to stand */
     stand->cell->output.mn2o_denit+=N2O_denit*stand->frac;
     stand->cell->output.mn2_emissions+=N_denit*stand->frac;
   }
-#ifdef DEBUG
+#ifdef DEBUG_N
   printf("NAFTER");
   for(l=0;l<NSOILLAYER-1;l++)
     printf("%g ",soil->NO3[l]);

@@ -15,7 +15,9 @@
 #include "lpj.h"
 #include "tree.h"
 
-Stocks fire_tree(Pft *pft,Real *fireprob)
+Stocks fire_tree(Pft *pft,      /**< pointer to tree PFT */
+                 Real *fireprob /**< fire probability */
+                )               /** \return burnt stock (gC/m2,gN/m2) */
 {
   Real disturb;
   Stocks flux;

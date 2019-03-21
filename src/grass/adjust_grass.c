@@ -15,7 +15,11 @@
 #include "lpj.h"
 #include "grass.h"
 
-void adjust_grass(Litter * UNUSED(litter),Pft *pft,Real grass_fpc, Real fpc_max)
+void adjust_grass(Litter * UNUSED(litter), /**< pointer to litter */
+                  Pft *pft,                /**< pointer to grass PFT */
+                  Real grass_fpc,          /**< grass foliage projective cover */
+                  Real fpc_max             /**< maximum foliage projective cover */
+                 )
 {
   Real fpc_end;
   if(grass_fpc>fpc_max)

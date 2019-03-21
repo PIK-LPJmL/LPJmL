@@ -85,7 +85,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   if(count<0 || count>UCHAR_MAX)
   {
     if(verb)
-      fprintf(stderr,"ERROR171: Invalid number of PFTs=%d in line %d of '%s'.\n",count,getlinecount(),getfilename());
+      fprintf(stderr,"ERROR171: Invalid number of PFTs=%d.\n",count);
     return NULL;
   }
   npft=newvec(int,ntypes);
@@ -106,8 +106,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     if(id<0 || id>=count)
     {
       if(verb)
-        fprintf(stderr,"ERROR120: Invalid range of 'id'=%d in line %d of '%s'.\n",
-                id,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR120: Invalid range of 'id'=%d.\n",id);
       return NULL;
     }
     pft=(*pftpar)+id;
@@ -115,7 +114,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,
-                "ERROR176: PFT id=%d in line %d of '%s' has been already defined.\n",id,getlinecount(),getfilename());
+                "ERROR176: PFT id=%d has been already defined.\n",id);
       return NULL;
     }
     pft->id=id;
@@ -136,13 +135,13 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     if(pft->cultivation_type<0 || pft->cultivation_type>ANNUAL_CROP)
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid value %d for cultivation type of PFT '%s' in line %d of '%s'.\n",pft->cultivation_type,pft->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR201: Invalid value %d for cultivation type of PFT '%s'.\n",pft->cultivation_type,pft->name);
       return NULL;
     }
     if(isbiomass && pft->cultivation_type==NONE)
     {
       if(verb)
-        fprintf(stderr,"ERROR210: Natural PFT '%s' in line %d of '%s' must be put before biomass plantation PFT.\n",pft->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR210: Natural PFT '%s' must be put before biomass plantation PFT.\n",pft->name);
       return NULL;
     }
     else if(pft->cultivation_type==BIOMASS)
@@ -189,14 +188,14 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     if(pft->phenology<0 || pft->phenology>CROPGREEN)
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid value %d for phenology of PFT '%s' in line %d of '%s'.\n",pft->phenology,pft->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR201: Invalid value %d for phenology of PFT '%s'.\n",pft->phenology,pft->name);
       return NULL;
     }
     fscanpftint(verb,&item,&pft->path,pft->name,"path");
     if(pft->path<0 || pft->path>C4)
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid value %d for path of PFT '%s' in line %d of '%s'.\n",pft->path,pft->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR201: Invalid value %d for path of PFT '%s'.\n",pft->path,pft->name);
       return NULL;
     }
     fscanpftlimit(verb,&item,&pft->temp_co2,pft->name,"temp_co2");
@@ -235,7 +234,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     if(pft->fn_turnover<0 || pft->fn_turnover>1.)
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid value %g for path of PFT '%s'.\n",pft->fn_turnover,pft->name);
+        fprintf(stderr,"ERROR201: Invalid value %g for fn_turnover of PFT '%s'.\n",pft->fn_turnover,pft->name);
       return NULL;
     }
     fscanpftreal(verb,&item,&pft->windspeed,pft->name,"windspeed_dampening");
@@ -246,8 +245,8 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     if(pft->type<0 || pft->type>=ntypes)
     {
       if(verb)
-        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s' in line %d of '%s'.\n",
-                pft->type,pft->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s'.\n",
+                pft->type,pft->name);
       return NULL;
     }
     npft[pft->type]++;

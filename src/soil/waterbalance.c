@@ -72,7 +72,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   if (*evap>(w_evap-w_evap_ice))
     *evap=w_evap-w_evap_ice;
 
-  //*evap=min(*evap,eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet); /*close the energy balance*/
+  *evap=min(*evap,eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet); /*close the energy balance*/
 
   if(stand->type->landusetype!=NATURAL && data_irrig->irrigation && data_irrig->irrig_system==DRIP)
     *evap*=(1-(param.drip_evap*(1-*frac_g_evap))); /*reduced blue soil evaporation in case of DRIP irrigation */

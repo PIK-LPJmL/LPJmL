@@ -15,18 +15,19 @@
 #include "lpj.h"
 #include "grass.h"
 
-Bool annual_grass(Stand *stand, /**< pointer to stand */
-                  Pft *pft,     /**< pointer to PFT variables */
-                  Real *fpc_inc, /**< FPC increment */
-                  Bool new_phenology, /**< new phenology (TRUE/FALSE) */
+Bool annual_grass(Stand *stand,        /**< pointer to stand */
+                  Pft *pft,            /**< pointer to PFT variables */
+                  Real *fpc_inc,       /**< FPC increment */
+                  Bool new_phenology,  /**< new phenology (TRUE/FALSE) */
+                  int with_nitrogen,   /**< with nitrogen (TRUE/FALSE) */
                   Bool UNUSED(isdaily) /**< daily temperature data? */
-                 )              /** \return TRUE on death */
+                 )                     /** \return TRUE on death */
 {
   Bool isdead=FALSE;
   if(stand->type->landusetype!=GRASSLAND && stand->type->landusetype!=BIOMASS_GRASS)
   {
     turnover_grass(&stand->soil.litter,pft,new_phenology,(Real)stand->growing_days/NDAYYEAR);
-    isdead=allocation_grass(&stand->soil.litter,pft,fpc_inc);
+    isdead=allocation_grass(&stand->soil.litter,pft,fpc_inc,with_nitrogen);
   }
   stand->growing_days=0;
   if(!isdead && !pft->prescribe_fpc)

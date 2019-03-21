@@ -149,15 +149,15 @@ typedef struct Pft
     void (*newpft)(struct Pft *,int,int);
     void (*init)(struct Pft *);
     Real (*wdf)(struct Pft *,Real,Real);
-    Real (*npp)(struct Pft*,Real,Real,Real,Bool);
+    Real (*npp)(struct Pft*,Real,Real,Real,int);
     Real (*fpar) (const struct Pft*);
     void (*snow_canopy) (struct Pft*, Real, Real);
-    Real (*alphaa_manage) (const struct Pft*,int);
+    Real (*alphaa_manage) (const struct Pft*,int,int);
     void (*leaf_phenology)(struct Pft *,Real,int,Bool);
     void (*albedo_pft) (struct Pft *, Real, Real);
     Bool (*fwrite)(FILE *,const struct Pft *);
     Bool (*fread)(FILE *,struct Pft *,Bool);
-    void (*fprint)(FILE *,const struct Pft *);
+    void (*fprint)(FILE *,const struct Pft *,int);
     void (*litter_update)(Litter *,struct Pft *,Real);
     Stocks (*establishment)(struct Pft *,Real,Real,int);
     Stocks (*fire)(struct Pft *,Real *);
@@ -176,7 +176,7 @@ typedef struct Pft
     void (*turnover_daily)(Litter *,struct Pft *,Real,Bool);
     Stocks (*livefuel_consumption)(Litter *,struct Pft *,const Fuel *,
                                    Livefuel *,Bool *,Real,Real);
-    Bool (*annual)(Stand *,struct Pft *,Real *,Bool,Bool);
+    Bool (*annual)(Stand *,struct Pft *,Real *,Bool,int,Bool);
     Real (*nuptake)(struct Pft *,Real *,Real *,int,int,int);
     Real (*ndemand)(const struct Pft *,Real *,Real, Real,Real,int,int,int);
     Real (*vmaxlimit)(const struct Pft *,Real,Real);
@@ -232,7 +232,7 @@ extern void initgdd(Real [],int);
 extern void updategdd(Real [],const Pftpar [],int,Real);
 extern Real gp(Pft *,Real,Real,Real,Real);
 extern Bool fwritepft(FILE *,const Pft *);
-extern void fprintpft(FILE *,const Pft *);
+extern void fprintpft(FILE *,const Pft *,int);
 extern Bool freadpft(FILE *,Stand *,Pft *,const Pftpar[],int,Bool);
 extern void noinit(Pft *);
 extern Stocks nofire(Pft *,Real *);
@@ -275,7 +275,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar *,Poolpar,Real,Real,Real *,Rea
 #define fpar(pft) pft->par->fpar(pft)
 #define turnover_monthly(litter,pft) pft->par->turnover_monthly(litter,pft)
 #define turnover_daily(litter,pft,temp,isdaily) pft->par->turnover_daily(litter,pft,temp,isdaily)
-#define alphaa(pft,lai_opt) pft->par->alphaa_manage(pft,lai_opt)
+#define alphaa(pft,with_nitrogen,lai_opt) pft->par->alphaa_manage(pft,with_nitrogen,lai_opt)
 #define npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen) pft->par->npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen)
 #define leaf_phenology(pft,temp,day,isdaily) pft->par->leaf_phenology(pft,temp,day,isdaily)
 #define litter_update(litter,pft,frac) pft->par->litter_update(litter,pft,frac)
@@ -290,7 +290,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar *,Poolpar,Real,Real,Real *,Rea
 #define reduce(litter,pft,fpc) pft->par->reduce(litter,pft,fpc)
 #define wdf(pft,demand,supply) pft->par->wdf(pft,demand,supply)
 #define establishment(pft,fpc_total,fpc,n_est) pft->par->establishment(pft,fpc_total,fpc,n_est)
-#define annualpft(stand,pft,fpc_inc,newphen,isdaily) pft->par->annual(stand,pft,fpc_inc,newphen,isdaily)
+#define annualpft(stand,pft,fpc_inc,newphen,nitrogen,isdaily) pft->par->annual(stand,pft,fpc_inc,newphen,nitrogen,isdaily)
 #define albedo_pft(pft,snowheight,snowfraction) pft->par->albedo_pft(pft,snowheight,snowfraction)
 #define nuptake(pft,n_plant_demand,ndemand_leaf,npft,nbiomass,ncft) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,nbiomass,ncft)
 #define ndemand(pft,nleaf,vcmax,daylength,temp,npft,nbiomass,ncft) pft->par->ndemand(pft,nleaf,vcmax,daylength,temp,npft,nbiomass,ncft)

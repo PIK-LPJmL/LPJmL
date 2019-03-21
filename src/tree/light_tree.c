@@ -15,7 +15,10 @@
 #include "lpj.h"
 #include "tree.h"
 
-void light_tree(Litter *litter,Pft *pft,Real excess)
+void light_tree(Litter *litter, /**< pointer to litter pools */
+                Pft *pft,       /**< pointer to tree PFT */
+                Real excess     /**< excess in FPC */
+               )
 {
   
   Real nind_kill;  /* reduction in individual density to reduce tree FPC to

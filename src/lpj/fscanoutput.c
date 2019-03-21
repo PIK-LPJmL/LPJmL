@@ -77,8 +77,8 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
     else if(count==nout_max)
     {
       if(verbosity)
-        fprintf(stderr,"ERROR160: Invalid value=%d in line %d of '%s' for number of output files.\n",
-                count,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR160: Invalid value=%d for number of output files.\n",
+                count);
       return TRUE;
     }
     else
@@ -94,19 +94,20 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
       {
         if(verbosity)
           fprintf(stderr,
-                  "ERROR161: Invalid value=%d in line %d of '%s' for index of output file '%s'.\n",
-                  flag,getlinecount(),getfilename(),config->outputvars[count].filename.name);
+                  "ERROR161: Invalid value=%d for index of output file '%s'.\n",
+                  flag,config->outputvars[count].filename.name);
       }
       else if(isopenoutput(flag,config->outputvars,count))
       {
         if(verbosity)
-          fprintf(stderr,"WARNING006: Output file for '%s' is opened twice in line %d of '%s', will be ignored.\n",
-                config->outnames[flag].name,getlinecount(),getfilename());
+          fprintf(stderr,"WARNING006: Output file for '%s' is opened twice, will be ignored.\n",
+                config->outnames[flag].name);
       }
       else if(config->outputvars[count].filename.fmt==CLM2)
       {
         if(verbosity)
-          fprintf(stderr,"ERRROR223: File format CLM2 is not supported for output file in line %d of '%s'.\n",getlinecount(),getfilename());
+          fprintf(stderr,"ERRROR223: File format CLM2 is not supported for output file '%s'.\n",
+                  config->outputvars[count].filename.name);
       }
       else
       {
@@ -115,13 +116,13 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
         if(config->outputvars[count].oneyear && checkfmt(config->outputvars[count].filename.name,'d'))
         {
           if(verbosity)
-            fprintf(stderr,"ERRROR224: Invalid format specifier in filename '%s' in line %d of '%s'.\n",
-                    config->outputvars[count].filename.name,getlinecount(),getfilename());
+            fprintf(stderr,"ERRROR224: Invalid format specifier in filename '%s'.\n",
+                    config->outputvars[count].filename.name);
         }
         else if(config->outputvars[count].oneyear && (flag==GRID || flag==COUNTRY || flag==REGION))
         {
           if(verbosity)
-            fprintf(stderr,"ERRROR225: One year output not allowed for grid, country or region in line %d of '%s'.\n",getlinecount(),getfilename());
+            fprintf(stderr,"ERRROR225: One year output not allowed for grid, country or region.\n");
         }
         else
         {
@@ -140,8 +141,8 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
     if(config->crop_index<0 || config->crop_index>=ntotpft)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR166: Invalid value for crop index=%d in line %d of '%s'.\n",
-                config->crop_index,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR166: Invalid value for crop index=%d.\n",
+                config->crop_index);
       return TRUE;
     }
     fscanint2(file,&config->crop_irrigation,"crop_irrigation");

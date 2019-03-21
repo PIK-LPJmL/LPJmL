@@ -48,7 +48,7 @@ static Real fcn(Real lambda,Data *data)
 
 } /* of 'fcn' */
 
-Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
+Real water_stressed(Pft *pft, /**< pointer to PFT variables */
                     Real aet_layer[LASTLAYER],
                     Real gp_stand,
                     Real gp_stand_leafon, /**< pot. canopy conduct. at full leaf cover */
@@ -77,7 +77,6 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
   Real freeze_depth,thaw_depth;
   Real adtmm;
   Real gc_new;
-  Bool isless=FALSE;
   Irrigation *irrig;
 
   wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
@@ -219,9 +218,9 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
     data.temp=temp;
     data.co2=ppm2Pa(co2);
     if(pft->par->type==CROP)
-      data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->laimax_interpolate)*fpar(pft); /** par calculation do not include albedo*/
+      data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->with_nitrogen,config->laimax_interpolate)*fpar(pft); /** par calculation do not include albedo*/
     else
-      data.apar = par*alphaa(pft,config->laimax_interpolate)*pft->fapar;                              /** fapar calculation of trees and grass already include albedo*/
+      data.apar = par*alphaa(pft,config->with_nitrogen,config->laimax_interpolate)*pft->fapar;                              /** fapar calculation of trees and grass already include albedo*/
     data.daylength=daylength;
     data.vmax=pft->vmax;
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);

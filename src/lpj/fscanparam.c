@@ -60,6 +60,8 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.k_max,"k_max");
   fscanparamreal(&f,&param.k_2,"k_2");
   fscanparamreal(&f,&param.k_mort,"k_mort");
+  fscanparamreal(&f,&param.temp_response_a,"temp_response_a");
+  fscanparamreal(&f,&param.temp_response_b,"temp_response_b");
   fscanparamreal(&f,&param.p,"p");
   fscanparamreal(&f,&param.n0,"n0");
   fscanparamreal(&f,&param.k_temp,"k_temp");

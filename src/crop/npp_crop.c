@@ -4,6 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Function calculates daily net primary productivity of crops                \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -32,7 +34,7 @@ Real npp_crop(Pft *pft, /**< PFT variables */
               Real assim,  /**< assimilation (gC/m2) */
               Bool *negbm, /**< on return: biomass is negative */
               Real wdf,     /**< water deficit fraction */
-              Bool with_nitrogen, /**< with nitrogen (TRUE,FALSE) */
+              int with_nitrogen, /**< with nitrogen (TRUE,FALSE) */
               Daily_outputs *output  /**< daily output structure */
              ) /** \return net primary productivity (gC/m2) */
 {

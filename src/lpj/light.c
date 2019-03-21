@@ -82,14 +82,15 @@ void light(Stand *stand,        /**< Pointer to stand */
 
   fpc_all=fpc_sum(fpc_total,ntypes,&stand->pftlist);
   i=0;
-  while(fpc_all>1 && i<50){
+  while(fpc_all>1 && i<50)
+  {
     foreachpft(pft,p,&stand->pftlist)
     {
       if(pft->par->type==GRASS)
       {
-          h=(min(fpc_total[TREE],FPC_TREE_MAX)+fpc_total[GRASS]-1.0)/fpc_total[GRASS];
-          excess=h*pft->fpc;
-          light_grass(&stand->soil.litter,pft,excess,fpc_total[GRASS]);
+        h=(min(fpc_total[TREE],FPC_TREE_MAX)+fpc_total[GRASS]-1.0)/fpc_total[GRASS];
+        excess=h*pft->fpc;
+        light_grass(&stand->soil.litter,pft,excess,fpc_total[GRASS]);
       }
     }
     fpc_all=fpc_sum(fpc_total,ntypes,&stand->pftlist)-epsilon;

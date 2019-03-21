@@ -15,20 +15,26 @@
 #include "lpj.h"
 #include "grass.h"
 
-Real alphaa_grass(const Pft *pft,int UNUSED(lai_opt))
+Real alphaa_grass(const Pft *pft,     /**< pointer to grass PFT */
+                  int with_nitrogen,  /**< nitrogen cycle enabled */
+                  int UNUSED(lai_opt) /**< LAImax option */
+                 )                    /** \return alpha_a (0..1) */
 {
   Pftgrass *grass;
   Real scaler=1.0;
-  grass=pft->data;
-
-  if((grass->ind.leaf.carbon+grass->excess_carbon*grass->falloc.leaf)>10)
+  if(with_nitrogen)
   {
-    scaler=grass->ind.leaf.nitrogen/(grass->ind.leaf.carbon+grass->excess_carbon*grass->falloc.leaf) /
-           pft->par->ncleaf.low;
-    if(scaler>1)
-      scaler=1.0;
-    else
-      scaler=(1+param.par_sink_limit)*scaler/(scaler+param.par_sink_limit);
+    grass=pft->data;
+
+    if((grass->ind.leaf.carbon+grass->excess_carbon*grass->falloc.leaf)>10)
+    {
+      scaler=grass->ind.leaf.nitrogen/(grass->ind.leaf.carbon+grass->excess_carbon*grass->falloc.leaf) /
+             pft->par->ncleaf.low;
+      if(scaler>1)
+        scaler=1.0;
+      else
+        scaler=(1+param.par_sink_limit)*scaler/(scaler+param.par_sink_limit);
+    }
   }
   return pft->par->alphaa*scaler;
 } /* of 'alphaa_grass' */

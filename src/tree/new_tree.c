@@ -3,6 +3,7 @@
 /**                       n  e  w  _  t  r  e  e  .  c                             \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
 /**     Function allocates and initializes tree-specific variables                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/

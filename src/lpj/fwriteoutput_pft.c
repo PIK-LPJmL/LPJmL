@@ -205,11 +205,11 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   int count,i,cell,p,s;
   short *vec;
   float *fvec;
-  Stand* stand;
+  const Stand* stand;
   const Pft *pft;
-  Pfttree *tree;
-  Pftgrass *grass;
-  Irrigation *data;
+  const Pfttree *tree;
+  const Pftgrass *grass;
+  const Irrigation *data;
   writeoutputshortvar(SDATE,sdate,2*ncft);
   writeoutputshortvar(HDATE,hdate,2*ncft);
   fvec=newvec(float,config->count);
@@ -220,126 +220,146 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   if(isopen(output,PFT_NLIMIT))
   {
     outindex(output,PFT_NLIMIT,config->rank);
-    for (i = 0; i < (npft - config->nbiomass); i++)
+    for (i=0;i<npft-config->nbiomass;i++)
     {
       count = 0;
-      for (cell = 0; cell < config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
+        {
           fvec[count] = 0;
-          foreachstand(stand, s, grid[cell].standlist) {
-            if (stand->type->landusetype == NATURAL) { /* ignoring setaside stands here */
-              foreachpft(pft, p, &stand->pftlist) {
-                if (i == pft->par->id) {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if (stand->type->landusetype == NATURAL)
+            { /* ignoring setaside stands here */
+              foreachpft(pft, p, &stand->pftlist)
+              {
+                if (i == pft->par->id)
                   fvec[count] = (float)pft->nlimit / NDAYYEAR;
-                }
               }
             }
           } /* stand */
           count++;
         } /* skip */
       } /* for cell */
-      writepft(output, PFT_NLIMIT, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_NLIMIT,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
-    for (i = (npft - config->nbiomass); i < (npft - config->nbiomass) + (ncft + NGRASS + NBIOMASSTYPE) * 2; i++)
+    for (i=npft-config->nbiomass;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     {
       count = 0;
       p = i - (npft - config->nbiomass);
-      for (cell = 0; cell<config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
           fvec[count++] = (float)grid[cell].output.cft_nlimit[p];
-        }
       }
-      writepft(output, PFT_NLIMIT, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_NLIMIT,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
   if(isopen(output,PFT_VEGC))
   {
     outindex(output,PFT_VEGC,config->rank);
-    for (i = 0; i < (npft - config->nbiomass); i++)
+    for (i=0;i<npft-config->nbiomass;i++)
     {
       count = 0;
-      for (cell = 0; cell < config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
+        {
           fvec[count] = 0;
-          foreachstand(stand, s, grid[cell].standlist) {
-            if (stand->type->landusetype == NATURAL) { /* ignoring setaside stands here */
-              foreachpft(pft, p, &stand->pftlist) {
-                if (i == pft->par->id) {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if (stand->type->landusetype == NATURAL)
+            { /* ignoring setaside stands here */
+              foreachpft(pft, p, &stand->pftlist)
+              {
+                if (i == pft->par->id)
                   fvec[count] = (float)vegc_sum(pft);
-                }
               }
             }
           } /* stand */
           count++;
         } /* skip */
       } /* for cell */
-      writepft(output, PFT_VEGC, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_VEGC,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
-    for (i = (npft - config->nbiomass); i < (npft - config->nbiomass) + (ncft + NGRASS + NBIOMASSTYPE) * 2; i++)
+    for (i=npft-config->nbiomass;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     {
       count = 0;
       p = i - (npft - config->nbiomass);
-      for (cell = 0; cell<config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
           fvec[count++] = (float)grid[cell].output.cft_veg[p].carbon;
-        }
       }
-      writepft(output, PFT_VEGC, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_VEGC,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
   if(isopen(output,PFT_VEGN))
   {
     outindex(output,PFT_VEGN,config->rank);
-    for (i = 0; i < (npft - config->nbiomass); i++)
+    for (i=0;i<npft-config->nbiomass;i++)
     {
       count = 0;
-      for (cell = 0; cell < config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
+        {
           fvec[count] = 0;
-          foreachstand(stand, s, grid[cell].standlist) {
-            if (stand->type->landusetype == NATURAL) { /* ignoring setaside stands here */
-              foreachpft(pft, p, &stand->pftlist) {
-                if (i == pft->par->id) {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if (stand->type->landusetype == NATURAL)
+            { /* ignoring setaside stands here */
+              foreachpft(pft, p, &stand->pftlist)
+              {
+                if (i == pft->par->id)
                   fvec[count] = (float)vegn_sum(pft);
-                }
               }
             }
           } /* stand */
           count++;
         } /* skip */
       } /* for cell */
-      writepft(output, PFT_VEGN, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_VEGN,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
-    for (i = (npft - config->nbiomass); i < (npft - config->nbiomass) + (ncft + NGRASS + NBIOMASSTYPE) * 2; i++)
+    for (i=npft-config->nbiomass;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     {
       count = 0;
       p = i - (npft - config->nbiomass);
-      for (cell = 0; cell<config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
           fvec[count++] = (float)grid[cell].output.cft_veg[p].nitrogen;
-        }
       }
-      writepft(output, PFT_VEGN, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_VEGN,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
   if(isopen(output,PFT_CLEAF))
   {
     outindex(output,PFT_CLEAF,config->rank);
-    for (i = 0; i < (npft - config->nbiomass); i++)
+    for (i=0;i<npft-config->nbiomass;i++)
     {
       count = 0;
-      for (cell = 0; cell < config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
+        {
           fvec[count] = 0;
-          foreachstand(stand, s, grid[cell].standlist) {
-            if (stand->type->landusetype == NATURAL) { /* ignoring setaside stands here */
-              foreachpft(pft, p, &stand->pftlist) {
-                if (i == pft->par->id) {
-                  if (pft->par->type == TREE) {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if (stand->type->landusetype == NATURAL)
+            { /* ignoring setaside stands here */
+              foreachpft(pft, p, &stand->pftlist)
+              {
+                if (i == pft->par->id)
+                {
+                  if (pft->par->type == TREE)
+                  {
                     tree = pft->data;
                     fvec[count] = (float)tree->ind.leaf.carbon;
                   }
-                  else {
+                  else
+                  {
                     grass = pft->data;
                     fvec[count] = (float)grass->ind.leaf.carbon;
                   }
@@ -350,38 +370,46 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
           count++;
         } /* skip */
       } /* for cell */
-      writepft(output, PFT_CLEAF, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_CLEAF,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
-    for (i = (npft - config->nbiomass); i < (npft - config->nbiomass) + (ncft + NGRASS + NBIOMASSTYPE) * 2; i++)
+    for (i=npft-config->nbiomass;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     {
       count = 0;
       p = i - (npft - config->nbiomass);
-      for (cell = 0; cell<config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
           fvec[count++] = (float)grid[cell].output.cft_leaf[p].carbon;
-        }
       }
-      writepft(output, PFT_CLEAF, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_CLEAF,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
   if(isopen(output,PFT_NLEAF))
   {
     outindex(output,PFT_NLEAF,config->rank);
-    for (i = 0; i < (npft - config->nbiomass); i++)
+    for (i=0;i<npft-config->nbiomass;i++)
     {
       count = 0;
-      for (cell = 0; cell < config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
+        {
           fvec[count] = 0;
-          foreachstand(stand, s, grid[cell].standlist) {
-            if (stand->type->landusetype == NATURAL) { /* ignoring setaside stands here */
-              foreachpft(pft, p, &stand->pftlist) {
-                if (i == pft->par->id) {
-                  if (pft->par->type == TREE) {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if (stand->type->landusetype == NATURAL)
+            { /* ignoring setaside stands here */
+              foreachpft(pft, p, &stand->pftlist)
+              {
+                if (i == pft->par->id)
+                {
+                  if (pft->par->type == TREE)
+                  {
                     tree = pft->data;
                     fvec[count] = (float)tree->ind.leaf.nitrogen;
                   }
-                  else {
+                  else
+                  {
                     grass = pft->data;
                     fvec[count] = (float)grass->ind.leaf.nitrogen;
                   }
@@ -392,24 +420,24 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
           count++;
         } /* skip */
       } /* for cell */
-      writepft(output, PFT_NLEAF, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_NLEAF,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
-    for (i = (npft - config->nbiomass); i < (npft - config->nbiomass) + (ncft + NGRASS + NBIOMASSTYPE) * 2; i++)
+    for (i=npft-config->nbiomass;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     {
       count = 0;
       p = i - (npft - config->nbiomass);
-      for (cell = 0; cell<config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
           fvec[count++] = (float)grid[cell].output.cft_leaf[p].nitrogen;
-        }
       }
-      writepft(output, PFT_NLEAF, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_NLEAF,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
   if(isopen(output,PFT_GCGP))
   {
     outindex(output,PFT_GCGP,config->rank);
-    for(i=0;i<(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
+    for(i=0;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     {
       count=0;
       for(cell=0;cell<config->ngridcell;cell++)
@@ -486,12 +514,12 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
     forrootsoillayer(i)
     {
       count = 0;
-      for (cell = 0; cell<config->ngridcell; cell++)
+      for(cell=0;cell<config->ngridcell;cell++)
       {
         if (!grid[cell].skip)
         {
           fvec[count] = 0;
-          foreachstand(stand, s, grid[cell].standlist)
+          foreachstand(stand,s,grid[cell].standlist)
           {
             fvec[count] += (float)(stand->soil.NO3[i]*stand->frac);
           }
@@ -507,19 +535,19 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
     forrootsoillayer(i)
     {
       count = 0;
-      for (cell = 0; cell<config->ngridcell; cell++)
+      for(cell=0;cell<config->ngridcell;cell++)
       {
         if (!grid[cell].skip)
         {
           fvec[count] = 0;
-          foreachstand(stand, s, grid[cell].standlist)
+          foreachstand(stand,s,grid[cell].standlist)
           {
             fvec[count] += (float)(stand->soil.NH4[i]*stand->frac);
           }
           count++;
         }
       }
-      writepft(output, SOILNH4_LAYER, fvec, BOTTOMLAYER, year, i, config);
+      writepft(output,SOILNH4_LAYER,fvec,BOTTOMLAYER,year,i,config);
     }
   }
   writeoutputvar(CFT_PET,cft_pet,2*(ncft+NGRASS));
@@ -547,15 +575,15 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   if(isopen(output,PFT_LAIMAX))
   {
     outindex(output,PFT_LAIMAX,config->rank);
-    for(i = 0; i < (npft - config->nbiomass); i++)
+    for(i=0;i<npft-config->nbiomass;i++)
     {
       count = 0;
-      for(cell = 0; cell < config->ngridcell; cell++)
+      for(cell=0;cell<config->ngridcell;cell++)
       {
         if(!grid[cell].skip)
         {
           fvec[count] = 0;
-          foreachstand(stand, s, grid[cell].standlist)
+          foreachstand(stand,s,grid[cell].standlist)
           {
             if(stand->type->landusetype == NATURAL)
             { /* ignoring setaside stands here */
@@ -569,38 +597,46 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
           count++;
         } /* skip */
       } /* for cell */
-      writepft(output, PFT_LAIMAX, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_LAIMAX,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
-    for (i = (npft - config->nbiomass); i < (npft - config->nbiomass) + (ncft + NGRASS + NBIOMASSTYPE) * 2; i++)
+    for (i=npft-config->nbiomass;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2; i++)
     {
       count = 0;
       p = i - (npft - config->nbiomass);
-      for (cell = 0; cell<config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
           fvec[count++] = (float)grid[cell].output.cft_laimax[p];
-        }
       }
-      writepft(output, PFT_LAIMAX, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_LAIMAX,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
   if(isopen(output,PFT_NROOT))
   {
     outindex(output,PFT_NROOT,config->rank);
-    for (i = 0; i < (npft - config->nbiomass); i++)
+    for(i=0;i<npft-config->nbiomass;i++)
     {
       count = 0;
-      for (cell = 0; cell < config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
+        {
           fvec[count] = 0;
-          foreachstand(stand, s, grid[cell].standlist) {
-            if (stand->type->landusetype == NATURAL) { /* ignoring setaside stands here */
-              foreachpft(pft, p, &stand->pftlist) {
-                if (i == pft->par->id) {
-                  if (pft->par->type == TREE) {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if (stand->type->landusetype == NATURAL)
+            { /* ignoring setaside stands here */
+              foreachpft(pft, p, &stand->pftlist)
+              {
+                if (i == pft->par->id)
+                {
+                  if (pft->par->type == TREE)
+                  {
                     tree = pft->data;
                     fvec[count] = (float)tree->ind.root.nitrogen;
                   }
-                  else {
+                  else
+                  {
                     grass = pft->data;
                     fvec[count] = (float)grass->ind.root.nitrogen;
                   }
@@ -611,115 +647,134 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
           count++;
         } /* skip */
       } /* for cell */
-      writepft(output, PFT_NROOT, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_NROOT,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
-    for (i = (npft - config->nbiomass); i < (npft - config->nbiomass) + (ncft + NGRASS + NBIOMASSTYPE) * 2; i++)
+    for (i=npft-config->nbiomass;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     {
       count = 0;
       p = i - (npft - config->nbiomass);
-      for (cell = 0; cell<config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for (cell = 0; cell<config->ngridcell; cell++)
+      {
+        if (!grid[cell].skip)
           fvec[count++] = (float)grid[cell].output.cft_root[p].nitrogen;
-        }
       }
-      writepft(output, PFT_NROOT, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_NROOT,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
   if(isopen(output,PFT_NSAPW))
   {
     outindex(output,PFT_NSAPW,config->rank);
-    for(i=0;i<(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
+    for(i=0;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     {
       count=0;
-      for(cell=0;cell<config->ngridcell;cell++){
-        if(!grid[cell].skip){
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if(!grid[cell].skip)
+        {
           fvec[count]=0;
-          foreachstand(stand,s,grid[cell].standlist){
-            switch(stand->type->landusetype){ /* ignoring setaside stands here */
-            case BIOMASS_TREE:
-              data=stand->data;
-              foreachpft(pft,p,&stand->pftlist){
-                if(pft->par->type==TREE){
-                  tree=pft->data;
-                  if(i==(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE))
-                    fvec[count]=(float)tree->ind.sapwood.nitrogen;
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            switch(stand->type->landusetype)
+            { /* ignoring setaside stands here */
+              case BIOMASS_TREE:
+                data=stand->data;
+                foreachpft(pft,p,&stand->pftlist)
+                {
+                  if(pft->par->type==TREE)
+                  {
+                    tree=pft->data;
+                    if(i==(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE))
+                      fvec[count]=(float)tree->ind.sapwood.nitrogen;
+                  }
                 }
-              }
-              break;
-            case NATURAL:
-              foreachpft(pft,p,&stand->pftlist){
-                if(i==pft->par->id){
-                  if(pft->par->type==TREE){
+                break;
+              case NATURAL:
+                foreachpft(pft,p,&stand->pftlist)
+                {
+                  if(i==pft->par->id && pft->par->type==TREE)
+                  {
                     tree=pft->data;
                     fvec[count]=(float)tree->ind.sapwood.nitrogen;
                   }
                 }
-              }
-              break;
+                break;
             } /* switch */
           }
           count++;
         }
       }
-      writepft(output,PFT_NSAPW,fvec,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);    }
+      writepft(output,PFT_NSAPW,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);    }
   }
   if(isopen(output,PFT_NHAWO))
   {
     outindex(output,PFT_NHAWO,config->rank);
-    for(i=0;i<(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
+    for(i=0;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     {
       count=0;
       for(cell=0;cell<config->ngridcell;cell++){
-        if(!grid[cell].skip){
+        if(!grid[cell].skip)
+        {
           fvec[count]=0;
-          foreachstand(stand,s,grid[cell].standlist){
-            switch(stand->type->landusetype){ /* ignoring setaside stands here */
-            case BIOMASS_TREE:
-              data=stand->data;
-              foreachpft(pft,p,&stand->pftlist){
-                if(pft->par->type==TREE){
-                  tree=pft->data;
-                  if(i==(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE))
-                    fvec[count]=(float)tree->ind.heartwood.nitrogen;
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            switch(stand->type->landusetype)
+            { /* ignoring setaside stands here */
+              case BIOMASS_TREE:
+                data=stand->data;
+                foreachpft(pft,p,&stand->pftlist)
+                {
+                  if(pft->par->type==TREE)
+                  {
+                    tree=pft->data;
+                    if(i==(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE))
+                      fvec[count]=(float)tree->ind.heartwood.nitrogen;
+                  }
                 }
-              }
-              break;
-            case NATURAL:
-              foreachpft(pft,p,&stand->pftlist){
-                if(i==pft->par->id){
-                  if(pft->par->type==TREE){
+                break;
+              case NATURAL:
+                foreachpft(pft,p,&stand->pftlist)
+                {
+                  if(i==pft->par->id && pft->par->type==TREE)
+                  {
                     tree=pft->data;
                     fvec[count]=(float)tree->ind.heartwood.nitrogen;
                   }
                 }
-              }
-              break;
+                break;
             } /* switch */
           }
           count++;
         }
       }
-      writepft(output,PFT_NHAWO,fvec,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
+      writepft(output,PFT_NHAWO,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
   if(isopen(output,PFT_CROOT))
   {
     outindex(output,PFT_CROOT,config->rank);
-    for (i = 0; i < (npft - config->nbiomass); i++)
+    for(i=0;i<npft-config->nbiomass;i++)
     {
       count = 0;
-      for (cell = 0; cell < config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if (!grid[cell].skip)
+        {
           fvec[count] = 0;
-          foreachstand(stand, s, grid[cell].standlist) {
-            if (stand->type->landusetype == NATURAL) { /* ignoring setaside stands here */
-              foreachpft(pft, p, &stand->pftlist) {
-                if (i == pft->par->id) {
-                  if (pft->par->type == TREE) {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if (stand->type->landusetype == NATURAL)
+            { /* ignoring setaside stands here */
+              foreachpft(pft, p, &stand->pftlist)
+              {
+                if (i == pft->par->id)
+                {
+                  if (pft->par->type == TREE)
+                  {
                     tree = pft->data;
                     fvec[count] = (float)tree->ind.root.carbon;
                   }
-                  else {
+                  else
+                  {
                     grass = pft->data;
                     fvec[count] = (float)grass->ind.root.carbon;
                   }
@@ -730,95 +785,105 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
           count++;
         } /* skip */
       } /* for cell */
-      writepft(output, PFT_CROOT, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_CROOT,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
-    for (i = (npft - config->nbiomass); i < (npft - config->nbiomass) + (ncft + NGRASS + NBIOMASSTYPE) * 2; i++)
+    for (i=npft-config->nbiomass;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     {
       count = 0;
       p = i - (npft - config->nbiomass);
-      for (cell = 0; cell<config->ngridcell; cell++) {
-        if (!grid[cell].skip) {
+      for (cell = 0; cell<config->ngridcell; cell++)
+      {
+        if (!grid[cell].skip)
           fvec[count++] = (float)grid[cell].output.cft_root[p].carbon;
-        }
       }
-      writepft(output, PFT_CROOT, fvec, (npft - config->nbiomass) + 2 * (ncft + NGRASS + NBIOMASSTYPE), year, i, config);
+      writepft(output,PFT_CROOT,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
   if(isopen(output,PFT_CSAPW))
   {
     outindex(output,PFT_CSAPW,config->rank);
-    for(i=0;i<(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
+    for(i=0;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     {
       count=0;
       for(cell=0;cell<config->ngridcell;cell++){
-        if(!grid[cell].skip){
+        if(!grid[cell].skip)
+        {
           fvec[count]=0;
-          foreachstand(stand,s,grid[cell].standlist){
-            switch(stand->type->landusetype){ /* ignoring setaside stands here */
-            case BIOMASS_TREE:
-              data=stand->data;
-              foreachpft(pft,p,&stand->pftlist){
-                if(pft->par->type==TREE){
-                  tree=pft->data;
-                  if(i==(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE))
-                    fvec[count]=(float)tree->ind.sapwood.carbon;
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            switch(stand->type->landusetype)
+            { /* ignoring setaside stands here */
+              case BIOMASS_TREE:
+                data=stand->data;
+                foreachpft(pft,p,&stand->pftlist){
+                  if(pft->par->type==TREE)
+                  {
+                    tree=pft->data;
+                    if(i==(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE))
+                      fvec[count]=(float)tree->ind.sapwood.carbon;
+                  }
                 }
-              }
-              break;
-            case NATURAL:
-              foreachpft(pft,p,&stand->pftlist){
-                if(i==pft->par->id){
-                  if(pft->par->type==TREE){
+                break;
+              case NATURAL:
+                foreachpft(pft,p,&stand->pftlist)
+                {
+                  if(i==pft->par->id && pft->par->type==TREE)
+                  {
                     tree=pft->data;
                     fvec[count]=(float)tree->ind.sapwood.carbon;
                   }
                 }
-              }
-              break;
+                break;
             } /* switch */
           }
           count++;
         }
       }
-      writepft(output,PFT_CSAPW,fvec,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);    }
+      writepft(output,PFT_CSAPW,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
+    }
   }
   if(isopen(output,PFT_CHAWO))
   {
     outindex(output,PFT_CHAWO,config->rank);
-    for(i=0;i<(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
+    for(i=0;i<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     {
       count=0;
       for(cell=0;cell<config->ngridcell;cell++){
-        if(!grid[cell].skip){
+        if(!grid[cell].skip)
+        {
           fvec[count]=0;
-          foreachstand(stand,s,grid[cell].standlist){
-            switch(stand->type->landusetype){ /* ignoring setaside stands here */
-            case BIOMASS_TREE:
-              data=stand->data;
-              foreachpft(pft,p,&stand->pftlist){
-                if(pft->par->type==TREE){
-                  tree=pft->data;
-                  if(i==(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE))
-                    fvec[count]=(float)tree->ind.heartwood.carbon;
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            switch(stand->type->landusetype)
+            { /* ignoring setaside stands here */
+              case BIOMASS_TREE:
+                data=stand->data;
+                foreachpft(pft,p,&stand->pftlist)
+                {
+                  if(pft->par->type==TREE)
+                  {
+                    tree=pft->data;
+                    if(i==(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE))
+                      fvec[count]=(float)tree->ind.heartwood.carbon;
+                  }
                 }
-              }
-              break;
-            case NATURAL:
-              foreachpft(pft,p,&stand->pftlist){
-                if(i==pft->par->id){
-                  if(pft->par->type==TREE){
+                break;
+              case NATURAL:
+                foreachpft(pft,p,&stand->pftlist)
+                {
+                  if(i==pft->par->id && pft->par->type==TREE)
+                  {
                     tree=pft->data;
                     fvec[count]=(float)tree->ind.heartwood.carbon;
                   }
                 }
-              }
-              break;
+                break;
             } /* switch */
           }
           count++;
         }
       }
-      writepft(output,PFT_CHAWO,fvec,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
+      writepft(output,PFT_CHAWO,fvec,npft-config->nbiomass+2*(ncft+NGRASS+NBIOMASSTYPE),year,i,config);
     }
   }
 #ifdef DOUBLE_HARVEST

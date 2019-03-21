@@ -21,13 +21,19 @@ void litter_update_grass(Litter *litter, /**< Litter pool */
                         )
 {
   Pftgrass *grass;
+  Output *output;
   grass=pft->data;
-  
+  output=&pft->stand->cell->output; 
   litter->ag[pft->litter].trait.leaf.carbon+=grass->ind.leaf.carbon*frac;
+  output->alittfall.carbon+=grass->ind.leaf.carbon*frac*pft->stand->frac;
   litter->ag[pft->litter].trait.leaf.nitrogen+=grass->ind.leaf.nitrogen*frac;
+  output->alittfall.nitrogen+=grass->ind.leaf.nitrogen*frac*pft->stand->frac;
   litter->ag[pft->litter].trait.leaf.nitrogen+=pft->bm_inc.nitrogen*frac;
+  output->alittfall.nitrogen+=pft->bm_inc.nitrogen*frac*pft->stand->frac;
   update_fbd_grass(litter,pft->par->fuelbulkdensity,
                    grass->ind.leaf.carbon*frac);
   litter->bg[pft->litter].carbon+=grass->ind.root.carbon*frac;
+  output->alittfall.carbon+=grass->ind.root.carbon*frac*pft->stand->frac;
   litter->bg[pft->litter].nitrogen+=grass->ind.root.nitrogen*frac;
+  output->alittfall.nitrogen+=grass->ind.root.nitrogen*frac*pft->stand->frac;
 } /* of 'litter_update_grass' */

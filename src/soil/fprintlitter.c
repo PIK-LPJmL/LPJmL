@@ -14,9 +14,10 @@
 
 #include "lpj.h"
 
-void fprintlitter(FILE *file,          /**< pointer to file */
-                  const Litter *litter /**< pointer to litter */
-                  )                    /** \returns void */
+void fprintlitter(FILE *file,           /**< pointer to file */
+                  const Litter *litter, /**< pointer to litter */
+                  int with_nitrogen     /**< nitrogen cycle enabled */
+                 )                      /** \returns void */
 {
   int i,p;
   Stocks sum,total;
@@ -59,37 +60,41 @@ void fprintlitter(FILE *file,          /**< pointer to file */
   fprintf(file,"\n\tTOTAL                            %7.2f %7.2f %7.2f",total.carbon,sum.carbon,trait_sum.leaf.carbon);
   for(i=0;i<NFUELCLASS;i++)
     fprintf(file," %7.2f",trait_sum.wood[i].carbon);
-  fprintf(file,"\n\tLitter nitrogen (gN/m2)\n"
-               "\tPFT                                      below   leaf   ");
-  for(i=0;i<NFUELCLASS;i++)
-    fprintf(file," wood(%d)",i);
-  fprintf(file,"\n");
-  fprintf(file,"\t---------------------------------------- ------- -------");
-  for(i=0;i<NFUELCLASS;i++)
-    fprintf(file," -------");
-  fprintf(file,"\n");
-  for(p=0;p<litter->n;p++)
+  fputc('\n',file);
+  if(with_nitrogen)
   {
-    fprintf(file,"\t%-40s %7.2f %7.2f",litter->ag[p].pft->name,
-            litter->bg[p].nitrogen,litter->ag[p].trait.leaf.nitrogen);
-    sum.nitrogen+=litter->bg[p].nitrogen;
-    trait_sum.leaf.nitrogen+=litter->ag[p].trait.leaf.nitrogen;
+    fprintf(file,"\tLitter nitrogen (gN/m2)\n"
+                 "\tPFT                                      below   leaf   ");
+    for(i=0;i<NFUELCLASS;i++)
+      fprintf(file," wood(%d)",i);
+    fprintf(file,"\n");
+    fprintf(file,"\t---------------------------------------- ------- -------");
+    for(i=0;i<NFUELCLASS;i++)
+      fprintf(file," -------");
+    fprintf(file,"\n");
+    for(p=0;p<litter->n;p++)
+    {
+      fprintf(file,"\t%-40s %7.2f %7.2f",litter->ag[p].pft->name,
+              litter->bg[p].nitrogen,litter->ag[p].trait.leaf.nitrogen);
+      sum.nitrogen+=litter->bg[p].nitrogen;
+      trait_sum.leaf.nitrogen+=litter->ag[p].trait.leaf.nitrogen;
+      for(i=0;i<NFUELCLASS;i++)
+      {
+        fprintf(file," %7.2f",litter->ag[p].trait.wood[i].nitrogen);
+        trait_sum.wood[i].nitrogen+=litter->ag[p].trait.wood[i].nitrogen;
+      }
+      fprintf(file,"\n");
+    }
+    total.nitrogen+=sum.nitrogen+trait_sum.leaf.nitrogen;
+    fprintf(file,"\t---------------------------------------- ------- -------");
     for(i=0;i<NFUELCLASS;i++)
     {
-      fprintf(file," %7.2f",litter->ag[p].trait.wood[i].nitrogen);
-      trait_sum.wood[i].nitrogen+=litter->ag[p].trait.wood[i].nitrogen;
+      total.nitrogen+=trait_sum.wood[i].nitrogen;
+      fprintf(file," -------");
     }
-    fprintf(file,"\n");
+    fprintf(file,"\n\tTOTAL                            %7.2f %7.2f %7.2f",total.nitrogen,sum.nitrogen,trait_sum.leaf.nitrogen);
+    for(i=0;i<NFUELCLASS;i++)
+      fprintf(file," %7.2f",trait_sum.wood[i].nitrogen);
+    fputc('\n',file);
   }
-  total.nitrogen+=sum.nitrogen+trait_sum.leaf.nitrogen;
-  fprintf(file,"\t---------------------------------------- ------- -------");
-  for(i=0;i<NFUELCLASS;i++)
-  {
-    total.nitrogen+=trait_sum.wood[i].nitrogen;
-    fprintf(file," -------");
-  }
-  fprintf(file,"\n\tTOTAL                            %7.2f %7.2f %7.2f",total.nitrogen,sum.nitrogen,trait_sum.leaf.nitrogen);
-  for(i=0;i<NFUELCLASS;i++)
-    fprintf(file," %7.2f",trait_sum.wood[i].nitrogen);
-  fputc('\n',file);
 } /* of 'fprintlitter' */

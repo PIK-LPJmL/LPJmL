@@ -58,7 +58,7 @@ Bool fscanfloat(LPJfile *file,    /**< pointer to LPJ file */
         fprintf(stderr,"ERROR226: Type of '%s' is not real.\n",name);
       return TRUE;
     }
-    *value=json_object_get_double(item);
+    *value=(float)json_object_get_double(item);
     if (verb >= VERB)
       printf("\"%s\" : %g\n",name,*value);
     return FALSE;

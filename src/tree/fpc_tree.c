@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                      f  p  c   _  t  r  e  e  .  c                             \n**/
+/**                       f  p  c  _  t  r  e  e  .  c                             \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function recalculates foliage projective cover (FPC) of grass              \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,15 +17,15 @@
 #include "lpj.h"
 #include "tree.h"
 
-Real fpc_tree(Pft *pft /**< pointer to PFT */
-             )         /** \return foliar projective cover (FPC) */
+Real fpc_tree(Pft *pft /**< pointer to tree PFT */
+             )         /** \return positive change in FPC */
 {
   Pfttree *tree;
   Real fpc_old;
   fpc_old=pft->fpc;
   tree=pft->data;
   
-   pft->fpc=(tree->crownarea>0.0) ? tree->crownarea*pft->nind*
-        (1.0-exp(- getpftpar(pft, lightextcoeff) * lai_tree(pft))) : 0;
+  pft->fpc=(tree->crownarea>0.0) ? tree->crownarea*pft->nind*
+           (1.0-exp(- getpftpar(pft, lightextcoeff) * lai_tree(pft))) : 0;
   return (pft->fpc<fpc_old) ? 0 : pft->fpc-fpc_old;
 } /* of 'fpc_tree' */

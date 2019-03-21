@@ -318,8 +318,8 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           fclose(landuse->fertilizer_nr.file);
           if(isroot(*config))
             fprintf(stderr,
-            "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
-            header.nbands);
+                    "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
+                    header.nbands);
           free(landuse);
           return(NULL);
         }
@@ -365,13 +365,6 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
 /**       -> if sum of fraction is greater 1: subtraction from fraction            \n**/
 /**          of managed grass if possible                                          \n**/
 /**       -> else fail incorrect input file                                        \n**/
-/**                                                                                \n**/
-/**     written by Werner von Bloh, Sibyll Schaphoff                               \n**/
-/**     Potsdam Institute for Climate Impact Research                              \n**/
-/**     PO Box 60 12 03                                                            \n**/
-/**     14412 Potsdam/Germany                                                      \n**/
-/**                                                                                \n**/
-/**     Last change: 15.10.2009                                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -756,87 +749,86 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   {
     if(config->fertilizer_input)
     {
-  /* assigning fertilizer Nr data */
-  yearf=year-landuse->fertilizer_nr.firstyear;
-  if(yearf>=landuse->fertilizer_nr.nyear)
-    yearf=landuse->fertilizer_nr.nyear-1;
-  else if(yearf<0)
-    yearf=0;
-  if(landuse->fertilizer_nr.fmt==CDF)
-  {
-    data=newvec(Real,config->ngridcell*landuse->fertilizer_nr.var_len);
-    if(data==NULL)
-    {
-      printallocerr("data");
-      return TRUE;
-    }
-    if(readdata_netcdf(&landuse->fertilizer_nr,data,grid,yearf,config))
-    {
-      fprintf(stderr,
-              "ERROR149: Cannot read fertilizer of year %d in getlanduse().\n",
-              yearf+landuse->fertilizer_nr.firstyear);
-      fflush(stderr);
-      return TRUE;
-    }
-  }
-  else
-  {
-    if(fseek(landuse->fertilizer_nr.file,(long long)yearf*landuse->fertilizer_nr.size+landuse->fertilizer_nr.offset,SEEK_SET))
-    {
-      fprintf(stderr,
-              "ERROR148: Cannot seek fertilizer Nr to year %d in getlanduse().\n",
-              yearf+landuse->fertilizer_nr.firstyear);
-      fflush(stderr);
-      return TRUE;
-    }
-    data=newvec(Real,landuse->fertilizer_nr.n);
-    if(data==NULL)
-    {
-      printallocerr("data");
-      return TRUE;
-    }
-    if(readrealvec(landuse->fertilizer_nr.file,data,0,landuse->fertilizer_nr.scalar,landuse->fertilizer_nr.n,landuse->fertilizer_nr.swap,landuse->fertilizer_nr.datatype))
-    {
-      fprintf(stderr,
-        "ERROR149: Cannot read fertilizer Nr of year %d in getlanduse().\n",
-        yearf+landuse->fertilizer_nr.firstyear);
-      fflush(stderr);
-      free(data);
-      return TRUE;
-    }
-  }
-  count=0;
-  for(cell=0;cell<config->ngridcell;cell++)
-  {
-    for(i=0;i<WIRRIG;i++)
-    {
-      for(j=0;j<ncft;j++)
-        grid[cell].ml.fertilizer_nr[i].crop[j]=data[count++];
-      for(j=0;j<NGRASS;j++)
-        grid[cell].ml.fertilizer_nr[i].grass[j]=data[count++];
-      if(landuse->nbands_fertilizer_nr!=2*(ncft+NGRASS))
+      /* assigning fertilizer Nr data */
+      yearf=year-landuse->fertilizer_nr.firstyear;
+      if(yearf>=landuse->fertilizer_nr.nyear)
+        yearf=landuse->fertilizer_nr.nyear-1;
+      else if(yearf<0)
+        yearf=0;
+      if(landuse->fertilizer_nr.fmt==CDF)
       {
-        grid[cell].ml.fertilizer_nr[i].biomass_grass=data[count++];
-        grid[cell].ml.fertilizer_nr[i].biomass_tree=data[count++];
+        data=newvec(Real,config->ngridcell*landuse->fertilizer_nr.var_len);
+        if(data==NULL)
+        {
+          printallocerr("data");
+          return TRUE;
+        }
+        if(readdata_netcdf(&landuse->fertilizer_nr,data,grid,yearf,config))
+        {
+          fprintf(stderr,
+                  "ERROR149: Cannot read fertilizer of year %d in getlanduse().\n",
+                  yearf+landuse->fertilizer_nr.firstyear);
+          fflush(stderr);
+          return TRUE;
+        }
       }
       else
-        grid[cell].ml.fertilizer_nr[i].biomass_grass=grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
+      {
+        if(fseek(landuse->fertilizer_nr.file,(long long)yearf*landuse->fertilizer_nr.size+landuse->fertilizer_nr.offset,SEEK_SET))
+        {
+          fprintf(stderr,
+                  "ERROR148: Cannot seek fertilizer Nr to year %d in getlanduse().\n",
+                  yearf+landuse->fertilizer_nr.firstyear);
+          fflush(stderr);
+          return TRUE;
+        }
+        data=newvec(Real,landuse->fertilizer_nr.n);
+        if(data==NULL)
+        {
+          printallocerr("data");
+          return TRUE;
+        }
+        if(readrealvec(landuse->fertilizer_nr.file,data,0,landuse->fertilizer_nr.scalar,landuse->fertilizer_nr.n,landuse->fertilizer_nr.swap,landuse->fertilizer_nr.datatype))
+        {
+          fprintf(stderr,
+                  "ERROR149: Cannot read fertilizer Nr of year %d in getlanduse().\n",
+                  yearf+landuse->fertilizer_nr.firstyear);
+          fflush(stderr);
+          free(data);
+          return TRUE;
+        }
+      }
+      count=0;
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        for(i=0;i<WIRRIG;i++)
+        {
+          for(j=0;j<ncft;j++)
+            grid[cell].ml.fertilizer_nr[i].crop[j]=data[count++];
+          for(j=0;j<NGRASS;j++)
+            grid[cell].ml.fertilizer_nr[i].grass[j]=data[count++];
+          if(landuse->nbands_fertilizer_nr!=2*(ncft+NGRASS))
+          {
+            grid[cell].ml.fertilizer_nr[i].biomass_grass=data[count++];
+            grid[cell].ml.fertilizer_nr[i].biomass_tree=data[count++];
+          }
+          else
+            grid[cell].ml.fertilizer_nr[i].biomass_grass=grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
+        }
+      } /* for(cell=0;...) */
+      free(data);
     }
-  } /* for(cell=0;...) */
-  free(data);
-  }
-  else
-    for(cell=0;cell<config->ngridcell;cell++)
-    for(i=0;i<WIRRIG;i++)
-    {
-      for(j=0;j<ncft;j++)
-        grid[cell].ml.fertilizer_nr[i].crop[j]=0;
-      for(j=0;j<NGRASS;j++)
-        grid[cell].ml.fertilizer_nr[i].grass[j]=0;
-      grid[cell].ml.fertilizer_nr[i].biomass_grass=0;
-      grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
-    }
-
+    else
+      for(cell=0;cell<config->ngridcell;cell++)
+        for(i=0;i<WIRRIG;i++)
+        {
+          for(j=0;j<ncft;j++)
+            grid[cell].ml.fertilizer_nr[i].crop[j]=0;
+          for(j=0;j<NGRASS;j++)
+            grid[cell].ml.fertilizer_nr[i].grass[j]=0;
+          grid[cell].ml.fertilizer_nr[i].biomass_grass=0;
+          grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
+        }
   } 
   return FALSE;
 } /* of 'getlanduse' */

@@ -40,7 +40,6 @@
 
 extern Standtype grassland_stand;
 
-extern Bool isMowingDay(int);
 extern Real daily_grassland(Stand *,Real,const Dailyclimate *, int,
                             Real,const Real [],
                             Real ,Real,Real,Real,Real,Real,

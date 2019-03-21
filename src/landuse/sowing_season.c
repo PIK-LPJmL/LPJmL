@@ -61,7 +61,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
             {
               if(!alloc_today_rf)
               {
-                allocation_today(setasidestand, config->ntypes);
+                allocation_today(setasidestand, config->ntypes,config->with_nitrogen);
                 alloc_today_rf=TRUE;
               }
               stocks=cultivate(cell,config->pftpar+npft+cft,
@@ -88,7 +88,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
             {
               if(!alloc_today_ir)
               {
-                allocation_today(setasidestand,config->ntypes);
+                allocation_today(setasidestand,config->ntypes,config->with_nitrogen);
                 alloc_today_ir=TRUE;
               }
               stocks=cultivate(cell,config->pftpar+npft+cft,
@@ -122,7 +122,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
             {
               if(!alloc_today_rf)
               {
-                allocation_today(setasidestand,config->ntypes);
+                allocation_today(setasidestand,config->ntypes,config->with_nitrogen);
                 alloc_today_rf=TRUE;
               }
               stocks=cultivate(cell,config->pftpar+npft+cft,
@@ -152,7 +152,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
             {
               if(!alloc_today_ir)
               {
-                allocation_today(setasidestand,config->ntypes);
+                allocation_today(setasidestand,config->ntypes,config->with_nitrogen);
                 alloc_today_ir=TRUE;
               }
               stocks=cultivate(cell,config->pftpar+npft+cft,
@@ -194,7 +194,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                 {
                   if(!alloc_today_rf)
                   {
-                    allocation_today(setasidestand, config->ntypes);
+                    allocation_today(setasidestand, config->ntypes,config->with_nitrogen);
                     alloc_today_rf=TRUE;
                   }
                   stocks=cultivate(cell,config->pftpar+npft+cft,
@@ -220,7 +220,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
               {
                 if(!alloc_today_rf)
                 {
-                  allocation_today(setasidestand, config->ntypes);
+                  allocation_today(setasidestand, config->ntypes,config->with_nitrogen);
                   alloc_today_rf=TRUE;
                 }
                 stocks=cultivate(cell,config->pftpar+npft+cft,
@@ -260,7 +260,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                 {
                   if(!alloc_today_ir)
                   {
-                    allocation_today(setasidestand, config->ntypes);
+                    allocation_today(setasidestand, config->ntypes,config->with_nitrogen);
                     alloc_today_ir=TRUE;
                   }
                   stocks=cultivate(cell,config->pftpar+npft+cft,
@@ -286,7 +286,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
               {
                 if(!alloc_today_ir)
                 {
-                  allocation_today(setasidestand, config->ntypes);
+                  allocation_today(setasidestand, config->ntypes,config->with_nitrogen);
                   alloc_today_ir=TRUE;
                 }
                 stocks=cultivate(cell,config->pftpar+npft+cft,

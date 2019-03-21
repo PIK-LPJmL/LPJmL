@@ -17,8 +17,9 @@
 #include "lpj.h"
 #include "tree.h"
 
-void fprint_tree(FILE *file,     /**< pointer to text file */
-                 const Pft *pft  /**< pointer to tree PFT */
+void fprint_tree(FILE *file,       /**< pointer to text file */
+                 const Pft *pft,   /**< pointer to tree PFT */
+                 int with_nitrogen /**< nitrogen cycle enabled */
                 )
 {
   const Pfttree *tree;
@@ -33,7 +34,15 @@ void fprint_tree(FILE *file,     /**< pointer to text file */
   if(pft->par->phenology==RAINGREEN)
     fprintf(file,"Aphen raingreen:\t%g\n",tree->aphen_raingreen);
   fputs("Mass:\t\t",file);
-  fprinttreephys2(file,tree->ind,pft->nind);
-  fprintf(file,"\nExcess carbon:\t%g (gC/m2)\n",tree->excess_carbon*pft->nind);
-  fprintf(file,"falloc:\t\t%g %g %g\n",tree->falloc.leaf,tree->falloc.root,tree->falloc.sapwood);
+  if(with_nitrogen)
+  {
+    fprinttreephys2(file,tree->ind,pft->nind);
+    fprintf(file,"\nExcess carbon:\t%g (gC/m2)\n",tree->excess_carbon*pft->nind);
+    fprintf(file,"falloc:\t\t%g %g %g\n",tree->falloc.leaf,tree->falloc.root,tree->falloc.sapwood);
+  }
+  else
+  {
+    fprinttreephys2carbon(file,tree->ind,pft->nind);
+    fputc('\n',file);
+  }
 } /* of 'fprint_tree' */

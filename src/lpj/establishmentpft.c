@@ -31,7 +31,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
                         int year             /**< simulation year (AD) */
                        )  /** \return establishment flux (gC/m2,gN/m2) */
 {
-  Stocks acflux_est={0,0},stocks;
+  Stocks flux_est={0,0},stocks;
   Real fpc_total,*fpc_type, fpc_obs_cor;
   int *n_est;
   Bool *present;
@@ -95,8 +95,8 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
     {
       stocks=establishment(pft,fpc_total,fpc_type[pft->par->type],
                            n_est[pft->par->type]);
-      acflux_est.carbon+=stocks.carbon;
-      acflux_est.nitrogen+=stocks.nitrogen;
+      flux_est.carbon+=stocks.carbon;
+      flux_est.nitrogen+=stocks.nitrogen;
 #ifdef DAILY_ESTABLISHMENT
       pft->established=TRUE;
 #endif
@@ -113,8 +113,8 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
     {
       stocks=establishment(pft,fpc_total,fpc_type[pft->par->type],
                                 n_est[pft->par->type]);
-      acflux_est.carbon+=stocks.carbon;
-      acflux_est.nitrogen+=stocks.nitrogen;
+      flux_est.carbon+=stocks.carbon;
+      flux_est.nitrogen+=stocks.nitrogen;
 #ifdef DAILY_ESTABLISHMENT
       pft->established=TRUE;
 #endif
@@ -122,7 +122,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   }
 
 #ifdef DAILY_ESTABLISHMENT
-  if(acflux_est.carbon>0) /* any establishment occured? */
+  if(flux_est.carbon>0) /* any establishment occured? */
   {
 #endif
   /* separate calculation of grass FPC after all grass PFTs have been updated */
@@ -148,5 +148,5 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   free(present);
   free(fpc_type);
   free(n_est);
-  return acflux_est;
+  return flux_est;
 } /* of 'establishmentpft' */

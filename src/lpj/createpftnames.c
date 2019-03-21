@@ -34,15 +34,15 @@ char **createpftnames(int index,           /**< output index */
   {
     case SDATE: case HDATE: 
     case SDATE2: case HDATE2: case SYEAR: case SYEAR2:
-        for(i=0;i<ncft;i++)
-          pftnames[i]=strdup(pftpar[npft+i].name);
-        for(i=0;i<ncft;i++)
-        {
-          pftnames[i+ncft]=malloc(strlen(pftpar[npft+i].name)+strlen("irrigated ")+1);
-          strcpy(pftnames[i+ncft],"irrigated ");
-          strcat(pftnames[i+ncft],pftpar[npft+i].name);
-        }
-        break;
+      for(i=0;i<ncft;i++)
+        pftnames[i]=strdup(pftpar[npft+i].name);
+      for(i=0;i<ncft;i++)
+      {
+        pftnames[i+ncft]=malloc(strlen(pftpar[npft+i].name)+strlen("irrigated ")+1);
+        strcpy(pftnames[i+ncft],"irrigated ");
+        strcat(pftnames[i+ncft],pftpar[npft+i].name);
+      }
+      break;
     case PFT_NPP: case PFT_GCGP: case PFT_NUPTAKE: case PFT_NDEMAND:
     case PFT_VEGC: case PFT_VEGN: case PFT_CLEAF: case PFT_NLEAF:
     case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:

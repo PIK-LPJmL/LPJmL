@@ -133,9 +133,9 @@ static Bool getroute(FILE *file, /**< pointer to binary file */
   return FALSE;
 } /* of 'getroute' */
 
-static Bool initirrig(Cell grid[],    /* Cell grid             */
-                      Config *config  /* LPJ configuration     */
-              )                /* returns TRUE on error */
+static Bool initirrig(Cell grid[],    /**< Cell grid             */
+                      Config *config  /**< LPJ configuration     */
+              )                       /** \return TRUE on error */
 {
   Infile irrig_file;
   Header header;
@@ -464,9 +464,9 @@ static Bool initriver(Cell grid[],Config *config)
   return FALSE;
 } /* of 'initriver' */
 
-Bool initdrain(Cell grid[],    /* Cell grid             */
-               Config *config  /* LPJ configuration     */
-              )                /* returns TRUE on error */
+Bool initdrain(Cell grid[],    /**< Cell grid             */
+               Config *config  /**< LPJ configuration     */
+              )                /** \return TRUE on error  */
 {
   if(config->withlanduse!=NO_LANDUSE)
   {

@@ -25,11 +25,12 @@ Stocks timber_burn(const Pft *pft, /**< Pointer to tree PFT */
   int i;
   const Pfttree *tree;
   const Pfttreepar *treepar;
+  Output *output;
   tree=pft->data;
   treepar=pft->par->data;
   if(fburnt<epsilon || nind<epsilon)
     return burn;
-
+  output=&pft->stand->cell->output;
   /* reducing carbon in litter pool because this carbon is added to
    * the litter pool in update_litter (next function in reclaim_land().
    * We can't substract it from the vegetation carbon as there
@@ -37,7 +38,9 @@ Stocks timber_burn(const Pft *pft, /**< Pointer to tree PFT */
   for(i=0;i<NFUELCLASS;i++)
   {
     litter->ag[pft->litter].trait.wood[i].carbon-=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0+tree->excess_carbon)*fburnt*nind*treepar->fuelfrac[i];
+    output->alittfall.carbon-=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0+tree->excess_carbon)*fburnt*nind*treepar->fuelfrac[i]*pft->stand->frac;
     litter->ag[pft->litter].trait.wood[i].nitrogen-=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*fburnt*nind*treepar->fuelfrac[i];
+    output->alittfall.nitrogen-=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*fburnt*nind*treepar->fuelfrac[i]*pft->stand->frac;
   }
   /* computing deforestation fire emissions */
   burn.carbon=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0)*fburnt*nind;

@@ -66,7 +66,7 @@ static Real albedo_stand(const Stand *stand)
 
   test = albstot + fbare * (frsg * c_albsnow + (1-frsg) * (c_albsoil+moisture));
 
-#ifndef NDEBUG
+#ifdef SAFE
   if (test > 1 || test < 0 || isnan(test))
   {
     printf("WARNING albedo out of bounds: %g fbare=%g albstot=%g\n", test, fbare, albstot);

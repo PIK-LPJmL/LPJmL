@@ -192,6 +192,10 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
       len=printsim(file,len,&count,"prescribe burntarea");
   }
+  if(config->const_climate)
+    len=printsim(file,len,&count,"const. climate");
+  if(config->const_deposition)
+    len=printsim(file,len,&count,"const. deposition");
   if(config->river_routing)
     len=printsim(file,len,&count,"river routing");
   if(config->with_nitrogen)
@@ -255,7 +259,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     else if(config->laimax_interpolate==LAIMAX_PAR)
     {
       len+=fprintf(file,", ");
-      len=fputstring(file,len,"pft.par LAImax",78);
+      len=fputstring(file,len,"pft.js LAImax",78);
     }
     if(config->sdate_option==FIXED_SDATE)
     {

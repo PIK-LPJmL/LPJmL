@@ -46,7 +46,7 @@ Stocks livefuel_consum_tree(Litter *litter,
                                          treepar->fuelfrac[2] * 0.05);
   live_consum_tree.carbon = livefuel->disturb * (tree->ind.leaf.carbon + sapwood_consum.carbon + heartwood_consum.carbon)*pft->nind;  /*gC/m2*/
   live_consum_tree.nitrogen = livefuel->disturb * (tree->ind.leaf.nitrogen + sapwood_consum.nitrogen + heartwood_consum.nitrogen)*pft->nind;  /*gC/m2*/
-  live_consum_tree.carbon+=pft->bm_inc.carbon*min(1,livefuel->disturb*1);
+  live_consum_tree.carbon+=pft->bm_inc.carbon*min(1,livefuel->disturb);
   live_consum_tree.nitrogen+=pft->bm_inc.nitrogen*min(1,livefuel->disturb);
   pft->bm_inc.carbon*=(1-min(1,livefuel->disturb));
   pft->bm_inc.nitrogen*=(1-min(1,livefuel->disturb));

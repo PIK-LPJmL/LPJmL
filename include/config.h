@@ -112,6 +112,8 @@ typedef struct
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
   Bool istimber;
+  Bool const_climate;           /**< constant climate */
+  Bool const_deposition;        /**< constant N deposition */
   Bool remove_residuals;
   Bool residues_fire;   /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */

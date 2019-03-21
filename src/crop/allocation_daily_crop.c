@@ -34,10 +34,10 @@ static void solve(Real *a,Real *b,Real *c,Real *d,
   *d=(-c1*n4*r1*r2*r3-c2*n4*r2*r3-c3*n4*r1*r3+c4*m*r1*r2+c4*n1*r1*r2+c4*n2*r1*r2+c4*n3*r1*r2)/nominator;
 }
 
-void allocation_daily_crop(Pft *pft, /**< PFT variables */
-                           Real npp, /**< net primary production (gC/m2) */ 
-                           Real wdf,  /**< water deficit fraction */
-                           Bool with_nitrogen,
+void allocation_daily_crop(Pft *pft,             /**< PFT variables */
+                           Real npp,             /**< net primary production (gC/m2) */
+                           Real wdf,             /**< water deficit fraction */
+                           int with_nitrogen,    /**< with nitrogen (TRUE/FALSE) */
                            Daily_outputs* output /**< daily output data */
                           )
 {
@@ -176,6 +176,8 @@ void allocation_daily_crop(Pft *pft, /**< PFT variables */
     }
   }
 #if 1
+  if(with_nitrogen)
+  {
   // Nitrogen allocation
   if(crop->ind.leaf.carbon>epsilon && pft->bm_inc.nitrogen>0)
   {
@@ -241,6 +243,7 @@ void allocation_daily_crop(Pft *pft, /**< PFT variables */
     }
   }
   pft->nleaf=crop->ind.leaf.nitrogen;
+  }
 #else
   if(crop->ind.leaf.carbon>epsilon)
   {

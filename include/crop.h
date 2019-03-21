@@ -122,18 +122,18 @@ typedef struct
 /* Declaration of functions */
 
 extern void new_crop(Pft *,int,int);
-extern void allocation_daily_crop(Pft *,Real, Real,Bool with_nitrogen,Daily_outputs *);
-extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,Bool with_nitrogen,Daily_outputs *);
+extern void allocation_daily_crop(Pft *,Real, Real,int,Daily_outputs *);
+extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,int,Daily_outputs *);
 extern Real fpc_crop(Pft *);
 extern Real fpar_crop(const Pft *);
-extern Real alphaa_crop(const Pft *,int);
+extern Real alphaa_crop(const Pft *,int,int);
 extern void litter_update_crop(Litter *,Pft *,Real);
 extern Real lai_crop(const Pft *);
 extern Real actual_lai_crop(const Pft *);
 extern Bool phenology_crop(Pft *,Real,Real);
 extern void laimax_manage(Manage *,const Pftpar [],int,int,int);
 extern Bool fwrite_crop(FILE *,const Pft *);
-extern void fprint_crop(FILE *,const Pft *);
+extern void fprint_crop(FILE *,const Pft *,int);
 extern Bool fread_crop(FILE *,Pft *,Bool);
 extern Bool fscanpft_crop(LPJfile *,Pftpar *,Verbosity);
 extern Stocks establishment_crop(Pft *,Real,Real,int);
@@ -162,5 +162,6 @@ extern Real vmaxlimit_crop(const Pft *,Real,Real);
 #define phys_sum_crop(ind) (ind.leaf.carbon+ind.root.carbon+ind.so.carbon+ind.pool.carbon)
 #define phys_sum_crop_n(ind) (ind.leaf.nitrogen+ind.root.nitrogen+ind.so.nitrogen+ind.pool.nitrogen)
 #define fprintcropphys2(file,phys,nind) fprintf(file,"%.2f %.2f %.2f %.2f (gC/m2) %.2f %.2f %.2f %.2f (gN/m2)",phys.leaf.carbon*nind,phys.so.carbon*nind,phys.pool.carbon*nind,phys.root.carbon*nind,phys.leaf.nitrogen*nind,phys.so.nitrogen*nind,phys.pool.nitrogen*nind,phys.root.nitrogen*nind)
+#define fprintcropphys2carbon(file,phys,nind) fprintf(file,"%.2f %.2f %.2f %.2f (gC/m2)",phys.leaf.carbon*nind,phys.so.carbon*nind,phys.pool.carbon*nind,phys.root.carbon*nind)
 
 #endif

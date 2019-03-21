@@ -35,7 +35,7 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
                          int npft,   /**< number of natural PFTs */
                          int ncft,   /**< number of crop PFTs   */
                          int UNUSED(year), /**< simulation year */
-                         Bool withdailyoutput,
+                         Bool withdailyoutput, /**< enable daily output */
                          Bool  UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                          const Config *config /**< LPJ config */
                         )            /** \return runoff (mm) */
@@ -147,12 +147,10 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
  *  respiration, including conversion from FPC to grid cell basis.
  *
  */
-
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,
                        npft,ncft,config);
-
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
       gcgp=gc_pft/gp_pft[getpftpar(pft,id)];
@@ -197,7 +195,7 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
       if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
       {
         turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
-        if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p))
+        if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config->with_nitrogen))
         {
           /* kill PFT from list of established PFTs */
           fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */

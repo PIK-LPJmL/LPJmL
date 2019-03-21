@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**           v  e  g  c  _  s  u  m  _  g  r  a  s  s  .  c                       \n**/
+/**           v  e  g  _  s  u  m  _  g  r  a  s  s  .  c                          \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function calculates vegetation carbon of grass PFTs                        \n**/
+/**     Function calculates vegetation carbon and nitrogen of grass PFTs           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -25,7 +25,8 @@ Real vegc_sum_grass(const Pft *pft /**< pointer to grass PFT */
   return (phys_sum_grass(grass->ind)+grass->excess_carbon)*pft->nind;
 } /* of 'vegc_sum_grass' */
 
-Real vegn_sum_grass(const Pft *pft)
+Real vegn_sum_grass(const Pft *pft /**< pointer to grass PFT */
+                   )               /** \return vegetation nitrogen (gN/m2) */
 {
   const Pftgrass *grass;
   grass=pft->data;

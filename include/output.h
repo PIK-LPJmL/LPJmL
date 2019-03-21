@@ -136,6 +136,7 @@ typedef struct
   Stocks flux_harvest;   /**< harvest flux (gC/m2,g/N/m2) */
   Stocks flux_rharvest_burnt; /**< crop residuals burnt outside of field (gC/m2,gN/m2)*/
   Stocks flux_rharvest_burnt_in_field; /*crop residuals burnt in field (gC/m2,gN/m2)*/
+  Stocks alittfall;       /**< litter fall (gC/m2/yr,gN/m2/yr) */
   Real mirrig;           /**< Monthly irrigation (mm) */
   Real airrig;           /**< Yearly irrigation (mm) */
   Real mwd_unsustainable; /**< Monthly withdrawal from unsustainable source (mm) */
