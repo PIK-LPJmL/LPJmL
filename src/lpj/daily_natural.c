@@ -53,7 +53,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   Real gc_pft;
 
 #ifdef DAILY_ESTABLISHMENT
-  Stocks acflux_estab = {0,0};
+  Stocks flux_estab = {0,0};
 #endif
   Soil *soil;
   soil = &stand->soil;
@@ -160,14 +160,13 @@ Real daily_natural(Stand *stand, /**< stand pointer */
         output->daily.pet=eeq*PRIESTLEY_TAYLOR;
       }
     output->daily.interc=intercep_stand*stand->frac;
-  }
-  foreachsoillayer(l){
-    output->mswc[l]+=(stand->soil.w[l]*stand->soil.par->whcs[l]+stand->soil.w_fw[l]+stand->soil.par->wpwps[l]+
-                   stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.par->wsats[l]*stand->frac*(1.0/(1-stand->cell->lakefrac));
-    output->daily.nh4+=stand->soil.NH4[l];
-    output->daily.no3+=stand->soil.NO3[l];
-    output->daily.nsoil_fast+=stand->soil.pool[l].fast.nitrogen;
-    output->daily.nsoil_slow+=stand->soil.pool[l].slow.nitrogen;
+    forrootsoillayer(l)
+    {
+      output->daily.nh4+=stand->soil.NH4[l];
+      output->daily.no3+=stand->soil.NO3[l];
+      output->daily.nsoil_fast+=stand->soil.pool[l].fast.nitrogen;
+      output->daily.nsoil_slow+=stand->soil.pool[l].slow.nitrogen;
+    }
   }
   forrootsoillayer(l)
   {
@@ -180,14 +179,14 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   output->mevap_b+=evap_blue*stand->frac;
   output->mreturn_flow_b+=return_flow_b*stand->frac;
 
-  #ifdef DAILY_ESTABLISHMENT
+#ifdef DAILY_ESTABLISHMENT
   if (year==911 && day==365) /* TODO: replace the hardcoded value 911 with a more indicative flag like first_year_of_spinup */
-    acflux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
+    flux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
   else if (year>911)
-    acflux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
-  output->flux_estab.carbon+=acflux_estab.carbon*stand->frac;
-  output->flux_estab.nitrogen+=acflux_estab.nitrogen*stand->frac;
-  output->dcflux-=acflux_estab.carbon*stand->frac;
+    flux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
+  output->flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  output->flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  output->dcflux-=flux_estab.carbon*stand->frac;
 #endif
 
   free(wet);
