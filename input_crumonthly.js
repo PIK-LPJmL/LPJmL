@@ -20,7 +20,7 @@
 {
   "soil" :         { "fmt" : META, "name" : "input_VERSION2/soil.descr"},
   "coord" :        { "fmt" : CLM,  "name" : "input_VERSION2/grid.bin"},
-  "countrycode" :  { "fmt" : CLM,  "name" : "input_VERSION2/cow_mg_2006_full.bin"},
+  "countrycode" :  { "fmt" : CLM,  "name" : "input_VERSION2/cow_full_2018.bin"},
   "no3deposition" : { "fmt" : CLM,  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
   "nh4deposition" : { "fmt" : CLM,  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
   "soilpH" :        { "fmt" : CLM,  "name" : "input_VERSION2/soil_ph.clm"},
