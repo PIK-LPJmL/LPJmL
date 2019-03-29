@@ -156,7 +156,7 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
             frac_g_influx=stand->frac_g[l];
             soil->perc_energy[l+1]=((soil->temp[l]-soil->temp[l+1])*perc*1e-3)*c_water;
           }
-          if(config->with_nitrogen)
+          if(config->with_nitrogen && l<BOTTOMLAYER)
           {
             /* determination of nitrate concentration in mobile water */
             w_mobile=vno3=concNO3_mobile=0;
