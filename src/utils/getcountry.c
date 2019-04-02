@@ -17,7 +17,7 @@
 
 #define USAGE "Usage: %s [-list] [-longheader] countryfile gridfile outfile country ...\n"
 
-#define NCOUNTRY 197 /* number of countries defined in LPJmL */
+#define NCOUNTRY 236 /* number of countries defined in LPJmL */
 
 typedef struct
 {
