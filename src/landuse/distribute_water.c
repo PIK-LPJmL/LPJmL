@@ -46,7 +46,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
 #ifdef DOUBLE_HARVEST
   Pftcrop *crop;
 #endif
-  aprec=irrig_threshold=0.0;
+  irrig_threshold=0.0;
   conv_loss=0.0;
 
   /* actual irrigation requirement */
@@ -76,6 +76,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
       if(data->irrigation)
       {
         /* determine if irrigation today */
+        aprec=0;
         for(m=0;m<NMONTH;m++)
           aprec+=max(0,stand->cell->climbuf.mprec20[m]);
         count=0;
