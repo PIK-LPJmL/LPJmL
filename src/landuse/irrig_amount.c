@@ -21,15 +21,15 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
                   int ncft      /**< number of crop PFTs */
                  )
 {
-  int l,p,m,count;
+  int l,p,count;
   Pft *pft;
   Irrigation *data;
-  Real conv_loss,irrig_stand,aprec,irrig_threshold;
+  Real conv_loss,irrig_stand,irrig_threshold;
   Real wr;
 #ifdef DOUBLE_HARVEST
   Pftcrop *crop;
 #endif
-  aprec=irrig_threshold=0.0;
+  irrig_threshold=0.0;
 
   /* determine if today irrigation dependent on threshold */
   data=stand->data;
@@ -38,8 +38,6 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
 
   if(data->irrigation)
   {
-    for(m=0;m<NMONTH;m++)
-      aprec+=max(0,stand->cell->climbuf.mprec20[m]);
     count=0;
     foreachpft(pft,p,&stand->pftlist)
     {
@@ -49,7 +47,7 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
 
       if(pft->par->path==C3)
       {
-        if(aprec<param.aprec_lim)
+        if(stand->cell->climbuf.aprec<param.aprec_lim)
           irrig_threshold=param.irrig_threshold_c3_dry;
         else
           irrig_threshold=param.irrig_threshold_c3_humid;

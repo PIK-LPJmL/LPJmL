@@ -36,10 +36,10 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       int ncft               /**< number of crop PFTs */
                      )
 {
-  int s,p,l,m,count;
+  int s,p,l,count;
   Real wr;
   Real conv_loss,irrig_stand;
-  Real frac_irrig_amount,frac_unsustainable,aprec,irrig_threshold;
+  Real frac_irrig_amount,frac_unsustainable,irrig_threshold;
   Stand *stand;
   Pft *pft;
   Irrigation *data;
@@ -76,9 +76,6 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
       if(data->irrigation)
       {
         /* determine if irrigation today */
-        aprec=0;
-        for(m=0;m<NMONTH;m++)
-          aprec+=max(0,stand->cell->climbuf.mprec20[m]);
         count=0;
         foreachpft(pft,p,&stand->pftlist)
         {
@@ -88,7 +85,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
 
           if(pft->par->path==C3)
           {
-            if(aprec<param.aprec_lim)
+            if(cell->climbuf.aprec<param.aprec_lim)
               irrig_threshold=param.irrig_threshold_c3_dry;
             else
               irrig_threshold=param.irrig_threshold_c3_humid;
