@@ -36,6 +36,7 @@ Bool new_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
   climbuf->atemp_mean20_fix=0;
   climbuf->dval_prec[0]=0;
   climbuf->mprec=0;
+  climbuf->aprec=0;
   climbuf->mpet=0;
   for(d=0;d<NDAYS;d++)
     climbuf->temp[d]=0;
@@ -86,11 +87,15 @@ void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
 void annual_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
                    )
 {
+  int m;
   updatebuffer(climbuf->min,climbuf->temp_min);
   updatebuffer(climbuf->max,climbuf->temp_max);
   climbuf->atemp_mean20 = (climbuf->atemp_mean20<-9998) ? climbuf->atemp : (1-kk)*climbuf->atemp_mean20+kk*climbuf->atemp;
   climbuf->atemp=0;
   climbuf->mtemp_min20 = getbufferavg(climbuf->min);
+  climbuf->aprec=0;
+  for(m=0;m<NMONTH;m++)
+    climbuf->aprec+=climbuf->mprec20[m];
 } /* of 'annual_climbuf' */
 
 Bool fwriteclimbuf(FILE *file, /**< pointer to binary file */
@@ -117,6 +122,7 @@ Bool freadclimbuf(FILE *file,  /**< pointer to binary file */
                   Bool swap /**< byte order has to be swapped (TRUE/FALSE) */
                  ) /** \return TRUE on error */
 {
+  int m;
   freadreal1(&climbuf->temp_max,swap,file);
   freadreal1(&climbuf->temp_min,swap,file);
   freadreal1(&climbuf->atemp_mean,swap,file);
@@ -137,6 +143,9 @@ Bool freadclimbuf(FILE *file,  /**< pointer to binary file */
   climbuf->max=freadbuffer(file,swap);
   climbuf->mtemp_min20 = getbufferavg(climbuf->min);
   climbuf->atemp=0;
+  climbuf->aprec=0;
+  for(m=0;m<NMONTH;m++)
+    climbuf->aprec+=climbuf->mprec20[m];
   return (climbuf->max==NULL);
 } /* of 'freadclimbuf' */
 
