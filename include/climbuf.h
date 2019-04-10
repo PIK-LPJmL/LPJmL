@@ -43,6 +43,7 @@ typedef struct
   Real mtemp20[NMONTH]; /* 20-year average monthly precip */
   Real mtemp_min20; /*20-year average of coldest month temperature*/
   Real aetp_mean;       /*20-year average of evapotranspiration of the cell*/
+  Real aprec;     /**< annual sum of 20-year average monthly precip */
 } Climbuf;
 
 /* Definitions of macros */

@@ -67,7 +67,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             param.min_c_bnf,param.q_ash,param.sapwood_recovery,param.par_sink_limit);
   if(config->withlanduse!=NO_LANDUSE)
   {
-    fprintf(file,"annual prec lim:\t%g\n",param.aprec_lim);
+    fprintf(file,"annual prec lim:\t%g (mm)\n",param.aprec_lim);
     fprintf(file,"irrig. threshold C3 dry:\t%g\n",param.irrig_threshold_c3_dry);
     fprintf(file,"irrig. threshold C3 humid:\t%g\n",
             param.irrig_threshold_c3_humid);
