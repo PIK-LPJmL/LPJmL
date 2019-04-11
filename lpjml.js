@@ -42,6 +42,8 @@
   "river_routing" : true,
   "permafrost" : true,
   "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "const_climate" : false,
+  "const_deposition" : false,
 #ifdef FROM_RESTART
   "population" : false,
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
