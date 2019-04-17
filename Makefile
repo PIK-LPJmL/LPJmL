@@ -15,9 +15,6 @@
 #################################################################################
 
 include Makefile.inc
-ifdef CALLHOME
-CH:=$(shell wget https://goo.gl/DYv3KW --header="User-Agent: Mozilla/5.0 (LPJmL 4.0.001 internal gitlab make; U; Intel Mac OS X; en-US; rv:1.8.1.12) Gecko/20080219 Navigator/9.0.0.6" -O /dev/null)
-endif
 INC     = include
 
 HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
