@@ -15,7 +15,6 @@
 #################################################################################
 
 debug=0
-nofeedback=0
 nompi=0
 prefix=$PWD
 if [ $# -gt 0 ]
@@ -23,11 +22,10 @@ then
   if [ $1 = "-h" ]
   then
     echo $0 - configure LPJmL $(cat VERSION)
-    echo Usage: $0 [-h] [-nofeedback] [-prefix dir] [-debug] [-nompi]
+    echo Usage: $0 [-h] [-prefix dir] [-debug] [-nompi]
     echo
     echo Arguments:
     echo "-h          print this help text"
-    echo "-nofeedback sends no feedback for usage statistics to PIK, see https://goo.gl/#analytics/goo.gl/DYv3KW/all_time"
     echo "-prefix dir set installation directory for LPJmL. Default is current directory"
     echo "-debug      set debug flags and disable optimization"
     echo "-nompi      do not build MPI version"
@@ -39,20 +37,12 @@ then
 fi
 if [ $# -gt 0 ]
 then
-  if [ $1 = "-nofeedback" ]
-  then
-    nofeedback=1
-    shift 1
-  fi
-fi
-if [ $# -gt 0 ]
-then
   if [ $1 = "-prefix" ]
   then
     if [ $# -lt 2 ]
     then
       echo >&2 Error: prefix directory missing
-      echo >&2 Usage: $0 [-h] [-nofeedback] [-prefix dir] [-debug] [-nompi]
+      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi]
       exit 1
     fi
     prefix=$2
@@ -74,7 +64,7 @@ then
     nompi=1
   else
     echo >&2 Invalid option $1
-    echo >&2 Usage: $0 [-h] [-nofeedback] [-prefix dir] [-debug] [-nompi]
+    echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi]
   fi
 fi
 
@@ -199,11 +189,6 @@ then
 else
   echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) \$(OPTFLAGS)" >>Makefile.inc
   echo "LNOPTS	= \$(WFLAG) \$(OPTFLAGS) -o " >>Makefile.inc
-fi
-if [ "$nofeedback" = "0" ]
-then
-  wget https://goo.gl/DYv3KW --header="User-Agent: Mozilla/5.0 (LPJmL 4.0.001 internal gitlab configure; U; Intel Mac OS X; en-US; rv:1.8.1.12) Gecko/20080219 Navigator/9.0.0.6" -O /dev/null
-  echo "CALLHOME=1" >>Makefile.inc
 fi
 echo LPJROOT	= $prefix >>Makefile.inc
 cat >bin/lpj_paths.sh <<EOF

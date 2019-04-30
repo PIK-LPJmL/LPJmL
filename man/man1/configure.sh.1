@@ -3,7 +3,7 @@
 configure.sh \- Configure LPJmL
 .SH SYNOPSIS
 .B configure.sh
-[-h] [-nofeedback] [-prefix \fIdir\fP] [-debug] [-nompi]
+[-h] [-prefix \fIdir\fP] [-debug] [-nompi]
 .SH DESCRIPTION
 Script configures LPJmL for specific OS and compiler. File \fIMakefile.inc\fP and scripts \fBlpj_paths.sh\fP, \fBlpj_paths.csh\fP are created. After configuration LPJmL program and utilities can be created by invoking
 
@@ -13,9 +13,6 @@ Script configures LPJmL for specific OS and compiler. File \fIMakefile.inc\fP an
 .TP
 -h
 display a short help text.
-.TP
--nofeedback
-sends no feedback for usage statistics to PIK, see https://goo.gl/#analytics/goo.gl/DYv3KW/all_time
 .TP
 -prefix \fIdir\fP
 Set installation directory for LPJmL. Default is current working directory.
