@@ -55,10 +55,12 @@ int iterate(Outputfile *output,  /**< Output file data */
   Flux flux;
   int year,landuse_year,wateruse_year,startyear,firstspinupyear;
   Bool rc;
+#ifdef STORECLIMATE
+  Climatedata store,data_save;
+#endif
 
   firstspinupyear=(config->isfirstspinupyear) ?  config->firstspinupyear : input.climate->firstyear;
 #ifdef STORECLIMATE
-  Climatedata store,data_save;
   if(config->nspinup)
   {
     /* climate for the first nspinyear years is stored in memory
