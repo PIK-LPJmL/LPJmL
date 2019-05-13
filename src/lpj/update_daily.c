@@ -46,6 +46,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real *gp_pft;
   Stand *stand;
   Pft *pft;
+  Irrigation *data;
   int l;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
@@ -120,15 +121,17 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       switch(stand->type->landusetype)
       {
         case GRASSLAND:
-          if (cell->output.daily.cft == TEMPERATE_HERBACEOUS)
+          data = stand->data;
+          if (cell->output.daily.cft == TEMPERATE_HERBACEOUS && cell->output.daily.irrigation == data->irrigation)
           {
             cell->output.daily.rh  += hetres;
             cell->output.daily.swe += stand->soil.snowpack;
           }
           break;
         case AGRICULTURE:
+          data = stand->data;
           foreachpft(pft,p,&stand->pftlist)
-            if (pft->par->id == cell->output.daily.cft)
+            if (pft->par->id == cell->output.daily.cft && cell->output.daily.irrigation == data->irrigation)
             {
               cell->output.daily.rh  = hetres;
               cell->output.daily.swe = stand->soil.snowpack;
