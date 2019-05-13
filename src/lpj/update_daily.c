@@ -50,6 +50,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Pft *pft;
   Real bnf;
   Real nh3;
+  Irrigation *data;
   int l;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
@@ -119,20 +120,23 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mrh+=hetres.carbon*stand->frac;
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
+    cell->output.mswe+=stand->soil.snowpack*stand->frac;
     if (withdailyoutput)
     {
       switch(stand->type->landusetype)
       {
         case GRASSLAND:
-          if (cell->output.daily.cft == TEMPERATE_HERBACEOUS)
+          data = stand->data;
+          if (cell->output.daily.cft == TEMPERATE_HERBACEOUS && cell->output.daily.irrigation == data->irrigation)
           {
             cell->output.daily.rh  += hetres.carbon;
             cell->output.daily.swe += stand->soil.snowpack;
           }
           break;
         case AGRICULTURE:
+          data = stand->data;
           foreachpft(pft,p,&stand->pftlist)
-            if (pft->par->id == cell->output.daily.cft)
+            if (pft->par->id == cell->output.daily.cft && cell->output.daily.irrigation == data->irrigation)
             {
               cell->output.daily.rh  = hetres.carbon;
               cell->output.daily.swe = stand->soil.snowpack;
@@ -292,7 +296,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mlakevol+=cell->discharge.dmass_lake*ndaymonth1[month];
   } /* of 'if(river_routing)' */
 
-  cell->output.mswe+=cell->output.daily.swe;
 
   killstand(cell,config->pftpar,npft,intercrop,year);
 #ifdef SAFE
