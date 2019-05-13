@@ -114,6 +114,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     hetres=littersom(&stand->soil,gtemp_soil);
     cell->output.mrh+=hetres*stand->frac;
     cell->output.dcflux+=hetres*stand->frac;
+    cell->output.mswe+=stand->soil.snowpack*stand->frac;
     if (withdailyoutput)
     {
       switch(stand->type->landusetype)
@@ -228,7 +229,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mlakevol+=cell->discharge.dmass_lake*ndaymonth1[month];
   } /* of 'if(river_routing)' */
 
-  cell->output.mswe+=cell->output.daily.swe;
 
   killstand(cell,config->pftpar,npft,intercrop,year);
 #ifdef SAFE
