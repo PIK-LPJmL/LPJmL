@@ -62,9 +62,13 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             "min_c_bnf:\t%g (gC/m2)\n"
             "q_ash:\t\t%g\n"
             "sapwood_rec:\t%g\n"
+            "T_m:\t\t%g (deg C)\n"
+            "T_0:\t\t%g (deg C)\n"
+            "T_r:\t\t%g (deg C)\n"
             "par_sink_limit:\t%g\n",
             param.k_max,param.k_2,param.p,param.n0,param.k_temp,param.denit_threshold,
-            param.min_c_bnf,param.q_ash,param.sapwood_recovery,param.par_sink_limit);
+            param.min_c_bnf,param.q_ash,param.sapwood_recovery,param.T_m,
+            param.T_0,param.T_r,param.par_sink_limit);
   if(config->withlanduse!=NO_LANDUSE)
   {
     fprintf(file,"annual prec lim:\t%g (mm)\n",param.aprec_lim);

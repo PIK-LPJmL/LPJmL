@@ -17,11 +17,7 @@
 
 #include "lpj.h"
 
-#define T_m 15.0
-#define T_0 (-25.0)
-#define T_r 15.0
-
 Real nuptake_temp_fcn(Real soiltemp)
 {
- return max((soiltemp-T_0)*(2*T_m-T_0-soiltemp)/(T_r-T_0)/(2*T_m-T_0-T_r),0);
+ return max((soiltemp-param.T_0)*(2*param.T_m-param.T_0-soiltemp)/(param.T_r-param.T_0)/(2*param.T_m-param.T_0-param.T_r),0);
 } /* of 'nuptake_temp_fcn' */

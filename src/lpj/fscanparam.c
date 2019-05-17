@@ -70,6 +70,9 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.par_sink_limit,"par_sink_limit");
   fscanparamreal(&f,&param.q_ash,"q_ash");
   fscanparamreal(&f,&param.sapwood_recovery,"sapwood_recovery");
+  fscanparamreal(&f,&param.T_m,"T_m");
+  fscanparamreal(&f,&param.T_0,"T_0");
+  fscanparamreal(&f,&param.T_r,"T_r");
   if(config->withlanduse!=NO_LANDUSE)
   {
     fscanparamreal(&f,&param.aprec_lim,"aprec_lim");

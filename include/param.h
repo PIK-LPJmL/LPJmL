@@ -49,6 +49,9 @@ typedef struct
   Real denit_threshold; /**< denitrificaton threshold */
   Real q_ash;        /**< fraction of nitrogen going to litter after fire */
   Real sapwood_recovery; /**< recovery of sapwood nitrogen */
+  Real T_m;          /**< parameter in N uptake temperature function */
+  Real T_0;
+  Real T_r;
   /* IRRIGATION */
   Real aprec_lim;    /**< annual precipitation limit for C3 irrigation threshold */
   Real irrig_threshold_c3_dry; /**< soil moisture irrigation threshold for C3 crops, annual precip < aprec_lim */
