@@ -142,7 +142,19 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(israndom)
   {
     config->seed=RANDOM_SEED;
-    if(fscanint(file,&config->seed,"random_seed",TRUE,verbose))
+    if(isstring(file,"random_seed"))
+    {
+      fscanstring(file,name,"random_seed",FALSE,verbose);
+      if(!strcmp(name,"random_seed"))
+        config->seed=RANDOM_SEED;
+      else
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR233: Invalid string '%s' for random_seed, must be 'random_seed' or number.\n",name);
+        return TRUE;
+      }
+    }
+    else if(fscanint(file,&config->seed,"random_seed",TRUE,verbose))
       return TRUE;
     if(config->seed==RANDOM_SEED)
       config->seed=time(NULL);
