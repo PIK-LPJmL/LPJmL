@@ -154,7 +154,7 @@ static Bool readdata(Climatefile *file,    /* climate data file */
             nc_close(file->ncid);
             return TRUE;
           }
-          data=file->slope*f[file->nlon*address[0]+address[1]]+file->intercept;
+          data=(float)(file->slope*f[file->nlon*address[0]+address[1]]+file->intercept);
           fwrite(&data,sizeof(float),1,bin);
         }
         else
