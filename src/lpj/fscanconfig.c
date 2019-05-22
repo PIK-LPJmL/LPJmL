@@ -181,7 +181,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->prescribe_burntarea && config->fire!=SPITFIRE && config->fire!=SPITFIRE_TMAX)
   {
     if(verbose)
-      fputs("WARNING029: Prescribed burnt area can only by set for SPITFIRE, wll be disabled.\n",stderr);
+      fputs("WARNING029: Prescribed burnt area can only by set for SPITFIRE, will be disabled.\n",stderr);
     config->prescribe_burntarea=FALSE;
   }
   config->prescribe_landcover=NO_LANDCOVER;
