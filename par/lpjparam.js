@@ -48,7 +48,7 @@
   "T_m" : 15.0,              /* parameter in N uptake temperature function */
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
-  "k_mort" : 0.4,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "k_mort" : 0.3,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold (mm) */
   "irrig_threshold_c3_dry" : 0.8,     /* irrigation threshold C3, prec < aprec_lim */
   "irrig_threshold_c3_humid" : 0.9,   /* irrigation threshold C3, prec >= aprec_lim */
