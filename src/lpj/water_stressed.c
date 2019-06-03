@@ -170,14 +170,14 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
   for (l=0;l<LASTLAYER;l++)
      {
        aet_frac=1;
-       if(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
+       if(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc>pft->stand->soil.w[l]*pft->stand->soil.whcs[l])
        {
-         aet_frac=(pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])/(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc);
+         aet_frac=(pft->stand->soil.w[l]*pft->stand->soil.whcs[l])/(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc);
        }
        aet_tmp[l]=aet_layer[l]+aet*rootdist_n[l]*pft->stand->soil.w[l]*aet_frac;
-       if (aet_tmp[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
+       if (aet_tmp[l]>pft->stand->soil.w[l]*pft->stand->soil.whcs[l])
        {
-         aet_cor+=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l]-aet_layer[l];
+         aet_cor+=pft->stand->soil.w[l]*pft->stand->soil.whcs[l]-aet_layer[l];
          if(aet_cor<epsilon) aet_cor=0;
        }
        else
@@ -259,7 +259,8 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
       }
       aet=(wr>0) ? demand*fpar(pft)/wr :0 ;
 
-      pft->nlimit+=pft->vmax/vmax;
+      if(vmax!=0)
+        pft->nlimit+=pft->vmax/vmax;
       if(pft->stand->type->landusetype==AGRICULTURE){
         irrig=pft->stand->data;
         if(&pft->stand->cell->output.daily!=NULL &&
@@ -278,8 +279,8 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
   for (l=0;l<LASTLAYER;l++)
   {
     aet_layer[l]+=aet*rootdist_n[l]*pft->stand->soil.w[l];
-    if (aet_layer[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
-      aet_layer[l]=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l];
+    if (aet_layer[l]>pft->stand->soil.w[l]*pft->stand->soil.whcs[l])
+      aet_layer[l]=pft->stand->soil.w[l]*pft->stand->soil.whcs[l];
   }
   return agd;
 } /* of 'water_stressed' */

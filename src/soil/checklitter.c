@@ -21,37 +21,37 @@ Stocks checklitter(Litter *litter)
   Stocks sum={0,0};
   for(l=0;l<litter->n;l++)
   {
-    if(litter->ag[l].trait.leaf.carbon<0)
+    if(litter->item[l].ag.leaf.carbon<0)
     {
-      sum.carbon+=litter->ag[l].trait.leaf.carbon;
-      litter->ag[l].trait.leaf.carbon=0;
+      sum.carbon+=litter->item[l].ag.leaf.carbon;
+      litter->item[l].ag.leaf.carbon=0;
     }
     for(i=0;i<NFUELCLASS;i++)
-      if(litter->ag[l].trait.wood[i].carbon<0)
+      if(litter->item[l].ag.wood[i].carbon<0)
       {
-        sum.carbon+=litter->ag[l].trait.wood[i].carbon;
-        litter->ag[l].trait.wood[i].carbon=0;
+        sum.carbon+=litter->item[l].ag.wood[i].carbon;
+        litter->item[l].ag.wood[i].carbon=0;
       }
-    if(litter->bg[l].carbon<0)
+    if(litter->item[l].bg.carbon<0)
     {
-      sum.carbon+=litter->bg[l].carbon;
-      litter->bg[l].carbon=0;
+      sum.carbon+=litter->item[l].bg.carbon;
+      litter->item[l].bg.carbon=0;
     }
-    if(litter->ag[l].trait.leaf.nitrogen<0)
+    if(litter->item[l].ag.leaf.nitrogen<0)
     {
-      sum.nitrogen+=litter->ag[l].trait.leaf.nitrogen;
-      litter->ag[l].trait.leaf.nitrogen=0;
+      sum.nitrogen+=litter->item[l].ag.leaf.nitrogen;
+      litter->item[l].ag.leaf.nitrogen=0;
     }
     for(i=0;i<NFUELCLASS;i++)
-      if(litter->ag[l].trait.wood[i].nitrogen<0)
+      if(litter->item[l].ag.wood[i].nitrogen<0)
       {
-        sum.nitrogen+=litter->ag[l].trait.wood[i].nitrogen;
-        litter->ag[l].trait.wood[i].nitrogen=0;
+        sum.nitrogen+=litter->item[l].ag.wood[i].nitrogen;
+        litter->item[l].ag.wood[i].nitrogen=0;
       }
-    if(litter->bg[l].nitrogen<0)
+    if(litter->item[l].bg.nitrogen<0)
     {
-      sum.nitrogen+=litter->bg[l].nitrogen;
-      litter->bg[l].nitrogen=0;
+      sum.nitrogen+=litter->item[l].bg.nitrogen;
+      litter->item[l].bg.nitrogen=0;
     }
   }
   return sum;

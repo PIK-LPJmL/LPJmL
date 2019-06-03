@@ -16,6 +16,11 @@
 
 /*#define USE_LINEAR_CONTACT_T  */ /*linear interpolation between temperatures seems to give a reasonable approximation of contact temperatures between layers*/
 
+#define rho_om 1300.9     /* density of organic matter [kg/m3]*/
+#define bd_leaves 20.0    /* bulk density of non-woody material, different values can be used (see Enrique et al. 1999 [kg/m3])*/
+#define  heatcap_om 2.5e6 /* volumetric heat capacity of organic matter [J/m3/K] */
+#define lambda_litter 0.1
+
 Real soiltemp_lag(const Soil *soil,      /**< Soil data */
                   const Climbuf *climbuf /**< Climate buffer */
                  )                       /** \return soil temperature (deg C) */
@@ -40,6 +45,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
 {
   Real th_diff[NSOILLAYER],      /* thermal diffusivity [m2/s]*/
        heatcap,                  /* heat capacity [J/m2/K] or [J/m3/K]*/
+       heatcap_litter,           /* heat capacity of litter [J/m2/K] or [J/m3/K]*/
        lambda[NSOILLAYER],       /* thermal conductivity [W/K/m]*/
        t_upper,                  /* temperature of upper soil/air/snow layer*/
        t_lower,                  /* temperature of lower soil layer*/
@@ -124,9 +130,17 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
       soil->state[l]=(short)getstate(soil->temp+l);
     }  
   } /* of 'for(l=0;...)' */
+/* for all combinations of temperature gradients and thermal litter properties, the resulting litter temperature is the average of airtemp and soiltemp */
+  soil->litter.agtop_temp=(airtemp+soil->temp[0])/2;
+  /* thermal properties of dry litter for next step */
+  heatcap_litter=heatcap_om*bd_leaves/rho_om;
+
+  /* heat transfer soil layers */
+  t_upper=airtemp*(1-soil->litter.agtop_cover)+soil->litter.agtop_temp*soil->litter.agtop_cover;
+#ifndef USE_LINEAR_CONTACT_T
+  admit_upper=admit[0]*(1-soil->litter.agtop_cover)+sqrt(lambda_litter*heatcap_litter)*soil->litter.agtop_cover;
+#endif
  
-  t_upper=airtemp;
-  admit_upper=admit[0];
   /* calculate soil temperatures */
   for(l=0;l<NSOILLAYER;++l)
   {

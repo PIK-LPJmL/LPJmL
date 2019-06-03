@@ -297,7 +297,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         foreachstand(stand,s,grid[cell].standlist)
         {
           for(p=0;p<stand->soil.litter.n;p++)
-            vec[count]+=(float)(stand->soil.litter.bg[p].carbon*stand->frac);
+            vec[count]+=(float)(stand->soil.litter.item[p].bg.carbon*stand->frac);
           forrootsoillayer(l)
             vec[count]+=(float)((stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac);
         }
@@ -331,10 +331,40 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         vec[count]=0;
         foreachstand(stand,s,grid[cell].standlist)
           /* if(stand->type->landusetype==NATURAL) */
-            vec[count]+=(float)(litter_ag_sum(&stand->soil.litter)*stand->frac);
+            vec[count]+=(float)((litter_ag_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac);
         count++;
       }
       writeannual(output,LITC,vec,year,config);
+  }
+  if(output->files[LITC_ALL].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        foreachstand(stand,s,grid[cell].standlist)
+        {
+          vec[count]+=(float)((litter_ag_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac);
+          for(p=0;p<stand->soil.litter.n;p++)
+            vec[count]+=(float)(stand->soil.litter.item[p].bg.carbon*stand->frac);
+        }
+        count++;
+      }
+      writeannual(output,LITC_ALL,vec,year,config);
+  }
+  if(output->files[LITC_AG].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        foreachstand(stand,s,grid[cell].standlist)
+          vec[count]+=(float)(litter_ag_sum(&stand->soil.litter)*stand->frac);
+        count++;
+      }
+      writeannual(output,LITC_AG,vec,year,config);
   }
   if(isopen(output,VEGN))
   {
@@ -361,7 +391,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         foreachstand(stand,s,grid[cell].standlist)
         {
           for(p=0;p<stand->soil.litter.n;p++)
-            vec[count]+=(float)(stand->soil.litter.bg[p].nitrogen*stand->frac);
+            vec[count]+=(float)(stand->soil.litter.item[p].bg.nitrogen*stand->frac);
           forrootsoillayer(l)
             vec[count]+=(float)((stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac);
         }
@@ -395,7 +425,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         vec[count]=0;
         foreachstand(stand,s,grid[cell].standlist)
           /* if(stand->type->landusetype==NATURAL) */
-            vec[count]+=(float)(litter_ag_sum_n(&stand->soil.litter)*stand->frac);
+            vec[count]+=(float)((litter_ag_sum_n(&stand->soil.litter)+litter_agsub_sum_n(&stand->soil.litter))*stand->frac);
         count++;
       }
       writeannual(output,LITN,vec,year,config);
@@ -447,6 +477,8 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
       writeannual(output,MAXTHAW_DEPTH,vec,year,config);
   }
+  writeoutputvar(RUNOFF_SURF,runoff_surf);
+  writeoutputvar(RUNOFF_LAT,runoff_lat);
   writeoutputvar(FLUX_ESTABC,flux_estab.carbon);
   writeoutputvar(FLUX_ESTABN,flux_estab.nitrogen);
   writeoutputvar(HARVESTC,flux_harvest.carbon);
@@ -482,7 +514,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
             if(stand->type->landusetype!=NATURAL)
             {
               for(p=0;p<stand->soil.litter.n;p++)
-                vec[count]+=(float)(stand->soil.litter.bg[p].carbon*stand->frac);
+                vec[count]+=(float)(stand->soil.litter.item[p].bg.carbon*stand->frac);
               forrootsoillayer(l)
                 vec[count]+=(float)((stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac);
             }
@@ -500,7 +532,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         vec[count]=0;
         foreachstand(stand,s,grid[cell].standlist)
           if(stand->type->landusetype!=NATURAL)
-            vec[count]+=(float)(litter_ag_sum(&stand->soil.litter)*stand->frac);
+            vec[count]+=(float)((litter_ag_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac);
         count++;
       }
     writeannual(output,MG_LITC,vec,year,config);

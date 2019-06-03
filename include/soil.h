@@ -25,6 +25,7 @@
 #define BOTTOMLAYER (NSOILLAYER-1)
 #define NFUELCLASS 4 /* Number of fuel classes */
 #define TOPLAYER 0
+#define NTILLLAYER 1 /* number of layers to be tilled */
 
 #define SNOWLAYER NSOILLAYER
 
@@ -84,8 +85,8 @@ typedef struct
 
 typedef struct
 {
-  Stocks fast;       /* fast-decomposing component */
-  Stocks slow;       /* slow-decomposing component */
+  Stocks fast;       /**< fast-decomposing component */
+  Stocks slow;       /**< slow-decomposing component */
 } Pool;
 
 typedef struct
@@ -104,17 +105,22 @@ typedef struct
 typedef struct
 {
   const struct Pftpar *pft; /**< PFT id for litter */
-  Trait trait;              /**< leaf and wood litter */
+  Trait ag;                 /**< above-ground leaf and wood litter */
+  Trait agsub;              /**< above-ground leaf and wood litter incorporated to first layer through tillage */
+  Stocks bg;                /**< below-ground litter (gC/m2, gN/m2) */
 } Litteritem;
 
 typedef struct
 {
   Real avg_fbd[NFUELCLASS+1]; /**< average fuel bulk densities */
-  Litteritem *ag; /**< above ground litter list for PFTs (gC/m2) */
-  Stocks *bg;        /**< below ground litter (gC/m2) */
-  int n;          /**< Number of above ground litter pools */
+  Litteritem *item;           /**< litter list for PFTs */
+  int n;                      /**< number of litter pools */
+  Real agtop_wcap;            /**< capacity of ag litter to store water in mm */
+  Real agtop_moist;           /**< amount of water stored in ag litter in mm */
+  Real agtop_cover;           /**< fraction of soil coverd by ag litter */
+  Real agtop_temp;            /**< temperature of ag litter */
 #ifdef MICRO_HEATING
-  Real decomC;  /**< litter decomposed*/
+  Real decomC;                /**< litter decomposed (gC/m2) */
 #endif
 } Litter;
 
@@ -129,17 +135,9 @@ typedef struct
   char *name; /**< soil name */
   Real Ks;    /**< hydraulic conductivity (mm/h)*/
   Real Sf;    /**< Suction head (mm)*/
-  Real wpwp;  /**< relative water content at wilting point */
-  Real wfc;   /**< relative water content at field capacity */
-  Real wsat;  /**< relative water content at saturation */
-  Real beta_soil;
-  Real whcs_all;
-  Real whc[NSOILLAYER];   /**< water holding capacity (fraction), whc = wfc - wpwp */
-  Real wsats[NSOILLAYER]; /**< absolute water content at saturation (mm), wsats = wsat * soildepth*/
-  Real whcs[NSOILLAYER];  /**< absolute water holding capacity (mm), whcs = whc * soildepth */
-  Real wpwps[NSOILLAYER]; /**< water at permanent wilting point in mm, depends on soildepth*/
-  Real bulkdens[NSOILLAYER]; /**< bulk density of soil [kg/m3]*/
-  Real k_dry[NSOILLAYER]; /**< thermal conductivity of dry soil */
+  Real sand;  /**< fraction of sand content in soil texture*/
+  Real silt;  /**< fraction of silt content in soil texture*/
+  Real clay;  /**< fraction of clay content in soil texture*/
   int hsg;        /**< hydrological soil group for CN */
   Real tdiff_0;   /**< thermal diffusivity (mm^2/s) at wilting point (0% whc) */
   Real tdiff_15;  /**< thermal diffusivity (mm^2/s) at 15% whc */
@@ -159,22 +157,21 @@ typedef struct
   Real denit_rate;
   Real anion_excl; /* fraction of porosity from which anions are excluded (from SWAT) */
   Real cn_ratio; /* C:N ration in soil pools */
-  //Real albedo; /**< albedo of the soil */
 } Soilpar;  /* soil parameters */
 
 typedef struct
 {
   const Soilpar *par; /**< pointer to soil parameters */
-  Pool pool[LASTLAYER];         /**< fast and slow carbon pool for all layers*/
-  Poolpar k_mean[LASTLAYER];        /**< fast and slow decay constant */
-  Real *c_shift_fast[LASTLAYER];       /**< shifting rate of carbon matter to the different layer*/
-  Real *c_shift_slow[LASTLAYER];       /**< shifting rate of carbon matter to the different layer*/
-  Real NO3[LASTLAYER];      /* NO3 per soillayer gN/m2 */
-  Real NH4[LASTLAYER];      /* NH4 per soillayer gN/m2 */
+  Pool pool[LASTLAYER];          /**< fast and slow carbon pool for all layers*/
+  Poolpar k_mean[LASTLAYER];     /**< fast and slow decay constant */
+  Real *c_shift_fast[LASTLAYER]; /**< shifting rate of carbon matter to the different layer*/
+  Real *c_shift_slow[LASTLAYER]; /**< shifting rate of carbon matter to the different layer*/
+  Real NO3[LASTLAYER];           /**< NO3 per soillayer (gN/m2) */
+  Real NH4[LASTLAYER];           /**< NH4 per soillayer (gN/m2) */
   Real w[NSOILLAYER],            /**< fraction of whc*/
     w_fw[NSOILLAYER];            /**< mm */
   Real w_evap;                   /**< soil moisture content which is not transpired and can evaporate? correct? */
-  Real perc_energy[NSOILLAYER]; /**< energy transfer by percolation*/
+  Real perc_energy[NSOILLAYER];  /**< energy transfer by percolation*/
 #ifdef MICRO_HEATING
   Real micro_heating[NSOILLAYER]; /**< energy of microbiological heating*/
   Real decomC[NSOILLAYER];
@@ -184,10 +181,23 @@ typedef struct
   Real snowheight; /**< height of snow */
   Real snowfraction;  /**< fraction of snow-covered ground */
   Real temp[NSOILLAYER+1];      /**< [deg C]; last layer=snow*/
+  Real Ks[NSOILLAYER];    /**< saturated hydraulic conductivity (mm/h) per layer*/
+  Real wpwp[NSOILLAYER];  /**< relative water content at wilting point */
+  Real wfc[NSOILLAYER];   /**< relative water content at field capacity */
+  Real wsat[NSOILLAYER];  /**< relative water content at saturation */
+  Real whcs_all;
+  Real whc[NSOILLAYER];   /**< water holding capacity (fraction), whc = wfc - wpwp */
+  Real wsats[NSOILLAYER]; /**< absolute water content at saturation (mm), wsats = wsat * soildepth*/
+  Real whcs[NSOILLAYER];  /**< absolute water holding capacity (mm), whcs = whc * soildepth */
+  Real wpwps[NSOILLAYER]; /**< water at permanent wilting point in mm, depends on soildepth*/
   Real ice_depth[NSOILLAYER];   /**< mm */
   Real ice_fw[NSOILLAYER];      /**< mm */
   Real freeze_depth[NSOILLAYER]; /**< mm */
   Real ice_pwp[NSOILLAYER];      /**< fraction of water below pwp frozen */
+  Real k_dry[NSOILLAYER];        /**< thermal conductivity of dry soil */
+  Real bulkdens[NSOILLAYER];     /**<  bulk density of soil [kg/m3]*/
+  Real df_tillage[NTILLLAYER];
+  Real beta_soil[NSOILLAYER];
   short state[NSOILLAYER];
   Real maxthaw_depth;
   Real mean_maxthaw;
@@ -226,9 +236,11 @@ extern Bool fwritelitter(FILE *,const Litter *);
 extern void getlag(Soil *,int);
 extern int getnsoilcode(const Filename *,unsigned int,Bool);
 extern Soilstate getstate(Real *); /*temperature above/below/at T_zero?*/
-extern Bool initsoil(Soil *soil,const Soilpar *, int,Bool);
+extern Bool initsoil(Stand *soil,const Soilpar *, int,Bool);
 extern Real litter_ag_sum(const Litter *);
 extern Real litter_ag_sum_n(const Litter *);
+extern Real litter_agsub_sum(const Litter *);
+extern Real litter_agsub_sum_n(const Litter *);
 extern Real litter_ag_grass(const Litter *);
 extern Real litter_ag_sum_quick(const Litter *);
 extern Stocks littersom(Stand *,Real [NSOILLAYER]);
@@ -262,7 +274,8 @@ extern Real nuptake_temp_fcn(Real);
 extern void denitrification(Stand *);
 extern void getrootdist(Real [],const Real[],Real);
 extern Stocks checklitter(Litter *);
-
+extern void updatelitterproperties(Stand *);
+extern void pedotransfer(Stand *, Real *, Real *,Real);
 
 /* Definition of macros */
 
@@ -270,8 +283,8 @@ extern Stocks checklitter(Litter *);
 #define foreachsoillayer(l) for(l=0;l<NSOILLAYER;l++)
 #define forrootmoist(l) for(l=0;l<3;l++)                   /* here defined for the first 1 m*/
 #define forrootsoillayer(l) for(l=0;l<LASTLAYER;l++)
-#define allice(soil,l) (soil->ice_depth[l]+soil->par->wpwps[l]*soil->ice_pwp[l]+soil->ice_fw[l])
-#define allwater(soil,l) (soil->w[l]*soil->par->whcs[l]+soil->par->wpwps[l]*(1-soil->ice_pwp[l])+soil->w_fw[l])
+#define allice(soil,l) (soil->ice_depth[l]+soil->wpwps[l]*soil->ice_pwp[l]+soil->ice_fw[l])
+#define allwater(soil,l) (soil->w[l]*soil->whcs[l]+soil->wpwps[l]*(1-soil->ice_pwp[l])+soil->w_fw[l])
 #define timestep2sec(timestep,steps) (24.0*3600.0*((timestep)/(steps))) /* convert timestep --> sec */
 #define fprintpool(file,pool) fprintf(file,"%.2f %.2f",pool.slow,pool.fast)
 #define f_temp(soiltemp) exp(-(soiltemp-18.79)*(soiltemp-18.79)/(2*5.26*5.26)) /* Parton et al 2001*/

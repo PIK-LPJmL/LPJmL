@@ -29,7 +29,7 @@ void soilice2moisture(Soil *soil, /**< pointer to soil data */
   
   melt_heat_ice = soil->ice_depth[l]*1e-3*c_water2ice;
   melt_heat_fw = soil->ice_fw[l]*1e-3*c_water2ice;
-  melt_heat_pwp = soil->par->wpwps[l]*soil->ice_pwp[l]*1e-3*c_water2ice;
+  melt_heat_pwp = soil->wpwps[l]*soil->ice_pwp[l]*1e-3*c_water2ice;
   if(melt_heat_ice+melt_heat_pwp+melt_heat_fw > (*heat))
   {
     melt_heat=*heat;
@@ -44,11 +44,11 @@ void soilice2moisture(Soil *soil, /**< pointer to soil data */
     melt_heat=melt_heat_ice+melt_heat_pwp+melt_heat_fw;
   *heat-=melt_heat;
   soil->ice_depth[l]-=melt_heat_ice/c_water2ice*1000;/*[mm]*/
-  soil->w[l]+=(melt_heat_ice/c_water2ice)/soil->par->whcs[l]*1000; /*fraction of whcs*/
+  soil->w[l]+=(melt_heat_ice/c_water2ice)/soil->whcs[l]*1000; /*fraction of whcs*/
   if (fabs(soil->ice_depth[l])<epsilon)
     soil->ice_depth[l]=0;
   /* conversion of water below permanent wilting point*/
-  soil->ice_pwp[l]-=melt_heat_pwp/c_water2ice*1000/soil->par->wpwps[l];
+  soil->ice_pwp[l]-=melt_heat_pwp/c_water2ice*1000/soil->wpwps[l];
   if(fabs(soil->ice_pwp[l])<epsilon)
     soil->ice_pwp[l]=0.0;
   /* conversion of free water */
@@ -57,7 +57,7 @@ void soilice2moisture(Soil *soil, /**< pointer to soil data */
   if (fabs(soil->ice_fw[l])<epsilon)
     soil->ice_fw[l]=0;
 #ifdef SAFE
-  if(soil->ice_depth[l]<0 || soil->ice_depth[l]>(soil->par->whcs[l]+epsilon))
+  if(soil->ice_depth[l]<0 || soil->ice_depth[l]>(soil->whcs[l]+epsilon))
     fprintf(stderr,"soil->ice_depth[%d]=%.10f in soilice2moisture().\n",l,soil->ice_depth[l]);
   if(soil->ice_pwp[l]<0)
     fprintf(stderr,"soil->ice_pwp[%d]=%.10f in soilice2moisture().\n",l,soil->ice_pwp[l]);

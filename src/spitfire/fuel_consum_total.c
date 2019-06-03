@@ -21,10 +21,10 @@ Stocks fuel_consum_total(const Litter *litter,const Fuel *fuel)
   fuel_consum.carbon=fuel_consum.nitrogen=0;
   for(l=0;l<litter->n;l++)
   {
-    fuel_consum.carbon += fuel->deadfuel_consum[0]*litter->ag[l].trait.leaf.carbon;
-    fuel_consum.nitrogen += fuel->deadfuel_consum[0]*litter->ag[l].trait.leaf.nitrogen;
+    fuel_consum.carbon += fuel->deadfuel_consum[0]*litter->item[l].ag.leaf.carbon;
+    fuel_consum.nitrogen += fuel->deadfuel_consum[0]*litter->item[l].ag.leaf.nitrogen;
     for (i=0;i<NFUELCLASS;i++)
-      fuel_consum.nitrogen += fuel->deadfuel_consum[i]*litter->ag[l].trait.wood[i].nitrogen;
+      fuel_consum.nitrogen += fuel->deadfuel_consum[i]*litter->item[l].ag.wood[i].nitrogen;
   }
   return fuel_consum;
 } /* of 'fuel_consum_total' */ 

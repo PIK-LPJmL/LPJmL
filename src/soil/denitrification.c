@@ -46,11 +46,11 @@ void denitrification(Stand *stand  /**< pointer to stand */
     else
       FT=0.0326;
 #ifdef DEBUG_N
-    printf("w=(%g + %g + %g  + %g + %g )/ %g\n",soil->par->wpwps[l],soil->w[l]*soil->par->whcs[l],soil->ice_depth[l],
-           soil->w_fw[l],soil->ice_fw[l],soil->par->wsats[l]);
+    printf("w=(%g + %g + %g  + %g + %g )/ %g\n",soil->wpwps[l],soil->w[l]*soil->whcs[l],soil->ice_depth[l],
+           soil->w_fw[l],soil->ice_fw[l],soil->wsats[l]);
 #endif
-    denit_t = (soil->par->wpwps[l]+soil->w[l]*soil->par->whcs[l]+soil->ice_depth[l]+
-      soil->w_fw[l]+soil->ice_fw[l])/soil->par->wsats[l]; /* denitrification threshold dependent on water filled pore space */
+    denit_t = (soil->wpwps[l]+soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+
+      soil->w_fw[l]+soil->ice_fw[l])/soil->wsats[l]; /* denitrification threshold dependent on water filled pore space */
 
     /* Version without threshold*/
     N_denit = 0.0;

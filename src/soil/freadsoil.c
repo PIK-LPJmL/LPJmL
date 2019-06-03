@@ -48,6 +48,18 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
     return TRUE;
   freadreal(soil->NO3,LASTLAYER,swap,file);
   freadreal(soil->NH4,LASTLAYER,swap,file);
+  freadreal(soil->wsat, NSOILLAYER, swap, file);
+  freadreal(soil->wpwp, NSOILLAYER, swap, file);
+  freadreal(soil->wfc, NSOILLAYER, swap, file);
+  freadreal(soil->whc, NSOILLAYER, swap, file);
+  freadreal(soil->whcs, NSOILLAYER, swap, file);
+  freadreal(soil->wpwps, NSOILLAYER, swap, file);
+  freadreal(soil->wsats, NSOILLAYER, swap, file);
+  freadreal(soil->beta_soil,NSOILLAYER, swap,file);
+  freadreal(soil->bulkdens, NSOILLAYER, swap, file);
+  freadreal(soil->k_dry, NSOILLAYER, swap, file);
+  freadreal(soil->Ks, NSOILLAYER, swap, file);
+  freadreal(soil->df_tillage, NTILLLAYER, swap, file);
   freadreal(soil->w,NSOILLAYER,swap,file);
   freadreal1(&soil->w_evap,swap,file);
   freadreal(soil->w_fw,NSOILLAYER,swap,file);

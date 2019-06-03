@@ -239,7 +239,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
       {
         tinc_ind.root.carbon=bm_inc_ind.carbon;
         tinc_ind.leaf.carbon=(tree->ind.root.carbon+tinc_ind.root.carbon)*lmtorm-tree->ind.leaf.carbon;
-        litter->ag[pft->litter].trait.leaf.carbon+=-tinc_ind.leaf.carbon*pft->nind;
+        litter->item[pft->litter].ag.leaf.carbon+=-tinc_ind.leaf.carbon*pft->nind;
         pft->stand->cell->output.alittfall.carbon+=-tinc_ind.leaf.carbon*pft->nind*pft->stand->frac;
       }
       tinc_ind.sapwood.carbon=(tinc_ind.leaf.carbon+tree->ind.leaf.carbon)*wooddens*tree->height*
@@ -309,7 +309,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
         if(tree->ind.leaf.nitrogen/tree->ind.leaf.carbon<pft->par->ncleaf.low)
         {
           cleaf=tree->ind.leaf.nitrogen/pft->par->ncleaf.low;
-          //litter->ag[pft->litter].trait.leaf.carbon+=(tree->ind.leaf.carbon-cleaf)*pft->nind;
+          //litter->item[pft->litter].ag.leaf.carbon+=(tree->ind.leaf.carbon-cleaf)*pft->nind;
           tree->excess_carbon+=(tree->ind.leaf.carbon-cleaf);
           tree->ind.leaf.carbon=cleaf;
         }
@@ -325,7 +325,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
           csapwood=tree->ind.sapwood.nitrogen/pft->par->ncleaf.low*treepar->ratio.sapwood;
           /*for(i=0;i<NFUELCLASS;i++)
           {
-            litter->ag[pft->litter].trait.wood[i].carbon+=(tree->ind.sapwood.carbon-csapwood)*pft->nind*treepar->fuelfrac[i];
+            litter->item[pft->litter].ag.wood[i].carbon+=(tree->ind.sapwood.carbon-csapwood)*pft->nind*treepar->fuelfrac[i];
             update_fbd_tree(litter,pft->par->fuelbulkdensity,
                             (tree->ind.sapwood.carbon-csapwood)*pft->nind*treepar->fuelfrac[i],i);
           }*/

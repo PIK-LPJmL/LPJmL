@@ -49,6 +49,17 @@
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
   "k_mort" : 0.4,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "till_fallow" : false,     /* apply tillage on black fallow  */
+  "prescribe_residues" : false, /* simulation with prescribed residue rate/pool on black_falow */
+  "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
+  "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
+  "residue_cn": 20,         /* CN ratio of prescribed residues */
+  "residue_fbg": 0.25,      /* belowground fraction of prescribed residues */
+  "fix_fertilization" : false, /* simulation with fixed fertilizer application rate */
+  "fertilizer_rate" : 20,     /* fixed fertilizer application rate in gN/m2/yr */
+  "residue_frac" : 0.95,      /* fraction of residues to be submerged by tillage */
+  "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
+  "till_startyear" : 1850,    /* year in which tillage should start */
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold (mm) */
   "irrig_threshold_c3_dry" : 0.8,     /* irrigation threshold C3, prec < aprec_lim */
   "irrig_threshold_c3_humid" : 0.9,   /* irrigation threshold C3, prec >= aprec_lim */

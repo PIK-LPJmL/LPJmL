@@ -280,7 +280,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
       irrigation->irrig_stor=0;
       irrigation->irrig_amount=0;
     }
-    if(setaside(stand->cell,stand,config->pftpar,intercrop,npft,irrigation->irrigation,year))
+    if(setaside(stand->cell,stand,config->pftpar,config->with_tillage,intercrop,npft,irrigation->irrigation,year))
       return TRUE;
   }
   else

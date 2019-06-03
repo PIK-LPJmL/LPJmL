@@ -66,7 +66,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
             stocks=cultivate(cell,config->pftpar+npft+cft,
                              cell->ml.cropdates[cft].vern_date20,
                              cell->ml.landfrac[0].crop[cft],FALSE,day,wtype,
-                             setasidestand,istimber,config->irrig_scenario,
+                             setasidestand,config->with_tillage,istimber,config->irrig_scenario,
                              npft,ncft,cft,year);
             flux_estab.carbon+=stocks.carbon;
             flux_estab.nitrogen+=stocks.nitrogen;
@@ -96,7 +96,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
             stocks=cultivate(cell,config->pftpar+npft+cft,
                              cell->ml.cropdates[cft].vern_date20,
                              cell->ml.landfrac[1].crop[cft],TRUE,day,wtype,
-                             setasidestand,istimber,config->irrig_scenario,
+                             setasidestand,config->with_tillage,istimber,config->irrig_scenario,
                              npft,ncft,cft,year);
             flux_estab.carbon+=stocks.carbon;
             flux_estab.nitrogen+=stocks.nitrogen;

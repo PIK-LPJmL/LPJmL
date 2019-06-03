@@ -238,6 +238,7 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
           fvec[count++]=(float)grid[cell].output.msoiltemp[l];
       writemonth2(output,MSOILTEMP,fvec,year,month,l,NSOILLAYER,config);
     }
+  writeoutputvar(MMG_SOILC,msoilc1);
   writeoutputvar(MSOILTEMP1,msoiltemp[0]);
   writeoutputvar(MSOILTEMP2,msoiltemp[1]);
   writeoutputvar(MSOILTEMP3,msoiltemp[2]);

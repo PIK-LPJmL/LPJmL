@@ -475,7 +475,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
           {
             if(i==0)
               for(p=0;p<stand->soil.litter.n;p++)
-                fvec[count]+=(float)(stand->soil.litter.bg[p].carbon*stand->frac);
+                fvec[count]+=(float)(stand->soil.litter.item[p].bg.carbon*stand->frac);
             fvec[count]+=(float)((stand->soil.pool[i].slow.carbon+stand->soil.pool[i].fast.carbon)*stand->frac);
           }   
           count++;
@@ -499,7 +499,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
           {
             if(i==0)
               for(p=0;p<stand->soil.litter.n;p++)
-                fvec[count]+=(float)(stand->soil.litter.bg[p].nitrogen*stand->frac);
+                fvec[count]+=(float)(stand->soil.litter.item[p].bg.nitrogen*stand->frac);
             fvec[count]+=(float)((stand->soil.pool[i].slow.nitrogen+stand->soil.pool[i].fast.nitrogen)*stand->frac);
           }
           count++;

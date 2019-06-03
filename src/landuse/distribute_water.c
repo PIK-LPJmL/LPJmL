@@ -81,7 +81,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
         {
           wr=0;
           for(l=0;l<LASTLAYER;l++)
-            wr+=pft->par->rootdist[l]*(stand->soil.w[l]+stand->soil.ice_depth[l]/stand->soil.par->whcs[l]);
+            wr+=pft->par->rootdist[l]*(stand->soil.w[l]+stand->soil.ice_depth[l]/stand->soil.whcs[l]);
 
           if(pft->par->path==C3)
           {

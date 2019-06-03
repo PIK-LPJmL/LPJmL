@@ -18,13 +18,15 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 
-Bool initsoil(Soil *soil,             /**< Pointer to soil data */
+Bool initsoil(Stand *stand,            /**< Pointer to stand data */
               const Soilpar *soilpar, /**< soil parameter array */
               int ntotpft,            /**< number of PFT including crops*/
               Bool with_nitrogen      /**< nitrogen cycle enabled? (TRUE/FALSE) */
              )                        /** \return TRUE on error */
 {
+  Soil *soil;
   int l,p;
+  soil=&stand->soil;
   soil->par=soilpar;
   forrootsoillayer(l)
   {
@@ -61,6 +63,7 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
     soil->ice_pwp[l]=0;
     soil->state[l]=NOSTATE;
     soil->perc_energy[l]=0;
+    soil->whcs[l]=0;
 #ifdef MICRO_HEATING
     soil->micro_heating[l]=0;
     soil->decomC[l]=0;
@@ -101,5 +104,53 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
   for (l=0;l<=NFUELCLASS;l++)
     soil->litter.avg_fbd[l]=0.0;
   soil->snowheight=soil->snowfraction=soil->rw_buffer=0;
+  for(l=0;l<NTILLLAYER;l++)
+    soil->df_tillage[l]=1.0;
+  if(soil->par->type==ROCK)
+  {
+    foreachsoillayer(l)
+    {
+      soil->wsat[l] = 0.006;
+      soil->wpwp[l] = 0.0001;
+      soil->wfc[l] = 0.005;
+      soil->whc[l] = soil->wfc[l] - soil->wpwp[l];
+      soil->whcs[l] = soil->whc[l] * soildepth[l];
+      soil->wpwps[l] = soil->wpwp[l] * soildepth[l];
+      soil->wsats[l] = soil->wsat[l] * soildepth[l];
+      soil->bulkdens[l] = (1 - soil->wsats[l] / soildepth[l])*MINERALDENS;
+      soil->k_dry[l] = 8.8;
+      soil->Ks[l] = 0.1;
+      soil->beta_soil[l] = -2.655 / log10(soil->wfc[l] / soil->wsat[l]);
+    }
+  }
+  else
+  {
+    foreachsoillayer(l)
+    {
+      soil->wsat[l] = 0.0;
+      soil->wpwp[l] = 0.0;
+      soil->wfc[l] = 0.0;
+      soil->whc[l] = 0.0;
+      soil->whcs[l] = 0.0;
+      soil->wpwps[l] = 0.0;
+      soil->wsats[l] = 0.0;
+      soil->bulkdens[l] = 0.0;
+      soil->k_dry[l] = 0.0;
+      soil->Ks[l] = 0.0;
+    }
+    pedotransfer(stand,NULL,NULL,stand->frac);
+  }
+    /*assume last layer is bedrock in 6-layer version */
+  soil->wsat[BOTTOMLAYER] = 0.006;
+  soil->wpwp[BOTTOMLAYER] = 0.001;
+  soil->wfc[BOTTOMLAYER] = 0.003;
+  soil->whc[BOTTOMLAYER] = soil->wfc[BOTTOMLAYER] - soil->wpwp[BOTTOMLAYER]; /*0.006 wsat - 0.002 whc - 0.001 wpwp = 0.003 for free water */
+  soil->whcs[BOTTOMLAYER] = soil->whc[BOTTOMLAYER] * soildepth[BOTTOMLAYER];
+  soil->wpwps[BOTTOMLAYER] = soil->wpwp[BOTTOMLAYER] * soildepth[BOTTOMLAYER];
+  soil->wsats[BOTTOMLAYER] = soil->wsat[BOTTOMLAYER] * soildepth[BOTTOMLAYER];
+  soil->bulkdens[BOTTOMLAYER] = (1 - soil->wsats[BOTTOMLAYER] / soildepth[BOTTOMLAYER])*MINERALDENS;
+  soil->k_dry[BOTTOMLAYER] = 0.039*pow(soil->wsats[BOTTOMLAYER] / soildepth[BOTTOMLAYER], -2.2);
+  soil->Ks[BOTTOMLAYER] = 0.1;
+  soil->beta_soil[BOTTOMLAYER] = -2.655 / log10(soil->wfc[BOTTOMLAYER] / soil->wsat[BOTTOMLAYER]);
   return FALSE;
 } /* of 'initsoil' */

@@ -47,6 +47,7 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   cell->output.mphen_tmax*=ndaymonth1[month];
   cell->output.mphen_light*=ndaymonth1[month];
   cell->output.mphen_water*=ndaymonth1[month];
+  cell->output.msoilc1*=ndaymonth1[month];
   cell->output.mwscal*=ndaymonth1[month];
   cell->output.atransp+=cell->output.mtransp;
   cell->output.aevap+=cell->output.mevap;
@@ -58,6 +59,8 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   cell->output.aconv_loss_evap+=cell->output.mconv_loss_evap;
   cell->output.aconv_loss_drain+=cell->output.mconv_loss_drain;
   cell->output.aburntarea+=cell->output.mburntarea;
+  cell->output.runoff_surf+=cell->output.mrunoff_surf;
+  cell->output.runoff_lat+=cell->output.mrunoff_lat;
 #ifdef IMAGE
   cell->ml.image_data->anpp+=cell->output.mnpp;
   cell->ml.image_data->arh+=cell->output.mrh;

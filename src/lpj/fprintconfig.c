@@ -196,12 +196,22 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,"const. climate");
   if(config->const_deposition)
     len=printsim(file,len,&count,"const. deposition");
+  if(config->no_ndeposition)
+    len=printsim(file,len,&count,"no N deposition");
   if(config->river_routing)
     len=printsim(file,len,&count,"river routing");
   if(config->with_nitrogen)
     len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
+  if(config->black_fallow)
+  {
+    len=printsim(file,len,&count,"black fallow");
+    if(config->till_fallow)
+      len=printsim(file,len,&count,"tillage fallow");
+    if(config->prescribe_residues)
+      len=printsim(file,len,&count,"prescribe residues");
+  }
   if(config->prescribe_landcover)
     len=printsim(file,len,&count,(config->prescribe_landcover==LANDCOVEREST) ? "prescribed establishment":"prescribed maximum FPC");
   if(config->new_phenology)
@@ -225,6 +235,11 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       len=printsim(file,len,&count,"rainwater management, ");
     len=fputstring(file,len,irrig[config->irrig_scenario],78);
     len=fputstring(file,len," irrigation",78);
+    if(config->fix_fertilization)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"fixed fertilization",78);
+    }
     if(config->intercrop)
     {
       len+=fprintf(file,", ");
@@ -234,6 +249,11 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     {
       len+=fprintf(file,", ");
       len=fputstring(file,len,"timber",78);
+    }
+    if(config->with_tillage)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"tillage",78);
     }
     if(config->remove_residuals)
     {

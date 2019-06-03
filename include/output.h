@@ -231,10 +231,14 @@ typedef struct
   Stocks timber_harvest;   /**< carbon and nitrogen harvested as timber [g/m2/a] */
   Real product_pool_fast;  /**< carbon in the fast product pool */
   Real product_pool_slow;  /**< carbon in the slow product pool */
+  Real msoilc1;            /**< slow+fast+bg litter carbon in the first soil layer (gC/m2/month) */
   Real *cft_luc_image;     /**< LUC data received by IMAGE [0-1], CFT specific */
   Real msoiltemp[NSOILLAYER]; /**< monthly soil temperature in deg C for  6 layer*/
   Real mrunoff_surf;       /**< monthly surface runoff in mm*/
   Real mrunoff_lat;        /**< monthly lateral runoff in mm*/
+  Real runoff_surf;        /**< annual surface runoff in mm*/
+  Real runoff_lat;         /**< annual lateral runoff in mm*/
+
   Real mseepage;           /**< monthly seepage water in mm*/
   Real mgcons_rf;          /**< monthly green water consumption on rainfed stands */
   Real mgcons_irr;         /**< monthly green water consumption on irrigated stands */

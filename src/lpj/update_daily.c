@@ -19,6 +19,7 @@
 #include "agriculture.h"
 
 #define length 1.0 /* characteristic length (m) */
+#define BIOTURBRATE 0.001897 /* daily rate for 50% annual bioturbation rate [-]*/
 
 void update_daily(Cell *cell,            /**< cell pointer           */
                   Real co2,              /**< atmospheric CO2 (ppmv) */
@@ -51,7 +52,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real bnf;
   Real nh3;
   Irrigation *data;
-  int l;
+  int index,l;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
@@ -78,6 +79,41 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     update_nesterov(cell,&climate);
   foreachstand(stand,s,cell->standlist)
   {
+    for (l = 0; l < stand->soil.litter.n; l++) {
+      stand->soil.litter.item[l].agsub.leaf.carbon += stand->soil.litter.item[l].ag.leaf.carbon*BIOTURBRATE;
+      stand->soil.litter.item[l].ag.leaf.carbon *= 1 - BIOTURBRATE;
+      stand->soil.litter.item[l].agsub.leaf.nitrogen += stand->soil.litter.item[l].ag.leaf.nitrogen*BIOTURBRATE;
+      stand->soil.litter.item[l].ag.leaf.nitrogen *= 1 - BIOTURBRATE;
+    }
+
+    if(stand->type->landusetype==NATURAL && config->black_fallow && (day==152 || day==335))
+    {
+      if(config->prescribe_residues && param.residue_rate>0 && param.residue_pool<=0)
+      {
+        index=findlitter(&stand->soil.litter,config->pftpar+npft);
+        if(index==NOT_FOUND)
+          index=addlitter(&stand->soil.litter,config->pftpar+npft)-1;
+        stand->soil.litter.item[index].ag.leaf.carbon+=param.residue_rate*(1-param.residue_fbg)/2;
+        stand->soil.litter.item[index].ag.leaf.nitrogen+=param.residue_rate*(1-param.residue_fbg)/param.residue_cn/2;
+        stand->soil.litter.item[index].bg.carbon+=param.residue_rate*param.residue_fbg*0.5;
+        stand->soil.litter.item[index].bg.nitrogen+=param.residue_rate*param.residue_fbg/param.residue_cn/2;
+        stand->cell->output.flux_estab.carbon+=param.residue_rate*0.5;
+        stand->cell->output.flux_estab.nitrogen+=param.residue_rate/param.residue_cn*0.5;
+        updatelitterproperties(stand);
+      }
+      if(config->fix_fertilization)
+      {
+        stand->soil.NO3[0]+=param.fertilizer_rate*0.25;
+        stand->soil.NH4[0]+=param.fertilizer_rate*0.25;
+        cell->balance.n_influx+=param.fertilizer_rate*0.5*stand->frac;
+      }
+      if(config->till_fallow)
+      {
+        tillage(&stand->soil,param.residue_frac);
+        pedotransfer(stand,NULL,NULL,stand->frac);
+        updatelitterproperties(stand);
+      }
+    }
     beta=albedo_stand(stand);
     radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,beta,config->with_radiation);
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
@@ -91,6 +127,15 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                       climate.temp,&temp_bs,&evap)*stand->frac;
       cell->discharge.drunoff+=snowrunoff;
       cell->output.mevap+=evap*stand->frac; /* evap from snow runoff*/
+      if(climate.prec+melt>epsilon)
+      {
+        prec_energy=climate.temp*climate.prec*1e-3*c_water + T_zero*melt*1e-3*c_water + stand->soil.litter.agtop_temp*stand->soil.litter.agtop_moist*1e-3*c_water + stand->soil.litter.agtop_temp*litter_ag_sum(&stand->soil.litter)/0.5*1e-3/1300*2.5e6;
+        stand->soil.litter.agtop_temp=prec_energy/(climate.prec*1e-3*c_water + melt*1e-3*c_water + stand->soil.litter.agtop_moist*1e-3*c_water + litter_ag_sum(&stand->soil.litter)/0.5*1e-3/1300*2.5e6);
+        stand->soil.perc_energy[TOPLAYER]=(stand->soil.litter.agtop_temp-stand->soil.temp[TOPLAYER])*(climate.prec+melt)*1e-3*c_water;
+      }
+      else
+        stand->soil.perc_energy[TOPLAYER]=0;
+
       prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
                     +melt*1e-3*(T_zero-stand->soil.temp[TOPLAYER]))*c_water;
       stand->soil.perc_energy[TOPLAYER]=prec_energy;
@@ -110,13 +155,34 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       gtemp_soil[0]=temp_response(soiltemp_lag(&stand->soil,&cell->climbuf));
       for(l=1;l<NSOILLAYER;l++)
         gtemp_soil[l]=gtemp_soil[0];
+      stand->soil.litter.agtop_temp=soiltemp_lag(&stand->soil,&cell->climbuf);
       snowrunoff=snow_old(&stand->soil.snowpack,&climate.prec,&melt,climate.temp)*stand->frac;
       cell->discharge.drunoff+=snowrunoff;
     }
     foreachsoillayer(l)
       cell->output.msoiltemp[l]+=stand->soil.temp[l]*ndaymonth1[month]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
+    /* update soil and litter properties to account for all changes since last call of littersom */
+    pedotransfer(stand,NULL,NULL,stand->frac);
+    updatelitterproperties(stand);
+
     hetres=littersom(stand,gtemp_soil);
+
+    if(stand->type->landusetype==NATURAL && config->black_fallow && config->prescribe_residues && param.residue_pool>0)
+    {
+      index=findlitter(&stand->soil.litter,config->pftpar+npft);
+      if(index==NOT_FOUND)
+        index=addlitter(&stand->soil.litter,config->pftpar+npft)-1;
+      stand->cell->output.flux_estab.carbon+=param.residue_pool-stand->soil.litter.item[index].ag.leaf.carbon;
+      stand->soil.litter.item[index].ag.leaf.carbon=param.residue_pool;
+      stand->cell->output.flux_estab.nitrogen+=param.residue_pool/param.residue_cn-stand->soil.litter.item[index].ag.leaf.nitrogen;
+      stand->soil.litter.item[index].ag.leaf.nitrogen=param.residue_pool/param.residue_cn;
+    }
+
+    /* update soil and litter properties to account for all changes from littersom */
+    pedotransfer(stand,NULL,NULL,stand->frac);
+    updatelitterproperties(stand);
+
     cell->output.mrh+=hetres.carbon*stand->frac;
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
@@ -170,7 +236,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         }
         cell->balance.n_influx+=2000*stand->frac;
       }
-      else
+      else if(!config->no_ndeposition)
       {
         if(stand->soil.par->type==ROCK)
         {
@@ -226,10 +292,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     climate.prec=prec_save;
 
     foreachsoillayer(l)
-      cell->output.mswc[l]+=(stand->soil.w[l]*stand->soil.par->whcs[l]+stand->soil.w_fw[l]+stand->soil.par->wpwps[l]+
-                     stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.par->wsats[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+      cell->output.mswc[l]+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
+                     stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.wsats[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     forrootmoist(l)
       cell->output.mrootmoist+=stand->soil.w[l]*soildepth[l]/rootdepth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    cell->output.msoilc1+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
   } /* of foreachstand */
 
 #ifdef COUPLING_WITH_FMS
@@ -297,7 +364,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   } /* of 'if(river_routing)' */
 
 
-  killstand(cell,config->pftpar,npft,intercrop,year);
+  killstand(cell,config->pftpar,npft,config->with_tillage,intercrop,year);
 #ifdef SAFE
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 #endif

@@ -195,6 +195,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->sdate_option=NO_FIXED_SDATE;
   config->rw_manage=FALSE;
   config->const_climate=FALSE;
+  config->with_tillage=FALSE;
   if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
     return TRUE;
   config->const_deposition=FALSE;
@@ -241,6 +242,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         config->fertilizer_input=TRUE;
         if(fscanbool(file,&config->fertilizer_input,"fertilizer_input",TRUE,verbose))
           return TRUE;
+        config->fix_fertilization=FALSE;
+        if(fscanbool(file,&config->fix_fertilization,"fix_fertilization",TRUE,verbose))
+          return TRUE;
       }
       config->istimber=FALSE;
       if(fscanbool(file,&config->istimber,"istimber",TRUE,verbose))
@@ -271,7 +275,19 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       grassharvest=FALSE;
       if(fscanbool(file,&grassharvest,"grass_harvest_options",TRUE,verbose))
         return TRUE;
+      fscanbool2(file,&config->with_tillage,"tillage");
     }
+    config->black_fallow=FALSE;
+    if(fscanbool(file,&config->black_fallow,"black_fallow",TRUE,verbose))
+      return TRUE;
+    if(config->black_fallow)
+    {
+      fscanbool2(file,&config->till_fallow,"till_fallow");
+      fscanbool2(file,&config->prescribe_residues,"prescribe_residues");
+    }
+    config->no_ndeposition=FALSE;
+    if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
+      return TRUE;
     if(isboolean(file,"wateruse"))
     {
       if(verbose)

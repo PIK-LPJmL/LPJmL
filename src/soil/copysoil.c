@@ -47,19 +47,19 @@ void copysoil(Soil *dst,       /**< destination */
   dst->maxthaw_depth=src->maxthaw_depth;
   dst->mean_maxthaw=src->mean_maxthaw;
   dst->decomp_litter_mean=src->decomp_litter_mean;
+  dst->whcs_all=src->whcs_all;
+  dst->litter.agtop_wcap=src->litter.agtop_wcap;
+  dst->litter.agtop_moist=src->litter.agtop_moist;
+  dst->litter.agtop_cover=src->litter.agtop_cover;
+  dst->litter.agtop_temp=src->litter.agtop_temp;
   freelitter(&dst->litter);
   dst->litter.n=src->litter.n;
   if(src->litter.n>0)
   {
-    dst->litter.ag=newvec(Litteritem,src->litter.n);
-    check(dst->litter.ag);
-    dst->litter.bg=newvec(Stocks,src->litter.n);
-    check(dst->litter.bg);
+    dst->litter.item=newvec(Litteritem,src->litter.n);
+    check(dst->litter.item);
     for(i=0;i<src->litter.n;i++)
-    {
-      dst->litter.ag[i]=src->litter.ag[i];
-      dst->litter.bg[i]=src->litter.bg[i];
-    }
+      dst->litter.item[i]=src->litter.item[i];
   }
   for(i=0;i<NFUELCLASS+1;i++)
     dst->litter.avg_fbd[i]=src->litter.avg_fbd[i];
@@ -73,6 +73,17 @@ void copysoil(Soil *dst,       /**< destination */
     dst->ice_pwp[i]=src->ice_pwp[i];
     dst->state[i]=src->state[i];
     dst->perc_energy[i]=src->perc_energy[i];
+    dst->wpwp[i]=src->wpwp[i];
+    dst->wfc[i]=src->wfc[i];
+    dst->wsat[i]=src->wsat[i];
+    dst->whc[i]=src->whc[i];
+    dst->wsats[i]=src->wsats[i];
+    dst->whcs[i]=src->whcs[i];
+    dst->wpwps[i]=src->wpwps[i];
+    dst->k_dry[i]=src->k_dry[i];
+    dst->Ks[i]=src->Ks[i];
+    dst->bulkdens[i]=src->bulkdens[i];
+    dst->beta_soil[i]=src->beta_soil[i];
 #ifdef MICRO_HEATING
     dst->micro_heating[i]=src->micro_heating[i];
     dst->decomC[i]=src->decomC[i];
@@ -82,4 +93,6 @@ void copysoil(Soil *dst,       /**< destination */
   for(i=0;i<NSOILLAYER+1;i++)
     dst->temp[i]=src->temp[i];
   dst->rw_buffer=src->rw_buffer;
+  for(i=0;i<NTILLLAYER;i++)
+    dst->df_tillage[i]=src->df_tillage[i];
 } /* of 'copysoil' */

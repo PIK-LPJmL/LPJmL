@@ -31,9 +31,8 @@ Bool freadlitter(FILE *file, /**< File pointer to binary file */
   litter->n=b;
   if(litter->n)
   {
-    litter->ag=newvec(Litteritem,litter->n);
-    litter->bg=newvec(Stocks,litter->n);
-    if(litter->ag==NULL || litter->bg==NULL)
+    litter->item=newvec(Litteritem,litter->n);
+    if(litter->item==NULL)
     {
       printallocerr("litter");
       return TRUE;
@@ -42,34 +41,34 @@ Bool freadlitter(FILE *file, /**< File pointer to binary file */
     {
       if(fread(&b,sizeof(b),1,file)!=1)
       {
-        free(litter->ag);
-        free(litter->bg);
+        free(litter->item);
         litter->n=0;
-        litter->ag=NULL;
-        litter->bg=NULL;
+        litter->item=NULL;
         return TRUE;
       }
-      litter->ag[i].pft=pftpar+b;
+      litter->item[i].pft=pftpar+b;
       if(b>=ntotpft)
       {
         fprintf(stderr,"ERROR195: Invalid value %d for PFT index litter.\n",(int)b);
-        free(litter->ag);
-        free(litter->bg);
+        free(litter->item);
         litter->n=0;
-        litter->ag=NULL;
-        litter->bg=NULL;
+        litter->item=NULL;
         return TRUE;
       }
-      if(freadreal((Real *)&litter->ag[i].trait,sizeof(Trait)/sizeof(Real),
+      if(freadreal((Real *)&litter->item[i].ag,sizeof(Trait)/sizeof(Real),
                    swap,file)!=sizeof(Trait)/sizeof(Real))
         return TRUE;
-      freadreal((Real *)(&litter->bg[i]),sizeof(Stocks)/sizeof(Real),swap,file);
+      if(freadreal((Real *)&litter->item[i].agsub,sizeof(Trait)/sizeof(Real),
+                   swap,file)!=sizeof(Trait)/sizeof(Real))
+        return TRUE;
+      freadreal((Real *)(&litter->item[i].bg),sizeof(Stocks)/sizeof(Real),swap,file);
     }
   }
   else
-  {
-    litter->ag=NULL;
-    litter->bg=NULL;
-  }
+    litter->item=NULL;
+  freadreal1(&litter->agtop_wcap,swap,file);
+  freadreal1(&litter->agtop_moist,swap,file);
+  freadreal1(&litter->agtop_cover,swap,file);
+  freadreal1(&litter->agtop_temp,swap,file);
   return FALSE;
 } /* of 'freadlitter' */

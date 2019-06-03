@@ -75,10 +75,10 @@ void iterateyear(Outputfile *output,  /**< Output file data */
             laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
           if(year>config->firstyear-config->nspinup)
             landusechange(grid+cell,config->pftpar,npft,ncft,config->ntypes,
-                          intercrop,istimber,year,config->pft_output_scaled);
+                          intercrop,config->with_tillage,istimber,year,config->pft_output_scaled);
           else if(grid[cell].ml.dam)
             landusechange_for_reservoir(grid+cell,config->pftpar,npft,istimber,
-                                        intercrop,ncft,year);
+                                        config->with_tillage,intercrop,ncft,year);
         }
 #ifdef IMAGE
         setoutput_image(grid+cell,ncft);

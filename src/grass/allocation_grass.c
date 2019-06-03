@@ -94,9 +94,9 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         inc_ind.root.carbon=bm_inc_ind.carbon;
         inc_ind.leaf.carbon=(grass->ind.root.carbon+inc_ind.root.carbon)*lmtorm-grass->ind.leaf.carbon;
         /* put negative carbon only into litter if litter is large enough otherwise into estab flux */
-        if(litter->ag[pft->litter].trait.leaf.carbon>=inc_ind.leaf.carbon*pft->nind)
+        if(litter->item[pft->litter].ag.leaf.carbon>=inc_ind.leaf.carbon*pft->nind)
         {
-          litter->ag[pft->litter].trait.leaf.carbon-=inc_ind.leaf.carbon*pft->nind;
+          litter->item[pft->litter].ag.leaf.carbon-=inc_ind.leaf.carbon*pft->nind;
           output->alittfall.carbon-=inc_ind.leaf.carbon*pft->nind*pft->stand->frac;
         }
         else
@@ -155,10 +155,10 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
           if (lastday.root.carbon>grass->ind.root.nitrogen / pft->par->ncleaf.low*grasspar->ratio)
           {
             grass->ind.root.carbon = grass->ind.root.nitrogen / pft->par->ncleaf.low*grasspar->ratio;
-            litter->bg[pft->litter].carbon += lastday.root.carbon - grass->ind.root.carbon;
+            litter->item[pft->litter].bg.carbon += lastday.root.carbon - grass->ind.root.carbon;
             output->alittfall.carbon += (lastday.root.carbon - grass->ind.root.carbon)*pft->stand->frac;
           }
-          litter->ag[pft->litter].trait.leaf.carbon += lastday.leaf.carbon - grass->ind.leaf.carbon;
+          litter->item[pft->litter].ag.leaf.carbon += lastday.leaf.carbon - grass->ind.leaf.carbon;
           output->alittfall.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->stand->frac;
           update_fbd_grass(litter, pft->par->fuelbulkdensity,
                            lastday.leaf.carbon - grass->ind.leaf.carbon);

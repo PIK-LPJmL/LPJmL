@@ -34,20 +34,20 @@ Real soilconduct(const Soil *soil, /**< pointer to soil data */
 #ifdef JOHANSEN
    Real k_sat,sat,ke,
         por;
-   por=soil->par->wsats[layer]/soildepth[layer];  /*porosity*/
+   por=soil->wsats[layer]/soildepth[layer];  /*porosity*/
    k_sat = pow(K_SOLID,(1-por))*pow(K_ICE,(por*soil->freeze_depth[layer]/soildepth[layer]))
            *pow(K_WATER,(por*(1-soil->freeze_depth[layer]/soildepth[layer])));
    /* saturation */
-   sat=(soil->w[layer]*soil->par->whcs[layer]+soil->ice_depth[layer]+soil->par->wpwps[layer]
-        +soil->w_fw[layer]+soil->ice_fw[layer])/soil->par->wsats[layer];
+   sat=(soil->w[layer]*soil->whcs[layer]+soil->ice_depth[layer]+soil->wpwps[layer]
+        +soil->w_fw[layer]+soil->ice_fw[layer])/soil->wsats[layer];
    /*Kersten number*/
    ke=(soil->freeze_depth[layer]>epsilon || sat < 0.1) ? sat : log10(sat)+1;
-   conduct = (k_sat-soil->par->k_dry[layer])*ke+soil->par->k_dry[layer];
+   conduct = (k_sat-soil->k_dry[layer])*ke+soil->k_dry[layer];
 #else
   Real conduct_w,conduct_ice;
-  conduct_w=(soil->w[layer]*soil->par->whcs[layer]+soil->w_fw[layer]+soil->par->wpwps[layer])
-             /(soil->par->wsats[layer])*(soil->par->tcond_100-soil->par->tcond_pwp);
-  conduct_ice=(soil->ice_depth[layer]+soil->ice_fw[layer]+soil->par->wpwps[layer])/soil->par->wsats[layer]*(soil->par->tcond_100_ice-soil->par->tcond_pwp);
+  conduct_w=(soil->w[layer]*soil->whcs[layer]+soil->w_fw[layer]+soil->wpwps[layer])
+             /(soil->wsats[layer])*(soil->par->tcond_100-soil->par->tcond_pwp);
+  conduct_ice=(soil->ice_depth[layer]+soil->ice_fw[layer]+soil->wpwps[layer])/soil->wsats[layer]*(soil->par->tcond_100_ice-soil->par->tcond_pwp);
   conduct = soil->par->tcond_pwp + conduct_w + conduct_ice;
 #endif
   return conduct;

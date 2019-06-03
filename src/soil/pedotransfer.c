@@ -1,0 +1,147 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**               p e d o t r a n s f e r .  c                                     \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+#include "lpj.h"
+
+void pedotransfer(Stand *stand,  /**< pointer to stand */
+                  Real *abswmm, 
+                  Real *absimm, 
+                  Real standfrac /**< stand fraction (0..1) */
+                 )
+{
+  int l;
+  const Soilpar *soilpar;
+  Soil *soil;
+  Real om_layer;
+  Real wpwpt; /* 1500kPa moisture, first solution, v% */
+  Real w_fc; /* field capacity without density effect */
+  Real wfct; /* 33kPa moisture, first solution, v% */
+  Real w_sat; /* saturation without density effect */
+  Real ws33t; /* SAT-33 kPa moisture, first solution, v% */
+  Real ws33; /* SAT-33 kPa moisture, normal density, v% */
+  Real wmm, imm; /* actual water content in mm */
+  Real lambda;
+  Real excess = 0;
+  soil=&stand->soil;
+  soilpar = soil->par;
+  soil->whcs_all = 0.0;
+
+  if (soilpar->type != ROCK)
+  {
+    forrootsoillayer(l)
+    {
+      if (abswmm == NULL)
+	wmm = soil->w[l] * soil->whcs[l] + soil->w_fw[l] + soil->wpwps[l] * (1 - soil->ice_pwp[l]); /* compute absolute water in mm */
+      else
+        wmm = abswmm[l];
+      if (absimm == NULL)
+	imm = soil->ice_depth[l] + soil->ice_fw[l] + soil->wpwps[l] * soil->ice_pwp[l]; /* compute absolute ice content in mm */
+      else
+        imm = absimm[l];
+
+      om_layer = 2 * ((soil->pool[l].fast.carbon + soil->pool[l].slow.carbon) / ( (1 - soil->wsat[l])*MINERALDENS * soildepth[l]))*100;  /* calculation of soil organic matter in % */
+      if (om_layer > 8)
+        om_layer = 8;
+
+
+      /* pedotransfer function following Saxton&Rawls 2006: */
+      wpwpt = -0.024*soilpar->sand + 0.487*soilpar->clay + 0.006*om_layer + 0.005*(soilpar->sand*om_layer) - 0.013*(soilpar->clay*om_layer) + 0.068*(soilpar->sand*soilpar->clay) + 0.031;
+      soil->wpwp[l] = wpwpt + (0.14 * wpwpt - 0.02);
+      soil->wpwps[l] = soil->wpwp[l] * soildepth[l];
+      
+      ws33t = 0.278*soilpar->sand + 0.034*soilpar->clay + 0.022*om_layer - 0.018*(soilpar->sand*om_layer) - 0.027*(soilpar->clay*om_layer) - 0.584*(soilpar->sand*soilpar->clay) + 0.078;
+      ws33 = ws33t + (0.636*ws33t - 0.107);
+
+      wfct = -0.251*soilpar->sand + 0.195*soilpar->clay + 0.011*om_layer + 0.006*(soilpar->sand*om_layer) - 0.027*(soilpar->clay*om_layer) + 0.452*(soilpar->sand*soilpar->clay) + 0.299;
+      w_fc = (wfct + (((1.283*wfct)*(1.283*wfct)) - 0.374*wfct - 0.015));
+
+      w_sat = w_fc + ws33 - 0.097*soilpar->sand + 0.043;
+
+      if(l<NTILLLAYER)
+      {
+        soil->wsat[l] = 1 - (1-w_sat)*soil->df_tillage[l];
+        soil->wfc[l] = w_fc - 0.2 * (w_sat - soil->wsat[l]);
+      }
+      else
+      {
+        soil->wsat[l]=w_sat;
+        soil->wfc[l]=w_fc;
+      }
+
+      soil->wsats[l] = soil->wsat[l] * soildepth[l];
+
+      if (soil->wsat[l] - soil->wfc[l] < 0.05)
+        soil->wfc[l] = soil->wsat[l] - 0.05;
+
+      if (soil->wsat[l] > 1)
+        printf("wsat[%d] %g, wpwp[%d] %g, wfc[%d] %g, om_soil %g, ice_pwp:%g in pedotransfer\n", l, soil->wsat[l], l, soil->wpwp[l], l, soil->wfc[l], om_layer, soil->ice_pwp[l]);
+      if (soil->wsats[l]<1e-10)
+        printf("wsat[%d] %3.3f,  wfc[%d] %3.3f, ws33 %3.3f, sand %3.3f, in pedotransfer\n", l, soil->wsat[l], l, soil->wfc[l], ws33, soilpar->sand);
+
+      soil->beta_soil[l] = -2.655 / log10(soil->wfc[l] / soil->wsat[l]);
+      soil->whc[l] = soil->wfc[l] - soil->wpwp[l];
+      soil->whcs[l] = soil->whc[l] * soildepth[l];
+
+      /* Calculation of Ks */
+      lambda =  (log(soil->wfc[l]) - log(soil->wpwp[l]))/(log(1500) - log(33));
+      soil->Ks[l] = 1930*pow((soil->wsat[l]-soil->wfc[l]),(3-lambda));
+
+      /* re-distribute absolute water */
+      if (imm > epsilon)
+      {
+        soil->ice_pwp[l] = min(imm / soil->wpwps[l], 1);
+        imm -= soil->ice_pwp[l] * soil->wpwps[l];
+        imm=max(0,imm);
+        soil->ice_depth[l] = min(imm, soil->whcs[l]);
+        imm -= soil->ice_depth[l];
+        imm=max(0,imm);
+        soil->ice_fw[l] = min(imm, soil->wsats[l] - soil->wfc[l] * soildepth[l]);
+        imm -= soil->ice_fw[l];
+      }
+      else
+        soil->ice_pwp[l] = soil->ice_depth[l] = soil->ice_fw[l] = 0;
+
+      if (soil->ice_pwp[l] < 1)
+        wmm -= soil->wpwps[l] * (1 - soil->ice_pwp[l]);
+
+      if (wmm > epsilon && imm < epsilon)
+      {
+        soil->w[l] = min(wmm / soil->whcs[l], 1);
+        wmm -= soil->whcs[l] * soil->w[l];
+        soil->w_fw[l] = min(wmm, soil->wsats[l] - soil->wfc[l] * soildepth[l]);
+        wmm -= soil->w_fw[l];
+      }
+      else
+        soil->w[l] = soil->w_fw[l] = 0;
+
+	  /* assure numerical stability */
+      if((soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])>(soil->wsats[l]-soil->wpwps[l]))
+      {
+        if(soil->w_fw[l]>epsilon)
+          soil->w_fw[l]-=(soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->wpwps[l]);
+        else
+          soil->ice_fw[l]-=(soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->wpwps[l]);
+      }
+
+      soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;
+      soil->k_dry[l] = (0.135*soil->bulkdens[l] + 64.7) / (MINERALDENS - 0.947*soil->bulkdens[l]);
+      excess+=wmm+imm;
+    } /* end of forrootsoillayer */
+  } /* end of if not ROCK */
+
+  stand->cell->balance.totw-=excess*standfrac;
+  stand->cell->balance.soil_storage-=excess*standfrac*stand->cell->coord.area;
+}
+
+/* Reference: Saxton and Rawls (2006): Soil Water Characteristic Estimates by Texture and Organic Matter for Hydrologic Solutions, Soil Sci. Soc. Am. J. 70:1569-1578 */

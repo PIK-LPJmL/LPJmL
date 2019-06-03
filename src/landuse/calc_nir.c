@@ -32,7 +32,7 @@ void calc_nir(Stand *stand, /**< pointer to non-natural stand */
   {
     wr=0;
     for(l=0;l<LASTLAYER;l++)
-      wr+=pft->par->rootdist[l]*(stand->soil.w[l]+stand->soil.ice_depth[l]/stand->soil.par->whcs[l]);
+      wr+=pft->par->rootdist[l]*(stand->soil.w[l]+stand->soil.ice_depth[l]/stand->soil.whcs[l]);
     
     if(pft->stand->type->landusetype==AGRICULTURE)
     {
@@ -59,9 +59,9 @@ void calc_nir(Stand *stand, /**< pointer to non-natural stand */
         if (stand->soil.freeze_depth[l]< soildepth[l])
         {
           /* net irrigation requirement: field capacity soil water deficit */
-          nir+=max(0,(param.irrigation_soilfrac-stand->soil.w[l]-stand->soil.ice_depth[l]/stand->soil.par->whcs[l])*stand->soil.par->whcs[l]*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
+          nir+=max(0,(param.irrigation_soilfrac-stand->soil.w[l]-stand->soil.ice_depth[l]/stand->soil.whcs[l])*stand->soil.whcs[l]*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
           /* farmer's estimate of distribution requirements: satlevel scales max freewater; demand = max freewater + whcs - available water */
-          dist+=max(0,((stand->soil.par->wsats[l]-stand->soil.par->wpwps[l]-stand->soil.par->whcs[l])*satlevel-stand->soil.w_fw[l])*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
+          dist+=max(0,((stand->soil.wsats[l]-stand->soil.wpwps[l]-stand->soil.whcs[l])*satlevel-stand->soil.w_fw[l])*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
         }
         l++;
       }while((soildepth_irrig-=soildepth[l-1])>0);

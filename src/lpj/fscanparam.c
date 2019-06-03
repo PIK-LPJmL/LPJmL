@@ -73,6 +73,14 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.T_m,"T_m");
   fscanparamreal(&f,&param.T_0,"T_0");
   fscanparamreal(&f,&param.T_r,"T_r");
+  fscanparamreal(&f,&param.residue_rate,"residue_rate");
+  fscanparamreal(&f,&param.residue_pool,"residue_pool");
+  fscanparamreal(&f,&param.residue_cn,"residue_cn");
+  fscanparamreal(&f,&param.residue_fbg,"residue_fbg");
+  fscanparamreal(&f,&param.fertilizer_rate,"fertilizer_rate");
+  fscanparamreal(&f,&param.residue_frac,"residue_frac");
+  fscanparamreal(&f,&param.mixing_efficiency,"mixing_efficiency");
+  fscanparamint(&f,&param.till_startyear,"till_startyear");
   if(config->withlanduse!=NO_LANDUSE)
   {
     fscanparamreal(&f,&param.aprec_lim,"aprec_lim");

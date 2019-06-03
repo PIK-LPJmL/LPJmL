@@ -829,7 +829,22 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           grid[cell].ml.fertilizer_nr[i].biomass_grass=0;
           grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
         }
-  } 
+  }
+  if (config->fix_fertilization)
+  {
+    for(cell=0;cell<config->ngridcell;cell++)
+    {
+      for (i=0;i<WIRRIG;i++)
+      {
+        for(j=0;j<ncft;j++)
+          grid[cell].ml.fertilizer_nr[i].crop[j] = param.fertilizer_rate;
+        for(j=0;j<NGRASS;j++)
+         grid[cell].ml.fertilizer_nr[i].grass[j] = param.fertilizer_rate;
+         grid[cell].ml.fertilizer_nr[i].biomass_grass = param.fertilizer_rate;
+         grid[cell].ml.fertilizer_nr[i].biomass_tree = param.fertilizer_rate;
+      }
+    }
+  }
   return FALSE;
 } /* of 'getlanduse' */
 

@@ -299,5 +299,10 @@
   { "id" : CFT_ABOVEGBMN2, "name": "cft_abovegbmn2", "var": "aboveground_biomassn2", "descr": "CFT aboveground biomass N 2nd season", "unit" : "gN/m2","scale": 1.0, "offset" : 0.0},
   { "id" : PFT_NLIMIT, "name": "pft_nlimit", "var": "nlimit", "descr": "ratio N-constrained to unconstrained vmax", "unit": "-", "scale": 1.0, "offset" : 0.0},
   { "id" : SOILNO3_LAYER, "name": "soilno3_layer", "var": "SoilNO3", "descr": "soil NO3 nitrogen in layer", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
-  { "id" : SOILNH4_LAYER, "name": "soilnh4_layer", "var": "SoilNH4", "descr": "soil NH4 nitrogen in layer", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0}
+  { "id" : SOILNH4_LAYER, "name": "soilnh4_layer", "var": "SoilNH4", "descr": "soil NH4 nitrogen in layer", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : MMG_SOILC, "name" : "mg_soilc", "var" : "mSoilC", "descr" : "managed soil carbon", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
+  { "id" : RUNOFF_SURF, "name" : "runoff_surf", "var" :  "annual_runoff_surf", "descr" : "annual surface runoff", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
+  { "id" : RUNOFF_LAT, "name" : "runoff_lat", "var" :  "annual_runoff_lateral", "descr" : "annual lateral runoff", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
+  { "id" : LITC_ALL, "name" : "litc_all", "var" :  "LitC_all", "descr" : "above and below ground litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : LITC_AG, "name" : "litc_ag", "var" :  "LitC_ag", "descr" : "above ground litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0}
 ],

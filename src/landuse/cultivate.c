@@ -23,6 +23,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
                  int day,              /**< day (1..365) */
                  Bool wtype,           /**< winter type (TRUE/FALSE) */
                  Stand *setasidestand, /**< pointer to setaside stand */
+                 Bool with_tillage,
                  Bool istimber,
                  int irrig_scenario,   /**< irrigation scenario */
                  int npft,             /**< number of natural PFTs */
@@ -45,6 +46,8 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     new_agriculture(setasidestand);
     /* delete all PFTs */
     cutpfts(setasidestand);
+    if(with_tillage && year>=param.till_startyear)
+      tillage(&setasidestand->soil,param.residue_frac);
     pos=addpft(setasidestand,pftpar,year,day);
     pft=getpft(&setasidestand->pftlist,pos-1);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype);
@@ -77,6 +80,8 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     data->irrigation= irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
     reclaim_land(setasidestand,cropstand,cell,istimber,npft+ncft);
     set_irrigsystem(cropstand,cft,0,FALSE);
+    if(with_tillage && year>=param.till_startyear)
+      tillage(&setasidestand->soil,param.residue_frac);
     pos=addpft(cropstand,pftpar,year,day);
     pft=getpft(&cropstand->pftlist,pos-1);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype);

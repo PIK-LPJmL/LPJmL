@@ -32,6 +32,18 @@ Bool fwritesoil(FILE *file, /**< pointer to binary file */
     return TRUE;
   fwriten(soil->NO3,sizeof(Real),LASTLAYER,file);
   fwriten(soil->NH4,sizeof(Real),LASTLAYER,file);
+  fwriten(soil->wsat, sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->wpwp, sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->wfc, sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->whc, sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->whcs, sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->wpwps, sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->wsats, sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->beta_soil, sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->bulkdens, sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->k_dry, sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->Ks, sizeof(Real), NSOILLAYER, file);
+  fwriten(soil->df_tillage, sizeof(Real), NTILLLAYER, file);
   fwriten(soil->w,sizeof(Real),NSOILLAYER,file);
   fwrite1(&soil->w_evap,sizeof(Real),file);
   fwriten(soil->w_fw,sizeof(Real),NSOILLAYER,file);
