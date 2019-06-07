@@ -134,8 +134,8 @@ static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to 
           reclaim_land(stand,cutstand,cell,istimber,npft+ncft);
           stand->frac-=cutstand->frac;
 
-          cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*cell->coord.area*cutstand->frac;
-          cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*cutstand->frac;
+          cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
+          cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
           
           if(setaside(cell,getstand(cell->standlist,pos),pftpar,with_tillage,intercrop,npft,FALSE,year))
             delstand(cell->standlist,pos);
@@ -158,8 +158,8 @@ static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to 
         reclaim_land(stand,cutstand,cell,istimber,npft+ncft);
         stand->frac-=cutstand->frac;
         
-        cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*cell->coord.area*cutstand->frac;
-        cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*cutstand->frac;
+        cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
+        cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
         
         if(setaside(cell,getstand(cell->standlist,pos),pftpar,with_tillage,intercrop,npft,FALSE,year))
           delstand(cell->standlist,pos);
