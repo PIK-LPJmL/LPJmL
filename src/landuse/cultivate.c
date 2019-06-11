@@ -81,7 +81,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     reclaim_land(setasidestand,cropstand,cell,istimber,npft+ncft);
     set_irrigsystem(cropstand,cft,0,FALSE);
     if(with_tillage && year>=param.till_startyear)
-      tillage(&setasidestand->soil,param.residue_frac);
+      tillage(&cropstand->soil,param.residue_frac);
     pos=addpft(cropstand,pftpar,year,day);
     pft=getpft(&cropstand->pftlist,pos-1);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype);
