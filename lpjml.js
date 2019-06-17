@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.1.001                         \n**/
+/** Default configuration file for LPJmL C Version 5.2.001                         \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -72,6 +72,7 @@
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : true,            /* enable fertilizer input */
+  "fix_fertlization" : false,           /* fix fertilizer input */
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
