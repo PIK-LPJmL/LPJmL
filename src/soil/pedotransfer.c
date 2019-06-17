@@ -153,7 +153,6 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
     } /* end of forrootsoillayer */
 
   stand->cell->balance.excess_water+=excess*standfrac;
-  stand->cell->output.soil_storage+=excess*standfrac*stand->cell->coord.area;
 #ifdef CHECK_BALANCE
   w_after=soilwater(&stand->soil)+excess;
   if(fabs(w_before-w_after)>1e-2)

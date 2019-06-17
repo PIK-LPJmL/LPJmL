@@ -30,7 +30,6 @@ void updatelitterproperties(Stand *stand,  /**< Stand pointer */
   if((stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)>epsilon)
   {
     stand->cell->balance.excess_water+=(stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)*standfrac;
-    stand->cell->output.soil_storage+=(stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)*standfrac*stand->cell->coord.area;
     stand->soil.litter.agtop_moist=stand->soil.litter.agtop_wcap;
   }
 } /* of 'updatelitterproperties' */
