@@ -42,7 +42,7 @@ void initoutput_annual(Output *output, /**< Output data */
   for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     output->pft_harvest[i].harvest.carbon=output->pft_harvest[i].residual.carbon=
     output->pft_harvest[i].harvest.nitrogen=output->pft_harvest[i].residual.nitrogen=
-    output->cftfrac[i]=
+    output->cftfrac[i]=output->cft_laimax[i]=
     output->cft_consump_water_g[i]=output->cft_consump_water_b[i]=
     output->cft_transp[i]=output->cft_transp_b[i]=output->cft_evap[i]=output->cft_evap_b[i]=
     output->cft_interc[i]=output->cft_interc_b[i]=output->cft_return_flow_b[i]=output->cft_nir[i]=

@@ -80,7 +80,12 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
     if(data_irrig->irrig_system==SPRINK || data_irrig->irrig_system==DRIP)
       influx=slug;        /*no surface runoff for DRIP and Sprinkler*/
     else
+    {
+      if(1-(soil->w[0]*soil->whcs[0]+soil->w_fw[0]+soil->ice_depth[0]+soil->ice_fw[0])/(soil->wsats[0]-soil->wpwps[0])>=0)
       influx=slug*pow(1-(soil->w[0]*soil->whcs[0]+soil->w_fw[0]+soil->ice_depth[0]+soil->ice_fw[0])/(soil->wsats[0]-soil->wpwps[0]),(1/soil_infil));
+      else
+        influx=0;
+    }
     runoff_surface+=slug - influx;
     srunoff=slug-influx; /*surface runoff used for leaching */
     *return_flow_b+=slug - influx;
@@ -157,7 +162,11 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
             perc=((soil->w[l]-1)*soil->whcs[l]+soil->ice_depth[l])*(1-exp(-24/TT));
             /*correction of percolation for water content of the following layer*/
             if (l<BOTTOMLAYER)
+            {
+              if(1-(soil->w[l+1]*soil->whcs[l+1]+soil->w_fw[l+1]+soil->ice_depth[l+1]+soil->ice_fw[l+1])/(soil->wsats[l+1]-soil->wpwps[l+1])>=0)
               perc=perc*sqrt(1-(soil->w[l+1]*soil->whcs[l+1]+soil->w_fw[l+1]+soil->ice_depth[l+1]+soil->ice_fw[l+1])/(soil->wsats[l+1]-soil->wpwps[l+1]));
+              else perc=0;
+            }
 #ifdef SAFE
             if (perc< 0)
               printf("perc<0 ; TT %3.3f HC %3.3f perc  %3.3f w[%d]  %3.7f\n",TT,HC,perc/soil->whcs[l],l,soil->w[l]);

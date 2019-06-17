@@ -99,7 +99,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         stand->soil.litter.item[index].bg.nitrogen+=param.residue_rate*param.residue_fbg/param.residue_cn/2;
         stand->cell->output.flux_estab.carbon+=param.residue_rate*0.5;
         stand->cell->output.flux_estab.nitrogen+=param.residue_rate/param.residue_cn*0.5;
-        updatelitterproperties(stand);
+        updatelitterproperties(stand,stand->frac);
       }
       if(config->fix_fertilization)
       {
@@ -111,7 +111,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       {
         tillage(&stand->soil,param.residue_frac);
         pedotransfer(stand,NULL,NULL,stand->frac);
-        updatelitterproperties(stand);
+        updatelitterproperties(stand,stand->frac);
       }
     }
     beta=albedo_stand(stand);
@@ -164,7 +164,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     /* update soil and litter properties to account for all changes since last call of littersom */
     pedotransfer(stand,NULL,NULL,stand->frac);
-    updatelitterproperties(stand);
+    updatelitterproperties(stand,stand->frac);
 
     hetres=littersom(stand,gtemp_soil);
 
@@ -181,7 +181,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     /* update soil and litter properties to account for all changes from littersom */
     pedotransfer(stand,NULL,NULL,stand->frac);
-    updatelitterproperties(stand);
+    updatelitterproperties(stand,stand->frac);
 
     cell->output.mrh+=hetres.carbon*stand->frac;
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;

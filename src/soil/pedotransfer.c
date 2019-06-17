@@ -33,10 +33,23 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
   Real wmm, imm; /* actual water content in mm */
   Real lambda;
   Real excess = 0;
+#ifdef CHECK_BALANCE
+  Real w_before,w_after;
+#endif
   soil=&stand->soil;
   soilpar = soil->par;
   soil->whcs_all = 0.0;
-
+#ifdef CHECK_BALANCE
+  if(abswmm==NULL)
+    w_before=soilwater(soil);
+  else
+  {
+    w_before=soil->snowpack+soil->rw_buffer+soil->litter.agtop_moist;
+    w_before+=soil->w[BOTTOMLAYER]*soil->whcs[BOTTOMLAYER]+soil->ice_depth[BOTTOMLAYER]+soil->w_fw[BOTTOMLAYER]+soil->ice_fw[BOTTOMLAYER]+soil->wpwps[BOTTOMLAYER];
+    forrootsoillayer(l)
+      w_before+=abswmm[l]+absimm[l];
+  }
+#endif
   if (soilpar->type != ROCK)
   {
     forrootsoillayer(l)
@@ -49,7 +62,6 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 	imm = soil->ice_depth[l] + soil->ice_fw[l] + soil->wpwps[l] * soil->ice_pwp[l]; /* compute absolute ice content in mm */
       else
         imm = absimm[l];
-
       om_layer = 2 * ((soil->pool[l].fast.carbon + soil->pool[l].slow.carbon) / ( (1 - soil->wsat[l])*MINERALDENS * soildepth[l]))*100;  /* calculation of soil organic matter in % */
       if (om_layer > 8)
         om_layer = 8;
@@ -59,7 +71,6 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       wpwpt = -0.024*soilpar->sand + 0.487*soilpar->clay + 0.006*om_layer + 0.005*(soilpar->sand*om_layer) - 0.013*(soilpar->clay*om_layer) + 0.068*(soilpar->sand*soilpar->clay) + 0.031;
       soil->wpwp[l] = wpwpt + (0.14 * wpwpt - 0.02);
       soil->wpwps[l] = soil->wpwp[l] * soildepth[l];
-      
       ws33t = 0.278*soilpar->sand + 0.034*soilpar->clay + 0.022*om_layer - 0.018*(soilpar->sand*om_layer) - 0.027*(soilpar->clay*om_layer) - 0.584*(soilpar->sand*soilpar->clay) + 0.078;
       ws33 = ws33t + (0.636*ws33t - 0.107);
 
@@ -97,12 +108,13 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       lambda =  (log(soil->wfc[l]) - log(soil->wpwp[l]))/(log(1500) - log(33));
       soil->Ks[l] = 1930*pow((soil->wsat[l]-soil->wfc[l]),(3-lambda));
 
+      soil->ice_pwp[l] = min(imm / soil->wpwps[l], 1);
+      imm -= soil->ice_pwp[l] * soil->wpwps[l];
       /* re-distribute absolute water */
       if (imm > epsilon)
       {
-        soil->ice_pwp[l] = min(imm / soil->wpwps[l], 1);
-        imm -= soil->ice_pwp[l] * soil->wpwps[l];
-        imm=max(0,imm);
+      //  soil->ice_pwp[l] = min(imm / soil->wpwps[l], 1);
+      //  imm -= soil->ice_pwp[l] * soil->wpwps[l];
         soil->ice_depth[l] = min(imm, soil->whcs[l]);
         imm -= soil->ice_depth[l];
         imm=max(0,imm);
@@ -110,12 +122,12 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
         imm -= soil->ice_fw[l];
       }
       else
-        soil->ice_pwp[l] = soil->ice_depth[l] = soil->ice_fw[l] = 0;
+        soil->ice_depth[l] = soil->ice_fw[l] = 0;
 
       if (soil->ice_pwp[l] < 1)
         wmm -= soil->wpwps[l] * (1 - soil->ice_pwp[l]);
-
-      if (wmm > epsilon && imm < epsilon)
+      //if (wmm > epsilon && imm < epsilon)
+      if (wmm > epsilon)
       {
         soil->w[l] = min(wmm / soil->whcs[l], 1);
         wmm -= soil->whcs[l] * soil->w[l];
@@ -132,16 +144,22 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
           soil->w_fw[l]-=(soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->wpwps[l]);
         else
           soil->ice_fw[l]-=(soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->wpwps[l]);
+        excess+=(soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->wpwps[l]);
       }
 
       soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;
       soil->k_dry[l] = (0.135*soil->bulkdens[l] + 64.7) / (MINERALDENS - 0.947*soil->bulkdens[l]);
       excess+=wmm+imm;
     } /* end of forrootsoillayer */
-  } /* end of if not ROCK */
 
-  stand->cell->balance.totw-=excess*standfrac;
-  stand->cell->balance.soil_storage-=excess*standfrac*stand->cell->coord.area;
+  stand->cell->balance.excess_water+=excess*standfrac;
+  stand->cell->output.soil_storage+=excess*standfrac*stand->cell->coord.area;
+#ifdef CHECK_BALANCE
+  w_after=soilwater(&stand->soil)+excess;
+  if(fabs(w_before-w_after)>1e-2)
+    fprintf(stderr,"ERROR: water balance=%g=%g-%g+%g in pedotransfer().\n",fabs(w_before-w_after),w_before,w_after+excess,excess);
+#endif
+  } /* end of if not ROCK */
 }
 
 /* Reference: Saxton and Rawls (2006): Soil Water Characteristic Estimates by Texture and Organic Matter for Hydrologic Solutions, Soil Sci. Soc. Am. J. 70:1569-1578 */

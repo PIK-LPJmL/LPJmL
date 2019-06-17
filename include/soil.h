@@ -274,7 +274,7 @@ extern Real nuptake_temp_fcn(Real);
 extern void denitrification(Stand *);
 extern void getrootdist(Real [],const Real[],Real);
 extern Stocks checklitter(Litter *);
-extern void updatelitterproperties(Stand *);
+extern void updatelitterproperties(Stand *,Real);
 extern void pedotransfer(Stand *, Real *, Real *,Real);
 
 /* Definition of macros */

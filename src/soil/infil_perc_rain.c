@@ -89,7 +89,10 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
     slug=min(4,infil);
     infil=infil-slug;
     soil_infil *= (1 + soil->litter.agtop_cover*2); /*soil_infil is scaled between 2 and 6, based on Jaegermeyr et al. 2016*/
+    if(1-(soil->w[0]*soil->whcs[0]+soil->w_fw[0]+soil->ice_depth[0]+soil->ice_fw[0])/(soil->wsats[0]-soil->wpwps[0])>=0)
     influx=slug*pow(1-(soil->w[0]*soil->whcs[0]+soil->w_fw[0]+soil->ice_depth[0]+soil->ice_fw[0])/(soil->wsats[0]-soil->wpwps[0]),(1/soil_infil));
+    else
+      influx=0;
     runoff_surface+=slug - influx;
     srunoff=slug-influx; /*surface runoff used for leaching */
     frac_g_influx=1; /* first layer has only green influx, but lower layers with percolation have mixed frac_g_influx */
@@ -149,8 +152,9 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
           if (l<BOTTOMLAYER)
           {
             if(1-(soil->w[l+1]*soil->whcs[l+1]+soil->w_fw[l+1]+soil->ice_depth[l+1]+soil->ice_fw[l+1])/(soil->wsats[l+1]-soil->wpwps[l+1])<0)
-              printf("error\n");
-            perc=perc*sqrt(1-(soil->w[l+1]*soil->whcs[l+1]+soil->w_fw[l+1]+soil->ice_depth[l+1]+soil->ice_fw[l+1])/(soil->wsats[l+1]-soil->wpwps[l+1]));
+              perc=0;
+            else
+              perc*=sqrt(1-(soil->w[l+1]*soil->whcs[l+1]+soil->w_fw[l+1]+soil->ice_depth[l+1]+soil->ice_fw[l+1])/(soil->wsats[l+1]-soil->wpwps[l+1]));
           }
 #ifdef SAFE
           if (perc< 0)

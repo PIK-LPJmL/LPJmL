@@ -245,7 +245,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     /* total water and carbon calculation before the correction of fractions
      * for reservoir water
      */
-    totw_before=cell->balance.awater_flux;
+    totw_before=cell->balance.awater_flux+cell->balance.excess_water;
     foreachstand(stand,s,cell->standlist)
       totw_before+=soilwater(&stand->soil)*stand->frac;
     totw_before+=(cell->discharge.dmass_lake)/cell->coord.area;
@@ -347,7 +347,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     /* total water and carbon calculation after the correction of fractions
      * for reservoir water
      */
-    totw_after=cell->balance.awater_flux;
+    totw_after=cell->balance.awater_flux+cell->balance.excess_water;
     foreachstand(stand,s,cell->standlist)
       totw_after+=soilwater(&stand->soil)*stand->frac;
     totw_after+=(cell->discharge.dmass_lake)/cell->coord.area;

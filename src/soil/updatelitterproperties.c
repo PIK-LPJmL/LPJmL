@@ -9,11 +9,14 @@
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
 /** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
 
-void updatelitterproperties(Stand *stand)       /* Stand pointer */
+void updatelitterproperties(Stand *stand,  /**< Stand pointer */
+                            Real standfrac /**< stand fraction (0..1) */
+                           )
 {
   int l;
   Real dm_sum=0;
@@ -26,8 +29,8 @@ void updatelitterproperties(Stand *stand)       /* Stand pointer */
   stand->soil.litter.agtop_wcap=2e-3*dm_sum;
   if((stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)>epsilon)
   {
-    stand->cell->balance.totw-=(stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)*stand->frac;
-    stand->cell->balance.soil_storage-=(stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)*stand->frac*stand->cell->coord.area;
+    stand->cell->balance.excess_water+=(stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)*standfrac;
+    stand->cell->output.soil_storage+=(stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)*standfrac*stand->cell->coord.area;
     stand->soil.litter.agtop_moist=stand->soil.litter.agtop_wcap;
   }
 } /* of 'updatelitterproperties' */

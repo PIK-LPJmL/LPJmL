@@ -128,6 +128,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 
   /* water balance check */
   totw=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+  totw+=cell->balance.excess_water;
   foreachstand(stand,s,cell->standlist)
   {
     totw+=soilwater(&stand->soil)*stand->frac;

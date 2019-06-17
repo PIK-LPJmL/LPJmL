@@ -60,6 +60,7 @@ typedef struct
   Stocks estab_storage_grass[2]; /**< carbon and nitrogen taken out from annual NPP to satisfy grass establishment rate */
   Real totw;                /**< total water (mm) */
   Real surface_storage;     /**< total water in surface storages (dm3) */
+  Real excess_water;        /**< excess water (mm) */
   Real soil_storage;        /**< total water in soil storages (dm3) */
   Real total_reservoir_out; /**< total water extracted from reservoirs (dm3) */
   Real total_irrig_from_reservoir; /**< total water added to fields from reservoirs (dm3)*/

@@ -489,6 +489,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].balance.surface_storage=grid[i].balance.soil_storage=0.0;
     grid[i].discharge.waterdeficit=0.0;
     grid[i].discharge.wateruse=0;
+    grid[i].balance.excess_water=0;
     grid[i].discharge.dmass_lake_max=grid[i].lakefrac*H*grid[i].coord.area*1000;
     grid[i].discharge.dmass_lake=grid[i].discharge.dmass_river=0.0;
     grid[i].discharge.dfout=grid[i].discharge.fout=0.0;

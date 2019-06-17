@@ -62,11 +62,10 @@ void denitrification(Stand *stand  /**< pointer to stand */
       N_denit = FW*TCDF*soil->NO3[l];
     }
 #ifdef SAFE
-    if((FW*TCDF)>1.0 && N_denit>(soil->NO3[l]-epsilon*10))
+    if((FW*TCDF)>1.0 && N_denit>(soil->NO3[l]+epsilon*10))
     {
-      fprintf(stdout,"too large denitrification in layer %d: N_denit %g FW %g TCDF %g NO3 %g FT %g Corg %g\n",l,N_denit,FW,TCDF,soil->NO3[l],FT,Corg);
-      fflush(stdout);
-
+      fprintf(stderr,"Too large denitrification in layer %d: N_denit %g FW %g TCDF %g NO3 %g FT %g Corg %g\n",l,N_denit,FW,TCDF,soil->NO3[l],FT,Corg);
+      fflush(stderr);
       N_denit=soil->NO3[l];
     }
 #endif
