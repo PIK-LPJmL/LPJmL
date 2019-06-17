@@ -111,6 +111,13 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     fscanreal2(verb,&item,&soil->sand,soil->name,"sand");
     fscanreal2(verb,&item,&soil->silt,soil->name,"silt");
     fscanreal2(verb,&item,&soil->clay,soil->name,"clay");
+    if(fabs(soil->sand+soil->silt+soil->clay-1)>epsilon)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR199: Sum of sand+silt+clay=%g is not one in soil '%s'.\n",
+                soil->sand+soil->silt+soil->clay,soil->name);
+      return 0;
+    }
     fscanint2(verb,&item,&soil->hsg,soil->name,"hsg");
     if(soil->hsg<1 || soil->hsg>NHSG)
     {
