@@ -531,7 +531,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
   difffrac=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf;
   difffrac2=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,TRUE)-cell->ml.cropfrac_ir;
 
-  if(difffrac*difffrac2<-epsilon) /* if one increases while the other decreases */
+  if(difffrac*difffrac2<-epsilon*epsilon) /* if one increases while the other decreases */
   {
     s=findlandusetype(cell->standlist,SETASIDE_RF);
     s2=findlandusetype(cell->standlist,SETASIDE_IR);
@@ -594,9 +594,9 @@ void landusechange(Cell *cell,            /**< pointer to cell */
     grassfrac=cell->ml.landfrac[i].grass[0]+cell->ml.landfrac[i].grass[1]; /* pasture + others */
 
 
-    if(difffrac>=0.001 && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir<0.99999) 
+    if(difffrac>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir<(1-epsilon)) 
       deforest(cell,difffrac,pftpar,intercrop,npft,FALSE,istimber,i,ncft,year,minnatfrac_luc);  /*deforestation*/
-    else if(difffrac<=-0.001) 
+    else if(difffrac<=-epsilon) 
       regrowth(cell,difffrac,pftpar,npft,ntypes,istimber,i,ncft,year);        /*regrowth*/
 
     /* pasture */
@@ -607,12 +607,12 @@ void landusechange(Cell *cell,            /**< pointer to cell */
     {
       stand=getstand(cell->standlist,s);
       difffrac=stand->frac-grassfrac;
-      if(difffrac>0.001)
+      if(difffrac>epsilon)
         grasslandreduction(cell,difffrac,pftpar,intercrop,npft,s,stand,istimber,ncft,pft_output_scaled,year);
-      else if(difffrac<-0.001)
+      else if(difffrac<-epsilon)
         landexpansion(cell,difffrac,pftpar,npft,ntypes,stand,irrigation,cultivation_type,istimber,ncft,year);
     }
-    else if (grassfrac>0.001)
+    else if (grassfrac>epsilon)
     {
       difffrac= -grassfrac;
       landexpansion(cell,difffrac,pftpar,npft,ntypes,NULL,irrigation,cultivation_type,istimber,ncft,year);
@@ -626,13 +626,13 @@ void landusechange(Cell *cell,            /**< pointer to cell */
     {
       stand=getstand(cell->standlist,s);
       difffrac=stand->frac-cell->ml.landfrac[i].biomass_tree;
-      if(difffrac>0.001)
+      if(difffrac>epsilon)
         grasslandreduction(cell,difffrac,pftpar,intercrop,npft,s,stand,istimber,ncft,pft_output_scaled,year);
-      else if(difffrac<-0.001)
+      else if(difffrac<-epsilon)
         landexpansion(cell,difffrac,pftpar,npft,ntypes,stand,irrigation,
                       cultivation_type,istimber,ncft,year);
     }
-    else if (cell->ml.landfrac[i].biomass_tree>0.001)
+    else if (cell->ml.landfrac[i].biomass_tree>epsilon)
     {
       difffrac= -cell->ml.landfrac[i].biomass_tree;
       landexpansion(cell,difffrac,pftpar,npft,ntypes,NULL,
@@ -646,13 +646,13 @@ void landusechange(Cell *cell,            /**< pointer to cell */
     {
       stand=getstand(cell->standlist,s);
       difffrac=stand->frac-cell->ml.landfrac[i].biomass_grass;
-      if(difffrac>0.001)
+      if(difffrac>epsilon)
         grasslandreduction(cell,difffrac,pftpar,intercrop,npft,s,stand,istimber,ncft,pft_output_scaled,year);
-      else if(difffrac<-0.001)
+      else if(difffrac<-epsilon)
         landexpansion(cell,difffrac,pftpar,npft,ntypes,stand,irrigation,
                       cultivation_type,istimber,ncft,year);
     }
-    else if (cell->ml.landfrac[i].biomass_grass>0.001)
+    else if (cell->ml.landfrac[i].biomass_grass>epsilon)
     {
       difffrac= -cell->ml.landfrac[i].biomass_grass;
       landexpansion(cell,difffrac,pftpar,npft,ntypes,NULL,
@@ -681,14 +681,14 @@ void landusechange(Cell *cell,            /**< pointer to cell */
                              due to not harvested winter cereals */
 #ifdef IMAGE
   /* if timber harvest not satisfied by agricultural expansion */
-  if(istimber && cell->ml.image_data->timber_frac>0.001)
+  if(istimber && cell->ml.image_data->timber_frac>epsilon)
   {
     s=findlandusetype(cell->standlist,NATURAL);
     if(s!=NOT_FOUND)
     {
       stand=getstand(cell->standlist,s);
       timberharvest=stand->frac;
-      if(timberharvest>0.001)
+      if(timberharvest>epsilon)
       {
         /* deforestation without conversion to agricultural land */
         deforest(cell,timberharvest,pftpar,intercrop,npft,TRUE,istimber,FALSE,ncft,year,minnatfrac_luc);
