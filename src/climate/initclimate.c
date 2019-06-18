@@ -594,7 +594,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       }
     }
   }
-  if(config->prescribe_burntarea)
+  if(config->prescribe_burntarea && (config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX))
   {
     if((climate->data.burntarea=newvec(Real,climate->file_burntarea.n))==NULL)
     {
@@ -602,12 +602,9 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate->co2.data);
       free(climate->data.prec);
       free(climate->data.temp);
-      if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-      {
-        free(climate->data.wind);
-        free(climate->data.tamp);
-        free(climate->data.lightning);
-      }
+      free(climate->data.wind);
+      free(climate->data.tamp);
+      free(climate->data.lightning);
       if(config->with_radiation)
       {
         free(climate->data.lwnet);

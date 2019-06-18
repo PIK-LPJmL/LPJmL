@@ -48,7 +48,7 @@
   "T_m" : 15.0,              /* parameter in N uptake temperature function */
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
-  "k_mort" : 0.4,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "k_mort" : 0.3,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
   "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
   "residue_cn": 20,         /* CN ratio of prescribed residues */
