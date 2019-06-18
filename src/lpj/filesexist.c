@@ -309,8 +309,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   if(config.withlanduse!=NO_LANDUSE)
   {
-    if(config.withlanduse!=ALL_CROPS)
-      bad+=checkdatafile(&config,&config.landuse_filename);
+    bad+=checkdatafile(&config,&config.landuse_filename);
     if(config.sdate_option==PRESCRIBED_SDATE)
       bad+=checkclmfile(&config,&config.sdate_filename);
     if(config.countrycode_filename.fmt==CDF)
