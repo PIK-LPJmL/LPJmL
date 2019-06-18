@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  o  n  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.1.001 without nitrogen limitation     \n**/
+/** Configuration file for LPJmL C Version 5.2.001 without nitrogen limitation     \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -32,7 +32,7 @@
 
   "sim_name" : "LPJmL Run without nitrogen", /* Simulation description */
   "sim_id"   : LPJML,       /* LPJML Simulation type with managed land use */
-  "version"  : "5.1",       /* LPJmL version expected */
+  "version"  : "5.2",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -42,6 +42,8 @@
   "river_routing" : true,
   "permafrost" : true,
   "with_nitrogen" : NO_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "const_climate" : false,
+  "const_deposition" : false,
 #ifdef FROM_RESTART
   "population" : false,
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
@@ -59,6 +61,8 @@
   "sowing_date_option" : FIXED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
   "intercrop" : true,                   /* intercrops on setaside */
+  "tillage" : true,                     /* enable tillaging */
+  "black_fallow" : false,               /* simulation with black fallow on PNV */
   "remove_residuals" : false,           /* remove residuals */
   "residues_fire" : false,              /* fire in residuals */
   "irrigation" : LIM_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */

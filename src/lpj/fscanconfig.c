@@ -196,12 +196,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->rw_manage=FALSE;
   config->const_climate=FALSE;
   config->with_tillage=FALSE;
+  config->no_ndeposition=FALSE;
   if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
     return TRUE;
   config->const_deposition=FALSE;
   if(config->with_nitrogen==LIM_NITROGEN)
   {
     if(fscanbool(file,&config->const_deposition,"const_deposition",TRUE,verbose))
+      return TRUE;
+    if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
       return TRUE;
   }
   if(config->sim_id!=LPJ)
@@ -285,9 +288,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fscanbool2(file,&config->till_fallow,"till_fallow");
       fscanbool2(file,&config->prescribe_residues,"prescribe_residues");
     }
-    config->no_ndeposition=FALSE;
-    if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
-      return TRUE;
     if(isboolean(file,"wateruse"))
     {
       if(verbose)

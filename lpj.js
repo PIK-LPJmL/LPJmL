@@ -30,7 +30,7 @@
 
 "sim_name" : "LPJ run with PNV",   /* Simulation description */
 "sim_id"   : LPJ,         /* LPJML Simulation with natural vegetation only */
-"version"  : "5.1",       /* LPJmL version expected */
+"version"  : "5.2",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -46,6 +46,9 @@
 "river_routing" : true,
 "permafrost" : true,
 "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+"const_climate" : false,
+"const_deposition" : false,
+"no_ndeposition" : false,             /* turn off atmospheric N deposition */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

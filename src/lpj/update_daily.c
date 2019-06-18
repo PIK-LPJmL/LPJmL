@@ -79,7 +79,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     update_nesterov(cell,&climate);
   foreachstand(stand,s,cell->standlist)
   {
-    for (l = 0; l < stand->soil.litter.n; l++) {
+    for(l=0;l<stand->soil.litter.n;l++)
+    {
       stand->soil.litter.item[l].agsub.leaf.carbon += stand->soil.litter.item[l].ag.leaf.carbon*BIOTURBRATE;
       stand->soil.litter.item[l].ag.leaf.carbon *= 1 - BIOTURBRATE;
       stand->soil.litter.item[l].agsub.leaf.nitrogen += stand->soil.litter.item[l].ag.leaf.nitrogen*BIOTURBRATE;

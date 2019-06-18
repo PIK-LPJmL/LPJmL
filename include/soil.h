@@ -150,8 +150,6 @@ typedef struct
   Real d_nit;
   Real m_nit;
   Real n_nit;
-  //Real C_corr;
-  //Real bd; /* bulk density, g/cm3 */
   Real a_denit;
   Real b_denit;
   Real denit_rate;

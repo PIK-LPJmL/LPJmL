@@ -230,7 +230,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
   }
   else
     landuse->sdate.file=NULL;
-  if(config->with_nitrogen && config->fertilizer_input)
+  if(config->with_nitrogen && config->fertilizer_input && !config->fix_fertilization)
   {
     /* read fertilizer data */
     landuse->fertilizer_nr.fmt=config->fertilizer_nr_filename.fmt;
@@ -747,7 +747,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     free(data);
   if(config->with_nitrogen)
   {
-    if(config->fertilizer_input)
+    if(config->fertilizer_input && !config->fix_fertilization)
     {
       /* assigning fertilizer Nr data */
       yearf=year-landuse->fertilizer_nr.firstyear;

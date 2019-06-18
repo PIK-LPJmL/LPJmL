@@ -39,7 +39,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
   tree=pft->data;
   bm_delta=pft->bm_inc.carbon/pft->nind-turnover_ind;
   if(bm_delta<0)
-   bm_delta=0;
+    bm_delta=0;
   if (pft->par->cultivation_type==BIOMASS)
     mort_max=0.005;
   else
@@ -50,7 +50,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
     mort = 0.0;
   else
     mort=mort_max/(1+param.k_mort*bm_delta/tree->ind.leaf.carbon/pft->par->sla);
-  if(mtemp_max>(isdaily) ? pft->par->twmax_daily : pft->par->twmax)
+  if(mtemp_max>((isdaily) ? pft->par->twmax_daily : pft->par->twmax))
   {
     heatstress=tree->gddtw/ramp_gddtw;
     if(heatstress>1)
