@@ -38,7 +38,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   Stocks bm_inc;
   Real split_fert=0.5;
   Pftcrop *crop;
-  if(landfrac>=setasidestand->frac-0.00001)
+  if(landfrac>=setasidestand->frac-epsilon)
   {
     setasidestand->type->freestand(setasidestand);
     setasidestand->type=&agriculture_stand;
