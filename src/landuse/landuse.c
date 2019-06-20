@@ -692,21 +692,37 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 
     sum = landfrac_sum(grid[cell].ml.landfrac, ncft, FALSE) + landfrac_sum(grid[cell].ml.landfrac, ncft, TRUE);
 
-    if (landuse->allcrops)
+    if (landuse->allcrops && !grid[cell].skip)
     {
       for (j = 0; j < ncft; j++)
       {
-        if (grid[cell].ml.landfrac[1].crop[j] < tinyfrac) grid[cell].ml.landfrac[1].crop[j] = tinyfrac;
+        if (grid[cell].ml.landfrac[1].crop[j] < tinyfrac) 
+        {
+          grid[cell].ml.irrig_system->crop[j] = grid[cell].ml.manage.par->default_irrig_system;
+          grid[cell].ml.landfrac[1].crop[j] = tinyfrac;
+        }
         if (grid[cell].ml.landfrac[0].crop[j] < tinyfrac) grid[cell].ml.landfrac[0].crop[j] = tinyfrac;
       }
       for (j = 0; j < NGRASS; j++)
       {
         if (grid[cell].ml.landfrac[0].grass[j] < tinyfrac) grid[cell].ml.landfrac[0].grass[j] = tinyfrac;
-        if (grid[cell].ml.landfrac[1].grass[j] < tinyfrac) grid[cell].ml.landfrac[1].grass[j] = tinyfrac;
+        if (grid[cell].ml.landfrac[1].grass[j] < tinyfrac) 
+        {
+          grid[cell].ml.landfrac[1].grass[j] = tinyfrac;
+          grid[cell].ml.irrig_system->grass[j] = grid[cell].ml.manage.par->default_irrig_system;
+        }
       }
-      if (grid[cell].ml.landfrac[1].biomass_tree < tinyfrac) grid[cell].ml.landfrac[1].biomass_tree = tinyfrac;
+      if (grid[cell].ml.landfrac[1].biomass_tree < tinyfrac) 
+      {
+        grid[cell].ml.landfrac[1].biomass_tree = tinyfrac;
+        grid[cell].ml.irrig_system->biomass_tree = grid[cell].ml.manage.par->default_irrig_system;
+      }
       if (grid[cell].ml.landfrac[0].biomass_tree < tinyfrac) grid[cell].ml.landfrac[0].biomass_tree = tinyfrac;
-      if (grid[cell].ml.landfrac[1].biomass_grass < tinyfrac) grid[cell].ml.landfrac[1].biomass_grass = tinyfrac;
+      if (grid[cell].ml.landfrac[1].biomass_grass < tinyfrac) 
+      {
+        grid[cell].ml.landfrac[1].biomass_grass = tinyfrac;
+        grid[cell].ml.irrig_system->biomass_grass = grid[cell].ml.manage.par->default_irrig_system;
+      }
       if (grid[cell].ml.landfrac[0].biomass_grass < tinyfrac) grid[cell].ml.landfrac[0].biomass_grass = tinyfrac;
     }
     sum = landfrac_sum(grid[cell].ml.landfrac, ncft, FALSE) + landfrac_sum(grid[cell].ml.landfrac, ncft, TRUE);
