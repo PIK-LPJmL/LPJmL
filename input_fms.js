@@ -23,7 +23,7 @@
   "landuse" : { "fmt" : "clm", "name" : "input_VERSION2/cft1700_2005_bioenergy_sc.bin"},
   "lakes" : { "fmt" : "raw", "name" : "/p/projects/climber3/petri/POEM/exp/CM2M_coarse_BLING_LPJ_05/Data-For-LPJ/Lakes/glwd_lakes-90881.bin"},
   "drainage" : { "fmt" : "clm", "name" : "/p/projects/climber3/petri/POEM/exp/CM2M_coarse_BLING_LPJ_05/Data-For-LPJ/Rivers/drainage.bin"},
-  "runoff2ocean_map": { "fmt" : "clm", "name" : " /p/projects/climber3/gengel/POEM/mom5.0.2/exp/CM2M_coarse_BLING_LPJ_05/Data-For-LPJ/runoff_coord.bin"}, /*together with this file, all runoff is send directly to ocean*/
+  "runoff2ocean_map": { "fmt" : "clm", "name" : "/p/projects/climber3/gengel/POEM/mom5.0.2/exp/CM2M_coarse_BLING_LPJ_05/Data-For-LPJ/runoff_coord.bin"}, /*together with this file, all runoff is send directly to ocean*/
   "neighb_irrig" : { "fmt" : "clm", "name" : "input_VERSION2/neighb_irrigation.bin"},
   "elevation" : { "fmt" : "clm", "name" : "input_VERSION2/elevation.bin"},
   "reservoir" : { "fmt" : "clm", "name" : "input_VERSION2/reservoir_info_grand5.bin"},
@@ -36,5 +36,5 @@
   "lightning" : { "fmt" : "clm", "nane" : "input_VERSION2/mlightning.clm"},
   "human_ignition" : { "fmt" : "clm", "name" : "input_VERSION2/human_ignition.clm"},
   "popdens" : { "fmt" : "clm", "name" : "input_VERSION2/popdens_HYDE_1901_2010_bi.clm"},
-  "co2" : { "fmt" : FMS }/* CO2 data from FMS coupler */
+  "co2" : { "fmt" : "fms" }/* CO2 data from FMS coupler */
 },
