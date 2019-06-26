@@ -5,7 +5,8 @@
 ##                                                                             ##
 ##   configure script to copy appropriate Makefile.$osname                     ##
 ##                                                                             ##
-##   Usage: configure.sh [-h] [-prefix dir] [-debug] [-nompi]                  ##
+##   Usage: configure.sh [-h] [-prefix dir] [-debug] [-check][-nompi]          ##
+##                       [-Dmacro[=value]]                                     ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -17,56 +18,63 @@
 debug=0
 nompi=0
 prefix=$PWD
-if [ $# -gt 0 ]
-then
-  if [ $1 = "-h" ]
-  then
-    echo $0 - configure LPJmL $(cat VERSION)
-    echo Usage: $0 [-h] [-prefix dir] [-debug] [-nompi]
-    echo
-    echo Arguments:
-    echo "-h          print this help text"
-    echo "-prefix dir set installation directory for LPJmL. Default is current directory"
-    echo "-debug      set debug flags and disable optimization"
-    echo "-nompi      do not build MPI version"
-    echo
-    echo After successfull completion of $0 LPJmL can be compiled by make all
-    echo Invoke make clean after change in configuration
-    exit 0
-  fi
-fi
-if [ $# -gt 0 ]
-then
-  if [ $1 = "-prefix" ]
-  then
-    if [ $# -lt 2 ]
-    then
-      echo >&2 Error: prefix directory missing
-      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi]
+while(( "$#" )); do
+  case "$1" in
+    -h)
+      echo $0 - configure LPJmL $(cat VERSION)
+      echo Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro=value]
+      echo
+      echo Arguments:
+      echo "-h              print this help text"
+      echo "-prefix dir     set installation directory for LPJmL. Default is current directory"
+      echo "-debug          set debug flags and disable optimization"
+      echo "-check          set debug flags, enable pointer checking and disable optimization"
+      echo "-nompi          do not build MPI version"
+      echo "-Dmacro[=value] define macro for compilation"
+      echo
+      echo After successfull completion of $0 LPJmL can be compiled by make all
+      echo Invoke make clean after change in configuration
+      exit 0
+      ;;
+    -prefix)
+      if [ $# -lt 2 ]
+      then
+        echo >&2 Error: prefix directory missing
+        echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value]]
+        exit 1
+      fi
+      prefix=$2
+      shift 2
+      ;;
+    -debug)
+      debug=1
+      shift 1
+      ;;
+    -check)
+      debug=2
+      shift 1
+      ;;
+    -nompi)
+      nompi=1
+      shift 1
+      ;;
+    -D*)
+      macro=$1
+      echo $macro
+      shift 1
+      ;;
+    -*)
+      echo >&2 Invalid option $1
+      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value]]
       exit 1
-    fi
-    prefix=$2
-    shift 2
-  fi
-fi
-if [ $# -gt 0 ]
-then
-  if [ $1 = "-debug" ]
-  then
-    debug=1
-    shift 1
-  fi
-fi
-if [ $# -gt 0 ]
-then
-  if [ $1 = "-nompi" ]
-  then
-    nompi=1
-  else
-    echo >&2 Invalid option $1
-    echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi]
-  fi
-fi
+      ;;
+    *)
+      echo >&2 Invalid argument $1
+      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value]]
+      exit 1
+      ;;
+  esac
+done
 
 echo Configuring LPJmL $(cat VERSION)...
         
@@ -99,12 +107,7 @@ then
     if which mpiicc >/dev/null 2>/dev/null ;
     then
       echo Intel MPI found
-      if test -d /p ;
-      then
-        cp config/Makefile.cluster2015 Makefile.inc
-      else 
-        cp config/Makefile.intel_mpi Makefile.inc
-      fi
+      cp config/Makefile.cluster2015 Makefile.inc
       if which llsubmit >/dev/null 2>/dev/null ;
       then
          echo LoadLeveler found
@@ -184,10 +187,14 @@ else
 fi
 if [ "$debug" = "1" ]
 then
-  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) \$(DEBUGFLAGS)" >>Makefile.inc
+  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro \$(DEBUGFLAGS)" >>Makefile.inc
   echo "LNOPTS	= \$(WFLAG) \$(DEBUGFLAGS) -o " >>Makefile.inc
+elif [ "$debug" = "2" ]
+then
+  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro \$(CHECKFLAGS)" >>Makefile.inc
+  echo "LNOPTS	= \$(WFLAG) \$(CHECKFLAGS) -o " >>Makefile.inc
 else
-  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) \$(OPTFLAGS)" >>Makefile.inc
+  echo "CFLAGS	= \$(WFLAG) \$(LPJFLAGS) $macro \$(OPTFLAGS)" >>Makefile.inc
   echo "LNOPTS	= \$(WFLAG) \$(OPTFLAGS) -o " >>Makefile.inc
 fi
 echo LPJROOT	= $prefix >>Makefile.inc

@@ -1279,6 +1279,13 @@ or by invoking the <A HREF="backtrace.html"><tt>backtrace</tt></A> script:
 <pre class="example">
 backtrace
 </pre>
+Additional checking for pointer access out of bounds can be done via
+<pre class="example">
+./configure.sh -check
+make clean
+make
+</pre>
+This option is only available for the Intel compiler and significantly slows down execution speed.
 
 <h3>Building with Visual C++ 2005</h3>
 
