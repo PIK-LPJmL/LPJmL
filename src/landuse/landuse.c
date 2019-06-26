@@ -610,6 +610,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         }
       }
     }
+    free(data);
     switch (config->irrig_scenario)
     {
     case NO_IRRIGATION:
