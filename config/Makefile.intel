@@ -15,6 +15,7 @@
 
 CC	= icc
 DEBUGFLAGS  = -g
+CHECKFLAGS = -g -check-pointers=rw
 OPTFLAGS= -O3 -ipo -xSSE4.1 -no-prec-div -no-inline-max-total-size -no-inline-max-size
 WFLAG	= -Wall -w3
 LPJFLAGS  = -DUSE_RAND48 -DSAFE -DWITH_FPE -DSTORECLIMATE -DUSE_NETCDF -DUSE_UDUNITS -DUSE_JSON
