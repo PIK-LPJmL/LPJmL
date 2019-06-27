@@ -50,7 +50,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
     mort = 0.0;
   else
     mort=mort_max/(1+param.k_mort*bm_delta/tree->ind.leaf.carbon/pft->par->sla);
-  if(mtemp_max>(isdaily) ? pft->par->twmax_daily : pft->par->twmax)
+  if(mtemp_max>((isdaily) ? pft->par->twmax_daily : pft->par->twmax))
   {
     heatstress=tree->gddtw/ramp_gddtw;
     if(heatstress>1)
