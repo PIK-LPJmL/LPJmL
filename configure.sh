@@ -5,8 +5,8 @@
 ##                                                                             ##
 ##   configure script to copy appropriate Makefile.$osname                     ##
 ##                                                                             ##
-##   Usage: configure.sh [-h] [-prefix dir] [-debug] [-check][-nompi]          ##
-##                       [-Dmacro[=value]]                                     ##
+##   Usage: configure.sh [-h] [-prefix dir] [-debug] [-check] [-nompi]         ##
+##                       [-Dmacro[=value] ...]                                 ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -23,7 +23,7 @@ while(( "$#" )); do
   case "$1" in
     -h)
       echo $0 - configure LPJmL $(cat VERSION)
-      echo Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro=value]
+      echo Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
       echo
       echo Arguments:
       echo "-h              print this help text"
@@ -41,7 +41,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: prefix directory missing
-        echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value]]
+        echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
         exit 1
       fi
       prefix=$2
@@ -65,12 +65,12 @@ while(( "$#" )); do
       ;;
     -*)
       echo >&2 Invalid option $1
-      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value]]
+      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
       exit 1
       ;;
     *)
       echo >&2 Invalid argument $1
-      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value]]
+      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
       exit 1
       ;;
   esac
