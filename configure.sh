@@ -18,6 +18,7 @@
 debug=0
 nompi=0
 prefix=$PWD
+macro=""
 while(( "$#" )); do
   case "$1" in
     -h)
@@ -59,8 +60,7 @@ while(( "$#" )); do
       shift 1
       ;;
     -D*)
-      macro=$1
-      echo $macro
+      macro="$macro $1"
       shift 1
       ;;
     -*)
