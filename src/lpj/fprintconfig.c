@@ -87,7 +87,7 @@ static size_t isnetcdfinput(const Config *config)
   {
     if(config->countrycode_filename.fmt==CDF)
       width=max(width,strlen(config->countrycode_filename.var));
-    if(config->withlanduse!=ALL_CROPS && config->landuse_filename.fmt==CDF)
+    if(config->landuse_filename.fmt==CDF)
       width=max(width,strlen(config->landuse_filename.var));
     if(config->sdate_option==PRESCRIBED_SDATE && config->sdate_filename.fmt==CDF)
       width=max(width,strlen(config->sdate_filename.var));
@@ -387,8 +387,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"countries",&config->countrycode_filename,width);
     if(config->countrycode_filename.fmt==CDF)
       printinputfile(file,"regions",&config->regioncode_filename,width);
-    if(config->withlanduse!=ALL_CROPS)
-      printinputfile(file,"landuse",&config->landuse_filename,width);
+    printinputfile(file,"landuse",&config->landuse_filename,width);
     if(config->sdate_option==PRESCRIBED_SDATE)
       printinputfile(file,"sdates",&config->sdate_filename,width);
     if(config->with_nitrogen && config->fertilizer_input)
