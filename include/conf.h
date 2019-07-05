@@ -58,6 +58,9 @@
 #define RWMANAGEMENT 1
 #define NO_TILLAGE 0
 #define TILLAGE 1
+#define READ_TILLAGE 2
+#define NO_RESIDUE_DATA 0
+#define RESIDUE_DATA 1
 #define RADIATION_LWDOWN 3
 #define RADIATION_SWONLY 2
 #define RADIATION 1

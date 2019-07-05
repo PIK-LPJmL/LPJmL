@@ -201,7 +201,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->sdate_option=NO_FIXED_SDATE;
   config->rw_manage=FALSE;
   config->const_climate=FALSE;
-  config->with_tillage=FALSE;
+  config->tillage_type=NO_TILLAGE;
+  config->read_residue_data=NO_RESIDUE_DATA;
   config->no_ndeposition=FALSE;
   if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
     return TRUE;
@@ -284,7 +285,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       grassharvest=FALSE;
       if(fscanbool(file,&grassharvest,"grass_harvest_options",TRUE,verbose))
         return TRUE;
-      fscanint2(file,&config->tillage_type,"tillage_type");
+      fscanint2(file,&config->tillage_type,"tillage");
+      fscanint2(file,&config->read_residue_data,"read_residue_data");
     }
     config->black_fallow=FALSE;
     if(fscanbool(file,&config->black_fallow,"black_fallow",TRUE,verbose))

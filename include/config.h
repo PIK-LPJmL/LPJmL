@@ -105,6 +105,7 @@ typedef struct
   Bool crop_irrigation;
   int with_nitrogen;      /**< enable nitrogen cycle */
   int tillage_type;      /**< type of tillage NO_TILLAGE=0, TILLAGE=1, READ_TILLAGE=2 */
+  Bool read_residue_data; /**< read residue share left on field data */
   Bool black_fallow;      /**< simulation with black fallow */
   Bool till_fallow;         /**< apply tillage on black fallow */
   Bool fix_fertilization;   /**< simulation with fixed fertilizer application rate */
