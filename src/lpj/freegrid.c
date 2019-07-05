@@ -35,6 +35,16 @@ void freegrid(Cell grid[],         /**< cell grid */
       freelandfrac(grid[cell].ml.fertilizer_nr);
       free(grid[cell].ml.fertilizer_nr);
     }
+    if (grid[cell].ml.manure_nr != NULL)
+    {
+      freelandfrac(grid[cell].ml.manure_nr);
+      free(grid[cell].ml.manure_nr);
+    }
+    if (grid[cell].ml.residue_on_field != NULL)
+    {
+      freelandfrac(grid[cell].ml.residue_on_field);
+      free(grid[cell].ml.residue_on_field);
+    }
     if(grid[cell].ml.irrig_system!=NULL)
     {
       free(grid[cell].ml.irrig_system->crop);

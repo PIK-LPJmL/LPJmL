@@ -67,6 +67,9 @@ typedef struct
   Filename fertilizer_nr_filename;
   Filename no3deposition_filename;
   Filename nh4deposition_filename;
+  Filename manure_nr_filename;
+  Filename with_tillage_filename;
+  Filename residue_data_filename;
   char *restart_filename;
   Filename lakes_filename;
   Filename wateruse_filename;
@@ -121,7 +124,7 @@ typedef struct
   Bool istimber;
   Bool const_climate;           /**< constant climate */
   Bool const_deposition;        /**< constant N deposition */
-  Bool remove_residuals;
+  Bool remove_residuals;    /* remove residuals (0:FALSE, 1:TRUE) */
   Bool residues_fire;   /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
   Bool check_climate; /**< check climate input data for NetCDF files */

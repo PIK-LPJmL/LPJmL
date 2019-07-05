@@ -115,6 +115,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(config->soilph_filename);
     if(config->withlanduse!=NO_LANDUSE && config->fertilizer_input)
       freefilename(config->fertilizer_nr_filename);
+      freefilename(config->manure_nr_filename);
   }
   if(config->prescribe_landcover != NO_LANDCOVER)
     freefilename(config->landcover_filename);

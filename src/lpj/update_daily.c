@@ -365,7 +365,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   } /* of 'if(river_routing)' */
 
 
-  killstand(cell,config->pftpar,npft,config->with_tillage,intercrop,year);
+  killstand(cell,config->pftpar,npft, cell->ml.with_tillage,intercrop,year);
 #ifdef SAFE
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 #endif

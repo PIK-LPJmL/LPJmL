@@ -516,9 +516,19 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         grid[i].ml.fertilizer_nr=newvec(Landfrac,2);
         checkptr(grid[i].ml.fertilizer_nr);
         newlandfrac(grid[i].ml.fertilizer_nr,ncft);
+        grid[i].ml.manure_nr = newvec(Landfrac, 2);
+        checkptr(grid[i].ml.manure_nr);
+        newlandfrac(grid[i].ml.manure_nr, ncft);
       }
       else
-        grid[i].ml.fertilizer_nr=NULL;
+      {
+        grid[i].ml.fertilizer_nr = NULL;
+        grid[i].ml.manure_nr = NULL;
+      }
+      grid[i].ml.residue_on_field = newvec(Landfrac, 2);
+      checkptr(grid[i].ml.residue_on_field);
+      newlandfrac(grid[i].ml.residue_on_field, ncft);
+
       grid[i].ml.irrig_system=newvec(Irrig_system,1);
       checkptr(grid[i].ml.irrig_system);
       grid[i].ml.irrig_system->crop=newvec(int,ncft);
@@ -535,6 +545,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       grid[i].ml.landfrac=NULL;
       grid[i].ml.fertilizer_nr=NULL;
+      grid[i].ml.manure_nr = NULL;
+      grid[i].ml.residue_on_field = NULL;
       grid[i].ml.irrig_system=NULL;
     }
     if(file_restart==NULL)

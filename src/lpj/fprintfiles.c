@@ -100,6 +100,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       fprintf(file,"%s\n",config->sdate_filename.name);
     if(config->with_nitrogen && config->fertilizer_input)
       fprintfilename(file,config->fertilizer_nr_filename);
+      fprintfilename(file,config->manure_nr_filename);
   }
   if(config->reservoir)
     fprintf(file,"%s\n"

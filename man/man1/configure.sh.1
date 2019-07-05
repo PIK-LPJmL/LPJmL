@@ -3,7 +3,7 @@
 configure.sh \- Configure LPJmL
 .SH SYNOPSIS
 .B configure.sh
-[-h] [-prefix \fIdir\fP] [-debug] [-nompi]
+[-h] [-prefix \fIdir\fP] [-debug] [-nompi] [-check] [-Dmacro[=value]]
 .SH DESCRIPTION
 Script configures LPJmL for specific OS and compiler. File \fIMakefile.inc\fP and scripts \fBlpj_paths.sh\fP, \fBlpj_paths.csh\fP are created. After configuration LPJmL program and utilities can be created by invoking
 
@@ -20,8 +20,14 @@ Set installation directory for LPJmL. Default is current working directory.
 -debug
 Set debug flags and disable optimization of compiler. LPJmL has to be rebuilt by invoking \fBmake clean\fP and \fBmake all\fP.
 .TP
+-check
+Set debug flags, enable pointer checking for access out of bounds and disable optimization of compiler. LPJmL has to be rebuilt by invoking \fBmake clean\fP and \fBmake all\fP.
+.TP
 -nompi
 Do not build the MPI version of the code.
+.TP
+-Dmacro[=value]
+Defines macro for compilation 
 .SH EXAMPLE
 .TP
 Configure LPJmL with installation directory \fI/data/biosx/lpjml\fP:

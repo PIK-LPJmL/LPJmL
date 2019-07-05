@@ -77,6 +77,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.residue_pool,"residue_pool");
   fscanparamreal(&f,&param.residue_cn,"residue_cn");
   fscanparamreal(&f,&param.residue_fbg,"residue_fbg");
+  fscanparamreal(&f,&param.manure_cn,"manure_cn");
   fscanparamreal(&f,&param.fertilizer_rate,"fertilizer_rate");
   fscanparamreal(&f,&param.residue_frac,"residue_frac");
   fscanparamreal(&f,&param.mixing_efficiency,"mixing_efficiency");

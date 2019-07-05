@@ -65,6 +65,7 @@ typedef struct
   Real drip_evap;        /**< reduction of drip soil evap */
   Real residues_in_soil;  /**< minimum residues in soil*/
   Real nfert_split;     /**< threshold fertilizer input for split application */
+  Real manure_cn;       /* CN ratio of applied manure gC/gN */
   Real residue_frac; /**< fraction of residues to be submerged with tillage */
   Real mixing_efficiency; /**< density factor to simulate changes in bulk density by tillage */
   int till_startyear; /* year in which tillage should start */

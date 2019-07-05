@@ -324,8 +324,11 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.elevation_filename,0);
       bad+=checkinputfile(&config,&config.reservoir_filename,10);
     }
-    if(config.with_nitrogen && config.fertilizer_input && !config.fix_fertilization)
+    if (config.with_nitrogen&&config.fertilizer_input&&!config.fix_fertilization)
+    {
       bad+=checkclmfile(&config,&config.fertilizer_nr_filename);
+      bad+=checkinputfile(&config,&config.manure_nr_filename);
+    }
   }
   badout=0;
   oldpath=strdup("");

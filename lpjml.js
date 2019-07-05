@@ -46,7 +46,7 @@
   "const_deposition" : false,
 #ifdef FROM_RESTART
   "population" : false,
-  "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
+  "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS, ONLY_CROPS (crops scaled to 100% of cell) */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
   "wateruse" : WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
@@ -62,7 +62,7 @@
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
   "intercrop" : true,                   /* intercrops on setaside */
   "remove_residuals" : false,           /* remove residuals */
-  "read_residue_data" : NO_RESIDUE_DATA, /* option to read data residue share left on field: NO_RESIDUE_DATA, RESIDUE_DATA (disables remove_residuals) */ 
+  "read_residue_data" : NO_RESIDUE_DATA, /* option to read data residue share left on field: RESIDUE_DATA, NO_RESIDUE_DATA (disables remove_residuals) */ 
   "residues_fire" : false,              /* fire in residuals */
   "irrigation" : LIM_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
   "tillage" : NO_TILLAGE,               /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */

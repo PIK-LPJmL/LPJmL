@@ -25,6 +25,7 @@
 #define NO_LANDUSE 0
 #define CONST_LANDUSE 3
 #define ALL_CROPS 4
+#define ONLY_CROPS 5
 #define NO_FIXED_SDATE 0
 #define FIXED_SDATE 1
 #define PRESCRIBED_SDATE 2

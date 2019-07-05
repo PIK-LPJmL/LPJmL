@@ -13,7 +13,7 @@
 
      <B>SYNOPSIS</B>
           <B>lpjsubmit</B> [-class c] [-group g] [-wtime time] [-blocking n]
-          [-o output] [-e error] [-q] [-nocheck] ntasks [args ...]
+          [-o output] [-e error] [-q] [-nocheck] [-norun] ntasks [args ...]
 
      <B>DESCRIPTION</B>
           Script creates SLURM/LoadLeveler job control file <I>job</I>.<I>jcf</I>
@@ -56,6 +56,10 @@
 
           -nocheck
                does not check input files and output directories.
+
+          -norun
+               does not submit job to batch queue, creates <I>slurm</I>.<I>jcf</I>
+               file only.
 
           ntasks
                set the number of parallel MPI tasks.

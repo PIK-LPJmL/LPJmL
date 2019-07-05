@@ -74,7 +74,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     if(config->with_nitrogen)
     {
       fprintf(file,"nfert_split:\t%g\n",param.nfert_split);
-    
+      fprintf(file, "manure_cn:\t%g\n", param.manure_cn);
     }
     fprintf(file,"residues_frac:\t%g\n",param.residue_frac);
     fprintf(file,"mixing_efficiency:\t%g\n",param.mixing_efficiency);
@@ -94,8 +94,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"saturation level drip:\t%g\n",param.sat_level[3]);
     fprintf(file,"drip evap. reduction:\t%g\n",param.drip_evap);
     fprintf(file,"residues in soil:\t%g\n",param.residues_in_soil);
-    if(config->with_nitrogen)
-      fprintf(file,"nfert split:\t%g\n",param.nfert_split);
     fprintf(file,"fraction burnt:\t%g\n",param.fburnt);
     fprintf(file,"timber fraction:\t%g\n",param.ftimber);
     if(config->rw_manage)

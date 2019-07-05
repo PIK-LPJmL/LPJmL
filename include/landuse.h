@@ -54,6 +54,8 @@ typedef struct
 {
   Landfrac *landfrac;     /**< land use fractions */
   Landfrac *fertilizer_nr;   /**< reactive nitrogen fertilizer */
+  Landfrac *manure_nr;     /* manure nitrogen fertilizer */
+  Landfrac *residue_on_field;     /* fraction of residues left on field */
   Irrig_system *irrig_system; /**< irrigation system type (SURF=1,SPRINK=2,DRIP=3) */
   Manage manage;
   Cropdates *cropdates;
@@ -65,11 +67,13 @@ typedef struct
                                     2:precipitation seasonality, 3 and 4:temperature
                                     seasonality*/
   int *sdate_fixed;       /**< array to store fixed or prescribed sowing dates */
+  int *tilltypes;         /* array to store tillage types */
   Resdata *resdata;       /**< Reservoir data */
   Real *fraction;
   Real reservoirfrac;     /**< reservoir fraction (0..1) */
   Real mdemand;           /**< monthly irrigation demand */
   Bool dam;               /**< dam inside cell (TRUE/FALSE) */
+  Bool with_tillage;      /* simulation with tillage implementation */
   int fixed_grass_pft;              /**< fix C3 or C4 for GRASS pft */
   GrassScenarioType grass_scenario; /* 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
   Real nr_of_lsus_ext;              /* nr of livestock units for extensive grazing */

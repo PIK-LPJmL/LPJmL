@@ -11,7 +11,8 @@
           configure.sh - Configure LPJmL
 
      <B>SYNOPSIS</B>
-          <B>configure.sh</B> [-h] [-prefix <I>dir</I>] [-debug] [-nompi]
+          <B>configure.sh</B> [-h] [-prefix <I>dir</I>] [-debug] [-nompi] [-check]
+          [-Dmacro[=value]]
 
      <B>DESCRIPTION</B>
           Script configures LPJmL for specific OS and compiler. File
@@ -34,8 +35,16 @@
                LPJmL has to be rebuilt by invoking <B>make</B> <B>clean</B> and <B>make</B>
                <B>all</B>.
 
+          -check
+               Set debug flags, enable pointer checking for access out
+               of bounds and disable optimization of compiler. LPJmL
+               has to be rebuilt by invoking <B>make</B> <B>clean</B> and <B>make</B> <B>all</B>
+
           -nompi
                Do not build the MPI version of the code.
+
+           -Dmacro[=value]
+               Defines macro for compilation
 
      <B>EXAMPLE</B>
           Configure LPJmL with installation directory /<I>data</I>/<I>biosx</I>/<I>lpjml</I>:

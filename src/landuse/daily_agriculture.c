@@ -34,7 +34,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
                        Real melt,  /**< melting water (mm) */
                        int npft,   /**< number of natural PFTs */
                        int ncft,   /**< number of crop PFTs   */
-                       int UNUSED(year), /**< simulation year */
+                       int year, /**< simulation year */
                        Bool withdailyoutput, /**< enable daily output */
                        Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                        const Config *config /**< LPJ config */
@@ -165,8 +165,8 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         (crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
 #endif
-      harvest_crop(output,stand,pft,npft,ncft,config->remove_residuals,config->residues_fire,
-                   config->pft_output_scaled);
+      harvest_crop(output,stand,pft,npft,ncft,year,config->remove_residuals,config->residues_fire,
+                   config->pft_output_scaled,config->read_residue_data);
       /* return irrig_stor and irrig_amount */
       if(data->irrigation)
       {
@@ -386,8 +386,8 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
 #endif
-      harvest_crop(output,stand,pft,npft,ncft,config->remove_residuals,config->residues_fire,
-                   config->pft_output_scaled);
+      harvest_crop(output,stand,pft,npft,ncft,year,config->remove_residuals,config->residues_fire,
+                   config->pft_output_scaled,config->read_residue_data);
       if(data->irrigation)
       {
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
