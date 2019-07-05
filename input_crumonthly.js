@@ -26,7 +26,7 @@
   "soilpH" :        { "fmt" : CLM,  "name" : "input_VERSION2/soil_ph.clm"},
   "landuse" :      { "fmt" : CLM,  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   "fertilizer_nr" : { "fmt" : CLM,  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
-  "manure_nr" :    { "fmt" : CLM, "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
+  "manure_nr" :    { "fmt" : CLM, "name" : "/p/projects/lpjml/input/historical/input_VERSION3/manure_zhang17_1860-2014_32bands.clm"},
   "with_tillage" : { "fmt" : CLM, "name" : "/p/projects/macmit/data/LPJmL_input_baseline_macmit/LPJTILL.clm"},
   "residue_on_field" : { "fmt" : CLM, "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
   /* insert prescribed sdate file name here */
