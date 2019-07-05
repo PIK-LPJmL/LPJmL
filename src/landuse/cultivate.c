@@ -133,11 +133,11 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
 
       cropstand->soil.NH4[0] += manure*fmanure_NH4;
       cropstand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
-      cropstand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-fmanure_NH4);
+      cropstand->soil.litter.item->agsub.leaf.nitrogen += manure*(1 - fmanure_NH4);
       cell->output.flux_estab.carbon += manure*param.manure_cn*cropstand->frac;
       cell->balance.n_influx += manure*cropstand->frac;
 
-      if (manure*fmanure_NH4<param.nfert_split)
+      if (manure*fmanure_NH4 < param.nfert_split)
       {
         if (fertil <= (param.nfert_split - manure*fmanure_NH4))
         {
@@ -159,6 +159,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
         crop = pft->data;
         crop->nfertilizer = fertil;
       }
+    }
     return bm_inc;
   }
 } /* of 'cultivate' */

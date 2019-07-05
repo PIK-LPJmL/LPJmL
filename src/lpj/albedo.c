@@ -49,7 +49,7 @@ static Real albedo_stand(const Stand *stand)
     return c_albsnow;
   }
 
-  VolWatercontent = stand->soil.w[0]*stand->soil.par->whc[0];
+  VolWatercontent = stand->soil.w[0]*stand->soil.whc[0];
   moisture = c_albedo_wet_soil + c_albedo_bare_soil*exp(-decay_alb_moist*VolWatercontent);/*gives the moisture dependence of the bare soil*/
 
   HS = c_watertosnow * (stand->soil.snowpack/1000.0); /* mm -> m */
@@ -59,7 +59,7 @@ static Real albedo_stand(const Stand *stand)
 
   foreachpft(pft,p,&stand->pftlist)
   {
-    albstot += pft->par->albedo(pft,HS,frsg); /* call PFT-specific albedo function */
+    albstot += albedo(pft,HS,frsg); /* call PFT-specific albedo function */
     fbare += pft->fpc;
   } /* pft loop */
   fbare = max((1-fbare),0.0);

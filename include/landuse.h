@@ -79,7 +79,6 @@ typedef struct
   Real nr_of_lsus_ext;              /* nr of livestock units for extensive grazing */
   Real nr_of_lsus_int;              /* nr of livestock units for intensive grazing */
   Rotation rotation;                /* rotation mode and parameters for intensive grazing */
-  Bool with_tillage;      /* simulation with tillage implementation */
 
 #ifdef IMAGE
   Image_data *image_data; /**< pointer to IMAGE data structure */

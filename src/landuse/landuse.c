@@ -869,7 +869,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 )                     /** \return TRUE on error */
 {
   short *vec;
-  int i, j, p, count, cell, yearf, yearl;
+  int i, j, p, count, cell, yearl;
   Real sum, *data, *fert_nr, *manu_nr, *res_on_field;
   int *dates;
   Bool *tilltypes;

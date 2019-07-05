@@ -327,7 +327,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if (config.with_nitrogen&&config.fertilizer_input&&!config.fix_fertilization)
     {
       bad+=checkclmfile(&config,&config.fertilizer_nr_filename);
-      bad+=checkinputfile(&config,&config.manure_nr_filename);
+      bad+=checkclmfile(&config,&config.manure_nr_filename);
     }
   }
   badout=0;
