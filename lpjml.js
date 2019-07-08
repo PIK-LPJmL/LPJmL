@@ -65,7 +65,7 @@
   "read_residue_data" : NO_RESIDUE_DATA, /* option to read data residue share left on field: RESIDUE_DATA, NO_RESIDUE_DATA (disables remove_residuals) */ 
   "residues_fire" : false,              /* fire in residuals */
   "irrigation" : LIM_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
-  "tillage" : NO_TILLAGE,               /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
+  "tillage_type" : NO_TILLAGE,          /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
   "black_fallow" : false,               /* simulation with black fallow on PNV */
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
   "laimax_interpolate" : LAIMAX_PAR,    /* laimax values from manage parameter file, */

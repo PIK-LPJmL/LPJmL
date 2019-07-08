@@ -285,7 +285,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       grassharvest=FALSE;
       if(fscanbool(file,&grassharvest,"grass_harvest_options",TRUE,verbose))
         return TRUE;
-      fscanint2(file,&config->tillage_type,"tillage");
+      fscanint2(file,&config->tillage_type,"tillage_type");
       fscanint2(file,&config->read_residue_data,"read_residue_data");
     }
     config->black_fallow=FALSE;
