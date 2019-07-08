@@ -436,9 +436,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(&input,&config->manure_nr_filename,config->inputdir,FALSE,"manure_nr");
     }
     if (config->tillage_type==READ_TILLAGE)
-      scanclimatefilename(file,&config->with_tillage_filename,config->inputdir,FALSE,"with_tillage");
+      scanclimatefilename(&input,&config->with_tillage_filename,config->inputdir,FALSE,"with_tillage");
     if (config->read_residue_data == RESIDUE_DATA)
-      scanclimatefilename(file,&config->residue_data_filename,config->inputdir,FALSE,"residue_on_field");
+      scanclimatefilename(&input,&config->residue_data_filename,config->inputdir,FALSE,"residue_on_field");
     if(grassfix == GRASS_FIXED_PFT)
     {
       scanclimatefilename(&input,&config->grassfix_filename,config->inputdir,FALSE,"grassland_fixed_pft");
