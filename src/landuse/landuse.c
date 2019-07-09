@@ -610,7 +610,6 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         }
       }
     }
-    free(data);
     switch (config->irrig_scenario)
     {
     case NO_IRRIGATION:
@@ -743,6 +742,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
              sum+1,cell+config->startgrid);
     }
   } /* for(cell=0;...) */
+  free(data);
   if(config->with_nitrogen)
   {
     if(config->fertilizer_input)
