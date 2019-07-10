@@ -137,6 +137,10 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
       cell->output.flux_estab.carbon += manure*param.manure_cn*cropstand->frac;
       cell->balance.n_influx += manure*cropstand->frac;
 
+      printf("fertilizer=%g in year=%d\n", fertil, year);
+      printf("manure=%g in year=%d\n", manure, year);
+      printf("cropstand->soil.NH4[0]=%g in year=%d\n", cropstand->soil.NH4[0], year);
+
       if (manure*fmanure_NH4 < param.nfert_split)
       {
         if (fertil <= (param.nfert_split - manure*fmanure_NH4))
