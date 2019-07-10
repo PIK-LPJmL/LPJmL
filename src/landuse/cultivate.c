@@ -131,15 +131,17 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
       else
         manure = 0;
 
+      printf("fertilizer=%g in year=%d\n", fertil, year);
+      printf("manure=%g in year=%d\n", manure, year);
+      printf("before: soil.NH4[0]=%g in year=%d in cell lat=%g long=%g\n", cropstand->soil.NH4[0], year, cell->coord.lat, cell->coord.lon);
+
       cropstand->soil.NH4[0] += manure*fmanure_NH4;
       cropstand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
       cropstand->soil.litter.item->agsub.leaf.nitrogen += manure*(1 - fmanure_NH4);
       cell->output.flux_estab.carbon += manure*param.manure_cn*cropstand->frac;
       cell->balance.n_influx += manure*cropstand->frac;
 
-      printf("fertilizer=%g in year=%d\n", fertil, year);
-      printf("manure=%g in year=%d\n", manure, year);
-      printf("cropstand->soil.NH4[0]=%g in year=%d in cell lat=%g long=%g\n", cropstand->soil.NH4[0], year, cell->coord.lat, cell->coord.lon);
+      printf("after manure: soil.NH4[0]=%g in year=%d in cell lat=%g long=%g\n", cropstand->soil.NH4[0], year, cell->coord.lat, cell->coord.lon);
 
       if (manure*fmanure_NH4 < param.nfert_split)
       {
@@ -163,6 +165,8 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
         crop = pft->data;
         crop->nfertilizer = fertil;
       }
+      printf("after fertilizer: soil.NH4[0]=%g in year=%d in cell lat=%g long=%g\n", cropstand->soil.NH4[0], year, cell->coord.lat, cell->coord.lon);
+
     }
     return bm_inc;
   }
