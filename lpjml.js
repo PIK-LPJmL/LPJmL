@@ -73,6 +73,7 @@
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : true,            /* enable fertilizer input */
+  "manure_input" : false,               /* enable manure input */
   "fix_fertlization" : false,           /* fix fertilizer input */
   "istimber" : true,
   "grassland_fixed_pft" : false,

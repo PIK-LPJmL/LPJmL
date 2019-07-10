@@ -339,98 +339,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->nbands_fertilizer_nr = header.nbands;
       landuse->fertilizer_nr.scalar = header.scalar;
     }
-    /* read manure fertilizer data */
-    landuse->manure_nr.fmt = config->manure_nr_filename.fmt;
-    if (config->manure_nr_filename.fmt == CDF)
+    if (config->with_nitrogen && config->manure_input && !config->fix_fertilization)
     {
-      if (opendata_netcdf(&landuse->manure_nr, config->manure_nr_filename.name, config->manure_nr_filename.var, NULL, config))
+      /* read manure fertilizer data */
+      landuse->manure_nr.fmt = config->manure_nr_filename.fmt;
+      if (config->manure_nr_filename.fmt == CDF)
       {
-        if (landuse->landuse.fmt == CDF)
-          closeclimate_netcdf(&landuse->landuse, isroot(*config));
-        else
-          fclose(landuse->landuse.file);
-        if (landuse->sdate.file != NULL)
-        {
-          if (landuse->sdate.fmt == CDF)
-            closeclimate_netcdf(&landuse->sdate, isroot(*config));
-          else
-            fclose(landuse->sdate.file);
-        }
-        if (landuse->fertilizer_nr.file != NULL)
-        {
-          if (landuse->fertilizer_nr.fmt == CDF)
-            closeclimate_netcdf(&landuse->fertilizer_nr, isroot(*config));
-          else
-            fclose(landuse->fertilizer_nr.file);
-        }
-
-        free(landuse);
-        return NULL;
-      }
-      if (landuse->manure_nr.var_len != 2 * (ncft + NGRASS + NBIOMASSTYPE))
-      {
-        closeclimate_netcdf(&landuse->manure_nr, isroot(*config));
-        if (isroot(*config))
-          fprintf(stderr,
-            "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
-            (int)landuse->manure_nr.var_len);
-        if (landuse->landuse.fmt == CDF)
-          closeclimate_netcdf(&landuse->landuse, isroot(*config));
-        else
-          fclose(landuse->landuse.file);
-        if (landuse->sdate.file != NULL)
-        {
-          if (landuse->sdate.fmt == CDF)
-            closeclimate_netcdf(&landuse->sdate, isroot(*config));
-          else
-            fclose(landuse->sdate.file);
-          if (landuse->fertilizer_nr.file != NULL)
-          {
-            if (landuse->fertilizer_nr.fmt == CDF)
-              closeclimate_netcdf(&landuse->fertilizer_nr, isroot(*config));
-            else
-              fclose(landuse->fertilizer_nr.file);
-          }
-        }
-        free(landuse);
-        return NULL;
-      }
-    }
-    else
-    {
-      if ((landuse->manure_nr.file = openinputfile(&header, &landuse->manure_nr.swap,
-        &config->manure_nr_filename, headername,
-        &version, &offset, config)) == NULL)
-      {
-        if (landuse->landuse.fmt == CDF)
-          closeclimate_netcdf(&landuse->landuse, isroot(*config));
-        else
-          fclose(landuse->landuse.file);
-        if (landuse->sdate.file != NULL)
-        {
-          if (landuse->sdate.fmt == CDF)
-            closeclimate_netcdf(&landuse->sdate, isroot(*config));
-          else
-            fclose(landuse->sdate.file);
-        }
-        if (landuse->fertilizer_nr.file != NULL)
-        {
-          if (landuse->fertilizer_nr.fmt == CDF)
-            closeclimate_netcdf(&landuse->fertilizer_nr, isroot(*config));
-          else
-            fclose(landuse->fertilizer_nr.file);
-        }
-        free(landuse);
-        return NULL;
-      }
-      if (config->manure_nr_filename.fmt == RAW)
-      {
-        header.nbands = 2 * (ncft + NGRASS + NBIOMASSTYPE);
-        landuse->manure_nr.offset = config->startgrid*header.nbands * sizeof(short);
-      }
-      else
-      {
-        if (header.nbands != 2 * (ncft + NGRASS + NBIOMASSTYPE))
+        if (opendata_netcdf(&landuse->manure_nr, config->manure_nr_filename.name, config->manure_nr_filename.var, NULL, config))
         {
           if (landuse->landuse.fmt == CDF)
             closeclimate_netcdf(&landuse->landuse, isroot(*config));
@@ -450,22 +365,110 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
             else
               fclose(landuse->fertilizer_nr.file);
           }
-          fclose(landuse->manure_nr.file);
+
+          free(landuse);
+          return NULL;
+        }
+        if (landuse->manure_nr.var_len != 2 * (ncft + NGRASS + NBIOMASSTYPE))
+        {
+          closeclimate_netcdf(&landuse->manure_nr, isroot(*config));
           if (isroot(*config))
             fprintf(stderr,
-              "ERROR147: Invalid number of bands=%d in manure data file.\n",
-              header.nbands);
+              "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
+              (int)landuse->manure_nr.var_len);
+          if (landuse->landuse.fmt == CDF)
+            closeclimate_netcdf(&landuse->landuse, isroot(*config));
+          else
+            fclose(landuse->landuse.file);
+          if (landuse->sdate.file != NULL)
+          {
+            if (landuse->sdate.fmt == CDF)
+              closeclimate_netcdf(&landuse->sdate, isroot(*config));
+            else
+              fclose(landuse->sdate.file);
+            if (landuse->fertilizer_nr.file != NULL)
+            {
+              if (landuse->fertilizer_nr.fmt == CDF)
+                closeclimate_netcdf(&landuse->fertilizer_nr, isroot(*config));
+              else
+                fclose(landuse->fertilizer_nr.file);
+            }
+          }
           free(landuse);
-          return(NULL);
+          return NULL;
         }
-        landuse->manure_nr.offset = (config->startgrid - header.firstcell)*header.nbands * sizeof(short) + headersize(headername, version);
       }
-      landuse->manure_nr.firstyear = header.firstyear;
-      landuse->manure_nr.nyear = header.nyear;
-      landuse->manure_nr.size = header.ncell*header.nbands * sizeof(short);
-      landuse->manure_nr.n = config->ngridcell*header.nbands;
-      landuse->nbands_manure_nr = header.nbands;
-      landuse->manure_nr.scalar = header.scalar;
+      else
+      {
+        if ((landuse->manure_nr.file = openinputfile(&header, &landuse->manure_nr.swap,
+          &config->manure_nr_filename, headername,
+          &version, &offset, config)) == NULL)
+        {
+          if (landuse->landuse.fmt == CDF)
+            closeclimate_netcdf(&landuse->landuse, isroot(*config));
+          else
+            fclose(landuse->landuse.file);
+          if (landuse->sdate.file != NULL)
+          {
+            if (landuse->sdate.fmt == CDF)
+              closeclimate_netcdf(&landuse->sdate, isroot(*config));
+            else
+              fclose(landuse->sdate.file);
+          }
+          if (landuse->fertilizer_nr.file != NULL)
+          {
+            if (landuse->fertilizer_nr.fmt == CDF)
+              closeclimate_netcdf(&landuse->fertilizer_nr, isroot(*config));
+            else
+              fclose(landuse->fertilizer_nr.file);
+          }
+          free(landuse);
+          return NULL;
+        }
+        if (config->manure_nr_filename.fmt == RAW)
+        {
+          header.nbands = 2 * (ncft + NGRASS + NBIOMASSTYPE);
+          landuse->manure_nr.offset = config->startgrid*header.nbands * sizeof(short);
+        }
+        else
+        {
+          if (header.nbands != 2 * (ncft + NGRASS + NBIOMASSTYPE))
+          {
+            if (landuse->landuse.fmt == CDF)
+              closeclimate_netcdf(&landuse->landuse, isroot(*config));
+            else
+              fclose(landuse->landuse.file);
+            if (landuse->sdate.file != NULL)
+            {
+              if (landuse->sdate.fmt == CDF)
+                closeclimate_netcdf(&landuse->sdate, isroot(*config));
+              else
+                fclose(landuse->sdate.file);
+            }
+            if (landuse->fertilizer_nr.file != NULL)
+            {
+              if (landuse->fertilizer_nr.fmt == CDF)
+                closeclimate_netcdf(&landuse->fertilizer_nr, isroot(*config));
+              else
+                fclose(landuse->fertilizer_nr.file);
+            }
+            fclose(landuse->manure_nr.file);
+            if (isroot(*config))
+              fprintf(stderr,
+                "ERROR147: Invalid number of bands=%d in manure data file.\n",
+                header.nbands);
+            free(landuse);
+            return(NULL);
+          }
+          landuse->manure_nr.offset = (config->startgrid - header.firstcell)*header.nbands * sizeof(short) + headersize(headername, version);
+        }
+        landuse->manure_nr.firstyear = header.firstyear;
+        landuse->manure_nr.nyear = header.nyear;
+        landuse->manure_nr.size = header.ncell*header.nbands * sizeof(short);
+        landuse->manure_nr.n = config->ngridcell*header.nbands;
+        landuse->nbands_manure_nr = header.nbands;
+        landuse->manure_nr.scalar = header.scalar;
+      }
     }
   }
   else
@@ -1314,105 +1317,108 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         free(fert_nr);
       else
         free(vec);
-
-      /* assigning manure fertilizer nr data */
-      yearm -= landuse->manure_nr.firstyear;
-      if (yearm >= landuse->manure_nr.nyear)
-        yearm = landuse->manure_nr.nyear - 1;
-      else if (yearm < 0)
-        yearm = 0;
-      if (landuse->manure_nr.fmt == CDF)
+    }
+      if (config->manure_input && !config->fix_fertilization)
       {
-        manu_nr = newvec(Real, config->ngridcell*landuse->manure_nr.var_len);
-        if (manu_nr == NULL)
-        {
-          printallocerr("manu_nr");
-          return TRUE;
-        }
-        if (readdata_netcdf(&landuse->manure_nr, manu_nr, grid, yearm, config))
-        {
-          fprintf(stderr,
-            "ERROR149: Cannot read manure fertilizer of year %d in getlanduse().\n",
-            yearm + landuse->manure_nr.firstyear);
-          fflush(stderr);
-          return TRUE;
-        }
-      }
-      else
-      {
-        if (fseek(landuse->manure_nr.file, (long long)yearm*landuse->manure_nr.size + landuse->manure_nr.offset, SEEK_SET))
-        {
-          fprintf(stderr,
-            "ERROR148: Cannot seek manure fertilizer to year %d in getlanduse().\n",
-            yearm + landuse->manure_nr.firstyear);
-          fflush(stderr);
-          return TRUE;
-        }
-        vec = newvec(short, landuse->manure_nr.n);
-        if (vec == NULL)
-        {
-          printallocerr("vec");
-          return TRUE;
-        }
-        if (fread(vec, sizeof(short), landuse->manure_nr.n, landuse->manure_nr.file) != landuse->manure_nr.n)
-        {
-          fprintf(stderr,
-            "ERROR149: Cannot read manure fertilizer of year %d in getlanduse().\n",
-            yearm + landuse->manure_nr.firstyear);
-          fflush(stderr);
-          free(vec);
-          return TRUE;
-        }
-        if (landuse->manure_nr.swap)
-          for (i = 0; i < landuse->manure_nr.n; i++)
-            vec[i] = swapshort(vec[i]);
-      }
-      count = 0;
-
-      /* do changes here for the fertilization*/
-      for (cell = 0; cell < config->ngridcell; cell++)
-      {
+        /* assigning manure fertilizer nr data */
+        yearm -= landuse->manure_nr.firstyear;
+        if (yearm >= landuse->manure_nr.nyear)
+          yearm = landuse->manure_nr.nyear - 1;
+        else if (yearm < 0)
+          yearm = 0;
         if (landuse->manure_nr.fmt == CDF)
         {
-          for (i = 0; i < WIRRIG; i++)
+          manu_nr = newvec(Real, config->ngridcell*landuse->manure_nr.var_len);
+          if (manu_nr == NULL)
           {
-            for (j = 0; j < ncft; j++)
-              grid[cell].ml.manure_nr[i].crop[j] = manu_nr[count++];
-            for (j = 0; j < NGRASS; j++)
-              grid[cell].ml.manure_nr[i].grass[j] = manu_nr[count++];
-
-            if (landuse->manure_nr.var_len != 2 * (ncft + NGRASS))
-            {
-              grid[cell].ml.manure_nr[i].biomass_grass = manu_nr[count++];
-              grid[cell].ml.manure_nr[i].biomass_tree = manu_nr[count++];
-            }
-            else
-              grid[cell].ml.manure_nr[i].biomass_grass = grid[cell].ml.manure_nr[i].biomass_tree = 0;
+            printallocerr("manu_nr");
+            return TRUE;
+          }
+          if (readdata_netcdf(&landuse->manure_nr, manu_nr, grid, yearm, config))
+          {
+            fprintf(stderr,
+              "ERROR149: Cannot read manure fertilizer of year %d in getlanduse().\n",
+              yearm + landuse->manure_nr.firstyear);
+            fflush(stderr);
+            return TRUE;
           }
         }
         else
         {
-          for (i = 0; i < WIRRIG; i++)
+          if (fseek(landuse->manure_nr.file, (long long)yearm*landuse->manure_nr.size + landuse->manure_nr.offset, SEEK_SET))
           {
-            for (j = 0; j < ncft; j++)
-              grid[cell].ml.manure_nr[i].crop[j] = vec[count++] * landuse->manure_nr.scalar;
-            for (j = 0; j < NGRASS; j++)
-              grid[cell].ml.manure_nr[i].grass[j] = vec[count++] * landuse->manure_nr.scalar;
-            if (landuse->nbands_manure_nr != 2 * (ncft + NGRASS))
-            {
-              grid[cell].ml.manure_nr[i].biomass_grass = vec[count++] * landuse->manure_nr.scalar;
-              grid[cell].ml.manure_nr[i].biomass_tree = vec[count++] * landuse->manure_nr.scalar;
-            }
-            else
-              grid[cell].ml.manure_nr[i].biomass_grass = grid[cell].ml.manure_nr[i].biomass_tree = 0;
+            fprintf(stderr,
+              "ERROR148: Cannot seek manure fertilizer to year %d in getlanduse().\n",
+              yearm + landuse->manure_nr.firstyear);
+            fflush(stderr);
+            return TRUE;
           }
+          vec = newvec(short, landuse->manure_nr.n);
+          if (vec == NULL)
+          {
+            printallocerr("vec");
+            return TRUE;
+          }
+          if (fread(vec, sizeof(short), landuse->manure_nr.n, landuse->manure_nr.file) != landuse->manure_nr.n)
+          {
+            fprintf(stderr,
+              "ERROR149: Cannot read manure fertilizer of year %d in getlanduse().\n",
+              yearm + landuse->manure_nr.firstyear);
+            fflush(stderr);
+            free(vec);
+            return TRUE;
+          }
+          if (landuse->manure_nr.swap)
+            for (i = 0; i < landuse->manure_nr.n; i++)
+              vec[i] = swapshort(vec[i]);
         }
-      } /* for(cell=0;...) */
-      if (landuse->manure_nr.fmt == CDF)
-        free(manu_nr);
-      else
-        free(vec);
-    }
+        count = 0;
+
+        /* do changes here for the manure*/
+        for (cell = 0; cell < config->ngridcell; cell++)
+        {
+          if (landuse->manure_nr.fmt == CDF)
+          {
+            for (i = 0; i < WIRRIG; i++)
+            {
+              for (j = 0; j < ncft; j++)
+                grid[cell].ml.manure_nr[i].crop[j] = manu_nr[count++];
+              for (j = 0; j < NGRASS; j++)
+                grid[cell].ml.manure_nr[i].grass[j] = manu_nr[count++];
+
+              if (landuse->manure_nr.var_len != 2 * (ncft + NGRASS))
+              {
+                grid[cell].ml.manure_nr[i].biomass_grass = manu_nr[count++];
+                grid[cell].ml.manure_nr[i].biomass_tree = manu_nr[count++];
+              }
+              else
+                grid[cell].ml.manure_nr[i].biomass_grass = grid[cell].ml.manure_nr[i].biomass_tree = 0;
+            }
+          }
+          else
+          {
+            for (i = 0; i < WIRRIG; i++)
+            {
+              for (j = 0; j < ncft; j++)
+                grid[cell].ml.manure_nr[i].crop[j] = vec[count++] * landuse->manure_nr.scalar;
+              for (j = 0; j < NGRASS; j++)
+                grid[cell].ml.manure_nr[i].grass[j] = vec[count++] * landuse->manure_nr.scalar;
+              if (landuse->nbands_manure_nr != 2 * (ncft + NGRASS))
+              {
+                grid[cell].ml.manure_nr[i].biomass_grass = vec[count++] * landuse->manure_nr.scalar;
+                grid[cell].ml.manure_nr[i].biomass_tree = vec[count++] * landuse->manure_nr.scalar;
+              }
+              else
+                grid[cell].ml.manure_nr[i].biomass_grass = grid[cell].ml.manure_nr[i].biomass_tree = 0;
+            }
+          }
+        } /* for(cell=0;...) */
+        if (landuse->manure_nr.fmt == CDF)
+          free(manu_nr);
+        else
+          free(vec);
+      }
+
     else
       for (cell = 0; cell < config->ngridcell; cell++)
         for (i = 0; i < WIRRIG; i++)

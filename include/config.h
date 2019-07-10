@@ -114,7 +114,8 @@ typedef struct
   Bool fix_fertilization;   /**< simulation with fixed fertilizer application rate */
   Bool no_ndeposition;      /**< turn off atmospheric N deposition */
   Bool prescribe_residues;  /**< simulation with prescribed residue rate on black fallow */
-  Bool fertilizer_input; 
+  Bool fertilizer_input;   /**< simulation with fertilizer input */
+  Bool manure_input;       /**< simulation with manure input */
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
   Bool landuse_restart;   /**< land use enabled in restart file */
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */

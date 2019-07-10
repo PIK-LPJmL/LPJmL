@@ -252,6 +252,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         config->fertilizer_input=TRUE;
         if(fscanbool(file,&config->fertilizer_input,"fertilizer_input",TRUE,verbose))
           return TRUE;
+        config->manure_input=FALSE;
+        if (fscanbool(file,&config->manure_input,"manure_input",TRUE,verbose))
+          return TRUE;
         config->fix_fertilization=FALSE;
         if(fscanbool(file,&config->fix_fertilization,"fix_fertilization",TRUE,verbose))
           return TRUE;
@@ -431,10 +434,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(&input,&config->sdate_filename,config->inputdir,FALSE,"sdate");
     }
     if(config->with_nitrogen && config->fertilizer_input)
-    {
       scanclimatefilename(&input,&config->fertilizer_nr_filename,config->inputdir,FALSE,"fertilizer_nr");
+    if (config->with_nitrogen && config->manure_input)
       scanclimatefilename(&input,&config->manure_nr_filename,config->inputdir,FALSE,"manure_nr");
-    }
     if (config->tillage_type==READ_TILLAGE)
       scanclimatefilename(&input,&config->with_tillage_filename,config->inputdir,FALSE,"with_tillage");
     if (config->read_residue_data == RESIDUE_DATA)

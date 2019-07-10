@@ -92,10 +92,9 @@ static size_t isnetcdfinput(const Config *config)
     if(config->sdate_option==PRESCRIBED_SDATE && config->sdate_filename.fmt==CDF)
       width=max(width,strlen(config->sdate_filename.var));
     if (config->with_nitrogen && config->fertilizer_input && config->fertilizer_nr_filename.fmt == CDF)
-    {
       width = max(width, strlen(config->fertilizer_nr_filename.var));
+    if (config->with_nitrogen && config->manure_input && config->manure_nr_filename.fmt == CDF)
       width = max(width, strlen(config->manure_nr_filename.var));
-    }  
     if(config->read_residue_data && config->residue_data_filename.fmt==CDF)
       width=max(width, strlen(config->residue_data_filename.var));
     if(config->tillage_type && config->with_tillage_filename.fmt==CDF)
@@ -397,11 +396,10 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"landuse",&config->landuse_filename,width);
     if(config->sdate_option==PRESCRIBED_SDATE)
       printinputfile(file,"sdates",&config->sdate_filename,width);
-    if(config->with_nitrogen && config->fertilizer_input)
-    {
-      printinputfile(file, "fertilizer_nr", &config->fertilizer_nr_filename, width);
-      printinputfile(file, "manure_nr", &config->manure_nr_filename, width);
-    }
+    if(config->with_nitrogen&&config->fertilizer_input)
+      printinputfile(file,"fertilizer_nr",&config->fertilizer_nr_filename, width);
+    if(config->with_nitrogen&&config->manure_input)
+      printinputfile(file,"manure_nr",&config->manure_nr_filename, width);
     if(config->read_residue_data==RESIDUE_DATA)
       printinputfile(file,"residue",&config->residue_data_filename,width);
     if(config->tillage_type==READ_TILLAGE)
