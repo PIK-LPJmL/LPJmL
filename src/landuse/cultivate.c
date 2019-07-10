@@ -139,7 +139,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
 
       printf("fertilizer=%g in year=%d\n", fertil, year);
       printf("manure=%g in year=%d\n", manure, year);
-      printf("cropstand->soil.NH4[0]=%g in year=%d\n", cropstand->soil.NH4[0], year);
+      printf("cropstand->soil.NH4[0]=%g in year=%d in cell lat=%g long=%g\n", cropstand->soil.NH4[0], year, cell->coord.lat, cell->coord.lon);
 
       if (manure*fmanure_NH4 < param.nfert_split)
       {
