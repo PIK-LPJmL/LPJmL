@@ -602,7 +602,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
   else
     landuse->with_tillage.file = NULL;
 
-  if (config->read_residue_data == RESIDUE_DATA)
+  if (config->residue_treatment == READ_RESIDUE_DATA)
   {
     /* read residue data */
     landuse->residue_on_field.fmt = config->residue_data_filename.fmt;
@@ -1532,7 +1532,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
   }
 
-  if (config->read_residue_data == RESIDUE_DATA)
+  if (config->residue_treatment == READ_RESIDUE_DATA)
   {
     /* assigning residue extraction data */
     yearr -= landuse->residue_on_field.firstyear;

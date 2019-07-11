@@ -202,7 +202,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->rw_manage=FALSE;
   config->const_climate=FALSE;
   config->tillage_type=NO_TILLAGE;
-  config->read_residue_data=NO_RESIDUE_DATA;
+  config->residue_treatment=NO_RESIDUE_REMOVE;
   config->no_ndeposition=FALSE;
   if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
     return TRUE;
@@ -262,9 +262,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       config->istimber=FALSE;
       if(fscanbool(file,&config->istimber,"istimber",TRUE,verbose))
         return TRUE;
-      config->remove_residuals=FALSE;
-      if(fscanbool(file,&config->remove_residuals,"remove_residuals",TRUE,verbose))
-        return TRUE;
       config->residues_fire=FALSE;
       if(fscanbool(file,&config->residues_fire,"residues_fire",TRUE,verbose))
         return TRUE;
@@ -289,7 +286,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscanbool(file,&grassharvest,"grass_harvest_options",TRUE,verbose))
         return TRUE;
       fscanint2(file,&config->tillage_type,"tillage_type");
-      fscanint2(file,&config->read_residue_data,"read_residue_data");
+      fscanint2(file,&config->residue_treatment,"residue_treatment");
     }
     config->black_fallow=FALSE;
     if(fscanbool(file,&config->black_fallow,"black_fallow",TRUE,verbose))
@@ -439,7 +436,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(&input,&config->manure_nr_filename,config->inputdir,FALSE,"manure_nr");
     if (config->tillage_type==READ_TILLAGE)
       scanclimatefilename(&input,&config->with_tillage_filename,config->inputdir,FALSE,"with_tillage");
-    if (config->read_residue_data == RESIDUE_DATA)
+    if (config->residue_treatment == READ_RESIDUE_DATA)
       scanclimatefilename(&input,&config->residue_data_filename,config->inputdir,FALSE,"residue_on_field");
     if(grassfix == GRASS_FIXED_PFT)
     {
