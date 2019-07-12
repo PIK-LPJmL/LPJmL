@@ -40,27 +40,17 @@ void harvest_crop(Output *output,        /**< Output data */
   Real fuelratio,bifratio,factor;
   data=stand->data;
   crop=pft->data;
-  Real res_on_field, res_removed;
+  Real res_onfield, res_remove;
 
   if(residue_treatment<READ_RESIDUE_DATA)
-  {
-    res_on_field = residue_treatment==FIXED_RESIDUE_REMOVE ? param.residues_in_soil : 1 ;
-    res_removed = residue_treatment==FIXED_RESIDUE_REMOVE ? (1-param.residues_in_soil) : 0;
-  }
-  if(residue_treatment==READ_RESIDUE_DATA)
-  {
-    res_on_field=stand->cell->ml.residue_on_field[data->irrigation].crop[pft->par->id-npft];
-    res_removed=(1-res_on_field); 
-  }  
-  if (year<param.till_startyear&&residue_treatment<READ_RESIDUE_DATA)
-  {
-    stand->soil.litter.item[pft->litter].ag.leaf.carbon += (crop->ind.leaf.carbon + crop->ind.pool.carbon)*0.1;
-    stand->soil.litter.item[pft->litter].ag.leaf.nitrogen += (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*0.1;
-  }
-  else {
-    stand->soil.litter.item[pft->litter].ag.leaf.carbon += (crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_on_field;
-    stand->soil.litter.item[pft->litter].ag.leaf.nitrogen += (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*res_on_field;
-  }
+    res_onfield = residue_treatment==FIXED_RESIDUE_REMOVE ? param.residues_in_soil : 1 ;
+  else
+    res_onfield=stand->cell->ml.residue_on_field[data->irrigation].crop[pft->par->id-npft];
+  if (year<param.till_startyear)
+    res_onfield=0.1;
+  res_remove = (1-res_onfield);
+  stand->soil.litter.item[pft->litter].ag.leaf.carbon += (crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield;
+  stand->soil.litter.item[pft->litter].ag.leaf.nitrogen += (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*res_onfield;
   if (!residues_fire)
   {
     harvest.residuals_burnt.carbon = harvest.residuals_burntinfield.carbon =
@@ -70,32 +60,19 @@ void harvest_crop(Output *output,        /**< Output data */
   {
     fuelratio = stand->cell->ml.manage.regpar->fuelratio; /* burn outside of field */
     bifratio = stand->cell->ml.manage.regpar->bifratio; /* burn in field */
-    if (bifratio + fuelratio > res_removed)
+    if (bifratio + fuelratio > res_remove)
     {
-      bifratio *= res_removed;
-      fuelratio *= res_removed;
+      bifratio *= res_remove;
+      fuelratio *= res_remove;
     }
-    res_removed -= fuelratio - bifratio;
+    res_remove -= fuelratio - bifratio;
     harvest.residuals_burnt.carbon = (crop->ind.leaf.carbon + crop->ind.pool.carbon)*fuelratio;
     harvest.residuals_burntinfield.carbon = (crop->ind.leaf.carbon + crop->ind.pool.carbon)*bifratio;
     harvest.residuals_burnt.nitrogen = (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*fuelratio;
     harvest.residuals_burntinfield.nitrogen = (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*bifratio;
   }
-  if (year<param.till_startyear&&residue_treatment<READ_RESIDUE_DATA)
-  {
-    harvest.residual.carbon = (crop->ind.leaf.carbon + crop->ind.pool.carbon)*0.9;
-    harvest.residual.nitrogen = (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*0.9;
-  }
-  else
-  {
-    if(residue_treatment>NO_RESIDUE_REMOVE)
-    {
-      harvest.residual.carbon = (crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_removed;
-      harvest.residual.nitrogen = (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*res_removed;
-    }
-    else
-      harvest.residual.carbon = harvest.residual.nitrogen = 0;
-  }
+  harvest.residual.carbon = (crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_remove;
+  harvest.residual.nitrogen = (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*res_remove;
   harvest.harvest=crop->ind.so;
   stand->soil.litter.item[pft->litter].bg.carbon+=crop->ind.root.carbon;
   stand->cell->output.alittfall.carbon+=crop->ind.root.carbon*stand->frac;
