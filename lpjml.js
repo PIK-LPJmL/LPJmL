@@ -73,6 +73,8 @@
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : true,            /* enable fertilizer input */
   "manure_input" : false,               /* enable manure input */
+  "others_to_crop" : false,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
+  "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
   "fix_fertlization" : false,           /* fix fertilizer input */
   "istimber" : true,
   "grassland_fixed_pft" : false,

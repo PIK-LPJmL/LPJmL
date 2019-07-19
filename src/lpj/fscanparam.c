@@ -82,6 +82,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.residue_frac,"residue_frac");
   fscanparamreal(&f,&param.mixing_efficiency,"mixing_efficiency");
   fscanparamint(&f,&param.till_startyear,"till_startyear");
+  fscanparamint(&f,&param.output_spinupyears,"output_spinupyears");
   if(config->withlanduse!=NO_LANDUSE)
   {
     fscanparamreal(&f,&param.aprec_lim,"aprec_lim");

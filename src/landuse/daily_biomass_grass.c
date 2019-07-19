@@ -37,6 +37,7 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
                          int UNUSED(year), /**< simulation year */
                          Bool withdailyoutput, /**< enable daily output */
                          Bool  UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
+                         Real agrfrac,
                          const Config *config /**< LPJ config */
                         )            /** \return runoff (mm) */
 {

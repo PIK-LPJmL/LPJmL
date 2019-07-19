@@ -35,6 +35,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
                    int year,         /**< simulation year (AD) */
                    Bool withdailyoutput, /**< daily output enabled */
                    Bool UNUSED(intercrop), /**< enabled intercropping */
+                   Real agrfrac,
                    const Config *config /**< LPJ config */
                   ) /** \return runoff (mm) */
 {
@@ -116,6 +117,8 @@ Real daily_natural(Stand *stand, /**< stand pointer */
     }
     output->dcflux-=npp*stand->frac;
     output->mnpp+=npp*stand->frac;
+    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR)
+      output->mnpp_agr += npp*stand->frac / agrfrac;
     output->mgpp+=gpp*stand->frac;
     output->mfapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 

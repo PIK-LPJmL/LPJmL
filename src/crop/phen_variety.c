@@ -46,7 +46,7 @@ void phen_variety(Pft *pft,      /**< PFT variables */
   {
     if(wtype)
     {
-      crop->pvd=max(0,min(60,vern_date20-sdate-croppar->pvd));
+      crop->pvd=max(0,min(60,vern_date20-(sdate-croppar->pvd)));
       crop->phu=max(croppar->phuw.low,-0.1081*pow((sdate-keyday),2)
                 +3.1633*(sdate-keyday)+croppar->phuw.high);
     }

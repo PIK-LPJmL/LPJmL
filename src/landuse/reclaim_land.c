@@ -156,6 +156,8 @@ void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool istimber, in
       soil->c_shift_slow[l][p]=0;
     }
 
+  /*allow one tillage event on new stand upon cultivation, after deforest or landuseexpansion*/
+  tillage(stand2, param.residue_frac);
   copysoil(&stand2->soil,&stand1->soil,ntotpft);
   for(l=0;l<NSOILLAYER;l++)
     stand2->frac_g[l]=stand1->frac_g[l];

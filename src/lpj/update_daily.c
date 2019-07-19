@@ -54,6 +54,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Irrigation *data;
   int index,l;
   Real rootdepth=0.0;
+  Real agrfrac;
   Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
   gp_pft=newvec(Real,npft+ncft);
@@ -77,6 +78,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     update_nesterov(cell,&climate);
+  agrfrac = 0;
+  foreachstand(stand, s, cell->standlist)
+    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
+      agrfrac += stand->frac;
   foreachstand(stand,s,cell->standlist)
   {
     for(l=0;l<stand->soil.litter.n;l++)
@@ -188,6 +193,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
     cell->output.mswe+=stand->soil.snowpack*stand->frac;
+    /*monthly rh for agricutural stands*/
+    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
+      stand->cell->output.mrh_agr += hetres.carbon*stand->frac / agrfrac;
+
     if (withdailyoutput)
     {
       switch(stand->type->landusetype)
@@ -276,7 +285,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
     runoff=daily_stand(stand,co2,&climate,day,daylength,gp_pft,
                        gtemp_air,gtemp_soil[0],gp_stand,gp_stand_leafon,eeq,par,
-                       melt,npft,ncft,year,withdailyoutput,intercrop,config);
+                       melt,npft,ncft,year,withdailyoutput,intercrop,agrfrac,config);
     if(config->with_nitrogen)
     {
       denitrification(stand);

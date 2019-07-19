@@ -1157,6 +1157,29 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 
     sum = landfrac_sum(grid[cell].ml.landfrac, ncft, FALSE) + landfrac_sum(grid[cell].ml.landfrac, ncft, TRUE);
 
+    if(config->others_to_crop)
+    {
+      if (grid[cell].coord.lat > 30 || grid[cell].coord.lat < -30)
+      {
+        grid[cell].ml.landfrac[0].crop[0] += grid[cell].ml.landfrac[0].grass[0];
+        grid[cell].ml.landfrac[1].crop[0] += grid[cell].ml.landfrac[1].grass[0];
+        grid[cell].ml.landfrac[0].grass[0] = grid[cell].ml.landfrac[1].grass[0] = 0;
+      }
+      else
+      {
+        grid[cell].ml.landfrac[0].crop[2] += grid[cell].ml.landfrac[0].grass[0];
+        grid[cell].ml.landfrac[1].crop[2] += grid[cell].ml.landfrac[1].grass[0];
+        grid[cell].ml.landfrac[0].grass[0] = grid[cell].ml.landfrac[1].grass[0] = 0;
+      }
+    }
+    if(config->grassonly)
+    {
+      for (j = 0; j < ncft; j++)
+        grid[cell].ml.landfrac[0].crop[j] = grid[cell].ml.landfrac[1].crop[j] = 0;
+      grid[cell].ml.landfrac[0].grass[0] = grid[cell].ml.landfrac[1].grass[0] = 0;
+      grid[cell].ml.landfrac[0].biomass_grass = grid[cell].ml.landfrac[1].biomass_grass =
+        grid[cell].ml.landfrac[0].biomass_tree = grid[cell].ml.landfrac[1].biomass_tree = 0;
+    }
     if (landuse->allcrops)
     {
       for (j = 0; j < ncft; j++)
