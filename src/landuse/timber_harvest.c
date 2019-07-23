@@ -55,7 +55,6 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   soil->pool[0].fast.nitrogen+=harvest.nitrogen*biofuel*0.1/standfrac;
   /* transfer non-harvested wood, leaves, and roots of trees cut to litter */
   soil->litter.item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*ftimber*(*nind);
-  soil->litter.item[pft->litter].ag.leaf.nitrogen+=pft->bm_inc.nitrogen*ftimber;
   output->alittfall.carbon+=tree->ind.leaf.carbon*ftimber*(*nind)*standfrac;
   soil->litter.item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*ftimber*(*nind);
   output->alittfall.nitrogen+=tree->ind.leaf.nitrogen*ftimber*(*nind)*standfrac;
