@@ -94,7 +94,6 @@ Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
   {
     /* allocate memory for PFT array */
     pftlist->pft=newvec(Pft,pftlist->n);
-    check(pftlist->pft);
     if(pftlist->pft==NULL)
     {
       printallocerr("pftlist");

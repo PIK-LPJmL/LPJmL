@@ -287,12 +287,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       fscanint2(file,&config->tillage_type,"tillage_type");
       fscanint2(file,&config->residue_treatment,"residue_treatment");
-      config->others_to_crop=FALSE;
-      if(fscanbool(file,&config->others_to_crop,"others_to_crop",TRUE,verbose))
-        return TRUE;
-      config->grassonly=FALSE;
-      if(fscanbool(file,&config->grassonly,"grassonly",TRUE,verbose))
-        return TRUE;
     }
     config->black_fallow=FALSE;
     if(fscanbool(file,&config->black_fallow,"black_fallow",TRUE,verbose))

@@ -37,7 +37,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
                        int year, /**< simulation year */
                        Bool withdailyoutput, /**< enable daily output */
                        Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
-                       Real agrfrac,
                        const Config *config /**< LPJ config */
                       )            /** \return runoff (mm) */
 {
@@ -288,7 +287,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     }
     npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd,&negbm,wdf,config->with_nitrogen,&output->daily);
     output->mnpp+=npp*stand->frac;
-    output->mnpp_agr+=npp*stand->frac/agrfrac;
     output->dcflux-=npp*stand->frac;
     output->mgpp+=gpp*stand->frac;
     output->mfapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -434,16 +432,9 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->daily.evap=evap;
         forrootsoillayer(l)
           output->daily.trans+=aet_stand[l];
-        /*output->daily.w0=stand->soil.w[1];
+        output->daily.w0=stand->soil.w[1];
         output->daily.w1=stand->soil.w[2];
-        output->daily.wevap=stand->soil.w[0];*/
-        /* output in mm including ice, free water and dead water */
-        output->daily.w0 = stand->soil.w[1] * stand->soil.whcs[1] + stand->soil.w_fw[1] +
-          stand->soil.ice_depth[1] + stand->soil.ice_fw[1] + stand->soil.wpwps[1];
-        output->daily.w1 = stand->soil.w[2] * stand->soil.whcs[2] + stand->soil.w_fw[2] +
-          stand->soil.ice_depth[2] + stand->soil.ice_fw[2] + stand->soil.wpwps[2];
-        output->daily.wevap = stand->soil.w[0] * stand->soil.whcs[0] + stand->soil.w_fw[0] +
-          stand->soil.ice_depth[0] + stand->soil.ice_fw[0] + stand->soil.wpwps[0];
+        output->daily.wevap=stand->soil.w[0];
         output->daily.par=par;
         output->daily.daylength=daylength;
         output->daily.pet=eeq*PRIESTLEY_TAYLOR;

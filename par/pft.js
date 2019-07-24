@@ -47,7 +47,7 @@
 #endif
 #define FN_TURNOVER 0.3      /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV 0.8   /* fraction of N not recovered before turnover */
-#define ALPHAA_NITROGEN 0.55  /* alphaa for simulations with nitrogen limitation */
+#define ALPHAA_NITROGEN 0.5  /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
 #define CN_BL_EG_MN 15.6

@@ -73,7 +73,6 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     if(config->withlanduse!=NO_LANDUSE)
       fputs(" harvest",file);
     fputs(" total  ",file);
-    fputs(" NPP    ", file);
     fputs(" transp     evap    interc ",file);
     if(config->withlanduse!=NO_LANDUSE)
       fputs(" wd     ",file);
@@ -85,7 +84,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     fputs("------",file);
     for(i=0;i<tabs;i++)
       fputs(" -------",file);
-    fputs(" ---------- ------- --------",file);
+    fputs(" ---------- ------- -------",file);
     if(config->withlanduse!=NO_LANDUSE)
       fputs(" -------",file);
     if(config->river_routing)
@@ -101,7 +100,6 @@ void fprintflux(FILE *file,          /**< Output file pointer */
   if(config->withlanduse!=NO_LANDUSE)
     fprintf(file," %7.3f",flux.harvest*convert);
   fprintf(file," %7.3f",cflux_total*convert);
-  fprintf(file, " %7.3f", flux.anpp*convert);
   fprintf(file," %10.1f %7.1f %7.1f",
           flux.transp*convert*1000,flux.evap*convert*1000,flux.interc*convert*1000);
   if(config->withlanduse!=NO_LANDUSE)

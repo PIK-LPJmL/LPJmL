@@ -61,18 +61,12 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   cell->output.aburntarea+=cell->output.mburntarea;
   cell->output.runoff_surf+=cell->output.mrunoff_surf;
   cell->output.runoff_lat+=cell->output.mrunoff_lat;
-  cell->output.anpp += cell->output.mnpp;
-  cell->output.anpp_agr += cell->output.mnpp_agr;
-  cell->output.arh += cell->output.mrh;
-  cell->output.arh_agr += cell->output.mrh_agr;
 #ifdef IMAGE
   cell->ml.image_data->anpp+=cell->output.mnpp;
   cell->ml.image_data->arh+=cell->output.mrh;
 #endif
   /* for carbon balance check  */
   cell->balance.nep+=cell->output.mnpp-cell->output.mrh;
-  cell->balance.anpp += cell->output.mnpp;
-  cell->balance.anpp_agr += cell->output.mnpp_agr;
   /* for nitrogen balance check */
   cell->balance.n_influx+=cell->output.mbnf; /* deposition added in update_daily.c, fertilizer added in cultivate.c */
   cell->balance.n_outflux+=cell->output.mn2o_denit+cell->output.mn2o_nit+cell->output.mn2_emissions+cell->output.mn_leaching;

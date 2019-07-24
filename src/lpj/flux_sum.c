@@ -29,7 +29,6 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
     {
       flux.area+=grid[cell].coord.area;
       flux.nep+=grid[cell].balance.nep*grid[cell].coord.area;
-      flux.anpp += grid[cell].balance.anpp*grid[cell].coord.area;
       flux.fire+=(grid[cell].output.fire.carbon+grid[cell].output.flux_firewood.carbon)*grid[cell].coord.area;
       flux.estab+=grid[cell].output.flux_estab.carbon*grid[cell].coord.area;
       flux.harvest+=(grid[cell].output.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon)*grid[cell].coord.area;

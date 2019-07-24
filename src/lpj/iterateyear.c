@@ -73,7 +73,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           /* calculate landuse change */
           if(config->laimax_interpolate!=CONST_LAI_MAX)
             laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
-          if(year>config->firstyear-param.output_spinupyears-config->nspinup)
+          if(year>config->firstyear-config->nspinup)
             landusechange(grid+cell,config->pftpar,npft,ncft,config->ntypes,
                           intercrop, &grid[cell].ml.with_tillage,istimber,year,config->pft_output_scaled);
           else if(grid[cell].ml.dam)

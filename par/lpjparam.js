@@ -20,7 +20,7 @@
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
   "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
   "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
-  "theta" : 0.8,             /* theta */
+  "theta" : 0.9,             /* theta */
   "k_beer" : 0.5,            /* k_beer */
   "alphac3" : 0.08,          /* alphac3 */
   "alphac4" : 0.053,         /* alphac4 */
@@ -58,7 +58,6 @@
   "residue_frac" : 0.95,      /* fraction of residues to be submerged by tillage */
   "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
   "till_startyear" : 1850,    /* year in which tillage should start */
-  "output_spinupyears" : 0,   /* years of which outputs should be written during spinup phase (1901-x)*/
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold (mm) */
   "irrig_threshold_c3_dry" : 0.8,     /* irrigation threshold C3, prec < aprec_lim */
   "irrig_threshold_c3_humid" : 0.9,   /* irrigation threshold C3, prec >= aprec_lim */

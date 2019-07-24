@@ -52,8 +52,6 @@
 typedef struct
 {
   Real nep;                 /**< annual NEP (gC/m2) */
-  Real anpp;                /* annual NPP (gC/m2) */
-  Real anpp_agr;            /* annual NPP for agriculture (gC/m2) */
   Real awater_flux;         /**< annual water flux (mm) */
   Real aprec;               /**< annual precipitation (mm) */
   Stocks tot;                /**< total carbon and nitrogen (g/m2) */

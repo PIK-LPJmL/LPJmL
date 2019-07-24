@@ -183,10 +183,8 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
   fvec=newvec(float,config->count);
   check(fvec);
   writeoutputvar(MNPP,mnpp);
-  writeoutputvar(MNPP_AGR, mnpp_agr);
   writeoutputvar(MGPP,mgpp);
   writeoutputvar(MRH,mrh);
-  writeoutputvar(MRH_AGR, mrh_agr);
   writeoutputvar(MRUNOFF,mrunoff);
   writeoutputvar(MDISCHARGE,mdischarge);
   writeoutputvar(MWATERAMOUNT,mwateramount);

@@ -304,14 +304,5 @@
   { "id" : RUNOFF_SURF, "name" : "runoff_surf", "var" :  "annual_runoff_surf", "descr" : "annual surface runoff", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : RUNOFF_LAT, "name" : "runoff_lat", "var" :  "annual_runoff_lateral", "descr" : "annual lateral runoff", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITC_ALL, "name" : "litc_all", "var" :  "LitC_all", "descr" : "above and below ground litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
-  { "id" : LITC_AG, "name" : "litc_ag", "var" : "LitC_ag", "descr" : "above ground litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MNPP_AGR, "name" : "mnpp_agr", "var" : "MNPP_agr" , "descr" : "monthly NPP for agricultural stands" , "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MRH_AGR, "name" : "mrh_agr" , "var" : "MRH_agr" , "descr" : "monthly heterotrophic respiration for agricultural stands", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
-  { "id" : SOILC_AGR, "name" : "soilc_agr" , "var" : "SoilC_agr" , "descr" : "total soil carbon density for agricultural stands" , "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
-  { "id" : SOILC_AGR_LAYER, "name" : "soilc_agr_layer" , "var" : "SoilC agric" , "descr" : "total soil carbon density agricultural stands in layer", "unit" : "gC/m2" , "scale" : 1.0, "offset" : 0.0},
-  { "id" : LITC_AGR, "name" : "litc_agr" , "var" :"LitC_agr" , "descr" : "above and below ground litter carbon for agricultural stands", "unit" : "gC/m2" , "scale" : 1.0, "offset" : 0.0},
-  { "id" : ANPP, "name" : "anpp" , "var" :"ANPP" , "descr" : "annual NPP" , "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0},
-  { "id" : ANPP_AGR, "name" : "anpp_agr" , "var" : "ANPP_agr" , "descr" : "annual NPP for agricultural stands", "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0},
-  { "id" : ARH, "name" : "arh" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration" , "unit" : "gC/m2/year", "scale" : 1.0, "offset" : 0.0},
-  { "id" : ARH_AGR, "name" : "arh_agr" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration for agricultural stands", "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0}
+  { "id" : LITC_AG, "name" : "litc_ag", "var" :  "LitC_ag", "descr" : "above ground litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0}
 ],
