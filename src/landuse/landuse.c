@@ -1218,6 +1218,26 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 
   if (config->with_nitrogen)
   {
+ 
+    for (cell = 0; cell < config->ngridcell; cell++)
+      for (i = 0; i < WIRRIG; i++)
+      {
+        for (j = 0; j < ncft; j++)
+        {
+          grid[cell].ml.fertilizer_nr[i].crop[j] = 0;
+          grid[cell].ml.manure_nr[i].crop[j] = 0;
+        }
+        for (j = 0; j < NGRASS; j++)
+        {
+          grid[cell].ml.fertilizer_nr[i].grass[j] = 0;
+          grid[cell].ml.manure_nr[i].grass[j] = 0;
+        }
+        grid[cell].ml.fertilizer_nr[i].biomass_grass = 0;
+        grid[cell].ml.fertilizer_nr[i].biomass_grass = 0;
+        grid[cell].ml.manure_nr[i].biomass_tree = 0;
+        grid[cell].ml.manure_nr[i].biomass_tree = 0;
+      }
+
     if (config->fertilizer_input && !config->fix_fertilization)
     {
       /* assigning fertilizer Nr data */
@@ -1301,6 +1321,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           {
             for (j = 0; j < ncft; j++)
               grid[cell].ml.fertilizer_nr[i].crop[j] = vec[count++] * landuse->fertilizer_nr.scalar;
+              
             for (j = 0; j < NGRASS; j++)
               grid[cell].ml.fertilizer_nr[i].grass[j] = vec[count++] * landuse->fertilizer_nr.scalar;
             if (landuse->nbands_fertilizer_nr != 2 * (ncft + NGRASS))
@@ -1318,6 +1339,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       else
         free(vec);
     }
+
       if (config->manure_input && !config->fix_fertilization)
       {
         /* assigning manure fertilizer nr data */
@@ -1424,17 +1446,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         for (i = 0; i < WIRRIG; i++)
         {
           for (j = 0; j < ncft; j++)
-          {
-            grid[cell].ml.fertilizer_nr[i].crop[j] = 0;
-            grid[cell].ml.manure_nr[i].crop[j] = 0;
-          }          
+            grid[cell].ml.manure_nr[i].crop[j] = 0;       
           for (j = 0; j < NGRASS; j++)
-          {
-            grid[cell].ml.fertilizer_nr[i].grass[j] = 0;
             grid[cell].ml.manure_nr[i].grass[j] = 0;
-          } 
-          grid[cell].ml.fertilizer_nr[i].biomass_grass = 0;
-          grid[cell].ml.fertilizer_nr[i].biomass_grass = 0;
           grid[cell].ml.manure_nr[i].biomass_tree = 0;
           grid[cell].ml.manure_nr[i].biomass_tree = 0;
         }
