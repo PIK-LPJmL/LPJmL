@@ -1441,18 +1441,6 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           free(vec);
       }
 
-    else
-      for (cell = 0; cell < config->ngridcell; cell++)
-        for (i = 0; i < WIRRIG; i++)
-        {
-          for (j = 0; j < ncft; j++)
-            grid[cell].ml.manure_nr[i].crop[j] = 0;       
-          for (j = 0; j < NGRASS; j++)
-            grid[cell].ml.manure_nr[i].grass[j] = 0;
-          grid[cell].ml.manure_nr[i].biomass_tree = 0;
-          grid[cell].ml.manure_nr[i].biomass_tree = 0;
-        }
-
     if (config->fix_fertilization)
     {
       for (cell = 0; cell < config->ngridcell; cell++)
