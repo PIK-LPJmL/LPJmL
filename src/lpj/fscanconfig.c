@@ -259,6 +259,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         if(fscanbool(file,&config->fix_fertilization,"fix_fertilization",TRUE,verbose))
           return TRUE;
       }
+      config->others_to_crop = FALSE;
+      if (fscanbool(file, &config->others_to_crop, "others_to_crop", TRUE, verbose))
+        return TRUE;
+      config->grassonly = FALSE;
+      if (fscanbool(file, &config->grassonly, "grassonly", TRUE, verbose))
+        return TRUE;
       config->istimber=FALSE;
       if(fscanbool(file,&config->istimber,"istimber",TRUE,verbose))
         return TRUE;
