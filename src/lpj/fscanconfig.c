@@ -221,7 +221,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->withlanduse!=NO_LANDUSE)
     {
-      if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS)
+      if(config->withlanduse==CONST_LANDUSE)
         fscanint2(file,&config->landuse_year_const,"landuse_year_const");
       fscanint2(file,&config->sdate_option,"sowing_date_option");
       if(config->sdate_option<0 || config->sdate_option>PRESCRIBED_SDATE)

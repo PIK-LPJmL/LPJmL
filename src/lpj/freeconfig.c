@@ -85,9 +85,10 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(config->grassfix_filename);
   if(config->grassharvest_filename.name!=NULL)
     freefilename(config->grassharvest_filename);
+  if(config->with_nitrogen  || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    freefilename(config->wind_filename);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    freefilename(config->wind_filename);
     freefilename(config->tamp_filename);
     if(config->tamp_filename.fmt==CDF && config->tmax_filename.name!=NULL)
       freefilename(config->tmax_filename);

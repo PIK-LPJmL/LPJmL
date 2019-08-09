@@ -1,9 +1,9 @@
-.TH lpjsubmit 1  "August 16, 2013" "version 5.1.001" "USER COMMANDS"
+.TH lpjsubmit 1  "June 25, 2019" "version 5.1.001" "USER COMMANDS"
 .SH NAME
 lpjsubmit \- Submit parallel SLURM/LoadLeveler job for LPJmL simulations 
 .SH SYNOPSIS
 .B lpjsubmit
-[\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] ntasks [args ...]
+[\-class c] [\-group g] [\-wtime time] [\-blocking n] [\-o output] [\-e error] [\-q] [\-nocheck] [\-norun] ntasks [args ...]
 .SH DESCRIPTION
 Script creates SLURM/LoadLeveler job control file \fIjob.jcf\fP and submits the job to the LoadLeveler queue via
 .B
@@ -43,6 +43,9 @@ only error messages are displayed, other output is suppressed.
 .TP
 \-nocheck
 does not check input files and output directories.
+.TP
+\-norun
+does not submit job to batch queue, creates \fIslurm.jcf\fP file only.
 .TP
 ntasks
 set the number of parallel MPI tasks.
