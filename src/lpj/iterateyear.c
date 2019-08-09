@@ -75,7 +75,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
             laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
           if(year>config->firstyear-config->nspinup)
             landusechange(grid+cell,config->pftpar,npft,ncft,config->ntypes,
-                          intercrop, &grid[cell].ml.with_tillage,istimber,year,config->pft_output_scaled);
+                          grid[cell].ml.with_tillage,intercrop,istimber,year,config->pft_output_scaled);
           else if(grid[cell].ml.dam)
             landusechange_for_reservoir(grid+cell,config->pftpar,npft,istimber,&grid[cell].ml.with_tillage,intercrop,ncft,year);
         }
