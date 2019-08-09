@@ -47,17 +47,24 @@ Real npp_crop(Pft *pft, /**< PFT variables */
   data=pft->stand->data;
   crop=pft->data;
   par=pft->par->data;
+/* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration, which reduces yields at high N inputs */
+#ifndef CROP_RESP_FIX
   if(with_nitrogen && crop->ind.root.carbon>epsilon)
     cn.root=crop->ind.root.nitrogen/crop->ind.root.carbon;
   else
+#endif
     cn.root=par->cn_ratio.root;
+#ifndef CROP_RESP_FIX
   if(with_nitrogen && crop->ind.so.carbon>epsilon)
     cn.so=crop->ind.so.nitrogen/crop->ind.so.carbon;
   else
+#endif
     cn.so=par->cn_ratio.so;
+#ifndef CROP_RESP_FIX
   if(with_nitrogen && crop->ind.pool.carbon>epsilon)
     cn.pool=crop->ind.pool.nitrogen/crop->ind.pool.carbon;
   else
+#endif
     cn.pool=par->cn_ratio.pool;
 
   rosoresp=crop->ind.root.carbon*pft->par->respcoeff*param.k*cn.root*gtemp_soil
