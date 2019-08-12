@@ -53,7 +53,7 @@ int outputsize(int index,    /**< output index */
       return npft-nbiomass+1;
     case MSOILTEMP: case MSWC:
       return NSOILLAYER;
-    case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER:
+    case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER: case SOILC_AGR_LAYER:
       return LASTLAYER;
     case GROWING_PERIOD: case CFT_TEMP:case CFT_PREC:
     case CFT_SRAD: case CFT_ABOVEGBMC: case CFT_ABOVEGBMN:

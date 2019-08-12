@@ -210,6 +210,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   const Pfttree *tree;
   const Pftgrass *grass;
   const Irrigation *data;
+  Real fracs;
   writeoutputshortvar(SDATE,sdate,2*ncft);
   writeoutputshortvar(HDATE,hdate,2*ncft);
   fvec=newvec(float,config->count);
@@ -482,6 +483,37 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
         }
       }
       writepft(output,SOILC_LAYER,fvec,BOTTOMLAYER,year,i,config);
+    }
+  }
+  if (output->files[SOILC_AGR_LAYER].isopen)
+  {
+    outindex(output, SOILC_AGR_LAYER, config->rank);
+    forrootsoillayer(i)
+    {
+      count = 0;
+      for (cell = 0; cell<config->ngridcell; cell++)
+      {
+        if (!grid[cell].skip)
+        {
+          fvec[count] = 0;
+          fracs = 0;
+          foreachstand(stand, s, grid[cell].standlist)
+          {
+            if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
+              stand->type->landusetype == AGRICULTURE)
+            {
+              fracs += stand->frac;
+              if (i == 0)
+                for (p = 0; p < stand->soil.litter.n; p++)
+                  fvec[count] += (float)(stand->soil.litter.item[p].bg.carbon*stand->frac);
+              fvec[count] += (float)((stand->soil.pool[i].slow.carbon + stand->soil.pool[i].fast.carbon)*stand->frac);
+            }
+          }
+          if (fracs>0) fvec[count] /= fracs;
+          count++;
+        }
+      }
+      writepft(output, SOILC_AGR_LAYER, fvec, BOTTOMLAYER, year, i, config);
     }
   }
   if(isopen(output,SOILN_LAYER))

@@ -95,7 +95,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 283           /* number of output files */
+#define NOUT 292           /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -393,6 +393,15 @@
 #define RUNOFF_LAT 280
 #define LITC_ALL 281
 #define LITC_AG 282
+#define MNPP_AGR 283
+#define MRH_AGR 284
+#define SOILC_AGR 285
+#define SOILC_AGR_LAYER 286
+#define LITC_AGR 287
+#define ANPP 288
+#define ANPP_AGR 289
+#define ARH 290
+#define ARH_AGR 291
 
 #define RANDOM_SEED 0
 

@@ -61,6 +61,10 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   cell->output.aburntarea+=cell->output.mburntarea;
   cell->output.runoff_surf+=cell->output.mrunoff_surf;
   cell->output.runoff_lat+=cell->output.mrunoff_lat;
+  cell->output.anpp += cell->output.mnpp;
+  cell->output.anpp_agr += cell->output.mnpp_agr;
+  cell->output.arh += cell->output.mrh;
+  cell->output.arh_agr += cell->output.mrh_agr;
 #ifdef IMAGE
   cell->ml.image_data->anpp+=cell->output.mnpp;
   cell->ml.image_data->arh+=cell->output.mrh;

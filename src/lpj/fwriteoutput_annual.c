@@ -252,6 +252,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
   Pft *pft;
   float *vec;
   short *svec;
+  Real fracs;
   if(isopen(output,SEASONALITY))
   {
     count=0;
@@ -322,6 +323,32 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output,SOILC_SLOW,vec,year,config);
   }
+  if (output->files[SOILC_AGR].isopen)
+  {
+    count = 0;
+    for (cell = 0; cell<config->ngridcell; cell++)
+      if (!grid[cell].skip)
+      {
+        vec[count] = 0;
+        fracs = 0;
+        foreachstand(stand, s, grid[cell].standlist)
+        {
+          if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
+            stand->type->landusetype == AGRICULTURE)
+          {
+            fracs += stand->frac;
+            for (p = 0; p<stand->soil.litter.n; p++)
+              vec[count] += (float)(stand->soil.litter.item[p].bg.carbon*stand->frac);
+            forrootsoillayer(l)
+              vec[count] += (float)((stand->soil.pool[l].slow.carbon + stand->soil.pool[l].fast.carbon)*stand->frac);
+          }
+        }
+        if (fracs>0) vec[count] /= fracs; /* as fracs don't add up to 1 here */
+        count++;
+      }
+    writeannual(output, SOILC_AGR, vec, year, config);
+  }
+
   if(isopen(output,LITC))
   {
     count=0;
@@ -366,6 +393,28 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
       writeannual(output,LITC_AG,vec,year,config);
   }
+  if (output->files[LITC_AGR].isopen)
+  {
+    count = 0;
+    for (cell = 0; cell<config->ngridcell; cell++)
+      if (!grid[cell].skip)
+      {
+        vec[count] = 0;
+        fracs = 0;
+        foreachstand(stand, s, grid[cell].standlist)
+        {
+          if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
+          {
+            fracs += stand->frac;
+            vec[count] += (float)((litter_ag_sum(&stand->soil.litter) + litter_agsub_sum(&stand->soil.litter))*stand->frac);
+          }
+        }
+        if (fracs>0) vec[count] /= fracs; /* as fracs don't add up to 1 here */
+        count++;
+      }
+    writeannual(output, LITC_AGR, vec, year, config);
+  }
+
   if(isopen(output,VEGN))
   {
     count=0;

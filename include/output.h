@@ -103,8 +103,14 @@ typedef struct
 typedef struct
 {
   Real mnpp;             /**< Monthly NPP (gC/m2) */
+  Real mnpp_agr;         /**< Monthly NPP for agricultural stands (gC/m2) */
+  Real anpp;             /* Annual NPP (gC/m2) */
+  Real anpp_agr;         /* Annual NPP for agricultural stands (gC/m2) */
   Real mgpp;             /**< Monthly GPP (gC/m2) */
   Real mrh;              /**< monthly heterotrophic respiration (gC/m2) */
+  Real mrh_agr;          /* monthly heterotrophic respiration of agricultural stands (gC/m2) */
+  Real arh;              /* annual heterotrophic respiration (gC/m2) */
+  Real arh_agr;          /* annual heterotrophic respiration of agricultural stands (gC/m2) */
   Real mtransp;          /**< Monthly transpiration (mm) */
   Real mtransp_b;        /**< Monthly transpired irrigation water (mm) */
   Real atransp;          /**< Yearly transpiration (mm) */
@@ -302,6 +308,7 @@ typedef struct
   Real n_uptake;              /**< total N uptake by plants */
   Real n_influx;              /**< total N inputs */
   Real n_outflux;             /**< total N losses */
+  Real anpp_flux;             /* Total NPP (gC/yr) */
 
 } Flux;
 

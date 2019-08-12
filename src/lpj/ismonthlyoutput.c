@@ -41,7 +41,7 @@ Bool ismonthlyoutput(int index /**< Output index */
     case MTARGET_RELEASE: case MRES_CAP: case MGCONS_RF: case MGCONS_IRR: case MBCONS_IRR:
     case MFIREEMISSION_CO: case MFIREEMISSION_CH4: case MFIREEMISSION_VOC:
     case MFIREEMISSION_TPM: case MFIREEMISSION_NOX: case MSOILTEMP: case MSWC:
-    case MMG_SOILC:
+    case MMG_SOILC: case MNPP_AGR: case MRH_AGR:
       return TRUE;
     default:
       return FALSE;
