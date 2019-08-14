@@ -77,7 +77,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
             landusechange(grid+cell,config->pftpar,npft,ncft,config->ntypes,
                           grid[cell].ml.with_tillage,intercrop,istimber,year,config->pft_output_scaled);
           else if(grid[cell].ml.dam)
-            landusechange_for_reservoir(grid+cell,config->pftpar,npft,istimber,&grid[cell].ml.with_tillage,intercrop,ncft,year);
+            landusechange_for_reservoir(grid+cell,config->pftpar,npft,istimber,grid[cell].ml.with_tillage,intercrop,ncft,year);
         }
 #ifdef IMAGE
         setoutput_image(grid+cell,ncft);
