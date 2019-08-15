@@ -189,6 +189,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     updatelitterproperties(stand,stand->frac);
 
     cell->output.mrh+=hetres.carbon*stand->frac;
+    /*monthly rh for agricutural stands*/
+    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
+      stand->cell->output.mrh_agr+=hetres.carbon*stand->frac/agrfrac;
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
     cell->output.mswe+=stand->soil.snowpack*stand->frac;
@@ -303,12 +306,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       cell->output.mrootmoist+=stand->soil.w[l]*soildepth[l]/rootdepth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     cell->output.msoilc1+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
   } /* of foreachstand */
-
-  /* correcting mhr and mnpp outputs per standtype class */
-  if (agrfrac > 0) {
-    cell->output.mrh_agr /= agrfrac;
-    cell->output.mnpp_agr /= agrfrac;
-      }
 
 #ifdef COUPLING_WITH_FMS
   if (cell->lakefrac > 0)
