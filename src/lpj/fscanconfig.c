@@ -217,7 +217,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->sim_id!=LPJ)
   {
     fscanint2(file,&config->withlanduse,"landuse");
-    if(config->withlanduse<NO_LANDUSE || config->withlanduse>ALL_CROPS)
+    if(config->withlanduse<NO_LANDUSE || config->withlanduse>ONLY_CROPS)
     {
       if(verbose)
         fprintf(stderr,"ERROR166: Invalid value for landuse=%d.\n",
