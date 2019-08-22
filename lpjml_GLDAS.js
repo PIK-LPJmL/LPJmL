@@ -72,7 +72,7 @@
 /*  II. Input parameter section                                      */
 /*===================================================================*/
 
-#include "param.js"    /* Input parameter file */
+#include "param_vpd.js"    /* Input parameter file */
 
 /*===================================================================*/
 /*  III. Input data section                                          */
