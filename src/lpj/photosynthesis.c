@@ -44,22 +44,22 @@
  *
  */
 
-Real photosynthesis(Real *agd,
-                    Real *rd,
+Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
+                    Real *rd,      /**< respiration rate (gC/m2/day) */
                     Real *vm,      /**< maximum catalytic capacity of Rubisco (gC/m2/day)
-                                      if zero actual value will be returned */
+                                        if zero actual value will be returned */
                     int path,      /**< Path (C3/C4) */
-                    Real lambda,
-                    Real tstress,
+                    Real lambda,   /**< ratio of intercellular to ambient CO2 concentration */
+                    Real tstress,  /**< temperature-related stress factor */
                     Real co2,      /**< atmospheric CO2 partial pressure (Pa) */
                     Real temp,     /**< temperature (deg C) */
-                    Real apar,
+                    Real apar,     /**< absorbed photosynthetic active radiation (J/m2/day) */
                     Real daylength /**< daylength (h) */
-                   )
+                   )               /** \return CO2 gas flux (mm/m2/day) */
 {
-  static Real ko,kc,tau,pi,c1,c2;
-  Real je,jc,phipi,and,adt,b,s,sigma;
-  static Real fac,gammastar;
+  Real ko,kc,tau,pi,c1,c2;
+  Real je,jc,phipi,adt,b,s,sigma;
+  Real fac,gammastar;
   if(tstress<1e-2)
   {
     *agd=0;
@@ -161,21 +161,16 @@ Real photosynthesis(Real *agd,
     *rd=b**vm;
     //if(*vm<-100)
     //  abort();
-    /*    Daily net photosynthesis (at leaf level), And, gC/m2/day */
-
-    and=*agd-*rd;
-    if(and<0)
-      and=0;
 
     /*     Total daytime net photosynthesis, Adt, gC/m2/day
      *     Eqn 19, Haxeltine & Prentice 1996
      */
 
-    adt=and+(1.0-hour2day(daylength))*(*rd);
+    adt=*agd-hour2day(daylength)*(*rd);
 
     /*     Convert adt from gC/m2/day to mm/m2/day using
      *     ideal gas equation
      */
-    return adt/cmass*8.314*degCtoK(temp)/p*1000.0;
+    return (adt<=0) ? 0 : adt/cmass*8.314*degCtoK(temp)/p*1000.0;
   }
 } /* of 'photosynthesis' */
