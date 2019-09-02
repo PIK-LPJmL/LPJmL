@@ -32,9 +32,10 @@ Real timber_burn(const Pft *pft, /**< Pointer to tree PFT */
   /* reducing carbon in litter pool because this carbon is added to
    * the litter pool in update_litter (next function in reclaim_land().
    * We can't substract it from the vegetation carbon as there
-   * is no vegetation on stand2. */
-  for(i=0;i<NFUELCLASS-1;i++){
+   * is no vegetation on stand2.*/
+  for(i=0;i<NFUELCLASS;i++)
     litter->ag[pft->litter].trait.wood[i]-=(tree->ind.heartwood+tree->ind.sapwood*2.0/3.0)*fburnt*nind*treepar->fuelfrac[i];
+
   /* computing deforestation fire emissions */
   return (tree->ind.heartwood+tree->ind.sapwood*2.0/3.0)*fburnt*nind;
 
