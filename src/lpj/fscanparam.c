@@ -81,7 +81,6 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(&f,&param.sat_level[3],"saturation_level_drip");
     fscanparamreal(&f,&param.drip_evap,"drip_evap_reduction");
     fscanparamreal(&f,&param.residues_in_soil,"residues_in_soil");
-    fscanparamreal(&f,&param.fburn,"fburn");
     if(config->rw_manage)
     {
       fscanparamreal(&f,&param.esoil_reduction,"esoil_reduction");

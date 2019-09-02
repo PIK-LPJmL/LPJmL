@@ -182,6 +182,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                 config->fdi,getlinecount(),getfilename());
       return TRUE;
     }
+    if(config->fdi==WVPD_INDEX && verbose)
+      fputs("WARNING029: VPD index only calibrated for South America.\n",stderr);
   }
   fscanbool2(file,&config->ispopulation,"population");
   config->prescribe_burntarea=FALSE;
