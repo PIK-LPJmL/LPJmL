@@ -33,9 +33,9 @@
 0.7       /* atmfrac */
 0.98      /* fastfrac */
 0.2       /* coefficient of growth efficiency in mortality equation (k_mort2) */
--8.79     /* scaling factor for fire duration for the WVPD*/
--0.53     /* a parameter for scaling the human ignintions within SPITFIRE */
-0.0104    /* threshold of fireintensity for which burnt area can be modeled */
+-11.06    /* scaling factor for fire duration for the WVPD*/
+-0.50     /* a parameter for scaling the human ignintions within SPITFIRE */
+0.000001  /* threshold of fireintensity for which burnt area can be modeled */
 #ifdef WITH_LANDUSE
 900       /* annual prec limit for C3 threshold*/
 0.8       /* irrigation threshold C3, prec < aprec_lim */

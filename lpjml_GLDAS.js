@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   l  p  j  m  l  .  j  s                                       \n**/
+/**                   l  p  j  m  l  _  G  L  D  A  S  .  j  s                     \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 4.0.002                         \n**/
+/** Configuration file for LPJmL C Version 4.0.002                                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -30,13 +30,13 @@
 /*  I. Simulation description and type section                       */
 /*===================================================================*/
 
-  "sim_name" : "LPJmL Run", /* Simulation description */
+  "sim_name" : "LPJmL run with SPITFIRE and VPD fire danger index", /* Simulation description */
   "sim_id"   : LPJML,       /* LPJML Simulation type with managed land use */
   "version"  : "4.0",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
-  "fire" : SPITFIRE_TMAX,        /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
+  "fire" : SPITFIRE_TMAX,   /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
   "fdi" : WVPD_INDEX,   /* different fire danger index formulations: WVPD_INDEX, NESTEROV_INDEX*/
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
