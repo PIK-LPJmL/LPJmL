@@ -98,7 +98,7 @@ C3                          /* pathway */
 0.38009                     /* shape factor for soil organic matter vertical distribution*/
 0.0000334                   /* scaling factor fire danger index */
 47.22296                    /* scaling factor vpd fire danger index*/
-24.5                        /* fuel bulk density */
+25.0                        /* fuel bulk density */
 1580.0 103.0   6.80   8.10   8.50 1.999 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
 FLAM_TREE                   /* flam */
@@ -118,11 +118,11 @@ ALLOM2
 ALLOM3
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
-0.2406                      /* scorch height (F) */
+0.1487                      /* scorch height (F) */
 0.3334                      /* crown length (CL) */
 0.0301                      /* bark thickness par1 */
 0.0281                      /* bark thickness par2 */
-0.985                       /* crown damage (rCK) */
+1.00                        /* crown damage (rCK) */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
@@ -179,7 +179,7 @@ C3                          /* pathway */
 0.51395                     /* shape factor for soil organic matter vertical distribution*/
 0.0000334                   /* scaling factor fire danger index */
 15.43195                    /* scaling factor vpd fire danger index*/
-12.38                       /* fuel bulk density */
+13.0                        /* fuel bulk density */
 1664.0 63.0 2.20 3.40 8.50 2.540 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
 FLAM_TREE                   /* flam */
@@ -199,11 +199,11 @@ ALLOM2
 ALLOM3
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
-0.4146                      /* scorch height (F) */
+0.061                       /* scorch height (F) */
 0.10                        /* crown length (CL) */
 0.1085                      /* bark thickness par1 */
 0.2120                      /* bark thickness par2 */
-0.09                        /* crown damage (rCK) */
+0.05                        /* crown damage (rCK) */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
@@ -339,7 +339,7 @@ C3                          /* pathway */
 20 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 3.0 18.8                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.43740                     /* shape factor for soil organic matter vertical distribution*/
-0.0000667                   /* scaling factor fire danger index */
+0.0000334                   /* scaling factor fire danger index */
 6                           /* scaling factor vpd fire danger index*/
 22.0                        /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
@@ -752,7 +752,7 @@ C4                          /* pathway */
 0.46513                     /* shape factor for soil organic matter vertical distribution*/
 0.0000667                   /* scaling factor fire danger index */
 3.85899                     /* scaling factor vpd fire danger index */
-1.9                         /* fuel bulk density (pb) */
+2.0                         /* fuel bulk density (pb) */
 1664.0 63.0 2.20 3.40 8.50 2.540 /* emission factors */
 100                         /* minimum annual precipitation to establish */
 FLAM_GRASS                  /* flam */
@@ -939,7 +939,7 @@ C3                          /* pathway */
 25 38                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26 (Almeida, 2004, FEM) 8 38*/
 7 1000                      /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.38009                     /* shape factor for soil organic matter vertical distribution*/
-0.000034                    /* scaling factor fire danger index */
+0.000067                    /* scaling factor fire danger index */
 6                           /* scaling factor vpd fire danger index*/
 13.0                        /* fuel bulk density */
 1664.0 63.0 2.20 3.40 8.50 2.540 /* emission factors */

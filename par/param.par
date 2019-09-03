@@ -52,7 +52,6 @@
 0.05      /* saturation level drip irrigation*/
 0.6       /* reduction of drip soil evap */
 0.1       /* minimum residues in soil*/
-1.0       /* fraction of forest burnt at deforestation */
 #ifdef WITH_RWMANAGEMENT
 0.0       /* reduction of soil evaporation */
 0.0       /* rw_buffer_max, size of rainwater harvesting tank [mm] */
