@@ -250,6 +250,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkinputfile(&config,&config.grassfix_filename,0);
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
+    if(config.fdi==WVPD_INDEX)
+      bad+=checkclmfile(&config,&config.humid_filename);
     bad+=checkclmfile(&config,&config.wind_filename);
     bad+=checkclmfile(&config,&config.tamp_filename);
     if(config.tamp_filename.fmt==CDF && config.tmax_filename.name!=NULL)

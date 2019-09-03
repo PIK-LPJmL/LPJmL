@@ -78,6 +78,8 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
               grid[cell].balance.estab_storage_tree[1],
               grid[cell].balance.estab_storage_grass[0],
               grid[cell].balance.estab_storage_grass[1]);
+      if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+        fprintignition(file,&grid[cell].ignition);
       fprintstandlist(file,grid[cell].standlist);
     }
   } /* of 'for(cell=...)' */

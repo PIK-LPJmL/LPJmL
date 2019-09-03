@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**         u  p  d  a  t  e  _  n  e  s  t  e  r  o  v  .  c                      \n**/
+/**                   p  a  r  a  m  .  j  s                                       \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function updates nesterov index                                            \n**/
+/** Default input parameter file for LPJmL C Version 4.0.002                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,16 +12,10 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include "par/lpjparam_vpd.js"      /* LPJ parameter file */
+#include "par/soil.js"          /* Soil parameter file */
+#include "par/pft_vpd.js"           /* PFT parameter file*/
 
-#define nesterovindex(tmin,tmax) ((tmax)*(tmax-((tmin)-4)))
-
-void update_nesterov(Cell *cell, /**< pointer to cell */
-                     const Dailyclimate *climate /**< daily climate data */
-                    )
-{
-  if (climate->prec >= 3.0 || climate->tmin  <= 4.0)
-    cell->ignition.nesterov_accum=0;
-  else
-    cell->ignition.nesterov_accum += nesterovindex(climate->tmin,climate->tmax);
-} /* of 'update_nesterov' */
+#include "par/manage_laimax_alphaa_fao.y.1999.2009_date.2017-10-19_lpj.rev.4176-4184M.js" /* Management parameter file */
+#include "par/manage_reg.js"    /* Management parameter file for regions*/
+#include "par/outputvars.js"

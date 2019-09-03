@@ -33,6 +33,9 @@
 0.7       /* atmfrac */
 0.98      /* fastfrac */
 0.2       /* coefficient of growth efficiency in mortality equation (k_mort2) */
+-8.79     /* scaling factor for fire duration for the WVPD*/
+-0.53     /* a parameter for scaling the human ignintions within SPITFIRE */
+0.0104    /* threshold of fireintensity for which burnt area can be modeled */
 #ifdef WITH_LANDUSE
 900       /* annual prec limit for C3 threshold*/
 0.8       /* irrigation threshold C3, prec < aprec_lim */
@@ -49,6 +52,7 @@
 0.05      /* saturation level drip irrigation*/
 0.6       /* reduction of drip soil evap */
 0.1       /* minimum residues in soil*/
+1.0       /* fraction of forest burnt at deforestation */
 #ifdef WITH_RWMANAGEMENT
 0.0       /* reduction of soil evaporation */
 0.0       /* rw_buffer_max, size of rainwater harvesting tank [mm] */

@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**         u  p  d  a  t  e  _  n  e  s  t  e  r  o  v  .  c                      \n**/
+/**            f  p  r  i  n  t  i  g  n  i  t  i  o  n  .  c                      \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function updates nesterov index                                            \n**/
+/**     Function prints ignition data to text file                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,14 +16,10 @@
 
 #include "lpj.h"
 
-#define nesterovindex(tmin,tmax) ((tmax)*(tmax-((tmin)-4)))
-
-void update_nesterov(Cell *cell, /**< pointer to cell */
-                     const Dailyclimate *climate /**< daily climate data */
-                    )
+void fprintignition(FILE *file,const Ignition *ignition)
 {
-  if (climate->prec >= 3.0 || climate->tmin  <= 4.0)
-    cell->ignition.nesterov_accum=0;
-  else
-    cell->ignition.nesterov_accum += nesterovindex(climate->tmin,climate->tmax);
-} /* of 'update_nesterov' */
+  fprintf(file,"Nesterov acum:\t%g\n"
+          "Nesterov max:\t%g\n"
+          "Nesterov days:\t%d\n",
+          ignition->nesterov_accum,ignition->nesterov_max,ignition->nesterov_day);
+} /* of 'fprintignition' */

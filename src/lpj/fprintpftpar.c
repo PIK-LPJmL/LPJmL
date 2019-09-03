@@ -83,6 +83,7 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
                "k_litter10_q10_wood:\t%g\n"
                "soc_k:\t\t%g\n"
                "alpha_fuelp:\t%g\n"
+               "vpd_par:\t\t%g\n"
                "fuel bulk dens.:\t%g (kg/m3)\n"
                "emis. factor:\t%g %g %g %g %g %g\n"
                "wind damp.:\t%g\n"
@@ -102,7 +103,7 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
           pftpar->aprec_min,
           pftpar->flam,pftpar->k_litter10.leaf*NDAYYEAR,
           pftpar->k_litter10.wood*NDAYYEAR,pftpar->k_litter10.q10_wood,
-          pftpar->soc_k,pftpar->alpha_fuelp,
+          pftpar->soc_k,pftpar->alpha_fuelp,pftpar->vpd_par,
           pftpar->fuelbulkdensity,pftpar->emissionfactor.co2,
           pftpar->emissionfactor.co,pftpar->emissionfactor.ch4,
           pftpar->emissionfactor.voc,pftpar->emissionfactor.tpm,

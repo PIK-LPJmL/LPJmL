@@ -59,7 +59,8 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
   {
     freadreal(cell->balance.estab_storage_tree,2,swap,file);
     freadreal(cell->balance.estab_storage_grass,2,swap,file);
-
+    if(freadignition(file,&cell->ignition,swap))
+      return TRUE;
     /* cell has valid soilcode */
     freadreal1(&cell->discharge.waterdeficit,swap,file);
     cell->gdd=newgdd(npft);
