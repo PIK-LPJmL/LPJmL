@@ -75,6 +75,7 @@ typedef struct
   Real residue_cn;          /**< CN ratio of prescribed residues */
   Real residue_fbg;         /**< belowground fraction of prescribed residues */
   Real fertilizer_rate;     /**< fixed fertilizer application rate in gN/m2/yr */
+  Real manure_rate;         /**< fixed manure application rate in gN/m2/yr */
   Real min_c_bnf;
   Real par_sink_limit;  /**< Michaelis-Menten scaling of sink limitation */
   Real k_temp;          /**< factor of temperature dependence of nitrogen demand for Rubisco activity */
