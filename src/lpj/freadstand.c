@@ -63,6 +63,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
     free(stand);
     return NULL;
   }
+  stand->data=NULL;
   stand->type=standtype+landusetype;
   /* read stand-specific data */
   if(stand->type->fread(file,stand,swap))
