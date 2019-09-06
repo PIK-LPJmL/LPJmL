@@ -54,7 +54,8 @@
   "residue_cn": 20,         /* CN ratio of prescribed residues */
   "residue_fbg": 0.25,      /* belowground fraction of prescribed residues */
   "manure_cn": 12.5,        /* CN ration of manure gC/gN */
-  "fertilizer_rate" : 20,     /* fixed fertilizer application rate in gN/m2/yr */
+  "fertilizer_rate" : 10,     /* default: 20; fixed fertilizer application rate in gN/m2/yr */
+  "manure_rate" : 0,          /* default: 20; fixed manure application rate in gN/m2/yr */
   "residue_frac" : 0.95,      /* fraction of residues to be submerged by tillage */
   "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
   "till_startyear" : 1850,    /* year in which tillage should start */

@@ -1470,12 +1470,18 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         for (i = 0; i < WIRRIG; i++)
         {
-          for (j = 0; j < ncft; j++)
+          for (j = 0; j < ncft; j++){
             grid[cell].ml.fertilizer_nr[i].crop[j] = param.fertilizer_rate;
-          for (j = 0; j < NGRASS; j++)
+            grid[cell].ml.manure_nr[i].crop[j] = param.manure_rate;
+          }
+          for (j = 0; j < NGRASS; j++){
             grid[cell].ml.fertilizer_nr[i].grass[j] = param.fertilizer_rate;
+            grid[cell].ml.manure_nr[i].grass[j] = param.manure_rate;
+          }
           grid[cell].ml.fertilizer_nr[i].biomass_grass = param.fertilizer_rate;
           grid[cell].ml.fertilizer_nr[i].biomass_tree = param.fertilizer_rate;
+          grid[cell].ml.manure_nr[i].biomass_grass = param.manure_rate;
+          grid[cell].ml.manure_nr[i].biomass_tree = param.manure_rate;
         }
       }
     }
