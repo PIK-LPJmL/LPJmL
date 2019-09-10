@@ -462,7 +462,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
   }
   else
-    climate->data.wind=climate->data.tamp=climate->data.lightning=climate->data.tmax=NULL;
+    climate->data.wind=climate->data.tamp=climate->data.lightning=climate->data.tmax=climate->data.humid=NULL;
   if(config->with_radiation)
   {
     if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
