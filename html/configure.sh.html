@@ -11,8 +11,8 @@
           configure.sh - Configure LPJmL
 
      <B>SYNOPSIS</B>
-          <B>configure.sh</B> [-h] [-nofeedback] [-prefix <I>dir</I>] [-debug] [-
-          nompi]
+          <B>configure.sh</B> [-h] [-prefix <I>dir</I>] [-debug] [-nompi] [-check]
+          [-Dmacro[=value] ...]
 
      <B>DESCRIPTION</B>
           Script configures LPJmL for specific OS and compiler. File
@@ -26,10 +26,6 @@
      <B>OPTIONS</B>
           -h   display a short help text.
 
-          -nofeedback
-               sends no feedback for usage statistics to PIK, see
-               https://goo.gl/#analytics/goo.gl/DYv3KW/all_time
-
           -prefix <I>dir</I>
                Set installation directory for LPJmL. Default is
                current working directory.
@@ -39,8 +35,16 @@
                LPJmL has to be rebuilt by invoking <B>make</B> <B>clean</B> and <B>make</B>
                <B>all</B>.
 
+          -check
+               Set debug flags, enable pointer checking for access out
+               of bounds and disable optimization of compiler. LPJmL
+               has to be rebuilt by invoking <B>make</B> <B>clean</B> and <B>make</B> <B>all</B>.
+
           -nompi
                Do not build the MPI version of the code.
+
+          -Dmacro[=value]
+               Defines macro for compilation
 
      <B>EXAMPLE</B>
           Configure LPJmL with installation directory /<I>data</I>/<I>biosx</I>/<I>lpjml</I>:
@@ -66,10 +70,6 @@
 
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="lpj_paths.sh.html">lpj_paths.sh(1)</A></B>, <B><A HREF="lpj_paths.csh.html">lpj_paths.csh(1)</A></B>, <B><A HREF="lpjml.html">lpjml(1)</A></B>
-
-
-
-
 
 
 

@@ -70,6 +70,7 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
     popdens->file.size=header.ncell*typesizes[header.datatype];
     popdens->file.scalar=header.scalar;
     popdens->file.datatype=header.datatype;
+    popdens->file.nyear=header.nyear;
     if(config->popdens_filename.fmt==RAW)
       popdens->file.offset=config->startgrid*sizeof(short);
     else
@@ -119,6 +120,8 @@ Bool readpopdens(Popdens popdens,     /**< pointer to population data */
   year-=popdens->file.firstyear;
   if(year<0)
     year=0;
+  if(year>=popdens->file.nyear)
+    year=popdens->file.nyear-1;
   if(popdens->file.fmt==CDF)
     return readdata_netcdf(&popdens->file,popdens->npopdens,grid,year,config);
   if(fseek(popdens->file.file,year*popdens->file.size+popdens->file.offset,SEEK_SET))

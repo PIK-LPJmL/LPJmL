@@ -3,7 +3,7 @@
 /**        i  n  p  u  t  _  n  e  t  c  d  f  .  j  s                             \n**/
 /**                                                                                \n**/
 /** Configuration file for NetCDF input dataset for LPJmL                          \n**/
-/** Version 4.0.001                                                                \n**/
+/** Version 4.0.002                                                                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -20,8 +20,8 @@
 "input" :
 {
   "soil" : { "fmt" : CDF, "var" : "soilcode", "name" : "cru_netcdf/soil_new_67420.nc"},
-  "countrycode" : { "fmt" : CDF, "var" : "country", "name" : "cru_netcdf/cow_mg_2006_full.nc"},
-  "regioncode" : { "fmt" : CDF, "var" : "region", "name" : "cru_netcdf/reg_mg_2006_full.nc"},
+  "countrycode" : { "fmt" : CDF, "var" : "country", "name" : "cru_netcdf/cow_full_2018.nc"},
+  "regioncode" : { "fmt" : CDF, "var" : "region", "name" : "cru_netcdf/reg_full_2018.nc"},
   "landuse" : { "fmt" : CDF, "var" :  "landfrac", "name" : "cru_netcdf/cft1700_2005_irrigation_systems_64bands.nc"},
   "temp" : { "fmt" : CDF, "var" : "temp", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.tmp.nc"},
   "prec" : { "fmt" : CDF, "var" : "prec", "name" : "cru_netcdf/gpcc_cru09_prec_monthly_1901_2009.nc"},

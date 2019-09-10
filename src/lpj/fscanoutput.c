@@ -76,8 +76,9 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
       break;  
     else if(count==nout_max)
     {
-      fprintf(stderr,"ERROR160: Invalid value=%d in line %d of '%s' for number of output files.\n",
-              count,getlinecount(),getfilename());
+      if(verbosity)
+        fprintf(stderr,"ERROR160: Invalid value=%d in line %d of '%s' for number of output files.\n",
+                count,getlinecount(),getfilename());
       return TRUE;
     }
     else

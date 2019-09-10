@@ -33,7 +33,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
   char byte;
   float fdata;
   double ddata;
-  int year,cell,i,*index;
+  int year,cell,i,*index,rc;
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
@@ -204,9 +204,10 @@ static void printclm(const char *filename,int output,int nbands,int version,
           printallocerr("index");
           return;
         }
-        if(freadint(index,last,swap,file)!=last)
+        rc=freadint(index,last,swap,file);
+        if(rc!=last)
         {
-          fprintf(stderr,"Unexpected end of file at cell %d.\n",cell);
+          fprintf(stderr,"Unexpected end of file at cell %d.\n",rc+first+1);
           free(index);
           return;
         }

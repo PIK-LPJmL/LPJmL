@@ -38,15 +38,12 @@ static void fprintfilename(FILE *file,Filename filename)
     fprintf(file,"%s\n",filename.name);
 } /* of 'fprintfilename' */
 
-void fprintfiles(FILE *file,   /**< File pointer to text output file */
-                 Bool withinput, /**< list input data files (TRUE/FALSE) */
+void fprintfiles(FILE *file,          /**< pointer to text output file */
+                 Bool withinput,      /**< list input data files (TRUE/FALSE) */
                  const Config *config /**< LPJmL configuration */
                 )
 {
-  char *lpjroot;
   int i,j;
-  lpjroot=getenv(LPJROOT);
-  fprintf(file,"%s/lpjml-" LPJ_VERSION ".tar.gz\n",(lpjroot==NULL) ? "." : lpjroot);
   if(isreadrestart(config))
     fprintf(file,"%s\n",config->restart_filename);
   if(withinput)
@@ -75,9 +72,11 @@ void fprintfiles(FILE *file,   /**< File pointer to text output file */
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fprintfilename(file,config->tamp_filename);
-    if(config->tamp_filename.fmt==CDF)
+    if(config->tmax_filename.name!=NULL)
       fprintfilename(file,config->tmax_filename);
     fprintfilename(file,config->wind_filename);
+    if(config->fdi==WVPD_INDEX)
+      fprintfilename(file,config->humid_filename);
     fprintfilename(file,config->lightning_filename);
     fprintfilename(file,config->human_ignition_filename);
   }

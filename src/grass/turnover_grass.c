@@ -43,7 +43,6 @@ Real turnover_grass(Litter *litter, /**< Litter pool */
     pft->bm_inc     -= reprod;
   }
   /* turnover */
-#ifndef YEARLY_TURNOVER
   if (pft->stand->type->landusetype==NATURAL)
   {
     gturn.root=grass->turn.root;
@@ -52,9 +51,7 @@ Real turnover_grass(Litter *litter, /**< Litter pool */
 
   }
   else
-#endif 
- {
-
+  {
     gturn.root=grass->ind.root*grasspar->turnover.root*fraction;
     gturn.leaf=grass->ind.leaf*grasspar->turnover.leaf*fraction;
     litter->ag[pft->litter].trait.leaf+=gturn.leaf*pft->nind;

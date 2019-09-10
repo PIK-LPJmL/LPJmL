@@ -2,11 +2,11 @@
 <HEAD>
 <LINK REL="stylesheet" HREF="style.css" TYPE="text/css">
 <TITLE>
-Installing and running LPJmL C Version 4.0.001
+Installing and running LPJmL C Version 4.0.002
 </TITLE>
 </HEAD>
 <BODY>
-<H1>Installing and running  LPJmL C Version 4.0.001</H1>
+<H1>Installing and running  LPJmL C Version 4.0.002</H1>
 
 <H2>Installation for Unix-like systems</h2>
 
@@ -29,7 +29,7 @@ cd lpjml
 
 untar source and data files</p>
 <pre class="example">
-gzip -cd lpjml-4.0.001.tar.gz|tar -xf -
+gzip -cd lpjml-4.0.002.tar.gz|tar -xf -
 </pre>
 
 Directory tree after extracting the tar files:</p>
@@ -100,7 +100,7 @@ module load lpjml
 
 <pre class="example">
 % ./configure.sh
-Configuring LPJmL 4.0.001...
+Configuring LPJmL 4.0.002...
 Operating system is Linux
 Intel MPI found
 Create executables with make all
@@ -554,6 +554,16 @@ Run parallel LPJmL program interactively.
 </tr>
 <tr>
 <td>
+<A HREF="manage2js.html">
+<tt>manage2js</tt>
+</A>
+</td>
+<td>
+Convert management  *.par files to JSON file
+<br></td>
+</tr>
+<tr>
+<td>
 <A HREF="printclm.html">
 <tt>printclm</tt>
 </A>
@@ -605,7 +615,7 @@ Concatenates output files from distributed LPJmL simulations
 </table>
 An installation directory can be defined during configuration:
 <pre class="example">
-./configure.sh -prefix /data/biosx/lpjml-4.0.001
+./configure.sh -prefix /data/biosx/lpjml-4.0.002
 </pre>
 Then the binaries can be copied in the installation directory by invoking</p>
 <pre class="example">
@@ -632,7 +642,7 @@ This improves performance in particular for the parallel code. </p>
 
 <H3>Man pages</h3>
 
-Manual pages for the <tt>man</tt> command are located in the <tt>$LPJROOT/man</tt> directory. The MANPAPTH variable is set by the <tt>lpj_paths.sh</tt> script.
+Manual pages for the <tt>man</tt> command are located in the <tt>$LPJROOT/man</tt> directory. The MANPATH variable is set by the <tt>lpj_paths.sh</tt> script.
 HTML versions of the manual pages are located <A HREF="manpages.html">here</A>.
 
 Invoking</p>
@@ -650,7 +660,7 @@ Sequential version can be started by invoking:</p>
 <pre class="example">
 ./bin/lpjml 
 </pre>
-By default the configuration file <tt>lpjml.conf</tt> is read. The contents of this file can be viewed <A HREF="lpjml_example.html">here</A>.
+By default the configuration file <tt>lpjml.js</tt> is read. The contents of this file can be viewed <A HREF="lpjml_example.html">here</A>.
 If you run <tt>lpjml</tt> outside the root directory of LPJmL, the following environment
 variable should be set (done by <tt>lpj_paths.sh</tt>):</p>
 
@@ -773,7 +783,7 @@ enable floating point exceptions
 <tr><td>
 -image host
 </td><td>
-set host where IMAGE model is running. Default is 'localhost'. Option is only availabel for the IMAGE version.
+set host where IMAGE model is running. Default is 'localhost'. Option is only available for the IMAGE version.
 </td></tr>
 <tr><td>
 -wait time
@@ -805,7 +815,7 @@ restart directory path
 </table>
 The first two options will be sent to the preprocessor.
 
-For the parallel version LoadLeveler files for Linux and AIX are provided. 
+For the parallel version SLURM and LoadLeveler files for Linux and AIX are provided.
 A job can be submitted by invoking the <tt><A HREF="lpjsubmit.html">lpjsubmit</A></tt> script:</p>
 <pre class="example">
 lpjsubmit ntasks LPJmL_args...
@@ -822,7 +832,7 @@ Depending on your MPI version installed the program can be started interactively
 ****       | |___|  __/ |_| | | | | | | |___  |__   _|  _  | |_| |        ****
 ****       |_____|_|   \___/|_| |_| |_|_____|    |_|   (_)  \___/         ****
 ****                                                                      ****
-****                lpjml C Version 4.0.001 (Nov  6 2018)                 ****
+****                lpjml C Version 4.0.002 (Nov  6 2018)                 ****
 ****    Dynamic global vegetation model with natural and managed land     ****
 ****                     Compiled for Linux with MPI                      ****
 ****       (C) Potsdam Institute for Climate Impact Research (PIK),       ****
@@ -1218,7 +1228,7 @@ dump and have to be fixed by program changes. Some errors will only be generated
 if -DSAFE is set in the compile options of <tt>Makefile.inc</tt>. The options set at compile time can be obtained by invoking
 <pre class="example">
 % lpjml -v
-lpjml C Version 4.0.001 (Nov  7 2018)
+lpjml C Version 4.0.002 (Nov  7 2018)
 Operating system: Linux, little endian
 Compiler:         Intel C version 15.00, 64 bit
 Compile flags:    "-DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DSTORECLIMATE -DUSE_NETCDF -DUSE_UDUNITS -DUSE_JSON "
@@ -1245,6 +1255,13 @@ or by invoking the <A HREF="backtrace.html"><tt>backtrace</tt></A> script:
 <pre class="example">
 backtrace
 </pre>
+Additional checking for pointer access out of bounds can be done via
+<pre class="example">
+./configure.sh -check
+make clean
+make
+</pre>
+This option is only available for the Intel compiler and significantly slows down execution speed.
 
 <h3>Building with Visual C++ 2005</h3>
 

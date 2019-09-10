@@ -34,6 +34,7 @@ getcountry (1) - extract grid cells for specified countries
 getlanduse (3) - get land use data
 getpopdens (3) - get population density data
 grid2clm (1) - convert grid data file to clm data files for LPJmL
+headersize (1) - print header size of clm files
 initclimate (3) - initialize climate data
 initconfig (3) - initialize LPJmL configuration for the sequential version
 initdrain (3) - initialize river routing network
@@ -63,6 +64,7 @@ clm (5) - input data files for LPJmL runs
 lpjml.conf (5) - configuration file for LPJmL runs
 lpjml_image.conf(5) - configuration file for LPJmL runs with IMAGE coupling
 lpj.conf (5) - configuration file for LPJmL runs with natural vegetation
+manage2js (1) - convert management  *.par files to JSON file
 newgrid (3) - allocate LPJ grid cells
 pnet_addconnect (3) - add connection to network
 pnet_dup (3) - duplicate network

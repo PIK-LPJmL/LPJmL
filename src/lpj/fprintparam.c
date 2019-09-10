@@ -43,16 +43,19 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "kc25:\t\t%g (Pa)\n"
                "atmfrac:\t%g\n"
                "fastfrac:\t%g\n" 
-               "K_MORT:\t\t%g\n",
+               "K_MORT:\t\t%g\n"
+	       "firedura:\t%g\n"
+	       "fire_intens:\t%g\n"
+	       "hum_ign:\t%g\n",
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
           param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,param.co2_p,
           param.k,param.theta,param.k_beer,param.alphac3,param.alphac4,
           param.bc3,param.bc4,param.r_growth,param.GM,param.ALPHAM,
-          param.ko25,param.kc25,param.atmfrac,param.fastfrac,param.k_mort);
+          param.ko25,param.kc25,param.atmfrac,param.fastfrac,param.k_mort,param.firedura,param.fire_intens,param.hum_ign);
 
   if(config->withlanduse!=NO_LANDUSE)
   {
-    fprintf(file,"annual prec lim:\t%g\n",param.aprec_lim);
+    fprintf(file,"annual prec lim:\t%g (mm)\n",param.aprec_lim);
     fprintf(file,"irrig. threshold C3 dry:\t%g\n",param.irrig_threshold_c3_dry);
     fprintf(file,"irrig. threshold C3 humid:\t%g\n",
             param.irrig_threshold_c3_humid);
@@ -76,7 +79,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"soil infil:\t\t%g\n",param.soil_infil);
       fprintf(file,"yield gap bridge:\t%g\n",param.yield_gap_bridge);
     }
-
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config->soilpar,config->nsoil);

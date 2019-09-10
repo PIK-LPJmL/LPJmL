@@ -60,7 +60,9 @@ Real deadfuel_consumption(const Litter *litter, /* litter pools */
   {
     fuel_consum += fuel->deadfuel_consum[0]*litter->ag[l].trait.leaf;
     for (i=0; i<NFUELCLASS-1;i++)
+    {
       fuel_consum += fuel->deadfuel_consum[i]*litter->ag[l].trait.wood[i];
+    }
   }   
   return c2biomass(fuel_consum);   
 } /* of 'deadfuel_consumption' */

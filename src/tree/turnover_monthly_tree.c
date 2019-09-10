@@ -15,7 +15,9 @@
 #include "lpj.h"
 #include "tree.h"
 
-void turnover_monthly_tree(Litter *litter,Pft *pft)
+void turnover_monthly_tree(Litter *litter, /**< pointer to litter pool */
+                           Pft *pft        /**< pointer to tree PFT */
+                          )
 {
   Pfttree *tree;
   Pfttreepar *treepar;  

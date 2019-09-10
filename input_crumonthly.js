@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**       i  n  p  u  t  _  c  r  u  m  o  n  t  h  l  y  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Configuration file for input dataset for LPJ C Version 4.0.001                 \n**/
+/** Configuration file for input dataset for LPJ C Version 4.0.002                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -20,7 +20,7 @@
 {
   "soil" :         { "fmt" : META, "name" : "input_VERSION2/soil.descr"},
   "coord" :        { "fmt" : CLM,  "name" : "input_VERSION2/grid.bin"},
-  "countrycode" :  { "fmt" : CLM,  "name" : "input_VERSION2/cow_mg_2006_full.bin"},
+  "countrycode" :  { "fmt" : CLM,  "name" : "input_VERSION2/cow_full_2018.bin"},
   "landuse" :      { "fmt" : CLM,  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   /* insert prescribed sdate file name here */
   "grassland_fixed_pft" : { "fmt" : RAW, "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.bin"},

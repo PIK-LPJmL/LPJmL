@@ -15,9 +15,7 @@
 #################################################################################
 
 include Makefile.inc
-ifdef CALLHOME
-CH:=$(shell wget https://goo.gl/DYv3KW --header="User-Agent: Mozilla/5.0 (LPJmL 4.0.001 internal gitlab make; U; Intel Mac OS X; en-US; rv:1.8.1.12) Gecko/20080219 Navigator/9.0.0.6" -O /dev/null)
-endif
+
 INC     = include
 
 HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
@@ -98,7 +96,7 @@ clean:
 	(cd src  && $(MAKE) clean)
 
 tar: 
-	tar -cf lpjml-4.0.001.tar $(FILES) src/Makefile src/*.c\
+	tar -cf lpjml-4.0.002.tar $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c\
             man/man1/*.1 man/man3/*.3 man/man5/*.5 man/whatis\
             man/man1/Makefile man/man3/Makefile man/man5/Makefile man/Makefile\
@@ -113,10 +111,10 @@ tar:
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c
-	    gzip -f lpjml-4.0.001.tar
+	    gzip -f lpjml-4.0.002.tar
 
 zipfile: 
-	zip -l lpjml-4.0.001.zip $(FILES) src/Makefile src/*.c\
+	zip -l lpjml-4.0.002.zip $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
             man/man3/*.3 man/man5/*.5\
 	    src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\

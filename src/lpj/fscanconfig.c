@@ -172,10 +172,29 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     fscanbool2(file,&config->firewood,"firewood");
   }
+  if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
+  {
+    fscanint2(file,&config->fdi,"fdi");
+    if(config->fdi<0 || config->fdi>WVPD_INDEX)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR166: Invalid value for fdi=%d in line %d of '%s'.\n",
+                config->fdi,getlinecount(),getfilename());
+      return TRUE;
+    }
+    if(config->fdi==WVPD_INDEX && verbose)
+      fputs("WARNING029: VPD index only calibrated for South America.\n",stderr);
+  }
   fscanbool2(file,&config->ispopulation,"population");
   config->prescribe_burntarea=FALSE;
   if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",TRUE,verbose))
     return TRUE;
+  if(config->prescribe_burntarea && config->fire!=SPITFIRE && config->fire!=SPITFIRE_TMAX)
+  {
+    if(verbose)
+      fputs("WARNING029: Prescribed burnt area can only by set for SPITFIRE, will be disabled.\n",stderr);
+    config->prescribe_burntarea=FALSE;
+  }
   config->prescribe_landcover=NO_LANDCOVER;
   if(fscanint(file,&config->prescribe_landcover,"prescribe_landcover",TRUE,verbose))
     return TRUE;
@@ -234,6 +253,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscanbool(file,&config->rw_manage,"rw_manage",TRUE,verbose))
         return TRUE;
       fscanint2(file,&config->laimax_interpolate,"laimax_interpolate");
+      if(config->laimax_interpolate<0 || config->laimax_interpolate>CONST_LAI_MAX)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR166: Invalid value for laimax_interpolate=%d in line %d of '%s'.\n",
+                  config->laimax_interpolate,getlinecount(),getfilename());
+        return TRUE;
+      }
       if(config->laimax_interpolate==CONST_LAI_MAX)
         fscanreal2(file,&config->laimax,"laimax");
       if(config->river_routing)
@@ -244,7 +270,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(isboolean(file,"wateruse"))
     {
-      if(isroot(*config))
+      if(verbose)
         fputs("WARNING028: Type of 'wateruse' is boolean, converted to int.\n",stderr);
       fscanbool2(file,&config->wateruse,"wateruse");
     }
@@ -327,7 +353,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscanint(file,&config->compress,"compress",TRUE,verbose))
     return TRUE;
 #ifdef USE_NETCDF
-  if(config->compress)
+  if(config->compress && verbose)
     fputs("WARNING403: Compression of NetCDF files is not supported in this version of NetCDF.\n",stderr);
 #endif
   config->missing_value=MISSING_VALUE_FLOAT;
@@ -434,6 +460,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
+    if(config->fdi==WVPD_INDEX)
+    {
+      scanclimatefilename(&input,&config->humid_filename,config->inputdir,config->sim_id==LPJML_FMS,"humid");
+    }
     scanclimatefilename(&input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,"wind");
     scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,(config->fire==SPITFIRE_TMAX) ? "tmin" : "tamp");
     if(config->fire==SPITFIRE_TMAX)
@@ -621,7 +651,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->restart_filename=addpath(name,config->restartdir);
   }
   else
+  {
     config->restart_filename=NULL;
+    if(verbose && config->nspinup<soil_equil_year)
+      fprintf(stderr,"WARNING031: Number of spinup years less than %d necessary for soil equilibration.\n",soil_equil_year);
+  }
   if(iskeydefined(file,"checkpoint_filename"))
   {
     fscanname(file,name,"checkpoint_filename");

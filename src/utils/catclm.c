@@ -20,14 +20,14 @@ int main(int argc,char **argv)
 {
   Header header,oldheader;
   String id;
-  int i,j,k,firstyear,version,n,setversion,index;
+  int i,j,k,firstyear,version,n,setversion,index,firstversion;
   FILE *in,*out;
   short *values;
   int *ivals;
   Byte *bvals;
   long long *lvals;
   Bool swap;
-  size_t size;
+  size_t size,filesize;
   size=2;
   setversion=READ_VERSION;
   for(index=1;index<argc;index++)
@@ -75,6 +75,12 @@ int main(int argc,char **argv)
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+index]);
         return EXIT_FAILURE;
       }
+      filesize=getfilesize(argv[index+i])-headersize(id,version);
+      if(filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nyear)
+      {
+        fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[index+i]);
+        return EXIT_FAILURE;
+      }
       if(version==3 && header.datatype!=oldheader.datatype)
       {
         fprintf(stderr,"Error: Different datatype in '%s'.\n",argv[i+index]);
@@ -114,8 +120,15 @@ int main(int argc,char **argv)
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+index]);
         return EXIT_FAILURE;
       }
+      filesize=getfilesize(argv[index])-headersize(id,version);
+      if(filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nyear)
+      {
+        fprintf(stderr,"Error: file length of '%s' does not match header.\n",argv[index]);
+        return EXIT_FAILURE;
+      }
       fseek(out,headersize(id,version),SEEK_SET);
       firstyear=header.firstyear;
+      firstversion=version;
     }
     if(version==3)
       size=typesizes[header.datatype];
@@ -206,7 +219,7 @@ int main(int argc,char **argv)
   header.nyear=header.firstyear+header.nyear-firstyear;
   header.firstyear=firstyear;
   rewind(out);
-  fwriteheader(out,&header,id,version);
+  fwriteheader(out,&header,id,firstversion);
   fclose(out);
   return EXIT_SUCCESS;
 } /* of 'main' */

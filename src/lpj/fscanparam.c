@@ -58,7 +58,9 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.atmfrac,"atmfrac");
   fscanparamreal(&f,&param.fastfrac,"fastfrac");
   fscanparamreal(&f,&param.k_mort,"k_mort");
-  
+  fscanparamreal(&f,&param.firedura,"firedura");
+  fscanparamreal(&f,&param.fire_intens,"fire_intens");
+  fscanparamreal(&f,&param.hum_ign,"hum_ign");
   if(config->withlanduse!=NO_LANDUSE)
   {
     fscanparamreal(&f,&param.aprec_lim,"aprec_lim");

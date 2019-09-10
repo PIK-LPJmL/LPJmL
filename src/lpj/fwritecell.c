@@ -65,6 +65,8 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(fwrite(grid[cell].balance.estab_storage_grass,sizeof(Real),2,file)!=2)
         break;
+      if(fwriteignition(file,&grid[cell].ignition))
+        break;
       if(fwrite(&grid[cell].discharge.waterdeficit,sizeof(Real),1,file)!=1)
         break;
       if(fwritestandlist(file,grid[cell].standlist,npft+ncft)!=

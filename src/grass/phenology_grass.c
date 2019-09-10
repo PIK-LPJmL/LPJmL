@@ -22,12 +22,10 @@ void phenology_grass(Pft *pft,  /**< pointer to PFT variables */
                     )
 {
   Real dtemp;
-#ifndef YEARLY_TURNOVER
   const Pftgrasspar *grasspar;
   Pftgrass *grass;
   grasspar=pft->par->data;
   grass=pft->data;
-#endif
 
   dtemp=temp - getpftpar(pft,gddbase);
   if(dtemp>0.0)
@@ -38,12 +36,11 @@ void phenology_grass(Pft *pft,  /**< pointer to PFT variables */
   if ((pft->stand->cell->coord.lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE) ||
       (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE)) 
     pft->aphen=pft->gdd=0.0;
-#ifndef YEARLY_TURNOVER
-  if (pft->stand->type->landusetype==NATURAL){
+  if (pft->stand->type->landusetype==NATURAL)
+  {
     grass->turn.leaf+=grass->ind.leaf*grasspar->turnover.leaf/NDAYYEAR;
     pft->stand->soil.litter.ag[pft->litter].trait.leaf+=grass->ind.leaf*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
     update_fbd_grass(&pft->stand->soil.litter,pft->par->fuelbulkdensity,grass->ind.leaf*grasspar->turnover.leaf/NDAYYEAR*pft->nind);
   }
-#endif
   pft->aphen+=pft->phen;
 } /* of 'phenology_grass' */

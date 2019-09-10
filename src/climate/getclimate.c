@@ -118,6 +118,16 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
       return TRUE;
     }
   }
+  if(climate->data.humid!=NULL)
+  {
+    if(readclimate(&climate->file_humid,climate->data.humid,0,climate->file_humid.scalar,grid,year,config))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR131: Cannot read humidity of year %d in getclimate().\n",
+                year);
+      return TRUE;
+    }
+  }
   if(climate->data.wind!=NULL)
   {
     if(readclimate(&climate->file_wind,climate->data.wind,0,climate->file_wind.scalar,grid,year,config))

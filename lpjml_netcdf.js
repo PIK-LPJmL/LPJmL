@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  e  t  c  d  f  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 4.0.001                         \n**/
+/** Default configuration file for LPJmL C Version 4.0.002                         \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -36,7 +36,8 @@
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : CLOUDINESS,
-"fire" : FIRE,            /* fire disturbance enabled */
+"fire" : FIRE,        /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
+"fdi" : NESTEROV_INDEX,   /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
 "firewood" : false,
 #ifdef FROM_RESTART
 "population" : false,

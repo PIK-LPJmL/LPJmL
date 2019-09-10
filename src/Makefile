@@ -86,8 +86,7 @@ clean:
 	(cd spitfire && $(MAKE) clean)
 	(cd netcdf && $(MAKE) clean)
 	(cd cpl && $(MAKE) clean)
-	$(RM) $(RMFLAGS) $(OBJ) getbuild.$O
-	(cd $(BINDIR) && $(RM) $(RMFLAGS) lpjml$E)
+	$(RM) $(RMFLAGS) $(OBJ) getbuild.$O $(EXE)
 
 $(OBJ): $(HDRS)
 

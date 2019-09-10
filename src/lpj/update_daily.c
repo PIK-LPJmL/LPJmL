@@ -44,8 +44,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real evap=0;
   Real hetres=0;
   Real *gp_pft;
+  Real avgprec;
   Stand *stand;
   Pft *pft;
+  Irrigation *data;
   int l;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
@@ -59,8 +61,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   updategdd(cell->gdd,config->pftpar,npft,climate.temp);
   cell->balance.aprec+=climate.prec;
   gtemp_air=temp_response(climate.temp);
-  daily_climbuf(&cell->climbuf,climate.temp);
-
+  daily_climbuf(&cell->climbuf,climate.temp,climate.prec);
+  avgprec=getavgprec(&cell->climbuf);
   cell->output.mprec+=climate.prec;
   cell->output.msnowf+=climate.temp<tsnow ? climate.prec : 0;
   cell->output.mrain+=climate.temp<tsnow ? 0 : climate.prec;
@@ -79,7 +81,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.malbedo += beta * stand->frac;
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& cell->afire_frac<1)
-      dailyfire_stand(stand,&livefuel,popdensity,&climate,config->ntypes,config->prescribe_burntarea);
+      dailyfire_stand(stand,&livefuel,popdensity,avgprec,&climate,config);
     if(config->permafrost)
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,
@@ -114,20 +116,23 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     hetres=littersom(&stand->soil,gtemp_soil);
     cell->output.mrh+=hetres*stand->frac;
     cell->output.dcflux+=hetres*stand->frac;
+    cell->output.mswe+=stand->soil.snowpack*stand->frac;
     if (withdailyoutput)
     {
       switch(stand->type->landusetype)
       {
         case GRASSLAND:
-          if (cell->output.daily.cft == TEMPERATE_HERBACEOUS)
+          data = stand->data;
+          if (cell->output.daily.cft == TEMPERATE_HERBACEOUS && cell->output.daily.irrigation == data->irrigation)
           {
             cell->output.daily.rh  += hetres;
             cell->output.daily.swe += stand->soil.snowpack;
           }
           break;
         case AGRICULTURE:
+          data = stand->data;
           foreachpft(pft,p,&stand->pftlist)
-            if (pft->par->id == cell->output.daily.cft)
+            if (pft->par->id == cell->output.daily.cft && cell->output.daily.irrigation == data->irrigation)
             {
               cell->output.daily.rh  = hetres;
               cell->output.daily.swe = stand->soil.snowpack;
@@ -228,7 +233,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mlakevol+=cell->discharge.dmass_lake*ndaymonth1[month];
   } /* of 'if(river_routing)' */
 
-  cell->output.mswe+=cell->output.daily.swe;
 
   killstand(cell,config->pftpar,npft,intercrop,year);
 #ifdef SAFE

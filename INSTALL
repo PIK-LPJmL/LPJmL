@@ -2,10 +2,10 @@
 | |   |  _ \   | |_ __ ___ | |    
 | |   | |_) |  | | '_ ` _ \| |    
 | |___|  __/ |_| | | | | | | |___ 
-|_____|_|   \___/|_| |_| |_|_____| Version 4.0.001
+|_____|_|   \___/|_| |_| |_|_____| Version 4.0.002
 
 
-Installation of LPJmL C Version 4.0.001
+Installation of LPJmL C Version 4.0.002
 =======================================
 
 Installation for Unix-like systems
@@ -28,7 +28,7 @@ cd lpjml
 
 untar source and data files
 
-gzip -cd lpjml-4.0.001.tar.gz|tar -xf -
+gzip -cd lpjml-4.0.002.tar.gz|tar -xf -
 gzip -cd cru.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
@@ -127,16 +127,6 @@ Makefile.intel_mpi   - Intel C-compiler and Intel MPI settings
 Makefile.cluster2015 - Intel C-compiler and Intel MPI on HLRS2015 cluster at PIK
 Makefile.mpich       - GNU C-Compiler and MPI Chameleon settings
 Makefile.win32       - Windows settings (used by configure.bat)
-
-We are interested in learning how much and where LPJmL is used. 
-For that we have included a call-home function in configure.sh and in the Makefile. 
-For technical reasons, we only track the execution of configure.sh and model builds using the makefiles, not model runs. 
-No personal data is recorded that could be used to identify users, 
-only the country in which the scripts/Makefiles are executed and the repository source 
-(PIK gitlab open source repository, PIK's internal gitlab repository, PIK's internal SVN repository).
-You can find the usage statistics online at https://goo.gl/#analytics/goo.gl/DYv3KW/all_time. 
-If you don't want to contribute to the usage statistics, please run configure.sh with the option -nofeedback
-or disable the option directly in src/Makefile.
 
 Compilation flags
 

@@ -56,6 +56,8 @@ static size_t isnetcdfinput(const Config *config)
     width=max(width,strlen(config->cloud_filename.var));
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
+    if(config->fdi==WVPD_INDEX && config->humid_filename.fmt==CDF)
+      width=max(width,strlen(config->humid_filename.var));
     if(config->tamp_filename.fmt==CDF)
       width=max(width,strlen(config->tamp_filename.var));
     if(config->fire==SPITFIRE_TMAX && config->tmax_filename.fmt==CDF)
@@ -151,6 +153,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
                   int ncft              /**< Number of crop PFTs */
                  )
 {
+  char *fdi[]={"Nesterov index","water vapour pressure deficit index"};
   char *irrig[]={"no","limited","potential","all","irrigation on rainfed"};
   String s;
   int len;
@@ -177,6 +180,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       len=printsim(file,len,&count,"and population");
     if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
       len=printsim(file,len,&count,"prescribe burntarea");
+    if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+      len=printsim(file,len,&count,fdi[config->fdi]);
   }
   if(config->river_routing)
     len=printsim(file,len,&count,"river routing");
@@ -299,6 +304,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   printinputfile(file,"co2",&config->co2_filename,width);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
+    if(config->fdi==WVPD_INDEX)
+      printinputfile(file,"humid",&config->humid_filename,width);
     if(config->tmax_filename.name!=NULL)
     {
       printinputfile(file,"temp min",&config->tamp_filename,width);

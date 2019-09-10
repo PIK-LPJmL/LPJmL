@@ -728,6 +728,7 @@ Bool readshortinput_netcdf(const Input_netcdf input,short *data,
     index=1;
   }
   else
+    index=0;
   if(input->offset)
     offsets[index]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   else

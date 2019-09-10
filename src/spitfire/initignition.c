@@ -42,7 +42,6 @@ Bool initignition(Cell grid[],         /* LPJ grid */
         closeinput_netcdf(input_netcdf);
         return TRUE;
       }
-      grid[cell].ignition.nesterov_accum=0;
     }
     closeinput_netcdf(input_netcdf);
   }
@@ -82,10 +81,6 @@ Bool initignition(Cell grid[],         /* LPJ grid */
       if(grid[cell].ignition.human<0)
         grid[cell].ignition.human=0;
       grid[cell].ignition.human/=365;
-
-      grid[cell].ignition.nesterov_accum=0;
-      grid[cell].ignition.nesterov_max=0;
-      grid[cell].ignition.nesterov_day=0;
     }
     fclose(file);
   }

@@ -46,6 +46,7 @@
 core
 core.*
 vgcore.*
+core-*
 
 # input files
 *.dat
@@ -143,4 +144,7 @@ bin/soil2cdf
 bin/txt2clm
 bin/txt2grid
 bin/water_use_input
-
+bin/cdf2bin
+bin/cvrtclm
+bin/manage2js
+bin/headersize
