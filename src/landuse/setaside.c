@@ -21,8 +21,12 @@ void mixsoil(Stand *stand1,const Stand *stand2)
 {
   int l,index,i;
   Real water1,water2;
-  Real absolute_water1[NSOILLAYER],absolute_water2;
-  Real absolute_ice1[NSOILLAYER],absolute_ice2;
+  //Real absolute_water1[NSOILLAYER],absolute_water2;
+  //Real absolute_ice1[NSOILLAYER],absolute_ice2;
+#ifdef CHECK_BALANCE
+  Real water_before,water_after;
+  water_before=soilwater(&stand1->soil)*stand1->frac+soilwater(&stand2->soil)*stand2->frac+stand1->cell->balance.excess_water;
+#endif
   forrootsoillayer(l)
   {
     mixpool(stand1->soil.NH4[l],stand2->soil.NH4[l],stand1->frac,stand2->frac);
@@ -116,8 +120,28 @@ void mixsoil(Stand *stand1,const Stand *stand2)
           stand2->frac);
   forrootsoillayer(l)
   {
+    water1 = (stand1->soil.w[l] * stand1->soil.whcs[l] + stand1->soil.ice_depth[l] + stand1->soil.w_fw[l] + stand1->soil.ice_fw[l])*stand1->frac;
+    water2 = (stand2->soil.w[l] * stand2->soil.whcs[l] + stand2->soil.ice_depth[l] + stand2->soil.w_fw[l] + stand2->soil.ice_fw[l])*stand2->frac;
+    if ((water1 + water2)>0)
+      mixpool(stand1->frac_g[l], stand2->frac_g[l], water1, water2);
+    else
+      stand1->frac_g[l]=0;
     stand1->soil.state[l]=(short)getstate(stand1->soil.temp+l);
-
+    stand1->soil.w[l]=(stand1->soil.w[l]*stand1->soil.whcs[l]*stand1->frac+stand2->soil.w[l]*stand2->soil.whcs[l]*stand2->frac)/(stand1->frac+stand2->frac);
+    mixpool(stand1->soil.whcs[l],stand2->soil.whcs[l],stand1->frac,stand2->frac);
+    stand1->soil.w[l]/=stand1->soil.whcs[l];
+    mixpool(stand1->soil.w_fw[l],stand2->soil.w_fw[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.ice_depth[l],stand2->soil.ice_depth[l],stand1->frac,
+            stand2->frac);
+    mixpool(stand1->soil.ice_fw[l],stand2->soil.ice_fw[l],stand1->frac,
+            stand2->frac);
+    mixpool(stand1->soil.freeze_depth[l],stand2->soil.freeze_depth[l],
+            stand1->frac,stand2->frac);
+    mixpool(stand1->soil.ice_pwp[l],stand2->soil.ice_pwp[l],stand1->frac,
+            stand2->frac);
+    mixpool(stand1->soil.wpwps[l],stand2->soil.wpwps[l],stand1->frac,
+            stand2->frac);
+/*
     absolute_water1[l] = stand1->soil.w[l] * stand1->soil.whcs[l] + stand1->soil.w_fw[l] + stand1->soil.wpwps[l] * (1 - stand1->soil.ice_pwp[l]);
     absolute_water2 = stand2->soil.w[l] * stand2->soil.whcs[l] + stand2->soil.w_fw[l] + stand2->soil.wpwps[l] * (1 - stand2->soil.ice_pwp[l]);
     mixpool(absolute_water1[l], absolute_water2, stand1->frac, stand2->frac);
@@ -125,19 +149,14 @@ void mixsoil(Stand *stand1,const Stand *stand2)
     absolute_ice1[l] = stand1->soil.ice_depth[l] + stand1->soil.ice_fw[l] + stand1->soil.wpwps[l] * stand1->soil.ice_pwp[l];
     absolute_ice2 = stand2->soil.ice_depth[l] + stand2->soil.ice_fw[l] + stand2->soil.wpwps[l] * stand2->soil.ice_pwp[l];
     mixpool(absolute_ice1[l], absolute_ice2, stand1->frac, stand2->frac);
-
-    water1 = (stand1->soil.w[l] * stand1->soil.whcs[l] + stand1->soil.ice_depth[l] + stand1->soil.w_fw[l] + stand1->soil.ice_fw[l])*stand1->frac;
-    water2 = (stand2->soil.w[l] * stand2->soil.whcs[l] + stand2->soil.ice_depth[l] + stand2->soil.w_fw[l] + stand2->soil.ice_fw[l])*stand2->frac;
-    if ((water1 + water2)>0)
-      mixpool(stand1->frac_g[l], stand2->frac_g[l], water1, water2);
-    else
-      stand1->frac_g[l]=0;
+*/
   }
 
   for(l=0;l<NTILLLAYER;l++)
     mixpool(stand1->soil.df_tillage[l],stand2->soil.df_tillage[l],stand1->frac,stand2->frac);
 
-  pedotransfer(stand1,absolute_water1,absolute_ice1,stand1->frac+stand2->frac);
+  pedotransfer(stand1,NULL,NULL,stand1->frac+stand2->frac);
+  //pedotransfer(stand1,absolute_water1,absolute_ice1,stand1->frac+stand2->frac);
   /* bedrock needs to be mixed seperately */
   mixpool(stand1->soil.w[BOTTOMLAYER],stand2->soil.w[BOTTOMLAYER],stand1->frac,stand2->frac);
   mixpool(stand1->soil.w_fw[BOTTOMLAYER],stand2->soil.w_fw[BOTTOMLAYER],stand1->frac,stand2->frac);
@@ -158,6 +177,11 @@ void mixsoil(Stand *stand1,const Stand *stand2)
   mixpool(stand1->soil.alag,stand2->soil.alag,stand1->frac,stand2->frac);
   mixpool(stand1->soil.amp,stand2->soil.amp,stand1->frac,stand2->frac);
   mixpool(stand1->soil.rw_buffer,stand2->soil.rw_buffer,stand1->frac,stand2->frac);
+#ifdef CHECK_BALANCE
+  water_after=soilwater(&stand1->soil)*(stand1->frac+stand2->frac)+stand1->cell->balance.excess_water;
+  if(fabs(water_before-water_after)>1e-2)
+    fail(INVALID_WATER_BALANCE_ERR,TRUE,"Invalid water balance=%g=%g-%g in mixsoil()",fabs(water_before-water_after),water_before,water_after);
+#endif
 } /* of 'mixsoil' */
 
 void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop)
