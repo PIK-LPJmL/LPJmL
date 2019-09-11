@@ -125,7 +125,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
 
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
     output->mnpp+=npp*stand->frac;
-    output->mnpp_agr += npp*stand->frac/agrfrac;
+    output->mnpp_agr += npp*stand->frac / agrfrac;
     output->dcflux-=npp*stand->frac;
     output->mgpp+=gpp*stand->frac;
     output->mfapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));

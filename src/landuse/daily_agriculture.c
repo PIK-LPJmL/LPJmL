@@ -288,7 +288,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     }
     npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd,&negbm,wdf,config->with_nitrogen,&output->daily);
     output->mnpp+=npp*stand->frac;
-    output->mnpp_agr+=npp*stand->frac/agrfrac;
+    output->mnpp_agr += npp*stand->frac / agrfrac;
     output->dcflux-=npp*stand->frac;
     output->mgpp+=gpp*stand->frac;
     output->mfapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -444,6 +444,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
           stand->soil.ice_depth[2] + stand->soil.ice_fw[2] + stand->soil.wpwps[2];
         output->daily.wevap = stand->soil.w[0] * stand->soil.whcs[0] + stand->soil.w_fw[0] +
           stand->soil.ice_depth[0] + stand->soil.ice_fw[0] + stand->soil.wpwps[0];
+
         output->daily.par=par;
         output->daily.daylength=daylength;
         output->daily.pet=eeq*PRIESTLEY_TAYLOR;

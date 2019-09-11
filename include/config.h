@@ -116,14 +116,14 @@ typedef struct
   Bool prescribe_residues;  /**< simulation with prescribed residue rate on black fallow */
   Bool fertilizer_input;   /**< simulation with fertilizer input */
   Bool manure_input;       /**< simulation with manure input */
-  Bool others_to_crop;    /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
-  Bool grassonly;         /* set all cropland including others to zero but keep managed grasslands */
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
   Bool landuse_restart;   /**< land use enabled in restart file */
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart; /**< sdate option in restart file */
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
+  Bool others_to_crop;       /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
+  Bool grassonly;            /* set all cropland including others to zero but keep managed grasslands */
   Bool istimber;
   Bool const_climate;           /**< constant climate */
   Bool const_deposition;        /**< constant N deposition */

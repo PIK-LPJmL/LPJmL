@@ -33,7 +33,6 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   Real biofuel;
   tree=pft->data;
   treepar=pft->par->data;
-  harvest.carbon = harvest.nitrogen = 0.0;
   if(ftimber<epsilon)
     return harvest;
   output=&pft->stand->cell->output;

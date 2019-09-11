@@ -346,7 +346,8 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
   soil->litter.decomC=decom_litter.carbon*param.atmfrac; /*only for mircobiological heating*/
 #endif
   soil->count++;
-
+  if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
+    stand->cell->output.mrh_agr += (decom_litter.carbon*param.atmfrac+soil_cflux)*stand->frac;
   flux.carbon=decom_litter.carbon*param.atmfrac+soil_cflux;
   return flux;
 } /* of 'littersom' */

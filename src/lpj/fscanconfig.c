@@ -217,7 +217,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->sim_id!=LPJ)
   {
     fscanint2(file,&config->withlanduse,"landuse");
-    if(config->withlanduse<NO_LANDUSE || config->withlanduse>ALL_CROPS)
+    if(config->withlanduse<NO_LANDUSE || config->withlanduse>ONLY_CROPS)
     {
       if(verbose)
         fprintf(stderr,"ERROR166: Invalid value for landuse=%d.\n",
@@ -226,7 +226,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->withlanduse!=NO_LANDUSE)
     {
-      if(config->withlanduse==CONST_LANDUSE)
+      if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ONLY_CROPS)
         fscanint2(file,&config->landuse_year_const,"landuse_year_const");
       fscanint2(file,&config->sdate_option,"sowing_date_option");
       if(config->sdate_option<0 || config->sdate_option>PRESCRIBED_SDATE)
@@ -259,6 +259,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         if(fscanbool(file,&config->fix_fertilization,"fix_fertilization",TRUE,verbose))
           return TRUE;
       }
+      config->others_to_crop = FALSE;
+      if (fscanbool(file, &config->others_to_crop, "others_to_crop", TRUE, verbose))
+        return TRUE;
+      config->grassonly = FALSE;
+      if (fscanbool(file, &config->grassonly, "grassonly", TRUE, verbose))
+        return TRUE;
       config->istimber=FALSE;
       if(fscanbool(file,&config->istimber,"istimber",TRUE,verbose))
         return TRUE;
@@ -287,12 +293,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       fscanint2(file,&config->tillage_type,"tillage_type");
       fscanint2(file,&config->residue_treatment,"residue_treatment");
-      config->others_to_crop=FALSE;
-      if(fscanbool(file,&config->others_to_crop,"others_to_crop",TRUE,verbose))
-        return TRUE;
-      config->grassonly=FALSE;
-      if(fscanbool(file,&config->grassonly,"grassonly",TRUE,verbose))
-        return TRUE;
     }
     config->black_fallow=FALSE;
     if(fscanbool(file,&config->black_fallow,"black_fallow",TRUE,verbose))

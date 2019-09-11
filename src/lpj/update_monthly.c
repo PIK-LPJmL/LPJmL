@@ -71,8 +71,6 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
 #endif
   /* for carbon balance check  */
   cell->balance.nep+=cell->output.mnpp-cell->output.mrh;
-  cell->balance.anpp += cell->output.mnpp;
-  cell->balance.anpp_agr += cell->output.mnpp_agr;
   /* for nitrogen balance check */
   cell->balance.n_influx+=cell->output.mbnf; /* deposition added in update_daily.c, fertilizer added in cultivate.c */
   cell->balance.n_outflux+=cell->output.mn2o_denit+cell->output.mn2o_nit+cell->output.mn2_emissions+cell->output.mn_leaching;

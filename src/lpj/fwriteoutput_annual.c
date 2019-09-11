@@ -348,6 +348,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output, SOILC_AGR, vec, year, config);
   }
+
   if(isopen(output,LITC))
   {
     count=0;
@@ -413,6 +414,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output, LITC_AGR, vec, year, config);
   }
+
   if(isopen(output,VEGN))
   {
     count=0;
@@ -534,6 +536,10 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
   writeoutputvar(RHARVEST_BURNTN,flux_rharvest_burnt.nitrogen);
   writeoutputvar(RHARVEST_BURNT_IN_FIELDC,flux_rharvest_burnt_in_field.carbon);
   writeoutputvar(RHARVEST_BURNT_IN_FIELDN,flux_rharvest_burnt_in_field.nitrogen);
+  writeoutputvar(ANPP,anpp);
+  writeoutputvar(ANPP_AGR,anpp_agr);
+  writeoutputvar(ARH,arh);
+  writeoutputvar(ARH_AGR,arh_agr);
   if(isopen(output,MG_VEGC))
   {
     count=0;

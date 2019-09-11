@@ -1155,9 +1155,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 */
 /* END DEBUG */
 
-    sum = landfrac_sum(grid[cell].ml.landfrac, ncft, FALSE) + landfrac_sum(grid[cell].ml.landfrac, ncft, TRUE);
-
-    if(config->others_to_crop)
+    if (config->others_to_crop)
     {
       if (grid[cell].coord.lat > 30 || grid[cell].coord.lat < -30)
       {
@@ -1172,7 +1170,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         grid[cell].ml.landfrac[0].grass[0] = grid[cell].ml.landfrac[1].grass[0] = 0;
       }
     }
-    if(config->grassonly)
+
+    if (config->grassonly)
     {
       for (j = 0; j < ncft; j++)
         grid[cell].ml.landfrac[0].crop[j] = grid[cell].ml.landfrac[1].crop[j] = 0;
@@ -1180,6 +1179,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       grid[cell].ml.landfrac[0].biomass_grass = grid[cell].ml.landfrac[1].biomass_grass =
         grid[cell].ml.landfrac[0].biomass_tree = grid[cell].ml.landfrac[1].biomass_tree = 0;
     }
+
     if (landuse->allcrops)
     {
       for (j = 0; j < ncft; j++)
@@ -1241,6 +1241,26 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 
   if (config->with_nitrogen)
   {
+ 
+    for (cell = 0; cell < config->ngridcell; cell++)
+      for (i = 0; i < WIRRIG; i++)
+      {
+        for (j = 0; j < ncft; j++)
+        {
+          grid[cell].ml.fertilizer_nr[i].crop[j] = 0;
+          grid[cell].ml.manure_nr[i].crop[j] = 0;
+        }
+        for (j = 0; j < NGRASS; j++)
+        {
+          grid[cell].ml.fertilizer_nr[i].grass[j] = 0;
+          grid[cell].ml.manure_nr[i].grass[j] = 0;
+        }
+        grid[cell].ml.fertilizer_nr[i].biomass_grass = 0;
+        grid[cell].ml.fertilizer_nr[i].biomass_grass = 0;
+        grid[cell].ml.manure_nr[i].biomass_tree = 0;
+        grid[cell].ml.manure_nr[i].biomass_tree = 0;
+      }
+
     if (config->fertilizer_input && !config->fix_fertilization)
     {
       /* assigning fertilizer Nr data */
@@ -1324,6 +1344,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           {
             for (j = 0; j < ncft; j++)
               grid[cell].ml.fertilizer_nr[i].crop[j] = vec[count++] * landuse->fertilizer_nr.scalar;
+              
             for (j = 0; j < NGRASS; j++)
               grid[cell].ml.fertilizer_nr[i].grass[j] = vec[count++] * landuse->fertilizer_nr.scalar;
             if (landuse->nbands_fertilizer_nr != 2 * (ncft + NGRASS))
@@ -1341,6 +1362,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       else
         free(vec);
     }
+
       if (config->manure_input && !config->fix_fertilization)
       {
         /* assigning manure fertilizer nr data */
@@ -1442,38 +1464,24 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           free(vec);
       }
 
-    else
-      for (cell = 0; cell < config->ngridcell; cell++)
-        for (i = 0; i < WIRRIG; i++)
-        {
-          for (j = 0; j < ncft; j++)
-          {
-            grid[cell].ml.fertilizer_nr[i].crop[j] = 0;
-            grid[cell].ml.manure_nr[i].crop[j] = 0;
-          }          
-          for (j = 0; j < NGRASS; j++)
-          {
-            grid[cell].ml.fertilizer_nr[i].grass[j] = 0;
-            grid[cell].ml.manure_nr[i].grass[j] = 0;
-          } 
-          grid[cell].ml.fertilizer_nr[i].biomass_grass = 0;
-          grid[cell].ml.fertilizer_nr[i].biomass_grass = 0;
-          grid[cell].ml.manure_nr[i].biomass_tree = 0;
-          grid[cell].ml.manure_nr[i].biomass_tree = 0;
-        }
-
     if (config->fix_fertilization)
     {
       for (cell = 0; cell < config->ngridcell; cell++)
       {
         for (i = 0; i < WIRRIG; i++)
         {
-          for (j = 0; j < ncft; j++)
+          for (j = 0; j < ncft; j++){
             grid[cell].ml.fertilizer_nr[i].crop[j] = param.fertilizer_rate;
-          for (j = 0; j < NGRASS; j++)
+            grid[cell].ml.manure_nr[i].crop[j] = param.manure_rate;
+          }
+          for (j = 0; j < NGRASS; j++){
             grid[cell].ml.fertilizer_nr[i].grass[j] = param.fertilizer_rate;
+            grid[cell].ml.manure_nr[i].grass[j] = param.manure_rate;
+          }
           grid[cell].ml.fertilizer_nr[i].biomass_grass = param.fertilizer_rate;
           grid[cell].ml.fertilizer_nr[i].biomass_tree = param.fertilizer_rate;
+          grid[cell].ml.manure_nr[i].biomass_grass = param.manure_rate;
+          grid[cell].ml.manure_nr[i].biomass_tree = param.manure_rate;
         }
       }
     }

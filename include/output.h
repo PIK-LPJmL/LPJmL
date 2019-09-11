@@ -103,7 +103,7 @@ typedef struct
 typedef struct
 {
   Real mnpp;             /**< Monthly NPP (gC/m2) */
-  Real mnpp_agr;         /* Monthly NPP for agricultural stands (gC/m2) */
+  Real mnpp_agr;         /**< Monthly NPP for agricultural stands (gC/m2) */
   Real anpp;             /* Annual NPP (gC/m2) */
   Real anpp_agr;         /* Annual NPP for agricultural stands (gC/m2) */
   Real mgpp;             /**< Monthly GPP (gC/m2) */
@@ -308,7 +308,8 @@ typedef struct
   Real n_uptake;              /**< total N uptake by plants */
   Real n_influx;              /**< total N inputs */
   Real n_outflux;             /**< total N losses */
-  Real anpp;                  /* Total NPP (gC/yr) */
+  Real anpp_flux;             /* Total NPP (gC/yr) */
+
 } Flux;
 
 typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;

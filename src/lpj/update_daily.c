@@ -54,9 +54,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Irrigation *data;
   int index,l;
   Real rootdepth=0.0;
-  Real agrfrac;
   Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
+  Real agrfrac;
   gp_pft=newvec(Real,npft+ncft);
   check(gp_pft);
 
@@ -78,12 +78,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     update_nesterov(cell,&climate);
-  agrfrac = 0;
-  foreachstand(stand, s, cell->standlist)
-    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
-      agrfrac += stand->frac;
+  agrfrac=0;
   foreachstand(stand,s,cell->standlist)
   {
+    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
+      agrfrac += stand->frac;
     for(l=0;l<stand->soil.litter.n;l++)
     {
       stand->soil.litter.item[l].agsub.leaf.carbon += stand->soil.litter.item[l].ag.leaf.carbon*BIOTURBRATE;
@@ -190,13 +189,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     updatelitterproperties(stand,stand->frac);
 
     cell->output.mrh+=hetres.carbon*stand->frac;
+    /*monthly rh for agricutural stands*/
+    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
+      stand->cell->output.mrh_agr+=hetres.carbon*stand->frac/agrfrac;
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
     cell->output.mswe+=stand->soil.snowpack*stand->frac;
-    /*monthly rh for agricutural stands*/
-    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
-      stand->cell->output.mrh_agr += hetres.carbon*stand->frac / agrfrac;
-
     if (withdailyoutput)
     {
       switch(stand->type->landusetype)

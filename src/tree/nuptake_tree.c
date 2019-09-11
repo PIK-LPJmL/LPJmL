@@ -54,11 +54,11 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
     {
       up_temp_f = nuptake_temp_fcn(soil->temp[l]);
       //up_temp_f=1;
-      NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin +totn/(totn+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))* up_temp_f * f_NCplant * (tree->ind.root.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.root)/1000; //Smith et al. Eq. C14-C15, Navail=totn
+      NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin +totn/(totn+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))* up_temp_f * f_NCplant * (tree->ind.root.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.root)*rootdist_n[l]/1000; //Smith et al. Eq. C14-C15, Navail=totn
         /* reducing uptake according to availability */
       if(NO3_up>totn)
         NO3_up=totn;
-      n_uptake+=NO3_up*rootdist_n[l];
+      n_uptake+=NO3_up;
       nsum+=totn*rootdist_n[l];
     }
   }
@@ -74,7 +74,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   {
     pft->bm_inc.nitrogen+=n_uptake;
     forrootsoillayer(l)
-      if(soil->temp[l]>0)
+      if(soil->temp[l]>0 && nsum > 0.0)
       {
         soil->NO3[l]-=soil->NO3[l]*rootdist_n[l]*n_uptake/nsum;
         if(soil->NO3[l]<0)

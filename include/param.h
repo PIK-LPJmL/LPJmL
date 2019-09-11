@@ -69,12 +69,13 @@ typedef struct
   Real residue_frac; /**< fraction of residues to be submerged with tillage */
   Real mixing_efficiency; /**< density factor to simulate changes in bulk density by tillage */
   int till_startyear; /* year in which tillage should start */
-  int output_spinupyears; /* years of which outputs should be written during spinup phase (1901-x)*/
+
   Real residue_rate;        /**< fixed residue rate in gC/m2/yr */
   Real residue_pool;        /**< fixed residue pool in gC/m2 */
   Real residue_cn;          /**< CN ratio of prescribed residues */
   Real residue_fbg;         /**< belowground fraction of prescribed residues */
   Real fertilizer_rate;     /**< fixed fertilizer application rate in gN/m2/yr */
+  Real manure_rate;         /**< fixed manure application rate in gN/m2/yr */
   Real min_c_bnf;
   Real par_sink_limit;  /**< Michaelis-Menten scaling of sink limitation */
   Real k_temp;          /**< factor of temperature dependence of nitrogen demand for Rubisco activity */
