@@ -421,7 +421,9 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
             config->image_outport,config->wait_image);
 
 #endif
+#ifndef PERMUTE
   if(config->wet_filename.name!=NULL)
+#endif
     fprintf(file,"Random seed: %d\n",config->seed);
   if(config->n_out)
   {

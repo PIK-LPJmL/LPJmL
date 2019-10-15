@@ -80,6 +80,10 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   irrig_apply=0.0;
   int n_pft;
   Real *fpc_inc;
+#ifdef PERMUTE
+  int *pvec;
+#endif
+
   n_pft=getnpft(&stand->pftlist); /* get number of established PFTs */
 
   data=stand->data;
@@ -91,11 +95,21 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   {
     wet=newvec(Real,getnpft(&stand->pftlist)); /* wet from pftlist */
     check(wet);
+#ifdef PERMUTE
+    pvec=newvec(int,getnpft(&stand->pftlist));
+    check(pvec);
+    permute(pvec,getnpft(&stand->pftlist));
+#endif
     for(p=0;p<getnpft(&stand->pftlist);p++)
       wet[p]=0;
   }
   else
+  {
     wet=NULL;
+#ifdef PERMUTE
+    pvec=NULL;
+#endif
+  }
   if(!config->river_routing)
     irrig_amount(stand,config->pft_output_scaled,npft,ncft);
 
@@ -135,8 +149,15 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   }
 
   /* INTERCEPTION */
+#ifdef PERMUTE
+  for(p=0;p<getnpft(&stand->pftlist);p++)
+#else
   foreachpft(pft,p,&stand->pftlist)
+#endif
   {
+#ifdef PERMUTE
+    pft=getpft(&stand->pftlist,pvec[p]);
+#endif
     sprink_interc=(data->irrig_system==SPRINK) ? 1 : 0;
 
     intercept=interception(&wet[p],pft,eeq,climate->prec+irrig_apply*sprink_interc);
@@ -163,8 +184,15 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,withdailyoutput,config);
 
   isphen = FALSE;
+#ifdef PERMUTE
+  for(p=0;p<getnpft(&stand->pftlist);p++)
+#else
   foreachpft(pft,p,&stand->pftlist)
+#endif
   {
+#ifdef PERMUTE
+    pft=getpft(&stand->pftlist,pvec[p]);
+#endif
     pft->phen = 1.0; /* phenology is calculated from biomass */
     cover_stand+=pft->fpc*pft->phen;
 
@@ -442,5 +470,8 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   output_gbw_grassland(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,
                        intercep_stand,intercep_stand_blue,ncft,config->pft_output_scaled);
   free(wet);
+#ifdef PERMUTE
+  free(pvec);
+#endif
   return runoff;
 } /* of 'daily_grassland' */
