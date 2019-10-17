@@ -100,7 +100,8 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   {
     fscanarrayindex(&arr,&item,n,verb);
     /* Read pft->id, defined in pftpar.h */
-    if(fscanint(&item,&id,"id",FALSE,verb))
+    id=n;
+    if(fscanint(&item,&id,"id",TRUE,verb))
       return NULL;
     if(id<0 || id>=count)
     {
