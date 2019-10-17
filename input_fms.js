@@ -33,7 +33,7 @@
   "swdown" : { "fmt" : FMS },/* downwelling shortwave radiation data from FMS coupler */
   "windspeed" : { "fmt" : FMS }, /* windspeed data from FMS coupler */
   "tamp" : { "fmt" : FMS },/* diurnal temp range data from FMS coupler */
-  "lightning" : { "fmt" : CLM, "nane" : "input_VERSION2/mlightning.clm"},
+  "lightning" : { "fmt" : CLM, "name" : "input_VERSION2/mlightning.clm"},
   "human_ignition" : { "fmt" : CLM, "name" : "input_VERSION2/human_ignition.clm"},
   "popdens" : { "fmt" : CLM, "name" : "input_VERSION2/popdens_HYDE_1901_2010_bi.clm"},
   "co2" : { "fmt" : FMS }/* CO2 data from FMS coupler */
