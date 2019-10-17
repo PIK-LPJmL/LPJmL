@@ -2,10 +2,10 @@
 | |   |  _ \   | |_ __ ___ | |    
 | |   | |_) |  | | '_ ` _ \| |    
 | |___|  __/ |_| | | | | | | |___ 
-|_____|_|   \___/|_| |_| |_|_____| Version 4.0.003
+|_____|_|   \___/|_| |_| |_|_____| Version 4.0.004
 
 
-Installation of LPJmL C Version 4.0.003
+Installation of LPJmL C Version 4.0.004
 =======================================
 
 Installation for Unix-like systems
@@ -28,7 +28,7 @@ cd lpjml
 
 untar source and data files
 
-gzip -cd lpjml-4.0.003.tar.gz|tar -xf -
+gzip -cd lpjml-4.0.004.tar.gz|tar -xf -
 gzip -cd cru.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
