@@ -2,11 +2,11 @@
 <HEAD>
 <LINK REL="stylesheet" HREF="style.css" TYPE="text/css">
 <TITLE>
-Installing and running LPJmL C Version 4.0.002
+Installing and running LPJmL C Version 4.0.003
 </TITLE>
 </HEAD>
 <BODY>
-<H1>Installing and running  LPJmL C Version 4.0.002</H1>
+<H1>Installing and running  LPJmL C Version 4.0.003</H1>
 
 <H2>Installation for Unix-like systems</h2>
 
@@ -29,7 +29,7 @@ cd lpjml
 
 untar source and data files</p>
 <pre class="example">
-gzip -cd lpjml-4.0.002.tar.gz|tar -xf -
+gzip -cd lpjml-4.0.003.tar.gz|tar -xf -
 </pre>
 
 Directory tree after extracting the tar files:</p>
@@ -100,7 +100,7 @@ module load lpjml
 
 <pre class="example">
 % ./configure.sh
-Configuring LPJmL 4.0.002...
+Configuring LPJmL 4.0.003...
 Operating system is Linux
 Intel MPI found
 Create executables with make all
@@ -615,7 +615,7 @@ Concatenates output files from distributed LPJmL simulations
 </table>
 An installation directory can be defined during configuration:
 <pre class="example">
-./configure.sh -prefix /data/biosx/lpjml-4.0.002
+./configure.sh -prefix /data/biosx/lpjml-4.0.003
 </pre>
 Then the binaries can be copied in the installation directory by invoking</p>
 <pre class="example">
@@ -832,7 +832,7 @@ Depending on your MPI version installed the program can be started interactively
 ****       | |___|  __/ |_| | | | | | | |___  |__   _|  _  | |_| |        ****
 ****       |_____|_|   \___/|_| |_| |_|_____|    |_|   (_)  \___/         ****
 ****                                                                      ****
-****                lpjml C Version 4.0.002 (Nov  6 2018)                 ****
+****                lpjml C Version 4.0.003 (Nov  6 2018)                 ****
 ****    Dynamic global vegetation model with natural and managed land     ****
 ****                     Compiled for Linux with MPI                      ****
 ****       (C) Potsdam Institute for Climate Impact Research (PIK),       ****
@@ -1228,7 +1228,7 @@ dump and have to be fixed by program changes. Some errors will only be generated
 if -DSAFE is set in the compile options of <tt>Makefile.inc</tt>. The options set at compile time can be obtained by invoking
 <pre class="example">
 % lpjml -v
-lpjml C Version 4.0.002 (Nov  7 2018)
+lpjml C Version 4.0.003 (Nov  7 2018)
 Operating system: Linux, little endian
 Compiler:         Intel C version 15.00, 64 bit
 Compile flags:    "-DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DSTORECLIMATE -DUSE_NETCDF -DUSE_UDUNITS -DUSE_JSON "
