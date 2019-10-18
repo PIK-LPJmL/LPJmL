@@ -3,7 +3,7 @@
 printclm, printheader \- Print contents of clm files for LPJmL                   
 .SH SYNOPSIS
 .B printclm
-[-metafile] [-header] [-data] [-longheader] [-type {byte|short|int|float|double}] [\-nbands n] [\-start s] [\-end e] [\-first f] [\-last l] \fIclmfile\fP ...
+[-metafile] [-header] [-data] [-text] [-scale] [-longheader] [-type {byte|short|int|float|double}] [\-nbands n] [\-start s] [\-end e] [\-first f] [\-last l] \fIclmfile\fP ...
 
 .B printheader
 \fIclmfile\fP ...
@@ -19,6 +19,12 @@ Print without header
 .TP
 -data
 Print without data
+.TP
+-text
+Print data only
+.TP
+-scale
+Scale data with scale factor defined in header
 .TP
 -longheader
 set long header in CLM files.

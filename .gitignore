@@ -152,4 +152,5 @@ bin/water_use_input
 bin/cdf2bin
 bin/cvrtclm
 bin/manage2js
+bin/regridirrig
 bin/headersize

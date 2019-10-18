@@ -30,7 +30,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
   Stand* stand;
   Real nsoilmeanyears;
   nsoilmeanyears = min(30,climate->file_temp.nyear);
-  for (year=config->firstyear; year < config->firstyear+nsoilmeanyears; ++year)
+  for (year=climate->file_temp.firstyear; year < climate->file_temp.firstyear+nsoilmeanyears; ++year)
   {
     if(getclimate(climate,grid,year,config))
       return TRUE;
