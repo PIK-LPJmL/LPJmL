@@ -209,6 +209,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftlimit(verb,&item,&pft->temp,pft->name,"temp");
     fscanpftreal(verb,&item,&pft->soc_k,pft->name,"soc_k");
     fscanpftreal(verb,&item,&pft->alpha_fuelp,pft->name,"alpha_fuelp");
+    fscanpftreal(verb,&item,&pft->vpd_par,pft->name,"vpd_par");
     fscanpftreal(verb,&item,&pft->fuelbulkdensity,pft->name,"fuelbulkdensity");
     fscanpftemissionfactor(verb,&item,&pft->emissionfactor,
                            pft->name,"emission_factor");

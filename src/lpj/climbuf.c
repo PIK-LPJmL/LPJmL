@@ -40,6 +40,8 @@ Bool new_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
   climbuf->mpet=0;
   for(d=0;d<NDAYS;d++)
     climbuf->temp[d]=0;
+  for(d=0;d<NDAYS;d++)
+    climbuf->prec[d]=0;
   for(m=0;m<NMONTH;m++)
     climbuf->mpet20[m]=climbuf->mprec20[m]=climbuf->mtemp20[m]=-9999;
   return FALSE;
@@ -56,7 +58,8 @@ void init_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
 } /* of 'init_climbuf' */
 
 void daily_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
-                   Real temp         /**< daily temperature (deg C) */
+                   Real temp,        /**< daily temperature (deg C) */
+                   Real prec         /**< daily precipitation (mm) */
                   )
 {
   int d;
@@ -64,7 +67,19 @@ void daily_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
   for(d=1;d<NDAYS;d++)
     climbuf->temp[d-1]=climbuf->temp[d];
   climbuf->temp[NDAYS-1]=temp;
+  for(d=1;d<NDAYS;d++)
+    climbuf->prec[d-1]=climbuf->prec[d];
+  climbuf->prec[NDAYS-1]=prec;
 } /* of  'daily_climbuf' */
+
+Real getavgprec(const Climbuf *climbuf)
+{
+  Real avg_prec=0;
+  int d;
+  for(d=0;d<(NDAYS/3);d++)
+   avg_prec+=climbuf->prec[d];
+  return avg_prec/(NDAYS/3);
+}
 
 void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
                      Real mtemp,       /**< monthly average temperature (deg C) */
@@ -110,6 +125,7 @@ Bool fwriteclimbuf(FILE *file, /**< pointer to binary file */
   fwrite(&climbuf->gdd5,sizeof(Real),1,file);
   fwrite(climbuf->dval_prec,sizeof(Real),1,file);
   fwrite(climbuf->temp,sizeof(Real),NDAYS,file);
+  fwrite(climbuf->prec,sizeof(Real),NDAYS,file);
   fwrite(climbuf->mpet20,sizeof(Real),NMONTH,file);
   fwrite(climbuf->mprec20,sizeof(Real),NMONTH,file);
   fwrite(climbuf->mtemp20,sizeof(Real),NMONTH,file);
@@ -131,6 +147,7 @@ Bool freadclimbuf(FILE *file,  /**< pointer to binary file */
   freadreal1(&climbuf->gdd5,swap,file);
   freadreal1(climbuf->dval_prec,swap,file);
   freadreal(climbuf->temp,NDAYS,swap,file);
+  freadreal(climbuf->prec,NDAYS,swap,file);
   freadreal(climbuf->mpet20,NMONTH,swap,file);
   freadreal(climbuf->mprec20,NMONTH,swap,file);
   freadreal(climbuf->mtemp20,NMONTH,swap,file);

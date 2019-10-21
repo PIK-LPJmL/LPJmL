@@ -23,8 +23,9 @@
 #define LPJML_FMS 3  /* LPJ simulation with managed land coupled to FMS */
 #define LANDUSE 1
 #define NO_LANDUSE 0
-#define CONST_LANDUSE 3
-#define ALL_CROPS 4
+#define CONST_LANDUSE 2
+#define ALL_CROPS 3
+#define ONLY_CROPS 4
 #define NO_FIXED_SDATE 0
 #define FIXED_SDATE 1
 #define PRESCRIBED_SDATE 2
@@ -70,6 +71,8 @@
 #define FIRE 1
 #define SPITFIRE 2
 #define SPITFIRE_TMAX 3
+#define NESTEROV_INDEX 0
+#define WVPD_INDEX 1
 #define NO_PRESCRIBE_BURNTAREA 0
 #define PRESCRIBE_BURNTAREA 1
 #define NO_LANDCOVER 0

@@ -40,6 +40,13 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
   }
   else
     store->tmax=NULL;
+  if(climate->data.humid!=NULL)
+  {
+    store->humid=newvec(Real,climate->file_humid.n*nyear);
+    checkptr(store->humid);
+  }
+  else
+    store->humid=NULL;
   if(climate->data.sun!=NULL)
   {
     store->sun=newvec(Real,climate->file_cloud.n*nyear);
@@ -120,6 +127,12 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
       for(j=0;j<climate->file_tmax.n;j++)
         store->tmax[count++]=climate->data.tmax[j];
     }
+    if(store->humid!=NULL)
+    {
+      count=climate->file_humid.n*(year-firstyear);
+      for(j=0;j<climate->file_humid.n;j++)
+        store->humid[count++]=climate->data.humid[j];
+    }
     if(store->lwnet!=NULL)
     {
       count=climate->file_lwnet.n*(year-firstyear);
@@ -179,6 +192,12 @@ void restoreclimate(Climate *climate,         /**< pointer to climate data */
     for(i=0;i<climate->file_tmax.n;i++)
       climate->data.tmax[i]=store->tmax[index++];
   }
+  if(store->humid!=NULL)
+  {
+    index=year*climate->file_humid.n;
+    for(i=0;i<climate->file_humid.n;i++)
+      climate->data.humid[i]=store->humid[index++];
+  }
   if(store->sun!=NULL)
   {
     index=year*climate->file_cloud.n;
@@ -232,6 +251,8 @@ void moveclimate(Climate *climate,  /**< Pointer to climate data */
   climate->data.temp=store->temp+climate->file_temp.n*year;
   if(climate->data.tmax!=NULL)
     climate->data.tmax=store->tmax+climate->file_tmax.n*year;
+  if(climate->data.humid!=NULL)
+    climate->data.humid=store->humid+climate->file_humid.n*year;
   if(climate->data.sun!=NULL)
     climate->data.sun=store->sun+climate->file_cloud.n*year;
   if(climate->data.lwnet!=NULL)

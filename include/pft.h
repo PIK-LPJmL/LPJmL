@@ -132,7 +132,8 @@ typedef struct Pft
     Traitpar k_litter10;
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
-    Real alpha_fuelp;           /**< fire danger parameter */
+    Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */
+    Real vpd_par;               /**< scaling factor for VPD fire danger index  */
     Real fuelbulkdensity;       /**< fuel bulk density*/
     Tracegas emissionfactor;    /**< trace gas emission factors */
     void *data;                 /**< pointer for PFT specific extensions */

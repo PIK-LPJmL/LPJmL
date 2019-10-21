@@ -96,7 +96,8 @@ C3                          /* pathway */
 25 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 15.5 1000                   /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.38009                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000334                   /* scaling factor fire danger index */
+47.22296                    /* scaling factor vpd fire danger index*/
 25.0                        /* fuel bulk density */
 1580.0 103.0   6.80   8.10   8.50 1.999 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
@@ -176,7 +177,8 @@ C3                          /* pathway */
 25 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 15.5 1000                   /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.51395                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000334                   /* scaling factor fire danger index */
+15.43195                    /* scaling factor vpd fire danger index*/
 13.0                        /* fuel bulk density */
 1664.0 63.0 2.20 3.40 8.50 2.540 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
@@ -256,7 +258,8 @@ C3                          /* pathway */
 20 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -2.0 22.0                   /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.32198                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_EXTRATROP       /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 25.0                        /* fuel bulk density */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
@@ -336,7 +339,8 @@ C3                          /* pathway */
 20 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 3.0 18.8                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.43740                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000334                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 22.0                        /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
@@ -416,7 +420,8 @@ C3                          /* pathway */
 20 25                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -17.0 15.5                  /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.28880                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_EXTRATROP       /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 22.0                        /* fuel bulk density */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
@@ -498,7 +503,8 @@ C3                          /* pathway */
 15 25                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -32.5 -2                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.28670                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_EXTRATROP       /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 25.0                        /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
@@ -578,7 +584,8 @@ C3                          /* pathway */
 15 25                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 -2                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.28670                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_EXTRATROP       /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 22.0                        /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
@@ -660,7 +667,8 @@ C3                          /* pathway */
 15 25                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -46 -5.4                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.28670                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_EXTRATROP       /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 22.0                        /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
@@ -742,7 +750,8 @@ C4                          /* pathway */
 20 45                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 7.0 1000.0                  /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.46513                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_EXTRATROP       /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+3.85899                     /* scaling factor vpd fire danger index */
 2.0                         /* fuel bulk density (pb) */
 1664.0 63.0 2.20 3.40 8.50 2.540 /* emission factors */
 100                         /* minimum annual precipitation to establish */
@@ -804,7 +813,8 @@ C3                          /* pathway */
 10 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -39 15.5                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.38184                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_EXTRATROP       /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 4.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 100                        /* minimum annual precipitation to establish */
@@ -866,7 +876,8 @@ C3                          /* pathway */
 10 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 -2.6                  /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.38184                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_EXTRATROP       /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 4.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
@@ -928,7 +939,8 @@ C3                          /* pathway */
 25 38                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26 (Almeida, 2004, FEM) 8 38*/
 7 1000                      /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.38009                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.000067                    /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 13.0                        /* fuel bulk density */
 1664.0 63.0 2.20 3.40 8.50 2.540 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
@@ -1008,7 +1020,8 @@ C3                          /* pathway */
 15 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -30 8                       /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.28880                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_EXTRATROP       /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 22.0                        /* fuel bulk density */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
@@ -1090,7 +1103,8 @@ C4                          /* pathway */
 15 45                        /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -40 1000                    /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
 0.46513                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_EXTRATROP       /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1664.0 63.0 2.20 3.40 8.50 2.540 /* emission factors */
 APREC_MIN                   /* minimum annual precipitation to establish */
@@ -1152,7 +1166,8 @@ C3                          /* pathway */
 12 17                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
 0.40428                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 0                           /* minimum annual precipitation to establish */
@@ -1237,7 +1252,8 @@ C3                          /* pathway */
 20 45                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
 0.40428                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 0                           /* minimum annual precipitation to establish */
@@ -1322,7 +1338,8 @@ C4                          /* pathway */
 21 26                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
 0.40428                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 0                           /* minimum annual precipitation to establish */
@@ -1407,7 +1424,8 @@ C4                          /* pathway */
 20 45                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
 0.40428                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 0                           /* minimum annual precipitation to establish */
@@ -1492,7 +1510,8 @@ C3                          /* pathway */
 10 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
 0.40428                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 0                           /* minimum annual precipitation to establish */
@@ -1577,7 +1596,8 @@ C3                          /* pathway */
 10 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
 0.40428                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 0                           /* minimum annual precipitation to establish */
@@ -1662,7 +1682,8 @@ C3                          /* pathway */
 20 45                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
 0.40428                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 0                           /* minimum annual precipitation to establish */
@@ -1747,7 +1768,8 @@ C3                          /* pathway */
 25 32                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
 0.40428                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 0                           /* minimum annual precipitation to establish */
@@ -1832,7 +1854,8 @@ C3                          /* pathway */
 28 32                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
 0.40428                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 0                           /* minimum annual precipitation to establish */
@@ -1917,7 +1940,8 @@ C3                          /* pathway */
 20 45                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
 0.40428                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 0                           /* minimum annual precipitation to establish */
@@ -2002,7 +2026,8 @@ C3                          /* pathway */
 12 17                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) */
 0.40428                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 0                           /* minimum annual precipitation to establish */
@@ -2087,7 +2112,8 @@ C4                          /* pathway */
 18 30                       /* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
 -1000 1000                  /* lower and upper coldest monthly mean temperature(deg C) 28 29 */
 0.40428                     /* shape factor for soil organic matter vertical distribution*/
-ALPHA_FUELP_TROP            /* scaling factor fire danger index */
+0.0000667                   /* scaling factor fire danger index */
+6                           /* scaling factor vpd fire danger index*/
 2.0                         /* fuel bulk density (pb) */
 1568.0 106.0 4.80 5.70 17.60 3.240 /* emission factors */
 0                           /* minimum annual precipitation to establish */

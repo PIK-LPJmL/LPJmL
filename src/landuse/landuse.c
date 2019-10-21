@@ -44,6 +44,7 @@ struct landuse
 {
   Bool intercrop;      /**< intercropping possible (TRUE/FALSE) */
   Bool allcrops;       /**< all crops establish (TRUE/FALSE) */
+  Bool onlycrops;       /**< only crops establish (TRUE/FALSE) */
   int nbands;          /**< number of data items per cell */
   int nbands_sdate;    /**< number of data items per cell for sowing dates */
   Climatefile landuse; /**< file pointer */
@@ -66,6 +67,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     return NULL;
   }
   landuse->allcrops=(config->withlanduse==ALL_CROPS);
+  landuse->onlycrops=(config->withlanduse==ONLY_CROPS);
   landuse->landuse.fmt=config->landuse_filename.fmt;
   if(landuse->allcrops)
     landuse->landuse.file=NULL;
@@ -640,6 +642,32 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         fail(CROP_FRACTION_ERR,FALSE,
              "crop fraction greater 1: %f cell: %d, managed grass is 0",
              sum+1,cell+config->startgrid);
+    }
+    if (landuse->onlycrops)
+    {
+      sum = 0;
+      for (j = 0; j < ncft; j++)
+      {
+        sum += grid[cell].ml.landfrac[0].crop[j];
+        sum += grid[cell].ml.landfrac[1].crop[j];
+      }
+      if (sum < 1 && sum > epsilon)
+      {
+        for (j = 0; j < ncft; j++)
+        {
+          grid[cell].ml.landfrac[0].crop[j] /= sum;
+          grid[cell].ml.landfrac[1].crop[j] /= sum;
+        }
+        for (j = 0; j < NGRASS; j++)
+        {
+          grid[cell].ml.landfrac[0].grass[j] = 0;
+          grid[cell].ml.landfrac[1].grass[j] = 0;
+        }
+        grid[cell].ml.landfrac[0].biomass_grass = 0;
+        grid[cell].ml.landfrac[1].biomass_grass = 0;
+        grid[cell].ml.landfrac[0].biomass_tree = 0;
+        grid[cell].ml.landfrac[1].biomass_tree = 0;
+      }
     }
   } /* for(cell=0;...) */
 

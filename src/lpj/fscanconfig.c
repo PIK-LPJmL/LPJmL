@@ -123,7 +123,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   LPJfile input;
   int restart,endgrid,israndom,grassfix;
   Verbosity verbose;
-  const char *landuse[]={"no_landuse","landuse","const_landuse","all_crops"};
+  const char *landuse[]={"no_landuse","landuse","const_landuse","all_crops","only_crops"};
   const char *irrigation[]={"no_irrigation","lim_irrigation","pot_irrigation","all_irrigation"};
   const char *radiation[]={"cloudiness","radiation","radiation_swonly","radiation_lwdown"};
   const char *fire[]={"no_fire","fire","spitfire","spitfire_tmax"};
@@ -131,6 +131,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   const char *wateruse[]={"no_wateruse","wateruse","all_wateruse"};
   const char *prescribe_landcover[]={"no_landcover","landcoverest","landcoverfpc"};
   const char *laimax_interpolate[]={"laimax_cft","laimax_interpolate","const_lai_max"};
+  const char *fdi[]={"nesterov_index","wvpd_index"};
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
 
   /*=================================================================*/
@@ -180,6 +181,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     fscanbool2(file,&config->firewood,"firewood");
   }
+  if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
+  {
+    if(fscankeywords(file,&config->fdi,"fdi",fdi,2,FALSE,verbose))
+      return TRUE;
+    if(config->fdi==WVPD_INDEX && verbose)
+      fputs("WARNING029: VPD index only calibrated for South America.\n",stderr);
+  }
   fscanbool2(file,&config->ispopulation,"population");
   config->prescribe_burntarea=FALSE;
   if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",TRUE,verbose))
@@ -201,11 +209,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->rw_manage=FALSE;
   if(config->sim_id!=LPJ)
   {
-    if(fscankeywords(file,&config->withlanduse,"landuse",landuse,4,FALSE,verbose))
+    if(fscankeywords(file,&config->withlanduse,"landuse",landuse,5,FALSE,verbose))
       return TRUE;
     if(config->withlanduse!=NO_LANDUSE)
     {
-      if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS)
+      if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS || config->withlanduse==ONLY_CROPS)
         fscanint2(file,&config->landuse_year_const,"landuse_year_const");
       if(fscankeywords(file,&config->sdate_option,"sowing_date_option",sowing_data_option,3,FALSE,verbose))
         return TRUE;
@@ -418,6 +426,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
+    if(config->fdi==WVPD_INDEX)
+    {
+      scanclimatefilename(&input,&config->humid_filename,config->inputdir,config->sim_id==LPJML_FMS,"humid");
+    }
     scanclimatefilename(&input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,"wind");
     scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,(config->fire==SPITFIRE_TMAX) ? "tmin" : "tamp");
     if(config->fire==SPITFIRE_TMAX)

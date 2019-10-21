@@ -109,7 +109,7 @@
     "soc_k" : 0.38009,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
     "vpd_par" : 47.22296, /*scaling factor vpd fire danger index*/
-    "fuelbulkdensity" : 25, /* fuel bulk density */
+    "fuelbulkdensity" : 24.5, /* fuel bulk density */
     "emission_factor" : { "co2" : 1580.0, "co" :  103.0, "ch4" : 6.80, "voc" : 8.10, "tpm" : 8.50, "nox" : 1.999}, /* emission factors */
     "aprec_min" : APREC_MIN,  /* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,  /* flam */
@@ -128,11 +128,11 @@
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
-    "scorchheight_f_param" : 0.1487, /* scorch height (F) */
+    "scorchheight_f_param" : 0.2406, /* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
     "barkthick_par1" : 0.0301, /* bark thickness par1 */
     "barkthick_par2" : 0.0281, /* bark thickness par2 */
-    "crown_mort_rck" : 1.00, /* crown damage (rCK) */
+    "crown_mort_rck" : 0.985, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est": K_EST,         /* k_est */
@@ -203,7 +203,7 @@
     "soc_k" : 0.51395,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
     "vpd_par" : 15.43195, /*scaling factor vpd fire danger index*/
-    "fuelbulkdensity" : 13.0, /* fuel bulk density */
+    "fuelbulkdensity" : 12.38, /* fuel bulk density */
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,     /* flam */
@@ -222,11 +222,11 @@
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
-    "scorchheight_f_param" : 0.061, /* scorch height (F) */
+    "scorchheight_f_param" : 0.4146, /* scorch height (F) */
     "crownlength" : 0.10, /* crown length (CL) */
     "barkthick_par1" : 0.1085, /* bark thickness par1 */
     "barkthick_par2" : 0.2120, /* bark thickness par2 */
-    "crown_mort_rck" : 0.05, /* crown damage (rCK) */
+    "crown_mort_rck" : 0.09, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est": K_EST,         /* k_est */
@@ -389,7 +389,7 @@
     "temp_photos" : { "low" : 20., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : 3.0, "high" : 18.8 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.43740,     /* shape factor for soil organic matter vertical distribution*/
-    "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 22.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
@@ -859,7 +859,7 @@
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : "any",      /* phenology */
+    "phenology" : ANY,      /* phenology */
     "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 20., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
@@ -867,7 +867,7 @@
     "soc_k" : 0.46513,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 3.85899, /*scaling factor vpd fire danger index*/
-    "fuelbulkdensity" : 2.0, /* fuel bulk density */
+    "fuelbulkdensity" : 1.9, /* fuel bulk density */
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : 100,                        /* minimum annual precipitation to establish */
     "flam" : FLAM_GRASS,     /* flam */
@@ -935,7 +935,7 @@
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : "any",      /* phenology */
+    "phenology" : ANY,      /* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
@@ -1011,7 +1011,7 @@
       "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : "any",      /* phenology */
+    "phenology" : ANY,      /* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
@@ -1037,7 +1037,7 @@
     "id" : BIOENERGY_TROPICAL_TREE,
     "name" : "bioenergy tropical tree",
     "type" : TREE,
-    "cultivation_type" : "biomass",/* cultivation_type */
+    "cultivation_type" : BIOMASS,/* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.975,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -1131,7 +1131,7 @@
     "id" : BIOENERGY_TEMPERATE_TREE,
     "name" : "bioenergy temperate tree",
     "type" : TREE,
-    "cultivation_type" : "biomass",/* cultivation_type */
+    "cultivation_type" : BIOMASS,/* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -1181,7 +1181,7 @@
       "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : 0.005,     /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : "summergreen", /* phenology */
+    "phenology" : SUMMERGREEN, /* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 15., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
@@ -1277,7 +1277,7 @@
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : "any",      /* phenology */
+    "phenology" : ANY,      /* phenology */
     "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 4.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 15., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
@@ -1552,7 +1552,7 @@
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "cropgreen",/* phenology */
-    "path" : C4,            /* pathway */
+    "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 8.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 21., "high" : 26. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
@@ -1864,7 +1864,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6,   /* windspeed dampening */
     "roughness_length" : 0.03,     /* roughness length */
-    "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : TEMP_STYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 90, "sdatesh" : 270, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 260,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -2062,7 +2062,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : TEMP_STYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" :  181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */

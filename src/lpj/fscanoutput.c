@@ -104,8 +104,9 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       if(flag==NOT_FOUND)
       {
         if(verbosity)
-          fprintf(stderr,"ERROR166: Id '%s' not defined for output.\n",name);
-        return TRUE;
+          fprintf(stderr,"ERROR166: Id '%s' not defined for output file, output is ignored.\n",name);
+        index++;
+        continue;
       }
     }
     else

@@ -31,9 +31,9 @@
   "prec" : { "fmt" : "fms" },/* precipitation data from FMS coupler */
   "lwnet" : { "fmt" : "fms" },/* net longwave radiation data from FMS coupler */
   "swdown" : { "fmt" : "fms" },/* downwelling shortwave radiation data from FMS coupler */
-  "windspeed" : { "fmt" : "fms" }, /* windspeed data from FMS coupler */
+  "wind" : { "fmt" : "fms" }, /* windspeed data from FMS coupler */
   "tamp" : { "fmt" : "fms" },/* diurnal temp range data from FMS coupler */
-  "lightning" : { "fmt" : "clm", "nane" : "input_VERSION2/mlightning.clm"},
+  "lightning" : { "fmt" : "clm", "name" : "input_VERSION2/mlightning.clm"},
   "human_ignition" : { "fmt" : "clm", "name" : "input_VERSION2/human_ignition.clm"},
   "popdens" : { "fmt" : "clm", "name" : "input_VERSION2/popdens_HYDE_1901_2010_bi.clm"},
   "co2" : { "fmt" : "fms" }/* CO2 data from FMS coupler */

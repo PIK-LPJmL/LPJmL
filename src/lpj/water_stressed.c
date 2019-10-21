@@ -49,20 +49,20 @@ static Real fcn(Real lambda,Data *data)
 
 Real water_stressed(Pft *pft, /**< pointer to PFT variables */
                     Real aet_layer[LASTLAYER],       
-                    Real gp_stand,
-                    Real gp_stand_leafon, /**< pot. canopy conduct. at full leaf cover */
-                    Real gp_pft, /* potential canopy conductance */
-                    Real *gc_pft,
-                    Real *rd,
-                    Real *wet,
-                    Real eeq,  /* equilibrium evapotranspiration (mm) */
-                    Real co2,  /* Atmospheric CO2 partial pressure (ppmv) */
-                    Real temp, /* Temperature (deg C) */
-                    Real par,  /* photosynthetic active radiation (J/m2/day) */
-                    Real daylength, /* Daylength (h) */
-                    Real *wdf,           /* water deficit fraction (0..100) */
-                    Bool permafrost
-) /** returns gross primary productivity (gC/m2) */
+                    Real gp_stand, /**< pot. total canopy conductivity (mm/s) */
+                    Real gp_stand_leafon, /**< pot. canopy conduct. at full leaf cover (mm/s) */
+                    Real gp_pft, /**< potential canopy conductance (mm/s) */
+                    Real *gc_pft, /**< actual canopy conductivity (mm/s) */
+                    Real *rd,  /**< respiration flux (gC/m2/day) */
+                    Real *wet, /**< relative wetness */
+                    Real eeq,  /**< equilibrium evapotranspiration (mm) */
+                    Real co2,  /**< Atmospheric CO2 partial pressure (ppmv) */
+                    Real temp, /**< Temperature (deg C) */
+                    Real par,  /**< photosynthetic active radiation (J/m2/day) */
+                    Real daylength, /**< Daylength (h) */
+                    Real *wdf, /**< water deficit fraction (0..100) */
+                    Bool permafrost /**< enable permafrost (TRUE/FALSE) */
+                   ) /** \return gross primary productivity (gC/m2/day) */
 {
   int l,i; 
   Real supply,supply_pft,demand,demand_pft,wr,lambda,gpd,agd,gc,aet,aet_cor;

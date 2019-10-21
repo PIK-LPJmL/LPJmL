@@ -54,7 +54,7 @@ Real area_burnt(Real fire_danger_index, Real num_fires, Real windsp_cover,
     /* check the parameter value!!
      *  fire duration as a function of daily fire danger index
      */
-    fire_durat=241.0/(1.0+(240*exp(-11.06*fire_danger_index)));
+    fire_durat=241.0/(1.0+(240*exp(param.firedura*fire_danger_index)));
     dbf = (ros_backward+ros_forward) * fire_durat;  /* in min , dbf in m*/
     d_area_burnt = (num_fires * M_PI_4/length_breath_ratio * dbf*dbf)*1e-4;
   }
