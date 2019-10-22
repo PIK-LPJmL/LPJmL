@@ -37,7 +37,8 @@ CONF	= lpjml.conf input.conf param.conf lpj.conf\
           lpjml_netcdf.conf input_netcdf.conf lpjml_fms.conf input_fms.conf
 
 JSON	= lpjml.js input_crumonthly.js param.js lpj.js\
-          lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js
+          lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js\
+          lpjml_vpd.js input_GLDAS.js param_vpd.js
 
 DATA    = par/*.par par/*.js
 
@@ -114,7 +115,7 @@ tar:
 	    gzip -f lpjml-4.0.004.tar
 
 zipfile: 
-	zip -l lpjml-4.0.003.zip $(FILES) src/Makefile src/*.c\
+	zip -l lpjml-4.0.004.zip $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
             man/man3/*.3 man/man5/*.5\
 	    src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\
