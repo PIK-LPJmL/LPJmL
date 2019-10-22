@@ -96,7 +96,7 @@ clean:
 	(cd src  && $(MAKE) clean)
 
 tar: 
-	tar -cf lpjml-4.0.003.tar $(FILES) src/Makefile src/*.c\
+	tar -cf lpjml-4.0.004.tar $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c\
             man/man1/*.1 man/man3/*.3 man/man5/*.5 man/whatis\
             man/man1/Makefile man/man3/Makefile man/man5/Makefile man/Makefile\
@@ -111,10 +111,10 @@ tar:
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
             src/cpl/Makefile src/cpl/*.c
-	    gzip -f lpjml-4.0.002.tar
+	    gzip -f lpjml-4.0.004.tar
 
 zipfile: 
-	zip -l lpjml-4.0.003.zip $(FILES) src/Makefile src/*.c\
+	zip -l lpjml-4.0.004.zip $(FILES) src/Makefile src/*.c\
 	    src/climate/Makefile src/climate/*.c config/* man/* man/man1/*.1\
             man/man3/*.3 man/man5/*.5\
 	    src/crop/*.c src/crop/Makefile src/grass/*.c src/grass/Makefile\
