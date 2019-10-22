@@ -14,13 +14,13 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-longheader] [-type {byte|short|int|float|double}]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
+#define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-scale] [-longheader] [-type {byte|short|int|float|double}]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
 #define NO_HEADER 1
 #define NO_DATA 2
 #define NO_TEXT 4
 
 static void printclm(const char *filename,int output,int nbands,int version,
-                     int start,int stop,int first,int last,Type type,Bool ismeta)
+                     int start,int stop,int first,int last,Type type,Bool ismeta,Bool isscale)
 {
   FILE *file;
   time_t mod_date;
@@ -246,7 +246,10 @@ static void printclm(const char *filename,int output,int nbands,int version,
                             year,cell,i);
                     return;
                   }
-                  printf("%3d\n",(int)byte);
+                  if(isscale && header.scalar!=1)
+                    printf("%6g\n",byte*header.scalar);
+                  else
+                    printf("%3d\n",(int)byte);
                   break;
                 case LPJ_SHORT:
                   if(freadshort(&sdata,1,swap,file)!=1)
@@ -255,7 +258,10 @@ static void printclm(const char *filename,int output,int nbands,int version,
                             year,cell,i);
                     return;
                   }
-                  printf("%5d\n",(int)sdata);
+                  if(isscale && header.scalar!=1)
+                    printf("%6g\n",sdata*header.scalar);
+                  else
+                    printf("%5d\n",(int)sdata);
                   break;
                 case LPJ_INT:
                   if(freadint(&idata,1,swap,file)!=1)
@@ -264,7 +270,10 @@ static void printclm(const char *filename,int output,int nbands,int version,
                             year,cell,i);
                     return;
                   }
-                  printf("%6d\n",idata);
+                  if(isscale && header.scalar!=1)
+                    printf("%6g\n",idata*header.scalar);
+                  else
+                    printf("%6d\n",idata);
                   break;
                 case LPJ_FLOAT:
                   if(freadfloat(&fdata,1,swap,file)!=1)
@@ -311,7 +320,10 @@ static void printclm(const char *filename,int output,int nbands,int version,
                           year,cell,i);
                   return;
                 }
-                printf(" %3d",(int)byte);
+                if(isscale && header.scalar!=1)
+                  printf(" %6g",byte*header.scalar);
+                else
+                  printf(" %3d",(int)byte);
                 break;
               case LPJ_SHORT:
                 if(freadshort(&sdata,1,swap,file)!=1)
@@ -321,7 +333,10 @@ static void printclm(const char *filename,int output,int nbands,int version,
                           year,cell,i);
                   return;
                 }
-                printf(" %5d",(int)sdata);
+                if(isscale && header.scalar!=1)
+                  printf(" %6g",sdata*header.scalar);
+                else
+                  printf(" %5d",(int)sdata);
                 break;
               case LPJ_INT:
                 if(freadint(&idata,1,swap,file)!=1)
@@ -331,7 +346,10 @@ static void printclm(const char *filename,int output,int nbands,int version,
                           year,cell,i);
                   return;
                 }
-                printf(" %6d",idata);
+                if(isscale && header.scalar!=1)
+                  printf(" %6g",idata*header.scalar);
+                else
+                  printf(" %6d",idata);
                 break;
               case LPJ_FLOAT:
                 if(freadfloat(&fdata,1,swap,file)!=1)
@@ -370,13 +388,14 @@ int main(int argc,char **argv)
   const char *progname;
   char *endptr;
   Bool ismeta;
+  Bool isscale;
   progname=strippath(argv[0]);
   output=0;
   first=0;
   start=stop=last=INT_MAX;
   type=LPJ_SHORT;
   nbands=-1;
-  ismeta=FALSE;
+  ismeta=isscale=FALSE;
   version=READ_VERSION;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
@@ -391,6 +410,8 @@ int main(int argc,char **argv)
         version=2;
       else if(!strcmp(argv[i],"-metafile"))
         ismeta=TRUE;
+      else if(!strcmp(argv[i],"-scale"))
+        isscale=TRUE;
       else if(!strcmp(argv[i],"-first"))
       {
         if(argc-1==i)
@@ -514,7 +535,7 @@ int main(int argc,char **argv)
   {
     if(argc>1)
       printf("Filename:\t%s\n",argv[i]);
-    printclm(argv[i],output,nbands,version,start,stop,first,last,type,ismeta);
+    printclm(argv[i],output,nbands,version,start,stop,first,last,type,ismeta,isscale);
   }
   return EXIT_SUCCESS;
 } /* of 'main' */

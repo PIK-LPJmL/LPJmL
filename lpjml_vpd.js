@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  v  p  d  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 4.0.002                                 \n**/
+/** Configuration file for LPJmL C Version 4.0.004                                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/

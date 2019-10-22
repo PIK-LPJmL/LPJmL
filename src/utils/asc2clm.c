@@ -202,7 +202,7 @@ int main(int argc,char **argv)
   {
     if(!stat(argv[argc-1],&buf))
     {
-      fprintf(stderr,"File '%s' already exists, ovewrite (y/n)?\n",argv[argc-1]);
+      fprintf(stderr,"File '%s' already exists, overwrite (y/n)?\n",argv[argc-1]);
       scanf("%c",&c);
       if(c!='y')
         return EXIT_FAILURE;
