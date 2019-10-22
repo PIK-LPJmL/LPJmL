@@ -37,7 +37,8 @@ CONF	= lpjml.conf input.conf param.conf lpj.conf\
           lpjml_netcdf.conf input_netcdf.conf lpjml_fms.conf input_fms.conf
 
 JSON	= lpjml.js input_crumonthly.js param.js lpj.js\
-          lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js
+          lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js\
+          lpjml_vpd.js input_GLDAS.js param_vpd.js
 
 DATA    = par/*.par par/*.js
 
