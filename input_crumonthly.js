@@ -27,9 +27,9 @@
 //  "landuse" :      { "fmt" : CLM,  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   "landuse" :      { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/MADRAT/lu_madrat_850-2015_32bands.clm"},
 //  "fertilizer_nr" : { "fmt" : CLM,  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
-  "fertilizer_nr" : { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/MADRAT/fertilizer_luh2v2_1900-2015_32bands.clm"},
-  "manure_nr" :    { "fmt" : CLM, "name" : "/p/projects/lpjml/input/MADRAT/manure_zhang17_1860-2014_32bands_clm2.clm"},
-  "with_tillage" : { "fmt" : CLM, "name" : "/p/projects/macmit/data/LPJmL_input_baseline_macmit/LPJTILL.clm"},
+  "fertilizer_nr" : { "fmt" : CLM,  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
+  "manure_nr" :    { "fmt" : CLM, "name" : "input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
+  "with_tillage" : { "fmt" : CLM, "name" : "input_VERSION3/lpj_tillage_CA_1973-2010.clm"},
   "residue_on_field" : { "fmt" : CLM, "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
   /* insert prescribed sdate file name here */
   "grassland_fixed_pft" : { "fmt" : RAW, "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.bin"},
