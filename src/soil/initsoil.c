@@ -33,11 +33,11 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
       soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=soil->NH4[l]=soil->NO3[l]=0.0;
     else
     {
-      soil->pool[l].slow.nitrogen=1000*(soildepth[l]/layerbound[BOTTOMLAYER]);
-      soil->pool[l].fast.nitrogen=1000*(soildepth[l]/layerbound[BOTTOMLAYER]);
+      soil->pool[l].slow.nitrogen=200*(soildepth[l]/layerbound[BOTTOMLAYER]);
+      soil->pool[l].fast.nitrogen=200*(soildepth[l]/layerbound[BOTTOMLAYER]);
       soil->pool[l].slow.carbon=soil->pool[l].slow.nitrogen*soil->par->cn_ratio;
       soil->pool[l].fast.carbon=soil->pool[l].fast.nitrogen*soil->par->cn_ratio;
-      soil->NH4[l]=soil->NO3[l]=soil->pool[l].slow.nitrogen/20;
+      soil->NH4[l]=soil->NO3[l]=soil->pool[l].slow.nitrogen/10;
     }
     soil->c_shift_fast[l]=newvec(Real,ntotpft);
     checkptr(soil->c_shift_fast[l]);
@@ -66,34 +66,17 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
     soil->decomC[l]=0;
 #endif
   }
-  if(with_nitrogen)
-  {
+  for (p=0;p<ntotpft;p++)
+    {
+      soil->c_shift_fast[0][p]=0.5;
+      soil->c_shift_slow[0][p]=0.5;
+    }
+  for (l=1;l<LASTLAYER;l++)
     for (p=0;p<ntotpft;p++)
     {
-      soil->c_shift_fast[0][p]=0.7;
-      soil->c_shift_slow[0][p]=0.7;
+        soil->c_shift_fast[l][p]=0.5/(LASTLAYER-1);
+        soil->c_shift_slow[l][p]=0.5/(LASTLAYER-1);
     }
-    for (l=1;l<LASTLAYER;l++)
-      for (p=0;p<ntotpft;p++)
-      {
-        soil->c_shift_fast[l][p]=0.3/(LASTLAYER-1);
-        soil->c_shift_slow[l][p]=0.3/(LASTLAYER-1);
-      }
-  }
-  else
-  {
-    for (p=0;p<ntotpft;p++)
-    {
-      soil->c_shift_fast[0][p]=1;
-      soil->c_shift_slow[0][p]=1;
-    }
-    for (l=1;l<LASTLAYER;l++)
-      for (p=0;p<ntotpft;p++)
-      {
-        soil->c_shift_fast[l][p]=0;
-        soil->c_shift_slow[l][p]=0;
-      }
-  }
   soil->maxthaw_depth=2;
   soil->mean_maxthaw=layerbound[BOTTOMLAYER];
   for(l=0;l<NSOILLAYER+1;++l)
