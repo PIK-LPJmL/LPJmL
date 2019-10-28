@@ -57,7 +57,7 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
   fprintsoil(stdout,soil,pftpar,ntotpft,TRUE);
 
   for(p=0;p<ntotpft;p++)
-    k_mean[p].fast=k_mean[p].slow=sum[p].fast=sum[p].slow=0.0;
+    k_mean[p].fast=k_mean[p].slow=sum[p].fast=sum[p].slow=c0[p].fast=c0[p].slow=0.0;
   forrootsoillayer(l)
     for(p=0;p<ntotpft;p++)
     {
@@ -71,8 +71,8 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
     {
       socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
             - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
-      c0[p].fast=soil->k_mean[l].fast>epsilon ? (1-param.atmfrac)*param.fastfrac*(soil->decomp_litter_mean.carbon)/soil->k_mean[l].fast*socfraction : 0;
-      c0[p].slow=soil->k_mean[l].slow>epsilon ? (1-param.atmfrac)*(1.0-param.fastfrac)*(soil->decomp_litter_mean.carbon)/soil->k_mean[l].slow*socfraction : 0;
+      c0[p].fast+=soil->k_mean[l].fast>epsilon ? (1-param.atmfrac)*param.fastfrac*(soil->decomp_litter_mean.carbon)/soil->k_mean[l].fast*socfraction : 0;
+      c0[p].slow+=soil->k_mean[l].slow>epsilon ? (1-param.atmfrac)*(1.0-param.fastfrac)*(soil->decomp_litter_mean.carbon)/soil->k_mean[l].slow*socfraction : 0;
     }
 
   if(soil->decomp_litter_mean.carbon>epsilon)

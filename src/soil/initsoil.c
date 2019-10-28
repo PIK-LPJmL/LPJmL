@@ -68,14 +68,14 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
   }
   for (p=0;p<ntotpft;p++)
     {
-      soil->c_shift_fast[0][p]=0.5;
-      soil->c_shift_slow[0][p]=0.5;
+      soil->c_shift_fast[0][p]=0.55;
+      soil->c_shift_slow[0][p]=0.55;
     }
   for (l=1;l<LASTLAYER;l++)
     for (p=0;p<ntotpft;p++)
     {
-        soil->c_shift_fast[l][p]=0.5/(LASTLAYER-1);
-        soil->c_shift_slow[l][p]=0.5/(LASTLAYER-1);
+        soil->c_shift_fast[l][p]=0.45/(LASTLAYER-1);
+        soil->c_shift_slow[l][p]=0.45/(LASTLAYER-1);
     }
   soil->maxthaw_depth=2;
   soil->mean_maxthaw=layerbound[BOTTOMLAYER];
