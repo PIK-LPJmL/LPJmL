@@ -13,6 +13,8 @@ For setting up the model, see the file INSTALL
 The source code is distributed via the git repository at https://github.com/PIK-LPJmL/LPJmL.
 The registration is free of costs.
 
+We do not provide any input data, which is derived from external sources. You may find some helper programs in utils (or after compilation in bin) that help generating these files e.g. from CRU data.
+
 Outside joint collaborative agreements with PIK, there is absolutely no support in model download, setup, development, application or similar. 
 
 New model development can be submitted to the LPJmL git repository in separate repository branches and pull requests can be issued. There is no guarantee or obligation that external model features, bug fixes or other developemnts will be merged into the standard LPJmL distribution at PIK.
