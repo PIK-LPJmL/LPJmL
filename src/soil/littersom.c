@@ -61,14 +61,14 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
                 ) /** \return decomposed carbon/nitrogen (g/m2) */
 {
 
-  Real response[LASTLAYER];
+  Real response[NSOILLAYER];
   Real response_agtop_leaves,response_agtop_wood,response_agsub_leaves,response_agsub_wood,response_bg_litter,w_agtop;
   Real decay_litter;
   Pool flux_soil[LASTLAYER];
   Real decom,soil_cflux;
   Stocks decom_litter;
   Stocks decom_sum,flux;
-  Real moist[LASTLAYER];
+  Real moist[NSOILLAYER];
   Real N_sum;
   Real n_immo;
   int i,p,l;
