@@ -253,8 +253,8 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         closeclimate_netcdf(&landuse->fertilizer_nr,isroot(*config));
         if(isroot(*config))
           fprintf(stderr,
-          "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
-          (int)landuse->fertilizer_nr.var_len);
+                  "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
+                  (int)landuse->fertilizer_nr.var_len);
         if(landuse->landuse.fmt==CDF)
           closeclimate_netcdf(&landuse->landuse,isroot(*config));
         else
@@ -269,6 +269,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         free(landuse);
         return NULL;
       }
+      landuse->nbands_fertilizer_nr=landuse->fertilizer_nr.var_len;
     }
     else
     {
