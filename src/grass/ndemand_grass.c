@@ -34,13 +34,13 @@ Real ndemand_grass(const Pft *pft,    /**< pointer to PFT */
   data=pft->stand->data;
   grass=pft->data;
   grasspar=pft->par->data;
-  *ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft))) +param.n0*0.001*(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf);
+  *ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft))) +param.n0*0.001*(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf)*pft->nind;
  nc_ratio=*ndemand_leaf/(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf);
   if(nc_ratio>pft->par->ncleaf.high)
     nc_ratio=pft->par->ncleaf.high;
   else if(nc_ratio<pft->par->ncleaf.low)
     nc_ratio=pft->par->ncleaf.low;
-  ndemand_tot=*ndemand_leaf+grass->ind.root.nitrogen+nc_ratio*
+  ndemand_tot=*ndemand_leaf+grass->ind.root.nitrogen*pft->nind+nc_ratio*
     (grass->excess_carbon*pft->nind+pft->bm_inc.carbon)*grass->falloc.root/grasspar->ratio;
 
   /* unclear to me: setaside NPP seems to go to natural grass pft_npp -- should we do the same for Ndemand? */
