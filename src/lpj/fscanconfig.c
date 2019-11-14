@@ -170,6 +170,19 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     fscanbool2(file,&config->firewood,"firewood");
   }
+  if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
+  {
+    fscanint2(file,&config->fdi,"fdi");
+    if(config->fdi<0 || config->fdi>WVPD_INDEX)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR166: Invalid value for fdi=%d in line %d of '%s'.\n",
+                config->fdi,getlinecount(),getfilename());
+      return TRUE;
+    }
+    if(config->fdi==WVPD_INDEX && verbose)
+      fputs("WARNING029: VPD index only calibrated for South America.\n",stderr);
+  }
   fscanbool2(file,&config->ispopulation,"population");
   config->prescribe_burntarea=FALSE;
   if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",TRUE,verbose))
@@ -483,6 +496,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->no3deposition_filename.name=config->nh4deposition_filename.name=config->soilph_filename.name=NULL;
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
+    if(config->fdi==WVPD_INDEX)
+    {
+      scanclimatefilename(&input,&config->humid_filename,config->inputdir,config->sim_id==LPJML_FMS,"humid");
+    }
     scanclimatefilename(&input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,"wind");
   }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)

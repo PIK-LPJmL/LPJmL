@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**               v  m  a  x  l  i  m  i  t  _  t  r  e  e  .  c                   \n**/
+/**            f  w  r  i  t  e  i  g  n  i  t  i  o  n  .  c                      \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function writes ignition data to binary file                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,14 +15,10 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "tree.h"
 
-Real vmaxlimit_tree(const Pft *pft, /**< pointer to PFT */
-                    Real daylength, /**< day length (h) */
-                    Real temp       /**< temperature (deg C) */
-                   )                /** \return vmax (gC/m2/day) */
+Bool fwriteignition(FILE *file,const Ignition *ignition)
 {
-  const Pfttree *tree;
-  tree=pft->data; 
-  return (tree->ind.leaf.nitrogen-param.n0*0.001*tree->ind.leaf.carbon)*pft->nind/exp(-param.k_temp*(temp-25))/f_lai(lai_tree(pft))/param.p/0.02314815*daylength;
-} /* of 'vmaxlimit_tree' */
+  fwrite(&ignition->nesterov_accum,sizeof(Real),1,file);
+  fwrite(&ignition->nesterov_max,sizeof(Real),1,file);
+  return fwrite(&ignition->nesterov_day,sizeof(int),1,file)!=1;
+} /* of 'fwriteignition' */

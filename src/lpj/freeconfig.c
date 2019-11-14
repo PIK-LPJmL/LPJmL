@@ -89,6 +89,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(config->wind_filename);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
+    if(config->fdi==WVPD_INDEX)
+      freefilename(config->humid_filename);
     freefilename(config->tamp_filename);
     if(config->tamp_filename.fmt==CDF && config->tmax_filename.name!=NULL)
       freefilename(config->tmax_filename);

@@ -49,6 +49,7 @@ typedef struct
   Filename wind_filename;
   Filename tamp_filename;
   Filename tmax_filename;
+  Filename humid_filename;
   Filename lightning_filename;
   Filename lwnet_filename;
   Filename swdown_filename;
@@ -102,6 +103,7 @@ typedef struct
   int laimax_interpolate;
   Real laimax;        /**< maximum LAI for benchmark */
   int crop_index;
+  int fdi;
   Bool crop_irrigation;
   int with_nitrogen;      /**< enable nitrogen cycle */
   Bool fertilizer_input; 

@@ -52,7 +52,7 @@ void copyright(const char *progname /**< program name */
   t[12]="This version of LPJmL is licensed under GNU AGPL Version 3 or later";
   t[13]="See LICENSE file or go to http://www.gnu.org/licenses/";
   t[14]="or invoke lpjml -l to print license";
-  t[15]="Contact: https://github.com/PIK-LPJmL/LPJmL /lpjml";
+  t[15]="Contact: https://github.com/PIK-LPJmL/LPJmL";
   t[16]="";
   banner(t,17,78);
 } /* of 'copyright' */

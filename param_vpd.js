@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**               v  m  a  x  l  i  m  i  t  _  t  r  e  e  .  c                   \n**/
+/**                   p  a  r  a  m  _  v  p  d  .  j  s                           \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
+/** Input parameter file for LPJmL C Version 4.0.002                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,15 +12,10 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
-#include "tree.h"
+#include "par/lpjparam_vpd.js"      /* LPJ parameter file */
+#include "par/soil.js"              /* Soil parameter file */
+#include "par/pft_vpd.js"           /* PFT parameter file*/
 
-Real vmaxlimit_tree(const Pft *pft, /**< pointer to PFT */
-                    Real daylength, /**< day length (h) */
-                    Real temp       /**< temperature (deg C) */
-                   )                /** \return vmax (gC/m2/day) */
-{
-  const Pfttree *tree;
-  tree=pft->data; 
-  return (tree->ind.leaf.nitrogen-param.n0*0.001*tree->ind.leaf.carbon)*pft->nind/exp(-param.k_temp*(temp-25))/f_lai(lai_tree(pft))/param.p/0.02314815*daylength;
-} /* of 'vmaxlimit_tree' */
+#include "par/manage_laimax_alphaa_fao_rev4453_20180507.js" /* Management parameter file */
+#include "par/manage_reg.js"    /* Management parameter file for regions*/
+#include "par/outputvars.js"

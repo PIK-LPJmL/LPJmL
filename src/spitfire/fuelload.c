@@ -23,6 +23,7 @@
 static Real alpha[NFUELCLASS]={0.001,0.00005424,0.00001485,0};
 static Real SIGMA[NFUELCLASS]={66.0,3.58,0.98,0};
 
+
 void fuelload(Stand *stand,
               Fuel *fuel,
               Livefuel *livefuel,

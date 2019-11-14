@@ -1,12 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 #################################################################################
 ##                                                                             ##
 ##            c  o  n  f  i  g  u  r  e  .  s  h                               ##
 ##                                                                             ##
 ##   configure script to copy appropriate Makefile.$osname                     ##
 ##                                                                             ##
-##   Usage: configure.sh [-h] [-prefix dir] [-debug] [-check][-nompi]          ##
-##                       [-Dmacro[=value]]                                     ##
+##   Usage: configure.sh [-h] [-prefix dir] [-debug] [-check] [-nompi]         ##
+##                       [-Dmacro[=value] ...]                                 ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -18,11 +18,12 @@
 debug=0
 nompi=0
 prefix=$PWD
+macro=""
 while(( "$#" )); do
   case "$1" in
     -h)
       echo $0 - configure LPJmL $(cat VERSION)
-      echo Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro=value]
+      echo Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
       echo
       echo Arguments:
       echo "-h              print this help text"
@@ -40,7 +41,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: prefix directory missing
-        echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value]]
+        echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
         exit 1
       fi
       prefix=$2
@@ -59,18 +60,17 @@ while(( "$#" )); do
       shift 1
       ;;
     -D*)
-      macro=$1
-      echo $macro
+      macro="$macro $1"
       shift 1
       ;;
     -*)
       echo >&2 Invalid option $1
-      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value]]
+      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
       exit 1
       ;;
     *)
       echo >&2 Invalid argument $1
-      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value]]
+      echo >&2 Usage: $0 [-h] [-prefix dir] [-debug] [-nompi] [-check] [-Dmacro[=value] ...]
       exit 1
       ;;
   esac

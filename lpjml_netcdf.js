@@ -36,7 +36,8 @@
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : CLOUDINESS,
-"fire" : FIRE,            /* fire disturbance enabled */
+"fire" : SPITFIRE,        /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
+"fdi" : NESTEROV_INDEX,   /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
 "firewood" : false,
 #ifdef FROM_RESTART
 "population" : false,
@@ -78,6 +79,7 @@
 /*===================================================================*/
 
 #include "input_netcdf.js"    /* Input files of CRU dataset */
+##include "input_GLDAS.js"	  /* Input files of GLDAS dataset */
 
 /*===================================================================*/
 /*  IV. Output data section                                          */

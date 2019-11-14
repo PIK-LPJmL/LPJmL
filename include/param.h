@@ -63,6 +63,9 @@ typedef struct
   Real ec_pipe;      /**< conveyance efficiency for pressurized irrigation systems */
   Real sat_level[4];   /**< saturation level for the three irrigation systems (surf,sprink,drip) */
   Real drip_evap;        /**< reduction of drip soil evap */
+  Real firedura;	/**< scaling factor for fire duration */
+  Real fire_intens;     /**< threshold of fireintensity for which burnt area can be modeled */
+  Real hum_ign;         /**< a parameter for scaling the human ignintions within SPITFIRE */
   Real residues_in_soil;  /**< minimum residues in soil*/
   Real nfert_split;     /**< threshold fertilizer input for split application */
   Real min_c_bnf;

@@ -45,13 +45,16 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "fastfrac:\t%g\n" 
                "K_MORT:\t\t%g\n"
                "temp_response_a:\t%g\n"
-               "temp_response_b:\t%g\n",
+               "temp_response_b:\t%g\n"
+	       "firedura:\t%g\n"
+	       "fire_intens:\t%g\n"
+	       "hum_ign:\t%g\n",
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
           param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,param.co2_p,
           param.k,param.theta,param.k_beer,param.alphac3,param.alphac4,
           param.bc3,param.bc4,param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,param.k_mort,
-          param.temp_response_a,param.temp_response_b);
+          param.temp_response_a,param.temp_response_b,param.firedura,param.fire_intens,param.hum_ign);
   if(config->with_nitrogen)
     fprintf(file,"k_max:\t\t%g (1/d)\n"
             "k_2:\t\t%g\n"

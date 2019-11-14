@@ -232,7 +232,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
     pft->vmax=vmax;
     if(config->with_nitrogen)
     {
-      nitrogen_stress(pft,temp,daylength,npft,config->nbiomass,ncft) ;
+      nitrogen_stress(pft,temp,daylength,npft,config->nbiomass,ncft);
 
       adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
                      temp,data.apar,daylength);

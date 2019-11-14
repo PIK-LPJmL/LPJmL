@@ -15,22 +15,48 @@
 
 #include "lpj.h"
 
+static int findnextcoord(Coord src,const Coord dst[],int ngrid)
+{
+  int i,i_min;
+  Real dist,dist_lon,dist_min;
+  fputs("Coordinate ",stderr);
+  fprintcoord(stderr,&src);
+  fputs(" not found, replaced by ",stderr);
+  dist_min=HUGE_VAL;
+  for(i=0;i<ngrid;i++)
+  {
+    dist_lon=fabs(src.lon-dst[i].lon);
+    if(360-dist_lon<dist_lon)
+      dist_lon=360-dist_lon;
+    dist=(src.lat-dst[i].lat)*(src.lat-dst[i].lat)+dist_lon*dist_lon;
+    if(dist_min>dist)
+    {
+      dist_min=dist;
+      i_min=i;
+    }
+  }
+  fprintcoord(stderr,dst+i_min);
+  fprintf(stderr,", distance=%g\n",sqrt(dist_min));
+  return i_min;
+} /* of 'findnextcoord' */
+
 int main(int argc,char **argv)
 {
   FILE *file,*data_file;
   Header header,header2;
   Coord *c,*c2;
-  Bool swap,isint,same;
-  short *data,*zero;
+  Bool swap,isint,same,issearch,iszero;
+  short *data;
+  int *zero;
   int *idata;
   long long size;
   Coord res,res2;
   Coordfile grid;
   int i,j,*index,data_version,setversion,ngrid,ngrid2;
-  float lon,lat;
+  float lon,lat,*fzero;
   String id;
   Filename filename;
-  isint=same=FALSE;
+  isint=same=issearch=iszero=FALSE;
   setversion=READ_VERSION;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
@@ -39,13 +65,17 @@ int main(int argc,char **argv)
         isint=TRUE;
       else if(!strcmp(argv[i],"-longheader"))
         setversion=2;
+      else if(!strcmp(argv[i],"-search"))
+        issearch=TRUE;
+      else if(!strcmp(argv[i],"-zero"))
+        iszero=TRUE;
       else if(!strcmp(argv[i],"-same"))
         same=TRUE;
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n",argv[i]);
         return EXIT_FAILURE;
-      } 
+      }
     }
     else
       break;
@@ -54,7 +84,7 @@ int main(int argc,char **argv)
   if(argc<5)
   {
     fprintf(stderr,"Error: Missing arguments.\n"
-            "Usage: %s [-size4] [-same] [-longheader] coord0.5.clm coord0.25.clm data0.5.clm data0.25.clm\n",
+            "Usage: %s [-size4] [-same] [-search] [-zero] [-longheader] coord0.5.clm coord0.25.clm data0.5.clm data0.25.clm\n",
             argv[1-i]);
     return EXIT_FAILURE;
   }
@@ -139,6 +169,19 @@ int main(int argc,char **argv)
   size=getfilesize(argv[3])-headersize(id,data_version);
   if(data_version==3)
     isint=header.datatype==LPJ_INT || header.datatype==LPJ_FLOAT;
+  if(iszero)
+  {
+    zero=newvec(int,header.nbands);
+    if(header.datatype==LPJ_FLOAT)
+    {
+      fzero=(float *)zero;
+      for(i=0;i<header.nbands;i++)
+        fzero[i]=0;
+    }
+    else
+      for(i=0;i<header.nbands;i++)
+        zero[i]=0;
+  }
   if(isint)
   {
     idata=newvec(int,(long long)header.ncell*header.nbands);
@@ -149,7 +192,7 @@ int main(int argc,char **argv)
     }
     if(size!=(long long)header.ncell*header.nyear*header.nbands*sizeof(int))
     {
-      header.nyear=size/(sizeof(int)*header.ncell*header.nbands); 
+      header.nyear=size/(sizeof(int)*header.ncell*header.nbands);
       fprintf(stderr,"File '%s' too short, number of years set to %d.\n",argv[3],header.nyear);
     }
   }
@@ -161,9 +204,6 @@ int main(int argc,char **argv)
       printallocerr("data");
       return EXIT_FAILURE;
     }
-    zero=newvec(short,header.nbands);
-    for(i=0;i<header.nbands;i++)
-      zero[i]=0;
     if(data==NULL)
     {
       printallocerr("data");
@@ -171,7 +211,7 @@ int main(int argc,char **argv)
     }
     if(size!=(long long)header.ncell*header.nyear*header.nbands*sizeof(short))
     {
-      header.nyear=size/(sizeof(short)*header.ncell*header.nbands); 
+      header.nyear=size/(sizeof(short)*header.ncell*header.nbands);
       fprintf(stderr,"File '%s' too short, number of years set to %d.\n",argv[3],header.nyear);
     }
   }
@@ -211,13 +251,19 @@ int main(int argc,char **argv)
         if(c2[i].lat-c[j].lat<=0.25 && c2[i].lon-c2[j].lon<=0.25)
           break;
     }
-    if(j==ngrid)
+    if(j==ngrid) /* coordinate not found? */
     {
-      fputs("Coord ",stderr);
-      fprintcoord(stderr,c2+i);
-      fputs(" not found.\n",stderr);
-      index[i]=-1;
-      return EXIT_FAILURE; 
+      if(issearch)
+        index[i]=findnextcoord(c2[i],c,ngrid);
+      else
+      {
+        fputs("Coordinate ",stderr);
+        fprintcoord(stderr,c2+i);
+        fputs(" not found.\n",stderr);
+        index[i]=-1;
+        if(!iszero)
+          return EXIT_FAILURE;
+      }
     }
     else
       index[i]=j;
@@ -232,8 +278,13 @@ int main(int argc,char **argv)
       }
       for(j=0;j<header2.ncell;j++)
       {
-        if(fwrite(idata+index[j]*header.nbands,sizeof(int),header.nbands,file)!=header.nbands)
-          fprintf(stderr,"Error writing file '%s: %s.\n",argv[4],strerror(errno));
+        if(index[j]==-1)
+          fwrite(zero,sizeof(int),header.nbands,file);
+        else
+        {
+          if(fwrite(idata+index[j]*header.nbands,sizeof(int),header.nbands,file)!=header.nbands)
+            fprintf(stderr,"Error writing file '%s: %s.\n",argv[4],strerror(errno));
+        }
       }
     }
   else
@@ -248,7 +299,7 @@ int main(int argc,char **argv)
       {
         if(index[j]==-1)
           fwrite(zero,sizeof(short),header.nbands,file);
-        else 
+        else
         {
           if(fwrite(data+index[j]*header.nbands,sizeof(short),header.nbands,file)!=header.nbands)
             fprintf(stderr,"Error writing file '%s: %s.\n",argv[4],strerror(errno));

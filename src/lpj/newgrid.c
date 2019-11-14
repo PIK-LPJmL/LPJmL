@@ -499,6 +499,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].discharge.mfout=grid[i].discharge.mfin=0.0;
     grid[i].discharge.dmass_sum=0.0;
     grid[i].discharge.queue=NULL;
+    grid[i].ignition.nesterov_accum=0;
+    grid[i].ignition.nesterov_max=0;
+    grid[i].ignition.nesterov_day=0;
+
 #ifdef COUPLING_WITH_FMS
     grid[i].laketemp=0;
 #endif

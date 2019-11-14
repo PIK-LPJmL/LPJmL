@@ -101,7 +101,8 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   {
     fscanarrayindex(&arr,&item,n,verb);
     /* Read pft->id, defined in pftpar.h */
-    if(fscanint(&item,&id,"id",FALSE,verb))
+    id=n;
+    if(fscanint(&item,&id,"id",TRUE,verb))
       return NULL;
     if(id<0 || id>=count)
     {
@@ -208,6 +209,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftlimit(verb,&item,&pft->temp,pft->name,"temp");
     fscanpftreal(verb,&item,&pft->soc_k,pft->name,"soc_k");
     fscanpftreal(verb,&item,&pft->alpha_fuelp,pft->name,"alpha_fuelp");
+    fscanpftreal(verb,&item,&pft->vpd_par,pft->name,"vpd_par");
     fscanpftreal(verb,&item,&pft->fuelbulkdensity,pft->name,"fuelbulkdensity");
     fscanpftemissionfactor(verb,&item,&pft->emissionfactor,
                            pft->name,"emission_factor");

@@ -156,8 +156,30 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     climate->data.no3deposition=climate->data.nh4deposition=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX || config->with_nitrogen)
   {
+    if(config->fdi==WVPD_INDEX)
+    {
+       if(openclimate(&climate->file_humid,&config->humid_filename,NULL,LPJ_SHORT,config))
+       {
+         closeclimatefile(&climate->file_temp,isroot(*config));
+         closeclimatefile(&climate->file_prec,isroot(*config));
+         if(config->with_radiation)
+         {
+           if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
+             closeclimatefile(&climate->file_lwnet,isroot(*config));
+           closeclimatefile(&climate->file_swdown,isroot(*config));
+         }
+         else
+           closeclimatefile(&climate->file_cloud,isroot(*config));
+         if(config->wet_filename.name!=NULL)
+           closeclimatefile(&climate->file_wet,isroot(*config));
+         free(climate);
+         return NULL;
+       }
+    }
     if(openclimate(&climate->file_wind,&config->wind_filename,"m/s",LPJ_SHORT,config))
     {
+      if(config->fdi==WVPD_INDEX)
+        closeclimatefile(&climate->file_humid,isroot(*config));
       closeclimatefile(&climate->file_temp,isroot(*config));
       closeclimatefile(&climate->file_prec,isroot(*config));
       if(config->with_radiation)
@@ -203,6 +225,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     {
       if(openclimate(&climate->file_tmax,&config->tmax_filename,"celsius",LPJ_SHORT,config))
     {
+      if(config->fdi==WVPD_INDEX)
+        closeclimatefile(&climate->file_humid,isroot(*config));
       closeclimatefile(&climate->file_tamp,isroot(*config));
       closeclimatefile(&climate->file_temp,isroot(*config));
       closeclimatefile(&climate->file_prec,isroot(*config));
@@ -224,6 +248,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if(openclimate(&climate->file_lightning,&config->lightning_filename,"1/day/hectare",LPJ_INT,config))
     {
+      if(config->fdi==WVPD_INDEX)
+        closeclimatefile(&climate->file_humid,isroot(*config));
       closeclimatefile(&climate->file_tmax,isroot(*config));
       closeclimatefile(&climate->file_tamp,isroot(*config));
       closeclimatefile(&climate->file_temp,isroot(*config));
@@ -245,6 +271,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     {
       if(openclimate(&climate->file_burntarea,&config->burntarea_filename,(config->burntarea_filename.fmt==CDF) ? NULL : NULL,LPJ_SHORT,config))
       {
+        if(config->fdi==WVPD_INDEX)
+          closeclimatefile(&climate->file_humid,isroot(*config));
         closeclimatefile(&climate->file_lightning,isroot(*config));
         closeclimatefile(&climate->file_tmax,isroot(*config));
         closeclimatefile(&climate->file_tamp,isroot(*config));
@@ -407,6 +435,20 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
+    if(config->fdi==WVPD_INDEX)
+    {
+      if((climate->data.humid=newvec(Real,climate->file_humid.n))==NULL)
+      {
+        printallocerr("humid");
+        free(climate->co2.data);
+        free(climate->data.prec);
+        free(climate->data.temp);
+        free(climate);
+        return NULL;
+      }
+    }
+    else
+      climate->data.humid=NULL;
     if(config->wind_filename.fmt==FMS)
       climate->data.wind=NULL;
     else
@@ -491,7 +533,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
   }
   else
-    climate->data.tamp=climate->data.lightning=climate->data.tmax=NULL;
+    climate->data.tamp=climate->data.lightning=climate->data.tmax=climate->data.humid=NULL;
   if(config->with_radiation)
   {
     if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)

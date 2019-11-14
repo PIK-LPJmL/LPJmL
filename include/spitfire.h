@@ -24,7 +24,7 @@ typedef struct
   Real human;
   Real nesterov_accum;
   Real nesterov_max;  /* maximum nesterov index */
-  Real nesterov_day;  /* number of days since the last nesterov_max value was set */
+  int nesterov_day;  /* number of days since the last nesterov_max value was set */
 } Ignition;
 
 /* Declaration of functions */
@@ -32,7 +32,7 @@ typedef struct
 extern Real area_burnt(Real,Real,Real,Real, int,const Pftlist *);
 extern Real deadfuel_consumption(const Litter *,Fuel *, Real);
 extern Stocks fuel_consum_total(const Litter *,const Fuel *);
-extern Real firedangerindex(Real,Real,Real,const Pftlist *);
+extern Real firedangerindex(Real,Real,const Pftlist *, Real, Real, int, Real);
 extern Real firemortality_tree(Pft *,const Fuel *,Livefuel *,Real,Real);
 extern void fraction_of_consumption(Fuel *);
 extern Real fuel_consumption_1hr(Real, Real);
@@ -51,8 +51,11 @@ extern void update_fbd_tree(Litter*,Real,Real,int);
 extern void update_fbd_grass(Litter*,Real,Real);
 extern Real wildfire_ignitions(Real,Real,Real);
 extern Real windspeed_fpc(Real,const Pftlist *);
-extern void dailyfire(Stand *,Livefuel *,Real,const Dailyclimate *,int,Bool);
+extern void dailyfire(Stand *,Livefuel *,Real,Real,const Dailyclimate *,const Config *);
 extern void update_nesterov(Cell *,const Dailyclimate *);
+extern Bool fwriteignition(FILE *,const Ignition *);
+extern Bool freadignition(FILE *,Ignition *,Bool);
+extern void fprintignition(FILE *,const Ignition *);
 
 /* Definition of constants */
 

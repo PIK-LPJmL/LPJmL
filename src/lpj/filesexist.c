@@ -263,6 +263,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkclmfile(&config,&config.wind_filename);
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
+    if(config.fdi==WVPD_INDEX)
+      bad+=checkclmfile(&config,&config.humid_filename);
     bad+=checkclmfile(&config,&config.tamp_filename);
     if(config.tamp_filename.fmt==CDF && config.tmax_filename.name!=NULL)
       bad+=checkclmfile(&config,&config.tmax_filename);

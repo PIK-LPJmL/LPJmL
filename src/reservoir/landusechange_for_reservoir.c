@@ -264,7 +264,6 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     tot_before.carbon+=cell->output.deforest_emissions.carbon;
     tot_before.nitrogen+=cell->output.deforest_emissions.nitrogen;
 
-
     /* cut cut entire natural stand if lakefraction+reservoir fraction equals 1 */
     if(difffrac>=1-cell->lakefrac-minnatfrac_res)
       minnatfrac_res=0.0;
