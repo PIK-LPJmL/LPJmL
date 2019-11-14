@@ -53,9 +53,6 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
     soil->k_mean[l].fast/=(soil_equil_year-veg_equil_year+1);
     soil->k_mean[l].slow/=(soil_equil_year-veg_equil_year+1);
   }
-  fprintf(stdout,"BEFORE EQUILSOIL\n");
-  fprintsoil(stdout,soil,pftpar,ntotpft,TRUE);
-
   for(p=0;p<ntotpft;p++)
     k_mean[p].fast=k_mean[p].slow=sum[p].fast=sum[p].slow=c0[p].fast=c0[p].slow=0.0;
   forrootsoillayer(l)
@@ -104,13 +101,8 @@ void equilsoil(Soil *soil,            /**< pointer to soil data */
         if(sumlitter>0)
             soil->pool[l].fast.carbon+=c0[soil->litter.ag[p].pft->id].fast*socfraction*pftlitter/sumlitter;
       }
-      //soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/soil->par->cn_ratio;
-      //soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/soil->par->cn_ratio;
       soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/cn_ratio[l].slow;
       soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/cn_ratio[l].fast;
-      //soil->NH4[l]=0;//soil->pool[l].slow.nitrogen/10000;
-      //soil->NO3[l]=0;//soil->pool[l].slow.nitrogen/10000;
-      //if (soil->decomp_litter_mean.nitrogen<0.2)
       if (soil->decomp_litter_mean.nitrogen<epsilon)
       {
         soil->NH4[l]=0;
