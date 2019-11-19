@@ -16,7 +16,7 @@
 #################################################################################
 
 CC	= mpiicc
-OPTFLAGS= -g -O3 -ipo -xCORE-AVX2 -no-prec-div -no-inline-max-total-size -no-inline-max-size
+OPTFLAGS= -g -O3 -ipo -xCORE-AVX2 -no-prec-div -no-inline-max-total-size -no-inline-max-size -no-vec
 DEBUGFLAGS = -g
 CHECKFLAGS = -g -check-pointers=rw
 LPJFLAGS=  -DUSE_RAND48 -DUSE_MPI -DSAFE -DWITH_FPE -DSTORECLIMATE -DUSE_NETCDF -DUSE_UDUNITS -DUSE_JSON #-DDAILY_ESTABLISHMENT
