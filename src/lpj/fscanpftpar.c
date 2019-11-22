@@ -63,6 +63,8 @@
     return NULL; \
   }
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
+
 int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  Pftpar **pftpar,     /**< Pointer to PFT parameter array */
                  const Fscanpftparfcn scanfcn[], /**< array of PFT-specific scan
@@ -88,11 +90,11 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     return NULL;
   }
   npft=newvec(int,ntypes);
-  check(npft);
+  checkptr(npft);
   for(n=0;n<ntypes;n++)
     npft[n]=0;
   *pftpar=newvec(Pftpar,count);
-  check(*pftpar);
+  checkptr(*pftpar);
   for(n=0;n<count;n++)
     (*pftpar)[n].id=UNDEF;
   isbiomass=FALSE;
@@ -128,7 +130,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       return NULL;
     }
     pft->name=strdup(s); /* store PFT name */
-    check(pft->name);
+    checkptr(pft->name);
 
     /* Read pft->type, defined in pftpar.h */
     fscanpftint(verb,&item,&pft->type,pft->name,"type");
