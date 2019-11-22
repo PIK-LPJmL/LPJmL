@@ -80,7 +80,7 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
   }
   file->lon_min=dim[0];
   if(file->nlon==1)
-    file->lon_res=config->resolution.lon;
+    file->lon_res=(float)config->resolution.lon;
   else
     file->lon_res=(dim[file->nlon-1]-dim[0])/(file->nlon-1);
   if(fabs(file->lon_res-config->resolution.lon)/config->resolution.lon>1e-3)
@@ -123,7 +123,7 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
   if(file->nlat==1)
   {
     file->lat_min=dim[0];
-    file->lat_res=config->resolution.lat;
+    file->lat_res=(float)config->resolution.lat;
     file->offset=0;
   }
   else if(dim[1]>dim[0])
