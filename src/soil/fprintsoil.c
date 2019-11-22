@@ -25,6 +25,7 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
 {
   int l,p;
   Pool sum={{0,0},{0,0}};
+  Real sum_NO3=0, sum_NH4=0;
   char *soilstates[]={"NOSTATE","BELOW_T_ZERO","AT_T_ZERO","ABOVE_T_ZERO",
                       "FREEZING","THAWING"};
   fprintf(file,"Soil type:\t%s\n",soil->par->name);
@@ -69,27 +70,34 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   if(with_nitrogen)
   {
     fputs("Stock pools:\n"
-          "\tlayer slow (gC/m2) fast (gC/m2) slow (gN/m2) fast (gN/m2)  k_mean_slow   k_mean_fast\n"
-          "\t----- ------------ ------------ ------------ ------------  -----------   -----------\n",file);
+          "\tlayer slow (gC/m2) fast (gC/m2) slow (gN/m2) fast (gN/m2) k_mean_slow k_mean_fast\n"
+          "\t----- ------------ ------------ ------------ ------------ ----------- -----------\n",file);
     forrootsoillayer(l)
     {
-      fprintf(file,"\t%5d %12.2f %12.2f %12.2f %12.2f %1.8f %1.8f\n",
+      fprintf(file,"\t%5d %12.2f %12.2f %12.2f %12.2f %1.9f %1.9f\n",
               l,soil->pool[l].slow.carbon,soil->pool[l].fast.carbon,
               soil->pool[l].slow.nitrogen,soil->pool[l].fast.nitrogen,
-			  soil->k_mean[l].slow/soil->count,soil->k_mean[l].fast/soil->count);
+              soil->k_mean[l].slow/soil->count,soil->k_mean[l].fast/soil->count);
       sum.slow.carbon+=soil->pool[l].slow.carbon;
       sum.fast.carbon+=soil->pool[l].fast.carbon;
       sum.fast.nitrogen+=soil->pool[l].fast.nitrogen;
       sum.slow.nitrogen+=soil->pool[l].slow.nitrogen;
     }
-    fputs("\t----- ------------ ------------ ------------ ------------\n",file);
+    fputs("\t----- ------------ ------------ ------------ ------------ ----------- -----------\n",file);
     fprintf(file,"\tTOTAL %12.2f %12.2f %12.2f %12.2f\n",
             sum.slow.carbon,sum.fast.carbon,sum.slow.nitrogen,sum.fast.nitrogen);
 
     fputs("\n\tlayer NO3 (gN/m2) NH4 (gN/m2)\n"
           "\t----- ----------- -----------\n",file);
     forrootsoillayer(l)
+    {
       fprintf(file,"\t%5d %11.4f %11.4f\n",l,soil->NO3[l],soil->NH4[l]);
+      sum_NO3+=soil->NO3[l];
+      sum_NH4+=soil->NH4[l];
+    }
+    fputs("\t----- ----------- -----------\n",file);
+    fprintf(file,"\tTOTAL %11.4f %11.4f\n",
+            sum_NO3,sum_NH4);
   }
   else
   {

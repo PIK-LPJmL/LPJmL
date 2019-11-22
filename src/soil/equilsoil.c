@@ -29,11 +29,10 @@
 
 #include "lpj.h"
 
-void equilsoil(Soil *soil,            /**< pointer to soil data */
-               int ntotpft,           /**< total number of PFTs */
-               const Pftpar pftpar[], /**< PFT parameter array */
-               Bool compute_cshift
-              )                       /** \return void         */
+void equilsoil(Soil *soil,           /**< pointer to soil data */
+               int ntotpft,          /**< total number of PFTs */
+               const Pftpar pftpar[] /**< PFT parameter array */
+              )                      /** \return void         */
 {
   int l,p,f;
   Real sumlitter,pftlitter,wood=0,socfraction;
