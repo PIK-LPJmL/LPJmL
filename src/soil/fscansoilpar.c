@@ -39,6 +39,8 @@ Real midlayer[NSOILLAYER];
 Real logmidlayer[NSOILLAYER];   /*log10(midlayer[l]/midlayer[NSOILLAYER-2]), for vertical soc profile*/
 Real fbd_fac[NFUELCLASS];
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
+
 unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
                           Soilpar **soilpar, /**< Pointer to Soilpar array */
                           Verbosity verb     /**< verbosity level (NO_ERR,ERR,VERB) */
@@ -76,7 +78,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     return 0;
   }
   *soilpar=newvec(Soilpar,nsoil);
-  check(*soilpar);
+  checkptr(*soilpar);
   for(n=0;n<nsoil;n++)
     (*soilpar)[n].type=UNDEF;
   for(n=0;n<nsoil;n++)
@@ -104,7 +106,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
       return 0;
     }
     soil->name=strdup(s);
-    check(soil->name);
+    checkptr(soil->name);
     soil->type=id;
     fscanreal2(verb,&item,&soil->Ks,soil->name,"Ks");
     fscanreal2(verb,&item,&soil->Sf,soil->name,"Sf");

@@ -335,6 +335,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                 "ERROR149: Cannot read sowing dates of year %d in getlanduse().\n",
                 year+landuse->sdate.firstyear);
         fflush(stderr);
+        free(dates);
         return TRUE;
       }
       count=0;
@@ -401,6 +402,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                 "ERROR149: Cannot read landuse of year %d in getlanduse().\n",
                 year+landuse->landuse.firstyear);
         fflush(stderr);
+        free(data);
         return TRUE;
       }
     }
