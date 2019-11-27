@@ -34,8 +34,8 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
                "allometry:\t%g %g %g %g\n",
           leaftype[partree->leaftype],
           1/partree->turnover.leaf,1/partree->turnover.sapwood,1/partree->turnover.root,
-          1/partree->cn_ratio.leaf,1/partree->cn_ratio.sapwood,
-          1/partree->cn_ratio.root,partree->ratio.sapwood,partree->ratio.root,
+          1/partree->nc_ratio.leaf,1/partree->nc_ratio.sapwood,
+          1/partree->nc_ratio.root,partree->ratio.sapwood,partree->ratio.root,
           partree->crownarea_max,
           partree->sapl.leaf.carbon,partree->sapl.sapwood.carbon,partree->sapl.heartwood.carbon,partree->sapl.root.carbon,
           partree->allom1,partree->allom2,partree->allom3,partree->allom4);

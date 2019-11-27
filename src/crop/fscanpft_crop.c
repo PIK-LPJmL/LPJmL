@@ -190,12 +190,12 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   fscanpftreal(verb,file,&crop->himin,pft->name,"himin");
   fscanpftreal(verb,file,&crop->shapesenescencenorm,pft->name,
                "shapesenescencenorm");
-  fscancropphys2(verb,file,&crop->cn_ratio,pft->name,"cn_ratio");
+  fscancropphys2(verb,file,&crop->nc_ratio,pft->name,"cn_ratio");
   fscancropratio2(verb,file,&crop->ratio,pft->name,"ratio");
-  crop->cn_ratio.leaf=1/crop->cn_ratio.leaf;
-  crop->cn_ratio.root=1/crop->cn_ratio.root;
-  crop->cn_ratio.so=1/crop->cn_ratio.so;
-  crop->cn_ratio.pool=1/crop->cn_ratio.pool;
+  crop->nc_ratio.leaf=1/crop->nc_ratio.leaf;
+  crop->nc_ratio.root=1/crop->nc_ratio.root;
+  crop->nc_ratio.so=1/crop->nc_ratio.so;
+  crop->nc_ratio.pool=1/crop->nc_ratio.pool;
   return FALSE;
 } /* of 'fscanpft_crop' */
 

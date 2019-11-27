@@ -40,14 +40,14 @@ Stocks establishment_grass(Pft *pft,              /**< pointer to grass PFT data
     /* Account for flux from atmosphere to grass regeneration */
 
     flux_est.carbon=(grasspar->sapl.leaf+grasspar->sapl.root)*est_pft;
-    flux_est.nitrogen=flux_est.carbon*grasspar->cn_ratio.leaf;
+    flux_est.nitrogen=flux_est.carbon*grasspar->nc_ratio.leaf;
 
     /* Add regeneration biomass to overall biomass */
 
     grass->ind.leaf.carbon+=grasspar->sapl.leaf*est_pft;
     grass->ind.root.carbon+=grasspar->sapl.root*est_pft;
-    grass->ind.leaf.nitrogen+=grasspar->sapl.leaf*grasspar->cn_ratio.leaf*est_pft;
-    grass->ind.root.nitrogen+=grasspar->sapl.root*grasspar->cn_ratio.leaf*est_pft;
+    grass->ind.leaf.nitrogen+=grasspar->sapl.leaf*grasspar->nc_ratio.leaf*est_pft;
+    grass->ind.root.nitrogen+=grasspar->sapl.root*grasspar->nc_ratio.leaf*est_pft;
     pft->nleaf=grass->ind.leaf.nitrogen;
   }
   else

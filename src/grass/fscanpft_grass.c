@@ -97,11 +97,11 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   fscangrassphys2(verb,file,&grass->turnover,pft->name,"turnover");
   grass->turnover.leaf=1.0/grass->turnover.leaf;
   grass->turnover.root=1.0/grass->turnover.root;
-  fscangrassphys2(verb,file,&grass->cn_ratio,pft->name,"cn_ratio");
+  fscangrassphys2(verb,file,&grass->nc_ratio,pft->name,"cn_ratio");
   fscanreal2(verb,file,&grass->ratio,pft->name,"ratio");
   fscanreal2(verb,file,&grass->reprod_cost,pft->name,"reprod_cost");
-  grass->cn_ratio.leaf=1/grass->cn_ratio.leaf;
-  grass->cn_ratio.root=1/grass->cn_ratio.root;
+  grass->nc_ratio.leaf=1/grass->nc_ratio.leaf;
+  grass->nc_ratio.root=1/grass->nc_ratio.root;
   grass->sapl.leaf=pft->lai_sapl/pft->sla;
   grass->sapl.root=(1.0/pft->lmro_ratio)*grass->sapl.leaf;
   grass->sapling_C=grass->sapl.leaf+grass->sapl.root;

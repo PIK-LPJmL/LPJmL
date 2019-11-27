@@ -42,7 +42,7 @@ Real npp_crop(Pft *pft, /**< PFT variables */
   const Pftcroppar *par;
   Real npp;
   Real rosoresp,presp,gresp;
-  Cropratio cn;
+  Cropratio nc_ratio;
   Irrigation *data;
   data=pft->stand->data;
   crop=pft->data;
@@ -50,26 +50,26 @@ Real npp_crop(Pft *pft, /**< PFT variables */
 /* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration, which reduces yields at high N inputs */
 #ifndef CROP_RESP_FIX
   if(with_nitrogen && crop->ind.root.carbon>epsilon)
-    cn.root=crop->ind.root.nitrogen/crop->ind.root.carbon;
+    nc_ratio.root=crop->ind.root.nitrogen/crop->ind.root.carbon;
   else
 #endif
-    cn.root=par->cn_ratio.root;
+    nc_ratio.root=par->nc_ratio.root;
 #ifndef CROP_RESP_FIX
   if(with_nitrogen && crop->ind.so.carbon>epsilon)
-    cn.so=crop->ind.so.nitrogen/crop->ind.so.carbon;
+    nc_ratio.so=crop->ind.so.nitrogen/crop->ind.so.carbon;
   else
 #endif
-    cn.so=par->cn_ratio.so;
+    nc_ratio.so=par->nc_ratio.so;
 #ifndef CROP_RESP_FIX
   if(with_nitrogen && crop->ind.pool.carbon>epsilon)
-    cn.pool=crop->ind.pool.nitrogen/crop->ind.pool.carbon;
+    nc_ratio.pool=crop->ind.pool.nitrogen/crop->ind.pool.carbon;
   else
 #endif
-    cn.pool=par->cn_ratio.pool;
+    nc_ratio.pool=par->nc_ratio.pool;
 
-  rosoresp=crop->ind.root.carbon*pft->par->respcoeff*param.k*cn.root*gtemp_soil
-           +crop->ind.so.carbon*pft->par->respcoeff*param.k*cn.so*gtemp_air;
-  presp=crop->ind.pool.carbon*pft->par->respcoeff*param.k*cn.pool*gtemp_air;
+  rosoresp=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil
+           +crop->ind.so.carbon*pft->par->respcoeff*param.k*nc_ratio.so*gtemp_air;
+  presp=crop->ind.pool.carbon*pft->par->respcoeff*param.k*nc_ratio.pool*gtemp_air;
   /* pools can't be negative any more as LAI growth and SO allocation is limited by NPP now */
   gresp=(assim-rosoresp-presp)*param.r_growth;
   if(gresp<0.0)
@@ -87,8 +87,8 @@ Real npp_crop(Pft *pft, /**< PFT variables */
   if(output!=NULL && output->cft==pft->par->id &&
      output->irrigation==data->irrigation)
   {
-    output->rroot=crop->ind.root.carbon*pft->par->respcoeff*param.k*cn.root*gtemp_soil;
-    output->rso=crop->ind.so.carbon*pft->par->respcoeff*param.k*par->cn_ratio.so*gtemp_air;
+    output->rroot=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil;
+    output->rso=crop->ind.so.carbon*pft->par->respcoeff*param.k*nc_ratio.so*gtemp_air;
     output->rpool=presp;
     output->gresp=gresp;
     output->npp=npp;

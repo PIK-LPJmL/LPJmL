@@ -58,8 +58,8 @@ typedef struct
 typedef struct
 {
   int leaftype;			    /**< par16*/
-  Treephyspar turnover;		    /**< turnover period (years) (9,11,12)*/
-  Treephyspar cn_ratio;		    /**< C:N mass ratio (13-15) */
+  Treephyspar turnover;		    /**< turnover rate (1/yr) (9,11,12)*/
+  Treephyspar nc_ratio;		    /**< N:C mass ratio (13-15) */
   Treeratio ratio;                  /**< C:N ratio relative to leaf ratio */
   Real crownarea_max;		    /**< tree maximum crown area (m2) (20)*/
   Treephys2 sapl;                   /**< sapling */

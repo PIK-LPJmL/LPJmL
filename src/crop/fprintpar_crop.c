@@ -74,9 +74,9 @@ void fprintpar_crop(FILE *file, /**< pointer to text file */
           croppar->laimin,croppar->laimax,
           croppar->hiopt,croppar->himin,
           croppar->shapesenescencenorm,
-          1/croppar->cn_ratio.leaf,
-          1/croppar->cn_ratio.root,
-          1/croppar->cn_ratio.so,
-          1/croppar->cn_ratio.pool,
+          1/croppar->nc_ratio.leaf,
+          1/croppar->nc_ratio.root,
+          1/croppar->nc_ratio.so,
+          1/croppar->nc_ratio.pool,
           croppar->ratio.root,croppar->ratio.so,croppar->ratio.pool);
 } /* of 'fprintpar_crop' */

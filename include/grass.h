@@ -32,9 +32,9 @@ typedef struct
 
 typedef struct
 {
-  Grassphyspar turnover; /**< turnover period (years) (9,11,12) */
-  Grassphyspar cn_ratio; /**< C:N mass ratio (13-15) */
-  Real ratio;            /**< C:N ratio of roots relaative to leaf */
+  Grassphyspar turnover; /**< turnover rate (1/yr) (9,11,12) */
+  Grassphyspar nc_ratio; /**< N:C mass ratio (13-15) */
+  Real ratio;            /**< C:N ratio of roots relative to leaf */
   Grassphyspar sapl;     /**< sapling */
   Real sapling_C;	 /**< sapling C (gC/m2) */
   Real reprod_cost;      /**< reproduction cost */

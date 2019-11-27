@@ -74,7 +74,7 @@ typedef struct
   Real hiopt;               /**< optimum harvest index HI reached at harvest*/
   Real himin;               /**< minimum harvest index HI reached at harvest*/
   Real shapesenescencenorm; /**< parameter for calculating the fraction of maximal LAI */
-  Cropphys cn_ratio;        /**< C:N mass ratio for root, storage organ, and pool */
+  Cropphys nc_ratio;        /**< N:C mass ratio for root, storage organ, and pool */
   Cropratio ratio;          /**< relative C:N ratio for root, storage organ and pool */
 } Pftcroppar;
 

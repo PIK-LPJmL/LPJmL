@@ -144,10 +144,10 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   tree->turnover.root=1.0/tree->turnover.root;
   tree->turnover.sapwood=1.0/tree->turnover.sapwood;
   tree->turnover.leaf=1.0/tree->turnover.leaf;
-  fscantreephys2(verb,file,&tree->cn_ratio,pft->name,"cn_ratio");
-  tree->cn_ratio.leaf=1/tree->cn_ratio.leaf;
-  tree->cn_ratio.sapwood=1/tree->cn_ratio.sapwood;
-  tree->cn_ratio.root=1/tree->cn_ratio.root;
+  fscantreephys2(verb,file,&tree->nc_ratio,pft->name,"cn_ratio");
+  tree->nc_ratio.leaf=1/tree->nc_ratio.leaf;
+  tree->nc_ratio.sapwood=1/tree->nc_ratio.sapwood;
+  tree->nc_ratio.root=1/tree->nc_ratio.root;
   fscanratio2(verb,file,&tree->ratio,pft->name,"ratio");
   fscanreal2(verb,file,&tree->crownarea_max,pft->name,"crownarea_max");
   fscanreal2(verb,file,&wood_sapl,pft->name,"wood_sapl");
@@ -186,9 +186,9 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   tree->sapl.heartwood.carbon=(wood_sapl-1)*tree->sapl.sapwood.carbon;
   tree->sapl.root.carbon=(1.0/pft->lmro_ratio)*tree->sapl.leaf.carbon;
   tree->sapling_C=phys_sum_tree(tree->sapl)*tree->k_est;
-  tree->sapl.leaf.nitrogen=tree->sapl.leaf.carbon*tree->cn_ratio.leaf;
-  tree->sapl.heartwood.nitrogen=tree->sapl.heartwood.carbon*tree->cn_ratio.sapwood;
-  tree->sapl.sapwood.nitrogen=tree->sapl.sapwood.carbon*tree->cn_ratio.sapwood;
-  tree->sapl.root.nitrogen=tree->sapl.root.carbon*tree->cn_ratio.root;
+  tree->sapl.leaf.nitrogen=tree->sapl.leaf.carbon*tree->nc_ratio.leaf;
+  tree->sapl.heartwood.nitrogen=tree->sapl.heartwood.carbon*tree->nc_ratio.sapwood;
+  tree->sapl.sapwood.nitrogen=tree->sapl.sapwood.carbon*tree->nc_ratio.sapwood;
+  tree->sapl.root.nitrogen=tree->sapl.root.carbon*tree->nc_ratio.root;
   return FALSE;
 } /* of 'fscanpft_tree' */
