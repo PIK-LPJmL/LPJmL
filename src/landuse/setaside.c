@@ -118,7 +118,7 @@ void mixsoil(Stand *stand1,const Stand *stand2)
   /* snowpack is independent of fraction */
   mixpool(stand1->soil.snowpack,stand2->soil.snowpack,stand1->frac,
           stand2->frac);
-  foreachsoillayer(l)
+  forrootsoillayer(l)
   {
     water1 = (stand1->soil.w[l] * stand1->soil.whcs[l] + stand1->soil.ice_depth[l] + stand1->soil.w_fw[l] + stand1->soil.ice_fw[l])*stand1->frac;
     water2 = (stand2->soil.w[l] * stand2->soil.whcs[l] + stand2->soil.ice_depth[l] + stand2->soil.w_fw[l] + stand2->soil.ice_fw[l])*stand2->frac;
