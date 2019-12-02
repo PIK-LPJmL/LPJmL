@@ -27,7 +27,7 @@ void new_tree(Pft *pft, /**< Parameter of pft */
   pft->data=tree;
   init_tree(pft);
   tree->ind.root=tree->ind.sapwood=tree->ind.heartwood=tree->ind.leaf=0.0;
-  tree->turn.root=tree->turn.sapwood=tree->turn.leaf=tree->turn_litt.leaf=tree->turn_litt.root=0.0;
+  tree->turn.root=tree->turn.sapwood=tree->turn.leaf=tree->turn_litt.leaf=tree->turn_litt.sapwood=tree->turn_litt.root=0.0;
   tree->ind.debt=tree->gddtw=tree->aphen_raingreen=0.0;
   tree->height=tree->crownarea=0.0;
   tree->isphen=FALSE;

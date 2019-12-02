@@ -30,6 +30,7 @@ Bool fwrite_tree(FILE *file,    /**< pointer to binary file */
   fwrite1(&tree->aphen_raingreen,sizeof(Real),file);
   fwrite1(&tree->isphen,sizeof(int),file);
   fwrite1(&tree->turn,sizeof(Treephys),file);
+  fwrite1(&tree->turn_litt,sizeof(Treephys),file);
   fwrite1(&tree->ind,sizeof(Treephys2),file);
   return FALSE;
 } /* of 'fwrite_tree' */

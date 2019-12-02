@@ -69,6 +69,8 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(fwrite(&grid[cell].discharge.waterdeficit,sizeof(Real),1,file)!=1)
         break;
+      if(fwrite(grid[cell].gdd,sizeof(Real),npft, file)!=npft)
+        break;
       if(fwritestandlist(file,grid[cell].standlist,npft+ncft)!=
          grid[cell].standlist->n)
         break;
