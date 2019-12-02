@@ -73,7 +73,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           /* calculate landuse change */
           if(config->laimax_interpolate!=CONST_LAI_MAX)
             laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
-          if(year>config->firstyear-config->nspinup)
+          if(year>config->firstyear-config->nspinup || config->from_restart)
             landusechange(grid+cell,config->pftpar,npft,ncft,config->ntypes,
                           intercrop,istimber,year,config->pft_output_scaled);
           else if(grid[cell].ml.dam)
@@ -152,7 +152,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                        ncft,year,month,output->withdaily,intercrop,config);
         }
       }
-
       if(config->river_routing)
       {
         if(input.landuse!=NULL || input.wateruse!=NULL)

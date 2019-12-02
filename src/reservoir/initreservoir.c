@@ -258,6 +258,7 @@ Bool initreservoir(Cell grid[],   /**< LPJ grid */
       }
       grid[cell].ml.resdata->fraction=newvec(Real,pnet_inlen(config->irrig_res,
                                           cell+config->startgrid-config->firstgrid));
+      check(grid[cell].ml.resdata->fraction);
     }
   config->irrig_res_back=pnet_dup(config->irrig_res);
   pnet_reverse(config->irrig_res_back);
