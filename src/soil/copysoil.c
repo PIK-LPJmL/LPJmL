@@ -47,6 +47,7 @@ void copysoil(Soil *dst,       /**< destination */
   dst->maxthaw_depth=src->maxthaw_depth;
   dst->mean_maxthaw=src->mean_maxthaw;
   dst->decomp_litter_mean=src->decomp_litter_mean;
+  dst->count=src->count;
   freelitter(&dst->litter);
   dst->litter.n=src->litter.n;
   if(src->litter.n>0)

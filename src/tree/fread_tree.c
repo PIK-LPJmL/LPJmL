@@ -37,8 +37,7 @@ Bool fread_tree(FILE *file, /**< pointer to binary file */
   freadreal1(&tree->aphen_raingreen,swap,file);
   freadint1(&tree->isphen,swap,file);
   freadreal((Real *)&tree->turn,sizeof(Treeturn)/sizeof(Real),swap,file);
-  tree->turn_litt.leaf.carbon=tree->turn_litt.root.carbon=0;
-  tree->turn_litt.leaf.nitrogen=tree->turn_litt.root.nitrogen=0;
+  freadreal((Real *)&tree->turn_litt,sizeof(Treeturn)/sizeof(Real),swap,file);
   freadreal1(&tree->turn_nbminc,swap,file);
   freadreal((Real *)&tree->ind,sizeof(Treephys2)/sizeof(Real),swap,file);
   freadreal1(&tree->excess_carbon,swap,file);

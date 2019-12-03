@@ -40,7 +40,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
     surplus=grid[cell].discharge.withdrawal-(grid[cell].discharge.wd_demand-grid[cell].discharge.wd_neighbour);
     surplus=surplus>0 ? surplus : 0.0;
     grid[cell].discharge.withdrawal-=surplus;
-    /*withdrawl which can be used for neighbour irrigation*/
+    /*withdrawal which can be used for neighbour irrigation*/
     grid[cell].output.mwd_neighb-=surplus/grid[cell].coord.area;
     grid[cell].discharge.wd_neighbour=grid[cell].discharge.wd_neighbour>0 ? surplus/grid[cell].discharge.wd_neighbour : 0.0;
   }

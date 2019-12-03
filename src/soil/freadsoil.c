@@ -52,6 +52,8 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   freadreal1(&soil->w_evap,swap,file);
   freadreal(soil->w_fw,NSOILLAYER,swap,file);
   freadreal1(&soil->snowpack,swap,file);
+  freadreal1(&soil->snowheight,swap,file);
+  freadreal1(&soil->snowfraction,swap,file);
   freadreal(soil->temp,NSOILLAYER+1,swap,file);
   freadreal(soil->ice_depth,NSOILLAYER,swap,file);
   freadreal(soil->ice_fw,NSOILLAYER,swap,file);
@@ -73,6 +75,5 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   soil->litter.decomC=0;
 #endif
   soil->YEDOMA=0;
-  soil->snowheight=soil->snowfraction=0;
   return (freadreal1(&soil->meanw1,swap,file)!=1);
 } /* of 'freadsoil' */

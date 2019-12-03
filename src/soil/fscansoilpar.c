@@ -45,8 +45,8 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
                          )                   /** \return number of elements in array */
 {
   LPJfile arr,item;
-  unsigned int nsoil,n,id;
-  int l;
+  unsigned int id;
+  int l, nsoil, n;
   String s;
   Soilpar *soil;
   if (verb>=VERB) puts("// soil parameters");
