@@ -46,6 +46,7 @@ extern Bool bigendian(void);
 
 #define freadint1(data,swap,file) freadint(data,1,swap,file)
 #define freadreal1(data,swap,file) freadreal(data,1,swap,file)
+#define freadfloat1(data,swap,file) freadfloat(data,1,swap,file)
 #define freadshort1(data,swap,file) freadshort(data,1,swap,file)
 #define freadlong1(data,swap,file) freadlong(data,1,swap,file)
 
