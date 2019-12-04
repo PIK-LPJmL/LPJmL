@@ -30,6 +30,7 @@ Bool fread_tree(FILE *file, /**< pointer to binary file */
     printallocerr("tree");
     return TRUE;
   }
+  pft->nlimit=0.0;
   freadreal1(&tree->height,swap,file);
   freadreal1(&tree->crownarea,swap,file);
   freadreal1(&tree->barkthickness,swap,file);

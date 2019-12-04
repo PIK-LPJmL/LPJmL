@@ -99,7 +99,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         initoutput_monthly(&((grid+cell)->output));
         /* Initialize random seed */
         //if(israndomprec(input.climate))
-        //  srand48(config->seed+(config->startgrid+cell)*year*month);
+          srand48(config->seed+(config->startgrid+cell)*year*month);
         initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month);
 
 #ifdef IMAGE
@@ -147,6 +147,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 
 #ifdef DEBUG
           printf("day=%d cell=%d\n",day,cell);
+#endif
+#ifdef PERMUTE
+          srand48(config->seed+(config->startgrid+cell)*year*day);
 #endif
           update_daily(grid+cell,co2,popdens,daily,day,npft,
                        ncft,year,month,output->withdaily,intercrop,config);
