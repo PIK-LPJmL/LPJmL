@@ -23,7 +23,7 @@ Bool fwriteresdata(FILE *file,       /**< pointer to restart file */
   fwrite(&cell->ml.resdata->dmass,sizeof(Real),1,file);
   fwrite(&cell->ml.resdata->k_rls,sizeof(Real),1,file);
   fwrite(&cell->ml.resdata->target_release_year,sizeof(Real), 1,file);
-  fwrite(&cell->ml.resdata->reservoir.capacity,sizeof(Real), 1,file); /* reservoir input is only loaded in initreservoir but capacity used in update_reservoir_annual called from freadresdata */
+  fwrite(&cell->ml.resdata->reservoir.capacity,sizeof(float), 1,file); /* reservoir input is only loaded in initreservoir but capacity used in update_reservoir_annual called from freadresdata */
   fwrite(cell->ml.resdata->dfout_irrigation_daily,sizeof(Real),NIRRIGDAYS,file);
   fwrite(cell->ml.resdata->target_release_month,sizeof(Real),NMONTH,file);
   fwrite(cell->ml.resdata->demand_hist,sizeof(Real),NMONTH*HIST_YEARS,file);
