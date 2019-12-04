@@ -37,6 +37,6 @@ Bool fread_tree(FILE *file, /**< pointer to binary file */
   freadreal1(&tree->aphen_raingreen,swap,file);
   freadint1(&tree->isphen,swap,file);
   freadreal((Real *)&tree->turn,sizeof(Treephys)/sizeof(Real),swap,file);
-  tree->turn_litt.leaf=tree->turn_litt.root=0;
+  freadreal((Real *)&tree->turn_litt,sizeof(Treephys)/sizeof(Real),swap,file);
   return freadreal((Real *)&tree->ind,sizeof(Treephys2)/sizeof(Real),swap,file)!=sizeof(Treephys2)/sizeof(Real);
 } /* of 'fread_tree' */
