@@ -73,7 +73,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           /* calculate landuse change */
           if(config->laimax_interpolate!=CONST_LAI_MAX)
             laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
-          if(year>config->firstyear-config->nspinup)
+          if(year>config->firstyear-config->nspinup || config->from_restart)
             landusechange(grid+cell,config->pftpar,npft,ncft,config->ntypes,
                           intercrop,istimber,year,config->pft_output_scaled);
           else if(grid[cell].ml.dam)
@@ -99,7 +99,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         initoutput_monthly(&((grid+cell)->output));
         /* Initialize random seed */
         //if(israndomprec(input.climate))
-        //  srand48(config->seed+(config->startgrid+cell)*year*month);
+          srand48(config->seed+(config->startgrid+cell)*year*month);
         initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month);
 
 #ifdef IMAGE
@@ -147,6 +147,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 
 #ifdef DEBUG
           printf("day=%d cell=%d\n",day,cell);
+#endif
+#ifdef PERMUTE
+          srand48(config->seed+(config->startgrid+cell)*year*day);
 #endif
           update_daily(grid+cell,co2,popdens,daily,day,npft,
                        ncft,year,month,output->withdaily,intercrop,config);

@@ -49,7 +49,7 @@
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
-  "wateruse" : WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "wateruse" : ALL_WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
 #else
   "population" : false,
   "landuse" : NO_LANDUSE,
@@ -111,97 +111,97 @@
 /*
 ID                         Fmt                    filename
 -------------------------- ---------------------- ----------------------------- */
-    { "id" : GRID,             "file" : { "fmt" : RAW, "name" : "output/grid.bin" }},
-    { "id" : FPC,              "file" : { "fmt" : RAW, "name" : "output/fpc.bin"}},
-    { "id" : MNPP,             "file" : { "fmt" : RAW, "name" : "output/mnpp.bin"}},
-    { "id" : MGPP,             "file" : { "fmt" : RAW, "name" : "output/mgpp.bin"}},
-    { "id" : MRH,              "file" : { "fmt" : RAW, "name" : "output/mrh.bin"}},
-    { "id" : MFAPAR,           "file" : { "fmt" : RAW, "name" : "output/mfapar.bin"}},
-    { "id" : MTRANSP,          "file" : { "fmt" : RAW, "name" : "output/mtransp.bin"}},
-    { "id" : MRUNOFF,          "file" : { "fmt" : RAW, "name" : "output/mrunoff.bin"}},
-    { "id" : MEVAP,            "file" : { "fmt" : RAW, "name" : "output/mevap.bin"}},
-    { "id" : MINTERC,          "file" : { "fmt" : RAW, "name" : "output/minterc.bin"}},
-    { "id" : MSWC1,            "file" : { "fmt" : RAW, "name" : "output/mswc1.bin"}},
-    { "id" : MSWC2,            "file" : { "fmt" : RAW, "name" : "output/mswc2.bin"}},
-    { "id" : FIREC,            "file" : { "fmt" : RAW, "name" : "output/firec.bin"}},
-    { "id" : FIREF,            "file" : { "fmt" : RAW, "name" : "output/firef.bin"}},
-    { "id" : VEGC,             "file" : { "fmt" : RAW, "name" : "output/vegc.bin"}},
-    { "id" : SOILC,            "file" : { "fmt" : RAW, "name" : "output/soilc.bin"}},
-    { "id" : LITC,             "file" : { "fmt" : RAW, "name" : "output/litc.bin"}},
-    { "id" : FLUX_ESTABC,      "file" : { "fmt" : RAW, "name" : "output/flux_estab.bin"}},
-    { "id" : PFT_VEGC,         "file" : { "fmt" : RAW, "name" : "output/pft_vegc.bin"}},
-    { "id" : MPHEN_TMIN,       "file" : { "fmt" : RAW, "name" : "output/mphen_tmin.bin"}},
-    { "id" : MPHEN_TMAX,       "file" : { "fmt" : RAW, "name" : "output/mphen_tmax.bin"}},
-    { "id" : MPHEN_LIGHT,      "file" : { "fmt" : RAW, "name" : "output/mphen_light.bin"}},
-    { "id" : MPHEN_WATER,      "file" : { "fmt" : RAW, "name" : "output/mphen_water.bin"}},
-    { "id" : VEGN,             "file" : { "fmt" : RAW, "name" : "output/vegn.bin"}},
-    { "id" : SOILN,            "file" : { "fmt" : RAW, "name" : "output/soiln.bin"}},
-    { "id" : LITN,             "file" : { "fmt" : RAW, "name" : "output/litn.bin"}},
-    { "id" : SOILN_LAYER,      "file" : { "fmt" : RAW, "name" : "output/soiln_layer.bin"}},
-    { "id" : SOILNO3_LAYER,    "file" : { "fmt" : RAW, "name" : "output/soilno3_layer.bin"}},
-    { "id" : SOILNH4_LAYER,    "file" : { "fmt" : RAW, "name" : "output/soilnh4_layer.bin"}},
-    { "id" : SOILN_SLOW,       "file" : { "fmt" : RAW, "name" : "output/soiln_slow.bin"}},
-    { "id" : SOILNH4,          "file" : { "fmt" : RAW, "name" : "output/soilnh4.bin"}},
-    { "id" : SOILNO3,          "file" : { "fmt" : RAW, "name" : "output/soilno3.bin"}},
-    { "id" : PFT_NUPTAKE,      "file" : { "fmt" : RAW, "name" : "output/pft_nuptake.bin"}},
-    { "id" : MNUPTAKE,         "file" : { "fmt" : RAW, "name" : "output/mnuptake.bin"}},
-    { "id" : MLEACHING,        "file" : { "fmt" : RAW, "name" : "output/mleaching.bin"}},
-    { "id" : MN2O_DENIT,       "file" : { "fmt" : RAW, "name" : "output/mn2o_denit.bin"}},
-    { "id" : MN2O_NIT,         "file" : { "fmt" : RAW, "name" : "output/mn2o_nit.bin"}},
-    { "id" : MN2_EMIS,         "file" : { "fmt" : RAW, "name" : "output/mn2_emis.bin"}},
-    { "id" : MBNF,             "file" : { "fmt" : RAW, "name" : "output/mbnf.bin"}},
-    { "id" : MN_IMMO,          "file" : { "fmt" : RAW, "name" : "output/mn_immo.bin"}},
-    { "id" : PFT_NDEMAND,      "file" : { "fmt" : RAW, "name" : "output/pft_ndemand.bin"}},
-    { "id" : FIREN,            "file" : { "fmt" : RAW, "name" : "output/firen.bin"}},
-    { "id" : MN_MINERALIZATION,"file" : { "fmt" : RAW, "name" : "output/mn_mineralization.bin"}},
-    { "id" : MN_VOLATILIZATION,"file" : { "fmt" : RAW, "name" : "output/mn_volatilization.bin"}},
-    { "id" : PFT_NLIMIT,       "file" : { "fmt" : RAW, "name" : "output/pft_nlimit.bin"}},
-    { "id" : PFT_VEGN,         "file" : { "fmt" : RAW, "name" : "output/pft_vegn.bin"}},
-    { "id" : PFT_CLEAF,        "file" : { "fmt" : RAW, "name" : "output/pft_cleaf.bin"}},
-    { "id" : PFT_NLEAF,        "file" : { "fmt" : RAW, "name" : "output/pft_nleaf.bin"}},
-    { "id" : PFT_LAIMAX,       "file" : { "fmt" : RAW, "name" : "output/pft_laimax.bin"}},
-    { "id" : PFT_CROOT,        "file" : { "fmt" : RAW, "name" : "output/pft_croot.bin"}},
-    { "id" : PFT_NROOT,        "file" : { "fmt" : RAW, "name" : "output/pft_nroot.bin"}},
-    { "id" : PFT_CSAPW,        "file" : { "fmt" : RAW, "name" : "output/pft_csapw.bin"}},
-    { "id" : PFT_NSAPW,        "file" : { "fmt" : RAW, "name" : "output/pft_nsapw.bin"}},
-    { "id" : PFT_CHAWO,        "file" : { "fmt" : RAW, "name" : "output/pft_chawo.bin"}},
-    { "id" : PFT_NHAWO,        "file" : { "fmt" : RAW, "name" : "output/pft_nhawo.bin"}},
+    { "id" : GRID,             "file" : { "fmt" : RAW, "name" : "output384/grid.bin" }},
+    { "id" : FPC,              "file" : { "fmt" : RAW, "name" : "output384/fpc.bin"}},
+    { "id" : MNPP,             "file" : { "fmt" : RAW, "name" : "output384/mnpp.bin"}},
+    { "id" : MGPP,             "file" : { "fmt" : RAW, "name" : "output384/mgpp.bin"}},
+    { "id" : MRH,              "file" : { "fmt" : RAW, "name" : "output384/mrh.bin"}},
+    { "id" : MFAPAR,           "file" : { "fmt" : RAW, "name" : "output384/mfapar.bin"}},
+    { "id" : MTRANSP,          "file" : { "fmt" : RAW, "name" : "output384/mtransp.bin"}},
+    { "id" : MRUNOFF,          "file" : { "fmt" : RAW, "name" : "output384/mrunoff.bin"}},
+    { "id" : MEVAP,            "file" : { "fmt" : RAW, "name" : "output384/mevap.bin"}},
+    { "id" : MINTERC,          "file" : { "fmt" : RAW, "name" : "output384/minterc.bin"}},
+    { "id" : MSWC1,            "file" : { "fmt" : RAW, "name" : "output384/mswc1.bin"}},
+    { "id" : MSWC2,            "file" : { "fmt" : RAW, "name" : "output384/mswc2.bin"}},
+    { "id" : FIREC,            "file" : { "fmt" : RAW, "name" : "output384/firec.bin"}},
+    { "id" : FIREF,            "file" : { "fmt" : RAW, "name" : "output384/firef.bin"}},
+    { "id" : VEGC,             "file" : { "fmt" : RAW, "name" : "output384/vegc.bin"}},
+    { "id" : SOILC,            "file" : { "fmt" : RAW, "name" : "output384/soilc.bin"}},
+    { "id" : LITC,             "file" : { "fmt" : RAW, "name" : "output384/litc.bin"}},
+    { "id" : FLUX_ESTABC,      "file" : { "fmt" : RAW, "name" : "output384/flux_estab.bin"}},
+    { "id" : PFT_VEGC,         "file" : { "fmt" : RAW, "name" : "output384/pft_vegc.bin"}},
+    { "id" : MPHEN_TMIN,       "file" : { "fmt" : RAW, "name" : "output384/mphen_tmin.bin"}},
+    { "id" : MPHEN_TMAX,       "file" : { "fmt" : RAW, "name" : "output384/mphen_tmax.bin"}},
+    { "id" : MPHEN_LIGHT,      "file" : { "fmt" : RAW, "name" : "output384/mphen_light.bin"}},
+    { "id" : MPHEN_WATER,      "file" : { "fmt" : RAW, "name" : "output384/mphen_water.bin"}},
+    { "id" : VEGN,             "file" : { "fmt" : RAW, "name" : "output384/vegn.bin"}},
+    { "id" : SOILN,            "file" : { "fmt" : RAW, "name" : "output384/soiln.bin"}},
+    { "id" : LITN,             "file" : { "fmt" : RAW, "name" : "output384/litn.bin"}},
+    { "id" : SOILN_LAYER,      "file" : { "fmt" : RAW, "name" : "output384/soiln_layer.bin"}},
+    { "id" : SOILNO3_LAYER,    "file" : { "fmt" : RAW, "name" : "output384/soilno3_layer.bin"}},
+    { "id" : SOILNH4_LAYER,    "file" : { "fmt" : RAW, "name" : "output384/soilnh4_layer.bin"}},
+    { "id" : SOILN_SLOW,       "file" : { "fmt" : RAW, "name" : "output384/soiln_slow.bin"}},
+    { "id" : SOILNH4,          "file" : { "fmt" : RAW, "name" : "output384/soilnh4.bin"}},
+    { "id" : SOILNO3,          "file" : { "fmt" : RAW, "name" : "output384/soilno3.bin"}},
+    { "id" : PFT_NUPTAKE,      "file" : { "fmt" : RAW, "name" : "output384/pft_nuptake.bin"}},
+    { "id" : MNUPTAKE,         "file" : { "fmt" : RAW, "name" : "output384/mnuptake.bin"}},
+    { "id" : MLEACHING,        "file" : { "fmt" : RAW, "name" : "output384/mleaching.bin"}},
+    { "id" : MN2O_DENIT,       "file" : { "fmt" : RAW, "name" : "output384/mn2o_denit.bin"}},
+    { "id" : MN2O_NIT,         "file" : { "fmt" : RAW, "name" : "output384/mn2o_nit.bin"}},
+    { "id" : MN2_EMIS,         "file" : { "fmt" : RAW, "name" : "output384/mn2_emis.bin"}},
+    { "id" : MBNF,             "file" : { "fmt" : RAW, "name" : "output384/mbnf.bin"}},
+    { "id" : MN_IMMO,          "file" : { "fmt" : RAW, "name" : "output384/mn_immo.bin"}},
+    { "id" : PFT_NDEMAND,      "file" : { "fmt" : RAW, "name" : "output384/pft_ndemand.bin"}},
+    { "id" : FIREN,            "file" : { "fmt" : RAW, "name" : "output384/firen.bin"}},
+    { "id" : MN_MINERALIZATION,"file" : { "fmt" : RAW, "name" : "output384/mn_mineralization.bin"}},
+    { "id" : MN_VOLATILIZATION,"file" : { "fmt" : RAW, "name" : "output384/mn_volatilization.bin"}},
+    { "id" : PFT_NLIMIT,       "file" : { "fmt" : RAW, "name" : "output384/pft_nlimit.bin"}},
+    { "id" : PFT_VEGN,         "file" : { "fmt" : RAW, "name" : "output384/pft_vegn.bin"}},
+    { "id" : PFT_CLEAF,        "file" : { "fmt" : RAW, "name" : "output384/pft_cleaf.bin"}},
+    { "id" : PFT_NLEAF,        "file" : { "fmt" : RAW, "name" : "output384/pft_nleaf.bin"}},
+    { "id" : PFT_LAIMAX,       "file" : { "fmt" : RAW, "name" : "output384/pft_laimax.bin"}},
+    { "id" : PFT_CROOT,        "file" : { "fmt" : RAW, "name" : "output384/pft_croot.bin"}},
+    { "id" : PFT_NROOT,        "file" : { "fmt" : RAW, "name" : "output384/pft_nroot.bin"}},
+    { "id" : PFT_CSAPW,        "file" : { "fmt" : RAW, "name" : "output384/pft_csapw.bin"}},
+    { "id" : PFT_NSAPW,        "file" : { "fmt" : RAW, "name" : "output384/pft_nsapw.bin"}},
+    { "id" : PFT_CHAWO,        "file" : { "fmt" : RAW, "name" : "output384/pft_chawo.bin"}},
+    { "id" : PFT_NHAWO,        "file" : { "fmt" : RAW, "name" : "output384/pft_nhawo.bin"}},
 #ifdef WITH_SPITFIRE
-    { "id" : MFIREC,           "file" : { "fmt" : RAW, "name" : "output/mfirec.bin"}},
-    { "id" : MNFIRE,           "file" : { "fmt" : RAW, "name" : "output/mnfire.bin"}},
-    { "id" : MBURNTAREA,       "file" : { "fmt" : RAW, "name" : "output/mburnt_area.bin"}},
-    { "id" : ABURNTAREA,       "file" : { "fmt" : RAW, "name" : "output/aburnt_area.bin"}},
+    { "id" : MFIREC,           "file" : { "fmt" : RAW, "name" : "output384/mfirec.bin"}},
+    { "id" : MNFIRE,           "file" : { "fmt" : RAW, "name" : "output384/mnfire.bin"}},
+    { "id" : MBURNTAREA,       "file" : { "fmt" : RAW, "name" : "output384/mburnt_area.bin"}},
+    { "id" : ABURNTAREA,       "file" : { "fmt" : RAW, "name" : "output384/aburnt_area.bin"}},
 #endif
-    { "id" : MDISCHARGE,       "file" : { "fmt" : RAW, "name" : "output/mdischarge.bin"}},
-    { "id" : MWATERAMOUNT,     "file" : { "fmt" : RAW, "name" : "output/mwateramount.bin"}},
-    { "id" : HARVESTC,         "file" : { "fmt" : RAW, "name" : "output/flux_harvest.bin"}},
-    { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : "output/sdate.bin"}},
-    { "id" : PFT_HARVESTC,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvest.SUFFIX)}},
-    { "id" : CFTFRAC,          "file" : { "fmt" : RAW, "name" : "output/cftfrac.bin"}},
-    { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : "output/seasonality.bin"}},
+    { "id" : MDISCHARGE,       "file" : { "fmt" : RAW, "name" : "output384/mdischarge.bin"}},
+    { "id" : MWATERAMOUNT,     "file" : { "fmt" : RAW, "name" : "output384/mwateramount.bin"}},
+    { "id" : HARVESTC,         "file" : { "fmt" : RAW, "name" : "output384/flux_harvest.bin"}},
+    { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : "output384/sdate.bin"}},
+    { "id" : PFT_HARVESTC,     "file" : { "fmt" : RAW, "name" : mkstr(output384/pft_harvest.SUFFIX)}},
+    { "id" : CFTFRAC,          "file" : { "fmt" : RAW, "name" : "output384/cftfrac.bin"}},
+    { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : "output384/seasonality.bin"}},
 #ifdef DAILY_OUTPUT
-    { "id" : D_NPP,            "file" : { "fmt" : RAW, "name" : "output/d_npp.bin"}},
-    { "id" : D_GPP,            "file" : { "fmt" : RAW, "name" : "output/d_gpp.bin"}},
-    { "id" : D_RH,             "file" : { "fmt" : RAW, "name" : "output/d_rh.bin"}},
-    { "id" : D_TRANS,          "file" : { "fmt" : RAW, "name" : "output/d_trans.bin"}},
-    { "id" : D_INTERC,         "file" : { "fmt" : RAW, "name" : "output/d_interc.bin"}},
-    { "id" : D_EVAP,           "file" : { "fmt" : RAW, "name" : "output/d_evap.bin"}},
+    { "id" : D_NPP,            "file" : { "fmt" : RAW, "name" : "output384/d_npp.bin"}},
+    { "id" : D_GPP,            "file" : { "fmt" : RAW, "name" : "output384/d_gpp.bin"}},
+    { "id" : D_RH,             "file" : { "fmt" : RAW, "name" : "output384/d_rh.bin"}},
+    { "id" : D_TRANS,          "file" : { "fmt" : RAW, "name" : "output384/d_trans.bin"}},
+    { "id" : D_INTERC,         "file" : { "fmt" : RAW, "name" : "output384/d_interc.bin"}},
+    { "id" : D_EVAP,           "file" : { "fmt" : RAW, "name" : "output384/d_evap.bin"}},
 #endif
-    { "id" : MPET,             "file" : { "fmt" : RAW, "name" : "output/mpet.bin"}},
-    { "id" : MALBEDO,          "file" : { "fmt" : RAW, "name" : "output/malbedo.bin"}},
-    { "id" : MAXTHAW_DEPTH,    "file" : { "fmt" : RAW, "name" : "output/maxthaw_depth.bin"}},
-    { "id" : MSOILTEMP1,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp1.bin"}},
-    { "id" : MSOILTEMP2,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp2.bin"}},
-    { "id" : MSOILTEMP3,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp3.bin"}},
-    { "id" : SOILC_LAYER,      "file" : { "fmt" : RAW, "name" : "output/soilc_layer.bin"}},
-    { "id" : AGB,              "file" : { "fmt" : RAW, "name" : "output/agb.bin"}},
-    { "id" : AGB_TREE,         "file" : { "fmt" : RAW, "name" : "output/agb_tree.bin"}},
-    { "id" : MRETURN_FLOW_B,   "file" : { "fmt" : RAW, "name" : "output/mreturn_flow_b.bin"}},
-    { "id" : MTRANSP_B,        "file" : { "fmt" : RAW, "name" : "output/mtransp_b.bin"}},
-    { "id" : MEVAP_B,          "file" : { "fmt" : RAW, "name" : "output/mevap_b.bin"}},
-    { "id" : MINTERC_B,        "file" : { "fmt" : RAW, "name" : "output/mintec_b.bin"}},
-    { "id" : ACONV_LOSS_EVAP,  "file" : { "fmt" : RAW, "name" : "output/aconv_loss_evap.bin"}},
-    { "id" : ACONV_LOSS_DRAIN, "file" : { "fmt" : RAW, "name" : "output/aconv_loss_drain.bin"}}
+    { "id" : MPET,             "file" : { "fmt" : RAW, "name" : "output384/mpet.bin"}},
+    { "id" : MALBEDO,          "file" : { "fmt" : RAW, "name" : "output384/malbedo.bin"}},
+    { "id" : MAXTHAW_DEPTH,    "file" : { "fmt" : RAW, "name" : "output384/maxthaw_depth.bin"}},
+    { "id" : MSOILTEMP1,       "file" : { "fmt" : RAW, "name" : "output384/msoiltemp1.bin"}},
+    { "id" : MSOILTEMP2,       "file" : { "fmt" : RAW, "name" : "output384/msoiltemp2.bin"}},
+    { "id" : MSOILTEMP3,       "file" : { "fmt" : RAW, "name" : "output384/msoiltemp3.bin"}},
+    { "id" : SOILC_LAYER,      "file" : { "fmt" : RAW, "name" : "output384/soilc_layer.bin"}},
+    { "id" : AGB,              "file" : { "fmt" : RAW, "name" : "output384/agb.bin"}},
+    { "id" : AGB_TREE,         "file" : { "fmt" : RAW, "name" : "output384/agb_tree.bin"}},
+    { "id" : MRETURN_FLOW_B,   "file" : { "fmt" : RAW, "name" : "output384/mreturn_flow_b.bin"}},
+    { "id" : MTRANSP_B,        "file" : { "fmt" : RAW, "name" : "output384/mtransp_b.bin"}},
+    { "id" : MEVAP_B,          "file" : { "fmt" : RAW, "name" : "output384/mevap_b.bin"}},
+    { "id" : MINTERC_B,        "file" : { "fmt" : RAW, "name" : "output384/mintec_b.bin"}},
+    { "id" : ACONV_LOSS_EVAP,  "file" : { "fmt" : RAW, "name" : "output384/aconv_loss_evap.bin"}},
+    { "id" : ACONV_LOSS_DRAIN, "file" : { "fmt" : RAW, "name" : "output384/aconv_loss_drain.bin"}}
 /*------------------------ ---------------------- ------------------------------- */
   ],
 
@@ -230,7 +230,7 @@ ID                         Fmt                    filename
   "lastyear" : 1901, /* last year of simulation */
   "restart" : false, /* do not start from restart file */
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1840_nv_stdfire384.lpj", /* filename of restart file */
   "restart_year": 1840 /* write restart at year */
 
 #else
@@ -239,12 +239,12 @@ ID                         Fmt                    filename
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 2011, /* last year of simulation */
-  "outputyear": 1901, /* first year output is written  */
+  "outputyear": 2001, /* first year output is written  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "restart_filename" : "restart/restart_1840_nv_stdfire384.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
-  "restart_year": 1900 /* write restart at year */
+  "write_restart_filename" : "restart/restart_2000_crop_stdfire384.lpj", /* filename of restart file */
+  "restart_year": 2000 /* write restart at year */
 
 #endif
 }
