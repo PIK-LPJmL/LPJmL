@@ -53,7 +53,7 @@ void initoutput_annual(Output *output, /**< Output data */
     output->cft_transp2[i]=output->cft_evap2[i]=output->cft_interc2[i]=
     output->cft_nir2[i]=output->cft_airrig2[i]=
 #endif
-    output->cft_nlimit[i]=
+    output->cft_nlimit[i]=output->cft_laimax[i]=
     output->cft_airrig[i]=output->cft_fpar[i]=output->cft_luc_image[i]=output->cft_conv_loss_evap[i]=output->cft_conv_loss_drain[i]=
     output->cft_leaf[i].nitrogen=output->cft_leaf[i].carbon=output->cft_root[i].carbon=output->cft_root[i].nitrogen=
     output->cft_veg[i].carbon=output->cft_veg[i].nitrogen=output->cft_irrig_events[i]=0;

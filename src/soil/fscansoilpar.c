@@ -45,8 +45,8 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
                          )                   /** \return number of elements in array */
 {
   LPJfile arr,item;
-  unsigned int nsoil,n,id;
-  int l;
+  unsigned int id;
+  int l,nsoil,n;
   String s;
   Soilpar *soil;
   if (verb>=VERB) puts("// soil parameters");
@@ -71,7 +71,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
   if(nsoil<1)
   {
     if(verb)
-      fprintf(stderr,"ERROR170: Invalid value for number of soil types=%u.\n",
+      fprintf(stderr,"ERROR170: Invalid value for number of soil types=%d.\n",
               nsoil);
     return 0;
   }
@@ -87,7 +87,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     if(id>=nsoil)
     {
       if(verb)
-        fprintf(stderr,"ERROR115: Invalid range of soil type=%u in fscansoilpar(), valid range is [0,%u].\n",id,nsoil-1);
+        fprintf(stderr,"ERROR115: Invalid range of soil type=%u in fscansoilpar(), valid range is [0,%d].\n",id,nsoil-1);
       return 0;
     }
     soil=(*soilpar)+id;
