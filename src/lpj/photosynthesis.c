@@ -46,16 +46,16 @@
 
 Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
                     Real *rd,      /**< respiration rate (gC/m2/day) */
-                    Real *vm,      /**< maximum catalytic capacity of Rubisco (gC/m2/day)
-                                        if zero actual value will be returned */
+                    Real *vm,      /**< maximum catalytic capacity of Rubisco (gC/m2/day) */
                     int path,      /**< Path (C3/C4) */
                     Real lambda,   /**< ratio of intercellular to ambient CO2 concentration */
                     Real tstress,  /**< temperature-related stress factor */
                     Real co2,      /**< atmospheric CO2 partial pressure (Pa) */
                     Real temp,     /**< temperature (deg C) */
                     Real apar,     /**< absorbed photosynthetic active radiation (J/m2/day) */
-                    Real daylength /**< daylength (h) */
-                   )               /** \return CO2 gas flux (mm/m2/day) */
+                    Real daylength, /**< daylength (h) */
+                    Bool comp_vm    /**< vmax value is computed (TRUE/FALSE) */
+                   )                /** \return CO2 gas flux (mm/m2/day) */
 {
   Real ko,kc,tau,pi,c1,c2;
   Real je,jc,phipi,adt,b,s,sigma;
@@ -64,6 +64,8 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
   {
     *agd=0;
     *rd=0;
+    if(comp_vm)
+      *vm=0;
     return 0;
   }
   else
@@ -96,9 +98,8 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
 
       /* Calculation of V_max (Rubisco activity) in gC/d/m2*/
 
-      if(*vm==0)
-        *vm=(1.0/param.bc3)*(c1/c2)*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*
-         cmass*cq;
+      if(comp_vm)
+        *vm=(1.0/param.bc3)*(c1/c2)*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*cmass*cq;
 
       pi=lambda*co2;
 
@@ -116,9 +117,8 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
       s=(24/daylength)*param.bc4;
       sigma=1-(c2-s)/(c2-param.theta*s);
       sigma= (sigma<=0) ? 0 : sqrt(sigma);
-      if(*vm==0)
-       *vm=(1.0/param.bc4)*c1/c2*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*
-         cmass*cq;
+      if(comp_vm)
+        *vm=(1.0/param.bc4)*c1/c2*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*cmass*cq;
 
       /*
        *       Parameter accounting for effect of reduced intercellular CO2

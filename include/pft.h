@@ -226,7 +226,7 @@ extern void freepft(Pft *);
 extern void freepftpar(Pftpar [],int);
 extern int* fscanpftpar(LPJfile *,Pftpar **,const Fscanpftparfcn [],int,Verbosity);
 extern Real temp_stress(const Pftpar *,Real,Real);
-extern Real photosynthesis(Real *,Real *,Real *,int,Real,Real,Real,Real,Real ,Real);
+extern Real photosynthesis(Real *,Real *,Real *,int,Real,Real,Real,Real,Real,Real,Bool);
 extern Bool survive(const Pftpar *,const Climbuf *);
 extern Real interception(Real *,const Pft *,Real,Real);
 extern void initgdd(Real [],int);

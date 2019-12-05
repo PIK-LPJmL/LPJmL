@@ -25,7 +25,7 @@ typedef struct
 
 static Real fcn(Real lambda,Data *data)
 {
-  Real agd,rd,vmax;
+  Real agd,rd;
 
 /*
  *              Call photosynthesis to determine alternative total
@@ -33,11 +33,10 @@ static Real fcn(Real lambda,Data *data)
  *              Eqns 2 & 19, Haxeltine & Prentice 1996, and current
  *              guess for lambda (xmid)
  */
-  vmax=data->vmax;
-  return data->fac*(1-lambda)-photosynthesis(&agd,&rd,&vmax,data->path,lambda,
+  return data->fac*(1-lambda)-photosynthesis(&agd,&rd,&data->vmax,data->path,lambda,
                                              data->tstress,data->co2,
                                              data->temp,data->apar,
-                                             data->daylength);
+                                             data->daylength,FALSE);
 /*
  *              Calculate total daytime photosynthesis implied by
  *              canopy conductance from water balance routine and
@@ -225,17 +224,16 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
     data.vmax=pft->vmax;
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);
     vmax=pft->vmax;
-    adtmm=photosynthesis(&agd,rd,&vmax,data.path,lambda,data.tstress,data.co2,
-                   temp,data.apar,daylength);
+    adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
+                   temp,data.apar,daylength,FALSE);
       gc_new=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                     pft->par->gmin*fpar(pft);
-    pft->vmax=vmax;
     if(config->with_nitrogen)
     {
       nitrogen_stress(pft,temp,daylength,npft,config->nbiomass,ncft);
 
       adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
-                     temp,data.apar,daylength);
+                     temp,data.apar,daylength,FALSE);
       gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                     pft->par->gmin*fpar(pft);
       demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
@@ -252,7 +250,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
         data.vmax=pft->vmax;
         lambda=bisect((Bisectfcn)fcn,0.02,lambda,&data,0,EPSILON,20,&iter);
         adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
-                             temp,data.apar,daylength);
+                             temp,data.apar,daylength,FALSE);
         gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                       pft->par->gmin*fpar(pft);
         demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
