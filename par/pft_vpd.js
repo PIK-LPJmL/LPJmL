@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**              p  f  t  .  j  s                                                  \n**/
+/**              p  f  t  _  v  p  d  .  j  s                                      \n**/
 /**                                                                                \n**/
 /**  PFT and CFT parameter file for LPJmL version 5.1.001                          \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/

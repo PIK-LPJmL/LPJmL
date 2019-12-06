@@ -4,6 +4,11 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Function photosynthesis                                                    \n**/
+/**                                                                                \n**/
+/**     Adapted from Farquhar (1982) photosynthesis model, as simplified by        \n**/
+/**     Collatz et al 1991, Collatz et al 1992 and Haxeltine & Prentice 1996       \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -14,47 +19,31 @@
 
 #include "lpj.h"
 
-#define po2 20.9e3/* O2 partial pressure in Pa */
-#define p 1.0e5   /* atmospheric pressure in Pa */
-#define q10ko 1.2 /* q10 for temperature-sensitive parameter ko */
-#define q10kc 2.1 /* q10 for temperature-sensitive parameter kc */
-#define q10tau 0.57 /* q10 for temperature-sensitive parameter tau */
-#define tau25 2600.0/* value of tau at 25 deg C */
-                                /* C3 plants */
+#define po2 20.9e3    /* O2 partial pressure in Pa */
+#define p 1.0e5       /* atmospheric pressure in Pa */
+#define q10ko 1.2     /* q10 for temperature-sensitive parameter ko */
+#define q10kc 2.1     /* q10 for temperature-sensitive parameter kc */
+#define q10tau 0.57   /* q10 for temperature-sensitive parameter tau */
+#define tau25 2600.0  /* value of tau at 25 deg C */
 #define cmass 12.0    /* atomic mass of carbon */
-#define cq 4.6e-6   /* conversion factor for solar radiation at 550 nm */
-                              /* from J/m2 to E/m2 (E mol quanta) */
-#define lambdamc4 0.4/* optimal ratio of intercellular to ambient CO2 */
-                               /* concentration (lambda) in C4 plants */
-#define lambdamc3 0.8/* optimal (maximum) lambda in C3 plants */
-#define n0 7.15     /* leaf N concentration (mg/g) not involved in */
-                              /* photosynthesis */
-#define m 25.0      /* corresponds to #define p in Eqn 28, Haxeltine */
-                              /*  Prentice 1996 */
-#define t0c3 250.0 /* base temperature (K) in Arrhenius temperature */
-                              /* response function for C3 plants */
-#define t0c4 260.0  /* base temperature in Arrhenius func for C4 plants */
-#define tk25 298.15 /* 25 deg C in Kelvin */
+#define cq 4.6e-6     /* conversion factor for solar radiation at 550 nm */
+                      /* from J/m2 to E/m2 (E mol quanta) */
+#define lambdamc4 0.4 /* optimal ratio of intercellular to ambient CO2 */
+                      /* concentration (lambda) in C4 plants */
+#define lambdamc3 0.8 /* optimal (maximum) lambda in C3 plants */
+#define m 25.0        /* corresponds to #define p in Eqn 28, Haxeltine & Prentice 1996 */
 
-/*
- *     Function photosynthesis
- *
- *     Adapted from Farquhar (1982) photosynthesis model, as simplified by
- *     Collatz et al 1991, Collatz et al 1992 and Haxeltine & Prentice 1996
- *
- */
-
-Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
-                    Real *rd,      /**< respiration rate (gC/m2/day) */
-                    Real *vm,      /**< maximum catalytic capacity of Rubisco (gC/m2/day) */
-                    int path,      /**< Path (C3/C4) */
-                    Real lambda,   /**< ratio of intercellular to ambient CO2 concentration */
-                    Real tstress,  /**< temperature-related stress factor */
-                    Real co2,      /**< atmospheric CO2 partial pressure (Pa) */
-                    Real temp,     /**< temperature (deg C) */
-                    Real apar,     /**< absorbed photosynthetic active radiation (J/m2/day) */
+Real photosynthesis(Real *agd,      /**< gross photosynthesis rate (gC/m2/day) */
+                    Real *rd,       /**< respiration rate (gC/m2/day) */
+                    Real *vm,       /**< maximum catalytic capacity of Rubisco (gC/m2/day) */
+                    int path,       /**< Path (C3/C4) */
+                    Real lambda,    /**< ratio of intercellular to ambient CO2 concentration */
+                    Real tstress,   /**< temperature-related stress factor */
+                    Real co2,       /**< atmospheric CO2 partial pressure (Pa) */
+                    Real temp,      /**< temperature (deg C) */
+                    Real apar,      /**< absorbed photosynthetic active radiation (J/m2/day) */
                     Real daylength, /**< daylength (h) */
-                    Bool comp_vm    /**< vmax value is computed (TRUE/FALSE) */
+                    Bool comp_vm    /**< vmax value is computed internally and returned (TRUE/FALSE) */
                    )                /** \return CO2 gas flux (mm/m2/day) */
 {
   Real ko,kc,tau,pi,c1,c2;
@@ -70,14 +59,12 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
   }
   else
   {
-    /*apar=fpar*par*alphaa;*/
     if(path==C3)
     {
       ko=param.ko25*pow(q10ko,(temp-25)*0.1);
       kc=param.kc25*pow(q10kc,(temp-25)*0.1);
       fac=kc*(1+po2/ko);
       tau=tau25*pow(q10tau,(temp-25)*0.1); /*reflects the abiltiy of Rubisco to discriminate between CO2 and O2*/
-      /*tau=tau25*exp((log(q10tau))*(temp-25)*0.1);*/
       gammastar=po2/(2*tau);
       pi=lambdamc3*co2;
       c1=tstress*param.alphac3*((pi-gammastar)/(pi+2.0*gammastar));
@@ -103,7 +90,7 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
 
       pi=lambda*co2;
 
-      /*       Recalculation of C1C3, C2C3 with actual pi */
+      /* Recalculation of C1C3, C2C3 with actual pi */
 
       c1=tstress*param.alphac3*((pi-gammastar)/(pi+2.0*gammastar));
 
@@ -146,7 +133,7 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
      */
     jc=c2*hour2day(*vm);
 #ifdef DEBUG_N
-  //  printf("c2=%g,je=%g,jc=%g\n",c2,je*daylength,jc*daylength);
+    printf("c2=%g,je=%g,jc=%g\n",c2,je*daylength,jc*daylength);
 #endif
     /*
      *    Calculation of daily gross photosynthesis, Agd, gC/m2/day
@@ -159,17 +146,15 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
      *    Eqn 10, Haxeltine & Prentice 1996
      */
     *rd=b**vm;
-    //if(*vm<-100)
-    //  abort();
 
-    /*     Total daytime net photosynthesis, Adt, gC/m2/day
-     *     Eqn 19, Haxeltine & Prentice 1996
+    /*    Total daytime net photosynthesis, Adt, gC/m2/day
+     *    Eqn 19, Haxeltine & Prentice 1996
      */
 
     adt=*agd-hour2day(daylength)*(*rd);
 
-    /*     Convert adt from gC/m2/day to mm/m2/day using
-     *     ideal gas equation
+    /*    Convert adt from gC/m2/day to mm/m2/day using
+     *    ideal gas equation
      */
     return (adt<=0) ? 0 : adt/cmass*8.314*degCtoK(temp)/p*1000.0;
   }
