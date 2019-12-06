@@ -99,6 +99,8 @@ typedef struct
   Real laimax;        /**< maximum LAI for benchmark */
   int crop_index;
   int fdi;
+  char *pft_index;
+  char *layer_index;
   Bool crop_irrigation;
   Bool global_netcdf;     /** enable global grid for NetCDF output */
   Bool landuse_restart;   /**< land use enabled in restart file */

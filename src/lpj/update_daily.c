@@ -81,7 +81,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.malbedo += beta * stand->frac;
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& cell->afire_frac<1)
-	dailyfire_stand(stand,&livefuel,popdensity,avgprec,&climate,config);    
+      dailyfire_stand(stand,&livefuel,popdensity,avgprec,&climate,config);
     if(config->permafrost)
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,

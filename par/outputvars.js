@@ -14,6 +14,8 @@
 
 "compress" : 0,          /* compression level (1-9, 0= no compression) */
 "missing_value" : -1e32, /* missing value in NetCDF files */
+"pft_index" : "npft",    /* name of index variable for PFT output */
+"layer_index" : "layer", /* name of index variable for soil layer output */
 
 "outputvar" :
 [

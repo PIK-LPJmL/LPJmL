@@ -34,6 +34,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->restartdir);
   free(config->arglist);
   free(config->sim_name);
+  free(config->pft_index);
+  free(config->layer_index);
   if(config->river_routing)
   {
     freefilename(config->drainage_filename);
