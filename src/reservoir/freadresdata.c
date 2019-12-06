@@ -30,7 +30,7 @@ Bool freadresdata(FILE *file,  /**< pointer to restart file */
   freadreal1(&cell->ml.resdata->dmass,swap,file);
   freadreal1(&cell->ml.resdata->k_rls,swap,file);
   freadreal1(&cell->ml.resdata->target_release_year,swap,file);
-  freadreal1(&cell->ml.resdata->reservoir.capacity,swap,file); /* reservoir input is only loaded in initreservoir but capacity used in update_reservoir_annual below */
+  freadfloat1(&cell->ml.resdata->reservoir.capacity,swap,file); /* reservoir input is only loaded in initreservoir but capacity used in update_reservoir_annual below */
   freadreal(cell->ml.resdata->dfout_irrigation_daily, NIRRIGDAYS, swap, file);
   freadreal(cell->ml.resdata->target_release_month, NMONTH, swap, file);
   freadreal(cell->ml.resdata->demand_hist[0],NMONTH*HIST_YEARS,swap,file);
