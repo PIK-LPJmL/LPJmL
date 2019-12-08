@@ -84,7 +84,7 @@
 /*  II. Input parameter section                                      */
 /*===================================================================*/
 
-#include "param.js"    /* Input parameter file */
+#include "param_intensification.js"    /* Input parameter file */
 
 /*===================================================================*/
 /*  III. Input data section                                          */
@@ -247,7 +247,7 @@ ID                         Fmt                    filename
   "lastyear" : 1901, /* last year of simulation */
   "restart" : false, /* do not start from restart file */
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : mkstr(output/restart_1840_nv_stdfire.lpj), /* filename of restart file */
+  "write_restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting.lpj), /* filename of restart file */
   "restart_year": 1840 /* write restart at year */
 
 #else
@@ -258,7 +258,7 @@ ID                         Fmt                    filename
   "lastyear" : 2005, /* last year of simulation */
   "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : mkstr(output/restart_1840_nv_stdfire.lpj), /* filename of restart file */
+  "restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting.lpj), /* filename of restart file */
   "write_restart" : true, /* create restart file */
   "write_restart_filename" : mkstr(output/restart_1900_crop_stdfire.lpj), /* filename of restart file */
   "restart_year": 1900 /* write restart at year */

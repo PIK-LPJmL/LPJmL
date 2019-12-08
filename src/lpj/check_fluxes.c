@@ -140,7 +140,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
       totw+=cell->ml.resdata->dfout_irrigation_daily[i]/cell->coord.area;
   }
   balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux;
-  if(year>startyear && fabs(balanceW)>1.5)
+  if(year>startyear && fabs(balanceW)>2.5)
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR005: "
 #else
