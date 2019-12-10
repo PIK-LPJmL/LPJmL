@@ -174,6 +174,7 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
      output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
    else
      output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
+   output->mpft_lai[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai(pft);
 
   } /* of foreachpft */
 

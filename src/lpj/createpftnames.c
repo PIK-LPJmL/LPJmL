@@ -43,7 +43,7 @@ char **createpftnames(int index,           /**< output index */
           strcat(pftnames[i+ncft],pftpar[npft+i].name);
         }
         break;
-    case PFT_NPP: case PFT_GCGP:
+    case PFT_NPP: case PFT_GCGP: case MPFT_LAI:
       for(i=0;i<npft-nbiomass;i++)
         pftnames[i]=strdup(pftpar[i].name);
       incr=npft-nbiomass;

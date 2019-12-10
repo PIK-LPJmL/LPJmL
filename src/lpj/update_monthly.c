@@ -20,12 +20,15 @@
 void update_monthly(Cell *cell,  /**< Pointer to cell */
                     Real mtemp,  /**< monthly average temperature (deg C) */
                     Real mprec,  /**< monthly average precipitation (mm) */
+                    int npft,    /**< number of natural PFTs */
+                    int nbiomass,/**< number of biomass PFTs */
+                    int ncft,    /**< number of crop PFTs */
                     int month    /**< month (0..11) */
                    )
 {
   int p;
   Pft *pft;
-  int s,l;
+  int s,i;
   Stand *stand;
 
   monthly_climbuf(&cell->climbuf,mtemp,mprec,cell->output.mpet,month);
@@ -37,8 +40,10 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
     foreachpft(pft,p,&stand->pftlist)
       turnover_monthly(&stand->soil.litter,pft);
   } /* of foreachstand */
-  for(l=0;l<NSOILLAYER;l++)
-    cell->output.mswc[l]*=ndaymonth1[month];
+  for(i=0;i<NSOILLAYER;i++)
+    cell->output.mswc[i]*=ndaymonth1[month];
+  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2+npft-nbiomass;i++)
+    cell->output.mpft_lai[i]*=ndaymonth1[month];
   cell->output.mrootmoist*=ndaymonth1[month];
   cell->output.mfiredi*=ndaymonth1[month];
   cell->output.mfapar*=ndaymonth1[month];

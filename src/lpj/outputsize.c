@@ -27,7 +27,7 @@ int outputsize(int index,    /**< output index */
     case SDATE: case HDATE: case HDATE2: case SDATE2:
     case SYEAR: case SYEAR2:
       return ncft*2;
-    case PFT_NPP: case PFT_GCGP:
+    case PFT_NPP: case PFT_GCGP: case MPFT_LAI:
       return npft-nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;
     case PFT_HARVEST: case PFT_RHARVEST: case CFT_CONSUMP_WATER_G: 
     case CFT_CONV_LOSS_EVAP: case CFT_CONV_LOSS_DRAIN:

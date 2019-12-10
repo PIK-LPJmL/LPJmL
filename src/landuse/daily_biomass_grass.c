@@ -176,6 +176,7 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
       output->pft_npp[(npft-config->nbiomass)+rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
     else
       output->pft_npp[(npft-config->nbiomass)+rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
+    output->mpft_lai[(npft-config->nbiomass)+rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai(pft);
   } /* of foreachpft */
 
   /* calculate water balance */

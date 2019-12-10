@@ -176,6 +176,8 @@ static void writemonth2(Outputfile *output,int index,float *data,int year,
 
 void fwriteoutput_monthly(Outputfile *output, /**< Output data */
                           const Cell grid[],  /**< LPJ cell array */
+                          int npft,            /**< number of natural PFTs */
+                          int ncft,            /**< number of crop PFTs */
                           int month,          /**< month of year (0..11) */
                           int year,           /**< year (AD) */
                           const Config *config /**< LPJmL configuration */
@@ -241,6 +243,15 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
         if(!grid[cell].skip)
           fvec[count++]=(float)grid[cell].output.msoiltemp[l];
       writemonth2(output,MSOILTEMP,fvec,year,month,l,NSOILLAYER,config);
+    }
+  if(isopen(output,MPFT_LAI))
+    for(l=0;l<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;l++)
+    {
+      count=0;
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+          fvec[count++]=(float)grid[cell].output.mpft_lai[l];
+      writemonth2(output,MPFT_LAI,fvec,year,month,l,npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2,config);
     }
   writeoutputvar(MSOILTEMP1,msoiltemp[0]);
   writeoutputvar(MSOILTEMP2,msoiltemp[1]);

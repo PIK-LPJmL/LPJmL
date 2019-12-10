@@ -43,6 +43,7 @@ layer /* name of index variabel for soil layer output */
   FLUX_ESTAB "flux_estab" "estab" "establishment flux" "gC/m2/yr" 1.0 0.0
   PFT_NPP "pft_npp" "NPP" "PFT-specific NPP" "gC/m2/yr" 1.0 0.0
   PFT_GCGP "pft_gcgp" "GCGP" "PFT-specific water stress" "" 1.0 0.0
+  MPFT_LAI "mpft_lai" "LAI" "PFT-specific monthly LAI" "" 1.0 0.0
   HARVEST "harvest" "harvest" "harvested carbon" "gC/m2/yr" 1.0 0.0
   MIRRIG "mirrig" "irrig" "irrigation" "mm/month" 1.0 0.0
   SDATE "sdate" "sdate" "sowing date" "" 1.0 0.0

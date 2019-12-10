@@ -132,6 +132,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
         output->pft_npp[pft->par->id]+=npp*stand->frac;
       else
         output->pft_npp[pft->par->id]+=npp;
+      output->mpft_lai[pft->par->id]+=actual_lai(pft);
     }
   } /* of foreachpft */
 

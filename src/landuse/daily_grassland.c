@@ -199,6 +199,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
       output->pft_npp[(npft-config->nbiomass)+rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
       output->pft_npp[(npft-config->nbiomass)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
     }
+    output->mpft_lai[(npft-config->nbiomass)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai(pft);
     grass = pft->data;
     if(withdailyoutput)
       if(output->daily.cft == TEMPERATE_HERBACEOUS && data->irrigation == output->daily.irrigation)

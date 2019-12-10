@@ -281,6 +281,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       output->pft_npp[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp*stand->frac;
     else
       output->pft_npp[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
+    output->mpft_lai[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai_crop(pft);
     crop=pft->data;
 #ifdef DOUBLE_HARVEST
     crop->lgp+=1;

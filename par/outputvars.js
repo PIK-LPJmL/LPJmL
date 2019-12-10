@@ -43,6 +43,7 @@
   { "id" : SOILC, "name": "soilc", "var" : "SoilC", "descr" : "total soil carbon density", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITC, "name": "litc", "var" : "LitC", "descr" : "litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : FLUX_ESTAB, "name": "flux_estab", "var" : "estab", "descr" : "establishment flux", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MPFT_LAI, "name": "mpft_lai", "var" : "LAI", "descr" : "PFT-specific monthly LAI", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : PFT_NPP, "name": "pft_npp", "var" : "NPP", "descr" : "PFT-specific NPP", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : PFT_GCGP, "name": "pft_gcgp", "var" : "GCGP", "descr" : "PFT-specific water stress", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : HARVEST, "name": "harvest", "var" : "harvest", "descr" : "harvested carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
