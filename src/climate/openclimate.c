@@ -56,7 +56,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
         s=malloc(strlen(file->filename)+12);
         check(s);
         sprintf(s,file->filename,file->firstyear);
-        openclimate_netcdf(file,s,filename->var,units,config);
+        openclimate_netcdf(file,s,filename->time,filename->var,units,config);
         free(s);
       }
 #ifdef USE_MPI
@@ -80,7 +80,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     }
     else
     {
-      if(mpi_openclimate_netcdf(file,filename->name,filename->var,units,config))
+      if(mpi_openclimate_netcdf(file,filename,units,config))
         return TRUE;
       if(file->time_step==MISSING_TIME)
       {
