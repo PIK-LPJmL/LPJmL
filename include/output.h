@@ -264,6 +264,8 @@ typedef struct
 
 typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;
 
+typedef enum { MISSING_TIME,DAY,MONTH,YEAR } Time;
+
 typedef struct
 {
   char *name;  /**< variable name */
@@ -272,6 +274,7 @@ typedef struct
   char *unit;  /**< units */
   float scale;
   float offset;
+  Time time;
 } Variable;
 
 /* Declaration of variables */

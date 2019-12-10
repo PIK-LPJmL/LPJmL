@@ -29,12 +29,14 @@ static void writemonth(Outputfile *output,int index,float *data,int year,
                        int month,
                        const Config *config)
 {
+  float scale;
   int i;
 #ifdef USE_MPI
   MPI_Status status;
 #endif
+  scale=config->outnames[index].scale*((config->outnames[index].time==DAY) ? ndaymonth1[month] : 1);
   for(i=0;i<config->count;i++)
-    data[i]=config->outnames[index].scale*data[i]+config->outnames[index].offset;
+    data[i]=scale*data[i]+config->outnames[index].offset;
 #ifdef USE_MPI
   switch(output->method)
   {
@@ -100,12 +102,14 @@ static void writemonth(Outputfile *output,int index,float *data,int year,
 static void writemonth2(Outputfile *output,int index,float *data,int year,
                         int month,int layer,int nlayer,const Config *config)
 {
+  float scale;
   int i;
 #ifdef USE_MPI
   MPI_Status status;
 #endif
+  scale=config->outnames[index].scale*((config->outnames[index].time==DAY) ? ndaymonth1[month] : 1);
   for(i=0;i<config->count;i++)
-    data[i]=config->outnames[index].scale*data[i]+config->outnames[index].offset;
+    data[i]=scale*data[i]+config->outnames[index].offset;
 #ifdef USE_MPI
   switch(output->method)
   {

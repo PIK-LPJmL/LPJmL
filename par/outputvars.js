@@ -28,7 +28,7 @@
   { "id" : MTRANSP, "name": "mtransp", "var" : "transp", "descr" : "monthly transpiration", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MTRANSP_B, "name": "mtransp_b", "var" : "transp_b", "descr" : "monthly transpired irrigation water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MRUNOFF, "name": "mrunoff", "var" : "runoff", "descr" :  "monthly runoff", "unit":  "mm/month", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MDISCHARGE, "name": "mdischarge", "var" : "discharge", "descr" : "monthly discharge", "unit" : "hm3/d", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MDISCHARGE, "name": "mdischarge", "var" : "discharge", "descr" : "monthly discharge", "unit" : "hm3/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : MWATERAMOUNT, "name": "mwateramount", "var" : "wateramount", "descr" : "mean monthly water amount", "unit" : "hm3", "scale" : 1.0, "offset" : 0.0},
   { "id" : MEVAP, "name": "mevap", "var" : "evap", "descr" : "monthly evaporation", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MEVAP_B, "name": "mevap_b", "var" : "evap_b", "descr" : "monthly evaporation of irrigation water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
