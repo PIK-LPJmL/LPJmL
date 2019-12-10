@@ -33,6 +33,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   Real up_temp_f;
   Real totn,nsum;
   Real n_uptake=0;
+  Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
   Real rootdist_n[LASTLAYER];
   Irrigation *data;
   int l;
@@ -79,6 +80,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
         if(soil->NO3[l]<0)
         {
           pft->bm_inc.nitrogen+=soil->NO3[l];
+          n_upfail+=soil->NO3[l];
           soil->NO3[l]=0;
         }
 
@@ -86,6 +88,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
         if(soil->NH4[l]<0)
         {
           pft->bm_inc.nitrogen+=soil->NH4[l];
+          n_upfail+=soil->NH4[l];
           soil->NH4[l]=0;
         }
       }
@@ -105,6 +108,8 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     pft->vscal+=1;
   else
     pft->vscal+=min(1,*ndemand_leaf/(ndemand_leaf_opt/(1+pft->par->knstore)));
+  /* correcting for failed uptake from depleted soils in outputs */
+  n_uptake+=n_upfail;
   if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==SETASIDE_RF || pft->stand->type->landusetype==SETASIDE_IR)
   {
     pft->stand->cell->output.pft_nuptake[pft->par->id]+=n_uptake;

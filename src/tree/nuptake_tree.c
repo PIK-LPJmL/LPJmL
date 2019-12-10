@@ -36,6 +36,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   Real up_temp_f;
   Real totn,nsum;
   Real n_uptake=0;
+  Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
   int l;
   Irrigation *data;
   Real rootdist_n[LASTLAYER];
@@ -80,12 +81,14 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
         if(soil->NO3[l]<0)
         {
            pft->bm_inc.nitrogen+=soil->NO3[l];
+           n_upfail+=soil->NO3[l];
            soil->NO3[l]=0;
         }
         soil->NH4[l]-=soil->NH4[l]*rootdist_n[l]*n_uptake/nsum;
         if(soil->NH4[l]<0)
         {
            pft->bm_inc.nitrogen+=soil->NH4[l];
+           n_upfail+=soil->NH4[l];
            soil->NH4[l]=0;
         }
       }
@@ -106,6 +109,8 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
     pft->vscal+=1;
   else
    pft->vscal+=min(1,*ndemand_leaf/(ndemand_leaf_opt/(1+pft->par->knstore))); /*eq. C20 in Smith et al. 2014, Biogeosciences */
+  /* correcting for failed uptake from depleted soils in outputs */
+  n_uptake+=n_upfail;
   if(pft->stand->type->landusetype==BIOMASS_TREE)
   {
     data=pft->stand->data;

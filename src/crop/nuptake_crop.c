@@ -34,6 +34,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real up_temp_f=0;
   Real totn,nsum;
   Real n_uptake=0;
+  Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
   Real fixed_n=0;
   Real rootdist_n[LASTLAYER];
   int l;
@@ -88,11 +89,13 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         if(soil->NO3[l]<0)
         {
            pft->bm_inc.nitrogen+=soil->NO3[l];
+           n_upfail+=soil->NO3[l];
            soil->NO3[l]=0;
         }
         if(soil->NH4[l]<0)
         {
            pft->bm_inc.nitrogen+=soil->NH4[l];
+           n_upfail+=soil->NH4[l];
            soil->NH4[l]=0;
         }
 
@@ -130,6 +133,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   }
   else
     pft->vscal = 1;
+  /* correcting for failed uptake from depleted soils in outputs */
+  n_uptake+=n_upfail;
   crop->nuptakesum += n_uptake;
 #ifdef DEBUG_N
   printf("ndemand=%g,ndemand_opt=%g\n",*ndemand_leaf,ndemand_leaf_opt);
