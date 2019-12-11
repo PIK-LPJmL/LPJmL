@@ -20,7 +20,7 @@
 /**               drain();                                                         \n**/
 /**             }                                                                  \n**/
 /**             for(cell=0;cell<config->ngridcell;cell++)                          \n**/
-/**               update_)monthly();                                                \n**/
+/**               update_monthly();                                                \n**/
 /**           }                                                                    \n**/
 /**           for(cell=0;cell<config->ngridcell;cell++)                            \n**/
 /**           {                                                                    \n**/
