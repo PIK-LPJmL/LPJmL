@@ -80,8 +80,10 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
       outnames[index].time=MONTH;
     else if(strstr(name,"year")!=NULL)
       outnames[index].time=YEAR;
-    else if(strstr(name,"day")!=NULL)
+    else if(strstr(name,"day")!=NULL || strstr(name,"d-1")!=NULL)
       outnames[index].time=DAY;
+    else if(strstr(name,"sec")!=NULL || strstr(name,"s-1")!=NULL)
+      outnames[index].time=SECOND;
     else
       outnames[index].time=MISSING_TIME;
     outnames[index].unit=strdup(name);

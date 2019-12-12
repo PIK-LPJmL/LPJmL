@@ -34,9 +34,19 @@ static void writemonth(Outputfile *output,int index,float *data,int year,
 #ifdef USE_MPI
   MPI_Status status;
 #endif
-  scale=config->outnames[index].scale*((config->outnames[index].time==DAY) ? ndaymonth1[month] : 1);
+  switch(config->outnames[index].time)
+  {
+    case SECOND:
+      scale=ndaymonth1[month]/NSECONDSDAY;
+      break;
+    case DAY:
+      scale=ndaymonth1[month];
+      break;
+    default:
+      scale=1;
+  }
   for(i=0;i<config->count;i++)
-    data[i]=scale*data[i]+config->outnames[index].offset;
+    data[i]=config->outnames[index].scale*scale*data[i]+config->outnames[index].offset;
 #ifdef USE_MPI
   switch(output->method)
   {
@@ -107,9 +117,19 @@ static void writemonth2(Outputfile *output,int index,float *data,int year,
 #ifdef USE_MPI
   MPI_Status status;
 #endif
-  scale=config->outnames[index].scale*((config->outnames[index].time==DAY) ? ndaymonth1[month] : 1);
+  switch(config->outnames[index].time)
+  {
+    case SECOND:
+      scale=ndaymonth1[month]/NSECONDSDAY;
+      break;
+    case DAY:
+      scale=ndaymonth1[month];
+      break;
+    default:
+      scale=1;
+  }
   for(i=0;i<config->count;i++)
-    data[i]=scale*data[i]+config->outnames[index].offset;
+    data[i]=config->outnames[index].scale*scale*data[i]+config->outnames[index].offset;
 #ifdef USE_MPI
   switch(output->method)
   {

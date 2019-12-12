@@ -265,7 +265,7 @@ typedef struct
 
 typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;
 
-typedef enum { MISSING_TIME,DAY,MONTH,YEAR } Time;
+typedef enum { MISSING_TIME,SECOND,DAY,MONTH,YEAR } Time;
 
 typedef struct
 {
