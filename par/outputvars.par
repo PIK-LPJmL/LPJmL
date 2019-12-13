@@ -26,7 +26,7 @@ layer /* name of index variabel for soil layer output */
   MTRANSP "mtransp" "transp" "monthly transpiration" "mm/month" 1.0 0.0
   MTRANSP_B "mtransp_b" "transp_b" "monthly transpired irrigation water" "mm/month" 1.0 0.0
   MRUNOFF "mrunoff" "runoff" "monthly runoff" "mm/month" 1.0 0.0
-  MDISCHARGE "mdischarge" "discharge" "monthly discharge" "hm3/d" 1.0 0.0
+  MDISCHARGE "mdischarge" "discharge" "monthly discharge" "hm3/day" 1.0 0.0
   MWATERAMOUNT "mwateramount" "wateramount" "mean monthly water amount" "hm3" 1.0 0.0
   MEVAP "mevap" "evap" "monthly evaporation" "mm/month" 1.0 0.0
   MEVAP_B "mevap_b" "evap_b" "monthly evaporation of irrigation water" "mm/month" 1.0 0.0
@@ -224,7 +224,7 @@ layer /* name of index variabel for soil layer output */
   CFT_EVAP2 "cft_evap2" "evap2" "CFT-specific evaporation 2nd season" "mm/yr" 1.0 0.0
   CFT_INTERC2 "cft_interc2" "interc2" "CFT-specific interception 2nd season" "mm/yr" 1.0 0.0
   CFT_NIR2 "cft_nir2" "nir2" "CFT-specific net irrigation requirement 2nd season" "mm/yr" 1.0 0.0
-  CFT_TEMP2 "cft_temp2" "temp2" "CFT-specific temperature 2nd season" "deg C" 1.0 0.0
+  CFT_TEMP2 "cft_temp2" "temp2" "CFT-specific temperature 2nd season" "celsius" 1.0 0.0
   CFT_PREC2 "cft_prec2" "prec2" "CFT-specific precipitation 2nd season" "mm/yr" 1.0 0.0
   CFT_SRAD2 "cft_srad2" "srad2" "CFT-specific shortwave downward radiation 2nd season" "W/m2" 1.0 0.0
   CFT_ABOVEGBM2 "cft_aboveground_biomass2" "aboveground_biomass2" "CFT aboveground biomass 2nd season" "gC/m2" 1.0 0.0
@@ -235,4 +235,4 @@ layer /* name of index variabel for soil layer output */
   AGB "agb" "AGB" "above ground biomass" "gC/m2" 1.0 0.0
   AGB_TREE "agb_tree" "AGB_TREE" "above ground tree biomass" "gC/m2" 1.0 0.0
   MLAKEVOL "mlakevol" "lakevol" "lake content volume" "dm3" 1.0 0.0
-  MLAKETEMP "mlaketemp" "laketemp" "lake surface temperature" "deg C" 1.0 0.0
+  MLAKETEMP "mlaketemp" "laketemp" "lake surface temperature" "celsius" 1.0 0.0
