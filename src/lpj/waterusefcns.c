@@ -43,16 +43,6 @@ Wateruse initwateruse(const Config *config /**< LPJmL configuration */
       free(wateruse);
       return NULL;
     }
-    if(wateruse->file.var_len!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR218: Number of bands=%d in wateruse file '%s' is not 1.\n",
-                (int)wateruse->file.var_len,config->wateruse_filename.name);
-
-      closeclimate_netcdf(&wateruse->file,isroot(*config));
-      free(wateruse);
-      return NULL;
-    }
   }
   else
   {
@@ -79,17 +69,19 @@ Wateruse initwateruse(const Config *config /**< LPJmL configuration */
         wateruse->file.datatype=LPJ_INT;
       wateruse->file.offset=headersize(headername,version)+typesizes[wateruse->file.datatype]*(config->startgrid-header.firstcell)+offset;
     }
-    if(header.nbands!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR218: Number of bands=%d in wateruse file '%s' is not 1.\n",
-                header.nbands,config->wateruse_filename.name);
-      fclose(wateruse->file.file);
-      free(wateruse);
-      return NULL;
-    }
+    wateruse->file.var_len=header.nbands;
     wateruse->file.size=header.ncell*typesizes[wateruse->file.datatype];
     wateruse->file.scalar=(version<=1) ? 1000 : header.scalar;
+  }
+  if(wateruse->file.var_len!=1)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR218: Number of bands=%d in wateruse file '%s' is not 1.\n",
+              (int)wateruse->file.var_len,config->wateruse_filename.name);
+
+    closeclimatefile(&wateruse->file,isroot(*config));
+    free(wateruse);
+    return NULL;
   }
   return wateruse;
 } /* of 'initwateruse' */
@@ -125,9 +117,6 @@ Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
         free(data);
         return TRUE;
       }
-      for(cell=0;cell<config->ngridcell;cell++)
-        grid[cell].discharge.wateruse=data[cell];
-      free(data);
     }
     else
     {
@@ -150,10 +139,10 @@ Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
         free(data);
         return TRUE;
       } 
-      for(cell=0;cell<config->ngridcell;cell++)
-        grid[cell].discharge.wateruse=data[cell];
-      free(data);
     }
+    for(cell=0;cell<config->ngridcell;cell++)
+      grid[cell].discharge.wateruse=data[cell];
+    free(data);
   }
   else 
     /* no wateruse data available for year, set all to zero */
@@ -168,10 +157,7 @@ void freewateruse(Wateruse wateruse, /**< pointer to wateruse data */
 {
   if(wateruse!=NULL)
   {
-    if(wateruse->file.fmt==CDF)
-      closeclimate_netcdf(&wateruse->file,isroot);
-    else
-      fclose(wateruse->file.file);
+    closeclimatefile(&wateruse->file,isroot);
     free(wateruse);
   }
 } /* of 'freewateruse' */

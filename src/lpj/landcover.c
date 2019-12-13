@@ -46,14 +46,6 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
       free(landcover);
       return NULL;
     }
-    if(landcover->file.var_len!=npft-config->nbiomass)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR225: Number of bands=%d is not %d\n",(int)landcover->file.var_len,npft-config->nbiomass);
-      closeclimate_netcdf(&landcover->file,isroot(*config));
-      free(landcover);
-      return NULL;
-    }
     len=landcover->file.var_len*config->ngridcell;
   }
   else
@@ -76,14 +68,6 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
       landcover->file.datatype=LPJ_SHORT;
     else
       landcover->file.datatype=header.datatype;
-    if(header.nbands!=npft-config->nbiomass)
-    {
-      fclose(landcover->file.file);
-      free(landcover);
-      if(isroot(*config))
-        fprintf(stderr,"ERROR225: Number of bands=%d is not %d\n",header.nbands,npft-config->nbiomass);
-      return NULL;
-    }
     landcover->file.var_len=header.nbands;
     landcover->file.size=header.ncell*header.nbands*typesizes[landcover->file.datatype];
     landcover->file.n=header.nbands*config->ngridcell;
@@ -91,10 +75,19 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
                            typesizes[landcover->file.datatype]+headersize(headername,version)+offset;
     len=landcover->file.n;
   }
+  if(landcover->file.var_len!=npft-config->nbiomass)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR225: Number of bands=%d is not %d\n",
+              (int)landcover->file.var_len,npft-config->nbiomass);
+    closeclimatefile(&landcover->file,isroot(*config));
+    free(landcover);
+    return NULL;
+  }
   if((landcover->frac=newvec(Real,len))==NULL)
   {
     printallocerr("frac");
-    fclose(landcover->file.file);
+    closeclimatefile(&landcover->file,isroot(*config));
     free(landcover);
     return NULL;
   }
@@ -166,10 +159,10 @@ void freelandcover(Landcover landcover, /**< landcover data */
                    Bool isroot          /**< task is root task */
                   )
 {
-  if(landcover->file.fmt==CDF)
-    closeclimate_netcdf(&landcover->file,isroot);
-  else
-    fclose(landcover->file.file);
-  free(landcover->frac);
-  free(landcover);
+  if(landcover!=NULL)
+  {
+    closeclimatefile(&landcover->file,isroot);
+    free(landcover->frac);
+    free(landcover);
+  }
 } /* of 'freelandcover' */
