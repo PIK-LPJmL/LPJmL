@@ -232,7 +232,7 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : ALL, /* 27410, 67208 60400 all grid cells */
+  "startgrid" :  ALL, /* 27410, 67208 60400 all grid cells */
   "endgrid" : ALL,
 
 #ifdef CHECKPOINT
@@ -247,7 +247,7 @@ ID                         Fmt                    filename
   "lastyear" : 1901, /* last year of simulation */
   "restart" : false, /* do not start from restart file */
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting.lpj), /* filename of restart file */
+  "write_restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting_test.lpj), /* filename of restart file */
   "restart_year": 1840 /* write restart at year */
 
 #else
@@ -258,9 +258,9 @@ ID                         Fmt                    filename
   "lastyear" : 2005, /* last year of simulation */
   "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting.lpj), /* filename of restart file */
+  "restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting_test.lpj), /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : mkstr(output/restart_1900_crop_stdfire.lpj), /* filename of restart file */
+  "write_restart_filename" : mkstr(output/restart_1900_crop_stdfire_test.lpj), /* filename of restart file */
   "restart_year": 1900 /* write restart at year */
 
 #endif

@@ -155,7 +155,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     }
     landuse->landuse.firstyear = header.firstyear;
     landuse->landuse.nyear = header.nyear;
-    landuse->landuse.size = header.ncell*header.nbands*typesizes[landuse->landuse.datatype];
+    landuse->landuse.size = (long long)header.ncell * (long long)header.nbands * typesizes[landuse->landuse.datatype];
     landuse->landuse.n = config->ngridcell*header.nbands;
     landuse->nbands = header.nbands;
     landuse->landuse.scalar = (version == 1) ? 0.001 : header.scalar;
@@ -241,7 +241,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
   /* Multiple-years PRESCRIBED_SDATE */
   if (config->sdate_option == PRESCRIBED_SDATE)
   {
-      /* read sdate data */
+      /* read sdate input metadata */
       landuse->sdate.fmt = config->sdate_filename.fmt;
       if (config->sdate_filename.fmt == CDF)
       {
@@ -285,7 +285,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           if (config->sdate_filename.fmt == RAW)
           {
               header.nbands = 2 * ncft;
-              landuse->sdate.offset = config->startgrid * header.nbands * sizeof(short);
+              landuse->sdate.offset = (long long)config->startgrid * header.nbands * sizeof(short);
           }
           else
           {
@@ -303,11 +303,12 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                   free(landuse);
                   return(NULL);
               }
-              landuse->sdate.offset = (config->startgrid - header.firstcell) * header.nbands * sizeof(short) + headersize(headername, version);
+              landuse->sdate.datatype = header.datatype;
+              landuse->sdate.offset = ((long long)config->startgrid - (long long)header.firstcell) * header.nbands * typesizes[landuse->sdate.datatype] + headersize(headername, version) + offset;
           }
           landuse->sdate.firstyear = header.firstyear;
           landuse->sdate.nyear = header.nyear;
-          landuse->sdate.size = header.ncell * header.nbands * sizeof(short);
+          landuse->sdate.size = (long long)header.ncell * (long long)header.nbands * typesizes[landuse->sdate.datatype];
           landuse->sdate.n = config->ngridcell * header.nbands;
           landuse->nbands_sdate = header.nbands;
           landuse->sdate.scalar = header.scalar;
@@ -957,7 +958,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   Real sum, *data, *fert_nr, *manu_nr, *res_on_field;
   int *dates;
   Bool *tilltypes;
-  int years = year;     /*sdate year*/
+  int yearsdate = year;     /*sdate year*/
   int yearf = year;
   int yearm = year;
   int yeart = year;
@@ -967,7 +968,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 
   /* LPJmL5 original approach: PRESCRIBED_SDATE (Single year sdate input file) */
   /* so far, read prescribed sdates only once at the beginning of each simulation */
-  /* if (config->sdate_option == PRESCRIBED_SDATE)
+ /* if (config->sdate_option == PRESCRIBED_SDATE)
   {
     if (landuse->sdate.fmt == CDF)
     {
@@ -1020,23 +1021,28 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       count = 0;
       for (cell = 0; cell < config->ngridcell; cell++)
         if (!grid[cell].skip)
-          for (j = 0; j < 2 * ncft; j++)
-            grid[cell].ml.sdate_fixed[j] = dates[count++];
+          //for (j = 0; j < 2 * ncft; j++)
+            //grid[cell].ml.sdate_fixed[j] = dates[count++];
+            for (j = 0; j < 2 * ncft; j++)
+            {
+                grid[cell].ml.sdate_fixed[j] = dates[count++];
+                printf("%d gridcell: grid[cell].ml.sdate_fixed[j] = %d\n", cell, grid[cell].ml.sdate_fixed[j]);
+            }
         else
           count += 2 * ncft;
       free(dates);
     }
-  } */
+  }*/
 
   /* Initialize yearly prescribed sdate */
-  if (config->sdate_option == PRESCRIBED_SDATE)
+ if (config->sdate_option == PRESCRIBED_SDATE)
   {
       /* assigning sdate data */
-      years -= landuse->sdate.firstyear;
-      if (years >= landuse->sdate.nyear)
-          years = landuse->sdate.nyear - 1;
-      else if (years < 0)
-          years = 0;
+      yearsdate -= landuse->sdate.firstyear;
+      if (yearsdate >= landuse->sdate.nyear)
+          yearsdate = landuse->sdate.nyear - 1; /* use last year sdate */
+      else if (yearsdate < 0)
+          yearsdate = 0;                        /* use first year sdate */
 
       if (landuse->sdate.fmt == CDF)
       {
@@ -1046,11 +1052,11 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
               printallocerr("dates");
               return TRUE;
           }
-          if (readintdata_netcdf(&landuse->sdate, dates, grid, years, config))
+          if (readintdata_netcdf(&landuse->sdate, dates, grid, yearsdate, config))
           {
               fprintf(stderr,
                   "ERROR149: Cannot read sowing dates of year %d in getlanduse().\n",
-                  years + landuse->sdate.firstyear);
+                  yearsdate + landuse->sdate.firstyear);
               fflush(stderr);
               return TRUE;
           }
@@ -1065,11 +1071,11 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       }
       else
       {
-          if (fseek(landuse->sdate.file, (int)years*landuse->sdate.size + landuse->sdate.offset, SEEK_SET))
+          if (fseek(landuse->sdate.file, (long long)yearsdate*landuse->sdate.size + landuse->sdate.offset, SEEK_SET))
           {
               fprintf(stderr,
                   "ERROR148: Cannot seek sowing dates to year %d in getlanduse().\n",
-                  years);
+                  yearsdate);
               return TRUE;
           }
           dates = newvec(int, landuse->sdate.n);
@@ -1082,15 +1088,19 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           {
               fprintf(stderr,
                   "ERROR149: Cannot read sowing dates of year %d in getlanduse().\n",
-                  years);
+                  yearsdate);
               free(dates);
               return TRUE;
           }
           count = 0;
           for (cell = 0; cell < config->ngridcell; cell++)
               if (!grid[cell].skip)
+              {
                   for (j = 0; j < 2 * ncft; j++)
+                  {
                       grid[cell].ml.sdate_fixed[j] = dates[count++];
+                  }
+              }
               else
                   count += 2 * ncft;
           free(dates);
