@@ -38,8 +38,8 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
     header->nbands=1;
     header->scalar=1;
     header->datatype=LPJ_SHORT;
-    header->cellsize_lon=config->resolution.lon;
-    header->cellsize_lat=config->resolution.lat;
+    header->cellsize_lon=(float)config->resolution.lon;
+    header->cellsize_lat=(float)config->resolution.lat;
     /* open description file */
     file=openmetafile(header,swap,offset,filename->name,isroot(*config));
     if(file==NULL)

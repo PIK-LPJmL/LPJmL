@@ -48,7 +48,6 @@ typedef struct
   int n;          /**< size of File array */
   Coord_array *index;
   Coord_array *index_all;
-  Bool withdaily; /**< with daily output (TRUE/FALSE) */
 } Outputfile;
 
 extern int findfile(const Outputvar *,int,int);

@@ -211,7 +211,6 @@ Outputfile *fopenoutput(const Cell grid[], /**< LPJ grid */
   output->index=output->index_all=NULL; 
   for(i=0;i<n;i++)
     output->files[i].isopen=FALSE;
-  output->withdaily=FALSE;
 #ifdef USE_MPI
   if(output->method!=LPJ_MPI2)
   {
@@ -325,8 +324,6 @@ Outputfile *fopenoutput(const Cell grid[], /**< LPJ grid */
 #endif
     if(output->files[config->outputvars[i].id].compress)
       free(filename);
-    if(output->files[config->outputvars[i].id].isopen && isdailyoutput(config->outputvars[i].id))
-      output->withdaily=TRUE;
   }
   return output;
 } /* of 'fopenoutput' */
@@ -425,7 +422,5 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
 #ifdef USE_MPI
      MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,0,config->comm);
 #endif
-     if(output->files[config->outputvars[i].id].isopen && isdailyoutput(config->outputvars[i].id))
-      output->withdaily=TRUE;
    }
 } /* of 'openoutput_yearly */

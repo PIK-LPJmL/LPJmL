@@ -14,6 +14,8 @@
 
 "compress" : 0,          /* compression level (1-9, 0= no compression) */
 "missing_value" : -1e32, /* missing value in NetCDF files */
+"pft_index" : "npft",    /* name of index variable for PFT output */
+"layer_index" : "layer", /* name of index variable for soil layer output */
 
 "outputvar" :
 [
@@ -26,7 +28,7 @@
   { "id" : MTRANSP, "name": "mtransp", "var" : "transp", "descr" : "monthly transpiration", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MTRANSP_B, "name": "mtransp_b", "var" : "transp_b", "descr" : "monthly transpired irrigation water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MRUNOFF, "name": "mrunoff", "var" : "runoff", "descr" :  "monthly runoff", "unit":  "mm/month", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MDISCHARGE, "name": "mdischarge", "var" : "discharge", "descr" : "monthly discharge", "unit" : "hm3/d", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MDISCHARGE, "name": "mdischarge", "var" : "discharge", "descr" : "monthly discharge", "unit" : "hm3/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : MWATERAMOUNT, "name": "mwateramount", "var" : "wateramount", "descr" : "mean monthly water amount", "unit" : "hm3", "scale" : 1.0, "offset" : 0.0},
   { "id" : MEVAP, "name": "mevap", "var" : "evap", "descr" : "monthly evaporation", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MEVAP_B, "name": "mevap_b", "var" : "evap_b", "descr" : "monthly evaporation of irrigation water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
@@ -41,6 +43,7 @@
   { "id" : SOILC, "name": "soilc", "var" : "SoilC", "descr" : "total soil carbon density", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITC, "name": "litc", "var" : "LitC", "descr" : "litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : FLUX_ESTAB, "name": "flux_estab", "var" : "estab", "descr" : "establishment flux", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MPFT_LAI, "name": "mpft_lai", "var" : "LAI", "descr" : "PFT-specific monthly LAI", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : PFT_NPP, "name": "pft_npp", "var" : "NPP", "descr" : "PFT-specific NPP", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : PFT_GCGP, "name": "pft_gcgp", "var" : "GCGP", "descr" : "PFT-specific water stress", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : HARVEST, "name": "harvest", "var" : "harvest", "descr" : "harvested carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},

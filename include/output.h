@@ -148,6 +148,7 @@ typedef struct
   Real *cftfrac2;           /**< cft fraction */
 #endif
   Real *pft_npp;         /**< Pft specific NPP (gC/m2) */
+  Real *mpft_lai;         /**< Pft specific LAI */
   Harvest *pft_harvest;
   Real *fpc;             /**< foliar projective cover (FPC) */
   Real *pft_gcgp;
@@ -264,6 +265,8 @@ typedef struct
 
 typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;
 
+typedef enum { MISSING_TIME,SECOND,DAY,MONTH,YEAR } Time;
+
 typedef struct
 {
   char *name;  /**< variable name */
@@ -272,6 +275,7 @@ typedef struct
   char *unit;  /**< units */
   float scale;
   float offset;
+  Time time;
 } Variable;
 
 /* Declaration of variables */
@@ -280,7 +284,7 @@ typedef struct
 
 extern Bool initoutput(Output *,int,Bool,int,int,int);
 extern void initoutput_annual(Output *,int,int,int);
-extern void initoutput_monthly(Output *);
+extern void initoutput_monthly(Output *,int,int,int);
 extern void initoutput_daily(Daily_outputs *);
 extern void freeoutput(Output *);
 extern int outputsize(int,int,int,int);

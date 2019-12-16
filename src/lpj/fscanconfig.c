@@ -359,6 +359,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->missing_value=MISSING_VALUE_FLOAT;
   if(fscanfloat(file,&config->missing_value,"missing_value",TRUE,verbose))
     return TRUE;
+  fscanname(file,name,"pft_index");
+  config->pft_index=strdup(name);
+  fscanname(file,name,"layer_index");
+  config->layer_index=strdup(name);
   config->outnames=fscanoutputvar(file,NOUT,verbose);
   if(config->outnames==NULL)
   {

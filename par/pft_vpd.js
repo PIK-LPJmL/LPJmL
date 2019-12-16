@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**              p  f  t  .  j  s                                                  \n**/
+/**              p  f  t  _  v  p  d  .  j  s                                      \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 4.0.002                          \n**/
+/**  PFT and CFT parameter file for LPJmL version 4.0.004                          \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -296,7 +296,7 @@
     "temp" : { "low" : -2.0, "high" : 22.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.32198,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /*scaling factor nesterov fire danger index */
-    "vpd_par" : 6, /*scaling factor vpd fire danger index*/    
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
     "fuelbulkdensity" : 25.0, /* fuel bulk density */
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
@@ -2021,7 +2021,7 @@
     "albedo_litter" : 0.06, /* albedo of litter */
     "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
     "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
-    "tmin" : 
+    "tmin" :
     {
       "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
       "base" : 4.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */

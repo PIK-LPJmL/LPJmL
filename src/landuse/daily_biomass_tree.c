@@ -36,7 +36,6 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
                         int npft,   /**< number of natural PFTs */
                         int ncft,   /**< number of crop PFTs   */
                         int UNUSED(year), /**< simulation year */
-                        Bool UNUSED(withdailyoutput),
                         Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                         const Config *config /**< LPJ config */
                        ) /** \return runoff (mm) */
@@ -174,6 +173,7 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
      output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
    else
      output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
+   output->mpft_lai[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai(pft);
 
   } /* of foreachpft */
 

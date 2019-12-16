@@ -53,8 +53,6 @@ typedef struct cdf
   float missing_value;
 } Netcdf;
 
-typedef enum { MISSING_TIME,DAY,MONTH,YEAR } Time;
-
 typedef struct
 {
   int firstyear;    /**< first year of climate data (AD) */
@@ -113,8 +111,8 @@ extern Bool create_netcdf(Netcdf *,const char *,const char *,
                           const char *,const char *,Type,int,
                           const Coord_array *,const Config *);
 extern Bool openclimate_netcdf(Climatefile *,const char *,const char *,
-                               const char *,const Config *);
-extern Bool mpi_openclimate_netcdf(Climatefile *,const char *,const char *,
+                               const char *,const char *,const Config *);
+extern Bool mpi_openclimate_netcdf(Climatefile *,const Filename *,
                                    const char *,const Config *);
 extern Bool create_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,
                               const char *,const char *,Type,int,
@@ -136,10 +134,10 @@ extern Bool write_short_netcdf(const Netcdf *,const short[],int,int);
 extern Bool write_pft_float_netcdf(const Netcdf *,const float[],int,int,int);
 extern Bool write_pft_short_netcdf(const Netcdf *,const short[],int,int,int);
 extern void freecoordarray(Coord_array *);
-extern Bool openfile_netcdf(Climatefile *,const char *,
-                     const char *,const char *,const Config *);
-extern Bool opendata_netcdf(Climatefile *,const char *,
-                     const char *,const char *,const Config *);
+extern Bool openfile_netcdf(Climatefile *,const Filename *,
+                            const char *,const Config *);
+extern Bool opendata_netcdf(Climatefile *,const Filename *,
+                     const char *,const Config *);
 extern Bool readdata_netcdf(const Climatefile *,Real *,const Cell *,
                             int,const Config *);
 extern Bool readintdata_netcdf(const Climatefile *,int *,const Cell *,

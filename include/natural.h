@@ -22,7 +22,7 @@ extern Standtype natural_stand;
 extern Real daily_natural(Stand *,Real,const Dailyclimate *,int,
                           Real,const Real [],
                           Real,Real,Real,Real,
-                          Real,Real,Real,int,int,int,Bool,Bool,const Config *);
+                          Real,Real,Real,int,int,int,Bool,const Config *);
 extern Bool annual_natural(Stand *,int,int,Real,int,Bool,Bool,const Config *);
 
 extern void dailyfire_natural(Stand *,Output *,Livefuel *,Real *,Real,

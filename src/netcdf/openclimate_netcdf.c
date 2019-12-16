@@ -23,6 +23,7 @@
 
 Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
                         const char *filename, /**< filename */
+                        const char *time_name,/**< time name or NULL */
                         const char *var,      /**< variable name or NULL */
                         const char *units,    /**< units or NULL */
                         const Config *config  /**< LPJ configuration */
@@ -45,9 +46,14 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
             filename,nc_strerror(rc));
     return TRUE;
   }
-  rc=nc_inq_varid(file->ncid,"time",&var_id);
-  if(rc)
-    rc=nc_inq_varid(file->ncid,"TIME",&var_id);
+  if(time_name==NULL)
+  {
+    rc=nc_inq_varid(file->ncid,"time",&var_id);
+    if(rc)
+      rc=nc_inq_varid(file->ncid,"TIME",&var_id);
+  }
+  else
+    rc=nc_inq_varid(file->ncid,time_name,&var_id);
   if(rc)  /* time axis not found */
     file->time_step=MISSING_TIME;
   else
