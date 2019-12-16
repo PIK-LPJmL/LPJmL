@@ -73,7 +73,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
   if(nsoil<1)
   {
     if(verb)
-      fprintf(stderr,"ERROR170: Invalid value for number of soil types=%u in line %d of '%s'\n",
+      fprintf(stderr,"ERROR170: Invalid value for number of soil types=%d in line %d of '%s'\n",
               nsoil,getlinecount(),getfilename());
     return 0;
   }
@@ -89,7 +89,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     if(id>=nsoil)
     {
       if(verb)
-        fprintf(stderr,"ERROR115: Invalid range of soil type=%u in line %d of '%s' in fscansoilpar(), valid range is [0,%u].\n",id,getlinecount(),getfilename(),nsoil-1);
+        fprintf(stderr,"ERROR115: Invalid range of soil type=%u in line %d of '%s' in fscansoilpar(), valid range is [0,%d].\n",id,getlinecount(),getfilename(),nsoil-1);
       return 0;
     }
     soil=(*soilpar)+id;
