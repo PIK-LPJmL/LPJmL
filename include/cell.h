@@ -102,7 +102,7 @@ Received 19 November 1997; accepted 15 January 1999*/
 extern void freegrid(Cell [],int,const Config *);
 extern void freecell(Cell *,int,Bool);
 extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
-                         int,int,int,int, Bool,Bool,const Config *);
+                         int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
                           Real,int,const Real *,Bool,Bool,const Config *);
 extern void update_monthly(Cell *,Real,Real,int,int,int,int);

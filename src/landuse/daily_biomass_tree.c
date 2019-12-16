@@ -36,7 +36,6 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
                         int npft,   /**< number of natural PFTs */
                         int ncft,   /**< number of crop PFTs   */
                         int UNUSED(year), /**< simulation year */
-                        Bool UNUSED(withdailyoutput),
                         Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                         const Config *config /**< LPJ config */
                        ) /** \return runoff (mm) */

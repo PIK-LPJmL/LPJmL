@@ -35,7 +35,6 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
                      int npft,   /**< number of natural PFTs */
                      int ncft,   /**< number of crop PFTs   */
                      int UNUSED(year), /**< simulation year */
-                     Bool withdailyoutput,
                      Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                      const Config *config /**< LPJ config */
                     )            /** \return runoff (mm) */
@@ -201,19 +200,18 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
     }
     output->mpft_lai[(npft-config->nbiomass)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai(pft);
     grass = pft->data;
-    if(withdailyoutput)
-      if(output->daily.cft == TEMPERATE_HERBACEOUS && data->irrigation == output->daily.irrigation)
-      {
-        output->daily.interc += intercep_pft;
-        output->daily.npp += npp;
-        output->daily.gpp += gpp;
+    if(config->withdailyoutput && output->daily.cft == TEMPERATE_HERBACEOUS && data->irrigation == output->daily.irrigation)
+    {
+      output->daily.interc += intercep_pft;
+      output->daily.npp += npp;
+      output->daily.gpp += gpp;
 
-        output->daily.croot += grass->ind.root;
-        output->daily.cleaf += grass->ind.leaf;
+      output->daily.croot += grass->ind.root;
+      output->daily.cleaf += grass->ind.leaf;
 
-        output->daily.rd += rd;
-        output->daily.assim += gpp-rd;
-      }
+      output->daily.rd += rd;
+      output->daily.assim += gpp-rd;
+    }
   }
 
   /* calculate water balance */
@@ -280,7 +278,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   }
 
 
-  if(withdailyoutput)
+  if(config->withdailyoutput)
   {
     foreachpft(pft,p,&stand->pftlist)
       if(output->daily.cft == TEMPERATE_HERBACEOUS && data->irrigation == output->daily.irrigation)

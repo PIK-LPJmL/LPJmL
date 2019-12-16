@@ -27,7 +27,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                   int ncft,              /**< number of crop PFTs   */
                   int year,              /**< simulation year */
                   int month,             /**< month (0..11) */
-                  Bool withdailyoutput,  /**< enable daily output */
                   Bool intercrop,        /**< enable intercropping */
                   const Config *config   /**< LPJmL configuration */
                  )
@@ -117,7 +116,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mrh+=hetres*stand->frac;
     cell->output.dcflux+=hetres*stand->frac;
     cell->output.mswe+=stand->soil.snowpack*stand->frac;
-    if (withdailyoutput)
+    if (config->withdailyoutput)
     {
       switch(stand->type->landusetype)
       {
@@ -157,7 +156,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                     &gp_stand_leafon,gp_pft,&fpc_total_stand);
     runoff=daily_stand(stand,co2,&climate,day,daylength,gp_pft,
                        gtemp_air,gtemp_soil[0],gp_stand,gp_stand_leafon,eeq,par,
-                       melt,npft,ncft,year,withdailyoutput,intercrop,config);
+                       melt,npft,ncft,year,intercrop,config);
 
     cell->discharge.drunoff+=runoff*stand->frac;
     climate.prec=prec_save;

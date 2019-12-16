@@ -149,7 +149,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           printf("day=%d cell=%d\n",day,cell);
 #endif
           update_daily(grid+cell,co2,popdens,daily,day,npft,
-                       ncft,year,month,output->withdaily,intercrop,config);
+                       ncft,year,month,intercrop,config);
         }
       }
       if(config->river_routing)
@@ -163,7 +163,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           wateruse(grid,npft,ncft,config);
       }
 
-      if(output->withdaily && year>=config->outputyear)
+      if(config->withdailyoutput && year>=config->outputyear)
         fwriteoutput_daily(output,grid,day-1,year,config);
 
       day++;

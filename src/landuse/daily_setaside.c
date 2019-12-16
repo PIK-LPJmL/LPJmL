@@ -36,7 +36,6 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
                    int npft,   /**< number of natural PFTs */
                    int UNUSED(ncft),   /**< number of crop PFTs   */
                    int year,           /**< simulation year (AD) */
-                   Bool withdailyoutput,
                    Bool intercrop, /**< enable intercropping (TRUE/FALSE) */
                    const Config *config /**< LPJ config */
                   ) /** \return runoff (mm) */
@@ -140,7 +139,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
 
-  if(withdailyoutput)
+  if(config->withdailyoutput)
   {
     foreachpft(pft,p,&stand->pftlist)
       if(pft->par->id==output->daily.cft)
