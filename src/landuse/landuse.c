@@ -150,7 +150,6 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                                             &version,&offset,config))==NULL)
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
-        fclose(landuse->landuse.file);
         free(landuse);
         return NULL;
       }
