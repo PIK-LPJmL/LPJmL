@@ -94,7 +94,7 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
   for(i=0;i<len;i++)
     landcover->frac[i]=0;
   return landcover;
-} /* of 'initpopdens' */
+} /* of 'initlandcover' */
 
 /*
 - called in lpj()
