@@ -47,6 +47,7 @@ struct landuse
   Bool onlycrops;      /* scale crop/grass shares to add to one (no natural vegetation) */
   int nbands;          /**< number of data items per cell */
   int nbands_sdate;    /**< number of data items per cell for sowing dates */
+  int nbands_crop_phu;    /**< number of data items per cell for crop phus */
   int nbands_fertilizer_nr; /**< number of data items per cell for fertilizer nr data */
   int nbands_manure_nr; /* number of data items per cell for manure fertilizer data */
   int nbands_with_tillage; /* number of data items per cell for tillage data */
@@ -57,6 +58,7 @@ struct landuse
   Climatefile with_tillage; /* file pointer to tillage file */
   Climatefile residue_on_field; /* file pointer to residue extraction file */
   Climatefile sdate;   /**< file pointer to prescribed sdates */
+  Climatefile crop_phu;   /**< file pointer to prescribed crop phus */
 };                     /**< definition of opaque datatype Landuse */
 
 Landuse initlanduse(int ncft,            /**< number of crop PFTs */
@@ -319,6 +321,117 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     landuse->sdate.file = NULL;
   } /* End sdate */
 
+    /* Multiple-years PRESCRIBED_CROP_PHU */
+  if (config->crop_phu_option == PRESCRIBED_CROP_PHU)
+  {
+      /* read sdate input metadata */
+      landuse->crop_phu.fmt = config->crop_phu_filename.fmt;
+      if (config->crop_phu_filename.fmt == CDF)
+      {
+          if (opendata_netcdf(&landuse->crop_phu, config->crop_phu_filename.name, config->crop_phu_filename.var, NULL, config))
+          {
+              if (landuse->landuse.fmt == CDF)
+                  closeclimate_netcdf(&landuse->landuse, isroot(*config));
+              else
+                  fclose(landuse->landuse.file);
+              if (landuse->sdate.file != NULL)
+              {
+                  if (landuse->sdate.fmt == CDF)
+                      closeclimate_netcdf(&landuse->sdate, isroot(*config));
+                  else
+                      fclose(landuse->sdate.file);
+              }
+              free(landuse);
+              return NULL;
+          }
+          
+          if (landuse->crop_phu.var_len != 2 * ncft)
+          {
+              closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+              if (isroot(*config))
+                  fprintf(stderr,
+                      "ERROR147: Invalid number of bands=%d in sowing date Nr data file.\n",
+                      (int)landuse->crop_phu.var_len);
+              if (landuse->landuse.fmt == CDF)
+                  closeclimate_netcdf(&landuse->landuse, isroot(*config));
+              else
+                  fclose(landuse->landuse.file);
+              if (landuse->sdate.file != NULL)
+              {
+                  if (landuse->sdate.fmt == CDF)
+                      closeclimate_netcdf(&landuse->sdate, isroot(*config));
+                  else
+                      fclose(landuse->sdate.file);
+              }
+              free(landuse);
+              return NULL;
+          }
+      }
+      else
+      {
+          if ((landuse->crop_phu.file = openinputfile(&header, &landuse->crop_phu.swap,
+              &config->crop_phu_filename, headername,
+              &version, &offset, config)) == NULL)
+          {
+              if (landuse->landuse.fmt == CDF)
+                  closeclimate_netcdf(&landuse->landuse, isroot(*config));
+              else
+                  fclose(landuse->landuse.file);
+              if (landuse->sdate.file != NULL)
+              {
+                  if (landuse->sdate.fmt == CDF)
+                      closeclimate_netcdf(&landuse->sdate, isroot(*config));
+                  else
+                      fclose(landuse->sdate.file);
+              }
+              free(landuse);
+              return NULL;
+          }
+          if (config->crop_phu_filename.fmt == RAW)
+          {
+              header.nbands = 2 * ncft;
+              landuse->crop_phu.offset = (long long)config->startgrid * header.nbands * sizeof(short);
+          }
+          else
+          {
+              if (header.nbands != 2 * ncft)
+              {
+                  if (landuse->landuse.fmt == CDF)
+                      closeclimate_netcdf(&landuse->landuse, isroot(*config));
+                  else
+                      fclose(landuse->landuse.file);
+                  if (landuse->sdate.file != NULL)
+                  {
+                      if (landuse->sdate.fmt == CDF)
+                          closeclimate_netcdf(&landuse->sdate, isroot(*config));
+                      else
+                          fclose(landuse->sdate.file);
+                  }
+                  fclose(landuse->crop_phu.file);
+                  if (isroot(*config))
+                      fprintf(stderr,
+                          "ERROR147: Invalid number of bands=%d in crop phu data file.\n",
+                          header.nbands);
+                  free(landuse);
+                  return(NULL);
+              }
+              landuse->crop_phu.datatype = header.datatype;
+              landuse->crop_phu.offset = ((long long)config->startgrid - (long long)header.firstcell) * header.nbands * typesizes[landuse->crop_phu.datatype] + headersize(headername, version) + offset;
+          }
+          landuse->crop_phu.firstyear = header.firstyear;
+          landuse->crop_phu.nyear = header.nyear;
+          landuse->crop_phu.size = (long long)header.ncell * (long long)header.nbands * typesizes[landuse->crop_phu.datatype];
+          landuse->crop_phu.n = config->ngridcell * header.nbands;
+          landuse->nbands_crop_phu = header.nbands;
+          landuse->crop_phu.scalar = header.scalar;
+      }
+  }
+  else
+  {
+      landuse->crop_phu.file = NULL;
+  } /* End crop_phu */
+
+
   if (config->with_nitrogen && config->fertilizer_input && !config->fix_fertilization)
   {
     /* read fertilizer data */
@@ -337,6 +450,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
             closeclimate_netcdf(&landuse->sdate, isroot(*config));
           else
             fclose(landuse->sdate.file);
+        }
+        if (landuse->crop_phu.file != NULL)
+        {
+            if (landuse->crop_phu.fmt == CDF)
+                closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+            else
+                fclose(landuse->crop_phu.file);
         }
         free(landuse);
         return NULL;
@@ -359,6 +479,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           else
             fclose(landuse->sdate.file);
         }
+        if (landuse->crop_phu.file != NULL)
+        {
+            if (landuse->crop_phu.fmt == CDF)
+                closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+            else
+                fclose(landuse->crop_phu.file);
+        }
         free(landuse);
         return NULL;
       }
@@ -379,6 +506,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
             closeclimate_netcdf(&landuse->sdate, isroot(*config));
           else
             fclose(landuse->sdate.file);
+        }
+        if (landuse->crop_phu.file != NULL)
+        {
+            if (landuse->crop_phu.fmt == CDF)
+                closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+            else
+                fclose(landuse->crop_phu.file);
         }
         free(landuse);
         return NULL;
@@ -402,6 +536,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
               closeclimate_netcdf(&landuse->sdate, isroot(*config));
             else
               fclose(landuse->sdate.file);
+          }
+          if (landuse->crop_phu.file != NULL)
+          {
+              if (landuse->crop_phu.fmt == CDF)
+                  closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+              else
+                  fclose(landuse->crop_phu.file);
           }
           fclose(landuse->fertilizer_nr.file);
           if (isroot(*config))
@@ -440,6 +581,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
             else
               fclose(landuse->sdate.file);
           }
+          if (landuse->crop_phu.file != NULL)
+          {
+              if (landuse->crop_phu.fmt == CDF)
+                  closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+              else
+                  fclose(landuse->crop_phu.file);
+          }
           if (landuse->fertilizer_nr.file != NULL)
           {
             if (landuse->fertilizer_nr.fmt == CDF)
@@ -468,6 +616,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
               closeclimate_netcdf(&landuse->sdate, isroot(*config));
             else
               fclose(landuse->sdate.file);
+            if (landuse->crop_phu.file != NULL)
+            {
+                if (landuse->crop_phu.fmt == CDF)
+                    closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+                else
+                    fclose(landuse->crop_phu.file);
+            }
             if (landuse->fertilizer_nr.file != NULL)
             {
               if (landuse->fertilizer_nr.fmt == CDF)
@@ -496,6 +651,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
               closeclimate_netcdf(&landuse->sdate, isroot(*config));
             else
               fclose(landuse->sdate.file);
+          }
+          if (landuse->crop_phu.file != NULL)
+          {
+              if (landuse->crop_phu.fmt == CDF)
+                  closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+              else
+                  fclose(landuse->crop_phu.file);
           }
           if (landuse->fertilizer_nr.file != NULL)
           {
@@ -526,6 +688,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                 closeclimate_netcdf(&landuse->sdate, isroot(*config));
               else
                 fclose(landuse->sdate.file);
+            }
+            if (landuse->crop_phu.file != NULL)
+            {
+                if (landuse->crop_phu.fmt == CDF)
+                    closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+                else
+                    fclose(landuse->crop_phu.file);
             }
             if (landuse->fertilizer_nr.file != NULL)
             {
@@ -577,6 +746,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           else
             fclose(landuse->sdate.file);
         }
+        if (landuse->crop_phu.file != NULL)
+        {
+            if (landuse->crop_phu.fmt == CDF)
+                closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+            else
+                fclose(landuse->crop_phu.file);
+        }
         if (landuse->fertilizer_nr.file != NULL)
         {
           if (landuse->fertilizer_nr.fmt == CDF)
@@ -612,6 +788,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
             closeclimate_netcdf(&landuse->sdate, isroot(*config));
           else
             fclose(landuse->sdate.file);
+        }
+        if (landuse->crop_phu.file != NULL)
+        {
+            if (landuse->crop_phu.fmt == CDF)
+                closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+            else
+                fclose(landuse->crop_phu.file);
         }
         if (landuse->fertilizer_nr.file != NULL)
         {
@@ -649,6 +832,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
               closeclimate_netcdf(&landuse->sdate, isroot(*config));
             else
               fclose(landuse->sdate.file);
+          }
+          if (landuse->crop_phu.file != NULL)
+          {
+              if (landuse->crop_phu.fmt == CDF)
+                  closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+              else
+                  fclose(landuse->crop_phu.file);
           }
           if (landuse->fertilizer_nr.file != NULL)
           {
@@ -703,6 +893,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           else
             fclose(landuse->sdate.file);
         }
+        if (landuse->crop_phu.file != NULL)
+        {
+            if (landuse->crop_phu.fmt == CDF)
+                closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+            else
+                fclose(landuse->crop_phu.file);
+        }
         if (landuse->fertilizer_nr.file != NULL)
         {
           if (landuse->fertilizer_nr.fmt == CDF)
@@ -745,6 +942,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           else
             fclose(landuse->sdate.file);
         }
+        if (landuse->crop_phu.file != NULL)
+        {
+            if (landuse->crop_phu.fmt == CDF)
+                closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+            else
+                fclose(landuse->crop_phu.file);
+        }
         if (landuse->fertilizer_nr.file != NULL)
         {
           if (landuse->fertilizer_nr.fmt == CDF)
@@ -786,6 +990,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
             closeclimate_netcdf(&landuse->sdate, isroot(*config));
           else
             fclose(landuse->sdate.file);
+        }
+        if (landuse->crop_phu.file != NULL)
+        {
+            if (landuse->crop_phu.fmt == CDF)
+                closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+            else
+                fclose(landuse->crop_phu.file);
         }
         if (landuse->fertilizer_nr.file != NULL)
         {
@@ -830,6 +1041,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
               closeclimate_netcdf(&landuse->sdate, isroot(*config));
             else
               fclose(landuse->sdate.file);
+          }
+          if (landuse->crop_phu.file != NULL)
+          {
+              if (landuse->crop_phu.fmt == CDF)
+                  closeclimate_netcdf(&landuse->crop_phu, isroot(*config));
+              else
+                  fclose(landuse->crop_phu.file);
           }
           if (landuse->fertilizer_nr.file != NULL)
           {
@@ -959,6 +1177,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   int *dates;
   Bool *tilltypes;
   int yearsdate = year;     /*sdate year*/
+  int yearphu = year;       /*crop phu year*/
   int yearf = year;
   int yearm = year;
   int yeart = year;
@@ -1106,6 +1325,79 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           free(dates);
       }
   }
+
+ /* Initialize yearly prescribed crop_phu */
+ if (config->sdate_option == PRESCRIBED_CROP_PHU)
+ {
+     /* assigning crop phus data */
+     yearphu -= landuse->crop_phu.firstyear;
+     if (yearphu >= landuse->crop_phu.nyear)
+         yearphu = landuse->crop_phu.nyear - 1; /* use last year sdate */
+     else if (yearphu < 0)
+         yearphu = 0;                        /* use first year sdate */
+
+     if (landuse->crop_phu.fmt == CDF)
+     {
+         dates = newvec(int, config->ngridcell*landuse->crop_phu.var_len);
+         if (dates == NULL)
+         {
+             printallocerr("dates");
+             return TRUE;
+         }
+         if (readintdata_netcdf(&landuse->crop_phu, dates, grid, yearphu, config))
+         {
+             fprintf(stderr,
+                 "ERROR149: Cannot read crop phus of year %d in getlanduse().\n",
+                 yearphu + landuse->crop_phu.firstyear);
+             fflush(stderr);
+             return TRUE;
+         }
+         count = 0;
+         for (cell = 0; cell < config->ngridcell; cell++)
+             if (!grid[cell].skip)
+                 for (j = 0; j < 2 * ncft; j++)
+                     grid[cell].ml.crop_phu_fixed[j] = dates[count++];
+             else
+                 count += 2 * ncft;
+         free(dates);
+     }
+     else
+     {
+         if (fseek(landuse->crop_phu.file, (long long)yearphu*landuse->crop_phu.size + landuse->crop_phu.offset, SEEK_SET))
+         {
+             fprintf(stderr,
+                 "ERROR148: Cannot seek crop phus to year %d in getlanduse().\n",
+                 yearphu);
+             return TRUE;
+         }
+         dates = newvec(int, landuse->crop_phu.n);
+         if (dates == NULL)
+         {
+             printallocerr("dates");
+             return TRUE;
+         }
+         if (readintvec(landuse->crop_phu.file, dates, landuse->crop_phu.n, landuse->crop_phu.swap, landuse->crop_phu.datatype))
+         {
+             fprintf(stderr,
+                 "ERROR149: Cannot read crop phus of year %d in getlanduse().\n",
+                 yearphu);
+             free(dates);
+             return TRUE;
+         }
+         count = 0;
+         for (cell = 0; cell < config->ngridcell; cell++)
+             if (!grid[cell].skip)
+             {
+                 for (j = 0; j < 2 * ncft; j++)
+                 {
+                     grid[cell].ml.crop_phu_fixed[j] = dates[count++];
+                 }
+             }
+             else
+                 count += 2 * ncft;
+         free(dates);
+     }
+ } /* end crop_phu*/
 
   yearl = year - landuse->landuse.firstyear;
   if (yearl >= landuse->landuse.nyear)

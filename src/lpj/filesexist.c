@@ -312,6 +312,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkdatafile(&config,&config.landuse_filename);
     if(config.sdate_option==PRESCRIBED_SDATE)
       bad+=checkclmfile(&config,&config.sdate_filename);
+    if(config.crop_phu_option==PRESCRIBED_CROP_PHU)
+        bad+=checkclmfile(&config,&config.crop_phu_filename);
     if(config.countrycode_filename.fmt==CDF)
     {
       bad+=checkinputfile(&config,&config.countrycode_filename,0);

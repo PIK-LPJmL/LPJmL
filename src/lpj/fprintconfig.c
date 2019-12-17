@@ -91,6 +91,8 @@ static size_t isnetcdfinput(const Config *config)
       width=max(width,strlen(config->landuse_filename.var));
     if(config->sdate_option==PRESCRIBED_SDATE && config->sdate_filename.fmt==CDF)
       width=max(width,strlen(config->sdate_filename.var));
+    if(config->crop_phu_option==PRESCRIBED_CROP_PHU && config->crop_phu_filename.fmt==CDF)
+        width=max(width,strlen(config->crop_phu_filename.var));
     if (config->with_nitrogen && config->fertilizer_input && config->fertilizer_nr_filename.fmt == CDF)
       width = max(width, strlen(config->fertilizer_nr_filename.var));
     if (config->with_nitrogen && config->manure_input && config->manure_nr_filename.fmt == CDF)
@@ -305,6 +307,12 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       count++;
       len=fputstring(file,len,"prescribed sowing date",78);
     }
+    else if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    {
+        len=fputstring(file,len,", ",78);
+        count++;
+        len=fputstring(file,len,"prescribed crop phus",78);
+    }
   }
   if(config->grassfix_filename.name!=NULL)
     len=printsim(file,len,&count,"grassland fixed PFT");
@@ -401,6 +409,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"landuse",&config->landuse_filename,width);
     if(config->sdate_option==PRESCRIBED_SDATE)
       printinputfile(file,"sdates",&config->sdate_filename,width);
+    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+        printinputfile(file,"crop_phu",&config->sdate_filename,width);
     if(config->with_nitrogen&&config->fertilizer_input)
       printinputfile(file,"fertilizer_nr",&config->fertilizer_nr_filename, width);
     if(config->with_nitrogen&&config->manure_input)

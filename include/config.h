@@ -76,6 +76,7 @@ typedef struct
   Filename elevation_filename;
   Filename reservoir_filename;
   Filename sdate_filename;
+  Filename crop_phu_filename;
   Filename burntarea_filename;
   Filename landcover_filename;
   Filename runoff2ocean_filename; /**< map with indices of the ocean cells where the coast cells send their runoff into */
@@ -174,6 +175,7 @@ typedef struct
   Bool from_restart;   /**< reading from restart */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
   int sdate_fixyear;    /**< year in which sowing dates shall be fixed */
+  int crop_phu_option;    /**< crop phu option (semistatic internally prescribed/computed (LPJmL4): 0, prescribed: 1)*/
   Bool initsoiltemp;
   Pnet *route;         /**< river routing network */
   Pnet *irrig_neighbour; /**< irrigation neighbour network */
