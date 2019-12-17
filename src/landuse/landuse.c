@@ -1175,6 +1175,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   int i, j, p, count, cell, yearl;
   Real sum, *data, *fert_nr, *manu_nr, *res_on_field;
   int *dates;
+  Real *phus;
   Bool *tilltypes;
   int yearsdate = year;     /*sdate year*/
   int yearphu = year;       /*crop phu year*/
@@ -1338,13 +1339,13 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 
      if (landuse->crop_phu.fmt == CDF)
      {
-         dates = newvec(int, config->ngridcell*landuse->crop_phu.var_len);
-         if (dates == NULL)
+         phus = newvec(int, config->ngridcell*landuse->crop_phu.var_len);
+         if (phus == NULL)
          {
              printallocerr("dates");
              return TRUE;
          }
-         if (readintdata_netcdf(&landuse->crop_phu, dates, grid, yearphu, config))
+         if (readintdata_netcdf(&landuse->crop_phu, phus, grid, yearphu, config))
          {
              fprintf(stderr,
                  "ERROR149: Cannot read crop phus of year %d in getlanduse().\n",
@@ -1356,10 +1357,10 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
          for (cell = 0; cell < config->ngridcell; cell++)
              if (!grid[cell].skip)
                  for (j = 0; j < 2 * ncft; j++)
-                     grid[cell].ml.crop_phu_fixed[j] = dates[count++];
+                     (Real)grid[cell].ml.crop_phu_fixed[j] = phus[count++];
              else
                  count += 2 * ncft;
-         free(dates);
+         free(phus);
      }
      else
      {
