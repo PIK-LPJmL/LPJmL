@@ -436,6 +436,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                 "ERROR149: Cannot read sowing dates of year %d in getlanduse().\n",
                 year+landuse->sdate.firstyear);
         fflush(stderr);
+        free(dates);
         return TRUE;
       }
       count=0;
@@ -500,6 +501,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         "ERROR149: Cannot read landuse of year %d in getlanduse().\n",
         yearl + landuse->landuse.firstyear);
       fflush(stderr);
+      free(data);
       return TRUE;
     }
   }
@@ -613,49 +615,49 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
     switch (config->irrig_scenario)
     {
-    case NO_IRRIGATION:
-      for (j = 0; j < ncft; j++)
-      {
-        grid[cell].ml.landfrac[0].crop[j] += grid[cell].ml.landfrac[1].crop[j];
-        grid[cell].ml.landfrac[1].crop[j] = 0;
-        grid[cell].ml.irrig_system->crop[j] = NOIRRIG;
-      }
-      for (j = 0; j < NGRASS; j++)
-      {
-        grid[cell].ml.landfrac[0].grass[j] += grid[cell].ml.landfrac[1].grass[j];
-        grid[cell].ml.landfrac[1].grass[j] = 0;
-        grid[cell].ml.irrig_system->grass[j] = NOIRRIG;
-      }
-      grid[cell].ml.landfrac[0].biomass_grass += grid[cell].ml.landfrac[1].biomass_grass;
-      grid[cell].ml.landfrac[1].biomass_grass = 0;
-      grid[cell].ml.irrig_system->biomass_grass = NOIRRIG;
-      grid[cell].ml.landfrac[0].biomass_tree += grid[cell].ml.landfrac[1].biomass_tree;
-      grid[cell].ml.landfrac[1].biomass_tree = 0;
-      grid[cell].ml.irrig_system->biomass_tree = NOIRRIG;
-      break;
-    case ALL_IRRIGATION:
-      for (j = 0; j < ncft; j++)
-      {
-        grid[cell].ml.landfrac[1].crop[j] += grid[cell].ml.landfrac[0].crop[j];
-        grid[cell].ml.landfrac[0].crop[j] = 0;
+      case NO_IRRIGATION:
+        for (j = 0; j < ncft; j++)
+        {
+          grid[cell].ml.landfrac[0].crop[j] += grid[cell].ml.landfrac[1].crop[j];
+          grid[cell].ml.landfrac[1].crop[j] = 0;
+          grid[cell].ml.irrig_system->crop[j] = NOIRRIG;
+        }
+        for (j = 0; j < NGRASS; j++)
+        {
+          grid[cell].ml.landfrac[0].grass[j] += grid[cell].ml.landfrac[1].grass[j];
+          grid[cell].ml.landfrac[1].grass[j] = 0;
+          grid[cell].ml.irrig_system->grass[j] = NOIRRIG;
+        }
+        grid[cell].ml.landfrac[0].biomass_grass += grid[cell].ml.landfrac[1].biomass_grass;
+        grid[cell].ml.landfrac[1].biomass_grass = 0;
+        grid[cell].ml.irrig_system->biomass_grass = NOIRRIG;
+        grid[cell].ml.landfrac[0].biomass_tree += grid[cell].ml.landfrac[1].biomass_tree;
+        grid[cell].ml.landfrac[1].biomass_tree = 0;
+        grid[cell].ml.irrig_system->biomass_tree = NOIRRIG;
+        break;
+      case ALL_IRRIGATION:
+        for (j = 0; j < ncft; j++)
+        {
+          grid[cell].ml.landfrac[1].crop[j] += grid[cell].ml.landfrac[0].crop[j];
+          grid[cell].ml.landfrac[0].crop[j] = 0;
+          if (!grid[cell].skip)
+            grid[cell].ml.irrig_system->crop[j] = grid[cell].ml.manage.par->default_irrig_system; /*default national irrigation system (Rohwer & Gerten 2007)*/
+        }
+        for (j = 0; j < NGRASS; j++)
+        {
+          grid[cell].ml.landfrac[1].grass[j] += grid[cell].ml.landfrac[0].grass[j];
+          grid[cell].ml.landfrac[0].grass[j] = 0;
+          if (!grid[cell].skip)
+            grid[cell].ml.irrig_system->grass[j] = grid[cell].ml.manage.par->default_irrig_system;
+        }
+        grid[cell].ml.landfrac[1].biomass_grass += grid[cell].ml.landfrac[0].biomass_grass;
+        grid[cell].ml.landfrac[0].biomass_grass = 0;
         if (!grid[cell].skip)
-          grid[cell].ml.irrig_system->crop[j] = grid[cell].ml.manage.par->default_irrig_system; /*default national irrigation system (Rohwer & Gerten 2007)*/
-      }
-      for (j = 0; j < NGRASS; j++)
-      {
-        grid[cell].ml.landfrac[1].grass[j] += grid[cell].ml.landfrac[0].grass[j];
-        grid[cell].ml.landfrac[0].grass[j] = 0;
-        if (!grid[cell].skip)
-          grid[cell].ml.irrig_system->grass[j] = grid[cell].ml.manage.par->default_irrig_system;
-      }
-      grid[cell].ml.landfrac[1].biomass_grass += grid[cell].ml.landfrac[0].biomass_grass;
-      grid[cell].ml.landfrac[0].biomass_grass = 0;
-      if (!grid[cell].skip)
-        grid[cell].ml.irrig_system->biomass_grass = grid[cell].ml.manage.par->default_irrig_system;
-      grid[cell].ml.landfrac[1].biomass_tree += grid[cell].ml.landfrac[0].biomass_tree;
-      grid[cell].ml.landfrac[0].biomass_tree = 0;
-      grid[cell].ml.irrig_system->biomass_tree = grid[cell].ml.manage.par->default_irrig_system;
-      break;
+          grid[cell].ml.irrig_system->biomass_grass = grid[cell].ml.manage.par->default_irrig_system;
+        grid[cell].ml.landfrac[1].biomass_tree += grid[cell].ml.landfrac[0].biomass_tree;
+        grid[cell].ml.landfrac[0].biomass_tree = 0;
+        grid[cell].ml.irrig_system->biomass_tree = grid[cell].ml.manage.par->default_irrig_system;
+        break;
     } /* of switch(...) */
 
     /* DEBUG: here you can set land-use fractions manually, it overwrites the land-use input, in all cells */
@@ -768,6 +770,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                   "ERROR149: Cannot read fertilizer of year %d in getlanduse().\n",
                   yearf+landuse->fertilizer_nr.firstyear);
           fflush(stderr);
+          free(data);
           return TRUE;
         }
       }

@@ -225,15 +225,15 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);
     vmax=pft->vmax;
     adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
-                   temp,data.apar,daylength,FALSE);
-      gc_new=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
+                         temp,data.apar,daylength,FALSE);
+    gc_new=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                     pft->par->gmin*fpar(pft);
     if(config->with_nitrogen)
     {
       nitrogen_stress(pft,temp,daylength,npft,config->nbiomass,ncft);
 
       adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
-                     temp,data.apar,daylength,FALSE);
+                           temp,data.apar,daylength,FALSE);
       gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                     pft->par->gmin*fpar(pft);
       demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
@@ -258,12 +258,14 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
       aet=(wr>0) ? demand*fpar(pft)/wr :0 ;
 
       pft->nlimit+=pft->vmax/vmax;
-      if(pft->stand->type->landusetype==AGRICULTURE){
+      if(pft->stand->type->landusetype==AGRICULTURE)
+      {
         irrig=pft->stand->data;
         if(&pft->stand->cell->output.daily!=NULL &&
-          pft->par->id==pft->stand->cell->output.daily.cft &&
-          irrig->irrigation==pft->stand->cell->output.daily.irrigation){
-            pft->stand->cell->output.daily.nlimit=pft->vmax/vmax;
+           pft->par->id==pft->stand->cell->output.daily.cft &&
+           irrig->irrigation==pft->stand->cell->output.daily.irrigation)
+        {
+          pft->stand->cell->output.daily.nlimit=pft->vmax/vmax;
         }
       }
     }

@@ -102,11 +102,12 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
             stand->cell->output.cft_nir[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
           }
           break;
-        default:
+        case BIOMASS_TREE:
           if(pft_output_scaled)
             stand->cell->output.cft_nir[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].biomass_tree;
           else
             stand->cell->output.cft_nir[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
+          break;
       } /* of switch */
 
       data->irrig_amount=data->irrig_stor+irrig_stand;
@@ -172,7 +173,7 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
           stand->cell->output.cft_conv_loss_drain[rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap);
         }
         break;
-      default:
+      case BIOMASS_TREE:
         if(pft_output_scaled)
         {
           stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].biomass_tree;
@@ -183,6 +184,7 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
           stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap;
           stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap);
         }
+        break;
     } /* of switch */
   } /* if data->irrigation */
 
