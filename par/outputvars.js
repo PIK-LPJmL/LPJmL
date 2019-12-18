@@ -4,6 +4,11 @@
 /**                                                                                \n**/
 /**  Defines array of output variables                                             \n**/
 /**                                                                                \n**/
+/**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
+/**  to day-1 or sec-1, e.g.:                                                      \n**/
+/**  "unit" : "g/m2/month"  ->  "unit" : "g m-2 day-1"                             \n**/
+/**  Then output is divided my the number of days in each month                    \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
