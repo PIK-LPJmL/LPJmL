@@ -1339,7 +1339,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 
      if (landuse->crop_phu.fmt == CDF)
      {
-         phus = newvec(int, config->ngridcell*landuse->crop_phu.var_len);
+         phus = newvec(Real, config->ngridcell*landuse->crop_phu.var_len);
          if (phus == NULL)
          {
              printallocerr("dates");
@@ -1371,18 +1371,18 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                  yearphu);
              return TRUE;
          }
-         dates = newvec(int, landuse->crop_phu.n);
-         if (dates == NULL)
+         phus = newvec(Real, landuse->crop_phu.n);
+         if (phus == NULL)
          {
              printallocerr("dates");
              return TRUE;
          }
-         if (readintvec(landuse->crop_phu.file, dates, landuse->crop_phu.n, landuse->crop_phu.swap, landuse->crop_phu.datatype))
+         if (readintvec(landuse->crop_phu.file, phus, landuse->crop_phu.n, landuse->crop_phu.swap, landuse->crop_phu.datatype))
          {
              fprintf(stderr,
                  "ERROR149: Cannot read crop phus of year %d in getlanduse().\n",
                  yearphu);
-             free(dates);
+             free(phus);
              return TRUE;
          }
          count = 0;
@@ -1391,12 +1391,12 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
              {
                  for (j = 0; j < 2 * ncft; j++)
                  {
-                     grid[cell].ml.crop_phu_fixed[j] = dates[count++];
+                     grid[cell].ml.crop_phu_fixed[j] = phus[count++];
                  }
              }
              else
                  count += 2 * ncft;
-         free(dates);
+         free(phus);
      }
  } /* end crop_phu*/
 

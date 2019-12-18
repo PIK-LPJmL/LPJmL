@@ -36,7 +36,7 @@ void phen_variety(Pft *pft,      /**< PFT variables */
   if(config->crop_phu_option == PRESCRIBED_CROP_PHU)
   {
       crop->pvd = 0; /* temporarily set to 0 (photoperiod insensitive) */
-      crop->phu = pft->stand->cell->ml.crop_phu_fixed;
+      crop->phu = *pft->stand->cell->ml.crop_phu_fixed;
       crop->basetemp = croppar->basetemp.low; /* temporarily set to basetemp.low */
   }
   else
