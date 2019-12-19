@@ -35,7 +35,6 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
                          int npft,   /**< number of natural PFTs */
                          int ncft,   /**< number of crop PFTs   */
                          int UNUSED(year), /**< simulation year */
-                         Bool withdailyoutput, /**< enable daily output */
                          Bool  UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                          const Config *config /**< LPJ config */
                         )            /** \return runoff (mm) */
@@ -126,12 +125,12 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
   /* soil inflow: infiltration and percolation */
   if(irrig_apply>epsilon)
   {
-    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config);
+    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,config);
     /* count irrigation events*/
     output->cft_irrig_events[rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,withdailyoutput,config);
+  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,config);
 
   isphen=FALSE;
   foreachpft(pft,p,&stand->pftlist)
@@ -177,6 +176,7 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
       output->pft_npp[(npft-config->nbiomass)+rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
     else
       output->pft_npp[(npft-config->nbiomass)+rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
+    output->mpft_lai[(npft-config->nbiomass)+rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai(pft);
   } /* of foreachpft */
 
   /* calculate water balance */

@@ -49,7 +49,6 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
                      int npft,   /**< number of natural PFTs */
                      int ncft,   /**< number of crop PFTs   */
                      int UNUSED(year), /**< simulation year */
-                     Bool withdailyoutput, /**< enable daily output */
                      Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                      const Config *config /**< LPJ config */
                     )            /** \return runoff (mm) */
@@ -175,13 +174,13 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   /* soil inflow: infiltration and percolation */
   if(irrig_apply>epsilon)
   {
-    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config);
+    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,config);
     /* count irrigation events*/
     output->cft_irrig_events[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
     output->cft_irrig_events[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,withdailyoutput,config);
+  runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,config);
 
   isphen = FALSE;
 #ifdef PERMUTE
@@ -247,22 +246,22 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
       output->pft_npp[(npft-config->nbiomass)+rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
       output->pft_npp[(npft-config->nbiomass)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
     }
+    output->mpft_lai[(npft-config->nbiomass)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai(pft);
     grass = pft->data;
-    if(withdailyoutput)
-      if(output->daily.cft == TEMPERATE_HERBACEOUS && data->irrigation == output->daily.irrigation)
-      {
-        output->daily.interc += intercep_pft;
-        output->daily.npp += npp;
-        output->daily.gpp += gpp;
+    if(config->withdailyoutput && output->daily.cft == TEMPERATE_HERBACEOUS && data->irrigation == output->daily.irrigation)
+    {
+      output->daily.interc += intercep_pft;
+      output->daily.npp += npp;
+      output->daily.gpp += gpp;
 
-        output->daily.croot += grass->ind.root.carbon;
-        output->daily.cleaf += grass->ind.leaf.carbon;
-        output->daily.nroot += grass->ind.root.nitrogen;
-        output->daily.nleaf += grass->ind.leaf.nitrogen;
+      output->daily.croot += grass->ind.root.carbon;
+      output->daily.cleaf += grass->ind.leaf.carbon;
+      output->daily.nroot += grass->ind.root.nitrogen;
+      output->daily.nleaf += grass->ind.leaf.nitrogen;
 
-        output->daily.rd += rd;
-        output->daily.assim += gpp-rd;
-      }
+      output->daily.rd += rd;
+      output->daily.assim += gpp-rd;
+    }
   }
 
   /* calculate water balance */
@@ -390,7 +389,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   }
 
 
-  if(withdailyoutput)
+  if(config->withdailyoutput)
   {
     foreachpft(pft,p,&stand->pftlist)
       if(output->daily.cft == TEMPERATE_HERBACEOUS && data->irrigation == output->daily.irrigation)

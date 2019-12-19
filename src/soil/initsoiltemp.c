@@ -13,7 +13,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include <math.h>
 
 #define initfrozen -0.5
 
@@ -32,13 +31,25 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
   nsoilmeanyears = min(30,climate->file_temp.nyear);
   for (year=climate->file_temp.firstyear; year < climate->file_temp.firstyear+nsoilmeanyears; ++year)
   {
-    if(getclimate(climate,grid,year,config))
+    if(readclimate(&climate->file_temp,climate->data.temp,0,climate->file_temp.scalar,grid,year,config))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR131: Cannot read temperature of year %d in initsoiltemp().\n",
+                year);
       return TRUE;
+    }
+    if(readclimate(&climate->file_prec,climate->data.prec,0,climate->file_prec.scalar,grid,year,config))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR131: Cannot read precipitation of year %d in initsoiltemp().\n",
+                year);
+      return TRUE;
+    }
     day=0;
     foreachmonth(month)
     {
       for(cell=0;cell<config->ngridcell;cell++)
-        if(!(grid+cell)->skip)
+        if(!grid[cell].skip)
         {
           rad=deg2rad(grid[cell].coord.lat);
           delta=deg2rad(-23.4*cos(2*M_PI*(midday[month]+10.0)/NDAYYEAR));
@@ -68,14 +79,16 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
           pet=((temp>0) ? 924*dl*0.611*exp(17.3*temp/(temp+237.3))/(temp+273.2):0);
 
           balance=prec-pet;
-          if(balance< epsilon) balance=0.0;
+          if(balance< epsilon)
+            balance=0.0;
 #ifdef COUPLING_WITH_FMS
           grid[cell].laketemp+=temp/NMONTH/nsoilmeanyears;
 #endif
-          foreachstand(stand,s,((grid+cell)->standlist))
+          foreachstand(stand,s,grid[cell].standlist)
           {
             whcs_all=0.0;
-            foreachsoillayer(l) whcs_all+=stand->soil.par->whcs[l];
+            foreachsoillayer(l)
+              whcs_all+=stand->soil.par->whcs[l];
             foreachsoillayer(l)
             {
               stand->soil.temp[l]+=temp/NMONTH/nsoilmeanyears;
@@ -87,11 +100,12 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
     } /* of foreachmonth */
   }
   for(cell=0;cell<config->ngridcell;cell++)
-    if(!(grid+cell)->skip)
-      foreachstand(stand,s,(grid+cell)->standlist)
+    if(!grid[cell].skip)
+      foreachstand(stand,s,grid[cell].standlist)
         foreachsoillayer(l)
         {
-          if(stand->soil.w[l]>1) stand->soil.w[l]=1.0;
+          if(stand->soil.w[l]>1)
+            stand->soil.w[l]=1.0;
           if(stand->soil.temp[l]<initfrozen)
           {
             stand->soil.ice_depth[l]=stand->soil.par->whcs[l]*stand->soil.w[l];

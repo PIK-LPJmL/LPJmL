@@ -22,7 +22,6 @@
 Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
                     Real infil,         /**< infiltration water (mm) */
                     Real *return_flow_b, /**< blue water return flow (mm) */
-                    Bool withdailyoutput,
                     const Config *config /**< LPJ configuration */
                    )                    /** \return water runoff (mm) */
 {
@@ -230,9 +229,9 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
         } /* if soil depth > freeze_depth */
       } /* soil layer loop */
       stand->cell->output.mn_leaching+=NO3perc_ly*stand->frac;
-      if(withdailyoutput && (stand->type->landusetype==NATURAL && ALLNATURAL==stand->cell->output.daily.cft))
+      if(config->withdailyoutput && (stand->type->landusetype==NATURAL && ALLNATURAL==stand->cell->output.daily.cft))
         stand->cell->output.daily.leaching+=NO3perc_ly;
-      if(withdailyoutput && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND))
+      if(config->withdailyoutput && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND))
       {
         foreachpft(pft,p,&stand->pftlist)
         {

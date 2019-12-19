@@ -318,7 +318,7 @@ int main(int argc,char **argv)
       c1++; /* running counter */
       if(c1 >= progress)
       {
-        printf("%.1f%s... ", c1*100.0/(cols*rows), "%");
+        printf("[%5.1f%%]\b\b\b\b\b\b\b\b\b",c1*100.0/(cols*rows));
         progress+=(int)(cols*rows*0.01);
         fflush(stdout);
       }

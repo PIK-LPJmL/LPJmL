@@ -33,9 +33,9 @@ Real soiltemp_lag(const Soil *soil,      /**< Soil data */
  * algorithm and stability criterion are taken from:
  * Y.Bayazitoglu / M.N.Oezisik: Elements of Heat Transfer (1988)
  */
- 
+
 void soiltemp(Soil *soil,   /**< pointer to soil data */
-              Real airtemp  /**< air temperature (deg C) */             
+              Real airtemp  /**< air temperature (deg C) */
              )
 {
   Real heatcap[NSOILLAYER],      /* heat capacity [J/m2/K] or [J/m3/K]*/
@@ -72,7 +72,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
       heatcap[l]=soilheatcap(soil,l); /*[J/m2/K]*/
       if(heat>epsilon)
       {
-        if (soil->state[l]==BELOW_T_ZERO || 
+        if (soil->state[l]==BELOW_T_ZERO ||
             soil->state[l]==THAWING ||
             soil->state[l]==AT_T_ZERO)
         {
@@ -81,8 +81,8 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
           heat-=heat2;
           if(heat2>epsilon && allice(soil,l)>epsilon)
             soilice2moisture(soil,&heat2,l);
-          heat+=heat2;   
-        }            
+          heat+=heat2;
+        }
       }
       else
       {
@@ -94,13 +94,13 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
           heat2=heat-dT*heatcap[l];
           if(heat2<-epsilon && allwater(soil,l)>epsilon)
             moisture2soilice(soil,&heat2,l);
-          heat+=heat2; 
-        }          
+          heat+=heat2;
+        }
       }
       soil->temp[l]+=heat/heatcap[l];
     } /*endif (precipitation or percolation energy present)*/
   }/*endfor each soil layer*/
-  
+
   /*thermal properties for each soillayer*/
   heat_steps=0;
   for(l=0;l<NSOILLAYER;++l)
@@ -121,9 +121,9 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
       heat=0;
       convert_water(soil,l,&heat);
       soil->state[l]=(short)getstate(soil->temp+l);
-    }  
+    }
   } /* of 'for(l=0;...)' */
- 
+
   /* calculate soil temperatures */
   for (t=0; t<heat_steps;++t)
   {
@@ -155,7 +155,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
          * and thus, whether there should be freezing/thawing at one boundary
          */
 #ifndef USE_LINEAR_CONTACT_T
-        /* see Campbell/Norman:Environmental Biophysics, 2nd Ed. 
+        /* see Campbell/Norman:Environmental Biophysics, 2nd Ed.
          * for a definition of thermal admittance
          */
         t_contact_u=(admit_upper*t_upper+admit[l]*soil->temp[l])/(admit_upper+admit[l]);
@@ -173,13 +173,13 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
         if(fabs(t_contact_l)<epsilon)
           t_contact_l=0.0;
 #endif
-        /* depth of 0-degree isotherme, if thermal properties were homogeneous 
+        /* depth of 0-degree isotherme, if thermal properties were homogeneous
          * across l and no freezing/thawing occured
          * is used to determine proportion of energy for water conversion
          */
         /* TODO:they may be both < 0 (but error is probably small)*/
         if(t_contact_u*soil->temp[l]<0)
-          z0=0.5*soildepth[l]-(-soil->temp[l]*0.5*soildepth[l]/(t_upper-soil->temp[l]));   
+          z0=0.5*soildepth[l]-(-soil->temp[l]*0.5*soildepth[l]/(t_upper-soil->temp[l]));
         else if (t_contact_l*soil->temp[l]<0)
           z0=0.5*soildepth[l]+(-soil->temp[l]*0.5*soildepth[l]/(t_lower-soil->temp[l]));
         else
@@ -187,7 +187,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
         if(z0<soildepth[l])
         {
           /* phase transition in this layer */
-          /* use part of available energy for water conversion*/                
+          /* use part of available energy for water conversion*/
           heat=z0/soildepth[l]*lambda[l]*dT/soildepth[l]*1000*timestep2sec(1.0,heat_steps);
           if (dT>0 && allice(soil,l)>epsilon)
           {
@@ -195,7 +195,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
               convert_water(soil,l,&heat);
             else
               soilice2moisture(soil, &heat, l);
-            soil->state[l]=THAWING;                                                 
+            soil->state[l]=THAWING;
           }
           else if (heat < 0 && allwater(soil,l)>epsilon)
           {
@@ -204,7 +204,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
             else
               moisture2soilice(soil, &heat, l);
             soil->state[l]=FREEZING;
-          }                   
+          }
           dT=(1-z0/soildepth[l])*dT+heat/lambda[l]*(soildepth[l]*1e-3)/timestep2sec(1.0,heat_steps);
         }
         else
@@ -232,5 +232,5 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
       break;
   }
   if (soil->maxthaw_depth<layer-soil->freeze_depth[l])
-    soil->maxthaw_depth=layer-soil->freeze_depth[l]; 
-} /* of 'soiltemp' */             
+    soil->maxthaw_depth=layer-soil->freeze_depth[l];
+} /* of 'soiltemp' */

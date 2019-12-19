@@ -63,6 +63,8 @@
     return NULL; \
   }
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
+
 int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  Pftpar **pftpar,     /**< Pointer to PFT parameter array */
                  const Fscanpftparfcn scanfcn[], /**< array of PFT-specific scan
@@ -77,7 +79,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   Pftpar *pft;
   Real totalroots;
   Limit cnratio;
-  Bool isbiomass;
+  Bool isbiomass,iscrop;
   if (verb>=VERB) puts("// PFT parameters");
   /* Read total number of defined PFTs */
   if(fscanarray(file,&arr,&count,TRUE,"pftpar",verb))
@@ -89,14 +91,14 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     return NULL;
   }
   npft=newvec(int,ntypes);
-  check(npft);
+  checkptr(npft);
   for(n=0;n<ntypes;n++)
     npft[n]=0;
   *pftpar=newvec(Pftpar,count);
-  check(*pftpar);
+  checkptr(*pftpar);
   for(n=0;n<count;n++)
     (*pftpar)[n].id=UNDEF;
-  isbiomass=FALSE;
+  isbiomass=iscrop=FALSE;
   for(n=0;n<count;n++)
   {
     fscanarrayindex(&arr,&item,n,verb);
@@ -128,7 +130,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       return NULL;
     }
     pft->name=strdup(s); /* store PFT name */
-    check(pft->name);
+    checkptr(pft->name);
 
     /* Read pft->type, defined in pftpar.h */
     fscanpftint(verb,&item,&pft->type,pft->name,"type");
@@ -145,8 +147,30 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
         fprintf(stderr,"ERROR210: Natural PFT '%s' must be put before biomass plantation PFT.\n",pft->name);
       return NULL;
     }
-    else if(pft->cultivation_type==BIOMASS)
-      isbiomass=TRUE;
+    if(iscrop)
+    {
+      if(pft->cultivation_type==NONE)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR210: Natural PFT '%s' in line %d of '%s' must be put before crop PFT.\n",pft->name,getlinecount(),getfilename());
+        return NULL;
+      }
+      else if(pft->cultivation_type==BIOMASS)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR210: Biomass plantation PFT '%s' in line %d of '%s' must be put before crop PFT.\n",pft->name,getlinecount(),getfilename());
+        return NULL;
+      }
+    }
+    switch(pft->cultivation_type)
+    {
+      case BIOMASS:
+        isbiomass=TRUE;
+        break;
+      case ANNUAL_CROP:
+        iscrop=TRUE;
+        break;
+    }
     fscanpftrealarray(verb,&item,pft->cn,NHSG,pft->name,"cn");
     fscanpftreal(verb,&item,&pft->beta_root,pft->name,"beta_root");
     totalroots=1 - pow(pft->beta_root,layerbound[BOTTOMLAYER-1]/10);

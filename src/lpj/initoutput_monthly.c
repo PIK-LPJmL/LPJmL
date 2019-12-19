@@ -16,7 +16,10 @@
 
 #include "lpj.h"
 
-void initoutput_monthly(Output *output /**< Output data */
+void initoutput_monthly(Output *output, /**< Output data */
+                        int npft,       /**< number of natural PFTs */
+                        int nbiomass,   /**< number of biomass PFTs */
+                        int ncft        /**< number of crop PFTs */
                        )
 {
   int l;
@@ -44,4 +47,6 @@ void initoutput_monthly(Output *output /**< Output data */
 
   for(l=0;l<NSOILLAYER;l++)
     output->mswc[l]=output->msoiltemp[l]=0;
+  for(l=0;l<(ncft+NGRASS+NBIOMASSTYPE)*2+npft-nbiomass;l++)
+    output->mpft_lai[l]=0;
 } /* of 'initoutput_monthly' */

@@ -154,7 +154,7 @@ static Bool readdata(Climatefile *file,    /* climate data file */
             nc_close(file->ncid);
             return TRUE;
           }
-          data=file->slope*f[file->nlon*address[0]+address[1]]+file->intercept;
+          data=(float)(file->slope*f[file->nlon*address[0]+address[1]]+file->intercept);
           fwrite(&data,sizeof(float),1,bin);
         }
         else
@@ -345,7 +345,7 @@ int main(int argc,char **argv)
   {
     if(verbose)
       printf("%s\n",argv[j]); 
-    if(openclimate_netcdf(&data,argv[j],var,units,&config))
+    if(openclimate_netcdf(&data,argv[j],NULL,var,units,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;

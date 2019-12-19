@@ -71,35 +71,12 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
   landuse->landuse.fmt=config->landuse_filename.fmt;
   if (config->landuse_filename.fmt == CDF)
   {
-    if (opendata_netcdf(&landuse->landuse, config->landuse_filename.name, config->landuse_filename.var, NULL, config))
+    if (opendata_netcdf(&landuse->landuse, &config->landuse_filename, NULL, config))
     {
       free(landuse);
       return NULL;
     }
     landuse->nbands = landuse->landuse.var_len;
-    if (landuse->landuse.var_len != 2 * (ncft + NGRASS + NBIOMASSTYPE) && landuse->landuse.var_len != 4 * (ncft + NGRASS + NBIOMASSTYPE))
-    {
-      if (landuse->landuse.var_len != 2 * (ncft + NGRASS))
-      {
-        closeclimate_netcdf(&landuse->landuse, isroot(*config));
-        if (isroot(*config))
-          fprintf(stderr,
-            "ERROR147: Invalid number of bands=%d in landuse data file.\n",
-            (int)landuse->landuse.var_len);
-        free(landuse);
-        return NULL;
-      }
-      else
-      {
-        if (isroot(*config))
-          fputs("WARNING022: No landuse for biomass defined.\n", stderr);
-      }
-    }
-    if (landuse->landuse.var_len != 4 * (ncft + NGRASS + NBIOMASSTYPE))
-    {
-      if (isroot(*config))
-        fputs("WARNING024: Land-use input does not include irrigation systems, suboptimal country values are used.\n", stderr);
-    }
   }
   else
   {
@@ -119,30 +96,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     }
     else
     {
-      if (header.nbands != 2 * (ncft + NGRASS + NBIOMASSTYPE) && header.nbands != 4 * (ncft + NGRASS + NBIOMASSTYPE))
-      {
-        if (header.nbands != 2 * (ncft + NGRASS))
-        {
-          fclose(landuse->landuse.file);
-          if (isroot(*config))
-            fprintf(stderr,
-              "ERROR147: Invalid number of bands=%d in landuse data file.\n",
-              header.nbands);
-          free(landuse);
-          return NULL;
-        }
-        else
-        {
-          if (isroot(*config))
-            fputs("WARNING022: No landuse for biomass defined.\n", stderr);
-        }
-      }
       landuse->landuse.datatype = header.datatype;
-      if (header.nbands != 4 * (ncft + NGRASS + NBIOMASSTYPE))
-      {
-        if (isroot(*config))
-          fputs("WARNING024: Land-use input does not include irrigation systems, suboptimal country values are used.\n", stderr);
-      }
       landuse->landuse.offset = (config->startgrid - header.firstcell)*header.nbands*typesizes[header.datatype] + headersize(headername, version) + offset;
     }
     landuse->landuse.firstyear = header.firstyear;
@@ -152,36 +106,39 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     landuse->nbands = header.nbands;
     landuse->landuse.scalar = (version == 1) ? 0.001 : header.scalar;
   }
-
+  if(landuse->nbands!=2*(ncft+NGRASS+NBIOMASSTYPE) && landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE))
+  {
+    if(landuse->nbands!=2*(ncft+NGRASS))
+    {
+      closeclimatefile(&landuse->landuse,isroot(*config));
+      if(isroot(*config))
+        fprintf(stderr,
+                "ERROR147: Invalid number of bands=%d in landuse data file.\n",
+                landuse->nbands);
+      free(landuse);
+      return NULL;
+    }
+    else
+    {
+      if(isroot(*config))
+        fputs("WARNING022: No landuse for biomass defined.\n",stderr);
+    }
+  }
+  if(landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE) && isroot(*config))
+    fputs("WARNING024: Land-use input does not include irrigation systems, suboptimal country values are used.\n",stderr);
 
   if(config->sdate_option==PRESCRIBED_SDATE)
   {
     landuse->sdate.fmt=config->sdate_filename.fmt;
     if(config->sdate_filename.fmt==CDF)
     {
-      if(opendata_netcdf(&landuse->sdate,config->sdate_filename.name,config->sdate_filename.var,NULL,config))
+      if(opendata_netcdf(&landuse->sdate,&config->sdate_filename,NULL,config))
       {
-        if(landuse->landuse.fmt==CDF)
-          closeclimate_netcdf(&landuse->landuse,isroot(*config));
-        else
-          fclose(landuse->landuse.file);
+        closeclimatefile(&landuse->landuse,isroot(*config));
         free(landuse);
         return NULL;
       }
-      if(landuse->sdate.var_len!=2*ncft)
-      {
-        closeclimate_netcdf(&landuse->sdate,isroot(*config));
-        if(isroot(*config))
-           fprintf(stderr,
-                  "ERROR147: Invalid number of bands=%d in sowing date data file.\n",
-                  (int)landuse->sdate.var_len);
-        if(landuse->landuse.fmt==CDF)
-          closeclimate_netcdf(&landuse->landuse,isroot(*config));
-        else
-          fclose(landuse->landuse.file);
-        free(landuse);
-        return NULL;
-      }
+      landuse->nbands_sdate=landuse->sdate.var_len;
     }
     else
     {
@@ -189,39 +146,36 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                                             &config->sdate_filename,headername,
                                             &version,&offset,config))==NULL)
       {
-        fclose(landuse->landuse.file);
+        closeclimatefile(&landuse->landuse,isroot(*config));
         free(landuse);
         return NULL;
       }
       if(config->sdate_filename.fmt==RAW)
       {
-        header.nbands=2*ncft;
+        landuse->nbands_sdate=2*ncft;
         landuse->sdate.datatype=LPJ_SHORT;
         landuse->sdate.offset=config->startgrid*header.nbands*sizeof(short);
       }
       else
       {
-        if(header.nbands!=2*ncft)
-        {
-          if(landuse->landuse.fmt==CDF)
-            closeclimate_netcdf(&landuse->landuse,isroot(*config));
-          else
-            fclose(landuse->landuse.file);
-          fclose(landuse->sdate.file);
-          if(isroot(*config))
-            fprintf(stderr,
-                    "ERROR147: Invalid number of bands=%d in sowing date file.\n",
-                    header.nbands);
-          free(landuse);
-          return(NULL);
-        }
+        landuse->nbands_sdate=header.nbands;
         landuse->sdate.datatype=header.datatype;
         landuse->sdate.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version)+offset;
       }
       landuse->sdate.size=header.ncell*header.nbands*typesizes[landuse->sdate.datatype];
       landuse->sdate.n=config->ngridcell*header.nbands;
-      landuse->nbands_sdate=header.nbands;
       landuse->sdate.scalar=header.scalar;
+    }
+    if(landuse->nbands_sdate!=2*ncft)
+    {
+      closeclimatefile(&landuse->landuse,isroot(*config));
+      closeclimatefile(&landuse->sdate,isroot(*config));
+      if(isroot(*config))
+        fprintf(stderr,
+                "ERROR147: Invalid number of bands=%d in sowing date file.\n",
+                landuse->nbands_sdate);
+      free(landuse);
+      return(NULL);
     }
   }
   else
@@ -232,40 +186,11 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     landuse->fertilizer_nr.fmt=config->fertilizer_nr_filename.fmt;
     if(config->fertilizer_nr_filename.fmt==CDF)
     {
-      if(opendata_netcdf(&landuse->fertilizer_nr,config->fertilizer_nr_filename.name,config->fertilizer_nr_filename.var,NULL,config))
+      if(opendata_netcdf(&landuse->fertilizer_nr,&config->fertilizer_nr_filename,NULL,config))
       {
-        if(landuse->landuse.fmt==CDF)
-          closeclimate_netcdf(&landuse->landuse,isroot(*config));
-        else
-          fclose(landuse->landuse.file);
+        closeclimatefile(&landuse->landuse,isroot(*config));
         if(landuse->sdate.file!=NULL)
-        {
-          if(landuse->sdate.fmt==CDF)
-            closeclimate_netcdf(&landuse->sdate,isroot(*config));
-          else
-            fclose(landuse->sdate.file);
-        }
-        free(landuse);
-        return NULL;
-      }
-      if(landuse->fertilizer_nr.var_len!=2*(ncft+NGRASS+NBIOMASSTYPE))
-      {
-        closeclimate_netcdf(&landuse->fertilizer_nr,isroot(*config));
-        if(isroot(*config))
-          fprintf(stderr,
-                  "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
-                  (int)landuse->fertilizer_nr.var_len);
-        if(landuse->landuse.fmt==CDF)
-          closeclimate_netcdf(&landuse->landuse,isroot(*config));
-        else
-          fclose(landuse->landuse.file);
-        if(landuse->sdate.file!=NULL)
-        {
-          if(landuse->sdate.fmt==CDF)
-            closeclimate_netcdf(&landuse->sdate,isroot(*config));
-          else
-            fclose(landuse->sdate.file);
-        }
+          closeclimatefile(&landuse->sdate,isroot(*config));
         free(landuse);
         return NULL;
       }
@@ -277,17 +202,9 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                                                     &config->fertilizer_nr_filename,headername,
                                                     &version,&offset,config))==NULL)
       {
-        if(landuse->landuse.fmt==CDF)
-          closeclimate_netcdf(&landuse->landuse,isroot(*config));
-        else
-          fclose(landuse->landuse.file);
+        closeclimatefile(&landuse->landuse,isroot(*config));
         if(landuse->sdate.file!=NULL)
-        {
-          if(landuse->sdate.fmt==CDF)
-            closeclimate_netcdf(&landuse->sdate,isroot(*config));
-          else
-            fclose(landuse->sdate.file);
-        }
+          closeclimatefile(&landuse->sdate,isroot(*config));
         free(landuse);
         return NULL;
       }
@@ -299,36 +216,29 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       else
       {
-        if(header.nbands!=2*(ncft+NGRASS+NBIOMASSTYPE))
-        {
-          if(landuse->landuse.fmt==CDF)
-            closeclimate_netcdf(&landuse->landuse,isroot(*config));
-          else
-            fclose(landuse->landuse.file);
-          if(landuse->sdate.file!=NULL)
-          {
-            if(landuse->sdate.fmt==CDF)
-              closeclimate_netcdf(&landuse->sdate,isroot(*config));
-            else
-              fclose(landuse->sdate.file);
-          }
-          fclose(landuse->fertilizer_nr.file);
-          if(isroot(*config))
-            fprintf(stderr,
-                    "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
-                    header.nbands);
-          free(landuse);
-          return(NULL);
-        }
         landuse->fertilizer_nr.datatype=header.datatype;
         landuse->fertilizer_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version)+offset;
       }
+      landuse->nbands_fertilizer_nr=header.nbands;
       landuse->fertilizer_nr.firstyear=header.firstyear;
       landuse->fertilizer_nr.nyear=header.nyear;
       landuse->fertilizer_nr.size=header.ncell*header.nbands*typesizes[header.datatype];
       landuse->fertilizer_nr.n=config->ngridcell*header.nbands;
       landuse->nbands_fertilizer_nr=header.nbands;
       landuse->fertilizer_nr.scalar=header.scalar;
+    }
+    if(landuse->nbands_fertilizer_nr!=2*(ncft+NGRASS+NBIOMASSTYPE))
+    {
+      closeclimatefile(&landuse->landuse,isroot(*config));
+      if(landuse->sdate.file!=NULL)
+        closeclimatefile(&landuse->sdate,isroot(*config));
+      closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
+      if(isroot(*config))
+        fprintf(stderr,
+                "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
+                landuse->nbands_fertilizer_nr);
+        free(landuse);
+        return(NULL);
     }
   }
   else
@@ -439,14 +349,6 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         free(dates);
         return TRUE;
       }
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          for(j=0;j<2*ncft;j++)
-            grid[cell].ml.sdate_fixed[j]=dates[count++];
-        else
-          count+=2*ncft;
-      free(dates);
     }
     else
     {
@@ -471,15 +373,15 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         free(dates);
         return TRUE;
       }
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          for(j=0;j<2*ncft;j++)
-            grid[cell].ml.sdate_fixed[j]=dates[count++];
-        else
-          count+=2*ncft;
-      free(dates);
     }
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+        for(j=0;j<2*ncft;j++)
+          grid[cell].ml.sdate_fixed[j]=dates[count++];
+      else
+        count+=2*ncft;
+    free(dates);
   }
 
   yearl = year - landuse->landuse.firstyear;
@@ -847,24 +749,11 @@ void freelanduse(Landuse landuse, /**< pointer to landuse data */
 {
   if(landuse!=NULL)
   {
-    if (landuse->landuse.fmt == CDF)
-      closeclimate_netcdf(&landuse->landuse, isroot);
-    else
-      fclose(landuse->landuse.file);
+    closeclimatefile(&landuse->landuse,isroot);
     if(landuse->sdate.file!=NULL)
-    {
-      if(landuse->sdate.fmt==CDF)
-        closeclimate_netcdf(&landuse->sdate,isroot);
-      else
-        fclose(landuse->sdate.file);
-    }
+      closeclimatefile(&landuse->sdate,isroot);
     if(landuse->fertilizer_nr.file!=NULL)
-    {
-      if(landuse->fertilizer_nr.fmt==CDF)
-        closeclimate_netcdf(&landuse->fertilizer_nr,isroot);
-      else
-        fclose(landuse->fertilizer_nr.file);
-    }
+      closeclimatefile(&landuse->fertilizer_nr,isroot);
     free(landuse);
   }
 } /* of 'freelanduse' */

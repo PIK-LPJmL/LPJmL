@@ -62,9 +62,9 @@ static Cdf *create_cdf(const char *filename,
   }
   cdf->index=array;
   for(i=0;i<array->nlon;i++)
-    lon[i]=array->lon_min+i*res.lon;
+    lon[i]=(float)(array->lon_min+i*res.lon);
   for(i=0;i<array->nlat;i++)
-    lat[i]=array->lat_min+i*res.lat;
+    lat[i]=(float)(array->lat_min+i*res.lat);
 #ifdef USE_NETCDF4
   rc=nc_create(filename,(compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
 #else

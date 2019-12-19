@@ -171,7 +171,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   error(rc);
   rc=nc_def_dim(cdf->ncid,TIME_DIM_NAME,nyear*n,&time_dim_id);
   error(rc);
-  rc=nc_def_dim(cdf->ncid,(index==SOILC_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==MSOILTEMP || index==MSWC) ? "layer" : "npft",size,&pft_dim_id);
+  rc=nc_def_dim(cdf->ncid,(index==SOILC_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==MSOILTEMP || index==MSWC) ? config->layer_index : config->pft_index,size,&pft_dim_id);
   error(rc);
   rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&lat_dim_id);
   error(rc);

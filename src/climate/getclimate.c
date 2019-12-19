@@ -192,7 +192,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
     if(index<0)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR130: Invalid year %d in getclimate().\n",year_climate);
+        fprintf(stderr,"ERROR130: Invalid year %d for wet days in getclimate().\n",year_climate);
       return TRUE;
     }
     if(index<climate->file_wet.nyear)

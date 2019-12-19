@@ -35,7 +35,6 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
                 )                   /** \return TRUE on error */
 {
   LPJfile arr,item;
-  Bool isdaily;
   int count,flag,size,index,ntotpft;
   String outpath;
   Verbosity verbosity;
@@ -47,7 +46,7 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
     return TRUE;
   }
   count=index=0;
-  isdaily=FALSE;
+  config->withdailyoutput=FALSE;
   size=nout_max;
   if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))
   {
@@ -127,14 +126,14 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
         else
         {
           if(isdailyoutput(flag))
-            isdaily=TRUE;
+            config->withdailyoutput=TRUE;
           count++;
         }
       }
     }
     index++;
   }
-  if(config->sim_id==LPJML && isdaily)
+  if(config->sim_id==LPJML && config->withdailyoutput)
   {
     ntotpft=config->npft[GRASS]+config->npft[TREE]+config->npft[CROP];
     fscanint2(file,&config->crop_index,"crop_index");

@@ -102,8 +102,11 @@ typedef struct
   int n_out;     /**< number of output files */
   int laimax_interpolate;
   Real laimax;        /**< maximum LAI for benchmark */
+  Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
   int crop_index;
   int fdi;
+  char *pft_index;
+  char *layer_index;
   Bool crop_irrigation;
   int with_nitrogen;      /**< enable nitrogen cycle */
   Bool fertilizer_input; 

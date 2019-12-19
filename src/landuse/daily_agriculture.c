@@ -35,7 +35,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
                        int npft,   /**< number of natural PFTs */
                        int ncft,   /**< number of crop PFTs   */
                        int UNUSED(year), /**< simulation year */
-                       Bool withdailyoutput, /**< enable daily output */
                        Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                        const Config *config /**< LPJ config */
                       )            /** \return runoff (mm) */
@@ -254,13 +253,13 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   /* INFILTRATION and PERCOLATION */
   if(irrig_apply>epsilon)
   {
-    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config);
+    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,config);
     /* count irrigation events*/
     pft=getpft(&stand->pftlist,0);
     output->cft_irrig_events[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,withdailyoutput,config);
+  runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -299,6 +298,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       output->pft_npp[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp*stand->frac;
     else
       output->pft_npp[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
+    output->mpft_lai[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai_crop(pft);
     crop=pft->data;
 #ifdef DOUBLE_HARVEST
     crop->lgp+=1;
@@ -424,7 +424,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
-  if(withdailyoutput)
+  if(config->withdailyoutput)
   {
     foreachpft(pft,p,&stand->pftlist)
       if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)

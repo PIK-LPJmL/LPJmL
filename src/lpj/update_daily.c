@@ -29,7 +29,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                   int ncft,              /**< number of crop PFTs   */
                   int year,              /**< simulation year */
                   int month,             /**< month (0..11) */
-                  Bool withdailyoutput,  /**< enable daily output */
                   Bool intercrop,        /**< enable intercropping */
                   const Config *config   /**< LPJmL configuration */
                  )
@@ -85,7 +84,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.malbedo += beta * stand->frac;
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& cell->afire_frac<1)
-	dailyfire_stand(stand,&livefuel,popdensity,avgprec,&climate,config);    
+      dailyfire_stand(stand,&livefuel,popdensity,avgprec,&climate,config);
     if(config->permafrost)
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,
@@ -122,7 +121,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
     cell->output.mswe+=stand->soil.snowpack*stand->frac;
-    if (withdailyoutput)
+    if (config->withdailyoutput)
     {
       switch(stand->type->landusetype)
       {
@@ -210,7 +209,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
     runoff=daily_stand(stand,co2,&climate,day,daylength,gp_pft,
                        gtemp_air,gtemp_soil[0],gp_stand,gp_stand_leafon,eeq,par,
-                       melt,npft,ncft,year,withdailyoutput,intercrop,config);
+                       melt,npft,ncft,year,intercrop,config);
     if(config->with_nitrogen)
     {
       denitrification(stand);

@@ -77,7 +77,7 @@ static int checkdatafile(const Config *config,const Filename *filename)
   size_t offset;
   if(filename->fmt==CDF)
   {
-    if(openfile_netcdf(&input,filename->name,filename->var,NULL,config))
+    if(openfile_netcdf(&input,filename,NULL,config))
        return 1;
     closeclimate_netcdf(&input,TRUE);
   }
@@ -121,7 +121,7 @@ static int checkclmfile(const Config *config,const Filename *filename)
       for(year=first;year<=last;year++)
       {
         sprintf(name,s,year);
-        if(openclimate_netcdf(&input,name,filename->var,NULL,config))
+        if(openclimate_netcdf(&input,name,filename->time,filename->var,NULL,config))
         {
           count++;
         }
@@ -134,7 +134,7 @@ static int checkclmfile(const Config *config,const Filename *filename)
     }
     else
     {
-      if(openclimate_netcdf(&input,filename->name,filename->var,NULL,config))
+      if(openclimate_netcdf(&input,filename->name,filename->time,filename->var,NULL,config))
         return 1;
       closeclimate_netcdf(&input,TRUE);
     }

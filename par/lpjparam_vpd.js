@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**              l  p  j  p  a  r  a  m  .  j  s                                   \n**/
+/**              l  p  j  p  a  r  a  m  _  v  p  d  .  j  s                       \n**/
 /**                                                                                \n**/
 /**     LPJ parameter file for LPJmL version 5.1.001                               \n**/
 /**                                                                                \n**/
@@ -12,7 +12,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-"param" : 
+"param" :
 {
   "k_litter10" : 0.3,        /* k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
@@ -28,7 +28,7 @@
   "bc4" : 0.035,             /* bc4 leaf respiration as fraction of Vmax for C4 plants */
   "r_growth" : 0.25,         /* r_growth */
   "GM" : 3.26,               /* GM empirical parameter in demand function */
-  "ALPHAM" : 1.391,          /* ALPHAM Priestley-Taylor coefficient*/ 
+  "ALPHAM" : 1.391,          /* ALPHAM Priestley-Taylor coefficient*/
   "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */
   "kc25" : 30.,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.7,           /* atmfrac */
@@ -77,5 +77,4 @@ bisco activity */
   "firedura" : -8.79,                 /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.53,		      /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.0104            /* threshold of fireintensity for which burnt area can be modeled */
-
 },

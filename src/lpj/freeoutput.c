@@ -26,6 +26,7 @@ void freeoutput(Output *output /**< Output data */
   free(output->pft_npp);
   free(output->pft_nuptake);
   free(output->pft_ndemand);
+  free(output->mpft_lai);
   free(output->pft_gcgp);
   free(output->gcgp_count);
   free(output->fpc);

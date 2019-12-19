@@ -96,7 +96,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].output.mdischarge=grid[cell].output.mwateramount=grid[cell].ml.mdemand=0.0;
       if(!grid[cell].skip)
       {
-        initoutput_monthly(&((grid+cell)->output));
+        initoutput_monthly(&grid[cell].output,npft,config->nbiomass,ncft);
         /* Initialize random seed */
         //if(israndomprec(input.climate))
           srand48(config->seed+(config->startgrid+cell)*year*month);
@@ -152,7 +152,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           srand48(config->seed+(config->startgrid+cell)*year*day);
 #endif
           update_daily(grid+cell,co2,popdens,daily,day,npft,
-                       ncft,year,month,output->withdaily,intercrop,config);
+                       ncft,year,month,intercrop,config);
         }
       }
       if(config->river_routing)
@@ -166,7 +166,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           wateruse(grid,npft,ncft,config);
       }
 
-      if(output->withdaily && year>=config->outputyear)
+      if(config->withdailyoutput && year>=config->outputyear)
         fwriteoutput_daily(output,grid,day-1,year,config);
 
       day++;
@@ -178,19 +178,19 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       {
         if(grid[cell].discharge.next<0)
           grid[cell].output.adischarge+=grid[cell].output.mdischarge;           /* only endcell outflow */
-        grid[cell].output.mdischarge*=1e-9/ndaymonth[month];                    /* daily mean discharge per month in 1.000.000 m3 per cell */
+        grid[cell].output.mdischarge*=1e-9;                    /* monthly mean discharge per month in 1.000.000 m3 per cell */
         grid[cell].output.mres_storage*=1e-9/ndaymonth[month];                  /* mean monthly reservoir storage in 1.000.000 m3 per cell */
         grid[cell].output.mwateramount*=1e-9/ndaymonth[month];                  /* mean wateramount per month in 1.000.000 m3 per cell */
       }
       if(!grid[cell].skip)
         update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
                        cell,month),getmprec(input.climate,&grid[cell].climbuf,
-                       cell,month),month);
+                       cell,month),npft,config->nbiomass,ncft,month);
     } /* of 'for(cell=0;...)' */
 
     if(year>=config->outputyear)
       /* write out monthly output */
-      fwriteoutput_monthly(output,grid,month,year,config);
+      fwriteoutput_monthly(output,grid,npft,ncft,month,year,config);
 
   } /* of 'foreachmonth */
 

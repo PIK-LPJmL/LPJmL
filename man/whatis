@@ -1,4 +1,5 @@
 adddrain (1) - add river basin to coordinate file
+addheader (1) - add clm header to binary file
 asc2clm (1) - convert ARC/Info ASCII files to clm data files for LPJmL
 backtrace (1) - print backtrace from core
 bin2cdf (1) - convert binary output files into NetCDF files

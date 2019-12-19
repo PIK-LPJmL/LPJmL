@@ -22,6 +22,8 @@
     return 0;\
   }
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
+
 int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
                    Regionpar **regionpar, /**< Pointer to regionpar array */
                    Verbosity verb         /**< verbosity level (NO_ERR,ERR,VERB) */
@@ -36,7 +38,7 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
     return 0;
 
   *regionpar=newvec(Regionpar,nregions);
-  check(*regionpar);
+  checkptr(*regionpar);
   for(n=0;n<nregions;n++)
     (*regionpar)[n].id=UNDEF;
   for(n=0;n<nregions;n++)
@@ -66,7 +68,7 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
       return 0;
     }
     region->name=strdup(s);
-    check(region->name);
+    checkptr(region->name);
     region->id=id;
     fscanreal2(verb,&item,&region->fuelratio,"fuelratio",region->name);
     fscanreal2(verb,&item,&region->bifratio,"bifratio",region->name);

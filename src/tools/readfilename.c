@@ -60,9 +60,29 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
         return TRUE;
       }
     }
+    if(iskeydefined(&f,"time"))
+    {
+      if(fscanstring(&f,name,"time",FALSE,verb))
+      {
+        if(verb)
+          readstringerr("time");
+        return TRUE;
+      }
+      else
+      {
+        filename->time=strdup(name);
+        if(filename->time==NULL)
+        {
+          printallocerr("time");
+          return TRUE;
+        }
+      }
+    }
+    else
+      filename->time=NULL;
   }
   else
-    filename->var=NULL;
+    filename->var=filename->time=NULL;
   if(fscanstring(&f,name,"name",FALSE,verb))
   {
     if(verb)

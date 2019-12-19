@@ -20,6 +20,7 @@ static void freefilename(Filename filename)
 {
   free(filename.name);
   free(filename.var);
+  free(filename.time);
 } /* of 'freefilename' */
 
 void freeconfig(Config *config /**< LPJmL configuration */
@@ -34,6 +35,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->restartdir);
   free(config->arglist);
   free(config->sim_name);
+  free(config->pft_index);
+  free(config->layer_index);
   if(config->river_routing)
   {
     freefilename(config->drainage_filename);

@@ -33,7 +33,6 @@ Real daily_natural(Stand *stand, /**< stand pointer */
                    int npft,   /**< number of natural PFTs */
                    int ncft, /**< number of crop PFTs   */
                    int year,         /**< simulation year (AD) */
-                   Bool withdailyoutput, /**< daily output enabled */
                    Bool UNUSED(intercrop), /**< enabled intercropping */
                    const Config *config /**< LPJ config */
                   ) /** \return runoff (mm) */
@@ -110,7 +109,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   }
 
   /* soil inflow: infiltration and percolation */
-  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,withdailyoutput,config);
+  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,config);
 #ifdef PERMUTE
   for(p=0;p<getnpft(&stand->pftlist);p++)
 #else
@@ -135,10 +134,8 @@ Real daily_natural(Stand *stand, /**< stand pointer */
     }
 
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
-    if (withdailyoutput){
-      if (output->daily.cft == ALLNATURAL)
-        output->daily.npp+=npp;
-    }
+    if(config->withdailyoutput && output->daily.cft == ALLNATURAL)
+      output->daily.npp+=npp;
     output->dcflux-=npp*stand->frac;
     output->mnpp+=npp*stand->frac;
     output->mgpp+=gpp*stand->frac;
@@ -157,6 +154,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
         output->pft_npp[pft->par->id]+=npp*stand->frac;
       else
         output->pft_npp[pft->par->id]+=npp;
+      output->mpft_lai[pft->par->id]+=actual_lai(pft);
     }
   } /* of foreachpft */
 
@@ -164,7 +162,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,FALSE);
 
-  if(withdailyoutput)
+  if(config->withdailyoutput)
   {
 #ifndef COUPLING_WITH_FMS
     // when coupling with FMS/POEM, we always need evap output,

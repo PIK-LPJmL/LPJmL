@@ -35,6 +35,8 @@ Bool initoutput(Output *output, /**< Output data */
   output->pft_nuptake=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->pft_nuptake);
   output->pft_ndemand=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
+  output->mpft_lai=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
+  checkptr(output->mpft_lai);
   output->pft_gcgp=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->pft_gcgp);
   output->gcgp_count=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));

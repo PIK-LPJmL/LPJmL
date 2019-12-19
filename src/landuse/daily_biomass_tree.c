@@ -36,7 +36,6 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
                         int npft,   /**< number of natural PFTs */
                         int ncft,   /**< number of crop PFTs   */
                         int UNUSED(year), /**< simulation year */
-                        Bool withdailyoutput, /**< enable daily output */
                         Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                         const Config *config /**< LPJ config */
                        ) /** \return runoff (mm) */
@@ -130,12 +129,12 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
   /* soil inflow: infiltration and percolation */
   if(irrig_apply>epsilon)
   {
-    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config);
+    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,config);
     /* count irrigation events*/
     output->cft_irrig_events[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++;
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,withdailyoutput,config);
+  runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -175,6 +174,7 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
      output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
    else
      output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
+   output->mpft_lai[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai(pft);
 
   } /* of foreachpft */
 
