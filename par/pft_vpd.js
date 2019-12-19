@@ -859,7 +859,7 @@
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : ANY,      /* phenology */
+    "phenology" : "any",      /* phenology */
     "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 20., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
@@ -935,7 +935,7 @@
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : ANY,      /* phenology */
+    "phenology" : "any",      /* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
@@ -1011,7 +1011,7 @@
       "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : ANY,      /* phenology */
+    "phenology" : "any",      /* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
@@ -1181,7 +1181,7 @@
       "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : 0.005,     /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : SUMMERGREEN, /* phenology */
+    "phenology" : "summergreen", /* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 15., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
@@ -1277,7 +1277,7 @@
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : ANY,      /* phenology */
+    "phenology" : "any",      /* phenology */
     "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 4.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 15., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
@@ -1864,7 +1864,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6,   /* windspeed dampening */
     "roughness_length" : 0.03,     /* roughness length */
-    "calcmethod_sdate" : TEMP_STYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 90, "sdatesh" : 270, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 260,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -2062,7 +2062,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : TEMP_STYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" :  181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  .  j  s                                                  \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 4.0.004                          \n**/
+/**  PFT and CFT parameter file for LPJmL version 4.0.005                          \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -135,9 +135,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST          /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 2. pft */
@@ -229,9 +227,7 @@
     "crown_mort_rck" : 0.05, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST          /* k_est */
   },
 /*---------------------------------------------------------------------------------------------*/
 /* 3. pft */
@@ -323,9 +319,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.75,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST          /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 4. pft */
@@ -417,9 +411,7 @@
     "crown_mort_rck" : 0.95, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST          /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 5. pft */
@@ -513,9 +505,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST          /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 6. pft */
@@ -607,9 +597,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST          /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 7. pft */
@@ -703,9 +691,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST          /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 8. pft */
@@ -799,9 +785,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST          /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 9. pft */

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  .  p  a  r                                               \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 4.0.002                          \n**/
+/**  PFT and CFT parameter file for LPJmL version 4.0.005                          \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -126,8 +126,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 2. pft */
 TROPICAL_BROADLEAVED_RAINGREEN_TREE
@@ -207,8 +205,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*---------------------------------------------------------------------------------------------*/
 /* 3. pft */
 TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE
@@ -288,8 +284,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.75                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 4. pft */
 TEMPERATE_BROADLEAVED_EVERGREEN_TREE
@@ -369,8 +363,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 5. pft */
 TEMPERATE_BROADLEAVED_SUMMERGREEN_TREE
@@ -452,8 +444,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 6. pft */
 BOREAL_NEEDLELEAVED_EVERGREEN_TREE
@@ -533,8 +523,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 7. pft */
 BOREAL_BROADLEAVED_SUMMERGREEN_TREE
@@ -616,8 +604,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 8. pft */
 BOREAL_NEEDLELEAVED_SUMMERGREEN_TREE
@@ -699,8 +685,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
 TROPICAL_HERBACEOUS

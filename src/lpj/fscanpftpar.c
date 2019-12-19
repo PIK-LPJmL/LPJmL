@@ -136,6 +136,13 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
 
     /* Read pft->type, defined in pftpar.h */
     fscanpftint(verb,&item,&pft->type,pft->name,"type");
+    if(pft->type<0 || pft->type>=ntypes)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s' in line %d of '%s'.\n",
+                pft->type,pft->name,getlinecount(),getfilename());
+      return NULL;
+    }
     if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,3,FALSE,verb))
     {
       if(verb)
@@ -231,13 +238,6 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  "roughness_length");
     pft->k_litter10.leaf/=NDAYYEAR;
     pft->k_litter10.wood/=NDAYYEAR;
-    if(pft->type<0 || pft->type>=ntypes)
-    {
-      if(verb)
-        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s' in line %d of '%s'.\n",
-                pft->type,pft->name,getlinecount(),getfilename());
-      return NULL;
-    }
     npft[pft->type]++;
     /* set default PFT-specific functions */
     pft->init=noinit;

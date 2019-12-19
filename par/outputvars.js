@@ -210,7 +210,7 @@
   { "id" : MPHEN_TMAX, "name": "mphen_tmax", "var" :  "phen_tmax", "descr" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MPHEN_LIGHT, "name": "mphen_light", "var" :  "phen_light", "descr" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MPHEN_WATER, "name": "mphen_water", "var" :  "phen_water", "descr" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MWSCAL, "name": "mwscal", "var" :  "wscal", "unit" : "water scalar", "descr" :  "", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MWSCAL, "name": "mwscal", "var" :  "wscal", "unit" : "", "descr" :  "water scalar", "scale" : 1.0, "offset" : 0.0},
   { "id" : MIRRIG_RW, "name": "mirrig_rw", "var" :  "rw_irrig", "descr" :  "supplementary rainwater irrigation", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MUNMET_DEMAND, "name": "munmet_demand", "var" :  "unmet_demand", "descr" :  "unavailable requested irrigation water", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : HDATE2, "name": "hdate2", "var" :  "hdate2", "descr" :  "harvesting date 2nd season", "unit" : "DOY", "scale" : 1.0, "offset" : 0.0},
