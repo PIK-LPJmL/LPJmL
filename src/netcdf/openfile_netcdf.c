@@ -17,18 +17,17 @@
 #include "lpj.h"
 
 Bool openfile_netcdf(Climatefile *file,    /**< data file */
-                     const char *filename, /**< filename */
-                     const char *var,      /**< variable name or NULL */
+                     const Filename *filename, /**< filename */
                      const char *units,    /**< units or NULL */
                      const Config *config  /**< LPJ configuration */
                     )                      /** \return TRUE on error */
 {
-  if(openclimate_netcdf(file,filename,var,units,config))
+  if(openclimate_netcdf(file,filename->name,filename->time,filename->var,units,config))
     return TRUE;
   file->oneyear=FALSE;
   if(file->time_step!=YEAR)
   {
-    fprintf(stderr,"ERROR435: No yearly data in file '%s'.\n",filename);
+    fprintf(stderr,"ERROR435: No yearly data in file '%s'.\n",filename->name);
     closeclimate_netcdf(file,TRUE);
     return TRUE;
   }

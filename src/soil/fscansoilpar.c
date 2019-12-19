@@ -39,6 +39,8 @@ Real midlayer[NSOILLAYER];
 Real logmidlayer[NSOILLAYER];   /*log10(midlayer[l]/midlayer[NSOILLAYER-2]), for vertical soc profile*/
 Real fbd_fac[NFUELCLASS];
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
+
 unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
                           Soilpar **soilpar, /**< Pointer to Soilpar array */
                           Verbosity verb     /**< verbosity level (NO_ERR,ERR,VERB) */
@@ -71,12 +73,12 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
   if(nsoil<1)
   {
     if(verb)
-      fprintf(stderr,"ERROR170: Invalid value for number of soil types=%u in line %d of '%s'\n",
+      fprintf(stderr,"ERROR170: Invalid value for number of soil types=%d in line %d of '%s'\n",
               nsoil,getlinecount(),getfilename());
     return 0;
   }
   *soilpar=newvec(Soilpar,nsoil);
-  check(*soilpar);
+  checkptr(*soilpar);
   for(n=0;n<nsoil;n++)
     (*soilpar)[n].type=UNDEF;
   for(n=0;n<nsoil;n++)
@@ -87,7 +89,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     if(id>=nsoil)
     {
       if(verb)
-        fprintf(stderr,"ERROR115: Invalid range of soil type=%u in line %d of '%s' in fscansoilpar(), valid range is [0,%u].\n",id,getlinecount(),getfilename(),nsoil-1);
+        fprintf(stderr,"ERROR115: Invalid range of soil type=%u in line %d of '%s' in fscansoilpar(), valid range is [0,%d].\n",id,getlinecount(),getfilename(),nsoil-1);
       return 0;
     }
     soil=(*soilpar)+id;
@@ -104,7 +106,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
       return 0;
     }
     soil->name=strdup(s);
-    check(soil->name);
+    checkptr(soil->name);
     soil->type=id;
     fscanreal2(verb,&item,&soil->Ks,soil->name,"Ks");
     fscanreal2(verb,&item,&soil->Sf,soil->name,"Sf");

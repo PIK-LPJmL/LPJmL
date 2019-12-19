@@ -74,7 +74,7 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        header.scalar=strtod(argv[++i],&endptr);
+        header.scalar=(float)strtod(argv[++i],&endptr);
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid number '%s' for scale.\n",argv[i]);

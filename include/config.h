@@ -97,8 +97,11 @@ typedef struct
   int n_out;     /**< number of output files */
   int laimax_interpolate;
   Real laimax;        /**< maximum LAI for benchmark */
+  Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
   int crop_index;
   int fdi;
+  char *pft_index;
+  char *layer_index;
   Bool crop_irrigation;
   Bool global_netcdf;     /** enable global grid for NetCDF output */
   Bool landuse_restart;   /**< land use enabled in restart file */

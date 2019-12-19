@@ -31,8 +31,6 @@ void initoutput_annual(Output *output, /**< Output data */
   output->prod_turnover=output->deforest_emissions=output->fburn=output->ftimber=output->timber_harvest=0;
   output->product_pool_fast=output->product_pool_slow=output->trad_biofuel=0;
 
-  /* memory allocation now in newgrid.c */
-
   for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     output->pft_harvest[i].harvest=output->pft_harvest[i].residual=output->cftfrac[i]=
     output->cft_consump_water_g[i]=output->cft_consump_water_b[i]=

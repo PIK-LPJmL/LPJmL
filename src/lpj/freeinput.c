@@ -21,12 +21,8 @@ void freeinput(Input input, /**< Input struct */
               )
 {
   freeclimate(input.climate,isroot);
-  if(input.wateruse!=NULL)
-    freewateruse(input.wateruse,isroot);
-  if(input.landuse!=NULL)
-    freelanduse(input.landuse,isroot);
-  if(input.popdens!=NULL)
-    freepopdens(input.popdens,isroot);
-  if(input.landcover!=NULL)
-    freelandcover(input.landcover,isroot);
+  freewateruse(input.wateruse,isroot);
+  freelanduse(input.landuse,isroot);
+  freepopdens(input.popdens,isroot);
+  freelandcover(input.landcover,isroot);
 } /* of 'freeinput' */

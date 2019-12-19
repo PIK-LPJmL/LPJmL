@@ -76,6 +76,16 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     fscanname(&item,name,"descr",outnames[index].name);
     outnames[index].descr=strdup(name);
     fscanname(&item,name,"unit",outnames[index].name);
+    if(strstr(name,"month")!=NULL)
+      outnames[index].time=MONTH;
+    else if(strstr(name,"year")!=NULL)
+      outnames[index].time=YEAR;
+    else if(strstr(name,"day")!=NULL || strstr(name,"d-1")!=NULL)
+      outnames[index].time=DAY;
+    else if(strstr(name,"sec")!=NULL || strstr(name,"s-1")!=NULL)
+      outnames[index].time=SECOND;
+    else
+      outnames[index].time=MISSING_TIME;
     outnames[index].unit=strdup(name);
     outnames[index].scale=1.0;
     fscanfloat2(&item,&outnames[index].scale,"scale",outnames[index].name);

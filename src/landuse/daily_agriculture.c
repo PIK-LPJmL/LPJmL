@@ -35,7 +35,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
                        int npft,   /**< number of natural PFTs */
                        int ncft,   /**< number of crop PFTs   */
                        int UNUSED(year), /**< simulation year */
-                       Bool withdailyoutput,
                        Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                        const Config *config /**< LPJ config */
                       )            /** \return runoff (mm) */
@@ -281,6 +280,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       output->pft_npp[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp*stand->frac;
     else
       output->pft_npp[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
+    output->mpft_lai[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai_crop(pft);
     crop=pft->data;
 #ifdef DOUBLE_HARVEST
     crop->lgp+=1;
@@ -406,7 +406,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
-  if(withdailyoutput)
+  if(config->withdailyoutput)
   {
     foreachpft(pft,p,&stand->pftlist)
       if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)

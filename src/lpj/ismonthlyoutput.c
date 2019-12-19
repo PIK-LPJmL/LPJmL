@@ -31,7 +31,7 @@ Bool ismonthlyoutput(int index /**< Output index */
     case MSOILTEMP4: case MSOILTEMP5: case MSOILTEMP6: case MWD_UNSUST: case MUNMET_DEMAND:
     case MPREC: case MRAIN: case MSNOWF: case MMELT: case MSWE: case MSNOWRUNOFF:
     case MRUNOFF_SURF: case MRUNOFF_LAT: case MSEEPAGE: case MIRRIG_RW:
-    case MFAPAR: case MALBEDO:
+    case MFAPAR: case MALBEDO: case MPFT_LAI:
     case MPHEN_TMIN: case MPHEN_TMAX: case MPHEN_LIGHT: case MPHEN_WATER: case MWSCAL:
     case MSWC3: case MSWC4: case MSWC5: case MWD_LOCAL: case MWD_NEIGHB: case MWD_RES:
     case MWD_RETURN: case MCONV_LOSS_EVAP: case MCONV_LOSS_DRAIN: case MRES_STORAGE: case MRES_DEMAND: case MSTOR_RETURN: case MLAKEVOL: case MLAKETEMP:

@@ -22,6 +22,8 @@
     return 0;\
   }
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
+
 char *irrigsys[]={"no irrig","surf","sprink","drip"};
 
 int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
@@ -40,7 +42,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
   if(fscanarray(file,&arr,&ncountries,TRUE,"countrypar",verb))
     return 0;
   *countrypar=newvec(Countrypar,ncountries);
-  check(*countrypar);
+  checkptr(*countrypar);
   for(n=0;n<ncountries;n++)
    (*countrypar)[n].id=UNDEF;
   for(n=0;n<ncountries;n++)
@@ -69,12 +71,12 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
       return 0;
     }
     country->name=strdup(s);
-    check(country->name);
+    checkptr(country->name);
     country->id=id;
     if(ncft)
     {
       country->laimax_cft=newvec(Real,ncft);
-      check(country->laimax_cft);
+      checkptr(country->laimax_cft);
       if(fscanrealarray(&item,country->laimax_cft,ncft,"laimax",verb))
       {
         if(verb)

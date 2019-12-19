@@ -174,7 +174,11 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   }
   env_options=getenv(LPJOPTIONS);
   options=newvec(char *,(env_options==NULL) ? *argc : *argc+1);
-  check(options);
+  if(options==NULL)
+  {
+    printallocerr("options");
+    return NULL;
+  }
   dcount=0;
   len=1;
   /* parse command line arguments */

@@ -24,6 +24,7 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_consump_water_b);
   free(output->growing_period);  
   free(output->pft_npp);
+  free(output->mpft_lai);
   free(output->pft_gcgp);
   free(output->gcgp_count);
   free(output->fpc);

@@ -65,9 +65,9 @@ static Cdf *create_cdf(const char *filename,
     return NULL;
   }
   for(i=0;i<array->nlon;i++)
-    lon[i]=array->lon_min+i*header.cellsize_lon;
+    lon[i]=(float)(array->lon_min+i*header.cellsize_lon);
   for(i=0;i<array->nlat;i++)
-    lat[i]=array->lat_min+i*header.cellsize_lat;
+    lat[i]=(float)(array->lat_min+i*header.cellsize_lat);
   if(notime)
     year=NULL;
   else
