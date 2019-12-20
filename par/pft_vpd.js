@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  _  v  p  d  .  j  s                                      \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 4.0.004                          \n**/
+/**  PFT and CFT parameter file for LPJmL version 4.0.005                          \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  j  s                            \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables                                             \n**/
+/**  Defines array of output variables for LPJmL version 4.0.005                   \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -135,7 +135,7 @@
   { "id" : D_RUNOFF, "name": "d_runoff", "var" : "runoff", "descr" :  "runoff", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_RH, "name": "d_rh", "var" : "rh", "descr" :  "heterotrophic respiration", "unit" : "gC/m2/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_INTERC, "name": "d_interc", "var" : "interc", "descr" :  "interception", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
-  { "id" : D_ASSIM, "name": "d_assim", "var" : "assim", "descr" :  "assim", "unit" : "gC/m2/day", "scale" : 1.0, "offset" : 0.0},
+  { "id" : D_ASSIM, "name": "d_assim", "var" : "assim", "descr" :  "carbon assimilation rate", "unit" : "gC/m2/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_ROT_MODE, "name": "d_rot_mode", "var" : "rot_mode", "descr" :  "rotation mode", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_PET, "name": "d_pet", "var" : "PET", "descr" :  "potential evapotranspiration", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
   /* further non-daily outputs */
@@ -153,7 +153,7 @@
   { "id" : FLUX_FIREWOOD, "name": "flux_firewood", "var" :  "flux_firewood", "descr" :  "wood fire emissions", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : RHARVEST_BURNT, "name": "rharvest_burnt", "var" :  "rharvest_burnt", "descr" :  "residual burnt carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : RHARVEST_BURNT_IN_FIELD, "name": "rharvest_burntinfield", "var" :  "rharvest_burntinfield", "descr" :  "", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MTEMP_IMAGE, "name": "mtemp_image", "var" :  "temp", "descr" :  "temperature received from IMAGE", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MTEMP_IMAGE, "name": "mtemp_image", "var" :  "temp", "descr" :  "temperature received from IMAGE", "unit" : "celsius", "scale" : 1.0, "offset" : 0.0},
   { "id" : MPREC_IMAGE, "name": "mprec_image", "var" :  "prec", "descr" :  "precipitation received from IMAGE", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MSUN_IMAGE, "name": "msun_image", "var" :  "sun", "descr" :  "sunshine received from IMAGE", "unit" : "%", "scale" : 1.0, "offset" : 0.0},
   { "id" : MWET_IMAGE, "name": "mwet_image", "var" :  "wet", "descr" :  "wet days received from IMAGE", "unit" : "day", "scale" : 1.0, "offset" : 0.0},
@@ -164,13 +164,13 @@
   { "id" : PRODUCT_POOL_SLOW, "name": "product_pool_slow", "var" :  "product_pool_slow", "descr" :  "carbon in the slow product pool", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LUC_IMAGE, "name": "luc_image", "var" :  "luc_image", "descr" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MAXTHAW_DEPTH, "name": "maxthaw_depth", "var" :  "maxthaw_depth", "descr" :  "maximum thawing depth", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MSOILTEMP, "name": "msoiltemp", "var" :  "soiltemp", "descr" :  "soil temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MSOILTEMP1, "name": "msoiltemp1", "var" :  "soiltemp1", "descr" :  "soil temperature in layer 1", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MSOILTEMP2, "name": "msoiltemp2", "var" :  "soiltemp2", "descr" :  "soil temperature in layer 2", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MSOILTEMP3, "name": "msoiltemp3", "var" :  "soiltemp3", "descr" :  "soil temperature in layer 3", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MSOILTEMP4, "name": "msoiltemp4", "var" :  "soiltemp4", "descr" :  "soil temperature in layer 4", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MSOILTEMP5, "name": "msoiltemp5", "var" :  "soiltemp5", "descr" :  "soil temperature in layer 5", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MSOILTEMP6, "name": "msoiltemp6", "var" :  "soiltemp6", "descr" :  "soil temperature in layer 6", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MSOILTEMP, "name": "msoiltemp", "var" :  "soiltemp", "descr" :  "soil temperature", "unit" : "celsius", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MSOILTEMP1, "name": "msoiltemp1", "var" :  "soiltemp1", "descr" :  "soil temperature in layer 1", "unit" : "celsius", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MSOILTEMP2, "name": "msoiltemp2", "var" :  "soiltemp2", "descr" :  "soil temperature in layer 2", "unit" : "celsius", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MSOILTEMP3, "name": "msoiltemp3", "var" :  "soiltemp3", "descr" :  "soil temperature in layer 3", "unit" : "celsius", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MSOILTEMP4, "name": "msoiltemp4", "var" :  "soiltemp4", "descr" :  "soil temperature in layer 4", "unit" : "celsius", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MSOILTEMP5, "name": "msoiltemp5", "var" :  "soiltemp5", "descr" :  "soil temperature in layer 5", "unit" : "celsius", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MSOILTEMP6, "name": "msoiltemp6", "var" :  "soiltemp6", "descr" :  "soil temperature in layer 6", "unit" : "celsius", "scale" : 1.0, "offset" : 0.0},
   { "id" : MRES_STORAGE, "name": "mres_storage", "var" :  "res_storage", "descr" :  "mean reservoir storage", "unit" : "hm3", "scale" : 1.0, "offset" : 0.0},
   { "id" : MRES_DEMAND, "name": "mres_demand", "var" :  "res_demand", "descr" :  "reservoir demand", "unit" : "hm3/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MTARGET_RELEASE, "name": "mtarget_release", "var" :  "target_release", "descr" :  "target release", "unit" : "hm3/month", "scale" : 1.0, "offset" : 0.0},
@@ -231,7 +231,7 @@
   { "id" : CFT_EVAP2, "name": "cft_evap2", "var" :  "evap2", "descr" :  "CFT-specific evaporation 2nd season", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_INTERC2, "name": "cft_interc2", "var" :  "interc2", "descr" :  "CFT-specific interception 2nd season", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_NIR2, "name": "cft_nir2", "var" :  "nir2", "descr" :  "CFT-specific net irrigation requirement 2nd season", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
-  { "id" : CFT_TEMP2, "name": "cft_temp2", "var" :  "temp2", "descr" :  "CFT-specific temperature 2nd season", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
+  { "id" : CFT_TEMP2, "name": "cft_temp2", "var" :  "temp2", "descr" :  "CFT-specific temperature 2nd season", "unit" : "celsius", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_PREC2, "name": "cft_prec2", "var" :  "prec2", "descr" :  "CFT-specific precipitation 2nd season", "unit" : "mm/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_SRAD2, "name": "cft_srad2", "var" :  "srad2", "descr" :  "CFT-specific shortwave downward radiation 2nd season", "unit" : "W/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_ABOVEGBM2, "name": "cft_aboveground_biomass2", "var" :  "aboveground_biomass2", "descr" :  "CFT aboveground biomass 2nd season", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
@@ -242,5 +242,5 @@
   { "id" : AGB, "name": "agb", "var" :  "AGB", "descr" :  "above ground biomass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : AGB_TREE, "name": "agb_tree", "var" :  "AGB_TREE", "descr" :  "above ground tree biomass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : MLAKEVOL, "name": "mlakevol", "var" :  "lakevol", "descr" :  "lake content volume", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MLAKETEMP, "name": "mlaketemp", "var" :  "laketemp", "descr" :  "lake surface temperature", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0}
+  { "id" : MLAKETEMP, "name": "mlaketemp", "var" :  "laketemp", "descr" :  "lake surface temperature", "unit" : "celsius", "scale" : 1.0, "offset" : 0.0}
 ],

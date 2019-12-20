@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function prints name, description and units of output variables            \n**/
+/**     Function prints name, description and units of all output variables        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,7 +16,10 @@
 
 #include "lpj.h"
 
-void fprintoutputvar(FILE *file,const Variable output[],int size)
+void fprintoutputvar(FILE *file,              /**< pointer to text file */
+                     const Variable output[], /**< array of output variables */
+                     int size                 /**< size of array */
+                    )
 {
   int i,width,width_unit,width_var;
   width=strlen("Name");
@@ -29,7 +32,7 @@ void fprintoutputvar(FILE *file,const Variable output[],int size)
     width_var=max(width_var,strlen(output[i].var));
   }
   fprintf(file,"Output files\n"
-          "%*s %*s %*s Type  Description\n",width,"Name",width_var,"Variable",width_unit,"Unit");
+          "%-*s %-*s %-*s Type  Description\n",width,"Name",width_var,"Variable",width_unit,"Unit");
   frepeatch(file,'-',width);
   fputc(' ',file);
   frepeatch(file,'-',width_var);
@@ -39,7 +42,7 @@ void fprintoutputvar(FILE *file,const Variable output[],int size)
   frepeatch(file,'-',77-width-width_unit-width_var-7);
   putc('\n',file);
   for(i=0;i<size;i++)
-   fprintf(file,"%*s %*s %*s %5s %s\n",width,output[i].name,width_var,output[i].var,
+   fprintf(file,"%-*s %-*s %-*s %5s %s\n",width,output[i].name,width_var,output[i].var,
               width_unit,strlen(output[i].unit)==0 ? "-" : output[i].unit,
               typenames[getoutputtype(i)],output[i].descr);
   frepeatch(file,'-',width);

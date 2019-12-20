@@ -128,7 +128,7 @@ layer /* name of index variabel for soil layer output */
   D_RUNOFF "d_runoff" "runoff" "runoff" "mm/day" 1.0 0.0
   D_RH "d_rh" "rh" "heterotrophic respiration" "gC/m2/day" 1.0 0.0
   D_INTERC "d_interc" "interc" "interception" "mm/day" 1.0 0.0
-  D_ASSIM "d_assim" "assim" "assim" "gC/m2/day" 1.0 0.0
+  D_ASSIM "d_assim" "assim" "carbon assimilation rate" "gC/m2/day" 1.0 0.0
   D_ROT_MODE "d_rot_mode" "rot_mode" "rotation mode" "" 1.0 0.0
   D_PET "d_pet" "PET" "potential evapotranspiration" "mm/day" 1.0 0.0
   /* further non-daily outputs */
@@ -146,7 +146,7 @@ layer /* name of index variabel for soil layer output */
   FLUX_FIREWOOD "flux_firewood" "flux_firewood" "wood fire emissions" "gC/m2/yr" 1.0 0.0
   RHARVEST_BURNT "rharvest_burnt" "rharvest_burnt" "residual burnt carbon" "gC/m2/yr" 1.0 0.0
   RHARVEST_BURNT_IN_FIELD "rharvest_burntinfield" "rharvest_burntinfield" "" "gC/m2/yr" 1.0 0.0
-  MTEMP_IMAGE "mtemp_image" "temp" "temperature received from IMAGE" "Celsius" 1.0 0.0
+  MTEMP_IMAGE "mtemp_image" "temp" "temperature received from IMAGE" "celsius" 1.0 0.0
   MPREC_IMAGE "mprec_image" "prec" "precipitation received from IMAGE" "mm/month" 1.0 0.0
   MSUN_IMAGE "msun_image" "sun" "sunshine received from IMAGE" "%" 1.0 0.0
   MWET_IMAGE "mwet_image" "wet" "wet days received from IMAGE" "day" 1.0 0.0
@@ -157,13 +157,13 @@ layer /* name of index variabel for soil layer output */
   PRODUCT_POOL_SLOW "product_pool_slow" "product_pool_slow" "carbon in the slow product pool" "gC/m2" 1.0 0.0
   LUC_IMAGE "luc_image" "luc_image" "" "" 1.0 0.0
   MAXTHAW_DEPTH "maxthaw_depth" "maxthaw_depth" "maximum thawing depth" "mm" 1.0 0.0
-  MSOILTEMP "msoiltemp" "soiltemp" "soil temperature" "Celsius" 1.0 0.0
-  MSOILTEMP1 "msoiltemp1" "soiltemp1" "soil temperature in layer 1" "Celsius" 1.0 0.0
-  MSOILTEMP2 "msoiltemp2" "soiltemp2" "soil temperature in layer 2" "Celsius" 1.0 0.0
-  MSOILTEMP3 "msoiltemp3" "soiltemp3" "soil temperature in layer 3" "Celsius" 1.0 0.0
-  MSOILTEMP4 "msoiltemp4" "soiltemp4" "soil temperature in layer 4" "Celsius" 1.0 0.0
-  MSOILTEMP5 "msoiltemp5" "soiltemp5" "soil temperature in layer 5" "Celsius" 1.0 0.0
-  MSOILTEMP6 "msoiltemp6" "soiltemp6" "soil temperature in layer 6" "Celsius" 1.0 0.0
+  MSOILTEMP "msoiltemp" "soiltemp" "soil temperature" "celsius" 1.0 0.0
+  MSOILTEMP1 "msoiltemp1" "soiltemp1" "soil temperature in layer 1" "celsius" 1.0 0.0
+  MSOILTEMP2 "msoiltemp2" "soiltemp2" "soil temperature in layer 2" "celsius" 1.0 0.0
+  MSOILTEMP3 "msoiltemp3" "soiltemp3" "soil temperature in layer 3" "celsius" 1.0 0.0
+  MSOILTEMP4 "msoiltemp4" "soiltemp4" "soil temperature in layer 4" "celsius" 1.0 0.0
+  MSOILTEMP5 "msoiltemp5" "soiltemp5" "soil temperature in layer 5" "celsius" 1.0 0.0
+  MSOILTEMP6 "msoiltemp6" "soiltemp6" "soil temperature in layer 6" "celsius" 1.0 0.0
   MRES_STORAGE "mres_storage" "res_storage" "mean reservoir storage" "hm3" 1.0 0.0
   MRES_DEMAND "mres_demand" "res_demand" "reservoir demand" "hm3/month" 1.0 0.0
   MTARGET_RELEASE "mtarget_release" "target_release" "target release" "hm3/month" 1.0 0.0

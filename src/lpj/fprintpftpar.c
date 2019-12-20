@@ -80,7 +80,7 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
                "k_litter10_q10_wood:\t%g\n"
                "soc_k:\t\t%g\n"
                "alpha_fuelp:\t%g\n"
-               "vpd_par:\t\t%g\n"
+               "vpd_par:\t%g\n"
                "fuel bulk dens.:\t%g (kg/m3)\n"
                "emis. factor:\t%g %g %g %g %g %g\n"
                "wind damp.:\t%g\n"
