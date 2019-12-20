@@ -49,6 +49,10 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
       fputs("Invalid soil\n",file);
     else
     {
+      fputs("GDD:\t\t",file);
+      for(cft=0;cft<npft;cft++)
+        fprintf(file," %6.1f",grid[cell].gdd[cft]);
+      fputc('\n',file);
       if(config->withlanduse!=NO_LANDUSE)
       {
         if(grid[cell].ml.sdate_fixed!=NULL)

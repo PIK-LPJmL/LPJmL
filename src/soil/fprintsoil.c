@@ -75,5 +75,7 @@ void fprintsoil(FILE *file,      /**< pointer to text file */
   for(l=0;l<NSOILLAYER+1;l++)
     fputs(" ------------",file);
   fprintf(file,"\nSnowpack:\t%g (mm)\n",soil->snowpack);
+  fprintf(file,"Snowheight:\t%g (mm)\n",soil->snowheight);
+  fprintf(file,"Snowfraction:\t%g\n",soil->snowfraction);
   fprintf(file,"rw_buffer:\t%g (mm)\n",soil->rw_buffer);
 } /* of 'fprintsoil' */

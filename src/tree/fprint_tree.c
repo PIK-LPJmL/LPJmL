@@ -34,6 +34,8 @@ void fprint_tree(FILE *file,     /**< pointer to text file */
     fprintf(file,"Aphen raingreen:\t%g\n",tree->aphen_raingreen);
   fprintf(file,"Turn:\t\t%6.2f %6.2f %6.2f (gC/m2)\n",
           tree->turn.leaf,tree->turn.sapwood,tree->turn.root);
+  fprintf(file,"Turn_litt:\t%6.2f %6.2f %6.2f (gC/m2)\n",
+          tree->turn_litt.leaf,tree->turn_litt.sapwood,tree->turn_litt.root);
   fputs("Cmass:\t\t",file);
   fprinttreephys2(file,tree->ind,pft->nind);
   fputc('\n',file);
