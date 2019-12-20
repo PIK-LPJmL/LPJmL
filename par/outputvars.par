@@ -203,7 +203,7 @@ layer /* name of index variabel for soil layer output */
   CFT_ABOVEGBM "cft_aboveground_biomass" "aboveground_biomass" "CFT aboveground biomass" "gC/m2" 1.0 0.0
   MGCONS_RF "mgcons_rf" "gcons_rf" "monthly green water consumption on rainfed stands " "mm" 1.0 0.0
   MGCONS_IRR "mgcons_irr" "gcons_irr" "monthly green water consumption on irrigated stands " "mm" 1.0 0.0
-  MBCONS_IRR "mbcons_irr" "bcons_irr" "monthly green water consumption on irrigated stands " "mm" 1.0 0.0
+  MBCONS_IRR "mbcons_irr" "bcons_irr" "monthly blue water consumption on irrigated stands " "mm" 1.0 0.0
   AWATERUSE_HIL "awateruse_hil" "wateruse_hil" "" "l/yr" 1.0 0.0
   MFAPAR "mfapar" "FPAR" "fraction of absorbed PAR" "" 1.0 0.0
   MALBEDO "malbedo" "albedo" "" "" 1.0 0.0
