@@ -239,12 +239,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->sdate_option==FIXED_SDATE || config->sdate_option==PRESCRIBED_SDATE)
         fscanint2(file,&config->sdate_fixyear,"sdate_fixyear");
       fscanint2(file,&config->crop_phu_option,"crop_phu_option");
-      if(config->crop_phu_option<0 || config->crop_phu_option>PRESCRIBED_CROP_PHU)
+      if(config->crop_phu_option<0||config->crop_phu_option>PRESCRIBED_CROP_PHU)
       {
-          if(verbose)
-              fprintf(stderr,"ERROR166: Invalid value for crop phu option=%d.\n",
-                  config->crop_phu_option);
-          return TRUE;
+        if(verbose)
+          fprintf(stderr,"ERROR166: Invalid value for crop phu option=%d.\n",
+            config->crop_phu_option);
+        return TRUE;
       }
       fscanint2(file,&config->irrig_scenario,"irrigation");
       if(config->irrig_scenario<0 || config->irrig_scenario>ALL_IRRIGATION)
@@ -446,7 +446,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
     {
-        scanclimatefilename(&input,&config->crop_phu_filename,config->inputdir,FALSE,"crop_phu");
+      scanclimatefilename(&input,&config->crop_phu_filename,config->inputdir,FALSE,"crop_phu");
     }
     if(config->with_nitrogen && config->fertilizer_input)
       scanclimatefilename(&input,&config->fertilizer_nr_filename,config->inputdir,FALSE,"fertilizer_nr");

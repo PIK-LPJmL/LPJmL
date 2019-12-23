@@ -98,6 +98,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     fprintf(file,"%s\n",config->landuse_filename.name);
     if(config->sdate_option==PRESCRIBED_SDATE)
       fprintf(file,"%s\n",config->sdate_filename.name);
+    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+      fprintf(file,"%s\n",config->crop_phu_filename.name);
     if(config->with_nitrogen && config->fertilizer_input)
       fprintfilename(file,config->fertilizer_nr_filename);
     if (config->with_nitrogen && config->manure_input)
