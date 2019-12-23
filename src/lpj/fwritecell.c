@@ -24,6 +24,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
                int ncft,          /**< number of crop PFTs */
                int npft,          /**< number of PFTs */
                int sdate_option,  /**< sowing date option (0-2) */
+               int phu_option,    /**< phu computation option (0-1) */
                Bool river_routing /**< river routing (TRUE/FALSE) */
               )                   /** \return number of cells written */
 {
@@ -83,6 +84,11 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
       if(sdate_option>NO_FIXED_SDATE)
       {
         if(fwrite(grid[cell].ml.sdate_fixed,sizeof(int),2*ncft,file)!=2*ncft)
+          break;
+      }
+      if(sdate_option>SEMISTATIC_CROP_PHU)
+      {
+        if(fwrite(grid[cell].ml.crop_phu_fixed,sizeof(Real),2*ncft,file)!=2*ncft)
           break;
       }
       if(fwrite(grid[cell].ml.sowing_month,sizeof(int),2*ncft,file)!=2*ncft)

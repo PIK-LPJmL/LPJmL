@@ -599,6 +599,15 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         }
         else
           grid[i].ml.sdate_fixed=NULL;
+        if(config->crop_phu_option>SEMISTATIC_CROP_PHU)
+        {
+          grid[i].ml.crop_phu_fixed=newvec(Real,2*ncft);
+          checkptr(grid[i].ml.crop_phu_fixed);
+          for(cft=0;cft<2*ncft;cft++)
+            grid[i].ml.crop_phu_fixed[cft]=0;
+        }
+        else
+          grid[i].ml.crop_phu_fixed=NULL;
       }
     }
     else /* read cell data from restart file */
