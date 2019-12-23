@@ -25,11 +25,11 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
                  Stand *setasidestand, /**< pointer to setaside stand */
                  Bool with_tillage,    /**< simulation with tillage implementation */
                  Bool istimber,
-                 int irrig_scenario,   /**< irrigation scenario */
+                 Config *config,
                  int npft,             /**< number of natural PFTs */
                  int ncft,             /**< number of crop PFTs */
                  int cft,              /**< cft index for set_irrigsystem */
-                 int year              /**< AD */
+                 int year             /**< AD */
                 )                      /** \return establihment flux (gC/m2,gN/m2) */
 {
   int pos; /*position of new stand in list*/
@@ -54,9 +54,9 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
       tillage(&setasidestand->soil,param.residue_frac);
     pos=addpft(setasidestand,pftpar,year,day);
     pft=getpft(&setasidestand->pftlist,pos-1);
-    phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,npft,ncft);
+    phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);
     data=setasidestand->data;
-    data->irrigation= irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
+    data->irrigation= config->irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
     set_irrigsystem(setasidestand,cft,0,FALSE); /* calls set_irrigsystem() for landusetype AGRICULTURE only */
     bm_inc.carbon=pft->bm_inc.carbon*setasidestand->frac;
     bm_inc.nitrogen=pft->bm_inc.nitrogen*setasidestand->frac;
@@ -109,14 +109,14 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand=getstand(cell->standlist,pos-1);
     data=cropstand->data;
     cropstand->frac=landfrac;
-    data->irrigation= irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
+    data->irrigation= config->irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
     reclaim_land(setasidestand,cropstand,cell,istimber,npft+ncft);
     set_irrigsystem(cropstand,cft,0,FALSE);
     if(with_tillage && year>=param.till_startyear)
       tillage(&cropstand->soil,param.residue_frac);
     pos=addpft(cropstand,pftpar,year,day);
     pft=getpft(&cropstand->pftlist,pos-1);
-    phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,npft,ncft);
+    phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);
     setasidestand->frac-=landfrac;
     bm_inc.carbon=pft->bm_inc.carbon*cropstand->frac;
     bm_inc.nitrogen=pft->bm_inc.nitrogen*cropstand->frac;
