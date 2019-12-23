@@ -14,6 +14,7 @@
 
 #include "lpj.h"
 #include "crop.h"
+#include "agriculture.h"
 
 #define KEYDAY_NHEMISPHERE 365 /* last day of driest month (Dec) of northern hemisphere */
 #define KEYDAY_SHEMISPHERE 181 /* last day of driest month (Jun) of southern hemisphere */
@@ -23,20 +24,24 @@ void phen_variety(Pft *pft,      /**< PFT variables */
                   Real lat,   /**< latitude (deg) */
                   int sdate,  /**< sowing date (1..365) */
                   Bool wtype,  /**< winter type (TRUE/FALSE) */
-                  const Config *config /**< LPJ configuration */
+                  const Config *config, /**< LPJ configuration */
+                  int npft
                  )
 {
   int keyday,keyday1;
   Pftcrop *crop;
   const Pftcroppar *croppar;
+  Irrigation *data;
   crop=pft->data;
   croppar=pft->par->data;
   crop->wtype=wtype;
 
+  data=pft->stand->data;
+
   if(config->crop_phu_option == PRESCRIBED_CROP_PHU)
   {
       crop->pvd = 0; /* temporarily set to 0 (photoperiod insensitive) */
-      crop->phu = *pft->stand->cell->ml.crop_phu_fixed;
+      crop->phu = pft->stand->cell->ml.crop_phu_fixed[pft->par->id-npft+data->irrigation*npft];
       crop->basetemp = croppar->basetemp.low; /* temporarily set to basetemp.low */
   }
   else
