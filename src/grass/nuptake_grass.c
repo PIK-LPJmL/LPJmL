@@ -38,7 +38,10 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   int l;
   soil=&pft->stand->soil;
   getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
-  data=pft->stand->data;
+  if(pft->stand->type->landusetype==AGRICULTURE || pft->stand->type->landusetype==SETASIDE_RF || pft->stand->type->landusetype==SETASIDE_IR || pft->stand->type->landusetype==BIOMASS_GRASS || pft->stand->type->landusetype==BIOMASS_TREE || pft->stand->type->landusetype==GRASSLAND)
+    data=pft->stand->data;
+  else
+    data=NULL;
   grass=pft->data;
   grasspar=pft->par->data;
   ndemand_leaf_opt=*ndemand_leaf;
