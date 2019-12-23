@@ -68,7 +68,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     initgdd(cell->gdd,npft);
     /* read stand list */
     cell->standlist=freadstandlist(file,cell,config->pftpar,npft+ncft,soilpar,
-                                   standtype,nstand,swap);
+      standtype,nstand,swap);
     if(cell->standlist==NULL)
       return TRUE;
     freadreal1(&cell->ml.cropfrac_rf,swap,file);
@@ -84,25 +84,23 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       if(config->sdate_option_restart>NO_FIXED_SDATE)
         freadint(cell->ml.sdate_fixed,2*ncft,swap,file);
       else
-        for(i=0;i<2*ncft;i++)
+        for(i=0; i<2*ncft; i++)
           cell->ml.sdate_fixed[i]=0;
     }
     else
       cell->ml.sdate_fixed=NULL;
-    if (config->crop_phu_option>SEMISTATIC_CROP_PHU)
+    if(config->crop_phu_option>SEMISTATIC_CROP_PHU)
     {
-      cell->ml.crop_phu_fixed=newvec(Real, 2*ncft);
+      cell->ml.crop_phu_fixed=newvec(Real,2*ncft);
       checkptr(cell->ml.crop_phu_fixed);
       if(config->sdate_option_restart>SEMISTATIC_CROP_PHU)
         freadreal(cell->ml.crop_phu_fixed,2*ncft,swap,file);
       else
-        for(i=0;i<2*ncft;i++)
+        for(i=0; i<2*ncft; i++)
           cell->ml.crop_phu_fixed[i]=0;
     }
     else
       cell->ml.crop_phu_fixed=NULL;
-
-    }
     cell->ml.sowing_month=newvec(int,2*ncft);
     checkptr(cell->ml.sowing_month);
     freadint(cell->ml.sowing_month,2*ncft,swap,file);
