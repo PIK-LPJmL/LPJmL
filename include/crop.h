@@ -142,7 +142,7 @@ extern Real vegc_sum_crop(const Pft *);
 extern Real vegn_sum_crop(const Pft *);
 extern Real agb_crop(const Pft *);
 extern void free_crop(Pft *);
-extern void phen_variety(Pft *,int,Real,int,Bool,int);
+extern void phen_variety(Pft *,int,Real,int,Bool,int,int);
 extern void harvest_crop(Output *,Stand *,Pft *,int,int,int,int,Bool,Bool);
 extern void adapt_crop_type(Real [],Real,const Pftpar [],int,int,int);
 extern Real wdf_crop(Pft *,Real,Real);
