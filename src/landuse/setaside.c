@@ -126,7 +126,7 @@ void mixsoil(Stand *stand1,const Stand *stand2)
       mixpool(stand1->frac_g[l], stand2->frac_g[l], water1, water2);
     else
       stand1->frac_g[l]=0;
-    stand1->soil.state[l]=(short)getstate(stand1->soil.temp+l);
+    //stand1->soil.state[l]=(short)getstate(stand1->soil.temp+l);
     stand1->soil.w[l]=(stand1->soil.w[l]*stand1->soil.whcs[l]*stand1->frac+stand2->soil.w[l]*stand2->soil.whcs[l]*stand2->frac)/(stand1->frac+stand2->frac);
     mixpool(stand1->soil.whcs[l],stand2->soil.whcs[l],stand1->frac,stand2->frac);
     stand1->soil.w[l]/=stand1->soil.whcs[l];
