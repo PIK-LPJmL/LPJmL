@@ -1175,7 +1175,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   int i,j,p,count,cell,yearl;
   Real sum,*data,*fert_nr,*manu_nr,*res_on_field;
   int *dates;
-  Real *phus;
+  int *phus;
   Bool *tilltypes;
   int yearsdate=year;     /*sdate year*/
   int yearphu=year;       /*crop phu year*/
@@ -1339,7 +1339,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 
     if(landuse->crop_phu.fmt==CDF)
     {
-      phus=newvec(Real,config->ngridcell*landuse->crop_phu.var_len);
+      phus=newvec(int,config->ngridcell*landuse->crop_phu.var_len);
       if(phus==NULL)
       {
         printallocerr("dates");
@@ -1357,7 +1357,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       for(cell=0; cell<config->ngridcell; cell++)
         if(!grid[cell].skip)
           for(j=0; j<2*ncft; j++)
-            (Real)grid[cell].ml.crop_phu_fixed[j]=phus[count++];
+            grid[cell].ml.crop_phu_fixed[j]=(Real)phus[count++];
         else
           count+=2*ncft;
       free(phus);
@@ -1371,7 +1371,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           yearphu);
         return TRUE;
       }
-      phus=newvec(Real,landuse->crop_phu.n);
+      phus=newvec(int,landuse->crop_phu.n);
       if(phus==NULL)
       {
         printallocerr("dates");
@@ -1391,7 +1391,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         {
           for(j=0; j<2*ncft; j++)
           {
-            grid[cell].ml.crop_phu_fixed[j]=phus[count++];
+            grid[cell].ml.crop_phu_fixed[j]=(Real)phus[count++];
           }
         }
         else
