@@ -52,7 +52,7 @@ typedef struct
 
 /* Declaration of functions */
 
-extern void new_grass(Pft *,int,int);
+extern void new_grass(Pft *,int,int,int);
 extern Real npp_grass(Pft *,Real,Real,Real,int);
 extern Real fpc_grass(Pft *);
 extern Real fpar_grass(const Pft *);

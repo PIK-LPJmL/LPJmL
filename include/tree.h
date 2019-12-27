@@ -98,7 +98,7 @@ typedef struct
 
 /* Declaration of functions */
 
-extern void new_tree(Pft *,int,int);
+extern void new_tree(Pft *,int,int,int);
 extern Pft *newpftage(Pftpar *,int);
 extern Real npp_tree(Pft *,Real,Real,Real,int);
 extern Bool mortality_tree(Litter *,Pft *,Real,Real,Bool);

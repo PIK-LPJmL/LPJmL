@@ -121,7 +121,7 @@ typedef struct
 
 /* Declaration of functions */
 
-extern void new_crop(Pft *,int,int);
+extern void new_crop(Pft *,int,int,int);
 extern void allocation_daily_crop(Pft *,Real, Real,int,Daily_outputs *);
 extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,int,Daily_outputs *);
 extern Real fpc_crop(Pft *);

@@ -220,7 +220,7 @@ typedef Bool (*Fscanpftparfcn)(LPJfile *,Pftpar *,Verbosity);
 
 /* Declaration of functions */
 
-extern void newpft(Pft *,Stand *,const Pftpar *,int,int);
+extern void newpft(Pft *,Stand *,const Pftpar *,int,int,int);
 extern void freepft(Pft *);
 extern void freepftpar(Pftpar [],int);
 extern int* fscanpftpar(LPJfile *,Pftpar **,const Fscanpftparfcn [],int,Verbosity);
