@@ -35,7 +35,7 @@ extern Bool freadpftlist(FILE *,Stand *,Pftlist *,const Pftpar[],int,
                          Bool);
 extern Stocks firepft(Litter *,Pftlist *,Real);
 extern void newpftlist(Pftlist *);
-extern int addpft(Stand *,const Pftpar *,int,int);
+extern int addpft(Stand *,const Pftpar *,int,int,int);
 
 /* Definitions of macros */
 

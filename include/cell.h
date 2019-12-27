@@ -141,7 +141,7 @@ extern Real flux_sum(Flux *,Cell [],const Config *);
 extern Bool getwateruse(Wateruse, Cell [],int,const Config *);
 extern Wateruse initwateruse(const Config *);
 extern void freewateruse(Wateruse,Bool);
-extern void killstand(Cell *,const Pftpar [],int,Bool,Bool,int);
+extern void killstand(Cell *,const Pftpar [],int,Bool,Bool,int,int);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);

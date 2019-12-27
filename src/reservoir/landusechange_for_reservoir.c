@@ -68,7 +68,8 @@ static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to 
                                         Bool intercrop,         /**< intercrop setting */
                                         int npft,               /**< number of PFTs */
                                         int ncft,               /**< number of CFTs */
-                                        int year
+                                        int year,
+                                        int with_nitrogen
                                         )                       /** \return reservoir fraction that could be created from setaside */
 {
   int s,s2,pos,p;
@@ -137,7 +138,7 @@ static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to 
           cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
           cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
           
-          if(setaside(cell,getstand(cell->standlist,pos),pftpar,with_tillage,intercrop,npft,FALSE,year))
+          if(setaside(cell,getstand(cell->standlist,pos),pftpar,with_tillage,intercrop,npft,FALSE,year,with_nitrogen))
             delstand(cell->standlist,pos);
         }
       }
@@ -161,7 +162,7 @@ static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to 
         cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cell->coord.area*cutstand->frac;
         cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount+cutstand->soil.litter.agtop_moist)*cutstand->frac;
         
-        if(setaside(cell,getstand(cell->standlist,pos),pftpar,with_tillage,intercrop,npft,FALSE,year))
+        if(setaside(cell,getstand(cell->standlist,pos),pftpar,with_tillage,intercrop,npft,FALSE,year,with_nitrogen))
           delstand(cell->standlist,pos);
       }
 
@@ -215,7 +216,8 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
                                  Bool with_tillage,     /**< tillage setting */
                                  Bool intercrop,        /**< intercrop setting */
                                  int ncft,              /**< number of CFTs */
-                                 int year
+                                 int year,
+                                 int with_nitrogen
                                 )                       /** \return void */
 /* needs to be called before establishment, to ensure that regrowth is possible in the
    following year */
@@ -282,7 +284,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     {
       s=findlandusetype(cell->standlist,NATURAL);
       if(s!=NOT_FOUND) /* check if there is still natural land in the gridcell */
-        deforest(cell,difffrac,pftpar,with_tillage,intercrop,npft,FALSE,istimber,FALSE,ncft,year,minnatfrac_res); /* 1 deforest */
+        deforest(cell,difffrac,pftpar,with_tillage,intercrop,npft,FALSE,istimber,FALSE,ncft,year,minnatfrac_res,with_nitrogen); /* 1 deforest */
       s=findlandusetype(cell->standlist,NATURAL); /* 2 check if everyting is deforested */
       if(s!=NOT_FOUND)
       {
@@ -298,7 +300,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
 /*        fail(FOREST_LEFT_ERR,TRUE,
                "wrong loop, there is still natural land to deforest left"); */
       
-          deforest(cell,difffrac,pftpar,with_tillage,intercrop,npft,FALSE,istimber,FALSE,ncft,year,minnatfrac_res); /* 1 deforest */
+          deforest(cell,difffrac,pftpar,with_tillage,intercrop,npft,FALSE,istimber,FALSE,ncft,year,minnatfrac_res,with_nitrogen); /* 1 deforest */
           s=findlandusetype(cell->standlist,NATURAL); /* 2 check if everyting is deforested */
           if(s!=NOT_FOUND)
           {
@@ -328,7 +330,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
       cell->ml.cropfrac_ir=sum[1];
 
       difffrac-=from_setaside_for_reservoir(cell,difffrac,pftpar,istimber,
-                                            with_tillage,intercrop,npft,ncft,year);
+                                            with_tillage,intercrop,npft,ncft,year,with_nitrogen);
       /*3 cut setaside stand to built the reservoir */
 
       /* update the cropfactor */

@@ -208,7 +208,8 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
               Bool intercrop,        /**< intercropping possible (TRUE/FALSE) */
               int npft,              /**< number of natural PFTs */
               Bool irrig,            /**< irrigated stand (TRUE/FALSE) */
-              int year               /**< simulation year */
+              int year,              /**< simulation year */
+              int with_nitrogen
              )                       /** \return stand has to be killed (TRUE/FALSE) */
 {
   int s,p,n_est;
@@ -244,7 +245,7 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
         if(establish(cell->gdd[p],pftpar+p,&cell->climbuf) &&
            pftpar[p].type==GRASS && pftpar[p].cultivation_type==NONE)
         {
-          addpft(cropstand,pftpar+p,year,0);
+          addpft(cropstand,pftpar+p,year,0,with_nitrogen);
           n_est++;
         }
       }

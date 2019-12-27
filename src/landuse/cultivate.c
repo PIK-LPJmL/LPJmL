@@ -25,7 +25,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
                  Stand *setasidestand, /**< pointer to setaside stand */
                  Bool with_tillage,    /**< simulation with tillage implementation */
                  Bool istimber,
-                 Config *config,
+                 const Config *config,
                  int npft,             /**< number of natural PFTs */
                  int ncft,             /**< number of crop PFTs */
                  int cft,              /**< cft index for set_irrigsystem */
@@ -52,7 +52,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cutpfts(setasidestand);
     if(with_tillage && year>=param.till_startyear)
       tillage(&setasidestand->soil,param.residue_frac);
-    pos=addpft(setasidestand,pftpar,year,day);
+    pos=addpft(setasidestand,pftpar,year,day,config->with_nitrogen);
     pft=getpft(&setasidestand->pftlist,pos-1);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);
     data=setasidestand->data;
@@ -114,7 +114,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     set_irrigsystem(cropstand,cft,0,FALSE);
     if(with_tillage && year>=param.till_startyear)
       tillage(&cropstand->soil,param.residue_frac);
-    pos=addpft(cropstand,pftpar,year,day);
+    pos=addpft(cropstand,pftpar,year,day,config->with_nitrogen);
     pft=getpft(&cropstand->pftlist,pos-1);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);
     setasidestand->frac-=landfrac;

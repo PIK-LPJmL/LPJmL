@@ -146,7 +146,7 @@ typedef struct Pft
     /* list of pointers for PFT specific functions */
     /* (Virtual functions in C++)                  */
 
-    void (*newpft)(struct Pft *,int,int);
+    void (*newpft)(struct Pft *,int,int,int);
     void (*init)(struct Pft *);
     Real (*wdf)(struct Pft *,Real,Real);
     Real (*npp)(struct Pft*,Real,Real,Real,int);

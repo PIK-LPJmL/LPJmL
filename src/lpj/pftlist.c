@@ -130,14 +130,15 @@ void freepftlist(Pftlist *pftlist /**< PFT list */
 int addpft(Stand *stand,         /**< Stand pointer */
            const Pftpar *pftpar, /**< PFT parameter */
            int year,             /**< simulation year (AD) */
-           int day               /**< day of year (1..365) */
+           int day,              /**< day of year (1..365) */
+           int with_nitrogen
           )                      /** \return updated length of PFT list */
 {
   /* resize PFT array */
   stand->pftlist.pft=(Pft *)realloc(stand->pftlist.pft,
                                     sizeof(Pft)*(stand->pftlist.n+1));
   check(stand->pftlist.pft);
-  newpft(stand->pftlist.pft+stand->pftlist.n,stand,pftpar,year,day);
+  newpft(stand->pftlist.pft+stand->pftlist.n,stand,pftpar,year,day,with_nitrogen);
   stand->pftlist.n++;
   return stand->pftlist.n;
 } /* of 'addpft' */

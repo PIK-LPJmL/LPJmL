@@ -82,7 +82,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
        establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf))
     {
       if(!present[p])
-       addpft(stand,config->pftpar+p,year,0);
+       addpft(stand,config->pftpar+p,year,0,config->with_nitrogen);
       n_est++;
     }
   }

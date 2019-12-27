@@ -22,7 +22,8 @@ void killstand(Cell *cell,            /**< cell pointer */
                int npft,              /**< number of natural PFTs */
                Bool with_tillage,     /**< tillage possible */
                Bool intercrop,        /**< intercropping possible */
-               int year               /**< simulation year (AD) */
+               int year,              /**< simulation year (AD) */
+               int with_nitrogen
               )
 {
   Stand *stand;
@@ -39,7 +40,7 @@ void killstand(Cell *cell,            /**< cell pointer */
       }
       else
         irrig=FALSE;
-      if(setaside(cell,stand,pftpar,with_tillage,intercrop,npft,irrig,year))
+      if(setaside(cell,stand,pftpar,with_tillage,intercrop,npft,irrig,year,with_nitrogen))
       {
         delstand(cell->standlist,s);
         s--; /* stand has been killed, adjust stand index */

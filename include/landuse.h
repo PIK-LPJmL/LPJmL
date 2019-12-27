@@ -111,12 +111,12 @@ extern Stocks cultivate(Cell *,const Pftpar *,int,Real,Bool,int,Bool,Stand *,
                       Bool,Bool,const Config *,int,int,int,int);
 extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int);
 extern Bool getlanduse(Landuse,Cell *,int,int,const Config *);
-extern void landusechange(Cell *,const Pftpar[],int,int,int,Bool,Bool,Bool,int,Bool);
-extern Bool setaside(Cell *,Stand *,const Pftpar[],Bool,Bool,int,Bool,int);
+extern void landusechange(Cell *,const Pftpar[],int,int,int,Bool,Bool,Bool,int,const Config *);
+extern Bool setaside(Cell *,Stand *,const Pftpar[],Bool,Bool,int,Bool,int,int);
 extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
 extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
 extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
-extern void deforest(Cell *,Real,const Pftpar [],Bool,Bool,int,Bool,Bool,Bool,int,int,Real);
+extern void deforest(Cell *,Real,const Pftpar [],Bool,Bool,int,Bool,Bool,Bool,int,int,Real,int);
 extern Stocks woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Real,Real [],Real);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real);
