@@ -39,7 +39,10 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
   int l;
   Real aet=0,updated_soil_water=0,previous_soil_water[NSOILLAYER],evap_out[BOTTOMLAYER];
   Irrigation *data_irrig;
-  data_irrig=stand->data;
+  if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND)
+    data_irrig=stand->data;
+  else
+    data_irrig=NULL;
 
   soil=&stand->soil;
   evap_ratio=0.0;
@@ -91,8 +94,10 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
 
   //*evap=min(*evap,eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet); /*close the energy balance*/
 
-    if(stand->type->landusetype!=NATURAL && data_irrig->irrigation && data_irrig->irrig_system==DRIP)
-      evap_soil*=(1-(param.drip_evap*(1-*frac_g_evap))); /*reduced blue soil evaporation in case of DRIP irrigation */
+    //if(stand->type->landusetype!=NATURAL)
+    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND)
+      if(data_irrig->irrigation && data_irrig->irrig_system==DRIP)
+        evap_soil*=(1-(param.drip_evap*(1-*frac_g_evap))); /*reduced blue soil evaporation in case of DRIP irrigation */
 
     if(rw_manage)
       evap_soil*=(1-param.esoil_reduction); /* reduced soil evaporation - JH: should this also apply to evap_litter? */

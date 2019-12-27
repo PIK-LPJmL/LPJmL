@@ -51,7 +51,10 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
   Pft *pft;
   String line;
   Irrigation *data_irrig;
-  data_irrig=stand->data;
+  if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND)
+    data_irrig=stand->data;
+  else
+    data_irrig=NULL;
 
   soil=&stand->soil;
   soil_infil=2; /* default to draw square root for infiltration factor*/
