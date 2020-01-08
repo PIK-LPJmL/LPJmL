@@ -78,11 +78,14 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     update_nesterov(cell,&climate);
+
   agrfrac=0;
   foreachstand(stand,s,cell->standlist)
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+      agrfrac+=stand->frac;
+
+  foreachstand(stand,s,cell->standlist)
   {
-    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
-      agrfrac += stand->frac;
     for(l=0;l<stand->soil.litter.n;l++)
     {
       stand->soil.litter.item[l].agsub.leaf.carbon += stand->soil.litter.item[l].ag.leaf.carbon*BIOTURBRATE;
