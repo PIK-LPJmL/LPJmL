@@ -107,6 +107,11 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         inc_ind.root.carbon=bm_inc_ind.carbon-inc_ind.leaf.carbon;
     }
   }
+  if(bm_inc_ind.carbon>0 && inc_ind.leaf.carbon>0 && inc_ind.root.carbon>0)
+  {
+    grass->falloc.leaf=inc_ind.leaf.carbon/bm_inc_ind.carbon;
+    grass->falloc.root=inc_ind.root.carbon/bm_inc_ind.carbon;
+  }
 
   grass->ind.leaf.carbon+=inc_ind.leaf.carbon;
   grass->ind.root.carbon+=inc_ind.root.carbon;
