@@ -1328,7 +1328,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   }
 
   /* Initialize yearly prescribed crop_phu */
-  if(config->sdate_option==PRESCRIBED_CROP_PHU)
+  if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
   {
     /* assigning crop phus data */
     yearphu-=landuse->crop_phu.firstyear;
