@@ -45,14 +45,6 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
       free(popdens);
       return NULL;
     }
-    if(popdens->file.var_len>1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR408: Invalid number of dimensions %d in population density file '%s'.\n",
-                (int)popdens->file.var_len,config->popdens_filename.name);
-      free(popdens);
-      return NULL;
-    }
   }
   else
   { 
@@ -70,22 +62,22 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
     popdens->file.scalar=header.scalar;
     popdens->file.datatype=header.datatype;
     popdens->file.nyear=header.nyear;
+    popdens->file.var_len=header.nbands;
     if(config->popdens_filename.fmt==RAW)
       popdens->file.offset=config->startgrid*sizeof(short);
     else
-    {
-      if(header.nbands!=1)
-      {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR218: Number of bands=%d in population density file '%s' is not 1.\n",
-                  header.nbands,config->popdens_filename.name);
-        fclose(popdens->file.file);
-        free(popdens);
-        return NULL;
-      }
       popdens->file.offset=(config->startgrid-header.firstcell)*typesizes[header.datatype]+headersize(headername,version)+offset;
-    }
   }
+  if(popdens->file.var_len>1)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR218: Number of bands=%d in population density file '%s' is not 1.\n",
+              (int)popdens->file.var_len,config->popdens_filename.name);
+    closeclimatefile(&popdens->file,isroot(*config));
+    free(popdens);
+    return NULL;
+  }
+
   popdens->file.n=config->ngridcell;
   if((popdens->npopdens=newvec(Real,popdens->file.n))==NULL)
   {
@@ -117,13 +109,25 @@ Bool readpopdens(Popdens popdens,     /**< pointer to population data */
   if(year>=popdens->file.nyear)
     year=popdens->file.nyear-1;
   if(popdens->file.fmt==CDF)
-    return readdata_netcdf(&popdens->file,popdens->npopdens,grid,year,config);
+  {
+    if(readdata_netcdf(&popdens->file,popdens->npopdens,grid,year,config))
+    {
+      fprintf(stderr,"ERROR185: Cannot read population density of year %d in readpopdens().\n",year+popdens->file.firstyear);
+      return TRUE;
+    }
+    return FALSE;
+  }
   if(fseek(popdens->file.file,year*popdens->file.size+popdens->file.offset,SEEK_SET))
   {
     fprintf(stderr,"ERROR184: Cannot seek to population density of year %d in readpopdens().\n",year+popdens->file.firstyear);
     return TRUE;
   }
-  return readrealvec(popdens->file.file,popdens->npopdens,0,popdens->file.scalar,popdens->file.n,popdens->file.swap,popdens->file.datatype);
+  if(readrealvec(popdens->file.file,popdens->npopdens,0,popdens->file.scalar,popdens->file.n,popdens->file.swap,popdens->file.datatype))
+  {
+    fprintf(stderr,"ERROR185: Cannot read population density of year %d in readpopdens().\n",year+popdens->file.firstyear);
+    return TRUE;
+  }
+   return FALSE;
 } /* of 'readpopdens' */
 
 Real getpopdens(const Popdens popdens,int cell)
