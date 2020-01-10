@@ -156,10 +156,6 @@ ID                         Fmt                    filename
 "crop_index" : TEMPERATE_CEREALS,  /* CFT for daily output_SPITFIRE-optpar */
 "crop_irrigation" : DAILY_RAINFED, /* irrigation flag for daily output_SPITFIRE-optpar */
 
-#else
-
-"output" : [],  /* no output written */
-
 #endif
 
 /*===================================================================*/

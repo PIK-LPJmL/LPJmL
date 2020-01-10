@@ -100,7 +100,7 @@
 
 #ifdef FROM_RESTART
 
-  "output" : 
+  "output" :
   [
 
 /*
@@ -165,10 +165,6 @@ ID                         Fmt                    filename
     { "id" : ACONV_LOSS_DRAIN, "file" : { "fmt" : CDF, "name" : "output/aconv_loss_drain.nc"}}
 /*------------------------ ---------------------- ------------------------------- */
   ],
-
-#else
-
-  "output" : [],  /* no output written */
 
 #endif
 

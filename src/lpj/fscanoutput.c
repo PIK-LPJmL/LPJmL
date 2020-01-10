@@ -48,10 +48,15 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
   count=index=0;
   config->withdailyoutput=FALSE;
   size=nout_max;
-  if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))
+  if(file->isjson && !iskeydefined(file,"output"))
   {
     config->n_out=0;
     return FALSE;
+  }
+  if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))
+  {
+    config->n_out=0;
+    return file->isjson;
   }
   config->global_netcdf=FALSE;
   if(iskeydefined(file,"global_netcdf"))
