@@ -16,15 +16,55 @@
 
 #include "lpj.h"
 
-void fprintsoil(FILE *file,      /**< pointer to text file */
-                const Soil *soil /**< pointer to soil variables to print */
+void fprintsoil(FILE *file,           /**< pointer to text file */
+                const Soil *soil,     /**< pointer to soil variables to print */
+                const Pftpar *pftpar, /**< PFT parameter array */
+                int ntotpft           /**< total number of PFTs */
                )
 {
-  int l;
+  int l,p;
   Pool sum={0,0};
   char *soilstates[]={"NOSTATE","BELOW_T_ZERO","AT_T_ZERO","ABOVE_T_ZERO",
                       "FREEZING","THAWING"};
   fprintf(file,"Soil type:\t%s\n",soil->par->name);
+  fputs("C shift fast:\n"
+        "PFT                                     ",file);
+  forrootsoillayer(l)
+    fprintf(file," %5d",l);
+  fputs("\n----------------------------------------",file);
+  forrootsoillayer(l)
+    fputs(" -----",file);
+  fputc('\n',file);
+  for(p=0;p<ntotpft;p++)
+  {
+    fprintf(file,"%-40s",pftpar[p].name);
+    forrootsoillayer(l)
+      fprintf(file," %5.2f",soil->c_shift_fast[l][p]);
+    fputc('\n',file);
+  }
+  fputs("----------------------------------------",file);
+  forrootsoillayer(l)
+    fputs(" -----",file);
+  fputc('\n',file);
+  fputs("C shift slow:\n"
+        "PFT                                     ",file);
+  forrootsoillayer(l)
+    fprintf(file," %5d",l);
+  fputs("\n----------------------------------------",file);
+  forrootsoillayer(l)
+    fputs(" -----",file);
+  fputc('\n',file);
+  for(p=0;p<ntotpft;p++)
+  {
+    fprintf(file,"%-40s",pftpar[p].name);
+    forrootsoillayer(l)
+      fprintf(file," %5.2f",soil->c_shift_slow[l][p]);
+    fputc('\n',file);
+  }
+  fputs("----------------------------------------",file);
+  forrootsoillayer(l)
+    fputs(" -----",file);
+  fputc('\n',file);
   fputs("Carbon pools:\n"
         "\tlayer slow (gC/m2) fast (gC/m2)\n"
         "\t----- ------------ ------------\n",file);
