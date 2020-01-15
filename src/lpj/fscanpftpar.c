@@ -26,6 +26,13 @@
     fprintf(stderr,"ERROR110: Cannot read real '%s' for PFT '%s'.\n",name,pft); \
     return NULL; \
   }
+#define fscanpftreal01(verb,file,var,pft,name) \
+  if(fscanreal01(file,var,name,FALSE,verb)) \
+  { \
+    if(verb)\
+    fprintf(stderr,"ERROR110: Cannot read real '%s' for PFT '%s'.\n",name,pft); \
+    return NULL; \
+  }
 #define fscanpftrealarray(verb,file,var,size,pft,name) \
   if(fscanrealarray(file,var,size,name,verb))\
   { \
@@ -177,14 +184,28 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     pft->rootdist[0]=(1 - pow(pft->beta_root,layerbound[0]/10))/totalroots;
     for(l=1;l<BOTTOMLAYER;l++)
       pft->rootdist[l]=(pow(pft->beta_root,layerbound[l-1]/10) - pow(pft->beta_root,layerbound[l]/10))/totalroots;
-    fscanpftreal(verb,&item,&pft->minwscal,pft->name,"minwscal");
+    fscanpftreal01(verb,&item,&pft->minwscal,pft->name,"minwscal");
     fscanpftreal(verb,&item,&pft->gmin,pft->name,"gmin");
     fscanpftreal(verb,&item,&pft->respcoeff,pft->name,"respcoeff");
     fscanpftreal(verb,&item,&pft->nmax,pft->name,"nmax");
-    fscanpftreal(verb,&item,&pft->resist,pft->name,"resist");
+    fscanpftreal01(verb,&item,&pft->resist,pft->name,"resist");
     fscanpftreal(verb,&item,&pft->longevity,pft->name,"longevity");
     fscanpftreal(verb,&item,&pft->lmro_ratio,pft->name,"lmro_ratio");
+    if(pft->lmro_ratio<=0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR234: Parameter 'lmro_ratio'=%g must be greater than zero for PFT '%s'.\n",
+                pft->lmro_ratio,pft->name);
+      return NULL;
+    }
     fscanpftreal(verb,&item,&pft->ramp,pft->name,"ramp");
+    if(pft->ramp<=0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR234: Parameter 'ramp'=%g must be greater than zero for PFT '%s'.\n",
+                pft->ramp,pft->name);
+      return NULL;
+    }
     pft->ramp=1/pft->ramp; /* store reciprocal to speed up calculations */
     fscanpftreal(verb,&item,&pft->lai_sapl,pft->name,"lai_sapl");
     fscanpftreal(verb,&item,&pft->gdd5min,pft->name,"gdd5min");
@@ -196,10 +217,10 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,&item,&pft->emax,pft->name,"emax");
     fscanpftreal(verb,&item,&pft->intc,pft->name,"intc");
     fscanpftreal(verb,&item,&pft->alphaa,pft->name,"alphaa");
-    fscanpftreal(verb,&item,&pft->albedo_leaf,pft->name,"albedo_leaf");
-    fscanpftreal(verb,&item,&pft->albedo_stem,pft->name,"albedo_stem");
-    fscanpftreal(verb,&item,&pft->albedo_litter,pft->name,"albedo_litter");
-    fscanpftreal(verb,&item,&pft->snowcanopyfrac,pft->name,"snowcanopyfrac");
+    fscanpftreal01(verb,&item,&pft->albedo_leaf,pft->name,"albedo_leaf");
+    fscanpftreal01(verb,&item,&pft->albedo_stem,pft->name,"albedo_stem");
+    fscanpftreal01(verb,&item,&pft->albedo_litter,pft->name,"albedo_litter");
+    fscanpftreal01(verb,&item,&pft->snowcanopyfrac,pft->name,"snowcanopyfrac");
     fscanpftreal(verb,&item,&pft->lightextcoeff,pft->name,"lightextcoeff");
 
     /* read new phenology parameters */
@@ -207,7 +228,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftphenpar(verb,&item,&pft->tmax,pft->name,"tmax");
     fscanpftphenpar(verb,&item,&pft->light,pft->name,"light");
     fscanpftphenpar(verb,&item,&pft->wscal,pft->name,"wscal");
-    fscanpftreal(verb,&item,&pft->mort_max,pft->name,"mort_max");
+    fscanpftreal01(verb,&item,&pft->mort_max,pft->name,"mort_max");
 
     fscanpftint(verb,&item,&pft->phenology,pft->name,"phenology");
     if(pft->phenology<0 || pft->phenology>CROPGREEN)

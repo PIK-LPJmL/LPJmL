@@ -64,6 +64,12 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
   }
   foreachsoillayer(l)
   {
+    if(soildepth[l]<=0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR234: Soil depth of layer %d=%g must be greater than zero.\n",l,soildepth[l]);
+      return 0;
+    }
     logmidlayer[l]=log10(midlayer[l]/midlayer[NSOILLAYER-2]);
   }
   if(fscanrealarray(file,fbd_fac,NFUELCLASS,"fbd_fac",verb))
@@ -84,7 +90,8 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
   for(n=0;n<nsoil;n++)
   {
     fscanarrayindex(&arr,&item,n,verb);
-    if(fscanuint(&item,&id,"id",FALSE,verb))
+    id=n;
+    if(fscanuint(&item,&id,"id",TRUE,verb))
       return 0;
     if(id>=nsoil)
     {
@@ -112,10 +119,10 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     fscanreal2(verb,&item,&soil->Sf,soil->name,"Sf");
     fscanreal2(verb,&item,&soil->wpwp,soil->name,"w_pwp");
     fscanreal2(verb,&item,&soil->wfc,soil->name,"w_fc");
-    if(soil->wfc>1)
+    if(soil->wfc<=0 || soil->wfc>1)
     {
       if(verb)
-        fprintf(stderr,"ERROR215: wfc=%g>1 in line %d of '%s' for soil type '%s'.\n",
+        fprintf(stderr,"ERROR215: wfc=%g in line %d of '%s' not int (0,1] for soil type '%s'.\n",
                 soil->wfc,getlinecount(),getfilename(),soil->name);
       return 0;
     }

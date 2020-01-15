@@ -52,7 +52,11 @@ static Bool fscantreephys(LPJfile *file,Treephys *phys,const char *name,
   if(fscanreal(&s,&phys->root,"root",FALSE,verb))
     return TRUE;
   if(phys->leaf<=0 || phys->sapwood<=0 || phys->root<=0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR235: Tree parameter '%s'=(%g,%g,%g) must be greater than zero.\n",name,phys->leaf,phys->root,phys->sapwood); 
     return TRUE;
+  }
   return FALSE;
 } /* of 'fscantreephys' */
 

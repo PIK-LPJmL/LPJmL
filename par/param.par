@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  a  r  a  m  .  p  a  r                                         \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 4.0.002                               \n**/
+/**     LPJ parameter file for LPJmL version 4.0.004                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -17,6 +17,7 @@
 0.001      /* slow k_soil10  (1/yr) */
 20000.0    /* max. snow pack (mm) */
 300.0      /* depth of sublayer at top of upper soil layer (mm) */
+2          /* default soil infiltration */
 278.0      /* pre-industrial CO2 (ppmv) */
 0.0548     /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
 0.7        /* theta */

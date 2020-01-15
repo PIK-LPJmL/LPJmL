@@ -25,6 +25,14 @@
     return TRUE; \
   }
 
+#define fscanreal012(verb,file,var,pft,name) \
+  if(fscanreal01(file,var,name,FALSE,verb)) \
+  { \
+    if(verb)\
+    fprintf(stderr,"ERROR110: Cannot read float '%s' for PFT '%s'.\n",name,pft); \
+    return TRUE; \
+  }
+
 #define fscangrassphys2(verb,file,var,pft,name) \
   if(fscangrassphys(file,var,name,verb))\
   { \
@@ -43,8 +51,12 @@ static Bool fscangrassphys(LPJfile *file,Grassphys *phys,const char *name,Verbos
     return TRUE;
   if(fscanreal(&item,&phys->root,"root",FALSE,verb))
     return TRUE;
-  if(phys->leaf<=0 ||  phys->root<=0)
+  if(phys->leaf<=0 || phys->root<=0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR235: Grass parameter '%s'=(%g,%g) must be greater than zero.\n",name,phys->leaf,phys->root);
     return TRUE;
+  }
   return FALSE;
 } /* of 'fscangrassphys' */
 
@@ -93,7 +105,7 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   grass->turnover.leaf=1.0/grass->turnover.leaf;
   grass->turnover.root=1.0/grass->turnover.root;
   fscangrassphys2(verb,file,&grass->cn_ratio,pft->name,"cn_ratio");
-  fscanreal2(verb,file,&grass->reprod_cost,pft->name,"reprod_cost");
+  fscanreal012(verb,file,&grass->reprod_cost,pft->name,"reprod_cost");
   grass->cn_ratio.leaf=pft->respcoeff*param.k/grass->cn_ratio.leaf;
   grass->cn_ratio.root=pft->respcoeff*param.k/grass->cn_ratio.root;
   grass->sapl.leaf=pft->lai_sapl/pft->sla;

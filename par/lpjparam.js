@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  .  j  s                                   \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 4.0.002                               \n**/
+/**     LPJ parameter file for LPJmL version 4.0.004                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -18,6 +18,7 @@
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
+  "soil_infil" : 2.0,        /* default soil infiltration */
   "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
   "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
   "theta" : 0.7,             /* theta */
@@ -53,7 +54,7 @@
   "rw_buffer_max" : 0.0,              /* size of rainwater harvesting tank [mm] */
   "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */
   "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
-  "soil_infil" : 2.0,                 /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
+  "soil_infil_rw" : 2.0,              /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
   "firedura" : -11.06,                /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.50,		      /* a parameter for scaling the human ignintions within SPITFIRE */
