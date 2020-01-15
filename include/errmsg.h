@@ -52,6 +52,7 @@
 #define NO_FMS_ERR 32
 #define INITSOILTEMP_ERR 33
 #define INVALID_RADIATION_ERR 34
+#define INVALID_CLIMATE_ERR 35
 
 /* Definition of macros */
 
