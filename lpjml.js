@@ -85,10 +85,10 @@
 /*===================================================================*/
 
 #ifdef WITH_GRIDBASED
-  "pft_output_scaled" : GRIDBASED,
+  "grid_scaled" : true, /* PFT-specific outputs scaled by stand->frac */
 #define SUFFIX grid.bin
 #else
-  "pft_output_scaled" : PFTBASED,
+  "grid_scaled" : false,
 #define SUFFIX pft.bin
 #endif
 

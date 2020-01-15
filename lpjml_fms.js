@@ -72,9 +72,9 @@
 /*===================================================================*/
 
 #ifdef WITH_GRIDBASED
-"pft_output_scaled" : GRIDBASED,
+"grid_scaled" : true,
 #else
-"pft_output_scaled" : PFTBASED,
+"grid_scaled" : false,
 #endif
 
 #ifdef FROM_RESTART
