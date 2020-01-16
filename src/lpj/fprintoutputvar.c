@@ -16,12 +16,34 @@
 
 #include "lpj.h"
 
+typedef struct
+{
+  char *name;
+  int index;
+} Item;
+
+static int compare(const Item *a,const Item *b)
+{
+  return strcmp(a->name,b->name);
+}
+
 void fprintoutputvar(FILE *file,              /**< pointer to text file */
                      const Variable output[], /**< array of output variables */
                      int size                 /**< size of array */
                     )
 {
-  int i,width,width_unit,width_var;
+  int i,width,width_unit,width_var,index;
+  Item *item;
+  item=newvec(Item,size);
+  if(item!=NULL)
+  {
+    for(i=0;i<size;i++)
+    {
+      item[i].index=i;
+      item[i].name=output[i].name;
+    }
+    qsort(item,size,sizeof(Item),(int (*)(const void *,const void *))compare);
+  }
   width=strlen("Name");
   width_unit=strlen("Unit");
   width_var=strlen("Variable");
@@ -31,7 +53,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
     width_unit=max(width_unit,strlen(output[i].unit));
     width_var=max(width_var,strlen(output[i].var));
   }
-  fprintf(file,"Output files\n"
+  fprintf(file,"Output files available\n"
           "%-*s %-*s %-*s Type  Description\n",width,"Name",width_var,"Variable",width_unit,"Unit");
   frepeatch(file,'-',width);
   fputc(' ',file);
@@ -42,9 +64,13 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   frepeatch(file,'-',77-width-width_unit-width_var-7);
   putc('\n',file);
   for(i=0;i<size;i++)
-   fprintf(file,"%-*s %-*s %-*s %5s %s\n",width,output[i].name,width_var,output[i].var,
-              width_unit,strlen(output[i].unit)==0 ? "-" : output[i].unit,
-              typenames[getoutputtype(i)],output[i].descr);
+  {
+   index=(item==NULL) ? i : item[i].index;
+   fprintf(file,"%-*s %-*s %-*s %5s %s\n",width,output[index].name,width_var,output[index].var,
+              width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,
+              typenames[getoutputtype(index)],output[index].descr);
+  }
+  free(item);
   frepeatch(file,'-',width);
   fputc(' ',file);
   frepeatch(file,'-',width_var);

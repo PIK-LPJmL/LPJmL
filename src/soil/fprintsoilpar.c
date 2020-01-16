@@ -31,7 +31,7 @@ void fprintsoilpar(FILE *file,              /**< pointer to ASCII file */
   fprintf(file,"\nName               w_pwp  w_fc  w_sat hsg tdiff0 tdiff15 tdiff100 condpwp cond100 cond100ice\n"
                "------------------ ------ ----- ----- --- ------ ------- -------- ------- ------- ----------\n");
   for(i=0;i<nsoil;i++)
-    fprintf(file,"%18s %6.2f %5.2f %5.2f %3d %6.3f %7.3f %8.3f %7.3f %7.3f %10.3f\n",
+    fprintf(file,"%-18s %6.2f %5.2f %5.2f %3d %6.3f %7.3f %8.3f %7.3f %7.3f %10.3f\n",
             soilpar[i].name,soilpar[i].wpwp,soilpar[i].wfc,soilpar[i].wsat,
             soilpar[i].hsg+1,
             soilpar[i].tdiff_0,soilpar[i].tdiff_15,soilpar[i].tdiff_100,
