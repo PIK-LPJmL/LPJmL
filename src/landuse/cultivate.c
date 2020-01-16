@@ -41,8 +41,7 @@ Real cultivate(Cell *cell,           /**< cell pointer */
     new_agriculture(setasidestand);
     /* delete all PFTs */
     cutpfts(setasidestand);
-    pos=addpft(setasidestand,pftpar,year,day);
-    pft=getpft(&setasidestand->pftlist,pos-1);
+    pft=addpft(setasidestand,pftpar,year,day);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype);
     data=setasidestand->data;
     data->irrigation= irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
@@ -59,8 +58,7 @@ Real cultivate(Cell *cell,           /**< cell pointer */
     data->irrigation= irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
     reclaim_land(setasidestand,cropstand,cell,istimber,ntotpft);
     set_irrigsystem(cropstand,cft,0,FALSE);
-    pos=addpft(cropstand,pftpar,year,day);
-    pft=getpft(&cropstand->pftlist,pos-1);
+    pft=addpft(cropstand,pftpar,year,day);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype);
     setasidestand->frac-=landfrac;
     return pft->bm_inc*cropstand->frac;
