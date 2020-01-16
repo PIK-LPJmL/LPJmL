@@ -45,8 +45,7 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   fputs("----------------------------------------",file);
   forrootsoillayer(l)
     fputs(" -----",file);
-  fputc('\n',file);
-  fputs("C shift slow:\n"
+  fputs("\nC shift slow:\n"
         "PFT                                     ",file);
   forrootsoillayer(l)
     fprintf(file," %5d",l);
@@ -64,8 +63,7 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   fputs("----------------------------------------",file);
   forrootsoillayer(l)
     fputs(" -----",file);
-  fputc('\n',file);
-  fputs("Carbon pools:\n"
+  fputs("\nCarbon pools:\n"
         "\tlayer slow (gC/m2) fast (gC/m2)\n"
         "\t----- ------------ ------------\n",file);
   forrootsoillayer(l)
@@ -78,7 +76,7 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   fprintf(file,"\tTOTAL %12.2f %12.2f\n",sum.slow,sum.fast);
   fprintf(file,"Rootlayer:\t%d",l);
   fprintf(file,"\ndecomp_litter_mean:\t%.2f (gC/m2)\n",soil->decomp_litter_mean);
-  fprintf(file,"Litter:");
+  fputs("Litter:",file);
   fprintlitter(file,&soil->litter);
   fprintf(file,"\nmean maxthaw:\t%.2f (mm)\n",soil->mean_maxthaw);
   fputs("Layer       ",file);

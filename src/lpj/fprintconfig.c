@@ -27,7 +27,7 @@ typedef struct
 static int compare(const Item *a,const Item *b)
 {
   return strcmp(a->name,b->name);
-}
+} /* of 'compare' */
 
 static int printsim(FILE *file,int len,int *count,const char *s)
 {
@@ -399,6 +399,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     fprintf(file,"Random seed: %d\n",config->seed);
   if(config->n_out)
   {
+    /* sort output alphabetically by name */
     item=newvec(Item,config->n_out);
     if(item!=NULL)
     {

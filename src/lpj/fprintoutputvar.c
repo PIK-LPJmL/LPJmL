@@ -25,7 +25,7 @@ typedef struct
 static int compare(const Item *a,const Item *b)
 {
   return strcmp(a->name,b->name);
-}
+} /* of 'compare' */
 
 void fprintoutputvar(FILE *file,              /**< pointer to text file */
                      const Variable output[], /**< array of output variables */
@@ -34,6 +34,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
 {
   int i,width,width_unit,width_var,index;
   Item *item;
+  /* sort output alphabetically by name */
   item=newvec(Item,size);
   if(item!=NULL)
   {
@@ -66,9 +67,10 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   for(i=0;i<size;i++)
   {
    index=(item==NULL) ? i : item[i].index;
-   fprintf(file,"%-*s %-*s %-*s %5s %s\n",width,output[index].name,width_var,output[index].var,
-              width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,
-              typenames[getoutputtype(index)],output[index].descr);
+   fprintf(file,"%-*s %-*s %-*s %5s %s\n",width,output[index].name,
+           width_var,output[index].var,
+           width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,
+           typenames[getoutputtype(index)],output[index].descr);
   }
   free(item);
   frepeatch(file,'-',width);
