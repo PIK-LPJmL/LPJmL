@@ -19,7 +19,7 @@
 #define fscanparamreal(file,var,name) \
   if(fscanreal(file,var,name,FALSE,verbosity)) return TRUE; 
 #define fscanparamreal01(file,var,name) \
-  if(fscanreal01(file,var,name,FALSE,verbosity)) return TRUE; 
+  if(fscanreal01(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparamint(file,var,name) \
   if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparambool(file,var,name) \

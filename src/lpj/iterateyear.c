@@ -144,12 +144,12 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           if(config->with_radiation)
           {
             if(daily.swdown<0)
-              fail(INVALID_CLIMATE_ERR,FALSE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",daily.swdown,cell+config->startgrid,day); 
+              fail(INVALID_CLIMATE_ERR,FALSE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",daily.swdown,cell+config->startgrid,day);
           }
           else
           {
             if(daily.sun<0 || daily.sun>100)
-              fail(INVALID_CLIMATE_ERR,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day); 
+              fail(INVALID_CLIMATE_ERR,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
           }
           /* get daily values for temperature, precipitation and sunshine */
           grid[cell].output.daily.temp=daily.temp;
