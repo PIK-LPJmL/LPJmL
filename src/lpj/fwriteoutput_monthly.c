@@ -25,6 +25,18 @@
     writemonth(output,index,fvec,year,month,config);\
   }
 
+#define writeoutputpftvar(index,name,n) if(isopen(output,index))\
+  {\
+    for(l=0;l<n;l++)\
+    {\
+      count=0;\
+      for(cell=0;cell<config->ngridcell;cell++)\
+        if(!grid[cell].skip)\
+          fvec[count++]=(float)grid[cell].output.name[l];\
+      writemonth2(output,index,fvec,year,month,l,n,config);\
+    }\
+  }
+
 static void writemonth(Outputfile *output,int index,float *data,int year,
                        int month,
                        const Config *config)
@@ -221,15 +233,7 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
   writeoutputvar(MINTERC,minterc);
   writeoutputvar(MINTERC_B,minterc_b);
   writeoutputvar(MPET,mpet);
-  if(isopen(output,MSWC))
-    for(l=0;l<NSOILLAYER;l++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.mswc[l];
-      writemonth2(output,MSWC,fvec,year,month,l,NSOILLAYER,config);
-    }
+  writeoutputpftvar(MSWC,mswc,NSOILLAYER);
   writeoutputvar(MSWC1,mswc[0]);
   writeoutputvar(MSWC2,mswc[1]);
   writeoutputvar(MSWC3,mswc[2]);
@@ -255,24 +259,8 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
   writeoutputvar(MPREC_IMAGE,mprec_image);
   writeoutputvar(MSUN_IMAGE,msun_image);
   writeoutputvar(MWET_IMAGE,mwet_image);
-  if(isopen(output,MSOILTEMP))
-    for(l=0;l<NSOILLAYER;l++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.msoiltemp[l];
-      writemonth2(output,MSOILTEMP,fvec,year,month,l,NSOILLAYER,config);
-    }
-  if(isopen(output,MPFT_LAI))
-    for(l=0;l<npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;l++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.mpft_lai[l];
-      writemonth2(output,MPFT_LAI,fvec,year,month,l,npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2,config);
-    }
+  writeoutputpftvar(MSOILTEMP,msoiltemp,NSOILLAYER);
+  writeoutputpftvar(MPFT_LAI,mpft_lai,npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2);
   writeoutputvar(MSOILTEMP1,msoiltemp[0]);
   writeoutputvar(MSOILTEMP2,msoiltemp[1]);
   writeoutputvar(MSOILTEMP3,msoiltemp[2]);
