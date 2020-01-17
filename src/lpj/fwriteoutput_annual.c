@@ -28,12 +28,25 @@
 static void writeannual(Outputfile *output,int index,float data[],int year,
                         const Config *config)
 {
+  Real scale;
   int i;
 #ifdef USE_MPI
   MPI_Status status;
 #endif
+  switch(config->outnames[index].time)
+  {
+    case SECOND:
+      scale=1./NDAYYEAR/NSECONDSDAY;
+      break;
+    case DAY:
+      scale=1./NDAYYEAR;
+      break;
+    default:
+      scale=1;
+  }
   for(i=0;i<config->count;i++)
-    data[i]=(float)(config->outnames[index].scale*data[i]+config->outnames[index].offset);
+    data[i]=config->outnames[index].scale*scale*data[i]+config->outnames[index].offset;
+
 #ifdef USE_MPI
   switch(output->method)
   {
