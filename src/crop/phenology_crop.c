@@ -20,7 +20,7 @@
 Bool phenology_crop(Pft *pft,         /**< pointer to PFT variables */
                     Real temp,        /**< temperature (deg C) */
                     Real daylength,   /**< length of day (h) */
-                    int laimax_option /**< option for maximaum LAI setting */
+                    int laimax_option /**< option for maximum LAI setting */
                    )                  /** \return harvesting crop (TRUE/FALSE) */
 {
   Pftcrop *crop;
