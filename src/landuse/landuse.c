@@ -229,16 +229,12 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     }
     if(landuse->nbands_fertilizer_nr!=2*(ncft+NGRASS+NBIOMASSTYPE))
     {
-      closeclimatefile(&landuse->landuse,isroot(*config));
-      if(landuse->sdate.file!=NULL)
-        closeclimatefile(&landuse->sdate,isroot(*config));
-      closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
                 landuse->nbands_fertilizer_nr);
-        free(landuse);
-        return(NULL);
+      freelanduse(landuse,isroot(*config));
+      return(NULL);
     }
   }
   else
@@ -434,7 +430,6 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
   }
   count = 0;
-
 
   for(cell=0;cell<config->ngridcell;cell++)
   {

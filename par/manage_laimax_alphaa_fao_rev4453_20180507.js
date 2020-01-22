@@ -1,10 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-<<<<<<< HEAD
 /**             manage_laimax_alphaa_fao_rev4453_20180507.js                       \n**/
-=======
-/**                 manage_laimax_alphaa_fao_rev4453_20180507.js                   \n**/
->>>>>>> 0c6688c4e09ba49932dbb928e1cdd90e27567187
 /**                                                                                \n**/
 /**     management parameter data with maximum LAI values for all crops            \n**/
 /**               LPJmL Version 5.1.001                                            \n**/

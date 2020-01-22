@@ -52,6 +52,8 @@
 "river_routing": false,
 "permafrost" : true,
 "with_nitrogen": LIM_NITROGEN,
+"const_climate" : false,
+"const_deposition" : false,
 "irrigation" : POT_IRRIGATION,
 "sowing_date_option" : FIXED_SDATE,
 "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */

@@ -46,6 +46,8 @@
 "river_routing" : true,
 "permafrost" : true,
 "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+"const_climate" : false,
+"const_deposition" : false,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

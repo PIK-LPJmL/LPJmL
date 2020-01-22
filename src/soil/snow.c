@@ -160,21 +160,21 @@ Real snow(Soil *soil,       /**< pointer to soil data */
   else
     *temp_bsnow=temp;
 
- /* calculate snow height and fraction of snow coverage */
- if(soil->snowpack>epsilon)
- {
-  HS = c_watertosnow * (soil->snowpack/1000.0); /* mm -> m */
-  frsg = HS / (HS+0.5*c_roughness);
+  /* calculate snow height and fraction of snow coverage */
+  if(soil->snowpack>epsilon)
+  {
+    HS = c_watertosnow * (soil->snowpack/1000.0); /* mm -> m */
+    frsg = HS / (HS+0.5*c_roughness);
 
-  soil->snowheight = HS;
-  soil->snowfraction = frsg;
-}
-else
-{
-  soil->snowpack=0.0;
-  soil->snowheight=0.0;
-  soil->snowfraction=0.0;
-}
+    soil->snowheight = HS;
+    soil->snowfraction = frsg;
+  }
+  else
+  {
+    soil->snowpack=0.0;
+    soil->snowheight=0.0;
+    soil->snowfraction=0.0;
+  }
 
   return runoff;
 } /* of 'snow' */
