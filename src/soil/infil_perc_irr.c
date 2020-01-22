@@ -43,12 +43,8 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
   runoff_surface=runoff=outflux=0;
   soil_infil=param.soil_infil;
    /*infiltration*/
-  if(rw_manage)
-    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE)
-      soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate */
-  if(soil_infil<param.soil_infil)
-    soil_infil=param.soil_infil;
-
+  if(rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE))
+    soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate */
 
   for(l=0;l<NSOILLAYER;l++)
   {

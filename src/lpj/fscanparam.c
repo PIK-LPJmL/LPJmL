@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 #define fscanparamreal(file,var,name) \
-  if(fscanreal(file,var,name,FALSE,verbosity)) return TRUE; 
+  if(fscanreal(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparamreal01(file,var,name) \
   if(fscanreal01(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparamint(file,var,name) \
@@ -99,7 +99,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.firedura,"firedura");
   fscanparamreal(&f,&param.fire_intens,"fire_intens");
   fscanparamreal(&f,&param.hum_ign,"hum_ign");
- 
+
   if(config->withlanduse!=NO_LANDUSE)
   {
     fscanparamreal(&f,&param.aprec_lim,"aprec_lim");
@@ -126,6 +126,12 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       fscanparamreal01(&f,&param.frac_ro_stored,"frac_ro_stored");
       fscanparamreal(&f,&param.rw_irrig_thres,"rw_irrig_thres");
       fscanparamreal(&f,&param.soil_infil_rw,"soil_infil_rw");
+      if(param.soil_infil_rw<param.soil_infil)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING030: Parameter 'soil_infil_rw'=%g less than 'soil_infil', set to %g.\n",param.soil_infil_rw,param.soil_infil);
+        param.soil_infil_rw=param.soil_infil;
+      }
       fscanparamreal(&f,&param.yield_gap_bridge,"yield_gap_bridge");
     }
   }
