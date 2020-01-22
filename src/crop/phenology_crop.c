@@ -17,10 +17,11 @@
 
 #define VD_SLOPE 7 /* vernalization with reduced effects for +/- 7 deg outside min/max range*/
 
-Bool phenology_crop(Pft *pft,       /**< pointer to PFT variables */
-                    Real temp,      /**< temperature (deg C) */
-                    Real daylength  /**< length of day (h) */
-                   )                /** \return harvesting crop (TRUE/FALSE) */
+Bool phenology_crop(Pft *pft,         /**< pointer to PFT variables */
+                    Real temp,        /**< temperature (deg C) */
+                    Real daylength,   /**< length of day (h) */
+                    int laimax_option /**< option for maximaum LAI setting */
+                   )                  /** \return harvesting crop (TRUE/FALSE) */
 {
   Pftcrop *crop;
   const Pftcroppar *par;
@@ -41,7 +42,10 @@ Bool phenology_crop(Pft *pft,       /**< pointer to PFT variables */
 
   crop->senescence0=crop->senescence;
 
-  laimax=pft->stand->cell->ml.manage.laimax[pft->par->id];
+  if(laimax_option==LAIMAX_PAR)
+    laimax=par->laimax;
+  else
+    laimax=pft->stand->cell->ml.manage.laimax[pft->par->id];
 
   if(crop->husum<crop->phu)
   {
