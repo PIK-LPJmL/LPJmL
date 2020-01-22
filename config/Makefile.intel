@@ -16,7 +16,7 @@
 CC	= icc
 DEBUGFLAGS  = -g
 CHECKFLAGS = -g -check-pointers=rw
-OPTFLAGS= -O3 -ipo -xSSE4.1 -no-prec-div -no-inline-max-total-size -no-inline-max-size
+OPTFLAGS= -O3 -ipo -xSSE4.1 -no-prec-div -no-inline-max-total-size -no-inline-max-size -no-vec
 WFLAG	= -Wall -w3
 LPJFLAGS  = -DUSE_RAND48 -DSAFE -DWITH_FPE -DSTORECLIMATE -DUSE_NETCDF -DUSE_UDUNITS -DUSE_JSON
 NETCDF_INC      = -I$(NETCDF_CROOT)/include -I$(UDUNITSROOT)/include
@@ -28,8 +28,8 @@ A	= a
 E	=
 AR	= ar
 AR	= xiar
-ARFLAGS	= r 
-RM	= rm 
+ARFLAGS	= r
+RM	= rm
 RMFLAGS	= -f
 LIBS    = $(NETCDF_LIB) -lnetcdf -ludunits2 -lexpat -lhdf5 -lcurl -lz  -ldl -lssl -lcrypto -lhdf5_hl -lsz $(JSON_LIB)
 LINKMAIN= icc
