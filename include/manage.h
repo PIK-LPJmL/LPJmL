@@ -60,8 +60,8 @@ extern int fscancountrypar(LPJfile *,Countrypar **,Bool,int,Verbosity);
 extern int fscanregionpar(LPJfile *,Regionpar **,Verbosity);
 extern void fprintcountrypar(FILE *,const Countrypar *,int,int);
 extern void fprintregionpar(FILE *,const Regionpar[],int);
-extern void initmanage(Manage *, const Countrypar *, const Regionpar *,int,
-                       int,Bool,Real);
+extern void initmanage(Manage *, const Countrypar *, const Regionpar *,const Pftpar *,int,
+                       int,int,Real);
 extern void freemanage(Manage *,int);
 extern FILE *opencountrycode(const Filename *,Bool *,Type *,long *,Bool);
 extern FILE *createcountrycode(const char *,int,int);
