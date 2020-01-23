@@ -95,7 +95,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         crop->nfertilizer=0;
       }
     }
-    if(phenology_crop(pft,climate->temp,daylength,config->laimax_interpolate))
+    if(phenology_crop(pft,climate->temp,daylength))
     {
       if(pft->par->id==output->daily.cft
          && data->irrigation==output->daily.irrigation)
