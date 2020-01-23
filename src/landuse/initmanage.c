@@ -13,16 +13,19 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "crop.h"
 
 void initmanage(Manage *manage, /**< pointer to management data */
                 const Countrypar *countrypar, /**< pointer to country param */
                 const Regionpar *regionpar, /**< pointer to region param */
+                const Pftpar *pftpar,
                 int npft, /**< number of natural PFTs */
                 int ncft, /**< number of crop PFts */
-                Bool isconstlai, /**< using const. LAImax? */
+                int laimax_opt, /**< using const. LAImax? */
                 Real laimax     /**< maximum LAI */
                )
 {
+  const Pftcroppar *croppar;
   int cft;
   manage->par=countrypar;    
   manage->regpar=regionpar;
@@ -30,7 +33,13 @@ void initmanage(Manage *manage, /**< pointer to management data */
     manage->laimax=newvec2(Real,npft,npft+ncft-1);  /* allocate memory for country-specific laimax*/
   else
     manage->laimax=manage->par->laimax_cft-npft;  /* set pointer to country specific laimax */
-  if(isconstlai)
+  if(laimax_opt==CONST_LAI_MAX)
     for(cft=0;cft<ncft;cft++)
       manage->laimax[npft+cft]=laimax;
+  else if(laimax_opt==LAIMAX_PAR)
+    for(cft=0;cft<ncft;cft++)
+    {
+      croppar=pftpar[npft+cft].data;
+      manage->laimax[npft+cft]=croppar->laimax;
+    }
 } /* of 'initmanage' */
