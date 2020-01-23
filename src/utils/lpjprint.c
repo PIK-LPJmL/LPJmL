@@ -107,8 +107,8 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       }
       else
         initmanage(&grid.ml.manage,config->countrypar+code.country,
-                   config->regionpar+code.region,npft,ncft,
-                   config->laimax_interpolate==CONST_LAI_MAX,config->laimax);
+                   config->regionpar+code.region,config->pftpar,npft,ncft,
+                   config->laimax_interpolate,config->laimax);
     }
     else
     {
