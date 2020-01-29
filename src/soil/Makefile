@@ -26,7 +26,7 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           moistfactor.$O litter_ag_sum_quick.$O freesoilpar.$O moisture2soilice.$O\
           soilconduct.$O soilheatcap.$O soilice2moisture.$O getlag.$O convert_water.$O\
           getstate.$O initsoiltemp.$O infil_perc_rain.$O infil_perc_irr.$O\
-          fscanpool.$O
+          fscanpool.$O getwr.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

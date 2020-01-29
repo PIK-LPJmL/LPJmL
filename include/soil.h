@@ -228,7 +228,7 @@ extern Real soilheatcap(const Soil *,int);
 extern void soilice2moisture(Soil *, Real *,int);
 extern Real temp_response(Real);
 extern Real litter_ag_tree(const Litter *,int);
-
+extern Real getwr(const Soil *,const Real []);
 
 /* Definition of macros */
 

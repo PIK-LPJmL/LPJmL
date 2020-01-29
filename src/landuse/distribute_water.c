@@ -36,7 +36,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       int ncft               /**< number of crop PFTs */
                      )
 {
-  int s,p,l,count;
+  int s,p,count;
   Real wr;
   Real conv_loss,irrig_stand;
   Real frac_irrig_amount,frac_unsustainable,irrig_threshold;
@@ -79,9 +79,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
         count=0;
         foreachpft(pft,p,&stand->pftlist)
         {
-          wr=0;
-          for(l=0;l<LASTLAYER;l++)
-            wr+=pft->par->rootdist[l]*(stand->soil.w[l]+stand->soil.ice_depth[l]/stand->soil.par->whcs[l]);
+          wr=getwr(&stand->soil,pft->par->rootdist);
 
           if(pft->par->path==C3)
           {
@@ -121,7 +119,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                 stand->cell->output.cft_nir[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
 #endif
               break;
-            case GRASSLAND: 
+            case GRASSLAND:
               if(pft_output_scaled)
               {
                 stand->cell->output.cft_nir[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].grass[0];
