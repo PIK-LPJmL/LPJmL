@@ -15,11 +15,36 @@
 
 #include "lpj.h"
 
+static int findnextcoord(Coord src,const Coord dst[],int ngrid)
+{
+  int i,i_min;
+  Real dist,dist_lon,dist_min;
+  fputs("Coordinate ",stderr);
+  fprintcoord(stderr,&src);
+  fputs(" not found, replaced by ",stderr);
+  dist_min=HUGE_VAL;
+  for(i=0;i<ngrid;i++)
+  {
+    dist_lon=fabs(src.lon-dst[i].lon);
+    if(360-dist_lon<dist_lon)
+      dist_lon=360-dist_lon;
+    dist=(src.lat-dst[i].lat)*(src.lat-dst[i].lat)+dist_lon*dist_lon;
+    if(dist_min>dist)
+    {
+      dist_min=dist;
+      i_min=i;
+    }
+  }
+  fprintcoord(stderr,dst+i_min);
+  fprintf(stderr,", distance=%g\n",sqrt(dist_min));
+  return i_min;
+} /* of 'findnextcoord' */
+
 int main(int argc,char **argv)
 {
   FILE *file;
   Coord *c,*c2;
-  Bool same;
+  Bool same,iszero,issearch;
   Byte *soil,zero=0;
   Coordfile grid;
   float lon,lat;
@@ -27,7 +52,7 @@ int main(int argc,char **argv)
   int i,j,setversion,ngrid,ngrid2,count;
   Filename filename;
   setversion=READ_VERSION;
-  same=FALSE;
+  same=iszero=issearch=FALSE;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
@@ -35,6 +60,10 @@ int main(int argc,char **argv)
         setversion=2;
       else if(!strcmp(argv[i],"-same"))
         same=TRUE;
+      else if(!strcmp(argv[i],"-search"))
+        issearch=TRUE;
+      else if(!strcmp(argv[i],"-zero"))
+        iszero=TRUE;
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n",argv[i]);
@@ -49,7 +78,7 @@ int main(int argc,char **argv)
   if(argc<5)
   {
     fprintf(stderr,"Missing arguments.\n"
-           "Usage: %s [-same] [-longheader] coord0.5.clm coord0.25.clm soil0.5.bin soil0.25.bin\n",
+           "Usage: %s [-same] [-longheader] [-search] [-zero] coord_old.clm coord_new.clm soil_old.bin soil_new.bin\n",
             argv[0]);
     return EXIT_FAILURE;
   }
@@ -150,15 +179,27 @@ int main(int argc,char **argv)
     }
     if(j==ngrid)
     {
-      fwrite(&zero,1,1,file);
       count++;
+      if(issearch)
+        j=findnextcoord(c2[i],c,ngrid);
+      else
+      {
+        fputs("Coordinate ",stderr);
+        fprintcoord(stderr,c2+i);
+        fputs(" not found.\n",stderr);
+        j=ngrid;
+        if(!iszero)
+          return EXIT_FAILURE;
+      }
     }
+    if(j==ngrid)
+      fwrite(&zero,1,1,file);
     else
       fwrite(soil+j,1,1,file);
   }
   putchar('\n');
   if(count)
-    fprintf(stderr,"Warning: %d cells not found, soilcode set to zero.\n",count);
+    fprintf(stderr,"Warning: %d cells not found.\n",count);
   fclose(file);
   return EXIT_SUCCESS;
 }  /* of 'main' */
