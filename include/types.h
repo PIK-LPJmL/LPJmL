@@ -41,6 +41,7 @@
 #define pclose _pclose
 #define popen _popen
 #define alloca _alloca
+#define strcasecmp stricmp
 
 #endif
  

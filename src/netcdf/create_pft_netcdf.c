@@ -219,7 +219,7 @@ Bool create_pft_netcdf(Netcdf *cdf,
   rc=nc_def_var(cdf->ncid,TIME_NAME,NC_INT,1,&time_dim_id,&time_var_id);
   error(rc);
   if(n==1)
-    rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen("year"),"year");
+    rc=nc_put_att_text(cdf->ncid,time_var_id,"units",strlen(YEARS_NAME),YEARS_NAME);
   else
   {
     snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->outputyear);
