@@ -149,7 +149,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
                           Bool istimber,         /* Image coupling (TRUE/FALSE) */
                           int ncft,              /* number of crop PFTs */
                           int year
-                          )
+                         )
 {
   int s,p,pos,q,t;
   Real flux_estab=0;
@@ -496,15 +496,13 @@ void set_irrigsystem(Stand *stand,          /**< stand pointer */
 } /*of set_irrigsystem*/
 
 
-void landusechange(Cell *cell,            /**< pointer to cell */
-                   const Pftpar pftpar[], /**< PFT parameter array */
-                   int npft,              /**< number of natural PFTs */
-                   int ncft,              /**< number of crop PFTs */
-                   int ntypes,            /**< number of different PFT classes */
-                   Bool intercrop,        /**< intercropping possible (TRUE/FALSE) */
-                   Bool istimber,         /**< Image coupling (TRUE/FALSE) */
-                   int year,              /**< simulation year (AD) */
-                   Bool pft_output_scaled /**< pft output scaled with stand (TRUE/FALSE)*/
+void landusechange(Cell *cell,          /**< pointer to cell */
+                   int npft,            /**< number of natural PFTs */
+                   int ncft,            /**< number of crop PFTs */
+                   Bool intercrop,      /**< intercropping possible (TRUE/FALSE) */
+                   Bool istimber,       /**< Image coupling (TRUE/FALSE) */
+                   int year,            /**< simulation year (AD) */
+                   const Config *config /**< LPJmL configuration */
                   )
   /* needs to be called before establishment, to ensure that regrowth is possible in the following year*/
 {
@@ -523,7 +521,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
 #endif
 
   if(cell->ml.dam)
-    landusechange_for_reservoir(cell,pftpar,npft,istimber,intercrop,ncft,year);
+    landusechange_for_reservoir(cell,config->pftpar,npft,istimber,intercrop,ncft,year);
   /* test if land needs to be reallocated between setaside stands */
   difffrac=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf;
   difffrac2=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,TRUE)-cell->ml.cropfrac_ir;
@@ -551,7 +549,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
           tempstand=getstand(cell->standlist,pos);
           tempstand->frac=movefrac;
           reclaim_land(irrigstand,tempstand,cell,FALSE,npft+ncft);
-          if(setaside(cell,getstand(cell->standlist,pos),pftpar,intercrop,npft,FALSE,year))
+          if(setaside(cell,getstand(cell->standlist,pos),config->pftpar,intercrop,npft,FALSE,year))
             delstand(cell->standlist,pos);
           irrigstand->frac-=movefrac;
         }
@@ -574,7 +572,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
           tempstand=getstand(cell->standlist,pos);
           tempstand->frac=movefrac;
           reclaim_land(stand,tempstand,cell,FALSE,npft+ncft);
-          if(setaside(cell,getstand(cell->standlist,pos),pftpar,intercrop,npft,TRUE,year))
+          if(setaside(cell,getstand(cell->standlist,pos),config->pftpar,intercrop,npft,TRUE,year))
              delstand(cell->standlist,pos);
           stand->frac-=movefrac;
         }
@@ -592,9 +590,9 @@ void landusechange(Cell *cell,            /**< pointer to cell */
 
 
     if(difffrac>=0.001 && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir<0.99999) 
-      deforest(cell,difffrac,pftpar,intercrop,npft,FALSE,istimber,i,ncft,year,minnatfrac_luc);  /*deforestation*/
+      deforest(cell,difffrac,config->pftpar,intercrop,npft,FALSE,istimber,i,ncft,year,minnatfrac_luc);  /*deforestation*/
     else if(difffrac<=-0.001) 
-      regrowth(cell,difffrac,pftpar,npft,ntypes,istimber,i,ncft,year);        /*regrowth*/
+      regrowth(cell,difffrac,config->pftpar,npft,config->ntypes,istimber,i,ncft,year);        /*regrowth*/
 
     /* pasture */
     cultivation_type=PASTURE;
@@ -605,14 +603,14 @@ void landusechange(Cell *cell,            /**< pointer to cell */
       stand=getstand(cell->standlist,s);
       difffrac=stand->frac-grassfrac;
       if(difffrac>0.001)
-        grasslandreduction(cell,difffrac,pftpar,intercrop,npft,s,stand,istimber,ncft,pft_output_scaled,year);
+        grasslandreduction(cell,difffrac,config->pftpar,intercrop,npft,s,stand,istimber,ncft,config->pft_output_scaled,year);
       else if(difffrac<-0.001)
-        landexpansion(cell,difffrac,pftpar,npft,ntypes,stand,irrigation,cultivation_type,istimber,ncft,year);
+        landexpansion(cell,difffrac,config->pftpar,npft,config->ntypes,stand,irrigation,cultivation_type,istimber,ncft,year);
     }
     else if (grassfrac>0.001)
     {
       difffrac= -grassfrac;
-      landexpansion(cell,difffrac,pftpar,npft,ntypes,NULL,irrigation,cultivation_type,istimber,ncft,year);
+      landexpansion(cell,difffrac,config->pftpar,npft,config->ntypes,NULL,irrigation,cultivation_type,istimber,ncft,year);
     }
 
     /* Biomass plantations */
@@ -624,15 +622,15 @@ void landusechange(Cell *cell,            /**< pointer to cell */
       stand=getstand(cell->standlist,s);
       difffrac=stand->frac-cell->ml.landfrac[i].biomass_tree;
       if(difffrac>0.001)
-        grasslandreduction(cell,difffrac,pftpar,intercrop,npft,s,stand,istimber,ncft,pft_output_scaled,year);
+        grasslandreduction(cell,difffrac,config->pftpar,intercrop,npft,s,stand,istimber,ncft,config->pft_output_scaled,year);
       else if(difffrac<-0.001)
-        landexpansion(cell,difffrac,pftpar,npft,ntypes,stand,irrigation,
+        landexpansion(cell,difffrac,config->pftpar,npft,config->ntypes,stand,irrigation,
                       cultivation_type,istimber,ncft,year);
     }
     else if (cell->ml.landfrac[i].biomass_tree>0.001)
     {
       difffrac= -cell->ml.landfrac[i].biomass_tree;
-      landexpansion(cell,difffrac,pftpar,npft,ntypes,NULL,
+      landexpansion(cell,difffrac,config->pftpar,npft,config->ntypes,NULL,
         irrigation,cultivation_type,istimber,ncft,year);
     }
 
@@ -644,15 +642,15 @@ void landusechange(Cell *cell,            /**< pointer to cell */
       stand=getstand(cell->standlist,s);
       difffrac=stand->frac-cell->ml.landfrac[i].biomass_grass;
       if(difffrac>0.001)
-        grasslandreduction(cell,difffrac,pftpar,intercrop,npft,s,stand,istimber,ncft,pft_output_scaled,year);
+        grasslandreduction(cell,difffrac,config->pftpar,intercrop,npft,s,stand,istimber,ncft,config->pft_output_scaled,year);
       else if(difffrac<-0.001)
-        landexpansion(cell,difffrac,pftpar,npft,ntypes,stand,irrigation,
+        landexpansion(cell,difffrac,config->pftpar,npft,config->ntypes,stand,irrigation,
                       cultivation_type,istimber,ncft,year);
     }
     else if (cell->ml.landfrac[i].biomass_grass>0.001)
     {
       difffrac= -cell->ml.landfrac[i].biomass_grass;
-      landexpansion(cell,difffrac,pftpar,npft,ntypes,NULL,
+      landexpansion(cell,difffrac,config->pftpar,npft,config->ntypes,NULL,
         irrigation,cultivation_type,istimber,ncft,year);
     }
 
@@ -661,7 +659,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
 
   foreachstand(stand,s,cell->standlist)
     if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE) /* do not update for crops, must be done in sowing functions */
-      set_irrigsystem(stand,0,ncft,pft_output_scaled); /* no CFT index needed for non-agricultural stands */
+      set_irrigsystem(stand,0,ncft,config->pft_output_scaled); /* no CFT index needed for non-agricultural stands */
 
 #ifdef SAFE
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
@@ -688,7 +686,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
       if(timberharvest>0.001)
       {
         /* deforestation without conversion to agricultural land */
-        deforest(cell,timberharvest,pftpar,intercrop,npft,TRUE,istimber,FALSE,ncft,year,minnatfrac_luc);
+        deforest(cell,timberharvest,config->pftpar,intercrop,npft,TRUE,istimber,FALSE,ncft,year,minnatfrac_luc);
       }
       cell->ml.image_data->timber_frac=0.0;
     }
