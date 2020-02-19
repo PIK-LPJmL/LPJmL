@@ -1426,8 +1426,7 @@ void lpj_update_
                   if(config.laimax_interpolate!=CONST_LAI_MAX)
                     laimax_manage(&grid[cell].ml.manage,config.pftpar+npft,npft,ncft,year);
                   if(year>config.firstyear-config.nspinup)
-                    landusechange(grid+cell,config.pftpar,npft,ncft,config.ntypes,
-                                  intercrop,istimber,year,config.pft_output_scaled);
+                    landusechange(grid+cell,npft,ncft,intercrop,istimber,year,&config);
                   else if(grid[cell].ml.dam)
                     landusechange_for_reservoir(grid+cell,config.pftpar,npft,istimber,
                                                 intercrop,ncft,year);
@@ -1451,7 +1450,7 @@ void lpj_update_
               grid[cell].ml.mdemand=0.0;
             if(!grid[cell].skip)
             {
-              initoutput_monthly(&((grid+cell)->output));
+              initoutput_monthly(&((grid+cell)->output),npft,config.nbiomass,ncft);
               // reset yesterday's saved values
               mevap_yesterday[cell] = mtransp_yesterday[cell] = 0.0;
               mevap_lake_yesterday[cell] = mevap_res_yesterday[cell] = 0.0;
@@ -1557,7 +1556,7 @@ void lpj_update_
               //printf("day=%d cell=%d CO2=%g\n",dayofyear,cell, co2);
 #endif
               update_daily(grid+cell,co2,popdens,daily,dayofyear,npft,ncft,
-                           year,month,output->withdaily,intercrop,&config);
+                           year,month,intercrop,&config);
             }
           }
 
@@ -1574,7 +1573,7 @@ void lpj_update_
 
           }
 
-          if(output->withdaily && year>=config.outputyear)
+          if(config.withdailyoutput && year>=config.outputyear)
             fwriteoutput_daily(output,grid,dayofyear-1,year,&config);
 
           /******* prepare OUTPUT for land_lad ****************************************         \n**/
@@ -1732,8 +1731,9 @@ void lpj_update_
             grid[cell].output.mres_storage*=1e-9/ndaymonth[month]; /* hb 5-11-09 mean monthly reservoir storage in 1.000.000 m3 per cell */
             if(!grid[cell].skip)
               update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
-                                                cell,month),getmprec(input.climate,&grid[cell].climbuf,
-                                                                     cell,month),month);
+                                                cell,month),
+                             getmprec(input.climate,&grid[cell].climbuf,cell,month),
+                             npft,config.nbiomass,ncft,month);
 #ifdef DEBUG
             printcell(grid+cell,1,ncft,input.landuse!=NULL,TRUE);
 #endif
@@ -1741,7 +1741,7 @@ void lpj_update_
 
             if(year>=config.outputyear)
               /* write out monthly output */
-              fwriteoutput_monthly(output,grid,month,year,&config);
+              fwriteoutput_monthly(output,grid,npft,ncft,month,year,&config);
 
         } /* if (monthend) */ /* of 'foreachmonth */
 
