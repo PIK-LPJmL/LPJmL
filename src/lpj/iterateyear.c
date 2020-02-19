@@ -49,15 +49,10 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                 )
 {
   Dailyclimate daily;
-  Bool intercrop,istimber;
+  Bool intercrop;
   int month,dayofmonth,day;
   int cell;
   Real popdens=0; /* population density (capita/km2) */
-#ifdef IMAGE
-  istimber=(config->start_imagecoupling!=INT_MAX);
-#else
-  istimber=config->istimber;
-#endif
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)
   {
@@ -75,9 +70,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
             laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
           if(year>config->firstyear-config->nspinup || config->from_restart)
             landusechange(grid+cell,config->pftpar,npft,ncft,config->ntypes,
-                          intercrop,istimber,year,config->pft_output_scaled);
+                          intercrop,config->istimber,year,config->pft_output_scaled);
           else if(grid[cell].ml.dam)
-            landusechange_for_reservoir(grid+cell,config->pftpar,npft,istimber,
+            landusechange_for_reservoir(grid+cell,config->pftpar,npft,config->istimber,
                                         intercrop,ncft,year);
         }
 #ifdef IMAGE
