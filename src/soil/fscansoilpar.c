@@ -122,7 +122,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     if(soil->wfc<=0 || soil->wfc>1)
     {
       if(verb)
-        fprintf(stderr,"ERROR215: wfc=%g in line %d of '%s' not int (0,1] for soil type '%s'.\n",
+        fprintf(stderr,"ERROR215: wfc=%g in line %d of '%s' not in (0,1] for soil type '%s'.\n",
                 soil->wfc,getlinecount(),getfilename(),soil->name);
       return 0;
     }
