@@ -40,7 +40,7 @@ Harvest harvest_grass(Stand *stand, /**< pointer to stand */
     sum.harvest.carbon+=harvest.harvest.carbon;
     sum.harvest.nitrogen+=harvest.harvest.nitrogen;
     grass->max_leaf = grass->ind.leaf.carbon;
-    pft->phen=1; /*0.3;*/
+    //pft->phen=1; /*0.3;*/
     pft->gdd=30;
   }
   return sum;
@@ -64,7 +64,7 @@ static Harvest harvest_grass_mowing(Stand *stand)
     grass->ind.leaf.nitrogen -= harvest.harvest.nitrogen;
     sum.harvest.carbon+=harvest.harvest.carbon;
     sum.harvest.nitrogen+=harvest.harvest.nitrogen;
-    pft->gdd=pft->phen=0.0; // change -> relative from ind.leaf
+    pft->gdd=0.0; // change -> relative from ind.leaf
   }
   return sum;
 } /* of 'harvest_grass_mowing' */
@@ -86,7 +86,7 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
     bm_tot.carbon += grass->ind.leaf.carbon;
     bm_tot.nitrogen+= grass->ind.leaf.nitrogen;
   }
-//  bm_grazed = stand->cell->ml.nr_of_lsus_ext * DEMAND_COW_EXT; 
+//  bm_grazed = stand->cell->ml.nr_of_lsus_ext * DEMAND_COW_EXT;
   bm_grazed = 1e-4* stand->cell->ml.nr_of_lsus_ext * DEMAND_COW_EXT;
 
   foreachpft(pft,p,&stand->pftlist)
@@ -116,7 +116,7 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
 
     grass->ind.leaf.nitrogen -=  bm_grazed_pft.nitrogen;
     sum.harvest.nitrogen     += (1-MANURE)*bm_grazed_pft.nitrogen;                       // 60% atmosphere, 15% cows
-    stand->soil.pool->fast.nitrogen += MANURE * bm_grazed_pft.nitrogen;             // 25% back to soil 
+    stand->soil.pool->fast.nitrogen += MANURE * bm_grazed_pft.nitrogen;             // 25% back to soil
     // pft->phen recalculated in phenology_grass
   }
   return sum;
@@ -149,7 +149,7 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
     if (rotation_len > MAX_ROTATION_LENGTH)
       rotation_len = MAX_ROTATION_LENGTH;
 
-    if (rotation_len > MIN_ROTATION_LENGTH) // otherwise wait for more growth 
+    if (rotation_len > MIN_ROTATION_LENGTH) // otherwise wait for more growth
     {
       rotation->grazing_days = (int)ceil(rotation_len/MAX_PADDOCKS);
       rotation->paddocks = (int)floor((rotation_len/rotation->grazing_days) + 0.5);
