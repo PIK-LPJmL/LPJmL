@@ -121,7 +121,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
  {
   String name;
   LPJfile input;
-  int restart,endgrid,israndom,grassfix;
+  int restart,endgrid,israndom,grassfix,grassharvest;
   Verbosity verbose;
 
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
@@ -266,6 +266,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         fscanbool2(file,&config->reservoir,"reservoir");
       grassfix=FALSE;
       if(fscanbool(file,&grassfix,"grassland_fixed_pft",TRUE,verbose))
+        return TRUE;
+      grassharvest=FALSE;
+      if(fscanbool(file,&grassharvest,"grass_harvest_options", TRUE, verbose))
         return TRUE;
     }
     if(isboolean(file,"wateruse"))
@@ -412,10 +415,17 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     else
       config->grassfix_filename.name = NULL;
+    if(grassharvest == GRASS_HARVEST_OPTIONS)
+    {
+      scanclimatefilename(&input,&config->grassharvest_filename,config->inputdir,FALSE,"grass_harvest_options");
+    }
+    else
+      config->grassharvest_filename.name = NULL;
   }
   else
   {
     config->grassfix_filename.name = NULL;
+    config->grassharvest_filename.name = NULL;
   }
   if(config->river_routing)
   {

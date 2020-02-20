@@ -18,6 +18,7 @@
 #include "grass.h"
 #include "agriculture.h"
 #include "grassland.h"
+#include "landuse.h"
 
 Harvest harvest_grass(Stand *stand, /**< pointer to stand */
                       Real hfrac    /**< harvest fractions */
@@ -192,7 +193,6 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
   }
   return sum;
 } /* of 'harvest_grass_grazing_int' */
-#endif
 
 Harvest harvest_stand(Output *output, /**< Output data */
                       Stand *stand,   /**< pointer to grassland stand */
@@ -200,8 +200,28 @@ Harvest harvest_stand(Output *output, /**< Output data */
                      )                /** \return harvested carbon (gC/m2) */
 {
   Harvest harvest;
-
-  harvest=harvest_grass(stand,hfrac);
+  if (stand->type->landusetype == GRASSLAND)
+    {
+      switch (stand->cell->ml.grass_scenario)
+      {
+        case GS_DEFAULT: // default
+          harvest=harvest_grass(stand,hfrac);
+          break;
+        case GS_MOWING: // mowing
+          harvest=harvest_grass_mowing(stand);
+          break;
+        case GS_GRAZING_EXT: // ext. grazing
+          harvest=harvest_grass_grazing_ext(stand);
+          break;
+        case GS_GRAZING_INT: // int. grazing
+          harvest=harvest_grass_grazing_int(stand);
+          break;
+      }
+    }
+    else /* option for biomass_grass */
+    {
+      harvest=harvest_grass(stand,hfrac);
+    }
   output->flux_harvest+=(harvest.harvest+harvest.residual)*stand->frac;
   output->dcflux+=(harvest.harvest+harvest.residual)*stand->frac;
   return harvest;

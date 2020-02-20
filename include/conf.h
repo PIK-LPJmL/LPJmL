@@ -32,10 +32,10 @@
 #define LIM_IRRIGATION 1
 #define POT_IRRIGATION 2
 #define ALL_IRRIGATION 3
-#define GRASS_HARVEST_OPTIONS 1 
-#define NO_GRASS_HARVEST_OPTIONS 0 
-#define GRASS_FIXED_PFT 1 
-#define NO_GRASS_FIXED_PFT 0 
+#define GRASS_HARVEST_OPTIONS 1
+#define NO_GRASS_HARVEST_OPTIONS 0
+#define GRASS_FIXED_PFT 1
+#define NO_GRASS_FIXED_PFT 0
 #define LAIMAX_CFT 0
 #define LAIMAX_INTERPOLATE 1
 #define CONST_LAI_MAX 2
@@ -86,7 +86,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 216            /* number of output files */
+#define NOUT 217            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -213,7 +213,7 @@
 #define PRODUCT_POOL_FAST 115
 #define PRODUCT_POOL_SLOW 116
 #define LUC_IMAGE 117
-#define MAXTHAW_DEPTH 118 
+#define MAXTHAW_DEPTH 118
 #define MSOILTEMP1 119
 #define MSOILTEMP2 120
 #define MSOILTEMP3 121
@@ -311,6 +311,7 @@
 #define ABURNTAREA 213
 #define AGB_TREE 214
 #define MPFT_LAI 215
+#define MEAN_VEGC_MANGRASS 216
 #define RANDOM_SEED 0
 
 #endif

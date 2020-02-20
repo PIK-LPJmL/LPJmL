@@ -19,6 +19,22 @@
 #include "agriculture.h"
 #include "grassland.h"
 
+static const int mowingDays[] = {152, 335}; // mowing on fixed dates 1-june or 1-dec
+
+Bool isMowingDay(int aDay)
+{
+  int i;
+  int len = sizeof(mowingDays)/sizeof(int);
+  for (i=0; i < len; i++)
+  {
+    if (aDay == mowingDays[i])
+      return TRUE;
+  }
+  return FALSE;
+}
+
+
+
 Real daily_grassland(Stand *stand, /**< stand pointer */
                      Real co2,   /**< atmospheric CO2 (ppmv) */
                      const Dailyclimate *climate, /**< Daily climate values */
@@ -39,7 +55,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
                      const Config *config /**< LPJ config */
                     )            /** \return runoff (mm) */
 {
-  int p,l;
+  int p,l,i,k;
   Pft *pft;
   Output *output;
   Harvest harvest={0,0,0,0};
@@ -59,6 +75,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   Bool isphen;
   Irrigation *data;
   Pftgrass *grass;
+  Real dfpar;
   Real hfrac=0.5;
   Real cleaf=0,cleaf_max=0;
   irrig_apply=0.0;
@@ -235,18 +252,43 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
     cleaf+=grass->ind.leaf;
     cleaf_max+=grass->max_leaf;
   }
-  if(day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365)
-  {
-    if(cleaf>cleaf_max)
+  switch(stand->cell->ml.grass_scenario)
     {
-      isphen=TRUE;
-      hfrac=1-1000/(1000+cleaf);
-    }
-  }
+      case GS_DEFAULT: // default
+        if(day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365)
+        {
+          if(cleaf>cleaf_max)
+          {
+            isphen=TRUE;
+            hfrac=1-1000/(1000+cleaf);
+          }
+        }
+        break;
+      case GS_MOWING: // mowing
+        if(isMowingDay(day))
+        {
+          if(cleaf > STUBBLE_HEIGHT_MOWING) /* 5 cm or 25 g.C.m-2 threshold */
+            isphen=TRUE;
+        }
+        break;
+      case GS_GRAZING_EXT: /* ext. grazing  */
+        stand->cell->ml.rotation.rotation_mode = RM_UNDEFINED;
+        stand->cell->ml.nr_of_lsus_ext = 0.0;
+        if(cleaf > STUBBLE_HEIGHT_GRAZING_EXT) /* minimum threshold */
+        {
+          isphen=TRUE;
+          stand->cell->ml.rotation.rotation_mode = RM_GRAZING;
+          stand->cell->ml.nr_of_lsus_ext = param.lsuha;
+        }
+        break;
+      case GS_GRAZING_INT: /* int. grazing */
+        if((cleaf > STUBBLE_HEIGHT_GRAZING_INT) || (stand->cell->ml.rotation.rotation_mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
+          isphen=TRUE;
+        break;
+    } /* of switch */
   if(isphen)
   {
     harvest=harvest_stand(output,stand,hfrac);
-
     /* return irrig_stor and irrig_amount in case of harvest */
     if(data->irrigation)
     {
@@ -346,6 +388,9 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   output->cft_temp[rmgrass(ncft)+data->irrigation*(ncft+NGRASS)]+=climate->temp;
   output->cft_prec[rmgrass(ncft)+data->irrigation*(ncft+NGRASS)]+=climate->prec;
   output->cft_srad[rmgrass(ncft)+data->irrigation*(ncft+NGRASS)]+=climate->swdown;
+  foreachpft(pft, p, &stand->pftlist)
+    output->mean_vegc_mangrass+=vegc_sum(pft);
+
 
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw_grassland(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,

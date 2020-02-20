@@ -45,6 +45,9 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   Bool swap_grassfix;
   Type grassfix_datatype;
   Infile grassfix_file;
+  Bool swap_grassharvest;
+  Infile grassharvest_file;
+  Type grassharvest_datatype;
   unsigned int soilcode;
   Code code;
   FILE *file_restart;
@@ -154,6 +157,66 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         }
       }
     }
+    if(config->grassharvest_filename.name!=NULL)
+    {
+      if(config->grassharvest_filename.fmt==CDF)
+      {
+        grassharvest_file.cdf=openinput_netcdf(config->grassharvest_filename.name,config->grassharvest_filename.var,NULL,0,config);
+        if(grassharvest_file.cdf==NULL)
+        {
+          closecelldata(celldata);
+          return NULL;
+        }
+      }
+      else
+      {
+      /* Open grassharvest file */
+        grassharvest_file.file=openinputfile(&header,&swap_grassharvest,&config->grassharvest_filename,
+                                           headername,&version,&offset,config);
+        if(grassharvest_file.file==NULL)
+        {
+          closecelldata(celldata);
+          if(config->countrypar!=NULL)
+          {
+            closeinput(countrycode,config->countrycode_filename.fmt);
+            if(config->countrycode_filename.fmt==CDF)
+              closeinput(regioncode,config->regioncode_filename.fmt);
+          }
+          if(config->grassharvest_filename.name!=NULL)
+          {
+            if(config->grassharvest_filename.fmt==CDF)
+              closeinput_netcdf(grassharvest_file.cdf);
+            else
+              fclose(grassharvest_file.file);
+          }
+          return NULL;
+        }
+	      grassharvest_datatype=(version<3) ? LPJ_BYTE : header.datatype;
+        if(fseek(grassharvest_file.file,config->startgrid*typesizes[grassharvest_datatype]+offset,SEEK_CUR))
+        {
+          /* seeking to position of first grid cell failed */
+          fprintf(stderr,
+                  "ERROR108: Cannot seek in grass harvest options file to position %d.\n",
+                  config->startgrid);
+          closecelldata(celldata);
+          fclose(grassharvest_file.file);
+          if(config->countrypar!=NULL)
+          {
+            closeinput(countrycode,config->countrycode_filename.fmt);
+            if(config->countrycode_filename.fmt==CDF)
+              closeinput(regioncode,config->regioncode_filename.fmt);
+          }
+          if(config->grassharvest_filename.name!=NULL)
+          {
+            if(config->grassharvest_filename.fmt==CDF)
+              closeinput_netcdf(grassharvest_file.cdf);
+            else
+              fclose(grassharvest_file.file);
+          }
+          return NULL;
+        }
+      }
+    }
   }
 
   if(config->river_routing)
@@ -178,6 +241,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           else
             fclose(grassfix_file.file);
         }
+        if(config->grassharvest_filename.name!=NULL)
+        {
+          if(config->grassharvest_filename.fmt==CDF)
+            closeinput_netcdf(grassharvest_file.cdf);
+          else
+            fclose(grassharvest_file.file);
+	      }
         return NULL;
       }
     }
@@ -201,6 +271,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
             closeinput_netcdf(grassfix_file.cdf);
           else
             fclose(grassfix_file.file);
+        }
+        if(config->grassharvest_filename.name!=NULL)
+        {
+          if(config->grassharvest_filename.fmt==CDF)
+            closeinput_netcdf(grassharvest_file.cdf);
+          else
+            fclose(grassharvest_file.file);
         }
         return NULL;
       }
@@ -226,6 +303,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
             closeinput_netcdf(grassfix_file.cdf);
           else
             fclose(grassfix_file.file);
+        }
+        if(config->grassharvest_filename.name!=NULL)
+        {
+          if(config->grassharvest_filename.fmt==CDF)
+            closeinput_netcdf(grassharvest_file.cdf);
+          else
+            fclose(grassharvest_file.file);
         }
         return NULL;
       }
@@ -268,6 +352,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       else
         fclose(grassfix_file.file);
     }
+    if(config->grassharvest_filename.name!=NULL)
+    {
+      if(config->grassharvest_filename.fmt==CDF)
+        closeinput_netcdf(grassharvest_file.cdf);
+      else
+        fclose(grassharvest_file.file);
+    }
     return NULL;
   }
   config->initsoiltemp=FALSE;
@@ -300,6 +391,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           closeinput_netcdf(grassfix_file.cdf);
         else
           fclose(grassfix_file.file);
+      }
+      if(config->grassharvest_filename.name!=NULL)
+      {
+        if(config->grassharvest_filename.fmt==CDF)
+          closeinput_netcdf(grassharvest_file.cdf);
+        else
+          fclose(grassharvest_file.file);
       }
       return NULL;
     }
@@ -367,7 +465,30 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       else
         grid[i].ml.fixed_grass_pft= -1;
-
+      if(config->grassharvest_filename.name != NULL)
+            {
+              if(config->grassharvest_filename.fmt==CDF)
+              {
+                if(readintinput_netcdf(grassharvest_file.cdf,&grid[i].ml.grass_scenario,&grid[i].coord))
+                {
+                  fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+                          config->grassharvest_filename.name,i+config->startgrid);
+                  return NULL;
+                }
+                grid[i].ml.grass_scenario=(GrassScenarioType)data;
+              }
+              else
+              {
+      	        if(readintvec(grassharvest_file.file,&grid[i].ml.grass_scenario,1,swap_grassharvest,grassharvest_datatype))
+                {
+                  fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+                          config->grassharvest_filename.name,i+config->startgrid);
+                  return NULL;
+                }
+              }
+            }
+            else
+              grid[i].ml.grass_scenario=GS_DEFAULT;
      }
     grid[i].lakefrac=0.0;
     if(config->river_routing)
@@ -417,6 +538,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #ifdef COUPLING_WITH_FMS
     grid[i].laketemp=0;
 #endif
+    grid[i].ml.rotation.grazing_days=grid[i].ml.rotation.paddocks=0;
+    grid[i].ml.rotation.recovery_days=0;
+    grid[i].ml.rotation.rotation_mode=RM_UNDEFINED;
+
     if(config->withlanduse!=NO_LANDUSE)
     {
       grid[i].ml.landfrac=newvec(Landfrac,2);
