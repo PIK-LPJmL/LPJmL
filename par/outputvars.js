@@ -242,5 +242,6 @@
   { "id" : AGB, "name": "agb", "var" :  "AGB", "descr" :  "above ground biomass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : AGB_TREE, "name": "agb_TREE", "var" :  "AGB_TREE", "descr" :  "above ground tree biomass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : MLAKEVOL, "name": "mlakevol", "var" :  "lakevol", "descr" :  "lake content volume", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MLAKETEMP, "name": "mlaketemp", "var" :  "laketemp", "descr" :  "lake surface temperature", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0}
+  { "id" : MLAKETEMP, "name": "mlaketemp", "var" :  "laketemp", "descr" :  "lake surface temperature", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
+  {"id" : MEAN_VEGC_MANGRASS, "name": "mean_vegc_mangrass", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0}
 ],
