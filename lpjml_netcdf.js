@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  e  t  c  d  f  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 4.0.002                         \n**/
+/** Default configuration file for LPJmL C Version 4.0.004                         \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -58,6 +58,7 @@
 "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
 "reservoir" : false,
 "grassland_fixed_pft" : false,
+ "grass_harvest_options" : false,
 "wateruse" : NO_WATERUSE,
 "intercrop" : true,                   /* intercrops on setaside */
 "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
