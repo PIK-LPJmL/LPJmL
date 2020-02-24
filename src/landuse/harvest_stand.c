@@ -19,10 +19,9 @@
 #include "grassland.h"
 
 static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
-                             Real hfrac    /**< harvest fractions */
+                             Real hfrac    /**< harvest fraction */
                             )              /** \return harvested grass (gC/m2) */
 {
-  Harvest harvest;
   Harvest sum={0,0,0,0};
   Pftgrass *grass;
   Pft *pft;
@@ -31,9 +30,8 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
-    harvest.harvest=grass->ind.leaf*hfrac;
+    sum.harvest+=grass->ind.leaf*hfrac*pft->nind;
     grass->ind.leaf*=(1-hfrac);
-    sum.harvest+=harvest.harvest*pft->nind;
     grass->max_leaf = grass->ind.leaf;
     pft->phen=0.3;
     pft->gdd=30;
