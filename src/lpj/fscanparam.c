@@ -102,6 +102,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
 
   if(config->withlanduse!=NO_LANDUSE)
   {
+    fscanparamreal(&f,&param.lsuha,"lsuha");
     fscanparamreal(&f,&param.aprec_lim,"aprec_lim");
     fscanparamreal01(&f,&param.irrig_threshold_c3_dry,"irrig_threshold_c3_dry");
     fscanparamreal01(&f,&param.irrig_threshold_c3_humid,

@@ -29,7 +29,7 @@ void initoutput_annual(Output *output, /**< Output data */
   output->awd_unsustainable=output->aevap_lake=output->aevap_res=0;
   output->soil_storage=output->aburntarea=0;
   output->prod_turnover=output->deforest_emissions=output->fburn=output->ftimber=output->timber_harvest=0;
-  output->product_pool_fast=output->product_pool_slow=output->trad_biofuel=0;
+  output->product_pool_fast=output->product_pool_slow=output->trad_biofuel=output->mean_vegc_mangrass=0;
 
   for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     output->pft_harvest[i].harvest=output->pft_harvest[i].residual=output->cftfrac[i]=

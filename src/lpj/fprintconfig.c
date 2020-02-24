@@ -84,6 +84,8 @@ static size_t isnetcdfinput(const Config *config)
     width=max(width,strlen(config->popdens_filename.var));
   if(config->grassfix_filename.name!=NULL && config->grassfix_filename.fmt==CDF)
     width=max(width,strlen(config->grassfix_filename.var));
+  if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
+    width=max(width,strlen(config->grassharvest_filename.var));
   if(config->withlanduse!=NO_LANDUSE)
   {
     if(config->countrycode_filename.fmt==CDF)
@@ -264,6 +266,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   }
   if(config->grassfix_filename.name!=NULL)
     len=printsim(file,len,&count,"grassland fixed PFT");
+  if(config->grassharvest_filename.name!=NULL)
+    len=printsim(file,len,&count,"grassland harvest");
   if(config->firewood)
     len=printsim(file,len,&count,"wood fires");
   if(config->reservoir)
@@ -337,6 +341,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"landcover",&config->landcover_filename,width);
   if(config->grassfix_filename.name!=NULL)
     printinputfile(file,"Grassfix",&config->grassfix_filename,width);
+  if(config->grassharvest_filename.name!=NULL)
+    printinputfile(file, "Grassharv", &config->grassharvest_filename, width);
   if(config->withlanduse!=NO_LANDUSE)
   {
     printinputfile(file,"countries",&config->countrycode_filename,width);

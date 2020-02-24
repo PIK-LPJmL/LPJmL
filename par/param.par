@@ -38,6 +38,7 @@
 -0.50     /* a parameter for scaling the human ignintions within SPITFIRE */
 0.000001  /* threshold of fireintensity for which burnt area can be modeled */
 #ifdef WITH_LANDUSE
+0.0       /* livestock density */
 900       /* annual prec limit for C3 threshold*/
 0.8       /* irrigation threshold C3, prec < aprec_lim */
 0.9       /* irrigation threshold C3, prec >= aprec_lim */

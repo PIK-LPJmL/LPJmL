@@ -236,3 +236,4 @@ layer /* name of index variabel for soil layer output */
   AGB_TREE "agb_tree" "AGB_TREE" "above ground tree biomass" "gC/m2" 1.0 0.0
   MLAKEVOL "mlakevol" "lakevol" "lake content volume" "dm3" 1.0 0.0
   MLAKETEMP "mlaketemp" "laketemp" "lake surface temperature" "celsius" 1.0 0.0
+  MEAN_VEGC_MANGRASS "mean_vegc_mangrass" "VegC" "Mean veg. C of managed grasslands" "gC/m2" 1.0 0.0

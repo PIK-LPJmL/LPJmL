@@ -81,7 +81,6 @@ extern void light(Stand *,int,const Real[]);
 extern Real establishmentpft(Stand *,const Pftpar[],int,int,Real,int);
 extern Real standcarbon(const Stand *);
 extern void cutpfts(Stand *);
-extern Harvest harvest_grass(Stand *,Real);
 extern Real roughnesslength(const Standlist);
 extern void waterbalance(Stand *,Real [BOTTOMLAYER],Real [BOTTOMLAYER],Real *,Real *,Real,Real,
                          Real,Real *,Bool);

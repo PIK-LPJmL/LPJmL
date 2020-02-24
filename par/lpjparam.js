@@ -12,7 +12,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-"param" : 
+"param" :
 {
   "k_litter10" : 0.3,        /* k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
@@ -29,12 +29,13 @@
   "bc4" : 0.035,             /* bc4 leaf respiration as fraction of Vmax for C4 plants */
   "r_growth" : 0.25,         /* r_growth */
   "GM" : 3.26,               /* GM empirical parameter in demand function */
-  "ALPHAM" : 1.391,          /* ALPHAM Priestley-Taylor coefficient*/ 
+  "ALPHAM" : 1.391,          /* ALPHAM Priestley-Taylor coefficient*/
   "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */
   "kc25" : 30.,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.7,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
   "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "lsuha" : 0.0,             /* livestock density */
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold*/
   "irrig_threshold_c3_dry" : 0.8,     /* irrigation threshold C3, prec < aprec_lim */
   "irrig_threshold_c3_humid" : 0.9,   /* irrigation threshold C3, prec >= aprec_lim */

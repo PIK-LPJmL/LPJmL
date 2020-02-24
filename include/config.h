@@ -74,6 +74,7 @@ typedef struct
   Filename landcover_filename;
   Filename runoff2ocean_filename; /**< map with indices of the ocean cells where the coast cells send their runoff into */
   Filename grassfix_filename;
+  Filename grassharvest_filename;
 #ifdef IMAGE
   Filename temp_var_filename; /**< file with CRU-derived temperature variation (K) */
   Filename prec_var_filename; /**< file with CRU-derived precipitation variation (%) */
