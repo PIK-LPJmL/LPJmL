@@ -170,7 +170,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       else
       {
-      /* Open grassharvest file */
+        /* Open grassharvest file */
         grassharvest_file.file=openinputfile(&header,&swap_grassharvest,&config->grassharvest_filename,
                                            headername,&version,&offset,config);
         if(grassharvest_file.file==NULL)
@@ -191,7 +191,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           }
           return NULL;
         }
-	      grassharvest_datatype=(version<3) ? LPJ_BYTE : header.datatype;
+        grassharvest_datatype=(version<3) ? LPJ_BYTE : header.datatype;
         if(fseek(grassharvest_file.file,config->startgrid*typesizes[grassharvest_datatype]+offset,SEEK_CUR))
         {
           /* seeking to position of first grid cell failed */
@@ -247,7 +247,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
             closeinput_netcdf(grassharvest_file.cdf);
           else
             fclose(grassharvest_file.file);
-	      }
+        }
         return NULL;
       }
     }
@@ -466,30 +466,29 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       else
         grid[i].ml.fixed_grass_pft= -1;
       if(config->grassharvest_filename.name != NULL)
-            {
-              if(config->grassharvest_filename.fmt==CDF)
-              {
-                if(readintinput_netcdf(grassharvest_file.cdf,&grid[i].ml.grass_scenario,&grid[i].coord))
-                {
-                  fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                          config->grassharvest_filename.name,i+config->startgrid);
-                  return NULL;
-                }
-                grid[i].ml.grass_scenario=(GrassScenarioType)data;
-              }
-              else
-              {
-      	        if(readintvec(grassharvest_file.file,&grid[i].ml.grass_scenario,1,swap_grassharvest,grassharvest_datatype))
-                {
-                  fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                          config->grassharvest_filename.name,i+config->startgrid);
-                  return NULL;
-                }
-              }
-            }
-            else
-              grid[i].ml.grass_scenario=GS_DEFAULT;
-     }
+      {
+        if(config->grassharvest_filename.fmt==CDF)
+        {
+          if(readintinput_netcdf(grassharvest_file.cdf,(int *)(&grid[i].ml.grass_scenario),&grid[i].coord))
+          {
+            fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+                    config->grassharvest_filename.name,i+config->startgrid);
+            return NULL;
+          }
+        }
+        else
+        {
+          if(readintvec(grassharvest_file.file,(int *)(&grid[i].ml.grass_scenario),1,swap_grassharvest,grassharvest_datatype))
+          {
+            fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+                    config->grassharvest_filename.name,i+config->startgrid);
+            return NULL;
+          }
+        }
+      }
+      else
+        grid[i].ml.grass_scenario=GS_DEFAULT;
+    }
     grid[i].lakefrac=0.0;
     if(config->river_routing)
     {
