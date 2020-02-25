@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  _  a  g  r  i  c  u  l  t  u  r  e  .  c                \n**/
+/**              i  n  i  t  _  i  r  r  i  g  a  t  i  o  n  .  c                 \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes irrigation data of stand                                   \n**/
+/**     Function initializes irrigation data                                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,15 +15,12 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
-Bool fwrite_agriculture(FILE *file,        /**< pointer to binary file */
-                        const Stand *stand /**< stand pointer */
-                       )                   /** \return TRUE on error */
+void init_irrigation(Irrigation *irrigation)
 {
-  Irrigation *irrigation;
-  irrigation=stand->data;
-  fwrite_irrigation(file,irrigation);
-  fwrite1(&stand->growing_days,sizeof(int),file);
-  return FALSE;
-} /* of 'fwrite_agriculture' */
+  irrigation->irrigation=FALSE;
+  irrigation->irrig_event=0;
+  irrigation->irrig_system=NOIRRIG;
+  irrigation->ec=1;
+  irrigation->conv_evap=irrigation->net_irrig_amount=irrigation->dist_irrig_amount=irrigation->irrig_amount=irrigation->irrig_stor=0.0;
+} /* of 'init_irrigation' */

@@ -23,13 +23,9 @@ void new_grassland(Stand *stand)
   grassland=new(Grassland);
   check(grassland);
   stand->fire_sum=0.0;
-  stand->growing_time=stand->growing_days=stand->age=0;
+  stand->growing_days=0;
   stand->data=grassland;
-  grassland->irrigation.irrigation=FALSE;
-  grassland->irrigation.irrig_event=0;
-  grassland->irrigation.irrig_system=NOIRRIG;
-  grassland->irrigation.ec=1;
-  grassland->irrigation.conv_evap=grassland->irrigation.net_irrig_amount=grassland->irrigation.dist_irrig_amount=grassland->irrigation.irrig_amount=grassland->irrigation.irrig_stor=0.0;
+  init_irrigation(&grassland->irrigation);
   grassland->nr_of_lsus_ext= grassland->nr_of_lsus_int=0.0;
   grassland->rotation.grazing_days=grassland->rotation.paddocks=0;
   grassland->rotation.recovery_days=0;

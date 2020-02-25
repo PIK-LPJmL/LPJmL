@@ -16,7 +16,6 @@
 
 #include "lpj.h"
 #include "natural.h"
-#include "agriculture.h"
 
 void update_daily(Cell *cell,            /**< cell pointer           */
                   Real co2,              /**< atmospheric CO2 (ppmv) */

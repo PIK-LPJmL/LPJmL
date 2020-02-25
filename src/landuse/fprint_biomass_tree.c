@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  _  a  g  r  i  c  u  l  t  u  r  e  .  c                \n**/
+/**      f  p  r  i  n  t  _  b  i  o  m  a  s  s  _  t  r  e  e  .  c             \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes irrigation data of stand                                   \n**/
+/**     Function prints biomass tree data of stand                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,15 +15,17 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
+#include "biomass_tree.h"
 
-Bool fwrite_agriculture(FILE *file,        /**< pointer to binary file */
-                        const Stand *stand /**< stand pointer */
-                       )                   /** \return TRUE on error */
+void fprint_biomass_tree(FILE *file,        /**< pointer to text file */
+                         const Stand *stand /**< pointer to stand */
+                        )
 {
-  Irrigation *irrigation;
-  irrigation=stand->data;
-  fwrite_irrigation(file,irrigation);
-  fwrite1(&stand->growing_days,sizeof(int),file);
-  return FALSE;
-} /* of 'fwrite_agriculture' */
+  const Biomass_tree *biomass_tree;
+  biomass_tree=stand->data;
+  fprint_irrigation(file,&biomass_tree->irrigation);
+  fprintf(file,"Growing time:\t%d (yr)\n"
+          "Age:\t\t%d (yr)\n",
+          biomass_tree->growing_time,
+          biomass_tree->age);
+} /* of 'fprint_biomass_tree' */

@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function of daily update of natural stand                                  \n**/
+/**     Function of daily update of biomass tree stand                             \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,9 +15,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "natural.h"
 #include "tree.h"
-#include "agriculture.h"
 #include "biomass_tree.h"
 
 Real daily_biomass_tree(Stand *stand, /**< stand pointer */
@@ -57,7 +55,7 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
   Real npp; /* net primary productivity (gC/m2) */
   Real wdf; /* water deficit fraction */
   Real gc_pft;
-  Irrigation *data;
+  Biomass_tree *data;
   Soil *soil;
   irrig_apply=0.0;
 
@@ -76,7 +74,7 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
   else
     wet=NULL;
   if(!config->river_routing)
-    irrig_amount(stand,config->pft_output_scaled,npft,ncft);
+    irrig_amount(stand,&data->irrigation,config->pft_output_scaled,npft,ncft);
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
@@ -86,24 +84,24 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
   if(rainmelt<0)
     rainmelt=0.0;
 
-  if(data->irrigation && data->irrig_amount>epsilon)
+  if(data->irrigation.irrigation && data->irrigation.irrig_amount>epsilon)
   {
-    irrig_apply=max(data->irrig_amount-rainmelt,0);  /*irrigate only missing deficit after rain, remainder goes to stor */
-    data->irrig_stor+=data->irrig_amount-irrig_apply;
-    data->irrig_amount=0.0;
-    if(irrig_apply<1 && data->irrig_system!=DRIP)  /* min. irrigation requirement of 1mm */
+    irrig_apply=max(data->irrigation.irrig_amount-rainmelt,0);  /*irrigate only missing deficit after rain, remainder goes to stor */
+    data->irrigation.irrig_stor+=data->irrigation.irrig_amount-irrig_apply;
+    data->irrigation.irrig_amount=0.0;
+    if(irrig_apply<1 && data->irrigation.irrig_system!=DRIP)  /* min. irrigation requirement of 1mm */
     {
-      data->irrig_stor+=irrig_apply;
+      data->irrigation.irrig_stor+=irrig_apply;
       irrig_apply=0.0;
     }
     else
     {
       /* write irrig_apply to output */
-      stand->cell->output.mirrig+=irrig_apply*stand->frac;
+      output->mirrig+=irrig_apply*stand->frac;
       if(config->pft_output_scaled)
-        stand->cell->output.cft_airrig[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->cell->ml.landfrac[1].biomass_tree;
+        output->cft_airrig[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->cell->ml.landfrac[1].biomass_tree;
       else
-        stand->cell->output.cft_airrig[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
+        output->cft_airrig[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
     }
   }
 
@@ -115,7 +113,7 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
       phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp);
     else
       leaf_phenology(pft,climate->temp,day,climate->isdailytemp);
-    sprink_interc=(data->irrig_system==SPRINK) ? 1 : 0;
+    sprink_interc=(data->irrigation.irrig_system==SPRINK) ? 1 : 0;
 
     intercept=interception(&wet[p],pft,eeq,climate->prec+irrig_apply*sprink_interc); /* in case of sprinkler, irrig_amount goes through interception, in case of mixed, 0.5 of irrig_amount */
     wet_all+=wet[p]*pft->fpc;
@@ -131,7 +129,7 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
   {
     runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,config->rw_manage);
     /* count irrigation events*/
-    output->cft_irrig_events[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++;
+    output->cft_irrig_events[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++;
   }
 
   runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,config->rw_manage);
@@ -151,11 +149,11 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,config->permafrost);
-   if(stand->cell->ml.landfrac[data->irrigation].biomass_tree>0.0 &&
+   if(stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree>0.0 &&
       gp_pft[getpftpar(pft,id)]>0.0)
    {
-     output->gcgp_count[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++;
-     output->pft_gcgp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
+     output->gcgp_count[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++;
+     output->pft_gcgp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
    }
    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd);
    output->mnpp+=npp*stand->frac;
@@ -167,13 +165,13 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
    output->mphen_light += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
    output->mphen_water += pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
    output->mwscal += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-   output->cft_fpar[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=(fpar(pft)*stand->cell->ml.landfrac[data->irrigation].biomass_tree*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
+   output->cft_fpar[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=(fpar(pft)*stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
    if(config->pft_output_scaled)
-     output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation].biomass_tree;
+     output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree;
    else
-     output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
-   output->mpft_lai[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai(pft);
+     output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
+   output->mpft_lai[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai(pft);
 
   } /* of foreachpft */
 
@@ -181,8 +179,8 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
 
-  if(data->irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,gp_stand,wet,eeq);
+  if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
+    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq);
 
   forrootsoillayer(l)
   {

@@ -18,7 +18,6 @@
 #include "grass.h"
 #include "agriculture.h"
 #include "grassland.h"
-#include "landuse.h"
 
 Harvest harvest_grass(Stand *stand, /**< pointer to stand */
                       Real hfrac    /**< harvest fractions */
@@ -51,7 +50,6 @@ static Harvest harvest_grass_mowing(Stand *stand)
   Pft *pft;
   int p;
   Real fpc_sum=0.0;
-  Real leafdeficit=0.0;
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
@@ -69,7 +67,7 @@ static Harvest harvest_grass_mowing(Stand *stand)
 } /* of 'harvest_grass_mowing' */
 
 /*
- * called in function phenology_grassland() when managed grassland
+ * called in function daily_grassland() when managed grassland
  * is harvested
  *
  */
@@ -84,7 +82,7 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
   Real fact;
   Real bm_tot=0.0;
   Real fpc_sum=0.0;
-  Real bm_grazed_pft, leafdeficit;
+  Real bm_grazed_pft;
   grassland=stand->data;
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -131,7 +129,7 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
   int p;
   Real rotation_len;
   Real fact;
-  Real bm_grazed, leafdeficit;
+  Real bm_grazed;
   Real bm_tot=0.0;
   Real bm_grazed_pft;
   Grassland *grassland;
@@ -183,13 +181,13 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
       // stand->soil.cpool[0].fast += MANURE * bm_grazed_pft;    // 25% back to soil
     }
 
-    grassland->rotation.grazing_days -= 1;
+    grassland->rotation.grazing_days--;
     if (grassland->rotation.grazing_days == 0)
       grassland->rotation.rotation_mode = RM_RECOVERY;
   }
   else if (grassland->rotation.rotation_mode == RM_RECOVERY)
   {
-    grassland->rotation.recovery_days -= 1;
+    grassland->rotation.recovery_days--;
     if (grassland->rotation.recovery_days == 0)
       grassland->rotation.rotation_mode = RM_UNDEFINED;
   }
@@ -203,27 +201,27 @@ Harvest harvest_stand(Output *output, /**< Output data */
 {
   Harvest harvest;
   if (stand->type->landusetype == GRASSLAND)
+  {
+    switch (stand->cell->ml.grass_scenario)
     {
-      switch (stand->cell->ml.grass_scenario)
-      {
-        case GS_DEFAULT: // default
-          harvest=harvest_grass(stand,hfrac);
-          break;
-        case GS_MOWING: // mowing
-          harvest=harvest_grass_mowing(stand);
-          break;
-        case GS_GRAZING_EXT: // ext. grazing
-          harvest=harvest_grass_grazing_ext(stand);
-          break;
-        case GS_GRAZING_INT: // int. grazing
-          harvest=harvest_grass_grazing_int(stand);
-          break;
-      }
+      case GS_DEFAULT: // default
+        harvest=harvest_grass(stand,hfrac);
+         break;
+      case GS_MOWING: // mowing
+        harvest=harvest_grass_mowing(stand);
+        break;
+      case GS_GRAZING_EXT: // ext. grazing
+        harvest=harvest_grass_grazing_ext(stand);
+        break;
+      case GS_GRAZING_INT: // int. grazing
+        harvest=harvest_grass_grazing_int(stand);
+        break;
     }
-    else /* option for biomass_grass */
-    {
-      harvest=harvest_grass(stand,hfrac);
-    }
+  }
+  else /* option for biomass_grass */
+  {
+    harvest=harvest_grass(stand,hfrac);
+  }
   output->flux_harvest+=(harvest.harvest+harvest.residual)*stand->frac;
   output->dcflux+=(harvest.harvest+harvest.residual)*stand->frac;
   return harvest;

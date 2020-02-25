@@ -16,7 +16,6 @@
 
 #include "lpj.h"
 #include "grass.h"
-#include "agriculture.h"
 #include "grassland.h"
 
 static const int mowingDays[] = {152, 335}; // mowing on fixed dates 1-june or 1-dec
@@ -55,7 +54,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
                      const Config *config /**< LPJ config */
                     )            /** \return runoff (mm) */
 {
-  int p,l,i,k;
+  int p,l;
   Pft *pft;
   Output *output;
   Harvest harvest={0,0,0,0};
@@ -75,7 +74,6 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   Bool isphen;
   Grassland *data;
   Pftgrass *grass;
-  Real dfpar;
   Real hfrac=0.5;
   Real cleaf=0,cleaf_max=0;
   irrig_apply=0.0;
@@ -94,7 +92,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   else
     wet=NULL;
   if(!config->river_routing)
-    irrig_amount(stand,config->pft_output_scaled,npft,ncft);
+    irrig_amount(stand,&data->irrigation,config->pft_output_scaled,npft,ncft);
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
@@ -117,16 +115,16 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
     else
     {
       /* write irrig_apply to output */
-      stand->cell->output.mirrig+=irrig_apply*stand->frac;
+      output->mirrig+=irrig_apply*stand->frac;
       if(config->pft_output_scaled)
       {
-        stand->cell->output.cft_airrig[rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
-        stand->cell->output.cft_airrig[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
+        output->cft_airrig[rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
+        output->cft_airrig[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
       }
       else
       {
-        stand->cell->output.cft_airrig[rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
-        stand->cell->output.cft_airrig[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
+        output->cft_airrig[rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
+        output->cft_airrig[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
       }
     }
   }
@@ -297,23 +295,23 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
       /* pay back conveyance losses that have already been consumed by transport into irrig_stor */
       stand->cell->discharge.dmass_lake+=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->cell->coord.area*stand->frac;
       stand->cell->balance.awater_flux-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
-      stand->cell->output.mstor_return+=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*stand->frac;
-      stand->cell->output.aconv_loss_evap-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
-      stand->cell->output.aconv_loss_drain-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->frac;
+      output->mstor_return+=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*stand->frac;
+      output->aconv_loss_evap-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
+      output->aconv_loss_drain-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->frac;
 
       if(config->pft_output_scaled)
       {
-        stand->cell->output.cft_conv_loss_evap[rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
-        stand->cell->output.cft_conv_loss_evap[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
-        stand->cell->output.cft_conv_loss_drain[rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
-        stand->cell->output.cft_conv_loss_drain[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
+        output->cft_conv_loss_evap[rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
+        output->cft_conv_loss_evap[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
+        output->cft_conv_loss_drain[rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
+        output->cft_conv_loss_drain[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
       }
       else
       {
-        stand->cell->output.cft_conv_loss_evap[rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap;
-        stand->cell->output.cft_conv_loss_evap[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap;
-        stand->cell->output.cft_conv_loss_drain[rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap);
-        stand->cell->output.cft_conv_loss_drain[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap);
+        output->cft_conv_loss_evap[rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap;
+        output->cft_conv_loss_evap[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap;
+        output->cft_conv_loss_drain[rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap);
+        output->cft_conv_loss_drain[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap);
       }
       data->irrigation.irrig_stor=0;
       data->irrigation.irrig_amount=0;
@@ -340,7 +338,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   }
 
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,gp_stand,wet,eeq);
+    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq);
 
   forrootsoillayer(l)
   {

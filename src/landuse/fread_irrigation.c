@@ -17,9 +17,9 @@
 #include "lpj.h"
 
 Bool fread_irrigation(FILE *file,   /**< pointer to binary file */
-                       Irrigation *irrigation, /**< irrigation pointer */
-                       Bool swap     /**< byte order has to be changed */
-                      )              /** \return TRUE on error */
+                      Irrigation *irrigation, /**< irrigation pointer */
+                      Bool swap     /**< byte order has to be changed */
+                     )              /** \return TRUE on error */
 {
   Byte b;
   fread(&b,sizeof(b),1,file);

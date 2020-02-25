@@ -27,7 +27,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
 void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       int irrig_scenario,    /**< irrigation scenario */

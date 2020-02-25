@@ -22,7 +22,7 @@ void fprint_grassland(FILE *file,        /**< pointer to text file */
                      )
 {
   static char *mode[]={"undefined","grazing","recovery"};
-  Grassland *grassland;
+  const Grassland *grassland;
   grassland=stand->data;
   fprint_irrigation(file,&grassland->irrigation);
   fprintf(file,"Nr. of lsus ext:\t%g\n"

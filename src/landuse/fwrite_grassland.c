@@ -21,7 +21,7 @@ Bool fwrite_grassland(FILE *file,        /**< pointer to binary file */
                       const Stand *stand /**< stand pointer */
                      )                   /** \return TRUE on error */
 {
-  Grassland *grassland;
+  const Grassland *grassland;
   grassland=stand->data;
   fwrite_irrigation(file,&grassland->irrigation);
   fwrite(&stand->growing_days,sizeof(int),1,file);

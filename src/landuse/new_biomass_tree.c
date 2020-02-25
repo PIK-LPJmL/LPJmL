@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  _  a  g  r  i  c  u  l  t  u  r  e  .  c                \n**/
+/**              n  e  w  _  b  i  o  m  a  s  s  _  t  r  e  e  .  c              \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes irrigation data of stand                                   \n**/
+/**     Function allocates biomass tree data of stand                              \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,15 +15,16 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
+#include "biomass_tree.h"
 
-Bool fwrite_agriculture(FILE *file,        /**< pointer to binary file */
-                        const Stand *stand /**< stand pointer */
-                       )                   /** \return TRUE on error */
+void new_biomass_tree(Stand *stand)
 {
-  Irrigation *irrigation;
-  irrigation=stand->data;
-  fwrite_irrigation(file,irrigation);
-  fwrite1(&stand->growing_days,sizeof(int),file);
-  return FALSE;
-} /* of 'fwrite_agriculture' */
+  Biomass_tree *biomass_tree;
+  biomass_tree=new(Biomass_tree);
+  check(biomass_tree);
+  stand->fire_sum=0.0;
+  stand->growing_days=0;
+  stand->data=biomass_tree;
+  biomass_tree->growing_time=biomass_tree->age=1;
+  init_irrigation(&biomass_tree->irrigation);
+} /* of 'new_biomass_tree' */

@@ -220,8 +220,6 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           mixstand->type->freestand(mixstand);
           mixstand->type=&biomass_tree_stand;
           mixstand->type->newstand(mixstand);
-          mixstand->growing_time++;
-          mixstand->age++;
           break;
         case BIOMASS_GRASS_PLANTATION:
           for(p=0;p<npft;p++)

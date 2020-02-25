@@ -17,8 +17,9 @@
 #ifndef GRASSLAND_H
 #define GRASSLAND_H
 
-#define STUBBLE_HEIGHT_MOWING 25
 /* Definition of settings */
+
+#define STUBBLE_HEIGHT_MOWING 25
 
 #define DEMAND_COW_INT 4000.0         // [g.C.day-1] same for extensive and intensive grazing;
 #define DEMAND_COW_EXT 4000.0         // corresponds to 8.9 kg DW which is in between the observed values of 6 and 12.
@@ -40,6 +41,8 @@
 #define STUBBLE_HEIGHT_GRAZING_EXT 5  // [g.C.m-2] Minimal threshold to start extensive grazing
 #define STUBBLE_HEIGHT_GRAZING_INT 40 // [g.C.m-2] equals 7-8 cm. Threshold to start intensive grazing
 
+/* Definition of datatypes */
+
 typedef enum {RM_UNDEFINED, RM_GRAZING, RM_RECOVERY} RotationModeType;
 
 typedef struct
@@ -57,6 +60,8 @@ typedef struct
   Real nr_of_lsus_ext;   /**< nr of livestock units for extensive grazing */
   Real nr_of_lsus_int;   /**< nr of livestock units for intensive grazing */
 } Grassland;
+
+/* Declaration of functions */
 
 extern Bool isMowingDay(int);
 

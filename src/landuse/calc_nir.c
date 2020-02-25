@@ -13,9 +13,9 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
 void calc_nir(Stand *stand, /**< pointer to non-natural stand */
+              Irrigation *data,
               Real gp_stand,
               Real wet[],   /**< wet array for PFT list */
               Real eeq      /**< equilibrium evapotranspiration (mm) */
@@ -25,8 +25,6 @@ void calc_nir(Stand *stand, /**< pointer to non-natural stand */
   int p,l;
   Real supply,demand,wr,satlevel;
   Real soildepth_irrig,nir,dist;
-  Irrigation *data;
-  data=stand->data;
 
   foreachpft(pft,p,&stand->pftlist)
   {
