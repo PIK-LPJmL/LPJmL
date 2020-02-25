@@ -28,16 +28,7 @@ Bool fread_agriculture(FILE *file,   /**< pointer to binary file */
   stand->data=irrigation;
   if(irrigation==NULL)
     return TRUE;
-  fread(&b,sizeof(b),1,file);
-  irrigation->irrigation=b;
-  freadint1(&irrigation->irrig_event,swap,file);
-  freadint1(&irrigation->irrig_system,swap,file);
-  freadreal1(&irrigation->ec,swap,file);
-  freadreal1(&irrigation->conv_evap,swap,file);
-  freadreal1(&irrigation->net_irrig_amount,swap,file);
-  freadreal1(&irrigation->dist_irrig_amount,swap,file);
-  freadreal1(&irrigation->irrig_amount,swap,file);
-  freadreal1(&irrigation->irrig_stor,swap,file);
+  fread_irrigation(file,irrigation,swap);
   freadint1(&stand->growing_time,swap,file);
   freadint1(&stand->growing_days,swap,file);
   return freadint1(&stand->age,swap,file)!=1;

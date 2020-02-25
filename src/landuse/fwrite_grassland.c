@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  p  r  i  n  t  _  a  g  r  i  c  u  l  t  u  r  e  .  c                \n**/
+/**      f  w  r  i  t  e  _  g  r  a  s  s  l  a  n  d  .  c                      \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function prints irrigation data of stand                                   \n**/
+/**     Function writes grassland data of stand                                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,13 +15,17 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
+#include "grassland.h"
 
-void fprint_agriculture(FILE *file,        /**< pointer to text file */
-                        const Stand *stand /**< pointer to stand */
-                       )
+Bool fwrite_grassland(FILE *file,        /**< pointer to binary file */
+                      const Stand *stand /**< stand pointer */
+                     )                   /** \return TRUE on error */
 {
-  Irrigation *irrigation;
-  irrigation=stand->data;
-  fprint_irrigation(file,irrigation);
-} /* of 'fprint_agriculture' */
+  Grassland *grassland;
+  grassland=stand->data;
+  fwrite_irrigation(file,&grassland->irrigation);
+  fwrite(&stand->growing_days,sizeof(int),1,file);
+  fwrite(&grassland->nr_of_lsus_ext,sizeof(Real),1,file);
+  fwrite(&grassland->nr_of_lsus_int,sizeof(Real),1,file);
+  return (fwrite(&grassland->rotation,sizeof(Rotation),1,file)!=1);
+} /* of 'fwrite_grassland' */

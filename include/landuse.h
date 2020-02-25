@@ -15,6 +15,11 @@
 #ifndef LANDUSE_H /* Already included? */
 #define LANDUSE_H
 
+#define NOIRRIG 0
+#define SURF 1
+#define SPRINK 2
+#define DRIP 3
+
 /* Definitions of datatypes */
 
 typedef enum {NATURAL,SETASIDE_RF,SETASIDE_IR,AGRICULTURE,MANAGEDFOREST,
@@ -41,16 +46,19 @@ typedef struct
 typedef enum {NO_SEASONALITY, PREC, PRECTEMP, TEMP, TEMPPREC} Seasonality;
 
 typedef enum {GS_DEFAULT, GS_MOWING, GS_GRAZING_EXT, GS_GRAZING_INT, GS_NONE} GrassScenarioType;
-typedef enum {RM_UNDEFINED, RM_GRAZING, RM_RECOVERY} RotationModeType;
 
 typedef struct
 {
-  int grazing_days;
-  int recovery_days;
-  int paddocks;
-  RotationModeType rotation_mode;
-} Rotation;
-
+  Bool irrigation;        /**< stand irrigated? (TRUE/FALSE) */
+  int irrig_event;        /**< irrigation water applied to field that day? depends on soil moisture and precipitation, if not irrig_amount is put to irrig_stor */
+  int irrig_system;       /**< irrigation system type (NOIRRIG=0,SURF=1,SPRINK=2,DRIP=3) */
+  Real ec;                /**< conveyance efficiency */
+  Real conv_evap;         /**< fraction of conveyance losses that is assumed to evaporate */
+  Real net_irrig_amount;  /**< deficit in upper 50cm soil to fulfill demand (mm) */
+  Real dist_irrig_amount; /**< water requirements for uniform field distribution, depending on irrigation system */
+  Real irrig_amount;      /**< irrigation water (mm) that reaches the field, i.e. without conveyance losses */
+  Real irrig_stor;        /**< storage buffer (mm), filled if irrig_threshold not reached and if irrig_amount > GIR and with irrig_amount-prec */
+} Irrigation;
 
 typedef struct
 {
@@ -72,10 +80,7 @@ typedef struct
   Real mdemand;           /**< monthly irrigation demand */
   Bool dam;               /**< dam inside cell (TRUE/FALSE) */
   int fixed_grass_pft;              /**< fix C3 or C4 for GRASS pft */
-  GrassScenarioType grass_scenario; /* 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
-  Real nr_of_lsus_ext;              /* nr of livestock units for extensive grazing */
-  Real nr_of_lsus_int;              /* nr of livestock units for intensive grazing */
-  Rotation rotation;                /* rotation mode and parameters for intensive grazing */
+  GrassScenarioType grass_scenario; /**< 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
 #ifdef IMAGE
   Image_data *image_data; /**< pointer to IMAGE data structure */
 #endif
@@ -119,5 +124,8 @@ extern void irrig_amount_river(Cell *,const Config *);
 extern void irrig_amount(Stand *,Bool,int,int);
 extern void mixsetaside(Stand *,Stand *,Bool);
 extern void set_irrigsystem(Stand *,int,int,Bool);
+extern Bool fwrite_irrigation(FILE *,const Irrigation *);
+extern void fprint_irrigation(FILE *,const Irrigation *);
+extern Bool fread_irrigation(FILE *,Irrigation *,Bool);
 
 #endif

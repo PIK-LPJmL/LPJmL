@@ -537,9 +537,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #ifdef COUPLING_WITH_FMS
     grid[i].laketemp=0;
 #endif
-    grid[i].ml.rotation.grazing_days=grid[i].ml.rotation.paddocks=0;
-    grid[i].ml.rotation.recovery_days=0;
-    grid[i].ml.rotation.rotation_mode=RM_UNDEFINED;
 
     if(config->withlanduse!=NO_LANDUSE)
     {

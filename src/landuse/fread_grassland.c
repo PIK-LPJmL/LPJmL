@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  p  r  i  n  t  _  a  g  r  i  c  u  l  t  u  r  e  .  c                \n**/
+/**        f  r  e  a  d  _  g  r  a  s  s  l  a  n  d  .  c                       \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function prints irrigation data of stand                                   \n**/
+/**     Function reads grassland data of stand                                     \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,13 +15,24 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
+#include "grassland.h"
 
-void fprint_agriculture(FILE *file,        /**< pointer to text file */
-                        const Stand *stand /**< pointer to stand */
-                       )
+Bool fread_grassland(FILE *file,   /**< pointer to binary file */
+                     Stand *stand, /**< stand pointer */
+                     Bool swap     /**< byte order has to be changed */
+                    )              /** \return TRUE on error */
 {
-  Irrigation *irrigation;
-  irrigation=stand->data;
-  fprint_irrigation(file,irrigation);
-} /* of 'fprint_agriculture' */
+  Grassland *grassland;
+  grassland=new(Grassland);
+  stand->data=grassland;
+  if(grassland==NULL)
+    return TRUE;
+  fread_irrigation(file,&grassland->irrigation,swap);
+  freadint1(&stand->growing_days,swap,file);
+  freadreal1(&grassland->nr_of_lsus_ext,swap,file);
+  freadreal1(&grassland->nr_of_lsus_int,swap,file);
+  freadint1(&grassland->rotation.grazing_days,swap,file);
+  freadint1(&grassland->rotation.recovery_days,swap,file);
+  freadint1(&grassland->rotation.paddocks,swap,file);
+  return freadint1((int *)(&grassland->rotation.rotation_mode),swap,file)!=1;
+} /* of 'fread_grassland' */

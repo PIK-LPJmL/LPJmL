@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  p  r  i  n  t  _  a  g  r  i  c  u  l  t  u  r  e  .  c                \n**/
+/**              n  e  w  _  g  r  a  s  s  l  a  n  d  .  c                       \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function prints irrigation data of stand                                   \n**/
+/**     Function allocates grassland data of stand                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,13 +15,23 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
+#include "grassland.h"
 
-void fprint_agriculture(FILE *file,        /**< pointer to text file */
-                        const Stand *stand /**< pointer to stand */
-                       )
+void new_grassland(Stand *stand)
 {
-  Irrigation *irrigation;
-  irrigation=stand->data;
-  fprint_irrigation(file,irrigation);
-} /* of 'fprint_agriculture' */
+  Grassland *grassland;
+  grassland=new(Grassland);
+  check(grassland);
+  stand->fire_sum=0.0;
+  stand->growing_time=stand->growing_days=stand->age=0;
+  stand->data=grassland;
+  grassland->irrigation.irrigation=FALSE;
+  grassland->irrigation.irrig_event=0;
+  grassland->irrigation.irrig_system=NOIRRIG;
+  grassland->irrigation.ec=1;
+  grassland->irrigation.conv_evap=grassland->irrigation.net_irrig_amount=grassland->irrigation.dist_irrig_amount=grassland->irrigation.irrig_amount=grassland->irrigation.irrig_stor=0.0;
+  grassland->nr_of_lsus_ext= grassland->nr_of_lsus_int=0.0;
+  grassland->rotation.grazing_days=grassland->rotation.paddocks=0;
+  grassland->rotation.recovery_days=0;
+  grassland->rotation.rotation_mode=RM_UNDEFINED;
+} /* of 'new_grassland' */

@@ -39,6 +39,25 @@
 
 #define STUBBLE_HEIGHT_GRAZING_EXT 5  // [g.C.m-2] Minimal threshold to start extensive grazing
 #define STUBBLE_HEIGHT_GRAZING_INT 40 // [g.C.m-2] equals 7-8 cm. Threshold to start intensive grazing
+
+typedef enum {RM_UNDEFINED, RM_GRAZING, RM_RECOVERY} RotationModeType;
+
+typedef struct
+{
+  int grazing_days;
+  int recovery_days;
+  int paddocks;
+  RotationModeType rotation_mode;
+} Rotation;
+
+typedef struct
+{
+  Irrigation irrigation;
+  Rotation rotation;
+  Real nr_of_lsus_ext;   /**< nr of livestock units for extensive grazing */
+  Real nr_of_lsus_int;   /**< nr of livestock units for intensive grazing */
+} Grassland;
+
 extern Bool isMowingDay(int);
 
 extern Standtype grassland_stand;
@@ -51,5 +70,9 @@ extern Bool annual_grassland(Stand *,int,int,Real,int,Bool,Bool,const Config *);
 extern void output_gbw_grassland(Output *,const Stand *,Real,Real,Real,Real,
                                  const Real [LASTLAYER],const Real [LASTLAYER],Real,Real,int,
                                  Bool);
+extern void new_grassland(Stand *);
+extern Bool fread_grassland(FILE *,Stand *,Bool);
+extern Bool fwrite_grassland(FILE *,const Stand *);
+extern void fprint_grassland(FILE *,const Stand *);
 
 #endif
