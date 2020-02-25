@@ -26,8 +26,12 @@ Bool fread_biomass_tree(FILE *file,   /**< pointer to binary file */
   biomass_tree=new(Biomass_tree);
   stand->data=biomass_tree;
   if(biomass_tree==NULL)
+  {
+    printallocerr("biomass_tree");
     return TRUE;
-  fread_irrigation(file,&biomass_tree->irrigation,swap);
+  }
+  if(fread_irrigation(file,&biomass_tree->irrigation,swap))
+    return TRUE;
   freadint1(&stand->growing_days,swap,file);
   freadint1(&biomass_tree->growing_time,swap,file);
   return freadint1(&biomass_tree->age,swap,file)!=1;

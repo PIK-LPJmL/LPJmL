@@ -26,8 +26,12 @@ Bool fread_grassland(FILE *file,   /**< pointer to binary file */
   grassland=new(Grassland);
   stand->data=grassland;
   if(grassland==NULL)
+  {
+    printallocerr("grassland");
     return TRUE;
-  fread_irrigation(file,&grassland->irrigation,swap);
+  }
+  if(fread_irrigation(file,&grassland->irrigation,swap))
+    return TRUE;
   freadint1(&stand->growing_days,swap,file);
   freadreal1(&grassland->nr_of_lsus_ext,swap,file);
   freadreal1(&grassland->nr_of_lsus_int,swap,file);

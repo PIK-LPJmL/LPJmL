@@ -16,13 +16,18 @@
 
 #include "lpj.h"
 
-Bool fread_irrigation(FILE *file,   /**< pointer to binary file */
+Bool fread_irrigation(FILE *file,             /**< pointer to binary file */
                       Irrigation *irrigation, /**< irrigation pointer */
-                      Bool swap     /**< byte order has to be changed */
-                     )              /** \return TRUE on error */
+                      Bool swap               /**< byte order has to be changed */
+                     )                        /** \return TRUE on error */
 {
   Byte b;
   fread(&b,sizeof(b),1,file);
+  if(b>1)
+  {
+    fprintf(stderr,"ERROR195: Invalid value %d for irrigation.\n",b);
+    return TRUE;
+  }
   irrigation->irrigation=b;
   freadint1(&irrigation->irrig_event,swap,file);
   freadint1(&irrigation->irrig_system,swap,file);
