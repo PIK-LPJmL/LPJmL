@@ -268,6 +268,7 @@ typedef struct
   Stocks *cft_root;
   Real *cft_nlimit;
   Real *cft_laimax;
+  Real mean_vegc_mangrass;
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 

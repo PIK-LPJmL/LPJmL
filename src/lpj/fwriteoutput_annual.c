@@ -73,7 +73,7 @@ static void writeannual(Outputfile *output,int index,float data[],int year,
     {
       case RAW: case CLM:
         if(fwrite(data,sizeof(float),config->count,output->files[index].fp.file)!=config->count)
-          fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno)); 
+          fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno));
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
@@ -490,7 +490,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
           count++;
         }
       writeannual(output,MG_SOILC,vec,year,config);
-  }  
+  }
   if(isopen(output,MG_LITC))
   {
     count=0;
@@ -572,5 +572,6 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
   }
   writeoutputvar(NEGC_FLUXES,neg_fluxes.carbon);
   writeoutputvar(NEGN_FLUXES,neg_fluxes.nitrogen);
+  writeoutputvar(MEAN_VEGC_MANGRASS,mean_vegc_mangrass);  
   free(vec);
 } /* of 'fwriteoutput_annual' */
