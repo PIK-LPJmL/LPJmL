@@ -230,7 +230,7 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
   }
 
   if(data->irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq);
+    calc_nir(stand,data,gp_stand,wet,eeq);
 
   forrootsoillayer(l)
   {
