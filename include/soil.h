@@ -262,7 +262,7 @@ extern Real nuptake_temp_fcn(Real);
 extern void denitrification(Stand *);
 extern void getrootdist(Real [],const Real[],Real);
 extern Stocks checklitter(Litter *);
-
+extern Real getwr(const Soil *,const Real []);
 
 /* Definition of macros */
 

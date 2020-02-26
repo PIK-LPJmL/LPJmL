@@ -17,7 +17,9 @@
 #include "lpj.h"
 
 #define fscanparamreal(file,var,name) \
-  if(fscanreal(file,var,name,FALSE,verbosity)) return TRUE; 
+  if(fscanreal(file,var,name,FALSE,verbosity)) return TRUE;
+#define fscanparamreal01(file,var,name) \
+  if(fscanreal01(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparamint(file,var,name) \
   if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparambool(file,var,name) \
@@ -39,24 +41,60 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   if(fscanstruct(file,&f,"param",verbosity))
     return TRUE;
   fscanparamreal(&f,&param.k_litter10,"k_litter10");
+  if(param.k_litter10<=0)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR234: Parameter 'k_litter10'=%g must be greater than zero.\n",
+              param.k_litter10);
+    return TRUE;
+  }
   fscanparampoolpar(&f,&param.k_soil10,"k_soil10");
+  if(param.k_soil10.slow<=0)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR234: Parameter 'k_soil10.slow'=%g must be greater than zero.\n",
+              param.k_soil10.slow);
+    return TRUE;
+  }
+  if(param.k_soil10.fast<=0)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR234: Parameter 'k_soil10.fast'=%g must be greater than zero.\n",
+              param.k_soil10.fast);
+    return TRUE;
+  }
   fscanparamreal(&f,&param.maxsnowpack,"maxsnowpack");
   fscanparamreal(&f,&param.soildepth_evap,"soildepth_evap");
+  fscanparamreal(&f,&param.soil_infil,"soil_infil");
+  if(param.soil_infil<=0)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR234: Parameter 'soil_infil'=%g must be greater than zero.\n",
+              param.soil_infil);
+    return TRUE;
+  }
   fscanparamreal(&f,&param.co2_p,"co2_p");
   fscanparamreal(&f,&param.k,"k");
-  fscanparamreal(&f,&param.theta,"theta");
+  if(param.k<=0)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR234: Parameter 'k'=%g must be greater than zero.\n",
+              param.k);
+    return TRUE;
+  }
+  fscanparamreal01(&f,&param.theta,"theta");
   fscanparamreal(&f,&param.k_beer,"k_beer");
   fscanparamreal(&f,&param.alphac3,"alphac3");
   fscanparamreal(&f,&param.alphac4,"alphac4");
   fscanparamreal(&f,&param.bc3,"bc3");
   fscanparamreal(&f,&param.bc4,"bc4");
-  fscanparamreal(&f,&param.r_growth,"r_growth");
+  fscanparamreal01(&f,&param.r_growth,"r_growth");
   fscanparamreal(&f,&param.GM,"GM");
   fscanparamreal(&f,&param.ALPHAM,"ALPHAM");
   fscanparamreal(&f,&param.ko25,"ko25");
   fscanparamreal(&f,&param.kc25,"kc25");
-  fscanparamreal(&f,&param.atmfrac,"atmfrac");
-  fscanparamreal(&f,&param.fastfrac,"fastfrac");
+  fscanparamreal01(&f,&param.atmfrac,"atmfrac");
+  fscanparamreal01(&f,&param.fastfrac,"fastfrac");
   fscanparamreal(&f,&param.k_max,"k_max");
   fscanparamreal(&f,&param.k_2,"k_2");
   fscanparamreal(&f,&param.k_mort,"k_mort");
@@ -79,32 +117,38 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   if(config->withlanduse!=NO_LANDUSE)
   {
     fscanparamreal(&f,&param.aprec_lim,"aprec_lim");
-    fscanparamreal(&f,&param.irrig_threshold_c3_dry,"irrig_threshold_c3_dry");
-    fscanparamreal(&f,&param.irrig_threshold_c3_humid,
+    fscanparamreal01(&f,&param.irrig_threshold_c3_dry,"irrig_threshold_c3_dry");
+    fscanparamreal01(&f,&param.irrig_threshold_c3_humid,
                    "irrig_threshold_c3_humid");
-    fscanparamreal(&f,&param.irrig_threshold_c4,"irrig_threshold_c4");
-    fscanparamreal(&f,&param.irrig_threshold_rice,"irrig_threshold_rice");
-    fscanparamreal(&f,&param.irrigation_soilfrac,"irrig_soilfrac");
-    fscanparamreal(&f,&param.ec_canal[0],"canal_conveyance_eff_sand");
-    fscanparamreal(&f,&param.ec_canal[1],"canal_conveyance_eff_loam");
-    fscanparamreal(&f,&param.ec_canal[2],"canal_conveyance_eff_clay");
-    fscanparamreal(&f,&param.ec_pipe,"pipe_conveyance_eff");
+    fscanparamreal01(&f,&param.irrig_threshold_c4,"irrig_threshold_c4");
+    fscanparamreal01(&f,&param.irrig_threshold_rice,"irrig_threshold_rice");
+    fscanparamreal01(&f,&param.irrigation_soilfrac,"irrig_soilfrac");
+    fscanparamreal01(&f,&param.ec_canal[0],"canal_conveyance_eff_sand");
+    fscanparamreal01(&f,&param.ec_canal[1],"canal_conveyance_eff_loam");
+    fscanparamreal01(&f,&param.ec_canal[2],"canal_conveyance_eff_clay");
+    fscanparamreal01(&f,&param.ec_pipe,"pipe_conveyance_eff");
     param.sat_level[0]=0; /* default value */
     fscanparamreal(&f,&param.sat_level[1],"saturation_level_surf");
     fscanparamreal(&f,&param.sat_level[2],"saturation_level_sprink");
     fscanparamreal(&f,&param.sat_level[3],"saturation_level_drip");
-    fscanparamreal(&f,&param.drip_evap,"drip_evap_reduction");
-    fscanparamreal(&f,&param.residues_in_soil,"residues_in_soil");
+    fscanparamreal01(&f,&param.drip_evap,"drip_evap_reduction");
+    fscanparamreal01(&f,&param.residues_in_soil,"residues_in_soil");
     fscanparamreal(&f,&param.nfert_split,"nfert_split");
-    fscanparamreal(&f,&param.fburnt,"fburnt");
-    fscanparamreal(&f,&param.ftimber,"ftimber");
+    fscanparamreal01(&f,&param.fburnt,"fburnt");
+    fscanparamreal01(&f,&param.ftimber,"ftimber");
     if(config->rw_manage)
     {
-      fscanparamreal(&f,&param.esoil_reduction,"esoil_reduction");
+      fscanparamreal01(&f,&param.esoil_reduction,"esoil_reduction");
       fscanparamreal(&f,&param.rw_buffer_max,"rw_buffer_max");
-      fscanparamreal(&f,&param.frac_ro_stored,"frac_ro_stored");
+      fscanparamreal01(&f,&param.frac_ro_stored,"frac_ro_stored");
       fscanparamreal(&f,&param.rw_irrig_thres,"rw_irrig_thres");
-      fscanparamreal(&f,&param.soil_infil,"soil_infil");
+      fscanparamreal(&f,&param.soil_infil_rw,"soil_infil_rw");
+      if(param.soil_infil_rw<param.soil_infil)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"WARNING030: Parameter 'soil_infil_rw'=%g less than 'soil_infil', set to %g.\n",param.soil_infil_rw,param.soil_infil);
+        param.soil_infil_rw=param.soil_infil;
+      }
       fscanparamreal(&f,&param.yield_gap_bridge,"yield_gap_bridge");
     }
   }

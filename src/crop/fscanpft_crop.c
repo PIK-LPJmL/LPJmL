@@ -87,7 +87,11 @@ static Bool fscancropphys(LPJfile *file,Cropphys *phys,const char *name,Verbosit
   if(fscanreal(&item,&phys->pool,"pool",FALSE,verb))
     return TRUE;
   if(phys->leaf<=0 || phys->root<=0 || phys->so<=0 || phys->pool<=0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR235: Crop parameter '%s'=(%g,%g,%g,%g) must be greater than zero.\n",name,phys->leaf,phys->root,phys->so,phys->pool);
     return TRUE;
+  }
   return FALSE;
 } /* of 'fscancropphys' */
 
@@ -103,7 +107,11 @@ static Bool fscancropratio(LPJfile *file,Cropratio *ratio,const char *name,Verbo
   if(fscanreal(&item,&ratio->pool,"pool",FALSE,verb))
     return TRUE;
   if(ratio->root<=0 || ratio->so<=0 || ratio->pool<=0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR235: Crop ratios =(%g,%g,%g) must be greater than zero.\n",ratio->root,ratio->so,ratio->pool);
     return TRUE;
+  }
   return FALSE;
 } /* of 'fscancropratio' */
 
@@ -141,12 +149,6 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   pft->data=crop;
   fscanpftint(verb,file,&crop->calcmethod_sdate,pft->name,
               "calcmethod_sdate");
-  if(iskeydefined(file,"sla"))
-  {
-    fscanpftreal(verb,file,&pft->sla,pft->name,"sla");
-  }
-  else
-    pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;   //"A photothermal model of leaf area index for greenhouse crops Xu etal.  "
   if(crop->calcmethod_sdate<0 ||  crop->calcmethod_sdate>MULTICROP)
   {
     if(verb)
@@ -154,6 +156,12 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
               crop->calcmethod_sdate,pft->name);
     return TRUE;
   }
+  if(iskeydefined(file,"sla"))
+  {
+    fscanpftreal(verb,file,&pft->sla,pft->name,"sla");
+  }
+  else
+    pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;   //"A photothermal model of leaf area index for greenhouse crops Xu etal.  "
   fscancropdate2(verb,file,&crop->initdate,pft->name,"init_date");
   fscanpftint(verb,file,&crop->hlimit,pft->name,
               "hlimit");

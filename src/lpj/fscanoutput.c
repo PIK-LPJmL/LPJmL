@@ -18,6 +18,7 @@
 #include "lpj.h"
 
 #define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
+#define fscanbool2(file,var,name) if(fscanbool(file,var,name,FALSE,verbosity)) return TRUE;
 
 static Bool isopenoutput(int id,const Outputvar output[],int n)
 {
@@ -48,10 +49,15 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
   count=index=0;
   config->withdailyoutput=FALSE;
   size=nout_max;
-  if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))
+  if(file->isjson && !iskeydefined(file,"output"))
   {
     config->n_out=0;
     return FALSE;
+  }
+  if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))
+  {
+    config->n_out=0;
+    return file->isjson;
   }
   config->global_netcdf=FALSE;
   if(iskeydefined(file,"global_netcdf"))
@@ -66,7 +72,14 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
     free(config->outputdir);
     config->outputdir=strdup(outpath);
   }
-  fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
+  if(iskeydefined(file,"grid_scaled"))
+  {
+    fscanbool2(file,&config->pft_output_scaled,"grid_scaled");
+  }
+  else
+  {
+    fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
+  }
   while(count<=nout_max && index<size)
   {
     fscanarrayindex(&arr,&item,index,verbosity);

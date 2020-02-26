@@ -23,6 +23,7 @@ typedef struct
   Poolpar k_soil10;
   Real maxsnowpack; /**< max. snow pack (mm) */
   Real soildepth_evap; /**< depth of sublayer at top of upper soil layer (mm) */
+  Real soil_infil;      /**< soil infiltration */
   Real co2_p;       /**< pre-industrial CO2 concentration (ppm) */
   Real k;
   Real theta;      /**< co-limitation (shape) parameter */
@@ -77,7 +78,7 @@ typedef struct
   Real rw_buffer_max;   /**< size of rainwater harvesting tank */
   Real frac_ro_stored;  /**< fraction of surface runoff stored in tank */
   Real rw_irrig_thres;  /**< threshold to apply rw_irrigation */
-  Real soil_infil;      /**< soil infiltration improvement */
+  Real soil_infil_rw;      /**< soil infiltration improvement */
   Real yield_gap_bridge; /**< yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
 } Param;
 

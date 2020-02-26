@@ -21,13 +21,13 @@ void fprintpft(FILE *file,       /**< pointer to text file */
                int with_nitrogen /**< nitrogen cycle enabled */
               )
 {
+  fprintf(file,"PFT:\t\t%s\n",pft->par->name);
   fprintf(file,"tmin phen.:\t%g\n"
           "tmax phen.:\t%g\n"
           "light phen.:\t%g\n"
           "wscal phen.:\t%g\n",
           pft->phen_gsi.tmin,pft->phen_gsi.tmax,
           pft->phen_gsi.light,pft->phen_gsi.wscal);
-  fprintf(file,"PFT:\t\t%s\n",pft->par->name);
   fprintf(file,"fpc:\t\t%g\n",pft->fpc);
   fprintf(file,"nind:\t\t%g (1/m2)\n",pft->nind);
   fprintf(file,"wscal_mean:\t\t%g\n",pft->wscal_mean);

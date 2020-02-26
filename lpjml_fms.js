@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  f  m  s  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 4.0.001 with FMS coupler                \n**/
+/** Configuration file for LPJmL C Version 5.0.001 with FMS coupler                \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -34,14 +34,14 @@
 "sim_name" : "LPJmL coupled to POEM", /* Simulation description */
 "sim_id"   : LPJML_FMS,       /* LPJML Simulation type coupled to POEM */
 "random_prec" : false,       /* Random weather generator for precipitation disabled */
+"random_seed" : 2,
 "radiation" : RADIATION,
 "fire" : FIRE,               /* fire disturbance enabled */
 "firewood" : false,
-#ifndef FROM_RESTART
+"with_nitrogen" : NO_NITROGEN,
+"const_climate" : false,
+"const_deposition" : false,
 "population" : false,
-#else
-"population" : true,
-#endif
 "prescribe_burntarea" : false,
 "prescribe_landcover" : NO_LANDCOVER,
 "new_phenology": true,
@@ -59,7 +59,7 @@
 /*  II. Input parameter section                                      */
 /*===================================================================*/
 
-#include "param.js"    /* Input parameter file */
+#include "param_non.js"    /* Input parameter file */
 
 /*===================================================================*/
 /*  III. Input data section                                          */
@@ -72,9 +72,9 @@
 /*===================================================================*/
 
 #ifdef WITH_GRIDBASED
-"pft_output_scaled" : GRIDBASED,
+"grid_scaled" : true,
 #else
-"pft_output_scaled" : PFTBASED,
+"grid_scaled" : false,
 #endif
 
 #ifdef FROM_RESTART
@@ -155,10 +155,6 @@ ID                         Fmt                    filename
 
 "crop_index" : TEMPERATE_CEREALS,  /* CFT for daily output_SPITFIRE-optpar */
 "crop_irrigation" : DAILY_RAINFED, /* irrigation flag for daily output_SPITFIRE-optpar */
-
-#else
-
-"output" : [],  /* no output written */
 
 #endif
 

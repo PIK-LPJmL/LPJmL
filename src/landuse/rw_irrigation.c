@@ -32,9 +32,7 @@ Real rw_irrigation(Stand *stand,     /**< Pointer to non-natural stand */
   /* calculate required irrigation amount */
   foreachpft(pft,p,&stand->pftlist)
   {
-    wr=0;
-    for(l=0;l<LASTLAYER;l++)
-      wr+=pft->par->rootdist[l]*(stand->soil.w[l]+stand->soil.ice_depth[l]/stand->soil.par->whcs[l]);
+    wr=getwr(&stand->soil,pft->par->rootdist);
 
     if(pft->stand->type->landusetype==AGRICULTURE)
     {
@@ -47,7 +45,7 @@ Real rw_irrigation(Stand *stand,     /**< Pointer to non-natural stand */
       supply=pft->par->emax*wr*pft->phen;
       //demand=(gp_stand>0) ? (1.0-wet[p])*pet*param.ALPHAM/(1+param.GM/gp_stand) : 0;
       demand=(gp_stand>0) ? (1.0-wet[p])*pet*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
-   }
+    }
 
     if(wr<param.rw_irrig_thres && supply<demand && pft->phen>0.0)
     {

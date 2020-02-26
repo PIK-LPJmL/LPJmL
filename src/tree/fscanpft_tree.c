@@ -61,7 +61,11 @@ static Bool fscantreephyspar(LPJfile *file,Treephyspar *phys,const char *name,
   if(fscanreal(&s,&phys->root,"root",FALSE,verb))
     return TRUE;
   if(phys->leaf<=0 || phys->sapwood<=0 || phys->root<=0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR235: Tree parameter '%s'=(%g,%g,%g) must be greater than zero.\n",name,phys->leaf,phys->sapwood,phys->root);
     return TRUE;
+  }
   return FALSE;
 } /* of 'fscantreephyspar' */
 
@@ -76,7 +80,11 @@ static Bool fscanratio(LPJfile *file,Treeratio *ratio,const char *name,
   if(fscanreal(&s,&ratio->root,"root",FALSE,verb))
     return TRUE;
   if(ratio->sapwood<=0 || ratio->root<=0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR235: Tree ratios=(%g,%g) must be greater than zero.\n",ratio->sapwood,ratio->root);
     return TRUE;
+  }
   return FALSE;
 } /* of 'fscanratio' */
 

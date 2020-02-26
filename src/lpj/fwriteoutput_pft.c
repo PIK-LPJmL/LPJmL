@@ -71,12 +71,25 @@ static void writepft(Outputfile *output,int n,float *data,int size,int year,
                      int index,
                      const Config *config)
 {
+  Real scale;
   int i;
 #ifdef USE_MPI
   MPI_Status status;
 #endif
+  switch(config->outnames[n].time)
+  {
+    case SECOND:
+      scale=1./NSECONDSDAY/NDAYYEAR;
+      break;
+    case DAY:
+      scale=1./NDAYYEAR;
+      break;
+    default:
+      scale=1;
+  }
   for(i=0;i<config->count;i++)
-    data[i]=config->outnames[n].scale*data[i]+config->outnames[n].offset;
+    data[i]=config->outnames[n].scale*scale*data[i]+config->outnames[n].offset;
+
 #ifdef USE_MPI
   switch(output->method)
   {

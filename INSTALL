@@ -337,6 +337,7 @@ Error code Description                                 Error type
         35 Negative soil NO3                             Internal
         36 Negative soil NH4                             Internal
         37 Invalid nitrogen balance                      Internal
+        38 Invalid climate data                          External
 ---------- --------------------------------------------- --------
 
 External errors are caused by invalid or missing input files while internal 

@@ -194,7 +194,7 @@ Bool create_netcdf(Netcdf *cdf,
     rc=nc_def_var(cdf->ncid,LON_NAME,NC_FLOAT,1,&cdf->lon_dim_id,&cdf->lon_var_id);
     error(rc);
     if(n==1)
-      rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen("Years"),"Years");
+      rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(YEARS_NAME),YEARS_NAME);
     else if(n>1)
     {
       snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->outputyear);

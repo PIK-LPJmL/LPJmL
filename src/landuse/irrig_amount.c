@@ -21,7 +21,7 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
                   int ncft      /**< number of crop PFTs */
                  )
 {
-  int l,p,count;
+  int p,count;
   Pft *pft;
   Irrigation *data;
   Real conv_loss,irrig_stand,irrig_threshold;
@@ -41,9 +41,7 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
     count=0;
     foreachpft(pft,p,&stand->pftlist)
     {
-      wr=0;
-      for(l=0;l<LASTLAYER;l++)
-        wr+=pft->par->rootdist[l]*(stand->soil.w[l]+stand->soil.ice_depth[l]/stand->soil.par->whcs[l]);
+      wr=getwr(&stand->soil,pft->par->rootdist);
 
       if(pft->par->path==C3)
       {

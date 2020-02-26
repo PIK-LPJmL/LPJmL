@@ -18,6 +18,17 @@
 
 #define notnull(s) (s==NULL) ? "" : s
 
+typedef struct
+{
+  char *name;
+  int index;
+} Item;
+
+static int compare(const Item *a,const Item *b)
+{
+  return strcmp(a->name,b->name);
+} /* of 'compare' */
+
 static int printsim(FILE *file,int len,int *count,const char *s)
 {
   len=fputstring(file,len,(*count) ? ", " : "Simulation with ",78);
@@ -170,9 +181,10 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   char *fdi[]={"Nesterov index","water vapour pressure deficit index"};
   char *irrig[]={"no","limited","potential","all","irrigation on rainfed"};
   String s;
+  Item *item;
   int len;
   char *method[]={"write","MPI-2","gathered","socket"};
-  int i,count=0,width,width_unit;
+  int i,count=0,width,width_unit,index;
   Bool isnetcdf;
   fputs("==============================================================================\n",file);
   fprintf(file,"Simulation \"%s\"",config->sim_name);
@@ -434,6 +446,17 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     fprintf(file,"Random seed: %d\n",config->seed);
   if(config->n_out)
   {
+    /* sort output alphabetically by name */
+    item=newvec(Item,config->n_out);
+    if(item!=NULL)
+    {
+      for(i=0;i<config->n_out;i++)
+      {
+        item[i].index=i;
+        item[i].name=config->outnames[config->outputvars[i].id].name;
+      }
+      qsort(item,config->n_out,sizeof(Item),(int (*)(const void *,const void *))compare);
+    }
     width=strlen("Variable");
     width_unit=strlen("Unit");
     for(i=0;i<config->n_out;i++)
@@ -478,16 +501,18 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     putc('\n',file);
     for(i=0;i<config->n_out;i++)
     {
-      if(config->outnames[config->outputvars[i].id].name==NULL)
-        fprintf(file,"%*d",width,config->outputvars[i].id);
+      index=(item==NULL) ? i : item[i].index;
+      if(config->outnames[config->outputvars[index].id].name==NULL)
+        fprintf(file,"%*d",width,config->outputvars[index].id);
       else
-        fprintf(file,"%*s",width,config->outnames[config->outputvars[i].id].name);
-      fprintf(file," %s %*s %5s ",fmt[config->outputvars[i].filename.fmt],
-              width_unit,strlen(config->outnames[config->outputvars[i].id].unit)==0 ? "-" : config->outnames[config->outputvars[i].id].unit,
-              typenames[getoutputtype(config->outputvars[i].id)]);
-      printoutname(file,config->outputvars[i].filename.name,config->outputvars[i].oneyear,config);
+        fprintf(file,"%*s",-width,config->outnames[config->outputvars[index].id].name);
+      fprintf(file," %s %*s %5s ",fmt[config->outputvars[index].filename.fmt],
+              -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
+              typenames[getoutputtype(config->outputvars[index].id)]);
+      printoutname(file,config->outputvars[index].filename.name,config->outputvars[index].oneyear,config);
       putc('\n',file);
     }
+    free(item);
     frepeatch(file,'-',width);
     fputs(" --- ",file);
     frepeatch(file,'-',width_unit);

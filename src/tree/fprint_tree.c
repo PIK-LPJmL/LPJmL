@@ -36,12 +36,20 @@ void fprint_tree(FILE *file,       /**< pointer to text file */
   fputs("Mass:\t\t",file);
   if(with_nitrogen)
   {
+    fprintf(file,"Turn:\t\t%6.2f %6.2f (gC/m2) %6.2f %6.2f (gN/m2)\n",
+            tree->turn.leaf.carbon,tree->turn.root.carbon,tree->turn.leaf.nitrogen,tree->turn.root.nitrogen);
+    fprintf(file,"Turn_litt:\t%6.2f %6.2f (gC/m2) %6.2f %6.2f (gN/m2)\n",
+            tree->turn_litt.leaf.carbon,tree->turn_litt.root.carbon,tree->turn_litt.leaf.nitrogen,tree->turn_litt.root.nitrogen);
     fprinttreephys2(file,tree->ind,pft->nind);
     fprintf(file,"\nExcess carbon:\t%g (gC/m2)\n",tree->excess_carbon*pft->nind);
     fprintf(file,"falloc:\t\t%g %g %g\n",tree->falloc.leaf,tree->falloc.root,tree->falloc.sapwood);
   }
   else
   {
+    fprintf(file,"Turn:\t\t%6.2f %6.2f (gC/m2)\n",
+            tree->turn.leaf.carbon,tree->turn.root.carbon);
+    fprintf(file,"Turn_litt:\t%6.2f %6.2f (gC/m2)\n",
+            tree->turn_litt.leaf.carbon,tree->turn_litt.root.carbon);
     fprinttreephys2carbon(file,tree->ind,pft->nind);
     fputc('\n',file);
   }

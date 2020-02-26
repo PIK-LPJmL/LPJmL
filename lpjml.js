@@ -91,10 +91,10 @@
 /*===================================================================*/
 
 #ifdef WITH_GRIDBASED
-  "pft_output_scaled" : GRIDBASED,
+  "grid_scaled" : true, /* PFT-specific outputs scaled by stand->frac */
 #define SUFFIX grid.bin
 #else
-  "pft_output_scaled" : PFTBASED,
+  "grid_scaled" : false,
 #define SUFFIX pft.bin
 #endif
 
@@ -205,10 +205,6 @@ ID                         Fmt                    filename
     { "id" : ACONV_LOSS_DRAIN, "file" : { "fmt" : RAW, "name" : "output/aconv_loss_drain.bin"}}
 /*------------------------ ---------------------- ------------------------------- */
   ],
-
-#else
-
-  "output" : [],  /* no output written */
 
 #endif
 

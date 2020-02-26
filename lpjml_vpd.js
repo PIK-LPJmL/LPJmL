@@ -87,10 +87,10 @@
 /*===================================================================*/
 
 #ifdef WITH_GRIDBASED
-  "pft_output_scaled" : GRIDBASED,
+  "grid_scaled" : true,
 #define SUFFIX grid.bin
 #else
-  "pft_output_scaled" : PFTBASED,
+  "grid_scaled" : false,
 #define SUFFIX pft.bin
 #endif
 
@@ -102,7 +102,7 @@
 
 #ifdef FROM_RESTART
 
-  "output" : 
+  "output" :
   [
 
 /*
@@ -167,10 +167,6 @@ ID                         Fmt                    filename
     { "id" : ACONV_LOSS_DRAIN, "file" : { "fmt" : CDF, "name" : "output/aconv_loss_drain.nc"}}
 /*------------------------ ---------------------- ------------------------------- */
   ],
-
-#else
-
-  "output" : [],  /* no output written */
 
 #endif
 

@@ -19,7 +19,7 @@ void calc_nir(Stand *stand, /**< pointer to non-natural stand */
               Real gp_stand,
               Real wet[],   /**< wet array for PFT list */
               Real eeq      /**< equilibrium evapotranspiration (mm) */
-             ) 
+             )
 {
   Pft *pft;
   int p,l;
@@ -30,10 +30,8 @@ void calc_nir(Stand *stand, /**< pointer to non-natural stand */
 
   foreachpft(pft,p,&stand->pftlist)
   {
-    wr=0;
-    for(l=0;l<LASTLAYER;l++)
-      wr+=pft->par->rootdist[l]*(stand->soil.w[l]+stand->soil.ice_depth[l]/stand->soil.par->whcs[l]);
-    
+    wr=getwr(&stand->soil,pft->par->rootdist);
+
     if(pft->stand->type->landusetype==AGRICULTURE)
     {
       supply=pft->par->emax*wr*(1-exp(-1.0*pft->par->sla*((Pftcrop *)pft->data)->ind.root.carbon));

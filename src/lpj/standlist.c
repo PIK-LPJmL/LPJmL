@@ -15,7 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "natural.h"
 
 int fwritestandlist(FILE *file,                /**< pointer to binary file */
                     const Standlist standlist, /**< stand list */

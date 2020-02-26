@@ -41,6 +41,7 @@
 #define pclose _pclose
 #define popen _popen
 #define alloca _alloca
+#define strcasecmp stricmp
 
 #endif
  
@@ -94,6 +95,7 @@ typedef struct
 
 extern void fail(int,Bool,const char *,...);
 extern Bool fscanreal(LPJfile *,Real *,const char *,Bool,Verbosity);
+extern Bool fscanreal01(LPJfile *,Real *,const char *,Bool,Verbosity);
 extern Bool fscanbool(LPJfile *,Bool *,const char *,Bool,Verbosity);
 extern Bool fscanrealarray(LPJfile *,Real *,int,const char *,Verbosity);
 extern Bool fscanstring(LPJfile *,String,const char *,Bool,Verbosity);

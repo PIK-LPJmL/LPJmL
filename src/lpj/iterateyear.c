@@ -69,8 +69,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
             laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
           if(year>config->firstyear-config->nspinup || config->from_restart)
-            landusechange(grid+cell,config->pftpar,npft,ncft,config->ntypes,
-                          intercrop,config->istimber,year,config->pft_output_scaled);
+            landusechange(grid+cell,npft,ncft,intercrop,year,config);
           else if(grid[cell].ml.dam)
             landusechange_for_reservoir(grid+cell,config->pftpar,npft,config->istimber,
                                         intercrop,ncft,year);
@@ -135,6 +134,17 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           /* get daily values for temperature, precipitation and sunshine */
           dailyclimate(&daily,input.climate,&grid[cell].climbuf,cell,day,
                        month,dayofmonth);
+          /* check for valid radiation input */
+          if(config->with_radiation)
+          {
+            if(daily.swdown<0)
+              fail(INVALID_CLIMATE_ERR,FALSE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",daily.swdown,cell+config->startgrid,day);
+          }
+          else
+          {
+            if(daily.sun<0 || daily.sun>100)
+              fail(INVALID_CLIMATE_ERR,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
+          }
           /* get daily values for temperature, precipitation and sunshine */
           grid[cell].output.daily.temp=daily.temp;
           grid[cell].output.daily.prec=daily.prec;
@@ -174,8 +184,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         if(grid[cell].discharge.next<0)
           grid[cell].output.adischarge+=grid[cell].output.mdischarge;           /* only endcell outflow */
         grid[cell].output.mdischarge*=1e-9;                    /* monthly mean discharge per month in 1.000.000 m3 per cell */
-        grid[cell].output.mres_storage*=1e-9/ndaymonth[month];                  /* mean monthly reservoir storage in 1.000.000 m3 per cell */
-        grid[cell].output.mwateramount*=1e-9/ndaymonth[month];                  /* mean wateramount per month in 1.000.000 m3 per cell */
+        grid[cell].output.mres_storage*=1e-9*ndaymonth1[month];                  /* mean monthly reservoir storage in 1.000.000 m3 per cell */
+        grid[cell].output.mwateramount*=1e-9*ndaymonth1[month];                  /* mean wateramount per month in 1.000.000 m3 per cell */
       }
       if(!grid[cell].skip)
         update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,

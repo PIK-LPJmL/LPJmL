@@ -28,6 +28,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "k_soil10:\t%g %g (1/yr)\n"
                "max snow pack:\t%g (mm)\n"
                "evap soildepth:\t%g (mm)\n"
+               "soil infil:\t%g\n"
                "pre. CO2:\t%g (ppm)\n"
                "k:\t\t%g (1/yr)\n"
                "theta:\t\t%g\n"
@@ -50,7 +51,8 @@ void fprintparam(FILE *file,    /**< pointer to text file */
 	       "fire_intens:\t%g\n"
 	       "hum_ign:\t%g\n",
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
-          param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,param.co2_p,
+          param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,
+          param.soil_infil,param.co2_p,
           param.k,param.theta,param.k_beer,param.alphac3,param.alphac4,
           param.bc3,param.bc4,param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,param.k_mort,
@@ -99,7 +101,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"rw buffer max:\t\t%g\n",param.rw_buffer_max);
       fprintf(file,"frac to stored:\t\t%g\n",param.frac_ro_stored);
       fprintf(file,"rw irrig thres:\t\t%g\n",param.rw_irrig_thres);
-      fprintf(file,"soil infil:\t\t%g\n",param.soil_infil);
+      fprintf(file,"soil infil rw:\t\t%g\n",param.soil_infil_rw);
       fprintf(file,"yield gap bridge:\t%g\n",param.yield_gap_bridge);
     }
   }
@@ -120,4 +122,5 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     for(p=0;p<npft-config->nbiomass;p++)
       fprintpftpar(file,config->pftpar+p,config->with_nitrogen);
   fputs("------------------------------------------------------------------------------\n",file);
+  fprintoutputvar(file,config->outnames,NOUT);
 } /* of 'fprintparam' */

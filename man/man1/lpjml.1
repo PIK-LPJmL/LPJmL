@@ -12,7 +12,7 @@ lpj, lpjml \- Dynamic global vegetation model with managed land and river routin
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
 .SH DESCRIPTION
-The model simulates vegetation dynamics, hydrology and soil 
+The model simulates vegetation dynamics, hydrology and soil
 organic matter dynamics on an area-averaged grid cell basis using
 one-year time step. The name derives from the three locations \fBL\fPund-\fBP\fPotsdam-\fBJ\fPena but is no longer to be interpreted that way. Input parameters are monthly mean air
 temperature, total precipitation and percentage of full sunshine,
@@ -52,7 +52,7 @@ set time to wait for connection to IMAGE model. Time is measured in seconds. Def
 .TP
 \-output {gather|mpi2|socket=hostname[:port]]}
 use the given output method to write data to disk or to a output channel. Valid output methods are write,
-gather, mpi2, and socket. The default output method for the MPI version is gather sending all output to the root task, while the default method is write for the sequential version of the code. Method mpi2 uses MPI-2 parallel file functions, while output method socket sends output data via a TCP/IP socket to a remote host hostname. Default port is 2222. \fBlpjliveview\fP is a program to display output variables on a X11 display at run time. The mpi2 and gather output methods are only valid for the MPI version of the code.  
+gather, mpi2, and socket. The default output method for the MPI version is gather sending all output to the root task, while the default method is write for the sequential version of the code. Method mpi2 uses MPI-2 parallel file functions, while output method socket sends output data via a TCP/IP socket to a remote host hostname. Default port is 2222. \fBlpjliveview\fP is a program to display output variables on a X11 display at run time. The mpi2 and gather output methods are only valid for the MPI version of the code.
 .TP
 \-outpath \fIdir\fP
 set the output directory path. The path is added to the output filenames if they do not contain an absolute path.
@@ -95,7 +95,7 @@ script has to be used.
 LPJCONFIG
 default LPJmL configuration filename
 .TP
-LPJPREP 
+LPJPREP
 defines preprocessor command for LPJmL configuration file, default is \fBcpp -P\fP. Same as '-pp' option.
 .TP
 LPJROOT
@@ -112,7 +112,7 @@ sets time to wait for connection to IMAGE model. Same as in '-wait' option.
 LPJINPATH
 path appended to the input filenames. Only done for filenames without absolute path. Same as '-inpath \fIdir\fP' option.
 .TP
-LPJOPTIONS     
+LPJOPTIONS
 runtime options for the preprocessor of LPJmL configuration files
 .TP
 LPJOUTPATH
@@ -128,7 +128,7 @@ are mpi2, gather, and socket. Same as '-output method' option.
 .SH EXIT STATUS
 .B lpjml
 and
-.B lpj 
+.B lpj
 returns a zero exit status if the simulation finishes successfully.
 Non zero is returned in case of failure.
 .SH DIAGNOSTICS
@@ -138,67 +138,67 @@ ERRORxxx: message, program terminated unsuccessfully
 
 where xxx is the return code of the program. The following error codes are defined:
 .TP
-ERROR001 
+ERROR001
 Error reading configuration. Check syntax of configuration file. External error
 .TP
-ERROR002 
+ERROR002
 Error initializing input. Check whether all input files are present. External error
 .TP
-ERROR003 
+ERROR003
 Error initializing grid, check for missing input files. External error
 .TP
-ERROR004 
+ERROR004
 Invalid carbon balance. Internal error
 .TP
-ERROR005 
+ERROR005
 Invalid water balance. Internal error
 .TP
-ERROR006 
+ERROR006
 Negative discharge. Internal error
 .TP
-ERROR007 
+ERROR007
 Negative fire probability. Internal error.
 .TP
-ERROR008 
+ERROR008
 Negative soil moisture. Internal error
 .TP
-ERROR009 
+ERROR009
 Error allocating memory. Rerun parallel program on more MPI tasks to reduce memory per task. External error
 .TP
-ERROR010 
+ERROR010
 Negative stand fraction. Internal error.
 .TP
-ERROR011 
+ERROR011
 Stand fraction sum error. Can be caused by invalid restart file. External error
 .TP
-ERROR012 
+ERROR012
 List is empty in \fBdellistitem()\fP. Internal error.
 .TP
-ERROR013 
+ERROR013
 Index out of range in \fBdellistitem()\fP. Internal error
 .TP
 ERROR014
 Error in \fBnewlanduse()\fP. Can be caused by invalid restart file. External error
 .TP
-ERROR015 
+ERROR015
 Invalid year in \fBgetco2()\fP. CO2 data file is too short. External error
 .TP
-ERROR016 
+ERROR016
 Crop fraction >1. Internal error.
 .TP
-ERROR017 
+ERROR017
 No natural stand for \fBdeforest()\fP. Internal error.
 .TP
-ERROR018 
+ERROR018
 Wrong cultivation type. Internal error.
 .TP
-ERROR019 
+ERROR019
 Floating point error occurred. Floating point exceptions will only be thrown if -fpe option is set. This is in particular useful if NaNs appear in the output files.  Internal error.
 .TP
-ERROR021 
+ERROR021
 PFT list is not empty in \fBsetaside()\fP. Internal error.
 .TP
-ERROR022 
+ERROR022
 Negative establishment rate. Internal error.
 .TP
 ERROR023
@@ -217,16 +217,16 @@ ERROR027
 Forest left after deforestation. Internal error.
 .TP
 ERROR028
-Outflow reservoir error. Internal error. 
+Outflow reservoir error. Internal error.
 .TP
 ERROR029
 Error in permafrost module. Internal error.
 .TP
 ERROR030
-Error in global water balance. Internal error. 
+Error in global water balance. Internal error.
 .TP
 ERROR031
-Error in store climate function. 
+Error in store climate function.
 .TP
 ERROR032
 No FMS coupler supported.
@@ -245,9 +245,12 @@ Negative soil NH4. Internal error
 .TP
 ERROR037
 Invalid nitrogen balance. Internal error
+.TP
+ERROR038
+Invalid climate data. External error
 
 .P
-Internal errors will generate a core dump and have to be fixed by changes in the code. A "post-mortem" analysis can be made by calling 
+Internal errors will generate a core dump and have to be fixed by changes in the code. A "post-mortem" analysis can be made by calling
 
 \fBgdb\fP $LPJROOT/bin/lpjml core
 
