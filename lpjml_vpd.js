@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  v  p  d  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 4.0.002                                 \n**/
+/** Configuration file for LPJmL C Version 4.0.004                                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -67,7 +67,7 @@
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "grassland_fixed_pft" : false,
-
+  "grass_harvest_options" : false,
 /*===================================================================*/
 /*  II. Input parameter section                                      */
 /*===================================================================*/
