@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**           i  r  r  i  g  a  t  i  o  n  _  s  t  a  n  d  .  c                 \n**/
+/**                         c  a  l  c  _  n  i  r  .  c                           \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -13,20 +13,18 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
-void calc_nir(Stand *stand, /**< pointer to non-natural stand */
-              Real gp_stand,
-              Real wet[],   /**< wet array for PFT list */
-              Real eeq      /**< equilibrium evapotranspiration (mm) */
-             )
+void calc_nir(Stand *stand,     /**< pointer to non-natural stand */
+              Irrigation *data, /**< irrigation data */
+              Real gp_stand,    /**< potential canopy conductivity */
+              Real wet[],       /**< wet array for PFT list */
+              Real eeq          /**< equilibrium evapotranspiration (mm) */
+             ) 
 {
   Pft *pft;
   int p,l;
   Real supply,demand,wr,satlevel;
   Real soildepth_irrig,nir,dist;
-  Irrigation *data;
-  data=stand->data;
 
   foreachpft(pft,p,&stand->pftlist)
   {

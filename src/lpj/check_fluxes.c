@@ -15,7 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
 void check_fluxes(Cell *cell,          /**< cell pointer */
                   int year,            /**< simulation year (AD) */

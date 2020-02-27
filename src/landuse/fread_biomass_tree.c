@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  _  a  g  r  i  c  u  l  t  u  r  e  .  c                \n**/
+/**        f  r  e  a  d  _  b  i  o  m  a  s  s  _  t  r  e  e  .  c              \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes irrigation data of stand                                   \n**/
+/**     Function reads biomass tree data of stand                                  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,15 +15,24 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
+#include "biomass_tree.h"
 
-Bool fwrite_agriculture(FILE *file,        /**< pointer to binary file */
-                        const Stand *stand /**< stand pointer */
-                       )                   /** \return TRUE on error */
+Bool fread_biomass_tree(FILE *file,   /**< pointer to binary file */
+                        Stand *stand, /**< stand pointer */
+                        Bool swap     /**< byte order has to be changed */
+                       )              /** \return TRUE on error */
 {
-  Irrigation *irrigation;
-  irrigation=stand->data;
-  fwrite_irrigation(file,irrigation);
-  fwrite1(&stand->growing_days,sizeof(int),file);
-  return FALSE;
-} /* of 'fwrite_agriculture' */
+  Biomass_tree *biomass_tree;
+  biomass_tree=new(Biomass_tree);
+  stand->data=biomass_tree;
+  if(biomass_tree==NULL)
+  {
+    printallocerr("biomass_tree");
+    return TRUE;
+  }
+  if(fread_irrigation(file,&biomass_tree->irrigation,swap))
+    return TRUE;
+  freadint1(&stand->growing_days,swap,file);
+  freadint1(&biomass_tree->growing_time,swap,file);
+  return freadint1(&biomass_tree->age,swap,file)!=1;
+} /* of 'fread_biomass_tree' */

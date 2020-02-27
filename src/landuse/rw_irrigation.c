@@ -13,14 +13,13 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
 #define MAX_RW_IRRIG 1.0
 
 Real rw_irrigation(Stand *stand,     /**< Pointer to non-natural stand */
                    Real gp_stand,    /**< potential stomata conductance */
                    const Real wet[], /**< wet array for PFT list */
-                   Real pet          /**< potential evapotranspiration (mm) */
+                   Real eeq          /**< potential evapotranspiration (mm) */
                   )                  /** \return irrigation applied (mm) */
 {
 
@@ -37,14 +36,14 @@ Real rw_irrigation(Stand *stand,     /**< Pointer to non-natural stand */
     if(pft->stand->type->landusetype==AGRICULTURE)
     {
       supply=pft->par->emax*wr*(1-exp(-1.0*pft->par->sla*((Pftcrop *)pft->data)->ind.root));
-      //demand=(gp_stand>0 && pft->phen>0 && fpar(pft)>0) ? (1.0-wet[p])*pet*param.ALPHAM/(1+param.GM/(gp_stand/pft->phen*fpar(pft))) : 0;
-      demand=(gp_stand>0 && pft->phen>0 && fpar(pft)>0) ? (1.0-wet[p])*pet*param.ALPHAM/(1+(param.GM*param.ALPHAM)/(gp_stand/pft->phen*fpar(pft))) : 0;
+      //demand=(gp_stand>0 && pft->phen>0 && fpar(pft)>0) ? (1.0-wet[p])*eeq*param.ALPHAM/(1+param.GM/(gp_stand/pft->phen*fpar(pft))) : 0;
+      demand=(gp_stand>0 && pft->phen>0 && fpar(pft)>0) ? (1.0-wet[p])*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/(gp_stand/pft->phen*fpar(pft))) : 0;
     }
     else
     {
       supply=pft->par->emax*wr*pft->phen;
-      //demand=(gp_stand>0) ? (1.0-wet[p])*pet*param.ALPHAM/(1+param.GM/gp_stand) : 0;
-      demand=(gp_stand>0) ? (1.0-wet[p])*pet*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
+      //demand=(gp_stand>0) ? (1.0-wet[p])*eeq*param.ALPHAM/(1+param.GM/gp_stand) : 0;
+      demand=(gp_stand>0) ? (1.0-wet[p])*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
     }
 
     if(wr<param.rw_irrig_thres && supply<demand && pft->phen>0.0)

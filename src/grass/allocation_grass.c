@@ -14,7 +14,6 @@
 
 #include "lpj.h"
 #include "grass.h"
-#include "landuse.h"
 
 Bool allocation_grass(Litter *litter, /**< litter pool */
                       Pft *pft        /**< pointer to PFT */

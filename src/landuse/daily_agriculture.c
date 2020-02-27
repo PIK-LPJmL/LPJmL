@@ -16,7 +16,6 @@
 
 #include "lpj.h"
 #include "crop.h"
-#include "natural.h"
 #include "agriculture.h"
 
 Real daily_agriculture(Stand *stand, /**< stand pointer */
@@ -78,7 +77,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     aet_stand[l]=green_transp[l]=0;
 
   if(!config->river_routing)
-    irrig_amount(stand,config->pft_output_scaled,npft,ncft);
+    irrig_amount(stand,data,config->pft_output_scaled,npft,ncft);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -425,7 +424,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 
   /* calculate net irrigation requirements (NIR) for next days irrigation */
   if(data->irrigation && stand->pftlist.n>0) /* second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,gp_stand,wet,eeq);
+    calc_nir(stand,data,gp_stand,wet,eeq);
 
   forrootsoillayer(l)
   {

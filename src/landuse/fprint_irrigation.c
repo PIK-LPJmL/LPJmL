@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  _  a  g  r  i  c  u  l  t  u  r  e  .  c                \n**/
+/**      f  p  r  i  n  t  _  i  r  r  i  g  a  t  i  o  n  .  c                   \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes irrigation data of stand                                   \n**/
+/**     Function prints irrigation data of stand                                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,15 +15,24 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
-Bool fwrite_agriculture(FILE *file,        /**< pointer to binary file */
-                        const Stand *stand /**< stand pointer */
-                       )                   /** \return TRUE on error */
+void fprint_irrigation(FILE *file,                  /**< pointer to text file */
+                       const Irrigation *irrigation /**< pointer to irrigation */
+                      )
 {
-  Irrigation *irrigation;
-  irrigation=stand->data;
-  fwrite_irrigation(file,irrigation);
-  fwrite1(&stand->growing_days,sizeof(int),file);
-  return FALSE;
-} /* of 'fwrite_agriculture' */
+  const char *irrig[]={"no","surface","sprinkler","drip"};
+  fprintf(file,"Irrigation:\t%s\n",bool2str(irrigation->irrigation));
+  if(irrigation->irrigation)
+    fprintf(file,"Irrigation event today:\t%s\n"
+            "Irrigation system:\t%s\n"
+            "conveyance efficiency:\t%g\n"
+            "conveyance evaporation:\t%g\n"
+            "net irrig amount:\t%g\n"
+            "distribution irrig amount:\t%g\n"
+            "irrig amount:\t%g\n"
+            "irrig stor:\t%g\n",
+            bool2str(irrigation->irrig_event),irrig[irrigation->irrig_system],
+            irrigation->ec,irrigation->conv_evap,
+            irrigation->net_irrig_amount,irrigation->dist_irrig_amount,
+            irrigation->irrig_amount,irrigation->irrig_stor);
+} /* of 'fprint_irrigation' */

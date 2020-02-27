@@ -13,9 +13,9 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
 void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
+                  Irrigation *data, /**< Irrigation data */
                   Bool pft_output_scaled, /**< output is PFT scaled (TRUE/FALSE) */
                   int npft,     /**< number of natural PFTs */
                   int ncft      /**< number of crop PFTs */
@@ -23,7 +23,6 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
 {
   int p,count;
   Pft *pft;
-  Irrigation *data;
   Real conv_loss,irrig_stand,irrig_threshold;
   Real wr;
 #ifdef DOUBLE_HARVEST
@@ -32,8 +31,7 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
   irrig_threshold=0.0;
 
   /* determine if today irrigation dependent on threshold */
-  data=stand->data;
-  data->irrig_event=0;
+  data->irrig_event=FALSE;
   data->irrig_amount=0;
 
   if(data->irrigation)
@@ -57,7 +55,7 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
 
       count+=(wr>irrig_threshold) ? 0 : 1; /* if one of possibly two (grass) pfts requests irrigation, both get irrigated */
     } /*for each pft*/
-    data->irrig_event=(count>0) ? 1 : 0;
+    data->irrig_event=(count>0);
 
     irrig_stand=max(data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor,0);
 

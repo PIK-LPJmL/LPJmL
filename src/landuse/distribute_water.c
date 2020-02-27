@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                 w i t h d r a w a l _ d e m a n d . c                          \n**/
+/**              d  i  s  t  r  i  b  u  t  e  _  w  a  t  e  r  .  c              \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -27,7 +27,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
 void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       int irrig_scenario,    /**< irrigation scenario */
@@ -70,7 +69,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
     if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE)
     {
       data=stand->data;
-      data->irrig_event=0;
+      data->irrig_event=FALSE;
       data->irrig_amount=0;
 
       if(data->irrigation)
@@ -95,7 +94,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
 
           count+=(wr>irrig_threshold) ? 0 : 1; /* if single grass pft needs irrigation both grass pft are irrigated */
         } /*for each pft*/
-        data->irrig_event=(count>0) ? 1 : 0;
+        data->irrig_event=(count>0);
 
         irrig_stand=max(data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor,0)*frac_irrig_amount;
 

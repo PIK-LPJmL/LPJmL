@@ -92,12 +92,12 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
       fscanreal2(verb,&item,&country->laimax_tempcer,"laimax_tempcer",country->name);
       fscanreal2(verb,&item,&country->laimax_maize,"laimax_maize",country->name);
     }
-    if(fscanint(&item,&country->default_irrig_system,"default_irrig_system",FALSE,verb))
+    if(fscanint(&item,(int *)(&country->default_irrig_system),"default_irrig_system",FALSE,verb))
       return 0;
-    if(country->default_irrig_system<1 || country->default_irrig_system>3)
+    if(country->default_irrig_system<SURF || country->default_irrig_system>DRIP)
     {
       if(verb)
-        fprintf(stderr,"ERROR215: Default irrigation system=%d is not defined within 1 to 3 for %s in line %d of '%s'.\n",country->default_irrig_system,country->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR215: Default irrigation system=%d is not defined within 1 to 3 for %s in line %d of '%s'.\n",(int)country->default_irrig_system,country->name,getlinecount(),getfilename());
        return 0;
     }
   } /* of 'for(n=0;...)' */

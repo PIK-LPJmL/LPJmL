@@ -45,9 +45,7 @@ struct stand
   Real fire_sum;
   Real frac;                  /**< Stand fraction (0..1) */
   Real frac_g[NSOILLAYER];    /**< fraction of green water in total available soil water, including free water */
-  int growing_time;           /**< for TREES years since harvest*/
   int growing_days;           /**< for GRASS days since harvest*/
-  int age;                    /**< PLANTATION AGE (yr) */
   int prescribe_landcover;
   const Real *landcover;
   void *data;                 /**< stand-specific extensions */

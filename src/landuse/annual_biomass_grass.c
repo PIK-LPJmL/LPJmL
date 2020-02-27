@@ -17,7 +17,6 @@
 
 #include "lpj.h"
 #include "grass.h"
-#include "agriculture.h"
 #include "biomass_grass.h"
 
 Bool annual_biomass_grass(Stand *stand,         /* Pointer to stand */

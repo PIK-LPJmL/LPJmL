@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  _  a  g  r  i  c  u  l  t  u  r  e  .  c                \n**/
+/**      f  p  r  i  n  t  _  g  r  a  s  s  l  a  n  d  .  c                      \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes irrigation data of stand                                   \n**/
+/**     Function prints grassland data of stand                                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,15 +15,26 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
+#include "grassland.h"
 
-Bool fwrite_agriculture(FILE *file,        /**< pointer to binary file */
-                        const Stand *stand /**< stand pointer */
-                       )                   /** \return TRUE on error */
+void fprint_grassland(FILE *file,        /**< pointer to text file */
+                      const Stand *stand /**< pointer to stand */
+                     )
 {
-  Irrigation *irrigation;
-  irrigation=stand->data;
-  fwrite_irrigation(file,irrigation);
-  fwrite1(&stand->growing_days,sizeof(int),file);
-  return FALSE;
-} /* of 'fwrite_agriculture' */
+  static char *mode[]={"undefined","grazing","recovery"};
+  const Grassland *grassland;
+  grassland=stand->data;
+  fprint_irrigation(file,&grassland->irrigation);
+  fprintf(file,"Nr. of lsus ext:\t%g\n"
+          "Nr. of lsus int:\t%g\n"
+          "grazing days:\t%d\n"
+          "recovery_day:\t%d\n"
+          "paddocks:\t%d\n"
+          "rotation mode:\t%s\n",
+          grassland->nr_of_lsus_ext,
+          grassland->nr_of_lsus_int,
+          grassland->rotation.grazing_days,
+          grassland->rotation.recovery_days,
+          grassland->rotation.paddocks,
+          mode[grassland->rotation.mode]);
+} /* of 'fprint_grassland' */

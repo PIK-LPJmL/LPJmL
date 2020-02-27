@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  w  r  i  t  e  _  a  g  r  i  c  u  l  t  u  r  e  .  c                \n**/
+/**              n  e  w  _  g  r  a  s  s  l  a  n  d  .  c                       \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes irrigation data of stand                                   \n**/
+/**     Function allocates grassland data of stand                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,15 +15,19 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
+#include "grassland.h"
 
-Bool fwrite_agriculture(FILE *file,        /**< pointer to binary file */
-                        const Stand *stand /**< stand pointer */
-                       )                   /** \return TRUE on error */
+void new_grassland(Stand *stand)
 {
-  Irrigation *irrigation;
-  irrigation=stand->data;
-  fwrite_irrigation(file,irrigation);
-  fwrite1(&stand->growing_days,sizeof(int),file);
-  return FALSE;
-} /* of 'fwrite_agriculture' */
+  Grassland *grassland;
+  grassland=new(Grassland);
+  check(grassland);
+  stand->fire_sum=0.0;
+  stand->growing_days=0;
+  stand->data=grassland;
+  init_irrigation(&grassland->irrigation);
+  grassland->nr_of_lsus_ext= grassland->nr_of_lsus_int=0.0;
+  grassland->rotation.grazing_days=grassland->rotation.paddocks=0;
+  grassland->rotation.recovery_days=0;
+  grassland->rotation.mode=RM_UNDEFINED;
+} /* of 'new_grassland' */
