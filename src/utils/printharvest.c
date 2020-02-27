@@ -28,6 +28,12 @@
 
 #define USAGE "Usage: %s [-h] [-outpath dir] [-inpath dir] [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
 
+#define fread_harvest(file,harvest) if(fread(harvest,sizeof(float),1,file)!=1) \
+  { \
+    fprintf(stderr,"Error: Unexpected end of file in '%s'.\n",config.outputvars[index].filename.name);\
+    return EXIT_FAILURE; \
+  }
+
 static int findfile2(const Outputvar *output,int n,int id)
 {
   int i;
@@ -55,6 +61,7 @@ int main(int argc,char **argv)
   String s;
   char *name;
   Intcoord intcoord;
+  Coord_netcdf cdf;
   FILE *file;
   struct stat filestat;
   int i,j,n,index,cell,year;
@@ -64,22 +71,41 @@ int main(int argc,char **argv)
   initconfig(&config);
   if(readconfig(&config,dflt_conf_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
-    fprintf(stderr,"Syntax error found in configuration file.\n");
+    fputs("Error occurred in processing configuration file.\n",stderr);
     return EXIT_FAILURE;
   }
   printf("Simulation: %s\n",config.sim_name);
-  /* get resolution from grid file */
-  coordfile=opencoord(&config.coord_filename,TRUE);
-  if(coordfile==NULL)
-    return EXIT_FAILURE;
-  getcellsizecoord(&lon,&lat,coordfile);
-  closecoord(coordfile);
-  config.resolution.lon=lon;
-  config.resolution.lat=lat;
+  if(config.soil_filename.fmt==CDF)
+  {
+    cdf=opencoord_netcdf(config.soil_filename.name,
+                         config.soil_filename.var,
+                         TRUE);
+    if(cdf==NULL)
+      return EXIT_FAILURE;
+    getresolution_netcdf(cdf,&config.resolution);
+    closecoord_netcdf(cdf);
+  }
+  else
+  {
+    /* get resolution from grid file */
+    coordfile=opencoord(&config.coord_filename,TRUE);
+    if(coordfile==NULL)
+      return EXIT_FAILURE;
+    getcellsizecoord(&lon,&lat,coordfile);
+    closecoord(coordfile);
+    config.resolution.lon=lon;
+    config.resolution.lat=lat;
+  }
   index=findfile2(config.outputvars,config.n_out,GRID);
   if(index==NOT_FOUND)
   {
-    fprintf(stderr,"Error: No gridfile was written in simulation.\n");
+    fputs("Error: No gridfile was written in simulation.\n",stderr);
+    return EXIT_FAILURE;
+  }
+  if(config.outputvars[index].filename.fmt!=RAW)
+  {
+    fprintf(stderr,"Error: grid file '%s' not in raw format.\n",
+            config.outputvars[index].filename.name);
     return EXIT_FAILURE;
   }
   file=fopen(config.outputvars[index].filename.name,"rb");
@@ -93,7 +119,8 @@ int main(int argc,char **argv)
   n=filestat.st_size/sizeof(Intcoord);
   if(n==0)
   {
-    fprintf(stderr,"Error: No coordinates written in grid file.\n");
+    fprintf(stderr,"Error: No coordinates written in grid file '%s'.\n",
+            config.outputvars[index].filename.name);
     return EXIT_FAILURE;
   }
   area=newvec(Real,n);
@@ -108,7 +135,13 @@ int main(int argc,char **argv)
   index=findfile2(config.outputvars,config.n_out,PFT_HARVEST);
   if(index==NOT_FOUND)
   {
-    fprintf(stderr,"Error: No harvest file was written in simulation.\n");
+    fputs("Error: No harvest file was written in simulation.\n",stderr);
+    return EXIT_FAILURE;
+  }
+  if(config.outputvars[index].filename.fmt!=RAW)
+  {
+    fprintf(stderr,"Error: harvest file '%s' not in raw format.\n",
+            config.outputvars[index].filename.name);
     return EXIT_FAILURE;
   }
   file=fopen(config.outputvars[index].filename.name,"rb");
@@ -149,7 +182,7 @@ int main(int argc,char **argv)
         harvest_sum[i].crop[j]=0;
         for(cell=0;cell<n;cell++)
         {
-          fread(&harvest,sizeof(harvest),1,file);
+          fread_harvest(file,&harvest);
           harvest_sum[i].crop[j]+=harvest*area[cell];
         }
       }
@@ -158,20 +191,20 @@ int main(int argc,char **argv)
         harvest_sum[i].grass[j]=0;
         for(cell=0;cell<n;cell++)
         {
-          fread(&harvest,sizeof(harvest),1,file);
+          fread_harvest(file,&harvest);
           harvest_sum[i].grass[j]+=harvest*area[cell];
         }
       }
       harvest_sum[i].biomass_grass=0;
       for(cell=0;cell<n;cell++)
       {
-        fread(&harvest,sizeof(harvest),1,file);
+        fread_harvest(file,&harvest);
         harvest_sum[i].biomass_grass+=harvest*area[cell];
       }
       harvest_sum[i].biomass_tree=0;
       for(cell=0;cell<n;cell++)
       {
-        fread(&harvest,sizeof(harvest),1,file);
+        fread_harvest(file,&harvest);
         harvest_sum[i].biomass_tree+=harvest*area[cell];
       }
     }
