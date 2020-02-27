@@ -100,6 +100,8 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
 
   stand->cell->output.soil_storage+=(irrigation->irrig_stor+irrigation->irrig_amount)*stand->frac*stand->cell->coord.area;
 
+  stand->cell->output.mean_vegc_mangrass/=NDAYYEAR;
+
   free(present);
   free(fpc_type);
   return FALSE;

@@ -307,5 +307,6 @@
   { "id" : CFT_ABOVEGBMN2, "name": "cft_abovegbmn2", "var": "aboveground_biomassn2", "descr": "CFT aboveground biomass N 2nd season", "unit" : "gN/m2","scale": 1.0, "offset" : 0.0},
   { "id" : PFT_NLIMIT, "name": "pft_nlimit", "var": "nlimit", "descr": "ratio N-constrained to unconstrained vmax", "unit": "-", "scale": 1.0, "offset" : 0.0},
   { "id" : SOILNO3_LAYER, "name": "soilno3_layer", "var": "SoilNO3", "descr": "soil NO3 nitrogen in layer", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
-  { "id" : SOILNH4_LAYER, "name": "soilnh4_layer", "var": "SoilNH4", "descr": "soil NH4 nitrogen in layer", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0}
+  { "id" : SOILNH4_LAYER, "name": "soilnh4_layer", "var": "SoilNH4", "descr": "soil NH4 nitrogen in layer", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
+  {"id" : MEAN_VEGC_MANGRASS, "name": "mean_vegc_mangrass", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0}
 ],

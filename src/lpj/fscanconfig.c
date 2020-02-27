@@ -431,7 +431,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       config->grassfix_filename.name = NULL;
     if(grassharvest)
     {
-      scanclimatefilename(&input,&config->grassharvest_filename,config->inputdir,FALSE,"Grassland harvest options");
+      scanclimatefilename(&input,&config->grassharvest_filename,config->inputdir,FALSE,"grass_harvest_options");
     }
     else
       config->grassharvest_filename.name = NULL;

@@ -192,7 +192,11 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
 #ifdef PERMUTE
     pft=getpft(&stand->pftlist,pvec[p]);
 #endif
-    pft->phen = 1.0; /* phenology is calculated from biomass */
+    //pft->phen = 1.0; /* phenology is calculated from biomass */
+    if (config->new_phenology)
+      phenology_gsi(pft, climate->temp,climate->swdown,day,climate->isdailytemp);
+    else
+      leaf_phenology(pft,climate->temp,day,climate->isdailytemp);
     cover_stand+=pft->fpc*pft->phen;
 
     /* calculate albedo and FAPAR of PFT */
@@ -345,12 +349,13 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
       {
         isphen=TRUE;
         stand->cell->ml.rotation.rotation_mode = RM_GRAZING;
-        stand->cell->ml.nr_of_lsus_ext = STOCKING_DENSITY_EXT;
+        stand->cell->ml.nr_of_lsus_ext = param.lsuha;
       }
       break;
     case GS_GRAZING_INT: /* int. grazing */
       if ((cleaf > STUBBLE_HEIGHT_GRAZING_INT) || (stand->cell->ml.rotation.rotation_mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
         isphen=TRUE;
+        stand->cell->ml.nr_of_lsus_int = param.lsuha;
       break;
   } /* of switch */
 
@@ -407,7 +412,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
         output->daily.pet+=eeq*PRIESTLEY_TAYLOR;
       }
   }
-   
+
   if(data->irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
     calc_nir(stand,gp_stand,wet,eeq);
 
@@ -465,6 +470,8 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   output->cft_temp[rmgrass(ncft)+data->irrigation*(ncft+NGRASS)]+=climate->temp;
   output->cft_prec[rmgrass(ncft)+data->irrigation*(ncft+NGRASS)]+=climate->prec;
   output->cft_srad[rmgrass(ncft)+data->irrigation*(ncft+NGRASS)]+=climate->swdown;
+  foreachpft(pft, p, &stand->pftlist)
+    output->mean_vegc_mangrass+=vegc_sum(pft);
 
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw_grassland(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,

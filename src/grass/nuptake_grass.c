@@ -52,7 +52,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   forrootsoillayer(l)
   {
     totn=(soil->NO3[l]+soil->NH4[l]);
-    if(totn>0 && soil->temp[l]>0)
+    if(totn>0)
     {
       /*Thornley 1991*/
       up_temp_f = nuptake_temp_fcn(soil->temp[l]);
@@ -74,7 +74,6 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   {
     pft->bm_inc.nitrogen+=n_uptake;
     forrootsoillayer(l)
-      if(soil->temp[l]>0)
       {
         soil->NO3[l]-=soil->NO3[l]*rootdist_n[l]*n_uptake/nsum;
         if(soil->NO3[l]<0)
