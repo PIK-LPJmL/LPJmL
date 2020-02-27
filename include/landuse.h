@@ -15,11 +15,6 @@
 #ifndef LANDUSE_H /* Already included? */
 #define LANDUSE_H
 
-#define NOIRRIG 0
-#define SURF 1
-#define SPRINK 2
-#define DRIP 3
-
 /* Definitions of datatypes */
 
 typedef enum {NATURAL,SETASIDE_RF,SETASIDE_IR,AGRICULTURE,MANAGEDFOREST,
@@ -37,11 +32,12 @@ typedef struct
 
 typedef struct
 {
-  int *crop;
-  int grass[NGRASS];
-  int biomass_grass;
-  int biomass_tree;
+  IrrigationType *crop;
+  IrrigationType grass[NGRASS];
+  IrrigationType biomass_grass;
+  IrrigationType biomass_tree;
 } Irrig_system;
+
 
 typedef enum {NO_SEASONALITY, PREC, PRECTEMP, TEMP, TEMPPREC} Seasonality;
 
@@ -50,8 +46,8 @@ typedef enum {GS_DEFAULT, GS_MOWING, GS_GRAZING_EXT, GS_GRAZING_INT, GS_NONE} Gr
 typedef struct
 {
   Bool irrigation;        /**< stand irrigated? (TRUE/FALSE) */
-  int irrig_event;        /**< irrigation water applied to field that day? depends on soil moisture and precipitation, if not irrig_amount is put to irrig_stor */
-  int irrig_system;       /**< irrigation system type (NOIRRIG=0,SURF=1,SPRINK=2,DRIP=3) */
+  Bool irrig_event;        /**< irrigation water applied to field that day? depends on soil moisture and precipitation, if not irrig_amount is put to irrig_stor */
+  IrrigationType irrig_system; /**< irrigation system type (NOIRRIG=0,SURF=1,SPRINK=2,DRIP=3) */
   Real ec;                /**< conveyance efficiency */
   Real conv_evap;         /**< fraction of conveyance losses that is assumed to evaporate */
   Real net_irrig_amount;  /**< deficit in upper 50cm soil to fulfill demand (mm) */
@@ -128,5 +124,6 @@ extern void init_irrigation(Irrigation *);
 extern Bool fwrite_irrigation(FILE *,const Irrigation *);
 extern void fprint_irrigation(FILE *,const Irrigation *);
 extern Bool fread_irrigation(FILE *,Irrigation *,Bool);
+extern Harvest harvest_stand(Output *,Stand *,Real);
 
 #endif

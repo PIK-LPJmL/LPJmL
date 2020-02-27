@@ -13,7 +13,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 #include "biomass_grass.h"
 
 void output_gbw_biomass_grass(Output *output,  /**< output data */

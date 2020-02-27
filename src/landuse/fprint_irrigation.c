@@ -16,22 +16,22 @@
 
 #include "lpj.h"
 
-void fprint_irrigation(FILE *file,        /**< pointer to text file */
+void fprint_irrigation(FILE *file,                  /**< pointer to text file */
                        const Irrigation *irrigation /**< pointer to irrigation */
                       )
 {
-  fprintf(file,"Irrigation:\t%s\n",
-          (irrigation->irrigation) ? "true" : "false");
+  const char *irrig[]={"no","surface","sprinkler","drip"};
+  fprintf(file,"Irrigation:\t%s\n",bool2str(irrigation->irrigation));
   if(irrigation->irrigation)
-    fprintf(file,"Irrigation event today:\t%d\n"
-            "Irrigation system:\t%d\n"
+    fprintf(file,"Irrigation event today:\t%s\n"
+            "Irrigation system:\t%s\n"
             "conveyance efficiency:\t%g\n"
             "conveyance evaporation:\t%g\n"
             "net irrig amount:\t%g\n"
             "distribution irrig amount:\t%g\n"
             "irrig amount:\t%g\n"
             "irrig stor:\t%g\n",
-            irrigation->irrig_event,irrigation->irrig_system,
+            bool2str(irrigation->irrig_event),irrig[irrigation->irrig_system],
             irrigation->ec,irrigation->conv_evap,
             irrigation->net_irrig_amount,irrigation->dist_irrig_amount,
             irrigation->irrig_amount,irrigation->irrig_stor);

@@ -20,7 +20,7 @@
 
 static const int mowingDays[] = {152, 335}; // mowing on fixed dates 1-june or 1-dec
 
-Bool isMowingDay(int aDay)
+static Bool isMowingDay(int aDay)
 {
   int i;
   int len = sizeof(mowingDays)/sizeof(int);
@@ -30,9 +30,7 @@ Bool isMowingDay(int aDay)
       return TRUE;
   }
   return FALSE;
-}
-
-
+} /* of 'isMowingDay' */
 
 Real daily_grassland(Stand *stand, /**< stand pointer */
                      Real co2,   /**< atmospheric CO2 (ppmv) */
@@ -74,7 +72,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   Bool isphen;
   Grassland *data;
   Pftgrass *grass;
-  Real hfrac=0.5;
+  Real hfrac;
   Real cleaf=0,cleaf_max=0;
   irrig_apply=0.0;
 
@@ -251,39 +249,36 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
     cleaf_max+=grass->max_leaf;
   }
   switch(stand->cell->ml.grass_scenario)
-    {
-      case GS_DEFAULT: // default
-        if(day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365)
-        {
-          if(cleaf>cleaf_max)
-          {
-            isphen=TRUE;
-            hfrac=1-1000/(1000+cleaf);
-          }
-        }
-        break;
-      case GS_MOWING: // mowing
-        if(isMowingDay(day))
-        {
-          if(cleaf > STUBBLE_HEIGHT_MOWING) /* 5 cm or 25 g.C.m-2 threshold */
-            isphen=TRUE;
-        }
-        break;
-      case GS_GRAZING_EXT: /* ext. grazing  */
-        data->rotation.rotation_mode = RM_UNDEFINED;
-        data->nr_of_lsus_ext = 0.0;
-        if(cleaf > STUBBLE_HEIGHT_GRAZING_EXT) /* minimum threshold */
+  {
+    case GS_DEFAULT: // default
+      if(day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365)
+      {
+        if(cleaf>cleaf_max)
         {
           isphen=TRUE;
-          data->rotation.rotation_mode = RM_GRAZING;
-          data->nr_of_lsus_ext = param.lsuha;
+          hfrac=1-1000/(1000+cleaf);
         }
-        break;
-      case GS_GRAZING_INT: /* int. grazing */
-        if((cleaf > STUBBLE_HEIGHT_GRAZING_INT) || (data->rotation.rotation_mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
-          isphen=TRUE;
-        break;
-    } /* of switch */
+      }
+      break;
+    case GS_MOWING: // mowing
+      if(isMowingDay(day) && cleaf > STUBBLE_HEIGHT_MOWING) /* 5 cm or 25 g.C.m-2 threshold */
+        isphen=TRUE;
+      break;
+    case GS_GRAZING_EXT: /* ext. grazing  */
+      data->rotation.mode = RM_UNDEFINED;
+      data->nr_of_lsus_ext = 0.0;
+      if(cleaf > STUBBLE_HEIGHT_GRAZING_EXT) /* minimum threshold */
+      {
+        isphen=TRUE;
+        data->rotation.mode = RM_GRAZING;
+        data->nr_of_lsus_ext = param.lsuha;
+      }
+      break;
+    case GS_GRAZING_INT: /* int. grazing */
+      if((cleaf > STUBBLE_HEIGHT_GRAZING_INT) || (data->rotation.mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
+        isphen=TRUE;
+      break;
+  } /* of switch */
   if(isphen)
   {
     harvest=harvest_stand(output,stand,hfrac);

@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Definition of biomass stand                                                \n**/
+/**     Definition of biomass tree stand                                           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,7 +16,6 @@
 
 #include "lpj.h"
 #include "agriculture.h"
-#include "tree.h"
 #include "biomass_tree.h"
 
 Standtype biomass_tree_stand={BIOMASS_TREE,"biomass_tree",new_biomass_tree,

@@ -15,7 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
 int findstand(const Standlist standlist, /**< Stand list */
               Landusetype landusetype,   /**< landuse type */

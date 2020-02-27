@@ -50,7 +50,7 @@ typedef struct
   int grazing_days;
   int recovery_days;
   int paddocks;
-  RotationModeType rotation_mode;
+  RotationModeType mode;
 } Rotation;
 
 typedef struct
@@ -62,8 +62,6 @@ typedef struct
 } Grassland;
 
 /* Declaration of functions */
-
-extern Bool isMowingDay(int);
 
 extern Standtype grassland_stand;
 

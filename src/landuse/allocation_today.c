@@ -14,7 +14,6 @@
 
 #include "lpj.h"
 #include "grass.h"
-#include "landuse.h"
 
 void allocation_today(Stand *setasidestand, /**< pointer to setaside stand */
                       int ntypes /**< number of different PFT classes */
@@ -43,8 +42,7 @@ void allocation_today(Stand *setasidestand, /**< pointer to setaside stand */
     fpc_inc=newvec(Real,npft);
     check(fpc_inc);
     foreachpft(pft,p,&setasidestand->pftlist)
-      if(pft->par->type==GRASS)
-        fpc_inc[p]=fpc_grass(pft);
+      fpc_inc[p]=fpc_grass(pft);
     light(setasidestand,ntypes,fpc_inc);
     free(fpc_inc);
   }

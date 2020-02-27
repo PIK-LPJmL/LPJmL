@@ -18,18 +18,21 @@
 
 Bool fwrite_irrigation(FILE *file,        /**< pointer to binary file */
                        const Irrigation *irrigation /**< irrigation pointer */
-                       )                   /** \return TRUE on error */
+                      )                   /** \return TRUE on error */
 {
   Byte b;
   b=(Byte)irrigation->irrigation;
   fwrite(&b,sizeof(b),1,file);
-  fwrite1(&irrigation->irrig_event,sizeof(int),file);
-  fwrite1(&irrigation->irrig_system,sizeof(int),file);
-  fwrite1(&irrigation->ec,sizeof(Real),file);
-  fwrite1(&irrigation->conv_evap,sizeof(Real),file);
-  fwrite1(&irrigation->net_irrig_amount,sizeof(Real),file);
-  fwrite1(&irrigation->dist_irrig_amount,sizeof(Real),file);
-  fwrite1(&irrigation->irrig_amount,sizeof(Real),file);
-  fwrite1(&irrigation->irrig_stor,sizeof(Real),file);
+  if(irrigation->irrigation)
+  {
+    fwrite1(&irrigation->irrig_event,sizeof(int),file);
+    fwrite1((int *)(&irrigation->irrig_system),sizeof(int),file);
+    fwrite1(&irrigation->ec,sizeof(Real),file);
+    fwrite1(&irrigation->conv_evap,sizeof(Real),file);
+    fwrite1(&irrigation->net_irrig_amount,sizeof(Real),file);
+    fwrite1(&irrigation->dist_irrig_amount,sizeof(Real),file);
+    fwrite1(&irrigation->irrig_amount,sizeof(Real),file);
+    fwrite1(&irrigation->irrig_stor,sizeof(Real),file);
+  }
   return FALSE;
 } /* of 'fwrite_irrigation' */

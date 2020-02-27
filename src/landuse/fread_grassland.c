@@ -38,5 +38,5 @@ Bool fread_grassland(FILE *file,   /**< pointer to binary file */
   freadint1(&grassland->rotation.grazing_days,swap,file);
   freadint1(&grassland->rotation.recovery_days,swap,file);
   freadint1(&grassland->rotation.paddocks,swap,file);
-  return freadint1((int *)(&grassland->rotation.rotation_mode),swap,file)!=1;
+  return freadint1((int *)(&grassland->rotation.mode),swap,file)!=1;
 } /* of 'fread_grassland' */

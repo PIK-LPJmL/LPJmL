@@ -15,7 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "tree.h"
 #include "biomass_tree.h"
 
 Real daily_biomass_tree(Stand *stand, /**< stand pointer */

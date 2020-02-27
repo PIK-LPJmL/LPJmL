@@ -15,7 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
 Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
                     Real infil,         /**< infiltration water (mm) */

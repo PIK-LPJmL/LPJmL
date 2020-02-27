@@ -19,6 +19,8 @@
 
 /* Declaration of datatypes */
 
+typedef enum {NOIRRIG, SURF, SPRINK, DRIP} IrrigationType;
+
 typedef struct
 {
   short country,region;
@@ -28,7 +30,7 @@ typedef struct
 {
   int id;     /* country id (0-196)*/
   char *name; /* country name */
-  int default_irrig_system; /* default irrig system at country-level (SURF=1,SPRINK=2,DRIP=3), used for ALLCROPS or ALL_IRRIGATION */
+  IrrigationType default_irrig_system; /* default irrig system at country-level (SURF=1,SPRINK=2,DRIP=3), used for ALLCROPS or ALL_IRRIGATION */
   Real laimax_tempcer;  /*laimax for temperate cereals*/
   Real laimax_maize;    /*laimax for maize*/
   /* parameters defined for each country */

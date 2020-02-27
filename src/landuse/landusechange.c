@@ -91,7 +91,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
   Pft *pft;
   Stand *setasidestand,*natstand,*mixstand;
   
-  s=findlandusetype(cell->standlist,irrig==TRUE ? SETASIDE_IR : SETASIDE_RF);
+  s=findlandusetype(cell->standlist,irrig ? SETASIDE_IR : SETASIDE_RF);
   if(s!=NOT_FOUND)
   {
     setasidestand=getstand(cell->standlist,s);
@@ -104,7 +104,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
     }
     else
     {
-      pos=addstand(irrig==TRUE ? &setaside_ir_stand :&setaside_rf_stand,cell)-1; /*setaside big enough for regrowth*/
+      pos=addstand(irrig ? &setaside_ir_stand :&setaside_rf_stand,cell)-1; /*setaside big enough for regrowth*/
       mixstand=getstand(cell->standlist,pos);
       mixstand->frac= -difffrac;
       reclaim_land(setasidestand,mixstand,cell,istimber,npft+ncft);
@@ -158,7 +158,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
   Irrigation *data;
   Stand *setasidestand,*mixstand;
 
-  s=findlandusetype(cell->standlist,irrigation==TRUE ? SETASIDE_IR : SETASIDE_RF);
+  s=findlandusetype(cell->standlist,irrigation ? SETASIDE_IR : SETASIDE_RF);
   if(s!=NOT_FOUND)
   {
     setasidestand=getstand(cell->standlist,s);

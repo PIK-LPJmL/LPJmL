@@ -15,7 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
 Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
                      Real infil,         /**< rainfall + melting water - interception_stand (mm) + rw_irrig */

@@ -29,5 +29,5 @@ void new_grassland(Stand *stand)
   grassland->nr_of_lsus_ext= grassland->nr_of_lsus_int=0.0;
   grassland->rotation.grazing_days=grassland->rotation.paddocks=0;
   grassland->rotation.recovery_days=0;
-  grassland->rotation.rotation_mode=RM_UNDEFINED;
+  grassland->rotation.mode=RM_UNDEFINED;
 } /* of 'new_grassland' */

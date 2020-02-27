@@ -36,5 +36,5 @@ void fprint_grassland(FILE *file,        /**< pointer to text file */
           grassland->rotation.grazing_days,
           grassland->rotation.recovery_days,
           grassland->rotation.paddocks,
-          mode[grassland->rotation.rotation_mode]);
+          mode[grassland->rotation.mode]);
 } /* of 'fprint_grassland' */

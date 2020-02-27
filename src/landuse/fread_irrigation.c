@@ -22,19 +22,31 @@ Bool fread_irrigation(FILE *file,             /**< pointer to binary file */
                      )                        /** \return TRUE on error */
 {
   Byte b;
-  fread(&b,sizeof(b),1,file);
+  if(fread(&b,sizeof(b),1,file)!=1)
+    return TRUE;
   if(b>1)
   {
     fprintf(stderr,"ERROR195: Invalid value %d for irrigation.\n",b);
     return TRUE;
   }
   irrigation->irrigation=b;
-  freadint1(&irrigation->irrig_event,swap,file);
-  freadint1(&irrigation->irrig_system,swap,file);
-  freadreal1(&irrigation->ec,swap,file);
-  freadreal1(&irrigation->conv_evap,swap,file);
-  freadreal1(&irrigation->net_irrig_amount,swap,file);
-  freadreal1(&irrigation->dist_irrig_amount,swap,file);
-  freadreal1(&irrigation->irrig_amount,swap,file);
-  return freadreal1(&irrigation->irrig_stor,swap,file)!=1;
+  if(irrigation->irrigation)
+  {
+    freadint1(&irrigation->irrig_event,swap,file);
+    freadint1((int *)(&irrigation->irrig_system),swap,file);
+    freadreal1(&irrigation->ec,swap,file);
+    freadreal1(&irrigation->conv_evap,swap,file);
+    freadreal1(&irrigation->net_irrig_amount,swap,file);
+    freadreal1(&irrigation->dist_irrig_amount,swap,file);
+    freadreal1(&irrigation->irrig_amount,swap,file);
+    return freadreal1(&irrigation->irrig_stor,swap,file)!=1;
+  }
+  else
+  {
+    irrigation->irrig_event=FALSE;
+    irrigation->irrig_system=NOIRRIG;
+    irrigation->ec=1;
+    irrigation->conv_evap=irrigation->net_irrig_amount=irrigation->dist_irrig_amount=irrigation->irrig_amount=irrigation->irrig_stor=0.0;
+  }
+  return FALSE;
 } /* of 'fread_irrigation' */
