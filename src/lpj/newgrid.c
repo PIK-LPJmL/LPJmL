@@ -546,14 +546,14 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 
       grid[i].ml.irrig_system=newvec(Irrig_system,1);
       checkptr(grid[i].ml.irrig_system);
-      grid[i].ml.irrig_system->crop=newvec(int,ncft);
+      grid[i].ml.irrig_system->crop=newvec(IrrigationType,ncft);
       checkptr(grid[i].ml.irrig_system->crop);
 
       for(j=0;j<ncft;j++)
-        grid[i].ml.irrig_system->crop[j]=0;
+        grid[i].ml.irrig_system->crop[j]=NOIRRIG;
       for(j=0;j<NGRASS;j++)
-        grid[i].ml.irrig_system->grass[j]=0;
-      grid[i].ml.irrig_system->biomass_grass=grid[i].ml.irrig_system->biomass_tree=0;
+        grid[i].ml.irrig_system->grass[j]=NOIRRIG;
+      grid[i].ml.irrig_system->biomass_grass=grid[i].ml.irrig_system->biomass_tree=NOIRRIG;
 
     }
     else
