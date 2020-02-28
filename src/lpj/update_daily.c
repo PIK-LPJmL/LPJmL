@@ -65,7 +65,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   cell->output.msnowf+=climate.temp<tsnow ? climate.prec : 0;
   cell->output.mrain+=climate.temp<tsnow ? 0 : climate.prec;
 
-  if(cell->ml.landfrac!=NULL) /* landuse enabled? */
+  if(config->withlanduse) /* landuse enabled? */
     flux_estab=sowing(cell,climate.prec,day,year,npft,ncft,config); 
   cell->discharge.drunoff=0.0;
 

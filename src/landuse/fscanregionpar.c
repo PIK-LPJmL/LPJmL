@@ -22,6 +22,14 @@
     return 0;\
   }
 
+#define fscanreal012(verb,file,var,name,region)\
+  if(fscanreal01(file,var,name,FALSE,verb))\
+  {\
+    if(verb)\
+      fprintf(stderr,"ERROR102: Cannot read float '%s' for region '%s'.\n",name,region);\
+    return 0;\
+  }
+
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
 
 int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
@@ -70,8 +78,8 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
     region->name=strdup(s);
     checkptr(region->name);
     region->id=id;
-    fscanreal2(verb,&item,&region->fuelratio,"fuelratio",region->name);
-    fscanreal2(verb,&item,&region->bifratio,"bifratio",region->name);
+    fscanreal012(verb,&item,&region->fuelratio,"fuelratio",region->name);
+    fscanreal012(verb,&item,&region->bifratio,"bifratio",region->name);
     fscanreal2(verb,&item,&region->woodconsum,"woodconsum",region->name);
 
   } /* of 'for(n=0;...)' */

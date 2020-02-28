@@ -13,17 +13,16 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#define c_fstem      0.70 /* Masking of the ground by stems and branches without leaves. Source: FOAM/LPJ */
 
 Real gp_sum(const Pftlist *pftlist, /**< Pft list */
             Real co2,              /**< atmospheric CO2 concentration (ppm) */
             Real temp,             /**< temperature (deg C) */
-            Real par,              /**< photosynthetic active radiation flux */
+            Real par,              /**< photosynthetic active radiation flux (J/m2/day) */
             Real daylength,        /**< daylength (h) */
-            Real *gp_stand_leafon, /**< pot. canopy conduct.at full leaf cover */
-            Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs*/
+            Real *gp_stand_leafon, /**< pot. canopy conduct.at full leaf cover (mm/s) */
+            Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
             Real *fpc              /**< total FPC of all PFTs */
-           )
+           )                       /** \return pot. canopy conductance (mm/s) */
 {
   int p;
   Pft *pft;
@@ -37,7 +36,8 @@ Real gp_sum(const Pftlist *pftlist, /**< Pft list */
   }
   foreachpft(pft,p,pftlist)
   {
-    if(pft->par->type==CROP){
+    if(pft->par->type==CROP)
+    {
       adtmm=photosynthesis(&agd,&rd,pft->par->path,LAMBDA_OPT,
                          temp_stress(pft->par,temp,daylength),ppm2Pa(co2),
                          temp,
@@ -47,7 +47,9 @@ Real gp_sum(const Pftlist *pftlist, /**< Pft list */
                     pft->par->gmin*fpar_crop(pft);
       gp_stand+=gp;
       gp_pft[getpftpar(pft,id)]=gp;
-    }else{
+    }
+    else
+    {
       adtmm=photosynthesis(&agd,&rd,pft->par->path,LAMBDA_OPT,
                          temp_stress(pft->par,temp,daylength),ppm2Pa(co2),
                          temp,

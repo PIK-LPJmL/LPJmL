@@ -92,9 +92,13 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   pft->turnover_monthly=turnover_monthly_tree;
   pft->turnover_daily=turnover_daily_tree;
   pft->albedo_pft=albedo_tree;
-  tree=new(Pfttreepar);
   pft->agb=agb_tree;
-  check(tree);
+  tree=new(Pfttreepar);
+  if(tree==NULL)
+  {
+    printallocerr("tree");
+    return TRUE;
+  }
   pft->data=tree;
   fscanint2(verb,file,&tree->leaftype,pft->name,"leaftype");
   if(tree->leaftype<0 || tree->leaftype>ANYLEAVED)

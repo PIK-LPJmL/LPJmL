@@ -95,7 +95,7 @@ typedef struct
 extern Landuse initlanduse(int,const Config *);
 extern void freelanduse(Landuse,Bool);
 extern Bool getintercrop(const Landuse);
-extern void newlandfrac(Landfrac [2],int);
+extern Landfrac *newlandfrac(int);
 extern void initlandfrac(Landfrac [2],int);
 extern void scalelandfrac(Landfrac [2],int,Real);
 extern void freelandfrac(Landfrac [2]);

@@ -111,10 +111,13 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   pft->albedo_pft=albedo_crop;
   pft->agb=agb_crop;
   crop=new(Pftcroppar);
-  check(crop);
+  if(crop==NULL)
+  {
+    printallocerr("crop");
+    return TRUE;
+  }
   pft->data=crop;
-  fscanpftint(verb,file,&crop->calcmethod_sdate,pft->name,
-              "calcmethod_sdate");
+  fscanpftint(verb,file,&crop->calcmethod_sdate,pft->name,"calcmethod_sdate");
   if(crop->calcmethod_sdate<0 ||  crop->calcmethod_sdate>MULTICROP)
   {
     if(verb)
@@ -129,30 +132,21 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   else
     pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;   //"A photothermal model of leaf area index for greenhouse crops Xu etal.  "
   fscancropdate2(verb,file,&crop->initdate,pft->name,"init_date");
-  fscanpftint(verb,file,&crop->hlimit,pft->name,
-              "hlimit");
-  fscanpftint(verb,file,&crop->fallow_days,pft->name,
-              "fallow_days");
-  fscanpftreal(verb,file,&crop->temp_fall,pft->name,
-               "temp_fall");
-  fscanpftreal(verb,file,&crop->temp_spring,pft->name,
-               "temp_spring");
-  fscanpftreal(verb,file,&crop->temp_vern,pft->name,
-               "temp_vern");
+  fscanpftint(verb,file,&crop->hlimit,pft->name,"hlimit");
+  fscanpftint(verb,file,&crop->fallow_days,pft->name,"fallow_days");
+  fscanpftreal(verb,file,&crop->temp_fall,pft->name,"temp_fall");
+  fscanpftreal(verb,file,&crop->temp_spring,pft->name,"temp_spring");
+  fscanpftreal(verb,file,&crop->temp_vern,pft->name,"temp_vern");
   fscanpftlimit(verb,file,&crop->trg,pft->name,"trg");
   fscanpftreal(verb,file,&crop->pvd,pft->name,"pvd");
-  fscanpftreal(verb,file,&crop->psens,pft->name,
-               "psens");
+  fscanpftreal(verb,file,&crop->psens,pft->name,"psens");
   fscanpftreal(verb,file,&crop->pb,pft->name,"pb");
   fscanpftreal(verb,file,&crop->ps,pft->name,"ps");
-  fscanpftlimit(verb,file,&crop->phuw,pft->name,
-                "phuw");
-  fscanpftlimit(verb,file,&crop->phus,pft->name,
-                "phus");
+  fscanpftlimit(verb,file,&crop->phuw,pft->name,"phuw");
+  fscanpftlimit(verb,file,&crop->phus,pft->name,"phus");
   fscanpftreal(verb,file,&crop->phu_par,pft->name,"phu_par");
   fscanpftlimit(verb,file,&crop->basetemp,pft->name,"basetemp");
-  fscanpftreal(verb,file,&crop->fphuc,pft->name,
-               "fphuc");
+  fscanpftreal(verb,file,&crop->fphuc,pft->name,"fphuc");
   fscanpftreal(verb,file,&crop->flaimaxc,pft->name,"flaimaxc");
   fscanpftreal(verb,file,&crop->fphuk,pft->name,"fphuk");
   fscanpftreal(verb,file,&crop->flaimaxk,pft->name,"flaimaxk");

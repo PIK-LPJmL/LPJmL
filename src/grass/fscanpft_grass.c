@@ -92,8 +92,11 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   pft->albedo_pft=albedo_grass;
   pft->agb=agb_grass;
   grass=new(Pftgrasspar);
-  check(grass);
-  pft->data=grass;
+  if(grass==NULL)
+  {
+    printallocerr("grass");
+    return TRUE;
+  }
   pft->data=grass;
   if(iskeydefined(file,"sla"))
   {

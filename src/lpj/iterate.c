@@ -5,7 +5,7 @@
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
 /**     Function iterate provides main time loop for LPJ                           \n**/
-/**     In each year iterateyear/iterateyear_river is called                       \n**/
+/**     In each year iterateyear is called                                         \n**/
 /**                                                                                \n**/
 /**     Prinicpal structure                                                        \n**/
 /**                                                                                \n**/

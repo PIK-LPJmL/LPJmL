@@ -540,11 +540,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 
     if(config->withlanduse!=NO_LANDUSE)
     {
-      grid[i].ml.landfrac=newvec(Landfrac,2);
+      grid[i].ml.landfrac=newlandfrac(ncft);
       checkptr(grid[i].ml.landfrac);
-      newlandfrac(grid[i].ml.landfrac,ncft);
 
-      grid[i].ml.irrig_system=newvec(Irrig_system,1);
+      grid[i].ml.irrig_system=new(Irrig_system);
       checkptr(grid[i].ml.irrig_system);
       grid[i].ml.irrig_system->crop=newvec(IrrigationType,ncft);
       checkptr(grid[i].ml.irrig_system->crop);

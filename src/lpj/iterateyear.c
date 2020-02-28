@@ -66,7 +66,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     if(!grid[cell].skip)
     {
       init_annual(grid+cell,npft,config->nbiomass,ncft);
-      if(input.landuse!=NULL)
+      if(config->withlanduse)
       {
         if(grid[cell].lakefrac<1)
         {
@@ -164,12 +164,12 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       }
       if(config->river_routing)
       {
-        if(input.landuse!=NULL || input.wateruse!=NULL)
+        if(config->withlanduse)
           withdrawal_demand(grid,config);
 
         drain(grid,month,config);
 
-        if(input.landuse!=NULL || input.wateruse!=NULL)
+        if(config->withlanduse)
           wateruse(grid,npft,ncft,config);
       }
 
@@ -242,4 +242,4 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     fwriteoutput_annual(output,grid,year,config);
     fwriteoutput_pft(output,grid,npft,ncft,year,config);
   }
-} /* of 'iterateyear_river' */
+} /* of 'iterateyear' */

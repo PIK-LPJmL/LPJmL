@@ -25,10 +25,7 @@ void harvest_crop(Output *output,        /**< Output data */
                   Pft *pft,              /**< PFT variables */
                   int npft,              /**< number of natural PFTs */
                   int ncft,              /**< number of crop PFTs */
-                  Bool remove_residuals, /**< remove residuals after harvest (TRUE/FALSE) */
-                  Bool residues_fire,    /**< fire in residuals after harvest (TRUE/FALSE) */
-                  Bool pft_output_scaled /**< pft-specific output scaled with
-                                              stand->frac (TRUE/FALSE) */
+                  const Config *config   /**< LPJmL configuration */
                  )
 {
   Pftcroppar *croppar;
@@ -39,12 +36,7 @@ void harvest_crop(Output *output,        /**< Output data */
   data=stand->data;
   crop=pft->data;
   stand->soil.litter.ag[pft->litter].trait.leaf+=(crop->ind.leaf+crop->ind.pool)*param.residues_in_soil;
-  if(!residues_fire)
-  {
-    harvest.residuals_burnt=harvest.residuals_burntinfield=0;
-    factor=(1-param.residues_in_soil);
-  }
-  else
+  if(config->residues_fire)
   {
     fuelratio=stand->cell->ml.manage.regpar->fuelratio; /* burn outside of field */
     bifratio=stand->cell->ml.manage.regpar->bifratio; /* burn in field */
@@ -57,7 +49,12 @@ void harvest_crop(Output *output,        /**< Output data */
     harvest.residuals_burnt=(crop->ind.leaf+crop->ind.pool)*fuelratio;
     harvest.residuals_burntinfield=(crop->ind.leaf+crop->ind.pool)*bifratio;
   }
-  if(remove_residuals)
+  else
+  {
+    harvest.residuals_burnt=harvest.residuals_burntinfield=0;
+    factor=(1-param.residues_in_soil);
+  }
+  if(config->remove_residuals)
     harvest.residual=(crop->ind.leaf+crop->ind.pool)*factor;
   else
   {
@@ -67,7 +64,7 @@ void harvest_crop(Output *output,        /**< Output data */
   harvest.harvest=crop->ind.so;
   stand->soil.litter.bg[pft->litter]+=crop->ind.root;
 #ifdef DOUBLE_HARVEST
-  if(pft_output_scaled)
+  if(config->pft_output_scaled)
   {
     double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
       &(output->pft_harvest[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest),
@@ -94,7 +91,7 @@ void harvest_crop(Output *output,        /**< Output data */
   else
     output->sdate[pft->par->id-npft+data->irrigation*ncft]=crop->sdate;
 #else
-  if(pft_output_scaled)
+  if(config->pft_output_scaled)
   {
     output->pft_harvest[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest+=harvest.harvest*stand->frac;
     output->pft_harvest[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)].residual+=(harvest.residual+harvest.residuals_burnt+harvest.residuals_burntinfield)*stand->frac;

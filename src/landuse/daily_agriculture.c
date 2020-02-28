@@ -145,8 +145,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
 #endif
-      harvest_crop(output,stand,pft,npft,ncft,config->remove_residuals,config->residues_fire,
-                   config->pft_output_scaled);
+      harvest_crop(output,stand,pft,npft,ncft,config);
       /* return irrig_stor and irrig_amount */
       if(data->irrigation)
       {
@@ -367,8 +366,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
 #endif
-      harvest_crop(output,stand,pft,npft,ncft,config->remove_residuals,config->residues_fire,
-                   config->pft_output_scaled);
+      harvest_crop(output,stand,pft,npft,ncft,config);
       if(data->irrigation)
       {
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;

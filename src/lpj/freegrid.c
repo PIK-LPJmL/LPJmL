@@ -44,11 +44,7 @@ void freegrid(Cell grid[],         /**< cell grid */
       }
       free(grid[cell].ml.fraction);
     }
-    if(grid[cell].ml.landfrac!=NULL)
-    {
-      freelandfrac(grid[cell].ml.landfrac);
-      free(grid[cell].ml.landfrac);
-    }
+    freelandfrac(grid[cell].ml.landfrac);
     freeoutput(&grid[cell].output);
     if(!grid[cell].skip)
     {

@@ -14,14 +14,26 @@
 
 #include "lpj.h"
 
-void newlandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
-                 int ncft              /**< number of crop PFTs */
-                )
+Landfrac *newlandfrac(int ncft /**< number of crop PFTs */
+                     )         /** \return allocated landfrac or NULL */
 {
+ Landfrac *landfrac;
+ landfrac=newvec(Landfrac,2);
+ if(landfrac==NULL)
+   return NULL;
  landfrac[0].crop=newvec(Real,ncft);
- check(landfrac[0].crop);
+ if(landfrac[0].crop==NULL)
+ {
+   free(landfrac);
+   return NULL;
+ }
  landfrac[1].crop=newvec(Real,ncft);
- check(landfrac[1].crop);
+ if(landfrac[1].crop==NULL)
+ {
+   free(landfrac);
+   return NULL;
+ }
+ return landfrac;
 } /* of 'newlandfrac' */
 
 void initlandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
@@ -59,8 +71,12 @@ void scalelandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.
 void freelandfrac(Landfrac landfrac[2] /**< land fractions (non-irrig., irrig.) */
                  )
 {
-  free(landfrac[0].crop);
-  free(landfrac[1].crop);
+  if(landfrac!=NULL)
+  {
+    free(landfrac[0].crop);
+    free(landfrac[1].crop);
+    free(landfrac);
+  }
 } /* of 'freelandfrac' */
 
 Bool fwritelandfrac(FILE *file,                 /**< pointer to binary file */
@@ -101,7 +117,7 @@ Bool freadlandfrac(FILE *file,           /**< pointer to binary file */
 Real landfrac_sum(const Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
                   int ncft,                   /**< number of crop PFTs */
                   Bool irrig                  /**< irrigated fraction? (TRUE/FALSE) */
-                 )                            /** \return sum of non-irrigated/irrigated fraction */ 
+                 )                            /** \return sum of non-irrigated/irrigated fraction */
 {
   Real sum;
   int j;

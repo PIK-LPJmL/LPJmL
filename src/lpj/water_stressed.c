@@ -47,43 +47,42 @@ static Real fcn(Real lambda,Data *data)
 
 } /* of 'fcn' */
 
-Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
-                    Real aet_layer[LASTLAYER],       
-                    Real gp_stand,
-                    Real gp_stand_leafon, /**< pot. canopy conduct. at full leaf cover */
-                    Real gp_pft, /* potential canopy conductance */
-                    Real *gc_pft,
-                    Real *rd,
-                    Real *wet,
-                    Real eeq,  /* equilibrium evapotranspiration (mm) */
-                    Real co2,  /* Atmospheric CO2 partial pressure (ppmv) */
-                    Real temp, /* Temperature (deg C) */
-                    Real par,  /* photosynthetic active radiation (J/m2/day) */
-                    Real daylength, /* Daylength (h) */
-                    Real *wdf,           /* water deficit fraction (0..100) */
-                    Bool permafrost
-) /** returns gross primary productivity (gC/m2) */
+Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT variables */
+                    Real aet_layer[LASTLAYER], /**< [inout] layer-specific transpiration (mm/day) */
+                    Real gp_stand,             /**< [in] pot. canopy conduct. (mm/s) */
+                    Real gp_stand_leafon,      /**< [in] pot. canopy conduct. at full leaf cover (mm/s) */
+                    Real gp_pft,               /**< [in] potential stomatal conductance of PFT (mm/s) */
+                    Real *gc_pft,              /**< [out] actual stomatal conductance of PFT (mm/s) */
+                    Real *rd,                  /**< [out] leaf respiration (gC/m2/day) */
+                    Real *wet,                 /**< [inout] relative wetness (0..1) */
+                    Real eeq,                  /**< [in] equilibrium evapotranspiration (mm/day) */
+                    Real co2,                  /**< [in] Atmospheric CO2 partial pressure (ppmv) */
+                    Real temp,                 /**< [in] Temperature (deg C) */
+                    Real par,                  /**< [in] photosynthetic active radiation (J/m2/day) */
+                    Real daylength,            /**< [in] Daylength (h) */
+                    Real *wdf,                 /**< [out] water deficit fraction (0..100) */
+                    Bool permafrost            /**< [in] permafrost enabled? (TRUE/FALSE) */
+                   )                           /** \return gross primary productivity (gC/m2/day) */
 {
   int l,i; 
   Real supply,supply_pft,demand,demand_pft,wr,lambda,gpd,agd,gc,aet,aet_cor;
   Data data;
-  Real roots;
   Real rootdist_n[LASTLAYER];
   Real layer,root_u,root_nu;
   Real freeze_depth,thaw_depth;
   Bool isless=FALSE;
 
-  wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
+  gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   forrootsoillayer(l)
-  rootdist_n[l]=pft->par->rootdist[l];
+    rootdist_n[l]=pft->par->rootdist[l];
   if(permafrost)
   {
     /*adjust root layer*/
     if(layerbound[BOTTOMLAYER]>pft->stand->soil.mean_maxthaw &&
-        pft->stand->soil.mean_maxthaw>epsilon)
+       pft->stand->soil.mean_maxthaw>epsilon)
     {
       forrootsoillayer(l)
-          {
+      {
         layer+=soildepth[l];
         root_u+=pft->par->rootdist[l];
         freeze_depth=layer-pft->stand->soil.mean_maxthaw;
@@ -96,7 +95,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
           l++;
           break;
         }
-          }
+      }
       for(i=l;i<BOTTOMLAYER;i++)
       {
         root_nu+=rootdist_n[i];
@@ -106,12 +105,9 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
         rootdist_n[i]=rootdist_n[i]/root_u*root_nu+rootdist_n[i];
     }
   }
-  wr=roots=0;
+  wr=0;
   for(l=0;l<LASTLAYER;l++)
-  {
     wr+=rootdist_n[l]*pft->stand->soil.w[l];
-    roots+=rootdist_n[l];
-  }
 
   if(*wet>0.9999)
     *wet=0.9999;    
@@ -170,7 +166,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
     else
       aet_cor+=aet_layer[l];
   }
-  if (isless==TRUE && aet_cor<aet)
+  if (isless && aet_cor<aet)
     supply=aet_cor*wr/pft->fpc;
 
   if(supply>=demand)  

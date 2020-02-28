@@ -67,7 +67,7 @@ int main(int argc,char **argv)
   int i,j,n,index,cell,year;
   float harvest,lon,lat;
   Real harvest_total;
-  Landfrac harvest_sum[2];
+  Landfrac *harvest_sum;
   initconfig(&config);
   if(readconfig(&config,dflt_conf_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
@@ -168,7 +168,7 @@ int main(int argc,char **argv)
     else
       printf("\n");
   }
-  newlandfrac(harvest_sum,config.npft[CROP]);
+  harvest_sum=newlandfrac(config.npft[CROP]);
   printf("----");
   for(i=0;i<config.npft[CROP];i++)
     printf(" -------");
