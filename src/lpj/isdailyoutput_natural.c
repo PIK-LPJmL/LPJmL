@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                    b  i  o  m  a  s  s  _  t  r  e  e  .  c                    \n**/
+/**                i s d a i l y o u t p u t _ n a t u r a l . c                   \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Definition of biomass tree stand                                           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,10 +13,11 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
-#include "biomass_tree.h"
+#include "natural.h"
 
-Standtype biomass_tree_stand={BIOMASS_TREE,"biomass_tree",new_biomass_tree,
-                              free_agriculture,fwrite_biomass_tree,
-                              fread_biomass_tree,fprint_biomass_tree,
-                              daily_biomass_tree,annual_biomass_tree,NULL,NULL};
+Bool isdailyoutput_natural(const Output *output,          /**< Output data */
+                           const Stand * UNUSED(stand)    /**< stand pointer */
+                          )
+{
+  return (output->daily.cft == ALLNATURAL);
+} /* of 'isdailyoutput_natural' */

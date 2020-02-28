@@ -21,4 +21,5 @@
 Standtype grassland_stand={GRASSLAND,"grassland",new_grassland,
                            free_agriculture,fwrite_grassland,
                            fread_grassland,fprint_grassland,
-                           daily_grassland,annual_grassland,NULL};
+                           daily_grassland,annual_grassland,NULL,
+                           isdailyoutput_grassland};

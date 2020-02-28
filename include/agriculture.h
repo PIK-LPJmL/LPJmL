@@ -36,6 +36,8 @@ extern Real daily_setaside(Stand *,Real,const Dailyclimate *,int,
                            Real,Real,Real,Real,Real,Real,int,int,int,
                            Bool,Bool,const Config *);
 
+extern Bool isdailyoutput_agriculture(const Output *,const Stand *);
+
 extern void output_gbw_agriculture(Output *,const Stand *,Real,Real,Real,Real,
                                    const Real[LASTLAYER],const Real[LASTLAYER],Real,Real,int,int,
                                    Bool);
@@ -44,5 +46,4 @@ extern void free_agriculture(Stand *);
 extern Bool fread_agriculture(FILE *,Stand *,Bool);
 extern Bool fwrite_agriculture(FILE *,const Stand *);
 extern void fprint_agriculture(FILE *,const Stand *);
-
 #endif

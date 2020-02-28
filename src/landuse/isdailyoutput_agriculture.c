@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                    b  i  o  m  a  s  s  _  t  r  e  e  .  c                    \n**/
+/**                i s d a i l y o u t p u t _ a g r i c u l t u r e . c           \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Definition of biomass tree stand                                           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,9 +14,17 @@
 
 #include "lpj.h"
 #include "agriculture.h"
-#include "biomass_tree.h"
 
-Standtype biomass_tree_stand={BIOMASS_TREE,"biomass_tree",new_biomass_tree,
-                              free_agriculture,fwrite_biomass_tree,
-                              fread_biomass_tree,fprint_biomass_tree,
-                              daily_biomass_tree,annual_biomass_tree,NULL,NULL};
+Bool isdailyoutput_agriculture(const Output *output, /**< Output data */
+                              const Stand *stand    /**< stand pointer */
+                             )
+{
+  const Irrigation *data;
+  const Pft *pft;
+  int p;
+  data = stand->data;
+  foreachpft(pft,p,&stand->pftlist)
+    if (pft->par->id == output->daily.cft && output->daily.irrigation == data->irrigation)
+      return TRUE;
+  return FALSE;
+} /* of 'isdailyoutput_agriculture' */

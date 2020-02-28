@@ -137,27 +137,19 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,FALSE);
 
-  if(config->withdailyoutput)
+  if(config->withdailyoutput && isdailyoutput_natural(output,stand))
   {
-#ifndef COUPLING_WITH_FMS
-    // when coupling with FMS/POEM, we always need evap output,
-    // regardless whether it is requested in the LPJ output configuration.
-    foreachpft(pft,p,&stand->pftlist)
-    if(pft->par->id==output->daily.cft)
-#endif
-      {
-        output->daily.evap=evap;
-        forrootsoillayer(l)
-          output->daily.trans+=aet_stand[l];
-        output->daily.irrig=0;
-        output->daily.w0=stand->soil.w[1];
-        output->daily.w1=stand->soil.w[2];
-        output->daily.wevap=stand->soil.w[0];
-        output->daily.par=par;
-        output->daily.daylength=daylength;
-        output->daily.pet=eeq*PRIESTLEY_TAYLOR;
-      }
-    output->daily.interc=intercep_stand*stand->frac;
+    output->daily.evap=evap;
+    forrootsoillayer(l)
+      output->daily.trans+=aet_stand[l];
+    output->daily.irrig=0;
+    output->daily.w0=stand->soil.w[1];
+    output->daily.w1=stand->soil.w[2];
+    output->daily.wevap=stand->soil.w[0];
+    output->daily.par=par;
+    output->daily.daylength=daylength;
+    output->daily.pet=eeq*PRIESTLEY_TAYLOR;
+    output->daily.interc=intercep_stand;
   }
 
   forrootsoillayer(l)
