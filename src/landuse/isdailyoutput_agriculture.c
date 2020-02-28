@@ -16,8 +16,8 @@
 #include "agriculture.h"
 
 Bool isdailyoutput_agriculture(const Output *output, /**< Output data */
-                              const Stand *stand    /**< stand pointer */
-                             )
+                               const Stand *stand    /**< stand pointer */
+                              )
 {
   const Irrigation *data;
   const Pft *pft;

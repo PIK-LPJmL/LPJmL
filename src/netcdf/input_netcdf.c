@@ -710,7 +710,7 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
       {
         fprintf(stderr,"ERROR415: Cannot read short data for cell (%s): %s.\n",
                 sprintcoord(line,coord),nc_strerror(rc));
-        free(s);
+        free(f);
         return TRUE;
       }
       for(i=0;i<input->var_len;i++)
@@ -719,7 +719,7 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
         {
           fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
                   sprintcoord(line,coord));
-          free(s);
+          free(f);
           return TRUE;
         }
         data[i]=(int)f[i];
