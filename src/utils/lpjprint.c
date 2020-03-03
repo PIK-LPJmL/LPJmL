@@ -22,7 +22,7 @@
 #include "biomass_tree.h"
 #include "biomass_grass.h"
 
-#define PRINTLPJ_VERSION "1.0.018"
+#define PRINTLPJ_VERSION "1.0.019"
 #define NTYPES 3
 #define NSTANDTYPES 9 /* number of stand types */
 #ifdef USE_JSON
@@ -126,13 +126,9 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     grid.ml.dam=FALSE;
     if(config->withlanduse!=NO_LANDUSE)
     {
-      grid.ml.landfrac=newvec(Landfrac,2);
-      newlandfrac(grid.ml.landfrac,ncft);
+      grid.ml.landfrac=newlandfrac(ncft);
       if(config->with_nitrogen)
-      {
-        grid.ml.fertilizer_nr=newvec(Landfrac,2);
-        newlandfrac(grid.ml.fertilizer_nr,ncft);
-      }
+        grid.ml.fertilizer_nr=newlandfrac(ncft);
       else
         grid.ml.fertilizer_nr=NULL;
 
@@ -154,16 +150,8 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     }
     if(isout)
       printcell(&grid,1,npft,ncft,config);
-    if(grid.ml.landfrac!=NULL)
-    {
-      freelandfrac(grid.ml.landfrac);
-      free(grid.ml.landfrac);
-    }
-    if(grid.ml.fertilizer_nr!=NULL)
-    {
-      freelandfrac(grid.ml.fertilizer_nr);
-      free(grid.ml.fertilizer_nr);
-    }
+    freelandfrac(grid.ml.landfrac);
+    freelandfrac(grid.ml.fertilizer_nr);
     freecell(&grid,npft,config->river_routing);
   } /* of for(i=0;...) */
   fclose(file_restart);

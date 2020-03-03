@@ -282,7 +282,7 @@ Input_netcdf openinput_netcdf(const char *filename, /**< filename */
   float *dim;
   if(filename==NULL)
   {
-    fputs("ERROR424: Invalid data pointer in openinput_netcdf().\n",stderr);
+    fputs("ERROR424: Invalid filename in openinput_netcdf().\n",stderr);
     return NULL;
   }
   input=new(struct input_netcdf);
@@ -309,7 +309,12 @@ Input_netcdf openinput_netcdf(const char *filename, /**< filename */
   if(len!=input->var_len)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR433: Invalid length %d of vector.\n",(int)input->var_len);
+    {
+      if(len==0)
+        fprintf(stderr,"ERROR436: Input data '%s' in '%s' must be a scalar, is a vector of length %d.\n",(var==NULL) ? "" : var, filename,(int)input->var_len);
+      else
+        fprintf(stderr,"ERROR433: Invalid length %d in '%s' of input vector '%s'.\n",(int)input->var_len,filename,(var==NULL) ? "" : var);
+    }
     nc_close(input->ncid);
     free(input);
     return NULL;
@@ -635,6 +640,7 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int rc,index;
   short *s;
+  float *f;
   size_t i;
   size_t offsets[3];
   size_t counts[3]={1,1,1};
@@ -696,6 +702,29 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
         data[i]=s[i];
       }
       free(s);
+      break;
+   case LPJ_FLOAT:
+      f=newvec(float,input->var_len);
+      checkptr(f);
+      if((rc=nc_get_vara_float(input->ncid,input->varid,offsets,counts,f)))
+      {
+        fprintf(stderr,"ERROR415: Cannot read short data for cell (%s): %s.\n",
+                sprintcoord(line,coord),nc_strerror(rc));
+        free(f);
+        return TRUE;
+      }
+      for(i=0;i<input->var_len;i++)
+      {
+        if(f[i]==input->missing_value.f)
+        {
+          fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
+                  sprintcoord(line,coord));
+          free(f);
+          return TRUE;
+        }
+        data[i]=(int)f[i];
+      }
+      free(f);
       break;
     default:
       fputs("ERROR428: Invalid data type in NetCDF file.\n",stderr);

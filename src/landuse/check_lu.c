@@ -19,8 +19,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "crop.h"
-#include "agriculture.h"
 
 Bool check_lu(const Standlist standlist, /**< List of stands */
               Real landfrac,             /**< land fraction for crop */

@@ -73,7 +73,8 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       return TRUE;
     freadreal1(&cell->ml.cropfrac_rf,swap,file);
     freadreal1(&cell->ml.cropfrac_ir,swap,file);
-    freadclimbuf(file,&cell->climbuf,swap);
+    if(freadclimbuf(file,&cell->climbuf,swap))
+      return TRUE;
     cell->ml.cropdates=freadcropdates(file,ncft,swap);
     if(cell->ml.cropdates==NULL)
       return TRUE;

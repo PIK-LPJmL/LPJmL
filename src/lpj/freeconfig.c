@@ -124,6 +124,6 @@ void freeconfig(Config *config /**< LPJmL configuration */
   }
   if(config->prescribe_landcover != NO_LANDCOVER)
     freefilename(config->landcover_filename);
-    
+
   freeoutputvar(config->outnames,NOUT);
 } /* of 'freeconfig' */

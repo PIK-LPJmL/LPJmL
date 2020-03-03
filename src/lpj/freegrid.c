@@ -30,11 +30,7 @@ void freegrid(Cell grid[],         /**< cell grid */
       freequeue(grid[cell].discharge.queue);
       free(grid[cell].discharge.tfunct);
     }
-    if(grid[cell].ml.fertilizer_nr!=NULL)
-    {
-      freelandfrac(grid[cell].ml.fertilizer_nr);
-      free(grid[cell].ml.fertilizer_nr);
-    }
+    freelandfrac(grid[cell].ml.fertilizer_nr);
     if(grid[cell].ml.irrig_system!=NULL)
     {
       free(grid[cell].ml.irrig_system->crop);
@@ -49,11 +45,7 @@ void freegrid(Cell grid[],         /**< cell grid */
       }
       free(grid[cell].ml.fraction);
     }
-    if(grid[cell].ml.landfrac!=NULL)
-    {
-      freelandfrac(grid[cell].ml.landfrac);
-      free(grid[cell].ml.landfrac);
-    }
+    freelandfrac(grid[cell].ml.landfrac);
     freeoutput(&grid[cell].output);
     if(!grid[cell].skip)
     {

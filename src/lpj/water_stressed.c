@@ -13,7 +13,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
 #define EPSILON 0.001  /* min precision of solution in bisection method */
 
@@ -47,29 +46,29 @@ static Real fcn(Real lambda,Data *data)
 
 } /* of 'fcn' */
 
-Real water_stressed(Pft *pft, /**< pointer to PFT variables */
-                    Real aet_layer[LASTLAYER],
-                    Real gp_stand,
-                    Real gp_stand_leafon, /**< pot. canopy conduct. at full leaf cover */
-                    Real gp_pft, /**< potential canopy conductance */
-                    Real *gc_pft,
-                    Real *rd,
-                    Real *wet,
-                    Real eeq,  /**< equilibrium evapotranspiration (mm) */
-                    Real co2,  /**< Atmospheric CO2 partial pressure (ppmv) */
-                    Real temp, /**< Temperature (deg C) */
-                    Real par,  /**< photosynthetic active radiation (J/m2/day) */
-                    Real daylength, /**< Daylength (h) */
-                    Real *wdf,           /**< water deficit fraction (0..100) */
-                    int npft,            /**< number of natural PFTs */
-                    int ncft,            /**< number of crop PFTs */
-                    const Config *config /**< LPJ configuration */
-                   ) /** \return gross primary productivity (gC/m2) */
+Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT variables */
+                    Real aet_layer[LASTLAYER], /**< [inout] layer-specific transpiration (mm/day) */
+                    Real gp_stand,             /**< [in] pot. canopy conduct. (mm/s) */
+                    Real gp_stand_leafon,      /**< [in] pot. canopy conduct. at full leaf cover (mm/s) */
+                    Real gp_pft,               /**< [in] potential stomatal conductance of PFT (mm/s) */
+                    Real *gc_pft,              /**< [out] actual stomatal conductance of PFT (mm/s) */
+                    Real *rd,                  /**< [out] leaf respiration (gC/m2/day) */
+                    Real *wet,                 /**< [inout] relative wetness (0..1) */
+                    Real eeq,                  /**< [in] equilibrium evapotranspiration (mm/day) */
+                    Real co2,                  /**< [in] Atmospheric CO2 partial pressure (ppmv) */
+                    Real temp,                 /**< [in] Temperature (deg C) */
+                    Real par,                  /**< [in] photosynthetic active radiation (J/m2/day) */
+                    Real daylength,            /**< [in] Daylength (h) */
+                    Real *wdf,                 /**< [out] water deficit fraction (0..100) */
+                    int npft,                  /**< [in] number of natural PFTs */
+                    int ncft,                  /**< [in] number of crop PFTs */
+                    const Config *config       /**< [in] LPJ configuration */
+                   )                           /** \return gross primary productivity (gC/m2/day) */
 {
   int l,i,iter;
   Real supply,supply_pft,demand,demand_pft,wr,lambda,gpd,agd,gc,aet,aet_cor,aet_frac;
   Data data;
-  Real roots,vmax;
+  Real vmax;
   Real rootdist_n[LASTLAYER];
   Real aet_tmp[LASTLAYER];
   Real layer,root_u,root_nu;
@@ -78,7 +77,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
   Real gc_new;
   Irrigation *irrig;
 
-  wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
+  gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
   forrootsoillayer(l)
     rootdist_n[l]=pft->par->rootdist[l];
@@ -112,12 +111,9 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
         rootdist_n[i]=rootdist_n[i]/root_u*root_nu+rootdist_n[i];
     }
   }
-  wr=roots=0;
+  wr=0;
   for(l=0;l<LASTLAYER;l++)
-  {
     wr+=rootdist_n[l]*pft->stand->soil.w[l];
-    roots+=rootdist_n[l];
-  }
 
   if(*wet>0.99)
     *wet=0.99;
@@ -127,8 +123,8 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
     supply=pft->par->emax*wr*(1-exp(-0.04*((Pftcrop *)pft->data)->ind.root.carbon));
     if (pft->phen>0)
     {
-       gp_stand=gp_stand/pft->phen*fpar(pft);
-       gp_pft=gp_pft/pft->phen*fpar(pft);
+      gp_stand=gp_stand/pft->phen*fpar(pft);
+      gp_pft=gp_pft/pft->phen*fpar(pft);
     }
   }
   else
@@ -166,33 +162,29 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
   aet=(wr>0) ? min(supply,demand)/wr*pft->fpc : 0;
   if (aet>0 && pft->fpc>epsilon)
   {
-  for (l=0;l<LASTLAYER;l++)
-     {
-       aet_frac=1;
-       if(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
-       {
-         aet_frac=(pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])/(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc);
-       }
-       aet_tmp[l]=aet_layer[l]+aet*rootdist_n[l]*pft->stand->soil.w[l]*aet_frac;
-       if (aet_tmp[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
-       {
-         aet_cor+=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l]-aet_layer[l];
-         if(aet_cor<epsilon) aet_cor=0;
-       }
-       else
-       {
-         aet_cor+=aet*rootdist_n[l]*pft->stand->soil.w[l]*aet_frac;
-       }
-     }
+    for (l=0;l<LASTLAYER;l++)
+    {
+      aet_frac=1;
+      if(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
+        aet_frac=(pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])/(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc);
+      aet_tmp[l]=aet_layer[l]+aet*rootdist_n[l]*pft->stand->soil.w[l]*aet_frac;
+      if (aet_tmp[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
+      {
+        aet_cor+=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l]-aet_layer[l];
+        if(aet_cor<epsilon) aet_cor=0;
+      }
+      else
+        aet_cor+=aet*rootdist_n[l]*pft->stand->soil.w[l]*aet_frac;
+    }
   }
-   else
-     aet_cor=0;
+  else
+    aet_cor=0;
 
   aet=(wr>0) ? aet_cor/wr : 0;
   if (pft->fpc>epsilon && aet>0)
     supply=aet*wr/pft->fpc;
   else
-        supply=0;
+    supply=0;
   if(supply>=demand)
     gc=gp_stand;
   else if(eeq>0)
@@ -223,9 +215,9 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
     data.daylength=daylength;
     data.vmax=pft->vmax;
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);
-    vmax=pft->vmax;
     adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
-                         temp,data.apar,daylength,FALSE);
+                         temp,data.apar,daylength,TRUE);
+    vmax=pft->vmax;
     gc_new=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                     pft->par->gmin*fpar(pft);
     if(config->with_nitrogen)
@@ -257,13 +249,15 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
       }
       aet=(wr>0) ? demand*fpar(pft)/wr :0 ;
 
-      pft->nlimit+=pft->vmax/vmax;
+      if(vmax>0)
+        pft->nlimit+=pft->vmax/vmax;
       if(pft->stand->type->landusetype==AGRICULTURE)
       {
         irrig=pft->stand->data;
         if(&pft->stand->cell->output.daily!=NULL &&
            pft->par->id==pft->stand->cell->output.daily.cft &&
-           irrig->irrigation==pft->stand->cell->output.daily.irrigation)
+           irrig->irrigation==pft->stand->cell->output.daily.irrigation &&
+           vmax>0)
         {
           pft->stand->cell->output.daily.nlimit=pft->vmax/vmax;
         }

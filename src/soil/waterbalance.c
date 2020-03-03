@@ -15,7 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
 void waterbalance(Stand *stand,           /**< Stand pointer */
                   Real aet_stand[BOTTOMLAYER],

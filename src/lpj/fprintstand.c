@@ -26,7 +26,6 @@ void fprintstand(FILE *file,           /**< Pointer to text file */
   int l;
   fprintf(file,"Standfrac:\t%g\n",stand->frac);
   fprintf(file,"Standtype:\t%s\n",stand->type->name);
-  fprintf(file,"Standage: \t%d (yr)\n",stand->age);
   /* print stand-specific data */
   stand->type->fprint(file,stand);
   fprintsoil(file,&stand->soil,pftpar,ntotpft,with_nitrogen);

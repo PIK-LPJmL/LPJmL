@@ -14,7 +14,6 @@
 
 #include "lpj.h"
 #include "crop.h"
-#include "agriculture.h"
 
 Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                      int day,               /**< day (1..365) */

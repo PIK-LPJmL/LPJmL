@@ -20,10 +20,10 @@ Real gp_sum(const Pftlist *pftlist, /**< Pft list */
             Real par,              /**< photosynthetic active radiation flux (J/m2/day) */
             Real daylength,        /**< daylength (h) */
             Real *gp_stand_leafon, /**< pot. canopy conduct.at full leaf cover (mm/s) */
-            Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs (mm/s)*/
+            Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
             Real *fpc,             /**< total FPC of all PFTs */
             const Config *config   /**< LPJ configuration */
-           )                       /** \return potential canopy conductance (mm/s) */
+           )                       /** \return pot. canopy conductance (mm/s) */
 {
   int p;
   Pft *pft;

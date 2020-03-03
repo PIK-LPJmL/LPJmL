@@ -167,7 +167,7 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
     cropstand->type= irrig? &setaside_ir_stand : &setaside_rf_stand;
     cropstand->type->newstand(cropstand);
     data=cropstand->data;
-    data->irrigation= irrig? TRUE : FALSE;
+    data->irrigation= irrig;
 #ifdef SAFE
     if(!isempty(&cropstand->pftlist))
       fail(LIST_NOT_EMPTY_ERR,TRUE,"Pftlist is not empty in setaside().");

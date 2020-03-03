@@ -63,7 +63,7 @@ typedef struct
   Real par;
   Real daylength;
   Real swe; /**< snow water equivalent*/
-  Real discharge; 
+  Real discharge;
   Real runoff;
   Real rh;
   Real interc;
@@ -159,7 +159,7 @@ typedef struct
   Real *cft_interc2;        /**< cft specific interception (mm) */
   Real *cft_nir2;           /**< cft specific net irrigation requirement (mm) */
   Real *cft_temp2;          /**< cft specific temperature sum (day degC) */
-  Real *cft_prec2;          /**< cft specific precipitation (mm) */  
+  Real *cft_prec2;          /**< cft specific precipitation (mm) */
   Real *cft_srad2;          /**< cft specific short-wave radiation (W/m2) */
   Stocks *cft_aboveground_biomass2; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
   Real *cftfrac2;           /**< cft fraction */
@@ -215,7 +215,7 @@ typedef struct
   Real *cft_nir;           /**< cft specific net irrigation requirement (mm) */
   Real *cft_fpar;          /**< cft specific fpar */
   Real *cft_temp;          /**< cft specific temperature sum (day degC) */
-  Real *cft_prec;          /**< cft specific precipitation (mm) */  
+  Real *cft_prec;          /**< cft specific precipitation (mm) */
   Real *cft_srad;          /**< cft specific short-wave radiation (W/m2) */
   Stocks *cft_aboveground_biomass; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
   Real *pft_nuptake;       /* nitrogen uptake per PFT */
@@ -269,7 +269,7 @@ typedef struct
   Stocks *cft_root;
   Real *cft_nlimit;
   Real *cft_laimax;
-  Real mean_vegc_mangrass;
+  Real mean_vegc_mangrass; /**< annual mean vegetation carbon of managed grasslands */
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 

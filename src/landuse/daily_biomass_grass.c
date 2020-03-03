@@ -16,7 +16,6 @@
 
 #include "lpj.h"
 #include "grass.h"
-#include "agriculture.h"
 #include "biomass_grass.h"
 
 Real daily_biomass_grass(Stand *stand, /**< stand pointer */
@@ -78,7 +77,7 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
     wet=NULL;
 
   if(!config->river_routing)
-    irrig_amount(stand,config->pft_output_scaled,npft,ncft);
+    irrig_amount(stand,data,config->pft_output_scaled,npft,ncft);
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
@@ -258,7 +257,7 @@ Real daily_biomass_grass(Stand *stand, /**< stand pointer */
   }
 
   if(data->irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,gp_stand,wet,eeq);
+    calc_nir(stand,data,gp_stand,wet,eeq);
 
   forrootsoillayer(l)
   {

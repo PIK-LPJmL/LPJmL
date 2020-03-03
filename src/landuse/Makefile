@@ -34,7 +34,12 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           new_agriculture.$O free_agriculture.$O fwrite_agriculture.$O\
           fread_agriculture.$O fprint_agriculture.$O fprintregionpar.$O\
           fprintcountrypar.$O wateruse.$O withdrawal_demand.$O\
-          distribute_water.$O sowing.$O rw_irrigation.$O
+          distribute_water.$O sowing.$O rw_irrigation.$O\
+          fwrite_irrigation.$O fread_irrigation.$O fprint_irrigation.$O\
+          new_grassland.$O fwrite_grassland.$O fread_grassland.$O\
+          fprint_grassland.$O new_biomass_tree.$O fread_biomass_tree.$O\
+          fwrite_biomass_tree.$O fprint_biomass_tree.$O init_irrigation.$O\
+          isdailyoutput_agriculture.$O isdailyoutput_grassland.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

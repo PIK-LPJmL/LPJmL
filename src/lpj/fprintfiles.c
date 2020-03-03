@@ -94,6 +94,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     fprintfilename(file,config->popdens_filename);
   if(config->grassfix_filename.name!=NULL)
     fprintf(file,"%s\n",config->grassfix_filename.name);
+  if(config->grassharvest_filename.name!=NULL)
+    fprintf(file,"%s\n",config->grassharvest_filename.name);
   if(config->withlanduse!=NO_LANDUSE)
   {
     fprintf(file,"%s\n",config->countrycode_filename.name);

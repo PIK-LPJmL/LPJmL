@@ -127,7 +127,11 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   pft->vmaxlimit=vmaxlimit_tree;
   pft->agb=agb_tree;
   tree=new(Pfttreepar);
-  check(tree);
+  if(tree==NULL)
+  {
+    printallocerr("tree");
+    return TRUE;
+  }
   pft->data=tree;
   fscanint2(verb,file,&tree->leaftype,pft->name,"leaftype");
   if(tree->leaftype<0 || tree->leaftype>ANYLEAVED)

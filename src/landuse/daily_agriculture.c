@@ -16,7 +16,6 @@
 
 #include "lpj.h"
 #include "crop.h"
-#include "natural.h"
 #include "agriculture.h"
 
 Real daily_agriculture(Stand *stand, /**< stand pointer */
@@ -78,7 +77,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     aet_stand[l]=green_transp[l]=0;
 
   if(!config->river_routing)
-    irrig_amount(stand,config->pft_output_scaled,npft,ncft);
+    irrig_amount(stand,data,config->pft_output_scaled,npft,ncft);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -164,8 +163,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         (crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
 #endif
-      harvest_crop(output,stand,pft,npft,ncft,config->remove_residuals,config->residues_fire,
-                   config->pft_output_scaled);
+      harvest_crop(output,stand,pft,npft,ncft,config);
       /* return irrig_stor and irrig_amount */
       if(data->irrigation)
       {
@@ -386,8 +384,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
 #endif
-      harvest_crop(output,stand,pft,npft,ncft,config->remove_residuals,config->residues_fire,
-                   config->pft_output_scaled);
+      harvest_crop(output,stand,pft,npft,ncft,config);
       if(data->irrigation)
       {
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
@@ -424,26 +421,22 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
-  if(config->withdailyoutput)
+  if(config->withdailyoutput && isdailyoutput_agriculture(output,stand))
   {
-    foreachpft(pft,p,&stand->pftlist)
-      if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)
-      {
-        output->daily.evap=evap;
-        forrootsoillayer(l)
-          output->daily.trans+=aet_stand[l];
-        output->daily.w0=stand->soil.w[1];
-        output->daily.w1=stand->soil.w[2];
-        output->daily.wevap=stand->soil.w[0];
-        output->daily.par=par;
-        output->daily.daylength=daylength;
-        output->daily.pet=eeq*PRIESTLEY_TAYLOR;
-      }
+    output->daily.evap=evap;
+    forrootsoillayer(l)
+      output->daily.trans+=aet_stand[l];
+    output->daily.w0=stand->soil.w[1];
+    output->daily.w1=stand->soil.w[2];
+    output->daily.wevap=stand->soil.w[0];
+    output->daily.par=par;
+    output->daily.daylength=daylength;
+    output->daily.pet=eeq*PRIESTLEY_TAYLOR;
   }
 
   /* calculate net irrigation requirements (NIR) for next days irrigation */
   if(data->irrigation && stand->pftlist.n>0) /* second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,gp_stand,wet,eeq);
+    calc_nir(stand,data,gp_stand,wet,eeq);
 
   forrootsoillayer(l)
   {

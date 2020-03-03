@@ -278,7 +278,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscanbool(file,&grassfix,"grassland_fixed_pft",TRUE,verbose))
         return TRUE;
       grassharvest=FALSE;
-      if(fscanbool(file,&grassharvest,"grass_harvest_options",TRUE,verbose))
+      if(fscanbool(file,&grassharvest,"grass_harvest_options", TRUE, verbose))
         return TRUE;
     }
     if(isboolean(file,"wateruse"))
@@ -435,7 +435,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     else
       config->grassharvest_filename.name = NULL;
-
   }
   else
   {

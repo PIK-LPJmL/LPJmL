@@ -16,7 +16,6 @@
 
 #include "lpj.h"
 #include "crop.h"
-#include "agriculture.h"
 
 /*
 - called in npp_crop()

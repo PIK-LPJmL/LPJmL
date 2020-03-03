@@ -124,6 +124,11 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
       else
       {
         config->outputvars[count].id=flag;
+        if(config->outputvars[count].filename.var!=NULL)
+        {
+          free(config->outnames[flag].var);
+          config->outnames[flag].var=strdup(config->outputvars[count].filename.var);
+        }
         config->outputvars[count].oneyear=(strstr(config->outputvars[count].filename.name,"%d")!=NULL);
         if(config->outputvars[count].oneyear && checkfmt(config->outputvars[count].filename.name,'d'))
         {

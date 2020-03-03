@@ -97,8 +97,11 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   pft->ndemand=ndemand_grass;
   pft->vmaxlimit=vmaxlimit_grass;
   grass=new(Pftgrasspar);
-  check(grass);
-  pft->data=grass;
+  if(grass==NULL)
+  {
+    printallocerr("grass");
+    return TRUE;
+  }
   pft->data=grass;
   if(iskeydefined(file,"sla"))
   {

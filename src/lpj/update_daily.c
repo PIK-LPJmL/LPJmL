@@ -15,8 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "natural.h"
-#include "agriculture.h"
 
 #define length 1.0 /* characteristic length (m) */
 
@@ -33,7 +31,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                   const Config *config   /**< LPJmL configuration */
                  )
 {
-  int p,s;
+  int s;
   Real melt=0,eeq,par,daylength,beta;
   Real gp_stand,gp_stand_leafon,runoff,snowrunoff;
   Real fpc_total_stand;
@@ -47,10 +45,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real *gp_pft;
   Real avgprec;
   Stand *stand;
-  Pft *pft;
   Real bnf;
   Real nh3;
-  Irrigation *data;
   int l;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
@@ -70,7 +66,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   cell->output.msnowf+=climate.temp<tsnow ? climate.prec : 0;
   cell->output.mrain+=climate.temp<tsnow ? 0 : climate.prec;
 
-  if(cell->ml.landfrac!=NULL) /* landuse enabled? */
+  if(config->withlanduse) /* landuse enabled? */
     flux_estab=sowing(cell,climate.prec,day,year,npft,ncft,config); 
   cell->discharge.drunoff=0.0;
 
@@ -121,35 +117,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
     cell->output.mswe+=stand->soil.snowpack*stand->frac;
-    if (config->withdailyoutput)
+    if (config->withdailyoutput && isdailyoutput_stand(&cell->output,stand))
     {
-      switch(stand->type->landusetype)
-      {
-        case GRASSLAND:
-          data = stand->data;
-          if (cell->output.daily.cft == TEMPERATE_HERBACEOUS && cell->output.daily.irrigation == data->irrigation)
-          {
-            cell->output.daily.rh  += hetres.carbon;
-            cell->output.daily.swe += stand->soil.snowpack;
-          }
-          break;
-        case AGRICULTURE:
-          data = stand->data;
-          foreachpft(pft,p,&stand->pftlist)
-            if (pft->par->id == cell->output.daily.cft && cell->output.daily.irrigation == data->irrigation)
-            {
-              cell->output.daily.rh  = hetres.carbon;
-              cell->output.daily.swe = stand->soil.snowpack;
-            }
-          break;
-        case NATURAL:
-          if (cell->output.daily.cft == ALLNATURAL)
-          {
-            cell->output.daily.rh  += hetres.carbon;
-            cell->output.daily.swe += stand->soil.snowpack;
-          }
-          break;
-      } /* of switch() */
+      cell->output.daily.rh  += hetres.carbon;
+      cell->output.daily.swe += stand->soil.snowpack;
     }
 
     cell->output.msnowrunoff+=snowrunoff;

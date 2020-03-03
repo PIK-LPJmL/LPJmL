@@ -14,7 +14,6 @@
 
 #include "lpj.h"
 #include "crop.h"
-#include "agriculture.h"
 
 #define FROOTMAX 0.4
 #define FROOTMIN 0.3 /* learning from AgMIP wheat and maize pilots */

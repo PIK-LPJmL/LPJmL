@@ -48,12 +48,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     
     foreachpft(pft,p,&stand->pftlist)
     {
-      if (stand->prescribe_landcover == LANDCOVERFPC && stand->type->landusetype==NATURAL)
-      {
-        pft->prescribe_fpc = TRUE;
-      }
-      else
-        pft->prescribe_fpc = FALSE;
+      pft->prescribe_fpc = (stand->prescribe_landcover == LANDCOVERFPC && stand->type->landusetype==NATURAL);
 
 #ifdef DEBUG2
       printf("PFT:%s fpc_inc=%g fpc=%g\n",pft->par->name,fpc_inc[p],pft->fpc);
@@ -130,6 +125,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
         pft->fpc = fpc_obs_cor;
     }
     stand->cell->output.fpc[getpftpar(pft,id)+1]=pft->fpc;
-  }
+  } /* of foreachpft */
   return FALSE;
 } /* of 'annual_natural' */

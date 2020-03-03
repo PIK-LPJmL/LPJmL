@@ -54,7 +54,7 @@ static int checkinputfile(const Config *config,const Filename *filename,size_t l
     file=openinputfile(&header,&swap,filename,headername,&version,&offset,config);
     if(len==0)
       len=1;
-    
+
     if(file==NULL)
       return 1;
     fclose(file);

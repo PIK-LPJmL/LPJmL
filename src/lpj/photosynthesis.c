@@ -33,17 +33,17 @@
 #define lambdamc3 0.8 /* optimal (maximum) lambda in C3 plants */
 #define m 25.0        /* corresponds to #define p in Eqn 28, Haxeltine & Prentice 1996 */
 
-Real photosynthesis(Real *agd,      /**< gross photosynthesis rate (gC/m2/day) */
-                    Real *rd,       /**< respiration rate (gC/m2/day) */
-                    Real *vm,       /**< maximum catalytic capacity of Rubisco (gC/m2/day) */
-                    int path,       /**< Path (C3/C4) */
-                    Real lambda,    /**< ratio of intercellular to ambient CO2 concentration */
-                    Real tstress,   /**< temperature-related stress factor */
-                    Real co2,       /**< atmospheric CO2 partial pressure (Pa) */
-                    Real temp,      /**< temperature (deg C) */
-                    Real apar,      /**< absorbed photosynthetic active radiation (J/m2/day) */
-                    Real daylength, /**< daylength (h) */
-                    Bool comp_vm    /**< vmax value is computed internally and returned (TRUE/FALSE) */
+Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/day) */
+                    Real *rd,       /**< [out] respiration rate (gC/m2/day) */
+                    Real *vm,       /**< [inout] maximum catalytic capacity of Rubisco (gC/m2/day) */
+                    int path,       /**< [in] Path (C3/C4) */
+                    Real lambda,    /**< [in] ratio of intercellular to ambient CO2 concentration */
+                    Real tstress,   /**< [in] temperature-related stress factor */
+                    Real co2,       /**< [in] atmospheric CO2 partial pressure (Pa) */
+                    Real temp,      /**< [in] temperature (deg C) */
+                    Real apar,      /**< [in] absorbed photosynthetic active radiation (J/m2/day) */
+                    Real daylength, /**< [in] daylength (h) */
+                    Bool comp_vm    /**< [in] vmax value is computed internally and returned (TRUE/FALSE) */
                    )                /** \return CO2 gas flux (mm/m2/day) */
 {
   Real ko,kc,tau,pi,c1,c2;

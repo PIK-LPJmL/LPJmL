@@ -16,12 +16,11 @@
 
 #include "lpj.h"
 #include "grass.h"
-#include "agriculture.h"
 #include "grassland.h"
 
-Harvest harvest_grass(Stand *stand, /**< pointer to stand */
-                      Real hfrac    /**< harvest fractions */
-                     )              /** \return harvested grass (gC/m2) */
+static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
+                             Real hfrac    /**< harvest fraction */
+                            )              /** \return harvested grass (gC/m2) */
 {
   Harvest harvest;
   Harvest sum={{0,0},{0,0},{0,0},{0,0}};
@@ -79,7 +78,8 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
   Real fact;
   Stocks bm_tot =  {0.0,0.0};
   Stocks bm_grazed_pft;
-
+  Grassland *grassland;
+  grassland=stand->data;
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
@@ -87,7 +87,7 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
     bm_tot.nitrogen+= grass->ind.leaf.nitrogen;
   }
 //  bm_grazed = stand->cell->ml.nr_of_lsus_ext * DEMAND_COW_EXT;
-  bm_grazed = 1e-4* stand->cell->ml.nr_of_lsus_ext * DEMAND_COW_EXT;
+  bm_grazed = 1e-4* grassland->nr_of_lsus_ext * DEMAND_COW_EXT;
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -133,9 +133,9 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
   Real bm_grazed;
   Stocks bm_tot = {0,0};
   Stocks bm_grazed_pft;
-  Rotation *rotation;
+  Grassland *grassland;
+  grassland=stand->data;
 
-  rotation = &(stand->cell->ml.rotation);
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
@@ -143,24 +143,24 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
     bm_tot.nitrogen += grass->ind.leaf.nitrogen;
   }
 
-  if (rotation->rotation_mode == RM_UNDEFINED) //initial calculate grazing days and recovery days
+  if (grassland->rotation.mode == RM_UNDEFINED) //initial calculate grazing days and recovery days
   {
-    rotation_len = (bm_tot.carbon - GRAZING_STUBBLE) / (1e4*stand->cell->ml.nr_of_lsus_int * DEMAND_COW_INT) ;
+    rotation_len = (bm_tot.carbon - GRAZING_STUBBLE) / (1e4*grassland->nr_of_lsus_int * DEMAND_COW_INT) ;
     if (rotation_len > MAX_ROTATION_LENGTH)
       rotation_len = MAX_ROTATION_LENGTH;
 
     if (rotation_len > MIN_ROTATION_LENGTH) // otherwise wait for more growth
     {
-      rotation->grazing_days = (int)ceil(rotation_len/MAX_PADDOCKS);
-      rotation->paddocks = (int)floor((rotation_len/rotation->grazing_days) + 0.5);
-      rotation->recovery_days = (rotation->paddocks-1) * rotation->grazing_days;
-      rotation->rotation_mode = RM_GRAZING;
+      grassland->rotation.grazing_days = (int)ceil(rotation_len/MAX_PADDOCKS);
+      grassland->rotation.paddocks = (int)floor((rotation_len/grassland->rotation.grazing_days) + 0.5);
+      grassland->rotation.recovery_days = (grassland->rotation.paddocks-1) * grassland->rotation.grazing_days;
+      grassland->rotation.mode = RM_GRAZING;
     }
   }
 
-  if (rotation->rotation_mode == RM_GRAZING)
+  if (grassland->rotation.mode == RM_GRAZING)
   {
-    bm_grazed = stand->cell->ml.nr_of_lsus_int * DEMAND_COW_INT * rotation->paddocks;
+    bm_grazed = grassland->nr_of_lsus_int * DEMAND_COW_INT * grassland->rotation.paddocks;
     foreachpft(pft,p,&stand->pftlist)
     {
       grass=pft->data;
@@ -187,19 +187,24 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
       stand->soil.pool->fast.nitrogen += MANURE * bm_grazed_pft.nitrogen;    // 25% back to soil
     }
 
-    rotation->grazing_days -= 1;
-    if (rotation->grazing_days == 0)
-      rotation->rotation_mode = RM_RECOVERY;
+    grassland->rotation.grazing_days--;
+    if (grassland->rotation.grazing_days == 0)
+      grassland->rotation.mode = RM_RECOVERY;
   }
-  else if (rotation->rotation_mode == RM_RECOVERY)
+  else if (grassland->rotation.mode == RM_RECOVERY)
   {
-    rotation->recovery_days -= 1;
-    if (rotation->recovery_days == 0)
-      rotation->rotation_mode = RM_UNDEFINED;
+    grassland->rotation.recovery_days--;
+    if (grassland->rotation.recovery_days == 0)
+      grassland->rotation.mode = RM_UNDEFINED;
   }
   return sum;
 } /* of 'harvest_grass_grazing_int' */
 
+/*
+ * called in function daily_grassland() when managed grassland
+ * is harvested
+ *
+ */
 
 Harvest harvest_stand(Output *output, /**< Output data */
                       Stand *stand,   /**< pointer to grassland stand */
@@ -234,5 +239,4 @@ Harvest harvest_stand(Output *output, /**< Output data */
   output->dcflux+=(harvest.harvest.carbon+harvest.residual.carbon)*stand->frac;
   stand->growing_days=0;
   return harvest;
-}
- /* of 'harvest_stand' */
+} /* of 'harvest_stand' */

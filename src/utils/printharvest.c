@@ -19,8 +19,20 @@
 #include "crop.h"
 
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
-#define dflt_conf_filename "lpjml.conf" /* Default LPJ configuration file */
+
+#ifdef USE_JSON
+#define dflt_conf_filename "lpjml.js"
+#else
+#define dflt_conf_filename "lpjml.conf"
+#endif
+
 #define USAGE "Usage: %s [-h] [-outpath dir] [-inpath dir] [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
+
+#define fread_harvest(file,harvest) if(fread(harvest,sizeof(float),1,file)!=1) \
+  { \
+    fprintf(stderr,"Error: Unexpected end of file in '%s'.\n",config.outputvars[index].filename.name);\
+    return EXIT_FAILURE; \
+  }
 
 static int findfile2(const Outputvar *output,int n,int id)
 {
@@ -45,26 +57,55 @@ int main(int argc,char **argv)
   Config config;         /* LPJ configuration */
   Real *area;
   Coord coord;
+  Coordfile coordfile;
   String s;
   char *name;
   Intcoord intcoord;
+  Coord_netcdf cdf;
   FILE *file;
   struct stat filestat;
   int i,j,n,index,cell,year;
-  float harvest;
+  float harvest,lon,lat;
   Real harvest_total;
-  Landfrac harvest_sum[2];
+  Landfrac *harvest_sum;
   initconfig(&config);
   if(readconfig(&config,dflt_conf_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
-    fprintf(stderr,"Syntax error found in configuration file.\n");
+    fputs("Error occurred in processing configuration file.\n",stderr);
     return EXIT_FAILURE;
   }
   printf("Simulation: %s\n",config.sim_name);
+  if(config.soil_filename.fmt==CDF)
+  {
+    cdf=opencoord_netcdf(config.soil_filename.name,
+                         config.soil_filename.var,
+                         TRUE);
+    if(cdf==NULL)
+      return EXIT_FAILURE;
+    getresolution_netcdf(cdf,&config.resolution);
+    closecoord_netcdf(cdf);
+  }
+  else
+  {
+    /* get resolution from grid file */
+    coordfile=opencoord(&config.coord_filename,TRUE);
+    if(coordfile==NULL)
+      return EXIT_FAILURE;
+    getcellsizecoord(&lon,&lat,coordfile);
+    closecoord(coordfile);
+    config.resolution.lon=lon;
+    config.resolution.lat=lat;
+  }
   index=findfile2(config.outputvars,config.n_out,GRID);
   if(index==NOT_FOUND)
   {
-    fprintf(stderr,"Error: No gridfile was written in simulation.\n");
+    fputs("Error: No gridfile was written in simulation.\n",stderr);
+    return EXIT_FAILURE;
+  }
+  if(config.outputvars[index].filename.fmt!=RAW)
+  {
+    fprintf(stderr,"Error: grid file '%s' not in raw format.\n",
+            config.outputvars[index].filename.name);
     return EXIT_FAILURE;
   }
   file=fopen(config.outputvars[index].filename.name,"rb");
@@ -78,7 +119,8 @@ int main(int argc,char **argv)
   n=filestat.st_size/sizeof(Intcoord);
   if(n==0)
   {
-    fprintf(stderr,"Error: No coordinates written in grid file.\n");
+    fprintf(stderr,"Error: No coordinates written in grid file '%s'.\n",
+            config.outputvars[index].filename.name);
     return EXIT_FAILURE;
   }
   area=newvec(Real,n);
@@ -93,7 +135,13 @@ int main(int argc,char **argv)
   index=findfile2(config.outputvars,config.n_out,PFT_HARVESTC);
   if(index==NOT_FOUND)
   {
-    fprintf(stderr,"Error: No harvest file was written in simulation.\n");
+    fputs("Error: No harvest file was written in simulation.\n",stderr);
+    return EXIT_FAILURE;
+  }
+  if(config.outputvars[index].filename.fmt!=RAW)
+  {
+    fprintf(stderr,"Error: harvest file '%s' not in raw format.\n",
+            config.outputvars[index].filename.name);
     return EXIT_FAILURE;
   }
   file=fopen(config.outputvars[index].filename.name,"rb");
@@ -106,7 +154,7 @@ int main(int argc,char **argv)
   printf("Year");
   for(i=0;i<config.npft[CROP];i++)
     printf(" %-7s",shorten(s,config.pftpar[i+config.npft[GRASS]+config.npft[TREE]].name,7));
-  printf(" %-7s %-7s Total\n","Pasture","Others");
+  printf(" %-7s %-7s %-7s %-7s Total\n","Pasture","Others", "Biomass","Biomass");
   for(j=1;j<=2;j++)
   {
     printf("    ");
@@ -115,49 +163,68 @@ int main(int argc,char **argv)
       name=config.pftpar[i+config.npft[GRASS]+config.npft[TREE]].name;
       printf(" %-7s",(strlen(name)>7*j) ? shorten(s,name+7*j,7) : "");
     }
-    printf("\n");
+    if(j==1)
+      printf("                 grass   tree\n");
+    else
+      printf("\n");
   }
-  newlandfrac(harvest_sum,config.npft[CROP]);
+  harvest_sum=newlandfrac(config.npft[CROP]);
   printf("----");
   for(i=0;i<config.npft[CROP];i++)
-     printf(" -------");
-  printf(" ------- ------- ------\n");
+    printf(" -------");
+  printf(" ------- ------- ------- ------- -------\n");
   for(year=config.firstyear;year<=config.lastyear;year++)
   {
     for(i=0;i<2;i++)
     {
       for(j=0;j<config.npft[CROP];j++)
       {
-        harvest_sum[i].crop[j]=0; 
+        harvest_sum[i].crop[j]=0;
         for(cell=0;cell<n;cell++)
         {
-          fread(&harvest,sizeof(harvest),1,file);
+          fread_harvest(file,&harvest);
           harvest_sum[i].crop[j]+=harvest*area[cell];
         }
       }
       for(j=0;j<NGRASS;j++)
       {
-        harvest_sum[i].grass[j]=0; 
+        harvest_sum[i].grass[j]=0;
         for(cell=0;cell<n;cell++)
         {
-          fread(&harvest,sizeof(harvest),1,file);
+          fread_harvest(file,&harvest);
           harvest_sum[i].grass[j]+=harvest*area[cell];
         }
+      }
+      harvest_sum[i].biomass_grass=0;
+      for(cell=0;cell<n;cell++)
+      {
+        fread_harvest(file,&harvest);
+        harvest_sum[i].biomass_grass+=harvest*area[cell];
+      }
+      harvest_sum[i].biomass_tree=0;
+      for(cell=0;cell<n;cell++)
+      {
+        fread_harvest(file,&harvest);
+        harvest_sum[i].biomass_tree+=harvest*area[cell];
       }
     }
     harvest_total=0;
     printf("%4d",year);
     for(i=0;i<config.npft[CROP];i++)
     {
-      printf(" %7.2f",(harvest_sum[0].crop[i]+harvest_sum[1].crop[i])*1e-15);
+      printf(" %7.2f",(harvest_sum[0].crop[i]+harvest_sum[0].crop[i])*1e-15*0.5);
       harvest_total+=harvest_sum[0].crop[i]+harvest_sum[1].crop[i];
     }
     for(i=0;i<NGRASS;i++)
     {
       printf(" %7.2f",(harvest_sum[0].grass[i]+harvest_sum[1].grass[i])*1e-15);
       harvest_total+=harvest_sum[0].grass[i]+harvest_sum[1].grass[i];
-   }
-    printf("%7.2f\n",harvest_total*1e-15);
+    }
+    printf(" %7.2f",(harvest_sum[0].biomass_grass+harvest_sum[1].biomass_grass)*1e-15);
+    harvest_total+=harvest_sum[0].biomass_grass+harvest_sum[1].biomass_grass;
+    printf(" %7.2f",(harvest_sum[0].biomass_tree+harvest_sum[1].biomass_tree)*1e-15);
+    harvest_total+=harvest_sum[0].biomass_tree+harvest_sum[1].biomass_tree;
+    printf(" %7.2f\n",harvest_total*1e-15);
   }
   fclose(file);
   return EXIT_SUCCESS;

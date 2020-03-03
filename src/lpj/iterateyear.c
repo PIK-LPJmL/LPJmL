@@ -61,7 +61,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     if(!grid[cell].skip)
     {
       init_annual(grid+cell,npft,config->nbiomass,ncft);
-      if(input.landuse!=NULL)
+      if(config->withlanduse)
       {
         if(grid[cell].lakefrac<1)
         {
@@ -145,6 +145,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
             if(daily.sun<0 || daily.sun>100)
               fail(INVALID_CLIMATE_ERR,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
           }
+          if(config->with_nitrogen && daily.windspeed<0)
+            fail(INVALID_CLIMATE_ERR,FALSE,"Wind speed=%g less than zero for cell %d at day %d",daily.windspeed,cell+config->startgrid,day);
+
           /* get daily values for temperature, precipitation and sunshine */
           grid[cell].output.daily.temp=daily.temp;
           grid[cell].output.daily.prec=daily.prec;
@@ -162,12 +165,12 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       }
       if(config->river_routing)
       {
-        if(input.landuse!=NULL || input.wateruse!=NULL)
+        if(config->withlanduse)
           withdrawal_demand(grid,config);
 
         drain(grid,month,config);
 
-        if(input.landuse!=NULL || input.wateruse!=NULL)
+        if(config->withlanduse)
           wateruse(grid,npft,ncft,config);
       }
 

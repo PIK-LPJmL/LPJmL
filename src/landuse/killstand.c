@@ -15,7 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "agriculture.h"
 
 void killstand(Cell *cell,            /**< cell pointer */
                const Pftpar pftpar[], /**< PFT parameter array */

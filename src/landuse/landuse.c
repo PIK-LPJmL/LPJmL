@@ -36,9 +36,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "natural.h"
-#include "agriculture.h"
-#include "grassland.h"
 
 struct landuse
 {
@@ -319,7 +316,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                 const Config *config /**< LPJ configuration */
                )                     /** \return TRUE on error */
 {
-  int i,j,p,count,cell,yearf,yearl;
+  int i,j,count,cell,yearf,yearl;
+  IrrigationType p;
   Real sum,*data;
   int *dates;
   /* define a tiny fraction for allcrops that is always at least 10x epsilon */
@@ -471,7 +469,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         grid[cell].ml.landfrac[i].biomass_grass = 0;
         grid[cell].ml.landfrac[i].biomass_tree = 0;
 
-        for (p = 1; p < 4; p++) /* irrigation system loop; 1: surface, 2: sprinkler, 3: drip */
+        for(p=SURF;p<=DRIP;p++) /* irrigation system loop; 1: surface, 2: sprinkler, 3: drip */
         {
           for (j = 0; j < ncft; j++)
           {

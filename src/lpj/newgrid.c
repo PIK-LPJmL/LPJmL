@@ -171,7 +171,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         /* Open grassharvest file */
         grassharvest_file.file=openinputfile(&header,&swap_grassharvest,&config->grassharvest_filename,
-          headername,&version,&offset,config);
+                                           headername,&version,&offset,config);
         if(grassharvest_file.file==NULL)
         {
           closecelldata(celldata);
@@ -240,6 +240,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           else
             fclose(grassfix_file.file);
         }
+        if(config->grassharvest_filename.name!=NULL)
+        {
+          if(config->grassharvest_filename.fmt==CDF)
+            closeinput_netcdf(grassharvest_file.cdf);
+          else
+            fclose(grassharvest_file.file);
+        }
         return NULL;
       }
     }
@@ -263,6 +270,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
             closeinput_netcdf(grassfix_file.cdf);
           else
             fclose(grassfix_file.file);
+        }
+        if(config->grassharvest_filename.name!=NULL)
+        {
+          if(config->grassharvest_filename.fmt==CDF)
+            closeinput_netcdf(grassharvest_file.cdf);
+          else
+            fclose(grassharvest_file.file);
         }
         return NULL;
       }
@@ -288,6 +302,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
             closeinput_netcdf(grassfix_file.cdf);
           else
             fclose(grassfix_file.file);
+        }
+        if(config->grassharvest_filename.name!=NULL)
+        {
+          if(config->grassharvest_filename.fmt==CDF)
+            closeinput_netcdf(grassharvest_file.cdf);
+          else
+            fclose(grassharvest_file.file);
         }
         return NULL;
       }
@@ -330,6 +351,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       else
         fclose(grassfix_file.file);
     }
+    if(config->grassharvest_filename.name!=NULL)
+    {
+      if(config->grassharvest_filename.fmt==CDF)
+        closeinput_netcdf(grassharvest_file.cdf);
+      else
+        fclose(grassharvest_file.file);
+    }
     return NULL;
   }
   config->initsoiltemp=FALSE;
@@ -362,6 +390,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           closeinput_netcdf(grassfix_file.cdf);
         else
           fclose(grassfix_file.file);
+      }
+      if(config->grassharvest_filename.name!=NULL)
+      {
+        if(config->grassharvest_filename.fmt==CDF)
+          closeinput_netcdf(grassharvest_file.cdf);
+        else
+          fclose(grassharvest_file.file);
       }
       return NULL;
     }
@@ -458,7 +493,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       else
         grid[i].ml.grass_scenario=GS_DEFAULT;
 
-     }
+    }
     grid[i].lakefrac=0.0;
     if(config->river_routing)
     {
@@ -509,32 +544,28 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #ifdef COUPLING_WITH_FMS
     grid[i].laketemp=0;
 #endif
-    grid[i].ml.rotation.grazing_days=grid[i].ml.rotation.paddocks=0;
-    grid[i].ml.rotation.recovery_days=0;
-    grid[i].ml.rotation.rotation_mode=RM_UNDEFINED;
     if(config->withlanduse!=NO_LANDUSE)
     {
-      grid[i].ml.landfrac=newvec(Landfrac,2);
+      grid[i].ml.landfrac=newlandfrac(ncft);
       checkptr(grid[i].ml.landfrac);
-      newlandfrac(grid[i].ml.landfrac,ncft);
       if(config->with_nitrogen)
       {
-        grid[i].ml.fertilizer_nr=newvec(Landfrac,2);
+        grid[i].ml.fertilizer_nr=newlandfrac(ncft);
         checkptr(grid[i].ml.fertilizer_nr);
-        newlandfrac(grid[i].ml.fertilizer_nr,ncft);
       }
       else
         grid[i].ml.fertilizer_nr=NULL;
-      grid[i].ml.irrig_system=newvec(Irrig_system,1);
+
+      grid[i].ml.irrig_system=new(Irrig_system);
       checkptr(grid[i].ml.irrig_system);
-      grid[i].ml.irrig_system->crop=newvec(int,ncft);
+      grid[i].ml.irrig_system->crop=newvec(IrrigationType,ncft);
       checkptr(grid[i].ml.irrig_system->crop);
 
       for(j=0;j<ncft;j++)
-        grid[i].ml.irrig_system->crop[j]=0;
+        grid[i].ml.irrig_system->crop[j]=NOIRRIG;
       for(j=0;j<NGRASS;j++)
-        grid[i].ml.irrig_system->grass[j]=0;
-      grid[i].ml.irrig_system->biomass_grass=grid[i].ml.irrig_system->biomass_tree=0;
+        grid[i].ml.irrig_system->grass[j]=NOIRRIG;
+      grid[i].ml.irrig_system->biomass_grass=grid[i].ml.irrig_system->biomass_tree=NOIRRIG;
 
     }
     else

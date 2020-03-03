@@ -91,7 +91,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
   Pft *pft;
   Stand *setasidestand,*natstand,*mixstand;
   
-  s=findlandusetype(cell->standlist,irrig==TRUE ? SETASIDE_IR : SETASIDE_RF);
+  s=findlandusetype(cell->standlist,irrig ? SETASIDE_IR : SETASIDE_RF);
   if(s!=NOT_FOUND)
   {
     setasidestand=getstand(cell->standlist,s);
@@ -104,7 +104,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
     }
     else
     {
-      pos=addstand(irrig==TRUE ? &setaside_ir_stand :&setaside_rf_stand,cell)-1; /*setaside big enough for regrowth*/
+      pos=addstand(irrig ? &setaside_ir_stand :&setaside_rf_stand,cell)-1; /*setaside big enough for regrowth*/
       mixstand=getstand(cell->standlist,pos);
       mixstand->frac= -difffrac;
       reclaim_land(setasidestand,mixstand,cell,istimber,npft+ncft);
@@ -125,7 +125,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
     {
       mixstand->type->freestand(mixstand);
       mixstand->type=&natural_stand;
-      new_natural(mixstand);
+      mixstand->type->newstand(mixstand);
       natstand=mixstand; 
     }
     natstand->prescribe_landcover = NO_LANDCOVER;
@@ -159,7 +159,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
   Irrigation *data;
   Stand *setasidestand,*mixstand;
 
-  s=findlandusetype(cell->standlist,irrigation==TRUE ? SETASIDE_IR : SETASIDE_RF);
+  s=findlandusetype(cell->standlist,irrigation ? SETASIDE_IR : SETASIDE_RF);
   if(s!=NOT_FOUND)
   {
     setasidestand=getstand(cell->standlist,s);
@@ -208,7 +208,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             }
           mixstand->type->freestand(mixstand);
           mixstand->type=&grassland_stand;
-          new_agriculture(mixstand);
+          mixstand->type->newstand(mixstand);
           break;
         case BIOMASS_TREE_PLANTATION:
           for(p=0;p<npft;p++)
@@ -220,9 +220,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             }
           mixstand->type->freestand(mixstand);
           mixstand->type=&biomass_tree_stand;
-          new_agriculture(mixstand);
-          mixstand->growing_time++;
-          mixstand->age++;
+          mixstand->type->newstand(mixstand);
           break;
         case BIOMASS_GRASS_PLANTATION:
           for(p=0;p<npft;p++)
@@ -234,7 +232,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
             }
           mixstand->type->freestand(mixstand);
           mixstand->type=&biomass_grass_stand;
-          new_agriculture(mixstand);
+          mixstand->type->newstand(mixstand);
           break;
         default:
           fail(WRONG_CULTIVATION_TYPE_ERR,TRUE,

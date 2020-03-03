@@ -32,23 +32,29 @@ typedef struct
 
 typedef struct
 {
-  int *crop;
-  int grass[NGRASS];
-  int biomass_grass;
-  int biomass_tree;
+  IrrigationType *crop;
+  IrrigationType grass[NGRASS];
+  IrrigationType biomass_grass;
+  IrrigationType biomass_tree;
 } Irrig_system;
 
+
 typedef enum {NO_SEASONALITY, PREC, PRECTEMP, TEMP, TEMPPREC} Seasonality;
+
 typedef enum {GS_DEFAULT, GS_MOWING, GS_GRAZING_EXT, GS_GRAZING_INT, GS_NONE} GrassScenarioType;
-typedef enum {RM_UNDEFINED, RM_GRAZING, RM_RECOVERY} RotationModeType;
 
 typedef struct
 {
-  int grazing_days;
-  int recovery_days;
-  int paddocks;
-  RotationModeType rotation_mode;
-} Rotation;
+  Bool irrigation;        /**< stand irrigated? (TRUE/FALSE) */
+  Bool irrig_event;        /**< irrigation water applied to field that day? depends on soil moisture and precipitation, if not irrig_amount is put to irrig_stor */
+  IrrigationType irrig_system; /**< irrigation system type (NOIRRIG=0,SURF=1,SPRINK=2,DRIP=3) */
+  Real ec;                /**< conveyance efficiency */
+  Real conv_evap;         /**< fraction of conveyance losses that is assumed to evaporate */
+  Real net_irrig_amount;  /**< deficit in upper 50cm soil to fulfill demand (mm) */
+  Real dist_irrig_amount; /**< water requirements for uniform field distribution, depending on irrigation system */
+  Real irrig_amount;      /**< irrigation water (mm) that reaches the field, i.e. without conveyance losses */
+  Real irrig_stor;        /**< storage buffer (mm), filled if irrig_threshold not reached and if irrig_amount > GIR and with irrig_amount-prec */
+} Irrigation;
 
 typedef struct
 {
@@ -71,11 +77,7 @@ typedef struct
   Real mdemand;           /**< monthly irrigation demand */
   Bool dam;               /**< dam inside cell (TRUE/FALSE) */
   int fixed_grass_pft;              /**< fix C3 or C4 for GRASS pft */
-  GrassScenarioType grass_scenario; /* 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
-  Real nr_of_lsus_ext;              /* nr of livestock units for extensive grazing */
-  Real nr_of_lsus_int;              /* nr of livestock units for intensive grazing */
-  Rotation rotation;                /* rotation mode and parameters for intensive grazing */
-
+  GrassScenarioType grass_scenario; /**< 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
 #ifdef IMAGE
   Image_data *image_data; /**< pointer to IMAGE data structure */
 #endif
@@ -94,7 +96,7 @@ typedef struct
 extern Landuse initlanduse(int,const Config *);
 extern void freelanduse(Landuse,Bool);
 extern Bool getintercrop(const Landuse);
-extern void newlandfrac(Landfrac [2],int);
+extern Landfrac *newlandfrac(int);
 extern void initlandfrac(Landfrac [2],int);
 extern void scalelandfrac(Landfrac [2],int,Real);
 extern void freelandfrac(Landfrac [2]);
@@ -113,11 +115,16 @@ extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
 extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
 extern void deforest(Cell *,Real,const Pftpar [],Bool,int,Bool,Bool,Bool,int,int,Real);
 extern Stocks woodconsum(Stand*,Real);
-extern void calc_nir(Stand *,Real,Real [],Real);
+extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real);
 extern void irrig_amount_river(Cell *,const Config *);
-extern void irrig_amount(Stand *,Bool,int,int);
+extern void irrig_amount(Stand *,Irrigation *,Bool,int,int);
 extern void mixsetaside(Stand *,Stand *,Bool);
 extern void set_irrigsystem(Stand *,int,int,Bool);
+extern void init_irrigation(Irrigation *);
+extern Bool fwrite_irrigation(FILE *,const Irrigation *);
+extern void fprint_irrigation(FILE *,const Irrigation *);
+extern Bool fread_irrigation(FILE *,Irrigation *,Bool);
+extern Harvest harvest_stand(Output *,Stand *,Real);
 
 #endif

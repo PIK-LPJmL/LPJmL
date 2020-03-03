@@ -61,6 +61,7 @@
 "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
 "reservoir" : false,
 "grassland_fixed_pft" : false,
+ "grass_harvest_options" : false,
 "wateruse" : NO_WATERUSE,
 "intercrop" : true,                   /* intercrops on setaside */
 "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */

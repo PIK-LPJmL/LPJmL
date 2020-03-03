@@ -42,7 +42,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   {
     setasidestand->type->freestand(setasidestand);
     setasidestand->type=&agriculture_stand;
-    new_agriculture(setasidestand);
+    setasidestand->type->newstand(setasidestand);
     /* delete all PFTs */
     cutpfts(setasidestand);
     pft=addpft(setasidestand,pftpar,year,day);

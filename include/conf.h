@@ -385,7 +385,6 @@
 #define ALITFALLN 277
 #define MPFT_LAI 278
 #define MEAN_VEGC_MANGRASS 279
-
 #define RANDOM_SEED 0
 
 #endif

@@ -17,7 +17,6 @@
 
 #include "lpj.h"
 #include "grass.h"
-#include "agriculture.h"
 #include "grassland.h"
 
 Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
@@ -37,7 +36,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   Stocks flux_estab,stocks;
   int n_est=0;
   Real fpc_total,*fpc_type;
-  Irrigation *irrigation;
+  Grassland *grassland;
 
   fpc_type=newvec(Real,config->ntypes);
   check(fpc_type);
@@ -47,7 +46,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   for(p=0;p<npft;p++)
     present[p]=FALSE;
 
-  irrigation=stand->data;
+  grassland=stand->data;
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -98,10 +97,9 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 
-  stand->cell->output.soil_storage+=(irrigation->irrig_stor+irrigation->irrig_amount)*stand->frac*stand->cell->coord.area;
-
+  stand->cell->output.soil_storage+=(grassland->irrigation.irrig_stor+grassland->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
   stand->cell->output.mean_vegc_mangrass/=NDAYYEAR;
-
+  
   free(present);
   free(fpc_type);
   return FALSE;
