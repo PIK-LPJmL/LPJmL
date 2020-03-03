@@ -33,6 +33,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real f_NCplant=0;
   Real up_temp_f=0;
   Real totn,nsum;
+  Real wscaler;
   Real n_uptake=0;
   Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
   Real fixed_n=0;
@@ -56,7 +57,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   nsum=0;
   forrootsoillayer(l)
   {
-    totn=(soil->NO3[l]+soil->NH4[l]);
+    wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
+    totn=(soil->NO3[l]+soil->NH4[l])*wscaler;
     if(totn > 0 && soil->temp[l]>0)
     //if(totn > 0)
     {

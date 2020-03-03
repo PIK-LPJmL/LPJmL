@@ -32,6 +32,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   Real f_NCplant;
   Real up_temp_f;
   Real totn,nsum;
+  Real wscaler;
   Real n_uptake=0;
   Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
   Real rootdist_n[LASTLAYER];
@@ -51,7 +52,8 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   nsum=0;
   forrootsoillayer(l)
   {
-    totn=(soil->NO3[l]+soil->NH4[l]);
+    wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
+    totn=(soil->NO3[l]+soil->NH4[l])*wscaler;
     if(totn>0)
     {
       /*Thornley 1991*/
