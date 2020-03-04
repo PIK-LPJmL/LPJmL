@@ -35,15 +35,30 @@ void phen_variety(Pft *pft,      /**< PFT variables */
   Irrigation *data;
   crop=pft->data;
   croppar=pft->par->data;
-  crop->wtype=wtype;
+  crop->wtype=wtype; /* wtype defined in sowing_prescribe.c */
 
   data=pft->stand->data;
 
   if(config->crop_phu_option == PRESCRIBED_CROP_PHU)
   {
-      crop->pvd = 0; /* temporarily set to 0 (photoperiod insensitive) */
       crop->phu = pft->stand->cell->ml.crop_phu_fixed[pft->par->id-npft+data->irrigation*ncft];
-      crop->basetemp = croppar->basetemp.low; /* temporarily set to basetemp.low */
+      if (crop->phu < 0) /* if phus of winter varieties are stored with negative sign */
+      {
+          if (!wtype)
+              printf("Warning: (phen_variety.c) prescribed phu refer to winter type, but sowing date not\n");
+          crop->phu = -(crop->phu);
+      }
+ //printf("phen_variety.c: crop->phu = %lf\n", crop->phu);
+      if (wtype)
+      {
+          crop->pvd = max(0, min(60, vern_date20 - sdate - croppar->pvd));
+      }
+      else
+      {
+          crop->pvd = 0; /* vernalization insensitive */
+      }
+      //crop->basetemp = croppar->basetemp.low; /* temporarily set to basetemp.low */
+      crop->basetemp=min(croppar->basetemp.high,max(croppar->basetemp.low,pft->stand->cell->climbuf.atemp_mean20_fix-3.0)); /* applies only to maize and sugarcane (for all other crops basetemp.high = basetemp.low)*/
   }
   else
   {

@@ -33,7 +33,9 @@
   "residue_on_field" : { "fmt" : CLM, "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
   //"sdate" : {"fmt" : CLM, "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/GGCMI_CTWN_planting_v1.25.clm2"},  
   "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/MACMIT_INTENSIFICATION/LPJmL/input/sdate_1996-2005_24bands_ggcmi-ctwn-v1.25.clm2"},  /* insert prescribed sdate file name here */
-  "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/MACMIT_INTENSIFICATION/LPJmL/input/phu_1996-2005_24bands_ggcmi-ctwn-v1.25.clm2"},  /* insert prescribed phu file name here */
+  //"crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/MACMIT_INTENSIFICATION/LPJmL/input/phu_1996-2005_24bands_ggcmi-ctwn-v1.25.clm2"},  /* insert prescribed phu file name here */
+  //"crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/MACMIT_INTENSIFICATION/SCRIPTS/Compute_GPs_PHUs/input/PHU_HadGEM2-ES_historical_1986_2005.bin"},  /* insert prescribed phu file name here */
+  "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/MACMIT_INTENSIFICATION/SCRIPTS/Compute_GPs_PHUs/input/PHU_WFDEI_historical_1986_2005.bin"},  /* insert prescribed phu file name here */
   //"grassland_fixed_pft" : { "fmt" : RAW, "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.bin"},
   "grassland_fixed_pft" : { "fmt" : RAW, "name" : "/p/projects/landuse/users/rolinski/Newinput/scenario_MO0.bin"},
   "lakes" :        { "fmt" : META, "name" : "input_VERSION2/glwd_lakes_and_rivers.descr"},
@@ -41,18 +43,24 @@
   "neighb_irrig" : { "fmt" : CLM,  "name" : "input_VERSION2/neighb_irrig_stn.bin"},
   "elevation" :    { "fmt" : CLM,  "name" : "input_VERSION2/elevation.bin"},
   "reservoir" :    { "fmt" : CLM,  "name" : "input_VERSION2/reservoir_info_grand5.bin"},
-  //"temp" :         { "fmt" : CLM,  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm"},
-  //"prec" :         { "fmt" : CLM,  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_precip_1901_2013.clm"},
-  //"lwnet" :        { "fmt" : CLM,  "name" : "input_VERSION2/lwnet_erainterim_1901-2011.clm"},
-  //"swdown" :       { "fmt" : CLM,  "name" : "input_VERSION2/swdown_erainterim_1901-2011.clm"},
-  //"cloud":         { "fmt" : CLM,  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.cld.dat.clm"},
-  //"wind":          { "fmt" : CLM,  "name" : "input_VERSION2/mwindspeed_1860-2100_67420.clm"},
-  //"tamp":          { "fmt" : CLM,  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
-  "temp" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/tas_HadGEM2-ES_historical_1861-2005.clm"},
-  "prec" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/pr_HadGEM2-ES_historical_1861-2005.clm"},
-  "lwnet" :        { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/lwnet_HadGEM2-ES_historical_1861-2005.clm"},
-  "swdown" :       { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/rsds_HadGEM2-ES_historical_1861-2005.clm"},
-  "wind" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/sfcWind_HadGEM2-ES_historical_1861-2005.clm"},
+      //"temp" :         { "fmt" : CLM,  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm"},
+      //"prec" :         { "fmt" : CLM,  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_precip_1901_2013.clm"},
+      //"lwnet" :        { "fmt" : CLM,  "name" : "input_VERSION2/lwnet_erainterim_1901-2011.clm"},
+      //"swdown" :       { "fmt" : CLM,  "name" : "input_VERSION2/swdown_erainterim_1901-2011.clm"},
+      //"cloud":         { "fmt" : CLM,  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.cld.dat.clm"},
+      //"wind":          { "fmt" : CLM,  "name" : "input_VERSION2/mwindspeed_1860-2100_67420.clm"},
+      //"tamp":          { "fmt" : CLM,  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
+  //"temp" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/tas_HadGEM2-ES_historical_1861-2005.clm"},
+  //"prec" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/pr_HadGEM2-ES_historical_1861-2005.clm"},
+  //"lwnet" :        { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/lwnet_HadGEM2-ES_historical_1861-2005.clm"},
+  //"swdown" :       { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/rsds_HadGEM2-ES_historical_1861-2005.clm"},
+  //"wind" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/sfcWind_HadGEM2-ES_historical_1861-2005.clm"},
+  "temp" :         { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI/tas_wfdei_1979-2012.clm2"},
+  "prec" :         { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI/prtotal_cru_wfdei_1979-2012.clm2"},
+  "lwnet" :        { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI/lwnet_wfdei_1979-2012.clm2"},
+  "swdown" :       { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI/rsds_wfdei_1979-2012.clm2"},
+  //"wind" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/sfcWind_HadGEM2-ES_historical_1861-2005.clm"},
+  "wind":          { "fmt" : CLM,  "name" : "input_VERSION2/mwindspeed_1860-2100_67420.clm"},
   "lightning" :    { "fmt" : CLM,  "name" : "input_VERSION2/mlightning.clm"},
   "human_ignition": { "fmt" : CLM, "name" : "input_VERSION2/human_ignition.clm"},
   "popdens" :      { "fmt" : CLM,  "name" : "input_VERSION2/popdens_HYDE3_1901_2011_bi.clm"},

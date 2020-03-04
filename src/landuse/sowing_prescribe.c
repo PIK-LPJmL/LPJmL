@@ -55,6 +55,7 @@ Stocks sowing_prescribe(Cell* cell,          /**< pointer to cell */
 
         if (day==cell->ml.sdate_fixed[cft])
         {
+//printf("sowing_prescribe.c for cft %d day==cell->ml.sdate_fixed[cft]==%d\n",cft , day);
           wtype=(croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE&&day>earliest_sdate)?TRUE:FALSE;
           if (check_lu(cell->standlist, cell->ml.landfrac[0].crop[cft], npft+cft, FALSE))
           {

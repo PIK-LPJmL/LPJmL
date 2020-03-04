@@ -307,7 +307,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       count++;
       len=fputstring(file,len,"prescribed sowing date",78);
     }
-    else if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
     {
         len=fputstring(file,len,", ",78);
         count++;
@@ -410,7 +410,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     if(config->sdate_option==PRESCRIBED_SDATE)
       printinputfile(file,"sdates",&config->sdate_filename,width);
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
-        printinputfile(file,"crop_phu",&config->sdate_filename,width);
+        printinputfile(file,"crop_phu",&config->crop_phu_filename,width);
     if(config->with_nitrogen&&config->fertilizer_input)
       printinputfile(file,"fertilizer_nr",&config->fertilizer_nr_filename, width);
     if(config->with_nitrogen&&config->manure_input)

@@ -244,23 +244,26 @@ ID                         Fmt                    filename
 
   "nspinup" : 5000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
-  "firstyear": 1901, /* first year of simulation */
-  "lastyear" : 1901, /* last year of simulation */
+  "firstyear": 1979, //1901, /* first year of simulation */
+  "lastyear" : 1979, //1901, /* last year of simulation */
   "restart" : false, /* do not start from restart file */
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting_test.lpj), /* filename of restart file */
-  "restart_year": 1840 /* write restart at year */
+  //"write_restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting_test.lpj), /* filename of restart file */
+  "write_restart_filename" : mkstr(output/restart_1978_nv_stdfire_withrrouting_test.lpj), /* filename of restart file */
+  "restart_year": 1978, //1840 /* write restart at year */
 
 #else
 
   "nspinup" : 390,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
-  "firstyear": 1901, /* first year of simulation */
+  "firstyear": 1979, //1901, /* first year of simulation */
   "lastyear" : 2005, /* last year of simulation */
-  "outputyear": 1901, /* first year output is written  */
+  "outputyear": 1979, //1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
+  //"restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting_test.lpj), /* filename of restart file */
   "restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting_test.lpj), /* filename of restart file */
-  "write_restart" : true, /* create restart file */
+  //"write_restart" : true, /* create restart file */
+  "write_restart" : false, /* create restart file */
   "write_restart_filename" : mkstr(output/restart_1900_crop_stdfire_test.lpj), /* filename of restart file */
   "restart_year": 1900 /* write restart at year */
 

@@ -37,7 +37,8 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
   harvesting=FALSE;
   crop->growingdays++;
 
-  hlimit=(crop->wtype && par->calcmethod_sdate==TEMP_WTYP_CALC_SDATE) ? par->hlimit+90 : par->hlimit; 
+  hlimit=(crop->wtype && par->calcmethod_sdate==TEMP_WTYP_CALC_SDATE) ? par->hlimit+90 : par->hlimit;
+//printf("phenology_crop.c: %s hlimit = %d\n", pft->par->name, hlimit);
 
   crop->senescence0=crop->senescence;
 
@@ -46,6 +47,7 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
   if(crop->husum<crop->phu)
   {
     hu=max(0,temp-crop->basetemp);
+
     /* Calculation of vernalization days */
     if (crop->vdsum<crop->pvd)
     {
@@ -55,6 +57,7 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
         vd_inc=1-((par->trg.low-temp)/VD_SLOPE);
       else 
         vd_inc=1.0;
+//printf("phenology_crop.c: vd_inc = %lf\n", vd_inc);
     }
     else
       vd_inc=0.0;
