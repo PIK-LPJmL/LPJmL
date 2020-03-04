@@ -134,7 +134,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           /* get daily values for temperature, precipitation and sunshine */
           dailyclimate(&daily,input.climate,&grid[cell].climbuf,cell,day,
                        month,dayofmonth);
-          /* check for valid radiation input */
+#ifdef SAFE
+          if(degCtoK(daily.temp)<0)
+            fail(INVALID_CLIMATE_ERR,FALSE,"Temperature=%g K less than zero for cell %d at day %d",daily.temp,cell+config->startgrid,day);
           if(config->with_radiation)
           {
             if(daily.swdown<0)
@@ -147,7 +149,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           }
           if(config->with_nitrogen && daily.windspeed<0)
             fail(INVALID_CLIMATE_ERR,FALSE,"Wind speed=%g less than zero for cell %d at day %d",daily.windspeed,cell+config->startgrid,day);
-
+#endif
           /* get daily values for temperature, precipitation and sunshine */
           grid[cell].output.daily.temp=daily.temp;
           grid[cell].output.daily.prec=daily.prec;

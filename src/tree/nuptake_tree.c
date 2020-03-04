@@ -78,14 +78,15 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
     pft->bm_inc.nitrogen+=n_uptake;
     forrootsoillayer(l)
       {
-        soil->NO3[l]-=soil->NO3[l]*rootdist_n[l]*n_uptake/nsum;
+        wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
+        soil->NO3[l]-=soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
         if(soil->NO3[l]<0)
         {
            pft->bm_inc.nitrogen+=soil->NO3[l];
            n_upfail+=soil->NO3[l];
            soil->NO3[l]=0;
         }
-        soil->NH4[l]-=soil->NH4[l]*rootdist_n[l]*n_uptake/nsum;
+        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
         if(soil->NH4[l]<0)
         {
            pft->bm_inc.nitrogen+=soil->NH4[l];
