@@ -71,6 +71,7 @@ typedef struct
   Type datatype;    /**< datatype */
   char *filename;
   const char *var;  /**< variable name */
+  const char *var_units;  /**< variable name */
   const char *units;/**< variable units or NULL */
   Bool oneyear;     /**< one file for each year (TRUE/FALSE) */
   size_t var_len;
@@ -111,7 +112,7 @@ extern Bool create1_netcdf(Netcdf *,const char *,const char *,
 extern Bool create_netcdf(Netcdf *,const char *,const char *,
                           const char *,const char *,Type,int,
                           const Coord_array *,const Config *);
-extern Bool openclimate_netcdf(Climatefile *,const char *,const char *,
+extern Bool openclimate_netcdf(Climatefile *,const char *,const char *,const char *,
                                const char *,const char *,const Config *);
 extern Bool mpi_openclimate_netcdf(Climatefile *,const Filename *,
                                    const char *,const Config *);
@@ -164,7 +165,7 @@ extern Bool readshortinput_netcdf(const Input_netcdf,short *,const Coord *);
 extern Input_netcdf dupinput_netcdf(const Input_netcdf);
 extern Type getinputtype_netcdf(const Input_netcdf);
 extern Bool getlatlon_netcdf(Climatefile *,const char *,const Config *);
-extern Bool getvar_netcdf(Climatefile *,const char *,const char *,
+extern Bool getvar_netcdf(Climatefile *,const char *,const char *,const char *,
                           const char *,const Config *);
 extern void closeinput(Infile,int);
 extern int open_netcdf(const char *,int *,Bool *);

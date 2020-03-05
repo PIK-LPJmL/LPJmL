@@ -25,6 +25,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
                         const char *filename, /**< filename */
                         const char *time_name,/**< time name or NULL */
                         const char *var,      /**< variable name or NULL */
+                        const char *var_units,/**< unit of variable or NULL */
                         const char *units,    /**< units or NULL */
                         const Config *config  /**< LPJ configuration */
                        )                      /** \return TRUE on error */
@@ -300,7 +301,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
       file->n=config->ngridcell;
       break;
   }
-  if(getvar_netcdf(file,filename,var,units,config))
+  if(getvar_netcdf(file,filename,var,var_units,units,config))
   {
     free_netcdf(file->ncid);
     return TRUE;

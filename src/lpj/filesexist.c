@@ -91,7 +91,7 @@ static int checkdatafile(const Config *config,const Filename *filename)
   return 0;
 } /* of 'checkdatafile' */
 
-static int checkclmfile(const Config *config,const Filename *filename)
+static int checkclmfile(const Config *config,const Filename *filename,const char *unit)
 {
   FILE *file;
   Header header;
@@ -121,7 +121,7 @@ static int checkclmfile(const Config *config,const Filename *filename)
       for(year=first;year<=last;year++)
       {
         sprintf(name,s,year);
-        if(openclimate_netcdf(&input,name,filename->time,filename->var,NULL,config))
+        if(openclimate_netcdf(&input,name,filename->time,filename->var,filename->unit,unit,config))
         {
           count++;
         }
@@ -134,7 +134,7 @@ static int checkclmfile(const Config *config,const Filename *filename)
     }
     else
     {
-      if(openclimate_netcdf(&input,filename->name,filename->time,filename->var,NULL,config))
+      if(openclimate_netcdf(&input,filename->name,filename->time,filename->var,filename->unit,unit,config))
         return 1;
       closeclimate_netcdf(&input,TRUE);
     }
@@ -253,36 +253,36 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
     if(config.fdi==WVPD_INDEX)
-      bad+=checkclmfile(&config,&config.humid_filename);
-    bad+=checkclmfile(&config,&config.wind_filename);
-    bad+=checkclmfile(&config,&config.tamp_filename);
+      bad+=checkclmfile(&config,&config.humid_filename,NULL);
+    bad+=checkclmfile(&config,&config.wind_filename,"m/s");
+    bad+=checkclmfile(&config,&config.tamp_filename,NULL);
     if(config.tamp_filename.fmt==CDF && config.tmax_filename.name!=NULL)
-      bad+=checkclmfile(&config,&config.tmax_filename);
-    bad+=checkclmfile(&config,&config.lightning_filename);
+      bad+=checkclmfile(&config,&config.tmax_filename,"celsius");
+    bad+=checkclmfile(&config,&config.lightning_filename,NULL);
     bad+=checkinputfile(&config,&config.human_ignition_filename,0);
   }
   if(config.wateruse)
     bad+=checkdatafile(&config,&config.wateruse_filename);
-  bad+=checkclmfile(&config,&config.temp_filename);
-  bad+=checkclmfile(&config,&config.prec_filename);
+  bad+=checkclmfile(&config,&config.temp_filename,"celsius");
+  bad+=checkclmfile(&config,&config.prec_filename,"kg/m2/day");
   if(config.with_radiation)
   {
     if(config.with_radiation==RADIATION || config.with_radiation==RADIATION_LWDOWN)
-      bad+=checkclmfile(&config,&config.lwnet_filename);
-    bad+=checkclmfile(&config,&config.swdown_filename);
+      bad+=checkclmfile(&config,&config.lwnet_filename,"W/m2");
+    bad+=checkclmfile(&config,&config.swdown_filename,"W/m2");
   }
   else
-    bad+=checkclmfile(&config,&config.cloud_filename);
+    bad+=checkclmfile(&config,&config.cloud_filename,"%");
    if(config.co2_filename.fmt!=FMS)
     bad+=checkfile(config.co2_filename.name);
   if(config.wet_filename.name!=NULL)
-    bad+=checkclmfile(&config,&config.wet_filename);
+    bad+=checkclmfile(&config,&config.wet_filename,NULL);
 #ifdef IMAGE
   if(config.sim_id==LPJML_IMAGE)
   {
-    bad+=checkclmfile(&config,&config.temp_var_filename);
-    bad+=checkclmfile(&config,&config.prec_var_filename);
-    bad+=checkclmfile(&config,&config.prodpool_init_filename);
+    bad+=checkclmfile(&config,&config.temp_var_filename,NULL);
+    bad+=checkclmfile(&config,&config.prec_var_filename,NULL);
+    bad+=checkclmfile(&config,&config.prodpool_init_filename,NULL);
   }
 #endif
   if(ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1)
@@ -304,7 +304,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.withlanduse!=ALL_CROPS)
       bad+=checkdatafile(&config,&config.landuse_filename);
     if(config.sdate_option==PRESCRIBED_SDATE)
-      bad+=checkclmfile(&config,&config.sdate_filename);
+      bad+=checkclmfile(&config,&config.sdate_filename,NULL);
     if(config.countrycode_filename.fmt==CDF)
     {
       bad+=checkinputfile(&config,&config.countrycode_filename,0);

@@ -38,7 +38,7 @@ static Bool myopen_netcdf(Climatefile *file,int year,const Config *config)
     free(s);
     return TRUE;
   }
-  if(getvar_netcdf(file,s,file->var,file->units,config))
+  if(getvar_netcdf(file,s,file->var,file->var_units,file->units,config))
   {
     nc_close(file->ncid); 
     free(s);

@@ -68,8 +68,11 @@ typedef enum {NO_ERR, ERR, VERB } Verbosity;
 typedef struct
 {
   char *name; /* name of file */
-  char *time; /* name of time or NULL */
+  char *time; /* name of time variable or NULL */
   char *var;  /* name of variable in NetCDF file or NULL */
+  char *unit; /* units of variable in NetCDF file or NULL */
+  Real scale; /* scale factor for output */
+  Bool isscale; /* scale factor defined? */
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
 } Filename;
 
