@@ -66,7 +66,7 @@ static int checkinputfile(const Config *config,const Filename *filename,size_t l
   }
   return 0;
 }
-static int checkdatafile(const Config *config,const Filename *filename)
+static int checkdatafile(const Config *config,const Filename *filename,const char *unit)
 {
   FILE *file;
   Header header;
@@ -77,7 +77,7 @@ static int checkdatafile(const Config *config,const Filename *filename)
   size_t offset;
   if(filename->fmt==CDF)
   {
-    if(openfile_netcdf(&input,filename,NULL,config))
+    if(openfile_netcdf(&input,filename,unit,config))
        return 1;
     closeclimate_netcdf(&input,TRUE);
   }
@@ -245,7 +245,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.neighb_irrig_filename,0);
   }
   if(config.ispopulation)
-    bad+=checkdatafile(&config,&config.popdens_filename);
+    bad+=checkdatafile(&config,&config.popdens_filename,"km-2");
   if(config.grassfix_filename.name!=NULL)
     bad+=checkinputfile(&config,&config.grassfix_filename,0);
   if(config.grassharvest_filename.name!=NULL)
@@ -262,7 +262,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkinputfile(&config,&config.human_ignition_filename,0);
   }
   if(config.wateruse)
-    bad+=checkdatafile(&config,&config.wateruse_filename);
+    bad+=checkdatafile(&config,&config.wateruse_filename,"dm3/yr");
   bad+=checkclmfile(&config,&config.temp_filename,"celsius");
   bad+=checkclmfile(&config,&config.prec_filename,"kg/m2/day");
   if(config.with_radiation)
@@ -302,7 +302,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.withlanduse!=NO_LANDUSE)
   {
     if(config.withlanduse!=ALL_CROPS)
-      bad+=checkdatafile(&config,&config.landuse_filename);
+      bad+=checkdatafile(&config,&config.landuse_filename,"1");
     if(config.sdate_option==PRESCRIBED_SDATE)
       bad+=checkclmfile(&config,&config.sdate_filename,NULL);
     if(config.countrycode_filename.fmt==CDF)

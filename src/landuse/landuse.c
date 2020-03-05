@@ -70,7 +70,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
   {
     if(config->landuse_filename.fmt==CDF)
     {
-      if(opendata_netcdf(&landuse->landuse,&config->landuse_filename,NULL,config))
+      if(opendata_netcdf(&landuse->landuse,&config->landuse_filename,"1",config))
       {
         free(landuse);
         return NULL;

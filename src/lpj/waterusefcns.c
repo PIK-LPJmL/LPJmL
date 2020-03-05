@@ -38,7 +38,7 @@ Wateruse initwateruse(const Config *config /**< LPJmL configuration */
   wateruse->file.fmt=config->wateruse_filename.fmt;
   if(config->wateruse_filename.fmt==CDF)
   { 
-    if(opendata_netcdf(&wateruse->file,&config->wateruse_filename,NULL,config))
+    if(opendata_netcdf(&wateruse->file,&config->wateruse_filename,"dm3/yr",config))
     {
       free(wateruse);
       return NULL;
