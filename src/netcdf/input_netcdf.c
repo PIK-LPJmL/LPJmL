@@ -22,7 +22,6 @@
 #include <udunits.h>
 #endif
 
-#define error(var,rc) if(rc) {if(isroot(*config))fprintf(stderr,"ERROR403: Cannot read '%s' in '%s': %s.\n",var,filename,nc_strerror(rc)); nc_close(input->ncid); free(input); return NULL;}
 #endif
 #define checkptr(ptr) if(ptr==NULL) {printallocerr(#ptr); return TRUE; }
 
@@ -65,7 +64,7 @@ Input_netcdf dupinput_netcdf(const Input_netcdf input)
   return copy;
 } /* of 'dupinput_netcdf' */
 
-static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const char *var,
+static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
                                const char *units,const Config *config)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -74,6 +73,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const cha
   size_t len;
   nc_type type;
   char *fromstr;
+  char *newstr;
   char name[NC_MAX_NAME+1];
 #ifdef USE_UDUNITS
   utUnit from,to;
@@ -83,7 +83,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const cha
     fputs("ERROR424: Invalid data pointer in setvarinput_netcdf().\n",stderr);
     return TRUE;
   }
-  if(var==NULL)
+  if(filename->var==NULL)
   {
     nc_inq_nvars(input->ncid,&nvars);
     for(i=0;i<nvars;i++)
@@ -98,15 +98,15 @@ static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const cha
     if(i==nvars)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR405: No variable found in '%s'.\n",filename);
+        fprintf(stderr,"ERROR405: No variable found in '%s'.\n",filename->name);
       return TRUE;
     }
   }
-  else if(nc_inq_varid(input->ncid,var,&input->varid))
+  else if(nc_inq_varid(input->ncid,filename->var,&input->varid))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR406: Cannot find variable '%s' in '%s'.\n",
-              var,filename);
+              filename->var,filename->name);
     return TRUE;
   }
   nc_inq_varndims(input->ncid,input->varid,&ndims);
@@ -129,7 +129,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const cha
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
-              ndims,filename);
+              ndims,filename->name);
     return TRUE;
   }
   nc_inq_vartype(input->ncid,input->varid,&type);
@@ -198,17 +198,17 @@ static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const cha
     default:
       if(isroot(*config))
         fprintf(stderr,"ERROR428: Invalid data type of %s in NetCDF in '%s'.\n",
-               (var==NULL) ? name : var,filename);
+               (filename->var==NULL) ? name : filename->var,filename->name);
       return TRUE;
   }
   if(rc)
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR402: Cannot read missing value of %s in '%s': %s.\n",
-              (var==NULL) ? name : var,filename,nc_strerror(rc));
+              (filename->var==NULL) ? name : filename->var,filename->name,nc_strerror(rc));
   }
 #ifdef USE_UDUNITS
-  if(units==NULL || nc_inq_attlen(input->ncid,input->varid,"units",&len))
+  if(units==NULL || (nc_inq_attlen(input->ncid,input->varid,"units",&len) && filename->unit==NULL))
   {
     input->slope=1;
     input->intercept=0;
@@ -224,15 +224,44 @@ static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const cha
     }
     else
     {
-      fromstr=malloc(len+1);
-      if(fromstr==NULL)
+      if(filename->unit!=NULL)
       {
-        printallocerr("fromstr");
-        utTerm();
-        return TRUE;
+        fromstr=strdup(filename->unit);
+        if(fromstr==NULL)
+        {
+          utTerm();
+          printallocerr("fromstr");
+          return TRUE;
+        }
+        if(isroot(*config) && !nc_inq_attlen(input->ncid,input->varid,"units",&len))
+        {
+          newstr=malloc(len+1);
+          if(newstr==NULL)
+          {
+            free(fromstr);
+            utTerm();
+            printallocerr("newstr");
+            return TRUE;
+          }
+          nc_get_att_text(input->ncid,input->varid,"units",newstr);
+          if(strcmp(newstr,fromstr))
+            fprintf(stderr,"WARNING408: Unit '%s' in '%s' differs from unit '%s' in configuration file.\n",
+                    newstr,filename->name,fromstr);
+          free(newstr);
+        }
       }
-      nc_get_att_text(input->ncid,input->varid,"units",fromstr);
-      fromstr[len]='\0';
+      else
+      {
+        fromstr=malloc(len+1);
+        if(fromstr==NULL)
+        {
+          printallocerr("fromstr");
+          utTerm();
+          return TRUE;
+        }
+        nc_get_att_text(input->ncid,input->varid,"units",fromstr);
+        fromstr[len]='\0';
+      }
       if(!strcmp(fromstr,"-"))
       {
         input->slope=1;
@@ -248,7 +277,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const cha
         {
           if(isroot(*config))
             fprintf(stderr,"ERROR414: Invalid conversion of %s from %s to %s in '%s'.\n",
-                    (var==NULL) ? name : var,fromstr,units,filename);
+                    (filename->var==NULL) ? name : filename->var,fromstr,units,filename->name);
           free(fromstr);
           utTerm();
           return TRUE;
@@ -268,8 +297,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const cha
 #endif
 } /* of 'setvarinput_netcdf' */
  
-Input_netcdf openinput_netcdf(const char *filename, /**< filename */
-                              const char *var,      /**< variable name or NULL */
+Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
                               const char *units,    /**< units or NULL */
                               size_t len,           /**< dim of variable */
                               const Config *config  /**< LPJ configuration */
@@ -291,16 +319,16 @@ Input_netcdf openinput_netcdf(const char *filename, /**< filename */
     printallocerr("input");
     return NULL;
   }
-  rc=nc_open(filename,NC_NOWRITE,&input->ncid);
+  rc=nc_open(filename->name,NC_NOWRITE,&input->ncid);
   if(rc)
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR409: Cannot open '%s': %s.\n",
-              filename,nc_strerror(rc));
+              filename->name,nc_strerror(rc));
     free(input);
     return NULL;
   }
-  if(setvarinput_netcdf(input,filename,var,units,config))
+  if(setvarinput_netcdf(input,filename,units,config))
   {
     nc_close(input->ncid);
     free(input);
@@ -311,9 +339,9 @@ Input_netcdf openinput_netcdf(const char *filename, /**< filename */
     if(isroot(*config))
     {
       if(len==0)
-        fprintf(stderr,"ERROR436: Input data '%s' in '%s' must be a scalar, is a vector of length %d.\n",(var==NULL) ? "" : var, filename,(int)input->var_len);
+        fprintf(stderr,"ERROR436: Input data '%s' in '%s' must be a scalar, is a vector of length %d.\n",(filename->var==NULL) ? "" : filename->var, filename->name,(int)input->var_len);
       else
-        fprintf(stderr,"ERROR433: Invalid length %d in '%s' of input vector '%s'.\n",(int)input->var_len,filename,(var==NULL) ? "" : var);
+        fprintf(stderr,"ERROR433: Invalid length %d in '%s' of input vector '%s'.\n",(int)input->var_len,filename->name,(filename->var==NULL) ? "" : filename->var);
     }
     nc_close(input->ncid);
     free(input);
@@ -338,7 +366,7 @@ Input_netcdf openinput_netcdf(const char *filename, /**< filename */
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
-              name,filename,nc_strerror(rc));
+              name,filename->name,nc_strerror(rc));
     free(dimids);
     nc_close(input->ncid);
     free(input);
@@ -361,7 +389,7 @@ Input_netcdf openinput_netcdf(const char *filename, /**< filename */
     free(dimids);
     if(isroot(*config))
       fprintf(stderr,"ERROR410: Cannot read longitude in '%s': %s.\n",
-              filename,nc_strerror(rc));
+              filename->name,nc_strerror(rc));
     nc_close(input->ncid);
     free(input);
     return NULL;
@@ -374,7 +402,7 @@ Input_netcdf openinput_netcdf(const char *filename, /**< filename */
   if(fabs(input->lon_res-config->resolution.lon)/config->resolution.lon>1e-3)
   {
     if(isroot(*config))
-      fprintf(stderr,"WARNING405: Incompatible resolution %g for longitude in '%s', not %g.\n",input->lon_res,filename,config->resolution.lon);
+      fprintf(stderr,"WARNING405: Incompatible resolution %g for longitude in '%s', not %g.\n",input->lon_res,filename->name,config->resolution.lon);
     //free(dim);
     //nc_close(input->ncid);
     //free(input);
@@ -387,7 +415,7 @@ Input_netcdf openinput_netcdf(const char *filename, /**< filename */
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
-              name,filename,nc_strerror(rc));
+              name,filename->name,nc_strerror(rc));
     free(dimids);
     nc_close(input->ncid);
     free(input);
@@ -409,7 +437,7 @@ Input_netcdf openinput_netcdf(const char *filename, /**< filename */
     free(dim);
     if(isroot(*config))
       fprintf(stderr,"ERROR411: Cannot read %s in '%s': %s.\n",
-              name,filename,nc_strerror(rc));
+              name,filename->name,nc_strerror(rc));
     nc_close(input->ncid);
     free(input);
     return NULL;
@@ -435,7 +463,7 @@ Input_netcdf openinput_netcdf(const char *filename, /**< filename */
   if(fabs(input->lat_res-config->resolution.lat)/config->resolution.lat>1e-3)
   {
     if(isroot(*config))
-      fprintf(stderr,"WARNING406: Incompatible resolution %g for latitude in '%s', not %g.\n",input->lat_res,filename,config->resolution.lat);
+      fprintf(stderr,"WARNING406: Incompatible resolution %g for latitude in '%s', not %g.\n",input->lat_res,filename->name,config->resolution.lat);
     //free(dim);
     //nc_close(input->ncid);
     //free(input);

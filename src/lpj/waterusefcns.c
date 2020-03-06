@@ -124,7 +124,7 @@ Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
                wateruse->file.offset+wateruse->file.size*(year-wateruse->file.firstyear),
                SEEK_SET))
       {
-        fprintf(stderr,"ERROR150: Cannot seek file to year %d in wateruse().\n",year);
+        fprintf(stderr,"ERROR150: Cannot seek file to year %d in getwateruse().\n",year);
         return TRUE;
       } 
       data=newvec(Real,config->ngridcell);

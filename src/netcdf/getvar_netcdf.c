@@ -153,7 +153,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
             if(newstr==NULL)
             {
               utTerm();
-              printallocerr("fromstr");
+              printallocerr("newstr");
               return TRUE;
             }
             strncpy(newstr,units,strlen(units)-3);

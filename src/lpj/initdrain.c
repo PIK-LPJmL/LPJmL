@@ -146,9 +146,8 @@ static Bool initirrig(Cell grid[],    /* Cell grid             */
   /* open neighbour irrigation file */
   if(config->neighb_irrig_filename.fmt==CDF)
   {
-    irrig_file.cdf=openinput_netcdf(config->neighb_irrig_filename.name,
-                                    config->neighb_irrig_filename.var,NULL,0,
-                                    config);
+    irrig_file.cdf=openinput_netcdf(&config->neighb_irrig_filename,
+                                    NULL,0,config);
     if(irrig_file.cdf==NULL)
       return TRUE;
     index=getindex(irrig_file.cdf,grid,config);
@@ -279,14 +278,11 @@ static Bool initriver(Cell grid[],Config *config)
   size_t offset;
   if(config->drainage_filename.fmt==CDF)
   {
-    drainage.cdf=openinput_netcdf(config->drainage_filename.name,
-                                  config->drainage_filename.var,NULL,0,
-                                  config);
+    drainage.cdf=openinput_netcdf(&config->drainage_filename,
+                                  NULL,0,config);
     if(drainage.cdf==NULL)
       return TRUE;
-    river.cdf=openinput_netcdf(config->river_filename.name,
-                               config->river_filename.var,"m",0,
-                               config);
+    river.cdf=openinput_netcdf(&config->river_filename,"m",0,config);
     if(river.cdf==NULL)
     {
       closeinput_netcdf(drainage.cdf);

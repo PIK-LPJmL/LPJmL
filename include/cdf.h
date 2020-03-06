@@ -154,7 +154,7 @@ extern int numcoord_netcdf(const Coord_netcdf);
 extern int *getindexcoord_netcdf(const Coord_netcdf);
 extern void getresolution_netcdf(const Coord_netcdf,Coord *);
 extern void getextension_netcdf(Extension *,const Coord_netcdf);
-extern Input_netcdf openinput_netcdf(const char *,const char *,const char *,
+extern Input_netcdf openinput_netcdf(const Filename *,const char *,
                                      size_t,const Config *);
 extern void closeinput_netcdf(Input_netcdf);
 extern size_t getindexinput_netcdf(const Input_netcdf,const Coord *);

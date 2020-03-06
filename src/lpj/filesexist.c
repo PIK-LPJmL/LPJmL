@@ -33,7 +33,7 @@ static int checkfile(const char *filename)
     return 0;
 } /* of 'checkfile' */
 
-static int checkinputfile(const Config *config,const Filename *filename,size_t len)
+static int checkinputfile(const Config *config,const Filename *filename,const char *unit,size_t len)
 {
   FILE *file;
   Header header;
@@ -44,7 +44,7 @@ static int checkinputfile(const Config *config,const Filename *filename,size_t l
   size_t offset;
   if(filename->fmt==CDF)
   {
-    input=openinput_netcdf(filename->name,filename->var,NULL,len,config);
+    input=openinput_netcdf(filename,unit,len,config);
     if(input==NULL)
       return 1;
     closeinput_netcdf(input);
@@ -65,7 +65,8 @@ static int checkinputfile(const Config *config,const Filename *filename,size_t l
     }
   }
   return 0;
-}
+} /* of 'checkinputfile' */
+
 static int checkdatafile(const Config *config,const Filename *filename,const char *unit)
 {
   FILE *file;
@@ -239,17 +240,17 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkcoordfile(&config,&config.soil_filename);
   if(config.river_routing)
   {
-    bad+=checkinputfile(&config,&config.drainage_filename,(config.drainage_filename.fmt==CDF) ? 0 : 2);
-    bad+=checkinputfile(&config,&config.lakes_filename,0);
+    bad+=checkinputfile(&config,&config.drainage_filename,NULL,(config.drainage_filename.fmt==CDF) ? 0 : 2);
+    bad+=checkinputfile(&config,&config.lakes_filename,"1",0);
     if(config.withlanduse!=NO_LANDUSE)
-      bad+=checkinputfile(&config,&config.neighb_irrig_filename,0);
+      bad+=checkinputfile(&config,&config.neighb_irrig_filename,NULL,0);
   }
   if(config.ispopulation)
     bad+=checkdatafile(&config,&config.popdens_filename,"km-2");
   if(config.grassfix_filename.name!=NULL)
-    bad+=checkinputfile(&config,&config.grassfix_filename,0);
+    bad+=checkinputfile(&config,&config.grassfix_filename,NULL,0);
   if(config.grassharvest_filename.name!=NULL)
-    bad+=checkinputfile(&config,&config.grassharvest_filename,0);
+    bad+=checkinputfile(&config,&config.grassharvest_filename,NULL,0);
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
     if(config.fdi==WVPD_INDEX)
@@ -259,7 +260,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.tamp_filename.fmt==CDF && config.tmax_filename.name!=NULL)
       bad+=checkclmfile(&config,&config.tmax_filename,"celsius");
     bad+=checkclmfile(&config,&config.lightning_filename,NULL);
-    bad+=checkinputfile(&config,&config.human_ignition_filename,0);
+    bad+=checkinputfile(&config,&config.human_ignition_filename,NULL,0);
   }
   if(config.wateruse)
     bad+=checkdatafile(&config,&config.wateruse_filename,"dm3/yr");
@@ -276,7 +277,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
    if(config.co2_filename.fmt!=FMS)
     bad+=checkfile(config.co2_filename.name);
   if(config.wet_filename.name!=NULL)
-    bad+=checkclmfile(&config,&config.wet_filename,NULL);
+    bad+=checkclmfile(&config,&config.wet_filename,"day");
 #ifdef IMAGE
   if(config.sim_id==LPJML_IMAGE)
   {
@@ -299,6 +300,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     config.ischeckpoint=FALSE;
     bad+=checkrestartfile(&config,config.restart_filename);
   }
+  if(config.prescribe_landcover!=NO_LANDCOVER)
+    bad+=checkdatafile(&config,&config.landcover_filename,"1");
   if(config.withlanduse!=NO_LANDUSE)
   {
     if(config.withlanduse!=ALL_CROPS)
@@ -307,15 +310,15 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkclmfile(&config,&config.sdate_filename,NULL);
     if(config.countrycode_filename.fmt==CDF)
     {
-      bad+=checkinputfile(&config,&config.countrycode_filename,0);
-      bad+=checkinputfile(&config,&config.regioncode_filename,0);
+      bad+=checkinputfile(&config,&config.countrycode_filename,NULL,0);
+      bad+=checkinputfile(&config,&config.regioncode_filename,NULL,0);
     }
     else
-      bad+=checkinputfile(&config,&config.countrycode_filename,2);
+      bad+=checkinputfile(&config,&config.countrycode_filename,NULL,2);
     if(config.reservoir)
     {
-      bad+=checkinputfile(&config,&config.elevation_filename,0);
-      bad+=checkinputfile(&config,&config.reservoir_filename,10);
+      bad+=checkinputfile(&config,&config.elevation_filename,"m",0);
+      bad+=checkinputfile(&config,&config.reservoir_filename,NULL,10);
     }
   }
   badout=0;
