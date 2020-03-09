@@ -23,8 +23,10 @@ Bool isdailyoutput_agriculture(const Output *output, /**< Output data */
   const Pft *pft;
   int p;
   data = stand->data;
+  if(output->daily.irrigation != data->irrigation)
+    return FALSE;
   foreachpft(pft,p,&stand->pftlist)
-    if (pft->par->id == output->daily.cft && output->daily.irrigation == data->irrigation)
+    if (pft->par->id == output->daily.cft)
       return TRUE;
   return FALSE;
 } /* of 'isdailyoutput_agriculture' */

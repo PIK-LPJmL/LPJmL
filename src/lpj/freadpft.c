@@ -37,8 +37,6 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
   }
   pft->par=pftpar+id;
   pft->stand=stand;
-  pft->prescribe_fpc=FALSE;
-  pft->fpc_obs=0;
   freadreal((Real *)(&pft->phen_gsi),sizeof(Phenology)/sizeof(Real),swap,file);
   freadreal1(&pft->wscal,swap,file);
   freadreal1(&pft->wscal_mean,swap,file);

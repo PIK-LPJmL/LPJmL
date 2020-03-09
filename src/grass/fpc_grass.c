@@ -18,10 +18,10 @@
 Real fpc_grass(Pft *pft)
 {
   Real fpc_old;
-  fpc_old=pft->fpc;
   const Pft *pft2;
   int p;
   Real lai_sum,fpc_sum;
+  fpc_old=pft->fpc;
   lai_sum=fpc_sum=0.0;
   foreachpft(pft2,p,&pft->stand->pftlist)
   {

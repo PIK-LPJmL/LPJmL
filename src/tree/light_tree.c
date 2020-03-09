@@ -24,9 +24,7 @@ void light_tree(Litter *litter,Pft *pft,Real excess)
 #ifdef DEBUG3
   printf("light: %g %g %s %g\n",pft->fpc,pft->nind,pft->par->name,excess);
 #endif
-  if (pft->prescribe_fpc)
-    nind_kill=0;
-  else
+  if (pft->stand->prescribe_landcover!=LANDCOVERFPC || pft->stand->type->landusetype!=NATURAL)
   {
     nind_kill=(excess<1e-20) ? 0 : pft->nind*(excess/pft->fpc); 
     pft->nind-=nind_kill;

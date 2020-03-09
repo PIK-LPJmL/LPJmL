@@ -17,25 +17,25 @@
 #include "lpj.h"
 #include "natural.h"
 
-Real daily_natural(Stand *stand, /**< stand pointer */
-                   Real co2,     /**< atmospheric CO2 (ppmv) */
+Real daily_natural(Stand *stand,                /**< stand pointer */
+                   Real co2,                    /**< atmospheric CO2 (ppmv) */
                    const Dailyclimate *climate, /**< Daily climate values */
-                   int day,    /**< day (1..365) */
-                   Real daylength, /**< length of day (h) */
-                   const Real gp_pft[], /**< pot. canopy conductance for PFTs & CFTs*/
-                   Real gtemp_air,  /**< value of air temperature response function */
-                   Real gtemp_soil, /**< value of soil temperature response function */
-                   Real gp_stand,   /* potential stomata conductance */
-                   Real gp_stand_leafon, /**< pot. canopy conduct.at full leaf cover */
-                   Real eeq,   /**< equilibrium evapotranspiration (mm) */
-                   Real par,   /**< photosynthetic active radiation flux */
-                   Real melt,  /**< melting water (mm) */
-                   int npft,   /**< number of natural PFTs */
-                   int UNUSED(ncft), /**< number of crop PFTs   */
-                   int year,         /**< simulation year (AD) */
-                   Bool UNUSED(intercrop), /**< enabled intercropping */
-                   const Config *config /**< LPJ config */
-                  ) /** \return runoff (mm) */
+                   int day,                     /**< day (1..365) */
+                   Real daylength,              /**< length of day (h) */
+                   const Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
+                   Real gtemp_air,              /**< value of air temperature response function */
+                   Real gtemp_soil,             /**< value of soil temperature response function */
+                   Real gp_stand,               /**< potential stomata conductance  (mm/s) */
+                   Real gp_stand_leafon,        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
+                   Real eeq,                    /**< equilibrium evapotranspiration (mm) */
+                   Real par,                    /**< photosynthetic active radiation flux  (J/m2/day) */
+                   Real melt,                   /**< melting water (mm/day) */
+                   int npft,                    /**< number of natural PFTs */
+                   int UNUSED(ncft),            /**< number of crop PFTs   */
+                   int year,                    /**< simulation year (AD) */
+                   Bool UNUSED(intercrop),      /**< enabled intercropping */
+                   const Config *config         /**< LPJ config */
+                  )                             /** \return runoff (mm/day) */
 {
   int p,l;
   Pft *pft;
@@ -109,7 +109,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
     }
 
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd);
-    if(config->withdailyoutput && output->daily.cft == ALLNATURAL)
+    if(config->withdailyoutput && isdailyoutput_natural(output,stand))
       output->daily.npp+=npp;
     output->dcflux-=npp*stand->frac;
     output->mnpp+=npp*stand->frac;
@@ -163,7 +163,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   output->mevap_b+=evap_blue*stand->frac;
   output->mreturn_flow_b+=return_flow_b*stand->frac;
 
-  #ifdef DAILY_ESTABLISHMENT
+#ifdef DAILY_ESTABLISHMENT
   if (year==911 && day==365) /* TODO: replace the hardcoded value 911 with a more indicative flag like first_year_of_spinup */
     acflux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
   else if (year>911)

@@ -78,7 +78,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" ----- ",file);
+  fputs(" ----- ----- ------ ",file);
   frepeatch(file,'-',77-width-width_unit-width_var-7);
   putc('\n',file);
 } /* of 'fprintoutputvar' */

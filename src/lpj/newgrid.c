@@ -540,7 +540,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].ignition.nesterov_accum=0;
     grid[i].ignition.nesterov_max=0;
     grid[i].ignition.nesterov_day=0;
-
+    grid[i].landcover=NULL;
 #ifdef COUPLING_WITH_FMS
     grid[i].laketemp=0;
 #endif

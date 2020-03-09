@@ -48,7 +48,6 @@ struct stand
   Real frac_g[NSOILLAYER];    /**< fraction of green water in total available soil water, including free water */
   int growing_days;           /**< for GRASS days since harvest*/
   int prescribe_landcover;
-  const Real *landcover;
   void *data;                 /**< stand-specific extensions */
 };
 

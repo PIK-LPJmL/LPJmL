@@ -205,8 +205,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   {
     if(!grid[cell].skip)
     {
-      update_annual(grid+cell,npft,ncft,popdens,year,
-                    (config->prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell) : NULL,daily.isdailytemp,intercrop,config);
+      grid[cell].landcover=(config->prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell) : NULL;
+      update_annual(grid+cell,npft,ncft,popdens,year,daily.isdailytemp,intercrop,config);
 #ifdef SAFE
       check_fluxes(grid+cell,year,cell,config);
 #endif

@@ -15,8 +15,8 @@
 #include "lpj.h"
 #include "natural.h"
 
-Bool isdailyoutput_natural(const Output *output,          /**< Output data */
-                           const Stand * UNUSED(stand)    /**< stand pointer */
+Bool isdailyoutput_natural(const Output *output,       /**< Output data */
+                           const Stand * UNUSED(stand) /**< stand pointer */
                           )
 {
   return (output->daily.cft == ALLNATURAL);
