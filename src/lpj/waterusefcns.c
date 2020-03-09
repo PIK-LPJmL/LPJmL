@@ -38,7 +38,7 @@ Wateruse initwateruse(const Config *config /**< LPJmL configuration */
   wateruse->file.fmt=config->wateruse_filename.fmt;
   if(config->wateruse_filename.fmt==CDF)
   { 
-    if(opendata_netcdf(&wateruse->file,&config->wateruse_filename,NULL,config))
+    if(opendata_netcdf(&wateruse->file,&config->wateruse_filename,"dm3/yr",config))
     {
       free(wateruse);
       return NULL;
@@ -124,7 +124,7 @@ Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
                wateruse->file.offset+wateruse->file.size*(year-wateruse->file.firstyear),
                SEEK_SET))
       {
-        fprintf(stderr,"ERROR150: Cannot seek file to year %d in wateruse().\n",year);
+        fprintf(stderr,"ERROR150: Cannot seek file to year %d in getwateruse().\n",year);
         return TRUE;
       } 
       data=newvec(Real,config->ngridcell);

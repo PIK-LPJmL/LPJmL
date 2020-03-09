@@ -1750,7 +1750,8 @@ void lpj_update_
           {
             if(!grid[cell].skip)
             {
-              update_annual(grid+cell,npft,ncft,popdens,year,(config.prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell): NULL,TRUE,intercrop,&config);
+              grid[cell].landcover=(config.prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell) : NULL;
+              update_annual(grid+cell,npft,ncft,popdens,year,TRUE,intercrop,&config);
 #ifdef SAFE
               check_fluxes(grid+cell,year,cell,&config);
 #endif

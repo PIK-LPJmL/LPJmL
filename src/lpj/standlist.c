@@ -113,7 +113,6 @@ void initstand(Stand *stand /**< Pointer to stand */
   stand->fire_sum=0.0;
   stand->growing_days=0;
   stand->prescribe_landcover=NO_LANDCOVER;
-  stand->landcover=NULL;
 } /* of 'initstand' */
 
 void freestand(Stand *stand /**< Pointer to stand */

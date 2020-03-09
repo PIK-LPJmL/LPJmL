@@ -68,7 +68,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
   landuse->landuse.fmt=config->landuse_filename.fmt;
   if (config->landuse_filename.fmt == CDF)
   {
-    if (opendata_netcdf(&landuse->landuse, &config->landuse_filename, NULL, config))
+    if (opendata_netcdf(&landuse->landuse, &config->landuse_filename, "1", config))
     {
       free(landuse);
       return NULL;
@@ -77,10 +77,10 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
   }
   else
   {
-    if ((landuse->landuse.file = openinputfile(&header, &landuse->landuse.swap,
-      &config->landuse_filename,
-      headername,
-      &version, &offset, config)) == NULL)
+    if((landuse->landuse.file=openinputfile(&header, &landuse->landuse.swap,
+                                            &config->landuse_filename,
+                                            headername,
+                                            &version, &offset, config)) == NULL)
     {
       free(landuse);
       return NULL;
@@ -183,7 +183,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     landuse->fertilizer_nr.fmt=config->fertilizer_nr_filename.fmt;
     if(config->fertilizer_nr_filename.fmt==CDF)
     {
-      if(opendata_netcdf(&landuse->fertilizer_nr,&config->fertilizer_nr_filename,NULL,config))
+      if(opendata_netcdf(&landuse->fertilizer_nr,&config->fertilizer_nr_filename,"g/m2",config))
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(landuse->sdate.file!=NULL)

@@ -33,7 +33,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
                        )  /** \return establishment flux (gC/m2,gN/m2) */
 {
   Stocks flux_est={0,0},stocks;
-  Real fpc_total,*fpc_type, fpc_obs_cor;
+  Real fpc_total,*fpc_type, fpc_obs_cor, fpc_obs;
   int *n_est;
   Bool *present;
   int p,t;
@@ -61,7 +61,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   /* establish PFTs if observed landcover > 0 or bioclimatic limits are suitable in dynamic mode */
   for(p=0;p<npft;p++)
   {
-    if ((stand->prescribe_landcover !=NO_LANDCOVER &&  pftpar[p].cultivation_type==NONE && stand->landcover[p] > 0 && stand->type->landusetype==NATURAL) ||
+    if ((stand->prescribe_landcover !=NO_LANDCOVER &&  pftpar[p].cultivation_type==NONE && stand->cell->landcover[p] > 0 && stand->type->landusetype==NATURAL) ||
         (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pftpar[p].aprec_min && pftpar[p].cultivation_type==NONE &&
        establish(stand->cell->gdd[p],pftpar+p,&stand->cell->climbuf)))
     {
@@ -74,16 +74,15 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
   {
-    pft->prescribe_fpc=(stand->prescribe_landcover == LANDCOVERFPC && pft->par->cultivation_type==NONE && stand->type->landusetype==NATURAL);
     fpc_obs_cor = 1;
     if (stand->prescribe_landcover !=NO_LANDCOVER &&  pft->par->cultivation_type==NONE && stand->type->landusetype==NATURAL)
     {
-      pft->fpc_obs = stand->landcover[pft->par->id];
+      fpc_obs = stand->cell->landcover[pft->par->id];
       /* adjust observed FPC by stand fraction of natural vegetation */
-      fpc_obs_cor = pft->fpc_obs + (1 - stand->frac) * pft->fpc_obs;
+      fpc_obs_cor = fpc_obs + (1 - stand->frac) * fpc_obs;
     }
     if ((stand->prescribe_landcover == LANDCOVERFPC && fpc_obs_cor > 0 && pft->fpc < fpc_obs_cor &&  pft->par->cultivation_type==NONE && stand->type->landusetype==NATURAL) ||
-        (stand->prescribe_landcover == LANDCOVEREST && pft->fpc_obs > 0 &&  pft->par->cultivation_type==NONE && stand->type->landusetype==NATURAL) ||
+        (stand->prescribe_landcover == LANDCOVEREST && fpc_obs > 0 &&  pft->par->cultivation_type==NONE && stand->type->landusetype==NATURAL) ||
         (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pft->par->cultivation_type==NONE && istree(pft) &&
 #ifdef DAILY_ESTABLISHMENT
         !pft->established &&

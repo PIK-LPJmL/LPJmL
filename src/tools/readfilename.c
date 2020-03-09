@@ -78,8 +78,26 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
         }
       }
     }
+    if(iskeydefined(&f,"unit"))
+    {
+      if(fscanstring(&f,name,"unit",FALSE,verb))
+      {
+        if(verb)
+          readstringerr("unit");
+        return TRUE;
+      }
+      else
+      {
+        filename->unit=strdup(name);
+        if(filename->unit==NULL)
+        {
+          printallocerr("unit");
+          return TRUE;
+        }
+      }
+    }
     else
-      filename->time=NULL;
+      filename->unit=NULL;
   }
   else
   {
@@ -103,8 +121,40 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     }
     else
       filename->var=NULL;
+    if(iskeydefined(&f,"scale"))
+    {
+      filename->isscale=TRUE;
+      if(fscanreal(&f,&filename->scale,"scale",FALSE,verb))
+      {
+        if(verb)
+          readstringerr("scale");
+        return TRUE;
+      }
+    }
+    else
+      filename->isscale=FALSE;
     filename->time=NULL;
   }
+  if(iskeydefined(&f,"unit"))
+  {
+    if(fscanstring(&f,name,"unit",FALSE,verb))
+    {
+      if(verb)
+        readstringerr("unit");
+      return TRUE;
+    }
+    else
+    {
+      filename->unit=strdup(name);
+      if(filename->unit==NULL)
+      {
+        printallocerr("unit");
+        return TRUE;
+      }
+    }
+  }
+  else
+    filename->unit=NULL;
   if(fscanstring(&f,name,"name",FALSE,verb))
   {
     if(verb)

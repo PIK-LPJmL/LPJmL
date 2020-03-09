@@ -97,7 +97,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
     if(country->default_irrig_system<SURF || country->default_irrig_system>DRIP)
     {
       if(verb)
-        fprintf(stderr,"ERROR215: Default irrigation system=%d is not defined within 1 to 3 for %s.\n",country->default_irrig_system,country->name);
+        fprintf(stderr,"ERROR215: Default irrigation system=%d is not defined within 1 to 3 for %s.\n",(int)country->default_irrig_system,country->name);
        return 0;
     }
   } /* of 'for(n=0;...)' */

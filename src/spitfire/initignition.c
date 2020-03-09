@@ -30,8 +30,8 @@ Bool initignition(Cell grid[],         /* LPJ grid */
   Input_netcdf input_netcdf;
   if(config->human_ignition_filename.fmt==CDF)
   {
-    input_netcdf=openinput_netcdf(config->human_ignition_filename.name,
-                                  NULL,NULL,0,config);
+    input_netcdf=openinput_netcdf(&config->human_ignition_filename,
+                                  "yr-1",0,config);
     if(input_netcdf==NULL)
       return TRUE;
     for(cell=0;cell<config->ngridcell;cell++)

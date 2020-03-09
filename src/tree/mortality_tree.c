@@ -46,7 +46,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
     mort_max=pft->par->mort_max;
 
   /* switch off background mortality in case of prescribed land cover */
-  if (pft->prescribe_fpc)
+  if (pft->stand->prescribe_landcover==LANDCOVERFPC && pft->stand->type->landusetype==NATURAL)
     mort = 0.0;
   else
     mort=mort_max/(1+param.k_mort*bm_delta/tree->ind.leaf.carbon/pft->par->sla);

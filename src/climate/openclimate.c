@@ -56,7 +56,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
         s=malloc(strlen(file->filename)+12);
         check(s);
         sprintf(s,file->filename,file->firstyear);
-        openclimate_netcdf(file,s,filename->time,filename->var,units,config);
+        openclimate_netcdf(file,s,filename->time,filename->var,filename->unit,units,config);
         free(s);
       }
 #ifdef USE_MPI
@@ -76,6 +76,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
         return TRUE;
       file->n=isdaily(*file) ? NDAYYEAR*config->ngridcell : NMONTH*config->ngridcell;
       file->var=filename->var;
+      file->var_units=filename->unit;
       return FALSE;
     }
     else

@@ -41,7 +41,7 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
   landcover->file.fmt=config->landcover_filename.fmt;
   if(config->landcover_filename.fmt==CDF)
   {
-    if(opendata_netcdf(&landcover->file,&config->landcover_filename,NULL,config))
+    if(opendata_netcdf(&landcover->file,&config->landcover_filename,"1",config))
     {
       free(landcover);
       return NULL;

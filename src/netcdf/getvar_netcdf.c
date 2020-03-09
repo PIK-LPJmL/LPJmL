@@ -26,6 +26,7 @@
 Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
                    const char *filename, /**< filename */
                    const char *var,      /**< variable name or NULL */
+                   const char *var_units,/**< unit of variable or NULL */
                    const char *units,    /**< units or NULL*/
                    const Config *config  /**< LPJ configuration */
                   )                      /** \return TRUE on error */
@@ -67,7 +68,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
     return TRUE;
   }
 #ifdef USE_UDUNITS
-  if(units==NULL || nc_inq_attlen(file->ncid,file->varid,"units",&len))
+  if(units==NULL || (nc_inq_attlen(file->ncid,file->varid,"units",&len) && var_units==NULL))
   {
     file->slope=1;
     file->intercept=0;
@@ -83,16 +84,44 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
     }
     else
     {
-
-      fromstr=malloc(len+1);
-      if(fromstr==NULL)
+      if(var_units!=NULL)
       {
-        utTerm();
-        printallocerr("fromstr");
-        return TRUE;
+        fromstr=strdup(var_units);
+        if(fromstr==NULL)
+        {
+          utTerm();
+          printallocerr("fromstr");
+          return TRUE;
+        }
+        if(isroot(*config) && !nc_inq_attlen(file->ncid,file->varid,"units",&len))
+        {
+          newstr=malloc(len+1);
+          if(newstr==NULL)
+          {
+            free(fromstr);
+            utTerm();
+            printallocerr("fromstr");
+            return TRUE;
+          }
+          nc_get_att_text(file->ncid,file->varid,"units",newstr);
+          if(strcmp(newstr,fromstr))
+            fprintf(stderr,"WARNING408: Unit '%s' in '%s' differs from unit '%s' in configuration file.\n",
+                    newstr,filename,fromstr);
+          free(newstr);
+        }
       }
-      nc_get_att_text(file->ncid,file->varid,"units",fromstr);
-      fromstr[len]='\0';
+      else
+      {
+        fromstr=malloc(len+1);
+        if(fromstr==NULL)
+        {
+          utTerm();
+          printallocerr("fromstr");
+          return TRUE;
+        }
+        nc_get_att_text(file->ncid,file->varid,"units",fromstr);
+        fromstr[len]='\0';
+      }
       /* if unit for precipitation is mm convert it to kg/m2/day */
       if(!isdaily(*file) && !strcmp(units,"kg/m2/day"))
         units="kg/m2/month";
@@ -112,7 +141,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         if(utScan(fromstr,&from))
         {
           if(isroot(*config))
-            fprintf(stderr,"WARNING404: Invalid unit %s for variable %s in '%s', assume none.\n",fromstr,(var==NULL) ? name : var,filename); 
+            fprintf(stderr,"WARNING404: Invalid unit %s for variable %s in '%s', assume none.\n",fromstr,(var==NULL) ? name : var,filename);
           file->slope=1;
           file->intercept=0;
         }
@@ -124,7 +153,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
             if(newstr==NULL)
             {
               utTerm();
-              printallocerr("fromstr");
+              printallocerr("newstr");
               return TRUE;
             }
             strncpy(newstr,units,strlen(units)-3);
@@ -219,11 +248,11 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
       case NC_FLOAT:
         nc_get_att_float(file->ncid,file->varid,"add_offset",&f);
         file->intercept+=file->slope*f;
-        break; 
+        break;
       case NC_DOUBLE:
         nc_get_att_double(file->ncid,file->varid,"add_offset",&d);
         file->intercept+=file->slope*d;
-        break; 
+        break;
     }
   }
   if(!nc_inq_atttype(file->ncid,file->varid,"scale_factor",&type))
@@ -233,11 +262,11 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
       case NC_FLOAT:
         nc_get_att_float(file->ncid,file->varid,"scale_factor",&f);
         file->slope*=f;
-        break; 
+        break;
       case NC_DOUBLE:
         nc_get_att_double(file->ncid,file->varid,"scale_factor",&d);
         file->slope*=d;
-        break; 
+        break;
     }
   }
   return FALSE;

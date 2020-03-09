@@ -129,6 +129,13 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
           free(config->outnames[flag].var);
           config->outnames[flag].var=strdup(config->outputvars[count].filename.var);
         }
+        if(config->outputvars[count].filename.unit!=NULL)
+        {
+          free(config->outnames[flag].unit);
+          config->outnames[flag].unit=strdup(config->outputvars[count].filename.unit);
+        }
+        if(config->outputvars[count].filename.isscale)
+          config->outnames[flag].scale=config->outputvars[count].filename.scale;
         config->outputvars[count].oneyear=(strstr(config->outputvars[count].filename.name,"%d")!=NULL);
         if(config->outputvars[count].oneyear && checkfmt(config->outputvars[count].filename.name,'d'))
         {

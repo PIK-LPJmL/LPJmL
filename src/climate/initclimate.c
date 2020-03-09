@@ -91,7 +91,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(config->wet_filename.name!=NULL)
   {
-    if(openclimate(&climate->file_wet,&config->wet_filename,NULL,LPJ_SHORT,config))
+    if(openclimate(&climate->file_wet,&config->wet_filename,"day",LPJ_SHORT,config))
     {
       closeclimatefile(&climate->file_temp,isroot(*config));
       closeclimatefile(&climate->file_prec,isroot(*config));

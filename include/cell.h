@@ -100,6 +100,7 @@ Received 19 November 1997; accepted 15 January 1999*/
   Output output;            /**< Output data */
   Discharge discharge;
   int elevation;            /**< cell elevation (m) */
+  const Real *landcover;    /**< prescribed landcover or NULL */
   Balance balance;          /**< balance checks */
 };
 
@@ -110,7 +111,7 @@ extern void freecell(Cell *,int,Bool);
 extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
                          int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
-                          Real,int,const Real *,Bool,Bool,const Config *);
+                          Real,int,Bool,Bool,const Config *);
 extern void update_monthly(Cell *,Real,Real,int,int,int,int);
 extern void init_annual(Cell *,int,int,int);
 extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,int,Bool);

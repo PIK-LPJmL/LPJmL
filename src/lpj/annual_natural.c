@@ -33,7 +33,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   Pft *pft;
   Real *fpc_inc;
   Real fire_frac;
-  Real fpc_obs_cor;
+  Real fpc_obs,fpc_obs_cor;
   Stocks flux;
 #ifndef DAILY_ESTABLISHMENT
   Stocks flux_estab;
@@ -48,7 +48,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     
     foreachpft(pft,p,&stand->pftlist)
     {
-      pft->prescribe_fpc = (stand->prescribe_landcover == LANDCOVERFPC && stand->type->landusetype==NATURAL);
 
 #ifdef DEBUG2
       printf("PFT:%s fpc_inc=%g fpc=%g\n",pft->par->name,fpc_inc[p],pft->fpc);
@@ -115,10 +114,11 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     /* if land cover is prescribed: reduce FPC and Nind of PFT if observed value is exceeded */
-    if (pft->prescribe_fpc)
+    if(stand->prescribe_landcover == LANDCOVERFPC && stand->type->landusetype==NATURAL)
     {
+      fpc_obs = stand->cell->landcover[pft->par->id];
       /* correct prescribed observed FPC value by fraction of natural vegetation stand to reach prescribed value */
-      fpc_obs_cor = pft->fpc_obs + (1 - stand->frac) * pft->fpc_obs;
+      fpc_obs_cor = fpc_obs + (1 - stand->frac) * fpc_obs;
       if (fpc_obs_cor > 0.99)
         fpc_obs_cor = 0.99;
       if (pft->fpc > fpc_obs_cor)

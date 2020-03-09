@@ -45,6 +45,5 @@ void newpft(Pft *pft,            /**< PFT variables */
 #ifdef DAILY_ESTABLISHMENT
   pft->established=FALSE;
 #endif
-  pft->prescribe_fpc=FALSE;
   pft->par->newpft(pft,year,day); /* type-specific allocation of memory */
 } /* of 'newpft' */

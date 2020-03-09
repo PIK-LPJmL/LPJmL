@@ -16,11 +16,12 @@
 
 #include "lpj.h"
 
-static void freefilename(Filename filename)
+static void freefilename(Filename *filename)
 {
-  free(filename.name);
-  free(filename.var);
-  free(filename.time);
+  free(filename->name);
+  free(filename->var);
+  free(filename->unit);
+  free(filename->time);
 } /* of 'freefilename' */
 
 void freeconfig(Config *config /**< LPJmL configuration */
@@ -28,8 +29,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
 {
   int i;
   if(config->soil_filename.fmt!=CDF)
-    freefilename(config->coord_filename);
-  freefilename(config->soil_filename);
+    freefilename(&config->coord_filename);
+  freefilename(&config->soil_filename);
   free(config->outputdir);
   free(config->inputdir);
   free(config->restartdir);
@@ -39,19 +40,19 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->layer_index);
   if(config->river_routing)
   {
-    freefilename(config->drainage_filename);
+    freefilename(&config->drainage_filename);
     if(config->drainage_filename.fmt==CDF)
-      freefilename(config->river_filename);
-    freefilename(config->lakes_filename);
+      freefilename(&config->river_filename);
+    freefilename(&config->lakes_filename);
     if(config->withlanduse!=NO_LANDUSE)
     {
-      freefilename(config->neighb_irrig_filename);
+      freefilename(&config->neighb_irrig_filename);
       if(config->reservoir)
       {
         pnet_free(config->irrig_res);
         pnet_free(config->irrig_res_back);
-        freefilename(config->elevation_filename);
-        freefilename(config->reservoir_filename);
+        freefilename(&config->elevation_filename);
+        freefilename(&config->reservoir_filename);
       }
       pnet_free(config->irrig_neighbour);
       pnet_free(config->irrig_back);
@@ -59,20 +60,20 @@ void freeconfig(Config *config /**< LPJmL configuration */
     pnet_free(config->route);
   }
   if(config->wateruse)
-    freefilename(config->wateruse_filename);
-  freefilename(config->temp_filename);
-  freefilename(config->prec_filename);
+    freefilename(&config->wateruse_filename);
+  freefilename(&config->temp_filename);
+  freefilename(&config->prec_filename);
   if(config->with_radiation)
   {
     if(config->with_radiation!=RADIATION_SWONLY)
-      freefilename(config->lwnet_filename);
-    freefilename(config->swdown_filename);
+      freefilename(&config->lwnet_filename);
+    freefilename(&config->swdown_filename);
   }
   else
-    freefilename(config->cloud_filename);
-  freefilename(config->co2_filename);
+    freefilename(&config->cloud_filename);
+  freefilename(&config->co2_filename);
   if(config->wet_filename.name!=NULL)
-    freefilename(config->wet_filename);
+    freefilename(&config->wet_filename);
   for(i=0;i<config->n_out;i++)
     free(config->outputvars[i].filename.name);
   free(config->outputvars);
@@ -83,47 +84,47 @@ void freeconfig(Config *config /**< LPJmL configuration */
   freesoilpar(config->soilpar,config->nsoil);
   free(config->npft);
   if(config->ispopulation)
-    freefilename(config->popdens_filename);
+    freefilename(&config->popdens_filename);
   if(config->grassfix_filename.name!=NULL)
-    freefilename(config->grassfix_filename);
+    freefilename(&config->grassfix_filename);
   if(config->grassharvest_filename.name!=NULL)
-    freefilename(config->grassharvest_filename);
+    freefilename(&config->grassharvest_filename);
   if(config->with_nitrogen  || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-    freefilename(config->wind_filename);
+    freefilename(&config->wind_filename);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX)
-      freefilename(config->humid_filename);
-    freefilename(config->tamp_filename);
+      freefilename(&config->humid_filename);
+    freefilename(&config->tamp_filename);
     if(config->tamp_filename.fmt==CDF && config->tmax_filename.name!=NULL)
-      freefilename(config->tmax_filename);
-    freefilename(config->lightning_filename);
-    freefilename(config->human_ignition_filename);
+      freefilename(&config->tmax_filename);
+    freefilename(&config->lightning_filename);
+    freefilename(&config->human_ignition_filename);
     if(config->prescribe_burntarea)
-      freefilename(config->burntarea_filename);
+      freefilename(&config->burntarea_filename);
   }
   if(config->withlanduse!=NO_LANDUSE)
   {
     freecountrypar(config->countrypar,config->ncountries);
     freeregionpar(config->regionpar,config->nregions);
-    freefilename(config->landuse_filename);
-    freefilename(config->countrycode_filename);
+    freefilename(&config->landuse_filename);
+    freefilename(&config->countrycode_filename);
     if(config->countrycode_filename.fmt==CDF)
-      freefilename(config->regioncode_filename);
+      freefilename(&config->regioncode_filename);
   }
   if(config->with_nitrogen)
   {
     if(config->with_nitrogen!=UNLIM_NITROGEN)
     { 
-      freefilename(config->no3deposition_filename);
-      freefilename(config->nh4deposition_filename);
+      freefilename(&config->no3deposition_filename);
+      freefilename(&config->nh4deposition_filename);
     }
-    freefilename(config->soilph_filename);
+    freefilename(&config->soilph_filename);
     if(config->withlanduse!=NO_LANDUSE && config->fertilizer_input)
-      freefilename(config->fertilizer_nr_filename);
+      freefilename(&config->fertilizer_nr_filename);
   }
   if(config->prescribe_landcover != NO_LANDCOVER)
-    freefilename(config->landcover_filename);
+    freefilename(&config->landcover_filename);
 
   freeoutputvar(config->outnames,NOUT);
 } /* of 'freeconfig' */

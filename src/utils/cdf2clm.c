@@ -381,7 +381,7 @@ int main(int argc,char **argv)
   {
     if(verbose)
       printf("%s\n",argv[j]);
-    if(openclimate_netcdf(&climate,argv[j],NULL,var,units,&config))
+    if(openclimate_netcdf(&climate,argv[j],NULL,var,NULL,units,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;

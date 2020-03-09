@@ -22,7 +22,7 @@ Bool openfile_netcdf(Climatefile *file,    /**< data file */
                      const Config *config  /**< LPJ configuration */
                     )                      /** \return TRUE on error */
 {
-  if(openclimate_netcdf(file,filename->name,filename->time,filename->var,units,config))
+  if(openclimate_netcdf(file,filename->name,filename->time,filename->var,filename->unit,units,config))
     return TRUE;
   file->oneyear=FALSE;
   if(file->time_step!=YEAR)

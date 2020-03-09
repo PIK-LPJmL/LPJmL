@@ -55,22 +55,22 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
     width_var=max(width_var,strlen(output[i].var));
   }
   fprintf(file,"Output files available\n"
-          "%-*s %-*s %-*s Type  Description\n",width,"Name",width_var,"Variable",width_unit,"Unit");
+          "%-*s %-*s %-*s Type  Scale Offset Description\n",width,"Name",width_var,"Variable",width_unit,"Unit");
   frepeatch(file,'-',width);
   fputc(' ',file);
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" ----- ",file);
+  fputs(" ----- ----- ------ ",file);
   frepeatch(file,'-',77-width-width_unit-width_var-7);
   putc('\n',file);
   for(i=0;i<size;i++)
   {
    index=(item==NULL) ? i : item[i].index;
-   fprintf(file,"%-*s %-*s %-*s %5s %s\n",width,output[index].name,
+   fprintf(file,"%-*s %-*s %-*s %5s %5g %6g %s\n",width,output[index].name,
            width_var,output[index].var,
            width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,
-           typenames[getoutputtype(index)],output[index].descr);
+           typenames[getoutputtype(index)],output[index].scale,output[index].offset,output[index].descr);
   }
   free(item);
   frepeatch(file,'-',width);
@@ -78,7 +78,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" ----- ",file);
+  fputs(" ----- ----- ------ ",file);
   frepeatch(file,'-',77-width-width_unit-width_var-7);
   putc('\n',file);
 } /* of 'fprintoutputvar' */

@@ -22,7 +22,6 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
                    int ncft,             /**< number of crop pfts */
                    Real popdens,         /**< population density (capita/km2) */
                    int year,               /**< simulation year (AD) */
-                   const Real landcover[], /**< array with observed PFT fractions */
                    Bool isdaily,           /**< daily temperature data (TRUE/FALSE) */
                    Bool intercrop,         /**< intercropping (TRUE/FALSE) */
                    const Config *config    /**< LPJ configuration */
@@ -52,8 +51,6 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
   foreachstand(stand,s,cell->standlist)
   {
     stand->prescribe_landcover = config->prescribe_landcover;
-    if (config->prescribe_landcover != NO_LANDCOVER && stand->type->landusetype==NATURAL)
-      stand->landcover = landcover;
 
     stand->soil.mean_maxthaw=(stand->soil.mean_maxthaw-stand->soil.mean_maxthaw/CLIMBUFSIZE)+stand->soil.maxthaw_depth/CLIMBUFSIZE;
     if(!config->with_nitrogen)

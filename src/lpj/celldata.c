@@ -114,8 +114,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     celldata->with_nitrogen=TRUE;
     if(config->soilph_filename.fmt==CDF)
     {
-      celldata->soilph.cdf=openinput_netcdf(config->soilph_filename.name,
-                                            config->soilph_filename.var,
+      celldata->soilph.cdf=openinput_netcdf(&config->soilph_filename,
                                             NULL,0,config);
       if(celldata->soilph.cdf==NULL)
       {

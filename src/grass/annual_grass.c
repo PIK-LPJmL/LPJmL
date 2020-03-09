@@ -30,7 +30,8 @@ Bool annual_grass(Stand *stand,        /**< pointer to stand */
     isdead=allocation_grass(&stand->soil.litter,pft,fpc_inc,with_nitrogen);
   }
   stand->growing_days=0;
-  if(!isdead && !pft->prescribe_fpc)
+  if (!(pft->stand->prescribe_landcover==LANDCOVERFPC && pft->stand->type->landusetype==NATURAL) &&
+      !isdead)  /* still not dead? */
     isdead=!survive(pft->par,&stand->cell->climbuf);
   return isdead;
 } /* of 'annual_grass' */

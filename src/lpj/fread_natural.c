@@ -18,6 +18,5 @@
 Bool fread_natural(FILE * UNUSED(file),Stand *stand,
                    Bool UNUSED(swap))
 {
-  stand->landcover=NULL;
   return FALSE;
 } /* of 'fread_natural' */

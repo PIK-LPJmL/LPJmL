@@ -74,13 +74,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   {
     if(config->countrycode_filename.fmt==CDF)
     {
-      countrycode.cdf=openinput_netcdf(config->countrycode_filename.name,config->countrycode_filename.var,NULL,0,config);
+      countrycode.cdf=openinput_netcdf(&config->countrycode_filename,NULL,0,config);
       if(countrycode.cdf==NULL)
       {
         closecelldata(celldata);
         return NULL;
       }
-      regioncode.cdf=openinput_netcdf(config->regioncode_filename.name,config->regioncode_filename.var,NULL,0,config);
+      regioncode.cdf=openinput_netcdf(&config->regioncode_filename,NULL,0,config);
       if(regioncode.cdf==NULL)
       {
         closeinput_netcdf(countrycode.cdf);
@@ -113,7 +113,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       if(config->grassfix_filename.fmt==CDF)
       {
-        grassfix_file.cdf=openinput_netcdf(config->grassfix_filename.name,config->grassfix_filename.var,NULL,0,config);
+        grassfix_file.cdf=openinput_netcdf(&config->grassfix_filename,NULL,0,config);
         if(grassfix_file.cdf==NULL)
         {
           closecelldata(celldata);
@@ -160,7 +160,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       if(config->grassharvest_filename.fmt==CDF)
       {
-        grassharvest_file.cdf=openinput_netcdf(config->grassharvest_filename.name,config->grassharvest_filename.var,NULL,0,config);
+        grassharvest_file.cdf=openinput_netcdf(&config->grassharvest_filename,NULL,0,config);
         if(grassharvest_file.cdf==NULL)
         {
           closecelldata(celldata);
@@ -230,7 +230,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     /* Open file for lake fraction */
     if(config->lakes_filename.fmt==CDF)
     {
-      lakes.cdf=openinput_netcdf(config->lakes_filename.name,config->lakes_filename.var,NULL,0,config);
+      lakes.cdf=openinput_netcdf(&config->lakes_filename,"1",0,config);
       if(lakes.cdf==NULL)
       {
         closecelldata(celldata);
@@ -547,7 +547,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].ignition.nesterov_accum=0;
     grid[i].ignition.nesterov_max=0;
     grid[i].ignition.nesterov_day=0;
-
+    grid[i].landcover=NULL;
 #ifdef COUPLING_WITH_FMS
     grid[i].laketemp=0;
 #endif

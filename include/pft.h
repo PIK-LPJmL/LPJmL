@@ -184,9 +184,6 @@ typedef struct Pft
   } *par;                /**< PFT parameters */
   Real fpc;              /**< foliar projective cover (FPC) under full leaf
                             cover as fraction of modelled area */
-  Real fpc_obs;          /**< foliar projective cover (FPC) under full leaf
-                            cover as prescribed from observation */
-  Bool prescribe_fpc;    /**< prescribe FPC? */
   Real albedo;           /**< albedo of the entire PFT (mix of green leaves, branches and snow albedo) */
   Real fapar;            /**< green fraction of absorbed photosythetic active radiation */
   Real nind;             /**< individual density (indiv/m2) */

@@ -60,7 +60,6 @@ extern Real alphaa_grass(const Pft *,int,int);
 extern void litter_update_grass(Litter *, Pft*,Real);
 extern Bool allocation_grass(Litter *,Pft *,Real *,int);
 extern void output_daily_grass(Daily_outputs *,const Pft *,Real, Real);
-extern Bool allocation_grass(Litter *,Pft *);
 extern Real lai_grass(const Pft *);
 extern Real actual_lai_grass(const Pft *);
 extern Stocks turnover_grass(Litter *,Pft *,Bool,Real);

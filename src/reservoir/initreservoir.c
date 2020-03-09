@@ -36,8 +36,8 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
   size_t offset;
   if(config->elevation_filename.fmt==CDF)
   {
-    input=openinput_netcdf(config->elevation_filename.name,
-                           config->elevation_filename.var,"m",0,config);
+    input=openinput_netcdf(&config->elevation_filename,
+                           "m",0,config);
     if(input==NULL)
       return TRUE;
     for(cell=0;cell<config->ngridcell;cell++)
