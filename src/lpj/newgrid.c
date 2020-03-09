@@ -171,7 +171,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         /* Open grassharvest file */
         grassharvest_file.file=openinputfile(&header,&swap_grassharvest,&config->grassharvest_filename,
-                                           headername,&version,&offset,config);
+                                             headername,&version,&offset,config);
         if(grassharvest_file.file==NULL)
         {
           closecelldata(celldata);
@@ -204,6 +204,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
             closeinput(countrycode,config->countrycode_filename.fmt);
             if(config->countrycode_filename.fmt==CDF)
               closeinput(regioncode,config->regioncode_filename.fmt);
+          }
+          if(config->grassfix_filename.name!=NULL)
+          {
+            if(config->grassfix_filename.fmt==CDF)
+              closeinput_netcdf(grassfix_file.cdf);
+            else
+              fclose(grassfix_file.file);
           }
           if(config->grassfix_filename.name!=NULL)
           {

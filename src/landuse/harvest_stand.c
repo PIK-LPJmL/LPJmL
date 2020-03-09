@@ -86,7 +86,6 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
     bm_tot.carbon += grass->ind.leaf.carbon;
     bm_tot.nitrogen+= grass->ind.leaf.nitrogen;
   }
-//  bm_grazed = stand->cell->ml.nr_of_lsus_ext * DEMAND_COW_EXT;
   bm_grazed = 1e-4* grassland->nr_of_lsus_ext * DEMAND_COW_EXT;
 
   foreachpft(pft,p,&stand->pftlist)

@@ -23,7 +23,7 @@ int findstand(const Standlist standlist, /**< Stand list */
 {
   int s;
   const Stand *stand;
-  Irrigation *data; 
+  const Irrigation *data;
   foreachstand(stand,s,standlist)
     if(stand->type->landusetype==landusetype && stand->data!=NULL)
     {
