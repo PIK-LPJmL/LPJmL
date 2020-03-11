@@ -32,7 +32,7 @@ char **createpftnames(int index,           /**< output index */
     return NULL;
   switch(index)
   {
-    case SDATE: case HDATE: 
+    case SDATE: case HDATE:
     case SDATE2: case HDATE2: case SYEAR: case SYEAR2:
         for(i=0;i<ncft;i++)
           pftnames[i]=strdup(pftpar[npft+i].name);
@@ -65,7 +65,7 @@ char **createpftnames(int index,           /**< output index */
         pftnames[incr]=strdup((i) ? "irrigated biomass grass": "biomass grass");
         pftnames[incr+1]=strdup((i) ? "irrigated biomass tree":  "biomass tree");
         incr+=2;
-      } 
+      }
       break;
     case PFT_HARVEST: case PFT_RHARVEST: case CFT_CONSUMP_WATER_G: case CFT_EVAP: case CFT_EVAP_B:
     case CFT_CONSUMP_WATER_B: case CFTFRAC: case CFT_AIRRIG: case CFT_FPAR: case CFT_IRRIG_EVENTS:
@@ -121,7 +121,11 @@ char **createpftnames(int index,           /**< output index */
       for(i=0;i<npft-nbiomass;i++)
         pftnames[i+1]=strdup(pftpar[i].name);
       break;
-  }
+    case PFT_MORT:
+      for(i=0;i<npft-nbiomass;i++)
+        pftnames[i]=strdup(pftpar[i].name);
+      break;
+  } /* of switch */
   return pftnames;
 } /* of 'createpftnames' */
 

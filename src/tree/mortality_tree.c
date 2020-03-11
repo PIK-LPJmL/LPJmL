@@ -59,6 +59,8 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
   }
   else
     heatstress=0;
+  if(pft->stand->type->landusetype==NATURAL)
+    pft->stand->cell->output.pft_mort[pft->par->id]=min(mort,1);
   nind_kill=(mort>1) ? pft->nind : pft->nind*mort;
   pft->nind-=nind_kill;
   litter_update_tree(litter,pft,nind_kill);

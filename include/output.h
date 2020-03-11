@@ -151,6 +151,7 @@ typedef struct
   Real *mpft_lai;         /**< Pft specific LAI */
   Harvest *pft_harvest;
   Real *fpc;             /**< foliar projective cover (FPC) */
+  Real *pft_mort;        /**< annual mortality  */
   Real *pft_gcgp;
   Real *gcgp_count;
   Real mevap_lake;       /**< Monthly lake evaporation (mm) */

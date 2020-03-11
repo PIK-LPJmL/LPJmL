@@ -124,7 +124,7 @@ layer /* name of index variabel for soil layer output */
   D_PAR "d_par" "PAR" "Photosynthetic Active Radiation" "J/m2/day" 1.0 0.0
   D_DAYLENGTH "d_daylength" "daylength" "day length" "h" 1.0 0.0
   D_SWE "d_swe" "SWE" "snow water equivalent" "mm" 1.0 0.0
-  D_DISCHARGE "d_discharge" "discharge" "discharge" "m3/s" 1.0 0.0
+  D_DISCHARGE "d_discharge" "discharge" "discharge" "m3/sec" 1.0 0.0
   D_RUNOFF "d_runoff" "runoff" "runoff" "mm/day" 1.0 0.0
   D_RH "d_rh" "rh" "heterotrophic respiration" "gC/m2/day" 1.0 0.0
   D_INTERC "d_interc" "interc" "interception" "mm/day" 1.0 0.0
@@ -135,7 +135,7 @@ layer /* name of index variabel for soil layer output */
   MEVAP_RES "mevap_res" "evap_res" "evaporation from reservoirs" "mm/month" 1.0 0.0
   MPREC_RES "mprec_res" "prec_res" "reservoir precipitation" "mm/month" 1.0 0.0
   MFIREC "mfirec" "FireC" "fire carbon emission" "gC/m2/month" 1.0 0.0
-  MNFIRE "mnfire" "nfire" "number of fires" "" 1.0 0.0
+  MNFIRE "mnfire" "nfire" "number of fires" "1/month" 1.0 0.0
   MFIREDI "mfiredi" "firedi" "fire danger index" "" 1.0 0.0
   MFIREEMISSION_CO2 "mfireemission_co2" "co2_emission" "CO2 fire emission" "g/m2/month" 1.0 0.0
   MFIREEMISSION_CO "mfireemission_co" "co_emission" "CO fire emission" "g/m2/month" 1.0 0.0
@@ -237,3 +237,4 @@ layer /* name of index variabel for soil layer output */
   MLAKEVOL "mlakevol" "lakevol" "lake content volume" "dm3" 1.0 0.0
   MLAKETEMP "mlaketemp" "laketemp" "lake surface temperature" "celsius" 1.0 0.0
   MEAN_VEGC_MANGRASS "mean_vegc_mangrass" "VegC" "Mean veg. C of managed grasslands" "gC/m2" 1.0 0.0
+  PFT_MORT "pft_mort" "mortality" "Annual mortality" "1/yr" 1.0 0.0

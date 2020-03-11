@@ -254,6 +254,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputvar(CFT_CONSUMP_WATER_B,cft_consump_water_b,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvar(GROWING_PERIOD,growing_period,2*(ncft+NGRASS));
   writeoutputvar(FPC,fpc,npft-config->nbiomass+1);
+  writeoutputvar(PFT_MORT,pft_mort,npft-config->nbiomass);
   if(isopen(output,SOILC_LAYER))
   {
     outindex(output,SOILC_LAYER,config->rank);
