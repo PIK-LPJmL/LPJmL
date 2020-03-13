@@ -51,6 +51,8 @@ int outputsize(int index,    /**< output index */
       return (ncft+NGRASS+NBIOMASSTYPE)*2;
     case FPC:
       return npft-nbiomass+1;
+    case PFT_MORT:
+      return npft-nbiomass;
     case MSOILTEMP: case MSWC:
       return NSOILLAYER;
     case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER:

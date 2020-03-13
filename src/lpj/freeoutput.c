@@ -30,6 +30,7 @@ void freeoutput(Output *output /**< Output data */
   free(output->pft_gcgp);
   free(output->gcgp_count);
   free(output->fpc);
+  free(output->pft_mort);
   free(output->cftfrac);
   free(output->cft_pet);
   free(output->cft_transp);

@@ -133,7 +133,7 @@
   { "id" : D_PAR, "name": "d_par", "var" : "PAR", "descr" :  "Photosynthetic Active Radiation", "unit" : "J/m2/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_DAYLENGTH, "name": "d_daylength", "var" : "daylength", "descr" :  "day length", "unit" : "h", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_SWE, "name": "d_swe", "var" : "SWE", "descr" :  "snow water equivalent", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
-  { "id" : D_DISCHARGE, "name": "d_discharge", "var" : "discharge", "descr" :  "discharge", "unit" : "m3/s", "scale" : 1.0, "offset" : 0.0},
+  { "id" : D_DISCHARGE, "name": "d_discharge", "var" : "discharge", "descr" :  "discharge", "unit" : "m3/sec", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_RUNOFF, "name": "d_runoff", "var" : "runoff", "descr" :  "runoff", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_RH, "name": "d_rh", "var" : "rh", "descr" :  "heterotrophic respiration", "unit" : "gC/m2/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_INTERC, "name": "d_interc", "var" : "interc", "descr" :  "interception", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
@@ -144,7 +144,7 @@
   { "id" : MEVAP_RES, "name": "mevap_res", "var" : "evap_res", "descr" :  "evaporation from reservoirs", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MPREC_RES, "name": "mprec_res", "var" : "prec_res", "descr" :  "reservoir precipitation", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MFIREC, "name": "mfirec", "var" : "FireC", "descr" :  "fire carbon emission", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MNFIRE, "name": "mnfire", "var" : "nfire", "descr" :  "number of fires", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MNFIRE, "name": "mnfire", "var" : "nfire", "descr" :  "number of fires", "unit" : "1/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MFIREDI, "name": "mfiredi", "var" : "firedi", "descr" :  "fire danger index", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MFIREEMISSION_CO2, "name": "mfireemission_co2", "var" : "co2_emission", "descr" :  "CO2 fire emission", "unit" : "g/m2/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MFIREEMISSION_CO, "name": "mfireemission_co", "var" : "co_emission", "descr" :  "CO fire emission", "unit" : "g/m2/month", "scale" : 1.0, "offset" : 0.0},
@@ -308,5 +308,6 @@
   { "id" : PFT_NLIMIT, "name": "pft_nlimit", "var": "nlimit", "descr": "ratio N-constrained to unconstrained vmax", "unit": "-", "scale": 1.0, "offset" : 0.0},
   { "id" : SOILNO3_LAYER, "name": "soilno3_layer", "var": "SoilNO3", "descr": "soil NO3 nitrogen in layer", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
   { "id" : SOILNH4_LAYER, "name": "soilnh4_layer", "var": "SoilNH4", "descr": "soil NH4 nitrogen in layer", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
-  {"id" : MEAN_VEGC_MANGRASS, "name": "mean_vegc_mangrass", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0}
+  {"id" : MEAN_VEGC_MANGRASS, "name": "mean_vegc_mangrass", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
+  {"id" : PFT_MORT, "name": "pft_mort", "var": "mortality", "descr": "Annual mortality", "unit": "1/yr", "scale": 1.0, "offset" : 0.0}
 ],

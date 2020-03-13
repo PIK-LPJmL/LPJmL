@@ -45,6 +45,8 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->pft_harvest);
   output->fpc = newvec(Real, (npft-nbiomass)+1);
   checkptr(output->fpc);
+  output->pft_mort = newvec(Real, (npft-nbiomass));
+  checkptr(output->pft_mort);
   output->cftfrac=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->cftfrac);
   output->cft_consump_water_g=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE));
