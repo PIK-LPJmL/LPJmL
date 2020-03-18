@@ -15,7 +15,7 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-v] [-units unit] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] gridfile netcdffile\n"
+#define USAGE "Usage: %s [-v] [-units unit] [-var name] [-time name] [-o filename] [-scale factor] [-id s] [-version v] [-float] gridfile netcdffile\n"
 #else
 #define USAGE "Usage: %s [-v] [-var name] [-o filename] [-scale factor] [-id s] [-version v] [-float] gridfile netcdffile\n"
 #endif
@@ -105,7 +105,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       {
         free(f);
         fprintf(stderr,"ERROR421: Cannot read float data: %s.\n",
-               nc_strerror(rc)); 
+               nc_strerror(rc));
         nc_close(file->ncid);
         return TRUE;
       }
@@ -210,7 +210,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
   }
   if(file->datatype==LPJ_FLOAT)
     free(f);
-  else 
+  else
     free(d);
   return FALSE;
 } /* of 'readclimate2' */
@@ -223,7 +223,7 @@ int main(int argc,char **argv)
   Coordfile coordfile;
   Climatefile climate;
   Config config;
-  char *units,*var,*outname,*endptr;
+	char *units,*var,*outname,*endptr,*time_name;
   float scale,*data;
   Filename coord_filename;
   Coord *coords;
@@ -238,6 +238,7 @@ int main(int argc,char **argv)
   /* set default values */
   units=NULL;
   var=NULL;
+  time_name=NULL;
   scale=1;
   isfloat=verbose=FALSE;
   outname="out.clm"; /* default file name for output */
@@ -257,6 +258,16 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         var=argv[++i];
+      }
+      else if(!strcmp(argv[i],"-time"))
+      {
+        if(argc==i+1)
+        {
+          fprintf(stderr,"Missing argument after option '-time'.\n"
+                 USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        time_name=argv[++i];
       }
 #ifdef USE_UDUNITS
       else if(!strcmp(argv[i],"-units"))
@@ -362,14 +373,14 @@ int main(int argc,char **argv)
   config.resolution.lat=header.cellsize_lat;
   config.resolution.lon=header.cellsize_lon;
   for(j=0;j<numcoord(coordfile);j++)
-    readcoord(coordfile,coords+j,&config.resolution); 
+    readcoord(coordfile,coords+j,&config.resolution);
   closecoord(coordfile);
   header.nyear=0;
   header.ncell=config.ngridcell;
   header.scalar=scale;
   header.order=CELLYEAR;
   header.firstcell=0;
-  header.datatype=(isfloat) ? LPJ_FLOAT : LPJ_SHORT; 
+  header.datatype=(isfloat) ? LPJ_FLOAT : LPJ_SHORT;
   file=fopen(outname,"wb");
   if(file==NULL)
   {
@@ -381,7 +392,7 @@ int main(int argc,char **argv)
   {
     if(verbose)
       printf("%s\n",argv[j]);
-    if(openclimate_netcdf(&climate,argv[j],NULL,var,NULL,units,&config))
+    if(openclimate_netcdf(&climate,argv[j],time_name,var,NULL,units,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
@@ -393,10 +404,10 @@ int main(int argc,char **argv)
       {
         case DAY:
           header.nbands=NDAYYEAR*climate.var_len;
-          break; 
+          break;
         case MONTH:
           header.nbands=NMONTH*climate.var_len;
-          break; 
+          break;
         case YEAR: case MISSING_TIME:
           header.nbands=climate.var_len;
           break;
@@ -453,7 +464,7 @@ int main(int argc,char **argv)
         }
       }
       else
-      { 
+      {
         for(k=0;k<config.ngridcell*header.nbands;k++)
         {
           if(round(data[k]/scale)<SHRT_MIN || round(data[k]/scale)>SHRT_MAX)
@@ -461,8 +472,8 @@ int main(int argc,char **argv)
             fprintf(stderr,"WARNING: Data overflow for cell %d ",k/header.nbands);
             fprintcoord(stderr,coords+k/header.nbands);
             fprintf(stderr,") at %s %d in %d.\n",isdaily(climate) ? "day" : "month",(k % header.nbands)+1,climate.firstyear+year);
-          } 
-          s[k]=(short)round(data[k]/scale); 
+          }
+          s[k]=(short)round(data[k]/scale);
         }
         if(fwrite(s,sizeof(short),config.ngridcell*header.nbands,file)!=config.ngridcell*header.nbands)
         {

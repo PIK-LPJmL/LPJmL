@@ -11,9 +11,9 @@
           cdf2clm - convert NetCDF files into CLM files
 
      <B>SYNOPSIS</B>
-          <B>cdf2clm</B> [-v] [-scale factor] [-units u] [-var name] [-id
-          string] [-version v] [-float] [-o clmfile] gridfile clmfile
-          ...
+          <B>cdf2clm</B> [-v] [-scale factor] [-units u] [-var name] [-time
+          name] [-id string] [-version v] [-float] [-o clmfile]
+          gridfile clmfile ...
 
      <B>DESCRIPTION</B>
           Program converts NetCDF input data into CLM input data.
@@ -26,25 +26,28 @@
                set unit to convert from  NetCDF file
 
           -var name
-               variable name in NetCDF file
+             variable name in NetCDF file
+
+          -time name
+             name of time in NetCDF file, default is "time" or "TIME"
 
           -id string
-               LPJ header string in clm file
+             LPJ header string in clm file
 
           -version v
-               version of clm header, default is 3
+             version of clm header, default is 3
 
           -float
-               write float values in clm file, default is short
+             write float values in clm file, default is short
 
           -<I>o</I> <I>clmfile</I>
-               filename of CLM data file written. Default is out.clm
+             filename of CLM data file written. Default is out.clm
 
           <I>gridfile</I>
-               filename of grid data file
+             filename of grid data file
 
           <I>netcdffile</I>
-               filename of NetCDF file(s) converted
+             filename of NetCDF file(s) converted
 
      <B>EXAMPLES</B>
           Create data file for temperature:
@@ -59,6 +62,7 @@
      <B>AUTHORS</B>
           For authors and contributors see AUTHORS file
 
+
      <B>COPYRIGHT</B>
           (C) Potsdam Institute for Climate Impact Research (PIK), see
           COPYRIGHT file
@@ -68,10 +72,6 @@
           <B><A HREF="cdf2coord.html">cdf2coord(1)</A></B>, <B><A HREF="cdf2bin.html">cdf2bin(1)</A></B>, <B><A HREF="clm2cdf.html">clm2cdf(1)</A></B>, <B><A HREF="bin2cdf.html">bin2cdf(1)</A></B>,
           <B><A HREF="country2cdf.html">country2cdf(1)</A></B>, <B><A HREF="regridlpj.html">regridlpj(1)</A></B>, <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="txt2clm.html">txt2clm(1)</A></B>,
           <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
-
-
-
-
 
 
 
