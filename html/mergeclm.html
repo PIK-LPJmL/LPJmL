@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+<TITLE>mergeclm.1</TITLE>
+</HEAD>
+<BODY>
+<H1>mergeclm.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          mergeclm - merge LPJmL climate data files
+
+     <B>SYNOPSIS</B>
+          <B>mergeclm</B> <B>[</B>-<B>f]</B> <B>[</B>-<B>longheader]</B> <I>infile</I> ... <I>outfile</I>
+
+     <B>DESCRIPTION</B>
+          Program merges bands of climate data files in clm format
+          into one clm file.
+
+     <B>OPTIONS</B>
+          -f   Force overwriting of extisting output file
+
+          -longheader
+               Long (version 2) header assumed for clm files <I>infile</I>
+               Filename(s) of clm files to paste. If filename is
+               "zero" one band containing all zero values is added
+
+          <I>outfile</I>
+               Filename of merged clm file
+
+     <B>EXAMPLE</B>
+          Merge clm data file from 12 clm files:
+               <B>mergeclm</B> <B>temp_1901-2003_01.clm</B> <B>temp_1901-2003_02.clm</B>
+               <B>temp_1901-2003_03.clm</B> <B>temp_1901-2003_04.clm</B> <B>temp_1901-</B>
+               <B>2003_05.clm</B>
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>mergeclm</B> returns a zero exit status if the clm file is
+          created.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="cutclm.html">cutclm(1)</A></B>, <B><A HREF="txt2clm.html">txt2clm(1)</A></B>, <B><A HREF="grid2clm.html">grid2clm(1)</A></B>, <B><A HREF="cft2clm.html">cft2clm(1)</A></B>,
+          <B><A HREF="clm.html">clm(5)</A></B>
+
+
+
+
+
+
+
+
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>
