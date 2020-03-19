@@ -19,7 +19,8 @@
 void initoutput_annual(Output *output, /**< Output data */
                        int npft,       /**< number of natural PFTs */
                        int nbiomass,   /**< number of biomass PFTs */
-                       int ncft        /**< number of crop PFTs */
+                       int ncft,       /**< number of crop PFTs */
+                       float missing_value /**< missing value for NetCDF output */
                       )
 {
   int i;
@@ -67,5 +68,5 @@ void initoutput_annual(Output *output, /**< Output data */
   for (i=0; i<npft-nbiomass+1;++i)
     output->fpc[i] = 0;
   for (i=0; i<npft-nbiomass;++i)
-    output->pft_mort[i] = 0;
+    output->pft_mort[i] = missing_value; /* do not plot values for non established trees */
 } /* of 'initoutput_annual' */

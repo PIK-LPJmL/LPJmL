@@ -285,7 +285,7 @@ typedef struct
 /* Declaration of functions */
 
 extern Bool initoutput(Output *,int,Bool,int,int,int);
-extern void initoutput_annual(Output *,int,int,int);
+extern void initoutput_annual(Output *,int,int,int,float);
 extern void initoutput_monthly(Output *,int,int,int);
 extern void initoutput_daily(Daily_outputs *);
 extern void freeoutput(Output *);

@@ -125,8 +125,7 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_srad2);
   output->cft_aboveground_biomass2=newvec(Real,2*(ncft+NGRASS));
   checkptr(output->cft_aboveground_biomass2);
-#endif  
-  initoutput_annual(output, npft, nbiomass,ncft);
+#endif
   output->daily.cft=cft;
   output->daily.irrigation=irrigation;
   return FALSE;

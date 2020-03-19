@@ -13,6 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include <sys/stat.h>
 
 #define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-scale] [-longheader] [-type {byte|short|int|float|double}]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
 #define NO_HEADER 1
@@ -37,12 +38,14 @@ static void printclm(const char *filename,int output,int nbands,int version,
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
+  struct stat filestat;
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;
     header.scalar=1;
     header.cellsize_lon=header.cellsize_lat=0.5;
     header.firstyear=1901;
+    header.firstcell=0;
     header.nyear=1;
     header.nbands=(nbands==-1)  ? 1 : nbands;
     header.datatype=type;
@@ -125,7 +128,11 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   else if(!isrestart && !isreservoir)
   {
-    size=getfilesize(filename)-headersize(id,version);
+    fstat(fileno(file),&filestat);
+    if(ismeta)
+      size=filestat.st_size-offset;
+    else
+      size=filestat.st_size-headersize(id,version);
     if(size!=typesizes[type]*header.ncell*header.nbands*header.nyear)
       fputs("Warning: file length does not match header.\n",stderr);
   }
