@@ -155,3 +155,4 @@ bin/cvrtclm
 bin/manage2js
 bin/regridirrig
 bin/headersize
+bin/mergeclm
