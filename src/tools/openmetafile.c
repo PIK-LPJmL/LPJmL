@@ -30,6 +30,8 @@
 
 #include "lpj.h"
 
+char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
+
 FILE *openmetafile(Header *header, /**< pointer to file header */
                    Bool *swap, /**< byte order has to be changed (TRUE/FALSE) */
                    size_t *offset, /**< offset in binary file */
@@ -110,6 +112,27 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
         fclose(file.file.file);
         return NULL;
       }
+    }
+    else if(!strcmp(key,"order"))
+    {
+      if(fscanstring(&file,value,"order",FALSE,isout ? ERR : NO_ERR))
+      {
+        if(isout)
+          readstringerr("order");
+        free(name);
+        fclose(file.file.file);
+        return NULL;
+      }
+      index=findstr(value,ordernames,4);
+      if(index==NOT_FOUND)
+      {
+        if(isout)
+          fprintf(stderr,"ERROR221: Invalid order '%s' in '%s'.\n",value,filename);
+        free(name);
+        fclose(file.file.file);
+        return NULL;
+      }
+      header->order=index+1;
     }
     else if(!strcmp(key,"offset"))
     {
@@ -226,7 +249,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
       fprintf(stderr,"ERROR223: No filename specified in '%s'.\n",filename);
     return NULL;
   }
-  if(name[0]=='^') 
+  if(name[0]=='^')
   {
      /* if filename starts with a '^' then path of description file is added to filename */
      path=getpath(filename);

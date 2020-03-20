@@ -49,6 +49,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     header.nyear=1;
     header.nbands=(nbands==-1)  ? 1 : nbands;
     header.datatype=type;
+    header.order=CELLYEAR;
     file=openmetafile(&header,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return;
@@ -59,7 +60,6 @@ static void printclm(const char *filename,int output,int nbands,int version,
       return;
     }
     type=header.datatype;
-    header.order=CELLYEAR;
     version=4;
     strcpy(id,"description file");
   }
@@ -79,6 +79,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
     }
     if(version>2)
       type=header.datatype;
+    else 
+      header.datatype=type;
     if(nbands!=-1)
       header.nbands=nbands;
     isrestart=(!strcmp(id,RESTART_HEADER));
@@ -97,10 +99,6 @@ static void printclm(const char *filename,int output,int nbands,int version,
     else
       printf((swap) ? "Big endian" : "Little endian");
     putchar('\n');
-    if(type>=0 && type<5)
-      printf("Type:\t\t%s\n",typenames[type]);
-    else
-      printf("Type:\t\t%d\n",(int)type); 
     printheader(&header);
     if(isrestart)
     {
