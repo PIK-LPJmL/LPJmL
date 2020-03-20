@@ -105,9 +105,19 @@ module load compiler/intel/15.0.3
 module load compiler/gnu/4.9.2
 module load netcdf-c/4.3.3.1/serial udunits/2.2.19 expat/2.1.0
 
-or you can simply load the lpjml module:
+Or you can simply load the lpjml module:
 
 module load lpjml
+
+On a Linux system you have to install the NetCDF, Udunits2, and JSON-C library:
+
+sudo apt-get install libnetcdf-dev
+sudo apt-get install libudunits2-dev
+sudo apt-get install libjson-c-dev
+and optionally the MPICH parallel library:
+sudo apt-get install mpich
+
+Then LPJmL can be configured via
 
 ./configure.sh
 
