@@ -98,6 +98,22 @@ On the HLRS2015 cluster at PIK you have to set the lpjml module for compilation 
 module load lpjml
 </pre>
 
+On a Linux system you have to install the NetCDF, Udunits2, and JSON-C library:
+
+<pre class="example">
+sudo apt-get install libnetcdf-dev
+sudo apt-get install libudunits2-dev
+sudo apt-get install libjson-c-dev
+</pre>
+
+and optionally the MPICH parallel library:
+
+<pre class="example">
+sudo apt-get install mpich
+</pre>
+
+Then LPJmL can be configured via
+
 <pre class="example">
 % ./configure.sh
 Configuring LPJmL 5.1.001...
