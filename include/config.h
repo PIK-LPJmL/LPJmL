@@ -159,6 +159,7 @@ typedef struct
   Bool river_routing;  /**< river routing enabled */
   Bool permafrost;     /**< permafrost module enabled */
   Bool new_phenology;	/**< new phenology enabled */
+  Bool equilsoil;      /**< equilsoil is called */
   Bool from_restart;   /**< reading from restart */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
   int sdate_fixyear;    /**< year in which sowing dates shall be fixed */

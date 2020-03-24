@@ -47,7 +47,8 @@ void albedo_grass(Pft *pft,         /**< pointer to PFT variables */
 
   /* total albedo of PFT including snow-covered parts */
   pft->albedo = pft->fpc * frs * c_albsnow + (1 - frs) * albedo_pft;
-  
+  pft->snowcover=frs;
+
   /* fraction of snow in green leave canopy */
   snow_green_canopy = pft->phen * frs;
     

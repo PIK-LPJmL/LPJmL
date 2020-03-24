@@ -28,7 +28,7 @@
 
 #define SNOWLAYER NSOILLAYER
 
-#define veg_equil_year 990
+#define veg_equil_year 4800
 #define soil_equil_year veg_equil_year+1320
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
 #define c_water 4.2e6 /* J/m3/K */

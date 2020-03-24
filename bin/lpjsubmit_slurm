@@ -26,7 +26,7 @@ then
 fi
 
 class=short
-group=""
+group="wforce"
 wtime=""
 blocking="unlimited"
 output="lpjml.%j.out"

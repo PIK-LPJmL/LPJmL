@@ -104,7 +104,8 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
         NC_leaf=pft->par->ncleaf.low;
     else if (NC_leaf>pft->par->ncleaf.high)
         NC_leaf=pft->par->ncleaf.high;
-    *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf)*NC_leaf;
+//    *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf)*NC_leaf;
+    *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind)*NC_leaf;
   }
 
   if(ndemand_leaf_opt<epsilon)

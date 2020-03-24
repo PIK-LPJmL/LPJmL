@@ -198,6 +198,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,"const. deposition");
   if(config->river_routing)
     len=printsim(file,len,&count,"river routing");
+  if(config->equilsoil)
+    len=printsim(file,len,&count,"equilsoil is called");
   if(config->with_nitrogen)
     len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)

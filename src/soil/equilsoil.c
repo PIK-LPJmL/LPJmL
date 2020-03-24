@@ -31,7 +31,8 @@
 
 void equilsoil(Soil *soil,           /**< pointer to soil data */
                int ntotpft,          /**< total number of PFTs */
-               const Pftpar pftpar[] /**< PFT parameter array */
+               const Pftpar pftpar[], /**< PFT parameter array */
+			   Bool shift
               )                      /** \return void         */
 {
   int l,p,f;
@@ -117,37 +118,39 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
     }
     forrootsoillayer(l)
     {
-      for(p=0;p<ntotpft;p++)
-      {
-        socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
-                  - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
-        soil->c_shift_fast[l][p]=socfraction*soil->k_mean[l].fast/k_mean[p].fast;
-        soil->c_shift_slow[l][p]=socfraction*soil->k_mean[l].slow/k_mean[p].slow;
-        sum[p].fast+=soil->c_shift_fast[l][p];
-        sum[p].slow+=soil->c_shift_slow[l][p];
-      }
+      if(shift==TRUE)
+        for(p=0;p<ntotpft;p++)
+        {
+          socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
+                    - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
+          soil->c_shift_fast[l][p]=socfraction*soil->k_mean[l].fast/k_mean[p].fast;
+          soil->c_shift_slow[l][p]=socfraction*soil->k_mean[l].slow/k_mean[p].slow;
+          sum[p].fast+=soil->c_shift_fast[l][p];
+          sum[p].slow+=soil->c_shift_slow[l][p];
+        }
 
       soil->k_mean[l].slow=soil->k_mean[l].fast=0.0;
     }
-    for(p=0;p<ntotpft;p++)
-    {
-      if(sum[p].fast<1.0 && sum[p].fast>0.0)
-      //if(sum[p].fast>=epsilon)
-        for (l=0;l<LASTLAYER;l++) soil->c_shift_fast[l][p]=soil->c_shift_fast[l][p]/sum[p].fast;
-      else if (sum[p].fast<epsilon)
+    if(shift==TRUE)
+      for(p=0;p<ntotpft;p++)
       {
-        soil->c_shift_fast[0][p]=1.0;
-        for (l=1;l<LASTLAYER;l++) soil->c_shift_fast[l][p]=0;
+        if(sum[p].fast<1.0 && sum[p].fast>0.0)
+        //if(sum[p].fast>=epsilon)
+          for (l=0;l<LASTLAYER;l++) soil->c_shift_fast[l][p]=soil->c_shift_fast[l][p]/sum[p].fast;
+        else if (sum[p].fast<epsilon)
+        {
+          soil->c_shift_fast[0][p]=1.0;
+          for (l=1;l<LASTLAYER;l++) soil->c_shift_fast[l][p]=0;
+        }
+        if(sum[p].slow<1.0 && sum[p].slow>0.0)
+        //if(sum[p].slow>=epsilon)
+          for (l=0;l<LASTLAYER;l++) soil->c_shift_slow[l][p]=soil->c_shift_slow[l][p]/sum[p].slow;
+        else if (sum[p].slow<epsilon)
+        {
+          soil->c_shift_slow[0][p]=1.0;
+          for (l=1;l<LASTLAYER;l++) soil->c_shift_slow[l][p]=0;
+        }
       }
-      if(sum[p].slow<1.0 && sum[p].slow>0.0)
-      //if(sum[p].slow>=epsilon)
-        for (l=0;l<LASTLAYER;l++) soil->c_shift_slow[l][p]=soil->c_shift_slow[l][p]/sum[p].slow;
-      else if (sum[p].slow<epsilon)
-      {
-        soil->c_shift_slow[0][p]=1.0;
-        for (l=1;l<LASTLAYER;l++) soil->c_shift_slow[l][p]=0;
-      }
-    }
     soil->count=0;
     soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
   }
@@ -158,9 +161,13 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
       soil->NH4[l]=soil->NO3[l]=0.0;
       soil->pool[l].slow.nitrogen=0;
       soil->pool[l].fast.nitrogen=0;
-    }
+      soil->k_mean[l].slow=soil->k_mean[l].fast=0.0;
+      soil->count=0;
+      soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
+   }
   }
   /* avoiding soilC increases in regions with low thawdepth (=permafrost) */
+
   if (soil->mean_maxthaw<1500)
   {
     forrootsoillayer(l)
@@ -168,7 +175,7 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
       total1+=soil->pool[l].fast.carbon+soil->pool[l].slow.carbon;
       total2+=c_before[l].fast.carbon+c_before[l].slow.carbon;
     }
-    /* if soilcarbon is to increase by 10% in permafrost regions, reset to original */
+     //if soilcarbon is to increase by 10% in permafrost regions, reset to original
     if (total1>total2*1.1)
     {
       forrootsoillayer(l)
@@ -181,6 +188,7 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
       }
     }
   }
+
   /* freeing memory */
   free(k_mean);
   free(c0);

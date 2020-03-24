@@ -40,6 +40,7 @@
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
   "river_routing" : true,
+  "equilsoil" :false,
   "permafrost" : true,
   "with_nitrogen" : NO_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
 #ifdef FROM_RESTART
