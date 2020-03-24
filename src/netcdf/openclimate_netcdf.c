@@ -34,7 +34,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   char *s,*c,*unit,*name;
   int rc,var_id,time_id,ndims,*dimids;
   int *time;
-  int m=0,d=0;
+  int m=0,d=0,time_diff;
   double *date;
   size_t len,time_len;
   Bool isopen,isdim;
@@ -58,7 +58,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   if(rc)  /* time axis not found */
     file->time_step=MISSING_TIME;
   else
-  { 
+  {
     rc=nc_inq_varndims(file->ncid,var_id,&ndims);
     error("time dim",rc);
     if(ndims!=1)
@@ -126,7 +126,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
           return TRUE;
         }
         file->firstyear=(int)(date[0]/10000);
-        free(date); 
+        free(date);
       }
       else
       {
@@ -192,7 +192,21 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         }
         else if(!strcmp(name,"hours"))
         {
-          file->time_step=(time[1]-time[0]==24) ? DAY : MONTH;
+          if(time_len>2)
+            time_diff=time[2]-time[1];
+          else
+            time_diff=time[1]-time[0];
+          if(time_diff<24)
+          {
+            fprintf(stderr,"ERROR437: Sub-daily time step %dh not allowed '%s'.\n",
+                    time_diff,filename);
+            free(name);
+            free(time);
+            free_netcdf(file->ncid);
+            free(s);
+            return TRUE;
+          }
+          file->time_step=(time_diff==24) ? DAY : MONTH;
           file->firstyear+=time[0]/NDAYYEAR/24;
         }
         else
