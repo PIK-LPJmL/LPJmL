@@ -390,13 +390,13 @@ int main(int argc,char **argv)
   fwriteheader(file,&header,id,version);
   for(j=i+1;j<argc;j++)
   {
-    if(verbose)
-      printf("%s\n",argv[j]);
     if(openclimate_netcdf(&climate,argv[j],time_name,var,NULL,units,&config))
     {
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
+    if(verbose)
+      printf("%s: ",argv[j]);
     if(j==i+1)
     {
       header.firstyear=climate.firstyear;
@@ -404,13 +404,27 @@ int main(int argc,char **argv)
       {
         case DAY:
           header.nbands=NDAYYEAR*climate.var_len;
+          if(verbose)
+            printf("daily");
           break;
         case MONTH:
           header.nbands=NMONTH*climate.var_len;
+          if(verbose)
+            printf("monthly");
           break;
         case YEAR: case MISSING_TIME:
           header.nbands=climate.var_len;
+          if(verbose)
+            printf((climate.time_step==YEAR) ? "yearly" : "no");
           break;
+      }
+      if(verbose)
+      {
+        printf(" time step from %d",climate.firstyear);
+        if(climate.slope!=1 || climate.intercept!=0)
+          printf(", convert by %g*data+%g\n",climate.slope,climate.intercept);
+        else
+          printf("\n");
       }
       data=newvec(float,config.ngridcell*header.nbands);
       if(data==NULL)
