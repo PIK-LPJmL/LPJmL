@@ -65,6 +65,8 @@
 #define CELLSEQ 4
 #define READ_VERSION -1
 
+extern char *ordernames[];
+
 /* Definition of datatypes */
 
 typedef struct

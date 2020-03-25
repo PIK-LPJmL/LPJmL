@@ -50,7 +50,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
         if(isroot(*config))
           fprintf(stderr,"ERROR225: Cannot parse filename '%s'.\n",filename->name);
         return TRUE;
-      } 
+      }
       if(isroot(*config))
       {
         s=malloc(strlen(file->filename)+12);
@@ -67,6 +67,12 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR436: Time axis missing in '%s'.\n",file->filename);
+        return TRUE;
+      }
+      if(file->time_step==YEAR)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR438: Yearly time step not allowed in '%s'.\n",file->filename);
         return TRUE;
       }
       file->oneyear=TRUE;
@@ -87,6 +93,12 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR436: Time axis missing in '%s'.\n",filename->name);
+        return TRUE;
+      }
+      if(file->time_step==YEAR)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR438: Yearly time step not allowed in '%s'.\n",filename->name);
         return TRUE;
       }
       if(file->var_len>1)
@@ -126,7 +138,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   file->nyear=header.nyear;
   if(file->version<=2)
     file->datatype=datatype;
-  else 
+  else
     file->datatype=header.datatype;
   if(filename->fmt==RAW)
   {

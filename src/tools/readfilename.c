@@ -41,6 +41,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   {
     filename->var=NULL;
     filename->name=NULL;
+    filename->time=NULL;
     return FALSE;
   }
   if(isvar && filename->fmt==CDF)
@@ -78,6 +79,8 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
         }
       }
     }
+    else
+      filename->time=NULL;
     if(iskeydefined(&f,"unit"))
     {
       if(fscanstring(&f,name,"unit",FALSE,verb))
@@ -133,7 +136,6 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     }
     else
       filename->isscale=FALSE;
-    filename->time=NULL;
   }
   if(iskeydefined(&f,"unit"))
   {
