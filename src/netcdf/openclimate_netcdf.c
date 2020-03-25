@@ -182,31 +182,41 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         }
         else if(!strcmp(name,"days"))
         {
-          file->time_step=(time[1]-time[0]==1) ? DAY : MONTH;
+          if(time_len==1)
+            file->time_step=YEAR;
+          else
+            file->time_step=(time[1]-time[0]==1) ? DAY : MONTH;
           file->firstyear+=time[0]/NDAYYEAR;
         }
         else if(strstr(name,"months")!=NULL)
         {
-          file->time_step=MONTH;
+          if(time_len==1)
+            file->time_step=YEAR;
+          else
+            file->time_step=MONTH;
           file->firstyear+=time[0]/12;
         }
         else if(!strcmp(name,"hours"))
         {
-          if(time_len>2)
-            time_diff=time[2]-time[1];
-          else
-            time_diff=time[1]-time[0];
-          if(time_diff<24)
+          if(time_len==1)
+            file->time_step=YEAR;
           {
-            fprintf(stderr,"ERROR437: Sub-daily time step %dh not allowed '%s'.\n",
-                    time_diff,filename);
-            free(name);
-            free(time);
-            free_netcdf(file->ncid);
-            free(s);
-            return TRUE;
+            if(time_len>2)
+              time_diff=time[2]-time[1];
+            else
+              time_diff=time[1]-time[0];
+            if(time_diff<24)
+            {
+              fprintf(stderr,"ERROR437: Sub-daily time step %dh not allowed '%s'.\n",
+                      time_diff,filename);
+              free(name);
+              free(time);
+              free_netcdf(file->ncid);
+              free(s);
+              return TRUE;
+            }
+            file->time_step=(time_diff==24) ? DAY : MONTH;
           }
-          file->time_step=(time_diff==24) ? DAY : MONTH;
           file->firstyear+=time[0]/NDAYYEAR/24;
         }
         else
