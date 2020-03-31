@@ -106,6 +106,7 @@ int main(int argc,char **argv)
     {
       files[i]=NULL;
       nbands[i]=1;
+      nbands_sum+=nbands[i];
     }
     else
     {
