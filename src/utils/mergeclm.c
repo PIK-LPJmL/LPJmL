@@ -15,7 +15,7 @@
 #include "lpj.h"
 #include <sys/stat.h>
 
-#define USAGE "Usage: mergeclm [-f] [-longheader] in1.clm|zero [in2.clm ...] out.clm\n"
+#define USAGE "Usage: mergeclm [-v] [-f] [-longheader] in1.clm|zero [in2.clm ...] out.clm\n"
 
 int main(int argc,char **argv)
 {
@@ -32,10 +32,11 @@ int main(int argc,char **argv)
   int rc;
   Bool force,first;
   Header header,header_out;
-  Bool *swap;
+  Bool *swap,verbose;
   String id,id_out;
   /* set default values */
   force=FALSE;
+  verbose=FALSE;
   setversion=READ_VERSION;
   /* process command options */
   for(iarg=1;iarg<argc;iarg++)
@@ -43,6 +44,8 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[iarg],"-f"))
         force=TRUE;
+      else if(!strcmp(argv[iarg],"-v"))
+        verbose=TRUE;
       else if(!strcmp(argv[iarg],"-longheader"))
         setversion=2;
       else
@@ -60,7 +63,7 @@ int main(int argc,char **argv)
   if(numfiles<=0)
   {
     fputs("Input file missing.\n"
-            USAGE,stderr);
+          USAGE,stderr);
     return EXIT_FAILURE;
   }
   files=newvec(FILE *,numfiles);
@@ -169,6 +172,8 @@ int main(int argc,char **argv)
                   header.scalar,argv[i+iarg],header_out.scalar);
           return EXIT_FAILURE;
         }
+        if(verbose)
+          printf("Filename: %s, bands=%d\n",argv[iarg+i],nbands[i]);
       }
       /* check file size */
       fstat(fileno(files[i]),&filestat);
