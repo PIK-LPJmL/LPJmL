@@ -2,11 +2,14 @@
 .SH NAME
 mergeclm \- merge LPJmL climate data files
 .SH SYNOPSIS
-.B mergeclm [\-f] [\-longheader] 
+.B mergeclm [\-v] [\-f] [\-longheader]
 \fIinfile\fP ... \fIoutfile\fP
 .SH DESCRIPTION
 Program merges bands of climate data files in clm format into one clm file.
 .SH OPTIONS
+.TP
+\-v
+Print filename and number of bands of each input file
 .TP
 \-f
 Force overwriting of extisting output file
