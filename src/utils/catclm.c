@@ -13,8 +13,8 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-
-#define USAGE "Usage: catclm [-v] [-longheader] [-size4] infile1.clm [infile2.clm ...] outfile.clm\n"
+#include <sys/stat.h>
+#define USAGE "Usage: catclm [-f] [-v] [-longheader] [-size4] infile1.clm [infile2.clm ...] outfile.clm\n"
 
 int main(int argc,char **argv)
 {
@@ -26,18 +26,23 @@ int main(int argc,char **argv)
   int *ivals;
   Byte *bvals;
   long long *lvals;
-  Bool swap,verbose;
+  struct stat filestat;
+  Bool swap,verbose,force;
   size_t size,filesize;
+  char c;
   size=2;
   setversion=READ_VERSION;
   verbose=FALSE;
+  force=FALSE;
   for(index=1;index<argc;index++)
     if(argv[index][0]=='-')
     {
       if(!strcmp(argv[index],"-longheader"))
         setversion=2;
+      else if(!strcmp(argv[index],"-f"))
+        force=TRUE;
       else if(!strcmp(argv[index],"-v"))
-        verbose=2;
+        verbose=TRUE;
       else if(!strcmp(argv[index],"-size4"))
         size=4;
       else
@@ -56,6 +61,16 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   n=argc-index-1;
+  if(!force)
+  {
+    if(!stat(argv[argc-1],&filestat))
+    {
+      fprintf(stderr,"File '%s' already exists, overwrite (y/n)?\n",argv[argc-1]);
+      scanf("%c",&c);
+      if(c!='y')
+        return EXIT_FAILURE;
+    }
+  }
   out=fopen(argv[argc-1],"wb");
   if(out==NULL)
   {
