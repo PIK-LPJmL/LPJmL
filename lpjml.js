@@ -40,7 +40,8 @@
   "fdi" : NESTEROV_INDEX,   /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
-  "river_routing" : true,
+  "river_routing" : false,
+  "equilsoil" :true,
   "permafrost" : true,
   "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "const_climate" : false,
@@ -51,11 +52,13 @@
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
   "wateruse" : WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "equilsoil" :false,
 #else
   "population" : false,
   "landuse" : NO_LANDUSE,
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,
+  "equilsoil" :true,
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
@@ -65,7 +68,7 @@
   "remove_residuals" : false,           /* remove residuals */
   "residues_fire" : false,              /* fire in residuals */
   "irrigation" : LIM_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
-  "laimax_interpolate" : LAIMAX_PAR, /* laimax values from manage parameter file, */
+  "laimax_interpolate" : LAIMAX_PAR,    /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
@@ -212,7 +215,7 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : ALL, /* 27410, 67208 60400 all grid cells */
+  "startgrid" : ALL, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
   "endgrid" : ALL,
 
 #ifdef CHECKPOINT
@@ -221,13 +224,14 @@ ID                         Fmt                    filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 7000,  /* spinup years */
+  "nspinup" : 20000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
-  "restart" : false, /* do not start from restart file */
+  "outputyear": -18099, /* first year output is written  */
+  "restart" :  false, /* start from restart file */
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1840_nv_stdfire_2.lpj", /* filename of restart file */
   "restart_year": 1840 /* write restart at year */
 
 #else
@@ -238,9 +242,9 @@ ID                         Fmt                    filename
   "lastyear" : 2011, /* last year of simulation */
   "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "restart_filename" : "restart/restart_1840_nv_stdfire_2.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1900_crop_stdfire_2.lpj", /* filename of restart file */
   "restart_year": 1900 /* write restart at year */
 
 #endif

@@ -283,6 +283,7 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
   /* NO3 and N2O from nitrification */
   forrootsoillayer(l)
   {
+	//wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
     fac_wfps = f_wfps(soil,l);
     fac_temp = f_temp(soil->temp[l]);
     //printf("NH4=%g\n",soil->NH4[l]);

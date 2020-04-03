@@ -199,6 +199,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   fscanbool2(file,&config->new_phenology,"new_phenology");
   fscanbool2(file,&config->river_routing,"river_routing");
+  fscanbool2(file,&config->equilsoil,"equilsoil");
   config->reservoir=FALSE;
   fscanbool2(file,&config->permafrost,"permafrost");
   config->sdate_option=NO_FIXED_SDATE;

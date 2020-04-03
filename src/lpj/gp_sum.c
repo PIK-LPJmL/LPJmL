@@ -54,10 +54,10 @@ Real gp_sum(const Pftlist *pftlist, /**< Pft list */
       adtmm=photosynthesis(&agd,&rd,&pft->vmax,pft->par->path,LAMBDA_OPT,
                            temp_stress(pft->par,temp,daylength),ppm2Pa(co2),
                            temp,
-                           par*pft->fpc*alphaa(pft,config->with_nitrogen,config->laimax_interpolate)*(1-getpftpar(pft,albedo_leaf)),
+                           par*pft->fpc*alphaa(pft,config->with_nitrogen,config->laimax_interpolate)*(1-getpftpar(pft,albedo_leaf))*(1-pft->snowcover),
                            daylength,TRUE);
       gp=(1.6*adtmm/(ppm2bar(co2)*(1.0-LAMBDA_OPT)*hour2sec(daylength)))+
-                      pft->par->gmin*pft->fpc;
+                      pft->par->gmin*pft->fpc*(1-pft->snowcover);
       gp_pft[getpftpar(pft,id)]=gp*pft->phen;
       gp_stand+=gp*pft->phen;
     }

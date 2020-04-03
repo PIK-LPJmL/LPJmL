@@ -185,6 +185,7 @@ typedef struct Pft
   Real fpc;              /**< foliar projective cover (FPC) under full leaf
                             cover as fraction of modelled area */
   Real albedo;           /**< albedo of the entire PFT (mix of green leaves, branches and snow albedo) */
+  Real snowcover;        /**< snow cover of leaves */
   Real fapar;            /**< green fraction of absorbed photosythetic active radiation */
   Real nind;             /**< individual density (indiv/m2) */
   Real gdd;              /**< current-year growing degree days */
@@ -245,7 +246,7 @@ extern Bool fscanphenparam(LPJfile *,Phen_param *,const char *,Verbosity);
 extern Real fire_sum(const Litter *,Real);
 extern void fprintpftpar(FILE *,const Pftpar [],int);
 extern void output_daily(Daily_outputs *,const Pft *,Real,Real);
-extern void equilsoil(Soil *, int, const Pftpar []);
+extern void equilsoil(Soil *, int, const Pftpar [],Bool);
 extern void noturnover_monthly(Litter *,Pft *);
 extern char **createpftnames(int,int,int,int,const Pftpar []);
 extern void freepftnames(char **,int,int,int,int);
