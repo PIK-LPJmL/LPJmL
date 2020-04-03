@@ -15,7 +15,7 @@
 #include "lpj.h"
 #include <sys/stat.h>
 
-#define USAGE "Usage: mergeclm [-v] [-f] [-longheader] in1.clm|zero [in2.clm ...] out.clm\n"
+#define USAGE "Usage: mergeclm [-v] [-f] [-longheader] [-size4] in1.clm|zero [in2.clm ...] out.clm\n"
 
 int main(int argc,char **argv)
 {
@@ -32,11 +32,12 @@ int main(int argc,char **argv)
   int rc;
   Bool force,first;
   Header header,header_out;
-  Bool *swap,verbose;
+  Bool *swap,verbose,size4;
   String id,id_out;
   /* set default values */
   force=FALSE;
   verbose=FALSE;
+  size4=FALSE;
   setversion=READ_VERSION;
   /* process command options */
   for(iarg=1;iarg<argc;iarg++)
@@ -46,6 +47,8 @@ int main(int argc,char **argv)
         force=TRUE;
       else if(!strcmp(argv[iarg],"-v"))
         verbose=TRUE;
+      else if(!strcmp(argv[iarg],"-size4"))
+        size4=TRUE;
       else if(!strcmp(argv[iarg],"-longheader"))
         setversion=2;
       else
@@ -132,6 +135,8 @@ int main(int argc,char **argv)
         header_out=header;
         strcpy(id_out,id);
         version_out=version;
+        if(size4 && version<3)
+          header_out.datatype=LPJ_INT;
         first=FALSE;
       }
       else
@@ -154,7 +159,7 @@ int main(int argc,char **argv)
                   header.firstyear,argv[i+iarg],header_out.firstyear);
           return EXIT_FAILURE;
         }
-        else if(header.datatype!=header_out.datatype)
+        else if(version==3 && header.datatype!=header_out.datatype)
         {
           fprintf(stderr,"Data type=%s in file '%s' differs from %s.\n",
                   typenames[header.datatype],argv[i+iarg],typenames[header_out.datatype]);
