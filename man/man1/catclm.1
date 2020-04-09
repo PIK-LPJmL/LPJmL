@@ -1,18 +1,24 @@
-.TH catclm 1  "January 29, 2016" "version 3.5.003" "USER COMMANDS"
+.TH catclm 1  "March 30, 2020" "version 4.0.004" "USER COMMANDS"
 .SH NAME
 catclm \- concatenate LPJmL climate data files
 .SH SYNOPSIS
-.B catclm [\-longheader] [\-size4]
+.B catclm [-\v] [\-f] [\-longheader] [\-size4]
 \fIinfile\fP ... \fIoutfile\fP
 .SH DESCRIPTION
 Program concatenates climate data files in clm format.
 .SH OPTIONS
 .TP
+\-v
+Print filename and start end year of each input file
+.TP
+\-f
+Force overwriting of extisting output file
+.TP
 \-longheader
 Long (version 2) header assumed for clm files
 .TP
 \-size4
-Size of data is set to 4 bytes, default is 2 bytes
+Size of data is set to 4 bytes for version 2 clm files, default is 2 bytes
 .TP
 .I infile
 Filename(s) of clm files to concatenate

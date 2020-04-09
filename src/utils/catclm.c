@@ -13,8 +13,8 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-
-#define USAGE "Usage: catclm [-longheader] [-size4] infile1.clm [infile2.clm ...] outfile.clm\n"
+#include <sys/stat.h>
+#define USAGE "Usage: catclm [-f] [-v] [-longheader] [-size4] infile1.clm [infile2.clm ...] outfile.clm\n"
 
 int main(int argc,char **argv)
 {
@@ -26,15 +26,23 @@ int main(int argc,char **argv)
   int *ivals;
   Byte *bvals;
   long long *lvals;
-  Bool swap;
+  struct stat filestat;
+  Bool swap,verbose,force;
   size_t size,filesize;
+  char c;
   size=2;
   setversion=READ_VERSION;
+  verbose=FALSE;
+  force=FALSE;
   for(index=1;index<argc;index++)
     if(argv[index][0]=='-')
     {
       if(!strcmp(argv[index],"-longheader"))
         setversion=2;
+      else if(!strcmp(argv[index],"-f"))
+        force=TRUE;
+      else if(!strcmp(argv[index],"-v"))
+        verbose=TRUE;
       else if(!strcmp(argv[index],"-size4"))
         size=4;
       else
@@ -53,6 +61,16 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   n=argc-index-1;
+  if(!force)
+  {
+    if(!stat(argv[argc-1],&filestat))
+    {
+      fprintf(stderr,"File '%s' already exists, overwrite (y/n)?\n",argv[argc-1]);
+      scanf("%c",&c);
+      if(c!='y')
+        return EXIT_FAILURE;
+    }
+  }
   out=fopen(argv[argc-1],"wb");
   if(out==NULL)
   {
@@ -130,20 +148,22 @@ int main(int argc,char **argv)
       firstyear=header.firstyear;
       firstversion=version;
     }
+    if(verbose)
+      printf("Filename: %s, %d-%d\n",argv[i+index],header.firstyear,header.firstyear+header.nyear-1);
     if(version==3)
       size=typesizes[header.datatype];
     switch(size)
     {
       case 1:
-        bvals=newvec(Byte,header.nbands*header.ncell);
+        bvals=newvec(Byte,(long long)header.nbands*header.ncell);
         for(j=0;j<header.nyear;j++)
         {
-          if(fread(bvals,1,header.nbands*header.ncell,in)!=header.nbands*header.ncell)
+          if(fread(bvals,1,(long long)header.nbands*header.ncell,in)!=(long long)header.nbands*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+index]);
             return EXIT_FAILURE;
           }
-          if(fwrite(bvals,1,header.nbands*header.ncell,out)!=header.nbands*header.ncell)
+          if(fwrite(bvals,1,(long long)header.nbands*header.ncell,out)!=(long long)header.nbands*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
             return EXIT_FAILURE;
@@ -152,18 +172,18 @@ int main(int argc,char **argv)
         free(bvals);
         break;
       case 2:
-        values=newvec(short,header.nbands*header.ncell);
+        values=newvec(short,(long long)header.nbands*header.ncell);
         for(j=0;j<header.nyear;j++)
         {
-          if(fread(values,sizeof(short),header.nbands*header.ncell,in)!=header.nbands*header.ncell)
+          if(fread(values,sizeof(short),(long long)header.nbands*header.ncell,in)!=(long long)header.nbands*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+index]);
             return EXIT_FAILURE;
           }
           if(swap)
-            for(k=0;k<header.nbands*header.ncell;k++)
+            for(k=0;k<(long long)header.nbands*(long long)header.ncell;k++)
               values[k]=swapshort(values[k]);
-          if(fwrite(values,sizeof(short),header.nbands*header.ncell,out)!=header.nbands*header.ncell)
+          if(fwrite(values,sizeof(short),(long long)header.nbands*header.ncell,out)!=(long long)header.nbands*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
             return EXIT_FAILURE;
@@ -172,18 +192,18 @@ int main(int argc,char **argv)
         free(values);
         break;
       case 4:
-        ivals=newvec(int,header.nbands*header.ncell);
+        ivals=newvec(int,(long long)header.nbands*header.ncell);
         for(j=0;j<header.nyear;j++)
         {
-          if(fread(ivals,sizeof(int),header.nbands*header.ncell,in)!=header.nbands*header.ncell)
+          if(fread(ivals,sizeof(int),(long long)header.nbands*header.ncell,in)!=(long long)header.nbands*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+index]);
             return EXIT_FAILURE;
           }
           if(swap)
-            for(k=0;k<header.nbands*header.ncell;k++)
+            for(k=0;k<(long long)header.nbands*header.ncell;k++)
               ivals[k]=swapint(ivals[k]);
-          if(fwrite(ivals,sizeof(int),header.nbands*header.ncell,out)!=header.nbands*header.ncell)
+          if(fwrite(ivals,sizeof(int),(long long)header.nbands*header.ncell,out)!=(long long)header.nbands*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
             return EXIT_FAILURE;
@@ -192,18 +212,18 @@ int main(int argc,char **argv)
         free(ivals);
         break;
       case 8:
-        lvals=newvec(long long,header.nbands*header.ncell);
+        lvals=newvec(long long,(long long)header.nbands*header.ncell);
         for(j=0;j<header.nyear;j++)
         {
-          if(fread(lvals,sizeof(long long),header.nbands*header.ncell,in)!=header.nbands*header.ncell)
+          if(fread(lvals,sizeof(long long),(long long)header.nbands*header.ncell,in)!=(long long)header.nbands*header.ncell)
           {
             fprintf(stderr,"Error reading from '%s'.\n",argv[i+index]);
             return EXIT_FAILURE;
           }
           if(swap)
-            for(k=0;k<header.nbands*header.ncell;k++)
+            for(k=0;k<(long long)header.nbands*header.ncell;k++)
               lvals[k]=swaplong(lvals[k]);
-          if(fwrite(lvals,sizeof(long long),header.nbands*header.ncell,out)!=header.nbands*header.ncell)
+          if(fwrite(lvals,sizeof(long long),(long long)header.nbands*header.ncell,out)!=(long long)header.nbands*header.ncell)
           {
             fprintf(stderr,"Error writing to '%s'.\n",argv[argc-1]);
             return EXIT_FAILURE;

@@ -422,7 +422,7 @@ int main(int argc,char **argv)
       {
         printf(" time step from %d",climate.firstyear);
         if(climate.slope!=1 || climate.intercept!=0)
-          printf(", convert by %g*data+%g\n",climate.slope,climate.intercept);
+          printf(", convert by %g*data%+g\n",climate.slope,climate.intercept);
         else
           printf("\n");
       }
