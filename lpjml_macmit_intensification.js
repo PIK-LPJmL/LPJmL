@@ -26,257 +26,277 @@
 
 /* ifdefs for MACMIT_INTENSIFICATION runs*/
 
+/*Identifiers (preprocessor only understands integer expressions in #if)*/
+#define TIM_1986_2005 1
+#define TIM_2080_2099 2
+
+#define SCN_HISTOR 1
+#define SCN_RCP60  2
+
+#define CLM_WFD 1
+#define CLM_HAD 2
+#define CLM_GFD 3
+#define CLM_IPS 4
+#define CLM_MIR 5
+
+#define IRR_LIM 1
+#define IRR_UNL 2
+
+#define NIT_LIM 1
+#define NIT_UNL 2
+
+#define GS_DAT 1
+#define GS_SA0 2
+#define GS_SA1 3
+
 /* WFDI */
 #ifdef RUN_ID_01
-    #define TIM_1986_2005
-    #define SCN_HISTOR
-    #define CLM_WFD
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_DAT /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_1986_2005
+    #define DSCN SCN_HISTOR
+    #define DCLM CLM_WFD //1//"CLM_WFD"
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS  GS_DAT /* GS_SA0, GS_SA1 */
     #define output_run  01_tim.1986.2005_scn.histor_clm.wfd_irr.lim_nit.lim_gs.dat_res.dat_til.dat
     #define restart_run 01_tim.1986.2005_scn.histor_clm.wfd_irr.lim_nit.lim_gs.dat_res.dat_til.dat
 #elif defined(RUN_ID_02)
-    #define TIM_1986_2005
-    #define SCN_HISTOR
-    #define CLM_WFD /p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_DAT /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_1986_2005
+    #define DSCN SCN_HISTOR
+    #define DCLM CLM_WFD
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_DAT /* GS_SA0, GS_SA1 */
     #define output_run  02_tim.1986.2005_scn.histor_clm.wfd_irr.unl_nit.unl_gs.dat_res.dat_til.dat
     #define restart_run 01_tim.1986.2005_scn.histor_clm.wfd_irr.lim_nit.lim_gs.dat_res.dat_til.dat
  
  /* HadGEM2-ES */
 #elif defined(RUN_ID_03)
-    #define TIM_1986_2005
-    #define SCN_HISTOR
-    #define CLM_HAD
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_1986_2005
+    #define DSCN SCN_HISTOR
+    #define DCLM CLM_HAD //2 //"CLM_HAD"
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  03_tim.1986.2005_scn.histor_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
     #define restart_run 03_tim.1986.2005_scn.histor_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_07)
-    #define TIM_1986_2005
-    #define SCN_HISTOR
-    #define CLM_HAD
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_1986_2005
+    #define DSCN SCN_HISTOR
+    #define DCLM CLM_HAD
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  07_tim.1986.2005_scn.histor_clm.had_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
     #define restart_run 03_tim.1986.2005_scn.histor_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_11)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_HAD
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_HAD
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  11_tim.2080.2099_scn.rcp60_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
     #define restart_run 03_tim.1986.2005_scn.histor_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_15)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_HAD
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_HAD
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run 15_tim.2080.2099_scn.rcp60_clm.had_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
-    #define restart_run 07_tim.1986.2005_scn.histor_clm.had_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
+    #define restart_run 03_tim.1986.2005_scn.histor_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_19)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_HAD
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_SA1 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_HAD
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS  GS_SA1 /* GS_SA0, GS_SA1 */
     #define output_run 19_tim.2080.2099_scn.rcp60_clm.had_irr.lim_nit.lim_gs.sa1_res.dat_til.dat
     #define restart_run 03_tim.1986.2005_scn.histor_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_23)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_HAD
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_SA1 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_HAD
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_SA1 /* GS_SA0, GS_SA1 */
     #define output_run 23_tim.2080.2099_scn.rcp60_clm.had_irr.unl_nit.unl_gs.sa1_res.dat_til.dat
-    #define restart_run 07_tim.1986.2005_scn.histor_clm.had_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
+    #define restart_run 03_tim.1986.2005_scn.histor_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 
  /* GFDL-ESM2M */
 #elif defined(RUN_ID_04)
-    #define TIM_1986_2005
-    #define SCN_HISTOR
-    #define CLM_GFD
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_1986_2005
+    #define DSCN SCN_HISTOR
+    #define DCLM CLM_GFD
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  04_tim.1986.2005_scn.histor_clm.gfd_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
     #define restart_run 04_tim.1986.2005_scn.histor_clm.gfd_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_08)
-    #define TIM_1986_2005
-    #define SCN_HISTOR
-    #define CLM_GFD
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_1986_2005
+    #define DSCN SCN_HISTOR
+    #define DCLM CLM_GFD
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  08_tim.1986.2005_scn.histor_clm.gfd_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
     #define restart_run 04_tim.1986.2005_scn.histor_clm.gfd_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_12)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_GFD
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_GFD
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  12_tim.2080.2099_scn.rcp60_clm.gfd_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
     #define restart_run 04_tim.1986.2005_scn.histor_clm.gfd_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_16)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_GFD
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_GFD
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  16_tim.2080.2099_scn.rcp60_clm.gfd_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
-    #define restart_run 08_tim.1986.2005_scn.histor_clm.gfd_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
+    #define restart_run 04_tim.1986.2005_scn.histor_clm.gfd_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_20)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_GFD
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_SA1 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_GFD
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS  GS_SA1 /* GS_SA0, GS_SA1 */
     #define output_run  20_tim.2080.2099_scn.rcp60_clm.gfd_irr.lim_nit.lim_gs.sa1_res.dat_til.dat
     #define restart_run 04_tim.1986.2005_scn.histor_clm.gfd_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_24)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_GFD
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_SA1 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_GFD
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_SA1 /* GS_SA0, GS_SA1 */
     #define output_run  24_tim.2080.2099_scn.rcp60_clm.gfd_irr.unl_nit.unl_gs.sa1_res.dat_til.dat
-    #define restart_run 08_tim.1986.2005_scn.histor_clm.gfd_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
+    #define restart_run 04_tim.1986.2005_scn.histor_clm.gfd_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 
 /* IPSL-CM5A-LR */
 #elif defined(RUN_ID_05)
-    #define TIM_1986_2005
-    #define SCN_HISTOR
-    #define CLM_IPS
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_1986_2005
+    #define DSCN SCN_HISTOR
+    #define DCLM CLM_IPS
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  05_tim.1986.2005_scn.histor_clm.ips_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
     #define restart_run 05_tim.1986.2005_scn.histor_clm.ips_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_09)
-    #define TIM_1986_2005
-    #define SCN_HISTOR
-    #define CLM_IPS
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_1986_2005
+    #define DSCN SCN_HISTOR
+    #define DCLM CLM_IPS
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  09_tim.1986.2005_scn.histor_clm.ips_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
     #define restart_run 05_tim.1986.2005_scn.histor_clm.ips_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_13)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_IPS
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_IPS
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  13_tim.2080.2099_scn.rcp60_clm.ips_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
     #define restart_run 05_tim.1986.2005_scn.histor_clm.ips_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_17)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_IPS
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_IPS
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  17_tim.2080.2099_scn.rcp60_clm.ips_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
-    #define restart_run 09_tim.1986.2005_scn.histor_clm.ips_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
+    #define restart_run 05_tim.1986.2005_scn.histor_clm.ips_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_21)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_IPS
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_SA1 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_IPS
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS  GS_SA1 /* GS_SA0, GS_SA1 */
     #define output_run  21_tim.2080.2099_scn.rcp60_clm.ips_irr.lim_nit.lim_gs.sa1_res.dat_til.dat
     #define restart_run 05_tim.1986.2005_scn.histor_clm.ips_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_25)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_IPS
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_SA1 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_IPS
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_SA1 /* GS_SA0, GS_SA1 */
     #define output_run  25_tim.2080.2099_scn.rcp60_clm.ips_irr.unl_nit.unl_gs.sa1_res.dat_til.dat
-    #define restart_run 09_tim.1986.2005_scn.histor_clm.ips_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
+    #define restart_run 05_tim.1986.2005_scn.histor_clm.ips_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 
  /* MIROC5 */
  #elif defined(RUN_ID_06)
-    #define TIM_1986_2005
-    #define SCN_HISTOR
-    #define CLM_MIR
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_1986_2005
+    #define DSCN SCN_HISTOR
+    #define DCLM CLM_MIR
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  06_tim.1986.2005_scn.histor_clm.mir_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
     #define restart_run 06_tim.1986.2005_scn.histor_clm.mir_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_10)
-    #define TIM_1986_2005
-    #define SCN_HISTOR
-    #define CLM_MIR
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_1986_2005
+    #define DSCN SCN_HISTOR
+    #define DCLM CLM_MIR
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  10_tim.1986.2005_scn.histor_clm.mir_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
     #define restart_run 06_tim.1986.2005_scn.histor_clm.mir_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_14)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_MIR
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_MIR
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  14_tim.2080.2099_scn.rcp60_clm.mir_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
     #define restart_run 06_tim.1986.2005_scn.histor_clm.mir_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_18)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_MIR
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_SA0 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_MIR
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  18_tim.2080.2099_scn.rcp60_clm.mir_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
-    #define restart_run 10_tim.1986.2005_scn.histor_clm.mir_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
+    #define restart_run 06_tim.1986.2005_scn.histor_clm.mir_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_22)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_MIR
-    #define IRR_LIM /* IRR_UNL */
-    #define NIT_LIM /* NIT_UNL */
-    #define GS_SA1 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_MIR
+    #define DIRR IRR_LIM /* IRR_UNL */
+    #define DNIT NIT_LIM /* NIT_UNL */
+    #define DGS  GS_SA1 /* GS_SA0, GS_SA1 */
     #define output_run  22_tim.2080.2099_scn.rcp60_clm.mir_irr.lim_nit.lim_gs.sa1_res.dat_til.dat
     #define restart_run 06_tim.1986.2005_scn.histor_clm.mir_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_26)
-    #define TIM_2080_2099
-    #define SCN_RCP60
-    #define CLM_MIR
-    #define IRR_UNL /* IRR_UNL */
-    #define NIT_UNL /* NIT_UNL */
-    #define GS_SA1 /* GS_SA0, GS_SA1 */
+    #define DTIM TIM_2080_2099
+    #define DSCN SCN_RCP60
+    #define DCLM CLM_MIR
+    #define DIRR IRR_UNL /* IRR_UNL */
+    #define DNIT NIT_UNL /* NIT_UNL */
+    #define DGS  GS_SA1 /* GS_SA0, GS_SA1 */
     #define output_run  26_tim.2080.2099_scn.rcp60_clm.mir_irr.unl_nit.unl_gs.sa1_res.dat_til.dat
-    #define restart_run 10_tim.1986.2005_scn.histor_clm.mir_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
+    #define restart_run 06_tim.1986.2005_scn.histor_clm.mir_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
 
 #else
 #endif /* RUN_ID */
 
 {   /* LPJmL configuration in JSON format */
-
-#define mkstr(s) xstr(s) /* putting string in quotation marks */
-#define xstr(s) #s
 
 /*===================================================================*/
 /*  I. Simulation description and type section                       */
@@ -292,18 +312,17 @@
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
 
-#ifdef IRR_LIM
-  "river_routing" : true,
-#elif defined(IRR_UNL)
-  "river_routing" : false,
-#else
+#if (DIRR==IRR_LIM)
+  "river_routing" : true,  //true, false set only for testing pixel runs
+#elif (DIRR==IRR_UNL)
+  "river_routing" : true,  //true,
 #endif
 
   "permafrost" : true,
 
-#ifdef NIT_LIM
+#if (DNIT==NIT_LIM)
   "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
-#elif defined(NIT_UNL)
+#elif (DNIT==NIT_UNL)
   "with_nitrogen" : UNLIM_NITROGEN,
   #else
 #endif
@@ -331,11 +350,10 @@
   "residue_treatment" : READ_RESIDUE_DATA, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
 
-#ifdef IRR_LIM
+#if (DIRR==IRR_LIM)
   "irrigation" : LIM_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
-#elif defined(IRR_UNL)
+#elif (DIRR==IRR_UNL)
   "irrigation" : POT_IRRIGATION,
-#else
 #endif
 
   "tillage_type" : READ_TILLAGE,          /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
@@ -378,8 +396,8 @@
 #define SUFFIX pft.bin
 #endif
 
-//#define mkstr(s) xstr(s) /* putting string in quotation marks */
-//#define xstr(s) #s
+#define mkstr(s) xstr(s) /* putting string in quotation marks */
+#define xstr(s) #s
 
 #define workdir /p/projects/macmit/users/minoli/PROJECTS/MACMIT_INTENSIFICATION/LPJmL/outputs
 #define output workdir/output_run
@@ -508,14 +526,14 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" :  ALL, /* 27410, 67208 60400 all grid cells */
-  "endgrid" : ALL,
+  "startgrid" :  27410, //ALL, /* 27410, 67208 60400 all grid cells */
+  "endgrid" : 27410, //ALL,
 
 #ifdef CHECKPOINT
   "checkpoint_filename" : mkstr(output/restart_checkpoint.lpj), /* filename of checkpoint file */
 #endif
 
-#ifdef CLM_WFD
+#if (DCLM==CLM_WFD)
 
     #ifndef FROM_RESTART
 
@@ -548,7 +566,7 @@ ID                         Fmt                    filename
     
 #else
 
-     #ifdef TIM_1986_2005
+     #if (DTIM==TIM_1986_2005)
      
      #ifndef FROM_RESTART
 
@@ -579,21 +597,21 @@ ID                         Fmt                    filename
 
       #endif /* FROM_RESTART */
 
-     #elif defined(TIM_2080_2099)
+     #elif (DTIM==TIM_2080_2099)
 	 
-       #ifndef FROM_RESTART
+       //#ifndef FROM_RESTART
 
-        "nspinup" : 5000,  /* spinup years */
-        "nspinyear" : 30,  /* cycle length during spinup (yr) */
-        "firstyear": 1901, /* first year of simulation */
-        "lastyear" : 1901, /* last year of simulation */
-        "restart" : false, /* do not start from restart file */
-        "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-        "write_restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting_test.lpj), /* filename of restart file */
+        //"nspinup" : 5000,  /* spinup years */
+        //"nspinyear" : 30,  /* cycle length during spinup (yr) */
+        //"firstyear": 1901, /* first year of simulation */
+        //"lastyear" : 1901, /* last year of simulation */
+        //"restart" : false, /* do not start from restart file */
+        //"write_restart" : true, /* create restart file: the last year of simulation=restart-year */
+        //"write_restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting_test.lpj), /* filename of restart file */
         //"write_restart_filename" : mkstr(output/restart_1978_nv_stdfire.lpj), /* filename of restart file */
-        "restart_year": 1840 /* write restart at year */
-
-       #else
+        //"restart_year": 1840 /* write restart at year */
+        
+       //#else
 
         "nspinup" : 0,   /* spinup years */
         "nspinyear" : 30,  /* cycle length during spinup (yr)*/
@@ -608,7 +626,7 @@ ID                         Fmt                    filename
         "write_restart_filename" : mkstr(output/restart_2005_crop_stdfire.lpj), /* filename of restart file */
         "restart_year": 2005 /* write restart at year */
 
-     #endif /* FROM_RESTART */
+    // #endif /* FROM_RESTART */
      
      #endif /* TIM_2080_2099 */
 
