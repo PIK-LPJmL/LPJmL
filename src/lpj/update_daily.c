@@ -85,8 +85,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& cell->afire_frac<1)
       dailyfire_stand(stand,&livefuel,popdensity,&climate,config->ntypes,config->prescribe_burntarea);
-    if(config->permafrost)
-    {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,
                       climate.temp,&temp_bs,&evap)*stand->frac;
       cell->discharge.drunoff+=snowrunoff;
@@ -101,17 +99,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       stand->soil.micro_heating[0]+=m_heat*stand->soil.litter.decomC;
 #endif
 
-      soiltemp(&stand->soil,temp_bs);
+      soiltemp(&stand->soil,temp_bs,config->permafrost);
       foreachsoillayer(l)
         gtemp_soil[l]=temp_response(stand->soil.temp[l]);
-    }
-    else
-    {
-      gtemp_soil[0]=temp_response(soiltemp_lag(&stand->soil,&cell->climbuf));
-      for(l=1;l<NSOILLAYER;l++)
-        gtemp_soil[l]=gtemp_soil[0];
-      snowrunoff=snow_old(&stand->soil.snowpack,&climate.prec,&melt,climate.temp)*stand->frac;
-      cell->discharge.drunoff+=snowrunoff;
     }
     foreachsoillayer(l)
       cell->output.msoiltemp[l]+=stand->soil.temp[l]*ndaymonth1[month]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));

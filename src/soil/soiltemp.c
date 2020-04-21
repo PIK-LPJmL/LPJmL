@@ -35,7 +35,8 @@ Real soiltemp_lag(const Soil *soil,      /**< Soil data */
  */
  
 void soiltemp(Soil *soil,   /**< pointer to soil data */
-              Real airtemp  /**< air temperature (deg C) */             
+              Real airtemp,  /**< air temperature (deg C) */             
+              Bool permafrost
              )
 {
   Real heatcap[NSOILLAYER],      /* heat capacity [J/m2/K] or [J/m3/K]*/
@@ -79,7 +80,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
           dT=min(heat/heatcap[l],T_zero-soil->temp[l]);
           heat2=heat-dT*heatcap[l];
           heat-=heat2;
-          if(heat2>epsilon && allice(soil,l)>epsilon)
+          if(permafrost && heat2>epsilon && allice(soil,l)>epsilon)
             soilice2moisture(soil,&heat2,l);
           heat+=heat2;   
         }            
@@ -92,7 +93,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
         {
           dT=max(heat/heatcap[l],T_zero-soil->temp[l]);
           heat2=heat-dT*heatcap[l];
-          if(heat2<-epsilon && allwater(soil,l)>epsilon)
+          if(permafrost && heat2<-epsilon && allwater(soil,l)>epsilon)
             moisture2soilice(soil,&heat2,l);
           heat+=heat2; 
         }          
@@ -115,8 +116,8 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
     dt = 0.5*(soildepth[l]*soildepth[l]*1e-6)/lambda[l]*heatcap[l];
     heat_steps=max(heat_steps,(unsigned long)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1);
     /* convert any latent energy present in this soil layer */
-    if((soil->state[l]==BELOW_T_ZERO && allwater(soil,l)>epsilon)
-        || (soil->state[l]==ABOVE_T_ZERO && (allice(soil,l)>epsilon)))
+    if(permafrost && ((soil->state[l]==BELOW_T_ZERO && allwater(soil,l)>epsilon)
+        || (soil->state[l]==ABOVE_T_ZERO && (allice(soil,l)>epsilon))))
     {
       heat=0;
       convert_water(soil,l,&heat);
@@ -142,7 +143,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
         dT=timestep2sec(1.0,heat_steps)*(0.5*(lambda[l+1]+lambda[l])*(t_lower-soil->temp[l])/soildepth[l+1]-0.5*(lambda[l]+((l==0)? lambda[0] : lambda[l-1]))*(soil->temp[l]-t_upper)/soildepth[l])/(0.5*(soildepth[l]+soildepth[l+1]))*1e6/heatcap[l];
     //  dT=th_diff[l]*timestep2sec(1.0,heat_steps)/(soildepth[l]*soildepth[l])*1000000
      //     *(t_upper+t_lower-2*soil->temp[l]);
-      if(soil->temp[l]*t_upper>0 && t_upper*t_lower>0 && (soil->temp[l]+dT)*t_upper>0)
+      if(!permafrost && soil->temp[l]*t_upper>0 && t_upper*t_lower>0 && (soil->temp[l]+dT)*t_upper>0)
       {
         soil->temp[l]+=dT;
         soil->state[l]=(short)getstate(soil->temp+l);
