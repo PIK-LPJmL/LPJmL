@@ -27,10 +27,13 @@ Real firedangerindex(Real char_moist_factor,
   int p,n;
   alpha_fuelp_ave=0;
   n=getnpft(pftlist);
-  foreachpft(pft,p,pftlist)
-    alpha_fuelp_ave+=pft->par->alpha_fuelp;
+  if(n>0)
+  {
+    foreachpft(pft,p,pftlist)
+      alpha_fuelp_ave+=pft->par->alpha_fuelp;
 
-  alpha_fuelp_ave/=n;
+    alpha_fuelp_ave/=n;
+  }
 
 #ifdef SAFE
   if(char_alpha_fuel < 0)

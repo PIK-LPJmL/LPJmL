@@ -120,15 +120,6 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
-  else if(!strcmp(argv[1],"scalar"))
-  {
-    header.scalar=(float)strtod(argv[2],&endptr);
-    if(*endptr!='\0')
-    {
-      fprintf(stderr,"Invalid number '%s' for scalar.\n",argv[2]);
-      return EXIT_FAILURE;
-    }
-  }
   else
   {
     fclose(file);
@@ -153,21 +144,8 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   if(fwrite(&version,sizeof(version),1,file)!=1)
     return EXIT_FAILURE;
-  switch(version)
-  {
-    case 1:
-      if(fwrite(&header,sizeof(Header_old),1,file)!=1)
-        return EXIT_FAILURE;
-      break;
-    case 2:
-      if(fwrite(&header,sizeof(Header2),1,file)!=1)
-        return EXIT_FAILURE;
-      break;
-    case 3:
-      if(fwrite(&header,sizeof(Header),1,file)!=1)
-        return EXIT_FAILURE;
-      break;
-  }
+  if(fwrite(&header,sizeof(Header_old),1,file)!=1)
+    return EXIT_FAILURE;
   fclose(file); 
   return EXIT_SUCCESS;
 } /* of 'main' */
