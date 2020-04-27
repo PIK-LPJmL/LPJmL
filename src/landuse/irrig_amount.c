@@ -21,7 +21,7 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
                   int ncft      /**< number of crop PFTs */
                  )
 {
-  int p,count;
+  int p;
   Pft *pft;
   Real conv_loss,irrig_stand,irrig_threshold;
   Real wr;
@@ -36,26 +36,28 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
 
   if(data->irrigation)
   {
-    count=0;
     foreachpft(pft,p,&stand->pftlist)
     {
       wr=getwr(&stand->soil,pft->par->rootdist);
 
-      if(pft->par->path==C3)
-      {
-        if(stand->cell->climbuf.aprec<param.aprec_lim)
-          irrig_threshold=param.irrig_threshold_c3_dry;
-        else
-          irrig_threshold=param.irrig_threshold_c3_humid;
-      }
-      else
-        irrig_threshold=param.irrig_threshold_c4;
       if(pft->par->id==RICE)
-       irrig_threshold=param.irrig_threshold_rice;
+        irrig_threshold=param.irrig_threshold_rice;
+      else
+      {
+        if(pft->par->path==C3)
+        {
+          if(stand->cell->climbuf.aprec<param.aprec_lim)
+            irrig_threshold=param.irrig_threshold_c3_dry;
+          else
+            irrig_threshold=param.irrig_threshold_c3_humid;
+        }
+        else
+          irrig_threshold=param.irrig_threshold_c4;
+      }
 
-      count+=(wr>irrig_threshold) ? 0 : 1; /* if one of possibly two (grass) pfts requests irrigation, both get irrigated */
+      if(wr>irrig_threshold)
+        data->irrig_event=TRUE; /* if one of possibly two (grass) pfts requests irrigation, both get irrigated */
     } /*for each pft*/
-    data->irrig_event=(count>0);
 
     irrig_stand=max(data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor,0);
 
@@ -75,34 +77,34 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
           crop->nirsum+=data->net_irrig_amount;
 #else
           if(pft_output_scaled)
-            stand->cell->output.cft_nir[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->frac;
+            stand->cell->output.cft_nir[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->frac;
           else
-            stand->cell->output.cft_nir[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
+            stand->cell->output.cft_nir[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
 #endif
           break;
         case BIOMASS_GRASS:
           if(pft_output_scaled)
-            stand->cell->output.cft_nir[rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].biomass_grass;
+            stand->cell->output.cft_nir[rbgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].biomass_grass;
           else
-            stand->cell->output.cft_nir[rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
+            stand->cell->output.cft_nir[rbgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
           break;
         case GRASSLAND:
           if(pft_output_scaled)
           {
-            stand->cell->output.cft_nir[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].grass[0];
-            stand->cell->output.cft_nir[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].grass[1];
+            stand->cell->output.cft_nir[rothers(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].grass[0];
+            stand->cell->output.cft_nir[rmgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].grass[1];
           }
           else
           {
-            stand->cell->output.cft_nir[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
-            stand->cell->output.cft_nir[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
+            stand->cell->output.cft_nir[rothers(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
+            stand->cell->output.cft_nir[rmgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
           }
           break;
         default:
           if(pft_output_scaled)
-            stand->cell->output.cft_nir[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].biomass_tree;
+            stand->cell->output.cft_nir[rbtree(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].biomass_tree;
           else
-            stand->cell->output.cft_nir[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
+            stand->cell->output.cft_nir[rbtree(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
       } /* of switch */
 
       data->irrig_amount=data->irrig_stor+irrig_stand;
@@ -143,41 +145,41 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
       case GRASSLAND:
         if(pft_output_scaled)
         {
-          stand->cell->output.cft_conv_loss_evap[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].grass[0];
-          stand->cell->output.cft_conv_loss_evap[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].grass[1];
-          stand->cell->output.cft_conv_loss_drain[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].grass[0];
-          stand->cell->output.cft_conv_loss_drain[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].grass[1];
+          stand->cell->output.cft_conv_loss_evap[rothers(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].grass[0];
+          stand->cell->output.cft_conv_loss_evap[rmgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].grass[1];
+          stand->cell->output.cft_conv_loss_drain[rothers(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].grass[0];
+          stand->cell->output.cft_conv_loss_drain[rmgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].grass[1];
         }
         else
         {
-          stand->cell->output.cft_conv_loss_evap[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap;
-          stand->cell->output.cft_conv_loss_evap[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap;
-          stand->cell->output.cft_conv_loss_drain[rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap);
-          stand->cell->output.cft_conv_loss_drain[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap);
+          stand->cell->output.cft_conv_loss_evap[rothers(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap;
+          stand->cell->output.cft_conv_loss_evap[rmgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap;
+          stand->cell->output.cft_conv_loss_drain[rothers(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap);
+          stand->cell->output.cft_conv_loss_drain[rmgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap);
         }
         break;
       case BIOMASS_GRASS:
         if(pft_output_scaled)
         {
-          stand->cell->output.cft_conv_loss_evap[rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].biomass_grass;
-          stand->cell->output.cft_conv_loss_drain[rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].biomass_grass;
+          stand->cell->output.cft_conv_loss_evap[rbgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].biomass_grass;
+          stand->cell->output.cft_conv_loss_drain[rbgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].biomass_grass;
         }
         else
         {
-          stand->cell->output.cft_conv_loss_evap[rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap;
-          stand->cell->output.cft_conv_loss_drain[rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap);
+          stand->cell->output.cft_conv_loss_evap[rbgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap;
+          stand->cell->output.cft_conv_loss_drain[rbgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap);
         }
         break;
       default:
         if(pft_output_scaled)
         {
-          stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].biomass_tree;
-          stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].biomass_tree;
+          stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].biomass_tree;
+          stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].biomass_tree;
         }
         else
         {
-          stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap;
-          stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap);
+          stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap;
+          stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*(1-data->conv_evap);
         }
     } /* of switch */
   } /* if data->irrigation */

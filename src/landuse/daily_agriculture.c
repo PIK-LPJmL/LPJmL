@@ -18,25 +18,25 @@
 #include "crop.h"
 #include "agriculture.h"
 
-Real daily_agriculture(Stand *stand, /**< stand pointer */
-                       Real co2,   /**< atmospheric CO2 (ppmv) */
+Real daily_agriculture(Stand *stand,                /**< stand pointer */
+                       Real co2,                    /**< atmospheric CO2 (ppmv) */
                        const Dailyclimate *climate, /**< Daily climate values */
-                       int day,    /**< day (1..365) */
-                       Real daylength, /**< length of day (h) */
-                       const Real gp_pft[], /**< pot. canopy conductance for PFTs & CFTs*/
-                       Real gtemp_air,  /**< value of air temperature response function */
-                       Real gtemp_soil, /**< value of soil temperature response function */
-                       Real gp_stand,   /* potential stomata conductance */
-                       Real gp_stand_leafon, /**< pot. canopy conduct.at full leaf cover */
-                       Real eeq,   /**< equilibrium evapotranspiration (mm) */
-                       Real par,   /**< photosynthetic active radiation flux */
-                       Real melt,  /**< melting water (mm) */
-                       int npft,   /**< number of natural PFTs */
-                       int ncft,   /**< number of crop PFTs   */
-                       int UNUSED(year), /**< simulation year */
-                       Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
-                       const Config *config /**< LPJ config */
-                      )            /** \return runoff (mm) */
+                       int day,                     /**< day (1..365) */
+                       Real daylength,              /**< length of day (h) */
+                       const Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
+                       Real gtemp_air,              /**< value of air temperature response function */
+                       Real gtemp_soil,             /**< value of soil temperature response function */
+                       Real gp_stand,               /**< potential stomata conductance  (mm/s) */
+                       Real gp_stand_leafon,        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
+                       Real eeq,                    /**< equilibrium evapotranspiration (mm) */
+                       Real par,                    /**< photosynthetic active radiation flux  (J/m2/day) */
+                       Real melt,                   /**< melting water (mm/day) */
+                       int npft,                    /**< number of natural PFTs */
+                       int ncft,                    /**< number of crop PFTs   */
+                       int UNUSED(year),            /**< simulation year (AD) */
+                       Bool UNUSED(intercrop),      /**< enabled intercropping */
+                       const Config *config         /**< LPJ config */
+                      )                             /** \return runoff (mm/day) */
 {
   int p,l;
   Pft *pft;
@@ -161,13 +161,13 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 
         if(config->pft_output_scaled)
         {
-          stand->cell->output.cft_conv_loss_evap[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-          stand->cell->output.cft_conv_loss_drain[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+          output->cft_conv_loss_evap[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+          output->cft_conv_loss_drain[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
         }
         else
         {
-          stand->cell->output.cft_conv_loss_evap[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
-          stand->cell->output.cft_conv_loss_drain[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
+          output->cft_conv_loss_evap[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
+          output->cft_conv_loss_drain[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
         }
         data->irrig_stor=0;
         data->irrig_amount=0;
@@ -177,7 +177,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       /* adjust index */
       p--;
       stand->type=&kill_stand;
-      continue;
     }
   } /* of foreachpft() */
 
@@ -381,23 +380,22 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 
         if(config->pft_output_scaled)
         {
-          stand->cell->output.cft_conv_loss_evap[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-          stand->cell->output.cft_conv_loss_drain[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+          output->cft_conv_loss_evap[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+          output->cft_conv_loss_drain[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
         }
         else
         {
-          stand->cell->output.cft_conv_loss_evap[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
-          stand->cell->output.cft_conv_loss_drain[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
+          output->cft_conv_loss_evap[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
+          output->cft_conv_loss_drain[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE)]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
         }
 
         data->irrig_stor=0;
         data->irrig_amount=0;
-      }
+      } /* of if(data->irrigation) */
       delpft(&stand->pftlist,p);
       stand->type=&kill_stand;
       p--;
-      continue;
-    }
+    } /* of if(negbm) */
   } /* of foreachpft */
 
   /* soil outflow: evap and transpiration */
@@ -436,7 +434,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw_agriculture(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,
-      intercep_stand,intercep_stand_blue,npft,ncft,config->pft_output_scaled);
+                         intercep_stand,intercep_stand_blue,npft,ncft,config->pft_output_scaled);
   free(wet);
   return runoff;
 } /* of 'daily_agriculture' */
