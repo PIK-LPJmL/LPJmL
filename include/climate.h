@@ -104,7 +104,7 @@ typedef struct
 
 extern Climate *initclimate(const Cell *,const Config *);
 extern Bool getclimate(Climate *,const Cell *,int,const Config *);
-extern Real getco2(const Climate *,int);
+extern Bool getco2(const Climate *,Real *,int);
 extern void freeclimate(Climate *,Bool);
 extern Bool storeclimate(Climatedata *,Climate *,const Cell *,int,int,
                          const Config *);

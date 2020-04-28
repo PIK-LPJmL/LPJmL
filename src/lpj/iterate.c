@@ -78,7 +78,7 @@ int iterate(Outputfile *output,  /**< Output file data */
   }
   ischeckpoint=FALSE;
 #ifndef _WIN32
-  if(ischeckpointrestart(config)) 
+  if(ischeckpointrestart(config))
     signal(SIGTERM,handler); /* enable checkpointing by setting signal handler */
 #endif
   startyear=(config->ischeckpoint) ? config->checkpointyear+1 : config->firstyear-config->nspinup;
@@ -92,7 +92,12 @@ int iterate(Outputfile *output,  /**< Output file data */
       co2=receive_image_co2(config);
     else
 #endif
-    co2=getco2(input.climate,year); /* get atmospheric CO2 concentration */
+    if(getco2(input.climate,&co2,year)) /* get atmospheric CO2 concentration */
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR015: Ivalid year %d in getco2().\n",year);
+      break;
+    }
     if(year<input.climate->firstyear) /* are we in spinup phase? */
       /* yes, let climate data point to stored data */
 #ifdef STORECLIMATE
@@ -126,8 +131,11 @@ int iterate(Outputfile *output,  /**< Output file data */
 #endif
       if(getclimate(input.climate,grid,year,config))
       {
-        fprintf(stderr,"ERROR104: Simulation stopped in getclimate().\n");
-        fflush(stderr);
+        if(isroot(*config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in getclimate().\n");
+          fflush(stderr);
+        }
         break; /* leave time loop */
       }
     }

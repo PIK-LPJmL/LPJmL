@@ -54,7 +54,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
 
         if(day==cell->ml.sdate_fixed[cft])
         {
-          wtype = (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE && day>earliest_sdate) ? TRUE : FALSE;
+          wtype = (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE && day>earliest_sdate);
           if(check_lu(cell->standlist,cell->ml.landfrac[0].crop[cft],npft+cft,FALSE))
           {
             if(!alloc_today_rf)
@@ -84,7 +84,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
         /*irrigated crops*/
         if(day==cell->ml.sdate_fixed[cft+ncft])
         {
-          wtype = (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE && day>earliest_sdate) ? TRUE : FALSE;
+          wtype = (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE && day>earliest_sdate);
           if(check_lu(cell->standlist,cell->ml.landfrac[1].crop[cft],npft+cft,TRUE))
           {
             if(!alloc_today_ir)
