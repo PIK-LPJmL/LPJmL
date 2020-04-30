@@ -230,6 +230,10 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           equilveg(grid+cell);
 
         if(config->nspinup>soil_equil_year &&
+           (year==config->firstyear-config->nspinup+cshift_year) && !config->from_restart)
+          equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
+
+        if(config->nspinup>soil_equil_year &&
            (year==config->firstyear-config->nspinup+120) && !config->from_restart)
           equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
 

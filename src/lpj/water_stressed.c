@@ -231,10 +231,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
          gc=(param.GM*param.ALPHAM)*supply_pft/((1.0-*wet)*eeq*param.ALPHAM-supply_pft);
          if(gc<0)
            gc=0;
-         if(pft->stand->type->landusetype==AGRICULTURE)
-           gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft));
-         else
-           gpd=hour2sec(daylength)*(gc-pft->par->gmin*pft->phen*pft->fpc);
+         gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft));
         data.fac=gpd/1.6*ppm2bar(co2);
         data.vmax=pft->vmax;
         lambda=bisect((Bisectfcn)fcn,0.02,lambda,&data,0,EPSILON,20,&iter);

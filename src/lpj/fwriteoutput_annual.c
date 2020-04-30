@@ -423,8 +423,11 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         foreachstand(stand,s,grid[cell].standlist)
         {
           forrootsoillayer(l)
-            vec[count]+=(float)((stand->soil.NO3[l])*stand->frac);
+		  {
+            if(stand->soil.mean_maxthaw>=layerbound[l])
+        	  vec[count]+=(float)((stand->soil.NO3[l])*stand->frac);
           /*vec[count]+=(float)(stand->soil.YEDOMA*stand->frac);*/
+		  }
         }
         count++;
       }
@@ -440,8 +443,11 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         foreachstand(stand,s,grid[cell].standlist)
         {
           forrootsoillayer(l)
-            vec[count]+=(float)((stand->soil.NH4[l])*stand->frac);
-          /*vec[count]+=(float)(stand->soil.YEDOMA*stand->frac);*/
+		  {
+		    if(stand->soil.mean_maxthaw>=layerbound[l])
+              vec[count]+=(float)((stand->soil.NH4[l])*stand->frac);
+            /*vec[count]+=(float)(stand->soil.YEDOMA*stand->frac);*/
+		  }
         }
         count++;
       }
