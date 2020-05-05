@@ -86,32 +86,33 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
   if(config->permafrost)
   {
     /*adjust root layer*/
-    if(layerbound[BOTTOMLAYER]>pft->stand->soil.mean_maxthaw &&
-       pft->stand->soil.mean_maxthaw>epsilon)
-    {
-      forrootsoillayer(l)
-      {
-        layer+=soildepth[l];
-        root_u+=pft->par->rootdist[l];
-        freeze_depth=layer-pft->stand->soil.mean_maxthaw;
-        if (freeze_depth>0)
-        {
-          thaw_depth=soildepth[l]-freeze_depth;
-          rootdist_n[l]=thaw_depth/soildepth[l]*pft->par->rootdist[l];
-          root_nu=pft->par->rootdist[l]-rootdist_n[l];
-          root_u-= root_nu;
-          l++;
-          break;
-        }
-      }
-      for(i=l;i<BOTTOMLAYER;i++)
-      {
-        root_nu+=rootdist_n[i];
-        rootdist_n[i]=0;
-      }
-      for(i=l-1;i>=0;--i)
-        rootdist_n[i]=rootdist_n[i]/root_u*root_nu+rootdist_n[i];
-    }
+   getrootdist(rootdist_n,pft->par->rootdist,pft->stand->soil.mean_maxthaw);
+//    if(layerbound[BOTTOMLAYER]>pft->stand->soil.mean_maxthaw &&
+//        pft->stand->soil.mean_maxthaw>epsilon)
+//     {
+//       forrootsoillayer(l)
+//       {
+//         layer+=soildepth[l];
+//         root_u+=pft->par->rootdist[l];
+//         freeze_depth=layer-pft->stand->soil.mean_maxthaw;
+//         if (freeze_depth>0)
+//         {
+//           thaw_depth=soildepth[l]-freeze_depth;
+//           rootdist_n[l]=thaw_depth/soildepth[l]*pft->par->rootdist[l];
+//           root_nu=pft->par->rootdist[l]-rootdist_n[l];
+//           root_u-= root_nu;
+//           l++;
+//           break;
+//         }
+//       }
+//       for(i=l;i<BOTTOMLAYER;i++)
+//       {
+//         root_nu+=rootdist_n[i];
+//         rootdist_n[i]=0;
+//       }
+//       for(i=l-1;i>=0;--i)
+//         rootdist_n[i]=rootdist_n[i]/root_u*root_nu+rootdist_n[i];
+//     }
   }
   wr=roots=0;
   for(l=0;l<LASTLAYER;l++)

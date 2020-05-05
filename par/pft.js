@@ -71,7 +71,7 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.962,    /* beta_root */
+    "beta_root" : 0.932,    /* beta_root original 0.962*/
     "minwscal" : 0.0,       /* minwscal 3*/
     "gmin"  : 1.6,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
@@ -171,7 +171,7 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.961,    /* beta_root */
+    "beta_root" : 0.981,    /* beta_root  original 0.962*/
     "minwscal" : 0.35,      /* minwscal 3*/
     "gmin"  : 1.8,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
@@ -573,7 +573,7 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.943,    /* beta_root */
+    "beta_root" : 0.96,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
@@ -673,7 +673,7 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.943,    /* beta_root */
+    "beta_root" : 0.96,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
@@ -775,7 +775,7 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.943,    /* beta_root */
+    "beta_root" : 0.96,     /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.3,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
