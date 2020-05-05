@@ -39,11 +39,8 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
   tree=pft->data;
   bm_delta=pft->bm_inc.carbon/pft->nind-turnover_ind;
   if(bm_delta<0)
-   bm_delta=0;
-  if (pft->par->cultivation_type==BIOMASS)
-    mort_max=0.005;
-  else
-    mort_max=pft->par->mort_max;
+    bm_delta=0;
+  mort_max=pft->par->mort_max;
 
   /* switch off background mortality in case of prescribed land cover */
   if (pft->stand->prescribe_landcover==LANDCOVERFPC && pft->stand->type->landusetype==NATURAL)

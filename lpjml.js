@@ -36,14 +36,11 @@
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
-  "fire" : FIRE,        /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
+  "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
   "fdi" : NESTEROV_INDEX,   /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
-  "radiation" : RADIATION_LWDOWN,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
-  "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
   "river_routing" : false,
-  "equilsoil" :true,
   "permafrost" : true,
   "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "const_climate" : false,
@@ -54,13 +51,13 @@
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
   "wateruse" : WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
-  "equilsoil" :false,
+  "equilsoil" : false,
 #else
   "population" : false,
   "landuse" : NO_LANDUSE,
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,
-  "equilsoil" :true,
+  "equilsoil" : true,
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
@@ -241,12 +238,12 @@ ID                         Fmt                    filename
   "nspinup" : 390,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
-  "lastyear" : 2018, /* last year of simulation */
+  "lastyear" : 2011, /* last year of simulation */
   "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv_stdfire_10.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1900_crop_stdfire_10.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
   "restart_year": 1900 /* write restart at year */
 
 #endif

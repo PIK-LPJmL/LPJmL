@@ -134,7 +134,7 @@ Real daily_natural(Stand *stand,                /**< stand pointer */
     }
 
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
-    if(config->withdailyoutput && isdailyoutput_natural(output,stand))
+    if(config->withdailyoutput && isdailyoutput_stand(output,stand))
       output->daily.npp+=npp;
     output->dcflux-=npp*stand->frac;
     output->mnpp+=npp*stand->frac;
@@ -162,7 +162,7 @@ Real daily_natural(Stand *stand,                /**< stand pointer */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,FALSE);
 
-  if(config->withdailyoutput && isdailyoutput_natural(output,stand))
+  if(config->withdailyoutput && isdailyoutput_stand(output,stand))
   {
     output->daily.evap=evap;
     forrootsoillayer(l)

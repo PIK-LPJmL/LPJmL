@@ -259,7 +259,6 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     }
     /* in rare occasions, agd(=GPP) can be negative, but shouldn't */
     agd=max(0,agd);
-    *rd=*rd;    /* DON'T DELETE THIS LINE */
   }
   else
     agd=0;
