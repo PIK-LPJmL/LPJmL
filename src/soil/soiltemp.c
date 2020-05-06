@@ -16,18 +16,6 @@
 
 /*#define USE_LINEAR_CONTACT_T  */ /*linear interpolation between temperatures seems to give a reasonable approximation of contact temperatures between layers*/
 
-Real soiltemp_lag(const Soil *soil,      /**< Soil data */
-                  const Climbuf *climbuf /**< Climate buffer */
-                 )                       /** \return soil temperature (deg C) */
-{
-  Real a,b,temp_lag;
-  if(soil->w[0]<epsilon)
-    return climbuf->temp[NDAYS-1];
-  linreg(&a,&b,climbuf->temp,NDAYS);
-  temp_lag=a+b*(NDAYS-1-soil->alag*LAG_CONV);
-  return climbuf->atemp_mean+soil->amp*(temp_lag-climbuf->atemp_mean);
-} /* of 'soiltemp_lag' */
-
 /* heat conduction equation: dT/dt = th_diff*d2T/dz2
  * is solved with a finite-difference solution
  * algorithm and stability criterion are taken from:
@@ -35,7 +23,8 @@ Real soiltemp_lag(const Soil *soil,      /**< Soil data */
  */
 
 void soiltemp(Soil *soil,   /**< pointer to soil data */
-              Real airtemp  /**< air temperature (deg C) */
+              Real airtemp,  /**< air temperature (deg C) */
+              Bool permafrost /** permafrost enabled? (TRUE/FALSE) */
              )
 {
   Real heatcap[NSOILLAYER],      /* heat capacity [J/m2/K] or [J/m3/K]*/
@@ -79,7 +68,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
           dT=min(heat/heatcap[l],T_zero-soil->temp[l]);
           heat2=heat-dT*heatcap[l];
           heat-=heat2;
-          if(heat2>epsilon && allice(soil,l)>epsilon)
+          if(permafrost && heat2>epsilon && allice(soil,l)>epsilon)
             soilice2moisture(soil,&heat2,l);
           heat+=heat2;
         }
@@ -92,7 +81,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
         {
           dT=max(heat/heatcap[l],T_zero-soil->temp[l]);
           heat2=heat-dT*heatcap[l];
-          if(heat2<-epsilon && allwater(soil,l)>epsilon)
+          if(permafrost && heat2<-epsilon && allwater(soil,l)>epsilon)
             moisture2soilice(soil,&heat2,l);
           heat+=heat2;
         }
@@ -115,8 +104,8 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
     dt = 0.5*(soildepth[l]*soildepth[l]*1e-6)/lambda[l]*heatcap[l];
     heat_steps=max(heat_steps,(unsigned long)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1);
     /* convert any latent energy present in this soil layer */
-    if((soil->state[l]==BELOW_T_ZERO && allwater(soil,l)>epsilon)
-        || (soil->state[l]==ABOVE_T_ZERO && (allice(soil,l)>epsilon)))
+    if(permafrost && ((soil->state[l]==BELOW_T_ZERO && allwater(soil,l)>epsilon)
+        || (soil->state[l]==ABOVE_T_ZERO && (allice(soil,l)>epsilon))))
     {
       heat=0;
       convert_water(soil,l,&heat);
@@ -142,7 +131,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
         dT=timestep2sec(1.0,heat_steps)*(0.5*(lambda[l+1]+lambda[l])*(t_lower-soil->temp[l])/soildepth[l+1]-0.5*(lambda[l]+((l==0)? lambda[0] : lambda[l-1]))*(soil->temp[l]-t_upper)/soildepth[l])/(0.5*(soildepth[l]+soildepth[l+1]))*1e6/heatcap[l];
     //  dT=th_diff[l]*timestep2sec(1.0,heat_steps)/(soildepth[l]*soildepth[l])*1000000
      //     *(t_upper+t_lower-2*soil->temp[l]);
-      if(soil->temp[l]*t_upper>0 && t_upper*t_lower>0 && (soil->temp[l]+dT)*t_upper>0)
+      if(!permafrost ||( soil->temp[l]*t_upper>0 && t_upper*t_lower>0 && (soil->temp[l]+dT)*t_upper>0))
       {
         soil->temp[l]+=dT;
         soil->state[l]=(short)getstate(soil->temp+l);

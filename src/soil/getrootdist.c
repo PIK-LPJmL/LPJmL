@@ -42,8 +42,12 @@ void getrootdist(Real rootdist_n[],const Real rootdist[],Real mean_maxthaw)
     }
     for(i=l;i<BOTTOMLAYER;i++)
       rootdist_n[i]=0;
+    layer=thaw_depth;
+    for(i=l-2;i>=0;--i)
+    	layer+=soildepth[i];
+    rootdist_n[l-1]+=rootdist_n[l-1]+(1-root_u)*thaw_depth/layer;
     /* rescale sum of rootdist_n to one */
-    for(i=l-1;i>=0;--i)
-      rootdist_n[i]/=root_u;
+    for(i=l-2;i>=0;--i)
+      rootdist_n[i]+=(1-root_u)*soildepth[i]/layer;
   }
 } /* of 'getrootdist' */

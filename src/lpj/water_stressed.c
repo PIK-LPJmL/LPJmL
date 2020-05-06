@@ -65,14 +65,13 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
                     const Config *config       /**< [in] LPJ configuration */
                    )                           /** \return gross primary productivity (gC/m2/day) */
 {
-  int l,i,iter;
+  int l,iter;
   Real supply,supply_pft,demand,demand_pft,wr,lambda,gpd,agd,gc,aet,aet_cor,aet_frac;
   Data data;
   Real vmax;
   Real rootdist_n[LASTLAYER];
   Real aet_tmp[LASTLAYER];
   Real layer,root_u,root_nu;
-  Real freeze_depth,thaw_depth;
   Real adtmm;
   Real gc_new;
   Irrigation *irrig;
@@ -84,32 +83,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   if(config->permafrost)
   {
     /*adjust root layer*/
-    if(layerbound[BOTTOMLAYER]>pft->stand->soil.mean_maxthaw &&
-       pft->stand->soil.mean_maxthaw>epsilon)
-    {
-      forrootsoillayer(l)
-      {
-        layer+=soildepth[l];
-        root_u+=pft->par->rootdist[l];
-        freeze_depth=layer-pft->stand->soil.mean_maxthaw;
-        if (freeze_depth>0)
-        {
-          thaw_depth=soildepth[l]-freeze_depth;
-          rootdist_n[l]=thaw_depth/soildepth[l]*pft->par->rootdist[l];
-          root_nu=pft->par->rootdist[l]-rootdist_n[l];
-          root_u-= root_nu;
-          l++;
-          break;
-        }
-      }
-      for(i=l;i<BOTTOMLAYER;i++)
-      {
-        root_nu+=rootdist_n[i];
-        rootdist_n[i]=0;
-      }
-      for(i=l-1;i>=0;--i)
-        rootdist_n[i]=rootdist_n[i]/root_u*root_nu+rootdist_n[i];
-    }
+   getrootdist(rootdist_n,pft->par->rootdist,pft->stand->soil.mean_maxthaw);
   }
   wr=0;
   for(l=0;l<LASTLAYER;l++)

@@ -47,7 +47,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
                          )                   /** \return number of elements in array */
 {
   LPJfile arr,item;
-  unsigned int id;
+  int id;
   int l,nsoil,n;
   String s;
   Soilpar *soil;
@@ -91,9 +91,9 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
   {
     fscanarrayindex(&arr,&item,n,verb);
     id=n;
-    if(fscanuint(&item,&id,"id",TRUE,verb))
+    if(fscanint(&item,&id,"id",TRUE,verb))
       return 0;
-    if(id>=nsoil)
+    if(id<0 || id>=nsoil)
     {
       if(verb)
         fprintf(stderr,"ERROR115: Invalid range of soil type=%d in fscansoilpar(), valid range is [0,%d].\n",id,nsoil-1);
@@ -103,7 +103,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     if(soil->type!=UNDEF)
     {
       if(verb)
-        fprintf(stderr,"ERROR177: Soil type=%u has been already defined in fscansoilpar().\n",id);
+        fprintf(stderr,"ERROR177: Soil type=%d has been already defined in fscansoilpar().\n",id);
       return 0;
     }
     if(fscanstring(&item,s,"name",FALSE,verb))
