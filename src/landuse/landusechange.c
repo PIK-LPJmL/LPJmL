@@ -518,7 +518,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
                   )
   /* needs to be called before establishment, to ensure that regrowth is possible in the following year*/
 {
-  Real difffrac,difffrac2,movefrac;
+  Real diff,difffrac,difffrac2,movefrac;
   Stand *stand, *tempstand, *irrigstand;
   Bool irrigation;
   Irrigation *data;
@@ -535,8 +535,22 @@ void landusechange(Cell *cell,            /**< pointer to cell */
   if(cell->ml.dam)
     landusechange_for_reservoir(cell,pftpar,npft,istimber,with_tillage,intercrop,ncft,year,config->with_nitrogen);
   /* test if land needs to be reallocated between setaside stands */
-  difffrac=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf;
-  difffrac2=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,TRUE)-cell->ml.cropfrac_ir;
+  diff=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf;
+  if(diff<0) /* if last year decline is persistent, diff will be negative again; a one-year only decline would be skipped */
+  {
+    difffrac=cell->ml.abandon_rf;
+    cell->ml.abandon_rf=diff-cell->ml.abandon_rf;
+  }
+  else 
+    difffrac=diff;
+  diff=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,TRUE)-cell->ml.cropfrac_ir;
+  if(diff<0)
+  {
+    difffrac2=cell->ml.abandon_ir;
+    cell->ml.abandon_ir=diff-cell->ml.abandon_ir;
+  }
+  else
+    difffrac2=diff;
 
   if(difffrac*difffrac2<-epsilon*epsilon) /* if one increases while the other decreases */
   {

@@ -61,6 +61,8 @@ typedef struct
   Cropdates *cropdates;
   Real cropfrac_rf;       /**< rain-fed crop fraction (0..1) */
   Real cropfrac_ir;       /**< irrigated crop fraction (0..1) */
+  Real abandon_rf;        /**< rain-fed crop fraction to be abandoned next year (avoids that crops cannot be sown due to overlapping seasons under declining cropland */
+  Real abandon_ir;
   int *sowing_month;      /**< sowing month (index of month, 1..12), rainfed, irrigated*/
   int *gs;                /**< length of growing season (number of consecutive months, 0..11)*/
   Seasonality seasonality_type;  /**< seasonality type (0..4) 0:no seasonality, 1 and
