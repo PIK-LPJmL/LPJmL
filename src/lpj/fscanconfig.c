@@ -44,6 +44,8 @@
       printf("%s %s\n", what, (var)->name);                             \
   }
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE; }
+
 static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const char *path,Verbosity verbose)
 {
   if(readfilename(file,name,key,path,FALSE,verbose))
@@ -364,8 +366,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     return TRUE;
   fscanname(file,name,"pft_index");
   config->pft_index=strdup(name);
+  checkptr(config->pft_index);
   fscanname(file,name,"layer_index");
   config->layer_index=strdup(name);
+  checkptr(config->layer_index);
   config->outnames=fscanoutputvar(file,NOUT,verbose);
   if(config->outnames==NULL)
   {
@@ -389,6 +393,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
     free(config->inputdir);
     config->inputdir=strdup(name);
+    checkptr(config->inputdir);
   }
   if(fscanstruct(file,&input,"input",verbose))
     return TRUE;
@@ -566,6 +571,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
     free(config->restartdir);
     config->restartdir=strdup(name);
+    checkptr(config->restartdir);
   }
   config->startgrid=ALL; /* set default value */
   if(fscanint(file,&config->startgrid,"startgrid",TRUE,verbose))
@@ -638,7 +644,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
               config->firstyear-config->nspinup,config->lastyear);
     return TRUE;
   }
-  if(iskeydefined(file,"outputyear"))
+  if(config->n_out && iskeydefined(file,"outputyear"))
   {
     fscanint2(file,&config->outputyear,"outputyear");
     if(config->outputyear>config->lastyear)
@@ -663,6 +669,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     fscanname(file,name,"restart_filename");
     config->restart_filename=addpath(name,config->restartdir);
+    checkptr(config->restart_filename);
   }
   else
   {
@@ -674,6 +681,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     fscanname(file,name,"checkpoint_filename");
     config->checkpoint_restart_filename=addpath(name,config->restartdir);
+    checkptr(config->checkpoint_restart_filename);
   }
   else
     config->checkpoint_restart_filename=NULL;
@@ -682,6 +690,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     fscanname(file,name,"write_restart_filename");
     config->write_restart_filename=addpath(name,config->restartdir);
+    checkptr(config->write_restart_filename);
     fscanint2(file,&config->restartyear,"restart_year");
     if(config->restartyear>config->lastyear || config->restartyear<config->firstyear-config->nspinup)
     {

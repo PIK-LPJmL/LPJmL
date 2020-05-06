@@ -62,6 +62,7 @@ int open_netcdf(const char *filename,int *ncid,Bool *isopen)
   item->filename=strdup(filename);
   if(item->filename==NULL)
   {
+    printallocerr("item");
     free(item);
     return 1;
   }

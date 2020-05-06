@@ -24,6 +24,8 @@
 #define cpp_cmd "cpp"  /* C preprocessor command for Unix */
 #endif
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return NULL; }
+
 FILE *openconfig(Config *config,      /**< configuration struct */
                  const char *dflt_filename, /**< default name of configuration file */
                  int *argc,           /**< pointer to the number of arguments */
@@ -50,17 +52,26 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   if(pos==NULL)
     config->outputdir=NULL;
   else
+  {
     config->outputdir=strdup(pos);
+    checkptr(config->outputdir);
+  }
   pos=getenv(LPJINPUT);
   if(pos==NULL)
     config->inputdir=NULL;
   else
+  {
     config->inputdir=strdup(pos);
+    checkptr(config->inputdir);
+  }
   pos=getenv(LPJRESTART);
   if(pos==NULL)
     config->restartdir=NULL;
   else
+  {
     config->restartdir=strdup(pos);
+    checkptr(config->restartdir);
+  }
   env_options=getenv(LPJOUTPUTMETHOD);
   config->port=DEFAULT_PORT;
   config->param_out=FALSE;
@@ -305,6 +316,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         {
           free(config->inputdir);
           config->inputdir=strdup((*argv)[++i]);
+          checkptr(config->inputdir);
         }
       }
       else if(!strcmp((*argv)[i],"-outpath"))
@@ -325,6 +337,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         {
           free(config->outputdir);
           config->outputdir=strdup((*argv)[++i]);
+          checkptr(config->outputdir);
         }
       }
       else if(!strcmp((*argv)[i],"-restartpath"))
@@ -344,6 +357,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         {
           free(config->restartdir);
           config->restartdir=strdup((*argv)[++i]);
+          checkptr(config->restartdir);
         }
       }
 #ifdef WITH_FPE

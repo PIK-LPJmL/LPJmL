@@ -222,6 +222,11 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
         return NULL;
       }
       name=strdup(value);
+      if(name==NULL)
+      {
+        printallocerr("name");
+        return NULL;
+      }
     }
     else if(!strcmp(key,"remark"))
     {

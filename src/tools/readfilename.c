@@ -166,6 +166,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   filename->name=addpath(name,path); /* add path to filename */
   if(filename->name==NULL)
   {
+    printallocerr("name");
     free(filename->var);
     return TRUE;
   }

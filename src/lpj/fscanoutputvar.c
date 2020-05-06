@@ -28,6 +28,8 @@
     }                                              \
   }
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return NULL; }
+
 Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
                          int nout_max,  /**< maximum number of output files */
                          Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
@@ -48,8 +50,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     return NULL;
   }
   outnames=newvec(Variable,nout_max);
-  if(outnames==NULL)
-    return NULL;
+  checkptr(outnames);
   for(i=0;i<nout_max;i++)
     outnames[i].name=NULL; 
   for(i=0;i<nout_max;i++)
@@ -71,10 +72,13 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     }
     fscanname(&item,name,"name",outnames[index].name);
     outnames[index].name=strdup(name);
+    checkptr(outnames[index].name);
     fscanname(&item,name,"var",outnames[index].name);
     outnames[index].var=strdup(name);
+    checkptr(outnames[index].var);
     fscanname(&item,name,"descr",outnames[index].name);
     outnames[index].descr=strdup(name);
+    checkptr(outnames[index].descr);
     fscanname(&item,name,"unit",outnames[index].name);
     if(strstr(name,"/month")!=NULL)
       outnames[index].time=MONTH;
@@ -87,6 +91,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     else
       outnames[index].time=MISSING_TIME;
     outnames[index].unit=strdup(name);
+    checkptr(outnames[index].unit);
     outnames[index].scale=1.0;
     fscanfloat2(&item,&outnames[index].scale,"scale",outnames[index].name);
     outnames[index].offset=0.0;

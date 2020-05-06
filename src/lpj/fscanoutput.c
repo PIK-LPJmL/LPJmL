@@ -20,6 +20,8 @@
 #define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanbool2(file,var,name) if(fscanbool(file,var,name,FALSE,verbosity)) return TRUE;
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE; }
+
 static Bool isopenoutput(int id,const Outputvar output[],int n)
 {
   /* checks whether output file has already been specified */
@@ -71,6 +73,7 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
       return TRUE;
     free(config->outputdir);
     config->outputdir=strdup(outpath);
+    checkptr(config->outputdir);
   }
   if(iskeydefined(file,"grid_scaled"))
   {
@@ -127,11 +130,13 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
         {
           free(config->outnames[flag].var);
           config->outnames[flag].var=strdup(config->outputvars[count].filename.var);
+          checkptr(config->outnames[flag].var);
         }
         if(config->outputvars[count].filename.unit!=NULL)
         {
           free(config->outnames[flag].unit);
           config->outnames[flag].unit=strdup(config->outputvars[count].filename.unit);
+          checkptr(config->outnames[flag].unit);
         }
         if(config->outputvars[count].filename.isscale)
           config->outnames[flag].scale=config->outputvars[count].filename.scale;
