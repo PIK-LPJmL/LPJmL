@@ -27,6 +27,10 @@
 /* ifdefs for MACMIT_INTENSIFICATION runs*/
 
 /*Identifiers (preprocessor only understands integer expressions in #if)*/
+#define GLOBALRUN 1
+#define PIXELRUN 2
+#define DRUN PIXELRUN
+
 #define TIM_1986_2005 1
 #define TIM_2080_2099 2
 
@@ -78,7 +82,7 @@
     #define DNIT NIT_LIM /* NIT_UNL */
     #define DGS GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  03_tim.1986.2005_scn.histor_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
-    #define restart_run 03_tim.1986.2005_scn.histor_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
+    #define restart_run 03_tim.1986.2005_scn.histor_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat //where the restart is read from
 #elif defined(RUN_ID_07)
     #define DTIM TIM_1986_2005
     #define DSCN SCN_HISTOR
@@ -105,7 +109,7 @@
     #define DNIT NIT_UNL /* NIT_UNL */
     #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run 15_tim.2080.2099_scn.rcp60_clm.had_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
-    #define restart_run 03_tim.1986.2005_scn.histor_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
+    #define restart_run 07_tim.1986.2005_scn.histor_clm.had_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_19)
     #define DTIM TIM_2080_2099
     #define DSCN SCN_RCP60
@@ -123,7 +127,7 @@
     #define DNIT NIT_UNL /* NIT_UNL */
     #define DGS  GS_SA1 /* GS_SA0, GS_SA1 */
     #define output_run 23_tim.2080.2099_scn.rcp60_clm.had_irr.unl_nit.unl_gs.sa1_res.dat_til.dat
-    #define restart_run 03_tim.1986.2005_scn.histor_clm.had_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
+    #define restart_run 07_tim.1986.2005_scn.histor_clm.had_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
 
  /* GFDL-ESM2M */
 #elif defined(RUN_ID_04)
@@ -161,7 +165,7 @@
     #define DNIT NIT_UNL /* NIT_UNL */
     #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  16_tim.2080.2099_scn.rcp60_clm.gfd_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
-    #define restart_run 04_tim.1986.2005_scn.histor_clm.gfd_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
+    #define restart_run 08_tim.1986.2005_scn.histor_clm.gfd_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_20)
     #define DTIM TIM_2080_2099
     #define DSCN SCN_RCP60
@@ -179,7 +183,7 @@
     #define DNIT NIT_UNL /* NIT_UNL */
     #define DGS  GS_SA1 /* GS_SA0, GS_SA1 */
     #define output_run  24_tim.2080.2099_scn.rcp60_clm.gfd_irr.unl_nit.unl_gs.sa1_res.dat_til.dat
-    #define restart_run 04_tim.1986.2005_scn.histor_clm.gfd_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
+    #define restart_run 08_tim.1986.2005_scn.histor_clm.gfd_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
 
 /* IPSL-CM5A-LR */
 #elif defined(RUN_ID_05)
@@ -217,7 +221,7 @@
     #define DNIT NIT_UNL /* NIT_UNL */
     #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  17_tim.2080.2099_scn.rcp60_clm.ips_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
-    #define restart_run 05_tim.1986.2005_scn.histor_clm.ips_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
+    #define restart_run 09_tim.1986.2005_scn.histor_clm.ips_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_21)
     #define DTIM TIM_2080_2099
     #define DSCN SCN_RCP60
@@ -235,7 +239,7 @@
     #define DNIT NIT_UNL /* NIT_UNL */
     #define DGS  GS_SA1 /* GS_SA0, GS_SA1 */
     #define output_run  25_tim.2080.2099_scn.rcp60_clm.ips_irr.unl_nit.unl_gs.sa1_res.dat_til.dat
-    #define restart_run 05_tim.1986.2005_scn.histor_clm.ips_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
+    #define restart_run 09_tim.1986.2005_scn.histor_clm.ips_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
 
  /* MIROC5 */
  #elif defined(RUN_ID_06)
@@ -273,7 +277,7 @@
     #define DNIT NIT_UNL /* NIT_UNL */
     #define DGS  GS_SA0 /* GS_SA0, GS_SA1 */
     #define output_run  18_tim.2080.2099_scn.rcp60_clm.mir_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
-    #define restart_run 06_tim.1986.2005_scn.histor_clm.mir_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
+    #define restart_run 10_tim.1986.2005_scn.histor_clm.mir_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
 #elif defined(RUN_ID_22)
     #define DTIM TIM_2080_2099
     #define DSCN SCN_RCP60
@@ -291,7 +295,7 @@
     #define DNIT NIT_UNL /* NIT_UNL */
     #define DGS  GS_SA1 /* GS_SA0, GS_SA1 */
     #define output_run  26_tim.2080.2099_scn.rcp60_clm.mir_irr.unl_nit.unl_gs.sa1_res.dat_til.dat
-    #define restart_run 06_tim.1986.2005_scn.histor_clm.mir_irr.lim_nit.lim_gs.sa0_res.dat_til.dat
+    #define restart_run 10_tim.1986.2005_scn.histor_clm.mir_irr.unl_nit.unl_gs.sa0_res.dat_til.dat
 
 #else
 #endif /* RUN_ID */
@@ -311,12 +315,17 @@
   "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
-
-#if (DIRR==IRR_LIM)
-  "river_routing" : true,  //true, false set only for testing pixel runs
-#elif (DIRR==IRR_UNL)
-  "river_routing" : true,  //true,
+#if (DRUN==PIXELRUN)
+    "river_routing" : false, //false set only for testing pixel runs
+#else
+    "river_routing" : true, // river_routing true for both IRR_LIM and IRR_UNL
 #endif
+
+/* #if (DIRR==IRR_LIM)
+  "river_routing" : true, //false set only for testing pixel runs
+#elif (DIRR==IRR_UNL)
+  "river_routing" : true,
+#endif */
 
   "permafrost" : true,
 
@@ -398,6 +407,11 @@
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
+
+#if(DRUN==PIXELRUN)
+    #define output_run  pixel
+    #define restart_run pixel
+#endif
 
 #define workdir /p/projects/macmit/users/minoli/PROJECTS/MACMIT_INTENSIFICATION/LPJmL/outputs
 #define output workdir/output_run
@@ -525,9 +539,13 @@ ID                         Fmt                    filename
 /*===================================================================*/
 /*  V. Run settings section                                          */
 /*===================================================================*/
-
-  "startgrid" :  27410, //ALL, /* 27410, 67208 60400 all grid cells */
-  "endgrid" : 27410, //ALL,
+#if (DRUN==PIXELRUN)
+  "startgrid" :  30115, /*31374, 27410, 67208 60400 all grid cells */
+  "endgrid" :    30115,
+#else
+  "startgrid" :  ALL, /*31374, 27410, 67208 60400 all grid cells */
+  "endgrid" :    ALL,
+#endif
 
 #ifdef CHECKPOINT
   "checkpoint_filename" : mkstr(output/restart_checkpoint.lpj), /* filename of checkpoint file */
@@ -543,7 +561,6 @@ ID                         Fmt                    filename
       "lastyear" : 1979, //1901, /* last year of simulation */
       "restart" : false, /* do not start from restart file */
       "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-      //"write_restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting_test.lpj), /* filename of restart file */
       "write_restart_filename" : mkstr(output/restart_1978_nv_stdfire.lpj), /* filename of restart file */
       "restart_year": 1978, //1840 /* write restart at year */
 
@@ -555,9 +572,7 @@ ID                         Fmt                    filename
       "lastyear" : 2005, /* last year of simulation */
       "outputyear": 1979, //1901, /* first year output is written  */
       "restart" :  true, /* start from restart file */
-      //"restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting_test.lpj), /* filename of restart file */
-      "restart_filename" : mkstr(output/restart_1978_nv_stdfire.lpj), /* filename of restart file */
-      //"write_restart" : true, /* create restart file */
+      "restart_filename" : mkstr(restart/restart_1978_nv_stdfire.lpj), /* filename of restart file */
       "write_restart" : false, /* create restart file */
       "write_restart_filename" : mkstr(output/restart_1900_crop_stdfire.lpj), /* filename of restart file */
       "restart_year": 1900 /* write restart at year */
@@ -577,21 +592,21 @@ ID                         Fmt                    filename
       "restart" : false, /* do not start from restart file */
       "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
       "write_restart_filename" : mkstr(output/restart_1861_nv_stdfire.lpj), /* filename of restart file */
-      //"write_restart_filename" : mkstr(output/restart_1978_nv_stdfire.lpj), /* filename of restart file */
       "restart_year": 1840 /* write restart at year */
 
      #else
-
+           #if (DRUN==PIXELRUN)
+       "nspinup" : 60,   /* spinup years */
+           #else
        "nspinup" : 390,   /* spinup years */
+           #endif
        "nspinyear" : 30,  /* cycle length during spinup (yr)*/
        "firstyear": 1901, /* first year of simulation */
        "lastyear" : 2005, /* last year of simulation */
        "outputyear": 1901, /* first year output is written  */
        "restart" :  true, /* start from restart file */
-       "restart_filename" : mkstr(output/restart_1861_nv_stdfire.lpj), /* filename of restart file */
-       //"restart_filename" : mkstr(output/restart_1978_nv_stdfire.lpj), /* filename of restart file */
+       "restart_filename" : mkstr(restart/restart_1861_nv_stdfire.lpj), /* filename of restart file */
        "write_restart" : true, /* create restart file */
-       //"write_restart" : false, /* create restart file */
        "write_restart_filename" : mkstr(output/restart_2005_crop_stdfire.lpj), /* filename of restart file */
        "restart_year": 2005 /* write restart at year */
 
@@ -599,20 +614,6 @@ ID                         Fmt                    filename
 
      #elif (DTIM==TIM_2080_2099)
 	 
-       //#ifndef FROM_RESTART
-
-        //"nspinup" : 5000,  /* spinup years */
-        //"nspinyear" : 30,  /* cycle length during spinup (yr) */
-        //"firstyear": 1901, /* first year of simulation */
-        //"lastyear" : 1901, /* last year of simulation */
-        //"restart" : false, /* do not start from restart file */
-        //"write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-        //"write_restart_filename" : mkstr(output/restart_1840_nv_stdfire_withrrouting_test.lpj), /* filename of restart file */
-        //"write_restart_filename" : mkstr(output/restart_1978_nv_stdfire.lpj), /* filename of restart file */
-        //"restart_year": 1840 /* write restart at year */
-        
-       //#else
-
         "nspinup" : 0,   /* spinup years */
         "nspinyear" : 30,  /* cycle length during spinup (yr)*/
         "firstyear": 2006, /* first year of simulation */
@@ -620,13 +621,9 @@ ID                         Fmt                    filename
         "outputyear": 2006, /* first year output is written  */
         "restart" :  true, /* start from restart file */
         "restart_filename" : mkstr(restart/restart_2005_crop_stdfire.lpj), /* filename of restart file */
-        //"restart_filename" : mkstr(output/restart_1978_nv_stdfire.lpj), /* filename of restart file */
-        //"write_restart" : true, /* create restart file */
         "write_restart" : false, /* create restart file */
         "write_restart_filename" : mkstr(output/restart_2005_crop_stdfire.lpj), /* filename of restart file */
         "restart_year": 2005 /* write restart at year */
-
-    // #endif /* FROM_RESTART */
      
      #endif /* TIM_2080_2099 */
 
