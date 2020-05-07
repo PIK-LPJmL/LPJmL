@@ -538,6 +538,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
   diff=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf;
   if(diff<0) /* if last year decline is persistent, diff will be negative again; a one-year only decline would be skipped */
   {
+      printf("landusechange(L541): last year decline is persistent\n");
     difffrac=cell->ml.abandon_rf;
     cell->ml.abandon_rf=diff-cell->ml.abandon_rf;
   }
@@ -551,6 +552,9 @@ void landusechange(Cell *cell,            /**< pointer to cell */
   }
   else
     difffrac2=diff;
+
+  //printf("cell->ml.reservoirfrac=%.5f, cell->lakefrac=%.5f\n", cell->ml.reservoirfrac, cell->lakefrac);
+  printf("landusechange(L557): difffrac=%.5f, difffrac2=%.5f, epsilon=%.7f, cropfrac_rf=%.3f, cropfrac_ir=%.3f\n", difffrac, difffrac2, epsilon, cell->ml.cropfrac_rf, cell->ml.cropfrac_ir);
 
   if(difffrac*difffrac2<-epsilon*epsilon) /* if one increases while the other decreases */
   {

@@ -45,6 +45,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
 
   if(landfrac>=setasidestand->frac-epsilon)
   {
+      printf("cultivate(L48): landfrac=%g, setasidestand->frac=%g\n", landfrac, setasidestand->frac);
     setasidestand->type->freestand(setasidestand);
     setasidestand->type=&agriculture_stand;
     new_agriculture(setasidestand);

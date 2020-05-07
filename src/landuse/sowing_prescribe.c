@@ -17,31 +17,33 @@
 #include "agriculture.h"
 
 Stocks sowing_prescribe(Cell* cell,          /**< pointer to cell */
-  int day,             /**< day of year (1..365) */
-  int npft,            /**< number of natural PFTs */
-  int ncft,            /**< number of crop PFTs */
-  int year,            /**< simulation year (AD) */
-  const Config* config /**< LPJmL configuration */
+    int day,             /**< day of year (1..365) */
+    int npft,            /**< number of natural PFTs */
+    int ncft,            /**< number of crop PFTs */
+    int year,            /**< simulation year (AD) */
+    const Config* config /**< LPJmL configuration */
 )                     /** \return establishment flux (gC/m2) */
 {
-  Stocks flux_estab={ 0,0 }, stocks;
-  Stand* setasidestand;
-  Bool alloc_today_rf=FALSE, alloc_today_ir=FALSE, istimber;
-  const Pftcroppar* croppar;
-  int cft, s, s2;
-  int earliest_sdate;
-  Bool wtype=FALSE;
+    Stocks flux_estab = { 0,0 }, stocks;
+    Stand* setasidestand;
+    Bool alloc_today_rf = FALSE, alloc_today_ir = FALSE, istimber;
+    const Pftcroppar* croppar;
+    int cft, s, s2;
+    int earliest_sdate;
+    Bool wtype = FALSE;
 
 #ifdef IMAGE
-  istimber=(config->start_imagecoupling!=INT_MAX);
+    istimber = (config->start_imagecoupling != INT_MAX);
 #else
-  istimber=FALSE;
+    istimber = FALSE;
 #endif
-  s=findlandusetype(cell->standlist, SETASIDE_RF);
-  s2=findlandusetype(cell->standlist, SETASIDE_IR);
+    s = findlandusetype(cell->standlist, SETASIDE_RF);
+    s2 = findlandusetype(cell->standlist, SETASIDE_IR);
+    if (day == cell->ml.sdate_fixed[1]) {
+        printf("sowing_prescribe(L42): day==%d, s==%d, s2==%d\n", day, s, s2);
+    }
   if (s!=NOT_FOUND||s2!=NOT_FOUND)
   {
-
     for (cft=0; cft<ncft; cft++)
     {
       croppar=config->pftpar[npft+cft].data;
@@ -49,15 +51,16 @@ Stocks sowing_prescribe(Cell* cell,          /**< pointer to cell */
 
       /*rainfed crops*/
       s=findlandusetype(cell->standlist, SETASIDE_RF);
+
       if (s!=NOT_FOUND)
       {
         setasidestand=getstand(cell->standlist, s);
 
         if (day==cell->ml.sdate_fixed[cft])
         {
-//printf("sowing_prescribe.c for cft %d day==cell->ml.sdate_fixed[cft]==%d\n",cft , day);
+printf("sowing_prescribe(L61): for cft=%d, lon=%.2f, lat=%.2f, sdate=%d, earliest_sdate=%d\n", cft, cell->coord.lon, cell->coord.lat, day, earliest_sdate);
           wtype=(croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE&&day>earliest_sdate)?TRUE:FALSE;
-          if (check_lu(cell->standlist, cell->ml.landfrac[0].crop[cft], npft+cft, FALSE))
+          if (check_lu(cell->standlist, cell->ml.landfrac[0].crop[cft], npft + cft, FALSE))
           {
             if (!alloc_today_rf)
             {

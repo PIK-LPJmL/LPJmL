@@ -48,7 +48,7 @@ void scalelandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.
   for(i=0;i<2;i++)
   {
     for(j=0;j<ncft;j++)
-      landfrac[i].crop[j]*=scale;
+        landfrac[i].crop[j]*=scale;
     for(j=0;j<NGRASS;j++)
       landfrac[i].grass[j]*=scale;
     landfrac[i].biomass_grass*=scale;
