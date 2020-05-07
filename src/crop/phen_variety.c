@@ -42,16 +42,20 @@ void phen_variety(Pft *pft,      /**< PFT variables */
   if(config->crop_phu_option == PRESCRIBED_CROP_PHU)
   {
       crop->phu = pft->stand->cell->ml.crop_phu_fixed[pft->par->id-npft+data->irrigation*ncft];
-      if (crop->phu < 0) /* if phus of winter varieties are stored with negative sign */
+      if (crop->phu < 0) /* phus of winter varieties stored with negative sign in phu input file */
       {
-          if (!wtype)
-              printf("Warning: (phen_variety.c) prescribed phu refer to winter type, but sowing date not\n");
+          wtype = TRUE;
           crop->phu = -(crop->phu);
       }
- //printf("phen_variety.c: crop->phu = %lf\n", crop->phu);
+      else
+      {
+          wtype = FALSE;
+      }
+      crop->wtype = wtype;
+ 
       if (wtype)
       {
-          crop->pvd = max(0, min(60, vern_date20 - sdate - croppar->pvd));
+          crop->pvd = max(0, min(60, vern_date20 - sdate - croppar->pvd)); /* compute vernalization requirements */
       }
       else
       {
