@@ -535,23 +535,37 @@ void landusechange(Cell *cell,            /**< pointer to cell */
   if(cell->ml.dam)
     landusechange_for_reservoir(cell,pftpar,npft,istimber,with_tillage,intercrop,ncft,year,config->with_nitrogen);
   /* test if land needs to be reallocated between setaside stands */
-  diff=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf;
-  if(diff<0) /* if last year decline is persistent, diff will be negative again; a one-year only decline would be skipped */
-  {
-      printf("landusechange(L541): last year decline is persistent\n");
+  difffrac=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf;
+  //if(diff<0) /* if last year decline is persistent, diff will be negative again; a one-year only decline would be skipped */
+  /*{
+    printf("landusechange(L541): this year decline will be stored for next year: %g abadon_rf %g\n",diff,cell->ml.abandon_rf);
     difffrac=cell->ml.abandon_rf;
-    cell->ml.abandon_rf=diff-cell->ml.abandon_rf;
-  }
-  else 
+    if(difffrac<0) printf("abandoning land from last year %g\n",difffrac);
+    cell->ml.abandon_rf=diff-difffrac;*/
+printf("existing stands\n");
+foreachstand(stand,s,cell->standlist)
+  printf("stand %d type %d frac %g\n",s,stand->type->landusetype,stand->frac);
+printf("landfracs\n");
+for(i=0;i<ncft;i++)
+  printf("cft %d frac %g\n",i,cell->ml.landfrac[0].crop[i]);
+/*  }
+  else
+  {
+    cell->ml.abandon_rf=0; 
     difffrac=diff;
-  diff=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,TRUE)-cell->ml.cropfrac_ir;
-  if(diff<0)
+printf("increasing difffrac again by %g to %g\n",diff,difffrac);
+  }*/
+  difffrac2=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,TRUE)-cell->ml.cropfrac_ir;
+  /*if(diff<0)
   {
     difffrac2=cell->ml.abandon_ir;
-    cell->ml.abandon_ir=diff-cell->ml.abandon_ir;
+    cell->ml.abandon_ir=diff-difffrac;
   }
   else
+  {
+    cell->ml.abandon_ir=0;
     difffrac2=diff;
+  }*/
 
   //printf("cell->ml.reservoirfrac=%.5f, cell->lakefrac=%.5f\n", cell->ml.reservoirfrac, cell->lakefrac);
   printf("landusechange(L557): difffrac=%.5f, difffrac2=%.5f, epsilon=%.7f, cropfrac_rf=%.3f, cropfrac_ir=%.3f\n", difffrac, difffrac2, epsilon, cell->ml.cropfrac_rf, cell->ml.cropfrac_ir);
@@ -614,15 +628,45 @@ void landusechange(Cell *cell,            /**< pointer to cell */
   {
     cropfrac= i==0 ? cell->ml.cropfrac_rf : cell->ml.cropfrac_ir;
 
-    difffrac=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,i)-cropfrac; /* hb 8-1-09: added the resfrac, see function AND replaced to BEFORE next three lines */
+    diff=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,i)-cropfrac; /* hb 8-1-09: added the resfrac, see function AND replaced to BEFORE next three lines */
+    if(diff<0)
+    {
+      difffrac= i==0 ? cell->ml.abandon_rf : cell->ml.abandon_ir;
+      if(diff<difffrac)
+      {
+        if(i==0) 
+          cell->ml.abandon_rf=diff-difffrac;
+        else
+          cell->ml.abandon_ir=diff-difffrac;
+      }
+      else
+      {
+        if(i==0)
+          cell->ml.abandon_rf=0;
+        else
+          cell->ml.abandon_ir=0;
+      }
+    }
+    else
+    {
+      if(i==0)
+        cell->ml.abandon_rf=0;
+      else
+        cell->ml.abandon_ir=0;
+      difffrac=diff;
+    }
 
     grassfrac=cell->ml.landfrac[i].grass[0]+cell->ml.landfrac[i].grass[1]; /* pasture + others */
 
 
     if(difffrac>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir<(1-epsilon)) 
       deforest(cell,difffrac,pftpar,with_tillage,intercrop,npft,FALSE,istimber,i,ncft,year,minnatfrac_luc,config->with_nitrogen);  /*deforestation*/
-    else if(difffrac<=-epsilon) 
+    else if(difffrac<=-epsilon)
+    {
+      printf("abandoning cropland %g (%d)\n",difffrac,i); 
       regrowth(cell,difffrac,pftpar,npft,ntypes,istimber,i,ncft,year,config->with_nitrogen);        /*regrowth*/
+    }
+    if(cell->ml.abandon_rf<0) printf("storing abandonment for next year %g\n",cell->ml.abandon_rf);
 
     /* pasture */
     cultivation_type=PASTURE;
