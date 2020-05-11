@@ -84,7 +84,6 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
           fputc('\n',file);
         }
         fprintf(file,"Cropfrac (rf/ir):\t%g\t%g\n",grid[cell].ml.cropfrac_rf,grid[cell].ml.cropfrac_ir);
-        fprintf(file,"abandon Cropfrac (rf/ir):\t%g\t%g\n",grid[cell].ml.abandon_rf,grid[cell].ml.abandon_ir);
         fprintcropdates(file,grid[cell].ml.cropdates,config->pftpar+npft,ncft);
       }
       if(config->with_nitrogen)
