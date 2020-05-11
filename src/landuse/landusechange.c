@@ -537,8 +537,6 @@ void landusechange(Cell *cell,            /**< pointer to cell */
   /* test if land needs to be reallocated between setaside stands */
   difffrac=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,FALSE)-cell->ml.cropfrac_rf;
   difffrac2=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,TRUE)-cell->ml.cropfrac_ir;
-
-  //printf("cell->ml.reservoirfrac=%.5f, cell->lakefrac=%.5f\n", cell->ml.reservoirfrac, cell->lakefrac);
   
   if(difffrac*difffrac2<-epsilon*epsilon) /* if one increases while the other decreases */
   {

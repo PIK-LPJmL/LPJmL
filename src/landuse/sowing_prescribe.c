@@ -46,14 +46,11 @@ Stocks sowing_prescribe(Cell* cell,          /**< pointer to cell */
 #endif
     s = findlandusetype(cell->standlist, SETASIDE_RF);
     s2 = findlandusetype(cell->standlist, SETASIDE_IR);
-    //if (day == cell->ml.sdate_fixed[1]) {
-    //    printf("sowing_prescribe(L42): day==%d, s==%d, s2==%d\n", day, s, s2);
-    //}
+
   if (s!=NOT_FOUND||s2!=NOT_FOUND)
   {
     for (cft=0; cft<ncft; cft++)
     {
-      //if(day==1)  printf("sowing_prescribe(L49): cft %d, sowingday=%d\n", cft,cell->ml.sdate_fixed[cft]);
       croppar=config->pftpar[npft+cft].data;
       earliest_sdate=(cell->coord.lat>=0)?croppar->initdate.sdatenh:croppar->initdate.sdatesh;
 
@@ -66,7 +63,6 @@ Stocks sowing_prescribe(Cell* cell,          /**< pointer to cell */
 
         if(day==cell->ml.sdate_fixed[cft])
         {
-          //printf("sowing_prescribe(L61): for cft=%d, lon=%.2f, lat=%.2f, sdate=%d, earliest_sdate=%d frac %g\n",cft,cell->coord.lon,cell->coord.lat,day,earliest_sdate,cell->ml.landfrac[0].crop[cft]);
           wtype=(croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE&&day>earliest_sdate) ? TRUE : FALSE;
           if(check_lu(cell->standlist,cell->ml.landfrac[0].crop[cft],npft+cft,FALSE))
           {
