@@ -59,11 +59,11 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     {
       /*Thornley 1991*/
       up_temp_f = nuptake_temp_fcn(soil->temp[l]);
-      NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin+totn/(totn+pft->par->KNmin*soil->par->wsat*soildepth[l]/1000))* up_temp_f * f_NCplant * grass->ind.root.carbon*pft->nind/1000;
+      NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin+totn/(totn+pft->par->KNmin*soil->par->wsat*soildepth[l]/1000))* up_temp_f * f_NCplant * (grass->ind.root.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.root)*rootdist_n[l]/1000;
       /* reducing uptake according to availability */
      if(NO3_up>totn)
         NO3_up=totn;
-      n_uptake+=NO3_up*rootdist_n[l];
+      n_uptake+=NO3_up;
       nsum+=totn*rootdist_n[l];
     }
   }
