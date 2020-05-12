@@ -88,6 +88,10 @@ typedef struct
   Real carbon;
   Real nitrogen;
 } Stocks;
+
+/* Declaration of variables */
+
+extern Real tinyfrac=max(epsilon*10,1e-5);
  
 /* Declaration of functions */
 

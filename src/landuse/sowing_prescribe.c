@@ -37,7 +37,7 @@ Stocks sowing_prescribe(Cell* cell,          /**< pointer to cell */
     Stand *stand, *cropstand;
     Irrigation *irrigation, *data;
     /* define a tiny fraction for allcrops that is always at least 10x epsilon, clean to only have one definition as in landuse.c */
-    Real tinyfrac=max(epsilon*10,1e-5);
+    //Real tinyfrac=max(epsilon*10,1e-5);
 
 #ifdef IMAGE
     istimber = (config->start_imagecoupling != INT_MAX);
@@ -201,20 +201,20 @@ Stocks sowing_prescribe(Cell* cell,          /**< pointer to cell */
                 //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
                 data->irrigation= irrigation->irrigation;
                 reclaim_land(stand,cropstand,cell,istimber,npft+ncft);
-                set_irrigsystem(cropstand,cft,0,config->pft_output_scaled);
-                setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,FALSE,year,config->with_nitrogen);
+                set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
+                setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config->with_nitrogen);
                 setasidestand=getstand(cell->standlist, pos-1);
                 wtype=(croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE&&day>earliest_sdate)?TRUE:FALSE;
-                if (check_lu(cell->standlist, cell->ml.landfrac[0].crop[cft], npft + cft, FALSE))
+                if (check_lu(cell->standlist, cell->ml.landfrac[irrigation->irrigation].crop[cft], npft + cft, irrigation->irrigation))
                 {
-                  if (!alloc_today_rf)
+                  if (!alloc_today_ir)
                   {
                     allocation_today(setasidestand, config->ntypes, config->with_nitrogen);
-                    alloc_today_rf=TRUE;
+                    alloc_today_ir=TRUE;
                   }
                   stocks=cultivate(cell, config->pftpar+npft+cft,
                     cell->ml.cropdates[cft].vern_date20,
-                    cell->ml.landfrac[1].crop[cft], TRUE, day, wtype,
+                    cell->ml.landfrac[irrigation->irrigation].crop[cft], irrigation->irrigation, day, wtype,
                     setasidestand, cell->ml.with_tillage, istimber, config,
                     npft, ncft, cft, year);
                   flux_estab.carbon+=stocks.carbon;
