@@ -1184,7 +1184,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   int yeart=year;
   int yearr=year;
   /* define a tiny fraction for allcrops that is always at least 10x epsilon */
-  //Real tinyfrac=max(epsilon*10,1e-5);
+  Real tinyfrac=max(epsilon*10,1e-5);
 
   /* LPJmL5 original approach: PRESCRIBED_SDATE (Single year sdate input file) */
   /* so far, read prescribed sdates only once at the beginning of each simulation */

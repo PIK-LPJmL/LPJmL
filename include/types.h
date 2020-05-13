@@ -183,6 +183,6 @@ extern void enablefpe(void);
 
 /* Declaration of variables */
 
-extern Real tinyfrac=max(epsilon*10,1e-5);
+//extern Real tinyfrac=max(epsilon*10,1e-5);
  
 #endif /* of TYPES_H */
