@@ -94,7 +94,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                 // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
                 foreachpft(pft,p,&stand->pftlist)
                   cft_id=pft->par->id-npft;
-                if(irrigation->irrigation==FALSE && stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
+                if(irrigation->irrigation==FALSE&&stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
                 {
                   difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrigation->irrigation].crop[cft_id]);
                   pos=addstand(&agriculture_stand,cell);
@@ -138,7 +138,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
           s=findlandusetype(cell->standlist,SETASIDE_IR);
           if(s!=NOT_FOUND)
           {
-            setasidestand=getstand(cell->standlist,s); 
+            setasidestand=getstand(cell->standlist,s);
             if(cell->ml.cropdates[cft].fallow_irrig<=0&&
               check_lu(cell->standlist,cell->ml.landfrac[1].crop[cft],npft+cft,TRUE))
             {
@@ -160,7 +160,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
               if(config->sdate_option==FIXED_SDATE)
                 cell->ml.sdate_fixed[cft+ncft]=day;
             }
-          } 
+          }
           else
           {
             difffrac=0;
@@ -171,7 +171,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                 // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
                 foreachpft(pft,p,&stand->pftlist)
                   cft_id=pft->par->id-npft;
-                if(irrigation->irrigation==TRUE && stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
+                if(irrigation->irrigation==TRUE&&stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
                 {
                   difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrigation->irrigation].crop[cft_id]);
                   pos=addstand(&agriculture_stand,cell);
@@ -258,7 +258,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                 // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
                 foreachpft(pft,p,&stand->pftlist)
                   cft_id=pft->par->id-npft;
-                if(irrigation->irrigation==FALSE && stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
+                if(irrigation->irrigation==FALSE&&stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
                 {
                   difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrigation->irrigation].crop[cft_id]);
                   pos=addstand(&agriculture_stand,cell);
@@ -342,7 +342,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                 // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
                 foreachpft(pft,p,&stand->pftlist)
                   cft_id=pft->par->id-npft;
-                if(irrigation->irrigation == TRUE && stand->frac > cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
+                if(irrigation->irrigation==TRUE&&stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
                 {
                   difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrigation->irrigation].crop[cft_id]);
                   pos=addstand(&agriculture_stand,cell);
@@ -351,24 +351,24 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   cropstand->frac=difffrac;
                   stand->frac-=difffrac;
                   //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
-                  data->irrigation= irrigation->irrigation;
+                  data->irrigation=irrigation->irrigation;
                   reclaim_land(stand,cropstand,cell,istimber,npft+ncft);
                   set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
                   setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config->with_nitrogen);
-                  setasidestand=getstand(cell->standlist, pos-1);
-                  if (cell->ml.cropdates[cft].fallow_irrig<=0&&
-                    check_lu(cell->standlist, cell->ml.landfrac[irrigation->irrigation].crop[cft], npft + cft, irrigation->irrigation))
+                  setasidestand=getstand(cell->standlist,pos-1);
+                  if(cell->ml.cropdates[cft].fallow_irrig<=0&&
+                    check_lu(cell->standlist,cell->ml.landfrac[irrigation->irrigation].crop[cft],npft+cft,irrigation->irrigation))
                   {
-                    if (!alloc_today_ir)
+                    if(!alloc_today_ir)
                     {
-                      allocation_today(setasidestand, config->ntypes, config->with_nitrogen);
+                      allocation_today(setasidestand,config->ntypes,config->with_nitrogen);
                       alloc_today_ir=TRUE;
                     }
-                    stocks=cultivate(cell, config->pftpar+npft+cft,
+                    stocks=cultivate(cell,config->pftpar+npft+cft,
                       cell->ml.cropdates[cft].vern_date20,
-                      cell->ml.landfrac[irrigation->irrigation].crop[cft], irrigation->irrigation, day, FALSE,
-                      setasidestand, cell->ml.with_tillage, istimber, config,
-                      npft, ncft, cft, year);
+                      cell->ml.landfrac[irrigation->irrigation].crop[cft],irrigation->irrigation,day,FALSE,
+                      setasidestand,cell->ml.with_tillage,istimber,config,
+                      npft,ncft,cft,year);
                     flux_estab.carbon+=stocks.carbon;
                     flux_estab.nitrogen+=stocks.nitrogen;
 #ifndef DOUBLE_HARVEST
@@ -472,7 +472,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                     // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
                     foreachpft(pft,p,&stand->pftlist)
                       cft_id=pft->par->id-npft;
-                    if(irrigation->irrigation==FALSE && stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
+                    if(irrigation->irrigation==FALSE&&stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
                     {
                       difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrigation->irrigation].crop[cft_id]);
                       pos=addstand(&agriculture_stand,cell);
@@ -521,7 +521,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
                   foreachpft(pft,p,&stand->pftlist)
                     cft_id=pft->par->id-npft;
-                  if(irrigation->irrigation==FALSE && stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
+                  if(irrigation->irrigation==FALSE&&stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
                   {
                     difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrigation->irrigation].crop[cft_id]);
                     pos=addstand(&agriculture_stand,cell);
@@ -648,7 +648,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                     // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
                     foreachpft(pft,p,&stand->pftlist)
                       cft_id=pft->par->id-npft;
-                    if(irrigation->irrigation==TRUE && stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
+                    if(irrigation->irrigation==TRUE&&stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
                     {
                       difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrigation->irrigation].crop[cft_id]);
                       pos=addstand(&agriculture_stand,cell);
@@ -697,7 +697,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
                   foreachpft(pft,p,&stand->pftlist)
                     cft_id=pft->par->id-npft;
-                  if(irrigation->irrigation==TRUE && stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
+                  if(irrigation->irrigation==TRUE&&stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
                   {
                     difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrigation->irrigation].crop[cft_id]);
                     pos=addstand(&agriculture_stand,cell);
@@ -739,7 +739,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
           }
 
         }/*of rainfed CFTs*/
-    }  /*for(cft=...) */
+      }  /*for(cft=...) */
+    }
   }
   return flux_estab;
 } /* of 'sowing_season' */
