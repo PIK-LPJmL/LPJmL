@@ -75,6 +75,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   }
   if(nsum==0)
     n_uptake=0;
+  else
+  {
   if (n_uptake>*n_plant_demand-pft->bm_inc.nitrogen)
     n_uptake=*n_plant_demand-pft->bm_inc.nitrogen;
   if(n_uptake<=0)
@@ -110,6 +112,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
 
 #endif
     }
+  }
   }
   crop->ndemandsum += max(0, *n_plant_demand - pft->bm_inc.nitrogen);
   if (*n_plant_demand > pft->bm_inc.nitrogen)
