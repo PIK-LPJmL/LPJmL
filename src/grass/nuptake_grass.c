@@ -69,6 +69,8 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   }
   if(nsum==0)
     n_uptake=0;
+  else
+  {
   if (n_uptake>*n_plant_demand-vegn_sum_grass(pft))
     n_uptake=*n_plant_demand-vegn_sum_grass(pft);
   if(n_uptake<=0)
@@ -95,6 +97,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
           soil->NH4[l]=0;
         }
       }
+  }
   }
   if(*n_plant_demand/(1+pft->par->knstore)>vegn_sum_grass(pft))
   {

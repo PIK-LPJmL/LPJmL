@@ -68,7 +68,10 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
 #ifdef DEBUG_N
   printf("TREE n_uptake=%g, nplant_demand=%g vegn=%g\n",n_uptake,*n_plant_demand,(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind));
 #endif
-
+  if(nsum==0)
+    n_uptake=0;
+  else
+  {
   if (n_uptake>*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind))
     n_uptake=*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind);
   if(n_uptake<=0)
@@ -94,6 +97,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
            soil->NH4[l]=0;
         }
       }
+  }
   }
   if(*n_plant_demand/(1+pft->par->knstore)>(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind))   /*HERE RECALCULATION OF N-demand TO N-supply*/
   {
