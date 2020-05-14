@@ -68,9 +68,9 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
 #endif
       /* reducing uptake according to availability */
       if(NO3_up>totn)
-          NO3_up=totn;
-       n_uptake+=NO3_up*rootdist_n[l];
-       nsum+=totn*rootdist_n[l];
+        NO3_up=totn;
+      n_uptake+=NO3_up*rootdist_n[l];
+      nsum+=totn*rootdist_n[l];
     }
   }
   if(nsum==0)
@@ -115,14 +115,16 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   if (*n_plant_demand > pft->bm_inc.nitrogen)
   {
     /* no N limitation for N-fixing crops */
-    if (pft->par->id == OIL_CROPS_SOYBEAN || pft->par->id == PULSES) {
+    if (pft->par->id == OIL_CROPS_SOYBEAN || pft->par->id == PULSES)
+    {
       fixed_n = *n_plant_demand - pft->bm_inc.nitrogen;
       n_uptake += fixed_n;
       pft->bm_inc.nitrogen = *n_plant_demand;
       pft->stand->cell->output.mbnf += fixed_n*pft->stand->frac;
       pft->vscal = 1;
     }
-    else {
+    else
+    {
       *n_plant_demand = pft->bm_inc.nitrogen;
       *ndemand_leaf = *n_plant_demand*crop->ind.leaf.carbon / (crop->ind.leaf.carbon + (crop->ind.root.carbon / croppar->ratio.root + crop->ind.pool.carbon / croppar->ratio.pool + crop->ind.so.carbon / croppar->ratio.so)); /*these parameters need to be in pft.par and need to be checked as well)*/
       if (ndemand_leaf_opt < epsilon)

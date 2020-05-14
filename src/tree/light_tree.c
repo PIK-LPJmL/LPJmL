@@ -30,6 +30,8 @@ void light_tree(Litter *litter, /**< pointer to litter pools */
   if (pft->stand->prescribe_landcover!=LANDCOVERFPC || pft->stand->type->landusetype!=NATURAL)
   {
     nind_kill=(excess<1e-20) ? 0 : pft->nind*(excess/pft->fpc);
+    if(nind_kill>pft->nind-epsilon)
+      nind_kill=pft->nind-epsilon;
     litter_update_tree(litter,pft,nind_kill);
     pft->bm_inc.nitrogen*=(pft->nind-nind_kill)/pft->nind;
     pft->nind-=nind_kill;

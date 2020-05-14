@@ -42,7 +42,6 @@ void adjust_tree(Litter *litter, /**< pointer to litter */
     if(pft->nind>0)
       pft->bm_inc.nitrogen*=(pft->nind-nind_old+nind_new)/pft->nind;
     pft->nind=nind_new;
-/*printf("PFT:%s fpc_obs=%g fpc=%g\n",pft->par->name, pft->fpc_obs, pft->fpc);*/
 
   }
 } /* of 'adjust_tree' */

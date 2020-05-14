@@ -17,6 +17,8 @@
 
 #include "lpj.h"
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return NULL; }
+
 char **createpftnames(int index,           /**< output index */
                       int npft,            /**< number of natural PFTs */
                       int nbiomass,        /**< number of biomass types */
@@ -35,10 +37,14 @@ char **createpftnames(int index,           /**< output index */
     case SDATE: case HDATE:
     case SDATE2: case HDATE2: case SYEAR: case SYEAR2:
       for(i=0;i<ncft;i++)
+      {
         pftnames[i]=strdup(pftpar[npft+i].name);
+        checkptr(pftnames[i]);
+      }
       for(i=0;i<ncft;i++)
       {
         pftnames[i+ncft]=malloc(strlen(pftpar[npft+i].name)+strlen("irrigated ")+1);
+        checkptr(pftnames[i+ncft]);
         strcpy(pftnames[i+ncft],"irrigated ");
         strcat(pftnames[i+ncft],pftpar[npft+i].name);
       }
@@ -49,7 +55,10 @@ char **createpftnames(int index,           /**< output index */
     case PFT_CHAWO: case PFT_NHAWO: case PFT_LAIMAX: case PFT_NLIMIT:
     case MPFT_LAI:
       for(i=0;i<npft-nbiomass;i++)
+      {
         pftnames[i]=strdup(pftpar[i].name);
+        checkptr(pftnames[i]);
+      }
       incr=npft-nbiomass;
       for(i=0;i<2;i++)
       {
@@ -57,17 +66,25 @@ char **createpftnames(int index,           /**< output index */
           if(i)
           {
             pftnames[j+incr]=malloc(strlen(pftpar[npft+j].name)+strlen("irrigated ")+1);
+            checkptr(pftnames[j+incr]);
             strcpy(pftnames[j+incr],"irrigated ");
             strcat(pftnames[j+incr],pftpar[npft+j].name);
           }
           else
+          {
             pftnames[j+incr]=strdup(pftpar[npft+j].name);
+            checkptr(pftnames[j+incr]);
+          }
         incr+=ncft;
         pftnames[incr]=strdup((i) ? "irrigated others":  "others");
+        checkptr(pftnames[incr]);
         pftnames[incr+1]=strdup((i) ? "irrigated pasture": "pasture");
+        checkptr(pftnames[incr+1]);
         incr+=2;
         pftnames[incr]=strdup((i) ? "irrigated biomass grass": "biomass grass");
+        checkptr(pftnames[incr]);
         pftnames[incr+1]=strdup((i) ? "irrigated biomass tree":  "biomass tree");
+        checkptr(pftnames[incr+1]);
         incr+=2;
       }
       break;
@@ -85,17 +102,25 @@ char **createpftnames(int index,           /**< output index */
           if(i)
           {
             pftnames[j+incr]=malloc(strlen(pftpar[npft+j].name)+strlen("irrigated ")+1);
+            checkptr(pftnames[j+incr]);
             strcpy(pftnames[j+incr],"irrigated ");
             strcat(pftnames[j+incr],pftpar[npft+j].name);
           }
           else
+          {
             pftnames[j+incr]=strdup(pftpar[npft+j].name);
+            checkptr(pftnames[j+incr]);
+          }
         incr+=ncft;
         pftnames[incr]=strdup((i) ? "irrigated others":  "others");
+        checkptr(pftnames[incr]);
         pftnames[incr+1]=strdup((i) ? "irrigated pasture": "pasture");
+        checkptr(pftnames[incr+1]);
         incr+=2;
         pftnames[incr]=strdup((i) ? "irrigated biomass grass": "biomass grass");
+        checkptr(pftnames[incr]);
         pftnames[incr+1]=strdup((i) ? "irrigated biomass tree":  "biomass tree");
+        checkptr(pftnames[incr+1]);
         incr+=2;
       }
       break;
@@ -110,25 +135,38 @@ char **createpftnames(int index,           /**< output index */
           if(i)
           {
             pftnames[j+incr]=malloc(strlen(pftpar[npft+j].name)+strlen("irrigated ")+1);
+            checkptr(pftnames[j+incr]);
             strcpy(pftnames[j+incr],"irrigated ");
             strcat(pftnames[j+incr],pftpar[npft+j].name);
           }
           else
+          {
             pftnames[j+incr]=strdup(pftpar[npft+j].name);
+            checkptr(pftnames[j+incr]);
+          }
         incr+=ncft;
         pftnames[incr]=strdup((i) ? "irrigated others":  "others");
+        checkptr(pftnames[incr]);
         pftnames[incr+1]=strdup((i) ? "irrigated pasture": "pasture");
+        checkptr(pftnames[incr+1]);
         incr+=2;
       }
       break;
     case FPC:
       pftnames[0]=strdup("natural stand fraction");
+      checkptr(pftnames[0]);
       for(i=0;i<npft-nbiomass;i++)
+      {
         pftnames[i+1]=strdup(pftpar[i].name);
+        checkptr(pftnames[i+1]);
+      }
       break;
     case PFT_MORT:
       for(i=0;i<npft-nbiomass;i++)
+      {
         pftnames[i]=strdup(pftpar[i].name);
+        checkptr(pftnames[i]);
+      }
       break;
   } /* of switch */
   return pftnames;

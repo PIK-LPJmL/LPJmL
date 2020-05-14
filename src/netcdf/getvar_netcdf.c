@@ -129,6 +129,11 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
       {
          free(fromstr);
          fromstr=strdup("kg/m2/day");
+         if(fromstr==NULL)
+         {
+           printallocerr("fromstr");
+           return TRUE;
+         }
       }
       if(!strcmp(fromstr,"-"))
       {

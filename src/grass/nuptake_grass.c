@@ -77,24 +77,24 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   {
     pft->bm_inc.nitrogen+=n_uptake;
     forrootsoillayer(l)
+    {
+      wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
+      soil->NO3[l]-=soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
+      if(soil->NO3[l]<0)
       {
-        wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
-        soil->NO3[l]-=soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
-        if(soil->NO3[l]<0)
-        {
-          pft->bm_inc.nitrogen+=soil->NO3[l];
-          n_upfail+=soil->NO3[l];
-          soil->NO3[l]=0;
-        }
-
-        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
-        if(soil->NH4[l]<0)
-        {
-          pft->bm_inc.nitrogen+=soil->NH4[l];
-          n_upfail+=soil->NH4[l];
-          soil->NH4[l]=0;
-        }
+        pft->bm_inc.nitrogen+=soil->NO3[l];
+        n_upfail+=soil->NO3[l];
+        soil->NO3[l]=0;
       }
+
+      soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
+      if(soil->NH4[l]<0)
+      {
+        pft->bm_inc.nitrogen+=soil->NH4[l];
+        n_upfail+=soil->NH4[l];
+        soil->NH4[l]=0;
+      }
+    }
   }
   if(*n_plant_demand/(1+pft->par->knstore)>vegn_sum_grass(pft))
   {
@@ -102,9 +102,9 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     NC_actual=vegn_sum_grass(pft)/vegc_sum_grass(pft);
     NC_leaf=NC_actual/(grass->falloc.root/grasspar->ratio+grass->falloc.leaf);
     if(NC_leaf< pft->par->ncleaf.low)
-        NC_leaf=pft->par->ncleaf.low;
+      NC_leaf=pft->par->ncleaf.low;
     else if (NC_leaf>pft->par->ncleaf.high)
-        NC_leaf=pft->par->ncleaf.high;
+      NC_leaf=pft->par->ncleaf.high;
 //    *ndemand_leaf=(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf)*NC_leaf;
     *ndemand_leaf=(grass->ind.leaf.carbon*pft->nind)*NC_leaf;
   }
