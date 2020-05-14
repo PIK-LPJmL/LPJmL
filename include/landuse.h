@@ -126,4 +126,8 @@ extern void mixsetaside(Stand *,Stand *,Bool);
 extern void set_irrigsystem(Stand *,int,int,Bool);
 extern void tillage(Soil *, Real);
 
+/* Declaration of variables */
+
+extern Real tinyfrac;
+
 #endif
