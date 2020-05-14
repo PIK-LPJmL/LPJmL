@@ -36,8 +36,6 @@ Stocks sowing_prescribe(Cell* cell,          /**< pointer to cell */
     Real difffrac=0;
     Stand *stand, *cropstand;
     Irrigation *irrigation, *data;
-    /* define a tiny fraction for allcrops that is always at least 10x epsilon, clean to only have one definition as in landuse.c */
-    Real tinyfrac=max(epsilon*10,1e-5);
 
 #ifdef IMAGE
     istimber = (config->start_imagecoupling != INT_MAX);
