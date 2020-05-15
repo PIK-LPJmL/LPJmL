@@ -109,7 +109,7 @@ Stocks sowing_prescribe(Cell* cell,          /**< pointer to cell */
               // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
               foreachpft(pft,p,&stand->pftlist)
                 cft_id=pft->par->id-npft;
-              if(irrigation->irrigation==FALSE && stand->frac>cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
+              if(irrigation->irrigation==FALSE && stand->frac>(cell->ml.landfrac[irrigation->irrigation].crop[cft_id]-epsilon))
               {
                 difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrigation->irrigation].crop[cft_id]);
                 pos=addstand(&agriculture_stand,cell);
@@ -190,7 +190,7 @@ Stocks sowing_prescribe(Cell* cell,          /**< pointer to cell */
               // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
               foreachpft(pft,p,&stand->pftlist)
                 cft_id=pft->par->id-npft;
-              if(irrigation->irrigation == TRUE && stand->frac > cell->ml.landfrac[irrigation->irrigation].crop[cft_id])
+              if(irrigation->irrigation == TRUE && stand->frac > (cell->ml.landfrac[irrigation->irrigation].crop[cft_id]-epsilon))
               {
                 difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrigation->irrigation].crop[cft_id]);
                 pos=addstand(&agriculture_stand,cell);
