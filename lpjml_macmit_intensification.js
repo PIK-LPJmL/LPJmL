@@ -29,7 +29,7 @@
 /*Identifiers (preprocessor only understands integer expressions in #if)*/
 #define GLOBALRUN 1
 #define PIXELRUN 2
-#define DRUN PIXELRUN
+#define DRUN GLOBALRUN
 
 #define TIM_1986_2005 1
 #define TIM_2080_2099 2

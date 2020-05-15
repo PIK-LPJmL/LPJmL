@@ -181,8 +181,4 @@ extern void enablefpe(void);
 #define bool2str(b) ((b) ? "true" : "false")
 #define printtime(s) fprinttime(stdout,s)
 
-/* Declaration of variables */
-
-//extern Real tinyfrac=max(epsilon*10,1e-5);
- 
 #endif /* of TYPES_H */
