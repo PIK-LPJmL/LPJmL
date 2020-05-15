@@ -199,6 +199,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->reservoir=FALSE;
   fscanbool2(file,&config->permafrost,"permafrost");
   config->sdate_option=NO_FIXED_SDATE;
+  config->crop_phu_option=SEMISTATIC_CROP_PHU;
   config->rw_manage=FALSE;
   config->const_climate=FALSE;
   config->tillage_type=NO_TILLAGE;
