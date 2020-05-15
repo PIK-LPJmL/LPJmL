@@ -57,7 +57,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);
     data=setasidestand->data;
     data->irrigation= config->irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
-    set_irrigsystem(setasidestand,cft,0,FALSE); /* calls set_irrigsystem() for landusetype AGRICULTURE only */
+    set_irrigsystem(setasidestand,cft,ncft,FALSE); /* calls set_irrigsystem() for landusetype AGRICULTURE only */
     bm_inc.carbon=pft->bm_inc.carbon*setasidestand->frac;
     bm_inc.nitrogen=pft->bm_inc.nitrogen*setasidestand->frac;
     if (cell->ml.fertilizer_nr != NULL || cell->ml.manure_nr != NULL)
@@ -111,7 +111,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand->frac=landfrac;
     data->irrigation= config->irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
     reclaim_land(setasidestand,cropstand,cell,istimber,npft+ncft);
-    set_irrigsystem(cropstand,cft,0,FALSE);
+    set_irrigsystem(cropstand,cft,ncft,FALSE);
     if(with_tillage && year>=param.till_startyear)
       tillage(&cropstand->soil,param.residue_frac);
     pos=addpft(cropstand,pftpar,year,day,config->with_nitrogen);
