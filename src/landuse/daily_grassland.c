@@ -193,11 +193,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
 #ifdef PERMUTE
     pft=getpft(&stand->pftlist,pvec[p]);
 #endif
-    //pft->phen = 1.0; /* phenology is calculated from biomass */
-    if (config->new_phenology)
-      phenology_gsi(pft, climate->temp,climate->swdown,day,climate->isdailytemp);
-    else
-      leaf_phenology(pft,climate->temp,day,climate->isdailytemp);
+    pft->phen = 1.0; /* phenology is calculated from biomass */
     cover_stand+=pft->fpc*pft->phen;
 
     /* calculate albedo and FAPAR of PFT */
