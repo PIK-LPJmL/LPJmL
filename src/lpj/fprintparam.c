@@ -101,6 +101,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"soil infil:\t\t%g\n",param.soil_infil);
       fprintf(file,"yield gap bridge:\t%g\n",param.yield_gap_bridge);
     }
+    fprintf(file,"allocation threshold:\t%g\n",param.allocation_threshhold);
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config->soilpar,config->nsoil,config->with_nitrogen);

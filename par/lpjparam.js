@@ -73,5 +73,6 @@
   "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */
   "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
   "soil_infil" : 2.0,                 /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
-  "yield_gap_bridge" : 0.0            /* factor by which laimax value is closed (7 - country-value)*factor */
+  "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
+  "allocation_threshhold" : 35.0      /* allocation threshhold for daily grassland allocation */
 },

@@ -281,7 +281,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
     foreachpft(pft,p,&stand->pftlist)
     {
       grass=pft->data;
-      if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
+      if (pft->bm_inc.carbon > 5.0|| (grass->ind.leaf.carbon*pft->nind) > param.allocation_threshhold|| day==NDAYYEAR)
       {
         turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
         if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config->with_nitrogen))
