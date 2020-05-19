@@ -39,7 +39,7 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
     sum.harvest.carbon+=harvest.harvest.carbon*pft->nind;
     sum.harvest.nitrogen+=harvest.harvest.nitrogen*pft->nind;
     grass->max_leaf = grass->ind.leaf.carbon;
-    //pft->phen=1; /*0.3;*/
+    pft->phen=1; /*0.3;*/
     pft->gdd=30;
   }
   return sum;
