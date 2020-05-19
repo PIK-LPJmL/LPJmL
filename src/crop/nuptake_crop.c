@@ -62,53 +62,56 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
     if(totn > 0)
     {
       up_temp_f = nuptake_temp_fcn(soil->temp[l]);
-      NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin +totn/(totn+pft->par->KNmin*soil->par->wsat*soildepth[l]/1000))* up_temp_f * f_NCplant * (crop->ind.root.carbon*pft->nind)/1000; //Smith et al. Eq. C14-C15, Navail=totn
+      NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin +totn/(totn+pft->par->KNmin*soil->par->wsat*soildepth[l]/1000))* up_temp_f * f_NCplant * (crop->ind.root.carbon*pft->nind)*rootdist_n[l]/1000; //Smith et al. Eq. C14-C15, Navail=totn
 #ifdef DEBUG_N
       printf("layer %d NO3_up=%g\n",l,NO3_up);
 #endif
       /* reducing uptake according to availability */
       if(NO3_up>totn)
         NO3_up=totn;
-      n_uptake+=NO3_up*rootdist_n[l];
+      n_uptake+=NO3_up;
       nsum+=totn*rootdist_n[l];
     }
   }
   if(nsum==0)
     n_uptake=0;
-  if (n_uptake>*n_plant_demand-pft->bm_inc.nitrogen)
-    n_uptake=*n_plant_demand-pft->bm_inc.nitrogen;
-  if(n_uptake<=0)
-    n_uptake=0;
   else
   {
-    pft->bm_inc.nitrogen+=n_uptake;
-    forrootsoillayer(l)
+    if (n_uptake>*n_plant_demand-pft->bm_inc.nitrogen)
+      n_uptake=*n_plant_demand-pft->bm_inc.nitrogen;
+    if(n_uptake<=0)
+      n_uptake=0;
+    else
     {
-      wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
-      soil->NO3[l]-=(soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake)/nsum;
-      soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
-      if(soil->NO3[l]<0)
+      pft->bm_inc.nitrogen+=n_uptake;
+      forrootsoillayer(l)
       {
-        pft->bm_inc.nitrogen+=soil->NO3[l];
-        n_upfail+=soil->NO3[l];
-        soil->NO3[l]=0;
-      }
-      if(soil->NH4[l]<0)
-      {
-        pft->bm_inc.nitrogen+=soil->NH4[l];
-        n_upfail+=soil->NH4[l];
-        soil->NH4[l]=0;
-      }
-
+        wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
+        soil->NO3[l]-=(soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake)/nsum;
+        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
+        if(soil->NO3[l]<0)
+        {
+          pft->bm_inc.nitrogen+=soil->NO3[l];
+          n_upfail+=soil->NO3[l];
+          soil->NO3[l]=0;
+        }
+        if(soil->NH4[l]<0)
+        {
+          pft->bm_inc.nitrogen+=soil->NH4[l];
+          n_upfail+=soil->NH4[l];
+          soil->NH4[l]=0;
+        }
+  
 #ifdef SAFE
-      if (soil->NO3[l]<-epsilon)
-        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",
-             pft->stand->cell->coord.lat,pft->stand->cell->coord.lon,soil->NO3[l],l,n_uptake,nsum);
-      if (soil->NH4[l]<-epsilon)
-        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NH4=%g<0 in layer %d, nuptake=%g, nsum=%g",
-             pft->stand->cell->coord.lat,pft->stand->cell->coord.lon,soil->NH4[l],l,n_uptake,nsum);
+        if (soil->NO3[l]<-epsilon)
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",
+               pft->stand->cell->coord.lat,pft->stand->cell->coord.lon,soil->NO3[l],l,n_uptake,nsum);
+        if (soil->NH4[l]<-epsilon)
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NH4=%g<0 in layer %d, nuptake=%g, nsum=%g",
+               pft->stand->cell->coord.lat,pft->stand->cell->coord.lon,soil->NH4[l],l,n_uptake,nsum);
 
 #endif
+      }
     }
   }
   crop->ndemandsum += max(0, *n_plant_demand - pft->bm_inc.nitrogen);

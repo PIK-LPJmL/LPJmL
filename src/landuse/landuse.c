@@ -406,8 +406,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     if (fseek(landuse->landuse.file, (long long)yearl*landuse->landuse.size + landuse->landuse.offset, SEEK_SET))
     {
       fprintf(stderr,
-        "ERROR148: Cannot seek landuse to year %d in getlanduse().\n",
-        yearl + landuse->landuse.firstyear);
+              "ERROR148: Cannot seek landuse to year %d in getlanduse().\n",
+              yearl + landuse->landuse.firstyear);
       fflush(stderr);
       return TRUE;
     }
@@ -420,8 +420,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     if (readrealvec(landuse->landuse.file, data, 0, landuse->landuse.scalar, landuse->landuse.n, landuse->landuse.swap, landuse->landuse.datatype))
     {
       fprintf(stderr,
-        "ERROR149: Cannot read landuse of year %d in getlanduse().\n",
-        yearl + landuse->landuse.firstyear);
+              "ERROR149: Cannot read landuse of year %d in getlanduse().\n",
+              yearl + landuse->landuse.firstyear);
       fflush(stderr);
       free(data);
       return TRUE;

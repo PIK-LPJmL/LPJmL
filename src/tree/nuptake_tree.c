@@ -57,41 +57,45 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
     {
       up_temp_f = nuptake_temp_fcn(soil->temp[l]);
       //up_temp_f=1;
-      NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin +totn/(totn+pft->par->KNmin*soil->par->wsat*soildepth[l]/1000))* up_temp_f * f_NCplant * (tree->ind.root.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.root)/1000; //Smith et al. Eq. C14-C15, Navail=totn
+      NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin +totn/(totn+pft->par->KNmin*soil->par->wsat*soildepth[l]/1000))* up_temp_f * f_NCplant * (tree->ind.root.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.root)*rootdist_n[l]/1000; //Smith et al. Eq. C14-C15, Navail=totn
         /* reducing uptake according to availability */
       if(NO3_up>totn)
         NO3_up=totn;
-      n_uptake+=NO3_up*rootdist_n[l];
+      n_uptake+=NO3_up;
       nsum+=totn*rootdist_n[l];
     }
   }
 #ifdef DEBUG_N
   printf("TREE n_uptake=%g, nplant_demand=%g vegn=%g\n",n_uptake,*n_plant_demand,(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind));
 #endif
-
-  if (n_uptake>*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind))
-    n_uptake=*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind);
-  if(n_uptake<=0)
+  if(nsum==0)
     n_uptake=0;
   else
   {
-    pft->bm_inc.nitrogen+=n_uptake;
-    forrootsoillayer(l)
+    if (n_uptake>*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind))
+      n_uptake=*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind);
+    if(n_uptake<=0)
+      n_uptake=0;
+    else
     {
-      wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
-      soil->NO3[l]-=soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
-      if(soil->NO3[l]<0)
+      pft->bm_inc.nitrogen+=n_uptake;
+      forrootsoillayer(l)
       {
-        pft->bm_inc.nitrogen+=soil->NO3[l];
-        n_upfail+=soil->NO3[l];
-        soil->NO3[l]=0;
-      }
-      soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
-      if(soil->NH4[l]<0)
-      {
-        pft->bm_inc.nitrogen+=soil->NH4[l];
-        n_upfail+=soil->NH4[l];
-        soil->NH4[l]=0;
+        wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
+        soil->NO3[l]-=soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
+        if(soil->NO3[l]<0)
+        {
+          pft->bm_inc.nitrogen+=soil->NO3[l];
+          n_upfail+=soil->NO3[l];
+          soil->NO3[l]=0;
+        }
+        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
+        if(soil->NH4[l]<0)
+        {
+          pft->bm_inc.nitrogen+=soil->NH4[l];
+          n_upfail+=soil->NH4[l];
+          soil->NH4[l]=0;
+        }
       }
     }
   }

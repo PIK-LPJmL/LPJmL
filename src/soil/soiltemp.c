@@ -22,9 +22,9 @@
  * Y.Bayazitoglu / M.N.Oezisik: Elements of Heat Transfer (1988)
  */
 
-void soiltemp(Soil *soil,   /**< pointer to soil data */
-              Real airtemp,  /**< air temperature (deg C) */
-              Bool permafrost /** permafrost enabled? (TRUE/FALSE) */
+void soiltemp(Soil *soil,     /**< pointer to soil data */
+              Real airtemp,   /**< air temperature (deg C) */
+              Bool permafrost /**< permafrost enabled? (TRUE/FALSE) */
              )
 {
   Real heatcap[NSOILLAYER],      /* heat capacity [J/m2/K] or [J/m3/K]*/
