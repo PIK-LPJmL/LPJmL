@@ -92,7 +92,7 @@ static int checkdatafile(const Config *config,const Filename *filename,const cha
   return 0;
 } /* of 'checkdatafile' */
 
-static int checkclmfile(const Config *config,const Filename *filename,const char *unit)
+static int checkclmfile(const Config *config,const Filename *filename,const char *unit,Bool checklast)
 {
   FILE *file;
   Header header;
@@ -143,7 +143,7 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
         fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",input.firstyear,filename->name,config->firstyear);
         return 1;
       }
-      if(input.firstyear+input.nyear-1<config->lastyear)
+      if(checklast && input.firstyear+input.nyear-1<config->lastyear)
       {
         fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,config->lastyear);
         return 1;
@@ -161,7 +161,7 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
       fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
       return 1;
     }
-    if(header.firstyear+header.nyear-1<config->lastyear)
+    if(checklast && header.firstyear+header.nyear-1<config->lastyear)
     {
       fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->lastyear);
       return 1;
@@ -274,36 +274,36 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
     if(config.fdi==WVPD_INDEX)
-      bad+=checkclmfile(&config,&config.humid_filename,NULL);
-    bad+=checkclmfile(&config,&config.wind_filename,"m/s");
-    bad+=checkclmfile(&config,&config.tamp_filename,NULL);
+      bad+=checkclmfile(&config,&config.humid_filename,NULL,TRUE);
+    bad+=checkclmfile(&config,&config.wind_filename,"m/s",TRUE);
+    bad+=checkclmfile(&config,&config.tamp_filename,NULL,TRUE);
     if(config.tamp_filename.fmt==CDF && config.tmax_filename.name!=NULL)
-      bad+=checkclmfile(&config,&config.tmax_filename,"celsius");
-    bad+=checkclmfile(&config,&config.lightning_filename,NULL);
+      bad+=checkclmfile(&config,&config.tmax_filename,"celsius",TRUE);
+    bad+=checkdatafile(&config,&config.lightning_filename,NULL);
     bad+=checkinputfile(&config,&config.human_ignition_filename,NULL,0);
   }
   if(config.wateruse)
     bad+=checkdatafile(&config,&config.wateruse_filename,"dm3/yr");
-  bad+=checkclmfile(&config,&config.temp_filename,"celsius");
-  bad+=checkclmfile(&config,&config.prec_filename,"kg/m2/day");
+  bad+=checkclmfile(&config,&config.temp_filename,"celsius",TRUE);
+  bad+=checkclmfile(&config,&config.prec_filename,"kg/m2/day",TRUE);
   if(config.with_radiation)
   {
     if(config.with_radiation==RADIATION || config.with_radiation==RADIATION_LWDOWN)
-      bad+=checkclmfile(&config,&config.lwnet_filename,"W/m2");
-    bad+=checkclmfile(&config,&config.swdown_filename,"W/m2");
+      bad+=checkclmfile(&config,&config.lwnet_filename,"W/m2",TRUE);
+    bad+=checkclmfile(&config,&config.swdown_filename,"W/m2",TRUE);
   }
   else
-    bad+=checkclmfile(&config,&config.cloud_filename,"%");
+    bad+=checkclmfile(&config,&config.cloud_filename,"%",TRUE);
    if(config.co2_filename.fmt!=FMS)
     bad+=checkfile(config.co2_filename.name);
   if(config.wet_filename.name!=NULL)
-    bad+=checkclmfile(&config,&config.wet_filename,"day");
+    bad+=checkclmfile(&config,&config.wet_filename,"day",FALSE);
 #ifdef IMAGE
   if(config.sim_id==LPJML_IMAGE)
   {
-    bad+=checkclmfile(&config,&config.temp_var_filename,NULL);
-    bad+=checkclmfile(&config,&config.prec_var_filename,NULL);
-    bad+=checkclmfile(&config,&config.prodpool_init_filename,NULL);
+    bad+=checkclmfile(&config,&config.temp_var_filename,NULL,FALSE);
+    bad+=checkclmfile(&config,&config.prec_var_filename,NULL,FALSE);
+    bad+=checkclmfile(&config,&config.prodpool_init_filename,NULL,FALSE);
   }
 #endif
   if(ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1)
@@ -327,7 +327,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.withlanduse!=ALL_CROPS)
       bad+=checkdatafile(&config,&config.landuse_filename,"1");
     if(config.sdate_option==PRESCRIBED_SDATE)
-      bad+=checkclmfile(&config,&config.sdate_filename,NULL);
+      bad+=checkdatafile(&config,&config.sdate_filename,NULL);
     if(config.countrycode_filename.fmt==CDF)
     {
       bad+=checkinputfile(&config,&config.countrycode_filename,NULL,0);
