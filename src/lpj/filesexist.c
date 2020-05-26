@@ -138,6 +138,16 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
       if(openclimate_netcdf(&input,filename->name,filename->time,filename->var,filename->unit,unit,config))
         return 1;
       closeclimate_netcdf(&input,TRUE);
+      if(input.firstyear<config->firstyear)
+      {
+        fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",input.firstyear,filename->name,config->firstyear);
+        return 1;
+      }
+      if(input.firstyear+input.nyear-1<config->lastyear)
+      {
+        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,config->lastyear);
+        return 1;
+      }
     }
   }
   else
@@ -146,6 +156,16 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
     if(file==NULL)
       return 1;
     fclose(file);
+    if(header.firstyear<config->firstyear)
+    {
+      fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
+      return 1;
+    }
+    if(header.firstyear+header.nyear-1<config->lastyear)
+    {
+      fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->lastyear);
+      return 1;
+    }
   }
   return 0;
 } /* of 'checkclmfile' */
