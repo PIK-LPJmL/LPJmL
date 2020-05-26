@@ -138,7 +138,7 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
       if(openclimate_netcdf(&input,filename->name,filename->time,filename->var,filename->unit,unit,config))
         return 1;
       closeclimate_netcdf(&input,TRUE);
-      if(input.firstyear<config->firstyear)
+      if(input.firstyear>config->firstyear)
       {
         fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",input.firstyear,filename->name,config->firstyear);
         return 1;
@@ -156,7 +156,7 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
     if(file==NULL)
       return 1;
     fclose(file);
-    if(header.firstyear<config->firstyear)
+    if(header.firstyear>config->firstyear)
     {
       fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
       return 1;
