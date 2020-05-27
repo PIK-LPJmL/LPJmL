@@ -52,12 +52,11 @@ static int checkinputfile(const Config *config,const Filename *filename,const ch
   else
   {
     file=openinputfile(&header,&swap,filename,headername,&version,&offset,config);
-    if(len==0)
-      len=1;
-
     if(file==NULL)
       return 1;
     fclose(file);
+    if(len==0)
+      len=1;
     if(header.nbands!=len)
     {
       fprintf(stderr,"ERROR228: Number of bands %d in '%s' is not '%d'.\n",header.nbands,filename->name,(int)len);
@@ -79,7 +78,7 @@ static int checkdatafile(const Config *config,const Filename *filename,const cha
   if(filename->fmt==CDF)
   {
     if(openfile_netcdf(&input,filename,unit,config))
-       return 1;
+      return 1;
     closeclimate_netcdf(&input,TRUE);
   }
   else
@@ -321,13 +320,13 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkrestartfile(&config,config.restart_filename);
   }
   if(config.prescribe_landcover!=NO_LANDCOVER)
-    bad+=checkdatafile(&config,&config.landcover_filename,"1");
+    bad+=checkinputfile(&config,&config.landcover_filename,"1",config.npft[GRASS]+config.npft[TREE]-config.nbiomass);
   if(config.withlanduse!=NO_LANDUSE)
   {
     if(config.withlanduse!=ALL_CROPS)
       bad+=checkdatafile(&config,&config.landuse_filename,"1");
     if(config.sdate_option==PRESCRIBED_SDATE)
-      bad+=checkdatafile(&config,&config.sdate_filename,NULL);
+      bad+=checkinputfile(&config,&config.sdate_filename,NULL,2*config.npft[CROP]);
     if(config.countrycode_filename.fmt==CDF)
     {
       bad+=checkinputfile(&config,&config.countrycode_filename,NULL,0);
