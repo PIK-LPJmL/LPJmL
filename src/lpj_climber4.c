@@ -1282,7 +1282,10 @@ void lpj_update_
       else
 #endif
       if (input.climate->co2.data) // invoke getco2() when reading from real file, not FMS
-      co2=getco2(input.climate,year); /* get atmospheric CO2 concentration */
+      {
+        if(getco2(input.climate,&co2,year)) /* get atmospheric CO2 concentration */
+          fprintf(stderr,"ERROR015: Invalid year %d in getco2().\n",year);
+      }
       /* else: use CO2 as given by LPJ coupler - done below in daily loop-over-cells */
 
       //if(year<input.climate->firstyear) /* are we in spinup phase? */
@@ -1417,7 +1420,7 @@ void lpj_update_
             grid[cell].output.surface_storage=0;
             if(!grid[cell].skip)
             {
-              init_annual(grid+cell,npft,config.nbiomass,ncft);
+              init_annual(grid+cell,npft,ncft,&config);
               if(input.landuse!=NULL)
               {
                 if(grid[cell].lakefrac<1)
