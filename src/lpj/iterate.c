@@ -95,7 +95,7 @@ int iterate(Outputfile *output,  /**< Output file data */
     if(getco2(input.climate,&co2,year)) /* get atmospheric CO2 concentration */
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR015: Ivalid year %d in getco2().\n",year);
+        fprintf(stderr,"ERROR015: Invalid year %d in getco2().\n",year);
       break;
     }
     if(year<input.climate->firstyear) /* are we in spinup phase? */
