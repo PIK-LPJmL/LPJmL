@@ -36,7 +36,11 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.evap+=grid[cell].output.aevap*grid[cell].coord.area;
       flux.interc+=grid[cell].output.ainterc*grid[cell].coord.area;
       flux.wd+=(grid[cell].output.airrig+grid[cell].output.aconv_loss_evap+grid[cell].output.aconv_loss_drain)*grid[cell].coord.area;
+#ifdef IMAGE
+      flux.wd_unsustainable+=grid[cell].output.awd_unsustainable*grid[cell].coord.area;
+#else
       flux.wd_unsustainable+=grid[cell].output.awd_unsustainable;
+#endif
       flux.evap_lake+=grid[cell].output.aevap_lake*grid[cell].coord.area;
       flux.evap_res+=grid[cell].output.aevap_res*grid[cell].coord.area;
       flux.irrig+=grid[cell].output.airrig*grid[cell].coord.area;

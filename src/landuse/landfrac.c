@@ -36,6 +36,9 @@ void initlandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.)
     for(j=0;j<NGRASS;j++)
       landfrac[i].grass[j]=0;
     landfrac[i].biomass_grass=landfrac[i].biomass_tree=0;
+#if defined IMAGE || defined INCLUDEWP
+    landfrac[i].woodplantation=0;
+#endif
   }
 } /* of 'initlandfrac' */
 
@@ -53,6 +56,9 @@ void scalelandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.
       landfrac[i].grass[j]*=scale;
     landfrac[i].biomass_grass*=scale;
     landfrac[i].biomass_tree*=scale;
+#if defined IMAGE || defined INCLUDEWP
+    landfrac[i].woodplantation*=scale;
+#endif
   }
 } /* of 'scalelandfrac' */
 
@@ -74,8 +80,15 @@ Bool fwritelandfrac(FILE *file,                 /**< pointer to binary file */
     fwrite(landfrac[i].crop,sizeof(Real),ncft,file);
     fwrite(landfrac[i].grass,sizeof(Real),NGRASS,file);
     fwrite(&landfrac[i].biomass_grass,sizeof(Real),1,file);
+#if defined IMAGE || defined INCLUDEWP
+    fwrite(&landfrac[i].biomass_tree,sizeof(Real),1,file);
+    if(fwrite(&landfrac[i].woodplantation,sizeof(Real),1,file)!=1)
+      return TRUE;
+#else
     if(fwrite(&landfrac[i].biomass_tree,sizeof(Real),1,file)!=1)
       return TRUE;
+#endif
+
   }
   return FALSE;
 } /* of 'fwritelandfrac' */
@@ -92,8 +105,14 @@ Bool freadlandfrac(FILE *file,           /**< pointer to binary file */
     freadreal(landfrac[i].crop,ncft,swap,file);
     freadreal(landfrac[i].grass,NGRASS,swap,file);
     freadreal(&landfrac[i].biomass_grass,1,swap,file);
+#if defined IMAGE || defined INCLUDEWP
+    freadreal(&landfrac[i].biomass_tree,1,swap,file);
+    if(freadreal(&landfrac[i].woodplantation,1,swap,file)!=1)
+      return TRUE;
+#else
     if(freadreal(&landfrac[i].biomass_tree,1,swap,file)!=1)
       return TRUE;
+#endif
   }
   return FALSE;
 } /* of 'freadlandfrac' */
@@ -112,6 +131,8 @@ Real landfrac_sum(const Landfrac landfrac[2], /**< land fractions (non-irrig., i
     sum+=landfrac[irrig].grass[j];
   sum+=landfrac[irrig].biomass_grass;
   sum+=landfrac[irrig].biomass_tree;
-
+#if defined IMAGE || defined INCLUDEWP
+  sum+=landfrac[irrig].woodplantation;
+#endif
   return sum;
 } /* of 'landfrac_sum' */

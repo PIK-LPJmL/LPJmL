@@ -34,13 +34,13 @@ void copyright(const char *progname /**< program name */
   t[6]=title;
 #ifdef USE_MPI
   snprintf(os,78-10,"Compiled for %s with MPI"
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
            " and IMAGE coupler"
 #endif
            ,sysname());
 #else
   snprintf(os,78-10,"Compiled for %s"
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
            " with IMAGE coupler"
 #endif
            ,sysname());

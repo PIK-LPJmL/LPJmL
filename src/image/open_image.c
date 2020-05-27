@@ -15,11 +15,20 @@
 
 #include "lpj.h"
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 
 Bool open_image(Config *config /**< LPJmL configuration */
                )               /** \return TRUE on error */
 {
+  char Revision_exe[10]  = "0000";
+  char Date_exe[80]      = "2020/05";
+  char TimeNow_exe[80]   = "2020/05";
+  char URL_exe[80]       = "https://gitlab.pik-potsdam.de";
+
+  int *IRevision;
+  int *IUrl;
+  int len,i;
+
   if(config->rank==0)
   {
     /* Establish the TDT connection */
@@ -46,6 +55,56 @@ Bool open_image(Config *config /**< LPJmL configuration */
     printf("All connections to IMAGE are established.\n");
     fflush(stdout);
 #endif
+    printf("LPJ.exe version information\n");
+    printf("URL repository: %s \n", URL_exe);
+    printf("Revision: %s \n",Revision_exe);
+    printf("Date: %s \n",Date_exe);
+    printf("BuildTime: %s \n",TimeNow_exe);
+/* SEND revision_lpj and URL_lpj; should be a string in future*/
+    IRevision = newvec(int,1);
+    check(IRevision);
+    IUrl = newvec(int,80);
+    check(IUrl);
+
+/* send revision number to interface */
+    IRevision[0] = atoi(Revision_exe);
+#ifdef DEBUG_IMAGE
+    printf("open_image1 %d \n",IRevision[0]);
+#endif
+    writeint_socket(config->out, IRevision,1); 
+#ifdef DEBUG_IMAGE
+    printf("open_image2 %d \n",IRevision[0]);
+#endif
+
+  /* send revision url */
+#ifdef DEBUG_IMAGE
+    printf("open_image3  \n"); 
+#endif
+    len = (int)strlen (URL_exe);
+    for(i=0;i<80;i++) {
+        if (i < len) {
+           IUrl[i] = URL_exe[i];
+        }
+        else {
+           IUrl[i] = 32;
+        }
+#ifdef DEBUG_IMAGE
+        printf("open_image4 %i %i \n",i, IUrl[i] );  
+#endif
+    }
+#ifdef DEBUG_IMAGE
+    printf("open_image5  \n"); 
+#endif
+    writeint_socket(config->out, IUrl,80); 
+#ifdef DEBUG_IMAGE
+    printf("open_image6  \n"); 
+#endif
+
+    free(IRevision);
+    free(IUrl);
+/* end SEND revision_lpj and URL_lpj; should be a string in future*/
+
+
   }
   return FALSE;
 } /* of 'open_image' */

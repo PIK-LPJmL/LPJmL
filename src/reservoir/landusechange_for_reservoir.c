@@ -221,7 +221,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
   int s;
   Real totw_before,totw_after,totc_before,totc_after,balanceW,balanceC; /* to check the water and c balance in the cells */
   Irrigation *data;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   minnatfrac_res=0.0002;
 #else
   minnatfrac_res=0;

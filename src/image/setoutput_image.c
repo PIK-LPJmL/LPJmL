@@ -15,7 +15,7 @@
 
 #include "lpj.h"
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 
 void setoutput_image(Cell *cell,int ncft)
 {
@@ -23,16 +23,18 @@ void setoutput_image(Cell *cell,int ncft)
   for(cft=0;cft<ncft;cft++)
   {
     cell->output.cft_luc_image[cft]=cell->ml.landfrac[0].crop[cft];
-    cell->output.cft_luc_image[cft+ncft+NGRASS+NBIOMASSTYPE]=cell->ml.landfrac[1].crop[cft];
+    cell->output.cft_luc_image[cft+ncft+NGRASS+NBIOMASSTYPE+NWPTYPE]=cell->ml.landfrac[1].crop[cft];
   }
   cell->output.cft_luc_image[rothers(ncft)]=cell->ml.landfrac[0].grass[0];
   cell->output.cft_luc_image[rmgrass(ncft)]=cell->ml.landfrac[0].grass[1];
   cell->output.cft_luc_image[rbgrass(ncft)]=cell->ml.landfrac[0].biomass_grass;
   cell->output.cft_luc_image[rbtree(ncft)]=cell->ml.landfrac[0].biomass_tree;
-  cell->output.cft_luc_image[rothers(ncft)+ncft+NGRASS+NBIOMASSTYPE]=cell->ml.landfrac[1].grass[0];
-  cell->output.cft_luc_image[rmgrass(ncft)+ncft+NGRASS+NBIOMASSTYPE]=cell->ml.landfrac[1].grass[1];
-  cell->output.cft_luc_image[rbgrass(ncft)+ncft+NGRASS+NBIOMASSTYPE]=cell->ml.landfrac[1].biomass_grass;
-  cell->output.cft_luc_image[rbtree(ncft)+ncft+NGRASS+NBIOMASSTYPE]=cell->ml.landfrac[1].biomass_tree;
+  cell->output.cft_luc_image[rwp(ncft)]=cell->ml.landfrac[0].woodplantation;
+  cell->output.cft_luc_image[rothers(ncft)+ncft+NGRASS+NBIOMASSTYPE+NWPTYPE]=cell->ml.landfrac[1].grass[0];
+  cell->output.cft_luc_image[rmgrass(ncft)+ncft+NGRASS+NBIOMASSTYPE+NWPTYPE]=cell->ml.landfrac[1].grass[1];
+  cell->output.cft_luc_image[rbgrass(ncft)+ncft+NGRASS+NBIOMASSTYPE+NWPTYPE]=cell->ml.landfrac[1].biomass_grass;
+  cell->output.cft_luc_image[rbtree(ncft)+ncft+NGRASS+NBIOMASSTYPE+NWPTYPE]=cell->ml.landfrac[1].biomass_tree;
+  cell->output.cft_luc_image[rwp(ncft)+ncft+NGRASS+NBIOMASSTYPE+NWPTYPE]=cell->ml.landfrac[1].woodplantation;
 } /* of 'setoutput_image' */
 
 #endif

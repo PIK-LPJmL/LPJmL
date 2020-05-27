@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 
 Bool receive_image_data(Cell *cell,          /**< LPJ grid */
                         int npft,            /**< number of natural PFTs */

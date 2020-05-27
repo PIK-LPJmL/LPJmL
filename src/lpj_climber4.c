@@ -1218,7 +1218,6 @@ void lpj_init_output_
    const int *const fse
       ) {
   double *tmp_evap_out        = alloca(sizeof(double) * config.ngridcell);
-  int cell;
 
   if (*fse != 4711) { printf("Error: %s : parameter test failed: 4711 != %d\n", __FUNCTION__, *fse); fflush(stdout); abort(); }
 

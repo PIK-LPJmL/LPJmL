@@ -61,9 +61,12 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   cell->output.mswe*=ndaymonth1[month];
   cell->output.aconv_loss_evap+=cell->output.mconv_loss_evap;
   cell->output.aconv_loss_drain+=cell->output.mconv_loss_drain;
-  #ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   cell->ml.image_data->anpp+=cell->output.mnpp;
   cell->ml.image_data->arh+=cell->output.mrh;
+  cell->ml.image_data->mirrwatdem[month]+=cell->output.mirrig+cell->output.mconv_loss_evap+cell->output.mconv_loss_drain;
+  cell->ml.image_data->mevapotr[month] += (cell->output.mtransp + cell->output.mevap + cell->output.minterc + cell->output.mevap_lake + cell->output.mevap_res + cell->output.mconv_loss_evap + cell->output.mconv_loss_drain);
+  cell->ml.image_data->mpetim[month] += cell->output.mpet;
 #endif
   /* for carbon balance check  */
   cell->balance.nep+=cell->output.mnpp-cell->output.mrh;

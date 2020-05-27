@@ -73,5 +73,6 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
   for (l=0;l<=NFUELCLASS;l++)
     soil->litter.avg_fbd[l]=0.0;
   soil->snowheight=soil->snowfraction=0;
+  soil->rw_buffer=0;
   return FALSE;
 } /* of 'initsoil' */

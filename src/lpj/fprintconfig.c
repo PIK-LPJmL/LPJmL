@@ -34,7 +34,7 @@ static Bool isnetcdfinput(const Config *config)
     return TRUE;
   if(config->prec_filename.fmt==CDF)
     return TRUE;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->temp_var_filename.fmt==CDF)
     return TRUE;
   if(config->prec_var_filename.fmt==CDF)
@@ -105,6 +105,10 @@ static Bool isnetcdfinput(const Config *config)
 
   if(config->wateruse_filename.name!=NULL && config->wateruse_filename.fmt==CDF)
     return TRUE;
+#ifdef IMAGE
+  if (config->wateruse_wd_filename.name != NULL && config->wateruse_wd_filename.fmt == CDF)
+    return TRUE;
+#endif
   return FALSE;
 } /* of 'isnetcdfinput' */
 
@@ -163,7 +167,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   else
     putc('\n',file);
   len=0;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     len=printsim(file,len,&count,"IMAGE coupling");
 #endif
@@ -200,6 +204,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       default:
         len=printsim(file,len,&count,"land use, ");
     } /* of switch */
+    if(config->rw_manage)
+      len=printsim(file,len,&count,"rainwater management, ");
     len=fputstring(file,len,irrig[config->irrig_scenario],78);
     len=fputstring(file,len," irrigation",78);
     if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
@@ -233,8 +239,18 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,"wood fires");
   if(config->reservoir)
     len=printsim(file,len,&count,"dam reservoirs");
+#ifdef IMAGE
+  if(config->groundwater_irrig==GROUNDWATER_IRRIG)
+    len=printsim(file,len,&count,"groundwater irrigation");
+  if(config->aquifer_irrig==AQUIFER_IRRIG)
+    len=printsim(file,len,&count,"aquifer irrigation");
+#endif
   if(config->wateruse_filename.name!=NULL)
     len=printsim(file,len,&count,"water use");
+#ifdef IMAGE
+  if(config->wateruse_wd_filename.name!=NULL)
+    len = printsim(file, len, &count, "water use wd");
+#endif
   if(count)
     fputs(".\n",file);
   fprintf(file,"Working directory: %s\n",getdir());
@@ -255,7 +271,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"coord",&config->coord_filename,iscdfinput);
   printinputfile(file,"temp",&config->temp_filename,iscdfinput);
   printinputfile(file,"prec",&config->prec_filename,iscdfinput);
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
     printinputfile(file,"temp var",&config->temp_var_filename,iscdfinput);
@@ -309,6 +325,13 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"elevation",&config->elevation_filename,iscdfinput);
     printinputfile(file,"reservoir",&config->reservoir_filename,iscdfinput);
   }
+#ifdef IMAGE
+  if(config->aquifer_irrig==AQUIFER_IRRIG)
+    fprintf(file,"aquifer  %-4s %-8s %s\n",
+            fmt[config->aquifer_filename.fmt],
+            (config->aquifer_filename.var==NULL) ? "": config->aquifer_filename.var,
+            config->aquifer_filename.name);
+#endif
   if(config->wet_filename.name!=NULL)
     printinputfile(file,"wetdays",&config->wet_filename,iscdfinput);
   if(config->river_routing)
@@ -331,12 +354,20 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     fputs("---------- ---- -------- -----------------------------------------------------\n",file);
   else
     fputs("---------- ---- --------------------------------------------------------------\n",file);
+#ifdef IMAGE
+  if (config->wateruse_wd_filename.name != NULL)
+    printinputfile(file,"wateruse wd", &config->wateruse_wd_filename,iscdfinput);
+  if(iscdfinput)
+    fputs("---------- ---- -------- -----------------------------------------------------\n",file);
+  else
+    fputs("---------- ---- -------- -----------------------------------------------------\n",file);
+#endif
   if(config->param_out)
     fprintparam(file,npft,ncft,config);
   if(iswriterestart(config))
     fprintf(file,"Writing restart file '%s' after year %d.\n",
             config->write_restart_filename,config->restartyear);
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     fprintf(file,
             "Coupled to IMAGE model running on host %s using port %d and %d.\n"
@@ -351,7 +382,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     size=strlen("Variable");
     for(i=0;i<config->n_out;i++)
       if(config->outnames[config->outputvars[i].id].name!=NULL &&
-         size<strlen(config->outnames[config->outputvars[i].id].name))
+         size<(int)strlen(config->outnames[config->outputvars[i].id].name))
         size=strlen(config->outnames[config->outputvars[i].id].name);
     fprintf(file,"Number of output files:       %d\n"
                  "Byte order in output files:   %s\n"
@@ -417,7 +448,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   fprintf(file,"First year:                  %6d\n"
           "Last year:                   %6d\n",
           config->firstyear,config->lastyear);
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     fprintf(file,"Start IMAGE coupling:        %6d\n",
             config->start_imagecoupling);

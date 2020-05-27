@@ -76,6 +76,21 @@ Bool fscanparam(FILE  *file,         /**< File pointer to text file */
     fscanparamint(file,&param.remove_residuals,"remove_residuals");
     fscanparamint(file,&param.sdate_fixyear,"sdate_fixyear");
     fscanparamint(file,&param.landuse_year_const,"landuse_year_const");
+    if(config->rw_manage)
+    {
+      fscanparamreal(file,&param.esoil_reduction,
+                  "esoil_reduction");
+      fscanparamreal(file,&param.rw_buffer_max,
+                   "rw_buffer_max");
+      fscanparamreal(file,&param.frac_ro_stored,
+                   "frac_ro_stored");
+      fscanparamreal(file,&param.rw_irrig_thres,
+                    "rw_irrig_thres");
+      fscanparamreal(file,&param.soil_infil,
+                    "soil_infil");
+      fscanparamreal(file,&param.yield_gap_bridge,
+                    "yield_gap_bridge");
+      }
   }
   param.k_litter10/=NDAYYEAR;
   param.k_soil10.fast/=NDAYYEAR;

@@ -21,10 +21,17 @@
 #include "agriculture.h"
 #include "biomass_tree.h"
 #include "biomass_grass.h"
+#if defined IMAGE || defined INCLUDEWP
+#include "woodplantation.h"
+#endif
 
 #define PRINTLPJ_VERSION "1.0.017"
 #define NTYPES 3
+#if defined IMAGE || defined INCLUDEWP
+#define NSTANDTYPES 10 /* number of stand types */
+#else 
 #define NSTANDTYPES 9 /* number of stand types */
+#endif
 #define dflt_conf_filename "lpjml.conf"
 #define USAGE "Usage: %s [-h] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename [-check] [start [end]]]\n"
@@ -123,7 +130,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     }
     else
       grid.ml.landfrac=NULL;
-    initoutput(&grid.output,config->crop_index,config->crop_irrigation,npft,config->nbiomass,ncft);
+    initoutput(&grid.output,config->crop_index,config->crop_irrigation,npft,config->nbiomass,config->nwft,ncft);
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
 
     if(freadcell(file_restart,&grid,npft,ncft,
@@ -166,6 +173,9 @@ int main(int argc,char **argv)
   standtype[GRASSLAND]=grassland_stand,
   standtype[BIOMASS_TREE]=biomass_tree_stand,
   standtype[BIOMASS_GRASS]=biomass_grass_stand,
+#if defined IMAGE || defined INCLUDEWP
+  standtype[WOODPLANTATION]=woodplantation_stand,
+#endif
   standtype[KILL]=kill_stand;
 
   progname=strippath(argv[0]);

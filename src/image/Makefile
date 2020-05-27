@@ -17,6 +17,7 @@ include ../../Makefile.inc
 
 OBJS    = receive_image_climate.$O  receive_image_data.$O\
           receive_image_luc.$O receive_image_productpools.$O\
+          receive_image_finish.$O\
           send_image_data.$O biome_classification.$O\
           receive_image_co2.$O open_image.$O setoutput_image.$O\
           product_turnover.$O close_image.$O monthlyoutput_image.$O\

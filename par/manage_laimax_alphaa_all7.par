@@ -1,0 +1,217 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**        m  a  n  a  g  e  _ l  a  i  m  a  x  .  p  a  r                        \n**/
+/**                                                                                \n**/
+/**     management parameter data with maximum LAI values for all crops            \n**/
+/**               LPJmL Version 4.0.001                                            \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+#include "../include/managepar.h"
+
+197  /* Number of countries*/			
+
+/* country-id  country-name	laimax 12 cft's	default-irrigation-system */
+Afghanistan	"Afghanistan"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Albania	"Albania"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Algeria	"Algeria"	7	7	5	7	7	7	7	7	7	7	7	7	2
+American_Samoa	"American Samoa"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Angola	"Angola"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Argentina	"Argentina"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Armenia	"Armenia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Austria	"Austria"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Azerbaijan	"Azerbaijan"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Bahamas_The	"Bahamas, The"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Bangladesh	"Bangladesh"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Belgium	"Belgium"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Belize	"Belize"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Benin	"Benin"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Bhutan	"Bhutan"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Bolivia	"Bolivia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Bosnia_and_Herzegovina	"Bosnia and Herzegovina"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Botswana	"Botswana"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Brunei	"Brunei"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Bulgaria	"Bulgaria"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Burkina_Faso	"Burkina Faso"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Burundi	"Burundi"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Byelarus	"Byelarus"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Cambodia	"Cambodia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Cameroon	"Cameroon"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Cape_Verde	"Cape Verde"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Cayman_Islands	"Cayman Islands"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Central_African_Republic	"Central African Republic"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Chad	"Chad"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Chile	"Chile"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Colombia	"Colombia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Comoros	"Comoros"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Congo_Brazzaville	"Congo-Brazzaville"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Cook_Islands	"Cook Islands"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Costa_Rica	"Costa Rica"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Croatia	"Croatia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Cuba	"Cuba"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Cyprus	"Cyprus"	7	7	5	7	7	7	7	7	7	7	7	7	3
+Czech_Republic	"Czech Republic"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Denmark	"Denmark"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Djibouti	"Djibouti"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Dominican_Republic	"Dominican Republic"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Ecuador	"Ecuador"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Egypt	"Egypt"	7	7	5	7	7	7	7	7	7	7	7	7	1
+El_Salvador	"El Salvador"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Equatorial_Guinea	"Equatorial Guinea"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Eritrea	"Eritrea"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Estonia	"Estonia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Ethiopia	"Ethiopia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Falkland_Islands_or_Islas_Malvinas	"Falkland Islands (Islas Malvinas)"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Faroe_Islands	"Faroe Islands"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Federated_States_of_Micronesia	"Federated States of Micronesia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Fiji	"Fiji"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Finland	"Finland"	7	7	5	7	7	7	7	7	7	7	7	7	2
+France	"France"	7	7	5	7	7	7	7	7	7	7	7	7	2
+French_Guiana	"French Guiana"	7	7	5	7	7	7	7	7	7	7	7	7	1
+French_Polynesia	"French Polynesia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+French_Southern_and_Antarctica_Lands	"French Southern and Antarctica Lands"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Gabon	"Gabon"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Gambia_The	"Gambia, The"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Georgia	"Georgia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Germany	"Germany"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Ghana	"Ghana"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Greece	"Greece"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Greenland	"Greenland"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Guadeloupe	"Guadeloupe"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Guatemala	"Guatemala"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Guinea	"Guinea"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Guinea_Bissau	"Guinea-Bissau"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Guyana	"Guyana"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Haiti	"Haiti"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Honduras	"Honduras"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Hungary	"Hungary"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Iceland	"Iceland"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Indonesia	"Indonesia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Iran	"Iran"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Iraq	"Iraq"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Ireland	"Ireland"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Israel	"Israel"	7	7	5	7	7	7	7	7	7	7	7	7	3
+Italy	"Italy"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Ivory_Coast	"Ivory Coast"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Jamaica	"Jamaica"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Japan	"Japan"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Jordan	"Jordan"	7	7	5	7	7	7	7	7	7	7	7	7	3
+Kazakhstan	"Kazakhstan"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Kenya	"Kenya"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Kiribati	"Kiribati"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Kuwait	"Kuwait"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Kyrgyzstan	"Kyrgyzstan"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Laos	"Laos"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Latvia	"Latvia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Lebanon	"Lebanon"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Lesotho	"Lesotho"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Liberia	"Liberia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Libya	"Libya"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Lithuania	"Lithuania"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Luxembourg	"Luxembourg"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Macedonia	"Macedonia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Madagascar	"Madagascar"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Malawi	"Malawi"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Malaysia	"Malaysia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Maldives	"Maldives"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Mali	"Mali"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Marshall_Islands	"Marshall Islands"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Mauritania	"Mauritania"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Mauritius	"Mauritius"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Mexico	"Mexico"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Moldova	"Moldova"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Mongolia	"Mongolia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Montenegro	"Montenegro"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Morocco	"Morocco"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Mozambique	"Mozambique"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Myanmar_or_Burma	"Myanmar (Burma)"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Namibia	"Namibia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Nepal	"Nepal"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Netherlands	"Netherlands"	7	7	5	7	7	7	7	7	7	7	7	7	2
+New_Caledonia	"New Caledonia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+New_Zealand	"New Zealand"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Nicaragua	"Nicaragua"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Niger	"Niger"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Nigeria	"Nigeria"	7	7	5	7	7	7	7	7	7	7	7	7	1
+North_Korea	"North Korea"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Northern_Mariana_Islands	"Northern Mariana Islands"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Norway	"Norway"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Oman	"Oman"	7	7	5	7	7	7	7	7	7	7	7	7	3
+Pakistan	"Pakistan"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Panama	"Panama"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Papua_New_Guinea	"Papua New Guinea"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Paraguay	"Paraguay"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Peru	"Peru"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Philippines	"Philippines"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Pitcairn_Islands	"Pitcairn Islands"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Poland	"Poland"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Portugal	"Portugal"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Puerto_Rico	"Puerto Rico"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Qatar	"Qatar"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Reunion	"Reunion"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Romania	"Romania"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Rwanda	"Rwanda"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Sao_Tome_and_Principe	"Sao Tome and Principe"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Saudi_Arabia	"Saudi Arabia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Senegal	"Senegal"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Serbia	"Serbia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Sierra_Leone	"Sierra Leone"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Slovakia	"Slovakia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Slovenia	"Slovenia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Solomon_Islands	"Solomon Islands"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Somalia	"Somalia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+South_Africa	"South Africa"	7	7	5	7	7	7	7	7	7	7	7	7	2
+South_Georgia_and_the_South_Sandwich_Islands	"South Georgia and the South Sandwich Islands"	7	7	5	7	7	7	7	7	7	7	7	7	2
+South_Korea	"South Korea"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Spain	"Spain"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Sri_Lanka	"Sri Lanka"	7	7	5	7	7	7	7	7	7	7	7	7	2
+St_Vincent_and_the_Grenadines	"St. Vincent and the Grenadines"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Sudan	"Sudan"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Suriname	"Suriname"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Svalbard	"Svalbard"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Swaziland	"Swaziland"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Sweden	"Sweden"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Switzerland	"Switzerland"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Syria	"Syria"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Taiwan	"Taiwan"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Tajikistan	"Tajikistan"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Tanzania_United_Republic_of	"Tanzania, United Republic of"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Thailand	"Thailand"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Togo	"Togo"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Tokelau	"Tokelau"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Trinidad_and_Tobago	"Trinidad and Tobago"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Tunisia	"Tunisia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Turkey	"Turkey"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Turkmenistan	"Turkmenistan"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Tuvalu	"Tuvalu"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Uganda	"Uganda"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Ukraine	"Ukraine"	7	7	5	7	7	7	7	7	7	7	7	7	2
+United_Arab_Emirates	"United Arab Emirates"	7	7	5	7	7	7	7	7	7	7	7	7	3
+United_Kingdom	"United Kingdom"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Uruguay	"Uruguay"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Uzbekistan	"Uzbekistan"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Vanuatu	"Vanuatu"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Venezuela	"Venezuela"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Vietnam	"Vietnam"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Virgin_Islands	"Virgin Islands"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Wake_Islands	"Wake Islands"	7	7	5	7	7	7	7	7	7	7	7	7	2
+West_Bank	"West Bank"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Western_Sahara	"Western Sahara"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Western_Samoa	"Western Samoa"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Yemen	"Yemen"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Zaire_DR_Congo	"DR Congo, former Zaire"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Zambia	"Zambia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Zimbabwe	"Zimbabwe"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Australia	"Australia"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Brazil	"Brazil"	7	7	5	7	7	7	7	7	7	7	7	7	2
+Canada	"Canada"	7	7	5	7	7	7	7	7	7	7	7	7	2
+China	"China"	7	7	5	7	7	7	7	7	7	7	7	7	1
+India	"India"	7	7	5	7	7	7	7	7	7	7	7	7	1
+Russia	"Russia"	7	7	5	7	7	7	7	7	7	7	7	7	2
+United_States	"United States"	7	7	5	7	7	7	7	7	7	7	7	7	2

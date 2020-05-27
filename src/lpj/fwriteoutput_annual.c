@@ -462,6 +462,14 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       vec[cell]=(float)(grid[cell].output.adischarge*1e-9);
     writeannualall(output,ADISCHARGE,vec,year,config);
   }
+#ifdef IMAGE
+  if(output->files[YDISCHARGE].isopen)
+  {
+     for(cell=0;cell<config->ngridcell;cell++)
+      vec[cell]=(float)(grid[cell].output.ydischarge*1e-9);
+    writeannual(output,YDISCHARGE,vec,year,config);
+  }
+#endif
   if(output->files[PROD_TURNOVER].isopen)
   {
     count=0;
@@ -566,6 +574,22 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       if(!grid[cell].skip)
         vec[count++]=(float)(grid[cell].output.awateruse_hil);
     writeannual(output,AWATERUSE_HIL,vec,year,config);
+  }
+  if (output->files[WATERUSECONS].isopen)
+  {
+    count = 0;
+    for (cell = 0;cell<config->ngridcell;cell++)
+      if (!grid[cell].skip)
+        vec[count++] = (float)(grid[cell].output.waterusecons);
+    writeannual(output, WATERUSECONS, vec, year, config);
+  }
+  if (output->files[WATERUSEDEM].isopen)
+  {
+    count = 0;
+    for (cell = 0;cell<config->ngridcell;cell++)
+      if (!grid[cell].skip)
+        vec[count++] = (float)(grid[cell].output.waterusedem);
+    writeannual(output, WATERUSEDEM, vec, year, config);
   }
   if(output->files[AGB].isopen)
   {

@@ -22,6 +22,9 @@ typedef struct
   Climate *climate;
   Landuse landuse;
   Wateruse wateruse;
+#ifdef IMAGE
+  Wateruse wateruse_wd;
+#endif
   Popdens popdens;
   Landcover landcover;
 } Input;

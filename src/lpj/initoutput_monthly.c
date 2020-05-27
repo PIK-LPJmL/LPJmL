@@ -37,6 +37,9 @@ void initoutput_monthly(Output *output /**< Output data */
   output->mfapar=output->malbedo=0.0;
   output->mphen_tmin = output->mphen_tmax = output->mphen_light = output->mphen_water = output->mwscal = 0.0;
 
+#ifdef IMAGE
+  output->mwd_gw=output->mwd_aq=output->mwateruse_hil=0.0;
+#endif
   for(l=0;l<NSOILLAYER;l++)
     output->mswc[l]=output->msoiltemp[l]=0;
 } /* of 'initoutput_monthly' */

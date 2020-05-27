@@ -35,7 +35,7 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
         case FLUX_ESTAB: case HARVEST: case VEGC: case MG_VEGC: case AGB:
         case SOILC: case MG_SOILC: case LITC: case MG_LITC: case APREC:
         case INPUT_LAKE: case PROD_TURNOVER: case DEFOREST_EMIS:
-        case AFRAC_WD_UNSUST: case ACONV_LOSS_EVAP: case ACONV_LOSS_DRAIN: case SOILC_SLOW: case AWATERUSE_HIL:
+        case AFRAC_WD_UNSUST: case ACONV_LOSS_EVAP: case ACONV_LOSS_DRAIN: case SOILC_SLOW: case AWATERUSE_HIL: case WATERUSECONS: case WATERUSEDEM:
           sum+=size*sizeof(float);
           break;
         case SOILC_LAYER:
@@ -44,16 +44,24 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
         case ADISCHARGE:
           sum+=(long long)config->ngridcell*(config->lastyear-config->firstyear+1)*sizeof(float);
           break;
+        case YDISCHARGE:
+           sum += (long long)config->ngridcell*(config->lastyear - config->firstyear + 1)*sizeof(float);
+           break;
         case SDATE: case HDATE: case SDATE2: case HDATE2:
         case SYEAR: case SYEAR2:
           sum+=size*ncft*2*sizeof(short);
           break;
         case CFT_IRRIG_EVENTS:
-          sum+=size*(ncft+NGRASS+NBIOMASSTYPE)*2*sizeof(short);
+          sum+=size*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2*sizeof(short);
           break;
         case PFT_NPP: case PFT_GCGP:
-          sum+=sizeof(float)*size*((npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
+          sum+=sizeof(float)*size*((npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
           break;
+#ifdef IMAGE
+        case WFT_VEGC:
+          sum+=sizeof(float)*size*config->nwft;
+          break;
+#endif
         case GROWING_PERIOD: case GROWING_PERIOD2:
         case CFT_TEMP:case CFT_PREC:
         case CFT_SRAD: case CFT_ABOVEGBM:
@@ -69,7 +77,7 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
         case CFT_FPAR: case CFT_AIRRIG: case CFT_CONV_LOSS_EVAP: case CFT_CONV_LOSS_DRAIN:
         case CFT_INTERC2: case PFT_HARVEST2: case PFT_RHARVEST2: case CFT_TRANSP2: 
         case CFTFRAC2: case CFT_EVAP2: case CFT_AIRRIG2:
-          sum+=sizeof(float)*size*(ncft+NGRASS+NBIOMASSTYPE)*2;
+          sum+=sizeof(float)*size*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;
           break;
         case FPC:
           sum+=sizeof(float)*size*((npft-config->nbiomass)+1);
@@ -91,8 +99,11 @@ long long outputfilesize(int npft,      /**< number of natural pfts */
         case MCONV_LOSS_EVAP: case MCONV_LOSS_DRAIN: case MRES_DEMAND: case MTARGET_RELEASE: case MRES_STORAGE: case MSTOR_RETURN:
         case MRES_CAP: case MGCONS_RF: case MGCONS_IRR:
       case MROOTMOIST: case MLAKEVOL: case MLAKETEMP:
+#ifdef IMAGE
+      case MWD_GW: case MWD_AQ: case MWATERUSE_HIL:
+#endif
           sum+=sizeof(float)*NMONTH*size;
           break;
       } /* of 'switch' */
   return sum;
-} /* of 'outputbuffersize' */
+} /* of 'outputfilesize' */

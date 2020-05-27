@@ -66,7 +66,7 @@ typedef struct
   Climatefile file_temp,file_prec,file_wet; /**< file pointers */
   Climatefile file_cloud,file_lwnet,file_swdown;
   Climatefile file_wind,file_tamp,file_tmax,file_lightning;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   Climatefile file_temp_var,file_prec_var;
 #endif
   Climatefile file_burntarea;

@@ -91,7 +91,7 @@ typedef struct Pft
   {
     int id;                     /**< unique PFT identifier */
     int type;                   /**< type --> whether CROP or TREE or GRASS*/
-    int cultivation_type;       /**< cultivation_type----> NONE, BIOMASS, ANNUAL_CROP*/
+    int cultivation_type;       /**< cultivation_type----> NONE, BIOMASS, ANNUAL_CROP, WP, */
     char *name;                 /**< Pft name */
     Real cn[NHSG];              /**< pft specific curve number for each hydr. soil group */
     Real beta_root;             /**< root distribution parameter */
@@ -245,16 +245,20 @@ extern void fprintpftpar(FILE *,const Pftpar []);
 extern void output_daily(Daily_outputs *,const Pft *,Real,Real);
 extern void equilsoil(Soil *, int, const Pftpar []);
 extern void noturnover_monthly(Litter *,Pft *);
-extern char **createpftnames(int,int,int,int,const Pftpar []);
-extern void freepftnames(char **,int,int,int,int);
+extern char **createpftnames(int,int,int,int,int,const Pftpar []);
+extern void freepftnames(char **,int,int,int,int,int);
 extern int getnbiomass(const Pftpar [],int);
+extern int getnwft(const Pftpar[],int);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool);
 
 /* needed for IMAGE, but can also be used otherwise */
 
 extern Real timber_burn(const Pft *, Real,Litter *,Real);
+#ifdef IMAGE
+extern Real timber_harvest(Pft *,Soil *,Pool *,Pool,Real,Real,Real *,Real *,Real, Real[] );
+#else
 extern Real timber_harvest(Pft *,Soil *,Pool *,Pool,Real,Real,Real *,Real *);
-
+#endif
 /* Definition of macros */
 
 #define isphoto(tstress) (tstress>=1e-2)

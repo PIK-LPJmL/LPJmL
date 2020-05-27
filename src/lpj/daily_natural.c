@@ -91,7 +91,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   }
 
   /* soil inflow: infiltration and percolation */
-  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b);
+  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,config->rw_manage);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -116,6 +116,12 @@ Real daily_natural(Stand *stand, /**< stand pointer */
     }
     output->dcflux-=npp*stand->frac;
     output->mnpp+=npp*stand->frac;
+#if defined IMAGE && defined COUPLED
+    if(stand->type->landusetype==NATURAL)
+    {
+      stand->cell->npp_nat+=npp*stand->frac;
+    }
+#endif
     output->mgpp+=gpp*stand->frac;
     output->mfapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
@@ -137,7 +143,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
 
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
-               &frac_g_evap);
+               &frac_g_evap,FALSE);
 
   if(withdailyoutput)
   {

@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 
 Real receive_image_co2(const Config *config /**< LPJ configuration */
                       )                  /** \return atmospheric CO2 (ppm) */

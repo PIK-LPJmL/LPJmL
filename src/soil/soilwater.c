@@ -24,5 +24,6 @@ Real soilwater(const Soil *soil /**< pointer to soil data */
   totw=soil->snowpack;
   foreachsoillayer(l)
     totw+=soil->w[l]*soil->par->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l];
+  totw+=soil->rw_buffer;
   return totw;
 } /* of 'soilwater' */

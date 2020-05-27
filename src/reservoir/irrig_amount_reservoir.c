@@ -19,7 +19,11 @@ void irrig_amount_reservoir(Cell grid[],          /**< LPJ grid */
   Real *in,*out;
   int i,cell,k;
 
+#if defined IMAGE && defined COUPLED
+  grid-=config->startgrid-config->firstgrid; // for IMAGE because it is run on multiple cores
+#else
   grid-=config->startgrid;
+#endif
   out=(Real *)pnet_output(config->irrig_res);
   in=(Real *)pnet_input(config->irrig_res);
   for(i=0;i<pnet_outlen(config->irrig_res);i++)

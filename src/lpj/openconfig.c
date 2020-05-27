@@ -19,7 +19,11 @@
 #include "lpj.h"
 
 #ifdef _WIN32              /* are we on a Windows machine? */
+#ifdef IMAGE
+#define cpp_cmd "cl /E /DIMAGE /nologo"  /* C preprocessor command for Windows */
+#else
 #define cpp_cmd "cl /E /nologo"  /* C preprocessor command for Windows */
+#endif
 #else
 #define cpp_cmd "cpp"  /* C preprocessor command for Unix */
 #endif
@@ -53,7 +57,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   config->port=DEFAULT_PORT;
   config->param_out=FALSE;
   config->scan_verbose=ERR; /* NO_ERR would suppress also error messages */
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   config->image_inport=DEFAULT_IMAGE_INPORT;
   config->image_outport=DEFAULT_IMAGE_OUTPORT;
   config->image_host=getenv(LPJIMAGE);
@@ -176,7 +180,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         options[dcount++]=(*argv)[i];
         len+=strlen((*argv)[i])+1;
       }
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
       else if(!strcmp((*argv)[i],"-wait"))
       {
         if(i==*argc-1)

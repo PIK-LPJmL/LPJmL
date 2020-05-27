@@ -57,4 +57,12 @@ BENCHMARK_LAI         /* maximum LAI */
 0         /* remove residuals (0:FALSE, 1:TRUE) */
 1970      /* year in which sowing dates shall be fixed */
 2000      /* set landuse year for LANDUSE_CONST case */
+#ifdef WITH_RWMANAGEMENT
+0.0       /* reduction of soil evaporation */
+0.0       /* rw_buffer_max, size of rainwater harvesting tank [mm] */
+0.0       /* frac_ro_stored, fraction of surface runoff stored in tank */
+0.0       /* rw_irrig_thres, threshold to apply rw_irrigation */
+2         /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
+0.0       /* yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
+#endif
 #endif

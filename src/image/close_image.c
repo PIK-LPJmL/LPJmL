@@ -15,7 +15,7 @@
 
 #include "lpj.h"
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 
 void close_image(const Config *config /**< LPJmL configuration */
                 )
@@ -25,7 +25,7 @@ void close_image(const Config *config /**< LPJmL configuration */
     if(config->in!=NULL)
       close_socket(config->in);
     if(config->out!=NULL)
-    close_socket(config->out);
+      close_socket(config->out);
   }
 } /* of 'close_image' */
 

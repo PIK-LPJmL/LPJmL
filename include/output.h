@@ -154,6 +154,11 @@ typedef struct
   Real mwd_neighb;       /**< monthly neighbour withdrawal (mm); negative values means give away to neighbour, positive taken for local irrigation from neighbour */
   Real mwd_res;          /**< monthly reservoir withdrawal (mm) */
   Real mwd_return;       /**< monthly withdrawals returned to river (mm) */
+#ifdef IMAGE
+  Real mwd_gw;           /**< monthly renewable groundwater withdrawal (mm) */
+  Real mwd_aq;           /**< monthly aquifer withdrawal (mm) NOT YET DEFINED*/
+  Real mwateruse_hil;    /**< monthly waterwithdrawal of household, industry and livestock */
+#endif
   Real aconv_loss_evap;  /**< Yearly evaporative conveyance loss of irrigation water withdrawals (mm) */
   Real aconv_loss_drain; /**< Yearly drainage conveyance loss (mm) */
   Real mconv_loss_evap;  /**< Monthly evaporative conveyance loss (mm) */
@@ -166,9 +171,15 @@ typedef struct
   Real msnowrunoff;      /**< Monthly runoff from snow above snowpack maximum */
   Real mswe;             /**< Monthly average snow water equivalent (mm)*/
   Real awateruse_hil;    /**< yearly water withdrawal of household, industry and livestock */
+  Real waterusecons;
+  Real waterusedem;
   Real mreturn_flow_b;   /**< monthly blue water return flow of runoff, conv. loss is not included */
   Real input_lake;       /**< yearly precipitation input to lakes (mm) */
   Real adischarge;       /**< Annual discharge (1.000.000 m3/year) */
+#ifdef IMAGE
+  Real ydischarge;       /**< Annual (1.000.000 m3/year) to send to IMAGE */
+  Real *wft_vegc;        /**< WFT specific vegetation carbon for wood plantation stand (gC/m2) */
+#endif
   Real surface_storage;  /**< Water stored in the suface storages by the end of year (dm3) */
   Real soil_storage;     /**< Water stored in the soil column by the end of year (dm3) */
   Real *cftfrac;         /**< cft fraction */
@@ -263,12 +274,12 @@ typedef struct
 
 /* Declaration of functions */
 
-extern Bool initoutput(Output *,int,Bool,int,int,int);
-extern void initoutput_annual(Output *,int,int,int);
+extern Bool initoutput(Output *,int,Bool,int,int,int,int);
+extern void initoutput_annual(Output *,int,int,int,int);
 extern void initoutput_monthly(Output *);
 extern void initoutput_daily(Daily_outputs *);
 extern void freeoutput(Output *);
-extern int outputsize(int,int,int,int);
+extern int outputsize(int,int,int,int,int);
 extern Type getoutputtype(int);
 
 #ifdef USE_MPI

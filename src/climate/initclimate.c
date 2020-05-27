@@ -226,7 +226,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   else
     climate->data.wind=climate->data.tamp=climate->data.lightning=climate->data.burntarea=NULL;
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
     if(openclimate(&climate->file_temp_var,&config->temp_var_filename,NULL,LPJ_SHORT,config))
@@ -289,7 +289,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       closeclimatefile(&climate->file_cloud,isroot(*config));
     if(config->wet_filename.name!=NULL)
       closeclimatefile(&climate->file_wet,isroot(*config));
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
     if(config->sim_id==LPJML_IMAGE)
     {
       closeclimatefile(&climate->file_temp_var,isroot(*config));

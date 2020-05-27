@@ -21,7 +21,7 @@
 #else
 #define FPE_OPT ""
 #endif
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 #define IMAGE_OPT "       [-image host[:inport[,outport]]] [-wait time]\n"
 #else
 #define IMAGE_OPT ""
@@ -57,7 +57,7 @@ void help(const char *progname, /**< program filename */
   fprintf(file,"\n    ");
   frepeatch(file,'=',count);
   fprintf(file,"\n\nDynamic global vegetation model with managed land\n");
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   fputs("and IMAGE coupler\n",file);
 #endif
   fprintf(file,lpj_usage,progname);
@@ -72,7 +72,7 @@ void help(const char *progname, /**< program filename */
 #ifdef WITH_FPE
           "-fpe             enable floating point exceptions\n"
 #endif
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
           "-image host[:inport[,outport]] set host where IMAGE model is running\n"
           "-wait time       time to wait for connection to IMAGE model (sec)\n"
 #endif

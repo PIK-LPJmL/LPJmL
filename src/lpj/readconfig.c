@@ -56,7 +56,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     closeconfig(file);
     return TRUE;
   }
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id!=LPJML && config->sim_id!=LPJ && config->sim_id!=LPJML_IMAGE)
   {
     if(verbosity)
@@ -70,7 +70,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     if(verbosity)
     {
       if(config->sim_id==LPJML_IMAGE)
-        fputs("ERROR219: LPJmL has to be compiled with '-DIMAGE' for simulation type 'LPJML_IMAGE'.\n",stderr);
+        fputs("ERROR219: LPJmL has to be compiled with '-DIMAGE -DCOUPLED' for simulation type 'LPJML_IMAGE'.\n",stderr);
       else
         fprintf(stderr,"ERROR123: Invalid simulation type in line %d of '%s', must be 'LPJML', 'LPJML_FMS' or 'LPJ'.\n",getlinecount(),getfilename());
     }

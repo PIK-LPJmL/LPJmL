@@ -69,6 +69,10 @@ void moisture2soilice(Soil *soil, /**< pointer to soil data */
     soil->freeze_depth[l]+=(soildepth[l]-soil->freeze_depth[l])*
                            (allice(soil,l)-ice_water_old)/
                            soil_water_old;
+#ifdef IMAGE
+  if(soil->freeze_depth[l]>soildepth[l])
+    soil->freeze_depth[l]=soildepth[l];
+#endif
 #ifdef SAFE
   if(soil->w[l]<0)
     fail(PERM_ERR,FALSE,"soil.w[%d]=%.10f<0 in moisture2soilice()",l,soil->w[l]);

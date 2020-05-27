@@ -22,7 +22,11 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
 {
   int i;
   char *phenology[]={"evergreen","raingreen","summergreen","any","cropgreen"};
+#if defined IMAGE || defined INCLUDEWP
+  char *cultivation_type[]={"none","biomass","annual crop","wp"};
+#else
   char *cultivation_type[]={"none","biomass","annual crop"};
+#endif
   char *path[]={"no pathway","C3","C4"};
   fputs("------------------------------------------------------------------------------\n",file);
   fprintf(file,"Id:\t\t%d\n"

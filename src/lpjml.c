@@ -83,7 +83,11 @@
 #include "agriculture.h"
 
 #define NTYPES 3 /* number of plant functional types: grass, tree, annual_crop */
+#if defined IMAGE || defined INCLUDEWP
+#define NSTANDTYPES 10 /* number of stand types / land use types as defined in landuse.h*/
+#else
 #define NSTANDTYPES 9 /* number of stand types / land use types as defined in landuse.h*/
+#endif
 
 #define dflt_conf_filename_ml "lpjml.conf" /* Default LPJ configuration file
                                               if called by lpjml */
@@ -111,6 +115,9 @@ int main(int argc,char **argv)
   standtype[GRASSLAND]=grassland_stand,
   standtype[BIOMASS_TREE]=biomass_tree_stand,
   standtype[BIOMASS_GRASS]=biomass_grass_stand,
+#if defined IMAGE || defined INCLUDEWP
+  standtype[WOODPLANTATION]=woodplantation_stand,
+#endif
   standtype[KILL]=kill_stand;
 
 
@@ -188,7 +195,7 @@ int main(int argc,char **argv)
       fputs("ERROR032: FMS coupler not supported.\n",stderr);
     return NO_FMS_ERR;
   }
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config.sim_id==LPJML_IMAGE)
   {
     rc=open_image(&config);
@@ -238,7 +245,7 @@ int main(int argc,char **argv)
            (double)(tend-tstart)/config.total/(year-config.firstyear+
                                                    config.nspinup));
   }
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config.sim_id==LPJML_IMAGE)
     close_image(&config);
 #endif
@@ -253,7 +260,7 @@ int main(int argc,char **argv)
   if(isroot(config))
   {
     printf("Total wall clock time:\t%d sec (",(int)(tfinal-tbegin));
-    printtime(tfinal-tbegin);
+    printtime((int)(tfinal-tbegin));
     puts(").");
   }
   return EXIT_SUCCESS;

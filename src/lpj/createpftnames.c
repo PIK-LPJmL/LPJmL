@@ -20,13 +20,14 @@
 char **createpftnames(int index,           /**< output index */
                       int npft,            /**< number of natural PFTs */
                       int nbiomass,        /**< number of biomass types */
+                      int nwft,            /**< number of WFTs */
                       int ncft,            /**< number of crop PFTs */
                       const Pftpar *pftpar /**< PFT parameter vector */
                      )                     /** \return string vector */
 {
   int i,j,incr,size;
   char **pftnames;
-  size=outputsize(index,npft,nbiomass,ncft);
+  size=outputsize(index,npft,nbiomass,nwft,ncft);
   pftnames=newvec(char *,size);
   if(pftnames==NULL)
     return NULL;
@@ -65,6 +66,10 @@ char **createpftnames(int index,           /**< output index */
         pftnames[incr]=strdup((i) ? "irrigated biomass grass": "biomass grass");
         pftnames[incr+1]=strdup((i) ? "irrigated biomass tree":  "biomass tree");
         incr+=2;
+#if defined IMAGE || defined INCLUDEWP
+        pftnames[incr]=strdup((i) ? "irrigated woodplantation": "woodplantation");
+        incr+=1;
+#endif
       } 
       break;
     case PFT_HARVEST: case PFT_RHARVEST: case CFT_CONSUMP_WATER_G: case CFT_EVAP: case CFT_EVAP_B:
@@ -92,6 +97,10 @@ char **createpftnames(int index,           /**< output index */
         pftnames[incr]=strdup((i) ? "irrigated biomass grass": "biomass grass");
         pftnames[incr+1]=strdup((i) ? "irrigated biomass tree":  "biomass tree");
         incr+=2;
+#if defined IMAGE || defined INCLUDEWP
+        pftnames[incr]=strdup((i) ? "irrigated woodplantation": "woodplantation");
+        incr+=1;
+#endif
       }
       break;
     case GROWING_PERIOD:case CFT_TEMP:case CFT_PREC:
@@ -121,16 +130,29 @@ char **createpftnames(int index,           /**< output index */
       for(i=0;i<npft-nbiomass;i++)
         pftnames[i+1]=strdup(pftpar[i].name);
       break;
+#ifdef IMAGE
+    case WFT_VEGC:
+      incr=0;
+      for (j=0;j<npft;j++)
+      {
+        if (pftpar[j].type==TREE && pftpar[j].cultivation_type==WP)
+        {
+          pftnames[incr]=strdup(pftpar[j].name);
+          incr++;
+        }
+      }
+      break;
+#endif
   }
   return pftnames;
 } /* of 'createpftnames' */
 
-void freepftnames(char **pftnames,int index,int npft,int nbiomass,int ncft)
+void freepftnames(char **pftnames,int index,int npft,int nbiomass,int nwft,int ncft)
 {
   int i,size;
   if(pftnames!=NULL)
   {
-    size=outputsize(index,npft,nbiomass,ncft);
+    size=outputsize(index,npft,nbiomass,nwft,ncft);
     for(i=0;i<size;i++)
       free(pftnames[i]);
     free(pftnames);

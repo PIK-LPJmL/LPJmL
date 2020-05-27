@@ -44,6 +44,7 @@ struct stand
   Soil soil;                  /**< soil specific variables */
   Real fire_sum;
   Real frac;                  /**< Stand fraction (0..1) */
+  Real frac_change;           /**< Expansion fraction due to landuse change (only used for woodplantations) */
   Real frac_g[NSOILLAYER];    /**< fraction of green water in total available soil water, including free water */
   int growing_time;           /**< for TREES years since harvest*/
   int growing_days;           /**< for GRASS days since harvest*/
@@ -84,9 +85,9 @@ extern void cutpfts(Stand *);
 extern Harvest harvest_grass(Stand *,Real);
 extern Real roughnesslength(const Standlist);
 extern void waterbalance(Stand *,Real [BOTTOMLAYER],Real [BOTTOMLAYER],Real *,Real *,Real,Real,
-                         Real,Real *);
-extern Real infil_perc_irr(Stand *,Real,Real *);
-extern Real infil_perc_rain(Stand *,Real,Real *);
+                         Real,Real *,Bool);
+extern Real infil_perc_irr(Stand *,Real,Real *,Bool);
+extern Real infil_perc_rain(Stand *,Real,Real *,Bool);
 extern Real albedo_stand(Stand *);                            
 extern Landcover initlandcover(int,const Config *);
 extern Bool readlandcover(Landcover,const Cell *,int,const Config *);

@@ -24,6 +24,7 @@
 
 int fscancountrypar(FILE *file,              /**< file pointer */
                     Countrypar **countrypar, /**< Pointer to countrypar array */
+                    Bool rw_manage,          /**< rain water management options On/OFF */
                     int ncft,                /**< number of CFTs or zero */
                     Verbosity verb           /**< verbosity level (NO_ERR,ERR,VERB) */
                    )                         /** \return number of elements in array */
@@ -76,6 +77,9 @@ int fscancountrypar(FILE *file,              /**< file pointer */
       for(i=0;i<ncft;i++)
       {
         fscanreal2(verb,file,&country->laimax_cft[i],"laimax_cft",country->name); /*reads for all 12 cfts laimax value*/
+        /*in case rw_manage: increases laimax by bridge gap factor*/
+        if(rw_manage)
+          country->laimax_cft[i]+=(7-country->laimax_cft[i])*param.yield_gap_bridge;
       }
     }
     else

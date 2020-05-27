@@ -172,6 +172,7 @@ typedef struct
   int count;
   Real YEDOMA;          /**< g/m2 */
   Litter litter;      /**< Litter pool */
+  Real rw_buffer;             /* available rain water amount in buffer (mm) */
 } Soil;
 
 struct Pftpar; /* forward declaration */

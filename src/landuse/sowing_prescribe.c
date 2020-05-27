@@ -32,7 +32,7 @@ Real sowing_prescribe(Cell *cell,          /**< pointer to cell */
   int earliest_sdate;
   Bool wtype=FALSE;
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   istimber=(config->start_imagecoupling!=INT_MAX);
 #else
   istimber=FALSE;

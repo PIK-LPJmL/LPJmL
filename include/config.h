@@ -72,8 +72,13 @@ typedef struct
   Filename burntarea_filename;
   Filename landcover_filename;
   Filename runoff2ocean_filename; /**< map with indices of the ocean cells where the coast cells send their runoff into */
-  Filename grassfix_filename;
 #ifdef IMAGE
+  Filename aquifer_filename;
+  Filename wateruse_wd_filename;
+#endif
+  Filename grassfix_filename;
+  Filename grassharvest_filename;
+#if defined IMAGE && defined COUPLED
   Filename temp_var_filename; /**< file with CRU-derived temperature variation (K) */
   Filename prec_var_filename; /**< file with CRU-derived precipitation variation (%) */
   Filename prodpool_init_filename; /* file with initial product pool sizes */
@@ -86,6 +91,7 @@ typedef struct
   int sim_id;             /**< Simulation type */
   int *npft;              /**< number of PFTs in each PFT class */
   int nbiomass;           /**< number of biomass PFTs */
+  int nwft;               /**< numer of WFTs */
   unsigned int nsoil;     /**< number of soil types */
   Soilpar *soilpar;       /**< Soil parameter array */
   int ncountries;         /**< number of countries */
@@ -146,11 +152,16 @@ typedef struct
   Pnet *irrig_res_back;
   int withlanduse;
   Bool reservoir;
-  int irrig_scenario; /**< irrigation scenario (NO:0, LIM:1, POT:2, ALL:3, IRRIG on RAINFED: 4) */
-  Bool pft_output_scaled; /**< PFT output grid scaled */
-  int with_radiation; /**< input of radiation components (CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN) */
-  Bool prescribe_burntarea;	/**< use input to prescribe burnt area to SPITFIRE? */
-  int prescribe_landcover; /**< use input to prescribe land cover ? */
+#ifdef IMAGE
+  Bool groundwater_irrig; /* Irrigation from groundwater reservoir */
+  Bool aquifer_irrig; /*Aquifer irrigation possible?*/
+#endif
+  int irrig_scenario; /* irrigation scenario (NO:0, LIM:1, POT:2, ALL:3, IRRIG on RAINFED: 4) */
+  Bool rw_manage;     /* rain-water management enabled: reduced soil evaporation + rain-water harvesting */
+  Bool pft_output_scaled; /* PFT output grid scaled */
+  int with_radiation; /* input of radiation components (CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN) */
+  Bool prescribe_burntarea;	/* use input to prescribe burnt area to SPITFIRE? */
+  int prescribe_landcover; /* use input to prescribe land cover ? */
 
 #ifdef IMAGE
   int start_imagecoupling; /**< year in which coupling to IMAGE starts

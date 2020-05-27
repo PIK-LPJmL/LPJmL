@@ -108,7 +108,13 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
       return NULL;
     }
   }
+#if defined IMAGE && defined COUPLED
+  /* TDT libraries for IMAGE are compiled for 64 bit, so length of Socket must be doubled */
+  len = 2*sizeof(Socket);
+  sock=(Socket *)malloc(len);
+#else
   sock=(Socket *)malloc(sizeof(Socket));
+#endif
   if(sock==NULL)
   {
     fputs("ERROR304: Cannot allocate memory for socket.\n",stderr);

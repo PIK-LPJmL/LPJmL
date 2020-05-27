@@ -194,6 +194,8 @@
   MGCONS_IRR "mgcons_irr" "gcons_irr" "monthly green water consumption on irrigated stands " "mm" 1.0
   MBCONS_IRR "mbcons_irr" "bcons_irr" "monthly green water consumption on irrigated stands " "mm" 1.0
   AWATERUSE_HIL "awateruse_hil" "wateruse_hil" "" "l/yr" 1.0
+  WATERUSECONS "waterusecons" "waterusecons" "" "m3/day" 1.0
+  WATERUSEDEM "waterusedem" "waterusedem" "" "m3/day" 1.0
   MFAPAR "mfapar" "FPAR" "fraction of absorbed PAR" "" 1.0
   MALBEDO "malbedo" "albedo" "" "" 1.0
   MPHEN_TMIN "mphen_tmin" "phen_tmin" "" "" 1.0
@@ -224,3 +226,10 @@
   AGB "agb" "AGB" "above ground biomass" "gC/m2" 1.0
   MLAKEVOL "mlakevol" "lakevol" "lake content volume" "dm3" 1.0
   MLAKETEMP "mlaketemp" "laketemp" "lake surface temperature" "deg C" 1.0
+#ifdef IMAGE
+  YDISCHARGE "ydischarge" "discharge" "annual discharge to send to IMAGE" "hm3/yr" 1.0
+  MWD_GW "mwd_gw" "wd_gw" "renewable groundwater withdrawal" "mm/month" 1.0
+  MWD_AQ "mwd_aq" "wd_aq" "aquifer withdrawal" "mm/month" 1.0
+  MWATERUSE_HIL "mwateruse_hil" "wateruse_hil" "water use by households industry and livestock" "l" 1.0
+  WFT_VEGC "wft_VegC" "wft_vegc" "Vegetation carbon for wood plantation trees (WFTs)" "gC/m2" 1.0
+#endif

@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 
 Bool receive_image_productpools(Cell *cell,          /**< LPJ grid */
                                 const Config *config /**< LPJ configuration */
@@ -85,6 +85,10 @@ Bool receive_image_productpools(Cell *cell,          /**< LPJ grid */
     }
   }
   free(image_timber_distribution);
+#ifdef DEBUG_IMAGE
+  printf("free data in receive_image_productpools.\n");
+  fflush(stdout);
+#endif
   return rc;
 } /* of 'receive_image_productpools' */
 

@@ -690,5 +690,31 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
         fvec[count++]=(float)grid[cell].output.mlaketemp;
     writemonth(output,MLAKETEMP,fvec,year,month,config);
   }
+#ifdef IMAGE
+  if(output->files[MWD_GW].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+     if(!grid[cell].skip)
+       fvec[count++]=(float)grid[cell].output.mwd_gw;
+     writemonth(output,MWD_GW,fvec,year,month,config);
+  }
+  if(output->files[MWD_AQ].isopen)
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+     if(!grid[cell].skip)
+       fvec[count++]=(float)grid[cell].output.mwd_aq;
+     writemonth(output,MWD_AQ,fvec,year,month,config);
+  }
+  if (output->files[MWATERUSE_HIL].isopen)
+  {
+    count = 0;
+    for (cell = 0;cell<config->ngridcell;cell++)
+      if (!grid[cell].skip)
+        fvec[count++] = (float)grid[cell].output.mwateruse_hil;
+    writemonth(output, MWATERUSE_HIL, fvec, year, month, config);
+  }
+#endif
   free(fvec);
 } /* of 'fwriteoutput_monthly' */
