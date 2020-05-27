@@ -53,7 +53,6 @@ static Harvest harvest_grass_mowing(Stand *stand)
   Pftgrass *grass;
   Pft *pft;
   int p;
-
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
@@ -160,7 +159,7 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
 
   if (rotation->rotation_mode == RM_GRAZING)
   {
-    bm_grazed = stand->cell->ml.nr_of_lsus_int * DEMAND_COW_INT * rotation->paddocks;
+    bm_grazed = 1e-4*stand->cell->ml.nr_of_lsus_int * DEMAND_COW_INT * rotation->paddocks;
     foreachpft(pft,p,&stand->pftlist)
     {
       grass=pft->data;
