@@ -29,7 +29,7 @@ Real sowing_prescribe(Cell *cell,          /**< pointer to cell */
   const Pftcroppar *croppar;
   int cft,s,s2;
   int earliest_sdate;
-  Bool wtype=FALSE;
+  Bool wtype;
 
 #ifdef IMAGE
   istimber=(config->start_imagecoupling!=INT_MAX);
@@ -54,7 +54,6 @@ Real sowing_prescribe(Cell *cell,          /**< pointer to cell */
 
         if(day==cell->ml.sdate_fixed[cft])
         {
-          wtype = (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE && day>earliest_sdate);
           if(check_lu(cell->standlist,cell->ml.landfrac[0].crop[cft],npft+cft,FALSE))
           {
             if(!alloc_today_rf)
@@ -62,11 +61,12 @@ Real sowing_prescribe(Cell *cell,          /**< pointer to cell */
               allocation_today(setasidestand, config->ntypes);
               alloc_today_rf=TRUE;
             }
+            wtype = (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE && day>earliest_sdate);
             flux_estab+=cultivate(cell,config->pftpar+npft+cft,
                                   cell->ml.cropdates[cft].vern_date20,
                                   cell->ml.landfrac[0].crop[cft],FALSE,day,wtype,
                                   setasidestand,istimber,config->irrig_scenario,
-                                  npft+ncft,cft,year);
+                                  npft,ncft,cft,year);
 #ifndef DOUBLE_HARVEST
             cell->output.sdate[cft]=day;
 #endif
@@ -82,7 +82,6 @@ Real sowing_prescribe(Cell *cell,          /**< pointer to cell */
         /*irrigated crops*/
         if(day==cell->ml.sdate_fixed[cft+ncft])
         {
-          wtype = (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE && day>earliest_sdate);
           if(check_lu(cell->standlist,cell->ml.landfrac[1].crop[cft],npft+cft,TRUE))
           {
             if(!alloc_today_ir)
@@ -90,11 +89,12 @@ Real sowing_prescribe(Cell *cell,          /**< pointer to cell */
               allocation_today(setasidestand, config->ntypes);
               alloc_today_ir=TRUE;
             }
+            wtype = (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE && day>earliest_sdate);
             flux_estab+=cultivate(cell,config->pftpar+npft+cft,
                                   cell->ml.cropdates[cft].vern_date20,
                                   cell->ml.landfrac[1].crop[cft],TRUE,day,wtype,
                                   setasidestand,istimber,config->irrig_scenario,
-                                  npft+ncft,cft,year);
+                                  npft,ncft,cft,year);
 #ifndef DOUBLE_HARVEST
             cell->output.sdate[cft+ncft]=day;
 #endif

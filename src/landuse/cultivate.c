@@ -25,7 +25,8 @@ Real cultivate(Cell *cell,           /**< cell pointer */
                Stand *setasidestand, /**< pointer to setaside stand */
                Bool istimber,
                int irrig_scenario,   /**< irrigation scenario */
-               int ntotpft,          /**< total number of PFTs */
+               int npft,             /**< number of natural PFTs */
+               int ncft,             /**< number of crop PFTs */
                int cft,              /**< cft index for set_irrigsystem */
                int year              /**< AD */
               )                      /** \return establihment flux (gC/m2) */
@@ -45,7 +46,7 @@ Real cultivate(Cell *cell,           /**< cell pointer */
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype);
     data=setasidestand->data;
     data->irrigation= (irrig_scenario==ALL_IRRIGATION) || irrigation;
-    set_irrigsystem(setasidestand,cft,0,FALSE); /* calls set_irrigsystem() for landusetype AGRICULTURE only */
+    set_irrigsystem(setasidestand,cft,ncft,FALSE); /* calls set_irrigsystem() for landusetype AGRICULTURE only */
     return pft->bm_inc*setasidestand->frac;
   }
   else
@@ -56,8 +57,8 @@ Real cultivate(Cell *cell,           /**< cell pointer */
     data=cropstand->data;
     cropstand->frac=landfrac;
     data->irrigation= (irrig_scenario==ALL_IRRIGATION) || irrigation;
-    reclaim_land(setasidestand,cropstand,cell,istimber,ntotpft);
-    set_irrigsystem(cropstand,cft,0,FALSE);
+    reclaim_land(setasidestand,cropstand,cell,istimber,npft+ncft);
+    set_irrigsystem(cropstand,cft,ncft,FALSE);
     pft=addpft(cropstand,pftpar,year,day);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype);
     setasidestand->frac-=landfrac;

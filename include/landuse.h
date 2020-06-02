@@ -104,7 +104,7 @@ extern Bool freadlandfrac(FILE *,Landfrac [2],int,Bool);
 extern Real landfrac_sum(const Landfrac [2],int,Bool);
 extern Real crop_sum_frac(Landfrac *,int,Real,Bool);
 extern Real cultivate(Cell *,const Pftpar *,int,Real,Bool,int,Bool,Stand *,
-                      Bool,int,int,int,int);
+                      Bool,int,int,int,int,int);
 extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int);
 extern Bool getlanduse(Landuse,Cell *,int,int,const Config *);
 extern void landusechange(Cell *,int,int,Bool,Bool,int,const Config *);
