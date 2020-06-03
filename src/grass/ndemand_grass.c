@@ -47,28 +47,5 @@ Real ndemand_grass(const Pft *pft,    /**< pointer to PFT */
   ndemand_tot=*ndemand_leaf+grass->ind.root.nitrogen*pft->nind;
 
   /* unclear to me: setaside NPP seems to go to natural grass pft_npp -- should we do the same for Ndemand? */
-  if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==SETASIDE_RF || pft->stand->type->landusetype==SETASIDE_IR)
-  {
-    if(ndemand_tot>vegn_sum_grass(pft)){
-      pft->stand->cell->output.pft_ndemand[pft->par->id]+=ndemand_tot-vegn_sum_grass(pft);
-      pft->stand->cell->balance.n_demand+=(ndemand_tot-vegn_sum_grass(pft))*pft->fpc*pft->stand->frac;
-    }
-  }
-  else if(pft->stand->type->landusetype==BIOMASS_GRASS)
-  {
-    if(ndemand_tot>vegn_sum_grass(pft)){
-      pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=ndemand_tot-vegn_sum_grass(pft); /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
-      pft->stand->cell->balance.n_demand+=(ndemand_tot-vegn_sum_grass(pft))*pft->fpc*pft->stand->frac;
-    }
-  }
-  else
-  {
-    if(ndemand_tot>vegn_sum_grass(pft))
-    {
-      pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=ndemand_tot-vegn_sum_grass(pft);/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
-      pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=ndemand_tot-vegn_sum_grass(pft);/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
-      pft->stand->cell->balance.n_demand+=(ndemand_tot-vegn_sum_grass(pft))*(pft->stand->cell->ml.landfrac[data->irrigation].grass[0]+pft->stand->cell->ml.landfrac[data->irrigation].grass[1]);
-    }
-  }
   return ndemand_tot;
 } /* of 'ndemand_grass' */

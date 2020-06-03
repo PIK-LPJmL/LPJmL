@@ -86,7 +86,7 @@ extern Harvest harvest_stand(Output *,Stand *,Real);
 extern void turnover_monthly_grass(Litter *,Pft *);
 extern void turnover_daily_grass(Litter *,Pft *,Real,Bool);
 extern void albedo_grass(Pft *,Real,Real);
-extern Real nuptake_grass(Pft *,Real *,Real *,int,int,int);
+extern Real nuptake_grass(Pft *,Real *,Real *,int,int,int,Bool);
 extern Real ndemand_grass(const Pft *,Real *,Real,Real,Real,int,int,int);
 extern Real vmaxlimit_grass(const Pft *,Real,Real);
 
