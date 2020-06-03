@@ -145,6 +145,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       else
         stand->soil.perc_energy[TOPLAYER]=0;
 
+      prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
+          +melt*1e-3*(T_zero-stand->soil.temp[TOPLAYER]))*c_water;
+      stand->soil.perc_energy[TOPLAYER]=prec_energy;
+
 #ifdef MICRO_HEATING
       /*THIS IS DEDICATED TO MICROBIOLOGICAL HEATING*/
     foreachsoillayer(l)
