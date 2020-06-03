@@ -1764,13 +1764,17 @@ void lpj_update_
                 printcell(grid+cell,1,ncft,input.landuse!=NULL);
               }
 #endif
-              if(config.nspinup>veg_equil_year &&
-                 year==config.firstyear-config.nspinup+veg_equil_year && !config.from_restart)
-                equilveg(grid+cell);
+              if(config->equilsoil)
+              {
 
-              if(config.nspinup>soil_equil_year &&
-                 year==config.firstyear-config.nspinup+soil_equil_year && !config.from_restart)
-                equilsom(grid+cell,npft+ncft,config.pftpar);
+                if(config.nspinup>veg_equil_year &&
+                   year==config.firstyear-config.nspinup+veg_equil_year && !config.from_restart)
+                  equilveg(grid+cell);
+
+                if(config.nspinup>soil_equil_year &&
+                   year==config.firstyear-config.nspinup+soil_equil_year && !config.from_restart)
+                  equilsom(grid+cell,npft+ncft,config.pftpar,TRUE);
+              }
 
             }
 

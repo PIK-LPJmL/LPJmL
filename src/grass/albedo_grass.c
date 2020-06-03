@@ -21,7 +21,7 @@
 void albedo_grass(Pft *pft,         /**< pointer to PFT variables */
                   Real snowheight,  /**< snowheight (m) */
                   Real snowfraction /**< fractional coverage of snow at the ground */
-                 )           
+                 )
 {
 
   Real albedo_pft, albedo_green_leaves, albedo_brown_litter, snow_green_canopy;
@@ -30,27 +30,28 @@ void albedo_grass(Pft *pft,         /**< pointer to PFT variables */
   /* calculate fraction of snow in canopy */
   frs1 = snowfraction*(pft->phen * getpftpar(pft,snowcanopyfrac) + (1 - pft->phen));
   frs2 = 1;
-  if (snowheight<=0)
+  if (snowheight<=epsilon)
     frs2 = 0;
   frs = frs1 + (1-frs1)*frs2;
-  if (snowheight>0)
+  if (snowheight>epsilon)
     frs = 1;
 
   /* albedo of PFT with green foliage */
   albedo_green_leaves = pft->fpc * pft->phen * getpftpar(pft, albedo_leaf);
-  
+
   /* albedo of PFT without green foliage (litter background albedo) */
   albedo_brown_litter = pft->fpc * (1 - pft->phen) * getpftpar(pft, albedo_litter);
 
-  /* albedo of PFT (green + brown) */  
+  /* albedo of PFT (green + brown) */
   albedo_pft = albedo_green_leaves + albedo_brown_litter;
 
   /* total albedo of PFT including snow-covered parts */
   pft->albedo = pft->fpc * frs * c_albsnow + (1 - frs) * albedo_pft;
-  
+  pft->snowcover=frs;
+
   /* fraction of snow in green leave canopy */
   snow_green_canopy = pft->phen * frs;
-    
+
   /* FAPAR of green canopy excluding snow */
   pft->fapar = max(epsilon,pft->fpc * (pft->phen - snow_green_canopy) * (1 - getpftpar(pft, albedo_leaf)));
 

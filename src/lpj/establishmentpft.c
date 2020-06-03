@@ -88,7 +88,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
     }
     if ((stand->prescribe_landcover == LANDCOVERFPC && fpc_obs_cor > 0 && pft->fpc < fpc_obs_cor &&  pftpar[p].cultivation_type==NONE && stand->type->landusetype==NATURAL) ||
         (stand->prescribe_landcover == LANDCOVEREST && pft->fpc_obs > 0 &&  pftpar[p].cultivation_type==NONE && stand->type->landusetype==NATURAL) ||
-        (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pftpar[p].cultivation_type==NONE && istree(pft) &&
+        (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pft->par->cultivation_type==NONE && istree(pft) &&
 #ifdef DAILY_ESTABLISHMENT
         !pft->established &&
 #endif
@@ -103,10 +103,19 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
 #endif
     }
   }
+  fpc_sum(fpc_type,ntypes,&stand->pftlist);
+  foreachpft(pft,p,&stand->pftlist)
+    if(pft->par->type==TREE)
+      adjust_tree(&stand->soil.litter,pft,fpc_type[pft->par->type], FPC_TREE_MAX);
+  fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
+  if (fpc_total>1.0)
+    foreachpft(pft,p,&stand->pftlist)
+      if(pft->par->type==GRASS)
+        reduce(&stand->soil.litter,pft,fpc_type[GRASS]/(1+fpc_type[GRASS]-fpc_total));
   fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
   {
-     if (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pftpar[p].cultivation_type==NONE && !istree(pft) &&
+     if (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pft->par->cultivation_type==NONE && !istree(pft) &&
 #ifdef DAILY_ESTABLISHMENT
         !pft->established &&
 #endif

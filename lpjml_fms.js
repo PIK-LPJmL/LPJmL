@@ -46,6 +46,7 @@
 "prescribe_landcover" : NO_LANDCOVER,
 "new_phenology": true,
 "river_routing" : true,
+"equilsoil" :false,
 "permafrost" : true,
 "landuse" : NO_LANDUSE,
 "irrigation" : LIM_IRRIGATION, /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */

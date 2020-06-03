@@ -71,7 +71,7 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.962,    /* beta_root */
+    "beta_root" : 0.932,    /* beta_root original 0.962*/
     "minwscal" : 0.0,       /* minwscal 3*/
     "gmin"  : 1.6,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
@@ -171,7 +171,7 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.961,    /* beta_root */
+    "beta_root" : 0.981,    /* beta_root  original 0.962*/
     "minwscal" : 0.35,      /* minwscal 3*/
     "gmin"  : 1.8,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
@@ -573,7 +573,7 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.943,    /* beta_root */
+    "beta_root" : 0.96,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
@@ -673,7 +673,7 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.943,    /* beta_root */
+    "beta_root" : 0.96,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
@@ -775,7 +775,7 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.943,    /* beta_root */
+    "beta_root" : 0.96,     /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.3,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
@@ -942,7 +942,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
@@ -1024,7 +1024,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -1106,7 +1106,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
@@ -1390,7 +1390,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
@@ -2165,7 +2165,7 @@
     "albedo_litter" : 0.06, /* albedo of litter */
     "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
     "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
-    "tmin" : 
+    "tmin" :
     {
       "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
       "base" : 4.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */

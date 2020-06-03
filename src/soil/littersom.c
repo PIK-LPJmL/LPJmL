@@ -170,6 +170,7 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
    */
 
   if(gtemp_soil[0]>0)
+  {
     for(p=0;p<soil->litter.n;p++)
     {
       response_agsub_leaves=response[0];
@@ -313,10 +314,15 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
         }
       }
     }   /*end soil->litter.n*/
+  /*sum for equilsom-routine*/
+  soil->decomp_litter_mean.carbon+=decom_litter.carbon;
+  soil->decomp_litter_mean.nitrogen+=decom_litter.nitrogen;
+  } /* end of gtemp_soil[0]>0 */
 
   /* NO3 and N2O from nitrification */
   forrootsoillayer(l)
   {
+	//wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
     fac_wfps = f_wfps(soil,l);
     fac_temp = f_temp(soil->temp[l]);
     //printf("NH4=%g\n",soil->NH4[l]);
@@ -340,8 +346,8 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
     /* F_N2O is given back for output */
   }
   /*sum for equilsom-routine*/
-  soil->decomp_litter_mean.carbon+=decom_litter.carbon;
-  soil->decomp_litter_mean.nitrogen+=decom_litter.nitrogen;
+  //soil->decomp_litter_mean.carbon+=decom_litter.carbon;
+  //soil->decomp_litter_mean.nitrogen+=decom_litter.nitrogen;
 #ifdef MICRO_HEATING
   soil->litter.decomC=decom_litter.carbon*param.atmfrac; /*only for mircobiological heating*/
 #endif

@@ -29,8 +29,9 @@
 
 #define SNOWLAYER NSOILLAYER
 
-#define veg_equil_year 990
+#define veg_equil_year 3000
 #define soil_equil_year veg_equil_year+1320
+#define cshift_year 120
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
 #define c_water 4.2e6 /* J/m3/K */
 #define c_ice   2.1e6 /* J/m3/K */
@@ -250,7 +251,7 @@ extern void newsoil(Soil *);
 extern int seeksoilcode(FILE *,int,size_t,Type);
 extern Real snow(Soil *,Real *,Real *,Real, Real *,Real *);
 extern Real snow_old(Real *,Real *,Real *,Real);
-extern void soiltemp(Soil*, Real);
+extern void soiltemp(Soil*, Real,Bool);
 #ifdef COUPLING_WITH_FMS
 extern void laketemp(Cell*, const struct Dailyclimate *);
 #endif

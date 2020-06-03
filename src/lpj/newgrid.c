@@ -338,8 +338,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   if(config->restart_filename==NULL && !config->ischeckpoint)
   {
     file_restart=NULL;
-    if(config->permafrost)
-      config->initsoiltemp=TRUE;
+    config->initsoiltemp=TRUE;
   }
   else
   {

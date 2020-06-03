@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 #define fscanparamreal(file,var,name) \
-  if(fscanreal(file,var,name,FALSE,verbosity)) return TRUE; 
+  if(fscanreal(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparamint(file,var,name) \
   if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparambool(file,var,name) \
@@ -85,6 +85,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamint(&f,&param.till_startyear,"till_startyear");
   if(config->withlanduse!=NO_LANDUSE)
   {
+    fscanparamreal(&f,&param.lsuha,"lsuha");
     fscanparamreal(&f,&param.aprec_lim,"aprec_lim");
     fscanparamreal(&f,&param.irrig_threshold_c3_dry,"irrig_threshold_c3_dry");
     fscanparamreal(&f,&param.irrig_threshold_c3_humid,
@@ -114,6 +115,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       fscanparamreal(&f,&param.soil_infil,"soil_infil");
       fscanparamreal(&f,&param.yield_gap_bridge,"yield_gap_bridge");
     }
+    fscanparamreal(&f,&param.allocation_threshold,"allocation_threshold");
   }
   param.k_litter10/=NDAYYEAR;
   param.k_soil10.fast/=NDAYYEAR;

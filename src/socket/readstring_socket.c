@@ -19,7 +19,7 @@
 
 char *readstring_socket(Socket *socket)
 {
-  unsigned int n;
+  int n;
   char *s;
   if(readint_socket(socket,&n,1))
     return NULL;

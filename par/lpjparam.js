@@ -12,7 +12,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-"param" : 
+"param" :
 {
   "k_litter10" : 0.3,        /* k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
@@ -28,7 +28,7 @@
   "bc4" : 0.035,             /* bc4 leaf respiration as fraction of Vmax for C4 plants */
   "r_growth" : 0.25,         /* r_growth */
   "GM" : 2.41,               /* GM empirical parameter in demand function */
-  "ALPHAM" : 1.485,          /* ALPHAM Priestley-Taylor coefficient*/ 
+  "ALPHAM" : 1.485,          /* ALPHAM Priestley-Taylor coefficient*/
   "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */
   "kc25" : 30.,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.6,           /* atmfrac */
@@ -48,6 +48,7 @@
   "T_m" : 15.0,              /* parameter in N uptake temperature function */
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
+  "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */
   "k_mort" : 0.3,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
   "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
@@ -82,5 +83,6 @@
   "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */
   "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
   "soil_infil" : 2.0,                 /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
-  "yield_gap_bridge" : 0.0            /* factor by which laimax value is closed (7 - country-value)*factor */
+  "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
+  "allocation_threshold" : 35.0      /* allocation threshold for daily grassland allocation */
 },

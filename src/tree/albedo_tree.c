@@ -50,7 +50,8 @@ void albedo_tree(Pft *pft,         /**< pointer to PFT variables */
   frs = frs1 + (1-frs1)*frs2;
   if (snowheight>htop)
     frs = 1;
-
+  if(frs<0)
+    frs=0;
   /* albedo of PFT with green foliage */
   albedo_green_leaves = pft->fpc *  pft->phen * getpftpar(pft, albedo_leaf);
   
@@ -65,7 +66,8 @@ void albedo_tree(Pft *pft,         /**< pointer to PFT variables */
   
   /* total albedo of PFT including snow-covered parts */
   pft->albedo = pft->fpc * frs * c_albsnow + (1 - frs) * albedo_pft;
-  
+  pft->snowcover=frs;
+
   /* fraction of snow in green leave canopy */
   snow_green_canopy = pft->phen * frs; 
   

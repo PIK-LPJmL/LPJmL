@@ -33,7 +33,9 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real f_NCplant=0;
   Real up_temp_f=0;
   Real totn,nsum;
+  Real wscaler;
   Real n_uptake=0;
+  Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
   Real fixed_n=0;
   Real rootdist_n[LASTLAYER];
   int l;
@@ -55,9 +57,9 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   nsum=0;
   forrootsoillayer(l)
   {
-    totn=(soil->NO3[l]+soil->NH4[l]);
-    if(totn > 0 && soil->temp[l]>0)
-    //if(totn > 0)
+    wscaler=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->whcs[l])) : 0;
+    totn=(soil->NO3[l]+soil->NH4[l])*wscaler;
+    if(totn > 0)
     {
       up_temp_f = nuptake_temp_fcn(soil->temp[l]);
       NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin +totn/(totn+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))* up_temp_f * f_NCplant * (crop->ind.root.carbon*pft->nind)*rootdist_n[l]/1000; //Smith et al. Eq. C14-C15, Navail=totn
@@ -73,6 +75,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   }
   if(nsum==0)
     n_uptake=0;
+  else
+  {
   if (n_uptake>*n_plant_demand-pft->bm_inc.nitrogen)
     n_uptake=*n_plant_demand-pft->bm_inc.nitrogen;
   if(n_uptake<=0)
@@ -81,32 +85,34 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   {
     pft->bm_inc.nitrogen+=n_uptake;
     forrootsoillayer(l)
-      if(soil->temp[l]>0 && nsum > 0.0)
+    {
+      wscaler=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->whcs[l])) : 0;
+      soil->NO3[l]-=(soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake)/nsum;
+      soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
+      if(soil->NO3[l]<0)
       {
-        soil->NO3[l]-=(soil->NO3[l]*rootdist_n[l]*n_uptake)/nsum;
-        soil->NH4[l]-=soil->NH4[l]*rootdist_n[l]*n_uptake/nsum;
-        if(soil->NO3[l]<0)
-        {
-           pft->bm_inc.nitrogen+=soil->NO3[l];
-           soil->NO3[l]=0;
-        }
-        if(soil->NH4[l]<0)
-        {
-           pft->bm_inc.nitrogen+=soil->NH4[l];
-           soil->NH4[l]=0;
-        }
+        pft->bm_inc.nitrogen+=soil->NO3[l];
+        n_upfail+=soil->NO3[l];
+        soil->NO3[l]=0;
+      }
+      if(soil->NH4[l]<0)
+      {
+        pft->bm_inc.nitrogen+=soil->NH4[l];
+        n_upfail+=soil->NH4[l];
+        soil->NH4[l]=0;
+      }
 
 #ifdef SAFE
-        if (soil->NO3[l]<-epsilon)
-          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",
-               pft->stand->cell->coord.lat,pft->stand->cell->coord.lon,soil->NO3[l],l,n_uptake,nsum);
-        if (soil->NH4[l]<-epsilon)
-          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NH4=%g<0 in layer %d, nuptake=%g, nsum=%g",
-               pft->stand->cell->coord.lat,pft->stand->cell->coord.lon,soil->NH4[l],l,n_uptake,nsum);
+      if (soil->NO3[l]<-epsilon)
+        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",
+             pft->stand->cell->coord.lat,pft->stand->cell->coord.lon,soil->NO3[l],l,n_uptake,nsum);
+      if (soil->NH4[l]<-epsilon)
+        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NH4=%g<0 in layer %d, nuptake=%g, nsum=%g",
+             pft->stand->cell->coord.lat,pft->stand->cell->coord.lon,soil->NH4[l],l,n_uptake,nsum);
 
 #endif
-
     }
+  }
   }
   crop->ndemandsum += max(0, *n_plant_demand - pft->bm_inc.nitrogen);
   if (*n_plant_demand > pft->bm_inc.nitrogen)
@@ -130,6 +136,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   }
   else
     pft->vscal = 1;
+  /* correcting for failed uptake from depleted soils in outputs */
+  n_uptake+=n_upfail;
   crop->nuptakesum += n_uptake;
 #ifdef DEBUG_N
   printf("ndemand=%g,ndemand_opt=%g\n",*ndemand_leaf,ndemand_leaf_opt);

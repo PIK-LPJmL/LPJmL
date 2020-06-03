@@ -132,16 +132,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 
   if (verbose>=VERB) puts("// I. type section");
   fscanbool2(file,&israndom,"random_prec");
-  if(israndom)
-  {
-    config->seed=RANDOM_SEED;
-    if(fscanint(file,&config->seed,"random_seed",TRUE,verbose))
-      return TRUE;
-    if(config->seed==RANDOM_SEED)
-      config->seed=time(NULL);
-  }
-  else
-    config->seed=0;
+  config->seed=RANDOM_SEED;
+  if(fscanint(file,&config->seed,"random_seed",TRUE,verbose))
+    return TRUE;
+  if(config->seed==RANDOM_SEED)
+    config->seed=time(NULL);
+  srand48(config->seed+config->rank*363633);
   config->with_nitrogen=LIM_NITROGEN;
   if(fscanint(file,&config->with_nitrogen,"with_nitrogen",TRUE,verbose))
     return TRUE;
@@ -178,12 +174,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->prescribe_burntarea=FALSE;
   if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",TRUE,verbose))
     return TRUE;
-  if(config->prescribe_burntarea && config->fire!=SPITFIRE && config->fire!=SPITFIRE_TMAX)
-  {
-    if(verbose)
-      fputs("WARNING029: Prescribed burnt area can only by set for SPITFIRE, will be disabled.\n",stderr);
-    config->prescribe_burntarea=FALSE;
-  }
   config->prescribe_landcover=NO_LANDCOVER;
   if(fscanint(file,&config->prescribe_landcover,"prescribe_landcover",TRUE,verbose))
     return TRUE;
@@ -196,6 +186,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   fscanbool2(file,&config->new_phenology,"new_phenology");
   fscanbool2(file,&config->river_routing,"river_routing");
+  fscanbool2(file,&config->equilsoil,"equilsoil");
   config->reservoir=FALSE;
   fscanbool2(file,&config->permafrost,"permafrost");
   config->sdate_option=NO_FIXED_SDATE;
@@ -227,7 +218,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->withlanduse!=NO_LANDUSE)
     {
-      if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ONLY_CROPS)
+      if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS)
         fscanint2(file,&config->landuse_year_const,"landuse_year_const");
       fscanint2(file,&config->sdate_option,"sowing_date_option");
       if(config->sdate_option<0 || config->sdate_option>PRESCRIBED_SDATE)
@@ -465,7 +456,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       config->grassfix_filename.name = NULL;
     if(grassharvest)
     {
-      scanclimatefilename(&input,&config->grassharvest_filename,config->inputdir,FALSE,"Grassland harvest options");
+      scanclimatefilename(&input,&config->grassharvest_filename,config->inputdir,FALSE,"grass_harvest_options");
     }
     else
       config->grassharvest_filename.name = NULL;

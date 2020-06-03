@@ -29,6 +29,7 @@ Real bisect(Real (*fcn)(Real,void *), /**< function */
 {
   int i;
   Real ylow,ymid,xmid;
+  Real ymin=1e9,xmin;
   ylow=(*fcn)(xlow,data); 
   for(i=0;i<maxit;i++)
   {
@@ -39,6 +40,11 @@ Real bisect(Real (*fcn)(Real,void *), /**< function */
       return xmid;
     }
     ymid=(*fcn)(xmid,data);
+    if(fabs(ymid)<ymin)
+    {
+      ymin=fabs(ymid);
+      xmin=xmid;
+    }
     if(fabs(ymid)<yacc)
     {
       *it=i;
@@ -53,5 +59,5 @@ Real bisect(Real (*fcn)(Real,void *), /**< function */
     } 
   } /* of for */
   *it=i;
-  return xmid;
+  return xmin;
 } /* of 'bisect' */

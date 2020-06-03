@@ -35,6 +35,7 @@ void denitrification(Stand *stand  /**< pointer to stand */
   
   forrootsoillayer(l)
   {
+    //wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
     Corg = soil->pool[l].fast.carbon+soil->pool[l].slow.carbon;
     if(Corg<0)
       Corg=0;
