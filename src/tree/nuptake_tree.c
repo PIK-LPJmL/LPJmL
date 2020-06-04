@@ -23,7 +23,8 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
                   Real *ndemand_leaf,   /**< N demand of leafs */
                   int npft,             /**< number of natural PFTs */
                   int nbiomass,         /**< number of biomass PFTs */
-                  int ncft              /**< number of crop PFTs */
+                  int ncft,             /**< number of crop PFTs */
+                  Bool permafrost
                  )                      /** \return nitrogen uptake (gN/m2/day) */
 {
 
@@ -42,7 +43,11 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   Irrigation *data;
   Real rootdist_n[LASTLAYER];
   soil=&pft->stand->soil;
-  getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
+  if(permafrost)
+    getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
+  else
+    forrootsoillayer(l)
+      rootdist_n[l]=pft->par->rootdist[l];
   tree=pft->data;
   treepar=pft->par->data;
   NCplant = (tree->ind.leaf.nitrogen+ tree->ind.root.nitrogen) / (tree->ind.leaf.carbon+ tree->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
@@ -122,9 +127,15 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   {
     data=pft->stand->data;
     pft->stand->cell->output.pft_nuptake[(npft-nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+    pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=max(0,*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind)); /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
   }
+
   else
+  {
     pft->stand->cell->output.pft_nuptake[pft->par->id]+=n_uptake;
+    pft->stand->cell->output.pft_ndemand[pft->par->id]+=max(0,*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind));
+  }
   pft->stand->cell->balance.n_uptake+=n_uptake*pft->stand->frac;
+  pft->stand->cell->balance.n_demand+=max(0,(*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind)))*pft->stand->frac;
   return n_uptake;
 } /* of 'nuptake_tree' */

@@ -138,7 +138,7 @@ extern Stocks coppice_tree(Pft *);
 extern void albedo_tree(Pft *,Real,Real);
 extern void turnover_monthly_tree(Litter *,Pft *);
 extern void turnover_daily_tree(Litter *,Pft *,Real,Bool);
-extern Real nuptake_tree(Pft *,Real *,Real *,int,int,int);
+extern Real nuptake_tree(Pft *,Real *,Real *,int,int,int,Bool);
 extern Real ndemand_tree(const Pft *,Real *,Real,Real,Real,int,int,int);
 extern Real vmaxlimit_tree(const Pft *,Real,Real);
 extern void nitrogen_allocation_tree(Real *,Real *,Real *,Stocks,Stocks,Stocks,Real,Real,Real);

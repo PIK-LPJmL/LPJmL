@@ -53,16 +53,5 @@ Real ndemand_tree(const Pft *pft,     /**< pointer to PFT */
   printf("\n");
   printf("ndemand_to = %g vegn %g vegc %g ndemand_leaf %g nc_ratio %g %g \n",ndemand_tot,vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind,vegc_sum_tree(pft),*ndemand_leaf,nc_ratio,*ndemand_leaf/(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf));
 #endif
-  pft->stand->cell->balance.n_demand+=max(0,(ndemand_tot-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind))*pft->fpc*pft->stand->frac);
-  if(ndemand_tot>(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind))
-  {
-    if(pft->stand->type->landusetype==BIOMASS_TREE)
-    {
-      data=pft->stand->data;
-      pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=ndemand_tot-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind)-pft->bm_inc.nitrogen; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
-    }
-    else
-      pft->stand->cell->output.pft_ndemand[pft->par->id]+=max(0,ndemand_tot-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind));
-  }
   return ndemand_tot;
 } /* of 'ndemand_tree' */

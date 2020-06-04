@@ -45,9 +45,6 @@ Real ndemand_crop(const Pft *pft,     /**< pointer to PFT */
   else if(nc_ratio<pft->par->ncleaf.low)
     nc_ratio=pft->par->ncleaf.low;
   ndemand_tot=*ndemand_leaf+nc_ratio*(crop->ind.root.carbon/croppar->ratio.root+crop->ind.pool.carbon/croppar->ratio.pool+crop->ind.so.carbon/croppar->ratio.so);
-  if(ndemand_tot>pft->bm_inc.nitrogen)
-    pft->stand->cell->output.pft_ndemand[(pft->par->id-nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=ndemand_tot-pft->bm_inc.nitrogen;
   /* as long as bm_inc is equal to total biomass, this is fine */
-  pft->stand->cell->balance.n_demand+=(ndemand_tot-pft->bm_inc.nitrogen)*pft->stand->frac;
   return ndemand_tot;
 } /* of 'ndemand_crop' */

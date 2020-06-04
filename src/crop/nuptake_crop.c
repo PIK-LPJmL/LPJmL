@@ -21,7 +21,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
                   Real *ndemand_leaf,   /**< N demand of leafs */
                   int UNUSED(npft),     /**< number of natural PFTs */
                   int nbiomass,         /**< number of biomass PFTs */
-                  int ncft              /**< number of crop PFTs */
+                  int ncft,              /**< number of crop PFTs */
+                  Bool permafrost
                  )                      /** \return nitrogen uptake (gN/m2/day) */
 {
   Soil *soil;
@@ -40,7 +41,12 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real rootdist_n[LASTLAYER];
   int l;
   soil=&pft->stand->soil;
+  if(permafrost)
   getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
+  else
+    forrootsoillayer(l)
+      rootdist_n[l]=pft->par->rootdist[l];
+
   crop=pft->data;
   croppar=pft->par->data;
   data=pft->stand->data;
@@ -146,7 +152,9 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
 #endif
 
    pft->stand->cell->output.pft_nuptake[(pft->par->id-nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=n_uptake;
+   pft->stand->cell->output.pft_ndemand[(pft->par->id-nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=max(0,*n_plant_demand-pft->bm_inc.nitrogen);
    pft->stand->cell->balance.n_uptake+=n_uptake*pft->stand->frac;
+   pft->stand->cell->balance.n_demand+=max(0,(*n_plant_demand-pft->bm_inc.nitrogen))*pft->stand->frac;
    if(pft->par->id==pft->stand->cell->output.daily.cft && data->irrigation==pft->stand->cell->output.daily.irrigation)
    {
      pft->stand->cell->output.daily.nuptake=n_uptake;
