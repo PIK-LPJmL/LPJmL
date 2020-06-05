@@ -313,6 +313,6 @@
   { "id" : ANPP, "name" : "anpp" , "var" :"ANPP" , "descr" : "annual NPP" , "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : ANPP_AGR, "name" : "anpp_agr" , "var" : "ANPP_agr" , "descr" : "annual NPP for agricultural stands", "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : ARH, "name" : "arh" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration" , "unit" : "gC/m2/year", "scale" : 1.0, "offset" : 0.0},
-  { "id" : ARH_AGR, "name" : "arh_agr" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration for agricultural stands", "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0}
+  { "id" : ARH_AGR, "name" : "arh_agr" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration for agricultural stands", "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : MEAN_VEGC_MANGRASS, "name": "mean_vegc_mangrass", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0}
 ],
