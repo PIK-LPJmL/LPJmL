@@ -39,6 +39,10 @@ void getrootdist(Real rootdist_n[],const Real rootdist[],Real mean_maxthaw)
         l++;
         break;
       }
+      else 
+      {
+        thaw_depth=soildepth[l];
+      }
     }
     for(i=l;i<BOTTOMLAYER;i++)
       rootdist_n[i]=0;
