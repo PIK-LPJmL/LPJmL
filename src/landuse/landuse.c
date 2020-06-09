@@ -1171,22 +1171,24 @@ static Real reducelanduse(Cell *cell,Real sum,int ncft)
 Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   Cell grid[],         /**< LPJ cell array */
   int year,            /**< year (AD) */
+  int actual_year,     /**< year (AD) but not the static in case of CONST_LANDUSE */
   int ncft,            /**< number of crop PFTs */
   const Config *config /**< LPJ configuration */
 )                     /** \return TRUE on error */
 {
   short *vec;
-  int i,j,p,count,cell,yearl;
+  int i,j,p,count,cell;
   Real sum,*data,*fert_nr,*manu_nr,*res_on_field;
   int *dates;
   int *phus;
   Bool *tilltypes;
-  int yearsdate=year;     /*sdate year*/
-  int yearphu=year;       /*crop phu year*/
+  int yearsdate=actual_year;     /*sdate year*/
+  int yearphu=actual_year;       /*crop phu year*/
   int yearf=year;
   int yearm=year;
   int yeart=year;
   int yearr=year;
+  int yearl=year;
 
   /* LPJmL5 original approach: PRESCRIBED_SDATE (Single year sdate input file) */
   /* so far, read prescribed sdates only once at the beginning of each simulation */
@@ -1402,7 +1404,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
   } /* end crop_phu*/
 
-  yearl=year-landuse->landuse.firstyear;
+  yearl-=landuse->landuse.firstyear;
   if(yearl>=landuse->landuse.nyear)
     yearl=landuse->landuse.nyear-1;
   else if(yearl<0)
