@@ -136,7 +136,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                        month,dayofmonth);
 #ifdef SAFE
           if(degCtoK(daily.temp)<0)
-            fail(INVALID_CLIMATE_ERR,FALSE,"Temperature=%g K less than zero for cell %d at day %d",daily.temp,cell+config->startgrid,day);
+            fail(INVALID_CLIMATE_ERR,FALSE,"Temperature=%g K less than zero for cell %d at day %d",degCtoK(daily.temp),cell+config->startgrid,day);
           if(config->with_radiation)
           {
             if(daily.swdown<0)
