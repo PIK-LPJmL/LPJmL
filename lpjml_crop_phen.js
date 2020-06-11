@@ -45,17 +45,17 @@
 #define NIT_LIM 0
 #define NIT_UNL 1
 
-#define GS_SA0 0
-#define GS_SA1 1
-#define GS_SA2 2
+#define GS_SA0 0      /* reference sdate & phus (unchanged management) */
+#define GS_SA1 1      /* delayed adaptation */
+#define GS_SA2 2      /* complete adaptation */
 
-#define CO2_DYNA 0
-#define CO2_STAT 1
+#define CO2_DYNA 0    /* transient CO2 */
+#define CO2_STAT 1    /* static CO2 fixed at 2005 level */
 
 
 /* ALL GCMs */
-#define DIRR IRR_UNL
-#define DNIT NIT_UNL
+#define DIRR IRR_UNL   /* assuming unlimited water available for irrigation */
+#define DNIT NIT_LIM   /* limited nitrogen to represent actual management*/
 
 /* HadGEM2-ES */
 #ifdef RUN_ID_01
@@ -281,16 +281,10 @@
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
 #if (DRUN==PIXELRUN)
-    "river_routing" : false, //false set only for testing pixel runs
+    "river_routing" : false, /* false set only for testing pixel runs */
 #else
-    "river_routing" : true, // river_routing true for both IRR_LIM and IRR_UNL
+    "river_routing" : true,  /* river_routing true for both IRR_LIM and IRR_UNL */
 #endif
-
-/* #if (DIRR==IRR_LIM)
-  "river_routing" : true, //false set only for testing pixel runs
-#elif (DIRR==IRR_UNL)
-  "river_routing" : true,
-#endif */
 
   "permafrost" : true,
 
@@ -373,12 +367,12 @@
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
 
-#if(DRUN==PIXELRUN)
+#if(DRUN==PIXELRUN)      /* defining directory for pixel run outputs */
     #define output_run  pixel
     #define restart_run pixel
 #endif
 
-#define workdir /p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/LPJmL/outputs
+#define workdir /p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/LPJmL/outputs /* global runs output main directory */
 #define output workdir/output_run
 #define restart workdir/restart_run
 
