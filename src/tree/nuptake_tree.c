@@ -24,7 +24,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
                   int npft,             /**< number of natural PFTs */
                   int nbiomass,         /**< number of biomass PFTs */
                   int ncft,             /**< number of crop PFTs */
-                  Bool permafrost
+                  Bool permafrost       /**< permafrost enabled? (TRUE/FALSE) */
                  )                      /** \return nitrogen uptake (gN/m2/day) */
 {
 

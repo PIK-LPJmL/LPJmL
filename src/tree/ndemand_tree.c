@@ -16,28 +16,24 @@
 
 #include "lpj.h"
 #include "tree.h"
-#include "agriculture.h"
 
 Real ndemand_tree(const Pft *pft,     /**< pointer to PFT */
                   Real *ndemand_leaf, /**< N demand of leaf (gN/m2) */
                   Real vmax,          /**< vmax (gC/m2/day) */
                   Real daylength,     /**< day length (h) */
-                  Real temp,          /**< temperature (deg C) */
-                  int npft,           /**< number of natural PFTs */
-                  int nbiomass,       /**< number of biomass types */
-                  int ncft            /**< number of crop PFTs */
+                  Real temp           /**< temperature (deg C) */
                  )                    /** \return total N demand  (gN/m2) */
 {
-  Real nc_ratio;
-  Irrigation *data;
+  //Real nc_ratio;
   const Pfttree *tree;
-  const Pfttreepar *treepar;
+  //const Pfttreepar *treepar;
   Real ndemand_tot;
   tree=pft->data; 
-  treepar=pft->par->data;
+  //treepar=pft->par->data;
   //*ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+param.n0*0.001*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind);
   //*ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.low*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind);
   *ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.low*(tree->ind.leaf.carbon*pft->nind);
+ /*
  if(tree->ind.leaf.carbon==0)
     nc_ratio=pft->par->ncleaf.low;
   else
@@ -46,7 +42,7 @@ Real ndemand_tree(const Pft *pft,     /**< pointer to PFT */
     nc_ratio=pft->par->ncleaf.high;
   else if(nc_ratio<pft->par->ncleaf.low)
     nc_ratio=pft->par->ncleaf.low;
-//  ndemand_tot=*ndemand_leaf+tree->ind.root.nitrogen*pft->nind+tree->ind.sapwood.nitrogen*pft->nind+nc_ratio*(tree->excess_carbon*pft->nind+pft->bm_inc.carbon)*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood);
+  ndemand_tot=*ndemand_leaf+tree->ind.root.nitrogen*pft->nind+tree->ind.sapwood.nitrogen*pft->nind+nc_ratio*(tree->excess_carbon*pft->nind+pft->bm_inc.carbon)*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood); */
   ndemand_tot=*ndemand_leaf+tree->ind.root.nitrogen*pft->nind+tree->ind.sapwood.nitrogen*pft->nind;
 #ifdef DEBUG_N
   fprinttreephys2(stdout,tree->ind,pft->nind);
