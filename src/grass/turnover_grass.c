@@ -42,16 +42,40 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   if(pft->bm_inc.carbon>0)
   {
     reprod=pft->bm_inc.carbon*grasspar->reprod_cost*fraction;
+    pft->bm_inc.carbon-=reprod;
+    if(pft->establish.carbon<reprod)
+    {
+      reprod-=pft->establish.carbon;
+      pft->stand->cell->output.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
+      pft->establish.carbon=0;
+    }
+    else
+    {
+      pft->stand->cell->output.flux_estab.carbon-=reprod*pft->stand->frac;
+      pft->establish.carbon-=reprod;
+      reprod=0;
+    }
     litter->ag[pft->litter].trait.leaf.carbon+=reprod;
     output->alittfall.carbon+=reprod*pft->stand->frac;
-    pft->bm_inc.carbon-=reprod;
   }
   if(pft->bm_inc.nitrogen>0)
   {
     reprod=pft->bm_inc.nitrogen*grasspar->reprod_cost*fraction;
+    pft->bm_inc.nitrogen-=reprod;
+    if(pft->establish.nitrogen<reprod)
+    {
+      reprod-=pft->establish.nitrogen;
+      pft->stand->cell->output.flux_estab.nitrogen-=pft->establish.nitrogen*pft->stand->frac;
+      pft->establish.nitrogen=0;
+    }
+    else
+    {
+      pft->stand->cell->output.flux_estab.nitrogen-=reprod*pft->stand->frac;
+      reprod=0;
+      pft->establish.nitrogen-=reprod;
+    }
     litter->ag[pft->litter].trait.leaf.nitrogen+=reprod;
     output->alittfall.nitrogen+=reprod*pft->stand->frac;
-    pft->bm_inc.nitrogen-=reprod;
   }
 
   /* turnover */

@@ -40,6 +40,7 @@ Bool fwritepft(FILE *file,    /**< File pointer to binary file */
   fwrite1(&pft->albedo,sizeof(Real),file);
   fwrite1(&pft->fapar,sizeof(Real),file);
   fwrite1(&pft->nleaf,sizeof(Real),file);
+  fwrite1(&pft->establish,sizeof(Stocks),file);
   b=(Byte)pft->litter;
   fwrite1(&b,sizeof(b),file);
   return FALSE;

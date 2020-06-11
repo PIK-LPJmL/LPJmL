@@ -20,7 +20,7 @@ Real nitrogen_stress(Pft *pft,       /**< PFT */
                      int npft,       /**< number of natural PFTs */
                      int nbiomass,   /**< number of biomass types */
                      int ncft,       /**< number of crop PFTs */
-                     Bool permafrost
+                     Bool permafrost /**< permafrost enabled? (TRUE/FALSE) */
                     )                /** \return total N demand (gN/m2) */
 {
   Real nplant_demand,ndemand_leaf;
@@ -32,7 +32,7 @@ Real nitrogen_stress(Pft *pft,       /**< PFT */
   nplant_demand=0;
   if(pft->bm_inc.carbon>0)
   {
-    nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,daylength,temp,npft,nbiomass,ncft)*(1+pft->par->knstore);
+    nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,daylength,temp)*(1+pft->par->knstore);
     ndemand_leaf_opt=ndemand_leaf;
 #ifdef DEBUG_N
     nplant_demand_opt=nplant_demand;

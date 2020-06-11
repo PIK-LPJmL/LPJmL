@@ -54,10 +54,22 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   if(pft->bm_inc.carbon>=0)
   {
     reprod=pft->bm_inc.carbon*treepar->reprod_cost;
+    pft->bm_inc.carbon-=reprod;
+    if(pft->establish.carbon<reprod)
+    {
+      reprod-=pft->establish.carbon;
+      pft->stand->cell->output.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
+      pft->establish.carbon=0;
+    }
+    else
+    {
+      pft->stand->cell->output.flux_estab.carbon-=reprod*pft->stand->frac;
+      pft->establish.carbon-=reprod;
+      reprod=0;
+    }
     litter->ag[pft->litter].trait.leaf.carbon+=reprod;
     output->alittfall.carbon+=reprod*pft->stand->frac;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,reprod,0);
-    pft->bm_inc.carbon-=reprod;
     reprod=pft->bm_inc.nitrogen*treepar->reprod_cost;
     //litter->ag[pft->litter].trait.leaf.nitrogen+=reprod;
     //pft->bm_inc.nitrogen-=reprod;
