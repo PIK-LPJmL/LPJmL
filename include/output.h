@@ -309,7 +309,8 @@ typedef struct
   Real n_uptake;              /**< total N uptake by plants */
   Real n_influx;              /**< total N inputs */
   Real n_outflux;             /**< total N losses */
-  Real anpp_flux;             /* Total NPP (gC/yr) */
+  Real anpp_flux;             /**< Total NPP (gC/yr) */
+  Real excess_water;          /**< Exess water (dm3) */
 
 } Flux;
 

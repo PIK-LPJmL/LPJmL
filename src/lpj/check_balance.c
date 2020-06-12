@@ -26,7 +26,7 @@ void check_balance(Flux flux,           /**< global carbon and water fluxes */
 
   if(config->river_routing)
     balance=flux.prec+flux.wd_unsustainable-flux.evap-flux.transp-flux.interc-flux.evap_lake-flux.evap_res
-            -flux.discharge-flux.conv_loss_evap-flux.delta_surface_storage-flux.delta_soil_storage-flux.wateruse;
+            -flux.discharge-flux.conv_loss_evap-flux.delta_surface_storage-flux.delta_soil_storage-flux.wateruse-flux.excess_water;
 
   balance=(flux.area>0) ? balance/flux.area : 0.0;
   if(config->ischeckpoint)
@@ -40,10 +40,10 @@ void check_balance(Flux flux,           /**< global carbon and water fluxes */
 #else
     fail(INVALID_WATER_BALANCE_ERR,TRUE,
 #endif
-         "y: %d GlobW_BALANCE-error: %.5f prec:%.2f wd_unsustainable:%.2f vapour_flux:%.2f discharge:%.2f delta_storage:%.2f\n",
+         "y: %d GlobW_BALANCE-error: %.5f prec:%.2f wd_unsustainable:%.2f vapour_flux:%.2f discharge:%.2f delta_storage:%.2f excess_water:%.2f\n",
          year,balance*flux.area,flux.prec,flux.wd_unsustainable,
          (flux.evap+flux.transp+flux.interc+flux.evap_lake+flux.evap_res+flux.conv_loss_evap),
-         flux.discharge,(flux.delta_surface_storage+flux.delta_soil_storage));
+         flux.discharge,(flux.delta_surface_storage+flux.delta_soil_storage),flux.excess_water);
     fflush(stdout);
   }
 
