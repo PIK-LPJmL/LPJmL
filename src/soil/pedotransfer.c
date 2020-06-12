@@ -33,6 +33,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
   Real wmm, imm; /* actual water content in mm */
   Real lambda;
   Real excess = 0;
+  Real dispose=0;
 #ifdef CHECK_BALANCE
   Real w_before,w_after;
 #endif
@@ -150,6 +151,17 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;
       soil->k_dry[l] = (0.135*soil->bulkdens[l] + 64.7) / (MINERALDENS - 0.947*soil->bulkdens[l]);
       excess+=wmm+imm;
+      /* check if plant available water and ice do not exceed 1.0 */
+      dispose=soil->w[l] + soil->ice_depth[l]/soil->whcs[l] - 1.0;
+      if(dispose > epsilon*1e-3){
+        //fprintf(stderr,"too much water!! w[%d]: %.10f icedepth %.10f whcs %.10f icefrac %.10f sum %.10f\n",l,soil->w[l],soil->ice_depth[l],soil->whcs[l],soil->ice_depth[l]/soil->whcs[l],soil->w[l] + soil->ice_depth[l]/soil->whcs[l]);
+        if(soil->w[l]>dispose+epsilon){
+          soil->w[l]-=dispose;
+        } else {
+          soil->ice_depth[l]-=dispose*soil->whcs[l];
+        }
+        excess+=dispose*soil->whcs[l];
+      }
     } /* end of forrootsoillayer */
 
   stand->cell->balance.excess_water+=excess*standfrac;

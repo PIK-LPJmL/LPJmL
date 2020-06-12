@@ -57,6 +57,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
   Real agrfrac;
+
   gp_pft=newvec(Real,npft+ncft);
   check(gp_pft);
 
@@ -89,9 +90,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     for(l=0;l<stand->soil.litter.n;l++)
     {
       stand->soil.litter.item[l].agsub.leaf.carbon += stand->soil.litter.item[l].ag.leaf.carbon*BIOTURBRATE;
-      stand->soil.litter.item[l].ag.leaf.carbon *= 1 - BIOTURBRATE;
+      stand->soil.litter.item[l].ag.leaf.carbon *= (1 - BIOTURBRATE);
       stand->soil.litter.item[l].agsub.leaf.nitrogen += stand->soil.litter.item[l].ag.leaf.nitrogen*BIOTURBRATE;
-      stand->soil.litter.item[l].ag.leaf.nitrogen *= 1 - BIOTURBRATE;
+      stand->soil.litter.item[l].ag.leaf.nitrogen *= (1 - BIOTURBRATE);
     }
 
     if(stand->type->landusetype==NATURAL && config->black_fallow && (day==152 || day==335))
@@ -237,6 +238,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     if(config->fire==FIRE && climate.temp>0)
       stand->fire_sum+=fire_sum(&stand->soil.litter,stand->soil.w[0]);
+
     if(config->with_nitrogen)
     {
       if(config->with_nitrogen==UNLIM_NITROGEN)
@@ -279,6 +281,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
 
     } /* of if(config->with_nitrogen) */
+
     gp_stand=gp_sum(&stand->pftlist,co2,climate.temp,par,daylength,
                     &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
     if(config->with_nitrogen)
@@ -287,12 +290,14 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       stand->soil.NH4[0]+=bnf;
       cell->output.mbnf+=bnf*stand->frac;
     }
+
     runoff=daily_stand(stand,co2,&climate,day,daylength,gp_pft,
                        gtemp_air,gtemp_soil[0],gp_stand,gp_stand_leafon,eeq,par,
                        melt,npft,ncft,year,withdailyoutput,intercrop,agrfrac,config);
     if(config->with_nitrogen)
     {
       denitrification(stand);
+
       nh3=volatilization(stand->soil.NH4[0],climate.windspeed,climate.temp,
                          length,cell->soilph);
       if(nh3>stand->soil.NH4[0])

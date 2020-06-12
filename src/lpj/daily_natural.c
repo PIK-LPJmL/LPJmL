@@ -126,6 +126,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
 #ifdef PERMUTE
     pft=getpft(&stand->pftlist,pvec[p]);
 #endif
+
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,npft,ncft,config);
@@ -136,6 +137,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
     }
 
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
+    
     if (withdailyoutput){
       if (output->daily.cft == ALLNATURAL)
         output->daily.npp+=npp;
@@ -167,7 +169,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,FALSE);
 
-  if(withdailyoutput)
+ if(withdailyoutput)
   {
 #ifndef COUPLING_WITH_FMS
     // when coupling with FMS/POEM, we always need evap output,
