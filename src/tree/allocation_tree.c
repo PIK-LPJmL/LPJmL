@@ -172,9 +172,9 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
   {
     if (tree->height>0.0) 
     {
-      tinc_ind_min.leaf.carbon=k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
+      tinc_ind_min.leaf.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
                         pft->par->sla)-tree->ind.leaf.carbon;
-      tinc_ind_min.root.carbon=k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
+      tinc_ind_min.root.carbon=treepar->k_latosa*tree->ind.sapwood.carbon/(wooddens*tree->height*
                         pft->par->sla*lmtorm)-tree->ind.root.carbon;
     }
     else 
@@ -201,7 +201,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
               tree->ind.root.carbon;
       data.lm=1+1/lmtorm;
       data.k1=pow(treepar->allom2,2.0/treepar->allom3)*4.0*M_1_PI/wooddens;
-      data.k3=k_latosa/wooddens/pft->par->sla;
+      data.k3=treepar->k_latosa/wooddens/pft->par->sla;
       data.ind_leaf=tree->ind.leaf.carbon;
       data.ind_heart=tree->ind.heartwood.carbon;
       data.allom3=treepar->allom3;
@@ -243,7 +243,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
         pft->stand->cell->output.alittfall.carbon+=-tinc_ind.leaf.carbon*pft->nind*pft->stand->frac;
       }
       tinc_ind.sapwood.carbon=(tinc_ind.leaf.carbon+tree->ind.leaf.carbon)*wooddens*tree->height*
-                       pft->par->sla/k_latosa-tree->ind.sapwood.carbon;
+                       pft->par->sla/treepar->k_latosa-tree->ind.sapwood.carbon;
       tinc_ind.heartwood.carbon=-tinc_ind.sapwood.carbon;
     }
   }

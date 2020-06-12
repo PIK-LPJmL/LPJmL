@@ -53,5 +53,7 @@ Stocks establishment_grass(Pft *pft,              /**< pointer to grass PFT data
   else
     flux_est.carbon=flux_est.nitrogen=0;
   fpc_grass(pft);
+  pft->establish.carbon+=flux_est.carbon;
+  pft->establish.nitrogen+=flux_est.nitrogen;
   return flux_est;
 } /* of 'establishment_grass' */

@@ -14,36 +14,31 @@
 
 #include "lpj.h"
 #include "grass.h"
-#include "agriculture.h"
 
 Real ndemand_grass(const Pft *pft,    /**< pointer to PFT */
                   Real *ndemand_leaf, /**< N demand of leaf (gN/m2) */
                   Real vmax,          /**< vmax (gC/m2/day) */
                   Real daylength,     /**< day length (h) */
-                  Real temp,          /**< temperature (deg C) */
-                  int npft,           /**< number of natural PFTs */
-                  int nbiomass,       /**< number of biomass types */
-                  int ncft            /**< number of crop PFTs */
+                  Real temp           /**< temperature (deg C) */
                  )                    /** \return total N demand  (gN/m2) */
 {
-  Real nc_ratio;
+  //Real nc_ratio;
   const Pftgrass *grass;
   //const Pftgrasspar *grasspar;
   Real ndemand_tot;
-  Irrigation *data;
-  data=pft->stand->data;
   grass=pft->data;
   //grasspar=pft->par->data;
   //*ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft))) +param.n0*0.001*(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf)*pft->nind;
   //*ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft))) +pft->par->ncleaf.low*(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf)*pft->nind;
   *ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft)))+pft->par->ncleaf.low*(grass->ind.leaf.carbon)*pft->nind;
+  /*
   nc_ratio=*ndemand_leaf/(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf);
   if(nc_ratio>pft->par->ncleaf.high)
     nc_ratio=pft->par->ncleaf.high;
   else if(nc_ratio<pft->par->ncleaf.low)
     nc_ratio=pft->par->ncleaf.low;
-//  ndemand_tot=*ndemand_leaf+grass->ind.root.nitrogen*pft->nind+nc_ratio*
-//    (grass->excess_carbon*pft->nind+pft->bm_inc.carbon)*grass->falloc.root/grasspar->ratio;
+  ndemand_tot=*ndemand_leaf+grass->ind.root.nitrogen*pft->nind+nc_ratio*
+    (grass->excess_carbon*pft->nind+pft->bm_inc.carbon)*grass->falloc.root/grasspar->ratio; */
   ndemand_tot=*ndemand_leaf+grass->ind.root.nitrogen*pft->nind;
 
   /* unclear to me: setaside NPP seems to go to natural grass pft_npp -- should we do the same for Ndemand? */

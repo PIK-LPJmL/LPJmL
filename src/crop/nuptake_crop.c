@@ -21,8 +21,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
                   Real *ndemand_leaf,   /**< N demand of leafs */
                   int UNUSED(npft),     /**< number of natural PFTs */
                   int nbiomass,         /**< number of biomass PFTs */
-                  int ncft,              /**< number of crop PFTs */
-                  Bool permafrost
+                  int ncft,             /**< number of crop PFTs */
+                  Bool permafrost       /**< permafrost enabled? (TRUE/FALSE) */
                  )                      /** \return nitrogen uptake (gN/m2/day) */
 {
   Soil *soil;

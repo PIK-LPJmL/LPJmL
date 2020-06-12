@@ -179,7 +179,7 @@ typedef struct Pft
                                    Livefuel *,Bool *,Real,Real);
     Bool (*annual)(Stand *,struct Pft *,Real *,Bool,int,Bool);
     Real (*nuptake)(struct Pft *,Real *,Real *,int,int,int,Bool);
-    Real (*ndemand)(const struct Pft *,Real *,Real, Real,Real,int,int,int);
+    Real (*ndemand)(const struct Pft *,Real *,Real, Real,Real);
     Real (*vmaxlimit)(const struct Pft *,Real,Real);
   } *par;                /**< PFT parameters */
   Real fpc;              /**< foliar projective cover (FPC) under full leaf
@@ -201,6 +201,7 @@ typedef struct Pft
   Bool established;
 #endif
   Phenology phen_gsi;    /**< new phenology variables */
+  Stocks establish;      /**< establishment */
   int litter;            /**< index of above-ground litter pool */
   Stand *stand;          /**< pointer to stand */
   void *data;            /**< pointer for PFT specific extensions */
@@ -292,7 +293,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar *,Poolpar,Real,Real,Real *,Rea
 #define annualpft(stand,pft,fpc_inc,newphen,nitrogen,isdaily) pft->par->annual(stand,pft,fpc_inc,newphen,nitrogen,isdaily)
 #define albedo_pft(pft,snowheight,snowfraction) pft->par->albedo_pft(pft,snowheight,snowfraction)
 #define nuptake(pft,n_plant_demand,ndemand_leaf,npft,nbiomass,ncft,permafrost) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,nbiomass,ncft,permafrost)
-#define ndemand(pft,nleaf,vcmax,daylength,temp,npft,nbiomass,ncft) pft->par->ndemand(pft,nleaf,vcmax,daylength,temp,npft,nbiomass,ncft)
+#define ndemand(pft,nleaf,vcmax,daylength,temp) pft->par->ndemand(pft,nleaf,vcmax,daylength,temp)
 #define vmaxlimit(pft,daylength,temp) pft->par->vmaxlimit(pft,daylength,temp)
 
 #endif

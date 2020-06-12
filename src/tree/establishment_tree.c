@@ -86,5 +86,7 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
   tree->ind.debt.nitrogen=tree->ind.debt.nitrogen*nind_old/pft->nind;
   allometry_tree(pft);
   fpc_tree(pft);
+  pft->establish.carbon+=flux_est.carbon;
+  pft->establish.nitrogen+=flux_est.nitrogen;
   return flux_est;
 } /* of 'establishment_tree' */
