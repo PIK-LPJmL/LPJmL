@@ -22,7 +22,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                      Real dprec,            /**< today's precipitation (mm) */
                      int year,              /**< simulation year (AD) */
                      const Config *config   /**< LPJ settings */
-                    )                       /** \return establish flux (gC/m2,gN/m2) */
+                    )                       /** \return establishment flux (gC/m2,gN/m2) */
 {
   Bool alloc_today_rf=FALSE, alloc_today_ir=FALSE,istimber;
   int cft,m,mm,dayofmonth,month,s,s2;

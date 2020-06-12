@@ -29,7 +29,6 @@ Real ndemand_tree(const Pft *pft,     /**< pointer to PFT */
                  )                    /** \return total N demand  (gN/m2) */
 {
   Real nc_ratio;
-  Irrigation *data;
   const Pfttree *tree;
   //const Pfttreepar *treepar;
   Real ndemand_tot;

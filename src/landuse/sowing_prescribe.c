@@ -21,7 +21,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
                         int ncft,            /**< number of crop PFTs */
                         int year,            /**< simulation year (AD) */
                         const Config *config /**< LPJmL configuration */
-                       )                     /** \return establishment flux (gC/m2) */
+                       )                     /** \return establishment flux (gC/m2, gN/m2) */
 {
   Stocks flux_estab={0,0},stocks;
   Stand *setasidestand;
@@ -29,7 +29,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
   const Pftcroppar *croppar;
   int cft,s,s2;
   int earliest_sdate;
-  Bool wtype=FALSE;
+  Bool wtype;
 
 #ifdef IMAGE
   istimber=(config->start_imagecoupling!=INT_MAX);

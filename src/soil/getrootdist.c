@@ -14,7 +14,10 @@
 
 #include "lpj.h"
 
-void getrootdist(Real rootdist_n[],const Real rootdist[],Real mean_maxthaw)
+void getrootdist(Real rootdist_n[],     /**<  new rooting distribution */
+                 const Real rootdist[], /**< old rooting distribution */
+                 Real mean_maxthaw      /**< mean maximum thawing depth (mm) */
+                )
 {
   Real root_u,freeze_depth,layer,root_nu,thaw_depth;
   int i,l;

@@ -36,7 +36,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     free(climate);
     return NULL;
   }
-  if(config->temp_filename.fmt!=CDF && climate->file_temp.version<=1)
+  if((config->temp_filename.fmt==CLM || config->temp_filename.fmt==RAW)  && climate->file_temp.version<=1)
     climate->file_temp.scalar=0.1;
   climate->firstyear=climate->file_temp.firstyear;
   if(openclimate(&climate->file_prec,&config->prec_filename,"kg/m2/day" /* "mm" */,LPJ_SHORT,config))
@@ -62,7 +62,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate);
         return NULL;
       }
-      if(config->lwnet_filename.fmt!=CDF && climate->file_lwnet.version<=1)
+      if((config->lwnet_filename.fmt==CLM || config->lwnet_filename.fmt==RAW) && climate->file_lwnet.version<=1)
         climate->file_lwnet.scalar=0.1;
       if(climate->firstyear<climate->file_lwnet.firstyear)
         climate->firstyear=climate->file_lwnet.firstyear;
@@ -78,7 +78,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate);
       return NULL;
     }
-    if(config->swdown_filename.fmt!=CDF && climate->file_swdown.version<=1)
+    if((config->swdown_filename.fmt==CLM || config->swdown_filename.fmt==RAW) && climate->file_swdown.version<=1)
       climate->file_swdown.scalar=0.1;
     if(climate->firstyear<climate->file_swdown.firstyear)
       climate->firstyear=climate->file_swdown.firstyear;
@@ -211,7 +211,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate);
       return NULL;
     }
-    if(config->wind_filename.fmt!=CDF && climate->file_wind.version<=1)
+    if((config->wind_filename.fmt==CLM || config->wind_filename.fmt==RAW)&& climate->file_wind.version<=1)
       climate->file_wind.scalar=0.001;
   }
   else
@@ -237,7 +237,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate);
       return NULL;
     }
-    if(config->tamp_filename.fmt!=CDF && climate->file_tamp.version<=1)
+    if((config->tamp_filename.fmt==CLM || config->tamp_filename.fmt==RAW) && climate->file_tamp.version<=1)
       climate->file_tamp.scalar=0.1;
     if(config->tmax_filename.name!=NULL)
     {
@@ -263,7 +263,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate);
         return NULL;
       }
-      if(climate->file_tmax.version<=1)
+      if((config->tmax_filename.fmt==CLM || config->tmax_filename.fmt==RAW) && climate->file_tmax.version<=1)
         climate->file_tmax.scalar=0.1;
     }
     if(openclimate(&climate->file_lightning,&config->lightning_filename,"1/day/hectare",LPJ_INT,config))
@@ -315,7 +315,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate);
         return NULL;
       }
-      if(config->burntarea_filename.fmt!=CDF && climate->file_burntarea.version==1)
+      if((config->burntarea_filename.fmt==CLM  || config->burntarea_filename.fmt==RAW) && climate->file_burntarea.version<=1)
         climate->file_burntarea.scalar=100;
     }
     else
@@ -346,7 +346,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate);
       return NULL;
     }
-    if(config->temp_var_filename.fmt!=CDF && climate->file_temp_var.version<=1)
+    if((config->temp_var_filename.fmt==CLM || config->temp_var_filename.fmt==RAW)&& climate->file_temp_var.version<=1)
       climate->file_temp_var.scalar=0.1;
     if(openclimate(&climate->file_prec_var,&config->prec_var_filename,NULL,LPJ_SHORT,config))
     {
@@ -368,7 +368,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate);
       return NULL;
     }
-    if(config->prec_var_filename.fmt!=CDF && climate->file_prec_var.version<=1)
+    if((config->prec_var_filename.fmt==CLM || config->prec_var_filename.fmt==RAW) && climate->file_prec_var.version<=1)
       climate->file_prec_var.scalar=0.01;
   }
   else
@@ -536,7 +536,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate);
       return NULL;
     }
-    if(climate->file_lightning.fmt!=CDF && climate->file_lightning.version<=1)
+    if((climate->file_lightning.fmt==CLM || climate->file_lightning.fmt==RAW) && climate->file_lightning.version<=1)
       climate->file_lightning.scalar=1e-7;
     if(climate->file_lightning.fmt==CDF)
     {
