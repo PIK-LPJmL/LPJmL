@@ -67,7 +67,7 @@ static size_t isnetcdfinput(const Config *config)
       width=max(width,strlen(config->soilph_filename.var));
   }
 #ifdef CROPSHEATFROST
-  if(config->withlanduse>NO_LANDUE && config->tmin_filename.fmt==CDF)
+  if(config->withlanduse>NO_LANDUSE && config->tmin_filename.fmt==CDF)
     width=max(width,strlen(config->tmin_filename.var));
   if(config->withlanduse>NO_LANDUSE || config->fire==SPITFIRE_TMAX)
     if(config->tmax_filename.fmt==CDF)
