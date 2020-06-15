@@ -80,11 +80,20 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     fprintfilename(file,config->wind_filename);
+#ifdef CROPSHEATFROST
+  if(config->fire==SPITFIRE|config->fire==SPITFIRE_TMAX||config->withlanduse>NO_LANDUSE)
+    if(config->tmax_filename.name!=NULL)
+      fprintfilename(file,config->tmax_filename);
+  if(config->tmin_filename.name!=NULL)
+    fprintfilename(file,config->tmin_filename);
+#else
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    if(config->tmax_filename.name!=NULL)
+      fprintfilename(file,config->tmax_filename);
+#endif
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fprintfilename(file,config->tamp_filename);
-    if(config->tmax_filename.name!=NULL)
-      fprintfilename(file,config->tmax_filename);
     fprintfilename(file,config->lightning_filename);
     fprintfilename(file,config->human_ignition_filename);
   }

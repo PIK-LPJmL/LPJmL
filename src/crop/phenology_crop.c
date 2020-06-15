@@ -16,9 +16,14 @@
 #include "crop.h"
 
 #define VD_SLOPE 7 /* vernalization with reduced effects for +/- 7 deg outside min/max range*/
+#ifdef CROPSHEATFROST
+#define TLOW 30.0
+#define THIGH 40.0 /* low and high temperature for reduction of harvest index */
+#endif
 
 Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
                     Real temp,     /**< temperature (deg C) */
+                    Real tmax,     /**< daily maximum temperature (deg C) */
                     Real daylength /**< length of day (h) */
                    )               /** \return harvesting crop (TRUE/FALSE) */
 {
@@ -31,7 +36,9 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
   Bool harvesting;
   int hlimit;
   Real vd_inc,vrf,prf;
-  
+#ifdef CROPSHEATFROST
+  Real as;
+#endif
   crop=pft->data;
   par=pft->par->data;
   harvesting=FALSE;
@@ -44,9 +51,25 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
 
   laimax=pft->stand->cell->ml.manage.laimax[pft->par->id];
 
+#ifdef CROPSHEATFROST
+  /* accelerated senescence factor should be between 1 and 2 and applied to mean temperature, following Maiorano et al. 2017 */
+  as = 1.0;
+  if (tmax > TLOW && tmax < THIGH)
+    as = 1/(THIGH-TLOW)*(tmax-TLOW)+1;
+  else if(tmax > THIGH)
+    as = 2;
+#endif
+
   if(crop->husum<crop->phu)
   {
+#ifdef CROPSHEATFROST
+    if(!crop->senescence)
+      hu=max(0,temp*as-crop->basetemp);
+    else 
+      hu=max(0,temp-crop->basetemp);
+#else
     hu=max(0,temp-crop->basetemp);
+#endif
 
     /* Calculation of vernalization days */
     if (crop->vdsum<crop->pvd)

@@ -96,7 +96,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         crop->nfertilizer=0;
       }
     }
-    if(phenology_crop(pft,climate->temp,daylength))
+    if(phenology_crop(pft,climate->temp,climate->tmax,daylength))
     {
 //printf("daily_agriculture.c: harvest day of cft %s = %d\n", pft->par->name, day);
 //printf("daily_agriculture.c: crop->growingdays of cft %s = %d\n", pft->par->name, crop->growingdays);

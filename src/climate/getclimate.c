@@ -89,7 +89,17 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR131: Cannot read tmax of year %d in getclimate().\n",
-                year_climate);
+          year_climate);
+      return TRUE;
+    }
+  }
+  if(climate->data.tmin!=NULL)
+  {
+    if(readclimate(&climate->file_tmin,climate->data.tmin,0,climate->file_tmin.scalar,grid,year_climate,config))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR131: Cannot read tmin of year %d in getclimate().\n",
+          year_climate);
       return TRUE;
     }
   }

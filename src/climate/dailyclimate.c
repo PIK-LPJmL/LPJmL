@@ -61,7 +61,12 @@ void dailyclimate(Dailyclimate *daily,    /**< */
     else
       daily->windspeed=interpolate(getcellwind(climate,cell),month,dayofmonth);
   }
-  if(climate->data.tamp!=NULL)
+  if(climate->data.tmax!=NULL&&climate->data.tmin!=NULL) /* Tmin and Tmax available */
+  {
+    daily->tmax=isdaily(climate->file_tmax) ?  climate->data.tmax[cell*NDAYYEAR+day-1] : interpolate(getcelltmax(climate,cell),month,dayofmonth);
+    daily->tmax=isdaily(climate->file_tmin) ?  climate->data.tmin[cell*NDAYYEAR+day-1] : interpolate(getcelltmin(climate,cell),month,dayofmonth);
+  }
+  else if(climate->data.tamp!=NULL)
   {
     if(climate->data.tmax!=NULL)
     {
