@@ -391,7 +391,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"windspeed",&config->wind_filename,width);
 #ifdef CROPSHEATFROST
   if(config->withlanduse>NO_LANDUSE)
-    if(config->tmin_filename.name==NULL)
+    if(config->tmin_filename.name!=NULL)
       printinputfile(file,"tmin",&config->tmin_filename,width);
   if(config->withlanduse>NO_LANDUSE || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     if(config->tmax_filename.name!=NULL)
