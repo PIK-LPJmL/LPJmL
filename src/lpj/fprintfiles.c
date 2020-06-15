@@ -81,7 +81,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     fprintfilename(file,config->wind_filename);
 #ifdef CROPSHEATFROST
-  if(config->fire==SPITFIRE|config->fire==SPITFIRE_TMAX||config->withlanduse>NO_LANDUSE)
+  if(config->fire==SPITFIRE||config->fire==SPITFIRE_TMAX||config->withlanduse>NO_LANDUSE)
     if(config->tmax_filename.name!=NULL)
       fprintfilename(file,config->tmax_filename);
   if(config->tmin_filename.name!=NULL)
