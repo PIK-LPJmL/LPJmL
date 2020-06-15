@@ -262,7 +262,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.with_nitrogen || config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
     bad+=checkclmfile(&config,&config.wind_filename);
 #ifdef CROPSHEATFROST
-  bad+=checkclmfile(&config,&config.tmin_filename);
+  if(config.withlanduse>NO_LANDUSE)
+    bad+=checkclmfile(&config,&config.tmin_filename);
   if(config.fire==SPITFIRE||config.fire==SPITFIRE_TMAX)
   {
     bad+=checkclmfile(&config,&config.tamp_filename);
