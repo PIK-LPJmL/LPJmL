@@ -171,9 +171,9 @@
   
   //"co2" :          { "fmt" : TXT,  "name" : "input_VERSION2/co2_1841-2012.dat"},
   #if (DCO2==CO2_DYNA)
-  "co2" :          { "fmt" : TXT,  "name" : "/p/projects/lpjml/input/scenarios/rcp60_CO2_1765-2200.dat"},
+  "co2" :  { "fmt" : TXT,  "name" : "/p/projects/lpjml/input/scenarios/rcp60_CO2_1765-2200.dat"},
   #elif (DCO2==CO2_STAT)
-  "co2" :          { "fmt" : TXT,  "name" : "/p/projects/lpjml/input/scenarios/co2_historical_1861-2005_static2005_until2100.dat"},
+  "co2" :  { "fmt" : TXT,  "name" : "/p/projects/lpjml/input/scenarios/co2_historical_1861-2005_static2005_until2100.dat"},
   #endif
 
   "wetdays" :      { "fmt" : CLM,  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm"},
