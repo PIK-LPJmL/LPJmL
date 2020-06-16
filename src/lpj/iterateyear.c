@@ -63,7 +63,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)
   {
+#ifdef IMAGE
     grid[cell].output.ydischarge=0;
+#endif
     grid[cell].output.adischarge=0;
     grid[cell].output.surface_storage=0;
     if(!grid[cell].skip)
@@ -181,7 +183,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     {
       if(config->river_routing)
       {
+#ifdef IMAGE
         grid[cell].output.ydischarge += grid[cell].output.mdischarge;
+#endif
         if(grid[cell].discharge.next<0)
           grid[cell].output.adischarge+=grid[cell].output.mdischarge;           /* only endcell outflow */
         grid[cell].output.mdischarge*=1e-9;                    /* monthly mean discharge per month in 1.000.000 m3 per cell */

@@ -715,6 +715,8 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
+0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
+0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
 TROPICAL_HERBACEOUS
