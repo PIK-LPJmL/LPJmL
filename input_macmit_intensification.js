@@ -44,6 +44,8 @@
 #if (DCLM==CLM_WFD) //"CLM_WFD"
 
   "temp" :         { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI/tas_wfdei_1979-2012.clm2"},
+  "tmax" :         { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI/tasmax_wfdei_1979-2012.clm2"},
+  "tmin" :         { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI/tasmin_wfdei_1979-2012.clm2"},
   "prec" :         { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI/prtotal_cru_wfdei_1979-2012.clm2"},
   "lwnet" :        { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI/lwnet_wfdei_1979-2012.clm2"},
   "swdown" :       { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI/rsds_wfdei_1979-2012.clm2"},
@@ -63,6 +65,8 @@
 
   #if (DTIM==TIM_1986_2005)
     "temp" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/tas_HadGEM2-ES_historical_1861-2005.clm"},
+    "tmax" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/tasmax_HadGEM2-ES_historical_1861-2005.clm"},
+    "tmin" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/tasmin_HadGEM2-ES_historical_1861-2005.clm"},
     "prec" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/pr_HadGEM2-ES_historical_1861-2005.clm"},
     "lwnet" :        { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/lwnet_HadGEM2-ES_historical_1861-2005.clm"},
     "swdown" :       { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/historical/rsds_HadGEM2-ES_historical_1861-2005.clm"},
@@ -70,6 +74,8 @@
 
   #elif (DTIM==TIM_2080_2099)
     "temp" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/rcp60/tas_HadGEM2-ES_rcp60_2006-2099.clm"},
+    "tmax" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/rcp60/tasmax_HadGEM2-ES_rcp60_2006-2099.clm"},
+    "tmin" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/rcp60/tasmin_HadGEM2-ES_rcp60_2006-2099.clm"},
     "prec" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/rcp60/pr_HadGEM2-ES_rcp60_2006-2099.clm"},
     "lwnet" :        { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/rcp60/lwnet_HadGEM2-ES_rcp60_2006-2099.clm"},
     "swdown" :       { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/HadGEM2-ES/rcp60/rsds_HadGEM2-ES_rcp60_2006-2099.clm"},
@@ -91,6 +97,8 @@
 
   #if (DTIM==TIM_1986_2005)
     "temp" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/GFDL-ESM2M/historical/tas_GFDL-ESM2M_historical_1861-2005.clm"},
+    "tmax" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/GFDL-ESM2M/historical/tasmax_GFDL-ESM2M_historical_1861-2005.clm"},
+    "tmin" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/GFDL-ESM2M/historical/tasmin_GFDL-ESM2M_historical_1861-2005.clm"},
     "prec" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/GFDL-ESM2M/historical/pr_GFDL-ESM2M_historical_1861-2005.clm"},
     "lwnet" :        { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/GFDL-ESM2M/historical/lwnet_GFDL-ESM2M_historical_1861-2005.clm"},
     "swdown" :       { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/GFDL-ESM2M/historical/rsds_GFDL-ESM2M_historical_1861-2005.clm"},
@@ -98,6 +106,8 @@
 
   #elif (DTIM==TIM_2080_2099)
     "temp" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/GFDL-ESM2M/rcp60/tas_GFDL-ESM2M_rcp60_2006-2099.clm"},
+    "tmax" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/GFDL-ESM2M/rcp60/tasmax_GFDL-ESM2M_rcp60_2006-2099.clm"},
+    "tmin" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/GFDL-ESM2M/rcp60/tasmin_GFDL-ESM2M_rcp60_2006-2099.clm"},
     "prec" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/GFDL-ESM2M/rcp60/pr_GFDL-ESM2M_rcp60_2006-2099.clm"},
     "lwnet" :        { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/GFDL-ESM2M/rcp60/lwnet_GFDL-ESM2M_rcp60_2006-2099.clm"},
     "swdown" :       { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/GFDL-ESM2M/rcp60/rsds_GFDL-ESM2M_rcp60_2006-2099.clm"},
@@ -119,6 +129,8 @@
 
   #if (DTIM==TIM_1986_2005)
     "temp" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/IPSL-CM5A-LR/historical/tas_IPSL-CM5A-LR_historical_1861-2005.clm"},
+    "tmax" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/IPSL-CM5A-LR/historical/tasmax_IPSL-CM5A-LR_historical_1861-2005.clm"},
+    "tmin" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/IPSL-CM5A-LR/historical/tasmin_IPSL-CM5A-LR_historical_1861-2005.clm"},
     "prec" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/IPSL-CM5A-LR/historical/pr_IPSL-CM5A-LR_historical_1861-2005.clm"},
     "lwnet" :        { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/IPSL-CM5A-LR/historical/lwnet_IPSL-CM5A-LR_historical_1861-2005.clm"},
     "swdown" :       { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/IPSL-CM5A-LR/historical/rsds_IPSL-CM5A-LR_historical_1861-2005.clm"},
@@ -126,6 +138,8 @@
 
   #elif (DTIM==TIM_2080_2099)
     "temp" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/IPSL-CM5A-LR/rcp60/tas_IPSL-CM5A-LR_rcp60_2006-2099.clm"},
+    "tmax" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/IPSL-CM5A-LR/rcp60/tasmax_IPSL-CM5A-LR_rcp60_2006-2099.clm"},
+    "tmin" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/IPSL-CM5A-LR/rcp60/tasmin_IPSL-CM5A-LR_rcp60_2006-2099.clm"},
     "prec" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/IPSL-CM5A-LR/rcp60/pr_IPSL-CM5A-LR_rcp60_2006-2099.clm"},
     "lwnet" :        { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/IPSL-CM5A-LR/rcp60/lwnet_IPSL-CM5A-LR_rcp60_2006-2099.clm"},
     "swdown" :       { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/IPSL-CM5A-LR/rcp60/rsds_IPSL-CM5A-LR_rcp60_2006-2099.clm"},
@@ -146,6 +160,8 @@
 
   #if (DTIM==TIM_1986_2005)
     "temp" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/MIROC5/historical/tas_MIROC5_historical_1861-2005.clm"},
+    "tmax" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/MIROC5/historical/tasmax_MIROC5_historical_1861-2005.clm"},
+    "tmin" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/MIROC5/historical/tasmin_MIROC5_historical_1861-2005.clm"},
     "prec" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/MIROC5/historical/pr_MIROC5_historical_1861-2005.clm"},
     "lwnet" :        { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/MIROC5/historical/lwnet_MIROC5_historical_1861-2005.clm"},
     "swdown" :       { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/MIROC5/historical/rsds_MIROC5_historical_1861-2005.clm"},
@@ -153,6 +169,8 @@
 
   #elif (DTIM==TIM_2080_2099)
     "temp" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/MIROC5/rcp60/tas_MIROC5_rcp60_2006-2099.clm"},
+    "tmax" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/MIROC5/rcp60/tasmax_MIROC5_rcp60_2006-2099.clm"},
+    "tmin" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/MIROC5/rcp60/tasmin_MIROC5_rcp60_2006-2099.clm"},
     "prec" :         { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/MIROC5/rcp60/pr_MIROC5_rcp60_2006-2099.clm"},
     "lwnet" :        { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/MIROC5/rcp60/lwnet_MIROC5_rcp60_2006-2099.clm"},
     "swdown" :       { "fmt" : CLM,  "name" : "/p/projects/ikiimp/ISIMIP2b/input_CLM2/MIROC5/rcp60/rsds_MIROC5_rcp60_2006-2099.clm"},
