@@ -135,6 +135,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     }
     else
       filename->isscale=FALSE;
+    filename->time=NULL;
   }
   if(iskeydefined(&f,"unit"))
   {
