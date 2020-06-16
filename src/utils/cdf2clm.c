@@ -146,7 +146,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       }
       break;
     default:
-      fprintf(stderr,"Datatype not supported.\n");
+      fprintf(stderr,"Datatype %s not supported.\n",typenames[file->datatype]);
       nc_close(file->ncid);
       return TRUE;
   }
