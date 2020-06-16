@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -25,7 +25,7 @@
 #define NBANDS_OUT 24
 #define NBANDS_LU 5
 #define USAGE    "Usage: cfts26_luc2clm [-h] [-firstyear first] [-lastyear last]\n"\
-                 "       [-nyear n] [-firstcell] [-ncell] [-nbands] [-rev]\n"\
+                 "       [-nyear n] [-firstcell] [-ncell] [-nbands] [-swap]\n"\
                  "       [-yearcell] cfts26-file lu5-file clmfile\n"
 
 typedef short Data[NBANDS_CFT];
@@ -67,7 +67,7 @@ int main(int argc,char **argv)
                "-firstcell       first cell in data file (default is %d)\n"
                "-ncell           number of cells in data file (default is %d)\n"
                "-nbands          number of bands in data/output file (default is %d)\n"
-               "-rev             change byte order in data file\n"
+               "-swap            change byte order in data file\n"
                "-yearcell        does not revert order in data file\n"
                "cfts26-file      filename of cfts26 data file\n"
                "lu5-file         filename of lu5 data file\n"
@@ -87,7 +87,7 @@ int main(int argc,char **argv)
         header.ncell=atoi(argv[++i]);
       else if(!strcmp(argv[i],"-nbands"))
         header.nbands=atoi(argv[++i]);
-      else if(!strcmp(argv[i],"-rev"))
+      else if(!strcmp(argv[i],"-swap"))
         swap=TRUE;
       else if(!strcmp(argv[i],"-yearcell"))
         header.order=YEARCELL;
@@ -118,12 +118,22 @@ int main(int argc,char **argv)
   n=filestat.st_size/header.nyear/sizeof(Data);
   printf("Number of cells in cft-file: %d\n",n);
   data=(Data *)malloc(n*sizeof(Data)*header.nyear);
+  if(data==NULL)
+  {
+    printallocerr("data");
+    return EXIT_FAILURE;
+  }
   data_out=(Data_out *)malloc(n*sizeof(Data_out)*header.nyear);
+  if(data_out==NULL)
+  {
+    printallocerr("data_out");
+    return EXIT_FAILURE;
+  }
   fread(data,sizeof(Data),n*header.nyear,file);
   if(swap)
     for(m=0;m<n*header.nyear;m++)
       for(j=0;j<header.nbands;j++)
-    data[m][j]=swapshort(data[m][j]);
+        data[m][j]=swapshort(data[m][j]);
 
   fclose(file);
 
@@ -149,7 +159,7 @@ int main(int argc,char **argv)
     {
       if(data[m][j]<0) data[m][j]=0;
       if(rbuf>=0)
-    data[m][j]=(short)((float)data[m][j]*(float)rbuf/1000+0.5);
+        data[m][j]=(short)((float)data[m][j]*(float)rbuf/1000+0.5);
     }
   }
   fclose(file);

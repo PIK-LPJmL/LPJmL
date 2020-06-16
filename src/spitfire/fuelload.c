@@ -9,7 +9,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -22,6 +22,7 @@
 
 static Real alpha[NFUELCLASS]={0.001,0.00005424,0.00001485,0};
 static Real SIGMA[NFUELCLASS]={66.0,3.58,0.98,0};
+
 
 void fuelload(Stand *stand,
               Fuel *fuel,
@@ -141,7 +142,6 @@ void fuelload(Stand *stand,
   if(fuel->sigma > 2*SIGMA[0])
   {
     /* may happen if litter is negative and causes numerical problems in rateofspread*/
-    //fprintf(stderr,"sigma %f deadfuel %f fuel_gBiomass[0] %f\n",fuel->sigma,dead_fuel,fuel_gBiomass[0]);
     fuel->sigma=SIGMA[0];
   }
 #endif
@@ -178,6 +178,9 @@ void fuelload(Stand *stand,
 #endif
   /* daily litter moisture back-calculated from nesterov_accum */
   fuel->daily_litter_moist = exp(-(fuel->char_alpha_fuel) * nesterov_accum);
+
+  /* combustion efficiency for litter */
+  fuel->CME = 0.0005*pow(fuel->daily_litter_moist*100,2)-0.02*fuel->daily_litter_moist*100+0.94;  
   dlm_1hr = exp(-alpha[0] * nesterov_accum);
 
   /* moisture of extinction (as PFT param.) weighted over litter amount */
@@ -203,6 +206,7 @@ void fuelload(Stand *stand,
     fuel->moist_1hr=moist_livegrass_1hr/fuel->char_moist_factor;
     fuel->moist_10_100hr=fuel->daily_litter_moist/fuel->char_moist_factor;
   }
+  livefuel->CME = 0.0005*pow(fuel->moist_10_100hr*100,2)-0.02*fuel->moist_10_100hr*100+0.94;
 
   /* mw_weight for rate of spread and fuel consumption */
   /* TODO: equals fuel->moist_10_100hr (correct??)*/

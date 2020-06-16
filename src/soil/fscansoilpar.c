@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -18,15 +18,19 @@
 
 #define UNDEF (-1)
 
-#define fscanreal2(verb,file,var,name)\
-  if(fscanreal(file,var,name,verb))\
+#define fscanreal2(verb,file,var,soil,name)\
+  if(fscanreal(file,var,name,FALSE,verb))\
   {\
+    if(verb) \
+      fprintf(stderr,"ERROR110: Cannot read real '%s' for soil type '%s'.\n",name,soil);\
     return 0;\
   }
-#define fscanint2(verb,file,var,name) \
-  if(fscanint(file,var,name,verb))\
+#define fscanint2(verb,file,var,soil,name) \
+  if(fscanint(file,var,name,FALSE,verb))\
   {\
-    return 0; \
+    if(verb) \
+      fprintf(stderr,"ERROR110: Cannot read int '%s' for soil type '%s'.\n",name,soil);\
+    return 0;\
   }
 
 Real soildepth[NSOILLAYER];
@@ -35,53 +39,57 @@ Real midlayer[NSOILLAYER];
 Real logmidlayer[NSOILLAYER];   /*log10(midlayer[l]/midlayer[NSOILLAYER-2]), for vertical soc profile*/
 Real fbd_fac[NFUELCLASS];
 
-unsigned int fscansoilpar(FILE *file,        /**< file  pointer */
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
+
+unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
                           Soilpar **soilpar, /**< Pointer to Soilpar array */
                           Verbosity verb     /**< verbosity level (NO_ERR,ERR,VERB) */
                          )                   /** \return number of elements in array */
 {
-  unsigned int nsoil,n,id;
-  int l;
+  LPJfile arr,item;
+  unsigned int id;
+  int l, nsoil, n;
   String s;
   Soilpar *soil;
   if (verb>=VERB) puts("// soil parameters");
-  for(l=0;l<NSOILLAYER;l++)
-    if(fscanreal(file,soildepth+l,"soildepth",verb))
-      return 0;
-  for(l=0;l<NSOILLAYER;l++)
+  if(fscanrealarray(file,soildepth,NSOILLAYER,"soildepth",verb))
+    return 0;
+  /* calculate layerbound and midlayer from soildepth */
+  layerbound[0]=soildepth[0];
+  midlayer[0]=soildepth[0]*0.5;
+  for(l=1;l<NSOILLAYER;l++)
   {
-    if(fscanreal(file,layerbound+l,"layerbound",verb))
-      return 0;
-    midlayer[l]=l>0?(layerbound[l-1]+soildepth[l]/2.):soildepth[l]/2.;
+    layerbound[l]=layerbound[l-1]+soildepth[l];
+    midlayer[l]=layerbound[l-1]+soildepth[l]*0.5;
   }
   foreachsoillayer(l)
   {
     logmidlayer[l]=log10(midlayer[l]/midlayer[NSOILLAYER-2]);
   }
-  for(l=0;l<NFUELCLASS;l++)
-    if(fscanreal(file,fbd_fac+l,"fbd_fac",verb))
-      return 0;
-  if(fscanuint(file,&nsoil,"nsoil",verb))
+  if(fscanrealarray(file,fbd_fac,NFUELCLASS,"fbd_fac",verb))
+    return 0;
+  if(fscanarray(file,&arr,&nsoil,TRUE,"soilpar",verb))
     return 0;
   if(nsoil<1)
   {
     if(verb)
-      fprintf(stderr,"ERROR170: Invalid value for number of soil types=%u in line %d of '%s'\n",
+      fprintf(stderr,"ERROR170: Invalid value for number of soil types=%d in line %d of '%s'\n",
               nsoil,getlinecount(),getfilename());
     return 0;
   }
   *soilpar=newvec(Soilpar,nsoil);
-  check(*soilpar);
+  checkptr(*soilpar);
   for(n=0;n<nsoil;n++)
     (*soilpar)[n].type=UNDEF;
   for(n=0;n<nsoil;n++)
   {
-    if(fscanuint(file,&id,"soiltype",verb))
+    fscanarrayindex(&arr,&item,n,verb);
+    if(fscanuint(&item,&id,"id",FALSE,verb))
       return 0;
     if(id>=nsoil)
     {
       if(verb)
-        fprintf(stderr,"ERROR115: Invalid range of soil type=%u in line %d of '%s' in fscansoilpar(), valid range is [0,%u].\n",id,getlinecount(),getfilename(),nsoil-1);
+        fprintf(stderr,"ERROR115: Invalid range of soil type=%u in line %d of '%s' in fscansoilpar(), valid range is [0,%d].\n",id,getlinecount(),getfilename(),nsoil-1);
       return 0;
     }
     soil=(*soilpar)+id;
@@ -91,46 +99,45 @@ unsigned int fscansoilpar(FILE *file,        /**< file  pointer */
         fprintf(stderr,"ERROR177: Soil type=%u in line %d of '%s' has been already defined in fscansoilpar().\n",id,getlinecount(),getfilename());
       return 0;
     }
-    if(fscanstring(file,s,verb!=NO_ERR))
+    if(fscanstring(&item,s,"name",FALSE,verb))
     {
       if(verb)
         readstringerr("name");
       return 0;
     }
-    if (verb>=VERB) printf("SOIL_NAME %s\n", s);
     soil->name=strdup(s);
-    check(soil->name);
+    checkptr(soil->name);
     soil->type=id;
-    fscanreal2(verb,file,&soil->Ks,"Ks");
-    fscanreal2(verb,file,&soil->Sf,"Sf");
-    fscanreal2(verb,file,&soil->wpwp,"w_pwp");
-    fscanreal2(verb,file,&soil->wfc,"w_fc");
+    fscanreal2(verb,&item,&soil->Ks,soil->name,"Ks");
+    fscanreal2(verb,&item,&soil->Sf,soil->name,"Sf");
+    fscanreal2(verb,&item,&soil->wpwp,soil->name,"w_pwp");
+    fscanreal2(verb,&item,&soil->wfc,soil->name,"w_fc");
     if(soil->wfc>1)
     {
       if(verb)
-        fprintf(stderr,"ERROR215: wfc=%g>1 in line %d of '%s' for soil type %s\n",
+        fprintf(stderr,"ERROR215: wfc=%g>1 in line %d of '%s' for soil type '%s'.\n",
                 soil->wfc,getlinecount(),getfilename(),soil->name);
       return 0;
     }
     if(soil->wfc-soil->wpwp<0)
     {
       if(verb)
-        fprintf(stderr,"ERROR213: whc=%g<0 in line %d of '%s' for soil type %s, wfc=%g, wpwp=%g\n",
+        fprintf(stderr,"ERROR213: whc=%g<0 in line %d of '%s' for soil type '%s', wfc=%g, wpwp=%g\n",
                 soil->wfc-soil->wpwp,getlinecount(),getfilename(),soil->name,soil->wfc,soil->wpwp);
       return 0;
     }
-    fscanreal2(verb,file,&soil->wsat,"w_sat");
+    fscanreal2(verb,&item,&soil->wsat,soil->name,"w_sat");
     if(soil->wsat<=0 || soil->wsat>1)
     {
       if(verb)
-        fprintf(stderr,"ERROR220: wsat=%g in line %d of '%s' not in (0,1] for soil type %s\n",
+        fprintf(stderr,"ERROR220: wsat=%g in line %d of '%s' not in (0,1] for soil type '%s'.\n",
                 soil->wsat,getlinecount(),getfilename(),soil->name);
       return 0;
     }
     if(soil->wsat<=soil->wfc)
     {
       if(verb)
-        fprintf(stderr,"ERROR216: wsat=%g <= wfc=%g in line %d of '%s' for soil type %s\n",
+        fprintf(stderr,"ERROR216: wsat=%g <= wfc=%g in line %d of '%s' for soil type '%s'.\n",
                 soil->wsat,soil->wfc,getlinecount(),getfilename(),soil->name);
       return 0;
     }
@@ -156,7 +163,7 @@ unsigned int fscansoilpar(FILE *file,        /**< file  pointer */
     soil->wsats[BOTTOMLAYER]=0.006*soildepth[BOTTOMLAYER];
     soil->bulkdens[BOTTOMLAYER]=(1-soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER])*MINERALDENS;
     soil->k_dry[BOTTOMLAYER]=0.039*pow(soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER],-2.2);
-    fscanint2(verb,file,&soil->hsg,"hsg");
+    fscanint2(verb,&item,&soil->hsg,soil->name,"hsg");
     if(soil->hsg<1 || soil->hsg>NHSG)
     {
       if(verb)
@@ -164,12 +171,12 @@ unsigned int fscansoilpar(FILE *file,        /**< file  pointer */
                 soil->hsg,soil->name);
       return 0;
     }
-    fscanreal2(verb,file,&soil->tdiff_0,"tdiff_0");
-    fscanreal2(verb,file,&soil->tdiff_15,"tdiff_15");
-    fscanreal2(verb,file,&soil->tdiff_100,"tdiff_100");
-    fscanreal2(verb,file,&soil->tcond_pwp,"cond_pwp");
-    fscanreal2(verb,file,&soil->tcond_100,"cond_100");
-    fscanreal2(verb,file,&soil->tcond_100_ice,"cond_100_ice");
+    fscanreal2(verb,&item,&soil->tdiff_0,soil->name,"tdiff_0");
+    fscanreal2(verb,&item,&soil->tdiff_15,soil->name,"tdiff_15");
+    fscanreal2(verb,&item,&soil->tdiff_100,soil->name,"tdiff_100");
+    fscanreal2(verb,&item,&soil->tcond_pwp,soil->name,"cond_pwp");
+    fscanreal2(verb,&item,&soil->tcond_100,soil->name,"cond_100");
+    fscanreal2(verb,&item,&soil->tcond_100_ice,soil->name,"cond_100_ice");
 
   } /* of 'for(n=0;...)' */
   return n;

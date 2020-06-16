@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -18,10 +18,11 @@
 
 #include "lpj.h"
 
-#define TXT2CLM_VERSION "1.0.004"
-#define USAGE "Usage: txt2clm [-h] [-yearcell] [-scale s] crufile clmfile [gridfile]\n"
+#define TXT2CLM_VERSION "1.0.005"
+#define USAGE "Usage: txt2clm [-h] [-yearcell] [-scale s] [-float] crufile clmfile [gridfile]\n"
 
 typedef short Data[NMONTH];
+typedef float Data_float[NMONTH];
 
 int main(int argc,char **argv)
 {
@@ -31,12 +32,16 @@ int main(int argc,char **argv)
   char num[6];
   int missing,lon,lat;
   Data *data;
+  Data_float *fdata;
   Coord start,end,grid;
   String line;
   Header header;
   int i,j,k,item,n,xsize,ysize;
+  Type datatype;
+  /* set default values */
   header.order=CELLYEAR;
   multiplier=1;
+  datatype=LPJ_SHORT;
   /* parse command line options */
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
@@ -49,6 +54,7 @@ int main(int argc,char **argv)
                "Arguments:\n"
                "-h          print this help text\n" 
                "-yearcell   does not revert order in cru file\n"
+               "-float      write data as float, default is short\n"
                "-scale s    scale data by a factor of s\n"
                "crufile     filename of cru data file\n"
                "clmfile     filename of clm data file\n"
@@ -57,6 +63,8 @@ int main(int argc,char **argv)
       }
       if(!strcmp(argv[i],"-yearcell"))
         header.order=YEARCELL;
+      else if(!strcmp(argv[i],"-float"))
+        datatype=LPJ_FLOAT;
       else if(!strcmp(argv[i],"-scale"))
       {
         if(i==argc-1)
@@ -115,12 +123,23 @@ int main(int argc,char **argv)
          bigendian() ? "big-endian" : "little-endian");
   header.firstcell=0;
   header.cellsize_lon=header.cellsize_lat=0.5;
-  header.datatype=LPJ_SHORT;
-  data=newvec(Data,header.ncell*header.nyear);
-  if(data==NULL)
+  if(datatype==LPJ_SHORT)
   {
-    printallocerr("data");
-    return EXIT_FAILURE;
+    data=newvec(Data,header.ncell*header.nyear);
+    if(data==NULL)
+    {
+      printallocerr("data");
+      return EXIT_FAILURE;
+    }
+  }
+  else
+  {
+    fdata=newvec(Data_float,header.ncell*header.nyear);
+    if(fdata==NULL)
+    {
+      printallocerr("data");
+      return EXIT_FAILURE;
+    }
   }
   if(argc>i+2)
   {
@@ -133,6 +152,7 @@ int main(int argc,char **argv)
     header.nyear=1;
     header.nbands=2;
     header.scalar=0.01;
+    header.datatype=LPJ_SHORT;
     fwriteheader(gridfile,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   }
   else 
@@ -165,7 +185,10 @@ int main(int argc,char **argv)
       for(j=0;j<NMONTH;j++)
       {
         item=atoi(strncpy(num,line+j*5,5));
-        data[k+n*header.nyear][j]=(short)(item*scale);
+        if(datatype==LPJ_SHORT)
+          data[k+n*header.nyear][j]=(short)(item*scale);
+        else
+          fdata[k+n*header.nyear][j]=item*scale;
       }
     }
   }
@@ -178,16 +201,28 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   header.nbands=NMONTH;
+  header.datatype=datatype;
   fwriteheader(file,&header,LPJ_CLIMATE_HEADER,LPJ_CLIMATE_VERSION);
-  if(header.order==CELLYEAR)
+  if(datatype==LPJ_SHORT)
   {
-    for(i=0;i<header.nyear;i++)
-      for(j=0;j<header.ncell;j++)
-        fwrite(data+j*header.nyear+i,sizeof(Data),1,file);
+    if(header.order==CELLYEAR)
+      for(i=0;i<header.nyear;i++)
+        for(j=0;j<header.ncell;j++)
+          fwrite(data+j*header.nyear+i,sizeof(Data),1,file);
+    else
+      fwrite(data,sizeof(Data),header.nyear*header.ncell,file);
+    free(data);
   }
   else
-    fwrite(data,sizeof(Data),header.nyear*header.ncell,file);
-  free(data);
+  {
+    if(header.order==CELLYEAR)
+      for(i=0;i<header.nyear;i++)
+        for(j=0;j<header.ncell;j++)
+          fwrite(fdata+j*header.nyear+i,sizeof(Data_float),1,file);
+      else
+        fwrite(fdata,sizeof(Data_float),header.nyear*header.ncell,file);
+    free(fdata);
+  }
   fclose(file);
   return EXIT_SUCCESS;
 } /* of 'main' */

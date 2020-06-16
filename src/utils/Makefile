@@ -8,7 +8,7 @@
 ## authors, and contributors see AUTHORS file                                  ##
 ## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
 ## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
-## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 ##                                                                             ##
 #################################################################################
 
@@ -20,11 +20,12 @@ OBJS    = cru2clm.$O cvrtsoil.$O grid2clm.$O cfts26_lu2clm.$O drainage.$O\
           river_sections_input_countrycode.$O river_sections_input_irrig.$O\
           txt2clm.$O water_use_input.$O catclm.$O asc2clm.$O\
           lpjprint.$O lpjcat.$O cat2bsq.$O grd2bsq.$O cft2clm.$O txt2grid.$O\
-          printdrain.$O lpjcheck.$O printclm.$O\
+          printdrain.$O lpjcheck.$O printclm.$O cdf2bin.$O\
           printharvest.$O printreservoir.$O lpjserver.$O setclm.$O getcountry.$O\
           regridclm.$O regridsoil.$O cdf2coord.$O cdf2soil.$O lpjfiles.$O\
           joingrid.$O clm2cdf.$O soil2cdf.$O cdf2clm.$O bin2cdf.$O adddrain.$O\
-          getcellindex.$O copyheader.$O addheader.$O mathclm.$O cutclm.$O
+          getcellindex.$O copyheader.$O addheader.$O mathclm.$O cutclm.$O\
+          cvrtclm.$O manage2js.$O getheadersize.$O regridirrig.$O
 
 SRC    = cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           river_sections_input_grid.c river_sections_input_soil.c\
@@ -36,7 +37,8 @@ SRC    = cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           printreservoir.c lpjserver.c setclm.c getcountry.c regridclm.c\
           cdf2soil.c lpjfiles.c asc2clm.c joingrid.c clm2cdf.c soil2cdf.c\
           cdf2clm.c bin2cdf.c adddrain.c txt2grid.c getcellindex.c\
-          copyheader.c addheader.c mathclm.c cutclm.c
+          copyheader.c addheader.c mathclm.c cutclm.c cdf2bin.c cvrtclm.c\
+          manage2js.c getheadersize.c regridirrig.c
 
 INC     = ../../include
 
@@ -68,7 +70,7 @@ all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/river_sections_input_climate$E $(BIN)/cdf2coord$E\
      $(BIN)/river_sections_input_landuse$E $(BIN)/cdf2soil$E\
      $(BIN)/river_sections_input_countrycode$E $(BIN)/txt2clm$E\
-     $(BIN)/setclm$E $(BIN)/lpjfiles$E\
+     $(BIN)/setclm$E $(BIN)/lpjfiles$E $(BIN)/cdf2bin$E\
      $(BIN)/lpjcat$E $(BIN)/cat2bsq$E $(BIN)/grd2bsq$E $(BIN)/drainage$E\
      $(BIN)/cvrtsoil$E $(BIN)/river_sections_input_irrig$E $(BIN)/soil2cdf$E\
      $(BIN)/water_use_input$E $(BIN)/getcountry$E $(BIN)/clm2cdf$E\
@@ -78,7 +80,8 @@ all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/printharvest$E $(BIN)/lpjprint$E $(BIN)/regridsoil$E\
      $(BIN)/cdf2clm$E $(BIN)/bin2cdf$E $(BIN)/adddrain$E $(BIN)/txt2grid$E\
      $(BIN)/getcellindex$E $(BIN)/copyheader$E $(BIN)/addheader$E\
-     $(BIN)/mathclm$E $(BIN)/cutclm$E
+     $(BIN)/mathclm$E $(BIN)/cutclm$E $(BIN)/cvrtclm$E $(BIN)/manage2js$E\
+     $(BIN)/headersize$E $(BIN)/regridirrig$E
 
 clean:
 	$(RM) $(RMFLAGS) $(OBJS)
@@ -92,12 +95,19 @@ clean:
             printreservoir$E setclm$E getcountry$E regridclm$E regridsoil$E\
             cdf2soil$E lpjfiles$E asc2clm$E joingrid$E clm2cdf$E soil2cdf$E\
             cff2clm$E bin2cdf$E adddrain$E txt2grid$E getcellindex$E\
-            copyheader$E addheader$E mathclm$E cutclm$E)
+            copyheader$E addheader$E mathclm$E cutclm$E cdf2bin$E cvrtclm$E\
+            manage2js$E headersize$E regridirrig$E)
 
 $(OBJS): $(HDRS)
 
 .c.$O: 
 	$(CC) $(CFLAGS) -I$(INC) -c $*.c
+
+cdf2bin.$O: cdf2bin.c
+	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) -c cdf2bin.c
+
+$(BIN)/cdf2bin$E: cdf2bin.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/cdf2bin$E cdf2bin.$O $(LPJLIBS) $(LIBS)
 
 bin2cdf.$O: bin2cdf.c
 	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) -c bin2cdf.c
@@ -138,6 +148,12 @@ $(BIN)/cdf2coord$E: cdf2coord.$O $(LPJLIBS)
 $(BIN)/joingrid$E: joingrid.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/joingrid$E joingrid.$O $(LIBDIR)/libtools.$A $(LIBS)
 
+$(BIN)/manage2js$E: manage2js.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/manage2js$E manage2js.$O $(LPJLIBS) $(LIBS)
+
+$(BIN)/cvrtclm$E: cvrtclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/cvrtclm$E cvrtclm.$O $(LPJLIBS) $(LIBS)
+
 $(BIN)/addheader$E: addheader.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/addheader$E addheader.$O $(LPJLIBS) $(LIBS)
 
@@ -175,8 +191,14 @@ $(BIN)/lpjserver$E: lpjserver.$O $(LIBDIR)/libsocket.$A $(LPJLIBS)
 $(BIN)/adddrain$E: adddrain.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/adddrain$E adddrain.$O $(LIBDIR)/libtools.$A $(LIBS)
 
+$(BIN)/regridirrig$E: regridirrig.$O $(LIBDIR)/libtools.$A
+	$(LINK) $(LNOPTS)$(BIN)/regridirrig$E regridirrig.$O $(LIBDIR)/libtools.$A $(LIBS)
+
 $(BIN)/regridclm$E: regridclm.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/regridclm$E regridclm.$O $(LIBDIR)/libtools.$A $(LIBS)
+
+$(BIN)/headersize$E: getheadersize.$O $(LIBDIR)/libtools.$A
+	$(LINK) $(LNOPTS)$(BIN)/headersize$E getheadersize.$O $(LIBDIR)/libtools.$A $(LIBS)
 
 $(BIN)/lpjfiles$E: lpjfiles.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/lpjfiles$E lpjfiles.$O $(LPJLIBS) $(LIBS)

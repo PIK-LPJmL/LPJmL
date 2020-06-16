@@ -34,7 +34,7 @@
           sunshine, annual atmospheric CO2 concentration and soil
           texture class. The simulation for each grid cell begins from
           "bare ground", requiring a "spin up" (under non-transient
-          climate) of c. 1000 years to develop equilibrium vegetation
+          climate) of c. 5000 years to develop equilibrium vegetation
           and soil structure. A restart file can be created to save
           compute time for the spin-up phase. If the Message Passing
           Interface (MPI) library is available a parallel version of
@@ -114,8 +114,8 @@
                configuration file
 
           <I>filename</I>
-               name of configuration file, default is <I>lpjml</I>.<I>conf</I> for
-               <B>lpjml</B> and <I>lpj</I>.<I>conf</I> for <B>lpj</B>.
+               name of configuration file, default is <I>lpjml</I>.<I>js</I> for
+               <B>lpjml</B> and <I>lpj</I>.<I>js</I> for <B>lpj</B>.
 
      <B>EXAMPLES</B>
           Perform simulation with input from the /scratch file system:
@@ -126,7 +126,7 @@
 
      enabled:
           Start simulation from restart file with floating point exceptions
-               <B>lpjml</B> -DFROM_RESTART -fpe lpjml.conf
+               <B>lpjml</B> -DFROM_RESTART -fpe lpjml.js
 
           For running the MPI version of the program on more than one
           task the <B>lpjsubmit</B> script has to be used.
@@ -291,11 +291,23 @@
                Outflow reservoir error. Internal error.
 
           ERROR029
-               Error in permafrost module. Internal error.  -TP
-               ERROR030 Error in global water balance. Internal error.
+               Error in permafrost module. Internal error.
 
-          ERROR031 Error in store climate function. ERROR032 No FMS
-          coupler supported.
+          ERROR030
+               Error in global water balance. Internal error.
+
+          ERROR031
+               Error in store climate function.
+
+          ERROR032
+               No FMS coupler supported.
+
+          ERROR033
+               Error initializing soil temperature
+
+          ERROR034
+               Invalid radiation model. Internal error
+
 
           Internal errors will generate a core dump and have to be
           fixed by changes in the code. A "post-mortem" analysis can
@@ -329,7 +341,7 @@
 
 
      <B>AUTHORS</B>
-          See AUTHORS file
+          For authors and contributors see AUTHORS file
 
 
      <B>COPYRIGHT</B>
@@ -338,26 +350,14 @@
 
 
      <B>SEE</B> <B>ALSO</B>
-          <B><A HREF="lpjsubmit.html">lpjsubmit(1)</A></B>, <B><A HREF="lpjcheck.html">lpjcheck(1)</A></B>, <B><A HREF="lpjliveview.html">lpjliveview(1)</A></B>, <B><A HREF="configure.sh.html">configure.sh(1)</A></B>,
-          <B><A HREF="backtrace.html">backtrace(1)</A></B>, <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="txt2clm.html">txt2clm(1)</A></B>, <B><A HREF="grid2clm.html">grid2clm(1)</A></B>,
-          <B><A HREF="cft2clm.html">cft2clm(1)</A></B>, <B><A HREF="lpjcat.html">lpjcat(1)</A></B>, <B><A HREF="lpjprint.html">lpjprint(1)</A></B>, <B><A HREF="printharvest.html">printharvest(1)</A></B>,
-          <B><A HREF="printclm.html">printclm(1)</A></B>, <B><A HREF="printheader.html">printheader(1)</A></B>, <B><A HREF="cat2bsq.html">cat2bsq(1)</A></B>, <B><A HREF="output_bsq.html">output_bsq(1)</A></B>,
-          <B><A HREF="lpj_paths.sh.html">lpj_paths.sh(1)</A></B>, <B><A HREF="lpj_paths.csh.html">lpj_paths.csh(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>,
-          <B><A HREF="lpj.conf.html">lpj.conf(5)</A></B>, <B><A HREF="lpjml_image.conf.html">lpjml_image.conf(5)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
+          <B><A HREF="lpjsubmit.html">lpjsubmit(1)</A></B>, <B><A HREF="lpjcheck.html">lpjcheck(1)</A></B>, <B><A HREF="configure.sh.html">configure.sh(1)</A></B>, <B><A HREF="backtrace.html">backtrace(1)</A></B>,
+          <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="txt2clm.html">txt2clm(1)</A></B>, <B><A HREF="grid2clm.html">grid2clm(1)</A></B>, <B><A HREF="cft2clm.html">cft2clm(1)</A></B>, <B><A HREF="lpjcat.html">lpjcat(1)</A></B>,
+          <B><A HREF="lpjprint.html">lpjprint(1)</A></B>, <B><A HREF="printharvest.html">printharvest(1)</A></B>, <B><A HREF="printclm.html">printclm(1)</A></B>, <B><A HREF="printheader.html">printheader(1)</A></B>,
+          <B><A HREF="cat2bsq.html">cat2bsq(1)</A></B>, <B><A HREF="output_bsq.html">output_bsq(1)</A></B>, <B><A HREF="lpj_paths.sh.html">lpj_paths.sh(1)</A></B>,
+          <B><A HREF="lpj_paths.csh.html">lpj_paths.csh(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>, <B><A HREF="lpj.conf.html">lpj.conf(5)</A></B>,
+          <B><A HREF="lpjml_image.conf.html">lpjml_image.conf(5)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
 
-          Contact: https://gitlab.pik-potsdam.de/lpjml/lpjml
-
-
-
-
-
-
-
-
-
-
-
-
+          Contact: https://github.com/PIK-LPJmL/LPJmL /lpjml
 
 
 

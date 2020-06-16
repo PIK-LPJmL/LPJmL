@@ -9,7 +9,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -55,6 +55,7 @@
 #define OLD_PERC 0
 #define NO_WATERUSE 0
 #define WATERUSE 1
+#define ALL_WATERUSE 2
 #define NO_RWMANAGEMENT 0
 #define RWMANAGEMENT 1
 #define RADIATION_LWDOWN 3
@@ -75,6 +76,9 @@
 #define NO_FIRE 0
 #define FIRE 1
 #define SPITFIRE 2
+#define SPITFIRE_TMAX 3
+#define NESTEROV_INDEX 0
+#define WVPD_INDEX 1
 #define NO_PRESCRIBE_BURNTAREA 0
 #define PRESCRIBE_BURNTAREA 1
 #define NO_LANDCOVER 0
@@ -89,9 +93,9 @@
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
 #ifdef IMAGE
-#define NOUT 213            /* number of output files */
+#define NOUT 224            /* number of output files */
 #else
-#define NOUT 208            /* number of output files */
+#define NOUT 219            /* number of output files */
 #endif
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
@@ -204,7 +208,7 @@
 #define MFIREC 100
 #define MNFIRE 101
 #define MFIREDI 102
-#define MFIREEMISSION 103
+#define MFIREEMISSION_CO2 103
 #define MFAPAR 104
 #define FLUX_FIREWOOD 105
 #define RHARVEST_BURNT 106
@@ -307,14 +311,25 @@
 #define AGB 203
 #define MLAKEVOL 204
 #define MLAKETEMP 205
-#define WATERUSECONS 206
-#define WATERUSEDEM 207
+#define MFIREEMISSION_CO 206
+#define MFIREEMISSION_CH4 207
+#define MFIREEMISSION_VOC 208
+#define MFIREEMISSION_TPM 209
+#define MFIREEMISSION_NOX 210
+#define MSOILTEMP 211
+#define MSWC 212
+#define ABURNTAREA 213
+#define AGB_TREE 214
+#define MPFT_LAI 215
+#define MEAN_VEGC_MANGRASS 216
+#define WATERUSECONS 217
+#define WATERUSEDEM 218
 #ifdef IMAGE
-#define YDISCHARGE 208
-#define MWD_GW 209
-#define MWD_AQ 210
-#define MWATERUSE_HIL 211
-#define WFT_VEGC 212
+#define YDISCHARGE 219
+#define MWD_GW 220
+#define MWD_AQ 221
+#define MWATERUSE_HIL 222
+#define WFT_VEGC 223
 #endif
 
 #define RANDOM_SEED 0

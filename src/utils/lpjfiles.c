@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -19,7 +19,11 @@
 
 #define LPJFILES_VERSION "1.0.002"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
+#ifdef USE_JSON
+#define dflt_conf_filename "lpjml.js" /* Default LPJ configuration file */
+#else
 #define dflt_conf_filename "lpjml.conf" /* Default LPJ configuration file */
+#endif
 #define USAGE "Usage: %s [-h] [-noinput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
 
@@ -60,7 +64,7 @@ int main(int argc,char **argv)
              "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
              "-Idir            directory to search for include files\n"
              "filename         configuration filename. Default is '%s'\n\n"
-             "Copyright (c) 2008-2012, PIK Potsdam\n",
+             "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
              dflt_conf_filename);
       if(file!=stdout)
         pclose(file);

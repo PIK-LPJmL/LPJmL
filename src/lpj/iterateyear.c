@@ -32,7 +32,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -74,9 +74,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         if(grid[cell].lakefrac<1)
         {
           /* calculate landuse change */
-          if(!config->isconstlai)
+          if(config->laimax_interpolate!=CONST_LAI_MAX)
             laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
-          if(year>config->firstyear-config->nspinup)
+          if(year>config->firstyear-config->nspinup || config->from_restart)
             landusechange(grid+cell,config->pftpar,npft,ncft,config->ntypes,
                           intercrop,istimber,year,config->pft_output_scaled);
           else if(grid[cell].ml.dam)
@@ -99,7 +99,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].output.mdischarge=grid[cell].output.mwateramount=grid[cell].ml.mdemand=0.0;
       if(!grid[cell].skip)
       {
-        initoutput_monthly(&((grid+cell)->output));
+        initoutput_monthly(&grid[cell].output,npft,config->nbiomass,ncft);
         /* Initialize random seed */
         if(israndomprec(input.climate))
           srand48(config->seed+(config->startgrid+cell)*year*month);
@@ -153,7 +153,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           fflush(stdout);
 #endif
           update_daily(grid+cell,co2,popdens,daily,day,npft,
-                       ncft,year,month,output->withdaily,intercrop,config);
+                       ncft,year,month,intercrop,config);
         }
       }
 
@@ -168,9 +168,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           wateruse(grid,npft,ncft,config);
       }
 #if defined IMAGE && defined COUPLED
-      if(output->withdaily && year>=config->firstyear-istimber*10)
+      if(config->withdailyoutput && year>=config->firstyear-istimber*10)
 #else
-      if(output->withdaily && year>=config->firstyear)
+      if(config->withdailyoutput && year>=config->outputyear)
 #endif
         fwriteoutput_daily(output,grid,day-1,year,config);
 
@@ -184,23 +184,23 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         grid[cell].output.ydischarge += grid[cell].output.mdischarge;
         if(grid[cell].discharge.next<0)
           grid[cell].output.adischarge+=grid[cell].output.mdischarge;           /* only endcell outflow */
-        grid[cell].output.mdischarge*=1e-9/ndaymonth[month];                    /* daily mean discharge per month in 1.000.000 m3 per cell */
+        grid[cell].output.mdischarge*=1e-9;                    /* monthly mean discharge per month in 1.000.000 m3 per cell */
         grid[cell].output.mres_storage*=1e-9/ndaymonth[month];                  /* mean monthly reservoir storage in 1.000.000 m3 per cell */
         grid[cell].output.mwateramount*=1e-9/ndaymonth[month];                  /* mean wateramount per month in 1.000.000 m3 per cell */
       }
       if(!grid[cell].skip)
         update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
                        cell,month),getmprec(input.climate,&grid[cell].climbuf,
-                       cell,month),month);
+                       cell,month),npft,config->nbiomass,ncft,month);
     } /* of 'for(cell=0;...)' */
 
 #if defined IMAGE && defined COUPLED
     if(year>=config->firstyear-istimber*10)
 #else
-    if(year>=config->firstyear)
+    if(year>=config->outputyear)
 #endif
       /* write out monthly output */
-      fwriteoutput_monthly(output,grid,month,year,config);
+      fwriteoutput_monthly(output,grid,npft,ncft,month,year,config);
 
   } /* of 'foreachmonth */
 
@@ -218,8 +218,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(year>config->firstyear)
       {
         printf("year=%d\n",year);
-        printf("cell=%d\n",cell);
-        printcell(grid+cell,1,ncft,input.landuse!=NULL,TRUE);
+        printf("cell=%d\n",cell+config->startgrid);
+        printcell(grid+cell,1,npft,ncft,config);
       }
 #endif
       if(config->nspinup>veg_equil_year &&
@@ -245,7 +245,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 #if defined IMAGE && defined COUPLED
   if(year>=config->firstyear-istimber*10)
 #else
-  if(year>=config->firstyear)
+  if(year>=config->outputyear)
 #endif
   {
     /* write out annual output */

@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -33,6 +33,8 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->hdate);
   output->pft_npp=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_npp);
+  output->mpft_lai=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  checkptr(output->mpft_lai);
   output->pft_gcgp=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_gcgp);
   output->gcgp_count=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));

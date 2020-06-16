@@ -8,7 +8,7 @@
 ## authors, and contributors see AUTHORS file                                  ##
 ## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
 ## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
-## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 ##                                                                             ##
 #################################################################################
 
@@ -86,8 +86,7 @@ clean:
 	(cd spitfire && $(MAKE) clean)
 	(cd netcdf && $(MAKE) clean)
 	(cd cpl && $(MAKE) clean)
-	$(RM) $(RMFLAGS) $(OBJ) getbuild.$O
-	(cd $(BINDIR) && $(RM) $(RMFLAGS) lpjml$E)
+	$(RM) $(RMFLAGS) $(OBJ) getbuild.$O $(EXE)
 
 $(OBJ): $(HDRS)
 

@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -106,17 +106,17 @@ static int nlons, nlats; //< number of cells in lon/lat directions of the boundi
 //static int *fms_to_lpj_indices = NULL; //< array to map FMS array index to LPJ cell index
 
 
-//// evaporation / transpiration is accumulated for monthly sums in the cell output structure.
-//// daily values are available only in local variables of some functions.
-//// Thus, we remember here yesterday's monthly sums, and the difference to today's values
-//// is the daily amount. The XXX_yesterday values must be reset to 0 every month.
-//static Real *mevap_yesterday = NULL, /* from bare soil */
-//  *mtransp_yesterday = NULL, /* from transpiration of the plants */
-//  *minterc_yesterday = NULL; /* should be included in the transpiration??? */
-//// mevap_lake and mevap_res are computed separately in update_daily.c ,
-//// thus we must treat those also here, and finally sum up all four evap components for passing to the coupler.
-//static Real *mevap_lake_yesterday = NULL, /* from lakes */
-//  *mevap_res_yesterday = NULL; /* evap from reservoires, if in use */
+// evaporation / transpiration is accumulated for monthly sums in the cell output structure.
+// daily values are available only in local variables of some functions.
+// Thus, we remember here yesterday's monthly sums, and the difference to today's values
+// is the daily amount. The XXX_yesterday values must be reset to 0 every month.
+static Real *mevap_yesterday = NULL, /* from bare soil */
+  *mtransp_yesterday = NULL, /* from transpiration of the plants */
+  *minterc_yesterday = NULL; /* should be included in the transpiration??? */
+// mevap_lake and mevap_res are computed separately in update_daily.c ,
+// thus we must treat those also here, and finally sum up all four evap components for passing to the coupler.
+static Real *mevap_lake_yesterday = NULL, /* from lakes */
+  *mevap_res_yesterday = NULL; /* evap from reservoires, if in use */
 
 // LPJ does not know, where runoff enters the ocean. It just stores a dead-end indicator
 // in its river routing map (cell.discharge.next == -1).
@@ -195,7 +195,7 @@ void lpj_init_
  const int *const npes_in,    /*< number of total atmosphere processes */
  const int *const layout,     /*< 2-element array with numberof PEs in lon and lat directions */
  
- /*! cell centers of corners of global grid */
+ /* ! cell centers of corners of global grid */
  const double *const glon_min_in,
  const double *const glon_max_in,
  const double *const glat_min_in,
@@ -382,7 +382,6 @@ void lpj_init_
   standtype[BIOMASS_GRASS]=biomass_grass_stand,
   standtype[KILL]=kill_stand;
 
-  enablefpe();
   /*
    * Use default communicator containing all processors. In defining your own
    * communicator it is possible to run LPJ on a subset of processors
@@ -548,7 +547,7 @@ void lpj_init_
    * The mapping is needed for storing input data from land_lad/FMS into LPJ,
    * and to extract LPJ results vice versa.
    * When running in parallel, the big problem is that LPJ uses a different
-   * domain decomposition scheme than FMS.
+   * domain decompistion scheme than FMS.
    * FMS just uses a 2-D rectangular decompistion of the global rectilinear grid.
    * The LPJ grid is not global, but contains only the catual land cells,
    * and LPJ tries to minimize inter-domain communication along river routes.
@@ -873,11 +872,11 @@ void lpj_init_
   fflush(stdout); fflush(stderr);
   MPI_Barrier(comm);
 
-  //mevap_yesterday = newvec(Real, config.ngridcell);
-  //mtransp_yesterday = newvec(Real, config.ngridcell);
-  //mevap_lake_yesterday = newvec(Real, config.ngridcell);
-  //mevap_res_yesterday = newvec(Real, config.ngridcell);
-  //minterc_yesterday = newvec(Real, config.ngridcell);
+  mevap_yesterday = newvec(Real, config.ngridcell);
+  mtransp_yesterday = newvec(Real, config.ngridcell);
+  mevap_lake_yesterday = newvec(Real, config.ngridcell);
+  mevap_res_yesterday = newvec(Real, config.ngridcell);
+  minterc_yesterday = newvec(Real, config.ngridcell);
 }
 
 
@@ -1196,45 +1195,6 @@ cpl_lpj_to_fms(const double *from_lpj, //< input data, 1-D, for each LPJ grid ce
 
 
 /**
- * Init daily output from values that are saved in the LPJ restart file.
- * We must pass back meaningful values to land_lad/FMS already in the first time step,
- * even before the invocation of lpj_update.
- * This can be done only after all else has been initialised above.
- * Note that the same code for writing out diagnostics and units conversion
- * appears in lpj_update below.
- */
-#ifdef __cplusplus
-extern "C"
-#endif
-void lpj_init_output_
-  (   /*! pass back results from LPJ */
-   double *carbon_flux_out, /* daily carbon flux from LPJ to atmosphere (gC/m2/day) */
-   double *evap_out,
-   double *runoff_out,
-   double *roughness_length_out,
-   double *surface_temp_out, /* returned in [degC] */
-   double *albedo_out,
-   /*! and finally some interface-checking args again */
-   const int *const fse
-      ) {
-  double *tmp_evap_out        = alloca(sizeof(double) * config.ngridcell);
-
-  if (*fse != 4711) { printf("Error: %s : parameter test failed: 4711 != %d\n", __FUNCTION__, *fse); fflush(stdout); abort(); }
-
-  // Copy daily output into output variables for land_lad
-  for (cell=0; cell<config.ngridcell; cell++) {
-    if (!grid[cell].skip) {
-      tmp_evap_out[cell] = grid[cell].output.dwflux;
-    } /* if (!grid[cell].skip) */
-  } /* loop over cells */
-
-  cpl_lpj_to_fms(tmp_evap_out, evap_out);
-
-}
-
-
-
-/**
  * Update LPJ by one day's time step.
  * The original main program uses one iterate() function, which loops
  * over the entire simulation time, and for every year a function iterate_year()
@@ -1251,7 +1211,6 @@ void lpj_update_
 (  const int *const Time_year, const int *const Time_month, const int *const Time_day,
    const int *const Time_hour, const int *const Time_minute, const int *const Time_seconds,
 /**     C implementation of LPJmL                                                  \n**/
-   /*! get climate status information. Fortran 90 arrays of dimension 0:je-js, 0:ie-is */
    //const double *fprec_in, //< TODO: use liquid and frozen precipitation as given by FMS
    //const double *lprec_in,
    const double *prec_in, //< currently, LPJ expects total precipitation and calculates liquid/frozen itself
@@ -1368,15 +1327,14 @@ void lpj_update_
       {
         calc_seasonality(grid,npft,ncft,&config);
         if(config.withlanduse==CONST_LANDUSE || config.withlanduse==ALL_CROPS) /* constant landuse? */
-          landuse_year=param.landuse_year_const;
-        else if(year>2000)			/* 2 lines added to use year 2000 landuse after 2000 if climate data is used */
-          landuse_year=2000;
+          landuse_year=config.landuse_year_const;
         else
           landuse_year=year;
         /* under constand landuse also keep wateruse at landuse_year_const */
         if(config.withlanduse==CONST_LANDUSE)
-          wateruse_year=param.landuse_year_const;
-        else wateruse_year=year;
+          wateruse_year=config.landuse_year_const;
+        else
+           wateruse_year=year;
 #ifdef IMAGE
         if(year>=config.start_imagecoupling)
         {
@@ -1418,17 +1376,17 @@ void lpj_update_
           /*return year*/ abort();
         }
       }
-      if (config.prescribe_landcover != NO_LANDCOVER)
+      if(config.prescribe_landcover != NO_LANDCOVER)
       {
-        if (readlandcover(input.landcover,grid,year,&config))
+        if(readlandcover(input.landcover,grid,year,&config))
         {
           fprintf(stderr,"ERROR104: Simulation stopped in readlandcover().\n");
           fflush(stderr);
-          abort();
+          /*return year*/ abort();
         }
       }
 
-      if(year>=config.firstyear)
+      if(year>=config.outputyear)
         openoutput_yearly(output,year,&config);
 
     } /* if (happynewyear) */
@@ -1465,7 +1423,7 @@ void lpj_update_
                 if(grid[cell].lakefrac<1)
                 {
                   /* calculate landuse change */
-                  if(!config.isconstlai)
+                  if(config.laimax_interpolate!=CONST_LAI_MAX)
                     laimax_manage(&grid[cell].ml.manage,config.pftpar+npft,npft,ncft,year);
                   if(year>config.firstyear-config.nspinup)
                     landusechange(grid+cell,config.pftpar,npft,ncft,config.ntypes,
@@ -1494,10 +1452,10 @@ void lpj_update_
             if(!grid[cell].skip)
             {
               initoutput_monthly(&((grid+cell)->output));
-              //// reset yesterday's saved values
-              //mevap_yesterday[cell] = mtransp_yesterday[cell] = 0.0;
-              //mevap_lake_yesterday[cell] = mevap_res_yesterday[cell] = 0.0;
-              //minterc_yesterday[cell] = 0.0; 
+              // reset yesterday's saved values
+              mevap_yesterday[cell] = mtransp_yesterday[cell] = 0.0;
+              mevap_lake_yesterday[cell] = mevap_res_yesterday[cell] = 0.0;
+              minterc_yesterday[cell] = 0.0; 
               /* Initialize random seed */
               if(israndomprec(input.climate))
                 srand48(config.seed+(config.startgrid+cell)*year*month);
@@ -1563,7 +1521,7 @@ void lpj_update_
             {
               if(config.ispopulation)
                 popdens=getpopdens(input.popdens,cell);
-              grid[cell].output.dcflux=grid[cell].output.dwflux=0;
+              grid[cell].output.dcflux=0;
               initoutput_daily(&(grid[cell].output.daily));
               /* get daily values for temperature, precipitation and sunshine */
 
@@ -1616,7 +1574,7 @@ void lpj_update_
 
           }
 
-          if(output->withdaily && year>=config.firstyear)
+          if(output->withdaily && year>=config.outputyear)
             fwriteoutput_daily(output,grid,dayofyear-1,year,&config);
 
           /******* prepare OUTPUT for land_lad ****************************************         \n**/
@@ -1673,26 +1631,24 @@ void lpj_update_
               tmp_carbon_flux_out[cell] = grid[cell].output.dcflux;
               //tmp_carbon_flux_out[cell] = pe; for testing the domain mapping
 
-              //// Evaporation: accumulated monthly in cell[].output.mevap.
-              ////              The daily value is stored in a local variable in update_daily
-              //// WvB: evap contains only the part that comes through sublimation of snow into the atmosphere,
-              ////      and is calculated in the permafrost module only.
-              ////      Other sources are given through output->mtransp.
-              //// Here we remember yesterdays's monthly accumulated transpiration and evaporation,
-              //// and subtract it from today's monthly sum.
-              ////assert(lpj_to_fms_indices[cell] >= 0 && lpj_to_fms_indices[cell] < nlons*nlats);
-              //tmp_evap_out[cell] = 
-              //  grid[cell].output.mtransp - mtransp_yesterday[cell]
-              //  + grid[cell].output.mevap - mevap_yesterday[cell]
-              //  + grid[cell].output.mevap_lake - mevap_lake_yesterday[cell]
-              //  + grid[cell].output.mevap_res - mevap_res_yesterday[cell];
+              // Evaporation: accumulated monthly in cell[].output.mevap.
+              //              The daily value is stored in a local variable in update_daily
+              // WvB: evap contains only the part that comes through sublimation of snow into the atmosphere,
+              //      and is calculated in the permafrost module only.
+              //      Other sources are given through output->mtransp.
+              // Here we remember yesterdays's monthly accumulated transpiration and evaporation,
+              // and subtract it from today's monthly sum.
+              //assert(lpj_to_fms_indices[cell] >= 0 && lpj_to_fms_indices[cell] < nlons*nlats);
+              tmp_evap_out[cell] = 
+                grid[cell].output.mtransp - mtransp_yesterday[cell]
+                + grid[cell].output.mevap - mevap_yesterday[cell]
+                + grid[cell].output.mevap_lake - mevap_lake_yesterday[cell]
+                + grid[cell].output.mevap_res - mevap_res_yesterday[cell];
 
-              //mtransp_yesterday[cell] = grid[cell].output.mtransp;
-              //mevap_yesterday[cell] = grid[cell].output.mevap;
-              //mevap_lake_yesterday[cell] = grid[cell].output.mevap_lake;
-              //mevap_res_yesterday[cell] = grid[cell].output.mevap_res;
-
-              tmp_evap_out[cell] = grid[cell].output.dwflux;
+              mtransp_yesterday[cell] = grid[cell].output.mtransp;
+              mevap_yesterday[cell] = grid[cell].output.mevap;
+              mevap_lake_yesterday[cell] = grid[cell].output.mevap_lake;
+              mevap_res_yesterday[cell] = grid[cell].output.mevap_res;
 
 #if 0
               // Runoff: grid[cell].discharge.dfout contains the daily runoff [m3/s]
@@ -1783,22 +1739,19 @@ void lpj_update_
 #endif
           } /* of 'for(cell=0;...)' */
 
-#ifdef IMAGE
-          if(year>=config.firstyear-istimber*10)
-#else
-            if(year>=config.firstyear)
-#endif
+            if(year>=config.outputyear)
               /* write out monthly output */
               fwriteoutput_monthly(output,grid,month,year,&config);
 
         } /* if (monthend) */ /* of 'foreachmonth */
 
         if (silvester) { /* from iterateyear_river() */
+
           for(cell=0;cell<config.ngridcell;cell++)
           {
             if(!grid[cell].skip)
             {
-              update_annual(grid+cell,npft,ncft,popdens,year,(config.prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell) : NULL,daily.isdailytemp,intercrop,&config);
+              update_annual(grid+cell,npft,ncft,popdens,year,(config.prescribe_landcover!=NO_LANDCOVER) ? getlandcover(input.landcover,cell): NULL,TRUE,intercrop,&config);
 #ifdef SAFE
               check_fluxes(grid+cell,year,cell,&config);
 #endif
@@ -1829,11 +1782,7 @@ void lpj_update_
                 grid[cell].output.surface_storage+=grid[cell].ml.resdata->dfout_irrigation_daily[i];
             }
           } /* of for(cell=0,...) */
-#ifdef IMAGE
-          if(year>=config.firstyear-istimber*10)
-#else
-            if(year>=config.firstyear)
-#endif
+            if(year>=config.outputyear)
             {
               /* write out annual output */
               fwriteoutput_annual(output,grid,year,&config);
@@ -1850,7 +1799,7 @@ void lpj_update_
     }
 
     if (silvester) { /* from iterate() */
-      if(year>=config.firstyear)
+      if(year>=config.outputyear)
       closeoutput_yearly(output,&config);
 
       /* calculating total carbon and water fluxes collected from all tasks */
@@ -1860,7 +1809,7 @@ void lpj_update_
         /* output of total carbon flux and water on stdout on root task */
         printflux(flux,cflux_total,year,&config);
         if(output->method==LPJ_SOCKET && output->socket!=NULL &&
-           year>=config.firstyear)
+           year>=config.outputyear)
           output_flux(output,flux);
         fflush(stdout); /* force output to console */
 #ifdef SAFE
@@ -1885,7 +1834,7 @@ void lpj_update_
       }
 #endif
       if(iswriterestart(&config) && year==config.restartyear)
-        fwriterestart(grid,npft,ncft,year,&config); /* write restart file */
+        fwriterestart(grid,npft,ncft,year,config.write_restart_filename,&config); /* write restart file */
     } /* if (silvester) */
 
     yesterday = dayofmonth;
@@ -1930,10 +1879,10 @@ void lpj_end_() {
   freeconfig(&config);
   cpl_free(cpl);
 
-  //free(mevap_yesterday);
-  //free(mevap_lake_yesterday);
-  //free(minterc_yesterday);
-  //free(mevap_res_yesterday);
-  //free(mtransp_yesterday);
+  free(mevap_yesterday);
+  free(mevap_lake_yesterday);
+  free(minterc_yesterday);
+  free(mevap_res_yesterday);
+  free(mtransp_yesterday);
   return /*EXIT_SUCCESS*/ ;
 }

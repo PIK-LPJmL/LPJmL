@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -51,6 +51,18 @@ typedef struct
 
 typedef enum {NO_SEASONALITY, PREC, PRECTEMP, TEMP, TEMPPREC} Seasonality;
 
+typedef enum {GS_DEFAULT, GS_MOWING, GS_GRAZING_EXT, GS_GRAZING_INT, GS_NONE} GrassScenarioType;
+typedef enum {RM_UNDEFINED, RM_GRAZING, RM_RECOVERY} RotationModeType;
+
+typedef struct
+{
+  int grazing_days;
+  int recovery_days;
+  int paddocks;
+  RotationModeType rotation_mode;
+} Rotation;
+
+
 typedef struct
 {
   Landfrac *landfrac;     /**< land use fractions */
@@ -71,6 +83,10 @@ typedef struct
   Real mdemand;           /**< monthly irrigation demand */
   Bool dam;               /**< dam inside cell (TRUE/FALSE) */
   int fixed_grass_pft;              /**< fix C3 or C4 for GRASS pft */
+  GrassScenarioType grass_scenario; /* 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
+  Real nr_of_lsus_ext;              /* nr of livestock units for extensive grazing */
+  Real nr_of_lsus_int;              /* nr of livestock units for intensive grazing */
+  Rotation rotation;                /* rotation mode and parameters for intensive grazing */
 #if defined IMAGE && defined COUPLED
   Image_data *image_data; /**< pointer to IMAGE data structure */
 #endif
@@ -115,6 +131,7 @@ extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real);
 #endif
 extern Real woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Real,Real [],Real);
+extern Real rw_irrigation(Stand *,Real,const Real [],Real);
 extern void irrig_amount_river(Cell *,const Config *);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real);
 extern void irrig_amount(Stand *,Bool,int,int);

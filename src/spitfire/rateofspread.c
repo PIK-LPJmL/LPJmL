@@ -8,13 +8,13 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
 
-#define MINER_DAMP 0.41739
+#define MINER_DAMP 0.41739 //0.17*pow(Se,-0.19), Se=1% (effective mineral content)
 #define PART_DENS 513.0
 #define heat_content_fuel 18000.0
   
@@ -46,7 +46,7 @@ Real rateofspread(Real windsp_cover,Fuel *fuel)
 
   /* converts wind_speed (m/min) to ft/min
    * for input into Rothermel's formula for phi_wind in the ROS S/R */
-  wind_forward=3.281*windsp_cover; 
+  wind_forward=3.281*windsp_cover;
 
   /* Effect of wind speed */
   phi_wind=(bet <= 0) ?  0 : c*pow(wind_forward,b)*pow(bet,-e); 
@@ -79,6 +79,5 @@ Real rateofspread(Real windsp_cover,Fuel *fuel)
     U_front = 0;
   else
     U_front=(ir * xi * (1.0 + phi_wind)) / (fuel->char_dens_fuel_ave * eps * q_ig);
-
   return U_front;
 } /* of 'rateofspread' */

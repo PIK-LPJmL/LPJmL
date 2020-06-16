@@ -39,7 +39,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -82,11 +82,11 @@ struct cell
 
 Albedo models for snow and ice on a freshwater lake
 Heather E. Henneman, Heinz G. Stefan
-St. Anthony Falls Laboratory, Department of CiÕil Engineering, UniÕersity of Minnesota, Minneapolis, MN 55414, USA
+St. Anthony Falls Laboratory, Department of Civil Engineering, University of Minnesota, Minneapolis, MN 55414, USA
 Received 19 November 1997; accepted 15 January 1999*/
 
-  Real albedo_lake; /**<for a changing albedo of lakes*/
-  Real snowpool_above_lake; /**<temporarily storing the snow mass on a lake*/
+  Real albedo_lake;         /**< for a changing albedo of lakes*/
+  Real snowpool_above_lake; /**< temporarily storing the snow mass on a lake*/
 
 #endif
   Bool skip;                /**< Invalid soil code in cell (TRUE/FALSE) */
@@ -110,10 +110,10 @@ Received 19 November 1997; accepted 15 January 1999*/
 extern void freegrid(Cell [],int,const Config *);
 extern void freecell(Cell *,int,Bool);
 extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
-                         int,int,int,int, Bool,Bool,const Config *);
+                         int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
                           Real,int,const Real [],Bool,Bool,const Config *);
-extern void update_monthly(Cell *,Real,Real,int);
+extern void update_monthly(Cell *,Real,Real,int,int,int,int);
 extern void init_annual(Cell *,int,int,int,int);
 extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,int,Bool);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
@@ -127,7 +127,7 @@ extern int iterate(Outputfile *,Cell [],Input,
 extern void iterateyear(Outputfile *,Cell [],Input,
                         Real,int,int,int,const Config *);
 extern void fwriteoutput_annual(Outputfile *,const Cell [],int,const Config *);
-extern void fwriteoutput_monthly(Outputfile *,const Cell [],int,int,const Config *);
+extern void fwriteoutput_monthly(Outputfile *,const Cell [],int,int,int,int,const Config *);
 extern void fwriteoutput_daily(Outputfile *,const Cell [],int,int,const Config *);
 extern void fwriteoutput_pft(Outputfile *,Cell [],int,int,int,const Config *);
 extern void equilsom(Cell *,int, const Pftpar []);

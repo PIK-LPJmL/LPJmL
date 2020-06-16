@@ -1,4 +1,4 @@
-.TH fopenoutput 3  "January 09, 2013" "version 4.0.001" "LPJmL programmers manual"
+.TH fopenoutput 3  "January 09, 2013" "version 4.0.002" "LPJmL programmers manual"
 .SH NAME
 fopenoutput \- creates LPJmL output files
 .SH SYNOPSIS
@@ -21,15 +21,14 @@ Pointer to LPJmL configuration data. Must be read by \fBreadconfig()\fP.
 .I nout
 Maximum number of output files.
 .SH RETURN VALUE
-Upon successful completion pointer to allocated output data is returned and NULL in case of failure.
-
+Upon successful completion pointer to allocated output data is returned or NULL in case of failure.
 .SH AUTHORS
 
-See AUTHORS file
+For authors and contributors see AUTHORS file
 
 .SH COPYRIGHT
 
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-fcloseoutput(3), readconfig(3), iterate(3), isopen(3) 
+fcloseoutput(3), readconfig(3), newgrid(3), iterate(3), isopen(3) 

@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -89,6 +89,7 @@ extern Real fpc_tree(Pft *);
 extern Real fpar_tree(const Pft *);
 extern Real alphaa_tree(const Pft *);
 extern void litter_update_tree(Litter *, Pft *,Real);
+extern void litter_update_fire_tree(Litter *, Pft *,Real);
 extern void allometry_tree(Pft *pft);
 extern Bool allocation_tree(Litter *,Pft *,Real *);
 extern Real lai_tree(const Pft *);
@@ -98,7 +99,7 @@ extern void phenology_tree(Pft *,Real,int,Bool);
 extern Bool fwrite_tree(FILE *,const Pft *);
 extern void fprint_tree(FILE *,const Pft *);
 extern Bool fread_tree(FILE *,Pft *,Bool);
-extern Bool fscanpft_tree(FILE *,Pftpar *,Verbosity);
+extern Bool fscanpft_tree(LPJfile *,Pftpar *,Verbosity);
 extern Bool isneg_tree(const Pft *);
 extern Real establishment_tree(Pft *,Real,Real,int);
 extern void init_tree(Pft *);

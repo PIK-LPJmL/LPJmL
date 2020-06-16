@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -17,7 +17,7 @@
 #define km 3.0
 #define c_roughness 0.06 /* Roughness height of vegetation below the canopy. Source: FOAM/LPJ */
 
-/*    
+/*
  *    Function snow
  *
  *    Adjust daily precipitation by snowmelt and accumulation in snowpack
@@ -32,7 +32,7 @@ Real snow_old(Real *snowpack, /**< snowpack depth (mm) */
              )                /** \return runoff (mm) */
 {
   Real runoff=0;
-  
+
   if(temp<tsnow)
   {
     *snowpack+=*prec;
@@ -48,7 +48,7 @@ Real snow_old(Real *snowpack, /**< snowpack depth (mm) */
     /* *snowmelt=km*(temp-tsnow);*/
     /* following Gerten et al. 2004 */
     *snowmelt=(1.5+0.007**prec)*(temp-tsnow);
-    if(*snowmelt>*snowpack) 
+    if(*snowmelt>*snowpack)
       *snowmelt=*snowpack;
     *snowpack-=*snowmelt;
   }
@@ -73,7 +73,7 @@ Real snow(Soil *soil,       /**< pointer to soil data */
   Real HS;    /* Height of the Snow (m) */
 
   unsigned long int heat_steps,t;
-     
+
   *snowmelt=0.0;
   /* precipitation falls as snow */
   if(temp<tsnow)
@@ -103,7 +103,7 @@ Real snow(Soil *soil,       /**< pointer to soil data */
     if(temp > T_zero)
     {
       /* TODO: snow-T to 0 before melting */
-      depth=min(soil->snowpack,snow_skin_depth); 
+      depth=min(soil->snowpack,snow_skin_depth);
       dT=th_diff_snow*timestep2sec(1.0,NSTEP_DAILY)/(depth*depth)*1000000.0
          *(temp-tsnow);
       heatflux=lambda_snow*(tsnow-T_zero+dT)/depth*1000;
@@ -114,11 +114,13 @@ Real snow(Soil *soil,       /**< pointer to soil data */
       {
         *temp_bsnow=temp;
         soil->snowpack=0.0;
+        soil->snowheight=0.0;
+        soil->snowfraction=0.0;
         return runoff;
       }
     }
     /* stability criterion for finite-difference solution */
-    dt=0.5*(soil->snowpack*soil->snowpack*1e-6)/th_diff_snow;   
+    dt=0.5*(soil->snowpack*soil->snowpack*1e-6)/th_diff_snow;
     heat_steps= (unsigned long int)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1;
     *temp_bsnow=temp;
     for (t=0; t<heat_steps;++t)
@@ -142,9 +144,9 @@ Real snow(Soil *soil,       /**< pointer to soil data */
           soil->snowpack=0.0;
           break;
         }
-        heatflux-=melt_heat/timestep2sec(1.0,heat_steps);/*[W/m2]*/   
+        heatflux-=melt_heat/timestep2sec(1.0,heat_steps);/*[W/m2]*/
         if(fabs(heatflux) < epsilon)
-          heatflux=0.0;    
+          heatflux=0.0;
         dT=heatflux*soil->snowpack*1e-3/lambda_snow;
         *temp_bsnow=soil->temp[SNOWLAYER]+dT;
       }
@@ -152,18 +154,27 @@ Real snow(Soil *soil,       /**< pointer to soil data */
       {
         soil->temp[SNOWLAYER]+=dT;
         *temp_bsnow=soil->temp[SNOWLAYER];
-      }            
+      }
     } /*foreach heatstep*/
   } /* snow present?*/
   else
     *temp_bsnow=temp;
 
  /* calculate snow height and fraction of snow coverage */
+ if(soil->snowpack>epsilon)
+ {
   HS = c_watertosnow * (soil->snowpack/1000.0); /* mm -> m */
   frsg = HS / (HS+0.5*c_roughness);
-  
+
   soil->snowheight = HS;
   soil->snowfraction = frsg;
+}
+else
+{
+  soil->snowpack=0.0;
+  soil->snowheight=0.0;
+  soil->snowfraction=0.0;
+}
 
   return runoff;
 } /* of 'snow' */

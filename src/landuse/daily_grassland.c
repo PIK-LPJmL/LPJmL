@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -18,6 +18,22 @@
 #include "grass.h"
 #include "agriculture.h"
 #include "grassland.h"
+
+static const int mowingDays[] = {152, 335}; // mowing on fixed dates 1-june or 1-dec
+
+Bool isMowingDay(int aDay)
+{
+  int i;
+  int len = sizeof(mowingDays)/sizeof(int);
+  for (i=0; i < len; i++)
+  {
+    if (aDay == mowingDays[i])
+      return TRUE;
+  }
+  return FALSE;
+}
+
+
 
 Real daily_grassland(Stand *stand, /**< stand pointer */
                      Real co2,   /**< atmospheric CO2 (ppmv) */
@@ -35,7 +51,6 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
                      int npft,   /**< number of natural PFTs */
                      int ncft,   /**< number of crop PFTs   */
                      int UNUSED(year), /**< simulation year */
-                     Bool withdailyoutput,
                      Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                      const Config *config /**< LPJ config */
                     )            /** \return runoff (mm) */
@@ -47,14 +62,13 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   Real aet_stand[LASTLAYER];
   Real green_transp[LASTLAYER];
   Real evap,evap_blue,rd,gpp,frac_g_evap,runoff,wet_all,intercept,sprink_interc;
+  Real rw_apply; /*applied irrigation water from rainwater harvesting storage, counted as green water */
   Real cover_stand,intercep_pft;
   Real *wet; /* wet from pftlist */
   Real return_flow_b; /* irrigation return flows from surface runoff, lateral runoff and percolation (mm)*/
   Real rainmelt,irrig_apply;
   Real intercep_stand; /* total stand interception (rain + irrigation) (mm)*/
   Real intercep_stand_blue; /* irrigation interception (mm)*/
-  Real rw_apply; /*applied irrigation water from rainwater harvesting storage, counted as green water */
-
   Real npp; /* net primary productivity (gC/m2) */
   Real gc_pft,gcgp;
   Real wdf; /* water deficit fraction */
@@ -200,20 +214,21 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
       output->pft_npp[(npft-config->nbiomass)+rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp;
       output->pft_npp[(npft-config->nbiomass)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp;
     }
+    output->mpft_lai[(npft-config->nbiomass)+rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=actual_lai_grass(pft);
+    output->mpft_lai[(npft-config->nbiomass)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=actual_lai_grass(pft);
     grass = pft->data;
-    if(withdailyoutput)
-      if(output->daily.cft == TEMPERATE_HERBACEOUS && data->irrigation == output->daily.irrigation)
-      {
-        output->daily.interc += intercep_pft;
-        output->daily.npp += npp;
-        output->daily.gpp += gpp;
+    if(config->withdailyoutput && output->daily.cft == TEMPERATE_HERBACEOUS && data->irrigation == output->daily.irrigation)
+    {
+      output->daily.interc += intercep_pft;
+      output->daily.npp += npp;
+      output->daily.gpp += gpp;
 
-        output->daily.croot += grass->ind.root;
-        output->daily.cleaf += grass->ind.leaf;
+      output->daily.croot += grass->ind.root;
+      output->daily.cleaf += grass->ind.leaf;
 
-        output->daily.rd += rd;
-        output->daily.assim += gpp-rd;
-      }
+      output->daily.rd += rd;
+      output->daily.assim += gpp-rd;
+    }
   }
 
   /* calculate water balance */
@@ -236,14 +251,40 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
     cleaf+=grass->ind.leaf;
     cleaf_max+=grass->max_leaf;
   }
-  if(day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365)
-  {
-    if(cleaf>cleaf_max)
+  switch(stand->cell->ml.grass_scenario)
     {
-      isphen=TRUE;
-      hfrac=1-1000/(1000+cleaf);
-    }
-  }
+      case GS_DEFAULT: // default
+        if(day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365)
+        {
+          if(cleaf>cleaf_max)
+          {
+            isphen=TRUE;
+            hfrac=1-1000/(1000+cleaf);
+          }
+        }
+        break;
+      case GS_MOWING: // mowing
+        if(isMowingDay(day))
+        {
+          if(cleaf > STUBBLE_HEIGHT_MOWING) /* 5 cm or 25 g.C.m-2 threshold */
+            isphen=TRUE;
+        }
+        break;
+      case GS_GRAZING_EXT: /* ext. grazing  */
+        stand->cell->ml.rotation.rotation_mode = RM_UNDEFINED;
+        stand->cell->ml.nr_of_lsus_ext = 0.0;
+        if(cleaf > STUBBLE_HEIGHT_GRAZING_EXT) /* minimum threshold */
+        {
+          isphen=TRUE;
+          stand->cell->ml.rotation.rotation_mode = RM_GRAZING;
+          stand->cell->ml.nr_of_lsus_ext = param.lsuha;
+        }
+        break;
+      case GS_GRAZING_INT: /* int. grazing */
+        if((cleaf > STUBBLE_HEIGHT_GRAZING_INT) || (stand->cell->ml.rotation.rotation_mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
+          isphen=TRUE;
+        break;
+    } /* of switch */
   if(isphen)
   {
     harvest=harvest_stand(output,stand,hfrac);
@@ -280,7 +321,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   }
 
 
-  if(withdailyoutput)
+  if(config->withdailyoutput)
   {
     foreachpft(pft,p,&stand->pftlist)
       if(output->daily.cft == TEMPERATE_HERBACEOUS && data->irrigation == output->daily.irrigation)
@@ -347,6 +388,8 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   output->cft_temp[rmgrass(ncft)+data->irrigation*(ncft+NGRASS)]+=climate->temp;
   output->cft_prec[rmgrass(ncft)+data->irrigation*(ncft+NGRASS)]+=climate->prec;
   output->cft_srad[rmgrass(ncft)+data->irrigation*(ncft+NGRASS)]+=climate->swdown;
+  foreachpft(pft, p, &stand->pftlist)
+    output->mean_vegc_mangrass+=vegc_sum(pft);
 
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw_grassland(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,

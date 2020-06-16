@@ -3,6 +3,7 @@
 /**      e  s  t  a  b  l  i  s  h  m  e  n  t  p  f  t  .  c                      \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
 /**     Function calculates establishment in population                            \n**/
 /**     Simulates population increase through establishment each                   \n**/
 /**     simulation year for trees and grasses and introduces new PFTs if           \n**/
@@ -15,7 +16,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -25,7 +26,7 @@
 
 Real establishmentpft(Stand *stand,        /**< Stand pointer  */
                       const Pftpar *pftpar,/**< PFT parameter array */
-                      int npft,            /**< number of PFTs */
+                      int npft,            /**< number of natural PFTs */
                       int ntypes,          /**< number of different PFT classes */
                       Real aprec,          /**< annual precipitation (mm) */
                       int year             /**< simulation year (AD) */
@@ -52,7 +53,7 @@ Real establishmentpft(Stand *stand,        /**< Stand pointer  */
   printf("ESTAB %s: %g %d\n",stand->type->name,stand->frac,stand->prescribe_landcover);
   printf("Number of pfts: %d\n",stand->pftlist.n);
   for(p=0;p<npft;p++)
-    printf("%s ",present[p] ? "true" : "false");
+    printf("%s ",bool2str(present[p]));
   printf("\n");
 #endif
   for(t=0;t<ntypes;t++)
@@ -74,21 +75,17 @@ Real establishmentpft(Stand *stand,        /**< Stand pointer  */
   fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
   {
-    pft->prescribe_fpc = FALSE;
-    if (stand->prescribe_landcover == LANDCOVERFPC && pftpar[p].cultivation_type==NONE && stand->type->landusetype==NATURAL)
-    {
-       pft->prescribe_fpc = TRUE;
-    }
+    pft->prescribe_fpc=(stand->prescribe_landcover == LANDCOVERFPC && pft->par->cultivation_type==NONE && stand->type->landusetype==NATURAL);
     fpc_obs_cor = 1;
-    if (stand->prescribe_landcover !=NO_LANDCOVER &&  pftpar[p].cultivation_type==NONE && stand->type->landusetype==NATURAL)
+    if (stand->prescribe_landcover !=NO_LANDCOVER &&  pft->par->cultivation_type==NONE && stand->type->landusetype==NATURAL)
     {
       pft->fpc_obs = stand->landcover[pft->par->id];
       /* adjust observed FPC by stand fraction of natural vegetation */
       fpc_obs_cor = pft->fpc_obs + (1 - stand->frac) * pft->fpc_obs;
     }
-    if ((stand->prescribe_landcover == LANDCOVERFPC && fpc_obs_cor > 0 && pft->fpc < fpc_obs_cor &&  pftpar[p].cultivation_type==NONE && stand->type->landusetype==NATURAL) ||
-        (stand->prescribe_landcover == LANDCOVEREST && pft->fpc_obs > 0 &&  pftpar[p].cultivation_type==NONE && stand->type->landusetype==NATURAL) ||
-        (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pftpar[p].cultivation_type==NONE && istree(pft) &&
+    if ((stand->prescribe_landcover == LANDCOVERFPC && fpc_obs_cor > 0 && pft->fpc < fpc_obs_cor &&  pft->par->cultivation_type==NONE && stand->type->landusetype==NATURAL) ||
+        (stand->prescribe_landcover == LANDCOVEREST && pft->fpc_obs > 0 &&  pft->par->cultivation_type==NONE && stand->type->landusetype==NATURAL) ||
+        (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pft->par->cultivation_type==NONE && istree(pft) &&
 #ifdef DAILY_ESTABLISHMENT
         !pft->established &&
 #endif
@@ -102,7 +99,7 @@ Real establishmentpft(Stand *stand,        /**< Stand pointer  */
   fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
   {
-     if (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pftpar[p].cultivation_type==NONE && !istree(pft) &&
+     if (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pft->par->cultivation_type==NONE && !istree(pft) &&
 #ifdef DAILY_ESTABLISHMENT
         !pft->established &&
 #endif

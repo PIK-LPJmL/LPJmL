@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -72,7 +72,6 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
     soil->temp[l]=0.0;
   for (l=0;l<=NFUELCLASS;l++)
     soil->litter.avg_fbd[l]=0.0;
-  soil->snowheight=soil->snowfraction=0;
-  soil->rw_buffer=0;
+  soil->snowheight=soil->snowfraction=soil->rw_buffer=0;
   return FALSE;
 } /* of 'initsoil' */

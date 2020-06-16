@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -21,7 +21,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE 999
-#define USAGE "%s [-scale s] [-compress level] [-descr d] name gridfile soilfile netcdffile\n"
+#define USAGE "%s [-scale s] [-global] [-compress level] [-descr d] name gridfile soilfile netcdffile\n"
 
 typedef struct
 {
@@ -62,9 +62,9 @@ static Cdf *create_cdf(const char *filename,
   }
   cdf->index=array;
   for(i=0;i<array->nlon;i++)
-    lon[i]=array->lon_min+i*res.lon;
+    lon[i]=(float)(array->lon_min+i*res.lon);
   for(i=0;i<array->nlat;i++)
-    lat[i]=array->lat_min+i*res.lat;
+    lat[i]=(float)(array->lat_min+i*res.lat);
 #ifdef USE_NETCDF4
   rc=nc_create(filename,(compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
 #else
@@ -188,8 +188,10 @@ int main(int argc,char **argv)
   char *descr,*endptr,*cmdline;
   float lon,lat;
   Filename filename;
+  Bool isglobal;
   descr=NULL;
   compress=0;
+  isglobal=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -203,6 +205,8 @@ int main(int argc,char **argv)
         }
         descr=argv[++iarg];
       }
+      else if(!strcmp(argv[iarg],"-global"))
+        isglobal=TRUE;
       else if(!strcmp(argv[iarg],"-compress"))
       {
         if(argc==iarg+1)
@@ -264,7 +268,7 @@ int main(int argc,char **argv)
     fclose(file);
     return EXIT_FAILURE;
   }
-  index=createindex(grid,ngrid,res);
+  index=createindex(grid,ngrid,res,isglobal);
   if(index==NULL)
     return EXIT_FAILURE;
   free(grid);

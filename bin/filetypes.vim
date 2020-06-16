@@ -1,6 +1,6 @@
 " ***************************************************************************
 " **                                                                       **
-" **           f  i  l  e  t  y  p  e  s  .  v  i m                        **
+" **           f  i  l  e  t  y  p  e  s  .  v  i  m                       **
 " **                                                                       **
 " **    This files sets for editor vim syntax filetypes for *.conf and     **
 " **    and *.par files to c.                                              **

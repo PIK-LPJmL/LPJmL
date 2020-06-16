@@ -9,7 +9,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -150,32 +150,30 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
 #endif
   }
   free(image_data);
-// 0000000000000000000000000000000000000000000000
   /* get timber harvest for woodplantattion shares from IMAGE */
   image_data = newvec(float,config->ngridcell);
   check(image_data);
-  /*printf("getting timber harvest for woodplantations shares mutliarray, %d (DYNgridreal)\n",
-  config->ngridcell);*/
+#ifdef DEBUG_IMAGE
   printf("getting timber harvest shares\n");
   fflush(stdout);
+#endif
   if(readfloat_socket(config->in, image_data, config->ngridcell))
   {
     free(image_data);
     return TRUE;
   }
 
-//#ifdef DEBUG_IMAGE
+#ifdef DEBUG_IMAGE
   printf("assigning timber harvest shares\n");
   fflush(stdout);
-//#endif
+#endif
   for(i=0;i<config->ngridcell;i++)
   {
     if(!grid[i].skip)
     {
       grid[i].ml.image_data->timber_frac_wp=(Real)image_data[i];
-      /*if(image_data[i]>0) printf("cell %d th %g\n",i,grid[i].image_data->timber_frac_wp);*/
     }
-//#ifdef DEBUG_IMAGE
+#ifdef DEBUG_IMAGE
     if(grid[i].coord.lon>-2.5 && grid[i].coord.lon<-2.0 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
     {
       printf("cell %d %g/%g\n",i,grid[i].coord.lon,grid[i].coord.lat);
@@ -183,28 +181,27 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
       printf("th[%d]:%g %g\n",i,grid[i].ml.image_data->timber_frac_wp,image_data[i]);
       fflush(stdout);
     }
-//#endif
+#endif
   }
   free(image_data);
 
-// 111111111111111111111111111111111111111
-/* get water consumption from IMAGE */
+  /* get water consumption from IMAGE */
   image_data = newvec(float, config->ngridcell);
   check(image_data);
-  /*printf("getting timber harvest for woodplantations shares mutliarray, %d (DYNgridreal)\n",
-  config->ngridcell);*/
+#ifdef DEBUG_IMAGE
   printf("getting water consumption\n");
   fflush(stdout);
+#endif
   if (readfloat_socket(config->in, image_data, config->ngridcell))
   {
      free(image_data);
      return TRUE;
   }
 
-  //#ifdef DEBUG_IMAGE
+#ifdef DEBUG_IMAGE
   printf("assigning water consumption\n");
   fflush(stdout);
-  //#endif
+#endif
   for (i = 0; i<config->ngridcell; i++)
   {
      if (!grid[i].skip)
@@ -214,7 +211,7 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
         grid[i].discharge.wateruse = grid[i].discharge.wateruse * 1000;
         grid[i].output.waterusecons = grid[i].discharge.wateruse;
      }
-     //#ifdef DEBUG_IMAGE
+#ifdef DEBUG_IMAGE
      if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
      {
         printf("cell %d %g/%g\n", i, grid[i].coord.lon, grid[i].coord.lat);
@@ -222,29 +219,27 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
         printf("th[%d]:%g %g\n", i, grid[i].ml.image_data->totwatcons, image_data[i]);
         fflush(stdout);
      }
-     //#endif
+#endif
   }
   free(image_data);
 
-// 222222222222222222222222222222222222222
-
-/* get water demand from IMAGE */
+  /* get water demand from IMAGE */
   image_data = newvec(float, config->ngridcell);
   check(image_data);
-  /*printf("getting timber harvest for woodplantations shares mutliarray, %d (DYNgridreal)\n",
-  config->ngridcell);*/
+#ifdef DEBUG_IMAGE
   printf("getting water demand\n");
   fflush(stdout);
+#endif
   if (readfloat_socket(config->in, image_data, config->ngridcell))
   {
      free(image_data);
      return TRUE;
   }
 
-  //#ifdef DEBUG_IMAGE
+#ifdef DEBUG_IMAGE
   printf("assigning water waterdemand\n");
   fflush(stdout);
-  //#endif
+#endif
   for (i = 0; i<config->ngridcell; i++)
   {
      if (!grid[i].skip)
@@ -254,7 +249,7 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
         grid[i].discharge.wateruse_wd = grid[i].discharge.wateruse_wd * 1000;
         grid[i].output.waterusedem = grid[i].discharge.wateruse_wd;
      }
-     //#ifdef DEBUG_IMAGE
+#ifdef DEBUG_IMAGE
      if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
      {
         printf("cell %d %g/%g\n", i, grid[i].coord.lon, grid[i].coord.lat);
@@ -262,11 +257,10 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
         printf("th[%d]:%g %g\n", i, grid[i].ml.image_data->totwatdem, image_data[i]);
         fflush(stdout);
      }
-     //#endif
+#endif
   }
   free(image_data);
 
-  // 33333333333333333333333333333
   // get takeaway fractions from IMAGE (4 values 1D array)
   image_takeaway = newvec(Takeaway,config->ngridcell);
   check(image_takeaway);
@@ -330,8 +324,6 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
   
   image_data_int = newvec(int,config->ngridcell);
   check(image_data_int);
-  /*printf("getting timber burnt shares mutliarray, %d (DYNgridint)\n",
-  config->ngridcell);*/
 #ifdef USE_MPI
   if(mpi_read_socket(config->in,image_data_int,MPI_INT,config->nall,counts,
                      offsets,config->rank,config->comm))

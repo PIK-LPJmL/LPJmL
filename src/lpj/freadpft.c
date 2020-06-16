@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -37,10 +37,9 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
   }
   pft->par=pftpar+id;
   pft->stand=stand;
-  pft->phen_gsi.tmin=pft->phen_gsi.light=0;
-  pft->phen_gsi.wscal=pft->phen_gsi.tmax=1;
   pft->prescribe_fpc=FALSE;
   pft->fpc_obs=0;
+  freadreal((Real *)(&pft->phen_gsi),sizeof(Phenology)/sizeof(Real),swap,file);
   freadreal1(&pft->wscal,swap,file);
   freadreal1(&pft->wscal_mean,swap,file);
   freadreal1(&pft->aphen,swap,file);

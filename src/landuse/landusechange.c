@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -355,7 +355,9 @@ static void landexpansion(Cell *cell,            /* cell pointer */
       } /* of switch */
       data=mixstand->data;
       data->irrigation=irrigation;
+#if defined IMAGE || defined INCLUDEWP
       mixstand->frac_change=-difffrac;
+#endif
       foreachpft(pft,q,&mixstand->pftlist)
       {
         flux_estab=establishment(pft,0,0,n_est[pft->par->type]);
@@ -823,7 +825,9 @@ void landusechange(Cell *cell,            /**< pointer to cell */
     {
       stand=getstand(cell->standlist,s);
       difffrac=stand->frac-cell->ml.landfrac[i].woodplantation;
+#if defined IMAGE || defined INCLUDEWP
       stand->frac_change = -difffrac;
+#endif
       if(difffrac>epsilon)
         grasslandreduction(cell,difffrac,pftpar,intercrop,npft,s,stand,istimber,ncft,pft_output_scaled,year);
       else if(difffrac<-epsilon)
@@ -877,8 +881,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
       }
       cell->ml.image_data->timber_frac=0.0;
     }
-
-  /* LdW check of sum of fractions is 1.0 */
+  /* check that sum of fractions is 1.0 */
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 
   /* check if there is more than 1 natural stand */

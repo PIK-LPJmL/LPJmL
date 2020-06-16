@@ -11,7 +11,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -34,8 +34,8 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
     update_reservoir_annual(cell);
   annual_climbuf(&cell->climbuf);
   if(config->sdate_option==NO_FIXED_SDATE ||
-    (config->sdate_option==FIXED_SDATE && year<=param.sdate_fixyear)||
-    (config->sdate_option==PRESCRIBED_SDATE && year<=param.sdate_fixyear))
+    (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear)||
+    (config->sdate_option==PRESCRIBED_SDATE && year<=config->sdate_fixyear))
     cell->climbuf.atemp_mean20_fix=cell->climbuf.atemp_mean20;
 
   /* count number of years without harvest

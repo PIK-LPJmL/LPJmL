@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -22,7 +22,10 @@ Cropdates *freadcropdates(FILE *file, /**< Pointer to binary file */
   Cropdates *cropdates;
   cropdates=newvec(Cropdates,ncft);
   if(cropdates==NULL)
+  {
+    printallocerr("cropdates");
     return NULL;
+  }
   freadint((int *)cropdates,sizeof(Cropdates)/sizeof(int)*ncft,swap,file);
   return cropdates;
 } /* of 'freadcropdates' */

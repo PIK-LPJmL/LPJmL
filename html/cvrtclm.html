@@ -1,0 +1,69 @@
+<HTML>
+<HEAD>
+<TITLE>cvrtclm.1</TITLE>
+</HEAD>
+<BODY>
+<H1>cvrtclm.1</H1>
+<HR>
+<PRE>
+<!-- Manpage converted by man2html 3.0.1 -->
+     <B>NAME</B>
+          cvrtclm - convert version of clm file to latest version 3
+
+     <B>SYNOPSIS</B>
+          <B>cvtrclm</B> [-type {byte|short|int|float|double}] [-scale s]
+          [-cellsize size] <I>infile</I> <I>outfile</I>
+
+     <B>DESCRIPTION</B>
+          Program converts clm file into clm file with version 3. For
+          version 1 file cellsize and scaling factor have to be
+          specified, if they differ from default values. For version 2
+          type has to be specified if different from short.
+
+     <B>OPTIONS</B>
+          -type {byte|short|int|float|double}
+               Set type of data in header, default is short
+
+          -scale s
+               set scaling factor in header, default is 1.
+
+          -cellsize size
+               set cell size in header, default is 0.5.
+
+          <I>infile</I>
+               filename of clm file to convert
+
+          <I>outfile</I>
+               filename of clm data file written. Must differ from
+               infile.
+
+     <B>EXAMPLES</B>
+          Convert clm wateruse data file to version 3:
+               <B>cvrtclm</B> -type int wateruse_1900-2000.bin
+               wateruse_1900-2000_v3.clm
+
+     <B>EXIT</B> <B>STATUS</B>
+          <B>cvrtclm</B> returns a zero exit status if the clm file is
+          created.  Non zero is returned in case of failure.
+
+
+     <B>AUTHORS</B>
+          For authors and contributors see AUTHORS file
+
+
+     <B>COPYRIGHT</B>
+          (C) Potsdam Institute for Climate Impact Research (PIK), see
+          COPYRIGHT file
+
+
+     <B>SEE</B> <B>ALSO</B>
+          <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="asc2clm.html">asc2clm(1)</A></B>, <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="grid2clm.html">grid2clm(1)</A></B>, <B><A HREF="cft2clm.html">cft2clm(1)</A></B>,
+          <B><A HREF="catclm.html">catclm(1)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
+</PRE>
+<HR>
+<ADDRESS>
+Man(1) output converted with
+<a href="http://www.oac.uci.edu/indiv/ehood/man2html.html">man2html</a>
+</ADDRESS>
+</BODY>
+</HTML>

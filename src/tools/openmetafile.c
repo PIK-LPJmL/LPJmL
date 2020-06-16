@@ -24,7 +24,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -37,12 +37,14 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
                    Bool isout /**< error output (TRUE/FALSE) */
                   )           /** \return file pointer to open file or NULL */
 {
-  FILE *file;
+  LPJfile file;
+  FILE *data;
   String key,value;
   char *name,*path,*fullname;
   int index;
+  file.isjson=FALSE;
   /* open description file */
-  if((file=fopen(filename,"rb"))==NULL)
+  if((file.file.file=fopen(filename,"rb"))==NULL)
   {
     if(isout)
       printfopenerr(filename);
@@ -53,103 +55,103 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
   *swap=FALSE;
   *offset=0;
   name=NULL;
-  while(!fscantoken(file,key))
+  while(!fscantoken(file.file.file,key))
     if(!strcmp(key,"firstcell"))
     {
-      if(fscanint(file,&header->firstcell,"firstcell",isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->firstcell,"firstcell",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
     }
     else if(!strcmp(key,"ncell"))
     {
-      if(fscanint(file,&header->ncell,"ncell",isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->ncell,"ncell",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
     }
     else if(!strcmp(key,"firstyear"))
     {
-      if(fscanint(file,&header->firstyear,"firstyear",isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->firstyear,"firstyear",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
     }
     else if(!strcmp(key,"lastyear"))
     {
-      if(fscanint(file,&header->nyear,"firstyear",isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->nyear,"firstyear",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
       header->nyear-=header->firstyear-1;
     }
     else if(!strcmp(key,"nyear"))
     {
-      if(fscanint(file,&header->nyear,"nyear",isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->nyear,"nyear",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
     }
     else if(!strcmp(key,"nbands"))
     {
-      if(fscanint(file,&header->nbands,"nbands",isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->nbands,"nbands",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
     }
     else if(!strcmp(key,"offset"))
     {
-      if(fscansize(file,offset,"offset",isout ? ERR : NO_ERR))
+      if(fscansize(&file,offset,"offset",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
     }
     else if(!strcmp(key,"scalar"))
     {
-      if(fscanfloat(file,&header->scalar,"scalar",isout ? ERR : NO_ERR))
+      if(fscanfloat(&file,&header->scalar,"scalar",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
     }
     else if(!strcmp(key,"cellsize"))
     {
-      if(fscanfloat(file,&header->cellsize_lon,"cellsize_lon",isout ? ERR : NO_ERR))
+      if(fscanfloat(&file,&header->cellsize_lon,"cellsize_lon",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
-      if(fscanfloat(file,&header->cellsize_lat,"cellsize_lat",isout ? ERR : NO_ERR))
+      if(fscanfloat(&file,&header->cellsize_lat,"cellsize_lat",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
     }
     else if(!strcmp(key,"datatype"))
     {
-      if(fscanstring(file,value,isout))
+      if(fscanstring(&file,value,"datatype",FALSE,isout ? ERR : NO_ERR))
       {
         if(isout)
           readstringerr("datatype");
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
       index=findstr(value,typenames,5);
@@ -158,19 +160,19 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
         if(isout)
           fprintf(stderr,"ERROR221: Invalid datatype '%s' in '%s'.\n",value,filename);
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
       header->datatype=(Type)index;
     }
     else if(!strcmp(key,"endian"))
     {
-      if(fscanstring(file,value,isout))
+      if(fscanstring(&file,value,"endian",FALSE,isout ? ERR : NO_ERR))
       {
         if(isout)
           readstringerr("endian");
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
       if(!strcmp(value,"little"))
@@ -182,30 +184,30 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
         if(isout)
           fprintf(stderr,"ERROR221: Invalid endianness '%s' in line %d of '%s'.\n",value,getlinecount(),filename);
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
     }
     else if(!strcmp(key,"file"))
     {
-      if(fscanstring(file,value,isout))
+      if(fscanstring(&file,value,"file",FALSE,isout ? ERR : NO_ERR))
       {
         if(isout)
           readstringerr("file");
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
       name=strdup(value);
     }
     else if(!strcmp(key,"remark"))
     {
-      if(fscanstring(file,value,isout))
+      if(fscanstring(&file,value,"remark",FALSE,isout ? ERR : NO_ERR))
       {
         if(isout)
           readstringerr("remark");
         free(name);
-        fclose(file);
+        fclose(file.file.file);
         return NULL;
       }
     }
@@ -214,10 +216,10 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
       if(isout)
         fprintf(stderr,"ERROR222: Invalid key word '%s' in line %d of '%s'.\n",key,getlinecount(),filename);
       free(name);
-      fclose(file);
+      fclose(file.file.file);
       return NULL;
     }
-  fclose(file);
+  fclose(file.file.file);
   if(name==NULL)
   {
     if(isout)
@@ -250,8 +252,8 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
      name=fullname;
   }
   /* open data file */
-  if((file=fopen(name,"rb"))==NULL  && isout)
+  if((data=fopen(name,"rb"))==NULL  && isout)
     printfopenerr(name);
   free(name);
-  return file;
+  return data;
 } /* of 'openmetafile' */

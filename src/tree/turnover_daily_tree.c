@@ -8,15 +8,17 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
 #include "tree.h"
 
-void turnover_daily_tree(Litter *litter,Pft *pft,Real temp,
-                         Bool isdaily /**< daily temperature data? */
+void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
+                         Pft *pft,       /**< pointer to tree PFT */
+                         Real temp,      /**< air temperature (deg C) */
+                         Bool isdaily    /**< daily temperature data? */
                         )
 {
   Pfttree *tree;

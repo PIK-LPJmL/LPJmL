@@ -9,7 +9,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -19,7 +19,7 @@
 /* Definition of constants */
 
 #define RESTART_HEADER "LPJRESTART"
-#define RESTART_VERSION 13
+#define RESTART_VERSION 19
 #define LPJ_CLIMATE_HEADER "LPJCLIM"
 #define LPJ_CLIMATE_VERSION 3
 #define LPJ_LANDUSE_HEADER "LPJLUSE"
@@ -71,9 +71,9 @@ typedef struct
   int firstcell;      /**< index of first data item */
   int ncell;          /**< number of data item per year */
   int nbands;         /**< number of data elements per cell */
-  float cellsize_lon; /**< latitude cellsize in deg */
+  float cellsize_lon; /**< longitude cellsize in deg */
   float scalar;       /**< conversion factor*/
-  float cellsize_lat; /**< longitude cellsize in deg */
+  float cellsize_lat; /**< latitude cellsize in deg */
   Type datatype;      /**< data type in file */
 } Header;
 

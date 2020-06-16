@@ -184,6 +184,7 @@
     <ClCompile Include="src\landuse\writecountrycode.c" />
     <ClCompile Include="src\landuse\writeregioncode.c" />
     <ClCompile Include="src\lpjml.c" />
+    <ClCompile Include="src\lpj\albedo.c" />
     <ClCompile Include="src\lpj\albedo_stand.c" />
     <ClCompile Include="src\lpj\annual_natural.c" />
     <ClCompile Include="src\lpj\celldata.c" />
@@ -251,6 +252,7 @@
     <ClCompile Include="src\lpj\getnbiomass.c" />
     <ClCompile Include="src\lpj\getnwft.c" />
     <ClCompile Include="src\lpj\getoutputtype.c" />
+    <ClCompile Include="src\lpj\getsize.c" />
     <ClCompile Include="src\lpj\gp_sum.c" />
     <ClCompile Include="src\lpj\help.c" />
     <ClCompile Include="src\lpj\initconfig.c" />
@@ -281,7 +283,7 @@
     <ClCompile Include="src\lpj\noturnover_monthly.c" />
     <ClCompile Include="src\lpj\nowdf.c" />
     <ClCompile Include="src\lpj\openconfig.c" />
-    <ClCompile Include="src\lpj\outputbuffersize.c" />
+    <ClCompile Include="src\lpj\outputfilesize.c" />
     <ClCompile Include="src\lpj\outputnames.c" />
     <ClCompile Include="src\lpj\outputsize.c" />
     <ClCompile Include="src\lpj\pftlist.c" />
@@ -289,7 +291,6 @@
     <ClCompile Include="src\lpj\photosynthesis.c" />
     <ClCompile Include="src\lpj\printlicense.c" />
     <ClCompile Include="src\lpj\readconfig.c" />
-    <ClCompile Include="src\lpj\readfilename.c" />
     <ClCompile Include="src\lpj\roughnesslength.c" />
     <ClCompile Include="src\lpj\standcarbon.c" />
     <ClCompile Include="src\lpj\standlist.c" />
@@ -365,7 +366,6 @@
     <ClCompile Include="src\reservoir\outflow_reservoir.c" />
     <ClCompile Include="src\reservoir\readreservoir.c" />
     <ClCompile Include="src\reservoir\reservoir_surface_storage.c" />
-    <ClCompile Include="src\reservoir\sum_irrig_demand.c" />
     <ClCompile Include="src\reservoir\update_reservoir_annual.c" />
     <ClCompile Include="src\reservoir\update_reservoir_daily.c" />
     <ClCompile Include="src\reservoir\update_reservoir_monthly.c" />
@@ -420,6 +420,7 @@
     <ClCompile Include="src\soil\freelitter.c" />
     <ClCompile Include="src\soil\freesoil.c" />
     <ClCompile Include="src\soil\freesoilpar.c" />
+    <ClCompile Include="src\soil\fscanpool.c" />
     <ClCompile Include="src\soil\fscansoilpar.c" />
     <ClCompile Include="src\soil\fwritelitter.c" />
     <ClCompile Include="src\soil\fwritesoil.c" />
@@ -455,11 +456,13 @@
     <ClCompile Include="src\spitfire\dailyfire.c" />
     <ClCompile Include="src\spitfire\deadfuel_consumption.c" />
     <ClCompile Include="src\spitfire\firedangerindex.c" />
-    <ClCompile Include="src\spitfire\fire_emissions.c" />
+    <ClCompile Include="src\spitfire\fprintignition.c" />
     <ClCompile Include="src\spitfire\fraction_of_consumption.c" />
+    <ClCompile Include="src\spitfire\freadignition.c" />
     <ClCompile Include="src\spitfire\fuelload.c" />
     <ClCompile Include="src\spitfire\fuel_consumption_1hr.c" />
     <ClCompile Include="src\spitfire\fuel_consum_total.c" />
+    <ClCompile Include="src\spitfire\fwriteignition.c" />
     <ClCompile Include="src\spitfire\humanignition.c" />
     <ClCompile Include="src\spitfire\initfuel.c" />
     <ClCompile Include="src\spitfire\initignition.c" />
@@ -493,12 +496,17 @@
     <ClCompile Include="src\tools\freadrestartheader.c" />
     <ClCompile Include="src\tools\freemat.c" />
     <ClCompile Include="src\tools\frepeatch.c" />
+    <ClCompile Include="src\tools\fscanarray.c" />
+    <ClCompile Include="src\tools\fscanarrayindex.c" />
+    <ClCompile Include="src\tools\fscanbool.c" />
     <ClCompile Include="src\tools\fscanfcns.c" />
     <ClCompile Include="src\tools\fscanfloat.c" />
     <ClCompile Include="src\tools\fscanint.c" />
     <ClCompile Include="src\tools\fscaninteof.c" />
     <ClCompile Include="src\tools\fscanreal.c" />
+    <ClCompile Include="src\tools\fscanrealarray.c" />
     <ClCompile Include="src\tools\fscansize.c" />
+    <ClCompile Include="src\tools\fscanstruct.c" />
     <ClCompile Include="src\tools\fscanuint.c" />
     <ClCompile Include="src\tools\fwriteheader.c" />
     <ClCompile Include="src\tools\getcounts.c" />
@@ -511,7 +519,9 @@
     <ClCompile Include="src\tools\hassuffix.c" />
     <ClCompile Include="src\tools\headersize.c" />
     <ClCompile Include="src\tools\isabspath.c" />
+    <ClCompile Include="src\tools\isboolean.c" />
     <ClCompile Include="src\tools\iserror.c" />
+    <ClCompile Include="src\tools\iskeydefined.c" />
     <ClCompile Include="src\tools\list.c" />
     <ClCompile Include="src\tools\mkfilename.c" />
     <ClCompile Include="src\tools\mpi_write.c" />
@@ -522,6 +532,7 @@
     <ClCompile Include="src\tools\openrestart.c" />
     <ClCompile Include="src\tools\printflags.c" />
     <ClCompile Include="src\tools\queue.c" />
+    <ClCompile Include="src\tools\readfilename.c" />
     <ClCompile Include="src\tools\readfloatvec.c" />
     <ClCompile Include="src\tools\readintvec.c" />
     <ClCompile Include="src\tools\readrealvec.c" />
@@ -554,6 +565,7 @@
     <ClCompile Include="src\tree\isneg_tree.c" />
     <ClCompile Include="src\tree\lai_tree.c" />
     <ClCompile Include="src\tree\light_tree.c" />
+    <ClCompile Include="src\tree\litter_update_fire_tree.c" />
     <ClCompile Include="src\tree\litter_update_tree.c" />
     <ClCompile Include="src\tree\livefuel_consum_tree.c" />
     <ClCompile Include="src\tree\mix_veg_tree.c" />

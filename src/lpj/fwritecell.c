@@ -11,7 +11,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -69,7 +69,11 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(fwrite(grid[cell].balance.estab_storage_grass,sizeof(Real),2,file)!=2)
         break;
+      if(fwriteignition(file,&grid[cell].ignition))
+        break;
       if(fwrite(&grid[cell].discharge.waterdeficit,sizeof(Real),1,file)!=1)
+        break;
+      if(fwrite(grid[cell].gdd,sizeof(Real),npft, file)!=npft)
         break;
       if(fwritestandlist(file,grid[cell].standlist,npft+ncft)!=
          grid[cell].standlist->n)

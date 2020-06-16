@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -22,7 +22,7 @@ Real avgtemp(const Climate *climate, /**< pointer to climate data */
 {
   int i,n;
   Real avg;
-  n=(climate->file_temp.isdaily)  ? NDAYYEAR : NMONTH;
+  n=isdaily(climate->file_temp) ? NDAYYEAR : NMONTH;
   avg=0;
   for(i=0;i<n;i++)
     avg+=climate->data.temp[cell*n+i];

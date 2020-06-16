@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -44,7 +44,7 @@ extern Standtype kill_stand;
 extern Real daily_agriculture(Stand *,Real,const Dailyclimate *,int,
                               Real,const Real [],Real,
                               Real,Real,Real,Real,Real,Real,int,int,int,
-                              Bool,Bool,const Config *);
+                              Bool,const Config *);
 extern Bool annual_agriculture(Stand *,int,int,Real,int,Bool,Bool,const Config *);
 
 extern Bool annual_setaside(Stand *,int,int,Real,int,Bool,Bool,const Config *);

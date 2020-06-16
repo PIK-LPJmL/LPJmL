@@ -13,7 +13,8 @@
 
      <B>SYNOPSIS</B>
           <B>lpjsubmit</B> [-class c] [-group g] [-wtime time] [-blocking n]
-          [-o output] [-e error] [-q] [-nocheck] ntasks [args ...]
+          [-o output] [-e error] [-q] [-nocheck] [-norun] ntasks [args
+          ...]
 
      <B>DESCRIPTION</B>
           Script creates SLURM/LoadLeveler job control file <I>job</I>.<I>jcf</I>
@@ -30,9 +31,9 @@
                can be obtained by the <B>llclass</B> command.
 
           -group g
-               set the SLURM/LoadLeveler group. Default group is
-               'bios-x'. Valid groups are user-specific and set in the
-               /<I>home</I>/<I>loadl</I>/<I>LoadL</I>_<I>admin</I> file.
+               set the SLURM/LoadLeveler group. Valid groups are
+               user-specific and set in the /<I>home</I>/<I>loadl</I>/<I>LoadL</I>_<I>admin</I>
+               file.
 
           -wtime time
                set wall clock limit of LoadLeveler job. time must be
@@ -57,6 +58,10 @@
           -nocheck
                does not check input files and output directories.
 
+          -norun
+               does not submit job to batch queue, creates <I>slurm</I>.<I>jcf</I>
+               file only.
+
           ntasks
                set the number of parallel MPI tasks.
 
@@ -80,7 +85,7 @@
 
 
      <B>AUTHORS</B>
-          See AUTHORS file
+          For authors and contributors see AUTHORS file
 
 
      <B>COPYRIGHT</B>
@@ -90,12 +95,6 @@
 
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="lpjcheck.html">lpjcheck(1)</A></B>, <B><A HREF="lpj_paths.sh.html">lpj_paths.sh(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>
-
-
-
-
-
-
 
 
 

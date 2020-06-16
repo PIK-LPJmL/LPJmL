@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -60,7 +60,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
     mort = 0.0;
   else
     mort=mort_max/(1+param.k_mort*bm_delta/tree->ind.leaf/pft->par->sla);
-  if(mtemp_max>(isdaily) ? pft->par->twmax_daily : pft->par->twmax)
+  if(mtemp_max>((isdaily) ? pft->par->twmax_daily : pft->par->twmax))
   {
     heatstress=tree->gddtw/ramp_gddtw;
     if(heatstress>1)

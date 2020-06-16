@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -62,12 +62,13 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
   {
     freadreal(cell->balance.estab_storage_tree,2,swap,file);
     freadreal(cell->balance.estab_storage_grass,2,swap,file);
-
+    if(freadignition(file,&cell->ignition,swap))
+      return TRUE;
     /* cell has valid soilcode */
     freadreal1(&cell->discharge.waterdeficit,swap,file);
     cell->gdd=newgdd(npft);
     checkptr(cell->gdd);
-    initgdd(cell->gdd,npft);
+    freadreal(cell->gdd,npft,swap,file);
     /* read stand list */
     cell->standlist=freadstandlist(file,cell,config->pftpar,npft+ncft,soilpar,
                                    standtype,nstand,swap);

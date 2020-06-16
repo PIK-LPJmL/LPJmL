@@ -1,11 +1,11 @@
-.TH freeinput 3  "February 4, 2009" "version 4.0.001" "LPJmL programmers manual"
+.TH freeinput 3  "November 14, 2018" "version 4.0.002" "LPJmL programmers manual"
 .SH NAME
 freeinput \- Closes files and deallocates input data
 .SH SYNOPSIS
 .nf
 \fB#include "lpj.h"
 
-void freeinput(Input \fIinput\fB);
+void freeinput(Input \fIinput\fB,Bool \fIisroot\fB);
 
 .fi
 .SH DESCRIPTION
@@ -14,12 +14,14 @@ The argument of \fBfreeinput\fP is:
 .TP
 .I input
 Pointer to input data.  Must be initialized by \fBinitinput()\fP.
+.TP
+.I isroot
+task is root task.
 .SH RETURN VALUE
 None.
-
 .SH AUTHORS
 
-See AUTHORS file
+For authors and contributors see AUTHORS file
 
 .SH COPYRIGHT
 

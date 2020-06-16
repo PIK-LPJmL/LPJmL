@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -50,7 +50,7 @@ Real deadfuel_consumption(const Litter *litter, /* litter pools */
 
   /*1000hr fuel consumption, not influencing rate of spread or I_surface (Rothermel 1972)*/
   /*Approximate form. No data. */
-  fuel->deadfuel_consum[3]=(-0.8*fuel->mw_weight+0.8)*(1.0-MINER_TOT)*fire_frac;
+  fuel->deadfuel_consum[3]=(-0.8*fuel->mw_weight+0.8);
 
   /* total fuel consumption (without 1000hr fuel) in g Biomass per m2 i.e. "/0.45"!!!
    * Used to calculate fire intensity in the FLAMING FRONT.
@@ -60,7 +60,9 @@ Real deadfuel_consumption(const Litter *litter, /* litter pools */
   {
     fuel_consum += fuel->deadfuel_consum[0]*litter->ag[l].trait.leaf;
     for (i=0; i<NFUELCLASS-1;i++)
+    {
       fuel_consum += fuel->deadfuel_consum[i]*litter->ag[l].trait.wood[i];
-  }     
+    }
+  }   
   return c2biomass(fuel_consum);   
 } /* of 'deadfuel_consumption' */

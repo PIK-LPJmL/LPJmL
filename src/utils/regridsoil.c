@@ -9,7 +9,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -24,7 +24,7 @@ int main(int argc,char **argv)
   Coordfile grid;
   float lon,lat;
   Coord res,res2;
-  int i,j,setversion,ngrid,ngrid2;
+  int i,j,setversion,ngrid,ngrid2,count;
   Filename filename;
   setversion=READ_VERSION;
   same=FALSE;
@@ -122,16 +122,17 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error creating '%s': %s.\n",argv[4],strerror(errno));
     return EXIT_FAILURE;
   }
+  count=0;
   for(i=0;i<ngrid2;i++)
   {
-    if(i %(ngrid2/10)==0)
+    if(ngrid2>10 && (i %(ngrid2/10)==0))
     {
       printf("\b\b\b\b\b%3d%%]",(i/(ngrid2/10))*10);
       fflush(stdout);
     }
 #ifdef DEBUG
     printf("%d ",i);
-    printcoord(c2[i]); 
+    printcoord(c2+i); 
     fputs(":",stdout);
 #endif
     for(j=0;j<ngrid;j++)
@@ -147,15 +148,17 @@ int main(int argc,char **argv)
         break;
       }
     }
-#ifdef DEBUG
-    printf("HIER \n");
-#endif
     if(j==ngrid)
+    {
       fwrite(&zero,1,1,file);
+      count++;
+    }
     else
       fwrite(soil+j,1,1,file);
   }
-  printf("\n");
+  putchar('\n');
+  if(count)
+    fprintf(stderr,"Warning: %d cells not found, soilcode set to zero.\n",count);
   fclose(file);
   return EXIT_SUCCESS;
 }  /* of 'main' */

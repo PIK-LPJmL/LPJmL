@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -43,7 +43,7 @@ Bool readdata_netcdf(const Climatefile *file,Real data[],const Cell grid[],
     start=1;
   counts[start]=file->nlat;
   counts[start+1]=file->nlon;
-  switch(file->type)
+  switch(file->datatype)
   {
     case LPJ_FLOAT:
       f=newvec(float,file->nlon*file->nlat*file->var_len);

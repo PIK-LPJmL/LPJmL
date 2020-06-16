@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -38,15 +38,12 @@ static void fprintfilename(FILE *file,Filename filename)
     fprintf(file,"%s\n",filename.name);
 } /* of 'fprintfilename' */
 
-void fprintfiles(FILE *file,   /**< File pointer to text output file */
-                 Bool withinput, /**< list input data files (TRUE/FALSE) */
+void fprintfiles(FILE *file,          /**< pointer to text output file */
+                 Bool withinput,      /**< list input data files (TRUE/FALSE) */
                  const Config *config /**< LPJmL configuration */
                 )
 {
-  char *lpjroot;
   int i,j;
-  lpjroot=getenv(LPJROOT);
-  fprintf(file,"%s/lpjml-" LPJ_VERSION ".tar.gz\n",(lpjroot==NULL) ? "." : lpjroot);
   if(isreadrestart(config))
     fprintf(file,"%s\n",config->restart_filename);
   if(withinput)
@@ -72,12 +69,14 @@ void fprintfiles(FILE *file,   /**< File pointer to text output file */
   else
     fprintfilename(file,config->cloud_filename);
   fprintf(file,"%s\n",config->co2_filename.name);
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fprintfilename(file,config->tamp_filename);
-    if(config->tamp_filename.fmt==CDF)
+    if(config->tmax_filename.name!=NULL)
       fprintfilename(file,config->tmax_filename);
     fprintfilename(file,config->wind_filename);
+    if(config->fdi==WVPD_INDEX)
+      fprintfilename(file,config->humid_filename);
     fprintfilename(file,config->lightning_filename);
     fprintfilename(file,config->human_ignition_filename);
   }
@@ -85,6 +84,8 @@ void fprintfiles(FILE *file,   /**< File pointer to text output file */
     fprintfilename(file,config->popdens_filename);
   if(config->grassfix_filename.name!=NULL)
     fprintf(file,"%s\n",config->grassfix_filename.name);
+  if(config->grassharvest_filename.name!=NULL)
+    fprintf(file,"%s\n",config->grassharvest_filename.name);
   if(config->withlanduse!=NO_LANDUSE)
   {
     fprintf(file,"%s\n",config->countrycode_filename.name);
@@ -110,7 +111,7 @@ void fprintfiles(FILE *file,   /**< File pointer to text output file */
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,"%s\n",config->neighb_irrig_filename.name);
   }
-  if(config->wateruse_filename.name!=NULL)
+  if(config->wateruse)
     fprintf(file,"%s\n",config->wateruse_filename.name);
 #ifdef IMAGE
   if (config->wateruse_wd_filename.name != NULL)

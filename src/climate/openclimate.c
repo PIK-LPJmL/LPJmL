@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -31,7 +31,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   file->fmt=filename->fmt;
   if(filename->fmt==FMS)
   {
-    file->isdaily=TRUE;
+    file->time_step=DAY;
     file->firstyear=config->firstyear;
     return FALSE;
   }
@@ -56,25 +56,47 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
         s=malloc(strlen(file->filename)+12);
         check(s);
         sprintf(s,file->filename,file->firstyear);
-        openclimate_netcdf(file,s,filename->var,units,config);
+        openclimate_netcdf(file,s,filename->time,filename->var,units,config);
         free(s);
       }
 #ifdef USE_MPI
-      MPI_Bcast(&file->isdaily,1,MPI_INT,0,config->comm);
+      MPI_Bcast(&file->time_step,1,MPI_INT,0,config->comm);
 #endif
-      if(isroot(*config))
-        free_netcdf(file->ncid);
+      closeclimate_netcdf(file,isroot(*config));
+      if(file->time_step==MISSING_TIME)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR436: Time axis missing in '%s'.\n",file->filename);
+        return TRUE;
+      }
       file->oneyear=TRUE;
       file->units=units;
       file->nyear=last-file->firstyear+1;
       if(file->filename==NULL)
         return TRUE;
-      file->n=(file->isdaily) ? NDAYYEAR*config->ngridcell : NMONTH*config->ngridcell;
+      file->n=isdaily(*file) ? NDAYYEAR*config->ngridcell : NMONTH*config->ngridcell;
       file->var=filename->var;
       return FALSE;
     }
     else
-      return mpi_openclimate_netcdf(file,filename->name,filename->var,units,config);
+    {
+      if(mpi_openclimate_netcdf(file,filename,units,config))
+        return TRUE;
+      if(file->time_step==MISSING_TIME)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR436: Time axis missing in '%s'.\n",filename->name);
+        return TRUE;
+      }
+      if(file->var_len>1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+                  (int)file->var_len,filename->name);
+        return TRUE;
+      }
+      return FALSE;
+    }
   }
   if((file->file=openinputfile(&header,&file->swap,
                                filename,
@@ -113,7 +135,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   else
     file->offset=(config->startgrid-header.firstcell)*header.nbands*
                  typesizes[file->datatype]+headersize(headername,version)+offset;
-  file->isdaily=(header.nbands==NDAYYEAR);
+  file->time_step=(header.nbands==NDAYYEAR) ? DAY : MONTH;
   file->size=header.ncell*header.nbands*typesizes[file->datatype];
   file->n=header.nbands*config->ngridcell;
   return FALSE;

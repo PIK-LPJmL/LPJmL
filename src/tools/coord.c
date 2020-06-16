@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -141,7 +141,9 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
   return coordfile;
 } /* of 'opencoord' */
 
-void getcellsizecoord(float *lon,float *lat,const Coordfile coordfile)
+void getcellsizecoord(float *lon,               /**< longitudinal size */
+                      float *lat,               /**< latitudinal size */
+                      const Coordfile coordfile /**< open coord file */)
 {
   *lon=coordfile->cellsize.lon;
   *lat=coordfile->cellsize.lat;
@@ -179,7 +181,7 @@ Bool readintcoord(FILE *file,      /**< pointer to binary file */
   return FALSE;
 } /* of 'readintcoord' */
 
-Bool readcoord(Coordfile coordfile, /**<  open coord file */
+Bool readcoord(Coordfile coordfile, /**< open coord file */
                Coord *coord,        /**< cell coordinate read from file */
                const Coord *resol   /**< resolution (deg) */
               )                     /** \return FALSE for successful read */
@@ -242,7 +244,7 @@ Bool readcoord(Coordfile coordfile, /**<  open coord file */
   return FALSE;
 } /* of 'readcoord' */
 
-Bool writecoord(FILE *file,        /**< file pointer */
+Bool writecoord(FILE *file,        /**< pointer to binary file */
                 const Coord *coord /**< cell coordinate written to file */
                )                   /** \return FALSE for successful write */
 {
@@ -252,7 +254,7 @@ Bool writecoord(FILE *file,        /**< file pointer */
   return fwrite(&icoord,sizeof(icoord),1,file)!=1;
 } /* of 'writecoord' */
 
-Bool writefloatcoord(FILE *file,        /**< file pointer */
+Bool writefloatcoord(FILE *file,        /**< pointer to binary file */
                      const Coord *coord /**< cell coordinate written to file */
                     )                   /** \returns TRUE on error */
 {
@@ -282,14 +284,14 @@ Real cellarea(const Coord *coord, /**< cell coordinate */
   return (111194.9*resol->lat)*(111194.9*resol->lon)*cos(deg2rad(coord->lat));
 } /* of 'cellarea' */
 
-Bool fscancoord(FILE *file,    /**< File pointer of text file */
+Bool fscancoord(LPJfile *file, /**< pointer to text file */
                 Coord *coord,  /**< cell coordinate read */
                 Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                )               /** \return TRUE on error */
 {
-  if(fscanreal(file,&coord->lon,"longitude",verb))
+  if(fscanreal(file,&coord->lon,"longitude",FALSE,verb))
     return TRUE;
-  if(fscanreal(file,&coord->lat,"latitude",verb))
+  if(fscanreal(file,&coord->lat,"latitude",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscancoord' */
@@ -306,7 +308,9 @@ int findcoord(const Coord *c,      /**< coordinate */
   return NOT_FOUND;
 } /* of 'findcoord' */
 
-char *sprintcoord(String s,const Coord *coord)
+char *sprintcoord(String s,          /**< string to fill */
+                  const Coord *coord /**< cell coordinate */
+                 )                   /** \return pointer to string */
 {
   int pos;
   if(coord->lat<0)

@@ -1,32 +1,33 @@
-.TH getpopdens 3  "January 9, 2013" "version 4.0.001" "LPJmL programmers manual"
+.TH getpodens 3  "November 15, 2018" "version 4.0.002" "LPJmL programmers manual"
 .SH NAME
 getpopdens \- Get population density data
 .SH SYNOPSIS
 .nf
 \fB#include "lpj.h"
 
-Bool getpopdens(const Popdens \fIpopdens\fB,int \fIyear\fB);\fP
+Real getpopdens(const Popdens \fIpopdens\fB,int \fIcell\fB);\fP
 
 .fi
 .SH DESCRIPTION
-Function reads population density data for specified year.
+Function returns  population density data for specified cell.
 The arguments of \fBgetpopdens\fP are:
 .TP
 .I popdens
-Pointer to population density data.  Must be initialized by \fBinitpopdens()\fP.
+Pointer to population density data.  Must be initialized by \fBinitpopdens()\fP and
+read by \fBreadpopdens()\fP.
 .TP
-.I year
-Sets year data is read.
+.I cell
+cell index
 .SH RETURN VALUE
-Upon successful completion FALSE is returned and TRUE on error.
+Population density in capita/km2 is returned.
 
 .SH AUTHORS
 
-See AUTHORS file
+For authors and contributors see AUTHORS file
 
 .SH COPYRIGHT
 
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-initpopdens(3), freepopdens(3)
+initpopdens(3), readpopdens(3), freepopdens(3)

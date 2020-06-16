@@ -8,7 +8,7 @@
      <B>SYNOPSIS</B>
           <B>#include</B> <B>"lpj.h"</B>
 
-          <B>void</B> <B>freeinput(Input</B> <I>input</I><B>);</B>
+          <B>void</B> <B>freeinput(Input</B> <I>input</I><B>,Bool</B> <I>isroot</I><B>);</B>
 
 
      <B>DESCRIPTION</B>
@@ -19,12 +19,14 @@
                Pointer to input data.  Must be initialized by
                <B>initinput()</B>.
 
+          <I>isroot</I>
+               task is root task.
+
      <B>RETURN</B> <B>VALUE</B>
           None.
 
-
      <B>AUTHORS</B>
-          See AUTHORS file
+          For authors and contributors see AUTHORS file
 
 
      <B>COPYRIGHT</B>
@@ -35,8 +37,6 @@
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="initinput.html">initinput(3)</A></B>, <B><A HREF="freeclimate.html">freeclimate(3)</A></B>, <B><A HREF="freelanduse.html">freelanduse(3)</A></B>,
           <B><A HREF="freewateruse.html">freewateruse(3)</A></B>
-
-
 
 
 

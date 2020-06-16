@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -40,10 +40,16 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
   popdens->file.fmt=config->popdens_filename.fmt;
   if(config->popdens_filename.fmt==CDF)
   {
-    if(opendata_netcdf(&popdens->file,config->popdens_filename.name,
-                       config->popdens_filename.var,
-                       "km-2",config))
+    if(opendata_netcdf(&popdens->file,&config->popdens_filename,"km-2",config))
     {
+      free(popdens);
+      return NULL;
+    }
+    if(popdens->file.var_len>1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR408: Invalid number of dimensions %d in population density file '%s'.\n",
+                (int)popdens->file.var_len,config->popdens_filename.name);
       free(popdens);
       return NULL;
     }
@@ -63,6 +69,7 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
     popdens->file.size=header.ncell*typesizes[header.datatype];
     popdens->file.scalar=header.scalar;
     popdens->file.datatype=header.datatype;
+    popdens->file.nyear=header.nyear;
     if(config->popdens_filename.fmt==RAW)
       popdens->file.offset=config->startgrid*sizeof(short);
     else
@@ -78,17 +85,12 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
       }
       popdens->file.offset=(config->startgrid-header.firstcell)*typesizes[header.datatype]+headersize(headername,version)+offset;
     }
-
-  
   }
   popdens->file.n=config->ngridcell;
   if((popdens->npopdens=newvec(Real,popdens->file.n))==NULL)
   {
     printallocerr("npopdens");
-    if(popdens->file.fmt==CDF)
-      closeclimate_netcdf(&popdens->file,isroot(*config));
-    else
-      fclose(popdens->file.file);
+    closeclimatefile(&popdens->file,isroot(*config));
     free(popdens);
     return NULL;
   }
@@ -112,11 +114,13 @@ Bool readpopdens(Popdens popdens,     /**< pointer to population data */
   year-=popdens->file.firstyear;
   if(year<0)
     year=0;
+  if(year>=popdens->file.nyear)
+    year=popdens->file.nyear-1;
   if(popdens->file.fmt==CDF)
     return readdata_netcdf(&popdens->file,popdens->npopdens,grid,year,config);
   if(fseek(popdens->file.file,year*popdens->file.size+popdens->file.offset,SEEK_SET))
   {
-    fprintf(stderr,"ERROR184: Cannot seek to population density of year %d in getpopdens().\n",year+popdens->file.firstyear);
+    fprintf(stderr,"ERROR184: Cannot seek to population density of year %d in readpopdens().\n",year+popdens->file.firstyear);
     return TRUE;
   }
   return readrealvec(popdens->file.file,popdens->npopdens,0,popdens->file.scalar,popdens->file.n,popdens->file.swap,popdens->file.datatype);
@@ -131,10 +135,7 @@ void freepopdens(Popdens popdens,Bool isroot)
 {
   if(popdens!=NULL)
   {
-    if(popdens->file.fmt==CDF)
-      closeclimate_netcdf(&popdens->file,isroot);
-    else
-      fclose(popdens->file.file);
+    closeclimatefile(&popdens->file,isroot);
     free(popdens->npopdens);
     free(popdens);
   }

@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -46,6 +46,7 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
                "nmax:\t\t%g (mg/g)\n"
                "resist:\t\t%g\n"
                "longevity:\t%g (yr)\n"
+               "SLA:\t\t%g (m2/gC)\n"
                "lmro ratio:\t%g\n"
                "ramp:\t\t%g\n"
                "LAI sapl:\t%g\n"
@@ -71,8 +72,8 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
                "light_sl:\t%g\n"
                "light_base:\t%g\n"
                "light_tau:\t%g\n"
-               "wcal_sl:\t%g\n"
-               "wsal_base:\t%g\n"
+               "wscal_sl:\t%g\n"
+               "wscal_base:\t%g\n"
                "wscal_tau:\t%g\n"
                "mort_max:\t%g (1/yr)\n"
                "phenology:\t%s\n"
@@ -86,6 +87,7 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
                "k_litter10_q10_wood:\t%g\n"
                "soc_k:\t\t%g\n"
                "alpha_fuelp:\t%g\n"
+               "vpd_par:\t\t%g\n"
                "fuel bulk dens.:\t%g (kg/m3)\n"
                "emis. factor:\t%g %g %g %g %g %g\n"
                "wind damp.:\t%g\n"
@@ -93,7 +95,7 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
           pftpar->beta_root,
           pftpar->minwscal,pftpar->gmin,pftpar->respcoeff,pftpar->nmax,
           pftpar->resist,
-          pftpar->longevity,pftpar->lmro_ratio,1.0/pftpar->ramp,
+          pftpar->longevity,pftpar->sla,pftpar->lmro_ratio,1.0/pftpar->ramp,
           pftpar->lai_sapl,pftpar->gdd5min,
           pftpar->twmax,pftpar->twmax_daily,pftpar->gddbase,pftpar->min_temprange,
           pftpar->emax,pftpar->intc,
@@ -105,7 +107,7 @@ void fprintpftpar(FILE *file,          /**< pointer to text file */
           pftpar->aprec_min,
           pftpar->flam,pftpar->k_litter10.leaf*NDAYYEAR,
           pftpar->k_litter10.wood*NDAYYEAR,pftpar->k_litter10.q10_wood,
-          pftpar->soc_k,pftpar->alpha_fuelp,
+          pftpar->soc_k,pftpar->alpha_fuelp,pftpar->vpd_par,
           pftpar->fuelbulkdensity,pftpar->emissionfactor.co2,
           pftpar->emissionfactor.co,pftpar->emissionfactor.ch4,
           pftpar->emissionfactor.voc,pftpar->emissionfactor.tpm,

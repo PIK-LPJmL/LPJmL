@@ -9,7 +9,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -21,35 +21,19 @@
 /*#include <sys/types.h>*/
 #include <sys/stat.h>
 #include "types.h"
+#include "errmsg.h"
 
-#define FLOAT 0
-#define SHORT 1
-#define DOUBLE 2
-#define INT 3
-#define CHAR 4
-#define NOT_FOUND -1
-#define USAGE "Usage: cat2bsq [-type {float|double|short|int|char}] [-o outfile] [-bands n] infilename ...\n"
-
-static int gettype(const char *s)
-{
-  int i;
-  static char *types[]={"float","short","double","int","char"};
-  for(i=0;i<5;i++)
-    if(!strcmp(s,types[i]))
-      return i;
-  return NOT_FOUND;
-}
+#define USAGE "Usage: cat2bsq [-type {byte|short|int|float|double}] [-o outfile] [-bands n] infilename ...\n"
 
 int main(int argc,char **argv)
 {
-  static int sizes[]={sizeof(float),sizeof(short),sizeof(double),sizeof(int),sizeof(char)};
   FILE *ofp;
   FILE **ifp;
   void *data;
   int i,j,k,p,*n,runs,bands,sum;
   char *outfile;
   struct stat filestat;
-  k=FLOAT;
+  k=LPJ_FLOAT;
   bands=103;
   outfile=NULL;
   for(i=0;i<argc;i++)
@@ -65,10 +49,10 @@ int main(int argc,char **argv)
         }
         else
         {
-          k=gettype(argv[++i]);
+          k=findstr(argv[++i],typenames,5);
           if(k==NOT_FOUND)
           {
-            fprintf(stderr,"Invalid argument '%s'.\n",argv[i]);
+            fprintf(stderr,"Invalid argument '%s' for option '-type'.\n",argv[i]);
             fprintf(stderr,USAGE);
             return EXIT_FAILURE;
           }
@@ -106,7 +90,7 @@ int main(int argc,char **argv)
     else
       break;
   runs=argc-i;
-  if(i==0)
+  if(runs==0)
   {
     fprintf(stderr,"Argument is missing\n" USAGE);
     return EXIT_FAILURE;
@@ -133,14 +117,14 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     fstat(fileno(ifp[j]),&filestat);
-    if(filestat.st_size % (bands*sizes[k]))
+    if(filestat.st_size % (bands*typesizes[k]))
     {
-      fprintf(stderr,"Error: Filesize=%d is not divisible without remainder=%d, bands=%d, size=%d.",
-           (int)filestat.st_size,(int)filestat.st_size % (bands*sizes[k]),bands,sizes[k]);
+      fprintf(stderr,"Error: Filesize=%zd is not divisible without remainder=%d, bands=%d, size=%d.",
+           filestat.st_size,(int)(filestat.st_size % (bands*typesizes[k])),bands,(int)typesizes[k]);
       return EXIT_FAILURE;
     }
     /* calculate number of pixels in each chunk and store it in array n[i] */
-    n[j]=filestat.st_size/bands/sizes[k];
+    n[j]=filestat.st_size/bands/typesizes[k];
   }
 
   for(p=0;p<bands;p++)
@@ -149,10 +133,15 @@ int main(int argc,char **argv)
     {
       if(outfile!=NULL && p==0) 
         printf("run: %d n: %d\n",i,n[i]);
-      fseek(ifp[i],sizes[k]*n[i]*p,SEEK_SET);
-      data=malloc(n[i]*sizes[k]);
-      fread(data,sizes[k],n[i],ifp[i]);
-      fwrite(data,sizes[k],n[i],ofp);
+      fseek(ifp[i],typesizes[k]*n[i]*p,SEEK_SET);
+      data=malloc(n[i]*typesizes[k]);
+      if(data==NULL)
+      {
+        printallocerr("data");
+        return EXIT_FAILURE;
+      }
+      fread(data,typesizes[k],n[i],ifp[i]);
+      fwrite(data,typesizes[k],n[i],ofp);
       free(data);
     }
   }

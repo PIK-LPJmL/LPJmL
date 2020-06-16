@@ -1,14 +1,14 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**              s  o  i  l  _  n  e  w  .  p  a  r                                \n**/
+/**              s  o  i  l  _  r  o  c  k  _  i  c  e  .  p  a  r                 \n**/
 /**                                                                                \n**/
-/**  Soil parameter data for LPJmL version 4.0.001                                 \n**/
+/**  Soil parameter data for LPJmL version 4.0.002                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -20,13 +20,6 @@
 1000        /* soil depth layer (mm) */
 1000        /* soil depth layer (mm) */
 10000       /* soil depth layer (mm) */
-
-200         /* layerbound (mm) */
-500         /* layerbound (mm) */
-1000        /* layerbound (mm) */
-2000        /* layerbound (mm) */
-3000        /* layerbound (mm) */
-13000       /* layerbound (mm) */
 
 1 1.2 1.4 0 /* fuel bulk density factors */
 

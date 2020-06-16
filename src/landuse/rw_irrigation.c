@@ -1,29 +1,27 @@
-/***************************************************************************/
-/**                                                                       **/
-/**                     r w _ i r r i g a t i o n . c                     **/
-/**                                                                       **/
-/**     C implementation of LPJ, derived from the Fortran/C++ version     **/
-/**                                                                       **/
-/**     Jens Heinke, Jonas Jaegermeyr                                     **/
-/**     Potsdam Institute for Climate Impact Research                     **/
-/**     PO Box 60 12 03                                                   **/
-/**     14412 Potsdam/Germany                                             **/
-/**                                                                       **/
-/**     Last change: $Date:: 2017-07-19 18:25:54 +0200 (Wed, 19 Jul 201#$ **/
-/**     By         : $Author:: sibylls                         $          **/
-/**                                                                       **/
-/***************************************************************************/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                     r w _ i r r i g a t i o n . c                              \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include "lpj.h"
 #include "agriculture.h"
 
 #define MAX_RW_IRRIG 1.0
 
-Real rw_irrigation(Stand *stand,     /* Pointer to non-natural stand */
-                   Real gp_stand,    /* potential stomata conductance */
-                   const Real wet[], /* wet array for PFT list */
-                   Real pet          /* potential evapotranspiration (mm) */
-                  )                  /* returns irrigation applied (mm) */
+Real rw_irrigation(Stand *stand,     /**< Pointer to non-natural stand */
+                   Real gp_stand,    /**< potential stomata conductance */
+                   const Real wet[], /**< wet array for PFT list */
+                   Real pet          /**< potential evapotranspiration (mm) */
+                  )                  /** \return irrigation applied (mm) */
 {
 
   Pft *pft;

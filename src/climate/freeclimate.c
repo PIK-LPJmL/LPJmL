@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -26,6 +26,7 @@ void freeclimatedata(Climatedata *data /**< pointer to climate data */
   free(data->lwnet);
   free(data->swdown);
   free(data->wet);
+  free(data->humid);
   free(data->wind);
   free(data->tamp);
   free(data->burntarea);
@@ -48,6 +49,8 @@ void freeclimate(Climate *climate, /**< pointer to climate data */
       closeclimatefile(&climate->file_lwnet,isroot);
     if(climate->data.swdown!=NULL)
       closeclimatefile(&climate->file_swdown,isroot);
+    if(climate->data.humid!=NULL)
+      closeclimatefile(&climate->file_humid,isroot);
     if(climate->data.wind!=NULL)
       closeclimatefile(&climate->file_wind,isroot);
     if(climate->data.tamp!=NULL)

@@ -1,13 +1,16 @@
-.TH clm2cdf 1  "March 4, 2013" "version 1.0.001" "USER COMMANDS"
+.TH clm2cdf 1  "March 7, 2018" "version 1.0.001" "USER COMMANDS"
 .SH NAME
 clm2cdf \- convert CLM files into NetCDF files
 .SH SYNOPSIS
 .B clm2cdf
-[\-scale factor] [\-cellsize size] [\-int] [\-landuse] [\-compress level] [\-units u] [\-descr d]
+[\-global] [\-scale factor] [\-cellsize size] [\-int] [\-float] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d]
 .I varname gridfile clmfile netcdffile
 .SH DESCRIPTION
 Program converts CLM input data into NetCDF input data. 
 .SH OPTIONS
+.TP
+\-global
+use global grid for NetCDF file
 .TP
 \-scale factor
 scaling factor for CLM version 1 files. Default is one
@@ -18,8 +21,14 @@ set cell size of grid file to size
 \-int
 set data type in CLM file to int, default is short 
 .TP
+\-float
+set data type in CLM file to float, default is short 
+.TP
 -landuse
 convert land-use input data
+.TP
+-notime
+No time dimension in NetCDF file
 .TP
 \-compress level
 compression level for NetCDF4 files
@@ -45,7 +54,7 @@ filename of NetCDF file created
 .TP
 Create data file for temperature:
 .B clm2cdf
--units Celsius -descr temperature temp grid.bin tmp.clm tmp.nc
+-units celsius -descr temperature temp grid.bin tmp.clm tmp.nc
 .PP
 .SH EXIT STATUS
 .B clm2cdf

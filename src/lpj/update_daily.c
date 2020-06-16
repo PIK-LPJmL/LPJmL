@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -31,7 +31,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                   int ncft,              /**< number of crop PFTs   */
                   int year,              /**< simulation year */
                   int month,             /**< month (0..11) */
-                  Bool withdailyoutput,  /**< enable daily output */
                   Bool intercrop,        /**< enable intercropping */
                   const Config *config   /**< LPJmL configuration */
                  )
@@ -51,8 +50,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real evap=0;
   Real hetres=0;
   Real *gp_pft;
+  Real avgprec;
   Stand *stand;
   Pft *pft;
+  Irrigation *data;
   int l;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
@@ -66,8 +67,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   updategdd(cell->gdd,config->pftpar,npft,climate.temp);
   cell->balance.aprec+=climate.prec;
   gtemp_air=temp_response(climate.temp);
-  daily_climbuf(&cell->climbuf,climate.temp);
-
+  daily_climbuf(&cell->climbuf,climate.temp,climate.prec);
+  avgprec=getavgprec(&cell->climbuf);
   cell->output.mprec+=climate.prec;
   cell->output.msnowf+=climate.temp<tsnow ? climate.prec : 0;
   cell->output.mrain+=climate.temp<tsnow ? 0 : climate.prec;
@@ -76,7 +77,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     flux_estab=sowing(cell,climate.prec,day,year,npft,ncft,config); 
   cell->discharge.drunoff=0.0;
 
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     update_nesterov(cell,&climate);
   foreachstand(stand,s,cell->standlist)
   {
@@ -85,8 +86,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     cell->output.malbedo += beta * stand->frac;
 
-    if(config->fire==SPITFIRE && cell->afire_frac<1)
-      dailyfire_stand(stand,&livefuel,popdensity,&climate,config->ntypes,config->prescribe_burntarea);
+    if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& cell->afire_frac<1)
+      dailyfire_stand(stand,&livefuel,popdensity,avgprec,&climate,config);
     if(config->permafrost)
     {
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,
@@ -133,20 +134,23 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
 
     cell->output.dcflux+=hetres*stand->frac;
-    if (withdailyoutput)
+    cell->output.mswe+=stand->soil.snowpack*stand->frac;
+    if (config->withdailyoutput)
     {
       switch(stand->type->landusetype)
       {
         case GRASSLAND:
-          if (cell->output.daily.cft == TEMPERATE_HERBACEOUS)
+          data = stand->data;
+          if (cell->output.daily.cft == TEMPERATE_HERBACEOUS && cell->output.daily.irrigation == data->irrigation)
           {
             cell->output.daily.rh  += hetres;
             cell->output.daily.swe += stand->soil.snowpack;
           }
           break;
         case AGRICULTURE:
+          data = stand->data;
           foreachpft(pft,p,&stand->pftlist)
-            if (pft->par->id == cell->output.daily.cft)
+            if (pft->par->id == cell->output.daily.cft && cell->output.daily.irrigation == data->irrigation)
             {
               cell->output.daily.rh  = hetres;
               cell->output.daily.swe = stand->soil.snowpack;
@@ -171,7 +175,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                     &gp_stand_leafon,gp_pft,&fpc_total_stand);
     runoff=daily_stand(stand,co2,&climate,day,daylength,gp_pft,
                        gtemp_air,gtemp_soil[0],gp_stand,gp_stand_leafon,eeq,par,
-                       melt,npft,ncft,year,withdailyoutput,intercrop,config);
+                       melt,npft,ncft,year,intercrop,config);
 
     cell->discharge.drunoff+=runoff*stand->frac;
     climate.prec=prec_save;
@@ -219,14 +223,45 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     /* lake waterbalance */
     cell->discharge.dmass_lake+=climate.prec*cell->coord.area*cell->lakefrac;
     cell->output.input_lake+=climate.prec*cell->coord.area*cell->lakefrac;
-
+#ifdef COUPLING_WITH_FMS
+    if(cell->discharge.next==-1 && cell->lakefrac>=0.999)
+      /*this if statement allows to identify the caspian sea to be an evaporating surface by lakefrac map of lpj and river rooting DDM30 map*/
+      /*this does nolonger make sense if discharge next is nolonger -1 (a parameterization of a river rooting map for the casp sea is possebly used
+        which is DDM30-coarsemask-zerofill.asc in /p/projects/climber3/gengel/POEM/mom5.0.2/exp/.../Data_for_LPJ), hence discharge next is not -1*/
+      {
+        /*here evaporation for casp sea is computed*/
+        cell->output.mevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
+        cell->output.dwflux+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
+        cell->discharge.dmass_lake=cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac;
+      }
+    else if(cell->discharge.next==-9)/*discharge for ocean cells, that are threated as land by lpj on land lad resolution is computed here*/
+      {
+        /*
+        if (cell->coord.lat<-60) //we have to exclude antarctica here since cells there have cell->discharge.next==-9 and lakefrac1 following initialization.  They should not contribute to evap of lakes here
+          {
+            cell->output.mevap_lake+=0;
+            cell->discharge.dmass_lake=0.0;
+          }
+            
+          else1.4.2016  changed the grid initialization in newgrid.c such that we have here no problem anymore, since the lakefraction now is nearly zero everywhere. */
+          {
+            cell->output.mevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
+            cell->discharge.dmass_lake=max(cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac,0.0);
+          }
+      }
+    else
+#endif
+    {
     cell->output.mevap_lake+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
+#ifdef COUPLING_WITH_FMS
+    cell->output.dwflux+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
+#endif
     cell->discharge.dmass_lake=max(cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac,0.0);
+    }
 
     cell->output.mlakevol+=cell->discharge.dmass_lake*ndaymonth1[month];
   } /* of 'if(river_routing)' */
 
-  cell->output.mswe+=cell->output.daily.swe;
 
   killstand(cell,config->pftpar,npft,intercrop,year);
 #ifdef SAFE

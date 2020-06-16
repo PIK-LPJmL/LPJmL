@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -44,7 +44,7 @@ extern void closecoord(Coordfile);
 extern Bool writecoord(FILE *,const Coord *);
 extern Bool writefloatcoord(FILE *,const Coord *);
 extern Real cellarea(const Coord *,const Coord *);
-extern Bool fscancoord(FILE *,Coord *,Verbosity);
+extern Bool fscancoord(LPJfile *,Coord *,Verbosity);
 extern int numcoord(const Coordfile);
 extern void getcellsizecoord(float *,float *,const Coordfile);
 extern char *sprintcoord(String,const Coord *);

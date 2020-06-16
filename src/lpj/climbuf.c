@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -36,9 +36,12 @@ Bool new_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
   climbuf->atemp_mean20_fix=0;
   climbuf->dval_prec[0]=0;
   climbuf->mprec=0;
+  climbuf->aprec=0;
   climbuf->mpet=0;
   for(d=0;d<NDAYS;d++)
     climbuf->temp[d]=0;
+  for(d=0;d<NDAYS;d++)
+    climbuf->prec[d]=0;
   for(m=0;m<NMONTH;m++)
     climbuf->mpet20[m]=climbuf->mprec20[m]=climbuf->mtemp20[m]=-9999;
   return FALSE;
@@ -55,7 +58,8 @@ void init_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
 } /* of 'init_climbuf' */
 
 void daily_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
-                   Real temp         /**< daily temperature (deg C) */
+                   Real temp,        /**< daily temperature (deg C) */
+                   Real prec         /**< daily precipitation (mm) */
                   )
 {
   int d;
@@ -63,7 +67,19 @@ void daily_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
   for(d=1;d<NDAYS;d++)
     climbuf->temp[d-1]=climbuf->temp[d];
   climbuf->temp[NDAYS-1]=temp;
+  for(d=1;d<NDAYS;d++)
+    climbuf->prec[d-1]=climbuf->prec[d];
+  climbuf->prec[NDAYS-1]=prec;
 } /* of  'daily_climbuf' */
+
+Real getavgprec(const Climbuf *climbuf)
+{
+  Real avg_prec=0;
+  int d;
+  for(d=0;d<(NDAYS/3);d++)
+   avg_prec+=climbuf->prec[d];
+  return avg_prec/(NDAYS/3);
+}
 
 void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
                      Real mtemp,       /**< monthly average temperature (deg C) */
@@ -86,11 +102,15 @@ void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
 void annual_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
                    )
 {
+  int m;
   updatebuffer(climbuf->min,climbuf->temp_min);
   updatebuffer(climbuf->max,climbuf->temp_max);
   climbuf->atemp_mean20 = (climbuf->atemp_mean20<-9998) ? climbuf->atemp : (1-kk)*climbuf->atemp_mean20+kk*climbuf->atemp;
   climbuf->atemp=0;
   climbuf->mtemp_min20 = getbufferavg(climbuf->min);
+  climbuf->aprec=0;
+  for(m=0;m<NMONTH;m++)
+    climbuf->aprec+=climbuf->mprec20[m];
 } /* of 'annual_climbuf' */
 
 Bool fwriteclimbuf(FILE *file, /**< pointer to binary file */
@@ -105,6 +125,7 @@ Bool fwriteclimbuf(FILE *file, /**< pointer to binary file */
   fwrite(&climbuf->gdd5,sizeof(Real),1,file);
   fwrite(climbuf->dval_prec,sizeof(Real),1,file);
   fwrite(climbuf->temp,sizeof(Real),NDAYS,file);
+  fwrite(climbuf->prec,sizeof(Real),NDAYS,file);
   fwrite(climbuf->mpet20,sizeof(Real),NMONTH,file);
   fwrite(climbuf->mprec20,sizeof(Real),NMONTH,file);
   fwrite(climbuf->mtemp20,sizeof(Real),NMONTH,file);
@@ -117,6 +138,7 @@ Bool freadclimbuf(FILE *file,  /**< pointer to binary file */
                   Bool swap /**< byte order has to be swapped (TRUE/FALSE) */
                  ) /** \return TRUE on error */
 {
+  int m;
   freadreal1(&climbuf->temp_max,swap,file);
   freadreal1(&climbuf->temp_min,swap,file);
   freadreal1(&climbuf->atemp_mean,swap,file);
@@ -125,6 +147,7 @@ Bool freadclimbuf(FILE *file,  /**< pointer to binary file */
   freadreal1(&climbuf->gdd5,swap,file);
   freadreal1(climbuf->dval_prec,swap,file);
   freadreal(climbuf->temp,NDAYS,swap,file);
+  freadreal(climbuf->prec,NDAYS,swap,file);
   freadreal(climbuf->mpet20,NMONTH,swap,file);
   freadreal(climbuf->mprec20,NMONTH,swap,file);
   freadreal(climbuf->mtemp20,NMONTH,swap,file);
@@ -137,6 +160,9 @@ Bool freadclimbuf(FILE *file,  /**< pointer to binary file */
   climbuf->max=freadbuffer(file,swap);
   climbuf->mtemp_min20 = getbufferavg(climbuf->min);
   climbuf->atemp=0;
+  climbuf->aprec=0;
+  for(m=0;m<NMONTH;m++)
+    climbuf->aprec+=climbuf->mprec20[m];
   return (climbuf->max==NULL);
 } /* of 'freadclimbuf' */
 

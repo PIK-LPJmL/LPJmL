@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -18,9 +18,6 @@
 #define CROP_H
 
 /* Definition of constants */
-
-#define RESIDUES_FIRE FALSE   /* use parameters for agricultural fires */
-#define RESIDUES_IN_SOIL 0.1  /* minimum residues in soil*/
 
 #define MINLGP 4              /* minimum length of growing period, used in calc_seasonality */
 #define DEFAULT_MONTH 1       /* default setting if no sowing month can be found in calc_seasonality*/
@@ -129,14 +126,14 @@ extern void laimax_manage(Manage *,const Pftpar [],int,int,int);
 extern Bool fwrite_crop(FILE *,const Pft *);
 extern void fprint_crop(FILE *,const Pft *);
 extern Bool fread_crop(FILE *,Pft *,Bool);
-extern Bool fscanpft_crop(FILE *,Pftpar *,Verbosity);
+extern Bool fscanpft_crop(LPJfile *,Pftpar *,Verbosity);
 extern Real establishment_crop(Pft *,Real,Real,int);
 extern void init_crop(Pft *);
 extern Real vegc_sum_crop(const Pft *);
 extern Real agb_crop(const Pft *);
 extern void free_crop(Pft *);
 extern void phen_variety(Pft *,int,Real,int,Bool);
-extern void harvest_crop(Output *,Stand *,Pft *,int,int,Bool);
+extern void harvest_crop(Output *,Stand *,Pft *,int,int,Bool,Bool,Bool);
 extern void adapt_crop_type(Real [],Real,const Pftpar [],int,int,int);
 extern Real wdf_crop(Pft *,Real,Real);
 extern void fprintpar_crop(FILE *,const Pftpar *);

@@ -1,6 +1,9 @@
  -----------------------------------------------------------------------------
                                  REFERENCES
  -----------------------------------------------------------------------------
+ Beringer T, Lucht W, Schaphoff S 2011 Bioenergy production potential of 
+   global biomass plantations under environmental and agricultural constraints.
+   Glob. Change Biol. Bioen. 3, 299-312.
  Biemans, H, Haddeland, I, Kabat, P, Ludwig, F, Hutjes, RWA, Heinke, J, 
    von Bloh, W, & Gerten, D 2011  Impact of reservoirs on river discharge and
    irrigation water supply during the 20th century, Water Resour. Res., 47,
@@ -18,6 +21,10 @@
  Collatz, GJ, Ribas-Carbo, M & Berry, JA 1992 Coupled photosynthesis-stomatal
    conductance models for leaves of C4 plants. Australian Journal of Plant
    Physiology 19: 519-538
+ Drueke M, Forkel M, von Bloh W, Sakschewski B, Cardoso M, Bustamante M,
+   Kurths J, & Thonicke K 2019 Improving the LPJmL4-SPITFIRE vegetation-fire
+   model for South America using satellite data.i
+   Geoscientific Model Development 12: 5029-2054
  Farquhar GD & von Caemmerer 1982 Modelling of photosynthetic response to
    environmental conditions. In: Lange, OL, Nobel PS, Osmond CB, Ziegler H
    (eds) Physiological Plant Ecology II: Water Relations and Carbon
@@ -66,6 +73,15 @@
  Schaphoff, S, Heyder, U, Ostberg, S, Gerten, D, Heinke, J, Lucht, W 2013
    Contribution of permafrost soils to the global carbon budget.
    Environ. Res. Lett. 8, 014026.
+ Schaphoff, S, von Bloh, W, Rammig, A, Thonicke, K, Biemans, H, Forkel, M,
+   Gerten, D,, Heinke, J, Jaegermeyr, J, Knauer, J, Langerwisch, F, Lucht, W,
+   Mueller, C, Rolinski, S & Waha, K 2018 LPJmL4 - a dynamic global
+   vegetation model with managed land: Part I - Model description.
+   Geoscientific Model Development 11: 1343-1375
+ Schaphoff, S, Forkel, M, Mueller, C, Knauer, J, von Bloh, W, Gerten, D,
+   Jaegermeyr, J, Lucht, W, Rammig, A, Thonicke, K & Waha, K 2018
+   LPJmL4 - a dynamic global vegetation model with managed land:
+   Part II - Model evaluation. Geoscientific Model Development 11: 1377-1403
  Shinozaki, K, Yoda, K, Hozumi, K & Kira, T 1964 A quantitative analysis of
    plant form - the pipe model theory. I. basic analyses. Japanese Journal of
    Ecology 14: 97-105
@@ -73,12 +89,12 @@
    plant form - the pipe model theory. II. further evidence of the theory and
    its application in forest ecology. Japanese Journal of Ecology 14: 133-139
  Sitch S, Smith B, Prentice IC, Arneth A, Bondeau A, Cramer W, Kaplan J, Levis S, 
-   Lucht, W, Sykes M, Thonicke K, Venevsky S 2003 Evaluation of ecosystem dynamics, 
+   Lucht, W, Sykes M, Thonicke K, Venevsky S 2003 Evaluation of ecosystem dynamics,
    plant geography and terrestrial carbon cycling in the LPJ Dynamic Vegetation
    Model.  Global Change Biology 9: 161-185
  Sprugel, DG, Ryan, MG, Brooks, JR, Vogt, KA, Martin, TA, Respiration from the
    organ level to the stand (in press '93 ---> look up)
- Thonicke K, Spessa A, Prentice IC, Harrison SP, Dong L & Carmona-Moreno C 2010 
+ Thonicke K, Spessa A, Prentice IC, Harrison SP, Dong L & Carmona-Moreno C 2010
    The influence of vegetation, fire spread and fire behaviour on biomass
    burning and trace gas emissions: results from a process-based model.
    Biogeoscience 7(6):1991-2011

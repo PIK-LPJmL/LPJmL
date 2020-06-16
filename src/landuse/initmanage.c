@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -19,7 +19,8 @@ void initmanage(Manage *manage, /**< pointer to management data */
                 const Regionpar *regionpar, /**< pointer to region param */
                 int npft, /**< number of natural PFTs */
                 int ncft, /**< number of crop PFts */
-                Bool isconstlai /**< using const. LAImax? */
+                Bool isconstlai, /**< using const. LAImax? */
+                Real laimax     /**< maximum LAI */
                )
 {
   int cft;
@@ -31,5 +32,5 @@ void initmanage(Manage *manage, /**< pointer to management data */
     manage->laimax=manage->par->laimax_cft-npft;  /* set pointer to country specific laimax */
   if(isconstlai)
     for(cft=0;cft<ncft;cft++)
-      manage->laimax[npft+cft]=param.laimax;
+      manage->laimax[npft+cft]=laimax;
 } /* of 'initmanage' */

@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -18,47 +18,49 @@
 #include "tree.h"
 
 #define fscanreal2(verb,file,var,pft,name) \
-  if(fscanreal(file,var,name,verb)) \
+  if(fscanreal(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read PFT '%s' in %s().\n",pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR110: Cannot read float '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 #define fscanint2(verb,file,var,pft,name) \
-  if(fscanint(file,var,name,verb)) \
+  if(fscanint(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read PFT '%s' in %s().\n",pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR110: Cannot read int '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 #define fscantreephys2(verb,file,var,pft,name)\
-  if(fscantreephys(file,var,verb))\
+  if(fscantreephys(file,var,name,verb))\
   {\
     if(verb)\
-    fprintf(stderr,"ERROR111: Cannot read '%s' of PFT '%s' in %s().\n",name,pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR111: Cannot read '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 
-static Bool fscantreephys(FILE *file,Treephys *phys,
+static Bool fscantreephys(LPJfile *file,Treephys *phys,const char *name,
                           Verbosity verb)
 {
-  if(fscanreal(file,&phys->leaf,"leaf",verb))
+  LPJfile s;
+  if(fscanstruct(file,&s,name,verb))
     return TRUE;
-  if(fscanreal(file,&phys->sapwood,"sapwood",verb))
+  if(fscanreal(&s,&phys->leaf,"leaf",FALSE,verb))
     return TRUE;
-  if(fscanreal(file,&phys->root,"root",verb))
+  if(fscanreal(&s,&phys->sapwood,"sapwood",FALSE,verb))
+    return TRUE;
+  if(fscanreal(&s,&phys->root,"root",FALSE,verb))
     return TRUE;
   if(phys->leaf<=0 || phys->sapwood<=0 || phys->root<=0)
     return TRUE;
   return FALSE;
 } /* of 'fscantreephys' */
 
-Bool fscanpft_tree(FILE *file,    /**< file pointer */
+Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
                    Pftpar *pft,   /**< Pointer to Pftpar array */
                    Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                   )               /** \return TRUE on error */
 {
-  int i;
   Real stemdiam,height_sapl,wood_sapl;
   Pfttreepar *tree;
   pft->newpft=new_tree;
@@ -99,10 +101,17 @@ Bool fscanpft_tree(FILE *file,    /**< file pointer */
     return TRUE;
   }
   fscantreephys2(verb,file,&tree->turnover,pft->name,"turnover");
-  if(tree->leaftype==BROADLEAVED)
-    pft->sla=2e-4*pow(10,2.20-0.4*log10(pft->longevity*12))/CCpDM;
+  if(iskeydefined(file,"sla"))
+  {
+    fscanreal2(verb,file,&pft->sla,pft->name,"sla");
+  }
   else
-    pft->sla=2e-4*pow(10,2.08-0.4*log10(pft->longevity*12))/CCpDM;
+  {
+    if(tree->leaftype==BROADLEAVED)
+      pft->sla=2e-4*pow(10,2.20-0.4*log10(pft->longevity*12))/CCpDM;
+    else
+      pft->sla=2e-4*pow(10,2.08-0.4*log10(pft->longevity*12))/CCpDM;
+  }
   tree->turnover.root=1.0/tree->turnover.root;
   tree->turnover.sapwood=1.0/tree->turnover.sapwood;
   tree->turnover.leaf=1.0/tree->turnover.leaf;
@@ -122,14 +131,18 @@ Bool fscanpft_tree(FILE *file,    /**< file pointer */
   fscanreal2(verb,file,&tree->allom3,pft->name,"allom3");
   fscanreal2(verb,file,&tree->allom4,pft->name,"allom4");
   fscanreal2(verb,file,&tree->height_max,pft->name,"height_max");
-  fscanreal2(verb,file,&tree->scorchheight_f_param,pft->name,"scorchheight_f_param"); /* benp */
-  fscanreal2(verb,file,&tree->crownlength,pft->name,"crownlength"); /* benp */
-  fscanreal2(verb,file,&tree->barkthick_par1,pft->name,"barkthick_par1"); /* benp */
-  fscanreal2(verb,file,&tree->barkthick_par2,pft->name,"barkthick_par2"); /* benp */
-  fscanreal2(verb,file,&tree->crown_mort_rck,pft->name,"crown_mort_rck"); /* benp */
-  fscanreal2(verb,file,&tree->crown_mort_p,pft->name,"crown_mort_p"); /* benp */
-  for(i=0;i<NFUELCLASS;i++)
-    fscanreal2(verb,file,tree->fuelfrac+i,pft->name,"fuel fraction");
+  fscanreal2(verb,file,&tree->scorchheight_f_param,pft->name,"scorchheight_f_param");
+  fscanreal2(verb,file,&tree->crownlength,pft->name,"crownlength");
+  fscanreal2(verb,file,&tree->barkthick_par1,pft->name,"barkthick_par1");
+  fscanreal2(verb,file,&tree->barkthick_par2,pft->name,"barkthick_par2");
+  fscanreal2(verb,file,&tree->crown_mort_rck,pft->name,"crown_mort_rck");
+  fscanreal2(verb,file,&tree->crown_mort_p,pft->name,"crown_mort_p");
+  if(fscanrealarray(file,tree->fuelfrac,NFUELCLASS,"fuelfraction",verb))
+  {
+    if(verb)
+      fprintf(stderr,"ERROR112: Cannot read 'fuelfraction' of PFT '%s'.\n",pft->name);
+    return TRUE;
+  }
   fscanreal2(verb,file,&tree->k_est,pft->name,"k_est");
   fscanint2(verb,file,&tree->rotation,pft->name,"rotation");
   fscanint2(verb,file,&tree->max_rotation_length,pft->name,"max_rotation_length");

@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -24,10 +24,10 @@
  *
  */
 
-Real turnover_grass(Litter *litter, /* Litter pool */
-                    Pft *pft,       /* Pointer to PFT variables */
-                    Real fraction   /* fraction of annual turnover (0..1) */
-                   )                /* returns turnover (gC/m2) */
+Real turnover_grass(Litter *litter, /**< Litter pool */
+                    Pft *pft,       /**< Pointer to PFT variables */
+                    Real fraction   /**< fraction of annual turnover (0..1) */
+                   )                /** \return turnover (gC/m2) */
 {
   Pftgrass *grass;
   const Pftgrasspar *grasspar;
@@ -43,7 +43,6 @@ Real turnover_grass(Litter *litter, /* Litter pool */
     pft->bm_inc     -= reprod;
   }
   /* turnover */
-#ifndef YEARLY_TURNOVER
   if (pft->stand->type->landusetype==NATURAL)
   {
     gturn.root=grass->turn.root;
@@ -52,9 +51,7 @@ Real turnover_grass(Litter *litter, /* Litter pool */
 
   }
   else
-#endif 
- {
-
+  {
     gturn.root=grass->ind.root*grasspar->turnover.root*fraction;
     gturn.leaf=grass->ind.leaf*grasspar->turnover.leaf*fraction;
     litter->ag[pft->litter].trait.leaf+=gturn.leaf*pft->nind;

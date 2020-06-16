@@ -9,7 +9,7 @@
 ## authors, and contributors see AUTHORS file                                  ##
 ## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
 ## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
-## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 ##                                                                             ##
 #################################################################################
 
@@ -36,9 +36,9 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O \
           fprintconfig.$O freepftpar.$O drain.$O initdrain.$O\
           openconfig.$O freeconfig.$O readconfig.$O initconfig.$O\
           check_stand_fracs.$O waterusefcns.$O getoutputtype.$O\
-          fscanlimit.$O filesexist.$O readfilename.$O freeoutputvar.$O\
+          fscanlimit.$O filesexist.$O freeoutputvar.$O\
           fprintflux.$O initoutput_daily.$O fwriteoutput_daily.$O\
-          outputbuffersize.$O nowdf.$O printlicense.$O\
+          outputfilesize.$O nowdf.$O printlicense.$O\
           ismonthlyoutput.$O initmpiconfig.$O fscanparam.$O fprintparam.$O\
           fprintpftpar.$O help.$O copyright.$O initinput.$O freeinput.$O\
           natural.$O daily_natural.$O fread_natural.$O fprint_natural.$O\
@@ -46,7 +46,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O \
           fscanemissionfactor.$O check_balance.$O transfer_function.$O\
           fprintfiles.$O roughnesslength.$O closeoutput_yearly.$O\
           getnbiomass.$O getextension.$O albedo_stand.$O phenology_gsi.$O\
-          fscanphenparam.$O landcover.$O getnwft.$O
+          fscanphenparam.$O landcover.$O getsize.$O getnwft.$O
 
 
 INC     = ../../include
@@ -72,7 +72,7 @@ $(LIBDIR)/$(LIB): $(OBJS)
 $(OBJS): $(HDRS)
 
 .c.$O: 
-	$(CC) $(CFLAGS) -I$(INC) -c $*.c
+	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c
 
 clean: 
 	$(RM) $(RMFLAGS) $(OBJS)

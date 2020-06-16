@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -26,7 +26,10 @@ Bool fread_crop(FILE *file, /**< file pointer */
   crop=new(Pftcrop);
   pft->data=crop;
   if(crop==NULL)
+  {
+    printallocerr("crop");
     return TRUE;
+  }
   freadint1(&crop->wtype,swap,file);
   freadint1(&crop->growingdays,swap,file);
   freadreal1(&crop->pvd,swap,file);

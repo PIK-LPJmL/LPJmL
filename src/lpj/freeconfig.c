@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -20,6 +20,7 @@ static void freefilename(Filename filename)
 {
   free(filename.name);
   free(filename.var);
+  free(filename.time);
 } /* of 'freefilename' */
 
 void freeconfig(Config *config /**< LPJmL configuration */
@@ -29,8 +30,13 @@ void freeconfig(Config *config /**< LPJmL configuration */
   if(config->soil_filename.fmt!=CDF)
     freefilename(config->coord_filename);
   freefilename(config->soil_filename);
+  free(config->outputdir);
+  free(config->inputdir);
+  free(config->restartdir);
   free(config->arglist);
   free(config->sim_name);
+  free(config->pft_index);
+  free(config->layer_index);
   if(config->river_routing)
   {
     freefilename(config->drainage_filename);
@@ -75,6 +81,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     free(config->outputvars[i].filename.name);
   free(config->outputvars);
   free(config->restart_filename);
+  free(config->checkpoint_restart_filename);
   free(config->write_restart_filename);
   freepftpar(config->pftpar,ivec_sum(config->npft,config->ntypes));
   freesoilpar(config->soilpar,config->nsoil);
@@ -83,8 +90,12 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(config->popdens_filename);
   if(config->grassfix_filename.name!=NULL)
     freefilename(config->grassfix_filename);
-  if(config->fire==SPITFIRE)
+  if(config->grassharvest_filename.name!=NULL)
+    freefilename(config->grassharvest_filename);
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
+    if(config->fdi==WVPD_INDEX)
+      freefilename(config->humid_filename);
     freefilename(config->wind_filename);
     freefilename(config->tamp_filename);
     if(config->tamp_filename.fmt==CDF && config->tmax_filename.name!=NULL)
@@ -103,9 +114,9 @@ void freeconfig(Config *config /**< LPJmL configuration */
     if(config->countrycode_filename.fmt==CDF)
       freefilename(config->regioncode_filename);
   }
-  
+
   if(config->prescribe_landcover != NO_LANDCOVER)
     freefilename(config->landcover_filename);
-    
+
   freeoutputvar(config->outnames,NOUT);
 } /* of 'freeconfig' */

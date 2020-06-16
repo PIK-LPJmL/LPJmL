@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -56,12 +56,12 @@ typedef struct
 
 /* Declaration of functions */
 
-extern int fscancountrypar(FILE *,Countrypar **,Bool,int,Verbosity);
-extern int fscanregionpar(FILE *,Regionpar **,Verbosity);
+extern int fscancountrypar(LPJfile *,Countrypar **,Bool,int,Verbosity);
+extern int fscanregionpar(LPJfile *,Regionpar **,Verbosity);
 extern void fprintcountrypar(FILE *,const Countrypar *,int,int);
 extern void fprintregionpar(FILE *,const Regionpar[],int);
 extern void initmanage(Manage *, const Countrypar *, const Regionpar *,int,
-                       int,Bool);
+                       int,Bool,Real);
 extern void freemanage(Manage *,int);
 extern FILE *opencountrycode(const Filename *,Bool *,Type *,long *,Bool);
 extern FILE *createcountrycode(const char *,int,int);

@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -18,34 +18,37 @@
 #include "grass.h"
 
 #define fscanreal2(verb,file,var,pft,name) \
-  if(fscanreal(file,var,name,verb)) \
+  if(fscanreal(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read PFT '%s' in %s().\n",pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR110: Cannot read float '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 
 #define fscangrassphys2(verb,file,var,pft,name) \
-  if(fscangrassphys(file,var,verb))\
+  if(fscangrassphys(file,var,name,verb))\
   { \
     if(verb)\
-    fprintf(stderr,"ERROR111: Cannot read '%s' of PFT '%s' in %s().\n",name,pft,__FUNCTION__); \
+    fprintf(stderr,"ERROR111: Cannot read '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 
 
-static Bool fscangrassphys(FILE *file,Grassphys *phys,Verbosity verb)
+static Bool fscangrassphys(LPJfile *file,Grassphys *phys,const char *name,Verbosity verb)
 {
-  if(fscanreal(file,&phys->leaf,"leaf",verb))
+  LPJfile item;
+  if(fscanstruct(file,&item,name,verb))
     return TRUE;
-  if(fscanreal(file,&phys->root,"root",verb))
+  if(fscanreal(&item,&phys->leaf,"leaf",FALSE,verb))
+    return TRUE;
+  if(fscanreal(&item,&phys->root,"root",FALSE,verb))
     return TRUE;
   if(phys->leaf<=0 ||  phys->root<=0)
     return TRUE;
   return FALSE;
 } /* of 'fscangrassphys' */
 
-Bool fscanpft_grass(FILE *file,    /**< file pointer */
+Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
                     Pftpar *pft,   /**< Pointer to Pftpar array */
                     Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                    )               /** \return TRUE on error  */
@@ -79,7 +82,13 @@ Bool fscanpft_grass(FILE *file,    /**< file pointer */
   grass=new(Pftgrasspar);
   check(grass);
   pft->data=grass;
-  pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;
+  pft->data=grass;
+  if(iskeydefined(file,"sla"))
+  {
+    fscanreal2(verb,file,&pft->sla,pft->name,"sla");
+  }
+  else
+    pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;
   fscangrassphys2(verb,file,&grass->turnover,pft->name,"turnover");
   grass->turnover.leaf=1.0/grass->turnover.leaf;
   grass->turnover.root=1.0/grass->turnover.root;

@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -30,10 +30,10 @@ typedef struct
   void (*fprint)(FILE *,const Stand *);
   Real (*daily)(Stand *,Real,const Dailyclimate *,int,Real,
                 const Real [],Real,Real,Real,Real,Real,
-                Real,Real,int,int,int,Bool,Bool,const Config *);
+                Real,Real,int,int,int,Bool,const Config *);
   Bool (*annual)(Stand *,int,int,
                  Real,int,Bool,Bool,const Config *);
-  void (*dailyfire)(Stand *,Livefuel *,Real,const Dailyclimate *,int,Bool);
+  void (*dailyfire)(Stand *,Livefuel *,Real,Real,const Dailyclimate *,const Config *);
 } Standtype;
 
 struct stand
@@ -44,7 +44,9 @@ struct stand
   Soil soil;                  /**< soil specific variables */
   Real fire_sum;
   Real frac;                  /**< Stand fraction (0..1) */
+#if defined IMAGE || defined INCLUDEWP
   Real frac_change;           /**< Expansion fraction due to landuse change (only used for woodplantations) */
+#endif
   Real frac_g[NSOILLAYER];    /**< fraction of green water in total available soil water, including free water */
   int growing_time;           /**< for TREES years since harvest*/
   int growing_days;           /**< for GRASS days since harvest*/
@@ -105,8 +107,8 @@ extern void freelandcover(Landcover,Bool);
  * functions in C++
  */
 
-#define daily_stand(stand,co2,climate,day,daylength,gp_pft,gtemp_air,gtemp_soil,gp_stand,gp_stand_leafon,eeq,par,melt,npft,ncft,year,withdaily,intercrop,config) stand->type->daily(stand,co2,climate,day,daylength,gp_pft,gtemp_air,gtemp_soil,gp_stand,gp_stand_leafon,eeq,par,melt,npft,ncft,year,withdaily,intercrop,config)
+#define daily_stand(stand,co2,climate,day,daylength,gp_pft,gtemp_air,gtemp_soil,gp_stand,gp_stand_leafon,eeq,par,melt,npft,ncft,year,intercrop,config) stand->type->daily(stand,co2,climate,day,daylength,gp_pft,gtemp_air,gtemp_soil,gp_stand,gp_stand_leafon,eeq,par,melt,npft,ncft,year,intercrop,config)
 #define annual_stand(stand,npft,ncft,popdens,year,isdaily,intercrop,config) stand->type->annual(stand,npft,ncft,popdens,year,isdaily,intercrop,config)
-#define dailyfire_stand(stand,livefuel,popdens,climate,ntypes,setting) if(stand->type->dailyfire!=NULL) stand->type->dailyfire(stand,livefuel,popdens,climate,ntypes,setting)
+#define dailyfire_stand(stand,livefuel,popdens,avgprec,climate,config) if(stand->type->dailyfire!=NULL) stand->type->dailyfire(stand,livefuel,popdens,avgprec,climate,config)
 
 #endif

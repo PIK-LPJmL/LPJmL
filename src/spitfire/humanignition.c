@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -20,7 +20,7 @@ Real humanignition(Real popdens,
   Real a_nd, human_ign, k_pd;
 
   a_nd = ignition->human;
-  k_pd = 6.8*(exp(-0.5*sqrt(popdens)));
-  human_ign = k_pd * a_nd * popdens;
+  k_pd = 30*(exp(param.hum_ign*sqrt(popdens)));
+  human_ign = k_pd * a_nd * popdens/100;
   return human_ign;
 } /* of 'humanignition' */

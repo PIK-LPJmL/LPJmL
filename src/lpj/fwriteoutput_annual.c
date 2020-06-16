@@ -8,13 +8,22 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
 #include "grass.h"
 #include "tree.h"
+
+#define writeoutputvar(index,name) if(isopen(output,index))\
+  {\
+    count=0;\
+    for(cell=0;cell<config->ngridcell;cell++)\
+      if(!grid[cell].skip)\
+        vec[count++]=(float)(grid[cell].output.name);\
+    writeannual(output,index,vec,year,config);\
+  }
 
 static void writeannual(Outputfile *output,int index,float data[],int year,
                         const Config *config)
@@ -24,13 +33,13 @@ static void writeannual(Outputfile *output,int index,float data[],int year,
   MPI_Status status;
 #endif
   for(i=0;i<config->count;i++)
-    data[i]*=(float)config->outnames[index].scale;
+    data[i]=(float)(config->outnames[index].scale*data[i]+config->outnames[index].offset);
 #ifdef USE_MPI
   switch(output->method)
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[index].fp.mpi_file,
-         (year-config->firstyear)*config->total+config->offset,data,config->count,
+         (year-config->outputyear)*config->total+config->offset,data,config->count,
                         MPI_FLOAT,&status);
       break;
     case LPJ_GATHER:
@@ -46,7 +55,7 @@ static void writeannual(Outputfile *output,int index,float data[],int year,
           break;
         case CDF:
           mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->total,
-                           output->files[index].oneyear ? NO_TIME : year-config->firstyear,
+                           output->files[index].oneyear ? NO_TIME : year-config->outputyear,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
       }
@@ -64,7 +73,7 @@ static void writeannual(Outputfile *output,int index,float data[],int year,
     {
       case RAW: case CLM:
         if(fwrite(data,sizeof(float),config->count,output->files[index].fp.file)!=config->count)
-          fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno)); 
+          fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno));
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
@@ -73,7 +82,7 @@ static void writeannual(Outputfile *output,int index,float data[],int year,
         break;
       case CDF:
         write_float_netcdf(&output->files[index].fp.cdf,data,
-                           output->files[index].oneyear ? NO_TIME : year-config->firstyear,
+                           output->files[index].oneyear ? NO_TIME : year-config->outputyear,
                            config->count);
         break;
     }
@@ -94,7 +103,7 @@ static void writeshortannual(Outputfile *output,int index,short data[],int year,
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[index].fp.mpi_file,
-         (year-config->firstyear)*config->total+config->offset,data,config->count,
+         (year-config->outputyear)*config->total+config->offset,data,config->count,
                         MPI_SHORT,&status);
       break;
     case LPJ_GATHER:
@@ -110,7 +119,7 @@ static void writeshortannual(Outputfile *output,int index,short data[],int year,
           break;
         case CDF:
           mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,config->total,
-                           output->files[index].oneyear ? NO_TIME : year-config->firstyear,
+                           output->files[index].oneyear ? NO_TIME : year-config->outputyear,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
       }
@@ -137,7 +146,7 @@ static void writeshortannual(Outputfile *output,int index,short data[],int year,
         break;
       case CDF:
         write_short_netcdf(&output->files[index].fp.cdf,data,
-                           output->files[index].oneyear ? NO_TIME : year-config->firstyear,
+                           output->files[index].oneyear ? NO_TIME : year-config->outputyear,
                            config->count);
         break;
     }
@@ -158,13 +167,13 @@ static void writeannualall(Outputfile *output,int index,float data[],int year,
   MPI_Status status;
 #endif
   for(i=0;i<config->ngridcell;i++)
-    data[i]*=(float)config->outnames[index].scale;
+    data[i]=(float)(config->outnames[index].scale*data[i]+config->outnames[index].offset);
 #ifdef USE_MPI
   switch(output->method)
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[index].fp.mpi_file,
-        (year-config->firstyear)*config->nall+config->offset,data,config->ngridcell,
+        (year-config->outputyear)*config->nall+config->offset,data,config->ngridcell,
                         MPI_FLOAT,&status);
       break;
     case LPJ_GATHER:
@@ -185,7 +194,7 @@ static void writeannualall(Outputfile *output,int index,float data[],int year,
           break;
         case CDF:
           mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->nall,
-                           output->files[index].oneyear ? NO_TIME : year-config->firstyear,
+                           output->files[index].oneyear ? NO_TIME : year-config->outputyear,
                            counts,offsets,config->rank,config->comm);
           break;
       }
@@ -220,7 +229,7 @@ static void writeannualall(Outputfile *output,int index,float data[],int year,
         break;
       case CDF:
         write_float_netcdf(&output->files[index].fp.cdf,data,
-                           output->files[index].oneyear ? NO_TIME : year-config->firstyear,
+                           output->files[index].oneyear ? NO_TIME : year-config->outputyear,
                            config->ngridcell);
         break;
     }
@@ -243,7 +252,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
   Pft *pft;
   float *vec;
   short *svec;
-  if(output->files[SEASONALITY].isopen)
+  if(isopen(output,SEASONALITY))
   {
     count=0;
     svec=newvec(short,config->ngridcell);
@@ -256,31 +265,11 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
   }
   vec=newvec(float,config->ngridcell);
   check(vec);
-  if(output->files[FIREC].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.firec;
-    writeannual(output,FIREC,vec,year,config);
-  }
-  if(output->files[FLUX_FIREWOOD].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.flux_firewood;
-    writeannual(output,FLUX_FIREWOOD,vec,year,config);
-  }
-  if(output->files[FIREF].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.firef;
-    writeannual(output,FIREF,vec,year,config);
-  }
-  if(output->files[VEGC].isopen)
+  writeoutputvar(FIREC,firec);
+  writeoutputvar(ABURNTAREA,aburntarea);
+  writeoutputvar(FLUX_FIREWOOD,flux_firewood);
+  writeoutputvar(FIREF,firef);
+  if(isopen(output,VEGC))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -295,7 +284,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output,VEGC,vec,year,config);
   }
-  if(output->files[SOILC].isopen)
+  if(isopen(output,SOILC))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -313,7 +302,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output,SOILC,vec,year,config);
   }
-  if(output->files[SOILC_SLOW].isopen)
+  if(isopen(output,SOILC_SLOW))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -330,7 +319,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output,SOILC_SLOW,vec,year,config);
   }
-  if(output->files[LITC].isopen)
+  if(isopen(output,LITC))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -344,7 +333,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
       writeannual(output,LITC,vec,year,config);
   }
-  if(output->files[MAXTHAW_DEPTH].isopen)
+  if(isopen(output,MAXTHAW_DEPTH))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -352,45 +341,17 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       {
         vec[count]=0;
         foreachstand(stand,s,grid[cell].standlist)
-            vec[count]+=(float)(stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
+          vec[count]+=(float)(stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
         count++;
       }
       writeannual(output,MAXTHAW_DEPTH,vec,year,config);
   }
-  if(output->files[FLUX_ESTAB].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.flux_estab;
-    writeannual(output,FLUX_ESTAB,vec,year,config);
-  }
-  if(output->files[HARVEST].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.flux_harvest;
-      writeannual(output,HARVEST,vec,year,config);
-  }
-  if(output->files[RHARVEST_BURNT].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.flux_rharvest_burnt;
-      writeannual(output,RHARVEST_BURNT,vec,year,config);
-  }
-  if(output->files[RHARVEST_BURNT_IN_FIELD].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)grid[cell].output.flux_rharvest_burnt_in_field;
-      writeannual(output,RHARVEST_BURNT_IN_FIELD,vec,year,config);
-  }
+  writeoutputvar(FLUX_ESTAB,flux_estab);
+  writeoutputvar(HARVEST,flux_harvest);
+  writeoutputvar(RHARVEST_BURNT,flux_rharvest_burnt);
+  writeoutputvar(RHARVEST_BURNT_IN_FIELD,flux_rharvest_burnt_in_field);
 
-  if(output->files[MG_VEGC].isopen)
+  if(isopen(output,MG_VEGC))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -400,12 +361,12 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         foreachstand(stand,s,grid[cell].standlist)
           if(stand->type->landusetype!=NATURAL)
             foreachpft(pft,p,&stand->pftlist)
-               vec[count]+=(float)(vegc_sum(pft)*stand->frac);
+              vec[count]+=(float)(vegc_sum(pft)*stand->frac);
         count++;
       }
       writeannual(output,MG_VEGC,vec,year,config);
   }
-  if(output->files[MG_SOILC].isopen)
+  if(isopen(output,MG_SOILC))
   {
       count=0;
       for(cell=0;cell<config->ngridcell;cell++)
@@ -419,14 +380,14 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
               for(p=0;p<stand->soil.litter.n;p++)
                 vec[count]+=(float)(stand->soil.litter.bg[p]*stand->frac);
               forrootsoillayer(l)
-              vec[count]+=(float)((stand->soil.cpool[l].slow+stand->soil.cpool[l].fast)*stand->frac);
+                vec[count]+=(float)((stand->soil.cpool[l].slow+stand->soil.cpool[l].fast)*stand->frac);
             }
           }
           count++;
         }
       writeannual(output,MG_SOILC,vec,year,config);
-  }  
-  if(output->files[MG_LITC].isopen)
+  }
+  if(isopen(output,MG_LITC))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -440,7 +401,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output,MG_LITC,vec,year,config);
   }
-  if(output->files[APREC].isopen)
+  if(isopen(output,APREC))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -448,150 +409,48 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
         vec[count++]=(float)grid[cell].balance.aprec;
     writeannual(output,APREC,vec,year,config);
   }
-  if(output->files[INPUT_LAKE].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.input_lake*1e-9);
-    writeannual(output,INPUT_LAKE,vec,year,config);
-  }
-  if(output->files[ADISCHARGE].isopen)
+  writeoutputvar(INPUT_LAKE,input_lake*1e-9);
+  if(isopen(output,ADISCHARGE))
   {
     for(cell=0;cell<config->ngridcell;cell++)
       vec[cell]=(float)(grid[cell].output.adischarge*1e-9);
     writeannualall(output,ADISCHARGE,vec,year,config);
   }
 #ifdef IMAGE
-  if(output->files[YDISCHARGE].isopen)
+  if (isopen(output, YDISCHARGE))
   {
-     for(cell=0;cell<config->ngridcell;cell++)
-      vec[cell]=(float)(grid[cell].output.ydischarge*1e-9);
-    writeannual(output,YDISCHARGE,vec,year,config);
+    for (cell = 0; cell<config->ngridcell; cell++)
+      vec[cell] = (float)(grid[cell].output.ydischarge*1e-9);
+    writeannualall(output, YDISCHARGE, vec, year, config);
   }
 #endif
-  if(output->files[PROD_TURNOVER].isopen)
+  writeoutputvar(PROD_TURNOVER,prod_turnover);
+  writeoutputvar(DEFOREST_EMIS,deforest_emissions);
+  writeoutputvar(TRAD_BIOFUEL,trad_biofuel);
+  writeoutputvar(AIRRIG,airrig);
+  writeoutputvar(FBURN,fburn);
+  writeoutputvar(FTIMBER,ftimber);
+  writeoutputvar(TIMBER_HARVEST,timber_harvest);
+  writeoutputvar(PRODUCT_POOL_FAST,product_pool_fast);
+  writeoutputvar(PRODUCT_POOL_SLOW,product_pool_slow);
+  if(isopen(output,AFRAC_WD_UNSUST))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.prod_turnover);
-    writeannual(output,PROD_TURNOVER,vec,year,config);
-  }
-  if(output->files[DEFOREST_EMIS].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.deforest_emissions);
-    writeannual(output,DEFOREST_EMIS,vec,year,config);
-  }
-  if(output->files[TRAD_BIOFUEL].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.trad_biofuel);
-    writeannual(output,TRAD_BIOFUEL,vec,year,config);
-  }
-  if(output->files[AIRRIG].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.airrig);
-    writeannual(output,AIRRIG,vec,year,config);
-  }
-  if(output->files[FBURN].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.fburn);
-    writeannual(output,FBURN,vec,year,config);
-  }
-  if(output->files[FTIMBER].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.ftimber);
-    writeannual(output,FTIMBER,vec,year,config);
-  }
-  if(output->files[TIMBER_HARVEST].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.timber_harvest);
-    writeannual(output,TIMBER_HARVEST,vec,year,config);
-  }
-  if(output->files[PRODUCT_POOL_FAST].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.product_pool_fast);
-    writeannual(output,PRODUCT_POOL_FAST,vec,year,config);
-  }
-  if(output->files[PRODUCT_POOL_SLOW].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.product_pool_slow);
-    writeannual(output,PRODUCT_POOL_SLOW,vec,year,config);
-  }
-  if(output->files[AFRAC_WD_UNSUST].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.awd_unsustainable/((grid[cell].output.airrig+
+         vec[count++]=(float)(grid[cell].output.awd_unsustainable/((grid[cell].output.airrig+
             grid[cell].output.aconv_loss_evap + grid[cell].output.aconv_loss_drain)*grid[cell].coord.area));
     writeannual(output,AFRAC_WD_UNSUST,vec,year,config);
   }
-  if(output->files[ACONV_LOSS_EVAP].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.aconv_loss_evap);
-    writeannual(output,ACONV_LOSS_EVAP,vec,year,config);
-  }
-  if(output->files[ACONV_LOSS_DRAIN].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.aconv_loss_drain);
-    writeannual(output,ACONV_LOSS_DRAIN,vec,year,config);
-  }
-  if(output->files[AWATERUSE_HIL].isopen)
-  {
-    count=0;
-    for(cell=0;cell<config->ngridcell;cell++)
-      if(!grid[cell].skip)
-        vec[count++]=(float)(grid[cell].output.awateruse_hil);
-    writeannual(output,AWATERUSE_HIL,vec,year,config);
-  }
-  if (output->files[WATERUSECONS].isopen)
-  {
-    count = 0;
-    for (cell = 0;cell<config->ngridcell;cell++)
-      if (!grid[cell].skip)
-        vec[count++] = (float)(grid[cell].output.waterusecons);
-    writeannual(output, WATERUSECONS, vec, year, config);
-  }
-  if (output->files[WATERUSEDEM].isopen)
-  {
-    count = 0;
-    for (cell = 0;cell<config->ngridcell;cell++)
-      if (!grid[cell].skip)
-        vec[count++] = (float)(grid[cell].output.waterusedem);
-    writeannual(output, WATERUSEDEM, vec, year, config);
-  }
-  if(output->files[AGB].isopen)
+  writeoutputvar(ACONV_LOSS_EVAP,aconv_loss_evap);
+  writeoutputvar(ACONV_LOSS_DRAIN,aconv_loss_drain);
+  writeoutputvar(AWATERUSE_HIL,awateruse_hil);
+#if defined IMAGE && defined COUPLED
+  writeoutputvar(WATERUSECONS,waterusecons);
+  writeoutputvar(WATERUSEDEM,waterusedem);
+#endif
+
+  if(isopen(output,AGB))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
@@ -599,11 +458,27 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       {
         vec[count]=0;
         foreachstand(stand,s,grid[cell].standlist)
-            foreachpft(pft,p,&stand->pftlist)
-               vec[count]+=(float)(agb(pft)*stand->frac);
+          foreachpft(pft,p,&stand->pftlist)
+            vec[count]+=(float)(agb(pft)*stand->frac);
         count++;
       }
     writeannual(output,AGB,vec,year,config);
   }
+  if(isopen(output,AGB_TREE))
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        foreachstand(stand,s,grid[cell].standlist)
+          foreachpft(pft,p,&stand->pftlist)
+            if(istree(pft))
+              vec[count]+=(float)(agb_tree(pft)*stand->frac);
+        count++;
+      }
+    writeannual(output,AGB_TREE,vec,year,config);
+  }
+  writeoutputvar(MEAN_VEGC_MANGRASS,mean_vegc_mangrass);
   free(vec);
 } /* of 'fwriteoutput_annual' */

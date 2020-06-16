@@ -8,13 +8,13 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
 
-#define USAGE  "Usage: %s [-var name] [-index i] [-float] [scale s] netcdffile coordfile\n"
+#define USAGE  "Usage: %s [-var name] [-index i] [-float] [-scale s] netcdffile coordfile\n"
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
 #include <netcdf.h>
@@ -86,7 +86,7 @@ int main(int argc,char **argv)
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
-        header.scalar=strtod(argv[++i],&endptr);
+        header.scalar=(float)strtod(argv[++i],&endptr);
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid number '%s' for scale.\n",argv[i]);
@@ -248,7 +248,8 @@ int main(int argc,char **argv)
     {
       rc=nc_get_vara_float(ncid,var_id,offsets,counts,&data);
       error(rc);
-      if(data!=missing_value)
+      if((!isnan(missing_value) && data!=missing_value) ||
+          (isnan(missing_value) && !isnan(data)))
       {
         if(isfloat)
         {

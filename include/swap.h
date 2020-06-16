@@ -9,7 +9,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -46,6 +46,7 @@ extern Bool bigendian(void);
 
 #define freadint1(data,swap,file) freadint(data,1,swap,file)
 #define freadreal1(data,swap,file) freadreal(data,1,swap,file)
+#define freadfloat1(data,swap,file) freadfloat(data,1,swap,file)
 #define freadshort1(data,swap,file) freadshort(data,1,swap,file)
 #define freadlong1(data,swap,file) freadlong(data,1,swap,file)
 

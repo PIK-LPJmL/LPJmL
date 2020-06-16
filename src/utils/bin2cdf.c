@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -21,7 +21,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-firstyear y] [-nitem n] [-cellsize size] [-ispft] [-swap]\n       [-short] [-compress level] [-units u] [-descr d] varname gridfile\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-firstyear y] [-nitem n] [-cellsize size] [-ispft] [-swap]\n       [-global] [-short] [-compress level] [-units u] [-descr d] varname gridfile\n       binfile netcdffile\n"
 
 typedef struct
 {
@@ -66,9 +66,9 @@ static Cdf *create_cdf(const char *filename,
     return NULL;
   }
   for(i=0;i<array->nlon;i++)
-    lon[i]=array->lon_min+i*header.cellsize_lon;
+    lon[i]=(float)(array->lon_min+i*header.cellsize_lon);
   for(i=0;i<array->nlat;i++)
-    lat[i]=array->lat_min+i*header.cellsize_lat;
+    lat[i]=(float)(array->lat_min+i*header.cellsize_lat);
   year=newvec(int,(ispft) ? header.nyear : header.nyear*header.nbands);
   if(year==NULL)
   {
@@ -357,12 +357,12 @@ int main(int argc,char **argv)
   float *data;
   short *data_short;
   int i,j,ngrid,iarg,compress;
-  Bool swap,ispft,isshort;
+  Bool swap,ispft,isshort,isglobal;
   float cellsize;
   char *units,*descr,*endptr,*cmdline;
   units=descr=NULL;
   compress=0;
-  swap=FALSE;
+  swap=isglobal=FALSE;
   res.lon=res.lat=header.cellsize_lon=header.cellsize_lat=0.5;
   header.firstyear=1901;
   header.nbands=1;
@@ -375,7 +375,7 @@ int main(int argc,char **argv)
       {
         if(iarg==argc-1)
         {
-          fprintf(stderr,"Missing argument after option '-units'.\n"
+          fprintf(stderr,"Error: Missing argument after option '-units'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
@@ -385,13 +385,15 @@ int main(int argc,char **argv)
         ispft=TRUE;
       else if(!strcmp(argv[iarg],"-short"))
         isshort=TRUE;
+      else if(!strcmp(argv[iarg],"-global"))
+        isglobal=TRUE;
       else if(!strcmp(argv[iarg],"-swap"))
         swap=TRUE;
       else if(!strcmp(argv[iarg],"-descr"))
       {
         if(iarg==argc-1)
         {
-          fprintf(stderr,"Missing argument after option '-descr'.\n"
+          fprintf(stderr,"Error: Missing argument after option '-descr'.\n"
                  USAGE,argv[0]);
           return EXIT_FAILURE;
         }
@@ -401,14 +403,19 @@ int main(int argc,char **argv)
       {
         if(iarg==argc-1)
         {
-          fprintf(stderr,"Missing argument after option '-nitem'.\n"
+          fprintf(stderr,"Error: Missing argument after option '-nitem'.\n"
                   USAGE,argv[0]);
           return EXIT_FAILURE;
         }
         header.nbands=strtol(argv[++iarg],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-nitem'.\n",argv[iarg]);
+          fprintf(stderr,"Error: Invalid number '%s' for option '-nitem'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(header.nbands<=0)
+        {
+          fputs("Error: Number of bands must be greater than zero.\n",stderr);
           return EXIT_FAILURE;
         }
       }
@@ -416,14 +423,14 @@ int main(int argc,char **argv)
       {
         if(iarg==argc-1)
         {
-          fprintf(stderr,"Missing argument after option '-firstyear'.\n"
+          fprintf(stderr,"Error: Missing argument after option '-firstyear'.\n"
                   USAGE,argv[0]);
           return EXIT_FAILURE;
         }
         header.firstyear=strtol(argv[++iarg],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-firstyear'.\n",argv[iarg]);
+          fprintf(stderr,"Error: Invalid number '%s' for option '-firstyear'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
       }
@@ -431,14 +438,14 @@ int main(int argc,char **argv)
       {
         if(iarg==argc-1)
         {
-          fprintf(stderr,"Missing argument after option '-cellsize'.\n"
+          fprintf(stderr,"Error: Missing argument after option '-cellsize'.\n"
                   USAGE,argv[0]);
           return EXIT_FAILURE;
         }
         cellsize=(float)strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-cellsize'.\n",argv[iarg]);
+          fprintf(stderr,"Error: Invalid number '%s' for option '-cellsize'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
         res.lon=res.lat=header.cellsize_lon=header.cellsize_lat=cellsize;
@@ -447,20 +454,20 @@ int main(int argc,char **argv)
       {
         if(iarg==argc-1)
         {
-          fprintf(stderr,"Missing argument after option '-compress'.\n"
+          fprintf(stderr,"Error: Missing argument after option '-compress'.\n"
                   USAGE,argv[0]);
           return EXIT_FAILURE;
         }
         compress=strtol(argv[++iarg],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-compress'.\n",argv[iarg]);
+          fprintf(stderr,"Error: Invalid number '%s' for option '-compress'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
       }
       else
       {
-        fprintf(stderr,"invalid option '%s'.\n"
+        fprintf(stderr,"Error: Invalid option '%s'.\n"
                 USAGE,argv[iarg],argv[0]);
         return EXIT_FAILURE;
       }
@@ -469,7 +476,7 @@ int main(int argc,char **argv)
       break;
   if(argc<iarg+4)
   {
-    fprintf(stderr,"Missing arguments.\n"
+    fprintf(stderr,"Error: Missing argument(s).\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
@@ -481,6 +488,11 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   ngrid=getfilesize(argv[iarg+1])/sizeof(short)/2;
+  if(ngrid==0)
+  {
+     fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg+1]);
+     return EXIT_FAILURE;
+  }
   grid=newvec(Coord,ngrid);
   if(grid==NULL)
   {
@@ -512,7 +524,7 @@ int main(int argc,char **argv)
     if(getfilesize(argv[iarg+2]) % (sizeof(float)*ngrid*header.nbands))
       fprintf(stderr,"Warning: file size of '%s' is not multiple bands %d and number of cells %d.\n",argv[iarg+2],header.nbands,ngrid);
   }
-  index=createindex(grid,ngrid,res);
+  index=createindex(grid,ngrid,res,isglobal);
   if(index==NULL)
     return EXIT_FAILURE;
   free(grid);

@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -27,6 +27,7 @@ typedef struct
 {
   Real gdd5; /* number of days with temp > 5 deg C */
   Real temp[NDAYS];
+  Real prec[NDAYS];
   Real dval_prec[NDAYS+1]; /* daily precipitation values (mm) */
   Real temp_min; /* minimum annual temperature (deg C) */
   Real temp_max; /* maximum annual temperature (deg C) */
@@ -42,6 +43,7 @@ typedef struct
   Real mpet20[NMONTH]; /* 20-year average monthly precip */
   Real mtemp20[NMONTH]; /* 20-year average monthly precip */
   Real mtemp_min20; /*20-year average of coldest month temperature*/
+  Real aprec;     /**< annual sum of 20-year average monthly precip */
 } Climbuf;
 
 /* Definitions of macros */
@@ -53,7 +55,8 @@ typedef struct
 
 extern Bool new_climbuf(Climbuf *);
 extern void init_climbuf(Climbuf *);
-extern void daily_climbuf(Climbuf *,Real);
+extern void daily_climbuf(Climbuf *,Real,Real);
+extern Real getavgprec(const Climbuf *);
 extern void monthly_climbuf(Climbuf *,Real,Real,Real,int);
 extern void annual_climbuf(Climbuf *);
 extern Bool fwriteclimbuf(FILE *,const Climbuf *);

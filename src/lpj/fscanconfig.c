@@ -10,24 +10,24 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
 
-#define fscanint2(file,var,name) if(fscanint(file,var,name,verbose)) return TRUE;
+#define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verbose)) return TRUE;
+#define fscanreal2(file,var,name) if(fscanreal(file,var,name,FALSE,verbose)) return TRUE;
+#define fscanbool2(file,var,name) if(fscanbool(file,var,name,FALSE,verbose)) return TRUE;
 #define fscanname(file,var,name) {              \
-    if(fscanstring(file,var,verbose!=NO_ERR)) {                 \
+    if(fscanstring(file,var,name,FALSE,verbose)) {                 \
       if(verbose) readstringerr(name);  \
       return TRUE;                              \
     }                                              \
-    if(verbose>=VERB)    \
-      printf("%s %s\n", name, var);                     \
   }
 
 #define scanfilename(file,var,path,what) {                              \
-    if(readfilename2(file,var,path,verbose)) {                  \
+    if(readfilename2(file,var,what,path,verbose)) {                  \
       if(verbose) fprintf(stderr,"ERROR209: Cannot read input filename for '%s'.\n",what); \
       return TRUE;                                                      \
     }                                                                   \
@@ -36,7 +36,7 @@
   }
 
 #define scanclimatefilename(file,var,path,isfms,what) {                 \
-    if(readclimatefilename(file,var,path,isfms,verbose)) {      \
+    if(readclimatefilename(file,var,what,path,isfms,verbose)) {      \
       if(verbose) fprintf(stderr,"ERROR209: Cannot read input filename for '%s'.\n",what); \
       return TRUE;                                                      \
     }                                                                   \
@@ -44,9 +44,9 @@
       printf("%s %s\n", what, (var)->name);                             \
   }
 
-static Bool readfilename2(FILE *file,Filename *name,const char *path,Verbosity verbose)
+static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const char *path,Verbosity verbose)
 {
-  if(readfilename(file,name,path,FALSE,verbose))
+  if(readfilename(file,name,key,path,FALSE,verbose))
     return TRUE;
   if(name->fmt==CDF)
   {
@@ -63,9 +63,9 @@ static Bool readfilename2(FILE *file,Filename *name,const char *path,Verbosity v
   return FALSE;
 } /* of 'readfilename2' */
 
-static Bool readclimatefilename(FILE *file,Filename *name,const char *path,Bool isfms,Verbosity verbose)
+static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,const char *path,Bool isfms,Verbosity verbose)
 {
-  if(readfilename(file,name,path,TRUE,verbose))
+  if(readfilename(file,name,key,path,TRUE,verbose))
     return TRUE;
   if(!isfms && name->fmt==FMS)
   {
@@ -80,7 +80,7 @@ static Bool readclimatefilename(FILE *file,Filename *name,const char *path,Bool 
     return TRUE;
   }
   return FALSE;
-} /* of 'readfilename2' */
+} /* of 'readclimatefilename' */
 
 
 static void divide(int *start, /**< index of first grid cell */
@@ -112,7 +112,7 @@ static void divide(int *start, /**< index of first grid cell */
 } /* of 'divide' */
 
 Bool fscanconfig(Config *config,    /**< LPJ configuration */
-                 FILE *file,        /**< File pointer to text file */
+                 LPJfile *file,        /**< File pointer to LPJ file */
                  Fscanpftparfcn scanfcn[], /**< array of PFT-specific scan
                                               functions */
                  int ntypes,        /**< Number of PFT classes */
@@ -120,7 +120,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                 )                   /** \return TRUE on error */
  {
   String name;
-  int restart,endgrid,israndom,wateruse,grassfix;
+  LPJfile input;
+  int restart,endgrid,israndom,grassfix,grassharvest;
   Verbosity verbose;
 
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
@@ -130,16 +131,18 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   /*=================================================================*/
 
   if (verbose>=VERB) puts("// I. type section");
-  fscanint2(file,&israndom,"prec");
-  if(israndom==RANDOM_PREC)
+  fscanbool2(file,&israndom,"random_prec");
+  if(israndom)
   {
-    fscanint2(file,&config->seed,"random seed");
+    config->seed=RANDOM_SEED;
+    if(fscanint(file,&config->seed,"random_seed",TRUE,verbose))
+      return TRUE;
     if(config->seed==RANDOM_SEED)
       config->seed=time(NULL);
   }
   else
     config->seed=0;
-  fscanint2(file,&config->with_radiation,"with_radiation");
+  fscanint2(file,&config->with_radiation,"radiation");
   if(config->with_radiation<CLOUDINESS || config->with_radiation>RADIATION_LWDOWN)
   {
     if(verbose)
@@ -156,38 +159,77 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
 #endif
   fscanint2(file,&config->fire,"fire");
+  if(config->fire<NO_FIRE || config->fire>SPITFIRE_TMAX)
+  {
+    if(verbose)
+      fprintf(stderr,"ERROR166: Invalid value for fire=%d in line %d of '%s'.\n",
+              config->fire,getlinecount(),getfilename());
+    return TRUE;
+  }
   if(config->sim_id==LPJ)
     config->firewood=NO_FIREWOOD;
   else
   {
-    fscanint2(file,&config->firewood,"firewood");
+    fscanbool2(file,&config->firewood,"firewood");
   }
-  fscanint2(file,&config->ispopulation,"population");
-  fscanint2(file,&config->prescribe_burntarea,"prescribe burntarea");
-  fscanint2(file,&config->prescribe_landcover,"prescribe landcover");
+  if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
+  {
+    fscanint2(file,&config->fdi,"fdi");
+    if(config->fdi<0 || config->fdi>WVPD_INDEX)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR166: Invalid value for fdi=%d in line %d of '%s'.\n",
+                config->fdi,getlinecount(),getfilename());
+      return TRUE;
+    }
+    if(config->fdi==WVPD_INDEX && verbose)
+      fputs("WARNING029: VPD index only calibrated for South America.\n",stderr);
+  }
+  fscanbool2(file,&config->ispopulation,"population");
+  config->prescribe_burntarea=FALSE;
+  if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",TRUE,verbose))
+    return TRUE;
+  if(config->prescribe_burntarea && config->fire!=SPITFIRE && config->fire!=SPITFIRE_TMAX)
+  {
+    if(verbose)
+      fputs("WARNING029: Prescribed burnt area can only by set for SPITFIRE, will be disabled.\n",stderr);
+    config->prescribe_burntarea=FALSE;
+  }
+  config->prescribe_landcover=NO_LANDCOVER;
+  if(fscanint(file,&config->prescribe_landcover,"prescribe_landcover",TRUE,verbose))
+    return TRUE;
   if(config->prescribe_landcover<NO_LANDCOVER || config->prescribe_landcover>LANDCOVERFPC)
   {
-    if(isroot(*config))
+    if(verbose)
       fprintf(stderr,"ERROR166: Invalid value for prescribe landcover=%d in line %d of '%s'.\n",
               config->prescribe_landcover,getlinecount(),getfilename());
     return TRUE;
   }
-  fscanint2(file,&config->new_phenology,"new phenology");
-  fscanint2(file,&config->river_routing,"river routing");
+  fscanbool2(file,&config->new_phenology,"new_phenology");
+  fscanbool2(file,&config->river_routing,"river_routing");
   config->reservoir=FALSE;
 #ifdef IMAGE
   config->groundwater_irrig = NO_GROUNDWATER_IRRIG;
   config->aquifer_irrig = NO_AQUIFER_IRRIG;
 #endif
-  fscanint2(file,&config->permafrost,"permafrost");
+  fscanbool2(file,&config->permafrost,"permafrost");
   config->sdate_option=NO_FIXED_SDATE;
-  config->rw_manage=NO_RWMANAGEMENT;
+  config->rw_manage=FALSE;
   if(config->sim_id!=LPJ)
   {
-    fscanint2(file,&config->withlanduse,"withlanduse");
+    fscanint2(file,&config->withlanduse,"landuse");
+    if(config->withlanduse<NO_LANDUSE || config->withlanduse>ALL_CROPS)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR166: Invalid value for landuse=%d in line %d of '%s'.\n",
+                config->withlanduse,getlinecount(),getfilename());
+      return TRUE;
+    }
     if(config->withlanduse!=NO_LANDUSE)
     {
-      fscanint2(file,&config->sdate_option,"sowing date option");
+      if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS)
+        fscanint2(file,&config->landuse_year_const,"landuse_year_const");
+      fscanint2(file,&config->sdate_option,"sowing_date_option");
       if(config->sdate_option<0 || config->sdate_option>PRESCRIBED_SDATE)
       {
         if(verbose)
@@ -195,7 +237,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                   config->sdate_option,getlinecount(),getfilename());
         return TRUE;
       }
-      fscanint2(file,&config->irrig_scenario,"irrigation scenario");
+      if(config->sdate_option==FIXED_SDATE || config->sdate_option==PRESCRIBED_SDATE)
+        fscanint2(file,&config->sdate_fixyear,"sdate_fixyear");
+      fscanint2(file,&config->irrig_scenario,"irrigation");
       if(config->irrig_scenario<0 || config->irrig_scenario>ALL_IRRIGATION)
       {
         if(verbose)
@@ -203,22 +247,59 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                   config->irrig_scenario,getlinecount(),getfilename());
         return TRUE;
       }
-      fscanint2(file,&config->rw_manage,"rw_manage");
+      fscanbool2(file,&config->intercrop,"intercrop");
+      config->remove_residuals=FALSE;
+      if(fscanbool(file,&config->remove_residuals,"remove_residuals",TRUE,verbose))
+        return TRUE;
+      config->residues_fire=FALSE;
+      if(fscanbool(file,&config->residues_fire,"residues_fire",TRUE,verbose))
+        return TRUE;
+      if(fscanbool(file,&config->rw_manage,"rw_manage",TRUE,verbose))
+        return TRUE;
       fscanint2(file,&config->laimax_interpolate,"laimax_interpolate");
-      config->isconstlai=(config->laimax_interpolate==CONST_LAI_MAX);
+      if(config->laimax_interpolate<0 || config->laimax_interpolate>CONST_LAI_MAX)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR166: Invalid value for laimax_interpolate=%d in line %d of '%s'.\n",
+                  config->laimax_interpolate,getlinecount(),getfilename());
+        return TRUE;
+      }
+      if(config->laimax_interpolate==CONST_LAI_MAX)
+        fscanreal2(file,&config->laimax,"laimax");
       if(config->river_routing){
-        fscanint2(file,&config->reservoir,"reservoir");
+        fscanbool2(file,&config->reservoir,"reservoir");
 #ifdef IMAGE
         fscanint2(file,&config->groundwater_irrig,"groundwater irrigation");
         fscanint2(file,&config->aquifer_irrig,"aquifer irrigation");
 #endif
       }
-      fscanint2(file,&grassfix,"grassland_fixed_pft");
+      grassfix=FALSE;
+      if(fscanbool(file,&grassfix,"grassland_fixed_pft",TRUE,verbose))
+        return TRUE;
+      grassharvest=FALSE;
+      if(fscanbool(file,&grassharvest,"grass_harvest_options", TRUE, verbose))
+        return TRUE;
     }
-    fscanint2(file,&wateruse,"wateruse");
-    if(wateruse==WATERUSE && config->withlanduse==NO_LANDUSE)
+    if(isboolean(file,"wateruse"))
     {
-      if(isroot(*config))
+      if(verbose)
+        fputs("WARNING028: Type of 'wateruse' is boolean, converted to int.\n",stderr);
+      fscanbool2(file,&config->wateruse,"wateruse");
+    }
+    else
+    {
+      fscanint2(file,&config->wateruse,"wateruse");
+      if(config->wateruse<NO_WATERUSE || config->wateruse>ALL_WATERUSE)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR166: Invalid value for wateruse=%d in line %d of '%s'.\n",
+                  config->wateruse,getlinecount(),getfilename());
+        return TRUE;
+      }
+    }
+    if(config->wateruse && config->withlanduse==NO_LANDUSE)
+    {
+      if(verbose)
         fputs("ERROR224: Wateruse without landuse set.\n",stderr);
       return TRUE;
     }
@@ -226,7 +307,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   else
   {
     config->withlanduse=NO_LANDUSE;
-    wateruse=NO_WATERUSE;
+    config->wateruse=NO_WATERUSE;
   }
   /*=================================================================*/
   /* II. Reading input parameter section                             */
@@ -239,11 +320,23 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
    * crops must have last id-number */
   /* Read PFT parameter array */
   if(fscanparam(file,config))
+  {
+    if(verbose)
+      fputs("ERROR230: Cannot read LPJ parameter.\n",stderr);
     return TRUE;
+  }
   if((config->nsoil=fscansoilpar(file,&config->soilpar,verbose))==0)
+  {
+    if(verbose)
+      fputs("ERROR230: Cannot read soil parameter.\n",stderr);
     return TRUE;
+  }
   if((config->npft=fscanpftpar(file,&config->pftpar,scanfcn,ntypes,verbose))==NULL)
+  {
+    if(verbose)
+      fputs("ERROR230: Cannot read PFT parameter.\n",stderr);
     return TRUE;
+  }
   config->ntypes=ntypes;
   config->nbiomass=getnbiomass(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
   config->nwft=getnwft(config->pftpar, config->npft[GRASS] + config->npft[TREE]);
@@ -252,73 +345,113 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     /* landuse enabled */
     if((config->ncountries=fscancountrypar(file,&config->countrypar,config->rw_manage,(config->laimax_interpolate==LAIMAX_CFT) ? config->npft[CROP] : 0,verbose))==0)
+    {
+      if(verbose)
+        fputs("ERROR230: Cannot read country parameter.\n",stderr);
       return TRUE;
+    }
     if((config->nregions=fscanregionpar(file,&config->regionpar,verbose))==0)
+    {
+      if(verbose)
+        fputs("ERROR230: Cannot read region parameter.\n",stderr);
       return TRUE;
+    }
   }
   else
   {
     config->countrypar=NULL;
     config->regionpar=NULL;
   }
-  fscanint2(file,&config->compress,"compress");
+  config->compress=0;
+  if(fscanint(file,&config->compress,"compress",TRUE,verbose))
+    return TRUE;
 #ifdef USE_NETCDF
-  if(config->compress)
+  if(config->compress && verbose)
     fputs("WARNING403: Compression of NetCDF files is not supported in this version of NetCDF.\n",stderr);
 #endif
-  if(fscanfloat(file,&config->missing_value,"missing value",verbose))
+  config->missing_value=MISSING_VALUE_FLOAT;
+  if(fscanfloat(file,&config->missing_value,"missing_value",TRUE,verbose))
     return TRUE;
+  fscanname(file,name,"pft_index");
+  config->pft_index=strdup(name);
+  fscanname(file,name,"layer_index");
+  config->layer_index=strdup(name);
   config->outnames=fscanoutputvar(file,NOUT,verbose);
   if(config->outnames==NULL)
+  {
+    if(verbose)
+      fputs("ERROR230: Cannot read output description.\n",stderr);
     return TRUE;
+  }
   /*=================================================================*/
   /* III. Reading input data section                                 */
   /*=================================================================*/
 
   if (verbose>=VERB) puts("// III. input data section");
-  scanclimatefilename(file,&config->soil_filename,config->inputdir,FALSE,"soil");
+  config->check_climate=FALSE;
+  if(iskeydefined(file,"check_climate"))
+  {
+    fscanbool2(file,&config->check_climate,"check_climate");
+  }
+  if(iskeydefined(file,"inpath"))
+  {
+    if(fscanstring(file,name,"inpath",FALSE,verbose))
+      return TRUE;
+    free(config->inputdir);
+    config->inputdir=strdup(name);
+  }
+  if(fscanstruct(file,&input,"input",verbose))
+    return TRUE;
+  scanclimatefilename(&input,&config->soil_filename,config->inputdir,FALSE,"soil");
   if(config->soil_filename.fmt!=CDF)
   {
-    scanfilename(file,&config->coord_filename,config->inputdir,"coord");
+    scanfilename(&input,&config->coord_filename,config->inputdir,"coord");
   }
   if(config->withlanduse!=NO_LANDUSE)
   {
-    scanclimatefilename(file,&config->countrycode_filename,config->inputdir,FALSE,"countrycode");
+    scanclimatefilename(&input,&config->countrycode_filename,config->inputdir,FALSE,"countrycode");
     if(config->countrycode_filename.fmt==CDF)
     {
-      scanclimatefilename(file,&config->regioncode_filename,config->inputdir,FALSE,"regioncode");
+      scanclimatefilename(&input,&config->regioncode_filename,config->inputdir,FALSE,"regioncode");
     }
-    scanclimatefilename(file,&config->landuse_filename,config->inputdir,FALSE,"landuse");
+    scanclimatefilename(&input,&config->landuse_filename,config->inputdir,FALSE,"landuse");
     if(config->sdate_option==PRESCRIBED_SDATE)
     {
-      scanclimatefilename(file,&config->sdate_filename,config->inputdir,FALSE,"sdate");
+      scanclimatefilename(&input,&config->sdate_filename,config->inputdir,FALSE,"sdate");
     }
     if(grassfix == GRASS_FIXED_PFT)
     {
-      scanclimatefilename(file,&config->grassfix_filename,config->inputdir,FALSE,"Grassland fixed pft");
+      scanclimatefilename(&input,&config->grassfix_filename,config->inputdir,FALSE,"grassland_fixed_pft");
     }
     else
       config->grassfix_filename.name = NULL;
+    if(grassharvest == GRASS_HARVEST_OPTIONS)
+    {
+      scanclimatefilename(&input,&config->grassharvest_filename,config->inputdir,FALSE,"grass_harvest_options");
+    }
+    else
+      config->grassharvest_filename.name = NULL;
   }
   else
   {
     config->grassfix_filename.name = NULL;
+    config->grassharvest_filename.name = NULL;
   }
   if(config->river_routing)
   {
-    scanclimatefilename(file,&config->lakes_filename,config->inputdir,FALSE,"lakes");
-    scanclimatefilename(file,&config->drainage_filename,config->inputdir,FALSE,"drainage");
+    scanclimatefilename(&input,&config->lakes_filename,config->inputdir,FALSE,"lakes");
+    scanclimatefilename(&input,&config->drainage_filename,config->inputdir,FALSE,"drainage");
     if(config->drainage_filename.fmt==CDF)
     {
-      scanclimatefilename(file,&config->river_filename,config->inputdir,FALSE,"river");
+      scanclimatefilename(&input,&config->river_filename,config->inputdir,FALSE,"river");
     }
     if(config->withlanduse!=NO_LANDUSE)
     {
-      scanclimatefilename(file,&config->neighb_irrig_filename,config->inputdir,FALSE,"neighb_irrig");
+      scanclimatefilename(&input,&config->neighb_irrig_filename,config->inputdir,FALSE,"neighb_irrig");
       if(config->reservoir)
       {
-        scanclimatefilename(file,&config->elevation_filename,config->inputdir,FALSE,"elevation");
-        scanfilename(file,&config->reservoir_filename,config->inputdir,"reservoir");
+        scanclimatefilename(&input,&config->elevation_filename,config->inputdir,FALSE,"elevation");
+        scanfilename(&input,&config->reservoir_filename,config->inputdir,"reservoir");
       }
 #ifdef IMAGE
       if(config->aquifer_irrig==AQUIFER_IRRIG)
@@ -327,56 +460,63 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->sim_id==LPJML_FMS)
     {
-      scanfilename(file,&config->runoff2ocean_filename,config->inputdir,"runoff2ocean_map");
+      scanfilename(&input,&config->runoff2ocean_filename,config->inputdir,"runoff2ocean_map");
     }
   }
-  scanclimatefilename(file,&config->temp_filename,config->inputdir,config->sim_id==LPJML_FMS,"temp");
-  scanclimatefilename(file,&config->prec_filename,config->inputdir,config->sim_id==LPJML_FMS,"prec");
+  scanclimatefilename(&input,&config->temp_filename,config->inputdir,config->sim_id==LPJML_FMS,"temp");
+  scanclimatefilename(&input,&config->prec_filename,config->inputdir,config->sim_id==LPJML_FMS,"prec");
   switch(config->with_radiation)
   {
     case RADIATION:
-      scanclimatefilename(file,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwnet");
-      scanclimatefilename(file,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
+      scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwnet");
+      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
+      break;
+    case RADIATION_LWDOWN:
+      scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwdown");
+      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
       break;
     case CLOUDINESS:
-      scanclimatefilename(file,&config->cloud_filename,config->inputdir,config->sim_id==LPJML_FMS,"cloud");
+      scanclimatefilename(&input,&config->cloud_filename,config->inputdir,config->sim_id==LPJML_FMS,"cloud");
       break;
-    case SWDOWN:
-      scanclimatefilename(file,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
+    case RADIATION_SWONLY:
+      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
       break;
     default:
-      fprintf(stderr,"ERROR213: Invalid setting %d for radiation in line %d of '%s'.\n",config->with_radiation,getlinecount(),getfilename());
+      if(verbose)
+        fprintf(stderr,"ERROR213: Invalid setting %d for radiation in line %d of '%s'.\n",config->with_radiation,getlinecount(),getfilename());
       return TRUE;
   }
-  if(config->fire==SPITFIRE)
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    scanclimatefilename(file,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,"wind");
-    scanclimatefilename(file,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,"tamp");
-#ifdef TMAX_SPITFIRE
-    if(config->tamp_filename.fmt==CDF)
+    if(config->fdi==WVPD_INDEX)
     {
-      scanclimatefilename(file,&config->tmax_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmax");
+      scanclimatefilename(&input,&config->humid_filename,config->inputdir,config->sim_id==LPJML_FMS,"humid");
+    }
+    scanclimatefilename(&input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,"wind");
+    scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,(config->fire==SPITFIRE_TMAX) ? "tmin" : "tamp");
+    if(config->fire==SPITFIRE_TMAX)
+    {
+      scanclimatefilename(&input,&config->tmax_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmax");
     }
     else
-#endif
       config->tmax_filename.name=NULL;
-    scanclimatefilename(file,&config->lightning_filename,config->inputdir,FALSE,"lightning");
-    scanclimatefilename(file,&config->human_ignition_filename,
+    scanclimatefilename(&input,&config->lightning_filename,config->inputdir,FALSE,"lightning");
+    scanclimatefilename(&input,&config->human_ignition_filename,
                         config->inputdir,FALSE,"human_ignition");
   }
   if(config->ispopulation)
   {
-    scanclimatefilename(file,&config->popdens_filename,config->inputdir,FALSE,"popdens");
+    scanclimatefilename(&input,&config->popdens_filename,config->inputdir,FALSE,"popdens");
   }
   if(config->prescribe_burntarea)
   {
-    scanclimatefilename(file,&config->burntarea_filename,config->inputdir,FALSE,"burntarea");
+    scanclimatefilename(&input,&config->burntarea_filename,config->inputdir,FALSE,"burntarea");
   }
   if(config->prescribe_landcover!=NO_LANDCOVER)
   {
-    scanclimatefilename(file,&config->landcover_filename,config->inputdir,FALSE,"landcover");
+    scanclimatefilename(&input,&config->landcover_filename,config->inputdir,FALSE,"landcover");
   }
-  if(readfilename(file,&config->co2_filename,config->inputdir,FALSE,verbose))
+  if(readfilename(&input,&config->co2_filename,"co2",config->inputdir,FALSE,verbose))
   {
     if(verbose)
       fputs("ERROR209: Cannot read input filename for 'co2'.\n",stderr);
@@ -388,11 +528,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR197: Only text file is supported for CO2 input in this version of LPJmL.\n",stderr);
     return TRUE;
   }
-  if (verbose>=VERB) printf("co2 %s\n", config->co2_filename.name);
 
   if(israndom==RANDOM_PREC)
   {
-    scanclimatefilename(file,&config->wet_filename,config->inputdir,config->sim_id==LPJML_FMS,"wetdays");
+    scanclimatefilename(&input,&config->wet_filename,config->inputdir,config->sim_id==LPJML_FMS,"wetdays");
   }
 #if defined IMAGE && defined COUPLED
   else if(config->sim_id==LPJML_IMAGE)
@@ -404,27 +543,26 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #endif
   else
     config->wet_filename.name=NULL;
-  if(wateruse==WATERUSE)
+  if(config->wateruse)
   {
-    scanclimatefilename(file,&config->wateruse_filename,config->inputdir,FALSE,"wateruse");
+    scanclimatefilename(&input,&config->wateruse_filename,config->inputdir,FALSE,"wateruse");
 #ifdef IMAGE
     scanclimatefilename(file,&config->wateruse_wd_filename,config->inputdir,FALSE,"wateruse_wd");
 #endif
-  }
-  else
-  {
-    config->wateruse_filename.name=NULL;
+  } 
 #ifdef IMAGE
+   else 
+  {
     config->wateruse_wd_filename.name=NULL;
-#endif
   }
+#endif
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
     /* reading IMAGE-coupling specific information */
-    scanclimatefilename(file,&config->temp_var_filename,config->inputdir,FALSE,"temp_var");
-    scanclimatefilename(file,&config->prec_var_filename,config->inputdir,FALSE,"prec_var");
-    scanclimatefilename(file,&config->prodpool_init_filename,config->inputdir,FALSE,"prodpool_init");
+    scanclimatefilename(&input,&config->temp_var_filename,config->inputdir,FALSE,"temp_var");
+    scanclimatefilename(&input,&config->prec_var_filename,config->inputdir,FALSE,"prec_var");
+    scanclimatefilename(&input,&config->prodpool_init_filename,config->inputdir,FALSE,"prodpool_init");
   }
 #endif
 
@@ -434,14 +572,27 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 
   if (verbose>=VERB) puts("// IV. output data section");
   if(fscanoutput(file,config,nout_max))
+  {
+    if(verbose)
+      fputs("ERROR230: Cannot read output data.\n",stderr);
     return TRUE;
+  }
 
   /*=================================================================*/
   /* V. Reading run settings section                                 */
   /*=================================================================*/
 
   if (verbose>=VERB) puts("// V. run settings");
-  fscanint2(file,&config->startgrid,"startgrid");
+  if(iskeydefined(file,"restartpath"))
+  {
+    if(fscanstring(file,name,"restartpath",FALSE,verbose))
+      return TRUE;
+    free(config->restartdir);
+    config->restartdir=strdup(name);
+  }
+  config->startgrid=ALL; /* set default value */
+  if(fscanint(file,&config->startgrid,"startgrid",TRUE,verbose))
+    return TRUE;
   if(config->startgrid==ALL)
   {
     config->startgrid=0;
@@ -458,7 +609,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       endgrid--;
   }
   else
-    fscanint2(file,&endgrid,"endgrid");
+  {
+    endgrid=config->startgrid;
+    if(fscanint(file,&endgrid,"endgrid",TRUE,verbose))
+      return TRUE;
+  }
   if(endgrid<config->startgrid)
   {
     if(verbose)
@@ -479,8 +634,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
            config->ntask);
   config->ngridcell=endgrid-config->startgrid+1;
   fscanint2(file,&config->nspinup,"nspinup");
+  config->isfirstspinupyear=FALSE;
   if(config->nspinup)
+  {
     fscanint2(file,&config->nspinyear,"nspinyear");
+    if(iskeydefined(file,"firstspinupyear"))
+    {
+      fscanint2(file,&config->firstspinupyear,"firstspinupyear");
+      config->isfirstspinupyear=TRUE;
+    }
+  }
   fscanint2(file,&config->firstyear,"firstyear");
   fscanint2(file,&config->lastyear,"lastyear");
 #if defined IMAGE && defined COUPLED
@@ -495,27 +658,54 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(verbose)
       fprintf(stderr,"ERROR105: First simulation year=%d greater than last simulation year=%d.\n",
-            config->firstyear-config->nspinup,config->lastyear);
+              config->firstyear-config->nspinup,config->lastyear);
     return TRUE;
   }
-  fscanint2(file,&restart,"restart");
-  if(restart==RESTART)
+  if(iskeydefined(file,"outputyear"))
   {
-    fscanname(file,name,"restart filename");
+    fscanint2(file,&config->outputyear,"outputyear");
+    if(config->outputyear>config->lastyear)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR230: First year output is written=%d greater than last simulation year=%d.\n",
+                config->outputyear,config->lastyear);
+      return TRUE;
+    }
+    else if(config->outputyear<config->firstyear-config->nspinup)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR230: First year output is written=%d less than first simulation year=%d.\n",
+                config->outputyear,config->firstyear-config->nspinup);
+      return TRUE;
+    }
+  }
+  else
+    config->outputyear=config->firstyear;
+  fscanbool2(file,&config->from_restart,"restart");
+  if(config->from_restart)
+  {
+    fscanname(file,name,"restart_filename");
     config->restart_filename=addpath(name,config->restartdir);
-    config->from_restart=TRUE;
   }
   else
   {
     config->restart_filename=NULL;
-    config->from_restart=FALSE;
+    if(verbose && config->nspinup<soil_equil_year)
+      fprintf(stderr,"WARNING031: Number of spinup years less than %d necessary for soil equilibration.\n",soil_equil_year);
   }
-  fscanint2(file,&restart,"write_restart");
-  if(restart==RESTART)
+  if(iskeydefined(file,"checkpoint_filename"))
   {
-    fscanname(file,name,"write_restart filename");
+    fscanname(file,name,"checkpoint_filename");
+    config->checkpoint_restart_filename=addpath(name,config->restartdir);
+  }
+  else
+    config->checkpoint_restart_filename=NULL;
+  fscanbool2(file,&restart,"write_restart");
+  if(restart)
+  {
+    fscanname(file,name,"write_restart_filename");
     config->write_restart_filename=addpath(name,config->restartdir);
-    fscanint2(file,&config->restartyear,"restart year");
+    fscanint2(file,&config->restartyear,"restart_year");
     if(config->restartyear>config->lastyear || config->restartyear<config->firstyear-config->nspinup)
     {
       if(verbose)

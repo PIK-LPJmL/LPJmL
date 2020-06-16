@@ -4,17 +4,46 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes out PFT specific output data                               \n**/
+/**     Function writes PFT-specific output into file                              \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
+
+#define writeoutputvar(index,name,n) if(isopen(output,index))\
+  {\
+    outindex(output,index,config->rank);\
+    for(i=0;i<n;i++)\
+    {\
+      count=0;\
+      for(cell=0;cell<config->ngridcell;cell++)\
+        if(!grid[cell].skip)\
+          fvec[count++]=(float)grid[cell].output.name[i];\
+      writepft(output,index,fvec,n,year,i,config);\
+    }\
+  }
+
+#define writeoutputshortvar(index,name,n) if(isopen(output,index))\
+  {\
+    outindex(output,index,config->rank);\
+    vec=newvec(short,config->count);\
+    check(vec);\
+    for(i=0;i<n;i++)\
+    {\
+      count=0;\
+      for(cell=0;cell<config->ngridcell;cell++)\
+        if(!grid[cell].skip)\
+          vec[count++]=(short)grid[cell].output.name[i];\
+      writeshortpft(output,index,vec,n,year,i,config);\
+    }\
+    free(vec);\
+  }
 
 static void outindex(Outputfile *output,int index,int rank)
 {
@@ -31,13 +60,13 @@ static void writepft(Outputfile *output,int n,float *data,int size,int year,
   MPI_Status status;
 #endif
   for(i=0;i<config->count;i++)
-    data[i]*=config->outnames[n].scale;
+    data[i]=config->outnames[n].scale*data[i]+config->outnames[n].offset;
 #ifdef USE_MPI
   switch(output->method)
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[n].fp.mpi_file,
-                        ((year-config->firstyear)*size+index)*config->total+config->offset,
+                        ((year-config->outputyear)*size+index)*config->total+config->offset,
                         data,config->count,MPI_FLOAT,&status);
       break;
     case LPJ_GATHER:
@@ -53,7 +82,7 @@ static void writepft(Outputfile *output,int n,float *data,int size,int year,
           break;
         case CDF:
           mpi_write_pft_netcdf(&output->files[n].fp.cdf,data,MPI_FLOAT,config->total,
-                               output->files[n].oneyear ? NO_TIME : year-config->firstyear,
+                               output->files[n].oneyear ? NO_TIME : year-config->outputyear,
                                index,
                                output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -79,7 +108,7 @@ static void writepft(Outputfile *output,int n,float *data,int size,int year,
         break;
       case CDF:
         write_pft_float_netcdf(&output->files[n].fp.cdf,data,
-                               output->files[n].oneyear ? NO_TIME : year-config->firstyear,
+                               output->files[n].oneyear ? NO_TIME : year-config->outputyear,
                                index,config->count);
         break;
     }
@@ -99,7 +128,7 @@ static void writeshortpft(Outputfile *output,int n,short *data,int size,
   {
     case LPJ_MPI2:
       MPI_File_write_at(output->files[n].fp.mpi_file,
-                        ((year-config->firstyear)*size+index)*config->total+config->offset,
+                        ((year-config->outputyear)*size+index)*config->total+config->offset,
                         data,config->count,MPI_SHORT,&status);
       break;
     case LPJ_GATHER:
@@ -115,7 +144,7 @@ static void writeshortpft(Outputfile *output,int n,short *data,int size,
           break;
         case CDF:
           mpi_write_pft_netcdf(&output->files[n].fp.cdf,data,MPI_SHORT,config->total,
-                               year-config->firstyear,index,
+                               year-config->outputyear,index,
                                output->counts,output->offsets,config->rank,config->comm);
           break;
       }
@@ -141,7 +170,7 @@ static void writeshortpft(Outputfile *output,int n,short *data,int size,
         break;
       case CDF:
         write_pft_short_netcdf(&output->files[n].fp.cdf,data,
-                               year-config->firstyear,index,config->count);
+                               year-config->outputyear,index,config->count);
         break;
     }
   else
@@ -161,66 +190,17 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   short *vec;
   float *fvec;
   Stand* stand;
-  if(isopen(output,SDATE))
-  {
-    outindex(output,SDATE,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<ncft*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.sdate[i];
-      writeshortpft(output,SDATE,vec,2*ncft,year,i,config);
-    }
-    free(vec);
-  }
-  if(isopen(output,HDATE))
-  {
-    outindex(output,HDATE,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<ncft*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.hdate[i];
-      writeshortpft(output,HDATE,vec,2*ncft,year,i,config);
-    }
-    free(vec);
-  }
-  
+  writeoutputshortvar(SDATE,sdate,2*ncft);
+  writeoutputshortvar(HDATE,hdate,2*ncft);
   fvec=newvec(float,config->count);
   check(fvec);
-  if(output->files[PFT_NPP].isopen)
-  {
-    outindex(output,PFT_NPP,config->rank);
-    for(i=0;i<(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.pft_npp[i];
-      writepft(output,PFT_NPP,fvec,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
+  writeoutputvar(PFT_NPP,pft_npp,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
 #ifdef IMAGE
-  if (output->files[WFT_VEGC].isopen)
-  {
-    outindex(output, WFT_VEGC, config->rank);
-    for (i = 0;i<config->nwft;i++)
-    {    
-      count = 0;
-      for (cell = 0;cell<config->ngridcell;cell++)
-        if (!grid[cell].skip)
-          fvec[count++] = (float)grid[cell].output.wft_vegc[i];
-      writepft(output, WFT_VEGC, fvec, config->nwft, year, i, config);
-    }
-  }
+  writeoutputvar(WFT_VEGC,wft_vegc,config->nwft);
 #endif
-  if(output->files[PFT_GCGP].isopen)
+
+
+  if(isopen(output,PFT_GCGP))
   {
     outindex(output,PFT_GCGP,config->rank);
     for(i=0;i<(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
@@ -238,7 +218,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,PFT_GCGP,fvec,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
     }
   }
-  if(output->files[PFT_HARVEST].isopen)
+  if(isopen(output,PFT_HARVEST))
   {
     outindex(output,PFT_HARVEST,config->rank);
     for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
@@ -250,7 +230,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,PFT_HARVEST,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
     }
   }
-  if(output->files[PFT_RHARVEST].isopen)
+  if(isopen(output,PFT_RHARVEST))
   {
     outindex(output,PFT_RHARVEST,config->rank);
     for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
@@ -262,55 +242,11 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,PFT_RHARVEST,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
     }
   }
-  if(output->files[CFT_CONSUMP_WATER_G].isopen)
-  {
-    outindex(output,CFT_CONSUMP_WATER_G,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_consump_water_g[i];
-      writepft(output,CFT_CONSUMP_WATER_G,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_CONSUMP_WATER_B].isopen)
-  {
-    outindex(output,CFT_CONSUMP_WATER_B,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_consump_water_b[i];
-      writepft(output,CFT_CONSUMP_WATER_B,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[GROWING_PERIOD].isopen)
-  {
-    outindex(output,GROWING_PERIOD,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.growing_period[i];
-      writepft(output,GROWING_PERIOD,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(output->files[FPC].isopen)
-  {
-    outindex(output,FPC,config->rank);
-    for(i=0; i<(npft-config->nbiomass)+1;++i)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.fpc[i];
-      writepft(output,FPC,fvec,(npft-config->nbiomass)+1,year,i,config);
-    }
-  }
-  if(output->files[SOILC_LAYER].isopen)
+  writeoutputvar(CFT_CONSUMP_WATER_G,cft_consump_water_g,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_CONSUMP_WATER_B,cft_consump_water_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(GROWING_PERIOD,growing_period,2*(ncft+NGRASS));
+  writeoutputvar(FPC,fpc,npft-config->nbiomass+1);
+  if(isopen(output,SOILC_LAYER))
   {
     outindex(output,SOILC_LAYER,config->rank);
     forrootsoillayer(i)
@@ -334,251 +270,28 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,SOILC_LAYER,fvec,BOTTOMLAYER,year,i,config);
     }
   }
-  if(output->files[CFT_PET].isopen)
-  {
-    outindex(output,CFT_PET,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_pet[i];
-      writepft(output,CFT_PET,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(output->files[CFT_TRANSP].isopen)
-  {
-    outindex(output,CFT_TRANSP,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_transp[i];
-      writepft(output,CFT_TRANSP,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_TRANSP_B].isopen)
-  {
-    outindex(output,CFT_TRANSP_B,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_transp_b[i];
-      writepft(output,CFT_TRANSP_B,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_EVAP].isopen)
-  {
-    outindex(output,CFT_EVAP,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_evap[i];
-        writepft(output,CFT_EVAP,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_EVAP_B].isopen)
-  {
-    outindex(output,CFT_EVAP_B,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_evap_b[i];
-        writepft(output,CFT_EVAP_B,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_INTERC].isopen)
-  {
-    outindex(output,CFT_INTERC,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_interc[i];
-      writepft(output,CFT_INTERC,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_INTERC_B].isopen)
-  {
-    outindex(output,CFT_INTERC_B,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_interc_b[i];
-      writepft(output,CFT_INTERC_B,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_RETURN_FLOW_B].isopen)
-  {
-    outindex(output,CFT_RETURN_FLOW_B,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_return_flow_b[i];
-      writepft(output,CFT_RETURN_FLOW_B,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_IRRIG_EVENTS].isopen)
-  {
-    outindex(output,CFT_IRRIG_EVENTS,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.cft_irrig_events[i];
-      writeshortpft(output,CFT_IRRIG_EVENTS,vec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-    free(vec);
-  }
-  if(output->files[CFT_NIR].isopen)
-  {
-    outindex(output,CFT_NIR,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-      {
-        count=0;
-        for(cell=0;cell<config->ngridcell;cell++)
-          if(!grid[cell].skip)
-            fvec[count++]=(float)grid[cell].output.cft_nir[i];
-        writepft(output,CFT_NIR,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-      }
-    }
-  if(output->files[CFT_TEMP].isopen)
-  {
-    outindex(output,CFT_TEMP,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_temp[i];
-      writepft(output,CFT_TEMP,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(output->files[CFT_PREC].isopen)
-  {
-    outindex(output,CFT_PREC,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_prec[i];
-      writepft(output,CFT_PREC,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(output->files[CFT_SRAD].isopen)
-  {
-    outindex(output,CFT_SRAD,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_srad[i];
-      writepft(output,CFT_SRAD,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(output->files[CFT_ABOVEGBM].isopen)
-  {
-    outindex(output,CFT_ABOVEGBM,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_aboveground_biomass[i];
-      writepft(output,CFT_ABOVEGBM,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(output->files[CFT_CONV_LOSS_EVAP].isopen)
-  {
-    outindex(output,CFT_CONV_LOSS_EVAP,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-      {
-        count=0;
-        for(cell=0;cell<config->ngridcell;cell++)
-          if(!grid[cell].skip)
-            fvec[count++]=(float)grid[cell].output.cft_conv_loss_evap[i];
-        writepft(output,CFT_CONV_LOSS_EVAP,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-      }
-    }
-  if(output->files[CFT_CONV_LOSS_DRAIN].isopen)
-  {
-    outindex(output,CFT_CONV_LOSS_DRAIN,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-      {
-        count=0;
-        for(cell=0;cell<config->ngridcell;cell++)
-          if(!grid[cell].skip)
-            fvec[count++]=(float)grid[cell].output.cft_conv_loss_drain[i];
-        writepft(output,CFT_CONV_LOSS_DRAIN,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-      }
-    }
-  if(output->files[CFTFRAC].isopen)
-  {
-    outindex(output,CFTFRAC,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cftfrac[i];
-      writepft(output,CFTFRAC,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_AIRRIG].isopen)
-  {
-    outindex(output,CFT_AIRRIG,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_airrig[i];
-      writepft(output,CFT_AIRRIG,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_FPAR].isopen)
-  {
-    outindex(output,CFT_FPAR,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_fpar[i];
-      writepft(output,CFT_FPAR,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[LUC_IMAGE].isopen)
-  {
-    outindex(output,LUC_IMAGE,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_luc_image[i];
-      writepft(output,LUC_IMAGE,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
+  writeoutputvar(CFT_PET,cft_pet,2*(ncft+NGRASS));
+  writeoutputvar(CFT_TRANSP,cft_transp,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_TRANSP_B,cft_transp_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_EVAP,cft_evap,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_EVAP_B,cft_evap_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_INTERC,cft_interc,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_INTERC_B,cft_interc_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_RETURN_FLOW_B,cft_return_flow_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputshortvar(CFT_IRRIG_EVENTS,cft_irrig_events,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_NIR,cft_nir,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_TEMP,cft_temp,2*(ncft+NGRASS));
+  writeoutputvar(CFT_PREC,cft_prec,2*(ncft+NGRASS));
+  writeoutputvar(CFT_SRAD,cft_srad,2*(ncft+NGRASS));
+  writeoutputvar(CFT_ABOVEGBM,cft_aboveground_biomass,2*(ncft+NGRASS));
+  writeoutputvar(CFT_CONV_LOSS_EVAP,cft_conv_loss_evap,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_CONV_LOSS_DRAIN,cft_conv_loss_drain,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFTFRAC,cftfrac,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_AIRRIG,cft_airrig,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_FPAR,cft_fpar,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(LUC_IMAGE,cft_luc_image,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
 #ifdef DOUBLE_HARVEST
-  if(output->files[PFT_HARVEST2].isopen)
+  if(isopen(output,PFT_HARVEST2))
   {
     outindex(output,PFT_HARVEST2,config->rank);
     for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
@@ -590,7 +303,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,PFT_HARVEST2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
     }
   }
-  if(output->files[PFT_RHARVEST2].isopen)
+  if(isopen(output,PFT_RHARVEST2))
   {
     outindex(output,PFT_RHARVEST2,config->rank);
     for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
@@ -602,211 +315,22 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
       writepft(output,PFT_RHARVEST2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
     }
   }
-  if(output->files[GROWING_PERIOD2].isopen)
-  {
-    outindex(output,GROWING_PERIOD2,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.growing_period2[i];
-      writepft(output,GROWING_PERIOD2,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(output->files[CFT_PET2].isopen)
-  {
-    outindex(output,CFT_PET2,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_pet2[i];
-      writepft(output,CFT_PET2,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(output->files[CFT_TRANSP2].isopen)
-  {
-    outindex(output,CFT_TRANSP2,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_transp2[i];
-      writepft(output,CFT_TRANSP2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_EVAP2].isopen)
-  {
-    outindex(output,CFT_EVAP2,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_evap2[i];
-        writepft(output,CFT_EVAP2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_INTERC2].isopen)
-  {
-    outindex(output,CFT_INTERC2,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_interc2[i];
-      writepft(output,CFT_INTERC2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_NIR2].isopen)
-  {
-    outindex(output,CFT_NIR2,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_nir2[i];
-      writepft(output,CFT_NIR2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_TEMP2].isopen)
-  {
-    outindex(output,CFT_TEMP2,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_temp2[i];
-      writepft(output,CFT_TEMP2,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(output->files[CFT_PREC2].isopen)
-  {
-    outindex(output,CFT_PREC2,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_prec2[i];
-      writepft(output,CFT_PREC2,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(output->files[CFT_SRAD2].isopen)
-  {
-    outindex(output,CFT_SRAD2,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_srad2[i];
-      writepft(output,CFT_SRAD2,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(output->files[CFT_ABOVEGBM2].isopen)
-  {
-    outindex(output,CFT_ABOVEGBM2,config->rank);
-    for(i=0;i<(ncft+NGRASS)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_aboveground_biomass2[i];
-      writepft(output,CFT_ABOVEGBM2,fvec,2*(ncft+NGRASS),year,i,config);
-    }
-  }
-  if(output->files[CFTFRAC2].isopen)
-  {
-    outindex(output,CFTFRAC2,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cftfrac2[i];
-      writepft(output,CFTFRAC2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(output->files[CFT_AIRRIG2].isopen)
-  {
-    outindex(output,CFT_AIRRIG2,config->rank);
-    for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_airrig2[i];
-      writepft(output,CFT_AIRRIG2,fvec,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
-    }
-  }
-  if(isopen(output,SDATE2))
-  {
-    outindex(output,SDATE2,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<ncft*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.sdate2[i];
-      writeshortpft(output,SDATE2,vec,2*ncft,year,i,config);
-    }
-    free(vec);
-  }
-  if(isopen(output,HDATE2))
-  {
-    outindex(output,HDATE2,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<ncft*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.hdate2[i];
-      writeshortpft(output,HDATE2,vec,2*ncft,year,i,config);
-    }
-    free(vec);
-  }
-  if(isopen(output,SYEAR))
-  {
-    outindex(output,SYEAR,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<ncft*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.syear[i];
-      writeshortpft(output,SYEAR,vec,2*ncft,year,i,config);
-    }
-    free(vec);
-  }
-  if(isopen(output,SYEAR2))
-  {
-    outindex(output,SYEAR2,config->rank);
-    vec=newvec(short,config->count);
-    check(vec);
-    for(i=0;i<ncft*2;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(short)grid[cell].output.syear2[i];
-      writeshortpft(output,SYEAR2,vec,2*ncft,year,i,config);
-    }
-    free(vec);
-  }
-
+  writeoutputvar(GROWING_PERIOD2,growing_period2,2*(ncft+NGRASS));
+  writeoutputvar(CFT_PET2,cft_pet2,2*(ncft+NGRASS));
+  writeoutputvar(CFT_TRANSP2,cft_transp2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_EVAP2,cft_evap2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_INTERC2,cft_interc2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_NIR2,cft_nir2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_TEMP2,cft_temp2,2*(ncft+NGRASS));
+  writeoutputvar(CFT_PREC2,cft_prec2,2*(ncft+NGRASS));
+  writeoutputvar(CFT_SRAD2,cft_srad2,2*(ncft+NGRASS));
+  writeoutputvar(CFT_ABOVEGBM2,cft_aboveground_biomass2,2*(ncft+NGRASS));
+  writeoutputvar(CFTFRAC2,cftfrac2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputvar(CFT_AIRRIG2,cft_airrig2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  writeoutputshortvar(SDATE2,sdate2,2*ncft);
+  writeoutputshortvar(HDATE2,hdate2,2*ncft);
+  writeoutputshortvar(SYEAR,syear,2*ncft);
+  writeoutputshortvar(SYEAR2,syear2,2*ncft);
 #endif
   free(fvec);
 } /* of 'fwriteoutput_pft' */

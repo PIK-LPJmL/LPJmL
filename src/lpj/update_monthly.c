@@ -11,7 +11,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -20,14 +20,15 @@
 void update_monthly(Cell *cell,  /**< Pointer to cell */
                     Real mtemp,  /**< monthly average temperature (deg C) */
                     Real mprec,  /**< monthly average precipitation (mm) */
+                    int npft,    /**< number of natural PFTs */
+                    int nbiomass,/**< number of biomass PFTs */
+                    int ncft,    /**< number of crop PFTs */
                     int month    /**< month (0..11) */
                    )
 {
-#ifndef YEARLY_TURNOVER
   int p;
   Pft *pft;
-#endif
-  int s,l;
+  int s,i;
   Stand *stand;
 
   monthly_climbuf(&cell->climbuf,mtemp,mprec,cell->output.mpet,month);
@@ -36,13 +37,13 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   foreachstand(stand,s,cell->standlist)
   {
     getlag(&stand->soil,month);
-#ifndef YEARLY_TURNOVER
     foreachpft(pft,p,&stand->pftlist)
       turnover_monthly(&stand->soil.litter,pft);
-#endif
   } /* of foreachstand */
-  for(l=0;l<NSOILLAYER;l++)
-    cell->output.mswc[l]*=ndaymonth1[month];
+  for(i=0;i<NSOILLAYER;i++)
+    cell->output.mswc[i]*=ndaymonth1[month];
+  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2+npft-nbiomass;i++)
+    cell->output.mpft_lai[i]*=ndaymonth1[month];
   cell->output.mrootmoist*=ndaymonth1[month];
   cell->output.mfiredi*=ndaymonth1[month];
   cell->output.mfapar*=ndaymonth1[month];
@@ -61,6 +62,7 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   cell->output.mswe*=ndaymonth1[month];
   cell->output.aconv_loss_evap+=cell->output.mconv_loss_evap;
   cell->output.aconv_loss_drain+=cell->output.mconv_loss_drain;
+  cell->output.aburntarea+=cell->output.mburntarea;
 #if defined IMAGE && defined COUPLED
   cell->ml.image_data->anpp+=cell->output.mnpp;
   cell->ml.image_data->arh+=cell->output.mrh;

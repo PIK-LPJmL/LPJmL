@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -144,7 +144,7 @@ int main(int argc,char **argv)
   data=newmatrix(float,count_max,total);
   check(data);
   time(&start);
-  for(year=config.firstyear;year<=config.lastyear;year++)
+  for(year=config.outputyear;year<=config.lastyear;year++)
   {
     for(j=0;j<nmonth;j++)
     {
@@ -191,7 +191,7 @@ int main(int argc,char **argv)
         }
     }
     readdouble_socket(socket,(Real *)&flux,sizeof(Flux)/sizeof(Real));
-    if((year-config.firstyear) % 20==0)
+    if((year-config.outputyear) % 20==0)
       printf("\nYear NEP     fire    estab   harvest total\n"
                "---- ------- ------- ------- ------- -------\n");
     printf("%4d %7.3f %7.3f %7.3f %7.3f %7.3f\n",
@@ -200,7 +200,7 @@ int main(int argc,char **argv)
   }
   time(&end);
   printf("Frame rate: %.1f (1/sec)\n",
-         (config.lastyear-config.firstyear+1)/(float)(end-start));
+         (config.lastyear-config.outputyear+1)/(float)(end-start));
   for(i=0;i<NOUT;i++)
    if(files[i].file!=NULL)
      fclose(files[i].file);

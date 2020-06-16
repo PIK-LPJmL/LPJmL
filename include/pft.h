@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -43,6 +43,7 @@ typedef struct
   Real moist_10_100hr;
   Real mw_weight;
   Real sigma;
+  Real CME;
 } Fuel;
 
 typedef struct
@@ -52,17 +53,8 @@ typedef struct
   Real non_combust;
   Real pot_fc_lg_c3; /**< Biomass of C3 grass in g/m2 */
   Real pot_fc_lg_c4; /**< Biomass of C4 grass in g/m2 */
+  Real CME;
 } Livefuel;
-
-typedef struct
-{
-  Real co2;
-  Real co;
-  Real ch4;
-  Real voc;
-  Real tpm;
-  Real nox;
-} Tracegas;
 
 typedef struct
 {
@@ -140,7 +132,8 @@ typedef struct Pft
     Traitpar k_litter10;
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
-    Real alpha_fuelp;           /**< fire danger parameter */
+    Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */
+    Real vpd_par;               /**< scaling factor for VPD fire danger index  */
     Real fuelbulkdensity;       /**< fuel bulk density*/
     Tracegas emissionfactor;    /**< trace gas emission factors */
     void *data;                 /**< pointer for PFT specific extensions */
@@ -209,14 +202,14 @@ typedef struct Pftpar Pftpar;
  * pointer.
  */
 
-typedef Bool (*Fscanpftparfcn)(FILE *,Pftpar *,Verbosity);
+typedef Bool (*Fscanpftparfcn)(LPJfile *,Pftpar *,Verbosity);
 
 /* Declaration of functions */
 
 extern void newpft(Pft *,Stand *,const Pftpar *,int,int);
 extern void freepft(Pft *);
 extern void freepftpar(Pftpar [],int);
-extern int* fscanpftpar(FILE *,Pftpar **,const Fscanpftparfcn [],int,Verbosity);
+extern int* fscanpftpar(LPJfile *,Pftpar **,const Fscanpftparfcn [],int,Verbosity);
 extern Real temp_stress(const Pftpar *,Real,Real);
 extern Real photosynthesis(Real *,Real *,int,Real,Real,Real,Real,Real ,Real);
 extern Bool survive(const Pftpar *,const Climbuf *);
@@ -237,9 +230,9 @@ extern void noadjust(Litter *,Pft *,Real,Real);
 extern void nomix_veg(Pft *,Real);
 extern Bool establish(Real,const Pftpar *,const Climbuf *);
 extern Real noestablishment(Pft *,Real,Real,int);
-extern Bool fscanlimit(FILE *,Limit *,Verbosity);
-extern Bool fscanemissionfactor(FILE *,Tracegas *,Verbosity);
-extern Bool fscanphenparam(FILE *,Phen_param *,Verbosity);
+extern Bool fscanlimit(LPJfile *,Limit *,const char *,Verbosity);
+extern Bool fscanemissionfactor(LPJfile *,Tracegas *,const char *,Verbosity);
+extern Bool fscanphenparam(LPJfile *,Phen_param *,const char *,Verbosity);
 extern Real fire_sum(const Litter *,Real);
 extern void fprintpftpar(FILE *,const Pftpar []);
 extern void output_daily(Daily_outputs *,const Pft *,Real,Real);

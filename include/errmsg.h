@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -51,8 +51,7 @@
 #define STORE_CLIMATE_ERR 31
 #define NO_FMS_ERR 32
 #define INITSOILTEMP_ERR 33
-#define RW_MANAGE_ERR 34
-#define INVALID_RADIATION_ERR 35
+#define INVALID_RADIATION_ERR 34
 
 /* Definition of macros */
 

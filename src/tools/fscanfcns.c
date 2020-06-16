@@ -9,7 +9,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -18,6 +18,9 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#ifdef USE_JSON
+#include <json-c/json.h>
+#endif
 #include "types.h"
 
 static int line_count; /* line number currently read */
@@ -101,6 +104,45 @@ static int fscanspace(FILE *file /* file pointer of a text file       */
   return c;
 } /* of 'fscanspace' */
 
+Bool fscanline(FILE *file,    /**< pointer to text file */
+               char line[],   /**< line to read */
+               int size,      /**< size of line */
+               Verbosity verb /**< verbosity level */
+              )               /** \return TRUE on error or end of file */
+{
+  int c;
+  int len;
+  c=fscanspace(file);
+  if(c==EOF)
+  {
+    line[0]='\0';
+    return TRUE;
+  }
+  line[0]=(char)c;
+  len=1;
+  while((c=fgetc(file))!=EOF)
+  {
+    if(len==size-1)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR103: Line too long in line %d of '%s'.\n",line_count,incfile);
+      line[len]='\0';
+      return TRUE;
+    }
+    if(c=='\n')
+    {
+      line[len++]=(char)c;
+      line[len]='\0';
+      line_count++; /* increase line number */
+      line_pos=0;
+      return FALSE;
+    }
+    line[len++]=(char)c; /* add character to string */
+    line_pos++;
+  }
+  return FALSE;
+} /* of 'fscanline' */
+
 Bool fscantoken(FILE *file, /**< file pointer of a text file         */
                 String s    /**< pointer to a char array of dimension
                                  STRING_LEN+1                        */
@@ -139,39 +181,79 @@ Bool fscantoken(FILE *file, /**< file pointer of a text file         */
   return FALSE;
 } /* of 'fscantoken' */
 
-Bool fscanstring(FILE *file, /**< file pointer of a text file         */
+Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
                  String s,   /**< pointer to a char array of dimension
                                   STRING_LEN+1                        */
-                 Bool isout  /**< enable error output */
+                 const char *name, /**< name of string                */
+                 Bool with_default, /**< allow default value */
+                 Verbosity verb  /**< enable error output */
                 )            /** \return TRUE on error                */
 {
   int c;
   int len;
+#ifdef USE_JSON
+  struct json_object *item;
+  const char *str;
+  if(file->isjson)
+  {
+    if(!json_object_object_get_ex(file->file.obj,name,&item))
+    {
+      if(with_default)
+      {
+        if(verb)
+          fprintf(stderr,"WARNING027: Name '%s' for string not found, set to '%s'.\n",name,s);
+        return FALSE;
+      }
+      else
+      {
+        if(verb)
+          fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
+        return TRUE;
+      }
+    }
+    if(json_object_get_type(item)!=json_type_string)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR226: Type of '%s' is not string.\n",name);
+      return TRUE;
+    }
+    str=json_object_get_string(item);
+    if(strlen(str)>STRING_LEN && verb)
+      fprintf(stderr,"ERROR103: String too long for name '%s', truncated.\n",name);
+    strncpy(s,str,STRING_LEN);
+    s[STRING_LEN]='\0';
+    if (verb >= VERB)
+      printf("\"%s\" : \"%s\"\n",name,s);
+    return FALSE;
+  }
+#endif
   /* searching for first occurrence of non-whitespace character  */
-  c=fscanspace(file);
+  c=fscanspace(file->file.file);
   if(c=='\"') /* opening '"' found? */
   {
     len=0;
-    while((c=fgetc(file))!=EOF)
+    while((c=fgetc(file->file.file))!=EOF)
     {
       line_pos++;
       if(c=='\"') /* closing '"' found? */
       {
         s[len]='\0';  /* yes, return with success */
+        if(verb>=VERB)
+          printf("\"%s\" : \"%s\"\n",name,s);
         return FALSE;
       }
       else if(len==STRING_LEN)  /* string too long? */
       {
-        if(isout)
+        if(verb)
           fprintf(stderr,"ERROR103: String too long in line %d of '%s'.\n",line_count,incfile);
       
         break;
       }
       else if(c=='\\') /* backslash found? */
       {
-        if((c=fgetc(file))==EOF) /* yes, read next character */
+        if((c=fgetc(file->file.file))==EOF) /* yes, read next character */
         {
-          if(isout)
+          if(verb)
             fprintf(stderr,"ERROR103: EOF reached reading string in line %d of '%s'.\n",line_count,incfile);
           s[len]='\0';
           return TRUE;
@@ -192,7 +274,7 @@ Bool fscanstring(FILE *file, /**< file pointer of a text file         */
               line_pos++;
               break;
             default:
-              if(isout)
+              if(verb)
                 fprintf(stderr,"ERROR103: Invalid control character '\\%c' reading string in line %d of '%s'.\n",(char)c,line_count,incfile);
               s[len]='\0';
               return TRUE;
@@ -209,7 +291,7 @@ Bool fscanstring(FILE *file, /**< file pointer of a text file         */
   {
     s[0]=(char)c;
     len=1;
-    while((c=fgetc(file))!=EOF)
+    while((c=fgetc(file->file.file))!=EOF)
     {
       if(isspace(c))
       {
@@ -221,11 +303,13 @@ Bool fscanstring(FILE *file, /**< file pointer of a text file         */
         else
           line_pos++;
         s[len]='\0';  /* yes, return with success */
+        if(verb>=VERB)
+          printf("\"%s\" : \"%s\"\n",name,s);
         return FALSE;
       }
       else if(len==STRING_LEN)  /* string too long? */
       {
-        if(isout)
+        if(verb)
           fprintf(stderr,"ERROR103: String too long in line %d of '%s'.\n",line_count,incfile);
         s[len]='\0';  /* terminate string */
         return TRUE;
@@ -237,9 +321,11 @@ Bool fscanstring(FILE *file, /**< file pointer of a text file         */
       }
     }
     s[len]='\0';
+    if(verb>=VERB)
+      printf("\"%s\" : \"%s\"\n",name,s);
     return FALSE;
   }
-  if(c==EOF && isout)
+  if(c==EOF && verb)
     fprintf(stderr,"ERROR103: EOF reached reading string in line %d of '%s'.\n",line_count,incfile);
   s[len]='\0';  /* terminate string */
   return TRUE;

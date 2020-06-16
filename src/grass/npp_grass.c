@@ -8,18 +8,18 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
 #include "grass.h"
 
-Real npp_grass(Pft *pft, /* PFT variables */
-               Real UNUSED(gtemp_air), /* value of air temperature response function */
-               Real gtemp_soil, /* value of soil temperature response function */
-               Real assim   /* assimilation (gC/m2) */
-             ) /* returns net primary productivity (gC/m2) */
+Real npp_grass(Pft *pft, /**< PFT variables */
+               Real UNUSED(gtemp_air), /**< value of air temperature response function */
+               Real gtemp_soil, /**< value of soil temperature response function */
+               Real assim   /**< assimilation (gC/m2) */
+              ) /** \return net primary productivity (gC/m2) */
 {
   Pftgrass *grass;
   const Pftgrasspar *par;

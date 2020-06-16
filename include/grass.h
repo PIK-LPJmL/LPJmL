@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -49,6 +49,7 @@ extern Real fpc_grass(Pft *);
 extern Real fpar_grass(const Pft *);
 extern Real alphaa_grass(const Pft *);
 extern void litter_update_grass(Litter *, Pft*,Real);
+extern void output_daily_grass(Daily_outputs *,const Pft *,Real, Real);
 extern Bool allocation_grass(Litter *,Pft *);
 extern Real lai_grass(const Pft *);
 extern Real actual_lai_grass(const Pft *);
@@ -57,7 +58,7 @@ extern void phenology_grass(Pft *,Real,int,Bool);
 extern Bool fwrite_grass(FILE *,const Pft *);
 extern void fprint_grass(FILE *,const Pft *);
 extern Bool fread_grass(FILE *,Pft *,Bool);
-extern Bool fscanpft_grass(FILE *,Pftpar *,Verbosity);
+extern Bool fscanpft_grass(LPJfile *,Pftpar *,Verbosity);
 extern Real establishment_grass(Pft *,Real,Real,int);
 extern Real vegc_sum_grass(const Pft *);
 extern Real agb_grass(const Pft *);

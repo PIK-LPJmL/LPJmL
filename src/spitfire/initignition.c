@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -42,7 +42,6 @@ Bool initignition(Cell grid[],         /* LPJ grid */
         closeinput_netcdf(input_netcdf);
         return TRUE;
       }
-      grid[cell].ignition.nesterov_accum=0;
     }
     closeinput_netcdf(input_netcdf);
   }
@@ -81,9 +80,7 @@ Bool initignition(Cell grid[],         /* LPJ grid */
       }
       if(grid[cell].ignition.human<0)
         grid[cell].ignition.human=0;
-      grid[cell].ignition.nesterov_accum=0;
-      grid[cell].ignition.nesterov_max=0;
-      grid[cell].ignition.nesterov_day=0;
+      grid[cell].ignition.human/=365;
     }
     fclose(file);
   }

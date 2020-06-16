@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -38,7 +38,7 @@ Real establishment_tree(Pft *pft,Real UNUSED(fpc_total),
     return 0.0;
   }
   if (pft->par->cultivation_type==BIOMASS)
-    est_nind = treepar->k_est - pft->nind;
+    est_nind=treepar->k_est-pft->nind;
 #if defined IMAGE || defined INCLUDEWP
   else if (pft->par->cultivation_type== WP)
     if (pft->stand->frac_change >= 0.0)

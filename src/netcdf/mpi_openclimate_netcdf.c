@@ -11,7 +11,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -22,8 +22,7 @@
 #endif
 
 Bool mpi_openclimate_netcdf(Climatefile *file,    /**< climate data file */
-                            const char *filename, /**< filename */
-                            const char *var,      /**< variable name or NULL */
+                            const Filename *filename, /**< filename */
                             const char *units,    /**< units or NULL */
                             const Config *config  /**< LPJ configuration */
                            )                      /** \return TRUE on error */
@@ -31,7 +30,7 @@ Bool mpi_openclimate_netcdf(Climatefile *file,    /**< climate data file */
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int rc;
   if(isroot(*config))
-    rc=openclimate_netcdf(file,filename,var,units,config);
+    rc=openclimate_netcdf(file,filename->name,filename->time,filename->var,units,config);
 #ifdef USE_MPI
   /* broadcast return code */
   MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
@@ -40,8 +39,9 @@ Bool mpi_openclimate_netcdf(Climatefile *file,    /**< climate data file */
     return TRUE;
 #ifdef USE_MPI
   /* broadcast necessary data */
-  MPI_Bcast(&file->type,1,MPI_INT,0,config->comm);
-  MPI_Bcast(&file->isdaily,1,MPI_INT,0,config->comm);
+  MPI_Bcast(&file->datatype,1,MPI_INT,0,config->comm);
+  MPI_Bcast(&file->var_len,sizeof(size_t),MPI_BYTE,0,config->comm);
+  MPI_Bcast(&file->time_step,1,MPI_INT,0,config->comm);
   MPI_Bcast(&file->isleap,1,MPI_INT,0,config->comm);
   MPI_Bcast(&file->n,1,MPI_INT,0,config->comm);
   MPI_Bcast(&file->firstyear,1,MPI_INT,0,config->comm);

@@ -9,7 +9,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -77,7 +77,7 @@ Bool receive_image_climate(Climate *climate,    /**< Climate data */
   check(counts);
   offsets=newvec(int,config->ntask);
   check(offsets);
-  n=(climate->file_temp.isdaily) ? NDAYYEAR : NMONTH;
+  n=(isdaily(climate->file_temp)) ? NDAYYEAR : NMONTH;
   getcounts(counts,offsets,config->nall,n,config->ntask);
   mpi_read_socket(config->in,image_data,MPI_FLOAT,n*config->nall,counts,
                  offsets,config->rank,config->comm);

@@ -1,16 +1,21 @@
 #!/bin/ksh
 
-#############################################################################
-##                                                                         ##
-##         o  u  t  p  u  t  _  b  s  q                                    ##
-##                                                                         ##
-## ksh script to create bsq output files from LPJ-C output                 ##
-##                                                                         ##
-## Usage:  output_bsq [-inpath dir] [-outpath dir] [-nyear]                ##
-##                                                                         ##
-## Last change: 15.10.2008                                                 ##
-##                                                                         ##
-#############################################################################
+################################################################################ä
+##                                                                             ##
+##         o  u  t  p  u  t  _  b  s  q                                        ##
+##                                                                             ##
+## ksh script to create bsq output files from LPJ-C output                     ##
+##                                                                             ##
+## Usage:  output_bsq [-inpath dir] [-outpath dir] [-nyear]                    ##
+##                                                                             ##
+##                                                                             ##
+## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
+## authors, and contributors see AUTHORS file                                  ##
+## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
+## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
+## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
+##                                                                             ##
+#################################################################################
 
 inpath=output
 outpath=output

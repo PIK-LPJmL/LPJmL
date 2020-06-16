@@ -67,7 +67,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -89,10 +89,18 @@
 #define NSTANDTYPES 9 /* number of stand types / land use types as defined in landuse.h*/
 #endif
 
+#ifdef USE_JSON
+#define dflt_conf_filename_ml "lpjml.js" /* Default LPJ configuration file
+                                            if called by lpjml */
+#define dflt_conf_filename "lpj.js" /* Default LPJ configuration file
+                                       if called by lpj */
+#else
 #define dflt_conf_filename_ml "lpjml.conf" /* Default LPJ configuration file
                                               if called by lpjml */
 #define dflt_conf_filename "lpj.conf" /* Default LPJ configuration file
                                          if called by lpj */
+#endif
+
 int main(int argc,char **argv)
 {
   Outputfile *output; /* Output file array */
@@ -112,9 +120,9 @@ int main(int argc,char **argv)
   standtype[SETASIDE_IR]=setaside_ir_stand;
   standtype[AGRICULTURE]=agriculture_stand;
   standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand,
-  standtype[BIOMASS_TREE]=biomass_tree_stand,
-  standtype[BIOMASS_GRASS]=biomass_grass_stand,
+  standtype[GRASSLAND]=grassland_stand;
+  standtype[BIOMASS_TREE]=biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=biomass_grass_stand;
 #if defined IMAGE || defined INCLUDEWP
   standtype[WOODPLANTATION]=woodplantation_stand,
 #endif
@@ -209,9 +217,11 @@ int main(int argc,char **argv)
   rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
-  rc=checkvalidclimate(input.climate,grid,&config);
-  failonerror(&config,rc,INIT_INPUT_ERR,
-              "Check of climate data failed");
+  if(config.check_climate)
+  {
+    rc=checkvalidclimate(input.climate,grid,&config);
+    failonerror(&config,rc,INIT_INPUT_ERR,"Check of climate data failed");
+  }
   /* open output files */  
   output=fopenoutput(grid,NOUT,&config);
 

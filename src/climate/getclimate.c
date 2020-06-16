@@ -13,7 +13,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -118,6 +118,16 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
       return TRUE;
     }
   }
+  if(climate->data.humid!=NULL)
+  {
+    if(readclimate(&climate->file_humid,climate->data.humid,0,climate->file_humid.scalar,grid,year,config))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR131: Cannot read humidity of year %d in getclimate().\n",
+                year);
+      return TRUE;
+    }
+  }
   if(climate->data.wind!=NULL)
   {
     if(readclimate(&climate->file_wind,climate->data.wind,0,climate->file_wind.scalar,grid,year,config))
@@ -154,7 +164,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
     if(index<0)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR130: Invalid year %d in getclimate().\n",year);
+        fprintf(stderr,"ERROR130: Invalid year %d for wet days in getclimate().\n",year);
       return TRUE;
     }
     if(index<climate->file_wet.nyear)

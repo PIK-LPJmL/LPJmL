@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -63,7 +63,7 @@ typedef struct
   Real par;
   Real daylength;
   Real swe; /**< snow water equivalent*/
-  Real discharge; 
+  Real discharge;
   Real runoff;
   Real rh;
   Real interc;
@@ -73,6 +73,16 @@ typedef struct
   int cft;
   Bool irrigation;
 } Daily_outputs;
+
+typedef struct
+{
+  Real co2;
+  Real co;
+  Real ch4;
+  Real voc;
+  Real tpm;
+  Real nox;
+} Tracegas;
 
 typedef struct
 {
@@ -98,8 +108,9 @@ typedef struct
   Real mfirec;           /**< monthly fire carbon emissions (gC/m2)*/
   Real mnfire;           /**< monthly number of fires */
   Real mfiredi;          /**< monthly fire danger index */
-  Real mfireemission;    /**< monthly fire emissions */
-  Real mburntarea; /**< monthly burnt area */
+  Tracegas mfireemission;    /**< monthly fire emissions */
+  Real mburntarea;       /**< monthly burnt area */
+  Real aburntarea;       /**< yearly burnt area */
   Real mprec_image;      /**< monthly precipitation received from IMAGE [mm/month]*/
   Real mtemp_image;      /**< monthly temperature received from IMAGE [K] */
   Real msun_image;       /**< monthly cloudiness received from IMAGE [% sunshine = 100-%cloud]*/
@@ -131,12 +142,13 @@ typedef struct
   Real *cft_interc2;        /**< cft specific interception (mm) */
   Real *cft_nir2;           /**< cft specific net irrigation requirement (mm) */
   Real *cft_temp2;          /**< cft specific temperature sum (day degC) */
-  Real *cft_prec2;          /**< cft specific precipitation (mm) */  
+  Real *cft_prec2;          /**< cft specific precipitation (mm) */
   Real *cft_srad2;          /**< cft specific short-wave radiation (W/m2) */
   Real *cft_aboveground_biomass2; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
   Real *cftfrac2;           /**< cft fraction */
 #endif
   Real *pft_npp;         /**< Pft specific NPP (gC/m2) */
+  Real *mpft_lai;         /**< Pft specific LAI */
   Harvest *pft_harvest;
   Real *fpc;             /**< foliar projective cover (FPC) */
   Real *pft_gcgp;
@@ -197,7 +209,7 @@ typedef struct
   Real *cft_nir;           /**< cft specific net irrigation requirement (mm) */
   Real *cft_fpar;          /**< cft specific fpar */
   Real *cft_temp;          /**< cft specific temperature sum (day degC) */
-  Real *cft_prec;          /**< cft specific precipitation (mm) */  
+  Real *cft_prec;          /**< cft specific precipitation (mm) */
   Real *cft_srad;          /**< cft specific short-wave radiation (W/m2) */
   Real *cft_aboveground_biomass; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
   Real *cft_conv_loss_evap; /**< cft specific evaporative conveyance losses (mm) */
@@ -228,9 +240,13 @@ typedef struct
   Real mphen_water;        /**< monthly phenology water limiting function */
   Real mwscal;             /**< monthly water scalar */
   Real dcflux;             /**< daily carbon flux from LPJ to atmosphere (gC/m2/day) */
+#ifdef COUPLING_WITH_FMS
+  Real dwflux;             /**< daily water flux from LPJ to atmosphere (kg/m2/day) */
+#endif
   Real mirrig_rw;          /**< monthly supplementary rain water irrigation in mm */
   Real mlakevol;           /**< monthly mean lake content volume in dm3 */
   Real mlaketemp;          /**< monthly mean lake surface temperature in deg C */
+  Real mean_vegc_mangrass; /**< annual mean vegetation carbon of managed grasslands */
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 
@@ -261,6 +277,8 @@ typedef struct
 
 typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;
 
+typedef enum { MISSING_TIME,SECOND,DAY,MONTH,YEAR } Time;
+
 typedef struct
 {
   char *name;  /**< variable name */
@@ -268,6 +286,8 @@ typedef struct
   char *descr; /**< description */
   char *unit;  /**< units */
   float scale;
+  float offset;
+  Time time;
 } Variable;
 
 /* Declaration of variables */
@@ -276,12 +296,12 @@ typedef struct
 
 extern Bool initoutput(Output *,int,Bool,int,int,int,int);
 extern void initoutput_annual(Output *,int,int,int,int);
-extern void initoutput_monthly(Output *);
+extern void initoutput_monthly(Output *,int,int,int);
 extern void initoutput_daily(Daily_outputs *);
 extern void freeoutput(Output *);
 extern int outputsize(int,int,int,int,int);
 extern Type getoutputtype(int);
-
+extern int getnyear(int);
 #ifdef USE_MPI
 extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,
                      int *,int,MPI_Comm);

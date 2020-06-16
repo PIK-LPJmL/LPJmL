@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -23,6 +23,7 @@ Bool fwriteresdata(FILE *file,       /**< pointer to restart file */
   fwrite(&cell->ml.resdata->dmass,sizeof(Real),1,file);
   fwrite(&cell->ml.resdata->k_rls,sizeof(Real),1,file);
   fwrite(&cell->ml.resdata->target_release_year,sizeof(Real), 1,file);
+  fwrite(&cell->ml.resdata->reservoir.capacity,sizeof(float),1,file);
   fwrite(cell->ml.resdata->dfout_irrigation_daily,sizeof(Real),NIRRIGDAYS,file);
   fwrite(cell->ml.resdata->target_release_month,sizeof(Real),NMONTH,file);
   fwrite(cell->ml.resdata->demand_hist,sizeof(Real),NMONTH*HIST_YEARS,file);

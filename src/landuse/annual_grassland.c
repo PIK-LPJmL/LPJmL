@@ -11,7 +11,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -95,6 +95,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   stand->cell->output.dcflux-=acflux_estab*stand->frac;
 
   stand->cell->output.soil_storage+=(irrigation->irrig_stor+irrigation->irrig_amount)*stand->frac*stand->cell->coord.area;
+  stand->cell->output.mean_vegc_mangrass/=NDAYYEAR;
 
   free(present);
   free(fpc_type);

@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -76,9 +76,9 @@ Bool create1_netcdf(Netcdf *cdf,
       return TRUE;
     }
     for(i=0;i<array->nlon;i++)
-      lon[i]=array->lon_min+i*config->resolution.lon;
+      lon[i]=(float)(array->lon_min+i*config->resolution.lon);
     for(i=0;i<array->nlat;i++)
-      lat[i]=array->lat_min+i*config->resolution.lat;
+      lat[i]=(float)(array->lat_min+i*config->resolution.lat);
     if(cdf->state==ONEFILE)
       cdf->n=1;
     if(max(n,cdf->n)>1)

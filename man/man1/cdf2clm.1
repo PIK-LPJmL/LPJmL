@@ -3,19 +3,31 @@
 cdf2clm \- convert NetCDF files into CLM files
 .SH SYNOPSIS
 .B cdf2clm
-[\-scale factor] [\-units u] [\-var name] [\-o clmfile] 
+[\-v] [\-scale factor] [\-units u] [\-var name] [\-id string] [\-version v] [\-float] [\-o clmfile] 
 gridfile clmfile ...
 .SH DESCRIPTION
 Program converts NetCDF input data into CLM input data. 
 .SH OPTIONS
 .TP
+\-v
+print name of netcdf files
+.TP
 \-scale factor
 scaling factor for CLM files. Default is one
 \-units u
-set units in NetCDF file
+set unit to convert from  NetCDF file
 .TP
 \-var name 
 variable name in NetCDF file
+.TP
+\-id string 
+LPJ header string in clm file
+.TP
+\-version v
+version of clm header, default is 3 
+.TP
+\-float
+write float values in clm file, default is short
 .TP
 .I -o clmfile
 filename of CLM data file written. Default is out.clm
@@ -38,10 +50,11 @@ Non zero is returned in case of failure.
 
 .SH AUTHORS
 
-See AUTHORS file
+For authors and contributors see AUTHORS file
 
 .SH COPYRIGHT
 
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
 .SH SEE ALSO
-clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
+cdf2coord(1), cdf2bin(1), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

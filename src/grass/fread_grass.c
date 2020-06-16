@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -24,7 +24,10 @@ Bool fread_grass(FILE *file, /**< pointer to binary file */
   grass=new(Pftgrass);
   pft->data=grass;
   if(grass==NULL)
+  {
+    printallocerr("grass");
     return TRUE;
+  }
   freadreal((Real *)&grass->turn,sizeof(Grassphys)/sizeof(Real),swap,file);
   freadreal((Real *)&grass->ind,sizeof(Grassphys)/sizeof(Real),swap,file);
   return freadreal((Real *)&grass->max_leaf,1,swap,file)!=1;

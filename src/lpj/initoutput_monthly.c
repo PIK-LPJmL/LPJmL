@@ -10,13 +10,16 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
 
-void initoutput_monthly(Output *output /**< Output data */
+void initoutput_monthly(Output *output, /**< Output data */
+                        int npft,       /**< number of natural PFTs */
+                        int nbiomass,   /**< number of biomass PFTs */
+                        int ncft        /**< number of crop PFTs */
                        )
 {
   int l;
@@ -25,7 +28,9 @@ void initoutput_monthly(Output *output /**< Output data */
   output->mrunoff=output->mpet=output->mwateramount=
   output->mdischarge=output->mevap=output->mevap_b=output->minterc=output->minterc_b=output->mirrig=output->mwd_unsustainable=
   output->mevap_lake=output->mreturn_flow_b=output->mevap_res=output->munmet_demand=
-  output->mprec_res=output->mnfire=output->mfireemission=
+  output->mprec_res=output->mnfire=output->mfireemission.co2=
+  output->mfireemission.co=output->mfireemission.ch4=output->mfireemission.voc=
+  output->mfireemission.tpm= output->mfireemission.nox=
   output->mburntarea=output->mlakevol=output->mlaketemp=
   output->mfirec=output->mfiredi=output->mtemp_image=output->mprec_image=
   output->msun_image=output->mwet_image=output->mres_storage=
@@ -42,4 +47,6 @@ void initoutput_monthly(Output *output /**< Output data */
 #endif
   for(l=0;l<NSOILLAYER;l++)
     output->mswc[l]=output->msoiltemp[l]=0;
+  for(l=0;l<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2+npft-nbiomass;l++)
+    output->mpft_lai[l]=0;
 } /* of 'initoutput_monthly' */

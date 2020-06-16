@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -42,17 +42,22 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "ko25:\t\t%g (Pa)\n"
                "kc25:\t\t%g (Pa)\n"
                "atmfrac:\t%g\n"
-               "fastfrac:\t%g\n" 
-               "K_MORT:\t\t%g\n",
+               "fastfrac:\t%g\n"
+               "K_MORT:\t\t%g\n"
+	       "firedura:\t%g\n"
+	       "fire_intens:\t%g\n"
+	       "hum_ign:\t%g\n",
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
           param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,param.co2_p,
           param.k,param.theta,param.k_beer,param.alphac3,param.alphac4,
           param.bc3,param.bc4,param.r_growth,param.GM,param.ALPHAM,
-          param.ko25,param.kc25,param.atmfrac,param.fastfrac,param.k_mort);
+          param.ko25,param.kc25,param.atmfrac,param.fastfrac,param.k_mort,param.firedura,param.fire_intens,param.hum_ign);
 
   if(config->withlanduse!=NO_LANDUSE)
   {
-    fprintf(file,"annual prec lim:\t%g\n",param.aprec_lim);
+    fprintf(file,"livestock density on grassland:\t%g\n",
+            param.lsuha);
+    fprintf(file,"annual prec lim:\t%g (mm)\n",param.aprec_lim);
     fprintf(file,"irrig. threshold C3 dry:\t%g\n",param.irrig_threshold_c3_dry);
     fprintf(file,"irrig. threshold C3 humid:\t%g\n",
             param.irrig_threshold_c3_humid);
@@ -66,6 +71,16 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"saturation level sprink:\t%g\n",param.sat_level[2]);
     fprintf(file,"saturation level drip:\t%g\n",param.sat_level[3]);
     fprintf(file,"drip evap. reduction:\t%g\n",param.drip_evap);
+    fprintf(file,"residues in soil:\t%g\n",param.residues_in_soil);
+    if(config->rw_manage)
+    {
+      fprintf(file,"esoil reduction:\t%g\n",param.esoil_reduction);
+      fprintf(file,"rw buffer max:\t\t%g\n",param.rw_buffer_max);
+      fprintf(file,"frac to stored:\t\t%g\n",param.frac_ro_stored);
+      fprintf(file,"rw irrig thres:\t\t%g\n",param.rw_irrig_thres);
+      fprintf(file,"soil infil:\t\t%g\n",param.soil_infil);
+      fprintf(file,"yield gap bridge:\t%g\n",param.yield_gap_bridge);
+    }
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config->soilpar,config->nsoil);

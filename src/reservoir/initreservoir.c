@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -125,7 +125,7 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
     /*if constant landuse, all dams as in landuse year (but 'built' before)*/
     if(config->withlanduse==CONST_LANDUSE)
     {
-      if(reservoir.year>0 && reservoir.year<=param.landuse_year_const)
+      if(reservoir.year>0 && reservoir.year<=config->landuse_year_const)
         reservoir.year=1;
     }
 
@@ -258,6 +258,7 @@ Bool initreservoir(Cell grid[],   /**< LPJ grid */
       }
       grid[cell].ml.resdata->fraction=newvec(Real,pnet_inlen(config->irrig_res,
                                           cell+config->startgrid-config->firstgrid));
+      check(grid[cell].ml.resdata->fraction);
     }
   config->irrig_res_back=pnet_dup(config->irrig_res);
   pnet_reverse(config->irrig_res_back);

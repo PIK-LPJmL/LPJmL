@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -39,10 +39,9 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
   data_irrig=stand->data;
 
   soil=&stand->soil;
+  soil_infil=2; /* default to draw square root for infiltration factor*/
   influx=grunoff=perc=frac_g_influx=freewater=0.0;
   runoff_surface=runoff=outflux=0;
-  soil_infil=2; /* default to draw square root for infiltration factor*/
-  /*infiltration*/
   if(rw_manage)
     if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE)
       soil_infil=param.soil_infil; /* parameter to increase soil infiltration rate */

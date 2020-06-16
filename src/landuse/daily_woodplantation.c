@@ -1,22 +1,18 @@
-/***************************************************************************/
-/**                                                                       **/
-/**     d  a  i  l  y  _  w  o  o  d  p  l  a  n  t  a  t  i  o  n  .  c  **/
-/**                                                                       **/
-/**     C implementation of LPJ, derived from the Fortran/C++ version     **/
-/**                                                                       **/
-/**     Function of daily update of natural stand                         **/
-/**                                                                       **/
-/**     written by Werner von Bloh, Sibyll Schaphoff                      **/
-/**     Potsdam Institute for Climate Impact Research                     **/
-/**     PO Box 60 12 03                                                   **/
-/**     14412 Potsdam/Germany                                             **/
-/**                                                                       **/
-/**     See file AUTHORS for list of authors contributing to this code    **/
-/**                                                                       **/
-/**     Last change: 17.06.2010                                           **/
-/**                                                                       **/
-/***************************************************************************/
-
+/**************************************************************************************/
+/**                                                                                \n**/
+/**       d  a  i  l  y  _  w  o  o  d  p  l  a  n  t  a  t  i  o  n  .  c         \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function of NPP update of woodplantation stand                             \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 #include "lpj.h"
 #include "agriculture.h"
 #include "woodplantation.h"
@@ -39,7 +35,6 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
                         int ncft,             /**< number of crop PFTs   */
                         int UNUSED(year),     /**< simulation year */
                         Bool output_pft_scaled, 
-                        Bool UNUSED, 
                         const Config *config  /**< LPJ config */
                        ) /* returns runoff (mm) */
 {

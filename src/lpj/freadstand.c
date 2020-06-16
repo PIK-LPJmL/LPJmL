@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -30,7 +30,10 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
   Byte landusetype;
   stand=new(Stand);
   if(stand==NULL)
+  {
+    printallocerr("stand");
     return NULL;
+  }
   stand->cell=cell;
   if(freadpftlist(file,stand,&stand->pftlist,pftpar,ntotpft,swap))
   {
@@ -40,7 +43,6 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
   initstand(stand);
   if(freadsoil(file,&stand->soil,soilpar,pftpar,ntotpft,swap))
   {
-    freepftlist(&stand->pftlist);
     free(stand);
     return NULL;
   }

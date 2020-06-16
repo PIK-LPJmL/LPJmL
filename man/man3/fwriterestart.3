@@ -1,23 +1,21 @@
-.TH fwriterestart 3  "January 9, 2013" "version 4.0.001" "LPJmL programmers manual"
+.TH fwriterestart 3  "November 14, 2018" "version 4.0.002" "LPJmL programmers manual"
 .SH NAME
 fwriterestart \- write restart file
 .SH SYNOPSIS
 .nf
 \fB#include "lpj.h"
 
-Bool fwriterestart(const Config *\fIconfig\fB   
-                   const Cell \fIgrid\fB[],
+Bool fwriterestart(const Cell \fIgrid\fB[],
                    int \fInpft\fB,int \fIncft\fB,
-                   int \fIyear\fB     
+                   int \fIyear\fB,
+                   const char *\fIfilename\fB,
+                   const Config *\fIconfig\fB   
                   );\fP
 
 .fi
 .SH DESCRIPTION
 Function writes restart file LPJmL.
 The arguments of \fBfwriterestart\fP are:
-.TP
-.I config
-LPJmL configuration data. Must be read by \fBreadconfig()\fP.
 .TP
 .I grid
 Cell grid array allocated and initialized by \fBnewgrid()\fP.
@@ -30,12 +28,18 @@ Number of crop plant functional types.
 .TP
 .I year
 year restart file is written.
+.TP
+.I filename
+filename of restart file.
+.TP
+.I config
+LPJmL configuration data. Must be read by \fBreadconfig()\fP.
 .SH RETURN VALUE
 Upon successful completion FALSE is returned and TRUE on error.
 
 .SH AUTHORS
 
-See AUTHORS file
+For authors and contributors see AUTHORS file
 
 .SH COPYRIGHT
 

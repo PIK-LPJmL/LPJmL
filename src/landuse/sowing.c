@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -25,7 +25,7 @@ Real sowing(Cell *cell,          /**< cell pointer */
 {
   Real flux_estab;
   if(config->sdate_option==NO_FIXED_SDATE ||
-    (config->sdate_option==FIXED_SDATE && year<=param.sdate_fixyear))
+    (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear))
   {
     update_fallowdays(cell->ml.cropdates,cell->coord.lat,day,ncft);
     /* calling reduced calc_cropdates for computing vern_date20 as needed for vernalization */

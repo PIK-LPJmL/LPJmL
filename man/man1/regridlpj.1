@@ -1,12 +1,12 @@
-.TH regridlpj 1  "February 28, 2013" "version 1.0.001" "USER COMMANDS"
+.TH regridlpj 1  "October 25, 2018" "version 1.0.002" "USER COMMANDS"
 .SH NAME
-regridlpj \- regrid CRU input data set for selected countries
+regridlpj \- regrid CRU input data set for selected countries or specified grid file
 .SH SYNOPSIS
 .B regridlpj
 [\-dir path] 
-.I filesuffix outfile countrycode ...
+.I filesuffix  [countrycode ...]
 .SH DESCRIPTION
-Program regrids CRU input files for selected countries and creates corresponding input configuration file. 
+Program regrids CRU input files for selected countries if country codes are provided. If country code is missing grid file grid_filesuffix.clm is used for regridding. Configuration files input_filesuffix.conf and input_filesuffix.js are created in the current directory.
 .SH OPTIONS
 .TP
 \-dir path
@@ -25,12 +25,17 @@ Create input data files for USA:
 .B regridlpj
 usa USA
 .PP
+.TP
+Create input file for amazon basin:
+.B regridlpj amazon
+.PP
+grid file grid_amazon.clm in the current directory is used for regridding.
 .SH EXIT STATUS
 Non zero is returned in case of failure.
 
 .SH AUTHORS
 
-See AUTHORS file
+For authors and contributors see AUTHORS file
 
 .SH COPYRIGHT
 

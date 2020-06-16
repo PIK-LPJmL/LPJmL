@@ -9,7 +9,7 @@
 ## authors, and contributors see AUTHORS file                                  ##
 ## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
 ## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
-## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 ##                                                                             ##
 #################################################################################
 
@@ -24,7 +24,7 @@ OBJS    = lai_tree.$O turnover_tree.$O npp_tree.$O phenology_tree.$O\
           vegc_sum_tree.$O adjust_tree.$O mix_veg_tree.$O fprintpar_tree.$O\
           alphaa_tree.$O livefuel_consum_tree.$O reduce_tree.$O\
           annual_tree.$O coppice_tree.$O turnover_monthly_tree.$O\
-          albedo_tree.$O turnover_daily_tree.$O agb_tree.$O
+          albedo_tree.$O turnover_daily_tree.$O agb_tree.$O litter_update_fire_tree.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

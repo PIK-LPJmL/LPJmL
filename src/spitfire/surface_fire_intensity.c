@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -21,7 +21,7 @@ Real surface_fire_intensity(Real fuel_consump,
                             Real ros_forward)
 {
   Real surface_intens;
-  if (fire_frac <= 0.000001)
+  if (fire_frac <= param.fire_intens)
     surface_intens = 0;
   else
   {

@@ -10,22 +10,26 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
 
-Bool fscanphenparam(FILE *file,          /**< pointer to text file */
+Bool fscanphenparam(LPJfile *file,       /**< pointer to LPJ file */
                     Phen_param *phenpar, /**< on return phenology params read */
+                    const char *key,     /**< name of phenology parameter */
                     Verbosity verb       /**< verbosity level (NO_ERR,ERR,VERB) */
                    )                     /** \return TRUE on error */
 {
-  if(fscanreal(file,&phenpar->sl,"sl param",verb))
+  LPJfile f;
+  if(fscanstruct(file,&f,key,verb))
     return TRUE;
-  if(fscanreal(file,&phenpar->base,"base param",verb))
+  if(fscanreal(&f,&phenpar->sl,"slope",FALSE,verb))
     return TRUE;
-  if(fscanreal(file,&phenpar->tau,"tau param",verb))
+  if(fscanreal(&f,&phenpar->base,"base",FALSE,verb))
+    return TRUE;
+  if(fscanreal(&f,&phenpar->tau,"tau",FALSE,verb))
     return TRUE;
   return FALSE;
 } /* of 'fscanphenparam' */

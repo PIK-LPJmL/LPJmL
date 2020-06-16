@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -35,7 +35,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
                        int npft,   /**< number of natural PFTs */
                        int ncft,   /**< number of crop PFTs   */
                        int UNUSED(year), /**< simulation year */
-                       Bool withdailyoutput,
                        Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                        const Config *config /**< LPJ config */
                       )            /** \return runoff (mm) */
@@ -148,7 +147,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
 #endif
-      harvest_crop(output,stand,pft,npft,ncft,
+      harvest_crop(output,stand,pft,npft,ncft,config->remove_residuals,config->residues_fire,
                    config->pft_output_scaled);
       /* return irrig_stor and irrig_amount */
       if(data->irrigation)
@@ -283,6 +282,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       output->pft_npp[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp*stand->frac;
     else
       output->pft_npp[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp;
+    output->mpft_lai[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=actual_lai_crop(pft);
     crop=pft->data;
 #ifdef DOUBLE_HARVEST
     crop->lgp+=1;
@@ -370,7 +370,8 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         (crop->ind.leaf+crop->ind.pool+crop->ind.so)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
 #endif
-      harvest_crop(output,stand,pft,npft,ncft,config->pft_output_scaled);
+      harvest_crop(output,stand,pft,npft,ncft,config->remove_residuals,config->residues_fire,
+                   config->pft_output_scaled);
       if(data->irrigation)
       {
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
@@ -407,7 +408,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
-  if(withdailyoutput)
+  if(config->withdailyoutput)
   {
     foreachpft(pft,p,&stand->pftlist)
       if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)

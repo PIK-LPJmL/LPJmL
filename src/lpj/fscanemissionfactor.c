@@ -10,25 +10,28 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
 
-Bool fscanemissionfactor(FILE *file,Tracegas *emissionfactor,Verbosity verb)
+Bool fscanemissionfactor(LPJfile *file,Tracegas *emissionfactor,const char *key,Verbosity verb)
 {
-  if(fscanreal(file,&emissionfactor->co2,"emiss. factor co2",verb))
+  LPJfile f;
+  if(fscanstruct(file,&f,key,verb))
     return TRUE;
-  if(fscanreal(file,&emissionfactor->co,"emiss. factor co",verb))
+  if(fscanreal(&f,&emissionfactor->co2,"co2",FALSE,verb))
     return TRUE;
-  if(fscanreal(file,&emissionfactor->ch4,"emiss. factor ch4",verb))
+  if(fscanreal(&f,&emissionfactor->co,"co",FALSE,verb))
     return TRUE;
-  if(fscanreal(file,&emissionfactor->voc,"emiss. factor voc",verb))
+  if(fscanreal(&f,&emissionfactor->ch4,"ch4",FALSE,verb))
     return TRUE;
-  if(fscanreal(file,&emissionfactor->tpm,"emiss. factor tpm",verb))
+  if(fscanreal(&f,&emissionfactor->voc,"voc",FALSE,verb))
     return TRUE;
-  if(fscanreal(file,&emissionfactor->nox,"emiss. factor nox",verb))
+  if(fscanreal(&f,&emissionfactor->tpm,"tpm",FALSE,verb))
+    return TRUE;
+  if(fscanreal(&f,&emissionfactor->nox,"nox",FALSE,verb))
     return TRUE;
   emissionfactor->co2*=1e-3;
   emissionfactor->co*=1e-3;

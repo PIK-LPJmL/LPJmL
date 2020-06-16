@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -186,7 +186,8 @@ extern void convert_water(Soil*,int,Real*);
 extern void copysoil(Soil *,const Soil *, int);
 extern int findlitter(const Litter *,const struct Pftpar *);
 extern Real fire_prob(const Litter *,Real);
-extern unsigned int fscansoilpar(FILE *,Soilpar **,Verbosity);
+extern unsigned int fscansoilpar(LPJfile *,Soilpar **,Verbosity);
+extern Bool fscanpool(LPJfile *,Pool *,const char *,Verbosity);
 extern Bool freadlitter(FILE *,Litter *,const struct Pftpar *,int,Bool);
 extern Bool freadsoil(FILE *,Soil *,const Soilpar *,const struct Pftpar *,int,Bool);
 extern Bool freadsoilcode(FILE *,unsigned int *,Bool,Type);

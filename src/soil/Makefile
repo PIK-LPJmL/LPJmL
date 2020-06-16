@@ -9,7 +9,7 @@
 ## authors, and contributors see AUTHORS file                                  ##
 ## This file is part of LPJmL and licensed under GNU AGPL Version 3            ##
 ## or later. See LICENSE file or go to http://www.gnu.org/licenses/            ##
-## Contact: https://gitlab.pik-potsdam.de/lpjml                                ##
+## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 ##                                                                             ##
 #################################################################################
 
@@ -25,7 +25,8 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           soilwater.$O soilcarbon.$O litter_ag_tree.$O litter_ag_grass.$O\
           moistfactor.$O litter_ag_sum_quick.$O freesoilpar.$O moisture2soilice.$O\
           soilconduct.$O soilheatcap.$O soilice2moisture.$O getlag.$O convert_water.$O\
-          getstate.$O initsoiltemp.$O infil_perc_rain.$O infil_perc_irr.$O
+          getstate.$O initsoiltemp.$O infil_perc_rain.$O infil_perc_irr.$O\
+          fscanpool.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

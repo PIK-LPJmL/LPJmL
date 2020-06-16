@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -71,15 +71,36 @@ typedef enum {NO_ERR, ERR, VERB } Verbosity;
 typedef struct
 {
   char *name; /* name of file */
+  char *time; /* name of time or NULL */
   char *var;  /* name of variable in NetCDF file or NULL */
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
 } Filename;
 
+typedef struct
+{
+  union
+  {
+    FILE *file;              /* pointer to text file */
+#ifdef USE_JSON
+    struct json_object *obj; /* pointer to JSON object */
+#endif
+  } file;
+  Bool isjson;
+} LPJfile;
+ 
 /* Declaration of functions */
 
 extern void fail(int,Bool,const char *,...);
-extern Bool fscanreal(FILE *,Real *,const char *,Verbosity);
-extern Bool fscanstring(FILE *,String,Bool);
+extern Bool fscanreal(LPJfile *,Real *,const char *,Bool,Verbosity);
+extern Bool fscanbool(LPJfile *,Bool *,const char *,Bool,Verbosity);
+extern Bool fscanrealarray(LPJfile *,Real *,int,const char *,Verbosity);
+extern Bool fscanstring(LPJfile *,String,const char *,Bool,Verbosity);
+extern Bool fscanstruct(const LPJfile *,LPJfile *,const char *,Verbosity);
+extern Bool fscanarray(LPJfile *,LPJfile *,int *,Bool,const char *,Verbosity);
+extern Bool fscanarrayindex(const LPJfile *,LPJfile *,int,Verbosity);
+extern Bool iskeydefined(const LPJfile *,const char *);
+extern Bool isboolean(const LPJfile *,const char *);
+extern Bool fscanline(FILE *,char [],int,Verbosity);
 extern Bool fscantoken(FILE *,String);
 extern char *sysname(void);
 extern char *getpath(const char *);
@@ -104,17 +125,16 @@ extern char *mkfilename(const char *);
 extern int findstr(const char *,const char *const *,int);
 extern Bool checkfmt(const char *,char);
 extern int fputstring(FILE *,int,const char *,int);
-extern Bool fscanint(FILE *,int *,const char *,Verbosity);
-extern Bool fscansize(FILE *,size_t *,const char *,Verbosity);
-extern Bool fscanuint(FILE *,unsigned int *,const char *,Verbosity);
-extern Bool fscanfloat(FILE *,float *,const char *,Verbosity);
-extern int getsvnrev(void);
+extern Bool fscanint(LPJfile *,int *,const char *,Bool,Verbosity);
+extern Bool fscansize(LPJfile *,size_t *,const char *,Bool,Verbosity);
+extern Bool fscanuint(LPJfile *,unsigned int *,const char *,Bool,Verbosity);
+extern Bool fscanfloat(LPJfile *,float *,const char *,Bool,Verbosity);
 extern void fprinttime(FILE *,int);
 extern Bool readrealvec(FILE *,Real *,Real,Real,size_t,Bool,Type);
 extern Bool readfloatvec(FILE *,float *,float,size_t,Bool,Type);
 extern Bool readintvec(FILE *,int *,size_t,Bool,Type);
 extern Bool readuintvec(FILE *,unsigned int *,size_t,Bool,Type);
-extern Bool readfilename(FILE *,Filename *,const char *,Bool,Verbosity);
+extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Verbosity);
 extern void **newmat(size_t,int,int);
 extern void freemat(void **);
 extern char *catstrvec(const char * const *,int);
@@ -122,7 +142,6 @@ extern char *strdate(const time_t *);
 extern int getlinecount(void);
 extern char* getfilename(void);
 extern void initscan(const char *);
-extern int getsvnrev(void);
 extern void fputprintable(FILE *,const char *);
 extern Bool fscaninteof(FILE *,int *,const char *,Bool *,Bool);
 #ifdef WITH_FPE

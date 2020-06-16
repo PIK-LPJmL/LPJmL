@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -16,9 +16,9 @@
 #include "grass.h"
 #include "landuse.h"
 
-Bool allocation_grass(Litter *litter, /* litter pool */
-                      Pft *pft        /* pointer to PFT */
-                     )                /* return TRUE on death */
+Bool allocation_grass(Litter *litter, /**< litter pool */
+                      Pft *pft        /**< pointer to PFT */
+                     )                /** \return TRUE on death */
 {
   Real bm_inc_ind,lmtorm,lmtormscal;
   Grassphys inc_ind;

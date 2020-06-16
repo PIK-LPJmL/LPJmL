@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -49,7 +49,8 @@ Bool create_netcdf(Netcdf *cdf,
     return TRUE;
   }
   cdf->missing_value=config->missing_value;
-  nyear=config->lastyear-config->firstyear+1;
+  cdf->index=array;
+  nyear=config->lastyear-config->outputyear+1;
   if(cdf->state==APPEND || cdf->state==CLOSE)
   {
      cdf->ncid=cdf->root->ncid;
@@ -59,6 +60,33 @@ Bool create_netcdf(Netcdf *cdf,
      cdf->time_var_id=cdf->root->time_var_id;
      cdf->lat_var_id=cdf->root->lat_var_id;
      cdf->lon_var_id=cdf->root->lon_var_id;
+  }
+  if(config->ischeckpoint)
+  {
+    if(cdf->state==ONEFILE || cdf->state==CREATE)
+    {
+      /* start from checkpoint file, output files exist and have to be opened */
+#ifdef USE_NETCDF4
+      rc=nc_open(filename,NC_WRITE|(config->compress) ? NC_CLOBBER|NC_NETCDF4 : NC_CLOBBER,&cdf->ncid);
+#else
+      rc=nc_open(filename,NC_WRITE|NC_CLOBBER,&cdf->ncid);
+#endif
+      if(rc)
+      {
+        fprintf(stderr,"ERROR426: Cannot open file '%s': %s.\n",
+                filename,nc_strerror(rc));
+        return TRUE;
+      }
+    }
+    /* get id of output variable */
+    rc=nc_inq_varid(cdf->ncid,name,&cdf->varid);
+    if(rc)
+    {
+      fprintf(stderr,"ERROR426: Cannot get variable '%s': %s.\n",
+              name,nc_strerror(rc));
+      return TRUE;
+    }
+    return FALSE;
   }
   if(cdf->state==ONEFILE || cdf->state==CLOSE)
   {
@@ -76,9 +104,9 @@ Bool create_netcdf(Netcdf *cdf,
       return TRUE;
     }
     for(i=0;i<array->nlon;i++)
-      lon[i]=array->lon_min+i*config->resolution.lon;
+      lon[i]=(float)(array->lon_min+i*config->resolution.lon);
     for(i=0;i<array->nlat;i++)
-      lat[i]=array->lat_min+i*config->resolution.lat;
+      lat[i]=(float)(array->lat_min+i*config->resolution.lat);
     if(n)
     {
       year=newvec(int,nyear*n);
@@ -98,7 +126,7 @@ Bool create_netcdf(Netcdf *cdf,
         break;
       case 1:
         for(i=0;i<nyear;i++)
-          year[i]=config->firstyear+i;
+          year[i]=config->outputyear+i;
         break;
       case 12:
         for(i=0;i<nyear;i++)
@@ -121,7 +149,6 @@ Bool create_netcdf(Netcdf *cdf,
         return TRUE;
     }
   }
-  cdf->index=array;
   if(cdf->state==ONEFILE || cdf->state==CREATE)
   {
 #ifdef USE_NETCDF4
@@ -170,7 +197,7 @@ Bool create_netcdf(Netcdf *cdf,
       rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen("Years"),"Years");
     else if(n>1)
     {
-      snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->firstyear);
+      snprintf(s,STRING_LEN,"days since %d-1-1 0:0:0",config->outputyear);
       rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"units",strlen(s),s);
       error(rc);
       rc=nc_put_att_text(cdf->ncid,cdf->time_var_id,"calendar",strlen("noleap"),

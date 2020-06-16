@@ -21,14 +21,14 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #ifndef LPJ_H /* Already included? */
 #define LPJ_H
 
-#define LPJ_VERSION  "4.0.001"
+#define LPJ_VERSION  "4.0.004"
 
 /* Necessary header files */
 
@@ -116,7 +116,7 @@ extern char *lpj_usage;
 /* Declaration of functions */
 
 extern Cell *newgrid(Config *,const Standtype [],int,int,int);
-extern Bool fwriterestart(const Cell[],int,int,int,const Config *);
+extern Bool fwriterestart(const Cell[],int,int,int,const char *,const Config *);
 extern FILE *openrestart(const char *,Config *,int,Bool *);
 extern void copyright(const char *);
 extern void printlicense(void);

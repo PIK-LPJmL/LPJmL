@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -38,8 +38,8 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
     header->nbands=1;
     header->scalar=1;
     header->datatype=LPJ_SHORT;
-    header->cellsize_lon=config->resolution.lon;
-    header->cellsize_lat=config->resolution.lat;
+    header->cellsize_lon=(float)config->resolution.lon;
+    header->cellsize_lat=(float)config->resolution.lat;
     /* open description file */
     file=openmetafile(header,swap,offset,filename->name,isroot(*config));
     if(file==NULL)
@@ -95,7 +95,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
     *swap=FALSE;
     header->firstcell=0;
     header->ncell=config->nall;
-    header->nbands=0;
+    header->nbands=1;
     header->scalar=1;
     header->datatype=LPJ_SHORT;
     *version=0;

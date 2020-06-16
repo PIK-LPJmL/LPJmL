@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -33,7 +33,7 @@ Real area_burnt(Real fire_danger_index, Real num_fires, Real windsp_cover,
     length_breath_ratio = 1;
   else
   {
-    windsp_cover*=0.06;
+    windsp_cover*=0.06; /* Conversion of units from m/min to km/h of windspeed */
     base=1.0-(exp(-0.03*windsp_cover));
     /* total tree fpc and total grass fpc for dampening effect on wind speed */
     fpc_total=newvec(Real,ntypes);
@@ -54,10 +54,9 @@ Real area_burnt(Real fire_danger_index, Real num_fires, Real windsp_cover,
     /* check the parameter value!!
      *  fire duration as a function of daily fire danger index
      */
-    /*fire_durat=241.0/(1.0+(((241.0/1.)-1.)*exp(-11.06*fire_danger_index)));*/
-    fire_durat=241.0/(1.0+(240*exp(-11.06*fire_danger_index)));
-    dbf = (ros_backward+ros_forward) * fire_durat;  /* in min */
-    d_area_burnt = (num_fires * M_PI_4*length_breath_ratio * dbf*dbf)*1e-4;
+    fire_durat=241.0/(1.0+(240*exp(param.firedura*fire_danger_index)));
+    dbf = (ros_backward+ros_forward) * fire_durat;  /* in min , dbf in m*/
+    d_area_burnt = (num_fires * M_PI_4/length_breath_ratio * dbf*dbf)*1e-4;
   }
   return d_area_burnt;
 } /* of 'area_burnt' */

@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -26,13 +26,11 @@ void initoutput_annual(Output *output, /**< Output data */
   int i;
   output->firec=output->firef=output->flux_harvest=output->flux_estab=0;
   output->input_lake=output->flux_firewood=output->flux_rharvest_burnt=output->flux_rharvest_burnt_in_field=0;
-  output->atransp = output->aevap = output->ainterc = output->airrig = output->aconv_loss_evap = output->aconv_loss_drain = output->awateruse_hil = 0;//output->waterusecons=output->waterusedem=0;
+  output->atransp=output->aevap=output->ainterc=output->airrig=output->aconv_loss_evap=output->aconv_loss_drain=output->awateruse_hil=0;
   output->awd_unsustainable=output->aevap_lake=output->aevap_res=0;
-  output->soil_storage=0;
+  output->soil_storage=output->aburntarea=0;
   output->prod_turnover=output->deforest_emissions=output->fburn=output->ftimber=output->timber_harvest=0;
-  output->product_pool_fast=output->product_pool_slow=output->trad_biofuel=0;
-
-  /* memory allocation now in newgrid.c */
+  output->product_pool_fast=output->product_pool_slow=output->trad_biofuel=output->mean_vegc_mangrass=0;
 
   for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
     output->pft_harvest[i].harvest=output->pft_harvest[i].residual=output->cftfrac[i]=

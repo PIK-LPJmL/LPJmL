@@ -8,7 +8,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -45,12 +45,11 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
   /* phenology */
   pft->phen = pft->phen_gsi.tmin * pft->phen_gsi.tmax * pft->phen_gsi.light * pft->phen_gsi.wscal;
 
-#ifndef YEARLY_TURNOVER
   turnover_daily(&pft->stand->soil.litter,pft,temp,isdaily);
-#endif
+
   if ((pft->stand->cell->coord.lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE) ||
       (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE))
- {
+  {
     pft->aphen = 0.0;
     if(pft->par->type==TREE)
     {

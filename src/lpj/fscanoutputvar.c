@@ -11,32 +11,42 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
 
-#define fscanint2(file,var,name) if(fscanint(file,var,name,verb)) return NULL;
-#define fscanfloat2(file,var,name) if(fscanfloat(file,var,name,verb)){ return NULL;}
-#define fscanname(file,var,name) {              \
-    if(fscanstring(file,var,verb!=NO_ERR)) {                 \
-      if(verb) readstringerr(name);  \
+#define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verb)) return NULL;
+#define fscanfloat2(file,var,name,out) if(fscanfloat(file,var,name,TRUE,verb)){ \
+    if(verb) fprintf(stderr,"ERRROR229: Cannot read float '%s' for output '%s'.\n",name,out);\
+    return NULL;}
+#define fscanname(file,var,name,out) {              \
+    if(fscanstring(file,var,name,FALSE,verb)) {                 \
+    if(verb) fprintf(stderr,"ERRROR229: Cannot read string '%s' for output '%s'.\n",name,out);\
       return NULL;                              \
     }                                              \
-    if(verb>=VERB)    \
-      printf("%s %s\n", name, var);                     \
   }
 
-Variable *fscanoutputvar(FILE *file,    /**< File pointer to text file */
+Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
                          int nout_max,  /**< maximum number of output files */
                          Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                         )               /** \return TRUE on error */
 {
+  LPJfile arr,item;
   String name;
   Variable *outnames;
-  int index,i;
+  int index,i,size;
   if (verb>=VERB) puts("// Output parameters");
+  size=nout_max;
+  if(fscanarray(file,&arr,&size,FALSE,"outputvar",verb))
+    return NULL;
+  if(size!=nout_max)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR232: Number of items=%d in 'outputvars' array does not match %d, check NOUT in 'include/conf.h'.\n",size,nout_max);
+    return NULL;
+  }
   outnames=newvec(Variable,nout_max);
   if(outnames==NULL)
     return NULL;
@@ -44,7 +54,8 @@ Variable *fscanoutputvar(FILE *file,    /**< File pointer to text file */
     outnames[i].name=NULL; 
   for(i=0;i<nout_max;i++)
   {
-    fscanint2(file,&index,"id");
+    fscanarrayindex(&arr,&item,i,verb);
+    fscanint2(&item,&index,"id");
     if(index<0 || index>=nout_max)
     {
       if(verb)
@@ -58,15 +69,28 @@ Variable *fscanoutputvar(FILE *file,    /**< File pointer to text file */
         fprintf(stderr,"ERROR202: Index %d in line %d of '%s' already used for output description.\n",index,getlinecount(),getfilename());
       return NULL;
     }
-    fscanname(file,name,"name");
+    fscanname(&item,name,"name",outnames[index].name);
     outnames[index].name=strdup(name);
-    fscanname(file,name,"var");
+    fscanname(&item,name,"var",outnames[index].name);
     outnames[index].var=strdup(name);
-    fscanname(file,name,"description");
+    fscanname(&item,name,"descr",outnames[index].name);
     outnames[index].descr=strdup(name);
-    fscanname(file,name,"unit");
+    fscanname(&item,name,"unit",outnames[index].name);
+    if(strstr(name,"month")!=NULL)
+      outnames[index].time=MONTH;
+    else if(strstr(name,"year")!=NULL)
+      outnames[index].time=YEAR;
+    else if(strstr(name,"day")!=NULL || strstr(name,"d-1")!=NULL)
+      outnames[index].time=DAY;
+    else if(strstr(name,"sec")!=NULL || strstr(name,"s-1")!=NULL)
+      outnames[index].time=SECOND;
+    else
+      outnames[index].time=MISSING_TIME;
     outnames[index].unit=strdup(name);
-    fscanfloat2(file,&outnames[index].scale,"scale");
+    outnames[index].scale=1.0;
+    fscanfloat2(&item,&outnames[index].scale,"scale",outnames[index].name);
+    outnames[index].offset=0.0;
+    fscanfloat2(&item,&outnames[index].offset,"offset",outnames[index].name);
   }
   return outnames;
 } /* of 'fscanoutputvar' */

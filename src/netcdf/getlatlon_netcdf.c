@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -79,7 +79,10 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
     return TRUE;
   }
   file->lon_min=dim[0];
-  file->lon_res=(dim[file->nlon-1]-dim[0])/(file->nlon-1);
+  if(file->nlon==1)
+    file->lon_res=(float)config->resolution.lon;
+  else
+    file->lon_res=(dim[file->nlon-1]-dim[0])/(file->nlon-1);
   if(fabs(file->lon_res-config->resolution.lon)/config->resolution.lon>1e-3)
   {
     if(isroot(*config))
@@ -117,7 +120,13 @@ Bool getlatlon_netcdf(Climatefile *file,    /**< Climate data */
               filename,nc_strerror(rc));
     return TRUE;
   }
-  if(dim[1]>dim[0])
+  if(file->nlat==1)
+  {
+    file->lat_min=dim[0];
+    file->lat_res=(float)config->resolution.lat;
+    file->offset=0;
+  }
+  else if(dim[1]>dim[0])
   {
     file->lat_min=dim[0];
     file->lat_res=(dim[file->nlat-1]-dim[0])/(file->nlat-1);

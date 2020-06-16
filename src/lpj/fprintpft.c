@@ -10,7 +10,7 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
@@ -20,6 +20,12 @@ void fprintpft(FILE *file,    /**< pointer to text file */
                const Pft *pft /**< pointer to PFT variables */
               )
 {
+  fprintf(file,"tmin phen.:\t%g\n"
+          "tmax phen.:\t%g\n"
+          "light phen.:\t%g\n"
+          "wscal phen.:\t%g\n",
+          pft->phen_gsi.tmin,pft->phen_gsi.tmax,
+          pft->phen_gsi.light,pft->phen_gsi.wscal);
   fprintf(file,"PFT:\t\t%s\n",pft->par->name);
   fprintf(file,"fpc:\t\t%g\n",pft->fpc);
   fprintf(file,"nind:\t\t%g (1/m2)\n",pft->nind);

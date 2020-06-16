@@ -10,13 +10,14 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #ifndef CDF_H
 #define CDF_H
 
+#define MISSING_VALUE_FLOAT -1e32
 #define MISSING_VALUE_SHORT -9999
 #define MISSING_VALUE_INT -999999
 #define MISSING_VALUE_BYTE 99
@@ -59,7 +60,7 @@ typedef struct
   long long offset; /**< file offset in bytes */
   long long size;   /**< size of dataset for each year in bytes */
   int nyear;        /**< number of years of climate data */
-  Bool isdaily;     /**< daily values (TRUE/FALSE) */
+  Time time_step;   /**< time steps (DAY/MONTH/YEAR) */
   Bool ready;       /**< data was already averaged */
   Bool swap;        /**< byte order has to be changed (TRUE/FALSE) */
   FILE *file;       /**< file pointer */
@@ -72,10 +73,9 @@ typedef struct
   const char *units;/**< variable units or NULL */
   Bool oneyear;     /**< one file for each year (TRUE/FALSE) */
   size_t var_len;
-  int ncid;
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
+  int ncid;
   int varid;
-  Type type;
   Bool isleap;      /**< leap days in file (TRUE/FALSE) */
   Bool is360;       /**< lon coordinates are in [0,360] (TRUE/FALSE) */
   size_t nlon,nlat; /**< dimensions of longitude/latitude */
@@ -111,14 +111,14 @@ extern Bool create_netcdf(Netcdf *,const char *,const char *,
                           const char *,const char *,Type,int,
                           const Coord_array *,const Config *);
 extern Bool openclimate_netcdf(Climatefile *,const char *,const char *,
-                               const char *,const Config *);
-extern Bool mpi_openclimate_netcdf(Climatefile *,const char *,const char *,
+                               const char *,const char *,const Config *);
+extern Bool mpi_openclimate_netcdf(Climatefile *,const Filename *,
                                    const char *,const Config *);
 extern Bool create_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,
-                              const char *,const char *,Type,
+                              const char *,const char *,Type,int,
                               const Coord_array *,const Config *);
 extern Bool create1_pft_netcdf(Netcdf *,const char *,int,int,int,const char *,
-                              const char *,const char *,Type,
+                              const char *,const char *,Type,int,int,
                               const Coord_array *,const Config *);
 extern Bool close_netcdf(Netcdf *);
 extern Bool readclimate_netcdf(Climatefile *,Real *,const Cell *,int,
@@ -134,10 +134,10 @@ extern Bool write_short_netcdf(const Netcdf *,const short[],int,int);
 extern Bool write_pft_float_netcdf(const Netcdf *,const float[],int,int,int);
 extern Bool write_pft_short_netcdf(const Netcdf *,const short[],int,int,int);
 extern void freecoordarray(Coord_array *);
-extern Bool openfile_netcdf(Climatefile *,const char *,
-                     const char *,const char *,const Config *);
-extern Bool opendata_netcdf(Climatefile *,const char *,
-                     const char *,const char *,const Config *);
+extern Bool openfile_netcdf(Climatefile *,const Filename *,
+                            const char *,const Config *);
+extern Bool opendata_netcdf(Climatefile *,const Filename *,
+                     const char *,const Config *);
 extern Bool readdata_netcdf(const Climatefile *,Real *,const Cell *,
                             int,const Config *);
 extern Bool readintdata_netcdf(const Climatefile *,int *,const Cell *,
@@ -153,15 +153,13 @@ extern int *getindexcoord_netcdf(const Coord_netcdf);
 extern void getresolution_netcdf(const Coord_netcdf,Coord *);
 extern void getextension_netcdf(Extension *,const Coord_netcdf);
 extern Input_netcdf openinput_netcdf(const char *,const char *,const char *,
-                                     int,const Config *);
+                                     size_t,const Config *);
 extern void closeinput_netcdf(Input_netcdf);
 extern size_t getindexinput_netcdf(const Input_netcdf,const Coord *);
 extern size_t getindexsize_netcdf(const Input_netcdf);
 extern Bool readinput_netcdf(const Input_netcdf,Real *,const Coord *);
 extern Bool readintinput_netcdf(const Input_netcdf,int *,const Coord *);
 extern Bool readshortinput_netcdf(const Input_netcdf,short *,const Coord *);
-extern Bool setvarinput_netcdf(Input_netcdf,const char *,const char *,
-                               const char *,int,const Config *);
 extern Input_netcdf dupinput_netcdf(const Input_netcdf);
 extern Type getinputtype_netcdf(const Input_netcdf);
 extern Bool getlatlon_netcdf(Climatefile *,const char *,const Config *);
@@ -177,5 +175,9 @@ extern Bool mpi_write_netcdf(const Netcdf *,void *,MPI_Datatype,int,int,
 extern Bool mpi_write_pft_netcdf(const Netcdf *,void *,MPI_Datatype,int,
                                  int,int,int [],int [],int,MPI_Comm);
 #endif
+
+/* Definition of macros */
+
+#define isdaily(climate) ((climate).time_step==DAY)
 
 #endif

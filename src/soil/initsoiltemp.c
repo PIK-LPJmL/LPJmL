@@ -8,12 +8,11 @@
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
 /** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
-/** Contact: https://gitlab.pik-potsdam.de/lpjml                                   \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
 
 #include "lpj.h"
-#include <math.h>
 
 #define initfrozen -0.5
 
@@ -30,15 +29,27 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
   Stand* stand;
   Real nsoilmeanyears;
   nsoilmeanyears = min(30,climate->file_temp.nyear);
-  for (year=config->firstyear; year < config->firstyear+nsoilmeanyears; ++year)
+  for (year=climate->file_temp.firstyear; year < climate->file_temp.firstyear+nsoilmeanyears; ++year)
   {
-    if(getclimate(climate,grid,year,config))
+    if(readclimate(&climate->file_temp,climate->data.temp,0,climate->file_temp.scalar,grid,year,config))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR131: Cannot read temperature of year %d in initsoiltemp().\n",
+                year);
       return TRUE;
+    }
+    if(readclimate(&climate->file_prec,climate->data.prec,0,climate->file_prec.scalar,grid,year,config))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR131: Cannot read precipitation of year %d in initsoiltemp().\n",
+                year);
+      return TRUE;
+    }
     day=0;
     foreachmonth(month)
     {
       for(cell=0;cell<config->ngridcell;cell++)
-        if(!(grid+cell)->skip)
+        if(!grid[cell].skip)
         {
           rad=deg2rad(grid[cell].coord.lat);
           delta=deg2rad(-23.4*cos(2*M_PI*(midday[month]+10.0)/NDAYYEAR));
@@ -48,7 +59,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
           else if (acos_dl>1.0)
             acos_dl=1.0;
           dl=2*acos(acos_dl)/0.2618;
-          if(climate->file_temp.isdaily)
+          if(isdaily(climate->file_temp))
           {
             temp=0;
             foreachdayofmonth(dayofmonth,month)
@@ -57,7 +68,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
           }
           else
             temp=(getcelltemp(climate,cell))[month];
-          if(climate->file_prec.isdaily)
+          if(isdaily(climate->file_prec))
           {
             prec=0;
             foreachdayofmonth(dayofmonth,month)
@@ -68,14 +79,16 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
           pet=((temp>0) ? 924*dl*0.611*exp(17.3*temp/(temp+237.3))/(temp+273.2):0);
 
           balance=prec-pet;
-          if(balance< epsilon) balance=0.0;
+          if(balance< epsilon)
+            balance=0.0;
 #ifdef COUPLING_WITH_FMS
           grid[cell].laketemp+=temp/NMONTH/nsoilmeanyears;
 #endif
-          foreachstand(stand,s,((grid+cell)->standlist))
+          foreachstand(stand,s,grid[cell].standlist)
           {
             whcs_all=0.0;
-            foreachsoillayer(l) whcs_all+=stand->soil.par->whcs[l];
+            foreachsoillayer(l)
+              whcs_all+=stand->soil.par->whcs[l];
             foreachsoillayer(l)
             {
               stand->soil.temp[l]+=temp/NMONTH/nsoilmeanyears;
@@ -87,11 +100,12 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
     } /* of foreachmonth */
   }
   for(cell=0;cell<config->ngridcell;cell++)
-    if(!(grid+cell)->skip)
-      foreachstand(stand,s,(grid+cell)->standlist)
+    if(!grid[cell].skip)
+      foreachstand(stand,s,grid[cell].standlist)
         foreachsoillayer(l)
         {
-          if(stand->soil.w[l]>1) stand->soil.w[l]=1.0;
+          if(stand->soil.w[l]>1)
+            stand->soil.w[l]=1.0;
           if(stand->soil.temp[l]<initfrozen)
           {
             stand->soil.ice_depth[l]=stand->soil.par->whcs[l]*stand->soil.w[l];

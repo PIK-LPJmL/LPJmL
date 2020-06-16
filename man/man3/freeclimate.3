@@ -1,11 +1,11 @@
-.TH freeclimate 3  "January 19, 2009" "version 4.0.001" "LPJmL programmers manual"
+.TH freeclimate 3  "November 14, 2018" "version 4.0.002" "LPJmL programmers manual"
 .SH NAME
 freeclimate \- Closes files and deallocates climate data
 .SH SYNOPSIS
 .nf
 \fB#include "lpj.h"
 
-void freeclimate(Climate *\fIclimate\fB);
+void freeclimate(Climate *\fIclimate\fB,Bool \fIisroot\fB);
 
 .fi
 .SH DESCRIPTION
@@ -14,12 +14,15 @@ The argument of \fBfreeclimate\fP is:
 .TP
 .I climate
 Pointer to climate data.  Must be initialized by \fBinitclimate()\fP.
+.TP
+.I isroot
+task is root task.
 .SH RETURN VALUE
 None.
 
 .SH AUTHORS
 
-See AUTHORS file
+For authors and contributors see AUTHORS file
 
 .SH COPYRIGHT
 
