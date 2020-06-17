@@ -53,6 +53,7 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
   size=nout_max;
   if(file->isjson && !iskeydefined(file,"output"))
   {
+    config->pft_output_scaled=FALSE;
     config->n_out=0;
     return FALSE;
   }
