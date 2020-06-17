@@ -30,7 +30,8 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
   Real ftimber; /* fraction harvested for timber */
   Bool tharvest=FALSE;
 
-  ftimber=min(1,cell->ml.image_data->timber_frac/standfrac);
+  if(istimber)
+    ftimber=min(1,cell->ml.image_data->timber_frac/standfrac);
 #endif
 
   foreachpft(pft,p,&stand->pftlist)

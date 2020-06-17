@@ -41,7 +41,8 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     totc+=cell->ml.resdata->c_pool;
   totc+=cell->balance.estab_storage_grass[0]+cell->balance.estab_storage_tree[0]+cell->balance.estab_storage_grass[1]+cell->balance.estab_storage_tree[1];
 #ifdef IMAGE
-  totc+=cell->ml.image_data->timber.slow+cell->ml.image_data->timber.fast;
+  if(config->sim_id==LPJML_IMAGE)
+    totc+=cell->ml.image_data->timber.slow+cell->ml.image_data->timber.fast;
 #endif
   delta_totc=totc-cell->balance.totc;
   cell->balance.totc=totc;
@@ -56,16 +57,17 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   if(year>startyear && fabs(balanceC)>1)
   {
 #ifdef IMAGE
-    foreachstand(stand,s,cell->standlist)
-    {
-      printf("C-balance on stand %d LUT %s, standfrac %g litter %g timber_frac %g\n",
-        s,stand->type->name,stand->frac,littersum(&stand->soil.litter),cell->ml.image_data->timber_frac);
-      fflush(stdout);
-      foreachpft(pft,p,&stand->pftlist)
-        printf("pft %d, %s, vegc %g\n",
-               p,pft->par->name,vegc_sum(pft));
-      fflush(stdout);
-    } /* of 'foreachstand' */
+    if(config->sim_id==LPJML_IMAGE)
+      foreachstand(stand,s,cell->standlist)
+      {
+        printf("C-balance on stand %d LUT %s, standfrac %g litter %g timber_frac %g\n",
+          s,stand->type->name,stand->frac,littersum(&stand->soil.litter),cell->ml.image_data->timber_frac);
+        fflush(stdout);
+        foreachpft(pft,p,&stand->pftlist)
+          printf("pft %d, %s, vegc %g\n",
+                 p,pft->par->name,vegc_sum(pft));
+        fflush(stdout);
+      } /* of 'foreachstand' */
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR004: "
 #else

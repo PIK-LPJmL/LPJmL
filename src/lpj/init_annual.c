@@ -39,7 +39,8 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   } /* of foreachstand */
   initoutput_annual(&cell->output,npft,config->nbiomass,ncft,config->missing_value);
 #ifdef IMAGE
-  cell->ml.image_data->anpp=cell->ml.image_data->arh=
+  if(config->sim_id==LPJML_IMAGE)
+    cell->ml.image_data->anpp=cell->ml.image_data->arh=
     cell->ml.image_data->prod_turn_fast=
     cell->ml.image_data->prod_turn_slow=0.0;
 #endif
