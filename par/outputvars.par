@@ -205,6 +205,8 @@ layer /* name of index variabel for soil layer output */
   MGCONS_IRR "mgcons_irr" "gcons_irr" "monthly green water consumption on irrigated stands " "mm" 1.0 0.0
   MBCONS_IRR "mbcons_irr" "bcons_irr" "monthly blue water consumption on irrigated stands " "mm" 1.0 0.0
   AWATERUSE_HIL "awateruse_hil" "wateruse_hil" "" "l/yr" 1.0 0.0
+  WATERUSECONS "waterusecons" "waterusecons" "" "m3/day" 1.0 0.0
+  WATERUSEDEM "waterusedem" "waterusedem" "" "m3/day" 1.0 0.0
   MFAPAR "mfapar" "FPAR" "fraction of absorbed PAR" "" 1.0 0.0
   MALBEDO "malbedo" "albedo" "" "" 1.0 0.0
   MPHEN_TMIN "mphen_tmin" "phen_tmin" "" "" 1.0 0.0
@@ -238,9 +240,9 @@ layer /* name of index variabel for soil layer output */
   MLAKETEMP "mlaketemp" "laketemp" "lake surface temperature" "celsius" 1.0 0.0
   MEAN_VEGC_MANGRASS "mean_vegc_mangrass" "VegC" "Mean veg. C of managed grasslands" "gC/m2" 1.0 0.0
 #ifdef IMAGE
-  YDISCHARGE "ydischarge" "discharge" "annual discharge to send to IMAGE" "hm3/yr" 1.0
-  MWD_GW "mwd_gw" "wd_gw" "renewable groundwater withdrawal" "mm/month" 1.0
-  MWD_AQ "mwd_aq" "wd_aq" "aquifer withdrawal" "mm/month" 1.0
-  MWATERUSE_HIL "mwateruse_hil" "wateruse_hil" "water use by households industry and livestock" "l" 1.0
-  WFT_VEGC "wft_VegC" "wft_vegc" "Vegetation carbon for wood plantation trees (WFTs)" "gC/m2" 1.0
+  YDISCHARGE "ydischarge" "discharge" "annual discharge to send to IMAGE" "hm3/yr" 1.0 0.0
+  MWD_GW "mwd_gw" "wd_gw" "renewable groundwater withdrawal" "mm/month" 1.0 0.0
+  MWD_AQ "mwd_aq" "wd_aq" "aquifer withdrawal" "mm/month" 1.0 0.0
+  MWATERUSE_HIL "mwateruse_hil" "wateruse_hil" "water use by households industry and livestock" "l" 1.0 0.0
+  WFT_VEGC "wft_VegC" "wft_vegc" "Vegetation carbon for wood plantation trees (WFTs)" "gC/m2" 1.0 0.0
 #endif

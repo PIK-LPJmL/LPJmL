@@ -74,6 +74,8 @@ static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const cha
   nc_type type;
   char name[NC_MAX_NAME+1];
 #ifdef USE_UDUNITS
+  size_t len;
+  char *fromstr;
   utUnit from,to;
 #endif
   if(input==NULL)
