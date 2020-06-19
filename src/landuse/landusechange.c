@@ -59,6 +59,8 @@ void deforest(Cell *cell,            /**< pointer to cell */
       cutstand->frac=difffrac;
 
       reclaim_land(natstand,cutstand,cell,istimber,npft+ncft);
+      /*allow one tillage event on new stand upon cultivation after deforestation of natural land */
+      tillage(&cutstand->soil, param.residue_frac);
       if(difffrac+epsilon>=natstand->frac)
       {
         delstand(cell->standlist,s);
@@ -327,6 +329,8 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
     cutstand->frac=difffrac;
     reclaim_land(grassstand,cutstand,cell,istimber,npft+ncft);
     grassstand->frac-=difffrac;
+    /*allow one tillage event on new stand upon cultivation of previous grassland */
+    tillage(&grassstand->soil, param.residue_frac);
     /* empty irrig stor and pay back conveyance losses that have been consumed by transport into irrig_stor, only evaporative conv. losses, drainage conv. losses already returned */
     grassstand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*grassstand->cell->coord.area*difffrac;
     grassstand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*difffrac;
