@@ -57,7 +57,6 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
 
   /* Evaporation */
   evap_energy=eeq*PRIESTLEY_TAYLOR*max(1-cover,0.05);
-
   if(evap_energy>epsilon && (eeq*PRIESTLEY_TAYLOR*(1-wet_all)-aet)>epsilon)
   {
     if(soil->litter.agtop_wcap>epsilon)
@@ -69,6 +68,7 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
     if((1-soil->litter.agtop_cover)>epsilon)
     {
       l=0;
+whcs_evap=0;
       do
       {
         /*w_evap is water content in soildepth_evap, i.e. that can evaporate */
@@ -78,11 +78,12 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
         /* here frag_g_evap is AMOUNT of green soil water after transpiration in upper 30cm */
         *frac_g_evap+=stand->frac_g[l]*(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l]-aet_stand[l])*min(1,soildepth_evap/soildepth[l]);
         l++;
+whcs_evap+=soil->whcs[l]*min(1,soildepth_evap/soildepth[l]);
       }while((soildepth_evap-=soildepth[l-1])>0);
       /* here frag_g_evap becomes FRACTION of green water in upper 30cm */
       *frac_g_evap = w_evap>0 ? *frac_g_evap/w_evap : 1;
 
-      whcs_evap=param.soildepth_evap*soil->whc[0];
+//      whcs_evap=param.soildepth_evap*soil->whc[0];
       if(w_evap/whcs_evap<1)
         evap_soil=evap_energy*w_evap/whcs_evap*w_evap/whcs_evap*(1-soil->litter.agtop_cover);
       else
@@ -146,11 +147,12 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
 //      printf("w[%d] %3.12f, fw[%d] %3.12f in line 133 waterbalance\n", l, soil->w[l], l, soil->w_fw[l]);
       soil->w_fw[l]+=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)*soil->whcs[l];
 #ifdef DEBUG
-printf("w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12f in line 135 waterbalance\n", l, soil->w[l], l, soil->w_fw[l], l,soil->ice_depth[l],l, soil->whcs[l]);
+fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12f in line 135 waterbalance\n", l, soil->w[l], l, soil->w_fw[l], l,soil->ice_depth[l],l, soil->whcs[l]);
 #endif
+      marginal+=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)*soil->whcs[l];
       soil->w[l]-=soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1;
 #ifdef DEBUG
- printf("w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12f in line 136 waterbalance\n", l, soil->w[l], l, soil->w_fw[l],l, soil->ice_depth[l],l, soil->whcs[l]);
+ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12f in line 136 waterbalance\n", l, soil->w[l], l, soil->w_fw[l],l, soil->ice_depth[l],l, soil->whcs[l]);
 #endif
     }
     if (fabs(soil->w_fw[l])<1e-12)
@@ -234,5 +236,6 @@ printf("w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12f in lin
       stand->frac_g[l]=1;
     if(stand->frac_g[l]<0)
       stand->frac_g[l]=0;
+  stand->cell->discharge.drunoff+=marginal*stand->frac;
   } /* soil layer loop */
 } /* of 'waterbalance' */

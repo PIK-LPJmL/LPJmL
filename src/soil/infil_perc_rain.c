@@ -51,6 +51,7 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
   Pft *pft;
   String line;
   Irrigation *data_irrig;
+
   if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND)
     data_irrig=stand->data;
   else
@@ -145,7 +146,7 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
       if (soildepth[l]>soil->freeze_depth[l])
       {
         /*percolation*/
-        if((soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)>epsilon)
+        if((soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)>epsilon/soil->whcs[l])
         {
           HC=soil->par->Ks*pow(((soil->w[l]*soil->whcs[l]+inactive_water[l])/soil->wsats[l]),soil->beta_soil[l]);
           TT=((soil->w[l]-1)*soil->whcs[l]+soil->ice_depth[l])/HC;
@@ -168,7 +169,7 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
 #endif
           soil->w[l]-=perc/soil->whcs[l];
 
-          if (fabs(soil->w[l])< epsilon)
+          if (fabs(soil->w[l])< epsilon/soil->whcs[l])
           {
             perc+=(soil->w[l])*soil->whcs[l];
             soil->w[l]=0;
@@ -252,9 +253,15 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
       soil->w[l]-=soil->w_fw[l]/soil->whcs[l];
     }
     if (fabs(soil->w_fw[l])<epsilon)
+    {
+      runoff+=soil->w_fw[l];
       soil->w_fw[l]=0;
+    }
     if (fabs(soil->w[l])<epsilon)
+    {
+      runoff+=soil->w[l]*soil->whcs[l];
       soil->w[l]=0;
+    }
     if(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l]<epsilon)
       stand->frac_g[l]=1.0;
 #ifdef SAFE

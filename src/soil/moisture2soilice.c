@@ -56,14 +56,14 @@ void moisture2soilice(Soil *soil, /**< pointer to soil data */
   /* amount of ice formed in current timestep (mm) */
   soil->ice_depth[l]+=freeze_heat_w/c_water2ice*1000; /*[mm]*/
   soil->w[l]-=freeze_heat_w/c_water2ice*1000/soil->whcs[l];
-  if (fabs(soil->w[l])<epsilon)
+  if (fabs(soil->w[l]*soil->whcs[l])<epsilon)
     soil->w[l]=0;
   /* conversion of water below permanent wilting point*/
   soil->ice_pwp[l]+=freeze_heat_pwp/c_water2ice*1000/soil->wpwps[l];
   /* conversion of free water*/
   soil->ice_fw[l]+=freeze_heat_fw/c_water2ice*1000; /*[mm]*/
   soil->w_fw[l]-=freeze_heat_fw/c_water2ice*1000;
-  if (fabs(soil->w_fw[l])<epsilon)
+  if (fabs(soil->w_fw[l])<epsilon*1e-3)
     soil->w_fw[l]=0;
   if(soil_water_old>epsilon)
     soil->freeze_depth[l]+=(soildepth[l]-soil->freeze_depth[l])*

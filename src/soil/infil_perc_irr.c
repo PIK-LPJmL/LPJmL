@@ -262,9 +262,15 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
       soil->w[l]-=freewater/soil->whcs[l];
     }
     if (fabs(soil->w_fw[l])<epsilon)
+    {
+      runoff+=soil->w_fw[l];
       soil->w_fw[l]=0;
+    }
     if (fabs(soil->w[l])<epsilon)
+    {
+      runoff+=soil->w[l]*soil->whcs[l];
       soil->w[l]=0;
+    }
     if(soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l]<epsilon)
       stand->frac_g[l]=1.0;
 #ifdef SAFE
