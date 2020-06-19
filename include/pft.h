@@ -124,8 +124,7 @@ typedef struct Pft
     Real k1,k2,k3;
     Real soc_k;                 /**< shape-factor for vertical distribution function of soil organic carbon, following Jobbagy et al. 2000*/
     Limit temp_co2;             /**< temperature limit for CO2 uptake (24,27) */
-    Limit temp_photos;          /**< range of temperature optimum for
-                                   photosynthesis(25,26) */
+    Limit temp_photos;          /**< range of temperature optimum for photosynthesis (25,26) */
     Limit temp;                 /**< bioclimatic limits (28,29) */
     Real aprec_min;             /**< minimum annual precipitation (mm) */
     Real flam;

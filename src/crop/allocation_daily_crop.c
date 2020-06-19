@@ -130,7 +130,7 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
     hi=(hiopt>1.0) ? fhiopt*(hiopt-1.0)+1.0 : fhiopt*hiopt;
   }
   else
-  hi=(par->hiopt>1.0) ? fhiopt*(par->hiopt-1.0)+1.0 : fhiopt*par->hiopt;
+    hi=(par->hiopt>1.0) ? fhiopt*(par->hiopt-1.0)+1.0 : fhiopt*par->hiopt;
   himind=(par->himin>1.0) ? fhiopt*(par->himin-1.0)+1.0 : fhiopt*par->himin;
   /*
   if(wdf>=0)

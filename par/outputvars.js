@@ -313,5 +313,7 @@
   { "id" : ANPP, "name" : "anpp" , "var" :"ANPP" , "descr" : "annual NPP" , "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : ANPP_AGR, "name" : "anpp_agr" , "var" : "ANPP_agr" , "descr" : "annual NPP for agricultural stands", "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : ARH, "name" : "arh" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration" , "unit" : "gC/m2/year", "scale" : 1.0, "offset" : 0.0},
-  { "id" : ARH_AGR, "name" : "arh_agr" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration for agricultural stands", "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0}
+  { "id" : ARH_AGR, "name" : "arh_agr" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration for agricultural stands", "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : HUSUM, "name" : "husum", "var" : "husum", "descr" : "crop growing season accumulated heat units", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
+  { "id" : HUSUM2, "name" : "husum2", "var" : "husum2", "descr" : "crop growing season accumulated heat units 2nd seaso", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0}
 ],

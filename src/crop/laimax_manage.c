@@ -29,7 +29,7 @@ void laimax_manage(Manage *manage,        /**< Management data */
 
       croppar=pftpar[cft].data; 
   
-      if(pftpar[cft].id==TROPICAL_CEREALS)
+      if(pftpar[cft].id==MILLET || pftpar[cft].id==SORGHUM)
         manage->laimax[npft+cft]=croppar->laimax;
       else
       {
@@ -38,7 +38,7 @@ void laimax_manage(Manage *manage,        /**< Management data */
         else if(year>2003)
           switch(pftpar[cft].id)
           {
-            case TEMPERATE_CEREALS:
+            case WINTERWHEAT: case SPRINGWHEAT:
               manage->laimax[npft+cft]=manage->par->laimax_tempcer;
               break;
             case MAIZE:
@@ -50,7 +50,7 @@ void laimax_manage(Manage *manage,        /**< Management data */
         else
           switch(pftpar[cft].id)
           {
-            case TEMPERATE_CEREALS:
+            case WINTERWHEAT: case SPRINGWHEAT:
             /*calculate linear trend of country-specific laimax from 1950 onwards*/
             /*function y=ax+b   (x,y): (1950,laimin)....(2000,laimax)*/
               manage->laimax[npft+cft]=(manage->par->laimax_tempcer-croppar->laimin)/50*year+40*croppar->laimin-39*manage->par->laimax_tempcer;

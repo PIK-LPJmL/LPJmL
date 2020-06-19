@@ -36,7 +36,7 @@ typedef struct
   Grassphyspar cn_ratio; /**< C:N mass ratio (13-15) */
   Real ratio;            /**< C:N ratio of roots relaative to leaf */
   Grassphyspar sapl;     /**< sapling */
-  Real sapling_C;	 /**< sapling C (gC/m2) */
+  Real sapling_C;  /**< sapling C (gC/m2) */
   Real reprod_cost;      /**< reproduction cost */
 } Pftgrasspar;
 

@@ -55,17 +55,16 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
     forrootsoillayer(l)
     {
       if (abswmm == NULL)
-	wmm = soil->w[l] * soil->whcs[l] + soil->w_fw[l] + soil->wpwps[l] * (1 - soil->ice_pwp[l]); /* compute absolute water in mm */
+        wmm = soil->w[l] * soil->whcs[l] + soil->w_fw[l] + soil->wpwps[l] * (1 - soil->ice_pwp[l]); /* compute absolute water in mm */
       else
         wmm = abswmm[l];
       if (absimm == NULL)
-	imm = soil->ice_depth[l] + soil->ice_fw[l] + soil->wpwps[l] * soil->ice_pwp[l]; /* compute absolute ice content in mm */
+        imm = soil->ice_depth[l] + soil->ice_fw[l] + soil->wpwps[l] * soil->ice_pwp[l]; /* compute absolute ice content in mm */
       else
         imm = absimm[l];
       om_layer = 2 * ((soil->pool[l].fast.carbon + soil->pool[l].slow.carbon) / ( (1 - soil->wsat[l])*MINERALDENS * soildepth[l]))*100;  /* calculation of soil organic matter in % */
       if (om_layer > 8)
         om_layer = 8;
-
 
       /* pedotransfer function following Saxton&Rawls 2006: */
       wpwpt = -0.024*soilpar->sand + 0.487*soilpar->clay + 0.006*om_layer + 0.005*(soilpar->sand*om_layer) - 0.013*(soilpar->clay*om_layer) + 0.068*(soilpar->sand*soilpar->clay) + 0.031;
@@ -137,7 +136,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       else
         soil->w[l] = soil->w_fw[l] = 0;
 
-	  /* assure numerical stability */
+      /* assure numerical stability */
       if((soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])>(soil->wsats[l]-soil->wpwps[l]))
       {
         if(soil->w_fw[l]>epsilon)

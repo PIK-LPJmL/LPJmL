@@ -77,7 +77,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(fwrite(&grid[cell].ml.cropfrac_ir,sizeof(Real),1,file)!=1)
         break;
-      if(fwriteclimbuf(file,&grid[cell].climbuf))
+      if(fwriteclimbuf(file,&grid[cell].climbuf,ncft))
         break;
       if(fwritecropdates(file,grid[cell].ml.cropdates,ncft))
         break;

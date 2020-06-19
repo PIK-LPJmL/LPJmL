@@ -34,7 +34,7 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   pft->nind=1;
 
   crop->growingdays=0;
-
+  crop->basetemp=par->basetemp.low;
   crop->vdsum=crop->husum=crop->fphu=0.0;
   crop->vscal_sum=0.0;
   crop->ind.so.carbon=0.0;

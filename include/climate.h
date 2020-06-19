@@ -34,7 +34,7 @@ typedef struct
   Real *lightning;
   Real *lwnet;   /**< long wave net downward flux (W m-2) */
   Real *swdown;  /**< short wave downward flux component (W m-2) */
-  Real *burntarea;	/**< burnt area (ha) */
+  Real *burntarea;  /**< burnt area (ha) */
   Real *no3deposition; /**< dry and wet N deposition (gN m-2) */
   Real *nh4deposition; /**< dry and wet N deposition (gN m-2) */
 } Climatedata;

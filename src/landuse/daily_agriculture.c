@@ -96,10 +96,10 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         crop->nfertilizer=0;
       }
     }
-    if(phenology_crop(pft,climate->temp,daylength))
+    if(phenology_crop(pft,climate->temp,daylength,npft,config))
     {
-//printf("daily_agriculture.c: harvest day of cft %s = %d\n", pft->par->name, day);
-//printf("daily_agriculture.c: crop->growingdays of cft %s = %d\n", pft->par->name, crop->growingdays);
+      //printf("daily_agriculture.c: harvest day of cft %s = %d\n", pft->par->name, day);
+      //printf("daily_agriculture.c: crop->growingdays of cft %s = %d\n", pft->par->name, crop->growingdays);
       if(pft->par->id==output->daily.cft
          && data->irrigation==output->daily.irrigation)
         output_daily_crop(&(output->daily),pft,0.0,0.0);
@@ -161,12 +161,17 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         crop->tempsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->husum+(pft->par->id-npft+data->irrigation*ncft),
+        output->husum2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->husum);
 #else
       output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].carbon=
         (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;
       output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].nitrogen=
         (crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
+      output->husum[pft->par->id-npft+data->irrigation*ncft]=crop->husum;
 #endif
       harvest_crop(output,stand,pft,npft,ncft,year,config->residue_treatment,config->residues_fire,
                    config->pft_output_scaled);
@@ -385,10 +390,15 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         crop->tempsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->husum+(pft->par->id-npft+data->irrigation*ncft),
+        output->husum2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->husum);
 #else
       output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].carbon=
         (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
+      output->husum[pft->par->id-npft+data->irrigation*ncft]=crop->husum;
 #endif
       harvest_crop(output,stand,pft,npft,ncft,year,config->residue_treatment,config->residues_fire,
                    config->pft_output_scaled);

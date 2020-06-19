@@ -131,7 +131,7 @@ int main(int argc,char **argv)
     /* printf("%d %d %d\n",j,lon,lat); */
     for(k=0;k<ncell;k++)
       if(lat==lpjlat[k] && lon==lpjlon[k]){
-	/* printf("j=%d k=%d soil=%d\n",j,k,soil[k]); */
+    /* printf("j=%d k=%d soil=%d\n",j,k,soil[k]); */
     fwrite(&cow[k],sizeof(short),1,ofp);
     fwrite(&reg[k],sizeof(short),1,ofp);
     break;

@@ -253,41 +253,44 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
       printf("doing cell %d\n",i);
       fflush(stdout);
 #endif
-      grid[i].ml.landfrac[0].crop[TEMPERATE_CEREALS-npft]=(Real)image_landuse[i].temp_cereals;
-      grid[i].ml.landfrac[0].crop[RICE-npft]=(Real)image_landuse[i].rice;
+      grid[i].ml.landfrac[0].crop[WINTERWHEAT-npft]=(Real)image_landuse[i].temp_cereals;
+      grid[i].ml.landfrac[0].crop[SPRINGWHEAT-npft]=(Real)image_landuse[i].temp_cereals;
       grid[i].ml.landfrac[0].crop[MAIZE-npft]=(Real)image_landuse[i].maize+
         (Real)image_landuse[i].maize_feed;
+      grid[i].ml.landfrac[0].crop[RICE1-npft]=(Real)image_landuse[i].rice;
+      grid[i].ml.landfrac[0].crop[RICE2-npft]=(Real)image_landuse[i].rice;
       grid[i].ml.landfrac[0].biomass_grass=(Real)image_landuse[i].non_woody_biofuels;
       grid[i].ml.landfrac[0].crop[SUGARCANE-npft]=(Real)image_landuse[i].sugar_cane;
-      grid[i].ml.landfrac[0].crop[TROPICAL_CEREALS-npft]=(Real)image_landuse[i].trop_cereals;
-      grid[i].ml.landfrac[0].crop[PULSES-npft]=(Real)image_landuse[i].pulses;
+      grid[i].ml.landfrac[0].crop[MILLET-npft]=(Real)image_landuse[i].trop_cereals;
+      grid[i].ml.landfrac[0].crop[SORGHUM-npft]=(Real)image_landuse[i].trop_cereals;
+      grid[i].ml.landfrac[0].crop[PEAS-npft]=(Real)image_landuse[i].pulses;
       if(grid[i].coord.lat>30.0 || grid[i].coord.lat<-30.0)
       {
-        grid[i].ml.landfrac[0].crop[TEMPERATE_ROOTS-npft]=(Real)image_landuse[i].roots_tubers;
-        grid[i].ml.landfrac[0].crop[TROPICAL_ROOTS-npft]=0;
+        grid[i].ml.landfrac[0].crop[SUGARBEET-npft]=(Real)image_landuse[i].roots_tubers;
+        grid[i].ml.landfrac[0].crop[CASSAVA-npft]=0;
       }
       else
       {
-        grid[i].ml.landfrac[0].crop[TEMPERATE_ROOTS-npft]=0;
-        grid[i].ml.landfrac[0].crop[TROPICAL_ROOTS-npft]=(Real)image_landuse[i].roots_tubers;
+        grid[i].ml.landfrac[0].crop[SUGARBEET-npft]=0;
+        grid[i].ml.landfrac[0].crop[CASSAVA-npft]=(Real)image_landuse[i].roots_tubers;
       }
       if(grid[i].coord.lat>30.0 || grid[i].coord.lat<-30.0)
       {
-        /* sunflower */
-        grid[i].ml.landfrac[0].crop[OIL_CROPS_SUNFLOWER-npft]=(Real)image_landuse[i].oil_crops*0.5;
         /* rapeseed */
-        grid[i].ml.landfrac[0].crop[OIL_CROPS_RAPESEED-npft]=(Real)image_landuse[i].oil_crops*0.5;
+        grid[i].ml.landfrac[0].crop[RAPESEED-npft]=(Real)image_landuse[i].oil_crops*0.5;
         /* soybean */
-        grid[i].ml.landfrac[0].crop[OIL_CROPS_SOYBEAN-npft]=0;
+        grid[i].ml.landfrac[0].crop[SOYBEAN-npft]=0;
+        /* sunflower */
+        grid[i].ml.landfrac[0].crop[SUNFLOWER-npft]=(Real)image_landuse[i].oil_crops*0.5;
         /* groundnut */
-        grid[i].ml.landfrac[0].crop[OIL_CROPS_GROUNDNUT-npft]=0;
+        grid[i].ml.landfrac[0].crop[GROUNDNUT-npft]=0;
       }
       else
       {
-        grid[i].ml.landfrac[0].crop[OIL_CROPS_SUNFLOWER-npft]=0;
-        grid[i].ml.landfrac[0].crop[OIL_CROPS_RAPESEED-npft]=0;
-        grid[i].ml.landfrac[0].crop[OIL_CROPS_SOYBEAN-npft]=(Real)image_landuse[i].oil_crops*0.5;
-        grid[i].ml.landfrac[0].crop[OIL_CROPS_GROUNDNUT-npft]=(Real)image_landuse[i].oil_crops*0.5;
+        grid[i].ml.landfrac[0].crop[RAPESEED-npft]=0;
+        grid[i].ml.landfrac[0].crop[SOYBEAN-npft]=(Real)image_landuse[i].oil_crops*0.5;
+        grid[i].ml.landfrac[0].crop[SUNFLOWER-npft]=0;
+        grid[i].ml.landfrac[0].crop[GROUNDNUT-npft]=(Real)image_landuse[i].oil_crops*0.5;
       }
       grid[i].ml.landfrac[0].grass[0]=(Real)image_landuse[i].pasture;
       /* no "others" */
@@ -299,34 +302,36 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
       fflush(stdout);
 #endif
       /* irrigated crops */
-      grid[i].ml.landfrac[1].crop[TEMPERATE_CEREALS-npft]=(Real)image_landuse[i].irrig_temp_cereals;
-      grid[i].ml.landfrac[1].crop[RICE-npft]=(Real)image_landuse[i].irrig_rice;
+      grid[i].ml.landfrac[1].crop[WINTERWHEAT-npft]=(Real)image_landuse[i].irrig_temp_cereals;
+      grid[i].ml.landfrac[1].crop[SPRINGWHEAT-npft]=(Real)image_landuse[i].irrig_temp_cereals;
+      grid[i].ml.landfrac[1].crop[RICE1-npft]=(Real)image_landuse[i].irrig_rice;
       grid[i].ml.landfrac[1].crop[MAIZE-npft]=(Real)image_landuse[i].irrig_maize;
-      grid[i].ml.landfrac[1].crop[TROPICAL_CEREALS-npft]=(Real)image_landuse[i].irrig_trop_cereals;
-      grid[i].ml.landfrac[1].crop[PULSES-npft]=(Real)image_landuse[i].irrig_pulses;
+      grid[i].ml.landfrac[1].crop[MILLET-npft]=(Real)image_landuse[i].irrig_trop_cereals;
+      grid[i].ml.landfrac[1].crop[SORGHUM-npft]=(Real)image_landuse[i].irrig_trop_cereals;
+      grid[i].ml.landfrac[1].crop[PEAS-npft]=(Real)image_landuse[i].irrig_pulses;
       if(grid[i].coord.lat>30.0 || grid[i].coord.lat<-30.0)
       {
-        grid[i].ml.landfrac[1].crop[TEMPERATE_ROOTS-npft]=(Real)image_landuse[i].irrig_roots_tubers;
-        grid[i].ml.landfrac[1].crop[TROPICAL_ROOTS-npft]=0;
+        grid[i].ml.landfrac[1].crop[SUGARBEET-npft]=(Real)image_landuse[i].irrig_roots_tubers;
+        grid[i].ml.landfrac[1].crop[CASSAVA-npft]=0;
       }
       else
       {
-        grid[i].ml.landfrac[1].crop[TEMPERATE_ROOTS-npft]=0;
-        grid[i].ml.landfrac[1].crop[TROPICAL_ROOTS-npft]=(Real)image_landuse[i].irrig_roots_tubers;
+        grid[i].ml.landfrac[1].crop[SUGARBEET-npft]=0;
+        grid[i].ml.landfrac[1].crop[CASSAVA-npft]=(Real)image_landuse[i].irrig_roots_tubers;
       }
       if(grid[i].coord.lat>30.0 || grid[i].coord.lat<-30.0)
       {
-        grid[i].ml.landfrac[1].crop[OIL_CROPS_SUNFLOWER-npft]=(Real)image_landuse[i].irrig_oil_crops*0.5;
-        grid[i].ml.landfrac[1].crop[OIL_CROPS_SOYBEAN-npft]=(Real)image_landuse[i].irrig_oil_crops*0.5;
-        grid[i].ml.landfrac[1].crop[OIL_CROPS_GROUNDNUT-npft]=0;
-        grid[i].ml.landfrac[1].crop[OIL_CROPS_RAPESEED-npft]=0;
+        grid[i].ml.landfrac[1].crop[SOYBEAN-npft]=(Real)image_landuse[i].irrig_oil_crops*0.5;
+        grid[i].ml.landfrac[1].crop[SUNFLOWER-npft]=(Real)image_landuse[i].irrig_oil_crops*0.5;
+        grid[i].ml.landfrac[1].crop[GROUNDNUT-npft]=0;
+        grid[i].ml.landfrac[1].crop[RAPESEED-npft]=0;
       }
       else
       {
-        grid[i].ml.landfrac[1].crop[OIL_CROPS_SUNFLOWER-npft]=0;
-        grid[i].ml.landfrac[1].crop[OIL_CROPS_SOYBEAN-npft]=0;
-        grid[i].ml.landfrac[1].crop[OIL_CROPS_GROUNDNUT-npft]=(Real)image_landuse[i].irrig_oil_crops*0.5;
-        grid[i].ml.landfrac[1].crop[OIL_CROPS_RAPESEED-npft]=(Real)image_landuse[i].irrig_oil_crops*0.5;
+        grid[i].ml.landfrac[1].crop[SOYBEAN-npft]=0;
+        grid[i].ml.landfrac[1].crop[SUNFLOWER-npft]=0;
+        grid[i].ml.landfrac[1].crop[GROUNDNUT-npft]=(Real)image_landuse[i].irrig_oil_crops*0.5;
+        grid[i].ml.landfrac[1].crop[RAPESEED-npft]=(Real)image_landuse[i].irrig_oil_crops*0.5;
       }
       /* no irrigated pasture */
       grid[i].ml.landfrac[1].grass[0]=0.0;

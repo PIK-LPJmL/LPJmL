@@ -39,7 +39,7 @@ void phen_variety(Pft *pft,      /**< PFT variables */
 
   data=pft->stand->data;
 
-  if(config->crop_phu_option == PRESCRIBED_CROP_PHU)
+  if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
   {
       crop->phu = pft->stand->cell->ml.crop_phu_fixed[pft->par->id-npft+data->irrigation*ncft];
       if (crop->phu < 0) /* phus of winter varieties stored with negative sign in phu input file */
@@ -52,17 +52,7 @@ void phen_variety(Pft *pft,      /**< PFT variables */
           wtype = FALSE;
       }
       crop->wtype = wtype;
- 
-      if (wtype)
-      {
-          crop->pvd = max(0, min(60, vern_date20 - sdate - croppar->pvd)); /* compute vernalization requirements */
-      }
-      else
-      {
-          crop->pvd = 0; /* vernalization insensitive */
-      }
-      //crop->basetemp = croppar->basetemp.low; /* temporarily set to basetemp.low */
-      crop->basetemp=min(croppar->basetemp.high,max(croppar->basetemp.low,pft->stand->cell->climbuf.atemp_mean20_fix-3.0)); /* applies only to maize and sugarcane (for all other crops basetemp.high = basetemp.low)*/
+      crop->pvd = 0; /* not used if PRESCRIBED_CROP_PHU, instead cell->climbuf.V_req specifies vernalization requirements */
   }
   else
   {
@@ -85,7 +75,7 @@ void phen_variety(Pft *pft,      /**< PFT variables */
       {
           if(wtype)
           {
-              crop->pvd=max(0,min(60,vern_date20-sdate-croppar->pvd));
+              crop->pvd=max(0,min(60,vern_date20-sdate-croppar->pvd_max));
               crop->phu=max(croppar->phuw.low,-0.1081*pow((sdate-keyday),2)
                   +3.1633*(sdate-keyday)+croppar->phuw.high);
           }
@@ -103,10 +93,10 @@ void phen_variety(Pft *pft,      /**< PFT variables */
           crop->phu=min(croppar->phus.high,max(croppar->phus.low,
               max(croppar->basetemp.low,pft->stand->cell->climbuf.atemp_mean20_fix)*167));
       }
-
-      crop->basetemp=min(croppar->basetemp.high,max(croppar->basetemp.low,pft->stand->cell->climbuf.atemp_mean20_fix-3.0)); /* applies only to maize and sugarcane (for all other crops basetemp.high = basetemp.low)*/
   }
-  
+
+  crop->basetemp=croppar->basetemp.low; /* for GGCMI Phase 3 we account for spatial differences through different PHU requirements and hold the basetemp constant */
+
 } /* of 'phen_variety' */
 
 /*

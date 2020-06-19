@@ -583,7 +583,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           for(l=0;l<FRACGLAYER;l++)
             stand->frac_g[l]=1.0;
         }
-        if(new_climbuf(&grid[i].climbuf))
+        if(new_climbuf(&grid[i].climbuf,ncft))
         {
           printallocerr("climbuf");
           return NULL;

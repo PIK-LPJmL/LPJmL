@@ -215,6 +215,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputshortvar(HDATE,hdate,2*ncft);
   fvec=newvec(float,config->count);
   check(fvec);
+  writeoutputvar(HUSUM,husum,2*ncft);
   writeoutputvar(PFT_NPP,pft_npp,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
   writeoutputvar(PFT_NUPTAKE,pft_nuptake,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
   writeoutputvar(PFT_NDEMAND,pft_ndemand,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
@@ -938,6 +939,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputshortvar(HDATE2,hdate2,2*ncft);
   writeoutputshortvar(SYEAR,syear,2*ncft);
   writeoutputshortvar(SYEAR2,syear2,2*ncft);
+  writeoutputvar(HUSUM2,husum2,2*ncft);
   writeoutputvaritem(CFT_ABOVEGBMC2,cft_aboveground_biomass2,carbon,2*(ncft+NGRASS));
   writeoutputvaritem(CFT_ABOVEGBMN2,cft_aboveground_biomass2,nitrogen,2*(ncft+NGRASS));
 #endif

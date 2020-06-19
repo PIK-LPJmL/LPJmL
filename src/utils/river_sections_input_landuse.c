@@ -122,7 +122,7 @@ int main(int argc,char **argv)
     fread(&rbuf1,sizeof(short),1,ifp);
     if(swap_grid) rbuf1=swapshort(rbuf1);
     lat=rbuf1;
-	/* printf("%d %d %d\n",k,lon,lat); */
+    /* printf("%d %d %d\n",k,lon,lat); */
       }
       else{
     fprintf(stderr,"Error reading lpjgrid.\n");

@@ -171,7 +171,7 @@ typedef struct
   Bool ispopulation;
   Bool river_routing;  /**< river routing enabled */
   Bool permafrost;     /**< permafrost module enabled */
-  Bool new_phenology;	/**< new phenology enabled */
+  Bool new_phenology;  /**< new phenology enabled */
   Bool from_restart;   /**< reading from restart */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
   int sdate_fixyear;    /**< year in which sowing dates shall be fixed */
@@ -188,7 +188,7 @@ typedef struct
   Bool rw_manage;     /**< rain-water management enabled: reduced soil evaporation + rain-water harvesting */
   Bool pft_output_scaled; /**< PFT output grid scaled */
   int with_radiation; /**< input of radiation components (CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN) */
-  Bool prescribe_burntarea;	/**< use input to prescribe burnt area to SPITFIRE? */
+  Bool prescribe_burntarea;  /**< use input to prescribe burnt area to SPITFIRE? */
   int prescribe_landcover; /**< use input to prescribe land cover ? */
 
 #ifdef IMAGE

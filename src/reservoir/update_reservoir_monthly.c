@@ -64,7 +64,7 @@ void update_reservoir_monthly(Cell *cell, /**< pointer to cell */
       {
         if (cell->ml.resdata->mean_demand>0.5*cell->ml.resdata->mean_inflow)
           /*cell->ml.resdata->target_release_month[j]=cell->ml.resdata->mean_inflow/10 + cell->ml.resdata->mean_inflow*cell->ml.resdata->mean_demand_month[j]/(ndaymonth[j]*cell->ml.resdata->mean_demand)*9/10;*/ /* in liters/d */
-		  cell->ml.resdata->target_release_month[j]=ENV_FLOW*cell->ml.resdata->mean_inflow_month[j]/ndaymonth[j] + ((1-ENV_FLOW)*cell->ml.resdata->mean_inflow/cell->ml.resdata->mean_demand)*(cell->ml.resdata->mean_demand_month[j]/ndaymonth[j]); /* in liters/d */
+          cell->ml.resdata->target_release_month[j]=ENV_FLOW*cell->ml.resdata->mean_inflow_month[j]/ndaymonth[j] + ((1-ENV_FLOW)*cell->ml.resdata->mean_inflow/cell->ml.resdata->mean_demand)*(cell->ml.resdata->mean_demand_month[j]/ndaymonth[j]); /* in liters/d */
         else
           cell->ml.resdata->target_release_month[j]=cell->ml.resdata->mean_inflow+cell->ml.resdata->mean_demand_month[j]/ndaymonth[j]-cell->ml.resdata->mean_demand;
       }

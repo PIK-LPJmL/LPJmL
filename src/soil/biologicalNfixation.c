@@ -41,7 +41,7 @@ Real biologicalnfixation(const Stand *stand /**< pointer to stand */
         break;
         // N fixation for crops now in n_uptake_crop.c
       /*case CROP:
-        if(pft->par->id==PULSES || pft->par->id==OIL_CROPS_SOYBEAN)
+        if(pft->par->id==PEAS || pft->par->id==SOYBEAN)
         {
           crop=pft->data;
           if(crop->ind.root.carbon>param.min_c_bnf)

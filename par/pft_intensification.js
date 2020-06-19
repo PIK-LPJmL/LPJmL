@@ -1478,7 +1478,7 @@
     "roughness_length" : 0.03, /* roughness length */
     "calcmethod_sdate" : TEMP_WTYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 258, "sdatesh" : 90, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-    "hlimit" : 330,         /* hlimit: max length of crop cycle  */
+    "hlimit" : 286,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 12, "temp_spring" :  5, "temp_vern" : 12, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
     "trg" : { "low" : 3, "high" : 10 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
@@ -1583,7 +1583,7 @@
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 100, "sdatesh" : 180, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-    "hlimit" : 180,         /* hlimit: max length of crop cycle  */
+    "hlimit" : 254,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  18, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
     "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
@@ -1688,7 +1688,7 @@
     "roughness_length" : 0.03,    /* roughness length */
     "calcmethod_sdate" : TEMP_PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" : 181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-    "hlimit" : 240,         /* hlimit: max length of crop cycle  */
+    "hlimit" : 322,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  14, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
     "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
@@ -1793,7 +1793,7 @@
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 80, "sdatesh" : 260, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-    "hlimit" : 240,         /* hlimit: max length of crop cycle  */
+    "hlimit" : 347,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  12, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
     "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
@@ -1898,7 +1898,7 @@
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : TEMP_PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" : 181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-    "hlimit" : 300,         /* hlimit: max length of crop cycle  */
+    "hlimit" : 257,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  10, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
     "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
@@ -2003,7 +2003,7 @@
     "roughness_length" : 0.03,     /* roughness length */
     "calcmethod_sdate" : TEMP_STYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 90, "sdatesh" : 270, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-    "hlimit" : 260,         /* hlimit: max length of crop cycle  */
+    "hlimit" : 288,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  8, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
     "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
@@ -2108,7 +2108,7 @@
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 80, "sdatesh" :  180, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-    "hlimit" : 330,         /* hlimit: max length of crop cycle  */
+    "hlimit" : 293,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  22, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
     "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
@@ -2213,7 +2213,7 @@
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : TEMP_STYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" :  181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-    "hlimit" : 240,         /* hlimit: max length of crop cycle  */
+    "hlimit" : 293,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  13, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
     "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
@@ -2318,7 +2318,7 @@
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 140, "sdatesh" :  320, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-    "hlimit" : 240,         /* hlimit: max length of crop cycle  */
+    "hlimit" : 239,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  13, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
     "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
@@ -2423,7 +2423,7 @@
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 100, "sdatesh" :  280, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-    "hlimit" : 240,         /* hlimit: max length of crop cycle  */
+    "hlimit" : 293,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  15, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
     "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
@@ -2528,7 +2528,7 @@
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : TEMP_WTYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 241, "sdatesh" :  61, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-    "hlimit" : 210,         /* hlimit: max length of crop cycle  */
+    "hlimit" : 265,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 0,      /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 17, "temp_spring" :  5, "temp_vern" : 12, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
     "trg" : { "low" : 3, "high" : 10 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
@@ -2633,7 +2633,7 @@
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : TEMP_PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 120, "sdatesh" : 300, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
-    "hlimit" : 360,         /* hlimit: max length of crop cycle  */
+    "hlimit" : 437,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 0,      /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  14, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
     "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
