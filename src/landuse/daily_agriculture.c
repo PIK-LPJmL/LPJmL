@@ -84,6 +84,21 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 
   foreachpft(pft,p,&stand->pftlist)
   {
+#ifdef CROPSHEATFROST
+    /* kill crop at frost events */
+    if(climate->tmin<(-5))
+    {
+      crop=pft->data;
+      if(crop->fphu>0.2&&crop->fphu<0.95)
+      {
+        litter_update_crop(&pft->stand->soil.litter,pft,1.0);
+        delpft(&stand->pftlist,p);
+        stand->type=&kill_stand;
+        p--;
+        continue;
+      }
+    }
+#endif
     if(!config->with_nitrogen){
       pft->vscal=1;
     } else {
@@ -96,7 +111,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         crop->nfertilizer=0;
       }
     }
-    if(phenology_crop(pft,climate->temp,daylength,npft,config))
+    if(phenology_crop(pft,climate->temp,climate->tmax,daylength,npft,config))
     {
       //printf("daily_agriculture.c: harvest day of cft %s = %d\n", pft->par->name, day);
       //printf("daily_agriculture.c: crop->growingdays of cft %s = %d\n", pft->par->name, crop->growingdays);

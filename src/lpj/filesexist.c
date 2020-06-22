@@ -261,11 +261,27 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkinputfile(&config,&config.grassharvest_filename,0);
   if(config.with_nitrogen || config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
     bad+=checkclmfile(&config,&config.wind_filename);
-  if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
+#ifdef CROPSHEATFROST
+  if(config.withlanduse>NO_LANDUSE)
+    bad+=checkclmfile(&config,&config.tmin_filename);
+  if(config.fire==SPITFIRE||config.fire==SPITFIRE_TMAX)
   {
     bad+=checkclmfile(&config,&config.tamp_filename);
-    if(config.tamp_filename.fmt==CDF && config.tmax_filename.name!=NULL)
+    if(config.tamp_filename.fmt==CDF&&config.tmax_filename.name!=NULL)
       bad+=checkclmfile(&config,&config.tmax_filename);
+  }
+  if(config.withlanduse>NO_LANDUSE && config.fire!=SPITFIRE && config.fire!=SPITFIRE_TMAX)
+    bad+=checkclmfile(&config,&config.tmax_filename);
+#else
+  if(config.fire==SPITFIRE||config.fire==SPITFIRE_TMAX)
+  {
+    bad+=checkclmfile(&config,&config.tamp_filename);
+    if(config.tamp_filename.fmt==CDF&&config.tmax_filename.name!=NULL)
+      bad+=checkclmfile(&config,&config.tmax_filename);
+  }
+#endif
+  if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
+  {
     bad+=checkclmfile(&config,&config.lightning_filename);
     bad+=checkinputfile(&config,&config.human_ignition_filename,0);
   }

@@ -31,6 +31,7 @@ typedef struct
   Real *wind; /**< wind speed (m/min) */
   Real *tamp; /**< temperature amplitude */
   Real *tmax; /**< maximum temperature (deg C) */
+  Real *tmin; /**< minimum temperature (deg C) */
   Real *lightning;
   Real *lwnet;   /**< long wave net downward flux (W m-2) */
   Real *swdown;  /**< short wave downward flux component (W m-2) */
@@ -69,7 +70,7 @@ typedef struct
   Co2data co2;      /**< CO2 data */
   Climatefile file_temp,file_prec,file_wet; /**< file pointers */
   Climatefile file_cloud,file_lwnet,file_swdown;
-  Climatefile file_wind,file_tamp,file_tmax,file_lightning;
+  Climatefile file_wind,file_tamp,file_tmax,file_tmin,file_lightning;
   Climatefile file_no3deposition,file_nh4deposition;
 #ifdef IMAGE
   Climatefile file_temp_var,file_prec_var;
@@ -89,6 +90,7 @@ typedef struct
 #define getcellwind(climate,cell) climate->data.wind+(cell)*NMONTH
 #define getcelltamp(climate,cell) climate->data.tamp+(cell)*NMONTH
 #define getcelltmax(climate,cell) climate->data.tmax+(cell)*NMONTH
+#define getcelltmin(climate,cell) climate->data.tmin+(cell)*NMONTH
 #define getcelllightning(climate,cell) climate->data.lightning+(cell)*NMONTH
 #define getcellburntarea(climate,cell) climate->data.burntarea+(cell)*NMONTH
 #define getcellno3deposition(climate,cell) climate->data.no3deposition+(cell)*NMONTH

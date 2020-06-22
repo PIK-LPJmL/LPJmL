@@ -156,7 +156,7 @@ int iterate(Outputfile *output,  /**< Output file data */
       else
 #endif
       /* read landuse pattern from file */
-      if(getlanduse(input.landuse,grid,landuse_year,ncft,config))
+      if(getlanduse(input.landuse,grid,landuse_year,year,ncft,config))
       {
         fprintf(stderr,"ERROR104: Simulation stopped in getlanduse().\n");
         fflush(stderr);

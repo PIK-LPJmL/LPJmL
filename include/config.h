@@ -49,6 +49,7 @@ typedef struct
   Filename wind_filename;
   Filename tamp_filename;
   Filename tmax_filename;
+  Filename tmin_filename;
   Filename lightning_filename;
   Filename lwnet_filename;
   Filename swdown_filename;

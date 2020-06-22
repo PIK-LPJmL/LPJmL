@@ -66,12 +66,22 @@ static size_t isnetcdfinput(const Config *config)
     if(config->soilph_filename.fmt==CDF)
       width=max(width,strlen(config->soilph_filename.var));
   }
+#ifdef CROPSHEATFROST
+  if(config->withlanduse>NO_LANDUSE && config->tmin_filename.fmt==CDF)
+    width=max(width,strlen(config->tmin_filename.var));
+  if(config->withlanduse>NO_LANDUSE || config->fire==SPITFIRE_TMAX)
+    if(config->tmax_filename.fmt==CDF)
+      width=max(width,strlen(config->tmax_filename.var));
+#else
+  if(config->fire==SPITFIRE_TMAX)
+    if(config->tmax_filename.fmt==CDF)
+      width=max(width,strlen(config->tmax_filename.var));
+#endif
+
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
     if(config->tamp_filename.fmt==CDF)
       width=max(width,strlen(config->tamp_filename.var));
-    if(config->fire==SPITFIRE_TMAX && config->tmax_filename.fmt==CDF)
-      width=max(width,strlen(config->tmax_filename.var));
     if(config->lightning_filename.fmt==CDF)
       width=max(width,strlen(config->lightning_filename.var));
     if(config->human_ignition_filename.fmt==CDF)
@@ -379,15 +389,25 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   printinputfile(file,"co2",&config->co2_filename,width);
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     printinputfile(file,"windspeed",&config->wind_filename,width);
+#ifdef CROPSHEATFROST
+  if(config->withlanduse>NO_LANDUSE)
+    if(config->tmin_filename.name!=NULL)
+      printinputfile(file,"tmin",&config->tmin_filename,width);
+  if(config->withlanduse>NO_LANDUSE || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    if(config->tmax_filename.name!=NULL)
+      printinputfile(file,"tmax",&config->tmax_filename,width);
+#else
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-  {
     if(config->tmax_filename.name!=NULL)
     {
-      printinputfile(file,"temp min",&config->tamp_filename,width);
+      printinputfile(file,"temp min",&config->tmin_filename,width);
       printinputfile(file,"temp max",&config->tmax_filename,width);
     }
     else
       printinputfile(file,"temp ampl",&config->tamp_filename,width);
+#endif
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  {
     printinputfile(file,"lightning",&config->lightning_filename,width);
     printinputfile(file,"human ign",&config->human_ignition_filename,width);
   }

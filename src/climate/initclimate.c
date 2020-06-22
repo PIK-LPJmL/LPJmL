@@ -178,12 +178,98 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   else
     climate->data.wind=NULL;
+#ifdef CROPSHEATFROST
+  if(config->withlanduse>NO_LANDUSE)
+  {
+    if(config->tmin_filename.name!=NULL)
+    {
+      if(openclimate(&climate->file_tmin,&config->tmin_filename,"celsius",LPJ_SHORT,config))
+      {
+        closeclimatefile(&climate->file_temp,isroot(*config));
+        closeclimatefile(&climate->file_prec,isroot(*config));
+        if(config->with_radiation)
+        {
+          if(config->with_radiation==RADIATION||config->with_radiation==RADIATION_LWDOWN)
+            closeclimatefile(&climate->file_lwnet,isroot(*config));
+          closeclimatefile(&climate->file_swdown,isroot(*config));
+        }
+        else
+          closeclimatefile(&climate->file_cloud,isroot(*config));
+        if(config->wet_filename.name!=NULL)
+          closeclimatefile(&climate->file_wet,isroot(*config));
+        free(climate);
+        return NULL;
+      }
+      if(climate->file_tmin.version<=1)
+        climate->file_tmin.scalar=0.1;
+    }
+  }
+  if(config->fire==SPITFIRE_TMAX||config->fire==SPITFIRE||config->withlanduse>NO_LANDUSE)
+  {
+    if(config->tmax_filename.name!=NULL)
+    {
+      if(openclimate(&climate->file_tmax,&config->tmax_filename,"celsius",LPJ_SHORT,config))
+      {
+        closeclimatefile(&climate->file_tamp,isroot(*config));
+        closeclimatefile(&climate->file_temp,isroot(*config));
+        closeclimatefile(&climate->file_prec,isroot(*config));
+        closeclimatefile(&climate->file_tmin,isroot(*config));
+        if(config->with_radiation)
+        {
+          if(config->with_radiation==RADIATION||config->with_radiation==RADIATION_LWDOWN)
+            closeclimatefile(&climate->file_lwnet,isroot(*config));
+          closeclimatefile(&climate->file_swdown,isroot(*config));
+        }
+        else
+          closeclimatefile(&climate->file_cloud,isroot(*config));
+        if(config->wet_filename.name!=NULL)
+          closeclimatefile(&climate->file_wet,isroot(*config));
+        free(climate);
+        return NULL;
+      }
+      if(climate->file_tmax.version<=1)
+        climate->file_tmax.scalar=0.1;
+    }
+  }
+#else
+  if(config->fire==SPITFIRE_TMAX||config->fire==SPITFIRE)
+  {
+    if(config->tmax_filename.name!=NULL)
+    {
+      if(openclimate(&climate->file_tmax,&config->tmax_filename,"celsius",LPJ_SHORT,config))
+      {
+        closeclimatefile(&climate->file_tamp,isroot(*config));
+        closeclimatefile(&climate->file_temp,isroot(*config));
+        closeclimatefile(&climate->file_prec,isroot(*config));
+        if(config->with_radiation)
+        {
+          if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
+            closeclimatefile(&climate->file_lwnet,isroot(*config));
+          closeclimatefile(&climate->file_swdown,isroot(*config));
+        }
+        else
+          closeclimatefile(&climate->file_cloud,isroot(*config));
+        if(config->wet_filename.name!=NULL)
+          closeclimatefile(&climate->file_wet,isroot(*config));
+        free(climate);
+        return NULL;
+      }
+      if(climate->file_tmax.version<=1)
+        climate->file_tmax.scalar=0.1;
+    }
+  }
+#endif
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     {
     if(openclimate(&climate->file_tamp,&config->tamp_filename,(config->tamp_filename.fmt==CDF) ? "celsius" : NULL,LPJ_SHORT,config))
     {
       closeclimatefile(&climate->file_temp,isroot(*config));
       closeclimatefile(&climate->file_prec,isroot(*config));
+#ifdef CROPSHEATFROST
+      if(config->withlanduse>NO_LANDUSE)
+        closeclimatefile(&climate->file_tmin,isroot(*config));
+#endif
+      closeclimatefile(&climate->file_tmax,isroot(*config));
       if(config->with_radiation)
       {
         if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
@@ -199,31 +285,13 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if(config->tamp_filename.fmt!=CDF && climate->file_tamp.version<=1)
       climate->file_tamp.scalar=0.1;
-    if(config->tmax_filename.name!=NULL)
-    {
-      if(openclimate(&climate->file_tmax,&config->tmax_filename,"celsius",LPJ_SHORT,config))
-    {
-      closeclimatefile(&climate->file_tamp,isroot(*config));
-      closeclimatefile(&climate->file_temp,isroot(*config));
-      closeclimatefile(&climate->file_prec,isroot(*config));
-      if(config->with_radiation)
-      {
-        if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
-          closeclimatefile(&climate->file_lwnet,isroot(*config));
-        closeclimatefile(&climate->file_swdown,isroot(*config));
-      }
-      else
-        closeclimatefile(&climate->file_cloud,isroot(*config));
-      if(config->wet_filename.name!=NULL)
-        closeclimatefile(&climate->file_wet,isroot(*config));
-      free(climate);
-      return NULL;
-    }
-      if(climate->file_tmax.version<=1)
-        climate->file_tmax.scalar=0.1;
-    }
     if(openclimate(&climate->file_lightning,&config->lightning_filename,"1/day/hectare",LPJ_INT,config))
     {
+#ifdef CROPSHEATFROST
+      if(config->withlanduse>NO_LANDUSE)
+        closeclimatefile(&climate->file_tmin,isroot(*config));
+#endif
+      closeclimatefile(&climate->file_tmax,isroot(*config));
       closeclimatefile(&climate->file_tmax,isroot(*config));
       closeclimatefile(&climate->file_tamp,isroot(*config));
       closeclimatefile(&climate->file_temp,isroot(*config));
@@ -246,6 +314,11 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       if(openclimate(&climate->file_burntarea,&config->burntarea_filename,(config->burntarea_filename.fmt==CDF) ? NULL : NULL,LPJ_SHORT,config))
       {
         closeclimatefile(&climate->file_lightning,isroot(*config));
+#ifdef CROPSHEATFROST
+        if(config->withlanduse>NO_LANDUSE)
+          closeclimatefile(&climate->file_tmin,isroot(*config));
+#endif
+        closeclimatefile(&climate->file_tmax,isroot(*config));
         closeclimatefile(&climate->file_tmax,isroot(*config));
         closeclimatefile(&climate->file_tamp,isroot(*config));
         closeclimatefile(&climate->file_temp,isroot(*config));
@@ -422,6 +495,77 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       }
     }
   }
+#ifdef CROPSHEATFROST
+  if(config->withlanduse>NO_LANDUSE || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  {
+    if(config->tmax_filename.name!=NULL)
+    {
+      if((climate->data.tmax=newvec(Real,climate->file_tmax.n))==NULL)
+      {
+        printallocerr("tmax");
+        free(climate->co2.data);
+        free(climate->data.wind);
+        if(config->fire==SPITFIRE||config->fire==SPITFIRE_TMAX)
+          free(climate->data.tamp);
+        free(climate->data.prec);
+        free(climate->data.temp);
+        free(climate);
+        return NULL;
+      }
+    }
+    else
+      climate->data.tmax=NULL;
+  }
+  else
+    climate->data.tmax=NULL;
+  if(config->withlanduse>NO_LANDUSE )
+  {
+    if(config->tmin_filename.name!=NULL)
+    {
+      if((climate->data.tmin=newvec(Real,climate->file_tmin.n))==NULL)
+      {
+        printallocerr("tmax");
+        free(climate->co2.data);
+        free(climate->data.wind);
+        if(config->fire==SPITFIRE||config->fire==SPITFIRE_TMAX)
+          free(climate->data.tamp);
+        free(climate->data.tmax);
+        free(climate->data.prec);
+        free(climate->data.temp);
+        free(climate);
+        return NULL;
+      }
+    }
+    else
+      climate->data.tmin=NULL;
+  }
+  else
+    climate->data.tmin=NULL;
+
+#else
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  {
+    if(config->tmax_filename.name!=NULL)
+    {
+      if((climate->data.tmax=newvec(Real,climate->file_tmax.n))==NULL)
+      {
+        printallocerr("tmax");
+        free(climate->co2.data);
+        free(climate->data.wind);
+        if(config->fire==SPITFIRE||config->fire==SPITFIRE_TMAX)
+          free(climate->data.tamp);
+        free(climate->data.prec);
+        free(climate->data.temp);
+        free(climate);
+        return NULL;
+      }
+    }
+    else
+      climate->data.tmax=NULL;
+  }
+  else
+    climate->data.tmax=NULL;
+#endif
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->tamp_filename.fmt==FMS)
@@ -435,26 +579,15 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate->data.wind);
         free(climate->data.prec);
         free(climate->data.temp);
+        free(climate->data.tmax);
+#ifdef CROPSHEATFROST
+        if(config->withlanduse>NO_LANDUSE)
+          free(climate->data.tmin);
+#endif
         free(climate);
         return NULL;
       }
     }
-    if(config->tmax_filename.name!=NULL)
-    {
-      if((climate->data.tmax=newvec(Real,climate->file_tmax.n))==NULL)
-      {
-        printallocerr("tmax");
-        free(climate->co2.data);
-        free(climate->data.wind);
-        free(climate->data.tamp);
-        free(climate->data.prec);
-        free(climate->data.temp);
-        free(climate);
-        return NULL;
-      }
-    }
-    else
-      climate->data.tmax=NULL;
     if((climate->data.lightning=newvec(Real,climate->file_lightning.n))==NULL)
     {
       printallocerr("lightning");
@@ -463,6 +596,11 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate->data.tamp);
       free(climate->data.prec);
       free(climate->data.temp);
+      free(climate->data.tmax);
+#ifdef CROPSHEATFROST
+      if(config->withlanduse>NO_LANDUSE)
+        free(climate->data.tmin);
+#endif
       free(climate);
       return NULL;
     }
@@ -491,7 +629,12 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
   }
   else
-    climate->data.tamp=climate->data.lightning=climate->data.tmax=NULL;
+  {
+    climate->data.tamp=climate->data.lightning=NULL;
+#ifndef CROPSHEATFROST
+    climate->data.tmax=NULL;
+#endif
+  }
   if(config->with_radiation)
   {
     if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
@@ -512,6 +655,12 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
             free(climate->data.tamp);
             free(climate->data.lightning);
           }
+#ifdef CROPSHEATFROST
+          if(config->withlanduse>NO_LANDUSE)
+            free(climate->data.tmin);
+          if(config->fire==SPITFIRE || config->fire == SPITFIRE_TMAX || config->withlanduse>NO_LANDUSE)
+            free(climate->data.tmax);
+#endif
           free(climate);
           return NULL;
         }
@@ -536,6 +685,12 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
           free(climate->data.tamp);
           free(climate->data.lightning);
         }
+#ifdef CROPSHEATFROST
+        if(config->withlanduse>NO_LANDUSE)
+          free(climate->data.tmin);
+        if(config->fire==SPITFIRE || config->fire == SPITFIRE_TMAX || config->withlanduse>NO_LANDUSE)
+          free(climate->data.tmax);
+#endif
         free(climate);
         return NULL;
       }
@@ -559,6 +714,12 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
           free(climate->data.tamp);
           free(climate->data.lightning);
         }
+#ifdef CROPSHEATFROST
+        if(config->withlanduse>NO_LANDUSE)
+          free(climate->data.tmin);
+        if(config->fire==SPITFIRE || config->fire == SPITFIRE_TMAX || config->withlanduse>NO_LANDUSE)
+          free(climate->data.tmax);
+#endif
         free(climate);
         return NULL;
       }
@@ -589,6 +750,12 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         }
         else
           free(climate->data.sun);
+#ifdef CROPSHEATFROST
+        if(config->withlanduse>NO_LANDUSE)
+          free(climate->data.tmin);
+        if(config->fire==SPITFIRE || config->fire == SPITFIRE_TMAX || config->withlanduse>NO_LANDUSE)
+          free(climate->data.tmax);
+#endif
         free(climate);
         return NULL;
       }
@@ -614,6 +781,12 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate->data.sun);
       if(config->wet_filename.name!=NULL)
         free(climate->data.wet);
+#ifdef CROPSHEATFROST
+      if(config->withlanduse>NO_LANDUSE)
+        free(climate->data.tmin);
+      if(config->fire==SPITFIRE || config->fire == SPITFIRE_TMAX || config->withlanduse>NO_LANDUSE)
+        free(climate->data.tmax);
+#endif
       free(climate);
       return NULL;
     }
