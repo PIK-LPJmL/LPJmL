@@ -691,6 +691,23 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 */
 /* END DEBUG */
 
+
+    if(config->others_to_crop)
+    {
+      if(grid[cell].coord.lat>30||grid[cell].coord.lat<-30)
+      {
+        grid[cell].ml.landfrac[0].crop[0]+=grid[cell].ml.landfrac[0].grass[0];
+        grid[cell].ml.landfrac[1].crop[0]+=grid[cell].ml.landfrac[1].grass[0];
+        grid[cell].ml.landfrac[0].grass[0]=grid[cell].ml.landfrac[1].grass[0]=0;
+      }
+      else
+      {
+        grid[cell].ml.landfrac[0].crop[2]+=grid[cell].ml.landfrac[0].grass[0];
+        grid[cell].ml.landfrac[1].crop[2]+=grid[cell].ml.landfrac[1].grass[0];
+        grid[cell].ml.landfrac[0].grass[0]=grid[cell].ml.landfrac[1].grass[0]=0;
+      }
+    }
+
     sum = landfrac_sum(grid[cell].ml.landfrac, ncft, FALSE) + landfrac_sum(grid[cell].ml.landfrac, ncft, TRUE);
 
     if (landuse->allcrops && !grid[cell].skip)
