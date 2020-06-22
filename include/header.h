@@ -116,7 +116,7 @@ extern Bool freadrestartheader(FILE *,Restartheader *,Bool);
 extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *);
 extern size_t headersize(const char *,int);
 extern FILE *openinputfile(Header *, Bool *,const Filename *,
-                           String, int *,size_t *,const Config *);
+                           String, int *,size_t *,Bool,const Config *);
 extern FILE *openmetafile(Header *, Bool *,size_t *,const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
 

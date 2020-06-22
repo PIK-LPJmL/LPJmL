@@ -55,7 +55,7 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
   {
     if((file=openinputfile(&header,&swap,&config->elevation_filename,
                            headername,
-                           &version,&offset,config))==NULL)
+                           &version,&offset,FALSE,config))==NULL)
       return TRUE;
     if(header.nbands!=1)
     {
@@ -95,7 +95,7 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
   }
   if((file=openinputfile(&header,&swap,&config->reservoir_filename,
                          headername,
-                         &version,&offset,config))==NULL)
+                         &version,&offset,TRUE,config))==NULL)
     return TRUE;
   if(header.nbands!=10)
   {

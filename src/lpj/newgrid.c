@@ -129,7 +129,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         /* Open grassfix file */
         grassfix_file.file=openinputfile(&header,&swap_grassfix,&config->grassfix_filename,
-                                         headername,&version,&offset,config);
+                                         headername,&version,&offset,FALSE,config);
         if(grassfix_file.file==NULL)
         {
           closecelldata(celldata);
@@ -175,7 +175,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         /* Open grassharvest file */
         grassharvest_file.file=openinputfile(&header,&swap_grassharvest,&config->grassharvest_filename,
-                                             headername,&version,&offset,config);
+                                             headername,&version,&offset,FALSE,config);
         if(grassharvest_file.file==NULL)
         {
           closecelldata(celldata);
@@ -264,7 +264,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     else
     {
       lakes.file=openinputfile(&header,&swap_lakes,&config->lakes_filename,
-                               headername,&version,&offset,config);
+                               headername,&version,&offset,FALSE,config);
       if(lakes.file==NULL)
       {
         /* opening of lake fraction file failed */

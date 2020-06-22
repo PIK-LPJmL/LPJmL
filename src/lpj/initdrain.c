@@ -162,7 +162,7 @@ static Bool initirrig(Cell grid[],    /* Cell grid             */
   {
     if((irrig_file.file=openinputfile(&header,&swap,&config->neighb_irrig_filename,
                                       headername,
-                                      &version,&offset,config))==NULL)
+                                      &version,&offset,FALSE,config))==NULL)
       return TRUE;
     if(version>=3 && header.datatype!=LPJ_INT)
     {
@@ -300,7 +300,7 @@ static Bool initriver(Cell grid[],Config *config)
   {
 
     if((drainage.file=openinputfile(&header,&swap,&config->drainage_filename,
-                                    headername,&version,&offset,config))==NULL)
+                                    headername,&version,&offset,FALSE,config))==NULL)
       return TRUE;
     if(version>=3 && header.datatype!=LPJ_INT)
     {
@@ -428,8 +428,8 @@ static Bool initriver(Cell grid[],Config *config)
                          r.index-config->firstgrid);
       if(rc)
       {
-        fprintf(stderr,"ERROR146: Cannot add river route from cell %d to cell %d: %s.\n",
-                r.index,cell+config->startgrid,pnet_strerror(rc));
+        fprintf(stderr,"ERROR146: Cannot add river route from cell %d to cell %d in '%s': %s.\n",
+                r.index,cell+config->startgrid,config->drainage_filename.name,pnet_strerror(rc));
         fflush(stderr);
         closeinput(drainage,config->drainage_filename.fmt);
         if(config->drainage_filename.fmt==CDF)
