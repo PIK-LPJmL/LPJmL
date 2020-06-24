@@ -175,7 +175,7 @@ typedef struct
   Bool new_phenology;  /**< new phenology enabled */
   Bool from_restart;   /**< reading from restart */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
-  int sdate_fixyear;    /**< year in which sowing dates shall be fixed */
+  int sdate_fixyear;    /**< year after which sowing dates are held constant (for both FIXED_SDATE or NO_FIXED_SDATE), also used to fix updating vernalization requirements */
   int crop_phu_option;    /**< crop phu option (semistatic internally prescribed/computed (LPJmL4): 0, prescribed: 1)*/
   Bool initsoiltemp;
   Pnet *route;         /**< river routing network */
