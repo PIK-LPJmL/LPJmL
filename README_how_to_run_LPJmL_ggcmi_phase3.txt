@@ -14,13 +14,8 @@ README: how to run LPJmL_ggcmi_phase3
 	- make sure the inputs are the same as in the planned LPJmL runs and that the simulation periods are correctly specified
 	- use 'calculate_phu_input_for_lpjml.sh' to submit the R script as cluster job (meaningful if done as a loop over various GCMs, RCP, etc.)
 
-<<<<<<< HEAD
-- compile code:
+3. compile code:
 	- configure makefile with './configure.sh -DCROPSHEATFROST -DDOUBLE_HARVEST'
-=======
-3. Compile code:
-	- configure makefile with: $ ./configure.sh -DDOUBLE_HARVEST
->>>>>>> 5a6c32743a60ec713a7f76a05245392645b0571a
 	- compile
 
 4. Create LPJmL restart file:
