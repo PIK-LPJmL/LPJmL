@@ -3,8 +3,9 @@ rm(list=ls(all=TRUE))
 gc()
 args <- commandArgs(TRUE)
 
-args="gswp3-w5e5"
+#args="gswp3-w5e5"
 # args="agmerra"
+args="wfdei"
 
 ### ------------------------------------------------------------------------------------------------- ###
 
@@ -25,24 +26,25 @@ verncrops_all <- c("wwh") # winter crops assumed in all grid cells
 
 ### ------------------------------------------------------------------------------------------------- ###
 
-climate_forcings=c("agmerra","gswp3-w5e5") # make sure this list is identical to the shell script submitting the job
+climate_forcings=c("agmerra","wfdei","gswp3-w5e5") # make sure this list is identical to the shell script submitting the job
 clim_arg=which(climate_forcings==args) # name of climate forcing data, passed by shell script
 climate_data=climate_forcings[clim_arg] # dailyc limate inputs #temp_data climate_data
 
 # path to climate forcing data (daily temperature)
 clm_paths=c(
   paste0("/p/projects/lpjml/input/historical/GGCMI_phase1/AgMERRA/tas_agmerra_1980-2010.clm2"), # header 43, 31 years, 365 bands, size 2
+  paste0("/p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI/tas_wfdei_1979-2012.clm2"), # header 43, 31 years, 365 bands, size 2
   paste0("/p/projects/lpjml/input/historical/ISIMIP3a/obsclim/GSWP3-W5E5/tas_gswp3-w5e5_obsclim_1901-2016.clm") # header 43, 31 years, 365 bands, size 2
 )
 path.tas=clm_paths[clim_arg]
 
 # specifiy time period for which PHUs are calculated 
-startyear=c(1980,1988)[clim_arg] # list of start dates for the respective climate forcing data sets
-endyear=c(2010,2018)[clim_arg] # list of end dates for the respective climate forcing data sets
+startyear=c(1980,1979,1988)[clim_arg] # list of start dates for the respective climate forcing data sets
+endyear=c(2010,2012,2018)[clim_arg] # list of end dates for the respective climate forcing data sets
 
 # specify start and end of climate forcing data
-climate_start=c(1980,1901)[clim_arg]
-climate_end=c(2010,2018)[clim_arg]
+climate_start=c(1980,1979,1901)[clim_arg]
+climate_end=c(2010,2012,2018)[clim_arg]
 
 ### ------------------------------------------------------------------------------------------------- ###
 
