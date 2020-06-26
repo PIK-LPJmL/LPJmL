@@ -237,6 +237,7 @@ export MANPATH=$LPJROOT/man:\$MANPATH
 # define alias
 
 alias printheader="printclm -data"
+alias soil2cdf="clm2cdf -notime -raw -byte"
 alias lpjml='lpjml.sh'
 EOF
 
@@ -280,6 +281,7 @@ setenv MANPATH \$LPJROOT/man\:\$MANPATH
 # define alias
 
 alias printheader "printclm -data"
+alias soil2cdf "clm2cdf -notime -raw -byte"
 alias lpjml 'lpjml.sh'
 EOF
 ln -sf lpjml bin/lpj
