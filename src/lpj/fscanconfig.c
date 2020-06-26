@@ -275,6 +275,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       }
       if(config->laimax_interpolate==CONST_LAI_MAX)
         fscanreal2(file,&config->laimax,"laimax");
+      config->others_to_crop = FALSE;
+      if (fscanbool(file, &config->others_to_crop, "others_to_crop", TRUE, verbose))
+        return TRUE;
       if(config->river_routing)
         fscanbool2(file,&config->reservoir,"reservoir");
       grassfix=FALSE;

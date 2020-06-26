@@ -123,6 +123,7 @@ typedef struct
   Bool residues_fire;   /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
   Bool check_climate; /**< check climate input data for NetCDF files */
+  Bool others_to_crop;       /**< move PFT type others into PFT crop, maize for tropical, wheat for temperate */
   Verbosity scan_verbose;       /**< option -vv 2: verbosely print the read values during fscanconfig. default 1; 0 would supress even error messages */
   int compress;           /**< compress NetCDF output (0: no compression) */
   float missing_value;    /**< Missing value in NetCDF files */

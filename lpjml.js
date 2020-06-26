@@ -75,6 +75,7 @@
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "others_to_crop" : true,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -208,6 +209,10 @@ ID                         Fmt                    filename
 /*------------------------ ---------------------- ------------------------------- */
   ],
 
+#else
+
+  "output" : [],  /* no output written */
+
 #endif
 
 /*===================================================================*/
@@ -230,7 +235,7 @@ ID                         Fmt                    filename
   "outputyear": -28099, /* first year output is written  */
   "restart" :  false, /* start from restart file */
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : "restart/restart_1840_nv_stdfire_10.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "restart_year": 1840 /* write restart at year */
 
 #else
@@ -241,7 +246,7 @@ ID                         Fmt                    filename
   "lastyear" : 2018, /* last year of simulation */
   "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : "restart/restart_1840_nv_stdfire_10.lpj", /* filename of restart file */
+  "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
   "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
   "restart_year": 1900 /* write restart at year */
