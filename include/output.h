@@ -124,8 +124,8 @@ typedef struct
   Real minterc_b;        /**< Monthly blue interception (mm) */
   Real ainterc;          /**< Yearly interception (mm) */
   Real mpet;             /**< Monthly PET (mm) */
-  Real mswc[NSOILLAYER]; /**< monthly soil water content*/
-  Real mrootmoist;       /**< monthly plant available water for evapotranspiration fractional*/
+  Real mswc[NSOILLAYER]; /**< monthly soil water content as fraction of water content at saturation, averaged across stands */
+  Real mrootmoist;       /**< monthly absolute soil water content in first meter (sum of soil layer 1-3) between wilting point and field capacity, i.e. water available water for evapotranspiration (excluding frozen water, water below wilting point, and above field capacity) */
   Stocks fire;           /**< annual fire carbon and nitrogen emissions (g/m2)*/
   Real mfirec;           /**< monthly fire carbon emissions (gC/m2)*/
   Real mnfire;           /**< monthly number of fires */

@@ -155,6 +155,7 @@ USE_RAND48          use drand48() random number generator
 USE_UDUNITS         enable unit conversion in NetCDF files
 WITH_FIRE_MOISTURE  enable moisture dependent fire emissions
 WITH_FPE            floating point exceptions are enabled for debugging purposes
+CROPSHEATFROST		enables tmin and tmax input effecting senescence, harvest index, and frost kill
 ------------------- ------------------------------------------------------------
 
 Create executables:

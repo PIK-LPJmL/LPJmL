@@ -1,3 +1,8 @@
+.project
+.gitignore
+.cproject
+.settings/
+
 # Prerequisites
 *.d
 
@@ -153,3 +158,54 @@ bin/cdf2bin
 bin/cvrtclm
 bin/manage2js
 bin/headersize
+bin/adddrain 2
+bin/addheader 2
+bin/asc2clm 2
+bin/bin2cdf 2
+bin/cat2bsq 2
+bin/catclm 2
+bin/cdf2bin 2
+bin/cdf2clm 2
+bin/cdf2coord 2
+bin/cdf2soil 2
+bin/cft2clm 2
+bin/cfts26_lu2clm 2
+bin/clm2cdf 2
+bin/copyheader 2
+bin/cru2clm 2
+bin/cutclm 2
+bin/cvrtclm 2
+bin/cvrtsoil 2
+bin/drainage 2
+bin/getcellindex 2
+bin/getcountry 2
+bin/grd2bsq 2
+bin/grid2clm 2
+bin/headersize 2
+bin/joingrid 2
+bin/lpjcat 2
+bin/lpjcheck 2
+bin/lpjfiles 2
+bin/lpjml 2
+bin/lpjprint 2
+bin/lpjserver 2
+bin/manage2js 2
+bin/mathclm 2
+bin/printclm 2
+bin/printdrain 2
+bin/printharvest 2
+bin/printreservoir 2
+bin/regridclm 2
+bin/regridsoil 2
+bin/river_sections_input_climate 2
+bin/river_sections_input_countrycode 2
+bin/river_sections_input_grid 2
+bin/river_sections_input_irrig 2
+bin/river_sections_input_landuse 2
+bin/river_sections_input_soil 2
+bin/setclm 2
+bin/soil2cdf 2
+bin/txt2clm 2
+bin/txt2grid 2
+bin/water_use_input 2
+

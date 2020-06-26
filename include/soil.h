@@ -166,10 +166,10 @@ typedef struct
   Real *c_shift_slow[LASTLAYER]; /**< shifting rate of carbon matter to the different layer*/
   Real NO3[LASTLAYER];           /**< NO3 per soillayer (gN/m2) */
   Real NH4[LASTLAYER];           /**< NH4 per soillayer (gN/m2) */
-  Real w[NSOILLAYER],            /**< fraction of whc*/
-    w_fw[NSOILLAYER];            /**< mm */
+  Real w[NSOILLAYER],            /**< soil water as fraction of whc (fractional water holding capacity) */
+    w_fw[NSOILLAYER];            /**< free water or gravitational water (mm), absolute water content between field capacity and saturation */
   Real w_evap;                   /**< soil moisture content which is not transpired and can evaporate? correct? */
-  Real perc_energy[NSOILLAYER];  /**< energy transfer by percolation*/
+  Real perc_energy[NSOILLAYER];  /**< energy transfer by percolation */
 #ifdef MICRO_HEATING
   Real micro_heating[NSOILLAYER]; /**< energy of microbiological heating*/
   Real decomC[NSOILLAYER];
@@ -185,9 +185,9 @@ typedef struct
   Real wsat[NSOILLAYER];  /**< relative water content at saturation */
   Real whcs_all;
   Real whc[NSOILLAYER];   /**< water holding capacity (fraction), whc = wfc - wpwp */
-  Real wsats[NSOILLAYER]; /**< absolute water content at saturation (mm), wsats = wsat * soildepth*/
+  Real wsats[NSOILLAYER]; /**< absolute water content at saturation (mm), wsats = wsat * soildepth */
   Real whcs[NSOILLAYER];  /**< absolute water holding capacity (mm), whcs = whc * soildepth */
-  Real wpwps[NSOILLAYER]; /**< water at permanent wilting point in mm, depends on soildepth*/
+  Real wpwps[NSOILLAYER]; /**< water at permanent wilting point in mm, depends on soildepth */
   Real ice_depth[NSOILLAYER];   /**< mm */
   Real ice_fw[NSOILLAYER];      /**< mm */
   Real freeze_depth[NSOILLAYER]; /**< mm */
