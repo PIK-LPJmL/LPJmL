@@ -1481,8 +1481,11 @@
     "hlimit" : 330,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 12, "temp_spring" :  5, "temp_vern" : 12, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 3, "high" : 10 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
-    "pvd" : 70,              /* pvd: number of vernalising days required*/
+    //"trg" : { "low" : 3, "high" : 10 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    //"pvd" : 70,              /* pvd: number of vernalising days required*/
+    "tv_eff" : { "low" : -4, "high" : 17 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
+    "tv_opt" : { "low" : 3, "high" : 10 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "pvd_max" : 70,              /* pvd_max: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 8,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 20,              /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
@@ -1586,15 +1589,18 @@
     "hlimit" : 180,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  18, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
-    "pvd" : 0,              /* pvd: number of vernalising days required*/
+    //"trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    //"pvd" : 0,              /* pvd: number of vernalising days required*/
+    "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
+    "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 24,              /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 0,               /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
     "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
     "phus" : { "low" : 1600.0,  "high" : 1800.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
     "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-    "basetemp": { "low" : 10.0, "high" :  10.0}, /* min & max basetemp: base temperature */
+    "basetemp": { "low" : 8.0, "high" :  8.0}, /* min & max basetemp: base temperature */
     "fphuc" : 0.10,         /* fphuc: fraction of growing season 1 [0-1]*/
     "flaimaxc" : 0.05,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
     "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
@@ -1691,15 +1697,18 @@
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  14, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
-    "pvd" : 0,              /* pvd: number of vernalising days required*/
+    //"trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    //"pvd" : 0,              /* pvd: number of vernalising days required*/
+    "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
+    "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 24,              /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
     "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
     "phus" : { "low" : 1600.0,  "high" : 1600.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
     "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-    "basetemp": { "low" : 8.0, "high" :  8.0}, /* modified for macmit_intensification, 5-15 */ /* min & max basetemp: base temperature */
+    "basetemp": { "low" : 6.0, "high" :  6.0}, /* modified for macmit_intensification, 5-15 */ /* min & max basetemp: base temperature */
     "fphuc" : 0.10,         /* fphuc: fraction of growing season 1 [0-1]*/
     "flaimaxc" : 0.05,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
     "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
@@ -1796,15 +1805,18 @@
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  12, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
-    "pvd" : 0,              /* pvd: number of vernalising days required*/
+    //"trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    //"pvd" : 0,              /* pvd: number of vernalising days required*/
+    "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
+    "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 24,              /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
     "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
     "phus" : { "low" : 1500.0,  "high" : 1500.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
     "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-    "basetemp": { "low" : 10.0, "high" :  10.0}, /* min & max basetemp: base temperature */
+    "basetemp": { "low" : 8.0, "high" :  8.0}, /* min & max basetemp: base temperature */
     "fphuc" : 0.15,         /* fphuc: fraction of growing season 1 [0-1]*/
     "flaimaxc" : 0.01,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
     "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
@@ -1901,8 +1913,11 @@
     "hlimit" : 300,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  10, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
-    "pvd" : 0,              /* pvd: number of vernalising days required*/
+    //"trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    //"pvd" : 0,              /* pvd: number of vernalising days required*/
+    "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
+    "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 24,              /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
@@ -2006,8 +2021,11 @@
     "hlimit" : 260,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  8, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
-    "pvd" : 0,              /* pvd: number of vernalising days required*/
+    //"trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    //"pvd" : 0,              /* pvd: number of vernalising days required*/
+    "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
+    "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 24,              /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
@@ -2111,8 +2129,11 @@
     "hlimit" : 330,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  22, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
-    "pvd" : 0,              /* pvd: number of vernalising days required*/
+    //"trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    //"pvd" : 0,              /* pvd: number of vernalising days required*/
+    "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
+    "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 24,              /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
@@ -2216,8 +2237,11 @@
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  13, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
-    "pvd" : 0,              /* pvd: number of vernalising days required*/
+    //"trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    //"pvd" : 0,              /* pvd: number of vernalising days required*/
+    "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
+    "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 24,              /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
@@ -2321,15 +2345,18 @@
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  13, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
-    "pvd" : 0,              /* pvd: number of vernalising days required*/
+    //"trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    //"pvd" : 0,              /* pvd: number of vernalising days required*/
+    "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
+    "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 24,              /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
     "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
     "phus" : { "low" : 1000.0,  "high" : 1000.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
     "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-    "basetemp": { "low" : 10.0, "high" :  10.0}, /* min & max basetemp: base temperature */
+    "basetemp": { "low" : 7.0, "high" :  7.0}, /* min & max basetemp: base temperature */
     "fphuc" : 0.15,         /* fphuc: fraction of growing season 1 [0-1]*/
     "flaimaxc" : 0.05,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
     "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
@@ -2426,8 +2453,11 @@
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  15, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
-    "pvd" : 0,              /* pvd: number of vernalising days required*/
+    //"trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    //"pvd" : 0,              /* pvd: number of vernalising days required*/
+    "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
+    "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 24,              /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
@@ -2531,8 +2561,11 @@
     "hlimit" : 210,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 0,      /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 17, "temp_spring" :  5, "temp_vern" : 12, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 3, "high" : 10 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
-    "pvd" : 70,              /* pvd: number of vernalising days required*/
+    //"trg" : { "low" : 3, "high" : 10 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    //"pvd" : 70,              /* pvd: number of vernalising days required*/
+    "tv_eff" : { "low" : -4, "high" : 17 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
+    "tv_opt" : { "low" : 3, "high" : 10 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "pvd_max" : 70,              /* pvd_max: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 8,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 20,              /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/
@@ -2636,8 +2669,11 @@
     "hlimit" : 360,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 0,      /* fallow_days: wait after harvest until next sowing */
     "temp_fall" : 1000, "temp_spring" :  14, "temp_vern" : 1000, /* temp_fall, temp_spring, temp_vernalization: thresholds for sowing date f(T)*/
-    "trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
-    "pvd" : 0,              /* pvd: number of vernalising days required*/
+    //"trg" : { "low" : 1000, "high" : 1000 }, /* min & max trg: temperature under which vernalization is possible (deg C)*/
+    //"pvd" : 0,              /* pvd: number of vernalising days required*/
+    "tv_eff" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is possible (deg C)*/
+    "tv_opt" : { "low" : 1000, "high" : 1000 }, /* min & max tv: lower and upper temperature threshold under which vernalization is optimal (deg C)*/
+    "pvd_max" : 0,              /* pvd_max: number of vernalising days required*/
     "psens": 1.0,           /* psens: sensitivity to the photoperiod effect [0-1](1 means no sensitivity)*/
     "pb" : 0,               /* pb: basal photoperiod (h)(pb<ps for longer days plants)*/
     "ps" : 24,              /* ps: saturating photoperiod (h) (ps<pb for shorter days plants)*/

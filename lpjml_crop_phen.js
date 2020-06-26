@@ -55,7 +55,7 @@
 
 /* ALL GCMs */
 #define DIRR IRR_UNL   /* assuming unlimited water available for irrigation */
-#define DNIT NIT_LIM   /* limited nitrogen to represent actual management*/
+#define DNIT NIT_LIM   /* limited nitrogen to represent actual management */
 
 /* HadGEM2-ES */
 #ifdef RUN_ID_01
