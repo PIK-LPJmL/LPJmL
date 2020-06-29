@@ -175,6 +175,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if(config->wind_filename.fmt!=CDF && climate->file_wind.version<=1)
       climate->file_wind.scalar=0.001;
+    if(climate->firstyear<climate->file_wind.firstyear)
+      climate->firstyear=climate->file_wind.firstyear;
   }
   else
     climate->data.wind=NULL;
@@ -618,6 +620,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       return NULL;
     }
   }
-
+  if(isroot(*config) && !config->isfirstspinupyear && climate->firstyear!=config->firstyear)
+    fprintf(stderr,"WARNING032: First year for climate spinup=%d differs from first simulation year %d.\n",climate->firstyear,config->firstyear);
   return climate;
 } /* of 'initclimate' */
