@@ -136,7 +136,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       celldata->soilph.bin.file=openinputfile(&header,&celldata->soilph.bin.swap,
                                               &config->soilph_filename,
                                               headername,
-                                              &version,&celldata->soilph.bin.offset,config);
+                                              &version,&celldata->soilph.bin.offset,FALSE,config);
       if(celldata->soilph.bin.file==NULL)
       {
         if(isroot(*config))
