@@ -31,7 +31,8 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
   Stocks stocks;
 #ifdef IMAGE
   Bool tharvest=FALSE;
-  ftimber=min(1,cell->ml.image_data->timber_frac/standfrac);
+  if(istimber)
+    ftimber=min(1,cell->ml.image_data->timber_frac/standfrac);
 #else
   Poolpar frac1,frac2;
   ftimber=1;

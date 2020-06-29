@@ -75,8 +75,11 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
   }
   cell->output.fpc[0] = 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;
 #ifdef IMAGE
-  cell->output.prod_turnover=product_turnover(cell->ml.image_data);
-  cell->output.product_pool_fast=cell->ml.image_data->timber.fast;
-  cell->output.product_pool_slow=cell->ml.image_data->timber.slow;
+  if(config->sim_id==LPJML_IMAGE)
+  {
+    cell->output.prod_turnover=product_turnover(cell->ml.image_data);
+    cell->output.product_pool_fast=cell->ml.image_data->timber.fast;
+    cell->output.product_pool_slow=cell->ml.image_data->timber.slow;
+  }
 #endif
 } /* of 'update_annual' */

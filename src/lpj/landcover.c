@@ -52,7 +52,7 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
   {
     if((landcover->file.file=openinputfile(&header,&landcover->file.swap,
                                            &config->landcover_filename,headername,
-                                           &version,&offset,config))==NULL)
+                                           &version,&offset,TRUE,config))==NULL)
 
     {
       free(landcover);

@@ -114,7 +114,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   if((file->file=openinputfile(&header,&file->swap,
                                filename,
                                headername,
-                               &version,&offset,config))==NULL)
+                               &version,&offset,TRUE,config))==NULL)
     return TRUE;
   if (header.order==YEARCELL)
   {

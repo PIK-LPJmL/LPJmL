@@ -51,7 +51,7 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
     if((popdens->file.file=openinputfile(&header,&popdens->file.swap,
                                          &config->popdens_filename,
                                          headername,
-                                         &version,&offset,config))==NULL)
+                                         &version,&offset,TRUE,config))==NULL)
     {
       free(popdens);
       return NULL;

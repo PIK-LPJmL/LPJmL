@@ -166,7 +166,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     celldata->runoff2ocean_map.file=openinputfile(&header,&celldata->runoff2ocean_map.swap,
                                                   &config->runoff2ocean_filename,
                                                   headername,
-                                                  &version,&celldata->runoff2ocean_map.offset,config);
+                                                  &version,&celldata->runoff2ocean_map.offset,FALSE,config);
     if(celldata->runoff2ocean_map.file==NULL)
     {
       if(isroot(*config))

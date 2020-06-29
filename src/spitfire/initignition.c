@@ -48,7 +48,7 @@ Bool initignition(Cell grid[],         /* LPJ grid */
   else
   {
     file=openinputfile(&header,&swap,&config->human_ignition_filename,
-                       headername,&version,&offset,config);
+                       headername,&version,&offset,FALSE,config);
     if(file==NULL)
     {
      printfopenerr(config->human_ignition_filename.name);

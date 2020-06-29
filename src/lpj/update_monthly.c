@@ -64,8 +64,11 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   cell->output.aconv_loss_drain+=cell->output.mconv_loss_drain;
   cell->output.aburntarea+=cell->output.mburntarea;
 #ifdef IMAGE
-  cell->ml.image_data->anpp+=cell->output.mnpp;
-  cell->ml.image_data->arh+=cell->output.mrh;
+  if(cell->ml.image_data!=NULL)
+  {
+    cell->ml.image_data->anpp+=cell->output.mnpp;
+    cell->ml.image_data->arh+=cell->output.mrh;
+  }
 #endif
   /* for carbon balance check  */
   cell->balance.nep+=cell->output.mnpp-cell->output.mrh;

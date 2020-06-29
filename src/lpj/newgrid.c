@@ -53,11 +53,14 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #ifdef IMAGE
   Productinit *productinit;
   Product *productpool;
-  if((productpool=newvec(Product,config->ngridcell))==NULL)
+  if(config->sim_id==LPJML_IMAGE)
   {
-    printallocerr("productpool");
-    free(productpool);
-    return NULL;
+    if((productpool=newvec(Product,config->ngridcell))==NULL)
+    {
+      printallocerr("productpool");
+      free(productpool);
+      return NULL;
+    }
   }
 #endif
 
@@ -124,7 +127,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         /* Open grassfix file */
         grassfix_file.file=openinputfile(&header,&swap_grassfix,&config->grassfix_filename,
-                                         headername,&version,&offset,config);
+                                         headername,&version,&offset,FALSE,config);
         if(grassfix_file.file==NULL)
         {
           closecelldata(celldata);
@@ -171,7 +174,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         /* Open grassharvest file */
         grassharvest_file.file=openinputfile(&header,&swap_grassharvest,&config->grassharvest_filename,
-                                             headername,&version,&offset,config);
+                                             headername,&version,&offset,FALSE,config);
         if(grassharvest_file.file==NULL)
         {
           closecelldata(celldata);
@@ -260,7 +263,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     else
     {
       lakes.file=openinputfile(&header,&swap_lakes,&config->lakes_filename,
-                               headername,&version,&offset,config);
+                               headername,&version,&offset,FALSE,config);
       if(lakes.file==NULL)
       {
         /* opening of lake fraction file failed */
@@ -322,17 +325,20 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     }
   }
 #ifdef IMAGE
-  if((productinit=initproductinit(config))==NULL)
+  if(config->sim_id==LPJML_IMAGE)
   {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR201: Cannot open file '%s'.\n",
-              config->prodpool_init_filename.name);
-    return NULL;
-  }
-  if(getproductpools(productinit,productpool,config->ngridcell))
-  {
-    fputs("ERROR202: Cannot read initial product pools.\n",stderr);
-    return NULL;
+    if((productinit=initproductinit(config))==NULL)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR201: Cannot open file '%s'.\n",
+                config->prodpool_init_filename.name);
+      return NULL;
+    }
+    if(getproductpools(productinit,productpool,config->ngridcell))
+    {
+      fputs("ERROR202: Cannot read initial product pools.\n",stderr);
+      return NULL;
+    }
   }
 #endif
 
@@ -652,10 +658,15 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       config->count++;
 #ifdef IMAGE
-      grid[i].ml.image_data=new_image(productpool+i);
-      if(i%1000==0) printf("initialized product pools in pix %d to %g %g\n",i,
-        grid[i].ml.image_data->timber.fast,grid[i].ml.image_data->timber.slow);
-      /* data sent to image */
+      if(config->sim_id==LPJML_IMAGE)
+      {
+        grid[i].ml.image_data=new_image(productpool+i);
+        if(i%1000==0) printf("initialized product pools in pix %d to %g %g\n",i,
+          grid[i].ml.image_data->timber.fast,grid[i].ml.image_data->timber.slow);
+        /* data sent to image */
+      }
+      else
+        grid[i].ml.image_data=NULL;
     }
     else /* skipped cells don't need memory allocation */
     {
@@ -693,8 +704,11 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       closeinput(regioncode,config->regioncode_filename.fmt);
   }
 #ifdef IMAGE
-  free(productpool);
-  freeproductinit(productinit);
+  if(config->sim_id==LPJML_IMAGE)
+  {
+    free(productpool);
+    freeproductinit(productinit);
+  }
 #endif
   return grid;
 } /* of 'newgrid2' */

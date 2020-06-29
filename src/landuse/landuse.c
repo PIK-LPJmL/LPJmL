@@ -80,7 +80,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     if((landuse->landuse.file=openinputfile(&header, &landuse->landuse.swap,
                                             &config->landuse_filename,
                                             headername,
-                                            &version, &offset, config)) == NULL)
+                                            &version, &offset,TRUE, config)) == NULL)
     {
       free(landuse);
       return NULL;
@@ -141,7 +141,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     {
       if((landuse->sdate.file=openinputfile(&header,&landuse->sdate.swap,
                                             &config->sdate_filename,headername,
-                                            &version,&offset,config))==NULL)
+                                            &version,&offset,TRUE,config))==NULL)
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
         free(landuse);
@@ -197,7 +197,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     {
       if((landuse->fertilizer_nr.file=openinputfile(&header,&landuse->fertilizer_nr.swap,
                                                     &config->fertilizer_nr_filename,headername,
-                                                    &version,&offset,config))==NULL)
+                                                    &version,&offset,TRUE,config))==NULL)
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(landuse->sdate.file!=NULL)

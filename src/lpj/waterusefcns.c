@@ -49,7 +49,7 @@ Wateruse initwateruse(const Config *config /**< LPJmL configuration */
     if((wateruse->file.file=openinputfile(&header,&wateruse->file.swap,
                                           &config->wateruse_filename,
                                           headername,
-                                          &version,&offset,config))==NULL)
+                                          &version,&offset,TRUE,config))==NULL)
     {
       free(wateruse);
       return NULL;

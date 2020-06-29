@@ -3,7 +3,7 @@
 clm2cdf \- convert CLM files into NetCDF files
 .SH SYNOPSIS
 .B clm2cdf
-[\-global] [\-scale factor] [\-cellsize size] [\-int] [\-float] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d]
+[\-global] [\-scale factor] [\-cellsize size] [\-byte] [\-int] [\-float] [\-raw] [\-nbands n] [\-landuse] [\-notime] [\-compress level] [\-units u] [\-descr d]
 .I varname gridfile clmfile netcdffile
 .SH DESCRIPTION
 Program converts CLM input data into NetCDF input data. 
@@ -18,11 +18,20 @@ scaling factor for CLM version 1 files. Default is one
 \-cellsize size
 set cell size of grid file to size
 .TP
+\-byte
+set data type in CLM file to byte, default is short or read from CLM header
+.TP
 \-int
-set data type in CLM file to int, default is short 
+set data type in CLM file to int, default is short or read from CLM header
 .TP
 \-float
-set data type in CLM file to float, default is short 
+set data type in CLM file to float, default is short or read from CLM header
+.TP
+\-raw
+set the innput format to raw instead of CLM
+.TP
+\-nbands n
+set the number of bands to n. This is only active if raw format is set. Default is one
 .TP
 -landuse
 convert land-use input data

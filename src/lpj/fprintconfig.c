@@ -48,12 +48,15 @@ static size_t isnetcdfinput(const Config *config)
   if(config->prec_filename.fmt==CDF)
     width=max(width,strlen(config->prec_filename.var));
 #ifdef IMAGE
-  if(config->temp_var_filename.fmt==CDF)
-    width=max(width,strlen(config->temp_var_filename.var));
-  if(config->prec_var_filename.fmt==CDF)
-    width=max(width,strlen(config->prec_var_filename.var));
-  if(config->prodpool_init_filename.fmt==CDF)
-    width=max(width,strlen(config->prodpool_init_filename.var));
+  if(config->sim_id==LPJML_IMAGE)
+  {
+    if(config->temp_var_filename.fmt==CDF)
+      width=max(width,strlen(config->temp_var_filename.var));
+    if(config->prec_var_filename.fmt==CDF)
+      width=max(width,strlen(config->prec_var_filename.var));
+    if(config->prodpool_init_filename.fmt==CDF)
+      width=max(width,strlen(config->prodpool_init_filename.var));
+  }
 #endif
   if(config->with_radiation)
   {

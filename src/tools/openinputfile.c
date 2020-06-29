@@ -22,6 +22,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
                     String headername, /**< clm file header string */
                     int *version, /**< clm file version */
                     size_t *offset, /**< offset in binary file */
+                    Bool isyear,
                     const Config *config /**< grid configuration */
                    )           /** \return file pointer to open file or NULL */
 {
@@ -65,7 +66,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
       return NULL;
     }*/
     if(header->firstyear>config->firstyear)
-      if(isroot(*config))
+      if(isyear && isroot(*config))
         fprintf(stderr,"WARNING004: First year in '%s'=%d greater than %d.\n",
                  filename->name,header->firstyear,config->firstyear);
     if(config->firstgrid<header->firstcell ||
@@ -130,7 +131,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
       }
     }
     if(header->firstyear>config->firstyear)
-      if(isroot(*config))
+      if(isyear && isroot(*config))
         fprintf(stderr,"WARNING004: First year in '%s'=%d greater than %d.\n",
                 filename->name,header->firstyear,config->firstyear);
     if(config->firstgrid<header->firstcell ||
