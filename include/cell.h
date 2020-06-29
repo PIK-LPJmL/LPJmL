@@ -145,7 +145,7 @@ extern void killstand(Cell *,const Pftpar [],int,Bool,int);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);
-extern Bool readcelldata(Celldata,Coord *,unsigned int *,Real *,Intcoord *,int,Config *);
+extern Bool readcelldata(Celldata,Coord *,unsigned int *,Real *,int,Config *);
 extern void closecelldata(Celldata);
 extern Real albedo(Cell *, Real , Real );
 

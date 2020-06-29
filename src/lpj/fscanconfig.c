@@ -467,10 +467,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         scanfilename(&input,&config->reservoir_filename,config->inputdir,"reservoir");
       }
     }
-    if(config->sim_id==LPJML_FMS)
-    {
-      scanfilename(&input,&config->runoff2ocean_filename,config->inputdir,"runoff2ocean_map");
-    }
   }
   scanclimatefilename(&input,&config->temp_filename,config->inputdir,config->sim_id==LPJML_FMS,"temp");
   scanclimatefilename(&input,&config->prec_filename,config->inputdir,config->sim_id==LPJML_FMS,"prec");
