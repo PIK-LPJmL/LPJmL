@@ -191,6 +191,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if((config->wind_filename.fmt==CLM || config->wind_filename.fmt==RAW)&& climate->file_wind.version<=1)
       climate->file_wind.scalar=0.001;
+    if(climate->firstyear<climate->file_wind.firstyear)
+      climate->firstyear=climate->file_wind.firstyear;
   }
   else
     climate->data.wind=NULL;
