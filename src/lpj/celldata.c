@@ -33,12 +33,6 @@ struct celldata
     } bin;
     Coord_netcdf cdf;
   } soil;
-  struct
-  {
-    Bool swap;
-    size_t offset;
-    FILE *file;
-  } runoff2ocean_map;
 };
 
 Celldata opencelldata(Config *config /**< LPJmL configuration */
@@ -94,30 +88,6 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       return NULL;
     }
   }
-  if(config->sim_id==LPJML_FMS)
-  {
-    celldata->runoff2ocean_map.file=openinputfile(&header,&celldata->runoff2ocean_map.swap,
-                                                  &config->runoff2ocean_filename,
-                                                  headername,
-                                                  &version,&celldata->runoff2ocean_map.offset,FALSE,config);
-    if(celldata->runoff2ocean_map.file==NULL)
-    {
-      if(isroot(*config))
-        printfopenerr(config->runoff2ocean_filename.name);
-      if(config->soil_filename.fmt==CDF)
-        closecoord_netcdf(celldata->soil.cdf);
-      else
-      {
-        closecoord(celldata->soil.bin.file_coord);
-        fclose(celldata->soil.bin.file);
-      }
-      free(celldata);
-      return NULL;
-    }
-  }
-  else
-    celldata->runoff2ocean_map.file=NULL;
-
   return celldata;
 } /* of 'opencelldata' */
 
@@ -153,15 +123,12 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
       return TRUE;
     }
   }
-  if(celldata->runoff2ocean_map.file!=NULL)
-    fseek(celldata->runoff2ocean_map.file,startgrid*sizeof(Intcoord)+celldata->runoff2ocean_map.offset,SEEK_CUR);
   return FALSE;
 } /* of 'seekcelldata' */
 
 Bool readcelldata(Celldata celldata, /**< pointer to celldata */
                   Coord *coord,      /**< lon,lat coordinate */
                   unsigned int *soilcode,     /**< soil code */
-                  Intcoord *runoff2ocean_coord, /**< coordinate for runoff */
                   int cell,          /**< cell index */
                   Config *config     /**< LPJmL configuration */
                  )                   /** \return TRUE on error */
@@ -194,15 +161,6 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
       return TRUE;
     }
   }
-  if(celldata->runoff2ocean_map.file!=NULL)
-  {
-    fread(runoff2ocean_coord,sizeof(Intcoord),1,celldata->runoff2ocean_map.file);
-    if(celldata->runoff2ocean_map.swap)
-    {
-      runoff2ocean_coord->lon=swapshort(runoff2ocean_coord->lon);
-      runoff2ocean_coord->lat=swapshort(runoff2ocean_coord->lat);
-    }
-  }
   return FALSE;
 } /* of 'readcelldata' */
 
@@ -216,7 +174,5 @@ void closecelldata(Celldata celldata /**< pointer to celldata */
     closecoord(celldata->soil.bin.file_coord);
     fclose(celldata->soil.bin.file);
   }
-  if(celldata->runoff2ocean_map.file!=NULL)
-    fclose(celldata->runoff2ocean_map.file);
   free(celldata);
 } /* of 'closecelldata' */
