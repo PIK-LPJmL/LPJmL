@@ -53,10 +53,7 @@ static Harvest harvest_grass_mowing(Stand *stand)
   Real fpc_sum=0.0;
   Real leafdeficit=0.0;
   foreachpft(pft,p,&stand->pftlist)
-  {
-    grass=pft->data;
-    fpc_sum+=(1.0-exp(-param.k_beer*lai_grass(pft)*pft->nind));
-  }
+    fpc_sum+=pft->fpc;
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
@@ -88,7 +85,7 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
   {
     grass=pft->data;
     bm_tot+=grass->ind.leaf;
-    fpc_sum+=(1.0-exp(-param.k_beer*lai_grass(pft)*pft->nind));
+    fpc_sum+=pft->fpc;
   }
 //  bm_grazed = stand->cell->ml.nr_of_lsus_ext * DEMAND_COW_EXT;
   bm_grazed = 1e-4* stand->cell->ml.nr_of_lsus_ext * DEMAND_COW_EXT;
@@ -140,12 +137,12 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
   {
     grass=pft->data;
     bm_tot+=grass->ind.leaf;
-    fpc_sum+=(1.0-exp(-param.k_beer*lai_grass(pft)*pft->nind));
+    fpc_sum+=pft->fpc;
   }
 
   if (rotation->rotation_mode == RM_UNDEFINED) //initial calculate grazing days and recovery days
   {
-    rotation_len = (bm_tot - GRAZING_STUBLE) / (1e4*stand->cell->ml.nr_of_lsus_int * DEMAND_COW_INT) ;
+    rotation_len = (bm_tot - GRAZING_STUBLE) / (1e-4*stand->cell->ml.nr_of_lsus_int * DEMAND_COW_INT) ;
     if (rotation_len > MAX_ROTATION_LENGTH)
       rotation_len = MAX_ROTATION_LENGTH;
 
@@ -160,7 +157,7 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
 
   if (rotation->rotation_mode == RM_GRAZING)
   {
-    bm_grazed = stand->cell->ml.nr_of_lsus_int * DEMAND_COW_INT * rotation->paddocks;
+    bm_grazed = 1e-4*stand->cell->ml.nr_of_lsus_int * DEMAND_COW_INT * rotation->paddocks;
     foreachpft(pft,p,&stand->pftlist)
     {
       grass=pft->data;
