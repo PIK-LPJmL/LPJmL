@@ -25,8 +25,8 @@
 //  "nh4deposition" : { "fmt" : CLM,  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
   "soilpH" :        { "fmt" : CLM,  "name" : "historical/input_VERSION2/soil_ph_65797.clm"},
   "landuse" :      { "fmt" : CLM,  "name" : "historical/input_VERSION2/cft2005_38bands_65797_dummy.bin"},
-//  "fertilizer_nr" : { "fmt" : CLM,  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
-//  "manure_nr" :    { "fmt" : CLM, "name" : "input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
+  "fertilizer_nr" : { "fmt" : CLM,  "name" : "historical/fertilizer/nfertilizer_isimip3b_38bands_2015soc_1850-2015.clm"},
+  "manure_nr" :    { "fmt" : CLM, "name" : "historical/fertilizer/manure_isimip3b_38bands_2015soc_1850-2015.clm"},
 //  "with_tillage" : { "fmt" : CLM, "name" : "input_VERSION3/lpj_tillage_CA_1973-2010.clm"},
 //  "residue_on_field" : { "fmt" : CLM, "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
   "sdate" : {"fmt" : CLM, "name" : "crop_calendar/sdates_ggcmi_phase3_v1.01_65797.clm"},  /* insert prescribed sdate file name here */
@@ -49,7 +49,7 @@
 //  "popdens" :      { "fmt" : CLM,  "name" : "input_VERSION2/popdens_HYDE3_1901_2011_bi.clm"},
 //  "burntarea" :    { "fmt" : CLM,  "name" : "/data/biosx/mforkel/input_new/GFED_CNFDB_ALFDB_Interp.BA.360.720.1901.2012.30days.clm"},
 //  "landcover":     { "fmt" : CLM,  "name" : "/data/biosx/mforkel/input_new/landcover_synmap_koeppen_vcf_newPFT_forLPJ_20130910.clm"},/*synmap_koeppen_vcf_NewPFT_adjustedByLanduse_SpinupTransitionPrescribed_forLPJ.clm*/
-  "co2" :          { "fmt" : TXT,  "name" : "historical/input_VERSION2/co2_1841-2018.dat"},
+  "co2" :          { "fmt" : TXT,  "name" : "historical/ISIMIP3a/co2/co2_historical_annual_1765_2014.txt"},
 //  "wetdays" :      { "fmt" : CLM,  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm"},
 //  "wateruse" :     { "fmt" : CLM,  "name" : "input_VERSION2/wateruse_1900_2000.bin" } /* water consumption for industry,household and livestock */
 },

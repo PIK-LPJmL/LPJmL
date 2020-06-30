@@ -167,7 +167,7 @@ EOF
   "new_phenology": true,    /* GSI phenology enabled */
   "river_routing" : false,
   "permafrost" : true,
-  "with_nitrogen" : NO_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "const_climate" : false,
   "const_deposition" : false,
 #ifdef FROM_RESTART
@@ -198,8 +198,8 @@ EOF
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
-  "fertilizer_input" : false,            /* enable fertilizer input */
-  "manure_input" : false,               /* enable manure input */
+  "fertilizer_input" : true,            /* enable fertilizer input */
+  "manure_input" : true,               /* enable manure input */
   "fix_fertilization" : false,          /* fix fertilizer input */
   "others_to_crop" : false,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
@@ -286,7 +286,7 @@ ID                         Fmt                    filename
 //    { "id" : PFT_NHAWO,        "file" : { "fmt" : RAW, "name" : mkstr(output/pft_nhawo.bin)}},
 //    { "id" : HARVESTC,         "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/flux_harvestc.bin)}},
 //    { "id" : HARVESTN,         "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/flux_harvestn.bin)}},
-    { "id" : SYEAR,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/syear_lai.LMAX.bin)}},
+/*    { "id" : SYEAR,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/syear_lai.LMAX.bin)}},
     { "id" : SYEAR2,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/syear2_lai.LMAX.bin)}},
     { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/sdate_lai.LMAX.bin)}},
     { "id" : SDATE2,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/sdate2_lai.LMAX.bin)}},
@@ -316,7 +316,7 @@ ID                         Fmt                    filename
     { "id" : CFT_INTERC2,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/cft_interc2.bin)}},
     { "id" : MSWC1,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l1_20cm.bin)}},
     { "id" : MSWC2,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l2_30cm.bin)}},
-    { "id" : MSWC3,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l3_50cm.bin)}},
+    { "id" : MSWC3,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l3_50cm.bin)}},*/
     { "id" : MROOTMOIST,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mroormoist_1m.bin)}}
 //    { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/seasonality.bin)}},
 #ifdef DAILY_OUTPUT
@@ -363,8 +363,8 @@ ID                         Fmt                    filename
 
 #else
 
-  "nspinup" : 2,   /* spinup years */
-  "nspinyear" : 2,  /* cycle length during spinup (yr)*/
+  "nspinup" : 30,   /* spinup years */
+  "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": ${startyear[c]}, /* first year of simulation */
   "lastyear" : ${endyear[c]}, /* last year of simulation */
   "outputyear": ${startyear[c]}, /* first year output is written  */
