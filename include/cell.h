@@ -113,7 +113,7 @@ extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
 extern void update_annual(Cell *,int,int,
                           Real,int,const Real *,Bool,Bool,const Config *);
 extern void update_monthly(Cell *,Real,Real,int);
-extern void init_annual(Cell *,int,int,int);
+extern void init_annual(Cell *,int,int,int,int, const Config *);
 extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,int,int,Bool);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
 extern Bool freadcell(FILE *,Cell *,int,int,const Soilpar *,
@@ -148,6 +148,7 @@ extern Bool seekcelldata(Celldata,int);
 extern Bool readcelldata(Celldata,Coord *,unsigned int *,Real *,Intcoord *,int,Config *);
 extern void closecelldata(Celldata);
 extern Real albedo(Cell *, Real , Real );
+extern void init_climbuf(Climbuf *,int,int,const Config *);
 
 /* Definition of macros */
 
