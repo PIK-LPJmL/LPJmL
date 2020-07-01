@@ -28,7 +28,7 @@ Real fpc_grass(Pft *pft)
     if(pft2->par->type==GRASS)
     {
       lai_sum+=lai_grass(pft2)*pft2->nind;
-      fpc_sum+=(1.0-exp(-pft->par->lightextcoeff*lai_grass(pft2)*pft2->nind));
+      fpc_sum+=(1.0-exp(-pft2->par->lightextcoeff*lai_grass(pft2)*pft2->nind));
     }
   }
   pft->fpc=fpc_sum>0 ? (1.0-exp(-pft->par->lightextcoeff*lai_sum))*(1.0-exp(-pft->par->lightextcoeff*lai_grass(pft)*pft->nind))/fpc_sum : 0;

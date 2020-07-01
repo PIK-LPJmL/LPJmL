@@ -278,8 +278,12 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
       }
       break;
     case GS_GRAZING_INT: /* int. grazing */
+      data->nr_of_lsus_ext = 0.0;
       if((cleaf > STUBBLE_HEIGHT_GRAZING_INT) || (data->rotation.mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
+      {
         isphen=TRUE;
+        data->nr_of_lsus_ext = param.lsuha;
+      }
       break;
   } /* of switch */
   if(isphen)
