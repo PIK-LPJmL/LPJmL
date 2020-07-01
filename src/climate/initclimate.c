@@ -241,6 +241,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if((config->tamp_filename.fmt==CLM || config->tamp_filename.fmt==RAW) && climate->file_tamp.version<=1)
       climate->file_tamp.scalar=0.1;
+    if(climate->firstyear<climate->file_tamp.firstyear)
+      climate->firstyear=climate->file_tamp.firstyear;
     if(config->tmax_filename.name!=NULL)
     {
       if(openclimate(&climate->file_tmax,&config->tmax_filename,"celsius",LPJ_SHORT,config))
@@ -267,6 +269,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       }
       if((config->tmax_filename.fmt==CLM || config->tmax_filename.fmt==RAW) && climate->file_tmax.version<=1)
         climate->file_tmax.scalar=0.1;
+      if(climate->firstyear<climate->file_tmax.firstyear)
+        climate->firstyear=climate->file_tmax.firstyear;
     }
     if(openclimate(&climate->file_lightning,&config->lightning_filename,"1/day/hectare",LPJ_INT,config))
     {
