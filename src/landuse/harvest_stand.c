@@ -145,7 +145,7 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
 
   if (rotation->rotation_mode == RM_UNDEFINED) //initial calculate grazing days and recovery days
   {
-    rotation_len = (bm_tot.carbon - GRAZING_STUBBLE) / (1e4*stand->cell->ml.nr_of_lsus_int * DEMAND_COW_INT) ;
+    rotation_len = (bm_tot.carbon - GRAZING_STUBBLE) / (1e-4*stand->cell->ml.nr_of_lsus_int * DEMAND_COW_INT) ;
     if (rotation_len > MAX_ROTATION_LENGTH)
       rotation_len = MAX_ROTATION_LENGTH;
 
@@ -160,7 +160,7 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
 
   if (rotation->rotation_mode == RM_GRAZING)
   {
-    bm_grazed = stand->cell->ml.nr_of_lsus_int * DEMAND_COW_INT * rotation->paddocks;
+    bm_grazed = 1e-4*stand->cell->ml.nr_of_lsus_int * DEMAND_COW_INT * rotation->paddocks;
     foreachpft(pft,p,&stand->pftlist)
     {
       grass=pft->data;
