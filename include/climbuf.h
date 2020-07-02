@@ -57,7 +57,7 @@ typedef struct
 /* Declaration of functions */
 
 extern Bool new_climbuf(Climbuf *,int);
-//extern void init_climbuf(Climbuf *,int,int,const Config *);
+extern void init_climbuf(Climbuf *,int);
 extern void daily_climbuf(Climbuf *,Real);
 extern void getmintemp20_n(const Climbuf *,Real [],int);
 extern void monthly_climbuf(Climbuf *,Real,Real,Real,int);

@@ -17,15 +17,13 @@
 void init_annual(Cell *cell, /**< Pointer to cell */
                  int npft,   /**< number of natural pfts */
                  int nbiomass, /**< number of biomass pfts */
-                 int ncft,    /**< number of crop pfts */
-                 int year,    /**<current year */
-                 const Config *config /**< config */
+                 int ncft    /**< number of crop pfts */
                 )
 {
   int s,p;
   Pft *pft;
   Stand *stand;
-  init_climbuf(&cell->climbuf,ncft,year,config);
+  init_climbuf(&cell->climbuf,ncft);
   cell->balance.aprec=cell->balance.nep=cell->balance.awater_flux=0.0;
   cell->afire_frac=cell->balance.biomass_yield.carbon=cell->balance.biomass_yield.nitrogen=0.0;
   cell->balance.total_irrig_from_reservoir=cell->balance.total_reservoir_out=0.0;

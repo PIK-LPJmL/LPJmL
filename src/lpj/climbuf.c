@@ -59,10 +59,8 @@ Bool new_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
 } /* of 'new_climbuf' */
 
 void init_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
-                  int ncft,          /**< number of crop pfts */
-                  int year,         /**< current year */
-                  const Config *config /**< config */
-                  )
+                  int ncft          /**< number of crop pfts */
+                 )
 {
   int c;
   climbuf->temp_min=HUGE_VAL;
@@ -70,11 +68,8 @@ void init_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
   climbuf->gdd5=0;
   climbuf->mprec=0;
   climbuf->mpet=0;
-  if(config->crop_phu_option==PRESCRIBED_CROP_PHU && year<=config->sdate_fixyear)
-  {
-    for(c=0;c<ncft;c++)
-      climbuf->V_req_a[c]=0;
-  }
+  for(c=0;c<ncft;c++)
+    climbuf->V_req_a[c]=0;
 } /* of 'init_climbuf' */
 
 void getmintemp20_n(const Climbuf *climbuf,

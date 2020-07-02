@@ -65,7 +65,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     grid[cell].output.surface_storage=0;
     if(!grid[cell].skip)
     {
-      init_annual(grid+cell,npft,config->nbiomass,ncft,year,config);
+      init_annual(grid+cell,npft,config->nbiomass,ncft);
       if(input.landuse!=NULL)
       {
         if(grid[cell].lakefrac<1)
