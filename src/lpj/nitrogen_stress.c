@@ -30,7 +30,7 @@ Real nitrogen_stress(Pft *pft,       /**< PFT */
   nplant_demand_opt=0;
 #endif
   nplant_demand=0;
-  if(pft->bm_inc.carbon>0)
+  if(pft->bm_inc.carbon>0  || (pft->stand->type->landusetype==GRASSLAND && pft->bm_inc.carbon>=0))
   {
     nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,daylength,temp)*(1+pft->par->knstore);
     ndemand_leaf_opt=ndemand_leaf;
