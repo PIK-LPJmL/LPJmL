@@ -14,23 +14,23 @@
 
 #include "include/conf.h" /* include constant definitions */
 
-"inpath" : "/p/projects/lpjml/input/",
+"inpath" : "/p/projects/lpjml/input",
 
 "input" :
 {
-  "soil" :         { "fmt" : META, "name" : "historical/input_VERSION2/soil_65797.descr"},
-  "coord" :        { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/grid_65797.clm"},
-  "countrycode" :  { "fmt" : CLM,  "name" : "historical/input_VERSION2/cow_full_2018_65797.bin"},
-//  "no3deposition" : { "fmt" : CLM,  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
-//  "nh4deposition" : { "fmt" : CLM,  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
-  "soilpH" :        { "fmt" : CLM,  "name" : "historical/input_VERSION2/soil_ph_65797.clm"},
-  "landuse" :      { "fmt" : CLM,  "name" : "historical/input_VERSION2/cft2005_38bands_65797_dummy.bin"},
+  "soil" :         { "fmt" : META, "name" : "historical/input_VERSION2/soil.descr"},
+  "coord" :        { "fmt" : CLM,  "name" : "historical/input_VERSION2/grid.bin"},
+  "countrycode" :  { "fmt" : CLM,  "name" : "historical/input_VERSION2/cow_full_2018.bin"},
+  "no3deposition" : { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/no3_deposition_2015soc_1850-2100.clm"},
+  "nh4deposition" : { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/nh4_deposition_2015soc_1850-2100.clm"},
+  "soilpH" :        { "fmt" : CLM,  "name" : "historical/input_VERSION2/soil_ph.clm"},
+  "landuse" :      { "fmt" : CLM,  "name" : "historical/input_VERSION2/cft2005_38bands_dummy.bin"},
   "fertilizer_nr" : { "fmt" : CLM,  "name" : "historical/fertilizer/nfertilizer_isimip3b_38bands_2015soc_1850-2015.clm"},
   "manure_nr" :    { "fmt" : CLM, "name" : "historical/fertilizer/manure_isimip3b_38bands_2015soc_1850-2015.clm"},
 //  "with_tillage" : { "fmt" : CLM, "name" : "input_VERSION3/lpj_tillage_CA_1973-2010.clm"},
 //  "residue_on_field" : { "fmt" : CLM, "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
-  "sdate" : {"fmt" : CLM, "name" : "crop_calendar/sdates_ggcmi_phase3_v1.01_65797.clm"},  /* insert prescribed sdate file name here */
-  "crop_phu" : {"fmt" : CLM, "name" : "crop_calendar/phu_gswp3-w5e5_ggcmi_phase3_v1.01_65797.clm"},  /* insert prescribed phu file name here */
+  "sdate" : {"fmt" : CLM, "name" : "crop_calendar/sdates_ggcmi_phase3_v1.01_67420.clm"},  /* insert prescribed sdate file name here */
+  "crop_phu" : {"fmt" : CLM, "name" : "crop_calendar/phu_gswp3-w5e5_ggcmi_phase3_v1.01_67420.clm"},  /* insert prescribed phu file name here */
 //  "grassland_fixed_pft" : { "fmt" : RAW, "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.clm"},
 //  "lakes" :        { "fmt" : META, "name" : "input_VERSION2/glwd_lakes_and_rivers.descr"},
 //  "drainage" :     { "fmt" : CLM,  "name" : "input_VERSION2/drainagestn.bin"},
@@ -43,13 +43,13 @@
   "prec" :         { "fmt" : CLM,  "name" : "historical/ISIMIP3a/obsclim/GSWP3-W5E5/pr_gswp3-w5e5_obsclim_1901-2016.clm"},
   "lwnet" :        { "fmt" : CLM,  "name" : "historical/ISIMIP3a/obsclim/GSWP3-W5E5/lwnet_gswp3-w5e5_obsclim_1901-2016.clm"},
   "swdown" :       { "fmt" : CLM,  "name" : "historical/ISIMIP3a/obsclim/GSWP3-W5E5/rsds_gswp3-w5e5_obsclim_1901-2016.clm"},
-//  "wind":          { "fmt" : CLM,  "name" : "input_VERSION2/mwindspeed_1860-2100_67420.clm"},
+  "wind":          { "fmt" : CLM,  "name" : "historical/ISIMIP3a/obsclim/GSWP3-W5E5/sfcwind_gswp3-w5e5_obsclim_1901-2016.clm"},
 //  "lightning" :    { "fmt" : CLM,  "name" : "input_VERSION2/mlightning.clm"},
 //  "human_ignition": { "fmt" : CLM, "name" : "input_VERSION2/human_ignition.clm"},
 //  "popdens" :      { "fmt" : CLM,  "name" : "input_VERSION2/popdens_HYDE3_1901_2011_bi.clm"},
 //  "burntarea" :    { "fmt" : CLM,  "name" : "/data/biosx/mforkel/input_new/GFED_CNFDB_ALFDB_Interp.BA.360.720.1901.2012.30days.clm"},
 //  "landcover":     { "fmt" : CLM,  "name" : "/data/biosx/mforkel/input_new/landcover_synmap_koeppen_vcf_newPFT_forLPJ_20130910.clm"},/*synmap_koeppen_vcf_NewPFT_adjustedByLanduse_SpinupTransitionPrescribed_forLPJ.clm*/
-  "co2" :          { "fmt" : TXT,  "name" : "historical/ISIMIP3a/co2/co2_historical_annual_1765_2014.txt"},
+  "co2" :          { "fmt" : TXT,  "name" : "historical/ISIMIP3a/co2/co2_obsclim_annual_1850_2018.txt"},
 //  "wetdays" :      { "fmt" : CLM,  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm"},
 //  "wateruse" :     { "fmt" : CLM,  "name" : "input_VERSION2/wateruse_1900_2000.bin" } /* water consumption for industry,household and livestock */
 },

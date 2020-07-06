@@ -3,9 +3,9 @@ rm(list=ls(all=TRUE))
 gc()
 args <- commandArgs(TRUE)
 
-#args="gswp3-w5e5"
+args="gswp3-w5e5"
 # args="agmerra"
-args="wfdei"
+# args="wfdei"
 
 ### ------------------------------------------------------------------------------------------------- ###
 
@@ -51,13 +51,8 @@ climate_end=c(2010,2012,2018)[clim_arg]
 # specify path to crop calendar in LPJmL format (.bin or .clm)
 crop_calendar="ggcmi_phase3_v1.01" # name tag for output files
 
-if(climate_data=="gswp3-w5e5") {
-  path.sowing="/p/projects/lpjml/input/crop_calendar/sdates_ggcmi_phase3_v1.01_65797.clm"
-  path.harvest="/p/projects/lpjml/input/crop_calendar/mdates_ggcmi_phase3_v1.01_65797.clm"
-} else {
-  path.sowing="/p/projects/lpjml/input/crop_calendar/sdates_ggcmi_phase3_v1.01_67420.clm"
-  path.harvest="/p/projects/lpjml/input/crop_calendar/mdates_ggcmi_phase3_v1.01_67420.clm"
-}
+path.sowing="/p/projects/lpjml/input/crop_calendar/sdates_ggcmi_phase3_v1.01_67420.clm"
+path.harvest="/p/projects/lpjml/input/crop_calendar/mdates_ggcmi_phase3_v1.01_67420.clm"
 
 ### ------------------------------------------------------------------------------------------------- ###
 
@@ -82,13 +77,8 @@ fn_tas_day=paste0(path.in,"tas/tas_average_daily_",simulation_period[1],"_",simu
 
 source("/p/projects/waterforce/jonas/R_functions/generic_functions.R")
 
-if(climate_data=="gswp3-w5e5") {
-	ncell <- 65797
-	grid <- read.LPJmL.grid("/p/projects/lpjml/input/scenarios/ISIMIP3b/grid_65797.clm",ncell,51) # new header and ncell; lon = grid[,1], lat = grid[,2]
-} else {
-	ncell <- 67420 # number of cells
-	grid <- t(array(readBin(paste0(path.in,"grid.bin"),what=integer(),size=2,n=ncell*2),dim=c(2,ncell))/100) # lon = grid[,1], lat = grid[,2]
-}
+ncell <- 67420 # number of cells
+grid <- t(array(readBin(paste0(path.in,"grid.bin"),what=integer(),size=2,n=ncell*2),dim=c(2,ncell))/100) # lon = grid[,1], lat = grid[,2]
 
 croppars <- read.csv(file=path.par,header=TRUE,sep=",",row.names=1,as.is=T)
 

@@ -75,7 +75,6 @@ else
   setup="lpjml_phase3_${climate[c]}_${socioecon[s]}_${co2[co]}_${startyear[c]}_${endyear[c]}"
   args="-DFROM_RESTART"
   runtime=120
-
 fi
 
 echo $setup
@@ -193,7 +192,7 @@ EOF
   "irrigation" : POT_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
   "tillage_type" : NO_TILLAGE,        /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
   "black_fallow" : false,               /* simulation with black fallow on PNV */
-  "no_ndeposition" : false,             /* turn off atmospheric N deposition */
+  "no_ndeposition" : true,             /* turn off atmospheric N deposition */
   "laimax_interpolate" : LAIMAX_PAR,    /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
