@@ -510,9 +510,9 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       cft_rm+=pft->stand->soil.w[l]*pft->stand->soil.whcs[l]*pft->stand->frac*(1.0/(1-pft->stand->cell->lakefrac-pft->stand->cell->ml.reservoirfrac)); /* absolute soil water content between wilting point and field capacity (mm) */
     output->cft_mswc[pft->par->id-npft+data->irrigation*ncft]+=cft_rm;
 #ifdef DOUBLE_HARVEST
-	double_harvest(output.syear2[pft->par->id-npft+data->irrigation*ncft],
-		cell->output.cft_mswc+(pft->par->id-npft+data->irrigation*ncft),
-		cell->output.cft_mswc2+(pft->par->id-npft+data->irrigation*ncft),
+	double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+		output->cft_mswc+(pft->par->id-npft+data->irrigation*ncft),
+		output->cft_mswc2+(pft->par->id-npft+data->irrigation*ncft),
 		cft_rm);
 #endif */
   }
