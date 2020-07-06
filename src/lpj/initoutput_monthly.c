@@ -16,7 +16,8 @@
 
 #include "lpj.h"
 
-void initoutput_monthly(Output *output /**< Output data */
+void initoutput_monthly(Output *output,   /**< Output data */
+                        int ncft          /**< number of crop PFTs */
                        )
 {
   int l;
@@ -44,4 +45,11 @@ void initoutput_monthly(Output *output /**< Output data */
 
   for(l=0;l<NSOILLAYER;l++)
     output->mswc[l]=output->msoiltemp[l]=0;
+  for(l=0;l<2*ncft;l++)
+    output->cft_mswc[l]=0;
+#ifdef DOUBLE_HARVEST
+  for(l=0;l<2*ncft;l++)
+    output->cft_mswc2[l]=0;
+#endif
+
 } /* of 'initoutput_monthly' */

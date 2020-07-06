@@ -55,6 +55,7 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_veg);
   free(output->cft_nlimit);
   free(output->cft_laimax);
+  free(output->cft_mswc);
 #ifdef DOUBLE_HARVEST
   free(output->cftfrac2);
   free(output->sdate2);
@@ -74,12 +75,14 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_airrig2);
   free(output->syear);
   free(output->syear2);
+  free(output->cft_mswc2);
   output->sdate2=output->hdate2=output->syear=output->syear2=output->husum2=NULL;
   output->cft_transp2=output->cft_evap2=output->cft_interc2=output->cft_nir2=
     output->cft_pet2=output->cftfrac2=output->cft_airrig2=NULL;
   output->pft_harvest2=NULL;
   output->cft_temp2=output->cft_prec2=output->cft_srad2=
     output->cft_aboveground_biomass2=NULL;
+  output->cft_mswc2=NULL;
 #endif
   output->sdate=output->hdate=output->husum=NULL;
   output->pft_harvest=NULL;
@@ -91,4 +94,5 @@ void freeoutput(Output *output /**< Output data */
   output->growing_period=NULL;
   output->cft_irrig_events=NULL;
   output->pft_npp=output->fpc=output->cftfrac=output->cft_airrig=output->cft_luc_image=NULL;
+  output->cft_mswc=NULL;
 } /* of 'freeoutput' */

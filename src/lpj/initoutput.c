@@ -99,9 +99,11 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_veg);
   output->cft_nlimit=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->cft_nlimit);
-  output->cft_laimax = newvec(Real, 2 * (ncft + NGRASS + NBIOMASSTYPE));
+  output->cft_laimax = newvec(Real, 2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->cft_laimax);
-#ifdef DOUBLE_HARVEST
+  output->cft_mswc=newvec(Real,2*ncft);
+  checkptr(output->cft_mswc);
+  #ifdef DOUBLE_HARVEST
   output->sdate2=newvec(int,2*ncft); /* allocate memory for output */
   checkptr(output->sdate2);
   output->hdate2=newvec(int,2*ncft);
@@ -138,7 +140,9 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_srad2);
   output->cft_aboveground_biomass2=newvec(Stocks,2*(ncft+NGRASS));
   checkptr(output->cft_aboveground_biomass2);
-#endif  
+  output->cft_mswc2=newvec(Real,2*ncft);
+  checkptr(output->cft_mswc2);
+  #endif
   initoutput_annual(output, npft, nbiomass,ncft);
   output->daily.cft=cft;
   output->daily.irrigation=irrigation;

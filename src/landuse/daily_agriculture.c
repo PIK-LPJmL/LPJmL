@@ -56,6 +56,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   Real npp; /* net primary productivity (gC/m2) */
   Real gc_pft;
   Real wdf; /* water deficit fraction */
+  Real cft_rm=0.0; /* cft-specific monthly root moisture */
   Bool negbm;
   Irrigation *data;
   Output *output;
@@ -499,6 +500,23 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw_agriculture(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,
       intercep_stand,intercep_stand_blue,npft,ncft,config->pft_output_scaled);
+
+  /* write CFT-specific soil moisture output */
+
+  foreachpft(pft,p,&stand->pftlist)
+  {
+    cft_rm=0.0;
+    forrootmoist(l)
+      cft_rm+=pft->stand->soil.w[l]*pft->stand->soil.whcs[l]*pft->stand->frac*(1.0/(1-pft->stand->cell->lakefrac-pft->stand->cell->ml.reservoirfrac)); /* absolute soil water content between wilting point and field capacity (mm) */
+    output->cft_mswc[pft->par->id-npft+data->irrigation*ncft]+=cft_rm;
+#ifdef DOUBLE_HARVEST
+	double_harvest(output.syear2[pft->par->id-npft+data->irrigation*ncft],
+		cell->output.cft_mswc+(pft->par->id-npft+data->irrigation*ncft),
+		cell->output.cft_mswc2+(pft->par->id-npft+data->irrigation*ncft),
+		cft_rm);
+#endif */
+  }
+
   free(wet);
   return runoff;
 } /* of 'daily_agriculture' */

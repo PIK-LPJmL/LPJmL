@@ -97,7 +97,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 294           /* number of output files */
+#define NOUT 296            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -406,6 +406,8 @@
 #define ARH_AGR 291
 #define HUSUM 292
 #define HUSUM2 293
+#define CFT_MSWC 294
+#define CFT_MSWC2 295
 
 #define RANDOM_SEED 0
 
