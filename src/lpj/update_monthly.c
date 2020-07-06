@@ -20,12 +20,13 @@
 void update_monthly(Cell *cell,  /**< Pointer to cell */
                     Real mtemp,  /**< monthly average temperature (deg C) */
                     Real mprec,  /**< monthly average precipitation (mm) */
-                    int month    /**< month (0..11) */
+                    int ncft,    /**< number of crop PFTs */
+					int month    /**< month (0..11) */
                    )
 {
   int p;
   Pft *pft;
-  int s,l;
+  int s,l,i;
   Stand *stand;
 
   monthly_climbuf(&cell->climbuf,mtemp,mprec,cell->output.mpet,month);
@@ -39,6 +40,8 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   } /* of foreachstand */
   for(l=0;l<NSOILLAYER;l++)
     cell->output.mswc[l]*=ndaymonth1[month];
+  for(i=0;i<ncft*2;i++)
+    cell->output.cft_mswc[i]*=ndaymonth1[month];
   cell->output.mrootmoist*=ndaymonth1[month];
   cell->output.mfiredi*=ndaymonth1[month];
   cell->output.mfapar*=ndaymonth1[month];

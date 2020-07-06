@@ -171,6 +171,7 @@ typedef struct
   Real *cft_srad2;          /**< cft specific short-wave radiation (W/m2) */
   Stocks *cft_aboveground_biomass2; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
   Real *cftfrac2;           /**< cft fraction */
+  Real *cft_mswc2;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
 #endif
   Real *pft_npp;         /**< Pft specific NPP (gC/m2) */
   Harvest *pft_harvest;
@@ -246,7 +247,6 @@ typedef struct
   Real mrunoff_lat;        /**< monthly lateral runoff in mm*/
   Real runoff_surf;        /**< annual surface runoff in mm*/
   Real runoff_lat;         /**< annual lateral runoff in mm*/
-
   Real mseepage;           /**< monthly seepage water in mm*/
   Real mgcons_rf;          /**< monthly green water consumption on rainfed stands */
   Real mgcons_irr;         /**< monthly green water consumption on irrigated stands */
@@ -280,6 +280,7 @@ typedef struct
   Stocks *cft_root;
   Real *cft_nlimit;
   Real *cft_laimax;
+  Real *cft_mswc;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 
@@ -332,7 +333,7 @@ typedef struct
 
 extern Bool initoutput(Output *,int,Bool,int,int,int);
 extern void initoutput_annual(Output *,int,int,int);
-extern void initoutput_monthly(Output *);
+extern void initoutput_monthly(Output *,int);
 extern void initoutput_daily(Daily_outputs *);
 extern void freeoutput(Output *);
 extern int outputsize(int,int,int,int);
