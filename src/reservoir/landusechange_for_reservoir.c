@@ -372,16 +372,29 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
 
 #ifndef IMAGE /*  Because the timber harvest is not accounted for in the carbon balance check*/
     if(fabs(balanceW)>0.01)
-      fail(INVALID_WATER_BALANCE_ERR,TRUE,
-           "balance error in the building of the reservoir, balanceW=%g",
-           balanceW);
+#ifdef NO_FAIL_BALANCE
+    fprintf(stderr,"ERROR005: "
+#else
+    fail(INVALID_WATER_BALANCE_ERR,TRUE,
+#endif
+         "water balance error in the building of the reservoir, balanceW=%g",
+         balanceW);
      if(fabs(balance.nitrogen)>0.1)
-      fail(INVALID_NITROGEN_BALANCE_ERR,TRUE,"nitrogen balance error in cell (%g,%g) in the building of the reservoir, balanceN=%g",
-          cell->coord.lat,cell->coord.lon,balance.nitrogen);
+#ifdef NO_FAIL_BALANCE
+    fprintf(stderr,"ERROR032: "
+#else
+    fail(INVALID_NITROGEN_BALANCE_ERR,TRUE,
+#endif
+         "nitrogen balance error in cell (%g,%g) in the building of the reservoir, balanceN=%g",
+         cell->coord.lat,cell->coord.lon,balance.nitrogen);
     if(fabs(balance.carbon)>2)
-      fail(INVALID_CARBON_BALANCE_ERR,TRUE,
-           "balance error in the building of the reservoir, balanceC=%g",
-           balance.carbon);
+#ifdef NO_FAIL_BALANCE
+    fprintf(stderr,"ERROR004: "
+#else
+    fail(INVALID_CARBON_BALANCE_ERR,TRUE,
+#endif
+         "carbon balance error in the building of the reservoir, balanceC=%g",
+         balance.carbon);
 #endif
     /* check if total fractions add up to 1 again */
     check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
