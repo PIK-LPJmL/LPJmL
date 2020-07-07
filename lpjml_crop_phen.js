@@ -48,6 +48,8 @@
 #define GS_SA0 0      /* reference sdate & phus (unchanged management) */
 #define GS_SA1 1      /* delayed adaptation */
 #define GS_SA2 2      /* complete adaptation */
+#define GS_SA3 4      /* adaptation of hdate only (fixed sdate) */
+#define GS_SA4 5      /* adaptation of sdate only (fixed hdate) */
 
 #define CO2_DYNA 0    /* transient CO2 */
 #define CO2_STAT 1    /* static CO2 fixed at 2005 level */
@@ -107,10 +109,9 @@
     #define DCO2 CO2_STAT
     #define output_run  07
     #define restart_run 01
-#endif
 
  /* GFDL-ESM2M */
- #ifdef RUN_ID_08
+#elif RUN_ID_08
     #define DTIM TIM_1986_2005
     #define DCLM CLM_GFD
     #define DGS  GS_SA0
@@ -159,10 +160,9 @@
     #define DCO2 CO2_STAT
     #define output_run  14
     #define restart_run 08
-#endif
 
 /* IPSL-CM5A-LR */
-#ifdef RUN_ID_15
+#elif RUN_ID_15
     #define DTIM TIM_1986_2005
     #define DCLM CLM_IPS
     #define DGS  GS_SA0
@@ -211,10 +211,9 @@
     #define DCO2 CO2_STAT
     #define output_run  21
     #define restart_run 15
-#endif
 
  /* MIROC5 */
- #ifdef RUN_ID_22
+#elif RUN_ID_22
     #define DTIM TIM_1986_2005
     #define DCLM CLM_MIR
     #define DGS  GS_SA0
@@ -263,7 +262,71 @@
     #define DCO2 CO2_STAT
     #define output_run  28
     #define restart_run 22
+
+/* RUNS with fixed sdate or hdate */
+#elif defined(RUN_ID_29)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_HAD
+    #define DGS  GS_SA3
+    #define DCO2 CO2_DYNA
+    #define output_run  29
+    #define restart_run 01
+#elif defined(RUN_ID_30)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_HAD
+    #define DGS  GS_SA4
+    #define DCO2 CO2_DYNA
+    #define output_run  29
+    #define restart_run 01
+
+#elif defined(RUN_ID_31 
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_GFD
+    #define DGS  GS_SA3
+    #define DCO2 CO2_DYNA
+    #define output_run  29
+    #define restart_run 08
+#elif defined(RUN_ID_32)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_GFD
+    #define DGS  GS_SA4
+    #define DCO2 CO2_DYNA
+    #define output_run  29
+    #define restart_run 08
+
+#elif defined(RUN_ID_33)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_IPS
+    #define DGS  GS_SA3
+    #define DCO2 CO2_DYNA
+    #define output_run  29
+    #define restart_run 15
+#elif defined(RUN_ID_34)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_IPS
+    #define DGS  GS_SA4
+    #define DCO2 CO2_DYNA
+    #define output_run  29
+    #define restart_run 15
+
+#elif defined(RUN_ID_35)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_MIR
+    #define DGS  GS_SA3
+    #define DCO2 CO2_DYNA
+    #define output_run  29
+    #define restart_run 22
+#elif defined(RUN_ID_36)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_MIR
+    #define DGS  GS_SA4
+    #define DCO2 CO2_DYNA
+    #define output_run  29
+    #define restart_run 22
 #endif
+
+
+
 
 {   /* LPJmL configuration in JSON format */
 
@@ -499,8 +562,8 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 #if (DRUN==PIXELRUN)
-  "startgrid" :  30115, /*31374, 27410, 67208 60400 all grid cells */
-  "endgrid" :    30115,
+  "startgrid" :  7175, //7212, //30115, /*31374, 27410, 67208 60400 all grid cells */
+  "endgrid" :    7234, //7212, //30115,
 #else
   "startgrid" :  ALL, /*31374, 27410, 67208 60400 all grid cells */
   "endgrid" :    ALL,
