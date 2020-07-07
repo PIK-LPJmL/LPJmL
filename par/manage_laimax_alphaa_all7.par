@@ -13,7 +13,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "../include/managepar.h "
+#include "../include/managepar.h"
 
 236  /* Number of countries*/
 
@@ -252,4 +252,4 @@ Canada "Canada" 7 7 5 7 7 7 7 7 7 7 7 7 2
 China "China" 7 7 5 7 7 7 7 7 7 7 7 7 1                 
 India "India" 7 7 5 7 7 7 7 7 7 7 7 7 1                 
 Russia "Russia" 7 7 5 7 7 7 7 7 7 7 7 7 2                 
-United_States "United States" 7 7 5 7 7 7 7 7 7 7 7 7 2                 
+United_States "United States" 7 7 5 7 7 7 7 7 7 7 7 7 2

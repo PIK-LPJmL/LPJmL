@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**     r  e  c  e  i  v  e  _  i  m  a  g  e  _  f  i  n  i  s  h  .  c           \n**/
+/**                   p  a  r  a  m  _  w  p  .  j  s                              \n**/
 /**                                                                                \n**/
-/**     extension of LPJ to couple LPJ online with IMAGE                           \n**/
+/** Default input parameter file for LPJmL C Version 4.0.002                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,32 +12,14 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include "par/lpjparam.js"      /* LPJ parameter file */
+#include "par/soil.js"          /* Soil parameter file */
+#include "par/pft_wp.js"        /* PFT parameter file with woodplantations */
 
-#if defined IMAGE && defined COUPLED
-
-Real receive_image_finish(const Config *config /* Grid configuration */
-                      )                     /* returns finsh */
-{
-  double finish;
-#ifdef USE_MPI
-  if(config->rank==0)
-  {
+#ifdef IMAGE
+#include "par/manage_laimax_alphaa_all7.js" /* Management parameter file for IMAGE spinup runs*/
+#else
+#include "par/manage_laimax_alphaa_fao_rev4453_20180507.js" /* Management parameter file */
 #endif
-#ifdef DEBUG_IMAGE
-  printf("Waiting for IMAGE-INTERFACE\n");
-  fflush(stdout);
-#endif
-  readdouble_socket(config->in,&finish,1);
-#ifdef DEBUG_IMAGE
-  printf("Received finish from IMAGE-INTERFACE %g\n",finish);
-  fflush(stdout);
-#endif
-#ifdef USE_MPI
-  }
-  MPI_Bcast(&finish,1,MPI_DOUBLE,0,config->comm);
-#endif
-  return (Real)finish;
-} /* of 'receive_image_finish' */
-
-#endif
+#include "par/manage_reg.js"    /* Management parameter file for regions*/
+#include "par/outputvars.js"

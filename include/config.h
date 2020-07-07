@@ -79,14 +79,16 @@ typedef struct
 #endif
   Filename grassfix_filename;
   Filename grassharvest_filename;
-#if defined IMAGE && defined COUPLED
+#ifdef IMAGE
   Filename temp_var_filename; /**< file with CRU-derived temperature variation (K) */
   Filename prec_var_filename; /**< file with CRU-derived precipitation variation (%) */
   Filename prodpool_init_filename; /* file with initial product pool sizes */
+#ifdef COUPLED
   char *image_host;       /**< hostname for computer running the IMAGE model */
   int image_inport;       /**< port numbert for ingoing data */
   int image_outport;      /**< port number for outgoing data */
   int wait_image;         /**< time to wait for image connection (sec) */
+#endif
 #endif
   char *sim_name;         /**< Desciption of LPJ simulation */
   int sim_id;             /**< Simulation type */

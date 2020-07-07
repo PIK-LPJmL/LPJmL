@@ -269,8 +269,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->river_routing){
         fscanbool2(file,&config->reservoir,"reservoir");
 #ifdef IMAGE
-        fscanint2(file,&config->groundwater_irrig,"groundwater irrigation");
-        fscanint2(file,&config->aquifer_irrig,"aquifer irrigation");
+        fscanbool(file,&config->groundwater_irrig,"groundwater_irrigation", TRUE,verbose);
+        fscanbool(file,&config->aquifer_irrig,"aquifer_irrigation",TRUE,verbose);
 #endif
       }
       grassfix=FALSE;
@@ -547,7 +547,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     scanclimatefilename(&input,&config->wateruse_filename,config->inputdir,FALSE,"wateruse");
 #ifdef IMAGE
-    scanclimatefilename(file,&config->wateruse_wd_filename,config->inputdir,FALSE,"wateruse_wd");
+    scanclimatefilename(&input,&config->wateruse_wd_filename,config->inputdir,FALSE,"wateruse_wd");
 #endif
   } 
 #ifdef IMAGE
