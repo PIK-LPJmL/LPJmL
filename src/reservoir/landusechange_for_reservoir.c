@@ -263,6 +263,8 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     tot_before.nitrogen+=cell->output.timber_harvest.nitrogen;
     tot_before.carbon+=cell->output.deforest_emissions.carbon;
     tot_before.nitrogen+=cell->output.deforest_emissions.nitrogen;
+    tot_before.carbon-=cell->output.flux_estab.carbon;
+    tot_before.nitrogen-=cell->output.flux_estab.nitrogen;
 
 
     /* cut cut entire natural stand if lakefraction+reservoir fraction equals 1 */
@@ -365,6 +367,8 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     tot_after.nitrogen+=cell->output.timber_harvest.nitrogen;
     tot_after.carbon+=cell->output.deforest_emissions.carbon;
     tot_after.nitrogen+=cell->output.deforest_emissions.nitrogen;
+    tot_after.carbon-=cell->output.flux_estab.carbon;
+    tot_after.nitrogen-=cell->output.flux_estab.nitrogen;
     /* check if the same */
     balanceW=totw_before-totw_after;
     balance.carbon=tot_before.carbon-tot_after.carbon;
@@ -372,15 +376,31 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
 
 #ifndef IMAGE /*  Because the timber harvest is not accounted for in the carbon balance check*/
     if(fabs(balanceW)>0.01)
+#ifdef NO_FAIL_BALANCE
+      fprintf(stderr,"ERROR005: "
+#else
       fail(INVALID_WATER_BALANCE_ERR,TRUE,
-           "balance error in the building of the reservoir, balanceW=%g",
+#endif
+           "water balance error in the building of the reservoir, balanceW=%g",
            balanceW);
-     if(fabs(balance.nitrogen)>0.1)
-      fail(INVALID_NITROGEN_BALANCE_ERR,TRUE,"nitrogen balance error in cell (%g,%g) in the building of the reservoir, balanceN=%g",
-          cell->coord.lat,cell->coord.lon,balance.nitrogen);
+    if(fabs(balance.nitrogen)>0.1)
+    {
+#ifdef NO_FAIL_BALANCE
+      fprintf(stderr,"ERROR037: "
+#else
+      fail(INVALID_NITROGEN_BALANCE_ERR,TRUE,
+#endif
+           "nitrogen balance error in cell (%g,%g) in the building of the reservoir, balanceN=%g",
+           cell->coord.lat,cell->coord.lon,balance.nitrogen);
+      fflush(stderr);
+    }
     if(fabs(balance.carbon)>2)
+#ifdef NO_FAIL_BALANCE
+      fprintf(stderr,"ERROR004: "
+#else
       fail(INVALID_CARBON_BALANCE_ERR,TRUE,
-           "balance error in the building of the reservoir, balanceC=%g",
+#endif
+           "carbon balance error in the building of the reservoir, balanceC=%g",
            balance.carbon);
 #endif
     /* check if total fractions add up to 1 again */
