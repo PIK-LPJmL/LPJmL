@@ -51,7 +51,11 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     /* delete all PFTs */
     cutpfts(setasidestand);
     if(with_tillage && year>=param.till_startyear)
+    {
       tillage(&setasidestand->soil,param.residue_frac);
+      updatelitterproperties(setasidestand,setasidestand->frac);
+      pedotransfer(setasidestand,NULL,NULL,setasidestand->frac);
+    }
     pos=addpft(setasidestand,pftpar,year,day,config->with_nitrogen);
     pft=getpft(&setasidestand->pftlist,pos-1);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);
@@ -113,7 +117,11 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     reclaim_land(setasidestand,cropstand,cell,istimber,npft+ncft);
     set_irrigsystem(cropstand,cft,ncft,FALSE);
     if(with_tillage && year>=param.till_startyear)
+    {
       tillage(&cropstand->soil,param.residue_frac);
+      updatelitterproperties(cropstand,cropstand->frac);
+      pedotransfer(cropstand,NULL,NULL,cropstand->frac);
+    }
     pos=addpft(cropstand,pftpar,year,day,config->with_nitrogen);
     pft=getpft(&cropstand->pftlist,pos-1);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);

@@ -19,7 +19,7 @@
 
 /* Definition of constants */
 
-#define epsilon 1.0E-6 /* a minimal value -- check if neglegible */
+#define epsilon 1.0E-7 /* a minimal value -- check if neglegible */
 #define NOT_FOUND -1
 #ifndef TRUE    /* Check whether TRUE or FALSE are already defined */
 #define TRUE 1

@@ -98,8 +98,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     }
     if(phenology_crop(pft,climate->temp,daylength))
     {
-//printf("daily_agriculture.c: harvest day of cft %s = %d\n", pft->par->name, day);
-//printf("daily_agriculture.c: crop->growingdays of cft %s = %d\n", pft->par->name, crop->growingdays);
       if(pft->par->id==output->daily.cft
          && data->irrigation==output->daily.irrigation)
         output_daily_crop(&(output->daily),pft,0.0,0.0);
@@ -247,6 +245,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     intercep_stand_blue+=(climate->prec+irrig_apply*sprink_interc>epsilon) ? intercept*(irrig_apply*sprink_interc)/(climate->prec+irrig_apply*sprink_interc) : 0; /* blue intercept fraction */
     intercep_stand+=intercept;
   }
+
   irrig_apply-=intercep_stand_blue;
   rainmelt-=(intercep_stand-intercep_stand_blue);
 
@@ -475,5 +474,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   output_gbw_agriculture(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,
       intercep_stand,intercep_stand_blue,npft,ncft,config->pft_output_scaled);
   free(wet);
+
   return runoff;
 } /* of 'daily_agriculture' */

@@ -42,7 +42,7 @@
 
 /* define a tiny fraction for allcrops that is always at least 10x epsilon */
 
-Real tinyfrac=max(epsilon*10,1e-5);
+Real tinyfrac=max(epsilon*10,1e-6);
 
 struct landuse
 {
@@ -1188,6 +1188,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   int yearm=year;
   int yeart=year;
   int yearr=year;
+  /* for testing soil type to avoid all crops on ROCK and ICE cells */
+  Stand *stand;
+  int soiltype=-1;
 
   /* LPJmL5 original approach: PRESCRIBED_SDATE (Single year sdate input file) */
   /* so far, read prescribed sdates only once at the beginning of each simulation */
@@ -1456,6 +1459,16 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 
   for(cell=0; cell<config->ngridcell; cell++)
   {
+  /* get soiltype of first stand (not stored in cell structure) */
+  if(grid[cell].standlist->n>0)
+  {
+    stand=getstand(grid[cell].standlist,0);
+    soiltype=stand->soil.par->type;
+  }
+  else
+  {
+    soiltype=-1;
+  }
     for(i=0; i<WIRRIG; i++)
     {
       /* read cropfrac from 32 bands or rain-fed cropfrac from 64 bands input */
@@ -1637,8 +1650,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       grid[cell].ml.landfrac[0].biomass_grass=grid[cell].ml.landfrac[1].biomass_grass=
         grid[cell].ml.landfrac[0].biomass_tree=grid[cell].ml.landfrac[1].biomass_tree=0;
     }
-
-    if (landuse->allcrops && !grid[cell].skip)
+    
+    /* force tinyfrac for all crops only on pixels with valid soil */
+    if (landuse->allcrops && !grid[cell].skip && soiltype!=ROCK && soiltype!=ICE && soiltype >= 0)
     {
       for(j=0; j<ncft; j++)
       {
@@ -1711,6 +1725,24 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         grid[cell].ml.landfrac[1].biomass_tree=0;
       }
     }
+/** temporary set everything to irrigated maize */
+/*        for(j=0; j<ncft; j++)
+        {
+          grid[cell].ml.landfrac[0].crop[j]=0;
+          grid[cell].ml.landfrac[1].crop[j]=0;
+        }
+        for(j=0; j<NGRASS; j++)
+        {
+          grid[cell].ml.landfrac[0].grass[j]=0;
+          grid[cell].ml.landfrac[1].grass[j]=0;
+        }
+        grid[cell].ml.landfrac[0].biomass_grass=0;
+        grid[cell].ml.landfrac[1].biomass_grass=0;
+        grid[cell].ml.landfrac[0].biomass_tree=0;
+        grid[cell].ml.landfrac[1].biomass_tree=0;
+      grid[cell].ml.landfrac[1].crop[0]=0.5;
+      grid[cell].ml.landfrac[1].crop[2]=0.5;
+      sum=1;*/
   } /* for(cell=0;...) */
 
   free(data);
