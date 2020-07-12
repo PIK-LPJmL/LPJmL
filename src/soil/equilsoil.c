@@ -121,14 +121,14 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
            wood+=soil->litter.ag[p].trait.wood[f].carbon;
           pftlitter=soil->litter.bg[p].carbon+soil->litter.ag[p].trait.leaf.carbon+wood;
           if(sumlitter>0)
-             soil->pool[l].slow.carbon+=c0[soil->litter.ag[p].pft->id].slow*soil->c_shift_slow[l][p]*pftlitter/sumlitter;
+             soil->pool[l].slow.carbon+=c0[soil->litter.ag[p].pft->id].slow*soil->c_shift_slow[l][soil->litter.ag[p].pft->id]*pftlitter/sumlitter;
           if(sumlitter>0)
-              soil->pool[l].fast.carbon+=c0[soil->litter.ag[p].pft->id].fast*soil->c_shift_fast[l][p]*pftlitter/sumlitter;
+              soil->pool[l].fast.carbon+=c0[soil->litter.ag[p].pft->id].fast*soil->c_shift_fast[l][soil->litter.ag[p].pft->id]*pftlitter/sumlitter;
         }
-        soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/soil->par->cn_ratio;
-        soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/soil->par->cn_ratio;
-        //soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/cn_ratio[l].slow;
-        //soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/cn_ratio[l].fast;
+        //soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/soil->par->cn_ratio;
+        //soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/soil->par->cn_ratio;
+        soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/cn_ratio[l].slow;
+        soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/cn_ratio[l].fast;
         //soil->NH4[l]=0;//soil->pool[l].slow.nitrogen/10000;
         //soil->NO3[l]=0;//soil->pool[l].slow.nitrogen/10000;
 //         if (soil->decomp_litter_mean.nitrogen<epsilon)
