@@ -78,13 +78,13 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
         k_mean_layer[l].slow=soil->k_mean[l].slow/(soil_equil_year-veg_equil_year);
         for(p=0;p<ntotpft;p++)
         {
-//#ifdef LINEAR_DECAY
+#ifdef LINEAR_DECAY
           c0[p].fast+=k_mean_layer[l].fast>epsilon ? (1-param.atmfrac)*param.fastfrac*soil->decomp_litter_mean.carbon/k_mean_layer[l].fast*soil->c_shift_fast[l][p] : 0;
           c0[p].slow+=k_mean_layer[l].slow>epsilon ? (1-param.atmfrac)*(1.0-param.fastfrac)*soil->decomp_litter_mean.carbon/k_mean_layer[l].slow*soil->c_shift_slow[l][p] : 0;
-//#else
-  //        c0[p].fast+=k_mean_layer[l].fast>epsilon ? (1-param.atmfrac)*param.fastfrac*soil->decomp_litter_mean.carbon/(1.0-exp(-k_mean_layer[l].fast))*soil->c_shift_fast[l][p] : 0; 
-  //        c0[p].slow+=k_mean_layer[l].slow>epsilon ? (1-param.atmfrac)*(1.0-param.fastfrac)*soil->decomp_litter_mean.carbon/(1.0-exp(-k_mean_layer[l].slow))*soil->c_shift_slow[l][p] : 0; 
-//#endif
+#else
+          c0[p].fast+=k_mean_layer[l].fast>epsilon ? (1-param.atmfrac)*param.fastfrac*soil->decomp_litter_mean.carbon/(1.0-exp(-k_mean_layer[l].fast))*soil->c_shift_fast[l][p] : 0; 
+          c0[p].slow+=k_mean_layer[l].slow>epsilon ? (1-param.atmfrac)*(1.0-param.fastfrac)*soil->decomp_litter_mean.carbon/(1.0-exp(-k_mean_layer[l].slow))*soil->c_shift_slow[l][p] : 0; 
+#endif
         }
       }
       forrootsoillayer(l)
