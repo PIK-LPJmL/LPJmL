@@ -74,7 +74,7 @@
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
   "nfert_split" : 5,                  /* threshold fertilizer input for split application */
-  "residues_in_soil" : 0.1,           /* minimum residues in soil*/
+  "residues_in_soil" : 0.3,           /* minimum residues in soil*/
   "fburnt" : 0,                       /* fraction of trees burnt at deforestation */
   "ftimber" : 1,                      /* timber fraction at deforestation */
   "esoil_reduction" : 0.0,            /* reduction of soil evaporation */

@@ -61,10 +61,10 @@
   "sowing_date_option" : FIXED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
   "intercrop" : true,                   /* intercrops on setaside */
-  "residue_treatment" : NO_RESIDUE_REMOVE, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
+  "residue_treatment" : FIXED_RESIDUE_REMOVE, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
   "irrigation" : LIM_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
-  "tillage_type" : NO_TILLAGE,          /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
+  "tillage_type" : TILLAGE,             /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
   "black_fallow" : false,               /* simulation with black fallow on PNV */
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
   "laimax_interpolate" : LAIMAX_PAR,    /* laimax values from manage parameter file, */
