@@ -192,7 +192,7 @@ typedef struct
   short state[NSOILLAYER];
   Real maxthaw_depth;
   Real mean_maxthaw;
-  Stocks decomp_litter_mean;
+  Stocks *decomp_litter_mean;
   int count;
   Real YEDOMA;       /**< g/m2 */
   Litter litter;     /**< Litter pool */

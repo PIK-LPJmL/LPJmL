@@ -77,16 +77,16 @@ void mixsoil(Stand *stand1,const Stand *stand2)
         mixpool(stand1->soil.litter.ag[l].trait.wood[i].nitrogen,0,
                 stand1->frac,stand2->frac);
       }
+      mixpool(stand1->soil.decomp_litter_mean[l].carbon,stand2->soil.decomp_litter_mean[l].carbon,
+        stand1->frac,stand2->frac);
+      mixpool(stand1->soil.decomp_litter_mean[l].nitrogen,stand2->soil.decomp_litter_mean[l].nitrogen,
+        stand1->frac,stand2->frac);
     }
   for(i=0;i<=NFUELCLASS;i++)
     mixpool(stand1->soil.litter.avg_fbd[i],stand2->soil.litter.avg_fbd[i],
             stand1->frac,stand2->frac);
 
   mixpool(stand1->soil.meanw1,stand2->soil.meanw1,
-          stand1->frac,stand2->frac);
-  mixpool(stand1->soil.decomp_litter_mean.carbon,stand2->soil.decomp_litter_mean.carbon,
-          stand1->frac,stand2->frac);
-  mixpool(stand1->soil.decomp_litter_mean.nitrogen,stand2->soil.decomp_litter_mean.nitrogen,
           stand1->frac,stand2->frac);
 
   /* snowpack is independent of fraction */

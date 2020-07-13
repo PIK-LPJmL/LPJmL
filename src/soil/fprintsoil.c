@@ -116,9 +116,11 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
             sum.slow.carbon,sum.fast.carbon);
   }
   fprintf(file,"\nRootlayer:\t%d\n",l);
-  fprintf(file,"Decomp_mean carbon:\t%.2f (gC/m2)\n",soil->decomp_litter_mean.carbon);
+  for(p=0;p<ntotpft;p++)
+    fprintf(file,"Decomp_mean carbon:\t%.2f (gC/m2)\n",soil->decomp_litter_mean[p].carbon);
   if(with_nitrogen)
-    fprintf(file,"Decomp_mean nitrogen:\t%.2f (gC/m2)",soil->decomp_litter_mean.nitrogen);
+    for(p=0;p<ntotpft;p++)
+      fprintf(file,"Decomp_mean nitrogen:\t%.2f (gC/m2)",soil->decomp_litter_mean[p].nitrogen);
   fputs("\nLitter:",file);
   fprintlitter(file,&soil->litter,with_nitrogen);
   fprintf(file,"\nmean maxthaw:\t%.2f (mm)\n",soil->mean_maxthaw);

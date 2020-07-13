@@ -52,7 +52,8 @@ void equilveg(Cell *cell /**< pointer to cell */
         grass=pft->data;
         grass->excess_carbon=0.0;
       }
+      stand->soil.decomp_litter_mean[pft->par->id].carbon=stand->soil.decomp_litter_mean[pft->par->id].nitrogen=0.0;
     }
-    stand->soil.decomp_litter_mean.carbon=stand->soil.decomp_litter_mean.nitrogen=stand->soil.count=0;
+    stand->soil.count=0;
   }
 } /* of 'equilveg' */

@@ -274,10 +274,10 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
           }
         }
       }
+      /*sum for equilsom-routine*/
+      soil->decomp_litter_mean[soil->litter.ag[p].pft->id].carbon+=decom_sum.carbon;
+      soil->decomp_litter_mean[soil->litter.ag[p].pft->id].nitrogen+=decom_sum.nitrogen;
     }   /*end soil->litter.n*/
-  /*sum for equilsom-routine*/
-  soil->decomp_litter_mean.carbon+=decom_litter.carbon;
-  soil->decomp_litter_mean.nitrogen+=decom_litter.nitrogen;
   } /* end of gtemp_soil[0]>0 */
 
   /* NO3 and N2O from nitrification */
