@@ -28,7 +28,7 @@
 
 #define SNOWLAYER NSOILLAYER
 
-#define veg_equil_year 3000
+#define veg_equil_year 2400
 #define soil_equil_year veg_equil_year+1320
 #define cshift_year 120
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
@@ -192,7 +192,7 @@ typedef struct
   short state[NSOILLAYER];
   Real maxthaw_depth;
   Real mean_maxthaw;
-  Stocks *decomp_litter_mean;
+  Stocks decomp_litter_mean;
   int count;
   Real YEDOMA;       /**< g/m2 */
   Litter litter;     /**< Litter pool */

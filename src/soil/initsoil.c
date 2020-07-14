@@ -33,8 +33,8 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
       soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=soil->NH4[l]=soil->NO3[l]=0.0;
     else
     {
-      soil->pool[l].slow.nitrogen=1500*(soildepth[l]/layerbound[BOTTOMLAYER]);
-      soil->pool[l].fast.nitrogen=1500*(soildepth[l]/layerbound[BOTTOMLAYER]);
+      soil->pool[l].slow.nitrogen=5500*(soildepth[l]/layerbound[BOTTOMLAYER]);
+      soil->pool[l].fast.nitrogen=5500*(soildepth[l]/layerbound[BOTTOMLAYER]);
       soil->pool[l].slow.carbon=soil->pool[l].slow.nitrogen*soil->par->cn_ratio;
       soil->pool[l].fast.carbon=soil->pool[l].fast.nitrogen*soil->par->cn_ratio;
       soil->NH4[l]=soil->NO3[l]=soil->pool[l].slow.nitrogen/10;
@@ -44,9 +44,7 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
     soil->c_shift_slow[l]=newvec(Real,ntotpft);
     checkptr(soil->c_shift_slow[l]);
   }
-  soil->decomp_litter_mean=newvec(Stocks,ntotpft);
-  checkptr(soil->decomp_litter_mean);
-  soil->YEDOMA=soil->alag=soil->amp=soil->meanw1=0.0;
+  soil->YEDOMA=soil->alag=soil->amp=soil->meanw1=soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
   soil->snowpack=0.0;
 #ifdef MICRO_HEATING
   soil->litter.decomC=0.0;
@@ -72,7 +70,6 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
     {
       soil->c_shift_fast[0][p]=0.55;
       soil->c_shift_slow[0][p]=0.55;
-      soil->decomp_litter_mean[p].carbon=soil->decomp_litter_mean[p].nitrogen=0.0;
     }
   for (l=1;l<LASTLAYER;l++)
     for (p=0;p<ntotpft;p++)

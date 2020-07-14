@@ -26,5 +26,4 @@ void freesoil(Soil *soil /**< pointer to soil data */
     free(soil->c_shift_fast[l]);
     free(soil->c_shift_slow[l]);
   }
-  free(soil->decomp_litter_mean);
 } /* of 'freesoil' */
