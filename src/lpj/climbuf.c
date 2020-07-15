@@ -128,6 +128,7 @@ void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
 
 void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
                     Real aetp,           /**< annual evapotranspiration (mm) */
+                    int npft,            /**< number of natural pfts */
                     int ncft,            /**< number of crop pfts */
                     int year,            /**< current year */
                     const Config *config /**< config */
@@ -135,6 +136,7 @@ void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
 {
   int m;
   int cft;
+  Pftcrop *pftcrop;
   updatebuffer(climbuf->min,climbuf->temp_min);
   updatebuffer(climbuf->max,climbuf->temp_max);
   climbuf->atemp_mean20 = (climbuf->atemp_mean20<-9998) ? climbuf->atemp : (1-kk)*climbuf->atemp_mean20+kk*climbuf->atemp;
@@ -147,7 +149,11 @@ void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
   if(config->crop_phu_option==PRESCRIBED_CROP_PHU && year<=config->sdate_fixyear) /* update only until sdate_fixyear */
   {
     for (cft=0;cft<ncft;cft++)
-  	  climbuf->V_req[cft]= (climbuf->V_req[cft]< -9998) ? climbuf->V_req_a[cft] : (1-kk)*climbuf->V_req[cft]+kk*climbuf->V_req_a[cft];
+    {
+      pftcrop=config->pftpar[npft+cft].data;
+      if(pftcrop->wtype==TRUE)
+        climbuf->V_req[cft]= (climbuf->V_req[cft]< -9998) ? climbuf->V_req_a[cft] : (1-kk)*climbuf->V_req[cft]+kk*climbuf->V_req_a[cft];
+    }
   }
 } /* of 'annual_climbuf' */
 

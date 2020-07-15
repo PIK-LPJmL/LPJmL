@@ -15,8 +15,9 @@ README: how to run LPJmL_ggcmi_phase3
 	- use 'calculate_phu_input_for_lpjml.sh' to submit the R script as cluster job (meaningful if done as a loop over various GCMs, RCP, etc.)
 
 3. compile code:
-	- configure makefile with './configure.sh -DCROPSHEATFROST -DDOUBLE_HARVEST'
-	- compile
+	- manually add -CROPSHEATFROST to LPJFLAGS in config/Makefile.cluster2015 
+	- configure makefile with './configure.sh -DDOUBLE_HARVEST'
+	- compile (make -j16 all)
 
 4. Create LPJmL restart file:
 	- create output directory outside of LPJROOT

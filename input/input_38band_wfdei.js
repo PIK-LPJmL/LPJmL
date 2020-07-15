@@ -12,7 +12,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "include/conf.h" /* include constant definitions */
+//#include "include/conf.h" /* include constant definitions */
 
 "inpath" : "/p/projects/lpjml/input/historical",
 

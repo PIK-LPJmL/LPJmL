@@ -199,8 +199,6 @@
   { "id" : MSWC3, "name": "mswc3", "var" :  "SWC3", "descr" :  "soil water content as fraction of water content at saturation in layer 3 (50 cm)", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MSWC4, "name": "mswc4", "var" :  "SWC4", "descr" :  "soil water content as fraction of water content at saturation in layer 4 (100 cm)", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MSWC5, "name": "mswc5", "var" :  "SWC5", "descr" :  "soil water content as fraction of water content at saturation in layer 5 (100 cm)", "unit" : "", "scale" : 1.0, "offset" : 0.0},
-  { "id" : CFT_MSWC, "name": "cft_mswc", "var" : "SWC_cft", "descr" : "CFT-specific monthly absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
-  { "id" : CFT_MSWC2, "name": "cft_mswc2", "var" : "SWC_cft2", "descr" : "CFT-specific monthly absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
   { "id" : MROOTMOIST, "name": "mrootmoist", "var" :  "rootmoist", "descr" :  "absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_SRAD, "name": "cft_srad", "var" :  "srad", "descr" :  "CFT-specific shortwave downward radiation", "unit" : "W/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_ABOVEGBMC, "name": "cft_aboveground_biomassc", "var" :  "aboveground_biomassc", "descr" :  "CFT aboveground biomass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
@@ -317,5 +315,7 @@
   { "id" : ARH, "name" : "arh" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration" , "unit" : "gC/m2/year", "scale" : 1.0, "offset" : 0.0},
   { "id" : ARH_AGR, "name" : "arh_agr" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration for agricultural stands", "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : HUSUM, "name" : "husum", "var" : "husum", "descr" : "crop growing season accumulated heat units", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
-  { "id" : HUSUM2, "name" : "husum2", "var" : "husum2", "descr" : "crop growing season accumulated heat units 2nd seaso", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0}
+  { "id" : HUSUM2, "name" : "husum2", "var" : "husum2", "descr" : "crop growing season accumulated heat units 2nd seaso", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
+  { "id" : CFT_MSWC, "name": "cft_mswc", "var" : "SWC_cft", "descr" : "CFT-specific monthly absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
+  { "id" : CFT_MSWC2, "name": "cft_mswc2", "var" : "SWC_cft2", "descr" : "CFT-specific monthly absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0}
 ],

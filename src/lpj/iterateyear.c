@@ -182,7 +182,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(!grid[cell].skip)
         update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
                        cell,month),getmprec(input.climate,&grid[cell].climbuf,
-                       cell,month),month,ncft);
+                       cell,month),ncft,month);
     } /* of 'for(cell=0;...)' */
 
     if(year>=config->outputyear)

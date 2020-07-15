@@ -37,7 +37,8 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
   Real laimax;
   Bool harvesting;
   int hlimit;
-  Real vd_inc,vd_b,vrf,prf;
+  Real vd_inc=1;
+  Real vd_b,vrf,prf;
 #ifdef CROPSHEATFROST
   Real as;
 #endif
