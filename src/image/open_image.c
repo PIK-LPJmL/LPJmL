@@ -60,6 +60,7 @@ Bool open_image(Config *config /**< LPJmL configuration */
     printf("Revision: %s \n",Revision_exe);
     printf("Date: %s \n",Date_exe);
     printf("BuildTime: %s \n",TimeNow_exe);
+    fflush(stdout);
 /* SEND revision_lpj and URL_lpj; should be a string in future*/
     IRevision = newvec(int,1);
     check(IRevision);

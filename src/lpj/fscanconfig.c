@@ -543,19 +543,20 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #endif
   else
     config->wet_filename.name=NULL;
-  if(config->wateruse)
+  if(config->wateruse==WATERUSE)
   {
     scanclimatefilename(&input,&config->wateruse_filename,config->inputdir,FALSE,"wateruse");
 #ifdef IMAGE
     scanclimatefilename(&input,&config->wateruse_wd_filename,config->inputdir,FALSE,"wateruse_wd");
 #endif
   } 
-#ifdef IMAGE
    else 
   {
+    config->wateruse_filename.name=NULL;
+#ifdef IMAGE
     config->wateruse_wd_filename.name=NULL;
-  }
 #endif
+  }
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {

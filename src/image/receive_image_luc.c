@@ -154,7 +154,7 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
   image_data = newvec(float,config->ngridcell);
   check(image_data);
 #ifdef DEBUG_IMAGE
-  printf("getting timber harvest shares\n");
+  printf("getting timber harvest for woodplantation shares\n");
   fflush(stdout);
 #endif
   if(readfloat_socket(config->in, image_data, config->ngridcell))
@@ -164,7 +164,7 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
   }
 
 #ifdef DEBUG_IMAGE
-  printf("assigning timber harvest shares\n");
+  printf("assigning timber harvest for woodplantations shares\n");
   fflush(stdout);
 #endif
   for(i=0;i<config->ngridcell;i++)
@@ -638,14 +638,17 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
   /* irrigation efficiency are defined per IMAGE region and mapped to LPJ countries 
    * therefore no #ifdef USE_MPI directives are present: the full data array must 
    * be received by all nodes. */
-  image_data = newvec(float,config->ncountries);
+  /* remove and use config->ncountries once INTERFACE is updated to match the number of countries in par/manage_laimax_alphaa_all7.par */
+  int ncountries = 197;
+  image_data = newvec(float,ncountries);
   check(image_data);
 
 #ifdef DEBUG_IMAGE
   printf("getting irrigation efficiency improvement\n");
   fflush(stdout);
 #endif
-  if(readfloat_socket(config->in, image_data, config->ncountries))
+  /* use config->ncountries once INTERFACE is updated to match the number of countries in par/manage_laimax_alphaa_all7.par */
+  if(readfloat_socket(config->in, image_data, ncountries))
   {
     free(image_data);
     return TRUE;
