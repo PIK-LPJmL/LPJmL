@@ -46,7 +46,7 @@
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : false,
-  "wateruse" : WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "wateruse" : NO_WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
 #else
   "population" : false,
   "landuse" : NO_LANDUSE,
@@ -55,7 +55,7 @@
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
-  "sowing_date_option" : FIXED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
+  "sowing_date_option" : NO_FIXED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
   "intercrop" : true,                   /* intercrops on setaside */
   "remove_residuals" : false,           /* remove residuals */
@@ -109,10 +109,8 @@
 ID                         Fmt                    filename
 -------------------------- ---------------------- ----------------------------- */
     { "id" : GRID,             "file" : { "fmt" : RAW, "name" : "output/grid.bin" }},
-#ifdef WITH_LANDUSE
     { "id" : PFT_HARVEST,      "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvest.SUFFIX)}},
     { "id" : CFTFRAC,          "file" : { "fmt" : RAW, "name" : "output/cftfrac.bin"}},
-#endif
 /*------------------------ ---------------------- ------------------------------- */
   ],
 
@@ -154,7 +152,7 @@ ID                         Fmt                    filename
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_image_lpj_pnv.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_IM32_lpjBM.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_image_lpj_1969_crop.lpj", /* filename of restart file */
   "restart_year": 1969 /* write restart at year */
 
 #endif
