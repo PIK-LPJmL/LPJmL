@@ -524,7 +524,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     {
       if((climate->data.tmin=newvec(Real,climate->file_tmin.n))==NULL)
       {
-        printallocerr("tmax");
+        printallocerr("tmin");
         free(climate->co2.data);
         free(climate->data.wind);
         if(config->fire==SPITFIRE||config->fire==SPITFIRE_TMAX)
@@ -543,6 +543,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     climate->data.tmin=NULL;
 
 #else
+  climate->data.tmin=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->tmax_filename.name!=NULL)
