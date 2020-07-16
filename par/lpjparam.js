@@ -74,5 +74,10 @@
   "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
   "soil_infil" : 2.0,                 /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
-  "allocation_threshold" : 35.0      /* allocation threshold for daily grassland allocation */
+  "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
+   #ifdef ROOTRED
+  "rootreduction" : 0.5               /*fraction used to calculate amouont of roots dying at harvest in managed grasslands */
+  #else
+    "rootreduction" : 0.0               /*fraction used to calculate amouont of roots dying at harvest in managed grasslands */
+  #endif
 },
