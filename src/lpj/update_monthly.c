@@ -41,7 +41,11 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   for(l=0;l<NSOILLAYER;l++)
     cell->output.mswc[l]*=ndaymonth1[month];
   for(i=0;i<ncft*2;i++)
-    cell->output.cft_mswc[i]*=ndaymonth1[month];
+    cell->output.cft_mswc[i]/=cell->output.nday_month[i];
+#ifdef DOUBLE_HARVEST
+  for(i=0;i<ncft*2;i++)
+    cell->output.cft_mswc2[i]/=cell->output.nday_month[i];
+#endif
   cell->output.mrootmoist*=ndaymonth1[month];
   cell->output.mfiredi*=ndaymonth1[month];
   cell->output.mfapar*=ndaymonth1[month];

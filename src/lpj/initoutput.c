@@ -103,6 +103,8 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_laimax);
   output->cft_mswc=newvec(Real,2*ncft);
   checkptr(output->cft_mswc);
+  output->nday_month=newvec(int,2*ncft);
+  checkptr(output->nday_month);
   #ifdef DOUBLE_HARVEST
   output->sdate2=newvec(int,2*ncft); /* allocate memory for output */
   checkptr(output->sdate2);

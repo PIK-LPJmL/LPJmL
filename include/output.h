@@ -281,6 +281,7 @@ typedef struct
   Real *cft_nlimit;
   Real *cft_laimax;
   Real *cft_mswc;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
+  int *nday_month;        /**< day count for monthly cft-specific outputs, needed in update_monthly to divide by number of days */
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 

@@ -56,6 +56,7 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_nlimit);
   free(output->cft_laimax);
   free(output->cft_mswc);
+  free(output->nday_month);
 #ifdef DOUBLE_HARVEST
   free(output->cftfrac2);
   free(output->sdate2);

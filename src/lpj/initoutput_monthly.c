@@ -44,12 +44,14 @@ void initoutput_monthly(Output *output,   /**< Output data */
     output->mn_immo=output->msoilc1=output->mnpp_agr=output->mrh_agr=0.0;
 
   for(l=0;l<NSOILLAYER;l++)
-    output->mswc[l]=output->msoiltemp[l]=0;
+    output->mswc[l]=output->msoiltemp[l]=0.0;
   for(l=0;l<2*ncft;l++)
-    output->cft_mswc[l]=0;
+    output->nday_month[l]=0;
+  for(l=0;l<2*ncft;l++)
+    output->cft_mswc[l]=0.0;
 #ifdef DOUBLE_HARVEST
   for(l=0;l<2*ncft;l++)
-    output->cft_mswc2[l]=0;
+    output->cft_mswc2[l]=0.0;
 #endif
 
 } /* of 'initoutput_monthly' */
