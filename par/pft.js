@@ -302,7 +302,7 @@
     "twmax_daily" : 1000.,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000., /* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.137,  /* albedo of green leaves */
@@ -613,7 +613,7 @@
     "twmax_daily" : 25.,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000., /* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.18,   /* albedo of green leaves */
@@ -821,7 +821,7 @@
     "twmax_daily" : 25.,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : 30.,  /* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.12,   /* albedo of green leaves */

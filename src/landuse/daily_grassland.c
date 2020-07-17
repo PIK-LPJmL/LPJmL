@@ -321,7 +321,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
         fpc_inc=newvec(Real,n_pft);
         check(fpc_inc);
         isphen=TRUE;
-        hfrac=1-500/(500+cleaf);
+        hfrac=1-2500/(2500+cleaf);
         foreachpft(pft,p,&stand->pftlist)
         {
           grass=pft->data;
