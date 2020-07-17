@@ -1686,6 +1686,27 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
     sum=landfrac_sum(grid[cell].ml.landfrac,ncft,FALSE)+landfrac_sum(grid[cell].ml.landfrac,ncft,TRUE);
 
+    /* set landuse to zero if no valid soil */
+    if ((grid[cell].skip || soiltype==ROCK || soiltype==ICE || soiltype < 0) && sum>0)
+    {
+      fprintf(stderr,"WARNING!! setting LU (sum:%g) to zero, because of invalid soil typ %d (%g/%g) in cell %d at year %d",
+              sum,soiltype,grid[cell].coord.lon,grid[cell].coord.lat, cell+config->startgrid,yearl+landuse->landuse.firstyear);
+      for(j=0; j<ncft; j++)
+      {
+        grid[cell].ml.landfrac[0].crop[j]/=sum;
+        grid[cell].ml.landfrac[1].crop[j]/=sum;
+      }
+      for(j=0; j<NGRASS; j++)
+      {
+        grid[cell].ml.landfrac[0].grass[j]=0;
+        grid[cell].ml.landfrac[1].grass[j]=0;
+      }
+      grid[cell].ml.landfrac[0].biomass_grass=0;
+      grid[cell].ml.landfrac[1].biomass_grass=0;
+      grid[cell].ml.landfrac[0].biomass_tree=0;
+      grid[cell].ml.landfrac[1].biomass_tree=0;
+    }
+
     if(sum>1.00001)
     {
       if(yearl>0)
