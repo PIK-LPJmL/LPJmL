@@ -223,7 +223,7 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
       count=0;
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_mswc[l];
+          fvec[count++]=(float)grid[cell].output.cft_mswc2[l];
       writemonth2(output,CFT_MSWC2,fvec,year,month,l,ncft*2,config);
     }
 #endif

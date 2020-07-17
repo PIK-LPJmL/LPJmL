@@ -285,7 +285,7 @@ ID                         Fmt                    filename
 //    { "id" : PFT_NHAWO,        "file" : { "fmt" : RAW, "name" : mkstr(output/pft_nhawo.bin)}},
 //    { "id" : HARVESTC,         "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/flux_harvestc.bin)}},
 //    { "id" : HARVESTN,         "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/flux_harvestn.bin)}},
-/*    { "id" : SYEAR,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/syear_lai.LMAX.bin)}},
+    { "id" : SYEAR,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/syear_lai.LMAX.bin)}},
     { "id" : SYEAR2,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/syear2_lai.LMAX.bin)}},
     { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/sdate_lai.LMAX.bin)}},
     { "id" : SDATE2,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/sdate2_lai.LMAX.bin)}},
@@ -315,8 +315,9 @@ ID                         Fmt                    filename
     { "id" : CFT_INTERC2,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/cft_interc2.bin)}},
     { "id" : MSWC1,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l1_20cm.bin)}},
     { "id" : MSWC2,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l2_30cm.bin)}},
-    { "id" : MSWC3,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l3_50cm.bin)}},*/
+    { "id" : MSWC3,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l3_50cm.bin)}},
     { "id" : CFT_MSWC,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/cft_mrootmoist.bin)}},
+    { "id" : CFT_MSWC2,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/cft_mrootmoist2.bin)}},
     { "id" : MROOTMOIST,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mroormoist_1m.bin)}}
 //    { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/seasonality.bin)}},
 #ifdef DAILY_OUTPUT
