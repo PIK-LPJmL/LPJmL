@@ -322,7 +322,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
         fpc_inc=newvec(Real,n_pft);
         check(fpc_inc);
         isphen=TRUE;
-        hfrac=1-500/(500+cleaf);
+        hfrac=1-2500/(2500+cleaf);
         foreachpft(pft,p,&stand->pftlist)
         {
           grass=pft->data;
@@ -350,12 +350,14 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
       }
       break;
     case GS_GRAZING_INT: /* int. grazing */
+      stand->cell->ml.nr_of_lsus_int = 0.0;
       if ((cleaf > STUBBLE_HEIGHT_GRAZING_INT) || (stand->cell->ml.rotation.rotation_mode > RM_UNDEFINED)) // 7-8 cm or 40 g.C.m-2 threshold
+      {
         isphen=TRUE;
         stand->cell->ml.nr_of_lsus_int = param.lsuha;
+      }
       break;
   } /* of switch */
-
   if(isphen)
   {
     harvest=harvest_stand(output,stand,hfrac);

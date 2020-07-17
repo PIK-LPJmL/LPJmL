@@ -126,7 +126,6 @@ Real daily_natural(Stand *stand, /**< stand pointer */
 #ifdef PERMUTE
     pft=getpft(&stand->pftlist,pvec[p]);
 #endif
-
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,npft,ncft,config);

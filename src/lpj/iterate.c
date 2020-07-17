@@ -60,6 +60,8 @@ int iterate(Outputfile *output,  /**< Output file data */
 #endif
 
   firstspinupyear=(config->isfirstspinupyear) ?  config->firstspinupyear : input.climate->firstyear;
+  if(isroot(*config) && config->nspinup && !config->isfirstspinupyear)
+    printf("Spinup using climate starting from year %d\n",input.climate->firstyear);
 #ifdef STORECLIMATE
   if(config->nspinup)
   {

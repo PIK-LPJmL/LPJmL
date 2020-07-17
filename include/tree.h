@@ -20,7 +20,6 @@
 /* Definition of constants */
 
 #define reinickerp 1.6
-#define k_latosa 4e3      /* leaf area to sapwood area */
 #define wooddens 2e5      /* wood density (gC/m3) */
 #ifdef USE_LANDCOVER
 #define FPC_TREE_MAX 0.99
@@ -76,6 +75,7 @@ typedef struct
   Real crown_mort_p;                /**< crown damage (p) */
   Real fuelfrac[NFUELCLASS];        /**< Fuel fractions */
   Real k_est;			/**< maximum overall sapling establishment rate (indiv/m2) */
+  Real k_latosa;        /**< leaf area to sapwood area */
   int rotation;         /**< coppicing interval from short ratation woody crops */
   int max_rotation_length; /**< lifetime of short rotation woody crop plantation */
 } Pfttreepar;
@@ -138,8 +138,8 @@ extern Stocks coppice_tree(Pft *);
 extern void albedo_tree(Pft *,Real,Real);
 extern void turnover_monthly_tree(Litter *,Pft *);
 extern void turnover_daily_tree(Litter *,Pft *,Real,Bool);
-extern Real nuptake_tree(Pft *,Real *,Real *,int,int,int);
-extern Real ndemand_tree(const Pft *,Real *,Real,Real,Real,int,int,int);
+extern Real nuptake_tree(Pft *,Real *,Real *,int,int,int,Bool);
+extern Real ndemand_tree(const Pft *,Real *,Real,Real,Real);
 extern Real vmaxlimit_tree(const Pft *,Real,Real);
 extern void nitrogen_allocation_tree(Real *,Real *,Real *,Stocks,Stocks,Stocks,Real,Real,Real);
 

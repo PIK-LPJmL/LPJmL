@@ -168,6 +168,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   fscanreal2(verb,file,&tree->barkthick_par2,pft->name,"barkthick_par2");
   fscanreal2(verb,file,&tree->crown_mort_rck,pft->name,"crown_mort_rck");
   fscanreal2(verb,file,&tree->crown_mort_p,pft->name,"crown_mort_p");
+  fscanreal2(verb,file,&tree->k_latosa,pft->name,"k_latosa");
   if(fscanrealarray(file,tree->fuelfrac,NFUELCLASS,"fuelfraction",verb))
   {
     if(verb)
@@ -178,11 +179,11 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   fscanint2(verb,file,&tree->rotation,pft->name,"rotation");
   fscanint2(verb,file,&tree->max_rotation_length,pft->name,"max_rotation_length");
   tree->sapl.leaf.carbon=pow(pft->lai_sapl*tree->allom1*pow(wood_sapl,reinickerp)*
-                  pow(4*pft->sla/M_PI/k_latosa,reinickerp*0.5)/pft->sla,
+                  pow(4*pft->sla/M_PI/tree->k_latosa,reinickerp*0.5)/pft->sla,
                   2/(2-reinickerp));
-  stemdiam=wood_sapl*sqrt(4*tree->sapl.leaf.carbon*pft->sla/M_PI/k_latosa);
+  stemdiam=wood_sapl*sqrt(4*tree->sapl.leaf.carbon*pft->sla/M_PI/tree->k_latosa);
   height_sapl=tree->allom2*pow(stemdiam,tree->allom3);
-  tree->sapl.sapwood.carbon=wooddens*height_sapl*tree->sapl.leaf.carbon*pft->sla/k_latosa;
+  tree->sapl.sapwood.carbon=wooddens*height_sapl*tree->sapl.leaf.carbon*pft->sla/tree->k_latosa;
   tree->sapl.heartwood.carbon=(wood_sapl-1)*tree->sapl.sapwood.carbon;
   tree->sapl.root.carbon=(1.0/pft->lmro_ratio)*tree->sapl.leaf.carbon;
   tree->sapling_C=phys_sum_tree(tree->sapl)*tree->k_est;

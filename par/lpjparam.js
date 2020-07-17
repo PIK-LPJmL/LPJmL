@@ -49,7 +49,7 @@
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
   "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */
-  "k_mort" : 0.3,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
   "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
   "residue_cn": 20,         /* CN ratio of prescribed residues */
@@ -84,5 +84,6 @@
   "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
   "soil_infil" : 2.0,                 /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
-  "allocation_threshold" : 35.0      /* allocation threshold for daily grassland allocation */
+  "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
+  "rootreduction" : 0.5               /*fraction used to calculate amouont of roots dying at harvest in managed grasslands */
 },

@@ -89,6 +89,7 @@ typedef struct
   Real soil_infil;      /**< soil infiltration improvement */
   Real yield_gap_bridge; /**< yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
   Real allocation_threshold; /**< allocation threshold for daily grassland allocation */
+  Real rootreduction; /**< fraction used to calculate amouont of roots dying at harvest in managed grasslands */
 } Param;
 
 /* Declaration of global variable */

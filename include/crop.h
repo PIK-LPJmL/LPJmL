@@ -151,8 +151,8 @@ extern void output_daily_crop(Daily_outputs *,const Pft *,Real,Real);
 extern void calc_seasonality(Cell *,int,int,const Config *);
 extern void albedo_crop(Pft *,Real,Real);
 extern void double_harvest(int, Real *, Real *, Real);
-extern Real nuptake_crop(Pft *,Real *,Real *,int,int,int);
-extern Real ndemand_crop(const Pft *,Real *,Real,Real,Real,int,int,int);
+extern Real nuptake_crop(Pft *,Real *,Real *,int,int,int,Bool);
+extern Real ndemand_crop(const Pft *,Real *,Real,Real,Real);
 extern Real vmaxlimit_crop(const Pft *,Real,Real);
 
 

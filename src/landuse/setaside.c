@@ -109,6 +109,8 @@ void mixsoil(Stand *stand1,const Stand *stand2)
 
   mixpool(stand1->soil.meanw1,stand2->soil.meanw1,
           stand1->frac,stand2->frac);
+
+  /* snowpack is independent of fraction */
   mixpool(stand1->soil.decomp_litter_mean.carbon,stand2->soil.decomp_litter_mean.carbon,
           stand1->frac,stand2->frac);
   mixpool(stand1->soil.decomp_litter_mean.nitrogen,stand2->soil.decomp_litter_mean.nitrogen,

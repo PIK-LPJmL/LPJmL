@@ -27,7 +27,7 @@ Real npp_tree(Pft *pft,         /**< PFT variables */
   Pfttree *tree;
   const Pfttreepar *par;
   Real mresp,npp;
-  Real cn_root,cn_sapwood;
+  Real cn_root,cn_sapwood;    //NC ration is used here
   tree=pft->data;
   par=pft->par->data;
   if(with_nitrogen)

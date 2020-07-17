@@ -44,8 +44,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
               Bool permafrost
              )
 {
-  Real th_diff[NSOILLAYER],      /* thermal diffusivity [m2/s]*/
-       heatcap[NSOILLAYER],                  /* heat capacity [J/m2/K] or [J/m3/K]*/
+  Real heatcap[NSOILLAYER],      /* heat capacity [J/m2/K] or [J/m3/K]*/
        heatcap_litter,           /* heat capacity of litter [J/m2/K] or [J/m3/K]*/
        lambda[NSOILLAYER],       /* thermal conductivity [W/K/m]*/
        t_upper,                  /* temperature of upper soil/air/snow layer*/

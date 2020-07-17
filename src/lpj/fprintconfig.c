@@ -275,6 +275,11 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       len+=fprintf(file,", ");
       len=fputstring(file,len,"tillage_type",78);
     }
+    if (config->others_to_crop)
+    {
+      len += fprintf(file, ", ");
+      len = fputstring(file, len, "others_to_crop", 78);
+    }
     if(config->residues_fire)
     {
       len+=fprintf(file,", ");

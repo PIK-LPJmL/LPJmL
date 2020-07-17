@@ -47,5 +47,6 @@ void newpft(Pft *pft,            /**< PFT variables */
   pft->established=FALSE;
 #endif
   pft->prescribe_fpc=FALSE;
+  pft->establish.carbon=pft->establish.nitrogen=0;
   pft->par->newpft(pft,year,day,with_nitrogen); /* type-specific allocation of memory */
 } /* of 'newpft' */

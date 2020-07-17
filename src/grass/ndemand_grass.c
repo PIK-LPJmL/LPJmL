@@ -14,64 +14,35 @@
 
 #include "lpj.h"
 #include "grass.h"
-#include "agriculture.h"
 
 Real ndemand_grass(const Pft *pft,    /**< pointer to PFT */
                   Real *ndemand_leaf, /**< N demand of leaf (gN/m2) */
                   Real vmax,          /**< vmax (gC/m2/day) */
                   Real daylength,     /**< day length (h) */
-                  Real temp,          /**< temperature (deg C) */
-                  int npft,           /**< number of natural PFTs */
-                  int nbiomass,       /**< number of biomass types */
-                  int ncft            /**< number of crop PFTs */
+                  Real temp           /**< temperature (deg C) */
                  )                    /** \return total N demand  (gN/m2) */
 {
   Real nc_ratio;
   const Pftgrass *grass;
   const Pftgrasspar *grasspar;
   Real ndemand_tot;
-  Irrigation *data;
-  if(pft->stand->type->landusetype==AGRICULTURE || pft->stand->type->landusetype==SETASIDE_RF || pft->stand->type->landusetype==SETASIDE_IR || pft->stand->type->landusetype==BIOMASS_GRASS || pft->stand->type->landusetype==BIOMASS_TREE || pft->stand->type->landusetype==GRASSLAND)
-    data=pft->stand->data;
-  else
-    data=NULL;
+
   grass=pft->data;
   grasspar=pft->par->data;
   //*ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft))) +param.n0*0.001*(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf)*pft->nind;
   //*ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft))) +pft->par->ncleaf.low*(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf)*pft->nind;
-  *ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft)))+pft->par->ncleaf.low*(grass->ind.leaf.carbon)*pft->nind;
+  //*ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft)))+pft->par->ncleaf.low*(grass->ind.leaf.carbon)*pft->nind;
+  *ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft)))+pft->par->ncratio_med*(grass->ind.leaf.carbon)*pft->nind;
+  
   nc_ratio=*ndemand_leaf/(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf);
   if(nc_ratio>pft->par->ncleaf.high)
     nc_ratio=pft->par->ncleaf.high;
   else if(nc_ratio<pft->par->ncleaf.low)
     nc_ratio=pft->par->ncleaf.low;
-//  ndemand_tot=*ndemand_leaf+grass->ind.root.nitrogen*pft->nind+nc_ratio*
-//    (grass->excess_carbon*pft->nind+pft->bm_inc.carbon)*grass->falloc.root/grasspar->ratio;
-  ndemand_tot=*ndemand_leaf+grass->ind.root.nitrogen*pft->nind;
+  ndemand_tot=*ndemand_leaf+grass->ind.root.nitrogen*pft->nind+nc_ratio*
+    (grass->excess_carbon*pft->nind+pft->bm_inc.carbon)*grass->falloc.root/grasspar->ratio; 
+  //ndemand_tot=*ndemand_leaf+grass->ind.root.nitrogen*pft->nind;
 
   /* unclear to me: setaside NPP seems to go to natural grass pft_npp -- should we do the same for Ndemand? */
-  if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==SETASIDE_RF || pft->stand->type->landusetype==SETASIDE_IR)
-  {
-    if(ndemand_tot>vegn_sum_grass(pft)){
-      pft->stand->cell->output.pft_ndemand[pft->par->id]+=ndemand_tot-vegn_sum_grass(pft);
-      pft->stand->cell->balance.n_demand+=(ndemand_tot-vegn_sum_grass(pft))*pft->fpc*pft->stand->frac;
-    }
-  }
-  else if(pft->stand->type->landusetype==BIOMASS_GRASS)
-  {
-    if(ndemand_tot>vegn_sum_grass(pft)){
-      pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=ndemand_tot-vegn_sum_grass(pft); /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
-      pft->stand->cell->balance.n_demand+=(ndemand_tot-vegn_sum_grass(pft))*pft->fpc*pft->stand->frac;
-    }
-  }
-  else
-  {
-    if(ndemand_tot>vegn_sum_grass(pft))
-    {
-      pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=ndemand_tot-vegn_sum_grass(pft);/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
-      pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=ndemand_tot-vegn_sum_grass(pft);/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
-      pft->stand->cell->balance.n_demand+=(ndemand_tot-vegn_sum_grass(pft))*(pft->stand->cell->ml.landfrac[data->irrigation].grass[0]+pft->stand->cell->ml.landfrac[data->irrigation].grass[1]);
-    }
-  }
   return ndemand_tot;
 } /* of 'ndemand_grass' */

@@ -63,6 +63,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   {
     if ((stand->prescribe_landcover !=NO_LANDCOVER &&  pftpar[p].cultivation_type==NONE && stand->landcover[p] > 0 && stand->type->landusetype==NATURAL) ||
         (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pftpar[p].aprec_min && pftpar[p].cultivation_type==NONE &&
+        (stand->soil.par->type != ICE && stand->soil.par->type != ROCK) &&
        establish(stand->cell->gdd[p],pftpar+p,&stand->cell->climbuf)))
     {
       if(!present[p])
@@ -88,7 +89,8 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
     }
     if ((stand->prescribe_landcover == LANDCOVERFPC && fpc_obs_cor > 0 && pft->fpc < fpc_obs_cor &&  pftpar[p].cultivation_type==NONE && stand->type->landusetype==NATURAL) ||
         (stand->prescribe_landcover == LANDCOVEREST && pft->fpc_obs > 0 &&  pftpar[p].cultivation_type==NONE && stand->type->landusetype==NATURAL) ||
-        (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pft->par->cultivation_type==NONE && istree(pft) &&
+        (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pft->par->cultivation_type==NONE &&
+        istree(pft) && (stand->soil.par->type != ICE && stand->soil.par->type != ROCK) &&
 #ifdef DAILY_ESTABLISHMENT
         !pft->established &&
 #endif
@@ -115,7 +117,8 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
   {
-     if (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pft->par->cultivation_type==NONE && !istree(pft) &&
+     if (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pft->par->cultivation_type==NONE &&
+    	!istree(pft) && (stand->soil.par->type != ICE && stand->soil.par->type != ROCK) &&
 #ifdef DAILY_ESTABLISHMENT
         !pft->established &&
 #endif
