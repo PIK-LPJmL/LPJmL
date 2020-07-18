@@ -181,7 +181,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   data->irrigation=irrigation->irrigation;
                   reclaim_land(stand,cropstand,cell,istimber,npft+ncft);
                   set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
-                  setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,FALSE,year,config->with_nitrogen);
+                  setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,TRUE,year,config->with_nitrogen);
                   setasidestand=getstand(cell->standlist,pos-1);
                   if(cell->ml.cropdates[cft].fallow_irrig<=0&&
                     check_lu(cell->standlist,cell->ml.landfrac[irrigation->irrigation].crop[cft],npft+cft,irrigation->irrigation))
