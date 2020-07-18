@@ -31,6 +31,14 @@
   "fertilizer_nr" : { "fmt" : CLM,  "name" : "/p/projects/lpjml/input/MADRAT/fertilizer_luh2v2_1900-2015_32bands.clm"},
   "manure_nr" :    { "fmt" : CLM, "name" : "/p/projects/lpjml/input/MADRAT/manure_zhang17_1860-2014_32bands_clm2.clm"},
   /* insert prescribed sdate file name here */
+  "with_tillage" : { "fmt" : CLM, "name" : "input_VERSION3/lpj_tillage_CA_1973-2010.clm"},
+  "residue_on_field" : { "fmt" : CLM, "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
+  //"sdate" : {"fmt" : CLM, "name" : "/p/projects/landuse/users/cmueller/GGCMI/crop_calendar/GGCMI_CTWN_planting_v1.25.clm2"},
+  "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/MACMIT_INTENSIFICATION/LPJmL/input/sdate_1996-2005_24bands_ggcmi-ctwn-v1.25.clm2"},  /* insert prescribed sdate file name here */
+  //"crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/MACMIT_INTENSIFICATION/LPJmL/input/phu_1996-2005_24bands_ggcmi-ctwn-v1.25.clm2"},  /* insert prescribed phu file name here */
+  //"crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/MACMIT_INTENSIFICATION/SCRIPTS/Compute_GPs_PHUs/input/PHU_HadGEM2-ES_historical_1986_2005.bin"},  /* insert prescribed phu file name here */
+  "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/MACMIT_INTENSIFICATION/SCRIPTS/Compute_GPs_PHUs/input/PHU_WFDEI_historical_1986_2005.bin"},  /* insert prescribed phu file name here */
+  //"grassland_fixed_pft" : { "fmt" : RAW, "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.bin"},
   "grassland_fixed_pft" : { "fmt" : RAW, "name" : "/p/projects/landuse/users/rolinski/Newinput/scenario_MO0.bin"},
   "grass_harvest_options" : { "fmt" : RAW, "name": "/p/projects/landuse/users/rolinski/Newinput/scenario_MO2.bin"},
   "lakes" :        { "fmt" : META, "name" : "input_VERSION2/glwd_lakes_and_rivers.descr"},
