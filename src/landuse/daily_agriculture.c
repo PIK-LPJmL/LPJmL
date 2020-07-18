@@ -224,6 +224,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       /* write irrig_apply to output */
       output->mirrig+=irrig_apply*stand->frac;
       pft=getpft(&stand->pftlist,0);
+      //foreachpft(pft,p,&stand->pftlist)
 #ifndef DOUBLE_HARVEST
       if(config->pft_output_scaled)
         output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->frac;
@@ -259,7 +260,8 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config);
     /* count irrigation events*/
     pft=getpft(&stand->pftlist,0);
-    output->cft_irrig_events[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
+    //foreachpft(pft,p,&stand->pftlist)
+      output->cft_irrig_events[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
   runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,withdailyoutput,config);
