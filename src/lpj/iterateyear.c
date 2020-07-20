@@ -73,7 +73,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           /* calculate landuse change */
           if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
             laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
-          if(year>config->firstyear-config->nspinup)
+          if(year>config->firstyear-config->nspinup || config->from_restart)
             landusechange(grid+cell,config->pftpar,npft,ncft,config->ntypes,
                           grid[cell].ml.with_tillage,intercrop,istimber,year,config);
           else if(grid[cell].ml.dam)
@@ -97,7 +97,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       {
         initoutput_monthly(&((grid+cell)->output),ncft);
         /* Initialize random seed */
-        if(israndomprec(input.climate))
+        //if(israndomprec(input.climate))
           srand48(config->seed+(config->startgrid+cell)*year*month);
         initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month);
 
@@ -139,6 +139,22 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           /* get daily values for temperature, precipitation and sunshine */
           dailyclimate(&daily,input.climate,&grid[cell].climbuf,cell,day,
                        month,dayofmonth);
+#ifdef SAFE
+          if(degCtoK(daily.temp)<0)
+            fail(INVALID_CLIMATE_ERR,FALSE,"Temperature=%g K less than zero for cell %d at day %d",degCtoK(daily.temp),cell+config->startgrid,day);
+          if(config->with_radiation)
+          {
+            if(daily.swdown<0)
+              fail(INVALID_CLIMATE_ERR,FALSE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",daily.swdown,cell+config->startgrid,day);
+          }
+          else
+          {
+            if(daily.sun<0 || daily.sun>100)
+              fail(INVALID_CLIMATE_ERR,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
+          }
+          if(config->with_nitrogen && daily.windspeed<0)
+            fail(INVALID_CLIMATE_ERR,FALSE,"Wind speed=%g less than zero for cell %d at day %d",daily.windspeed,cell+config->startgrid,day);
+#endif
           /* get daily values for temperature, precipitation and sunshine */
           grid[cell].output.daily.temp=daily.temp;
           grid[cell].output.daily.prec=daily.prec;
@@ -146,6 +162,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 
 #ifdef DEBUG
           printf("day=%d cell=%d\n",day,cell);
+#endif
+#ifdef PERMUTE
+          srand48(config->seed+(config->startgrid+cell)*year*day);
 #endif
           update_daily(grid+cell,co2,popdens,daily,day,npft,
                        ncft,year,month,output->withdaily,intercrop,config);
@@ -209,14 +228,22 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         printcell(grid+cell,1,npft,ncft,config);
       }
 #endif
+
+if(config->equilsoil)
+{
       if(config->nspinup>veg_equil_year &&
-         year==config->firstyear-config->nspinup+veg_equil_year && !config->from_restart)
+         (year==config->firstyear-config->nspinup+veg_equil_year) && !config->from_restart)
         equilveg(grid+cell);
 
       if(config->nspinup>soil_equil_year &&
-         year==config->firstyear-config->nspinup+soil_equil_year && !config->from_restart)
-        equilsom(grid+cell,npft+ncft,config->pftpar);
+         (year==config->firstyear-config->nspinup+cshift_year) && !config->from_restart)
+        equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
 
+
+      if(config->nspinup>soil_equil_year &&
+         (year==config->firstyear-config->nspinup+soil_equil_year) && !config->from_restart)
+        equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
+}
     }
     if(config->river_routing)
     {

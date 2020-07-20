@@ -22,7 +22,6 @@ void phenology_gsi(Pft *pft,    /**< pointer to PFT variables */
                   )
 {
   Pfttree *tree;
-
   /* get parameters */
 
   Phen_param tminpar = getpftpar(pft, tmin);

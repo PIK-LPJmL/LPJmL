@@ -218,6 +218,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,"no N deposition");
   if(config->river_routing)
     len=printsim(file,len,&count,"river routing");
+  if(config->equilsoil)
+    len=printsim(file,len,&count,"equilsoil is called");
   if(config->with_nitrogen)
     len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
@@ -282,6 +284,11 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     {
       len+=fprintf(file,", ");
       len=fputstring(file,len,"tillage_type",78);
+    }
+    if (config->others_to_crop)
+    {
+      len += fprintf(file, ", ");
+      len = fputstring(file, len, "others_to_crop", 78);
     }
     if(config->residues_fire)
     {
@@ -488,7 +495,9 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
             config->image_outport,config->wait_image);
 
 #endif
+#ifndef PERMUTE
   if(config->wet_filename.name!=NULL)
+#endif
     fprintf(file,"Random seed: %d\n",config->seed);
   if(config->n_out)
   {

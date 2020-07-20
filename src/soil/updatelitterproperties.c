@@ -27,9 +27,10 @@ void updatelitterproperties(Stand *stand,  /**< Stand pointer */
 
   stand->soil.litter.agtop_cover=1-exp(-6e-3*dm_sum);
   stand->soil.litter.agtop_wcap=2e-3*dm_sum;
-  if((stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)>epsilon)
+  if((stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)>epsilon*1e-3)
   {
-    stand->cell->balance.excess_water+=(stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)*standfrac;
+    //stand->cell->balance.excess_water+=(stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap)*standfrac;
+    stand->soil.w_fw[0]+=(stand->soil.litter.agtop_moist-stand->soil.litter.agtop_wcap);
     stand->soil.litter.agtop_moist=stand->soil.litter.agtop_wcap;
   }
 } /* of 'updatelitterproperties' */

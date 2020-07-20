@@ -114,8 +114,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     }
     if(phenology_crop(pft,climate->temp,climate->tmax,daylength,npft,config))
     {
-      //printf("daily_agriculture.c: harvest day of cft %s = %d\n", pft->par->name, day);
-      //printf("daily_agriculture.c: crop->growingdays of cft %s = %d\n", pft->par->name, crop->growingdays);
       if(pft->par->id==output->daily.cft
          && data->irrigation==output->daily.irrigation)
         output_daily_crop(&(output->daily),pft,0.0,0.0);
@@ -247,6 +245,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       /* write irrig_apply to output */
       output->mirrig+=irrig_apply*stand->frac;
       pft=getpft(&stand->pftlist,0);
+      //foreachpft(pft,p,&stand->pftlist)
 #ifndef DOUBLE_HARVEST
       if(config->pft_output_scaled)
         output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->frac;
@@ -268,6 +267,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     intercep_stand_blue+=(climate->prec+irrig_apply*sprink_interc>epsilon) ? intercept*(irrig_apply*sprink_interc)/(climate->prec+irrig_apply*sprink_interc) : 0; /* blue intercept fraction */
     intercep_stand+=intercept;
   }
+
   irrig_apply-=intercep_stand_blue;
   rainmelt-=(intercep_stand-intercep_stand_blue);
 
@@ -281,7 +281,8 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config);
     /* count irrigation events*/
     pft=getpft(&stand->pftlist,0);
-    output->cft_irrig_events[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
+    //foreachpft(pft,p,&stand->pftlist)
+      output->cft_irrig_events[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
   runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,withdailyoutput,config);
@@ -520,5 +521,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   }
 
   free(wet);
+
   return runoff;
 } /* of 'daily_agriculture' */

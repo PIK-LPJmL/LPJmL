@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                     e  q  u  i  l  s  o  m  . c                                \n**/
+/**                   p  e  r  m  u  t  e  .  c                                    \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
+/**     Creates int vector with random permutation                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,25 +12,22 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include "types.h"
+#include "numeric.h"
 
-/**
- *  DESCRIPTION
- *
- *  Analytically solves differential flux equations for fast and slow SOM 
- *  pools assuming annual litter inputs close to long term equilibrium
- *
- */
-
-void equilsom(Cell *cell,           /**< pointer to cell */
-              int ntotpft,          /**< total number of PFTs */
-              const Pftpar pftpar[], /**< PFT parameter array */
-              Bool shift
-             )
+void permute(int vec[],int size)
 {
-  int s;
-  Stand *stand;
-  
-  foreachstand(stand,s,cell->standlist)
-    equilsoil(&stand->soil,ntotpft,pftpar,shift);
-} /* of 'equilsom' */
+  int i,index,swp;
+  for(i=0;i<size;i++)
+    vec[i]=i;
+  for(i=0;i<size-1;i++)
+  {
+    index=i+(int)(drand48()*(size-i));
+    swp=vec[i];
+    vec[i]=vec[index];
+    vec[index]=swp;
+  }
+} /* of 'permute' */

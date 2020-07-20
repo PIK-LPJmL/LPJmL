@@ -30,6 +30,7 @@ Bool fread_crop(FILE *file, /**< file pointer */
     printallocerr("crop");
     return TRUE;
   }
+  freadreal1(&pft->nlimit,swap,file);
   freadint1(&crop->wtype,swap,file);
   freadint1(&crop->growingdays,swap,file);
   freadreal1(&crop->pvd,swap,file);

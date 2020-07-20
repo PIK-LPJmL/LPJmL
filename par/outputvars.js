@@ -317,6 +317,6 @@
   { "id" : HUSUM, "name" : "husum", "var" : "husum", "descr" : "crop growing season accumulated heat units", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
   { "id" : HUSUM2, "name" : "husum2", "var" : "husum2", "descr" : "crop growing season accumulated heat units 2nd seaso", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_MSWC, "name": "cft_mswc", "var" : "SWC_cft", "descr" : "CFT-specific monthly absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
-  { "id" : CFT_MSWC2, "name": "cft_mswc2", "var" : "SWC_cft2", "descr" : "CFT-specific monthly absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0}
-
-  ],
+  { "id" : CFT_MSWC2, "name": "cft_mswc2", "var" : "SWC_cft2", "descr" : "CFT-specific monthly absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
+  { "id" : 296, "name": "mean_vegc_mangrass", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0}
+],

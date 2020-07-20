@@ -111,6 +111,8 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
             case AGRICULTURE:
                /* write net irrigation requirement */
               pft=getpft(&stand->pftlist,0);
+              //foreachpft(pft,p,&stand->pftlist)
+              {
 #ifdef DOUBLE_HARVEST
               crop=pft->data;
               crop->nirsum+=data->net_irrig_amount;
@@ -120,6 +122,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
               else
                 stand->cell->output.cft_nir[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount;
 #endif
+              }
               break;
             case GRASSLAND: 
               if(pft_output_scaled)
@@ -173,6 +176,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
         if(stand->type->landusetype==AGRICULTURE)
         {
           pft=getpft(&stand->pftlist,0);
+          //foreachpft(pft,p,&stand->pftlist)
           if(pft_output_scaled)
           {
             stand->cell->output.cft_conv_loss_evap[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap*stand->frac;

@@ -23,20 +23,14 @@ Bool freadresdata(FILE *file,  /**< pointer to restart file */
   if(cell->ml.resdata==NULL)
     return TRUE;
   /*initialize other characteristics of this reservoir*/
-  cell->ml.resdata->dfout_res=0.0;
-  cell->ml.resdata->dfout_irrigation=0.0;
-  cell->ml.resdata->c=1.0;
-  cell->ml.resdata->mdemand=0.0;
-  cell->ml.resdata->ddemand=0.0;
-  cell->ml.resdata->demand_fraction=0.0;
-  cell->ml.resdata->mean_volume=0.0;
-  cell->ml.reservoirfrac=((Real)cell->ml.resdata->reservoir.area)*1000*1000/cell->coord.area; /*area in km2 to m2 */
+  initresdata(cell);
   /* read from restart file */
   freadreal1(&cell->ml.reservoirfrac,swap,file);
   freadreal((Real *)&cell->ml.resdata->pool,sizeof(Stocks)/sizeof(Real),swap,file);
   freadreal1(&cell->ml.resdata->dmass,swap,file);
   freadreal1(&cell->ml.resdata->k_rls,swap,file);
   freadreal1(&cell->ml.resdata->target_release_year,swap,file);
+  freadfloat1(&cell->ml.resdata->reservoir.capacity,swap,file); /* reservoir input is only loaded in initreservoir but capacity used in update_reservoir_annual below */
   freadreal(cell->ml.resdata->dfout_irrigation_daily, NIRRIGDAYS, swap, file);
   freadreal(cell->ml.resdata->target_release_month, NMONTH, swap, file);
   freadreal(cell->ml.resdata->demand_hist[0],NMONTH*HIST_YEARS,swap,file);

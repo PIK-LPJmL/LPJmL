@@ -19,7 +19,8 @@ Real nitrogen_stress(Pft *pft,       /**< PFT */
                      Real daylength, /**< daylength (h) */
                      int npft,       /**< number of natural PFTs */
                      int nbiomass,   /**< number of biomass types */
-                     int ncft        /**< number of crop PFTs */
+                     int ncft,       /**< number of crop PFTs */
+                     Bool permafrost /**< permafrost enabled? (TRUE/FALSE) */
                     )                /** \return total N demand (gN/m2) */
 {
   Real nplant_demand,ndemand_leaf;
@@ -29,16 +30,16 @@ Real nitrogen_stress(Pft *pft,       /**< PFT */
   nplant_demand_opt=0;
 #endif
   nplant_demand=0;
-  if(pft->bm_inc.carbon>0)
+  if(pft->bm_inc.carbon>0  || (pft->stand->type->landusetype==GRASSLAND && pft->bm_inc.carbon>=0))
   {
-    nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,daylength,temp,npft,nbiomass,ncft)*(1+pft->par->knstore);
+    nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,daylength,temp)*(1+pft->par->knstore);
     ndemand_leaf_opt=ndemand_leaf;
 #ifdef DEBUG_N
     nplant_demand_opt=nplant_demand;
 #endif
     /* calculation of limitation in ndemad_leaf is missing */
     if(nplant_demand>pft->bm_inc.nitrogen || pft->bm_inc.nitrogen<2)  //nuptake happens always if nitrogen bm_inc< 2
-      pft->stand->cell->output.mn_uptake+=nuptake(pft,&nplant_demand,&ndemand_leaf,npft,nbiomass,ncft)*pft->stand->frac;
+      pft->stand->cell->output.mn_uptake+=nuptake(pft,&nplant_demand,&ndemand_leaf,npft,nbiomass,ncft,permafrost)*pft->stand->frac;
     else if(pft->stand->type->landusetype!=AGRICULTURE)
       pft->vscal+=1;
     pft->nleaf=max(pft->nleaf,ndemand_leaf);

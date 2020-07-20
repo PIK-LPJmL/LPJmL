@@ -55,7 +55,8 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
   freadreal1(&pft->albedo,swap,file);
   freadreal1(&pft->fapar,swap,file);
   freadreal1(&pft->nleaf,swap,file);
-  pft->nlimit=pft->vmax=0;
+  freadreal((Real *)&pft->establish,sizeof(Stocks)/sizeof(Real),swap,file);
+  pft->vmax=0;
   if(fread(&id,sizeof(id),1,file)!=1)
     return TRUE;
   pft->litter=id;

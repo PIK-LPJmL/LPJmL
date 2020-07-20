@@ -65,7 +65,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     freadreal1(&cell->discharge.waterdeficit,swap,file);
     cell->gdd=newgdd(npft);
     checkptr(cell->gdd);
-    initgdd(cell->gdd,npft);
+    freadreal(cell->gdd,npft,swap,file);
     /* read stand list */
     cell->standlist=freadstandlist(file,cell,config->pftpar,npft+ncft,soilpar,
       standtype,nstand,swap);

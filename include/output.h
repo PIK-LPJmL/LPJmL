@@ -282,6 +282,7 @@ typedef struct
   Real *cft_laimax;
   Real *cft_mswc;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
   int *nday_month;        /**< day count for monthly cft-specific outputs, needed in update_monthly to divide by number of days */
+  Real mean_vegc_mangrass;
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 
@@ -312,7 +313,8 @@ typedef struct
   Real n_uptake;              /**< total N uptake by plants */
   Real n_influx;              /**< total N inputs */
   Real n_outflux;             /**< total N losses */
-  Real anpp_flux;             /* Total NPP (gC/yr) */
+  Real anpp_flux;             /**< Total NPP (gC/yr) */
+  Real excess_water;          /**< Exess water (dm3) */
 
 } Flux;
 

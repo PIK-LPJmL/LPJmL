@@ -40,6 +40,9 @@ Real daily_natural(Stand *stand, /**< stand pointer */
                   ) /** \return runoff (mm) */
 {
   int p,l;
+#ifdef PERMUTE
+  int *pvec;
+#endif
   Pft *pft;
   Output *output;
   Real aet_stand[LASTLAYER];
@@ -68,16 +71,32 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   {
     wet=newvec(Real,getnpft(&stand->pftlist)); /* wet from pftlist */
     check(wet);
+#ifdef PERMUTE
+    pvec=newvec(int,getnpft(&stand->pftlist));
+    check(pvec);
+    permute(pvec,getnpft(&stand->pftlist));
+#endif
     for(p=0;p<getnpft(&stand->pftlist);p++)
       wet[p]=0;
   }
   else
+  {
     wet=NULL;
+#ifdef PERMUTE
+    pvec=NULL;
+#endif
+  }
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
-
+#ifdef PERMUTE
+  for(p=0;p<getnpft(&stand->pftlist);p++)
+#else
   foreachpft(pft,p,&stand->pftlist)
+#endif
   {
+#ifdef PERMUTE
+    pft=getpft(&stand->pftlist,pvec[p]);
+#endif
     /* calculate old or new phenology*/
     if (config->new_phenology)
       phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp);
@@ -93,14 +112,20 @@ Real daily_natural(Stand *stand, /**< stand pointer */
 
   /* soil inflow: infiltration and percolation */
   runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,withdailyoutput,config);
-
+#ifdef PERMUTE
+  for(p=0;p<getnpft(&stand->pftlist);p++)
+#else
   foreachpft(pft,p,&stand->pftlist)
+#endif
   {
 /*
  *  Calculate net assimilation, i.e. gross primary production minus leaf
  *  respiration, including conversion from FPC to grid cell basis.
  *
  */
+#ifdef PERMUTE
+    pft=getpft(&stand->pftlist,pvec[p]);
+#endif
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,npft,ncft,config);
@@ -111,6 +136,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
     }
 
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
+    
     if (withdailyoutput){
       if (output->daily.cft == ALLNATURAL)
         output->daily.npp+=npp;
@@ -142,7 +168,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,FALSE);
 
-  if(withdailyoutput)
+ if(withdailyoutput)
   {
 #ifndef COUPLING_WITH_FMS
     // when coupling with FMS/POEM, we always need evap output,
@@ -193,5 +219,8 @@ Real daily_natural(Stand *stand, /**< stand pointer */
 #endif
 
   free(wet);
+#ifdef PERMUTE
+  free(pvec);
+#endif
   return runoff;
 } /* of 'daily_natural' */

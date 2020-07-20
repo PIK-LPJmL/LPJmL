@@ -20,7 +20,7 @@
 void new_tree(Pft *pft, /**< Parameter of pft */
               int UNUSED(year),
               int UNUSED(day),
-              int UNUSED(with_nitrogen)
+              int UNUSED(withnitrogen)
              )         
 {
   Pfttree *tree;

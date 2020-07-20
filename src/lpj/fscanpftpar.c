@@ -227,6 +227,8 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,&item,&pft->kNmin,pft->name,"kNmin");
     fscanpftreal(verb,&item,&pft->KNmin,pft->name,"KNmin");
     fscanpftlimit(verb,&item,&cnratio,pft->name,"cnratio_leaf");
+    fscanpftreal(verb,&item,&pft->ncratio_med,pft->name,"cnratio_leaf_median");
+    pft->ncratio_med=1/pft->ncratio_med;
     pft->ncleaf.low=1/cnratio.high;
     pft->ncleaf.high=1/cnratio.low;
     fscanpftreal(verb,&item,&pft->knstore,pft->name,"knstore");

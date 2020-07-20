@@ -44,19 +44,23 @@ void update_reservoir_annual(Cell *cell /**< pointer to cell */
         cell->ml.resdata->mean_volume+=cell->ml.resdata->level_hist[i][j];
       }
     }
-  cell->ml.resdata->mean_inflow/=(count*365); /* mean inflow in liters/day */
-  cell->ml.resdata->mean_demand/=(count*365); /* mean demand in liters/day */
-  cell->ml.resdata->mean_volume/=(count*12); /* mean volume in liters */
-
-  for(j=0;j<NMONTH;j++)
+  if(count>0)
   {
-    cell->ml.resdata->mean_inflow_month[j]/=count;  /*mean inflow in liters/month */
-    cell->ml.resdata->mean_demand_month[j]/=count; /*mean monthly demand in liters/month */
-    cell->ml.resdata->mean_level_month[j]/=count; /*mean monthly level in liters */
+	cell->ml.resdata->mean_inflow/=(count*365); /* mean inflow in liters/day */
+	cell->ml.resdata->mean_demand/=(count*365); /* mean demand in liters/day */
+	cell->ml.resdata->mean_volume/=(count*12); /* mean volume in liters */
+
+
+	for(j=0;j<NMONTH;j++)
+	{
+	  cell->ml.resdata->mean_inflow_month[j]/=count;  /*mean inflow in liters/month */
+	  cell->ml.resdata->mean_demand_month[j]/=count; /*mean monthly demand in liters/month */
+	  cell->ml.resdata->mean_level_month[j]/=count; /*mean monthly level in liters */
+	}
   }
 
   /* update the capacity to inflow ratio */
-  cell->ml.resdata->c=cell->ml.resdata->reservoir.capacity/(cell->ml.resdata->mean_inflow*365);
+  cell->ml.resdata->c=(cell->ml.resdata->mean_inflow>0) ? cell->ml.resdata->reservoir.capacity/(cell->ml.resdata->mean_inflow*365) : 1.0;
 
   /*
    * Find the start of the operational year based on average inflow over the last 20 years
