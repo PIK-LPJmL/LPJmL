@@ -29,7 +29,11 @@
 /*Identifiers (preprocessor only understands integer expressions in #if)*/
 #define GLOBALRUN 0
 #define PIXELRUN  1
-#define DRUN GLOBALRUN
+#define DRUN PIXELRUN //GLOBALRUN
+
+#if (DRUN==PIXELRUN)
+  #define DAILY_OUTPUT
+#endif
 
 #define TIM_1986_2005 0
 #define TIM_2080_2099 1
@@ -517,22 +521,30 @@ ID                         Fmt                    filename
     { "id" : HARVESTN,         "file" : { "fmt" : RAW, "name" : mkstr(output/flux_harvestn.bin)}},
     { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : mkstr(output/sdate.bin)}},
     { "id" : HDATE,            "file" : { "fmt" : RAW, "name" : mkstr(output/hdate.bin)}},
+    { "id" : HUSUM,            "file" : { "fmt" : RAW, "name" : mkstr(output/husum.bin)}},
     { "id" : PFT_HARVESTC,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestc.SUFFIX)}},
     { "id" : PFT_HARVESTN,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestn.SUFFIX)}},
     { "id" : CFT_AIRRIG,       "file" : { "fmt" : RAW, "name" : mkstr(output/cft_airrig.SUFFIX)}},
-    { "id" : CFT_PET,       "file" : { "fmt" : RAW, "name" : mkstr(output/cft_pet.SUFFIX)}},
+    { "id" : CFT_PET,          "file" : { "fmt" : RAW, "name" : mkstr(output/cft_pet.SUFFIX)}},
     { "id" : CFT_TRANSP,       "file" : { "fmt" : RAW, "name" : mkstr(output/cft_transp.SUFFIX)}},
-    { "id" : CFT_EVAP,       "file" : { "fmt" : RAW, "name" : mkstr(output/cft_evap.SUFFIX)}},
+    { "id" : CFT_EVAP,         "file" : { "fmt" : RAW, "name" : mkstr(output/cft_evap.SUFFIX)}},
     { "id" : CFT_INTERC,       "file" : { "fmt" : RAW, "name" : mkstr(output/cft_interc.SUFFIX)}},
     { "id" : CFTFRAC,          "file" : { "fmt" : RAW, "name" : mkstr(output/cftfrac.bin)}},
-    { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : mkstr(output/seasonality.bin)}} //,
+    { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : mkstr(output/seasonality.bin)}},
 #ifdef DAILY_OUTPUT
-    { "id" : D_NPP,            "file" : { "fmt" : RAW, "name" : "output/d_npp.bin"}},
-    { "id" : D_GPP,            "file" : { "fmt" : RAW, "name" : "output/d_gpp.bin"}},
-    { "id" : D_RH,             "file" : { "fmt" : RAW, "name" : "output/d_rh.bin"}},
-    { "id" : D_TRANS,          "file" : { "fmt" : RAW, "name" : "output/d_trans.bin"}},
-    { "id" : D_INTERC,         "file" : { "fmt" : RAW, "name" : "output/d_interc.bin"}},
-    { "id" : D_EVAP,           "file" : { "fmt" : RAW, "name" : "output/d_evap.bin"}},
+    { "id" : D_NPP,            "file" : { "fmt" : RAW, "name" : mkstr(output/d_npp.bin)}},
+    { "id" : D_GPP,            "file" : { "fmt" : RAW, "name" : mkstr(output/d_gpp.bin)}},
+    { "id" : D_RH,             "file" : { "fmt" : RAW, "name" : mkstr(output/d_rh.bin)}},
+    { "id" : D_TRANS,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_trans.bin)}},
+    { "id" : D_INTERC,         "file" : { "fmt" : RAW, "name" : mkstr(output/d_interc.bin)}},
+    { "id" : D_EVAP,           "file" : { "fmt" : RAW, "name" : mkstr(output/d_evap.bin)}},
+    { "id" : D_LAI,            "file" : { "fmt" : RAW, "name" : mkstr(output/d_lai.bin)}},
+    { "id" : D_CLEAF,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_cleaf.bin)}},
+    { "id" : D_CROOT,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_croot.bin)}},
+    { "id" : D_CSO,            "file" : { "fmt" : RAW, "name" : mkstr(output/d_cso.bin)}},
+    { "id" : D_CPOOL,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_cpool.bin)}},
+    { "id" : D_HUSUM,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_husum.bin)}},
+    { "id" : D_VDSUM,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_vdsum.bin)}}
 #endif
 /*    { "id" : MPET,             "file" : { "fmt" : RAW, "name" : "output/mpet.bin"}},
     { "id" : MALBEDO,          "file" : { "fmt" : RAW, "name" : "output/malbedo.bin"}},
@@ -562,8 +574,8 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 #if (DRUN==PIXELRUN)
-  "startgrid" :  7175, //7212, //30115, /*31374, 27410, 67208 60400 all grid cells */
-  "endgrid" :    7234, //7212, //30115,
+  "startgrid" :  7199, //7175, //7212, //30115, /*31374, 27410, 67208 60400 all grid cells */
+  "endgrid" :    7199, //7234, //7212, //30115,
 #else
   "startgrid" :  ALL, /*31374, 27410, 67208 60400 all grid cells */
   "endgrid" :    ALL,
