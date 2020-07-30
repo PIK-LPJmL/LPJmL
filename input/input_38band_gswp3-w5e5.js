@@ -18,15 +18,17 @@
 
 "input" :
 {
-  "soil" :         { "fmt" : META, "name" : "historical/input_VERSION2/soil.descr"},
-  "coord" :        { "fmt" : CLM,  "name" : "historical/input_VERSION2/grid.bin"},
+  "soil" :         { "fmt" : META, "name" : "ISIMIP3/soil_ISISMIP3.descr"},
+//  "soil" :         { "fmt" : META, "name" : "historical/input_VERSION2/soil.descr"},
+  "coord" :        { "fmt" : CLM,  "name" : "ISIMIP3/grid.bin"},
   "countrycode" :  { "fmt" : CLM,  "name" : "historical/input_VERSION2/cow_full_2018.bin"},
-  "no3deposition" : { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/no3_deposition_2015soc_1850-2100.clm"},
-  "nh4deposition" : { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/nh4_deposition_2015soc_1850-2100.clm"},
+  "no3deposition" : { "fmt" : CLM,  "name" : "ISIMIP3/no3_deposition_2015soc_1850-2100.clm"},
+  "nh4deposition" : { "fmt" : CLM,  "name" : "ISIMIP3/nh4_deposition_2015soc_1850-2100.clm"},
   "soilpH" :        { "fmt" : CLM,  "name" : "historical/input_VERSION2/soil_ph.clm"},
-  "landuse" :      { "fmt" : CLM,  "name" : "historical/input_VERSION2/cft2005_38bands_dummy.bin"},
-  "fertilizer_nr" : { "fmt" : CLM,  "name" : "historical/fertilizer/nfertilizer_isimip3b_38bands_2015soc_1850-2015.clm"},
-  "manure_nr" :    { "fmt" : CLM, "name" : "historical/fertilizer/manure_isimip3b_38bands_2015soc_1850-2015.clm"},
+  "landuse" :      { "fmt" : CLM,  "name" : "ISIMIP3/cft_38bands_2015soc_1601-2100.clm"},
+//  "landuse" :      { "fmt" : CLM,  "name" : "historical/input_VERSION2/cft2005_38bands_dummy.bin"},
+  "fertilizer_nr" : { "fmt" : CLM,  "name" : "ISIMIP3/nfertilizer_isimip3b_38bands_2015soc_1850-2015.clm"},
+  "manure_nr" :    { "fmt" : CLM, "name" : "ISIMIP3/manure_isimip3b_38bands_2015soc_1850-2015.clm"},
 //  "with_tillage" : { "fmt" : CLM, "name" : "input_VERSION3/lpj_tillage_CA_1973-2010.clm"},
 //  "residue_on_field" : { "fmt" : CLM, "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
   "sdate" : {"fmt" : CLM, "name" : "crop_calendar/sdates_ggcmi_phase3_v1.01_67420.clm"},  /* insert prescribed sdate file name here */

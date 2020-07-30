@@ -15,15 +15,15 @@
 export LPJROOT=/p/projects/waterforce/jonas/diss/LPJmL/LPJmL_gitlab/LPJmL_ggcmi_phase3
 
 # output directory, script makes subfolders for each run
-simdir="/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3a"
+simdir="/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3b/historical"
 
 # climate forcing
-climate=("agmerra" "wfdei" "gswp3-w5e5")
+climate=("GFDL-ESM4","IPSL-CM6A-LR","MPI-ESM1-2-HR","MRI-ESM2-0","UKESM1-0-LL")
 
 # simulation time period, depending on climte forcing, restart year is 30 years before first year with climate data
-restartyear=(1950 1949 1871)
-startyear=(1980 1979 1901)
-endyear=(2010 2012 2016)
+restartyear=(1820)
+startyear=(1850)
+endyear=(2014)
 
 # CO2 concentration: default = transient, 2015co2 = constant at 2015 level
 co2=("default" "2015co2")
@@ -32,9 +32,9 @@ co2=("default" "2015co2")
 socioecon=("histsoc" "2015soc")
 
 # restart option: CREATE_RESTART or FROM_RESTART
-sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
+#sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
 restartsetup="nv" # use "nv_rr" for spinup with river routing, do not uncomment for "FROM_RESTART" runs, stores information if river routing was used during spinup
-# sim="FROM_RESTART"
+sim="FROM_RESTART"
 nyear_spin=390
 
 if [ $# -lt 1 ]
@@ -58,7 +58,7 @@ fi
 for ((c=2;c<3;c+=1)) # climate forcing
 do
 
-for ((s=0;s<1;s+=1)) # socio-economic option (histsoc = 0, 2005soc = 1)
+for ((s=1;s<2;s+=1)) # socio-economic option (histsoc = 0, 2015soc = 1)
 do
 
 for ((co=0;co<1;co+=1)) # co2 options (default = 0, 2005co2 = 1)
@@ -74,7 +74,7 @@ then
 else
   setup="lpjml_phase3_${climate[c]}_${socioecon[s]}_${co2[co]}_${startyear[c]}_${endyear[c]}"
   args="-DFROM_RESTART"
-  runtime=200
+  runtime=120
 fi
 
 echo $setup
@@ -90,8 +90,7 @@ mkdir -p $outdir
   cat <<EOF >$outdir/$setup.jcf
 #!/bin/bash
 #SBATCH --ntasks=$ntask
-#SBATCH --partition=priority
-#SBATCH --qos=priority
+#SBATCH --qos=short
 #SBATCH --signal=15@180
 #SBATCH --export=ALL
 #SBATCH -J LPJmL50
@@ -101,7 +100,7 @@ mkdir -p $outdir
 #SBATCH --tasks-per-node=16
 #SBATCH --output=$outdir/$setup.out
 #SBATCH --error=$outdir/$setup.err
-#SBATCH --account=open
+#SBATCH --account=macmit
 #SBATCH --job-name=GGCMI3
 #SBATCH --comment="LPJmL Version 5.2.001 for GGCMI Phase 3"
 
@@ -222,7 +221,7 @@ EOF
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-#include "$LPJROOT/input/input_38band_${climate[c]}.js"
+#include "$LPJROOT/input/input_38band_${climate[c]}_historical.js"
 
 /*===================================================================*/
 /*  IV. Output data section                                          */

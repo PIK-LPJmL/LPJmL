@@ -1702,7 +1702,7 @@
     "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
     "phus" : { "low" : 1600.0,  "high" : 1600.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
     "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-    "basetemp": { "low" : 8.0, "high" :  8.0}, /* modified for macmit_intensification, 5-15 */ /* min & max basetemp: base temperature */
+    "basetemp": { "low" : 5.0, "high" :  5.0}, /* modified for macmit_intensification, 5-15 */ /* min & max basetemp: base temperature */
     "fphuc" : 0.10,         /* fphuc: fraction of growing season 1 [0-1]*/
     "flaimaxc" : 0.05,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
     "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
@@ -1808,7 +1808,7 @@
     "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
     "phus" : { "low" : 1600.0,  "high" : 1800.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
     "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-    "basetemp": { "low" : 10.0, "high" :  10.0}, /* min & max basetemp: base temperature */
+    "basetemp": { "low" : 8.0, "high" :  8.0}, /* min & max basetemp: base temperature */
     "fphuc" : 0.10,         /* fphuc: fraction of growing season 1 [0-1]*/
     "flaimaxc" : 0.05,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
     "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
@@ -1914,7 +1914,7 @@
     "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
     "phus" : { "low" : 1600.0,  "high" : 1800.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
     "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-    "basetemp": { "low" : 10.0, "high" :  10.0}, /* min & max basetemp: base temperature */
+    "basetemp": { "low" : 8.0, "high" :  8.0}, /* min & max basetemp: base temperature */
     "fphuc" : 0.10,         /* fphuc: fraction of growing season 1 [0-1]*/
     "flaimaxc" : 0.05,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
     "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
@@ -2020,7 +2020,7 @@
     "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
     "phus" : { "low" : 1000.0,  "high" : 1000.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
     "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-    "basetemp": { "low" : 10.0, "high" :  10.0}, /* min & max basetemp: base temperature */
+    "basetemp": { "low" : 7.0, "high" :  7.0}, /* min & max basetemp: base temperature */
     "fphuc" : 0.15,         /* fphuc: fraction of growing season 1 [0-1]*/
     "flaimaxc" : 0.05,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
     "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
@@ -2126,7 +2126,7 @@
     "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
     "phus" : { "low" : 1500.0,  "high" : 1500.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
     "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-    "basetemp": { "low" : 10.0, "high" :  10.0}, /* min & max basetemp: base temperature */
+    "basetemp": { "low" : 8.0, "high" :  8.0}, /* min & max basetemp: base temperature */
     "fphuc" : 0.15,         /* fphuc: fraction of growing season 1 [0-1]*/
     "flaimaxc" : 0.01,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1]*/
     "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1]*/
@@ -2232,7 +2232,7 @@
     "phuw" : { "low" : 0.0,  "high" : 0.0}, /* min & max phu: potential heat units required for plant maturity winter(deg C)*/
     "phus" : { "low" : 1500.0,  "high" : 1500.0}, /* min & max phu: potential heat units required for plant maturity summer(deg C)*/
     "phu_par" : 9999,        /* phu parameter for determining the variability of phu */
-    "basetemp": { "low" : 10.0, "high" :  10.0}, /* min & max basetemp: base temperature, based on SWIM chapter 3, Table 3.13 (https://www.pik-potsdam.de/members/valen/swim/swim-ch-3/view) */
+    "basetemp": { "low" : 8.0, "high" :  8.0}, /* min & max basetemp: base temperature, based on SWIM chapter 3, Table 3.13 (https://www.pik-potsdam.de/members/valen/swim/swim-ch-3/view) */
     "fphuc" : 0.15,         /* fphuc: fraction of growing season 1 [0-1], based on SWIM chapter 3, Table 3.13 (https://www.pik-potsdam.de/members/valen/swim/swim-ch-3/view) */
     "flaimaxc" : 0.05,      /* flaimaxc: fraction of plant maximal LAI 1 [0-1], based on SWIM chapter 3, Table 3.13 (https://www.pik-potsdam.de/members/valen/swim/swim-ch-3/view) */
     "fphuk" : 0.50,         /* fphuk: fraction of growing season 2 [0-1], based on SWIM chapter 3, Table 3.13 (https://www.pik-potsdam.de/members/valen/swim/swim-ch-3/view) */

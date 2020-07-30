@@ -46,8 +46,8 @@
   "const_deposition" : false,
 #ifdef FROM_RESTART
   "population" : false,
-  "landuse" : CONST_LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS, ONLY_CROPS (crops scaled to 100% of cell) */
-  "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
+  "landuse" : ALL_CROPS, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS, ONLY_CROPS (crops scaled to 100% of cell) */
+  "landuse_year_const" : 1979, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
 #else
@@ -60,14 +60,14 @@
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : PRESCRIBED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "crop_phu_option" : PRESCRIBED_CROP_PHU,    /* PRESCRIBED_CROP_PHU (PHU dataset used, requires PRESCRIBED_SDATE), SEMISTATIC_CROP_PHU (LPJmL4 semi-static PHU approach) */
-  "sdate_fixyear" : 2000,               /* year in which sowing dates shall be fixed */
+  "sdate_fixyear" : 1979,               /* year in which sowing dates shall be fixed */
   "intercrop" : true,                   /* intercrops on setaside */
-  "residue_treatment" : NO_RESIDUE_REMOVE, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
+  "residue_treatment" : FIXED_RESIDUE_REMOVE, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
   "irrigation" : POT_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
-  "tillage_type" : NO_TILLAGE,          /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
+  "tillage_type" : TILLAGE,          /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
   "black_fallow" : false,               /* simulation with black fallow on PNV */
-  "no_ndeposition" : true,             /* turn off atmospheric N deposition */
+  "no_ndeposition" : false,             /* turn off atmospheric N deposition */
   "laimax_interpolate" : LAIMAX_PAR,    /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
@@ -158,8 +158,8 @@ ID                         Fmt                    filename
 
 #else
 
-  "nspinup" : 2,   /* spinup years */
-  "nspinyear" : 2,  /* cycle length during spinup (yr)*/
+  "nspinup" : 30,   /* spinup years */
+  "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1979, /* first year of simulation */
   "lastyear" : 2012, /* last year of simulation */
   "outputyear": 1979, /* first year output is written  */

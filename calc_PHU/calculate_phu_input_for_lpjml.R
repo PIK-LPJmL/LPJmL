@@ -39,12 +39,12 @@ clm_paths=c(
 path.tas=clm_paths[clim_arg]
 
 # specifiy time period for which PHUs are calculated 
-startyear=c(1980,1979,1988)[clim_arg] # list of start dates for the respective climate forcing data sets
-endyear=c(2010,2012,2018)[clim_arg] # list of end dates for the respective climate forcing data sets
+startyear=c(1980,1979,1979)[clim_arg] # list of start dates for the respective climate forcing data sets
+endyear=c(2010,2012,2010)[clim_arg] # list of end dates for the respective climate forcing data sets
 
 # specify start and end of climate forcing data
 climate_start=c(1980,1979,1901)[clim_arg]
-climate_end=c(2010,2012,2018)[clim_arg]
+climate_end=c(2010,2012,2016)[clim_arg]
 
 ### ------------------------------------------------------------------------------------------------- ###
 
