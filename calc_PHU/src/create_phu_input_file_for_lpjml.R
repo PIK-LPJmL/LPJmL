@@ -74,7 +74,7 @@ header.float <- c(0.5,1) # cell size and scaling factor, new in new header
 ### ---------------------------------------------------------------------------------- ###
 # write to file
 
-con=file(paste0(path.out,"phu_",climate_data,"_",crop_calendar,"_",ncell,".clm",sep=""),"wb")
+con=file(paste0(path.out,"PHU_",climate_data,"_",crop_calendar,".bin",sep=""),"wb")
 writeBin(as.raw(header.s),con,size=1)
 writeBin(as.integer(header.int),con,size=4)
 writeBin(as.double(header.float),con,size=4)
