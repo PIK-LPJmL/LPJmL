@@ -74,7 +74,7 @@ core-*
 *.rdata
 *.m
 *.N
-*.csv
+#*.csv
 *.CSV
 
 # Common desktop formats
