@@ -93,8 +93,8 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
       crop->vdsum+=max(0,vd_inc);
 
       /* Calculation of vernalization reduction factor */
-      vd_b=pft->stand->cell->climbuf.V_req[pft->par->id-npft]/5; /* base requirements, 20% of total vernalization requirements */
-      //vd_b=0; /* macmit_intensification: setting vd_b to zero to allow some crop development of winter types in autumn */
+      // vd_b=pft->stand->cell->climbuf.V_req[pft->par->id-npft]/5; /* base requirements, 20% of total vernalization requirements */
+      vd_b=pft->stand->cell->climbuf.V_req[pft->par->id-npft]*0.01; /* macmit_intensification: modified base requirements */
 
       if (crop->vdsum<vd_b) /* no phenological development before 20% of vern. requirements are accumulated */
         vrf=0.0;            /* ToDo: hu sums are not accumulated until V_b is reached; causes autumn heat sums to be neglected. This is not a problem if PHUs are calculated the same way */

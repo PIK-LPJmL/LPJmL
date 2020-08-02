@@ -30,28 +30,61 @@ gs_length <- function(pl,hv){
 # this is the rule suggested by Portman et al. 2010, slightly changed in that <=7 instead of 6°C is used
 # more details in "/p/projects/waterforce/jonas/R_functions/wintercrop.R"
 
+#wintercrop<-function(start,end) {
+
+#  cm=cold_m_temp # temp of coldest month 
+#  wc=start
+#  length=gs_length(start,end)
+
+#  wc[which(!is.na(start))]=0
+#  for(i in 1:length(wc)) {
+#    if(!is.na(start[i]) && start[i]>0 && !is.na(lat[i]) && !is.na(cm[i])) {
+#      if(lat[i]>0) {
+#        if(((start[i] + length[i] > 365) && (length[i] >= 150)) && (cm[i]>= -10 && cm[i]<= 7)) {
+#          wc[i]=1
+#        }
+#      } else {
+#        if(((start[i]<182) && (start[i] + length[i] > 182) && (length[i] >= 150)) && (cm[i]>= -10 && cm[i]<= 7)) {
+#          wc[i]=1
+#        }
+#      }
+#    }
+#  } # cell
+#  return(wc)
+#}
+
+### ------------------------ ###
+# tests if given season should be classified as winter crop
+# approach consistent with rule-based sowing date
+
+earliest_sd_nh=243  # Aug 31, based on MIRAC
+earliest_sd_sh=59 # Mar 30, based on MIRCA
+latest_sd_nh=365 # Dec 31
+latest_sd_sh=212 # June 31 + 30 days
+
+
 wintercrop<-function(start,end) {
+        
+        coldestm=cold_m_temp # temp of coldest month
 
-  cm=cold_m_temp # temp of coldest month 
-  wc=start
-  length=gs_length(start,end)
+	wc=array(0,length(start))
 
-  wc[which(!is.na(start))]=0
-  for(i in 1:length(wc)) {
-    if(!is.na(start[i]) && start[i]>0 && !is.na(lat[i]) && !is.na(cm[i])) {
-      if(lat[i]>0) {
-        if(((start[i] + length[i] > 365) && (length[i] >= 150)) && (cm[i]>= -10 && cm[i]<= 7)) {
-          wc[i]=1
-        }
-      } else {
-        if(((start[i]<182) && (start[i] + length[i] > 182) && (length[i] >= 150)) && (cm[i]>= -10 && cm[i]<= 7)) {
-          wc[i]=1
-        }
-      }
-    }
-  } # cell
-  return(wc)
+	for(i in 1:length(start)) {
+		if(lat[i]>0) {
+		  if((start[i] > earliest_sd_nh && start[i] <= latest_sd_nh) && coldestm[i]<=10) {
+		    wc[i]=1
+		  }
+		} else {
+		  if((start[i] > earliest_sd_sh && start[i] <= latest_sd_sh) && coldestm[i]<=10) {
+		    wc[i]=1
+		  }
+		}
+	}
+	return(wc)
 }
+
+
+
 
 ### ------------------------------------------------------------------------------------------------- ###
 
