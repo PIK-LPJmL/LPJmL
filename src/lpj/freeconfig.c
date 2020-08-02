@@ -93,6 +93,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(config->tmax_filename);
   }
   if(config->withlanduse>NO_LANDUSE)
+    if(config->tmin_filename.name!=NULL)
+      freefilename(config->tmin_filename);
     if(config->tmax_filename.name!=NULL)
       freefilename(config->tmax_filename);
 #else
