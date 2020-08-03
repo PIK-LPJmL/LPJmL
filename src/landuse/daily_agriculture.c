@@ -43,6 +43,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 {
   int p,l;
   Pft *pft;
+  const Pftpar *pftpar;
   Real aet_stand[LASTLAYER];
   Real green_transp[LASTLAYER];
   Real evap,evap_blue,rd,gpp,frac_g_evap,runoff,wet_all,intercept,sprink_interc;
@@ -84,6 +85,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 
   foreachpft(pft,p,&stand->pftlist)
   {
+    pftpar=pft->par;
 #ifdef CROPSHEATFROST
     /* kill crop at frost events */
     if(climate->tmin<(-5))
@@ -245,14 +247,13 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     {
       /* write irrig_apply to output */
       output->mirrig+=irrig_apply*stand->frac;
-      pft=getpft(&stand->pftlist,0);
 #ifndef DOUBLE_HARVEST
       if(config->pft_output_scaled)
-        output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->frac;
+        output->cft_airrig[pftpar->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->frac;
       else
-        output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
+        output->cft_airrig[pftpar->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
 #endif
-      if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)
+      if(pftpar->id==output->daily.cft && data->irrigation==output->daily.irrigation)
         output->daily.irrig=irrig_apply;
     }
   }
@@ -280,7 +281,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config);
     /* count irrigation events*/
     pft=getpft(&stand->pftlist,0);
-    output->cft_irrig_events[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
+    output->cft_irrig_events[pftpar->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
   runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,withdailyoutput,config);
