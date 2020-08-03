@@ -86,6 +86,8 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
           vd_inc=(par->tv_eff.high-temp)/(par->tv_eff.high-par->tv_opt.high);
         else if (temp>=par->tv_opt.low && temp<par->tv_opt.high)                    /* temp within optimal conditions */
           vd_inc=1.0;
+        else
+          vd_inc=0.0;
       }
       else
         vd_inc=0.0;
