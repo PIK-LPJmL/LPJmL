@@ -29,7 +29,7 @@
 /*Identifiers (preprocessor only understands integer expressions in #if)*/
 #define GLOBALRUN 0
 #define PIXELRUN  1
-#define DRUN PIXELRUN //GLOBALRUN
+#define DRUN PIXELRUN // GLOBALRUN
 
 #if (DRUN==PIXELRUN)
   #define DAILY_OUTPUT
@@ -574,8 +574,8 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 #if (DRUN==PIXELRUN)
-  "startgrid" :  7199, //7175, //7212, //30115, /*31374, 27410, 67208 60400 all grid cells */
-  "endgrid" :    7199, //7234, //7212, //30115,
+  "startgrid" :  7189, //7175, //7212, //30115, /*31374, 27410, 67208 60400 all grid cells */
+  "endgrid" :    7189, //7234, //7212, //30115,
 #else
   "startgrid" :  ALL, /*31374, 27410, 67208 60400 all grid cells */
   "endgrid" :    ALL,
