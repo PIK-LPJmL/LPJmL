@@ -543,6 +543,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     climate->data.tmin=NULL;
 
 #else
+  climate->data.tmin=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->tmax_filename.name!=NULL)
