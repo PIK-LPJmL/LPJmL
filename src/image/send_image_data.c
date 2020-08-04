@@ -659,35 +659,102 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
   getcounts(counts,offsets,config->nall,NBPOOLS,config->ntask);
   mpi_write_socket(config->out,biomass_image,MPI_FLOAT,
                    config->nall*NBPOOLS,counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,biomass_image_nat,MPI_FLOAT,
+                   config->nall*NBPOOLS,counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,biomass_image_wp,MPI_FLOAT,
+                   config->nall*NBPOOLS,counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,biomass_image_agr,MPI_FLOAT,
+                   config->nall*NBPOOLS,counts,offsets,config->rank,config->comm);
   getcounts(counts,offsets,config->nall,1,config->ntask);
   mpi_write_socket(config->out,biome_image,MPI_INT,config->nall,
                    counts,offsets,config->rank,config->comm);
   mpi_write_socket(config->out,nep_image,MPI_FLOAT,config->nall,
                    counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,nep_image_nat,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,nep_image_wp,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,nep_image_agr,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
   mpi_write_socket(config->out,npp_image,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,npp_image_nat,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,npp_image_wp,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,npp_image_agr,MPI_FLOAT,config->nall,
                    counts,offsets,config->rank,config->comm);
 #ifdef SENDSEP
   mpi_write_socket(config->out,rh_image,MPI_FLOAT,config->nall,
                    counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,rh_image_nat,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,rh_image_wp,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,rh_image_agr,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
   mpi_write_socket(config->out,harvest_agric_image,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,harvest_agric_image_agr,MPI_FLOAT,config->nall,
                    counts,offsets,config->rank,config->comm);
   mpi_write_socket(config->out,harvest_biofuel_image,MPI_FLOAT,config->nall,
                    counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,harvest_biofuel_image_agr,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
   mpi_write_socket(config->out,harvest_timber_image,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,harvest_timber_image_nat,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,harvest_timber_image_wp,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,harvest_timber_image_wp,MPI_FLOAT,config->nall,
                    counts,offsets,config->rank,config->comm);
 #endif
   mpi_write_socket(config->out,fire_image,MPI_FLOAT,config->nall,
                    counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,fire_image_nat,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,fire_image_wp,MPI_FLOAT,config->nall,
+                   counts,offsets,config->rank,config->comm);
   rc=mpi_write_socket(config->out,fireemission_deforest_image,MPI_FLOAT,
+                   config->nall,counts,offsets,config->rank,config->comm);
+  rc=mpi_write_socket(config->out,fireemission_deforest_image_agr,MPI_FLOAT,
                    config->nall,counts,offsets,config->rank,config->comm);
 #ifdef SENDSEP
   mpi_write_socket(config->out,product_turnover_fast_image,MPI_FLOAT,
                    config->nall,counts,offsets,config->rank,config->comm);
   mpi_write_socket(config->out,product_turnover_slow_image,MPI_FLOAT,
                    config->nall,counts,offsets,config->rank,config->comm);
-  rc=mpi_write_socket(config->out,trad_biofuel_image,MPI_FLOAT,
+  mpi_write_socket(config->out,trad_biofuel_image,MPI_FLOAT,
+                   config->nall,counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,trad_biofuel_image_nat,MPI_FLOAT,
+                   config->nall,counts,offsets,config->rank,config->comm);
+  rc=mpi_write_socket(config->out,trad_biofuel_image_wp,MPI_FLOAT,
                    config->nall,counts,offsets,config->rank,config->comm);
 #endif
+/* sending yield data to interface -- needs to be read at the same position! */
+  getcounts(counts,offsets,config->nall,ncrops,config->ntask);
+  mpi_write_socket(config->out,yields,MPI_FLOAT,
+                   config->nall*ncrops,counts,offsets,config->rank,config->comm);
+  getcounts(counts,offsets,config->nall,1,config->ntask);
+  mpi_write_socket(config->out,adischarge,MPI_FLOAT,
+                   config->nall,counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,nppgrass_image,MPI_FLOAT,
+                   config->nall,counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,natfrac_image,MPI_FLOAT,
+                   config->nall,counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,wpfrac_image,MPI_FLOAT,
+                   config->nall,counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,agrfrac_image,MPI_FLOAT,
+                   config->nall,counts,offsets,config->rank,config->comm);
+  getcounts(counts,offsets,config->nall,NMONTH,config->ntask);
+  mpi_write_socket(config->out,monthirrig,MPI_FLOAT,
+                   config->nall*NMONTH,counts,offsets,config->rank,config->comm);
+  mpi_write_socket(config->out,monthevapotr,MPI_FLOAT,
+                   config->nall*NMONTH,counts,offsets,config->rank,config->comm);
+  rc=mpi_write_socket(config->out,monthpetim,MPI_FLOAT,
+                      config->nall*NMONTH,counts,offsets,config->rank,config->comm);
+
   free(counts);
   free(offsets);
 #else
