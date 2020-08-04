@@ -130,7 +130,8 @@ void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
                     Real aetp,           /**< annual evapotranspiration (mm) */
                     int ncft,            /**< number of crop pfts */
                     int year,            /**< current year */
-                    const Config *config /**< config */
+                    int crop_phu_option,
+                    int sdate_fixyear    /**< year in which sowing dates shall be fixed */
                    )
 {
   int m;
@@ -144,10 +145,10 @@ void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
   climbuf->aprec=0;
   for(m=0;m<NMONTH;m++)
     climbuf->aprec+=climbuf->mprec20[m];
-  if(config->crop_phu_option==PRESCRIBED_CROP_PHU && year<=config->sdate_fixyear) /* update only until sdate_fixyear */
+  if(crop_phu_option==PRESCRIBED_CROP_PHU && year<=sdate_fixyear) /* update only until sdate_fixyear */
   {
-    for (cft=0;cft<ncft;cft++)
-  	  climbuf->V_req[cft]= (climbuf->V_req[cft]< -9998) ? climbuf->V_req_a[cft] : (1-kk)*climbuf->V_req[cft]+kk*climbuf->V_req_a[cft];
+    for(cft=0;cft<ncft;cft++)
+      climbuf->V_req[cft]= (climbuf->V_req[cft]< -9998) ? climbuf->V_req_a[cft] : (1-kk)*climbuf->V_req[cft]+kk*climbuf->V_req_a[cft];
   }
 } /* of 'annual_climbuf' */
 

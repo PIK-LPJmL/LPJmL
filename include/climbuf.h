@@ -61,7 +61,7 @@ extern void init_climbuf(Climbuf *,int);
 extern void daily_climbuf(Climbuf *,Real);
 extern void getmintemp20_n(const Climbuf *,Real [],int);
 extern void monthly_climbuf(Climbuf *,Real,Real,Real,int);
-//extern void annual_climbuf(Climbuf *,Real,int,int,const Config *);
+extern void annual_climbuf(Climbuf *,Real,int,int,int,int);
 extern Bool fwriteclimbuf(FILE *,const Climbuf *,int);
 extern Bool freadclimbuf(FILE *,Climbuf *,Bool,int);
 extern void freeclimbuf(Climbuf *);

@@ -54,7 +54,7 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
      }
   }
 
-  annual_climbuf(&cell->climbuf,cell->output.aevap+cell->output.atransp,ncft,year,config);
+  annual_climbuf(&cell->climbuf,cell->output.aevap+cell->output.atransp,ncft,year,config->crop_phu_option,config->sdate_fixyear);
   if(config->sdate_option==NO_FIXED_SDATE ||
     (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear)||
     (config->sdate_option==PRESCRIBED_SDATE && year<=config->sdate_fixyear))
