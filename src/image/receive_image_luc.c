@@ -266,6 +266,7 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
   image_takeaway = newvec(Takeaway,config->ngridcell);
   check(image_takeaway);
 #ifdef USE_MPI
+  /* The MPI part has to not been tested so far */
   counts=newvec(int,config->ntask);
   check(counts);
   offsets=newvec(int,config->ntask);

@@ -652,6 +652,7 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
 
   /* send data */
 #ifdef USE_MPI
+  /* The MPI part has to not been tested so far */
   counts=newvec(int,config->ntask);
   check(counts);
   offsets=newvec(int,config->ntask);
