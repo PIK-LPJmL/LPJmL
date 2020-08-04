@@ -96,6 +96,7 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
   int *image_data_int;
 #ifdef USE_MPI
   int *counts,*offsets;
+  MPI_Datatype datatype;
 #endif
 
   /* get timber harvest shares from IMAGE */
@@ -270,14 +271,19 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
   offsets=newvec(int,config->ntask);
   check(offsets);
   getcounts(counts,offsets,config->nall,1,config->ntask);
-  if(socket_readall(config->in,image_takeaway,MPI_FLOAT,config->nall,counts,
-                    offsets,config->rank,config->comm))
+  MPI_Type_contiguous(NIMAGETREEPARTS,MPI_FLOAT,&datatype);
+  MPI_Type_commit(&datatype);
+
+  if(mpi_read_socket(config->in,image_takeaway,datatype,config->nall,counts,
+                     offsets,config->rank,config->comm))
   {
     free(offsets);
     free(counts);
     free(image_takeaway);
+    MPI_Type_free(&datatype);
     return TRUE;
   }
+  MPI_Type_free(&datatype);
 #else
 #ifdef DEBUG_IMAGE
   printf("getting takeaway fractions\n");

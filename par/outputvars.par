@@ -205,8 +205,10 @@ layer /* name of index variabel for soil layer output */
   MGCONS_IRR "mgcons_irr" "gcons_irr" "monthly green water consumption on irrigated stands " "mm" 1.0 0.0
   MBCONS_IRR "mbcons_irr" "bcons_irr" "monthly blue water consumption on irrigated stands " "mm" 1.0 0.0
   AWATERUSE_HIL "awateruse_hil" "wateruse_hil" "" "l/yr" 1.0 0.0
+#ifdef IMAGE
   WATERUSECONS "waterusecons" "waterusecons" "" "m3/day" 1.0 0.0
   WATERUSEDEM "waterusedem" "waterusedem" "" "m3/day" 1.0 0.0
+#endif
   MFAPAR "mfapar" "FPAR" "fraction of absorbed PAR" "" 1.0 0.0
   MALBEDO "malbedo" "albedo" "" "" 1.0 0.0
   MPHEN_TMIN "mphen_tmin" "phen_tmin" "" "" 1.0 0.0

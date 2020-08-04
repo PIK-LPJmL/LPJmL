@@ -29,6 +29,7 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
                      int ncft                /**< number of crop PFTs */
                     )                        /**< return TRUE on error */
 {
+  int m;
   float agrfrac, natfrac, wpfrac,*agrfrac_image, *natfrac_image,*wpfrac_image;
   Bool rc;
   float *nep_image;
@@ -37,11 +38,11 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
   float *npp_image,*fire_image,*fireemission_deforest_image;
   float *fire_image_nat,*fire_image_wp,*fireemission_deforest_image_agr;
 
-  cropyield_to_image *yields;
+  float **yields;
   float *adischarge;
-  mirrig_to_image *monthirrig;
-  mirrig_to_image *monthevapotr;
-  mirrig_to_image *monthpetim;
+  Mirrig_to_image *monthirrig;
+  Mirrig_to_image *monthevapotr;
+  Mirrig_to_image *monthpetim;
   float *nppgrass_image;
   float *npp_image_nat,*npp_image_wp,*npp_image_agr,*nep_image_nat,*nep_image_wp,*nep_image_agr;
 #ifdef SENDSEP
@@ -63,15 +64,13 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
   int *counts,*offsets;
 #endif
   ncrops = 2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
-/*  yields_image=newvec(float *,config.ngridcell);
-  check(yields_image);*/
-  yields=newvec(cropyield_to_image,config->ngridcell);
+  yields=newmatrix(float,config->ngridcell,ncrops);
   check(yields);  
-  monthirrig=newvec(mirrig_to_image,config->ngridcell);
+  monthirrig=newvec(Mirrig_to_image,config->ngridcell);
   check(monthirrig);  
-  monthevapotr = newvec(mirrig_to_image, config->ngridcell);
+  monthevapotr = newvec(Mirrig_to_image, config->ngridcell);
   check(monthevapotr);
-  monthpetim = newvec(mirrig_to_image, config->ngridcell);
+  monthpetim = newvec(Mirrig_to_image, config->ngridcell);
   check(monthpetim);
   adischarge=newvec(float,config->ngridcell);
   check(adischarge);
@@ -163,7 +162,7 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
   /* allocating memory to list of yields_image pointers */
   /* VORtech: a list of pointers to vectors written to the socket is not correctly handled by
      the TDT library, as a workaround we defined the struct cropyield_to_image */
-  /*    yields_image[cell]=newvec(float,ncrops); /* here we could check if it is more
+  /*    yields_image[cell]=newvec(float,ncrops);  here we could check if it is more
                                                 reasonable to send only yield for the 19
                                                 crops known in IMAGE -- c.f. also our
                                                 discussion on what crops to force where:
@@ -175,80 +174,14 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
 /*    check(yields_image[cell]);*/
 /*    for(i=0;i<ncrops;i++) yields_image[cell][i] = 0.0;*/
     /* initializing to have zeros in skipped cells */
-    yields[cell].temp_cereals  = 0.0;
-    yields[cell].rice          = 0.0;
-    yields[cell].maize         = 0.0;
-    yields[cell].trop_cereals  = 0.0;
-    yields[cell].pulses        = 0.0;
-    yields[cell].temp_roots    = 0.0;
-    yields[cell].trop_roots    = 0.0;
-    yields[cell].sunflower     = 0.0;
-    yields[cell].soybean       = 0.0;
-    yields[cell].groundnut     = 0.0;
-    yields[cell].rapeseed      = 0.0;
-    yields[cell].sugarcane     = 0.0;
-    yields[cell].others        = 0.0;
-    yields[cell].managed_grass = 0.0;
-    yields[cell].biomass_grass = 0.0;
-    yields[cell].biomass_tree  = 0.0;
-    yields[cell].woodplantation  = 0.0;
-    yields[cell].irrig_temp_cereals  = 0.0;
-    yields[cell].irrig_rice          = 0.0;
-    yields[cell].irrig_maize         = 0.0;
-    yields[cell].irrig_trop_cereals  = 0.0;
-    yields[cell].irrig_pulses        = 0.0;
-    yields[cell].irrig_temp_roots    = 0.0;
-    yields[cell].irrig_trop_roots    = 0.0;
-    yields[cell].irrig_sunflower     = 0.0;
-    yields[cell].irrig_soybean       = 0.0;
-    yields[cell].irrig_groundnut     = 0.0;
-    yields[cell].irrig_rapeseed      = 0.0;
-    yields[cell].irrig_sugarcane     = 0.0;
-    yields[cell].irrig_others        = 0.0;
-    yields[cell].irrig_managed_grass = 0.0;
-    yields[cell].irrig_biomass_grass = 0.0;
-    yields[cell].irrig_biomass_tree  = 0.0;
-    yields[cell].irrig_woodplantation  = 0.0;
-
-    monthirrig[cell].jan = 0.0;
-    monthirrig[cell].feb = 0.0;
-    monthirrig[cell].mar = 0.0;
-    monthirrig[cell].apr = 0.0;
-    monthirrig[cell].may = 0.0;
-    monthirrig[cell].jun = 0.0;
-    monthirrig[cell].jul = 0.0;
-    monthirrig[cell].aug = 0.0;
-    monthirrig[cell].sep = 0.0;
-    monthirrig[cell].oct = 0.0;
-    monthirrig[cell].nov = 0.0;
-    monthirrig[cell].dec= 0.0;
-
-    monthevapotr[cell].jan = 0.0;
-    monthevapotr[cell].feb = 0.0;
-    monthevapotr[cell].mar = 0.0;
-    monthevapotr[cell].apr = 0.0;
-    monthevapotr[cell].may = 0.0;
-    monthevapotr[cell].jun = 0.0;
-    monthevapotr[cell].jul = 0.0;
-    monthevapotr[cell].aug = 0.0;
-    monthevapotr[cell].sep = 0.0;
-    monthevapotr[cell].oct = 0.0;
-    monthevapotr[cell].nov = 0.0;
-    monthevapotr[cell].dec = 0.0;
-
-    monthpetim[cell].jan = 0.0;
-    monthpetim[cell].feb = 0.0;
-    monthpetim[cell].mar = 0.0;
-    monthpetim[cell].apr = 0.0;
-    monthpetim[cell].may = 0.0;
-    monthpetim[cell].jun = 0.0;
-    monthpetim[cell].jul = 0.0;
-    monthpetim[cell].aug = 0.0;
-    monthpetim[cell].sep = 0.0;
-    monthpetim[cell].oct = 0.0;
-    monthpetim[cell].nov = 0.0;
-    monthpetim[cell].dec = 0.0;
-        
+    for(i=0;i<ncrops;i++)
+      yields[cell][i]  = 0.0;
+    for(m=0;m<NMONTH;m++)
+    {
+      monthirrig[cell][m] = 0.0;
+      monthevapotr[cell][m] = 0.0;
+      monthpetim[cell][m] = 0.0;
+    }     
     adischarge[cell]=0.0;
     nep_image[cell]=npp_image[cell]=
     fire_image[cell]=fireemission_deforest_image[cell]=0.0;
@@ -310,91 +243,23 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
   {
     if(!grid[cell].skip)
     {
-        /*for(i=0;i<ncrops;i++)
-        yields_image[cell][i] = (float)grid[cell].output.pft_harvest[i].harvest; */
+        for(i=0;i<ncrops;i++)
+          yields[cell][i] = (float)grid[cell].output.pft_harvest[i].harvest;
         
-      /* assigning values to yields_image[cell][] */
-      yields[cell].temp_cereals  = (float)grid[cell].output.pft_harvest[0].harvest;
-      yields[cell].rice          = (float)grid[cell].output.pft_harvest[1].harvest;
-      yields[cell].maize         = (float)grid[cell].output.pft_harvest[2].harvest;
-      yields[cell].trop_cereals  = (float)grid[cell].output.pft_harvest[3].harvest;
-      yields[cell].pulses        = (float)grid[cell].output.pft_harvest[4].harvest;
-      yields[cell].temp_roots    = (float)grid[cell].output.pft_harvest[5].harvest;
-      yields[cell].trop_roots    = (float)grid[cell].output.pft_harvest[6].harvest;
-      yields[cell].sunflower     = (float)grid[cell].output.pft_harvest[7].harvest;
-      yields[cell].soybean       = (float)grid[cell].output.pft_harvest[8].harvest;
-      yields[cell].groundnut     = (float)grid[cell].output.pft_harvest[9].harvest;
-      yields[cell].rapeseed      = (float)grid[cell].output.pft_harvest[10].harvest;
-      yields[cell].sugarcane     = (float)grid[cell].output.pft_harvest[11].harvest;
-      yields[cell].others        = (float)grid[cell].output.pft_harvest[12].harvest;
-      yields[cell].managed_grass = (float)grid[cell].output.pft_harvest[13].harvest;
-      yields[cell].biomass_grass = (float)grid[cell].output.pft_harvest[14].harvest;
-      yields[cell].biomass_tree  = (float)grid[cell].output.pft_harvest[15].harvest;
-      yields[cell].woodplantation  = (float)grid[cell].output.pft_harvest[16].harvest;
-      yields[cell].irrig_temp_cereals  = (float)grid[cell].output.pft_harvest[17].harvest;
-      yields[cell].irrig_rice          = (float)grid[cell].output.pft_harvest[18].harvest;
-      yields[cell].irrig_maize         = (float)grid[cell].output.pft_harvest[19].harvest;
-      yields[cell].irrig_trop_cereals  = (float)grid[cell].output.pft_harvest[20].harvest;
-      yields[cell].irrig_pulses        = (float)grid[cell].output.pft_harvest[21].harvest;
-      yields[cell].irrig_temp_roots    = (float)grid[cell].output.pft_harvest[22].harvest;
-      yields[cell].irrig_trop_roots    = (float)grid[cell].output.pft_harvest[23].harvest;
-      yields[cell].irrig_sunflower     = (float)grid[cell].output.pft_harvest[24].harvest;
-      yields[cell].irrig_soybean       = (float)grid[cell].output.pft_harvest[25].harvest;
-      yields[cell].irrig_groundnut     = (float)grid[cell].output.pft_harvest[26].harvest;
-      yields[cell].irrig_rapeseed      = (float)grid[cell].output.pft_harvest[27].harvest;
-      yields[cell].irrig_sugarcane     = (float)grid[cell].output.pft_harvest[28].harvest;
-      yields[cell].irrig_others        = (float)grid[cell].output.pft_harvest[29].harvest;
-      yields[cell].irrig_managed_grass = (float)grid[cell].output.pft_harvest[30].harvest;
-      yields[cell].irrig_biomass_grass = (float)grid[cell].output.pft_harvest[31].harvest;
-      yields[cell].irrig_biomass_tree  = (float)grid[cell].output.pft_harvest[32].harvest;
-      yields[cell].irrig_woodplantation= (float)grid[cell].output.pft_harvest[33].harvest;
 
-      monthirrig[cell].jan  = (float)grid[cell].ml.image_data->mirrwatdem[0];
-      monthirrig[cell].feb  = (float)grid[cell].ml.image_data->mirrwatdem[1];
-      monthirrig[cell].mar  = (float)grid[cell].ml.image_data->mirrwatdem[2];
-      monthirrig[cell].apr  = (float)grid[cell].ml.image_data->mirrwatdem[3];
-      monthirrig[cell].may  = (float)grid[cell].ml.image_data->mirrwatdem[4];
-      monthirrig[cell].jun  = (float)grid[cell].ml.image_data->mirrwatdem[5];
-      monthirrig[cell].jul  = (float)grid[cell].ml.image_data->mirrwatdem[6];
-      monthirrig[cell].aug  = (float)grid[cell].ml.image_data->mirrwatdem[7];
-      monthirrig[cell].sep  = (float)grid[cell].ml.image_data->mirrwatdem[8];
-      monthirrig[cell].oct  = (float)grid[cell].ml.image_data->mirrwatdem[9];
-      monthirrig[cell].nov  = (float)grid[cell].ml.image_data->mirrwatdem[10];
-      monthirrig[cell].dec  = (float)grid[cell].ml.image_data->mirrwatdem[11];
-      
-      monthevapotr[cell].jan = (float)grid[cell].ml.image_data->mevapotr[0];
-      monthevapotr[cell].feb = (float)grid[cell].ml.image_data->mevapotr[1];
-      monthevapotr[cell].mar = (float)grid[cell].ml.image_data->mevapotr[2];
-      monthevapotr[cell].apr = (float)grid[cell].ml.image_data->mevapotr[3];
-      monthevapotr[cell].may = (float)grid[cell].ml.image_data->mevapotr[4];
-      monthevapotr[cell].jun = (float)grid[cell].ml.image_data->mevapotr[5];
-      monthevapotr[cell].jul = (float)grid[cell].ml.image_data->mevapotr[6];
-      monthevapotr[cell].aug = (float)grid[cell].ml.image_data->mevapotr[7];
-      monthevapotr[cell].sep = (float)grid[cell].ml.image_data->mevapotr[8];
-      monthevapotr[cell].oct = (float)grid[cell].ml.image_data->mevapotr[9];
-      monthevapotr[cell].nov = (float)grid[cell].ml.image_data->mevapotr[10];
-      monthevapotr[cell].dec = (float)grid[cell].ml.image_data->mevapotr[11];
-      
-      monthpetim[cell].jan = (float)grid[cell].ml.image_data->mpetim[0];
-      monthpetim[cell].feb = (float)grid[cell].ml.image_data->mpetim[1];
-      monthpetim[cell].mar = (float)grid[cell].ml.image_data->mpetim[2];
-      monthpetim[cell].apr = (float)grid[cell].ml.image_data->mpetim[3];
-      monthpetim[cell].may = (float)grid[cell].ml.image_data->mpetim[4];
-      monthpetim[cell].jun = (float)grid[cell].ml.image_data->mpetim[5];
-      monthpetim[cell].jul = (float)grid[cell].ml.image_data->mpetim[6];
-      monthpetim[cell].aug = (float)grid[cell].ml.image_data->mpetim[7];
-      monthpetim[cell].sep = (float)grid[cell].ml.image_data->mpetim[8];
-      monthpetim[cell].oct = (float)grid[cell].ml.image_data->mpetim[9];
-      monthpetim[cell].nov = (float)grid[cell].ml.image_data->mpetim[10];
-      monthpetim[cell].dec = (float)grid[cell].ml.image_data->mpetim[11];
-
+      for(m=0;m<NMONTH;m++)
+      {
+        monthirrig[cell][m]  = (float)grid[cell].ml.image_data->mirrwatdem[m];
+        monthevapotr[cell][m] = (float)grid[cell].ml.image_data->mevapotr[m];
+        monthpetim[cell][m] = (float)grid[cell].ml.image_data->mpetim[m];
+      }
       if (config->river_routing) {
         adischarge[cell] = (float)(grid[cell].output.ydischarge*1e-9);
       }
 #ifdef DEBUG_IMAGE_CELL        
       if (grid[cell].output.pft_harvest[11].harvest > 0){
         printf("pft_harvest.sugarcane = %d, %g\n", cell, grid[cell].output.pft_harvest[11].harvest);
-        printf("yields sugarcane = %d %g\n", cell, yields[cell].sugarcane);
+        printf("yields sugarcane = %d %g\n", cell, yields[cell][11]);
       }
       fflush(stdout);
 #endif
@@ -848,7 +713,7 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
            harvest_agric_image[cell],harvest_biofuel_image[cell], 
            harvest_timber_image[cell], fire_image[cell],fireemission_deforest_image[cell],
            product_turnover_fast_image[cell], product_turnover_slow_image[cell],
-           trad_biofuel_image[cell], yields[cell].temp_cereals, adischarge[cell],nppgrass_image[cell]);
+           trad_biofuel_image[cell], yields[cell][0], adischarge[cell],nppgrass_image[cell]);
 
    }
 #endif
@@ -928,7 +793,7 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
   free(fire_image_wp);
   free(fireemission_deforest_image);
   free(fireemission_deforest_image_agr);
-  free(yields);
+  freemat((void **)yields);
   free(monthirrig);
   free(monthevapotr);
   free(monthpetim);

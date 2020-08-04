@@ -20,6 +20,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
+#define IMAGE
 #include "include/conf.h" /* include constant definitions */
 
 

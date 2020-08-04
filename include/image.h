@@ -147,60 +147,7 @@ typedef struct
    float forest_plant;          // 38 forest plantation
 } Image_landuse;
 
-typedef struct
-{
-  /* for the moment hardcoded, must be consistent with pft_2layer.par */
-  float temp_cereals;
-  float rice;
-  float maize;
-  float trop_cereals;
-  float pulses;
-  float temp_roots;
-  float trop_roots;
-  float sunflower;
-  float soybean;
-  float groundnut;
-  float rapeseed;
-  float sugarcane;
-  float others;
-  float managed_grass;
-  float biomass_grass;
-  float biomass_tree;
-  float woodplantation;
-  float irrig_temp_cereals;
-  float irrig_rice;
-  float irrig_maize;
-  float irrig_trop_cereals;
-  float irrig_pulses;
-  float irrig_temp_roots;
-  float irrig_trop_roots;
-  float irrig_sunflower;
-  float irrig_soybean;
-  float irrig_groundnut;
-  float irrig_rapeseed;
-  float irrig_sugarcane;
-  float irrig_others;
-  float irrig_managed_grass;
-  float irrig_biomass_grass;
-  float irrig_biomass_tree;
-  float irrig_woodplantation;
-} cropyield_to_image;
-
-typedef struct
-{
-  float jan;
-  float feb;
-  float mar;
-  float apr;
-  float may;
-  float jun;
-  float jul;
-  float aug;
-  float sep;
-  float oct;
-  float nov;
-  float dec;
-} mirrig_to_image;
+typedef float Mirrig_to_image[NMONTH];
 
 typedef struct
 {

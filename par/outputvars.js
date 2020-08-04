@@ -212,8 +212,10 @@
   { "id" : MGCONS_IRR, "name": "mgcons_irr", "var" :  "gcons_irr", "descr" :  "monthly green water consumption on irrigated stands ", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
   { "id" : MBCONS_IRR, "name": "mbcons_irr", "var" :  "bcons_irr", "descr" :  "monthly blue water consumption on irrigated stands ", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
   { "id" : AWATERUSE_HIL, "name": "awateruse_hil", "var" :  "wateruse_hil", "descr" :  "", "unit" : "l/yr", "scale" : 1.0, "offset" : 0.0},
+#ifdef IMAGE
   { "id" : WATERUSECONS, "name": "waterusecons", "var" :  "waterusecons", "descr" :  "", "unit" : "m3/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : WATERUSEDEM, "name": "waterusedem", "var" :  "waterusedem", "descr" :  "", "unit" : "m3/day", "scale" : 1.0, "offset" : 0.0},
+#endif
   { "id" : MFAPAR, "name": "mfapar", "var" :  "FPAR", "descr" :  "fraction of absorbed PAR", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MALBEDO, "name": "malbedo", "var" :  "albedo", "descr" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MPHEN_TMIN, "name": "mphen_tmin", "var" :  "phen_tmin", "descr" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
