@@ -34,7 +34,25 @@ Real cultivate(Cell *cell,           /**< cell pointer */
   Pft *pft;
   Stand *cropstand;
   Irrigation *data;
+#ifdef IMAGE
+  int nagr,s;
+  Stand *stand;
+// AJV hard coded nagr??
+  nagr=24;
+  foreachstand(stand,s,cell->standlist)
+    if(stand->type->landusetype==AGRICULTURE) 
+      nagr-=1;  
+  
+  if(landfrac>setasidestand->frac-nagr*1e-7)
+  {
+    landfrac=max(setasidestand->frac-nagr*1e-7,1e-8);
+  }
+
+  if(landfrac>=setasidestand->frac-epsilon)
+#else
   if(landfrac>=setasidestand->frac-0.00001)
+#endif
+
   {
     setasidestand->type->freestand(setasidestand);
     setasidestand->type=&agriculture_stand;

@@ -36,12 +36,22 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
 {
   Real mort,bm_delta,heatstress,nind_kill,mort_max;
   Pfttree *tree;
+#if defined IMAGE || defined INCLUDEWP
+  Pfttreepar *treepar;
+#endif
   tree=pft->data;
   bm_delta=pft->bm_inc/pft->nind-turnover_ind;
   if(bm_delta<0)
    bm_delta=0;
   if (pft->par->cultivation_type==BIOMASS)
     mort_max=0.005;
+#if defined IMAGE || defined INCLUDEWP
+  else if (pft->par->cultivation_type==WP)
+  {
+    treepar = pft->par->data;
+    mort_max = treepar->k_mort_max;
+  }
+#endif
   else
     mort_max=pft->par->mort_max;
 

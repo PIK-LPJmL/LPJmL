@@ -14,7 +14,11 @@
 
 #include "lpj.h"
 
+#ifdef IMAGE
+#define accuracy 1e-7
+#else
 #define accuracy 1e-4
+#endif
 
 Bool check_stand_fracs_for_reservoir(const Cell *cell, /**< cell pointer */
                                      Real *difffrac    /** \param[out] fraction above 1 */

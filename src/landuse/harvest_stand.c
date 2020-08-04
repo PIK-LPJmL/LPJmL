@@ -80,7 +80,7 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
   Real fact;
   Real bm_tot=0.0;
   Real fpc_sum=0.0;
-  Real bm_grazed_pft, leafdeficit;
+  Real bm_grazed_pft;
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
@@ -126,7 +126,7 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
   int p;
   Real rotation_len;
   Real fact;
-  Real bm_grazed, leafdeficit;
+  Real bm_grazed;
   Real bm_tot=0.0;
   Real bm_grazed_pft;
   Rotation *rotation;

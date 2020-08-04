@@ -32,13 +32,22 @@ Bool initinput(Input *input,        /**< Input data */
   }
   else
     input->landuse=NULL; /* no landuse */
-  if(config->wateruse)
+  if(config->wateruse_filename.name!=NULL)
   {
     if((input->wateruse=initwateruse(config))==NULL)
       return TRUE;
   }
   else
     input->wateruse=NULL;
+#ifdef IMAGE
+  if (config->wateruse_wd_filename.name != NULL)
+  {
+    if ((input->wateruse_wd=initwateruse_wd(config)) == NULL) 
+      return TRUE;
+  }
+  else
+    input->wateruse_wd = NULL;
+#endif
   if(config->ispopulation)
   {
     if((input->popdens=initpopdens(config))==NULL)

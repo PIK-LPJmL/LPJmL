@@ -51,18 +51,18 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
                     Real aet_layer[LASTLAYER],       
                     Real gp_stand,
                     Real gp_stand_leafon, /**< pot. canopy conduct. at full leaf cover */
-                    Real gp_pft, /* potential canopy conductance */
+                    Real gp_pft, /**< potential canopy conductance */
                     Real *gc_pft,
                     Real *rd,
                     Real *wet,
-                    Real eeq,  /* equilibrium evapotranspiration (mm) */
-                    Real co2,  /* Atmospheric CO2 partial pressure (ppmv) */
-                    Real temp, /* Temperature (deg C) */
-                    Real par,  /* photosynthetic active radiation (J/m2/day) */
-                    Real daylength, /* Daylength (h) */
-                    Real *wdf,           /* water deficit fraction (0..100) */
+                    Real eeq,  /**< equilibrium evapotranspiration (mm) */
+                    Real co2,  /**< Atmospheric CO2 partial pressure (ppmv) */
+                    Real temp, /**< Temperature (deg C) */
+                    Real par,  /**< photosynthetic active radiation (J/m2/day) */
+                    Real daylength, /**< Daylength (h) */
+                    Real *wdf,           /**< water deficit fraction (0..100) */
                     Bool permafrost
-) /** returns gross primary productivity (gC/m2) */
+                   ) /** \return gross primary productivity (gC/m2) */
 {
   int l,i; 
   Real supply,supply_pft,demand,demand_pft,wr,lambda,gpd,agd,gc,aet,aet_cor;
@@ -83,7 +83,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
         pft->stand->soil.mean_maxthaw>epsilon)
     {
       forrootsoillayer(l)
-          {
+      {
         layer+=soildepth[l];
         root_u+=pft->par->rootdist[l];
         freeze_depth=layer-pft->stand->soil.mean_maxthaw;
@@ -96,7 +96,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
           l++;
           break;
         }
-          }
+      }
       for(i=l;i<BOTTOMLAYER;i++)
       {
         root_nu+=rootdist_n[i];

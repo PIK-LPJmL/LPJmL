@@ -58,8 +58,12 @@ void freeconfig(Config *config /**< LPJmL configuration */
     }
     pnet_free(config->route);
   }
-  if(config->wateruse)
+  if(config->wateruse_filename.name!=NULL)
     freefilename(config->wateruse_filename);
+#ifdef IMAGE
+  if (config->wateruse_wd_filename.name != NULL)
+    freefilename(config->wateruse_wd_filename);
+#endif
   freefilename(config->temp_filename);
   freefilename(config->prec_filename);
   if(config->with_radiation)

@@ -15,7 +15,7 @@
 
 #include "lpj.h"
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 
 Real product_turnover(Image_data *data)
 {

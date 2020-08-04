@@ -49,17 +49,27 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   Infile grassharvest_file;
   Type grassharvest_datatype;
   unsigned int soilcode;
+#ifdef IMAGE
+  Bool swap_aquifers; 
+  Byte aquifer;
+  Infile aquifers;
+#endif
   Code code;
   FILE *file_restart;
   Infile lakes,countrycode,regioncode;
-#ifdef IMAGE
+
+#if defined IMAGE && defined COUPLED
   Productinit *productinit;
   Product *productpool;
-  if((productpool=newvec(Product,config->ngridcell))==NULL)
+
+  if (config->sim_id == LPJML_IMAGE)
   {
-    printallocerr("productpool");
-    free(productpool);
-    return NULL;
+    if ((productpool = newvec(Product, config->ngridcell)) == NULL)
+    {
+      printallocerr("productpool");
+      free(productpool);
+      return NULL;
+    }
   }
 #endif
 
@@ -322,12 +332,76 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
     }
   }
-#ifdef IMAGE
-  if((productinit=initproductinit(config))==NULL)
+#if defined IMAGE
+  if(config->aquifer_irrig==AQUIFER_IRRIG)
   {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR201: Cannot open file '%s'.\n",
-              config->prodpool_init_filename.name);
+    /* Open file with aquifer locations */
+    if(config->aquifer_filename.fmt==CDF)
+    {
+      aquifers.cdf=openinput_netcdf(config->aquifer_filename.name,config->aquifer_filename.var,NULL,0,config);
+      if(aquifers.cdf==NULL)
+      {
+        closecelldata(celldata);
+        if(config->river_routing)
+          closeinput(lakes,config->aquifer_filename.fmt);
+        if(config->countrypar!=NULL)
+        {
+          closeinput(countrycode,config->countrycode_filename.fmt);
+          if(config->countrycode_filename.fmt==CDF)
+            closeinput(regioncode,config->regioncode_filename.fmt);
+        }
+        return NULL;
+      }
+    }
+    else
+    {
+      aquifers.file=openinputfile(&header,&swap_aquifers,&config->aquifer_filename,
+                               headername,&version,&offset, config);
+      if(aquifers.file==NULL)
+      {
+        /* opening of aquifer file failed */
+        if(isroot(*config))
+          printfopenerr(config->aquifer_filename.name);
+        closecelldata(celldata);
+        if(config->river_routing)
+          closeinput(lakes,config->lakes_filename.fmt);
+        if(config->countrypar!=NULL)
+        {
+          closeinput(countrycode,config->countrycode_filename.fmt);
+          if(config->countrycode_filename.fmt==CDF)
+            closeinput(regioncode,config->regioncode_filename.fmt);
+        }
+        return NULL;
+      }
+
+      if(fseek(aquifers.file,config->startgrid*sizeof(aquifer),SEEK_CUR))
+      {
+        /* seeking to position of first grid cell failed */
+        fprintf(stderr,
+                "ERROR108: Cannot seek in aquifer file to position %d.\n",
+                config->startgrid);
+        closecelldata(celldata);
+        fclose(aquifers.file);
+        if(config->river_routing)
+          closeinput(lakes,config->lakes_filename.fmt);
+        if(config->countrypar!=NULL)
+        {
+          closeinput(countrycode,config->countrycode_filename.fmt);
+          if(config->countrycode_filename.fmt==CDF)
+            closeinput(regioncode,config->regioncode_filename.fmt);
+        }
+        return NULL;
+      }
+    }
+  }
+#endif
+
+#if defined IMAGE && defined COUPLED
+  if ((productinit = initproductinit(config)) == NULL)
+  {
+    if (isroot(*config))
+      fprintf(stderr, "ERROR201: Cannot open file '%s'.\n",
+        config->prodpool_init_filename.name);
     return NULL;
   }
   if(getproductpools(productinit,productpool,config->ngridcell))
@@ -346,6 +420,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     closecelldata(celldata);
     if(config->river_routing)
       closeinput(lakes,config->lakes_filename.fmt);
+#ifdef IMAGE
+    if(config->aquifer_irrig==AQUIFER_IRRIG)
+      closeinput(aquifers,config->aquifer_filename.fmt);
+#endif
     if(config->countrypar!=NULL)
     {
       closeinput(countrycode,config->countrycode_filename.fmt);
@@ -518,6 +596,32 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         }
       }
     }
+#ifdef IMAGE
+    grid[i].discharge.aquifer=0;
+    if(config->aquifer_irrig==AQUIFER_IRRIG)
+    {
+      if(config->aquifer_filename.fmt==CDF)
+      {
+        if (readintinput_netcdf(aquifers.cdf, &grid[i].discharge.aquifer, &grid[i].coord))
+        {
+          fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+                  config->aquifer_filename.name,i+config->startgrid);
+          return NULL;
+        }
+        grid[i].discharge.aquifer = (Bool)data;
+      }
+      else
+      {
+        if(fread(&aquifer,sizeof(aquifer),1,aquifers.file)!=1)
+        {
+          fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+                  config->aquifer_filename.name,i+config->startgrid);
+          return NULL;
+        }
+        grid[i].discharge.aquifer=(Byte)aquifer;
+      }
+    }
+#endif
     /* Init cells */
     grid[i].ml.dam=FALSE;
     grid[i].ml.cropfrac_rf=grid[i].ml.cropfrac_ir=grid[i].ml.reservoirfrac=0;
@@ -526,13 +630,21 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].balance.estab_storage_grass[0]=grid[i].balance.estab_storage_grass[1]=20.0;
     grid[i].balance.surface_storage=grid[i].balance.soil_storage=0.0;
     grid[i].discharge.waterdeficit=0.0;
-    grid[i].discharge.wateruse=0;
+    grid[i].discharge.wateruse=0.0;
+#ifdef IMAGE
+    grid[i].discharge.wateruse_wd=0.0;
+    grid[i].discharge.wateruse_fraction = 0.0;
+#endif
     grid[i].discharge.dmass_lake_max=grid[i].lakefrac*H*grid[i].coord.area*1000;
     grid[i].discharge.dmass_lake=grid[i].discharge.dmass_river=0.0;
     grid[i].discharge.dfout=grid[i].discharge.fout=0.0;
     grid[i].discharge.gir=grid[i].discharge.irrig_unmet=0.0;
     grid[i].discharge.act_irrig_amount_from_reservoir=0.0;
     grid[i].discharge.withdrawal=grid[i].discharge.wd_demand=0.0;
+#ifdef IMAGE
+    grid[i].discharge.dmass_gw=0.0;
+    grid[i].discharge.withdrawal_gw=0.0;
+#endif
     grid[i].discharge.wd_neighbour=grid[i].discharge.wd_deficit=0.0;
     grid[i].discharge.mfout=grid[i].discharge.mfin=0.0;
     grid[i].discharge.dmass_sum=0.0;
@@ -564,7 +676,9 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       for(j=0;j<NGRASS;j++)
         grid[i].ml.irrig_system->grass[j]=0;
       grid[i].ml.irrig_system->biomass_grass=grid[i].ml.irrig_system->biomass_tree=0;
-
+#if defined IMAGE || defined INCLUDEWP
+      grid[i].ml.irrig_system->woodplantation = 0;
+#endif  
     }
     else
     {
@@ -642,7 +756,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     if(!grid[i].skip)
     {
       config->count++;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
       grid[i].ml.image_data=new_image(productpool+i);
       if(i%1000==0) printf("initialized product pools in pix %d to %g %g\n",i,
         grid[i].ml.image_data->timber.fast,grid[i].ml.image_data->timber.slow);
@@ -654,7 +768,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #endif
     }
     if(initoutput(&grid[i].output,config->crop_index,config->crop_irrigation,
-                  npft,config->nbiomass,ncft))
+                  npft,config->nbiomass,config->nwft,ncft))
       return NULL;
 
   } /* of for(i=0;...) */
@@ -669,7 +783,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     if(config->countrycode_filename.fmt==CDF)
       closeinput(regioncode,config->regioncode_filename.fmt);
   }
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   free(productpool);
   freeproductinit(productinit);
 #endif
