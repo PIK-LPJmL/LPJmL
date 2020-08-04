@@ -75,6 +75,7 @@
   "soil_infil" : 2.0,                 /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
   "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
+  "hfrac2" : 500.0,
   "firedura" : -11.06,                /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.50,                  /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.000001            /* threshold of fireintensity for which burnt area can be modeled */

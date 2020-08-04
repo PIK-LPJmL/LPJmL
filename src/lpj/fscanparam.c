@@ -153,6 +153,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       fscanparamreal(&f,&param.yield_gap_bridge,"yield_gap_bridge");
     }
     fscanparamreal(&f,&param.allocation_threshold,"allocation_threshold");
+    fscanparamreal(&f,&param.hfrac2,"hfrac2");
   }
   param.k_litter10/=NDAYYEAR;
   param.k_soil10.fast/=NDAYYEAR;
