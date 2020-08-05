@@ -34,7 +34,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
                         int npft,             /**< number of natural PFTs */
                         int ncft,             /**< number of crop PFTs   */
                         int UNUSED(year),     /**< simulation year */
-                        Bool output_pft_scaled, 
+                        Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                         const Config *config  /**< LPJ config */
                        ) /* returns runoff (mm) */
 {
