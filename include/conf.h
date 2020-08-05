@@ -38,10 +38,10 @@
 #define AQUIFER_IRRIG 1
 #define NO_AQUIFER_IRRIG 0 //Flag to allow for irrigation from aquifers (according to input map for aquifers)
 #endif
-#define GRASS_HARVEST_OPTIONS 1 
-#define NO_GRASS_HARVEST_OPTIONS 0 
-#define GRASS_FIXED_PFT 1 
-#define NO_GRASS_FIXED_PFT 0 
+#define GRASS_HARVEST_OPTIONS 1
+#define NO_GRASS_HARVEST_OPTIONS 0
+#define GRASS_FIXED_PFT 1
+#define NO_GRASS_FIXED_PFT 0
 #define LAIMAX_CFT 0
 #define LAIMAX_INTERPOLATE 1
 #define CONST_LAI_MAX 2
@@ -223,7 +223,7 @@
 #define PRODUCT_POOL_FAST 115
 #define PRODUCT_POOL_SLOW 116
 #define LUC_IMAGE 117
-#define MAXTHAW_DEPTH 118 
+#define MAXTHAW_DEPTH 118
 #define MSOILTEMP1 119
 #define MSOILTEMP2 120
 #define MSOILTEMP3 121

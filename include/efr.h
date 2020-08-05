@@ -9,7 +9,7 @@
 /**      written by Amandine Pastor, Wietse Franssen                      **/
 /**     Wageningen univeristy, Earth system science                       **/
 /**     Postbus 47                                                        **/
-/**     6700AA Wageningen, Netherlands                                    **/                                                                  
+/**     6700AA Wageningen, Netherlands                                    **/
 /**                                                                       **/
 /**     Last change: 08.04.2014                                           **/
 /**                                                                       **/

@@ -133,7 +133,6 @@ extern Real woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Real,Real [],Real);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real);
 extern void irrig_amount_river(Cell *,const Config *);
-extern Real rw_irrigation(Stand *,Real,const Real [],Real);
 extern void irrig_amount(Stand *,Bool,int,int);
 extern void mixsetaside(Stand *,Stand *,Bool);
 extern void set_irrigsystem(Stand *,int,int,Bool);

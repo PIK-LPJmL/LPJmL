@@ -19,9 +19,9 @@ extern Standtype woodplantation_stand;
 
 extern Bool annual_woodplantation(Stand *, int,int,Real,int,Bool,Bool,const Config *);
 extern Real daily_woodplantation(Stand *, Real, const Dailyclimate *, int,
-                              Real, const Real[],
-                              Real, Real, Real, Real, Real, Real,
-                              Real, int, int, int, Bool, const Config *);
+                                 Real, const Real[],
+                                 Real, Real, Real, Real, Real, Real,
+                                 Real, int, int, int, Bool, const Config *);
 extern void output_gbw_woodplantation(Output *, const Stand *, Real, Real, Real, Real,
                                       const Real[LASTLAYER], const Real[LASTLAYER], Real, Real, int,
                                       Bool);
