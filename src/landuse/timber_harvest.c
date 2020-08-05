@@ -40,7 +40,8 @@ Real timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
 //TakeAway fractions for 4 tree components (stems[0], branches[1], leaves[2], roots[3])
   Real takeAway[4]={1.0,1.0,0.0,0.0};
 #ifdef IMAGE
-  if(timber_frac>epsilon);{
+  if(timber_frac>epsilon)
+  {
      for (i=0;i<NIMAGETREEPARTS;i++){
         takeAway[i]=takeaway_image[i];
      }
