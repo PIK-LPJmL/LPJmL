@@ -163,6 +163,7 @@ void freewateruse(Wateruse wateruse, /**< pointer to wateruse data */
 } /* of 'freewateruse' */
 
 #ifdef IMAGE
+
 Wateruse initwateruse_wd(const Config *config /**< LPJmL configuration */
 )
 {
@@ -294,4 +295,5 @@ Bool getwateruse_wd(Wateruse wateruse,   /**< Pointer to wateruse data */
       grid[cell].discharge.wateruse_wd = 0;
   return FALSE;
 } /* of 'getwateruse_wd' */
+
 #endif
