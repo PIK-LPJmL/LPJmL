@@ -169,10 +169,10 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_srad+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_srad2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         crop->sradsum);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_airrig+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
-        output->cft_airrig2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
-        crop->pirrww);
+//      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+//        output->cft_airrig+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
+//        output->cft_airrig2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
+//        crop->pirrww);
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
@@ -252,6 +252,11 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->frac;
       else
         output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
+#else
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_airrig+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
+        output->cft_airrig2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
+		irrig_apply);
 #endif
       if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)
         output->daily.irrig=irrig_apply;
@@ -333,7 +338,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       crop->precsum+=climate->prec*stand->frac;
       crop->sradsum+=climate->swdown*stand->frac;
       crop->tempsum+=climate->temp*stand->frac;
-      crop->pirrww+=data->irrig_amount*stand->frac;
+/*      crop->pirrww+=data->irrig_amount*stand->frac; this is wrong as irrig_amount is set to zero after subtracting rainmelt, so the output is always zero! */
     }
     else
     {
@@ -341,7 +346,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       crop->precsum+=climate->prec;
       crop->sradsum+=climate->swdown;
       crop->tempsum+=climate->temp;
-      crop->pirrww+=data->irrig_amount;
+/*      crop->pirrww+=data->irrig_amount; see above */
     }
 
 #else
