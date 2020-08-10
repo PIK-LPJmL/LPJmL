@@ -15,7 +15,7 @@
 export LPJROOT=/p/projects/waterforce/jonas/diss/LPJmL/LPJmL_gitlab/LPJmL_ggcmi_phase3
 
 # output directory, script makes subfolders for each run
-simdir="/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3b/historical"
+simdir="/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3b/picontrol"
 
 # climate forcing
 Climate=("GFDL-ESM4" "IPSL-CM6A-LR" "MPI-ESM1-2-HR" "MRI-ESM2-0" "UKESM1-0-LL")
@@ -24,10 +24,10 @@ climate=("gfdl-esm4" "ipsl-cm6a-lr" "mpi-esm1-2-hr" "mri-esm2-0" "ukesm1-0-ll")
 # simulation time period, depending on climte forcing, restart year is 30 years before first year with climate data
 restartyear=1820
 startyear=1850
-endyear=2014
+endyear=2100
 
 # CO2 concentration: default = transient, 2015co2 = constant at 2015 level
-co2=("default" "2015co2")
+co2=("default" "1850co2")
 
 # socio-economic drivers: histsoc = transient fertilizer, 2015soc = constant 2015 fertilizer
 socioecon=("histsoc" "2015soc")
@@ -62,7 +62,7 @@ do
 for ((s=1;s<2;s+=1)) # socio-economic option (histsoc = 0, 2015soc = 1)
 do
 
-for ((co=0;co<1;co+=1)) # co2 options (default = 0, 2005co2 = 1)
+for ((co=1;co<2;co+=1)) # co2 options (default = 0, 2015co2 = 1)
 do
 
 # ----------------------------------------------- #
@@ -174,7 +174,7 @@ EOF
 #ifdef FROM_RESTART
   "population" : false,
   "landuse" : ALL_CROPS, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS, ONLY_CROPS (crops scaled to 100% of cell) */
-  "landuse_year_const" : 2014, /* set landuse year for CONST_LANDUSE case */
+  "landuse_year_const" : 2015, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
 #else
@@ -187,7 +187,7 @@ EOF
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : PRESCRIBED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "crop_phu_option" : PRESCRIBED_CROP_PHU,    /* PRESCRIBED_CROP_PHU (PHU dataset used, requires PRESCRIBED_SDATE), SEMISTATIC_CROP_PHU (LPJmL4 semi-static PHU approach) */
-  "sdate_fixyear" : 2014,               /* year after which sowing dates are held constant (for both FIXED_SDATE or NO_FIXED_SDATE), also used to fix updating vernalization requirements */
+  "sdate_fixyear" : 2015,               /* year after which sowing dates are held constant (for both FIXED_SDATE or NO_FIXED_SDATE), also used to fix updating vernalization requirements */
   "intercrop" : true,                   /* intercrops on setaside */
   "residue_treatment" : FIXED_RESIDUE_REMOVE, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
@@ -240,14 +240,14 @@ EOF
   "manure_nr" :    { "fmt" : CLM, "name" : "ISIMIP3/manure_isimip3b_38bands_2015soc_1850-2015.clm"},
   "sdate" : {"fmt" : CLM, "name" : "crop_calendar/sdates_ggcmi_phase3_v1.01_67420.clm"},
   "crop_phu" : {"fmt" : CLM, "name" : "crop_calendar/phu_${climate[c]}_1979-2010_ggcmi_phase3_v1.01_67420.clm"},
-  "temp" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/historical/${Climate[c]}/tas_${climate[c]}_historical_1850-2014.clm"},
-  "tmax" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/historical/${Climate[c]}/tasmax_${climate[c]}_historical_1850-2014.clm"},
-  "tmin" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/historical/${Climate[c]}/tasmin_${climate[c]}_historical_1850-2014.clm"},
-  "prec" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/historical/${Climate[c]}/pr_${climate[c]}_historical_1850-2014.clm"},
-  "lwnet" :        { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/historical/${Climate[c]}/lwnet_${climate[c]}_historical_1850-2014.clm"},
-  "swdown" :       { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/historical/${Climate[c]}/rsds_${climate[c]}_historical_1850-2014.clm"},
-  "wind":          { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/historical/${Climate[c]}/sfcwind_${climate[c]}_historical_1850-2014.clm"},
-  "co2" :          { "fmt" : TXT,  "name" : "historical/ISIMIP3a/co2/co2_obsclim_annual_1850_2018.txt"},
+  "temp" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/picontrol/${Climate[c]}/tas_${climate[c]}_picontrol_1601-2100.clm"},
+  "tmax" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/picontrol/${Climate[c]}/tasmax_${climate[c]}_picontrol_1601-2100.clm"},
+  "tmin" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/picontrol/${Climate[c]}/tasmin_${climate[c]}_picontrol_1601-2100.clm"},
+  "prec" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/picontrol/${Climate[c]}/pr_${climate[c]}_picontrol_1601-2100.clm"},
+  "lwnet" :        { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/picontrol/${Climate[c]}/lwnet_${climate[c]}_picontrol_1601-2100.clm"},
+  "swdown" :       { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/picontrol/${Climate[c]}/rsds_${climate[c]}_picontrol_1601-2100.clm"},
+  "wind":          { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/picontrol/${Climate[c]}/sfcwind_${climate[c]}_picontrol_1601-2100.clm"},
+  "co2" :          { "fmt" : TXT,  "name" : "historical/ISIMIP3a/co2/co2_1850co2_annual_1850_2100.txt"},
 },
 
 
@@ -397,7 +397,7 @@ ID                         Fmt                    filename
   "lastyear" : ${endyear}, /* last year of simulation */
   "outputyear": ${startyear}, /* first year output is written  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : "/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3b/historical/lpjml_phase3_${climate[c]}_2015soc_default_1850_2014/restart_2014_${restartsetup}.lpj", /* filename of restart file */
+  "restart_filename" : "/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3b/historical/lpjml_restart_${climate[c]}_${restartsetup}/restart_${restartyear}_${restartsetup}_${nyear_spin}.lpj", /* filename of restart file */
   "write_restart" : false /* create restart file */
 
 #endif

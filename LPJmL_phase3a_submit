@@ -32,9 +32,9 @@ co2=("default" "2015co2")
 socioecon=("histsoc" "2015soc")
 
 # restart option: CREATE_RESTART or FROM_RESTART
-sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
+# sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
 restartsetup="nv" # use "nv_rr" for spinup with river routing, do not uncomment for "FROM_RESTART" runs, stores information if river routing was used during spinup
-# sim="FROM_RESTART"
+sim="FROM_RESTART"
 nyear_spin=390
 
 if [ $# -lt 1 ]
@@ -70,7 +70,7 @@ if [ ${sim} = "CREATE_RESTART" ]
 then
   setup="lpjml_restart_${climate[c]}_${restartsetup}"  
   args=""
-  runtime=300
+  runtime=400
 else
   setup="lpjml_phase3_${climate[c]}_${socioecon[s]}_${co2[co]}_${startyear[c]}_${endyear[c]}"
   args="-DFROM_RESTART"
@@ -91,7 +91,7 @@ mkdir -p $outdir
 #!/bin/bash
 #SBATCH --ntasks=$ntask
 #SBATCH --partition=priority
-#SBATCH --qos=priority
+#SBATCH --qos=standby
 #SBATCH --signal=15@180
 #SBATCH --export=ALL
 #SBATCH -J LPJmL50
@@ -101,7 +101,7 @@ mkdir -p $outdir
 #SBATCH --tasks-per-node=16
 #SBATCH --output=$outdir/$setup.out
 #SBATCH --error=$outdir/$setup.err
-#SBATCH --account=open
+#SBATCH --account=macmit
 #SBATCH --job-name=GGCMI3
 #SBATCH --comment="LPJmL Version 5.2.001 for GGCMI Phase 3"
 
@@ -173,7 +173,7 @@ EOF
 #ifdef FROM_RESTART
   "population" : false,
   "landuse" : ALL_CROPS, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS, ONLY_CROPS (crops scaled to 100% of cell) */
-  "landuse_year_const" : 2014, /* set landuse year for CONST_LANDUSE case */
+  "landuse_year_const" : 2015, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
 #else
@@ -186,7 +186,7 @@ EOF
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : PRESCRIBED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "crop_phu_option" : PRESCRIBED_CROP_PHU,    /* PRESCRIBED_CROP_PHU (PHU dataset used, requires PRESCRIBED_SDATE), SEMISTATIC_CROP_PHU (LPJmL4 semi-static PHU approach) */
-  "sdate_fixyear" : 2014,               /* year after which sowing dates are held constant (for both FIXED_SDATE or NO_FIXED_SDATE), also used to fix updating vernalization requirements */
+  "sdate_fixyear" : 2015,               /* year after which sowing dates are held constant (for both FIXED_SDATE or NO_FIXED_SDATE), also used to fix updating vernalization requirements */
   "intercrop" : true,                   /* intercrops on setaside */
   "residue_treatment" : FIXED_RESIDUE_REMOVE, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */

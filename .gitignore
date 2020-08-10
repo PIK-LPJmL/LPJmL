@@ -2,6 +2,7 @@
 .gitignore
 .cproject
 .settings/
+calc_PHU/tmp/
 
 # Prerequisites
 *.d

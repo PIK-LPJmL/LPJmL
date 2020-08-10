@@ -18,12 +18,17 @@ export LPJROOT=/p/projects/waterforce/jonas/diss/LPJmL/LPJmL_gitlab/LPJmL_ggcmi_
 simdir="/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3b"
 
 # climate forcing
-climate=("agmerra" "wfdei" "gswp3-w5e5")
+Climate=("GFDL-ESM4" "IPSL-CM6A-LR" "MPI-ESM1-2-HR" "MRI-ESM2-0" "UKESM1-0-LL")
+climate=("gfdl-esm4" "ipsl-cm6a-lr" "mpi-esm1-2-hr" "mri-esm2-0" "ukesm1-0-ll")
 
 # simulation time period, depending on climte forcing, restart year is 30 years before first year with climate data
-restartyear=(1950 1949 1871)
-startyear=(1980 1979 1901)
-endyear=(2010 2012 2016)
+restartyear=2015
+startyear=2015
+endyear=2100
+
+# RCPs
+rcps=("ssp126" "ssp370" "ssp585")
+
 
 # CO2 concentration: default = transient, 2015co2 = constant at 2015 level
 co2=("default" "2015co2")
@@ -32,7 +37,7 @@ co2=("default" "2015co2")
 socioecon=("histsoc" "2015soc")
 
 # restart option: CREATE_RESTART or FROM_RESTART
-#sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
+# sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
 restartsetup="nv" # use "nv_rr" for spinup with river routing, do not uncomment for "FROM_RESTART" runs, stores information if river routing was used during spinup
 sim="FROM_RESTART"
 nyear_spin=390
@@ -55,13 +60,16 @@ fi
 
 # ----------------------------------------------- #
 
-for ((c=2;c<3;c+=1)) # climate forcing
+for ((c=4;c<5;c+=1)) # climate forcing
 do
 
-for ((s=0;s<1;s+=1)) # socio-economic option (histsoc = 0, 2005soc = 1)
+for ((s=1;s<2;s+=1)) # socio-economic option (histsoc = 0, 2015soc = 1)
 do
 
 for ((co=0;co<1;co+=1)) # co2 options (default = 0, 2005co2 = 1)
+do
+
+for ((r=2;r<3;r+=1)) # RCP scenario
 do
 
 # ----------------------------------------------- #
@@ -70,16 +78,16 @@ if [ ${sim} = "CREATE_RESTART" ]
 then
   setup="lpjml_restart_${climate[c]}_${restartsetup}"  
   args=""
-  runtime=300
+  runtime=400
 else
-  setup="lpjml_phase3_${climate[c]}_${socioecon[s]}_${co2[co]}_${startyear[c]}_${endyear[c]}"
+  setup="lpjml_phase3_${climate[c]}_${socioecon[s]}_${co2[co]}_${startyear}_${endyear}"
   args="-DFROM_RESTART"
-  runtime=120
+  runtime=200
 fi
 
 echo $setup
 
-outdir=${simdir}/${setup}
+outdir=${simdir}/${rcps[r]}/${setup}
 
 mkdir -p $outdir
 
@@ -90,7 +98,8 @@ mkdir -p $outdir
   cat <<EOF >$outdir/$setup.jcf
 #!/bin/bash
 #SBATCH --ntasks=$ntask
-#SBATCH --qos=short
+#SBATCH --partition=priority
+#SBATCH --qos=standby
 #SBATCH --signal=15@180
 #SBATCH --export=ALL
 #SBATCH -J LPJmL50
@@ -172,7 +181,7 @@ EOF
 #ifdef FROM_RESTART
   "population" : false,
   "landuse" : ALL_CROPS, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS, ONLY_CROPS (crops scaled to 100% of cell) */
-  "landuse_year_const" : 1979, /* set landuse year for CONST_LANDUSE case */
+  "landuse_year_const" : 2015, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
 #else
@@ -185,7 +194,7 @@ EOF
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : PRESCRIBED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "crop_phu_option" : PRESCRIBED_CROP_PHU,    /* PRESCRIBED_CROP_PHU (PHU dataset used, requires PRESCRIBED_SDATE), SEMISTATIC_CROP_PHU (LPJmL4 semi-static PHU approach) */
-  "sdate_fixyear" : 1979,               /* year after which sowing dates are held constant (for both FIXED_SDATE or NO_FIXED_SDATE), also used to fix updating vernalization requirements */
+  "sdate_fixyear" : 2015,               /* year after which sowing dates are held constant (for both FIXED_SDATE or NO_FIXED_SDATE), also used to fix updating vernalization requirements */
   "intercrop" : true,                   /* intercrops on setaside */
   "residue_treatment" : FIXED_RESIDUE_REMOVE, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
@@ -221,7 +230,33 @@ EOF
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-#include "$LPJROOT/input/input_38band_${climate[c]}.js"
+/* #include "$LPJROOT/input/input_38band_${climate[c]}_historical.js" */
+
+"inpath" : "/p/projects/lpjml/input",
+
+"input" :
+{
+  "soil" :         { "fmt" : META, "name" : "ISIMIP3/soil_ISISMIP3.descr"},
+  "coord" :        { "fmt" : CLM,  "name" : "ISIMIP3/grid.bin"},
+  "countrycode" :  { "fmt" : CLM,  "name" : "historical/input_VERSION2/cow_full_2018.bin"},
+  "no3deposition" : { "fmt" : CLM,  "name" : "ISIMIP3/no3_deposition_2015soc_1850-2100.clm"},
+  "nh4deposition" : { "fmt" : CLM,  "name" : "ISIMIP3/nh4_deposition_2015soc_1850-2100.clm"},
+  "soilpH" :        { "fmt" : CLM,  "name" : "historical/input_VERSION2/soil_ph.clm"},
+  "landuse" :      { "fmt" : CLM,  "name" : "ISIMIP3/cft_38bands_2015soc_1601-2100.clm"},
+  "fertilizer_nr" : { "fmt" : CLM,  "name" : "ISIMIP3/nfertilizer_isimip3b_38bands_2015soc_1850-2015.clm"},
+  "manure_nr" :    { "fmt" : CLM, "name" : "ISIMIP3/manure_isimip3b_38bands_2015soc_1850-2015.clm"},
+  "sdate" : {"fmt" : CLM, "name" : "crop_calendar/sdates_ggcmi_phase3_v1.01_67420.clm"},
+  "crop_phu" : {"fmt" : CLM, "name" : "crop_calendar/phu_${climate[c]}_1979-2010_ggcmi_phase3_v1.01_67420.clm"},
+  "temp" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/${rcps[r]}/${Climate[c]}/tas_${climate[c]}_${rcps[r]}_2015-2100.clm"},
+  "tmax" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/${rcps[r]}/${Climate[c]}/tasmax_${climate[c]}_${rcps[r]}_2015-2100.clm"},
+  "tmin" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/${rcps[r]}/${Climate[c]}/tasmin_${climate[c]}_${rcps[r]}_2015-2100.clm"},
+  "prec" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/${rcps[r]}/${Climate[c]}/pr_${climate[c]}_${rcps[r]}_2015-2100.clm"},
+  "lwnet" :        { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/${rcps[r]}/${Climate[c]}/lwnet_${climate[c]}_${rcps[r]}_2015-2100.clm"},
+  "swdown" :       { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/${rcps[r]}/${Climate[c]}/rsds_${climate[c]}_${rcps[r]}_2015-2100.clm"},
+  "wind":          { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/${rcps[r]}/${Climate[c]}/sfcwind_${climate[c]}_${rcps[r]}_2015-2100.clm"},
+  "co2" :          { "fmt" : TXT,  "name" : "historical/ISIMIP3a/co2/co2_2015co2_annual_1850_2100.txt"},
+},
+
 
 /*===================================================================*/
 /*  IV. Output data section                                          */
@@ -354,22 +389,22 @@ ID                         Fmt                    filename
 
   "nspinup" : $nyear_spin,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
-  "firstyear": ${startyear[c]}, /* first year of simulation */
-  "lastyear" : ${startyear[c]}, /* last year of simulation */
+  "firstyear": ${startyear}, /* first year of simulation */
+  "lastyear" : ${startyear}, /* last year of simulation */
   "restart" : false, /* do not start from restart file */
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : "${outdir}/restart_${restartyear[c]}_${restartsetup}_${nyear_spin}.lpj", /* filename of restart file */
-  "restart_year": ${restartyear[c]} /* write restart at year */
+  "write_restart_filename" : "${outdir}/restart_${restartyear}_${restartsetup}_${nyear_spin}.lpj", /* filename of restart file */
+  "restart_year": ${restartyear} /* write restart at year */
 
 #else
 
   "nspinup" : 30,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
-  "firstyear": ${startyear[c]}, /* first year of simulation */
-  "lastyear" : ${endyear[c]}, /* last year of simulation */
-  "outputyear": ${startyear[c]}, /* first year output is written  */
-  "restart" :  false, /* start from restart file */
-  "restart_filename" : "${simdir}/lpjml_restart_${climate[c]}_${restartsetup}/restart_${restartyear[c]}_${restartsetup}_${nyear_spin}.lpj", /* filename of restart file */
+  "firstyear": ${startyear}, /* first year of simulation */
+  "lastyear" : ${endyear}, /* last year of simulation */
+  "outputyear": ${startyear}, /* first year output is written  */
+  "restart" :  true, /* start from restart file */
+  "restart_filename" : "/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3b/historical/lpjml_phase3_${climate[c]}_2015soc_default_1850_2014/restart_2014_${restartsetup}.lpj", /* filename of restart file */
   "write_restart" : false /* create restart file */
 
 #endif
@@ -381,4 +416,4 @@ EOF
 done
 done
 done
-
+done
