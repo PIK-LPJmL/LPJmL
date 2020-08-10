@@ -111,6 +111,7 @@ typedef struct
   Real intercsum;
   Real precsum;
   Real sradsum;
+  Real irrig_apply;
   Real tempsum;
   Real nirsum;
   Real lgp;

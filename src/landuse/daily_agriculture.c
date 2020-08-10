@@ -170,6 +170,10 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_srad2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         crop->sradsum);
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_airrig+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
+        output->cft_airrig2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
+		crop->irrig_apply);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         crop->tempsum);
@@ -249,10 +253,11 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       else
         output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
 #else
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-        output->cft_airrig+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
-        output->cft_airrig2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
-		irrig_apply);
+      crop=pft->data;
+      if(config->pft_output_scaled)
+        crop->irrig_apply+=irrig_apply*stand->frac;
+      else
+        crop->irrig_apply+=irrig_apply;
 #endif
       if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)
         output->daily.irrig=irrig_apply;
@@ -397,6 +402,10 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_srad+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_srad2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         crop->sradsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_airrig+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
+        output->cft_airrig2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
+		crop->irrig_apply);
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
