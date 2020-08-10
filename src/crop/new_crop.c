@@ -57,7 +57,6 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   crop->intercsum=0.0;
   crop->precsum=0.0;
   crop->sradsum=0.0;
-  crop->pirrww=0.0;
   crop->tempsum=0.0;
   crop->nirsum=0.0;
   crop->lgp=0.0;
