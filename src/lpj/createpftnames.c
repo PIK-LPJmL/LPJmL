@@ -33,7 +33,7 @@ char **createpftnames(int index,           /**< output index */
   switch(index)
   {
     case SDATE: case HDATE: case HUSUM: case SYEAR: case CFT_MSWC:
-    case SDATE2: case HDATE2: case HUSUM2: case SYEAR2: case CFT_MSWC2:
+    case SDATE2: case HDATE2: case HUSUM2: case SYEAR2:
       for(i=0;i<ncft;i++)
         pftnames[i]=strdup(pftpar[npft+i].name);
       for(i=0;i<ncft;i++)

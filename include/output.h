@@ -171,7 +171,6 @@ typedef struct
   Real *cft_srad2;          /**< cft specific short-wave radiation (W/m2) */
   Stocks *cft_aboveground_biomass2; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
   Real *cftfrac2;           /**< cft fraction */
-  Real *cft_mswc2;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
 #endif
   Real *pft_npp;         /**< Pft specific NPP (gC/m2) */
   Harvest *pft_harvest;

@@ -316,7 +316,6 @@
   { "id" : ARH_AGR, "name" : "arh_agr" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration for agricultural stands", "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : HUSUM, "name" : "husum", "var" : "husum", "descr" : "crop growing season accumulated heat units", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
   { "id" : HUSUM2, "name" : "husum2", "var" : "husum2", "descr" : "crop growing season accumulated heat units 2nd seaso", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
-  { "id" : CFT_MSWC, "name": "cft_mswc", "var" : "SWC_cft", "descr" : "CFT-specific monthly absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
-  { "id" : CFT_MSWC2, "name": "cft_mswc2", "var" : "SWC_cft2", "descr" : "CFT-specific monthly absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0}
+  { "id" : CFT_MSWC, "name": "cft_mswc", "var" : "SWC_cft", "descr" : "CFT-specific monthly absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0}
 
   ],
