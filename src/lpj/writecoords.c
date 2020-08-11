@@ -70,7 +70,7 @@ int writecoords(Outputfile *output,  /**< output struct */
       fvec=newvec(Floatcoord,config->count);
       if(fvec==NULL)
       {
-        printallocerr("vec");
+        printallocerr("fvec");
         rc=TRUE;
       }
       else
@@ -169,7 +169,7 @@ int writecoords(Outputfile *output,  /**< output struct */
             fdst=newvec(Floatcoord,config->total);
             if(fdst==NULL)
             {
-              printallocerr("dst");
+              printallocerr("fdst");
               rc=TRUE;
             }
             else
@@ -178,7 +178,7 @@ int writecoords(Outputfile *output,  /**< output struct */
           MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
           if(rc)
           {
-            free(vec);
+            free(fvec);
             return 0;
           }
           MPI_Gatherv(fvec,config->count,type,fdst,output->counts,output->offsets,
@@ -266,7 +266,7 @@ int writecoords(Outputfile *output,  /**< output struct */
         case RAW: case CLM:
           if(fwrite(fvec,sizeof(Floatcoord),count,output->files[index].fp.file)!=count)
             fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno));
-          free(vec);
+          free(fvec);
           break;
         case TXT:
           for(cell=0;cell<count-1;cell++)
