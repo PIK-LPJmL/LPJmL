@@ -58,7 +58,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   if(year>=config->firstyear-istimber*10)
 #else
   istimber=FALSE;
-  if(year>=config->firstyear)
 #endif
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)
