@@ -126,11 +126,6 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
   if(pft->stand->type->landusetype==AGRICULTURE)
   {
     supply=pft->par->emax*wr*(1-exp(-0.04*((Pftcrop *)pft->data)->ind.root.carbon));
-    if (pft->phen>0)
-    {
-       gp_stand=gp_stand/pft->phen*fpar(pft);
-       gp_pft=gp_pft/pft->phen*fpar(pft);
-    }
   }
   else
   {
