@@ -21,14 +21,18 @@
 #if defined IMAGE || defined INCLUDEWP
 #include "woodplantation.h"
 #endif
-
+#ifdef IMAGE
+#define EPS epsilon
+#else
+#define  EPS 0.001
+#endif
 #define PASTURE 1  /* cultivation type */
 #define BIOMASS_TREE_PLANTATION 2
 #define BIOMASS_GRASS_PLANTATION 3
 #if defined IMAGE || defined INCLUDEWP
 #define WOOD_PLANTATION 4
 #endif
-#ifdef IMAGE 
+#ifdef IMAGE
 #define minnatfrac_luc 0.0002
 #else
 #define minnatfrac_luc 0.0
@@ -748,10 +752,13 @@ void landusechange(Cell *cell,            /**< pointer to cell */
     difffrac=crop_sum_frac(cell->ml.landfrac,ncft,cell->ml.reservoirfrac+cell->lakefrac,i)-cropfrac; /* hb 8-1-09: added the resfrac, see function AND replaced to BEFORE next three lines */
 
     grassfrac=cell->ml.landfrac[i].grass[0]+cell->ml.landfrac[i].grass[1]; /* pasture + others */
-
+#ifdef IMAGE
    if(difffrac>epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir<(1-epsilon)) 
+#else
+   if(difffrac>=0.001 && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir<0.99999)
+#endif
      deforest(cell,difffrac,pftpar,intercrop,npft,FALSE,istimber,i,ncft,year,minnatfrac_luc);  /*deforestation*/
-   else if(difffrac<-epsilon) 
+   else if(difffrac<=-EPS) 
       regrowth(cell,difffrac,pftpar,npft,ntypes,istimber,i,ncft,year);        /*regrowth*/
 
     /* pasture */
@@ -762,12 +769,12 @@ void landusechange(Cell *cell,            /**< pointer to cell */
     {
       stand=getstand(cell->standlist,s);
       difffrac=stand->frac-grassfrac;
-      if(difffrac>epsilon)
+      if(difffrac>EPS)
         grasslandreduction(cell,difffrac,pftpar,intercrop,npft,s,stand,istimber,ncft,pft_output_scaled,year);
-      else if(difffrac<-epsilon)
+      else if(difffrac<-EPS)
         landexpansion(cell,difffrac,pftpar,npft,ntypes,stand,irrigation,cultivation_type,istimber,ncft,year);
     }
-    else if (grassfrac>epsilon)
+    else if (grassfrac>EPS)
     {
       difffrac= -grassfrac;
       landexpansion(cell,difffrac,pftpar,npft,ntypes,NULL,irrigation,cultivation_type,istimber,ncft,year);
@@ -781,13 +788,13 @@ void landusechange(Cell *cell,            /**< pointer to cell */
     {
       stand=getstand(cell->standlist,s);
       difffrac=stand->frac-cell->ml.landfrac[i].biomass_tree;
-      if(difffrac>epsilon)
+      if(difffrac>EPS)
         grasslandreduction(cell,difffrac,pftpar,intercrop,npft,s,stand,istimber,ncft,pft_output_scaled,year);
-      else if(difffrac<-epsilon)
+      else if(difffrac<-EPS)
         landexpansion(cell,difffrac,pftpar,npft,ntypes,stand,irrigation,
                       cultivation_type,istimber,ncft,year);
     }
-    else if (cell->ml.landfrac[i].biomass_tree>epsilon)
+    else if (cell->ml.landfrac[i].biomass_tree>EPS)
     {
       difffrac= -cell->ml.landfrac[i].biomass_tree;
       landexpansion(cell,difffrac,pftpar,npft,ntypes,NULL,
@@ -801,13 +808,13 @@ void landusechange(Cell *cell,            /**< pointer to cell */
     {
       stand=getstand(cell->standlist,s);
       difffrac=stand->frac-cell->ml.landfrac[i].biomass_grass;
-      if(difffrac>epsilon)
+      if(difffrac>EPS)
         grasslandreduction(cell,difffrac,pftpar,intercrop,npft,s,stand,istimber,ncft,pft_output_scaled,year);
-      else if(difffrac<-epsilon)
+      else if(difffrac<-EPS)
         landexpansion(cell,difffrac,pftpar,npft,ntypes,stand,irrigation,
                       cultivation_type,istimber,ncft,year);
     }
-    else if (cell->ml.landfrac[i].biomass_grass>epsilon)
+    else if (cell->ml.landfrac[i].biomass_grass>EPS)
     {
       difffrac= -cell->ml.landfrac[i].biomass_grass;
       landexpansion(cell,difffrac,pftpar,npft,ntypes,NULL,
@@ -834,7 +841,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
         landexpansion(cell,difffrac,pftpar,npft,ntypes,stand,irrigation,
         cultivation_type,istimber,ncft,year);
     }
-    else if (cell->ml.landfrac[i].woodplantation>epsilon)
+    else if (cell->ml.landfrac[i].woodplantation>EPS)
     {
       difffrac= -cell->ml.landfrac[i].woodplantation;
       landexpansion(cell,difffrac,pftpar,npft,ntypes,NULL,
