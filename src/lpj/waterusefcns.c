@@ -152,8 +152,8 @@ Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
 } /* of 'getwateruse' */
 
 void freewateruse(Wateruse wateruse, /**< pointer to wateruse data */
-  Bool isroot        /**< task is root task (TRUE/FALSE) */
-)
+                  Bool isroot        /**< task is root task (TRUE/FALSE) */
+                 )
 {
   if(wateruse!=NULL)
   {

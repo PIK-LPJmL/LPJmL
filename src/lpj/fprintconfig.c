@@ -106,7 +106,7 @@ static size_t isnetcdfinput(const Config *config)
     width=max(width,strlen(config->burntarea_filename.var));
   if(config->prescribe_landcover && config->landcover_filename.fmt==CDF)
     width=max(width,strlen(config->landcover_filename.var));
-  if(config->wateruse_filename.name!=NULL && config->wateruse_filename.fmt==CDF)
+  if(config->wateruse && config->wateruse_filename.fmt==CDF)
     width=max(width,strlen(config->wateruse_filename.var));
 #ifdef IMAGE
   if(config->wateruse_wd_filename.name!=NULL && config->wateruse_wd_filename.fmt==CDF)
@@ -270,8 +270,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   if(config->aquifer_irrig==AQUIFER_IRRIG)
     len=printsim(file,len,&count,"aquifer irrigation");
 #endif
-  if(config->wateruse_filename.name!=NULL)
-    len=printsim(file,len,&count,"water use");
+  if(config->wateruse)
+   len=printsim(file,len,&count,(config->wateruse==ALL_WATERUSE) ? "always water use" : "water use");
 #ifdef IMAGE
   if(config->wateruse_wd_filename.name!=NULL)
     len = printsim(file, len, &count, "water use wd");

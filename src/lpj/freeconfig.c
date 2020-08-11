@@ -58,7 +58,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     }
     pnet_free(config->route);
   }
-  if(config->wateruse_filename.name!=NULL)
+  if(config->wateruse)
     freefilename(config->wateruse_filename);
 #ifdef IMAGE
   if (config->wateruse_wd_filename.name != NULL)

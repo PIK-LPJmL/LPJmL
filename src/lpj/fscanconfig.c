@@ -543,7 +543,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #endif
   else
     config->wet_filename.name=NULL;
-  if(config->wateruse==WATERUSE)
+  if(config->wateruse)
   {
     scanclimatefilename(&input,&config->wateruse_filename,config->inputdir,FALSE,"wateruse");
 #ifdef IMAGE

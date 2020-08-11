@@ -32,7 +32,7 @@ Bool initinput(Input *input,        /**< Input data */
   }
   else
     input->landuse=NULL; /* no landuse */
-  if(config->wateruse_filename.name!=NULL)
+  if(config->wateruse)
   {
     if((input->wateruse=initwateruse(config))==NULL)
       return TRUE;
