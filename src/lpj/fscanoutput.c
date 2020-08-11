@@ -59,6 +59,10 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
     if(fscanbool(file,&config->global_netcdf,"global_netcdf",FALSE,verbosity))
       return TRUE;
   }
+  config->float_grid=FALSE;
+  if(fscanbool(file,&config->float_grid,"float_grid",TRUE,verbosity))
+    return TRUE;
+  
   if(iskeydefined(file,"outpath"))
   {
     if(fscanstring(file,outpath,"outpath",FALSE,verbosity))

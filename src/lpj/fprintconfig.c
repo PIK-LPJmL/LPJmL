@@ -443,7 +443,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
         fprintf(file,"%*s",width,config->outnames[config->outputvars[i].id].name);
       fprintf(file," %s %*s %5s ",fmt[config->outputvars[i].filename.fmt],
               width_unit,strlen(config->outnames[config->outputvars[i].id].unit)==0 ? "-" : config->outnames[config->outputvars[i].id].unit,
-              typenames[getoutputtype(config->outputvars[i].id)]);
+              typenames[getoutputtype(config->outputvars[i].id,config->float_grid)]);
       printoutname(file,config->outputvars[i].filename.name,config->outputvars[i].oneyear,config);
       putc('\n',file);
     }

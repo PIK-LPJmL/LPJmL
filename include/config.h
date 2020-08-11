@@ -105,6 +105,7 @@ typedef struct
   char *layer_index;
   Bool crop_irrigation;
   Bool global_netcdf;     /** enable global grid for NetCDF output */
+  Bool float_grid;
   Bool landuse_restart;   /**< land use enabled in restart file */
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart; /**< sdate option in restart file */

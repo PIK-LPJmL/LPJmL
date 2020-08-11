@@ -221,6 +221,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                 config->withlanduse,getlinecount(),getfilename());
       return TRUE;
     }
+    if(config->river_routing)
+      fscanbool2(file,&config->reservoir,"reservoir");
     if(config->withlanduse!=NO_LANDUSE)
     {
       if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS)
@@ -262,8 +264,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       }
       if(config->laimax_interpolate==CONST_LAI_MAX)
         fscanreal2(file,&config->laimax,"laimax");
-      if(config->river_routing)
-        fscanbool2(file,&config->reservoir,"reservoir");
       grassfix=FALSE;
       if(fscanbool(file,&grassfix,"grassland_fixed_pft",TRUE,verbose))
         return TRUE;
@@ -435,14 +435,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       scanclimatefilename(&input,&config->river_filename,config->inputdir,FALSE,"river");
     }
+    if(config->reservoir)
+    {
+      scanclimatefilename(&input,&config->elevation_filename,config->inputdir,FALSE,"elevation");
+      scanfilename(&input,&config->reservoir_filename,config->inputdir,"reservoir");
+    }
     if(config->withlanduse!=NO_LANDUSE)
     {
       scanclimatefilename(&input,&config->neighb_irrig_filename,config->inputdir,FALSE,"neighb_irrig");
-      if(config->reservoir)
-      {
-        scanclimatefilename(&input,&config->elevation_filename,config->inputdir,FALSE,"elevation");
-        scanfilename(&input,&config->reservoir_filename,config->inputdir,"reservoir");
-      }
     }
     if(config->sim_id==LPJML_FMS)
     {
