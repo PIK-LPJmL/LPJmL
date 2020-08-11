@@ -67,7 +67,7 @@ Real sowing_prescribe(Cell *cell,          /**< pointer to cell */
                                   cell->ml.cropdates[cft].vern_date20,
                                   cell->ml.landfrac[0].crop[cft],FALSE,day,wtype,
                                   setasidestand,istimber,config->irrig_scenario,
-                                  npft+ncft,cft,year);
+                                  npft,ncft,cft,year);
 #ifndef DOUBLE_HARVEST
             cell->output.sdate[cft]=day;
 #endif
@@ -95,7 +95,7 @@ Real sowing_prescribe(Cell *cell,          /**< pointer to cell */
                                   cell->ml.cropdates[cft].vern_date20,
                                   cell->ml.landfrac[1].crop[cft],TRUE,day,wtype,
                                   setasidestand,istimber,config->irrig_scenario,
-                                  npft+ncft,cft,year);
+                                  npft,ncft,cft,year);
 #ifndef DOUBLE_HARVEST
             cell->output.sdate[cft+ncft]=day;
 #endif

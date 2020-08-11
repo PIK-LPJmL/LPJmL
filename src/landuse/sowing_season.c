@@ -68,7 +68,7 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                                     cell->ml.cropdates[cft].vern_date20,
                                     cell->ml.landfrac[0].crop[cft],FALSE,day,FALSE,
                                     setasidestand,istimber,config->irrig_scenario,
-                                    npft+ncft,cft,year);
+                                    npft,ncft,cft,year);
 #ifndef DOUBLE_HARVEST
               cell->output.sdate[cft]=day;
 #endif
@@ -93,7 +93,7 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                                     cell->ml.cropdates[cft].vern_date20,
                                     cell->ml.landfrac[1].crop[cft],TRUE,day,FALSE,
                                     setasidestand,istimber,config->irrig_scenario,
-                                    npft+ncft,cft,year);
+                                    npft,ncft,cft,year);
 #ifndef DOUBLE_HARVEST
               cell->output.sdate[cft+ncft]=day;
 #endif
@@ -125,7 +125,7 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                                     cell->ml.cropdates[cft].vern_date20,
                                     cell->ml.landfrac[0].crop[cft],FALSE,day,FALSE,
                                     setasidestand,istimber,config->irrig_scenario,
-                                    npft+ncft,cft,year);
+                                    npft,ncft,cft,year);
 #ifndef DOUBLE_HARVEST
               cell->output.sdate[cft]=day;
 #endif
@@ -153,7 +153,7 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                                     cell->ml.cropdates[cft].vern_date20,
                                     cell->ml.landfrac[1].crop[cft],TRUE,day,FALSE,
                                     setasidestand,istimber,config->irrig_scenario,
-                                    npft+ncft,cft,year);
+                                    npft,ncft,cft,year);
 #ifndef DOUBLE_HARVEST
               cell->output.sdate[cft+ncft]=day;
 #endif
@@ -193,7 +193,7 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                                         cell->ml.cropdates[cft].vern_date20,
                                         cell->ml.landfrac[0].crop[cft],FALSE,day,TRUE,
                                         setasidestand,istimber,config->irrig_scenario,
-                                        npft+ncft,cft,year);
+                                        npft,ncft,cft,year);
 #ifndef DOUBLE_HARVEST
                   cell->output.sdate[cft]=day;
 #endif
@@ -217,7 +217,7 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                                       cell->ml.cropdates[cft].vern_date20,
                                       cell->ml.landfrac[0].crop[cft],FALSE,day,FALSE,
                                       setasidestand,istimber,config->irrig_scenario,
-                                      npft+ncft,cft,year);
+                                      npft,ncft,cft,year);
 #ifndef DOUBLE_HARVEST
                 cell->output.sdate[cft]=day;
 #endif
@@ -255,7 +255,7 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                                         cell->ml.cropdates[cft].vern_date20,
                                         cell->ml.landfrac[1].crop[cft],TRUE,day,TRUE,
                                         setasidestand,istimber,config->irrig_scenario,
-                                        npft+ncft,cft,year);
+                                        npft,ncft,cft,year);
 #ifndef DOUBLE_HARVEST
                   cell->output.sdate[cft+ncft]=day;
 #endif
@@ -279,7 +279,7 @@ Real sowing_season(Cell *cell,            /**< pointer to cell */
                                       cell->ml.cropdates[cft].vern_date20,
                                       cell->ml.landfrac[1].crop[cft],TRUE,day,FALSE,
                                       setasidestand,istimber,config->irrig_scenario,
-                                      npft+ncft,cft,year);
+                                      npft,ncft,cft,year);
 #ifndef DOUBLE_HARVEST
                 cell->output.sdate[cft+ncft]=day;
 #endif
