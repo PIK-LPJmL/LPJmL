@@ -170,7 +170,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_airrig+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
         output->cft_airrig2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
-        crop->pirrww);
+		crop->irrig_apply);
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
@@ -251,6 +251,12 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->frac;
       else
         output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
+#else
+      crop=pft->data;
+      if(config->pft_output_scaled)
+        crop->irrig_apply+=irrig_apply*stand->frac;
+      else
+        crop->irrig_apply+=irrig_apply;
 #endif
       if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)
         output->daily.irrig=irrig_apply;
@@ -334,7 +340,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       crop->precsum+=climate->prec*stand->frac;
       crop->sradsum+=climate->swdown*stand->frac;
       crop->tempsum+=climate->temp*stand->frac;
-      crop->pirrww+=data->irrig_amount*stand->frac;
     }
     else
     {
@@ -342,7 +347,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       crop->precsum+=climate->prec;
       crop->sradsum+=climate->swdown;
       crop->tempsum+=climate->temp;
-      crop->pirrww+=data->irrig_amount;
     }
 
 #else
@@ -402,7 +406,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_airrig+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
         output->cft_airrig2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
-        crop->pirrww);
+		crop->irrig_apply);
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
@@ -510,7 +514,8 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     cft_rm=0.0;
     forrootmoist(l)
       cft_rm+=pft->stand->soil.w[l]*pft->stand->soil.whcs[l]; /* absolute soil water content between wilting point and field capacity (mm) */
-#ifdef DOUBLE_HARVEST
+    output->nday_month[pft->par->id-npft+data->irrigation*ncft]+=1; /* track number of growing season days in each month for calculating the mean in update_monthly.c */
+    #ifdef DOUBLE_HARVEST
     if(output->syear2[pft->par->id-npft+data->irrigation*ncft]>epsilon)
       output->cft_mswc2[pft->par->id-npft+data->irrigation*ncft]+=cft_rm;
     else

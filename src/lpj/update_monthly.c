@@ -41,11 +41,18 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   for(l=0;l<NSOILLAYER;l++)
     cell->output.mswc[l]*=ndaymonth1[month];
   for(i=0;i<ncft*2;i++)
-    cell->output.cft_mswc[i]/=cell->output.nday_month[i];
+  {
+    if(cell->output.nday_month[i]>0)
+	  cell->output.cft_mswc[i]/=cell->output.nday_month[i];
+    else
+  	  cell->output.cft_mswc[i]=0;
 #ifdef DOUBLE_HARVEST
-  for(i=0;i<ncft*2;i++)
-    cell->output.cft_mswc2[i]/=cell->output.nday_month[i];
+    if(cell->output.nday_month[i]>0)
+	  cell->output.cft_mswc2[i]/=cell->output.nday_month[i];
+    else
+  	  cell->output.cft_mswc2[i]=0;
 #endif
+  }
   cell->output.mrootmoist*=ndaymonth1[month];
   cell->output.mfiredi*=ndaymonth1[month];
   cell->output.mfapar*=ndaymonth1[month];

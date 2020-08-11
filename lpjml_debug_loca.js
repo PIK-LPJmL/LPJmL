@@ -47,7 +47,7 @@
 #ifdef FROM_RESTART
   "population" : false,
   "landuse" : ALL_CROPS, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS, ONLY_CROPS (crops scaled to 100% of cell) */
-  "landuse_year_const" : 1979, /* set landuse year for CONST_LANDUSE case */
+  "landuse_year_const" : 1980, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
 #else
@@ -60,7 +60,7 @@
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : PRESCRIBED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "crop_phu_option" : PRESCRIBED_CROP_PHU,    /* PRESCRIBED_CROP_PHU (PHU dataset used, requires PRESCRIBED_SDATE), SEMISTATIC_CROP_PHU (LPJmL4 semi-static PHU approach) */
-  "sdate_fixyear" : 1979,               /* year in which sowing dates shall be fixed */
+  "sdate_fixyear" : 1980,               /* year in which sowing dates shall be fixed */
   "intercrop" : true,                   /* intercrops on setaside */
   "residue_treatment" : FIXED_RESIDUE_REMOVE, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
@@ -96,7 +96,30 @@
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-#include "input/input_38band_wfdei.js"
+"inpath" : "/p/projects/macmit/users/jaegermeyr/EPA_LOCA",
+
+"input" :
+{
+  "soil" :         { "fmt" : META, "name" : "other_0.25deg_inputs/soil_loca_ISISMIP3.descr"},
+  "coord" :        { "fmt" : CLM,  "name" : "other_0.25deg_inputs/grid_19415.bin"},
+  "countrycode" :  { "fmt" : CLM,  "name" : "other_0.25deg_inputs/cow_mg_2006_full_19415.bin"},
+  "no3deposition" : { "fmt" : CLM,  "name" : "other_0.25deg_inputs/no3_deposition_2015soc_1980-2100_19415.clm"},
+  "nh4deposition" : { "fmt" : CLM,  "name" : "other_0.25deg_inputs/nh4_deposition_2015soc_1980-2100_19415.clm"},
+  "soilpH" :        { "fmt" : CLM,  "name" : "other_0.25deg_inputs/soil_ph_19415.clm"},
+  "landuse" :      { "fmt" : CLM,  "name" : "other_0.25deg_inputs/cft_38bands_2015soc_1980-2100_19415.clm"},
+  "fertilizer_nr" : { "fmt" : CLM,  "name" : "other_0.25deg_inputs/nfertilizer_isimip3b_38bands_2015soc_1980-2100_19415.clm"},
+  "manure_nr" :    { "fmt" : CLM, "name" : "other_0.25deg_inputs/manure_isimip3b_38bands_2015soc_1980-2100_19415.clm"},
+  "sdate" : {"fmt" : CLM, "name" : "other_0.25deg_inputs/sdates_ggcmi_phase3_v1.01_19415.clm"},  /* insert prescribed sdate file name here */
+  "crop_phu" : {"fmt" : CLM, "name" : "other_0.25deg_inputs/phu_loca_1980-2005_ggcmi_phase3_v1.01_19415.clm"},  /* insert prescribed phu file name here */
+  "temp" :         { "fmt" : CLM,  "name" : "loca_climate_input/LOCA_CanESM2_historical_1980-2005_daily_tas.clm2"},
+  "tmax" :         { "fmt" : CLM,  "name" : "loca_climate_input/LOCA_CanESM2_historical_1980-2005_daily_tmax.clm2"},
+  "tmin" :         { "fmt" : CLM,  "name" : "loca_climate_input/LOCA_CanESM2_historical_1980-2005_daily_tmin.clm2"},
+  "prec" :         { "fmt" : CLM,  "name" : "loca_climate_input/LOCA_CanESM2_historical_1980-2005_daily_prec.clm2"},
+  "lwnet" :        { "fmt" : CLM,  "name" : "loca_climate_input/LOCA_CanESM2_historical_1980-2005_daily_lwnet.clm2"},
+  "swdown" :       { "fmt" : CLM,  "name" : "loca_climate_input/LOCA_CanESM2_historical_1980-2005_daily_rsds.clm2"},
+  "wind":          { "fmt" : CLM,  "name" : "other_0.25deg_inputs/sfcwind_gswp3-w5e5_obsclim_2015soc_1980_2100.clm"},
+  "co2" :          { "fmt" : TXT,  "name" : "/p/projects/lpjml/input/historical/ISIMIP3a/co2/co2_obsclim_annual_1850_2018.txt"},
+},
 
 /*===================================================================*/
 /*  IV. Output data section                                          */
@@ -126,6 +149,8 @@ ID                         Fmt                    filename
 -------------------------- ---------------------- ----------------------------- */
     { "id" : GRID,             "file" : { "fmt" : RAW, "name" : "output/grid.bin" }},
     { "id" : CFT_MSWC,     "file" : { "fmt" : RAW, "name" : "output/cft_mrootmoist.bin"}},
+    { "id" : CFT_AIRRIG,     "file" : { "fmt" : RAW, "name" : "output/cft_airrig.bin"}},
+    { "id" : CFT_AIRRIG2,     "file" : { "fmt" : RAW, "name" : "output/cft_airrig.bin"}},
     { "id" : MROOTMOIST,     "file" : { "fmt" : RAW, "name" : "output/mroormoist_1m.bin"}}
 /*------------------------ ---------------------- ------------------------------- */
   ],
@@ -140,8 +165,8 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : 27410, /* 27410, 67208 60400 all grid cells */
-  "endgrid" : 27410,
+  "startgrid" : 13265, /* 27410, 67208 60400 all grid cells */
+  "endgrid" : 13265,
 
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
@@ -158,13 +183,13 @@ ID                         Fmt                    filename
 
 #else
 
-  "nspinup" : 30,   /* spinup years */
-  "nspinyear" : 30,  /* cycle length during spinup (yr)*/
-  "firstyear": 1979, /* first year of simulation */
-  "lastyear" : 2012, /* last year of simulation */
-  "outputyear": 1979, /* first year output is written  */
-  "restart" :  false, /* start from restart file */
- // "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "nspinup" : 2,   /* spinup years */
+  "nspinyear" : 2,  /* cycle length during spinup (yr)*/
+  "firstyear": 1980, /* first year of simulation */
+  "lastyear" : 2005, /* last year of simulation */
+  "outputyear": 1980, /* first year output is written  */
+  "restart" :  true, /* start from restart file */
+  "restart_filename" : "/p/projects/macmit/users/jaegermeyr/EPA_LOCA/sims/historical/lpjml_restart_CanESM2_nv/restart_1950_nv_390.lpj", /* filename of restart file */
   "write_restart" : false, /* create restart file */
  // "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
  // "restart_year": 1900 /* write restart at year */
