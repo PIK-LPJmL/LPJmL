@@ -230,7 +230,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     rainmelt=0.0;
 
   /* blue water inflow*/
-  if(data->irrigation && data->irrig_amount>epsilon)
+  if(data->irrigation && data->irrig_amount>epsilon && stand->pftlist.n>0)
   { /* data->irrigation defines if stand is irrigated in general and not if water is delivered that day, initialized in new_agriculture.c and changed in landusechange.c*/
     irrig_apply=max(data->irrig_amount-rainmelt,0);  /*irrigate only missing deficit after rain, remainder goes to stor */
     data->irrig_stor+=data->irrig_amount-irrig_apply;
