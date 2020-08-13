@@ -230,7 +230,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     rainmelt=0.0;
 
   /* blue water inflow*/
-  if(data->irrigation && data->irrig_amount>epsilon)
+  if(data->irrigation && data->irrig_amount>epsilon && stand->pftlist.n>0)
   { /* data->irrigation defines if stand is irrigated in general and not if water is delivered that day, initialized in new_agriculture.c and changed in landusechange.c*/
     irrig_apply=max(data->irrig_amount-rainmelt,0);  /*irrigate only missing deficit after rain, remainder goes to stor */
     data->irrig_stor+=data->irrig_amount-irrig_apply;
@@ -282,7 +282,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     rw_apply=rw_irrigation(stand,gp_stand,wet,eeq); /* Note: RWH supplementary irrigation is here considered green water */
 
   /* INFILTRATION and PERCOLATION */
-  if(irrig_apply>epsilon)
+  if(irrig_apply>epsilon && stand->pftlist.n>0)
   {
     runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config);
     /* count irrigation events*/
