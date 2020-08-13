@@ -1088,7 +1088,7 @@
     "sla" : 0.042242,        /* specific leaf area */
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
     "ramp" : 100.,          /* ramp 19*/
-    "lai_sapl" : 0.001,     /* lai_sapl 21*/
+    "lai_sapl" : 0.1,     /* lai_sapl 21*/
     "gdd5min" : 0.01,       /* gdd5min 30*/
     "twmax" : 1000.,        /* twmax 31*/
     "twmax_daily" : 1000.,  /* twmax_daily 31*/
