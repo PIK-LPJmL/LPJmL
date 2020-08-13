@@ -12,7 +12,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "include/conf.h" /* include constant definitions */
+//#include "include/conf.h" /* include constant definitions */
 
 "inpath" : "/p/projects/lpjml/input",
 
@@ -32,7 +32,7 @@
 //  "with_tillage" : { "fmt" : CLM, "name" : "input_VERSION3/lpj_tillage_CA_1973-2010.clm"},
 //  "residue_on_field" : { "fmt" : CLM, "name" : "/p/projects/lpjml/input/MADRAT/residues_madrat_1850-2015_16bands.clm"},
   "sdate" : {"fmt" : CLM, "name" : "crop_calendar/sdates_ggcmi_phase3_v1.01_67420.clm"},  /* insert prescribed sdate file name here */
-  "crop_phu" : {"fmt" : CLM, "name" : "crop_calendar/phu_gswp3-w5e5_ggcmi_phase3_v1.01_67420.clm"},  /* insert prescribed phu file name here */
+  "crop_phu" : {"fmt" : CLM, "name" : "crop_calendar/phu_gswp3-w5e5_1979-2010_ggcmi_phase3_v1.01_67420.clm"},  /* insert prescribed phu file name here */
 //  "grassland_fixed_pft" : { "fmt" : RAW, "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.clm"},
 //  "lakes" :        { "fmt" : META, "name" : "input_VERSION2/glwd_lakes_and_rivers.descr"},
 //  "drainage" :     { "fmt" : CLM,  "name" : "input_VERSION2/drainagestn.bin"},
