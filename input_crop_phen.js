@@ -71,11 +71,14 @@
     "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT/sdate_HadGEM2-ES_rcp60_2080_2099.bin"},  /* insert prescribed sdate file name here */
     "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT/PHU_HadGEM2-ES_rcp60_2080_2099.bin"},  /* insert prescribed phu file name here */
   #elif (DGS==GS_SA3)
-    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_sdate/sdate_HadGEM2-ES_historical_1986_2005.bin"},  /* insert prescribed sdate file name here */
+    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_sdate/sdate_HadGEM2-ES_fix_sdate.bin"},  /* insert prescribed sdate file name here */
     "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_sdate/PHU_HadGEM2-ES_rcp60_2080_2099.bin"},  /* insert prescribed phu file name here */
   #elif (DGS==GS_SA4)
-    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/sdate_HadGEM2-ES_rcp60_2080_2099.bin"},  /* insert prescribed sdate file name here */
+    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/sdate_HadGEM2-ES_adapt_sdate.bin"},  /* insert prescribed sdate file name here */
     "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/PHU_HadGEM2-ES_rcp60_2080_2099.bin"},  /* insert prescribed phu file name here */
+  #elif (DGS==GS_SA0_swh)
+    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_swh_only/sdate_HadGEM2-ES_historical_1986_2005.bin"},  /* insert prescribed sdate file name here */
+    "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_swh_only/PHU_HadGEM2-ES_historical_1986_2005.bin"},  /* insert prescribed phu file name here */
   #endif
 
 
@@ -112,10 +115,10 @@
     "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT/sdate_GFDL-ESM2M_rcp60_2080_2099.bin"},  /* insert prescribed sdate file name here */
     "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT/PHU_GFDL-ESM2M_rcp60_2080_2099.bin"},  /* insert prescribed phu file name here */
   #elif (DGS==GS_SA3)
-    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_sdate/sdate_GFDL-ESM2M_historical_1986_2005.bin"},  /* insert prescribed sdate file name here */
+    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_sdate/sdate_GFDL-ESM2M_fix_sdate.bin"},  /* insert prescribed sdate file name here */
     "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_sdate/PHU_GFDL-ESM2M_rcp60_2080_2099.bin"},  /* insert prescribed phu file name here */
   #elif (DGS==GS_SA4)
-    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/sdate_GFDL-ESM2M_rcp60_2080_2099.bin"},  /* insert prescribed sdate file name here */
+    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/sdate_GFDL-ESM2M_adapt_sdate.bin"},  /* insert prescribed sdate file name here */
     "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/PHU_GFDL-ESM2M_rcp60_2080_2099.bin"},  /* insert prescribed phu file name here */
   #endif
 
@@ -153,10 +156,10 @@
     "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT/sdate_IPSL-CM5A-LR_rcp60_2080_2099.bin"},  /* insert prescribed sdate file name here */
     "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT/PHU_IPSL-CM5A-LR_rcp60_2080_2099.bin"},  /* insert prescribed phu file name here */
   #elif (DGS==GS_SA3)
-    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_sdate/sdate_IPSL-CM5A-LR_historical_1986_2005.bin"},  /* insert prescribed sdate file name here */
+    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_sdate/sdate_IPSL-CM5A-LR_fix_sdate.bin"},  /* insert prescribed sdate file name here */
     "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_sdate/PHU_IPSL-CM5A-LR_rcp60_2080_2099.bin"},  /* insert prescribed phu file name here */
   #elif (DGS==GS_SA4)
-    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/sdate_IPSL-CM5A-LR_rcp60_2080_2099.bin"},  /* insert prescribed sdate file name here */
+    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/sdate_IPSL-CM5A-LR_adapt_sdate.bin"},  /* insert prescribed sdate file name here */
     "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/PHU_IPSL-CM5A-LR_rcp60_2080_2099.bin"},  /* insert prescribed phu file name here */
   #endif
 
@@ -193,10 +196,10 @@
     "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT/sdate_MIROC5_rcp60_2080_2099.bin"},  /* insert prescribed sdate file name here */
     "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT/PHU_MIROC5_rcp60_2080_2099.bin"},  /* insert prescribed phu file name here */
   #elif (DGS==GS_SA3)
-    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_sdate/sdate_MIROC5_historical_1986_2005.bin"},  /* insert prescribed sdate file name here */
+    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_sdate/sdate_MIROC5_fix_sdate.bin"},  /* insert prescribed sdate file name here */
     "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_sdate/PHU_MIROC5_rcp60_2080_2099.bin"},  /* insert prescribed phu file name here */
   #elif (DGS==GS_SA4)
-    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/sdate_MIROC5_rcp60_2080_2099.bin"},  /* insert prescribed sdate file name here */
+    "sdate" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/sdate_MIROC5_adapt_sdate.bin"},  /* insert prescribed sdate file name here */
     "crop_phu" : {"fmt" : CLM, "name" : "/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/PHU_MIROC5_rcp60_2080_2099.bin"},  /* insert prescribed phu file name here */
   #endif
 

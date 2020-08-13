@@ -29,7 +29,7 @@
 /*Identifiers (preprocessor only understands integer expressions in #if)*/
 #define GLOBALRUN 0
 #define PIXELRUN  1
-#define DRUN PIXELRUN // GLOBALRUN
+#define DRUN GLOBALRUN
 
 #if (DRUN==PIXELRUN)
   #define DAILY_OUTPUT
@@ -54,6 +54,7 @@
 #define GS_SA2 2      /* complete adaptation */
 #define GS_SA3 4      /* adaptation of hdate only (fixed sdate) */
 #define GS_SA4 5      /* adaptation of sdate only (fixed hdate) */
+#define GS_SA0_swh 6  /* reference sdate & phus for runs with spring wheat everywhere */
 
 #define CO2_DYNA 0    /* transient CO2 */
 #define CO2_STAT 1    /* static CO2 fixed at 2005 level */
@@ -280,22 +281,22 @@
     #define DCLM CLM_HAD
     #define DGS  GS_SA4
     #define DCO2 CO2_DYNA
-    #define output_run  29
+    #define output_run  30
     #define restart_run 01
 
-#elif defined(RUN_ID_31 
+#elif defined(RUN_ID_31) 
     #define DTIM TIM_2080_2099
     #define DCLM CLM_GFD
     #define DGS  GS_SA3
     #define DCO2 CO2_DYNA
-    #define output_run  29
+    #define output_run  31
     #define restart_run 08
 #elif defined(RUN_ID_32)
     #define DTIM TIM_2080_2099
     #define DCLM CLM_GFD
     #define DGS  GS_SA4
     #define DCO2 CO2_DYNA
-    #define output_run  29
+    #define output_run  32
     #define restart_run 08
 
 #elif defined(RUN_ID_33)
@@ -303,14 +304,14 @@
     #define DCLM CLM_IPS
     #define DGS  GS_SA3
     #define DCO2 CO2_DYNA
-    #define output_run  29
+    #define output_run  33
     #define restart_run 15
 #elif defined(RUN_ID_34)
     #define DTIM TIM_2080_2099
     #define DCLM CLM_IPS
     #define DGS  GS_SA4
     #define DCO2 CO2_DYNA
-    #define output_run  29
+    #define output_run  34
     #define restart_run 15
 
 #elif defined(RUN_ID_35)
@@ -318,15 +319,24 @@
     #define DCLM CLM_MIR
     #define DGS  GS_SA3
     #define DCO2 CO2_DYNA
-    #define output_run  29
+    #define output_run  35
     #define restart_run 22
 #elif defined(RUN_ID_36)
     #define DTIM TIM_2080_2099
     #define DCLM CLM_MIR
     #define DGS  GS_SA4
     #define DCO2 CO2_DYNA
-    #define output_run  29
+    #define output_run  36
     #define restart_run 22
+
+#elif defined(RUN_ID_37)
+    #define DTIM TIM_1986_2005
+    #define DCLM CLM_HAD
+    #define DGS  GS_SA0_swh
+    #define DCO2 CO2_DYNA
+    #define output_run  37
+    #define restart_run 01
+
 #endif
 
 
@@ -521,6 +531,7 @@ ID                         Fmt                    filename
     { "id" : HARVESTN,         "file" : { "fmt" : RAW, "name" : mkstr(output/flux_harvestn.bin)}},
     { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : mkstr(output/sdate.bin)}},
     { "id" : HDATE,            "file" : { "fmt" : RAW, "name" : mkstr(output/hdate.bin)}},
+    { "id" : GROWING_PERIOD,   "file" : { "fmt" : RAW, "name" : mkstr(output/growing_period.bin)}},
     { "id" : HUSUM,            "file" : { "fmt" : RAW, "name" : mkstr(output/husum.bin)}},
     { "id" : PFT_HARVESTC,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestc.SUFFIX)}},
     { "id" : PFT_HARVESTN,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestn.SUFFIX)}},
@@ -574,8 +585,8 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 #if (DRUN==PIXELRUN)
-  "startgrid" :  7189, //7175, //7212, //30115, /*31374, 27410, 67208 60400 all grid cells */
-  "endgrid" :    7189, //7234, //7212, //30115,
+  "startgrid" :  7187, //9353, //7223, //7175, //7212, //30115, /*31374, 27410, 67208 60400 all grid cells */
+  "endgrid" :    7187, //9353, //7223, //7234, //7212, //30115,
 #else
   "startgrid" :  ALL, /*31374, 27410, 67208 60400 all grid cells */
   "endgrid" :    ALL,

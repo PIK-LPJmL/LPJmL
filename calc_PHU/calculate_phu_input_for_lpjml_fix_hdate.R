@@ -56,8 +56,8 @@ if (climate_data!="WFDEI") {
   path.tas=paste0("/p/projects/ikiimp/ISIMIP2b/input_CLM2/",climate_data,"/",period,"/tas_",climate_data,"_",period,"_",climate_start,"-",climate_end,".clm") # header 43,145 years, 365 bands, size 2
   
   
-  path.sowing=paste0("/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT/sdate_",climate_data,"_",period,"_",startyear,"_",endyear,".bin")
-  path.harvest=paste0("/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT/hdate_",climate_data,"_",period,"_",startyear,"_",endyear,".bin")
+  path.sowing=paste0("/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/sdate_", climate_data,"_", "adapt_sdate", ".bin")
+  path.harvest=paste0("/p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/DATA/CROP_CALENDARS/LPJML_INPUT_fix_hdate/hdate_", climate_data,"_", "fix_hdate",".bin")
   
 } else {
   

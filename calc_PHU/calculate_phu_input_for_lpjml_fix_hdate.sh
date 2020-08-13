@@ -10,7 +10,7 @@ do
 for ((s=2;s<3;s+=1)) # scen
 do
 
-  cat <<EOF >$scriptdir/tmp/calculate_PHU_requirements__fix_hdate_${climates[c]}_${scens[s]}.jcf
+  cat <<EOF >$scriptdir/tmp/calculate_PHU_requirements_fix_hdate_${climates[c]}_${scens[s]}.jcf
 #!/bin/bash
 #SBATCH --qos=standby
 #SBATCH --export=ALL
