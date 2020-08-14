@@ -54,7 +54,7 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
       }
       else
         irrig_threshold=param.irrig_threshold_c4;
-      if(pft->par->id==RICE)
+      if(pft->par->id==RICE1 || pft->par->id==RICE2)
         irrig_threshold=param.irrig_threshold_rice;
 
       count+=(wr>irrig_threshold) ? 0 : 1; /* if one of possibly two (grass) pfts requests irrigation, both get irrigated */
@@ -71,7 +71,6 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
 
       /* net irrigation requirement */
       pft=getpft(&stand->pftlist,0);
-      //foreachpft(pft,p,&stand->pftlist)
       switch(stand->type->landusetype)
       {
         case AGRICULTURE:
@@ -134,7 +133,6 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
     {
       case AGRICULTURE:
         pft=getpft(&stand->pftlist,0);
-        //foreachpft(pft,p,&stand->pftlist)
         if(pft_output_scaled)
         {
           stand->cell->output.cft_conv_loss_evap[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=conv_loss*data->conv_evap*stand->frac;
