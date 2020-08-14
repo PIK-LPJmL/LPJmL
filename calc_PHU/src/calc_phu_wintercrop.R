@@ -92,12 +92,22 @@ for (typ in irrtyp) {
   
                         vdsum <- vdsum + veff[k]
 
+                        # # if VDD < 20% Vreq (Vb)
+                        # if(vdsum<(vd[i]*0.2)) {
+                        #     vern_factor[i,ifelse(k>365,k-365,k)] <- 0.0 # factor = 0 until 20% vernalization requirements reached
+                        # } else {
+                        #     vern_factor[i,ifelse(k>365,k-365,k)] <- max(0,min(1,(vdsum - (vd[i]*0.2)) / (vd[i] - (vd[i]*0.2))))
+                        # }
+
+                        # Modified for macmit_intensification branch: allow husum to accumulate from sdate onwards, without waiting for 20% Vreq to be fulfilled
                         # if VDD < 20% Vreq (Vb)
-                        if(vdsum<(vd[i]*0.2)) {
-                            vern_factor[i,ifelse(k>365,k-365,k)] <- 0.0 # factor = 0 until 20% vernalization requirements reached
+                        vd_b <- vd[i]*0.1   # originally 0.2
+                        if(vdsum<vd_b) {
+                            vern_factor[i,ifelse(k>365,k-365,k)] <- 1.0 # factor = 1 until 20% vernalization requirements reached
                         } else {
-                            vern_factor[i,ifelse(k>365,k-365,k)] <- max(0,min(1,(vdsum - (vd[i]*0.2)) / (vd[i] - (vd[i]*0.2))))
+                            vern_factor[i,ifelse(k>365,k-365,k)] <- max(0,min(1,(vdsum - vd_b) / (vd[i] - vd_b)))
                         }
+
                     } # day loop
                 } # if
 

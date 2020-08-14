@@ -135,7 +135,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       }
       else
         soil->w[l] = soil->w_fw[l] = 0;
-
+        
       /* assure numerical stability */
       /* if more water than soil can hold (above pwp) */
       if((soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])>(soil->wsats[l]-soil->wpwps[l]))

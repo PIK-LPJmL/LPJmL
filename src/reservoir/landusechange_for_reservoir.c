@@ -286,7 +286,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
     {
       s=findlandusetype(cell->standlist,NATURAL);
       if(s!=NOT_FOUND) /* check if there is still natural land in the gridcell */
-        deforest(cell,difffrac,pftpar,with_tillage,intercrop,npft,FALSE,istimber,FALSE,ncft,year,minnatfrac_res,with_nitrogen); /* 1 deforest */
+        deforest(cell,difffrac,pftpar,intercrop,npft,FALSE,istimber,FALSE,ncft,year,minnatfrac_res,with_nitrogen); /* 1 deforest */
       s=findlandusetype(cell->standlist,NATURAL); /* 2 check if everyting is deforested */
       if(s!=NOT_FOUND)
       {
@@ -302,7 +302,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
 /*        fail(FOREST_LEFT_ERR,TRUE,
                "wrong loop, there is still natural land to deforest left"); */
       
-          deforest(cell,difffrac,pftpar,with_tillage,intercrop,npft,FALSE,istimber,FALSE,ncft,year,minnatfrac_res,with_nitrogen); /* 1 deforest */
+          deforest(cell,difffrac,pftpar,intercrop,npft,FALSE,istimber,FALSE,ncft,year,minnatfrac_res,with_nitrogen); /* 1 deforest */
           s=findlandusetype(cell->standlist,NATURAL); /* 2 check if everyting is deforested */
           if(s!=NOT_FOUND)
           {

@@ -547,6 +547,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       config->tmax_filename.name=NULL;
   }
 #else
+  config->tmin_filename.name=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fire==SPITFIRE_TMAX)

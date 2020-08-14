@@ -1,4 +1,3 @@
-
 rm(list=ls(all=TRUE))
 gc()
 args <- commandArgs(TRUE)
@@ -151,3 +150,4 @@ unlink(paste0(path.tmp,"PHU_",climate_data,"_",crop_calendar,"_*.txt"))
 # unlink(paste0(path.tmp,"calculate_*.jcf"))
 
 print("ready!!!")
+

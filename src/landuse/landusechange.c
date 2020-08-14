@@ -32,7 +32,6 @@
 void deforest(Cell *cell,            /**< pointer to cell */
               Real difffrac, /**< stand fraction to deforest (0..1) */
               const Pftpar pftpar[], /**< PFT parameter array */
-              Bool with_tillage, /**< tillage (TRUE/FALSE) */
               Bool intercrop, /**< intercropping possible (TRUE/FALSE) */
               int npft,       /**< number of natural PFTs */
               Bool timberharvest,
@@ -530,7 +529,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
                   )
   /* needs to be called before establishment, to ensure that regrowth is possible in the following year*/
 {
-  Real diff,difffrac,difffrac2,movefrac;
+  Real difffrac,difffrac2,movefrac;
   Stand *stand, *tempstand, *irrigstand;
   Bool irrigation;
   Irrigation *data;
@@ -614,7 +613,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
 
 
     if(difffrac>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir<(1-epsilon)) 
-      deforest(cell,difffrac,pftpar,with_tillage,intercrop,npft,FALSE,istimber,i,ncft,year,minnatfrac_luc,config->with_nitrogen);  /*deforestation*/
+      deforest(cell,difffrac,pftpar,intercrop,npft,FALSE,istimber,i,ncft,year,minnatfrac_luc,config->with_nitrogen);  /*deforestation*/
     else if(difffrac<=-epsilon)
       regrowth(cell,difffrac,pftpar,npft,ntypes,istimber,i,ncft,year,config->with_nitrogen);        /*regrowth*/
 

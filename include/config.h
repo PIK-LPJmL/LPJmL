@@ -224,7 +224,6 @@ extern void fprintfiles(FILE *,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);
 extern size_t getsize(int,const Config *);
-extern void annual_climbuf(Climbuf *,Real,int,int,int,const Config *); /* moved here from climbuf.h because the config argument is not yet defined there */
 
 /* Definition of macros */
 

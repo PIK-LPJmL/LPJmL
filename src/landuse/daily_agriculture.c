@@ -92,7 +92,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     if(climate->tmin<(-5))
     {
       crop=pft->data;
-      if(crop->fphu>0.2&&crop->fphu<0.95)
+      if(crop->fphu>0.5&&crop->fphu<0.95) /* frost damage possible after storage organs start growing (about fphu>0.5)*/
       {
         litter_update_crop(&pft->stand->soil.litter,pft,1.0);
         delpft(&stand->pftlist,p);
@@ -253,10 +253,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_airrig[pftpar->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
 #else
       crop=pft->data;
-      if(config->pft_output_scaled)
-        crop->irrig_apply+=irrig_apply*stand->frac;
-      else
-        crop->irrig_apply+=irrig_apply;
+      crop->irrig_apply+=irrig_apply;
 #endif
       if(pftpar->id==output->daily.cft && data->irrigation==output->daily.irrigation)
         output->daily.irrig=irrig_apply;

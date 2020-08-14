@@ -1112,10 +1112,10 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   int yearm=year;
   int yeart=year;
   int yearr=year;
-  int yearl=year;
   /* for testing soil type to avoid all crops on ROCK and ICE cells */
   Stand *stand;
   int soiltype=-1;
+  int yearl=year;
 
   /* Initialize yearly prescribed sdate */
   if(config->sdate_option==PRESCRIBED_SDATE)
@@ -1932,7 +1932,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       count=0;
       for(cell=0; cell<config->ngridcell; cell++)
         if(!grid[cell].skip)
-          grid[cell].ml.with_tillage=vec[count++]*landuse->with_tillage.scalar;
+          grid[cell].ml.with_tillage=(Bool)vec[count++]*landuse->with_tillage.scalar;
         else
           count+=1;
       free(vec);

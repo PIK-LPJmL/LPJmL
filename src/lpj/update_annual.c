@@ -46,20 +46,16 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
     {
      for (cft=0;cft<ncft;cft++)
      {
-       pftcrop=config->pftpar[npft+cft].data;
-       if(pftcrop->wtype==TRUE)
-       {
-         croppar=config->pftpar[npft+cft].data;
+       croppar=config->pftpar[npft+cft].data;
  	     if (mintemp[m]<=croppar->tv_opt.low && mintemp[m]> -9999)
-           cell->climbuf.V_req_a[cft]+=croppar->pvd_max/N; /* maximum number of vernalization days per months */
-         else if (mintemp[m]>croppar->tv_opt.low && mintemp[m]<croppar->tv_opt.high)
-           cell->climbuf.V_req_a[cft]+=croppar->pvd_max/N*(1-(mintemp[m]-croppar->tv_opt.low)/(croppar->tv_opt.high-croppar->tv_opt.low));
-       }
+         cell->climbuf.V_req_a[cft]+=croppar->pvd_max/N; /* maximum number of vernalization days per months */
+       else if (mintemp[m]>croppar->tv_opt.low && mintemp[m]<croppar->tv_opt.high)
+         cell->climbuf.V_req_a[cft]+=croppar->pvd_max/N*(1-(mintemp[m]-croppar->tv_opt.low)/(croppar->tv_opt.high-croppar->tv_opt.low));
      }
     }
   }
 
-  annual_climbuf(&cell->climbuf,cell->output.aevap+cell->output.atransp,npft,ncft,year,config);
+  annual_climbuf(&cell->climbuf,cell->output.aevap+cell->output.atransp,ncft,year,config->crop_phu_option,config->sdate_fixyear);
   if(config->sdate_option==NO_FIXED_SDATE ||
     (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear)||
     (config->sdate_option==PRESCRIBED_SDATE && year<=config->sdate_fixyear))
