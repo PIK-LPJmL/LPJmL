@@ -1,0 +1,13 @@
+#!/bin/bash
+#SBATCH --qos=short
+#SBATCH --export=ALL
+#SBATCH --mail-user=jonasjae@pik-potsdam.de
+#SBATCH --mail-type=end
+#SBATCH --time=120
+#SBATCH --tasks-per-node=16
+#SBATCH --output=tmp/calculate_PHU_requirements_agmerra.out
+#SBATCH --error=tmp/calculate_PHU_requirements_agmerra.err
+#SBATCH --account=macmit
+#SBATCH --job-name=PHU
+
+Rscript calculate_PHU_requirements.R agmerra

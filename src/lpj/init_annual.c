@@ -23,7 +23,7 @@ void init_annual(Cell *cell, /**< Pointer to cell */
   int s,p;
   Pft *pft;
   Stand *stand;
-  init_climbuf(&cell->climbuf);
+  init_climbuf(&cell->climbuf,ncft);
   cell->balance.aprec=cell->balance.nep=cell->balance.awater_flux=0.0;
   cell->afire_frac=cell->balance.biomass_yield.carbon=cell->balance.biomass_yield.nitrogen=0.0;
   cell->balance.total_irrig_from_reservoir=cell->balance.total_reservoir_out=0.0;

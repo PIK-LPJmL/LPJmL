@@ -55,7 +55,7 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
       else
         irrig_threshold=param.irrig_threshold_c4;
       if(pft->par->id==RICE)
-       irrig_threshold=param.irrig_threshold_rice;
+        irrig_threshold=param.irrig_threshold_rice;
 
       count+=(wr>irrig_threshold) ? 0 : 1; /* if one of possibly two (grass) pfts requests irrigation, both get irrigated */
     } /*for each pft*/

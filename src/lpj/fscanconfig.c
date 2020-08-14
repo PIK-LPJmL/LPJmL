@@ -530,15 +530,37 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     scanclimatefilename(&input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,"wind");
   }
+#ifdef CROPSHEATFROST
+  if(config->withlanduse>NO_LANDUSE)
+  {
+    scanclimatefilename(&input,&config->tmin_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmin");
+  }
+  else
+    config->tmin_filename.name=NULL;
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX || config->withlanduse>NO_LANDUSE)
+  {
+    if(config->fire==SPITFIRE_TMAX || config->withlanduse>NO_LANDUSE)
+    {
+      scanclimatefilename(&input,&config->tmax_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmax");
+    }
+    else
+      config->tmax_filename.name=NULL;
+  }
+#else
+  config->tmin_filename.name=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,(config->fire==SPITFIRE_TMAX) ? "tmin" : "tamp");
     if(config->fire==SPITFIRE_TMAX)
     {
       scanclimatefilename(&input,&config->tmax_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmax");
     }
     else
       config->tmax_filename.name=NULL;
+  }
+#endif
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  {
+    scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,(config->fire==SPITFIRE_TMAX) ? "tmin" : "tamp");
     scanclimatefilename(&input,&config->lightning_filename,config->inputdir,FALSE,"lightning");
     scanclimatefilename(&input,&config->human_ignition_filename,
                         config->inputdir,FALSE,"human_ignition");

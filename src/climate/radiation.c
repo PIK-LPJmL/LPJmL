@@ -22,7 +22,7 @@ void radiation(Real *daylength,       /**< daylength (h) */
                Real *par,             /**< photosynthetic active radiation flux (J/m2/day) */
                Real *eeq,             /**< equilibrium evapotranspiration (mm) */
                Real lat,              /**< latitude (deg) */
-               int day,	              /**< day (1..365) */
+               int day,               /**< day (1..365) */
                Dailyclimate *climate, /**< daily climate data */
                Real beta,             /**< albedo */
                int with_radiation     /**< CLOUDINESS/RADIATION/RADIATION_LWDOWN/RADIATION_SWONLY */

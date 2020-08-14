@@ -15,12 +15,19 @@
 #include "lpj.h"
 #include "crop.h"
 
-#define VD_SLOPE 7 /* vernalization with reduced effects for +/- 7 deg outside min/max range*/
+#define VD_SLOPE 7 /* slope parameter for reduced vernalization effectivity +/- 7 deg outside min/max range*/
+#ifdef CROPSHEATFROST
+#define TLOW 30.0
+#define THIGH 40.0 /* low and high temperature for reduction of harvest index */
+#endif
 
 Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
                     Real temp,     /**< temperature (deg C) */
-                    Real daylength /**< length of day (h) */
-                   )               /** \return harvesting crop (TRUE/FALSE) */
+                    Real tmax,     /**< daily maximum temperature (deg C) */
+                    Real daylength, /**< length of day (h) */
+                    int npft,
+                    const Config *config /**< LPJ configuration */
+                    )               /** \return harvesting crop (TRUE/FALSE) */
 {
   Pftcrop *crop;
   const Pftcroppar *par;
@@ -30,45 +37,77 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
   Real laimax;
   Bool harvesting;
   int hlimit;
-  Real vd_inc,vrf,prf;
-  
+  Real vd_inc,vd_b,vrf,prf;
+#ifdef CROPSHEATFROST
+  Real as;
+#endif
   crop=pft->data;
   par=pft->par->data;
   harvesting=FALSE;
   crop->growingdays++;
 
-  hlimit=(crop->wtype && par->calcmethod_sdate==TEMP_WTYP_CALC_SDATE) ? par->hlimit+90 : par->hlimit;
-//printf("phenology_crop.c: %s hlimit = %d\n", pft->par->name, hlimit);
+  if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+    hlimit=par->hlimit;
+  else
+    hlimit=(crop->wtype) ? par->hlimit+90 : par->hlimit; /* add 90 days for winter crops for internally computed seasons */
 
   crop->senescence0=crop->senescence;
 
   laimax=pft->stand->cell->ml.manage.laimax[pft->par->id];
 
+#ifdef CROPSHEATFROST
+  /* accelerated senescence factor should be between 1 and 2 and applied to mean temperature, following Maiorano et al. 2017 */
+  as = 1.0;
+  if (tmax > TLOW && tmax < THIGH)
+    as = 1/(THIGH-TLOW)*(tmax-TLOW)+1;
+  else if(tmax > THIGH)
+    as = 2;
+#endif
+
   if(crop->husum<crop->phu)
   {
+#ifdef CROPSHEATFROST
+    if(!crop->senescence)
+      hu=max(0,temp*as-crop->basetemp);
+    else 
+      hu=max(0,temp-crop->basetemp);
+#else
     hu=max(0,temp-crop->basetemp);
+#endif
 
-    /* Calculation of vernalization days */
-    if (crop->vdsum<crop->pvd)
+    if (crop->wtype) /* if winter crops with vernalization requirements */
     {
-      if (temp>par->trg.high)
-        vd_inc=1-((temp-par->trg.high)/VD_SLOPE);
-      else if (temp<par->trg.low)
-        vd_inc=1-((par->trg.low-temp)/VD_SLOPE);
-      else 
-        vd_inc=1.0;
-//printf("phenology_crop.c: vd_inc = %lf\n", vd_inc);
+      /* Calculation of daily vernalization increment */
+      if (crop->vdsum<pft->stand->cell->climbuf.V_req[pft->par->id-npft])
+      {
+        if (temp>=par->tv_eff.low && temp<par->tv_opt.low)                          /* temp within effective, but below optimal conditions */
+          vd_inc=(temp-par->tv_eff.low )/(par->tv_opt.low-par->tv_eff.low );
+        else if (temp<=par->tv_eff.high && temp>=par->tv_opt.high)                  /* temp within effective, but above optimal conditions */
+          vd_inc=(par->tv_eff.high-temp)/(par->tv_eff.high-par->tv_opt.high);
+        else if (temp>=par->tv_opt.low && temp<par->tv_opt.high)                    /* temp within optimal conditions */
+          vd_inc=1.0;
+        else
+          vd_inc=0.0;
+      }
+      else
+        vd_inc=0.0;
+
+      crop->vdsum+=max(0,vd_inc);
+
+      /* Calculation of vernalization reduction factor */
+      vd_b=pft->stand->cell->climbuf.V_req[pft->par->id-npft]*0.1; /* vernalization base requirements: originally 0.2 of V_req */
+
+      if (crop->vdsum<vd_b)  /* hu units fully effective until vd_b is reached; from there on vernalization slows development down. This to  allow some LAI development in autumn */
+        vrf=1.0;
+      else if (crop->vdsum>=vd_b && crop->vdsum<pft->stand->cell->climbuf.V_req[pft->par->id-npft]) /* the previous version stopped the vernalization penalty at 0.2 fphu "&& (crop->fphu<=0.2)" */
+        vrf=max(0,min(1,(crop->vdsum-vd_b)/(pft->stand->cell->climbuf.V_req[pft->par->id-npft]-vd_b)));
+      else
+        vrf=1.0;
     }
-    else
-      vd_inc=0.0;
-    crop->vdsum+=max(0,vd_inc);
-    /* Calculation of vernalization reduction factor */
-    if ((crop->vdsum<crop->pvd) && (crop->fphu<=0.2))
-      vrf=(crop->vdsum<=10.0) ? 0.0 : (crop->vdsum-10.0) / (crop->pvd-10.0);
     else
       vrf = 1.0;
 
-    /* Response to photoperiodic */
+    /* Response to photoperiodism */
     if (crop->fphu <= par->fphusen)
       prf=(1-par->psens)*min(1,max(0,(daylength-par->pb)/(par->ps-par->pb)))+par->psens;
     else

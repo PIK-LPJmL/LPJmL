@@ -17,10 +17,11 @@
 #define k (1.0/12.0)
 #define kk 0.05
 
-Bool new_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
-                )                 /** \return TRUE on error */
+Bool new_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
+                 int ncft          /**< number of crop pfts */
+                )                  /** \return TRUE on error */
 {
-  int d,m;
+  int d,m,c;
   climbuf->max=newbuffer(CLIMBUFSIZE);
   if(climbuf->max==NULL)
   {
@@ -30,6 +31,17 @@ Bool new_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
   climbuf->min=newbuffer(CLIMBUFSIZE);
   if(climbuf->min==NULL)
     return TRUE;
+  climbuf->V_req=newvec(Real,ncft);
+  if(climbuf->V_req==NULL)
+    return TRUE;
+  climbuf->V_req_a=newvec(Real,ncft);
+  if(climbuf->V_req_a==NULL)
+    return TRUE;
+  for(c=0;c<ncft;c++)
+  {
+   climbuf->V_req[c]=-9999;
+   climbuf->V_req_a[c]=0;
+  }
   climbuf->atemp_mean=0;
   climbuf->aetp_mean=0;
   climbuf->atemp=0;
@@ -46,15 +58,44 @@ Bool new_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
   return FALSE;
 } /* of 'new_climbuf' */
 
-void init_climbuf(Climbuf *climbuf /**< pointer to climate buffer */
+void init_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
+                  int ncft          /**< number of crop pfts */
                  )
 {
+  int c;
   climbuf->temp_min=HUGE_VAL;
   climbuf->temp_max=-HUGE_VAL;
   climbuf->gdd5=0;
   climbuf->mprec=0;
   climbuf->mpet=0;
+  for(c=0;c<ncft;c++)
+    climbuf->V_req_a[c]=0;
 } /* of 'init_climbuf' */
+
+void getmintemp20_n(const Climbuf *climbuf,
+                    Real min[],
+                    int n
+                   )
+{
+  Real temp[NMONTH],swp;
+  int m,i,index;
+  for(m=0;m<NMONTH;m++)
+    temp[m]=climbuf->mtemp20[m];
+  for(i=0;i<n;i++)
+  {
+    min[i]=temp[i];
+    index=i;
+    for(m=i+1;m<NMONTH;m++)
+      if(min[i]>temp[m])
+      {
+        min[i]=temp[m];
+        index=m;
+      }
+    swp=temp[i];
+    temp[i]=temp[index];
+    temp[index]=swp;
+  }
+} /* of 'getmintemp20_n'  calculates n coldest month and returns their values */
 
 void daily_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
                    Real temp         /**< daily temperature (deg C) */
@@ -85,11 +126,16 @@ void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
   climbuf->atemp+=mtemp*k;
 } /* of 'monthly_climbuf' */
 
-void annual_climbuf(Climbuf *climbuf,/**< pointer to climate buffer */
-                    Real aetp        /**< annual evapotranspiration (mm) */
+void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
+                    Real aetp,           /**< annual evapotranspiration (mm) */
+                    int ncft,            /**< number of crop pfts */
+                    int year,            /**< current year */
+                    int crop_phu_option,
+                    int sdate_fixyear    /**< year in which sowing dates shall be fixed */
                    )
 {
   int m;
+  int cft;
   updatebuffer(climbuf->min,climbuf->temp_min);
   updatebuffer(climbuf->max,climbuf->temp_max);
   climbuf->atemp_mean20 = (climbuf->atemp_mean20<-9998) ? climbuf->atemp : (1-kk)*climbuf->atemp_mean20+kk*climbuf->atemp;
@@ -99,11 +145,17 @@ void annual_climbuf(Climbuf *climbuf,/**< pointer to climate buffer */
   climbuf->aprec=0;
   for(m=0;m<NMONTH;m++)
     climbuf->aprec+=climbuf->mprec20[m];
+  if(crop_phu_option==PRESCRIBED_CROP_PHU && year<=sdate_fixyear) /* update only until sdate_fixyear */
+  {
+    for(cft=0;cft<ncft;cft++)
+      climbuf->V_req[cft]= (climbuf->V_req[cft]< -9998) ? climbuf->V_req_a[cft] : (1-kk)*climbuf->V_req[cft]+kk*climbuf->V_req_a[cft];
+  }
 } /* of 'annual_climbuf' */
 
-Bool fwriteclimbuf(FILE *file,            /**< pointer to binary file */
-                   const Climbuf *climbuf /**< pointer to climate buffer written */
-                  )                       /** \return TRUE on error */
+Bool fwriteclimbuf(FILE *file,             /**< pointer to binary file */
+                   const Climbuf *climbuf, /**< pointer to climate buffer written */
+                   int ncft                /**< number of crop pfts */
+                  )                        /** \return TRUE on error */
 {
   fwrite(&climbuf->temp_max,sizeof(Real),1,file);
   fwrite(&climbuf->temp_min,sizeof(Real),1,file);
@@ -117,14 +169,17 @@ Bool fwriteclimbuf(FILE *file,            /**< pointer to binary file */
   fwrite(climbuf->mpet20,sizeof(Real),NMONTH,file);
   fwrite(climbuf->mprec20,sizeof(Real),NMONTH,file);
   fwrite(climbuf->mtemp20,sizeof(Real),NMONTH,file);
+  fwrite(climbuf->V_req,sizeof(Real),ncft,file);
+  fwrite(climbuf->V_req_a,sizeof(Real),ncft,file);
   fwritebuffer(file,climbuf->min);
   return fwritebuffer(file,climbuf->max);
 } /* of 'fwriteclimbuf' */
 
-Bool freadclimbuf(FILE *file,       /**< pointer to binary file */
-                  Climbuf *climbuf, /**< pointer to climate buffer read */
-                  Bool swap         /**< byte order has to be swapped (TRUE/FALSE) */
-                 )                  /** \return TRUE on error */
+Bool freadclimbuf(FILE *file,        /**< pointer to binary file */
+                  Climbuf *climbuf,  /**< pointer to climate buffer read */
+                  Bool swap,         /**< byte order has to be swapped (TRUE/FALSE) */
+                  int ncft           /**< number of crop pfts */
+                 )                   /** \return TRUE on error */
 {
   int m;
   freadreal1(&climbuf->temp_max,swap,file);
@@ -139,6 +194,14 @@ Bool freadclimbuf(FILE *file,       /**< pointer to binary file */
   freadreal(climbuf->mpet20,NMONTH,swap,file);
   freadreal(climbuf->mprec20,NMONTH,swap,file);
   freadreal(climbuf->mtemp20,NMONTH,swap,file);
+  climbuf->V_req=newvec(Real,ncft);
+  if(climbuf->V_req==NULL)
+    return TRUE;
+  freadreal(climbuf->V_req,ncft,swap,file);
+  climbuf->V_req_a=newvec(Real,ncft);
+  if(climbuf->V_req_a==NULL)
+    return TRUE;
+  freadreal(climbuf->V_req_a,ncft,swap,file);
   climbuf->min=freadbuffer(file,swap);
   if(climbuf->min==NULL)
   {
@@ -159,4 +222,6 @@ void freeclimbuf(Climbuf *climbuf /**< pointer to binary file */
 {
   freebuffer(climbuf->max);
   freebuffer(climbuf->min);
+  free(climbuf->V_req);
+  free(climbuf->V_req_a);
 } /* of 'freeclimbuf' */

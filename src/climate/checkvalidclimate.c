@@ -115,7 +115,16 @@ Bool checkvalidclimate(Climate *climate, /**< pointer to climate data */
       return TRUE;
     if(checkvalid(&climate->file_tamp,config->tamp_filename.name,grid,config))
       return TRUE;
+#ifdef CROPSHEATFROST
+    if(config->withlanduse>NO_LANDUSE)
+    {
+      if(checkvalid(&climate->file_tmin,config->tmin_filename.name,grid,config))
+        return TRUE;
+    }
+    if(config->fire==SPITFIRE_TMAX || config->withlanduse>NO_LANDUSE)
+#else
     if(config->fire==SPITFIRE_TMAX)
+#endif
     {
       if(checkvalid(&climate->file_tmax,config->tmax_filename.name,grid,config))
         return TRUE;

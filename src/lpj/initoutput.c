@@ -30,6 +30,8 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->sdate);
   output->hdate=newvec(int,2*ncft);
   checkptr(output->hdate);
+  output->husum=newvec(Real,2*ncft);
+  check(output->husum);
   output->pft_npp=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->pft_npp);
   output->pft_nuptake=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
@@ -104,6 +106,8 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->sdate2);
   output->hdate2=newvec(int,2*ncft);
   checkptr(output->hdate2);
+  output->husum2=newvec(Real,2*ncft);
+  check(output->husum2);
   output->syear=newvec(int,2*ncft); /* allocate memory for output */
   checkptr(output->syear);
   output->syear2=newvec(int,2*ncft); /* allocate memory for output */

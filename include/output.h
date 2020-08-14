@@ -125,7 +125,7 @@ typedef struct
   Real ainterc;          /**< Yearly interception (mm) */
   Real mpet;             /**< Monthly PET (mm) */
   Real mswc[NSOILLAYER]; /**< monthly soil water content*/
-  Real mrootmoist;        /**< monthly plant available water for evapotranspiration fractional*/
+  Real mrootmoist;       /**< monthly plant available water for evapotranspiration fractional*/
   Stocks fire;           /**< annual fire carbon and nitrogen emissions (g/m2)*/
   Real mfirec;           /**< monthly fire carbon emissions (gC/m2)*/
   Real mnfire;           /**< monthly number of fires */
@@ -148,6 +148,7 @@ typedef struct
   Real mwd_unsustainable; /**< Monthly withdrawal from unsustainable source (mm) */
   Real awd_unsustainable; /**< Yearly withdrawal from unsustainable source (mm) */
   Real munmet_demand;     /**< monthly unavailable requested irrigation water (mm) */
+  Real *husum;           /**< accumulated heat units through growing season */
   Real *cft_airrig;      /**< Yearly irrigation per cft (mm) */
   int *sdate;            /**< sowing date */
   int *hdate;            /**< Harvest date */
@@ -156,6 +157,7 @@ typedef struct
   int *hdate2;           /**< Harvest date */
   int *syear;
   int *syear2;
+  Real *husum2;          /**< accumulated heat units through growing season */
   Real *cft_airrig2;     /**< Yearly irrigation per cft (mm) */
   Harvest *pft_harvest2;
   Real *growing_period2;      /**< lenght of growing period in days */
@@ -184,7 +186,7 @@ typedef struct
   Real mres_demand;      /**< Monthly reservoir demand (million m3) */
   Real mtarget_release;  /**< Monthly target release (1.000.000 m3/day) */
   Real mres_cap;         /**< monthly output of reservoir capacity (in million m3) */
-  Real mwd_local;        /**<  monthly local withdrawal (mm) total water used for local and neighbour irrigation, including water that goes into irrig_stor, which could go back to river */
+  Real mwd_local;        /**< monthly local withdrawal (mm) total water used for local and neighbour irrigation, including water that goes into irrig_stor, which could go back to river */
   Real mwd_neighb;       /**< monthly neighbour withdrawal (mm); negative values means give away to neighbour, positive taken for local irrigation from neighbour */
   Real mwd_res;          /**< monthly reservoir withdrawal (mm) */
   Real mwd_return;       /**< monthly withdrawals returned to river (mm) */

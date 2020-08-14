@@ -67,7 +67,6 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       if (om_layer > 8)
         om_layer = 8;
 
-
       /* pedotransfer function following Saxton&Rawls 2006: */
       wpwpt = -0.024*soilpar->sand + 0.487*soilpar->clay + 0.006*om_layer + 0.005*(soilpar->sand*om_layer) - 0.013*(soilpar->clay*om_layer) + 0.068*(soilpar->sand*soilpar->clay) + 0.031;
       soil->wpwp[l] = wpwpt + (0.14 * wpwpt - 0.02);
@@ -136,8 +135,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       }
       else
         soil->w[l] = soil->w_fw[l] = 0;
-
-
+        
       /* assure numerical stability */
       /* if more water than soil can hold (above pwp) */
       if((soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])>(soil->wsats[l]-soil->wpwps[l]))

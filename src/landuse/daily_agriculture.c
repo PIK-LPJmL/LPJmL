@@ -91,7 +91,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     if(climate->tmin<(-5))
     {
       crop=pft->data;
-      if(crop->fphu>0.2&&crop->fphu<0.95)
+      if(crop->fphu>0.5&&crop->fphu<0.95) /* frost damage possible after storage organs start growing (about fphu>0.5)*/
       {
         litter_update_crop(&pft->stand->soil.litter,pft,1.0);
         delpft(&stand->pftlist,p);
@@ -113,7 +113,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         crop->nfertilizer=0;
       }
     }
-    if(phenology_crop(pft,climate->temp,daylength))
+    if(phenology_crop(pft,climate->temp,climate->tmax,daylength,npft,config))
     {
       if(pft->par->id==output->daily.cft
          && data->irrigation==output->daily.irrigation)
@@ -176,12 +176,17 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         crop->tempsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->husum+(pft->par->id-npft+data->irrigation*ncft),
+        output->husum2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->husum);
 #else
       output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].carbon=
         (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;
       output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].nitrogen=
         (crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
+      output->husum[pft->par->id-npft+data->irrigation*ncft]=crop->husum;
 #endif
       harvest_crop(output,stand,pft,npft,ncft,year,config->residue_treatment,config->residues_fire,
                    config->pft_output_scaled);
@@ -399,10 +404,15 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         crop->tempsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->husum+(pft->par->id-npft+data->irrigation*ncft),
+        output->husum2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->husum);
 #else
       output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].carbon=
         (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;
       output->hdate[pft->par->id-npft+data->irrigation*ncft]=day;
+      output->husum[pft->par->id-npft+data->irrigation*ncft]=crop->husum;
 #endif
       harvest_crop(output,stand,pft,npft,ncft,year,config->residue_treatment,config->residues_fire,
                    config->pft_output_scaled);
