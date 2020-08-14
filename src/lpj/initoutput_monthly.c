@@ -49,9 +49,5 @@ void initoutput_monthly(Output *output,   /**< Output data */
     output->nday_month[l]=0;
   for(l=0;l<2*ncft;l++)
     output->cft_mswc[l]=0.0;
-#ifdef DOUBLE_HARVEST
-  for(l=0;l<2*ncft;l++)
-    output->cft_mswc2[l]=0.0;
-#endif
 
 } /* of 'initoutput_monthly' */

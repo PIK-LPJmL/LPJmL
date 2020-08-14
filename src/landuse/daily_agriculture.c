@@ -505,22 +505,13 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       intercep_stand,intercep_stand_blue,npft,ncft,config->pft_output_scaled);
 
   /* write CFT-specific soil moisture output */
-
   foreachpft(pft,p,&stand->pftlist)
   {
-//    printf("Day: %d cft: %s output->cft_mswc = %f\n", day, pft->par->name, output->cft_mswc[pft->par->id-npft+data->irrigation*ncft]);
     cft_rm=0.0;
     forrootmoist(l)
       cft_rm+=pft->stand->soil.w[l]*pft->stand->soil.whcs[l]; /* absolute soil water content between wilting point and field capacity (mm) */
     output->nday_month[pft->par->id-npft+data->irrigation*ncft]+=1; /* track number of growing season days in each month for calculating the mean in update_monthly.c */
-    #ifdef DOUBLE_HARVEST
-    if(output->syear2[pft->par->id-npft+data->irrigation*ncft]>epsilon)
-      output->cft_mswc2[pft->par->id-npft+data->irrigation*ncft]+=cft_rm;
-    else
-      output->cft_mswc[pft->par->id-npft+data->irrigation*ncft]+=cft_rm;
-#else
-    output->cft_mswc[pft->par->id-npft+data->irrigation*ncft]+=cft_rm;
-#endif
+    output->cft_mswc[pft->par->id-npft+data->irrigation*ncft]+=cft_rm; /* no secondary output needed as monthly outputs are written even in double harvest situation */
   }
 
   free(wet);

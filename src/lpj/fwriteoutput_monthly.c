@@ -216,17 +216,6 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
           fvec[count++]=(float)grid[cell].output.cft_mswc[l];
       writemonth2(output,CFT_MSWC,fvec,year,month,l,ncft*2,config);
     }
-#ifdef DOUBLE_HARVEST
-  if(isopen(output,CFT_MSWC2))
-    for(l=0;l<ncft*2;l++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          fvec[count++]=(float)grid[cell].output.cft_mswc2[l];
-      writemonth2(output,CFT_MSWC2,fvec,year,month,l,ncft*2,config);
-    }
-#endif
 
   writeoutputvar(MSWC1,mswc[0]);
   writeoutputvar(MSWC2,mswc[1]);

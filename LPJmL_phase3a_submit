@@ -329,9 +329,7 @@ ID                         Fmt                    filename
     { "id" : MSWC2,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l2_30cm.bin)}},
     { "id" : MSWC3,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l3_50cm.bin)}},
     { "id" : CFT_MSWC,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/cft_mrootmoist.bin)}},
-    { "id" : CFT_MSWC2,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/cft_mrootmoist2.bin)}},
     { "id" : MROOTMOIST,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mroormoist_1m.bin)}}
-//    { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/seasonality.bin)}},
 #ifdef DAILY_OUTPUT
 //    { "id" : D_VDSUM,            "file" : { "fmt" : RAW, "name" : "output/d_vdsum.bin"}},
 //    { "id" : D_PVD,            "file" : { "fmt" : RAW, "name" : "output/d_pdv.bin"}},
