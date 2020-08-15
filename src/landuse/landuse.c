@@ -1687,7 +1687,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           return TRUE;
         }
         if(readrealvec(landuse->fertilizer_nr.file,fert_nr,0,landuse->fertilizer_nr.scalar,landuse->fertilizer_nr.n,
-          landuse->fertilizer_nr.swap,landuse->fertilizer_nr.datatype))        {
+          landuse->fertilizer_nr.swap,landuse->fertilizer_nr.datatype))
+        {
           fprintf(stderr,
             "ERROR149: Cannot read fertilizer Nr of year %d in getlanduse().\n",
             yearf+landuse->fertilizer_nr.firstyear);
@@ -1765,7 +1766,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           return TRUE;
         }
         if(readrealvec(landuse->manure_nr.file,manu_nr,0,landuse->manure_nr.scalar,landuse->manure_nr.n,
-          landuse->manure_nr.swap,landuse->manure_nr.datatype))        {
+          landuse->manure_nr.swap,landuse->manure_nr.datatype))
         //if(fread(vec,sizeof(short),landuse->manure_nr.n,landuse->manure_nr.file)!=landuse->manure_nr.n)
         {
           fprintf(stderr,
