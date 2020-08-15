@@ -39,8 +39,6 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
   Real sumlitter,pftlitter,wood=0,socfraction;
   Poolpar *k_mean,*c0,*sum,*k_mean_layer;
   Poolpar cn_ratio[LASTLAYER];
-  Pool c_before[LASTLAYER];
-  Real total1=0, total2=0;
   k_mean_layer=newvec(Poolpar,LASTLAYER);
   check(k_mean_layer);
   k_mean=newvec(Poolpar,ntotpft);
@@ -56,11 +54,6 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
   for(p=0;p<ntotpft;p++)
     k_mean[p].fast=k_mean[p].slow=sum[p].fast=sum[p].slow=c0[p].fast=c0[p].slow=0.0;
  
-  forrootsoillayer(l)
-  {
-    c_before[l].fast.carbon=soil->pool[l].fast.carbon;
-    c_before[l].slow.carbon=soil->pool[l].slow.carbon;
-  }
   if(shift!=TRUE)
   {
     soil->decomp_litter_mean.carbon/=(soil_equil_year-veg_equil_year);
