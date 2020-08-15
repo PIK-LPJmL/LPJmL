@@ -68,7 +68,7 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
   } 
   else //if(shift==TRUE)
   {
-    if(shift!=TRUE)
+    forrootsoillayer(l)
     {
       k_mean_layer[l].fast=soil->k_mean[l].fast/(cshift_year+1);
       k_mean_layer[l].slow=soil->k_mean[l].slow/(cshift_year+1);
@@ -79,7 +79,9 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
         k_mean[p].fast+=k_mean_layer[l].fast*socfraction;
         k_mean[p].slow+=k_mean_layer[l].slow*socfraction;
       }
-      soil->count=0;     soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
+    }
+    forrootsoillayer(l)
+    {
       for(p=0;p<ntotpft;p++)
       {
         socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
