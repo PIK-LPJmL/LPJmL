@@ -104,6 +104,9 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(&f,&param.drip_evap,"drip_evap_reduction");
     fscanparamreal(&f,&param.residues_in_soil,"residues_in_soil");
     fscanparamreal(&f,&param.nfert_split,"nfert_split");
+    fscanparamreal(&f,&param.nfert_split_frac,"nfert_split_frac");
+    fscanparamreal(&f,&param.nfert_no3_frac,"nfert_no3_frac");
+    fscanparamreal(&f,&param.nmanure_nh4_frac,"nmanure_nh4_frac");
     fscanparamreal(&f,&param.fburnt,"fburnt");
     fscanparamreal(&f,&param.ftimber,"ftimber");
     if(config->rw_manage)

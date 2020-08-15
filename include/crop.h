@@ -102,6 +102,7 @@ typedef struct
   Real ndemandsum;
   Real nuptakesum;
   Real nfertilizer;         /* fertilizer amount */
+  Real nmanure;             /* manure ammount */
   Real vscal_sum;
   Real supplysum;
 #ifdef DOUBLE_HARVEST

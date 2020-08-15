@@ -107,11 +107,22 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     } else {
       /* trigger 2nd fertilization */
       crop=pft->data;
-      if(crop->fphu>0.4 && crop->nfertilizer>0){
-        pft->stand->soil.NO3[0]+=crop->nfertilizer*0.5;
-        pft->stand->soil.NH4[0]+=crop->nfertilizer*0.5;
-        pft->stand->cell->balance.n_influx+=crop->nfertilizer*pft->stand->frac;
+      /* GGCMI phase 3 rule: apply second dosis at fphu=0.25*/
+      if(crop->fphu>0.25 && crop->nfertilizer>0){
+        stand->soil.NO3[0]+=crop->nfertilizer*param.nfert_no3_frac;
+        stand->soil.NH4[0]+=crop->nfertilizer*(1-param.nfert_no3_frac);
+        stand->cell->balance.n_influx+=crop->nfertilizer*stand->frac;
         crop->nfertilizer=0;
+      }
+      if(crop->fphu>0.25 && crop->nmanure>0){
+        stand->soil.NH4[0] += crop->nmanure*param.nmanure_nh4_frac;
+        /* no tillage at second application, so manure goes to ag litter not agsub as at cultivation */
+        stand->soil.litter.item->ag.leaf.carbon += crop->nmanure*param.manure_cn;
+        stand->soil.litter.item->ag.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
+        stand->cell->output.flux_estab.carbon += crop->nmanure*param.manure_cn*stand->frac;
+        stand->cell->balance.n_influx += crop->nmanure*stand->frac;
+
+        crop->nmanure=0;
       }
     }
     if(phenology_crop(pft,climate->temp,climate->tmax,daylength,npft,config))

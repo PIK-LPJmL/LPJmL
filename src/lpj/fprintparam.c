@@ -74,6 +74,9 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     if(config->with_nitrogen)
     {
       fprintf(file,"nfert_split:\t%g\n",param.nfert_split);
+      fprintf(file,"nfert_split_frac:\t%g\n",param.nfert_split_frac);
+      fprintf(file,"nfert_no3_frac:\t%g\n",param.nfert_no3_frac);
+      fprintf(file,"nmanure_nh4_frac:\t%g\n",param.nmanure_nh4_frac);
       fprintf(file, "manure_cn:\t%g\n", param.manure_cn);
     }
     fprintf(file,"residues_frac:\t%g\n",param.residue_frac);

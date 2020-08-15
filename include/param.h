@@ -67,6 +67,9 @@ typedef struct
   Real residues_in_soil;  /**< minimum residues in soil*/
   Real nfert_split;     /**< threshold fertilizer input for split application */
   Real manure_cn;       /* CN ratio of applied manure gC/gN */
+  Real nfert_split_frac;       /* fraction of fertilizer to be applied at sowing */
+  Real nfert_no3_frac;  /* fraction of NO3 in fertilizer */
+  Real nmanure_nh4_frac;  /* fraction of NH4 in manure */
   Real residue_frac; /**< fraction of residues to be submerged with tillage */
   Real mixing_efficiency; /**< density factor to simulate changes in bulk density by tillage */
   int till_startyear; /* year in which tillage should start */

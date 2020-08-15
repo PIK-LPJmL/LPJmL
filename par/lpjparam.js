@@ -54,7 +54,7 @@
   "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
   "residue_cn": 20,         /* CN ratio of prescribed residues */
   "residue_fbg": 0.25,      /* belowground fraction of prescribed residues */
-  "manure_cn": 12.5,        /* CN ration of manure gC/gN */
+  "manure_cn": 14.5,        /* CN ration of manure gC/gN */
   "fertilizer_rate" : 10,     /* default: 20; fixed fertilizer application rate in gN/m2/yr */
   "manure_rate" : 0,          /* default: 20; fixed manure application rate in gN/m2/yr */
   "residue_frac" : 0.95,      /* fraction of residues to be submerged by tillage */
@@ -74,7 +74,10 @@
   "saturation_level_sprink" : 0.55,   /* saturation level sprinkler irrigation*/
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
-  "nfert_split" : 5,                  /* threshold fertilizer input for split application */
+  "nfert_split" : 0,                  /* threshold fertilizer input for split application */
+  "nfert_split_frac" : 0.2,           /* fraction of fertilizer input at sowing */
+  "nfert_no3_frac" : 0.5,             /* fraction of NO3 in fertilizer input */
+  "nmanure_nh4_frac" : 0.666667,      /* fraction of NH4 in manure input */
   "residues_in_soil" : 0.3,           /* minimum residues in soil*/
   "fburnt" : 0,                       /* fraction of trees burnt at deforestation */
   "ftimber" : 1,                      /* timber fraction at deforestation */
