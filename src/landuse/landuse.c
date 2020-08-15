@@ -480,11 +480,11 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           free(landuse);
           return(NULL);
         }
-        landuse->fertilizer_nr.offset=(config->startgrid-header.firstcell)*header.nbands*sizeof(short)+headersize(headername,version);
+        landuse->fertilizer_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
       }
       landuse->fertilizer_nr.firstyear=header.firstyear;
       landuse->fertilizer_nr.nyear=header.nyear;
-      landuse->fertilizer_nr.size=header.ncell*header.nbands*sizeof(short);
+      landuse->fertilizer_nr.size=header.ncell*header.nbands*typesizes[header.datatype];
       landuse->fertilizer_nr.n=config->ngridcell*header.nbands;
       landuse->nbands_fertilizer_nr=header.nbands;
       landuse->fertilizer_nr.scalar=header.scalar;
@@ -639,11 +639,11 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
             free(landuse);
             return(NULL);
           }
-          landuse->manure_nr.offset=(config->startgrid-header.firstcell)*header.nbands*sizeof(short)+headersize(headername,version);
+          landuse->manure_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
         }
         landuse->manure_nr.firstyear=header.firstyear;
         landuse->manure_nr.nyear=header.nyear;
-        landuse->manure_nr.size=header.ncell*header.nbands*sizeof(short);
+        landuse->manure_nr.size=header.ncell*header.nbands*typesizes[header.datatype];
         landuse->manure_nr.n=config->ngridcell*header.nbands;
         landuse->nbands_manure_nr=header.nbands;
         landuse->manure_nr.scalar=header.scalar;
@@ -1006,11 +1006,11 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           free(landuse);
           return(NULL);
         }
-        landuse->residue_on_field.offset=(config->startgrid-header.firstcell)*header.nbands*sizeof(short)+headersize(headername,version);
+        landuse->residue_on_field.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
       }
       landuse->residue_on_field.firstyear=header.firstyear;
       landuse->residue_on_field.nyear=header.nyear;
-      landuse->residue_on_field.size=header.ncell*header.nbands*sizeof(short);
+      landuse->residue_on_field.size=header.ncell*header.nbands*typesizes[header.datatype];
       landuse->residue_on_field.n=config->ngridcell*header.nbands;
       landuse->nbands_residue_on_field=header.nbands;
       landuse->residue_on_field.scalar=header.scalar;
@@ -1679,71 +1679,48 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           fflush(stderr);
           return TRUE;
         }
-        vec=newvec(short,landuse->fertilizer_nr.n);
-        if(vec==NULL)
+        fert_nr=newvec(Real,landuse->fertilizer_nr.n);
+        //vec=newvec(short,landuse->fertilizer_nr.n);
+        if(fert_nr==NULL)
         {
-          printallocerr("vec");
+          printallocerr("fert_nr");
           return TRUE;
         }
-        if(fread(vec,sizeof(short),landuse->fertilizer_nr.n,landuse->fertilizer_nr.file)!=landuse->fertilizer_nr.n)
-        {
+        if(readrealvec(landuse->fertilizer_nr.file,fert_nr,0,landuse->fertilizer_nr.scalar,landuse->fertilizer_nr.n,
+          landuse->fertilizer_nr.swap,landuse->fertilizer_nr.datatype))        {
           fprintf(stderr,
             "ERROR149: Cannot read fertilizer Nr of year %d in getlanduse().\n",
             yearf+landuse->fertilizer_nr.firstyear);
           fflush(stderr);
-          free(vec);
+          free(fert_nr);
           return TRUE;
         }
         if(landuse->fertilizer_nr.swap)
           for(i=0; i<landuse->fertilizer_nr.n; i++)
-            vec[i]=swapshort(vec[i]);
+            fert_nr[i]=swapreal(fert_nr[i]);
       }
       count=0;
 
       /* do changes here for the fertilization*/
       for(cell=0; cell<config->ngridcell; cell++)
       {
-        if(landuse->fertilizer_nr.fmt==CDF)
+        for(i=0; i<WIRRIG; i++)
         {
-          for(i=0; i<WIRRIG; i++)
-          {
-            for(j=0; j<ncft; j++)
-              grid[cell].ml.fertilizer_nr[i].crop[j]=fert_nr[count++];
-            for(j=0; j<NGRASS; j++)
-              grid[cell].ml.fertilizer_nr[i].grass[j]=fert_nr[count++];
+          for(j=0; j<ncft; j++)
+            grid[cell].ml.fertilizer_nr[i].crop[j]=fert_nr[count++];
+          for(j=0; j<NGRASS; j++)
+            grid[cell].ml.fertilizer_nr[i].grass[j]=fert_nr[count++];
 
-            if(landuse->fertilizer_nr.var_len!=2*(ncft+NGRASS))
-            {
-              grid[cell].ml.fertilizer_nr[i].biomass_grass=fert_nr[count++];
-              grid[cell].ml.fertilizer_nr[i].biomass_tree=fert_nr[count++];
-            }
-            else
-              grid[cell].ml.fertilizer_nr[i].biomass_grass=grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
-          }
-        }
-        else
-        {
-          for(i=0; i<WIRRIG; i++)
+          if(landuse->fertilizer_nr.var_len!=2*(ncft+NGRASS))
           {
-            for(j=0; j<ncft; j++)
-              grid[cell].ml.fertilizer_nr[i].crop[j]=vec[count++]*landuse->fertilizer_nr.scalar;
-
-            for(j=0; j<NGRASS; j++)
-              grid[cell].ml.fertilizer_nr[i].grass[j]=vec[count++]*landuse->fertilizer_nr.scalar;
-            if(landuse->nbands_fertilizer_nr!=2*(ncft+NGRASS))
-            {
-              grid[cell].ml.fertilizer_nr[i].biomass_grass=vec[count++]*landuse->fertilizer_nr.scalar;
-              grid[cell].ml.fertilizer_nr[i].biomass_tree=vec[count++]*landuse->fertilizer_nr.scalar;
-            }
-            else
-              grid[cell].ml.fertilizer_nr[i].biomass_grass=grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
+            grid[cell].ml.fertilizer_nr[i].biomass_grass=fert_nr[count++];
+            grid[cell].ml.fertilizer_nr[i].biomass_tree=fert_nr[count++];
           }
+          else
+            grid[cell].ml.fertilizer_nr[i].biomass_grass=grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
         }
       } /* for(cell=0;...) */
-      if(landuse->fertilizer_nr.fmt==CDF)
-        free(fert_nr);
-      else
-        free(vec);
+      free(fert_nr);
     }
 
     if(config->manure_input&&!config->fix_fertilization)
@@ -1781,70 +1758,49 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           fflush(stderr);
           return TRUE;
         }
-        vec=newvec(short,landuse->manure_nr.n);
-        if(vec==NULL)
+        manu_nr=newvec(Real,landuse->manure_nr.n);
+        if(manu_nr==NULL)
         {
-          printallocerr("vec");
+          printallocerr("manu_nr");
           return TRUE;
         }
-        if(fread(vec,sizeof(short),landuse->manure_nr.n,landuse->manure_nr.file)!=landuse->manure_nr.n)
+        if(readrealvec(landuse->manure_nr.file,manu_nr,0,landuse->manure_nr.scalar,landuse->manure_nr.n,
+          landuse->manure_nr.swap,landuse->manure_nr.datatype))        {
+        //if(fread(vec,sizeof(short),landuse->manure_nr.n,landuse->manure_nr.file)!=landuse->manure_nr.n)
         {
           fprintf(stderr,
             "ERROR149: Cannot read manure fertilizer of year %d in getlanduse().\n",
             yearm+landuse->manure_nr.firstyear);
           fflush(stderr);
-          free(vec);
+          free(manu_nr);
           return TRUE;
         }
         if(landuse->manure_nr.swap)
           for(i=0; i<landuse->manure_nr.n; i++)
-            vec[i]=swapshort(vec[i]);
+            manu_nr[i]=swapreal(manu_nr[i]);
       }
       count=0;
 
       /* do changes here for the manure*/
       for(cell=0; cell<config->ngridcell; cell++)
       {
-        if(landuse->manure_nr.fmt==CDF)
+        for(i=0; i<WIRRIG; i++)
         {
-          for(i=0; i<WIRRIG; i++)
-          {
-            for(j=0; j<ncft; j++)
-              grid[cell].ml.manure_nr[i].crop[j]=manu_nr[count++];
-            for(j=0; j<NGRASS; j++)
-              grid[cell].ml.manure_nr[i].grass[j]=manu_nr[count++];
+          for(j=0; j<ncft; j++)
+            grid[cell].ml.manure_nr[i].crop[j]=manu_nr[count++];
+          for(j=0; j<NGRASS; j++)
+            grid[cell].ml.manure_nr[i].grass[j]=manu_nr[count++];
 
-            if(landuse->manure_nr.var_len!=2*(ncft+NGRASS))
-            {
-              grid[cell].ml.manure_nr[i].biomass_grass=manu_nr[count++];
-              grid[cell].ml.manure_nr[i].biomass_tree=manu_nr[count++];
-            }
-            else
-              grid[cell].ml.manure_nr[i].biomass_grass=grid[cell].ml.manure_nr[i].biomass_tree=0;
-          }
-        }
-        else
-        {
-          for(i=0; i<WIRRIG; i++)
+          if(landuse->manure_nr.var_len!=2*(ncft+NGRASS))
           {
-            for(j=0; j<ncft; j++)
-              grid[cell].ml.manure_nr[i].crop[j]=vec[count++]*landuse->manure_nr.scalar;
-            for(j=0; j<NGRASS; j++)
-              grid[cell].ml.manure_nr[i].grass[j]=vec[count++]*landuse->manure_nr.scalar;
-            if(landuse->nbands_manure_nr!=2*(ncft+NGRASS))
-            {
-              grid[cell].ml.manure_nr[i].biomass_grass=vec[count++]*landuse->manure_nr.scalar;
-              grid[cell].ml.manure_nr[i].biomass_tree=vec[count++]*landuse->manure_nr.scalar;
-            }
-            else
-              grid[cell].ml.manure_nr[i].biomass_grass=grid[cell].ml.manure_nr[i].biomass_tree=0;
+            grid[cell].ml.manure_nr[i].biomass_grass=manu_nr[count++];
+            grid[cell].ml.manure_nr[i].biomass_tree=manu_nr[count++];
           }
+          else
+            grid[cell].ml.manure_nr[i].biomass_grass=grid[cell].ml.manure_nr[i].biomass_tree=0;
         }
       } /* for(cell=0;...) */
-      if(landuse->manure_nr.fmt==CDF)
-        free(manu_nr);
-      else
-        free(vec);
+      free(manu_nr);
     }
 
     if(config->fix_fertilization)
