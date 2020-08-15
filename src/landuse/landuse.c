@@ -1698,7 +1698,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         }
         if(landuse->fertilizer_nr.swap)
           for(i=0; i<landuse->fertilizer_nr.n; i++)
-            fert_nr[i]=swapreal(fert_nr[i]);
+            fert_nr[i]=swapfloat(fert_nr[i]);
       }
       count=0;
 
@@ -1778,7 +1778,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         }
         if(landuse->manure_nr.swap)
           for(i=0; i<landuse->manure_nr.n; i++)
-            manu_nr[i]=swapreal(manu_nr[i]);
+            manu_nr[i]=swapfloat(manu_nr[i]);
       }
       count=0;
 
