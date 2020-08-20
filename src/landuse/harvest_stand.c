@@ -76,8 +76,8 @@ static Harvest harvest_grass_mowing(Stand *stand)
     hfrac=harvest.harvest.carbon/grass->ind.leaf.carbon;
     harvest.harvest.nitrogen = hfrac*grass->ind.leaf.nitrogen*0.25;
     stand->soil.NH4[0]+=hfrac*grass->ind.leaf.nitrogen*0.75*pft->nind;
-
-
+    grass->ind.leaf.carbon = STUBBLE_HEIGHT_MOWING*pft->fpc/fpc_sum;
+    grass->ind.leaf.nitrogen -= harvest.harvest.nitrogen;
 
     stand->soil.litter.bg[pft->litter].carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
     output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
