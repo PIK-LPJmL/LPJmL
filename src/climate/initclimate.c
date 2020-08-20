@@ -266,7 +266,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         closeclimatefile(&climate->file_prec,isroot(*config));
         if(config->with_radiation)
         {
-          if(config->with_radiation==RADIATION)
+          if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
             closeclimatefile(&climate->file_lwnet,isroot(*config));
           closeclimatefile(&climate->file_swdown,isroot(*config));
         }
