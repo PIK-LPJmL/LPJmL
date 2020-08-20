@@ -28,7 +28,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   String line;
   int s,i,startyear;
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   int p;
   Pft *pft;
 #endif
@@ -40,7 +40,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   if(cell->ml.dam)
     totc+=cell->ml.resdata->c_pool;
   totc+=cell->balance.estab_storage_grass[0]+cell->balance.estab_storage_tree[0]+cell->balance.estab_storage_grass[1]+cell->balance.estab_storage_tree[1];
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     totc+=cell->ml.image_data->timber.slow+cell->ml.image_data->timber.fast;
 #endif
@@ -56,7 +56,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     startyear=config->firstyear+1;
   if(year>startyear && fabs(balanceC)>1)
   {
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
     if(config->sim_id==LPJML_IMAGE)
       foreachstand(stand,s,cell->standlist)
       {
@@ -98,7 +98,11 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #endif
   }
   /* water balance check */
+#ifdef IMAGE
+  totw=(cell->discharge.dmass_lake+cell->discharge.dmass_river+cell->discharge.dmass_gw)/cell->coord.area;
+#else
   totw=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+#endif
   foreachstand(stand,s,cell->standlist)
   {
     totw+=soilwater(&stand->soil)*stand->frac;

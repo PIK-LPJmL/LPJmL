@@ -285,6 +285,10 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkdatafile(&config,&config.wateruse_filename,"dm3/yr");
   bad+=checkclmfile(&config,&config.temp_filename,"celsius",TRUE);
   bad+=checkclmfile(&config,&config.prec_filename,"kg/m2/day",TRUE);
+#ifdef IMAGE
+  if (config.wateruse_wd_filename.name != NULL)
+    bad += checkdatafile(&config, &config.wateruse_wd_filename,"dm3/yr");
+#endif
   if(config.with_radiation)
   {
     if(config.with_radiation==RADIATION || config.with_radiation==RADIATION_LWDOWN)
@@ -339,6 +343,12 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.elevation_filename,"m",0);
       bad+=checkinputfile(&config,&config.reservoir_filename,NULL,10);
     }
+#ifdef IMAGE
+    if(config.aquifer_irrig==AQUIFER_IRRIG)
+    {
+      bad+=checkinputfile(&config,&config.aquifer_filename,NULL,0);
+    }
+#endif
   }
   badout=0;
   oldpath=strdup("");

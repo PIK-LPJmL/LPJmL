@@ -142,7 +142,11 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     /* Read pft->type, defined in pftpar.h */
     fscanpftint(verb,&item,&pft->type,pft->name,"type");
     fscanpftint(verb,&item,&pft->cultivation_type,pft->name,"cultivation_type");
+#if defined IMAGE || defined INCLUDEWP
+    if(pft->cultivation_type<0 || pft->cultivation_type>WP)
+#else
     if(pft->cultivation_type<0 || pft->cultivation_type>ANNUAL_CROP)
+#endif
     {
       if(verb)
         fprintf(stderr,"ERROR201: Invalid value %d for cultivation type of PFT '%s' in line %d of '%s'.\n",pft->cultivation_type,pft->name,getlinecount(),getfilename());

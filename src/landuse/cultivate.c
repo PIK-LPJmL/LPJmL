@@ -17,7 +17,7 @@
 
 Real cultivate(Cell *cell,           /**< cell pointer */
                const Pftpar *pftpar, /**< PFT parameter to be established */
-               int vern_date20, 
+               int vern_date20,
                Real landfrac,        /**< land fraction (0..1) */
                Bool irrigation,      /**< irrigated (TRUE/FALSE) */
                int day,              /**< day (1..365) */
@@ -35,7 +35,24 @@ Real cultivate(Cell *cell,           /**< cell pointer */
   Pft *pft;
   Stand *cropstand;
   Irrigation *data;
+#ifdef IMAGE
+  int nagr,s;
+  Stand *stand;
+  nagr=2*ncft;
+  foreachstand(stand,s,cell->standlist)
+    if(stand->type->landusetype==AGRICULTURE)
+      nagr--;
+
+  if(landfrac>setasidestand->frac-nagr*1e-7)
+  {
+    landfrac=max(setasidestand->frac-nagr*1e-7,1e-8);
+  }
+
+  if(landfrac>=setasidestand->frac-epsilon)
+#else
   if(landfrac>=setasidestand->frac-0.00001)
+#endif
+
   {
     setasidestand->type->freestand(setasidestand);
     setasidestand->type=&agriculture_stand;

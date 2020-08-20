@@ -32,6 +32,12 @@
 #define LIM_IRRIGATION 1
 #define POT_IRRIGATION 2
 #define ALL_IRRIGATION 3
+#ifdef IMAGE
+#define GROUNDWATER_IRRIG 1
+#define NO_GROUNDWATER_IRRIG 0 // Flag to allow for irrigation from groundwater reservoir (sustainable gw irrigation)
+#define AQUIFER_IRRIG 1
+#define NO_AQUIFER_IRRIG 0 //Flag to allow for irrigation from aquifers (according to input map for aquifers)
+#endif
 #define GRASS_HARVEST_OPTIONS 1
 #define NO_GRASS_HARVEST_OPTIONS 0
 #define GRASS_FIXED_PFT 1
@@ -86,7 +92,11 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
+#ifdef IMAGE
+#define NOUT 225            /* number of output files */
+#else
 #define NOUT 218            /* number of output files */
+#endif
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -313,5 +323,15 @@
 #define MPFT_LAI 215
 #define MEAN_VEGC_MANGRASS 216
 #define PFT_MORT 217
+#ifdef IMAGE
+#define WATERUSECONS 218
+#define WATERUSEDEM 219
+#define YDISCHARGE 220
+#define MWD_GW 221
+#define MWD_AQ 222
+#define MWATERUSE_HIL 223
+#define WFT_VEGC 224
+#endif
+
 #define RANDOM_SEED 0
 #endif

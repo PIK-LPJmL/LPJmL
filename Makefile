@@ -15,7 +15,6 @@
 #################################################################################
 
 include Makefile.inc
-
 INC     = include
 
 HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
@@ -33,7 +32,7 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h
 
 CONF	= lpjml.conf input.conf param.conf lpj.conf\
-          lpjml_image.conf input_crumonthly.conf\
+          lpjml_image_*.conf input_crumonthly.conf\
           lpjml_netcdf.conf input_netcdf.conf lpjml_fms.conf input_fms.conf
 
 JSON	= lpjml.js input_crumonthly.js param.js lpj.js\

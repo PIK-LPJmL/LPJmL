@@ -46,7 +46,7 @@ typedef struct Dailyclimate
   Real windspeed;  /**< windspeed (m/min) */
   Real tmin;       /**< minimum temperature (deg C) */
   Real tmax;       /**< maximum temperature (deg C) */
-  Real humid; /**< specific humidity (kg/kg) */
+  Real humid;      /**< specific humidity (kg/kg) */
   Real lightning;  /**< daily lightning ignition  */
   Real lwnet;      /**< long wave net downward flux (W/m2) */
   Real swdown;     /**< short wave downward flux component (W/m2) */
@@ -69,7 +69,7 @@ typedef struct
   Climatefile file_cloud,file_lwnet,file_swdown;
   Climatefile file_wind,file_tamp,file_tmax,file_lightning;
   Climatefile file_humid;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   Climatefile file_temp_var,file_prec_var;
 #endif
   Climatefile file_burntarea;

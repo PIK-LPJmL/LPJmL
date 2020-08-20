@@ -17,8 +17,13 @@
 
 /* Definitions of datatypes */
 
+#if defined IMAGE || defined INCLUDEWP
+typedef enum {NATURAL,SETASIDE_RF,SETASIDE_IR,AGRICULTURE,MANAGEDFOREST,
+              GRASSLAND,BIOMASS_TREE,BIOMASS_GRASS,WOODPLANTATION,KILL} Landusetype;
+#else
 typedef enum {NATURAL,SETASIDE_RF,SETASIDE_IR,AGRICULTURE,MANAGEDFOREST,
               GRASSLAND,BIOMASS_TREE,BIOMASS_GRASS,KILL} Landusetype;
+#endif
 
 typedef struct landuse *Landuse;
 
@@ -28,6 +33,9 @@ typedef struct
   Real grass[NGRASS];
   Real biomass_grass;
   Real biomass_tree;
+#if defined IMAGE || defined INCLUDEWP
+  Real woodplantation;
+#endif
 } Landfrac;
 
 typedef struct
@@ -36,6 +44,9 @@ typedef struct
   IrrigationType grass[NGRASS];
   IrrigationType biomass_grass;
   IrrigationType biomass_tree;
+#if defined IMAGE || defined INCLUDEWP
+  IrrigationType woodplantation;
+#endif
 } Irrig_system;
 
 
@@ -77,7 +88,7 @@ typedef struct
   Bool dam;               /**< dam inside cell (TRUE/FALSE) */
   int fixed_grass_pft;              /**< fix C3 or C4 for GRASS pft */
   GrassScenarioType grass_scenario; /**< 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   Image_data *image_data; /**< pointer to IMAGE data structure */
 #endif
 } Managed_land;
@@ -89,6 +100,9 @@ typedef struct
 #define rmgrass(ncft) (ncft+1)
 #define rbgrass(ncft) (ncft+2)
 #define rbtree(ncft) (ncft+3)
+#if defined IMAGE || defined INCLUDEWP
+#define rwp(ncft) (ncft+4)
+#endif
 
 /* Declaration of functions */
 
@@ -113,6 +127,9 @@ extern Real sowing_season(Cell *,int,int,int,Real,int,const Config *);
 extern Real sowing_prescribe(Cell *,int,int,int,int,const Config *);
 extern Real sowing(Cell *,Real,int,int,int,int,const Config *);
 extern void deforest(Cell *,Real,const Pftpar [],Bool,int,Bool,Bool,Bool,int,int,Real);
+#ifdef IMAGE
+extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real);
+#endif
 extern Real woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real);

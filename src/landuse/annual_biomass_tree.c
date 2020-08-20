@@ -77,6 +77,14 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
       if(istree(pft))
       {
         treepar=pft->par->data;
+#if defined IMAGE && defined COUPLED
+        /* reset stored bmtree yield in years of harvest before harvest, if multiple trees, they need to be harvested in parallel */
+         // als groeitijd >= rotatietijd EN groeitijd is een veelvoud van rotatietijd ( % is modulo in C) dan reset store_bmtree_yield
+        if(stand->growing_time >= treepar->rotation && stand->growing_time%treepar->rotation==0)
+          stand->cell->ml.image_data->store_bmtree_yield=0;
+#endif
+
+
         if (stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation]<treepar->sapling_C*stand->frac && pft->bm_inc>100)
         {
           estab_store=pft->bm_inc*0.03;
@@ -127,22 +135,24 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
           yield+=stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation];
           stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation]-=stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation]*stand->frac;
         }
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
         /* communicate bm tree yield every year as fraction of rotation length */
-        stand->cell->ml.image_data->store_bmtree_yield=yield;
+        /* yearly results. Not used in IMAGE ! */
+        stand->cell->ml.image_data->store_bmtree_yield+=yield*stand->frac/treepar->rotation;
 #endif
         stand->cell->balance.biomass_yield+=yield*stand->frac;
         if(config->pft_output_scaled)
-          stand->cell->output.pft_harvest[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest+=yield*stand->frac;
+          stand->cell->output.pft_harvest[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest+=yield*stand->frac;
         else
-          stand->cell->output.pft_harvest[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)].harvest+=yield;
+          stand->cell->output.pft_harvest[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest+=yield;
 
         biomass_tree->growing_time=0;
       }
     }
-#ifdef IMAGE
+
+#if defined IMAGE && defined COUPLED
     /* communicate bm tree yield every year as fraction of rotation length */
-    stand->cell->ml.image_data->biomass_yield_annual+=stand->cell->ml.image_data->store_bmtree_yield*stand->frac/treepar->rotation;
+    stand->cell->ml.image_data->biomass_yield_annual=stand->cell->ml.image_data->store_bmtree_yield;
 #endif
 
   } /* of foreachpft */
@@ -216,7 +226,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
         isdead=TRUE;
     }
 
-  stand->cell->output.cftfrac[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].biomass_tree;
+  stand->cell->output.cftfrac[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].biomass_tree;
 
   free(present);
   free(fpc_type);
@@ -239,13 +249,13 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
 
       if(config->pft_output_scaled)
       {
-        stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->cell->ml.landfrac[1].biomass_tree;
-        stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap)*stand->cell->ml.landfrac[1].biomass_tree;
+        stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->cell->ml.landfrac[1].biomass_tree;
+        stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap)*stand->cell->ml.landfrac[1].biomass_tree;
       }
       else
       {
-        stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap;
-        stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap);
+        stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap;
+        stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap);
       }
 
       biomass_tree->irrigation.irrig_stor=0;

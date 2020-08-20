@@ -1,0 +1,849 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\climate\avgtemp.c" />
+    <ClCompile Include="src\climate\checkvalidclimate.c" />
+    <ClCompile Include="src\climate\closeclimate.c" />
+    <ClCompile Include="src\climate\dailyclimate.c" />
+    <ClCompile Include="src\climate\freeclimate.c" />
+    <ClCompile Include="src\climate\getclimate.c" />
+    <ClCompile Include="src\climate\getco2.c" />
+    <ClCompile Include="src\climate\getmprec.c" />
+    <ClCompile Include="src\climate\getmtemp.c" />
+    <ClCompile Include="src\climate\initclimate.c" />
+    <ClCompile Include="src\climate\initclimate_monthly.c" />
+    <ClCompile Include="src\climate\openclimate.c" />
+    <ClCompile Include="src\climate\prdaily.c" />
+    <ClCompile Include="src\climate\radiation.c" />
+    <ClCompile Include="src\climate\readco2.c" />
+    <ClCompile Include="src\climate\storeclimate.c" />
+    <ClCompile Include="src\cpl\cpl_free.c" />
+    <ClCompile Include="src\cpl\cpl_init.c" />
+    <ClCompile Include="src\crop\agb_crop.c" />
+    <ClCompile Include="src\crop\albedo_crop.c" />
+    <ClCompile Include="src\crop\allocation_daily_crop.c" />
+    <ClCompile Include="src\crop\alphaa_crop.c" />
+    <ClCompile Include="src\crop\calc_cropdates.c" />
+    <ClCompile Include="src\crop\calc_seasonality.c" />
+    <ClCompile Include="src\crop\double_harvest.c" />
+    <ClCompile Include="src\crop\fpar_crop.c" />
+    <ClCompile Include="src\crop\fpc_crop.c" />
+    <ClCompile Include="src\crop\fprintcropdates.c" />
+    <ClCompile Include="src\crop\fprintpar_crop.c" />
+    <ClCompile Include="src\crop\fprint_crop.c" />
+    <ClCompile Include="src\crop\freadcropdates.c" />
+    <ClCompile Include="src\crop\fread_crop.c" />
+    <ClCompile Include="src\crop\freecropdates.c" />
+    <ClCompile Include="src\crop\free_crop.c" />
+    <ClCompile Include="src\crop\fscanpft_crop.c" />
+    <ClCompile Include="src\crop\fwritecropdates.c" />
+    <ClCompile Include="src\crop\fwrite_crop.c" />
+    <ClCompile Include="src\crop\harvest_crop.c" />
+    <ClCompile Include="src\crop\init_cropdates.c" />
+    <ClCompile Include="src\crop\laimax_manage.c" />
+    <ClCompile Include="src\crop\lai_crop.c" />
+    <ClCompile Include="src\crop\litter_update_crop.c" />
+    <ClCompile Include="src\crop\new_crop.c" />
+    <ClCompile Include="src\crop\npp_crop.c" />
+    <ClCompile Include="src\crop\output_daily_crop.c" />
+    <ClCompile Include="src\crop\phenology_crop.c" />
+    <ClCompile Include="src\crop\phen_variety.c" />
+    <ClCompile Include="src\crop\update_cropdates.c" />
+    <ClCompile Include="src\crop\update_fallowdays.c" />
+    <ClCompile Include="src\crop\vegc_sum_crop.c" />
+    <ClCompile Include="src\crop\wdf_crop.c" />
+    <ClCompile Include="src\getbuild.c" />
+    <ClCompile Include="src\grass\adjust_grass.c" />
+    <ClCompile Include="src\grass\agb_grass.c" />
+    <ClCompile Include="src\grass\albedo_grass.c" />
+    <ClCompile Include="src\grass\allocation_grass.c" />
+    <ClCompile Include="src\grass\alphaa_grass.c" />
+    <ClCompile Include="src\grass\annual_grass.c" />
+    <ClCompile Include="src\grass\establishment_grass.c" />
+    <ClCompile Include="src\grass\fire_grass.c" />
+    <ClCompile Include="src\grass\fpar_grass.c" />
+    <ClCompile Include="src\grass\fpc_grass.c" />
+    <ClCompile Include="src\grass\fprintpar_grass.c" />
+    <ClCompile Include="src\grass\fprint_grass.c" />
+    <ClCompile Include="src\grass\fread_grass.c" />
+    <ClCompile Include="src\grass\free_grass.c" />
+    <ClCompile Include="src\grass\fscanpft_grass.c" />
+    <ClCompile Include="src\grass\fwrite_grass.c" />
+    <ClCompile Include="src\grass\init_grass.c" />
+    <ClCompile Include="src\grass\lai_grass.c" />
+    <ClCompile Include="src\grass\light_grass.c" />
+    <ClCompile Include="src\grass\litter_update_grass.c" />
+    <ClCompile Include="src\grass\livefuel_consum_grass.c" />
+    <ClCompile Include="src\grass\mix_veg_grass.c" />
+    <ClCompile Include="src\grass\new_grass.c" />
+    <ClCompile Include="src\grass\npp_grass.c" />
+    <ClCompile Include="src\grass\phenology_grass.c" />
+    <ClCompile Include="src\grass\reduce_grass.c" />
+    <ClCompile Include="src\grass\turnover_daily_grass.c" />
+    <ClCompile Include="src\grass\turnover_grass.c" />
+    <ClCompile Include="src\grass\turnover_monthly_grass.c" />
+    <ClCompile Include="src\grass\vegc_sum_grass.c" />
+    <ClCompile Include="src\image\biome_classification.c" />
+    <ClCompile Include="src\image\close_image.c" />
+    <ClCompile Include="src\image\getproductpools.c" />
+    <ClCompile Include="src\image\initproductinit.c" />
+    <ClCompile Include="src\image\monthlyoutput_image.c" />
+    <ClCompile Include="src\image\new_image.c" />
+    <ClCompile Include="src\image\open_image.c" />
+    <ClCompile Include="src\image\product_turnover.c" />
+    <ClCompile Include="src\image\receive_image_climate.c" />
+    <ClCompile Include="src\image\receive_image_co2.c" />
+    <ClCompile Include="src\image\receive_image_data.c" />
+    <ClCompile Include="src\image\receive_image_finish.c" />
+    <ClCompile Include="src\image\receive_image_luc.c" />
+    <ClCompile Include="src\image\receive_image_productpools.c" />
+    <ClCompile Include="src\image\send_image_data.c" />
+    <ClCompile Include="src\image\setoutput_image.c" />
+    <ClCompile Include="src\landuse\agriculture.c" />
+    <ClCompile Include="src\landuse\allocation_today.c" />
+    <ClCompile Include="src\landuse\annual_agriculture.c" />
+    <ClCompile Include="src\landuse\annual_biomass_grass.c" />
+    <ClCompile Include="src\landuse\annual_biomass_tree.c" />
+    <ClCompile Include="src\landuse\annual_grassland.c" />
+    <ClCompile Include="src\landuse\annual_setaside.c" />
+    <ClCompile Include="src\landuse\annual_woodplantation.c" />
+    <ClCompile Include="src\landuse\biomass_grass.c" />
+    <ClCompile Include="src\landuse\biomass_tree.c" />
+    <ClCompile Include="src\landuse\calc_nir.c" />
+    <ClCompile Include="src\landuse\check_lu.c" />
+    <ClCompile Include="src\landuse\createcountrycode.c" />
+    <ClCompile Include="src\landuse\crop_sum_frac.c" />
+    <ClCompile Include="src\landuse\cultivate.c" />
+    <ClCompile Include="src\landuse\cutpfts.c" />
+    <ClCompile Include="src\landuse\daily_agriculture.c" />
+    <ClCompile Include="src\landuse\daily_biomass_grass.c" />
+    <ClCompile Include="src\landuse\daily_biomass_tree.c" />
+    <ClCompile Include="src\landuse\daily_grassland.c" />
+    <ClCompile Include="src\landuse\daily_setaside.c" />
+    <ClCompile Include="src\landuse\daily_woodplantation.c" />
+    <ClCompile Include="src\landuse\distribute_water.c" />
+    <ClCompile Include="src\landuse\findlandusetype.c" />
+    <ClCompile Include="src\landuse\findstand.c" />
+    <ClCompile Include="src\landuse\fprintcountrypar.c" />
+    <ClCompile Include="src\landuse\fprintregionpar.c" />
+    <ClCompile Include="src\landuse\fprint_agriculture.c" />
+    <ClCompile Include="src\landuse\fread_agriculture.c" />
+    <ClCompile Include="src\landuse\freecountrypar.c" />
+    <ClCompile Include="src\landuse\freemanage.c" />
+    <ClCompile Include="src\landuse\freeregionpar.c" />
+    <ClCompile Include="src\landuse\free_agriculture.c" />
+    <ClCompile Include="src\landuse\fscancountrypar.c" />
+    <ClCompile Include="src\landuse\fscanregionpar.c" />
+    <ClCompile Include="src\landuse\fwrite_agriculture.c" />
+    <ClCompile Include="src\landuse\grassland.c" />
+    <ClCompile Include="src\landuse\harvest_stand.c" />
+    <ClCompile Include="src\landuse\initmanage.c" />
+    <ClCompile Include="src\landuse\irrig_amount.c" />
+    <ClCompile Include="src\landuse\killstand.c" />
+    <ClCompile Include="src\landuse\landfrac.c" />
+    <ClCompile Include="src\landuse\landuse.c" />
+    <ClCompile Include="src\landuse\landusechange.c" />
+    <ClCompile Include="src\landuse\new_agriculture.c" />
+    <ClCompile Include="src\landuse\opencountrycode.c" />
+    <ClCompile Include="src\landuse\output_gbw_agriculture.c" />
+    <ClCompile Include="src\landuse\output_gbw_biomass_grass.c" />
+    <ClCompile Include="src\landuse\output_gbw_biomass_tree.c" />
+    <ClCompile Include="src\landuse\output_gbw_grassland.c" />
+    <ClCompile Include="src\landuse\output_gbw_woodplantation.c" />
+    <ClCompile Include="src\landuse\readcountrycode.c" />
+    <ClCompile Include="src\landuse\reclaim_land.c" />
+    <ClCompile Include="src\landuse\rw_irrigation.c" />
+    <ClCompile Include="src\landuse\setaside.c" />
+    <ClCompile Include="src\landuse\sowing.c" />
+    <ClCompile Include="src\landuse\sowing_prescribe.c" />
+    <ClCompile Include="src\landuse\sowing_season.c" />
+    <ClCompile Include="src\landuse\timber_burn.c" />
+    <ClCompile Include="src\landuse\timber_harvest.c" />
+    <ClCompile Include="src\landuse\wateruse.c" />
+    <ClCompile Include="src\landuse\withdrawal_demand.c" />
+    <ClCompile Include="src\landuse\woodconsum.c" />
+    <ClCompile Include="src\landuse\woodplantation.c" />
+    <ClCompile Include="src\landuse\writecountrycode.c" />
+    <ClCompile Include="src\landuse\writeregioncode.c" />
+    <ClCompile Include="src\lpjml.c" />
+    <ClCompile Include="src\lpj\albedo.c" />
+    <ClCompile Include="src\lpj\albedo_stand.c" />
+    <ClCompile Include="src\lpj\annual_natural.c" />
+    <ClCompile Include="src\lpj\celldata.c" />
+    <ClCompile Include="src\lpj\cflux_sum.c" />
+    <ClCompile Include="src\lpj\check_balance.c" />
+    <ClCompile Include="src\lpj\check_fluxes.c" />
+    <ClCompile Include="src\lpj\check_stand_fracs.c" />
+    <ClCompile Include="src\lpj\climbuf.c" />
+    <ClCompile Include="src\lpj\closeoutput_yearly.c" />
+    <ClCompile Include="src\lpj\copyright.c" />
+    <ClCompile Include="src\lpj\createpftnames.c" />
+    <ClCompile Include="src\lpj\daily_natural.c" />
+    <ClCompile Include="src\lpj\drain.c" />
+    <ClCompile Include="src\lpj\equilsom.c" />
+    <ClCompile Include="src\lpj\equilveg.c" />
+    <ClCompile Include="src\lpj\establish.c" />
+    <ClCompile Include="src\lpj\establishmentpft.c" />
+    <ClCompile Include="src\lpj\fcloseoutput.c" />
+    <ClCompile Include="src\lpj\filesexist.c" />
+    <ClCompile Include="src\lpj\firepft.c" />
+    <ClCompile Include="src\lpj\flux_sum.c" />
+    <ClCompile Include="src\lpj\fopenoutput.c" />
+    <ClCompile Include="src\lpj\fpc_sum.c" />
+    <ClCompile Include="src\lpj\fprintcell.c" />
+    <ClCompile Include="src\lpj\fprintconfig.c" />
+    <ClCompile Include="src\lpj\fprintfiles.c" />
+    <ClCompile Include="src\lpj\fprintflux.c" />
+    <ClCompile Include="src\lpj\fprintincludes.c" />
+    <ClCompile Include="src\lpj\fprintparam.c" />
+    <ClCompile Include="src\lpj\fprintpft.c" />
+    <ClCompile Include="src\lpj\fprintpftpar.c" />
+    <ClCompile Include="src\lpj\fprintstand.c" />
+    <ClCompile Include="src\lpj\fprint_natural.c" />
+    <ClCompile Include="src\lpj\freadcell.c" />
+    <ClCompile Include="src\lpj\freadpft.c" />
+    <ClCompile Include="src\lpj\freadstand.c" />
+    <ClCompile Include="src\lpj\fread_natural.c" />
+    <ClCompile Include="src\lpj\freecell.c" />
+    <ClCompile Include="src\lpj\freeconfig.c" />
+    <ClCompile Include="src\lpj\freegrid.c" />
+    <ClCompile Include="src\lpj\freeinput.c" />
+    <ClCompile Include="src\lpj\freeoutput.c" />
+    <ClCompile Include="src\lpj\freeoutputvar.c" />
+    <ClCompile Include="src\lpj\freepft.c" />
+    <ClCompile Include="src\lpj\freepftpar.c" />
+    <ClCompile Include="src\lpj\free_natural.c" />
+    <ClCompile Include="src\lpj\fscanconfig.c" />
+    <ClCompile Include="src\lpj\fscanemissionfactor.c" />
+    <ClCompile Include="src\lpj\fscanlimit.c" />
+    <ClCompile Include="src\lpj\fscanoutput.c" />
+    <ClCompile Include="src\lpj\fscanoutputvar.c" />
+    <ClCompile Include="src\lpj\fscanparam.c" />
+    <ClCompile Include="src\lpj\fscanpftpar.c" />
+    <ClCompile Include="src\lpj\fscanphenparam.c" />
+    <ClCompile Include="src\lpj\fwritecell.c" />
+    <ClCompile Include="src\lpj\fwriteoutput_annual.c" />
+    <ClCompile Include="src\lpj\fwriteoutput_daily.c" />
+    <ClCompile Include="src\lpj\fwriteoutput_monthly.c" />
+    <ClCompile Include="src\lpj\fwriteoutput_pft.c" />
+    <ClCompile Include="src\lpj\fwritepft.c" />
+    <ClCompile Include="src\lpj\fwriterestart.c" />
+    <ClCompile Include="src\lpj\fwritestand.c" />
+    <ClCompile Include="src\lpj\fwrite_natural.c" />
+    <ClCompile Include="src\lpj\getextension.c" />
+    <ClCompile Include="src\lpj\getnbiomass.c" />
+    <ClCompile Include="src\lpj\getnwft.c" />
+    <ClCompile Include="src\lpj\getoutputtype.c" />
+    <ClCompile Include="src\lpj\getsize.c" />
+    <ClCompile Include="src\lpj\gp_sum.c" />
+    <ClCompile Include="src\lpj\help.c" />
+    <ClCompile Include="src\lpj\initconfig.c" />
+    <ClCompile Include="src\lpj\initdrain.c" />
+    <ClCompile Include="src\lpj\initgdd.c" />
+    <ClCompile Include="src\lpj\initinput.c" />
+    <ClCompile Include="src\lpj\initmpiconfig.c" />
+    <ClCompile Include="src\lpj\initoutput.c" />
+    <ClCompile Include="src\lpj\initoutput_annual.c" />
+    <ClCompile Include="src\lpj\initoutput_daily.c" />
+    <ClCompile Include="src\lpj\initoutput_monthly.c" />
+    <ClCompile Include="src\lpj\init_annual.c" />
+    <ClCompile Include="src\lpj\interception.c" />
+    <ClCompile Include="src\lpj\ismonthlyoutput.c" />
+    <ClCompile Include="src\lpj\iterate.c" />
+    <ClCompile Include="src\lpj\iterateyear.c" />
+    <ClCompile Include="src\lpj\landcover.c" />
+    <ClCompile Include="src\lpj\light.c" />
+    <ClCompile Include="src\lpj\natural.c" />
+    <ClCompile Include="src\lpj\newgrid.c" />
+    <ClCompile Include="src\lpj\newpft.c" />
+    <ClCompile Include="src\lpj\new_natural.c" />
+    <ClCompile Include="src\lpj\noadjust.c" />
+    <ClCompile Include="src\lpj\noestablishment.c" />
+    <ClCompile Include="src\lpj\nofire.c" />
+    <ClCompile Include="src\lpj\noinit.c" />
+    <ClCompile Include="src\lpj\nomix_veg.c" />
+    <ClCompile Include="src\lpj\noturnover_monthly.c" />
+    <ClCompile Include="src\lpj\nowdf.c" />
+    <ClCompile Include="src\lpj\openconfig.c" />
+    <ClCompile Include="src\lpj\outputfilesize.c" />
+    <ClCompile Include="src\lpj\outputnames.c" />
+    <ClCompile Include="src\lpj\outputsize.c" />
+    <ClCompile Include="src\lpj\pftlist.c" />
+    <ClCompile Include="src\lpj\phenology_gsi.c" />
+    <ClCompile Include="src\lpj\photosynthesis.c" />
+    <ClCompile Include="src\lpj\printlicense.c" />
+    <ClCompile Include="src\lpj\readconfig.c" />
+    <ClCompile Include="src\lpj\roughnesslength.c" />
+    <ClCompile Include="src\lpj\standcarbon.c" />
+    <ClCompile Include="src\lpj\standlist.c" />
+    <ClCompile Include="src\lpj\survive.c" />
+    <ClCompile Include="src\lpj\temp_stress.c" />
+    <ClCompile Include="src\lpj\transfer_function.c" />
+    <ClCompile Include="src\lpj\updategdd.c" />
+    <ClCompile Include="src\lpj\update_annual.c" />
+    <ClCompile Include="src\lpj\update_daily.c" />
+    <ClCompile Include="src\lpj\update_monthly.c" />
+    <ClCompile Include="src\lpj\waterusefcns.c" />
+    <ClCompile Include="src\lpj\water_stressed.c" />
+    <ClCompile Include="src\lpj\writecoords.c" />
+    <ClCompile Include="src\netcdf\closeclimate_netcdf.c" />
+    <ClCompile Include="src\netcdf\close_netcdf.c" />
+    <ClCompile Include="src\netcdf\coord_netcdf.c" />
+    <ClCompile Include="src\netcdf\create1_netcdf.c" />
+    <ClCompile Include="src\netcdf\create1_pft_netcdf.c" />
+    <ClCompile Include="src\netcdf\createcoord.c" />
+    <ClCompile Include="src\netcdf\createcoord_all.c" />
+    <ClCompile Include="src\netcdf\createindex.c" />
+    <ClCompile Include="src\netcdf\create_netcdf.c" />
+    <ClCompile Include="src\netcdf\create_pft_netcdf.c" />
+    <ClCompile Include="src\netcdf\freecoordarray.c" />
+    <ClCompile Include="src\netcdf\getlatlon_netcdf.c" />
+    <ClCompile Include="src\netcdf\getvar_netcdf.c" />
+    <ClCompile Include="src\netcdf\input_netcdf.c" />
+    <ClCompile Include="src\netcdf\mpi_openclimate_netcdf.c" />
+    <ClCompile Include="src\netcdf\mpi_write_netcdf.c" />
+    <ClCompile Include="src\netcdf\mpi_write_pft_netcdf.c" />
+    <ClCompile Include="src\netcdf\openclimate_netcdf.c" />
+    <ClCompile Include="src\netcdf\opendata_netcdf.c" />
+    <ClCompile Include="src\netcdf\openfile_netcdf.c" />
+    <ClCompile Include="src\netcdf\open_netcdf.c" />
+    <ClCompile Include="src\netcdf\readclimate_netcdf.c" />
+    <ClCompile Include="src\netcdf\readdata_netcdf.c" />
+    <ClCompile Include="src\netcdf\readintdata_netcdf.c" />
+    <ClCompile Include="src\netcdf\readshortdata_netcdf.c" />
+    <ClCompile Include="src\netcdf\write_float_netcdf.c" />
+    <ClCompile Include="src\netcdf\write_int_netcdf.c" />
+    <ClCompile Include="src\netcdf\write_pft_float_netcdf.c" />
+    <ClCompile Include="src\netcdf\write_pft_short_netcdf.c" />
+    <ClCompile Include="src\netcdf\write_short_netcdf.c" />
+    <ClCompile Include="src\numeric\bisect.c" />
+    <ClCompile Include="src\numeric\buffer.c" />
+    <ClCompile Include="src\numeric\date.c" />
+    <ClCompile Include="src\numeric\int2date.c" />
+    <ClCompile Include="src\numeric\interpolate.c" />
+    <ClCompile Include="src\numeric\ivec_sum.c" />
+    <ClCompile Include="src\numeric\leftmostzero.c" />
+    <ClCompile Include="src\numeric\linreg.c" />
+    <ClCompile Include="src\numeric\petpar.c" />
+    <ClCompile Include="src\numeric\petpar2.c" />
+    <ClCompile Include="src\numeric\petpar3.c" />
+    <ClCompile Include="src\numeric\rand.c" />
+    <ClCompile Include="src\pnet\intlist.c" />
+    <ClCompile Include="src\pnet\pnet_addconnect.c" />
+    <ClCompile Include="src\pnet\pnet_dup.c" />
+    <ClCompile Include="src\pnet\pnet_free.c" />
+    <ClCompile Include="src\pnet\pnet_init.c" />
+    <ClCompile Include="src\pnet\pnet_reverse.c" />
+    <ClCompile Include="src\pnet\pnet_setup.c" />
+    <ClCompile Include="src\pnet\pnet_strerror.c" />
+    <ClCompile Include="src\reservoir\allocate_reservoir.c" />
+    <ClCompile Include="src\reservoir\check_stand_fracs_for_reservoir.c" />
+    <ClCompile Include="src\reservoir\fprintresdata.c" />
+    <ClCompile Include="src\reservoir\freadresdata.c" />
+    <ClCompile Include="src\reservoir\fwriteresdata.c" />
+    <ClCompile Include="src\reservoir\initresdata.c" />
+    <ClCompile Include="src\reservoir\initreservoir.c" />
+    <ClCompile Include="src\reservoir\irrig_amount_reservoir.c" />
+    <ClCompile Include="src\reservoir\landusechange_for_reservoir.c" />
+    <ClCompile Include="src\reservoir\outflow_reservoir.c" />
+    <ClCompile Include="src\reservoir\readreservoir.c" />
+    <ClCompile Include="src\reservoir\reservoir_surface_storage.c" />
+    <ClCompile Include="src\reservoir\update_reservoir_annual.c" />
+    <ClCompile Include="src\reservoir\update_reservoir_daily.c" />
+    <ClCompile Include="src\reservoir\update_reservoir_monthly.c" />
+    <ClCompile Include="src\socket\close_socket.c" />
+    <ClCompile Include="src\socket\connecttdt_socket.c" />
+    <ClCompile Include="src\socket\connect_socket.c" />
+    <ClCompile Include="src\socket\fclose_socket.c" />
+    <ClCompile Include="src\socket\fconnecttdt_socket.c" />
+    <ClCompile Include="src\socket\fconnect_socket.c" />
+    <ClCompile Include="src\socket\fgetclientname.c" />
+    <ClCompile Include="src\socket\fopentdt_socket.c" />
+    <ClCompile Include="src\socket\fopen_socket.c" />
+    <ClCompile Include="src\socket\freaddouble_socket.c" />
+    <ClCompile Include="src\socket\freadfloat_socket.c" />
+    <ClCompile Include="src\socket\freadint_socket.c" />
+    <ClCompile Include="src\socket\freadlong_socket.c" />
+    <ClCompile Include="src\socket\freadshort_socket.c" />
+    <ClCompile Include="src\socket\freadstring_socket.c" />
+    <ClCompile Include="src\socket\fwritedouble_socket.c" />
+    <ClCompile Include="src\socket\fwritefloat_socket.c" />
+    <ClCompile Include="src\socket\fwriteint_socket.c" />
+    <ClCompile Include="src\socket\fwritelong_socket.c" />
+    <ClCompile Include="src\socket\fwriteshort_socket.c" />
+    <ClCompile Include="src\socket\fwritestring_socket.c" />
+    <ClCompile Include="src\socket\getclientname.c" />
+    <ClCompile Include="src\socket\opentdt_socket.c" />
+    <ClCompile Include="src\socket\open_socket.c" />
+    <ClCompile Include="src\socket\readdouble_socket.c" />
+    <ClCompile Include="src\socket\readfloat_socket.c" />
+    <ClCompile Include="src\socket\readint_socket.c" />
+    <ClCompile Include="src\socket\readlong_socket.c" />
+    <ClCompile Include="src\socket\readshort_socket.c" />
+    <ClCompile Include="src\socket\readstring_socket.c" />
+    <ClCompile Include="src\socket\read_socket.c" />
+    <ClCompile Include="src\socket\writestring_socket.c" />
+    <ClCompile Include="src\socket\write_socket.c" />
+    <ClCompile Include="src\soil\addlitter.c" />
+    <ClCompile Include="src\soil\albedo_soil.c" />
+    <ClCompile Include="src\soil\convert_water.c" />
+    <ClCompile Include="src\soil\copysoil.c" />
+    <ClCompile Include="src\soil\equilsoil.c" />
+    <ClCompile Include="src\soil\findlitter.c" />
+    <ClCompile Include="src\soil\fire_prob.c" />
+    <ClCompile Include="src\soil\fire_sum.c" />
+    <ClCompile Include="src\soil\fopensoilcode.c" />
+    <ClCompile Include="src\soil\fprintlitter.c" />
+    <ClCompile Include="src\soil\fprintsoil.c" />
+    <ClCompile Include="src\soil\fprintsoilpar.c" />
+    <ClCompile Include="src\soil\freadlitter.c" />
+    <ClCompile Include="src\soil\freadsoil.c" />
+    <ClCompile Include="src\soil\freadsoilcode.c" />
+    <ClCompile Include="src\soil\freelitter.c" />
+    <ClCompile Include="src\soil\freesoil.c" />
+    <ClCompile Include="src\soil\freesoilpar.c" />
+    <ClCompile Include="src\soil\fscanpool.c" />
+    <ClCompile Include="src\soil\fscansoilpar.c" />
+    <ClCompile Include="src\soil\fwritelitter.c" />
+    <ClCompile Include="src\soil\fwritesoil.c" />
+    <ClCompile Include="src\soil\getlag.c" />
+    <ClCompile Include="src\soil\getnsoilcode.c" />
+    <ClCompile Include="src\soil\getstate.c" />
+    <ClCompile Include="src\soil\getwr.c" />
+    <ClCompile Include="src\soil\infil_perc_irr.c" />
+    <ClCompile Include="src\soil\infil_perc_rain.c" />
+    <ClCompile Include="src\soil\initsoil.c" />
+    <ClCompile Include="src\soil\initsoiltemp.c" />
+    <ClCompile Include="src\soil\laketemp.c" />
+    <ClCompile Include="src\soil\littersom.c" />
+    <ClCompile Include="src\soil\littersum.c" />
+    <ClCompile Include="src\soil\litter_ag_grass.c" />
+    <ClCompile Include="src\soil\litter_ag_sum.c" />
+    <ClCompile Include="src\soil\litter_ag_sum_quick.c" />
+    <ClCompile Include="src\soil\litter_ag_tree.c" />
+    <ClCompile Include="src\soil\moistfactor.c" />
+    <ClCompile Include="src\soil\moisture2soilice.c" />
+    <ClCompile Include="src\soil\newsoil.c" />
+    <ClCompile Include="src\soil\seeksoilcode.c" />
+    <ClCompile Include="src\soil\snow.c" />
+    <ClCompile Include="src\soil\soilcarbon.c" />
+    <ClCompile Include="src\soil\soilconduct.c" />
+    <ClCompile Include="src\soil\soilheatcap.c" />
+    <ClCompile Include="src\soil\soilice2moisture.c" />
+    <ClCompile Include="src\soil\soiltemp.c" />
+    <ClCompile Include="src\soil\soilwater.c" />
+    <ClCompile Include="src\soil\temp_response.c" />
+    <ClCompile Include="src\soil\waterbalance.c" />
+    <ClCompile Include="src\spitfire\area_burnt.c" />
+    <ClCompile Include="src\spitfire\dailyfire.c" />
+    <ClCompile Include="src\spitfire\deadfuel_consumption.c" />
+    <ClCompile Include="src\spitfire\firedangerindex.c" />
+    <ClCompile Include="src\spitfire\fprintignition.c" />
+    <ClCompile Include="src\spitfire\fraction_of_consumption.c" />
+    <ClCompile Include="src\spitfire\freadignition.c" />
+    <ClCompile Include="src\spitfire\fuelload.c" />
+    <ClCompile Include="src\spitfire\fuel_consumption_1hr.c" />
+    <ClCompile Include="src\spitfire\fuel_consum_total.c" />
+    <ClCompile Include="src\spitfire\fwriteignition.c" />
+    <ClCompile Include="src\spitfire\humanignition.c" />
+    <ClCompile Include="src\spitfire\initfuel.c" />
+    <ClCompile Include="src\spitfire\initignition.c" />
+    <ClCompile Include="src\spitfire\litter_update_fire.c" />
+    <ClCompile Include="src\spitfire\popdens.c" />
+    <ClCompile Include="src\spitfire\rateofspread.c" />
+    <ClCompile Include="src\spitfire\surface_fire_intensity.c" />
+    <ClCompile Include="src\spitfire\update_fbd_grass.c" />
+    <ClCompile Include="src\spitfire\update_fbd_tree.c" />
+    <ClCompile Include="src\spitfire\update_nesterov.c" />
+    <ClCompile Include="src\spitfire\wildfire_ignitions.c" />
+    <ClCompile Include="src\spitfire\windspeed_fpc.c" />
+    <ClCompile Include="src\tools\addpath.c" />
+    <ClCompile Include="src\tools\bigendian.c" />
+    <ClCompile Include="src\tools\catstrvec.c" />
+    <ClCompile Include="src\tools\checkfmt.c" />
+    <ClCompile Include="src\tools\coord.c" />
+    <ClCompile Include="src\tools\diskfree.c" />
+    <ClCompile Include="src\tools\enablefpe.c" />
+    <ClCompile Include="src\tools\fail.c" />
+    <ClCompile Include="src\tools\failonerror.c" />
+    <ClCompile Include="src\tools\fbanner.c" />
+    <ClCompile Include="src\tools\findstr.c" />
+    <ClCompile Include="src\tools\fprintheader.c" />
+    <ClCompile Include="src\tools\fprintintf.c" />
+    <ClCompile Include="src\tools\fprinttime.c" />
+    <ClCompile Include="src\tools\fputprintable.c" />
+    <ClCompile Include="src\tools\fputstring.c" />
+    <ClCompile Include="src\tools\freadanyheader.c" />
+    <ClCompile Include="src\tools\freadheader.c" />
+    <ClCompile Include="src\tools\freadrestartheader.c" />
+    <ClCompile Include="src\tools\freemat.c" />
+    <ClCompile Include="src\tools\frepeatch.c" />
+    <ClCompile Include="src\tools\fscanarray.c" />
+    <ClCompile Include="src\tools\fscanarrayindex.c" />
+    <ClCompile Include="src\tools\fscanbool.c" />
+    <ClCompile Include="src\tools\fscanfcns.c" />
+    <ClCompile Include="src\tools\fscanfloat.c" />
+    <ClCompile Include="src\tools\fscanint.c" />
+    <ClCompile Include="src\tools\fscaninteof.c" />
+    <ClCompile Include="src\tools\fscanreal.c" />
+    <ClCompile Include="src\tools\fscanrealarray.c" />
+    <ClCompile Include="src\tools\fscansize.c" />
+    <ClCompile Include="src\tools\fscanstruct.c" />
+    <ClCompile Include="src\tools\fscanuint.c" />
+    <ClCompile Include="src\tools\fwriteheader.c" />
+    <ClCompile Include="src\tools\getcounts.c" />
+    <ClCompile Include="src\tools\getdir.c" />
+    <ClCompile Include="src\tools\getfiledate.c" />
+    <ClCompile Include="src\tools\getfilesize.c" />
+    <ClCompile Include="src\tools\gethost.c" />
+    <ClCompile Include="src\tools\getpath.c" />
+    <ClCompile Include="src\tools\getuser.c" />
+    <ClCompile Include="src\tools\hassuffix.c" />
+    <ClCompile Include="src\tools\headersize.c" />
+    <ClCompile Include="src\tools\isabspath.c" />
+    <ClCompile Include="src\tools\isboolean.c" />
+    <ClCompile Include="src\tools\iserror.c" />
+    <ClCompile Include="src\tools\iskeydefined.c" />
+    <ClCompile Include="src\tools\list.c" />
+    <ClCompile Include="src\tools\mkfilename.c" />
+    <ClCompile Include="src\tools\mpi_write.c" />
+    <ClCompile Include="src\tools\mpi_write_txt.c" />
+    <ClCompile Include="src\tools\newmat.c" />
+    <ClCompile Include="src\tools\openinputfile.c" />
+    <ClCompile Include="src\tools\openmetafile.c" />
+    <ClCompile Include="src\tools\openrestart.c" />
+    <ClCompile Include="src\tools\printflags.c" />
+    <ClCompile Include="src\tools\queue.c" />
+    <ClCompile Include="src\tools\readfilename.c" />
+    <ClCompile Include="src\tools\readfloatvec.c" />
+    <ClCompile Include="src\tools\readintvec.c" />
+    <ClCompile Include="src\tools\readrealvec.c" />
+    <ClCompile Include="src\tools\readuintvec.c" />
+    <ClCompile Include="src\tools\strdate.c" />
+    <ClCompile Include="src\tools\strippath.c" />
+    <ClCompile Include="src\tools\stripsuffix.c" />
+    <ClCompile Include="src\tools\swap.c" />
+    <ClCompile Include="src\tools\sysname.c" />
+    <ClCompile Include="src\tree\adjust_tree.c" />
+    <ClCompile Include="src\tree\agb_tree.c" />
+    <ClCompile Include="src\tree\albedo_tree.c" />
+    <ClCompile Include="src\tree\allocation_tree.c" />
+    <ClCompile Include="src\tree\allometry_tree.c" />
+    <ClCompile Include="src\tree\alphaa_tree.c" />
+    <ClCompile Include="src\tree\annual_tree.c" />
+    <ClCompile Include="src\tree\coppice_tree.c" />
+    <ClCompile Include="src\tree\establishment_tree.c" />
+    <ClCompile Include="src\tree\firemortality_tree.c" />
+    <ClCompile Include="src\tree\fire_tree.c" />
+    <ClCompile Include="src\tree\fpar_tree.c" />
+    <ClCompile Include="src\tree\fpc_tree.c" />
+    <ClCompile Include="src\tree\fprintpar_tree.c" />
+    <ClCompile Include="src\tree\fprint_tree.c" />
+    <ClCompile Include="src\tree\fread_tree.c" />
+    <ClCompile Include="src\tree\free_tree.c" />
+    <ClCompile Include="src\tree\fscanpft_tree.c" />
+    <ClCompile Include="src\tree\fwrite_tree.c" />
+    <ClCompile Include="src\tree\init_tree.c" />
+    <ClCompile Include="src\tree\isneg_tree.c" />
+    <ClCompile Include="src\tree\lai_tree.c" />
+    <ClCompile Include="src\tree\light_tree.c" />
+    <ClCompile Include="src\tree\litter_update_fire_tree.c" />
+    <ClCompile Include="src\tree\litter_update_tree.c" />
+    <ClCompile Include="src\tree\livefuel_consum_tree.c" />
+    <ClCompile Include="src\tree\mix_veg_tree.c" />
+    <ClCompile Include="src\tree\mortality_tree.c" />
+    <ClCompile Include="src\tree\new_tree.c" />
+    <ClCompile Include="src\tree\npp_tree.c" />
+    <ClCompile Include="src\tree\phenology_tree.c" />
+    <ClCompile Include="src\tree\reduce_tree.c" />
+    <ClCompile Include="src\tree\turnover_daily_tree.c" />
+    <ClCompile Include="src\tree\turnover_monthly_tree.c" />
+    <ClCompile Include="src\tree\turnover_tree.c" />
+    <ClCompile Include="src\tree\vegc_sum_tree.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\agriculture.h" />
+    <ClInclude Include="include\biomass_grass.h" />
+    <ClInclude Include="include\biomass_tree.h" />
+    <ClInclude Include="include\biomes.h" />
+    <ClInclude Include="include\buffer.h" />
+    <ClInclude Include="include\build.h" />
+    <ClInclude Include="include\cdf.h" />
+    <ClInclude Include="include\cell.h" />
+    <ClInclude Include="include\channel.h" />
+    <ClInclude Include="include\climate.h" />
+    <ClInclude Include="include\climbuf.h" />
+    <ClInclude Include="include\conf.h" />
+    <ClInclude Include="include\config.h" />
+    <ClInclude Include="include\coord.h" />
+    <ClInclude Include="include\cpl.h" />
+    <ClInclude Include="include\crop.h" />
+    <ClInclude Include="include\cropdates.h" />
+    <ClInclude Include="include\date.h" />
+    <ClInclude Include="include\discharge.h" />
+    <ClInclude Include="include\errmsg.h" />
+    <ClInclude Include="include\grass.h" />
+    <ClInclude Include="include\grassland.h" />
+    <ClInclude Include="include\header.h" />
+    <ClInclude Include="include\image.h" />
+    <ClInclude Include="include\input.h" />
+    <ClInclude Include="include\intlist.h" />
+    <ClInclude Include="include\landuse.h" />
+    <ClInclude Include="include\list.h" />
+    <ClInclude Include="include\lpj.h" />
+    <ClInclude Include="include\manage.h" />
+    <ClInclude Include="include\managepar.h" />
+    <ClInclude Include="include\natural.h" />
+    <ClInclude Include="include\netcdf.h" />
+    <ClInclude Include="include\netcdf_meta.h" />
+    <ClInclude Include="include\numeric.h" />
+    <ClInclude Include="include\outfile.h" />
+    <ClInclude Include="include\output.h" />
+    <ClInclude Include="include\param.h" />
+    <ClInclude Include="include\pft.h" />
+    <ClInclude Include="include\pftlist.h" />
+    <ClInclude Include="include\pftpar.h" />
+    <ClInclude Include="include\pftpar_wp.h" />
+    <ClInclude Include="include\pnet.h" />
+    <ClInclude Include="include\queue.h" />
+    <ClInclude Include="include\reservoir.h" />
+    <ClInclude Include="include\soil.h" />
+    <ClInclude Include="include\soilpar.h" />
+    <ClInclude Include="include\spitfire.h" />
+    <ClInclude Include="include\stand.h" />
+    <ClInclude Include="include\swap.h" />
+    <ClInclude Include="include\tree.h" />
+    <ClInclude Include="include\types.h" />
+    <ClInclude Include="include\units.h" />
+    <ClInclude Include="include\version_LPJ.h" />
+    <ClInclude Include="include\woodplantation.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="src\utils\Makefile" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{6F8FA3B6-7238-4043-9734-FA754E4CD117}</ProjectGuid>
+    <RootNamespace>LPJ</RootNamespace>
+    <ProjectName>LPJ</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
+    <CLRSupport>false</CLRSupport>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <OutDir>.\bin\$(Platform)\$(Configuration)\</OutDir>
+    <GenerateManifest>false</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <OutDir>.\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <OutDir>.\bin\</OutDir>
+    <GenerateManifest>false</GenerateManifest>
+    <TargetName>$(ProjectName)</TargetName>
+    <PreBuildEventUseInBuild>false</PreBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IgnoreImportLibrary>true</IgnoreImportLibrary>
+    <LibraryPath>C:\Program Files %28x86%29\Microsoft Visual Studio 10.0\Common7\IDE;$(LibraryPath)</LibraryPath>
+    <OutDir>.\bin\$(Platform)\$(Configuration)\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>WITH_FPE;STORECLIMATE;IMAGE;COUPLED;DEBUG_IMAGE;SENDSEP;USE_CPP;USE_NETCDF;SAFE;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <AdditionalIncludeDirectories>./include;C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.0A\Include\</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>ws2_32.lib;advapi32.lib;netcdf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.0A\Lib\;.\lib\netcdf_4.3.3.1_32bit\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBCMTD.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AssemblyDebug>true</AssemblyDebug>
+      <FixedBaseAddress>false</FixedBaseAddress>
+    </Link>
+    <PreBuildEvent>
+      <Command>subwcrev.exe . include\version_LPJ.template include\version_LPJ.h 
+vcvars32.bat 
+</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copyrevexe.bat $(OutDir) $(TargetName) $(ConfigurationName) $(TargetExt)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>./include;C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.0A\Include\</AdditionalIncludeDirectories>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PreprocessorDefinitions>WITH_FPE;STORECLIMATE;SENDSEP;USE_CPP;IMAGE;COUPLED;USE_NETCDF;SAFE;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>ws2_32.lib;advapi32.lib;netcdf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.0A\Lib\;.\lib\netcdf_4.4.1_64bit\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>LIBCMTD.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AssemblyDebug>true</AssemblyDebug>
+      <FixedBaseAddress>false</FixedBaseAddress>
+    </Link>
+    <PreBuildEvent />
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>./include;C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.0A\Include\</AdditionalIncludeDirectories>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <PreprocessorDefinitions>WITH_FPE;STORECLIMATE;IMAGE;COUPLED;SENDSEP;USE_CPP;USE_NETCDF;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <CompileAs>CompileAsC</CompileAs>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.0A\Lib\;.\lib\netcdf_4.3.3.1_32bit\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;advapi32.lib;netcdf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBCMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <FixedBaseAddress>false</FixedBaseAddress>
+      <AssemblyDebug>false</AssemblyDebug>
+      <ProgramDatabaseFile />
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+    </Link>
+    <PreBuildEvent>
+      <Command>subwcrev.exe . include\version_LPJ.template include\version_LPJ.h 
+vcvars32.bat 
+</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copyrevexe.bat $(OutDir) $(TargetName) $(ConfigurationName) $(TargetExt)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <AdditionalIncludeDirectories>.\include</AdditionalIncludeDirectories>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <PreprocessorDefinitions>WITH_FPE;STORECLIMATE;IMAGE;COUPLED;SENDSEP;USE_CPP;USE_NETCDF;_USE_MATH_DEFINES;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.0A\Lib\;.\lib\netcdf_4.4.1_64bit\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;advapi32.lib;netcdf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>LIBCMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <FixedBaseAddress>false</FixedBaseAddress>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <ProgramDatabaseFile />
+      <AssemblyDebug>false</AssemblyDebug>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

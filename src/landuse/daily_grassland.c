@@ -101,7 +101,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   if(rainmelt<0)
     rainmelt=0.0;
 
-  index=data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE);
+  index=data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
 
   if(data->irrigation.irrigation && data->irrigation.irrig_amount>epsilon)
   {
@@ -289,6 +289,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   if(isphen)
   {
     harvest=harvest_stand(output,stand,hfrac);
+
     /* return irrig_stor and irrig_amount in case of harvest */
     if(data->irrigation.irrigation)
     {

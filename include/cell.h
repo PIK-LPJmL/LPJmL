@@ -95,6 +95,14 @@ Received 19 November 1997; accepted 15 January 1999*/
   Discharge discharge;
   int elevation;            /**< cell elevation (m) */
   const Real *landcover;    /**< prescribed landcover or NULL */
+#if defined IMAGE || defined INCLUDEWP
+  Real npp_nat;             /**< NPP natural stand */
+  Real npp_wp;              /**< NPP woodplantation */
+  Real flux_estab_nat;      /**< flux_estab natural stand */
+  Real rh_nat;              /**< soil respiration natural stand */
+  Real flux_estab_wp;       /**< flux_estab woodplantation */
+  Real rh_wp;               /**< soil respiration woodplantation */
+#endif
   Balance balance;          /**< balance checks */
 };
 
@@ -134,6 +142,10 @@ extern Real cflux_sum(const Cell [],const Config *);
 extern Real flux_sum(Flux *,Cell [],const Config *);
 extern Bool getwateruse(Wateruse, Cell [],int,const Config *);
 extern Wateruse initwateruse(const Config *);
+#ifdef IMAGE
+extern Bool getwateruse_wd(Wateruse, Cell[], int, const Config *);
+extern Wateruse initwateruse_wd(const Config *);
+#endif
 extern void freewateruse(Wateruse,Bool);
 extern void killstand(Cell *,const Pftpar [],int,Bool,int);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);

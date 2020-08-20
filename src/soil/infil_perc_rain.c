@@ -44,6 +44,7 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
   if(rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE))
     soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate */
 
+
   for(l=0;l<NSOILLAYER;l++)
   {
     previous_soil_water[l]=soil->w[l]*soil->par->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l];
@@ -125,7 +126,11 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
           }
           if(l==BOTTOMLAYER)
           {
+#ifdef IMAGE
+            stand->cell->discharge.dmass_gw+=perc*stand->frac*stand->cell->coord.area;
+#else
             outflux+=perc;
+#endif
             *return_flow_b+=perc*(1-stand->frac_g[l]);
           }
           else

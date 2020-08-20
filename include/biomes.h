@@ -17,40 +17,25 @@
 
 /* definition of constants for biomes */
 
-#define BOREAL_DECIDUOUS_FOREST 1
-#define BOREAL_EVERGREEN_FOREST 2
-#define TEMPERATE_BOREAL_MIXED_FOREST 3
-#define TEMPERATE_CONIFEROUS_FOREST 4
-#define TEMPERATE_DECIDUOUS_FOREST 5
-#define TEMPERATE_BROADLEAVED_EVERGREEN_FOREST 6
-#define TEMPERATE_MIXED_FOREST 7
-#define TROPICAL_SEASONAL_FOREST 8
-#define TROPICAL_RAIN_FOREST 9
-#define TROPCIAL_DECIDUOUS_FOREST 10
-#define MOIST_SAVANNAH 11
-#define DRY_SAVANNAH 12
-#define TROPICAL_GRASS 13
-#define SHRUB 14
-#define ARID_SHRUB_STEPPE 15
-#define WOOD_TUNDRA 16
-#define TUNDRA 17
-#define COOL_GRASS 18
-#define DESERT 19
-#ifdef IMAGE
-#define ARCTIC_TUNDRA TUNDRA /* no differentiation for IMAGE */
-#define XERIC_SHRUBS SHRUB /* no differentiation for IMAGE */ 
-#define TALL_GRASSLAND 0
-#define SHORT_GRASSLAND 0
-#else
-#define ARCTIC_TUNDRA 20
-#define XERIC_SHRUBS 21
-#define TALL_GRASSLAND 22
-#define SHORT_GRASSLAND 23
-#endif
-#define MANAGED_LAND 24
+#define MANAGED_LAND 1
+#define IJS 7  // ICE was already used
+#define TUNDRA 8
+#define WOODED_TUNDRA 9
+#define BOREAL_FOREST 10
+#define COOL_CONIFER_FOREST 11
+#define TEMPERATE_MIXED_FOREST 12
+#define TEMPERATE_DECIDUOUS_FOREST 13
+#define WARM_MIXED_FOREST 14
+#define GRASSLAND_STEPPE 15
+#define HOT_DESERT 16
+#define SCRUBLAND 17
+#define SAVANNAH 18
+#define TROPICAL_WOODLAND 19
+#define TROPICAL_FOREST 20
+
 
 /* Declaration of functions */
 
-extern int biome_classification(Real,const  Stand *,int);
+extern int biome_classification(Real,Real,const  Stand *,int);
 
 #endif /*BIOMES_H*/

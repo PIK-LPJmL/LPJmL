@@ -98,9 +98,9 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
       /* write irrig_apply to output */
       output->mirrig+=irrig_apply*stand->frac;
       if(config->pft_output_scaled)
-        output->cft_airrig[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->cell->ml.landfrac[1].biomass_tree;
+        output->cft_airrig[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=irrig_apply*stand->cell->ml.landfrac[1].biomass_tree;
       else
-        output->cft_airrig[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
+        output->cft_airrig[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=irrig_apply;
     }
   }
 
@@ -128,7 +128,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   {
     runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,config->rw_manage);
     /* count irrigation events*/
-    output->cft_irrig_events[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++;
+    output->cft_irrig_events[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]++;
   }
 
   runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,config->rw_manage);
@@ -151,8 +151,8 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
    if(stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree>0.0 &&
       gp_pft[getpftpar(pft,id)]>0.0)
    {
-     output->gcgp_count[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++;
-     output->pft_gcgp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
+     output->gcgp_count[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]++;
+     output->pft_gcgp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
    }
    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd);
    output->mnpp+=npp*stand->frac;
@@ -164,13 +164,13 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
    output->mphen_light += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
    output->mphen_water += pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
    output->mwscal += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-   output->cft_fpar[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=(fpar(pft)*stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
+   output->cft_fpar[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=(fpar(pft)*stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
    if(config->pft_output_scaled)
-     output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree;
+     output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree;
    else
-     output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=npp;
-   output->mpft_lai[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=actual_lai(pft);
+     output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp;
+   output->mpft_lai[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=actual_lai(pft);
 
   } /* of foreachpft */
 

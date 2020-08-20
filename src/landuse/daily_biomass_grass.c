@@ -86,7 +86,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   if(rainmelt<0)
     rainmelt=0.0;
 
-  index=rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE);
+  index=rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
 
   if(data->irrigation && data->irrig_amount>epsilon)
   {

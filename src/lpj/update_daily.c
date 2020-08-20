@@ -16,6 +16,10 @@
 
 #include "lpj.h"
 
+#ifdef IMAGE
+#define GWCOEFF 100 /**< groundwater outflow coefficient (average amount of release time in reservoir) */
+#endif
+
 void update_daily(Cell *cell,            /**< cell pointer           */
                   Real co2,              /**< atmospheric CO2 (ppmv) */
                   Real popdensity,       /**< population density (capita/km2) */
@@ -32,6 +36,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   int s;
   Real melt=0,eeq,par,daylength,beta;
   Real gp_stand,gp_stand_leafon,runoff,snowrunoff;
+#ifdef IMAGE
+  Real fout_gw; // local variable for groundwater outflow (baseflow)
+#endif
   Real fpc_total_stand;
   Real gtemp_air;  /* value of air temperature response function */
   Real gtemp_soil[NSOILLAYER]; /* value of soil temperature response function */
@@ -110,6 +117,18 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     hetres=littersom(&stand->soil,gtemp_soil);
     cell->output.mrh+=hetres*stand->frac;
+#ifdef IMAGE
+    if (stand->type->landusetype == NATURAL)
+    {
+       cell->rh_nat += hetres*stand->frac;
+    } /* if NATURAL */
+    if (stand->type->landusetype == WOODPLANTATION)
+    {
+       cell->rh_wp += hetres*stand->frac;
+    } /* if woodplantation */
+#endif
+
+
     cell->output.dcflux+=hetres*stand->frac;
     cell->output.mswe+=stand->soil.snowpack*stand->frac;
     if (config->withdailyoutput && isdailyoutput_stand(&cell->output,stand))
@@ -147,6 +166,17 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   }
   else
     cell->output.mlaketemp=config->missing_value;
+#endif
+
+#ifdef IMAGE
+  // outflow from groundwater reservoir to river
+  if (cell->discharge.dmass_gw > 0)
+  {
+    fout_gw=cell->discharge.dmass_gw/GWCOEFF;
+    cell->discharge.drunoff+=fout_gw/cell->coord.area;
+    cell->discharge.dmass_gw-=fout_gw;
+    cell->output.mseepage+=fout_gw/cell->coord.area;
+  }
 #endif
 
   cell->output.mrunoff+=cell->discharge.drunoff;
