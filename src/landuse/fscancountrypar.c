@@ -80,12 +80,12 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
         if(verb)
           fprintf(stderr,"ERROR102: Cannot read array 'laimax' for country '%s'.\n",country->name);  
         return 0;
-      }
+      } 
       /*in case rw_manage: increases laimax by bridge gap factor*/
       if(rw_manage)
         for(i=0;i<ncft;i++)
           country->laimax_cft[i]+=(7-country->laimax_cft[i])*param.yield_gap_bridge;
-    }
+    }  
     else
     {
       country->laimax_cft=NULL;

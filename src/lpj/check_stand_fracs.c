@@ -16,8 +16,11 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-
+#if defined IMAGE && defined COUPLED
+#define accuracy 1e-7
+#else
 #define accuracy 1e-4
+#endif
 
 void check_stand_fracs(const Cell *cell, /**< pointer to cell */
                        Real lakefrac     /**< lake fraction (0..1) */
@@ -39,6 +42,11 @@ void check_stand_fracs(const Cell *cell, /**< pointer to cell */
   }
   
   if(fabs(frac_sum-1)>accuracy)
-    fail(STAND_FRAC_SUM_ERR,TRUE,"STAND_FRAC_SUM-error %g lakefrac: %g, cell (%s)",
-         fabs(frac_sum-1),lakefrac,sprintcoord(line,&cell->coord));
+#if defined IMAGE && defined COUPLED
+    fail(STAND_FRAC_SUM_ERR,TRUE,"STAND_FRAC_SUM-error %g frac_sum %glakefrac: %g, cell (%g/%g), reservoirfrac %g",
+    fabs(frac_sum-1),frac_sum, lakefrac,stand->cell->coord.lon,stand->cell->coord.lat,stand->cell->ml.reservoirfrac);
+#else
+    fail(STAND_FRAC_SUM_ERR,TRUE,"STAND_FRAC_SUM-error %g lakefrac: %g, cell (%g/%g)",
+         fabs(frac_sum-1),lakefrac,cell->coord.lon,cell->coord.lat);
+#endif
 } /* of 'check_stand_fracs' */
