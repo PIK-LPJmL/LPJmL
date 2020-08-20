@@ -78,6 +78,8 @@ typedef struct
 
 #ifdef IMAGE
   Image_data *image_data; /**< pointer to IMAGE data structure */
+#else
+  Pool product;
 #endif
 } Managed_land;
 

@@ -222,15 +222,21 @@ typedef struct
   Real *cft_conv_loss_evap; /**< cft specific evaporative conveyance losses (mm) */
   Real *cft_conv_loss_drain; /**< cft specific drainage conveyance losses (mm) */
   int  *cft_irrig_events;  /**< number of irrigation days within growing season */
-  Real prod_turnover;      /**< carbon emissions from product turnover [gC/m2/a] in IMAGE coupling */
   Stocks deforest_emissions; /**< carbon and nitrogen emissions from deforested wood burnt [g/m2/a] in IMAGE coupling */
   Real trad_biofuel;       /**< carbon emissions from traditional biofuel burnt [gC/m2/a] in IMAGE coupling */
   Stocks flux_firewood;    /**< carbon and nitrogen emissions from domestic wood use [g/m2/a]*/
   Real fburn;              /**< fraction of deforested wood burnt [0-1]*/
   Real ftimber;            /**< fraction of deforested wood harvested as timber [0-1]*/
   Stocks timber_harvest;   /**< carbon and nitrogen harvested as timber [g/m2/a] */
+#ifdef IMAGE
   Real product_pool_fast;  /**< carbon in the fast product pool */
   Real product_pool_slow;  /**< carbon in the slow product pool */
+  Real prod_turnover;      /**< carbon emissions from product turnover [gC/m2/a] in IMAGE coupling */
+#else
+  Stocks product_pool_fast;  /**< carbon and nitrogen in the fast product pool */
+  Stocks product_pool_slow;  /**< carbon and nitrogen in the slow product pool */
+  Stocks prod_turnover;      /**< carbon and nitrogen emissions from product turnover [gX/m2/a] */
+#endif
   Real *cft_luc_image;     /**< LUC data received by IMAGE [0-1], CFT specific */
   Real msoiltemp[NSOILLAYER]; /**< monthly soil temperature in deg C for  6 layer*/
   Real mrunoff_surf;       /**< monthly surface runoff in mm*/

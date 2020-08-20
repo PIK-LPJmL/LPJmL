@@ -81,5 +81,11 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
   cell->output.prod_turnover=product_turnover(cell->ml.image_data);
   cell->output.product_pool_fast=cell->ml.image_data->timber.fast;
   cell->output.product_pool_slow=cell->ml.image_data->timber.slow;
+#else
+  product_turnover(cell);
+  cell->output.product_pool_fast.carbon=cell->ml.product.fast.carbon;
+  cell->output.product_pool_slow.carbon=cell->ml.product.slow.carbon;
+  cell->output.product_pool_fast.nitrogen=cell->ml.product.fast.nitrogen;
+  cell->output.product_pool_slow.nitrogen=cell->ml.product.slow.nitrogen;
 #endif
 } /* of 'update_annual' */

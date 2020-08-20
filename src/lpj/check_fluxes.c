@@ -50,6 +50,9 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   tot.nitrogen+=cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
 #ifdef IMAGE
   tot.carbon+=cell->ml.image_data->timber.slow+cell->ml.image_data->timber.fast;
+#else
+  tot.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon;
+  tot.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen;
 #endif
   delta_tot.carbon=tot.carbon-cell->balance.tot.carbon;
   delta_tot.nitrogen=tot.nitrogen-cell->balance.tot.nitrogen;
@@ -57,9 +60,14 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 
   balance.carbon=cell->balance.nep-cell->output.fire.carbon-cell->output.flux_firewood.carbon+cell->output.flux_estab.carbon-cell->output.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-cell->output.neg_fluxes.carbon;
   /* for IMAGE but can also be used without IMAGE */
+#ifdef IMAGE
   balance.carbon-=cell->output.deforest_emissions.carbon+cell->output.prod_turnover+cell->output.trad_biofuel+cell->output.timber_harvest.carbon;
+#else
+  balance.carbon-=cell->output.deforest_emissions.carbon-cell->output.prod_turnover.carbon-cell->output.trad_biofuel; // +cell->output.timber_harvest.carbon;
+#endif
   balance.nitrogen=cell->balance.n_influx-cell->output.fire.nitrogen-cell->balance.n_outflux+cell->output.flux_estab.nitrogen-
-    cell->balance.biomass_yield.nitrogen-cell->output.flux_harvest.nitrogen-delta_tot.nitrogen-cell->output.neg_fluxes.nitrogen-cell->output.deforest_emissions.nitrogen-cell->output.timber_harvest.nitrogen;
+    cell->balance.biomass_yield.nitrogen-cell->output.flux_harvest.nitrogen-delta_tot.nitrogen-cell->output.neg_fluxes.nitrogen-
+    cell->output.deforest_emissions.nitrogen-cell->output.prod_turnover.nitrogen;//cell->output.timber_harvest.nitrogen;
   if(config->ischeckpoint)
     startyear=max(config->firstyear,config->checkpointyear)+1;
   else
@@ -104,7 +112,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.nep,cell->output.fire.carbon,
          cell->output.flux_estab.carbon,cell->output.flux_harvest.carbon,delta_tot.carbon,cell->balance.biomass_yield.carbon,
          cell->balance.estab_storage_grass[0].carbon,cell->balance.estab_storage_grass[1].carbon,cell->balance.estab_storage_tree[0].carbon,cell->balance.estab_storage_tree[1].carbon,
-         cell->output.deforest_emissions.carbon,cell->output.prod_turnover);
+         cell->output.deforest_emissions.carbon,cell->output.prod_turnover.carbon);
 #endif
   }
   if(config->with_nitrogen && year>startyear && fabs(balance.nitrogen)>.2)
@@ -114,11 +122,13 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #else
     fail(INVALID_NITROGEN_BALANCE_ERR,TRUE,
 #endif
-         "N-balance on y %d c %d (%0.2f/%0.2f) BALANCE_N-error %.10f n_influx %g n_outflux %g n_harvest %g n_biomass_yield %g n_estab %g delta_tot=%g total nitrogen=%g estab_storage grass [0] = %g estab_storage grass [1] = %g  estab_storage tree [0] = %g estab_storage tree [1] = %g \n",
-         year,cellid+config->startgrid,cell->coord.lon,cell->coord.lat,balance.nitrogen,
-         cell->balance.n_influx,cell->balance.n_outflux,cell->output.flux_harvest.nitrogen,cell->balance.biomass_yield.nitrogen,cell->output.flux_estab.nitrogen,delta_tot.nitrogen,tot.nitrogen,
-         cell->balance.estab_storage_grass[0].nitrogen,cell->balance.estab_storage_grass[1].nitrogen,cell->balance.estab_storage_tree[0].nitrogen,
-         cell->balance.estab_storage_tree[1].nitrogen);
+      "N-balance on y %d c %d (%0.2f/%0.2f) BALANCE_N-error %.10f n_influx %g n_outflux %g n_harvest %g n_biomass_yield %g n_estab %g n_defor_emis %g n_product_turnover %g delta_tot=%g total nitrogen=%g estab_storage grass [0] = %g estab_storage grass [1] = %g  estab_storage tree [0] = %g estab_storage tree [1] = %g \n",
+      year,cellid+config->startgrid,cell->coord.lon,cell->coord.lat,balance.nitrogen,
+      cell->balance.n_influx,cell->balance.n_outflux,cell->output.flux_harvest.nitrogen,cell->balance.biomass_yield.nitrogen,cell->output.flux_estab.nitrogen,
+      cell->output.deforest_emissions.nitrogen,cell->output.prod_turnover.nitrogen,
+      delta_tot.nitrogen,tot.nitrogen,
+      cell->balance.estab_storage_grass[0].nitrogen,cell->balance.estab_storage_grass[1].nitrogen,cell->balance.estab_storage_tree[0].nitrogen,
+      cell->balance.estab_storage_tree[1].nitrogen);
     foreachstand(stand,s,cell->standlist){
       foreachpft(pft,p,&stand->pftlist){
         fprintf(stderr,"PFT bm_inc nitrogen %g\n",pft->bm_inc.nitrogen);

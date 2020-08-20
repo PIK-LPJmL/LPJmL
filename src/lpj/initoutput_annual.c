@@ -34,8 +34,16 @@ void initoutput_annual(Output *output, /**< Output data */
   output->awd_unsustainable=output->aevap_lake=output->aevap_res=0;
   output->soil_storage=output->aburntarea=0;
   output->soil_storage=output->alittfall.carbon=output->alittfall.nitrogen=0;
-  output->prod_turnover=output->deforest_emissions.carbon=output->deforest_emissions.nitrogen=output->fburn=output->ftimber=output->timber_harvest.carbon=output->timber_harvest.nitrogen=0;
-  output->product_pool_fast=output->product_pool_slow=output->trad_biofuel=output->mean_vegc_mangrass=0;
+  output->deforest_emissions.carbon=output->deforest_emissions.nitrogen=output->fburn=output->ftimber=output->timber_harvest.carbon=output->timber_harvest.nitrogen=0;
+  output->trad_biofuel=output->mean_vegc_mangrass=0;
+
+#ifdef IMAGE
+  output->prod_turnover=0;
+  output->product_pool_fast=output->product_pool_slow=0;
+#else
+  output->prod_turnover.carbon=output->prod_turnover.nitrogen=0;
+  output->product_pool_fast.carbon=output->product_pool_slow.carbon=output->product_pool_fast.nitrogen=output->product_pool_slow.nitrogen=0;
+#endif
 
   /* memory allocation now in newgrid.c */
 
