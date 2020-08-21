@@ -3,7 +3,7 @@ rm(list=ls(all=TRUE))
 gc()
 args <- commandArgs(TRUE)
 
-# args="gswp3-w5e5"
+args="gswp3-w5e5"
 # args="agmerra"
 # args="wfdei"
 

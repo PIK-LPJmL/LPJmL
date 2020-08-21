@@ -1660,7 +1660,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 
     if(sum>1.00001)
     {
-      if(yearl>0)
+      if(yearl>0&&sum>1.01)
       {
         fprintf(stderr,"WARNING013: in cell %d at year %d: sum of crop fractions greater 1: %f\n",
           cell+config->startgrid,yearl+landuse->landuse.firstyear,sum);
