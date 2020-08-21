@@ -63,7 +63,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #ifdef IMAGE
   balance.carbon-=cell->output.deforest_emissions.carbon+cell->output.prod_turnover+cell->output.trad_biofuel+cell->output.timber_harvest.carbon;
 #else
-  balance.carbon-=cell->output.deforest_emissions.carbon-cell->output.prod_turnover.carbon-cell->output.trad_biofuel; // +cell->output.timber_harvest.carbon;
+  balance.carbon-=cell->output.deforest_emissions.carbon+cell->output.prod_turnover.carbon+cell->output.trad_biofuel; // +cell->output.timber_harvest.carbon;
 #endif
   balance.nitrogen=cell->balance.n_influx-cell->output.fire.nitrogen-cell->balance.n_outflux+cell->output.flux_estab.nitrogen-
     cell->balance.biomass_yield.nitrogen-cell->output.flux_harvest.nitrogen-delta_tot.nitrogen-cell->output.neg_fluxes.nitrogen-
