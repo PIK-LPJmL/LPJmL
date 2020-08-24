@@ -51,11 +51,6 @@ struct landuse
   Bool onlycrops;      /* scale crop/grass shares to add to one (no natural vegetation) */
   int nbands;          /**< number of data items per cell */
   int nbands_sdate;    /**< number of data items per cell for sowing dates */
-  int nbands_crop_phu;    /**< number of data items per cell for crop phus */
-  int nbands_fertilizer_nr; /**< number of data items per cell for fertilizer nr data */
-  int nbands_manure_nr; /* number of data items per cell for manure fertilizer data */
-  int nbands_with_tillage; /* number of data items per cell for tillage data */
-  int nbands_residue_on_field; /* number of data items per cell for residues left on field data */
   Climatefile landuse; /**< file pointer */
   Climatefile fertilizer_nr; /**< file pointer to nitrogen fertilizer file */
   Climatefile manure_nr; /* file pointer to manure fertilizer file */
@@ -349,7 +344,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->crop_phu.nyear=header.nyear;
       landuse->crop_phu.size=(long long)header.ncell*(long long)header.nbands*typesizes[landuse->crop_phu.datatype];
       landuse->crop_phu.n=config->ngridcell*header.nbands;
-      landuse->nbands_crop_phu=header.nbands;
+      landuse->crop_phu.var_len=header.nbands;
       landuse->crop_phu.scalar=header.scalar;
     }
   }
@@ -416,7 +411,6 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         free(landuse);
         return NULL;
       }
-      landuse->nbands_fertilizer_nr=landuse->fertilizer_nr.var_len;
     }
     else
     {
@@ -487,7 +481,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->fertilizer_nr.nyear=header.nyear;
       landuse->fertilizer_nr.size=header.ncell*header.nbands*typesizes[header.datatype];
       landuse->fertilizer_nr.n=config->ngridcell*header.nbands;
-      landuse->nbands_fertilizer_nr=header.nbands;
+      landuse->fertilizer_nr.var_len=header.nbands;
       landuse->fertilizer_nr.scalar=header.scalar;
     }
 
@@ -647,7 +641,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         landuse->manure_nr.nyear=header.nyear;
         landuse->manure_nr.size=header.ncell*header.nbands*typesizes[header.datatype];
         landuse->manure_nr.n=config->ngridcell*header.nbands;
-        landuse->nbands_manure_nr=header.nbands;
+        landuse->manure_nr.var_len=header.nbands;
         landuse->manure_nr.scalar=header.scalar;
       }
     }
@@ -797,7 +791,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->with_tillage.nyear=header.nyear;
       landuse->with_tillage.size=header.ncell*header.nbands*sizeof(short);
       landuse->with_tillage.n=config->ngridcell*header.nbands;
-      landuse->nbands_with_tillage=header.nbands;
+      landuse->with_tillage.var_len=header.nbands;
       landuse->with_tillage.scalar=header.scalar;
     }
   }
@@ -1015,7 +1009,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->residue_on_field.nyear=header.nyear;
       landuse->residue_on_field.size=header.ncell*header.nbands*typesizes[header.datatype];
       landuse->residue_on_field.n=config->ngridcell*header.nbands;
-      landuse->nbands_residue_on_field=header.nbands;
+      landuse->residue_on_field.var_len=header.nbands;
       landuse->residue_on_field.scalar=header.scalar;
     }
   }
@@ -1991,7 +1985,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             grid[cell].ml.residue_on_field[i].grass[j]=vec[count]*landuse->residue_on_field.scalar;
           count++;
         }
-        if(landuse->nbands_residue_on_field!=ncft+NGRASS)
+        if(landuse->residue_on_field.var_len!=ncft+NGRASS)
         {
           grid[cell].ml.residue_on_field[0].biomass_grass=vec[count]*landuse->residue_on_field.scalar;
           grid[cell].ml.residue_on_field[1].biomass_grass=vec[count++]*landuse->residue_on_field.scalar;
