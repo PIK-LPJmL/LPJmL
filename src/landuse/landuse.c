@@ -480,6 +480,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           free(landuse);
           return(NULL);
         }
+        landuse->fertilizer_nr.datatype=header.datatype;
         landuse->fertilizer_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
       }
       landuse->fertilizer_nr.firstyear=header.firstyear;
@@ -639,6 +640,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
             free(landuse);
             return(NULL);
           }
+          landuse->manure_nr.datatype=header.datatype;
           landuse->manure_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
         }
         landuse->manure_nr.firstyear=header.firstyear;
@@ -1006,6 +1008,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           free(landuse);
           return(NULL);
         }
+        landuse->residue_on_field.datatype=header.datatype;
         landuse->residue_on_field.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
       }
       landuse->residue_on_field.firstyear=header.firstyear;
@@ -1696,9 +1699,6 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           free(fert_nr);
           return TRUE;
         }
-        if(landuse->fertilizer_nr.swap)
-          for(i=0; i<landuse->fertilizer_nr.n; i++)
-            fert_nr[i]=swapfloat(fert_nr[i]);
       }
       count=0;
 
@@ -1776,9 +1776,6 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           free(manu_nr);
           return TRUE;
         }
-        if(landuse->manure_nr.swap)
-          for(i=0; i<landuse->manure_nr.n; i++)
-            manu_nr[i]=swapfloat(manu_nr[i]);
       }
       count=0;
 
