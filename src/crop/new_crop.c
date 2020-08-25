@@ -49,6 +49,7 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   crop->demandsum=0;
   crop->ndemandsum=crop->nuptakesum=0;
   crop->supplysum=0;
+  crop->frostkill=FALSE;
   pft->vmax=0;
 #ifdef DOUBLE_HARVEST
   crop->petsum=0.0;

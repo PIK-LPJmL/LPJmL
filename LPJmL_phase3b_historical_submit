@@ -316,6 +316,7 @@ ID                         Fmt                    filename
     { "id" : SYEAR,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/syear.bin)}},
     { "id" : SYEAR2,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/syear2.bin)}},
     { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/sdate.bin)}},
+    { "id" : SDATE2,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/sdate2.bin)}},
     { "id" : HDATE,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/hdate.bin)}},
     { "id" : HDATE2,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/hdate2.bin)}},
     { "id" : GROWING_PERIOD,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/growing_period.bin)}},

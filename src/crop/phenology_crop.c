@@ -136,6 +136,9 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
   if(crop->growingdays==hlimit)
     harvesting=TRUE;
   
+  if(crop->frostkill==TRUE)
+    harvesting=TRUE;
+
   /* determination of lai */
   lai0=crop->lai;
 
