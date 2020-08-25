@@ -94,11 +94,13 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       crop=pft->data;
       if(crop->fphu>0.5&&crop->fphu<0.95) /* frost damage possible after storage organs start growing (about fphu>0.5)*/
       {
-        litter_update_crop(&pft->stand->soil.litter,pft,1.0);
-        delpft(&stand->pftlist,p);
-        stand->type=&kill_stand;
-        p--;
-        continue;
+        printf("daily_agriculture.c: frostkill of cft %s on day %d\n", pft->par->name, day);
+        crop->frostkill=TRUE;
+//        litter_update_crop(&pft->stand->soil.litter,pft,1.0);
+//        delpft(&stand->pftlist,p);
+//        stand->type=&kill_stand;
+//        p--;
+//        continue;
       }
     }
 #endif

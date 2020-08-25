@@ -45,4 +45,5 @@ void fprint_crop(FILE *file,       /**< pointer to text file */
   fprintf(file,"LAImax_adjusted:\t%g\n",crop->laimax_adjusted);
   fprintf(file,"Demandsum:\t%g\n",crop->demandsum);
   fprintf(file,"Supplysum:\t%g\n",crop->supplysum);
+  fprintf(file,"Frostkill:\t%s\n",(crop->frostkill) ? "Frostkill" : "No frostkill");
 } /* of 'fprint_crop' */

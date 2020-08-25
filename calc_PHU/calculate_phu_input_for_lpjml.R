@@ -1,8 +1,9 @@
+
 rm(list=ls(all=TRUE))
 gc()
 args <- commandArgs(TRUE)
 
-# args="gswp3-w5e5"
+args="gswp3-w5e5"
 # args="agmerra"
 # args="wfdei"
 
@@ -150,4 +151,3 @@ unlink(paste0(path.tmp,"PHU_",climate_data,"_",crop_calendar,"_*.txt"))
 # unlink(paste0(path.tmp,"calculate_*.jcf"))
 
 print("ready!!!")
-

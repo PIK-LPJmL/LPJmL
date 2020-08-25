@@ -58,7 +58,7 @@ void soilice2moisture(Soil *soil, /**< pointer to soil data */
     soil->ice_fw[l]=0;
 #ifdef SAFE
   if(soil->ice_depth[l]<0 || soil->ice_depth[l]>(soil->whcs[l]+epsilon))
-    fprintf(stderr,"soil->ice_depth[%d]=%.10f in soilice2moisture().\n",l,soil->ice_depth[l]);
+    //fprintf(stderr,"soil->ice_depth[%d]=%.10f in soilice2moisture().\n",l,soil->ice_depth[l]);
   if(soil->ice_pwp[l]<0)
     fprintf(stderr,"soil->ice_pwp[%d]=%.10f in soilice2moisture().\n",l,soil->ice_pwp[l]);
   if(soil->w[l]<0)
