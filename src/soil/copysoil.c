@@ -52,6 +52,7 @@ void copysoil(Soil *dst,       /**< destination */
   dst->litter.agtop_moist=src->litter.agtop_moist;
   dst->litter.agtop_cover=src->litter.agtop_cover;
   dst->litter.agtop_temp=src->litter.agtop_temp;
+  dst->count=src->count;
   freelitter(&dst->litter);
   dst->litter.n=src->litter.n;
   if(src->litter.n>0)

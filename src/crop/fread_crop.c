@@ -30,6 +30,7 @@ Bool fread_crop(FILE *file, /**< file pointer */
     printallocerr("crop");
     return TRUE;
   }
+  freadreal1(&pft->nlimit,swap,file);
   freadint1(&crop->wtype,swap,file);
   freadint1(&crop->growingdays,swap,file);
   freadreal1(&crop->pvd,swap,file);
@@ -50,6 +51,7 @@ Bool fread_crop(FILE *file, /**< file pointer */
   freadreal1(&crop->ndemandsum,swap,file);
   freadreal1(&crop->nuptakesum,swap,file);
   freadreal1(&crop->nfertilizer,swap,file);
+  freadreal1(&crop->nmanure,swap,file);
   freadreal1(&crop->vscal_sum,swap,file);
 #ifdef DOUBLE_HARVEST
   freadreal1(&crop->supplysum,swap,file);

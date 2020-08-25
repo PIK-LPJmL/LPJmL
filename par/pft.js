@@ -41,26 +41,35 @@
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
 #ifdef WITH_SPITFIRE
-#define MORT_MAX 0.02
+#define MORT_MAX 0.03
 #else
-#define MORT_MAX 0.02
+#define MORT_MAX 0.03
 #endif
+#define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.3      /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV 0.8   /* fraction of N not recovered before turnover */
 #define ALPHAA_NITROGEN 0.5  /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
 #define CN_BL_EG_MN 15.6
+#define CN_BL_EG_MD 26.8
 #define CN_NL_EG_MX 63.8
 #define CN_NL_EG_MN 31.8
+#define CN_NL_EG_MD 45.0
 #define CN_BL_DC_MX 34.6
 #define CN_BL_DC_MN 15.4
+#define CN_BL_DC_MD 23.1
 #define CN_NL_DC_MX 36.9
 #define CN_NL_DC_MN 18.4
+#define CN_NL_DC_MD 26.0
 #define CN_GC3_MX 37.9
 #define CN_GC3_MN 10.5
+#define CN_GC3_MD 19.9
 #define CN_GC4_MX 66.9
 #define CN_GC4_MN 17.4
+#define CN_GC4_MD 34.0
+#define CN_CROPS_MEAN 25.0 /* cnleaf mean for grasses, table A.3.1, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+#define K_LATOSA 6e3      /* leaf area to sapwood area */
 
 "pftpar" :
 [
@@ -71,13 +80,14 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.962,    /* beta_root */
+    "beta_root" : 0.932,    /* beta_root original 0.962*/
     "minwscal" : 0.0,       /* minwscal 3*/
     "gmin"  : 1.6,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 1.6,      /* leaf longevity 10*/
+    "sla" : 0.01986,         /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
     "ramp" : 1000.,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
@@ -89,7 +99,7 @@
     "emax": 10.,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
-    "albedo_leaf" : 0.14,   /* albedo of green leaves */
+    "albedo_leaf" : 0.13,   /* albedo of green leaves */
     "albedo_stem" : 0.1,    /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
     "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
@@ -136,21 +146,23 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
     "leaftype" : BROADLEAVED,  /* leaftype */
-    "turnover" : {"leaf" : 2.0, "sapwood" : 20.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 2.0, "sapwood" : 30.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
-    "crownarea_max" : 15.0, /* crownarea_max 20*/
+    "crownarea_max" : 25.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "reprod_cost" : REPROD_COST,  /* reproduction cost */
     "allom1" : ALLOM1,      /* allometry */
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.1487, /* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -171,13 +183,14 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.961,    /* beta_root */
+    "beta_root" : 0.981,    /* beta_root  original 0.962*/
     "minwscal" : 0.35,      /* minwscal 3*/
     "gmin"  : 1.8,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
+    "sla" : 0.03233,         /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
     "ramp" : 1000.,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
@@ -189,28 +202,28 @@
     "emax": 10.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
-    "albedo_leaf" : 0.13,   /* albedo of green leaves */
-    "albedo_stem" : 0.07,   /* albedo of stems */
-    "albedo_litter" : 0.06, /* albedo of litter */
+    "albedo_leaf" : 0.14,   /* albedo of green leaves */
+    "albedo_stem" : 0.1,   /* albedo of stems */
+    "albedo_litter" : 0.1, /* albedo of litter */
     "snowcanopyfrac" : 0.5, /* maximum snow coverage in green canopy */
     "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
       "slope" : 0.24,       /* new phenology: slope of cold-temperature limiting function */
       "base" : 7.66,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
-      "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+      "tau" : 0.1           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
       "slope" : 1.625,      /* new phenology: slope of warm-temperature limiting function tmax_sl */
       "base" : 38.64,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
-      "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+      "tau" : 0.1           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
       "slope" : 23,         /* new phenology: slope of light limiting function */
       "base" : 13.01,       /* new phenology: inflection point of light limiting function (Wm-2) */
-      "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
+      "tau" : 0.1           /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
@@ -236,21 +249,23 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_DC_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
     "leaftype" : BROADLEAVED,  /* leaftype */
-    "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 1.0, "sapwood" : 30.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
-    "crownarea_max" : 12.0, /* crownarea_max 20*/
+    "crownarea_max" : 15.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "reprod_cost" : REPROD_COST, /* reproduction cost */
     "allom1" : ALLOM1,      /* allometry */
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.061, /* scorch height (F) */
     "crownlength" : 0.10, /* crown length (CL) */
@@ -278,6 +293,7 @@
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 4.0,      /* leaf longevity 10*/
+    "sla" : 0.01049,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
     "ramp" : 1000.,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
@@ -286,7 +302,7 @@
     "twmax_daily" : 1000.,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000., /* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.137,  /* albedo of green leaves */
@@ -316,7 +332,7 @@
     {
       "slope" : 5,          /* new phenology: slope of water limiting function */
       "base" : 8.613,       /* new phenology: inflection point of water limiting function (% water availability)  */
-      "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
+      "tau" : 0.7           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : EVERGREEN,/* phenology */
@@ -336,12 +352,13 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_EG_MN, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_NL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "leaftype" : NEEDLELEAVED,/* leaftype */
-    "turnover" : {"leaf" : 4.0, "sapwood" : 20.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 15.0, /* crownarea_max 20*/
@@ -351,6 +368,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.1000,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -378,6 +396,7 @@
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 1.6,      /* leaf longevity 10*/
+    "sla" : 0.01986,         /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
     "ramp" : 1000.,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
@@ -436,12 +455,13 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
     "leaftype" : BROADLEAVED,/* leaftype */
-    "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 15.0, /* crownarea_max 20*/
@@ -451,6 +471,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.3710,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -478,6 +499,7 @@
     "nmax" : 120.,          /* nmax 7*/
     "resist" : 0.3,         /* resist 8*/
     "longevity" : 0.45,     /* leaf longevity 10*/
+    "sla" : 0.03233,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
     "ramp" : 300.,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
@@ -536,15 +558,16 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_DC_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
     "leaftype" : BROADLEAVED,/* leaftype */
-    "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
-    "crownarea_max" : 15.0, /* crownarea_max 20*/
+    "crownarea_max" : 25.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "aphen_min" : APHEN_MIN,
     "aphen_max" : APHEN_MAX,
@@ -553,6 +576,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.0940,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -573,13 +597,14 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.943,    /* beta_root */
+    "beta_root" : 0.955,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 4.0,      /* leaf longevity 10*/
+    "sla" : 0.01049,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
     "ramp" : 1000.,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
@@ -588,14 +613,14 @@
     "twmax_daily" : 25.,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000., /* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
-    "albedo_leaf" : 0.13,   /* albedo of green leaves */
+    "albedo_leaf" : 0.18,   /* albedo of green leaves */
     "albedo_stem" : 0.1,    /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
-    "snowcanopyfrac" : 0.1, /* maximum snow coverage in green canopy */
-    "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+    "snowcanopyfrac" : 0.15, /* maximum snow coverage in green canopy */
+    "lightextcoeff" : 0.4,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
       "slope" : 0.1008,     /* new phenology: slope of cold-temperature limiting function */
@@ -638,21 +663,23 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_EG_MN, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "cnratio_leaf_median": CN_NL_EG_MD,
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
     "leaftype" : NEEDLELEAVED,/* leaftype */
-    "turnover" : {"leaf" : 4.0, "sapwood" : 20.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
-    "crownarea_max" : 15.0, /* crownarea_max 20*/
+    "crownarea_max" : 20.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "reprod_cost" : REPROD_COST, /* reproduction cost */
     "allom1" : ALLOM1,      /* allometry */
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.1100,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -673,13 +700,14 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.943,    /* beta_root */
+    "beta_root" : 0.955,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.3,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
+    "sla" : 0.03233,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
     "ramp" : 200.,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
@@ -718,7 +746,7 @@
     {
       "slope" : 5.24,       /* new phenology: slope of water limiting function */
       "base" : 20.96,       /* new phenology: inflection point of water limiting function (% water availability)  */
-      "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
+      "tau" : 0.7           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : SUMMERGREEN,/* phenology */
@@ -738,15 +766,16 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "cnratio_leaf_median": CN_BL_DC_MD,
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "leaftype" : BROADLEAVED,/* leaftype */
-    "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
-    "crownarea_max" : 15.0, /* crownarea_max 20*/
+    "crownarea_max" : 20.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "aphen_min" : APHEN_MIN,
     "aphen_max" : APHEN_MAX,
@@ -755,6 +784,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.0940,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -775,13 +805,14 @@
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
-    "beta_root" : 0.943,    /* beta_root */
+    "beta_root" : 0.955,     /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.3,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 0.65,     /* leaf longevity 10*/
+    "sla" : 0.02118,        /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
     "ramp" : 200.,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
@@ -790,7 +821,7 @@
     "twmax_daily" : 25.,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : 30.,  /* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.12,   /* albedo of green leaves */
@@ -801,7 +832,7 @@
     "tmin" :
     {
       "slope" : 0.21,       /* new phenology: slope of cold-temperature limiting function 0.15 */
-      "base" : -4.165,      /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "base" : -4.165,      /* new phenology: inflection point of cold-temperature limiting function (deg C) -4.165*/
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
@@ -840,15 +871,16 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_DC_MN, "high" : CN_NL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "cnratio_leaf_median": CN_NL_DC_MD,
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "leaftype" : NEEDLELEAVED,/* leaftype */
-    "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
+    "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
-    "crownarea_max" : 15.0, /* crownarea_max 20*/
+    "crownarea_max" : 20.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "aphen_min" : 10,
     "aphen_max" : 200,
@@ -857,6 +889,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.0940,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -884,9 +917,10 @@
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.4,      /* leaf longevity 10*/
+    "sla" : 0.040373,        /* specific leaf area */
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
     "ramp" : 100.,          /* ramp 19*/
-    "lai_sapl" : 0.001,     /* lai_sapl 21*/
+    "lai_sapl" : 0.1,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
     "twmax" : 1000.,        /* twmax 31*/
     "twmax_daily" : 1000.,  /* twmax_daily 31*/
@@ -924,7 +958,7 @@
       "base" : 41.72,       /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
-    "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
+    "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : ANY,      /* phenology */
     "path" : C4,            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
@@ -942,7 +976,8 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "cnratio_leaf_median": CN_GC4_MD,
+    "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
@@ -966,9 +1001,10 @@
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.35,     /* leaf longevity 10*/
+    "sla" : 0.042242,        /* specific leaf area */
     "lmro_ratio" : 0.8,     /* lmro_ratio 18*/
     "ramp" : 100.,          /* ramp 19*/
-    "lai_sapl" : 0.001,     /* lai_sapl 21*/
+    "lai_sapl" : 0.1,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
     "twmax" : 1000.,        /* twmax 31*/
     "twmax_daily" : 1000.,  /* twmax_daily 31*/
@@ -977,7 +1013,7 @@
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
-    "albedo_leaf" : 0.20,   /* albedo of green leaves */
+    "albedo_leaf" : 0.23,   /* albedo of green leaves */
     "albedo_stem" : 0.15,   /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
     "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
@@ -1006,7 +1042,7 @@
       "base" : 53.07,       /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
-    "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
+    "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : ANY,      /* phenology */
     "path" : C3,            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
@@ -1024,7 +1060,8 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "cnratio_leaf_median": CN_GC3_MD,
+    "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -1048,9 +1085,10 @@
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.35,     /* leaf longevity 10*/
+    "sla" : 0.042242,        /* specific leaf area */
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
     "ramp" : 100.,          /* ramp 19*/
-    "lai_sapl" : 0.001,     /* lai_sapl 21*/
+    "lai_sapl" : 0.1,     /* lai_sapl 21*/
     "gdd5min" : 0.01,       /* gdd5min 30*/
     "twmax" : 1000.,        /* twmax 31*/
     "twmax_daily" : 1000.,  /* twmax_daily 31*/
@@ -1059,7 +1097,7 @@
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
-    "albedo_leaf" : 0.21,   /* albedo of green leaves */
+    "albedo_leaf" : 0.23,   /* albedo of green leaves */
     "albedo_stem" : 0.1,    /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
     "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
@@ -1088,11 +1126,11 @@
       "base" : 1,           /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
     },
-    "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
+    "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : ANY,      /* phenology */
     "path" : C3,            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 15., "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 10., "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "temp" : { "low" : -1000.0, "high" : -2.6 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38184,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : ALPHA_FUELP_EXTRATROP, /* scaling factor fire danger index */
@@ -1106,7 +1144,8 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "cnratio_leaf_median": CN_GC3_MD,
+    "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
@@ -1188,6 +1227,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
@@ -1203,6 +1243,7 @@
     "allom2" : 35,
     "allom3" : 0.75,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : 8,       /* maximum height of tree */
     "scorchheight_f_param" : 0.061,/* scorch height (F) */
     "crownlength" : 0.10 , /* crown length (CL) */
@@ -1288,6 +1329,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_DC_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -1305,6 +1347,7 @@
     "allom2" : 35,
     "allom3" : 0.75,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : 8,       /* maximum height of tree */
     "scorchheight_f_param" : 0.0940, /* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -1390,7 +1433,8 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "cnratio_leaf_median": CN_GC4_MD,
+    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
@@ -1472,6 +1516,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1577,6 +1622,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1682,6 +1728,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
@@ -1787,6 +1834,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1892,6 +1940,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1997,6 +2046,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,   /* windspeed dampening */
@@ -2102,6 +2152,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2165,7 +2216,7 @@
     "albedo_litter" : 0.06, /* albedo of litter */
     "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
     "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
-    "tmin" : 
+    "tmin" :
     {
       "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
       "base" : 4.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
@@ -2207,6 +2258,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2312,6 +2364,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2417,6 +2470,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2522,6 +2576,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2627,6 +2682,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */

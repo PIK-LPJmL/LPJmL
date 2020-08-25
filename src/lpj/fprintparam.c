@@ -42,7 +42,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "ko25:\t\t%g (Pa)\n"
                "kc25:\t\t%g (Pa)\n"
                "atmfrac:\t%g\n"
-               "fastfrac:\t%g\n" 
+               "fastfrac:\t%g\n"
                "K_MORT:\t\t%g\n"
                "temp_response_a:\t%g\n"
                "temp_response_b:\t%g\n",
@@ -74,11 +74,16 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     if(config->with_nitrogen)
     {
       fprintf(file,"nfert_split:\t%g\n",param.nfert_split);
+      fprintf(file,"nfert_split_frac:\t%g\n",param.nfert_split_frac);
+      fprintf(file,"nfert_no3_frac:\t%g\n",param.nfert_no3_frac);
+      fprintf(file,"nmanure_nh4_frac:\t%g\n",param.nmanure_nh4_frac);
       fprintf(file, "manure_cn:\t%g\n", param.manure_cn);
     }
     fprintf(file,"residues_frac:\t%g\n",param.residue_frac);
     fprintf(file,"mixing_efficiency:\t%g\n",param.mixing_efficiency);
     fprintf(file,"till_staryear:\t%d\n",param.till_startyear);
+    fprintf(file,"livestock density on grassland:\t%g\n",
+            param.lsuha);
     fprintf(file,"annual prec lim:\t%g (mm)\n",param.aprec_lim);
     fprintf(file,"irrig. threshold C3 dry:\t%g\n",param.irrig_threshold_c3_dry);
     fprintf(file,"irrig. threshold C3 humid:\t%g\n",
@@ -105,6 +110,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"soil infil:\t\t%g\n",param.soil_infil);
       fprintf(file,"yield gap bridge:\t%g\n",param.yield_gap_bridge);
     }
+    fprintf(file,"allocation threshold:\t%g\n",param.allocation_threshold);
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config->soilpar,config->nsoil,config->with_nitrogen);

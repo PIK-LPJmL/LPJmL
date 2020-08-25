@@ -28,6 +28,7 @@ void init_annual(Cell *cell, /**< Pointer to cell */
   cell->afire_frac=cell->balance.biomass_yield.carbon=cell->balance.biomass_yield.nitrogen=0.0;
   cell->balance.total_irrig_from_reservoir=cell->balance.total_reservoir_out=0.0;
   cell->balance.n_influx=cell->balance.n_outflux=cell->balance.n_demand=cell->balance.n_uptake=0.0;
+  cell->balance.excess_water=0;
   foreachstand(stand,s,cell->standlist)
   {
 #ifdef DEBUG3

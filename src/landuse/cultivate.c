@@ -32,13 +32,13 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
                  int year             /**< AD */
                 )                      /** \return establihment flux (gC/m2,gN/m2) */
 {
-  int pos; /*position of new stand in list*/
+  int p,pos; /*position of new stand in list*/
   Pft *pft;
   Stand *cropstand;
   Irrigation *data;
   Stocks bm_inc;
-  Real split_fert=0.5;
-  Real fmanure_NH4=0.5;
+  //Real split_fert=0.5;
+  //Real fmanure_NH4=2/3;
   Pftcrop *crop;
   Real manure;
   Real fertil;
@@ -51,9 +51,13 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     /* delete all PFTs */
     cutpfts(setasidestand);
     if(with_tillage && year>=param.till_startyear)
+    {
       tillage(&setasidestand->soil,param.residue_frac);
-    pos=addpft(setasidestand,pftpar,year,day,config->with_nitrogen);
-    pft=getpft(&setasidestand->pftlist,pos-1);
+      updatelitterproperties(setasidestand,setasidestand->frac);
+      pedotransfer(setasidestand,NULL,NULL,setasidestand->frac);
+    }
+    p=addpft(setasidestand,pftpar,year,day,config->with_nitrogen);
+    pft=getpft(&setasidestand->pftlist,p-1);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);
     data=setasidestand->data;
     data->irrigation= config->irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
@@ -71,15 +75,23 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
       else
         manure = 0;
 
-      setasidestand->soil.NH4[0] += manure*fmanure_NH4;
-      setasidestand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
-      setasidestand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-fmanure_NH4);
-      cell->output.flux_estab.carbon += manure*param.manure_cn*setasidestand->frac;
-      cell->balance.n_influx += manure*setasidestand->frac;
+      /* GGCMI phase 3 rules: always apply 20% of all ferilizers (incl. manure) at sowing, rest at fphu=0.25 */
+      //if (fertil+manure<param.nfert_split) /* param.nfert_split set to zero */
+      //{
+        setasidestand->soil.NH4[0] += manure*param.nmanure_nh4_frac*param.nfert_split_frac;
+        setasidestand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn*param.nfert_split_frac;
+        setasidestand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac)*param.nfert_split_frac;
+        cell->output.flux_estab.carbon += manure*param.manure_cn*setasidestand->frac*param.nfert_split_frac;
+        cell->balance.n_influx += manure*setasidestand->frac*param.nfert_split_frac;
+        setasidestand->soil.NO3[0] += fertil*param.nfert_no3_frac*param.nfert_split_frac;
+        setasidestand->soil.NH4[0] += fertil*(1 - param.nfert_no3_frac)*param.nfert_split_frac;
+        cell->balance.n_influx += fertil*param.nfert_split_frac*setasidestand->frac;
+        /* store remainder of manure and fertilizer for second application */
+        crop = pft->data;
+        crop->nmanure=manure*(1-param.nfert_split_frac);
+        crop->nfertilizer = fertil*(1-param.nfert_split_frac);
 
-      if (manure*fmanure_NH4<param.nfert_split)
-      {
-        if (fertil <= (param.nfert_split - manure*fmanure_NH4))
+        /*if (fertil <= (param.nfert_split - manure*fmanure_NH4))
         {
           setasidestand->soil.NO3[0] += fertil*split_fert;
           setasidestand->soil.NH4[0] += fertil*(1 - split_fert);
@@ -92,13 +104,13 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
           cell->balance.n_influx += (param.nfert_split - manure*fmanure_NH4)*setasidestand->frac;
           crop = pft->data;
           crop->nfertilizer = fertil - (param.nfert_split - manure*fmanure_NH4);
-        }
-      }
+        }*/
+      /*}
       else
       {
         crop = pft->data;
         crop->nfertilizer = fertil;
-      }
+      }*/
     }
     return bm_inc;
   }
@@ -113,9 +125,13 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     reclaim_land(setasidestand,cropstand,cell,istimber,npft+ncft);
     set_irrigsystem(cropstand,cft,ncft,FALSE);
     if(with_tillage && year>=param.till_startyear)
+    {
       tillage(&cropstand->soil,param.residue_frac);
-    pos=addpft(cropstand,pftpar,year,day,config->with_nitrogen);
-    pft=getpft(&cropstand->pftlist,pos-1);
+      updatelitterproperties(cropstand,cropstand->frac);
+      pedotransfer(cropstand,NULL,NULL,cropstand->frac);
+    }
+    p=addpft(cropstand,pftpar,year,day,config->with_nitrogen);
+    pft=getpft(&cropstand->pftlist,p-1);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);
     setasidestand->frac-=landfrac;
     bm_inc.carbon=pft->bm_inc.carbon*cropstand->frac;
@@ -131,7 +147,20 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
       else
         manure = 0;
 
-      cropstand->soil.NH4[0] += manure*fmanure_NH4;
+      cropstand->soil.NH4[0] += manure*param.nmanure_nh4_frac*param.nfert_split_frac;
+      cropstand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn*param.nfert_split_frac;
+      cropstand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac)*param.nfert_split_frac;
+      cell->output.flux_estab.carbon += manure*param.manure_cn*cropstand->frac*param.nfert_split_frac;
+      cell->balance.n_influx += manure*cropstand->frac*param.nfert_split_frac;
+      cropstand->soil.NO3[0] += fertil*param.nfert_no3_frac*param.nfert_split_frac;
+      cropstand->soil.NH4[0] += fertil*(1 - param.nfert_no3_frac)*param.nfert_split_frac;
+      cell->balance.n_influx += fertil*param.nfert_split_frac*cropstand->frac;
+      /* store remainder of manure and fertilizer for second application */
+      crop = pft->data;
+      crop->nmanure=manure*(1-param.nfert_split_frac);
+      crop->nfertilizer = fertil*(1-param.nfert_split_frac);
+
+      /*cropstand->soil.NH4[0] += manure*fmanure_NH4;
       cropstand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
       cropstand->soil.litter.item->agsub.leaf.nitrogen += manure*(1 - fmanure_NH4);
       cell->output.flux_estab.carbon += manure*param.manure_cn*cropstand->frac;
@@ -158,7 +187,7 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
       {
         crop = pft->data;
         crop->nfertilizer = fertil;
-      }
+      }*/
     }
     return bm_inc;
   }

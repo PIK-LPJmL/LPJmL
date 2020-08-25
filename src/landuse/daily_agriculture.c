@@ -43,6 +43,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 {
   int p,l;
   Pft *pft;
+  const Pftpar *pftpar;
   Real aet_stand[LASTLAYER];
   Real green_transp[LASTLAYER];
   Real evap,evap_blue,rd,gpp,frac_g_evap,runoff,wet_all,intercept,sprink_interc;
@@ -85,12 +86,13 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 
   foreachpft(pft,p,&stand->pftlist)
   {
+    pftpar=pft->par;
 #ifdef CROPSHEATFROST
     /* kill crop at frost events */
     if(climate->tmin<(-5))
     {
       crop=pft->data;
-      if(crop->fphu>0.2)
+      if(crop->fphu>0.5&&crop->fphu<0.95) /* frost damage possible after storage organs start growing (about fphu>0.5)*/
       {
         printf("daily_agriculture.c: frostkill of cft %s on day %d\n", pft->par->name, day);
         crop->frostkill=TRUE;
@@ -107,17 +109,26 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     } else {
       /* trigger 2nd fertilization */
       crop=pft->data;
-      if(crop->fphu>0.4 && crop->nfertilizer>0){
-        pft->stand->soil.NO3[0]+=crop->nfertilizer*0.5;
-        pft->stand->soil.NH4[0]+=crop->nfertilizer*0.5;
-        pft->stand->cell->balance.n_influx+=crop->nfertilizer*pft->stand->frac;
+      /* GGCMI phase 3 rule: apply second dosis at fphu=0.25*/
+      if(crop->fphu>0.25 && crop->nfertilizer>0){
+        stand->soil.NO3[0]+=crop->nfertilizer*param.nfert_no3_frac;
+        stand->soil.NH4[0]+=crop->nfertilizer*(1-param.nfert_no3_frac);
+        stand->cell->balance.n_influx+=crop->nfertilizer*stand->frac;
         crop->nfertilizer=0;
+      }
+      if(crop->fphu>0.25 && crop->nmanure>0){
+        stand->soil.NH4[0] += crop->nmanure*param.nmanure_nh4_frac;
+        /* no tillage at second application, so manure goes to ag litter not agsub as at cultivation */
+        stand->soil.litter.item->ag.leaf.carbon += crop->nmanure*param.manure_cn;
+        stand->soil.litter.item->ag.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
+        stand->cell->output.flux_estab.carbon += crop->nmanure*param.manure_cn*stand->frac;
+        stand->cell->balance.n_influx += crop->nmanure*stand->frac;
+
+        crop->nmanure=0;
       }
     }
     if(phenology_crop(pft,climate->temp,climate->tmax,daylength,npft,config))
     {
-      //printf("daily_agriculture.c: harvest day of cft %s = %d\n", pft->par->name, day);
-      //printf("daily_agriculture.c: crop->growingdays of cft %s = %d\n", pft->par->name, crop->growingdays);
       if(pft->par->id==output->daily.cft
          && data->irrigation==output->daily.irrigation)
         output_daily_crop(&(output->daily),pft,0.0,0.0);
@@ -248,20 +259,16 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     {
       /* write irrig_apply to output */
       output->mirrig+=irrig_apply*stand->frac;
-      pft=getpft(&stand->pftlist,0);
 #ifndef DOUBLE_HARVEST
       if(config->pft_output_scaled)
-        output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->frac;
+        output->cft_airrig[pftpar->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply*stand->frac;
       else
-        output->cft_airrig[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
+        output->cft_airrig[pftpar->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=irrig_apply;
 #else
       crop=pft->data;
-      if(config->pft_output_scaled)
-        crop->irrig_apply+=irrig_apply*stand->frac;
-      else
-        crop->irrig_apply+=irrig_apply;
+      crop->irrig_apply+=irrig_apply;
 #endif
-      if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)
+      if(pftpar->id==output->daily.cft && data->irrigation==output->daily.irrigation)
         output->daily.irrig=irrig_apply;
     }
   }
@@ -276,6 +283,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     intercep_stand_blue+=(climate->prec+irrig_apply*sprink_interc>epsilon) ? intercept*(irrig_apply*sprink_interc)/(climate->prec+irrig_apply*sprink_interc) : 0; /* blue intercept fraction */
     intercep_stand+=intercept;
   }
+
   irrig_apply-=intercep_stand_blue;
   rainmelt-=(intercep_stand-intercep_stand_blue);
 
@@ -288,8 +296,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   {
     runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config);
     /* count irrigation events*/
-    pft=getpft(&stand->pftlist,0);
-    output->cft_irrig_events[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
+    output->cft_irrig_events[pftpar->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
   runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,withdailyoutput,config);
@@ -518,5 +525,6 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   }
 
   free(wet);
+
   return runoff;
 } /* of 'daily_agriculture' */

@@ -87,6 +87,8 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
           vd_inc=(par->tv_eff.high-temp)/(par->tv_eff.high-par->tv_opt.high);
         else if (temp>=par->tv_opt.low && temp<par->tv_opt.high)                    /* temp within optimal conditions */
           vd_inc=1.0;
+        else
+          vd_inc=0.0;
       }
       else
         vd_inc=0.0;
@@ -94,10 +96,10 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
       crop->vdsum+=max(0,vd_inc);
 
       /* Calculation of vernalization reduction factor */
-      vd_b=pft->stand->cell->climbuf.V_req[pft->par->id-npft]/5; /* base requirements, 20% of total vernalization requirements */
+      vd_b=pft->stand->cell->climbuf.V_req[pft->par->id-npft]*0.1; /* vernalization base requirements: originally 0.2 of V_req */
 
-      if (crop->vdsum<vd_b) /* no phenological development before 20% of vern. requirements are accumulated */
-        vrf=0.0;            /* ToDo: hu sums are not accumulated until V_b is reached; causes autumn heat sums to be neglected. This is not a problem if PHUs are calculated the same way */
+      if (crop->vdsum<vd_b)  /* hu units fully effective until vd_b is reached; from there on vernalization slows development down. This to  allow some LAI development in autumn */
+        vrf=1.0;
       else if (crop->vdsum>=vd_b && crop->vdsum<pft->stand->cell->climbuf.V_req[pft->par->id-npft]) /* the previous version stopped the vernalization penalty at 0.2 fphu "&& (crop->fphu<=0.2)" */
         vrf=max(0,min(1,(crop->vdsum-vd_b)/(pft->stand->cell->climbuf.V_req[pft->par->id-npft]-vd_b)));
       else

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                    s  o  i  l  t  e  m  p  .  c                                \n**/
 /**                                                                                \n**/
-/**     More advanced soil temperature and moisture sceme                          \n**/
+/**     More advanced soil temperature and moisture scheme                         \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -40,11 +40,11 @@ Real soiltemp_lag(const Soil *soil,      /**< Soil data */
  */
  
 void soiltemp(Soil *soil,   /**< pointer to soil data */
-              Real airtemp  /**< air temperature (deg C) */             
+              Real airtemp,  /**< air temperature (deg C) */             
+              Bool permafrost
              )
 {
-  Real th_diff[NSOILLAYER],      /* thermal diffusivity [m2/s]*/
-       heatcap,                  /* heat capacity [J/m2/K] or [J/m3/K]*/
+  Real heatcap[NSOILLAYER],      /* heat capacity [J/m2/K] or [J/m3/K]*/
        heatcap_litter,           /* heat capacity of litter [J/m2/K] or [J/m3/K]*/
        lambda[NSOILLAYER],       /* thermal conductivity [W/K/m]*/
        t_upper,                  /* temperature of upper soil/air/snow layer*/
@@ -58,8 +58,8 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
        z0;                       /* depth of hypothetic Zero-degree Isotherme (assuming homogeneous soil properties)*/
   Real layer;
   int l;
-  unsigned long int heat_steps[NSOILLAYER],t; 
-
+  unsigned long int heat_steps,t;
+  Real temp_old,admit_old;
   layer=heat=0;
   /*temperature change of upper soillayer by precipitation, of lower layers by percolation water*/
   for(l=0; l<NSOILLAYER;l++)
@@ -76,17 +76,17 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
       soil->micro_heating[l]=0;
 #endif
       soil->perc_energy[l]=0;
-      heatcap=soilheatcap(soil,l); /*[J/m2/K]*/
+      heatcap[l]=soilheatcap(soil,l); /*[J/m2/K]*/
       if(heat>epsilon)
       {
         if (soil->state[l]==BELOW_T_ZERO || 
             soil->state[l]==THAWING ||
             soil->state[l]==AT_T_ZERO)
         {
-          dT=min(heat/heatcap,T_zero-soil->temp[l]);
-          heat2=heat-dT*heatcap;
+          dT=min(heat/heatcap[l],T_zero-soil->temp[l]);
+          heat2=heat-dT*heatcap[l];
           heat-=heat2;
-          if(heat2>epsilon && allice(soil,l)>epsilon)
+          if(permafrost && heat2>epsilon && allice(soil,l)>epsilon)
             soilice2moisture(soil,&heat2,l);
           heat+=heat2;   
         }            
@@ -97,33 +97,33 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
             soil->state[l]==FREEZING ||
             soil->state[l]==AT_T_ZERO)
         {
-          dT=max(heat/heatcap,T_zero-soil->temp[l]);
-          heat2=heat-dT*heatcap;
-          if(heat2<-epsilon && allwater(soil,l)>epsilon)
+          dT=max(heat/heatcap[l],T_zero-soil->temp[l]);
+          heat2=heat-dT*heatcap[l];
+          if(permafrost && heat2<-epsilon && allwater(soil,l)>epsilon)
             moisture2soilice(soil,&heat2,l);
           heat+=heat2; 
         }          
       }
-      soil->temp[l]+=heat/heatcap;
+      soil->temp[l]+=heat/heatcap[l];
     } /*endif (precipitation or percolation energy present)*/
   }/*endfor each soil layer*/
   
   /*thermal properties for each soillayer*/
+  heat_steps=0;
   for(l=0;l<NSOILLAYER;++l)
   {
     /* calculate thermal diffusivities */
-    heatcap=soilheatcap(soil,l)/soildepth[l]*1000.; /*[J/m3/K]*/
+    heatcap[l]=soilheatcap(soil,l)/soildepth[l]*1000.; /*[J/m3/K]*/
     lambda[l]=soilconduct(soil,l);
-    th_diff[l]=lambda[l]/heatcap; /* assuming no change in thermal diffusivity in this timestep/layer */
 #ifndef USE_LINEAR_CONTACT_T
-    admit[l]=sqrt(lambda[l]*heatcap);
+    admit[l]=sqrt(lambda[l]*heatcap[l]);
 #endif
     /* stability criterion for finite-difference solution; */
-    dt = 0.5*(soildepth[l]*soildepth[l]*1e-6)/th_diff[l];
-    heat_steps[l]=(unsigned long)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1;
+    dt = 0.5*(soildepth[l]*soildepth[l]*1e-6)/lambda[l]*heatcap[l];
+    heat_steps=max(heat_steps,(unsigned long)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1);
     /* convert any latent energy present in this soil layer */
-    if((soil->state[l]==BELOW_T_ZERO && allwater(soil,l)>epsilon)
-        || (soil->state[l]==ABOVE_T_ZERO && (allice(soil,l)>epsilon)))
+    if(permafrost && ((soil->state[l]==BELOW_T_ZERO && allwater(soil,l)>epsilon)
+        || (soil->state[l]==ABOVE_T_ZERO && (allice(soil,l)>epsilon))))
     {
       heat=0;
       convert_water(soil,l,&heat);
@@ -142,18 +142,24 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
 #endif
  
   /* calculate soil temperatures */
-  for(l=0;l<NSOILLAYER;++l)
+  for (t=0; t<heat_steps;++t)
   {
-    t_lower=(l==BOTTOMLAYER) ? t_upper : soil->temp[l+1];
-    admit_lower=(l==BOTTOMLAYER) ? admit[l] : admit[l+1];
-    for (t=0; t<heat_steps[l];++t)
+    t_upper=airtemp;
+    admit_upper=admit[0];
+    for(l=0;l<NSOILLAYER;++l)
     {
+      temp_old=soil->temp[l];
+      admit_old=admit[l];
+      t_lower=(l==BOTTOMLAYER) ? soil->temp[l] : soil->temp[l+1];
+      admit_lower=(l==BOTTOMLAYER) ? admit[l] : admit[l+1];
       /* temperature change during this timestep*/
-      dT=th_diff[l]*timestep2sec(1.0,heat_steps[l])/(soildepth[l]*soildepth[l])*1000000
-          *(t_upper+t_lower-2*soil->temp[l]);
-      if((dT>-epsilon&&dT<epsilon) || t==maxheatsteps)
-        break;
-      if(soil->temp[l]*t_upper>0 && t_upper*t_lower>0 && (soil->temp[l]+dT)*t_upper>0)
+      if(l==BOTTOMLAYER)
+        dT=0.5*(lambda[l-1]+lambda[l])*timestep2sec(1.0,heat_steps)*(t_upper-soil->temp[l])/soildepth[l]/soildepth[l]*1e6/heatcap[l];
+      else
+        dT=timestep2sec(1.0,heat_steps)*(0.5*(lambda[l+1]+lambda[l])*(t_lower-soil->temp[l])/soildepth[l+1]-0.5*(lambda[l]+((l==0)? lambda[0] : lambda[l-1]))*(soil->temp[l]-t_upper)/soildepth[l])/(0.5*(soildepth[l]+soildepth[l+1]))*1e6/heatcap[l];
+    //  dT=th_diff[l]*timestep2sec(1.0,heat_steps)/(soildepth[l]*soildepth[l])*1000000
+     //     *(t_upper+t_lower-2*soil->temp[l]);
+      if(!permafrost ||( soil->temp[l]*t_upper>0 && t_upper*t_lower>0 && (soil->temp[l]+dT)*t_upper>0))
       {
         soil->temp[l]+=dT;
         soil->state[l]=(short)getstate(soil->temp+l);
@@ -199,7 +205,7 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
         {
           /* phase transition in this layer */
           /* use part of available energy for water conversion*/                
-          heat=z0/soildepth[l]*lambda[l]*dT/soildepth[l]*1000*timestep2sec(1.0,heat_steps[l]);       
+          heat=z0/soildepth[l]*lambda[l]*dT/soildepth[l]*1000*timestep2sec(1.0,heat_steps);
           if (dT>0 && allice(soil,l)>epsilon)
           {
             if(getstate(soil->temp+l)==ABOVE_T_ZERO)
@@ -216,25 +222,26 @@ void soiltemp(Soil *soil,   /**< pointer to soil data */
               moisture2soilice(soil, &heat, l);
             soil->state[l]=FREEZING;
           }                   
-          dT=(1-z0/soildepth[l])*dT+heat/lambda[l]*(soildepth[l]*1e-3)/timestep2sec(1.0,heat_steps[l]);
+          dT=(1-z0/soildepth[l])*dT+heat/lambda[l]*(soildepth[l]*1e-3)/timestep2sec(1.0,heat_steps);
         }
         else
         { /*whole layer is heated*/
           /* energy corresponding to dT*/
-          heat=lambda[l]*dT/soildepth[l]*1000*timestep2sec(1.0,heat_steps[l]);
+          heat=lambda[l]*dT/soildepth[l]*1000*timestep2sec(1.0,heat_steps);
           convert_water(soil,l,&heat);
           /*energy left after water conversion changes temperature*/
-          dT=heat*(soildepth[l]*1e-3)/lambda[l]/timestep2sec(1.0,heat_steps[l]);
+          dT=heat*(soildepth[l]*1e-3)/lambda[l]/timestep2sec(1.0,heat_steps);
           soil->state[l]=(short)getstate(soil->temp+l);
         }
         soil->temp[l]+=dT;
         if(soil->state[l]!=FREEZING && soil->state[l]!=THAWING)
           soil->state[l]=(short)getstate(soil->temp+l);
       } /* endif (freezing/thawing occurs)*/
-    }/*foreach heat step*/
-    t_upper=soil->temp[l];
-    admit_upper=admit[l];   
-  }/*foreach soil layer*/
+      t_upper=temp_old;
+      admit_upper=admit_old;
+    }/*foreach soil layer*/
+
+  }/*foreach heat step*/
   for (l=0;l<=BOTTOMLAYER;l++)
   {
     layer+=soildepth[l];

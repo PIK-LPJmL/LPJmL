@@ -7,8 +7,8 @@
 ##    Intel MPI.                                                               ##
 ##                                                                             ##
 ##    Usage: lpjsubmit [-class c] [-group g] [-wtime time] [-blocking n]       ##
-##                     [-o output] [-e error] [-q] [-nocheck] ntask            ##
-##                     [LPJargs...]                                            ##
+##                     [-o output] [-e error] [-q] [-nocheck] [-norun]         ##
+##                     ntask [LPJargs...]                                      ##
 ##                                                                             ##
 ## (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file ##
 ## authors, and contributors see AUTHORS file                                  ##
@@ -17,13 +17,6 @@
 ## Contact: https://github.com/PIK-LPJmL/LPJmL                                 ##
 ##                                                                             ##
 #################################################################################
-
-if [ $# -lt 1 ]
-then
-  echo >&2 Error: Number of tasks missing
-  echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] ntasks [args ...]
-  exit 1
-fi
 
 if [ "$LPJROOT" = "" ]
 then

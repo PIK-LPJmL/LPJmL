@@ -35,11 +35,12 @@
   "version"  : "5.2",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
-  "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
+  "radiation" : RADIATION_LWDOWN,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
   "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
-  "river_routing" : true,
+  "river_routing" : false,
+  "equilsoil" :true,
   "permafrost" : true,
   "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "const_climate" : false,
@@ -50,11 +51,13 @@
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
   "wateruse" : WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "equilsoil" :false,
 #else
   "population" : false,
   "landuse" : NO_LANDUSE,
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,
+  "equilsoil" :true,
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
@@ -79,6 +82,7 @@
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "others_to_crop" : true,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -90,7 +94,7 @@
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-#include "input_crumonthly.js"    /* Input files of CRU dataset */
+#include "input_GSWP3-ERA5.js"    /* Input files of CRU dataset */
 
 /*===================================================================*/
 /*  IV. Output data section                                          */
@@ -191,34 +195,41 @@ ID                         Fmt                    filename
     { "id" : CFTFRAC,          "file" : { "fmt" : RAW, "name" : mkstr(output/cftfrac_lai.LMAX.bin)}},
     { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : mkstr(output/seasonality.bin)}},
 #ifdef DAILY_OUTPUT
-    { "id" : D_NPP,            "file" : { "fmt" : RAW, "name" : "output/d_npp.bin"}},
-    { "id" : D_GPP,            "file" : { "fmt" : RAW, "name" : "output/d_gpp.bin"}},
-    { "id" : D_RH,             "file" : { "fmt" : RAW, "name" : "output/d_rh.bin"}},
-    { "id" : D_TRANS,          "file" : { "fmt" : RAW, "name" : "output/d_trans.bin"}},
-    { "id" : D_INTERC,         "file" : { "fmt" : RAW, "name" : "output/d_interc.bin"}},
-    { "id" : D_EVAP,           "file" : { "fmt" : RAW, "name" : "output/d_evap.bin"}},
+    { "id" : D_NPP,            "file" : { "fmt" : RAW, "name" : "output_global_10/d_npp.bin"}},
+    { "id" : D_GPP,            "file" : { "fmt" : RAW, "name" : "output_global_10/d_gpp.bin"}},
+    { "id" : D_RH,             "file" : { "fmt" : RAW, "name" : "output_global_10/d_rh.bin"}},
+    { "id" : D_TRANS,          "file" : { "fmt" : RAW, "name" : "output_global_10/d_trans.bin"}},
+    { "id" : D_INTERC,         "file" : { "fmt" : RAW, "name" : "output_global_10/d_interc.bin"}},
+    { "id" : D_EVAP,           "file" : { "fmt" : RAW, "name" : "output_global_10/d_evap.bin"}},
 #endif
-    { "id" : MPET,             "file" : { "fmt" : RAW, "name" : "output/mpet.bin"}},
-    { "id" : MALBEDO,          "file" : { "fmt" : RAW, "name" : "output/malbedo.bin"}},
-    { "id" : MAXTHAW_DEPTH,    "file" : { "fmt" : RAW, "name" : "output/maxthaw_depth.bin"}},
-    { "id" : MSOILTEMP1,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp1.bin"}},
-    { "id" : MSOILTEMP2,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp2.bin"}},
-    { "id" : MSOILTEMP3,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp3.bin"}},
-    { "id" : SOILC_LAYER,      "file" : { "fmt" : RAW, "name" : "output/soilc_layer.bin"}},
-    { "id" : AGB,              "file" : { "fmt" : RAW, "name" : "output/agb.bin"}},
-    { "id" : AGB_TREE,         "file" : { "fmt" : RAW, "name" : "output/agb_tree.bin"}},
-    { "id" : MRETURN_FLOW_B,   "file" : { "fmt" : RAW, "name" : "output/mreturn_flow_b.bin"}},
-    { "id" : MTRANSP_B,        "file" : { "fmt" : RAW, "name" : "output/mtransp_b.bin"}},
-    { "id" : MEVAP_B,          "file" : { "fmt" : RAW, "name" : "output/mevap_b.bin"}},
-    { "id" : MINTERC_B,        "file" : { "fmt" : RAW, "name" : "output/mintec_b.bin"}},
-    { "id" : ACONV_LOSS_EVAP,  "file" : { "fmt" : RAW, "name" : "output/aconv_loss_evap.bin"}},
-    { "id" : ACONV_LOSS_DRAIN, "file" : { "fmt" : RAW, "name" : "output/aconv_loss_drain.bin"}}
+    { "id" : MPET,             "file" : { "fmt" : RAW, "name" : "output_global_10/mpet.bin"}},
+    { "id" : MALBEDO,          "file" : { "fmt" : RAW, "name" : "output_global_10/malbedo.bin"}},
+    { "id" : MAXTHAW_DEPTH,    "file" : { "fmt" : RAW, "name" : "output_global_10/maxthaw_depth.bin"}},
+    { "id" : MSOILTEMP1,       "file" : { "fmt" : RAW, "name" : "output_global_10/msoiltemp1.bin"}},
+    { "id" : MSOILTEMP2,       "file" : { "fmt" : RAW, "name" : "output_global_10/msoiltemp2.bin"}},
+    { "id" : MSOILTEMP3,       "file" : { "fmt" : RAW, "name" : "output_global_10/msoiltemp3.bin"}},
+    { "id" : SOILC_LAYER,      "file" : { "fmt" : RAW, "name" : "output_global_10/soilc_layer.bin"}},
+    { "id" : AGB,              "file" : { "fmt" : RAW, "name" : "output_global_10/agb.bin"}},
+    { "id" : AGB_TREE,         "file" : { "fmt" : RAW, "name" : "output_global_10/agb_tree.bin"}},
+    { "id" : MRETURN_FLOW_B,   "file" : { "fmt" : RAW, "name" : "output_global_10/mreturn_flow_b.bin"}},
+    { "id" : MTRANSP_B,        "file" : { "fmt" : RAW, "name" : "output_global_10/mtransp_b.bin"}},
+    { "id" : MEVAP_B,          "file" : { "fmt" : RAW, "name" : "output_global_10/mevap_b.bin"}},
+    { "id" : MINTERC_B,        "file" : { "fmt" : RAW, "name" : "output_global_10/mintec_b.bin"}},
+    { "id" : ACONV_LOSS_EVAP,  "file" : { "fmt" : RAW, "name" : "output_global_10/aconv_loss_evap.bin"}},
+    { "id" : ACONV_LOSS_DRAIN, "file" : { "fmt" : RAW, "name" : "output_global_10/aconv_loss_drain.bin"}}
 /*------------------------ ---------------------- ------------------------------- */
   ],
 
 #else
 
-  "output" : [],  /* no output written */
+  "output" : [
+    { "id" : GRID,             "file" : { "fmt" : RAW, "name" : "output_global_10/grid.bin" }},
+    { "id" : SOILC,            "file" : { "fmt" : RAW, "name" : "output_global_10/soilc_spinup.bin"}},
+    { "id" : VEGC,             "file" : { "fmt" : RAW, "name" : "output_global_10/vegc_spinup.bin"}},
+    { "id" : SOILNH4,          "file" : { "fmt" : RAW, "name" : "output_global_10/soilnh4_spinup.bin"}},
+    { "id" : SOILNO3,          "file" : { "fmt" : RAW, "name" : "output_global_10/soilno3_spinup.bin"}},
+    { "id" : MAXTHAW_DEPTH,    "file" : { "fmt" : RAW, "name" : "output_global_10/maxthaw_depth_spinup.bin"}}    
+  ],  /* no output written */
 
 #endif
 
@@ -226,7 +237,7 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : ALL, /* 27410, 67208 60400 all grid cells */
+  "startgrid" : ALL, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
   "endgrid" : ALL,
 
 #ifdef CHECKPOINT
@@ -235,13 +246,14 @@ ID                         Fmt                    filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 5000,  /* spinup years */
+  "nspinup" : 30000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
-  "restart" : false, /* do not start from restart file */
+  "outputyear": -28099, /* first year output is written  */
+  "restart" :  false, /* start from restart file */
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1840_nv_stdfire_10.lpj", /* filename of restart file */
   "restart_year": 1840 /* write restart at year */
 
 #else
@@ -249,12 +261,12 @@ ID                         Fmt                    filename
   "nspinup" : 390,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
-  "lastyear" : 2011, /* last year of simulation */
+  "lastyear" : 2018, /* last year of simulation */
   "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "restart_filename" : "restart/restart_1840_nv_stdfire_10.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1900_crop_stdfire_10.lpj", /* filename of restart file */
   "restart_year": 1900 /* write restart at year */
 
 #endif

@@ -32,7 +32,6 @@
 void deforest(Cell *cell,            /**< pointer to cell */
               Real difffrac, /**< stand fraction to deforest (0..1) */
               const Pftpar pftpar[], /**< PFT parameter array */
-              Bool with_tillage, /**< tillage (TRUE/FALSE) */
               Bool intercrop, /**< intercropping possible (TRUE/FALSE) */
               int npft,       /**< number of natural PFTs */
               Bool timberharvest,
@@ -59,6 +58,10 @@ void deforest(Cell *cell,            /**< pointer to cell */
       cutstand->frac=difffrac;
 
       reclaim_land(natstand,cutstand,cell,istimber,npft+ncft);
+      /*force one tillage event on new stand upon cultivation after deforestation of natural land */
+      tillage(&cutstand->soil, param.residue_frac);
+      updatelitterproperties(cutstand,cutstand->frac);
+      pedotransfer(cutstand,NULL,NULL,cutstand->frac);
       if(difffrac+epsilon>=natstand->frac)
       {
         delstand(cell->standlist,s);
@@ -68,7 +71,8 @@ void deforest(Cell *cell,            /**< pointer to cell */
         natstand->frac-=difffrac;
       if(!timberharvest)
       {
-        if(setaside(cell,getstand(cell->standlist,pos),pftpar,with_tillage,intercrop,npft,irrig,year,with_nitrogen))
+        /* stand was already tilled, so put FALSE to tillage argument */
+        if(setaside(cell,getstand(cell->standlist,pos),pftpar,FALSE,intercrop,npft,irrig,year,with_nitrogen))
           delstand(cell->standlist,pos);
       }
     }
@@ -93,7 +97,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
   Stocks flux_estab;
   Pft *pft;
   Stand *setasidestand,*natstand,*mixstand;
-  
+ 
   s=findlandusetype(cell->standlist,irrig==TRUE ? SETASIDE_IR : SETASIDE_RF);
   if(s!=NOT_FOUND)
   {
@@ -112,6 +116,8 @@ static void regrowth(Cell *cell, /* pointer to cell */
       mixstand->frac= -difffrac;
       reclaim_land(setasidestand,mixstand,cell,istimber,npft+ncft);
       setasidestand->frac+=difffrac;
+      //pedotransfer(mixstand,NULL,NULL,mixstand->frac+setasidestand->frac);
+      //updatelitterproperties(mixstand,mixstand->frac+setasidestand->frac);
     }
 
     s=findlandusetype(cell->standlist,NATURAL);
@@ -317,7 +323,8 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
     data->irrig_amount=0;
 
     cutpfts(grassstand);
-    if(setaside(cell,getstand(cell->standlist,s),pftpar,with_tillage,intercrop,npft,data->irrigation,year,with_nitrogen))
+    /*force one tillage event on new stand upon cultivation of previous grassland,  */
+    if(setaside(cell,getstand(cell->standlist,s),pftpar,TRUE,intercrop,npft,data->irrigation,max(param.till_startyear,year),with_nitrogen))
       delstand(cell->standlist,s);
   }
   else
@@ -327,6 +334,10 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
     cutstand->frac=difffrac;
     reclaim_land(grassstand,cutstand,cell,istimber,npft+ncft);
     grassstand->frac-=difffrac;
+    /*force one tillage event on new stand upon cultivation of previous grassland */
+    tillage(&cutstand->soil, param.residue_frac);
+    updatelitterproperties(cutstand,cutstand->frac);
+    pedotransfer(cutstand,NULL,NULL,cutstand->frac);
     /* empty irrig stor and pay back conveyance losses that have been consumed by transport into irrig_stor, only evaporative conv. losses, drainage conv. losses already returned */
     grassstand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*grassstand->cell->coord.area*difffrac;
     grassstand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*difffrac;
@@ -518,7 +529,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
                   )
   /* needs to be called before establishment, to ensure that regrowth is possible in the following year*/
 {
-  Real diff,difffrac,difffrac2,movefrac;
+  Real difffrac,difffrac2,movefrac;
   Stand *stand, *tempstand, *irrigstand;
   Bool irrigation;
   Irrigation *data;
@@ -602,7 +613,7 @@ void landusechange(Cell *cell,            /**< pointer to cell */
 
 
     if(difffrac>=epsilon && cell->lakefrac+cell->ml.reservoirfrac+cell->ml.cropfrac_rf+cell->ml.cropfrac_ir<(1-epsilon)) 
-      deforest(cell,difffrac,pftpar,with_tillage,intercrop,npft,FALSE,istimber,i,ncft,year,minnatfrac_luc,config->with_nitrogen);  /*deforestation*/
+      deforest(cell,difffrac,pftpar,intercrop,npft,FALSE,istimber,i,ncft,year,minnatfrac_luc,config->with_nitrogen);  /*deforestation*/
     else if(difffrac<=-epsilon)
       regrowth(cell,difffrac,pftpar,npft,ntypes,istimber,i,ncft,year,config->with_nitrogen);        /*regrowth*/
 

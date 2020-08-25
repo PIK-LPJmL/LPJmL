@@ -48,6 +48,8 @@ Bool fwritesoil(FILE *file, /**< pointer to binary file */
   fwrite1(&soil->w_evap,sizeof(Real),file);
   fwriten(soil->w_fw,sizeof(Real),NSOILLAYER,file);
   fwrite1(&soil->snowpack,sizeof(Real),file);
+  fwrite1(&soil->snowheight,sizeof(Real),file);
+  fwrite1(&soil->snowfraction,sizeof(Real),file);
   fwriten(soil->temp,sizeof(Real),NSOILLAYER+1,file);
   fwriten(soil->ice_depth,sizeof(Real),NSOILLAYER,file);
   fwriten(soil->ice_fw,sizeof(Real),NSOILLAYER,file);

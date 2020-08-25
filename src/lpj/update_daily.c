@@ -57,6 +57,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
   Real agrfrac;
+
   gp_pft=newvec(Real,npft+ncft);
   check(gp_pft);
 
@@ -89,9 +90,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     for(l=0;l<stand->soil.litter.n;l++)
     {
       stand->soil.litter.item[l].agsub.leaf.carbon += stand->soil.litter.item[l].ag.leaf.carbon*BIOTURBRATE;
-      stand->soil.litter.item[l].ag.leaf.carbon *= 1 - BIOTURBRATE;
+      stand->soil.litter.item[l].ag.leaf.carbon *= (1 - BIOTURBRATE);
       stand->soil.litter.item[l].agsub.leaf.nitrogen += stand->soil.litter.item[l].ag.leaf.nitrogen*BIOTURBRATE;
-      stand->soil.litter.item[l].ag.leaf.nitrogen *= 1 - BIOTURBRATE;
+      stand->soil.litter.item[l].ag.leaf.nitrogen *= (1 - BIOTURBRATE);
     }
 
     if(stand->type->landusetype==NATURAL && config->black_fallow && (day==152 || day==335))
@@ -129,44 +130,23 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& cell->afire_frac<1)
       dailyfire_stand(stand,&livefuel,popdensity,&climate,config->ntypes,config->prescribe_burntarea);
-    if(config->permafrost)
-    {
-      snowrunoff=snow(&stand->soil,&climate.prec,&melt,
-                      climate.temp,&temp_bs,&evap)*stand->frac;
-      cell->discharge.drunoff+=snowrunoff;
-      cell->output.mevap+=evap*stand->frac; /* evap from snow runoff*/
-      if(climate.prec+melt>epsilon)
-      {
-        prec_energy=climate.temp*climate.prec*1e-3*c_water + T_zero*melt*1e-3*c_water + stand->soil.litter.agtop_temp*stand->soil.litter.agtop_moist*1e-3*c_water + stand->soil.litter.agtop_temp*litter_ag_sum(&stand->soil.litter)/0.5*1e-3/1300*2.5e6;
-        stand->soil.litter.agtop_temp=prec_energy/(climate.prec*1e-3*c_water + melt*1e-3*c_water + stand->soil.litter.agtop_moist*1e-3*c_water + litter_ag_sum(&stand->soil.litter)/0.5*1e-3/1300*2.5e6);
-        stand->soil.perc_energy[TOPLAYER]=(stand->soil.litter.agtop_temp-stand->soil.temp[TOPLAYER])*(climate.prec+melt)*1e-3*c_water;
-      }
-      else
-        stand->soil.perc_energy[TOPLAYER]=0;
-
-      prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
+    snowrunoff=snow(&stand->soil,&climate.prec,&melt,
+                    climate.temp,&temp_bs,&evap)*stand->frac;
+    cell->discharge.drunoff+=snowrunoff;
+    cell->output.mevap+=evap*stand->frac; /* evap from snow runoff*/
+    prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
                     +melt*1e-3*(T_zero-stand->soil.temp[TOPLAYER]))*c_water;
-      stand->soil.perc_energy[TOPLAYER]=prec_energy;
+    stand->soil.perc_energy[TOPLAYER]=prec_energy;
 #ifdef MICRO_HEATING
       /*THIS IS DEDICATED TO MICROBIOLOGICAL HEATING*/
-      foreachsoillayer(l)
-        stand->soil.micro_heating[l]=m_heat*stand->soil.decomC[l];
-      stand->soil.micro_heating[0]+=m_heat*stand->soil.litter.decomC;
+    foreachsoillayer(l)
+      stand->soil.micro_heating[l]=m_heat*stand->soil.decomC[l];
+    stand->soil.micro_heating[0]+=m_heat*stand->soil.litter.decomC;
 #endif
 
-      soiltemp(&stand->soil,temp_bs);
-      foreachsoillayer(l)
-        gtemp_soil[l]=temp_response(stand->soil.temp[l]);
-    }
-    else
-    {
-      gtemp_soil[0]=temp_response(soiltemp_lag(&stand->soil,&cell->climbuf));
-      for(l=1;l<NSOILLAYER;l++)
-        gtemp_soil[l]=gtemp_soil[0];
-      stand->soil.litter.agtop_temp=soiltemp_lag(&stand->soil,&cell->climbuf);
-      snowrunoff=snow_old(&stand->soil.snowpack,&climate.prec,&melt,climate.temp)*stand->frac;
-      cell->discharge.drunoff+=snowrunoff;
-    }
+    soiltemp(&stand->soil,temp_bs,config->permafrost);
+    foreachsoillayer(l)
+      gtemp_soil[l]=temp_response(stand->soil.temp[l]);
     foreachsoillayer(l)
       cell->output.msoiltemp[l]+=stand->soil.temp[l]*ndaymonth1[month]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
@@ -234,6 +214,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     if(config->fire==FIRE && climate.temp>0)
       stand->fire_sum+=fire_sum(&stand->soil.litter,stand->soil.w[0]);
+
     if(config->with_nitrogen)
     {
       if(config->with_nitrogen==UNLIM_NITROGEN)
@@ -276,6 +257,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
 
     } /* of if(config->with_nitrogen) */
+
     gp_stand=gp_sum(&stand->pftlist,co2,climate.temp,par,daylength,
                     &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
     if(config->with_nitrogen)
@@ -284,12 +266,14 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       stand->soil.NH4[0]+=bnf;
       cell->output.mbnf+=bnf*stand->frac;
     }
+
     runoff=daily_stand(stand,co2,&climate,day,daylength,gp_pft,
                        gtemp_air,gtemp_soil[0],gp_stand,gp_stand_leafon,eeq,par,
                        melt,npft,ncft,year,withdailyoutput,intercrop,agrfrac,config);
     if(config->with_nitrogen)
     {
       denitrification(stand);
+
       nh3=volatilization(stand->soil.NH4[0],climate.windspeed,climate.temp,
                          length,cell->soilph);
       if(nh3>stand->soil.NH4[0])

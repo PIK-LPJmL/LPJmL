@@ -93,6 +93,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
       return TRUE;
     }
   }
+  #ifdef CROPSHEATFROST
   if(climate->data.tmin!=NULL)
   {
     if(readclimate(&climate->file_tmin,climate->data.tmin,0,climate->file_tmin.scalar,grid,year_climate,config))
@@ -103,6 +104,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
       return TRUE;
     }
   }
+  #endif
   if(climate->data.sun!=NULL)
   {
     if(readclimate(&climate->file_cloud,climate->data.sun,100,-climate->file_cloud.scalar,grid,year_climate,config))

@@ -21,7 +21,7 @@ void denitrification(Stand *stand  /**< pointer to stand */
   /* determines NO2 and N2 from nitrate NO3 */
   Real N_denit=0; /* amount of nitrate lost to denitrification */
   Real N2O_denit, denit_t;
-  Real FT,FW,TCDF;
+  Real FT=0,FW=0,TCDF=0;
   Real Corg;
   Soil *soil;
   int l;
@@ -35,6 +35,7 @@ void denitrification(Stand *stand  /**< pointer to stand */
   
   forrootsoillayer(l)
   {
+    //wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
     Corg = soil->pool[l].fast.carbon+soil->pool[l].slow.carbon;
     if(Corg<0)
       Corg=0;

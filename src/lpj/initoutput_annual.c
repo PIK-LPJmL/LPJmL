@@ -35,8 +35,9 @@ void initoutput_annual(Output *output, /**< Output data */
   output->soil_storage=output->aburntarea=0;
   output->soil_storage=output->alittfall.carbon=output->alittfall.nitrogen=0;
   output->prod_turnover=output->deforest_emissions.carbon=output->deforest_emissions.nitrogen=output->fburn=output->ftimber=output->timber_harvest.carbon=output->timber_harvest.nitrogen=0;
-  output->product_pool_fast=output->product_pool_slow=output->trad_biofuel=0;
+  output->product_pool_fast=output->product_pool_slow=output->trad_biofuel=output->mean_vegc_mangrass=0;
   output->runoff_surf=output->runoff_lat=output->anpp = output->anpp_agr = output->arh = output->arh_agr = 0;
+
   /* memory allocation now in newgrid.c */
 
   for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
@@ -53,7 +54,7 @@ void initoutput_annual(Output *output, /**< Output data */
     output->cft_transp2[i]=output->cft_evap2[i]=output->cft_interc2[i]=
     output->cft_nir2[i]=output->cft_airrig2[i]=
 #endif
-    output->cft_nlimit[i]=
+    output->cft_nlimit[i]=output->cft_laimax[i]=
     output->cft_airrig[i]=output->cft_fpar[i]=output->cft_luc_image[i]=output->cft_conv_loss_evap[i]=output->cft_conv_loss_drain[i]=
     output->cft_leaf[i].nitrogen=output->cft_leaf[i].carbon=output->cft_root[i].carbon=output->cft_root[i].nitrogen=
     output->cft_veg[i].carbon=output->cft_veg[i].nitrogen=output->cft_irrig_events[i]=0;

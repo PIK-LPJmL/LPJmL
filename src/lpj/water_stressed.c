@@ -86,32 +86,33 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
   if(config->permafrost)
   {
     /*adjust root layer*/
-    if(layerbound[BOTTOMLAYER]>pft->stand->soil.mean_maxthaw &&
-       pft->stand->soil.mean_maxthaw>epsilon)
-    {
-      forrootsoillayer(l)
-      {
-        layer+=soildepth[l];
-        root_u+=pft->par->rootdist[l];
-        freeze_depth=layer-pft->stand->soil.mean_maxthaw;
-        if (freeze_depth>0)
-        {
-          thaw_depth=soildepth[l]-freeze_depth;
-          rootdist_n[l]=thaw_depth/soildepth[l]*pft->par->rootdist[l];
-          root_nu=pft->par->rootdist[l]-rootdist_n[l];
-          root_u-= root_nu;
-          l++;
-          break;
-        }
-      }
-      for(i=l;i<BOTTOMLAYER;i++)
-      {
-        root_nu+=rootdist_n[i];
-        rootdist_n[i]=0;
-      }
-      for(i=l-1;i>=0;--i)
-        rootdist_n[i]=rootdist_n[i]/root_u*root_nu+rootdist_n[i];
-    }
+   getrootdist(rootdist_n,pft->par->rootdist,pft->stand->soil.mean_maxthaw);
+//    if(layerbound[BOTTOMLAYER]>pft->stand->soil.mean_maxthaw &&
+//        pft->stand->soil.mean_maxthaw>epsilon)
+//     {
+//       forrootsoillayer(l)
+//       {
+//         layer+=soildepth[l];
+//         root_u+=pft->par->rootdist[l];
+//         freeze_depth=layer-pft->stand->soil.mean_maxthaw;
+//         if (freeze_depth>0)
+//         {
+//           thaw_depth=soildepth[l]-freeze_depth;
+//           rootdist_n[l]=thaw_depth/soildepth[l]*pft->par->rootdist[l];
+//           root_nu=pft->par->rootdist[l]-rootdist_n[l];
+//           root_u-= root_nu;
+//           l++;
+//           break;
+//         }
+//       }
+//       for(i=l;i<BOTTOMLAYER;i++)
+//       {
+//         root_nu+=rootdist_n[i];
+//         rootdist_n[i]=0;
+//       }
+//       for(i=l-1;i>=0;--i)
+//         rootdist_n[i]=rootdist_n[i]/root_u*root_nu+rootdist_n[i];
+//     }
   }
   wr=roots=0;
   for(l=0;l<LASTLAYER;l++)
@@ -126,11 +127,6 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
   if(pft->stand->type->landusetype==AGRICULTURE)
   {
     supply=pft->par->emax*wr*(1-exp(-0.04*((Pftcrop *)pft->data)->ind.root.carbon));
-    if (pft->phen>0)
-    {
-       gp_stand=gp_stand/pft->phen*fpar(pft);
-       gp_pft=gp_pft/pft->phen*fpar(pft);
-    }
   }
   else
   {
@@ -208,7 +204,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
   if(pft->par->type==CROP)
     gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft));
   else
-    gpd=hour2sec(daylength)*(gc-pft->par->gmin*pft->phen)*pft->fpc;
+    gpd=hour2sec(daylength)*(gc-pft->par->gmin*pft->phen)*pft->fpc*(1-pft->snowcover);
 
   data.tstress=temp_stress(pft->par,temp,daylength);
   if(gpd>1e-5 && isphoto(data.tstress))
@@ -217,10 +213,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
     data.path=pft->par->path;
     data.temp=temp;
     data.co2=ppm2Pa(co2);
-    if(pft->par->type==CROP)
-      data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->with_nitrogen,config->laimax_interpolate)*fpar(pft); /** par calculation do not include albedo*/
-    else
-      data.apar = par*alphaa(pft,config->with_nitrogen,config->laimax_interpolate)*pft->fapar;                              /** fapar calculation of trees and grass already include albedo*/
+    data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->with_nitrogen,config->laimax_interpolate)*fpar(pft); /** par calculation do not include albedo*/
     data.daylength=daylength;
     data.vmax=pft->vmax;
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);
@@ -232,7 +225,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
     pft->vmax=vmax;
     if(config->with_nitrogen)
     {
-      nitrogen_stress(pft,temp,daylength,npft,config->nbiomass,ncft) ;
+      nitrogen_stress(pft,temp,daylength,npft,config->nbiomass,ncft,config->permafrost);
 
       adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
                      temp,data.apar,daylength);
@@ -244,10 +237,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
          gc=(param.GM*param.ALPHAM)*supply_pft/((1.0-*wet)*eeq*param.ALPHAM-supply_pft);
          if(gc<0)
            gc=0;
-         if(pft->stand->type->landusetype==AGRICULTURE)
-           gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft));
-         else
-           gpd=hour2sec(daylength)*(gc-pft->par->gmin*pft->phen*pft->fpc);
+         gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft));
         data.fac=gpd/1.6*ppm2bar(co2);
         data.vmax=pft->vmax;
         lambda=bisect((Bisectfcn)fcn,0.02,lambda,&data,0,EPSILON,20,&iter);
@@ -259,7 +249,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
       }
       aet=(wr>0) ? demand*fpar(pft)/wr :0 ;
 
-      if(vmax!=0)
+      if(vmax>0)
         pft->nlimit+=pft->vmax/vmax;
       if(pft->stand->type->landusetype==AGRICULTURE){
         irrig=pft->stand->data;

@@ -19,7 +19,7 @@
 /* Definition of constants */
 
 #define RESTART_HEADER "LPJRESTART"
-#define RESTART_VERSION 20
+#define RESTART_VERSION 21
 #define LPJ_CLIMATE_HEADER "LPJCLIM"
 #define LPJ_CLIMATE_VERSION 3
 #define LPJ_LANDUSE_HEADER "LPJLUSE"
@@ -78,9 +78,9 @@ typedef struct
   int firstcell;      /**< index of first data item */
   int ncell;          /**< number of data item per year */
   int nbands;         /**< number of data elements per cell */
-  float cellsize_lon; /**< latitude cellsize in deg */
+  float cellsize_lon; /**< longitude cellsize in deg */
   float scalar;       /**< conversion factor*/
-  float cellsize_lat; /**< longitude cellsize in deg */
+  float cellsize_lat; /**< latitude cellsize in deg */
   Type datatype;      /**< data type in file */
 } Header;
 

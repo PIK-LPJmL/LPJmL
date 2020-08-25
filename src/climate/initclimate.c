@@ -175,6 +175,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if(config->wind_filename.fmt!=CDF && climate->file_wind.version<=1)
       climate->file_wind.scalar=0.001;
+    if(climate->firstyear<climate->file_wind.firstyear)
+      climate->firstyear=climate->file_wind.firstyear;
   }
   else
     climate->data.wind=NULL;
@@ -272,9 +274,21 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       closeclimatefile(&climate->file_tmax,isroot(*config));
       if(config->with_radiation)
       {
-        if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
-          closeclimatefile(&climate->file_lwnet,isroot(*config));
-        closeclimatefile(&climate->file_swdown,isroot(*config));
+        closeclimatefile(&climate->file_tamp,isroot(*config));
+        closeclimatefile(&climate->file_temp,isroot(*config));
+        closeclimatefile(&climate->file_prec,isroot(*config));
+        if(config->with_radiation)
+        {
+          if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
+            closeclimatefile(&climate->file_lwnet,isroot(*config));
+          closeclimatefile(&climate->file_swdown,isroot(*config));
+        }
+        else
+          closeclimatefile(&climate->file_cloud,isroot(*config));
+        if(config->wet_filename.name!=NULL)
+          closeclimatefile(&climate->file_wet,isroot(*config));
+        free(climate);
+        return NULL;
       }
       else
         closeclimatefile(&climate->file_cloud,isroot(*config));

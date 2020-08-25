@@ -12,7 +12,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-"param" : 
+"param" :
 {
   "k_litter10" : 0.3,        /* k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
@@ -28,7 +28,7 @@
   "bc4" : 0.035,             /* bc4 leaf respiration as fraction of Vmax for C4 plants */
   "r_growth" : 0.25,         /* r_growth */
   "GM" : 2.41,               /* GM empirical parameter in demand function */
-  "ALPHAM" : 1.485,          /* ALPHAM Priestley-Taylor coefficient*/ 
+  "ALPHAM" : 1.485,          /* ALPHAM Priestley-Taylor coefficient*/
   "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */
   "kc25" : 30.,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.6,           /* atmfrac */
@@ -48,12 +48,13 @@
   "T_m" : 15.0,              /* parameter in N uptake temperature function */
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
-  "k_mort" : 0.3,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */
+  "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
   "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
   "residue_cn": 20,         /* CN ratio of prescribed residues */
   "residue_fbg": 0.25,      /* belowground fraction of prescribed residues */
-  "manure_cn": 12.5,        /* CN ration of manure gC/gN */
+  "manure_cn": 14.5,        /* CN ration of manure gC/gN */
   "fertilizer_rate" : 10,     /* default: 20; fixed fertilizer application rate in gN/m2/yr */
   "manure_rate" : 0,          /* default: 20; fixed manure application rate in gN/m2/yr */
   "residue_frac" : 0.95,      /* fraction of residues to be submerged by tillage */
@@ -73,7 +74,10 @@
   "saturation_level_sprink" : 0.55,   /* saturation level sprinkler irrigation*/
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
-  "nfert_split" : 5,                  /* threshold fertilizer input for split application */
+  "nfert_split" : 0,                  /* threshold fertilizer input for split application */
+  "nfert_split_frac" : 0.2,           /* fraction of fertilizer input at sowing */
+  "nfert_no3_frac" : 0.5,             /* fraction of NO3 in fertilizer input */
+  "nmanure_nh4_frac" : 0.666667,      /* fraction of NH4 in manure input */
   "residues_in_soil" : 0.3,           /* minimum residues in soil*/
   "fburnt" : 0,                       /* fraction of trees burnt at deforestation */
   "ftimber" : 1,                      /* timber fraction at deforestation */
@@ -82,5 +86,7 @@
   "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */
   "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
   "soil_infil" : 2.0,                 /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
-  "yield_gap_bridge" : 0.0            /* factor by which laimax value is closed (7 - country-value)*factor */
+  "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
+  "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
+  "rootreduction" : 0.5               /*fraction used to calculate amouont of roots dying at harvest in managed grasslands */
 },

@@ -22,7 +22,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
              )                     /** \return total flux (gC) */
 {
   int cell;
-  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   for(cell=0;cell<config->ngridcell;cell++)
   {
     if(!grid[cell].skip)
@@ -51,6 +51,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.n_uptake+=grid[cell].balance.n_uptake*grid[cell].coord.area;
       flux.n_influx+=grid[cell].balance.n_influx*grid[cell].coord.area;
       flux.n_outflux+=grid[cell].balance.n_outflux*grid[cell].coord.area;
+      flux.excess_water+=grid[cell].balance.excess_water*grid[cell].coord.area;
     }
     flux.discharge+=grid[cell].output.adischarge;
     flux.delta_surface_storage+=grid[cell].output.surface_storage-grid[cell].balance.surface_storage;

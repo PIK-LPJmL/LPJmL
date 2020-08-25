@@ -33,6 +33,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
   Real wmm, imm; /* actual water content in mm */
   Real lambda;
   Real excess = 0;
+  Real dispose=0,dispose2=0;
 #ifdef CHECK_BALANCE
   Real w_before,w_after;
 #endif
@@ -94,10 +95,12 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       if (soil->wsat[l] - soil->wfc[l] < 0.05)
         soil->wfc[l] = soil->wsat[l] - 0.05;
 
+#ifdef SAFE
       if (soil->wsat[l] > 1)
         printf("wsat[%d] %g, wpwp[%d] %g, wfc[%d] %g, om_soil %g, ice_pwp:%g in pedotransfer\n", l, soil->wsat[l], l, soil->wpwp[l], l, soil->wfc[l], om_layer, soil->ice_pwp[l]);
       if (soil->wsats[l]<1e-10)
         printf("wsat[%d] %3.3f,  wfc[%d] %3.3f, ws33 %3.3f, sand %3.3f, in pedotransfer\n", l, soil->wsat[l], l, soil->wfc[l], ws33, soilpar->sand);
+#endif
 
       soil->beta_soil[l] = -2.655 / log10(soil->wfc[l] / soil->wsat[l]);
       soil->whc[l] = soil->wfc[l] - soil->wpwp[l];
@@ -110,10 +113,8 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       soil->ice_pwp[l] = min(imm / soil->wpwps[l], 1);
       imm -= soil->ice_pwp[l] * soil->wpwps[l];
       /* re-distribute absolute water */
-      if (imm > epsilon)
+      if (imm > epsilon * 1e-3)
       {
-      //  soil->ice_pwp[l] = min(imm / soil->wpwps[l], 1);
-      //  imm -= soil->ice_pwp[l] * soil->wpwps[l];
         soil->ice_depth[l] = min(imm, soil->whcs[l]);
         imm -= soil->ice_depth[l];
         imm=max(0,imm);
@@ -125,8 +126,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 
       if (soil->ice_pwp[l] < 1)
         wmm -= soil->wpwps[l] * (1 - soil->ice_pwp[l]);
-      //if (wmm > epsilon && imm < epsilon)
-      if (wmm > epsilon)
+      if (wmm > epsilon * 1e-3)
       {
         soil->w[l] = min(wmm / soil->whcs[l], 1);
         wmm -= soil->whcs[l] * soil->w[l];
@@ -135,27 +135,77 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       }
       else
         soil->w[l] = soil->w_fw[l] = 0;
-
+        
       /* assure numerical stability */
+      /* if more water than soil can hold (above pwp) */
       if((soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])>(soil->wsats[l]-soil->wpwps[l]))
       {
+        dispose=(soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->wpwps[l]);
+        /* dispose liquid free water first if there is any */
         if(soil->w_fw[l]>epsilon)
-          soil->w_fw[l]-=(soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->wpwps[l]);
-        else
-          soil->ice_fw[l]-=(soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->wpwps[l]);
-        excess+=(soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->wpwps[l]);
+        {
+          dispose2=min(soil->w_fw[l],dispose);
+          soil->w_fw[l]-=dispose2; //(soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->wpwps[l]);
+          soil->w_fw[l]=max(0,soil->w_fw[l]);
+          excess+=dispose2;
+          dispose-=dispose2;
+        }
+        /* if there still is water to dispose, take from free ice */
+        if(dispose>epsilon && soil->ice_fw[l]>epsilon)
+        {
+          dispose2=min(soil->ice_fw[l],dispose);
+          soil->ice_fw[l]-=dispose2; //(soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])-(soil->wsats[l]-soil->wpwps[l]);
+          soil->ice_fw[l]=max(0,soil->ice_fw[l]);
+          excess+=dispose2;
+          dispose-=dispose2;
+        }
+        if(dispose>epsilon && soil->w[l]*soil->whcs[l]>epsilon)
+        {
+          dispose2=min(soil->w[l]*soil->whcs[l],dispose);
+          soil->w[l]-=dispose2/soil->whcs[l];
+          soil->w[l]=max(0,soil->w[l]);
+          excess+=dispose2;
+          dispose-=dispose2;
+        }  
+        if(dispose>epsilon && soil->ice_depth[l]>epsilon)
+        {
+          dispose2=min(soil->ice_depth[l],dispose);
+          soil->ice_depth[l]-=dispose2;
+          soil->ice_depth[l]=max(0,soil->ice_depth[l]);
+          excess+=dispose2;
+          dispose-=dispose2;
+        }  
       }
-
       soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;
       soil->k_dry[l] = (0.135*soil->bulkdens[l] + 64.7) / (MINERALDENS - 0.947*soil->bulkdens[l]);
       excess+=wmm+imm;
+      /* check if plant available water and ice do not exceed 1.0 */
+      dispose=soil->w[l] + soil->ice_depth[l]/soil->whcs[l] - 1.0;
+      if(dispose > 0){
+        if(soil->w[l]*soil->whcs[l]>epsilon){
+          dispose2=min(soil->w[l],dispose);
+          soil->w[l]-=dispose2;
+          soil->w[l]=max(0,soil->w[l]);
+          excess+=dispose2*soil->whcs[l];
+          dispose-=dispose2;
+        } 
+        if(dispose*soil->whcs[l]>epsilon && soil->ice_depth[l] > epsilon)
+        {
+          dispose2=min(soil->ice_depth[l]/soil->whcs[l],dispose);
+          soil->ice_depth[l]-=dispose2*soil->whcs[l];
+          soil->ice_depth[l]=max(0,soil->ice_depth[l]);
+          excess+=dispose2*soil->whcs[l];
+          dispose-=dispose2;
+        }
+      }
     } /* end of forrootsoillayer */
 
   stand->cell->balance.excess_water+=excess*standfrac;
+  //stand->cell->discharge.drunoff+=excess*standfrac;
 #ifdef CHECK_BALANCE
   w_after=soilwater(&stand->soil)+excess;
-  if(fabs(w_before-w_after)>1e-2)
-    fprintf(stderr,"ERROR: water balance=%g=%g-%g+%g in pedotransfer().\n",fabs(w_before-w_after),w_before,w_after+excess,excess);
+  if(fabs(w_before-w_after)>epsilon)
+    fprintf(stderr,"ERROR: %.2f/%.2f water balance=%.10f=%.10f-%.10f (excess is %.10f) in pedotransfer() wmm %.10f imm %.10f.\n",stand->cell->coord.lon,stand->cell->coord.lat,fabs(w_before-w_after),w_before,w_after+excess,excess,wmm,imm);
 #endif
   } /* end of if not ROCK */
 }

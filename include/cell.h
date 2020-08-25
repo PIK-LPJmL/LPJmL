@@ -129,7 +129,7 @@ extern void fwriteoutput_annual(Outputfile *,const Cell [],int,const Config *);
 extern void fwriteoutput_monthly(Outputfile *,const Cell [],int,int,int,const Config *);
 extern void fwriteoutput_daily(Outputfile *,const Cell [],int,int,const Config *);
 extern void fwriteoutput_pft(Outputfile *,Cell [],int,int,int,const Config *);
-extern void equilsom(Cell *,int, const Pftpar []);
+extern void equilsom(Cell *,int, const Pftpar [],Bool);
 extern void equilveg(Cell *);
 extern void check_fluxes(Cell *,int,int,const Config *);
 extern void check_balance(Flux,int,const Config *);

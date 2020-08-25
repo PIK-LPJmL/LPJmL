@@ -53,6 +53,7 @@ typedef struct
   Real T_0;
   Real T_r;
   /* IRRIGATION */
+  Real lsuha;        /** livestock density for grassland management (lsuha) */
   Real aprec_lim;    /**< annual precipitation limit for C3 irrigation threshold */
   Real irrig_threshold_c3_dry; /**< soil moisture irrigation threshold for C3 crops, annual precip < aprec_lim */
   Real irrig_threshold_c3_humid; /**< soil moisture irrigation threshold for C3 crops, annual precip >= aprec_lim */
@@ -66,6 +67,9 @@ typedef struct
   Real residues_in_soil;  /**< minimum residues in soil*/
   Real nfert_split;     /**< threshold fertilizer input for split application */
   Real manure_cn;       /* CN ratio of applied manure gC/gN */
+  Real nfert_split_frac;       /* fraction of fertilizer to be applied at sowing */
+  Real nfert_no3_frac;  /* fraction of NO3 in fertilizer */
+  Real nmanure_nh4_frac;  /* fraction of NH4 in manure */
   Real residue_frac; /**< fraction of residues to be submerged with tillage */
   Real mixing_efficiency; /**< density factor to simulate changes in bulk density by tillage */
   int till_startyear; /* year in which tillage should start */
@@ -87,6 +91,8 @@ typedef struct
   Real rw_irrig_thres;  /**< threshold to apply rw_irrigation */
   Real soil_infil;      /**< soil infiltration improvement */
   Real yield_gap_bridge; /**< yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
+  Real allocation_threshold; /**< allocation threshold for daily grassland allocation */
+  Real rootreduction; /**< fraction used to calculate amouont of roots dying at harvest in managed grasslands */
 } Param;
 
 /* Declaration of global variable */

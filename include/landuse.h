@@ -116,7 +116,7 @@ extern Bool setaside(Cell *,Stand *,const Pftpar[],Bool,Bool,int,Bool,int,int);
 extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
 extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
 extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
-extern void deforest(Cell *,Real,const Pftpar [],Bool,Bool,int,Bool,Bool,Bool,int,int,Real,int);
+extern void deforest(Cell *,Real,const Pftpar [],Bool,int,Bool,Bool,Bool,int,int,Real,int);
 extern Stocks woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Real,Real [],Real);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real);

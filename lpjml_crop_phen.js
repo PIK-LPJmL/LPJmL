@@ -31,6 +31,10 @@
 #define PIXELRUN  1
 #define DRUN GLOBALRUN
 
+#if (DRUN==PIXELRUN)
+  #define DAILY_OUTPUT
+#endif
+
 #define TIM_1986_2005 0
 #define TIM_2080_2099 1
 
@@ -48,6 +52,9 @@
 #define GS_SA0 0      /* reference sdate & phus (unchanged management) */
 #define GS_SA1 1      /* delayed adaptation */
 #define GS_SA2 2      /* complete adaptation */
+#define GS_SA3 4      /* adaptation of hdate only (fixed sdate) */
+#define GS_SA4 5      /* adaptation of sdate only (fixed hdate) */
+#define GS_SA0_swh 6  /* reference sdate & phus for runs with spring wheat everywhere */
 
 #define CO2_DYNA 0    /* transient CO2 */
 #define CO2_STAT 1    /* static CO2 fixed at 2005 level */
@@ -55,7 +62,7 @@
 
 /* ALL GCMs */
 #define DIRR IRR_UNL   /* assuming unlimited water available for irrigation */
-#define DNIT NIT_LIM   /* limited nitrogen to represent actual management*/
+#define DNIT NIT_LIM   /* limited nitrogen to represent actual management */
 
 /* HadGEM2-ES */
 #ifdef RUN_ID_01
@@ -107,10 +114,9 @@
     #define DCO2 CO2_STAT
     #define output_run  07
     #define restart_run 01
-#endif
 
  /* GFDL-ESM2M */
- #ifdef RUN_ID_08
+#elif RUN_ID_08
     #define DTIM TIM_1986_2005
     #define DCLM CLM_GFD
     #define DGS  GS_SA0
@@ -159,10 +165,9 @@
     #define DCO2 CO2_STAT
     #define output_run  14
     #define restart_run 08
-#endif
 
 /* IPSL-CM5A-LR */
-#ifdef RUN_ID_15
+#elif RUN_ID_15
     #define DTIM TIM_1986_2005
     #define DCLM CLM_IPS
     #define DGS  GS_SA0
@@ -211,10 +216,9 @@
     #define DCO2 CO2_STAT
     #define output_run  21
     #define restart_run 15
-#endif
 
  /* MIROC5 */
- #ifdef RUN_ID_22
+#elif RUN_ID_22
     #define DTIM TIM_1986_2005
     #define DCLM CLM_MIR
     #define DGS  GS_SA0
@@ -263,7 +267,80 @@
     #define DCO2 CO2_STAT
     #define output_run  28
     #define restart_run 22
+
+/* RUNS with fixed sdate or hdate */
+#elif defined(RUN_ID_29)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_HAD
+    #define DGS  GS_SA3
+    #define DCO2 CO2_DYNA
+    #define output_run  29
+    #define restart_run 01
+#elif defined(RUN_ID_30)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_HAD
+    #define DGS  GS_SA4
+    #define DCO2 CO2_DYNA
+    #define output_run  30
+    #define restart_run 01
+
+#elif defined(RUN_ID_31) 
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_GFD
+    #define DGS  GS_SA3
+    #define DCO2 CO2_DYNA
+    #define output_run  31
+    #define restart_run 08
+#elif defined(RUN_ID_32)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_GFD
+    #define DGS  GS_SA4
+    #define DCO2 CO2_DYNA
+    #define output_run  32
+    #define restart_run 08
+
+#elif defined(RUN_ID_33)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_IPS
+    #define DGS  GS_SA3
+    #define DCO2 CO2_DYNA
+    #define output_run  33
+    #define restart_run 15
+#elif defined(RUN_ID_34)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_IPS
+    #define DGS  GS_SA4
+    #define DCO2 CO2_DYNA
+    #define output_run  34
+    #define restart_run 15
+
+#elif defined(RUN_ID_35)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_MIR
+    #define DGS  GS_SA3
+    #define DCO2 CO2_DYNA
+    #define output_run  35
+    #define restart_run 22
+#elif defined(RUN_ID_36)
+    #define DTIM TIM_2080_2099
+    #define DCLM CLM_MIR
+    #define DGS  GS_SA4
+    #define DCO2 CO2_DYNA
+    #define output_run  36
+    #define restart_run 22
+
+#elif defined(RUN_ID_37)
+    #define DTIM TIM_1986_2005
+    #define DCLM CLM_HAD
+    #define DGS  GS_SA0_swh
+    #define DCO2 CO2_DYNA
+    #define output_run  37
+    #define restart_run 01
+
 #endif
+
+
+
 
 {   /* LPJmL configuration in JSON format */
 
@@ -454,22 +531,31 @@ ID                         Fmt                    filename
     { "id" : HARVESTN,         "file" : { "fmt" : RAW, "name" : mkstr(output/flux_harvestn.bin)}},
     { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : mkstr(output/sdate.bin)}},
     { "id" : HDATE,            "file" : { "fmt" : RAW, "name" : mkstr(output/hdate.bin)}},
+    { "id" : GROWING_PERIOD,   "file" : { "fmt" : RAW, "name" : mkstr(output/growing_period.bin)}},
+    { "id" : HUSUM,            "file" : { "fmt" : RAW, "name" : mkstr(output/husum.bin)}},
     { "id" : PFT_HARVESTC,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestc.SUFFIX)}},
     { "id" : PFT_HARVESTN,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestn.SUFFIX)}},
     { "id" : CFT_AIRRIG,       "file" : { "fmt" : RAW, "name" : mkstr(output/cft_airrig.SUFFIX)}},
-    { "id" : CFT_PET,       "file" : { "fmt" : RAW, "name" : mkstr(output/cft_pet.SUFFIX)}},
+    { "id" : CFT_PET,          "file" : { "fmt" : RAW, "name" : mkstr(output/cft_pet.SUFFIX)}},
     { "id" : CFT_TRANSP,       "file" : { "fmt" : RAW, "name" : mkstr(output/cft_transp.SUFFIX)}},
-    { "id" : CFT_EVAP,       "file" : { "fmt" : RAW, "name" : mkstr(output/cft_evap.SUFFIX)}},
+    { "id" : CFT_EVAP,         "file" : { "fmt" : RAW, "name" : mkstr(output/cft_evap.SUFFIX)}},
     { "id" : CFT_INTERC,       "file" : { "fmt" : RAW, "name" : mkstr(output/cft_interc.SUFFIX)}},
     { "id" : CFTFRAC,          "file" : { "fmt" : RAW, "name" : mkstr(output/cftfrac.bin)}},
-    { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : mkstr(output/seasonality.bin)}} //,
+    { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : mkstr(output/seasonality.bin)}},
 #ifdef DAILY_OUTPUT
-    { "id" : D_NPP,            "file" : { "fmt" : RAW, "name" : "output/d_npp.bin"}},
-    { "id" : D_GPP,            "file" : { "fmt" : RAW, "name" : "output/d_gpp.bin"}},
-    { "id" : D_RH,             "file" : { "fmt" : RAW, "name" : "output/d_rh.bin"}},
-    { "id" : D_TRANS,          "file" : { "fmt" : RAW, "name" : "output/d_trans.bin"}},
-    { "id" : D_INTERC,         "file" : { "fmt" : RAW, "name" : "output/d_interc.bin"}},
-    { "id" : D_EVAP,           "file" : { "fmt" : RAW, "name" : "output/d_evap.bin"}},
+    { "id" : D_NPP,            "file" : { "fmt" : RAW, "name" : mkstr(output/d_npp.bin)}},
+    { "id" : D_GPP,            "file" : { "fmt" : RAW, "name" : mkstr(output/d_gpp.bin)}},
+    { "id" : D_RH,             "file" : { "fmt" : RAW, "name" : mkstr(output/d_rh.bin)}},
+    { "id" : D_TRANS,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_trans.bin)}},
+    { "id" : D_INTERC,         "file" : { "fmt" : RAW, "name" : mkstr(output/d_interc.bin)}},
+    { "id" : D_EVAP,           "file" : { "fmt" : RAW, "name" : mkstr(output/d_evap.bin)}},
+    { "id" : D_LAI,            "file" : { "fmt" : RAW, "name" : mkstr(output/d_lai.bin)}},
+    { "id" : D_CLEAF,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_cleaf.bin)}},
+    { "id" : D_CROOT,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_croot.bin)}},
+    { "id" : D_CSO,            "file" : { "fmt" : RAW, "name" : mkstr(output/d_cso.bin)}},
+    { "id" : D_CPOOL,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_cpool.bin)}},
+    { "id" : D_HUSUM,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_husum.bin)}},
+    { "id" : D_VDSUM,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_vdsum.bin)}}
 #endif
 /*    { "id" : MPET,             "file" : { "fmt" : RAW, "name" : "output/mpet.bin"}},
     { "id" : MALBEDO,          "file" : { "fmt" : RAW, "name" : "output/malbedo.bin"}},
@@ -499,8 +585,8 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 #if (DRUN==PIXELRUN)
-  "startgrid" :  30115, /*31374, 27410, 67208 60400 all grid cells */
-  "endgrid" :    30115,
+  "startgrid" :  7187, //9353, //7223, //7175, //7212, //30115, /*31374, 27410, 67208 60400 all grid cells */
+  "endgrid" :    7187, //9353, //7223, //7234, //7212, //30115,
 #else
   "startgrid" :  ALL, /*31374, 27410, 67208 60400 all grid cells */
   "endgrid" :    ALL,

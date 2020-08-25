@@ -23,7 +23,8 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
                   Real *ndemand_leaf,   /**< N demand of leafs */
                   int npft,             /**< number of natural PFTs */
                   int nbiomass,         /**< number of biomass PFTs */
-                  int ncft              /**< number of crop PFTs */
+                  int ncft,             /**< number of crop PFTs */
+                  Bool permafrost       /**< permafrost enabled? (TRUE/FALSE) */
                  )                      /** \return nitrogen uptake (gN/m2/day) */
 {
 
@@ -35,12 +36,18 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   Real f_NCplant=0;
   Real up_temp_f;
   Real totn,nsum;
+  Real wscaler;
   Real n_uptake=0;
+  Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
   int l;
   Irrigation *data;
   Real rootdist_n[LASTLAYER];
   soil=&pft->stand->soil;
-  getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
+  if(permafrost)
+    getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
+  else
+    forrootsoillayer(l)
+      rootdist_n[l]=pft->par->rootdist[l];
   tree=pft->data;
   treepar=pft->par->data;
   NCplant = (tree->ind.leaf.nitrogen+ tree->ind.root.nitrogen) / (tree->ind.leaf.carbon+ tree->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
@@ -49,8 +56,9 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   nsum=0;
   forrootsoillayer(l)
   {
-    totn=(soil->NO3[l]+soil->NH4[l]);
-    if(totn>0 && soil->temp[l]>0)
+    wscaler=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->whcs[l])) : 0;
+    totn=(soil->NO3[l]+soil->NH4[l])*wscaler;
+    if(totn>0)
     {
       up_temp_f = nuptake_temp_fcn(soil->temp[l]);
       //up_temp_f=1;
@@ -65,7 +73,10 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
 #ifdef DEBUG_N
   printf("TREE n_uptake=%g, nplant_demand=%g vegn=%g\n",n_uptake,*n_plant_demand,(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind));
 #endif
-
+  if(nsum==0)
+    n_uptake=0;
+  else
+  {
   if (n_uptake>*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind))
     n_uptake=*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind);
   if(n_uptake<=0)
@@ -74,21 +85,24 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   {
     pft->bm_inc.nitrogen+=n_uptake;
     forrootsoillayer(l)
-      if(soil->temp[l]>0 && nsum > 0.0)
-      {
-        soil->NO3[l]-=soil->NO3[l]*rootdist_n[l]*n_uptake/nsum;
+    {
+        wscaler=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->whcs[l])) : 0;
+        soil->NO3[l]-=soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
         if(soil->NO3[l]<0)
         {
            pft->bm_inc.nitrogen+=soil->NO3[l];
+           n_upfail+=soil->NO3[l];
            soil->NO3[l]=0;
         }
-        soil->NH4[l]-=soil->NH4[l]*rootdist_n[l]*n_uptake/nsum;
+        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
         if(soil->NH4[l]<0)
         {
            pft->bm_inc.nitrogen+=soil->NH4[l];
+           n_upfail+=soil->NH4[l];
            soil->NH4[l]=0;
         }
       }
+  }
   }
   if(*n_plant_demand/(1+pft->par->knstore)>(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind))   /*HERE RECALCULATION OF N-demand TO N-supply*/
   {
@@ -99,20 +113,29 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
         NC_leaf=pft->par->ncleaf.low;
     else if (NC_leaf>pft->par->ncleaf.high)
         NC_leaf=pft->par->ncleaf.high;
-    *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf)*NC_leaf;
+//    *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf)*NC_leaf;
+    *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind)*NC_leaf;
   }
 
   if(ndemand_leaf_opt<epsilon)
     pft->vscal+=1;
   else
    pft->vscal+=min(1,*ndemand_leaf/(ndemand_leaf_opt/(1+pft->par->knstore))); /*eq. C20 in Smith et al. 2014, Biogeosciences */
+  /* correcting for failed uptake from depleted soils in outputs */
+  n_uptake+=n_upfail;
   if(pft->stand->type->landusetype==BIOMASS_TREE)
   {
     data=pft->stand->data;
     pft->stand->cell->output.pft_nuptake[(npft-nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+    pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=max(0,*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind)); /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
   }
+
   else
+  {
     pft->stand->cell->output.pft_nuptake[pft->par->id]+=n_uptake;
+    pft->stand->cell->output.pft_ndemand[pft->par->id]+=max(0,*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind));
+  }
   pft->stand->cell->balance.n_uptake+=n_uptake*pft->stand->frac;
+  pft->stand->cell->balance.n_demand+=max(0,(*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind)))*pft->stand->frac;
   return n_uptake;
 } /* of 'nuptake_tree' */

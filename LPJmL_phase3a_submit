@@ -12,10 +12,10 @@
 #############################################################################
 
 # directory of model source code
-export LPJROOT=/p/projects/waterforce/jonas/diss/LPJmL/LPJmL_gitlab/LPJmL_ggcmi_phase3
+export LPJROOT=/home/cmueller/lpj_git/git_merge
 
 # output directory, script makes subfolders for each run
-simdir="/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3a"
+simdir="/p/projects/macmit/users/cmueller/GGCMI_phase3/phase3a"
 
 # climate forcing
 climate=("agmerra" "wfdei" "gswp3-w5e5")
@@ -32,10 +32,9 @@ co2=("default" "2015co2")
 socioecon=("histsoc" "2015soc")
 
 # restart option: CREATE_RESTART or FROM_RESTART
-# sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
-restartsetup="nv" # use "nv_rr" for spinup with river routing, do not uncomment for "FROM_RESTART" runs, stores information if river routing was used during spinup
+#sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
+restartsetup="nv_rr" # use "nv_rr" for spinup with river routing, do not uncomment for "FROM_RESTART" runs, stores information if river routing was used during spinup
 sim="FROM_RESTART"
-nyear_spin=390
 
 if [ $# -lt 1 ]
 then
@@ -66,6 +65,9 @@ do
 
 # ----------------------------------------------- #
 
+nyear_spin=8000
+nyear_spin2=390
+
 if [ ${sim} = "CREATE_RESTART" ]
 then
   setup="lpjml_restart_${climate[c]}_${restartsetup}"  
@@ -95,7 +97,7 @@ mkdir -p $outdir
 #SBATCH --signal=15@180
 #SBATCH --export=ALL
 #SBATCH -J LPJmL50
-#SBATCH --mail-user=jonasjae@pik-potsdam.de
+#SBATCH --mail-user=cmueller@pik-potsdam.de
 #SBATCH --mail-type=end
 #SBATCH --time=$runtime
 #SBATCH --tasks-per-node=16
@@ -176,18 +178,20 @@ EOF
   "landuse_year_const" : 2015, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "equilsoil" : false,
 #else
   "population" : false,
   "landuse" : NO_LANDUSE,
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,
+  "equilsoil" : true,
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : PRESCRIBED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "crop_phu_option" : PRESCRIBED_CROP_PHU,    /* PRESCRIBED_CROP_PHU (PHU dataset used, requires PRESCRIBED_SDATE), SEMISTATIC_CROP_PHU (LPJmL4 semi-static PHU approach) */
   "sdate_fixyear" : 2015,               /* year after which sowing dates are held constant (for both FIXED_SDATE or NO_FIXED_SDATE), also used to fix updating vernalization requirements */
-  "intercrop" : true,                   /* intercrops on setaside */
+  "intercrop" : false,                   /* intercrops on setaside */
   "residue_treatment" : FIXED_RESIDUE_REMOVE, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
   "irrigation" : POT_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
@@ -251,40 +255,48 @@ EOF
 ID                         Fmt                    filename
 -------------------------- ---------------------- ----------------------------- */
     { "id" : GRID,             "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/grid.bin) }},
-//    { "id" : FPC,              "file" : { "fmt" : RAW, "name" : mkstr(output/fpc.bin)}},
-//    { "id" : MNPP,             "file" : { "fmt" : RAW, "name" : mkstr(output/mnpp.bin)}},
-//    { "id" : MGPP,             "file" : { "fmt" : RAW, "name" : mkstr(output/mgpp.bin)}},
-//    { "id" : MRH,              "file" : { "fmt" : RAW, "name" : mkstr(output/mrh.bin)}},
-//    { "id" : MFAPAR,           "file" : { "fmt" : RAW, "name" : mkstr(output/mfapar.bin)}},
-//    { "id" : MTRANSP,          "file" : { "fmt" : RAW, "name" : mkstr(output/mtransp.bin)}},
-//    { "id" : MRUNOFF,          "file" : { "fmt" : RAW, "name" : mkstr(output/mrunoff.bin)}},
-//    { "id" : MEVAP,            "file" : { "fmt" : RAW, "name" : mkstr(output/mevap.bin)}},
-//    { "id" : MINTERC,          "file" : { "fmt" : RAW, "name" : mkstr(output/minterc.bin)}},
-//    { "id" : MSWC1,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mswc1.bin)}},
+    { "id" : FPC,              "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/fpc.bin)}},
+    { "id" : MNPP,             "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mnpp.bin)}},
+    { "id" : MGPP,             "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mgpp.bin)}},
+    { "id" : MRH,              "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mrh.bin)}},
+    { "id" : SOILC,              "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/soilc.bin)}},
+    { "id" : SOILN,              "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/soiln.bin)}},
+    { "id" : VEGC,              "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/vegc.bin)}},
+    { "id" : VEGN,              "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/vegn.bin)}},
+    { "id" : LITC,              "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/litc.bin)}},
+    { "id" : LITN,              "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/litn.bin)}},
+    { "id" : FLUX_ESTABC,              "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/flux_estab.bin)}},
+    { "id" : FIREC,              "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/firec.bin)}},
+//    { "id" : MFAPAR,           "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mfapar.bin)}},
+    { "id" : MTRANSP,          "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mtransp.bin)}},
+    { "id" : MRUNOFF,          "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mrunoff.bin)}},
+    { "id" : MEVAP,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mevap.bin)}},
+    { "id" : MINTERC,          "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/minterc.bin)}},
+    { "id" : MSWC1,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mswc1.bin)}},
 //    { "id" : MSWC2,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mswc2.bin)}},
-//    { "id" : PFT_NUPTAKE,      "file" : { "fmt" : RAW, "name" : mkstr(output/pft_nuptake.bin)}},
-//    { "id" : MNUPTAKE,         "file" : { "fmt" : RAW, "name" : mkstr(output/mnuptake.bin)}},
-//    { "id" : MLEACHING,        "file" : { "fmt" : RAW, "name" : mkstr(output/mleaching.bin)}},
-//    { "id" : MN2O_DENIT,       "file" : { "fmt" : RAW, "name" : mkstr(output/mn2o_denit.bin)}},
-//    { "id" : MN2O_NIT,         "file" : { "fmt" : RAW, "name" : mkstr(output/mn2o_nit.bin)}},
-//    { "id" : MN2_EMIS,         "file" : { "fmt" : RAW, "name" : mkstr(output/mn2_emis.bin)}},
-//    { "id" : MBNF,             "file" : { "fmt" : RAW, "name" : mkstr(output/mbnf.bin)}},
-//    { "id" : MN_IMMO,          "file" : { "fmt" : RAW, "name" : mkstr(output/mn_immo.bin)}},
-//    { "id" : PFT_NDEMAND,      "file" : { "fmt" : RAW, "name" : mkstr(output/pft_ndemand.bin)}},
-//    { "id" : MN_MINERALIZATION,"file" : { "fmt" : RAW, "name" : mkstr(output/mn_mineralization.bin)}},
-//    { "id" : MN_VOLATILIZATION,"file" : { "fmt" : RAW, "name" : mkstr(output/mn_volatilization.bin)}},
-//    { "id" : PFT_NLIMIT,       "file" : { "fmt" : RAW, "name" : mkstr(output/pft_nlimit.bin)}},
-//    { "id" : PFT_VEGN,         "file" : { "fmt" : RAW, "name" : mkstr(output/pft_vegn.bin)}},
-//    { "id" : PFT_CLEAF,        "file" : { "fmt" : RAW, "name" : mkstr(output/pft_cleaf.bin)}},
-//    { "id" : PFT_NLEAF,        "file" : { "fmt" : RAW, "name" : mkstr(output/pft_nleaf.bin)}},
-//    { "id" : PFT_LAIMAX,       "file" : { "fmt" : RAW, "name" : mkstr(output/pft_laimax.bin)}},
-//    { "id" : PFT_CROOT,        "file" : { "fmt" : RAW, "name" : mkstr(output/pft_croot.bin)}},
-//    { "id" : PFT_NROOT,        "file" : { "fmt" : RAW, "name" : mkstr(output/pft_nroot.bin)}},
-//    { "id" : PFT_CSAPW,        "file" : { "fmt" : RAW, "name" : mkstr(output/pft_csapw.bin)}},
-//    { "id" : PFT_NSAPW,        "file" : { "fmt" : RAW, "name" : mkstr(output/pft_nsapw.bin)}},
-//    { "id" : PFT_CHAWO,        "file" : { "fmt" : RAW, "name" : mkstr(output/pft_chawo.bin)}},
-//    { "id" : PFT_NHAWO,        "file" : { "fmt" : RAW, "name" : mkstr(output/pft_nhawo.bin)}},
-//    { "id" : HARVESTC,         "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/flux_harvestc.bin)}},
+//    { "id" : PFT_NUPTAKE,      "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_nuptake.bin)}},
+    { "id" : MNUPTAKE,         "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mnuptake.bin)}},
+    { "id" : MLEACHING,        "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mleaching.bin)}},
+    { "id" : MN2O_DENIT,       "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mn2o_denit.bin)}},
+    { "id" : MN2O_NIT,         "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mn2o_nit.bin)}},
+    { "id" : MN2_EMIS,         "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mn2_emis.bin)}},
+    { "id" : MBNF,             "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mbnf.bin)}},
+    { "id" : MN_IMMO,          "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mn_immo.bin)}},
+//    { "id" : PFT_NDEMAND,      "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_ndemand.bin)}},
+    { "id" : MN_MINERALIZATION,"file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mn_mineralization.bin)}},
+    { "id" : MN_VOLATILIZATION,"file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mn_volatilization.bin)}},
+//    { "id" : PFT_NLIMIT,       "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_nlimit.bin)}},
+//    { "id" : PFT_VEGN,         "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_vegn.bin)}},
+//    { "id" : PFT_CLEAF,        "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_cleaf.bin)}},
+//    { "id" : PFT_NLEAF,        "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_nleaf.bin)}},
+//    { "id" : PFT_LAIMAX,       "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_laimax.bin)}},
+//    { "id" : PFT_CROOT,        "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_croot.bin)}},
+//    { "id" : PFT_NROOT,        "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_nroot.bin)}},
+//    { "id" : PFT_CSAPW,        "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_csapw.bin)}},
+//    { "id" : PFT_NSAPW,        "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_nsapw.bin)}},
+//    { "id" : PFT_CHAWO,        "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_chawo.bin)}},
+//    { "id" : PFT_NHAWO,        "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/pft_nhawo.bin)}},
+    { "id" : HARVESTC,         "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/flux_harvest.bin)}},
 //    { "id" : HARVESTN,         "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/flux_harvestn.bin)}},
     { "id" : SYEAR,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/syear.bin)}},
     { "id" : SYEAR2,            "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/syear2.bin)}},
@@ -363,12 +375,12 @@ ID                         Fmt                    filename
 
 #else
 
-  "nspinup" : 30,   /* spinup years */
+  "nspinup" : $nyear_spin2,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": ${startyear[c]}, /* first year of simulation */
   "lastyear" : ${endyear[c]}, /* last year of simulation */
   "outputyear": ${startyear[c]}, /* first year output is written  */
-  "restart" :  false, /* start from restart file */
+  "restart" :  true, /* start from restart file */
   "restart_filename" : "${simdir}/lpjml_restart_${climate[c]}_${restartsetup}/restart_${restartyear[c]}_${restartsetup}_${nyear_spin}.lpj", /* filename of restart file */
   "write_restart" : false /* create restart file */
 
