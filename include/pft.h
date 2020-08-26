@@ -136,6 +136,7 @@ typedef struct Pft
     Real knstore;
     Real fn_turnover;           /**< fraction of N not recovered before turnover */
     Limit ncleaf;               /**< minimum, maximum leaf foliage N concentration */
+    Real ncratio_med;           /**< median leaf foligae N concentration, targeted in N demand */
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
     Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */

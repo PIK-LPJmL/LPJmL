@@ -27,15 +27,24 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   Pftgrass *grass;
   Pft *pft;
   int p;
+  Output *output;
+  output=&stand->cell->output;
 
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
     harvest.harvest.carbon=grass->ind.leaf.carbon*hfrac;
-    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*0.25; /*0.25*/
-    pft->stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*0.75*pft->nind;
+    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*0.5; /*0.25*/
+    stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*0.5*pft->nind;
     grass->ind.leaf.carbon*=(1-hfrac);
     grass->ind.leaf.nitrogen*=(1-hfrac);
+    stand->soil.litter.bg[pft->litter].carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
+    output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
+    stand->soil.litter.bg[pft->litter].nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
+    output->alittfall.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
+    pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
+    grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
+    grass->ind.root.nitrogen*=(1-hfrac*param.rootreduction);
     sum.harvest.carbon+=harvest.harvest.carbon*pft->nind;
     sum.harvest.nitrogen+=harvest.harvest.nitrogen*pft->nind;
     grass->max_leaf = grass->ind.leaf.carbon;
@@ -52,17 +61,33 @@ static Harvest harvest_grass_mowing(Stand *stand)
   Pftgrass *grass;
   Pft *pft;
   int p;
+  Real fpc_sum=0.0;
+  Real hfrac;
+  Output *output;
+  output=&stand->cell->output;
+  foreachpft(pft,p,&stand->pftlist)
+    fpc_sum+=pft->fpc;
 
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
-    harvest.harvest.carbon = grass->ind.leaf.carbon - STUBBLE_HEIGHT_MOWING;
-    harvest.harvest.nitrogen = harvest.harvest.carbon/grass->ind.leaf.carbon*grass->ind.leaf.nitrogen;
+    harvest.harvest.carbon = grass->ind.leaf.carbon - STUBBLE_HEIGHT_MOWING*pft->fpc/fpc_sum;
+    hfrac=harvest.harvest.carbon/grass->ind.leaf.carbon;
+    harvest.harvest.nitrogen = hfrac*grass->ind.leaf.nitrogen*0.25;
+    stand->soil.NH4[0]+=hfrac*grass->ind.leaf.nitrogen*0.75*pft->nind;
 
-    grass->ind.leaf.carbon = STUBBLE_HEIGHT_MOWING;
-    grass->ind.leaf.nitrogen -= harvest.harvest.nitrogen;
-    sum.harvest.carbon+=harvest.harvest.carbon;
-    sum.harvest.nitrogen+=harvest.harvest.nitrogen;
+
+
+    stand->soil.litter.bg[pft->litter].carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
+    output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
+    stand->soil.litter.bg[pft->litter].nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
+    output->alittfall.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
+    pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
+
+    grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
+    grass->ind.root.nitrogen*=(1-hfrac*param.rootreduction);
+    sum.harvest.carbon+=harvest.harvest.carbon*pft->nind;
+    sum.harvest.nitrogen+=harvest.harvest.nitrogen*pft->nind;
     pft->gdd=0.0; // change -> relative from ind.leaf
   }
   return sum;
@@ -80,11 +105,16 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
   Stocks bm_grazed_pft;
   Grassland *grassland;
   grassland=stand->data;
+  Real fpc_sum=0.0;
+  Real hfrac;
+  Output *output;
+  output=&stand->cell->output;
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
     bm_tot.carbon += grass->ind.leaf.carbon;
     bm_tot.nitrogen+= grass->ind.leaf.nitrogen;
+    fpc_sum+=pft->fpc;
   }
   bm_grazed = 1e-4* grassland->nr_of_lsus_ext * DEMAND_COW_EXT;
 
@@ -97,25 +127,34 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
       fact = grass->ind.leaf.carbon/bm_tot.carbon;
 
     bm_grazed_pft.carbon   = bm_grazed * fact;
-    if (grass->ind.leaf.carbon - bm_grazed_pft.carbon < GRAZING_STUBBLE)
-      bm_grazed_pft.carbon = grass->ind.leaf.carbon - GRAZING_STUBBLE;
+    if (grass->ind.leaf.carbon - bm_grazed_pft.carbon < GRAZING_STUBBLE*pft->fpc/fpc_sum)
+      bm_grazed_pft.carbon = grass->ind.leaf.carbon - GRAZING_STUBBLE*pft->fpc/fpc_sum;
     if (bm_grazed_pft.carbon < 0)
       bm_grazed_pft.carbon = 0;
-
-    pft->gdd = (1-(bm_grazed_pft.carbon/grass->ind.leaf.carbon)) * pft->gdd;
+    hfrac=bm_grazed_pft.carbon/grass->ind.leaf.carbon;
+    pft->gdd = (1-hfrac) * pft->gdd;
 
 
     /* Nitrogen */
     //bm_grazed_pft.nitrogen = bm_grazed * fact;
-    bm_grazed_pft.nitrogen = bm_grazed_pft.carbon/grass->ind.leaf.carbon*grass->ind.leaf.nitrogen;
+    bm_grazed_pft.nitrogen = hfrac*grass->ind.leaf.nitrogen;
 
     grass->ind.leaf.carbon -= bm_grazed_pft.carbon;
-    sum.harvest.carbon     += (1-MANURE)*bm_grazed_pft.carbon;                       // 60% atmosphere, 15% cows
-    stand->soil.pool->fast.carbon += MANURE * bm_grazed_pft.carbon;             // 25% back to soil
+    sum.harvest.carbon     += (1-MANURE)*bm_grazed_pft.carbon*pft->nind;                       // 60% atmosphere, 15% cows
+    stand->soil.pool->fast.carbon += MANURE * bm_grazed_pft.carbon*pft->nind;             // 25% back to soil
 
     grass->ind.leaf.nitrogen -=  bm_grazed_pft.nitrogen;
-    sum.harvest.nitrogen     += (1-MANURE)*bm_grazed_pft.nitrogen;                       // 60% atmosphere, 15% cows
-    stand->soil.pool->fast.nitrogen += MANURE * bm_grazed_pft.nitrogen;             // 25% back to soil
+    sum.harvest.nitrogen     += (1-MANURE)*bm_grazed_pft.nitrogen*pft->nind;                       // 60% atmosphere, 15% cows
+    stand->soil.pool->fast.nitrogen += MANURE * bm_grazed_pft.nitrogen*pft->nind;             // 25% back to soil
+
+    stand->soil.litter.bg[pft->litter].carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
+    output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
+    stand->soil.litter.bg[pft->litter].nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
+    output->alittfall.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
+    pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
+
+    grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
+    grass->ind.root.nitrogen*=(1-hfrac*param.rootreduction);
     // pft->phen recalculated in phenology_grass
   }
   return sum;
@@ -134,12 +173,16 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
   Stocks bm_grazed_pft;
   Grassland *grassland;
   grassland=stand->data;
-
+  Real fpc_sum=0.0;
+  Real hfrac;
+  Output *output;
+  output=&stand->cell->output;
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
     bm_tot.carbon += grass->ind.leaf.carbon;
     bm_tot.nitrogen += grass->ind.leaf.nitrogen;
+    fpc_sum+=pft->fpc;
   }
 
   if (grassland->rotation.mode == RM_UNDEFINED) //initial calculate grazing days and recovery days
@@ -166,24 +209,34 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
       fact = grass->ind.leaf.carbon / bm_tot.carbon;
       bm_grazed_pft.carbon = bm_grazed * fact;
 
-      if (grass->ind.leaf.carbon - bm_grazed_pft.carbon < GRAZING_STUBBLE)
-        bm_grazed_pft.carbon = grass->ind.leaf.carbon - GRAZING_STUBBLE;
+      if (grass->ind.leaf.carbon - bm_grazed_pft.carbon < GRAZING_STUBBLE*pft->fpc/fpc_sum)
+        bm_grazed_pft.carbon = grass->ind.leaf.carbon - GRAZING_STUBBLE*pft->fpc/fpc_sum;
 
       if (bm_grazed_pft.carbon < 0)
         bm_grazed_pft.carbon =0;
 
-      pft->gdd = (1-(bm_grazed_pft.carbon/grass->ind.leaf.carbon)) * pft->gdd;
+      hfrac=bm_grazed_pft.carbon/grass->ind.leaf.carbon;
+      pft->gdd = (1-hfrac) * pft->gdd;
 
       /* Nitrogen */
-      bm_grazed_pft.nitrogen = bm_grazed_pft.carbon/grass->ind.leaf.carbon*grass->ind.leaf.nitrogen;
+      bm_grazed_pft.nitrogen = hfrac*grass->ind.leaf.nitrogen;
 
       grass->ind.leaf.carbon -= bm_grazed_pft.carbon;
-      sum.harvest.carbon     += (1-MANURE)*bm_grazed_pft.carbon;              // 60% atmosphere, 15% cows
-      stand->soil.pool->fast.carbon += MANURE * bm_grazed_pft.carbon;    // 25% back to soil
+      sum.harvest.carbon     += (1-MANURE)*bm_grazed_pft.carbon*pft->nind;              // 60% atmosphere, 15% cows
+      stand->soil.pool->fast.carbon += MANURE * bm_grazed_pft.carbon*pft->nind;    // 25% back to soil
 
       grass->ind.leaf.nitrogen -= bm_grazed_pft.nitrogen;
-      sum.harvest.nitrogen     += (1-MANURE)*bm_grazed_pft.nitrogen;              // 60% atmosphere, 15% cows
-      stand->soil.pool->fast.nitrogen += MANURE * bm_grazed_pft.nitrogen;    // 25% back to soil
+      sum.harvest.nitrogen     += (1-MANURE)*bm_grazed_pft.nitrogen*pft->nind;              // 60% atmosphere, 15% cows
+      stand->soil.pool->fast.nitrogen += MANURE * bm_grazed_pft.nitrogen*pft->nind;    // 25% back to soil
+
+      stand->soil.litter.bg[pft->litter].carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
+      output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
+      stand->soil.litter.bg[pft->litter].nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
+      output->alittfall.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
+      pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
+
+      grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
+      grass->ind.root.nitrogen*=(1-hfrac*param.rootreduction);
     }
 
     grassland->rotation.grazing_days--;

@@ -274,12 +274,14 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,&item,&pft->kNmin,pft->name,"kNmin");
     fscanpftreal(verb,&item,&pft->KNmin,pft->name,"KNmin");
     fscanpftlimit(verb,&item,&cnratio,pft->name,"cnratio_leaf");
-    if(cnratio.low<=0 || cnratio.high<=0)
+    fscanpftreal(verb,&item,&pft->ncratio_med,pft->name,"cnratio_leaf_median");
+    if(cnratio.low<=0 || cnratio.high<=0 || pft->ncratio_med<=0)
     {
       if(verb)
-        fprintf(stderr,"ERROR235: CN ratio limits=(%g,%g) must be greater than zero for PFT '%s'.\n",cnratio.low,cnratio.high,pft->name);
+        fprintf(stderr,"ERROR235: CN ratio limits=(%g,%g,%g) must be greater than zero for PFT '%s'.\n",cnratio.low,pft->ncratio_med,cnratio.high,pft->name);
       return NULL;
     }
+    pft->ncratio_med=1/pft->ncratio_med;
     pft->ncleaf.low=1/cnratio.high;
     pft->ncleaf.high=1/cnratio.low;
     fscanpftreal(verb,&item,&pft->knstore,pft->name,"knstore");

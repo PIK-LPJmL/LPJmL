@@ -50,16 +50,23 @@
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
 #define CN_BL_EG_MN 15.6
+#define CN_BL_EG_MD 26.8
 #define CN_NL_EG_MX 63.8
 #define CN_NL_EG_MN 31.8
+#define CN_NL_EG_MD 45.0
 #define CN_BL_DC_MX 34.6
 #define CN_BL_DC_MN 15.4
+#define CN_BL_DC_MD 23.1
 #define CN_NL_DC_MX 36.9
 #define CN_NL_DC_MN 18.4
+#define CN_NL_DC_MD 26.0
 #define CN_GC3_MX 37.9
 #define CN_GC3_MN 10.5
+#define CN_GC3_MD 19.9
 #define CN_GC4_MX 66.9
 #define CN_GC4_MN 17.4
+#define CN_GC4_MD 34.0
+#define CN_CROPS_MEAN 25.0 /* cnleaf mean for grasses, table A.3.1, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
 #define K_LATOSA 6e3      /* leaf area to sapwood area */
 
 "pftpar" :
@@ -138,6 +145,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
@@ -241,6 +249,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_DC_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -293,7 +302,7 @@
     "twmax_daily" : 1000.,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000., /* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.137,  /* albedo of green leaves */
@@ -344,6 +353,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_EG_MN, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_NL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -447,6 +457,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -550,6 +561,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_DC_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -604,7 +616,7 @@
     "twmax_daily" : 25.,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000., /* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.18,   /* albedo of green leaves */
@@ -655,6 +667,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_EG_MN, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_NL_EG_MD,
     "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -758,6 +771,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_DC_MD,
     "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -812,7 +826,7 @@
     "twmax_daily" : 25.,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : 30.,  /* min_temprange 34*/
-    "emax": 7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.12,   /* albedo of green leaves */
@@ -863,6 +877,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_DC_MN, "high" : CN_NL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_NL_DC_MD,
     "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -968,6 +983,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_GC4_MD,
     "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
@@ -1052,6 +1068,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_GC3_MD,
     "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1136,6 +1153,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_GC3_MD,
     "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
@@ -1219,6 +1237,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
@@ -1321,6 +1340,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_DC_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -1425,6 +1445,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_GC4_MD,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
@@ -1508,6 +1529,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1614,6 +1636,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1720,6 +1743,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
@@ -1826,6 +1850,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1932,6 +1957,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2038,6 +2064,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,   /* windspeed dampening */
@@ -2144,6 +2171,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2250,6 +2278,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2356,6 +2385,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2462,6 +2492,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2568,6 +2599,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2674,6 +2706,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median": CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */

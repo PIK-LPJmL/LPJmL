@@ -113,7 +113,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   foreachpft(pft,p,&stand->pftlist)
   {
      if (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pft->par->cultivation_type==NONE &&
-    	!istree(pft) && (stand->soil.par->type != ICE && stand->soil.par->type != ROCK) &&
+         !istree(pft) && (stand->soil.par->type != ICE && stand->soil.par->type != ROCK) &&
 #ifdef DAILY_ESTABLISHMENT
         !pft->established &&
 #endif

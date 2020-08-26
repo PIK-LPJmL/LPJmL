@@ -113,10 +113,10 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
     fprintf(file,"vmax_up:\t%g (gN/kgC)\n"
                  "kNmin:\t\t%g\n"
                  "KNmin:\t\t%g\n"
-                 "CNleaf:\t\t%g %g\n"
+                 "CNleaf:\t\t%g %g (median %g)\n"
                  "kNstore:\t%g\n"
                  "fN_turnover:\t%g\n",
             pftpar->vmax_up,pftpar->kNmin,pftpar->KNmin,1/pftpar->ncleaf.high,
-            1/pftpar->ncleaf.low,pftpar->knstore,pftpar->fn_turnover);
+            1/pftpar->ncleaf.low,1/pftpar->ncratio_med,pftpar->knstore,pftpar->fn_turnover);
   pftpar->fprintpar(file,pftpar); /* call type-specific print function */
 } /* of 'fprintpftpar' */

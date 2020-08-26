@@ -684,7 +684,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       if(timberharvest>epsilon)
       {
         /* deforestation without conversion to agricultural land */
-        deforest(cell,timberharvest,config->pftpar,intercrop,npft,TRUE,istimber,FALSE,ncft,year,minnatfrac_luc);
+        deforest(cell,timberharvest,config->pftpar,intercrop,npft,TRUE,config->istimber,FALSE,ncft,year,minnatfrac_luc);
       }
       cell->ml.image_data->timber_frac=0.0;
     }

@@ -70,10 +70,9 @@ static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to 
                                         int year
                                         )                       /** \return reservoir fraction that could be created from setaside */
 {
-  int s,s2,pos,p;
+  int s,s2,pos;
   Stand *setasidestand,*setasidestand_ir,*cutstand, *stand;
   Real factor;
-  Pft *pft;
   Stocks stocks;
   String line;
   Irrigation *data;
@@ -96,11 +95,7 @@ static Real from_setaside_for_reservoir(Cell *cell,             /**< pointer to 
         if(difffrac+epsilon>=setasidestand->frac+setasidestand_ir->frac)
         {
           /* remove all vegetation on irrigated setaside */
-          foreachpft(pft,p,&setasidestand_ir->pftlist){
-            litter_update(&setasidestand_ir->soil.litter,pft,pft->nind);
-            delpft(&setasidestand_ir->pftlist,p);
-            p--; /* adjust loop variable */
-          }
+          cutpfts(setasidestand_ir);
           mixsetaside(setasidestand,setasidestand_ir,intercrop);
           delstand(cell->standlist,s2);
         }

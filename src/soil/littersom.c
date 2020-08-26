@@ -274,24 +274,22 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
           }
         }
       }
+      /*sum for equilsom-routine*/
     }   /*end soil->litter.n*/
-  /*sum for equilsom-routine*/
-  soil->decomp_litter_mean.carbon+=decom_litter.carbon;
-  soil->decomp_litter_mean.nitrogen+=decom_litter.nitrogen;
+    /*sum for equilsom-routine*/
+    soil->decomp_litter_mean.carbon+=decom_litter.carbon;
+    soil->decomp_litter_mean.nitrogen+=decom_litter.nitrogen;
   } /* end of gtemp_soil[0]>0 */
 
   /* NO3 and N2O from nitrification */
   forrootsoillayer(l)
   {
-	//wscaler=(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l])) : 0;
     fac_wfps = f_wfps(soil,l);
     fac_temp = f_temp(soil->temp[l]);
-    //printf("NH4=%g\n",soil->NH4[l]);
     F_NO3=param.k_max*soil->NH4[l]*fac_temp*fac_wfps*f_ph(stand->cell->soilph);
     if(F_NO3>soil->NH4[l])
       F_NO3=soil->NH4[l];
     F_N2O=param.k_2*F_NO3;
-    //printf("soil->NH4[%d]=%g, FNO3=%g\n,FN2O=%g\n",l, soil->NH4[l],F_NO3,F_N2O);
     soil->NO3[l]+=F_NO3*(1-param.k_2);
 #ifdef SAFE
     if(soil->NO3[l]<-epsilon)
@@ -306,9 +304,6 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
     flux.nitrogen += F_N2O;
     /* F_N2O is given back for output */
   }
-  /*sum for equilsom-routine*/
-  //soil->decomp_litter_mean.carbon+=decom_litter.carbon;
-  //soil->decomp_litter_mean.nitrogen+=decom_litter.nitrogen;
 #ifdef MICRO_HEATING
   soil->litter.decomC=decom_litter.carbon*param.atmfrac; /*only for mircobiological heating*/
 #endif

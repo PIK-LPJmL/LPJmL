@@ -1429,7 +1429,7 @@ void lpj_update_
                   if(config.laimax_interpolate!=CONST_LAI_MAX)
                     laimax_manage(&grid[cell].ml.manage,config.pftpar+npft,npft,ncft,year);
                   if(year>config.firstyear-config.nspinup)
-                    landusechange(grid+cell,npft,ncft,intercrop,istimber,year,&config);
+                    landusechange(grid+cell,npft,ncft,intercrop,year,&config);
                   else if(grid[cell].ml.dam)
                     landusechange_for_reservoir(grid+cell,config.pftpar,npft,istimber,
                                                 intercrop,ncft,year);
@@ -1767,7 +1767,7 @@ void lpj_update_
                 printcell(grid+cell,1,ncft,input.landuse!=NULL);
               }
 #endif
-              if(config->equilsoil)
+              if(config.equilsoil)
               {
 
                 if(config.nspinup>veg_equil_year &&

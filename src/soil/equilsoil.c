@@ -38,9 +38,9 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
   int l,p,f;
   Real sumlitter,pftlitter,wood=0,socfraction;
   Poolpar *k_mean,*c0,*sum,*k_mean_layer;
-  //Poolpar cn_ratio[LASTLAYER];
-  //Pool c_before[LASTLAYER];
-  //Real total1=0, total2=0;
+  Poolpar cn_ratio[LASTLAYER];
+  Pool c_before[LASTLAYER];
+  Real total1=0, total2=0;
   k_mean_layer=newvec(Poolpar,LASTLAYER);
   check(k_mean_layer);
   k_mean=newvec(Poolpar,ntotpft);
@@ -50,124 +50,130 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
   sum=newvec(Poolpar,ntotpft);
   check(sum);
   sumlitter=littercarbon(&soil->litter);
-
- // shift true only calculates the carbon shift rates into the lower layers
-  soil->decomp_litter_mean.carbon/=(soil_equil_year-veg_equil_year);
-  soil->decomp_litter_mean.nitrogen/=(soil_equil_year-veg_equil_year);
-
-
-  if(shift)
-  {
-    forrootsoillayer(l)
-    {
-      k_mean_layer[l].fast=soil->k_mean[l].fast/cshift_year;
-      k_mean_layer[l].slow=soil->k_mean[l].slow/cshift_year;
-    }
-  }
-  else
-    forrootsoillayer(l)
-    {
-      k_mean_layer[l].fast=soil->k_mean[l].fast/(soil_equil_year-veg_equil_year);
-      k_mean_layer[l].slow=soil->k_mean[l].slow/(soil_equil_year-veg_equil_year);
-    }
+  
+  
+  /* if shift is  true equilsoil only calculates the carbon shift rates into the lower layers */
   for(p=0;p<ntotpft;p++)
     k_mean[p].fast=k_mean[p].slow=sum[p].fast=sum[p].slow=c0[p].fast=c0[p].slow=0.0;
+ 
   forrootsoillayer(l)
+  {
+    c_before[l].fast.carbon=soil->pool[l].fast.carbon;
+    c_before[l].slow.carbon=soil->pool[l].slow.carbon;
+  }
+  if(!shift)
+  {
+    soil->decomp_litter_mean.carbon/=(soil_equil_year-veg_equil_year);
+    soil->decomp_litter_mean.nitrogen/=(soil_equil_year-veg_equil_year);
+  } 
+  else //if(shift==TRUE)
+  {
+    forrootsoillayer(l)
+    {
+      k_mean_layer[l].fast=soil->k_mean[l].fast/(cshift_year+1);
+      k_mean_layer[l].slow=soil->k_mean[l].slow/(cshift_year+1);
+      for(p=0;p<ntotpft;p++)
+      {
+        socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
+                    - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
+        k_mean[p].fast+=k_mean_layer[l].fast*socfraction;
+        k_mean[p].slow+=k_mean_layer[l].slow*socfraction;
+      }
+    }
+    forrootsoillayer(l)
+    {
+      for(p=0;p<ntotpft;p++)
+      {
+        socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
+                    - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
+        soil->c_shift_fast[l][p]=socfraction*k_mean_layer[l].fast/k_mean[p].fast;
+        soil->c_shift_slow[l][p]=socfraction*k_mean_layer[l].slow/k_mean[p].slow;
+        sum[p].fast+=soil->c_shift_fast[l][p];
+        sum[p].slow+=soil->c_shift_slow[l][p];
+      }
+      soil->k_mean[l].slow=soil->k_mean[l].fast=0.0;
+    }
+    soil->count=0;
+    soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
     for(p=0;p<ntotpft;p++)
     {
-      socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
-            - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
-      k_mean[p].fast+=k_mean_layer[l].fast*socfraction;
-      k_mean[p].slow+=k_mean_layer[l].slow*socfraction;
-      c0[p].fast+=k_mean_layer[l].fast>epsilon ? (1-param.atmfrac)*param.fastfrac*(soil->decomp_litter_mean.carbon)/k_mean_layer[l].fast*socfraction : 0;
-      c0[p].slow+=k_mean_layer[l].slow>epsilon ? (1-param.atmfrac)*(1.0-param.fastfrac)*(soil->decomp_litter_mean.carbon)/k_mean_layer[l].slow*socfraction : 0;
+      if(sum[p].fast<1.0 && sum[p].fast>0.0)
+      //if(sum[p].fast>=epsilon)
+        for (l=0;l<LASTLAYER;l++) 
+          soil->c_shift_fast[l][p]=soil->c_shift_fast[l][p]/sum[p].fast;
+      else if (sum[p].fast<epsilon)
+      {
+        soil->c_shift_fast[0][p]=1.0;
+        for (l=1;l<LASTLAYER;l++) 
+          soil->c_shift_fast[l][p]=0;
+      }
+      if(sum[p].slow<1.0 && sum[p].slow>0.0)
+      //if(sum[p].slow>=epsilon)
+        for (l=0;l<LASTLAYER;l++) 
+          soil->c_shift_slow[l][p]=soil->c_shift_slow[l][p]/sum[p].slow;
+      else if (sum[p].slow<epsilon)
+      {
+        soil->c_shift_slow[0][p]=1.0;
+        for (l=1;l<LASTLAYER;l++) 
+          soil->c_shift_slow[l][p]=0;
+      }
     }
+  }//if(shift==TRUE)
 
-  if(soil->decomp_litter_mean.carbon>epsilon)
+  if(!shift)
   {
-    if(!shift)
+    if(soil->decomp_litter_mean.carbon>epsilon)
     {
       forrootsoillayer(l)
       {
-        //cn_ratio[l].slow=soil->pool[l].slow.carbon/soil->pool[l].slow.nitrogen;
-        //cn_ratio[l].fast=soil->pool[l].fast.carbon/soil->pool[l].fast.nitrogen;
+        k_mean_layer[l].fast=soil->k_mean[l].fast/(soil_equil_year-veg_equil_year);
+        k_mean_layer[l].slow=soil->k_mean[l].slow/(soil_equil_year-veg_equil_year);
+        for(p=0;p<ntotpft;p++)
+        {
+          socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
+                      - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
+
+#ifdef LINEAR_DECAY
+          c0[p].fast+=k_mean_layer[l].fast>epsilon ? (1-param.atmfrac)*param.fastfrac*soil->decomp_litter_mean.carbon/k_mean_layer[l].fast*soil->c_shift_fast[l][p] : 0;
+          c0[p].slow+=k_mean_layer[l].slow>epsilon ? (1-param.atmfrac)*(1.0-param.fastfrac)*soil->decomp_litter_mean.carbon/k_mean_layer[l].slow*soil->c_shift_slow[l][p] : 0;
+#else
+          c0[p].fast+=k_mean_layer[l].fast>epsilon ? (1-param.atmfrac)*param.fastfrac*soil->decomp_litter_mean.carbon*soil->c_shift_fast[l][p]/(1.0-exp(-k_mean_layer[l].fast)) : 0; 
+          c0[p].slow+=k_mean_layer[l].slow>epsilon ? (1-param.atmfrac)*(1.0-param.fastfrac)*soil->decomp_litter_mean.carbon*soil->c_shift_slow[l][p]/(1.0-exp(-k_mean_layer[l].slow)) : 0; 
+#endif
+        }
+      }
+      forrootsoillayer(l)
+      {
+        cn_ratio[l].slow=soil->pool[l].slow.carbon/soil->pool[l].slow.nitrogen;
+        cn_ratio[l].fast=soil->pool[l].fast.carbon/soil->pool[l].fast.nitrogen;
         soil->pool[l].slow.carbon=soil->pool[l].fast.carbon=0;
         soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=0;
         for(p=0;p<soil->litter.n;p++)
         {
+          socfraction=pow(10,pftpar[soil->litter.ag[p].pft->id].soc_k*logmidlayer[l])
+                      - (l>0 ? pow(10,pftpar[soil->litter.ag[p].pft->id].soc_k*logmidlayer[l-1]): 0);
           wood=0;
           for(f=0;f<NFUELCLASS;f++)
             wood+=soil->litter.ag[p].trait.wood[f].carbon;
           pftlitter=soil->litter.bg[p].carbon+soil->litter.ag[p].trait.leaf.carbon+wood;
-          socfraction=pow(10,soil->litter.ag[p].pft->soc_k*logmidlayer[l])
-                   - (l>0 ? pow(10,soil->litter.ag[p].pft->soc_k*logmidlayer[l-1]): 0);
           if(sumlitter>0)
-            soil->pool[l].slow.carbon+=c0[soil->litter.ag[p].pft->id].slow*socfraction*pftlitter/sumlitter;
+             //soil->pool[l].slow.carbon+=c0[soil->litter.ag[p].pft->id].slow*soil->c_shift_slow[l][soil->litter.ag[p].pft->id]*pftlitter/sumlitter;
+             soil->pool[l].slow.carbon+=c0[soil->litter.ag[p].pft->id].slow*socfraction*pftlitter/sumlitter;
           if(sumlitter>0)
-            soil->pool[l].fast.carbon+=c0[soil->litter.ag[p].pft->id].fast*socfraction*pftlitter/sumlitter;
+             //soil->pool[l].fast.carbon+=c0[soil->litter.ag[p].pft->id].fast*soil->c_shift_fast[l][soil->litter.ag[p].pft->id]*pftlitter/sumlitter;
+             soil->pool[l].fast.carbon+=c0[soil->litter.ag[p].pft->id].fast*socfraction*pftlitter/sumlitter;
         }
-        soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/soil->par->cn_ratio;
-        soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/soil->par->cn_ratio;
-        //soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/cn_ratio[l].slow;
-        //soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/cn_ratio[l].fast;
-        //soil->NH4[l]=0;//soil->pool[l].slow.nitrogen/10000;
-        //soil->NO3[l]=0;//soil->pool[l].slow.nitrogen/10000;
-//         if (soil->decomp_litter_mean.nitrogen<epsilon)
-//         {
-//           soil->NH4[l]=0;
-//           soil->NO3[l]=0;
-//           soil->pool[l].slow.nitrogen=0;
-//           soil->pool[l].fast.nitrogen=0;
-//         }
+        //soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/soil->par->cn_ratio;
+        //soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/soil->par->cn_ratio;
+        soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/cn_ratio[l].slow;
+        soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/cn_ratio[l].fast;
         soil->k_mean[l].slow=soil->k_mean[l].fast=0.0;
       }
       soil->count=0;
       soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
     }
-    else
-    {
-      forrootsoillayer(l)
-      {
-        for(p=0;p<ntotpft;p++)
-        {
-          socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])
-                    - (l>0 ? pow(10,pftpar[p].soc_k*logmidlayer[l-1]): 0);
-          soil->c_shift_fast[l][p]=socfraction*k_mean_layer[l].fast/k_mean[p].fast;
-          soil->c_shift_slow[l][p]=socfraction*k_mean_layer[l].slow/k_mean[p].slow;
-          sum[p].fast+=soil->c_shift_fast[l][p];
-          sum[p].slow+=soil->c_shift_slow[l][p];
-        }
-        soil->k_mean[l].slow=soil->k_mean[l].fast=0.0;
-      }
-      soil->count=0;
-      soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
-      for(p=0;p<ntotpft;p++)
-      {
-        if(sum[p].fast<1.0 && sum[p].fast>0.0)
-        //if(sum[p].fast>=epsilon)
-          for (l=0;l<LASTLAYER;l++)
-            soil->c_shift_fast[l][p]=soil->c_shift_fast[l][p]/sum[p].fast;
-        else if (sum[p].fast<epsilon)
-        {
-          soil->c_shift_fast[0][p]=1.0;
-          for (l=1;l<LASTLAYER;l++)
-            soil->c_shift_fast[l][p]=0;
-        }
-        if(sum[p].slow<1.0 && sum[p].slow>0.0)
-        //if(sum[p].slow>=epsilon)
-          for (l=0;l<LASTLAYER;l++)
-            soil->c_shift_slow[l][p]=soil->c_shift_slow[l][p]/sum[p].slow;
-        else if (sum[p].slow<epsilon)
-        {
-          soil->c_shift_slow[0][p]=1.0;
-          for (l=1;l<LASTLAYER;l++) soil->c_shift_slow[l][p]=0;
-        }
-      }
-    }
-  }
-  else
-  { /* if there is no carbon, remove mineral N from initialization */
-    if(!shift)
+    else //if(shift==TRUE)
+    { /* if there is no carbon, remove mineral N from initialization */
       forrootsoillayer(l)
       {
         soil->NH4[l]=soil->NO3[l]=0.0;
@@ -175,32 +181,10 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
         soil->pool[l].fast.nitrogen=0;
         soil->k_mean[l].slow=soil->k_mean[l].fast=0.0;
         soil->count=0;
-        soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
       }
-  }
-  /* avoiding soilC increases in regions with low thawdepth (=permafrost) */
-/*
-  if(shift!=TRUE)
-    if (soil->mean_maxthaw<1500)
-    {
-      forrootsoillayer(l)
-      {
-        total1+=soil->pool[l].fast.carbon+soil->pool[l].slow.carbon;
-        total2+=c_before[l].fast.carbon+c_before[l].slow.carbon;
-      }
-       //if soilcarbon is to increase by 10% in permafrost regions, reset to original
-      if (total1>total2*1.1)
-      {
-        forrootsoillayer(l)
-        {
-          soil->pool[l].fast.carbon=c_before[l].fast.carbon;
-          soil->pool[l].slow.carbon=c_before[l].slow.carbon;
-          soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/cn_ratio[l].slow;
-          soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/cn_ratio[l].fast;
-        }
-      }
+      soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
     }
-*/
+  }
 
   /* freeing memory */
   free(k_mean_layer);

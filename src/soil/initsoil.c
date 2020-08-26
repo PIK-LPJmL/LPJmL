@@ -33,8 +33,8 @@ Bool initsoil(Soil *soil,             /**< Pointer to soil data */
       soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=soil->NH4[l]=soil->NO3[l]=0.0;
     else
     {
-      soil->pool[l].slow.nitrogen=1500*(soildepth[l]/layerbound[BOTTOMLAYER]);
-      soil->pool[l].fast.nitrogen=1500*(soildepth[l]/layerbound[BOTTOMLAYER]);
+      soil->pool[l].slow.nitrogen=5500*(soildepth[l]/layerbound[BOTTOMLAYER]);
+      soil->pool[l].fast.nitrogen=5500*(soildepth[l]/layerbound[BOTTOMLAYER]);
       soil->pool[l].slow.carbon=soil->pool[l].slow.nitrogen*soil->par->cn_ratio;
       soil->pool[l].fast.carbon=soil->pool[l].fast.nitrogen*soil->par->cn_ratio;
       soil->NH4[l]=soil->NO3[l]=soil->pool[l].slow.nitrogen/10;

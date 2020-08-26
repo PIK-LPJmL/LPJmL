@@ -108,6 +108,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     }
     fprintf(file,"allocation threshold:\t%g\n",param.allocation_threshold);
     fprintf(file,"hfrac2:\t\t%g (gC/m2)\n",param.hfrac2);
+    fprintf(file,"rootreduction:\t%g\n",param.rootreduction);
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config->soilpar,config->nsoil,config->with_nitrogen);
