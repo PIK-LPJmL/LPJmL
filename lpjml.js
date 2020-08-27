@@ -204,6 +204,8 @@ ID                         Fmt                    filename
     { "id" : MTRANSP_B,        "file" : { "fmt" : RAW, "name" : "output/mtransp_b.bin"}},
     { "id" : MEVAP_B,          "file" : { "fmt" : RAW, "name" : "output/mevap_b.bin"}},
     { "id" : MINTERC_B,        "file" : { "fmt" : RAW, "name" : "output/mintec_b.bin"}},
+    { "id" : PROD_TURNOVER,    "file" : { "fmt" : RAW, "name" : "output/prod_turnover.bin"}},
+    { "id" : DEFOREST_EMIS,    "file" : { "fmt" : RAW, "name" : "output/deforest_emis.bin"}},
     { "id" : ACONV_LOSS_EVAP,  "file" : { "fmt" : RAW, "name" : "output/aconv_loss_evap.bin"}},
     { "id" : ACONV_LOSS_DRAIN, "file" : { "fmt" : RAW, "name" : "output/aconv_loss_drain.bin"}}
 /*------------------------ ---------------------- ------------------------------- */

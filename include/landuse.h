@@ -80,6 +80,8 @@ typedef struct
   GrassScenarioType grass_scenario; /**< 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
 #ifdef IMAGE
   Image_data *image_data; /**< pointer to IMAGE data structure */
+#else
+  Pool product;
 #endif
 } Managed_land;
 

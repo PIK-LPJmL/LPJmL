@@ -27,4 +27,16 @@ Real product_turnover(Image_data *data)
   return data->prod_turn_fast+data->prod_turn_slow;
 } /* of 'product_turnover' */
 
+#else
+Real product_turnover(Cell *cell)
+{
+  cell->output.prod_turnover.carbon+=cell->ml.product.fast.carbon*PRODUCT_FAST;
+  cell->output.prod_turnover.carbon+=cell->ml.product.slow.carbon*PRODUCT_SLOW;
+  cell->ml.product.fast.carbon*=(1.0-PRODUCT_FAST);
+  cell->ml.product.slow.carbon*=(1.0-PRODUCT_SLOW);
+  cell->output.prod_turnover.nitrogen+=cell->ml.product.fast.nitrogen*PRODUCT_FAST;
+  cell->output.prod_turnover.nitrogen+=cell->ml.product.slow.nitrogen*PRODUCT_SLOW;
+  cell->ml.product.fast.nitrogen*=(1.0-PRODUCT_FAST);
+  cell->ml.product.slow.nitrogen*=(1.0-PRODUCT_SLOW);
+}
 #endif

@@ -67,8 +67,8 @@
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
   "nfert_split" : 5,                  /* threshold fertilizer input for split application */
   "residues_in_soil" : 0.1,           /* minimum residues in soil*/
-  "fburnt" : 0,                       /* fraction of trees burnt at deforestation */
-  "ftimber" : 1,                      /* timber fraction at deforestation */
+  "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
+  "ftimber" : 0.76,                   /* timber fraction at deforestation */
   "esoil_reduction" : 0.0,            /* reduction of soil evaporation */
   "rw_buffer_max" : 0.0,              /* size of rainwater harvesting tank [mm] */
   "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */
