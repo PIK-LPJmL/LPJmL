@@ -99,7 +99,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #endif
         cell->output.deforest_emissions.carbon+=stocks.carbon*standfrac;
         cell->output.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
-        soil->NO3[0]+=stocks.nitrogen*param.q_ash*standfrac;
+        soil->NO3[0]+=stocks.nitrogen*param.q_ash;
       } /* if tree */
     } /* is timber */
 #ifdef DEBUG_IMAGE

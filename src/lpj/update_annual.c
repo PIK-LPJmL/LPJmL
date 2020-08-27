@@ -82,6 +82,14 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
     cell->output.product_pool_slow=cell->ml.image_data->timber.slow;
   }
 #else
+  /* reset product pools after first year with land use to avoid large peak */
+  if(year==config->firstyear-config->nspinup&&!config->landuse_restart)
+  {
+    cell->ml.product.fast.carbon=cell->ml.product.fast.nitrogen=0;
+    cell->ml.product.slow.carbon=cell->ml.product.slow.nitrogen=0;
+    cell->output.timber_harvest.carbon=cell->output.timber_harvest.nitrogen=0;
+    cell->output.deforest_emissions.carbon=cell->output.deforest_emissions.nitrogen=0;
+  }
   product_turnover(cell);
   cell->output.product_pool_fast.carbon=cell->ml.product.fast.carbon;
   cell->output.product_pool_slow.carbon=cell->ml.product.slow.carbon;
