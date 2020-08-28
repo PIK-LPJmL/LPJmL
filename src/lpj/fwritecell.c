@@ -90,7 +90,12 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
       if(fwrite(grid[cell].ml.gs,sizeof(int),2*ncft,file)!=2*ncft)
         break;
       if(grid[cell].ml.landfrac!=NULL)
+      {
         fwritelandfrac(file,grid[cell].ml.landfrac,ncft);
+#ifndef IMAGE
+        fwrite(&grid[cell].ml.product,sizeof(Pool),1,file);
+#endif
+      }
       if(grid[cell].ml.fertilizer_nr!=NULL)
         fwritelandfrac(file,grid[cell].ml.fertilizer_nr,ncft);
     }
