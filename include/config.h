@@ -172,7 +172,7 @@ typedef struct
   Bool ispopulation;
   Bool river_routing;  /**< river routing enabled */
   Bool permafrost;     /**< permafrost module enabled */
-  Bool new_phenology;	/**< new phenology enabled */
+  Bool new_phenology;  /**< new phenology enabled */
   Bool equilsoil;      /**< equilsoil is called */
   Bool from_restart;   /**< reading from restart */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
@@ -224,6 +224,7 @@ extern void fprintfiles(FILE *,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);
 extern size_t getsize(int,const Config *);
+extern void annual_climbuf(Climbuf *,Real,int,int,int,const Config *); /* moved here from climbuf.h because the config argument is not yet defined there */
 
 /* Definition of macros */
 

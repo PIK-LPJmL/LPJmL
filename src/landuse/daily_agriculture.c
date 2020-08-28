@@ -92,9 +92,8 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     if(climate->tmin<(-5))
     {
       crop=pft->data;
-      if(crop->fphu>0.5&&crop->fphu<0.95) /* frost damage possible after storage organs start growing (about fphu>0.5)*/
+      if(crop->fphu>0.5) /* frost damage possible after storage organs start growing (about fphu>0.5)*/
       {
-        printf("daily_agriculture.c: frostkill of cft %s on day %d\n", pft->par->name, day);
         crop->frostkill=TRUE;
 //        litter_update_crop(&pft->stand->soil.litter,pft,1.0);
 //        delpft(&stand->pftlist,p);

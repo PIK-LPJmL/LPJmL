@@ -1543,8 +1543,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     /* set landuse to zero if no valid soil */
     if ((grid[cell].skip || soiltype==ROCK || soiltype==ICE || soiltype < 0) && sum>0)
     {
-      fprintf(stderr,"WARNING!! setting LU (sum:%g) to zero, because of invalid soil type %d (%g/%g) in cell %d at year %d\n",
-              sum,soiltype,grid[cell].coord.lon,grid[cell].coord.lat, cell+config->startgrid,yearl+landuse->landuse.firstyear);
+      //fprintf(stderr,"WARNING!! setting LU (sum:%g) to zero, because of invalid soil type %d (%g/%g) in cell %d at year %d\n",
+      //        sum,soiltype,grid[cell].coord.lon,grid[cell].coord.lat, cell+config->startgrid,yearl+landuse->landuse.firstyear);
       for(j=0; j<ncft; j++)
       {
         grid[cell].ml.landfrac[0].crop[j]/=sum;

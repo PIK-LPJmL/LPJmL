@@ -16,7 +16,7 @@ README: how to run LPJmL_ggcmi_phase3
 
 3. compile code:
 	- manually add -DCROPSHEATFROST to LPJFLAGS in config/Makefile.cluster2015 
-	- configure makefile with './configure.sh -DDOUBLE_HARVEST'
+	- configure makefile with './configure.sh -DDOUBLE_HARVEST -DCROPSHEATFROST'
 	- compile (make -j16 all)
 
 4. Create LPJmL restart file:
