@@ -88,6 +88,14 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
                 grid[cell].balance.estab_storage_grass[1].carbon,
                 grid[cell].balance.estab_storage_grass[0].nitrogen,
                 grid[cell].balance.estab_storage_grass[1].nitrogen);
+#ifndef IMAGE
+        fprintf(file,"fast product:\t%g (gC/m2) %g (gN/m2)\n",
+                grid[cell].ml.product.fast.carbon,
+                grid[cell].ml.product.fast.nitrogen);
+        fprintf(file,"slow product:\t%g (gC/m2) %g (gN/m2)\n",
+                grid[cell].ml.product.slow.carbon,
+                grid[cell].ml.product.slow.nitrogen);
+#endif
       }
       else
       {
@@ -99,6 +107,12 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
         fprintf(file,"grass %6.2f %6.2f (gC/m2)\n",
                 grid[cell].balance.estab_storage_grass[0].carbon,
                 grid[cell].balance.estab_storage_grass[1].carbon);
+#ifndef IMAGE
+        fprintf(file,"fast product:\t%g (gC/m2)\n",
+                grid[cell].ml.product.fast.carbon);
+        fprintf(file,"slow product:\t%g (gC/m2)\n",
+                grid[cell].ml.product.slow.carbon);
+#endif
       }
       if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
         fprintignition(file,&grid[cell].ignition);

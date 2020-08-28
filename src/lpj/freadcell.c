@@ -98,7 +98,12 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     if(freadint(cell->ml.gs,2*ncft,swap,file)!=2*ncft)
       return TRUE;
     if(cell->ml.landfrac!=NULL && config->landuse_restart)
+    {
       freadlandfrac(file,cell->ml.landfrac,ncft,swap);
+#ifndef IMAGE
+      freadreal((Real *)&cell->ml.product,sizeof(Pool)/sizeof(Real),swap,file);
+#endif
+    }
     if(cell->ml.fertilizer_nr!=NULL && config->landuse_restart)
       freadlandfrac(file,cell->ml.fertilizer_nr,ncft,swap);
   }
