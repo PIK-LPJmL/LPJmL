@@ -32,9 +32,9 @@ co2=("default" "2015co2")
 socioecon=("histsoc" "2015soc")
 
 # restart option: CREATE_RESTART or FROM_RESTART
-# sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
+sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
 restartsetup="nv" # use "nv_rr" for spinup with river routing, do not uncomment for "FROM_RESTART" runs, stores information if river routing was used during spinup
-sim="FROM_RESTART"
+# sim="FROM_RESTART"
 
 if [ $# -lt 1 ]
 then
@@ -66,14 +66,14 @@ do
 # ----------------------------------------------- #
 
 nyear_spin=8000
-# nyear_spin2=390
-nyear_spin2=30
+nyear_spin2=390
+# nyear_spin2=30
 
 if [ ${sim} = "CREATE_RESTART" ]
 then
   setup="lpjml_restart_${climate[c]}_${restartsetup}"  
   args=""
-  runtime=400
+  runtime=800
 else
   setup="lpjml_phase3_${climate[c]}_${socioecon[s]}_${co2[co]}_${startyear[c]}_${endyear[c]}_CROPSHEATFROST"
   # setup="lpjml_phase3_${climate[c]}_${socioecon[s]}_${co2[co]}_${startyear[c]}_${endyear[c]}"
@@ -374,7 +374,7 @@ ID                         Fmt                    filename
   "firstyear": ${startyear[c]}, /* first year of simulation */
   "lastyear" : ${endyear[c]}, /* last year of simulation */
   "outputyear": ${startyear[c]}, /* first year output is written  */
-  "restart" :  false, /* start from restart file */
+  "restart" :  true, /* start from restart file */
   "restart_filename" : "${simdir}/lpjml_restart_${climate[c]}_${restartsetup}/restart_${restartyear[c]}_${restartsetup}_${nyear_spin}.lpj", /* filename of restart file */
   "write_restart" : false /* create restart file */
 
