@@ -26,17 +26,16 @@ restartyear=1820
 startyear=1850
 endyear=2100
 
-# CO2 concentration: default = transient, 2015co2 = constant at 2015 level
-co2=("default" "1850co2")
-
 # socio-economic drivers: histsoc = transient fertilizer, 2015soc = constant 2015 fertilizer
 socioecon=("histsoc" "2015soc")
+
+# CO2 concentration: default = transient, 2015co2 = constant at 2015 level
+co2=("default" "1850co2")
 
 # restart option: CREATE_RESTART or FROM_RESTART
 # sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
 restartsetup="nv" # use "nv_rr" for spinup with river routing, do not uncomment for "FROM_RESTART" runs, stores information if river routing was used during spinup
 sim="FROM_RESTART"
-nyear_spin=390
 
 if [ $# -lt 1 ]
 then
@@ -66,6 +65,9 @@ for ((co=1;co<2;co+=1)) # co2 options (default = 0, 2015co2 = 1)
 do
 
 # ----------------------------------------------- #
+
+nyear_spin=8000
+nyear_spin2=30
 
 if [ ${sim} = "CREATE_RESTART" ]
 then
@@ -177,18 +179,20 @@ EOF
   "landuse_year_const" : 2015, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "equilsoil" : false,
 #else
   "population" : false,
   "landuse" : NO_LANDUSE,
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,
+  "equilsoil" : true,
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : PRESCRIBED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "crop_phu_option" : PRESCRIBED_CROP_PHU,    /* PRESCRIBED_CROP_PHU (PHU dataset used, requires PRESCRIBED_SDATE), SEMISTATIC_CROP_PHU (LPJmL4 semi-static PHU approach) */
   "sdate_fixyear" : 2015,               /* year after which sowing dates are held constant (for both FIXED_SDATE or NO_FIXED_SDATE), also used to fix updating vernalization requirements */
-  "intercrop" : true,                   /* intercrops on setaside */
+  "intercrop" : false,                   /* intercrops on setaside */
   "residue_treatment" : FIXED_RESIDUE_REMOVE, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
   "irrigation" : POT_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
@@ -341,13 +345,8 @@ ID                         Fmt                    filename
     { "id" : CFT_EVAP2,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/cft_evap2.bin)}},
     { "id" : CFT_INTERC,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/cft_interc.bin)}},
     { "id" : CFT_INTERC2,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/cft_interc2.bin)}},
-    { "id" : MSWC1,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l1_20cm.bin)}},
-    { "id" : MSWC2,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l2_30cm.bin)}},
-    { "id" : MSWC3,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/msoilwatercont_l3_50cm.bin)}},
     { "id" : CFT_MSWC,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/cft_mrootmoist.bin)}},
-    { "id" : CFT_MSWC2,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/cft_mrootmoist2.bin)}},
     { "id" : MROOTMOIST,     "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/mroormoist_1m.bin)}}
-//    { "id" : SEASONALITY,      "file" : { "fmt" : RAW, "name" : mkstr(${outdir}/seasonality.bin)}},
 #ifdef DAILY_OUTPUT
 //    { "id" : D_VDSUM,            "file" : { "fmt" : RAW, "name" : "output/d_vdsum.bin"}},
 //    { "id" : D_PVD,            "file" : { "fmt" : RAW, "name" : "output/d_pdv.bin"}},
@@ -392,7 +391,7 @@ ID                         Fmt                    filename
 
 #else
 
-  "nspinup" : 30,   /* spinup years */
+  "nspinup" : $nyear_spin2,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": ${startyear}, /* first year of simulation */
   "lastyear" : ${endyear}, /* last year of simulation */

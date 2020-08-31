@@ -25,16 +25,16 @@ restartyear=(1950 1949 1871)
 startyear=(1980 1979 1901)
 endyear=(2010 2012 2016)
 
-# CO2 concentration: default = transient, 2015co2 = constant at 2015 level
-co2=("default" "2015co2")
-
 # socio-economic drivers: histsoc = transient fertilizer, 2015soc = constant 2015 fertilizer
 socioecon=("histsoc" "2015soc")
 
+# CO2 concentration: default = transient, 2015co2 = constant at 2015 level
+co2=("default" "2015co2")
+
 # restart option: CREATE_RESTART or FROM_RESTART
-sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
+# sim="CREATE_RESTART" # if creating restart make sure the script is not looping over climate forcings, CO2, or socioecon settings
 restartsetup="nv" # use "nv_rr" for spinup with river routing, do not uncomment for "FROM_RESTART" runs, stores information if river routing was used during spinup
-# sim="FROM_RESTART"
+sim="FROM_RESTART"
 
 if [ $# -lt 1 ]
 then
@@ -75,8 +75,7 @@ then
   args=""
   runtime=800
 else
-  setup="lpjml_phase3_${climate[c]}_${socioecon[s]}_${co2[co]}_${startyear[c]}_${endyear[c]}_CROPSHEATFROST"
-  # setup="lpjml_phase3_${climate[c]}_${socioecon[s]}_${co2[co]}_${startyear[c]}_${endyear[c]}"
+  setup="lpjml_phase3_${climate[c]}_${socioecon[s]}_${co2[co]}_${startyear[c]}_${endyear[c]}"
   args="-DFROM_RESTART"
   runtime=200
 fi

@@ -36,7 +36,7 @@ ncrops=length(simulated_crops)
 irrigs <- c("noirr","firr")
 bands <- c(1,2,3,4,5,6)
 crops <- c("wwh","swh","mai","ri1","ri2","soy")
-cropf <- c("winter_wheat","spring_wheat","maize","soy")
+cropf <- c("winter_wheat","spring_wheat","maize","rice1","rice2","soy")
 
 all_variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")
 var_sel<- which(all_variables==shellarg) #c(1,3,4,5) # indices of variables to be processed, in "variables"
