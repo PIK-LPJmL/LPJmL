@@ -22,6 +22,7 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
                     Real mprec,  /**< monthly average precipitation (mm) */
                     int npft,    /**< number of natural PFTs */
                     int nbiomass,/**< number of biomass PFTs */
+                    int nwft,    /**< number of wood plantations PFTs */
                     int ncft,    /**< number of crop PFTs */
                     int month    /**< month (0..11) */
                    )
@@ -42,7 +43,7 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   } /* of foreachstand */
   for(i=0;i<NSOILLAYER;i++)
     cell->output.mswc[i]*=ndaymonth1[month];
-  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2+npft-nbiomass;i++)
+  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2+npft-nbiomass-nwft;i++)
     cell->output.mpft_lai[i]*=ndaymonth1[month];
   cell->output.mrootmoist*=ndaymonth1[month];
   cell->output.mfiredi*=ndaymonth1[month];
