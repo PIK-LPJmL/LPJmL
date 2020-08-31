@@ -53,9 +53,9 @@ Bool fread_crop(FILE *file, /**< file pointer */
   freadreal1(&crop->nfertilizer,swap,file);
   freadreal1(&crop->nmanure,swap,file);
   freadreal1(&crop->vscal_sum,swap,file);
-  freadreal1(&crop->supplysum,swap,file);
- #ifdef DOUBLE_HARVEST
   freadint1(&crop->frostkill,swap,file);
+ #ifdef DOUBLE_HARVEST
+  freadreal1(&crop->supplysum,swap,file);
   freadreal1(&crop->petsum,swap,file);
   freadreal1(&crop->evapsum,swap,file);
   freadreal1(&crop->transpsum,swap,file);
