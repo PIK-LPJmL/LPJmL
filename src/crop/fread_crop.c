@@ -69,6 +69,6 @@ Bool fread_crop(FILE *file, /**< file pointer */
   freadint1(&crop->sdate,swap,file);
   return freadint1(&crop->sowing_year,swap,file)!=1;
 #else
-  return freadint1(&crop->frostkill,swap,file)!=1;
+  return freadreal1(&crop->supplysum,swap,file)!=1;
 #endif
 } /* of 'fread_crop' */
