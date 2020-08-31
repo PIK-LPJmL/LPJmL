@@ -91,7 +91,7 @@ extern Real water_stressed(Pft *,Real [LASTLAYER],Real,Real,
 
 extern Real infil_perc_irr(Stand *,Real,Real *,Bool,const Config *);
 extern Real infil_perc_rain(Stand *,Real,Real *,Bool,const Config *);
-extern Real albedo_stand(Stand *);                            
+extern Real albedo_stand(const Stand *);                            
 extern Landcover initlandcover(int,const Config *);
 extern Bool readlandcover(Landcover,const Cell *,int,const Config *);
 extern Real *getlandcover(Landcover,int);

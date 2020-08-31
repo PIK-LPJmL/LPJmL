@@ -22,7 +22,7 @@
 #define error(var,rc) if(rc){ if(isout) fprintf(stderr,"ERROR403: Cannot read '%s' in '%s': %s.\n",var,filename,nc_strerror(rc)); nc_close(coord->ncid); free(coord); return NULL;}
 #endif
 
-#define MISSING_VALUE_FLOAT -9999.
+//#define MISSING_VALUE_FLOAT -9999.
 
 struct coord_netcdf
 {

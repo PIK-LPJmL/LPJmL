@@ -65,5 +65,5 @@ extern void annual_climbuf(Climbuf *,Real,int,int,int,int);
 extern Bool fwriteclimbuf(FILE *,const Climbuf *,int);
 extern Bool freadclimbuf(FILE *,Climbuf *,Bool,int);
 extern void freeclimbuf(Climbuf *);
-
+extern void annual_climbuf(Climbuf *,Real,int,int,int,int); 
 #endif

@@ -18,7 +18,7 @@
 #define c_albAntarctica  0.7
 #define c_roughness      0.06 /* Roughness height of vegetation below the canopy. Source: FOAM/LPJ */
 
-Real albedo_stand(Stand *stand /**< pointer to stand */
+Real albedo_stand(const Stand *stand /**< pointer to stand */
                  )             /** \return albedo (0..1) */
 {
   int p;

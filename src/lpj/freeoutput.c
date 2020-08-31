@@ -83,7 +83,8 @@ void freeoutput(Output *output /**< Output data */
   output->cft_temp2=output->cft_prec2=output->cft_srad2=
     output->cft_aboveground_biomass2=NULL;
 #endif
-  output->sdate=output->hdate=output->husum=NULL;
+  output->sdate=output->hdate=NULL; 
+  output->husum=NULL;
   output->pft_harvest=NULL;
   output->cft_consump_water_g=output->cft_consump_water_b=output->cft_pet=NULL;
   output->cft_transp=output->cft_transp_b=output->cft_evap=output->cft_evap_b=output->cft_interc=output->cft_interc_b=
