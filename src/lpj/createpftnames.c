@@ -45,9 +45,9 @@ char **createpftnames(int index,           /**< output index */
         }
         break;
     case PFT_NPP: case PFT_GCGP: case MPFT_LAI:
-      for(i=0;i<npft-nbiomass;i++)
+      for(i=0;i<npft-nbiomass-nwft;i++)
         pftnames[i]=strdup(pftpar[i].name);
-      incr=npft-nbiomass;
+      incr=npft-nbiomass-nwft;
       for(i=0;i<2;i++)
       {
         for(j=0;j<ncft;j++)
@@ -127,7 +127,7 @@ char **createpftnames(int index,           /**< output index */
       break;
     case FPC:
       pftnames[0]=strdup("natural stand fraction");
-      for(i=0;i<npft-nbiomass;i++)
+      for(i=0;i<npft-nbiomass-nwft;i++)
         pftnames[i+1]=strdup(pftpar[i].name);
       break;
 #ifdef IMAGE

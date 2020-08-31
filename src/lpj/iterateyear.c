@@ -100,7 +100,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].output.mdischarge=grid[cell].output.mwateramount=grid[cell].ml.mdemand=0.0;
       if(!grid[cell].skip)
       {
-        initoutput_monthly(&grid[cell].output,npft,config->nbiomass,ncft);
+        initoutput_monthly(&grid[cell].output,npft,config->nbiomass,config->nwft,ncft);
         /* Initialize random seed */
         if(israndomprec(input.climate))
           srand48(config->seed+(config->startgrid+cell)*year*month);
@@ -194,7 +194,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(!grid[cell].skip)
         update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
                        cell,month),getmprec(input.climate,&grid[cell].climbuf,
-                       cell,month),npft,config->nbiomass,ncft,month);
+                       cell,month),npft,config->nbiomass,config->nwft,ncft,month);
     } /* of 'for(cell=0;...)' */
 
 #if defined IMAGE && defined COUPLED

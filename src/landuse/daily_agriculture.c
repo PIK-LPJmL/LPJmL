@@ -265,8 +265,8 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 
     if(gp_pft[getpftpar(pft,id)]>0.0)
     {
-      output->gcgp_count[pft->par->id-config->nbiomass+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]++;
-      output->pft_gcgp[pft->par->id-config->nbiomass+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
+      output->gcgp_count[pft->par->id-config->nbiomass-config->nwft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]++;
+      output->pft_gcgp[pft->par->id-config->nbiomass-config->nwft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
     npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd,&negbm,wdf,&output->daily);
     output->mnpp+=npp*stand->frac;
@@ -279,10 +279,10 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     output->cft_fpar[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac)))*(1-pft->albedo);
 
     if(config->pft_output_scaled)
-      output->pft_npp[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp*stand->frac;
+      output->pft_npp[(pft->par->id-config->nbiomass-config->nwft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp*stand->frac;
     else
-      output->pft_npp[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp;
-    output->mpft_lai[(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=actual_lai_crop(pft);
+      output->pft_npp[(pft->par->id-config->nbiomass-config->nwft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp;
+    output->mpft_lai[(pft->par->id-config->nbiomass-config->nwft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=actual_lai_crop(pft);
     crop=pft->data;
 #ifdef DOUBLE_HARVEST
     crop->lgp+=1;
