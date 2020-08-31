@@ -34,7 +34,7 @@ Bool initinput(Input *input,        /**< Input data */
     input->landuse=NULL; /* no landuse */
   if(config->wateruse)
   {
-    if((input->wateruse=initwateruse(config))==NULL)
+    if((input->wateruse=initwateruse(&config->wateruse_filename,config))==NULL)
       return TRUE;
   }
   else
@@ -42,7 +42,7 @@ Bool initinput(Input *input,        /**< Input data */
 #ifdef IMAGE
   if (config->wateruse_wd_filename.name != NULL)
   {
-    if ((input->wateruse_wd=initwateruse_wd(config)) == NULL) 
+    if ((input->wateruse_wd=initwateruse(&config->wateruse_wd_filename,config)) == NULL)
       return TRUE;
   }
   else
@@ -61,6 +61,6 @@ Bool initinput(Input *input,        /**< Input data */
       return TRUE;
   }
   else
-    input->landcover=NULL;    
+    input->landcover=NULL;
   return FALSE;
 } /* of 'initinput' */

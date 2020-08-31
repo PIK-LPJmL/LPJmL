@@ -41,8 +41,6 @@ struct landuse
 {
   Bool intercrop;      /**< intercropping possible (TRUE/FALSE) */
   Bool allcrops;       /**< all crops establish (TRUE/FALSE) */
-  int nbands;          /**< number of data items per cell */
-  int nbands_sdate;    /**< number of data items per cell for sowing dates */
   Climatefile landuse; /**< file pointer */
   Climatefile sdate;   /**< file pointer to prescribed sdates */
 };                     /**< definition of opaque datatype Landuse */
@@ -75,7 +73,6 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         free(landuse);
         return NULL;
       }
-      landuse->nbands=landuse->landuse.var_len;
     }
     else
     {
@@ -102,18 +99,18 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->landuse.nyear=header.nyear;
       landuse->landuse.size=header.ncell*header.nbands*typesizes[landuse->landuse.datatype];
       landuse->landuse.n=config->ngridcell*header.nbands;
-      landuse->nbands=header.nbands;
+      landuse->landuse.var_len=header.nbands;
       landuse->landuse.scalar=(version==1) ? 0.001 : header.scalar;
     }
-    if(landuse->nbands!=2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE) && landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE))
+    if(landuse->landuse.var_len!=2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE) && landuse->landuse.var_len!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE))
     {
-      if(landuse->nbands!=2*(ncft+NGRASS))
+      if(landuse->landuse.var_len!=2*(ncft+NGRASS))
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(isroot(*config))
           fprintf(stderr,
                   "ERROR147: Invalid number of bands=%d in landuse data file.\n",
-                  landuse->nbands);
+                  (int)landuse->landuse.var_len);
         free(landuse);
         return NULL;
       }
@@ -123,7 +120,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           fputs("WARNING022: No landuse for biomass defined.\n",stderr);
       }
     }
-    if(landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE) && isroot(*config))
+    if(landuse->landuse.var_len!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE) && isroot(*config))
       fputs("WARNING024: Land-use input does not include irrigation systems, suboptimal country values are used.\n",stderr);
   }
 
@@ -138,7 +135,6 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         free(landuse);
         return NULL;
       }
-      landuse->nbands_sdate=landuse->sdate.var_len;
     }
     else
     {
@@ -152,13 +148,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       if(config->sdate_filename.fmt==RAW)
       {
-        landuse->nbands_sdate=2*ncft;
+        landuse->sdate.var_len=2*ncft;
         landuse->sdate.datatype=LPJ_SHORT;
         landuse->sdate.offset=config->startgrid*header.nbands*sizeof(short);
       }
       else
       {
-        landuse->nbands_sdate=header.nbands;
+        landuse->sdate.var_len=header.nbands;
         landuse->sdate.datatype=header.datatype;
         landuse->sdate.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version)+offset;
       }
@@ -166,14 +162,14 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->sdate.n=config->ngridcell*header.nbands;
       landuse->sdate.scalar=header.scalar;
     }
-    if(landuse->nbands_sdate!=2*ncft)
+    if(landuse->sdate.var_len!=2*ncft)
     {
       closeclimatefile(&landuse->landuse,isroot(*config));
       closeclimatefile(&landuse->sdate,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%d in sowing date file.\n",
-                landuse->nbands_sdate);
+                (int)landuse->sdate.var_len);
       free(landuse);
       return(NULL);
     }
@@ -274,14 +270,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   /* so far, read prescribed sdates only once at the beginning of each simulation */
   if(config->sdate_option==PRESCRIBED_SDATE)
   {
+    dates=newvec(int,config->ngridcell*landuse->sdate.var_len);
+    if(dates==NULL)
+    {
+      printallocerr("dates");
+      return TRUE;
+    }
     if(landuse->sdate.fmt==CDF)
     {
-      dates=newvec(int,config->ngridcell*landuse->sdate.var_len);
-      if(dates==NULL)
-      {
-        printallocerr("dates");
-        return TRUE;
-      }
       if(readintdata_netcdf(&landuse->sdate,dates,grid,0,config))
       {
         fprintf(stderr,
@@ -299,12 +295,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         fprintf(stderr,
                 "ERROR148: Cannot seek sowing dates to year %d in getlanduse().\n",
                 year);
-        return TRUE;
-      }
-      dates=newvec(int,landuse->sdate.n);
-      if(dates==NULL)
-      {
-        printallocerr("dates");
+        free(dates);
         return TRUE;
       }
       if(readintvec(landuse->sdate.file,dates,landuse->sdate.n,landuse->sdate.swap,landuse->sdate.datatype))
@@ -333,14 +324,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       year=landuse->landuse.nyear-1;
     else if(year<0)
       year=0;
+    data=newvec(Real,config->ngridcell*landuse->landuse.var_len);
+    if(data==NULL)
+    {
+      printallocerr("data");
+      return TRUE;
+    }
     if(landuse->landuse.fmt==CDF)
     {
-      data=newvec(Real,config->ngridcell*landuse->landuse.var_len);
-      if(data==NULL)
-      {
-        printallocerr("data");
-        return TRUE;
-      }
       if(readdata_netcdf(&landuse->landuse,data,grid,year,config))
       {
         fprintf(stderr,
@@ -359,12 +350,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                 "ERROR148: Cannot seek landuse to year %d in getlanduse().\n",
                 year+landuse->landuse.firstyear);
         fflush(stderr);
-        return TRUE;
-      }
-      data=newvec(Real,landuse->landuse.n);
-      if(data==NULL)
-      {
-        printallocerr("data");
+        free(data);
         return TRUE;
       }
       if(readrealvec(landuse->landuse.file,data,0,landuse->landuse.scalar,landuse->landuse.n,landuse->landuse.swap,landuse->landuse.datatype))
@@ -426,7 +412,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       for(i=0;i<WIRRIG;i++)
       {
         /* read cropfrac from 32 bands or rain-fed cropfrac from 64 bands input */
-        if(landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE) || i<1)
+        if(landuse->landuse.var_len!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE) || i<1)
         {
           for(j=0;j<ncft;j++)
           {
@@ -440,7 +426,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             if(i>0 && !grid[cell].skip)
               grid[cell].ml.irrig_system->grass[j]=grid[cell].ml.manage.par->default_irrig_system;
           }
-          if(landuse->nbands!=2*(ncft+NGRASS))
+          if(landuse->landuse.var_len!=2*(ncft+NGRASS))
           {
             grid[cell].ml.landfrac[i].biomass_grass=data[count++];
             if(i>0 && !grid[cell].skip)

@@ -5,7 +5,7 @@
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
 /**     Function performs necessary updates after iteration over one               \n**/
-/**     year for natural stand                                                     \n**/
+/**     year for wood plantation stand                                             \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -17,21 +17,20 @@
 
 #include "lpj.h"
 #include "tree.h"
-#include "natural.h"
 #include "agriculture.h"
 #include "woodplantation.h"
 
 #define FPC_MAX 0.95
 
-Bool annual_woodplantation(Stand *stand,         /* Pointer to stand */
-                         int npft,             /* number of natural pfts */
-                         int ncft,             /* number of crop PFTs */
-                         Real UNUSED(popdens), /* population density (capita/km2) */
-                         int year        ,     /* year (AD) */
-                         Bool isdaily,         /**< daily temperature data? */
-                         Bool intercrop,       
-                         const Config *config
-                        )                      /* stand has to be killed (TRUE/FALSE) */
+Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
+                           int npft,             /**< number of natural pfts */
+                           int ncft,             /**< number of crop PFTs */
+                           Real UNUSED(popdens), /**< population density (capita/km2) */
+                           int year,             /**< year (AD) */
+                           Bool isdaily,         /**< daily temperature data? */
+                           Bool intercrop,       
+                           const Config *config
+                          )                      /* \return stand has to be killed (TRUE/FALSE) */
 {
 #if defined IMAGE || defined INCLUDEWP
   int p,pft_len,t,outIdx;
@@ -80,7 +79,7 @@ Bool annual_woodplantation(Stand *stand,         /* Pointer to stand */
       printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
              pft->bm_inc,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
-      
+
       if(istree(pft))
       {
         treepar=pft->par->data;
@@ -100,9 +99,9 @@ Bool annual_woodplantation(Stand *stand,         /* Pointer to stand */
         litter_update(&stand->soil.litter,pft,pft->nind);
         pft->nind=0;
         delpft(&stand->pftlist,p);
-        p--; /* adjust loop variable */ 
+        p--; /* adjust loop variable */
       }
-        
+
     } /* of foreachpft */
 #ifdef DEBUG2
     printf("Number of updated pft: %d\n",stand->pftlist.n);
@@ -130,7 +129,7 @@ Bool annual_woodplantation(Stand *stand,         /* Pointer to stand */
   {
     if (pft->par->type==TREE && pft->par->cultivation_type==WP) // tree
     {
-      outIdx = pft->par->id-nnatpft-nbiomass;
+      outIdx = pft->par->id-nnatpft-config->nbiomass;
       stand->cell->output.wft_vegc[outIdx]+=(float)(vegc_sum(pft));
     }
   }
@@ -144,38 +143,31 @@ Bool annual_woodplantation(Stand *stand,         /* Pointer to stand */
                                        &stand->pftlist,fire_frac)*stand->frac;
   }
   */
-  
+
 #ifdef COUPLED
-		if(stand->cell->ml.image_data->timber_frac_wp>0)
-		{
-	      ftimber=min(1,stand->cell->ml.image_data->timber_frac_wp/stand->frac);
-		  foreachpft(pft,p,&stand->pftlist)
-		  {
-			if(istree(pft))
-			{
-				treepar=pft->par->data;
-				
-					yield=timber_harvest(pft,&stand->soil,&stand->cell->ml.image_data->timber,
-                         stand->cell->ml.image_data->timber_f,ftimber,stand->frac,&pft->nind,&stand->cell->output.trad_biofuel,stand->cell->ml.image_data->timber_frac_wp,stand->cell->ml.image_data->takeaway);
+  if(stand->cell->ml.image_data->timber_frac_wp>0)
+  {
+    ftimber=min(1,stand->cell->ml.image_data->timber_frac_wp/stand->frac);
+    foreachpft(pft,p,&stand->pftlist)
+    {
+      if(istree(pft))
+      {
+        treepar=pft->par->data;
 
-					if(config->pft_output_scaled)
-						stand->cell->output.pft_harvest[rwp(ncft)+irrigation->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest+=yield*stand->frac;
-					else
-						stand->cell->output.pft_harvest[rwp(ncft)+irrigation->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest+=yield;
-
-					stand->growing_time=0;
-				
-					fpc_tree(pft);
-			}
-			/* of if(istree) */
-			
-			
-		} /* of foreachpft */
-	   
-	  }
+        yield=timber_harvest(pft,&stand->soil,&stand->cell->ml.image_data->timber,
+                             stand->cell->ml.image_data->timber_f,ftimber,stand->frac,&pft->nind,
+                             &stand->cell->output.trad_biofuel,stand->cell->ml.image_data->timber_frac_wp,
+                             stand->cell->ml.image_data->takeaway);
+        if(config->pft_output_scaled)
+          stand->cell->output.pft_harvest[rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest+=yield*stand->frac;
+        else
+          stand->cell->output.pft_harvest[rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest+=yield;
+        biomass_tree->growing_time=0;
+        fpc_tree(pft);
+      } /* of if(istree) */
+    } /* of foreachpft */
+  }
 #endif
-  
-  
 
   for(p=0;p<npft;p++)
   {

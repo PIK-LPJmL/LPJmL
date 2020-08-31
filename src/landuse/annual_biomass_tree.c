@@ -80,7 +80,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
 #if defined IMAGE && defined COUPLED
         /* reset stored bmtree yield in years of harvest before harvest, if multiple trees, they need to be harvested in parallel */
          // als groeitijd >= rotatietijd EN groeitijd is een veelvoud van rotatietijd ( % is modulo in C) dan reset store_bmtree_yield
-        if(stand->growing_time >= treepar->rotation && stand->growing_time%treepar->rotation==0)
+        if(biomass_tree->growing_time >= treepar->rotation && biomass_tree->growing_time%treepar->rotation==0)
           stand->cell->ml.image_data->store_bmtree_yield=0;
 #endif
 

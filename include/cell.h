@@ -141,10 +141,9 @@ extern Real nep_sum(const Cell [],const Config *);
 extern Real cflux_sum(const Cell [],const Config *);
 extern Real flux_sum(Flux *,Cell [],const Config *);
 extern Bool getwateruse(Wateruse, Cell [],int,const Config *);
-extern Wateruse initwateruse(const Config *);
+extern Wateruse initwateruse(const Filename *,const Config *);
 #ifdef IMAGE
 extern Bool getwateruse_wd(Wateruse, Cell[], int, const Config *);
-extern Wateruse initwateruse_wd(const Config *);
 #endif
 extern void freewateruse(Wateruse,Bool);
 extern void killstand(Cell *,const Pftpar [],int,Bool,int);

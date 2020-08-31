@@ -124,7 +124,7 @@ int iterate(Outputfile *output,  /**< Output file data */
 #if defined IMAGE && defined COUPLED
       if(year>=config->start_imagecoupling)
       {
-        if(receive_image_climate(input.climate,year,config))
+        if(receive_image_climate(input.climate,grid,year,config))
         {
           fprintf(stderr,"ERROR104: Simulation stopped in receive_image_climate().\n");
           fflush(stderr);

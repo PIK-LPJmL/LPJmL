@@ -51,7 +51,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   unsigned int soilcode;
 #ifdef IMAGE
   Bool swap_aquifers; 
-  Byte aquifer;
+  Type type_aquifers;
   Infile aquifers;
 #endif
   Code code;
@@ -355,7 +355,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     else
     {
       aquifers.file=openinputfile(&header,&swap_aquifers,&config->aquifer_filename,
-                               headername,&version,&offset, FALSE,config);
+                                  headername,&version,&offset,FALSE,config);
       if(aquifers.file==NULL)
       {
         /* opening of aquifer file failed */
@@ -372,8 +372,11 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         }
         return NULL;
       }
-
-      if(fseek(aquifers.file,config->startgrid*sizeof(aquifer),SEEK_CUR))
+      if(config->aquifer_filename.fmt==RAW  || version<3)
+         type_aquifers=LPJ_BYTE;
+      else
+         type_aquifers=header.datatype;
+      if(fseek(aquifers.file,config->startgrid*typesizes[type_aquifers],SEEK_CUR))
       {
         /* seeking to position of first grid cell failed */
         fprintf(stderr,
@@ -396,17 +399,20 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #endif
 
 #if defined IMAGE && defined COUPLED
-  if ((productinit = initproductinit(config)) == NULL)
+  if(config->sim_id==LPJML_IMAGE)
   {
-    if (isroot(*config))
-      fprintf(stderr, "ERROR201: Cannot open file '%s'.\n",
-        config->prodpool_init_filename.name);
-    return NULL;
-  }
-  if(getproductpools(productinit,productpool,config->ngridcell))
-  {
-    fputs("ERROR202: Cannot read initial product pools.\n",stderr);
-    return NULL;
+    if ((productinit = initproductinit(config)) == NULL)
+    {
+      if (isroot(*config))
+        fprintf(stderr, "ERROR201: Cannot open file '%s'.\n",
+                config->prodpool_init_filename.name);
+      return NULL;
+    }
+    if(getproductpools(productinit,productpool,config->ngridcell))
+    {
+      fputs("ERROR202: Cannot read initial product pools.\n",stderr);
+      return NULL;
+    }
   }
 #endif
 
@@ -611,13 +617,12 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       else
       {
-        if(fread(&aquifer,sizeof(aquifer),1,aquifers.file)!=1)
+        if(readintvec(aquifers.file,&grid[i].discharge.aquifer,1,swap_aquifers,type_aquifers))
         {
           fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
                   config->aquifer_filename.name,i+config->startgrid);
           return NULL;
         }
-        grid[i].discharge.aquifer=(Byte)aquifer;
       }
     }
 #endif
@@ -790,6 +795,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     free(productpool);
     freeproductinit(productinit);
   }
+#endif
+#ifdef IMAGE
+  if(config->aquifer_irrig==AQUIFER_IRRIG)
+    closeinput(aquifers,config->aquifer_filename.fmt);
 #endif
   return grid;
 } /* of 'newgrid2' */

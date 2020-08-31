@@ -35,30 +35,20 @@ Bool getproductpools(Productinit *productinit,
   vec=newvec(float,ncell*2);
   if(vec==NULL)
   {
-    printallocerr("vec in getproductpools()");
+    printallocerr("vec");
     return TRUE;
   }
-  if(fread(vec,sizeof(float),ncell*2,productinit->file)!=ncell*2)
+  if(readfloatvec(productinit->file,vec,productinit->scalar,ncell*2,productinit->swap,productinit->datatype))
   {
     fprintf(stderr,"ERROR151: Cannot read initial product pools.\n");
     free(vec);
     return TRUE;
   } 
-  if(productinit->swap) /* Has byte order to be changed? */ 
+  for(cell=0;cell<ncell;cell++)
   {
-    printf("swapping byte order for product pools\n");
-    for(cell=0;cell<ncell;cell++)
-    {
-      productpools[cell].fast=(Real)swapfloat(vec[2*cell]);
-      productpools[cell].slow=(Real)swapfloat(vec[2*cell+1]);
-    }
+    productpools[cell].fast=(Real)vec[2*cell];
+    productpools[cell].slow=(Real)vec[2*cell+1];
   }
-  else
-    for(cell=0;cell<ncell;cell++)
-    {
-      productpools[cell].fast=(Real)vec[2*cell];
-      productpools[cell].slow=(Real)vec[2*cell+1];
-    }
   free(vec);
   return FALSE ;
 } /* of 'getproductpools' */

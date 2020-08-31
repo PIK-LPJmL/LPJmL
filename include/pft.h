@@ -237,8 +237,7 @@ extern void equilsoil(Soil *, int, const Pftpar []);
 extern void noturnover_monthly(Litter *,Pft *);
 extern char **createpftnames(int,int,int,int,int,const Pftpar []);
 extern void freepftnames(char **,int,int,int,int,int);
-extern int getnbiomass(const Pftpar [],int);
-extern int getnwft(const Pftpar[],int);
+extern int getnculttype(const Pftpar [],int,int);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool);
 
 /* needed for IMAGE, but can also be used otherwise */

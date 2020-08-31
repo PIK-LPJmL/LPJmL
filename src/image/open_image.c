@@ -25,11 +25,11 @@ Bool open_image(Config *config /**< LPJmL configuration */
   char TimeNow_exe[80]   = "2020/05";
   char URL_exe[80]       = "https://gitlab.pik-potsdam.de";
 
-  int *IRevision;
-  int *IUrl;
+  int IRevision;
+  int IUrl[80];
   int len,i;
 
-  if(config->rank==0)
+  if(isroot(*config))
   {
     /* Establish the TDT connection */
     printf("Connecting IMAGE model...  image_inport %d, wait %d host %s outport %d\n",config->image_inport,config->wait_image,config->image_host,config->image_outport);
@@ -43,7 +43,7 @@ Bool open_image(Config *config /**< LPJmL configuration */
     printf("opening LPJ_to_INTERFACE image_host %s outport %d\n",config->image_host,config->image_outport);
 #endif
     config->out=connecttdt_socket(config->image_host,
-                                       config->image_outport);
+                                  config->image_outport);
     if(config->out==NULL)
     {
       close_socket(config->in);
@@ -62,19 +62,15 @@ Bool open_image(Config *config /**< LPJmL configuration */
     printf("BuildTime: %s \n",TimeNow_exe);
     fflush(stdout);
 /* SEND revision_lpj and URL_lpj; should be a string in future*/
-    IRevision = newvec(int,1);
-    check(IRevision);
-    IUrl = newvec(int,80);
-    check(IUrl);
 
 /* send revision number to interface */
-    IRevision[0] = atoi(Revision_exe);
+    IRevision = atoi(Revision_exe);
 #ifdef DEBUG_IMAGE
-    printf("open_image1 %d \n",IRevision[0]);
+    printf("open_image1 %d \n",IRevision);
 #endif
-    writeint_socket(config->out, IRevision,1); 
+    writeint_socket(config->out, &IRevision,1);
 #ifdef DEBUG_IMAGE
-    printf("open_image2 %d \n",IRevision[0]);
+    printf("open_image2 %d \n",IRevision);
 #endif
 
   /* send revision url */
@@ -82,15 +78,11 @@ Bool open_image(Config *config /**< LPJmL configuration */
     printf("open_image3  \n"); 
 #endif
     len = (int)strlen (URL_exe);
-    for(i=0;i<80;i++) {
-        if (i < len) {
-           IUrl[i] = URL_exe[i];
-        }
-        else {
-           IUrl[i] = 32;
-        }
+    for(i=0;i<80;i++)
+    {
+      IUrl[i] = (i<len) ? URL_exe[i] : ' ';
 #ifdef DEBUG_IMAGE
-        printf("open_image4 %i %i \n",i, IUrl[i] );  
+      printf("open_image4 %d %d \n",i, IUrl[i] );
 #endif
     }
 #ifdef DEBUG_IMAGE
@@ -101,10 +93,7 @@ Bool open_image(Config *config /**< LPJmL configuration */
     printf("open_image6  \n"); 
 #endif
 
-    free(IRevision);
-    free(IUrl);
 /* end SEND revision_lpj and URL_lpj; should be a string in future*/
-
 
   }
   return FALSE;

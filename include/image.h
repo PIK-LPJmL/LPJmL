@@ -178,7 +178,7 @@ extern Bool open_image(Config *);
 extern void close_image(const Config *);
 extern Real product_turnover(Image_data *);
 extern Bool send_image_data(const Config *,const Cell *,const  Climate *,int, int);
-extern Bool receive_image_climate(Climate *,int,const Config *);
+extern Bool receive_image_climate(Climate *,const Cell *,int,const Config *);
 extern Bool receive_image_productpools(Cell *,const Config *);
 extern Bool receive_image_luc(Cell *,int,int,const Config *);
 extern Bool receive_image_data(Cell *,int,int,const Config *);
