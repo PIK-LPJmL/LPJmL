@@ -104,9 +104,9 @@ typedef struct
   Real nfertilizer;         /* fertilizer amount */
   Real nmanure;             /* manure ammount */
   Real vscal_sum;
-  Real supplysum;
   Bool frostkill;           /* set to TRUE in daily_agriculture if tmin<-5 and 0.2<fphu<0.95 */
   #ifdef DOUBLE_HARVEST
+  Real supplysum;
   Real petsum;
   Real evapsum;
   Real transpsum;
