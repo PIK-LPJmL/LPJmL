@@ -407,7 +407,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         grid[cell].ml.landfrac[0].biomass_tree=0.01;
         grid[cell].ml.landfrac[1].biomass_grass=0.01;
         grid[cell].ml.landfrac[0].biomass_grass=0.01;
-#ifdef IMAGE
+#if defined IMAGE || defined INCLUDEWP
         grid[cell].ml.landfrac[1].woodplantation=0.01;
         grid[cell].ml.landfrac[0].woodplantation=0.01;
         sum += 0.06;
