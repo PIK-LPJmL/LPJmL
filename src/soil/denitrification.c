@@ -58,7 +58,7 @@ void denitrification(Stand *stand  /**< pointer to stand */
     N2O_denit = 0.0;
     if(soil->temp[l]<=45.9)
     {
-      FW = 6.664096e-10*exp(21.12912*denit_t); /* newly fitted parameters on curve with threshold */
+      FW = min(1.0,6.664096e-10*exp(21.12912*denit_t)); /* newly fitted parameters on curve with threshold */
       TCDF = 1-exp(-CDN*FT*Corg);
       N_denit = FW*TCDF*soil->NO3[l];
     }
