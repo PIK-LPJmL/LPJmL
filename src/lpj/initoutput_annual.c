@@ -69,10 +69,12 @@ void initoutput_annual(Output *output, /**< Output data */
     output->cft_aboveground_biomass[i].carbon=output->cft_aboveground_biomass[i].nitrogen=0;
   for(i=0;i<(ncft*2);i++){
 #ifdef DOUBLE_HARVEST
-    output->sdate2[i]=output->hdate2[i]=output->husum2[i]=
-    output->syear[i]=output->syear2[i]=
+    output->sdate2[i]=output->hdate2[i]=
+    output->syear[i]=output->syear2[i]=0;
+    output->husum2[i]=0.;
 #endif
-    output->sdate[i]=output->hdate[i]=output->husum[i]=0;
+    output->sdate[i]=output->hdate[i]=0;
+    output->husum[i]=0;
   }
   for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2+npft-nbiomass;i++)
   {

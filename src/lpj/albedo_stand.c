@@ -27,7 +27,7 @@ Real albedo_stand(const Stand *stand /**< pointer to stand */
   Real albedo; /* albedo of the stand */
   Real sfr;
   Pft *pft;
-  Soil *soil;
+  const Soil *soil;
 
   soil = &stand->soil;
   sfr = soil->snowfraction; /* snow fraction in the stand */

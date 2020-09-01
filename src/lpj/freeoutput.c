@@ -76,12 +76,13 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_airrig2);
   free(output->syear);
   free(output->syear2);
-  output->sdate2=output->hdate2=output->syear=output->syear2=output->husum2=NULL;
+  output->sdate2=output->hdate2=output->syear=output->syear2=NULL;
+  output->husum2=NULL;
   output->cft_transp2=output->cft_evap2=output->cft_interc2=output->cft_nir2=
     output->cft_pet2=output->cftfrac2=output->cft_airrig2=NULL;
   output->pft_harvest2=NULL;
-  output->cft_temp2=output->cft_prec2=output->cft_srad2=
-    output->cft_aboveground_biomass2=NULL;
+  output->cft_temp2=output->cft_prec2=output->cft_srad2=NULL;
+  output->cft_aboveground_biomass2=NULL;
 #endif
   output->sdate=output->hdate=NULL; 
   output->husum=NULL;
