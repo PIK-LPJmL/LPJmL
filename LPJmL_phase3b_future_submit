@@ -72,8 +72,7 @@ do
 
 # ----------------------------------------------- #
 
-nyear_spin=8000
-nyear_spin2=30
+nyear_spin2=0
 
 if [ ${sim} = "CREATE_RESTART" ]
 then

@@ -67,7 +67,7 @@ do
 # ----------------------------------------------- #
 
 nyear_spin=8000
-nyear_spin2=30
+nyear_spin2=390
 
 if [ ${sim} = "CREATE_RESTART" ]
 then

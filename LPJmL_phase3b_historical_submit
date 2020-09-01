@@ -93,8 +93,8 @@ mkdir -p $outdir
   cat <<EOF >$outdir/$setup.jcf
 #!/bin/bash
 #SBATCH --ntasks=$ntask
-#SBATCH --partition=priority
-#SBATCH --qos=standby
+#SBATCH --partition=standard
+#SBATCH --qos=short
 #SBATCH --signal=15@180
 #SBATCH --export=ALL
 #SBATCH -J LPJmL50
