@@ -107,9 +107,9 @@ static size_t isnetcdfinput(const Config *config)
       width = max(width, strlen(config->fertilizer_nr_filename.var));
     if (config->with_nitrogen && config->manure_input && config->manure_nr_filename.fmt == CDF)
       width = max(width, strlen(config->manure_nr_filename.var));
-    if(config->residue_treatment && config->residue_data_filename.fmt==CDF)
+    if(config->residue_treatment==READ_RESIDUE_DATA && config->residue_data_filename.fmt==CDF)
       width=max(width, strlen(config->residue_data_filename.var));
-    if(config->tillage_type && config->with_tillage_filename.fmt==CDF)
+    if(config->tillage_type==READ_TILLAGE && config->with_tillage_filename.fmt==CDF)
       width=max(width, strlen(config->with_tillage_filename.var));
   }
   if(config->reservoir)
