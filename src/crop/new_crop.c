@@ -68,7 +68,7 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   crop->lai=crop->lai000=crop->flaimax*par->laimax;
   crop->lai_nppdeficit=0.0;
   pft->phen=crop->lai/par->laimax;
-  crop->senescence=FALSE;
+  crop->senescence=crop->senescence0=FALSE;
   pft->nleaf = 0;
   pft->vscal = 1;
   crop->nfertilizer=0;

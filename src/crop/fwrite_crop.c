@@ -34,7 +34,15 @@ Bool fwrite_crop(FILE *file, /**< pointer to file data */
   fwrite1(&crop->husum,sizeof(Real),file);
   fwrite1(&crop->vdsum,sizeof(Real),file);
   fwrite1(&crop->fphu,sizeof(Real),file);
-  fwrite1(&crop->ind,sizeof(Cropphys2),file);
+//  fwrite1(&crop->ind,sizeof(Cropphys2),file);
+  fwrite1(&crop->ind.leaf.carbon,sizeof(Real),file);
+  fwrite1(&crop->ind.leaf.nitrogen,sizeof(Real),file);
+  fwrite1(&crop->ind.root.carbon,sizeof(Real),file);
+  fwrite1(&crop->ind.root.nitrogen,sizeof(Real),file);
+  fwrite1(&crop->ind.pool.carbon,sizeof(Real),file);
+  fwrite1(&crop->ind.pool.nitrogen,sizeof(Real),file);
+  fwrite1(&crop->ind.so.carbon,sizeof(Real),file);
+  fwrite1(&crop->ind.so.nitrogen,sizeof(Real),file);
   fwrite1(&crop->flaimax,sizeof(Real),file);
   fwrite1(&crop->lai,sizeof(Real),file);
   fwrite1(&crop->lai000,sizeof(Real),file);
