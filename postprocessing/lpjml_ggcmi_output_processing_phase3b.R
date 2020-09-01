@@ -24,13 +24,13 @@ out.path <- "/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/processed/phase3b"
 
 climate=c("gfdl-esm4","ipsl-cm6a-lr","mpi-esm1-2-hr","mri-esm2-0","ukesm1-0-ll")[5]
 
-setup=c("picontrol","historical","ssp126","ssp585")[1]
-start_years=c(1850,1850,2015,2015)[1]
-first_years=c(1850,1850,2015,2015)[1]
-end_years=c(2100,2014,2100,2100)[1]
+setup=c("picontrol","historical","ssp126","ssp585")[3]
+start_years=c(1850,1850,2015,2015)[3]
+first_years=c(1850,1850,2015,2015)[3]
+end_years=c(2100,2014,2100,2100)[3]
 
 socioecon=c("histsoc","2015soc")[2]
-co2=c("default","2015co2","1850co2")[3]
+co2=c("default","2015co2","1850co2")[1]
 
 # ----------------------------------------- #
 
@@ -58,6 +58,24 @@ hlimit=TRUE # sets yields to zero if achieved husum < 90% prescribed husum
 # ----------------------------------------- #
 # functions
 # ----------------------------------------- #
+
+read.LPJmL.grid <- function(filename,npix,header,swap=F){
+  ff <- file(filename,"rb")
+  seek(ff,where=header,origin="start")
+  if(swap){
+    x <- readBin(ff,integer(),size=2,n=npix*2,endian="swap")/100
+  } else {
+    x <- readBin(ff,integer(),size=2,n=npix*2)/100
+  }
+  lon <- x[(1:npix)*2-1]
+  lat <- x[(1:npix)*2]
+  # ilon/ilat are row and column numbers, starting at 179.75W and 89.75S as 1/1
+  ilon <- as.integer((lon+180)/0.5 + 1.01)
+  ilat <- as.integer((lat+90)/0.5 + 1.01)
+  area <- (111e3*0.5)*(111e3*0.5)*cos(lat/180*pi)/10000
+  close(ff)
+  data.frame(lon,lat,ilon,ilat,area)
+}
 
 read.LPJmL.array <- function(filename,fyear,syear,eyear,nbands,crop,npix){
   ff <- file(filename,"rb")
@@ -118,15 +136,8 @@ toraster=function(var,lonlat=grid) {
 # main
 # ----------------------------------------- #
 
-file="/p/projects/lpjml/input/ISIMIP3/grid.bin"
-zz<- file(file,"rb")
-seek(zz,where=43,origin="start")
-grid <- readBin(zz,integer(),size=2,n=ncell*2)
-close(zz)
-grid=t(array(grid,dim=c(2,ncell)))/100
-
-lon=grid[,1]
-lat=grid[,2]
+# load grid
+grid <- read.LPJmL.grid("/p/projects/lpjml/input/ISIMIP3/grid.bin",ncell,43,swap=F)
 res=0.5
 raster_lons=seq(-180+(res/2),180-(res/2),0.5)
 raster_lats=seq(-90+(res/2),90-(res/2),0.5)
@@ -386,9 +397,14 @@ for(c in 1:length(climate)) {
             buf <- var
             if(variables[va]=="soilmoist1m") buf <- smo
 
-            for(i in 1:dim(mapo)[3]){
-              mapo[,,i]=t(as.matrix(toraster(buf[,i],grid)))
+            # for(i in 1:dim(mapo)[3]){
+            #   mapo[,,i]=t(as.matrix(toraster(buf[,i],grid)))
+            # }
+
+            for(p in 1:ncell){
+              mapo[grid$ilon[p],360-grid$ilat[p]+1,] <- buf[p,]
             }
+
             mapo[is.na(mapo)] <- mv
 
             # writing data to NC files looping through time

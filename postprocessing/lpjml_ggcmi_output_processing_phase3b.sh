@@ -1,7 +1,7 @@
 #!/bin/sh
 
 variables=("yield" "pirnreq" "plantday" "plantyear" "matyday" "harvyear" "soilmoist1m")
-ext="picontrol"
+ext="ssp126_default" # c("picontrol","historical","ssp126","ssp585")
 
 crops=("wwh" "swh" "mai" "ri1" "ri2" "soy")
 
