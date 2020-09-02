@@ -17,18 +17,18 @@
 #include "woodplantation.h"
 
 void output_gbw_woodplantation(Output *output, /**< output data */
-                          const Stand *stand,  /**< stand pointer */
-                          Real frac_g_evap,
-                          Real evap,           /**< evaporation (mm) */
-                          Real evap_blue,      /**< evaporation of irrigation water (mm) */
-                          Real return_flow_b,  /**< irrigation return flows from surface runoff, lateral runoff and percolation (mm) */
-                          const Real aet_stand[LASTLAYER],
-                          const Real green_transp[LASTLAYER],
-                          Real intercep_stand,  /**< stand interception (mm) */
-                          Real intercep_stand_blue,  /**< stand interception from irrigation(mm) */
-                          int ncft,            /**< number of CROPS */
-                          Bool pft_output_scaled
-                         )
+                               const Stand *stand,  /**< stand pointer */
+                               Real frac_g_evap,
+                               Real evap,           /**< evaporation (mm) */
+                               Real evap_blue,      /**< evaporation of irrigation water (mm) */
+                               Real return_flow_b,  /**< irrigation return flows from surface runoff, lateral runoff and percolation (mm) */
+                               const Real aet_stand[LASTLAYER],
+                               const Real green_transp[LASTLAYER],
+                               Real intercep_stand,  /**< stand interception (mm) */
+                               Real intercep_stand_blue,  /**< stand interception from irrigation(mm) */
+                               int ncft,            /**< number of CROPS */
+                               Bool pft_output_scaled
+                              )
 {
   int l;
   Real total_g,total_b;
@@ -46,7 +46,7 @@ void output_gbw_woodplantation(Output *output, /**< output data */
     total_g+=green_transp[l];
     total_b+=aet_stand[l]-green_transp[l];
   }
-#ifdef IMAGE
+#if defined IMAGE || defined INCLUDEWP
   if(pft_output_scaled)
   {
     output->cft_consump_water_g[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_g*stand->cell->ml.landfrac[data->irrigation].woodplantation;
@@ -93,4 +93,3 @@ void output_gbw_woodplantation(Output *output, /**< output data */
   }
 #endif
 } /* of 'output_gbw_woodplantation' */
-
