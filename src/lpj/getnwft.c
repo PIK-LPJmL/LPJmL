@@ -16,14 +16,14 @@
 
 #include "lpj.h"
 
-int getnwft(const Pftpar pftpar[],     /**< PFT parameter array */
-            int npft                   /**< number of natural PFTs */
-               )                       /**< returns number of WFTs */
+int getnwft(const Pftpar pftpar[], /**< PFT parameter array */
+            int npft               /**< number of natural PFTs */
+           )                       /**< returns number of WFTs */
 {
   int p,nwft;
   nwft=0;
-  for(p=0;p<npft;p++)
 #if defined INCLUDEWP
+  for(p=0;p<npft;p++)
     if (pftpar[p].type==TREE && pftpar[p].cultivation_type==WP)
       nwft++;
 #endif
