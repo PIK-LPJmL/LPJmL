@@ -585,5 +585,6 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
   writeoutputvar(NEGC_FLUXES,neg_fluxes.carbon);
   writeoutputvar(NEGN_FLUXES,neg_fluxes.nitrogen);
   writeoutputvar(MEAN_VEGC_MANGRASS,mean_vegc_mangrass);  
+  writeoutputvar(VEGC_AVG,vegc_avg);
   free(vec);
 } /* of 'fwriteoutput_annual' */

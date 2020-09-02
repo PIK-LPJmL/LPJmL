@@ -88,7 +88,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 279           /* number of output files */
+#define NOUT 282            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -382,6 +382,9 @@
 #define ALITFALLC 276
 #define ALITFALLN 277
 #define MEAN_VEGC_MANGRASS 278
+#define VEGC_AVG 279
+#define NV_LAI 280
+#define FPC_BFT 281
 #define RANDOM_SEED 0
 
 #endif

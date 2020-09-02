@@ -88,5 +88,5 @@ void freeoutput(Output *output /**< Output data */
   output->cft_conv_loss_evap=output->cft_conv_loss_drain=NULL;
   output->growing_period=NULL;
   output->cft_irrig_events=NULL;
-  output->pft_npp=output->fpc=output->cftfrac=output->cft_airrig=output->cft_luc_image=NULL;
+  output->pft_npp=output->fpc=output->cftfrac=output->cft_airrig=output->cft_luc_image=output->fpc_bft=output->nv_lai=NULL;
 } /* of 'freeoutput' */

@@ -287,6 +287,13 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
     stand->cell->output.soil_storage+=(irrigation->irrig_stor+irrigation->irrig_amount)*stand->frac*stand->cell->coord.area;
   stand->age++;
   stand->growing_time++;
+  foreachpft(pft,p,&stand->pftlist)
+  {
+    if(istree(pft))
+    	stand->cell->output.fpc_bft[getpftpar(pft, id)-npft+irrigation->irrigation*(config->nbiomass+config->ngrass*2)]=pft->fpc;
+    else
+        stand->cell->output.fpc_bft[getpftpar(pft, id)-config->npft[TREE]+config->nbiomass+irrigation->irrigation*(config->nbiomass+config->ngrass*2)]=pft->fpc; /* grass below biomass trees */
+  }
 
   return FALSE;
 } /* of 'annual_biomass_tree' */

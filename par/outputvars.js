@@ -300,5 +300,8 @@
   { "id" : PFT_NLIMIT, "name": "pft_nlimit", "var": "nlimit", "descr": "ratio N-constrained to unconstrained vmax", "unit": "-", "scale": 1.0, "offset" : 0.0},
   { "id" : SOILNO3_LAYER, "name": "soilno3_layer", "var": "SoilNO3", "descr": "soil NO3 nitrogen in layer", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
   { "id" : SOILNH4_LAYER, "name": "soilnh4_layer", "var": "SoilNH4", "descr": "soil NH4 nitrogen in layer", "unit": "gN/m2", "scale": 1.0, "offset" : 0.0},
-  {"id" : MEAN_VEGC_MANGRASS, "name": "mean_vegc_mangrass", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0}
+  {"id" : MEAN_VEGC_MANGRASS, "name": "mean_vegc_mangrass", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : VEGC_AVG, "name": "vegc_avg", "var" : "VegC", "descr" : "average vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : NV_LAI, "name": "nv_lai", "var" : "LAI", "descr" : "mean LAI from natural vegetation", "unit" : "m2/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : FPC_BFT, "name": "fpc_bft", "var" : "FPC", "descr" : "FPC for Bioenergie-PFTs and managed grassland", "unit" : "", "scale" : 1.0, "offset" : 0.0}  
 ],

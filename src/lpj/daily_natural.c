@@ -203,6 +203,9 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   output->mevap+=evap*stand->frac;
   output->mevap_b+=evap_blue*stand->frac;
   output->mreturn_flow_b+=return_flow_b*stand->frac;
+  foreachpft(pft, p, &stand->pftlist){
+    output->nv_lai[getpftpar(pft,id)]+=(actual_lai(pft)/NDAYYEAR);
+  }
 
 #ifdef DAILY_ESTABLISHMENT
   if (year==911 && day==365) /* TODO: replace the hardcoded value 911 with a more indicative flag like first_year_of_spinup */

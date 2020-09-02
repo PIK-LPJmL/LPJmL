@@ -91,6 +91,7 @@ typedef struct
   int sim_id;             /**< Simulation type */
   int *npft;              /**< number of PFTs in each PFT class */
   int nbiomass;           /**< number of biomass PFTs */
+  int ngrass;             /**< number of grass PFTs not biomass */
   unsigned int nsoil;     /**< number of soil types */
   Soilpar *soilpar;       /**< Soil parameter array */
   int ncountries;         /**< number of countries */

@@ -17,7 +17,8 @@
 void init_annual(Cell *cell, /**< Pointer to cell */
                  int npft,   /**< number of natural pfts */
                  int nbiomass, /**< number of biomass pfts */
-                 int ncft    /**< number of crop pfts */
+                 int ncft,    /**< number of crop pfts */
+                 const Config *config
                 )
 {
   int s,p;
@@ -38,7 +39,7 @@ void init_annual(Cell *cell, /**< Pointer to cell */
     foreachpft(pft,p,&stand->pftlist)
       init(pft);
   } /* of foreachstand */
-  initoutput_annual(&cell->output,npft,nbiomass,ncft);
+  initoutput_annual(&cell->output,npft,nbiomass,config->ngrass,ncft);
 #ifdef IMAGE
   cell->ml.image_data->anpp=cell->ml.image_data->arh=
     cell->ml.image_data->prod_turn_fast=

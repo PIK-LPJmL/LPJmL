@@ -100,6 +100,7 @@ Received 19 November 1997; accepted 15 January 1999*/
   Output output;            /**< Output data */
   Discharge discharge;
   int elevation;            /**< cell elevation (m) */
+  Real dRH;
   Balance balance;          /**< balance checks */
 };
 
@@ -112,7 +113,7 @@ extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
 extern void update_annual(Cell *,int,int,
                           Real,int,const Real *,Bool,Bool,const Config *);
 extern void update_monthly(Cell *,Real,Real,int);
-extern void init_annual(Cell *,int,int,int);
+extern void init_annual(Cell *,int,int,int,const Config *);
 extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,int,Bool);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
 extern Bool freadcell(FILE *,Cell *,int,int,const Soilpar *,
