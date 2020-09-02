@@ -57,11 +57,7 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
             partree->rotation,partree->max_rotation_length);
 #if defined IMAGE || defined INCLUDEWP
   if(par->cultivation_type==WP)
-  {
-    fprintf(file,"k_mort_max:\t\t%g (1/year)\n"
-                 "P_init:\t\t%g (1/m2)\n",
-            partree->k_mort_max,partree->P_init);
-  }
+    fprintf(file,"P_init:\t\t%g (1/m2)\n",partree->P_init);
 #endif
   fputs("fuel fraction:\t",file);
   for(i=0;i<NFUELCLASS;i++)

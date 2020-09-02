@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  v  p  d  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 4.0.004                                 \n**/
+/** Configuration file for LPJmL C Version 4.0.005                                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -33,7 +33,7 @@
   "sim_name" : "LPJmL run with SPITFIRE and VPD fire danger index", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "version"  : "4.0",       /* LPJmL version expected */
-  "random_prec" : true,     /* Random weather generator for precipitation enabled */
+  "random_prec" : false,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation", /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
   "fire" : "spitfire_tmax",  /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
@@ -176,7 +176,7 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : ALL, /* 27410, 67208 60400 all grid cells */
+  "startgrid" : "all", /* 27410, 67208 60400 all grid cells */
   "endgrid" : ALL,
 
 #ifdef CHECKPOINT

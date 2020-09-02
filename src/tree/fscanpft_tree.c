@@ -153,7 +153,6 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
 #if defined IMAGE || defined INCLUDEWP
   if(pft->cultivation_type==WP)
   {
-    fscanreal2(verb,file,&tree->k_mort_max,pft->name,"k_mort_max");
     fscanreal2(verb,file,&tree->P_init,pft->name,"P_init");
   }
 #endif

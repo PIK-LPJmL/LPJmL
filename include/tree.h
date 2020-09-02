@@ -63,7 +63,6 @@ typedef struct
   int rotation;                     /**< coppicing interval from short ratation woody crops */
   int max_rotation_length;          /**< lifetime of short rotation woody crop plantation */
 #if defined IMAGE  || defined INCLUDEWP
-  Real k_mort_max;                  /**< PFT specific maximum mortality rate (1/year) (currently only used for woodplantation)*/
   Real P_init;                      /**< initial stand density (only used for wood plantations)*/
 #endif
 } Pfttreepar;

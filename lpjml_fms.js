@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  f  m  s  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 4.0.002 with FMS coupler                \n**/
+/** Configuration file for LPJmL C Version 4.0.005 with FMS coupler                \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -164,7 +164,7 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-"startgrid" : ALL, /* 27410 67208 60400 all grid cells */
+"startgrid" : "all", /* 27410 67208 60400 all grid cells */
 
 #ifndef FROM_RESTART
 

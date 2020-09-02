@@ -1213,7 +1213,7 @@
     "id" : BIOENERGY_C4_GRASS,
     "name" : "bioenergy C4 grass",
     "type" : GRASS,
-    "cultivation_type" : BIOMASS, /* cultivation_type */
+    "cultivation_type" : "biomass", /* cultivation_type */
     "cn" : [39., 61., 74., 80.], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/

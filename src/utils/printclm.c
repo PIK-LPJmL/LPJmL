@@ -24,8 +24,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
 {
   FILE *file;
   time_t mod_date;
-  uint64_t size;
-  //long long size;
+  long long size;
   Header header;
   Restartheader restartheader;
   String id;

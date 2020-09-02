@@ -85,13 +85,13 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     free(config->outputdir);
     config->outputdir=strdup(outpath);
   }
-  if(iskeydefined(file,"pft_output_scaled"))
+  if(iskeydefined(file,"grid_scaled"))
   {
-    fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
+    fscanbool2(file,&config->pft_output_scaled,"grid_scaled");
   }
   else
   {
-    fscanbool2(file,&config->pft_output_scaled,"grid_scaled");
+    fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
   }
   while(count<=nout_max && index<size)
   {

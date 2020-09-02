@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define EPSILON 0.001  /* min precision of solution in bisection method */
+#define EPSILON 0.1  /* min precision of solution in bisection method */
 
 typedef struct
 {

@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   l  p  j  m  l  .  j  s                                       \n**/
+/**          l  p  j  m  l  _  i  m  a  g  e  _  s  p  i  n  u  p  .  j  s         \n**/
 /**                                                                                \n**/
 /** Configuration file for LPJmL C Version 4.0.004 spinup runs for IMAGE coupling  \n**/
 /**                                                                                \n**/
@@ -21,6 +21,7 @@
 /**************************************************************************************/
 
 #define IMAGE
+
 #include "include/conf.h" /* include constant definitions */
 
 
@@ -34,7 +35,7 @@
   "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
   "version"  : "4.0",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
-  "random_seed" : RANDOM_SEED, /* seed for random number generator */
+  "random_seed" : "random_seed", /* seed for random number generator */
   "radiation" : "cloudiness",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
   "fire" : "fire",        /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
   "fdi" : "nesterov_index",   /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
@@ -88,18 +89,18 @@
 /*===================================================================*/
 
 #ifdef WITH_GRIDBASED
-  "pft_output_scaled" : GRIDBASED,
+  "grid_scaled" : true,
 #define SUFFIX grid.bin
 #else
-  "pft_output_scaled" : PFTBASED,
+  "grid_scaled" : false,
 #define SUFFIX pft.bin
 #endif
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
 
-  "crop_index" : TEMPERATE_CEREALS,  /* CFT for daily output */
-  "crop_irrigation" : DAILY_RAINFED, /* irrigation flag for daily output */
+  "crop_index" : "temperate cereals",  /* CFT for daily output */
+  "crop_irrigation" : true, /* irrigation flag for daily output */
 
 #ifdef FROM_RESTART
 
@@ -109,9 +110,9 @@
 /*
 ID                         Fmt                    filename
 -------------------------- ---------------------- ----------------------------- */
-    { "id" : GRID,             "file" : { "fmt" : RAW, "name" : "output/grid.bin" }},
-    { "id" : PFT_HARVEST,      "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvest.SUFFIX)}},
-    { "id" : CFTFRAC,          "file" : { "fmt" : RAW, "name" : "output/cftfrac.bin"}},
+    { "id" : "grid",       "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+    { "id" : "pft_harvest","file" : { "fmt" : "raw", "name" : mkstr(output/pft_harvest.SUFFIX)}},
+    { "id" : "cftfrac",    "file" : { "fmt" : "raw", "name" : "output/cftfrac.bin"}},
 /*------------------------ ---------------------- ------------------------------- */
   ],
 
@@ -125,7 +126,7 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : ALL, /* 27410, 67208 60400 all grid cells */
+  "startgrid" : "all", /* 27410, 67208 60400 all grid cells */
   "endgrid" : ALL,
 
 #ifdef CHECKPOINT
