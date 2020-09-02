@@ -51,7 +51,7 @@
     "id" : TROPICAL_BROADLEAVED_EVERGREEN_TREE,
     "name" : "tropical broadleaved evergreen tree",
     "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "cultivation_type" : "none", /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.962,    /* beta_root */
     "minwscal" : 0.0,       /* minwscal 3*/
@@ -135,11 +135,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
- 	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 2. pft */
@@ -147,7 +143,7 @@
     "id" : TROPICAL_BROADLEAVED_RAINGREEN_TREE,
     "name" : "tropical broadleaved raingreen tree",
     "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "cultivation_type" : "none", /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.961,    /* beta_root */
     "minwscal" : 0.35,      /* minwscal 3*/
@@ -231,11 +227,7 @@
     "crown_mort_rck" : 0.05, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
-    "k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "k_est": K_EST         /* k_est */
   },
 /*---------------------------------------------------------------------------------------------*/
 /* 3. pft */
@@ -243,7 +235,7 @@
     "id" : TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE,
     "name": "temperate needleleaved evergreen tree",
     "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "cultivation_type" : "none", /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.976,    /* beta_root 1 */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -327,11 +319,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.75,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
-  	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "k_est": K_EST         /* k_est */
  },
 /*--------------------------------------------------------------------------*/
 /* 4. pft */
@@ -339,7 +327,7 @@
     "id" : TEMPERATE_BROADLEAVED_EVERGREEN_TREE,
     "name" : "temperate broadleaved evergreen tree",
     "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "cultivation_type" : "none", /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.964,    /* beta_root 1 */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -423,11 +411,7 @@
     "crown_mort_rck" : 0.95, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
- 	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 5. pft */
@@ -435,7 +419,7 @@
     "id" : TEMPERATE_BROADLEAVED_SUMMERGREEN_TREE,
     "name" : "temperate broadleaved summergreen tree",
     "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "cultivation_type" : "none", /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -521,11 +505,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
- 	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 6. pft */
@@ -533,7 +513,7 @@
     "id" : BOREAL_NEEDLELEAVED_EVERGREEN_TREE,
     "name" : "boreal needleleaved evergreen tree",
     "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "cultivation_type" : "none", /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -617,11 +597,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
- 	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 7. pft */
@@ -629,7 +605,7 @@
     "id" : BOREAL_BROADLEAVED_SUMMERGREEN_TREE,
     "name" : "boreal broadleaved summergreen tree",
     "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "cultivation_type" : "none", /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -715,11 +691,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
- 	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 8. pft */
@@ -727,7 +699,7 @@
     "id" : BOREAL_NEEDLELEAVED_SUMMERGREEN_TREE,
     "name" : "boreal needleleaved summergreen tree",
     "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "cultivation_type" : "none", /* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -814,10 +786,6 @@
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
-  	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
  },
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
@@ -825,7 +793,7 @@
     "id" : TROPICAL_HERBACEOUS,
     "name" : "Tropical C4 grass",
     "type" : GRASS,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "cultivation_type" : "none", /* cultivation_type */
     "cn" : [39., 61., 74., 80.], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -901,7 +869,7 @@
     "id" : TEMPERATE_HERBACEOUS,
     "name" : "Temperate C3 grass",
     "type" : GRASS,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "cultivation_type" : "none", /* cultivation_type */
     "cn" : [39., 61., 74., 80.], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -977,7 +945,7 @@
     "id" : POLAR_HERBACEOUS,
     "name" : "Polar C3 grass",
     "type" : GRASS,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "cultivation_type" : "none", /* cultivation_type */
     "cn" : [39., 61., 74., 80.], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1053,7 +1021,7 @@
     "id" : BIOENERGY_TROPICAL_TREE,
     "name" : "bioenergy tropical tree",
     "type" : TREE,
-    "cultivation_type" : BIOMASS,/* cultivation_type */
+    "cultivation_type" : "biomass",/* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.975,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -1139,9 +1107,7 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est" : 0.5,          /* k_est,  Giardina, 2002 */
     "rotation" : 10,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
- 	"k_mort_max" : 0.005,       /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */	
+    "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/
 /* 2. bft */
@@ -1149,7 +1115,7 @@
     "id" : BIOENERGY_TEMPERATE_TREE,
     "name" : "bioenergy temperate tree",
     "type" : TREE,
-    "cultivation_type" : BIOMASS,/* cultivation_type */
+    "cultivation_type" : "biomass",/* cultivation_type */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -1237,9 +1203,7 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est" : 0.8,          /* k_est TIM 1.5*/
     "rotation" : 10,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
-    "k_mort_max" : 0.005,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */	
+    "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/
 /* 3. bft ONLY FOR BIOENERGY*/
@@ -1247,7 +1211,7 @@
     "id" : BIOENERGY_C4_GRASS,
     "name" : "bioenergy C4 grass",
     "type" : GRASS,
-    "cultivation_type" : BIOMASS, /* cultivation_type */
+    "cultivation_type" : "biomass", /* cultivation_type */
     "cn" : [39., 61., 74., 80.], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1617,7 +1581,7 @@
     "id" : TEMPERATE_CEREALS,
     "name" : "temperate cereals",
     "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1716,7 +1680,7 @@
     "id" : RICE,
     "name" : "rice",
     "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1815,7 +1779,7 @@
     "id" : MAIZE,
     "name" : "maize",
     "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1914,7 +1878,7 @@
     "id" : TROPICAL_CEREALS,
     "name" : "tropical cereals",
     "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2013,7 +1977,7 @@
     "id" : PULSES,          /* re-parameterized as field peas, swatusermanual2000.pdf, CM 4.2.2009 */
     "name" : "pulses",
     "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2112,7 +2076,7 @@
     "id" : TEMPERATE_ROOTS,
     "name": "temperate roots",
     "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2211,7 +2175,7 @@
     "id" : TROPICAL_ROOTS,
     "name" : "tropical roots", /* re-parameterized as Cassava, 14.12.2009 KW */
     "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2310,7 +2274,7 @@
     "id" : OIL_CROPS_SUNFLOWER,
     "name" : "oil crops sunflower",
     "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.3,       /* minwscal 3*/
@@ -2409,7 +2373,7 @@
     "id" : OIL_CROPS_SOYBEAN,
     "name" : "oil crops soybean",
     "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2508,7 +2472,7 @@
     "id" : OIL_CROPS_GROUNDNUT,
     "name": "oil crops groundnut",
     "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2607,7 +2571,7 @@
     "id" : OIL_CROPS_RAPESEED,
     "name" : "oil crops rapeseed",
     "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2706,7 +2670,7 @@
     "id" : SUGARCANE,
     "name" : "sugarcane",
     "type" : CROP,
-    "cultivation_type": ANNUAL_CROP, /* cultivation_type */
+    "cultivation_type": "annual crop", /* cultivation_type */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/

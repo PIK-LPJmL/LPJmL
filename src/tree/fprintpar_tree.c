@@ -45,18 +45,24 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
                "crown length:\t%g\n"
                "bark thickness:\t%g %g\n"
                "crown damage:\t%g %g\n"
-               "k_est:\t\t%g (1/m2)\n"
-               "k_mort_max:\t\t%g (1/year)\n"
-               "P_init:\t\t%g (1/m2)\n",
+               "k_est:\t\t%g (1/m2)\n",
           partree->height_max,partree->reprod_cost,
           partree->scorchheight_f_param,partree->crownlength,
           partree->barkthick_par1,partree->barkthick_par2,
           partree->crown_mort_rck,partree->crown_mort_p,
-          partree->k_est,partree->k_mort_max,partree->P_init);
+          partree->k_est);
   if(par->cultivation_type!=NONE)
     fprintf(file,"rotation:\t%d (yr)\n"
                  "max. rotation:\t%d (yr)\n",
             partree->rotation,partree->max_rotation_length);
+#if defined IMAGE || defined INCLUDEWP
+  if(par->cultivation_type==WP)
+  {
+    fprintf(file,"k_mort_max:\t\t%g (1/year)\n"
+                 "P_init:\t\t%g (1/m2)\n",
+            partree->k_mort_max,partree->P_init);
+  }
+#endif
   fputs("fuel fraction:\t",file);
   for(i=0;i<NFUELCLASS;i++)
     fprintf(file,"%g ",partree->fuelfrac[i]);
