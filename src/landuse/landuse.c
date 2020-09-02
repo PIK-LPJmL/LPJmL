@@ -94,7 +94,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       if(config->landuse_filename.fmt==RAW)
       {
-        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE);
+        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
         landuse->landuse.datatype=LPJ_SHORT;
         landuse->landuse.offset=config->startgrid*header.nbands*sizeof(short);
       }
@@ -110,7 +110,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->nbands=header.nbands;
       landuse->landuse.scalar=(version==1) ? 0.001 : header.scalar;
     }
-    if(landuse->nbands!=2*(ncft+NGRASS+NBIOMASSTYPE) && landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE))
+    if(landuse->nbands!=2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE) && landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE))
     {
       if(landuse->nbands!=2*(ncft+NGRASS))
       {
@@ -128,7 +128,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           fputs("WARNING022: No landuse for biomass defined.\n",stderr);
       }
     }
-    if(landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE) && isroot(*config))
+    if(landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE) && isroot(*config))
       fputs("WARNING024: Land-use input does not include irrigation systems, suboptimal country values are used.\n",stderr);
   }
 
@@ -409,11 +409,20 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         grid[cell].ml.landfrac[0].biomass_tree=0.01;
         grid[cell].ml.landfrac[1].biomass_grass=0.01;
         grid[cell].ml.landfrac[0].biomass_grass=0.01;
+#if defined IMAGE || defined INCLUDEWP
+        grid[cell].ml.landfrac[1].woodplantation=0.01;
+        grid[cell].ml.landfrac[0].woodplantation=0.01;
+        sum += 0.06;
+#else
         sum += 0.04;
+#endif
         grid[cell].ml.landfrac[0].grass[NGRASS-1]=1.0-sum+0.01; /* I set landfrac[0], trunk has landfrac[1], which is irrigated -> much more irrigated grass in allcrops run */
 
         grid[cell].ml.irrig_system->biomass_tree=grid[cell].ml.manage.par->default_irrig_system;
         grid[cell].ml.irrig_system->biomass_grass=grid[cell].ml.manage.par->default_irrig_system;
+#if defined IMAGE || defined INCLUDEWP
+        grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
+#endif
       }
     }
     else
@@ -421,7 +430,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       for(i=0;i<WIRRIG;i++)
       {
         /* read cropfrac from 32 bands or rain-fed cropfrac from 64 bands input */
-        if(landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE) || i<1)
+        if(landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE) || i<1)
         {
           for(j=0;j<ncft;j++)
           {
@@ -443,9 +452,19 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             grid[cell].ml.landfrac[i].biomass_tree=data[count++];
             if(i>0 && !grid[cell].skip)
               grid[cell].ml.irrig_system->biomass_tree=grid[cell].ml.manage.par->default_irrig_system;
+#if defined IMAGE || defined INCLUDEWP
+            grid[cell].ml.landfrac[i].woodplantation = data[count++];
+            if (i>0 && !grid[cell].skip)
+              grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
+#endif
           }
-          else
-            grid[cell].ml.landfrac[i].biomass_grass=grid[cell].ml.landfrac[i].biomass_tree=0;
+          else 
+          {
+            grid[cell].ml.landfrac[i].biomass_grass = grid[cell].ml.landfrac[i].biomass_tree=0;
+#if defined IMAGE || defined INCLUDEWP
+            grid[cell].ml.landfrac[i].woodplantation=0;
+#endif
+          }
         }
         else /* read irrigated cropfrac and irrigation systems from 64 bands input */
         {
@@ -455,7 +474,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             grid[cell].ml.landfrac[i].grass[j]=0;
           grid[cell].ml.landfrac[i].biomass_grass=0;
           grid[cell].ml.landfrac[i].biomass_tree=0;
-
+#if defined IMAGE || defined INCLUDEWP
+          grid[cell].ml.landfrac[i].woodplantation = 0;
+#endif
           for(p=1;p<4;p++) /* irrigation system loop; 1: surface, 2: sprinkler, 3: drip */
           {
             for(j=0;j<ncft;j++)
@@ -492,6 +513,16 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             }
             else
               count++;
+#if defined IMAGE || defined INCLUDEWP
+            if (data[count]>0)
+            {
+              grid[cell].ml.landfrac[i].woodplantation = data[count++];
+              grid[cell].ml.irrig_system->woodplantation = p;
+            }
+            else
+              count++;
+#endif
+
           }
         }
       }
@@ -516,6 +547,11 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           grid[cell].ml.landfrac[0].biomass_tree+=grid[cell].ml.landfrac[1].biomass_tree;
           grid[cell].ml.landfrac[1].biomass_tree=0;
           grid[cell].ml.irrig_system->biomass_tree=NOIRRIG;
+#if defined IMAGE || defined INCLUDEWP
+          grid[cell].ml.landfrac[0].woodplantation+=grid[cell].ml.landfrac[1].woodplantation;
+          grid[cell].ml.landfrac[1].woodplantation=0;
+          grid[cell].ml.irrig_system->woodplantation=NOIRRIG;
+#endif
           break;
         case ALL_IRRIGATION:
           for(j=0;j<ncft;j++)
@@ -538,7 +574,15 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             grid[cell].ml.irrig_system->biomass_grass=grid[cell].ml.manage.par->default_irrig_system;
           grid[cell].ml.landfrac[1].biomass_tree+=grid[cell].ml.landfrac[0].biomass_tree;
           grid[cell].ml.landfrac[0].biomass_tree=0;
-          grid[cell].ml.irrig_system->biomass_tree=grid[cell].ml.manage.par->default_irrig_system;
+          if (!grid[cell].skip)
+            grid[cell].ml.irrig_system->biomass_tree=grid[cell].ml.manage.par->default_irrig_system;
+#if defined IMAGE || defined INCLUDEWP
+          grid[cell].ml.landfrac[1].woodplantation += grid[cell].ml.landfrac[0].woodplantation;
+          grid[cell].ml.landfrac[0].woodplantation = 0;
+          if (!grid[cell].skip)
+            grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
+#endif
+
           break;
       } /* of switch(...) */
 

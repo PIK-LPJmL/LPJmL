@@ -17,8 +17,13 @@
 
 /* Definitions of datatypes */
 
+#if defined IMAGE || defined INCLUDEWP
+typedef enum {NATURAL,SETASIDE_RF,SETASIDE_IR,AGRICULTURE,MANAGEDFOREST,
+              GRASSLAND,BIOMASS_TREE,BIOMASS_GRASS,WOODPLANTATION,KILL} Landusetype;
+#else
 typedef enum {NATURAL,SETASIDE_RF,SETASIDE_IR,AGRICULTURE,MANAGEDFOREST,
               GRASSLAND,BIOMASS_TREE,BIOMASS_GRASS,KILL} Landusetype;
+#endif
 
 typedef struct landuse *Landuse;
 
@@ -28,6 +33,9 @@ typedef struct
   Real grass[NGRASS];
   Real biomass_grass;
   Real biomass_tree;
+#if defined IMAGE || defined INCLUDEWP
+  Real woodplantation;
+#endif
 } Landfrac;
 
 typedef struct
@@ -36,9 +44,24 @@ typedef struct
   int grass[NGRASS];
   int biomass_grass;
   int biomass_tree;
+#if defined IMAGE || defined INCLUDEWP
+  int woodplantation;
+#endif
 } Irrig_system;
 
 typedef enum {NO_SEASONALITY, PREC, PRECTEMP, TEMP, TEMPPREC} Seasonality;
+
+typedef enum {GS_DEFAULT, GS_MOWING, GS_GRAZING_EXT, GS_GRAZING_INT, GS_NONE} GrassScenarioType;
+typedef enum {RM_UNDEFINED, RM_GRAZING, RM_RECOVERY} RotationModeType;
+
+typedef struct
+{
+  int grazing_days;
+  int recovery_days;
+  int paddocks;
+  RotationModeType rotation_mode;
+} Rotation;
+
 
 typedef struct
 {
@@ -60,7 +83,11 @@ typedef struct
   Real mdemand;           /**< monthly irrigation demand */
   Bool dam;               /**< dam inside cell (TRUE/FALSE) */
   int fixed_grass_pft;              /**< fix C3 or C4 for GRASS pft */
-#ifdef IMAGE
+  GrassScenarioType grass_scenario; /* 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
+  Real nr_of_lsus_ext;              /* nr of livestock units for extensive grazing */
+  Real nr_of_lsus_int;              /* nr of livestock units for intensive grazing */
+  Rotation rotation;                /* rotation mode and parameters for intensive grazing */
+#if defined IMAGE && defined COUPLED
   Image_data *image_data; /**< pointer to IMAGE data structure */
 #endif
 } Managed_land;
@@ -72,6 +99,9 @@ typedef struct
 #define rmgrass(ncft) (ncft+1)
 #define rbgrass(ncft) (ncft+2)
 #define rbtree(ncft) (ncft+3)
+#if defined IMAGE || defined INCLUDEWP
+#define rwp(ncft) (ncft+4)
+#endif
 
 /* Declaration of functions */
 
@@ -87,7 +117,7 @@ extern Bool freadlandfrac(FILE *,Landfrac [2],int,Bool);
 extern Real landfrac_sum(const Landfrac [2],int,Bool);
 extern Real crop_sum_frac(Landfrac *,int,Real,Bool);
 extern Real cultivate(Cell *,const Pftpar *,int,Real,Bool,int,Bool,Stand *,
-                      Bool,int,int,int,int);
+                      Bool,int,int,int,int,int);
 extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int);
 extern Bool getlanduse(Landuse,Cell *,int,int,const Config *);
 extern void landusechange(Cell *,const Pftpar[],int,int,int,Bool,Bool,int,Bool);
@@ -96,6 +126,9 @@ extern Real sowing_season(Cell *,int,int,int,Real,int,const Config *);
 extern Real sowing_prescribe(Cell *,int,int,int,int,const Config *);
 extern Real sowing(Cell *,Real,int,int,int,int,const Config *);
 extern void deforest(Cell *,Real,const Pftpar [],Bool,int,Bool,Bool,Bool,int,int,Real);
+#ifdef IMAGE
+extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real);
+#endif
 extern Real woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Real,Real [],Real);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real);

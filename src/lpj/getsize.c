@@ -37,6 +37,7 @@ size_t getsize(int index,           /**< index of output file */
   size*=outputsize(config->outputvars[index].id,
                    config->npft[GRASS]+config->npft[TREE],
                    config->nbiomass,
+                   config->nwft,
                    config->npft[CROP]);
   size*=typesizes[getoutputtype(config->outputvars[index].id)];
   if(config->outputvars[index].id==ADISCHARGE)

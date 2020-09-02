@@ -45,12 +45,14 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
                "crown length:\t%g\n"
                "bark thickness:\t%g %g\n"
                "crown damage:\t%g %g\n"
-               "k_est:\t\t%g (1/m2)\n",
+               "k_est:\t\t%g (1/m2)\n"
+               "k_mort_max:\t\t%g (1/year)\n"
+               "P_init:\t\t%g (1/m2)\n",
           partree->height_max,partree->reprod_cost,
           partree->scorchheight_f_param,partree->crownlength,
           partree->barkthick_par1,partree->barkthick_par2,
           partree->crown_mort_rck,partree->crown_mort_p,
-          partree->k_est);
+          partree->k_est,partree->k_mort_max,partree->P_init);
   if(par->cultivation_type!=NONE)
     fprintf(file,"rotation:\t%d (yr)\n"
                  "max. rotation:\t%d (yr)\n",

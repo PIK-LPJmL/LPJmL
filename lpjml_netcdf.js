@@ -59,6 +59,7 @@
 "reservoir" : false,
 "grassland_fixed_pft" : false,
 "wateruse" : "no_wateruse",
+"grass_harvest_options" : false,
 "intercrop" : true,                   /* intercrops on setaside */
 "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
 "remove_residuals" : false,           /* remove residuals */

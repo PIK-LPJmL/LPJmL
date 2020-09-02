@@ -44,6 +44,9 @@ struct stand
   Soil soil;                  /**< soil specific variables */
   Real fire_sum;
   Real frac;                  /**< Stand fraction (0..1) */
+#if defined IMAGE || defined INCLUDEWP
+  Real frac_change;           /**< Expansion fraction due to landuse change (only used for woodplantations) */
+#endif
   Real frac_g[NSOILLAYER];    /**< fraction of green water in total available soil water, including free water */
   int growing_time;           /**< for TREES years since harvest*/
   int growing_days;           /**< for GRASS days since harvest*/

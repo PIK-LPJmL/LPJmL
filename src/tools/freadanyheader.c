@@ -92,7 +92,7 @@ Bool freadanyheader(FILE *file,        /**< file pointer of binary file */
     }
     if(*version>2)
     { 
-      ptr=(int *)&header->cellsize_lon;
+      ptr=(int *)&header->cellsize_lat;
       header->cellsize_lat=swapfloat(*ptr);
       header->datatype=(Type)swapint(header->datatype);
     }

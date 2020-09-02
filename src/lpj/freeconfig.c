@@ -60,6 +60,10 @@ void freeconfig(Config *config /**< LPJmL configuration */
   }
   if(config->wateruse)
     freefilename(config->wateruse_filename);
+#ifdef IMAGE
+  if (config->wateruse_wd_filename.name != NULL)
+    freefilename(config->wateruse_wd_filename);
+#endif
   freefilename(config->temp_filename);
   freefilename(config->prec_filename);
   if(config->with_radiation)
@@ -86,6 +90,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(config->popdens_filename);
   if(config->grassfix_filename.name!=NULL)
     freefilename(config->grassfix_filename);
+  if(config->grassharvest_filename.name!=NULL)
+    freefilename(config->grassharvest_filename);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX)
@@ -108,9 +114,9 @@ void freeconfig(Config *config /**< LPJmL configuration */
     if(config->countrycode_filename.fmt==CDF)
       freefilename(config->regioncode_filename);
   }
-  
+
   if(config->prescribe_landcover != NO_LANDCOVER)
     freefilename(config->landcover_filename);
-    
+
   freeoutputvar(config->outnames,NOUT);
 } /* of 'freeconfig' */

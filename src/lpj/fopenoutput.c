@@ -29,6 +29,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
   size=outputsize(config->outputvars[index].id,
                   config->npft[GRASS]+config->npft[TREE],
                   config->nbiomass,
+                  config->nwft,
                   config->npft[CROP]);
   if(size==1)
     return create_netcdf(cdf,filename,
@@ -148,6 +149,7 @@ static void openfile(Outputfile *output,const Cell grid[],
               header.nbands*=outputsize(config->outputvars[i].id,
                                         config->npft[GRASS]+config->npft[TREE],
                                         config->nbiomass,
+                                        config->nwft,
                                         config->npft[CROP]);
               header.nyear=config->lastyear-config->outputyear+1;
               header.datatype=getoutputtype(config->outputvars[i].id);
@@ -363,6 +365,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                 header.nbands=outputsize(config->outputvars[i].id,
                                          config->npft[GRASS]+config->npft[TREE],
                                          config->nbiomass,
+                                         config->nwft,
                                          config->npft[CROP]);
               if(config->outputvars[i].id==SDATE || config->outputvars[i].id==HDATE || config->outputvars[i].id==SEASONALITY)
                 header.datatype=LPJ_SHORT;
@@ -396,6 +399,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
             size=outputsize(config->outputvars[i].id,
                             config->npft[GRASS]+config->npft[TREE],
                             config->nbiomass,
+                            config->nwft,
                             config->npft[CROP]);
            if(size==1)
              output->files[config->outputvars[i].id].isopen=!create1_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,

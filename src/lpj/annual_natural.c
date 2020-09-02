@@ -107,7 +107,13 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #ifndef DAILY_ESTABLISHMENT
   acflux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
   stand->cell->output.flux_estab+=acflux_estab*stand->frac;
-  stand->cell->output.dcflux-=acflux_estab*stand->frac;
+  stand->cell->output.dcflux+=acflux_estab*stand->frac;
+#if defined IMAGE && defined COUPLED
+  if(stand->type->landusetype==NATURAL)
+  {
+    stand->cell->flux_estab_nat+=acflux_estab*stand->frac;
+  }
+#endif
 #endif
   foreachpft(pft,p,&stand->pftlist)
   {

@@ -46,8 +46,8 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O \
           fscanemissionfactor.$O check_balance.$O transfer_function.$O\
           fprintfiles.$O roughnesslength.$O closeoutput_yearly.$O\
           getnbiomass.$O getextension.$O albedo_stand.$O phenology_gsi.$O\
-          fscanphenparam.$O landcover.$O getsize.$O fprintoutputvar.$O
-
+          fscanphenparam.$O landcover.$O getsize.$O fprintoutputvar.$O\
+          getnwft.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

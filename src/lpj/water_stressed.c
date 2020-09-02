@@ -83,7 +83,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
         pft->stand->soil.mean_maxthaw>epsilon)
     {
       forrootsoillayer(l)
-          {
+      {
         layer+=soildepth[l];
         root_u+=pft->par->rootdist[l];
         freeze_depth=layer-pft->stand->soil.mean_maxthaw;
@@ -96,7 +96,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
           l++;
           break;
         }
-          }
+      }
       for(i=l;i<BOTTOMLAYER;i++)
       {
         root_nu+=rootdist_n[i];

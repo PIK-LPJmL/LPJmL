@@ -36,7 +36,7 @@ static size_t isnetcdfinput(const Config *config)
     width=max(width,strlen(config->temp_filename.var));
   if(config->prec_filename.fmt==CDF)
     width=max(width,strlen(config->prec_filename.var));
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->temp_var_filename.fmt==CDF)
     width=max(width,strlen(config->temp_var_filename.var));
   if(config->prec_var_filename.fmt==CDF)
@@ -73,6 +73,8 @@ static size_t isnetcdfinput(const Config *config)
     width=max(width,strlen(config->popdens_filename.var));
   if(config->grassfix_filename.name!=NULL && config->grassfix_filename.fmt==CDF)
     width=max(width,strlen(config->grassfix_filename.var));
+  if(config->grassharvest_filename.name!=NULL && config->grassharvest_filename.fmt==CDF)
+    width=max(width,strlen(config->grassharvest_filename.var));
   if(config->withlanduse!=NO_LANDUSE)
   {
     if(config->countrycode_filename.fmt==CDF)
@@ -106,6 +108,10 @@ static size_t isnetcdfinput(const Config *config)
     width=max(width,strlen(config->landcover_filename.var));
   if(config->wateruse && config->wateruse_filename.fmt==CDF)
     width=max(width,strlen(config->wateruse_filename.var));
+#ifdef IMAGE
+  if(config->wateruse_wd_filename.name!=NULL && config->wateruse_wd_filename.fmt==CDF)
+    width=max(width,strlen(config->wateruse_wd_filename.var));
+#endif
   if(width)
     width=max(width,strlen("Varname"));
   return width;
@@ -165,7 +171,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   else
     putc('\n',file);
   len=0;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     len=printsim(file,len,&count,"IMAGE coupling");
 #endif
@@ -254,12 +260,24 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   }
   if(config->grassfix_filename.name!=NULL)
     len=printsim(file,len,&count,"grassland fixed PFT");
+  if(config->grassharvest_filename.name!=NULL)
+    len=printsim(file,len,&count,"grassland harvest");
   if(config->firewood)
     len=printsim(file,len,&count,"wood fires");
   if(config->reservoir)
     len=printsim(file,len,&count,"dam reservoirs");
+#ifdef IMAGE
+  if(config->groundwater_irrig==GROUNDWATER_IRRIG)
+    len=printsim(file,len,&count,"groundwater irrigation");
+  if(config->aquifer_irrig==AQUIFER_IRRIG)
+    len=printsim(file,len,&count,"aquifer irrigation");
+#endif
   if(config->wateruse)
-    len=printsim(file,len,&count,(config->wateruse==ALL_WATERUSE) ? "always water use" : "water use");
+   len=printsim(file,len,&count,(config->wateruse==ALL_WATERUSE) ? "always water use" : "water use");
+#ifdef IMAGE
+  if(config->wateruse_wd_filename.name!=NULL)
+    len = printsim(file, len, &count, "water use wd");
+#endif
   if(count)
     fputs(".\n",file);
   fprintf(file,"Working directory: %s\n",getdir());
@@ -286,7 +304,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"coord",&config->coord_filename,width);
   printinputfile(file,"temp",&config->temp_filename,width);
   printinputfile(file,"prec",&config->prec_filename,width);
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
     printinputfile(file,"temp var",&config->temp_var_filename,width);
@@ -327,6 +345,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"landcover",&config->landcover_filename,width);
   if(config->grassfix_filename.name!=NULL)
     printinputfile(file,"Grassfix",&config->grassfix_filename,width);
+  if(config->grassharvest_filename.name!=NULL)
+    printinputfile(file, "Grassharv", &config->grassharvest_filename, width);
   if(config->withlanduse!=NO_LANDUSE)
   {
     printinputfile(file,"countries",&config->countrycode_filename,width);
@@ -342,6 +362,13 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"elevation",&config->elevation_filename,width);
     printinputfile(file,"reservoir",&config->reservoir_filename,width);
   }
+#ifdef IMAGE
+  if(config->aquifer_irrig==AQUIFER_IRRIG)
+    fprintf(file,"aquifer  %-4s %-8s %s\n",
+            fmt[config->aquifer_filename.fmt],
+            (config->aquifer_filename.var==NULL) ? "": config->aquifer_filename.var,
+            config->aquifer_filename.name);
+#endif
   if(config->wet_filename.name!=NULL)
     printinputfile(file,"wetdays",&config->wet_filename,width);
   if(config->river_routing)
@@ -367,6 +394,14 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   }
   else
     fputs("---------- ---- --------------------------------------------------------------\n",file);
+#ifdef IMAGE
+  if (config->wateruse_wd_filename.name != NULL)
+    printinputfile(file,"wateruse wd", &config->wateruse_wd_filename,width);
+  if(width)
+    fputs("---------- ---- -------- -----------------------------------------------------\n",file);
+  else
+    fputs("---------- ---- -------- -----------------------------------------------------\n",file);
+#endif
   if(config->param_out)
     fprintparam(file,npft,ncft,config);
   if(iswriterestart(config))
@@ -376,7 +411,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     fprintf(file,"Checkpoint restart file: '%s'.\n",
             config->checkpoint_restart_filename);
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     fprintf(file,
             "Coupled to IMAGE model running on host %s using port %d and %d.\n"
@@ -394,9 +429,9 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     for(i=0;i<config->n_out;i++)
     {
       if(config->outnames[config->outputvars[i].id].name!=NULL &&
-         width<strlen(config->outnames[config->outputvars[i].id].name))
+         width<(int)strlen(config->outnames[config->outputvars[i].id].name))
         width=strlen(config->outnames[config->outputvars[i].id].name);
-      width_unit=max(width_unit,strlen(config->outnames[config->outputvars[i].id].unit));
+      width_unit=max(width_unit,(int)strlen(config->outnames[config->outputvars[i].id].unit));
     }
     fprintf(file,"Number of output files:       %d\n"
                  "Output written in year:       %d\n"
@@ -474,7 +509,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   fprintf(file,"First year:                  %6d\n"
           "Last year:                   %6d\n",
           config->firstyear,config->lastyear);
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     fprintf(file,"Start IMAGE coupling:        %6d\n",
             config->start_imagecoupling);

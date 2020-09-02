@@ -23,7 +23,7 @@ Real outflow_reservoir(Resdata *resdata, /**< pointer to reservoir data */
   else if (resdata->c>=0 && resdata->c<0.5)
     dfresout=max(0,pow(resdata->c/0.5,2)*resdata->k_rls*resdata->target_release_month[month]+(1-pow(resdata->c/0.5,2))*resdata->mean_inflow_month[month]/ndaymonth[month]);
   else 
-    fail(OUTFLOW_RESERVOIR_ERR,TRUE,"outflow_reservoir ERROR: c<0!");
+    fail(OUTFLOW_RESERVOIR_ERR,TRUE,"outflow_reservoir ERROR: c<0!, c: %f, cap: %f, mean inflow: %f", resdata->c, resdata->reservoir.capacity, resdata->mean_inflow);
 
   if(dfresout>resdata->dmass)
     dfresout=resdata->dmass;

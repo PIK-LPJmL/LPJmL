@@ -52,6 +52,7 @@
 "reservoir" : false,
 "grassland_fixed_pft" : false,
 "wateruse" : "no_wateruse",
+"grass_harvest_options" : false,
 "rw_manage" : false,
 
 /*===================================================================*/

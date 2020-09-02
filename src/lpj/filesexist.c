@@ -54,7 +54,7 @@ static int checkinputfile(const Config *config,const Filename *filename,size_t l
     file=openinputfile(&header,&swap,filename,headername,&version,&offset,config);
     if(len==0)
       len=1;
-    
+
     if(file==NULL)
       return 1;
     fclose(file);
@@ -248,6 +248,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkdatafile(&config,&config.popdens_filename);
   if(config.grassfix_filename.name!=NULL)
     bad+=checkinputfile(&config,&config.grassfix_filename,0);
+  if(config.grassharvest_filename.name!=NULL)
+    bad+=checkinputfile(&config,&config.grassharvest_filename,0);
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
     if(config.fdi==WVPD_INDEX)
@@ -261,6 +263,10 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   if(config.wateruse)
     bad+=checkdatafile(&config,&config.wateruse_filename);
+#ifdef IMAGE
+  if (config.wateruse_wd_filename.name != NULL)
+    bad += checkdatafile(&config, &config.wateruse_wd_filename);
+#endif
   bad+=checkclmfile(&config,&config.temp_filename);
   bad+=checkclmfile(&config,&config.prec_filename);
   if(config.with_radiation)
@@ -315,6 +321,12 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.elevation_filename,0);
       bad+=checkinputfile(&config,&config.reservoir_filename,10);
     }
+#ifdef IMAGE
+    if(config.aquifer_irrig==AQUIFER_IRRIG)
+    {
+      bad+=checkinputfile(&config,&config.aquifer_filename,0);
+    }
+#endif
   }
   badout=0;
   oldpath=strdup("");

@@ -39,6 +39,7 @@ typedef struct
   Real atmfrac;      /**< fraction of decomposed litter emitted as CO2 to the atmosphere */
   Real fastfrac;     /**< fraction of soil-bound decomposed litter entering the intermediate soil carbon pool */
   Real k_mort;       /**< coefficient of growth efficiency in mortality equation (k_mort2) */
+  Real lsuha;       /* livestock density for grassland management (lsuha) */
   /* IRRIGATION */
   Real aprec_lim;    /**< annual precipitation limit for C3 irrigation threshold */
   Real irrig_threshold_c3_dry; /**< soil moisture irrigation threshold for C3 crops, annual precip < aprec_lim */
@@ -50,16 +51,16 @@ typedef struct
   Real ec_pipe;      /**< conveyance efficiency for pressurized irrigation systems */
   Real sat_level[4];   /**< saturation level for the three irrigation systems (surf,sprink,drip) */
   Real drip_evap;        /**< reduction of drip soil evap */
-  Real firedura;	/**< scaling factor for fire duration */
+  Real firedura;        /**< scaling factor for fire duration */
   Real fire_intens;     /**< threshold of fireintensity for which burnt area can be modeled */
   Real hum_ign;         /**< a parameter for scaling the human ignintions within SPITFIRE */
   Real residues_in_soil;  /**< minimum residues in soil*/
-  Real esoil_reduction; /**< reduction of soil evaporation */
-  Real rw_buffer_max;   /**< size of rainwater harvesting tank */
-  Real frac_ro_stored;  /**< fraction of surface runoff stored in tank */
-  Real rw_irrig_thres;  /**< threshold to apply rw_irrigation */
-  Real soil_infil;      /**< soil infiltration improvement */
-  Real yield_gap_bridge; /**< yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
+  Real esoil_reduction;   /**< reduction of soil evaporation */
+  Real rw_buffer_max;     /**< size of rainwater harvesting tank */
+  Real frac_ro_stored;    /**< fraction of surface runoff stored in tank */
+  Real rw_irrig_thres;    /**< threshold to apply rw_irrigation */
+  Real soil_infil;        /**< soil infiltration improvement */
+  Real yield_gap_bridge;  /**< yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
 } Param;
 
 /* Declaration of global variable */

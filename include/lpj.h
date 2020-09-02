@@ -71,7 +71,7 @@ typedef struct stand Stand; /* forward declaration of stand */
 #include "param.h"
 #include "header.h"
 #include "climate.h"
-#ifdef IMAGE            /* Compile with IMAGE coupler? */
+#ifdef IMAGE  /* Compile with IMAGE coupler or compile for IMAGE spinup run */
 #include "image.h"
 #endif
 #include "cropdates.h"
@@ -91,6 +91,9 @@ typedef struct stand Stand; /* forward declaration of stand */
 #include "tree.h"
 #include "biomass_tree.h"
 #include "landuse.h"
+#if defined IMAGE || defined INCLUDEWP
+#include "woodplantation.h"
+#endif
 #include "biomes.h"
 
 /* Definition of constants */

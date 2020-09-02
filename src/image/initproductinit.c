@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 
 Productinit *initproductinit(const Config *config)
 {

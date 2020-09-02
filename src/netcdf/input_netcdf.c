@@ -71,11 +71,11 @@ static Bool setvarinput_netcdf(Input_netcdf input,const char *filename,const cha
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int i,rc,nvars,ndims;
   int *dimids;
-  size_t len;
   nc_type type;
-  char *fromstr;
   char name[NC_MAX_NAME+1];
 #ifdef USE_UDUNITS
+  size_t len;
+  char *fromstr;
   utUnit from,to;
 #endif
   if(input==NULL)

@@ -66,7 +66,7 @@
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
 
 char *phenology[]={"evergreen","raingreen","summergreen","any","cropgreen"};
-char *cultivation_type[]={"none","biomass","annual crop"};
+char *cultivation_type[]={"none","biomass","annual crop","wp"};
 char *path[]={"no pathway","C3","C4"};
 
 
@@ -146,7 +146,11 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                 pft->type,pft->name,getlinecount(),getfilename());
       return NULL;
     }
+#if defined IMAGE || defined INCLUDEWP
+    if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,4,FALSE,verb))
+#else
     if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,3,FALSE,verb))
+#endif
     {
       if(verb)
         fprintf(stderr,"ERROR201: Invalid value for cultivation type of PFT '%s'.\n",pft->name);

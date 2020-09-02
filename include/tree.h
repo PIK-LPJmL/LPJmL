@@ -59,9 +59,11 @@ typedef struct
   Real crown_mort_rck;              /**< crown damage (rCK) */
   Real crown_mort_p;                /**< crown damage (p) */
   Real fuelfrac[NFUELCLASS];        /**< Fuel fractions */
-  Real k_est;			/**< maximum overall sapling establishment rate (indiv/m2) */
-  int rotation;         /**< coppicing interval from short ratation woody crops */
-  int max_rotation_length; /**< lifetime of short rotation woody crop plantation */
+  Real k_est;                       /**< maximum overall sapling establishment rate (indiv/m2) */
+  int rotation;                     /**< coppicing interval from short ratation woody crops */
+  int max_rotation_length;          /**< lifetime of short rotation woody crop plantation */
+  Real k_mort_max;                  /**< PFT specific maximum mortality rate (1/year) (currently only used for woodplantation)*/
+  Real P_init;                      /**< initial stand density (only used for wood plantations)*/
 } Pfttreepar;
 
 typedef struct
@@ -112,7 +114,11 @@ extern void light_tree(Litter *,Pft *,Real);
 extern void adjust_tree(Litter *,Pft *,Real,Real);
 extern void reduce_tree(Litter *,Pft *,Real);
 extern void fprintpar_tree(FILE *,const Pftpar *);
+#if defined IMAGE && defined COUPLED
+extern void output_daily_tree(Daily_outputs *,const Pft *,Real gpp,Real rd);
+#else
 extern void output_daily_tree(Daily_outputs *,const Pft *);
+#endif
 extern Real livefuel_consum_tree(Litter *,Pft *,const Fuel *,Livefuel *,
                                  Bool *,Real,Real);
 extern Bool annual_tree(Stand *,Pft *,Real *,Bool);

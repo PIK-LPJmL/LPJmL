@@ -132,7 +132,7 @@ int main(int argc,char **argv)
     }
 #ifdef DEBUG
     printf("%d ",i);
-    printcoord(c2[i]); 
+    printcoord(c2+i); 
     fputs(":",stdout);
 #endif
     for(j=0;j<ngrid;j++)

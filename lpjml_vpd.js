@@ -67,7 +67,7 @@
   "rw_manage" : false,                    /* rain water management */
   "laimax" : 5,                           /* maximum LAI for CONST_LAI_MAX */
   "grassland_fixed_pft" : false,
-
+  "grass_harvest_options" : false,
 /*===================================================================*/
 /*  II. Input parameter section                                      */
 /*===================================================================*/

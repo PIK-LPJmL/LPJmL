@@ -49,6 +49,7 @@ extern Real fpc_grass(Pft *);
 extern Real fpar_grass(const Pft *);
 extern Real alphaa_grass(const Pft *);
 extern void litter_update_grass(Litter *, Pft*,Real);
+extern void output_daily_grass(Daily_outputs *,const Pft *,Real, Real);
 extern Bool allocation_grass(Litter *,Pft *);
 extern Real lai_grass(const Pft *);
 extern Real actual_lai_grass(const Pft *);
