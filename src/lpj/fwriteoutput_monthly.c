@@ -260,7 +260,7 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
   writeoutputvar(MSUN_IMAGE,msun_image);
   writeoutputvar(MWET_IMAGE,mwet_image);
   writeoutputpftvar(MSOILTEMP,msoiltemp,NSOILLAYER);
-  writeoutputpftvar(MPFT_LAI,mpft_lai,npft-config->nbiomass+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
+  writeoutputpftvar(MPFT_LAI,mpft_lai,npft-config->nbiomass-config->nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
   writeoutputvar(MSOILTEMP1,msoiltemp[0]);
   writeoutputvar(MSOILTEMP2,msoiltemp[1]);
   writeoutputvar(MSOILTEMP3,msoiltemp[2]);

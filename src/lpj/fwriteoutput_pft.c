@@ -207,7 +207,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputshortvar(HDATE,hdate,2*ncft);
   fvec=newvec(float,config->count);
   check(fvec);
-  writeoutputvar(PFT_NPP,pft_npp,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
+  writeoutputvar(PFT_NPP,pft_npp,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
 #ifdef IMAGE
   writeoutputvar(WFT_VEGC,wft_vegc,config->nwft);
 #endif
@@ -216,7 +216,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   if(isopen(output,PFT_GCGP))
   {
     outindex(output,PFT_GCGP,config->rank);
-    for(i=0;i<(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
+    for(i=0;i<(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
     {
       count=0;
       for(cell=0;cell<config->ngridcell;cell++)
@@ -228,7 +228,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
             grid[cell].output.pft_gcgp[i]=-9;
           fvec[count++]=(float)grid[cell].output.pft_gcgp[i];
         }
-      writepft(output,PFT_GCGP,fvec,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
+      writepft(output,PFT_GCGP,fvec,(npft-config->nbiomass-config->nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
     }
   }
   if(isopen(output,PFT_HARVEST))
@@ -258,8 +258,8 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputvar(CFT_CONSUMP_WATER_G,cft_consump_water_g,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   writeoutputvar(CFT_CONSUMP_WATER_B,cft_consump_water_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   writeoutputvar(GROWING_PERIOD,growing_period,2*(ncft+NGRASS));
-  writeoutputvar(FPC,fpc,npft-config->nbiomass+1);
-  writeoutputvar(PFT_MORT,pft_mort,npft-config->nbiomass);
+  writeoutputvar(FPC,fpc,npft-config->nbiomass-config->nwft+1);
+  writeoutputvar(PFT_MORT,pft_mort,npft-config->nbiomass-config->nwft);
   if(isopen(output,SOILC_LAYER))
   {
     outindex(output,SOILC_LAYER,config->rank);

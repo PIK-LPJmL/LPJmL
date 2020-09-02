@@ -151,8 +151,8 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
    if(stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree>0.0 &&
       gp_pft[getpftpar(pft,id)]>0.0)
    {
-     output->gcgp_count[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]++;
-     output->pft_gcgp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
+     output->gcgp_count[(npft-config->nbiomass-config->nwft)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]++;
+     output->pft_gcgp[(npft-config->nbiomass-config->nwft)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
    }
    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd);
    output->mnpp+=npp*stand->frac;
@@ -167,10 +167,10 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
    output->cft_fpar[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=(fpar(pft)*stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
    if(config->pft_output_scaled)
-     output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree;
+     output->pft_npp[(npft-config->nbiomass-config->nwft)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree;
    else
-     output->pft_npp[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp;
-   output->mpft_lai[(npft-config->nbiomass)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=actual_lai(pft);
+     output->pft_npp[(npft-config->nbiomass-config->nwft)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp;
+   output->mpft_lai[(npft-config->nbiomass-config->nwft)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=actual_lai(pft);
 
   } /* of foreachpft */
 

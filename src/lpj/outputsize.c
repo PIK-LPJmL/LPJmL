@@ -29,7 +29,7 @@ int outputsize(int index,     /**< output index */
     case SYEAR: case SYEAR2:
       return ncft*2;
     case PFT_NPP: case PFT_GCGP: case MPFT_LAI:
-      return npft-nbiomass+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;
+      return npft-nbiomass-nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;
 #ifdef IMAGE
     case WFT_VEGC:
         return nwft;
@@ -47,9 +47,9 @@ int outputsize(int index,     /**< output index */
     case CFT_EVAP2:
       return (ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;
     case FPC:
-      return npft-nbiomass+1;
+      return npft-nbiomass-nwft+1;
     case PFT_MORT:
-      return npft-nbiomass;
+      return npft-nbiomass-nwft;
     case MSOILTEMP: case MSWC:
       return NSOILLAYER;
     case SOILC_LAYER:

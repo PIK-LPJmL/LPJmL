@@ -35,7 +35,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
 #if defined IMAGE || defined INCLUDEWP
   int p,pft_len,t,outIdx;
   Bool *present,isdead;
-  int *n_est,nnatpft,nbiomass;
+  int *n_est;
   Pft *pft;
   Real *fpc_inc,*fpc_inc2,*fpc_type;
   Real fpc_total;
@@ -113,23 +113,13 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
 
 #ifdef IMAGE
-  // count the number of natural PFTs and BFTs
-  nbiomass=0;
-  nnatpft=0;
-  for (p=0;p<npft;p++)
-  {
-    if (config->pftpar[p].cultivation_type == NONE)
-      nnatpft++;
-    else if (config->pftpar[p].cultivation_type == BIOMASS)
-      nbiomass++;
-  }
 
   // STORE WFT SPECIFIC OUTPUT
   foreachpft(pft, p, &stand->pftlist)
   {
     if (pft->par->type==TREE && pft->par->cultivation_type==WP) // tree
     {
-      outIdx = pft->par->id-nnatpft-config->nbiomass;
+      outIdx = pft->par->id-npft+config->nwft;
       stand->cell->output.wft_vegc[outIdx]+=(float)(vegc_sum(pft));
     }
   }

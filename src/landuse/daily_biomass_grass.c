@@ -156,8 +156,8 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       gcgp=gc_pft/gp_pft[getpftpar(pft,id)];
       if(stand->cell->ml.landfrac[data->irrigation].biomass_grass>0.0)
       {
-        output->gcgp_count[(npft-config->nbiomass)+index]++;
-        output->pft_gcgp[(npft-config->nbiomass)+index]+=gcgp;
+        output->gcgp_count[(npft-config->nbiomass-config->nwft)+index]++;
+        output->pft_gcgp[(npft-config->nbiomass-config->nwft)+index]+=gcgp;
       }
     }
     npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd);
@@ -174,10 +174,10 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     output->cft_fpar[index]+=(fpar(pft)*stand->cell->ml.landfrac[data->irrigation].biomass_grass*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
     if(config->pft_output_scaled)
-      output->pft_npp[(npft-config->nbiomass)+index]+=npp*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
+      output->pft_npp[(npft-config->nbiomass-config->nwft)+index]+=npp*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
     else
-      output->pft_npp[(npft-config->nbiomass)+index]+=npp;
-    output->mpft_lai[(npft-config->nbiomass)+index]+=actual_lai(pft);
+      output->pft_npp[(npft-config->nbiomass-config->nwft)+index]+=npp;
+    output->mpft_lai[(npft-config->nbiomass-config->nwft)+index]+=actual_lai(pft);
   } /* of foreachpft */
 
   /* calculate water balance */

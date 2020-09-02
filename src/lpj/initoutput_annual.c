@@ -60,7 +60,7 @@ void initoutput_annual(Output *output, /**< Output data */
 #endif
     output->sdate[i]=output->hdate[i]=0;
   }
-  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2+npft-nbiomass;i++)
+  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2+npft-nbiomass-nwft;i++)
   {
     output->pft_npp[i]=0;
     output->pft_gcgp[i]=0;
@@ -72,7 +72,7 @@ void initoutput_annual(Output *output, /**< Output data */
     output->wft_vegc[i] = 0;
   }
 #endif
-  for (i=0; i<npft-nbiomass+1;++i)
+  for (i=0; i<npft-nbiomass-nwft+1;++i)
     output->fpc[i] = 0;
   for (i=0; i<npft-nbiomass;++i)
     output->pft_mort[i] = missing_value; /* do not plot values for non established trees */

@@ -51,12 +51,12 @@ char **createpftnames(int index,           /**< output index */
       }
       break;
     case PFT_NPP: case PFT_GCGP: case MPFT_LAI:
-      for(i=0;i<npft-nbiomass;i++)
+      for(i=0;i<npft-nbiomass-nwft;i++)
       {
         pftnames[i]=strdup(pftpar[i].name);
         checkptr(pftnames[i]);
       }
-      incr=npft-nbiomass;
+      incr=npft-nbiomass-nwft;
       for(i=0;i<2;i++)
       {
         for(j=0;j<ncft;j++)
@@ -159,14 +159,14 @@ char **createpftnames(int index,           /**< output index */
     case FPC:
       pftnames[0]=strdup("natural stand fraction");
       checkptr(pftnames[0]);
-      for(i=0;i<npft-nbiomass;i++)
+      for(i=0;i<npft-nbiomass-nwft;i++)
       {
         pftnames[i+1]=strdup(pftpar[i].name);
         checkptr(pftnames[i+1]);
       }
       break;
     case PFT_MORT:
-      for(i=0;i<npft-nbiomass;i++)
+      for(i=0;i<npft-nbiomass-nwft;i++)
       {
         pftnames[i]=strdup(pftpar[i].name);
         checkptr(pftnames[i]);

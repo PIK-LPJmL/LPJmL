@@ -180,13 +180,13 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
       gcgp=gc_pft/gp_pft[getpftpar(pft,id)];
       if(stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0]>0.0)
       {
-        output->gcgp_count[(npft-config->nbiomass)+rothers(ncft)+index]++;
-        output->pft_gcgp[(npft-config->nbiomass)+rothers(ncft)+index]+=gcgp;
+        output->gcgp_count[(npft-config->nbiomass-config->nwft)+rothers(ncft)+index]++;
+        output->pft_gcgp[(npft-config->nbiomass-config->nwft)+rothers(ncft)+index]+=gcgp;
       }
       if(stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1]>0.0)
       {
-        output->gcgp_count[(npft-config->nbiomass)+rmgrass(ncft)+index]++;
-        output->pft_gcgp[(npft-config->nbiomass)+rmgrass(ncft)+index]+=gcgp;
+        output->gcgp_count[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+index]++;
+        output->pft_gcgp[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+index]+=gcgp;
       }
     }
     npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd);
@@ -206,16 +206,16 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
     if(config->pft_output_scaled)
     {
-      output->pft_npp[(npft-config->nbiomass)+rothers(ncft)+index]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
-      output->pft_npp[(npft-config->nbiomass)+rmgrass(ncft)+index]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
+      output->pft_npp[(npft-config->nbiomass-config->nwft)+rothers(ncft)+index]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
+      output->pft_npp[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+index]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
     }
     else
     {
-      output->pft_npp[(npft-config->nbiomass)+rothers(ncft)+index]+=npp;
-      output->pft_npp[(npft-config->nbiomass)+rmgrass(ncft)+index]+=npp;
+      output->pft_npp[(npft-config->nbiomass-config->nwft)+rothers(ncft)+index]+=npp;
+      output->pft_npp[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+index]+=npp;
     }
-    output->mpft_lai[(npft-config->nbiomass)+rothers(ncft)+index]+=actual_lai_grass(pft);
-    output->mpft_lai[(npft-config->nbiomass)+rmgrass(ncft)+index]+=actual_lai_grass(pft);
+    output->mpft_lai[(npft-config->nbiomass-config->nwft)+rothers(ncft)+index]+=actual_lai_grass(pft);
+    output->mpft_lai[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+index]+=actual_lai_grass(pft);
     grass = pft->data;
     if(config->withdailyoutput && isdailyoutput_grassland(output,stand))
     {

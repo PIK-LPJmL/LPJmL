@@ -160,7 +160,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
     if(stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation>0.0 &&
       gp_pft[getpftpar(pft,id)]>0.0)
    {
-     output->gcgp_count[(npft-config->nbiomass)+rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]++;
+     output->gcgp_count[(npft-config->nbiomass-config->nwft)+rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]++;
      output->pft_gcgp[(npft-config->nbiomass)+rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
    }
    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd);
@@ -172,10 +172,10 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
    output->dcflux-=npp*stand->frac;
    output->mgpp+=gpp*stand->frac;
    output->cft_fpar[rbtree(ncft) + data->irrigation.irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += (fpar(pft)*stand->cell->ml.landfrac[data->irrigation.irrigation].biomass_tree*(1.0 / (1 - stand->cell->lakefrac)));
-   if(config->pft_output_scaled)
-     output->pft_npp[(npft-config->nbiomass)+rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation;
+   if (config->pft_output_scaled)
+     output->pft_npp[(npft-config->nbiomass-config->nwft)+rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation;
    else
-     output->pft_npp[(npft-config->nbiomass)+rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp;
+     output->pft_npp[(npft-config->nbiomass-config->nwft)+rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp;
   } /* of foreachpft */
 
   /* soil outflow: evap and transpiration */
