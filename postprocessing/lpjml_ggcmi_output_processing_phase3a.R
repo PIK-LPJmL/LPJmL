@@ -39,7 +39,7 @@ crops <- c("wwh","swh","mai","ri1","ri2","soy")
 cropf <- c("winter_wheat","spring_wheat","maize","rice1","rice2","soy")
 
 all_variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")
-var_sel<- which(all_variables==shellarg) #c(1,3,4,5) # indices of variables to be processed, in "variables"
+var_sel<- which(all_variables==shellarg) # indices of variables to be processed
 variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")[var_sel]
 units <- c("t ha-1 yr-1","mm yr-1","day of year","year","days since planting","year","mm")[var_sel]
 longnames <- c("crop yields","potential irrigation requirements","actual planting date","planting year","days from planting to maturity","harvest year","soil water content")[var_sel]
@@ -49,6 +49,24 @@ hlimit=TRUE # sets yields to zero if achieved husum < 90% prescribed husum
 # ----------------------------------------- #
 # functions
 # ----------------------------------------- #
+
+read.LPJmL.grid <- function(filename,npix,header,swap=F){
+  ff <- file(filename,"rb")
+  seek(ff,where=header,origin="start")
+  if(swap){
+    x <- readBin(ff,integer(),size=2,n=npix*2,endian="swap")/100
+  } else {
+    x <- readBin(ff,integer(),size=2,n=npix*2)/100
+  }
+  lon <- x[(1:npix)*2-1]
+  lat <- x[(1:npix)*2]
+  # ilon/ilat are row and column numbers, starting at 179.75W and 89.75S as 1/1
+  ilon <- as.integer((lon+180)/0.5 + 1.01)
+  ilat <- as.integer((lat+90)/0.5 + 1.01)
+  area <- (111e3*0.5)*(111e3*0.5)*cos(lat/180*pi)/10000
+  close(ff)
+  data.frame(lon,lat,ilon,ilat,area)
+}
 
 read.LPJmL.array <- function(filename,fyear,syear,eyear,nbands,crop,npix){
   ff <- file(filename,"rb")
@@ -99,25 +117,12 @@ discard_first <- function(data,select,monthly=FALSE){
   }
 }
 
-toraster=function(var,lonlat=grid) {
-  raster <- raster(ncols=720, nrows=360)
-  raster[cellFromXY(raster,lonlat)] <- var
-  return(raster)
-}
-
 # ----------------------------------------- #
 # main
 # ----------------------------------------- #
 
-file="/p/projects/lpjml/input/ISIMIP3/grid.bin"
-zz<- file(file,"rb")
-seek(zz,where=43,origin="start")
-grid <- readBin(zz,integer(),size=2,n=ncell*2)
-close(zz)
-grid=t(array(grid,dim=c(2,ncell)))/100
-
-lon=grid[,1]
-lat=grid[,2]
+# load grid
+grid <- read.LPJmL.grid("/p/projects/lpjml/input/ISIMIP3/grid.bin",ncell,43,swap=F)
 res=0.5
 raster_lons=seq(-180+(res/2),180-(res/2),0.5)
 raster_lats=seq(-90+(res/2),90-(res/2),0.5)
@@ -310,13 +315,15 @@ for(c in 1:length(climate)) {
           # dump harvest if less than 90% of heat units achieved  #
           # ----------------------------------------------------- #
 
-          if(hlimit==TRUE && "yield"%in%variables) {
+          if(hlimit==TRUE && ("yield"%in%variables || "matyday"%in%variables)) {
 
             band_id=ifelse(ir>1,bands[cr]+15,bands[cr])
             for(y in 1:nyear) {
 
               dump=ifelse(hu[,y]<0.90*hu_ref[,band_id],1,0)
-              var[which(dump==1),y]=0
+
+              if("yield"%in%variables) var[which(dump==1),y]=0 # delete yields if less than 90% of husum is reached
+              if("matyday"%in%variables) var[which(dump==1),y]=var[which(dump==1),y]*-1 # document the deletion of yield by setting matyday to negatve values
 
             }
           }
@@ -329,9 +336,6 @@ for(c in 1:length(climate)) {
 
   	        # 3a file name convention: lpjml_gswp3-w5e5_obsclim_histsoc_default_plantday-wwh-firr_global_annual_1901_2016.nc
   	        # folder structure: AgMIP.output/<modelname>/phase3a/<climate_forcing>/obsclim/<crop>
-
-  	        # 3b file name convention: lpjml_gfdl-esm4_w5e5_picontrol_histsoc_default_biom-wwh-firr_global_annual_1850_2100.nc 
-  	        # folder structure: AgMIP.output/<modelname>/phase3b/<climate_forcing>/<climate_scenario>/<crop>
 
     		    # output dir
             outdir=paste(out.path,"/",climate[c],"/obsclim/",crops[cr],"/",sep="")
@@ -372,23 +376,25 @@ for(c in 1:length(climate)) {
             # preparing data for NC files
             # having some 3D matrix: lon, lat, time
             if(variables[va]=="soilmoist1m") {
-              mapo <- array(NA,dim=c(nlon,nlat,nyear*12))
+              mapo <- array(NA,dim=c(nlon*nlat,nyear*12))
             } else {
-              mapo <- array(NA,dim=c(nlon,nlat,nyear))
+              mapo <- array(NA,dim=c(nlon*nlat,nyear))
             }
             # loop through pixels, fill matrix
             buf <- var
             if(variables[va]=="soilmoist1m") buf <- smo
 
-            for(i in 1:dim(mapo)[3]){
-              mapo[,,i]=t(as.matrix(toraster(buf[,i],grid)))
-            }
-            mapo[is.na(mapo)] <- mv
+            lpjraster <- raster(ncols=720, nrows=360)
+            lpj_raster_index <- cellFromXY(lpjraster,grid[,c(1,2)])
+            mapo[lpj_raster_index,] <- buf
 
-            # writing data to NC files looping through time
-            for(i in 1:dim(mapo)[3]){
-              ncvar_put(ncf,ncv,mapo[,,i],start=c(1,1,i),count=c(-1,-1,1))
+            if(variables[va]=="soilmoist1m") {
+              dim(mapo) <- c(nlon,nlat,nyear*12)
+            } else {
+              dim(mapo) <- c(nlon,nlat,nyear)
             }
+            
+            ncvar_put(ncf,ncv,mapo,start=c(1,1,1),count=c(-1,-1,-1))
 
             nc_close(ncf)
 

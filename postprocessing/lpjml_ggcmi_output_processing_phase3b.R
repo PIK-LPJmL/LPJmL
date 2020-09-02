@@ -24,31 +24,26 @@ out.path <- "/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/processed/phase3b"
 
 climate=c("gfdl-esm4","ipsl-cm6a-lr","mpi-esm1-2-hr","mri-esm2-0","ukesm1-0-ll")[5]
 
-setup=c("picontrol","historical","ssp126","ssp585")[3]
-start_years=c(1850,1850,2015,2015)[3]
-first_years=c(1850,1850,2015,2015)[3]
-end_years=c(2100,2014,2100,2100)[3]
+climate_scenario=c("picontrol","historical","ssp126","ssp585")[4]
+start_years=c(1850,1850,2015,2015)[4]
+first_years=c(1850,1850,2015,2015)[4]
+end_years=c(2100,2014,2100,2100)[4]
 
 socioecon=c("histsoc","2015soc")[2]
 co2=c("default","2015co2","1850co2")[1]
 
 # ----------------------------------------- #
 
-var_job=strsplit(shellarg,"_")[[1]][1]
-cro_job=strsplit(shellarg,"_")[[1]][2]
-
 simulated_crops <- c("wwh","swh","mai","ri1","ri2","soy","mil","sor","pea","sgb","cas","rap","sun","nut","sgc")
 ncrops=length(simulated_crops)
 
 irrigs <- c("noirr","firr")
-all_crops <- c("wwh","swh","mai","ri1","ri2","soy")
-cro_sel<- which(all_crops==cro_job) # indices of crops to be processed
-bands <- c(1,2,3,4,5,6)[cro_sel]
-crops <- c("wwh","swh","mai","ri1","ri2","soy")[cro_sel]
-cropf <- c("winter_wheat","spring_wheat","maize","rice1","rice2","soy")[cro_sel]
+bands <- c(1,2,3,4,5,6)
+crops <- c("wwh","swh","mai","ri1","ri2","soy")
+cropf <- c("winter_wheat","spring_wheat","maize","rice1","rice2","soy")
 
 all_variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")
-var_sel<- which(all_variables==var_job) # indices of variables to be processed
+var_sel<- which(all_variables==shellarg) # indices of variables to be processed
 variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")[var_sel]
 units <- c("t ha-1 yr-1","mm yr-1","day of year","year","days since planting","year","mm")[var_sel]
 longnames <- c("crop yields","potential irrigation requirements","actual planting date","planting year","days from planting to maturity","harvest year","soil water content")[var_sel]
@@ -126,12 +121,6 @@ discard_first <- function(data,select,monthly=FALSE){
   }
 }
 
-toraster=function(var,lonlat=grid) {
-  raster <- raster(ncols=720, nrows=360)
-  raster[cellFromXY(raster,lonlat)] <- var
-  return(raster)
-}
-
 # ----------------------------------------- #
 # main
 # ----------------------------------------- #
@@ -154,7 +143,7 @@ hu_ref=t(hu_ref)
 close(ff)
 
 # ---------------------- #
-# setup loop
+# climate forcing loop
 # ---------------------- #
 
 for(c in 1:length(climate)) {
@@ -169,7 +158,7 @@ for(c in 1:length(climate)) {
     nyear=length(start.year:end.year)
 
     # input
-    data.path=paste(sim.path,"/",setup,"/lpjml_phase3_",climate[c],"_",socioecon,"_",co2,"_",start.year,"_",end.year,sep="")
+    data.path=paste(sim.path,"/",climate_scenario,"/lpjml_phase3_",climate[c],"_",socioecon,"_",co2,"_",start.year,"_",end.year,sep="")
 
     # ------------------- #
     # irrig/rainfed loop
@@ -330,13 +319,15 @@ for(c in 1:length(climate)) {
           # dump harvest if less than 90% of heat units achieved  #
           # ----------------------------------------------------- #
 
-          if(hlimit==TRUE && "yield"%in%variables) {
+          if(hlimit==TRUE && ("yield"%in%variables || "matyday"%in%variables)) {
 
             band_id=ifelse(ir>1,bands[cr]+15,bands[cr])
             for(y in 1:nyear) {
 
               dump=ifelse(hu[,y]<0.90*hu_ref[,band_id],1,0)
-              var[which(dump==1),y]=0
+
+			  if("yield"%in%variables) var[which(dump==1),y]=0 # delete yields if less than 90% of husum is reached
+              if("matyday"%in%variables) var[which(dump==1),y]=var[which(dump==1),y]*-1 # document the deletion of yield by setting matyday to negatve values
 
             }
           }
@@ -351,14 +342,14 @@ for(c in 1:length(climate)) {
   	        # folder structure: AgMIP.output/<modelname>/phase3b/<climate_forcing>/<climate_scenario>/<crop>
 
     		    # output dir
-            outdir=paste(out.path,"/",setup,"/",climate[c],"/",crops[cr],"/",sep="")
+            outdir=paste(out.path,"/",climate_scenario,"/",climate[c],"/",crops[cr],"/",sep="")
 
-    		    if(!file.exists(outdir)) dir.create(outdir,recursive=TRUE)
+			if(!file.exists(outdir)) dir.create(outdir,recursive=TRUE)
 
-    		    # output file
-            timestep=ifelse(variables[va]=="soilmoist1m","monthly","annual")
+			# output file
+			timestep=ifelse(variables[va]=="soilmoist1m","monthly","annual")
             write_var=paste0(variables[va],"-",crops[cr],"-",irrigs[ir])
-            fn <- paste(outdir,"lpjml_",climate[c],"_obsclim_",socioecon,"_",co2,"_",write_var,"_global_",timestep,"_",start.year,"_",end.year,".nc4",sep="")
+            fn <- paste(outdir,"lpjml_",climate[c],"_w5e5_",climate_scenario,"_",socioecon,"_",co2,"_",write_var,"_global_",timestep,"_",start.year,"_",end.year,".nc4",sep="")
             unlink(fn)
 
             # NetCDF generation ####
@@ -389,28 +380,25 @@ for(c in 1:length(climate)) {
             # preparing data for NC files
             # having some 3D matrix: lon, lat, time
             if(variables[va]=="soilmoist1m") {
-              mapo <- array(NA,dim=c(nlon,nlat,nyear*12))
+              mapo <- array(NA,dim=c(nlon*nlat,nyear*12))
             } else {
-              mapo <- array(NA,dim=c(nlon,nlat,nyear))
+              mapo <- array(NA,dim=c(nlon*nlat,nyear))
             }
             # loop through pixels, fill matrix
             buf <- var
             if(variables[va]=="soilmoist1m") buf <- smo
 
-            # for(i in 1:dim(mapo)[3]){
-            #   mapo[,,i]=t(as.matrix(toraster(buf[,i],grid)))
-            # }
+			lpjraster <- raster(ncols=720, nrows=360)
+			lpj_raster_index <- cellFromXY(lpjraster,grid[,c(1,2)])
+			mapo[lpj_raster_index,] <- buf
 
-            for(p in 1:ncell){
-              mapo[grid$ilon[p],360-grid$ilat[p]+1,] <- buf[p,]
-            }
-
-            mapo[is.na(mapo)] <- mv
-
-            # writing data to NC files looping through time
-            for(i in 1:dim(mapo)[3]){
-              ncvar_put(ncf,ncv,mapo[,,i],start=c(1,1,i),count=c(-1,-1,1))
-            }
+			if(variables[va]=="soilmoist1m") {
+				dim(mapo) <- c(nlon,nlat,nyear*12)
+			} else {
+				dim(mapo) <- c(nlon,nlat,nyear)
+			}
+            
+            ncvar_put(ncf,ncv,mapo,start=c(1,1,1),count=c(-1,-1,-1))
 
             nc_close(ncf)
 

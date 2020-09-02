@@ -1,7 +1,7 @@
 #!/bin/sh
 
 variables=("yield" "pirnreq" "plantday" "plantyear" "matyday" "harvyear" "soilmoist1m")
-ext="CROPSHEATFROST"
+ext=""
 
 scriptdir="/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/processed"
 
