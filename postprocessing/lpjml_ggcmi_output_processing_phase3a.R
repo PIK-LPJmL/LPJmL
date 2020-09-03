@@ -2,7 +2,7 @@
 rm(list=ls(all=TRUE))
 gc()
 shellarg <- commandArgs(TRUE)
-shellarg <- 1
+#shellarg <- "yield"
 # ----------------------------------------- #
 
 require(raster)
@@ -18,7 +18,7 @@ NODATA <- 1e20
 ncell <- 67420
 sim.path <- "/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3a"
 out.path <- "/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/processed/phase3a"
-#out.path <- "/p/projects/macmit/users/cmueller/GGCMI_phase3/processed/phase3a"
+#.path <- "/p/projects/macmit/users/cmueller/GGCMI_phase3/processed/phase3a"
 
 # ----------------------------------------- #
 
@@ -354,7 +354,8 @@ for(cl in 1:length(climate)) {
     		    # output file
             timestep=ifelse(variables[va]=="soilmoist1m","monthly","annual")
             if(for_eval){
-              write_var=paste0(variables[va],"_",crops[cr])
+              cro <- if(crops[cr] %in% c("wwh","swh")) "whe" else if(crops[cr] %in% c("ri1","ri2")) "ric" else crops[cr]
+              write_var=paste0(variables[va],"_",cro)
               fn <- paste(outdir,"lpjml_",climate[cl],"_hist_fullharm_",irrigs[ir],"_",variables[va],"_",crops[cr],"_",timestep,"_",start.year[cl],"_",end.year[cl],".nc4",sep="")
               #fn <- paste(outdir,"lpjml_",climate[cl],"_obsclim_",socioecon,"_",co2,"_",write_var,"_global_",timestep,"_",start.year,"_",end.year,".nc4",sep="")
             } else {
