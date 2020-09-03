@@ -28,9 +28,9 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
                            Real UNUSED(popdens), /**< population density (capita/km2) */
                            int year,             /**< year (AD) */
                            Bool isdaily,         /**< daily temperature data? */
-                           Bool intercrop,       
-                           const Config *config
-                          )                      /* \return stand has to be killed (TRUE/FALSE) */
+                           Bool intercrop,       /**< enable intercropping (TRUE/FALSE) */
+                           const Config *config  /**< LPJ configuration */
+                          )                      /** \return stand has to be killed (TRUE/FALSE) */
 {
 #if defined IMAGE || defined INCLUDEWP
   int p,pft_len,t,outIdx;
@@ -119,7 +119,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   {
     if (pft->par->type==TREE && pft->par->cultivation_type==WP) // tree
     {
-      outIdx = pft->par->id-npft+config->nwft;
+      outIdx = pft->par->id-(npft-config->nwft);
       stand->cell->output.wft_vegc[outIdx]+=(float)(vegc_sum(pft));
     }
   }
@@ -198,7 +198,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   }
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   if(fpc_total>1.0) light(stand,config->ntypes,fpc_inc2);
-  fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);  
+  fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
 
   if (fpc_total>1.0)
    foreachpft(pft,p,&stand->pftlist)
