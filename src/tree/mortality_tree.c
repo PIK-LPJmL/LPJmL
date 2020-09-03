@@ -36,9 +36,6 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
 {
   Real mort,bm_delta,heatstress,nind_kill,mort_max;
   Pfttree *tree;
-#if defined IMAGE || defined INCLUDEWP
-  Pfttreepar *treepar;
-#endif
   tree=pft->data;
   bm_delta=pft->bm_inc/pft->nind-turnover_ind;
   if(bm_delta<0)
