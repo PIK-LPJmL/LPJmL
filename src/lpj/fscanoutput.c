@@ -42,6 +42,8 @@ static int findid(const char *name,const Variable var[],int size)
 static int findpftid(const char *name,const Pftpar pftpar[],int ntotpft)
 {
   int p;
+  if(!strcmp("allnatural",name))
+    return ALLNATURAL;
   for(p=0;p<ntotpft;p++)
     if(!strcmp(name,pftpar[p].name))
       return pftpar[p].id;
