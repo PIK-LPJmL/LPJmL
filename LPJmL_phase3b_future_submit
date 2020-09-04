@@ -27,7 +27,7 @@ startyear=2015
 endyear=2100
 
 # RCPs
-rcps=("ssp126" "ssp370" "ssp585")
+rcps=("ssp126" "ssp585" "ssp370")
 
 # socio-economic drivers: histsoc = transient fertilizer, 2015soc = constant 2015 fertilizer
 socioecon=("histsoc" "2015soc")
@@ -64,10 +64,10 @@ do
 for ((s=1;s<2;s+=1)) # socio-economic option (histsoc = 0, 2015soc = 1)
 do
 
-for ((co=1;co<2;co+=1)) # co2 options (default = 0, 2015co2 = 1)
+for ((co=0;co<2;co+=1)) # co2 options (default = 0, 2015co2 = 1)
 do
 
-for ((r=2;r<3;r+=1)) # RCP scenario
+for ((r=0;r<2;r+=1)) # RCP scenario
 do
 
 # ----------------------------------------------- #
@@ -90,6 +90,13 @@ echo $setup
 outdir=${simdir}/${rcps[r]}/${setup}
 
 mkdir -p $outdir
+
+if [ ${co2[co]} = "default" ]
+then
+  co2_input=${rcps[r]}
+else
+  co2_input=${co2[co]}
+fi
 
 # ----------------------------------------------- #
 # prepare JCF file
@@ -256,7 +263,7 @@ EOF
   "lwnet" :        { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/${rcps[r]}/${Climate[c]}/lwnet_${climate[c]}_${rcps[r]}_2015-2100.clm"},
   "swdown" :       { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/${rcps[r]}/${Climate[c]}/rsds_${climate[c]}_${rcps[r]}_2015-2100.clm"},
   "wind":          { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/${rcps[r]}/${Climate[c]}/sfcwind_${climate[c]}_${rcps[r]}_2015-2100.clm"},
-  "co2" :          { "fmt" : TXT,  "name" : "historical/ISIMIP3a/co2/co2_2015co2_annual_1850_2100.txt"},
+  "co2" :          { "fmt" : TXT,  "name" : "scenarios/ISIMIP3b/co2/co2_${co2_input}_annual_2015_2100.txt"},
 },
 
 
