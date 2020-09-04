@@ -128,8 +128,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 2. pft */
 TROPICAL_BROADLEAVED_RAINGREEN_TREE
@@ -211,8 +209,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*---------------------------------------------------------------------------------------------*/
 /* 3. pft */
 TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE
@@ -294,8 +290,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 4. pft */
 TEMPERATE_BROADLEAVED_EVERGREEN_TREE
@@ -377,8 +371,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 5. pft */
 TEMPERATE_BROADLEAVED_SUMMERGREEN_TREE
@@ -462,8 +454,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 6. pft */
 BOREAL_NEEDLELEAVED_EVERGREEN_TREE
@@ -545,8 +535,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 7. pft */
 BOREAL_BROADLEAVED_SUMMERGREEN_TREE
@@ -630,8 +618,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 8. pft */
 BOREAL_NEEDLELEAVED_SUMMERGREEN_TREE
@@ -715,8 +701,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
 TROPICAL_HERBACEOUS
@@ -987,8 +971,6 @@ ALLOM4
 0.5                         /* k_est,  Giardina, 2002 */
 10                          /* rotation */
 40                          /* max_rotation_length */
-0.005                       /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 2. bft */
 BIOENERGY_TEMPERATE_TREE
@@ -1072,8 +1054,6 @@ ALLOM4
 0.8                         /* k_est TIM 1.5*/
 10                          /* rotation */
 40                          /* max_rotation_length */
-0.005                       /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 3. bft ONLY FOR BIOENERGY*/
 BIOENERGY_C4_GRASS

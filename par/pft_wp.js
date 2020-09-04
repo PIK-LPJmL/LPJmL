@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**              p  f  t  .  j  s                                                  \n**/
+/**              p  f  t  _  w  p  .  j  s                                         \n**/
 /**                                                                                \n**/
 /**  PFT and CFT parameter file for LPJmL version 4.0.004                          \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
@@ -137,9 +137,7 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est": K_EST,         /* k_est */
     "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
- 	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/
 /* 2. pft */
@@ -233,9 +231,7 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est": K_EST,         /* k_est */
     "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
-    "k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*---------------------------------------------------------------------------------------------*/
 /* 3. pft */
@@ -329,9 +325,7 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est": K_EST,         /* k_est */
     "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
-  	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "max_rotation_length" : 40 /* max_rotation_length */
  },
 /*--------------------------------------------------------------------------*/
 /* 4. pft */
@@ -425,9 +419,7 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est": K_EST,         /* k_est */
     "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
- 	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/
 /* 5. pft */
@@ -523,9 +515,7 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est": K_EST,         /* k_est */
     "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
- 	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/
 /* 6. pft */
@@ -619,9 +609,7 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est": K_EST,         /* k_est */
     "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
- 	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/
 /* 7. pft */
@@ -717,9 +705,7 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est": K_EST,         /* k_est */
     "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
- 	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/
 /* 8. pft */
@@ -815,9 +801,7 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est": K_EST,         /* k_est */
     "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
-  	"k_mort_max" : 0.03,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */
+    "max_rotation_length" : 40 /* max_rotation_length */
  },
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
@@ -1139,9 +1123,7 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est" : 0.5,          /* k_est,  Giardina, 2002 */
     "rotation" : 10,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
- 	"k_mort_max" : 0.005,       /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */	
+    "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/
 /* 2. bft */
@@ -1237,9 +1219,7 @@
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est" : 0.8,          /* k_est TIM 1.5*/
     "rotation" : 10,         /* rotation */
-    "max_rotation_length" : 40, /* max_rotation_length */
-    "k_mort_max" : 0.005,        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-    "P_init" : 0.1              /* Initial stand density (only used for wood plantations) */	
+    "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/
 /* 3. bft ONLY FOR BIOENERGY*/
@@ -1372,7 +1352,7 @@
         "base" : 14.787,      /* new phenology: inflection point of water limiting function (% water availability)  */
         "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
     },
-    "mort_max" : 0.005,     /* asymptotic maximum mortality rate (1/year) */
+    "mort_max" : 0.0635576,   /* asymptotic maximum mortality rate (1/year) */
     "phenology" : SUMMERGREEN,/* phenology */
     "path" : C3,            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
@@ -1412,7 +1392,6 @@
     "k_est" : K_EST,             /* k_est,  Giardina, 2002 */
     "rotation" : 500,            /* rotation */
     "max_rotation_length" : 500, /* max_rotation_length */
-    "k_mort_max" : 0.0635576,    /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
     "P_init" : 0.15394           /* Initial stand density (only used for wood plantations) */	
   },
 /*--------------------------------------------------------------------------*/
@@ -1470,7 +1449,7 @@
       "base" : 4.997,       /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.44          /* new phenology: change rate of actual to previous day water limiting function */
     },
-    "mort_max" : 0.005,     /* asymptotic maximum mortality rate (1/year) */
+    "mort_max" : 0.0584912, /* asymptotic maximum mortality rate (1/year) */
     "phenology" : EVERGREEN,/* phenology */
     "path" : C3,            /* pathway */
     "temp_co2" : { "low" : 2.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
@@ -1510,7 +1489,6 @@
     "k_est" : 0.5,                 /* k_est,  Giardina, 2002 */
     "rotation" : 500,              /* rotation */
     "max_rotation_length" : 500,   /* max_rotation_length */
-    "k_mort_max" : 0.0584912,      /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
     "P_init" : 0.147257            /* Initial stand density (only used for wood plantations) */	
   },
 /*--------------------------------------------------------------------------*/
@@ -1568,7 +1546,7 @@
       "base" : 0.007695,   /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.8          /* new phenology: change rate of actual to previous day water limiting function */
     },
-    "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
+    "mort_max" : 0.0480544, /* asymptotic maximum mortality rate (1/year) */
     "phenology" : EVERGREEN,/* phenology */
     "path" : C3,            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
@@ -1608,7 +1586,6 @@
     "k_est" : K_EST,             /* k_est,  Giardina, 2002 */
     "rotation" : 500,            /* rotation */
     "max_rotation_length" : 500, /* max_rotation_length */
-    "k_mort_max" : 0.0480544,    /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
     "P_init" : 0.169781          /* Initial stand density (only used for wood plantations) */	
    },
 /*--------------------------------------------------------------------------*/

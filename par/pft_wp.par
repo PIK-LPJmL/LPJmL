@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**              p  f  t  .  p  a  r                                               \n**/
+/**              p  f  t  _  w  p  .  p  a  r                                      \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 4.0.002                          \n**/
+/**  PFT and CFT parameter file for LPJmL version 4.0.004                          \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -128,8 +128,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 2. pft */
 TROPICAL_BROADLEAVED_RAINGREEN_TREE
@@ -211,8 +209,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*---------------------------------------------------------------------------------------------*/
 /* 3. pft */
 TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE
@@ -294,8 +290,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 4. pft */
 TEMPERATE_BROADLEAVED_EVERGREEN_TREE
@@ -377,8 +371,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 5. pft */
 TEMPERATE_BROADLEAVED_SUMMERGREEN_TREE
@@ -462,8 +454,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 6. pft */
 BOREAL_NEEDLELEAVED_EVERGREEN_TREE
@@ -545,8 +535,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 7. pft */
 BOREAL_BROADLEAVED_SUMMERGREEN_TREE
@@ -630,8 +618,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 8. pft */
 BOREAL_NEEDLELEAVED_SUMMERGREEN_TREE
@@ -715,8 +701,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 8                           /* rotation */
 40                          /* max_rotation_length */
-0.03                        /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
 TROPICAL_HERBACEOUS
@@ -987,8 +971,6 @@ ALLOM4
 0.5                         /* k_est,  Giardina, 2002 */
 10                          /* rotation */
 40                          /* max_rotation_length */
-0.005                       /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 2. bft */
 BIOENERGY_TEMPERATE_TREE
@@ -1072,8 +1054,6 @@ ALLOM4
 0.8                         /* k_est TIM 1.5*/
 10                          /* rotation */
 40                          /* max_rotation_length */
-0.005                       /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
-0.1                         /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 3. bft ONLY FOR BIOENERGY*/
 BIOENERGY_C4_GRASS
@@ -1179,7 +1159,7 @@ WP                          /* cultivation_type */
 5.12                        /* new phenology: slope of water limiting function */
 14.787                      /* new phenology: inflection point of water limiting function (% water availability)  */
 0.8                         /* new phenology: change rate of actual to previous day water limiting function */
-0.005                       /* asymptotic maximum mortality rate (1/year) */
+0.0635576                   /* asymptotic maximum mortality rate (1/year) */
 SUMMERGREEN                 /* phenology */
 C3                          /* pathway */
 -4.0 38.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
@@ -1220,7 +1200,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 500                         /* rotation */
 500                         /* max_rotation_length */
-0.0635576                   /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
 0.15394                     /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 2. Wft */
@@ -1264,7 +1243,7 @@ WP                          /* cultivation_type */
 5.14                        /* new phenology: slope of water limiting function */
 4.997                       /* new phenology: inflection point of water limiting function (% water availability)  */
 0.44                        /* new phenology: change rate of actual to previous day water limiting function */
-0.005                        /* asymptotic maximum mortality rate (1/year) */
+0.0584912                   /* asymptotic maximum mortality rate (1/year) */
 EVERGREEN                   /* phenology */
 C3                          /* pathway */
 2.0 55.0                    /* lower and upper temperature limit for co2 (deg C) 24 27*/
@@ -1303,7 +1282,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                       /* k_est */
 500                         /* rotation */
 500                         /* max_rotation_length */
-0.0584912                   /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
 0.147257                    /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 3. Wft */
@@ -1347,7 +1325,7 @@ WP                          /* cultivation_type */
 5                           /* new phenology: slope of water limiting function */
 0.007695                    /* new phenology: inflection point of water limiting function (% water availability)  */
 0.8                         /* new phenology: change rate of actual to previous day water limiting function */
-MORT_MAX                    /* asymptotic maximum mortality rate (1/year) */
+0.0480544                   /* asymptotic maximum mortality rate (1/year) */
 EVERGREEN                   /* phenology */
 C3                          /* pathway */
 -4.0 38.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
@@ -1386,7 +1364,6 @@ HEIGHT_MAX                  /* maximum height of tree */
 K_EST                        /* k_est */
 500                         /* rotation */
 500                         /* max_rotation_length */
-0.0480544                   /* PFT specific asymptotic maximum mortality rate (1/year; k_mort_max; curently only used for woodplantations) */
 0.169781                    /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 1. cft */
