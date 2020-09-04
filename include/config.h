@@ -72,7 +72,6 @@ typedef struct
   Filename sdate_filename;
   Filename burntarea_filename;
   Filename landcover_filename;
-  Filename runoff2ocean_filename; /**< map with indices of the ocean cells where the coast cells send their runoff into */
 #ifdef IMAGE
   Filename aquifer_filename;
   Filename wateruse_wd_filename;
