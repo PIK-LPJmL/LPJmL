@@ -47,7 +47,7 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_conv_loss_evap);
   free(output->cft_conv_loss_drain);
   free(output->cft_luc_image);
-#ifdef IMAGE
+#if defined IMAGE || defined INCLUDEWP
   free(output->wft_vegc);
 #endif
   free(output->cft_irrig_events);

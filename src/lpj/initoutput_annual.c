@@ -65,7 +65,7 @@ void initoutput_annual(Output *output, /**< Output data */
     output->pft_gcgp[i]=0;
     output->gcgp_count[i]=0;
   }
-#ifdef IMAGE
+#if defined IMAGE || defined INCLUDEWP
   for (i = 0;i<nwft;i++)
   {
     output->wft_vegc[i] = 0;

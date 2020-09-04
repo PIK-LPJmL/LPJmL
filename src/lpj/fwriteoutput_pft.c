@@ -195,7 +195,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   fvec=newvec(float,config->count);
   check(fvec);
   writeoutputvar(PFT_NPP,pft_npp,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
-#ifdef IMAGE
+#if defined IMAGE || defined INCLUDEWP
   writeoutputvar(WFT_VEGC,wft_vegc,config->nwft);
 #endif
 

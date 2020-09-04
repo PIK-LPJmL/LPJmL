@@ -85,7 +85,7 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_fpar);
   output->cft_luc_image=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->cft_luc_image);
-#ifdef IMAGE
+#if defined IMAGE || defined INCLUDEWP
   output->wft_vegc = newvec(Real, nwft);
   check(output->wft_vegc);
 #endif

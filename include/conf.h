@@ -92,11 +92,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#ifdef IMAGE
 #define NOUT 224            /* number of output files */
-#else
-#define NOUT 217            /* number of output files */
-#endif
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -322,7 +318,6 @@
 #define AGB_TREE 214
 #define MPFT_LAI 215
 #define MEAN_VEGC_MANGRASS 216
-#ifdef IMAGE
 #define WATERUSECONS 217
 #define WATERUSEDEM 218
 #define YDISCHARGE 219
@@ -330,7 +325,6 @@
 #define MWD_AQ 221
 #define MWATERUSE_HIL 222
 #define WFT_VEGC 223
-#endif
 
 #define RANDOM_SEED 0
 
