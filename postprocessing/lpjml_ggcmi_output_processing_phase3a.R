@@ -377,7 +377,8 @@ for(cl in 1:length(climate)) {
               if(for_eval){
                 dim_time <- ncdim_def("time",paste("growing seasons since ",start.year,"-01-01 00:00:00",sep=""),c(start.year:end.year)-start.year+1,calendar = "standard")
               } else {
-                dim_time <- ncdim_def("time",paste("growing seasons since ",start.year,"-01-01",sep=""),c(start.year:end.year)-start.year+1,calendar = "standard")
+                # start year of time dimension needs to be 1901 in 3a and 1661 in 3b, see https://www.isimip.org/protocol/preparing-simulation-files/
+                dim_time <- ncdim_def("time",paste("growing seasons since 1901-01-01, 00:00:00",sep=""),c(start.year:end.year)-1902,calendar = "standard")
               }
             }
 
