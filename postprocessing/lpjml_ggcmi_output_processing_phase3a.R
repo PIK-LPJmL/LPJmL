@@ -49,7 +49,7 @@ cropf <- c("winter_wheat","spring_wheat","maize","rice1","rice2","soy")
 all_variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")
 var_sel<- which(all_variables==shellarg) # indices of variables to be processed
 variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")[var_sel]
-units <- c("t ha-1 yr-1","mm yr-1","day of year","year","days since planting","year","mm")[var_sel]
+units <- c("t ha-1 gs-1 (dry matter)","kg m-2 gs-1","day of year","calendar year","days from planting","calendar year","kg m-3")[var_sel]
 longnames <- c("crop yields","potential irrigation requirements","actual planting date","planting year","days from planting to maturity","harvest year","soil water content")[var_sel]
 
 hlimit=TRUE # sets yields to zero if achieved husum < 90% prescribed husum 
