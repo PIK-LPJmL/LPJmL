@@ -376,6 +376,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->withlanduse!=NO_LANDUSE)
   {
+    config->cftmap=getcftmap(file,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+    if(config->cftmap==NULL)
+      return TRUE;
     scanclimatefilename(&input,&config->countrycode_filename,config->inputdir,FALSE,"countrycode");
     if(config->countrycode_filename.fmt==CDF)
     {

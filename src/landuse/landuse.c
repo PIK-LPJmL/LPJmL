@@ -434,7 +434,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         {
           for(j=0;j<ncft;j++)
           {
-            grid[cell].ml.landfrac[i].crop[j]=data[count++];
+            grid[cell].ml.landfrac[i].crop[config->cftmap[j]]=data[count++];
             if(i>0 && !grid[cell].skip)
               grid[cell].ml.irrig_system->crop[j]=grid[cell].ml.manage.par->default_irrig_system; /*default national irrigation system (Rohwer & Gerten 2007)*/
           }
@@ -483,8 +483,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             {
               if(data[count]>0)
               {
-                grid[cell].ml.landfrac[i].crop[j]=data[count++];
-                grid[cell].ml.irrig_system->crop[j]=p;
+                grid[cell].ml.landfrac[i].crop[config->cftmap[j]]=data[count++];
+                grid[cell].ml.irrig_system->crop[config->cftmap[j]]=p;
               }
               else
                 count++;

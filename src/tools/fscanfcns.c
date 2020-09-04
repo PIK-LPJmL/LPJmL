@@ -196,6 +196,10 @@ Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
   const char *str;
   if(file->isjson)
   {
+    if(name==NULL)
+      item=file->file.obj;
+    else
+    {
     if(!json_object_object_get_ex(file->file.obj,name,&item))
     {
       if(with_default)
@@ -211,19 +215,20 @@ Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
         return TRUE;
       }
     }
+    }
     if(json_object_get_type(item)!=json_type_string)
     {
       if(verb)
-        fprintf(stderr,"ERROR226: Type of '%s' is not string.\n",name);
+        fprintf(stderr,"ERROR226: Type of '%s' is not string.\n",(name==NULL) ? "N/A" : name);
       return TRUE;
     }
     str=json_object_get_string(item);
     if(strlen(str)>STRING_LEN && verb)
-      fprintf(stderr,"ERROR103: String too long for name '%s', truncated.\n",name);
+      fprintf(stderr,"ERROR103: String too long for name '%s', truncated.\n",(name==NULL) ? "N/A" : name);
     strncpy(s,str,STRING_LEN);
     s[STRING_LEN]='\0';
     if (verb >= VERB)
-      printf("\"%s\" : \"%s\"\n",name,s);
+      printf("\"%s\" : \"%s\"\n",(name==NULL) ? "N/A" : name,s);
     return FALSE;
   }
 #endif

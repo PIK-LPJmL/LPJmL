@@ -136,5 +136,6 @@ extern void irrig_amount_river(Cell *,const Config *);
 extern void irrig_amount(Stand *,Bool,int,int);
 extern void mixsetaside(Stand *,Stand *,Bool);
 extern void set_irrigsystem(Stand *,int,int,Bool);
+extern int *getcftmap(LPJfile *,int,int,const Config *);
 
 #endif

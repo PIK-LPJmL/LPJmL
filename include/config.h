@@ -172,6 +172,7 @@ typedef struct
   Pnet *irrig_res_back;
   int withlanduse;
   Bool reservoir;
+  int *cftmap;
 #ifdef IMAGE
   Bool groundwater_irrig;   /**< Irrigation from groundwater reservoir */
   Bool aquifer_irrig;       /**< Aquifer irrigation possible?*/

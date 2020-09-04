@@ -78,7 +78,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  Verbosity verb       /**< verbosity level (NO_ERR,ERR,VERB) */
                 )                     /** \return array of size ntypes or NULL */
 {
-  int *npft,n,id,l,count;
+  int *npft,n,l,count;
   LPJfile arr,item,subitem;
   String s;
   Pftpar *pft;
