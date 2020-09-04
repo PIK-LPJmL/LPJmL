@@ -232,9 +232,7 @@ Bool annual_woodplantation(Stand *stand,         /* Pointer to stand */
         isdead=TRUE;
     }
 
-#ifdef IMAGE
   stand->cell->output.cftfrac[rwp(ncft)+irrigation->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=stand->cell->ml.landfrac[irrigation->irrigation].woodplantation;
-#endif
 
   free(present);
   free(fpc_type);
