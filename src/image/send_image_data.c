@@ -310,8 +310,8 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
       /*-grid[cell].output.prod_turnover);*/
       fire_image[cell]=(float)grid[cell].output.firec;
       npp_image[cell]=(float)(grid[cell].ml.image_data->anpp+grid[cell].output.flux_estab);
-      npp_image_nat[cell]=(float)(grid[cell].npp_nat+grid[cell].flux_estab_nat);
-      npp_image_wp[cell]=(float)(grid[cell].npp_wp+grid[cell].flux_estab_wp);
+      npp_image_nat[cell]=(float)(grid[cell].output.npp_nat+grid[cell].output.flux_estab_nat);
+      npp_image_wp[cell]=(float)(grid[cell].output.npp_wp+grid[cell].output.flux_estab_wp);
       fireemission_deforest_image[cell]=(float)grid[cell].output.deforest_emissions;
       /*printf("sending pix %d trad_biof %g deforest_emiss %g\n",
         cell,trad_biofuel_image[cell],fireemission_deforest_image[cell]);*/

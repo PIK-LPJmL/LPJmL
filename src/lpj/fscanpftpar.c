@@ -106,26 +106,8 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   for(n=0;n<count;n++)
   {
     fscanarrayindex(&arr,&item,n,verb);
-    /* Read pft->id, defined in pftpar.h */
-    id=n;
-    if(fscanint(&item,&id,"id",TRUE,verb))
-      return NULL;
-    if(id<0 || id>=count)
-    {
-      if(verb)
-        fprintf(stderr,"ERROR120: Invalid range of 'id'=%d in line %d of '%s'.\n",
-                id,getlinecount(),getfilename());
-      return NULL;
-    }
-    pft=(*pftpar)+id;
-    if(pft->id!=UNDEF)
-    {
-      if(verb)
-        fprintf(stderr,
-                "ERROR176: PFT id=%d in line %d of '%s' has been already defined.\n",id,getlinecount(),getfilename());
-      return NULL;
-    }
-    pft->id=id;
+    pft=(*pftpar)+n;
+    pft->id=n;
 
     /* Read pft->name */
     if(fscanstring(&item,s,"name",FALSE,verb))

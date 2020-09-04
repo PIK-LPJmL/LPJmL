@@ -116,7 +116,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
 #if defined IMAGE && defined COUPLED
     if(stand->type->landusetype==NATURAL)
     {
-      stand->cell->npp_nat+=npp*stand->frac;
+      output->npp_nat+=npp*stand->frac;
     }
 #endif
     output->mgpp+=gpp*stand->frac;

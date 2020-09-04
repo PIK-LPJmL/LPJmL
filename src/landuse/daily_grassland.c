@@ -217,7 +217,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
     output->mpft_lai[(npft-config->nbiomass-config->nwft)+rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=actual_lai_grass(pft);
     output->mpft_lai[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=actual_lai_grass(pft);
     grass = pft->data;
-    if(config->withdailyoutput && output->daily.cft == TEMPERATE_HERBACEOUS && data->irrigation == output->daily.irrigation)
+    if(config->withdailyoutput && output->daily.cft == ALLGRASSLAND && data->irrigation == output->daily.irrigation)
     {
       output->daily.interc += intercep_pft;
       output->daily.npp += npp;
@@ -328,7 +328,7 @@ Real daily_grassland(Stand *stand, /**< stand pointer */
   if(config->withdailyoutput)
   {
     foreachpft(pft,p,&stand->pftlist)
-      if(output->daily.cft == TEMPERATE_HERBACEOUS && data->irrigation == output->daily.irrigation)
+      if(output->daily.cft == ALLGRASSLAND && data->irrigation == output->daily.irrigation)
       {
         output->daily.evap+=evap;
         forrootsoillayer(l)

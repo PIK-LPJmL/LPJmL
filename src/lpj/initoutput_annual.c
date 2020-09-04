@@ -71,6 +71,9 @@ void initoutput_annual(Output *output, /**< Output data */
     output->wft_vegc[i] = 0;
   }
 #endif
+#if defined IMAGE && defined COUPLED
+  output->npp_nat=output->npp_wp=output->flux_estab_nat=output->flux_estab_wp=output->rh_nat=output->rh_wp=0.0;
+#endif
   for (i=0; i<npft-nbiomass-nwft+1;++i)
     output->fpc[i] = 0;
 } /* of 'initoutput_annual' */

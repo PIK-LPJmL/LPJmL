@@ -42,8 +42,10 @@ static int findid(const char *name,const Variable var[],int size)
 static int findpftid(const char *name,const Pftpar pftpar[],int ntotpft)
 {
   int p;
-  if(!strcmp("allnatural",name))
+  if(!strcmp(name,"allnatural"))
     return ALLNATURAL;
+  else if(!strcmp(name,"allgrassland"))
+    return ALLGRASSLAND;
   for(p=0;p<ntotpft;p++)
     if(!strcmp(name,pftpar[p].name))
       return pftpar[p].id;
@@ -69,6 +71,12 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   count=index=0;
   config->withdailyoutput=FALSE;
   size=nout_max;
+  if(file->isjson && !iskeydefined(file,"output"))
+  {
+    config->pft_output_scaled=FALSE;
+    config->n_out=0;
+    return FALSE;
+  }
   if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))
   {
     config->n_out=0;
@@ -192,17 +200,16 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     else
     {
       fscanint2(file,&config->crop_index,"crop_index");
-      if(config->crop_index<0 || config->crop_index>=ntotpft)
+      if((config->crop_index!=ALLNATURAL && config->crop_index!=ALLGRASSLAND) || config->crop_index>=config->npft[CROP])
       {
         if(verbosity)
           fprintf(stderr,"ERROR166: Invalid value for crop index=%d in line %d of '%s'.\n",
                   config->crop_index,getlinecount(),getfilename());
         return TRUE;
       }
+      config->crop_index+=config->npft[GRASS]+config->npft[TREE];
     }
     fscanbool2(file,&config->crop_irrigation,"crop_irrigation");
-    if (config->crop_index == TROPICAL_HERBACEOUS)
-      config->crop_index = TEMPERATE_HERBACEOUS; /* for managed grassland the key for daily output is C3_PERENNIAL_GRASS */
   }
   else
   {

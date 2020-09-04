@@ -190,7 +190,17 @@ typedef struct
   Real adischarge;       /**< Annual discharge (1.000.000 m3/year) */
 #ifdef IMAGE
   Real ydischarge;       /**< Annual (1.000.000 m3/year) to send to IMAGE */
+#endif
+#if defined IMAGE || defined INCLUDEWP
   Real *wft_vegc;        /**< WFT specific vegetation carbon for wood plantation stand (gC/m2) */
+#endif
+#if defined IMAGE && defined COUPLED
+  Real npp_nat;          /**< NPP natural stand */
+  Real npp_wp;           /**< NPP woodplantation */
+  Real flux_estab_nat;   /**< flux_estab natural stand */
+  Real rh_nat;           /**< soil respiration natural stand */
+  Real flux_estab_wp;    /**< flux_estab woodplantation */
+  Real rh_wp;            /**< soil respiration woodplantation */
 #endif
   Real surface_storage;  /**< Water stored in the suface storages by the end of year (dm3) */
   Real soil_storage;     /**< Water stored in the soil column by the end of year (dm3) */

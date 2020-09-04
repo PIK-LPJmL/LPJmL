@@ -94,14 +94,6 @@ Received 19 November 1997; accepted 15 January 1999*/
   Output output;            /**< Output data */
   Discharge discharge;
   int elevation;            /**< cell elevation (m) */
-#if defined IMAGE || defined INCLUDEWP
-  Real npp_nat;             /**< NPP natural stand */
-  Real npp_wp;              /**< NPP woodplantation */
-  Real flux_estab_nat;      /**< flux_estab natural stand */
-  Real rh_nat;              /**< soil respiration natural stand */
-  Real flux_estab_wp;       /**< flux_estab woodplantation */
-  Real rh_wp;               /**< soil respiration woodplantation */
-#endif
   Balance balance;          /**< balance checks */
 };
 

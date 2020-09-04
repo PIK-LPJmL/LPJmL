@@ -51,7 +51,6 @@ static Harvest harvest_grass_mowing(Stand *stand)
   Pft *pft;
   int p;
   Real fpc_sum=0.0;
-  Real leafdeficit=0.0;
   foreachpft(pft,p,&stand->pftlist)
     fpc_sum+=pft->fpc;
   foreachpft(pft,p,&stand->pftlist)

@@ -112,8 +112,6 @@ Bool annual_woodplantation(Stand *stand,         /* Pointer to stand */
   } /* END if(pft_len>0) */
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
 
-#ifdef IMAGE
-
   // STORE WFT SPECIFIC OUTPUT
   foreachpft(pft, p, &stand->pftlist)
   {
@@ -123,7 +121,6 @@ Bool annual_woodplantation(Stand *stand,         /* Pointer to stand */
       stand->cell->output.wft_vegc[outIdx]+=(float)(vegc_sum(pft));
     }
   }
-#endif
     /*
   if(setting.fire==FIRE)
   {
@@ -219,8 +216,8 @@ Bool annual_woodplantation(Stand *stand,         /* Pointer to stand */
   acflux_estab=0;
 
   stand->cell->output.flux_estab+=acflux_estab*stand->frac;
-#ifdef IMAGE
-  stand->cell->flux_estab_wp+=acflux_estab*stand->frac;
+#ifdef COUPLED
+  stand->cell->output.flux_estab_wp+=acflux_estab*stand->frac;
 #endif
   stand->cell->output.dcflux+=acflux_estab*stand->frac;
 
@@ -232,9 +229,7 @@ Bool annual_woodplantation(Stand *stand,         /* Pointer to stand */
         isdead=TRUE;
     }
 
-#ifdef IMAGE
   stand->cell->output.cftfrac[rwp(ncft)+irrigation->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=stand->cell->ml.landfrac[irrigation->irrigation].woodplantation;
-#endif
 
   free(present);
   free(fpc_type);
