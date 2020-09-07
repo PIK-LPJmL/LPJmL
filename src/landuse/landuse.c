@@ -51,7 +51,7 @@ struct landuse
   Climatefile sdate;   /**< file pointer to prescribed sdates */
 };                     /**< definition of opaque datatype Landuse */
 
-Landuse initlanduse(int ncft,            /**< number of crop PFTs */
+Landuse initlanduse(int ncft,
                     const Config *config /**< LPJ configuration */
                    )                     /** \return allocated landuse or NULL */
 {
@@ -94,7 +94,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       if(config->landuse_filename.fmt==RAW)
       {
-        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
+        header.nbands=2*(config->cftmap_size+NBIOMASSTYPE+NWPTYPE);
         landuse->landuse.datatype=LPJ_SHORT;
         landuse->landuse.offset=config->startgrid*header.nbands*sizeof(short);
       }
@@ -110,9 +110,9 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->nbands=header.nbands;
       landuse->landuse.scalar=(version==1) ? 0.001 : header.scalar;
     }
-    if(landuse->nbands!=2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE) && landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE))
+    if(landuse->nbands!=2*(config->cftmap_size+NBIOMASSTYPE+NWPTYPE) && landuse->nbands!=4*(config->cftmap_size+NBIOMASSTYPE+NWPTYPE))
     {
-      if(landuse->nbands!=2*(ncft+NGRASS))
+      if(landuse->nbands!=2*(config->cftmap_size))
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(isroot(*config))
@@ -128,7 +128,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
           fputs("WARNING022: No landuse for biomass defined.\n",stderr);
       }
     }
-    if(landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE) && isroot(*config))
+    if(landuse->nbands!=4*(config->cftmap_size+NBIOMASSTYPE+NWPTYPE) && isroot(*config))
       fputs("WARNING024: Land-use input does not include irrigation systems, suboptimal country values are used.\n",stderr);
   }
 
@@ -430,21 +430,28 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       for(i=0;i<WIRRIG;i++)
       {
         /* read cropfrac from 32 bands or rain-fed cropfrac from 64 bands input */
-        if(landuse->nbands!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE) || i<1)
+        if(landuse->nbands!=4*(config->cftmap_size+NBIOMASSTYPE+NWPTYPE) || i<1)
         {
           for(j=0;j<ncft;j++)
           {
-            grid[cell].ml.landfrac[i].crop[config->cftmap[j]]=data[count++];
+            grid[cell].ml.landfrac[i].crop[j]=0;
             if(i>0 && !grid[cell].skip)
               grid[cell].ml.irrig_system->crop[j]=grid[cell].ml.manage.par->default_irrig_system; /*default national irrigation system (Rohwer & Gerten 2007)*/
           }
           for(j=0;j<NGRASS;j++)
           {
-            grid[cell].ml.landfrac[i].grass[j]=data[count++];
+            grid[cell].ml.landfrac[i].grass[j]=0;
             if(i>0 && !grid[cell].skip)
               grid[cell].ml.irrig_system->grass[j]=grid[cell].ml.manage.par->default_irrig_system;
+          } 
+          for(j=0;j<config->cftmap_size;j++)
+          {
+            if(config->cftmap[j]>=ncft)
+              grid[cell].ml.landfrac[i].grass[config->cftmap[j]-ncft]+=data[count++];
+            else 
+              grid[cell].ml.landfrac[i].crop[config->cftmap[j]]=+data[count++];
           }
-          if(landuse->nbands!=2*(ncft+NGRASS))
+          if(landuse->nbands!=2*(config->cftmap_size))
           {
             grid[cell].ml.landfrac[i].biomass_grass=data[count++];
             if(i>0 && !grid[cell].skip)
@@ -479,22 +486,20 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 #endif
           for(p=1;p<4;p++) /* irrigation system loop; 1: surface, 2: sprinkler, 3: drip */
           {
-            for(j=0;j<ncft;j++)
+            for(j=0;j<config->cftmap_size;j++)
             {
               if(data[count]>0)
               {
-                grid[cell].ml.landfrac[i].crop[config->cftmap[j]]=data[count++];
-                grid[cell].ml.irrig_system->crop[config->cftmap[j]]=p;
-              }
-              else
-                count++;
-            }
-            for(j=0;j<NGRASS;j++)
-            {
-              if(data[count]>0)
-              {
-                grid[cell].ml.landfrac[i].grass[j]=data[count++];
-                grid[cell].ml.irrig_system->grass[j]=p;
+                if(config->cftmap[j]>=ncft)
+                {
+                  grid[cell].ml.landfrac[i].grass[config->cftmap[j]-ncft]+=data[count++];
+                  grid[cell].ml.irrig_system->grass[config->cftmap[j]-ncft]=p;
+                }
+                else 
+                {
+                  grid[cell].ml.landfrac[i].crop[config->cftmap[j]]+=data[count++];
+                  grid[cell].ml.irrig_system->crop[config->cftmap[j]]=p;
+                }
               }
               else
                 count++;

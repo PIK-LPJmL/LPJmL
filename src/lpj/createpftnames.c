@@ -130,7 +130,6 @@ char **createpftnames(int index,           /**< output index */
       for(i=0;i<npft-nbiomass-nwft;i++)
         pftnames[i+1]=strdup(pftpar[i].name);
       break;
-#if defined IMAGE || defined INCLUDEWP
     case WFT_VEGC:
       incr=0;
       for (j=0;j<npft;j++)
@@ -142,7 +141,6 @@ char **createpftnames(int index,           /**< output index */
         }
       }
       break;
-#endif
   }
   return pftnames;
 } /* of 'createpftnames' */

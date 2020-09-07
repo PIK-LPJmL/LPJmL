@@ -118,4 +118,4 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
   else if (verb >= VERB)
     printf("\"%s\" : %d\n", name, *value);
   return rc;
-} /* of 'fscanint' */
+} /* of 'fscankeywords' */

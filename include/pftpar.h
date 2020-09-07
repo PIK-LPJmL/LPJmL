@@ -54,6 +54,8 @@
 #define ALLNATURAL -1 /* ensures summing daily outputs for all natural vegetation pfts */
 #define ALLGRASSLAND -2 /* ensures summing daily outputs for all natural vegetation pfts */
 
+/* the following constants are used by IMAGE */
+
 #define TROPICAL_BROADLEAVED_EVERGREEN_TREE 0
 #define TROPICAL_BROADLEAVED_RAINGREEN_TREE 1
 #define TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE 2

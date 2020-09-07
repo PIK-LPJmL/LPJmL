@@ -48,7 +48,6 @@
 [
   /* first pft */
   {
-    "id" : TROPICAL_BROADLEAVED_EVERGREEN_TREE,
     "name" : "tropical broadleaved evergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
@@ -140,7 +139,6 @@
 /*--------------------------------------------------------------------------*/
 /* 2. pft */
   {
-    "id" : TROPICAL_BROADLEAVED_RAINGREEN_TREE,
     "name" : "tropical broadleaved raingreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
@@ -232,7 +230,6 @@
 /*---------------------------------------------------------------------------------------------*/
 /* 3. pft */
   {
-    "id" : TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE,
     "name": "temperate needleleaved evergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
@@ -324,7 +321,6 @@
 /*--------------------------------------------------------------------------*/
 /* 4. pft */
   {
-    "id" : TEMPERATE_BROADLEAVED_EVERGREEN_TREE,
     "name" : "temperate broadleaved evergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
@@ -416,7 +412,6 @@
 /*--------------------------------------------------------------------------*/
 /* 5. pft */
   {
-    "id" : TEMPERATE_BROADLEAVED_SUMMERGREEN_TREE,
     "name" : "temperate broadleaved summergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
@@ -510,7 +505,6 @@
 /*--------------------------------------------------------------------------*/
 /* 6. pft */
   {
-    "id" : BOREAL_NEEDLELEAVED_EVERGREEN_TREE,
     "name" : "boreal needleleaved evergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
@@ -602,7 +596,6 @@
 /*--------------------------------------------------------------------------*/
 /* 7. pft */
   {
-    "id" : BOREAL_BROADLEAVED_SUMMERGREEN_TREE,
     "name" : "boreal broadleaved summergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
@@ -696,7 +689,6 @@
 /*--------------------------------------------------------------------------*/
 /* 8. pft */
   {
-    "id" : BOREAL_NEEDLELEAVED_SUMMERGREEN_TREE,
     "name" : "boreal needleleaved summergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
@@ -790,7 +782,6 @@
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
   {
-    "id" : TROPICAL_HERBACEOUS,
     "name" : "Tropical C4 grass",
     "type" : GRASS,
     "cultivation_type" : "none", /* cultivation_type */
@@ -866,7 +857,6 @@
 /*--------------------------------------------------------------------------*/
 /* 10. pft */
   {
-    "id" : TEMPERATE_HERBACEOUS,
     "name" : "Temperate C3 grass",
     "type" : GRASS,
     "cultivation_type" : "none", /* cultivation_type */
@@ -942,7 +932,6 @@
 /*--------------------------------------------------------------------------*/
 /* 11. pft */
   {
-    "id" : POLAR_HERBACEOUS,
     "name" : "Polar C3 grass",
     "type" : GRASS,
     "cultivation_type" : "none", /* cultivation_type */
@@ -1018,7 +1007,6 @@
 /*----------------------------------------------------------------------------------------*/
 /* 1. bft */
   {
-    "id" : BIOENERGY_TROPICAL_TREE,
     "name" : "bioenergy tropical tree",
     "type" : TREE,
     "cultivation_type" : BIOMASS,/* cultivation_type */
@@ -1112,7 +1100,6 @@
 /*--------------------------------------------------------------------------*/
 /* 2. bft */
   {
-    "id" : BIOENERGY_TEMPERATE_TREE,
     "name" : "bioenergy temperate tree",
     "type" : TREE,
     "cultivation_type" : BIOMASS,/* cultivation_type */
@@ -1208,7 +1195,6 @@
 /*--------------------------------------------------------------------------*/
 /* 3. bft ONLY FOR BIOENERGY*/
   {
-    "id" : BIOENERGY_C4_GRASS,
     "name" : "bioenergy C4 grass",
     "type" : GRASS,
     "cultivation_type" : BIOMASS, /* cultivation_type */
@@ -1284,7 +1270,6 @@
 /*--------------------------------------------------------------------------*/
 /* 1. cft */
   {
-    "id" : TEMPERATE_CEREALS,
     "name" : "temperate cereals",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
@@ -1383,7 +1368,6 @@
 /*--------------------------------------------------------------------------*/
 /* 2. cft */
   {
-    "id" : RICE,
     "name" : "rice",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
@@ -1482,7 +1466,6 @@
 /*--------------------------------------------------------------------------*/
 /* 3. cft */
   {
-    "id" : MAIZE,
     "name" : "maize",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
@@ -1581,7 +1564,6 @@
 /*--------------------------------------------------------------------------*/
 /* 4. cft */
   {
-    "id" : TROPICAL_CEREALS,
     "name" : "tropical cereals",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
@@ -1680,7 +1662,6 @@
 /*--------------------------------------------------------------------------*/
 /* 5. cft */
   {
-    "id" : PULSES,          /* re-parameterized as field peas, swatusermanual2000.pdf, CM 4.2.2009 */
     "name" : "pulses",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
@@ -1779,7 +1760,6 @@
 /*--------------------------------------------------------------------------*/
 /* 6. cft */
   {
-    "id" : TEMPERATE_ROOTS,
     "name": "temperate roots",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
@@ -1878,7 +1858,6 @@
 /*--------------------------------------------------------------------------*/
 /* 7. cft */
   {
-    "id" : TROPICAL_ROOTS,
     "name" : "tropical roots", /* re-parameterized as Cassava, 14.12.2009 KW */
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
@@ -1977,7 +1956,6 @@
 /*--------------------------------------------------------------------------*/
 /* 8. cft */
   {
-    "id" : OIL_CROPS_SUNFLOWER,
     "name" : "oil crops sunflower",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
@@ -2076,7 +2054,6 @@
 /*--------------------------------------------------------------------------*/
 /* 9. cft */
   {
-    "id" : OIL_CROPS_SOYBEAN,
     "name" : "oil crops soybean",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
@@ -2175,7 +2152,6 @@
 /*--------------------------------------------------------------------------*/
 /* 10. cft */
   {
-    "id" : OIL_CROPS_GROUNDNUT,
     "name": "oil crops groundnut",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
@@ -2274,7 +2250,6 @@
 /*--------------------------------------------------------------------------*/
 /* 11. cft */
   {
-    "id" : OIL_CROPS_RAPESEED,
     "name" : "oil crops rapeseed",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
@@ -2373,7 +2348,6 @@
 /*--------------------------------------------------------------------------*/
 /* 12. cft */
   {
-    "id" : SUGARCANE,
     "name" : "sugarcane",
     "type" : CROP,
     "cultivation_type": "annual crop", /* cultivation_type */

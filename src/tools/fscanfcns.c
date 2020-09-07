@@ -181,13 +181,13 @@ Bool fscantoken(FILE *file, /**< file pointer of a text file         */
   return FALSE;
 } /* of 'fscantoken' */
 
-Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
-                 String s,   /**< pointer to a char array of dimension
-                                  STRING_LEN+1                        */
-                 const char *name, /**< name of string                */
+Bool fscanstring(LPJfile *file,     /**< pointer to  a LPJ file         */
+                 String s,          /**< pointer to a char array of dimension
+                                         STRING_LEN+1                        */
+                 const char *name,  /**< name of string                */
                  Bool with_default, /**< allow default value */
-                 Verbosity verb  /**< enable error output */
-                )            /** \return TRUE on error                */
+                 Verbosity verb     /**< enable error output */
+                )                   /** \return TRUE on error                */
 {
   int c;
   int len;
@@ -200,21 +200,21 @@ Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
       item=file->file.obj;
     else
     {
-    if(!json_object_object_get_ex(file->file.obj,name,&item))
-    {
-      if(with_default)
+      if(!json_object_object_get_ex(file->file.obj,name,&item))
       {
-        if(verb)
-          fprintf(stderr,"WARNING027: Name '%s' for string not found, set to '%s'.\n",name,s);
-        return FALSE;
+        if(with_default)
+        {
+          if(verb)
+            fprintf(stderr,"WARNING027: Name '%s' for string not found, set to '%s'.\n",name,s);
+          return FALSE;
+        }
+        else
+        {
+          if(verb)
+            fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
+          return TRUE;
+        }
       }
-      else
-      {
-        if(verb)
-          fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
-        return TRUE;
-      }
-    }
     }
     if(json_object_get_type(item)!=json_type_string)
     {
