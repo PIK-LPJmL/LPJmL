@@ -289,7 +289,8 @@ int iterate(Outputfile *output,  /**< Output file data */
 
 #if defined IMAGE && defined COUPLED
   /* wait for IMAGE to finish before closing TDT-connections by LPJ */
-  finish=receive_image_finish(config);
+  if(config->sim_id==LPJML_IMAGE)
+    finish=receive_image_finish(config);
 #endif
   return year;
 } /* of 'iterate' */

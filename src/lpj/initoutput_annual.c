@@ -74,6 +74,6 @@ void initoutput_annual(Output *output, /**< Output data */
 #endif
   for (i=0; i<npft-nbiomass-nwft+1;++i)
     output->fpc[i] = 0;
-  for (i=0; i<npft-nbiomass;++i)
+  for (i=0; i<npft-nbiomass-nwft;++i)
     output->pft_mort[i] = missing_value; /* do not plot values for non established trees */
 } /* of 'initoutput_annual' */

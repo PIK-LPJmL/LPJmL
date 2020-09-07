@@ -135,7 +135,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   */
 
 #ifdef COUPLED
-  if(stand->cell->ml.image_data->timber_frac_wp>0)
+  if(config->sim_id==LPJML_IMAGE && stand->cell->ml.image_data->timber_frac_wp>0)
   {
     ftimber=min(1,stand->cell->ml.image_data->timber_frac_wp/stand->frac);
     foreachpft(pft,p,&stand->pftlist)

@@ -74,13 +74,13 @@ static void reducelandfrac(Cell *cell,Real cropsum,int ncft)
         cell->ml.landfrac[i].grass[j]=0;
       }
   }
-}
+} /* of 'reducelandfrac' */
 
-Bool receive_image_luc(Cell *grid,          /* LPJ grid */
-                       int npft,            /* number of natural PFTs */
-                       int ncft,            /* number of crop PFTs */
-                       const Config *config /* Grid configuration */
-                      )                     /* returns TRUE on error */
+Bool receive_image_luc(Cell *grid,          /**< LPJ grid */
+                       int npft,            /**< number of natural PFTs */
+                       int ncft,            /**< number of crop PFTs */
+                       const Config *config /**< Grid configuration */
+                      )                     /** \return TRUE on error */
 {
   int i;
   Real cropsum;
@@ -195,8 +195,8 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
 #endif
   if (readfloat_socket(config->in, image_data, config->ngridcell))
   {
-     free(image_data);
-     return TRUE;
+    free(image_data);
+    return TRUE;
   }
 
 #ifdef DEBUG_IMAGE
@@ -205,21 +205,21 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
 #endif
   for (i = 0; i<config->ngridcell; i++)
   {
-     if (!grid[i].skip)
-     {
-        grid[i].ml.image_data->totwatcons = (Real)image_data[i];
-        grid[i].discharge.wateruse = grid[i].ml.image_data->totwatcons;//HB->check of er nog unit conversie nodig is.
-        grid[i].discharge.wateruse = grid[i].discharge.wateruse * 1000;
-        grid[i].output.waterusecons = grid[i].discharge.wateruse;
-     }
+    if (!grid[i].skip)
+    {
+      grid[i].ml.image_data->totwatcons = (Real)image_data[i];
+      grid[i].discharge.wateruse = grid[i].ml.image_data->totwatcons;//HB->check of er nog unit conversie nodig is.
+      grid[i].discharge.wateruse = grid[i].discharge.wateruse * 1000;
+      grid[i].output.waterusecons = grid[i].discharge.wateruse*NDAYYEAR;
+    }
 #ifdef DEBUG_IMAGE
-     if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
-     {
-        printf("cell %d %g/%g\n", i, grid[i].coord.lon, grid[i].coord.lat);
-        fflush(stdout);
-        printf("th[%d]:%g %g\n", i, grid[i].ml.image_data->totwatcons, image_data[i]);
-        fflush(stdout);
-     }
+    if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
+    {
+      printf("cell %d %g/%g\n", i, grid[i].coord.lon, grid[i].coord.lat);
+      fflush(stdout);
+      printf("th[%d]:%g %g\n", i, grid[i].ml.image_data->totwatcons, image_data[i]);
+      fflush(stdout);
+    }
 #endif
   }
   free(image_data);
@@ -233,8 +233,8 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
 #endif
   if (readfloat_socket(config->in, image_data, config->ngridcell))
   {
-     free(image_data);
-     return TRUE;
+    free(image_data);
+    return TRUE;
   }
 
 #ifdef DEBUG_IMAGE
@@ -243,21 +243,21 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
 #endif
   for (i = 0; i<config->ngridcell; i++)
   {
-     if (!grid[i].skip)
-     {
-        grid[i].ml.image_data->totwatdem = (Real)image_data[i];
-        grid[i].discharge.wateruse_wd = grid[i].ml.image_data->totwatdem;
-        grid[i].discharge.wateruse_wd = grid[i].discharge.wateruse_wd * 1000;
-        grid[i].output.waterusedem = grid[i].discharge.wateruse_wd;
-     }
+    if (!grid[i].skip)
+    {
+      grid[i].ml.image_data->totwatdem = (Real)image_data[i];
+      grid[i].discharge.wateruse_wd = grid[i].ml.image_data->totwatdem;
+      grid[i].discharge.wateruse_wd = grid[i].discharge.wateruse_wd * 1000;
+      grid[i].output.waterusedem = grid[i].discharge.wateruse_wd*NDAYYEAR;
+    }
 #ifdef DEBUG_IMAGE
-     if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
-     {
-        printf("cell %d %g/%g\n", i, grid[i].coord.lon, grid[i].coord.lat);
-        fflush(stdout);
-        printf("th[%d]:%g %g\n", i, grid[i].ml.image_data->totwatdem, image_data[i]);
-        fflush(stdout);
-     }
+    if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
+    {
+      printf("cell %d %g/%g\n", i, grid[i].coord.lon, grid[i].coord.lat);
+      fflush(stdout);
+      printf("th[%d]:%g %g\n", i, grid[i].ml.image_data->totwatdem, image_data[i]);
+      fflush(stdout);
+    }
 #endif
   }
   free(image_data);
@@ -303,27 +303,30 @@ Bool receive_image_luc(Cell *grid,          /* LPJ grid */
 #endif
   for(i=0;i<config->ngridcell;i++)
   {
-    if(!grid[i].skip){
+    if(!grid[i].skip)
+    {
       grid[i].ml.image_data->takeaway[0]=(Real)image_takeaway[i].stems;
       grid[i].ml.image_data->takeaway[1]=(Real)image_takeaway[i].branches;
       grid[i].ml.image_data->takeaway[2]=(Real)image_takeaway[i].leaves;
       grid[i].ml.image_data->takeaway[3]=(Real)image_takeaway[i].roots;
 
 #ifdef DEBUG_IMAGE
-      if(i==3794 || i==4696 || i==850 || i==4582){
-          printf("takeaway cell %d %g/%g/%g/%g\n",i,grid[i].ml.image_data->takeaway[0],grid[i].ml.image_data->takeaway[1],grid[i].ml.image_data->takeaway[2],grid[i].ml.image_data->takeaway[3]);
-            fflush(stdout);}	
+      if(i==3794 || i==4696 || i==850 || i==4582)
+      {
+        printf("takeaway cell %d %g/%g/%g/%g\n",i,grid[i].ml.image_data->takeaway[0],grid[i].ml.image_data->takeaway[1],grid[i].ml.image_data->takeaway[2],grid[i].ml.image_data->takeaway[3]);
+        fflush(stdout);
+      }
 #endif
     }
 #ifdef DEBUG_IMAGE_CELL
-   if(image_takeaway[i].stems>0)
-	{
+    if(image_takeaway[i].stems>0)
+    {
       printf("cell %d %g/%g\n",i,grid[i].coord.lon,grid[i].coord.lat);
       fflush(stdout);
       printf("takeaway: th[%d]:%g %g\n",i,grid[i].ml.image_data->takeaway[0],image_takeaway[i].stems);
       fflush(stdout);
-      for (j=0;j<4;j++){
-         printf("takeaway2:%d %.6g\n", i, grid[i].ml.image_data->takeaway[j]);}
+      for (j=0;j<4;j++)
+        printf("takeaway2:%d %.6g\n", i, grid[i].ml.image_data->takeaway[j]);
     }
 #endif
   }
