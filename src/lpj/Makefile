@@ -47,7 +47,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O \
           fprintfiles.$O roughnesslength.$O closeoutput_yearly.$O\
           getnculttype.$O getextension.$O albedo_stand.$O phenology_gsi.$O\
           fscanphenparam.$O landcover.$O getsize.$O fprintoutputvar.$O\
-          isdailyoutput_natural.$O
+          isdailyoutput_natural.$O 
 
 INC     = ../../include
 LIBDIR  = ../../lib

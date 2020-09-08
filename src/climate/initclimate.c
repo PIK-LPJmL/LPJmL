@@ -253,7 +253,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if (config->prescribe_burntarea)
     {
-      if(openclimate(&climate->file_burntarea,&config->burntarea_filename,(config->burntarea_filename.fmt==CDF) ? NULL : NULL,LPJ_SHORT,config))
+      if(openclimate(&climate->file_burntarea,&config->burntarea_filename,(config->burntarea_filename.fmt==CDF) ?  (char *)NULL : (char *)NULL,LPJ_SHORT,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open burntarea data from '%s'.\n",config->burntarea_filename.name);

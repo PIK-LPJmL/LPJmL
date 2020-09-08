@@ -24,6 +24,8 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
 
+char *irrigsys[]={"no irrig","surf","sprink","drip"};
+
 int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
                     Countrypar **countrypar, /**< Pointer to countrypar array */
                     Bool rw_manage,          /**< rain water management options (TRUE/FALSE) */
@@ -92,12 +94,10 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
       fscanreal2(verb,&item,&country->laimax_tempcer,"laimax_tempcer",country->name);
       fscanreal2(verb,&item,&country->laimax_maize,"laimax_maize",country->name);
     }
-    if(fscanint(&item,(int *)(&country->default_irrig_system),"default_irrig_system",FALSE,verb))
-      return 0;
-    if(country->default_irrig_system<SURF || country->default_irrig_system>DRIP)
+    if(fscankeywords(&item,&country->default_irrig_system,"default_irrig_system",irrigsys,4,FALSE,verb))
     {
       if(verb)
-        fprintf(stderr,"ERROR215: Default irrigation system=%d is not defined within 1 to 3 for %s in line %d of '%s'.\n",(int)country->default_irrig_system,country->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR215: Invalid value for irrigation system for %s.\n",country->name);
        return 0;
     }
   } /* of 'for(n=0;...)' */

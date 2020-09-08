@@ -62,7 +62,9 @@ typedef struct
   Real k_est;                       /**< maximum overall sapling establishment rate (indiv/m2) */
   int rotation;                     /**< coppicing interval from short rotation woody crops */
   int max_rotation_length;          /**< lifetime of short rotation woody crop plantation */
+#if defined IMAGE  || defined INCLUDEWP
   Real P_init;                      /**< initial stand density (only used for wood plantations)*/
+#endif
 } Pfttreepar;
 
 typedef struct
@@ -77,6 +79,8 @@ typedef struct
   Treephys turn_litt;
   Treephys2 ind;
 } Pfttree;
+
+extern char *leaftype[];
 
 /* Declaration of functions */
 

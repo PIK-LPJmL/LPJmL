@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  v  p  d  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 4.0.004                                 \n**/
+/** Configuration file for LPJmL C Version 4.0.005                                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -31,41 +31,41 @@
 /*===================================================================*/
 
   "sim_name" : "LPJmL run with SPITFIRE and VPD fire danger index", /* Simulation description */
-  "sim_id"   : LPJML,       /* LPJML Simulation type with managed land use */
+  "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "version"  : "4.0",       /* LPJmL version expected */
-  "random_prec" : true,     /* Random weather generator for precipitation enabled */
+  "random_prec" : false,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
-  "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
-  "fire" : SPITFIRE_TMAX,   /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
-  "fdi" : WVPD_INDEX,   /* different fire danger index formulations: WVPD_INDEX, NESTEROV_INDEX*/
+  "radiation" : "radiation", /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
+  "fire" : "spitfire_tmax",  /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
+  "fdi" : "wvpd_index",      /* different fire danger index formulations: WVPD_INDEX, NESTEROV_INDEX*/
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
   "river_routing" : false,
   "permafrost" : true,
 #ifdef FROM_RESTART
   "population" : true,
-  "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
+  "landuse" : "landuse", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
-  "wateruse" : WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "wateruse" : "wateruse",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
 #else
   "population" : false,
-  "landuse" : NO_LANDUSE,
+  "landuse" : "no_landuse",
   "reservoir" : false,
-  "wateruse" : NO_WATERUSE,
+  "wateruse" : "no_wateruse",
 #endif
   "prescribe_burntarea" : false,
-  "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
-  "sowing_date_option" : FIXED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
-  "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
-  "intercrop" : true,                   /* intercrops on setaside */
-  "remove_residuals" : false,           /* remove residuals */
-  "residues_fire" : false,              /* fire in residuals */
-  "irrigation" : LIM_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
-  "laimax_interpolate" : LAIMAX_CFT,    /* laimax values from manage parameter file, */
-                                        /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
-  "rw_manage" : false,                  /* rain water management */
-  "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
+  "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
+  "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
+  "sdate_fixyear" : 1970,                 /* year in which sowing dates shall be fixed */
+  "intercrop" : true,                     /* intercrops on setaside */
+  "remove_residuals" : false,             /* remove residuals */
+  "residues_fire" : false,                /* fire in residuals */
+  "irrigation" : "lim_irrigation",        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
+  "laimax_interpolate" : "laimax_cft",    /* laimax values from manage parameter file, */
+                                          /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
+  "rw_manage" : false,                    /* rain water management */
+  "laimax" : 5,                           /* maximum LAI for CONST_LAI_MAX */
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
 /*===================================================================*/
@@ -95,8 +95,8 @@
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s
 
-  "crop_index" : TEMPERATE_CEREALS,  /* CFT for daily output */
-  "crop_irrigation" : DAILY_RAINFED, /* irrigation flag for daily output */
+  "crop_index" : "temperate cereals",  /* CFT for daily output */
+  "crop_irrigation" : false, /* irrigation flag for daily output */
 
 #ifdef FROM_RESTART
 
@@ -106,63 +106,63 @@
 /*
 ID                         Fmt                    filename
 -------------------------- ---------------------- ----------------------------- */
-    { "id" : GRID,             "file" : { "fmt" : CDF, "name" : "output/grid.nc" }},
-    { "id" : FPC,              "file" : { "fmt" : CDF, "name" : "output/fpc.nc"}},
-    { "id" : MNPP,             "file" : { "fmt" : CDF, "name" : "output/mnpp.nc"}},
-    { "id" : MGPP,             "file" : { "fmt" : CDF, "name" : "output/mgpp.nc"}},
-    { "id" : MRH,              "file" : { "fmt" : CDF, "name" : "output/mrh.nc"}},
-    { "id" : MFAPAR,           "file" : { "fmt" : CDF, "name" : "output/mfapar.nc"}},
-    { "id" : MTRANSP,          "file" : { "fmt" : CDF, "name" : "output/mtransp.nc"}},
-    { "id" : MRUNOFF,          "file" : { "fmt" : CDF, "name" : "output/mrunoff.nc"}},
-    { "id" : MEVAP,            "file" : { "fmt" : CDF, "name" : "output/mevap.nc"}},
-    { "id" : MINTERC,          "file" : { "fmt" : CDF, "name" : "output/minterc.nc"}},
-    { "id" : MSWC1,            "file" : { "fmt" : CDF, "name" : "output/mswc1.nc"}},
-    { "id" : MSWC2,            "file" : { "fmt" : CDF, "name" : "output/mswc2.nc"}},
-    { "id" : FIREC,            "file" : { "fmt" : CDF, "name" : "output/firec.nc"}},
-    { "id" : FIREF,            "file" : { "fmt" : CDF, "name" : "output/firef.nc"}},
-    { "id" : VEGC,             "file" : { "fmt" : CDF, "name" : "output/vegc.nc"}},
-    { "id" : SOILC,            "file" : { "fmt" : CDF, "name" : "output/soilc.nc"}},
-    { "id" : LITC,             "file" : { "fmt" : CDF, "name" : "output/litc.nc"}},
-    { "id" : FLUX_ESTAB,       "file" : { "fmt" : CDF, "name" : "output/flux_estab.nc"}},
-    { "id" : MPHEN_TMIN,       "file" : { "fmt" : CDF, "name" : "output/mphen_tmin.nc"}},
-    { "id" : MPHEN_TMAX,       "file" : { "fmt" : CDF, "name" : "output/mphen_tmax.nc"}},
-    { "id" : MPHEN_LIGHT,      "file" : { "fmt" : CDF, "name" : "output/mphen_light.nc"}},
-    { "id" : MPHEN_WATER,      "file" : { "fmt" : CDF, "name" : "output/mphen_water.nc"}},
-    { "id" : MFIREC,           "file" : { "fmt" : CDF, "name" : "output/mfirec.nc"}},
-    { "id" : MNFIRE,           "file" : { "fmt" : CDF, "name" : "output/mnfire.nc"}},
-    { "id" : MBURNTAREA,       "file" : { "fmt" : CDF, "name" : "output/mburnt_area.nc"}},
-    { "id" : ABURNTAREA,       "file" : { "fmt" : CDF, "name" : "output/aburnt_area.nc"}},
-    { "id" : MFIREDI,          "file" : { "fmt" : CDF, "name" : "output/mfiredi.nc"}},
-    { "id" : MDISCHARGE,       "file" : { "fmt" : CDF, "name" : "output/mdischarge.nc"}},
-    { "id" : MWATERAMOUNT,     "file" : { "fmt" : CDF, "name" : "output/mwateramount.nc"}},
-    { "id" : HARVEST,          "file" : { "fmt" : CDF, "name" : "output/flux_harvest.nc"}},
-    { "id" : SDATE,            "file" : { "fmt" : CDF, "name" : "output/sdate.nc"}},
-    { "id" : PFT_HARVEST,      "file" : { "fmt" : CDF, "name" : mkstr(output/pft_harvest.SUFFIX)}},
-    { "id" : CFTFRAC,          "file" : { "fmt" : CDF, "name" : "output/cftfrac.nc"}},
-    { "id" : SEASONALITY,      "file" : { "fmt" : CDF, "name" : "output/seasonality.nc"}},
+    { "id" : "grid",             "file" : { "fmt" : "cdf", "name" : "output/grid.nc" }},
+    { "id" : "fpc",              "file" : { "fmt" : "cdf", "name" : "output/fpc.nc"}},
+    { "id" : "mnpp",             "file" : { "fmt" : "cdf", "name" : "output/mnpp.nc"}},
+    { "id" : "mgpp",             "file" : { "fmt" : "cdf", "name" : "output/mgpp.nc"}},
+    { "id" : "mrh",              "file" : { "fmt" : "cdf", "name" : "output/mrh.nc"}},
+    { "id" : "mfapar",           "file" : { "fmt" : "cdf", "name" : "output/mfapar.nc"}},
+    { "id" : "mtransp",          "file" : { "fmt" : "cdf", "name" : "output/mtransp.nc"}},
+    { "id" : "mrunoff",          "file" : { "fmt" : "cdf", "name" : "output/mrunoff.nc"}},
+    { "id" : "mevap",            "file" : { "fmt" : "cdf", "name" : "output/mevap.nc"}},
+    { "id" : "minterc",          "file" : { "fmt" : "cdf", "name" : "output/minterc.nc"}},
+    { "id" : "mswc1",            "file" : { "fmt" : "cdf", "name" : "output/mswc1.nc"}},
+    { "id" : "mswc2",            "file" : { "fmt" : "cdf", "name" : "output/mswc2.nc"}},
+    { "id" : "firec",            "file" : { "fmt" : "cdf", "name" : "output/firec.nc"}},
+    { "id" : "firef",            "file" : { "fmt" : "cdf", "name" : "output/firef.nc"}},
+    { "id" : "vegc",             "file" : { "fmt" : "cdf", "name" : "output/vegc.nc"}},
+    { "id" : "soilc",            "file" : { "fmt" : "cdf", "name" : "output/soilc.nc"}},
+    { "id" : "litc",             "file" : { "fmt" : "cdf", "name" : "output/litc.nc"}},
+    { "id" : "flux_estab",       "file" : { "fmt" : "cdf", "name" : "output/flux_estab.nc"}},
+    { "id" : "mphen_tmin",       "file" : { "fmt" : "cdf", "name" : "output/mphen_tmin.nc"}},
+    { "id" : "mphen_tmax",       "file" : { "fmt" : "cdf", "name" : "output/mphen_tmax.nc"}},
+    { "id" : "mphen_light",      "file" : { "fmt" : "cdf", "name" : "output/mphen_light.nc"}},
+    { "id" : "mphen_water",      "file" : { "fmt" : "cdf", "name" : "output/mphen_water.nc"}},
+    { "id" : "mfirec",           "file" : { "fmt" : "cdf", "name" : "output/mfirec.nc"}},
+    { "id" : "mnfire",           "file" : { "fmt" : "cdf", "name" : "output/mnfire.nc"}},
+    { "id" : "mburntarea",       "file" : { "fmt" : "cdf", "name" : "output/mburnt_area.nc"}},
+    { "id" : "aburntarea",       "file" : { "fmt" : "cdf", "name" : "output/aburnt_area.nc"}},
+    { "id" : "mfiredi",          "file" : { "fmt" : "cdf", "name" : "output/mfiredi.nc"}},
+    { "id" : "mdischarge",       "file" : { "fmt" : "cdf", "name" : "output/mdischarge.nc"}},
+    { "id" : "mwateramount",     "file" : { "fmt" : "cdf", "name" : "output/mwateramount.nc"}},
+    { "id" : "harvest",          "file" : { "fmt" : "cdf", "name" : "output/flux_harvest.nc"}},
+    { "id" : "sdate",            "file" : { "fmt" : "cdf", "name" : "output/sdate.nc"}},
+    { "id" : "pft_harvest",      "file" : { "fmt" : "cdf", "name" : mkstr(output/pft_harvest.SUFFIX)}},
+    { "id" : "cftfrac",          "file" : { "fmt" : "cdf", "name" : "output/cftfrac.nc"}},
+    { "id" : "seasonality",      "file" : { "fmt" : "cdf", "name" : "output/seasonality.nc"}},
 #ifdef DAILY_OUTPUT
-    { "id" : D_NPP,            "file" : { "fmt" : CDF, "name" : "output/d_npp.nc"}},
-    { "id" : D_GPP,            "file" : { "fmt" : CDF, "name" : "output/d_gpp.nc"}},
-    { "id" : D_RH,             "file" : { "fmt" : CDF, "name" : "output/d_rh.nc"}},
-    { "id" : D_TRANS,          "file" : { "fmt" : CDF, "name" : "output/d_trans.nc"}},
-    { "id" : D_INTERC,         "file" : { "fmt" : CDF, "name" : "output/d_interc.nc"}},
-    { "id" : D_EVAP,           "file" : { "fmt" : CDF, "name" : "output/d_evap.nc"}},
+    { "id" : "d_npp",            "file" : { "fmt" : "cdf", "name" : "output/d_npp.nc"}},
+    { "id" : "d_gpp",            "file" : { "fmt" : "cdf", "name" : "output/d_gpp.nc"}},
+    { "id" : "d_rh",             "file" : { "fmt" : "cdf", "name" : "output/d_rh.nc"}},
+    { "id" : "d_trans",          "file" : { "fmt" : "cdf", "name" : "output/d_trans.nc"}},
+    { "id" : "d_interc",         "file" : { "fmt" : "cdf", "name" : "output/d_interc.nc"}},
+    { "id" : "d_evap",           "file" : { "fmt" : "cdf", "name" : "output/d_evap.nc"}},
 #endif
-    { "id" : MPET,             "file" : { "fmt" : CDF, "name" : "output/mpet.nc"}},
-    { "id" : MALBEDO,          "file" : { "fmt" : CDF, "name" : "output/malbedo.nc"}},
-    { "id" : MAXTHAW_DEPTH,    "file" : { "fmt" : CDF, "name" : "output/maxthaw_depth.nc"}},
-    { "id" : MSOILTEMP1,       "file" : { "fmt" : CDF, "name" : "output/msoiltemp1.nc"}},
-    { "id" : MSOILTEMP2,       "file" : { "fmt" : CDF, "name" : "output/msoiltemp2.nc"}},
-    { "id" : MSOILTEMP3,       "file" : { "fmt" : CDF, "name" : "output/msoiltemp3.nc"}},
-    { "id" : SOILC_LAYER,      "file" : { "fmt" : CDF, "name" : "output/soilc_layer.nc"}},
-    { "id" : AGB,              "file" : { "fmt" : CDF, "name" : "output/agb.nc"}},
-    { "id" : AGB_TREE,         "file" : { "fmt" : CDF, "name" : "output/agb_tree.nc"}},
-    { "id" : MRETURN_FLOW_B,   "file" : { "fmt" : CDF, "name" : "output/mreturn_flow_b.nc"}},
-    { "id" : MTRANSP_B,        "file" : { "fmt" : CDF, "name" : "output/mtransp_b.nc"}},
-    { "id" : MEVAP_B,          "file" : { "fmt" : CDF, "name" : "output/mevap_b.nc"}},
-    { "id" : MINTERC_B,        "file" : { "fmt" : CDF, "name" : "output/mintec_b.nc"}},
-    { "id" : ACONV_LOSS_EVAP,  "file" : { "fmt" : CDF, "name" : "output/aconv_loss_evap.nc"}},
-    { "id" : ACONV_LOSS_DRAIN, "file" : { "fmt" : CDF, "name" : "output/aconv_loss_drain.nc"}}
+    { "id" : "mpet",             "file" : { "fmt" : "cdf", "name" : "output/mpet.nc"}},
+    { "id" : "malbedo",          "file" : { "fmt" : "cdf", "name" : "output/malbedo.nc"}},
+    { "id" : "maxthaw_depth",    "file" : { "fmt" : "cdf", "name" : "output/maxthaw_depth.nc"}},
+    { "id" : "msoiltemp1",       "file" : { "fmt" : "cdf", "name" : "output/msoiltemp1.nc"}},
+    { "id" : "msoiltemp2",       "file" : { "fmt" : "cdf", "name" : "output/msoiltemp2.nc"}},
+    { "id" : "msoiltemp3",       "file" : { "fmt" : "cdf", "name" : "output/msoiltemp3.nc"}},
+    { "id" : "soilc_layer",      "file" : { "fmt" : "cdf", "name" : "output/soilc_layer.nc"}},
+    { "id" : "agb",              "file" : { "fmt" : "cdf", "name" : "output/agb.nc"}},
+    { "id" : "agb_tree",         "file" : { "fmt" : "cdf", "name" : "output/agb_tree.nc"}},
+    { "id" : "mreturn_flow_b",   "file" : { "fmt" : "cdf", "name" : "output/mreturn_flow_b.nc"}},
+    { "id" : "mtransp_b",        "file" : { "fmt" : "cdf", "name" : "output/mtransp_b.nc"}},
+    { "id" : "mevap_b",          "file" : { "fmt" : "cdf", "name" : "output/mevap_b.nc"}},
+    { "id" : "minterc_b",        "file" : { "fmt" : "cdf", "name" : "output/mintec_b.nc"}},
+    { "id" : "aconv_loss_evap",  "file" : { "fmt" : "cdf", "name" : "output/aconv_loss_evap.nc"}},
+    { "id" : "aconv_loss_drain", "file" : { "fmt" : "cdf", "name" : "output/aconv_loss_drain.nc"}}
 /*------------------------ ---------------------- ------------------------------- */
   ],
 
@@ -172,7 +172,7 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : ALL, /* 27410, 67208 60400 all grid cells */
+  "startgrid" : "all", /* 27410, 67208 60400 all grid cells */
   "endgrid" : ALL,
 
 #ifdef CHECKPOINT

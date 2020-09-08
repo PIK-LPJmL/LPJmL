@@ -117,17 +117,16 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     hetres=littersom(&stand->soil,gtemp_soil);
     cell->output.mrh+=hetres*stand->frac;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
     if (stand->type->landusetype == NATURAL)
     {
-       cell->rh_nat += hetres*stand->frac;
+      cell->output.rh_nat += hetres*stand->frac;
     } /* if NATURAL */
     if (stand->type->landusetype == WOODPLANTATION)
     {
-       cell->rh_wp += hetres*stand->frac;
+      cell->output.rh_wp += hetres*stand->frac;
     } /* if woodplantation */
 #endif
-
 
     cell->output.dcflux+=hetres*stand->frac;
     cell->output.mswe+=stand->soil.snowpack*stand->frac;

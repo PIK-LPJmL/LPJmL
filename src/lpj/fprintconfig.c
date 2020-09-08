@@ -154,8 +154,6 @@ static void printoutname(FILE *file,const char *filename,Bool isoneyear,
     fputs(filename,file);
 } /* of printoutname' */
 
-static char *fmt[]={"raw","clm","clm2","txt","fms","meta","cdf"};
-
 static void printinputfile(FILE *file,const char *descr,const Filename *filename,
                            int width)
 {
@@ -223,6 +221,10 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
         break;
       case ALL_CROPS:
         len=printsim(file,len,&count,"all crops land use, ");
+        break;
+      case ONLY_CROPS:
+        snprintf(s,STRING_LEN,"only crops land use for year %d, ",config->landuse_year_const);
+        len=printsim(file,len,&count,s);
         break;
       default:
         len=printsim(file,len,&count,"land use, ");

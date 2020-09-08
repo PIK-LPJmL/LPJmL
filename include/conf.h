@@ -18,13 +18,14 @@
 
 #define LPJ 0          /* LPJ simulation with natural vegetation only */
 #define LPJML 1        /* LPJ simulation with managed land */
-#define LPJML_IMAGE 4  /* LPJ simulation with managed land coupled to IMAGE
+#define LPJML_IMAGE 2  /* LPJ simulation with managed land coupled to IMAGE
                           model */
-#define LPJML_FMS 5  /* LPJ simulation with managed land coupled to FMS */
+#define LPJML_FMS 3  /* LPJ simulation with managed land coupled to FMS */
 #define LANDUSE 1
 #define NO_LANDUSE 0
-#define CONST_LANDUSE 3
-#define ALL_CROPS 4
+#define CONST_LANDUSE 2
+#define ALL_CROPS 3
+#define ONLY_CROPS 4
 #define NO_FIXED_SDATE 0
 #define FIXED_SDATE 1
 #define PRESCRIBED_SDATE 2
@@ -62,7 +63,6 @@
 #define RADIATION_SWONLY 2
 #define RADIATION 1
 #define CLOUDINESS 0
-#define SWDOWN 2
 #define ALL -1
 #define RAW 0
 #define CLM 1
@@ -92,11 +92,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#ifdef IMAGE
 #define NOUT 225            /* number of output files */
-#else
-#define NOUT 218            /* number of output files */
-#endif
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -323,7 +319,6 @@
 #define MPFT_LAI 215
 #define MEAN_VEGC_MANGRASS 216
 #define PFT_MORT 217
-#ifdef IMAGE
 #define WATERUSECONS 218
 #define WATERUSEDEM 219
 #define YDISCHARGE 220
@@ -331,7 +326,6 @@
 #define MWD_AQ 222
 #define MWATERUSE_HIL 223
 #define WFT_VEGC 224
-#endif
 
 #define RANDOM_SEED 0
 #endif

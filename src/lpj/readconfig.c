@@ -47,6 +47,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   LPJfile lpjfile;
   String s;
   Verbosity verbosity;
+  const char *sim_id[]={"lpj","lpjml","lpjml_image","lpjml_fms"};
 #ifdef USE_JSON
   char line[LINE_LEN];
   enum json_tokener_error json_error;
@@ -135,7 +136,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   }
   /* Read LPJ configuration */
   config->sim_id=LPJML;
-  if(fscanint(&lpjfile,&config->sim_id,"sim_id",TRUE,verbosity))
+  if(fscankeywords(&lpjfile,&config->sim_id,"sim_id",sim_id,4,TRUE,verbosity))
   {
     closeconfig(&lpjfile);
     return TRUE;

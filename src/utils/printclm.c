@@ -121,7 +121,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     if(version<3)
       type=LPJ_FLOAT;
     size=getfilesize(filename)-headersize(id,version)-sizeof(int)*header.ncell;
-    if(size!=typesizes[type]*header.ncell*header.nbands*header.nyear)
+    if(size!=(long long)typesizes[type]*header.ncell*header.nbands*header.nyear)
       fputs("Warning: file length does not match header.\n",stderr);
   }
   else if(!isrestart && !isreservoir)

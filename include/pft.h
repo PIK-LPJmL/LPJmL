@@ -201,6 +201,10 @@ typedef struct Pftpar Pftpar;
 
 typedef Bool (*Fscanpftparfcn)(LPJfile *,Pftpar *,Verbosity);
 
+extern char *phenology[];
+extern  char *cultivation_type[];
+extern  char *path[];
+
 /* Declaration of functions */
 
 extern void newpft(Pft *,Stand *,const Pftpar *,int,int);

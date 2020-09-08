@@ -172,7 +172,6 @@ char **createpftnames(int index,           /**< output index */
         checkptr(pftnames[i]);
       }
       break;
-#ifdef IMAGE
     case WFT_VEGC:
       incr=0;
       for (j=0;j<npft;j++)
@@ -184,7 +183,6 @@ char **createpftnames(int index,           /**< output index */
         }
       }
       break;
-#endif
   } /* of switch */
   return pftnames;
 } /* of 'createpftnames' */

@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                 a  l  p  h  a  a  _  c  r  o  p  .  c                          \n**/
+/**                   i  s  s  t  r  i  n  g  .  c                                 \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function determines whether JSON keyword is of type string                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,21 +14,29 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
-#include "crop.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#ifdef USE_JSON
+#include <json-c/json.h>
+#endif
+#include "types.h"
 
-Real alphaa_crop(const Pft *pft /**< pointer to PFT data */
-                )               /** \return alpha_a */
+Bool isstring(const LPJfile *file, /**< pointer to LPJ file */
+              const char *name     /**< variable name */
+             )                     /** \return TRUE if type is string */
 {
-  Real laimax;
-  if(pft->stand->cell->ml.manage.laimax==NULL)                             
-    laimax=0;                                                           
+#ifdef USE_JSON
+  struct json_object *item;
+  if(file->isjson)
+  {
+    if(!json_object_object_get_ex(file->file.obj,name,&item))
+      return FALSE;
+    return (json_object_get_type(item)==json_type_string);
+  }
   else
-    laimax=pft->stand->cell->ml.manage.laimax[pft->par->id];
-  laimax= (laimax<=7) ? laimax : 7;
-  /* learning from AgMIP, MAIZE reaches highest intensity level at LAImax=5*/
-  if(!strcmp(pft->par->name,"maize"))
-    return min(1,pft->par->alphaa-(0.15*(5-laimax)));
-  else
-    return pft->par->alphaa-(0.1*(7-laimax));
-} /* of 'alphaa_crop' */
+   return FALSE;
+#else
+   return FALSE;
+#endif
+} /* of 'isstring' */

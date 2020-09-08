@@ -29,14 +29,14 @@ void laimax_manage(Manage *manage,        /**< Management data */
 
       croppar=pftpar[cft].data; 
   
-      if(pftpar[cft].id==TROPICAL_CEREALS)
+      if(pftpar[cft].id==TROPICAL_CEREALS+npft)
         manage->laimax[npft+cft]=croppar->laimax;
       else
       {
         if(year<=1949)
           manage->laimax[npft+cft]=croppar->laimin;
         else if(year>2003)
-          switch(pftpar[cft].id)
+          switch(pftpar[cft].id-npft)
           {
             case TEMPERATE_CEREALS:
               manage->laimax[npft+cft]=manage->par->laimax_tempcer;
@@ -48,7 +48,7 @@ void laimax_manage(Manage *manage,        /**< Management data */
               manage->laimax[npft+cft]=croppar->laimax;
           }
         else
-          switch(pftpar[cft].id)
+          switch(pftpar[cft].id-npft)
           {
             case TEMPERATE_CEREALS:
             /*calculate linear trend of country-specific laimax from 1950 onwards*/

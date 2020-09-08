@@ -142,5 +142,6 @@ extern Bool fwrite_irrigation(FILE *,const Irrigation *);
 extern void fprint_irrigation(FILE *,const Irrigation *);
 extern Bool fread_irrigation(FILE *,Irrigation *,Bool);
 extern Harvest harvest_stand(Output *,Stand *,Real);
+extern int *getcftmap(LPJfile *,int *,int,int,const Config *);
 
 #endif

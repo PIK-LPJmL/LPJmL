@@ -49,7 +49,6 @@
 29  /* number of PFT's (natural + crops + bioenergy + woodplantations) */
 
 /* first pft */
-TROPICAL_BROADLEAVED_EVERGREEN_TREE
 "tropical broadleaved evergreen tree"
 TREE
 NONE                        /* cultivation_type */
@@ -126,11 +125,8 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 2. pft */
-TROPICAL_BROADLEAVED_RAINGREEN_TREE
 "tropical broadleaved raingreen tree"
 TREE
 NONE                        /* cultivation_type */
@@ -207,11 +203,8 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*---------------------------------------------------------------------------------------------*/
 /* 3. pft */
-TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE
 "temperate needleleaved evergreen tree"
 TREE
 NONE                        /* cultivation_type */
@@ -288,11 +281,8 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.75                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 4. pft */
-TEMPERATE_BROADLEAVED_EVERGREEN_TREE
 "temperate broadleaved evergreen tree"
 TREE
 NONE
@@ -369,11 +359,8 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 5. pft */
-TEMPERATE_BROADLEAVED_SUMMERGREEN_TREE
 "temperate broadleaved summergreen tree"
 TREE
 NONE                        /* cultivation_type */
@@ -452,11 +439,8 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 6. pft */
-BOREAL_NEEDLELEAVED_EVERGREEN_TREE
 "boreal needleleaved evergreen tree"
 TREE
 NONE                        /* cultivation_type */
@@ -533,11 +517,8 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 7. pft */
-BOREAL_BROADLEAVED_SUMMERGREEN_TREE
 "boreal broadleaved summergreen tree"
 TREE
 NONE                        /* cultivation_type */
@@ -616,11 +597,8 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 8. pft */
-BOREAL_NEEDLELEAVED_SUMMERGREEN_TREE
 "boreal needleleaved summergreen tree"
 TREE
 NONE                        /* cultivation_type */
@@ -699,11 +677,8 @@ HEIGHT_MAX                  /* maximum height of tree */
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 K_EST                       /* k_est */
-8                           /* rotation */
-40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
-TROPICAL_HERBACEOUS
 "Tropical C4 grass"
 GRASS
 NONE                        /* cultivation_type */
@@ -766,7 +741,6 @@ CTON_LEAF CTON_ROOT         /* C:N mass ratio for leaf and root 13,15*/
 REPROD_COST                 /* reproduction cost */
 /*--------------------------------------------------------------------------*/
 /* 10. pft */
-TEMPERATE_HERBACEOUS
 "Temperate C3 grass"
 GRASS
 NONE                        /* cultivation_type */
@@ -829,7 +803,6 @@ CTON_LEAF CTON_ROOT         /* C:N mass ratio for leaf and root 13,15*/
 REPROD_COST                 /* reproduction cost */
 /*--------------------------------------------------------------------------*/
 /* 11. pft */
-POLAR_HERBACEOUS
 "Polar C3 grass"
 GRASS
 NONE                        /* cultivation_type */
@@ -892,7 +865,6 @@ CTON_LEAF CTON_ROOT         /* C:N mass ratio for leaf and root 13,15*/
 REPROD_COST                 /* reproduction cost */
 /*----------------------------------------------------------------------------------------*/
 /* 1. bft */
-BIOENERGY_TROPICAL_TREE
 "bioenergy tropical tree"
 TREE
 BIOMASS                     /* cultivation_type */
@@ -973,7 +945,6 @@ ALLOM4
 40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 2. bft */
-BIOENERGY_TEMPERATE_TREE
 "bioenergy temperate tree"
 TREE
 BIOMASS                     /* cultivation_type */
@@ -1056,7 +1027,6 @@ ALLOM4
 40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 3. bft ONLY FOR BIOENERGY*/
-BIOENERGY_C4_GRASS
 "bioenergy C4 grass"
 GRASS
 BIOMASS                     /* cultivation_type */
@@ -1119,7 +1089,6 @@ CTON_LEAF CTON_ROOT         /* C:N mass ratio for leaf and root 13,15*/
 REPROD_COST                 /* reproduction cost */
 /*--------------------------------------------------------------------------*/
 /* 1. wft */
-WOODPLANTATION_TEMPERATE_TREE
 "woodplantation temperate tree"
 TREE
 WP                          /* cultivation_type */
@@ -1203,7 +1172,6 @@ K_EST                       /* k_est */
 0.15394                     /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 2. Wft */
-WOODPLANTATION_TROPICAL_TREE
 "woodplantation tropical tree"
 TREE
 WP                          /* cultivation_type */
@@ -1285,7 +1253,6 @@ K_EST                       /* k_est */
 0.147257                    /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 3. Wft */
-WOODPLANTATION_BOREAL_TREE
 "woodplantation boreal tree"
 TREE
 WP                          /* cultivation_type */
@@ -1325,7 +1292,7 @@ WP                          /* cultivation_type */
 5                           /* new phenology: slope of water limiting function */
 0.007695                    /* new phenology: inflection point of water limiting function (% water availability)  */
 0.8                         /* new phenology: change rate of actual to previous day water limiting function */
-0.0480544                   /* asymptotic maximum mortality rate (1/year) */
+0.0480544                   /*  asymptotic maximum mortality rate (1/year) */
 EVERGREEN                   /* phenology */
 C3                          /* pathway */
 -4.0 38.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
@@ -1367,7 +1334,6 @@ K_EST                        /* k_est */
 0.169781                    /* P_init. Initial stand density (only used for wood plantations) */
 /*--------------------------------------------------------------------------*/
 /* 1. cft */
-TEMPERATE_CEREALS
 "temperate cereals"
 CROP
 ANNUAL_CROP                 /* cultivation_type */
@@ -1453,7 +1419,6 @@ TEMP_WTYP_CALC_SDATE        /* calc_sdate: method to calculate the sowing date *
 CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
 /*--------------------------------------------------------------------------*/
 /* 2. cft */
-RICE
 "rice"
 CROP
 ANNUAL_CROP                 /* cultivation_type */
@@ -1539,7 +1504,6 @@ PREC_CALC_SDATE             /* ????calc_sdate: method to calculate the sowing da
 CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
 /*--------------------------------------------------------------------------*/
 /* 3. cft */
-MAIZE
 "maize"
 CROP
 ANNUAL_CROP                 /* cultivation_type */
@@ -1625,7 +1589,6 @@ TEMP_PREC_CALC_SDATE        /* calc_sdate: method to calculate the sowing date*/
 CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
 /*--------------------------------------------------------------------------*/
 /* 4. cft */
-TROPICAL_CEREALS
 "tropical cereals"
 CROP
 ANNUAL_CROP                 /* cultivation_type */
@@ -1711,7 +1674,6 @@ PREC_CALC_SDATE                        /* calc_sdate: method to calculate the so
 CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
 /*--------------------------------------------------------------------------*/
 /* 5. cft */
-PULSES                      /* re-parameterized as field peas, swatusermanual2000.pdf, CM 4.2.2009 */
 "pulses"
 CROP
 ANNUAL_CROP                 /* cultivation_type */
@@ -1797,7 +1759,6 @@ TEMP_PREC_CALC_SDATE        /* calc_sdate: method to calculate the sowing date*/
 CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
 /*--------------------------------------------------------------------------*/
 /* 6. cft */
-TEMPERATE_ROOTS
 "temperate roots"
 CROP
 ANNUAL_CROP                 /* cultivation_type */
@@ -1883,7 +1844,6 @@ TEMP_STYP_CALC_SDATE        /* calc_sdate: method to calculate the sowing date*/
 CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
 /*--------------------------------------------------------------------------*/
 /* 7. cft */
-TROPICAL_ROOTS
 "tropical roots"            /* re-parameterized as Cassava, 14.12.2009 KW */
 CROP
 ANNUAL_CROP                 /* cultivation_type */
@@ -1969,7 +1929,6 @@ PREC_CALC_SDATE             /* calc_sdate: method to calculate the sowing date *
 CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
 /*--------------------------------------------------------------------------*/
 /* 8. cft */
-OIL_CROPS_SUNFLOWER
 "oil crops sunflower"
 CROP
 ANNUAL_CROP                 /* cultivation_type */
@@ -2055,7 +2014,6 @@ TEMP_STYP_CALC_SDATE        /* calc_sdate: method to calculate the sowing date *
 CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
 /*--------------------------------------------------------------------------*/
 /* 9. cft */
-OIL_CROPS_SOYBEAN
 "oil crops soybean"
 CROP
 ANNUAL_CROP                 /* cultivation_type */
@@ -2141,7 +2099,6 @@ PREC_CALC_SDATE             /* calc_sdate: method to calculate the sowing date *
 CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
 /*--------------------------------------------------------------------------*/
 /* 10. cft */
-OIL_CROPS_GROUNDNUT
 "oil crops groundnut"
 CROP
 ANNUAL_CROP                 /* cultivation_type */
@@ -2227,7 +2184,6 @@ PREC_CALC_SDATE             /* calc_sdate: method to calculate the sowing date *
 CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
 /*--------------------------------------------------------------------------*/
 /* 11. cft */
-OIL_CROPS_RAPESEED
 "oil crops rapeseed"
 CROP
 ANNUAL_CROP                 /* cultivation_type */
@@ -2313,7 +2269,6 @@ TEMP_WTYP_CALC_SDATE        /* calc_sdate: method to calculate the sowing date *
 CTON_ROOT CTON_SO CTON_POOL /* C:N mass ratio for root, storage organ, and pool */
 /*--------------------------------------------------------------------------*/
 /* 12. cft */
-SUGARCANE
 "sugarcane"
 CROP
 ANNUAL_CROP                 /* cultivation_type */

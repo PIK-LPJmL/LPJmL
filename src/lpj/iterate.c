@@ -146,7 +146,7 @@ int iterate(Outputfile *output,  /**< Output file data */
     if(input.landuse!=NULL)
     {
       calc_seasonality(grid,npft,ncft,config);
-      if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS) /* constant landuse? */
+      if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS || config->withlanduse==ONLY_CROPS) /* constant landuse? */
         landuse_year=config->landuse_year_const;
       else
         landuse_year=year;

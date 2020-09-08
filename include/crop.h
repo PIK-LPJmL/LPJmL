@@ -110,6 +110,8 @@ typedef struct
 #endif
 } Pftcrop;
 
+extern char *calcmethod[];
+
 /* Declaration of functions */
 
 extern void new_crop(Pft *,int,int);

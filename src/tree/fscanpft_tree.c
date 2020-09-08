@@ -60,6 +60,8 @@ static Bool fscantreephys(LPJfile *file,Treephys *phys,const char *name,
   return FALSE;
 } /* of 'fscantreephys' */
 
+char *leaftype[]={"broadleaved","needleleaved","any leaved"};
+
 Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
                    Pftpar *pft,   /**< Pointer to Pftpar array */
                    Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
@@ -100,12 +102,11 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
     return TRUE;
   }
   pft->data=tree;
-  fscanint2(verb,file,&tree->leaftype,pft->name,"leaftype");
-  if(tree->leaftype<0 || tree->leaftype>ANYLEAVED)
+  if(fscankeywords(file,&tree->leaftype,"leaftype",leaftype,3,FALSE,verb))
   {
     if(verb)
-      fprintf(stderr,"ERROR201: Invalid value %d for leaf type of PFT '%s'.\n",
-              tree->leaftype,pft->name);
+      fprintf(stderr,"ERROR201: Invalid value for leaf type of PFT '%s'.\n",
+              pft->name);
     return TRUE;
   }
   fscantreephys2(verb,file,&tree->turnover,pft->name,"turnover");
@@ -152,12 +153,17 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
     return TRUE;
   }
   fscanreal2(verb,file,&tree->k_est,pft->name,"k_est");
-  fscanint2(verb,file,&tree->rotation,pft->name,"rotation");
-  fscanint2(verb,file,&tree->max_rotation_length,pft->name,"max_rotation_length");
+  if(pft->cultivation_type!=NONE)
+  {
+    fscanint2(verb,file,&tree->rotation,pft->name,"rotation");
+    fscanint2(verb,file,&tree->max_rotation_length,pft->name,"max_rotation_length");
+  }
+#if defined IMAGE || defined INCLUDEWP
   if(pft->cultivation_type==WP)
   {
     fscanreal2(verb,file,&tree->P_init,pft->name,"P_init");
   }
+#endif
   tree->sapl.leaf=pow(pft->lai_sapl*tree->allom1*pow(wood_sapl,reinickerp)*
                   pow(4*pft->sla/M_PI/k_latosa,reinickerp*0.5)/pft->sla,
                   2/(2-reinickerp));

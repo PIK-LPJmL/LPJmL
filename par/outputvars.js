@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**               o  u  t  p  u  t  v  a  r  s  .  j  s                            \n**/
 /**                                                                                \n**/
-/**  Defines array of output variables                                             \n**/
+/**  Defines array of output variables for LPJmL version 4.0.005                   \n**/
 /**                                                                                \n**/
 /**  Monthly output rates can be rescaled to 1/day or 1/second by setting the unit \n**/
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
@@ -135,7 +135,7 @@
   { "id" : D_RUNOFF, "name": "d_runoff", "var" : "runoff", "descr" :  "runoff", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_RH, "name": "d_rh", "var" : "rh", "descr" :  "heterotrophic respiration", "unit" : "gC/m2/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_INTERC, "name": "d_interc", "var" : "interc", "descr" :  "interception", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
-  { "id" : D_ASSIM, "name": "d_assim", "var" : "assim", "descr" :  "assim", "unit" : "gC/m2/day", "scale" : 1.0, "offset" : 0.0},
+  { "id" : D_ASSIM, "name": "d_assim", "var" : "assim", "descr" :  "carbon assimilation rate", "unit" : "gC/m2/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_ROT_MODE, "name": "d_rot_mode", "var" : "rot_mode", "descr" :  "rotation mode", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_PET, "name": "d_pet", "var" : "PET", "descr" :  "potential evapotranspiration", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
   /* further non-daily outputs */
@@ -212,10 +212,8 @@
   { "id" : MGCONS_IRR, "name": "mgcons_irr", "var" :  "gcons_irr", "descr" :  "monthly green water consumption on irrigated stands ", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MBCONS_IRR, "name": "mbcons_irr", "var" :  "bcons_irr", "descr" :  "monthly blue water consumption on irrigated stands ", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : AWATERUSE_HIL, "name": "awateruse_hil", "var" :  "wateruse_hil", "descr" :  "", "unit" : "l/yr", "scale" : 1.0, "offset" : 0.0},
-#ifdef IMAGE
   { "id" : WATERUSECONS, "name": "waterusecons", "var" :  "waterusecons", "descr" :  "", "unit" : "m3/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : WATERUSEDEM, "name": "waterusedem", "var" :  "waterusedem", "descr" :  "", "unit" : "m3/day", "scale" : 1.0, "offset" : 0.0},
-#endif
   { "id" : MFAPAR, "name": "mfapar", "var" :  "FPAR", "descr" :  "fraction of absorbed PAR", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MALBEDO, "name": "malbedo", "var" :  "albedo", "descr" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MPHEN_TMIN, "name": "mphen_tmin", "var" :  "phen_tmin", "descr" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
@@ -247,14 +245,11 @@
   { "id" : AGB_TREE, "name": "agb_tree", "var" :  "AGB_TREE", "descr" :  "above ground tree biomass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : MLAKEVOL, "name": "mlakevol", "var" :  "lakevol", "descr" :  "lake content volume", "unit" : "dm3", "scale" : 1.0, "offset" : 0.0},
   { "id" : MLAKETEMP, "name": "mlaketemp", "var" :  "laketemp", "descr" :  "lake surface temperature", "unit" : "celsius", "scale" : 1.0, "offset" : 0.0},
-  {"id" : MEAN_VEGC_MANGRASS, "name": "mean_vegc_mangrass", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
-  {"id" : PFT_MORT, "name": "pft_mort", "var": "mortality", "descr": "Annual mortality", "unit": "1/yr", "scale": 1.0, "offset" : 0.0}
-#ifdef IMAGE
-  ,
+  { "id" : MEAN_VEGC_MANGRASS, "name": "mean_vegc_mangrass", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
+  {"id" : PFT_MORT, "name": "pft_mort", "var": "mortality", "descr": "Annual mortality", "unit": "1/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : YDISCHARGE, "name": "ydischarge", "var": "discharge", "descr": "annual discharge to send to IMAGE", "unit": "hm3/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : MWD_GW, "name": "mwd_gw", "var": "wd_gw", "descr": "renewable groundwater withdrawal", "unit": "mm/month", "scale": 1.0, "offset" : 0.0},
   { "id" : MWD_AQ, "name": "mwd_aq", "var": "wd_aq", "descr": "aquifer withdrawal", "unit": "mm/month", "scale": 1.0, "offset" : 0.0},
   { "id" : MWATERUSE_HIL, "name": "mwateruse_hil", "var": "wateruse_hil", "descr": "water use by households industry and livestock", "unit" : "l", "scale" : 1.0, "offset" : 0.0},
   { "id" : WFT_VEGC, "name": "wft_VegC", "var": "wft_vegc", "descr": "Vegetation carbon for wood plantation trees (WFTs)", "unit": "gC/m2", "scale" : 1.0, "offset" : 0.0}
-#endif
 ],

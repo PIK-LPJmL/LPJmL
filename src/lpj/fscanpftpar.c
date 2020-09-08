@@ -72,6 +72,11 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
 
+char *phenology[]={"evergreen","raingreen","summergreen","any","cropgreen"};
+char *cultivation_type[]={"none","biomass","annual crop","wp"};
+char *path[]={"no pathway","C3","C4"};
+
+
 int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  Pftpar **pftpar,     /**< Pointer to PFT parameter array */
                  const Fscanpftparfcn scanfcn[], /**< array of PFT-specific scan
@@ -80,12 +85,12 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  Verbosity verb       /**< verbosity level (NO_ERR,ERR,VERB) */
                 )                     /** \return array of size ntypes or NULL */
 {
-  int *npft,n,id,l,count;
+  int *npft,n,l,count;
   LPJfile arr,item,subitem;
   String s;
   Pftpar *pft;
   Real totalroots;
-  Bool isbiomass,iscrop;
+  Bool isbiomass,iscrop,iswp;
   if (verb>=VERB) puts("// PFT parameters");
   /* Read total number of defined PFTs */
   if(fscanarray(file,&arr,&count,TRUE,"pftpar",verb))
@@ -104,30 +109,12 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   checkptr(*pftpar);
   for(n=0;n<count;n++)
     (*pftpar)[n].id=UNDEF;
-  isbiomass=iscrop=FALSE;
+  isbiomass=iscrop=iswp=FALSE;
   for(n=0;n<count;n++)
   {
     fscanarrayindex(&arr,&item,n,verb);
-    /* Read pft->id, defined in pftpar.h */
-    id=n;
-    if(fscanint(&item,&id,"id",TRUE,verb))
-      return NULL;
-    if(id<0 || id>=count)
-    {
-      if(verb)
-        fprintf(stderr,"ERROR120: Invalid range of 'id'=%d in line %d of '%s'.\n",
-                id,getlinecount(),getfilename());
-      return NULL;
-    }
-    pft=(*pftpar)+id;
-    if(pft->id!=UNDEF)
-    {
-      if(verb)
-        fprintf(stderr,
-                "ERROR176: PFT id=%d in line %d of '%s' has been already defined.\n",id,getlinecount(),getfilename());
-      return NULL;
-    }
-    pft->id=id;
+    pft=(*pftpar)+n;
+    pft->id=n;
 
     /* Read pft->name */
     if(fscanstring(&item,s,"name",FALSE,verb))
@@ -141,15 +128,21 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
 
     /* Read pft->type, defined in pftpar.h */
     fscanpftint(verb,&item,&pft->type,pft->name,"type");
-    fscanpftint(verb,&item,&pft->cultivation_type,pft->name,"cultivation_type");
+    if(pft->type<0 || pft->type>=ntypes)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s' in line %d of '%s'.\n",
+                pft->type,pft->name,getlinecount(),getfilename());
+      return NULL;
+    }
 #if defined IMAGE || defined INCLUDEWP
-    if(pft->cultivation_type<0 || pft->cultivation_type>WP)
+    if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,4,FALSE,verb))
 #else
-    if(pft->cultivation_type<0 || pft->cultivation_type>ANNUAL_CROP)
+    if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,3,FALSE,verb))
 #endif
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid value %d for cultivation type of PFT '%s' in line %d of '%s'.\n",pft->cultivation_type,pft->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR201: Invalid value for cultivation type of PFT '%s'.\n",pft->name);
       return NULL;
     }
     if(isbiomass && pft->cultivation_type==NONE)
@@ -172,6 +165,27 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
           fprintf(stderr,"ERROR210: Biomass plantation PFT '%s' in line %d of '%s' must be put before crop PFT.\n",pft->name,getlinecount(),getfilename());
         return NULL;
       }
+      else if(pft->cultivation_type==WP)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR210: wood plantation PFT '%s' in line %d of '%s' must be put before crop PFT.\n",pft->name,getlinecount(),getfilename());
+        return NULL;
+      }
+    }
+    if(iswp)
+    {
+      if(pft->cultivation_type==NONE)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR210: Natural PFT '%s' in line %d of '%s' must be put before wood plantation PFT.\n",pft->name,getlinecount(),getfilename());
+        return NULL;
+      }
+      else if(pft->cultivation_type==BIOMASS)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR210: Biomass plantation PFT '%s' in line %d of '%s' must be put before wood planatation PFT.\n",pft->name,getlinecount(),getfilename());
+        return NULL;
+      }
     }
     switch(pft->cultivation_type)
     {
@@ -180,6 +194,9 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
         break;
       case ANNUAL_CROP:
         iscrop=TRUE;
+        break;
+      case WP:
+        iswp=TRUE;
         break;
     }
     fscanpftrealarray(verb,&item,pft->cn,NHSG,pft->name,"cn");
@@ -234,18 +251,16 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftphenpar(verb,&item,&pft->wscal,pft->name,"wscal");
     fscanpftreal01(verb,&item,&pft->mort_max,pft->name,"mort_max");
 
-    fscanpftint(verb,&item,&pft->phenology,pft->name,"phenology");
-    if(pft->phenology<0 || pft->phenology>CROPGREEN)
+    if(fscankeywords(&item,&pft->phenology,"phenology",phenology,5,FALSE,verb))
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid value %d for phenology of PFT '%s' in line %d of '%s'.\n",pft->phenology,pft->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR201: Invalid value for phenology of PFT '%s'.\n",pft->name);
       return NULL;
     }
-    fscanpftint(verb,&item,&pft->path,pft->name,"path");
-    if(pft->path<0 || pft->path>C4)
+    if(fscankeywords(&item,&pft->path,"path",path,3,FALSE,verb))
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid value %d for path of PFT '%s' in line %d of '%s'.\n",pft->path,pft->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR201: Invalid value for path of PFT '%s'.\n",pft->name);
       return NULL;
     }
     fscanpftlimit(verb,&item,&pft->temp_co2,pft->name,"temp_co2");
@@ -279,13 +294,6 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  "roughness_length");
     pft->k_litter10.leaf/=NDAYYEAR;
     pft->k_litter10.wood/=NDAYYEAR;
-    if(pft->type<0 || pft->type>=ntypes)
-    {
-      if(verb)
-        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s' in line %d of '%s'.\n",
-                pft->type,pft->name,getlinecount(),getfilename());
-      return NULL;
-    }
     npft[pft->type]++;
     /* set default PFT-specific functions */
     pft->init=noinit;

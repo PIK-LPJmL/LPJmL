@@ -30,10 +30,8 @@ int outputsize(int index,     /**< output index */
       return ncft*2;
     case PFT_NPP: case PFT_GCGP: case MPFT_LAI:
       return npft-nbiomass-nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;
-#ifdef IMAGE
     case WFT_VEGC:
         return nwft;
-#endif
     case PFT_HARVEST: case PFT_RHARVEST: case CFT_CONSUMP_WATER_G: 
     case CFT_CONV_LOSS_EVAP: case CFT_CONV_LOSS_DRAIN:
     case CFT_CONSUMP_WATER_B: case CFTFRAC: case CFT_AIRRIG: case CFT_FPAR: 

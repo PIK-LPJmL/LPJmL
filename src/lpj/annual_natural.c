@@ -105,7 +105,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #if defined IMAGE && defined COUPLED
   if(stand->type->landusetype==NATURAL)
   {
-    stand->cell->flux_estab_nat+=acflux_estab*stand->frac;
+    stand->cell->output.flux_estab_nat+=acflux_estab*stand->frac;
   }
 #endif
 #endif
