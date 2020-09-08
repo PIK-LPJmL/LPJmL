@@ -779,7 +779,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
+    "k_est": K_EST         /* k_est */
  },
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
