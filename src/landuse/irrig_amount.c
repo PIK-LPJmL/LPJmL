@@ -100,7 +100,7 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
             stand->cell->output.cft_nir[rmgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount;
           }
           break;
-#ifdef IMAGE
+#if defined IMAGE || defined INCLUDEWP
         case WOODPLANTATION:
           if (pft_output_scaled)
             stand->cell->output.cft_nir[rwp(ncft) + (ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)] += data->net_irrig_amount*stand->cell->ml.landfrac[1].woodplantation;
@@ -180,7 +180,7 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
           stand->cell->output.cft_conv_loss_drain[rbgrass(ncft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=conv_loss*(1-data->conv_evap);
         }
         break;
-#ifdef IMAGE
+#if defined IMAGE || defined INCLUDEWP
       case WOODPLANTATION:
         if(pft_output_scaled)
           stand->cell->output.cft_conv_loss_evap[rwp(ncft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].woodplantation;

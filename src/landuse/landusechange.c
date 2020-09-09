@@ -591,7 +591,7 @@ void set_irrigsystem(Stand *stand,          /**< stand pointer */
       if(!data->irrigation)
         data->irrig_system=NOIRRIG;
       break;
-#ifdef IMAGE
+#if defined IMAGE || defined INCLUDEWP
     case WOODPLANTATION:
       if (data->irrigation && data->irrig_system != stand->cell->ml.irrig_system->woodplantation)
       {
@@ -820,9 +820,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     {
       stand=getstand(cell->standlist,s);
       difffrac=stand->frac-cell->ml.landfrac[i].woodplantation;
-#if defined IMAGE || defined INCLUDEWP
       stand->frac_change = -difffrac;
-#endif
       if(difffrac>epsilon)
         grasslandreduction(cell,difffrac,config->pftpar,intercrop,npft,s,stand,config->istimber,ncft,config->pft_output_scaled,year);
       else if(difffrac<-epsilon)
