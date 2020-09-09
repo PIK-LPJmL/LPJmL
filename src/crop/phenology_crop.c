@@ -59,10 +59,11 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
 #ifdef CROPSHEATFROST
   /* accelerated senescence factor should be between 1 and 2 and applied to mean temperature, following Maiorano et al. 2017 */
   as = 1.0;
-  if (tmax > TLOW && tmax < THIGH)
-    as = 1/(THIGH-TLOW)*(tmax-TLOW)+1;
-  else if(tmax > THIGH)
-    as = 2;
+// as is disabled until effect on growing season length is better understood
+//  if (tmax > TLOW && tmax < THIGH)
+//    as = 1/(THIGH-TLOW)*(tmax-TLOW)+1;
+//  else if(tmax > THIGH)
+//    as = 2;
 #endif
 
   if(crop->husum<crop->phu)
