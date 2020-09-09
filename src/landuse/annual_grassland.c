@@ -21,7 +21,7 @@
 
 Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
                       int npft,             /**< number of natural pfts */
-                      int UNUSED(ncft),     /**< number of crop PFTs */
+                      int ncft,             /**< number of crop PFTs */
                       Real UNUSED(popdens), /**< population density (capita/km2) */
                       int year,             /**< simulation year (AD) */
                       Bool isdaily,         /**< daily temperature data? */
@@ -102,7 +102,12 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     stand->cell->output.fpc_bft[getpftpar(pft, id)-(npft-config->nbiomass-config->nwft-config->ngrass)+grassland->irrigation.irrigation*(config->nbiomass+2*config->ngrass)]=pft->fpc;
+    stand->cell->output.cft_veg[npft-config->nbiomass-config->nwft+rothers(ncft)+grassland->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
+    stand->cell->output.cft_veg[npft-config->nbiomass-config->nwft+rmgrass(ncft)+grassland->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
+    stand->cell->output.cft_veg[npft-config->nbiomass-config->nwft+rothers(ncft)+grassland->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen+=vegn_sum(pft);
+    stand->cell->output.cft_veg[npft-config->nbiomass-config->nwft+rmgrass(ncft)+grassland->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen+=vegn_sum(pft);
   }
+
   free(present);
   free(fpc_type);
   return FALSE;
