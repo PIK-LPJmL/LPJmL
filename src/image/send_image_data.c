@@ -316,7 +316,7 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
       /*printf("sending pix %d trad_biof %g deforest_emiss %g\n",
         cell,trad_biofuel_image[cell],fireemission_deforest_image[cell]);*/
       /* pft_npp voor rainfed managed grass */
-      nppgrass_image[cell]=(float)grid[cell].output.pft_npp[(npft-config->nbiomass)+rmgrass(ncft)];
+      nppgrass_image[cell]=(float)grid[cell].output.pft_npp[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)];
 #ifdef DEBUG_IMAGE
       if(grid[cell].coord.lon>-2.5 && grid[cell].coord.lon<-2.0 && grid[cell].coord.lat>48.0 && grid[cell].coord.lat<48.5)
       {
