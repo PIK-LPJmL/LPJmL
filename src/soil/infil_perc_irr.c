@@ -168,7 +168,11 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
             }
             if(l==BOTTOMLAYER)
             {
+#ifdef IMAGE
+              stand->cell->discharge.dmass_gw+=perc*stand->frac*stand->cell->coord.area;
+#else
               outflux+=perc;
+#endif
               *return_flow_b+=perc*(1-stand->frac_g[l]);
             }
             else

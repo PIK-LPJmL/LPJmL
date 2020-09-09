@@ -30,7 +30,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
   const Pftcroppar *croppar;
   Stand *setasidestand;
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   istimber=(config->start_imagecoupling!=INT_MAX);
 #else
   istimber=FALSE;

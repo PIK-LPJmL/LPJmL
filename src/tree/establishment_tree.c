@@ -24,7 +24,7 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
 
   Real nind_old;
   Stocks flux_est={0,0};
-  Real est_pft;
+  Real est_pft, frac_old;
   /* establishment rate for a particular PFT on modelled area
    * basis (for trees, indiv/m2; for grasses, fraction of
    * modelled area colonised establishment rate for a particular
@@ -41,8 +41,24 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
     allometry_tree(pft);
     return flux_est;
   }
-  if (pft->par->cultivation_type== BIOMASS)
+  if (pft->par->cultivation_type==BIOMASS)
     est_nind=treepar->k_est-pft->nind;
+#if defined IMAGE || defined INCLUDEWP
+  else if (pft->par->cultivation_type== WP)
+    if (pft->stand->frac_change >= 0.0)
+    {
+      // In case of expansion of forest plantation:
+      //   Pre-existing part of stand has natural establishment 
+      //   New part has initial planting density P_init
+      // The overall establishment is the combination of the two scaled according to the old fraction
+      // and the change.
+      // NB: Reduction of existing plantation density due to expansion is done in landexpansion()->mix_veg_tree()
+      frac_old = pft->stand->frac - pft->stand->frac_change;
+      est_nind = (frac_old * treepar->k_est + pft->stand->frac_change * treepar->P_init) / pft->stand->frac;
+    }
+  else
+    est_nind = treepar->k_est;
+#endif
   else
     est_nind=treepar->k_est;
   est_pft=est_nind*(1.0-exp(-5.0*(1.0-fpc_type)))*(1.0-fpc_type)/(Real)n_est;

@@ -21,6 +21,6 @@ Bool isdailyoutput_grassland(const Output *output, /**< Output data */
 {
   const Grassland *data;
   data = stand->data;
-  return (output->daily.cft==TEMPERATE_HERBACEOUS &&
+  return (output->daily.cft==ALLGRASSLAND &&
      output->daily.irrigation==data->irrigation.irrigation);
 } /* of 'isdailyoutput_grassland' */

@@ -20,7 +20,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-scale s] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-descr d] name gridfile clmfile netcdffile\n"
+#define USAGE "Usage: %s [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-descr d] name gridfile clmfile netcdffile\n"
 
 typedef struct
 {
@@ -379,7 +379,7 @@ int main(int argc,char **argv)
   String headername;
   float *data;
   Type type;
-  int i,j,k,ngrid,version,iarg,compress,nbands;
+  int i,j,k,ngrid,version,iarg,compress,nbands,setversion;
   Bool swap,landuse,notime,isglobal,istype,israw;
   float *f,scale,cellsize_lon,cellsize_lat;
   int *idata,*iarr;
@@ -396,6 +396,7 @@ int main(int argc,char **argv)
   isglobal=FALSE;
   israw=FALSE;
   nbands=1;
+  setversion=READ_VERSION;
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -412,6 +413,8 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[iarg],"-global"))
         isglobal=TRUE;
+      else if(!strcmp(argv[iarg],"-longheader"))
+        setversion=2;
       else if(!strcmp(argv[iarg],"-raw"))
         israw=TRUE;
       else if(!strcmp(argv[iarg],"-int"))
@@ -555,7 +558,7 @@ int main(int argc,char **argv)
   }
   if(!israw)
   {
-    version=READ_VERSION;
+    version=setversion;
     if(freadanyheader(file,&header,&swap,headername,&version))
     {
       fprintf(stderr,"Error reading header of '%s'.\n",argv[iarg+2]);

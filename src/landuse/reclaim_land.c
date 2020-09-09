@@ -29,7 +29,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
   Real ftimber; /* fraction harvested for timber */
   Stocks harvest;
   Stocks stocks;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   Bool tharvest=FALSE;
   if(istimber)
     ftimber=min(1,cell->ml.image_data->timber_frac/standfrac);
@@ -45,6 +45,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
   foreachpft(pft,p,&stand->pftlist)
   {
     nind = pft->nind;
+
     /* if plot is deforested, wood is returned to litter, harvested or burnt
     * allows for mixed use, first harvesting a fraction of the stand,
     * then burning a fraction, then returning the rest to the litter pools
@@ -53,6 +54,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
     {
       if(pft->par->type==TREE)
       {
+#ifdef IMAGE
 #ifdef DEBUG_IMAGE
         if/*(ftimber>0 ||
           (cell->coord.lon-.1<-43.25 && cell->coord.lon+.1>-43.25 && cell->coord.lat-.1<-11.75 && cell->coord.lat+.1>-11.75)||
@@ -66,12 +68,12 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #endif
         /* harvesting timber */
         cell->output.ftimber=ftimber;
-#ifdef IMAGE
-        tharvest=TRUE;
         harvest=timber_harvest(pft,soil,&cell->ml.image_data->timber,
-                               cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&cell->output.trad_biofuel);
+          cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&cell->output.trad_biofuel,cell->ml.image_data->timber_frac,cell->ml.image_data->takeaway);
+        cell->output.timber_harvest.carbon+=harvest.carbon;
+        cell->output.timber_harvest.nitrogen+=harvest.nitrogen;
 #ifdef DEBUG_IMAGE
-        if(ftimber>0 ||
+        /*if(ftimber>0 ||
           (cell->coord.lon-.1<-43.25 && cell->coord.lon+.1>-43.25 && cell->coord.lat-.1<-11.75 && cell->coord.lat+.1>-11.75)||
           (cell->coord.lon-.1<94.25 && cell->coord.lon+.1>94.25 && cell->coord.lat-.1<22.25 && cell->coord.lat+.1>22.25))*/
         if(cell->coord.lon>102.2 && cell->coord.lon < 102.3 && cell->coord.lat >28.7 && cell->coord.lat< 28.8)
@@ -89,7 +91,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #ifdef IMAGE
         /* burning wood */
         cell->output.fburn=cell->ml.image_data->fburnt;
-#ifdef DEBUG_IMAGE
+#ifdef DEBUG_IMAGE_CELL
         printf("fburnt %g %g\n",cell->output.fburn,cell->ml.image_data->fburnt);
         fflush(stdout);
 #endif
@@ -102,7 +104,10 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         soil->NO3[0]+=stocks.nitrogen*param.q_ash;
       } /* if tree */
     } /* is timber */
-#ifdef DEBUG_IMAGE
+#if defined DEBUG_IMAGE && defined COUPLED
+    /*if(ftimber>0 ||
+      (cell->coord.lon-.1<-43.25 && cell->coord.lon+.1>-43.25 && cell->coord.lat-.1<-11.75 && cell->coord.lat+.1>-11.75)||
+      (cell->coord.lon-.1<94.25 && cell->coord.lon+.1>94.25 && cell->coord.lat-.1<22.25 && cell->coord.lat+.1>22.25))*/
     if(cell->coord.lon>102.2 && cell->coord.lon < 102.3 && cell->coord.lat >28.7 && cell->coord.lat< 28.8)
     {
       printf("C %g/%g timber_burn: %s fburn %g standfrac %g littersum %g vegcsum %g nind %g %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,cell->ml.image_data->fburnt,
@@ -112,7 +117,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #endif
     /* rest goes to litter */
     litter_update(&soil->litter,pft,nind);
-#ifdef DEBUG_IMAGE
+#ifdef DEBUG_IMAGE_CELL
     if(ftimber>0 ||
       (cell->coord.lon-.1<-43.25 && cell->coord.lon+.1>-43.25 && cell->coord.lat-.1<-11.75 && cell->coord.lat+.1>-11.75)||
       (cell->coord.lon-.1<94.25 && cell->coord.lon+.1>94.25 && cell->coord.lat-.1<22.25 && cell->coord.lat+.1>22.25))
@@ -124,9 +129,9 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #endif
 
   } /* of foreachpft */
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(tharvest)
-    cell->ml.image_data->timber_frac-=ftimber;
+    cell->ml.image_data->timber_frac-=ftimber*standfrac;
 #endif
   /* There should be no vegetation on stand2, only the soil carbon was copied to stand2
    * therefore delpft is not necessary here */

@@ -16,6 +16,8 @@
 
 #include "lpj.h"
 
+char *fmt[N_FMT]={"raw","clm","clm2","txt","fms","meta","cdf"};
+
 Bool readfilename(LPJfile *file,      /**< pointer to text file read */
                   Filename *filename, /**< returns filename and format */
                   const char *key,    /**< name of json object */
@@ -28,15 +30,8 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   String name;
   if(fscanstruct(file,&f,key,verb))
     return TRUE;
-  if(fscanint(&f,&filename->fmt,"fmt",FALSE,verb))
+  if(fscankeywords(&f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
     return TRUE;
-  if(filename->fmt<0 || filename->fmt>CDF)
-  {
-    if(verb)
-      fprintf(stderr,"ERROR205: Invalid value %d for input format for '%s'.\n",
-              filename->fmt,filename->name);
-    return TRUE;
-  }
   if(filename->fmt==FMS)
   {
     filename->var=NULL;

@@ -38,7 +38,23 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   Stocks bm_inc;
   Real split_fert=0.5;
   Pftcrop *crop;
+#ifdef IMAGE
+  int nagr,s;
+  Stand *stand;
+  nagr=2*ncft;
+  foreachstand(stand,s,cell->standlist)
+    if(stand->type->landusetype==AGRICULTURE)
+      nagr--;
+
+  if(landfrac>setasidestand->frac-nagr*1e-7)
+  {
+    landfrac=max(setasidestand->frac-nagr*1e-7,1e-8);
+  }
+
   if(landfrac>=setasidestand->frac-epsilon)
+#else
+  if(landfrac>=setasidestand->frac-0.00001)
+#endif
   {
     setasidestand->type->freestand(setasidestand);
     setasidestand->type=&agriculture_stand;

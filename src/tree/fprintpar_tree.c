@@ -22,7 +22,6 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
                   )
 {
   int i;
-  char *leaftype[]={"broadleaved","needleleaved","any leaved"};
   const Pfttreepar *partree;
   partree=par->data;
   fprintf(file,"leaftype:\t%s\n"
@@ -48,15 +47,20 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
                "crown length:\t%g\n"
                "bark thickness:\t%g %g\n"
                "crown damage:\t%g %g\n"
-               "rotation:\t%d (yr)\n"
-               "max. rotation:\t%d (yr)\n"
                "k_est:\t\t%g (1/m2)\n",
           partree->height_max,partree->reprod_cost,
           partree->scorchheight_f_param,partree->crownlength,
           partree->barkthick_par1,partree->barkthick_par2,
           partree->crown_mort_rck,partree->crown_mort_p,
-          partree->rotation,partree->max_rotation_length,
           partree->k_est);
+  if(par->cultivation_type!=NONE)
+    fprintf(file,"rotation:\t%d (yr)\n"
+                 "max. rotation:\t%d (yr)\n",
+            partree->rotation,partree->max_rotation_length);
+#if defined IMAGE || defined INCLUDEWP
+  if(par->cultivation_type==WP)
+    fprintf(file,"P_init:\t\t%g (1/m2)\n",partree->P_init);
+#endif
   fputs("fuel fraction:\t",file);
   for(i=0;i<NFUELCLASS;i++)
     fprintf(file,"%g ",partree->fuelfrac[i]);

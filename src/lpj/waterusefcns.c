@@ -21,7 +21,8 @@ struct wateruse
   Climatefile file;
 };               /* definition of opaque datatype Wateruse */
 
-Wateruse initwateruse(const Config *config /**< LPJmL configuration */
+Wateruse initwateruse(const Filename *filename,
+                      const Config *config /**< LPJmL configuration */
                      )
 {
   Wateruse wateruse;
@@ -35,10 +36,10 @@ Wateruse initwateruse(const Config *config /**< LPJmL configuration */
     printallocerr("wateruse");
     return NULL;
   }
-  wateruse->file.fmt=config->wateruse_filename.fmt;
-  if(config->wateruse_filename.fmt==CDF)
+  wateruse->file.fmt=filename->fmt;
+  if(filename->fmt==CDF)
   { 
-    if(opendata_netcdf(&wateruse->file,&config->wateruse_filename,"dm3/yr",config))
+    if(opendata_netcdf(&wateruse->file,filename,NULL,config))
     {
       free(wateruse);
       return NULL;
@@ -47,7 +48,7 @@ Wateruse initwateruse(const Config *config /**< LPJmL configuration */
   else
   {
     if((wateruse->file.file=openinputfile(&header,&wateruse->file.swap,
-                                          &config->wateruse_filename,
+                                          filename,
                                           headername,
                                           &version,&offset,TRUE,config))==NULL)
     {
@@ -86,11 +87,11 @@ Wateruse initwateruse(const Config *config /**< LPJmL configuration */
   return wateruse;
 } /* of 'initwateruse' */
 
-Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
-                 Cell grid[],         /**< cell grid */
-                 int year,            /**< year of wateruse data (AD) */
-                 const Config *config /**< LPJ configuration */
-                )                     /** \return TRUE on error */
+static Real *readwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
+                          Cell grid[],         /**< cell grid */
+                          int year,            /**< year of wateruse data (AD) */
+                          const Config *config /**< LPJ configuration */
+                         )                     /** \return data array or NULL on error */
 {
   int cell;
   Real *data;
@@ -110,12 +111,12 @@ Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
       if(data==NULL)
       {
         printallocerr("data");
-        return TRUE;
+        return NULL;
       }
       if(readdata_netcdf(&wateruse->file,data,grid,year,config))
       {
         free(data);
-        return TRUE;
+        return NULL;
       }
     }
     else
@@ -124,32 +125,54 @@ Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
                wateruse->file.offset+wateruse->file.size*(year-wateruse->file.firstyear),
                SEEK_SET))
       {
-        fprintf(stderr,"ERROR150: Cannot seek file to year %d in getwateruse().\n",year);
-        return TRUE;
+        fprintf(stderr,"ERROR150: Cannot seek file to year %d in wateruse().\n",year);
+        return NULL;
       } 
       data=newvec(Real,config->ngridcell);
       if(data==NULL)
       {
         printallocerr("data");
-        return TRUE;
+        return NULL;
       }
       if(readrealvec(wateruse->file.file,data,0,wateruse->file.scalar,config->ngridcell,wateruse->file.swap,wateruse->file.datatype))
       {
         fprintf(stderr,"ERROR151: Cannot read wateruse for year %d.\n",year);
         free(data);
-        return TRUE;
+        return NULL;
       } 
     }
-    for(cell=0;cell<config->ngridcell;cell++)
-      grid[cell].discharge.wateruse=data[cell];
-    free(data);
   }
   else 
+  {
+    data=newvec(Real,config->ngridcell);
+    if(data==NULL)
+    {
+      printallocerr("data");
+      return NULL;
+    }
     /* no wateruse data available for year, set all to zero */
     for(cell=0;cell<config->ngridcell;cell++)
-      grid[cell].discharge.wateruse=0;
+      data[cell]=0;
+  }
+  return data;
+} /* of 'readwateruse' */
+
+Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
+                 Cell grid[],         /**< cell grid */
+                 int year,            /**< year of wateruse data (AD) */
+                 const Config *config /**< LPJ configuration */
+                )                     /** \return TRUE on error */
+{
+  int cell;
+  Real *data;
+  data=readwateruse(wateruse,grid,year,config);
+  if(data==NULL)
+    return TRUE;
+  for (cell=0;cell<config->ngridcell;cell++)
+    grid[cell].discharge.wateruse=data[cell];
+  free(data);
   return FALSE;
-} /* of 'getwateruse' */
+} /* of 'getwaterused' */
 
 void freewateruse(Wateruse wateruse, /**< pointer to wateruse data */
                   Bool isroot        /**< task is root task (TRUE/FALSE) */
@@ -161,3 +184,24 @@ void freewateruse(Wateruse wateruse, /**< pointer to wateruse data */
     free(wateruse);
   }
 } /* of 'freewateruse' */
+
+#ifdef IMAGE
+
+Bool getwateruse_wd(Wateruse wateruse,   /**< Pointer to wateruse data */
+                    Cell grid[],         /**< cell grid */
+                    int year,            /**< year of wateruse data (AD) */
+                    const Config *config /**< LPJ configuration */
+                   )                     /** \return TRUE on error */
+{
+  int cell;
+  Real *data;
+  data=readwateruse(wateruse,grid,year,config);
+  if(data==NULL)
+    return TRUE;
+  for (cell=0;cell<config->ngridcell;cell++)
+    grid[cell].discharge.wateruse_wd=data[cell];
+  free(data);
+  return FALSE;
+} /* of 'getwateruse_wd' */
+
+#endif

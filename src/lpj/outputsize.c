@@ -16,11 +16,12 @@
 
 #include "lpj.h"
 
-int outputsize(int index,    /**< output index */
-               int npft,     /**< number of natural PFTs */
-               int nbiomass, /**< number of biomass PFTs */
-               int ncft      /**< number of crop PFTs */
-              )              /** \return number of items per cell */
+int outputsize(int index,     /**< output index */
+               int npft,      /**< number of natural PFTs */
+               int nbiomass,  /**< number of biomass PFTs */
+               int nwft,      /**< number of WFTs */
+               int ncft       /**< number of crop PFTs */
+              )               /** \return number of items per cell */
 {
   switch(index)
   {
@@ -32,7 +33,7 @@ int outputsize(int index,    /**< output index */
     case PFT_CLEAF: case PFT_NLEAF:
     case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
     case PFT_CHAWO: case PFT_NHAWO: case MPFT_LAI:
-      return npft-nbiomass+(ncft+NGRASS+NBIOMASSTYPE)*2;
+      return npft-nbiomass-nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;
     case PFT_HARVESTC: case PFT_RHARVESTC: 
     case PFT_HARVESTN: case PFT_RHARVESTN: 
     case CFT_CONSUMP_WATER_G: 
@@ -48,11 +49,11 @@ int outputsize(int index,    /**< output index */
     case CFTFRAC2: case CFT_AIRRIG2: 
     case CFT_TRANSP2: case CFT_NIR2:
     case CFT_EVAP2:
-      return (ncft+NGRASS+NBIOMASSTYPE)*2;
+      return (ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;
     case FPC:
-      return npft-nbiomass+1;
+      return npft-nbiomass-nwft+1;
     case PFT_MORT:
-      return npft-nbiomass;
+      return npft-nbiomass-nwft;
     case MSOILTEMP: case MSWC:
       return NSOILLAYER;
     case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER:

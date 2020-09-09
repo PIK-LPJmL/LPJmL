@@ -56,6 +56,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)
   {
+#ifdef IMAGE
+    grid[cell].output.ydischarge=0;
+#endif
     grid[cell].output.adischarge=0;
     grid[cell].output.surface_storage=0;
     if(!grid[cell].skip)
@@ -74,7 +77,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
             landusechange_for_reservoir(grid+cell,config->pftpar,npft,config->istimber,
                                         intercrop,ncft,year);
         }
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
         setoutput_image(grid+cell,ncft);
 #endif
       }
@@ -90,13 +93,13 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].output.mdischarge=grid[cell].output.mwateramount=grid[cell].ml.mdemand=0.0;
       if(!grid[cell].skip)
       {
-        initoutput_monthly(&grid[cell].output,npft,config->nbiomass,ncft);
+        initoutput_monthly(&grid[cell].output,npft,config->nbiomass,config->nwft,ncft);
         /* Initialize random seed */
         //if(israndomprec(input.climate))
           srand48(config->seed+(config->startgrid+cell)*year*month);
         initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month);
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
         monthlyoutput_image(&grid[cell].output,input.climate,cell,month);
 #endif
 
@@ -157,6 +160,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 
 #ifdef DEBUG
           printf("day=%d cell=%d\n",day,cell);
+          fflush(stdout);
 #endif
 #ifdef PERMUTE
           srand48(config->seed+(config->startgrid+cell)*year*day);
@@ -165,6 +169,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                        ncft,year,month,intercrop,config);
         }
       }
+
       if(config->river_routing)
       {
         if(config->withlanduse)
@@ -175,8 +180,11 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         if(config->withlanduse)
           wateruse(grid,npft,ncft,config);
       }
-
+#if defined IMAGE && defined COUPLED
+      if(config->withdailyoutput && year>=config->firstyear-config->istimber*10)
+#else
       if(config->withdailyoutput && year>=config->outputyear)
+#endif
         fwriteoutput_daily(output,grid,day-1,year,config);
 
       day++;
@@ -186,6 +194,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     {
       if(config->river_routing)
       {
+#ifdef IMAGE
+        grid[cell].output.ydischarge += grid[cell].output.mdischarge;
+#endif
         if(grid[cell].discharge.next<0)
           grid[cell].output.adischarge+=grid[cell].output.mdischarge;           /* only endcell outflow */
         grid[cell].output.mdischarge*=1e-9;                    /* monthly mean discharge per month in 1.000.000 m3 per cell */
@@ -195,10 +206,14 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(!grid[cell].skip)
         update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
                        cell,month),getmprec(input.climate,&grid[cell].climbuf,
-                       cell,month),npft,config->nbiomass,ncft,month);
+                       cell,month),npft,config->nbiomass,config->nwft,ncft,month);
     } /* of 'for(cell=0;...)' */
 
+#if defined IMAGE && defined COUPLED
+    if(year>=config->firstyear-config->istimber*10)
+#else
     if(year>=config->outputyear)
+#endif
       /* write out monthly output */
       fwriteoutput_monthly(output,grid,npft,ncft,month,year,config);
 
@@ -244,13 +259,21 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     }
     if(config->river_routing)
     {
+#ifdef IMAGE
+      grid[cell].output.surface_storage = grid[cell].discharge.dmass_lake + grid[cell].discharge.dmass_river + grid[cell].discharge.dmass_gw;
+#else
       grid[cell].output.surface_storage=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river;
+#endif
       if(grid[cell].ml.dam)
         grid[cell].output.surface_storage+=reservoir_surface_storage(grid[cell].ml.resdata);
     }
   } /* of for(cell=0,...) */
 
+#if defined IMAGE && defined COUPLED
+  if(year>=config->firstyear-config->istimber*10)
+#else
   if(year>=config->outputyear)
+#endif
   {
     /* write out annual output */
     fwriteoutput_annual(output,grid,year,config);

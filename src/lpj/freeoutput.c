@@ -50,6 +50,9 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_conv_loss_evap);
   free(output->cft_conv_loss_drain);
   free(output->cft_luc_image);
+#if defined IMAGE || defined INCLUDEWP
+  free(output->wft_vegc);
+#endif
   free(output->cft_irrig_events);
   free(output->cft_leaf);
   free(output->cft_root);
@@ -90,5 +93,8 @@ void freeoutput(Output *output /**< Output data */
   output->cft_conv_loss_evap=output->cft_conv_loss_drain=NULL;
   output->growing_period=NULL;
   output->cft_irrig_events=NULL;
+#ifdef IMAGE
+  output->wft_vegc=NULL;
+#endif
   output->pft_npp=output->fpc=output->cftfrac=output->cft_airrig=output->cft_luc_image=NULL;
 } /* of 'freeoutput' */

@@ -45,7 +45,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O \
           annual_natural.$O fwrite_natural.$O celldata.$O\
           fscanemissionfactor.$O check_balance.$O transfer_function.$O\
           fprintfiles.$O roughnesslength.$O closeoutput_yearly.$O\
-          getnbiomass.$O getextension.$O albedo_stand.$O phenology_gsi.$O\
+          getnculttype.$O getextension.$O albedo_stand.$O phenology_gsi.$O\
           fscanphenparam.$O landcover.$O standstocks.$O nitrogen_stress.$O\
           f_lai.$O getsize.$O fprintoutputvar.$O isdailyoutput_natural.$O
 

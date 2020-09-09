@@ -29,7 +29,7 @@ Real alphaa_crop(const Pft *pft,            /**< pointer to crop PFT */
     laimax=pft->stand->cell->ml.manage.laimax[pft->par->id];
   laimax= (laimax<=7) ? laimax : 7;
   /* learning from AgMIP, MAIZE reaches highest intensity level at LAImax=5*/
-  if(pft->par->id==MAIZE)
+  if(!strcmp(pft->par->name,"maize"))
     return min(1,pft->par->alphaa-(0.15*(5-laimax)));
   else
     return pft->par->alphaa-(0.1*(7-laimax));

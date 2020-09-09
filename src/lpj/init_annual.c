@@ -21,6 +21,9 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
                 )
 {
   int s,p;
+#if defined IMAGE && defined COUPLED
+  int m;
+#endif
   Pft *pft;
   Stand *stand;
   init_climbuf(&cell->climbuf);
@@ -38,11 +41,19 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
     foreachpft(pft,p,&stand->pftlist)
       init(pft);
   } /* of foreachstand */
-  initoutput_annual(&cell->output,npft,config->nbiomass,ncft,config->missing_value);
-#ifdef IMAGE
+  initoutput_annual(&cell->output,npft,config->nbiomass,config->nwft,ncft,config->missing_value);
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
+  {
     cell->ml.image_data->anpp=cell->ml.image_data->arh=
     cell->ml.image_data->prod_turn_fast=
     cell->ml.image_data->prod_turn_slow=0.0;
+    for(m=0;m<NMONTH;m++)
+    {
+      cell->ml.image_data->mirrwatdem[m]=0.0;
+      cell->ml.image_data->mevapotr[m] = 0.0;
+      cell->ml.image_data->mpetim[m] = 0.0;
+    }
+  }
 #endif
 } /* of 'init_annual' */

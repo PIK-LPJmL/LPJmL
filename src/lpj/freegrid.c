@@ -64,7 +64,7 @@ void freegrid(Cell grid[],         /**< cell grid */
       if(config->sdate_option>NO_FIXED_SDATE)
         free(grid[cell].ml.sdate_fixed);
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
       free(grid[cell].ml.image_data);
 #endif
     }

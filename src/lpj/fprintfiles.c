@@ -53,7 +53,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   fprintf(file,"%s\n",config->soil_filename.name);
   fprintfilename(file,config->temp_filename);
   fprintfilename(file,config->prec_filename);
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
     fprintfilename(file,config->temp_var_filename);
@@ -109,6 +109,10 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     fprintf(file,"%s\n"
                  "%s\n",
             config->elevation_filename.name,config->reservoir_filename.name);
+#ifdef IMAGE
+  if(config->aquifer_irrig==AQUIFER_IRRIG)
+    fprintf(file,"%s\n",config->aquifer_filename.name);
+#endif
   if(config->wet_filename.name!=NULL)
     fprintfilename(file,config->wet_filename);
   if(config->river_routing)
@@ -120,6 +124,10 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   if(config->wateruse)
     fprintf(file,"%s\n",config->wateruse_filename.name);
+#ifdef IMAGE
+  if (config->wateruse_wd_filename.name != NULL)
+    fprintf(file, "%s\n", config->wateruse_wd_filename.name);
+#endif
   }
   if(iswriterestart(config))
     fprintf(file,"%s\n",config->write_restart_filename);

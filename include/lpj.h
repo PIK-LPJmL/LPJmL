@@ -28,7 +28,7 @@
 #ifndef LPJ_H /* Already included? */
 #define LPJ_H
 
-#define LPJ_VERSION  "5.1.001"
+#define LPJ_VERSION  "5.1.002"
 
 /* Necessary header files */
 
@@ -73,9 +73,7 @@ typedef struct stand Stand; /* forward declaration of stand */
 #include "param.h"
 #include "header.h"
 #include "climate.h"
-//#ifdef IMAGE            /* Compile with IMAGE coupler? */
 #include "image.h"
-//#endif
 #include "cropdates.h"
 #include "reservoir.h"
 #include "landuse.h"
@@ -93,6 +91,9 @@ typedef struct stand Stand; /* forward declaration of stand */
 #include "tree.h"
 #include "biomass_tree.h"
 #include "landuse.h"
+#if defined IMAGE || defined INCLUDEWP
+#include "woodplantation.h"
+#endif
 #include "biomes.h"
 
 /* Definition of constants */

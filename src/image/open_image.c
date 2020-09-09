@@ -15,12 +15,21 @@
 
 #include "lpj.h"
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 
 Bool open_image(Config *config /**< LPJmL configuration */
                )               /** \return TRUE on error */
 {
-  if(config->rank==0)
+  char Revision_exe[10]  = "0000";
+  char Date_exe[80]      = "2020/05";
+  char TimeNow_exe[80]   = "2020/05";
+  char URL_exe[80]       = "https://gitlab.pik-potsdam.de";
+
+  int IRevision;
+  int IUrl[80];
+  int len,i;
+
+  if(isroot(*config))
   {
     /* Establish the TDT connection */
     printf("Connecting IMAGE model...  image_inport %d, wait %d host %s outport %d\n",config->image_inport,config->wait_image,config->image_host,config->image_outport);
@@ -34,7 +43,7 @@ Bool open_image(Config *config /**< LPJmL configuration */
     printf("opening LPJ_to_INTERFACE image_host %s outport %d\n",config->image_host,config->image_outport);
 #endif
     config->out=connecttdt_socket(config->image_host,
-                                       config->image_outport);
+                                  config->image_outport);
     if(config->out==NULL)
     {
       close_socket(config->in);
@@ -46,6 +55,46 @@ Bool open_image(Config *config /**< LPJmL configuration */
     printf("All connections to IMAGE are established.\n");
     fflush(stdout);
 #endif
+    printf("LPJ.exe version information\n");
+    printf("URL repository: %s \n", URL_exe);
+    printf("Revision: %s \n",Revision_exe);
+    printf("Date: %s \n",Date_exe);
+    printf("BuildTime: %s \n",TimeNow_exe);
+    fflush(stdout);
+/* SEND revision_lpj and URL_lpj; should be a string in future*/
+
+/* send revision number to interface */
+    IRevision = atoi(Revision_exe);
+#ifdef DEBUG_IMAGE
+    printf("open_image1 %d \n",IRevision);
+#endif
+    writeint_socket(config->out, &IRevision,1);
+#ifdef DEBUG_IMAGE
+    printf("open_image2 %d \n",IRevision);
+#endif
+
+  /* send revision url */
+#ifdef DEBUG_IMAGE
+    printf("open_image3  \n"); 
+#endif
+    len = (int)strlen (URL_exe);
+    for(i=0;i<80;i++)
+    {
+      IUrl[i] = (i<len) ? URL_exe[i] : ' ';
+#ifdef DEBUG_IMAGE
+      printf("open_image4 %d %d \n",i, IUrl[i] );
+#endif
+    }
+#ifdef DEBUG_IMAGE
+    printf("open_image5  \n"); 
+#endif
+    writeint_socket(config->out, IUrl,80); 
+#ifdef DEBUG_IMAGE
+    printf("open_image6  \n"); 
+#endif
+
+/* end SEND revision_lpj and URL_lpj; should be a string in future*/
+
   }
   return FALSE;
 } /* of 'open_image' */

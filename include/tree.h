@@ -74,10 +74,13 @@ typedef struct
   Real crown_mort_rck;              /**< crown damage (rCK) */
   Real crown_mort_p;                /**< crown damage (p) */
   Real fuelfrac[NFUELCLASS];        /**< Fuel fractions */
-  Real k_est;			/**< maximum overall sapling establishment rate (indiv/m2) */
-  Real k_latosa;        /**< leaf area to sapwood area */
-  int rotation;         /**< coppicing interval from short ratation woody crops */
-  int max_rotation_length; /**< lifetime of short rotation woody crop plantation */
+  Real k_est;                       /**< maximum overall sapling establishment rate (indiv/m2) */
+  Real k_latosa;                    /**< leaf area to sapwood area */
+  int rotation;                     /**< coppicing interval from short rotation woody crops */
+  int max_rotation_length;          /**< lifetime of short rotation woody crop plantation */
+#if defined IMAGE  || defined INCLUDEWP
+  Real P_init;                      /**< initial stand density (only used for wood plantations)*/
+#endif
 } Pfttreepar;
 
 typedef struct
@@ -95,6 +98,8 @@ typedef struct
   Real turn_nbminc;     /**< storage for recovered nitrogen from turnover */
   Real excess_carbon;   /**< gC/ind; storage for carbon that cannot be allocated under given N limitation */
 } Pfttree;
+
+extern char *leaftype[];
 
 /* Declaration of functions */
 

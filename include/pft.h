@@ -83,7 +83,7 @@ typedef struct Pft
   {
     int id;                     /**< unique PFT identifier */
     int type;                   /**< type --> whether CROP or TREE or GRASS*/
-    int cultivation_type;       /**< cultivation_type----> NONE, BIOMASS, ANNUAL_CROP*/
+    int cultivation_type;       /**< cultivation_type----> NONE, BIOMASS, ANNUAL_CROP, WP, */
     char *name;                 /**< Pft name */
     Real cn[NHSG];              /**< pft specific curve number for each hydr. soil group */
     Real beta_root;             /**< root distribution parameter */
@@ -219,6 +219,10 @@ typedef struct Pftpar Pftpar;
 
 typedef Bool (*Fscanpftparfcn)(LPJfile *,Pftpar *,Verbosity);
 
+extern char *phenology[];
+extern  char *cultivation_type[];
+extern  char *path[];
+
 /* Declaration of functions */
 
 extern void newpft(Pft *,Stand *,const Pftpar *,int,int);
@@ -250,9 +254,9 @@ extern void fprintpftpar(FILE *,const Pftpar [],int);
 extern void output_daily(Daily_outputs *,const Pft *,Real,Real);
 extern void equilsoil(Soil *, int, const Pftpar [],Bool);
 extern void noturnover_monthly(Litter *,Pft *);
-extern char **createpftnames(int,int,int,int,const Pftpar []);
-extern void freepftnames(char **,int,int,int,int);
-extern int getnbiomass(const Pftpar [],int);
+extern char **createpftnames(int,int,int,int,int,const Pftpar []);
+extern void freepftnames(char **,int,int,int,int,int);
+extern int getnculttype(const Pftpar [],int,int);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool);
 extern Real nitrogen_stress(Pft *,Real,Real,int,int,int,Bool);
 extern Real f_lai(Real);
@@ -260,8 +264,11 @@ extern Real f_lai(Real);
 /* needed for IMAGE, but can also be used otherwise */
 
 extern Stocks timber_burn(const Pft *, Real,Litter *,Real);
+#ifdef IMAGE
+extern Stocks timber_harvest(Pft *,Soil *,Poolpar *,Poolpar,Real,Real,Real *,Real *,Real, Real[] );
+#else
 extern Stocks timber_harvest(Pft *,Soil *,Poolpar *,Poolpar,Real,Real,Real *,Real *);
-
+#endif
 /* Definition of macros */
 
 #define isphoto(tstress) (tstress>=1e-2)

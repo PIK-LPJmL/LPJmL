@@ -19,6 +19,7 @@
 void initoutput_monthly(Output *output, /**< Output data */
                         int npft,       /**< number of natural PFTs */
                         int nbiomass,   /**< number of biomass PFTs */
+                        int nwft,       /**< number of wood plantation PFTs */
                         int ncft        /**< number of crop PFTs */
                        )
 {
@@ -45,8 +46,11 @@ void initoutput_monthly(Output *output, /**< Output data */
     output->mn2o_nit=output->mn2_emissions=output->mn_mineralization=output->mn_volatilization=
     output->mn_immo=0.0;
 
+#ifdef IMAGE
+  output->mwd_gw=output->mwd_aq=output->mwateruse_hil=0.0;
+#endif
   for(l=0;l<NSOILLAYER;l++)
     output->mswc[l]=output->msoiltemp[l]=0;
-  for(l=0;l<(ncft+NGRASS+NBIOMASSTYPE)*2+npft-nbiomass;l++)
+  for(l=0;l<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2+npft-nbiomass-nwft;l++)
     output->mpft_lai[l]=0;
 } /* of 'initoutput_monthly' */

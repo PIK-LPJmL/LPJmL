@@ -297,7 +297,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if (config->prescribe_burntarea)
     {
-      if(openclimate(&climate->file_burntarea,&config->burntarea_filename,(config->burntarea_filename.fmt==CDF) ? NULL : NULL,LPJ_SHORT,config))
+      if(openclimate(&climate->file_burntarea,&config->burntarea_filename,(config->burntarea_filename.fmt==CDF) ?  (char *)NULL : (char *)NULL,LPJ_SHORT,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open burntarea data from '%s'.\n",config->burntarea_filename.name);
@@ -310,7 +310,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         closeclimatefile(&climate->file_prec,isroot(*config));
         if(config->with_radiation)
         {
-          if(config->with_radiation==RADIATION)
+          if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
             closeclimatefile(&climate->file_lwnet,isroot(*config));
           closeclimatefile(&climate->file_swdown,isroot(*config));
         }
@@ -330,7 +330,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   else
     climate->data.tamp=climate->data.lightning=climate->data.burntarea=NULL;
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
     if(openclimate(&climate->file_temp_var,&config->temp_var_filename,NULL,LPJ_SHORT,config))
@@ -397,7 +397,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       closeclimatefile(&climate->file_cloud,isroot(*config));
     if(config->wet_filename.name!=NULL)
       closeclimatefile(&climate->file_wet,isroot(*config));
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
     if(config->sim_id==LPJML_IMAGE)
     {
       closeclimatefile(&climate->file_temp_var,isroot(*config));

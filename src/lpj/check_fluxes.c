@@ -47,7 +47,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   }
   tot.carbon+=cell->balance.estab_storage_grass[0].carbon+cell->balance.estab_storage_tree[0].carbon+cell->balance.estab_storage_grass[1].carbon+cell->balance.estab_storage_tree[1].carbon;
   tot.nitrogen+=cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
-#ifdef IMAGE
+#if defined  IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     tot.carbon+=cell->ml.image_data->timber.slow+cell->ml.image_data->timber.fast;
 #else
@@ -76,7 +76,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 
   if(year>startyear && fabs(balance.carbon)>1)
   {
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
     if(config->sim_id==LPJML_IMAGE)
       foreachstand(stand,s,cell->standlist)
       {
@@ -144,7 +144,11 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   }
 
   /* water balance check */
+#ifdef IMAGE
+  totw=(cell->discharge.dmass_lake+cell->discharge.dmass_river+cell->discharge.dmass_gw)/cell->coord.area;
+#else
   totw=(cell->discharge.dmass_lake+cell->discharge.dmass_river)/cell->coord.area;
+#endif
   foreachstand(stand,s,cell->standlist)
   {
     totw+=soilwater(&stand->soil)*stand->frac;

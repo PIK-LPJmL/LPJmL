@@ -19,6 +19,7 @@
 void initoutput_annual(Output *output, /**< Output data */
                        int npft,       /**< number of natural PFTs */
                        int nbiomass,   /**< number of biomass PFTs */
+                       int nwft,       /**< number of WFTs */
                        int ncft,       /**< number of crop PFTs */
                        float missing_value /**< missing value for NetCDF output */
                       )
@@ -46,7 +47,7 @@ void initoutput_annual(Output *output, /**< Output data */
   output->product_pool_fast.carbon=output->product_pool_slow.carbon=output->product_pool_fast.nitrogen=output->product_pool_slow.nitrogen=0;
 #endif
 
-  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
+  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
     output->pft_harvest[i].harvest.carbon=output->pft_harvest[i].residual.carbon=
     output->pft_harvest[i].harvest.nitrogen=output->pft_harvest[i].residual.nitrogen=
     output->cftfrac[i]=
@@ -80,7 +81,7 @@ void initoutput_annual(Output *output, /**< Output data */
 #endif
     output->sdate[i]=output->hdate[i]=0;
   }
-  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2+npft-nbiomass;i++)
+  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2+npft-nbiomass-nwft;i++)
   {
     output->pft_npp[i]=0;
     output->pft_gcgp[i]=0;
@@ -88,8 +89,17 @@ void initoutput_annual(Output *output, /**< Output data */
     output->pft_nuptake[i]=0;
     output->pft_ndemand[i]=0;
   }
-  for (i=0; i<npft-nbiomass+1;++i)
+#if defined IMAGE || defined INCLUDEWP
+  for (i = 0;i<nwft;i++)
+  {
+    output->wft_vegc[i] = 0;
+  }
+#endif
+#if defined IMAGE && defined COUPLED
+  output->npp_nat=output->npp_wp=output->flux_estab_nat=output->flux_estab_wp=output->rh_nat=output->rh_wp=0.0;
+#endif
+  for (i=0; i<npft-nbiomass-nwft+1;++i)
     output->fpc[i] = 0;
-  for (i=0; i<npft-nbiomass;++i)
+  for (i=0; i<npft-nbiomass-nwft;++i)
     output->pft_mort[i] = missing_value; /* do not plot values for non established trees */
 } /* of 'initoutput_annual' */

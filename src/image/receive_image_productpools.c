@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 
 Bool receive_image_productpools(Cell *cell,          /**< LPJ grid */
                                 const Config *config /**< LPJ configuration */
@@ -56,9 +56,6 @@ Bool receive_image_productpools(Cell *cell,          /**< LPJ grid */
     if(!cell[i].skip)
     {
       sum=image_timber_distribution[i].fast + image_timber_distribution[i].slow;
-#ifdef DEBUG_IMAGE
-      if(sum < 1.0-0.000000001 && sum > 0.00000001)
-#endif
       /* correcting timber distribution fractions if needed */
       if(sum>1.0)
       {
@@ -85,6 +82,10 @@ Bool receive_image_productpools(Cell *cell,          /**< LPJ grid */
     }
   }
   free(image_timber_distribution);
+#ifdef DEBUG_IMAGE
+  printf("free data in receive_image_productpools.\n");
+  fflush(stdout);
+#endif
   return rc;
 } /* of 'receive_image_productpools' */
 

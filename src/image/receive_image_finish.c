@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   g  e  t  n  b  i  o  m  a  s  s  .  c                        \n**/
+/**     r  e  c  e  i  v  e  _  i  m  a  g  e  _  f  i  n  i  s  h  .  c           \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function counts number of biomass plantation PFTs                          \n**/
+/**     extension of LPJ to couple LPJ online with IMAGE                           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,14 +14,30 @@
 
 #include "lpj.h"
 
-int getnbiomass(const Pftpar pftpar[], /**< PFT parameter array */
-                int npft               /**< number of natural PFTs */
-               )                       /** \return number of biomass PFTs */
+#if defined IMAGE && defined COUPLED
+
+Real receive_image_finish(const Config *config /* Grid configuration */
+                      )                     /* returns finsh */
 {
-  int p,nbiomass;
-  nbiomass=0;
-  for(p=0;p<npft;p++)
-    if(pftpar[p].cultivation_type==BIOMASS)
-      nbiomass++;
-  return nbiomass;
-} /* of 'getnbiomass' */
+  double finish;
+#ifdef USE_MPI
+  if(config->rank==0)
+  {
+#endif
+#ifdef DEBUG_IMAGE
+  printf("Waiting for IMAGE-INTERFACE\n");
+  fflush(stdout);
+#endif
+  readdouble_socket(config->in,&finish,1);
+#ifdef DEBUG_IMAGE
+  printf("Received finish from IMAGE-INTERFACE %g\n",finish);
+  fflush(stdout);
+#endif
+#ifdef USE_MPI
+  }
+  MPI_Bcast(&finish,1,MPI_DOUBLE,0,config->comm);
+#endif
+  return (Real)finish;
+} /* of 'receive_image_finish' */
+
+#endif

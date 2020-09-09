@@ -110,6 +110,12 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
+#if defined IMAGE && defined COUPLED
+  if(stand->type->landusetype==NATURAL)
+  {
+    stand->cell->output.flux_estab_nat+=flux_estab.carbon*stand->frac;
+  }
+#endif
 #endif
   foreachpft(pft,p,&stand->pftlist)
   {

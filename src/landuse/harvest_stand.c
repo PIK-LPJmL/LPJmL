@@ -67,7 +67,6 @@ static Harvest harvest_grass_mowing(Stand *stand)
   output=&stand->cell->output;
   foreachpft(pft,p,&stand->pftlist)
     fpc_sum+=pft->fpc;
-
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;

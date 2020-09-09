@@ -20,7 +20,7 @@ Real fpar_crop(const Pft *pft /**< pointer to PFT data */
 {
   const Pftcrop *crop;
   crop=pft->data;
-  if(pft->par->id==MAIZE)
+  if(!strcmp(pft->par->name,"maize"))
     return min(1,max(0,0.2558*max(0.01,crop->lai-crop->lai_nppdeficit)-0.0024))*(1-pft->snowcover);
   else
     return (1-exp(-param.k_beer*max(0,(crop->lai-crop->lai_nppdeficit))))*(1-pft->snowcover);

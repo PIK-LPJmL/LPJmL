@@ -74,7 +74,7 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
     stand->cell->output.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   }
   cell->output.fpc[0] = 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
     cell->output.prod_turnover=product_turnover(cell->ml.image_data);

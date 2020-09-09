@@ -59,6 +59,10 @@ int iterate(Outputfile *output,  /**< Output file data */
   Climatedata store,data_save;
 #endif
 
+#if defined IMAGE && defined COUPLED
+  Real finish;
+#endif
+
   firstspinupyear=(config->isfirstspinupyear) ?  config->firstspinupyear : input.climate->firstyear;
   if(isroot(*config) && config->nspinup && !config->isfirstspinupyear)
     printf("Spinup using climate starting from year %d\n",input.climate->firstyear);
@@ -89,7 +93,7 @@ int iterate(Outputfile *output,  /**< Output file data */
     printf("Starting from checkpoint file '%s'.\n",config->checkpoint_restart_filename);
   for(year=startyear;year<=config->lastyear;year++)
   {
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
     if(year>=config->start_imagecoupling)
       co2=receive_image_co2(config);
     else
@@ -119,7 +123,7 @@ int iterate(Outputfile *output,  /**< Output file data */
       }
 #endif
       /* read climate from files */
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
       if(year>=config->start_imagecoupling)
       {
         if(receive_image_climate(input.climate,grid,year,config))
@@ -153,7 +157,7 @@ int iterate(Outputfile *output,  /**< Output file data */
         wateruse_year=config->landuse_year_const;
       else
         wateruse_year=year;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
       if(year>=config->start_imagecoupling)
       {
         if(receive_image_data(grid,npft,ncft,config))
@@ -175,6 +179,7 @@ int iterate(Outputfile *output,  /**< Output file data */
       if(config->reservoir)
         allocate_reservoir(grid,year,config);
     }
+#ifndef COUPLED
     if(input.wateruse!=NULL && input.landuse!=NULL)
     {
       /* read wateruse data from file */
@@ -185,6 +190,19 @@ int iterate(Outputfile *output,  /**< Output file data */
         break; /* leave time loop */
       }
     }
+#ifdef IMAGE
+    if (input.wateruse_wd!= NULL && input.landuse!=NULL)
+    {
+      /* read wateruse data from file */
+      if (getwateruse_wd(input.wateruse_wd, grid, wateruse_year, config))
+      {
+        fprintf(stderr, "ERROR104: Simulation stopped in getwateruse_wd().\n");
+        fflush(stderr);
+        break; /* leave time loop */
+      }
+    }
+#endif
+#endif
     if(config->ispopulation)
     {
       if(readpopdens(input.popdens,year,grid,config))
@@ -223,7 +241,7 @@ int iterate(Outputfile *output,  /**< Output file data */
       check_balance(flux,year,config);
 #endif
     }
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
     if(year>=config->start_imagecoupling)
     {
       /* send data to IMAGE */
@@ -235,7 +253,7 @@ int iterate(Outputfile *output,  /**< Output file data */
         fflush(stdout);
       }
 #endif
-      if(send_image_data(grid,input.climate,npft,config))
+      if(send_image_data(config,grid,input.climate,npft,ncft))
         fail(SEND_IMAGE_ERR,FALSE,
              "Problem with writing maps for transfer to IMAGE");
     }
@@ -270,5 +288,11 @@ int iterate(Outputfile *output,  /**< Output file data */
 #endif
   if(year>config->lastyear && config->ischeckpoint)
     unlink(config->checkpoint_restart_filename); /* delete checkpoint file */
+
+#if defined IMAGE && defined COUPLED
+  /* wait for IMAGE to finish before closing TDT-connections by LPJ */
+  if(config->sim_id==LPJML_IMAGE)
+    finish=receive_image_finish(config);
+#endif
   return year;
 } /* of 'iterate' */

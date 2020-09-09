@@ -181,13 +181,13 @@ Bool fscantoken(FILE *file, /**< file pointer of a text file         */
   return FALSE;
 } /* of 'fscantoken' */
 
-Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
-                 String s,   /**< pointer to a char array of dimension
-                                  STRING_LEN+1                        */
-                 const char *name, /**< name of string                */
+Bool fscanstring(LPJfile *file,     /**< pointer to  a LPJ file         */
+                 String s,          /**< pointer to a char array of dimension
+                                         STRING_LEN+1                        */
+                 const char *name,  /**< name of string                */
                  Bool with_default, /**< allow default value */
-                 Verbosity verb  /**< enable error output */
-                )            /** \return TRUE on error                */
+                 Verbosity verb     /**< enable error output */
+                )                   /** \return TRUE on error                */
 {
   int c;
   int len;
@@ -196,34 +196,39 @@ Bool fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
   const char *str;
   if(file->isjson)
   {
-    if(!json_object_object_get_ex(file->file.obj,name,&item))
+    if(name==NULL)
+      item=file->file.obj;
+    else
     {
-      if(with_default)
+      if(!json_object_object_get_ex(file->file.obj,name,&item))
       {
-        if(verb)
-          fprintf(stderr,"WARNING027: Name '%s' for string not found, set to '%s'.\n",name,s);
-        return FALSE;
-      }
-      else
-      {
-        if(verb)
-          fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
-        return TRUE;
+        if(with_default)
+        {
+          if(verb)
+            fprintf(stderr,"WARNING027: Name '%s' for string not found, set to '%s'.\n",name,s);
+          return FALSE;
+        }
+        else
+        {
+          if(verb)
+            fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
+          return TRUE;
+        }
       }
     }
     if(json_object_get_type(item)!=json_type_string)
     {
       if(verb)
-        fprintf(stderr,"ERROR226: Type of '%s' is not string.\n",name);
+        fprintf(stderr,"ERROR226: Type of '%s' is not string.\n",(name==NULL) ? "N/A" : name);
       return TRUE;
     }
     str=json_object_get_string(item);
     if(strlen(str)>STRING_LEN && verb)
-      fprintf(stderr,"ERROR103: String too long for name '%s', truncated.\n",name);
+      fprintf(stderr,"ERROR103: String too long for name '%s', truncated.\n",(name==NULL) ? "N/A" : name);
     strncpy(s,str,STRING_LEN);
     s[STRING_LEN]='\0';
     if (verb >= VERB)
-      printf("\"%s\" : \"%s\"\n",name,s);
+      printf("\"%s\" : \"%s\"\n",(name==NULL) ? "N/A" : name,s);
     return FALSE;
   }
 #endif

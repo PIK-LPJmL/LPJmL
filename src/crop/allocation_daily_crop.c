@@ -122,7 +122,7 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   fhiopt=100*crop->fphu/(100*crop->fphu+exp(11.1-10.0*crop->fphu));
   if(crop->fphu>0)
   { /* avoid memory leakage when called from new_crop.c */
-    if(pft->par->id==MAIZE)
+    if(!strcmp(pft->par->name,"maize"))
       hiopt=min(1,par->hiopt*(0.8+0.2/4*(pft->stand->cell->ml.manage.laimax[pft->par->id]-1)));
     else
       hiopt=par->hiopt*(0.8+0.2/6*(pft->stand->cell->ml.manage.laimax[pft->par->id]-1));

@@ -15,7 +15,6 @@
 #################################################################################
 
 include Makefile.inc
-
 INC     = include
 
 HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\

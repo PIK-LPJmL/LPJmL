@@ -47,6 +47,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   LPJfile lpjfile;
   String s;
   Verbosity verbosity;
+  const char *sim_id[]={"lpj","lpjml","lpjml_image","lpjml_fms"};
 #ifdef USE_JSON
   char line[LINE_LEN];
   enum json_tokener_error json_error;
@@ -135,12 +136,12 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   }
   /* Read LPJ configuration */
   config->sim_id=LPJML;
-  if(fscanint(&lpjfile,&config->sim_id,"sim_id",TRUE,verbosity))
+  if(fscankeywords(&lpjfile,&config->sim_id,"sim_id",sim_id,4,TRUE,verbosity))
   {
     closeconfig(&lpjfile);
     return TRUE;
   }
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id!=LPJML && config->sim_id!=LPJ && config->sim_id!=LPJML_IMAGE)
   {
     if(verbosity)
@@ -154,7 +155,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     if(verbosity)
     {
       if(config->sim_id==LPJML_IMAGE)
-        fputs("ERROR219: LPJmL has to be compiled with '-DIMAGE' for simulation type 'LPJML_IMAGE'.\n",stderr);
+        fputs("ERROR219: LPJmL has to be compiled with '-DIMAGE -DCOUPLED' for simulation type 'LPJML_IMAGE'.\n",stderr);
       else
         fprintf(stderr,"ERROR123: Invalid simulation type, must be 'LPJML', 'LPJML_FMS' or 'LPJ'.\n");
     }

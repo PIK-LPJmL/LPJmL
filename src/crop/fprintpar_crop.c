@@ -21,8 +21,6 @@ void fprintpar_crop(FILE *file, /**< pointer to text file */
                     const Pftpar *par /**< pointer to PFT parameter */
                    )
 {
-  char *calcmethod[]={"no calc","prec calc","temp wtyp calc","temp styp calc",
-                      "temp prec calc","multi crop"}; 
   Pftcroppar *croppar;
   croppar=par->data;
   fprintf(file,"sdate calcmethod:\t %s\n"

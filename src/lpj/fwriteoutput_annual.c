@@ -540,6 +540,14 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
     writeannualall(output,ADISCHARGE,vec,year,config);
   }
   writeoutputvar(DEFOREST_EMIS,deforest_emissions.carbon);
+#ifdef IMAGE
+  if (isopen(output, YDISCHARGE))
+  {
+    for (cell = 0; cell<config->ngridcell; cell++)
+      vec[cell] = (float)(grid[cell].output.ydischarge*1e-9);
+    writeannualall(output, YDISCHARGE, vec, year, config);
+  }
+#endif
   writeoutputvar(TRAD_BIOFUEL,trad_biofuel);
   writeoutputvar(AIRRIG,airrig);
   writeoutputvar(FBURN,fburn);
@@ -566,6 +574,11 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
   writeoutputvar(ACONV_LOSS_EVAP,aconv_loss_evap);
   writeoutputvar(ACONV_LOSS_DRAIN,aconv_loss_drain);
   writeoutputvar(AWATERUSE_HIL,awateruse_hil);
+#if defined IMAGE && defined COUPLED
+  writeoutputvar(WATERUSECONS,waterusecons);
+  writeoutputvar(WATERUSEDEM,waterusedem);
+#endif
+
   if(isopen(output,AGB))
   {
     count=0;
