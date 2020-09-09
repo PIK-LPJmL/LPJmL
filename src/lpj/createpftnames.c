@@ -21,12 +21,13 @@ char **createpftnames(int index,           /**< output index */
                       int npft,            /**< number of natural PFTs */
                       int nbiomass,        /**< number of biomass types */
                       int ncft,            /**< number of crop PFTs */
-                      const Pftpar *pftpar /**< PFT parameter vector */
+					  int ngrass,          /**< number of grasses */
+					  const Pftpar *pftpar /**< PFT parameter vector */
                      )                     /** \return string vector */
 {
   int i,j,incr,size;
   char **pftnames;
-  size=outputsize(index,npft,nbiomass,ncft);
+  size=outputsize(index,npft,nbiomass,ngrass,ncft);
   pftnames=newvec(char *,size);
   if(pftnames==NULL)
     return NULL;
@@ -125,16 +126,24 @@ char **createpftnames(int index,           /**< output index */
       for(i=0;i<npft-nbiomass;i++)
         pftnames[i+1]=strdup(pftpar[i].name);
       break;
+    case NV_LAI:
+         for(i=0;i<npft-nbiomass;i++)
+           pftnames[i]=strdup(pftpar[i].name);
+         break;
+    case FPC_BFT:
+         for(i=0;i<((nbiomass+ngrass*2)*2);i++)
+           pftnames[i]=strdup(pftpar[i].name);
+         break;
   }
   return pftnames;
 } /* of 'createpftnames' */
 
-void freepftnames(char **pftnames,int index,int npft,int nbiomass,int ncft)
+void freepftnames(char **pftnames,int index,int npft,int nbiomass, int ngrass,int ncft)
 {
   int i,size;
   if(pftnames!=NULL)
   {
-    size=outputsize(index,npft,nbiomass,ncft);
+    size=outputsize(index,npft,nbiomass,ngrass,ncft);
     for(i=0;i<size;i++)
       free(pftnames[i]);
     free(pftnames);

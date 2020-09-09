@@ -23,6 +23,7 @@ Bool initoutput(Output *output, /**< Output data */
                 Bool irrigation,/**< irrigation for daily output */
                 int npft,       /**< number of natural PFTs */
                 int nbiomass,   /**< number of biomass PFTs */
+				int ngrass,     /**< number of grasses */
                 int ncft        /**< number of crop PFTs */
                )                /**\ return TRUE on error */
 {
@@ -99,7 +100,11 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_nlimit);
   output->cft_laimax = newvec(Real, 2 * (ncft + NGRASS + NBIOMASSTYPE));
   checkptr(output->cft_laimax);
-#ifdef DOUBLE_HARVEST
+  output->nv_lai=newvec(Real, (npft-nbiomass));
+  check(output->nv_lai);
+  output->fpc_bft=newvec(Real, (nbiomass+ngrass*2)*2);
+  check(output->fpc_bft);
+  #ifdef DOUBLE_HARVEST
   output->sdate2=newvec(int,2*ncft); /* allocate memory for output */
   checkptr(output->sdate2);
   output->hdate2=newvec(int,2*ncft);
@@ -135,7 +140,7 @@ Bool initoutput(Output *output, /**< Output data */
   output->cft_aboveground_biomass2=newvec(Stocks,2*(ncft+NGRASS));
   checkptr(output->cft_aboveground_biomass2);
 #endif  
-  initoutput_annual(output, npft, nbiomass,ncft);
+  initoutput_annual(output, npft, nbiomass,ngrass,ncft);
   output->daily.cft=cft;
   output->daily.irrigation=irrigation;
   return FALSE;

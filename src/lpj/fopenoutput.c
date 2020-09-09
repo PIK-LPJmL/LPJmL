@@ -28,7 +28,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
   int size;
   size=outputsize(config->outputvars[index].id,
                   config->npft[GRASS]+config->npft[TREE],
-                  config->nbiomass,
+                  config->nbiomass, config->ngrass,
                   config->npft[CROP]);
   if(size==1)
     return create_netcdf(cdf,filename,
@@ -147,7 +147,7 @@ static void openfile(Outputfile *output,const Cell grid[],
               header.nbands=getnyear(config->outputvars[i].id);
               header.nbands*=outputsize(config->outputvars[i].id,
                                         config->npft[GRASS]+config->npft[TREE],
-                                        config->nbiomass,
+                                        config->nbiomass, config->ngrass,
                                         config->npft[CROP]);
               header.nyear=config->lastyear-config->outputyear+1;
               header.datatype=getoutputtype(config->outputvars[i].id);
@@ -365,7 +365,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
               if(header.nbands==1)
                 header.nbands=outputsize(config->outputvars[i].id,
                                          config->npft[GRASS]+config->npft[TREE],
-                                         config->nbiomass,
+                                         config->nbiomass, config->ngrass,
                                          config->npft[CROP]);
               if(config->outputvars[i].id==SDATE || config->outputvars[i].id==HDATE || config->outputvars[i].id==SEASONALITY)
                 header.datatype=LPJ_SHORT;
@@ -398,7 +398,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
           case CDF:
             size=outputsize(config->outputvars[i].id,
                             config->npft[GRASS]+config->npft[TREE],
-                            config->nbiomass,
+                            config->nbiomass, config->ngrass,
                             config->npft[CROP]);
            if(size==1)
              output->files[config->outputvars[i].id].isopen=!create1_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,

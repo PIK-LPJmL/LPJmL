@@ -77,6 +77,7 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
     stand->cell->output.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   }
   cell->output.fpc[0] = 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;
+  cell->output.vegc_avg/=NDAYYEAR;
 #ifdef IMAGE
   cell->output.prod_turnover=product_turnover(cell->ml.image_data);
   cell->output.product_pool_fast=cell->ml.image_data->timber.fast;
