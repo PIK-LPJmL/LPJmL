@@ -131,8 +131,22 @@ char **createpftnames(int index,           /**< output index */
            pftnames[i]=strdup(pftpar[i].name);
          break;
     case FPC_BFT:
-         for(i=0;i<((nbiomass+ngrass*2)*2);i++)
-           pftnames[i]=strdup(pftpar[i].name);
+         for(i=0;i<ngrass;i++)
+           pftnames[i]=strdup(pftpar[i+npft-nbiomass-ngrass].name);
+         for(i=0;i<nbiomass;i++)
+           pftnames[i+ngrass]=strdup(pftpar[i+npft-nbiomass].name);
+         for(i=0;i<ngrass;i++)
+         {
+            pftnames[i+ngrass+nbiomass]=malloc(strlen(pftpar[i+npft-nbiomass-ngrass].name)+strlen("irrigated ")+1);
+            strcpy(pftnames[i+ngrass+nbiomass],"irrigated ");
+            strcat(pftnames[i+ngrass+nbiomass],pftpar[i+npft-nbiomass-ngrass].name);
+         }
+         for(i=0;i<nbiomass;i++)
+         {
+            pftnames[i+2*ngrass+nbiomass]=malloc(strlen(pftpar[i+npft-nbiomass].name)+strlen("irrigated ")+1);
+            strcpy(pftnames[i+2*ngrass+nbiomass],"irrigated ");
+            strcat(pftnames[i+2*ngrass+nbiomass],pftpar[i+npft-nbiomass].name);
+         }
          break;
   }
   return pftnames;

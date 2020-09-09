@@ -289,10 +289,8 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   stand->growing_time++;
   foreachpft(pft,p,&stand->pftlist)
   {
-    if(istree(pft))
-    	stand->cell->output.fpc_bft[getpftpar(pft, id)-npft+irrigation->irrigation*(config->nbiomass+config->ngrass*2)]=pft->fpc;
-    else
-        stand->cell->output.fpc_bft[getpftpar(pft, id)-config->npft[TREE]+config->nbiomass+irrigation->irrigation*(config->nbiomass+config->ngrass*2)]=pft->fpc; /* grass below biomass trees */
+//    printf("ngrass=%d,npft=%d, id=%d\n", config->ngrass,npft,getpftpar(pft, id));
+    stand->cell->output.fpc_bft[getpftpar(pft, id)-npft+config->nbiomass+config->ngrass+irrigation->irrigation*(config->nbiomass+config->ngrass)]=pft->fpc;
   }
 
   return FALSE;

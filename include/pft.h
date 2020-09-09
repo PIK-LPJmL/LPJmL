@@ -255,6 +255,7 @@ extern void noturnover_monthly(Litter *,Pft *);
 extern char **createpftnames(int,int,int,int,int,const Pftpar []);
 extern void freepftnames(char **,int,int,int,int,int);
 extern int getnbiomass(const Pftpar [],int);
+extern int getngrassnat(const Pftpar [],int);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool);
 extern Real nitrogen_stress(Pft *,Real,Real,int,int,int,Bool);
 extern Real f_lai(Real);
