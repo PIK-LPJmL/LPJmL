@@ -92,15 +92,8 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     if(climate->tmin<(-5))
     {
       crop=pft->data;
-      if(crop->fphu>0.5) /* frost damage possible after storage organs start growing (about fphu>0.5)*/
-      {
+      if(crop->fphu>0.45 || crop->wtype==FALSE) /* frost damage possible for winter crops after storage organs develop, for other crops always possible */
         crop->frostkill=TRUE;
-//        litter_update_crop(&pft->stand->soil.litter,pft,1.0);
-//        delpft(&stand->pftlist,p);
-//        stand->type=&kill_stand;
-//        p--;
-//        continue;
-      }
     }
 #endif
     if(!config->with_nitrogen){
