@@ -109,9 +109,9 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_nlimit);
   output->cft_laimax = newvec(Real, 2 * (ncft + NGRASS + NBIOMASSTYPE+NWPTYPE));
   checkptr(output->cft_laimax);
-  output->nv_lai=newvec(Real, (npft-nbiomass));
+  output->nv_lai=newvec(Real, (npft-nbiomass-nwft));
   check(output->nv_lai);
-  output->fpc_bft=newvec(Real, (nbiomass+ngrass*2)*2);
+  output->fpc_bft=newvec(Real, (nbiomass+2*ngrass)*2);
   check(output->fpc_bft);
 #ifdef DOUBLE_HARVEST
   output->sdate2=newvec(int,2*ncft); /* allocate memory for output */
