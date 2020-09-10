@@ -20,6 +20,7 @@ int outputsize(int index,     /**< output index */
                int npft,      /**< number of natural PFTs */
                int nbiomass,  /**< number of biomass PFTs */
                int nwft,      /**< number of WFTs */
+               int ngrass,    /**< number of grass PFTs */
                int ncft       /**< number of crop PFTs */
               )               /** \return number of items per cell */
 {
@@ -54,6 +55,8 @@ int outputsize(int index,     /**< output index */
       return npft-nbiomass-nwft+1;
     case PFT_MORT:
       return npft-nbiomass-nwft;
+    case NV_LAI:
+      return npft-nbiomass-nwft;
     case MSOILTEMP: case MSWC:
       return NSOILLAYER;
     case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER:
@@ -64,6 +67,8 @@ int outputsize(int index,     /**< output index */
     case CFT_SRAD2: case CFT_ABOVEGBMC2: case CFT_ABOVEGBMN2:
     case CFT_PET: case CFT_PET2:
       return (ncft+NGRASS)*2;
+    case FPC_BFT:
+      return (nbiomass+ngrass*2)*2;
     default:
       return 1;
   } /* of 'switch' */

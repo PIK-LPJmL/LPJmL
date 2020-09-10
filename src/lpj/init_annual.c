@@ -41,7 +41,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
     foreachpft(pft,p,&stand->pftlist)
       init(pft);
   } /* of foreachstand */
-  initoutput_annual(&cell->output,npft,config->nbiomass,config->nwft,ncft,config->missing_value);
+  initoutput_annual(&cell->output,npft,config->nbiomass,config->nwft,config->ngrass,ncft,config->missing_value);
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {

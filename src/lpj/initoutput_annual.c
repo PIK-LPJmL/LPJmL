@@ -20,6 +20,7 @@ void initoutput_annual(Output *output, /**< Output data */
                        int npft,       /**< number of natural PFTs */
                        int nbiomass,   /**< number of biomass PFTs */
                        int nwft,       /**< number of WFTs */
+                       int ngrass,     /**< number of grass PFTs */
                        int ncft,       /**< number of crop PFTs */
                        float missing_value /**< missing value for NetCDF output */
                       )
@@ -37,7 +38,7 @@ void initoutput_annual(Output *output, /**< Output data */
   output->soil_storage=output->aburntarea=0;
   output->soil_storage=output->alittfall.carbon=output->alittfall.nitrogen=0;
   output->deforest_emissions.carbon=output->deforest_emissions.nitrogen=output->fburn=output->ftimber=output->timber_harvest.carbon=output->timber_harvest.nitrogen=0;
-  output->trad_biofuel=output->mean_vegc_mangrass=0;
+  output->trad_biofuel=output->mean_vegc_mangrass=output->vegc_avg=0;
 
 #ifdef IMAGE
   output->prod_turnover=0;
@@ -101,5 +102,10 @@ void initoutput_annual(Output *output, /**< Output data */
   for (i=0; i<npft-nbiomass-nwft+1;++i)
     output->fpc[i] = 0;
   for (i=0; i<npft-nbiomass-nwft;++i)
+  {
     output->pft_mort[i] = missing_value; /* do not plot values for non established trees */
+    output->nv_lai[i] = 0;
+  }
+  for(i=0;i<((nbiomass+ngrass*2)*2);i++)
+    output->fpc_bft[i] = 0;
 } /* of 'initoutput_annual' */

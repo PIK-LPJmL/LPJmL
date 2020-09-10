@@ -101,6 +101,7 @@ Received 19 November 1997; accepted 15 January 1999*/
   Discharge discharge;
   int elevation;            /**< cell elevation (m) */
   const Real *landcover;    /**< prescribed landcover or NULL */
+  Real dRH;
   Balance balance;          /**< balance checks */
 };
 

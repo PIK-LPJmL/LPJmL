@@ -98,6 +98,7 @@ typedef struct
   int *npft;              /**< number of PFTs in each PFT class */
   int nbiomass;           /**< number of biomass PFTs */
   int nwft;               /**< numer of WFTs */
+  int ngrass;             /**< number of grass PFTs not biomass */
   unsigned int nsoil;     /**< number of soil types */
   Soilpar *soilpar;       /**< Soil parameter array */
   int ncountries;         /**< number of countries */

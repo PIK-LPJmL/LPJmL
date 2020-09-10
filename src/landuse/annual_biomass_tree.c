@@ -288,9 +288,22 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
       return TRUE;
   }
   else
+<<<<<<< HEAD
     stand->cell->output.soil_storage+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
   biomass_tree->age++;
   biomass_tree->growing_time++;
+=======
+    stand->cell->output.soil_storage+=(irrigation->irrig_stor+irrigation->irrig_amount)*stand->frac*stand->cell->coord.area;
+  stand->age++;
+  stand->growing_time++;
+  foreachpft(pft,p,&stand->pftlist)
+  {
+    if(istree(pft))
+    	stand->cell->output.fpc_bft[getpftpar(pft, id)-npft+irrigation->irrigation*(config->nbiomass+config->ngrass*2)]=pft->fpc;
+    else
+        stand->cell->output.fpc_bft[getpftpar(pft, id)-config->npft[TREE]+config->nbiomass+irrigation->irrigation*(config->nbiomass+config->ngrass*2)]=pft->fpc; /* grass below biomass trees */
+  }
+>>>>>>> 030c565e21bad32b08ed0d3144fab026341c03de
 
   return FALSE;
 } /* of 'annual_biomass_tree' */

@@ -34,7 +34,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                   const Config *config   /**< LPJmL configuration */
                  )
 {
-  int s;
+  int s,p;
+  Pft *pft;
   Real melt=0,eeq,par,daylength,beta;
   Real gp_stand,gp_stand_leafon,runoff,snowrunoff;
 #ifdef IMAGE
@@ -201,7 +202,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     cell->discharge.drunoff+=runoff*stand->frac;
     climate.prec=prec_save;
-
+    foreachpft(pft, p, &stand->pftlist)
+      cell->output.vegc_avg+=(float)(vegc_sum(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac))/NDAYYEAR);
     foreachsoillayer(l)
       cell->output.mswc[l]+=(stand->soil.w[l]*stand->soil.par->whcs[l]+stand->soil.w_fw[l]+stand->soil.par->wpwps[l]+
                      stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.par->wsats[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));

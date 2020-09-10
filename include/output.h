@@ -298,6 +298,9 @@ typedef struct
   Real *cft_nlimit;
   Real *cft_laimax;
   Real mean_vegc_mangrass; /**< annual mean vegetation carbon of managed grasslands */
+  Real vegc_avg;
+  Real *nv_lai;
+  Real *fpc_bft;
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 
@@ -350,12 +353,12 @@ typedef struct
 
 /* Declaration of functions */
 
-extern Bool initoutput(Output *,int,Bool,int,int,int,int);
-extern void initoutput_annual(Output *,int,int,int,int,float);
+extern Bool initoutput(Output *,int,Bool,int,int,int,int,int);
+extern void initoutput_annual(Output *,int,int,int,int,int,float);
 extern void initoutput_monthly(Output *,int,int,int,int);
 extern void initoutput_daily(Daily_outputs *);
 extern void freeoutput(Output *);
-extern int outputsize(int,int,int,int,int);
+extern int outputsize(int,int,int,int,int,int);
 extern Type getoutputtype(int);
 extern int getnyear(int);
 #ifdef USE_MPI
