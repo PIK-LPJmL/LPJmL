@@ -372,7 +372,7 @@ for(cl in 1:length(climate)) {
             #change order of latitudes
             dim_lat <- ncdim_def("lat","degrees_north",rev(raster_lats))
             if(variables[va]=="soilmoist1m") {
-            	dim_time <- ncdim_def("time",paste("months since ",start.year,"-01-01",sep=""),1:(nyear*12),calendar = "standard")
+            	dim_time <- ncdim_def("time",paste("months since 1901-01-01",sep=""),c(1:(nyear*12))+(start.year-1901)*12,calendar = "standard")
             } else {
               if(for_eval){
                 dim_time <- ncdim_def("time",paste("growing seasons since ",start.year,"-01-01 00:00:00",sep=""),c(start.year:end.year)-start.year+1,calendar = "standard")
