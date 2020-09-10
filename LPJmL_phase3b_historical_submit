@@ -15,7 +15,7 @@
 export LPJROOT=/p/projects/waterforce/jonas/diss/LPJmL/LPJmL_gitlab/LPJmL_ggcmi_phase3
 
 # output directory, script makes subfolders for each run
-simdir="/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3b/historical"
+simdir="/p/projects/macmit/data/GGCMI/phase3/raw_output/phase3b/historical"
 
 # climate forcing
 Climate=("GFDL-ESM4" "IPSL-CM6A-LR" "MPI-ESM1-2-HR" "MRI-ESM2-0" "UKESM1-0-LL")

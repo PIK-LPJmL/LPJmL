@@ -2,7 +2,7 @@
 rm(list=ls(all=TRUE))
 gc()
 shellarg <- commandArgs(TRUE)
-#shellarg <- "yield"
+
 # ----------------------------------------- #
 
 require(raster)
@@ -16,24 +16,16 @@ registerDoSEQ() # tells foreach to use sequential mode
 
 NODATA <- 1e20
 ncell <- 67420
-sim.path <- "/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3a"
-out.path <- "/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/processed/phase3a"
-#.path <- "/p/projects/macmit/users/cmueller/GGCMI_phase3/processed/phase3a"
+sim.path <- "/p/projects/macmit/data/GGCMI/phase3/raw_output/phase3a"
+out.path <- "/p/projects/macmit/data/GGCMI/AgMIP.output/LPJmL/phase3a"
 
 # ----------------------------------------- #
 
-for_eval <- TRUE
 climate=c("gswp3-w5e5")
 
-if(for_eval){
-  start_years=c(1980)
-  end_years=c(2010)
-} else {
-  start_years=c(1901)
-  end_years=c(2016)
-}
-  first_years=c(1901)
-  last_years=c(2016)
+start_years=c(1901)
+first_years=c(1901)
+end_years=c(2016)
 
 socioecon=c("histsoc","2015soc")[1]
 co2=c("default","2015co2")[1]
@@ -49,7 +41,7 @@ cropf <- c("winter_wheat","spring_wheat","maize","rice1","rice2","soy")
 all_variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")
 var_sel<- which(all_variables==shellarg) # indices of variables to be processed
 variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")[var_sel]
-units <- c("t ha-1 gs-1 (dry matter)","kg m-2 gs-1","day of year","calendar year","days from planting","calendar year","kg m-3")[var_sel]
+units <- c("t ha-1 yr-1","mm yr-1","day of year","year","days since planting","year","mm")[var_sel]
 longnames <- c("crop yields","potential irrigation requirements","actual planting date","planting year","days from planting to maturity","harvest year","soil water content")[var_sel]
 
 hlimit=TRUE # sets yields to zero if achieved husum < 90% prescribed husum 
@@ -150,20 +142,19 @@ close(ff)
 # setup loop
 # ---------------------- #
 
-for(cl in 1:length(climate)) {
+for(c in 1:length(climate)) {
 
     print(" # ------------------------------------------- # ")
-    print(paste(" # doing ", climate[cl]))
+    print(paste(" # doing ", climate[c]))
     print(" # ------------------------------------------- # ")
 
-    start.year=start_years[cl]
-    first.year=first_years[cl]
-    end.year=end_years[cl]
-    last.year=last_years[cl]
+    start.year=start_years[c]
+    first.year=first_years[c]
+    end.year=end_years[c]
     nyear=length(start.year:end.year)
 
     # input
-    data.path=paste(sim.path,"/lpjml_phase3_",climate[cl],"_",socioecon,"_",co2,"_",first.year,"_",last.year,sep="")
+    data.path=paste(sim.path,"/lpjml_phase3_",climate[c],"_",socioecon,"_",co2,"_",start.year,"_",end.year,sep="")
 
     # ------------------- #
     # irrig/rainfed loop
@@ -347,21 +338,14 @@ for(cl in 1:length(climate)) {
   	        # folder structure: AgMIP.output/<modelname>/phase3a/<climate_forcing>/obsclim/<crop>
 
     		    # output dir
-            outdir=paste(out.path,"/",climate[cl],"/obsclim/",crops[cr],"/",sep="")
+            outdir=paste(out.path,"/",climate[c],"/obsclim/",crops[cr],"/",sep="")
 
     		    if(!file.exists(outdir)) dir.create(outdir,recursive=TRUE)
 
     		    # output file
             timestep=ifelse(variables[va]=="soilmoist1m","monthly","annual")
-            if(for_eval){
-              cro <- if(crops[cr] %in% c("wwh","swh")) "whe" else if(crops[cr] %in% c("ri1","ri2")) "ric" else crops[cr]
-              write_var=paste0(variables[va],"_",cro)
-              fn <- paste(outdir,"lpjml_",climate[cl],"_hist_fullharm_",irrigs[ir],"_",variables[va],"_",crops[cr],"_",timestep,"_",start.year[cl],"_",end.year[cl],".nc4",sep="")
-              #fn <- paste(outdir,"lpjml_",climate[cl],"_obsclim_",socioecon,"_",co2,"_",write_var,"_global_",timestep,"_",start.year,"_",end.year,".nc4",sep="")
-            } else {
-              write_var=paste0(variables[va],"-",crops[cr],"-",irrigs[ir])
-              fn <- paste(outdir,"lpjml_",climate[cl],"_obsclim_",socioecon,"_",co2,"_",write_var,"_global_",timestep,"_",start.year,"_",end.year,".nc",sep="")
-            }
+            write_var=paste0(variables[va],"-",crops[cr],"-",irrigs[ir])
+            fn <- paste(outdir,"lpjml_",climate[c],"_obsclim_",socioecon,"_",co2,"_",write_var,"_global_",timestep,"_",start.year,"_",end.year,".nc4",sep="")
             unlink(fn)
 
             # NetCDF generation ####
@@ -374,12 +358,7 @@ for(cl in 1:length(climate)) {
             if(variables[va]=="soilmoist1m") {
             	dim_time <- ncdim_def("time",paste("months since ",start.year,"-01-01",sep=""),1:(nyear*12),calendar = "standard")
             } else {
-              if(for_eval){
-                dim_time <- ncdim_def("time",paste("growing seasons since ",start.year,"-01-01 00:00:00",sep=""),c(start.year:end.year)-start.year+1,calendar = "standard")
-              } else {
-                # start year of time dimension needs to be 1901 in 3a and 1661 in 3b, see https://www.isimip.org/protocol/preparing-simulation-files/
-                dim_time <- ncdim_def("time",paste("growing seasons since 1901-01-01, 00:00:00",sep=""),c(start.year:end.year)-1902,calendar = "standard")
-              }
+              dim_time <- ncdim_def("time",paste("growing seasons since ",start.year,"-01-01",sep=""),c(start.year:end.year)-start.year+1,calendar = "standard")
             }
 
             # define variable
@@ -390,8 +369,8 @@ for(cl in 1:length(climate)) {
 
             # commenting
             ncatt_put(ncf,varid=0,"title","LPJmL simulations for Ag-GRID GGCMI Phase 3 project")
-            ncatt_put(ncf,varid=0,"comment1","Potsdam Insittute for Climate Impact Reserach, Columbia University")
-            ncatt_put(ncf,varid=0,"comment2","jonas.jaegermeyr@columbia.edu, cmueller@pik-potsdam.de, minoli@pik-potsdam.de")
+            ncatt_put(ncf,varid=0,"comment1","Columbia University")
+            ncatt_put(ncf,varid=0,"comment2","jonas.jaegermeyr@columbia.edu")
             ncatt_put(ncf,varid=0,"comment3",fn)
 
             # preparing data for NC files
