@@ -329,7 +329,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
 #endif
   if(count)
     fputs(".\n",file);
-  if(config->withlanduse)
+  if(config->withlanduse && config->grassharvest_filename.name!=NULL)
   {
     fprintf(file,"Mowing days for grassland:");
     for(i=0;i<config->mowingdays_size;i++)
