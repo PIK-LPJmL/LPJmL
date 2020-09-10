@@ -293,7 +293,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->wateruse==ALL_WATERUSE) ? "always water use" : "water use");
   if(count)
     fputs(".\n",file);
-  if(config->withlanduse)
+  if(config->withlanduse && config->grassharvest_filename.name!=NULL)
   {
     fprintf(file,"Mowing days for grassland:");
     for(i=0;i<config->mowingdays_size;i++)
