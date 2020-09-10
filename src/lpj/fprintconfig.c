@@ -208,7 +208,6 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->prescribe_landcover==LANDCOVEREST) ? "prescribed establishment":"prescribed maximum FPC");
   if(config->new_phenology)
     len=printsim(file,len,&count,"new phenology");
-
   if(config->withlanduse)
   {
     switch(config->withlanduse)
@@ -294,7 +293,13 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->wateruse==ALL_WATERUSE) ? "always water use" : "water use");
   if(count)
     fputs(".\n",file);
-  fprintf(file,"Working directory: %s\n",getdir());
+  if(config->withlanduse)
+  {
+    fprintf(file,"Mowing days for grassland:");
+    for(i=0;i<config->mowingdays_size;i++)
+      fprintf(file," %d",config->mowingdays[i]);
+  } 
+  fprintf(file,"\nWorking directory: %s\n",getdir());
   if(isreadrestart(config))
     fprintf(file,"Starting from restart file '%s'.\n",config->restart_filename);
   else

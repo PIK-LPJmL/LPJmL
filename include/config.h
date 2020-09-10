@@ -179,7 +179,8 @@ typedef struct
   int with_radiation; /**< input of radiation components (CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN) */
   Bool prescribe_burntarea;	/**< use input to prescribe burnt area to SPITFIRE? */
   int prescribe_landcover; /**< use input to prescribe land cover ? */
-
+  int* mowingdays;         /**< mowing days for grassland */
+  int mowingdays_size;     /**< size of mowing days array */
 #ifdef IMAGE
   int start_imagecoupling; /**< year in which coupling to IMAGE starts
                               (e.g. 1970), set to 9999 if IMAGE is not used */
