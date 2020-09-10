@@ -5,7 +5,7 @@
 climates=( "agmerra" "wfdei" "gswp3-w5e5" "gfdl-esm4" "ipsl-cm6a-lr" "mpi-esm1-2-hr" "mri-esm2-0" "ukesm1-0-ll")
 myemail="jonasjae@pik-potsdam.de"
 
-for ((c=4;c<5;c+=1)) # climate
+for ((c=3;c<8;c+=1)) # climate
 do
 
   cat <<EOF >tmp/calculate_phu_input_for_lpjml_${climates[c]}.jcf
