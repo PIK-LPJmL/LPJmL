@@ -243,7 +243,7 @@ EOF
   "fertilizer_nr" : { "fmt" : CLM,  "name" : "ISIMIP3/nfertilizer_isimip3b_38bands_2015soc_1850-2015.clm"},
   "manure_nr" :    { "fmt" : CLM, "name" : "ISIMIP3/manure_isimip3b_38bands_2015soc_1850-2015.clm"},
   "sdate" : {"fmt" : CLM, "name" : "crop_calendar/sdates_ggcmi_phase3_v1.01_67420.clm"},
-  "crop_phu" : {"fmt" : CLM, "name" : "crop_calendar/phu_${climate[c]}_1979-2010_ggcmi_phase3_v1.01_67420.clm"},
+  "crop_phu" : {"fmt" : CLM, "name" : "crop_calendar/phu_${climate[c]}_historical_1984-2014_ggcmi_phase3_v1.01_67420.clm"},
   "temp" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/historical/${Climate[c]}/tas_${climate[c]}_historical_1850-2014.clm"},
   "tmax" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/historical/${Climate[c]}/tasmax_${climate[c]}_historical_1850-2014.clm"},
   "tmin" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/historical/${Climate[c]}/tasmin_${climate[c]}_historical_1850-2014.clm"},
