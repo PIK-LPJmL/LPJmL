@@ -103,7 +103,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   stand->cell->output.mean_vegc_mangrass/=NDAYYEAR;
   foreachpft(pft,p,&stand->pftlist)
   {
-    stand->cell->output.fpc_bft[getpftpar(pft, id)-(npft-config->nbiomass-config->ngrass)+irrigation->irrigation*(config->nbiomass+config->ngrass)]=pft->fpc;
+    stand->cell->output.fpc_bft[getpftpar(pft, id)-(npft-config->nbiomass-config->ngrass)+irrigation->irrigation*(config->nbiomass+2*config->ngrass)]=pft->fpc;
   }
   free(present);
   free(fpc_type);
