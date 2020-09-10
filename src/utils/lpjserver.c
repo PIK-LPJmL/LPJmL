@@ -109,11 +109,7 @@ int main(int argc,char **argv)
         break;
     }
     files[config.outputvars[i].id].file=fopen(config.outputvars[i].filename.name,"wb");
-<<<<<<< HEAD
-    files[config.outputvars[i].id].count=outputsize(config.outputvars[i].id,config.npft[TREE]+config.npft[GRASS],config.nbiomass,config.nwft,config.npft[CROP]);
-=======
-    files[config.outputvars[i].id].count=outputsize(config.outputvars[i].id,config.npft[TREE]+config.npft[GRASS],config.nbiomass,config.ngrass,config.npft[CROP]);
->>>>>>> 030c565e21bad32b08ed0d3144fab026341c03de
+    files[config.outputvars[i].id].count=outputsize(config.outputvars[i].id,config.npft[TREE]+config.npft[GRASS],config.nbiomass,config.nwft,config.ngrass,config.npft[CROP]);
     if(files[config.outputvars[i].id].count>count_max)
       count_max=files[config.outputvars[i].id].count;
   }

@@ -68,7 +68,7 @@ int outputsize(int index,     /**< output index */
     case CFT_PET: case CFT_PET2:
       return (ncft+NGRASS)*2;
     case FPC_BFT:
-      return (nbiomass+ngrass*2)*2;
+      return (nbiomass+ngrass)*2;
     default:
       return 1;
   } /* of 'switch' */

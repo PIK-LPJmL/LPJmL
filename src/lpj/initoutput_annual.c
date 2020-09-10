@@ -106,6 +106,6 @@ void initoutput_annual(Output *output, /**< Output data */
     output->pft_mort[i] = missing_value; /* do not plot values for non established trees */
     output->nv_lai[i] = 0;
   }
-  for(i=0;i<((nbiomass+ngrass*2)*2);i++)
+  for(i=0;i<((nbiomass+ngrass)*2);i++)
     output->fpc_bft[i] = 0;
 } /* of 'initoutput_annual' */

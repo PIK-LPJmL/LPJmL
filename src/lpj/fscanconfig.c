@@ -325,7 +325,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->ntypes=ntypes;
   config->nbiomass=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],BIOMASS);
   config->nwft=getnculttype(config->pftpar, config->npft[GRASS] + config->npft[TREE],WP);
-  config->ngrass=config->npft[GRASS]-getnculttype(config->pftpar,config->npft[GRASS],BIOMASS);
+  config->ngrass=getngrassnat(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
   /* Read soil paramater array */
   if(config->withlanduse!=NO_LANDUSE)
   {

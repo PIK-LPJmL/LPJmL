@@ -146,11 +146,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       grid.ml.landfrac=NULL;
       grid.ml.fertilizer_nr=NULL;
     }
-<<<<<<< HEAD
-    initoutput(&grid.output,config->crop_index,config->crop_irrigation,npft,config->nbiomass,config->nwft,ncft);
-=======
-    initoutput(&grid.output,config->crop_index,config->crop_irrigation,npft,config->nbiomass,config->ngrass,ncft);
->>>>>>> 030c565e21bad32b08ed0d3144fab026341c03de
+    initoutput(&grid.output,config->crop_index,config->crop_irrigation,npft,config->nbiomass,config->nwft,config->ngrass,ncft);
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
 
     if(freadcell(file_restart,&grid,npft,ncft,
