@@ -195,20 +195,36 @@ char **createpftnames(int index,           /**< output index */
        break;
     case FPC_BFT:
        for(i=0;i<ngrass;i++)
-         pftnames[i]=strdup(pftpar[i+npft-nbiomass-ngrass].name);
-       for(i=0;i<nbiomass;i++)
-         pftnames[i+ngrass]=strdup(pftpar[i+npft-nbiomass].name);
+       {
+         pftnames[i]=malloc(strlen(pftpar[i+npft-nbiomass-nwft-ngrass].name)+strlen("grassland ")+1);
+         strcpy(pftnames[i],"grassland ");
+         strcat(pftnames[i],pftpar[i+npft-nbiomass-ngrass].name);
+       }
        for(i=0;i<ngrass;i++)
        {
-          pftnames[i+ngrass+nbiomass]=malloc(strlen(pftpar[i+npft-nbiomass-ngrass].name)+strlen("irrigated ")+1);
-          strcpy(pftnames[i+ngrass+nbiomass],"irrigated ");
-          strcat(pftnames[i+ngrass+nbiomass],pftpar[i+npft-nbiomass-ngrass].name);
+         pftnames[i+ngrass]=malloc(strlen(pftpar[i+npft-nbiomass-nwft-ngrass].name)+strlen("biomass tree ")+1);
+         strcpy(pftnames[i+ngrass],"biomass tree ");
+         strcat(pftnames[i+ngrass],pftpar[i+npft-nbiomass-ngrass].name);
+       }
+       for(i=0;i<nbiomass;i++)
+         pftnames[i+2*ngrass]=strdup(pftpar[i+npft-nbiomass-nwft].name);
+       for(i=0;i<ngrass;i++)
+       {
+          pftnames[i+ngrass*2+nbiomass]=malloc(strlen(pftpar[i+npft-nbiomass-nwft-ngrass].name)+strlen("grassland irrigated ")+1);
+          strcpy(pftnames[i+ngrass*2+nbiomass],"grassland irrigated ");
+          strcat(pftnames[i+ngrass*2+nbiomass],pftpar[i+npft-nbiomass-nwft-ngrass].name);
+       }
+       for(i=0;i<ngrass;i++)
+       {
+          pftnames[i+ngrass*3+nbiomass]=malloc(strlen(pftpar[i+npft-nbiomass-nwft-ngrass].name)+strlen("biomass tree irrigated ")+1);
+          strcpy(pftnames[i+ngrass*3+nbiomass],"biomass tree irrigated ");
+          strcat(pftnames[i+ngrass*3+nbiomass],pftpar[i+npft-nbiomass-nwft-ngrass].name);
        }
        for(i=0;i<nbiomass;i++)
        {
-          pftnames[i+2*ngrass+nbiomass]=malloc(strlen(pftpar[i+npft-nbiomass].name)+strlen("irrigated ")+1);
-          strcpy(pftnames[i+2*ngrass+nbiomass],"irrigated ");
-          strcat(pftnames[i+2*ngrass+nbiomass],pftpar[i+npft-nbiomass].name);
+          pftnames[i+ngrass*4+nbiomass]=malloc(strlen(pftpar[i+npft-nbiomass-nwft].name)+strlen("irrigated ")+1);
+          strcpy(pftnames[i+ngrass*4+nbiomass],"irrigated ");
+          strcat(pftnames[i+ngrass*4+nbiomass],pftpar[i+npft-nbiomass-nwft].name);
        }
        break;
   }

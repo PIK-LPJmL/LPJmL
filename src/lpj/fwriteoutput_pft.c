@@ -477,7 +477,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputvar(GROWING_PERIOD,growing_period,2*(ncft+NGRASS));
   writeoutputvar(FPC,fpc,npft-config->nbiomass-config->nwft+1);
   writeoutputvar(PFT_MORT,pft_mort,npft-config->nbiomass-config->nwft);
-  writeoutputvar(FPC_BFT,fpc_bft,((config->nbiomass+config->ngrass)*2));
+  writeoutputvar(FPC_BFT,fpc_bft,((config->nbiomass+config->ngrass*2)*2));
   writeoutputvar(NV_LAI,nv_lai,npft-config->nbiomass-config->nwft);
   if(isopen(output,SOILC_LAYER))
   {
