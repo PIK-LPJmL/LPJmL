@@ -270,6 +270,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       grassharvest=FALSE;
       if(fscanbool(file,&grassharvest,"grass_harvest_options", TRUE, verbose))
         return TRUE;
+      if(fscanmowingdays(file,config))
+        return TRUE;
     }
     if(isboolean(file,"wateruse"))
     {

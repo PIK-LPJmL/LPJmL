@@ -36,19 +36,24 @@ Bool fscanint(LPJfile *file,    /**< pointer to LPJ file */
   struct json_object *item;
   if(file->isjson)
   {
-    if(!json_object_object_get_ex(file->file.obj,name,&item))
+    if(name==NULL)
+      item=file->file.obj;
+    else
     {
-      if(with_default)
+      if(!json_object_object_get_ex(file->file.obj,name,&item))
       {
-        if(verb)
-          fprintf(stderr,"WARNING027: Name '%s' for int not found, set to %d.\n",name,*value);
-        return FALSE;
-      }
-      else
-      {
-        if(verb)
-          fprintf(stderr,"ERROR225: Name '%s' for int not found.\n",name);
-        return TRUE;
+        if(with_default)
+        {
+          if(verb)
+            fprintf(stderr,"WARNING027: Name '%s' for int not found, set to %d.\n",name,*value);
+          return FALSE;
+        }
+        else
+        {
+          if(verb)
+            fprintf(stderr,"ERROR225: Name '%s' for int not found.\n",name);
+          return TRUE;
+        }
       }
     }
     if(json_object_get_type(item)!=json_type_int)

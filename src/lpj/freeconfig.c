@@ -110,6 +110,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   if(config->withlanduse!=NO_LANDUSE)
   {
     free(config->cftmap);
+    free(config->mowingdays);
     freecountrypar(config->countrypar,config->ncountries);
     freeregionpar(config->regionpar,config->nregions);
     freefilename(&config->landuse_filename);

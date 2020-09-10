@@ -18,15 +18,12 @@
 #include "grass.h"
 #include "grassland.h"
 
-static const int mowingDays[] = {152, 335}; // mowing on fixed dates 1-june or 1-dec
-
-static Bool isMowingDay(int aDay)
+static Bool isMowingDay(int aDay,const int *mowingdays,int size)
 {
   int i;
-  int len = sizeof(mowingDays)/sizeof(int);
-  for (i=0; i < len; i++)
+  for (i=0; i < size; i++)
   {
-    if (aDay == mowingDays[i])
+    if (aDay == mowingdays[i])
       return TRUE;
   }
   return FALSE;
@@ -334,7 +331,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
       }
       break;
     case GS_MOWING: // mowing
-      if (isMowingDay(day))
+      if (isMowingDay(day,config->mowingdays,config->mowingdays_size))
       {
         if (cleaf > STUBBLE_HEIGHT_MOWING) // 5 cm or 25 g.C.m-2 threshold
           isphen=TRUE;
