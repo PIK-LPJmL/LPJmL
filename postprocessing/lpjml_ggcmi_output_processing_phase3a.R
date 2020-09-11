@@ -14,16 +14,18 @@ registerDoSEQ() # tells foreach to use sequential mode
 
 # ----------------------------------------- #
 
+for_eval <- FALSE
+
 NODATA <- 1e20
 ncell <- 67420
 sim.path <- "/p/projects/macmit/data/GGCMI/phase3/raw_output/phase3a"
 out.path <- "/p/projects/macmit/data/GGCMI/AgMIP.output/LPJmL/phase3a"
+if(for_eval) out.path <- "/p/projects/macmit/data/GGCMI/phase3_eval"
 
 # ----------------------------------------- #
 
 climate=c("gswp3-w5e5")
 
-for_eval <- TRUE
 if(for_eval){
   start_years=c(1980)
   end_years=c(2010)
