@@ -15,12 +15,13 @@ registerDoSEQ() # tells foreach to use sequential mode
 # ----------------------------------------- #
 
 for_eval <- FALSE
+if(for_eval) shellarg <- "yield"
 
 NODATA <- 1e20
 ncell <- 67420
 sim.path <- "/p/projects/macmit/data/GGCMI/phase3/raw_output/phase3a"
 out.path <- "/p/projects/macmit/data/GGCMI/AgMIP.output/LPJmL/phase3a"
-if(for_eval) out.path <- "/p/projects/macmit/data/GGCMI/phase3_eval"
+if(for_eval) out.path <- "/p/projects/macmit/data/GGCMI/phase3_eval_noheatfrost"
 
 # ----------------------------------------- #
 
@@ -52,6 +53,7 @@ all_variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear"
 var_sel<- which(all_variables==shellarg) # indices of variables to be processed
 variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")[var_sel]
 units <- c("t ha-1 gs-1 (dry matter)","kg m-2 gs-1","day of year","calendar year","days from planting","calendar year","kg m-3")[var_sel]
+if(for_eval) units <- "t ha-1 yr-1"
 longnames <- c("crop yields","potential irrigation requirements","actual planting date","planting year","days from planting to maturity","harvest year","soil water content")[var_sel]
 
 hlimit=TRUE # sets yields to zero if achieved husum < 90% prescribed husum 
@@ -166,7 +168,7 @@ for(cl in 1:length(climate)) {
     nyear=length(start.year:end.year)
 
     # input
-    data.path=paste(sim.path,"/lpjml_phase3_",climate[cl],"_",socioecon,"_",co2,"_",start.year,"_",last.year,sep="")
+    data.path=paste(sim.path,"/lpjml_phase3_",climate[cl],"_",socioecon,"_",co2,"_",first.year,"_",last.year,sep="")
 
     # ------------------- #
     # irrig/rainfed loop
@@ -341,7 +343,7 @@ for(cl in 1:length(climate)) {
           }
 
           # ------------------------------------------ #
-          # write outputs to .nc4 file
+          # write outputs to .nc file
           # ------------------------------------------ #
 
           for(va in 1:length(variables)){
@@ -360,7 +362,6 @@ for(cl in 1:length(climate)) {
               cro <- if(crops[cr] %in% c("wwh","swh")) "whe" else if(crops[cr] %in% c("ri1","ri2")) "ric" else crops[cr]
               write_var=paste0(variables[va],"_",cro)
               fn <- paste(outdir,"lpjml_",climate[cl],"_hist_fullharm_",irrigs[ir],"_",variables[va],"_",crops[cr],"_",timestep,"_",start.year[cl],"_",end.year[cl],".nc4",sep="")
-              #fn <- paste(outdir,"lpjml_",climate[cl],"_obsclim_",socioecon,"_",co2,"_",write_var,"_global_",timestep,"_",start.year,"_",end.year,".nc4",sep="")
             } else {
               write_var=paste0(variables[va],"-",crops[cr],"-",irrigs[ir])
               fn <- paste(outdir,"lpjml_",climate[cl],"_obsclim_",socioecon,"_",co2,"_",write_var,"_global_",timestep,"_",start.year,"_",end.year,".nc",sep="")
@@ -377,8 +378,12 @@ for(cl in 1:length(climate)) {
             if(variables[va]=="soilmoist1m") {
               dim_time <- ncdim_def("time",paste("months since 1901-01-01",sep=""),c(1:(nyear*12))+(start.year-1901)*12,calendar = "standard")
             } else {
-              # start year of time dimension needs to be 1901 in 3a and 1661 in 3b, see https://www.isimip.org/protocol/preparing-simulation-files/
-              dim_time <- ncdim_def("time",paste("growing seasons since 1901-01-01, 00:00:00",sep=""),c(start.year:end.year)-1900,calendar = "standard")
+              if(for_eval){
+                dim_time <- ncdim_def("time",paste("growing seasons since ",start.year,"-01-01 00:00:00",sep=""),c(start.year:end.year)-start.year+1,calendar = "standard")
+              } else {
+                # start year of time dimension needs to be 1901 in 3a and 1661 in 3b, see https://www.isimip.org/protocol/preparing-simulation-files/
+                dim_time <- ncdim_def("time",paste("growing seasons since 1901-01-01, 00:00:00",sep=""),c(start.year:end.year)-1900,calendar = "standard")
+              }
             }
 
             # define variable
