@@ -46,8 +46,8 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   if(config->sim_id==LPJML_IMAGE)
   {
     cell->ml.image_data->anpp=cell->ml.image_data->arh=
-    cell->ml.image_data->prod_turn_fast=
-    cell->ml.image_data->prod_turn_slow=0.0;
+    cell->ml.image_data->prod_turn.fast.carbon=cell->ml.image_data->prod_turn.fast.nitrogen=
+    cell->ml.image_data->prod_turn.slow.carbon=cell->ml.image_data->prod_turn.slow.nitrogen=0.0;
     for(m=0;m<NMONTH;m++)
     {
       cell->ml.image_data->mirrwatdem[m]=0.0;

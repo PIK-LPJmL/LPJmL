@@ -17,12 +17,14 @@
 
 Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
                       Soil *soil,      /**< Litter pool */
-                      Poolpar *timber,
+#ifdef IMAGE
+                      Pool *timber,
+#endif
                       Poolpar f,     /**< fractions for timber distribution */
                       Real ftimber,
                       Real standfrac,
                       Real *nind,          /**< cannot use pft->nind, since pft is on different stand */
-                      Real *trad_biofuel
+                      Stocks *trad_biofuel
 #ifdef IMAGE
                     ,
                     Real timber_frac,
@@ -43,9 +45,8 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   Real takeAway[4]={1.0,1.0,0.0,0.0};
   if(timber_frac>epsilon)
   {
-     for (i=0;i<NIMAGETREEPARTS;i++){
-        takeAway[i]=takeaway_image[i];
-     }
+    for (i=0;i<NIMAGETREEPARTS;i++)
+      takeAway[i]=takeaway_image[i];
   }
 #endif
   tree=pft->data;
@@ -63,10 +64,13 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   harvestleaves.nitrogen=tree->ind.leaf.nitrogen*ftimber*(*nind)*standfrac*takeAway[2];
   harvestroots.carbon=(tree->ind.root.carbon+(tree->ind.sapwood.carbon/3.0))*ftimber*(*nind)*standfrac*takeAway[3];
   harvestroots.nitrogen=(tree->ind.root.nitrogen+(tree->ind.sapwood.nitrogen/3.0))*ftimber*(*nind)*standfrac*takeAway[3];
-  timber->slow+=(harvest.carbon+harvestroots.carbon+harvestleaves.carbon)*f.slow;
-  timber->fast+=(harvest.carbon+harvestroots.carbon+harvestleaves.carbon)*f.fast;
+  timber->slow.carbon+=(harvest.carbon+harvestroots.carbon+harvestleaves.carbon)*f.slow;
+  timber->fast.carbon+=(harvest.carbon+harvestroots.carbon+harvestleaves.carbon)*f.fast;
+  timber->slow.nitrogen+=(harvest.nitrogen+harvestroots.nitrogen+harvestleaves.nitrogen)*f.slow;
+  timber->fast.nitrogen+=(harvest.carbon+harvestroots.nitrogen+harvestleaves.nitrogen)*f.fast;
   biofuel=1.0-f.slow-f.fast; // [-]
-  *trad_biofuel+=(harvest.carbon+harvestroots.carbon+harvestleaves.carbon)*biofuel*0.9; // [gC/m2(cell)]]
+  trad_biofuel->carbon+=(harvest.carbon+harvestroots.carbon+harvestleaves.carbon)*biofuel*0.9; // [gC/m2(cell)]]
+  trad_biofuel->nitrogen+=(harvest.nitrogen+harvestroots.nitrogen+harvestleaves.nitrogen)*biofuel*0.9; // [gC/m2(cell)]]
   /* 10% of traditional biofuel is assumed to enter fast soil pool -- may not be scaled with standfrac!*/
   soil->pool[0].fast.carbon+=(harvest.carbon+harvestroots.carbon+harvestleaves.carbon)*biofuel*0.1/standfrac;  // [gC/m2(stand)]
   soil->pool[0].fast.nitrogen+=(harvest.nitrogen+harvestroots.nitrogen+harvestleaves.nitrogen)*biofuel*0.1/standfrac;  // [gC/m2(stand)]

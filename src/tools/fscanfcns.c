@@ -184,7 +184,7 @@ Bool fscantoken(FILE *file, /**< file pointer of a text file         */
 Bool fscanstring(LPJfile *file,     /**< pointer to  a LPJ file         */
                  String s,          /**< pointer to a char array of dimension
                                          STRING_LEN+1                        */
-                 const char *name,  /**< name of string                */
+                 const char *name,  /**< name of string or NULL        */
                  Bool with_default, /**< allow default value */
                  Verbosity verb     /**< enable error output */
                 )                   /** \return TRUE on error                */

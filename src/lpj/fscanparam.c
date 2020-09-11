@@ -137,6 +137,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(&f,&param.nfert_split,"nfert_split");
     fscanparamreal01(&f,&param.fburnt,"fburnt");
     fscanparamreal01(&f,&param.ftimber,"ftimber");
+    fscanparamreal01(&f,&param.harvest_fast_frac,"harvest_fast_frac");
     if(config->rw_manage)
     {
       fscanparamreal01(&f,&param.esoil_reduction,"esoil_reduction");

@@ -49,7 +49,10 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   tot.nitrogen+=cell->balance.estab_storage_grass[0].nitrogen+cell->balance.estab_storage_tree[0].nitrogen+cell->balance.estab_storage_grass[1].nitrogen+cell->balance.estab_storage_tree[1].nitrogen;
 #if defined  IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
-    tot.carbon+=cell->ml.image_data->timber.slow+cell->ml.image_data->timber.fast;
+  {
+    tot.carbon+=cell->ml.image_data->timber.slow.carbon+cell->ml.image_data->timber.fast.carbon;
+    tot.nitrogen+=cell->ml.image_data->timber.slow.nitrogen+cell->ml.image_data->timber.fast.nitrogen;
+  }
 #else
   tot.carbon+=cell->ml.product.fast.carbon+cell->ml.product.slow.carbon;
   tot.nitrogen+=cell->ml.product.fast.nitrogen+cell->ml.product.slow.nitrogen;
@@ -64,9 +67,10 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     cell->output.deforest_emissions.nitrogen;//cell->output.timber_harvest.nitrogen;
   /* for IMAGE but can also be used without IMAGE */
 #ifdef IMAGE
-  balance.carbon-=cell->output.deforest_emissions.carbon+cell->output.prod_turnover+cell->output.trad_biofuel+cell->output.timber_harvest.carbon;
+  balance.carbon-=cell->output.deforest_emissions.carbon+cell->output.prod_turnover.carbon+cell->output.trad_biofuel.carbon+cell->output.timber_harvest.carbon;
+  balance.carbon-=cell->output.deforest_emissions.nitrogen+cell->output.prod_turnover.nitrogen+cell->output.trad_biofuel.nitrogen+cell->output.timber_harvest.nitrogen;
 #else
-  balance.carbon-=cell->output.deforest_emissions.carbon+cell->output.prod_turnover.carbon+cell->output.trad_biofuel; // +cell->output.timber_harvest.carbon;
+  balance.carbon-=cell->output.deforest_emissions.carbon+cell->output.prod_turnover.carbon+cell->output.trad_biofuel.carbon; // +cell->output.timber_harvest.carbon;
   balance.nitrogen-=cell->output.prod_turnover.nitrogen;
 #endif
   if(config->ischeckpoint)
@@ -98,7 +102,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->output.fire.carbon,
          cell->output.flux_estab.carbon,cell->output.flux_harvest.carbon,delta_tot.carbon,
          cell->output.deforest_emissions.carbon,cell->output.prod_turnover,cell->output.trad_biofuel,
-         cell->ml.image_data->timber.slow,cell->ml.image_data->timber.fast,cell->output.timber_harvest.carbon,
+         cell->ml.image_data->timber.slow.carbon,cell->ml.image_data->timber.fast,cell->output.timber_harvest.carbon,
          cell->ml.image_data->timber_f,cell->ml.image_data->fburnt);
 #else
 #ifdef NO_FAIL_BALANCE
@@ -128,11 +132,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
       year,cellid+config->startgrid,cell->coord.lon,cell->coord.lat,balance.nitrogen,
       cell->balance.n_influx,cell->balance.n_outflux,cell->output.flux_harvest.nitrogen,cell->balance.biomass_yield.nitrogen,cell->output.flux_estab.nitrogen,
       cell->output.deforest_emissions.nitrogen,
-#ifdef IMAGE
-      0,
-#else
       cell->output.prod_turnover.nitrogen,
-#endif
       delta_tot.nitrogen,tot.nitrogen,
       cell->balance.estab_storage_grass[0].nitrogen,cell->balance.estab_storage_grass[1].nitrogen,cell->balance.estab_storage_tree[0].nitrogen,
       cell->balance.estab_storage_tree[1].nitrogen);

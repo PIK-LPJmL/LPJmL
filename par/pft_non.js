@@ -49,23 +49,29 @@
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
 #define CN_BL_EG_MN 15.6
+#define CN_BL_EG_MD 26.8
 #define CN_NL_EG_MX 63.8
 #define CN_NL_EG_MN 31.8
+#define CN_NL_EG_MD 45.0
 #define CN_BL_DC_MX 34.6
 #define CN_BL_DC_MN 15.4
+#define CN_BL_DC_MD 23.1
 #define CN_NL_DC_MX 36.9
 #define CN_NL_DC_MN 18.4
+#define CN_NL_DC_MD 26.0
 #define CN_GC3_MX 37.9
 #define CN_GC3_MN 10.5
+#define CN_GC3_MD 19.9
 #define CN_GC4_MX 66.9
 #define CN_GC4_MN 17.4
+#define CN_GC4_MD 34.0
+#define CN_CROPS_MEAN 25.0 /* cnleaf mean for grasses, table A.3.1, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
 #define K_LATOSA 4e3      /* leaf area to sapwood area */
 
 "pftpar" :
 [
   /* first pft */
   {
-    "id" : TROPICAL_BROADLEAVED_EVERGREEN_TREE,
     "name" : "tropical broadleaved evergreen tree",
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
@@ -136,6 +142,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
@@ -160,14 +167,11 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 2. pft */
   {
-    "id" : TROPICAL_BROADLEAVED_RAINGREEN_TREE,
     "name" : "tropical broadleaved raingreen tree",
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
@@ -238,6 +242,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_DC_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -262,14 +267,11 @@
     "crown_mort_rck" : 0.05, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST         /* k_est */
   },
 /*---------------------------------------------------------------------------------------------*/
 /* 3. pft */
   {
-    "id" : TEMPERATE_NEEDLELEAVED_EVERGREEN_TREE,
     "name": "temperate needleleaved evergreen tree",
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
@@ -340,6 +342,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_EG_MN, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_NL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -364,14 +367,11 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.75,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 4. pft */
   {
-    "id" : TEMPERATE_BROADLEAVED_EVERGREEN_TREE,
     "name" : "temperate broadleaved evergreen tree",
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
@@ -442,6 +442,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -466,14 +467,11 @@
     "crown_mort_rck" : 0.95, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 5. pft */
   {
-    "id" : TEMPERATE_BROADLEAVED_SUMMERGREEN_TREE,
     "name" : "temperate broadleaved summergreen tree",
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
@@ -544,6 +542,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_DC_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -570,14 +569,11 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 6. pft */
   {
-    "id" : BOREAL_NEEDLELEAVED_EVERGREEN_TREE,
     "name" : "boreal needleleaved evergreen tree",
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
@@ -648,6 +644,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_EG_MN, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_NL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -672,14 +669,11 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 7. pft */
   {
-    "id" : BOREAL_BROADLEAVED_SUMMERGREEN_TREE,
     "name" : "boreal broadleaved summergreen tree",
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
@@ -750,6 +744,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_DC_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -776,14 +771,11 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 8. pft */
   {
-    "id" : BOREAL_NEEDLELEAVED_SUMMERGREEN_TREE,
     "name" : "boreal needleleaved summergreen tree",
     "type" : TREE,
     "cultivation_type" : NONE, /* cultivation_type */
@@ -854,6 +846,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_DC_MN, "high" : CN_NL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_NL_DC_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -880,14 +873,11 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
   {
-    "id" : TROPICAL_HERBACEOUS,
     "name" : "Tropical C4 grass",
     "type" : GRASS,
     "cultivation_type" : NONE, /* cultivation_type */
@@ -958,6 +948,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_GC4_MD,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
@@ -970,7 +961,6 @@
 /*--------------------------------------------------------------------------*/
 /* 10. pft */
   {
-    "id" : TEMPERATE_HERBACEOUS,
     "name" : "Temperate C3 grass",
     "type" : GRASS,
     "cultivation_type" : NONE, /* cultivation_type */
@@ -1042,6 +1032,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_GC3_MD,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1054,7 +1045,6 @@
 /*--------------------------------------------------------------------------*/
 /* 11. pft */
   {
-    "id" : POLAR_HERBACEOUS,
     "name" : "Polar C3 grass",
     "type" : GRASS,
     "cultivation_type" : NONE, /* cultivation_type */
@@ -1125,6 +1115,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_GC3_MD,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
@@ -1137,7 +1128,6 @@
 /*----------------------------------------------------------------------------------------*/
 /* 1. bft */
   {
-    "id" : BIOENERGY_TROPICAL_TREE,
     "name" : "bioenergy tropical tree",
     "type" : TREE,
     "cultivation_type" : BIOMASS,/* cultivation_type */
@@ -1208,6 +1198,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_EG_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
@@ -1239,7 +1230,6 @@
 /*--------------------------------------------------------------------------*/
 /* 2. bft */
   {
-    "id" : BIOENERGY_TEMPERATE_TREE,
     "name" : "bioenergy temperate tree",
     "type" : TREE,
     "cultivation_type" : BIOMASS,/* cultivation_type */
@@ -1310,6 +1300,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_BL_DC_MD,
     "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
@@ -1343,7 +1334,6 @@
 /*--------------------------------------------------------------------------*/
 /* 3. bft ONLY FOR BIOENERGY*/
   {
-    "id" : BIOENERGY_C4_GRASS,
     "name" : "bioenergy C4 grass",
     "type" : GRASS,
     "cultivation_type" : BIOMASS, /* cultivation_type */
@@ -1414,6 +1404,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "cnratio_leaf_median": CN_GC4_MD,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
@@ -1426,7 +1417,6 @@
 /*--------------------------------------------------------------------------*/
 /* 1. cft */
   {
-    "id" : TEMPERATE_CEREALS,
     "name" : "temperate cereals",
     "type" : CROP,
     "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
@@ -1497,6 +1487,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median" : CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1532,7 +1523,6 @@
 /*--------------------------------------------------------------------------*/
 /* 2. cft */
   {
-    "id" : RICE,
     "name" : "rice",
     "type" : CROP,
     "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
@@ -1603,6 +1593,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median" : CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1638,7 +1629,6 @@
 /*--------------------------------------------------------------------------*/
 /* 3. cft */
   {
-    "id" : MAIZE,
     "name" : "maize",
     "type" : CROP,
     "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
@@ -1709,6 +1699,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median" : CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
@@ -1744,7 +1735,6 @@
 /*--------------------------------------------------------------------------*/
 /* 4. cft */
   {
-    "id" : TROPICAL_CEREALS,
     "name" : "tropical cereals",
     "type" : CROP,
     "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
@@ -1815,6 +1805,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median" : CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1850,7 +1841,6 @@
 /*--------------------------------------------------------------------------*/
 /* 5. cft */
   {
-    "id" : PULSES,          /* re-parameterized as field peas, swatusermanual2000.pdf, CM 4.2.2009 */
     "name" : "pulses",
     "type" : CROP,
     "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
@@ -1921,6 +1911,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median" : CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -1956,7 +1947,6 @@
 /*--------------------------------------------------------------------------*/
 /* 6. cft */
   {
-    "id" : TEMPERATE_ROOTS,
     "name": "temperate roots",
     "type" : CROP,
     "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
@@ -2027,6 +2017,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median" : CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,   /* windspeed dampening */
@@ -2062,7 +2053,6 @@
 /*--------------------------------------------------------------------------*/
 /* 7. cft */
   {
-    "id" : TROPICAL_ROOTS,
     "name" : "tropical roots", /* re-parameterized as Cassava, 14.12.2009 KW */
     "type" : CROP,
     "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
@@ -2133,6 +2123,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median" : CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2168,7 +2159,6 @@
 /*--------------------------------------------------------------------------*/
 /* 8. cft */
   {
-    "id" : OIL_CROPS_SUNFLOWER,
     "name" : "oil crops sunflower",
     "type" : CROP,
     "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
@@ -2239,6 +2229,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median" : CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2274,7 +2265,6 @@
 /*--------------------------------------------------------------------------*/
 /* 9. cft */
   {
-    "id" : OIL_CROPS_SOYBEAN,
     "name" : "oil crops soybean",
     "type" : CROP,
     "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
@@ -2345,6 +2335,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median" : CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2380,7 +2371,6 @@
 /*--------------------------------------------------------------------------*/
 /* 10. cft */
   {
-    "id" : OIL_CROPS_GROUNDNUT,
     "name": "oil crops groundnut",
     "type" : CROP,
     "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
@@ -2451,6 +2441,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median" : CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2486,7 +2477,6 @@
 /*--------------------------------------------------------------------------*/
 /* 11. cft */
   {
-    "id" : OIL_CROPS_RAPESEED,
     "name" : "oil crops rapeseed",
     "type" : CROP,
     "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
@@ -2557,6 +2547,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median" : CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
@@ -2592,7 +2583,6 @@
 /*--------------------------------------------------------------------------*/
 /* 12. cft */
   {
-    "id" : SUGARCANE,
     "name" : "sugarcane",
     "type" : CROP,
     "cultivation_type": ANNUAL_CROP, /* cultivation_type */
@@ -2663,6 +2653,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
+    "cnratio_leaf_median" : CN_CROPS_MEAN,
     "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */

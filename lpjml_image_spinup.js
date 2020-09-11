@@ -33,7 +33,7 @@
 
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
-  "version"  : "4.0",       /* LPJmL version expected */
+  "version"  : "5.1",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : "random_seed", /* seed for random number generator */
   "radiation" : "cloudiness",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -43,18 +43,22 @@
   "new_phenology": true,    /* GSI phenology enabled */
   "river_routing" : true,
   "permafrost" : true,
+  "const_climate" : false,
 #ifdef FROM_RESTART
+  "equilsoil" : false,
   "population" : false,
   "landuse" : "landuse", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : false,
   "wateruse" : "no_wateruse",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
 #else
+  "equilsoil" : true,
   "population" : false,
   "landuse" : "no_landuse",
   "reservoir" : false,
   "wateruse" : "no_wateruse",
 #endif
+  "with_nitrogen" : "no_nitrogen",
   "prescribe_burntarea" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : "no_fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
@@ -71,6 +75,8 @@
   "grass_harvest_options" : false,
   "groundwater_irrigation": false, 
   "aquifer_irrigation": false,
+  "others_to_crop" : false,
+  "istimber" : false,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -111,7 +117,7 @@
 ID                         Fmt                    filename
 -------------------------- ---------------------- ----------------------------- */
     { "id" : "grid",       "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
-    { "id" : "pft_harvest","file" : { "fmt" : "raw", "name" : mkstr(output/pft_harvest.SUFFIX)}},
+    { "id" : "pft_harvestc","file" : { "fmt" : "raw", "name" : mkstr(output/pft_harvest.SUFFIX)}},
     { "id" : "cftfrac",    "file" : { "fmt" : "raw", "name" : "output/cftfrac.bin"}},
 /*------------------------ ---------------------- ------------------------------- */
   ],

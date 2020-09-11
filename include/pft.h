@@ -266,9 +266,9 @@ extern Real f_lai(Real);
 
 extern Stocks timber_burn(const Pft *, Real,Litter *,Real);
 #ifdef IMAGE
-extern Stocks timber_harvest(Pft *,Soil *,Poolpar *,Poolpar,Real,Real,Real *,Real *,Real, Real[] );
+extern Stocks timber_harvest(Pft *,Soil *,Pool *,Poolpar,Real,Real,Real *,Stocks *,Real, Real[] );
 #else
-extern Stocks timber_harvest(Pft *,Soil *,Poolpar *,Poolpar,Real,Real,Real *,Real *);
+extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *);
 #endif
 /* Definition of macros */
 

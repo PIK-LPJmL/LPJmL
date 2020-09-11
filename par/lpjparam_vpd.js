@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  _  v  p  d  .  j  s                       \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.1.001                               \n**/
+/**     LPJ parameter file for LPJmL version 5.1.002                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -75,8 +75,16 @@ bisco activity */
   "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
   "soil_infil_rw" : 2.0,              /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
-  "fburn" : 1.0,                      /* fraction of forest burnt at deforestation */
+  "nfert_split" : 5,                  /* threshold fertilizer input for split application */
+  "residues_in_soil" : 0.1,           /* minimum residues in soil*/
+  "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
+  "ftimber" : 0.76,                   /* timber fraction at deforestation */
+  "harvest_fast_frac" : 0.34,         /* fraction of harvested wood going to fast pools */
+  "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
+  "hfrac2" : 2500.0,
   "firedura" : -8.79,                 /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.53,		      /* a parameter for scaling the human ignintions within SPITFIRE */
-  "fire_intens" : 0.0104            /* threshold of fireintensity for which burnt area can be modeled */
+  "fire_intens" : 0.0104,             /* threshold of fireintensity for which burnt area can be modeled */
+  "rootreduction" : 0.5               /*fraction used to calculate amouont of roots dying at harvest in managed grasslands */
+
 },

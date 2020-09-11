@@ -34,12 +34,12 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
   if(istimber)
     ftimber=min(1,cell->ml.image_data->timber_frac/standfrac);
 #else
-  Poolpar frac1,frac2;
+  Poolpar frac;
   ftimber=1;
   /* fast and slow separation based on wood demand for pulpwood and particles (fast) and sawlog, veneer and others (slow) */
   /* remainder is burnt, if param.fburn is set to 1.0 */
-  frac1.fast=frac2.fast=0.34; /* 76% of cut trees is harvested and 26% of harvested wood into fast pools, so 34% of harvested wood goes to fast pools */
-  frac1.slow=frac2.slow=0.66; /* 50% of all cut trees go to slow, that is 66% of all harvested (76%) */
+  frac.fast=param.harvest_fast_frac; /* 76% of cut trees is harvested and 26% of harvested wood into fast pools, so 34% of harvested wood goes to fast pools */
+  frac.slow=1-param.harvest_fast_frac; /* 50% of all cut trees go to slow, that is 66% of all harvested (76%) */
 #endif
 
   foreachpft(pft,p,&stand->pftlist)
@@ -69,7 +69,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         /* harvesting timber */
         cell->output.ftimber=ftimber;
         harvest=timber_harvest(pft,soil,&cell->ml.image_data->timber,
-          cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&cell->output.trad_biofuel,cell->ml.image_data->timber_frac,cell->ml.image_data->takeaway);
+                               cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&cell->output.trad_biofuel,cell->ml.image_data->timber_frac,cell->ml.image_data->takeaway);
         cell->output.timber_harvest.carbon+=harvest.carbon;
         cell->output.timber_harvest.nitrogen+=harvest.nitrogen;
 #ifdef DEBUG_IMAGE
@@ -84,7 +84,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         }
 #endif
 #else
-        harvest=timber_harvest(pft,soil,&frac1,frac2,param.ftimber,standfrac,&nind,&cell->output.trad_biofuel);
+        harvest=timber_harvest(pft,soil,frac,param.ftimber,standfrac,&nind,&cell->output.trad_biofuel);
 #endif
         cell->output.timber_harvest.carbon+=harvest.carbon;
         cell->output.timber_harvest.nitrogen+=harvest.nitrogen;

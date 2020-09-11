@@ -17,14 +17,19 @@
 
 #if defined IMAGE && defined COUPLED
 
-Real product_turnover(Image_data *data)
+Stocks product_turnover(Image_data *data)
 {
-  data->prod_turn_fast=(data->timber.fast)*PRODUCT_FAST;
-  data->prod_turn_slow=(data->timber.slow)*PRODUCT_SLOW;
+  Stocks stocks;
+  data->prod_turn.fast.carbon=(data->timber.fast.carbon)*PRODUCT_FAST;
+  data->prod_turn.fast.nitrogen=(data->timber.fast.nitrogen)*PRODUCT_FAST;
+  data->prod_turn.slow.carbon=(data->timber.slow.carbon)*PRODUCT_SLOW;
+  data->prod_turn.slow.nitrogen=(data->timber.slow.carbon)*PRODUCT_SLOW;
   
-  data->timber.fast*=(1.0-PRODUCT_FAST);
-  data->timber.slow*=(1.0-PRODUCT_SLOW);
-  return data->prod_turn_fast+data->prod_turn_slow;
+  data->timber.fast.carbon*=(1.0-PRODUCT_FAST);
+  data->timber.slow.carbon*=(1.0-PRODUCT_SLOW);
+  stocks.carbon=data->prod_turn.fast.carbon+data->prod_turn.slow.carbon;
+  stocks.nitrogen=data->prod_turn.fast.nitrogen+data->prod_turn.slow.nitrogen;
+  return stocks;
 } /* of 'product_turnover' */
 
 #else

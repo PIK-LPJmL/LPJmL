@@ -38,15 +38,10 @@ void initoutput_annual(Output *output, /**< Output data */
   output->soil_storage=output->aburntarea=0;
   output->soil_storage=output->alittfall.carbon=output->alittfall.nitrogen=0;
   output->deforest_emissions.carbon=output->deforest_emissions.nitrogen=output->fburn=output->ftimber=output->timber_harvest.carbon=output->timber_harvest.nitrogen=0;
-  output->trad_biofuel=output->mean_vegc_mangrass=output->vegc_avg=0;
+  output->trad_biofuel.carbon=output->trad_biofuel.nitrogen=output->mean_vegc_mangrass=output->vegc_avg=0;
 
-#ifdef IMAGE
-  output->prod_turnover=0;
-  output->product_pool_fast=output->product_pool_slow=0;
-#else
   output->prod_turnover.carbon=output->prod_turnover.nitrogen=0;
-  output->product_pool_fast.carbon=output->product_pool_slow.carbon=output->product_pool_fast.nitrogen=output->product_pool_slow.nitrogen=0;
-#endif
+  output->product_pool.fast.carbon=output->product_pool.slow.carbon=output->product_pool.fast.nitrogen=output->product_pool.slow.nitrogen=0;
 
   for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
     output->pft_harvest[i].harvest.carbon=output->pft_harvest[i].residual.carbon=

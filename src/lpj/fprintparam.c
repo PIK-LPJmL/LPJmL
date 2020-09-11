@@ -97,6 +97,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"nfert split:\t%g\n",param.nfert_split);
     fprintf(file,"fraction burnt:\t%g\n",param.fburnt);
     fprintf(file,"timber fraction:\t%g\n",param.ftimber);
+    fprintf(file,"harvest fast frac:\t%g\n",param.harvest_fast_frac);
     if(config->rw_manage)
     {
       fprintf(file,"esoil reduction:\t%g\n",param.esoil_reduction);

@@ -289,12 +289,12 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
       nep_image[cell]=(float)(grid[cell].balance.nep+grid[cell].output.flux_estab.carbon);
       nep_image_nat[cell]=(float)(grid[cell].npp_nat+grid[cell].flux_estab_nat-grid[cell].rh_nat);
       nep_image_wp[cell]=(float)(grid[cell].npp_wp+grid[cell].flux_estab_wp-grid[cell].rh_wp);
-      harvest_agric_image[cell]=(float)grid[cell].output.flux_harvest;
+      harvest_agric_image[cell]=(float)grid[cell].output.flux_harvest.carbon;
       harvest_biofuel_image[cell]=(float)grid[cell].ml.image_data->biomass_yield_annual;
-      harvest_timber_image[cell]=(float)grid[cell].output.timber_harvest;
-      product_turnover_fast_image[cell]=(float)grid[cell].ml.image_data->prod_turn_fast;
-      product_turnover_slow_image[cell]=(float)grid[cell].ml.image_data->prod_turn_slow;
-      trad_biofuel_image[cell]=(float)grid[cell].output.trad_biofuel;
+      harvest_timber_image[cell]=(float)grid[cell].output.timber_harvest.carbon;
+      product_turnover_fast_image[cell]=(float)grid[cell].ml.image_data->prod_turn.fast.carbon;
+      product_turnover_slow_image[cell]=(float)grid[cell].ml.image_data->prod_turn.slow.carbon;
+      trad_biofuel_image[cell]=(float)grid[cell].output.trad_biofuel.carbon;
       rh_image[cell]=(float)grid[cell].ml.image_data->arh;
       rh_image_nat[cell]=(float)(grid[cell].rh_nat);
       rh_image_wp[cell]=(float)(grid[cell].rh_wp);
@@ -374,8 +374,8 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
           biomass_image[cell].charcoal+=(float)stand->soil.pool[i].slow.carbon*(float)stand->frac;
         }
       } /* for each stand */
-      biomass_image[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast;
-      biomass_image[cell].product_slow=(float)grid[cell].ml.image_data->timber.slow;
+      biomass_image[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast.carbon;
+      biomass_image[cell].product_slow=(float)grid[cell].ml.image_data->timber.slow.carbon;
       /*if(product_turnover_fast_image[cell]>0){
         printf("cell %d turn_fast %g\n",cell,product_turnover_fast_image[cell]);
         printf("cell %d fast %g\n",cell,biomass_image[cell].product_fast);
@@ -434,8 +434,8 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
           natfrac+=(float)stand->frac;
         }
       } /* for each stand */
-      biomass_image_nat[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast;
-      biomass_image_nat[cell].product_slow=(float)grid[cell].ml.image_data->timber.slow;
+      biomass_image_nat[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast.carbon;
+      biomass_image_nat[cell].product_slow=(float)grid[cell].ml.image_data->timber.slow.carbon;
       natfrac_image[cell]=natfrac;
 
       /* WOODPLANTATIONS variable biomass_image_wp with 9 biomass pools with ONLY woodplantation stand */
@@ -478,8 +478,8 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
           wpfrac += (float)stand->frac;
         }
       } /* for each stand */
-      biomass_image_wp[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast;
-      biomass_image_wp[cell].product_slow=(float)grid[cell].ml.image_data->timber.slow;
+      biomass_image_wp[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast.carbon;
+      biomass_image_wp[cell].product_slow=(float)grid[cell].ml.image_data->timber.slow.carbon;
       wpfrac_image[cell]=wpfrac;
 
       /* Added new variable biomass_image_agr with 9 biomass pools for all NON-natural stand */
@@ -532,8 +532,8 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
         agrfrac+=(float)stand->frac;
         }
       } /* for each stand */
-      biomass_image_agr[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast;
-      biomass_image_agr[cell].product_slow=(float)grid[cell].ml.image_data->timber.slow;
+      biomass_image_agr[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast.carbon;
+      biomass_image_agr[cell].product_slow=(float)grid[cell].ml.image_data->timber.slow.carbon;
       agrfrac_image[cell]=agrfrac;
 
       // scale with total agr fraction (all but natural fraction)

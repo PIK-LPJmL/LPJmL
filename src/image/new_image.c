@@ -17,21 +17,25 @@
 
 #if defined IMAGE && defined COUPLED
 
+#define CN_ratio 7.0 /* C:N ratio of product pools */
+
 Image_data *new_image(const Product *productpool)
 {
   Image_data *image_data;
   image_data=new(Image_data);
   check(image_data);
   /* data received from IMAGE */
-  image_data->fburnt=image_data->timber.fast=
-  image_data->timber.slow=image_data->timber_frac=
+  image_data->fburnt=image_data->timber.fast.carbon=image_data->timber.fast.nitrogen=
+  image_data->timber.slow.carbon=image_data->timber.slow.nitrogen=image_data->timber_frac=
   image_data->timber_f.fast=image_data->timber_f.slow=
   image_data->timber_turnover=image_data->deforest_emissions=
   image_data->store_bmtree_yield=image_data->biomass_yield_annual=
   image_data->totwatcons=image_data->totwatdem=0.0
 ;
-  image_data->timber.fast=productpool->fast;
-  image_data->timber.slow=productpool->slow;
+  image_data->timber.fast.carbon=productpool->fast;
+  image_data->timber.slow.carbon=productpool->slow;
+  image_data->timber.fast.nitrogen=productpool->fast/NC_ratio;
+  image_data->timber.slow.nitrogen=productpool->slow/NC_ratio;
   /* data sent to image */
   image_data->anpp=image_data->arh=0.0;
   return image_data;

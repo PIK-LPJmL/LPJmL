@@ -48,7 +48,6 @@
 
 /* Definition of datatypes */
 
-
 typedef struct
 {
   Real nep;                 /**< annual NEP (gC/m2) */
@@ -67,7 +66,6 @@ typedef struct
   Real n_outflux;           /**< all N outputs: n2onit, n2odenit, n2denit, leaching */
   Real n_demand;            /**< N demand by plants (gN)*/
   Real n_uptake;            /**< N uptake by plants (gN) */
-
 } Balance;
 
 typedef struct celldata *Celldata;
@@ -92,7 +90,6 @@ Received 19 November 1997; accepted 15 January 1999*/
 
   Real albedo_lake;         /**< for a changing albedo of lakes*/
   Real snowpool_above_lake; /**< temporarily storing the snow mass on a lake*/
-
 #endif
   Real soilph;              /**< soil pH */
   Bool skip;                /**< Invalid soil code in cell (TRUE/FALSE) */

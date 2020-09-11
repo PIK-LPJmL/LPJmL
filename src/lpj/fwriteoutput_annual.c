@@ -548,20 +548,14 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
     writeannualall(output, YDISCHARGE, vec, year, config);
   }
 #endif
-  writeoutputvar(TRAD_BIOFUEL,trad_biofuel);
+  writeoutputvar(TRAD_BIOFUEL,trad_biofuel.carbon);
   writeoutputvar(AIRRIG,airrig);
   writeoutputvar(FBURN,fburn);
   writeoutputvar(FTIMBER,ftimber);
   writeoutputvar(TIMBER_HARVESTC,timber_harvest.carbon);
-#ifdef IMAGE
-  writeoutputvar(PRODUCT_POOL_FAST,product_pool_fast);
-  writeoutputvar(PRODUCT_POOL_SLOW,product_pool_slow);
-  writeoutputvar(PROD_TURNOVER,prod_turnover);
-#else
-  writeoutputvar(PRODUCT_POOL_FAST,product_pool_fast.carbon);
-  writeoutputvar(PRODUCT_POOL_SLOW,product_pool_slow.carbon);
+  writeoutputvar(PRODUCT_POOL_FAST,product_pool.fast.carbon);
+  writeoutputvar(PRODUCT_POOL_SLOW,product_pool.slow.carbon);
   writeoutputvar(PROD_TURNOVER,prod_turnover.carbon);
-#endif
   if(isopen(output,AFRAC_WD_UNSUST))
   {
     count=0;
