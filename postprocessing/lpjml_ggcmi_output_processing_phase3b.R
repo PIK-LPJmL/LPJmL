@@ -146,19 +146,19 @@ close(ff)
 # climate forcing loop
 # ---------------------- #
 
-for(c in 1:length(climate)) {
+for(cl in 1:length(climate)) {
 
     print(" # ------------------------------------------- # ")
-    print(paste(" # doing ", climate[c]))
+    print(paste(" # processing ", climate[cl]))
     print(" # ------------------------------------------- # ")
 
-    start.year=start_years[c]
-    first.year=first_years[c]
-    end.year=end_years[c]
+    start.year=start_years[cl]
+    first.year=first_years[cl]
+    end.year=end_years[cl]
     nyear=length(start.year:end.year)
 
     # input
-    data.path=paste(sim.path,"/",climate_scenario,"/lpjml_phase3_",climate[c],"_",socioecon,"_",co2,"_",start.year,"_",end.year,sep="")
+    data.path=paste(sim.path,"/",climate_scenario,"/lpjml_phase3_",climate[cl],"_",socioecon,"_",co2,"_",start.year,"_",end.year,sep="")
 
     # ------------------- #
     # irrig/rainfed loop
@@ -342,14 +342,14 @@ for(c in 1:length(climate)) {
   	        # folder structure: AgMIP.output/<modelname>/phase3b/<climate_forcing>/<climate_scenario>/<crop>
 
     		    # output dir
-            outdir=paste(out.path,"/",climate[c],"/",climate_scenario,"/",crops[cr],"/",sep="")
+            outdir=paste(out.path,"/",climate[cl],"/",climate_scenario,"/",crops[cr],"/",sep="")
 
             if(!file.exists(outdir)) dir.create(outdir,recursive=TRUE)
 
             # output file
             timestep=ifelse(variables[va]=="soilmoist1m","monthly","annual")
             write_var=paste0(variables[va],"-",crops[cr],"-",irrigs[ir])
-            fn <- paste(outdir,"lpjml_",climate[c],"_w5e5_",climate_scenario,"_",socioecon,"_",co2,"_",write_var,"_global_",timestep,"_",start.year,"_",end.year,".nc4",sep="")
+            fn <- paste(outdir,"lpjml_",climate[cl],"_w5e5_",climate_scenario,"_",socioecon,"_",co2,"_",write_var,"_global_",timestep,"_",start.year,"_",end.year,".nc",sep="")
             unlink(fn)
 
             # NetCDF generation ####
@@ -363,7 +363,7 @@ for(c in 1:length(climate)) {
             	dim_time <- ncdim_def("time",paste("months since 1661-01-01, 00:00:00",sep=""),c(1:(nyear*12))+(start.year-1661)*12,calendar = "standard")
             } else {
               # start year of time dimension needs to be 1901 in 3a and 1661 in 3b, see https://www.isimip.org/protocol/preparing-simulation-files/
-              dim_time <- ncdim_def("time",paste("growing seasons since 1661-01-01, 00:00:00",sep=""),c(start.year:end.year)-1662,calendar = "standard")
+              dim_time <- ncdim_def("time",paste("growing seasons since 1661-01-01, 00:00:00",sep=""),c(start.year:end.year)-1660,calendar = "standard")
             }
 
             # define variable
