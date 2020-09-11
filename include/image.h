@@ -176,7 +176,7 @@ extern void close_image(const Config *);
 #if defined IMAGE && defined COUPLED
 extern Stocks product_turnover(Image_data *);
 #else
-extern Real product_turnover(Cell *);
+extern void product_turnover(Cell *);
 #endif
 extern Bool send_image_data(const Config *,const Cell *,const  Climate *,int, int);
 extern Bool receive_image_climate(Climate *,const Cell *,int,const Config *);

@@ -33,7 +33,7 @@ Stocks product_turnover(Image_data *data)
 } /* of 'product_turnover' */
 
 #else
-Real product_turnover(Cell *cell)
+void product_turnover(Cell *cell)
 {
   cell->output.prod_turnover.carbon+=cell->ml.product.fast.carbon*PRODUCT_FAST;
   cell->output.prod_turnover.carbon+=cell->ml.product.slow.carbon*PRODUCT_SLOW;

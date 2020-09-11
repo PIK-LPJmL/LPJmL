@@ -203,7 +203,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->discharge.drunoff+=runoff*stand->frac;
     climate.prec=prec_save;
     foreachpft(pft, p, &stand->pftlist)
-      cell->output.vegc_avg+=(float)(vegc_sum(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac))/NDAYYEAR);
+      cell->output.vegc_avg+=(float)(vegc_sum(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
     foreachsoillayer(l)
       cell->output.mswc[l]+=(stand->soil.w[l]*stand->soil.par->whcs[l]+stand->soil.w_fw[l]+stand->soil.par->wpwps[l]+
                      stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.par->wsats[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
