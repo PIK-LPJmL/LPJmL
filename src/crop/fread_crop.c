@@ -75,6 +75,12 @@ Bool fread_crop(FILE *file, /**< file pointer */
   freadreal1(&crop->tempsum,swap,file);
   freadreal1(&crop->nirsum,swap,file);
   freadreal1(&crop->lgp,swap,file);
+  freadreal1(&crop->runoffsum,swap,file);
+  freadreal1(&crop->n2o_denitsum,swap,file);
+  freadreal1(&crop->n2o_nitsum,swap,file);
+  freadreal1(&crop->n2_emissum,swap,file);
+  freadreal1(&crop->leachingsum,swap,file);
+  freadreal1(&crop->c_emissum,swap,file);
   freadint1(&crop->sdate,swap,file);
   return freadint1(&crop->sowing_year,swap,file)!=1;
 #else

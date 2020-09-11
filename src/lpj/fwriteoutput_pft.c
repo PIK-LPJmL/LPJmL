@@ -216,6 +216,12 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   fvec=newvec(float,config->count);
   check(fvec);
   writeoutputvar(HUSUM,husum,2*ncft);
+  writeoutputvar(CFT_RUNOFF,cft_runoff,2*ncft);
+  writeoutputvar(CFT_N2O_DENIT,cft_n2o_denit,2*ncft);
+  writeoutputvar(CFT_N2O_NIT,cft_n2o_nit,2*ncft);
+  writeoutputvar(CFT_N2_EMIS,cft_n2_emis,2*ncft);
+  writeoutputvar(CFT_LEACHING,cft_leaching,2*ncft);
+  writeoutputvar(CFT_C_EMIS,cft_c_emis,2*ncft);
   writeoutputvar(PFT_NPP,pft_npp,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
   writeoutputvar(PFT_NUPTAKE,pft_nuptake,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
   writeoutputvar(PFT_NDEMAND,pft_ndemand,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
@@ -942,6 +948,13 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputvar(HUSUM2,husum2,2*ncft);
   writeoutputvaritem(CFT_ABOVEGBMC2,cft_aboveground_biomass2,carbon,2*(ncft+NGRASS));
   writeoutputvaritem(CFT_ABOVEGBMN2,cft_aboveground_biomass2,nitrogen,2*(ncft+NGRASS));
+  writeoutputvar(CFT_RUNOFF2,cft_runoff2,2*ncft);
+  writeoutputvar(CFT_N2O_DENIT2,cft_n2o_denit2,2*ncft);
+  writeoutputvar(CFT_N2O_NIT2,cft_n2o_nit2,2*ncft);
+  writeoutputvar(CFT_N2_EMIS2,cft_n2_emis2,2*ncft);
+  writeoutputvar(CFT_LEACHING2,cft_leaching2,2*ncft);
+  writeoutputvar(CFT_C_EMIS2,cft_c_emis2,2*ncft);
+  writeoutputvar(PFT_NUPTAKE2,pft_nuptake2,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
 #endif
   free(fvec);
 } /* of 'fwriteoutput_pft' */

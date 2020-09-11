@@ -64,6 +64,13 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   crop->lgp=0.0;
   crop->sowing_year=year;
   crop->sdate=day;
+  crop->runoffsum=0.0;
+  crop->n2o_denitsum=0.0;
+  crop->n2o_nitsum=0.0;
+  crop->n2_emissum=0.0;
+  crop->leachingsum=0.0;
+  crop->c_emissum=0.0;
+
 #endif
   crop->lai=crop->lai000=crop->flaimax*par->laimax;
   crop->lai_nppdeficit=0.0;

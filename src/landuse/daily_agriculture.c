@@ -186,6 +186,34 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->husum+(pft->par->id-npft+data->irrigation*ncft),
         output->husum2+(pft->par->id-npft+data->irrigation*ncft),
         crop->husum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_runoff+(pft->par->id-npft+data->irrigation*ncft),
+        output->cft_runoff2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->runoffsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_n2o_denit+(pft->par->id-npft+data->irrigation*ncft),
+        output->cft_n2o_denit2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->n2o_denitsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_n2o_nit+(pft->par->id-npft+data->irrigation*ncft),
+        output->cft_n2o_nit2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->n2o_nitsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_n2_emis+(pft->par->id-npft+data->irrigation*ncft),
+        output->cft_n2_emis2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->n2_emissum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_leaching+(pft->par->id-npft+data->irrigation*ncft),
+        output->cft_leaching2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->leachingsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_c_emis+(pft->par->id-npft+data->irrigation*ncft),
+        output->cft_c_emis2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->c_emissum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->pft_nuptake+(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE),
+        output->pft_nuptake2+(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE),
+        crop->nuptakesum);
 #else
       output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].carbon=
         (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;
@@ -286,12 +314,12 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
   /* INFILTRATION and PERCOLATION */
   if(irrig_apply>epsilon)
   {
-    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config);
+    runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,withdailyoutput,config,npft,ncft);
     /* count irrigation events*/
     output->cft_irrig_events[pftpar->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,withdailyoutput,config);
+  runoff+=infil_perc_rain(stand,rainmelt+rw_apply,&return_flow_b,withdailyoutput,config,npft,ncft);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -348,7 +376,10 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       crop->sradsum+=climate->swdown;
       crop->tempsum+=climate->temp;
     }
-
+    if(stand->type->landusetype==AGRICULTURE)
+    {
+      crop->runoffsum+=runoff;
+    }
 #else
     output->growing_period[pft->par->id-npft+data->irrigation*(ncft+NGRASS)]+=1.;
     output->cft_pet[pft->par->id-npft+data->irrigation*(ncft+NGRASS)]+=eeq*PRIESTLEY_TAYLOR;
@@ -419,6 +450,34 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->husum+(pft->par->id-npft+data->irrigation*ncft),
         output->husum2+(pft->par->id-npft+data->irrigation*ncft),
         crop->husum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_runoff+(pft->par->id-npft+data->irrigation*ncft),
+        output->cft_runoff2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->runoffsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_n2o_denit+(pft->par->id-npft+data->irrigation*ncft),
+        output->cft_n2o_denit2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->n2o_denitsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_n2o_nit+(pft->par->id-npft+data->irrigation*ncft),
+        output->cft_n2o_nit2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->n2o_nitsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_n2_emis+(pft->par->id-npft+data->irrigation*ncft),
+        output->cft_n2_emis2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->n2_emissum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_leaching+(pft->par->id-npft+data->irrigation*ncft),
+        output->cft_leaching2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->leachingsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_c_emis+(pft->par->id-npft+data->irrigation*ncft),
+        output->cft_c_emis2+(pft->par->id-npft+data->irrigation*ncft),
+        crop->c_emissum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->pft_nuptake+(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE),
+        output->pft_nuptake2+(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE),
+        crop->nuptakesum);
 #else
       output->cft_aboveground_biomass[pft->par->id-npft+data->irrigation*(ncft+NGRASS)].carbon=
         (crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*pft->nind;

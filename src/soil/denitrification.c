@@ -14,8 +14,12 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "crop.h"
+#include "agriculture.h"
 
-void denitrification(Stand *stand  /**< pointer to stand */
+void denitrification(Stand *stand,  /**< pointer to stand */
+                     int npft,
+                     int ncft
                     )
 {
   /* determines NO2 and N2 from nitrate NO3 */
@@ -24,7 +28,10 @@ void denitrification(Stand *stand  /**< pointer to stand */
   Real FT=0,FW=0,TCDF=0;
   Real Corg;
   Soil *soil;
-  int l;
+  int l,p;
+  Pft *pft;
+  Pftcrop *crop;
+  Irrigation *data;
   soil=&stand->soil;
 #ifdef DEBUG_N
   printf("NBEFORE");
@@ -85,6 +92,21 @@ void denitrification(Stand *stand  /**< pointer to stand */
     stand->cell->output.daily.n2o_denit += N2O_denit;
     stand->cell->output.mn2o_denit+=N2O_denit*stand->frac;
     stand->cell->output.mn2_emissions+=N_denit*stand->frac;
+    if(stand->type->landusetype==AGRICULTURE)
+    {
+      data=stand->data;
+      foreachpft(pft,p,&stand->pftlist)
+      {
+        crop=pft->data;
+#ifdef DOUBLE_HARVEST
+        crop->n2o_denitsum+=N2O_denit;
+        crop->n2_emissum+=N_denit;
+#else
+        stand->cell->output.cft_n2o_denit[pft->par->id-npft+data->irrigation*ncft]+=N2O_denit;
+        stand->cell->output.cft_n2_emis[pft->par->id-npft+data->irrigation*ncft]+=N_denit;
+#endif
+      }
+    }
   }
 #ifdef DEBUG_N
   printf("NAFTER");

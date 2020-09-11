@@ -16,6 +16,7 @@
 
 #include "lpj.h"
 #include "agriculture.h"
+#include "crop.h"
 
 #define NPERCO 0.4  /*controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
 
@@ -23,7 +24,9 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
                      Real infil,         /**< rainfall + melting water - interception_stand (mm) + rw_irrig */
                      Real *return_flow_b, /**< blue water return flow (mm) */
                      Bool withdailyoutput,
-                     const Config *config /**< LPJ configuration */
+                     const Config *config,/**< LPJ configuration */
+                     int npft,
+                     int ncft
                     )                    /** \return water runoff (mm) */
 {
   Real runoff;
@@ -51,6 +54,7 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
   Pft *pft;
   String line;
   Irrigation *data_irrig;
+  Pftcrop *crop;
 
   if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND)
     data_irrig=stand->data;
@@ -227,6 +231,18 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
             soil->NO3[l] -= NO3perc_ly;
 
             stand->cell->output.mn_leaching+=(NO3surf + NO3lat)*stand->frac;
+            if(stand->type->landusetype==AGRICULTURE)
+            {
+              foreachpft(pft,p,&stand->pftlist)
+              {
+                crop=pft->data;
+#ifdef DOUBLE_HARVEST
+                crop->leachingsum+=NO3perc_ly;
+#else
+                stand->cell->output.cft_leaching[pft->par->id-npft+data_irrig->irrigation*ncft]+=NO3perc_ly;
+#endif
+              }
+            }
           } /* end of if(config->with_nitrogen) */
         } /*end percolation*/
       } /* if soil depth > freeze_depth */

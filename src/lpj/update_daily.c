@@ -154,7 +154,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
 
-    hetres=littersom(stand,gtemp_soil);
+    hetres=littersom(stand,gtemp_soil,npft,ncft);
 
     if(stand->type->landusetype==NATURAL && config->black_fallow && config->prescribe_residues && param.residue_pool>0)
     {
@@ -272,7 +272,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                        melt,npft,ncft,year,withdailyoutput,intercrop,agrfrac,config);
     if(config->with_nitrogen)
     {
-      denitrification(stand);
+      denitrification(stand,npft,ncft);
 
       nh3=volatilization(stand->soil.NH4[0],climate.windspeed,climate.temp,
                          length,cell->soilph);

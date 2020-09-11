@@ -72,9 +72,13 @@ void initoutput_annual(Output *output, /**< Output data */
     output->sdate2[i]=output->hdate2[i]=
     output->syear[i]=output->syear2[i]=0;
     output->husum2[i]=0.;
+    output->cft_runoff2[i]=output->cft_n2o_denit2[i]=output->cft_n2o_nit2[i]=output->cft_n2_emis2[i]=
+      output->cft_c_emis2[i]=output->cft_leaching2[i]=0.0;
 #endif
     output->sdate[i]=output->hdate[i]=0;
     output->husum[i]=0;
+    output->cft_runoff[i]=output->cft_n2o_denit[i]=output->cft_n2o_nit[i]=output->cft_n2_emis[i]=
+      output->cft_c_emis[i]=output->cft_leaching[i]=0.0;
   }
   for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2+npft-nbiomass;i++)
   {
@@ -83,6 +87,9 @@ void initoutput_annual(Output *output, /**< Output data */
     output->gcgp_count[i]=0;
     output->pft_nuptake[i]=0;
     output->pft_ndemand[i]=0;
+#ifdef DOUBLE_HARVEST
+    output->pft_nuptake2[i]=0;
+#endif
   }
   for (i=0; i<npft-nbiomass+1;++i)
     output->fpc[i] = 0;

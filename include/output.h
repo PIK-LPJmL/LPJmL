@@ -171,7 +171,20 @@ typedef struct
   Real *cft_srad2;          /**< cft specific short-wave radiation (W/m2) */
   Stocks *cft_aboveground_biomass2; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
   Real *cftfrac2;           /**< cft fraction */
+  Real *cft_runoff2;        /**< cft specific runoff (mm) */
+  Real *cft_n2o_denit2;        /**< cft specific N2O emissions from denitrification (gN/m2/growing season) */
+  Real *cft_n2o_nit2;        /**< cft specific N2O emissions from nitrification (gN/m2/growing season) */
+  Real *cft_n2_emis2;        /**< cft specific N2 emissions (gN/m2/growing season) */
+  Real *cft_leaching2;        /**< cft specific leaching (gN/m2/growing season) */
+  Real *cft_c_emis2;        /**< cft specific C emissions (gC/m2/growing season) */
+  Real *pft_nuptake2;       /* nitrogen uptake per PFT */
 #endif
+  Real *cft_runoff;        /**< cft specific runoff (mm) */
+  Real *cft_n2o_denit;        /**< cft specific N2O emissions from denitrification (gN/m2/growing season) */
+  Real *cft_n2o_nit;        /**< cft specific N2O emissions from nitrification (gN/m2/growing season) */
+  Real *cft_n2_emis;        /**< cft specific N2 emissions (gN/m2/growing season) */
+  Real *cft_leaching;        /**< cft specific leaching (gN/m2/growing season) */
+  Real *cft_c_emis;        /**< cft specific C emissions (gC/m2/growing season) */
   Real *pft_npp;         /**< Pft specific NPP (gC/m2) */
   Harvest *pft_harvest;
   Real *fpc;             /**< foliar projective cover (FPC) */

@@ -57,6 +57,12 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_laimax);
   free(output->cft_mswc);
   free(output->nday_month);
+  free(output->cft_runoff);
+  free(output->cft_n2o_denit);
+  free(output->cft_n2o_nit);
+  free(output->cft_n2_emis);
+  free(output->cft_leaching);
+  free(output->cft_c_emis);
 #ifdef DOUBLE_HARVEST
   free(output->cftfrac2);
   free(output->sdate2);
@@ -76,6 +82,14 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_airrig2);
   free(output->syear);
   free(output->syear2);
+  free(output->pft_nuptake2);
+  free(output->cft_runoff2);
+  free(output->cft_n2o_denit2);
+  free(output->cft_n2o_nit2);
+  free(output->cft_n2_emis2);
+  free(output->cft_leaching2);
+  free(output->cft_c_emis2);
+
   output->sdate2=output->hdate2=output->syear=output->syear2=NULL;
   output->husum2=NULL;
   output->cft_transp2=output->cft_evap2=output->cft_interc2=output->cft_nir2=
@@ -83,6 +97,9 @@ void freeoutput(Output *output /**< Output data */
   output->pft_harvest2=NULL;
   output->cft_temp2=output->cft_prec2=output->cft_srad2=NULL;
   output->cft_aboveground_biomass2=NULL;
+  output->cft_runoff2=output->cft_n2o_denit2=output->cft_n2o_nit2=output->cft_n2_emis2=
+    output->cft_leaching2=output->cft_c_emis2=NULL;
+
 #endif
   output->sdate=output->hdate=NULL; 
   output->husum=NULL;
@@ -96,4 +113,6 @@ void freeoutput(Output *output /**< Output data */
   output->cft_irrig_events=NULL;
   output->pft_npp=output->fpc=output->cftfrac=output->cft_airrig=output->cft_luc_image=NULL;
   output->cft_mswc=NULL;
+  output->cft_runoff=output->cft_n2o_denit=output->cft_n2o_nit=output->cft_n2_emis=
+    output->cft_leaching=output->cft_c_emis=NULL;
 } /* of 'freeoutput' */

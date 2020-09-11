@@ -111,7 +111,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
   }
 
   /* soil inflow: infiltration and percolation */
-  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,withdailyoutput,config);
+  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,withdailyoutput,config,npft,ncft);
 #ifdef PERMUTE
   for(p=0;p<getnpft(&stand->pftlist);p++)
 #else

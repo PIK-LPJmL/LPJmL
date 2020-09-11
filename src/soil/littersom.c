@@ -29,6 +29,8 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "crop.h"
+#include "agriculture.h"
 
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
@@ -57,8 +59,10 @@ static Real f_ph(Real ph)
 } /* of 'f_ph' */
 
 Stocks littersom(Stand *stand,               /**< pointer to stand data */
-                 Real gtemp_soil[NSOILLAYER] /**< respiration coefficents */
-                ) /** \return decomposed carbon/nitrogen (g/m2) */
+                 Real gtemp_soil[NSOILLAYER],/**< respiration coefficents */
+                 int npft,
+                 int ncft
+) /** \return decomposed carbon/nitrogen (g/m2) */
 {
 
   Real response[NSOILLAYER];
@@ -79,6 +83,9 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
   Real F_Nmineral;  /* net mineralization flux gN *m-2*d-1*/
   Real fac_wfps, fac_temp;
   String line;
+  Pft *pft;
+  Pftcrop *crop;
+  Irrigation *data;
   soil=&stand->soil;
   flux.nitrogen=0;
   foreachsoillayer(l) response[l]=0.0;
@@ -341,6 +348,22 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
 #endif
     flux.nitrogen += F_N2O;
     /* F_N2O is given back for output */
+    if(stand->type->landusetype==AGRICULTURE)
+    {
+      data=stand->data;
+      foreachpft(pft,p,&stand->pftlist)
+      {
+        crop=pft->data;
+#ifdef DOUBLE_HARVEST
+        crop->n2o_nitsum+=F_N2O;
+        crop->c_emissum+=decom_litter.carbon*param.atmfrac+soil_cflux;
+#else
+        stand->cell->output.cft_n2o_nit[pft->par->id-npft+data->irrigation*ncft]+=F_N2O;
+        stand->cell->output.cft_c_emis[pft->par->id-npft+data->irrigation*ncft]+=decom_litter.carbon *param.atmfrac+soil_cflux;
+#endif
+      }
+    }
+
   }
 #ifdef MICRO_HEATING
   soil->litter.decomC=decom_litter.carbon*param.atmfrac; /*only for mircobiological heating*/

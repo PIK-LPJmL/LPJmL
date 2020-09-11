@@ -97,7 +97,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 296            /* number of output files */
+#define NOUT 307            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -408,6 +408,19 @@
 #define HUSUM2 293
 #define CFT_MSWC 294
 #define MEANVEGCMANGRASS 295
+#define CFT_RUNOFF 296
+#define CFT_RUNOFF2 297
+#define CFT_N2O_NIT 298
+#define CFT_N2O_NIT2 299
+#define PFT_NUPTAKE2 300
+#define CFT_N2O_DENIT 301
+#define CFT_N2O_DENIT2 302
+#define CFT_N2_EMIS 303
+#define CFT_N2_EMIS2 304
+#define CFT_LEACHING 303
+#define CFT_LEACHING2 304
+#define CFT_C_EMIS 305
+#define CFT_C_EMIS2 306
 
 #define RANDOM_SEED 0
 

@@ -317,5 +317,19 @@
   { "id" : HUSUM, "name" : "husum", "var" : "husum", "descr" : "crop growing season accumulated heat units", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
   { "id" : HUSUM2, "name" : "husum2", "var" : "husum2", "descr" : "crop growing season accumulated heat units 2nd seaso", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_MSWC, "name": "cft_mswc", "var" : "SWC_cft", "descr" : "CFT-specific monthly absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MEANVEGCMANGRASS, "name": "mean_vegc_mangrass", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0}
+  { "id" : MEANVEGCMANGRASS, "name": "mean_vegc_mangrass", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
+  { "id" : PFT_NUPTAKE2, "name": "pft_nuptake2", "var": "pft_nuptake2", "descr": "N uptake per PFT", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_RUNOFF, "name": "cft_runoff", "var": "runoff_cft", "descr": "CFT runoff", "unit" : "mm/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_RUNOFF2, "name": "cft_runoff2", "var": "runoff_cft2", "descr": "CFT runoff", "unit" : "mm/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_N2O_NIT, "name": "CFT_N2O_NIT", "var": "n2o_nit_cft", "descr": "CFT N2O emissions from nitrificaiton", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_N2O_NIT2, "name": "CFT_N2O_NIT2", "var": "n2o_nit_cft2", "descr": "CFT N2O emissions from nitrificaiton", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_N2O_DENIT, "name": "CFT_N2O_DENIT", "var": "n2o_denit_cft", "descr": "CFT N2O emissions from denitrificaiton", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_N2O_DENIT2, "name": "CFT_N2O_DENIT2", "var": "n2o_denit_cft2", "descr": "CFT N2O emissions from denitrificaiton", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_N2_EMIS, "name": "CFT_N2_EMIS", "var": "n2_emis_cft", "descr": "CFT N2 emissions", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_N2_EMIS2, "name": "CFT_N2_EMIS2", "var": "n2_emis_cft2", "descr": "CFT N2 emissions", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_LEACHING, "name": "CFT_LEACHING", "var": "leaching_cft", "descr": "CFT leaching", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_LEACHING2, "name": "CFT_LEACHING2", "var": "leaching_cft2", "descr": "CFT leaching", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_C_EMIS, "name": "CFT_C_EMIS", "var": "c_emis_cft", "descr": "CFT C emissions", "unit" : "gC/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_C_EMIS2, "name": "CFT_C_EMIS2", "var": "c_emis_cft2", "descr": "CFT C emissions", "unit" : "gC/m2/growing season","scale": 1.0, "offset" : 0.0}
+
 ],

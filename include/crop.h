@@ -117,6 +117,12 @@ typedef struct
   Real tempsum;
   Real nirsum;
   Real lgp;
+  Real runoffsum;
+  Real n2o_denitsum;
+  Real n2o_nitsum;
+  Real n2_emissum;
+  Real leachingsum;
+  Real c_emissum;
   int sdate;
   int sowing_year;
 #endif

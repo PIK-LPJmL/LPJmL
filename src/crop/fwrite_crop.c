@@ -67,6 +67,12 @@ Bool fwrite_crop(FILE *file, /**< pointer to file data */
   fwrite1(&crop->tempsum,sizeof(Real),file);
   fwrite1(&crop->nirsum,sizeof(Real),file);
   fwrite1(&crop->lgp,sizeof(Real),file);
+  fwrite1(&crop->runoffsum,sizeof(Real),file);
+  fwrite1(&crop->n2o_denitsum,sizeof(Real),file);
+  fwrite1(&crop->n2o_nitsum,sizeof(Real),file);
+  fwrite1(&crop->n2_emissum,sizeof(Real),file);
+  fwrite1(&crop->leachingsum,sizeof(Real),file);
+  fwrite1(&crop->c_emissum,sizeof(Real),file);
   fwrite1(&crop->sdate,sizeof(int),file);
   fwrite1(&crop->sowing_year,sizeof(int),file);
 #endif
