@@ -394,7 +394,7 @@ for(cl in 1:length(climate)) {
 
             # commenting
             ncatt_put(ncf,varid=0,"title","LPJmL simulations for Ag-GRID GGCMI Phase 3 project")
-            ncatt_put(ncf,varid=0,"comment1","Potsdam Insittute for Climate Impact Reserach, Columbia University")
+            ncatt_put(ncf,varid=0,"comment1","Potsdam Institute for Climate Impact Research, Columbia University")
             ncatt_put(ncf,varid=0,"comment2","jonas.jaegermeyr@columbia.edu, cmueller@pik-potsdam.de, minoli@pik-potsdam.de")
             ncatt_put(ncf,varid=0,"comment3",fn)
 
