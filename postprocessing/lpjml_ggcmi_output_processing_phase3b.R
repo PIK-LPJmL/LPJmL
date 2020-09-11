@@ -17,8 +17,8 @@ registerDoSEQ() # tells foreach to use sequential mode
 
 NODATA <- 1e20
 ncell <- 67420
-sim.path <- "/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3b"
-out.path <- "/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/processed/phase3b"
+sim.path <- "/p/projects/macmit/data/GGCMI/phase3/raw_output/phase3b"
+out.path <- "/p/projects/macmit/data/GGCMI/AgMIP.output/LPJmL/phase3b"
 
 # ----------------------------------------- #
 
@@ -326,7 +326,7 @@ for(c in 1:length(climate)) {
 
               dump=ifelse(hu[,y]<0.90*hu_ref[,band_id],1,0)
 
-			  if("yield"%in%variables) var[which(dump==1),y]=0 # delete yields if less than 90% of husum is reached
+			        if("yield"%in%variables) var[which(dump==1),y]=0 # delete yields if less than 90% of husum is reached
               if("matyday"%in%variables) var[which(dump==1),y]=var[which(dump==1),y]*-1 # document the deletion of yield by setting matyday to negatve values
 
             }
@@ -342,12 +342,12 @@ for(c in 1:length(climate)) {
   	        # folder structure: AgMIP.output/<modelname>/phase3b/<climate_forcing>/<climate_scenario>/<crop>
 
     		    # output dir
-            outdir=paste(out.path,"/",climate_scenario,"/",climate[c],"/",crops[cr],"/",sep="")
+            outdir=paste(out.path,"/",climate[c],"/",climate_scenario,"/",crops[cr],"/",sep="")
 
-			if(!file.exists(outdir)) dir.create(outdir,recursive=TRUE)
+            if(!file.exists(outdir)) dir.create(outdir,recursive=TRUE)
 
-			# output file
-			timestep=ifelse(variables[va]=="soilmoist1m","monthly","annual")
+            # output file
+            timestep=ifelse(variables[va]=="soilmoist1m","monthly","annual")
             write_var=paste0(variables[va],"-",crops[cr],"-",irrigs[ir])
             fn <- paste(outdir,"lpjml_",climate[c],"_w5e5_",climate_scenario,"_",socioecon,"_",co2,"_",write_var,"_global_",timestep,"_",start.year,"_",end.year,".nc4",sep="")
             unlink(fn)
@@ -389,16 +389,16 @@ for(c in 1:length(climate)) {
             buf <- var
             if(variables[va]=="soilmoist1m") buf <- smo
 
-			lpjraster <- raster(ncols=720, nrows=360)
-			lpj_raster_index <- cellFromXY(lpjraster,grid[,c(1,2)])
-			mapo[lpj_raster_index,] <- buf
+            lpjraster <- raster(ncols=720, nrows=360)
+            lpj_raster_index <- cellFromXY(lpjraster,grid[,c(1,2)])
+            mapo[lpj_raster_index,] <- buf
 
-			if(variables[va]=="soilmoist1m") {
-				dim(mapo) <- c(nlon,nlat,nyear*12)
-			} else {
-				dim(mapo) <- c(nlon,nlat,nyear)
-			}
-            
+            if(variables[va]=="soilmoist1m") {
+            	dim(mapo) <- c(nlon,nlat,nyear*12)
+            } else {
+            	dim(mapo) <- c(nlon,nlat,nyear)
+            }
+                  
             ncvar_put(ncf,ncv,mapo,start=c(1,1,1),count=c(-1,-1,-1))
 
             nc_close(ncf)

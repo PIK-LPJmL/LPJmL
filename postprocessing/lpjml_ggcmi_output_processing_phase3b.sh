@@ -1,11 +1,11 @@
 #!/bin/sh
 
 variables=("yield" "pirnreq" "plantday" "plantyear" "matyday" "harvyear" "soilmoist1m")
-ext="ssp585_default" # c("picontrol","historical","ssp126","ssp585")
+ext="ssp585_default_noheatfrost" # c("picontrol","historical","ssp126","ssp585")
 
 scriptdir="/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/processed"
 
-for ((v=0;v<7;v+=1))
+for ((v=0;v<6;v+=1))
 do
 
   cat <<EOF >$scriptdir/tmp/lpjml_ggcmi_phase3_processing_${variables[v]}_${ext}.jcf

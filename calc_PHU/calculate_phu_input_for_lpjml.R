@@ -3,7 +3,7 @@ rm(list=ls(all=TRUE))
 gc()
 args <- commandArgs(TRUE)
 
-args="gswp3-w5e5"
+# args="gswp3-w5e5"
 # args="agmerra"
 # args="wfdei"
 
@@ -30,26 +30,44 @@ climate_forcings=c("agmerra","wfdei","gswp3-w5e5","gfdl-esm4","ipsl-cm6a-lr","mp
 clim_arg=which(climate_forcings==args) # name of climate forcing data, passed by shell script
 climate_data=climate_forcings[clim_arg] # dailyc limate inputs #temp_data climate_data
 
+pic_or_his=c("picontrol","historical")[2] # only relevant for ISIMIP3b: "gfdl-esm4","ipsl-cm6a-lr","mpi-esm1-2-hr","mri-esm2-0","ukesm1-0-ll"
+
+if(climate_forcings[clim_arg]%in%c("gfdl-esm4","ipsl-cm6a-lr","mpi-esm1-2-hr","mri-esm2-0","ukesm1-0-ll")) {
+	climate_data=paste0(climate_data,"_",pic_or_his)
+	ggcmi_phu_start=1984
+	ggcmi_phu_end=2014
+
+	if(pic_or_his=="picontrol")	{
+		timeperiod="1601-2100"
+		isimip_start=1601
+		isimip_end=2100
+	} else {
+		timeperiod="1850-2014"
+		isimip_start=1850
+		isimip_end=2014
+	}
+}
+
 # path to climate forcing data (daily temperature)
 clm_paths=c(
   paste0("/p/projects/lpjml/input/historical/GGCMI_phase1/AgMERRA/tas_agmerra_1980-2010.clm2"), # header 43, 31 years, 365 bands, size 2
   paste0("/p/projects/lpjml/input/historical/GGCMI_phase1/WFDEI/tas_wfdei_1979-2012.clm2"), # header 43, 31 years, 365 bands, size 2
   paste0("/p/projects/lpjml/input/historical/ISIMIP3a/obsclim/GSWP3-W5E5/tas_gswp3-w5e5_obsclim_1901-2016.clm"), # header 43, 31 years, 365 bands, size 2
-  paste0("/p/projects/lpjml/input/scenarios/ISIMIP3b/historical/GFDL-ESM4/tas_gfdl-esm4_historical_1850-2014.clm"), # header 43, 31 years, 365 bands, size 2
-  paste0("/p/projects/lpjml/input/scenarios/ISIMIP3b/historical/IPSL-CM6A-LR/tas_ipsl-cm6a-lr_historical_1850-2014.clm"), # header 43, 31 years, 365 bands, size 2
-  paste0("/p/projects/lpjml/input/scenarios/ISIMIP3b/historical/MPI-ESM1-2-HR/tas_mpi-esm1-2-hr_historical_1850-2014.clm"), # header 43, 31 years, 365 bands, size 2
-  paste0("/p/projects/lpjml/input/scenarios/ISIMIP3b/historical/MRI-ESM2-0/tas_mri-esm2-0_historical_1850-2014.clm"), # header 43, 31 years, 365 bands, size 2
-  paste0("/p/projects/lpjml/input/scenarios/ISIMIP3b/historical/UKESM1-0-LL/tas_ukesm1-0-ll_historical_1850-2014.clm") # header 43, 31 years, 365 bands, size 2
+  paste0("/p/projects/lpjml/input/scenarios/ISIMIP3b/",pic_or_his,"/GFDL-ESM4/tas_gfdl-esm4_",pic_or_his,"_",timeperiod,".clm"), # header 43, 31 years, 365 bands, size 2
+  paste0("/p/projects/lpjml/input/scenarios/ISIMIP3b/",pic_or_his,"/IPSL-CM6A-LR/tas_ipsl-cm6a-lr_",pic_or_his,"_",timeperiod,".clm"), # header 43, 31 years, 365 bands, size 2
+  paste0("/p/projects/lpjml/input/scenarios/ISIMIP3b/",pic_or_his,"/MPI-ESM1-2-HR/tas_mpi-esm1-2-hr_",pic_or_his,"_",timeperiod,".clm"), # header 43, 31 years, 365 bands, size 2
+  paste0("/p/projects/lpjml/input/scenarios/ISIMIP3b/",pic_or_his,"/MRI-ESM2-0/tas_mri-esm2-0_",pic_or_his,"_",timeperiod,".clm"), # header 43, 31 years, 365 bands, size 2
+  paste0("/p/projects/lpjml/input/scenarios/ISIMIP3b/",pic_or_his,"/UKESM1-0-LL/tas_ukesm1-0-ll_",pic_or_his,"_",timeperiod,".clm") # header 43, 31 years, 365 bands, size 2
 )
 path.tas=clm_paths[clim_arg]
 
 # specifiy time period for which PHUs are calculated 
-startyear=c(1980,1979,1979,1979,1979,1979,1979,1979)[clim_arg] # list of start dates for the respective climate forcing data sets
-endyear=c(2010,2012,2010,2010,2010,2010,2010,2010)[clim_arg] # list of end dates for the respective climate forcing data sets
+startyear=c(1980,1979,ggcmi_phu_start,ggcmi_phu_start,ggcmi_phu_start,ggcmi_phu_start,ggcmi_phu_start,ggcmi_phu_start)[clim_arg] # list of start dates for the respective climate forcing data sets
+endyear=c(2010,2012,ggcmi_phu_end,ggcmi_phu_end,ggcmi_phu_end,ggcmi_phu_end,ggcmi_phu_end,ggcmi_phu_end)[clim_arg] # list of end dates for the respective climate forcing data sets
 
 # specify start and end of climate forcing data
-climate_start=c(1980,1979,1901,1850,1850,1850,1850,1850)[clim_arg]
-climate_end=c(2010,2012,2016,2014,2014,2014,2014,2014)[clim_arg]
+climate_start=c(1980,1979,1901,isimip_start,isimip_start,isimip_start,isimip_start,isimip_start)[clim_arg]
+climate_end=c(2010,2012,2016,isimip_end,isimip_end,isimip_end,isimip_end,isimip_end)[clim_arg]
 
 ### ------------------------------------------------------------------------------------------------- ###
 

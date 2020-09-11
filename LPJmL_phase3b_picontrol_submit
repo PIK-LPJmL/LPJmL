@@ -15,7 +15,7 @@
 export LPJROOT=/p/projects/waterforce/jonas/diss/LPJmL/LPJmL_gitlab/LPJmL_ggcmi_phase3
 
 # output directory, script makes subfolders for each run
-simdir="/p/projects/macmit/users/jaegermeyr/GGCMI_phase3/phase3b/picontrol"
+simdir="/p/projects/macmit/data/GGCMI/phase3/raw_output/phase3b/picontrol"
 
 # climate forcing
 Climate=("GFDL-ESM4" "IPSL-CM6A-LR" "MPI-ESM1-2-HR" "MRI-ESM2-0" "UKESM1-0-LL")
@@ -243,7 +243,7 @@ EOF
   "fertilizer_nr" : { "fmt" : CLM,  "name" : "ISIMIP3/nfertilizer_isimip3b_38bands_2015soc_1850-2015.clm"},
   "manure_nr" :    { "fmt" : CLM, "name" : "ISIMIP3/manure_isimip3b_38bands_2015soc_1850-2015.clm"},
   "sdate" : {"fmt" : CLM, "name" : "crop_calendar/sdates_ggcmi_phase3_v1.01_67420.clm"},
-  "crop_phu" : {"fmt" : CLM, "name" : "crop_calendar/phu_${climate[c]}_1979-2010_ggcmi_phase3_v1.01_67420.clm"},
+  "crop_phu" : {"fmt" : CLM, "name" : "crop_calendar/phu_${climate[c]}_picontrol_1984-2014_ggcmi_phase3_v1.01_67420.clm"},
   "temp" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/picontrol/${Climate[c]}/tas_${climate[c]}_picontrol_1601-2100.clm"},
   "tmax" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/picontrol/${Climate[c]}/tasmax_${climate[c]}_picontrol_1601-2100.clm"},
   "tmin" :         { "fmt" : CLM,  "name" : "scenarios/ISIMIP3b/picontrol/${Climate[c]}/tasmin_${climate[c]}_picontrol_1601-2100.clm"},
