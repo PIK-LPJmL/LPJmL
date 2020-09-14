@@ -104,9 +104,9 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
       /* write irrig_apply to output */
       stand->cell->output.mirrig += irrig_apply*stand->frac;
       if (config->pft_output_scaled)
-        stand->cell->output.cft_airrig[rbtree(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += irrig_apply*stand->cell->ml.landfrac[1].woodplantation;
+        stand->cell->output.cft_airrig[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += irrig_apply*stand->cell->ml.landfrac[1].woodplantation;
       else
-        stand->cell->output.cft_airrig[rbtree(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += irrig_apply;
+        stand->cell->output.cft_airrig[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += irrig_apply;
     }
   }
 
@@ -136,7 +136,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   {
     runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,config->rw_manage);
     /* count irrigation events*/
-    output->cft_irrig_events[rbtree(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)]++;
+    output->cft_irrig_events[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)]++;
   }
 
   runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,config->rw_manage);
@@ -171,7 +171,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
    }
    output->dcflux-=npp*stand->frac;
    output->mgpp+=gpp*stand->frac;
-   output->cft_fpar[rbtree(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += (fpar(pft)*stand->cell->ml.landfrac[data->irrigation].woodplantation*(1.0 / (1 - stand->cell->lakefrac)));
+   output->cft_fpar[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += (fpar(pft)*stand->cell->ml.landfrac[data->irrigation].woodplantation*(1.0 / (1 - stand->cell->lakefrac)));
    if(config->pft_output_scaled)
      output->pft_npp[(npft-config->nbiomass-config->nwft)+rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation].woodplantation;
    else
