@@ -185,6 +185,7 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
   writeoutputvar(MNPP,mnpp);
   writeoutputvar(MGPP,mgpp);
   writeoutputvar(MRH,mrh);
+  writeoutputvar(MRH_LITTER,mrh_litter);
   writeoutputvar(MRUNOFF,mrunoff);
   writeoutputvar(MDISCHARGE,mdischarge);
   writeoutputvar(MWATERAMOUNT,mwateramount);
