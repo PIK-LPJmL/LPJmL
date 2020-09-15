@@ -53,7 +53,7 @@ int iterate(Outputfile *output,  /**< Output file data */
 {
   Real co2,cflux_total;
   Flux flux;
-  int year,landuse_year,wateruse_year,startyear,firstspinupyear;
+  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year;
   Bool rc;
 #ifdef STORECLIMATE
   Climatedata store,data_save;
@@ -96,13 +96,24 @@ int iterate(Outputfile *output,  /**< Output file data */
 #endif
     co2=getco2(input.climate,year); /* get atmospheric CO2 concentration */
     if(year<input.climate->firstyear) /* are we in spinup phase? */
+    {
       /* yes, let climate data point to stored data */
-#ifdef STORECLIMATE
-      moveclimate(input.climate,&store,
-                  (year-config->firstyear+config->nspinup) % config->nspinyear);
-#else
-      getclimate(input.climate,grid,firstspinupyear+(year-config->firstyear+config->nspinup) % config->nspinyear,config);
+      if(config->shuffle_climate)
+      {
+        if(isroot(*config))
+         spinup_year=(int)(drand48()*config->nspinyear);
+#ifdef USE_MPI
+         MPI_Bcast(&spinup_year,1,MPI_INT,0,config->comm);
 #endif
+      }
+      else 
+        spinup_year=(year-config->firstyear+config->nspinup) % config->nspinyear;
+#ifdef STORECLIMATE
+      moveclimate(input.climate,&store,spinup_year);
+#else
+      getclimate(input.climate,grid,firstspinupyear+spinup_year,config);
+#endif
+    }
     else
     {
 #ifdef STORECLIMATE

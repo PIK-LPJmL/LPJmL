@@ -194,6 +194,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->const_climate=FALSE;
   if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
     return TRUE;
+  config->shuffle_climate=FALSE;
+  if(fscanbool(file,&config->shuffle_climate,"shuffle_climate",TRUE,verbose))
+    return TRUE;
   config->const_deposition=FALSE;
   if(config->with_nitrogen==LIM_NITROGEN)
   {

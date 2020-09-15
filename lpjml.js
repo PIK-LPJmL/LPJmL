@@ -40,10 +40,10 @@
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
   "river_routing" : false,
-  "equilsoil" :true,
   "permafrost" : true,
   "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "const_climate" : false,
+  "shuffle_climate" : true, /* shuffle spinup climate */
   "const_deposition" : false,
 #ifdef FROM_RESTART
   "population" : false,
@@ -51,13 +51,13 @@
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
   "wateruse" : WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
-  "equilsoil" :false,
+  "equilsoil" : false,
 #else
   "population" : false,
   "landuse" : NO_LANDUSE,
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,
-  "equilsoil" :true,
+  "equilsoil" : true,
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
