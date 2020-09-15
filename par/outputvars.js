@@ -315,6 +315,7 @@
   { "id" : VEGC_AVG, "name": "vegc_avg", "var" : "VegC", "descr" : "average vegetation carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : NV_LAI, "name": "nv_lai", "var" : "LAI", "descr" : "mean LAI from natural vegetation", "unit" : "m2/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : FPC_BFT, "name": "fpc_bft", "var" : "FPC", "descr" : "FPC for Bioenergie-PFTs and managed grassland", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MRH_LITTER, "name": "mrh_litter", "var" : "RH_LITTER", "descr" : "monthly heterotrophic respiration from litter pools", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : YDISCHARGE, "name": "ydischarge", "var": "discharge", "descr": "annual discharge to send to IMAGE", "unit": "hm3/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : MWD_GW, "name": "mwd_gw", "var": "wd_gw", "descr": "renewable groundwater withdrawal", "unit": "mm/month", "scale": 1.0, "offset" : 0.0},
   { "id" : MWD_AQ, "name": "mwd_aq", "var": "wd_aq", "descr": "aquifer withdrawal", "unit": "mm/month", "scale": 1.0, "offset" : 0.0},

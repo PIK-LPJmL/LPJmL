@@ -105,6 +105,7 @@ typedef struct
   Real mnpp;             /**< Monthly NPP (gC/m2) */
   Real mgpp;             /**< Monthly GPP (gC/m2) */
   Real mrh;              /**< monthly heterotrophic respiration (gC/m2) */
+  Real mrh_litter;       /**< monthly heterotrophic respiration (gC/m2) */
   Real mtransp;          /**< Monthly transpiration (mm) */
   Real mtransp_b;        /**< Monthly transpired irrigation water (mm) */
   Real atransp;          /**< Yearly transpiration (mm) */

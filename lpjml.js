@@ -44,6 +44,7 @@
   "permafrost" : true,
   "with_nitrogen" : "lim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "const_climate" : false,
+  "shuffle_climate" : true, /* shuffle spinup climate */
   "const_deposition" : false,
 #ifdef FROM_RESTART
   "population" : false,

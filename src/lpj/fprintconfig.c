@@ -216,6 +216,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   }
   if(config->const_climate)
     len=printsim(file,len,&count,"const. climate");
+  if(config->shuffle_climate)
+    len=printsim(file,len,&count,"shuffle climate");
   if(config->const_deposition)
     len=printsim(file,len,&count,"const. deposition");
   if(config->river_routing)

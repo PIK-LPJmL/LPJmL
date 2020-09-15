@@ -125,6 +125,7 @@ typedef struct
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
   Bool istimber;
   Bool const_climate;           /**< constant climate */
+  Bool shuffle_climate;           /**< shuffle spinup climate */
   Bool const_deposition;        /**< constant N deposition */
   Bool remove_residuals;
   Bool residues_fire;   /**< use parameters for agricultural fires */
