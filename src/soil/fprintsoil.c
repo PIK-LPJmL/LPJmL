@@ -41,7 +41,7 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   {
     fprintf(file,"%-40s",pftpar[p].name);
     forrootsoillayer(l)
-      fprintf(file," %5.2f",soil->c_shift_fast[l][p]);
+      fprintf(file," %5.2f",soil->c_shift[l][p].fast);
     fputc('\n',file);
   }
   fputs("----------------------------------------",file);
@@ -60,7 +60,7 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   {
     fprintf(file,"%-40s",pftpar[p].name);
     forrootsoillayer(l)
-      fprintf(file," %5.2f",soil->c_shift_slow[l][p]);
+      fprintf(file," %5.2f",soil->c_shift[l][p].slow);
     fputc('\n',file);
   }
   fputs("----------------------------------------",file);

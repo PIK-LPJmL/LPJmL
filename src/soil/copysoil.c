@@ -31,10 +31,7 @@ void copysoil(Soil *dst,       /**< destination */
     dst->k_mean[l].slow=src->k_mean[l].slow;
     dst->k_mean[l].fast=src->k_mean[l].fast;
     for(p=0;p<ntotpft;p++)
-    {
-      dst->c_shift_fast[l][p]=src->c_shift_fast[l][p];
-      dst->c_shift_slow[l][p]=src->c_shift_slow[l][p];
-    }
+      dst->c_shift[l][p]=src->c_shift[l][p];
   }
   dst->YEDOMA=src->YEDOMA;
 #ifdef MICRO_HEATING

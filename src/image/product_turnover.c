@@ -20,28 +20,30 @@
 Stocks product_turnover(Image_data *data)
 {
   Stocks stocks;
-  data->prod_turn.fast.carbon=(data->timber.fast.carbon)*PRODUCT_FAST;
-  data->prod_turn.fast.nitrogen=(data->timber.fast.nitrogen)*PRODUCT_FAST;
-  data->prod_turn.slow.carbon=(data->timber.slow.carbon)*PRODUCT_SLOW;
-  data->prod_turn.slow.nitrogen=(data->timber.slow.carbon)*PRODUCT_SLOW;
+  data->prod_turn.fast.carbon=(data->timber.fast.carbon)*param.product_turnover.fast;
+  data->prod_turn.fast.nitrogen=(data->timber.fast.nitrogen)*param.product_turnover.fast;
+  data->prod_turn.slow.carbon=(data->timber.slow.carbon)*param.product_turnover.slow;
+  data->prod_turn.slow.nitrogen=(data->timber.slow.carbon)*param.product_turnover.slow;
   
-  data->timber.fast.carbon*=(1.0-PRODUCT_FAST);
-  data->timber.slow.carbon*=(1.0-PRODUCT_SLOW);
+  data->timber.fast.carbon*=(1.0-param.product_turnover.fast);
+  data->timber.slow.carbon*=(1.0-param.product_turnover.slow);
   stocks.carbon=data->prod_turn.fast.carbon+data->prod_turn.slow.carbon;
   stocks.nitrogen=data->prod_turn.fast.nitrogen+data->prod_turn.slow.nitrogen;
   return stocks;
 } /* of 'product_turnover' */
 
 #else
+
 void product_turnover(Cell *cell)
 {
-  cell->output.prod_turnover.carbon+=cell->ml.product.fast.carbon*PRODUCT_FAST;
-  cell->output.prod_turnover.carbon+=cell->ml.product.slow.carbon*PRODUCT_SLOW;
-  cell->ml.product.fast.carbon*=(1.0-PRODUCT_FAST);
-  cell->ml.product.slow.carbon*=(1.0-PRODUCT_SLOW);
-  cell->output.prod_turnover.nitrogen+=cell->ml.product.fast.nitrogen*PRODUCT_FAST;
-  cell->output.prod_turnover.nitrogen+=cell->ml.product.slow.nitrogen*PRODUCT_SLOW;
-  cell->ml.product.fast.nitrogen*=(1.0-PRODUCT_FAST);
-  cell->ml.product.slow.nitrogen*=(1.0-PRODUCT_SLOW);
-}
+  cell->output.prod_turnover.carbon+=cell->ml.product.fast.carbon*param.product_turnover.fast;
+  cell->output.prod_turnover.carbon+=cell->ml.product.slow.carbon*param.product_turnover.slow;
+  cell->ml.product.fast.carbon*=(1.0-param.product_turnover.fast);
+  cell->ml.product.slow.carbon*=(1.0-param.product_turnover.slow);
+  cell->output.prod_turnover.nitrogen+=cell->ml.product.fast.nitrogen*param.product_turnover.fast;
+  cell->output.prod_turnover.nitrogen+=cell->ml.product.slow.nitrogen*param.product_turnover.slow;
+  cell->ml.product.fast.nitrogen*=(1.0-param.product_turnover.fast);
+  cell->ml.product.slow.nitrogen*=(1.0-param.product_turnover.slow);
+} /* of 'product_turnover' */
+
 #endif

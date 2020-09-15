@@ -22,8 +22,5 @@ void freesoil(Soil *soil /**< pointer to soil data */
   int l;
   freelitter(&soil->litter);
   for (l=0;l<LASTLAYER;l++)
-  {
-    free(soil->c_shift_fast[l]);
-    free(soil->c_shift_slow[l]);
-  }
+    free(soil->c_shift[l]);
 } /* of 'freesoil' */

@@ -36,8 +36,8 @@ typedef struct
 
 /*Nog uitzoeken verschil tussen threshold en target*/
 
-extern Bool discharge_statistics(Cell *); //This is a declaration of the variable. The header is included by the source file that defines the variable. only one source file cnan define the variable,. 
-extern Bool efr_determine(Cell *, int, int); // Declaration of function. It is defined in efr.c
+extern void discharge_statistics(Cell *); //This is a declaration of the variable. The header is included by the source file that defines the variable. only one source file cnan define the variable,. 
+extern void efr_determine(Cell *, int, int); // Declaration of function. It is defined in efr.c
 extern Bool new_efrdata(Efrdata *, Bool);
 extern Bool fwriteefrdata(FILE *,const Efrdata *);// const can be applied to the declaration of any variable to sp[ecify that its value will not be changed. 
 extern Bool freadefrdata(FILE *,Efrdata *,Bool);

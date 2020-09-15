@@ -172,28 +172,34 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
        ((config->pftpar[p].type==TREE && config->pftpar[p].cultivation_type==WP) ||
         (config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)))
     {
-      if(!present[p] && (estab_store.carbon<epsilon || config->pftpar[p].type!=TREE) && (fpc_type[TREE]<0.7 || config->pftpar[p].type==GRASS)) {
+      if(!present[p] && (estab_store.carbon<epsilon || config->pftpar[p].type!=TREE) && (fpc_type[TREE]<0.7 || config->pftpar[p].type==GRASS))
+      {
         addpft(stand,config->pftpar+p,year,0);
         n_est[config->pftpar[p].type]++;
       }
-      if(present[p])  n_est[config->pftpar[p].type]++;
+      if(present[p])
+        n_est[config->pftpar[p].type]++;
     }
 
   }
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   pft_len=getnpft(&stand->pftlist);
-  if(pft_len>0){
+  if(pft_len>0)
+  {
     fpc_inc2=newvec(Real,pft_len);
     check(fpc_inc2);
   }
-  foreachpft(pft,p,&stand->pftlist) fpc_inc2[p]=0;
+  foreachpft(pft,p,&stand->pftlist)
+    fpc_inc2[p]=0;
 
   foreachpft(pft,p,&stand->pftlist){
     if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
+    {
       if (istree(pft))
       {
         treepar=pft->par->data;
-        if(pft->nind<treepar->k_est && biomass_tree->age<treepar->max_rotation_length){
+        if(pft->nind<treepar->k_est && biomass_tree->age<treepar->max_rotation_length)
+        {
           flux_return=establishment(pft,fpc_total,fpc_type[pft->par->type],
                                     n_est[pft->par->type]);
           flux_estab.carbon+=flux_return.carbon;
@@ -208,14 +214,16 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         flux_estab.carbon+=flux_return.carbon;
         flux_estab.nitrogen+=flux_return.nitrogen;
       }
+    }
   }
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
-  if(fpc_total>1.0) light(stand,config->ntypes,fpc_inc2);
+  if(fpc_total>1.0)
+    light(stand,config->ntypes,fpc_inc2);
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
 
   if (fpc_total>1.0)
-   foreachpft(pft,p,&stand->pftlist)
-    adjust(&stand->soil.litter, pft, fpc_type[pft->par->type], FPC_MAX);
+    foreachpft(pft,p,&stand->pftlist)
+     adjust(&stand->soil.litter, pft, fpc_type[pft->par->type], FPC_MAX);
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
 
   if (fpc_total>1.0)
@@ -236,7 +244,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     if(istree(pft))
     {
       treepar=pft->par->data;
-      if (biomass_tree->age>=treepar->max_rotation_length) 
+      if (biomass_tree->age>=treepar->max_rotation_length)
         isdead=TRUE;
     }
 
@@ -245,7 +253,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   free(present);
   free(fpc_type);
   free(n_est);
-  if(pft_len>0) free(fpc_inc2);
+  if(pft_len>0)
+    free(fpc_inc2);
   if(isdead)
   {
     cutpfts(stand);

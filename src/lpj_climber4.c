@@ -1453,7 +1453,7 @@ void lpj_update_
               grid[cell].ml.mdemand=0.0;
             if(!grid[cell].skip)
             {
-              initoutput_monthly(&((grid+cell)->output),npft,config.nbiomass,ncft);
+              initoutput_monthly(&((grid+cell)->output),npft,config.nbiomass,config.nwft,ncft);
               // reset yesterday's saved values
               mevap_yesterday[cell] = mtransp_yesterday[cell] = 0.0;
               mevap_lake_yesterday[cell] = mevap_res_yesterday[cell] = 0.0;
@@ -1735,7 +1735,7 @@ void lpj_update_
             if(!grid[cell].skip)
               update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
                                                 cell,month),getmprec(input.climate,&grid[cell].climbuf,
-                                                                     cell,month),npft,config.nbiomass,ncft,month);
+                                                                     cell,month),npft,config.nbiomass,config.nwft,ncft,month);
 #ifdef DEBUG
             printcell(grid+cell,1,ncft,input.landuse!=NULL,TRUE);
 #endif

@@ -29,20 +29,13 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   forrootsoillayer(l)
   {
     freadreal((Real *)&soil->pool[l],sizeof(Pool)/sizeof(Real),swap,file);
-    soil->c_shift_fast[l]=newvec(Real,ntotpft);
-    if(soil->c_shift_fast[l]==NULL)
+    soil->c_shift[l]=newvec(Poolpar,ntotpft);
+    if(soil->c_shift[l]==NULL)
     {
-      printallocerr("c_shift_fast");
+      printallocerr("c_shift");
       return TRUE;
     }
-    soil->c_shift_slow[l]=newvec(Real,ntotpft);
-    if(soil->c_shift_slow[l]==NULL)
-    {
-      printallocerr("c_shift_slow");
-      return TRUE;
-    }
-    freadreal(soil->c_shift_fast[l],ntotpft,swap,file);
-    freadreal(soil->c_shift_slow[l],ntotpft,swap,file);
+    freadreal((Real *)soil->c_shift[l],ntotpft*sizeof(Poolpar)/sizeof(Real),swap,file);
   }
   if(freadlitter(file,&soil->litter,pftpar,ntotpft,swap))
     return TRUE;

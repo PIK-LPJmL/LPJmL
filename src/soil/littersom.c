@@ -217,14 +217,14 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
       decom_litter.nitrogen+=decom_sum.nitrogen;
       forrootsoillayer(l)
       {
-        soil->pool[l].fast.carbon+=param.fastfrac*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift_fast[l][soil->litter.ag[p].pft->id];
-        soil->pool[l].slow.carbon+=(1-param.fastfrac)*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift_slow[l][soil->litter.ag[p].pft->id];
+        soil->pool[l].fast.carbon+=param.fastfrac*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.ag[p].pft->id].fast;
+        soil->pool[l].slow.carbon+=(1-param.fastfrac)*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.ag[p].pft->id].slow;
         if(decom_sum.nitrogen>0)
         {
-          soil->pool[l].slow.nitrogen+=(1-param.fastfrac)*(1-param.atmfrac)*decom_sum.nitrogen*soil->c_shift_slow[l][soil->litter.ag[p].pft->id];
-          soil->pool[l].fast.nitrogen+=param.fastfrac*(1-param.atmfrac)*decom_sum.nitrogen*soil->c_shift_fast[l][soil->litter.ag[p].pft->id];
+          soil->pool[l].slow.nitrogen+=(1-param.fastfrac)*(1-param.atmfrac)*decom_sum.nitrogen*soil->c_shift[l][soil->litter.ag[p].pft->id].slow;
+          soil->pool[l].fast.nitrogen+=param.fastfrac*(1-param.atmfrac)*decom_sum.nitrogen*soil->c_shift[l][soil->litter.ag[p].pft->id].fast;
           /* NO3 and N2O from mineralization of organic matter */
-          F_Nmineral=decom_sum.nitrogen*param.atmfrac*(param.fastfrac*soil->c_shift_fast[l][soil->litter.ag[p].pft->id]+(1-param.fastfrac)*soil->c_shift_slow[l][soil->litter.ag[p].pft->id]);
+          F_Nmineral=decom_sum.nitrogen*param.atmfrac*(param.fastfrac*soil->c_shift[l][soil->litter.ag[p].pft->id].fast+(1-param.fastfrac)*soil->c_shift[l][soil->litter.ag[p].pft->id].slow);
           soil->NH4[l]+=F_Nmineral*(1-k_l);
 #ifdef SAFE
           if(soil->NH4[l]<-epsilon)
@@ -236,7 +236,7 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
         N_sum=soil->NH4[l]+soil->NO3[l];
         if(N_sum>0) /* immobilization of N */
         {
-          n_immo=param.fastfrac*(1-param.atmfrac)*(decom_sum.carbon/soil->par->cn_ratio-decom_sum.nitrogen)*soil->c_shift_fast[l][soil->litter.ag[p].pft->id]*N_sum/soildepth[l]*1e3/(k_N+N_sum/soildepth[l]*1e3);
+          n_immo=param.fastfrac*(1-param.atmfrac)*(decom_sum.carbon/soil->par->cn_ratio-decom_sum.nitrogen)*soil->c_shift[l][soil->litter.ag[p].pft->id].fast*N_sum/soildepth[l]*1e3/(k_N+N_sum/soildepth[l]*1e3);
           if(n_immo >0) 
           {
             if(n_immo>N_sum)
@@ -256,7 +256,7 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
         N_sum=soil->NH4[l]+soil->NO3[l];
         if(N_sum>0)
         {
-          n_immo=(1-param.fastfrac)*(1-param.atmfrac)*(decom_sum.carbon/soil->par->cn_ratio-decom_sum.nitrogen)*soil->c_shift_slow[l][soil->litter.ag[p].pft->id]*N_sum/soildepth[l]*1e3/(k_N+N_sum/soildepth[l]*1e3);
+          n_immo=(1-param.fastfrac)*(1-param.atmfrac)*(decom_sum.carbon/soil->par->cn_ratio-decom_sum.nitrogen)*soil->c_shift[l][soil->litter.ag[p].pft->id].slow*N_sum/soildepth[l]*1e3/(k_N+N_sum/soildepth[l]*1e3);
           if(n_immo >0) 
           {
             if(n_immo>N_sum)

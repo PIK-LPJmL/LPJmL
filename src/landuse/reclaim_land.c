@@ -147,21 +147,19 @@ void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool istimber, in
 
   for (l=0;l<LASTLAYER;l++)
   {
-    soil->c_shift_fast[l]=newvec(Real,ntotpft);
-    check(soil->c_shift_fast[l]);
-    soil->c_shift_slow[l]=newvec(Real,ntotpft);
-    check(soil->c_shift_slow[l]);
+    soil->c_shift[l]=newvec(Poolpar,ntotpft);
+    check(soil->c_shift[l]);
   }
   for (p=0;p<ntotpft;p++)
   {
-    soil->c_shift_fast[0][p]=1;
-    soil->c_shift_slow[0][p]=1;
+    soil->c_shift[0][p].fast=1;
+    soil->c_shift[0][p].slow=1;
   }
   for (l=1;l<LASTLAYER;l++)
     for (p=0;p<ntotpft;p++)
     {
-      soil->c_shift_fast[l][p]=0;
-      soil->c_shift_slow[l][p]=0;
+      soil->c_shift[l][p].fast=0;
+      soil->c_shift[l][p].slow=0;
     }
 
   copysoil(&stand2->soil,&stand1->soil,ntotpft);

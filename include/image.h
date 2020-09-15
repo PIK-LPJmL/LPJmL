@@ -18,9 +18,6 @@
 
 /* Definition of constants for biomass pools used in IMAGE */
 
-#define PRODUCT_FAST 0.1
-#define PRODUCT_SLOW 0.01
-
 #define LPJIMAGE "LPJIMAGE"  /* Environment variable for IMAGE coupler */
 #define LPJWAITIMAGE "LPJWAITIMAGE"  /* time to wait for IMAGE connection */
 #define DEFAULT_IMAGE_HOST "localhost" /* Default host for IMAGE model */
@@ -170,6 +167,7 @@ typedef struct
 } Image_data;
 
 /* Declaration of functions */
+
 extern Image_data *new_image(const Product *);
 extern Bool open_image(Config *);
 extern void close_image(const Config *);

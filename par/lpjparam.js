@@ -70,6 +70,7 @@
   "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
   "ftimber" : 0.76,                   /* timber fraction at deforestation */
   "harvest_fast_frac" : 0.34,         /* fraction of harvested wood going to fast pools */
+  "product_turnover" : { "fast" : 0.1, "slow" : 0.01}, /* product turnover (1/yr) */
   "esoil_reduction" : 0.0,            /* reduction of soil evaporation */
   "rw_buffer_max" : 0.0,              /* size of rainwater harvesting tank [mm] */
   "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */

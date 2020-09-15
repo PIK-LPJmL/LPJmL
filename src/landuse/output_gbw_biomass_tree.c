@@ -29,7 +29,7 @@ void output_gbw_biomass_tree(Output *output,      /**< output data */
                              Bool pft_output_scaled
                             )
 {
-  int l,irrigation;
+  int l,irrigation,index;
   Real total_g,total_b;
   Biomass_tree *data;
   data=stand->data;
@@ -46,37 +46,38 @@ void output_gbw_biomass_tree(Output *output,      /**< output data */
     total_g+=green_transp[l];
     total_b+=aet_stand[l]-green_transp[l];
   }
+  index=rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
   if(pft_output_scaled)
   {
-    output->cft_consump_water_g[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_g*stand->cell->ml.landfrac[irrigation].biomass_tree;
-    output->cft_consump_water_b[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_b*stand->cell->ml.landfrac[irrigation].biomass_tree;
+    output->cft_consump_water_g[index]+=total_g*stand->cell->ml.landfrac[irrigation].biomass_tree;
+    output->cft_consump_water_b[index]+=total_b*stand->cell->ml.landfrac[irrigation].biomass_tree;
     forrootsoillayer(l)
     {
-      output->cft_transp[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l]*stand->cell->ml.landfrac[irrigation].biomass_tree;
-      output->cft_transp_b[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=(aet_stand[l]-green_transp[l])*stand->cell->ml.landfrac[irrigation].biomass_tree;
+      output->cft_transp[index]+=aet_stand[l]*stand->cell->ml.landfrac[irrigation].biomass_tree;
+      output->cft_transp_b[index]+=(aet_stand[l]-green_transp[l])*stand->cell->ml.landfrac[irrigation].biomass_tree;
     }
 
-    output->cft_evap[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap*stand->cell->ml.landfrac[irrigation].biomass_tree;
-    output->cft_evap_b[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap_blue*stand->cell->ml.landfrac[irrigation].biomass_tree;
-    output->cft_interc[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand*stand->cell->ml.landfrac[irrigation].biomass_tree;
-    output->cft_interc_b[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand_blue*stand->cell->ml.landfrac[irrigation].biomass_tree;
-    output->cft_return_flow_b[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=return_flow_b*stand->cell->ml.landfrac[irrigation].biomass_tree;
+    output->cft_evap[index]+=evap*stand->cell->ml.landfrac[irrigation].biomass_tree;
+    output->cft_evap_b[index]+=evap_blue*stand->cell->ml.landfrac[irrigation].biomass_tree;
+    output->cft_interc[index]+=intercep_stand*stand->cell->ml.landfrac[irrigation].biomass_tree;
+    output->cft_interc_b[index]+=intercep_stand_blue*stand->cell->ml.landfrac[irrigation].biomass_tree;
+    output->cft_return_flow_b[index]+=return_flow_b*stand->cell->ml.landfrac[irrigation].biomass_tree;
   }
   else
   {
-    output->cft_consump_water_g[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_g;
-    output->cft_consump_water_b[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_b;
+    output->cft_consump_water_g[index]+=total_g;
+    output->cft_consump_water_b[index]+=total_b;
     forrootsoillayer(l)
     {
-      output->cft_transp[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l];
-      output->cft_transp_b[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l]-green_transp[l];
+      output->cft_transp[index]+=aet_stand[l];
+      output->cft_transp_b[index]+=aet_stand[l]-green_transp[l];
     }
 
-    output->cft_evap[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap;
-    output->cft_evap_b[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap_blue;
-    output->cft_interc[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand;
-    output->cft_interc_b[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand_blue;
-    output->cft_return_flow_b[rbtree(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=return_flow_b;
+    output->cft_evap[index]+=evap;
+    output->cft_evap_b[index]+=evap_blue;
+    output->cft_interc[index]+=intercep_stand;
+    output->cft_interc_b[index]+=intercep_stand_blue;
+    output->cft_return_flow_b[index]+=return_flow_b;
   }
 
   if(irrigation)

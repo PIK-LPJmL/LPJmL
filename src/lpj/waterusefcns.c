@@ -172,7 +172,7 @@ Bool getwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
     grid[cell].discharge.wateruse=data[cell];
   free(data);
   return FALSE;
-} /* of 'getwaterused' */
+} /* of 'getwateruse' */
 
 void freewateruse(Wateruse wateruse, /**< pointer to wateruse data */
                   Bool isroot        /**< task is root task (TRUE/FALSE) */

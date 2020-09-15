@@ -25,8 +25,7 @@ Bool fwritesoil(FILE *file, /**< pointer to binary file */
   forrootsoillayer(l)
   {
     fwrite1(&soil->pool[l],sizeof(Pool),file);
-    fwriten(soil->c_shift_fast[l],sizeof(Real),ntotpft,file);
-    fwriten(soil->c_shift_slow[l],sizeof(Real),ntotpft,file);
+    fwriten(soil->c_shift[l],sizeof(Poolpar),ntotpft,file);
   }
   if(fwritelitter(file,&soil->litter))
     return TRUE;

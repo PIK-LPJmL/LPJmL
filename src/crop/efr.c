@@ -103,7 +103,7 @@ Bool freadefrdata(FILE *file, Efrdata *efr, Bool swap)
 
 // gegevens komen uit efr. Wat dan met cell? In cell is efrdata dan weer gedefineerd als efr? of efr verwijzing naar efrdata dan.  
 
-Bool discharge_statistics(Cell *cell)
+void  discharge_statistics(Cell *cell)
 {
   int y, m, i;
   int arraySize;
@@ -132,10 +132,9 @@ Bool discharge_statistics(Cell *cell)
   cell->efr.discharge_q75 = sortArray[(int)(NYEAR_EFR*NMONTH*0.25 + 0.5)];
   cell->efr.discharge_q50 = sortArray[(int)(NYEAR_EFR*NMONTH*0.5 + 0.5)];
   free(sortArray);
-  return TRUE;
 } /* of 'discharge_statistics' */
 
-Bool efr_determine(Cell grid[], int ngridcell, int efroption)
+void  efr_determine(Cell grid[], int ngridcell, int efroption)
 {
   int m, cell;
 
@@ -314,5 +313,4 @@ Bool efr_determine(Cell grid[], int ngridcell, int efroption)
       }
       break;
   } /* of switch */
-  return TRUE;
 } /* of 'efr_determine' */
