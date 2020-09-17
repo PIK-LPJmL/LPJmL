@@ -189,6 +189,9 @@ Real daily_natural(Stand *stand, /**< stand pointer */
         output->daily.pet=eeq*PRIESTLEY_TAYLOR;
       }
     output->daily.interc=intercep_stand*stand->frac;
+    /* only write to daily outputs if there are no values yet from the crop stand in order to record values from setaside stands */
+    if(output->daily.nh4==0 && output->daily.no3==0 && output->daily.nsoil_fast==0 &&
+       (output->daily.irrigation && stand->type->landusetype==SETASIDE_IR) || (!output->daily.irrigation && stand->type->landusetype==SETASIDE_RF))
     forrootsoillayer(l)
     {
       output->daily.nh4+=stand->soil.NH4[l];

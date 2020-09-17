@@ -61,16 +61,16 @@
   "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
   "till_startyear" : 1850,    /* year in which tillage should start */
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold (mm) */
-  "irrig_threshold_c3_dry" : 0.8,     /* irrigation threshold C3, prec < aprec_lim */
-  "irrig_threshold_c3_humid" : 0.9,   /* irrigation threshold C3, prec >= aprec_lim */
-  "irrig_threshold_c4" : 0.7,         /* irrigation threshold C4 */
+  "irrig_threshold_c3_dry" : 0.95,     /* irrigation threshold C3, prec < aprec_lim */
+  "irrig_threshold_c3_humid" : 0.95,   /* irrigation threshold C3, prec >= aprec_lim */
+  "irrig_threshold_c4" : 0.95,         /* irrigation threshold C4 */
   "irrig_threshold_rice" : 1.0,       /* irrigation threshold RICE */
   "irrig_soilfrac" : 1.0,             /* fraction of soil filled with water during irrigation event */
   "canal_conveyance_eff_sand" : 0.7,  /* open canal conveyance efficiency, soil type sand (Ks > 20)*/
   "canal_conveyance_eff_loam" : 0.75, /* open canal conveyance efficiency, soil type loam (10<=Ks<=20)*/
   "canal_conveyance_eff_clay" : 0.8,  /* open canal conveyance efficiency, soil type clay (Ks<10) */
   "pipe_conveyance_eff" : 0.95,       /* pressurized conveyance efficiency*/
-  "saturation_level_surf" : 1.15,     /* saturation level surface irrigation*/
+  "saturation_level_surf" : 1.0,      /* saturation level surface irrigation*/
   "saturation_level_sprink" : 0.55,   /* saturation level sprinkler irrigation*/
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */

@@ -208,7 +208,8 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
             soil->NO3[l] += NO3perc_ly;
             NO3perc_ly=0;
             /* calculate nitrate in surface runoff */
-            if(l==0)
+            /* assume that there is no N in surface runoff as it does not infiltrate */
+            if(l==-999)
             {
               NO3surf = NPERCO * concNO3_mobile * srunoff; /* Eq. 4:2.1.5 */
               NO3surf = min(NO3surf, soil->NO3[l]);
@@ -254,8 +255,10 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
     {
       foreachpft(pft,p,&stand->pftlist)
       {
-        if(pft->par->id==stand->cell->output.daily.cft)
+        if(pft->par->id==stand->cell->output.daily.cft && pft->stand->cell->output.daily.irrigation==data_irrig->irrigation)
+        {
           stand->cell->output.daily.leaching=NO3perc_ly;
+        }
       }
     }
   } /* while infil > 0 */

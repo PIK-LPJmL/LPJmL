@@ -215,7 +215,8 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
               soil->NO3[l] += NO3perc_ly;
               NO3perc_ly=0;
               /* calculate nitrate in surface runoff */
-              if(l==0)
+              /* assume that there is no N in surface runoff as it does not infiltrate */
+              if(l==-999)
               {
                 NO3surf = NPERCO * concNO3_mobile * srunoff; /* Eq. 4:2.1.5 */
                 NO3surf = min(NO3surf, soil->NO3[l]);
@@ -225,13 +226,13 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
                 NO3surf=0;
 
               srunoff=0.0; /* not used for lower soil layers */
-              if (l==0)
+              if (l==0){
                 NO3lat = NPERCO * concNO3_mobile * lrunoff; /* Eq. 4:2.1.6 */
+              }
               else
                 NO3lat = concNO3_mobile * lrunoff; /* Eq. 4:2.1.7 */
               NO3lat = min(NO3lat, soil->NO3[l]);
               soil->NO3[l] -= NO3lat;
-
               /* nitrate percolating from this layer */
               NO3perc_ly = concNO3_mobile * perc;  /*Eq 4:2.1.8*/
               NO3perc_ly = min(NO3perc_ly,soil->NO3[l]);
@@ -249,8 +250,10 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
       {
         foreachpft(pft,p,&stand->pftlist)
         {
-          if(pft->par->id==stand->cell->output.daily.cft)
+          if(pft->par->id==stand->cell->output.daily.cft && pft->stand->cell->output.daily.irrigation==TRUE)
+          {
             stand->cell->output.daily.leaching=NO3perc_ly;
+          }
         }
       }
       if(stand->type->landusetype==AGRICULTURE)

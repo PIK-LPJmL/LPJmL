@@ -1542,7 +1542,7 @@
     "flaimaxk" : 0.95,      /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
     "fphusen" : 0.7,        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
     "flaimaxharvest" : 0.00, /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
-    "laimax" : 5.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
+    "laimax" : 7.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
     "laimin" : 2.0,         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
     "hiopt" : 0.50,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.20,         /* himin: minimum harvest index HI reached at harvest*/
@@ -1649,7 +1649,7 @@
     "flaimaxk" : 0.95,      /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
     "fphusen" : 0.7,        /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
     "flaimaxharvest" : 0.00, /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
-    "laimax" : 5.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
+    "laimax" : 7.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
     "laimin" : 2.0,         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
     "hiopt" : 0.50,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.20,         /* himin: minimum harvest index HI reached at harvest*/
@@ -1863,7 +1863,7 @@
     "flaimaxk" : 0.95,      /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
     "fphusen" : 0.80,       /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
     "flaimaxharvest" : 0.00, /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
-    "laimax" : 5.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
+    "laimax" : 7.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
     "laimin" : 5.0,         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
     "hiopt" : 0.50,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.25,         /* himin: minimum harvest index HI reached at harvest*/
@@ -1970,7 +1970,7 @@
     "flaimaxk" : 0.95,      /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
     "fphusen" : 0.80,       /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
     "flaimaxharvest" : 0.00, /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
-    "laimax" : 5.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
+    "laimax" : 7.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
     "laimin" : 5.0,         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
     "hiopt" : 0.50,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.25,         /* himin: minimum harvest index HI reached at harvest*/
@@ -2184,7 +2184,7 @@
     "flaimaxk" : 0.95,      /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
     "fphusen" : 0.85,       /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
     "flaimaxharvest" : 0.00, /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
-    "laimax" : 5.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
+    "laimax" : 7.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
     "laimin" : 5.0,         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
     "hiopt" : 0.25,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest*/
@@ -2291,7 +2291,7 @@
     "flaimaxk" : 0.95,      /* flaimaxk: fraction of plant maximal LAI 2 [0-1], based on SWIM chapter 3, Table 3.13 (https://www.pik-potsdam.de/members/valen/swim/swim-ch-3/view) */
     "fphusen" : 0.8,       /* fphusen: fraction of growing period at which LAI starts decreasing [0-1], based on SWIM chapter 3, Table 3.13 (https://www.pik-potsdam.de/members/valen/swim/swim-ch-3/view) */
     "flaimaxharvest" : 0.00, /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
-    "laimax" : 5.0,         /* laimax: plant maximal LAI (m2leaf/m2), based on SWIM chapter 3, Table 3.13 (https://www.pik-potsdam.de/members/valen/swim/swim-ch-3/view) */
+    "laimax" : 7.0,         /* laimax: plant maximal LAI (m2leaf/m2), based on SWIM chapter 3, Table 3.13 (https://www.pik-potsdam.de/members/valen/swim/swim-ch-3/view) */
     "laimin" : 5.0,         /* laimin: plant maximal LAI (m2leaf/m2) in 1950, based on SWIM chapter 3, Table 3.13 (https://www.pik-potsdam.de/members/valen/swim/swim-ch-3/view) */
     "hiopt" : 0.50,         /* hiopt: optimum harvest index HI reached at harvest, based on SWIM chapter 3, Table 3.13 (https://www.pik-potsdam.de/members/valen/swim/swim-ch-3/view) */
     "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest, based on SWIM chapter 3, Table 3.13 (https://www.pik-potsdam.de/members/valen/swim/swim-ch-3/view) */
@@ -2398,7 +2398,7 @@
     "flaimaxk" : 0.95,      /* flaimaxk: fraction of plant maximal LAI 2 [0-1]*/
     "fphusen" : 0.90,       /* fphusen: fraction of growing period at which LAI starts decreasing [0-1]*/
     "flaimaxharvest" : 0.00, /* flaimaxharvest: fraction of plant maximal LAI still present at harvest [0-1]*/
-    "laimax" : 4.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
+    "laimax" : 5.0,         /* laimax: plant maximal LAI (m2leaf/m2)*/
     "laimin" : 4.0,         /* laimin: plant maximal LAI (m2leaf/m2) in 1950*/
     "hiopt" : 0.45,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest*/

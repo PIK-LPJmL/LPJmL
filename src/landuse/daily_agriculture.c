@@ -528,8 +528,20 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
       if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)
       {
         output->daily.evap=evap;
+        /* if there are already values from the setaside stand, which does not know if there's the cropstand of interest 
+           these values are overwritten here */
+        if(output->daily.nh4>0) output->daily.nh4=0;
+        if(output->daily.no3>0) output->daily.no3=0;
+        if(output->daily.nsoil_fast>0) output->daily.nsoil_fast=0;
+        if(output->daily.nsoil_slow>0) output->daily.nsoil_slow=0;
         forrootsoillayer(l)
+        {
+          output->daily.nh4+=stand->soil.NH4[l];
+          output->daily.no3+=stand->soil.NO3[l];
+          output->daily.nsoil_fast+=stand->soil.pool[l].fast.nitrogen;
+          output->daily.nsoil_slow+=stand->soil.pool[l].slow.nitrogen;
           output->daily.trans+=aet_stand[l];
+        }
         /*output->daily.w0=stand->soil.w[1];
         output->daily.w1=stand->soil.w[2];
         output->daily.wevap=stand->soil.w[0];*/

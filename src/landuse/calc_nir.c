@@ -71,7 +71,8 @@ void calc_nir(Stand *stand, /**< pointer to non-natural stand */
 #ifdef DEBUG
       printf("demand:%f supply::%f irrig:%f\n",demand,supply,nir+dist);
 #endif
-
+      /* avoid large irrigation amounts for dist if nir is zero */
+      if(nir<1) dist=0;
       if(nir>data->net_irrig_amount) /* for pft loop */
         data->net_irrig_amount=nir;
       if(dist>data->dist_irrig_amount)

@@ -249,14 +249,16 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
       }
       aet=(wr>0) ? demand*fpar(pft)/wr :0 ;
 
-      if(vmax>0)
+      if(vmax>epsilon)
+      {
         pft->nlimit+=pft->vmax/vmax;
-      if(pft->stand->type->landusetype==AGRICULTURE){
-        irrig=pft->stand->data;
-        if(&pft->stand->cell->output.daily!=NULL &&
-          pft->par->id==pft->stand->cell->output.daily.cft &&
-          irrig->irrigation==pft->stand->cell->output.daily.irrigation){
-            pft->stand->cell->output.daily.nlimit=pft->vmax/vmax;
+        if(pft->stand->type->landusetype==AGRICULTURE){
+          irrig=pft->stand->data;
+          if(&pft->stand->cell->output.daily!=NULL &&
+            pft->par->id==pft->stand->cell->output.daily.cft &&
+            irrig->irrigation==pft->stand->cell->output.daily.irrigation){
+              pft->stand->cell->output.daily.nlimit=pft->vmax/vmax;
+          }
         }
       }
     }

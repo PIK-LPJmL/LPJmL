@@ -56,6 +56,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
 
   NCplant = (crop->ind.leaf.nitrogen + crop->ind.root.nitrogen) / (crop->ind.leaf.carbon + crop->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
   f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1); /*Eq.10, Zaehle&Friend 2010 Supplementary*/
+  /* disabling N uptake response to plant C:N ratio status */
+  f_NCplant=1;
 #ifdef DEBUG_N
   printf("f_NCplant=%g\n",f_NCplant);
 #endif
@@ -107,7 +109,6 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         n_upfail+=soil->NH4[l];
         soil->NH4[l]=0;
       }
-
 #ifdef SAFE
       if (soil->NO3[l]<-epsilon)
         fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",
