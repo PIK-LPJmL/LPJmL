@@ -58,6 +58,8 @@ typedef unsigned char Byte;
 
 typedef char String[STRING_LEN+1];
 
+typedef unsigned short int Seed[3]; /* Seed for erand48() random number generator */
+
 extern size_t typesizes[];
 extern char *typenames[];
 

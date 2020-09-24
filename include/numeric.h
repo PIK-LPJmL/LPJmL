@@ -31,7 +31,7 @@ extern void petpar(Real *,Real *,Real *,Real *,Real,int,Real,Real,Real);
 extern void petpar2(Real *,Real *,Real *,Real,int,Real,Real,Real,Bool,Real);
 extern void petpar3(Real *,Real *,Real *,Real,int,Real,Real,Real);
 extern int ivec_sum(const int[],int); /* vector sum of integers */
-extern void permute(int [],int);
+extern void permute(int [],int,Seed);
 
 #ifndef USE_RAND48
 /* if drand48(),srand48() functions are not defined, use randfrac,setseed instead */

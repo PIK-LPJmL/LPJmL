@@ -132,12 +132,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 
   if (verbose>=VERB) puts("// I. type section");
   fscanbool2(file,&israndom,"random_prec");
-  config->seed=RANDOM_SEED;
-  if(fscanint(file,&config->seed,"random_seed",TRUE,verbose))
+  config->seed_start=RANDOM_SEED;
+  if(fscanint(file,&config->seed_start,"random_seed",TRUE,verbose))
     return TRUE;
-  if(config->seed==RANDOM_SEED)
-    config->seed=time(NULL);
-  srand48(config->seed+config->rank*363633);
+  if(config->seed_start==RANDOM_SEED)
+    config->seed_start=time(NULL);
+  config->seed[0]=13070;
+  config->seed[1]=config->seed_start % (USHRT_MAX+1);
+  config->seed[2]=config->seed_start / (USHRT_MAX+1);
+  seed48(config->seed);
   config->with_nitrogen=LIM_NITROGEN;
   if(fscanint(file,&config->with_nitrogen,"with_nitrogen",TRUE,verbose))
     return TRUE;

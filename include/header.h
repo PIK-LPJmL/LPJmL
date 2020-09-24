@@ -19,7 +19,7 @@
 /* Definition of constants */
 
 #define RESTART_HEADER "LPJRESTART"
-#define RESTART_VERSION 20
+#define RESTART_VERSION 21
 #define LPJ_CLIMATE_HEADER "LPJCLIM"
 #define LPJ_CLIMATE_VERSION 3
 #define LPJ_LANDUSE_HEADER "LPJLUSE"
@@ -108,6 +108,7 @@ typedef struct
   Bool landuse;       /**< land use enabled (TRUE/FALSE) */
   Bool river_routing; /**< river routing enabled (TRUE/FALSE) */
   int sdate_option;   /**< sowing date option (0-2)*/
+  Seed seed;
 } Restartheader;
 
 /* Declaration of functions */

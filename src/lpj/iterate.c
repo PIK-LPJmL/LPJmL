@@ -101,7 +101,7 @@ int iterate(Outputfile *output,  /**< Output file data */
       if(config->shuffle_climate)
       {
         if(isroot(*config))
-         spinup_year=(int)(drand48()*config->nspinyear);
+         spinup_year=(int)(erand48(config->seed)*config->nspinyear);
 #ifdef USE_MPI
          MPI_Bcast(&spinup_year,1,MPI_INT,0,config->comm);
 #endif

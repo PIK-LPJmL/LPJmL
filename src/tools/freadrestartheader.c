@@ -20,6 +20,7 @@ Bool freadrestartheader(FILE *file, /**< file pointer of binary file */
                         Bool swap /**< set to TRUE if data is in different order */
                        ) /** \return TRUE on error */
 {
+  int i;
   if(fread(header,sizeof(Restartheader),1,file)!=1)
     return TRUE;
   if(swap)
@@ -27,6 +28,8 @@ Bool freadrestartheader(FILE *file, /**< file pointer of binary file */
     header->landuse=swapint(header->landuse);
     header->river_routing=swapint(header->river_routing);
     header->sdate_option=swapint(header->sdate_option);
+    for(i=0;i<3;i++)
+      header->seed[i]=swapshort(header->seed[i]);
   }
   return FALSE;
 } /* of 'freadrestartheader' */

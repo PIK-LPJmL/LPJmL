@@ -18,14 +18,14 @@
 #include "types.h"
 #include "numeric.h"
 
-void permute(int vec[],int size)
+void permute(int vec[],int size,Seed seed)
 {
   int i,index,swp;
   for(i=0;i<size;i++)
     vec[i]=i;
   for(i=0;i<size-1;i++)
   {
-    index=i+(int)(drand48()*(size-i));
+    index=i+(int)(erand48(seed)*(size-i));
     swp=vec[i];
     vec[i]=vec[index];
     vec[index]=swp;

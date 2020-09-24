@@ -549,6 +549,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       else
       {
+        grid[i].seed[0]=13070;
+        grid[i].seed[1]=(config->seed_start+(i+config->startgrid)*36363) % (USHRT_MAX+1);
+        grid[i].seed[2]=(config->seed_start+(i+config->startgrid)*36363) / (USHRT_MAX+1);
+        seed48(grid[i].seed);
         grid[i].skip=FALSE;
         grid[i].standlist=newlist();
         checkptr(grid[i].standlist);

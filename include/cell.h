@@ -102,6 +102,7 @@ Received 19 November 1997; accepted 15 January 1999*/
   int elevation;            /**< cell elevation (m) */
   Real dRH;
   Balance balance;          /**< balance checks */
+  Seed seed;                /**< seed for random generator */
 };
 
 /* Declaration of functions */

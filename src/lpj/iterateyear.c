@@ -100,7 +100,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         /* Initialize random seed */
         //if(israndomprec(input.climate))
           srand48(config->seed+(config->startgrid+cell)*year*month);
-        initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month);
+        initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
 
 #ifdef IMAGE
         monthlyoutput_image(&grid[cell].output,input.climate,cell,month);
