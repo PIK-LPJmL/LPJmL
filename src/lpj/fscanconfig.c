@@ -683,6 +683,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     fscanname(file,name,"restart_filename");
     config->restart_filename=addpath(name,config->restartdir);
+    config->new_seed=FALSE;
+    if(fscanbool(file,&config->new_seed,"new_seed",TRUE,verbose))
+      return TRUE;
   }
   else
   {

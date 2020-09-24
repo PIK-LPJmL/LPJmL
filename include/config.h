@@ -157,6 +157,7 @@ typedef struct
   int fire;      /**< fire disturbance enabled */
   int firewood;  /**< fire wood usage */
   int seed_start;      /**< initial seed for random number generator */
+  Bool new_seed;
   Coord resolution;    /**< size of grid cell (deg) */
   Bool ispopulation;
   Bool river_routing;  /**< river routing enabled */
