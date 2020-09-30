@@ -17,7 +17,7 @@
 FILE *opencountrycode(const Filename *filename, /**< filename */
                       Bool *swap, /**< byte order has to be swapped (TRUE/FALS) */
                       Type *type,  /**< LPJ datatype */
-                      long *offset, /**< offset in binary file */
+                      size_t *offset, /**< offset in binary file */
                       Bool isout    /**< enable error output (TRUE/FALSE) */
                      )              /** \return pointer to open file or NULL */
 {

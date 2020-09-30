@@ -41,7 +41,7 @@ typedef struct
   int *index;
 } Coord_array;
 
-typedef struct cdf 
+typedef struct cdf
 {
   State_nc state;
   struct cdf *root;
@@ -102,7 +102,13 @@ typedef struct input_netcdf *Input_netcdf;
 
 typedef union
 {
-  FILE *file;
+  struct
+  {
+    Bool swap;     /**< byte order has to be changed */
+    size_t offset; /**< offset in binary file */
+    Type type;     /**< data type in binary file */
+    FILE *file;
+  } bin;
   Input_netcdf cdf;
 } Infile;
 

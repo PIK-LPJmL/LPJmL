@@ -50,7 +50,7 @@ void closeinput(Infile file,int fmt)
   if(fmt==CDF)
     closeinput_netcdf(file.cdf);
   else
-    fclose(file.file);
+    fclose(file.bin.file);
 } /* of 'closeinput' */
 
 Input_netcdf dupinput_netcdf(const Input_netcdf input)
@@ -296,7 +296,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
   return TRUE;
 #endif
 } /* of 'setvarinput_netcdf' */
- 
+
 Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
                               const char *units,    /**< units or NULL */
                               size_t len,           /**< dim of variable */
