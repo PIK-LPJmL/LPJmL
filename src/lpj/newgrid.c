@@ -341,7 +341,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         closecelldata(celldata);
         if(config->river_routing)
-          closeinput(lakes,config->aquifer_filename.fmt);
+          closeinput(lakes,config->lakes_filename.fmt);
         if(config->countrypar!=NULL)
         {
           closeinput(countrycode,config->countrycode_filename.fmt);
