@@ -433,7 +433,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             if(config->cftmap[j]>=ncft)
               grid[cell].ml.landfrac[i].grass[config->cftmap[j]-ncft]+=data[count++];
             else 
-              grid[cell].ml.landfrac[i].crop[config->cftmap[j]]=+data[count++];
+              grid[cell].ml.landfrac[i].crop[config->cftmap[j]]+=data[count++];
           }
           if(landuse->landuse.var_len!=2*config->cftmap_size)
           {

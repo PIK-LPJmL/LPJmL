@@ -1292,7 +1292,7 @@ WP                          /* cultivation_type */
 5                           /* new phenology: slope of water limiting function */
 0.007695                    /* new phenology: inflection point of water limiting function (% water availability)  */
 0.8                         /* new phenology: change rate of actual to previous day water limiting function */
-0.0480544                   /*  asymptotic maximum mortality rate (1/year) */
+0.0480544                   /* asymptotic maximum mortality rate (1/year) */
 EVERGREEN                   /* phenology */
 C3                          /* pathway */
 -4.0 38.0                   /* lower and upper temperature limit for co2 (deg C) 24 27*/
