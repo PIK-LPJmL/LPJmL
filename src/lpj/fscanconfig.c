@@ -137,10 +137,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     return TRUE;
   if(config->seed_start==RANDOM_SEED)
     config->seed_start=time(NULL);
-  config->seed[0]=13070;
-  config->seed[1]=config->seed_start % (USHRT_MAX+1);
-  config->seed[2]=config->seed_start / (USHRT_MAX+1);
-  seed48(config->seed);
+  setseed(config->seed,config->seed_start);
   config->with_nitrogen=LIM_NITROGEN;
   if(fscanint(file,&config->with_nitrogen,"with_nitrogen",TRUE,verbose))
     return TRUE;

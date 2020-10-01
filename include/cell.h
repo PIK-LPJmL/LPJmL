@@ -123,7 +123,7 @@ extern int writecoords(Outputfile *,int,const Cell [],const Config *);
 extern int writecountrycode(Outputfile *,int,const Cell [],const Config *);
 extern int writeregioncode(Outputfile *,int,const Cell [],const Config *);
 extern int iterate(Outputfile *,Cell [],Input,
-                   int,int,const Config *);
+                   int,int,Config *);
 extern void iterateyear(Outputfile *,Cell [],Input,
                         Real,int,int,int,const Config *);
 extern void fwriteoutput_annual(Outputfile *,const Cell [],int,const Config *);
