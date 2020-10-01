@@ -35,7 +35,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
       index[cell]=ftell(file); /* store actual position in index vector */
     b=(Byte)grid[cell].skip;
     fwrite(&b,sizeof(b),1,file);
-    fwrite(grid[cell].seed,sizeof(unsigned short int),3,file);
+    fwrite(grid[cell].seed,sizeof(Seed),1,file);
     if(river_routing)
     {
       if(fwrite(&grid[cell].discharge.dmass_lake,sizeof(Real),1,file)!=1)

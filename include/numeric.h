@@ -15,18 +15,32 @@
 #ifndef NUMERIC_H /* Already included? */
 #define NUMERIC_H
 
+/* Definition of constants */
+
+#ifdef USE_RAND48
+#define NSEED 3 /* length of seed vector */
+#else
+#define NSEED 1 /* length of seed vector */
+#endif
+
 /* Definition of datatypes */
 
 typedef Real (*Bisectfcn)(Real,void *);
+
+#ifdef USE_RAND48
+typedef unsigned short int Seed[NSEED]; /* Seed for erand48() random number generator */
+#else
+typedef int Seed[NSEED]; /* Seed for randfrac() random number generator */
+#endif
 
 /* Declaration of functions */
 
 extern Real bisect(Real (*)(Real,void *),Real,Real,void *,Real,Real,int,int *); /* find zero */
 extern Real leftmostzero(Real (*)(Real,void *),Real,Real,void *,Real,Real,int); /* find leftmost zero */
 extern void linreg(Real *,Real *,const Real[],int); /* linear regression */
-extern void setseed(int); /* set seed of random number generator */
-extern int getseed(void); /* get seed of random number generator */
-extern Real randfrac(void); /* random number generator */
+extern void setseed(Seed,int); /* set seed of random number generator */
+extern Bool freadseed(FILE *,Seed, Bool);
+extern Real randfrac(int *); /* random number generator */
 extern void petpar(Real *,Real *,Real *,Real *,Real,int,Real,Real,Real);
 extern void petpar2(Real *,Real *,Real *,Real,int,Real,Real,Real,Bool,Real);
 extern void petpar3(Real *,Real *,Real *,Real,int,Real,Real,Real);
@@ -34,9 +48,8 @@ extern int ivec_sum(const int[],int); /* vector sum of integers */
 extern void permute(int [],int,Seed);
 
 #ifndef USE_RAND48
-/* if drand48(),srand48() functions are not defined, use randfrac,setseed instead */
-#define drand48() randfrac()
-#define srand48(seed) setseed(seed)
+/* if erand48() function is not defined, use randfrac instead */
+#define erand48(seed) randfrac(seed)
 #endif
 
 #endif

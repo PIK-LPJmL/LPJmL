@@ -46,6 +46,7 @@
   "shuffle_climate" : true, /* shuffle spinup climate */
   "const_deposition" : false,
 #ifdef FROM_RESTART
+  "new_seed" : false, /* read random seed from restart file */
   "population" : false,
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */

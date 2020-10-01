@@ -366,12 +366,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       return NULL;
     }
     if(config->new_seed)
-    {
-      config->seed[0]=13070;
-      config->seed[1]=config->seed_start % (USHRT_MAX+1);
-      config->seed[2]=config->seed_start / (USHRT_MAX+1);
-      seed48(config->seed);
-    }
+      setseed(config->seed,config->seed_start);
   }
   *count=0;
   for(i=0;i<config->ngridcell;i++)
@@ -556,10 +551,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       else
       {
-        grid[i].seed[0]=13070;
-        grid[i].seed[1]=(config->seed_start+(i+config->startgrid)*36363) % (USHRT_MAX+1);
-        grid[i].seed[2]=(config->seed_start+(i+config->startgrid)*36363) / (USHRT_MAX+1);
-        seed48(grid[i].seed);
+        setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
         grid[i].skip=FALSE;
         grid[i].standlist=newlist();
         checkptr(grid[i].standlist);
@@ -613,12 +605,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         return NULL;
       }
       if(config->new_seed)
-      {
-        grid[i].seed[0]=13070;
-        grid[i].seed[1]=(config->seed_start+(i+config->startgrid)*36363) % (USHRT_MAX+1);
-        grid[i].seed[2]=(config->seed_start+(i+config->startgrid)*36363) / (USHRT_MAX+1);
-        seed48(grid[i].seed);
-      }
+        setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
       if(!grid[i].skip)
         check_stand_fracs(grid+i,
                           grid[i].lakefrac+grid[i].ml.reservoirfrac);

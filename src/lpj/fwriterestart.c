@@ -85,7 +85,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     restartheader.landuse=(config->withlanduse!=NO_LANDUSE);
     restartheader.sdate_option=config->sdate_option;
     restartheader.river_routing=config->river_routing;
-    for(i=0;i<3;i++)
+    for(i=0;i<NSEED;i++)
       restartheader.seed[i]=config->seed[i];
     fwrite(&restartheader,sizeof(restartheader),1,file);
     /* skip index vector */

@@ -1,9 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  r  e  a  d  r  e  s  t  a  r  t  h  e  a  d  e  r  .  c                \n**/
+/**                         s  e  t  s  e  e  d  .  c                              \n**/
 /**                                                                                \n**/
-/**     Reading file header for LPJ related files. Detects                         \n**/
-/**     whether byte order has to be changed                                       \n**/
+/**     Set seed of random number generator                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,27 +12,20 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#include "types.h"
+#include "numeric.h"
 
-Bool freadrestartheader(FILE *file, /**< file pointer of binary file */
-                        Restartheader *header, /**< file header to be read */
-                        Bool swap /**< set to TRUE if data is in different order */
-                       ) /** \return TRUE on error */
+void setseed(Seed seed,int start)
 {
-  int i;
-  if(fread(header,sizeof(Restartheader),1,file)!=1)
-    return TRUE;
-  if(swap)
-  {
-    header->landuse=swapint(header->landuse);
-    header->river_routing=swapint(header->river_routing);
-    header->sdate_option=swapint(header->sdate_option);
-    for(i=0;i<NSEED;i++)
 #ifdef USE_RAND48
-      header->seed[i]=swapshort(header->seed[i]);
+  seed[0]=13070;
+  seed[1]=start % (USHRT_MAX+1);
+  seed[2]=start / (USHRT_MAX+1);
+  seed48(seed);
 #else
-      header->seed[i]=swapint(header->seed[i]);
+  seed[0]=start;
 #endif
-  }
-  return FALSE;
-} /* of 'freadrestartheader' */
+} /* of 'setseed' */
