@@ -26,7 +26,7 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
   FILE *file;
   Header header;
   Restartheader restartheader;
-  int offset,version;
+  int offset,version,i;
   long long offsetl;
   char *type;
   /* Open file */
@@ -112,6 +112,8 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
     fclose(file);
     return NULL;
   }
+  for(i=0;i<NSEED;i++)
+    config->seed[i]=restartheader.seed[i];
   if(config->ischeckpoint)
   {
     config->checkpointyear=header.firstyear;

@@ -110,6 +110,7 @@ typedef struct
   Bool landuse;       /**< land use enabled (TRUE/FALSE) */
   Bool river_routing; /**< river routing enabled (TRUE/FALSE) */
   int sdate_option;   /**< sowing date option (0-2)*/
+  Seed seed;
 } Restartheader;
 
 /* Declaration of functions */

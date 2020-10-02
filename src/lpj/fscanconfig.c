@@ -143,24 +143,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 
   if (verbose>=VERB) puts("// I. type section");
   fscanbool2(file,&israndom,"random_prec");
-  config->seed=RANDOM_SEED;
-  if(isstring(file,"random_seed"))
-  {
-    fscanstring(file,name,"random_seed",FALSE,verbose);
-    if(!strcmp(name,"random_seed"))
-      config->seed=RANDOM_SEED;
-    else
-    {
-      if(verbose)
-        fprintf(stderr,"ERROR233: Invalid string '%s' for random_seed, must be 'random_seed' or number.\n",name);
-      return TRUE;
-    }
-  }
-  else if(fscanint(file,&config->seed,"random_seed",TRUE,verbose))
+  config->seed_start=RANDOM_SEED;
+  if(fscanint(file,&config->seed_start,"random_seed",TRUE,verbose))
     return TRUE;
-  if(config->seed==RANDOM_SEED)
-    config->seed=time(NULL);
-   srand48(config->seed+config->rank*363633);
+  if(config->seed_start==RANDOM_SEED)
+    config->seed_start=time(NULL);
+  setseed(config->seed,config->seed_start);
   config->with_nitrogen=LIM_NITROGEN;
   if(fscankeywords(file,&config->with_nitrogen,"with_nitrogen",nitrogen,3,TRUE,verbose))
     return TRUE;
@@ -712,6 +700,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     fscanname(file,name,"restart_filename");
     config->restart_filename=addpath(name,config->restartdir);
     checkptr(config->restart_filename);
+    config->new_seed=FALSE;
+    if(fscanbool(file,&config->new_seed,"new_seed",TRUE,verbose))
+      return TRUE;
   }
   else
     config->restart_filename=NULL;

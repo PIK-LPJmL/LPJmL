@@ -489,7 +489,12 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
 #ifndef PERMUTE
   if(config->wet_filename.name!=NULL)
 #endif
-    fprintf(file,"Random seed: %d\n",config->seed);
+  {
+    if(isreadrestart(config) && !config->new_seed)
+      fputs("Reading random seeds from restart file.\n",file);
+    else
+      fprintf(file,"Random seed: %d\n",config->seed_start);
+  }
   if(config->n_out)
   {
     /* sort output alphabetically by name */

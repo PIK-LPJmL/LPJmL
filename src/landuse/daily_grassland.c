@@ -93,7 +93,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 #ifdef PERMUTE
     pvec=newvec(int,getnpft(&stand->pftlist));
     check(pvec);
-    permute(pvec,getnpft(&stand->pftlist));
+    permute(pvec,getnpft(&stand->pftlist),stand->cell->seed);
 #endif
     for(p=0;p<getnpft(&stand->pftlist);p++)
       wet[p]=0;

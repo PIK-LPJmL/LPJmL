@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**     i  n  i  t  c  l  i  m  a  t  e  _  m  o  n  t  h  l  y  .  c              \n**/
+/**                         s  e  t  s  e  e  d  .  c                              \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
+/**     Set seed of random number generator                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,18 +12,20 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+#include "types.h"
+#include "numeric.h"
 
-void initclimate_monthly(const Climate *climate, /**< Pointer to climate data */
-                         Climbuf *climbuf,       /**< pointer to climate buffer */
-                         int cell,               /**< cell index */
-                         int month,              /**< month (0..11) */
-                         Seed seed               /**< seed for random generator */
-                        )                        /** \return void */
+void setseed(Seed seed,int start)
 {
-  if(!isdaily(climate->file_prec) && israndomprec(climate))
-    prdaily(climbuf->dval_prec,ndaymonth[month],
-            (getcellprec(climate,cell))[month],
-            (getcellwet(climate,cell))[month],seed);
-  climbuf->mtemp=climbuf->mprec=0;
-} /* of 'initclimate_monthly' */
+#ifdef USE_RAND48
+  seed[0]=13070;
+  seed[1]=start % (USHRT_MAX+1);
+  seed[2]=start / (USHRT_MAX+1);
+  seed48(seed);
+#else
+  seed[0]=start;
+#endif
+} /* of 'setseed' */

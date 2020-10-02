@@ -48,7 +48,7 @@ int iterate(Outputfile *output,  /**< Output file data */
             Input input,         /**< input data: climate, land use, water use */
             int npft,            /**< Number of natural PFT's */
             int ncft,            /**< Number of crop PFT's */
-            const Config *config /**< LPJ configuration data */
+            Config *config /**< LPJ configuration data */
            )                     /** \return last year+1 on success */
 {
   Real co2,cflux_total;
@@ -110,7 +110,7 @@ int iterate(Outputfile *output,  /**< Output file data */
       if(config->shuffle_climate)
       {
         if(isroot(*config))
-          spinup_year=(int)(drand48()*config->nspinyear);
+          spinup_year=(int)(erand48(config->seed)*config->nspinyear);
 #ifdef USE_MPI
         MPI_Bcast(&spinup_year,1,MPI_INT,0,config->comm);
 #endif

@@ -167,7 +167,8 @@ typedef struct
   int count;     /**< number of grid cells with valid soilcode */
   int fire;      /**< fire disturbance enabled */
   int firewood;  /**< fire wood usage */
-  int seed;      /**< initial seed for random number generator */
+  int seed_start;      /**< initial seed for random number generator */
+  Bool new_seed;
   Coord resolution;    /**< size of grid cell (deg) */
   Bool ispopulation;
   Bool river_routing;  /**< river routing enabled */
@@ -199,6 +200,7 @@ typedef struct
   int prescribe_landcover; /**< use input to prescribe land cover ? */
   int* mowingdays;         /**< mowing days for grassland */
   int mowingdays_size;     /**< size of mowing days array */
+  Seed seed;
 #ifdef IMAGE
   int start_imagecoupling; /**< year in which coupling to IMAGE starts
                               (e.g. 1970), set to 9999 if IMAGE is not used */

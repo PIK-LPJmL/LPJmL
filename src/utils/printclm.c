@@ -111,6 +111,10 @@ static void printclm(const char *filename,int output,int nbands,int version,
                bool2str(restartheader.landuse),
                bool2str(restartheader.river_routing),
                bool2str(restartheader.sdate_option));
+        printf("Random seed:\t");
+        for(i=0;i<NSEED;i++)
+          printf(" %d",restartheader.seed[i]);
+        putchar('\n');
       }
       else
         fprintf(stderr,"Warning: invalid restart version %d.\n",version);

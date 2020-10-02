@@ -94,10 +94,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(!grid[cell].skip)
       {
         initoutput_monthly(&grid[cell].output,npft,config->nbiomass,config->nwft,ncft);
-        /* Initialize random seed */
-        //if(israndomprec(input.climate))
-          srand48(config->seed+(config->startgrid+cell)*year*month);
-        initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month);
+        initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
 
 #if defined IMAGE && defined COUPLED
         monthlyoutput_image(&grid[cell].output,input.climate,cell,month);
@@ -161,9 +158,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 #ifdef DEBUG
           printf("day=%d cell=%d\n",day,cell);
           fflush(stdout);
-#endif
-#ifdef PERMUTE
-          srand48(config->seed+(config->startgrid+cell)*year*day);
 #endif
           update_daily(grid+cell,co2,popdens,daily,day,npft,
                        ncft,year,month,intercrop,config);
