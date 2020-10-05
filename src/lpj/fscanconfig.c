@@ -223,10 +223,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscankeywords(file,&config->irrig_scenario,"irrigation",irrigation,4,FALSE,verbose))
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
+      config->crop_resp_fix=FALSE;
       if(config->with_nitrogen)
       {
         config->fertilizer_input=TRUE;
         if(fscanbool(file,&config->fertilizer_input,"fertilizer_input",TRUE,verbose))
+          return TRUE;
+        if(fscanbool(file,&config->crop_resp_fix,"crop_resp_fix",TRUE,verbose))
           return TRUE;
       }
       config->istimber=FALSE;
@@ -309,7 +312,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR230: Cannot read soil parameter.\n",stderr);
     return TRUE;
   }
-  if((config->npft=fscanpftpar(file,&config->pftpar,scanfcn,ntypes,verbose))==NULL)
+  if((config->npft=fscanpftpar(file,&config->pftpar,scanfcn,ntypes,config))==NULL)
   {
     if(verbose)
       fputs("ERROR230: Cannot read PFT parameter.\n",stderr);

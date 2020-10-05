@@ -274,6 +274,11 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       len += fprintf(file, ", ");
       len = fputstring(file, len, "others_to_crop", 78);
     }
+    if (config->crop_resp_fix)
+    {
+      len += fprintf(file, ", ");
+      len = fputstring(file, len, "C:N fixed crop respiration", 78);
+    }
     if(config->residues_fire)
     {
       len+=fprintf(file,", ");

@@ -285,7 +285,8 @@ Real daily_agriculture(Stand *stand,                /**< stand pointer */
       output->gcgp_count[pft->par->id-config->nbiomass-config->nwft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]++;
       output->pft_gcgp[pft->par->id-config->nbiomass-config->nwft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
-    npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd,&negbm,wdf,config->with_nitrogen,&output->daily);
+    npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd,&negbm,wdf,
+                 !config->crop_resp_fix,config->with_nitrogen);
     output->mnpp+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
     output->mgpp+=gpp*stand->frac;

@@ -82,7 +82,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  const Fscanpftparfcn scanfcn[], /**< array of PFT-specific scan
                                                     functions */
                  int ntypes,          /**< number of PFT classes */
-                 Verbosity verb       /**< verbosity level (NO_ERR,ERR,VERB) */
+                 const Config *config       /**< LPJ configuration */
                 )                     /** \return array of size ntypes or NULL */
 {
   int *npft,n,l,count;
@@ -92,6 +92,8 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   Real totalroots;
   Limit cnratio;
   Bool isbiomass,iscrop,iswp;
+  Verbosity verb;
+  verb=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   if (verb>=VERB) puts("// PFT parameters");
   /* Read total number of defined PFTs */
   if(fscanarray(file,&arr,&count,TRUE,"pftpar",verb))
@@ -244,12 +246,14 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal01(verb,&item,&pft->albedo_litter,pft->name,"albedo_litter");
     fscanpftreal01(verb,&item,&pft->snowcanopyfrac,pft->name,"snowcanopyfrac");
     fscanpftreal(verb,&item,&pft->lightextcoeff,pft->name,"lightextcoeff");
-
-    /* read new phenology parameters */
-    fscanpftphenpar(verb,&item,&pft->tmin,pft->name,"tmin");
-    fscanpftphenpar(verb,&item,&pft->tmax,pft->name,"tmax");
-    fscanpftphenpar(verb,&item,&pft->light,pft->name,"light");
-    fscanpftphenpar(verb,&item,&pft->wscal,pft->name,"wscal");
+    if(config->new_phenology)
+    {
+      /* read new phenology parameters */
+      fscanpftphenpar(verb,&item,&pft->tmin,pft->name,"tmin");
+      fscanpftphenpar(verb,&item,&pft->tmax,pft->name,"tmax");
+      fscanpftphenpar(verb,&item,&pft->light,pft->name,"light");
+      fscanpftphenpar(verb,&item,&pft->wscal,pft->name,"wscal");
+    }
     fscanpftreal01(verb,&item,&pft->mort_max,pft->name,"mort_max");
 
     if(fscankeywords(&item,&pft->phenology,"phenology",phenology,5,FALSE,verb))
@@ -273,13 +277,20 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
 
     fscanpftlimit(verb,&item,&pft->temp,pft->name,"temp");
     fscanpftreal(verb,&item,&pft->soc_k,pft->name,"soc_k");
-    fscanpftreal(verb,&item,&pft->alpha_fuelp,pft->name,"alpha_fuelp");
-    fscanpftreal(verb,&item,&pft->vpd_par,pft->name,"vpd_par");
-    fscanpftreal(verb,&item,&pft->fuelbulkdensity,pft->name,"fuelbulkdensity");
-    fscanpftemissionfactor(verb,&item,&pft->emissionfactor,
-                           pft->name,"emission_factor");
+    if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    {
+      fscanpftreal(verb,&item,&pft->alpha_fuelp,pft->name,"alpha_fuelp");
+      if(config->fdi==WVPD_INDEX)
+        fscanpftreal(verb,&item,&pft->vpd_par,pft->name,"vpd_par");
+      fscanpftreal(verb,&item,&pft->fuelbulkdensity,pft->name,"fuelbulkdensity");
+      fscanpftemissionfactor(verb,&item,&pft->emissionfactor,
+                             pft->name,"emission_factor");
+    }
     fscanpftreal(verb,&item,&pft->aprec_min,pft->name,"aprec_min");
-    fscanpftreal(verb,&item,&pft->flam,pft->name,"flam");
+    if(config->fire==FIRE)
+    {
+      fscanpftreal(verb,&item,&pft->flam,pft->name,"flam");
+    }
     if(fscanstruct(&item,&subitem,"k_litter10",verb))
     {
       if(verb)

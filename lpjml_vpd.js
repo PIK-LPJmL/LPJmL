@@ -44,6 +44,7 @@
   "permafrost" : true,
   "with_nitrogen" : "no_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "const_climate" : false,
+  "shuffle_climate" : false,
 #ifdef FROM_RESTART
   "equilsoil" : false,
   "population" : true,

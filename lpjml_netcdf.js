@@ -38,6 +38,7 @@
 "radiation" : "cloudiness",
 "fire" : "fire",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
 "fdi" : "nesterov_index",   /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
+"shuffle_climate" : false,
 "firewood" : false,
 #ifdef FROM_RESTART
 "population" : false,
@@ -71,6 +72,8 @@
 "istimber": false,
 "rw_manage" : false,                  /* rain water management */
 "check_climate" : true,               /* check climate input before start */
+"others_to_crop" : true,
+"crop_resp_fix" : false,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -122,7 +125,7 @@ ID                         Fmt                    filename
 { "id" : "vegc",             "file" : { "fmt" : "cdf", "name" : "output/vegc.nc"}},
 { "id" : "soilc",            "file" : { "fmt" : "cdf", "name" : "output/soilc.nc"}},
 { "id" : "litc",             "file" : { "fmt" : "cdf", "name" : "output/litc.nc"}},
-{ "id" : "flux_estab",       "file" : { "fmt" : "cdf", "name" : "output/flux_estab.nc"}},
+{ "id" : "flux_estabc",       "file" : { "fmt" : "cdf", "name" : "output/flux_estabc.nc"}},
 { "id" : "mphen_tmin",       "file" : { "fmt" : "cdf", "name" : "output/mphen_tmin.nc"}},
 { "id" : "mphen_tmax",       "file" : { "fmt" : "cdf", "name" : "output/mphen_tmax.nc"}},
 { "id" : "mphen_light",      "file" : { "fmt" : "cdf", "name" : "output/mphen_light.nc"}},

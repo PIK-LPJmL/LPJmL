@@ -103,7 +103,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   fpc_sum(fpc_type,ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
     if(pft->par->type==TREE)
-      adjust_tree(&stand->soil.litter,pft,fpc_type[pft->par->type], FPC_TREE_MAX);
+      adjust_tree(&stand->soil.litter,pft,fpc_type[pft->par->type], param.fpc_tree_max);
   fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)
@@ -140,7 +140,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   fpc_sum(fpc_type,ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
     if(pft->par->type==TREE)
-      adjust_tree(&stand->soil.litter,pft,fpc_type[pft->par->type], FPC_TREE_MAX);
+      adjust_tree(&stand->soil.litter,pft,fpc_type[pft->par->type], param.fpc_tree_max);
   fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)

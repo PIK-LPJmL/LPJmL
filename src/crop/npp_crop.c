@@ -33,8 +33,8 @@ Real npp_crop(Pft *pft, /**< PFT variables */
               Real assim,  /**< assimilation (gC/m2) */
               Bool *negbm, /**< on return: biomass is negative */
               Real wdf,     /**< water deficit fraction */
-              int with_nitrogen, /**< with nitrogen (TRUE,FALSE) */
-              Daily_outputs *output  /**< daily output structure */
+              Bool crop_resp_var, /**< with variable crop respiration (TRUE,FALSE) */
+              int with_nitrogen /**< with nitrogen (TRUE,FALSE) */
              ) /** \return net primary productivity (gC/m2) */
 {
   Pftcrop *crop;
@@ -43,27 +43,23 @@ Real npp_crop(Pft *pft, /**< PFT variables */
   Real rosoresp,presp,gresp;
   Cropratio nc_ratio;
   Irrigation *data;
+  Daily_outputs *output;
+  output=&pft->stand->cell->output.daily;
   data=pft->stand->data;
   crop=pft->data;
   par=pft->par->data;
 /* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration, which reduces yields at high N inputs */
-#ifndef CROP_RESP_FIX
-  if(with_nitrogen && crop->ind.root.carbon>epsilon)
+  if(crop_resp_var && crop->ind.root.carbon>epsilon)
     nc_ratio.root=crop->ind.root.nitrogen/crop->ind.root.carbon;
   else
-#endif
     nc_ratio.root=par->nc_ratio.root;
-#ifndef CROP_RESP_FIX
-  if(with_nitrogen && crop->ind.so.carbon>epsilon)
+  if(crop_resp_var && crop->ind.so.carbon>epsilon)
     nc_ratio.so=crop->ind.so.nitrogen/crop->ind.so.carbon;
   else
-#endif
     nc_ratio.so=par->nc_ratio.so;
-#ifndef CROP_RESP_FIX
-  if(with_nitrogen && crop->ind.pool.carbon>epsilon)
+  if(crop_resp_var && crop->ind.pool.carbon>epsilon)
     nc_ratio.pool=crop->ind.pool.nitrogen/crop->ind.pool.carbon;
   else
-#endif
     nc_ratio.pool=par->nc_ratio.pool;
 
   rosoresp=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil
@@ -83,7 +79,7 @@ Real npp_crop(Pft *pft, /**< PFT variables */
   } 
   else 
     allocation_daily_crop(pft,npp,wdf,with_nitrogen,output);
-  if(output!=NULL && output->cft==pft->par->id &&
+  if(output->cft==pft->par->id &&
      output->irrigation==data->irrigation)
   {
     output->rroot=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil;

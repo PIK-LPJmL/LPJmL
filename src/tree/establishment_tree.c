@@ -36,7 +36,7 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
   Pfttreepar *treepar;
   tree=pft->data;
   treepar=getpftpar(pft,data);
-  if (fpc_type>=FPC_TREE_MAX || n_est<=epsilon)
+  if (fpc_type>=param.fpc_tree_max || n_est<=epsilon)
   {
     allometry_tree(pft);
     return flux_est;

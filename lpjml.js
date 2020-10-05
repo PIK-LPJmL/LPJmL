@@ -79,6 +79,7 @@
   "grass_harvest_options" : false,
   "others_to_crop" : true,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
   "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
+  "crop_resp_fix" : false,             /* variable C:N ratio for crop respiration */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

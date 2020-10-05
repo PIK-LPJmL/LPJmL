@@ -116,6 +116,7 @@ typedef struct
   char *layer_index;
   Bool crop_irrigation;
   int with_nitrogen;      /**< enable nitrogen cycle */
+  Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   Bool fertilizer_input; 
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
   Bool landuse_restart;   /**< land use enabled in restart file */
@@ -222,6 +223,8 @@ extern void fprintconfig(FILE *,const Config *,int,int);
 extern Bool filesexist(Config,Bool);
 extern long long outputfilesize(const Config *);
 extern Variable *fscanoutputvar(LPJfile *,int,Verbosity);
+extern int* fscanpftpar(LPJfile *,Pftpar **,const Fscanpftparfcn [],int,const Config *);
+extern void fprintpftpar(FILE *,const Pftpar [],const Config *);
 extern void fprintoutputvar(FILE *,const Variable *,int);
 extern void freeoutputvar(Variable *,int);
 extern Bool fscanoutput(LPJfile *,Config *,int);

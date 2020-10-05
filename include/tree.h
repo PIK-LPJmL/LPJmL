@@ -21,11 +21,6 @@
 
 #define reinickerp 1.6
 #define wooddens 2e5      /* wood density (gC/m3) */
-#ifdef USE_LANDCOVER
-#define FPC_TREE_MAX 0.99
-#else
-#define FPC_TREE_MAX 0.95 /* maximum foliage projective cover for trees */
-#endif
 
 /* Declaration of datatypes */
 

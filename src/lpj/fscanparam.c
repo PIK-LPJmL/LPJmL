@@ -98,6 +98,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.k_max,"k_max");
   fscanparamreal(&f,&param.k_2,"k_2");
   fscanparamreal(&f,&param.k_mort,"k_mort");
+  fscanparamreal01(&f,&param.fpc_tree_max,"fpc_tree_max");
   fscanparamreal(&f,&param.temp_response_a,"temp_response_a");
   fscanparamreal(&f,&param.temp_response_b,"temp_response_b");
   fscanparamreal(&f,&param.p,"p");
@@ -111,9 +112,12 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.T_m,"T_m");
   fscanparamreal(&f,&param.T_0,"T_0");
   fscanparamreal(&f,&param.T_r,"T_r");
-  fscanparamreal(&f,&param.firedura,"firedura");
-  fscanparamreal(&f,&param.fire_intens,"fire_intens");
-  fscanparamreal(&f,&param.hum_ign,"hum_ign");
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  {
+    fscanparamreal(&f,&param.firedura,"firedura");
+    fscanparamreal(&f,&param.fire_intens,"fire_intens");
+    fscanparamreal(&f,&param.hum_ign,"hum_ign");
+  }
   if(config->withlanduse!=NO_LANDUSE)
   {
     fscanparamreal(&f,&param.lsuha,"lsuha");

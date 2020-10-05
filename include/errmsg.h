@@ -56,6 +56,7 @@
 #define NEGATIVE_SOIL_NH4_ERR 36
 #define INVALID_NITROGEN_BALANCE_ERR 37
 #define INVALID_CLIMATE_ERR 38
+#define INVALID_FPC_ERR 39
 
 /* Definition of macros */
 
