@@ -126,6 +126,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
     trf[l]=min(max(1-psi/1500,0),1);
 #else
     trf[l]=pft->stand->soil.w[l];
+#endif
   }
 
   wr=roots=0;
