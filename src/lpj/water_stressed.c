@@ -61,7 +61,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
                     Real par,  /**< photosynthetic active radiation (J/m2/day) */
                     Real daylength, /**< Daylength (h) */
                     Real *wdf,           /**< water deficit fraction (0..100) */
-                    Bool permafrost
+                    const Config *config /**< LPJ configuration */
                    ) /** \return gross primary productivity (gC/m2) */
 {
   int l,i; 
@@ -72,11 +72,13 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
   Real layer,root_u,root_nu;
   Real freeze_depth,thaw_depth;
   Bool isless=FALSE;
+  Real A,B,psi;
+  Real trf[LASTLAYER];
 
   wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   forrootsoillayer(l)
   rootdist_n[l]=pft->par->rootdist[l];
-  if(permafrost)
+  if(config->permafrost)
   {
     /*adjust root layer*/
     if(layerbound[BOTTOMLAYER]>pft->stand->soil.mean_maxthaw &&
@@ -109,7 +111,16 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
   wr=roots=0;
   for(l=0;l<LASTLAYER;l++)
   {
-    wr+=rootdist_n[l]*pft->stand->soil.w[l];
+    if(config->new_trf)
+    {
+      B=(log(1500) - log(33))/(log(pft->stand->soil.par->wfc) - log(pft->stand->soil.par->wpwp));
+      A=exp(log(33) + B*log(pft->stand->soil.par->wfc));
+      psi=A*pow(pft->stand->soil.par->wpwp+pft->stand->soil.w[l]*pft->stand->soil.par->whc[l],-B);
+      trf[l]=min(max(1-psi/1500,0),1);
+    }
+    else
+      trf[l]=pft->stand->soil.w[l];
+    wr+=rootdist_n[l]*trf[l];
     roots+=rootdist_n[l];
   }
 
@@ -160,7 +171,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variabels */
   aet=(wr>0) ? min(supply,demand)/wr*pft->fpc : 0; 
   for (l=0;l<LASTLAYER;l++)
   {
-    aet_layer[l]+=aet*rootdist_n[l]*pft->stand->soil.w[l];
+    aet_layer[l]+=aet*rootdist_n[l]*trf[l];
     if (aet_layer[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
     {
       aet_layer[l]=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l];
