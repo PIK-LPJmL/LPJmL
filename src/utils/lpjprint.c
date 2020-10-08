@@ -94,7 +94,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
            config->checkpoint_restart_filename,config->checkpointyear);
   for(i=0;i<config->ngridcell;i++)
   {
-    if(readcelldata(celldata,&grid.coord,&soilcode,&grid.discharge.runoff2ocean_coord,i,config))
+    if(readcelldata(celldata,&grid.coord,&soilcode,i,config))
       break;
     if(config->countrypar!=NULL)
     {
