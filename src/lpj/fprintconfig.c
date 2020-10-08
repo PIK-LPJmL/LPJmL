@@ -378,8 +378,6 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     if(config->withlanduse!=NO_LANDUSE)
       printinputfile(file,"neighbour",&config->neighb_irrig_filename,width);
   }
-  if(config->sim_id==LPJML_FMS)
-    printinputfile(file,"runoff2ocean_map",&config->runoff2ocean_filename,width);
   if(config->wateruse)
     printinputfile(file,"wateruse",&config->wateruse_filename,width);
   if(width)

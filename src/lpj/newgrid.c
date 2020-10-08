@@ -491,7 +491,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   for(i=0;i<config->ngridcell;i++)
   {
     /* read cell coordinate and soil code from file */
-    if(readcelldata(celldata,&grid[i].coord,&soilcode,&grid[i].discharge.runoff2ocean_coord,i,config))
+    if(readcelldata(celldata,&grid[i].coord,&soilcode,i,config))
       return NULL;
 
     if(config->countrypar!=NULL)
