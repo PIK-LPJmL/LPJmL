@@ -121,21 +121,23 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   /* storage organs growth */
   /* scale HIopt according to LAImax */
   fhiopt=100*crop->fphu/(100*crop->fphu+exp(11.1-10.0*crop->fphu));
-  if(crop->fphu>0)
-  { /* avoid memory leakage when called from new_crop.c */
-    if(pft->par->id==MAIZE)
-      hiopt=min(1,par->hiopt*(0.8+0.2/4*(pft->stand->cell->ml.manage.laimax[pft->par->id]-1)));
-    else
-      hiopt=par->hiopt*(0.8+0.2/6*(pft->stand->cell->ml.manage.laimax[pft->par->id]-1));
-    hi=(hiopt>1.0) ? fhiopt*(hiopt-1.0)+1.0 : fhiopt*hiopt;
-  }
-  else
+
+//
+//  if(crop->fphu>0)
+//  { /* avoid memory leakage when called from new_crop.c */
+//    if(pft->par->id==MAIZE)
+//      hiopt=min(1,par->hiopt*(0.8+0.2/4*(pft->stand->cell->ml.manage.laimax[pft->par->id]-1)));
+//    else
+//      hiopt=par->hiopt*(0.8+0.2/6*(pft->stand->cell->ml.manage.laimax[pft->par->id]-1));
+//    hi=(hiopt>1.0) ? fhiopt*(hiopt-1.0)+1.0 : fhiopt*hiopt;
+//  }
+//  else
     hi=(par->hiopt>1.0) ? fhiopt*(par->hiopt-1.0)+1.0 : fhiopt*par->hiopt;
   himind=(par->himin>1.0) ? fhiopt*(par->himin-1.0)+1.0 : fhiopt*par->himin;
-  /*
+  
   if(wdf>=0)
     hi=(hi-himind)*wdf/(wdf+exp(6.13-0.0883*wdf))+himind;
-  */  
+
   if((crop->ind.leaf.carbon+crop->ind.root.carbon)<pft->bm_inc.carbon)
   {
     crop->ind.so.carbon=(par->hiopt>1.0) ? (1.0-1.0/hi)*(1.0-froot)*pft->bm_inc.carbon : hi*(1.0-froot)*pft->bm_inc.carbon;
