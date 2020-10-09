@@ -39,9 +39,6 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
                      )               /** \return pointer to cell data or NULL */
 {
   Celldata celldata;
-  Header header;
-  String headername;
-  int version;
   float lon,lat;
   celldata=new(struct celldata);
   if(celldata==NULL)
