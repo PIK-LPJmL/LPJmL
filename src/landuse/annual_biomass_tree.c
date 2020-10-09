@@ -265,9 +265,10 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
       return TRUE;
   }
   else
+  {
     stand->cell->output.soil_storage+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
-  biomass_tree->age++;
-  biomass_tree->growing_time++;
-
+    biomass_tree->age++;
+    biomass_tree->growing_time++;
+  }
   return FALSE;
 } /* of 'annual_biomass_tree' */
