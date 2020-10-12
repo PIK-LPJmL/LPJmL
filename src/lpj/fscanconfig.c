@@ -144,7 +144,19 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if (verbose>=VERB) puts("// I. type section");
   fscanbool2(file,&israndom,"random_prec");
   config->seed_start=RANDOM_SEED;
-  if(fscanint(file,&config->seed_start,"random_seed",TRUE,verbose))
+  if(isstring(file,"random_seed"))
+  {
+    fscanstring(file,name,"random_seed",FALSE,verbose);
+    if(!strcmp(name,"random_seed"))
+      config->seed_start=RANDOM_SEED;
+    else
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR233: Invalid string '%s' for random_seed, must be 'random_seed' or number.\n",name);
+      return TRUE;
+    }
+  }
+  else if(fscanint(file,&config->seed_start,"random_seed",TRUE,verbose))
     return TRUE;
   if(config->seed_start==RANDOM_SEED)
     config->seed_start=time(NULL);
@@ -198,6 +210,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->rw_manage=FALSE;
   config->const_climate=FALSE;
   if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
+    return TRUE;
+  config->storeclimate=TRUE;;
+  if(fscanbool(file,&config->storeclimate,"store_climate",TRUE,verbose))
     return TRUE;
   config->shuffle_climate=FALSE;
   if(fscanbool(file,&config->shuffle_climate,"shuffle_climate",TRUE,verbose))

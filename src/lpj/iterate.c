@@ -55,9 +55,7 @@ int iterate(Outputfile *output,  /**< Output file data */
   Flux flux;
   int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year;
   Bool rc;
-#ifdef STORECLIMATE
   Climatedata store,data_save;
-#endif
 
 #if defined IMAGE && defined COUPLED
   Real finish;
@@ -66,8 +64,7 @@ int iterate(Outputfile *output,  /**< Output file data */
   firstspinupyear=(config->isfirstspinupyear) ?  config->firstspinupyear : input.climate->firstyear;
   if(isroot(*config) && config->nspinup && !config->isfirstspinupyear)
     printf("Spinup using climate starting from year %d\n",input.climate->firstyear);
-#ifdef STORECLIMATE
-  if(config->nspinup)
+  if(config->storeclimate && config->nspinup)
   {
     /* climate for the first nspinyear years is stored in memory
        to avoid reading repeatedly from disk */
@@ -76,7 +73,6 @@ int iterate(Outputfile *output,  /**< Output file data */
 
     data_save=input.climate->data;
   }
-#endif
   if(config->initsoiltemp)
   {
     rc=initsoiltemp(input.climate,grid,config);
@@ -117,22 +113,19 @@ int iterate(Outputfile *output,  /**< Output file data */
       }
       else
         spinup_year=(year-config->firstyear+config->nspinup) % config->nspinyear;
-#ifdef STORECLIMATE
-      moveclimate(input.climate,&store,spinup_year);
-#else
-      getclimate(input.climate,grid,firstspinupyear+spinup_year,config);
-#endif
+      if(config->storeclimate)
+        moveclimate(input.climate,&store,spinup_year);
+      else
+        getclimate(input.climate,grid,firstspinupyear+spinup_year,config);
     }
     else
     {
-#ifdef STORECLIMATE
-      if(year==input.climate->firstyear && config->nspinup)
+      if(config->storeclimate && year==input.climate->firstyear && config->nspinup)
       {
         /* restore climate data pointers to initial data */
         input.climate->data=data_save;
         freeclimatedata(&store); /* free data not used anymore */
       }
-#endif
       /* read climate from files */
 #if defined IMAGE && defined COUPLED
       if(year>=config->start_imagecoupling)
@@ -289,14 +282,12 @@ int iterate(Outputfile *output,  /**< Output file data */
       }
     }
   } /* of 'for(year=...)' */
-#ifdef STORECLIMATE
-  if(config->nspinup && (config->lastyear<input.climate->firstyear || year<input.climate->firstyear))
+  if(config->storeclimate && config->nspinup && (config->lastyear<input.climate->firstyear || year<input.climate->firstyear))
   {
     /* restore climate data pointers to initial data */
     input.climate->data=data_save;
     freeclimatedata(&store); /* free data not used anymore */
   }
-#endif
   if(year>config->lastyear && config->ischeckpoint)
     unlink(config->checkpoint_restart_filename); /* delete checkpoint file */
 

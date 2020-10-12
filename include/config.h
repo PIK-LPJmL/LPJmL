@@ -125,6 +125,7 @@ typedef struct
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
   Bool istimber;
+  Bool storeclimate;           /**< store climate data in spin-up phase */
   Bool const_climate;           /**< constant climate */
   Bool shuffle_climate;           /**< shuffle spinup climate */
   Bool const_deposition;        /**< constant N deposition */
