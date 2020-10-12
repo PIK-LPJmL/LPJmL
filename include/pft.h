@@ -217,9 +217,6 @@ extern Real interception(Real *,const Pft *,Real,Real);
 extern void initgdd(Real [],int);
 extern void updategdd(Real [],const Pftpar [],int,Real);
 extern Real gp(Pft *,Real,Real,Real,Real);
-extern Real water_stressed(Pft *,Real [LASTLAYER],Real,Real,
-                           Real,Real *,Real *,Real *,Real,Real,
-                           Real,Real,Real,Real *,Bool);
 extern Bool fwritepft(FILE *,const Pft *);
 extern void fprintpft(FILE *,const Pft *);
 extern Bool freadpft(FILE *,Stand *,Pft *,const Pftpar[],int,Bool);

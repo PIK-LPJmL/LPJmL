@@ -86,6 +86,8 @@
 #define LANDCOVERFPC 2
 #define OLD_PHENOLOGY 0
 #define NEW_PHENOLOGY 1
+#define OLD_TRF 0
+#define NEW_TRF 1
 #define NO_POPULATION 0
 #define POPULATION 1
 #define NO_FIREWOOD 0

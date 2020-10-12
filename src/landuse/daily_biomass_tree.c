@@ -150,7 +150,7 @@ Real daily_biomass_tree(Stand *stand, /**< stand pointer */
  */
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
-                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,config->permafrost);
+                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,config);
    if(stand->cell->ml.landfrac[data->irrigation].biomass_tree>0.0 &&
       gp_pft[getpftpar(pft,id)]>0.0)
    {

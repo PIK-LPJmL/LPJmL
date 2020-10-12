@@ -206,6 +206,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     return TRUE;
   }
   fscanbool2(file,&config->new_phenology,"new_phenology");
+  config->new_trf=FALSE;
+  if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
+    return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
   config->reservoir=FALSE;
 #ifdef IMAGE

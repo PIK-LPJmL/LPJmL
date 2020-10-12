@@ -259,7 +259,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
 
     gpp=water_stressed(pft,aet_stand,gp_stand,gp_stand_leafon,
                        gp_pft[getpftpar(pft,id)],&gc_pft,&rd,
-                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,config->permafrost);
+                       &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,config);
     if(pft->par->id==output->daily.cft && data->irrigation==output->daily.irrigation)
       output_daily_crop(&output->daily,pft,gpp,rd);
 
