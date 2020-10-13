@@ -74,6 +74,8 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Real layer,root_u,root_nu;
   Real adtmm;
   Real gc_new;
+  Real A,B,psi;
+  Real trf[LASTLAYER];
   Irrigation *irrig;
 
   gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
@@ -87,19 +89,26 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   }
   wr=0;
   for(l=0;l<LASTLAYER;l++)
-    wr+=rootdist_n[l]*pft->stand->soil.w[l];
+  {
+    if(config->new_trf)
+    {
+      B=(log(1500) - log(33))/(log(pft->stand->soil.par->wfc) - log(pft->stand->soil.par->wpwp));
+      A=exp(log(33) + B*log(pft->stand->soil.par->wfc));
+      psi=A*pow(pft->stand->soil.par->wpwp+pft->stand->soil.w[l]*pft->stand->soil.par->whc[l],-B);
+      trf[l]=min(max(1-psi/1500,0),1);
+    }
+    else
+      trf[l]=pft->stand->soil.w[l];
+    wr+=rootdist_n[l]*trf[l];
+  }
 
   if(*wet>0.99)
     *wet=0.99;
 
   if(pft->stand->type->landusetype==AGRICULTURE)
-  {
     supply=pft->par->emax*wr*(1-exp(-0.04*((Pftcrop *)pft->data)->ind.root.carbon));
-  }
   else
-  {
     supply=pft->par->emax*wr*pft->phen;
-  }
 
   supply_pft=supply*pft->fpc;
   demand=(gp_stand>0) ? (1.0-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gp_stand) : 0;
@@ -134,16 +143,17 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     for (l=0;l<LASTLAYER;l++)
     {
       aet_frac=1;
-      if(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
-        aet_frac=(pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])/(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc);
-      aet_tmp[l]=aet_layer[l]+aet*rootdist_n[l]*pft->stand->soil.w[l]*aet_frac;
+      if(aet*rootdist_n[l]*trf[l]/pft->fpc>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
+        aet_frac=(pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])/(aet*rootdist_n[l]*trf[l]/pft->fpc);
+      aet_tmp[l]=aet_layer[l]+aet*rootdist_n[l]*trf[l]*aet_frac;
       if (aet_tmp[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
       {
         aet_cor+=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l]-aet_layer[l];
-        if(aet_cor<epsilon) aet_cor=0;
+        if(aet_cor<epsilon)
+          aet_cor=0;
       }
       else
-        aet_cor+=aet*rootdist_n[l]*pft->stand->soil.w[l]*aet_frac;
+        aet_cor+=aet*rootdist_n[l]*trf[l]*aet_frac;
     }
   }
   else
@@ -197,10 +207,10 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
       demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
       if(gc_new-gc>0.01 &&  demand-supply_pft>0.1)
       {
-         gc=(param.GM*param.ALPHAM)*supply_pft/((1.0-*wet)*eeq*param.ALPHAM-supply_pft);
-         if(gc<0)
-           gc=0;
-         gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft));
+        gc=(param.GM*param.ALPHAM)*supply_pft/((1.0-*wet)*eeq*param.ALPHAM-supply_pft);
+        if(gc<0)
+          gc=0;
+        gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft));
         data.fac=gpd/1.6*ppm2bar(co2);
         data.vmax=pft->vmax;
         lambda=bisect((Bisectfcn)fcn,0.02,lambda,&data,0,EPSILON,20,&iter);
@@ -233,7 +243,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     agd=0;
   for (l=0;l<LASTLAYER;l++)
   {
-    aet_layer[l]+=aet*rootdist_n[l]*pft->stand->soil.w[l];
+    aet_layer[l]+=aet*rootdist_n[l]*trf[l];
     if (aet_layer[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
       aet_layer[l]=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l];
   }

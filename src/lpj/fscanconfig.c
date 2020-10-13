@@ -198,6 +198,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->new_phenology,"new_phenology");
+  config->new_trf=FALSE;
+  if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
+    return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
   fscanbool2(file,&config->equilsoil,"equilsoil");
   config->reservoir=FALSE;
