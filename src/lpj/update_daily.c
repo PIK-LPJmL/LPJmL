@@ -85,21 +85,33 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& cell->afire_frac<1)
       dailyfire_stand(stand,&livefuel,popdensity,&climate,config->ntypes,config->prescribe_burntarea);
-    snowrunoff=snow(&stand->soil,&climate.prec,&melt,
-                    climate.temp,&temp_bs,&evap)*stand->frac;
-    cell->discharge.drunoff+=snowrunoff;
-    cell->output.mevap+=evap*stand->frac; /* evap from snow runoff*/
-    prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
+    if(config->permafrost)
+    {
+      snowrunoff=snow(&stand->soil,&climate.prec,&melt,
+                      climate.temp,&temp_bs,&evap)*stand->frac;
+      cell->discharge.drunoff+=snowrunoff;
+      cell->output.mevap+=evap*stand->frac; /* evap from snow runoff*/
+      prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
                     +melt*1e-3*(T_zero-stand->soil.temp[TOPLAYER]))*c_water;
-    stand->soil.perc_energy[TOPLAYER]=prec_energy;
+      stand->soil.perc_energy[TOPLAYER]=prec_energy;
 #ifdef MICRO_HEATING
       /*THIS IS DEDICATED TO MICROBIOLOGICAL HEATING*/
-    foreachsoillayer(l)
-      stand->soil.micro_heating[l]=m_heat*stand->soil.decomC[l];
-    stand->soil.micro_heating[0]+=m_heat*stand->soil.litter.decomC;
+      foreachsoillayer(l)
+        stand->soil.micro_heating[l]=m_heat*stand->soil.decomC[l];
+      stand->soil.micro_heating[0]+=m_heat*stand->soil.litter.decomC;
 #endif
 
-    soiltemp(&stand->soil,temp_bs,config->permafrost);
+      soiltemp(&stand->soil,temp_bs,config->permafrost);
+    }
+    else
+    {
+      stand->soil.temp[0]=soiltemp_lag(&stand->soil,&cell->climbuf);
+      for(l=1;l<NSOILLAYER;l++)
+        stand->soil.temp[l]=stand->soil.temp[0];
+      snowrunoff=snow_old(&stand->soil.snowpack,&climate.prec,&melt,climate.temp)*stand->frac;
+      cell->discharge.drunoff+=snowrunoff;
+    }
+
     foreachsoillayer(l)
       gtemp_soil[l]=temp_response(stand->soil.temp[l]);
     foreachsoillayer(l)
