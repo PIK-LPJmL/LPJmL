@@ -43,6 +43,7 @@
   "river_routing" : false,
   "permafrost" : true,
   "with_nitrogen" : "lim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
   "const_deposition" : false,
@@ -80,6 +81,8 @@
   "others_to_crop" : true,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
   "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
   "crop_resp_fix" : false,             /* variable C:N ratio for crop respiration */
+                                       /* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration,
+                                          which reduces yields at high N inputs */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
