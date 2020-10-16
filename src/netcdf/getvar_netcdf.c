@@ -96,6 +96,8 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
       /* if unit for precipitation is mm convert it to kg/m2/day */
       if(!isdaily(*file) && !strcmp(units,"kg/m2/day"))
         units="kg/m2/month";
+      if(!isdaily(*file) && !strcmp(units,"g/m2/day"))
+        units="g/m2/month";
       if(!strcmp(fromstr,"mm")|| !strcmp(fromstr,"mm/day"))
       {
          free(fromstr);
