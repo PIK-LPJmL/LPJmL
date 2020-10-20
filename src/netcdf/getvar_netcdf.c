@@ -39,6 +39,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
   char *fromstr,*newstr;
   size_t len;
   utUnit from,to;
+  Bool isprec;
 #endif
   float f;
   double d;
@@ -123,8 +124,14 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         fromstr[len]='\0';
       }
       /* if unit for precipitation is mm convert it to kg/m2/day */
-      if(!isdaily(*file) && !strcmp(units,"kg/m2/day"))
-        units="kg/m2/month";
+      if(!strcmp(units,"kg/m2/day"))
+      {
+        isprec=TRUE;
+        if(!isdaily(*file))
+          units="kg/m2/month";
+      }
+      else
+        isprec=FALSE;
       if(!strcmp(fromstr,"mm")|| !strcmp(fromstr,"mm/day"))
       {
          free(fromstr);
@@ -152,7 +159,7 @@ Bool getvar_netcdf(Climatefile *file,    /**< climate data file */
         }
         else
         {
-          if(strstr(units,"day")!=NULL && !isdaily(*file))
+          if(isprec && strstr(units,"day")!=NULL && !isdaily(*file))
           {
             newstr=malloc(strlen(units)+3);
             if(newstr==NULL)
