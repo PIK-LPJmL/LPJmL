@@ -3,7 +3,6 @@ rm(list=ls(all=TRUE))
 gc()
 
 shellarg <- commandArgs(TRUE)
-
 # ----------------------------------------- #
 
 require(raster)
@@ -22,12 +21,13 @@ out.path <- "/p/projects/macmit/data/GGCMI/AgMIP.output/LPJmL/phase3b"
 
 # ----------------------------------------- #
 
-climate=c("gfdl-esm4","ipsl-cm6a-lr","mpi-esm1-2-hr","mri-esm2-0","ukesm1-0-ll")#[5]
+climate=c("gfdl-esm4","ipsl-cm6a-lr","mpi-esm1-2-hr","mri-esm2-0","ukesm1-0-ll")#[c(2:5)]
 
-climate_scenarios=c("picontrol","historical","ssp126","ssp585")[2:4]
-start_years=c(1850,1850,2015,2015)[2:4]
-first_years=c(1850,1850,2015,2015)[2:4]
-end_years=c(2100,2014,2100,2100)[2:4]
+sel <- c(5)
+climate_scenarios=c("picontrol","historical","ssp126","ssp585","ssp370")[sel]
+start_years=c(1850,1850,2015,2015,2015)[sel]
+first_years=c(1850,1850,2015,2015,2015)[sel]
+end_years=c(2100,2014,2100,2100,2100)[sel]
 
 socioecon=c("histsoc","2015soc")[2]
 co2=c("default","2015co2","1850co2")[1]
@@ -179,7 +179,7 @@ for(cs in 1:length(climate_scenarios))
         parloop <- foreach(cr=c(1:length(crops)), .errorhandling='pass', .verbose=FALSE, .export='message') %dopar% {
           
           print(paste("...",irrigs[ir],crops[cr]))
-          
+          cat("reading",paste(data.path,"/syear.bin",sep=""),"\n")
           # ---------------------------- #
           # reading lpjml bin data
           # ---------------------------- #
@@ -378,6 +378,7 @@ for(cs in 1:length(climate_scenarios))
             ncv <- ncvar_def(write_var,units[va],list(dim_lon,dim_lat,dim_time),mv,longname=paste(irrigs[ir],cropf[cr],longnames[va]),compression=9)
             
             # create files
+            cat("create",fn,"\n")
             ncf <- nc_create(fn,list(ncv))
             
             # commenting
