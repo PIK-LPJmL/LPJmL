@@ -3,6 +3,7 @@ rm(list=ls(all=TRUE))
 gc()
 
 shellarg <- commandArgs(TRUE)
+
 # ----------------------------------------- #
 
 require(raster)
@@ -17,20 +18,22 @@ registerDoSEQ() # tells foreach to use sequential mode
 NODATA <- 1e20
 ncell <- 67420
 sim.path <- "/p/projects/macmit/data/GGCMI/phase3/raw_output2/phase3b"
-out.path <- "/p/projects/macmit/data/GGCMI/AgMIP.output/LPJmL/phase3b"
+out.path <- "/p/projects/macmit/data/GGCMI/AgMIP.output/LPJmL/phase3b_matureonly"
 
 # ----------------------------------------- #
 
-climate=c("gfdl-esm4","ipsl-cm6a-lr","mpi-esm1-2-hr","mri-esm2-0","ukesm1-0-ll")#[c(2:5)]
+climate=c("gfdl-esm4","ipsl-cm6a-lr","mpi-esm1-2-hr","mri-esm2-0","ukesm1-0-ll")
 
-sel <- c(5)
-climate_scenarios=c("picontrol","historical","ssp126","ssp585","ssp370")[sel]
-start_years=c(1850,1850,2015,2015,2015)[sel]
-first_years=c(1850,1850,2015,2015,2015)[sel]
-end_years=c(2100,2014,2100,2100,2100)[sel]
+set_arg=as.numeric(strsplit(shellarg,"_")[[1]][1])+1
+var_arg=as.numeric(strsplit(shellarg,"_")[[1]][2])+1
+
+climate_scenarios=c("picontrol","historical","ssp126","ssp126","ssp585","ssp585")[set_arg]
+start_years=c(1850,1850,2015,2015,2015,2015)[set_arg]
+first_years=c(1850,1850,2015,2015,2015,2015)[set_arg]
+end_years=c(2100,2014,2100,2100,2100,2100)[set_arg]
+co2=c("1850co2","default","2015co2","default","2015co2","default")[set_arg]
 
 socioecon=c("histsoc","2015soc")[2]
-co2=c("default","2015co2","1850co2")[1]
 
 # ----------------------------------------- #
 
@@ -42,11 +45,9 @@ bands <- c(1,2,3,4,5,6)
 crops <- c("wwh","swh","mai","ri1","ri2","soy")
 cropf <- c("winter_wheat","spring_wheat","maize","rice1","rice2","soy")
 
-all_variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")
-var_sel<- which(all_variables==shellarg) # indices of variables to be processed
-variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")[var_sel]
-units <- c("t ha-1 gs-1 (dry matter)","kg m-2 gs-1","day of year","calendar year","days from planting","calendar year","kg m-3")[var_sel]
-longnames <- c("crop yields","potential irrigation requirements","actual planting date","planting year","days from planting to maturity","harvest year","soil water content")[var_sel]
+variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")[var_arg]
+units <- c("t ha-1 gs-1 (dry matter)","kg m-2 gs-1","day of year","calendar year","days from planting","calendar year","kg m-3")[var_arg]
+longnames <- c("crop yields","potential irrigation requirements","actual planting date","planting year","days from planting to maturity","harvest year","soil water content")[var_arg]
 
 hlimit=TRUE # sets yields to zero if achieved husum < 90% prescribed husum 
 
@@ -148,20 +149,21 @@ close(ff)
 
 for(cs in 1:length(climate_scenarios))
 {
+  
   climate_scenario <- climate_scenarios[cs]
   start.year=start_years[cs]
   first.year=first_years[cs]
   end.year=end_years[cs]
   nyear=length(start.year:end.year)
   
-# ---------------------- #
-# climate forcing loop
-# ---------------------- #
+  # ---------------------- #
+  # climate forcing loop
+  # ---------------------- #
 
   for(cl in 1:length(climate)) {
     
     print(" # ------------------------------------------- # ")
-    print(paste(" # processing ", climate[cl]))
+    print(paste(" # processing ", climate_scenario, climate[cl]))
     print(" # ------------------------------------------- # ")
     
     
@@ -179,7 +181,7 @@ for(cs in 1:length(climate_scenarios))
         parloop <- foreach(cr=c(1:length(crops)), .errorhandling='pass', .verbose=FALSE, .export='message') %dopar% {
           
           print(paste("...",irrigs[ir],crops[cr]))
-          cat("reading",paste(data.path,"/syear.bin",sep=""),"\n")
+          #cat("reading",paste(data.path,"/syear.bin",sep=""),"\n")
           # ---------------------------- #
           # reading lpjml bin data
           # ---------------------------- #
@@ -332,9 +334,9 @@ for(cs in 1:length(climate_scenarios))
             band_id=ifelse(ir>1,bands[cr]+15,bands[cr])
             for(y in 1:nyear) {
               
-              dump=ifelse(hu[,y]<0.90*hu_ref[,band_id],1,0)
+              dump=ifelse(hu[,y]<hu_ref[,band_id],1,0)
               
-              if("yield"%in%variables) var[which(dump==1),y]=0 # delete yields if less than 90% of husum is reached
+              if("yield"%in%variables) var[which(dump==1),y]=NA # delete yields if less than 90% of husum is reached
               if("matyday"%in%variables) var[which(dump==1),y]=var[which(dump==1),y]*-1 # document the deletion of yield by setting matyday to negatve values
               
             }
