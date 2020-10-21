@@ -102,10 +102,10 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     stand->cell->output.fpc_bft[getpftpar(pft, id)-(npft-config->nbiomass-config->nwft-config->ngrass)+grassland->irrigation.irrigation*(config->nbiomass+2*config->ngrass)]=pft->fpc;
-    stand->cell->output.cft_veg[npft-config->nbiomass-config->nwft+rothers(ncft)+grassland->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
-    stand->cell->output.cft_veg[npft-config->nbiomass-config->nwft+rmgrass(ncft)+grassland->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
-    stand->cell->output.cft_veg[npft-config->nbiomass-config->nwft+rothers(ncft)+grassland->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen+=vegn_sum(pft);
-    stand->cell->output.cft_veg[npft-config->nbiomass-config->nwft+rmgrass(ncft)+grassland->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen+=vegn_sum(pft);
+    stand->cell->output.cft_veg[rothers(ncft)+grassland->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
+    stand->cell->output.cft_veg[rmgrass(ncft)+grassland->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
+    stand->cell->output.cft_veg[rothers(ncft)+grassland->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen+=vegn_sum(pft);
+    stand->cell->output.cft_veg[rmgrass(ncft)+grassland->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen+=vegn_sum(pft);
   }
 
   free(present);
