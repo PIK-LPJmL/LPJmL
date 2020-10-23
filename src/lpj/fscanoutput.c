@@ -60,9 +60,11 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
       return TRUE;
   }
   config->float_grid=FALSE;
-  if(fscanbool(file,&config->float_grid,"float_grid",TRUE,verbosity))
-    return TRUE;
-  
+  if(iskeydefined(file,"float_grid"))
+  {
+    if(fscanbool(file,&config->float_grid,"float_grid",FALSE,verbosity))
+      return TRUE;
+  }
   if(iskeydefined(file,"outpath"))
   {
     if(fscanstring(file,outpath,"outpath",FALSE,verbosity))

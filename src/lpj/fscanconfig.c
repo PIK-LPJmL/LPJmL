@@ -149,7 +149,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fprintf(stderr,"ERROR219: Invalid radiation model %d in line %d of '%s'.\n",config->with_radiation,getlinecount(),getfilename());
     return TRUE;
   }
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE && config->with_radiation)
   {
     if(verbose)
@@ -208,6 +208,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   fscanbool2(file,&config->new_phenology,"new_phenology");
   fscanbool2(file,&config->river_routing,"river_routing");
   config->reservoir=FALSE;
+#ifdef IMAGE
+  config->groundwater_irrig = NO_GROUNDWATER_IRRIG;
+  config->aquifer_irrig = NO_AQUIFER_IRRIG;
+#endif
   fscanbool2(file,&config->permafrost,"permafrost");
   config->sdate_option=NO_FIXED_SDATE;
   config->rw_manage=FALSE;
@@ -221,8 +225,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                 config->withlanduse,getlinecount(),getfilename());
       return TRUE;
     }
-    if(config->river_routing)
-      fscanbool2(file,&config->reservoir,"reservoir");
     if(config->withlanduse!=NO_LANDUSE)
     {
       if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS)
@@ -264,6 +266,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       }
       if(config->laimax_interpolate==CONST_LAI_MAX)
         fscanreal2(file,&config->laimax,"laimax");
+      if(config->river_routing){
+        fscanbool2(file,&config->reservoir,"reservoir");
+#ifdef IMAGE
+        fscanbool(file,&config->groundwater_irrig,"groundwater_irrigation", TRUE,verbose);
+        fscanbool(file,&config->aquifer_irrig,"aquifer_irrigation",TRUE,verbose);
+#endif
+      }
       grassfix=FALSE;
       if(fscanbool(file,&grassfix,"grassland_fixed_pft",TRUE,verbose))
         return TRUE;
@@ -330,6 +339,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   config->ntypes=ntypes;
   config->nbiomass=getnbiomass(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
+  config->nwft=getnwft(config->pftpar, config->npft[GRASS] + config->npft[TREE]);
   /* Read soil paramater array */
   if(config->withlanduse!=NO_LANDUSE)
   {
@@ -435,18 +445,18 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       scanclimatefilename(&input,&config->river_filename,config->inputdir,FALSE,"river");
     }
-    if(config->reservoir)
-    {
-      scanclimatefilename(&input,&config->elevation_filename,config->inputdir,FALSE,"elevation");
-      scanfilename(&input,&config->reservoir_filename,config->inputdir,"reservoir");
-    }
     if(config->withlanduse!=NO_LANDUSE)
     {
       scanclimatefilename(&input,&config->neighb_irrig_filename,config->inputdir,FALSE,"neighb_irrig");
-    }
-    if(config->sim_id==LPJML_FMS)
-    {
-      scanfilename(&input,&config->runoff2ocean_filename,config->inputdir,"runoff2ocean_map");
+      if(config->reservoir)
+      {
+        scanclimatefilename(&input,&config->elevation_filename,config->inputdir,FALSE,"elevation");
+        scanfilename(&input,&config->reservoir_filename,config->inputdir,"reservoir");
+      }
+#ifdef IMAGE
+      if(config->aquifer_irrig==AQUIFER_IRRIG)
+        scanclimatefilename(file,&config->aquifer_filename,config->inputdir,FALSE,"aquifer");
+#endif
     }
   }
   scanclimatefilename(&input,&config->temp_filename,config->inputdir,config->sim_id==LPJML_FMS,"temp");
@@ -519,7 +529,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     scanclimatefilename(&input,&config->wet_filename,config->inputdir,config->sim_id==LPJML_FMS,"wetdays");
   }
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   else if(config->sim_id==LPJML_IMAGE)
   {
     if(verbose)
@@ -532,8 +542,18 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->wateruse)
   {
     scanclimatefilename(&input,&config->wateruse_filename,config->inputdir,FALSE,"wateruse");
-  }
 #ifdef IMAGE
+    scanclimatefilename(&input,&config->wateruse_wd_filename,config->inputdir,FALSE,"wateruse_wd");
+#endif
+  } 
+   else 
+  {
+    config->wateruse_filename.name=NULL;
+#ifdef IMAGE
+    config->wateruse_wd_filename.name=NULL;
+#endif
+  }
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
     /* reading IMAGE-coupling specific information */
@@ -623,7 +643,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   fscanint2(file,&config->firstyear,"firstyear");
   fscanint2(file,&config->lastyear,"lastyear");
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
     fscanint2(file,&config->start_imagecoupling,"start_imagecoupling");

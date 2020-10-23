@@ -73,7 +73,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     printallocerr("lat");
     return TRUE;
   }
-  size=outputsize(index,npft,config->nbiomass,ncft);
+  size=outputsize(index,npft,config->nbiomass,config->nwft,ncft);
   if(index==SOILC_LAYER || index==MSOILTEMP || index==MSWC)
   {
     layer=newvec(float,size);
@@ -174,7 +174,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
   }
   else
   {
-    pftnames=createpftnames(index,npft,config->nbiomass,ncft,config->pftpar);
+    pftnames=createpftnames(index,npft,config->nbiomass,config->nwft,ncft,config->pftpar);
     if(pftnames==NULL)
     {
       free(lon);
@@ -306,7 +306,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
       error(rc);
     }
 #endif
-    freepftnames(pftnames,index,npft,config->nbiomass,ncft);
+    freepftnames(pftnames,index,npft,config->nbiomass,config->nwft,ncft);
   }
   rc=nc_put_var_float(cdf->ncid,lat_var_id,lat);
   error(rc);

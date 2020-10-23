@@ -16,15 +16,15 @@
 
 #include "lpj.h"
 
-Type getoutputtype(int index, /**< index of output */
-                   Bool float_grid
-                  )          /** \return type of output data */
+Type getoutputtype(int index,      /**< index of output */
+                   Bool float_grid /**< datatype of grid file is float */
+                  )                /** \return type of output data */
 {
-  if(float_grid && index==GRID)
-    return LPJ_FLOAT;
   switch(index)
   {
-    case SEASONALITY: case SDATE: case HDATE: case GRID: case COUNTRY:
+    case GRID:
+      return (float_grid) ? LPJ_FLOAT : LPJ_SHORT;
+    case SEASONALITY: case SDATE: case HDATE: case COUNTRY:
     case REGION: case SDATE2: case HDATE2: case SYEAR: case SYEAR2:
       return LPJ_SHORT;
     default:

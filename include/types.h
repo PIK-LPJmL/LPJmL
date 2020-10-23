@@ -19,7 +19,11 @@
 
 /* Definition of constants */
 
+#if defined IMAGE && defined COUPLED
+#define epsilon 1.0E-8  /* this value must be smaller than MINCROPFR used in INTERFACE */
+#else
 #define epsilon 1.0E-6 /* a minimal value -- check if neglegible */
+#endif
 #define NOT_FOUND -1
 #ifndef TRUE    /* Check whether TRUE or FALSE are already defined */
 #define TRUE 1

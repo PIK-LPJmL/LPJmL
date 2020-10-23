@@ -15,7 +15,7 @@
 
 #include "lpj.h"
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 
 Image_data *new_image(const Product *productpool)
 {
@@ -27,7 +27,8 @@ Image_data *new_image(const Product *productpool)
   image_data->timber.slow=image_data->timber_frac=
   image_data->timber_f.fast=image_data->timber_f.slow=
   image_data->timber_turnover=image_data->deforest_emissions=
-  image_data->store_bmtree_yield=image_data->biomass_yield_annual=0.0
+  image_data->store_bmtree_yield=image_data->biomass_yield_annual=
+  image_data->totwatcons=image_data->totwatdem=0.0
 ;
   image_data->timber.fast=productpool->fast;
   image_data->timber.slow=productpool->slow;

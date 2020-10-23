@@ -15,7 +15,7 @@
 
 #include "lpj.h"
 
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 
 void monthlyoutput_image(Output *output,
                          const Climate *climate, /**< climate data */

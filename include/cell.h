@@ -94,6 +94,14 @@ Received 19 November 1997; accepted 15 January 1999*/
   Output output;            /**< Output data */
   Discharge discharge;
   int elevation;            /**< cell elevation (m) */
+#if defined IMAGE || defined INCLUDEWP
+  Real npp_nat;             /**< NPP natural stand */
+  Real npp_wp;              /**< NPP woodplantation */
+  Real flux_estab_nat;      /**< flux_estab natural stand */
+  Real rh_nat;              /**< soil respiration natural stand */
+  Real flux_estab_wp;       /**< flux_estab woodplantation */
+  Real rh_wp;               /**< soil respiration woodplantation */
+#endif
   Balance balance;          /**< balance checks */
 };
 
@@ -104,9 +112,9 @@ extern void freecell(Cell *,int,Bool);
 extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
                          int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
-                          Real,int,const Real *,Bool,Bool,const Config *);
-extern void update_monthly(Cell *,Real,Real,int,int,int,int);
-extern void init_annual(Cell *,int,int,int);
+                          Real,int,const Real [],Bool,Bool,const Config *);
+extern void update_monthly(Cell *,Real,Real,int,int,int,int,int);
+extern void init_annual(Cell *,int,int,int,int);
 extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,int,Bool);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
 extern Bool freadcell(FILE *,Cell *,int,int,const Soilpar *,
@@ -133,12 +141,16 @@ extern Real cflux_sum(const Cell [],const Config *);
 extern Real flux_sum(Flux *,Cell [],const Config *);
 extern Bool getwateruse(Wateruse, Cell [],int,const Config *);
 extern Wateruse initwateruse(const Config *);
+#ifdef IMAGE
+extern Bool getwateruse_wd(Wateruse, Cell[], int, const Config *);
+extern Wateruse initwateruse_wd(const Config *);
+#endif
 extern void freewateruse(Wateruse,Bool);
 extern void killstand(Cell *,const Pftpar [],int,Bool,int);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);
-extern Bool readcelldata(Celldata,Coord *,unsigned int *,Intcoord *,int,Config *);
+extern Bool readcelldata(Celldata,Coord *,unsigned int *,int,Config *);
 extern void closecelldata(Celldata);
 extern Real albedo(Cell *, Real , Real );
 

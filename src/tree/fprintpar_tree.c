@@ -55,6 +55,8 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
           partree->crown_mort_rck,partree->crown_mort_p,
           partree->rotation,partree->max_rotation_length,
           partree->k_est);
+  if(par->cultivation_type==WP)
+    fprintf(file,"P_init:\t\t%g (1/m2)\n",partree->P_init);
   fputs("fuel fraction:\t",file);
   for(i=0;i<NFUELCLASS;i++)
     fprintf(file,"%g ",partree->fuelfrac[i]);

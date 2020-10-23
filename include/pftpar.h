@@ -34,6 +34,7 @@
 #define NONE 0
 #define BIOMASS 1
 #define ANNUAL_CROP 2
+#define WP 3
 
 /* CROP must always last id because of ntypes, see also lpjml.c */
 #define TROPICAL_BROADLEAVED_EVERGREEN_TREE 0
@@ -50,6 +51,23 @@
 #define BIOENERGY_TROPICAL_TREE 11
 #define BIOENERGY_TEMPERATE_TREE 12
 #define BIOENERGY_C4_GRASS 13
+#if defined IMAGE || defined INCLUDEWP
+#define WOODPLANTATION_TEMPERATE_TREE 14
+#define WOODPLANTATION_TROPICAL_TREE 15
+#define WOODPLANTATION_BOREAL_TREE 16
+#define TEMPERATE_CEREALS 17
+#define RICE 18
+#define MAIZE 19
+#define TROPICAL_CEREALS 20
+#define PULSES 21
+#define TEMPERATE_ROOTS 22
+#define TROPICAL_ROOTS 23
+#define OIL_CROPS_SUNFLOWER 24
+#define OIL_CROPS_SOYBEAN 25
+#define OIL_CROPS_GROUNDNUT 26
+#define OIL_CROPS_RAPESEED 27
+#define SUGARCANE 28
+#else
 #define TEMPERATE_CEREALS 14
 #define RICE 15
 #define MAIZE 16
@@ -62,6 +80,7 @@
 #define OIL_CROPS_GROUNDNUT 23
 #define OIL_CROPS_RAPESEED 24
 #define SUGARCANE 25
+#endif
 
 #define NO_CALC_SDATE 0
 #define PREC_CALC_SDATE 1
@@ -71,9 +90,13 @@
 #define MULTICROP 5
 
 #define NGRASS 2 /* OTHERS + MANAGED GRASSLAND */
-#define NBIOMASSTYPE 2 /* TREE + GRASS */
+#define NBIOMASSTYPE 2 /* GRASS + TREE */
+#if defined IMAGE || defined INCLUDEWP
+#define NWPTYPE 1 
+#else
+#define NWPTYPE 0
+#endif
 #define WIRRIG 2
-
 #define ALLNATURAL -1 /* ensures summing daily outputs for all natural vegetation pfts */
 
 #endif

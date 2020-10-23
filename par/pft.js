@@ -326,7 +326,7 @@
     "k_est": K_EST,         /* k_est */
     "rotation" : 8,         /* rotation */
     "max_rotation_length" : 40 /* max_rotation_length */
-  },
+ },
 /*--------------------------------------------------------------------------*/
 /* 4. pft */
   {
@@ -802,7 +802,7 @@
     "k_est": K_EST,         /* k_est */
     "rotation" : 8,         /* rotation */
     "max_rotation_length" : 40 /* max_rotation_length */
-  },
+ },
 /*--------------------------------------------------------------------------*/
 /* 9. pft */
   {
@@ -1122,7 +1122,7 @@
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est" : 0.5,          /* k_est,  Giardina, 2002 */
-    "rotation" : 8,         /* rotation */
+    "rotation" : 10,         /* rotation */
     "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/
@@ -1218,7 +1218,7 @@
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est" : 0.8,          /* k_est TIM 1.5*/
-    "rotation" : 8,         /* rotation */
+    "rotation" : 10,         /* rotation */
     "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/

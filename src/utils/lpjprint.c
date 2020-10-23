@@ -21,10 +21,18 @@
 #include "agriculture.h"
 #include "biomass_tree.h"
 #include "biomass_grass.h"
+#if defined IMAGE || defined INCLUDEWP
+#include "woodplantation.h"
+#endif
 
 #define PRINTLPJ_VERSION "1.0.018"
 #define NTYPES 3
+#if defined IMAGE || defined INCLUDEWP
+#define NSTANDTYPES 10 /* number of stand types */
+#else 
 #define NSTANDTYPES 9 /* number of stand types */
+#endif
+
 #ifdef USE_JSON
 #define dflt_conf_filename "lpjml.js"
 #else
@@ -86,7 +94,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
            config->checkpoint_restart_filename,config->checkpointyear);
   for(i=0;i<config->ngridcell;i++)
   {
-    if(readcelldata(celldata,&grid.coord,&soilcode,&grid.discharge.runoff2ocean_coord,i,config))
+    if(readcelldata(celldata,&grid.coord,&soilcode,i,config))
       break;
     if(config->countrypar!=NULL)
     {
@@ -131,7 +139,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     }
     else
       grid.ml.landfrac=NULL;
-    initoutput(&grid.output,config->crop_index,config->crop_irrigation,npft,config->nbiomass,ncft);
+    initoutput(&grid.output,config->crop_index,config->crop_irrigation,npft,config->nbiomass,config->nwft,ncft);
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
 
     if(freadcell(file_restart,&grid,npft,ncft,
@@ -176,6 +184,9 @@ int main(int argc,char **argv)
   standtype[GRASSLAND]=grassland_stand;
   standtype[BIOMASS_TREE]=biomass_tree_stand;
   standtype[BIOMASS_GRASS]=biomass_grass_stand;
+#if defined IMAGE || defined INCLUDEWP
+  standtype[WOODPLANTATION]=woodplantation_stand,
+#endif
   standtype[KILL]=kill_stand;
 
   progname=strippath(argv[0]);

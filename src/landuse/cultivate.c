@@ -17,7 +17,7 @@
 
 Real cultivate(Cell *cell,           /**< cell pointer */
                const Pftpar *pftpar, /**< PFT parameter to be established */
-               int vern_date20, 
+               int vern_date20,
                Real landfrac,        /**< land fraction (0..1) */
                Bool irrigation,      /**< irrigated (TRUE/FALSE) */
                int day,              /**< day (1..365) */
@@ -25,7 +25,8 @@ Real cultivate(Cell *cell,           /**< cell pointer */
                Stand *setasidestand, /**< pointer to setaside stand */
                Bool istimber,
                int irrig_scenario,   /**< irrigation scenario */
-               int ntotpft,          /**< total number of PFTs */
+               int npft,             /**< number of natural PFTs */
+               int ncft,             /**< number of crop PFTs */
                int cft,              /**< cft index for set_irrigsystem */
                int year              /**< AD */
               )                      /** \return establihment flux (gC/m2) */
@@ -34,7 +35,24 @@ Real cultivate(Cell *cell,           /**< cell pointer */
   Pft *pft;
   Stand *cropstand;
   Irrigation *data;
+#ifdef IMAGE
+  int nagr,s;
+  Stand *stand;
+  nagr=2*ncft;
+  foreachstand(stand,s,cell->standlist)
+    if(stand->type->landusetype==AGRICULTURE)
+      nagr--;
+
+  if(landfrac>setasidestand->frac-nagr*1e-7)
+  {
+    landfrac=max(setasidestand->frac-nagr*1e-7,1e-8);
+  }
+
+  if(landfrac>=setasidestand->frac-epsilon)
+#else
   if(landfrac>=setasidestand->frac-0.00001)
+#endif
+
   {
     setasidestand->type->freestand(setasidestand);
     setasidestand->type=&agriculture_stand;
@@ -57,7 +75,7 @@ Real cultivate(Cell *cell,           /**< cell pointer */
     data=cropstand->data;
     cropstand->frac=landfrac;
     data->irrigation= irrig_scenario==ALL_IRRIGATION ? TRUE : irrigation;
-    reclaim_land(setasidestand,cropstand,cell,istimber,ntotpft);
+    reclaim_land(setasidestand,cropstand,cell,istimber,npft+ncft);
     set_irrigsystem(cropstand,cft,0,FALSE);
     pos=addpft(cropstand,pftpar,year,day);
     pft=getpft(&cropstand->pftlist,pos-1);

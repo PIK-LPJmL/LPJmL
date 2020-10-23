@@ -19,6 +19,7 @@
 void initoutput_annual(Output *output, /**< Output data */
                        int npft,       /**< number of natural PFTs */
                        int nbiomass,   /**< number of biomass PFTs */
+                       int nwft,       /**< number of WFTs */
                        int ncft        /**< number of crop PFTs */
                       )
 {
@@ -31,7 +32,7 @@ void initoutput_annual(Output *output, /**< Output data */
   output->prod_turnover=output->deforest_emissions=output->fburn=output->ftimber=output->timber_harvest=0;
   output->product_pool_fast=output->product_pool_slow=output->trad_biofuel=output->mean_vegc_mangrass=0;
 
-  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
+  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;i++)
     output->pft_harvest[i].harvest=output->pft_harvest[i].residual=output->cftfrac[i]=
     output->cft_consump_water_g[i]=output->cft_consump_water_b[i]=
     output->cft_transp[i]=output->cft_transp_b[i]=output->cft_evap[i]=output->cft_evap_b[i]=
@@ -58,12 +59,18 @@ void initoutput_annual(Output *output, /**< Output data */
 #endif
     output->sdate[i]=output->hdate[i]=0;
   }
-  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2+npft-nbiomass;i++)
+  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2+npft-nbiomass-nwft;i++)
   {
     output->pft_npp[i]=0;
     output->pft_gcgp[i]=0;
     output->gcgp_count[i]=0;
   }
-  for (i=0; i<npft-nbiomass+1;++i)
+#ifdef IMAGE
+  for (i = 0;i<nwft;i++)
+  {
+    output->wft_vegc[i] = 0;
+  }
+#endif
+  for (i=0; i<npft-nbiomass-nwft+1;++i)
     output->fpc[i] = 0;
 } /* of 'initoutput_annual' */

@@ -969,7 +969,7 @@ ALLOM4
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 0.5                         /* k_est,  Giardina, 2002 */
-8                           /* rotation */
+10                          /* rotation */
 40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 2. bft */
@@ -1052,7 +1052,7 @@ ALLOM4
 3.00                        /* crown damage (p)     */
 0.045 0.075 0.21 0.67       /* fuel fraction */
 0.8                         /* k_est TIM 1.5*/
-8                           /* rotation */
+10                          /* rotation */
 40                          /* max_rotation_length */
 /*--------------------------------------------------------------------------*/
 /* 3. bft ONLY FOR BIOENERGY*/

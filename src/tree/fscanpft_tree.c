@@ -146,6 +146,10 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   fscanreal2(verb,file,&tree->k_est,pft->name,"k_est");
   fscanint2(verb,file,&tree->rotation,pft->name,"rotation");
   fscanint2(verb,file,&tree->max_rotation_length,pft->name,"max_rotation_length");
+  if(pft->cultivation_type==WP)
+  {
+    fscanreal2(verb,file,&tree->P_init,pft->name,"P_init");
+  }
   tree->sapl.leaf=pow(pft->lai_sapl*tree->allom1*pow(wood_sapl,reinickerp)*
                   pow(4*pft->sla/M_PI/k_latosa,reinickerp*0.5)/pft->sla,
                   2/(2-reinickerp));
