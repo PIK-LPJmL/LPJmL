@@ -39,7 +39,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                          config->outnames[config->outputvars[index].id].descr,
                          (config->outputvars[index].id==GRID) ? "" :
                          config->outnames[config->outputvars[index].id].unit,
-                         getoutputtype(config->outputvars[index].id),
+                         getoutputtype(config->outputvars[index].id,FALSE),
                          getnyear(config->outputvars[index].id),array,config);
   else
     return create_pft_netcdf(cdf,filename,
@@ -49,7 +49,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                              config->outnames[config->outputvars[index].id].var,
                              config->outnames[config->outputvars[index].id].descr,
                              config->outnames[config->outputvars[index].id].unit,
-                             getoutputtype(config->outputvars[index].id),
+                             getoutputtype(config->outputvars[index].id,FALSE),
                              getnyear(config->outputvars[index].id),
                              array,config);
 } /* of 'create' */
@@ -135,7 +135,7 @@ static void openfile(Outputfile *output,const Cell grid[],
             header.scalar=1;
             if(config->outputvars[i].id==GRID)
             {
-              header.datatype=LPJ_SHORT;
+              header.datatype=(config->float_grid) ? LPJ_FLOAT : LPJ_SHORT;
               header.nbands=2;
               header.nyear=1;
               header.order=CELLYEAR;
@@ -152,7 +152,7 @@ static void openfile(Outputfile *output,const Cell grid[],
                                         config->nwft,
                                         config->npft[CROP]);
               header.nyear=config->lastyear-config->outputyear+1;
-              header.datatype=getoutputtype(config->outputvars[i].id);
+              header.datatype=getoutputtype(config->outputvars[i].id,config->float_grid);
               fwriteheader(output->files[config->outputvars[i].id].fp.file,
                            &header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
             }
@@ -406,7 +406,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                            config->outnames[config->outputvars[i].id].var,
                            config->outnames[config->outputvars[i].id].descr,
                            config->outnames[config->outputvars[i].id].unit,
-                           getoutputtype(config->outputvars[i].id),
+                           getoutputtype(config->outputvars[i].id,FALSE),
                            getnyear(config->outputvars[i].id),
                            (config->outputvars[i].id==ADISCHARGE) ? output->index_all : output->index,year,config);
            else
@@ -417,7 +417,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                            config->outnames[config->outputvars[i].id].var,
                            config->outnames[config->outputvars[i].id].descr,
                            config->outnames[config->outputvars[i].id].unit,
-                           getoutputtype(config->outputvars[i].id),
+                           getoutputtype(config->outputvars[i].id,FALSE),
                            getnyear(config->outputvars[i].id),year,
                                output->index,config);
 
