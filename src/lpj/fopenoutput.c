@@ -135,7 +135,13 @@ static void openfile(Outputfile *output,const Cell grid[],
             header.scalar=1;
             if(config->outputvars[i].id==GRID)
             {
-              header.datatype=(config->float_grid) ? LPJ_FLOAT : LPJ_SHORT;
+              if(config->float_grid)
+                header.datatype=LPJ_FLOAT;
+              else
+              {
+                header.datatype=LPJ_SHORT;
+                header.scalar=0.01;
+              }
               header.nbands=2;
               header.nyear=1;
               header.order=CELLYEAR;
