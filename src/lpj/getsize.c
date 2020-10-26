@@ -39,7 +39,7 @@ size_t getsize(int index,           /**< index of output file */
                    config->nbiomass,
                    config->nwft,
                    config->npft[CROP]);
-  size*=typesizes[getoutputtype(config->outputvars[index].id)];
+  size*=typesizes[getoutputtype(config->outputvars[index].id,config->float_grid)];
   if(config->outputvars[index].id==ADISCHARGE)
     size*=config->nall;
   else
