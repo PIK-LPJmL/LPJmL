@@ -43,12 +43,14 @@
   "river_routing" : true,
   "permafrost" : true,
 #ifdef FROM_RESTART
+  "equilsoil" : false,
   "population" : false,
   "landuse" : "landuse", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
   "wateruse" : "wateruse",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
 #else
+  "equilsoil" : true,
   "population" : false,
   "landuse" : "no_landuse",
   "reservoir" : false,
@@ -92,6 +94,8 @@
   "grid_scaled" : false,
 #define SUFFIX pft.bin
 #endif
+
+  "float_grid" : false, /* set datatype of grid file to float (TRUE/FALSE) */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s

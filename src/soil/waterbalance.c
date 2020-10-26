@@ -185,19 +185,19 @@ void waterbalance(Stand *stand,           /**< Stand pointer */
         fflush(stderr);
       }
     }
-   if (soil->w[l]< -1e-12)
-   {
-    fprintf(stderr,"Cell (%s) aet= %3.5f evap=  %3.5f cover=  %3.2f soilwater=%.6f wsats=%.6f\n",
-            sprintcoord(line,&stand->cell->coord),aet_stand[l],*evap,cover,allwater(soil,l)+allice(soil,l),soil->par->wsats[l]);
-    fflush(stderr);
-    fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,
-         "Cell (%s) Soil-moisture %d negative: %g, lutype %s soil_type %s in waterbalance()",
-         sprintcoord(line,&stand->cell->coord),l,soil->w[l],stand->type->name,soil->par->name);
-   }
+    if (soil->w[l]< -1e-12)
+    {
+     fprintf(stderr,"Cell (%s) aet= %3.5f evap=  %3.5f cover=  %3.2f soilwater=%.6f wsats=%.6f\n",
+             sprintcoord(line,&stand->cell->coord),aet_stand[l],*evap,cover,allwater(soil,l)+allice(soil,l),soil->par->wsats[l]);
+     fflush(stderr);
+     fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,
+          "Cell (%s) Soil-moisture %d negative: %g, lutype %s soil_type %s in waterbalance()",
+          sprintcoord(line,&stand->cell->coord),l,soil->w[l],stand->type->name,soil->par->name);
+    }
 #endif
-   if(stand->frac_g[l]>1)
-     stand->frac_g[l]=1;
-   if(stand->frac_g[l]<0)
-     stand->frac_g[l]=0;
+    if(stand->frac_g[l]>1)
+      stand->frac_g[l]=1;
+    if(stand->frac_g[l]<0)
+      stand->frac_g[l]=0;
   } /* soil layer loop */
 } /* of 'waterbalance' */

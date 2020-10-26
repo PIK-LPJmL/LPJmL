@@ -96,6 +96,9 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal01(&f,&param.atmfrac,"atmfrac");
   fscanparamreal01(&f,&param.fastfrac,"fastfrac");
   fscanparamreal(&f,&param.k_mort,"k_mort");
+  fscanparamreal01(&f,&param.fpc_tree_max,"fpc_tree_max");
+  fscanparamreal(&f,&param.temp_response_a,"temp_response_a");
+  fscanparamreal(&f,&param.temp_response_b,"temp_response_b");
   fscanparamreal(&f,&param.firedura,"firedura");
   fscanparamreal(&f,&param.fire_intens,"fire_intens");
   fscanparamreal(&f,&param.hum_ign,"hum_ign");

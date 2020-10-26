@@ -50,6 +50,8 @@
 #define RESERVOIR 1
 #define NO_DRAINAGE 0
 #define DRAINAGE 1
+#define NO_EQUILSOIL 0
+#define EQUILSOIL 1
 #define PERM 1
 #define NO_PERM 0
 #define NEW_PERC 1

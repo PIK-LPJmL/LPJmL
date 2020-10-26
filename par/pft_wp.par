@@ -45,6 +45,7 @@
 #else
 #define MORT_MAX 0.03
 #endif
+#define K_LATOSA 4e3      /* leaf area to sapwood area */
 
 29  /* number of PFT's (natural + crops + bioenergy + woodplantations) */
 
@@ -117,6 +118,7 @@ ALLOM2
 ALLOM3
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
+K_LATOSA
 0.1487                      /* scorch height (F) */
 0.3334                      /* crown length (CL) */
 0.0301                      /* bark thickness par1 */
@@ -195,6 +197,7 @@ ALLOM2
 ALLOM3
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
+K_LATOSA
 0.061                       /* scorch height (F) */
 0.10                        /* crown length (CL) */
 0.1085                      /* bark thickness par1 */
@@ -273,6 +276,7 @@ ALLOM2
 ALLOM3
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
+K_LATOSA
 0.1000                      /* scorch height (F) */
 0.3334                      /* crown length (CL) */
 0.0367                      /* bark thickness par1 */
@@ -351,6 +355,7 @@ ALLOM2
 ALLOM3
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
+K_LATOSA
 0.3710                      /* scorch height (F) */
 0.3334                      /* crown length (CL) */
 0.0451                      /* bark thickness par1 */
@@ -431,6 +436,7 @@ ALLOM2
 ALLOM3
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
+K_LATOSA
 0.0940                      /* scorch height (F) */
 0.3334                      /* crown length (CL) */
 0.0347                      /* bark thickness par1 */
@@ -509,6 +515,7 @@ ALLOM2
 ALLOM3
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
+K_LATOSA
 0.1100                      /* scorch height (F) */
 0.3334                      /* crown length (CL) */
 0.0292                      /* bark thickness par1 */
@@ -589,6 +596,7 @@ ALLOM2
 ALLOM3
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
+K_LATOSA
 0.0940                      /* scorch height (F) */
 0.3334                      /* crown length (CL) */
 0.0347                      /* bark thickness par1 */
@@ -669,6 +677,7 @@ ALLOM2
 ALLOM3
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
+K_LATOSA
 0.0940                      /* scorch height (F) */
 0.3334                      /* crown length (CL) */
 0.0347                      /* bark thickness par1 */
@@ -933,6 +942,7 @@ REPROD_COST                 /* reproduction cost */
 0.75
 ALLOM4
 8                           /* maximum height of tree */
+K_LATOSA
 0.061                       /* scorch height (F) */
 0.10                        /* crown length (CL) */
 0.1085                      /* bark thickness par1 */
@@ -1015,6 +1025,7 @@ REPROD_COST                 /* reproduction cost */
 0.75
 ALLOM4
 8                           /* maximum height of tree */
+K_LATOSA
 0.0940                      /* scorch height (F) */
 0.3334                      /* crown length (CL) */
 0.0347                      /* bark thickness par1 */
@@ -1159,6 +1170,7 @@ REPROD_COST                 /* reproduction cost */
 1.02133 
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
+K_LATOSA
 0.0940                      /* scorch height (F) */
 0.3334                      /* crown length (CL) */
 0.0347                      /* bark thickness par1 */
@@ -1240,6 +1252,7 @@ REPROD_COST                 /* reproduction cost */
 0.840484
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
+K_LATOSA
 0.061                       /* scorch height (F) */
 0.10                        /* crown length (CL) */
 0.1085                      /* bark thickness par1 */
@@ -1321,6 +1334,7 @@ REPROD_COST                 /* reproduction cost */
 1.21058
 ALLOM4
 HEIGHT_MAX                  /* maximum height of tree */
+K_LATOSA
 0.1100                      /* scorch height (F) */
 0.3334                      /* crown length (CL) */
 0.0292                      /* bark thickness par1 */

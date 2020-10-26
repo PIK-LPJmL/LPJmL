@@ -25,7 +25,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
                     Real popdens,         /**< population density (capita/km2) */
                     int year,             /**< year (AD) */
                     Bool isdaily,         /**< daily temperature data? */
-                    Bool UNUSED(intercrop), /**< intercroping enabled (TRUE/FALSE) */
+                    Bool UNUSED(intercrop), /**< intercropping enabled (TRUE/FALSE) */
                     const Config *config  /**< LPJ configuration */
                    )                      /** \return stand has to be killed (TRUE/FALSE) */
 {

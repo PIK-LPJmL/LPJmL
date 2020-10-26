@@ -39,7 +39,7 @@ void litter_update_tree(Litter *litter, /**< Litter pool */
                                   tree->ind.debt)*frac*treepar->fuelfrac[i];
     update_fbd_tree(litter,pft->par->fuelbulkdensity,
                     (tree->ind.sapwood+tree->ind.heartwood-tree->ind.debt)
-               *frac*treepar->fuelfrac[i],i);
+                    *frac*treepar->fuelfrac[i],i);
   }
   litter->bg[pft->litter]+=tree->ind.root*frac;
   update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf*treepar->turnover.leaf*frac,0); //CHECK

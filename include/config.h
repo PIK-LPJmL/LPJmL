@@ -110,7 +110,7 @@ typedef struct
   char *pft_index;
   char *layer_index;
   Bool crop_irrigation;
-  Bool global_netcdf;     /** enable global grid for NetCDF output */
+  Bool global_netcdf;     /**< enable global grid for NetCDF output */
   Bool landuse_restart;   /**< land use enabled in restart file */
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart; /**< sdate option in restart file */
@@ -161,6 +161,7 @@ typedef struct
   Bool river_routing;  /**< river routing enabled */
   Bool permafrost;     /**< permafrost module enabled */
   Bool new_phenology;	/**< new phenology enabled */
+  Bool equilsoil;      /**< equilsoil is called */
   Bool from_restart;   /**< reading from restart */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
   int sdate_fixyear;    /**< year in which sowing dates shall be fixed */

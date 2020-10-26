@@ -34,6 +34,9 @@
 0.7       /* atmfrac */
 0.98      /* fastfrac */
 0.2       /* coefficient of growth efficiency in mortality equation (k_mort2) */
+0.95      /* maximum foliage projective cover for trees */
+56.02     /* Parameter in temperature response function */
+46.02     /* Parameter in temperature response function */
 -11.06    /* scaling factor for fire duration for the WVPD*/
 -0.50     /* a parameter for scaling the human ignintions within SPITFIRE */
 0.000001  /* threshold of fireintensity for which burnt area can be modeled */

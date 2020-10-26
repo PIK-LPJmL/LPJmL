@@ -32,7 +32,7 @@ Real establishment_tree(Pft *pft,Real UNUSED(fpc_total),
   Pfttreepar *treepar;
   tree=pft->data;
   treepar=getpftpar(pft,data);
-  if (fpc_type>=FPC_TREE_MAX || n_est<=epsilon)
+  if (fpc_type>=param.fpc_tree_max || n_est<=epsilon)
   {
     allometry_tree(pft);
     return 0.0;
@@ -77,7 +77,8 @@ Real establishment_tree(Pft *pft,Real UNUSED(fpc_total),
   tree->ind.sapwood=(tree->ind.sapwood*nind_old+treepar->sapl.sapwood*est_pft)/pft->nind;
   tree->ind.heartwood=(tree->ind.heartwood*nind_old+treepar->sapl.heartwood*est_pft)/pft->nind;
   tree->ind.debt=tree->ind.debt*nind_old/pft->nind;
-  if((pft->par->phenology==SUMMERGREEN || pft->par->phenology==RAINGREEN) && nind_old==0){
+  if((pft->par->phenology==SUMMERGREEN || pft->par->phenology==RAINGREEN) && nind_old==0)
+  {
     tree->turn.leaf+=treepar->sapl.leaf*treepar->turnover.leaf;
     tree->turn_litt.leaf+=treepar->sapl.leaf*treepar->turnover.leaf*pft->nind;
     pft->stand->soil.litter.ag[pft->litter].trait.leaf+=treepar->sapl.leaf*treepar->turnover.leaf*pft->nind;

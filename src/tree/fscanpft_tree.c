@@ -140,6 +140,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   fscanreal2(verb,file,&tree->allom3,pft->name,"allom3");
   fscanreal2(verb,file,&tree->allom4,pft->name,"allom4");
   fscanreal2(verb,file,&tree->height_max,pft->name,"height_max");
+  fscanreal2(verb,file,&tree->k_latosa,pft->name,"k_latosa");
   fscanreal2(verb,file,&tree->scorchheight_f_param,pft->name,"scorchheight_f_param");
   fscanreal2(verb,file,&tree->crownlength,pft->name,"crownlength");
   fscanreal2(verb,file,&tree->barkthick_par1,pft->name,"barkthick_par1");
@@ -165,11 +166,11 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   }
 #endif
   tree->sapl.leaf=pow(pft->lai_sapl*tree->allom1*pow(wood_sapl,reinickerp)*
-                  pow(4*pft->sla/M_PI/k_latosa,reinickerp*0.5)/pft->sla,
+                  pow(4*pft->sla/M_PI/tree->k_latosa,reinickerp*0.5)/pft->sla,
                   2/(2-reinickerp));
-  stemdiam=wood_sapl*sqrt(4*tree->sapl.leaf*pft->sla/M_PI/k_latosa);
+  stemdiam=wood_sapl*sqrt(4*tree->sapl.leaf*pft->sla/M_PI/tree->k_latosa);
   height_sapl=tree->allom2*pow(stemdiam,tree->allom3);
-  tree->sapl.sapwood=wooddens*height_sapl*tree->sapl.leaf*pft->sla/k_latosa;
+  tree->sapl.sapwood=wooddens*height_sapl*tree->sapl.leaf*pft->sla/tree->k_latosa;
   tree->sapl.heartwood=(wood_sapl-1)*tree->sapl.sapwood;
   tree->sapl.root=(1.0/pft->lmro_ratio)*tree->sapl.leaf;
   tree->sapling_C=phys_sum_tree(tree->sapl)*tree->k_est;

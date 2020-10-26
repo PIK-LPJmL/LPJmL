@@ -20,13 +20,7 @@
 /* Definition of constants */
 
 #define reinickerp 1.6
-#define k_latosa 4e3      /* leaf area to sapwood area */
 #define wooddens 2e5      /* wood density (gC/m3) */
-#ifdef USE_LANDCOVER
-#define FPC_TREE_MAX 0.99
-#else
-#define FPC_TREE_MAX 0.95 /* maximum foliage projective cover for trees */
-#endif
 
 /* Declaration of datatypes */
 
@@ -51,6 +45,7 @@ typedef struct
   Real allom1,allom2,allom3,allom4; /**< allometry */
   Real aphen_min,aphen_max;
   Real height_max;                  /**< maximum height of tree (m) */
+  Real k_latosa;                    /**< leaf area to sapwood area */
   Real reprod_cost;                 /**< reproduction cost */
   Real scorchheight_f_param;        /**< scorch height (F) */
   Real crownlength;                 /**< crown length (CL) */

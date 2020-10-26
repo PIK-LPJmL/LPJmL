@@ -35,6 +35,9 @@
   "atmfrac" : 0.7,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
   "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
+  "temp_response_a" : 56.02, /* Parameter in temperature response function */
+  "temp_response_b" : 46.02, /* Parameter in temperature response function */
   "lsuha" : 0.0,             /* livestock density */
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold*/
   "irrig_threshold_c3_dry" : 0.8,     /* irrigation threshold C3, prec < aprec_lim */

@@ -205,6 +205,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     return TRUE;
   fscanbool2(file,&config->new_phenology,"new_phenology");
   fscanbool2(file,&config->river_routing,"river_routing");
+  fscanbool2(file,&config->equilsoil,"equilsoil");
   config->reservoir=FALSE;
 #ifdef IMAGE
   config->groundwater_irrig = NO_GROUNDWATER_IRRIG;
@@ -700,5 +701,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->write_restart_filename=NULL;
+  if(config->equilsoil && verbose && config->nspinup<soil_equil_year)
+    fprintf(stderr,"WARNING031: Number of spinup years less than %d necessary for soil equilibration.\n",soil_equil_year);
   return FALSE;
 } /* of 'fscanconfig' */

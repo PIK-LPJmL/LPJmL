@@ -40,6 +40,9 @@ typedef struct
   Real atmfrac;      /**< fraction of decomposed litter emitted as CO2 to the atmosphere */
   Real fastfrac;     /**< fraction of soil-bound decomposed litter entering the intermediate soil carbon pool */
   Real k_mort;       /**< coefficient of growth efficiency in mortality equation (k_mort2) */
+  Real fpc_tree_max; /**< maximum foliage projective cover for trees */
+  Real temp_response_a; /**< parameter in temperature response fucntion */
+  Real temp_response_b; /**< parameter in temperature response fucntion */
   Real lsuha;       /**< livestock density for grassland management (lsuha) */
   /* IRRIGATION */
   Real aprec_lim;    /**< annual precipitation limit for C3 irrigation threshold */

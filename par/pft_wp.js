@@ -43,6 +43,7 @@
 #else
 #define MORT_MAX 0.03
 #endif
+#define K_LATOSA 4e3      /* leaf area to sapwood area */
 
 "pftpar" :
 [
@@ -126,6 +127,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.1487, /* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -217,6 +219,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.061, /* scorch height (F) */
     "crownlength" : 0.10, /* crown length (CL) */
@@ -308,6 +311,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.1000,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -399,6 +403,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.3710,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -492,6 +497,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.0940,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -583,6 +589,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.1100,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -676,6 +683,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.0940,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -769,6 +777,7 @@
     "allom2" : ALLOM2,
     "allom3" : ALLOM3,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX, /* maximum height of tree */
     "scorchheight_f_param" : 0.0940,/* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -1085,6 +1094,7 @@
     "allom2" : 35,
     "allom3" : 0.75,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : 8,       /* maximum height of tree */
     "scorchheight_f_param" : 0.061,/* scorch height (F) */
     "crownlength" : 0.10 , /* crown length (CL) */
@@ -1180,6 +1190,7 @@
     "allom2" : 35,
     "allom3" : 0.75,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : 8,       /* maximum height of tree */
     "scorchheight_f_param" : 0.0940, /* scorch height (F) */
     "crownlength" : 0.3334, /* crown length (CL) */
@@ -1350,6 +1361,7 @@
     "allom2" : 53.9572,
     "allom3" : 1.02133,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX,   /* maximum height of tree */
     "scorchheight_f_param" : 0.0940,/* scorch height (F) */
     "crownlength" : 0.3334,      /* crown length (CL) */
@@ -1446,6 +1458,7 @@
     "allom2" : 41.1424,
     "allom3" : 0.840484,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX,     /* maximum height of tree */
     "scorchheight_f_param" : 0.061,/* scorch height (F) */
     "crownlength" : 0.10 ,         /* crown length (CL) */
@@ -1542,6 +1555,7 @@
     "allom2" : 36.5433,
     "allom3" : 1.21058,
     "allom4" : ALLOM4,
+    "k_latosa" : K_LATOSA,
     "height_max" : HEIGHT_MAX,   /* maximum height of tree */
     "scorchheight_f_param" : 0.1100,/* scorch height (F) */
     "crownlength" : 0.3334 ,     /* crown length (CL) */
