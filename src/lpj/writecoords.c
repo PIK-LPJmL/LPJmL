@@ -260,7 +260,7 @@ int writecoords(Outputfile *output,  /**< output struct */
 #else
   if(output->method==LPJ_FILES)
   {
-    if(config->floatgrid)
+    if(config->float_grid)
       switch(output->files[index].fmt)
       {
         case RAW: case CLM:
