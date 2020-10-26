@@ -85,6 +85,9 @@ extern void cutpfts(Stand *);
 extern Real roughnesslength(const Standlist);
 extern void waterbalance(Stand *,Real [BOTTOMLAYER],Real [BOTTOMLAYER],Real *,Real *,Real,Real,
                          Real,Real *,Bool);
+extern Real water_stressed(Pft *,Real [LASTLAYER],Real,Real,
+                           Real,Real *,Real *,Real *,Real,Real,
+                           Real,Real,Real,Real *,const Config *);
 extern Real infil_perc_irr(Stand *,Real,Real *,Bool);
 extern Real infil_perc_rain(Stand *,Real,Real *,Bool);
 extern Real albedo_stand(Stand *);                            

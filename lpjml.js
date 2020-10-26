@@ -40,6 +40,7 @@
   "fdi" : "nesterov_index", /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
+  "new_trf": false,    /* new transpiration reduction function disabled */
   "river_routing" : true,
   "permafrost" : true,
 #ifdef FROM_RESTART

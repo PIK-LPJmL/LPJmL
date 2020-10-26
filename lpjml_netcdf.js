@@ -49,6 +49,7 @@
 "prescribe_burntarea" : false,
 "prescribe_landcover" : "no_landcover",
 "new_phenology": false,
+"new_trf": false,    /* new transpiration reduction function disabled */
 "river_routing": false,
 "permafrost" : true,
 "irrigation" : "pot_irrigation",
