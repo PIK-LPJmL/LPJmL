@@ -19,8 +19,8 @@
 
 typedef struct
 {
-  float lon; /**< longitudein degrees * 100 */
-  float lat; /**< latitude in degrees * 100 */
+  float lon; /**< longitude */
+  float lat; /**< latitude */
 } Floatcoord;
 
 int writecoords(Outputfile *output,  /**< output struct */
@@ -227,7 +227,7 @@ int writecoords(Outputfile *output,  /**< output struct */
           {
             free(vec);
             return 0;
-          } 
+          }
           MPI_Gatherv(vec,config->count,type,dst,output->counts,output->offsets,
                       type,0,config->comm);
           MPI_Type_free(&type);
