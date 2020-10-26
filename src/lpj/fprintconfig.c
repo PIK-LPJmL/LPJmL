@@ -566,7 +566,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
         fprintf(file,"%*s",-width,config->outnames[config->outputvars[index].id].name);
       fprintf(file," %s %*s %5s ",fmt[config->outputvars[index].filename.fmt],
               -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
-              typenames[getoutputtype(config->outputvars[index].id)]);
+              typenames[getoutputtype(config->outputvars[index].id,config->float_grid)]);
       printoutname(file,config->outputvars[index].filename.name,config->outputvars[index].oneyear,config);
       putc('\n',file);
     }

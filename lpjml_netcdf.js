@@ -104,6 +104,7 @@
 #ifdef FROM_RESTART
 
 "global_netcdf" : false,  /* global NetCDF grid (TRUE/FALSE) */
+"float_grid" : false, /* set datatype of grid file to float (TRUE/FALSE) */
 
 "output" : [
 

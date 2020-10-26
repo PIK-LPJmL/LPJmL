@@ -118,6 +118,7 @@ struct config
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   Bool fertilizer_input; 
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
+  Bool float_grid;        /**< enable float datatype for binary grid file */
   Bool landuse_restart;   /**< land use enabled in restart file */
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart; /**< sdate option in restart file */
