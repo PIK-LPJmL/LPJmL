@@ -151,7 +151,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
           grid[cell].discharge.dmass_gw-=grid[cell].discharge.irrig_unmet;
           grid[cell].balance.awater_flux+=grid[cell].discharge.irrig_unmet/grid[cell].coord.area;
           grid[cell].output.mwd_gw+=grid[cell].discharge.irrig_unmet/grid[cell].coord.area;
-          grid[cell].discharge.irrig_unmet=0; //HB 9-4-2015 no unmet demand
+          grid[cell].discharge.irrig_unmet=0; // no unmet demand
         }
         else
         {

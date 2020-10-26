@@ -21,8 +21,8 @@ struct wateruse
   Climatefile file;
 };               /* definition of opaque datatype Wateruse */
 
-Wateruse initwateruse(const Filename *filename,
-                      const Config *config /**< LPJmL configuration */
+Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file */
+                      const Config *config      /**< LPJmL configuration */
                      )
 {
   Wateruse wateruse;

@@ -48,11 +48,25 @@
     fprintf(stderr,"ERROR110: Cannot read int '%s' for PFT '%s').\n",name,pft); \
     return NULL; \
   }
+#define fscanpftbool(verb,file,var,pft,name) \
+  if(fscanbool(file,var,name,FALSE,verb)) \
+  { \
+    if(verb)\
+    fprintf(stderr,"ERROR110: Cannot read boolean '%s' for PFT '%s').\n",name,pft); \
+    return NULL; \
+  }
 #define fscanpftlimit(verb,file,var,pft,name) \
   if(fscanlimit(file,var,name,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR112: Cannot read limit '%s' for PFT '%s'.\n",name,pft); \
+    return NULL; \
+  }
+#define fscanpftcnratio(verb,file,var,pft,name) \
+  if(fscancnratio(file,var,name,verb)) \
+  { \
+    if(verb)\
+    fprintf(stderr,"ERROR112: Cannot read C:N ratio '%s' for PFT '%s'.\n",name,pft); \
     return NULL; \
   }
 #define fscanpftphenpar(verb,file,var,pft,name) \
@@ -90,7 +104,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   String s;
   Pftpar *pft;
   Real totalroots;
-  Limit cnratio;
+  Cnratio cnratio;
   Bool isbiomass,iscrop,iswp;
   Verbosity verb;
   verb=(isroot(*config)) ? config->scan_verbose : NO_ERR;
@@ -286,6 +300,8 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       fscanpftemissionfactor(verb,&item,&pft->emissionfactor,
                              pft->name,"emission_factor");
     }
+    else
+      pft->fuelbulkdensity=0;
     fscanpftreal(verb,&item,&pft->aprec_min,pft->name,"aprec_min");
     if(config->fire==FIRE)
     {
@@ -301,22 +317,28 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,&subitem,&pft->k_litter10.wood,pft->name,"wood");
     fscanpftreal(verb,&item,&pft->k_litter10.q10_wood,pft->name,
                  "k_litter10_q10_wood");
-    fscanpftreal(verb,&item,&pft->vmax_up,pft->name,"vmax_up");
-    fscanpftreal(verb,&item,&pft->kNmin,pft->name,"kNmin");
-    fscanpftreal(verb,&item,&pft->KNmin,pft->name,"KNmin");
-    fscanpftlimit(verb,&item,&cnratio,pft->name,"cnratio_leaf");
-    fscanpftreal(verb,&item,&pft->ncratio_med,pft->name,"cnratio_leaf_median");
-    if(cnratio.low<=0 || cnratio.high<=0 || pft->ncratio_med<=0)
+    if(config->with_nitrogen)
     {
-      if(verb)
-        fprintf(stderr,"ERROR235: CN ratio limits=(%g,%g,%g) must be greater than zero for PFT '%s'.\n",cnratio.low,pft->ncratio_med,cnratio.high,pft->name);
-      return NULL;
+      fscanpftbool(verb,&item,&pft->nfixing,pft->name,"nfixing");
+      fscanpftreal(verb,&item,&pft->vmax_up,pft->name,"vmax_up");
+      fscanpftreal(verb,&item,&pft->kNmin,pft->name,"kNmin");
+      fscanpftreal(verb,&item,&pft->KNmin,pft->name,"KNmin");
+      fscanpftreal(verb,&item,&pft->knstore,pft->name,"knstore");
+      fscanpftreal01(verb,&item,&pft->fn_turnover,pft->name,"fn_turnover");
+      fscanpftcnratio(verb,&item,&cnratio,pft->name,"cnratio_leaf");
+      if(cnratio.low<=0 || cnratio.high<=0 || cnratio.median<=0)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR235: CN ratio limits=(%g,%g,%g) must be greater than zero for PFT '%s'.\n",
+                  cnratio.low,cnratio.median,cnratio.high,pft->name);
+        return NULL;
+      }
+      pft->ncleaf.median=1/cnratio.median;
+      pft->ncleaf.low=1/cnratio.high;
+      pft->ncleaf.high=1/cnratio.low;
     }
-    pft->ncratio_med=1/pft->ncratio_med;
-    pft->ncleaf.low=1/cnratio.high;
-    pft->ncleaf.high=1/cnratio.low;
-    fscanpftreal(verb,&item,&pft->knstore,pft->name,"knstore");
-    fscanpftreal01(verb,&item,&pft->fn_turnover,pft->name,"fn_turnover");
+    else
+      pft->fn_turnover=0;
     fscanpftreal(verb,&item,&pft->windspeed,pft->name,"windspeed_dampening");
     fscanpftreal(verb,&item,&pft->roughness,pft->name,
                  "roughness_length");
@@ -332,7 +354,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     pft->wdf=nowdf;
     pft->turnover_monthly=noturnover_monthly;
     /* Now scan PFT-specific parameters and set specific functions */
-    if(scanfcn[pft->type](&item,pft,verb))
+    if(scanfcn[pft->type](&item,pft,config))
       return NULL;
   }
   return npft;

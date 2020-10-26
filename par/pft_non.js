@@ -75,6 +75,7 @@
     "name" : "tropical broadleaved evergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.962,    /* beta_root */
     "minwscal" : 0.0,       /* minwscal 3*/
@@ -175,6 +176,7 @@
     "name" : "tropical broadleaved raingreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.961,    /* beta_root */
     "minwscal" : 0.35,      /* minwscal 3*/
@@ -275,6 +277,7 @@
     "name": "temperate needleleaved evergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.976,    /* beta_root 1 */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -375,6 +378,7 @@
     "name" : "temperate broadleaved evergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.964,    /* beta_root 1 */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -475,6 +479,7 @@
     "name" : "temperate broadleaved summergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -577,6 +582,7 @@
     "name" : "boreal needleleaved evergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -677,6 +683,7 @@
     "name" : "boreal broadleaved summergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -779,6 +786,7 @@
     "name" : "boreal needleleaved summergreen tree",
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -881,6 +889,7 @@
     "name" : "Tropical C4 grass",
     "type" : GRASS,
     "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -964,6 +973,7 @@
     "name" : "Temperate C3 grass",
     "type" : GRASS,
     "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1048,6 +1058,7 @@
     "name" : "Polar C3 grass",
     "type" : GRASS,
     "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1131,6 +1142,7 @@
     "name" : "bioenergy tropical tree",
     "type" : TREE,
     "cultivation_type" : "biomass",/* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.975,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -1233,6 +1245,7 @@
     "name" : "bioenergy temperate tree",
     "type" : TREE,
     "cultivation_type" : "biomass",/* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -1337,6 +1350,7 @@
     "name" : "bioenergy C4 grass",
     "type" : GRASS,
     "cultivation_type" : "biomass", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1420,6 +1434,7 @@
     "name" : "temperate cereals",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1526,6 +1541,7 @@
     "name" : "rice",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1632,6 +1648,7 @@
     "name" : "maize",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1738,6 +1755,7 @@
     "name" : "tropical cereals",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1844,6 +1862,7 @@
     "name" : "pulses",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
+    "nfixing" : true,           /* N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1950,6 +1969,7 @@
     "name": "temperate roots",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2056,6 +2076,7 @@
     "name" : "tropical roots", /* re-parameterized as Cassava, 14.12.2009 KW */
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2162,6 +2183,7 @@
     "name" : "oil crops sunflower",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.3,       /* minwscal 3*/
@@ -2268,6 +2290,7 @@
     "name" : "oil crops soybean",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
+    "nfixing" : true,           /* N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2374,6 +2397,7 @@
     "name": "oil crops groundnut",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2480,6 +2504,7 @@
     "name" : "oil crops rapeseed",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2586,6 +2611,7 @@
     "name" : "sugarcane",
     "type" : CROP,
     "cultivation_type": "annual crop", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/

@@ -4,7 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Jens Heinke                                                                \n**/
+/**     Function checks global water balance                                       \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -38,7 +39,7 @@ void check_balance(Flux flux,           /**< global carbon and water fluxes */
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR030: "
 #else
-    fail(INVALID_WATER_BALANCE_ERR,TRUE,
+    fail(INVALID_WATER_BALANCE_ERR,FALSE,
 #endif
          "y: %d GlobW_BALANCE-error: %.5f prec:%.2f wd_unsustainable:%.2f vapour_flux:%.2f discharge:%.2f delta_storage:%.2f\n",
          year,balance*flux.area,flux.prec,flux.wd_unsustainable,

@@ -41,10 +41,15 @@
   "fdi" : "nesterov_index",   /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
+  "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : true,
   "permafrost" : true,
+  "with_nitrogen" : "no_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "store_climate" : true, /* store climate data in spin-up phase */
+  "shuffle_climate" : false,
   "const_climate" : false,
 #ifdef FROM_RESTART
+  "new_seed" : false, /* read random seed from restart file */
   "equilsoil" : false,
   "population" : false,
   "landuse" : "landuse", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */

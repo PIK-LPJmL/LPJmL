@@ -35,19 +35,19 @@ int outputsize(int index,     /**< output index */
     case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
     case PFT_CHAWO: case PFT_NHAWO: case MPFT_LAI:
       return npft-nbiomass-nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;
-    case PFT_HARVESTC: case PFT_RHARVESTC: 
-    case PFT_HARVESTN: case PFT_RHARVESTN: 
-    case CFT_CONSUMP_WATER_G: 
+    case PFT_HARVESTC: case PFT_RHARVESTC:
+    case PFT_HARVESTN: case PFT_RHARVESTN:
+    case CFT_CONSUMP_WATER_G:
     case CFT_CONV_LOSS_EVAP: case CFT_CONV_LOSS_DRAIN:
-    case CFT_CONSUMP_WATER_B: case CFTFRAC: case CFT_AIRRIG: case CFT_FPAR: 
+    case CFT_CONSUMP_WATER_B: case CFTFRAC: case CFT_AIRRIG: case CFT_FPAR:
     case CFT_RETURN_FLOW_B:
-    case LUC_IMAGE: case CFT_INTERC: case CFT_INTERC_B: case CFT_NIR: 
+    case LUC_IMAGE: case CFT_INTERC: case CFT_INTERC_B: case CFT_NIR:
     case CFT_TRANSP: case CFT_TRANSP_B:
     case CFT_EVAP: case CFT_EVAP_B: case CFT_IRRIG_EVENTS:
     case PFT_HARVESTC2: case PFT_RHARVESTC2:
     case PFT_HARVESTN2: case PFT_RHARVESTN2:
-    case CFT_INTERC2: 
-    case CFTFRAC2: case CFT_AIRRIG2: 
+    case CFT_INTERC2:
+    case CFTFRAC2: case CFT_AIRRIG2:
     case CFT_TRANSP2: case CFT_NIR2:
     case CFT_EVAP2:
       return (ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;

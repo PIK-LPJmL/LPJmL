@@ -17,14 +17,14 @@
 
 #include "lpj.h"
 
-void update_annual(Cell *cell,           /**< Pointer to cell */
-                   int npft,             /**< number of natural pfts */
-                   int ncft,             /**< number of crop pfts */
-                   Real popdens,         /**< population density (capita/km2) */
-                   int year,               /**< simulation year (AD) */
-                   Bool isdaily,           /**< daily temperature data (TRUE/FALSE) */
-                   Bool intercrop,         /**< intercropping (TRUE/FALSE) */
-                   const Config *config    /**< LPJ configuration */
+void update_annual(Cell *cell,          /**< Pointer to cell */
+                   int npft,            /**< number of natural pfts */
+                   int ncft,            /**< number of crop pfts */
+                   Real popdens,        /**< population density (capita/km2) */
+                   int year,            /**< simulation year (AD) */
+                   Bool isdaily,        /**< daily temperature data (TRUE/FALSE) */
+                   Bool intercrop,      /**< intercropping (TRUE/FALSE) */
+                   const Config *config /**< LPJ configuration */
                   )
 {
   int s,p;

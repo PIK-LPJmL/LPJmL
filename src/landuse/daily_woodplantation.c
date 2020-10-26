@@ -136,11 +136,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   {
     runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,config);
     /* count irrigation events*/
-<<<<<<< HEAD
-    output->cft_irrig_events[rbtree(ncft) + data->irrigation.irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)]++;
-=======
-    output->cft_irrig_events[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)]++;
->>>>>>> 1915d00fa8e0db66c3a0e954489367879d58d89f
+    output->cft_irrig_events[rwp(ncft) + data->irrigation.irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)]++;
   }
 
   runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,config);

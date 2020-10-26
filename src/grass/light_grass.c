@@ -29,6 +29,10 @@ void light_grass(Litter *litter, /**< pointer to litter pools */
   grass=pft->data;
 
   nind_kill=(excess<1e-20) ? 1 : pft->nind*(1-excess/pft->fpc);
+#if 0
+  if(nind_kill>pft->nind)
+    nind_kill=pft->nind;
+#endif
   lm_old=grass->ind.leaf;
   grass->ind.leaf.carbon*=nind_kill;
   //grass->ind.leaf.carbon=-2.0*log(1.0-(pft->fpc-excess*pft->fpc/fpc_total_grass))/getpftpar(pft,sla);

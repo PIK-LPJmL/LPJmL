@@ -17,7 +17,6 @@
 
 /* Definition of datatypes */
 
-
 typedef struct
 {
   Filename filename; /**< Filename of output file */
@@ -35,7 +34,7 @@ typedef struct
   Real lat_res;
 } Extension;
 
-typedef struct
+struct config
 {
   const char *filename;       /**< LPJ configuration filename */
   char *arglist;              /**< command line */
@@ -210,8 +209,9 @@ typedef struct
   Socket *in;  /**< socket for ingoing data */
   Socket *out; /**< socket for outgoing data */
 #endif
+}; /* LPJ configuration */
 
-} Config; /* LPJ configuration */
+typedef Bool (*Fscanpftparfcn)(LPJfile *,Pftpar *,const Config *);
 
 /* Declaration of functions */
 

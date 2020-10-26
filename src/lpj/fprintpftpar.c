@@ -25,7 +25,8 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
   fputs("------------------------------------------------------------------------------\n",file);
   fprintf(file,"Id:\t\t%d\n"
                "Name:\t\t%s\n"
-               "Cult. type:\t%s\n",pftpar->id,pftpar->name,cultivation_type[pftpar->cultivation_type]);
+               "Cult. type:\t%s\n",
+          pftpar->id,pftpar->name,cultivation_type[pftpar->cultivation_type]);
   fprintf(file,"rootdist:\t");
   for(i=0;i<LASTLAYER;i++)
     fprintf(file,"%g ",pftpar->rootdist[i]);
@@ -96,10 +97,10 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                 "wscal_sl:\t%g\n"
                 "wscal_base:\t%g\n"
                 "wscal_tau:\t%g\n",
-           pftpar->tmin.sl, pftpar->tmin.base, pftpar->tmin.tau,
-           pftpar->tmax.sl, pftpar->tmax.base, pftpar->tmax.tau,
-           pftpar->light.sl, pftpar->light.base, pftpar->light.tau,
-           pftpar->wscal.sl, pftpar->wscal.base, pftpar->wscal.tau);
+            pftpar->tmin.sl, pftpar->tmin.base, pftpar->tmin.tau,
+            pftpar->tmax.sl, pftpar->tmax.base, pftpar->tmax.tau,
+            pftpar->light.sl, pftpar->light.base, pftpar->light.tau,
+            pftpar->wscal.sl, pftpar->wscal.base, pftpar->wscal.tau);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fprintf(file,"alpha_fuelp:\t%g\n"
@@ -119,10 +120,12 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
     fprintf(file,"vmax_up:\t%g (gN/kgC)\n"
                  "kNmin:\t\t%g\n"
                  "KNmin:\t\t%g\n"
-                 "CNleaf:\t\t%g %g (median %g)\n"
+                 "CNleaf:\t\t%g %g %g\n"
                  "kNstore:\t%g\n"
-                 "fN_turnover:\t%g\n",
+                 "fN_turnover:\t%g\n"
+                 "N fixing:\t%s\n",
             pftpar->vmax_up,pftpar->kNmin,pftpar->KNmin,1/pftpar->ncleaf.high,
-            1/pftpar->ncleaf.low,1/pftpar->ncratio_med,pftpar->knstore,pftpar->fn_turnover);
-  pftpar->fprintpar(file,pftpar); /* call type-specific print function */
+            1/pftpar->ncleaf.median,1/pftpar->ncleaf.low,pftpar->knstore,
+            pftpar->fn_turnover,bool2str(pftpar->nfixing));
+  pftpar->fprintpar(file,pftpar,config); /* call type-specific print function */
 } /* of 'fprintpftpar' */

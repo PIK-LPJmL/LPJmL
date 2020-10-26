@@ -120,7 +120,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     foreachsoillayer(l)
       cell->output.msoiltemp[l]+=stand->soil.temp[l]*ndaymonth1[month]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
-    hetres=littersom(stand,gtemp_soil);
+    hetres=littersom(stand,gtemp_soil,config->with_nitrogen);
     cell->output.mrh+=hetres.carbon*stand->frac;
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;

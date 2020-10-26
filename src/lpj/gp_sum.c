@@ -14,21 +14,21 @@
 
 #include "lpj.h"
 
-Real gp_sum(const Pftlist *pftlist, /**< Pft list */
-            Real co2,              /**< atmospheric CO2 concentration (ppm) */
-            Real temp,             /**< temperature (deg C) */
-            Real par,              /**< photosynthetic active radiation flux (J/m2/day) */
-            Real daylength,        /**< daylength (h) */
-            Real *gp_stand_leafon, /**< pot. canopy conduct.at full leaf cover (mm/s) */
-            Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
-            Real *fpc,             /**< total FPC of all PFTs */
-            const Config *config   /**< LPJ configuration */
+Real gp_sum(const Pftlist *pftlist, /**< [in] Pft list */
+            Real co2,              /**< [in] atmospheric CO2 concentration (ppm) */
+            Real temp,             /**< [in] temperature (deg C) */
+            Real par,              /**< [in] photosynthetic active radiation flux (J/m2/day) */
+            Real daylength,        /**< [in] daylength (h) */
+            Real *gp_stand_leafon, /**< [out] pot. canopy conduct.at full leaf cover (mm/s) */
+            Real gp_pft[],         /**< [out] pot. canopy conductance for PFTs & CFTs (mm/s) */
+            Real *fpc_total,       /**< [out] total FPC of all PFTs */
+            const Config *config   /**< [in] LPJ configuration */
            )                       /** \return pot. canopy conductance (mm/s) */
 {
   int p;
   Pft *pft;
-  Real agd,adtmm,gp,gp_stand,rd,fpc_total;
-  *gp_stand_leafon=gp=*fpc=gp_stand=0;
+  Real agd,adtmm,gp,gp_stand,rd;
+  *gp_stand_leafon=gp=*fpc_total=gp_stand=0;
   if(daylength<1e-20)
   {
     foreachpft(pft,p,pftlist)
@@ -61,10 +61,9 @@ Real gp_sum(const Pftlist *pftlist, /**< Pft list */
       gp_pft[getpftpar(pft,id)]=gp*pft->phen;
       gp_stand+=gp*pft->phen;
     }
-    *fpc+=pft->fpc;
-    *gp_stand_leafon+=gp;                                                       // TODO /pft->phen included
+    *fpc_total+=pft->fpc;
+    *gp_stand_leafon+=gp;             // TODO /pft->phen included
   }
-  fpc_total=*fpc;
-  *gp_stand_leafon= (gp_stand<1e-20 || fpc_total<1e-20) ? 0 : *gp_stand_leafon/fpc_total;
-  return (gp_stand<1e-20 || fpc_total<1e-20) ? 0 : gp_stand/fpc_total;
+  *gp_stand_leafon= (gp_stand<1e-20 || *fpc_total<1e-20) ? 0 : *gp_stand_leafon/ *fpc_total;
+  return (gp_stand<1e-20 || *fpc_total<1e-20) ? 0 : gp_stand/ *fpc_total;
 } /* of 'gp_sum' */

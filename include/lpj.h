@@ -49,6 +49,7 @@
 
 typedef struct cell Cell;   /* forward declaration of cell */
 typedef struct stand Stand; /* forward declaration of stand */
+typedef struct config Config; /* forward declaration of stand */
 
 /*  Defined header files for LPJ */
 

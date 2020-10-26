@@ -120,7 +120,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
         establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
     {
       stocks=establishment(pft,fpc_total,fpc_type[pft->par->type],
-                                n_est[pft->par->type]);
+                           n_est[pft->par->type]);
       flux_est.carbon+=stocks.carbon;
       flux_est.nitrogen+=stocks.nitrogen;
 #ifdef DAILY_ESTABLISHMENT

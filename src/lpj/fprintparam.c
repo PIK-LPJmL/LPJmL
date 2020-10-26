@@ -66,7 +66,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             "p:\t\t%g\n"
             "N0:\t\t%g (mgN/gC)\n"
             "k_temp:\t\t%g\n"
-            "denit threshold:\t%g\n"
             "min_c_bnf:\t%g (gC/m2)\n"
             "q_ash:\t\t%g\n"
             "sapwood_rec:\t%g\n"
@@ -74,7 +73,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             "T_0:\t\t%g (deg C)\n"
             "T_r:\t\t%g (deg C)\n"
             "par_sink_limit:\t%g\n",
-            param.k_max,param.k_2,param.p,param.n0,param.k_temp,param.denit_threshold,
+            param.k_max,param.k_2,param.p,param.n0,param.k_temp,
             param.min_c_bnf,param.q_ash,param.sapwood_recovery,param.T_m,
             param.T_0,param.T_r,param.par_sink_limit);
   if(config->withlanduse!=NO_LANDUSE)
@@ -98,11 +97,14 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"residues in soil:\t%g\n",param.residues_in_soil);
     if(config->with_nitrogen)
       fprintf(file,"nfert split:\t%g\n",param.nfert_split);
-    fprintf(file,"fraction burnt:\t%g\n",param.fburnt);
-    fprintf(file,"timber fraction:\t%g\n",param.ftimber);
-    fprintf(file,"harvest fast frac:\t%g\n",param.harvest_fast_frac);
-    fprintf(file,"product turnover:\t%g %g (1/yr)\n",
-            param.product_turnover.fast,param.product_turnover.slow);
+    if(config->istimber)
+    {
+      fprintf(file,"fraction burnt:\t%g\n",param.fburnt);
+      fprintf(file,"timber fraction:\t%g\n",param.ftimber);
+      fprintf(file,"harvest fast frac:\t%g\n",param.harvest_fast_frac);
+      fprintf(file,"product turnover:\t%g %g (1/yr)\n",
+              param.product_turnover.fast,param.product_turnover.slow);
+    }
     if(config->rw_manage)
     {
       fprintf(file,"esoil reduction:\t%g\n",param.esoil_reduction);

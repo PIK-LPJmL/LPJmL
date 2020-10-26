@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes PFT-specific output into file                              \n**/
+/**     Function writes PFT-specific output file                                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -183,7 +183,7 @@ static void writeshortpft(Outputfile *output,int n,short *data,int size,
                        output->counts,output->offsets,config->rank,config->comm);
       break;
   } /* of switch */
-   
+
 #else
   int i;
   if(output->method==LPJ_FILES)
@@ -496,7 +496,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
               for(p=0;p<stand->soil.litter.n;p++)
                 fvec[count]+=(float)(stand->soil.litter.bg[p].carbon*stand->frac);
             fvec[count]+=(float)((stand->soil.pool[i].slow.carbon+stand->soil.pool[i].fast.carbon)*stand->frac);
-          }   
+          }
           count++;
         }
       }
@@ -606,7 +606,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
           {
             if(stand->type->landusetype == NATURAL)
             { /* ignoring setaside stands here */
-              foreachpft(pft, p, &stand->pftlist) 
+              foreachpft(pft, p, &stand->pftlist)
               {
                 if(i == pft->par->id)
                   fvec[count] = (float)pft->par->lai(pft);
@@ -722,7 +722,8 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
           count++;
         }
       }
-      writepft(output,PFT_NSAPW,fvec,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);    }
+      writepft(output,PFT_NSAPW,fvec,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),year,i,config);
+    }
   }
   if(isopen(output,PFT_NHAWO))
   {
@@ -936,7 +937,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
 
 0-8  9-19   20-21           22               23              24-34     35-36        37-38
 PFT  CFT    PASTURE/OTHEr   BIOMASS-GRASS   BIOMASS-TREE    CFT_irr   PASTURE_irr  biomass-irr
- 
+
 
 
  - order of CFT-specific output:

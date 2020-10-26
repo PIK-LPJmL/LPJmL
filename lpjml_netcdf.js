@@ -50,10 +50,12 @@
 "prescribe_burntarea" : false,
 "prescribe_landcover" : "no_landcover",
 "new_phenology": false,
+"new_trf" : false,        /* new transpiration reduction function disabled */
 "river_routing": false,
 "equilsoil" :false,
 "permafrost" : true,
 "with_nitrogen": "lim_nitrogen",
+"store_climate" : true, /* store climate data in spin-up phase */
 "const_climate" : false,
 "const_deposition" : false,
 "irrigation" : "pot_irrigation",

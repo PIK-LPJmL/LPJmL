@@ -62,10 +62,12 @@ static Bool fscangrassphys(LPJfile *file,Grassphyspar *phys,const char *name,Ver
 
 Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
                     Pftpar *pft,   /**< Pointer to Pftpar array */
-                    Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
+                    const Config *config /**< LPJmL configuration */
                    )               /** \return TRUE on error  */
 {
   Pftgrasspar *grass;
+  Verbosity verb;
+  verb=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   pft->newpft=new_grass;
   pft->npp=npp_grass;
   /*pft->fpc=fpc_grass; */
@@ -113,12 +115,15 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   grass->turnover.leaf=1.0/grass->turnover.leaf;
   grass->turnover.root=1.0/grass->turnover.root;
   fscangrassphys2(verb,file,&grass->nc_ratio,pft->name,"cn_ratio");
-  fscanreal2(verb,file,&grass->ratio,pft->name,"ratio");
-  if(grass->ratio<=0)
+  if(config->with_nitrogen)
   {
-    if(verb)
-      fprintf(stderr,"ERROR235: Grass ratio=%g must be greater than zero.\n",grass->ratio);
-    return TRUE;
+    fscanreal2(verb,file,&grass->ratio,pft->name,"ratio");
+    if(grass->ratio<=0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR235: Grass ratio=%g must be greater than zero.\n",grass->ratio);
+      return TRUE;
+    }
   }
   fscanreal012(verb,file,&grass->reprod_cost,pft->name,"reprod_cost");
   grass->nc_ratio.leaf=1/grass->nc_ratio.leaf;

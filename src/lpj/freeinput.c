@@ -22,6 +22,9 @@ void freeinput(Input input, /**< Input struct */
 {
   freeclimate(input.climate,isroot);
   freewateruse(input.wateruse,isroot);
+#ifdef IMAGE
+  freewateruse(input.wateruse_wd,isroot);
+#endif
   freelanduse(input.landuse,isroot);
   freepopdens(input.popdens,isroot);
   freelandcover(input.landcover,isroot);

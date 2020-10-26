@@ -184,7 +184,7 @@ int iterate(Outputfile *output,  /**< Output file data */
         allocate_reservoir(grid,year,config);
     }
 #ifndef COUPLED
-    if(input.wateruse!=NULL && input.landuse!=NULL)
+    if(config->wateruse)
     {
       /* read wateruse data from file */
       if(getwateruse(input.wateruse,grid,wateruse_year,config))

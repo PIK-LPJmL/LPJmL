@@ -69,7 +69,7 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
 #endif
 
   nind_old=pft->nind;
-  if (pft->nind<epsilon && vegc_sum(pft)<2.0) /* avoid C-balance error by checking vegc */
+  if (pft->nind<epsilon && vegc_sum(pft)<2) /* avoid C-balance error by checking vegc */
     pft->nind=0.0;
   pft->nind+=est_pft;
   /* Account for flux from the atmosphere to new saplings */

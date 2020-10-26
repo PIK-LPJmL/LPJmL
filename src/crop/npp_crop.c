@@ -20,22 +20,22 @@
 /*
 - called in npp_crop()
 - calculation of the vegetation growth:
-  -> calculation of carbon biomass (total plant growth) 
+  -> calculation of carbon biomass (total plant growth)
   -> calculation of carbon mass root (root growth)
   -> calculation of carbon mass leaf (leaf growth)
   -> calculation of carbon mass so (storage organs growth)
   -> calculation of carbon mass pool (additional pool stem + reserve)
 */
 
-Real npp_crop(Pft *pft, /**< PFT variables */
-              Real gtemp_air, /**< value of air temperature response function */
-              Real gtemp_soil, /**< value of soil temperature response function */
-              Real assim,  /**< assimilation (gC/m2) */
-              Bool *negbm, /**< on return: biomass is negative */
-              Real wdf,     /**< water deficit fraction */
+Real npp_crop(Pft *pft,           /**< PFT variables */
+              Real gtemp_air,     /**< value of air temperature response function */
+              Real gtemp_soil,    /**< value of soil temperature response function */
+              Real assim,         /**< assimilation (gC/m2) */
+              Bool *negbm,        /**< on return: biomass is negative */
+              Real wdf,           /**< water deficit fraction */
               Bool crop_resp_var, /**< with variable crop respiration (TRUE,FALSE) */
-              int with_nitrogen /**< with nitrogen (TRUE,FALSE) */
-             ) /** \return net primary productivity (gC/m2) */
+              int with_nitrogen   /**< with nitrogen (TRUE,FALSE) */
+             )                    /** \return net primary productivity (gC/m2) */
 {
   Pftcrop *crop;
   const Pftcroppar *par;
@@ -48,7 +48,6 @@ Real npp_crop(Pft *pft, /**< PFT variables */
   data=pft->stand->data;
   crop=pft->data;
   par=pft->par->data;
-/* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration, which reduces yields at high N inputs */
   if(crop_resp_var && crop->ind.root.carbon>epsilon)
     nc_ratio.root=crop->ind.root.nitrogen/crop->ind.root.carbon;
   else
@@ -75,12 +74,11 @@ Real npp_crop(Pft *pft, /**< PFT variables */
   {
     *negbm=TRUE;
     crop->ind.pool.carbon+=npp;
-    pft->bm_inc.carbon+=npp; 
-  } 
-  else 
+    pft->bm_inc.carbon+=npp;
+  }
+  else
     allocation_daily_crop(pft,npp,wdf,with_nitrogen,output);
-  if(output->cft==pft->par->id &&
-     output->irrigation==data->irrigation)
+  if(output->cft==pft->par->id && output->irrigation==data->irrigation)
   {
     output->rroot=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil;
     output->rso=crop->ind.so.carbon*pft->par->respcoeff*param.k*nc_ratio.so*gtemp_air;
@@ -95,7 +93,6 @@ Real npp_crop(Pft *pft, /**< PFT variables */
     output->npool=crop->ind.pool.nitrogen;
     output->nso=crop->ind.so.nitrogen;
     output->nroot=crop->ind.root.nitrogen;
-
     output->wdf=wdf;
     output->wscal=pft->wscal;
   }
@@ -114,7 +111,7 @@ Real npp_crop(Pft *pft, /**< PFT variables */
   -> calculation of daily npp (net primary production)
 
 - calls the function allocation_daily_crop() if npp>0 und carbon mass pool+npp>0
-  -> allocation_daily_crop() needs the determined npp of npp_crop() 
+  -> allocation_daily_crop() needs the determined npp of npp_crop()
 - sets negbm to TRUE if the biomass gets negative
   -> cropstand will be deleted in update_daily()
 */

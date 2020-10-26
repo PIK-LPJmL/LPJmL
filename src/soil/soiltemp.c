@@ -16,6 +16,18 @@
 
 /*#define USE_LINEAR_CONTACT_T  */ /*linear interpolation between temperatures seems to give a reasonable approximation of contact temperatures between layers*/
 
+Real soiltemp_lag(const Soil *soil,      /**< Soil data */
+                  const Climbuf *climbuf /**< Climate buffer */
+                 )                       /** \return soil temperature (deg C) */
+{
+  Real a,b,temp_lag;
+  if(soil->w[0]<epsilon)
+    return climbuf->temp[NDAYS-1];
+  linreg(&a,&b,climbuf->temp,NDAYS);
+  temp_lag=a+b*(NDAYS-1-soil->alag*LAG_CONV);
+  return climbuf->atemp_mean+soil->amp*(temp_lag-climbuf->atemp_mean);
+} /* of 'soiltemp_lag' */
+
 /* heat conduction equation: dT/dt = th_diff*d2T/dz2
  * is solved with a finite-difference solution
  * algorithm and stability criterion are taken from:
@@ -211,9 +223,9 @@ void soiltemp(Soil *soil,     /**< pointer to soil data */
       } /* endif (freezing/thawing occurs)*/
       t_upper=temp_old;
       admit_upper=admit_old;
-    }/*foreach soil layer*/
+    } /* foreach soil layer*/
 
-  }/*foreach heat step*/
+  } /* foreach heat step*/
   for (l=0;l<=BOTTOMLAYER;l++)
   {
     layer+=soildepth[l];

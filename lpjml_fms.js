@@ -38,12 +38,14 @@
 "fire" : "fire",               /* fire disturbance enabled */
 "firewood" : false,
 "with_nitrogen" : "no_nitrogen",
+"store_climate" : true, /* store climate data in spin-up phase */
 "const_climate" : false,
 "const_deposition" : false,
 "population" : false,
 "prescribe_burntarea" : false,
 "prescribe_landcover" : "no_landcover",
 "new_phenology": true,
+"new_trf" : false,        /* new transpiration reduction function disabled */
 "river_routing" : true,
 "equilsoil" :false,
 "permafrost" : true,

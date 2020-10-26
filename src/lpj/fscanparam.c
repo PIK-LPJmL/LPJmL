@@ -95,23 +95,27 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.kc25,"kc25");
   fscanparamreal01(&f,&param.atmfrac,"atmfrac");
   fscanparamreal01(&f,&param.fastfrac,"fastfrac");
-  fscanparamreal(&f,&param.k_max,"k_max");
-  fscanparamreal(&f,&param.k_2,"k_2");
   fscanparamreal(&f,&param.k_mort,"k_mort");
   fscanparamreal01(&f,&param.fpc_tree_max,"fpc_tree_max");
   fscanparamreal(&f,&param.temp_response_a,"temp_response_a");
   fscanparamreal(&f,&param.temp_response_b,"temp_response_b");
-  fscanparamreal(&f,&param.p,"p");
-  fscanparamreal(&f,&param.n0,"n0");
-  fscanparamreal(&f,&param.k_temp,"k_temp");
-  fscanparamreal(&f,&param.denit_threshold,"denit_threshold");
-  fscanparamreal(&f,&param.min_c_bnf,"min_c_bnf");
-  fscanparamreal(&f,&param.par_sink_limit,"par_sink_limit");
-  fscanparamreal(&f,&param.q_ash,"q_ash");
-  fscanparamreal(&f,&param.sapwood_recovery,"sapwood_recovery");
-  fscanparamreal(&f,&param.T_m,"T_m");
-  fscanparamreal(&f,&param.T_0,"T_0");
-  fscanparamreal(&f,&param.T_r,"T_r");
+  if(config->with_nitrogen)
+  {
+    fscanparamreal(&f,&param.k_max,"k_max");
+    fscanparamreal(&f,&param.k_2,"k_2");
+    fscanparamreal(&f,&param.p,"p");
+    fscanparamreal(&f,&param.n0,"n0");
+    fscanparamreal(&f,&param.k_temp,"k_temp");
+    fscanparamreal(&f,&param.min_c_bnf,"min_c_bnf");
+    fscanparamreal(&f,&param.par_sink_limit,"par_sink_limit");
+    fscanparamreal(&f,&param.q_ash,"q_ash");
+    fscanparamreal(&f,&param.sapwood_recovery,"sapwood_recovery");
+    fscanparamreal(&f,&param.T_m,"T_m");
+    fscanparamreal(&f,&param.T_0,"T_0");
+    fscanparamreal(&f,&param.T_r,"T_r");
+  }
+  else
+    param.q_ash=param.sapwood_recovery=0;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fscanparamreal(&f,&param.firedura,"firedura");
@@ -138,11 +142,17 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(&f,&param.sat_level[3],"saturation_level_drip");
     fscanparamreal01(&f,&param.drip_evap,"drip_evap_reduction");
     fscanparamreal01(&f,&param.residues_in_soil,"residues_in_soil");
-    fscanparamreal(&f,&param.nfert_split,"nfert_split");
-    fscanparamreal01(&f,&param.fburnt,"fburnt");
-    fscanparamreal01(&f,&param.ftimber,"ftimber");
-    fscanparamreal01(&f,&param.harvest_fast_frac,"harvest_fast_frac");
-    fscanparampoolpar(&f,&param.product_turnover,"product_turnover");
+    if(config->with_nitrogen)
+    {
+      fscanparamreal(&f,&param.nfert_split,"nfert_split");
+    }
+    if(config->istimber)
+    {
+      fscanparamreal01(&f,&param.fburnt,"fburnt");
+      fscanparamreal01(&f,&param.ftimber,"ftimber");
+      fscanparamreal01(&f,&param.harvest_fast_frac,"harvest_fast_frac");
+      fscanparampoolpar(&f,&param.product_turnover,"product_turnover");
+    }
     if(config->rw_manage)
     {
       fscanparamreal01(&f,&param.esoil_reduction,"esoil_reduction");

@@ -30,7 +30,7 @@ Real ndemand_crop(const Pft *pft,     /**< pointer to PFT */
   croppar=pft->par->data;
   //*ndemand_leaf=((daylength==0) ? 0 : param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_crop(pft)))+param.n0*0.001*crop->ind.leaf.carbon;
   //*ndemand_leaf=((daylength==0) ? 0 : param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_crop(pft)))+pft->par->ncleaf.low*crop->ind.leaf.carbon;
-  *ndemand_leaf=((daylength==0) ? 0 : param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_crop(pft)))+pft->par->ncratio_med*crop->ind.leaf.carbon;
+  *ndemand_leaf=((daylength==0) ? 0 : param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_crop(pft)))+pft->par->ncleaf.median*crop->ind.leaf.carbon;
   if(crop->ind.leaf.carbon>0)
     nc_ratio=*ndemand_leaf/crop->ind.leaf.carbon;
   else

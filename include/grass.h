@@ -67,7 +67,7 @@ extern void phenology_grass(Pft *,Real,int,Bool);
 extern Bool fwrite_grass(FILE *,const Pft *);
 extern void fprint_grass(FILE *,const Pft *,int);
 extern Bool fread_grass(FILE *,Pft *,Bool);
-extern Bool fscanpft_grass(LPJfile *,Pftpar *,Verbosity);
+extern Bool fscanpft_grass(LPJfile *,Pftpar *,const Config *);
 extern Stocks establishment_grass(Pft *,Real,Real,int);
 extern Real vegc_sum_grass(const Pft *);
 extern Real vegn_sum_grass(const Pft *);
@@ -79,7 +79,7 @@ extern void free_grass(Pft *);
 extern void light_grass(Litter *,Pft *,Real);
 extern void adjust_grass(Litter *,Pft *,Real,Real);
 extern void reduce_grass(Litter *,Pft *,Real);
-extern void fprintpar_grass(FILE *,const Pftpar *);
+extern void fprintpar_grass(FILE *,const Pftpar *,const Config *);
 extern Stocks livefuel_consum_grass(Litter *,Pft *,const Fuel *,Livefuel *,
                                     Bool *,Real, Real);
 extern Bool annual_grass(Stand *,Pft *,Real *,Bool,int,Bool);

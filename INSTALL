@@ -1,21 +1,21 @@
- _     ____     _           _     
-| |   |  _ \   | |_ __ ___ | |    
-| |   | |_) |  | | '_ ` _ \| |    
-| |___|  __/ |_| | | | | | | |___ 
-|_____|_|   \___/|_| |_| |_|_____| Version 5.1.001
+ _     ____     _           _
+| |   |  _ \   | |_ __ ___ | |
+| |   | |_) |  | | '_ ` _ \| |
+| |___|  __/ |_| | | | | | | |___
+|_____|_|   \___/|_| |_| |_|_____| Version 5.1.002
 
 
-Installation of LPJmL C Version 5.1.001
+Installation of LPJmL C Version 5.1.002
 =======================================
 
 Installation for Unix-like systems
 ----------------------------------
 
-This text describes how to install LPJmL on your system. 
-The code has been tested for AIX, Linux, Mac OS X, and Windows 
-with cygwin and Microsoft C compiler (sequential version without MPI). 
+This text describes how to install LPJmL on your system.
+The code has been tested for AIX, Linux, Mac OS X, and Windows
+with cygwin and Microsoft C compiler (sequential version without MPI).
 Cygwin is a Linux-like environment for Windows (http://www.cygwin.com)
-On Mac OS the xcode suite must be installed in order to have the gcc 
+On Mac OS the xcode suite must be installed in order to have the gcc
 compiler.
 
 create LPJmL directory:
@@ -26,10 +26,9 @@ Go to LPJmL directory:
 
 cd lpjml
 
-untar source and data files
+untar source files
 
-gzip -cd lpjml-5.1.001.tar.gz|tar -xf -
-gzip -cd cru.tar.gz|tar -xf -
+gzip -cd lpjml-5.1.002.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -69,7 +68,7 @@ Directory tree after extracting the tar files:
      |
      +--pnet      : source for library for distributed networks
      |
-     +--climate   : climate code 
+     +--climate   : climate code
      |
      +--lpj       : lpj functions
      |
@@ -87,14 +86,14 @@ Directory tree after extracting the tar files:
      |
      +--reservoir : reservoir code
      |
-     +--socket    : socket communication library 
+     +--socket    : socket communication library
      |
-     +--image     : coupler to IMAGE model 
+     +--image     : coupler to IMAGE model
      |
      +--netcdf    : NetCDF output functions
      |
      +--utils     : utility programs
-         
+
 Configure for your operating system
 
 On the HLRS2015 cluster at PIK you have to set several modules for compilation and linking:
@@ -122,7 +121,7 @@ Then LPJmL can be configured via
 ./configure.sh
 
 If configure script exits with message "Unsupported operating system",
-Makefile.$osname is created from Makefile.gcc and probably has to be 
+Makefile.$osname is created from Makefile.gcc and probably has to be
 modified for your operating system/compiler.
 If the configure script finds a MPI environment a parallel version of lpjml is built.
 The configure script creates a copy of the following OS-specific makefiles from
@@ -148,15 +147,16 @@ LPJFLAGS= -Dflag1 ...
 Flag                Description
 ------------------- ------------------------------------------------------------
 COUPLING_WITH_FMS   enable coupling to FMS
-DAILY_ESTABLISHMENT Enable daily establishment 
+DAILY_ESTABLISHMENT Enable daily establishment
 DEBUG               diagnostic output is generated for debugging purposes
 DOUBLE_HARVEST      adding correct sequencing of harvest events
 IMAGE               include coupler to IMAGE model
+INCLUDEWP           include wood plantation
 LINEAR_DECAY        use linearized functions for litter decay
 MICRO_HEATING       Enable microbial heating
 NO_FAIL_BALANCE     lpjml does not terminate on balance errors
+PERMUTE             random permutation of PFT list
 SAFE                code is compiled with additional checks
-STORECLIMATE        store climate data in memory for spin up phase
 USE_JSON            enable JSON format for LPJmL configuration files
 USE_MPI             compile parallel version of LPJmL
 USE_NETCDF          enable NetCDF input/output
@@ -169,13 +169,13 @@ WITH_FPE            floating point exceptions are enabled for debugging purposes
 
 Create executables:
 
-make    
+make
 
-One executable in directory bin is created: 
+One executable in directory bin is created:
 
 lpjml    - LPJmL simulation code
 
-Utility programs are compiled by 
+Utility programs are compiled by
 
 make utils
 
@@ -188,7 +188,7 @@ printheader - prints file header of LPJmL input data files.
 lpjprint    - prints content of restart file to stdout.
 txt2clm     - converts CRU data files into LPJmL climate data files.
               CRU data files have to be in the format specified in
-              http://www.cru.uea.ac.uk/~timm/grid/CRU_TS_2_1.html. 
+              http://www.cru.uea.ac.uk/~timm/grid/CRU_TS_2_1.html.
 
 The binaries can be copied in an installation directory by invoking
 
@@ -207,7 +207,7 @@ The following environment variables are used by LPJmL:
 LPJCONFIG      - default LPJmL configuration filename
 LPJPREP        - defines preprocessor command for LPJmL configuration  file, default
                  is "cpp"
-LPJROOT        - defines the root directory for LPJmL. This directory is added to the 
+LPJROOT        - defines the root directory for LPJmL. This directory is added to the
                  include directories of the preprocessor
 LPJIMAGE       - sets host where IMAGE is running
 LPJWAITIMAGE   - sets time to wait for connection to IMAGE model
@@ -219,15 +219,15 @@ LPJOPTIONS     - cpp runtime options for LPJmL
 LPJOUTPATH     - Path appended to the output filenames. Only done for filenames
                  without absolute path.
 LPJOUTPUT      - Default method for generating output files. Valid values
-                 are write, mpi2, gather, and socket. 
+                 are write, mpi2, gather, and socket.
 
 Create output and restart directory:
 
 make test
 
-On the compute cluster at PIK it is better to create symbolic links of the 
+On the compute cluster at PIK it is better to create symbolic links of the
 input, output, and restart directory to the parallel GPFS filesystem /scratch.
-This improves performance in particular for the parallel code. 
+This improves performance in particular for the parallel code.
 
 Man pages
 ---------
@@ -246,11 +246,11 @@ apropos lpj
 yields list of man pages related to LPJmL.
 
 Running the code
----------------- 
- 
+----------------
+
 Sequential version can be started by invoking:
 
-./bin/lpjml 
+./bin/lpjml
 
 If you run lpjml outside the root directory of LPJmL, the following environment
 variable should be set:
@@ -269,7 +269,7 @@ in your profile. Then LPJROOT, PATH and MANPATH are set accordingly.
 
 Runtime options of lpjml
 
-The following runtime options are defined: 
+The following runtime options are defined:
 
 -Iincludepath     - Adds include path for LPJmL configuration file
 -Dmacro[=value]   - Defines macro
@@ -292,7 +292,7 @@ The following runtime options are defined:
 
 The first two options will be sent to the preprocessor.
 
-For the parallel version SLURM and LoadLeveler files for Linux and AIX are provided. 
+For the parallel version SLURM and LoadLeveler files for Linux and AIX are provided.
 A job can be submitted by invoking the bin/lpjsubmit script:
 
 bin/lpjsubmit ntasks LPJmL_args...
@@ -310,8 +310,8 @@ ERRORxxx: message
 
 where xxx is the error code returned. The following error codes are defined:
 
-Error code Description                                 Error type
----------- ------------------------------------------- ----------
+Error code Description                                   Error type
+---------- --------------------------------------------- ----------
          1 Error reading configuration                   External
          2 Error initializing input data                 External
          3 Error initializing grid                       External
@@ -348,9 +348,10 @@ Error code Description                                 Error type
         36 Negative soil NH4                             Internal
         37 Invalid nitrogen balance                      Internal
         38 Invalid climate data                          External
----------- --------------------------------------------- --------
+        39 Invalid FPC value                             Internal
+---------- --------------------------------------------- ----------
 
-External errors are caused by invalid or missing input files while internal 
+External errors are caused by invalid or missing input files while internal
 errors are caused by problems inside the LPJ code. The latter will cause a core
 dump and have to be fixed by program changes. Some errors will only be generated
 if -DSAFE is set in the compile options of Makefile.inc.
@@ -358,7 +359,7 @@ if -DSAFE is set in the compile options of Makefile.inc.
 Installation for Windows XP without cygwin
 ------------------------------------------
 
-The code without MPI has been tested on Windows XP using the free Microsoft 
+The code without MPI has been tested on Windows XP using the free Microsoft
 C++ compiler and nmake. The Microsoft SDK has to be installed, too.  All necessary
 programs can be downloaded from the Microsoft webpage.
 
@@ -368,9 +369,9 @@ configure makefile:
 
 configure.bat
 
-If the compiler does not find the system libraries, the library path defined in 
-Makefile.inc has to be modified. 
+If the compiler does not find the system libraries, the library path defined in
+Makefile.inc has to be modified.
 
 create lpjml executable:
 
-nmake 
+nmake

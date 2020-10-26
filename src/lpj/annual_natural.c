@@ -131,7 +131,8 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
         pft->fpc = fpc_obs_cor;
     }
     stand->cell->output.fpc[getpftpar(pft,id)+1]=pft->fpc;
-#ifdef SAFE
+//#ifdef SAFE
+#if 0
     if(pft->fpc<0)
       fail(INVALID_FPC_ERR,TRUE,"FPC=%g for '%s' less than zero.\n",pft->fpc,pft->par->name);
 #endif

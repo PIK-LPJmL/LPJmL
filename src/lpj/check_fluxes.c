@@ -16,8 +16,6 @@
 
 #include "lpj.h"
 
-#define FAIL   /* program is stopped if balance error occures */
-
 void check_fluxes(Cell *cell,          /**< cell pointer */
                   int year,            /**< simulation year (AD) */
                   int cellid,          /**< cell index */
@@ -95,7 +93,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR004: "
 #else
-    fail(INVALID_CARBON_BALANCE_ERR,TRUE,
+    fail(INVALID_CARBON_BALANCE_ERR,FALSE,
 #endif
          "y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f firec: %.2f flux_estab: %.2f flux_harvest: %.2f delta_totc: %.2f\ndeforest_emissions: %.2f product_turnover: %.2f trad_biofuel: %.2f product pools %.2f %.2f timber_harvest %.2f ftimber %.2f fburn %.2f\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.nep,
@@ -108,7 +106,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR004: "
 #else
-    fail(INVALID_CARBON_BALANCE_ERR,TRUE,
+    fail(INVALID_CARBON_BALANCE_ERR,FALSE,
 #endif
          "y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f\n"
          "                            firec: %.2f flux_estab: %.2f \n"
@@ -164,7 +162,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR005: "
 #else
-    fail(INVALID_WATER_BALANCE_ERR,TRUE,
+    fail(INVALID_WATER_BALANCE_ERR,FALSE,
 #endif
          "y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceW,cell->balance.totw,totw,

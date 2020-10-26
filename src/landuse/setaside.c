@@ -20,7 +20,7 @@
 void mixsoil(Stand *stand1,const Stand *stand2)
 {
   int l,index,i;
-  Real water1,water2;
+  Real water1,water2,tmp;
   forrootsoillayer(l)
   {
     mixpool(stand1->soil.NH4[l],stand2->soil.NH4[l],stand1->frac,stand2->frac);
@@ -105,7 +105,9 @@ void mixsoil(Stand *stand1,const Stand *stand2)
             stand1->frac,stand2->frac);
     mixpool(stand1->soil.ice_pwp[l],stand2->soil.ice_pwp[l],stand1->frac,
             stand2->frac);
-    stand1->soil.state[l]=(short)getstate(stand1->soil.temp+l);
+    tmp=stand1->soil.temp[l];
+    stand1->soil.state[l]=(short)getstate(&tmp);
+    stand1->soil.temp[l]=tmp;
 
     water1=(stand1->soil.w[l]*stand1->soil.par->whcs[l]+stand1->soil.ice_depth[l]+stand1->soil.w_fw[l]+stand1->soil.ice_fw[l])*stand1->frac;
     water2=(stand2->soil.w[l]*stand2->soil.par->whcs[l]+stand2->soil.ice_depth[l]+stand2->soil.w_fw[l]+stand2->soil.ice_fw[l])*stand2->frac;

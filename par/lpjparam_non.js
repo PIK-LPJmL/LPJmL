@@ -41,7 +41,6 @@
   "p" : 25,                  /* Haxeltine & Prentice regression coefficient */
   "n0" : 7.15,               /* Haxeltine & Prentice regression coefficient */
   "k_temp" : 0.02,           /* factor of temperature dependence of nitrogen demand for Rubisco activity */
-  "denit_threshold" : 0.8,   /* denitrification threshold */
   "min_c_bnf" : 20,          /* threshold C root content for BNF */
   "par_sink_limit" : 0.2,    /* Michaelis-Menten scaler of sink limitation */
   "q_ash" : 0.45,            /* fraction of nitrogen going to litter after fire */

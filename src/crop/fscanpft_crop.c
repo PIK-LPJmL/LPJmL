@@ -78,18 +78,16 @@ static Bool fscancropphys(LPJfile *file,Cropphys *phys,const char *name,Verbosit
   LPJfile item;
   if(fscanstruct(file,&item,name,verb))
     return TRUE;
-  if(fscanreal(&item,&phys->leaf,"leaf",FALSE,verb))
-    return TRUE;
   if(fscanreal(&item,&phys->root,"root",FALSE,verb))
     return TRUE;
   if(fscanreal(&item,&phys->so,"so",FALSE,verb))
     return TRUE;
   if(fscanreal(&item,&phys->pool,"pool",FALSE,verb))
     return TRUE;
-  if(phys->leaf<=0 || phys->root<=0 || phys->so<=0 || phys->pool<=0)
+  if(phys->root<=0 || phys->so<=0 || phys->pool<=0)
   {
     if(verb)
-      fprintf(stderr,"ERROR235: Crop parameter '%s'=(%g,%g,%g,%g) must be greater than zero.\n",name,phys->leaf,phys->root,phys->so,phys->pool);
+      fprintf(stderr,"ERROR235: Crop parameter '%s'=(%g,%g,%g) must be greater than zero.\n",name,phys->root,phys->so,phys->pool);
     return TRUE;
   }
   return FALSE;
@@ -119,10 +117,12 @@ char *calcmethod[]={"no calc","prec calc","temp wtyp calc","temp styp calc",
 
 Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
                    Pftpar *pft,    /**< Pointer to Pftpar array */
-                   Verbosity verb  /**< verbosity level (NO_ERR,ERR,VERB) */
+                   const Config *config /**< LPJmL comfiguration */
                   )                /** \return TRUE on error */
 {
   Pftcroppar *crop;
+  Verbosity verb;
+  verb=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   pft->newpft=new_crop;
   pft->npp=NULL;
   pft->leaf_phenology=NULL;
@@ -194,8 +194,10 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   fscanpftreal(verb,file,&crop->shapesenescencenorm,pft->name,
                "shapesenescencenorm");
   fscancropphys2(verb,file,&crop->nc_ratio,pft->name,"cn_ratio");
-  fscancropratio2(verb,file,&crop->ratio,pft->name,"ratio");
-  crop->nc_ratio.leaf=1/crop->nc_ratio.leaf;
+  if(config->with_nitrogen)
+  {
+    fscancropratio2(verb,file,&crop->ratio,pft->name,"ratio");
+  }
   crop->nc_ratio.root=1/crop->nc_ratio.root;
   crop->nc_ratio.so=1/crop->nc_ratio.so;
   crop->nc_ratio.pool=1/crop->nc_ratio.pool;

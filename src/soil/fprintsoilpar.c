@@ -31,10 +31,10 @@ void fprintsoilpar(FILE *file,              /**< pointer to ASCII file */
     fprintf(file," %g",fbd_fac[i]);
   fputs("\nName               w_pwp  w_fc  w_sat hsg tdiff0 tdiff15 tdiff100 condpwp cond100 cond100ice",file);
   if(with_nitrogen)
-    fputs(" denit_rate a_denit b_denit c_denit d_denit anion_excl cn_ratio",file);
+    fputs(" a_denit b_denit c_denit d_denit anion_excl cn_ratio",file);
   fputs("\n------------------ ------ ----- ----- --- ------ ------- -------- ------- ------- ----------",file);
   if(with_nitrogen)
-    fputs(" ---------- ------- ------- ------- ------- ---------- --------\n",file);
+    fputs(" ------- ------- ------- ------- ---------- --------\n",file);
   else
     fputc('\n',file);
   for(i=0;i<nsoil;i++)
@@ -45,8 +45,7 @@ void fprintsoilpar(FILE *file,              /**< pointer to ASCII file */
             soilpar[i].tdiff_0,soilpar[i].tdiff_15,soilpar[i].tdiff_100,
             soilpar[i].tcond_pwp,soilpar[i].tcond_100,soilpar[i].tcond_100_ice);
     if(with_nitrogen)
-      fprintf(file," %10.3f %7.3f %7.3f %7.4f %7.3f %10.3f %8.1f",
-              soilpar[i].denit_rate,
+      fprintf(file," %7.3f %7.3f %7.4f %7.3f %10.3f %8.1f",
               soilpar[i].a_nit,soilpar[i].b_nit,soilpar[i].c_nit,soilpar[i].d_nit,soilpar[i].anion_excl,soilpar[i].cn_ratio);
     fputc('\n',file);
   }

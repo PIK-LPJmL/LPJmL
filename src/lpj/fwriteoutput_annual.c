@@ -4,6 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Function writes annual output into binary file                             \m**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -604,7 +606,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
   }
   writeoutputvar(NEGC_FLUXES,neg_fluxes.carbon);
   writeoutputvar(NEGN_FLUXES,neg_fluxes.nitrogen);
-  writeoutputvar(MEAN_VEGC_MANGRASS,mean_vegc_mangrass);  
+  writeoutputvar(MEAN_VEGC_MANGRASS,mean_vegc_mangrass);
   writeoutputvar(VEGC_AVG,vegc_avg);
   free(vec);
 } /* of 'fwriteoutput_annual' */

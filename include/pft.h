@@ -64,6 +64,13 @@ typedef struct
 
 typedef struct
 {
+  Real low;    /**< lower CN ratio  */
+  Real median; /**< median CN ratio  */
+  Real high;   /**< upper CN ratio  */
+} Cnratio;
+
+typedef struct
+{
   Real tmin;  /**< daily cold-temperature limiting function value for phenology */
   Real tmax;  /**< daily heat-stress limiting function value for phenology */
   Real light; /**< daily light limiting function value for phenology */
@@ -84,6 +91,7 @@ typedef struct Pft
     int id;                     /**< unique PFT identifier */
     int type;                   /**< type --> whether CROP or TREE or GRASS*/
     int cultivation_type;       /**< cultivation_type----> NONE, BIOMASS, ANNUAL_CROP, WP, */
+    Bool nfixing;               /**< PFT can fix N (TRUE/FALSE) */
     char *name;                 /**< Pft name */
     Real cn[NHSG];              /**< pft specific curve number for each hydr. soil group */
     Real beta_root;             /**< root distribution parameter */
@@ -135,8 +143,7 @@ typedef struct Pft
     Real KNmin;                 /**< Half saturation concentration of fine root N uptake (g N m-2), non-PFT specific */
     Real knstore;
     Real fn_turnover;           /**< fraction of N not recovered before turnover */
-    Limit ncleaf;               /**< minimum, maximum leaf foliage N concentration */
-    Real ncratio_med;           /**< median leaf foligae N concentration, targeted in N demand */
+    Cnratio ncleaf;             /**< minimum, median, maximum leaf foliage N concentration */
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
     Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */
@@ -172,7 +179,7 @@ typedef struct Pft
     Real (*vegn_sum)(const struct Pft *);
     Real (*agb)(const struct Pft *);
     void (*mix_veg)(struct Pft *,Real);
-    void (*fprintpar)(FILE *,const struct Pftpar *);
+    void (*fprintpar)(FILE *,const struct Pftpar *,const Config *);
     //void (*output_daily)(Daily_outputs *,const struct Pft *);
     void (*turnover_monthly)(Litter *,struct Pft *);
     void (*turnover_daily)(Litter *,struct Pft *,Real,Bool);
@@ -217,8 +224,6 @@ typedef struct Pftpar Pftpar;
  * pointer.
  */
 
-typedef Bool (*Fscanpftparfcn)(LPJfile *,Pftpar *,Verbosity);
-
 extern char *phenology[];
 extern  char *cultivation_type[];
 extern  char *path[];
@@ -246,6 +251,7 @@ extern void nomix_veg(Pft *,Real);
 extern Bool establish(Real,const Pftpar *,const Climbuf *);
 extern Stocks noestablishment(Pft *,Real,Real,int);
 extern Bool fscanlimit(LPJfile *,Limit *,const char *,Verbosity);
+extern Bool fscancnratio(LPJfile *,Cnratio *,const char *,Verbosity);
 extern Bool fscanemissionfactor(LPJfile *,Tracegas *,const char *,Verbosity);
 extern Bool fscanphenparam(LPJfile *,Phen_param *,const char *,Verbosity);
 extern Real fire_sum(const Litter *,Real);

@@ -18,7 +18,8 @@
 #include "crop.h"
 
 void fprintpar_crop(FILE *file, /**< pointer to text file */
-                    const Pftpar *par /**< pointer to PFT parameter */
+                    const Pftpar *par, /**< pointer to PFT parameter */
+                    const Config *config /**< LPJmL configuration */
                    )
 {
   Pftcroppar *croppar;
@@ -48,8 +49,7 @@ void fprintpar_crop(FILE *file, /**< pointer to text file */
                "min, max LAI:\t%g %g\n"
                "opt,min hi:\t%g %g\n"
                "shapesenescencenorm:\t%g\n"
-               "C:N ratio:\t%g %g %g %g\n"
-               "rel. C:N ratio:\t%g %g %g\n",
+               "C:N ratio:\t%g %g %g\n",
           calcmethod[croppar->calcmethod_sdate],
           croppar->initdate.sdatenh,croppar->initdate.sdatesh,
           croppar->hlimit,croppar->fallow_days,
@@ -72,9 +72,10 @@ void fprintpar_crop(FILE *file, /**< pointer to text file */
           croppar->laimin,croppar->laimax,
           croppar->hiopt,croppar->himin,
           croppar->shapesenescencenorm,
-          1/croppar->nc_ratio.leaf,
           1/croppar->nc_ratio.root,
           1/croppar->nc_ratio.so,
-          1/croppar->nc_ratio.pool,
-          croppar->ratio.root,croppar->ratio.so,croppar->ratio.pool);
+          1/croppar->nc_ratio.pool);
+  if(config->with_nitrogen)
+    fprintf(file,"rel. C:N ratio:\t%g %g %g\n",
+            croppar->ratio.root,croppar->ratio.so,croppar->ratio.pool);
 } /* of 'fprintpar_crop' */

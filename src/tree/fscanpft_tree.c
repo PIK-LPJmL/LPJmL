@@ -92,11 +92,14 @@ char *leaftype[]={"broadleaved","needleleaved","any leaved"};
 
 Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
                    Pftpar *pft,   /**< Pointer to Pftpar array */
-                   Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
+                   const Config *config /**< LPJmL configuration  */
                   )               /** \return TRUE on error */
 {
   Real stemdiam,height_sapl,wood_sapl;
   Pfttreepar *tree;
+  Verbosity verb;
+  int i;
+  verb=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   pft->newpft=new_tree;
   pft->npp=npp_tree;
   /*pft->fpc=fpc_tree; */
@@ -161,7 +164,10 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   tree->nc_ratio.leaf=1/tree->nc_ratio.leaf;
   tree->nc_ratio.sapwood=1/tree->nc_ratio.sapwood;
   tree->nc_ratio.root=1/tree->nc_ratio.root;
-  fscanratio2(verb,file,&tree->ratio,pft->name,"ratio");
+  if(config->with_nitrogen)
+  {
+    fscanratio2(verb,file,&tree->ratio,pft->name,"ratio");
+  } 
   fscanreal2(verb,file,&tree->crownarea_max,pft->name,"crownarea_max");
   fscanreal2(verb,file,&wood_sapl,pft->name,"wood_sapl");
   if(pft->phenology==SUMMERGREEN)
@@ -175,18 +181,27 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   fscanreal2(verb,file,&tree->allom3,pft->name,"allom3");
   fscanreal2(verb,file,&tree->allom4,pft->name,"allom4");
   fscanreal2(verb,file,&tree->height_max,pft->name,"height_max");
-  fscanreal2(verb,file,&tree->scorchheight_f_param,pft->name,"scorchheight_f_param");
-  fscanreal2(verb,file,&tree->crownlength,pft->name,"crownlength");
-  fscanreal2(verb,file,&tree->barkthick_par1,pft->name,"barkthick_par1");
-  fscanreal2(verb,file,&tree->barkthick_par2,pft->name,"barkthick_par2");
-  fscanreal2(verb,file,&tree->crown_mort_rck,pft->name,"crown_mort_rck");
-  fscanreal2(verb,file,&tree->crown_mort_p,pft->name,"crown_mort_p");
   fscanreal2(verb,file,&tree->k_latosa,pft->name,"k_latosa");
-  if(fscanrealarray(file,tree->fuelfrac,NFUELCLASS,"fuelfraction",verb))
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    if(verb)
-      fprintf(stderr,"ERROR112: Cannot read 'fuelfraction' of PFT '%s'.\n",pft->name);
-    return TRUE;
+    fscanreal2(verb,file,&tree->scorchheight_f_param,pft->name,"scorchheight_f_param");
+    fscanreal2(verb,file,&tree->crownlength,pft->name,"crownlength");
+    fscanreal2(verb,file,&tree->barkthick_par1,pft->name,"barkthick_par1");
+    fscanreal2(verb,file,&tree->barkthick_par2,pft->name,"barkthick_par2");
+    fscanreal2(verb,file,&tree->crown_mort_rck,pft->name,"crown_mort_rck");
+    fscanreal2(verb,file,&tree->crown_mort_p,pft->name,"crown_mort_p");
+    if(fscanrealarray(file,tree->fuelfrac,NFUELCLASS,"fuelfraction",verb))
+    {
+      if(verb)
+        fprintf(stderr,"ERROR112: Cannot read 'fuelfraction' of PFT '%s'.\n",pft->name);
+      return TRUE;
+    }
+  }
+  else
+  {
+    tree->barkthick_par1=tree->barkthick_par2=0;
+    for(i=0;i<NFUELCLASS;i++)
+      tree->fuelfrac[i]=0;
   }
   fscanreal2(verb,file,&tree->k_est,pft->name,"k_est");
   if(pft->cultivation_type!=NONE)

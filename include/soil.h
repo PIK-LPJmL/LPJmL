@@ -153,11 +153,6 @@ typedef struct
   Real d_nit;
   Real m_nit;
   Real n_nit;
-  //Real C_corr;
-  //Real bd; /* bulk density, g/cm3 */
-  Real a_denit;
-  Real b_denit;
-  Real denit_rate;
   Real anion_excl; /* fraction of porosity from which anions are excluded (from SWAT) */
   Real cn_ratio; /* C:N ration in soil pools */
   //Real albedo; /**< albedo of the soil */
@@ -209,7 +204,7 @@ extern void convert_water(Soil*,int,Real*);
 extern void copysoil(Soil *,const Soil *, int);
 extern int findlitter(const Litter *,const struct Pftpar *);
 extern Real fire_prob(const Litter *,Real);
-extern unsigned int fscansoilpar(LPJfile *,Soilpar **,Verbosity);
+extern unsigned int fscansoilpar(LPJfile *,Soilpar **,int,Verbosity);
 extern Bool fscanpoolpar(LPJfile *,Poolpar *,const char *,Verbosity);
 extern Bool freadlitter(FILE *,Litter *,const struct Pftpar *,int,Bool);
 extern Bool freadsoil(FILE *,Soil *,const Soilpar *,const struct Pftpar *,int,Bool);
@@ -231,7 +226,7 @@ extern Real litter_ag_sum(const Litter *);
 extern Real litter_ag_sum_n(const Litter *);
 extern Real litter_ag_grass(const Litter *);
 extern Real litter_ag_sum_quick(const Litter *);
-extern Stocks littersom(Stand *,Real [NSOILLAYER]);
+extern Stocks littersom(Stand *,Real [NSOILLAYER],int);
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);
 extern Real moistfactor(const Litter *);
@@ -239,10 +234,12 @@ extern void moisture2soilice(Soil *,Real *,int);
 extern void newsoil(Soil *);
 extern int seeksoilcode(FILE *,int,size_t,Type);
 extern Real snow(Soil *,Real *,Real *,Real, Real *,Real *);
+extern Real snow_old(Real *,Real *,Real *,Real);
 extern void soiltemp(Soil*, Real,Bool);
 #ifdef COUPLING_WITH_FMS
 extern void laketemp(Cell*, const struct Dailyclimate *);
 #endif
+extern Real soiltemp_lag(const Soil *,const Climbuf *);
 extern Real soilcarbon(const Soil *);
 extern Real soilcarbon_slow(const Soil *);
 extern Stocks soilstocks(const Soil *);

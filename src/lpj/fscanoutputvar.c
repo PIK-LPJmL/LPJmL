@@ -52,7 +52,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
   outnames=newvec(Variable,nout_max);
   checkptr(outnames);
   for(i=0;i<nout_max;i++)
-    outnames[i].name=NULL; 
+    outnames[i].name=NULL;
   for(i=0;i<nout_max;i++)
   {
     fscanarrayindex(&arr,&item,i,verb);

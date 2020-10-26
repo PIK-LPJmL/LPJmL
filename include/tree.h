@@ -116,7 +116,7 @@ extern void phenology_tree(Pft *,Real,int,Bool);
 extern Bool fwrite_tree(FILE *,const Pft *);
 extern void fprint_tree(FILE *,const Pft *,int);
 extern Bool fread_tree(FILE *,Pft *,Bool);
-extern Bool fscanpft_tree(LPJfile *,Pftpar *,Verbosity);
+extern Bool fscanpft_tree(LPJfile *,Pftpar *,const Config *);
 extern Bool isneg_tree(const Pft *);
 extern Stocks establishment_tree(Pft *,Real,Real,int);
 extern void init_tree(Pft *);
@@ -129,7 +129,7 @@ extern void free_tree(Pft *);
 extern void light_tree(Litter *,Pft *,Real);
 extern void adjust_tree(Litter *,Pft *,Real,Real);
 extern void reduce_tree(Litter *,Pft *,Real);
-extern void fprintpar_tree(FILE *,const Pftpar *);
+extern void fprintpar_tree(FILE *,const Pftpar *,const Config *);
 extern void output_daily_tree(Daily_outputs *,const Pft *);
 extern Stocks livefuel_consum_tree(Litter *,Pft *,const Fuel *,Livefuel *,
                                    Bool *,Real,Real);

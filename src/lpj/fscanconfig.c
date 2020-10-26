@@ -161,7 +161,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->seed_start==RANDOM_SEED)
     config->seed_start=time(NULL);
   setseed(config->seed,config->seed_start);
-  config->with_nitrogen=LIM_NITROGEN;
+  config->with_nitrogen=NO_NITROGEN;
   if(fscankeywords(file,&config->with_nitrogen,"with_nitrogen",nitrogen,3,TRUE,verbose))
     return TRUE;
   if(fscankeywords(file,&config->with_radiation,"radiation",radiation,4,FALSE,verbose))
@@ -324,7 +324,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR230: Cannot read LPJ parameter.\n",stderr);
     return TRUE;
   }
-  if((config->nsoil=fscansoilpar(file,&config->soilpar,verbose))==0)
+  if((config->nsoil=fscansoilpar(file,&config->soilpar,config->with_nitrogen,verbose))==0)
   {
     if(verbose)
       fputs("ERROR230: Cannot read soil parameter.\n",stderr);

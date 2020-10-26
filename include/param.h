@@ -48,7 +48,6 @@ typedef struct
   Real temp_response_b; /**< parameter in temperature response fucntion */
   Real p;            /**< regression coefficent from Haxeltine and Prentice : N=p Vmax+n0 */
   Real n0;           /**< regression coefficient from Haxltine and Prentice */
-  Real denit_threshold; /**< denitrificaton threshold */
   Real q_ash;        /**< fraction of nitrogen going to litter after fire */
   Real sapwood_recovery; /**< recovery of sapwood nitrogen */
   Real T_m;          /**< parameter in N uptake temperature function */

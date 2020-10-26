@@ -38,7 +38,7 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
   int l,p,f;
   Real sumlitter,pftlitter,wood=0,socfraction;
   Poolpar *k_mean,*c0,*sum,*k_mean_layer;
-  Poolpar cn_ratio[LASTLAYER];
+  Poolpar nc_ratio[LASTLAYER];
   k_mean_layer=newvec(Poolpar,LASTLAYER);
   check(k_mean_layer);
   k_mean=newvec(Poolpar,ntotpft);
@@ -143,8 +143,8 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
       }
       forrootsoillayer(l)
       {
-        cn_ratio[l].slow=soil->pool[l].slow.carbon/soil->pool[l].slow.nitrogen;
-        cn_ratio[l].fast=soil->pool[l].fast.carbon/soil->pool[l].fast.nitrogen;
+        nc_ratio[l].slow=soil->pool[l].slow.nitrogen/soil->pool[l].slow.carbon;
+        nc_ratio[l].fast=soil->pool[l].fast.nitrogen/soil->pool[l].fast.carbon;
         soil->pool[l].slow.carbon=soil->pool[l].fast.carbon=0;
         soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=0;
         for(p=0;p<soil->litter.n;p++)
@@ -164,8 +164,8 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
         }
         //soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/soil->par->cn_ratio;
         //soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/soil->par->cn_ratio;
-        soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/cn_ratio[l].slow;
-        soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/cn_ratio[l].fast;
+        soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon*nc_ratio[l].slow;
+        soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon*nc_ratio[l].fast;
         soil->k_mean[l].slow=soil->k_mean[l].fast=0.0;
       }
       soil->count=0;
