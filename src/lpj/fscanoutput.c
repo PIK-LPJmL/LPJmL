@@ -223,14 +223,15 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     else
     {
       fscanint2(file,&config->crop_index,"crop_index");
-      if((config->crop_index!=ALLNATURAL && config->crop_index!=ALLGRASSLAND) || config->crop_index>=config->npft[CROP])
+      if(config->crop_index>=0 && config->crop_index<config->npft[CROP])
+        config->crop_index+=config->npft[GRASS]+config->npft[TREE];
+      else if((config->crop_index!=ALLNATURAL && config->crop_index!=ALLGRASSLAND))
       {
         if(verbosity)
           fprintf(stderr,"ERROR166: Invalid value for crop index=%d in line %d of '%s'.\n",
                   config->crop_index,getlinecount(),getfilename());
         return TRUE;
       }
-      config->crop_index+=config->npft[GRASS]+config->npft[TREE];
     }
     fscanbool2(file,&config->crop_irrigation,"crop_irrigation");
   }
