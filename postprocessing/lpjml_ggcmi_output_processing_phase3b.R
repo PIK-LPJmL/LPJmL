@@ -44,6 +44,7 @@ irrigs <- c("noirr","firr")
 bands <- c(1,2,3,4,5,6)
 crops <- c("wwh","swh","mai","ri1","ri2","soy")
 cropf <- c("winter_wheat","spring_wheat","maize","rice1","rice2","soy")
+phu_thres <- c(0.9,0.9,0.8,0.9,0.9,0.8)
 
 variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")[var_arg]
 units <- c("t ha-1 gs-1 (dry matter)","kg m-2 gs-1","day of year","calendar year","days from planting","calendar year","kg m-3")[var_arg]
@@ -334,10 +335,11 @@ for(cs in 1:length(climate_scenarios))
             band_id=ifelse(ir>1,bands[cr]+15,bands[cr])
             for(y in 1:nyear) {
               
-              dump=ifelse(hu[,y]<hu_ref[,band_id],1,0)
+              dump=ifelse(hu[,y]<phu_thres[cr]*hu_ref[,band_id],1,0)
+              dump2=ifelse(hu[,y]<hu_ref[,band_id],1,0)
               
-              if("yield"%in%variables) var[which(dump==1),y]=NA # delete yields if less than 90% of husum is reached
-              if("matyday"%in%variables) var[which(dump==1),y]=var[which(dump==1),y]*-1 # document the deletion of yield by setting matyday to negatve values
+              if("yield"%in%variables) var[which(dump==1),y]=0 # delete yields if less than 90% of husum is reached
+              if("matyday"%in%variables) var[which(dump2==1),y]=var[which(dump2==1),y]*-1 # document the reporting of premature yield by setting matyday to negatve values
               
             }
           }
