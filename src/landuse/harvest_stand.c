@@ -32,6 +32,8 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
     grass=pft->data;
     sum.harvest+=grass->ind.leaf*hfrac*pft->nind;
     grass->ind.leaf*=(1-hfrac);
+    grass->ind.root*=(1-hfrac*param.rootreduction);
+    stand->soil.litter.bg[pft->litter]+=grass->ind.root*hfrac*param.rootreduction*pft->nind;
     grass->max_leaf = grass->ind.leaf;
     pft->phen=0.3;
     pft->gdd=30;

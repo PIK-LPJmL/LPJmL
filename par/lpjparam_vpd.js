@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  _  v  p  d  .  j  s                       \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 4.0.004                               \n**/
+/**     LPJ parameter file for LPJmL version 4.0.005                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -60,7 +60,9 @@
   "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
   "soil_infil_rw" : 2.0,              /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
-  "fburn" : 1.0,                      /* fraction of forest burnt at deforestation */
+  "hfrac2" : 1000.0,
+  "rootreduction" : 0.0,              /* fraction used to calculate amouont of roots dying a
+t harvest in managed grasslands */
   "firedura" : -8.79,                 /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.53,		      /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.0104            /* threshold of fireintensity for which burnt area can be modeled */

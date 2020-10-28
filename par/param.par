@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  a  r  a  m  .  p  a  r                                         \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 4.0.004                               \n**/
+/**     LPJ parameter file for LPJmL version 4.0.005                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -65,4 +65,6 @@
 2         /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
 0.0       /* yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
 #endif
+1000      /* hfrac2 */
+0.0       /* fraction used to calculate amouont of roots dying at harvest in managed grasslands */
 #endif

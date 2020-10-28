@@ -517,6 +517,9 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
        case ALLNATURAL:
          fputs("PFT for daily output: all natural\n",file);
          break;
+       case ALLSTAND:
+         fputs("PFT for daily output: all stands\n",file);
+         break;
        case ALLGRASSLAND:
          fprintf(file,"PFT for daily output:        all grassland\n"
                       "Irrigation for daily output: %s\n",

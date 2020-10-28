@@ -87,6 +87,8 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"soil infil rw:\t\t%g\n",param.soil_infil_rw);
       fprintf(file,"yield gap bridge:\t%g\n",param.yield_gap_bridge);
     }
+    fprintf(file,"hfrac2:\t\t%g (gC/m2)\n",param.hfrac2);
+    fprintf(file,"rootreduction:\t%g\n",param.rootreduction);
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config->soilpar,config->nsoil);

@@ -65,6 +65,8 @@ typedef struct
   Real rw_irrig_thres;    /**< threshold to apply rw_irrigation */
   Real soil_infil_rw;     /**< soil infiltration improvement */
   Real yield_gap_bridge;  /**< yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
+  Real hfrac2;
+  Real rootreduction;     /**< fraction used to calculate amount of roots dying at harvest in managed grasslands */
 } Param;
 
 /* Declaration of global variable */

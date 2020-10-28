@@ -46,7 +46,7 @@ struct landuse
   Climatefile sdate;   /**< file pointer to prescribed sdates */
 };                     /**< definition of opaque datatype Landuse */
 
-Landuse initlanduse(int ncft,
+Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                     const Config *config /**< LPJ configuration */
                    )                     /** \return allocated landuse or NULL */
 {
@@ -427,12 +427,12 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             grid[cell].ml.landfrac[i].grass[j]=0;
             if(i>0 && !grid[cell].skip)
               grid[cell].ml.irrig_system->grass[j]=grid[cell].ml.manage.par->default_irrig_system;
-          } 
+          }
           for(j=0;j<config->cftmap_size;j++)
           {
             if(config->cftmap[j]>=ncft)
               grid[cell].ml.landfrac[i].grass[config->cftmap[j]-ncft]+=data[count++];
-            else 
+            else
               grid[cell].ml.landfrac[i].crop[config->cftmap[j]]+=data[count++];
           }
           if(landuse->landuse.var_len!=2*config->cftmap_size)
@@ -449,7 +449,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
               grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
 #endif
           }
-          else 
+          else
           {
             grid[cell].ml.landfrac[i].biomass_grass = grid[cell].ml.landfrac[i].biomass_tree=0;
 #if defined IMAGE || defined INCLUDEWP
@@ -479,7 +479,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                   grid[cell].ml.landfrac[i].grass[config->cftmap[j]-ncft]+=data[count++];
                   grid[cell].ml.irrig_system->grass[config->cftmap[j]-ncft]=p;
                 }
-                else 
+                else
                 {
                   grid[cell].ml.landfrac[i].crop[config->cftmap[j]]+=data[count++];
                   grid[cell].ml.irrig_system->crop[config->cftmap[j]]=p;

@@ -60,20 +60,25 @@ Real npp_crop(Pft *pft, /**< PFT variables */
   } 
   else 
     allocation_daily_crop(pft,npp,wdf,output);
-  if(output!=NULL && output->cft==pft->par->id &&
-     output->irrigation==data->irrigation)
+  if(output!=NULL)
   {
-    output->rroot=crop->ind.root*par->cn_ratio.root*gtemp_soil;
-    output->rso=crop->ind.so*par->cn_ratio.so*gtemp_air;
-    output->rpool=presp;
-    output->gresp=gresp;
-    output->npp=npp;
-    output->cleaf=crop->ind.leaf;
-    output->croot=crop->ind.root;
-    output->cso=crop->ind.so;
-    output->cpool=crop->ind.pool;
-    output->wdf=wdf;
-    output->wscal=pft->wscal;
+     if(output->cft==ALLSTAND)
+       output->npp=npp*pft->stand->frac;
+     else if(output->cft==pft->par->id &&
+             output->irrigation==data->irrigation)
+     {
+       output->rroot=crop->ind.root*par->cn_ratio.root*gtemp_soil;
+       output->rso=crop->ind.so*par->cn_ratio.so*gtemp_air;
+       output->rpool=presp;
+       output->gresp=gresp;
+       output->npp=npp;
+       output->cleaf=crop->ind.leaf;
+       output->croot=crop->ind.root;
+       output->cso=crop->ind.so;
+       output->cpool=crop->ind.pool;
+       output->wdf=wdf;
+       output->wscal=pft->wscal;
+    }
   }
   return npp;
 } /* of 'npp_crop' */
