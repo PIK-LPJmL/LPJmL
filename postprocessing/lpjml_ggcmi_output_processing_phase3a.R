@@ -38,7 +38,7 @@ if(for_eval){
   last_years=c(2016)
 
 
-socioecon=c("histsoc","2015soc")[1]
+socioecon=c("histsoc","2015soc")[2]
 co2=c("default","2015co2")[1]
 
 simulated_crops <- c("wwh","swh","mai","ri1","ri2","soy","mil","sor","pea","sgb","cas","rap","sun","nut","sgc")
@@ -48,6 +48,7 @@ irrigs <- c("noirr","firr")
 bands <- c(1,2,3,4,5,6)
 crops <- c("wwh","swh","mai","ri1","ri2","soy")
 cropf <- c("winter_wheat","spring_wheat","maize","rice1","rice2","soy")
+phu_thres <- c(0.9,0.9,0.8,0.9,0.9,0.8)
 
 all_variables <- c("yield","pirnreq","plantday","plantyear","matyday","harvyear","soilmoist1m")
 var_sel<- which(all_variables==shellarg) # indices of variables to be processed
@@ -334,10 +335,11 @@ for(cl in 1:length(climate)) {
             band_id=ifelse(ir>1,bands[cr]+15,bands[cr])
             for(y in 1:nyear) {
 
-              dump=ifelse(hu[,y]<0.90*hu_ref[,band_id],1,0)
+              dump=ifelse(hu[,y]<phu_thres[cr]*hu_ref[,band_id],1,0)
+              dump2=ifelse(hu[,y]<hu_ref[,band_id],1,0)
 
               if("yield"%in%variables) var[which(dump==1),y]=0 # delete yields if less than 90% of husum is reached
-              if("matyday"%in%variables) var[which(dump==1),y]=var[which(dump==1),y]*-1 # document the deletion of yield by setting matyday to negatve values
+              if("matyday"%in%variables) var[which(dump2==1),y]=var[which(dump2==1),y]*-1 # document the deletion of yield by setting matyday to negatve values
 
             }
           }
