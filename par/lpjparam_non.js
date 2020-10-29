@@ -18,6 +18,7 @@
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
+  "soil_infil" : 2.0,        /* default soil infiltration */
   "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
   "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
   "theta" : 0.7,             /* theta */
@@ -37,17 +38,6 @@
   "temp_response_b" : 46.02, /* Parameter in temperature response function */
   "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
-  "k_2": 0.02,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
-  "p" : 25,                  /* Haxeltine & Prentice regression coefficient */
-  "n0" : 7.15,               /* Haxeltine & Prentice regression coefficient */
-  "k_temp" : 0.02,           /* factor of temperature dependence of nitrogen demand for Rubisco activity */
-  "min_c_bnf" : 20,          /* threshold C root content for BNF */
-  "par_sink_limit" : 0.2,    /* Michaelis-Menten scaler of sink limitation */
-  "q_ash" : 0.45,            /* fraction of nitrogen going to litter after fire */
-  "sapwood_recovery" : 0.3,  /* recovery of sapwood nitrogen */
-  "T_m" : 15.0,              /* parameter in N uptake temperature function */
-  "T_0" : -25.0,             /* parameter in N uptake temperature function */
-  "T_r" : 15.0,              /* parameter in N uptake temperature function */
   "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold (mm) */
@@ -64,7 +54,6 @@
   "saturation_level_sprink" : 0.55,   /* saturation level sprinkler irrigation*/
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
-  "nfert_split" : 5,                  /* threshold fertilizer input for split application */
   "residues_in_soil" : 0.1,           /* minimum residues in soil*/
   "fburnt" : 0,                       /* fraction of trees burnt at deforestation */
   "ftimber" : 0,                      /* timber fraction at deforestation */
@@ -74,12 +63,11 @@
   "rw_buffer_max" : 0.0,              /* size of rainwater harvesting tank [mm] */
   "frac_ro_stored" : 0.0,             /* fraction of surface runoff stored in tank */
   "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
-  "soil_infil" : 2.0,                 /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
+  "soil_infil_rw" : 2.0,              /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
-  "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
-  "hfrac2" : 500.0,
+  "hfrac2" : 1000.0,
   "firedura" : -11.06,                /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.50,                  /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
-  "rootreduction" : 0.5               /*fraction used to calculate amouont of roots dying at harvest in managed grasslands */
+  "rootreduction" : 0.0               /*fraction used to calculate amouont of roots dying at harvest in managed grasslands */
 },

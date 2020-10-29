@@ -373,7 +373,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
 #ifdef NO_FAIL_BALANCE
       fprintf(stderr,"ERROR005: "
 #else
-      fail(INVALID_WATER_BALANCE_ERR,TRUE,
+      fail(INVALID_WATER_BALANCE_ERR,FALSE,
 #endif
            "water balance error in the building of the reservoir, balanceW=%g",
            balanceW);
@@ -382,7 +382,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
 #ifdef NO_FAIL_BALANCE
       fprintf(stderr,"ERROR037: "
 #else
-      fail(INVALID_NITROGEN_BALANCE_ERR,TRUE,
+      fail(INVALID_NITROGEN_BALANCE_ERR,FALSE,
 #endif
            "nitrogen balance error in cell (%g,%g) in the building of the reservoir, balanceN=%g",
            cell->coord.lat,cell->coord.lon,balance.nitrogen);
@@ -392,7 +392,7 @@ void landusechange_for_reservoir(Cell *cell,            /**< pointer to cell */
 #ifdef NO_FAIL_BALANCE
       fprintf(stderr,"ERROR004: "
 #else
-      fail(INVALID_CARBON_BALANCE_ERR,TRUE,
+      fail(INVALID_CARBON_BALANCE_ERR,FALSE,
 #endif
            "carbon balance error in the building of the reservoir, balanceC=%g",
            balance.carbon);

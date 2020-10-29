@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**          l  p  j  m  l  _  i  m  a  g  e  _  s  p  i  n  u  p  .  j  s         \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 4.0.004 spinup runs for IMAGE coupling  \n**/
+/** Configuration file for LPJmL C Version 5.1.002 spinup runs for IMAGE coupling  \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/

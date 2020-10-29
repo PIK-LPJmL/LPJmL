@@ -68,15 +68,15 @@
   "intercrop" : true,                   /* intercrops on setaside */
   "remove_residuals" : false,           /* remove residuals */
   "residues_fire" : false,              /* fire in residuals */
-  "irrigation" : "lim_irrigation",        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
-  "laimax_interpolate" : "laimax_cft",    /* laimax values from manage parameter file, */
+  "irrigation" : "lim_irrigation",      /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
+  "laimax_interpolate" : "laimax_cft",  /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "istimber" : false,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
-  "others_to_crop" : true,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
+  "others_to_crop" : false,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

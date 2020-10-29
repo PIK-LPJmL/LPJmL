@@ -267,37 +267,48 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
   /* allocation, turnover and harvest AFTER photosynthesis */
-  if(n_pft>0) /* nonzero? */
+  if(config->with_nitrogen)
   {
-    fpc_inc=newvec(Real,n_pft);
-    check(fpc_inc);
-
-    foreachpft(pft,p,&stand->pftlist)
+    if(n_pft>0) /* nonzero? */
     {
-      grass=pft->data;
-      if (pft->bm_inc.carbon > 5.0|| (grass->ind.leaf.carbon*pft->nind) > param.allocation_threshold|| day==NDAYYEAR)
+      fpc_inc=newvec(Real,n_pft);
+      check(fpc_inc);
+
+      foreachpft(pft,p,&stand->pftlist)
       {
-        turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
-        if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config->with_nitrogen))
+        grass=pft->data;
+        if (pft->bm_inc.carbon > 5.0|| (grass->ind.leaf.carbon*pft->nind) > param.allocation_threshold|| day==NDAYYEAR)
         {
-          /* kill PFT from list of established PFTs */
-          fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */
-          litter_update_grass(&stand->soil.litter,pft,pft->nind);
-          delpft(&stand->pftlist,p);
-          p--; /* adjust loop variable */
-        }
-        else
-         // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
-         pft->bm_inc.carbon=0;
-       }
-       else
-       {
-         grass->growing_days++;
-         fpc_inc[p]=0;
-       }
+          turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
+          if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config->with_nitrogen))
+          {
+            /* kill PFT from list of established PFTs */
+            fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */
+            litter_update_grass(&stand->soil.litter,pft,pft->nind);
+            delpft(&stand->pftlist,p);
+            p--; /* adjust loop variable */
+          }
+          else
+           // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
+           pft->bm_inc.carbon=0;
+         }
+         else
+         {
+           grass->growing_days++;
+           fpc_inc[p]=0;
+         }
+      }
+      light(stand,config->ntypes,fpc_inc);
+      free(fpc_inc);
     }
-    light(stand,config->ntypes,fpc_inc);
-    free(fpc_inc);
+  }
+  else
+  {
+    stand->growing_days = 1;
+    /* turnover must happen before allocation */
+    foreachpft(pft,p,&stand->pftlist)
+      turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)stand->growing_days/NDAYYEAR);
+    allocation_today(stand,config->ntypes,config->with_nitrogen);
   }
 
   /* daily harvest check*/
@@ -314,20 +325,24 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   switch(stand->cell->ml.grass_scenario)
   {
     case GS_DEFAULT: // default
-      if(cleaf>cleaf_max && stand->growing_days>=20)
+      if(cleaf>cleaf_max && ((config->with_nitrogen && stand->growing_days>=20) ||
+         (!config->with_nitrogen && (day==31 || day==59 || day==90 || day==120 || day==151 || day==181 || day==212 || day==243 || day==273 || day==304 || day==334 || day==365))))
       {
-        fpc_inc=newvec(Real,n_pft);
-        check(fpc_inc);
         isphen=TRUE;
         hfrac=1-param.hfrac2/(param.hfrac2+cleaf);
-        foreachpft(pft,p,&stand->pftlist)
+        if(config->with_nitrogen)
         {
-          grass=pft->data;
-          turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
+          fpc_inc=newvec(Real,n_pft);
+          check(fpc_inc);
+          foreachpft(pft,p,&stand->pftlist)
+          {
+            grass=pft->data;
+            turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
+          }
+          allocation_today(stand,config->ntypes,config->with_nitrogen);
+          light(stand,config->ntypes,fpc_inc);
+          free(fpc_inc);
         }
-        allocation_today(stand,config->ntypes,config->with_nitrogen);
-        light(stand,config->ntypes,fpc_inc);
-        free(fpc_inc);
       }
       break;
     case GS_MOWING: // mowing

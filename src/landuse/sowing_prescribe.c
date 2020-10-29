@@ -25,17 +25,12 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
 {
   Stocks flux_estab={0,0},stocks;
   Stand *setasidestand;
-  Bool alloc_today_rf=FALSE, alloc_today_ir=FALSE,istimber;
+  Bool alloc_today_rf=FALSE, alloc_today_ir=FALSE;
   const Pftcroppar *croppar;
   int cft,s,s2;
   int earliest_sdate;
   Bool wtype;
 
-#if defined IMAGE && defined COUPLED
-  istimber=(config->start_imagecoupling!=INT_MAX);
-#else
-  istimber=FALSE;
-#endif
   s=findlandusetype(cell->standlist,SETASIDE_RF);
   s2=findlandusetype(cell->standlist,SETASIDE_IR);
   if(s!=NOT_FOUND || s2!=NOT_FOUND)
@@ -65,7 +60,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
             stocks=cultivate(cell,config->pftpar+npft+cft,
                              cell->ml.cropdates[cft].vern_date20,
                              cell->ml.landfrac[0].crop[cft],FALSE,day,wtype,
-                             setasidestand,istimber,config->irrig_scenario,
+                             setasidestand,config->istimber,config->irrig_scenario,
                              npft,ncft,cft,year);
             flux_estab.carbon+=stocks.carbon;
             flux_estab.nitrogen+=stocks.nitrogen;
@@ -95,7 +90,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
             stocks=cultivate(cell,config->pftpar+npft+cft,
                              cell->ml.cropdates[cft].vern_date20,
                              cell->ml.landfrac[1].crop[cft],TRUE,day,wtype,
-                             setasidestand,istimber,config->irrig_scenario,
+                             setasidestand,config->istimber,config->irrig_scenario,
                              npft,ncft,cft,year);
             flux_estab.carbon+=stocks.carbon;
             flux_estab.nitrogen+=stocks.nitrogen;

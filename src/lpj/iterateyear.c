@@ -174,11 +174,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         if(config->withlanduse)
           wateruse(grid,npft,ncft,config);
       }
-#if defined IMAGE && defined COUPLED
-      if(config->withdailyoutput && year>=config->firstyear-config->istimber*10)
-#else
       if(config->withdailyoutput && year>=config->outputyear)
-#endif
         fwriteoutput_daily(output,grid,day-1,year,config);
 
       day++;
@@ -203,11 +199,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                        cell,month),npft,config->nbiomass,config->nwft,ncft,month);
     } /* of 'for(cell=0;...)' */
 
-#if defined IMAGE && defined COUPLED
-    if(year>=config->firstyear-config->istimber*10)
-#else
     if(year>=config->outputyear)
-#endif
       /* write out monthly output */
       fwriteoutput_monthly(output,grid,npft,ncft,month,year,config);
 
@@ -263,11 +255,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     }
   } /* of for(cell=0,...) */
 
-#if defined IMAGE && defined COUPLED
-  if(year>=config->firstyear-config->istimber*10)
-#else
   if(year>=config->outputyear)
-#endif
   {
     /* write out annual output */
     fwriteoutput_annual(output,grid,year,config);

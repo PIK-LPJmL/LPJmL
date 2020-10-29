@@ -296,12 +296,12 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       fscanpftreal(verb,&item,&pft->alpha_fuelp,pft->name,"alpha_fuelp");
       if(config->fdi==WVPD_INDEX)
         fscanpftreal(verb,&item,&pft->vpd_par,pft->name,"vpd_par");
-      fscanpftreal(verb,&item,&pft->fuelbulkdensity,pft->name,"fuelbulkdensity");
       fscanpftemissionfactor(verb,&item,&pft->emissionfactor,
                              pft->name,"emission_factor");
     }
     else
       pft->fuelbulkdensity=0;
+    fscanpftreal(verb,&item,&pft->fuelbulkdensity,pft->name,"fuelbulkdensity");
     fscanpftreal(verb,&item,&pft->aprec_min,pft->name,"aprec_min");
     if(config->fire==FIRE)
     {

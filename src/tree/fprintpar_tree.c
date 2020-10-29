@@ -46,23 +46,22 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
     fprintf(file,"aphen:\t\t%g %g\n",partree->aphen_min,partree->aphen_max);
   fprintf(file,"max height:\t%g (m)\n"
                "reprod cost:\t%g\n"
-               "k_est:\t\t%g (1/m2)\n",
+               "k_est:\t\t%g (1/m2)\n"
+               "bark thickness:\t%g %g\n",
           partree->height_max,partree->reprod_cost,
-          partree->k_est);
+          partree->k_est,partree->barkthick_par1,partree->barkthick_par2);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fprintf(file,"scorch height:\t%g\n"
                  "crown length:\t%g\n"
-                 "bark thickness:\t%g %g\n"
                  "crown damage:\t%g %g\n",
             partree->scorchheight_f_param,partree->crownlength,
-            partree->barkthick_par1,partree->barkthick_par2,
             partree->crown_mort_rck,partree->crown_mort_p);
-    fputs("fuel fraction:\t",file);
-    for(i=0;i<NFUELCLASS;i++)
-      fprintf(file,"%g ",partree->fuelfrac[i]);
-    fputc('\n',file);
   }
+  fputs("fuel fraction:\t",file);
+  for(i=0;i<NFUELCLASS;i++)
+    fprintf(file,"%g ",partree->fuelfrac[i]);
+  fputc('\n',file);
   if(par->cultivation_type!=NONE)
     fprintf(file,"rotation:\t%d (yr)\n"
                  "max. rotation:\t%d (yr)\n",

@@ -29,7 +29,8 @@ static int compare(const Item *a,const Item *b)
 
 void fprintoutputvar(FILE *file,              /**< pointer to text file */
                      const Variable output[], /**< array of output variables */
-                     int size                 /**< size of array */
+                     int size,                /**< size of array */
+                     Bool float_grid
                     )
 {
   int i,width,width_unit,width_var,index;
@@ -88,7 +89,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
    fprintf(file,"%-*s %-*s %-*s %5s %5g%2s %6g %s\n",width,output[index].name,
            width_var,output[index].var,
            width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,
-           typenames[getoutputtype(index)],output[index].scale,sc,output[index].offset,output[index].descr);
+           typenames[getoutputtype(index,float_grid)],output[index].scale,sc,output[index].offset,output[index].descr);
   }
   free(item);
   frepeatch(file,'-',width);

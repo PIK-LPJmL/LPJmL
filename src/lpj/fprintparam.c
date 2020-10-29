@@ -114,7 +114,8 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"soil infil rw:\t\t%g\n",param.soil_infil_rw);
       fprintf(file,"yield gap bridge:\t%g\n",param.yield_gap_bridge);
     }
-    fprintf(file,"allocation threshold:\t%g\n",param.allocation_threshold);
+    if(config->with_nitrogen)
+      fprintf(file,"allocation threshold:\t%g\n",param.allocation_threshold);
     fprintf(file,"hfrac2:\t\t%g (gC/m2)\n",param.hfrac2);
     fprintf(file,"rootreduction:\t%g\n",param.rootreduction);
   }
@@ -135,5 +136,5 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     for(p=0;p<npft-config->nbiomass;p++)
       fprintpftpar(file,config->pftpar+p,config);
   fputs("------------------------------------------------------------------------------\n",file);
-  fprintoutputvar(file,config->outnames,NOUT);
+  fprintoutputvar(file,config->outnames,NOUT,config->float_grid);
 } /* of 'fprintparam' */

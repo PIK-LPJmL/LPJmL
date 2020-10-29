@@ -192,8 +192,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   fscanbool2(file,&config->ispopulation,"population");
   config->prescribe_burntarea=FALSE;
-  if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",TRUE,verbose))
-    return TRUE;
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  {
+    if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",TRUE,verbose))
+      return TRUE;
+  }
   config->prescribe_landcover=NO_LANDCOVER;
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,TRUE,verbose))
     return TRUE;

@@ -98,7 +98,6 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   Real stemdiam,height_sapl,wood_sapl;
   Pfttreepar *tree;
   Verbosity verb;
-  int i;
   verb=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   pft->newpft=new_tree;
   pft->npp=npp_tree;
@@ -186,22 +185,16 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   {
     fscanreal2(verb,file,&tree->scorchheight_f_param,pft->name,"scorchheight_f_param");
     fscanreal2(verb,file,&tree->crownlength,pft->name,"crownlength");
-    fscanreal2(verb,file,&tree->barkthick_par1,pft->name,"barkthick_par1");
-    fscanreal2(verb,file,&tree->barkthick_par2,pft->name,"barkthick_par2");
     fscanreal2(verb,file,&tree->crown_mort_rck,pft->name,"crown_mort_rck");
     fscanreal2(verb,file,&tree->crown_mort_p,pft->name,"crown_mort_p");
-    if(fscanrealarray(file,tree->fuelfrac,NFUELCLASS,"fuelfraction",verb))
-    {
-      if(verb)
-        fprintf(stderr,"ERROR112: Cannot read 'fuelfraction' of PFT '%s'.\n",pft->name);
-      return TRUE;
-    }
   }
-  else
+  fscanreal2(verb,file,&tree->barkthick_par1,pft->name,"barkthick_par1");
+  fscanreal2(verb,file,&tree->barkthick_par2,pft->name,"barkthick_par2");
+  if(fscanrealarray(file,tree->fuelfrac,NFUELCLASS,"fuelfraction",verb))
   {
-    tree->barkthick_par1=tree->barkthick_par2=0;
-    for(i=0;i<NFUELCLASS;i++)
-      tree->fuelfrac[i]=0;
+    if(verb)
+      fprintf(stderr,"ERROR112: Cannot read 'fuelfraction' of PFT '%s'.\n",pft->name);
+    return TRUE;
   }
   fscanreal2(verb,file,&tree->k_est,pft->name,"k_est");
   if(pft->cultivation_type!=NONE)
@@ -215,7 +208,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
     fscanreal2(verb,file,&tree->P_init,pft->name,"P_init");
   }
 #endif
-   tree->sapl.leaf.carbon=pow(pft->lai_sapl*tree->allom1*pow(wood_sapl,reinickerp)*
+  tree->sapl.leaf.carbon=pow(pft->lai_sapl*tree->allom1*pow(wood_sapl,reinickerp)*
                   pow(4*pft->sla/M_PI/tree->k_latosa,reinickerp*0.5)/pft->sla,
                   2/(2-reinickerp));
   stemdiam=wood_sapl*sqrt(4*tree->sapl.leaf.carbon*pft->sla/M_PI/tree->k_latosa);

@@ -193,11 +193,11 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);
     adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
                          temp,data.apar,daylength,TRUE);
-    vmax=pft->vmax;
-    gc_new=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
-                    pft->par->gmin*fpar(pft);
     if(config->with_nitrogen)
     {
+      vmax=pft->vmax;
+      gc_new=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
+                      pft->par->gmin*fpar(pft);
       nitrogen_stress(pft,temp,daylength,npft,config->nbiomass,ncft,config->permafrost);
 
       adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
@@ -235,7 +235,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
           pft->stand->cell->output.daily.nlimit=pft->vmax/vmax;
         }
       }
-    }
+    } /* of if(config->with_nitrogen) */
     /* in rare occasions, agd(=GPP) can be negative, but shouldn't */
     agd=max(0,agd);
   }

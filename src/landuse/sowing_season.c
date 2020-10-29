@@ -24,17 +24,12 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                      const Config *config   /**< LPJ settings */
                     )                       /** \return establishment flux (gC/m2,gN/m2) */
 {
-  Bool alloc_today_rf=FALSE, alloc_today_ir=FALSE,istimber;
+  Bool alloc_today_rf=FALSE, alloc_today_ir=FALSE;
   int cft,m,mm,dayofmonth,month,s,s2;
   Stocks flux_estab={0,0},stocks;
   const Pftcroppar *croppar;
   Stand *setasidestand;
 
-#if defined IMAGE && defined COUPLED
-  istimber=(config->start_imagecoupling!=INT_MAX);
-#else
-  istimber=FALSE;
-#endif
   s=findlandusetype(cell->standlist,SETASIDE_RF);
   s2=findlandusetype(cell->standlist,SETASIDE_IR);
   if(s!=NOT_FOUND || s2!=NOT_FOUND)
@@ -66,7 +61,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
               stocks=cultivate(cell,config->pftpar+npft+cft,
                                cell->ml.cropdates[cft].vern_date20,
                                cell->ml.landfrac[0].crop[cft],FALSE,day,FALSE,
-                               setasidestand,istimber,config->irrig_scenario,
+                               setasidestand,config->istimber,config->irrig_scenario,
                                npft,ncft,cft,year);
               flux_estab.carbon+=stocks.carbon;
               flux_estab.nitrogen+=stocks.nitrogen;
@@ -93,7 +88,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
               stocks=cultivate(cell,config->pftpar+npft+cft,
                                cell->ml.cropdates[cft].vern_date20,
                                cell->ml.landfrac[1].crop[cft],TRUE,day,FALSE,
-                               setasidestand,istimber,config->irrig_scenario,
+                               setasidestand,config->istimber,config->irrig_scenario,
                                npft,ncft,cft,year);
               flux_estab.carbon+=stocks.carbon;
               flux_estab.nitrogen+=stocks.nitrogen;
@@ -127,7 +122,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
               stocks=cultivate(cell,config->pftpar+npft+cft,
                                cell->ml.cropdates[cft].vern_date20,
                                cell->ml.landfrac[0].crop[cft],FALSE,day,FALSE,
-                               setasidestand,istimber,config->irrig_scenario,
+                               setasidestand,config->istimber,config->irrig_scenario,
                                npft,ncft,cft,year);
               flux_estab.carbon+=stocks.carbon;
               flux_estab.nitrogen+=stocks.nitrogen;
@@ -157,7 +152,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
               stocks=cultivate(cell,config->pftpar+npft+cft,
                                cell->ml.cropdates[cft].vern_date20,
                                cell->ml.landfrac[1].crop[cft],TRUE,day,FALSE,
-                               setasidestand,istimber,config->irrig_scenario,
+                               setasidestand,config->istimber,config->irrig_scenario,
                                npft,ncft,cft,year);
               flux_estab.carbon+=stocks.carbon;
               flux_estab.nitrogen+=stocks.nitrogen;
@@ -199,7 +194,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   stocks=cultivate(cell,config->pftpar+npft+cft,
                                    cell->ml.cropdates[cft].vern_date20,
                                    cell->ml.landfrac[0].crop[cft],FALSE,day,TRUE,
-                                   setasidestand,istimber,config->irrig_scenario,
+                                   setasidestand,config->istimber,config->irrig_scenario,
                                    npft,ncft,cft,year);
                   flux_estab.carbon+=stocks.carbon;
                   flux_estab.nitrogen+=stocks.nitrogen;
@@ -225,7 +220,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                 stocks=cultivate(cell,config->pftpar+npft+cft,
                                  cell->ml.cropdates[cft].vern_date20,
                                  cell->ml.landfrac[0].crop[cft],FALSE,day,FALSE,
-                                 setasidestand,istimber,config->irrig_scenario,
+                                 setasidestand,config->istimber,config->irrig_scenario,
                                  npft,ncft,cft,year);
                 flux_estab.carbon+=stocks.carbon;
                 flux_estab.nitrogen+=stocks.nitrogen;
@@ -265,7 +260,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   stocks=cultivate(cell,config->pftpar+npft+cft,
                                    cell->ml.cropdates[cft].vern_date20,
                                    cell->ml.landfrac[1].crop[cft],TRUE,day,TRUE,
-                                   setasidestand,istimber,config->irrig_scenario,
+                                   setasidestand,config->istimber,config->irrig_scenario,
                                    npft,ncft,cft,year);
                   flux_estab.carbon+=stocks.carbon;
                   flux_estab.nitrogen+=stocks.nitrogen;
@@ -291,7 +286,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                 stocks=cultivate(cell,config->pftpar+npft+cft,
                                  cell->ml.cropdates[cft].vern_date20,
                                  cell->ml.landfrac[1].crop[cft],TRUE,day,FALSE,
-                                 setasidestand,istimber,config->irrig_scenario,
+                                 setasidestand,config->istimber,config->irrig_scenario,
                                  npft,ncft,cft,year);
                 flux_estab.carbon+=stocks.carbon;
                 flux_estab.nitrogen+=stocks.nitrogen;
