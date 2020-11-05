@@ -180,12 +180,15 @@ int main(int argc,char **argv)
      res.lat=header.cellsize_lat;
      for(i=0;i<numcoord(coordfile);i++)
        if(readcoord(coordfile,grid_ref+i,&res))
+       {
+         fprintf(stderr,"Error reading coordinate %d in '%s'.\n",i+1,map_name);
          return EXIT_FAILURE;
+       }
   }
   file=fopen(argv[iarg],"r");
   if(file==NULL)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[i],strerror(errno));
+    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg],strerror(errno));
     return EXIT_FAILURE;
   }
   for(n=0;n<nskip;n++)
