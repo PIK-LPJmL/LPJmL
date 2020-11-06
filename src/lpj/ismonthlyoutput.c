@@ -37,7 +37,7 @@ Bool ismonthlyoutput(int index /**< Output index */
     case MFAPAR: case MALBEDO: case MPFT_LAI:
     case MPHEN_TMIN: case MPHEN_TMAX: case MPHEN_LIGHT: case MPHEN_WATER: case MWSCAL:
     case MSWC3: case MSWC4: case MSWC5: case MWD_LOCAL: case MWD_NEIGHB: case MWD_RES:
-    case MWD_RETURN: case MCONV_LOSS_EVAP: case MCONV_LOSS_DRAIN: case MRES_STORAGE: case MRES_DEMAND: case MSTOR_RETURN: case MLAKEVOL: case MLAKETEMP:
+    case MCONV_LOSS_EVAP: case MCONV_LOSS_DRAIN: case MRES_STORAGE: case MRES_DEMAND: case MSTOR_RETURN: case MLAKEVOL: case MLAKETEMP:
     case MTARGET_RELEASE: case MRES_CAP: case MGCONS_RF: case MGCONS_IRR: case MBCONS_IRR:
 #ifdef IMAGE
     case MWD_GW: case MWD_AQ : case MWATERUSE_HIL:
