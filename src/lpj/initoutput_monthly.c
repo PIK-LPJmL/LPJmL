@@ -36,7 +36,7 @@ void initoutput_monthly(Output *output, /**< Output data */
   output->mfirec=output->mfiredi=output->mtemp_image=output->mprec_image=
   output->msun_image=output->mwet_image=output->mres_storage=
   output->mres_demand=output->mtarget_release=output->mres_cap=
-  output->mwd_local=output->mwd_neighb=output->mwd_res=output->mwd_return=
+  output->mwd_local=output->mwd_neighb=output->mwd_res=
   output->mconv_loss_evap=output->mconv_loss_drain=output->mprec=output->mrain=output->msnowf=output->mmelt=output->msnowrunoff=output->mswe=output->mstor_return=0.0;
   output->mrunoff_lat=output->mrunoff_surf=output->mseepage=output->mrootmoist=0.0;
   output->mgcons_rf=output->mgcons_irr=output->mbcons_irr=output->mirrig_rw=0.0;

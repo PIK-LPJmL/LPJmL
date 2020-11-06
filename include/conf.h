@@ -51,6 +51,8 @@
 #define RESERVOIR 1
 #define NO_DRAINAGE 0
 #define DRAINAGE 1
+#define NO_EQUILSOIL 0
+#define EQUILSOIL 1
 #define PERM 1
 #define NO_PERM 0
 #define NEW_PERC 1
@@ -90,6 +92,8 @@
 #define LANDCOVERFPC 2
 #define OLD_PHENOLOGY 0
 #define NEW_PHENOLOGY 1
+#define OLD_TRF 0
+#define NEW_TRF 1
 #define NO_POPULATION 0
 #define POPULATION 1
 #define NO_FIREWOOD 0

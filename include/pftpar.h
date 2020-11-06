@@ -51,8 +51,9 @@
 #define NWPTYPE 0
 #endif
 #define WIRRIG 2
-#define ALLNATURAL -1 /* ensures summing daily outputs for all natural vegetation pfts */
-#define ALLGRASSLAND -2 /* ensures summing daily outputs for grassland  */
+#define ALLNATURAL -2 /* ensures summing daily outputs for all natural vegetation pfts */
+#define ALLGRASSLAND -3 /* ensures summing daily outputs for all natural vegetation pfts */
+#define ALLSTAND -4
 
 /* the following constants are used by IMAGE */
 

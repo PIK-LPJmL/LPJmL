@@ -101,6 +101,8 @@
 #define SUFFIX "pft.nc"
 #endif
 
+"float_grid" : false, /* set datatype of grid file to float (TRUE/FALSE) */
+
 #ifdef FROM_RESTART
 
 "global_netcdf" : false,  /* global NetCDF grid (TRUE/FALSE) */

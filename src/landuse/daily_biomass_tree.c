@@ -156,6 +156,11 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
      output->pft_gcgp[(npft-config->nbiomass-config->nwft)+rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
    }
    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
+   if(output->daily.cft==ALLSTAND)
+   {
+     output->daily.npp+=npp*stand->frac;
+     output->daily.gpp+=gpp*stand->frac;
+   }
    output->mnpp+=npp*stand->frac;
    output->dcflux-=npp*stand->frac;
    output->mgpp+=gpp*stand->frac;
@@ -181,6 +186,16 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
 
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
     calc_nir(stand,&data->irrigation,gp_stand,wet,eeq);
+  if(output->daily.cft==ALLSTAND)
+  {
+    output->daily.evap+=evap*stand->frac;
+    forrootsoillayer(l)
+      output->daily.trans+=aet_stand[l]*stand->frac;
+    output->daily.w0+=stand->soil.w[1]*stand->frac;
+    output->daily.w1+=stand->soil.w[2]*stand->frac;
+    output->daily.wevap+=stand->soil.w[0]*stand->frac;
+    output->daily.interc+=intercep_stand*stand->frac;
+  }
 
   forrootsoillayer(l)
   {

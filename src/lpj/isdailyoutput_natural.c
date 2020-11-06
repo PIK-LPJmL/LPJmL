@@ -19,5 +19,5 @@ Bool isdailyoutput_natural(const Output *output,       /**< Output data */
                            const Stand * UNUSED(stand) /**< stand pointer */
                           )
 {
-  return (output->daily.cft == ALLNATURAL);
+  return (output->daily.cft == ALLNATURAL || output->daily.cft==ALLSTAND);
 } /* of 'isdailyoutput_natural' */

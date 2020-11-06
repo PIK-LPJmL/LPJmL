@@ -286,7 +286,6 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
   writeoutputvar(MWD_LOCAL,mwd_local);
   writeoutputvar(MWD_NEIGHB,mwd_neighb);
   writeoutputvar(MWD_RES,mwd_res);
-  writeoutputvar(MWD_RETURN,mwd_return);
   writeoutputvar(MCONV_LOSS_EVAP,mconv_loss_evap);
   writeoutputvar(MCONV_LOSS_DRAIN,mconv_loss_drain);
   writeoutputvar(MSTOR_RETURN,mstor_return);

@@ -135,7 +135,18 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
     if(config->withdailyoutput && isdailyoutput_stand(output,stand))
-      output->daily.npp+=npp;
+    {
+      if(output->daily.cft==ALLSTAND)
+      {
+        output->daily.npp+=npp*stand->frac;
+        output->daily.gpp+=gpp*stand->frac;
+      }
+      else
+      {
+        output->daily.npp+=npp;
+        output->daily.gpp+=gpp;
+      }
+    }
     output->dcflux-=npp*stand->frac;
     output->mnpp+=npp*stand->frac;
 #if defined IMAGE && defined COUPLED
@@ -170,23 +181,39 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
 
   if(config->withdailyoutput && isdailyoutput_stand(output,stand))
   {
-    output->daily.evap=evap;
-    forrootsoillayer(l)
-      output->daily.trans+=aet_stand[l];
-    output->daily.irrig=0;
-    output->daily.w0=stand->soil.w[1];
-    output->daily.w1=stand->soil.w[2];
-    output->daily.wevap=stand->soil.w[0];
-    output->daily.par=par;
-    output->daily.daylength=daylength;
-        output->daily.pet=eeq*PRIESTLEY_TAYLOR;
-    output->daily.interc=intercep_stand*stand->frac;
-    forrootsoillayer(l)
+    if(output->daily.cft==ALLSTAND)
     {
-      output->daily.nh4+=stand->soil.NH4[l];
-      output->daily.no3+=stand->soil.NO3[l];
-      output->daily.nsoil_fast+=stand->soil.pool[l].fast.nitrogen;
-      output->daily.nsoil_slow+=stand->soil.pool[l].slow.nitrogen;
+      output->daily.evap+=evap*stand->frac;
+      forrootsoillayer(l)
+        output->daily.trans+=aet_stand[l]*stand->frac;
+      output->daily.interc+=intercep_stand*stand->frac;
+      output->daily.w0+=stand->soil.w[1]*stand->frac;
+      output->daily.w1+=stand->soil.w[2]*stand->frac;
+      output->daily.wevap+=stand->soil.w[0]*stand->frac;
+      output->daily.par=par;
+      output->daily.daylength=daylength;
+      output->daily.pet=eeq*PRIESTLEY_TAYLOR;
+    }
+    else
+    {
+      output->daily.evap=evap;
+      forrootsoillayer(l)
+        output->daily.trans+=aet_stand[l];
+      output->daily.irrig=0;
+      output->daily.w0=stand->soil.w[1];
+      output->daily.w1=stand->soil.w[2];
+      output->daily.wevap=stand->soil.w[0];
+      output->daily.par=par;
+      output->daily.daylength=daylength;
+      output->daily.pet=eeq*PRIESTLEY_TAYLOR;
+      output->daily.interc=intercep_stand*stand->frac;
+      forrootsoillayer(l)
+      {
+        output->daily.nh4+=stand->soil.NH4[l];
+        output->daily.no3+=stand->soil.NO3[l];
+        output->daily.nsoil_fast+=stand->soil.pool[l].fast.nitrogen;
+        output->daily.nsoil_slow+=stand->soil.pool[l].slow.nitrogen;
+      }
     }
   }
   forrootsoillayer(l)

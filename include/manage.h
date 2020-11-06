@@ -67,7 +67,7 @@ extern void fprintregionpar(FILE *,const Regionpar[],int);
 extern Bool initmanage(Manage *, const Countrypar *, const Regionpar *,const Pftpar *,int,
                        int,int,Real);
 extern void freemanage(Manage *,int);
-extern FILE *opencountrycode(const Filename *,Bool *,Type *,long *,Bool);
+extern FILE *opencountrycode(const Filename *,Bool *,Type *,size_t *,Bool);
 extern FILE *createcountrycode(const char *,int,int);
 extern Bool readcountrycode(FILE *,Code *,Type,Bool);
 extern void freecountrypar(Countrypar [],int);

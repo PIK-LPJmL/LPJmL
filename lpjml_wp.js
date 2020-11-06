@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   l  p  j  m  l  .  j  s                                       \n**/
+/**                   l  p  j  m  l  _  w  p  .  j  s                              \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.1.002                         \n**/
+/** Configuration file for LPJmL C Version 5.0.002 with wood plantations           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -30,10 +30,10 @@
 /*  I. Simulation description and type section                       */
 /*===================================================================*/
 
-  "sim_name" : "LPJmL Run", /* Simulation description */
+  "sim_name" : "LPJmL run with wood plantations", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "version"  : "5.1",       /* LPJmL version expected */
-  "random_prec" : false,     /* Random weather generator for precipitation enabled */
+  "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
   "fire" : "fire",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
@@ -108,6 +108,8 @@
   "grid_scaled" : false,
 #define SUFFIX pft.bin
 #endif
+
+  "float_grid" : false, /* set datatype of grid file to float (TRUE/FALSE) */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s

@@ -141,8 +141,6 @@ static Bool initirrig(Cell grid[],    /**< Cell grid             */
   Header header;
   String headername,line;
   int cell,neighb_irrig,rc,*index,n,version;
-  Bool swap;
-  size_t offset;
   /* open neighbour irrigation file */
   if(config->neighb_irrig_filename.fmt==CDF)
   {
@@ -160,15 +158,15 @@ static Bool initirrig(Cell grid[],    /**< Cell grid             */
   }
   else
   {
-    if((irrig_file.file=openinputfile(&header,&swap,&config->neighb_irrig_filename,
-                                      headername,
-                                      &version,&offset,FALSE,config))==NULL)
+    if((irrig_file.bin.file=openinputfile(&header,&irrig_file.bin.swap,&config->neighb_irrig_filename,
+                                          headername,
+                                          &version,&irrig_file.bin.offset,FALSE,config))==NULL)
       return TRUE;
     if(version>=3 && header.datatype!=LPJ_INT)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR217: Datatype %s in irrigation neighbour file '%s' is not int.\n",typenames[header.datatype],config->neighb_irrig_filename.name);
-      fclose(irrig_file.file);
+      fclose(irrig_file.bin.file);
       return TRUE;
     }
     if(config->neighb_irrig_filename.fmt!=RAW && header.nbands!=1)
@@ -176,15 +174,15 @@ static Bool initirrig(Cell grid[],    /**< Cell grid             */
       if(isroot(*config))
         fprintf(stderr,"ERROR218: Number of bands=%d in irrigation neighbour file '%s' is not 1.\n",
                 header.nbands,config->neighb_irrig_filename.name);
-      fclose(irrig_file.file);
+      fclose(irrig_file.bin.file);
       return TRUE;
     }
-    if(fseek(irrig_file.file,sizeof(neighb_irrig)*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
+    if(fseek(irrig_file.bin.file,sizeof(neighb_irrig)*(config->startgrid-header.firstcell)+irrig_file.bin.offset,SEEK_CUR))
     {
       fprintf(stderr,"ERROR139: Cannot seek to irrigation neighbour of %d.\n",
               config->startgrid);
       fflush(stderr);
-      fclose(irrig_file.file);
+      fclose(irrig_file.bin.file);
       return TRUE;
     }
   }
@@ -233,22 +231,22 @@ static Bool initirrig(Cell grid[],    /**< Cell grid             */
       }
     }
     else
-      if(fread(&neighb_irrig,sizeof(neighb_irrig),1,irrig_file.file)!=1)
+      if(fread(&neighb_irrig,sizeof(neighb_irrig),1,irrig_file.bin.file)!=1)
       {
         fprintf(stderr,"ERROR141: Cannot read irrigation neighbour of cell %d.\n",
                 cell+config->startgrid);
         fflush(stderr);
-        fclose(irrig_file.file);
+        fclose(irrig_file.bin.file);
         return TRUE;
       }
     /* add connection to network */
     rc=pnet_addconnect(config->irrig_neighbour,
                        cell+config->startgrid-config->firstgrid,
-                       ((swap) ? swapint(neighb_irrig) : neighb_irrig)-config->firstgrid);
+                       ((irrig_file.bin.swap) ? swapint(neighb_irrig) : neighb_irrig)-config->firstgrid);
     if(rc)
     {
       fprintf(stderr,"ERROR142: Cannot add irrigation neighbour %d of cell %d: %s.\n",
-              ((swap) ? swapint(neighb_irrig) : neighb_irrig),
+              ((irrig_file.bin.swap) ? swapint(neighb_irrig) : neighb_irrig),
               cell+config->startgrid,
               pnet_strerror(rc));
       fflush(stderr);
@@ -270,12 +268,10 @@ static Bool initriver(Cell grid[],Config *config)
   Infile drainage,river;
   int cell,rc;
   Routing r;
-  Bool swap;
   Header header;
   String headername,line;
   int *index,n,version,ncoeff;
   Real len;
-  size_t offset;
   if(config->drainage_filename.fmt==CDF)
   {
     drainage.cdf=openinput_netcdf(&config->drainage_filename,
@@ -299,14 +295,14 @@ static Bool initriver(Cell grid[],Config *config)
   else
   {
 
-    if((drainage.file=openinputfile(&header,&swap,&config->drainage_filename,
-                                    headername,&version,&offset,FALSE,config))==NULL)
+    if((drainage.bin.file=openinputfile(&header,&drainage.bin.swap,&config->drainage_filename,
+                                        headername,&version,&drainage.bin.offset,FALSE,config))==NULL)
       return TRUE;
     if(version>=3 && header.datatype!=LPJ_INT)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR217: Datatype %s in drainage file '%s' is not int.\n",typenames[header.datatype],config->drainage_filename.name);
-      fclose(drainage.file);
+      fclose(drainage.bin.file);
       return TRUE;
     }
     if(config->drainage_filename.fmt!=RAW && header.nbands!=2)
@@ -314,11 +310,11 @@ static Bool initriver(Cell grid[],Config *config)
       if(isroot(*config))
         fprintf(stderr,"ERROR218: Number of bands=%d in drainage file '%s' is not 2.\n",
                 header.nbands,config->drainage_filename.name);
-      fclose(drainage.file);
+      fclose(drainage.bin.file);
       return TRUE;
     }
     /* seek startgrid positions in drainage file */
-    if(fseek(drainage.file,sizeof(Routing)*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
+    if(fseek(drainage.bin.file,sizeof(Routing)*(config->startgrid-header.firstcell)+drainage.bin.offset,SEEK_CUR))
       return TRUE;
   }
   /* initialize pnet structure for drainage network */
@@ -334,7 +330,7 @@ static Bool initriver(Cell grid[],Config *config)
   {
     fputs("ERROR143: Cannot initialize river network.\n",stderr);
     fflush(stderr);
-    fclose(drainage.file);
+    closeinput(drainage,config->drainage_filename.fmt);
     return TRUE;
   }
   for(cell=0;cell<config->ngridcell;cell++)
@@ -379,12 +375,12 @@ static Bool initriver(Cell grid[],Config *config)
     }
     else
     {
-      if(getroute(drainage.file,&r,swap))
+      if(getroute(drainage.bin.file,&r,drainage.bin.swap))
       {
         fprintf(stderr,"ERROR144: Cannot read river route for cell %d.\n",
                 cell+config->startgrid);
         fflush(stderr);
-        fclose(drainage.file);
+        fclose(drainage.bin.file);
         return TRUE;
       }
       /* calculate transfer function */

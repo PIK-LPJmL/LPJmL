@@ -57,6 +57,7 @@
   "wateruse" : "wateruse",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
   "equilsoil" : false,
 #else
+  "equilsoil" : true,
   "population" : false,
   "landuse" : "no_landuse",
   "reservoir" : false,
@@ -232,7 +233,7 @@ ID                               Fmt                        filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 7000,  /* spinup years */
+  "nspinup" : 8000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */

@@ -53,8 +53,8 @@ typedef struct
   Real T_m;          /**< parameter in N uptake temperature function */
   Real T_0;
   Real T_r;
+  Real lsuha;       /**< livestock density for grassland management (lsuha) */
   /* IRRIGATION */
-  Real lsuha;        /**< livestock density for grassland management (lsuha) */
   Real aprec_lim;    /**< annual precipitation limit for C3 irrigation threshold */
   Real irrig_threshold_c3_dry; /**< soil moisture irrigation threshold for C3 crops, annual precip < aprec_lim */
   Real irrig_threshold_c3_humid; /**< soil moisture irrigation threshold for C3 crops, annual precip >= aprec_lim */
@@ -75,7 +75,8 @@ typedef struct
   Real k_temp;          /**< factor of temperature dependence of nitrogen demand for Rubisco activity */
   Real fburnt;          /**< fraction of trees burnt at deforestation */
   Real ftimber;         /**< timber fraction at deforestation */
-  Real harvest_fast_frac;  /**< fraction of harvested wood going to fast pools */Real esoil_reduction; /**< reduction of soil evaporation */
+  Real harvest_fast_frac;  /**< fraction of harvested wood going to fast pools */
+  Real esoil_reduction; /**< reduction of soil evaporation */
   Poolpar product_turnover; /**< fast and slow product turnover (1/yr) */
   Real rw_buffer_max;   /**< size of rainwater harvesting tank */
   Real frac_ro_stored;  /**< fraction of surface runoff stored in tank */
@@ -84,7 +85,7 @@ typedef struct
   Real yield_gap_bridge; /**< yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
   Real allocation_threshold; /**< allocation threshold for daily grassland allocation */
   Real hfrac2;
-  Real rootreduction; /**< fraction used to calculate amouont of roots dying at harvest in managed grasslands */
+  Real rootreduction;     /**< fraction used to calculate amouont of roots dying at harvest in managed grasslands */
 } Param;
 
 /* Declaration of global variable */

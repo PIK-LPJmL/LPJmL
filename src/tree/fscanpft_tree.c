@@ -95,10 +95,11 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
                    const Config *config /**< LPJmL configuration  */
                   )               /** \return TRUE on error */
 {
-  Real stemdiam,height_sapl,wood_sapl;
+  Real stemdiam,height_sapl,wood_sapl,sum;
   Pfttreepar *tree;
   Verbosity verb;
   verb=(isroot(*config)) ? config->scan_verbose : NO_ERR;
+  int i;
   pft->newpft=new_tree;
   pft->npp=npp_tree;
   /*pft->fpc=fpc_tree; */
@@ -194,6 +195,15 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   {
     if(verb)
       fprintf(stderr,"ERROR112: Cannot read 'fuelfraction' of PFT '%s'.\n",pft->name);
+    return TRUE;
+  }
+  sum=0;
+  for(i=0;i<NFUELCLASS;i++)
+    sum+=tree->fuelfrac[i];
+  if(sum!=1.0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR112: Sum of fuel fractions=%g of PFT '%s' is not 1.\n",sum,pft->name);
     return TRUE;
   }
   fscanreal2(verb,file,&tree->k_est,pft->name,"k_est");

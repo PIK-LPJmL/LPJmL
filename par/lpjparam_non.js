@@ -34,9 +34,9 @@
   "kc25" : 30.,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.7,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
+  "veg_equil_year" : 990,
   "temp_response_a" : 56.02, /* Parameter in temperature response function */
   "temp_response_b" : 46.02, /* Parameter in temperature response function */
-  "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
   "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */

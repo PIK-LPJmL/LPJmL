@@ -23,16 +23,21 @@ void output_daily_crop(Daily_outputs* output, /**< daily output data */
 {
   const Pftcrop *crop;
   crop=pft->data;
-  output->lai=crop->lai;
-  output->laimaxad=crop->laimax_adjusted;
-  output->lainppdeficit=crop->lai_nppdeficit;
-  output->husum=crop->husum;
-  output->vdsum=crop->vdsum;
-  output->fphu=crop->fphu;
-  output->phen=pft->phen;
-  output->growingday=crop->growingdays;
-  output->pvd=crop->pvd;
-  output->phu=crop->phu;
-  output->gpp=gpp;
-  output->rd=rd;
+  if(output->cft==ALLSTAND)
+    output->gpp+=gpp*pft->stand->frac;
+  else
+  {
+    output->lai=crop->lai;
+    output->laimaxad=crop->laimax_adjusted;
+    output->lainppdeficit=crop->lai_nppdeficit;
+    output->husum=crop->husum;
+    output->vdsum=crop->vdsum;
+    output->fphu=crop->fphu;
+    output->phen=pft->phen;
+    output->growingday=crop->growingdays;
+    output->pvd=crop->pvd;
+    output->phu=crop->phu;
+    output->gpp=gpp;
+    output->rd=rd;
+  }
 } /* of 'output_daily_crop' */

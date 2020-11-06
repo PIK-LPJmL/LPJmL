@@ -61,6 +61,7 @@ typedef struct
   Real allom1,allom2,allom3,allom4; /**< allometry */
   Real aphen_min,aphen_max;
   Real height_max;                  /**< maximum height of tree (m) */
+  Real k_latosa;                    /**< leaf area to sapwood area */
   Real reprod_cost;                 /**< reproduction cost */
   Real scorchheight_f_param;        /**< scorch height (F) */
   Real crownlength;                 /**< crown length (CL) */

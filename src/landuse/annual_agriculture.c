@@ -23,7 +23,7 @@ Bool annual_agriculture(Stand *stand,         /**< Pointer to stand */
                         int UNUSED(ncft),     /**< number of crop PFTs */
                         Real UNUSED(popdens), /**< population density (capita/km2) */
                         int UNUSED(year),     /**< simulation year */
-                        Bool UNUSED(isdaily),
+                        Bool UNUSED(isdaily), /**< daily temperature data? */
                         Bool UNUSED(intercrop), /**< enable intercropping (TRUE/FALSE) */
                         const Config * UNUSED(config)
                        )                      /** \return stand has to be killed (TRUE/FALSE) */

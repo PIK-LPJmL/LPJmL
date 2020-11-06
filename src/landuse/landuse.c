@@ -47,7 +47,7 @@ struct landuse
   Climatefile sdate;   /**< file pointer to prescribed sdates */
 };                     /**< definition of opaque datatype Landuse */
 
-Landuse initlanduse(int ncft,
+Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                     const Config *config /**< LPJ configuration */
                    )                     /** \return allocated landuse or NULL */
 {

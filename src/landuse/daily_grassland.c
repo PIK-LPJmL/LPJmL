@@ -57,7 +57,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   Real green_transp[LASTLAYER];
   Real evap,evap_blue,rd,gpp,frac_g_evap,runoff,wet_all,intercept,sprink_interc;
   Real rw_apply; /*applied irrigation water from rainwater harvesting storage, counted as green water */
-  Real cover_stand,intercep_pft;
+  Real cover_stand;
   Real *wet; /* wet from pftlist */
   Real return_flow_b; /* irrigation return flows from surface runoff, lateral runoff and percolation (mm)*/
   Real rainmelt,irrig_apply;
@@ -84,7 +84,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   data=stand->data;
   stand->growing_days++;
   output=&stand->cell->output;
-  evap=evap_blue=cover_stand=intercep_stand=intercep_stand_blue=wet_all=rw_apply=intercept=sprink_interc=rainmelt=intercep_pft=0.0;
+  evap=evap_blue=cover_stand=intercep_stand=intercep_stand_blue=wet_all=rw_apply=intercept=sprink_interc=rainmelt=0.0;
   runoff=return_flow_b=0.0;
   if(getnpft(&stand->pftlist)>0)
   {
@@ -249,17 +249,24 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     grass = pft->data;
     if(config->withdailyoutput && isdailyoutput_grassland(output,stand))
     {
-      output->daily.interc += intercep_pft;
-      output->daily.npp += npp;
-      output->daily.gpp += gpp;
+      if(output->daily.cft==ALLSTAND)
+      {
+        output->daily.npp += npp*stand->frac;
+        output->daily.gpp += gpp*stand->frac;
+      }
+      else
+      {
+        output->daily.npp += npp;
+        output->daily.gpp += gpp;
 
-      output->daily.croot += grass->ind.root.carbon;
-      output->daily.cleaf += grass->ind.leaf.carbon;
-      output->daily.nroot += grass->ind.root.nitrogen;
-      output->daily.nleaf += grass->ind.leaf.nitrogen;
+        output->daily.croot += grass->ind.root.carbon;
+        output->daily.cleaf += grass->ind.leaf.carbon;
+        output->daily.nroot += grass->ind.root.nitrogen;
+        output->daily.nleaf += grass->ind.leaf.nitrogen;
 
-      output->daily.rd += rd;
-      output->daily.assim += gpp-rd;
+        output->daily.rd += rd;
+        output->daily.assim += gpp-rd;
+      }
     }
   }
 
@@ -434,16 +441,29 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
   if(config->withdailyoutput && isdailyoutput_grassland(output,stand))
   {
-    output->daily.evap+=evap;
-    forrootsoillayer(l)
-      output->daily.trans+=aet_stand[l];
-    output->daily.irrig=irrig_apply;
-    output->daily.w0+=stand->soil.w[1];
-    output->daily.w1+=stand->soil.w[2];
-    output->daily.wevap+=stand->soil.w[0];
-    output->daily.par=par;
-    output->daily.daylength=daylength;
-    output->daily.pet+=eeq*PRIESTLEY_TAYLOR;
+    if(output->daily.cft==ALLSTAND)
+    {
+      output->daily.evap+=evap*stand->frac;
+      forrootsoillayer(l)
+        output->daily.trans+=aet_stand[l]*stand->frac;
+      output->daily.w0+=stand->soil.w[1]*stand->frac;
+      output->daily.w1+=stand->soil.w[2]*stand->frac;
+      output->daily.wevap+=stand->soil.w[0]*stand->frac;
+      output->daily.interc+=intercep_stand*stand->frac;
+    }
+    else
+    {
+      output->daily.evap+=evap;
+      forrootsoillayer(l)
+        output->daily.trans+=aet_stand[l];
+      output->daily.irrig=irrig_apply;
+      output->daily.w0+=stand->soil.w[1];
+      output->daily.w1+=stand->soil.w[2];
+      output->daily.wevap+=stand->soil.w[0];
+      output->daily.par=par;
+      output->daily.daylength=daylength;
+      output->daily.pet+=eeq*PRIESTLEY_TAYLOR;
+    }
   }
 
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */

@@ -184,7 +184,6 @@ typedef struct
   Real mwd_local;        /**<  monthly local withdrawal (mm) total water used for local and neighbour irrigation, including water that goes into irrig_stor, which could go back to river */
   Real mwd_neighb;       /**< monthly neighbour withdrawal (mm); negative values means give away to neighbour, positive taken for local irrigation from neighbour */
   Real mwd_res;          /**< monthly reservoir withdrawal (mm) */
-  Real mwd_return;       /**< monthly withdrawals returned to river (mm) */
 #ifdef IMAGE
   Real mwd_gw;           /**< monthly renewable groundwater withdrawal (mm) */
   Real mwd_aq;           /**< monthly aquifer withdrawal (mm) NOT YET DEFINED*/

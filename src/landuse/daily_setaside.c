@@ -122,6 +122,11 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
     }
 
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
+    if(output->daily.cft==ALLSTAND)
+    {
+      output->daily.npp+=npp*stand->frac;
+      output->daily.gpp+=gpp*stand->frac;
+    }
     output->mnpp+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
     output->mgpp+=gpp*stand->frac;

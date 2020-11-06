@@ -90,11 +90,13 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       dailyfire_stand(stand,&livefuel,popdensity,avgprec,&climate,config);
     if(config->permafrost)
     {
-    snowrunoff=snow(&stand->soil,&climate.prec,&melt,
-                    climate.temp,&temp_bs,&evap)*stand->frac;
-    cell->discharge.drunoff+=snowrunoff;
-    cell->output.mevap+=evap*stand->frac; /* evap from snow runoff*/
-    prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
+      snowrunoff=snow(&stand->soil,&climate.prec,&melt,
+                      climate.temp,&temp_bs,&evap)*stand->frac;
+      cell->discharge.drunoff+=snowrunoff;
+      cell->output.mevap+=evap*stand->frac; /* evap from snow runoff*/
+      if(config->withdailyoutput && cell->output.daily.cft==ALLSTAND)
+        cell->output.daily.evap+=evap*stand->frac;
+      prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
                     +melt*1e-3*(T_zero-stand->soil.temp[TOPLAYER]))*c_water;
       stand->soil.perc_energy[TOPLAYER]=prec_energy;
 #ifdef MICRO_HEATING
@@ -289,6 +291,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
     {
     cell->output.mevap_lake+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
+    if(config->withdailyoutput && cell->output.daily.cft==ALLSTAND)
+      cell->output.daily.evap+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
 #ifdef COUPLING_WITH_FMS
     cell->output.dwflux+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
 #endif

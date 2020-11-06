@@ -187,7 +187,6 @@
   { "id" : MWD_LOCAL, "name": "mwd_local", "var" :  "wd_local", "descr" :  "local withdrawal", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MWD_NEIGHB, "name": "mwd_neighb", "var" :  "wd_neighb", "descr" :  "neighbour withdrawal", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MWD_RES, "name": "mwd_res", "var" :  "wd_res", "descr" :  "reservoir withdrawal", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
-  { "id" : MWD_RETURN, "name": "mwd_return", "var" :  "wd_return", "descr" :  "withdrawals returned to river", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MCONV_LOSS_EVAP, "name": "mconv_loss_evap", "var" :  "conv_loss_evap", "descr" :  "evaporative conveyance loss", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MCONV_LOSS_DRAIN, "name": "mconv_loss_drain", "var" :  "conv_loss_drain", "descr" :  "drainage conveyance loss", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MSTOR_RETURN, "name": "mstor_return", "var" :  "stor_return", "descr" :  "irrig stor return", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},

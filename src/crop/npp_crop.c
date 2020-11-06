@@ -80,21 +80,26 @@ Real npp_crop(Pft *pft,           /**< PFT variables */
     allocation_daily_crop(pft,npp,wdf,with_nitrogen,output);
   if(output->cft==pft->par->id && output->irrigation==data->irrigation)
   {
-    output->rroot=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil;
-    output->rso=crop->ind.so.carbon*pft->par->respcoeff*param.k*nc_ratio.so*gtemp_air;
-    output->rpool=presp;
-    output->gresp=gresp;
-    output->npp=npp;
-    output->cleaf=crop->ind.leaf.carbon;
-    output->croot=crop->ind.root.carbon;
-    output->cso=crop->ind.so.carbon;
-    output->cpool=crop->ind.pool.carbon;
-    output->nleaf=crop->ind.leaf.nitrogen;
-    output->npool=crop->ind.pool.nitrogen;
-    output->nso=crop->ind.so.nitrogen;
-    output->nroot=crop->ind.root.nitrogen;
-    output->wdf=wdf;
-    output->wscal=pft->wscal;
+    if(output->cft==ALLSTAND)
+      output->npp=npp*pft->stand->frac;
+    else
+    {
+      output->rroot=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil;
+      output->rso=crop->ind.so.carbon*pft->par->respcoeff*param.k*nc_ratio.so*gtemp_air;
+      output->rpool=presp;
+      output->gresp=gresp;
+      output->npp=npp;
+      output->cleaf=crop->ind.leaf.carbon;
+      output->croot=crop->ind.root.carbon;
+      output->cso=crop->ind.so.carbon;
+      output->cpool=crop->ind.pool.carbon;
+      output->nleaf=crop->ind.leaf.nitrogen;
+      output->npool=crop->ind.pool.nitrogen;
+      output->nso=crop->ind.so.nitrogen;
+      output->nroot=crop->ind.root.nitrogen;
+      output->wdf=wdf;
+      output->wscal=pft->wscal;
+    }
   }
   return npp;
 } /* of 'npp_crop' */
