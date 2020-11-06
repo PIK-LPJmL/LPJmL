@@ -226,16 +226,12 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 
       if(config->equilsoil)
       {
-        if(config->nspinup>veg_equil_year &&
-           (year==config->firstyear-config->nspinup+veg_equil_year) && !config->from_restart)
+        if(config->nspinup>param.veg_equil_year &&
+           (year==config->firstyear-config->nspinup+param.veg_equil_year) && !config->from_restart)
           equilveg(grid+cell);
 
         if(config->nspinup>soil_equil_year &&
            (year==config->firstyear-config->nspinup+cshift_year) && !config->from_restart)
-          equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
-
-        if(config->nspinup>soil_equil_year &&
-           (year==config->firstyear-config->nspinup+120) && !config->from_restart)
           equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
 
         if(config->nspinup>soil_equil_year &&
