@@ -115,6 +115,9 @@ typedef struct
   Bool istimber;
   Bool const_climate;           /**< constant climate */
   Bool shuffle_climate;           /**< shuffle spinup climate */
+  Bool fix_climate;
+  int fix_climate_year;
+  int fix_climate_cycle;
   Bool const_deposition;        /**< constant N deposition */
   Bool remove_residuals;
   Bool residues_fire;   /**< use parameters for agricultural fires */

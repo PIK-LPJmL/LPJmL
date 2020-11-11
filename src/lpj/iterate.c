@@ -53,7 +53,7 @@ int iterate(Outputfile *output,  /**< Output file data */
 {
   Real co2,cflux_total;
   Flux flux;
-  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year;
+  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year,climate_year;
   Bool rc;
 #ifdef STORECLIMATE
   Climatedata store,data_save;
@@ -94,7 +94,10 @@ int iterate(Outputfile *output,  /**< Output file data */
       co2=receive_image_co2(config);
     else
 #endif
-    co2=getco2(input.climate,year); /* get atmospheric CO2 concentration */
+    if(config->fix_climate && year>config->fix_climate_year)
+      co2=getco2(input.climate,config->fix_climate_year); /* get atmospheric CO2 concentration */
+    else
+      co2=getco2(input.climate,year); /* get atmospheric CO2 concentration */
     if(year<input.climate->firstyear) /* are we in spinup phase? */
     {
       /* yes, let climate data point to stored data */
@@ -137,11 +140,29 @@ int iterate(Outputfile *output,  /**< Output file data */
       }
       else
 #endif
-      if(getclimate(input.climate,grid,year,config))
       {
-        fprintf(stderr,"ERROR104: Simulation stopped in getclimate().\n");
-        fflush(stderr);
-        break; /* leave time loop */
+        if(config->fix_climate && year>config->fix_climate_year)
+        {
+          if(config->shuffle_climate)
+          {
+            if(isroot(*config))
+              climate_year=config->fix_climate_year-config->fix_climate_cycle/2+(int)(drand48()*config->fix_climate_cycle);
+#ifdef USE_MPI
+            MPI_Bcast(&climate_year,1,MPI_INT,0,config->comm);
+#endif
+          }
+          else
+            climate_year=config->fix_climate_year-config->fix_climate_cycle/2+(year-config->fix_climate_year+config->fix_climate_cycle/2) % config->fix_climate_cycle;
+        }
+        else
+          climate_year=year;
+
+        if(getclimate(input.climate,grid,climate_year,config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in getclimate().\n");
+          fflush(stderr);
+          break; /* leave time loop */
+        }
       }
     }
     if(input.landuse!=NULL)
