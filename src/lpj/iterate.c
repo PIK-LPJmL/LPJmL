@@ -146,7 +146,7 @@ int iterate(Outputfile *output,  /**< Output file data */
           if(config->shuffle_climate)
           {
             if(isroot(*config))
-              climate_year=config->fix_climate_year-config->fix_climate_cycle/2+(int)(drand48()*config->fix_climate_cycle);
+              climate_year=config->fix_climate_year-config->fix_climate_cycle/2+(int)(erand48(config->seed)*config->fix_climate_cycle);
 #ifdef USE_MPI
             MPI_Bcast(&climate_year,1,MPI_INT,0,config->comm);
 #endif
