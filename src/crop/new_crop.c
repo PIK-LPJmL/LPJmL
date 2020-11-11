@@ -43,8 +43,8 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   crop->ind.pool.nitrogen=0.0;
   pft->bm_inc.carbon=20.0;
   pft->bm_inc.nitrogen=0.7; /*C:N ratio of seed = 29, see redmine #1560*/
-  crop->laimax_adjusted=1; 
-  crop->flaimax=0.000083; 
+  crop->laimax_adjusted=1;
+  crop->flaimax=0.000083;
   crop->demandsum=0;
   crop->ndemandsum=crop->nuptakesum=0;
   crop->supplysum=0;
@@ -71,7 +71,7 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   pft->vscal = 1;
   crop->nfertilizer=0;
 
-  allocation_daily_crop(pft,0,NO_WDF,FALSE,NULL); 
+  allocation_daily_crop(pft,0,NO_WDF,FALSE,NULL);
 } /* of 'new_crop' */
 
 /*

@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                     e  q  u  i  l  s  o  m  . c                                \n**/
+/**                     e  q  u  i  l  v  e  g  .  c                               \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     After vegetation equilibrium reset decomposition parameter                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,14 +17,6 @@
 #include "lpj.h"
 #include "grass.h"
 #include "tree.h"
-
-/*
- *  DESCRIPTION
- *
- *  after vegetation equilibrium reset decomposition parameter
- *
- *
- */
 
 void equilveg(Cell *cell /**< pointer to cell */
              )

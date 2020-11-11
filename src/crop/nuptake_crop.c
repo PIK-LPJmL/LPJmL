@@ -107,7 +107,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
           n_upfail+=soil->NH4[l];
           soil->NH4[l]=0;
         }
-  
+
 #ifdef SAFE
         if (soil->NO3[l]<-epsilon)
           fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",

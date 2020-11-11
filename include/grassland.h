@@ -15,8 +15,10 @@
 /**************************************************************************************/
 
 #ifndef GRASSLAND_H
+#define GRASSLAND_H
 
 /* Definition of settings */
+
 #define DEMAND_COW_INT 4000.0         // [g.C.day-1] same for extensive and intensive grazing;
 #define DEMAND_COW_EXT 4000.0         // corresponds to 8.9 kg DW which is in between the observed values of 6 and 12.
 

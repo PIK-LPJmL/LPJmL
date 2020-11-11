@@ -24,6 +24,8 @@
   if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparambool(file,var,name) \
   if(fscanbool(file,var,name,FALSE,verbosity)) return TRUE;
+#define fscanparamint(file,var,name) \
+  if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanparampoolpar(file,var,name) \
   if(fscanpoolpar(file,var,name,verbosity)) return TRUE;
 
@@ -95,6 +97,10 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.kc25,"kc25");
   fscanparamreal01(&f,&param.atmfrac,"atmfrac");
   fscanparamreal01(&f,&param.fastfrac,"fastfrac");
+  if(config->equilsoil)
+  {
+    fscanparamint(&f,&param.veg_equil_year,"veg_equil_year");
+  }
   fscanparamreal(&f,&param.k_mort,"k_mort");
   fscanparamreal01(&f,&param.fpc_tree_max,"fpc_tree_max");
   fscanparamreal(&f,&param.temp_response_a,"temp_response_a");
@@ -108,11 +114,18 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(&f,&param.k_temp,"k_temp");
     fscanparamreal(&f,&param.min_c_bnf,"min_c_bnf");
     fscanparamreal(&f,&param.par_sink_limit,"par_sink_limit");
-    fscanparamreal(&f,&param.q_ash,"q_ash");
-    fscanparamreal(&f,&param.sapwood_recovery,"sapwood_recovery");
+    fscanparamreal01(&f,&param.q_ash,"q_ash");
+    fscanparamreal01(&f,&param.sapwood_recovery,"sapwood_recovery");
     fscanparamreal(&f,&param.T_m,"T_m");
     fscanparamreal(&f,&param.T_0,"T_0");
     fscanparamreal(&f,&param.T_r,"T_r");
+    if(param.T_r==param.T_0)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR238: Paramter T_0=%g must not be identical to parameter T_r=%g.\n",
+                param.T_0,param.T_r);
+      return TRUE;
+    }
   }
   else
     param.q_ash=param.sapwood_recovery=0;

@@ -18,24 +18,24 @@
 #include "crop.h"
 #include "agriculture.h"
 
-Real daily_agriculture(Stand *stand,                /**< stand pointer */
-                       Real co2,                    /**< atmospheric CO2 (ppmv) */
-                       const Dailyclimate *climate, /**< Daily climate values */
-                       int day,                     /**< day (1..365) */
-                       Real daylength,              /**< length of day (h) */
-                       const Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
-                       Real gtemp_air,              /**< value of air temperature response function */
-                       Real gtemp_soil,             /**< value of soil temperature response function */
-                       Real gp_stand,               /**< potential stomata conductance  (mm/s) */
-                       Real gp_stand_leafon,        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
-                       Real eeq,                    /**< equilibrium evapotranspiration (mm) */
+Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer */
+                       Real co2,                    /**< [in] atmospheric CO2 (ppmv) */
+                       const Dailyclimate *climate, /**< [in] Daily climate values */
+                       int day,                     /**< [in] day (1..365) */
+                       Real daylength,              /**< [in] length of day (h) */
+                       const Real gp_pft[],         /**< [out] pot. canopy conductance for PFTs & CFTs (mm/s) */
+                       Real gtemp_air,              /**< [in] value of air temperature response function */
+                       Real gtemp_soil,             /**< [in] value of soil temperature response function */
+                       Real gp_stand,               /**< [in] potential stomata conductance  (mm/s) */
+                       Real gp_stand_leafon,        /**< [in] pot. canopy conduct.at full leaf cover  (mm/s) */
+                       Real eeq,                    /**< [in] equilibrium evapotranspiration (mm) */
                        Real par,                    /**< photosynthetic active radiation flux  (J/m2/day) */
-                       Real melt,                   /**< melting water (mm/day) */
-                       int npft,                    /**< number of natural PFTs */
-                       int ncft,                    /**< number of crop PFTs   */
-                       int UNUSED(year),            /**< simulation year (AD) */
-                       Bool UNUSED(intercrop),      /**< enabled intercropping */
-                       const Config *config         /**< LPJ config */
+                       Real melt,                   /**< [in] melting water (mm/day) */
+                       int npft,                    /**< [in] number of natural PFTs */
+                       int ncft,                    /**< [in] number of crop PFTs   */
+                       int UNUSED(year),            /**< [in] simulation year (AD) */
+                       Bool UNUSED(intercrop),      /**< [in] enabled intercropping */
+                       const Config *config         /**< [in] LPJ config */
                       )                             /** \return runoff (mm/day) */
 {
   int p,l;

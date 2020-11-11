@@ -56,8 +56,8 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
  
   if(!shift)
   {
-    soil->decomp_litter_mean.carbon/=(soil_equil_year-veg_equil_year);
-    soil->decomp_litter_mean.nitrogen/=(soil_equil_year-veg_equil_year);
+    soil->decomp_litter_mean.carbon/=(soil_equil_year-param.veg_equil_year);
+    soil->decomp_litter_mean.nitrogen/=(soil_equil_year-param.veg_equil_year);
   } 
   else //if(shift==TRUE)
   {
@@ -125,8 +125,8 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
     {
       forrootsoillayer(l)
       {
-        k_mean_layer[l].fast=soil->k_mean[l].fast/(soil_equil_year-veg_equil_year);
-        k_mean_layer[l].slow=soil->k_mean[l].slow/(soil_equil_year-veg_equil_year);
+        k_mean_layer[l].fast=soil->k_mean[l].fast/(soil_equil_year-param.veg_equil_year);
+        k_mean_layer[l].slow=soil->k_mean[l].slow/(soil_equil_year-param.veg_equil_year);
         for(p=0;p<ntotpft;p++)
         {
           socfraction=pow(10,pftpar[p].soc_k*logmidlayer[l])

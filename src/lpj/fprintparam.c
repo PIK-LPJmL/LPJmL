@@ -55,6 +55,8 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           param.bc3,param.bc4,param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,param.k_mort,
           param.fpc_tree_max,param.temp_response_a,param.temp_response_b);
+  if(config->equilsoil)
+    fprintf(file,"veg_equil_year:\t%d\n",param.veg_equil_year);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     fprintf(file,"firedura:\t%g\n"
 	    "fire_intens:\t%g\n"

@@ -39,7 +39,7 @@ void fprintsoilpar(FILE *file,              /**< pointer to ASCII file */
     fputc('\n',file);
   for(i=0;i<nsoil;i++)
   {
-    fprintf(file,"%18s %6.2f %5.2f %5.2f %3d %6.3f %7.3f %8.3f %7.3f %7.3f %10.3f",
+    fprintf(file,"%-18s %6.2f %5.2f %5.2f %3d %6.3f %7.3f %8.3f %7.3f %7.3f %10.3f",
             soilpar[i].name,soilpar[i].wpwp,soilpar[i].wfc,soilpar[i].wsat,
             soilpar[i].hsg+1,
             soilpar[i].tdiff_0,soilpar[i].tdiff_15,soilpar[i].tdiff_100,

@@ -22,7 +22,7 @@ Real vmaxlimit_crop(const Pft *pft, /**< pointer to PFT */
 {
   const Pftcrop *crop;
   Real vmax;
-  crop=pft->data; 
+  crop=pft->data;
 #ifdef DEBUG_N
   printf("LAI=%g, N0=%g\n",lai_crop(pft),param.n0*0.001*crop->ind.leaf.carbon);
 #endif

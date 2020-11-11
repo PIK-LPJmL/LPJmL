@@ -57,7 +57,7 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   par=pft->par->data;
 
   /* vegetation growth */
-  pft->bm_inc.carbon+=npp;   
+  pft->bm_inc.carbon+=npp;
 
   /* root growth */
   if(with_nitrogen)
@@ -89,10 +89,10 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   crop->ndemandsum+=ndemand_crop_max;
   }*/
 
-  crop->ind.root.carbon=froot*pft->bm_inc.carbon; 
+  crop->ind.root.carbon=froot*pft->bm_inc.carbon;
 
-  /* leaf growth */  
-  /* Calculation of leaf biomass (g C/m2), prescribed LAI development, constrained by NPP */  
+  /* leaf growth */
+  /* Calculation of leaf biomass (g C/m2), prescribed LAI development, constrained by NPP */
   if(!crop->senescence)
   {
     if(pft->bm_inc.carbon-crop->ind.root.carbon>=crop->lai/pft->par->sla)
@@ -134,7 +134,7 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   /*
   if(wdf>=0)
     hi=(hi-himind)*wdf/(wdf+exp(6.13-0.0883*wdf))+himind;
-  */  
+  */
   if((crop->ind.leaf.carbon+crop->ind.root.carbon)<pft->bm_inc.carbon)
   {
     crop->ind.so.carbon=(par->hiopt>1.0) ? (1.0-1.0/hi)*(1.0-froot)*pft->bm_inc.carbon : hi*(1.0-froot)*pft->bm_inc.carbon;
@@ -144,7 +144,7 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   else
     crop->ind.so.carbon=0;
 //  crop->ind.so.nitrogen=crop->ind.so.carbon*par->cn_ratio.leaf; /* crop->ind.so.nitrogen=crop->ind.so.carbon*par->cn_ratio.leaf*ratio_so_leaf; */
-  
+
   /* additional pool */
   crop->ind.pool.carbon=pft->bm_inc.carbon-crop->ind.root.carbon-crop->ind.leaf.carbon-crop->ind.so.carbon;
   if(crop->senescence && crop->ind.pool.carbon<0)
@@ -181,7 +181,7 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   if(crop->ind.leaf.carbon>epsilon && pft->bm_inc.nitrogen>0)
   {
     crop->ind.leaf.nitrogen=crop->ind.root.nitrogen=crop->ind.so.nitrogen=crop->ind.pool.nitrogen=0;
-    //crop->ind.leaf.nitrogen=pft->nleaf/pft->nind; 
+    //crop->ind.leaf.nitrogen=pft->nleaf/pft->nind;
     solve(&a,&b,&c,&d,
           crop->ind.leaf.nitrogen,crop->ind.root.nitrogen,crop->ind.so.nitrogen,crop->ind.pool.nitrogen,
           crop->ind.leaf.carbon,crop->ind.root.carbon,crop->ind.so.carbon,crop->ind.pool.carbon,
@@ -228,8 +228,8 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
     }
     else
     {
-       crop->ind.leaf.nitrogen+=a*pft->bm_inc.nitrogen; 
-       crop->ind.root.nitrogen+=b*pft->bm_inc.nitrogen; 
+       crop->ind.leaf.nitrogen+=a*pft->bm_inc.nitrogen;
+       crop->ind.root.nitrogen+=b*pft->bm_inc.nitrogen;
        crop->ind.so.nitrogen+=c*pft->bm_inc.nitrogen;
        crop->ind.pool.nitrogen+=d*pft->bm_inc.nitrogen;
 #ifdef DEBUG_N
@@ -247,7 +247,7 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   if(crop->ind.leaf.carbon>epsilon)
   {
     /* leaf nitrogen */
-    crop->ind.leaf.nitrogen=pft->nleaf/pft->nind; 
+    crop->ind.leaf.nitrogen=pft->nleaf/pft->nind;
 
     if(crop->ind.leaf.nitrogen/crop->ind.leaf.carbon>pft->par->ncleaf.high)
     {
@@ -263,7 +263,7 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
 
     /* root nitrogen and reduce bm_inc.nitrogen accordingly */
     if(crop->ind.root.carbon*nc_ratio/par->ratio.so < pft->bm_inc.nitrogen-crop->ind.leaf.nitrogen)
-      crop->ind.root.nitrogen=crop->ind.root.carbon*nc_ratio/par->ratio.root; 
+      crop->ind.root.nitrogen=crop->ind.root.carbon*nc_ratio/par->ratio.root;
     else
       crop->ind.root.nitrogen=max(0,pft->bm_inc.nitrogen-crop->ind.leaf.nitrogen);
 
@@ -314,7 +314,7 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
 /*
 - called in npp_crop()
 - calculation of the vegetation growth:
-  -> calculation of carbon biomass (total plant growth) 
+  -> calculation of carbon biomass (total plant growth)
   -> calculation of carbon mass root (root growth)
   -> calculation of carbon mass leaf (leaf growth)
   -> calculation of carbon mass so (storage organs growth)

@@ -21,9 +21,9 @@ void litter_update_crop(Litter *litter, /**< Litter pools */
                        )
 {
   Pftcrop *crop;
-  Output *output;  
+  Output *output;
   crop=pft->data;
-  output=&pft->stand->cell->output; 
+  output=&pft->stand->cell->output;
   litter->ag[pft->litter].trait.leaf.carbon+=(crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*frac;
   output->alittfall.carbon+=(crop->ind.leaf.carbon+crop->ind.pool.carbon+crop->ind.so.carbon)*frac*pft->stand->frac;
   litter->ag[pft->litter].trait.leaf.nitrogen+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen+crop->ind.so.nitrogen)*frac;

@@ -32,4 +32,3 @@ Real vegn_sum_crop(const Pft *pft /**< pointer to PFT data */
   crop=pft->data;
   return phys_sum_crop_n(crop->ind)*pft->nind;
 } /* of 'vegn_sum_crop' */
-

@@ -228,6 +228,13 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,&item,&pft->nmax,pft->name,"nmax");
     fscanpftreal01(verb,&item,&pft->resist,pft->name,"resist");
     fscanpftreal(verb,&item,&pft->longevity,pft->name,"longevity");
+    if(pft->longevity<=0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR234: Parameter 'longevity'=%g must be greater than zero for PFT '%s'.\n",
+                pft->longevity,pft->name);
+      return NULL;
+    }
     fscanpftreal(verb,&item,&pft->lmro_ratio,pft->name,"lmro_ratio");
     if(pft->lmro_ratio<=0)
     {
@@ -254,7 +261,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  "min_temprange");
     fscanpftreal(verb,&item,&pft->emax,pft->name,"emax");
     fscanpftreal(verb,&item,&pft->intc,pft->name,"intc");
-    fscanpftreal(verb,&item,&pft->alphaa,pft->name,"alphaa");
+    fscanpftreal01(verb,&item,&pft->alphaa,pft->name,"alphaa");
     fscanpftreal01(verb,&item,&pft->albedo_leaf,pft->name,"albedo_leaf");
     fscanpftreal01(verb,&item,&pft->albedo_stem,pft->name,"albedo_stem");
     fscanpftreal01(verb,&item,&pft->albedo_litter,pft->name,"albedo_litter");

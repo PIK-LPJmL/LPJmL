@@ -92,9 +92,5 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     cell->output.deforest_emissions.carbon=cell->output.deforest_emissions.nitrogen=0;
   }
   product_turnover(cell);
-  cell->output.product_pool.fast.carbon=cell->ml.product.fast.carbon;
-  cell->output.product_pool.slow.carbon=cell->ml.product.slow.carbon;
-  cell->output.product_pool.fast.nitrogen=cell->ml.product.fast.nitrogen;
-  cell->output.product_pool.slow.nitrogen=cell->ml.product.slow.nitrogen;
 #endif
 } /* of 'update_annual' */

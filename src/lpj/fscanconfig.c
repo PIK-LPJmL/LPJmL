@@ -244,12 +244,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscankeywords(file,&config->irrig_scenario,"irrigation",irrigation,4,FALSE,verbose))
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
-      config->crop_resp_fix=FALSE;
+      config->crop_resp_fix=TRUE;
       if(config->with_nitrogen)
       {
         config->fertilizer_input=TRUE;
         if(fscanbool(file,&config->fertilizer_input,"fertilizer_input",TRUE,verbose))
           return TRUE;
+        config->crop_resp_fix=FALSE;
         if(fscanbool(file,&config->crop_resp_fix,"crop_resp_fix",TRUE,verbose))
           return TRUE;
       }
