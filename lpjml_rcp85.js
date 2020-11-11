@@ -30,7 +30,7 @@
 /*  I. Simulation description and type section                       */
 /*===================================================================*/
 
-  "sim_name" : "LPJmL run with RCP85 climatology", /* Simulation description */
+  "sim_name" : "LPJmL run with RCP85 climatology fixed after 2094", /* Simulation description */
   "sim_id"   : LPJML,       /* LPJML Simulation type with managed land use */
   "version"  : "5.1",       /* LPJmL version expected */
   "random_prec" : false,    /* Random weather generator for precipitation enabled */
@@ -239,7 +239,7 @@ ID                         Fmt                    filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 30000,  /* spinup years */
+  "nspinup" : 8000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1861, /* first year of simulation */
   "lastyear" : 1861, /* last year of simulation */

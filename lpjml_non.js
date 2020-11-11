@@ -39,11 +39,14 @@
   "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
+  "new_trf": false,
   "river_routing" : true,
   "equilsoil" :false,
   "permafrost" : true,
   "with_nitrogen" : NO_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "const_climate" : false,
+  "shuffle_climate" : false,
+  "fix_climate" : false,
 #ifdef FROM_RESTART
   "population" : false,
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */

@@ -40,12 +40,13 @@
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
-  "river_routing" : false,
+  "river_routing" : true,
   "permafrost" : true,
   "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
   "const_deposition" : false,
+  "fix_climate" : false,
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,
@@ -218,14 +219,7 @@ ID                         Fmt                    filename
 
 #else
 
-  "output" : [
-    { "id" : GRID,             "file" : { "fmt" : RAW, "name" : "output/grid.bin" }},
-    { "id" : SOILC,            "file" : { "fmt" : RAW, "name" : "output/soilc_spinup.bin"}},
-    { "id" : VEGC,             "file" : { "fmt" : RAW, "name" : "output/vegc_spinup.bin"}},
-    { "id" : SOILNH4,          "file" : { "fmt" : RAW, "name" : "output/soilnh4_spinup.bin"}},
-    { "id" : SOILNO3,          "file" : { "fmt" : RAW, "name" : "output/soilno3_spinup.bin"}},
-    { "id" : MAXTHAW_DEPTH,    "file" : { "fmt" : RAW, "name" : "output/maxthaw_depth_spinup.bin"}}    
-  ],  /* no output written */
+  "output" : [],  /* no output written */
 
 #endif
 
@@ -242,14 +236,13 @@ ID                         Fmt                    filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 30000,  /* spinup years */
+  "nspinup" : 8000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
-  "outputyear": -28099, /* first year output is written  */
   "restart" :  false, /* start from restart file */
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : "restart/restart_1840_nv_stdfire_5.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "restart_year": 1840 /* write restart at year */
 
 #else
@@ -260,9 +253,9 @@ ID                         Fmt                    filename
   "lastyear" : 2018, /* last year of simulation */
   "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : "restart/restart_1840_nv_stdfire_5.lpj", /* filename of restart file */
+  "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */
-  "write_restart_filename" : "restart/restart_1900_crop_stdfire_7.lpj", /* filename of restart file */
+  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
   "restart_year": 1900 /* write restart at year */
 
 #endif
