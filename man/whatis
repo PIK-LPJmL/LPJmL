@@ -66,6 +66,7 @@ lpjml.conf (5) - configuration file for LPJmL runs
 lpjml_image.conf(5) - configuration file for LPJmL runs with IMAGE coupling
 lpj.conf (5) - configuration file for LPJmL runs with natural vegetation
 manage2js (1) - convert management  *.par files to JSON file
+mergeclm (1) - merge LPJmL climate data files
 newgrid (3) - allocate LPJ grid cells
 pnet_addconnect (3) - add connection to network
 pnet_dup (3) - duplicate network
