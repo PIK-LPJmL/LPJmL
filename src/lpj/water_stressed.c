@@ -77,6 +77,8 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
   Real freeze_depth,thaw_depth;
   Real adtmm;
   Real gc_new;
+  Real A,B,psi;
+  Real trf[LASTLAYER];
   Irrigation *irrig;
 
   wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
@@ -117,7 +119,16 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
   wr=roots=0;
   for(l=0;l<LASTLAYER;l++)
   {
-    wr+=rootdist_n[l]*pft->stand->soil.w[l];
+    if(config->new_trf)
+    {
+      B=(log(1500) - log(33))/(log(pft->stand->soil.par->wfc) - log(pft->stand->soil.par->wpwp));
+      A=exp(log(33) + B*log(pft->stand->soil.par->wfc));
+      psi=A*pow(pft->stand->soil.par->wpwp+pft->stand->soil.w[l]*pft->stand->soil.par->whc[l],-B);
+      trf[l]=min(max(1-psi/1500,0),1);
+    }
+    else
+      trf[l]=pft->stand->soil.w[l];
+    wr+=rootdist_n[l]*trf[l];
     roots+=rootdist_n[l];
   }
 
@@ -166,11 +177,11 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
   for (l=0;l<LASTLAYER;l++)
      {
        aet_frac=1;
-       if(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
+       if(aet*rootdist_n[l]*trf[l]/pft->fpc>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
        {
-         aet_frac=(pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])/(aet*rootdist_n[l]*pft->stand->soil.w[l]/pft->fpc);
+         aet_frac=(pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])/(aet*rootdist_n[l]*trf[l]/pft->fpc);
        }
-       aet_tmp[l]=aet_layer[l]+aet*rootdist_n[l]*pft->stand->soil.w[l]*aet_frac;
+       aet_tmp[l]=aet_layer[l]+aet*rootdist_n[l]*trf[l]*aet_frac;
        if (aet_tmp[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
        {
          aet_cor+=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l]-aet_layer[l];
@@ -178,7 +189,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
        }
        else
        {
-         aet_cor+=aet*rootdist_n[l]*pft->stand->soil.w[l]*aet_frac;
+         aet_cor+=aet*rootdist_n[l]*trf[l]*aet_frac;
        }
      }
   }
@@ -268,7 +279,7 @@ Real water_stressed(Pft *pft, /**< pointer to PFT variables */
     agd=0;
   for (l=0;l<LASTLAYER;l++)
   {
-    aet_layer[l]+=aet*rootdist_n[l]*pft->stand->soil.w[l];
+    aet_layer[l]+=aet*rootdist_n[l]*trf[l];
     if (aet_layer[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
       aet_layer[l]=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l];
   }

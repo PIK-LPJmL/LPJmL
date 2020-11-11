@@ -216,6 +216,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->prescribe_landcover==LANDCOVEREST) ? "prescribed establishment":"prescribed maximum FPC");
   if(config->new_phenology)
     len=printsim(file,len,&count,"new phenology");
+  if(config->new_trf)
+    len=printsim(file,len,&count,"new transpiration reduction function");
   if(config->withlanduse)
   {
     switch(config->withlanduse)
@@ -444,7 +446,12 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
 #ifndef PERMUTE
   if(config->wet_filename.name!=NULL)
 #endif
-    fprintf(file,"Random seed: %d\n",config->seed);
+  {
+    if(isreadrestart(config) && !config->new_seed)
+      fputs("Reading random seeds from restart file.\n",file);
+    else
+      fprintf(file,"Random seed: %d\n",config->seed_start);
+  }
   if(config->n_out)
   {
     width=strlen("Variable");
@@ -497,7 +504,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
         fprintf(file,"%*s",width,config->outnames[config->outputvars[i].id].name);
       fprintf(file," %s %*s %5s ",fmt[config->outputvars[i].filename.fmt],
               width_unit,strlen(config->outnames[config->outputvars[i].id].unit)==0 ? "-" : config->outnames[config->outputvars[i].id].unit,
-              typenames[getoutputtype(config->outputvars[i].id)]);
+              typenames[getoutputtype(config->outputvars[i].id,config->float_grid)]);
       printoutname(file,config->outputvars[i].filename.name,config->outputvars[i].oneyear,config);
       putc('\n',file);
     }

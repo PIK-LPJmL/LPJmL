@@ -107,6 +107,7 @@ typedef struct
   int with_nitrogen;      /**< enable nitrogen cycle */
   Bool fertilizer_input; 
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
+  Bool float_grid;        /**< enable float datatype for binary grid file */
   Bool landuse_restart;   /**< land use enabled in restart file */
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart; /**< sdate option in restart file */
@@ -159,12 +160,14 @@ typedef struct
   int count;     /**< number of grid cells with valid soilcode */
   int fire;      /**< fire disturbance enabled */
   int firewood;  /**< fire wood usage */
-  int seed;      /**< initial seed for random number generator */
+  int seed_start;      /**< initial seed for random number generator */
+  Bool new_seed;
   Coord resolution;    /**< size of grid cell (deg) */
   Bool ispopulation;
   Bool river_routing;  /**< river routing enabled */
   Bool permafrost;     /**< permafrost module enabled */
   Bool new_phenology;	/**< new phenology enabled */
+  Bool new_trf;         /**< new transpiration reduction function enabled */
   Bool equilsoil;      /**< equilsoil is called */
   Bool from_restart;   /**< reading from restart */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
@@ -185,6 +188,7 @@ typedef struct
   int prescribe_landcover; /**< use input to prescribe land cover ? */
   int* mowingdays;         /**< mowing days for grassland */
   int mowingdays_size;     /**< size of mowing days array */
+  Seed seed;
 #ifdef IMAGE
   int start_imagecoupling; /**< year in which coupling to IMAGE starts
                               (e.g. 1970), set to 9999 if IMAGE is not used */

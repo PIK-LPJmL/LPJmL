@@ -132,12 +132,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 
   if (verbose>=VERB) puts("// I. type section");
   fscanbool2(file,&israndom,"random_prec");
-  config->seed=RANDOM_SEED;
-  if(fscanint(file,&config->seed,"random_seed",TRUE,verbose))
+  config->seed_start=RANDOM_SEED;
+  if(fscanint(file,&config->seed_start,"random_seed",TRUE,verbose))
     return TRUE;
-  if(config->seed==RANDOM_SEED)
-    config->seed=time(NULL);
-  srand48(config->seed+config->rank*363633);
+  if(config->seed_start==RANDOM_SEED)
+    config->seed_start=time(NULL);
+  setseed(config->seed,config->seed_start);
   config->with_nitrogen=LIM_NITROGEN;
   if(fscanint(file,&config->with_nitrogen,"with_nitrogen",TRUE,verbose))
     return TRUE;
@@ -185,6 +185,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     return TRUE;
   }
   fscanbool2(file,&config->new_phenology,"new_phenology");
+  config->new_trf=FALSE;
+  if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
+    return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
   fscanbool2(file,&config->equilsoil,"equilsoil");
   config->reservoir=FALSE;
@@ -688,6 +691,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     fscanname(file,name,"restart_filename");
     config->restart_filename=addpath(name,config->restartdir);
+    config->new_seed=FALSE;
+    if(fscanbool(file,&config->new_seed,"new_seed",TRUE,verbose))
+      return TRUE;
   }
   else
   {

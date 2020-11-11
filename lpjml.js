@@ -39,6 +39,7 @@
   "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
+  "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : false,
   "permafrost" : true,
   "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
@@ -46,6 +47,7 @@
   "shuffle_climate" : true, /* shuffle spinup climate */
   "const_deposition" : false,
 #ifdef FROM_RESTART
+  "new_seed" : false, /* read random seed from restart file */
   "population" : false,
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
@@ -101,6 +103,8 @@
   "pft_output_scaled" : PFTBASED,
 #define SUFFIX pft.bin
 #endif
+
+  "float_grid" : false, /* set datatype of grid file to float (TRUE/FALSE) */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s

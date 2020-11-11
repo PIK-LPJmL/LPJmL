@@ -34,6 +34,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
   if(fread(&b,sizeof(b),1,file)!=1)
     return TRUE;
   cell->skip=b;
+  freadseed(file,cell->seed,swap);
   if(config->river_routing)
   {
     freadreal1(&cell->discharge.dmass_lake,swap,file);

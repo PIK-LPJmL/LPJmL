@@ -22,20 +22,8 @@
 #define r 2836
 #define MASK 123459876
 
-static int seed=12345678; /* seed for random number generator (see randfrac) */
-
-void setseed(int init /**< seed of random number generator */
-            ) 
-{
-  seed=init;
-} /* of 'setseed' */
-
-int getseed(void) /** \return seed of random number generator */
-{
-  return seed;
-} /* of 'getseed' */
-
-Real randfrac(void) /** \return random number */
+Real randfrac(int *seed /**< seed for random generator */
+             )          /** \return random number in [0,1) */
 {
  /*
   * DESCRIPTION
@@ -51,12 +39,12 @@ Real randfrac(void) /** \return random number */
   */
   int k;
   Real ans;
-  seed^=MASK; /* XORing to avoid seed being 0 */
-  k=seed/q;
-  seed=multiplier*(seed-k*q)-r*k;
-  if (seed<0) 
-    seed+=modulus;
-  ans=(Real)seed/(Real)modulus;
-  seed^=MASK; /* XORing to avoid seed being 0 */
+  *seed^=MASK; /* XORing to avoid seed being 0 */
+  k=*seed/q;
+  *seed=multiplier*(*seed-k*q)-r*k;
+  if (*seed<0)
+    *seed+=modulus;
+  ans=(Real)*seed/(Real)modulus;
+  *seed^=MASK; /* XORing to avoid seed being 0 */
   return ans;
 } /* of 'randfrac' */

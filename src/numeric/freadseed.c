@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**     i  n  i  t  c  l  i  m  a  t  e  _  m  o  n  t  h  l  y  .  c              \n**/
+/**                         f  r  e  a  d  s  e  e  d  .  c                        \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
+/**     Read seed of random number generator from binary file                      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,18 +12,19 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdio.h>
+#include "types.h"
+#include "swap.h"
+#include "numeric.h"
 
-void initclimate_monthly(const Climate *climate, /**< Pointer to climate data */
-                         Climbuf *climbuf,       /**< pointer to climate buffer */
-                         int cell,               /**< cell index */
-                         int month,              /**< month (0..11) */
-                         Seed seed               /**< seed for random generator */
-                        )                        /** \return void */
+Bool freadseed(FILE *file, /**< pointer to binary file */
+               Seed seed,  /**< seed of random number generator read */
+               Bool swap   /**< byte order has to be swapped */
+              )            /** \return TRUE on error */
 {
-  if(!isdaily(climate->file_prec) && israndomprec(climate))
-    prdaily(climbuf->dval_prec,ndaymonth[month],
-            (getcellprec(climate,cell))[month],
-            (getcellwet(climate,cell))[month],seed);
-  climbuf->mtemp=climbuf->mprec=0;
-} /* of 'initclimate_monthly' */
+#ifdef USE_RAND48
+  return freadshort(seed,NSEED,swap,file)!=NSEED;
+#else
+  return freadint(seed,NSEED,swap,file)!=NSEED;
+#endif
+} /* of 'freadseed' */

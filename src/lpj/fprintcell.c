@@ -25,11 +25,14 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
                 const Config *config   /**< LPJ configuration */
                )
 {
-  int cell,cft;
+  int i,cell,cft;
   for(cell=0;cell<ncell;cell++)
   {
     fputs("Coord:\t\t",file);
     fprintcoord(file,&grid[cell].coord);
+    fputs("\nRandom seed:\t",file);
+    for(i=0;i<NSEED;i++)
+      printf(" %d",grid[cell].seed[i]);
     fputc('\n',file);
     if(config->river_routing)
     {

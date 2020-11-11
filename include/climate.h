@@ -107,12 +107,12 @@ extern Bool storeclimate(Climatedata *,Climate *,const Cell *,int,int,
 extern void freeclimatedata(Climatedata *);
 extern void restoreclimate(Climate *,const Climatedata *,int);
 extern void moveclimate(Climate *,const Climatedata *,int);
-extern void prdaily(Real [],int,Real,Real);
+extern void prdaily(Real [],int,Real,Real,Seed);
 extern void dailyclimate(Dailyclimate *,const Climate *,Climbuf *,
                          int,int,int,int);
 extern Real getmtemp(const Climate *,const Climbuf *,int,int);
 extern Real getmprec(const Climate *,const Climbuf *,int,int);
-extern void initclimate_monthly(const Climate *,Climbuf *,int,int);
+extern void initclimate_monthly(const Climate *,Climbuf *,int,int,Seed);
 extern Bool openclimate(Climatefile *,const Filename *,const char *,Type,
                         const Config *);
 extern Real avgtemp(const Climate *,int cell);

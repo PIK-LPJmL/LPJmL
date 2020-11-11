@@ -78,6 +78,8 @@
 "pft_output_scaled" : PFTBASED,
 #endif
 
+"float_grid" : false, /* set datatype of grid file to float (TRUE/FALSE) */
+
 #ifdef FROM_RESTART
 
 "output" : [
