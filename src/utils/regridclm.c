@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                    r  e  g  r  i  d  c  l  m  .  c                             \n**/
 /**                                                                                \n**/
-/**     CLM data in 0.5 degree resolution is regridded to 0.25 degree              \n**/
+/**     CLM data is regridded to new grid file                                     \n**/
 /**     resolution.                                                                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -15,37 +15,13 @@
 
 #include "lpj.h"
 
-static int findnextcoord(Coord src,const Coord dst[],int ngrid)
-{
-  int i,i_min;
-  Real dist,dist_lon,dist_min;
-  fputs("Coordinate ",stderr);
-  fprintcoord(stderr,&src);
-  fputs(" not found, replaced by ",stderr);
-  dist_min=HUGE_VAL;
-  for(i=0;i<ngrid;i++)
-  {
-    dist_lon=fabs(src.lon-dst[i].lon);
-    if(360-dist_lon<dist_lon)
-      dist_lon=360-dist_lon;
-    dist=(src.lat-dst[i].lat)*(src.lat-dst[i].lat)+dist_lon*dist_lon;
-    if(dist_min>dist)
-    {
-      dist_min=dist;
-      i_min=i;
-    }
-  }
-  fprintcoord(stderr,dst+i_min);
-  fprintf(stderr,", distance=%g\n",sqrt(dist_min));
-  return i_min;
-} /* of 'findnextcoord' */
-
 int main(int argc,char **argv)
 {
   FILE *file,*data_file;
   Header header,header2;
   Coord *c,*c2;
-  Bool swap,isint,same,issearch,iszero;
+  Real dist_min;
+  Bool swap,isint,issearch,iszero;
   short *data;
   int *zero;
   int *idata;
@@ -56,7 +32,7 @@ int main(int argc,char **argv)
   float lon,lat,*fzero;
   String id;
   Filename filename;
-  isint=same=issearch=iszero=FALSE;
+  isint=issearch=iszero=FALSE;
   setversion=READ_VERSION;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
@@ -69,8 +45,6 @@ int main(int argc,char **argv)
         issearch=TRUE;
       else if(!strcmp(argv[i],"-zero"))
         iszero=TRUE;
-      else if(!strcmp(argv[i],"-same"))
-        same=TRUE;
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n",argv[i]);
@@ -84,7 +58,7 @@ int main(int argc,char **argv)
   if(argc<5)
   {
     fprintf(stderr,"Error: Missing arguments.\n"
-            "Usage: %s [-size4] [-same] [-search] [-zero] [-longheader] coord0.5.clm coord0.25.clm data0.5.clm data0.25.clm\n",
+            "Usage: %s [-size4] [-search] [-zero] [-longheader] coord_old.clm coord_new.clm data_old.clm data_new.clm\n",
             argv[1-i]);
     return EXIT_FAILURE;
   }
@@ -124,7 +98,6 @@ int main(int argc,char **argv)
   getcellsizecoord(&lon,&lat,grid);
   res2.lon=lon;
   res2.lat=lat;
-  same=res.lon==res2.lon;
   c2=newvec(Coord,ngrid2);
   if(c2==NULL)
   {
@@ -236,25 +209,18 @@ int main(int argc,char **argv)
   }
   for(i=0;i<ngrid2;i++)
   {
-    if(same)
-    {
-      for(j=0;j<ngrid;j++)
-      {
-        //printf("%g=%g %g=%g, %g,%g\n",c2[i].lat,c[j].lat, c2[i].lon,c[j].lon, c2[i].lat-c[j].lat,c2[i].lon-c[j].lon);
-        if(fabs(c2[i].lat-c[j].lat)<1e-5 && fabs(c2[i].lon-c[j].lon)<1e-5)
-          break;
-      }
-    }
-    else
-    {
-      for(j=0;j<ngrid;j++)
-        if(c2[i].lat-c[j].lat<=0.25 && c2[i].lon-c2[j].lon<=0.25)
-          break;
-    }
-    if(j==ngrid) /* coordinate not found? */
+    j=findcoord(c2+i,c,ngrid);
+    if(j==NOT_FOUND) /* coordinate not found? */
     {
       if(issearch)
-        index[i]=findnextcoord(c2[i],c,ngrid);
+      {
+        fputs("Coordinate ",stderr);
+        fprintcoord(stderr,c2+i);
+        fputs(" not found, replaced by ",stderr);
+        index[i]=findnextcoord(&dist_min,c2+i,c,ngrid);
+        fprintcoord(stderr,c+index[i]);
+        fprintf(stderr,", distance=%g\n",dist_min);
+      }
       else
       {
         fputs("Coordinate ",stderr);
