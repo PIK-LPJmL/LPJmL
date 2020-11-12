@@ -39,6 +39,7 @@
   "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
+  "new_trf" : false,
   "river_routing" : true,
   "permafrost" : true,
   "with_nitrogen" : NO_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
@@ -46,9 +47,11 @@
   "const_deposition" : false,
   "shuffle_climate" : true,
   "fix_climate" : true,
+  "fix_landuse" : false,
   "fix_climate_year" : 2094,
   "fix_climate_cycle": 11,
 #ifdef FROM_RESTART
+  "new_seed" : false,
   "equilsoil" : false,
   "population" : false,
   "landuse" : LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */

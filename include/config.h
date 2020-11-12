@@ -115,10 +115,11 @@ typedef struct
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
   Bool istimber;
   Bool const_climate;           /**< constant climate */
-  Bool shuffle_climate;           /**< shuffle spinup climate */
-  Bool fix_climate;
-  int fix_climate_year;
-  int fix_climate_cycle;
+  Bool shuffle_climate;         /**< shuffle spinup climate */
+  Bool fix_climate;             /**< fix climate after specified year */
+  Bool fix_landuse;             /**< fix land use after specified year */
+  int fix_climate_year;         /**< year at which climate (and land use) is fixed */
+  int fix_climate_cycle;        /**< number of years for climate shuffle for fixed climate */
   Bool const_deposition;        /**< constant N deposition */
   Bool remove_residuals;
   Bool residues_fire;   /**< use parameters for agricultural fires */

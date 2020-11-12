@@ -198,9 +198,15 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,"shuffle climate");
    if(config->fix_climate)
   {
-    snprintf(s,STRING_LEN," fix climate after year %d cycling %d years",
+    snprintf(s,STRING_LEN,"fix climate after year %d cycling %d years",
              config->fix_climate_year, config->fix_climate_cycle);
     len=printsim(file,len,&count,s);
+    if(config->withlanduse!=CONST_LANDUSE && config->withlanduse!=NO_LANDUSE && config->fix_landuse)
+    {
+      snprintf(s,STRING_LEN,"fix landuse after year %d",
+               config->fix_climate_year);
+      len=printsim(file,len,&count,s);
+    }
   }
   if(config->const_deposition)
     len=printsim(file,len,&count,"const. deposition");
