@@ -23,36 +23,45 @@
 #define TXT2GRID_VERSION "1.0.004"
 #define USAGE "Usage: txt2grid [-h] [-v] [-map file] [-fmt s] [-skip n] [-cellsize size] [-float] [-latlon] gridfile clmfile\n"
 
-static int findnextcoord(Coord src,const Coord dst[],int ngrid,Bool verbose)
+typedef  struct
 {
-  int i,i_min;
-  Real dist,dist_lon,dist_min;
-  if(verbose)
+  float lon,lat;
+} Float_coord;
+
+static Bool scancoord(FILE *file,const char *fmt,Float_coord *coord,Bool latlon)
+{
+  char *pos,clon,clat;
+  if((pos=strstr(fmt,"%c"))!=NULL && strstr(pos,"%c")!=NULL)
   {
-    fputs("Coordinate ",stdout);
-    fprintcoord(stdout,&src);
-    fputs(" mapped to ",stdout);
-  }
-  dist_min=HUGE_VAL;
-  for(i=0;i<ngrid;i++)
-  {
-    dist_lon=fabs(src.lon-dst[i].lon);
-    if(360-dist_lon<dist_lon)
-      dist_lon=360-dist_lon;
-    dist=(src.lat-dst[i].lat)*(src.lat-dst[i].lat)+dist_lon*dist_lon;
-    if(dist_min>dist)
+    if(latlon)
     {
-      dist_min=dist;
-      i_min=i;
+      if(fscanf(file,fmt,&coord->lat,&clat,&coord->lon,&clon)!=4)
+        return FALSE;
     }
+    else
+    {
+      if(fscanf(file,fmt,&coord->lon,&clon,&coord->lat,&clat)!=4)
+        return FALSE;
+    }
+    if(clon=='W')
+      coord->lon= -coord->lon;
+    else if(clon!='E')
+    {
+      fprintf(stderr,"Invalid character '%c' for longitude.\n",clon);
+      return FALSE;
+    }
+    if(clat=='S')
+      coord->lat= -coord->lat;
+    else if(clat!='N')
+    {
+      fprintf(stderr,"Invalid character '%c' for latitude.\n",clat);
+      return FALSE;
+    }
+    return TRUE;
   }
-  if(verbose)
-  {
-    fprintcoord(stdout,dst+i_min);
-    printf(", distance=%g\n",sqrt(dist_min));
-  }
-  return i_min;
-} /* of 'findnextcoord' */
+  else
+    return (fscanf(file,fmt,(latlon) ? &coord->lat : &coord->lon,(latlon) ? &coord->lon : &coord->lat)==2);
+} /* of 'scancoord' */
 
 int main(int argc,char **argv)
 {
@@ -63,10 +72,8 @@ int main(int argc,char **argv)
   Coord grid,*grid_ref,res;
   String line;
   int i,iarg,nskip,n,index;
-  struct
-  {
-    float lon,lat;
-  } coord;
+  Float_coord coord;
+  Real dist_min;
   Header header;
   char *endptr,*map_name;
   Bool isfloat,latlon,verbose;
@@ -84,14 +91,14 @@ int main(int argc,char **argv)
              "         clm grid file for lpj C version\n\n"
              USAGE
              "\nArguments:\n"
-             "-h             print this help text\n" 
-             "-v             verbose output\n" 
+             "-h             print this help text\n"
+             "-v             verbose output\n"
              "-map file      mapping to grid file\n"
              "-fmt s         format string for text input, default is '%s'\n"
              "-cellsize size cell size, default is %g\n"
              "-float         write float data, default is short\n"
-             "-skip n        skip first n lines, default is one\n" 
-             "-latlon        read latitude then longitude\n" 
+             "-skip n        skip first n lines, default is one\n"
+             "-latlon        read latitude then longitude\n"
              "gridfile       filename of grid text file\n"
              "clmfile        filename of clm data file\n",fmt,header.cellsize_lon);
         return EXIT_SUCCESS;
@@ -159,7 +166,7 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
     }
-    else 
+    else
       break;
   if(argc<iarg+2)
   {
@@ -220,13 +227,24 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   fwriteheader(gridfile,&header,LPJGRID_HEADER,LPJGRID_VERSION);
-  while(fscanf(file,fmt,(latlon) ? &coord.lat : &coord.lon,(latlon) ? &coord.lon : &coord.lat)==2)
+  while(scancoord(file,fmt, &coord,latlon))
   {
     if(map_name!=NULL)
     {
       grid.lon=coord.lon;
       grid.lat=coord.lat;
-      index=findnextcoord(grid,grid_ref,numcoord(coordfile),verbose);
+      if(verbose)
+      {
+        fputs("Coordinate ",stdout);
+        printcoord(&grid);
+        fputs(" mapped to ",stdout);
+      }
+      index=findnextcoord(&dist_min,&grid,grid_ref,numcoord(coordfile));
+      if(verbose)
+      {
+        printcoord(grid_ref+index);
+        printf(", distance=%g\n",dist_min);
+      }
       coord.lon=grid_ref[index].lon;
       coord.lat=grid_ref[index].lat;
     }
@@ -234,7 +252,7 @@ int main(int argc,char **argv)
     {
       grid.lon=coord.lon;
       grid.lat=coord.lat;
-      fprintcoord(stdout,&grid);
+      printcoord(&grid);
       putchar('\n');
     }
     if(isfloat)

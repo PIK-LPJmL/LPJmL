@@ -2,8 +2,7 @@
 /**                                                                                \n**/
 /**                    r  e  g  r  i  d  s  o  i  l  .  c                          \n**/
 /**                                                                                \n**/
-/**     soil data in 0.5 degree resolution is regridded to 0.25 degree             \n**/
-/**     resolution.                                                                \n**/
+/**     soil data is regridded to new grid file                                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -19,22 +18,25 @@ int main(int argc,char **argv)
 {
   FILE *file;
   Coord *c,*c2;
-  Bool same;
+  Bool iszero,issearch;
   Byte *soil,zero=0;
   Coordfile grid;
   float lon,lat;
   Coord res,res2;
+  Real dist_min;
   int i,j,setversion,ngrid,ngrid2,count;
   Filename filename;
   setversion=READ_VERSION;
-  same=FALSE;
+  iszero=issearch=FALSE;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
       if(!strcmp(argv[i],"-longheader"))
         setversion=2;
-      else if(!strcmp(argv[i],"-same"))
-        same=TRUE;
+      else if(!strcmp(argv[i],"-search"))
+        issearch=TRUE;
+      else if(!strcmp(argv[i],"-zero"))
+        iszero=TRUE;
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n",argv[i]);
@@ -49,7 +51,7 @@ int main(int argc,char **argv)
   if(argc<5)
   {
     fprintf(stderr,"Missing arguments.\n"
-           "Usage: %s [-same] [-longheader] coord0.5.clm coord0.25.clm soil0.5.bin soil0.25.bin\n",
+           "Usage: %s [-longheader] [-search] [-zero] coord_old.clm coord_new.clm soil_old.bin soil_new.bin\n",
             argv[0]);
     return EXIT_FAILURE;
   }
@@ -84,7 +86,6 @@ int main(int argc,char **argv)
   getcellsizecoord(&lon,&lat,grid);
   res2.lon=lon;
   res2.lat=lat;
-  same=(res.lon==res2.lon);
   c2=newvec(Coord,ngrid2);
   if(c2==NULL)
   {
@@ -132,33 +133,40 @@ int main(int argc,char **argv)
     }
 #ifdef DEBUG
     printf("%d ",i);
-    printcoord(c2+i); 
+    printcoord(c2+i);
     fputs(":",stdout);
 #endif
-    for(j=0;j<ngrid;j++)
+    j=findcoord(c2+i,c,ngrid);
+    if(j==NOT_FOUND)
     {
-      if((same && c2[i].lat==c[j].lat && c2[i].lon==c[j].lon)||
-         (!same && c2[i].lat-c[j].lat<=0.25 && c2[i].lon-c[j].lon<=0.25))
+      count++;
+      if(issearch)
       {
-#ifdef DEBUG
-        printf("%d  ",j);
-        printf("lat %.2f  lon %.2f",c[j].lat,c[j].lon);
-        fflush(stdout);
-#endif
-        break;
+        fputs("Coordinate ",stderr);
+        fprintcoord(stderr,c2+i);
+        fputs(" not found, replaced by ",stderr);
+        j=findnextcoord(&dist_min,c2+i,c,ngrid);
+        fprintcoord(stderr,c+j);
+        fprintf(stderr,", distance=%g\n",dist_min);
+      }
+      else
+      {
+        fputs("Coordinate ",stderr);
+        fprintcoord(stderr,c2+i);
+        fputs(" not found.\n",stderr);
+        j=ngrid;
+        if(!iszero)
+          return EXIT_FAILURE;
       }
     }
     if(j==ngrid)
-    {
       fwrite(&zero,1,1,file);
-      count++;
-    }
     else
       fwrite(soil+j,1,1,file);
   }
   putchar('\n');
   if(count)
-    fprintf(stderr,"Warning: %d cells not found, soilcode set to zero.\n",count);
+    fprintf(stderr,"Warning: %d cells not found.\n",count);
   fclose(file);
   return EXIT_SUCCESS;
 }  /* of 'main' */
