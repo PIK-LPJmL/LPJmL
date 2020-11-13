@@ -1,0 +1,60 @@
+.TH country2cdf 1  "March 4, 2013" "version 1.0.001" "USER COMMANDS"
+.SH NAME
+country2cdf \- convert country/region code file into NetCDF file
+.SH SYNOPSIS
+.B country2cdf
+[\-global] [-\cellsize size] [\-compress level] [\-descr d] [\-index {0|1}]
+.I varname gridfile countryfile netcdffile
+.SH DESCRIPTION
+Program converts country/region input file into NetCDF file.
+.SH OPTIONS
+.TP
+\-global
+use global grid for NetCDF file
+.TP
+\-cellsize size
+set cell size in grid file to size
+.TP
+\-compress level
+compression level for NetCDF4 files
+.TP
+\-descr d
+set long name in NetCDF file
+.TP
+\-index {0|1}
+set country  (0) or region (1) in file. Default is 0
+.TP
+varname
+variable name in NetCDF file
+.TP
+.I gridfile    
+filename of grid data file
+.TP
+.I countryfile
+filename of country/region code data file
+.TP
+.I netcdffile     
+filename of NetCDF file created
+.SH EXAMPLES
+.TP
+Create data file for country and region:
+.B country2cdf
+country  grid.bin cow.bin country.nc
+.B country2cdf
+[-index 1] region  grid.bin cow.bin region.nc
+.PP
+.SH EXIT STATUS
+.B country2cdf
+returns a zero exit status if the NetCDF file is created.
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+See AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+bin2cdf(1), clm2cdf(1), soil2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
