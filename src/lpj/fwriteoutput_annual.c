@@ -663,6 +663,25 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
   }
   writeoutputvar(NEGC_FLUXES,neg_fluxes.carbon);
   writeoutputvar(NEGN_FLUXES,neg_fluxes.nitrogen);
-  writeoutputvar(MEANVEGCMANGRASS,mean_vegc_mangrass);  
+  writeoutputvar(MEANVEGCMANGRASS,mean_vegc_mangrass);
+  writeoutputvar(ABNF_AGR,abnf_agr);
+  writeoutputvar(ANFERT_AGR,anfert_agr);
+  writeoutputvar(ANMANURE_AGR,anmanure_agr);
+  writeoutputvar(ANDEPO_AGR,andepo_agr);
+  writeoutputvar(ANMINERALIZATION_AGR,anmineralization_agr);
+  writeoutputvar(ANIMMOBILIZATION_AGR,animmobilization_agr);
+  writeoutputvar(ANUPTAKE_AGR,anuptake_agr);
+  writeoutputvar(ANLEACHING_AGR,anleaching_agr);
+  writeoutputvar(AN2O_DENIT_AGR,an2o_denit_agr);
+  writeoutputvar(AN2O_NIT_AGR,an2o_nit_agr);
+  writeoutputvar(ANH3_AGR,anh3_agr);
+  writeoutputvar(AN2_AGR,an2_agr);
+  writeoutputvar(ALITFALLN_AGR,alitfalln_agr);
+  writeoutputvar(AHARVESTN_AGR,aharvestn_agr);
+  writeoutputvar(ASEEDN_AGR,aseedn_agr);
+  writeoutputvar(ADELTA_NORG_SOIL_AGR,adelta_norg_soil_agr);
+  writeoutputvar(ADELTA_NMIN_SOIL_AGR,adelta_nmin_soil_agr);
+  writeoutputvar(ADELTA_NVEG_SOIL_AGR,adelta_nveg_soil_agr);
+  writeoutputvar(CELLFRAC_AGR,cellfrac_agr);
   free(vec);
 } /* of 'fwriteoutput_annual' */

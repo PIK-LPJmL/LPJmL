@@ -97,7 +97,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 309            /* number of output files */
+#define NOUT 328            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -421,6 +421,25 @@
 #define CFT_LEACHING2 306
 #define CFT_C_EMIS 307
 #define CFT_C_EMIS2 308
+#define ABNF_AGR 309
+#define ANFERT_AGR 310
+#define ANMANURE_AGR 311
+#define ANDEPO_AGR 312
+#define ANMINERALIZATION_AGR 313
+#define ANIMMOBILIZATION_AGR 314
+#define ANUPTAKE_AGR 315
+#define ANLEACHING_AGR 316
+#define AN2O_DENIT_AGR 317
+#define AN2O_NIT_AGR 318
+#define ANH3_AGR 319
+#define AN2_AGR 320
+#define ALITFALLN_AGR 321
+#define AHARVESTN_AGR 322
+#define ASEEDN_AGR 323
+#define ADELTA_NORG_SOIL_AGR 324
+#define ADELTA_NMIN_SOIL_AGR 325
+#define ADELTA_NVEG_SOIL_AGR 326
+#define CELLFRAC_AGR 327
 
 #define RANDOM_SEED 0
 

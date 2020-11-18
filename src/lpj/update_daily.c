@@ -176,6 +176,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
       stand->cell->output.mrh_agr+=hetres.carbon*stand->frac/agrfrac;
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+      stand->cell->output.an2o_nit_agr+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
     cell->output.mswe+=stand->soil.snowpack*stand->frac;
     if (withdailyoutput)
@@ -220,13 +222,19 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       if(config->with_nitrogen==UNLIM_NITROGEN)
       {
         if(stand->soil.par->type==ROCK)
+        {
           stand->cell->output.mn_leaching+=2000*stand->frac;
+          if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+            stand->cell->output.anleaching_agr+=2000*stand->frac;
+        }
         else
         {
           stand->soil.NH4[0]+=1000;
           stand->soil.NO3[0]+=1000;
         }
         cell->balance.n_influx+=2000*stand->frac;
+        if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+          cell->output.andepo_agr+=2000*stand->frac;
       }
       else if(!config->no_ndeposition)
       {
@@ -234,6 +242,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         {
           stand->cell->output.mn_leaching+=climate.nh4deposition*stand->frac;
           stand->cell->output.mn_leaching+=climate.no3deposition*stand->frac;
+          if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+            stand->cell->output.anleaching_agr+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         }
         else
         {
@@ -242,6 +252,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           stand->soil.NO3[0]+=climate.no3deposition;
         }
         cell->balance.n_influx+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+        if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+          cell->output.andepo_agr+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
       }
 #ifdef DEBUG_N
       printf("BEFORE_STRESS[%s], day %d: ",stand->type->name,day);
@@ -280,6 +292,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         nh3=stand->soil.NH4[0];
       stand->soil.NH4[0]-=nh3;
       cell->output.mn_volatilization+=nh3*stand->frac;
+      if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+	    cell->output.anh3_agr+=nh3*stand->frac;
       cell->balance.n_outflux+=nh3*stand->frac;
     }
 
@@ -294,6 +308,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       /*cell->output.mrootmoist+=stand->soil.w[l]*soildepth[l]/rootdepth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); previous implementation that doesn't make sense to me, because the sum of soildepth[l]/rootdepth over the first 3 layers equals 1 (JJ, June 25, 2020)*/
     cell->output.msoilc1+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
   } /* of foreachstand */
+
+  cell->output.cellfrac_agr+=agrfrac/NDAYYEAR;
 
 #ifdef COUPLING_WITH_FMS
   if (cell->lakefrac > 0)

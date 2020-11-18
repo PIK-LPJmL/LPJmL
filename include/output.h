@@ -295,6 +295,25 @@ typedef struct
   Real *cft_mswc;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
   int *nday_month;        /**< day count for monthly cft-specific outputs, needed in update_monthly to divide by number of days */
   Real mean_vegc_mangrass;
+  Real abnf_agr;
+  Real anfert_agr;
+  Real anmanure_agr;
+  Real andepo_agr;
+  Real anmineralization_agr;
+  Real animmobilization_agr;
+  Real anuptake_agr;
+  Real anleaching_agr;
+  Real an2o_denit_agr;
+  Real an2o_nit_agr;
+  Real anh3_agr;
+  Real an2_agr;
+  Real alitfalln_agr;
+  Real aharvestn_agr;
+  Real aseedn_agr;
+  Real adelta_norg_soil_agr;
+  Real adelta_nmin_soil_agr;
+  Real adelta_nveg_soil_agr;
+  Real cellfrac_agr;
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 

@@ -25,11 +25,13 @@ Real nitrogen_stress(Pft *pft,       /**< PFT */
 {
   Real nplant_demand,ndemand_leaf;
   Real ndemand_leaf_opt;
+  Real nup;
 #ifdef DEBUG_N
   Real nplant_demand_opt;
   nplant_demand_opt=0;
 #endif
   nplant_demand=0;
+  nup=0;
   if(pft->bm_inc.carbon>0  || (pft->stand->type->landusetype==GRASSLAND && pft->bm_inc.carbon>=0))
   {
     nplant_demand=ndemand(pft,&ndemand_leaf,pft->vmax,daylength,temp)*(1+pft->par->knstore);
@@ -39,9 +41,12 @@ Real nitrogen_stress(Pft *pft,       /**< PFT */
 #endif
     /* calculation of limitation in ndemad_leaf is missing */
     if(nplant_demand>pft->bm_inc.nitrogen || pft->bm_inc.nitrogen<2)  //nuptake happens always if nitrogen bm_inc< 2
-      pft->stand->cell->output.mn_uptake+=nuptake(pft,&nplant_demand,&ndemand_leaf,npft,nbiomass,ncft,permafrost)*pft->stand->frac;
+      nup=nuptake(pft,&nplant_demand,&ndemand_leaf,npft,nbiomass,ncft,permafrost);
     else if(pft->stand->type->landusetype!=AGRICULTURE)
       pft->vscal+=1;
+    pft->stand->cell->output.mn_uptake+=nup*pft->stand->frac;
+    if(pft->stand->type->landusetype==SETASIDE_RF || pft->stand->type->landusetype==SETASIDE_IR || pft->stand->type->landusetype==AGRICULTURE)
+      pft->stand->cell->output.anuptake_agr+=nup*pft->stand->frac;
     pft->nleaf=max(pft->nleaf,ndemand_leaf);
     if(ndemand_leaf_opt>ndemand_leaf)
     {

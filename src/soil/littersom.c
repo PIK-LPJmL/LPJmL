@@ -149,6 +149,8 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
 #endif
         soil->NO3[l]+=F_Nmineral*k_l;
         stand->cell->output.mn_mineralization+=F_Nmineral*stand->frac;
+        if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+          stand->cell->output.anmineralization_agr+=F_Nmineral*stand->frac;
         soil->k_mean[l].fast+=(param.k_soil10.fast*response[l]);
         soil->k_mean[l].slow+=(param.k_soil10.slow*response[l]);
 #ifdef MICRO_HEATING
@@ -277,6 +279,8 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
 #endif
           soil->NO3[l]+=F_Nmineral*k_l;
           stand->cell->output.mn_mineralization+=F_Nmineral*stand->frac;
+          if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+            stand->cell->output.anmineralization_agr+=F_Nmineral*stand->frac;
         }
         N_sum=soil->NH4[l]+soil->NO3[l];
         if(N_sum>0) /* immobilization of N */
@@ -288,6 +292,8 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
               n_immo=N_sum;
             soil->pool[l].fast.nitrogen+=n_immo;
             stand->cell->output.mn_immo+=n_immo*stand->frac;
+            if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+              stand->cell->output.animmobilization_agr+=n_immo*stand->frac;
             soil->NH4[l]-=n_immo*soil->NH4[l]/N_sum;
             soil->NO3[l]-=n_immo*soil->NO3[l]/N_sum;
 #ifdef SAFE
@@ -308,6 +314,8 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
               n_immo=N_sum;
             soil->pool[l].slow.nitrogen+=n_immo;
             stand->cell->output.mn_immo+=n_immo*stand->frac;
+            if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+              stand->cell->output.animmobilization_agr+=n_immo*stand->frac;
             soil->NH4[l]-=n_immo*soil->NH4[l]/N_sum;
             soil->NO3[l]-=n_immo*soil->NO3[l]/N_sum;
 #ifdef SAFE

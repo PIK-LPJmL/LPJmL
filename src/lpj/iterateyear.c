@@ -53,6 +53,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   int month,dayofmonth,day;
   int cell;
   Real popdens=0; /* population density (capita/km2) */
+  int l,s,p;
+  Stand *stand;
+  const Pft *pft;
 #ifdef IMAGE
   istimber=(config->start_imagecoupling!=INT_MAX);
 #else
@@ -83,6 +86,18 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         setoutput_image(grid+cell,ncft);
 #endif
       }
+      foreachstand(stand,s,(grid+cell)->standlist)
+        if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+        {
+          grid[cell].output.adelta_norg_soil_agr-=litterstocks(&stand->soil.litter).nitrogen*stand->frac;
+          forrootsoillayer(l)
+          {
+            grid[cell].output.adelta_norg_soil_agr-=(stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac;
+            grid[cell].output.adelta_nmin_soil_agr-=(stand->soil.NO3[l]+stand->soil.NH4[l])*stand->frac;
+          }
+          foreachpft(pft,p,&stand->pftlist)
+            grid[cell].output.adelta_nveg_soil_agr-=vegn_sum(pft)*stand->frac;
+        }
       initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/
   } /* of for(cell=...) */
@@ -244,6 +259,19 @@ if(config->equilsoil)
          (year==config->firstyear-config->nspinup+soil_equil_year) && !config->from_restart)
         equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
 }
+      foreachstand(stand,s,(grid+cell)->standlist)
+        if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+        {
+          grid[cell].output.adelta_norg_soil_agr+=litterstocks(&stand->soil.litter).nitrogen*stand->frac;
+          forrootsoillayer(l)
+          {
+            grid[cell].output.adelta_norg_soil_agr+=(stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac;
+            grid[cell].output.adelta_nmin_soil_agr+=(stand->soil.NO3[l]+stand->soil.NH4[l])*stand->frac;
+          }
+          foreachpft(pft,p,&stand->pftlist)
+            grid[cell].output.adelta_nveg_soil_agr+=vegn_sum(pft)*stand->frac;
+        }
+
     }
     if(config->river_routing)
     {

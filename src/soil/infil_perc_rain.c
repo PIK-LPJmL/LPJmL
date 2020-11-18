@@ -232,6 +232,8 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
             soil->NO3[l] -= NO3perc_ly;
 
             stand->cell->output.mn_leaching+=(NO3surf + NO3lat)*stand->frac;
+            if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+              stand->cell->output.anleaching_agr+=(NO3surf+NO3lat)*stand->frac;
             if(stand->type->landusetype==AGRICULTURE)
             {
               foreachpft(pft,p,&stand->pftlist)
@@ -249,6 +251,8 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
       } /* if soil depth > freeze_depth */
     } /* soil layer loop */
     stand->cell->output.mn_leaching+=NO3perc_ly*stand->frac;
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+      stand->cell->output.anleaching_agr+=NO3perc_ly*stand->frac;
     if(withdailyoutput && (stand->type->landusetype==NATURAL && ALLNATURAL==stand->cell->output.daily.cft))
       stand->cell->output.daily.leaching+=NO3perc_ly;
     if(withdailyoutput && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND))

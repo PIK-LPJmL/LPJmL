@@ -106,6 +106,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         stand->soil.NO3[0]+=crop->nfertilizer*param.nfert_no3_frac;
         stand->soil.NH4[0]+=crop->nfertilizer*(1-param.nfert_no3_frac);
         stand->cell->balance.n_influx+=crop->nfertilizer*stand->frac;
+        pft->stand->cell->output.anfert_agr+=crop->nfertilizer*pft->stand->frac;
         crop->nfertilizer=0;
       }
       if(crop->fphu>0.25 && crop->nmanure>0){
@@ -115,7 +116,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         stand->soil.litter.item->ag.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
         stand->cell->output.flux_estab.carbon += crop->nmanure*param.manure_cn*stand->frac;
         stand->cell->balance.n_influx += crop->nmanure*stand->frac;
-
+        pft->stand->cell->output.anmanure_agr+=crop->nmanure*pft->stand->frac;
         crop->nmanure=0;
       }
     }

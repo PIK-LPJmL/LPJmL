@@ -331,5 +331,25 @@
   { "id" : CFT_LEACHING2, "name": "CFT_LEACHING2", "var": "leaching_cft2", "descr": "CFT leaching", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
   { "id" : CFT_C_EMIS, "name": "CFT_C_EMIS", "var": "c_emis_cft", "descr": "CFT C emissions", "unit" : "gC/m2/growing season","scale": 1.0, "offset" : 0.0},
   { "id" : CFT_C_EMIS2, "name": "CFT_C_EMIS2", "var": "c_emis_cft2", "descr": "CFT C emissions", "unit" : "gC/m2/growing season","scale": 1.0, "offset" : 0.0}
-
+  { "id" : ARH_AGR, "name" : "arh_agr" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration for agricultural stands", "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ABNF_AGR, "name" : "abnf_agr" , "var" : "ABNF_agr" , "descr" : "annual BNF on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ANFERT_AGR, "name" : "anfert_agr" , "var" : "ANFERT_agr" , "descr" : "annual N input from fertilizer on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ANMANURE_AGR, "name" : "anmanure_agr" , "var" : "ANMANURE_agr" , "descr" : "annual N input from manure on  agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ANDEPO_AGR, "name" : "andepo_agr" , "var" : "ANDEPO_agr" , "descr" : "annual N input from atmospheric deposition on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ANMINERALIZATION_AGR, "name" : "anmineralization_agr" , "var" : "ANMINERALIZATION_agr" , "descr" : "annual N mineralization on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ANIMMOBILIZATION_AGR, "name" : "animmobilization_agr" , "var" : "ANIMMOBILIZATION_agr" , "descr" : "annual N immobilization on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ANUPTAKE_AGR, "name" : "anuptake_agr" , "var" : "ANUPTAKE_agr" , "descr" : "annual N uptake on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ANLEACHING_AGR, "name" : "anleaching_agr" , "var" : "ANLEACHING_agr" , "descr" : "annual N loss through leaching on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : AN2O_DENIT_AGR, "name" : "an2o_denit_agr" , "var" : "AN2O_DENIT_agr" , "descr" : "annual N loss through N2O from denitrification on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : AN2O_NIT_AGR, "name" : "an2o_nit_agr" , "var" : "AN2O_NIT_agr" , "descr" : "annual N loss through N2O from nitrification on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ANH3_AGR, "name" : "anh3_agr" , "var" : "ANH3_agr" , "descr" : "annual N loss through NH3 volatilization on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : AN2_AGR, "name" : "an2_agr" , "var" : "AN2_agr" , "descr" : "annual N loss through N2 from denitrification on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ALITFALLN_AGR, "name" : "alitfalln_agr" , "var" : "ALITFALLN_agr" , "descr" : "annual N in litter fall on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : AHARVESTN_AGR, "name" : "aharvestn_agr" , "var" : "AHARVESTN_agr" , "descr" : "annual N removal through harvest from agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ASEEDN_AGR, "name" : "aseedn_agr" , "var" : "ASEEDN_agr" , "descr" : "annual N input through seeds on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ADELTA_NORG_SOIL_AGR, "name" : "adelta_norg_soil_agr" , "var" : "ADELTA_NORG_SOIL_agr" , "descr" : "annual change of organic N in soil on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ADELTA_NMIN_SOIL_AGR, "name" : "adelta_nmin_soil_agr" , "var" : "ADELTA_NMIN_SOIL_agr" , "descr" : "annual change of mineral N in soil on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : ADELTA_NVEG_SOIL_AGR, "name" : "adelta_nveg_soil_agr" , "var" : "ADELTA_NVEG_SOIL_agr" , "descr" : "annual change of N in living biomass on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : CELLFRAC_AGR, "name" : "cellfrac_agr" , "var" : "CELLFRAC_agr" , "descr" : "fraction of grid cell covered by agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0}  
+  
 ],
