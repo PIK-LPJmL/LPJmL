@@ -330,7 +330,7 @@
   { "id" : CFT_LEACHING, "name": "CFT_LEACHING", "var": "leaching_cft", "descr": "CFT leaching", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
   { "id" : CFT_LEACHING2, "name": "CFT_LEACHING2", "var": "leaching_cft2", "descr": "CFT leaching", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
   { "id" : CFT_C_EMIS, "name": "CFT_C_EMIS", "var": "c_emis_cft", "descr": "CFT C emissions", "unit" : "gC/m2/growing season","scale": 1.0, "offset" : 0.0},
-  { "id" : CFT_C_EMIS2, "name": "CFT_C_EMIS2", "var": "c_emis_cft2", "descr": "CFT C emissions", "unit" : "gC/m2/growing season","scale": 1.0, "offset" : 0.0}
+  { "id" : CFT_C_EMIS2, "name": "CFT_C_EMIS2", "var": "c_emis_cft2", "descr": "CFT C emissions", "unit" : "gC/m2/growing season","scale": 1.0, "offset" : 0.0},
   { "id" : ARH_AGR, "name" : "arh_agr" , "var" : "ARH_agr" , "descr" : "annual heterotrophic respiration for agricultural stands", "unit" : "gC/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : ABNF_AGR, "name" : "abnf_agr" , "var" : "ABNF_agr" , "descr" : "annual BNF on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : ANFERT_AGR, "name" : "anfert_agr" , "var" : "ANFERT_agr" , "descr" : "annual N input from fertilizer on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
