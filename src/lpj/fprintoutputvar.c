@@ -30,7 +30,7 @@ static int compare(const Item *a,const Item *b)
 void fprintoutputvar(FILE *file,              /**< pointer to text file */
                      const Variable output[], /**< array of output variables */
                      int size,                /**< size of array */
-                     Bool float_grid
+                     const Config *config     /**< LPJ configuration */
                     )
 {
   int i,width,width_unit,width_var,index;
@@ -68,28 +68,31 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   putc('\n',file);
   for(i=0;i<size;i++)
   {
-   index=(item==NULL) ? i : item[i].index;
-   switch(output[index].time)
-   {
-     case YEAR:
-       sc="/y";
-       break;
-     case SECOND:
-       sc="/s";
-       break;
-     case MONTH:
-       sc="/m";
-       break;
-     case DAY:
-       sc="/d";
-       break;
-     default:
-       sc="";
-   }
-   fprintf(file,"%-*s %-*s %-*s %5s %5g%2s %6g %s\n",width,output[index].name,
-           width_var,output[index].var,
-           width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,
-           typenames[getoutputtype(index,float_grid)],output[index].scale,sc,output[index].offset,output[index].descr);
+    index=(item==NULL) ? i : item[i].index;
+    if(config->with_nitrogen || !isnitrogen_output(index))
+    {
+      switch(output[index].time)
+      {
+        case YEAR:
+          sc="/y";
+          break;
+        case SECOND:
+          sc="/s";
+          break;
+        case MONTH:
+          sc="/m";
+          break;
+        case DAY:
+          sc="/d";
+          break;
+        default:
+          sc="";
+      }
+      fprintf(file,"%-*s %-*s %-*s %5s %5g%2s %6g %s\n",width,output[index].name,
+              width_var,output[index].var,
+              width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,
+             typenames[getoutputtype(index,config->float_grid)],output[index].scale,sc,output[index].offset,output[index].descr);
+    }
   }
   free(item);
   frepeatch(file,'-',width);

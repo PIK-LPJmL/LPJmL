@@ -164,6 +164,12 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
           fprintf(stderr,"WARNING006: Output file for '%s' is opened twice, will be ignored.\n",
                 config->outnames[flag].name);
       }
+      else if(!config->with_nitrogen && isnitrogen_output(flag))
+      {
+        if(verbosity)
+          fprintf(stderr,"WARNING006: Output file for '%s' is nitrogen output but nitrogen is not enabled, will be ignored.\n",
+                config->outnames[flag].name);
+      }
       else if(config->outputvars[count].filename.fmt==CLM2)
       {
         if(verbosity)
