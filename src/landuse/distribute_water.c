@@ -92,7 +92,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
           }
           else
             irrig_threshold=param.irrig_threshold_c4;
-          if(pft->par->id==RICE1 || pft->par->id==RICE2)
+          if(pft->par->id==RICE)
             irrig_threshold=param.irrig_threshold_rice;
 
           count+=(wr>irrig_threshold) ? 0 : 1; /* if single grass pft needs irrigation both grass pft are irrigated */
