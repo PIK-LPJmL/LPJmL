@@ -16,16 +16,22 @@
 
 #include "lpj.h"
 
-int getnyear(int index /**< index of output file */
+int getnyear(const Variable *variable,
+             int index /**< index of output file */
             )          /** \return number of items per year */
 {
   if(index==REGION || index==COUNTRY || index==GRID)
     return 0;
-  if(ismonthlyoutput(index))
-    return 12;
-  if(isdailyoutput(index))
-    return NDAYYEAR;
-  return 1;
+  switch(variable[index].timestep)
+  {
+     case ANNUAL:
+       return 1;
+     case MONTHLY:
+       return 12;
+     case DAILY:
+       return NDAYYEAR;
+  }
+  return NOT_FOUND;
 } /* of 'getnyear' */
 
 size_t getsize(int index,           /**< index of output file */
@@ -33,7 +39,7 @@ size_t getsize(int index,           /**< index of output file */
               )                     /** \return size of output written in one year */
 {
   size_t size;
-  size=getnyear(config->outputvars[index].id);
+  size=getnyear(config->outnames,config->outputvars[index].id);
   size*=outputsize(config->outputvars[index].id,
                    config->npft[GRASS]+config->npft[TREE],
                    config->nbiomass, config->ngrass,

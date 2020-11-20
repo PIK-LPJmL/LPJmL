@@ -16,11 +16,11 @@
 include ../../Makefile.inc
 
 OBJS    = update_daily.$O update_annual.$O init_annual.$O \
-          update_monthly.$O newgrid.$O iterate.$O initoutput_monthly.$O\
+          update_monthly.$O newgrid.$O iterate.$O\
           iterateyear.$O initoutput.$O fopenoutput.$O\
-          fcloseoutput.$O fwriteoutput_annual.$O fwriteoutput_pft.$O\
-          fwriteoutput_monthly.$O fprintincludes.$O\
-          cflux_sum.$O flux_sum.$O initoutput_annual.$O\
+          fcloseoutput.$O\
+          fprintincludes.$O\
+          cflux_sum.$O flux_sum.$O\
           freeoutput.$O freegrid.$O freecell.$O fscanoutput.$O\
           fscanpftpar.$O firepft.$O climbuf.$O outputsize.$O\
           pftlist.$O newpft.$O establish.$O fprintstand.$O temp_stress.$O\
@@ -37,9 +37,9 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O \
           openconfig.$O freeconfig.$O readconfig.$O initconfig.$O\
           check_stand_fracs.$O waterusefcns.$O getoutputtype.$O\
           fscanlimit.$O filesexist.$O freeoutputvar.$O\
-          fprintflux.$O initoutput_daily.$O fwriteoutput_daily.$O\
+          fprintflux.$O\
           outputfilesize.$O nowdf.$O printlicense.$O\
-          ismonthlyoutput.$O initmpiconfig.$O fscanparam.$O fprintparam.$O\
+          initmpiconfig.$O fscanparam.$O fprintparam.$O\
           fprintpftpar.$O help.$O copyright.$O initinput.$O freeinput.$O\
           natural.$O daily_natural.$O fread_natural.$O fprint_natural.$O\
           annual_natural.$O fwrite_natural.$O celldata.$O\
@@ -47,7 +47,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O \
           fprintfiles.$O roughnesslength.$O closeoutput_yearly.$O\
           getnbiomass.$O getextension.$O albedo_stand.$O phenology_gsi.$O\
           fscanphenparam.$O landcover.$O standstocks.$O nitrogen_stress.$O\
-          f_lai.$O getsize.$O getngrassnat.$O
+          f_lai.$O getsize.$O getngrassnat.$O fwriteoutput.$O initoutputdata.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

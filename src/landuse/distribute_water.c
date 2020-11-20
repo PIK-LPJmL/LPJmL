@@ -60,7 +60,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
     frac_irrig_amount=cell->discharge.gir>0 ? 1.0 : 0.0;
     frac_unsustainable=cell->discharge.gir>0 ? 1 - cell->discharge.withdrawal/cell->discharge.gir : 0.0;
     frac_unsustainable=frac_unsustainable>0 ? frac_unsustainable : 0.0;
-    cell->output.awd_unsustainable+=frac_unsustainable*cell->discharge.gir;
+    cell->balance.awd_unsustainable+=frac_unsustainable*cell->discharge.gir;
     cell->output.mwd_unsustainable+=frac_unsustainable*cell->discharge.gir;
   }
 
@@ -166,7 +166,9 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
         cell->discharge.dmass_lake+=conv_loss*cell->coord.area*(1-data->conv_evap)*stand->frac; /* Note: conveyance losses are not included in return flow */
         cell->discharge.mfin+=conv_loss*cell->coord.area*(1-data->conv_evap)*stand->frac;
         cell->output.mconv_loss_drain+=conv_loss*(1-data->conv_evap)*stand->frac;
+        cell->balance.aconv_loss_drain+=conv_loss*(1-data->conv_evap)*stand->frac;
         cell->output.mconv_loss_evap+=conv_loss*data->conv_evap*stand->frac;
+        cell->balance.aconv_loss_evap+=conv_loss*data->conv_evap*stand->frac;
 
         /* write cft-specific conveyance losses */
         /* not written within irrig_event loop, because irrig_stor consists of water already transported to the field */

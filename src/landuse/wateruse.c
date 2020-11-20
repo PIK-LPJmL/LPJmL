@@ -65,12 +65,14 @@ void wateruse(Cell *grid,          /**< LPJ grid */
     {
       grid[cell].discharge.waterdeficit-=grid[cell].discharge.withdrawal;
       grid[cell].output.awateruse_hil+=grid[cell].discharge.withdrawal;
+      grid[cell].balance.awateruse_hil+=grid[cell].discharge.withdrawal;
       grid[cell].discharge.withdrawal=0.0;
     }
     else
     {
       grid[cell].discharge.withdrawal-=grid[cell].discharge.waterdeficit;
       grid[cell].output.awateruse_hil+=grid[cell].discharge.waterdeficit;
+      grid[cell].balance.awateruse_hil+=grid[cell].discharge.waterdeficit;
       grid[cell].discharge.waterdeficit=0.0;
 
     }

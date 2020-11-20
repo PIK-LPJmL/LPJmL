@@ -68,6 +68,8 @@ typedef struct
 {
   char *name; /* name of file */
   char *var;  /* name of variable in NetCDF file or NULL */
+  char *unit; /* units of variable in NetCDF file or NULL */
+  int timestep; /* time step for output (ANNUAL,MONTHLY,DAILY) */
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
 } Filename;
 

@@ -20,6 +20,7 @@ static void freefilename(Filename filename)
 {
   free(filename.name);
   free(filename.var);
+  free(filename.unit);
 } /* of 'freefilename' */
 
 void freeconfig(Config *config /**< LPJmL configuration */

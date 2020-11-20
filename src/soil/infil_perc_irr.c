@@ -225,11 +225,13 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
               soil->NO3[l] -= NO3perc_ly;
 
               stand->cell->output.mn_leaching+=(NO3surf + NO3lat)*stand->frac;
+              stand->cell->balance.n_outflux+=(NO3surf + NO3lat)*stand->frac;
             } /* end of if(config->with_nitrogen) */
           } /*end percolation*/
         } /* if soil depth > freeze_depth */
       } /* soil layer loop */
       stand->cell->output.mn_leaching+=NO3perc_ly*stand->frac;
+      stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
       if(withdailyoutput && (stand->type->landusetype==NATURAL && ALLNATURAL==stand->cell->output.daily.cft))
         stand->cell->output.daily.leaching+=NO3perc_ly;
       if(withdailyoutput && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND))

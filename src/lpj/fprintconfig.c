@@ -166,6 +166,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
                  )
 {
   char *irrig[]={"no","limited","potential","all","irrigation on rainfed"};
+  char timenames[]={'Y','M','D'};
   String s;
   int len;
   char *method[]={"write","MPI-2","gathered","socket"};
@@ -495,12 +496,12 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
               config->missing_value,
               config->global_netcdf ? "global" : "local");
     }
-    fprintf(file,"%*s Fmt %*s Type  Filename\n",-width,"Variable",-width_unit,"Unit");
+    fprintf(file,"%*s Fmt %*s Type  dT Filename\n",-width,"Variable",-width_unit,"Unit");
     frepeatch(file,'-',width);
     fputs(" --- ",file);
     frepeatch(file,'-',width_unit);
-    fputs(" ----- ",file);
-    frepeatch(file,'-',77-width-4-width_unit-7);
+    fputs(" ----- -- ",file);
+    frepeatch(file,'-',77-width-4-width_unit-7-3);
     putc('\n',file);
     for(i=0;i<config->n_out;i++)
     {
@@ -508,17 +509,17 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
         fprintf(file,"%*d",width,config->outputvars[i].id);
       else
         fprintf(file,"%*s",width,config->outnames[config->outputvars[i].id].name);
-      fprintf(file," %s %*s %5s ",fmt[config->outputvars[i].filename.fmt],
+      fprintf(file," %s %*s %5s %c  ",fmt[config->outputvars[i].filename.fmt],
               width_unit,strlen(config->outnames[config->outputvars[i].id].unit)==0 ? "-" : config->outnames[config->outputvars[i].id].unit,
-              typenames[getoutputtype(config->outputvars[i].id,config->float_grid)]);
+              typenames[getoutputtype(config->outputvars[i].id,config->float_grid)],timenames[config->outnames[config->outputvars[i].id].timestep]);
       printoutname(file,config->outputvars[i].filename.name,config->outputvars[i].oneyear,config);
       putc('\n',file);
     }
     frepeatch(file,'-',width);
     fputs(" --- ",file);
     frepeatch(file,'-',width_unit);
-    fputs(" ----- ",file);
-    frepeatch(file,'-',77-width-4-width_unit-7);
+    fputs(" ----- -- ",file);
+    frepeatch(file,'-',77-width-4-width_unit-7-3);
     putc('\n',file);
     if(config->crop_index>=0)
     {

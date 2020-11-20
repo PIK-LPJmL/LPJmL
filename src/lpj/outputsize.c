@@ -19,7 +19,7 @@
 int outputsize(int index,    /**< output index */
                int npft,     /**< number of natural PFTs */
                int nbiomass, /**< number of biomass PFTs */
-			   int ngrass,   /**< number of grass PFTs */
+               int ngrass,   /**< number of grass PFTs */
                int ncft      /**< number of crop PFTs */
               )              /** \return number of items per cell */
 {
@@ -54,7 +54,7 @@ int outputsize(int index,    /**< output index */
       return npft-nbiomass+1;
     case NV_LAI:
       return npft-nbiomass;
-    case MSOILTEMP: case MSWC:
+    case SOILTEMP: case SWC:
       return NSOILLAYER;
     case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER:
       return LASTLAYER;

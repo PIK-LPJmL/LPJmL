@@ -29,6 +29,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
   Real ftimber; /* fraction harvested for timber */
   Stocks harvest;
   Stocks stocks;
+  Real trad_biofuel;
 #ifdef IMAGE
   Bool tharvest=FALSE;
   ftimber=min(1,cell->ml.image_data->timber_frac/standfrac);
@@ -68,7 +69,9 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #ifdef IMAGE
         tharvest=TRUE;
         harvest=timber_harvest(pft,soil,&cell->ml.image_data->timber,
-                               cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&cell->output.trad_biofuel);
+                               cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&trad_biofuel);
+        cell->output.trad_biofuel+=trad_biofuel;
+        cell->balance.trad_biofuel+=trad_biofuel;
 #ifdef DEBUG_IMAGE
         if(ftimber>0 ||
           (cell->coord.lon-.1<-43.25 && cell->coord.lon+.1>-43.25 && cell->coord.lat-.1<-11.75 && cell->coord.lat+.1>-11.75)||
@@ -81,8 +84,10 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         }
 #endif
 #else
-        harvest=timber_harvest(pft,soil,&frac1,frac2,param.ftimber,standfrac,&nind,&cell->output.trad_biofuel);
+        harvest=timber_harvest(pft,soil,&frac1,frac2,param.ftimber,standfrac,&nind,&trad_biofuel);
 #endif
+        cell->output.trad_biofuel+=trad_biofuel;
+        cell->balance.trad_biofuel+=trad_biofuel;
         cell->output.timber_harvest.carbon+=harvest.carbon;
         cell->output.timber_harvest.nitrogen+=harvest.nitrogen;
 #ifdef IMAGE
@@ -98,6 +103,8 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #endif
         cell->output.deforest_emissions.carbon+=stocks.carbon*standfrac;
         cell->output.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
+        cell->balance.deforest_emissions.carbon+=stocks.carbon*standfrac;
+        cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
         soil->NO3[0]+=stocks.nitrogen*param.q_ash;
       } /* if tree */
     } /* is timber */

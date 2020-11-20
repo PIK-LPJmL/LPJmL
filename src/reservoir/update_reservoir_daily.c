@@ -27,6 +27,7 @@ void update_reservoir_daily(Cell *cell, /**< pointer to cell */
     cell->ml.resdata->dmass=cell->ml.resdata->reservoir.capacity;
   }
   cell->output.mevap_res+=min(cell->ml.resdata->dmass/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->ml.reservoirfrac);
+  cell->balance.aevap_res+=min(cell->ml.resdata->dmass/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->ml.reservoirfrac);
   cell->ml.resdata->dmass=max(cell->ml.resdata->dmass-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->ml.reservoirfrac,0.0);
   cell->output.mres_storage+=cell->ml.resdata->dmass;
 } /* of 'update_reservoir_daily' */

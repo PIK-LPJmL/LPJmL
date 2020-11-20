@@ -154,12 +154,14 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   output->mfiredi +=fire_danger_index;
   output->mnfire +=num_fires;
   output->firef += fire_frac;
-  output->mburntarea += burnt_area; /*ha*/
+  output->burntarea += burnt_area; /*ha*/
   output->fire.carbon+= total_fire.carbon;
+  stand->cell->balance.fire.carbon+=total_fire.carbon;
+  stand->cell->balance.fire.carbon+= total_fire.carbon;
   output->fire.nitrogen+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;
+  stand->cell->balance.fire.nitrogen+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;
   stand->soil.NO3[0]+=total_fire.nitrogen*param.q_ash;
   output->dcflux+=total_fire.carbon;
-  output->mfirec+= total_fire.carbon;
   output->mfireemission.co2+=emission.co2*stand->frac;
   output->mfireemission.co+=emission.co*stand->frac;
   output->mfireemission.ch4+=emission.ch4*stand->frac;

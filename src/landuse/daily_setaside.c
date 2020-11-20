@@ -53,6 +53,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   Real cover_stand,intercep_stand,rainmelt;
   Real npp; /* net primary productivity (gC/m2) */
   Real wdf; /* water deficit fraction */
+  Real transp;
   Real gc_pft;
   Stocks flux_estab = {0,0};
   Stocks stocks;
@@ -123,10 +124,11 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
     }
 
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
-    output->mnpp+=npp*stand->frac;
+    output->npp+=npp*stand->frac;
+    stand->cell->balance.nep+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
-    output->mgpp+=gpp*stand->frac;
-    output->mfapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    output->gpp+=gpp*stand->frac;
+    output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     output->mphen_tmin += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     output->mphen_tmax += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     output->mphen_light += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -158,14 +160,18 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
       }
   }
 
+  transp=0;
   forrootsoillayer(l)
   {
-    output->mtransp+=aet_stand[l]*stand->frac;
+    transp+=aet_stand[l]*stand->frac;
     output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
-
-  output->minterc+=intercep_stand*stand->frac;
-  output->mevap+=evap*stand->frac;
+  output->transp+=transp;
+  output->atransp+=transp;
+  output->interc+=intercep_stand*stand->frac;
+  output->evap+=evap*stand->frac;
+  output->aevap+=evap*stand->frac;
+  output->ainterc+=intercep_stand*stand->frac;
   output->mevap_b+=evap_blue*stand->frac; /*TODOJJ why are monthly outputs in setaside written but cft-outputs not? */
   output->mreturn_flow_b+=return_flow_b*stand->frac;
 
@@ -196,6 +202,8 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
 
     output->flux_estab.carbon+=flux_estab.carbon*stand->frac;
     output->flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+    stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+    stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
     output->dcflux-=flux_estab.carbon*stand->frac;
   }
   free(present);

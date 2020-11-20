@@ -34,7 +34,7 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
   Stocks litter_neg;
   if(cell->ml.dam)
     update_reservoir_annual(cell);
-  annual_climbuf(&cell->climbuf,cell->output.aevap+cell->output.atransp);
+  annual_climbuf(&cell->climbuf,cell->balance.aevap+cell->balance.atransp);
   if(config->sdate_option==NO_FIXED_SDATE ||
     (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear)||
     (config->sdate_option==PRESCRIBED_SDATE && year<=config->sdate_fixyear))
@@ -73,11 +73,12 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
       litter_neg=checklitter(&stand->soil.litter);
       cell->output.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
       cell->output.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
+      cell->balance.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
+      cell->balance.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
     }
-    stand->cell->output.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
+    stand->cell->balance.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   }
   cell->output.fpc[0] = 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;
-  cell->output.vegc_avg/=NDAYYEAR;
 #ifdef IMAGE
   cell->output.prod_turnover=product_turnover(cell->ml.image_data);
   cell->output.product_pool_fast=cell->ml.image_data->timber.fast;
@@ -90,6 +91,7 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
     cell->ml.product.slow.carbon=cell->ml.product.slow.nitrogen=0;
     cell->output.timber_harvest.carbon=cell->output.timber_harvest.nitrogen=0;
     cell->output.deforest_emissions.carbon=cell->output.deforest_emissions.nitrogen=0;
+    cell->balance.deforest_emissions.carbon=cell->balance.deforest_emissions.nitrogen=0;
   }
   product_turnover(cell);
   cell->output.product_pool_fast.carbon=cell->ml.product.fast.carbon;

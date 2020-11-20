@@ -129,6 +129,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
       n_uptake += fixed_n;
       pft->bm_inc.nitrogen = *n_plant_demand;
       pft->stand->cell->output.mbnf += fixed_n*pft->stand->frac;
+      pft->stand->cell->balance.n_influx += fixed_n*pft->stand->frac;
       pft->vscal = 1;
     }
     else {

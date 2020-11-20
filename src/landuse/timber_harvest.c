@@ -34,7 +34,10 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   tree=pft->data;
   treepar=pft->par->data;
   if(ftimber<epsilon)
+  {
+    *trad_biofuel=0;
     return harvest;
+  }
   output=&pft->stand->cell->output;
   /* transfer wood to product pools, assume 2/3 of sapwood to be above-ground */
   harvest.carbon=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0)*
@@ -45,9 +48,10 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   timber->slow+=harvest.carbon*f.slow;
   timber->fast+=harvest.carbon*f.fast;
   biofuel=1.0-f.slow-f.fast;
-  *trad_biofuel+=harvest.carbon*biofuel*0.9;
+  *trad_biofuel=harvest.carbon*biofuel*0.9;
   /* 10% of traditional biofuel is assumed to enter fast soil pool -- may not be scaled with standfrac!*/
 #else
+  *trad_biofuel=0;
   biofuel=0;
   pft->stand->cell->ml.product.fast.nitrogen+=harvest.nitrogen*f.fast;
   pft->stand->cell->ml.product.slow.nitrogen+=harvest.nitrogen*f.slow;

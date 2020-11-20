@@ -126,7 +126,9 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
 
     data->net_irrig_amount=data->dist_irrig_amount=0.0;
     stand->cell->output.mconv_loss_drain+=conv_loss*(1-data->conv_evap)*stand->frac;
+    stand->cell->balance.aconv_loss_drain+=conv_loss*(1-data->conv_evap)*stand->frac;
     stand->cell->output.mconv_loss_evap+=conv_loss*data->conv_evap*stand->frac;
+    stand->cell->balance.aconv_loss_evap+=conv_loss*data->conv_evap*stand->frac;
 
     /* write cft-specific conveyance losses, ATTENTION: full conv losses incl. evaporation and drainage */
     switch(stand->type->landusetype)

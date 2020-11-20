@@ -33,14 +33,15 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   if(filename->fmt<0 || filename->fmt>CDF)
   {
     if(verb)
-      fprintf(stderr,"ERROR205: Invalid value %d for input format for '%s'.\n",
-              filename->fmt,filename->name);
+      fprintf(stderr,"ERROR205: Invalid value %d for input format.\n",
+              filename->fmt);
     return TRUE;
   }
   if(filename->fmt==FMS)
   {
     filename->var=NULL;
     filename->name=NULL;
+    filename->unit=NULL;
     return FALSE;
   }
   if(isvar && filename->fmt==CDF)
@@ -76,5 +77,44 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     free(filename->var);
     return TRUE;
   }
+  if(iskeydefined(&f,"unit"))
+  {
+    if(fscanstring(&f,name,"unit",FALSE,verb))
+    {
+      if(verb)
+        readstringerr("unit");
+      return TRUE;
+    }
+    else
+    {
+      filename->unit=strdup(name);
+      if(filename->unit==NULL)
+      {
+        printallocerr("unit");
+        return TRUE;
+      }
+    }
+  }
+  else
+    filename->unit=NULL;
+  if(iskeydefined(&f,"timestep"))
+  {
+    if(fscanint(&f,&filename->timestep,"timestep",FALSE,verb))
+    {
+     
+      if(verb)
+        fputs("ERRROR229: Cannot read int 'timestep'.\n",stderr);
+      return TRUE;
+    }
+    if(filename->timestep<0 || filename->timestep>DAILY)
+    {
+      if(verb)
+        fprintf(stderr,"ERRROR229: Invalid value %d for 'timestep'.\n",
+                filename->timestep);
+      return TRUE;
+    }
+  }
+  else
+    filename->timestep=NOT_FOUND;
   return FALSE;
 } /* of 'readfilename' */

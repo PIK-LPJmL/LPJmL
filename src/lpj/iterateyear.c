@@ -61,8 +61,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)
   {
-    grid[cell].output.adischarge=0;
-    grid[cell].output.surface_storage=0;
+    initoutputdata(&grid[cell].output,ANNUAL,npft,ncft,config);
+    grid[cell].balance.surface_storage=0;
     if(!grid[cell].skip)
     {
       init_annual(grid+cell,npft,config->nbiomass,ncft,config);
@@ -93,10 +93,11 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   {
     for(cell=0;cell<config->ngridcell;cell++)
     {
-      grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].output.mdischarge=grid[cell].output.mwateramount=grid[cell].ml.mdemand=0.0;
+      grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].ml.mdemand=0.0;
+      grid[cell].output.mpet=0;
+      initoutputdata(&((grid+cell)->output),MONTHLY,npft,ncft,config);
       if(!grid[cell].skip)
       {
-        initoutput_monthly(&((grid+cell)->output));
         initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
 
 #ifdef IMAGE
@@ -133,7 +134,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           if(config->ispopulation)
             popdens=getpopdens(input.popdens,cell);
           grid[cell].output.dcflux=0;
-          initoutput_daily(&(grid[cell].output.daily));
+          //initoutput_daily(&grid[cell].output,config->outnames);
+          initoutputdata(&((grid+cell)->output),DAILY,npft,ncft,config);
           /* get daily values for temperature, precipitation and sunshine */
           dailyclimate(&daily,input.climate,&grid[cell].climbuf,cell,day,
                        month,dayofmonth);
@@ -178,21 +180,13 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       }
 
       if(output->withdaily && year>=config->outputyear)
-        fwriteoutput_daily(output,grid,day-1,year,config);
+        fwriteoutput(output,grid,year,day-1,DAILY,npft,ncft,config);
 
       day++;
     } /* of 'foreachdayofmonth */
     /* Calculate resdata->mdemand as sum of ddemand to reservoir, instead of the sum of evaporation deficits per cell*/
     for(cell=0;cell<config->ngridcell;cell++)
     {
-      if(config->river_routing)
-      {
-        if(grid[cell].discharge.next<0)
-          grid[cell].output.adischarge+=grid[cell].output.mdischarge;           /* only endcell outflow */
-        grid[cell].output.mdischarge*=1e-9/ndaymonth[month];                    /* daily mean discharge per month in 1.000.000 m3 per cell */
-        grid[cell].output.mres_storage*=1e-9/ndaymonth[month];                  /* mean monthly reservoir storage in 1.000.000 m3 per cell */
-        grid[cell].output.mwateramount*=1e-9/ndaymonth[month];                  /* mean wateramount per month in 1.000.000 m3 per cell */
-      }
       if(!grid[cell].skip)
         update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
                        cell,month),getmprec(input.climate,&grid[cell].climbuf,
@@ -201,7 +195,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
 
     if(year>=config->outputyear)
       /* write out monthly output */
-      fwriteoutput_monthly(output,grid,month,year,config);
+      //fwriteoutput_monthly(output,grid,month,year,config);
+      fwriteoutput(output,grid,year,month,MONTHLY,npft,ncft,config);
 
   } /* of 'foreachmonth */
 
@@ -242,16 +237,15 @@ if(config->equilsoil)
     }
     if(config->river_routing)
     {
-      grid[cell].output.surface_storage=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river;
+      grid[cell].balance.surface_storage=grid[cell].discharge.dmass_lake+grid[cell].discharge.dmass_river;
       if(grid[cell].ml.dam)
-        grid[cell].output.surface_storage+=reservoir_surface_storage(grid[cell].ml.resdata);
+        grid[cell].balance.surface_storage+=reservoir_surface_storage(grid[cell].ml.resdata);
     }
   } /* of for(cell=0,...) */
 
   if(year>=config->outputyear)
   {
     /* write out annual output */
-    fwriteoutput_annual(output,grid,year,config);
-    fwriteoutput_pft(output,grid,npft,ncft,year,config);
+    fwriteoutput(output,grid,year,0,ANNUAL,npft,ncft,config);
   }
 } /* of 'iterateyear' */

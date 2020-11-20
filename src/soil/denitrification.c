@@ -86,6 +86,7 @@ void denitrification(Stand *stand  /**< pointer to stand */
     stand->cell->output.daily.n2o_denit += N2O_denit;
     stand->cell->output.mn2o_denit+=N2O_denit*stand->frac;
     stand->cell->output.mn2_emissions+=N_denit*stand->frac;
+    stand->cell->balance.n_outflux+=(N_denit+N2O_denit)*stand->frac;
   }
 #ifdef DEBUG_N
   printf("NAFTER");

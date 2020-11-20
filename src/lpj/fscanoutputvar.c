@@ -81,6 +81,19 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     fscanfloat2(&item,&outnames[index].scale,"scale",outnames[index].name);
     outnames[index].offset=0.0;
     fscanfloat2(&item,&outnames[index].offset,"offset",outnames[index].name);
+    if(fscanint(&item,&outnames[index].timestep,"timestep",FALSE,verb))
+    {
+      if(verb) 
+        fprintf(stderr,"ERRROR229: Cannot read int 'timestep' for output '%s'.\n",outnames[index].name);
+      return NULL;
+    }
+    if(outnames[index].timestep<0 || outnames[index].timestep>DAILY)
+    {
+      if(verb) 
+        fprintf(stderr,"ERRROR229: Invalid value %d  for 'timestep' for output '%s'.\n",
+                outnames[index].timestep,outnames[index].name);
+      return NULL;
+    }
   }
   return outnames;
 } /* of 'fscanoutputvar' */

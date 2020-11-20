@@ -102,32 +102,29 @@ typedef struct
 
 typedef struct
 {
-  Real mnpp;             /**< Monthly NPP (gC/m2) */
-  Real mgpp;             /**< Monthly GPP (gC/m2) */
-  Real mrh;              /**< monthly heterotrophic respiration (gC/m2) */
-  Real mrh_litter;              /**< monthly heterotrophic respiration (gC/m2) */
-  Real mtransp;          /**< Monthly transpiration (mm) */
+  Real npp;              /**< NPP (gC/m2) */
+  Real gpp;              /**<  GPP (gC/m2) */
+  Real rh;               /**< heterotrophic respiration (gC/m2) */
+  Real mrh_litter;       /**< monthly heterotrophic respiration (gC/m2) */
+  Real transp;           /**< transpiration (mm) */
   Real mtransp_b;        /**< Monthly transpired irrigation water (mm) */
-  Real atransp;          /**< Yearly transpiration (mm) */
-  Real mrunoff;          /**< Monthly runoff (mm) */
+  Real runoff;           /**< runoff (mm) */
   Real mdischarge;       /**< Monthly discharge (1.000.000 m3/day) */
   Real mwateramount;     /**< Mean wateramount in month (1.000.000 m3) */
-  Real mevap;            /**< Monthly evaporation (mm) */
+  Real evap;             /**< evaporation (mm) */
   Real mevap_b;          /**< Monthly evaporation of irrigation water (mm) */
-  Real aevap;            /**< Yearly evaporation (mm) */
-  Real minterc;          /**< Monthly interception (mm) */
+  Real interc;           /**< Monthly interception (mm) */
   Real minterc_b;        /**< Monthly blue interception (mm) */
-  Real ainterc;          /**< Yearly interception (mm) */
-  Real mpet;             /**< Monthly PET (mm) */
+  Real pet;              /**< PET (mm) */
+  Real mpet;             /**< monthly PET (mm) */
   Real mswc[NSOILLAYER]; /**< monthly soil water content*/
+  Real mswc2[NSOILLAYER]; /**< monthly soil water content*/
   Real mrootmoist;        /**< monthly plant available water for evapotranspiration fractional*/
   Stocks fire;           /**< annual fire carbon and nitrogen emissions (g/m2)*/
-  Real mfirec;           /**< monthly fire carbon emissions (gC/m2)*/
   Real mnfire;           /**< monthly number of fires */
   Real mfiredi;          /**< monthly fire danger index */
   Tracegas mfireemission;    /**< monthly fire emissions */
-  Real mburntarea;       /**< monthly burnt area */
-  Real aburntarea;       /**< yearly burnt area */
+  Real burntarea;       /**< burnt area */
   Real mprec_image;      /**< monthly precipitation received from IMAGE [mm/month]*/
   Real mtemp_image;      /**< monthly temperature received from IMAGE [K] */
   Real msun_image;       /**< monthly cloudiness received from IMAGE [% sunshine = 100-%cloud]*/
@@ -138,10 +135,8 @@ typedef struct
   Stocks flux_rharvest_burnt; /**< crop residuals burnt outside of field (gC/m2,gN/m2)*/
   Stocks flux_rharvest_burnt_in_field; /*crop residuals burnt in field (gC/m2,gN/m2)*/
   Stocks alittfall;       /**< litter fall (gC/m2/yr,gN/m2/yr) */
-  Real mirrig;           /**< Monthly irrigation (mm) */
-  Real airrig;           /**< Yearly irrigation (mm) */
+  Real irrig;             /**<irrigation (mm) */
   Real mwd_unsustainable; /**< Monthly withdrawal from unsustainable source (mm) */
-  Real awd_unsustainable; /**< Yearly withdrawal from unsustainable source (mm) */
   Real munmet_demand;     /**< monthly unavailable requested irrigation water (mm) */
   Real *cft_airrig;      /**< Yearly irrigation per cft (mm) */
   int *sdate;            /**< sowing date */
@@ -171,9 +166,7 @@ typedef struct
   Real *pft_gcgp;
   Real *gcgp_count;
   Real mevap_lake;       /**< Monthly lake evaporation (mm) */
-  Real aevap_lake;       /**< Yearly lake evaporation (mm) */
   Real mevap_res;        /**< Monthly reservoir evaporation (mm) */
-  Real aevap_res;        /**< Yearly reservoir evaporation (mm) */
   Real mprec_res;        /**< Monthly reservoir precipitation (mm) */
   Real mres_storage;     /**< Monthly mean reservoir storage (million m3) */
   Real mres_demand;      /**< Monthly reservoir demand (million m3) */
@@ -183,8 +176,6 @@ typedef struct
   Real mwd_neighb;       /**< monthly neighbour withdrawal (mm); negative values means give away to neighbour, positive taken for local irrigation from neighbour */
   Real mwd_res;          /**< monthly reservoir withdrawal (mm) */
   Real mwd_return;       /**< monthly withdrawals returned to river (mm) */
-  Real aconv_loss_evap;  /**< Yearly evaporative conveyance loss of irrigation water withdrawals (mm) */
-  Real aconv_loss_drain; /**< Yearly drainage conveyance loss (mm) */
   Real mconv_loss_evap;  /**< Monthly evaporative conveyance loss (mm) */
   Real mconv_loss_drain; /**< Monthly drainage conveyance loss (mm) */
   Real mstor_return;     /**< Monthly water amount returned from irrig stor into river system*/
@@ -198,8 +189,6 @@ typedef struct
   Real mreturn_flow_b;   /**< monthly blue water return flow of runoff, conv. loss is not included */
   Real input_lake;       /**< yearly precipitation input to lakes (mm) */
   Real adischarge;       /**< Annual discharge (1.000.000 m3/year) */
-  Real surface_storage;  /**< Water stored in the suface storages by the end of year (dm3) */
-  Real soil_storage;     /**< Water stored in the soil column by the end of year (dm3) */
   Real *cftfrac;         /**< cft fraction */
   Real *cft_consump_water_g; /**< CFT specific green water consumption (mm) */
   Real *cft_consump_water_b; /**< CFT specific blue water consumption (mm) */
@@ -240,13 +229,14 @@ typedef struct
 #endif
   Real *cft_luc_image;     /**< LUC data received by IMAGE [0-1], CFT specific */
   Real msoiltemp[NSOILLAYER]; /**< monthly soil temperature in deg C for  6 layer*/
+  Real msoiltemp2[NSOILLAYER]; /**< monthly soil temperature in deg C for  6 layer*/
   Real mrunoff_surf;       /**< monthly surface runoff in mm*/
   Real mrunoff_lat;        /**< monthly lateral runoff in mm*/
   Real mseepage;           /**< monthly seepage water in mm*/
   Real mgcons_rf;          /**< monthly green water consumption on rainfed stands */
   Real mgcons_irr;         /**< monthly green water consumption on irrigated stands */
   Real mbcons_irr;         /**< monthly blue water consumption on irrigated stands */
-  Real mfapar;             /**< monthly FAPAR (unitless) */
+  Real fapar;              /**< FAPAR (unitless) */
   Real malbedo;            /**< monthly albedo (unitless) */
   Real mphen_tmin;         /**< monthly phenology cold-temperature limiting function */
   Real mphen_tmax;         /**< monthly phenology heat stress limiting function */
@@ -322,6 +312,7 @@ typedef struct
   char *unit;  /**< units */
   float scale;
   float offset;
+  int timestep; /**< time step (ANNUAL,MONTHLY,DAILY) */
 } Variable;
 
 /* Declaration of variables */
@@ -329,25 +320,20 @@ typedef struct
 /* Declaration of functions */
 
 extern Bool initoutput(Output *,int,Bool,int,int,int,int);
-extern void initoutput_annual(Output *,int,int,int,int);
-extern void initoutput_monthly(Output *);
-extern void initoutput_daily(Daily_outputs *);
 extern void freeoutput(Output *);
 extern int outputsize(int,int,int,int,int);
 extern Type getoutputtype(int,Bool);
-extern int getnyear(int);
+extern int getnyear(const Variable *,int);
 #ifdef USE_MPI
 extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,
                      int *,int,MPI_Comm);
 extern int mpi_write_txt(FILE *,void *,MPI_Datatype,int,int *,
                          int *,int,MPI_Comm);
 #endif
-extern Bool ismonthlyoutput(int);
 
 /* Definition of macros */
 
 #define isopen(output,index) output->files[index].isopen
 #define output_flux(output,flux) writedouble_socket(output->socket,(Real *)&flux,sizeof(Flux)/sizeof(Real))
-#define isdailyoutput(index) (index>=D_LAI && index<=D_PET)
 
 #endif

@@ -17,6 +17,7 @@
 
 #include "lpj.h"
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 #define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
 
 static Bool isopenoutput(int id,const Outputvar output[],int n)
@@ -118,6 +119,14 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
       else
       {
         config->outputvars[count].id=flag;
+        if(config->outputvars[count].filename.timestep!=NOT_FOUND)
+          config->outnames[flag].timestep=config->outputvars[count].filename.timestep;
+        if(config->outputvars[count].filename.unit!=NULL)
+        {
+          free(config->outnames[flag].unit);
+          config->outnames[flag].unit=strdup(config->outputvars[count].filename.unit);
+          checkptr(config->outnames[flag].unit);
+        }
         config->outputvars[count].oneyear=(strstr(config->outputvars[count].filename.name,"%d")!=NULL);
         if(config->outputvars[count].oneyear && checkfmt(config->outputvars[count].filename.name,'d'))
         {
@@ -132,7 +141,7 @@ Bool fscanoutput(LPJfile *file,     /**< pointer to LPJ file */
         }
         else
         {
-          if(isdailyoutput(flag))
+          if(config->outnames[flag].timestep==DAILY)
             isdaily=TRUE;
           count++;
         }

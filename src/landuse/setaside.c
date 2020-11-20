@@ -194,6 +194,8 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
       }
       cell->output.flux_estab.carbon+=flux_estab.carbon*cropstand->frac;
       cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*cropstand->frac;
+      cell->balance.flux_estab.carbon+=flux_estab.carbon*cropstand->frac;
+      cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*cropstand->frac;
     }
   }
   return FALSE;
