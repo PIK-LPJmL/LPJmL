@@ -33,8 +33,8 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   if(filename->fmt<0 || filename->fmt>CDF)
   {
     if(verb)
-      fprintf(stderr,"ERROR205: Invalid value %d for input format for '%s'.\n",
-              filename->fmt,filename->name);
+      fprintf(stderr,"ERROR205: Invalid value %d for input format.\n",
+              filename->fmt);
     return TRUE;
   }
   if(filename->fmt==FMS)
