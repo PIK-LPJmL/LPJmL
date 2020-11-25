@@ -52,7 +52,10 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   tree=pft->data;
   treepar=pft->par->data;
   if(ftimber<epsilon)
+  {
+    trad_biofuel->carbon=trad_biofuel->nitrogen=0;
     return harvest;
+  }
   output=&pft->stand->cell->output;
   /* transfer wood to product pools, assume 2/3 of sapwood to be above-ground */
 #ifdef IMAGE
@@ -98,6 +101,7 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
                  ftimber*(*nind)*standfrac;
   harvest.nitrogen=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*
                  ftimber*(*nind)*standfrac;
+  trad_biofuel->carbon=trad_biofuel->nitrogen=0;
   biofuel=0;
   pft->stand->cell->ml.product.fast.nitrogen+=harvest.nitrogen*f.fast;
   pft->stand->cell->ml.product.slow.nitrogen+=harvest.nitrogen*f.slow;

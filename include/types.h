@@ -68,6 +68,7 @@ typedef char String[STRING_LEN+1];
 extern size_t typesizes[];
 extern char *typenames[];
 extern char *fmt[N_FMT];
+extern char *time_step[];
 
 typedef enum {LPJ_BYTE,LPJ_SHORT,LPJ_INT,LPJ_FLOAT,LPJ_DOUBLE} Type;
 typedef enum {NO_ERR, ERR, VERB } Verbosity;
@@ -80,6 +81,7 @@ typedef struct
   char *unit; /* units of variable in NetCDF file or NULL */
   Real scale; /* scale factor for output */
   Bool isscale; /* scale factor defined? */
+  int timestep; /* time step for output (ANNUAL,MONTHLY,DAILY) */
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
 } Filename;
 

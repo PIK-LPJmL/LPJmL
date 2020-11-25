@@ -59,11 +59,13 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     {
       reprod-=pft->establish.carbon;
       pft->stand->cell->output.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
+      pft->stand->cell->balance.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
       pft->establish.carbon=0;
     }
     else
     {
       pft->stand->cell->output.flux_estab.carbon-=reprod*pft->stand->frac;
+      pft->stand->cell->balance.flux_estab.carbon-=reprod*pft->stand->frac;
       pft->establish.carbon-=reprod;
       reprod=0;
     }

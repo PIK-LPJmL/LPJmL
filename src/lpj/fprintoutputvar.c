@@ -33,6 +33,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
                      const Config *config     /**< LPJ configuration */
                     )
 {
+  char timenames[]={'Y','M','D'};
   int i,width,width_unit,width_var,index;
   char *sc;
   Item *item;
@@ -57,13 +58,13 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
     width_var=max(width_var,strlen(output[i].var));
   }
   fprintf(file,"Output files available\n"
-          "%-*s %-*s %-*s Type  Scale   Offset Description\n",width,"Name",width_var,"Variable",width_unit,"Unit");
+          "%-*s %-*s %-*s dT Type  Scale   Offset Description\n",width,"Name",width_var,"Variable",width_unit,"Unit");
   frepeatch(file,'-',width);
   fputc(' ',file);
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" ----- ------- ------ ",file);
+  fputs(" --  ----- ------- ------ ",file);
   frepeatch(file,'-',77-width-width_unit-width_var-7);
   putc('\n',file);
   for(i=0;i<size;i++)
@@ -88,9 +89,9 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
         default:
           sc="";
       }
-      fprintf(file,"%-*s %-*s %-*s %5s %5g%2s %6g %s\n",width,output[index].name,
+      fprintf(file,"%-*s %-*s %-*s %c  %5s %5g%2s %6g %s\n",width,output[index].name,
               width_var,output[index].var,
-              width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,
+              width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,timenames[output[index].timestep],
              typenames[getoutputtype(index,config->float_grid)],output[index].scale,sc,output[index].offset,output[index].descr);
     }
   }
@@ -100,7 +101,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" ----- ------- ------ ",file);
+  fputs(" -- ----- ------- ------ ",file);
   frepeatch(file,'-',77-width-width_unit-width_var-7);
   putc('\n',file);
 } /* of 'fprintoutputvar' */

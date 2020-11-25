@@ -41,7 +41,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                          (config->outputvars[index].id==GRID) ? "" :
                          config->outnames[config->outputvars[index].id].unit,
                          getoutputtype(config->outputvars[index].id,FALSE),
-                         getnyear(config->outputvars[index].id),array,config);
+                         getnyear(config->outnames,config->outputvars[index].id),array,config);
   else
     return create_pft_netcdf(cdf,filename,
                              config->outputvars[index].id,
@@ -51,7 +51,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                              config->outnames[config->outputvars[index].id].descr,
                              config->outnames[config->outputvars[index].id].unit,
                              getoutputtype(config->outputvars[index].id,FALSE),
-                             getnyear(config->outputvars[index].id),
+                             getnyear(config->outnames,config->outputvars[index].id),
                              array,config);
 } /* of 'create' */
 
@@ -152,7 +152,7 @@ static void openfile(Outputfile *output,const Cell grid[],
             else
             {
               header.order=CELLSEQ;
-              header.nbands=getnyear(config->outputvars[i].id);
+              header.nbands=getnyear(config->outnames,config->outputvars[i].id);
               header.nbands*=outputsize(config->outputvars[i].id,
                                         config->npft[GRASS]+config->npft[TREE],
                                         config->nbiomass,
@@ -368,7 +368,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
               header.cellsize_lat=(float)config->resolution.lat;
               header.scalar=1;
               header.order=CELLSEQ;
-              header.nbands=getnyear(config->outputvars[i].id);
+              header.nbands=getnyear(config->outnames,config->outputvars[i].id);
               if(header.nbands==1)
                 header.nbands=outputsize(config->outputvars[i].id,
                                          config->npft[GRASS]+config->npft[TREE],
@@ -417,7 +417,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                            config->outnames[config->outputvars[i].id].descr,
                            config->outnames[config->outputvars[i].id].unit,
                            getoutputtype(config->outputvars[i].id,FALSE),
-                           getnyear(config->outputvars[i].id),
+                           getnyear(config->outnames,config->outputvars[i].id),
                            (config->outputvars[i].id==ADISCHARGE) ? output->index_all : output->index,year,config);
            else
              output->files[config->outputvars[i].id].isopen=!create1_pft_netcdf(&output->files[config->outputvars[i].id].fp.cdf,filename,
@@ -428,7 +428,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                            config->outnames[config->outputvars[i].id].descr,
                            config->outnames[config->outputvars[i].id].unit,
                            getoutputtype(config->outputvars[i].id,FALSE),
-                           getnyear(config->outputvars[i].id),year,
+                           getnyear(config->outnames,config->outputvars[i].id),year,
                                output->index,config);
 
         }

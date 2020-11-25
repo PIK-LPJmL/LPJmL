@@ -238,6 +238,8 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
 
   stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 
   foreachpft(pft,p,&stand->pftlist)
@@ -267,8 +269,10 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
       stand->cell->discharge.dmass_lake+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->cell->coord.area*stand->frac;
       stand->cell->balance.awater_flux-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->frac;
       stand->cell->output.mstor_return+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac;
-      stand->cell->output.aconv_loss_evap-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->frac;
-      stand->cell->output.aconv_loss_drain-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap)*stand->frac;
+      stand->cell->output.mconv_loss_evap-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->frac;
+      stand->cell->output.mconv_loss_drain-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap)*stand->frac;
+      stand->cell->balance.aconv_loss_evap-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->frac;
+      stand->cell->balance.aconv_loss_drain-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap)*stand->frac;
 
       if(config->pft_output_scaled)
       {
@@ -289,7 +293,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   }
   else
   {
-    stand->cell->output.soil_storage+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
+    stand->cell->balance.soil_storage+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
     biomass_tree->age++;
     biomass_tree->growing_time++;
     foreachpft(pft,p,&stand->pftlist)

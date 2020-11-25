@@ -37,7 +37,7 @@ Real firedangerindex(Real char_moist_factor,
                     )                        /** \return fire danged index */
 {
   Real d_fdi,alpha_fuelp_ave,fpc_sum=0;
-  Real temperature, RH, VD, R, Z, vpd_sum;
+  Real temperature, rh, VD, R, Z, vpd_sum;
 
   const Pft *pft;
   int p,n;
@@ -68,12 +68,12 @@ Real firedangerindex(Real char_moist_factor,
       Z =( a * (Ts/temperature -1) + b * log(Ts/temperature) + c * (pow(10,pow(d,(1-(Ts/temperature))))-1) + f * (pow(10,-pow(h,(Ts/temperature)-1))-1));
   
       /*conversion of specific humidity to relative humidity*/
-      RH= 0.263 * 1013.25 * humidity *1/(exp(17.67*temp/(temperature-29.65)));
+      rh= 0.263 * 1013.25 * humidity *1/(exp(17.67*temp/(temperature-29.65)));
   
       /* average precipitation over one month to avoid unrealistically high flammability fluctuations in time steps with very low or zero precipitation */
        R = avgprec; /* letzten monat aufsummieren und durch num month teilen (units: mm/day) */
-       if (RH > 1)
-         RH = 1;
+       if (rh > 1)
+         rh = 1;
   
       /*calculation of vegetation density and average alpha_fuelp as skaling factor for VPD*/
       if(n>0)
@@ -88,7 +88,7 @@ Real firedangerindex(Real char_moist_factor,
       VD = fpc_sum; /* todo implement lai or fpc?*/
    
       /*calculation of Vapor Pressure Deficite (VPD) */
-      d_fdi = pow(10,Z) * (1-RH) * VD * exp(-cR * R);
+      d_fdi = pow(10,Z) * (1-rh) * VD * exp(-cR * R);
       d_fdi*= vpd_sum;
       break;
   }  /* of 'switch' */

@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   l  p  j  m  l  _  r  c  p 8  5  .  j  s                      \n**/
+/**                   l  p  j  m  l  _  r  c  p 8  5  _  c  c  .  j  s             \n**/
 /**                                                                                \n**/
 /** Configuration file for LPJmL C Version 5.1.001 with RCP85 climate              \n**/
 /**                                                                                \n**/
@@ -33,7 +33,7 @@
 /*  I. Simulation description and type section                       */
 /*===================================================================*/
 
-  "sim_name" : mkstr(LPJmL run with RCP85 climate from MODEL), /* Simulation description */
+  "sim_name" : mkstr(LPJmL run with constant climate from MODEL), /* Simulation description */
   "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
   "version"  : "5.1",       /* LPJmL version expected */
   "random_prec" : false,    /* Random weather generator for precipitation enabled */
@@ -47,13 +47,9 @@
   "permafrost" : true,
   "with_nitrogen" : "lim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "store_climate" : true, /* store climate data in spin-up phase */
-  "const_climate" : false,
+  "const_climate" : true,
   "shuffle_climate" : true,
   "const_deposition" : false,
-  "fix_climate" : false,      /* fix climate after specified year */
-  "fix_landuse" : false,     /* fix land use after specified year */
-  "fix_climate_year" : 2094, /* year at which climate (and land use) is fixed */
-  "fix_climate_cycle": 11,   /* number of years for climate shuffle for fixed climate */
 #ifdef FROM_RESTART
   "equilsoil" :  false,
   "population" : false,
@@ -84,7 +80,6 @@
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
-  "others_to_crop" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -136,6 +131,7 @@ ID                         Fmt                    filename
     { "id" : "interc",          "file" : { "fmt" : "raw", "name" : "output/minterc.bin"}},
     { "id" : "swc1",            "file" : { "fmt" : "raw", "name" : "output/mswc1.bin"}},
     { "id" : "swc2",            "file" : { "fmt" : "raw", "name" : "output/mswc2.bin"}},
+    { "id" : "firec",            "file" : { "fmt" : "raw", "name" : "output/firec.bin"}},
     { "id" : "firef",            "file" : { "fmt" : "raw", "name" : "output/firef.bin"}},
     { "id" : "vegc",             "file" : { "fmt" : "raw", "name" : "output/vegc.bin"}},
     { "id" : "soilc",            "file" : { "fmt" : "raw", "name" : "output/soilc.bin"}},
@@ -181,11 +177,9 @@ ID                         Fmt                    filename
     { "id" : "pft_chawo",        "file" : { "fmt" : "raw", "name" : "output/pft_chawo.bin"}},
     { "id" : "pft_nhawo",        "file" : { "fmt" : "raw", "name" : "output/pft_nhawo.bin"}},
 #ifdef WITH_SPITFIRE
-    { "id" : "firec",           "file" : { "fmt" : "raw", "timestep" : "mongthy", "unit" : "gC/month", "name" : "output/mfirec.bin"}},
+    { "id" : "firec",           "file" : { "fmt" : "raw", "name" : "output/mfirec.bin"}},
     { "id" : "nfire",           "file" : { "fmt" : "raw", "name" : "output/mnfire.bin"}},
     { "id" : "burntarea",       "file" : { "fmt" : "raw", "name" : "output/mburnt_area.bin"}},
-#else
-    { "id" : "firec",            "file" : { "fmt" : "raw", "name" : "output/firec.bin"}},
 #endif
     { "id" : "discharge",       "file" : { "fmt" : "raw", "name" : "output/mdischarge.bin"}},
     { "id" : "wateramount",     "file" : { "fmt" : "raw", "name" : "output/mwateramount.bin"}},
@@ -237,7 +231,7 @@ ID                         Fmt                    filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 8000,  /* spinup years */
+  "nspinup" : 7000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1861, /* first year of simulation */
   "lastyear" : 1861, /* last year of simulation */

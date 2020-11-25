@@ -53,7 +53,7 @@ int iterate(Outputfile *output,  /**< Output file data */
 {
   Real co2,cflux_total;
   Flux flux;
-  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year;
+  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year,climate_year,year_co2;
   Bool rc;
   Climatedata store,data_save;
 
@@ -94,7 +94,11 @@ int iterate(Outputfile *output,  /**< Output file data */
       co2=receive_image_co2(config);
     else
 #endif
-    if(getco2(input.climate,&co2,year)) /* get atmospheric CO2 concentration */
+    if(config->fix_climate && year>config->fix_climate_year)
+      year_co2=config->fix_climate_year;
+    else
+      year_co2=year; 
+    if(getco2(input.climate,&co2,year_co2)) /* get atmospheric CO2 concentration */
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR015: Invalid year %d in getco2().\n",year);
@@ -139,14 +143,29 @@ int iterate(Outputfile *output,  /**< Output file data */
       }
       else
 #endif
-      if(getclimate(input.climate,grid,year,config))
       {
-        if(isroot(*config))
+        if(config->fix_climate && year>config->fix_climate_year)
+        {
+          if(config->shuffle_climate)
+          {
+            if(isroot(*config))
+              climate_year=config->fix_climate_year-config->fix_climate_cycle/2+(int)(erand48(config->seed)*config->fix_climate_cycle);
+#ifdef USE_MPI
+            MPI_Bcast(&climate_year,1,MPI_INT,0,config->comm);
+#endif
+          }
+          else
+            climate_year=config->fix_climate_year-config->fix_climate_cycle/2+(year-config->fix_climate_year+config->fix_climate_cycle/2) % config->fix_climate_cycle;
+        }
+        else
+          climate_year=year;
+
+        if(getclimate(input.climate,grid,climate_year,config))
         {
           fprintf(stderr,"ERROR104: Simulation stopped in getclimate().\n");
           fflush(stderr);
+          break; /* leave time loop */
         }
-        break; /* leave time loop */
       }
     }
     if(input.landuse!=NULL)
@@ -154,11 +173,15 @@ int iterate(Outputfile *output,  /**< Output file data */
       calc_seasonality(grid,npft,ncft,config);
       if(config->withlanduse==CONST_LANDUSE) /* constant landuse? */
         landuse_year=config->landuse_year_const;
+      else if(config->fix_landuse && year>config->fix_climate_year)
+        landuse_year=config->fix_climate_year;
       else
         landuse_year=year;
-      /* under constand landuse also keep wateruse at landuse_year_const */
+      /* under constant landuse also keep wateruse at landuse_year_const */
       if(config->withlanduse==CONST_LANDUSE)
         wateruse_year=config->landuse_year_const;
+      else if(config->fix_landuse && year>config->fix_climate_year)
+        wateruse_year=config->fix_climate_year;
       else
         wateruse_year=year;
 #if defined IMAGE && defined COUPLED

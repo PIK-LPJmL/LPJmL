@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#define writeoutputvar(index,name) if(isopen(output,index))\
+#define writeoutputvar(index,name) if(isopen(output,index) && config->outnames[index].timestep==MONTHLY)\
   {\
     count=0;\
     for(cell=0;cell<config->ngridcell;cell++)\
@@ -220,21 +220,34 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
   float *fvec;
   fvec=newvec(float,config->count);
   check(fvec);
-  writeoutputvar(MNPP,mnpp);
-  writeoutputvar(MGPP,mgpp);
-  writeoutputvar(MRH,mrh);
+  writeoutputvar(NPP,npp);
+  writeoutputvar(GPP,gpp);
+  writeoutputvar(RH,rh);
   writeoutputvar(MRH_LITTER,mrh_litter);
-  writeoutputvar(MRUNOFF,mrunoff);
+  writeoutputvar(RUNOFF,runoff);
   writeoutputvar(MDISCHARGE,mdischarge);
   writeoutputvar(MWATERAMOUNT,mwateramount);
-  writeoutputvar(MTRANSP,mtransp);
+  writeoutputvar(TRANSP,transp);
   writeoutputvar(MTRANSP_B,mtransp_b);
-  writeoutputvar(MEVAP,mevap);
+  writeoutputvar(EVAP,evap);
   writeoutputvar(MEVAP_B,mevap_b);
-  writeoutputvar(MINTERC,minterc);
+  writeoutputvar(INTERC,interc);
   writeoutputvar(MINTERC_B,minterc_b);
+<<<<<<< HEAD
   writeoutputvar(MPET,mpet);
   writeoutputpftvar(MSWC,mswc,NSOILLAYER);
+=======
+  writeoutputvar(PET,pet);
+  if(isopen(output,MSWC))
+    for(l=0;l<NSOILLAYER;l++)
+    {
+      count=0;
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+          fvec[count++]=(float)grid[cell].output.mswc[l];
+      writemonth2(output,MSWC,fvec,year,month,l,NSOILLAYER,config);
+    }
+>>>>>>> 2667ff6872542f4a551087e7e63a69279365542d
   writeoutputvar(MSWC1,mswc[0]);
   writeoutputvar(MSWC2,mswc[1]);
   writeoutputvar(MSWC3,mswc[2]);
@@ -298,7 +311,7 @@ void fwriteoutput_monthly(Outputfile *output, /**< Output data */
   writeoutputvar(MRUNOFF_SURF,mrunoff_surf);
   writeoutputvar(MRUNOFF_LAT,mrunoff_lat);
   writeoutputvar(MSEEPAGE,mseepage);
-  writeoutputvar(MFAPAR,mfapar);
+  writeoutputvar(FAPAR,fapar*ndaymonth1[month]);
   writeoutputvar(MALBEDO,malbedo);
   writeoutputvar(MPHEN_TMIN,mphen_tmin);
   writeoutputvar(MPHEN_TMAX,mphen_tmax);

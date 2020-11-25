@@ -185,6 +185,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
 {
   char *fdi[]={"Nesterov index","water vapour pressure deficit index"};
   char *irrig[]={"no","limited","potential","all","irrigation on rainfed"};
+  char timenames[]={'Y','M','D'};
   String s;
   Item *item;
   int len;
@@ -218,6 +219,18 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,"const. climate");
   if(config->shuffle_climate)
     len=printsim(file,len,&count,"shuffle climate");
+   if(config->fix_climate)
+  {
+    snprintf(s,STRING_LEN,"fix climate after year %d cycling %d years",
+             config->fix_climate_year, config->fix_climate_cycle);
+    len=printsim(file,len,&count,s);
+    if(config->withlanduse!=CONST_LANDUSE && config->withlanduse!=NO_LANDUSE && config->fix_landuse)
+    {
+      snprintf(s,STRING_LEN,"fix landuse after year %d",
+               config->fix_climate_year);
+      len=printsim(file,len,&count,s);
+    }
+  }
   if(config->const_deposition)
     len=printsim(file,len,&count,"const. deposition");
   if(config->river_routing)
@@ -550,12 +563,12 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
               config->missing_value,
               config->global_netcdf ? "global" : "local");
     }
-    fprintf(file,"%*s Fmt %*s Type  Filename\n",-width,"Variable",-width_unit,"Unit");
+    fprintf(file,"%*s Fmt %*s Type  dT Filename\n",-width,"Variable",-width_unit,"Unit");
     frepeatch(file,'-',width);
     fputs(" --- ",file);
     frepeatch(file,'-',width_unit);
-    fputs(" ----- ",file);
-    frepeatch(file,'-',77-width-4-width_unit-7);
+    fputs(" ----- -- ",file);
+    frepeatch(file,'-',77-width-4-width_unit-7-3);
     putc('\n',file);
     for(i=0;i<config->n_out;i++)
     {
@@ -563,10 +576,10 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       if(config->outnames[config->outputvars[index].id].name==NULL)
         fprintf(file,"%*d",width,config->outputvars[index].id);
       else
-        fprintf(file,"%*s",-width,config->outnames[config->outputvars[index].id].name);
-      fprintf(file," %s %*s %5s ",fmt[config->outputvars[index].filename.fmt],
-              -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
-              typenames[getoutputtype(config->outputvars[index].id,config->float_grid)]);
+        fprintf(file,"%*s",width,config->outnames[config->outputvars[index].id].name);
+      fprintf(file," %s %*s %5s %c  ",fmt[config->outputvars[index].filename.fmt],
+              width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
+              typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],timenames[config->outnames[config->outputvars[index].id].timestep]);
       printoutname(file,config->outputvars[index].filename.name,config->outputvars[index].oneyear,config);
       putc('\n',file);
     }
@@ -574,8 +587,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     frepeatch(file,'-',width);
     fputs(" --- ",file);
     frepeatch(file,'-',width_unit);
-    fputs(" ----- ",file);
-    frepeatch(file,'-',77-width-4-width_unit-7);
+    fputs(" ----- -- ",file);
+    frepeatch(file,'-',77-width-4-width_unit-7-3);
     putc('\n',file);
     switch(config->crop_index)
     {

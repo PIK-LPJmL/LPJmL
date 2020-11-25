@@ -101,7 +101,7 @@ int main(int argc,char **argv)
         sub++;
         break;
       default:
-        if(ismonthlyoutput(config.outputvars[i].id))
+        if(config.outnames[config.outputvars[i].id].timestep==MONTHLY)
         {
           nmonth++;
           sub++;

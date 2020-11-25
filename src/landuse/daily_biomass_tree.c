@@ -53,6 +53,7 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
   Real intercep_stand_blue; /* irrigation interception (mm)*/
   Real npp; /* net primary productivity (gC/m2) */
   Real wdf; /* water deficit fraction */
+  Real transp;
   Real gc_pft;
   Biomass_tree *data;
   Soil *soil;
@@ -96,7 +97,8 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
     else
     {
       /* write irrig_apply to output */
-      output->mirrig+=irrig_apply*stand->frac;
+      output->irrig+=irrig_apply*stand->frac;
+      stand->cell->balance.airrig+=irrig_apply*stand->frac;
       if(config->pft_output_scaled)
         output->cft_airrig[rbtree(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=irrig_apply*stand->cell->ml.landfrac[1].biomass_tree;
       else
@@ -161,10 +163,11 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
      output->daily.npp+=npp*stand->frac;
      output->daily.gpp+=gpp*stand->frac;
    }
-   output->mnpp+=npp*stand->frac;
+   output->npp+=npp*stand->frac;
+   stand->cell->balance.nep+=npp*stand->frac;
    output->dcflux-=npp*stand->frac;
-   output->mgpp+=gpp*stand->frac;
-   output->mfapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+   output->gpp+=gpp*stand->frac;
+   output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
    output->mphen_tmin += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
    output->mphen_tmax += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
    output->mphen_light += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -197,16 +200,20 @@ Real daily_biomass_tree(Stand *stand,                /**< stand pointer */
     output->daily.interc+=intercep_stand*stand->frac;
   }
 
+  transp=0;
   forrootsoillayer(l)
   {
-    output->mtransp+=aet_stand[l]*stand->frac;
+    transp+=aet_stand[l]*stand->frac;
     output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
-
-  output->minterc+=intercep_stand*stand->frac; /* Note: including blue fraction*/
+  output->transp+=transp;
+  stand->cell->balance.atransp+=transp;
+  output->interc+=intercep_stand*stand->frac; /* Note: including blue fraction*/
   output->minterc_b+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
 
-  output->mevap+=evap*stand->frac;
+  output->evap+=evap*stand->frac;
+  stand->cell->balance.aevap+=evap*stand->frac;
+  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
   output->mevap_b+=evap_blue*stand->frac;   /* blue soil evap */
 
   output->mreturn_flow_b+=return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/

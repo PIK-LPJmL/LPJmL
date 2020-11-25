@@ -96,6 +96,12 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     fscanfloat2(&item,&outnames[index].scale,"scale",outnames[index].name);
     outnames[index].offset=0.0;
     fscanfloat2(&item,&outnames[index].offset,"offset",outnames[index].name);
+    if(fscankeywords(&item,&outnames[index].timestep,"timestep",time_step,3,FALSE,verb))
+    {
+      if(verb) 
+        fprintf(stderr,"ERRROR229: Cannot read int 'timestep' for output '%s'.\n",outnames[index].name);
+      return NULL;
+    }
   }
   return outnames;
 } /* of 'fscanoutputvar' */

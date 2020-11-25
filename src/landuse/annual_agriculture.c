@@ -30,6 +30,6 @@ Bool annual_agriculture(Stand *stand,         /**< Pointer to stand */
 {
   Irrigation *data;
   data=stand->data;
-  stand->cell->output.soil_storage+=(data->irrig_stor+data->irrig_amount)*stand->frac*stand->cell->coord.area;
+  stand->cell->balance.soil_storage+=(data->irrig_stor+data->irrig_amount)*stand->frac*stand->cell->coord.area;
   return FALSE;
 } /* of 'annual_agriculture' */

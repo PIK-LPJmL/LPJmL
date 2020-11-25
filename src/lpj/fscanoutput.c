@@ -17,6 +17,7 @@
 
 #include "lpj.h"
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 #define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanbool2(file,var,name) if(fscanbool(file,var,name,FALSE,verbosity)) return TRUE;
 
@@ -185,6 +186,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
           config->outnames[flag].var=strdup(config->outputvars[count].filename.var);
           checkptr(config->outnames[flag].var);
         }
+        if(config->outputvars[count].filename.timestep!=NOT_FOUND)
+          config->outnames[flag].timestep=config->outputvars[count].filename.timestep;
         if(config->outputvars[count].filename.unit!=NULL)
         {
           free(config->outnames[flag].unit);
@@ -207,7 +210,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         }
         else
         {
-          if(isdailyoutput(flag))
+          if(config->outnames[flag].timestep==DAILY)
             config->withdailyoutput=TRUE;
           count++;
         }

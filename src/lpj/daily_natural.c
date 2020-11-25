@@ -53,6 +53,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   Real npp; /* net primary productivity (gC/m2) */
   Real wdf; /* water deficit fraction */
   Real gc_pft;
+  Real transp;
 
 #ifdef DAILY_ESTABLISHMENT
   Stocks flux_estab = {0,0};
@@ -148,15 +149,16 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       }
     }
     output->dcflux-=npp*stand->frac;
-    output->mnpp+=npp*stand->frac;
 #if defined IMAGE && defined COUPLED
     if(stand->type->landusetype==NATURAL)
     {
       output->npp_nat+=npp*stand->frac;
     }
 #endif
-    output->mgpp+=gpp*stand->frac;
-    output->mfapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    stand->cell->balance.nep+=npp*stand->frac;
+    output->npp+=npp*stand->frac;
+    output->gpp+=gpp*stand->frac;
+    output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
     output->mphen_tmin += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     output->mphen_tmax += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -216,20 +218,24 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       }
     }
   }
+  transp=0;
   forrootsoillayer(l)
   {
-    output->mtransp+=aet_stand[l]*stand->frac;
+    transp+=aet_stand[l]*stand->frac;
     output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
-
-  output->minterc+=intercep_stand*stand->frac;
-  output->mevap+=evap*stand->frac;
+  output->transp+=transp;
+  stand->cell->balance.atransp+=transp;
+  output->interc+=intercep_stand*stand->frac;
+  output->evap+=evap*stand->frac;
+  stand->cell->balance.aevap+=evap*stand->frac;
+  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
   output->mevap_b+=evap_blue*stand->frac;
   output->mreturn_flow_b+=return_flow_b*stand->frac;
   if(stand->type->landusetype==NATURAL)
     foreachpft(pft, p, &stand->pftlist)
     {
-      output->nv_lai[getpftpar(pft,id)]+=(actual_lai(pft)/NDAYYEAR);
+      output->nv_lai[getpftpar(pft,id)]+=actual_lai(pft);
     }
 
 #ifdef DAILY_ESTABLISHMENT
@@ -239,6 +245,8 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     flux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
   output->flux_estab.carbon+=flux_estab.carbon*stand->frac;
   output->flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   output->dcflux-=flux_estab.carbon*stand->frac;
 #endif
 

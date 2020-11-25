@@ -223,6 +223,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->shuffle_climate=FALSE;
   if(fscanbool(file,&config->shuffle_climate,"shuffle_climate",TRUE,verbose))
     return TRUE;
+  config->fix_climate=FALSE;
+  if(fscanbool(file,&config->fix_climate,"fix_climate",TRUE,verbose))
+    return TRUE;
+  if(config->fix_climate)
+  {
+    fscanint2(file,&config->fix_climate_year,"fix_climate_year");
+    fscanint2(file,&config->fix_climate_cycle,"fix_climate_cycle");
+  }
   config->const_deposition=FALSE;
   if(config->with_nitrogen==LIM_NITROGEN)
   {
@@ -237,6 +245,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS || config->withlanduse==ONLY_CROPS)
         fscanint2(file,&config->landuse_year_const,"landuse_year_const");
+      config->fix_landuse=FALSE;
+      if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS)
+        fscanint2(file,&config->landuse_year_const,"landuse_year_const");
+      if(config->withlanduse!=CONST_LANDUSE && config->fix_climate)
+      {
+        if(fscanbool(file,&config->fix_landuse,"fix_landuse",TRUE,verbose))
+          return TRUE;
+      }
       if(fscankeywords(file,&config->sdate_option,"sowing_date_option",sowing_data_option,3,FALSE,verbose))
         return TRUE;
       if(config->sdate_option==FIXED_SDATE || config->sdate_option==PRESCRIBED_SDATE)

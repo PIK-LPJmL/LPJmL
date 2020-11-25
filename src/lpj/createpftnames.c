@@ -55,7 +55,7 @@ char **createpftnames(int index,           /**< output index */
     case PFT_VEGC: case PFT_VEGN: case PFT_CLEAF: case PFT_NLEAF:
     case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
     case PFT_CHAWO: case PFT_NHAWO: case PFT_LAIMAX: case PFT_NLIMIT:
-    case MPFT_LAI:
+    case PFT_LAI:
       for(i=0;i<npft-nbiomass-nwft;i++)
       {
         pftnames[i]=strdup(pftpar[i].name);

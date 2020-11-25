@@ -25,12 +25,12 @@ Bool isnitrogen_output(int index /**< index for output file */
     case CFT_ABOVEGBMN: case PFT_HARVESTN: case PFT_RHARVESTN: case RHARVEST_BURNTN:
     case RHARVEST_BURNT_IN_FIELDN: case FLUX_ESTABN: case VEGN: case SOILN: case LITN:
     case SOILNH4: case SOILNO3: case HARVESTN: case SOILN_LAYER: case SOILN_SLOW:
-    case PFT_NUPTAKE: case MNUPTAKE: case MLEACHING: case MN2O_DENIT: case MN2O_NIT:
-    case MN2_EMIS: case MBNF: case PFT_NDEMAND: case MN_MINERALIZATION: case FIREN:
-    case MN_IMMO: case PFT_NLEAF: case PFT_VEGN: case NEGN_FLUXES: case PFT_NROOT:
+    case PFT_NUPTAKE: case NUPTAKE: case LEACHING: case N2O_DENIT: case N2O_NIT:
+    case N2_EMIS: case BNF: case PFT_NDEMAND: case N_MINERALIZATION: case FIREN:
+    case N_IMMO: case PFT_NLEAF: case PFT_VEGN: case NEGN_FLUXES: case PFT_NROOT:
     case PFT_NSAPW: case PFT_NHAWO: case PFT_HARVESTN2: case PFT_RHARVESTN2:
-    case CFT_ABOVEGBMN2: case MN_VOLATILIZATION: case PFT_NLIMIT: case SOILNO3_LAYER:
-    case SOILNH4_LAYER: case ALITFALLN:
+    case CFT_ABOVEGBMN2: case N_VOLATILIZATION: case PFT_NLIMIT: case SOILNO3_LAYER:
+    case SOILNH4_LAYER: case LITFALLN:
       return TRUE;
     default:
       return FALSE;

@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   l  p  j  m  l  _  r  c  p 8  5  .  j  s                      \n**/
+/**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.1.001 with RCP85 climate              \n**/
+/** Default configuration file for LPJmL C Version 5.1.002                         \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -22,9 +22,6 @@
 
 #include "include/conf.h" /* include constant definitions */
 
-#define mkstr(s) xstr(s) /* putting string in quotation marks */
-#define xstr(s) #s
-
 //#define DAILY_OUTPUT  /* enables daily output */
 
 {   /* LPJmL configuration in JSON format */
@@ -33,40 +30,35 @@
 /*  I. Simulation description and type section                       */
 /*===================================================================*/
 
-  "sim_name" : mkstr(LPJmL run with RCP85 climate from MODEL), /* Simulation description */
-  "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
+  "sim_name" : "LPJmL Run", /* Simulation description */
+  "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "version"  : "5.1",       /* LPJmL version expected */
-  "random_prec" : false,    /* Random weather generator for precipitation enabled */
-  "random_seed" : "random_seed",        /* seed for random number generator */
-  "radiation" : "radiation",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
-  "fire" : "fire",            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
+  "random_prec" : false,     /* Random weather generator for precipitation enabled */
+  "random_seed" : 2,        /* seed for random number generator */
+  "radiation" : "radiation_lwdown",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
+  "fire" : "fire",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
+  "fdi" : "nesterov_index", /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
-  "new_trf" : false,        /* new transpiration reduction function disabled */
-  "river_routing" : true,
+  "river_routing" : false,
   "permafrost" : true,
   "with_nitrogen" : "lim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
-  "store_climate" : true, /* store climate data in spin-up phase */
+  "store_climate" : true, /* store climate data in spin-uip phase */
   "const_climate" : false,
-  "shuffle_climate" : true,
   "const_deposition" : false,
-  "fix_climate" : false,      /* fix climate after specified year */
-  "fix_landuse" : false,     /* fix land use after specified year */
-  "fix_climate_year" : 2094, /* year at which climate (and land use) is fixed */
-  "fix_climate_cycle": 11,   /* number of years for climate shuffle for fixed climate */
 #ifdef FROM_RESTART
-  "equilsoil" :  false,
   "population" : false,
   "landuse" : "landuse", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
-  "wateruse" : "all_wateruse",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "wateruse" : "wateruse",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "equilsoil" : false,
 #else
-  "equilsoil" :  true,
   "population" : false,
   "landuse" : "no_landuse",
   "reservoir" : false,
   "wateruse" : "no_wateruse",
+  "equilsoil" : true,
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
@@ -75,16 +67,17 @@
   "intercrop" : true,                   /* intercrops on setaside */
   "remove_residuals" : false,           /* remove residuals */
   "residues_fire" : false,              /* fire in residuals */
-  "irrigation" : "lim_irrigation",        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
-  "laimax_interpolate" : "laimax_par",    /* laimax values from manage parameter file, */
-                                        /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
+  "irrigation" : "lim_irrigation",      /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
+  "laimax_interpolate" : "laimax_par",  /* laimax values from manage parameter file, */
+                                        /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : true,            /* enable fertilizer input */
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
-  "others_to_crop" : true,
+  "others_to_crop" : false,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
+  "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -96,7 +89,7 @@
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-#include "input_rcp85.js"    /* Input files of CRU dataset */
+#include "input_GSWP3-ERA5.js"    /* Input files of CRU dataset */
 
 /*===================================================================*/
 /*  IV. Output data section                                          */
@@ -122,8 +115,8 @@
   [
 
 /*
-ID                         Fmt                    filename
--------------------------- ---------------------- ----------------------------- */
+ID                               Fmt                        filename
+-------------------------------- ------------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
     { "id" : "fpc",              "file" : { "fmt" : "raw", "name" : "output/fpc.bin"}},
     { "id" : "npp",             "file" : { "fmt" : "raw", "name" : "output/mnpp.bin"}},
@@ -136,6 +129,7 @@ ID                         Fmt                    filename
     { "id" : "interc",          "file" : { "fmt" : "raw", "name" : "output/minterc.bin"}},
     { "id" : "swc1",            "file" : { "fmt" : "raw", "name" : "output/mswc1.bin"}},
     { "id" : "swc2",            "file" : { "fmt" : "raw", "name" : "output/mswc2.bin"}},
+    { "id" : "firec",            "file" : { "fmt" : "raw", "name" : "output/firec.bin"}},
     { "id" : "firef",            "file" : { "fmt" : "raw", "name" : "output/firef.bin"}},
     { "id" : "vegc",             "file" : { "fmt" : "raw", "name" : "output/vegc.bin"}},
     { "id" : "soilc",            "file" : { "fmt" : "raw", "name" : "output/soilc.bin"}},
@@ -147,8 +141,6 @@ ID                         Fmt                    filename
     { "id" : "phen_light",      "file" : { "fmt" : "raw", "name" : "output/mphen_light.bin"}},
     { "id" : "phen_water",      "file" : { "fmt" : "raw", "name" : "output/mphen_water.bin"}},
     { "id" : "vegn",             "file" : { "fmt" : "raw", "name" : "output/vegn.bin"}},
-    { "id" : "litfallc",       "file" : { "fmt" : "raw", "name" : "output/alitfallc.bin"}},
-    { "id" : "litfalln",       "file" : { "fmt" : "raw", "name" : "output/alitfalln.bin"}},
     { "id" : "soiln",            "file" : { "fmt" : "raw", "name" : "output/soiln.bin"}},
     { "id" : "litn",             "file" : { "fmt" : "raw", "name" : "output/litn.bin"}},
     { "id" : "soiln_layer",      "file" : { "fmt" : "raw", "name" : "output/soiln_layer.bin"}},
@@ -181,29 +173,17 @@ ID                         Fmt                    filename
     { "id" : "pft_chawo",        "file" : { "fmt" : "raw", "name" : "output/pft_chawo.bin"}},
     { "id" : "pft_nhawo",        "file" : { "fmt" : "raw", "name" : "output/pft_nhawo.bin"}},
 #ifdef WITH_SPITFIRE
-    { "id" : "firec",           "file" : { "fmt" : "raw", "timestep" : "mongthy", "unit" : "gC/month", "name" : "output/mfirec.bin"}},
+    { "id" : "firec",           "file" : { "fmt" : "raw", "name" : "output/mfirec.bin"}},
     { "id" : "nfire",           "file" : { "fmt" : "raw", "name" : "output/mnfire.bin"}},
     { "id" : "burntarea",       "file" : { "fmt" : "raw", "name" : "output/mburnt_area.bin"}},
-#else
-    { "id" : "firec",            "file" : { "fmt" : "raw", "name" : "output/firec.bin"}},
 #endif
     { "id" : "discharge",       "file" : { "fmt" : "raw", "name" : "output/mdischarge.bin"}},
     { "id" : "wateramount",     "file" : { "fmt" : "raw", "name" : "output/mwateramount.bin"}},
-    { "id" : "harvestc",         "file" : { "fmt" : "raw", "name" : "output/flux_harvestc.bin"}},
-    { "id" : "harvestn",         "file" : { "fmt" : "raw", "name" : "output/flux_harvestn.bin"}},
+    { "id" : "harvestc",         "file" : { "fmt" : "raw", "name" : "output/flux_harvest.bin"}},
     { "id" : "sdate",            "file" : { "fmt" : "raw", "name" : "output/sdate.bin"}},
     { "id" : "pft_harvestc",     "file" : { "fmt" : "raw", "name" : mkstr(output/pft_harvest.SUFFIX)}},
-    { "id" : "pft_harvestn",     "file" : { "fmt" : "raw", "name" : mkstr(output/pft_harvestn.SUFFIX)}},
     { "id" : "cftfrac",          "file" : { "fmt" : "raw", "name" : "output/cftfrac.bin"}},
     { "id" : "seasonality",      "file" : { "fmt" : "raw", "name" : "output/seasonality.bin"}},
-#ifdef DAILY_OUTPUT
-    { "id" : "d_npp",            "file" : { "fmt" : "raw", "name" : "output/d_npp.bin"}},
-    { "id" : "d_gpp",            "file" : { "fmt" : "raw", "name" : "output/d_gpp.bin"}},
-    { "id" : "d_rh",             "file" : { "fmt" : "raw", "name" : "output/d_rh.bin"}},
-    { "id" : "d_trans",          "file" : { "fmt" : "raw", "name" : "output/d_trans.bin"}},
-    { "id" : "d_interc",         "file" : { "fmt" : "raw", "name" : "output/d_interc.bin"}},
-    { "id" : "d_evap",           "file" : { "fmt" : "raw", "name" : "output/d_evap.bin"}},
-#endif
     { "id" : "pet",             "file" : { "fmt" : "raw", "name" : "output/mpet.bin"}},
     { "id" : "albedo",          "file" : { "fmt" : "raw", "name" : "output/malbedo.bin"}},
     { "id" : "maxthaw_depth",    "file" : { "fmt" : "raw", "name" : "output/maxthaw_depth.bin"}},
@@ -217,10 +197,16 @@ ID                         Fmt                    filename
     { "id" : "transp_b",        "file" : { "fmt" : "raw", "name" : "output/mtransp_b.bin"}},
     { "id" : "evap_b",          "file" : { "fmt" : "raw", "name" : "output/mevap_b.bin"}},
     { "id" : "interc_b",        "file" : { "fmt" : "raw", "name" : "output/mintec_b.bin"}},
+    { "id" : "prod_turnover",    "file" : { "fmt" : "raw", "name" : "output/prod_turnover.bin"}},
+    { "id" : "deforest_emis",    "file" : { "fmt" : "raw", "name" : "output/deforest_emis.bin"}},
     { "id" : "conv_loss_evap",  "file" : { "fmt" : "raw", "name" : "output/aconv_loss_evap.bin"}},
     { "id" : "conv_loss_drain", "file" : { "fmt" : "raw", "name" : "output/aconv_loss_drain.bin"}}
 /*------------------------ ---------------------- ------------------------------- */
   ],
+
+#else
+
+  "output" : [],  /* no output written */
 
 #endif
 
@@ -228,8 +214,8 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 
-  "startgrid" : "all", /* 27410, 67208 60400 all grid cells */
-  "endgrid" : ALL,
+  "startgrid" : 18744, /* 27410, 67208 60400 47284 47293 47277 all grid cells */
+  "endgrid" : 18744,
 
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */
@@ -237,25 +223,28 @@ ID                         Fmt                    filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 8000,  /* spinup years */
+  "nspinup" : 30000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
-  "firstyear": 1861, /* first year of simulation */
-  "lastyear" : 1861, /* last year of simulation */
-  "restart" : false, /* do not start from restart file */
+  "firstyear": 1901, /* first year of simulation */
+  "lastyear" : 1901, /* last year of simulation */
+  "outputyear": -28099, /* first year output is written  */
+  "restart" :  false, /* start from restart file */
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-  "write_restart_filename" : "restart/restart_1860_nv_stdfire.lpj", /* filename of restart file */
-  "restart_year": 1860 /* write restart at year */
+  "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "restart_year": 1840 /* write restart at year */
 
 #else
 
   "nspinup" : 390,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
-  "firstyear": 1861, /* first year of simulation */
-  "lastyear" : 2099, /* last year of simulation */
-  "outputyear": 1861, /* first year output is written  */
+  "firstyear": 1901, /* first year of simulation */
+  "lastyear" : 2018, /* last year of simulation */
+  "outputyear": 1901, /* first year output is written  */
   "restart" :  true, /* start from restart file */
-  "restart_filename" : "restart/restart_1860_nv_stdfire.lpj", /* filename of restart file */
-  "write_restart" : false, /* create restart file */
+  "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
+  "write_restart" : true, /* create restart file */
+  "write_restart_filename" : "restart/restart_1900_crop_stdfire.lpj", /* filename of restart file */
+  "restart_year": 1900 /* write restart at year */
 
 #endif
 }

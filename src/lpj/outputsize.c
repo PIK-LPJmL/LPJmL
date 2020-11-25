@@ -33,7 +33,7 @@ int outputsize(int index,     /**< output index */
     case PFT_NUPTAKE: case PFT_NDEMAND: case PFT_VEGC: case PFT_VEGN:
     case PFT_CLEAF: case PFT_NLEAF:
     case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
-    case PFT_CHAWO: case PFT_NHAWO: case MPFT_LAI:
+    case PFT_CHAWO: case PFT_NHAWO: case PFT_LAI:
       return npft-nbiomass-nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;
     case PFT_HARVESTC: case PFT_RHARVESTC:
     case PFT_HARVESTN: case PFT_RHARVESTN:
@@ -57,7 +57,7 @@ int outputsize(int index,     /**< output index */
       return npft-nbiomass-nwft;
     case NV_LAI:
       return npft-nbiomass-nwft;
-    case MSOILTEMP: case MSWC:
+    case SOILTEMP: case SWC:
       return NSOILLAYER;
     case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER:
       return LASTLAYER;

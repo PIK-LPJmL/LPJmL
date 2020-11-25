@@ -29,6 +29,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
   Real ftimber; /* fraction harvested for timber */
   Stocks harvest;
   Stocks stocks;
+  Stocks trad_biofuel;
 #if defined IMAGE && defined COUPLED
   Bool tharvest=FALSE;
   if(istimber)
@@ -72,6 +73,9 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
                                cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&cell->output.trad_biofuel,cell->ml.image_data->timber_frac,cell->ml.image_data->takeaway);
         cell->output.timber_harvest.carbon+=harvest.carbon;
         cell->output.timber_harvest.nitrogen+=harvest.nitrogen;
+                               cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&trad_biofuel);
+        cell->output.trad_biofuel+=trad_biofuel;
+        cell->balance.trad_biofuel+=trad_biofuel;
 #ifdef DEBUG_IMAGE
         /*if(ftimber>0 ||
           (cell->coord.lon-.1<-43.25 && cell->coord.lon+.1>-43.25 && cell->coord.lat-.1<-11.75 && cell->coord.lat+.1>-11.75)||
@@ -84,8 +88,12 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         }
 #endif
 #else
-        harvest=timber_harvest(pft,soil,frac,param.ftimber,standfrac,&nind,&cell->output.trad_biofuel);
+        harvest=timber_harvest(pft,soil,frac,param.ftimber,standfrac,&nind,&trad_biofuel);
 #endif
+        cell->output.trad_biofuel.carbon+=trad_biofuel.carbon;
+        cell->output.trad_biofuel.nitrogen+=trad_biofuel.nitrogen;
+        cell->balance.trad_biofuel.carbon+=trad_biofuel.carbon;
+        cell->balance.trad_biofuel.nitrogen+=trad_biofuel.nitrogen;
         cell->output.timber_harvest.carbon+=harvest.carbon;
         cell->output.timber_harvest.nitrogen+=harvest.nitrogen;
 #ifdef IMAGE
@@ -101,6 +109,8 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #endif
         cell->output.deforest_emissions.carbon+=stocks.carbon*standfrac;
         cell->output.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
+        cell->balance.deforest_emissions.carbon+=stocks.carbon*standfrac;
+        cell->balance.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
         soil->NO3[0]+=stocks.nitrogen*param.q_ash;
       } /* if tree */
     } /* is timber */

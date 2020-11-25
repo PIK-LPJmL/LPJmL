@@ -47,11 +47,13 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     {
       reprod-=pft->establish.carbon;
       pft->stand->cell->output.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
+      pft->stand->cell->balance.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
       pft->establish.carbon=0;
     }
     else
     {
       pft->stand->cell->output.flux_estab.carbon-=reprod*pft->stand->frac;
+      pft->stand->cell->balance.flux_estab.carbon-=reprod*pft->stand->frac;
       pft->establish.carbon-=reprod;
       reprod=0;
     }
@@ -66,11 +68,13 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     {
       reprod-=pft->establish.nitrogen;
       pft->stand->cell->output.flux_estab.nitrogen-=pft->establish.nitrogen*pft->stand->frac;
+      pft->stand->cell->balance.flux_estab.nitrogen-=pft->establish.nitrogen*pft->stand->frac;
       pft->establish.nitrogen=0;
     }
     else
     {
       pft->stand->cell->output.flux_estab.nitrogen-=reprod*pft->stand->frac;
+      pft->stand->cell->balance.flux_estab.nitrogen-=reprod*pft->stand->frac;
       reprod=0;
       pft->establish.nitrogen-=reprod;
     }

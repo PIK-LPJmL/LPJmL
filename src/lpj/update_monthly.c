@@ -41,29 +41,6 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
     foreachpft(pft,p,&stand->pftlist)
       turnover_monthly(&stand->soil.litter,pft);
   } /* of foreachstand */
-  for(i=0;i<NSOILLAYER;i++)
-    cell->output.mswc[i]*=ndaymonth1[month];
-  for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2+npft-nbiomass-nwft;i++)
-    cell->output.mpft_lai[i]*=ndaymonth1[month];
-  cell->output.mrootmoist*=ndaymonth1[month];
-  cell->output.mfiredi*=ndaymonth1[month];
-  cell->output.mfapar*=ndaymonth1[month];
-  cell->output.malbedo*=ndaymonth1[month];
-  cell->output.mphen_tmin*=ndaymonth1[month];
-  cell->output.mphen_tmax*=ndaymonth1[month];
-  cell->output.mphen_light*=ndaymonth1[month];
-  cell->output.mphen_water*=ndaymonth1[month];
-  cell->output.mwscal*=ndaymonth1[month];
-  cell->output.atransp+=cell->output.mtransp;
-  cell->output.aevap+=cell->output.mevap;
-  cell->output.ainterc+=cell->output.minterc;
-  cell->output.airrig+=cell->output.mirrig;
-  cell->output.aevap_lake+=cell->output.mevap_lake;
-  cell->output.aevap_res+=cell->output.mevap_res;
-  cell->output.mswe*=ndaymonth1[month];
-  cell->output.aconv_loss_evap+=cell->output.mconv_loss_evap;
-  cell->output.aconv_loss_drain+=cell->output.mconv_loss_drain;
-  cell->output.aburntarea+=cell->output.mburntarea;
 #if defined IMAGE && defined COUPLED
   if(cell->ml.image_data!=NULL)
   {
@@ -74,16 +51,8 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
     cell->ml.image_data->mpetim[month] += cell->output.mpet;
   }
 #endif
-  /* for carbon balance check  */
-  cell->balance.nep+=cell->output.mnpp-cell->output.mrh;
   /* for nitrogen balance check */
-  cell->balance.n_influx+=cell->output.mbnf; /* deposition added in update_daily.c, fertilizer added in cultivate.c */
-  cell->balance.n_outflux+=cell->output.mn2o_denit+cell->output.mn2o_nit+cell->output.mn2_emissions+cell->output.mn_leaching;
   /* for water balance check */
-  cell->balance.awater_flux+=cell->output.mrunoff+cell->output.mtransp+
-    cell->output.mevap+cell->output.minterc+cell->output.mevap_lake+
-    ((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area)-cell->output.mirrig;
-  if(cell->ml.dam)
-    cell->balance.awater_flux+=cell->output.mevap_res;
+  cell->balance.awater_flux+=((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area);
 
 } /* of 'monthly_update' */

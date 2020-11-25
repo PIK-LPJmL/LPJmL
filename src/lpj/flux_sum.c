@@ -29,36 +29,36 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
     {
       flux.area+=grid[cell].coord.area;
       flux.nep+=grid[cell].balance.nep*grid[cell].coord.area;
-      flux.fire+=(grid[cell].output.fire.carbon+grid[cell].output.flux_firewood.carbon)*grid[cell].coord.area;
-      flux.estab+=grid[cell].output.flux_estab.carbon*grid[cell].coord.area;
-      flux.harvest+=(grid[cell].output.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon)*grid[cell].coord.area;
-      flux.transp+=grid[cell].output.atransp*grid[cell].coord.area;
-      flux.evap+=grid[cell].output.aevap*grid[cell].coord.area;
-      flux.interc+=grid[cell].output.ainterc*grid[cell].coord.area;
-      flux.wd+=(grid[cell].output.airrig+grid[cell].output.aconv_loss_evap+grid[cell].output.aconv_loss_drain)*grid[cell].coord.area;
+      flux.fire+=(grid[cell].balance.fire.carbon+grid[cell].balance.flux_firewood.carbon)*grid[cell].coord.area;
+      flux.estab+=grid[cell].balance.flux_estab.carbon*grid[cell].coord.area;
+      flux.harvest+=(grid[cell].balance.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon)*grid[cell].coord.area;
+      flux.transp+=grid[cell].balance.atransp*grid[cell].coord.area;
+      flux.evap+=grid[cell].balance.aevap*grid[cell].coord.area;
+      flux.interc+=grid[cell].balance.ainterc*grid[cell].coord.area;
+      flux.wd+=(grid[cell].balance.airrig+grid[cell].balance.aconv_loss_evap+grid[cell].balance.aconv_loss_drain)*grid[cell].coord.area;
 #ifdef IMAGE
-      flux.wd_unsustainable+=grid[cell].output.awd_unsustainable*grid[cell].coord.area;
+      flux.wd_unsustainable+=grid[cell].balance.awd_unsustainable*grid[cell].coord.area;
 #else
-      flux.wd_unsustainable+=grid[cell].output.awd_unsustainable;
+      flux.wd_unsustainable+=grid[cell].balance.awd_unsustainable;
 #endif
-      flux.evap_lake+=grid[cell].output.aevap_lake*grid[cell].coord.area;
-      flux.evap_res+=grid[cell].output.aevap_res*grid[cell].coord.area;
-      flux.irrig+=grid[cell].output.airrig*grid[cell].coord.area;
-      flux.conv_loss_evap+=grid[cell].output.aconv_loss_evap*grid[cell].coord.area; /* only evaporated conveyance losses */
+      flux.evap_lake+=grid[cell].balance.aevap_lake*grid[cell].coord.area;
+      flux.evap_res+=grid[cell].balance.aevap_res*grid[cell].coord.area;
+      flux.irrig+=grid[cell].balance.airrig*grid[cell].coord.area;
+      flux.conv_loss_evap+=grid[cell].balance.aconv_loss_evap*grid[cell].coord.area; /* only evaporated conveyance losses */
       flux.prec+=grid[cell].balance.aprec*grid[cell].coord.area;
-      flux.delta_soil_storage+=grid[cell].output.soil_storage-grid[cell].balance.soil_storage;
-      grid[cell].balance.soil_storage=grid[cell].output.soil_storage;
+      flux.delta_soil_storage+=grid[cell].balance.soil_storage-grid[cell].balance.soil_storage_last;
+      grid[cell].balance.soil_storage_last=grid[cell].balance.soil_storage;
       flux.total_reservoir_out+=grid[cell].balance.total_reservoir_out;
       flux.total_irrig_from_reservoir+=grid[cell].balance.total_irrig_from_reservoir;
-      flux.wateruse+=grid[cell].output.awateruse_hil;
+      flux.wateruse+=grid[cell].balance.awateruse_hil;
       flux.n_demand+=grid[cell].balance.n_demand*grid[cell].coord.area;
       flux.n_uptake+=grid[cell].balance.n_uptake*grid[cell].coord.area;
       flux.n_influx+=grid[cell].balance.n_influx*grid[cell].coord.area;
       flux.n_outflux+=grid[cell].balance.n_outflux*grid[cell].coord.area;
     }
-    flux.discharge+=grid[cell].output.adischarge;
-    flux.delta_surface_storage+=grid[cell].output.surface_storage-grid[cell].balance.surface_storage;
-    grid[cell].balance.surface_storage=grid[cell].output.surface_storage;
+    flux.discharge+=grid[cell].balance.adischarge;
+    flux.delta_surface_storage+=grid[cell].balance.surface_storage-grid[cell].balance.surface_storage_last;
+    grid[cell].balance.surface_storage_last=grid[cell].balance.surface_storage;
 
   } /* of 'for(cell=...)' */
 

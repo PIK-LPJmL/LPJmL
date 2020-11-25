@@ -17,6 +17,7 @@
 #include "lpj.h"
 
 char *fmt[N_FMT]={"raw","clm","clm2","txt","fms","meta","cdf"};
+char *time_step[]={"annual","monthly","daily"};
 
 Bool readfilename(LPJfile *file,      /**< pointer to text file read */
                   Filename *filename, /**< returns filename and format */
@@ -32,11 +33,19 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     return TRUE;
   if(fscankeywords(&f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
     return TRUE;
+  if(filename->fmt<0 || filename->fmt>CDF)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR205: Invalid value %d for input format.\n",
+              filename->fmt);
+    return TRUE;
+  }
   if(filename->fmt==FMS)
   {
     filename->var=NULL;
     filename->name=NULL;
     filename->time=NULL;
+    filename->unit=NULL;
     return FALSE;
   }
   if(isvar && filename->fmt==CDF)
@@ -147,5 +156,36 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     free(filename->var);
     return TRUE;
   }
+  if(iskeydefined(&f,"unit"))
+  {
+    if(fscanstring(&f,name,"unit",FALSE,verb))
+    {
+      if(verb)
+        readstringerr("unit");
+      return TRUE;
+    }
+    else
+    {
+      filename->unit=strdup(name);
+      if(filename->unit==NULL)
+      {
+        printallocerr("unit");
+        return TRUE;
+      }
+    }
+  }
+  else
+    filename->unit=NULL;
+  if(iskeydefined(&f,"timestep"))
+  {
+    if(fscankeywords(&f,&filename->timestep,"timestep",time_step,3,FALSE,verb))
+    {
+      if(verb)
+        fputs("ERRROR229: Cannot read int 'timestep'.\n",stderr);
+      return TRUE;
+    }
+  }
+  else
+    filename->timestep=NOT_FOUND;
   return FALSE;
 } /* of 'readfilename' */

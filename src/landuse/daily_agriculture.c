@@ -54,6 +54,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   Real npp; /* net primary productivity (gC/m2) */
   Real gc_pft;
   Real wdf; /* water deficit fraction */
+  Real transp;
   Bool negbm;
   Irrigation *data;
   Output *output;
@@ -177,8 +178,10 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         /* pay back conveyance losses that have already been consumed by transport into irrig_stor, only evaporative conv. losses, drainage conv. losses already returned */
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->coord.area*stand->frac;
         stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-        output->aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac; /* part of global water balance */
-        output->aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac; /* not included in global water balance */
+        output->mconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+        stand->cell->balance.aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+        output->mconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+        stand->cell->balance.aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
 
         if(config->pft_output_scaled)
         {
@@ -220,7 +223,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     else
     {
       /* write irrig_apply to output */
-      output->mirrig+=irrig_apply*stand->frac;
+      output->irrig+=irrig_apply*stand->frac;
+      stand->cell->balance.airrig+=irrig_apply*stand->frac;
       pft=getpft(&stand->pftlist,0);
 #ifndef DOUBLE_HARVEST
       if(config->pft_output_scaled)
@@ -287,10 +291,11 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     }
     npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd,&negbm,wdf,
                  !config->crop_resp_fix,config->with_nitrogen);
-    output->mnpp+=npp*stand->frac;
+    output->npp+=npp*stand->frac;
+    stand->cell->balance.nep+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
-    output->mgpp+=gpp*stand->frac;
-    output->mfapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    output->gpp+=gpp*stand->frac;
+    output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     output->mwscal += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     output->cft_fpar[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac)))*(1-pft->albedo);
 
@@ -400,8 +405,10 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         /* pay back conveyance losses that have already been consumed by transport into irrig_stor */
         stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->coord.area*stand->frac;
         stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-        output->aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-        output->aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+        output->mconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+        stand->cell->balance.aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+        output->mconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+        stand->cell->balance.aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
 
         if(config->pft_output_scaled)
         {
@@ -456,16 +463,20 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   if(data->irrigation && stand->pftlist.n>0) /* second element to avoid irrigation on just harvested fields */
     calc_nir(stand,data,gp_stand,wet,eeq);
 
+  transp=0;
   forrootsoillayer(l)
   {
-    output->mtransp+=aet_stand[l]*stand->frac;
+    transp+=aet_stand[l]*stand->frac;
     output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
-
-  output->minterc+=intercep_stand*stand->frac; /* Note: including blue fraction*/
+  output->transp+=transp;
+  stand->cell->balance.atransp+=transp;
+  output->interc+=intercep_stand*stand->frac; /* Note: including blue fraction*/
   output->minterc_b+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
 
-  output->mevap+=evap*stand->frac;
+  output->evap+=evap*stand->frac;
+  stand->cell->balance.aevap+=evap*stand->frac;
+  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
   output->mevap_b+=evap_blue*stand->frac;   /* blue soil evap */
 
   output->mreturn_flow_b+=return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/

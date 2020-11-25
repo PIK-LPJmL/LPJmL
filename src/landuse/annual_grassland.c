@@ -95,10 +95,12 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
     }
   stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 
-  stand->cell->output.soil_storage+=(grassland->irrigation.irrig_stor+grassland->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
-  stand->cell->output.mean_vegc_mangrass/=NDAYYEAR;
+  stand->cell->balance.soil_storage+=(grassland->irrigation.irrig_stor+grassland->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
+
   foreachpft(pft,p,&stand->pftlist)
   {
     stand->cell->output.fpc_bft[getpftpar(pft, id)-(npft-config->nbiomass-config->nwft-config->ngrass)+grassland->irrigation.irrigation*(config->nbiomass+2*config->ngrass)]=pft->fpc;

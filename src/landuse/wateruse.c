@@ -71,6 +71,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
       grid[cell].discharge.mfin += (1 - grid[cell].discharge.wateruse_fraction)*grid[cell].discharge.withdrawal;//return flow
 #else
       grid[cell].output.awateruse_hil+=grid[cell].discharge.withdrawal;
+      grid[cell].balance.awateruse_hil+=grid[cell].discharge.withdrawal;
 #endif
       grid[cell].discharge.withdrawal=0.0;
     }
@@ -83,6 +84,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
       grid[cell].discharge.dmass_lake += (1 - grid[cell].discharge.wateruse_fraction)*grid[cell].discharge.waterdeficit;//return flow
       grid[cell].discharge.mfin += (1 - grid[cell].discharge.wateruse_fraction)*grid[cell].discharge.waterdeficit;//return flow
 #else
+      grid[cell].balance.awateruse_hil+=grid[cell].discharge.waterdeficit;
       grid[cell].output.awateruse_hil+=grid[cell].discharge.waterdeficit;
 #endif
       grid[cell].discharge.waterdeficit=0.0;

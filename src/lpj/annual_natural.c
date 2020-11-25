@@ -78,6 +78,8 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
       firewood=woodconsum(stand,popdens);
       stand->cell->output.flux_firewood.carbon+=firewood.carbon*stand->frac;
       stand->cell->output.flux_firewood.nitrogen+=firewood.nitrogen*stand->frac;
+      stand->cell->balance.flux_firewood.carbon+=firewood.carbon*stand->frac;
+      stand->cell->balance.flux_firewood.nitrogen+=firewood.nitrogen*stand->frac;
       foreachpft(pft,p,&stand->pftlist)
         if(pft->nind<epsilon)
         {
@@ -96,10 +98,15 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     stand->cell->output.firef+=1.0/fire_frac;
     flux=firepft(&stand->soil.litter,&stand->pftlist,fire_frac);
     stand->cell->output.fire.carbon+=flux.carbon*stand->frac;
+    stand->cell->balance.fire.carbon+=flux.carbon*stand->frac;
     if(flux.nitrogen<0)
+    {
       stand->cell->output.fire.nitrogen+=flux.nitrogen*stand->frac;
+      stand->cell->balance.fire.nitrogen+=flux.nitrogen*stand->frac;
+    }
     else
     {
+      stand->cell->balance.fire.nitrogen+=flux.nitrogen*stand->frac*(1-param.q_ash);
       stand->cell->output.fire.nitrogen+=flux.nitrogen*stand->frac*(1-param.q_ash);
       stand->soil.NO3[0]+=flux.nitrogen*param.q_ash;
     }
@@ -109,6 +116,8 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   flux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
   stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
   if(stand->type->landusetype==NATURAL)
