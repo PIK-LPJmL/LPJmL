@@ -97,8 +97,6 @@ typedef struct
   Poolpar timber_f;        /* fraction that enters fast and slow product pool */
   Poolpar timber;          /* fast and slow timber pool [gC/m2] */
   Real timber_turnover;    /* annual sum of decayed product pool [gC/m2] */
-  Real anpp;               /* annual NPP (gC/m2) */
-  Real arh;                /* annual Rh (gC/m2) */
   Real prod_turn_fast;     /* product turnover from fast product pool (gC/m2/a) */
   Real prod_turn_slow;     /* product turnover from slow product pool (gC/m2/a) */
   Real store_bmtree_yield; /* yield of biomass trees storage to distribute over following years (gC/m2/8a) */

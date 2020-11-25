@@ -58,7 +58,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   delta_tot.nitrogen=tot.nitrogen-cell->balance.tot.nitrogen;
   cell->balance.tot=tot;
 
-  balance.carbon=cell->balance.nep-cell->balance.fire.carbon-cell->balance.flux_firewood.carbon+cell->balance.flux_estab.carbon-cell->balance.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-cell->output.neg_fluxes.carbon;
+  balance.carbon=cell->balance.anpp-cell->balance.arh-cell->balance.fire.carbon-cell->balance.flux_firewood.carbon+cell->balance.flux_estab.carbon-cell->balance.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-cell->output.neg_fluxes.carbon;
   balance.nitrogen=cell->balance.n_influx-cell->balance.fire.nitrogen-cell->balance.flux_firewood.nitrogen-cell->balance.n_outflux+cell->balance.flux_estab.nitrogen-
     cell->balance.biomass_yield.nitrogen-cell->balance.flux_harvest.nitrogen-delta_tot.nitrogen-cell->balance.neg_fluxes.nitrogen-
     cell->balance.deforest_emissions.nitrogen;//cell->output.timber_harvest.nitrogen;
@@ -93,7 +93,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     fail(INVALID_CARBON_BALANCE_ERR,FALSE,
 #endif
          "y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f firec: %.2f flux_estab: %.2f flux_harvest: %.2f delta_totc: %.2f\ndeforest_emissions: %.2f product_turnover: %.2f trad_biofuel: %.2f product pools %.2f %.2f timber_harvest %.2f ftimber %.2f fburn %.2f\n",
-         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.nep,
+         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.anpp-cell->balance.arh,
          cell->balance.fire.carbon,
          cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,
          cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover,cell->balance.trad_biofuel,
@@ -110,7 +110,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          "                            flux_harvest: %.2f delta_totc: %.2f biomass_yield: %.2f\n"
          "                            estab_storage_grass: %.2f %.2f estab_storage_tree %.2f %.2f\n"
          "                            deforest_emissions: %.2f product_turnover: %.2f\n",
-         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.nep,cell->balance.fire.carbon,
+         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balance.carbon,cell->balance.anpp-cell->balance.arh,cell->balance.fire.carbon,
          cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,cell->balance.biomass_yield.carbon,
          cell->balance.estab_storage_grass[0].carbon,cell->balance.estab_storage_grass[1].carbon,cell->balance.estab_storage_tree[0].carbon,cell->balance.estab_storage_tree[1].carbon,
          cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover.carbon);

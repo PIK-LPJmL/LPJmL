@@ -141,7 +141,7 @@ Real daily_natural(Stand *stand, /**< stand pointer */
         output->daily.npp+=npp;
     }
     output->dcflux-=npp*stand->frac;
-    stand->cell->balance.nep+=npp*stand->frac;
+    stand->cell->balance.anpp+=npp*stand->frac;
     output->npp+=npp*stand->frac;
     output->gpp+=gpp*stand->frac;
     output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));

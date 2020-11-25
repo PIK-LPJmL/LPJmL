@@ -154,7 +154,7 @@ ID                         Fmt                    filename
     { "id" : FIREC,            "file" : { "fmt" : CDF, "timestep" : MONTHLY, "unit" : "gC/m2/month", "name" : "output/mfirec.nc"}},
     { "id" : NFIRE,            "file" : { "fmt" : CDF, "name" : "output/mnfire.nc"}},
     { "id" : BURNTAREA,        "file" : { "fmt" : CDF, "name" : "output/mburnt_area.nc"}},
-else
+#else
     { "id" : FIREC,            "file" : { "fmt" : CDF, "name" : "output/firec.nc"}},
 #endif
     { "id" : DISCHARGE,        "file" : { "fmt" : CDF, "name" : "output/mdischarge.nc"}},

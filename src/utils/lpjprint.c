@@ -119,6 +119,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     /* Init cells */
     grid.ml.cropfrac_rf=grid.ml.cropfrac_ir=0;
     grid.balance.totw=grid.balance.tot.carbon=grid.balance.tot.nitrogen=0.0;
+    grid.ml.product.fast.carbon=grid.ml.product.slow.carbon=grid.ml.product.fast.nitrogen=grid.ml.product.slow.nitrogen=0;
     grid.discharge.dmass_lake=0.0;
     grid.discharge.next=0;
     grid.ml.fraction=NULL;

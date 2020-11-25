@@ -25,7 +25,7 @@ void init_annual(Cell *cell, /**< Pointer to cell */
   Pft *pft;
   Stand *stand;
   init_climbuf(&cell->climbuf);
-  cell->balance.aprec=cell->balance.nep=cell->balance.awater_flux=0.0;
+  cell->balance.aprec=cell->balance.anpp=cell->balance.arh=cell->balance.awater_flux=0.0;
   cell->afire_frac=cell->balance.biomass_yield.carbon=cell->balance.biomass_yield.nitrogen=0.0;
   cell->balance.total_irrig_from_reservoir=cell->balance.total_reservoir_out=0.0;
   cell->balance.n_influx=cell->balance.n_outflux=cell->balance.n_demand=cell->balance.n_uptake=0.0;
@@ -52,7 +52,6 @@ void init_annual(Cell *cell, /**< Pointer to cell */
   } /* of foreachstand */
   //initoutput_annual(&cell->output,npft,nbiomass,config->ngrass,ncft);
 #ifdef IMAGE
-  cell->ml.image_data->anpp=cell->ml.image_data->arh=
     cell->ml.image_data->prod_turn_fast=
     cell->ml.image_data->prod_turn_slow=0.0;
 #endif

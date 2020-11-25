@@ -135,9 +135,9 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
       product_turnover_fast_image[cell]=(float)grid[cell].ml.image_data->prod_turn_fast;
       product_turnover_slow_image[cell]=(float)grid[cell].ml.image_data->prod_turn_slow;
       trad_biofuel_image[cell]=(float)grid[cell].output.trad_biofuel;
-      rh_image[cell]=(float)grid[cell].ml.image_data->arh;
+      rh_image[cell]=(float)grid[cell].balance.arh;
 #else
-      nep_image[cell]=(float)(grid[cell].balance.nep+grid[cell].output.flux_estab.carbon-grid[cell].output.flux_harvest.carbon)
+      nep_image[cell]=(float)(grid[cell].balance.anpp-grid[cell].balance.arh+grid[cell].balance.flux_estab.carbon-grid[cell].balance.flux_harvest.carbon)
         -grid[cell].balance.biomass_yield.carbon;
 #endif
       /* timber harvest is computed in IMAGE based on LPJmL carbon pools, 
@@ -146,8 +146,8 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
       /* traditional biofuel emissions are to be overwritten in IMAGE, so DO sent here */
       /* -grid[cell].output.timber_harvest*/ 
       /*-grid[cell].output.prod_turnover);*/
-      fire_image[cell]=(float)grid[cell].output.fire.carbon;
-      npp_image[cell]=(float)(grid[cell].ml.image_data->anpp+grid[cell].output.flux_estab.carbon);
+      fire_image[cell]=(float)grid[cell].balance.fire.carbon;
+      npp_image[cell]=(float)(grid[cell].balance.anpp+grid[cell].balance.flux_estab.carbon);
       fireemission_deforest_image[cell]=(float)grid[cell].output.deforest_emissions.carbon;
 #ifdef DEBUG_IMAGE
       if(grid[cell].coord.lon>-2.5 && grid[cell].coord.lon<-2.0 && grid[cell].coord.lat>48.0 && grid[cell].coord.lat<48.5)

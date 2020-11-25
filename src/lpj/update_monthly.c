@@ -37,11 +37,6 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
     foreachpft(pft,p,&stand->pftlist)
       turnover_monthly(&stand->soil.litter,pft);
   } /* of foreachstand */
-#ifdef IMAGE
-  cell->ml.image_data->anpp+=cell->output.npp;
-  cell->ml.image_data->arh+=cell->output.mrh;
-#endif
-  /* for nitrogen balance check */
   /* for water balance check */
   cell->balance.awater_flux+=((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area);
 

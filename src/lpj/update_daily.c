@@ -66,7 +66,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   gtemp_air=temp_response(climate.temp);
   daily_climbuf(&cell->climbuf,climate.temp);
 
-  cell->output.mprec+=climate.prec;
+  cell->output.prec+=climate.prec;
   cell->output.msnowf+=climate.temp<tsnow ? climate.prec : 0;
   cell->output.mrain+=climate.temp<tsnow ? 0 : climate.prec;
 
@@ -122,7 +122,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       cell->output.msoiltemp2[l]+=stand->soil.temp[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     }
     hetres=littersom(stand,gtemp_soil);
-    cell->balance.nep-=hetres.carbon*stand->frac;
+    cell->balance.arh+=hetres.carbon*stand->frac;
     cell->output.rh+=hetres.carbon*stand->frac;
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;

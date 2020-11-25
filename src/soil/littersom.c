@@ -32,7 +32,7 @@
 
 #define MOIST_DENOM 0.63212055882855767841 /* (1.0-exp(-1.0)) */
 #define K10_YEDOMA 0.025/NDAYYEAR
-#define INTERC 0.04021601
+#define INTERCEPT 0.04021601
 #define MOIST_3 -5.00505434
 #define MOIST_2 4.26937932
 #define MOIST  0.71890122
@@ -94,7 +94,7 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
         moist[l]=epsilon;
       if (moist[l]<epsilon) moist[l]=epsilon;
 
-      response[l]=gtemp_soil[l]*(INTERC+MOIST_3*(moist[l]*moist[l]*moist[l])+MOIST_2*(moist[l]*moist[l])+MOIST*moist[l]);
+      response[l]=gtemp_soil[l]*(INTERCEPT+MOIST_3*(moist[l]*moist[l]*moist[l])+MOIST_2*(moist[l]*moist[l])+MOIST*moist[l]);
       if (response[l]<epsilon)
         response[l]=0.0;
       if (response[l]>1)
@@ -187,7 +187,7 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
 
       for(i=0;i<NFUELCLASS;i++)
       {
-        response_wood=pow(soil->litter.ag[p].pft->k_litter10.q10_wood,(soil->temp[0]-10)/10.0)*(INTERC+MOIST_3*(moist[0]*moist[0]*moist[0])+MOIST_2*(moist[0]*moist[0])+MOIST*moist[0]);
+        response_wood=pow(soil->litter.ag[p].pft->k_litter10.q10_wood,(soil->temp[0]-10)/10.0)*(INTERCEPT+MOIST_3*(moist[0]*moist[0]*moist[0])+MOIST_2*(moist[0]*moist[0])+MOIST*moist[0]);
 
 #ifdef LINEAR_DECAY
         decay_litter=soil->litter.ag[p].pft->k_litter10.wood*response_wood;

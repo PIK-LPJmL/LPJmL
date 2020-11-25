@@ -179,7 +179,7 @@ ID                         Fmt                    filename
     { "id" : FIREC,            "file" : { "fmt" : RAW, "timestep" : MONTHLY, "name" : "output/mfirec.bin"}},
     { "id" : NFIRE,            "file" : { "fmt" : RAW, "name" : "output/mnfire.bin"}},
     { "id" : BURNTAREA,        "file" : { "fmt" : RAW, "name" : "output/mburnt_area.bin"}},
-else
+#else
     { "id" : FIREC,            "file" : { "fmt" : RAW, "name" : "output/firec.bin"}},
 #endif
     { "id" : DISCHARGE,        "file" : { "fmt" : RAW, "name" : "output/mdischarge.bin"}},

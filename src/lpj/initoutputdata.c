@@ -150,7 +150,7 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(CONV_LOSS_EVAP,mconv_loss_evap);
   setoutputvar(CONV_LOSS_DRAIN,mconv_loss_drain);
   setoutputvar(STOR_RETURN,mstor_return);
-  setoutputvar(PREC,mprec);
+  setoutputvar(PREC,prec);
   setoutputvar(RAIN,mrain);
   setoutputvar(SNOWF,msnowf);
   setoutputvar(MELT,mmelt);

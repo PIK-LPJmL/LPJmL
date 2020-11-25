@@ -179,7 +179,7 @@ typedef struct
   Real mconv_loss_evap;  /**< Monthly evaporative conveyance loss (mm) */
   Real mconv_loss_drain; /**< Monthly drainage conveyance loss (mm) */
   Real mstor_return;     /**< Monthly water amount returned from irrig stor into river system*/
-  Real mprec;            /**< Monthly precipitation (mm)*/
+  Real prec;             /**< Monthly precipitation (mm)*/
   Real mrain;            /**< Monthly precipitation fallen as rain (minus snowfall) (mm)*/
   Real msnowf;           /**< Monthly precipitation fallen as snow */
   Real mmelt;            /**< Monthly snowmelt (mm)*/

@@ -963,7 +963,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(CONV_LOSS_EVAP,mconv_loss_evap);
   writeoutputvar(CONV_LOSS_DRAIN,mconv_loss_drain);
   writeoutputvar(STOR_RETURN,mstor_return);
-  writeoutputvar(PREC,mprec);
+  writeoutputvar(PREC,prec);
   writeoutputvar(RAIN,mrain);
   writeoutputvar(SNOWF,msnowf);
   writeoutputvar(MELT,mmelt);

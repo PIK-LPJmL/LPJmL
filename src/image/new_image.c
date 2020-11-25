@@ -32,7 +32,6 @@ Image_data *new_image(const Product *productpool)
   image_data->timber.fast=productpool->fast;
   image_data->timber.slow=productpool->slow;
   /* data sent to image */
-  image_data->anpp=image_data->arh=0.0;
   return image_data;
 } /* of 'new_image' */
 

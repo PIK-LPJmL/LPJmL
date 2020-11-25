@@ -291,7 +291,7 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
     }
     npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd,&negbm,wdf,config->with_nitrogen,&output->daily);
     output->npp+=npp*stand->frac;
-    stand->cell->balance.nep+=npp*stand->frac;
+    stand->cell->balance.anpp+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
     output->gpp+=gpp*stand->frac;
     output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
