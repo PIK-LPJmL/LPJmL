@@ -16,7 +16,8 @@
 
 void update_reservoir_daily(Cell *cell, /**< pointer to cell */
                             Real prec,  /**< precipitation (mm) */
-                            Real eeq    /**< equilibrium evapotranspiration (mm) */
+                            Real eeq,    /**< equilibrium evapotranspiration (mm) */
+                            int month
                            )
 {
   cell->ml.resdata->dmass+=prec*cell->coord.area*cell->ml.reservoirfrac;
@@ -30,6 +31,10 @@ void update_reservoir_daily(Cell *cell, /**< pointer to cell */
   if(cell->output.daily.cft==ALLSTAND)
     cell->output.daily.evap+=min(cell->ml.resdata->dmass/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->ml.reservoirfrac);
   cell->balance.aevap_res+=min(cell->ml.resdata->dmass/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->ml.reservoirfrac);
+#if defined(IMAGE) && defined(COUPLED)
+  if(cell->ml.image_data!=NULL)
+    cell->ml.image_data->mevapotr[month] += min(cell->ml.resdata->dmass/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->ml.reservoirfrac);
+#endif
   cell->ml.resdata->dmass=max(cell->ml.resdata->dmass-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->ml.reservoirfrac,0.0);
   cell->output.mres_storage+=cell->ml.resdata->dmass;
 } /* of 'update_reservoir_daily' */

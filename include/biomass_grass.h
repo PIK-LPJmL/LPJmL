@@ -19,7 +19,7 @@
 
 extern Standtype biomass_grass_stand;
 
-extern Real daily_biomass_grass(Stand *,Real,const Dailyclimate *, int,
+extern Real daily_biomass_grass(Stand *,Real,const Dailyclimate *, int,int,
                             Real,const Real [],
                             Real ,Real,Real,Real,Real,Real,
                             Real ,int, int, int,Bool,const Config *);

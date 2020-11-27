@@ -22,6 +22,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
                          Real co2,                    /**< atmospheric CO2 (ppmv) */
                          const Dailyclimate *climate, /**< Daily climate values */
                          int day,                     /**< day (1..365) */
+                         int month,
                          Real daylength,              /**< length of day (h) */
                          const Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
                          Real gtemp_air,              /**< value of air temperature response function */
@@ -79,7 +80,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     wet=NULL;
 
   if(!config->river_routing)
-    irrig_amount(stand,data,config->pft_output_scaled,npft,ncft);
+    irrig_amount(stand,data,config->pft_output_scaled,npft,ncft,month);
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
@@ -106,6 +107,13 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       /* write irrig_apply to output */
       output->irrig+=irrig_apply*stand->frac;
       stand->cell->balance.airrig+=irrig_apply*stand->frac;
+#if defined IMAGE && defined COUPLED
+      if(stand->cell->ml.image_data!=NULL)
+      {
+        stand->cell->ml.image_data->mirrwatdem[month]+=irrig_apply*stand->frac;
+        stand->cell->ml.image_data->mevapotr[month] += irrig_apply*stand->frac;
+      }
+#endif
       if(config->pft_output_scaled)
         output->cft_airrig[index]+=irrig_apply*stand->cell->ml.landfrac[1].biomass_grass;
       else
@@ -170,7 +178,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       output->daily.gpp+=gpp*stand->frac;
     }
     output->npp+=npp*stand->frac;
-    stand->cell->balance.nep+=npp*stand->frac;
+    stand->cell->balance.anpp+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
     output->gpp+=gpp*stand->frac;
     output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -252,6 +260,13 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       stand->cell->balance.aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
       output->mconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
       stand->cell->balance.aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+#if defined IMAGE && defined COUPLED
+      if(stand->cell->ml.image_data!=NULL)
+      {
+        stand->cell->ml.image_data->mirrwatdem[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+        stand->cell->ml.image_data->mevapotr[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+      }
+#endif
 
       if(config->pft_output_scaled)
       {
@@ -309,6 +324,10 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
 
   output->interc+=intercep_stand*stand->frac;
   output->minterc_b+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
+#if defined(IMAGE) && defined(COUPLED)
+  if(stand->cell->ml.image_data!=NULL)
+    stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
+#endif
 
   output->mreturn_flow_b+=return_flow_b*stand->frac;
 

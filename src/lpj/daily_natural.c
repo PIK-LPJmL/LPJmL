@@ -21,6 +21,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
                    Real co2,                    /**< [in] atmospheric CO2 (ppmv) */
                    const Dailyclimate *climate, /**< [in] Daily climate values */
                    int day,                     /**< [in] day (1..365) */
+                   int month,
                    Real daylength,              /**< [in] length of day (h) */
                    const Real gp_pft[],         /**< [out] pot. canopy conductance for PFTs & CFTs (mm/s) */
                    Real gtemp_air,              /**< [in] value of air temperature response function */
@@ -155,7 +156,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       output->npp_nat+=npp*stand->frac;
     }
 #endif
-    stand->cell->balance.nep+=npp*stand->frac;
+    stand->cell->balance.anpp+=npp*stand->frac;
     output->npp+=npp*stand->frac;
     output->gpp+=gpp*stand->frac;
     output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -232,6 +233,10 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   stand->cell->balance.ainterc+=intercep_stand*stand->frac;
   output->mevap_b+=evap_blue*stand->frac;
   output->mreturn_flow_b+=return_flow_b*stand->frac;
+#if defined(IMAGE) && defined(COUPLED)
+  if(stand->cell->ml.image_data!=NULL)
+    stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
+#endif
   if(stand->type->landusetype==NATURAL)
     foreachpft(pft, p, &stand->pftlist)
     {

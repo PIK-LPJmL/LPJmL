@@ -42,6 +42,9 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   Stocks flux_return;
   Stocks flux_estab={0,0};
   Stocks estab_store={0,0};
+#ifdef COUPLED
+  Stocks biofuel;
+#endif
   Pfttreepar *treepar;
   Biomass_tree *biomass_tree;
 
@@ -145,10 +148,13 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
       {
         treepar=pft->par->data;
 
-        yield=timber_harvest(pft,&stand->soil,&stand->cell->ml.image_data->timber,
+        yield=timber_harvest(pft,&stand->soil,&stand->cell->ml.product,
                              stand->cell->ml.image_data->timber_f,ftimber,stand->frac,&pft->nind,
-                             &stand->cell->output.trad_biofuel,stand->cell->ml.image_data->timber_frac_wp,
+                             &biofuel,stand->cell->ml.image_data->timber_frac_wp,
                              stand->cell->ml.image_data->takeaway);
+        stand->cell->output.trad_biofuel+=biofuel.carbon;
+        stand->cell->balance.trad_biofuel.carbon+=biofuel.carbon;
+        stand->cell->balance.trad_biofuel.nitrogen+=biofuel.nitrogen;
         if(config->pft_output_scaled)
         {
           stand->cell->output.pft_harvest[rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.carbon+=yield.carbon*stand->frac;
@@ -265,7 +271,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
       return TRUE;
   }
   else
-    stand->cell->output.soil_storage+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
+    stand->cell->balance.soil_storage+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
   biomass_tree->age++;
   biomass_tree->growing_time++;
   foreachpft(pft,p,&stand->pftlist)

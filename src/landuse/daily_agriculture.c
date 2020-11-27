@@ -22,6 +22,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
                        Real co2,                    /**< [in] atmospheric CO2 (ppmv) */
                        const Dailyclimate *climate, /**< [in] Daily climate values */
                        int day,                     /**< [in] day (1..365) */
+                       int month,
                        Real daylength,              /**< [in] length of day (h) */
                        const Real gp_pft[],         /**< [out] pot. canopy conductance for PFTs & CFTs (mm/s) */
                        Real gtemp_air,              /**< [in] value of air temperature response function */
@@ -79,7 +80,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     aet_stand[l]=green_transp[l]=0;
 
   if(!config->river_routing)
-    irrig_amount(stand,data,config->pft_output_scaled,npft,ncft);
+    irrig_amount(stand,data,config->pft_output_scaled,npft,ncft,month);
 
   foreachpft(pft,p,&stand->pftlist)
   {
@@ -182,6 +183,14 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->cell->balance.aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
         output->mconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
         stand->cell->balance.aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+#if defined IMAGE && defined COUPLED
+        if(stand->cell->ml.image_data!=NULL)
+        {
+          stand->cell->ml.image_data->mirrwatdem[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+          stand->cell->ml.image_data->mevapotr[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+        }
+#endif
+
 
         if(config->pft_output_scaled)
         {
@@ -225,6 +234,14 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       /* write irrig_apply to output */
       output->irrig+=irrig_apply*stand->frac;
       stand->cell->balance.airrig+=irrig_apply*stand->frac;
+#if defined IMAGE && defined COUPLED
+      if(stand->cell->ml.image_data!=NULL)
+      {
+        stand->cell->ml.image_data->mirrwatdem[month]+=irrig_apply*stand->frac;
+        stand->cell->ml.image_data->mevapotr[month] += irrig_apply*stand->frac;
+      }
+#endif
+
       pft=getpft(&stand->pftlist,0);
 #ifndef DOUBLE_HARVEST
       if(config->pft_output_scaled)
@@ -292,7 +309,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     npp=npp_crop(pft,gtemp_air,gtemp_soil,gpp-rd,&negbm,wdf,
                  !config->crop_resp_fix,config->with_nitrogen);
     output->npp+=npp*stand->frac;
-    stand->cell->balance.nep+=npp*stand->frac;
+    stand->cell->balance.anpp+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
     output->gpp+=gpp*stand->frac;
     output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -409,6 +426,13 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->cell->balance.aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
         output->mconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
         stand->cell->balance.aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+#if defined IMAGE && defined COUPLED
+        if(stand->cell->ml.image_data!=NULL)
+        {
+          stand->cell->ml.image_data->mirrwatdem[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+          stand->cell->ml.image_data->mevapotr[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+        }
+#endif
 
         if(config->pft_output_scaled)
         {
@@ -478,6 +502,10 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   stand->cell->balance.aevap+=evap*stand->frac;
   stand->cell->balance.ainterc+=intercep_stand*stand->frac;
   output->mevap_b+=evap_blue*stand->frac;   /* blue soil evap */
+#if defined(IMAGE) && defined(COUPLED)
+  if(stand->cell->ml.image_data!=NULL)
+    stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
+#endif
 
   output->mreturn_flow_b+=return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/
 

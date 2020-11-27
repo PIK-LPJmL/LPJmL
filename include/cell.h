@@ -50,7 +50,8 @@
 
 typedef struct
 {
-  Real nep;                 /**< annual NEP (gC/m2) */
+  Real anpp;                /**< annual NPP (gC/m2) */
+  Real arh;                 /**< annual heterotrophic respiration (gC/m2) */
   Real awater_flux;         /**< annual water flux (mm) */
   Real aprec;               /**< annual precipitation (mm) */
   Real aevap;               /**< annual evaporation (mm) */
@@ -70,7 +71,7 @@ typedef struct
   Stocks flux_estab;        /**< establishment flux (gC/m2,gN/m2) */
   Stocks flux_harvest;      /**< harvest flux (gC/m2,g/N/m2) */
   Stocks deforest_emissions;/**< carbon and nitrogen emissions from deforested wood burnt [g/m2/a] in IMAGE coupling */
-  Stocks prod_turnover;     /**< carbon and nitrogen emissions from product turnover [gX/m2/a] */
+  Pool prod_turnover;     /**< carbon and nitrogen emissions from product turnover [gX/m2/a] */
   Stocks neg_fluxes;        /**< negative carbon and nitrogen fluxes which occur for negative allocation; needed for balance check*/
   Stocks trad_biofuel;        /**< carbon emissions from traditional biofuel burnt [gC/m2/a] in IMAGE coupling */
   Stocks tot;                /**< total carbon and nitrogen (g/m2) */
@@ -131,7 +132,7 @@ extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
                          int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
                           Real,int,Bool,Bool,const Config *);
-extern void update_monthly(Cell *,Real,Real,int,int,int,int,int);
+extern void update_monthly(Cell *,Real,Real,int);
 extern void init_annual(Cell *,int,int,const Config *);
 extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,int,Bool);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);

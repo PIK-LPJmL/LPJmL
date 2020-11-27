@@ -153,11 +153,7 @@ typedef struct
   Real totwatdem;          /* total water demand */
   Real deforest_emissions; /* carbon emissions from deforested wood burnt [gC/m2]*/
   Poolpar timber_f;        /* fraction that enters fast and slow product pool */
-  Pool timber;             /* fast and slow timber pool [gC/m2, gN/m2] */
   Real timber_turnover;    /* annual sum of decayed product pool [gC/m2] */
-  Real anpp;               /* annual NPP (gC/m2) */
-  Real arh;                /* annual Rh (gC/m2) */
-  Pool prod_turn;          /* product turnover from fast product pool (gC/m2/a) */
   Real store_bmtree_yield; /* yield of biomass trees storage to distribute over following years (gC/m2/8a) */
   Real biomass_yield_annual; /* biomass yield scaled to annual fractions */
   Real takeaway[NIMAGETREEPARTS];          /* fraction of harvested carbonpools taken from forest */
@@ -168,15 +164,11 @@ typedef struct
 
 /* Declaration of functions */
 
-extern Image_data *new_image(const Product *);
+extern Bool new_image(Cell *,const Product *);
 extern Bool open_image(Config *);
 extern void close_image(const Config *);
-#if defined IMAGE && defined COUPLED
-extern Stocks product_turnover(Image_data *);
-#else
 extern void product_turnover(Cell *);
-#endif
-extern Bool send_image_data(const Config *,const Cell *,const  Climate *,int, int);
+extern Bool send_image_data(const Cell *,const  Climate *,int, int,const Config *);
 extern Bool receive_image_climate(Climate *,const Cell *,int,const Config *);
 extern Bool receive_image_productpools(Cell *,const Config *);
 extern Bool receive_image_luc(Cell *,int,int,const Config *);

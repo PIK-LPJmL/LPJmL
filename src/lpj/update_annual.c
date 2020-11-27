@@ -78,11 +78,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   cell->output.fpc[0] = 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
-  {
-    cell->output.prod_turnover=product_turnover(cell->ml.image_data);
-    cell->output.product_pool.fast=cell->ml.image_data->timber.fast;
-    cell->output.product_pool.slow=cell->ml.image_data->timber.slow;
-  }
+    product_turnover(cell);
 #else
   /* reset product pools after first year with land use to avoid large peak */
   if(year==config->firstyear-config->nspinup&&!config->landuse_restart)

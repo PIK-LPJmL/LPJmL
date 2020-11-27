@@ -102,7 +102,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
         }
       } /*of no seasonality*/
 
-      if (cell->ml.seasonality_type==PREC || cell->ml.seasonality_type==PRECTEMP) /*precipitation-dependent rules*/
+      if (cell->ml.seasonality_type==PRECIP || cell->ml.seasonality_type==PRECIPTEMP) /*precipitation-dependent rules*/
       {
         s=findlandusetype(cell->standlist,SETASIDE_RF);
 
@@ -166,7 +166,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
         }
       } /*of precipitation seasonality*/
 
-      if (cell->ml.seasonality_type==TEMP || cell->ml.seasonality_type==TEMPPREC) /*temperature-dependent rule*/
+      if (cell->ml.seasonality_type==TEMP || cell->ml.seasonality_type==TEMPPRECIP) /*temperature-dependent rule*/
       {
         s=findlandusetype(cell->standlist,SETASIDE_RF);
 

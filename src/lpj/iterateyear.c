@@ -174,7 +174,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         drain(grid,month,config);
 
         if(config->withlanduse)
-          wateruse(grid,npft,ncft,config);
+          wateruse(grid,npft,ncft,month,config);
       }
 
       if(config->withdailyoutput && year>=config->outputyear)
@@ -194,7 +194,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(!grid[cell].skip)
         update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
                        cell,month),getmprec(input.climate,&grid[cell].climbuf,
-                       cell,month),npft,config->nbiomass,config->nwft,ncft,month);
+                       cell,month),month);
     } /* of 'for(cell=0;...)' */
 
     if(year>=config->outputyear)

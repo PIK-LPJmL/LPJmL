@@ -18,7 +18,8 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
                   Irrigation *data, /**< Irrigation data */
                   Bool pft_output_scaled, /**< output is PFT scaled (TRUE/FALSE) */
                   int npft,     /**< number of natural PFTs */
-                  int ncft      /**< number of crop PFTs */
+                  int ncft,     /**< number of crop PFTs */
+                  int month
                  )
 {
   int p;
@@ -137,6 +138,13 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
     stand->cell->balance.aconv_loss_drain+=conv_loss*(1-data->conv_evap)*stand->frac;
     stand->cell->output.mconv_loss_evap+=conv_loss*data->conv_evap*stand->frac;
     stand->cell->balance.aconv_loss_evap+=conv_loss*data->conv_evap*stand->frac;
+#if defined(IMAGE) && defined(COUPLED)
+    if(stand->cell->ml.image_data!=NULL)
+    {
+      stand->cell->ml.image_data->mirrwatdem[month]+=conv_loss*stand->frac;
+      stand->cell->ml.image_data->mevapotr[month] += conv_loss*stand->frac;
+    }
+#endif
 
     /* write cft-specific conveyance losses, ATTENTION: full conv losses incl. evaporation and drainage */
     switch(stand->type->landusetype)

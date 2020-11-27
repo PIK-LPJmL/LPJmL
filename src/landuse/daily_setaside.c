@@ -24,6 +24,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
                    Real co2,     /**< atmospheric CO2 (ppmv) */
                    const Dailyclimate *climate, /**< Daily climate values */
                    int day,    /**< day (1..365) */
+                   int month,
                    Real daylength, /**< length of day (h) */
                    const Real gp_pft[], /**< pot. canopy conductance for PFTs & CFTs*/
                    Real gtemp_air,  /**< value of air temperature response function */
@@ -132,8 +133,12 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
     output->mnpp+=npp*stand->frac;
 =======
     output->npp+=npp*stand->frac;
+<<<<<<< HEAD
     stand->cell->balance.nep+=npp*stand->frac;
 >>>>>>> 2667ff6872542f4a551087e7e63a69279365542d
+=======
+    stand->cell->balance.anpp+=npp*stand->frac;
+>>>>>>> ba9831cb8c94144eb1836e50167cb3627988f402
     output->dcflux-=npp*stand->frac;
     output->gpp+=gpp*stand->frac;
     output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -182,6 +187,10 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   output->ainterc+=intercep_stand*stand->frac;
   output->mevap_b+=evap_blue*stand->frac; /*TODOJJ why are monthly outputs in setaside written but cft-outputs not? */
   output->mreturn_flow_b+=return_flow_b*stand->frac;
+#if defined(IMAGE) && defined(COUPLED)
+  if(cell->ml.image_data!=NULL)
+    stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
+#endif
 
   /* new block for daily establishment */
   n_est=0;

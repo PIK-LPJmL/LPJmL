@@ -20,16 +20,12 @@
 void update_monthly(Cell *cell,  /**< Pointer to cell */
                     Real mtemp,  /**< monthly average temperature (deg C) */
                     Real mprec,  /**< monthly average precipitation (mm) */
-                    int npft,    /**< number of natural PFTs */
-                    int nbiomass,/**< number of biomass PFTs */
-                    int nwft,    /**< number of wood plantations PFTs */
-                    int ncft,    /**< number of crop PFTs */
                     int month    /**< month (0..11) */
                    )
 {
   int p;
   Pft *pft;
-  int s,i;
+  int s;
   Stand *stand;
 
   monthly_climbuf(&cell->climbuf,mtemp,mprec,cell->output.mpet,month);
@@ -44,14 +40,11 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
 #if defined IMAGE && defined COUPLED
   if(cell->ml.image_data!=NULL)
   {
-    cell->ml.image_data->anpp+=cell->output.mnpp;
-    cell->ml.image_data->arh+=cell->output.mrh;
-    cell->ml.image_data->mirrwatdem[month]+=cell->output.mirrig+cell->output.mconv_loss_evap+cell->output.mconv_loss_drain;
-    cell->ml.image_data->mevapotr[month] += (cell->output.mtransp + cell->output.mevap + cell->output.minterc + cell->output.mevap_lake + cell->output.mevap_res + cell->output.mconv_loss_evap + cell->output.mconv_loss_drain);
+    //cell->ml.image_data->mirrwatdem[month]+=cell->output.irrig+cell->output.mconv_loss_evap+cell->output.mconv_loss_drain;
+    //cell->ml.image_data->mevapotr[month] += (cell->output.transp + cell->output.evap + cell->output.interc + cell->output.mevap_lake + cell->output.mevap_res + cell->output.mconv_loss_evap + cell->output.mconv_loss_drain);
     cell->ml.image_data->mpetim[month] += cell->output.mpet;
   }
 #endif
-  /* for nitrogen balance check */
   /* for water balance check */
   cell->balance.awater_flux+=((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area);
 

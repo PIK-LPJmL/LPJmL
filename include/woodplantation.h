@@ -18,7 +18,7 @@
 extern Standtype woodplantation_stand;
 
 extern Bool annual_woodplantation(Stand *, int,int,Real,int,Bool,Bool,const Config *);
-extern Real daily_woodplantation(Stand *, Real, const Dailyclimate *, int,
+extern Real daily_woodplantation(Stand *, Real, const Dailyclimate *, int,int,
                                  Real, const Real[],
                                  Real, Real, Real, Real, Real, Real,
                                  Real, int, int, int, Bool, const Config *);

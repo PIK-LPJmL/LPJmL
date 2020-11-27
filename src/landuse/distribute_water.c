@@ -32,7 +32,8 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       int irrig_scenario,    /**< irrigation scenario */
                       int pft_output_scaled, /**< output PFT scaled? (TRUE/FALSE) */
                       int npft,              /**< number of natural PFTs */
-                      int ncft               /**< number of crop PFTs */
+                      int ncft,              /**< number of crop PFTs */
+                      int month
                      )
 {
   int s,p,count;
@@ -66,7 +67,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
     frac_unsustainable=cell->discharge.gir>0 ? (cell->discharge.irrig_unmet/cell->discharge.gir) : 0.0;
     frac_unsustainable=frac_unsustainable>0 ? frac_unsustainable : 0.0;
     // coord area added to change to mm
-    cell->output.awd_unsustainable+=frac_unsustainable*cell->discharge.gir/cell->coord.area;
+    cell->balance.awd_unsustainable+=frac_unsustainable*cell->discharge.gir/cell->coord.area;
     cell->output.mwd_unsustainable+=frac_unsustainable*cell->discharge.gir/cell->coord.area; 
     if(cell->discharge.aquifer)
       cell->output.mwd_aq+=frac_unsustainable*cell->discharge.gir/cell->coord.area; 
@@ -197,6 +198,13 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
         cell->balance.aconv_loss_drain+=conv_loss*(1-data->conv_evap)*stand->frac;
         cell->output.mconv_loss_evap+=conv_loss*data->conv_evap*stand->frac;
         cell->balance.aconv_loss_evap+=conv_loss*data->conv_evap*stand->frac;
+#if defined(IMAGE) && defined(COUPLED)
+  if(cell->ml.image_data!=NULL)
+  {
+    cell->ml.image_data->mirrwatdem[month]+=conv_loss*stand->frac;
+    cell->ml.image_data->mevapotr[month] += conv_loss*stand->frac;
+  }
+#endif
 
         /* write cft-specific conveyance losses */
         /* not written within irrig_event loop, because irrig_stor consists of water already transported to the field */

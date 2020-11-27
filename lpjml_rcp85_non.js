@@ -43,8 +43,8 @@
   "river_routing" : true,
   "permafrost" : true,
   "with_nitrogen" : NO_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "store_climate" : true,
   "const_climate" : false,
-  "const_deposition" : false,
   "shuffle_climate" : true,
   "fix_climate" : true,
   "fix_landuse" : false,
@@ -77,7 +77,6 @@
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
-  "fertilizer_input" : true,            /* enable fertilizer input */
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
@@ -143,7 +142,6 @@ ID                         Fmt                    filename
     { "id" : PHEN_TMAX,        "file" : { "fmt" : CDF, "name" : "output/mphen_tmax.nc"}},
     { "id" : PHEN_LIGHT,       "file" : { "fmt" : CDF, "name" : "output/mphen_light.nc"}},
     { "id" : PHEN_WATER,       "file" : { "fmt" : CDF, "name" : "output/mphen_water.nc"}},
-    { "id" : VEGN,             "file" : { "fmt" : CDF, "name" : "output/vegn.nc"}},
     { "id" : LITFALLC,         "file" : { "fmt" : CDF, "name" : "output/alitfallc.nc"}},
     { "id" : PFT_CLEAF,        "file" : { "fmt" : CDF, "name" : "output/pft_cleaf.nc"}},
     { "id" : PFT_LAIMAX,       "file" : { "fmt" : CDF, "name" : "output/pft_laimax.nc"}},
@@ -154,7 +152,7 @@ ID                         Fmt                    filename
     { "id" : FIREC,            "file" : { "fmt" : CDF, "timestep" : MONTHLY, "unit" : "gC/m2/month", "name" : "output/mfirec.nc"}},
     { "id" : NFIRE,            "file" : { "fmt" : CDF, "name" : "output/mnfire.nc"}},
     { "id" : BURNTAREA,        "file" : { "fmt" : CDF, "name" : "output/mburnt_area.nc"}},
-else
+#else
     { "id" : FIREC,            "file" : { "fmt" : CDF, "name" : "output/firec.nc"}},
 #endif
     { "id" : DISCHARGE,        "file" : { "fmt" : CDF, "name" : "output/mdischarge.nc"}},

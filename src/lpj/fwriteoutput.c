@@ -211,7 +211,7 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
 } /* of 'writedata' */
 
 static void writeshortdata(Outputfile *output,int index,short data[],int year,int date,int ndata,
-                             const Config *config)
+                           const Config *config)
 {
   int offset;
 #ifdef USE_MPI
@@ -880,19 +880,13 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     writealldata(output,ADISCHARGE,vec,year,date,ndata,config);
   }
   writeoutputvar(DEFOREST_EMIS,deforest_emissions.carbon);
-  writeoutputvar(TRAD_BIOFUEL,trad_biofuel.carbon);
+  writeoutputvar(TRAD_BIOFUEL,trad_biofuel);
   writeoutputvar(FBURN,fburn);
   writeoutputvar(FTIMBER,ftimber);
   writeoutputvar(TIMBER_HARVESTC,timber_harvest.carbon);
-#ifdef IMAGE
-  writeoutputvar(PRODUCT_POOL_FAST,product_pool_fast);
-  writeoutputvar(PRODUCT_POOL_SLOW,product_pool_slow);
-  writeoutputvar(PROD_TURNOVER,prod_turnover);
-#else
   writeoutputvar(PRODUCT_POOL_FAST,product_pool.fast);
   writeoutputvar(PRODUCT_POOL_SLOW,product_pool.slow);
   writeoutputvar(PROD_TURNOVER,prod_turnover);
-#endif
   if(iswrite(output,AFRAC_WD_UNSUST))
   {
     count=0;
@@ -1010,11 +1004,10 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(WD_LOCAL,mwd_local);
   writeoutputvar(WD_NEIGHB,mwd_neighb);
   writeoutputvar(WD_RES,mwd_res);
-  writeoutputvar(WD_RETURN,mwd_return);
   writeoutputvar(CONV_LOSS_EVAP,mconv_loss_evap);
   writeoutputvar(CONV_LOSS_DRAIN,mconv_loss_drain);
   writeoutputvar(STOR_RETURN,mstor_return);
-  writeoutputvar(PREC,mprec);
+  writeoutputvar(PREC,prec);
   writeoutputvar(RAIN,mrain);
   writeoutputvar(SNOWF,msnowf);
   writeoutputvar(MELT,mmelt);

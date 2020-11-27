@@ -182,11 +182,10 @@ typedef struct
   Real mwd_aq;           /**< monthly aquifer withdrawal (mm) NOT YET DEFINED*/
   Real mwateruse_hil;    /**< monthly waterwithdrawal of household, industry and livestock */
 #endif
-  Real mwd_return;       /**< monthly withdrawals returned to river (mm) */
   Real mconv_loss_evap;  /**< Monthly evaporative conveyance loss (mm) */
   Real mconv_loss_drain; /**< Monthly drainage conveyance loss (mm) */
   Real mstor_return;     /**< Monthly water amount returned from irrig stor into river system*/
-  Real mprec;            /**< Monthly precipitation (mm)*/
+  Real prec;             /**< Monthly precipitation (mm)*/
   Real mrain;            /**< Monthly precipitation fallen as rain (minus snowfall) (mm)*/
   Real msnowf;           /**< Monthly precipitation fallen as snow */
   Real mmelt;            /**< Monthly snowmelt (mm)*/
@@ -236,7 +235,7 @@ typedef struct
   Real *cft_conv_loss_drain; /**< cft specific drainage conveyance losses (mm) */
   int  *cft_irrig_events;  /**< number of irrigation days within growing season */
   Stocks deforest_emissions; /**< carbon and nitrogen emissions from deforested wood burnt [g/m2/a] in IMAGE coupling */
-  Stocks trad_biofuel;       /**< carbon emissions from traditional biofuel burnt [gC/m2/a] in IMAGE coupling */
+  Real trad_biofuel;       /**< carbon emissions from traditional biofuel burnt [gC/m2/a] in IMAGE coupling */
   Stocks flux_firewood;    /**< carbon and nitrogen emissions from domestic wood use [g/m2/a]*/
   Real fburn;              /**< fraction of deforested wood burnt [0-1]*/
   Real ftimber;            /**< fraction of deforested wood harvested as timber [0-1]*/

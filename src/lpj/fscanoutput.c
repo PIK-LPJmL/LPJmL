@@ -21,8 +21,6 @@
 #define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verbosity)) return TRUE;
 #define fscanbool2(file,var,name) if(fscanbool(file,var,name,FALSE,verbosity)) return TRUE;
 
-#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE; }
-
 static Bool isopenoutput(int id,const Outputvar output[],int n)
 {
   /* checks whether output file has already been specified */

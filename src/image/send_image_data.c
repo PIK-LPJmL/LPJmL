@@ -22,11 +22,11 @@
 
 #if defined IMAGE && defined COUPLED
 
-Bool send_image_data(const Config *config,   /**< Grid configuration */
-                     const Cell grid[],      /**< LPJ grid */
+Bool send_image_data(const Cell grid[],      /**< LPJ grid */
                      const Climate *climate, /**< Climate data */
                      int npft,               /**< number of natural PFTs */
                      int ncft                /**< number of crop PFTs */
+                     const Config *config    /**< LPJmL configuration */
                     )                        /**< return TRUE on error */
 {
   int m;
@@ -65,9 +65,9 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
 #endif
   ncrops = 2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
   yields=newmatrix(float,config->ngridcell,ncrops);
-  check(yields);  
+  check(yields);
   monthirrig=newvec(Mirrig_to_image,config->ngridcell);
-  check(monthirrig);  
+  check(monthirrig);
   monthevapotr = newvec(Mirrig_to_image, config->ngridcell);
   check(monthevapotr);
   monthpetim = newvec(Mirrig_to_image, config->ngridcell);
@@ -181,7 +181,7 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
       monthirrig[cell][m] = 0.0;
       monthevapotr[cell][m] = 0.0;
       monthpetim[cell][m] = 0.0;
-    }     
+    }
     adischarge[cell]=0.0;
     nep_image[cell]=npp_image[cell]=
     fire_image[cell]=fireemission_deforest_image[cell]=0.0;
@@ -243,9 +243,8 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
   {
     if(!grid[cell].skip)
     {
-        for(i=0;i<ncrops;i++)
-          yields[cell][i] = (float)grid[cell].output.pft_harvest[i].harvest.carbon;
-        
+      for(i=0;i<ncrops;i++)
+        yields[cell][i] = (float)grid[cell].output.pft_harvest[i].harvest.carbon;
 
       for(m=0;m<NMONTH;m++)
       {
@@ -253,20 +252,20 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
         monthevapotr[cell][m] = (float)grid[cell].ml.image_data->mevapotr[m];
         monthpetim[cell][m] = (float)grid[cell].ml.image_data->mpetim[m];
       }
-      if (config->river_routing) {
+      if (config->river_routing)
         adischarge[cell] = (float)(grid[cell].output.ydischarge*1e-9);
-      }
-#ifdef DEBUG_IMAGE_CELL        
-      if (grid[cell].output.pft_harvest[11].harvest.carbon > 0){
+#ifdef DEBUG_IMAGE_CELL
+      if (grid[cell].output.pft_harvest[11].harvest.carbon > 0)
+      {
         printf("pft_harvest.sugarcane = %d, %g\n", cell, grid[cell].output.pft_harvest[11].harvest.carbon);
         printf("yields sugarcane = %d %g\n", cell, yields[cell][11]);
       }
       fflush(stdout);
 #endif
 #ifdef DEBUG_IMAGE
-      if(isnan(grid[cell].balance.nep))
+      if(isnan(grid[cell].balance.anpp))
       {
-        printf("NEP isnan in cell %d\n",cell);
+        printf("NPP isnan in cell %d\n",cell);
         fflush(stdout);
       }
       if(isnan(grid[cell].output.flux_estab.carbon))
@@ -286,33 +285,33 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
       }
 #endif
 #ifdef SENDSEP
-      nep_image[cell]=(float)(grid[cell].balance.nep+grid[cell].output.flux_estab.carbon);
-      nep_image_nat[cell]=(float)(grid[cell].npp_nat+grid[cell].flux_estab_nat-grid[cell].rh_nat);
-      nep_image_wp[cell]=(float)(grid[cell].npp_wp+grid[cell].flux_estab_wp-grid[cell].rh_wp);
-      harvest_agric_image[cell]=(float)grid[cell].output.flux_harvest.carbon;
-      harvest_biofuel_image[cell]=(float)grid[cell].ml.image_data->biomass_yield_annual;
+      nep_image[cell]=(float)(grid[cell].balance.anpp-grid[cell].balance.arh+grid[cell].balance.flux_estab.carbon);
+      nep_image_nat[cell]=(float)(grid[cell].output.npp_nat+grid[cell].output.flux_estab_nat-grid[cell].output.rh_nat);
+      nep_image_wp[cell]=(float)(grid[cell].output.npp_wp+grid[cell].output.flux_estab_wp-grid[cell].output.rh_wp);
+      harvest_agric_image[cell]=(float)grid[cell].balance.flux_harvest.carbon;
+      harvest_biofuel_image[cell]=(float)grid[cell].balance.biomass_yield.carbon;
       harvest_timber_image[cell]=(float)grid[cell].output.timber_harvest.carbon;
-      product_turnover_fast_image[cell]=(float)grid[cell].ml.image_data->prod_turn.fast.carbon;
-      product_turnover_slow_image[cell]=(float)grid[cell].ml.image_data->prod_turn.slow.carbon;
-      trad_biofuel_image[cell]=(float)grid[cell].output.trad_biofuel.carbon;
-      rh_image[cell]=(float)grid[cell].ml.image_data->arh;
-      rh_image_nat[cell]=(float)(grid[cell].rh_nat);
-      rh_image_wp[cell]=(float)(grid[cell].rh_wp);
+      product_turnover_fast_image[cell]=(float)grid[cell].balance.prod_turnover.fast.carbon;
+      product_turnover_slow_image[cell]=(float)grid[cell].balance.prod_turnover.slow.carbon;
+      trad_biofuel_image[cell]=(float)grid[cell].balance.trad_biofuel.carbon;
+      rh_image_nat[cell]=(float)(grid[cell].output.rh_nat);
+      rh_image_wp[cell]=(float)(grid[cell].output.rh_wp);
 #else
-      nep_image[cell]=(float)(grid[cell].balance.nep+grid[cell].output.flux_estab.carbon-grid[cell].output.flux_harvest.carbon)
+      nep_image[cell]=(float)(grid[cell].balance.anpp-grid[cell].balance.arh+grid[cell].balance.flux_estab.carbon-grid[cell].balance.flux_harvest.carbon)
         -grid[cell].balance.biomass_yield.carbon;
 #endif
-      /* timber harvest is computed in IMAGE based on LPJmL carbon pools, 
-         not the extraction is a carbon flux to the atmosphere but the product-pool 
+      /* timber harvest is computed in IMAGE based on LPJmL carbon pools,
+         not the extraction is a carbon flux to the atmosphere but the product-pool
          turnover, which is also computed in IMAGE*/
       /* traditional biofuel emissions are to be overwritten in IMAGE, so DO sent here */
-      /* -grid[cell].output.timber_harvest*/ 
+      /* -grid[cell].output.timber_harvest*/
       /*-grid[cell].output.prod_turnover);*/
-      fire_image[cell]=(float)grid[cell].output.fire.carbon;
-      npp_image[cell]=(float)(grid[cell].ml.image_data->anpp+grid[cell].output.flux_estab.carbon);
+      fire_image[cell]=(float)grid[cell].balance.fire.carbon;
+      npp_image[cell]=(float)(grid[cell].balance.anpp+grid[cell].balance.flux_estab.carbon);
+      fire_image[cell]=(float)grid[cell].balance.fire.carbon;
       npp_image_nat[cell]=(float)(grid[cell].output.npp_nat+grid[cell].output.flux_estab_nat);
       npp_image_wp[cell]=(float)(grid[cell].output.npp_wp+grid[cell].output.flux_estab_wp);
-      fireemission_deforest_image[cell]=(float)grid[cell].output.deforest_emissions.carbon;
+      fireemission_deforest_image[cell]=(float)grid[cell].balance.deforest_emissions.carbon;
       /*printf("sending pix %d trad_biof %g deforest_emiss %g\n",
         cell,trad_biofuel_image[cell],fireemission_deforest_image[cell]);*/
       /* pft_npp voor rainfed managed grass */
@@ -322,7 +321,7 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
       {
         printf("sending cell %d (%g/%g): NPP %g NEP %g fire %g deforest_emissions %g biome %d\n",
                cell,grid[cell].coord.lon,grid[cell].coord.lat,npp_image[cell],nep_image[cell],fire_image[cell],fireemission_deforest_image[cell],
-            biome_image[cell]);
+               biome_image[cell]);
         fflush(stdout);
       }
 #endif
@@ -369,13 +368,14 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
           } /* of switch */
         biomass_image[cell].litter+=(float)littercarbon(&stand->soil.litter)*
                                     (float)stand->frac;
-        for(i=0;i<LASTLAYER;i++){
+        for(i=0;i<LASTLAYER;i++)
+        {
           biomass_image[cell].humus+=(float)stand->soil.pool[i].fast.carbon*(float)stand->frac;
           biomass_image[cell].charcoal+=(float)stand->soil.pool[i].slow.carbon*(float)stand->frac;
         }
       } /* for each stand */
-      biomass_image[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast.carbon;
-      biomass_image[cell].product_slow=(float)grid[cell].ml.image_data->timber.slow.carbon;
+      biomass_image[cell].product_fast=(float)grid[cell].ml.product.fast.carbon;
+      biomass_image[cell].product_slow=(float)grid[cell].ml.product.slow.carbon;
       /*if(product_turnover_fast_image[cell]>0){
         printf("cell %d turn_fast %g\n",cell,product_turnover_fast_image[cell]);
         printf("cell %d fast %g\n",cell,biomass_image[cell].product_fast);
@@ -387,8 +387,8 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
 #ifdef DEBUG_IMAGE
       if(grid[cell].coord.lon>-2.5 && grid[cell].coord.lon<-2.0 && grid[cell].coord.lat>48.0 && grid[cell].coord.lat<48.5){
         printf("sending biomass branches %g charcoal %g humus %g leaves %g litter %g roots %g stems %g\n",
-          biomass_image[cell].branches,biomass_image[cell].charcoal,biomass_image[cell].humus,
-          biomass_image[cell].leaves,biomass_image[cell].litter,biomass_image[cell].roots,biomass_image[cell].stems);
+               biomass_image[cell].branches,biomass_image[cell].charcoal,biomass_image[cell].humus,
+               biomass_image[cell].leaves,biomass_image[cell].litter,biomass_image[cell].roots,biomass_image[cell].stems);
         fflush(stdout);
       }
 #endif
@@ -427,15 +427,16 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
                 break;
             } /* of switch */
           biomass_image_nat[cell].litter+=(float)litterstocks(&stand->soil.litter).carbon*(float)stand->frac;
-          for (i=0; i<LASTLAYER; i++){
+          for (i=0; i<LASTLAYER; i++)
+          {
             biomass_image_nat[cell].humus+=(float)stand->soil.pool[i].fast.carbon*(float)stand->frac;
             biomass_image_nat[cell].charcoal+=(float)stand->soil.pool[i].slow.carbon*(float)stand->frac;
           }
           natfrac+=(float)stand->frac;
         }
       } /* for each stand */
-      biomass_image_nat[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast.carbon;
-      biomass_image_nat[cell].product_slow=(float)grid[cell].ml.image_data->timber.slow.carbon;
+      biomass_image_nat[cell].product_fast=(float)grid[cell].ml.product.fast.carbon;
+      biomass_image_nat[cell].product_slow=(float)grid[cell].ml.product.slow.carbon;
       natfrac_image[cell]=natfrac;
 
       /* WOODPLANTATIONS variable biomass_image_wp with 9 biomass pools with ONLY woodplantation stand */
@@ -471,15 +472,16 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
                 break;
             } /* of switch */
           biomass_image_wp[cell].litter+=(float)litterstocks(&stand->soil.litter).carbon*(float)stand->frac;
-          for (i = 0; i<LASTLAYER; i++){
+          for (i = 0; i<LASTLAYER; i++)
+          {
             biomass_image_wp[cell].humus+=(float)stand->soil.pool[i].fast.carbon*(float)stand->frac;
             biomass_image_wp[cell].charcoal+=(float)stand->soil.pool[i].slow.carbon*(float)stand->frac;
           }
           wpfrac += (float)stand->frac;
         }
       } /* for each stand */
-      biomass_image_wp[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast.carbon;
-      biomass_image_wp[cell].product_slow=(float)grid[cell].ml.image_data->timber.slow.carbon;
+      biomass_image_wp[cell].product_fast=(float)grid[cell].ml.product.fast.carbon;
+      biomass_image_wp[cell].product_slow=(float)grid[cell].ml.product.slow.carbon;
       wpfrac_image[cell]=wpfrac;
 
       /* Added new variable biomass_image_agr with 9 biomass pools for all NON-natural stand */
@@ -525,15 +527,16 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
           } /* of switch */
           biomass_image_agr[cell].litter+=(float)litterstocks(&stand->soil.litter).carbon*
             (float)stand->frac;
-          for(i=0;i<LASTLAYER;i++){
+          for(i=0;i<LASTLAYER;i++)
+          {
             biomass_image_agr[cell].humus+=(float)stand->soil.pool[i].fast.carbon*(float)stand->frac;
             biomass_image_agr[cell].charcoal+=(float)stand->soil.pool[i].slow.carbon*(float)stand->frac;
           }
-        agrfrac+=(float)stand->frac;
+          agrfrac+=(float)stand->frac;
         }
       } /* for each stand */
-      biomass_image_agr[cell].product_fast=(float)grid[cell].ml.image_data->timber.fast.carbon;
-      biomass_image_agr[cell].product_slow=(float)grid[cell].ml.image_data->timber.slow.carbon;
+      biomass_image_agr[cell].product_fast=(float)grid[cell].ml.product.fast.carbon;
+      biomass_image_agr[cell].product_slow=(float)grid[cell].ml.product.slow.carbon;
       agrfrac_image[cell]=agrfrac;
 
       // scale with total agr fraction (all but natural fraction)
@@ -621,7 +624,6 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
 #endif
       }
 
-         
       /* Set C-balance variables to 0 if the biome is ICE, formerly done in IMAGE -> interface_image.f */
       if(biome_image[cell]==IJS)
       {
@@ -759,12 +761,12 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
   free(counts);
   free(offsets);
 #else
-  
+
 #ifdef DEBUG_IMAGE
   printf("sending data\n");
   printf("biomass pools[1] %g %g %g %g %g %g %g\n",biomass_image[1].branches,
-    biomass_image[1].charcoal,biomass_image[1].humus,biomass_image[1].leaves,
-    biomass_image[1].litter,biomass_image[1].roots,biomass_image[1].stems);
+         biomass_image[1].charcoal,biomass_image[1].humus,biomass_image[1].leaves,
+         biomass_image[1].litter,biomass_image[1].roots,biomass_image[1].stems);
   printf("biome[1] %d\n",biome_image[1]);
   printf("nep[1] %g\n",nep_image[1]);
   printf("npp[1] %g\n",npp_image[1]);
@@ -774,20 +776,21 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
 
 
 #ifdef DEBUG_IMAGE_CELL
-  for(cell=0;cell<config->ngridcell;cell++) {
-        printf("lpjsend %i %g %i %g %g %g %g %g %g %g %g %g %g %g %g %g %g \n",
-           cell, biomass_image[cell].branches, 
+  for(cell=0;cell<config->ngridcell;cell++)
+  {
+    printf("lpjsend %i %g %i %g %g %g %g %g %g %g %g %g %g %g %g %g %g \n",
+           cell, biomass_image[cell].branches,
            biome_image[cell],nep_image[cell],npp_image[cell],rh_image[cell],
-           harvest_agric_image[cell],harvest_biofuel_image[cell], 
+           harvest_agric_image[cell],harvest_biofuel_image[cell],
            harvest_timber_image[cell], fire_image[cell],fireemission_deforest_image[cell],
            product_turnover_fast_image[cell], product_turnover_slow_image[cell],
            trad_biofuel_image[cell], yields[cell][0], adischarge[cell],nppgrass_image[cell]);
 
-   }
+  }
 #endif
 
 #endif
-   
+
   writefloat_socket(config->out, biomass_image, config->ngridcell*NBPOOLS);
   writefloat_socket(config->out, biomass_image_nat, config->ngridcell*NBPOOLS);
   writefloat_socket(config->out, biomass_image_wp , config->ngridcell*NBPOOLS);
@@ -834,7 +837,7 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
   writefloat_socket(config->out, natfrac_image, config->ngridcell);
   writefloat_socket(config->out, wpfrac_image, config->ngridcell);
   writefloat_socket(config->out, agrfrac_image, config->ngridcell);
-  writefloat_socket(config->out, monthirrig,  (NMONTH)*config->ngridcell); 
+  writefloat_socket(config->out, monthirrig,  (NMONTH)*config->ngridcell);
   writefloat_socket(config->out, monthevapotr,(NMONTH)*config->ngridcell);
   rc = writefloat_socket(config->out, monthpetim,  (NMONTH)*config->ngridcell);
 

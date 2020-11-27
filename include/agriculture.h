@@ -23,7 +23,7 @@ extern Standtype setaside_rf_stand;
 extern Standtype setaside_ir_stand;
 extern Standtype kill_stand;
 
-extern Real daily_agriculture(Stand *,Real,const Dailyclimate *,int,
+extern Real daily_agriculture(Stand *,Real,const Dailyclimate *,int,int,
                               Real,const Real [],Real,
                               Real,Real,Real,Real,Real,Real,int,int,int,
                               Bool,const Config *);
@@ -31,7 +31,7 @@ extern Bool annual_agriculture(Stand *,int,int,Real,int,Bool,Bool,const Config *
 
 extern Bool annual_setaside(Stand *,int,int,Real,int,Bool,Bool,const Config *);
 
-extern Real daily_setaside(Stand *,Real,const Dailyclimate *,int,
+extern Real daily_setaside(Stand *,Real,const Dailyclimate *,int,int,
                            Real,const Real [],Real,
                            Real,Real,Real,Real,Real,Real,int,int,int,
                            Bool,Bool,const Config *);

@@ -100,7 +100,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 285           /* number of output files */
+#define NOUT 284           /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -402,7 +402,6 @@
 #define WD_GW 281
 #define WD_AQ 282
 #define WFT_VEGC 283
-#define WD_RETURN 284
 
 #define RANDOM_SEED 0
 #endif

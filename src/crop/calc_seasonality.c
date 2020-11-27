@@ -125,11 +125,11 @@ void calc_seasonality(Cell *grid,          /**< cell grid array */
         }
 
         if (var_prec>0.4 && var_temp<=0.010) /*precipitation seasonality only*/
-          grid[cell].ml.seasonality_type=PREC;            
+          grid[cell].ml.seasonality_type=PRECIP;            
         if (var_prec>0.4 && (var_temp>0.010 && grid[cell].climbuf.mtemp_min20>TEMPMIN)) /*both seasonalities, but "weak" temperature seasonality (coldest month > 10 deg C)*/
-          grid[cell].ml.seasonality_type=PRECTEMP;  
+          grid[cell].ml.seasonality_type=PRECIPTEMP;  
      
-        if (grid[cell].ml.seasonality_type==PREC || grid[cell].ml.seasonality_type==PRECTEMP)
+        if (grid[cell].ml.seasonality_type==PRECIP || grid[cell].ml.seasonality_type==PRECIPTEMP)
         {
           /*find first month of four wettest months (sum of their precipiation/PET ratios)*/ 
           max=sum=0;
@@ -172,9 +172,9 @@ void calc_seasonality(Cell *grid,          /**< cell grid array */
         if (var_temp>0.010 && var_prec<=0.4) /*temperature seasonality only*/
            grid[cell].ml.seasonality_type=TEMP;
         if (var_temp>0.010 && (var_prec>0.4 && grid[cell].climbuf.mtemp_min20<=TEMPMIN)) /*both seasonalities but "strong" temperature seasonality (coldest month <= 10 deg C)*/  
-           grid[cell].ml.seasonality_type=TEMPPREC;
+           grid[cell].ml.seasonality_type=TEMPPRECIP;
          
-        if (grid[cell].ml.seasonality_type==TEMP || grid[cell].ml.seasonality_type==TEMPPREC)
+        if (grid[cell].ml.seasonality_type==TEMP || grid[cell].ml.seasonality_type==TEMPPRECIP)
         {
           earliest_sdatetemp=interpolate(grid[cell].climbuf.mtemp20,earliest_smonth-1,earliestdayofmonth);
           earliestbefore_sdatetemp=interpolate(grid[cell].climbuf.mtemp20,earliest_smonth-1,earliestdayofmonth-1);

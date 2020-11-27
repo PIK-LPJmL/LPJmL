@@ -23,6 +23,7 @@
 void wateruse(Cell *grid,          /**< LPJ grid */
               int npft,            /**< number of natural PFTs */
               int ncft,            /**< number of crop PFTs */
+              int month,
               const Config *config /**< LPJ configuration */
              )
 {
@@ -131,7 +132,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
       grid[cell].output.mwd_res+=grid[cell].discharge.act_irrig_amount_from_reservoir/grid[cell].coord.area;
 
 #ifndef IMAGE
-      distribute_water(&grid[cell],config->irrig_scenario,config->pft_output_scaled,npft,ncft);
+      distribute_water(&grid[cell],config->irrig_scenario,config->pft_output_scaled,npft,ncft,month);
 #endif
     }
   }
@@ -164,7 +165,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
           grid[cell].discharge.dmass_gw=0.0;
         }
       }     
-      distribute_water(&grid[cell],config->irrig_scenario,config->pft_output_scaled,npft,ncft);
+      distribute_water(&grid[cell],config->irrig_scenario,config->pft_output_scaled,npft,ncft,month);
     }
   }
 #endif

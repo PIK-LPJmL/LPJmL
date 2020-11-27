@@ -55,7 +55,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
     {
       if(pft->par->type==TREE)
       {
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
 #ifdef DEBUG_IMAGE
         if/*(ftimber>0 ||
           (cell->coord.lon-.1<-43.25 && cell->coord.lon+.1>-43.25 && cell->coord.lat-.1<-11.75 && cell->coord.lat+.1>-11.75)||
@@ -63,19 +63,19 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
           (cell->coord.lon>102.2 && cell->coord.lon < 102.3 && cell->coord.lat >28.7 && cell->coord.lat< 28.8)
         {
           printf("A %g/%g timber_harvest: %s ftimber %g standfrac %g littersum %g vegcsum %g nind %g %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,ftimber,
-                 standfrac,littersum(&soil->litter),vegc_sum(pft),pft->nind,nind);
+                 standfrac,litterstocks(&soil->litter).carbon,vegc_sum(pft),pft->nind,nind);
           fflush(stdout);
         }
 #endif
         /* harvesting timber */
         cell->output.ftimber=ftimber;
-        harvest=timber_harvest(pft,soil,&cell->ml.image_data->timber,
-                               cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&cell->output.trad_biofuel,cell->ml.image_data->timber_frac,cell->ml.image_data->takeaway);
+        harvest=timber_harvest(pft,soil,&cell->ml.product,
+                               cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&trad_biofuel,cell->ml.image_data->timber_frac,cell->ml.image_data->takeaway);
         cell->output.timber_harvest.carbon+=harvest.carbon;
         cell->output.timber_harvest.nitrogen+=harvest.nitrogen;
-                               cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&trad_biofuel);
-        cell->output.trad_biofuel+=trad_biofuel;
-        cell->balance.trad_biofuel+=trad_biofuel;
+        cell->output.trad_biofuel+=trad_biofuel.carbon;
+        cell->balance.trad_biofuel.carbon+=trad_biofuel.carbon;
+        cell->balance.trad_biofuel.nitrogen+=trad_biofuel.nitrogen;
 #ifdef DEBUG_IMAGE
         /*if(ftimber>0 ||
           (cell->coord.lon-.1<-43.25 && cell->coord.lon+.1>-43.25 && cell->coord.lat-.1<-11.75 && cell->coord.lat+.1>-11.75)||
@@ -83,20 +83,19 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         if(cell->coord.lon>102.2 && cell->coord.lon < 102.3 && cell->coord.lat >28.7 && cell->coord.lat< 28.8)
         {
           printf("B %g/%g timber_burn: %s fburn %g standfrac %g littersum %g vegcsum %g nind %g %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,cell->ml.image_data->fburnt,
-                 standfrac,littersum(&soil->litter),vegc_sum(pft),pft->nind,nind);
+                 standfrac,litterstocks(&soil->litter).carbon,vegc_sum(pft),pft->nind,nind);
           fflush(stdout);
         }
 #endif
 #else
         harvest=timber_harvest(pft,soil,frac,param.ftimber,standfrac,&nind,&trad_biofuel);
 #endif
-        cell->output.trad_biofuel.carbon+=trad_biofuel.carbon;
-        cell->output.trad_biofuel.nitrogen+=trad_biofuel.nitrogen;
+        cell->output.trad_biofuel+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.carbon+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.nitrogen+=trad_biofuel.nitrogen;
         cell->output.timber_harvest.carbon+=harvest.carbon;
         cell->output.timber_harvest.nitrogen+=harvest.nitrogen;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
         /* burning wood */
         cell->output.fburn=cell->ml.image_data->fburnt;
 #ifdef DEBUG_IMAGE_CELL
@@ -121,7 +120,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
     if(cell->coord.lon>102.2 && cell->coord.lon < 102.3 && cell->coord.lat >28.7 && cell->coord.lat< 28.8)
     {
       printf("C %g/%g timber_burn: %s fburn %g standfrac %g littersum %g vegcsum %g nind %g %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,cell->ml.image_data->fburnt,
-             standfrac,littersum(&soil->litter),vegc_sum(pft),pft->nind,nind);
+             standfrac,litterstocks(&soil->litter).carbon,vegc_sum(pft),pft->nind,nind);
       fflush(stdout);
     }
 #endif
@@ -133,7 +132,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
       (cell->coord.lon-.1<94.25 && cell->coord.lon+.1>94.25 && cell->coord.lat-.1<22.25 && cell->coord.lat+.1>22.25))
     {
       printf("D %g/%g timber_burn: %s fburn %g standfrac %g littersum %g vegcsum %g nind %g %g\n",cell->coord.lon,cell->coord.lat,pft->par->name,cell->ml.image_data->fburnt,
-             standfrac,littersum(&soil->litter),vegc_sum(pft),pft->nind,nind);
+             standfrac,litterstocks(&soil->litter).carbon,vegc_sum(pft),pft->nind,nind);
       fflush(stdout);
     }
 #endif

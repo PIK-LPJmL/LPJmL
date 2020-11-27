@@ -280,7 +280,7 @@ int iterate(Outputfile *output,  /**< Output file data */
         fflush(stdout);
       }
 #endif
-      if(send_image_data(config,grid,input.climate,npft,ncft))
+      if(send_image_data(grid,input.climate,npft,ncft,config))
         fail(SEND_IMAGE_ERR,FALSE,
              "Problem with writing maps for transfer to IMAGE");
     }

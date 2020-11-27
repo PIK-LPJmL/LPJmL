@@ -27,7 +27,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   Pft *pft;
   Stand *stand;
   init_climbuf(&cell->climbuf);
-  cell->balance.aprec=cell->balance.nep=cell->balance.awater_flux=0.0;
+  cell->balance.aprec=cell->balance.anpp=cell->balance.arh=cell->balance.awater_flux=0.0;
   cell->afire_frac=cell->balance.biomass_yield.carbon=cell->balance.biomass_yield.nitrogen=0.0;
   cell->balance.total_irrig_from_reservoir=cell->balance.total_reservoir_out=0.0;
   cell->balance.n_influx=cell->balance.n_outflux=cell->balance.n_demand=cell->balance.n_uptake=0.0;
@@ -41,10 +41,11 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.flux_estab.carbon=cell->balance.flux_estab.nitrogen=0;
   cell->balance.flux_harvest.carbon=cell->balance.flux_harvest.nitrogen=0;
   cell->balance.deforest_emissions.carbon=cell->balance.deforest_emissions.nitrogen=0;
-  cell->balance.prod_turnover.carbon=cell->balance.prod_turnover.nitrogen=0;
+  cell->balance.prod_turnover.fast.carbon=cell->balance.prod_turnover.fast.nitrogen=0;
+  cell->balance.prod_turnover.slow.carbon=cell->balance.prod_turnover.slow.nitrogen=0;
   cell->balance.neg_fluxes.carbon=cell->balance.neg_fluxes.nitrogen=0;
 #if defined IMAGE && defined COUPLED
-  output->npp_nat=output->npp_wp=output->flux_estab_nat=output->flux_estab_wp=output->rh_nat=output->rh_wp=0.0;
+  cell->output.npp_nat=cell->output.npp_wp=cell->output.flux_estab_nat=cell->output.flux_estab_wp=cell->output.rh_nat=cell->output.rh_wp=0.0;
 #endif
   foreachstand(stand,s,cell->standlist)
   {
@@ -59,9 +60,6 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
-    cell->ml.image_data->anpp=cell->ml.image_data->arh=
-    cell->ml.image_data->prod_turn.fast.carbon=cell->ml.image_data->prod_turn.fast.nitrogen=
-    cell->ml.image_data->prod_turn.slow.carbon=cell->ml.image_data->prod_turn.slow.nitrogen=0.0;
     for(m=0;m<NMONTH;m++)
     {
       cell->ml.image_data->mirrwatdem[m]=0.0;

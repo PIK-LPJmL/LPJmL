@@ -27,7 +27,7 @@ typedef struct
 extern Standtype biomass_tree_stand;
 
 extern Bool annual_biomass_tree(Stand *,int, int,Real,int,Bool,Bool,const Config *);
-extern Real daily_biomass_tree(Stand *,Real,const Dailyclimate *, int,
+extern Real daily_biomass_tree(Stand *,Real,const Dailyclimate *, int,int,
                                Real,const Real [],
                                Real ,Real,Real,Real,Real,Real,
                                Real ,int, int, int,Bool,const Config *);

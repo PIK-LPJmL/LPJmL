@@ -22,6 +22,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
                         Real co2,             /**< atmospheric CO2 (ppmv) */
                         const Dailyclimate *climate, /**< Daily climate values */
                         int day,              /**< day (1..365) */
+                        int month,
                         Real daylength,       /**< length of day (h) */
                         const Real gp_pft[],  /**< pot. canopy conductance for PFTs & CFTs*/
                         Real gtemp_air,       /**< value of air temperature response function */
@@ -55,6 +56,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   Real npp; /* net primary productivity (gC/m2) */
   Real wdf; /* water deficit fraction */
   Real gc_pft;
+  Real transp;
   Biomass_tree *data;
   Soil *soil;
   irrig_apply = 0;
@@ -74,7 +76,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   else
     wet = NULL;
   if (!config->river_routing)
-    irrig_amount(stand, &data->irrigation,config->pft_output_scaled, npft, ncft);
+    irrig_amount(stand, &data->irrigation,config->pft_output_scaled, npft, ncft,month);
 
   if(config->pft_output_scaled)
     stand->cell->output.cft_airrig[rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->irrigation.irrig_amount*stand->cell->ml.landfrac[1].woodplantation;
@@ -102,7 +104,15 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
     else
     {
       /* write irrig_apply to output */
-      stand->cell->output.mirrig += irrig_apply*stand->frac;
+      stand->cell->output.irrig += irrig_apply*stand->frac;
+      stand->cell->balance.airrig += irrig_apply*stand->frac;
+#if defined IMAGE && defined COUPLED
+      if(stand->cell->ml.image_data!=NULL)
+      {
+        stand->cell->ml.image_data->mirrwatdem[month]+=irrig_apply*stand->frac;
+        stand->cell->ml.image_data->mevapotr[month] += irrig_apply*stand->frac;
+      }
+#endif
       if (config->pft_output_scaled)
         stand->cell->output.cft_airrig[rwp(ncft) + data->irrigation.irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += irrig_apply*stand->cell->ml.landfrac[1].woodplantation;
       else
@@ -170,12 +180,13 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
      output->daily.npp+=npp*stand->frac;
      output->daily.gpp+=gpp*stand->frac;
    }
-   output->mnpp+=npp*stand->frac;
+   output->npp+=npp*stand->frac;
+   stand->cell->balance.anpp+=npp*stand->frac;
 #ifdef COUPLED
-   stand->cell->output.npp_wp+=npp*stand->frac;
+   output->npp_wp+=npp*stand->frac;
 #endif
    output->dcflux-=npp*stand->frac;
-   output->mgpp+=gpp*stand->frac;
+   output->gpp+=gpp*stand->frac;
    output->cft_fpar[rwp(ncft) + data->irrigation.irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += (fpar(pft)*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation*(1.0 / (1 - stand->cell->lakefrac)));
    if (config->pft_output_scaled)
      output->pft_npp[(npft-config->nbiomass-config->nwft)+rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation;
@@ -199,18 +210,25 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
     output->daily.wevap+=stand->soil.w[0]*stand->frac;
     output->daily.interc+=intercep_stand*stand->frac;
   }
-
+  transp=0;
   forrootsoillayer(l)
   {
-    output->mtransp += aet_stand[l] * stand->frac;
+    transp += aet_stand[l] * stand->frac;
     output->mtransp_b += (aet_stand[l] - green_transp[l])*stand->frac;
   }
-
-  output->minterc += intercep_stand*stand->frac; /* Note: including blue fraction*/
+  output->transp+=transp;
+  stand->cell->balance.atransp+=transp;
+  output->interc += intercep_stand*stand->frac; /* Note: including blue fraction*/
+  stand->cell->balance.ainterc+=intercep_stand*stand->frac;
   output->minterc_b += intercep_stand_blue*stand->frac;   /* blue interception and evap */
 
-  output->mevap += evap*stand->frac;
+  output->evap += evap*stand->frac;
+  stand->cell->balance.aevap+=evap*stand->frac;
   output->mevap_b += evap_blue*stand->frac;   /* blue soil evap */
+#ifdef COUPLED
+  if(stand->cell->ml.image_data!=NULL)
+    stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
+#endif
 
   output->mreturn_flow_b += return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/
 

@@ -68,24 +68,21 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(INPUT_LAKE,input_lake);
   setoutputvar(DEFOREST_EMIS,deforest_emissions.carbon);
   setoutputvar(DEFOREST_EMIS,deforest_emissions.nitrogen);
-  setoutputvar(TRAD_BIOFUEL,trad_biofuel.carbon);
-  setoutputvar(TRAD_BIOFUEL,trad_biofuel.nitrogen);
+  setoutputvar(TRAD_BIOFUEL,trad_biofuel);
   setoutputvar(FBURN,fburn);
   setoutputvar(FTIMBER,ftimber);
   setoutputvar(TIMBER_HARVESTC,timber_harvest.carbon);
   setoutputvar(TIMBER_HARVESTC,timber_harvest.nitrogen);
 #if defined IMAGE || defined INCLUDEWP
-  setoutputarrary(WFT_VEGC,wft_vegc,config->nwft);
+  setoutputarray(WFT_VEGC,wft_vegc,config->nwft);
 #endif
 #ifdef IMAGE
-  setoutputvar(PRODUCT_POOL_FAST,product_pool_fast);
-  setoutputvar(PRODUCT_POOL_SLOW,product_pool_slow);
-  setoutputvar(PROD_TURNOVER,prod_turnover);
-#else
+  setoutputvar(WD_GW,mwd_gw);
+  setoutputvar(WD_AQ,mwd_aq);
+#endif
   setoutputvar(PRODUCT_POOL_FAST,product_pool.fast);
   setoutputvar(PRODUCT_POOL_SLOW,product_pool.slow);
   setoutputvar(PROD_TURNOVER,prod_turnover);
-#endif
   setoutputvar(WATERUSE_HIL,awateruse_hil);
   setoutputvar(WATERUSECONS,waterusecons);
   setoutputvar(WATERUSEDEM,waterusedem);
@@ -149,11 +146,10 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(WD_LOCAL,mwd_local);
   setoutputvar(WD_NEIGHB,mwd_neighb);
   setoutputvar(WD_RES,mwd_res);
-  setoutputvar(WD_RETURN,mwd_return);
   setoutputvar(CONV_LOSS_EVAP,mconv_loss_evap);
   setoutputvar(CONV_LOSS_DRAIN,mconv_loss_drain);
   setoutputvar(STOR_RETURN,mstor_return);
-  setoutputvar(PREC,mprec);
+  setoutputvar(PREC,prec);
   setoutputvar(RAIN,mrain);
   setoutputvar(SNOWF,msnowf);
   setoutputvar(MELT,mmelt);

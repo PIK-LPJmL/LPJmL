@@ -50,7 +50,7 @@ typedef struct
 } Irrig_system;
 
 
-typedef enum {NO_SEASONALITY, PREC, PRECTEMP, TEMP, TEMPPREC} Seasonality;
+typedef enum {NO_SEASONALITY, PRECIP, PRECIPTEMP, TEMP, TEMPPRECIP} Seasonality;
 
 typedef enum {GS_DEFAULT, GS_MOWING, GS_GRAZING_EXT, GS_GRAZING_INT, GS_NONE} GrassScenarioType;
 
@@ -91,9 +91,8 @@ typedef struct
   GrassScenarioType grass_scenario; /**< 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
 #if defined IMAGE && defined COUPLED
   Image_data *image_data; /**< pointer to IMAGE data structure */
-#else
-  Pool product;
 #endif
+  Pool product;
 } Managed_land;
 
 /* Definitions of macros */
@@ -137,7 +136,7 @@ extern Stocks woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real);
 extern void irrig_amount_river(Cell *,const Config *);
-extern void irrig_amount(Stand *,Irrigation *,Bool,int,int);
+extern void irrig_amount(Stand *,Irrigation *,Bool,int,int,int);
 extern void mixsetaside(Stand *,Stand *,Bool);
 extern void set_irrigsystem(Stand *,int,int,Bool);
 extern void init_irrigation(Irrigation *);

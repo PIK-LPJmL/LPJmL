@@ -69,7 +69,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   gtemp_air=temp_response(climate.temp);
   daily_climbuf(&cell->climbuf,climate.temp,climate.prec);
   avgprec=getavgprec(&cell->climbuf);
-  cell->output.mprec+=climate.prec;
+  cell->output.prec+=climate.prec;
   cell->output.msnowf+=climate.temp<tsnow ? climate.prec : 0;
   cell->output.mrain+=climate.temp<tsnow ? 0 : climate.prec;
 
@@ -96,6 +96,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       cell->discharge.drunoff+=snowrunoff;
       cell->output.evap+=evap*stand->frac; /* evap from snow runoff*/
       cell->balance.aevap+=evap*stand->frac; /* evap from snow runoff*/
+#if defined IMAGE && defined COUPLED
+  if(cell->ml.image_data!=NULL)
+    cell->ml.image_data->mevapotr[month] += evap*stand->frac;
+#endif
+
       if(config->withdailyoutput && cell->output.daily.cft==ALLSTAND)
         cell->output.daily.evap+=evap*stand->frac;
       prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
@@ -127,7 +132,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       cell->output.msoiltemp2[l]+=stand->soil.temp[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     }
     hetres=littersom(stand,gtemp_soil,config->with_nitrogen);
-    cell->balance.nep-=hetres.carbon*stand->frac;
+    cell->balance.arh+=hetres.carbon*stand->frac;
     cell->output.rh+=hetres.carbon*stand->frac;
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
@@ -209,7 +214,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       cell->output.mbnf+=bnf*stand->frac;
       cell->balance.n_influx+=bnf*stand->frac;
     }
-    runoff=daily_stand(stand,co2,&climate,day,daylength,gp_pft,
+    runoff=daily_stand(stand,co2,&climate,day,month,daylength,gp_pft,
                        gtemp_air,gtemp_soil[0],gp_stand,gp_stand_leafon,eeq,par,
                        melt,npft,ncft,year,intercrop,config);
     if(config->with_nitrogen)
@@ -272,7 +277,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     /* reservoir waterbalance */
     if(cell->ml.dam)
-      update_reservoir_daily(cell,climate.prec,eeq);
+      update_reservoir_daily(cell,climate.prec,eeq,month);
 
     /* lake waterbalance */
     cell->discharge.dmass_lake+=climate.prec*cell->coord.area*cell->lakefrac;
@@ -286,6 +291,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         /*here evaporation for casp sea is computed*/
         cell->output.mevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
         cell->balance.aevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
+#if defined IMAGE && defined COUPLED
+        if(cell->ml.image_data!=NULL)
+          cell->ml.image_data->mevapotr[month] += =eeq*PRIESTLEY_TAYLOR*stand->frac;
+#endif
         cell->output.dwflux+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
         cell->discharge.dmass_lake=cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac;
       }
@@ -302,6 +311,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           {
             cell->output.mevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
             cell->balance.aevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
+#if defined IMAGE && defined COUPLED
+            if(cell->ml.image_data!=NULL)
+              cell->ml.image_data->mevapotr[month] += =eeq*PRIESTLEY_TAYLOR*stand->frac;
+#endif
             cell->discharge.dmass_lake=max(cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac,0.0);
           }
       }
@@ -312,6 +325,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     if(config->withdailyoutput && cell->output.daily.cft==ALLSTAND)
       cell->output.daily.evap+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
     cell->balance.aevap_lake+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
+#if defined IMAGE && defined COUPLED
+     if(cell->ml.image_data!=NULL)
+       cell->ml.image_data->mevapotr[month] += min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
+#endif
 #ifdef COUPLING_WITH_FMS
     cell->output.dwflux+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
 #endif
