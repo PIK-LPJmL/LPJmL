@@ -232,7 +232,7 @@ export LPJINPATH=$inpath
 
 # include manpages of LPJmL
 
-export MANPATH=$LPJROOT/man:\$MANPATH
+export MANPATH=\$LPJROOT/man:\$MANPATH
 
 # define alias
 
