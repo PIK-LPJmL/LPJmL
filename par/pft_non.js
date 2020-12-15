@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                      p  f  t  _  n  o  n  .  j  s                              \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 5.1.001 without nitrogen         \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.1.002 without nitrogen         \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -139,13 +139,6 @@
     "flam" : FLAM_TREE,  /* flam */
     "k_litter10" : { "leaf" : 0.93, "wood" : 0.039 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 2.75, /* Q10_wood */
-    "vmax_up" : 2.8,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_BL_EG_MN, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_BL_EG_MD,
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
     "leaftype" : "broadleaved",  /* leaftype */
@@ -240,13 +233,6 @@
     "flam" : FLAM_TREE,     /* flam */
     "k_litter10" : { "leaf" : 1.17, "wood" : 0.039 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 2.75, /* Q10_wood */
-    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_BL_DC_MD,
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
     "leaftype" : "broadleaved",  /* leaftype */
@@ -341,13 +327,6 @@
     "flam" : FLAM_TREE,     /* flam */
     "k_litter10" : { "leaf" : 0.7, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1.97, /* Q10_wood */
-    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_NL_EG_MN, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_NL_EG_MD,
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "leaftype" : "needleleaved",/* leaftype */
@@ -442,13 +421,6 @@
     "flam" : FLAM_TREE,     /* flam */
     "k_litter10" : { "leaf" : 0.86, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1.37, /* Q10_wood */
-    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_BL_EG_MN, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_BL_EG_MD,
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
     "leaftype" : "broadleaved",/* leaftype */
@@ -543,13 +515,6 @@
     "flam" : FLAM_TREE,     /* flam */
     "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1.37, /* Q10_wood */
-    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_BL_DC_MD,
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
     "leaftype" : "broadleaved",/* leaftype */
@@ -646,13 +611,6 @@
     "flam" : FLAM_TREE,     /* flam */
     "k_litter10" : { "leaf" : 0.76, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1.97, /* Q10_wood */
-    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_NL_EG_MN, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_NL_EG_MD,
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
     "leaftype" : "needleleaved",/* leaftype */
@@ -747,13 +705,6 @@
     "flam" : FLAM_TREE,     /* flam */
     "k_litter10" : { "leaf" : 0.94, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1.37, /* Q10_wood */
-    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_BL_DC_MD,
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "leaftype" : "broadleaved",/* leaftype */
@@ -850,13 +801,6 @@
     "flam" : FLAM_TREE,     /* flam */
     "k_litter10" : { "leaf" : 0.76, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1.97, /* Q10_wood */
-    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_NL_DC_MN, "high" : CN_NL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_NL_DC_MD,
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "leaftype" : "needleleaved",/* leaftype */
@@ -953,13 +897,6 @@
     "flam" : FLAM_GRASS,     /* flam */
     "k_litter10" : { "leaf" : 0.97, "wood" : 0.97 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1., /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_GC4_MN, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_GC4_MD,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
@@ -1038,13 +975,6 @@
     "flam" : FLAM_GRASS,     /* flam */
     "k_litter10" : { "leaf" : 1.2, "wood" : 1.2 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1., /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_GC3_MN, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_GC3_MD,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
@@ -1122,13 +1052,6 @@
     "flam" : FLAM_GRASS,     /* flam */
     "k_litter10" : { "leaf" : 1.2, "wood" : 1.2 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1., /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_GC3_MN, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_GC3_MD,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
@@ -1206,13 +1129,6 @@
     "flam" : FLAM_TREE,     /* flam */
     "k_litter10" : { "leaf" : 0.93, "wood" : 0.039 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 2.75, /* Q10_wood */
-    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_BL_EG_MN, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_BL_EG_MD,
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 1.0,/* roughness length */
     "leaftype" : "broadleaved",/* leaftype */
@@ -1309,13 +1225,6 @@
     "flam" : FLAM_TREE,     /* flam */
     "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1.37, /* Q10_wood */
-    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_BL_DC_MN, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_BL_DC_MD,
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "leaftype" : "broadleaved",/* leaftype */
@@ -1414,13 +1323,6 @@
     "flam" : FLAM_GRASS,     /* flam */
     "k_litter10" : { "leaf" : 0.97, "wood" : 0.97 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1., /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": CN_GC4_MN, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "cnratio_leaf_median": CN_GC4_MD,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
@@ -1498,13 +1400,6 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "cnratio_leaf_median" : CN_CROPS_MEAN,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03, /* roughness length */
     "calcmethod_sdate" : TEMP_WTYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
@@ -1605,13 +1500,6 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "cnratio_leaf_median" : CN_CROPS_MEAN,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
@@ -1712,13 +1600,6 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "cnratio_leaf_median" : CN_CROPS_MEAN,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
     "calcmethod_sdate" : TEMP_PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
@@ -1819,13 +1700,6 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "cnratio_leaf_median" : CN_CROPS_MEAN,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
@@ -1926,13 +1800,6 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "cnratio_leaf_median" : CN_CROPS_MEAN,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : TEMP_PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
@@ -2033,13 +1900,6 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "cnratio_leaf_median" : CN_CROPS_MEAN,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,   /* windspeed dampening */
     "roughness_length" : 0.03,     /* roughness length */
     "calcmethod_sdate" : TEMP_STYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
@@ -2140,13 +2000,6 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "cnratio_leaf_median" : CN_CROPS_MEAN,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
@@ -2247,13 +2100,6 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "cnratio_leaf_median" : CN_CROPS_MEAN,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : TEMP_STYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
@@ -2354,13 +2200,6 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "cnratio_leaf_median" : CN_CROPS_MEAN,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
@@ -2461,13 +2300,6 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "cnratio_leaf_median" : CN_CROPS_MEAN,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
@@ -2568,13 +2400,6 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "cnratio_leaf_median" : CN_CROPS_MEAN,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : TEMP_WTYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
@@ -2675,13 +2500,6 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
-    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
-    "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
-    "cnratio_leaf": {"low": 14.3, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "cnratio_leaf_median" : CN_CROPS_MEAN,
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
     "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/

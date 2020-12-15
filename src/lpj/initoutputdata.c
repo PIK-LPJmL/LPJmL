@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#define isinit(index) (config->outnames[index].timestep==timestep)
+#define isinit(index) (isinit2(index,timestep,year,config))
 
 #define setoutputvar(index,name) if(isinit(index))\
    output->name=0
@@ -33,14 +33,58 @@
       output->name[i].item=0;\
   }
 
+static Bool isinit2(int index,int timestep,int year,const Config *config)
+{
+  if(timestep==ANNUAL && config->outnames[index].timestep>0)
+    return ((year-config->outputyear) %  config->outnames[index].timestep==0);
+  else
+    return config->outnames[index].timestep==timestep;
+} /* of 'isinit2' */
+
 void initoutputdata(Output *output,      /**< output data */
                     int timestep,        /**< time step (ANNUAL, MONTHLY, DAILY) */
                     int npft,            /**< number of natural PFTs */
                     int ncft,            /**< number of crop PFTs */
+                    int year,            /**< simulation year */
                     const Config *config /**< LPJ configuration */
                    )
 {
   int i,index;
+  setoutputvar(DAYLENGTH,daylength);
+  setoutputvar(TEMP,temp);
+  setoutputvar(SUN,sun);
+  setoutputvar(VEGC,veg.carbon);
+  setoutputvar(VEGN,veg.nitrogen);
+  setoutputvar(SOILC,soil.carbon);
+  setoutputvar(SOILN,soil.nitrogen);
+  setoutputvar(MG_VEGC,mg_vegc);
+  setoutputvar(MG_SOILC,mg_soilc);
+  setoutputvar(MG_LITC,mg_litc);
+  setoutputvar(SOILC_SLOW,soil_slow.carbon);
+  setoutputvar(SOILN_SLOW,soil_slow.nitrogen);
+  setoutputvar(LITC,litter.carbon);
+  setoutputvar(LITN,litter.nitrogen);
+  setoutputarrayitem(SOILC_LAYER,soil_layer,carbon,LASTLAYER);
+  setoutputarrayitem(SOILN_LAYER,soil_layer,nitrogen,LASTLAYER);
+  setoutputarray(SOILNO3_LAYER,soilno3_layer,LASTLAYER);
+  setoutputarray(SOILNH4_LAYER,soilnh4_layer,LASTLAYER);
+  setoutputarray(PFT_LAIMAX,pft_laimax,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarrayitem(PFT_NLEAF,pft_leaf,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarrayitem(PFT_CLEAF,pft_leaf,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarrayitem(PFT_NROOT,pft_root,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarrayitem(PFT_CROOT,pft_root,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarrayitem(PFT_NSAPW,pft_sapw,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarrayitem(PFT_CSAPW,pft_sapw,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarrayitem(PFT_NHAWO,pft_hawo,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarrayitem(PFT_CHAWO,pft_hawo,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarrayitem(PFT_VEGC,pft_veg,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarrayitem(PFT_VEGN,pft_veg,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarray(PFT_NLIMIT,pft_nlimit,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputvar(MAXTHAW_DEPTH,maxthaw_depth);
+  setoutputvar(SOILNO3,soilno3);
+  setoutputvar(SOILNH4,soilnh4);
+  setoutputvar(AGB,agb);
+  setoutputvar(AGB_TREE,agb_tree);
   setoutputvar(NPP,npp);
   setoutputvar(GPP,gpp);
   setoutputvar(RH,rh);
@@ -90,7 +134,7 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(NEGN_FLUXES,neg_fluxes.nitrogen);
   setoutputvar(MEAN_VEGC_MANGRASS,mean_vegc_mangrass);  
   setoutputvar(VEGC_AVG,vegc_avg);
-  setoutputvar(RH_LITTER,mrh_litter);
+  setoutputvar(RH_LITTER,rh_litter);
   setoutputvar(DISCHARGE,mdischarge);
   setoutputvar(ADISCHARGE,adischarge);
   setoutputvar(WATERAMOUNT,mwateramount);
@@ -173,7 +217,7 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(LAKETEMP,mlaketemp);
   setoutputarray(SDATE,sdate,2*ncft);
   setoutputarray(HDATE,hdate,2*ncft);
-  setoutputarray(PFT_NPP,pft_npp,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE+NWPTYPE)*2);
+  setoutputarray(PFT_NPP,pft_npp,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
   setoutputarray(PFT_NUPTAKE,pft_nuptake,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
   setoutputarray(PFT_NDEMAND,pft_ndemand,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
   setoutputarray(PFT_GCGP,pft_gcgp,npft-config->nbiomass-config->nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
@@ -184,14 +228,6 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputarrayitem(PFT_RHARVESTN,pft_harvest,residual.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   setoutputarray(CFT_CONSUMP_WATER_G,cft_consump_water_g,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   setoutputarray(CFT_CONSUMP_WATER_B,cft_consump_water_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_CLEAF,cft_leaf,carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_NLEAF,cft_leaf,nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE));
-  setoutputarrayitem(PFT_CROOT,cft_root,carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_NROOT,cft_root,nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_VEGC,cft_veg,carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_VEGN,cft_veg,nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(PFT_NLIMIT,cft_nlimit,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(PFT_LAIMAX,cft_laimax,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   setoutputarray(GROWING_PERIOD,growing_period,2*(ncft+NGRASS));
   setoutputarray(FPC,fpc,npft-config->nbiomass-config->nwft+1);
   setoutputarray(FPC_BFT,fpc_bft,((config->nbiomass+config->ngrass*2)*2));

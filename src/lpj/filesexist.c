@@ -142,10 +142,18 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
         fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",input.firstyear,filename->name,config->firstyear);
         return 1;
       }
-      if(checklast && input.firstyear+input.nyear-1<config->lastyear)
+      if(checklast)
       {
-        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,config->lastyear);
-        return 1;
+        if(!config->fix_climate && input.firstyear+input.nyear-1<config->lastyear)
+        {
+          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,config->lastyear);
+          return 1;
+        }
+        else if(config->fix_climate && input.firstyear+input.nyear-1<config->fix_climate_year+config->fix_climate_cycle/2)
+        {
+          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,config->fix_climate_year+config->fix_climate_cycle/2);
+          return 1;
+        }
       }
     }
   }
@@ -160,10 +168,18 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
       fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
       return 1;
     }
-    if(checklast && header.firstyear+header.nyear-1<config->lastyear)
+    if(checklast)
     {
-      fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->lastyear);
-      return 1;
+      if(!config->fix_climate && header.firstyear+header.nyear-1<config->lastyear)
+      {
+        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->lastyear);
+        return 1;
+      }
+        else if(config->fix_climate && header.firstyear+header.nyear-1<config->fix_climate_year+config->fix_climate_cycle/2)
+        {
+          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->fix_climate_year+config->fix_climate_cycle/2);
+          return 1;
+        }
     }
   }
   return 0;

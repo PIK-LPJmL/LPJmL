@@ -178,7 +178,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     filename->unit=NULL;
   if(iskeydefined(&f,"timestep"))
   {
-    if(fscankeywords(&f,&filename->timestep,"timestep",time_step,3,FALSE,verb))
+    if(fscantimestep(&f,&filename->timestep,verb))
     {
       if(verb)
         fputs("ERRROR229: Cannot read int 'timestep'.\n",stderr);

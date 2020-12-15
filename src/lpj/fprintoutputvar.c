@@ -33,10 +33,10 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
                      const Config *config     /**< LPJ configuration */
                     )
 {
-  char timenames[]={'Y','M','D'};
   int i,width,width_unit,width_var,index;
   char *sc;
   Item *item;
+  String s;
   /* sort output alphabetically by name */
   item=newvec(Item,size);
   if(item!=NULL)
@@ -89,9 +89,9 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
         default:
           sc="";
       }
-      fprintf(file,"%-*s %-*s %-*s %c  %5s %5g%2s %6g %s\n",width,output[index].name,
+      fprintf(file,"%-*s %-*s %-*s %2s %5s %5g%2s %6g %s\n",width,output[index].name,
               width_var,output[index].var,
-              width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,timenames[output[index].timestep],
+              width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,sprinttimestep(s,output[index].timestep),
              typenames[getoutputtype(index,config->float_grid)],output[index].scale,sc,output[index].offset,output[index].descr);
     }
   }

@@ -50,15 +50,17 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_conv_loss_evap);
   free(output->cft_conv_loss_drain);
   free(output->cft_luc_image);
+  free(output->pft_laimax);
+  free(output->pft_root);
+  free(output->pft_leaf);
+  free(output->pft_sapw);
+  free(output->pft_hawo);
+  free(output->pft_veg);
+  free(output->pft_nlimit);
 #if defined IMAGE || defined INCLUDEWP
   free(output->wft_vegc);
 #endif
   free(output->cft_irrig_events);
-  free(output->cft_leaf);
-  free(output->cft_root);
-  free(output->cft_veg);
-  free(output->cft_nlimit);
-  free(output->cft_laimax);
 #ifdef DOUBLE_HARVEST
   free(output->cftfrac2);
   free(output->sdate2);

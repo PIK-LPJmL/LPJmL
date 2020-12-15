@@ -269,11 +269,12 @@ extern Real f_lai(Real);
 /* needed for IMAGE, but can also be used otherwise */
 
 extern Stocks timber_burn(const Pft *, Real,Litter *,Real);
-#if defined(IMAGE) && defined(COUPLED) 
+#if defined(IMAGE) && defined(COUPLED)
 extern Stocks timber_harvest(Pft *,Soil *,Pool *,Poolpar,Real,Real,Real *,Stocks *,Real, Real[] );
 #else
 extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *);
 #endif
+
 /* Definition of macros */
 
 #define isphoto(tstress) (tstress>=1e-2)

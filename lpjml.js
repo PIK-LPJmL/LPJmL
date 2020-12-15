@@ -121,7 +121,7 @@
 
 #ifdef FROM_RESTART
 
-  "output" : 
+  "output" :
   [
 
 /*
@@ -212,12 +212,8 @@ ID                               Fmt                        filename
     { "id" : "deforest_emis",    "file" : { "fmt" : "raw", "name" : "output/deforest_emis.bin"}},
     { "id" : "conv_loss_evap",   "file" : { "fmt" : "raw", "name" : "output/aconv_loss_evap.bin"}},
     { "id" : "conv_loss_drain",  "file" : { "fmt" : "raw", "name" : "output/aconv_loss_drain.bin"}}
-/*------------------------ ---------------------- ------------------------------- */
+/*------------------------------ ------------------------- ------------------------------- */
   ],
-
-#else
-
-  "output" : [],  /* no output written */
 
 #endif
 

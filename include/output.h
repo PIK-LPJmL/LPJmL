@@ -25,10 +25,10 @@ typedef struct
 {
   Real lai;
   Real phen;
-  Real cleaf;
-  Real croot;
-  Real cso;
-  Real cpool;
+  Stocks leaf;
+  Stocks root;
+  Stocks so;
+  Stocks pool;
   Real wdf;
   Real growingday;
   Real pvd;
@@ -48,7 +48,6 @@ typedef struct
   Real gresp;
   Real trans;
   Real evap;
-  Real prec;
   Real perc;
   Real irrig;
   Real w0;
@@ -58,13 +57,9 @@ typedef struct
   Real fhiopt;
   Real himind;
   Real froot;
-  Real temp;
-  Real sun;
   Real par;
-  Real daylength;
   Real swe; /**< snow water equivalent*/
   Real discharge;
-  Real runoff;
   Real rh;
   Real interc;
   Real nuptake;
@@ -73,10 +68,6 @@ typedef struct
   Real n2_denit;
   Real leaching;
   Real bnf;
-  Real nleaf;
-  Real nroot;
-  Real nso;
-  Real npool;
   Real no3;
   Real nh4;
   Real nsoil_slow;
@@ -103,9 +94,9 @@ typedef struct
 typedef struct
 {
   Real npp;              /**< NPP (gC/m2) */
-  Real gpp;              /**<  GPP (gC/m2) */
+  Real gpp;              /**< GPP (gC/m2) */
   Real rh;               /**< heterotrophic respiration (gC/m2) */
-  Real mrh_litter;       /**< monthly heterotrophic respiration (gC/m2) */
+  Real rh_litter;        /**< heterotrophic respiration from litter (gC/m2) */
   Real transp;           /**< transpiration (mm) */
   Real mtransp_b;        /**< Monthly transpired irrigation water (mm) */
   Real runoff;           /**< runoff (mm) */
@@ -117,10 +108,12 @@ typedef struct
   Real minterc_b;        /**< Monthly blue interception (mm) */
   Real pet;              /**< PET (mm) */
   Real mpet;             /**< monthly PET (mm) */
+  Real temp;
+  Real sun;
   Real mswc[NSOILLAYER]; /**< monthly soil water content*/
   Real mswc2[NSOILLAYER]; /**< monthly soil water content*/
   Real mrootmoist;        /**< monthly plant available water for evapotranspiration fractional*/
-  Stocks fire;           /**< annual fire carbon and nitrogen emissions (g/m2)*/
+  Stocks fire;           /**< fire carbon and nitrogen emissions (g/m2)*/
   Real mnfire;           /**< monthly number of fires */
   Real mfiredi;          /**< monthly fire danger index */
   Tracegas mfireemission;    /**< monthly fire emissions */
@@ -275,15 +268,33 @@ typedef struct
   Real mn_volatilization;  /**< monthly N volatilization rate gN/m2 */
   Real mn_immo;            /**< monthly N immobilization rate gN/m2 */
   Stocks neg_fluxes;       /**< negative carbon and nitrogen fluxes which occur for negative allocation; needed for balance check*/
-  Stocks *cft_leaf;
-  Stocks *cft_veg;
-  Stocks *cft_root;
-  Real *cft_nlimit;
-  Real *cft_laimax;
   Real mean_vegc_mangrass; /**< annual mean vegetation carbon of managed grasslands */
+  Stocks veg;              /**< vegetation carbon (gC/m2) */
+  Stocks soil;             /**< soil carbon and nitrogen (gC/m2, gN/m2) */
+  Stocks soil_slow;        /**< slow carbon and nitrogen pool (gC/m2, gN/m2) */
+  Stocks litter;           /**< litter carbon and nitrogen (gC/m2, gN/m2) */
+  Real maxthaw_depth;      /**< maximum thawing depth (mm) */
+  Real soilno3;                 /**< soil NO3 content (gC/m2) */
+  Real soilnh4;                 /**< soil NH4 content (gC/m2) */
+  Stocks soil_layer[LASTLAYER]; /**< layer-specific soil carbon (gC2/m2) */
+  Real soilno3_layer[LASTLAYER];
+  Real soilnh4_layer[LASTLAYER];
+  Real agb;                     /**< above-ground biomass (gC/m2) */
+  Real agb_tree;                /**< above-ground tree biomass (gC/m2) */
+  Real mg_vegc;                 /**< above-ground managed biomass (gC/m2) */
+  Real mg_soilc;                /**< above-ground managed soil carbon (gC/m2) */
+  Real mg_litc;                 /**< above-ground managed litter carbon (gC/m2) */
+  Real *pft_laimax;             /**< PFT-specific maximum LAI (m2/m2) */
+  Stocks *pft_root;             /**< PFT-specific root mass (gC/ind, gN/ind) */
+  Stocks *pft_leaf;             /**< PFT-specific leaf mass (gC/ind, gN/ind) */
+  Stocks *pft_sapw;
+  Stocks *pft_hawo;
+  Real *pft_nlimit;
+  Stocks *pft_veg;
   Real vegc_avg;
   Real *nv_lai;
   Real *fpc_bft;
+  Real daylength;
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 

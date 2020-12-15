@@ -24,7 +24,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
                    Real co2,     /**< atmospheric CO2 (ppmv) */
                    const Dailyclimate *climate, /**< Daily climate values */
                    int day,    /**< day (1..365) */
-                   int month,
+                   int month,       /**< [in] month (0..11) */
                    Real daylength, /**< length of day (h) */
                    const Real gp_pft[], /**< pot. canopy conductance for PFTs & CFTs*/
                    Real gtemp_air,  /**< value of air temperature response function */
@@ -124,21 +124,13 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
     }
 
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
-<<<<<<< HEAD
     if(output->daily.cft==ALLSTAND)
     {
       output->daily.npp+=npp*stand->frac;
       output->daily.gpp+=gpp*stand->frac;
     }
-    output->mnpp+=npp*stand->frac;
-=======
     output->npp+=npp*stand->frac;
-<<<<<<< HEAD
-    stand->cell->balance.nep+=npp*stand->frac;
->>>>>>> 2667ff6872542f4a551087e7e63a69279365542d
-=======
     stand->cell->balance.anpp+=npp*stand->frac;
->>>>>>> ba9831cb8c94144eb1836e50167cb3627988f402
     output->dcflux-=npp*stand->frac;
     output->gpp+=gpp*stand->frac;
     output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -154,23 +146,17 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
-
-  if(config->withdailyoutput)
+  if(output->daily.cft==ALLSTAND)
   {
-    foreachpft(pft,p,&stand->pftlist)
-      if(pft->par->id==output->daily.cft)
-      {
-        output->daily.evap=evap;
-        forrootsoillayer(l)
-          output->daily.trans+=aet_stand[l];
-        output->daily.irrig=0;
-        output->daily.w0=stand->soil.w[1];
-        output->daily.w1=stand->soil.w[2];
-        output->daily.wevap=stand->soil.w[0];
-        output->daily.par=par;
-        output->daily.daylength=daylength;
-        output->daily.pet=eeq*PRIESTLEY_TAYLOR;
-      }
+    output->daily.evap+=evap*stand->frac;
+    forrootsoillayer(l)
+      output->daily.trans+=aet_stand[l]*stand->frac;
+    output->daily.irrig=0;
+    output->daily.w0+=stand->soil.w[1]*stand->frac;
+    output->daily.w1+=stand->soil.w[2]*stand->frac;
+    output->daily.wevap+=stand->soil.w[0]*stand->frac;
+    output->daily.par=par;
+    output->daily.pet=eeq*PRIESTLEY_TAYLOR;
   }
 
   transp=0;

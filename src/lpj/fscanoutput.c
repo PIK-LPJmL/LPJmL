@@ -62,6 +62,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
 {
   LPJfile arr,item;
   int count,flag,size,index,ntotpft;
+  Bool isdaily;
   String outpath,name;
   Verbosity verbosity;
   verbosity=isroot(*config) ? config->scan_verbose : NO_ERR;
@@ -113,6 +114,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   {
     fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
   }
+  isdaily=FALSE;
   while(count<=nout_max && index<size)
   {
     fscanarrayindex(&arr,&item,index,verbosity);
@@ -177,6 +179,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       }
       else
       {
+        if(flag>=D_LAI && flag<=D_PET)
+          isdaily=TRUE;
         config->outputvars[count].id=flag;
         if(config->outputvars[count].filename.var!=NULL)
         {
@@ -216,7 +220,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     }
     index++;
   }
-  if(config->sim_id==LPJML && config->withdailyoutput)
+  if(isdaily)
   {
     ntotpft=config->npft[GRASS]+config->npft[TREE]+config->npft[CROP];
     if(isstring(file,"crop_index"))

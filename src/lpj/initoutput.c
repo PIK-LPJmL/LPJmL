@@ -91,6 +91,20 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_fpar);
   output->cft_luc_image=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->cft_luc_image);
+  output->pft_laimax=newvec(Real,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  checkptr(output->pft_laimax);
+  output->pft_root=newvec(Stocks,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  checkptr(output->pft_root);
+  output->pft_leaf=newvec(Stocks,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  checkptr(output->pft_leaf);
+  output->pft_sapw=newvec(Stocks,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  checkptr(output->pft_sapw);
+  output->pft_hawo=newvec(Stocks,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  checkptr(output->pft_hawo);
+  output->pft_veg=newvec(Stocks,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  checkptr(output->pft_veg);
+  output->pft_nlimit=newvec(Real,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  checkptr(output->pft_nlimit);
 #if defined IMAGE || defined INCLUDEWP
   output->wft_vegc = newvec(Real, nwft);
   check(output->wft_vegc);
@@ -99,16 +113,6 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_conv_loss_evap);
   output->cft_conv_loss_drain=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->cft_conv_loss_drain);
-  output->cft_leaf=newvec(Stocks,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  checkptr(output->cft_leaf);
-  output->cft_root=newvec(Stocks,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  checkptr(output->cft_root);
-  output->cft_veg=newvec(Stocks,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  checkptr(output->cft_veg);
-  output->cft_nlimit=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  checkptr(output->cft_nlimit);
-  output->cft_laimax = newvec(Real, 2 * (ncft + NGRASS + NBIOMASSTYPE+NWPTYPE));
-  checkptr(output->cft_laimax);
   output->nv_lai=newvec(Real, (npft-nbiomass-nwft));
   check(output->nv_lai);
   output->fpc_bft=newvec(Real, (nbiomass+2*ngrass)*2);

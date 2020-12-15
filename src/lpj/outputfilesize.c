@@ -30,6 +30,8 @@ long long outputfilesize(const Config *config /**< LPJ configuration */
   {
     size=getsize(i,config);
     size*=config->lastyear-config->outputyear+1;
+    if(config->outnames[config->outputvars[i].id].timestep>1)
+      size/=config->outnames[config->outputvars[i].id].timestep;
     if(config->outputvars[i].filename.fmt==CDF)
     {
       if(!iscdf)

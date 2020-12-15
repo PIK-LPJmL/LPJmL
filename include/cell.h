@@ -145,8 +145,8 @@ extern int iterate(Outputfile *,Cell [],Input,
                    int,int,Config *);
 extern void iterateyear(Outputfile *,Cell [],Input,
                         Real,int,int,int,const Config *);
-extern void initoutputdata(Output *,int,int,int,const Config *);
-extern void fwriteoutput(Outputfile *,const Cell [],int,int,int,int,int,const Config *);
+extern void initoutputdata(Output *,int,int,int,int,const Config *);
+extern void fwriteoutput(Outputfile *,Cell [],int,int,int,int,int,const Config *);
 extern void equilsom(Cell *,int, const Pftpar [],Bool);
 extern void equilveg(Cell *);
 extern void check_fluxes(Cell *,int,int,const Config *);

@@ -1,0 +1,57 @@
+.TH printglobal 1  "December 14, 2020" "version 5.1.002" "USER COMMANDS"
+.SH NAME
+printglobal \- print global values for raw binary output files
+.SH SYNOPSIS
+.B printglobal  [\-firstyear year] [\-nbands n] [\-cellsize size] [\-day|month] [\-noheader] [\-csv] [\-mean]
+\fIgridfile \fP \fIoutfile\fP ...
+.SH DESCRIPTION
+Program prints global area weighted sums or means of LPJmL binary output files.
+.SH OPTIONS
+.TP
+\-firstyear year
+Set first year in output, default is 1901
+.TP
+\-nbands n
+Set number of bands, default is 1
+.TP
+\-cellsize size
+Set size of cell in degrees, default is 0.5 degree
+.TP
+\-day|month
+Set time step of input file to day or month, default is year
+.TP
+\-noheader
+Do not print header for columns
+.TP
+\-csv
+Set ',' as separator in output, default is space
+.TP
+\-mean
+Print global mean value instead of global sum
+.TP
+.I gridfile
+Filename of binary grid file
+.TP
+.I outfile
+Filename(s) of raw binary output files
+.SH EXAMPLE
+.TP
+Print global sum of NPP and heterotrophic respiration:
+.B printglobal 
+-month grid.bin mnpp.bin mrh.bin
+.PP
+.SH EXIT STATUS
+.B printglobal
+returns a zero exit status if the output files can be read.
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+printharvest(1), bin2cdf(1), cdf2bin(1), lpjml(1)

@@ -276,8 +276,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   biomass_tree->growing_time++;
   foreachpft(pft,p,&stand->pftlist)
   {
-    stand->cell->output.cft_veg[rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
-    stand->cell->output.cft_veg[rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen+=vegn_sum(pft);
+    stand->cell->output.pft_veg[npft-config->nbiomass-config->nwft+rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
+    stand->cell->output.pft_veg[npft-config->nbiomass-config->nwft+rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen+=vegn_sum(pft);
   }
   return FALSE;
 #else

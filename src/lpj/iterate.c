@@ -43,13 +43,13 @@ static void handler(int UNUSED(num))
   ischeckpoint=TRUE; /* SIGTERM received, set global flag to TRUE */
 } /* of 'handler' */
 
-int iterate(Outputfile *output,  /**< Output file data */
-            Cell grid[],         /**< cell grid array */
-            Input input,         /**< input data: climate, land use, water use */
-            int npft,            /**< Number of natural PFT's */
-            int ncft,            /**< Number of crop PFT's */
-            Config *config /**< LPJ configuration data */
-           )                     /** \return last year+1 on success */
+int iterate(Outputfile *output, /**< Output file data */
+            Cell grid[],        /**< cell grid array */
+            Input input,        /**< input data: climate, land use, water use */
+            int npft,           /**< Number of natural PFTs */
+            int ncft,           /**< Number of crop PFTs */
+            Config *config      /**< LPJ configuration data */
+           )                    /** \return last year+1 on success */
 {
   Real co2,cflux_total;
   Flux flux;

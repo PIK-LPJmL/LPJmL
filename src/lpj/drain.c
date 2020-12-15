@@ -128,7 +128,6 @@ void drain(Cell grid[],         /**< Cell array */
       grid[i].discharge.dmass_river-=grid[i].discharge.fout;
       grid[i].discharge.dfout+=grid[i].discharge.fout;
       grid[i].output.mdischarge+=grid[i].discharge.fout;
-      grid[i].output.daily.discharge+=grid[i].discharge.fout*1e-3; /*in m3 per day */
       if(grid[i].discharge.next<0)
       {
         grid[i].output.adischarge+=grid[i].discharge.fout;           /* only endcell outflow */

@@ -50,7 +50,7 @@ typedef struct
 } Irrig_system;
 
 
-typedef enum {NO_SEASONALITY, PRECIP, PRECIPTEMP, TEMP, TEMPPRECIP} Seasonality;
+typedef enum {NO_SEASONALITY, PRECIP, PRECIPTEMP, TEMPERATURE, TEMPPRECIP} Seasonality;
 
 typedef enum {GS_DEFAULT, GS_MOWING, GS_GRAZING_EXT, GS_GRAZING_INT, GS_NONE} GrassScenarioType;
 

@@ -24,14 +24,13 @@ int getnyear(const Variable *variable,
     return 0;
   switch(variable[index].timestep)
   {
-     case ANNUAL:
-       return 1;
      case MONTHLY:
-       return 12;
+       return NMONTH;
      case DAILY:
        return NDAYYEAR;
+     default:
+       return 1;
   }
-  return NOT_FOUND;
 } /* of 'getnyear' */
 
 size_t getsize(int index,           /**< index of output file */

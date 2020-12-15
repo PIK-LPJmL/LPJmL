@@ -41,7 +41,8 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                          (config->outputvars[index].id==GRID) ? "" :
                          config->outnames[config->outputvars[index].id].unit,
                          getoutputtype(config->outputvars[index].id,FALSE),
-                         getnyear(config->outnames,config->outputvars[index].id),array,config);
+                         getnyear(config->outnames,config->outputvars[index].id),
+                         (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,array,config);
   else
     return create_pft_netcdf(cdf,filename,
                              config->outputvars[index].id,
@@ -52,7 +53,7 @@ static Bool create(Netcdf *cdf,const char *filename,int index,
                              config->outnames[config->outputvars[index].id].unit,
                              getoutputtype(config->outputvars[index].id,FALSE),
                              getnyear(config->outnames,config->outputvars[index].id),
-                             array,config);
+                             (config->outnames[config->outputvars[index].id].timestep==ANNUAL) ? 1 : config->outnames[config->outputvars[index].id].timestep,array,config);
 } /* of 'create' */
 
 static void openfile(Outputfile *output,const Cell grid[],

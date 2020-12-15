@@ -60,7 +60,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     grid[cell].output.ydischarge=0;
 #endif
     grid[cell].output.adischarge=0;
-    initoutputdata(&grid[cell].output,ANNUAL,npft,ncft,config);
+    initoutputdata(&grid[cell].output,ANNUAL,npft,ncft,year,config);
     grid[cell].balance.surface_storage=0;
     if(!grid[cell].skip)
     {
@@ -93,7 +93,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     {
       grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].ml.mdemand=0.0;
       grid[cell].output.mpet=0;
-      initoutputdata(&((grid+cell)->output),MONTHLY,npft,ncft,config);
+      initoutputdata(&((grid+cell)->output),MONTHLY,npft,ncft,year,config);
       if(!grid[cell].skip)
       {
         initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
@@ -132,7 +132,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           if(config->ispopulation)
             popdens=getpopdens(input.popdens,cell);
           grid[cell].output.dcflux=0;
-          initoutputdata(&((grid+cell)->output),DAILY,npft,ncft,config);
+          initoutputdata(&((grid+cell)->output),DAILY,npft,ncft,year,config);
           /* get daily values for temperature, precipitation and sunshine */
           dailyclimate(&daily,input.climate,&grid[cell].climbuf,cell,day,
                        month,dayofmonth);
@@ -148,14 +148,14 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           {
             if(daily.sun<0 || daily.sun>100)
               fail(INVALID_CLIMATE_ERR,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
+            grid[cell].output.sun+=daily.sun;
           }
           if(config->with_nitrogen && daily.windspeed<0)
             fail(INVALID_CLIMATE_ERR,FALSE,"Wind speed=%g less than zero for cell %d at day %d",daily.windspeed,cell+config->startgrid,day);
 #endif
           /* get daily values for temperature, precipitation and sunshine */
-          grid[cell].output.daily.temp=daily.temp;
-          grid[cell].output.daily.prec=daily.prec;
-          grid[cell].output.daily.sun=daily.sun;
+          grid[cell].output.temp+=daily.temp;
+          grid[cell].output.prec+=daily.prec;
 
 #ifdef DEBUG
           printf("day=%d cell=%d\n",day,cell);

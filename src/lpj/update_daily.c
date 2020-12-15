@@ -69,7 +69,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   gtemp_air=temp_response(climate.temp);
   daily_climbuf(&cell->climbuf,climate.temp,climate.prec);
   avgprec=getavgprec(&cell->climbuf);
-  cell->output.prec+=climate.prec;
   cell->output.msnowf+=climate.temp<tsnow ? climate.prec : 0;
   cell->output.mrain+=climate.temp<tsnow ? 0 : climate.prec;
 
@@ -101,7 +100,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->ml.image_data->mevapotr[month] += evap*stand->frac;
 #endif
 
-      if(config->withdailyoutput && cell->output.daily.cft==ALLSTAND)
+      if(cell->output.daily.cft==ALLSTAND)
         cell->output.daily.evap+=evap*stand->frac;
       prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
                     +melt*1e-3*(T_zero-stand->soil.temp[TOPLAYER]))*c_water;
@@ -149,10 +148,18 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
 
     cell->output.mswe+=stand->soil.snowpack*stand->frac;
-    if (config->withdailyoutput && isdailyoutput_stand(&cell->output,stand))
+    if(isdailyoutput_stand(&cell->output,stand))
     {
-      cell->output.daily.rh  += hetres.carbon;
-      cell->output.daily.swe += stand->soil.snowpack;
+      if(cell->output.daily.cft==ALLSTAND)
+      {
+        cell->output.daily.rh  += hetres.carbon*stand->frac;
+        cell->output.daily.swe += stand->soil.snowpack*stand->frac;
+      }
+      else
+      {
+        cell->output.daily.rh  += hetres.carbon;
+        cell->output.daily.swe += stand->soil.snowpack;
+      }
     }
 
     cell->output.msnowrunoff+=snowrunoff;
@@ -267,7 +274,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   cell->output.runoff+=cell->discharge.drunoff;
   cell->balance.awater_flux+=cell->discharge.drunoff;
-  cell->output.daily.runoff+=cell->discharge.drunoff;
   if(config->river_routing)
   {
     radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,c_albwater,config->with_radiation);
@@ -322,7 +328,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
     {
     cell->output.mevap_lake+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
-    if(config->withdailyoutput && cell->output.daily.cft==ALLSTAND)
+    if(cell->output.daily.cft==ALLSTAND)
       cell->output.daily.evap+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
     cell->balance.aevap_lake+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
 #if defined IMAGE && defined COUPLED
@@ -337,7 +343,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     cell->output.mlakevol+=cell->discharge.dmass_lake*ndaymonth1[month];
   } /* of 'if(river_routing)' */
-
+  cell->output.daylength+=daylength;
 
   killstand(cell,config->pftpar,npft,intercrop,year);
 #ifdef SAFE

@@ -22,7 +22,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
                        Real co2,                    /**< [in] atmospheric CO2 (ppmv) */
                        const Dailyclimate *climate, /**< [in] Daily climate values */
                        int day,                     /**< [in] day (1..365) */
-                       int month,
+                       int month,                   /**< [in] month (0..11) */
                        Real daylength,              /**< [in] length of day (h) */
                        const Real gp_pft[],         /**< [out] pot. canopy conductance for PFTs & CFTs (mm/s) */
                        Real gtemp_air,              /**< [in] value of air temperature response function */
@@ -457,13 +457,18 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
-  if(config->withdailyoutput && isdailyoutput_agriculture(output,stand))
+  transp=0;
+  forrootsoillayer(l)
+  {
+    transp+=aet_stand[l]*stand->frac;
+    output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
+  }
+  if(isdailyoutput_agriculture(output,stand))
   {
     if(output->daily.cft==ALLSTAND)
     {
       output->daily.evap+=evap*stand->frac;
-      forrootsoillayer(l)
-        output->daily.trans+=aet_stand[l]*stand->frac;
+      output->daily.trans+=transp;
       output->daily.w0+=stand->soil.w[1]*stand->frac;
       output->daily.w1+=stand->soil.w[2]*stand->frac;
       output->daily.wevap+=stand->soil.w[0]*stand->frac;
@@ -478,7 +483,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       output->daily.w1=stand->soil.w[2];
       output->daily.wevap=stand->soil.w[0];
       output->daily.par=par;
-      output->daily.daylength=daylength;
       output->daily.pet=eeq*PRIESTLEY_TAYLOR;
     }
   }
@@ -487,12 +491,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   if(data->irrigation && stand->pftlist.n>0) /* second element to avoid irrigation on just harvested fields */
     calc_nir(stand,data,gp_stand,wet,eeq);
 
-  transp=0;
-  forrootsoillayer(l)
-  {
-    transp+=aet_stand[l]*stand->frac;
-    output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
-  }
   output->transp+=transp;
   stand->cell->balance.atransp+=transp;
   output->interc+=intercep_stand*stand->frac; /* Note: including blue fraction*/

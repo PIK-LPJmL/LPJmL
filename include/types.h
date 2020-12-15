@@ -68,7 +68,6 @@ typedef char String[STRING_LEN+1];
 extern size_t typesizes[];
 extern char *typenames[];
 extern char *fmt[N_FMT];
-extern char *time_step[];
 
 typedef enum {LPJ_BYTE,LPJ_SHORT,LPJ_INT,LPJ_FLOAT,LPJ_DOUBLE} Type;
 typedef enum {NO_ERR, ERR, VERB } Verbosity;
@@ -163,6 +162,8 @@ extern char* getfilename(void);
 extern void initscan(const char *);
 extern void fputprintable(FILE *,const char *);
 extern Bool fscaninteof(FILE *,int *,const char *,Bool *,Bool);
+extern char *sprinttimestep(String,int);
+extern Bool fscantimestep(LPJfile *,int *,Verbosity);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

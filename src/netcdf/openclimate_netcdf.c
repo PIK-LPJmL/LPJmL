@@ -182,10 +182,12 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         }
         else if(!strcmp(name,"days"))
         {
-          if(time_len==1)
+          if(time[1]-time[0]==1)
+            file->time_step=DAY;
+          else if(time[1]-time[0]==NDAYYEAR)
             file->time_step=YEAR;
           else
-            file->time_step=(time[1]-time[0]==1) ? DAY : MONTH;
+            file->time_step=MONTH;
           file->firstyear+=time[0]/NDAYYEAR;
         }
         else if(strstr(name,"months")!=NULL)

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  .  j  s                                   \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.1.001                               \n**/
+/**     LPJ parameter file for LPJmL version 5.1.002                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -83,5 +83,5 @@
   "firedura" : -11.06,                /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.50,		      /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
-  "rootreduction" : 0.5               /*fraction used to calculate amouont of roots dying at harvest in managed grasslands */
+  "rootreduction" : 0.5               /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
 },

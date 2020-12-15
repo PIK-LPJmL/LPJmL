@@ -10,6 +10,7 @@
 /**  Then output is divided my the number of days in each month                    \n**/
 /**  Time step for output can be set via keyword:                                  \n**/
 /**  "timstep" : "annual", "monthly" or "daily"                                    \n**/
+/**  If time step is an integer number output is averaged of this number of years  \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -117,7 +118,6 @@
   { "id" : D_GRESP, "name": "d_gresp", "timestep" : "daily", "var" : "Gresp", "descr" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_TRANS, "name": "d_trans", "timestep" : "daily", "var" : "Trans", "descr" :  "transpiration", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_EVAP, "name": "d_evap", "timestep" : "daily", "var" : "evap", "descr" :  "evaporation", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
-  { "id" : D_PREC, "name": "d_prec", "timestep" : "daily", "var" : "prec", "descr" :  "precipitation", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_PERC, "name": "d_perc", "timestep" : "daily", "var" : "perc", "descr" :  "", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_IRRIG, "name": "d_irrig", "timestep" : "daily", "var" : "irrig", "descr" :  "irrigation", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_W0, "name": "d_w0", "timestep" : "daily", "var" : "w0", "descr" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
@@ -127,13 +127,11 @@
   { "id" : D_FHIOPT, "name": "d_fhiopt", "timestep" : "daily", "var" : "Hiopt", "descr" :  "optimum harvest index HI reached at harvest", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_HIMIND, "name": "d_himind", "timestep" : "daily", "var" : "Himind", "descr" :  "minimum harvest index HI reached at harvest", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_FROOT, "name": "d_froot", "timestep" : "daily", "var" : "froot", "descr" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
-  { "id" : D_TEMP, "name": "d_temp", "timestep" : "daily", "var" : "temp", "descr" :  "temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
-  { "id" : D_SUN, "name": "d_sun", "timestep" : "daily", "var" : "cloud", "descr" :  "cloudiness", "unit" : "%", "scale" : 1.0, "offset" : 0.0},
+  { "id" : TEMP, "name": "temp", "timestep" : "daily", "var" : "temp", "descr" :  "temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
+  { "id" : SUN, "name": "sun", "timestep" : "daily", "var" : "cloud", "descr" :  "cloudiness", "unit" : "%", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_PAR, "name": "d_par", "timestep" : "daily", "var" : "PAR", "descr" :  "Photosynthetic Active Radiation", "unit" : "J/m2/day", "scale" : 1.0, "offset" : 0.0},
-  { "id" : D_DAYLENGTH, "name": "d_daylength", "timestep" : "daily", "var" : "daylength", "descr" :  "day length", "unit" : "h", "scale" : 1.0, "offset" : 0.0},
+  { "id" : DAYLENGTH, "name": "daylength", "timestep" : "daily", "var" : "daylength", "descr" :  "day length", "unit" : "h", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_SWE, "name": "d_swe", "timestep" : "daily", "var" : "SWE", "descr" :  "snow water equivalent", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
-  { "id" : D_DISCHARGE, "name": "d_discharge", "timestep" : "daily", "var" : "discharge", "descr" :  "discharge", "unit" : "m3/sec", "scale" : 1.0, "offset" : 0.0},
-  { "id" : D_RUNOFF, "name": "d_runoff", "timestep" : "daily", "var" : "runoff", "descr" :  "runoff", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_RH, "name": "d_rh", "timestep" : "daily", "var" : "rh", "descr" :  "heterotrophic respiration", "unit" : "gC/m2/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_INTERC, "name": "d_interc", "timestep" : "daily", "var" : "interc", "descr" :  "interception", "unit" : "mm/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : D_ASSIM, "name": "d_assim", "timestep" : "daily", "var" : "assim", "descr" :  "assim", "unit" : "gC/m2/day", "scale" : 1.0, "offset" : 0.0},

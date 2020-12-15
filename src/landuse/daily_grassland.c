@@ -33,7 +33,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
                      Real co2,                    /**< atmospheric CO2 (ppmv) */
                      const Dailyclimate *climate, /**< Daily climate values */
                      int day,                     /**< day (1..365) */
-                     int month,
+                     int month,                   /**< [in] month (0..11) */
                      Real daylength,              /**< length of day (h) */
                      const Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
                      Real gtemp_air,              /**< value of air temperature response function */
@@ -258,7 +258,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     output->mpft_lai[(npft-config->nbiomass-config->nwft)+rothers(ncft)+index]+=actual_lai_grass(pft);
     output->mpft_lai[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+index]+=actual_lai_grass(pft);
     grass = pft->data;
-    if(config->withdailyoutput && isdailyoutput_grassland(output,stand))
+    if(isdailyoutput_grassland(output,stand))
     {
       if(output->daily.cft==ALLSTAND)
       {
@@ -270,10 +270,10 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         output->daily.npp += npp;
         output->daily.gpp += gpp;
 
-        output->daily.croot += grass->ind.root.carbon;
-        output->daily.cleaf += grass->ind.leaf.carbon;
-        output->daily.nroot += grass->ind.root.nitrogen;
-        output->daily.nleaf += grass->ind.leaf.nitrogen;
+        output->daily.root.carbon += grass->ind.root.carbon;
+        output->daily.leaf.carbon += grass->ind.leaf.carbon;
+        output->daily.root.nitrogen += grass->ind.root.nitrogen;
+        output->daily.leaf.nitrogen += grass->ind.leaf.nitrogen;
 
         output->daily.rd += rd;
         output->daily.assim += gpp-rd;
@@ -459,13 +459,18 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     output->cftfrac[rmgrass(ncft)+index]=stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
   } /* of if(isphen) */
 
-  if(config->withdailyoutput && isdailyoutput_grassland(output,stand))
+  transp=0;
+  forrootsoillayer(l)
+  {
+    transp+=aet_stand[l]*stand->frac;
+    output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
+  }
+  if(isdailyoutput_grassland(output,stand))
   {
     if(output->daily.cft==ALLSTAND)
     {
       output->daily.evap+=evap*stand->frac;
-      forrootsoillayer(l)
-        output->daily.trans+=aet_stand[l]*stand->frac;
+      output->daily.trans+=transp;
       output->daily.w0+=stand->soil.w[1]*stand->frac;
       output->daily.w1+=stand->soil.w[2]*stand->frac;
       output->daily.wevap+=stand->soil.w[0]*stand->frac;
@@ -481,7 +486,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
       output->daily.w1+=stand->soil.w[2];
       output->daily.wevap+=stand->soil.w[0];
       output->daily.par=par;
-      output->daily.daylength=daylength;
       output->daily.pet+=eeq*PRIESTLEY_TAYLOR;
     }
   }
@@ -489,12 +493,6 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
     calc_nir(stand,&data->irrigation,gp_stand,wet,eeq);
 
-  transp=0;
-  forrootsoillayer(l)
-  {
-    transp+=aet_stand[l]*stand->frac;
-    output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
-  }
   output->transp+=transp;
   stand->cell->balance.atransp+=transp;
   output->interc+=intercep_stand*stand->frac; /* Note: including blue fraction*/

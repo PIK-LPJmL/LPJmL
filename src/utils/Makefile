@@ -20,7 +20,7 @@ OBJS    = cru2clm.$O cvrtsoil.$O grid2clm.$O cfts26_lu2clm.$O drainage.$O\
           river_sections_input_countrycode.$O river_sections_input_irrig.$O\
           txt2clm.$O water_use_input.$O catclm.$O asc2clm.$O\
           lpjprint.$O lpjcat.$O cat2bsq.$O grd2bsq.$O cft2clm.$O txt2grid.$O\
-          printdrain.$O lpjcheck.$O printclm.$O cdf2bin.$O\
+          printdrain.$O lpjcheck.$O printclm.$O cdf2bin.$O printglobal.$O\
           printharvest.$O printreservoir.$O lpjserver.$O setclm.$O getcountry.$O\
           regridclm.$O regridsoil.$O cdf2coord.$O cdf2soil.$O lpjfiles.$O\
           joingrid.$O clm2cdf.$O cdf2clm.$O bin2cdf.$O adddrain.$O\
@@ -31,7 +31,7 @@ SRC    = cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           river_sections_input_grid.c river_sections_input_soil.c\
           river_sections_input_climate.c river_sections_input_landuse.c\
           river_sections_input_countrycode.c river_sections_input_irrig.c\
-          txt2clm.c water_use_input.c catclm.c cdf2coord.c\
+          txt2clm.c water_use_input.c catclm.c cdf2coord.c printglobal.c\
           lpjprint.c lpjcat.c cat2bsq.c grd2bsq.c cft2clm.c regridsoil.c\
           printdrain.c lpjcheck.c printclm.c printharvest.c\
           printreservoir.c lpjserver.c setclm.c getcountry.c regridclm.c\
@@ -81,7 +81,8 @@ all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/cdf2clm$E $(BIN)/bin2cdf$E $(BIN)/adddrain$E $(BIN)/txt2grid$E\
      $(BIN)/getcellindex$E $(BIN)/copyheader$E $(BIN)/addheader$E\
      $(BIN)/mathclm$E $(BIN)/cutclm$E $(BIN)/cvrtclm$E $(BIN)/manage2js$E\
-     $(BIN)/headersize$E $(BIN)/regridirrig$E $(BIN)/mergeclm$E
+     $(BIN)/headersize$E $(BIN)/regridirrig$E $(BIN)/mergeclm$E\
+     $(BIN)/printglobal$E
 
 clean:
 	$(RM) $(RMFLAGS) $(OBJS)
@@ -96,7 +97,7 @@ clean:
             cdf2soil$E lpjfiles$E asc2clm$E joingrid$E clm2cdf$E\
             cff2clm$E bin2cdf$E adddrain$E txt2grid$E getcellindex$E\
             copyheader$E addheader$E mathclm$E cutclm$E cdf2bin$E cvrtclm$E\
-            manage2js$E headersize$E regridirrig$E mergeclm$E)
+            manage2js$E headersize$E regridirrig$E mergeclm$E printglobal$E)
 
 $(OBJS): $(HDRS)
 
@@ -159,6 +160,9 @@ $(BIN)/asc2clm$E: asc2clm.$O $(LPJLIBS)
 
 $(BIN)/lpjcheck$E: lpjcheck.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/lpjcheck$E lpjcheck.$O $(LPJLIBS) $(LIBS)
+
+$(BIN)/printglobal$E: printglobal.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/printglobal$E printglobal.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/printharvest$E: printharvest.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/printharvest$E printharvest.$O $(LPJLIBS) $(LIBS)

@@ -170,11 +170,11 @@ void calc_seasonality(Cell *grid,          /**< cell grid array */
         } /*of precipitation seasonality*/
 
         if (var_temp>0.010 && var_prec<=0.4) /*temperature seasonality only*/
-           grid[cell].ml.seasonality_type=TEMP;
+           grid[cell].ml.seasonality_type=TEMPERATURE;
         if (var_temp>0.010 && (var_prec>0.4 && grid[cell].climbuf.mtemp_min20<=TEMPMIN)) /*both seasonalities but "strong" temperature seasonality (coldest month <= 10 deg C)*/  
            grid[cell].ml.seasonality_type=TEMPPRECIP;
          
-        if (grid[cell].ml.seasonality_type==TEMP || grid[cell].ml.seasonality_type==TEMPPRECIP)
+        if (grid[cell].ml.seasonality_type==TEMPERATURE || grid[cell].ml.seasonality_type==TEMPPRECIP)
         {
           earliest_sdatetemp=interpolate(grid[cell].climbuf.mtemp20,earliest_smonth-1,earliestdayofmonth);
           earliestbefore_sdatetemp=interpolate(grid[cell].climbuf.mtemp20,earliest_smonth-1,earliestdayofmonth-1);

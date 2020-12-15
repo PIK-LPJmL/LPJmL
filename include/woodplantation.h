@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                     w o o d p l a n t a t i o n  .  h                          \n**/
+/**                     w o o d p l a n t a t i o n . h                            \n**/
 /**                                                                                \n**/
 /**     Declaration of woodplantation stand                                        \n**/
 /**                                                                                \n**/

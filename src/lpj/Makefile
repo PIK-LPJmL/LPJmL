@@ -15,12 +15,10 @@
 
 include ../../Makefile.inc
 
-OBJS    = update_daily.$O update_annual.$O init_annual.$O \
+OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           update_monthly.$O newgrid.$O iterate.$O\
           iterateyear.$O initoutput.$O fopenoutput.$O\
-          fcloseoutput.$O\
-          fprintincludes.$O\
-          cflux_sum.$O flux_sum.$O\
+          fcloseoutput.$O fprintincludes.$O cflux_sum.$O flux_sum.$O\
           freeoutput.$O freegrid.$O freecell.$O fscanoutput.$O\
           fscanpftpar.$O firepft.$O climbuf.$O outputsize.$O\
           pftlist.$O newpft.$O establish.$O fprintstand.$O temp_stress.$O\

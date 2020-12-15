@@ -158,8 +158,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
    pft->stand->cell->balance.n_demand+=max(0,(*n_plant_demand-pft->bm_inc.nitrogen))*pft->stand->frac;
    if(pft->par->id==pft->stand->cell->output.daily.cft && data->irrigation==pft->stand->cell->output.daily.irrigation)
    {
-     pft->stand->cell->output.daily.nuptake=n_uptake;
-     pft->stand->cell->output.daily.vscal=pft->vscal;
+     pft->stand->cell->output.daily.nuptake+=n_uptake;
+     pft->stand->cell->output.daily.vscal+=pft->vscal;
    }
    return n_uptake;
 } /* of 'nuptake_crop' */
