@@ -31,6 +31,8 @@ void freegrid(Cell grid[],         /**< cell grid */
       free(grid[cell].discharge.tfunct);
     }
     freelandfrac(grid[cell].ml.fertilizer_nr);
+    freelandfrac(grid[cell].ml.manure_nr);
+    freelandfrac(grid[cell].ml.residue_on_field);
     if(grid[cell].ml.irrig_system!=NULL)
     {
       free(grid[cell].ml.irrig_system->crop);
@@ -63,6 +65,8 @@ void freegrid(Cell grid[],         /**< cell grid */
       free(grid[cell].ml.gs);
       if(config->sdate_option>NO_FIXED_SDATE)
         free(grid[cell].ml.sdate_fixed);
+      if(config->crop_phu_option)
+        free(grid[cell].ml.crop_phu_fixed);
 
 #if defined IMAGE && defined COUPLED
       free(grid[cell].ml.image_data);

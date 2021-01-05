@@ -53,7 +53,7 @@ Real rw_irrigation(Stand *stand,     /**< Pointer to non-natural stand */
       do
       {
         if (stand->soil.freeze_depth[l]< soildepth[l])
-          irrig_apply+=max(0,(MAX_RW_IRRIG-stand->soil.w[l]-stand->soil.ice_depth[l]/stand->soil.par->whcs[l])*stand->soil.par->whcs[l]*min(1,soildepth_irrig/(soildepth[l]-stand->soil.freeze_depth[l])));
+          irrig_apply+=max(0,(MAX_RW_IRRIG-stand->soil.w[l]-stand->soil.ice_depth[l]/stand->soil.whcs[l])*stand->soil.whcs[l]*min(1,soildepth_irrig/(soildepth[l]-stand->soil.freeze_depth[l])));
         l++;
       }while((soildepth_irrig-=soildepth[l-1])>0);
     }

@@ -118,59 +118,16 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     soil->type=id;
     fscanreal2(verb,&item,&soil->Ks,soil->name,"Ks");
     fscanreal2(verb,&item,&soil->Sf,soil->name,"Sf");
-    fscanreal2(verb,&item,&soil->wpwp,soil->name,"w_pwp");
-    fscanreal2(verb,&item,&soil->wfc,soil->name,"w_fc");
-    if(soil->wfc<=0 || soil->wfc>1)
+    fscanreal2(verb,&item,&soil->sand,soil->name,"sand");
+    fscanreal2(verb,&item,&soil->silt,soil->name,"silt");
+    fscanreal2(verb,&item,&soil->clay,soil->name,"clay");
+    if(fabs(soil->sand+soil->silt+soil->clay-1)>epsilon)
     {
       if(verb)
-        fprintf(stderr,"ERROR215: wfc=%g not in (0,1] for soil type '%s'.\n",
-                soil->wfc,soil->name);
+        fprintf(stderr,"ERROR199: Sum of sand+silt+clay=%g is not one in soil '%s'.\n",
+                soil->sand+soil->silt+soil->clay,soil->name);
       return 0;
     }
-    if(soil->wfc-soil->wpwp<0)
-    {
-      if(verb)
-        fprintf(stderr,"ERROR213: whc=%g<0 for soil type '%s', wfc=%g, wpwp=%g\n",
-                soil->wfc-soil->wpwp,soil->name,soil->wfc,soil->wpwp);
-      return 0;
-    }
-    fscanreal2(verb,&item,&soil->wsat,soil->name,"w_sat");
-    if(soil->wsat<=0 || soil->wsat>1)
-    {
-      if(verb)
-        fprintf(stderr,"ERROR220: wsat=%g not in (0,1] for soil type '%s'.\n",
-                soil->wsat,soil->name);
-      return 0;
-    }
-    if(soil->wsat<=soil->wfc)
-    {
-      if(verb)
-        fprintf(stderr,"ERROR216: wsat=%g <= wfc=%g for soil type '%s'.\n",
-                soil->wsat,soil->wfc,soil->name);
-      return 0;
-    }
-    soil->beta_soil=-2.655/log10(soil->wfc/soil->wsat);
-    soil->whcs_all=0.0;
-    for(l=0;l<LASTLAYER;l++)
-    {
-      soil->whc[l]=soil->wfc-soil->wpwp;
-      soil->whcs[l]=soil->whc[l]*soildepth[l];
-      soil->wpwps[l]=soil->wpwp*soildepth[l];
-      soil->wsats[l]=soil->wsat*soildepth[l];
-      soil->bulkdens[l]=(1-soil->wsat)*MINERALDENS;
-      if(soil->type==ROCK)
-        soil->k_dry[l]=8.8;
-      else            //Johansen assumptions
-        soil->k_dry[l]=(0.135*soil->bulkdens[l]+64.7)/
-               (MINERALDENS-0.947*soil->bulkdens[l]);
-    }
-    /*assume last layer is bedrock in 6-layer version */
-    soil->whc[BOTTOMLAYER]=0.002;/*0.006 wsats - 0.002 whc - 0.001 wpwps = 0.003 for free water */
-    soil->whcs[BOTTOMLAYER]=soil->whc[BOTTOMLAYER]*soildepth[BOTTOMLAYER];
-    soil->wpwps[BOTTOMLAYER]=0.001*soildepth[BOTTOMLAYER];
-    soil->wsats[BOTTOMLAYER]=0.006*soildepth[BOTTOMLAYER];
-    soil->bulkdens[BOTTOMLAYER]=(1-soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER])*MINERALDENS;
-    soil->k_dry[BOTTOMLAYER]=0.039*pow(soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER],-2.2);
     fscanint2(verb,&item,&soil->hsg,soil->name,"hsg");
     if(soil->hsg<1 || soil->hsg>NHSG)
     {

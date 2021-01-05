@@ -110,7 +110,6 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
         count=0;
         foreachpft(pft,p,&stand->pftlist)
         {
-          wr=getwr(&stand->soil,pft->par->rootdist);
 
           if(pft->par->path==C3)
           {

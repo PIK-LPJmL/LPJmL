@@ -122,7 +122,7 @@ int main(int argc,char **argv)
     for(k=0;k<ncell;k++)
       if(lat==lpjlat[k] && lon==lpjlon[k])
       {
-	/* printf("j=%d k=%d soil=%d\n",j,k,soil[k]); */
+    /* printf("j=%d k=%d soil=%d\n",j,k,soil[k]); */
     fwrite(soil+k,sizeof(char),1,ofp);
     break;
       }

@@ -26,8 +26,8 @@ int outputsize(int index,     /**< output index */
 {
   switch(index)
   {
-    case SDATE: case HDATE: case HDATE2: case SDATE2:
-    case SYEAR: case SYEAR2:
+    case SDATE: case HDATE: case HDATE2: case SDATE2: case CFT_SWC:
+    case SYEAR: case SYEAR2: case HUSUM: case HUSUM2:
       return ncft*2;
     case PFT_NPP: case PFT_GCGP: case PFT_LAIMAX: case PFT_NLIMIT:
     case PFT_NUPTAKE: case PFT_NDEMAND: case PFT_VEGC: case PFT_VEGN:
@@ -59,7 +59,7 @@ int outputsize(int index,     /**< output index */
       return npft-nbiomass-nwft;
     case SOILTEMP: case SWC:
       return NSOILLAYER;
-    case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER:
+    case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER: case SOILC_AGR_LAYER:
       return LASTLAYER;
     case GROWING_PERIOD: case CFT_TEMP:case CFT_PREC:
     case CFT_SRAD: case CFT_ABOVEGBMC: case CFT_ABOVEGBMN:

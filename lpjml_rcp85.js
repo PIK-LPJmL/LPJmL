@@ -27,6 +27,9 @@
 
 //#define DAILY_OUTPUT  /* enables daily output */
 
+#ifndef MODEL
+#define MODEL HadGEM2-ES
+#endif
 {   /* LPJmL configuration in JSON format */
 
 /*===================================================================*/
@@ -50,12 +53,12 @@
   "const_climate" : false,
   "shuffle_climate" : true,
   "const_deposition" : false,
-  "fix_climate" : false,      /* fix climate after specified year */
+  "fix_climate" : true,      /* fix climate after specified year */
   "fix_landuse" : false,     /* fix land use after specified year */
   "fix_climate_year" : 2094, /* year at which climate (and land use) is fixed */
   "fix_climate_cycle": 11,   /* number of years for climate shuffle for fixed climate */
 #ifdef FROM_RESTART
-  "newseed" : false,
+  "new_seed" : false,
   "equilsoil" :  false,
   "population" : false,
   "landuse" : "landuse", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
@@ -120,7 +123,7 @@
 
 #ifdef FROM_RESTART
 
-  "output" : 
+  "output" :
   [
 
 /*
@@ -253,7 +256,7 @@ ID                         Fmt                    filename
   "nspinup" : 390,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1861, /* first year of simulation */
-  "lastyear" : 2099, /* last year of simulation */
+  "lastyear" : 2699, /* last year of simulation */
   "outputyear": 1861, /* first year output is written  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1860_nv_stdfire.lpj", /* filename of restart file */

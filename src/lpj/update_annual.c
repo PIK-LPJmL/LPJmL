@@ -17,6 +17,8 @@
 
 #include "lpj.h"
 
+#define N 5
+
 void update_annual(Cell *cell,          /**< Pointer to cell */
                    int npft,            /**< number of natural pfts */
                    int ncft,            /**< number of crop pfts */
@@ -27,13 +29,34 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
                    const Config *config /**< LPJ configuration */
                   )
 {
-  int s,p;
+  int s,p,m,cft;
   Pft *pft;
   Stand *stand;
+  Pftcroppar *croppar;
+  Pftcrop *pftcrop;
+  Real mintemp[N];
   Stocks litter_neg;
   if(cell->ml.dam)
     update_reservoir_annual(cell);
-  annual_climbuf(&cell->climbuf,cell->balance.aevap+cell->balance.atransp);
+
+  /* Vernalization requirements in case not STATIC_PHU */
+  if(config->crop_phu_option && year<=config->sdate_fixyear) /* update only until sdate_fixyear */
+  {
+    getmintemp20_n(&cell->climbuf,mintemp,N);
+    for (m=0;m<N;m++)
+    {
+     for (cft=0;cft<ncft;cft++)
+     {
+       croppar=config->pftpar[npft+cft].data;
+ 	     if (mintemp[m]<=croppar->tv_opt.low && mintemp[m]> -9999)
+         cell->climbuf.V_req_a[cft]+=croppar->pvd_max/N; /* maximum number of vernalization days per months */
+       else if (mintemp[m]>croppar->tv_opt.low && mintemp[m]<croppar->tv_opt.high)
+         cell->climbuf.V_req_a[cft]+=croppar->pvd_max/N*(1-(mintemp[m]-croppar->tv_opt.low)/(croppar->tv_opt.high-croppar->tv_opt.low));
+     }
+    }
+  }
+
+  annual_climbuf(&cell->climbuf,cell->balance.aevap+cell->balance.atransp,ncft,year,config->crop_phu_option,config->sdate_fixyear);
   if(config->sdate_option==NO_FIXED_SDATE ||
     (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear)||
     (config->sdate_option==PRESCRIBED_SDATE && year<=config->sdate_fixyear))
@@ -44,9 +67,8 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
    * occurred within the last 10 years
    */
 
-    if((year<config->firstyear && config->sdate_option!=PRESCRIBED_SDATE) ||
-       config->sdate_option==NO_FIXED_SDATE)
-      update_cropdates(cell->ml.cropdates,ncft);
+   if((year<config->firstyear && config->sdate_option!=PRESCRIBED_SDATE) || config->sdate_option==NO_FIXED_SDATE)
+     update_cropdates(cell->ml.cropdates,ncft);
 
   foreachstand(stand,s,cell->standlist)
   {
@@ -75,6 +97,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     }
     stand->cell->balance.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   }
+  //cell->output.soil_storage+=cell->balance.excess_water*cell->coord.area; /* now tracked in separate flux */
   cell->output.fpc[0] = 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)

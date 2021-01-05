@@ -20,6 +20,6 @@ Real getwr(const Soil *soil,const Real rootdist[])
   int l;
   wr=0;
   for(l=0;l<LASTLAYER;l++)
-    wr+=rootdist[l]*(soil->w[l]+soil->ice_depth[l]/soil->par->whcs[l]);
+    wr+=rootdist[l]*(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]);
   return wr;
 } /* of 'getwr' */

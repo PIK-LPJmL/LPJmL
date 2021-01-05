@@ -35,6 +35,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
                    int ncft,                    /**< [in] number of crop PFTs   */
                    int year,                    /**< [in] simulation year (AD) */
                    Bool UNUSED(intercrop),      /**< [in] enabled intercropping */
+                   Real agrfrac,
                    const Config *config         /**< [in] LPJ config */
                   )                             /** \return runoff (mm/day) */
 {
@@ -111,7 +112,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   }
 
   /* soil inflow: infiltration and percolation */
-  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,config);
+  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,npft,ncft,config);
 #ifdef PERMUTE
   for(p=0;p<getnpft(&stand->pftlist);p++)
 #else
@@ -160,6 +161,8 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     output->npp+=npp*stand->frac;
     output->gpp+=gpp*stand->frac;
     output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR)
+      output->npp_agr += npp*stand->frac / agrfrac;
 
     output->mphen_tmin += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     output->mphen_tmax += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
@@ -213,14 +216,18 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       output->daily.par=par;
       output->daily.pet=eeq*PRIESTLEY_TAYLOR;
       output->daily.interc=intercep_stand*stand->frac;
-      forrootsoillayer(l)
-      {
-        output->daily.nh4+=stand->soil.NH4[l];
-        output->daily.no3+=stand->soil.NO3[l];
-        output->daily.nsoil_fast+=stand->soil.pool[l].fast.nitrogen;
-        output->daily.nsoil_slow+=stand->soil.pool[l].slow.nitrogen;
-      }
+      /* only write to daily outputs if there are no values yet from the crop stand in order to record values from setaside stands */
+      if(output->daily.nh4==0 && output->daily.no3==0 && output->daily.nsoil_fast==0 &&
+         (output->daily.irrigation && stand->type->landusetype==SETASIDE_IR) || (!output->daily.irrigation && stand->type->landusetype==SETASIDE_RF))
+        forrootsoillayer(l)
+        {
+          output->daily.nh4+=stand->soil.NH4[l];
+          output->daily.no3+=stand->soil.NO3[l];
+          output->daily.nsoil_fast+=stand->soil.pool[l].fast.nitrogen;
+          output->daily.nsoil_slow+=stand->soil.pool[l].slow.nitrogen;
+        }
     }
+
   }
   output->transp+=transp;
   stand->cell->balance.atransp+=transp;

@@ -21,7 +21,7 @@
 #define c_albedo_wet_soil  0.15  /* see above */
 #define decay_alb_moist  12.7    /* Describes how fast the moisture dependence is */
 
-Real albedo_stand(Stand *stand /**< pointer to stand */
+Real albedo_stand(const Stand *stand /**< pointer to stand */
                  )             /** \return albedo (0..1) */
 {
   int p;
@@ -30,7 +30,7 @@ Real albedo_stand(Stand *stand /**< pointer to stand */
   Real albedo; /* albedo of the stand */
   Real sfr;
   Pft *pft;
-  Soil *soil;
+  const Soil *soil;
   Real soil_albedo;
 #ifdef COUPLING_WITH_FMS
   Real VolWatercontent;

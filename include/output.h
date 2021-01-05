@@ -94,8 +94,10 @@ typedef struct
 typedef struct
 {
   Real npp;              /**< NPP (gC/m2) */
+  Real npp_agr;         /**< Monthly NPP for agricultural stands (gC/m2) */
   Real gpp;              /**< GPP (gC/m2) */
   Real rh;               /**< heterotrophic respiration (gC/m2) */
+  Real rh_agr;          /* annual heterotrophic respiration of agricultural stands (gC/m2) */
   Real rh_litter;        /**< heterotrophic respiration from litter (gC/m2) */
   Real transp;           /**< transpiration (mm) */
   Real mtransp_b;        /**< Monthly transpired irrigation water (mm) */
@@ -131,6 +133,7 @@ typedef struct
   Real irrig;             /**<irrigation (mm) */
   Real mwd_unsustainable; /**< Monthly withdrawal from unsustainable source (mm) */
   Real munmet_demand;     /**< monthly unavailable requested irrigation water (mm) */
+  Real *husum;           /**< accumulated heat units through growing season */
   Real *cft_airrig;      /**< Yearly irrigation per cft (mm) */
   int *sdate;            /**< sowing date */
   int *hdate;            /**< Harvest date */
@@ -139,6 +142,7 @@ typedef struct
   int *hdate2;           /**< Harvest date */
   int *syear;
   int *syear2;
+  Real *husum2;          /**< accumulated heat units through growing season */
   Real *cft_airrig2;     /**< Yearly irrigation per cft (mm) */
   Harvest *pft_harvest2;
   Real *growing_period2;      /**< lenght of growing period in days */
@@ -152,7 +156,20 @@ typedef struct
   Real *cft_srad2;          /**< cft specific short-wave radiation (W/m2) */
   Stocks *cft_aboveground_biomass2; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
   Real *cftfrac2;           /**< cft fraction */
+  Real *cft_runoff2;        /**< cft specific runoff (mm) */
+  Real *cft_n2o_denit2;        /**< cft specific N2O emissions from denitrification (gN/m2/growing season) */
+  Real *cft_n2o_nit2;        /**< cft specific N2O emissions from nitrification (gN/m2/growing season) */
+  Real *cft_n2_emis2;        /**< cft specific N2 emissions (gN/m2/growing season) */
+  Real *cft_leaching2;        /**< cft specific leaching (gN/m2/growing season) */
+  Real *cft_c_emis2;        /**< cft specific C emissions (gC/m2/growing season) */
+  Real *pft_nuptake2;       /* nitrogen uptake per PFT */
 #endif
+  Real *cft_runoff;        /**< cft specific runoff (mm) */
+  Real *cft_n2o_denit;        /**< cft specific N2O emissions from denitrification (gN/m2/growing season) */
+  Real *cft_n2o_nit;        /**< cft specific N2O emissions from nitrification (gN/m2/growing season) */
+  Real *cft_n2_emis;        /**< cft specific N2 emissions (gN/m2/growing season) */
+  Real *cft_leaching;        /**< cft specific leaching (gN/m2/growing season) */
+  Real *cft_c_emis;        /**< cft specific C emissions (gC/m2/growing season) */
   Real *pft_npp;         /**< Pft specific NPP (gC/m2) */
   Real *mpft_lai;         /**< Pft specific LAI */
   Harvest *pft_harvest;
@@ -167,7 +184,7 @@ typedef struct
   Real mres_demand;      /**< Monthly reservoir demand (million m3) */
   Real mtarget_release;  /**< Monthly target release (1.000.000 m3/day) */
   Real mres_cap;         /**< monthly output of reservoir capacity (in million m3) */
-  Real mwd_local;        /**<  monthly local withdrawal (mm) total water used for local and neighbour irrigation, including water that goes into irrig_stor, which could go back to river */
+  Real mwd_local;        /**< monthly local withdrawal (mm) total water used for local and neighbour irrigation, including water that goes into irrig_stor, which could go back to river */
   Real mwd_neighb;       /**< monthly neighbour withdrawal (mm); negative values means give away to neighbour, positive taken for local irrigation from neighbour */
   Real mwd_res;          /**< monthly reservoir withdrawal (mm) */
 #ifdef IMAGE
@@ -235,11 +252,14 @@ typedef struct
   Stocks timber_harvest;   /**< carbon and nitrogen harvested as timber [g/m2/a] */
   Poolpar product_pool;  /**< carbon and nitrogen in the fast product pool */
   Real prod_turnover;      /**< carbon and nitrogen emissions from product turnover [gX/m2/a] */
+  Real msoilc1;            /**< slow+fast+bg litter carbon in the first soil layer (gC/m2/month) */
   Real *cft_luc_image;     /**< LUC data received by IMAGE [0-1], CFT specific */
   Real msoiltemp[NSOILLAYER]; /**< monthly soil temperature in deg C for  6 layer*/
   Real msoiltemp2[NSOILLAYER]; /**< monthly soil temperature in deg C for  6 layer*/
   Real mrunoff_surf;       /**< monthly surface runoff in mm*/
   Real mrunoff_lat;        /**< monthly lateral runoff in mm*/
+  Real runoff_surf;        /**< annual surface runoff in mm*/
+  Real runoff_lat;         /**< annual lateral runoff in mm*/
   Real mseepage;           /**< monthly seepage water in mm*/
   Real mgcons_rf;          /**< monthly green water consumption on rainfed stands */
   Real mgcons_irr;         /**< monthly green water consumption on irrigated stands */
@@ -295,6 +315,32 @@ typedef struct
   Real *nv_lai;
   Real *fpc_bft;
   Real daylength;
+  Stocks *cft_leaf;
+  Stocks *cft_veg;
+  Stocks *cft_root;
+  Real *cft_nlimit;
+  Real *cft_laimax;
+  Real *cft_mswc;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
+  int *nday_month;        /**< day count for monthly cft-specific outputs, needed in update_monthly to divide by number of days */
+  Real abnf_agr;
+  Real anfert_agr;
+  Real anmanure_agr;
+  Real andepo_agr;
+  Real anmineralization_agr;
+  Real animmobilization_agr;
+  Real anuptake_agr;
+  Real anleaching_agr;
+  Real an2o_denit_agr;
+  Real an2o_nit_agr;
+  Real anh3_agr;
+  Real an2_agr;
+  Real alitfalln_agr;
+  Real aharvestn_agr;
+  Real aseedn_agr;
+  Real adelta_norg_soil_agr;
+  Real adelta_nmin_soil_agr;
+  Real adelta_nveg_soil_agr;
+  Real cellfrac_agr;
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 
@@ -325,6 +371,8 @@ typedef struct
   Real n_uptake;              /**< total N uptake by plants */
   Real n_influx;              /**< total N inputs */
   Real n_outflux;             /**< total N losses */
+  Real anpp_flux;             /**< Total NPP (gC/yr) */
+  Real excess_water;          /**< Exess water (dm3) */
 
 } Flux;
 

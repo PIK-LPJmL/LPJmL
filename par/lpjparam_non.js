@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  _  n  o  n  .  j  s                       \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.1.002 without nitrogen              \n**/
+/**     LPJ parameter file for LPJmL version 5.2.002 without nitrogen              \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -39,6 +39,14 @@
   "temp_response_b" : 46.02, /* Parameter in temperature response function */
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
   "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
+  "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
+  "residue_cn": 20,          /* CN ratio of prescribed residues */
+  "residue_fbg": 0.25,       /* belowground fraction of prescribed residues */
+  "fertilizer_rate" : 20,     /* fixed fertilizer application rate in gN/m2/yr */
+  "residue_frac" : 0.95,      /* fraction of residues to be submerged by tillage */
+  "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
+  "till_startyear" : 1850,    /* year in which tillage should start */
   "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold (mm) */
   "irrig_threshold_c3_dry" : 0.8,     /* irrigation threshold C3, prec < aprec_lim */
@@ -65,9 +73,10 @@
   "rw_irrig_thres" : 0.0,             /* threshold to apply rw_irrigation */
   "soil_infil_rw" : 2.0,              /* values > 2 (default) increase soil infiltration on rainfed and irrigated managed land */
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
+  "allocation_threshold" : 35.0,     /* allocation threshold for daily grassland allocation */
   "hfrac2" : 1000.0,
   "firedura" : -11.06,                /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.50,                  /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
-  "rootreduction" : 0.0               /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
+  "rootreduction" : 0.5               /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
 },

@@ -71,6 +71,8 @@ typedef struct
 {
   Landfrac *landfrac;     /**< land use fractions */
   Landfrac *fertilizer_nr;   /**< reactive nitrogen fertilizer */
+  Landfrac *manure_nr;     /* manure nitrogen fertilizer */
+  Landfrac *residue_on_field;     /* fraction of residues left on field */
   Irrig_system *irrig_system; /**< irrigation system type (SURF=1,SPRINK=2,DRIP=3) */
   Manage manage;
   Cropdates *cropdates;
@@ -82,11 +84,14 @@ typedef struct
                                     2:precipitation seasonality, 3 and 4:temperature
                                     seasonality*/
   int *sdate_fixed;       /**< array to store fixed or prescribed sowing dates */
+  Real *crop_phu_fixed;   /**< array to store prescribed crop phus */
+  int *tilltypes;         /* array to store tillage types */
   Resdata *resdata;       /**< Reservoir data */
   Real *fraction;
   Real reservoirfrac;     /**< reservoir fraction (0..1) */
   Real mdemand;           /**< monthly irrigation demand */
   Bool dam;               /**< dam inside cell (TRUE/FALSE) */
+  Bool with_tillage;      /* simulation with tillage implementation */
   int fixed_grass_pft;              /**< fix C3 or C4 for GRASS pft */
   GrassScenarioType grass_scenario; /**< 0=default, 1=mowing, 2=ext.grazing, 3=int.grazing */
 #if defined IMAGE && defined COUPLED
@@ -120,18 +125,18 @@ extern Bool freadlandfrac(FILE *,Landfrac [2],int,Bool);
 extern Real landfrac_sum(const Landfrac [2],int,Bool);
 extern Real crop_sum_frac(Landfrac *,int,Real,Bool);
 extern Stocks cultivate(Cell *,const Pftpar *,int,Real,Bool,int,Bool,Stand *,
-                        Bool,int,int,int,int,int);
-extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int);
-extern Bool getlanduse(Landuse,Cell *,int,int,const Config *);
-extern void landusechange(Cell *,int,int,Bool,int,const Config *);
-extern Bool setaside(Cell *,Stand *,const Pftpar[],Bool,int,Bool,int);
-extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
-extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
-extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
-extern void deforest(Cell *,Real,const Pftpar [],Bool,int,Bool,Bool,Bool,int,int,Real);
+                        Bool,int,int,int,int,const Config *);
 #ifdef IMAGE
 extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real);
 #endif
+extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int);
+extern Bool getlanduse(Landuse,Cell *,int,int,int,const Config *);
+extern void landusechange(Cell *,int,int,Bool,Bool,int,const Config *);
+extern Bool setaside(Cell *,Stand *,const Pftpar[],Bool,Bool,int,Bool,int,int);
+extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
+extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
+extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
+extern void deforest(Cell *,Real,Bool,int,Bool,Bool,int,int,Real,const Config *);
 extern Stocks woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real);
@@ -146,5 +151,10 @@ extern Bool fread_irrigation(FILE *,Irrigation *,Bool);
 extern Harvest harvest_stand(Output *,Stand *,Real);
 extern int *getcftmap(LPJfile *,int *,int,int,const Config *);
 extern Bool fscanmowingdays(LPJfile *,Config *);
+extern void tillage(Soil *, Real);
+
+/* Declaration of variables */
+
+extern Real tinyfrac;
 
 #endif

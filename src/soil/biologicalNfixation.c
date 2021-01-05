@@ -38,6 +38,16 @@ Real biologicalnfixation(const Stand *stand /**< pointer to stand */
         if(grass->ind.root.carbon>param.min_c_bnf)
           bnf+=max(0,(0.0234*stand->cell->climbuf.aetp_mean-0.172)/10/NDAYYEAR)*pft->fpc;
         break;
+        // N fixation for crops now in n_uptake_crop.c
+      /*case CROP:
+        if(pft->par->id==PEAS || pft->par->id==SOYBEAN)
+        {
+          crop=pft->data;
+          if(crop->ind.root.carbon>param.min_c_bnf)
+            bnf+=max(0,(0.0234*stand->cell->climbuf.aetp_mean-0.172)/10/NDAYYEAR)*pft->fpc;
+        }
+        break;
+        */
     } /* of switch */
   return bnf;
 } /* of 'biologicalnfixation' */

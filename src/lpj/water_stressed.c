@@ -92,9 +92,9 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   {
     if(config->new_trf)
     {
-      B=(log(1500) - log(33))/(log(pft->stand->soil.par->wfc) - log(pft->stand->soil.par->wpwp));
-      A=exp(log(33) + B*log(pft->stand->soil.par->wfc));
-      psi=A*pow(pft->stand->soil.par->wpwp+pft->stand->soil.w[l]*pft->stand->soil.par->whc[l],-B);
+      B=(log(1500) - log(33))/(log(pft->stand->soil.wfc[l]) - log(pft->stand->soil.wpwp[l]));
+      A=exp(log(33) + B*log(pft->stand->soil.wfc[l]));
+      psi=A*pow(pft->stand->soil.wpwp[l]+pft->stand->soil.w[l]*pft->stand->soil.whc[l],-B);
       trf[l]=min(max(1-psi/1500,0),1);
     }
     else
@@ -143,12 +143,12 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     for (l=0;l<LASTLAYER;l++)
     {
       aet_frac=1;
-      if(aet*rootdist_n[l]*trf[l]/pft->fpc>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
-        aet_frac=(pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])/(aet*rootdist_n[l]*trf[l]/pft->fpc);
+      if(aet*rootdist_n[l]*trf[l]/pft->fpc>pft->stand->soil.w[l]*pft->stand->soil.whcs[l])
+        aet_frac=(pft->stand->soil.w[l]*pft->stand->soil.whcs[l])/(aet*rootdist_n[l]*trf[l]/pft->fpc);
       aet_tmp[l]=aet_layer[l]+aet*rootdist_n[l]*trf[l]*aet_frac;
-      if (aet_tmp[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
+      if (aet_tmp[l]>pft->stand->soil.w[l]*pft->stand->soil.whcs[l])
       {
-        aet_cor+=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l]-aet_layer[l];
+        aet_cor+=pft->stand->soil.w[l]*pft->stand->soil.whcs[l]-aet_layer[l];
         if(aet_cor<epsilon)
           aet_cor=0;
       }
@@ -222,7 +222,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
       }
       aet=(wr>0) ? demand*fpar(pft)/wr :0 ;
 
-      if(vmax>0)
+      if(vmax>epsilon)
         pft->nlimit+=pft->vmax/vmax;
       if(pft->stand->type->landusetype==AGRICULTURE)
       {
@@ -244,8 +244,8 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   for (l=0;l<LASTLAYER;l++)
   {
     aet_layer[l]+=aet*rootdist_n[l]*trf[l];
-    if (aet_layer[l]>pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l])
-      aet_layer[l]=pft->stand->soil.w[l]*pft->stand->soil.par->whcs[l];
+    if (aet_layer[l]>pft->stand->soil.w[l]*pft->stand->soil.whcs[l])
+      aet_layer[l]=pft->stand->soil.w[l]*pft->stand->soil.whcs[l];
   }
   return agd;
 } /* of 'water_stressed' */

@@ -48,9 +48,11 @@
   "with_nitrogen" : "lim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : true,
+  "fix_climate" : false,
   "shuffle_climate" : true,
   "const_deposition" : false,
 #ifdef FROM_RESTART
+  "new_seed" : false,
   "equilsoil" :  false,
   "population" : false,
   "landuse" : "landuse", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
@@ -78,6 +80,8 @@
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : true,            /* enable fertilizer input */
   "istimber" : true,
+  "others_to_crop" : true,
+  "crop_resp_fix" : false,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
 
@@ -113,7 +117,7 @@
 
 #ifdef FROM_RESTART
 
-  "output" : 
+  "output" :
   [
 
 /*

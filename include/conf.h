@@ -29,6 +29,8 @@
 #define NO_FIXED_SDATE 0
 #define FIXED_SDATE 1
 #define PRESCRIBED_SDATE 2
+#define SEMISTATIC_CROP_PHU 0
+#define PRESCRIBED_CROP_PHU 1
 #define NO_IRRIGATION 0
 #define LIM_IRRIGATION 1
 #define POT_IRRIGATION 2
@@ -65,6 +67,12 @@
 #define ALL_WATERUSE 2
 #define NO_RWMANAGEMENT 0
 #define RWMANAGEMENT 1
+#define NO_TILLAGE 0
+#define TILLAGE 1
+#define READ_TILLAGE 2
+#define NO_RESIDUE_REMOVE 0
+#define FIXED_RESIDUE_REMOVE 1
+#define READ_RESIDUE_DATA 2
 #define RADIATION_LWDOWN 3
 #define RADIATION_SWONLY 2
 #define RADIATION 1
@@ -100,7 +108,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 281           /* number of output files */
+#define NOUT 326            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -354,7 +362,7 @@
 #define PFT_HARVEST2 PFT_HARVESTC2
 #define PFT_RHARVESTC2 235
 #define PFR_RHARVEST2 PFT_RHARVESTC2
-#define GROWING_PERIOD2 236
+#define HARVESTC_AGR 236
 #define CFT_PET2 237
 #define CFT_TRANSP2 238
 #define CFT_EVAP2 239
@@ -399,6 +407,52 @@
 #define WATERUSECONS 278
 #define WATERUSEDEM 279
 #define WD_GW 280
+#define LITC_ALL 281
+#define LITC_AG 282
+#define NPP_AGR 283
+#define RH_AGR 284
+#define SOILC_AGR 285
+#define SOILC_AGR_LAYER 286
+#define LITC_AGR 287
+#define GROWING_PERIOD2 288
+#define DELTA_NORG_SOIL_AGR 289
+#define DELTA_NMIN_SOIL_AGR 290
+#define DELTA_NVEG_SOIL_AGR 291
+#define HUSUM 292
+#define HUSUM2 293
+#define CFT_SWC 294
+#define MEANVEGCMANGRASS 295
+#define CFT_RUNOFF 296
+#define CFT_RUNOFF2 297
+#define CFT_N2O_NIT 298
+#define CFT_N2O_NIT2 299
+#define PFT_NUPTAKE2 300
+#define CFT_N2O_DENIT 301
+#define CFT_N2O_DENIT2 302
+#define CFT_N2_EMIS 303
+#define CFT_N2_EMIS2 304
+#define CFT_LEACHING 305
+#define CFT_LEACHING2 306
+#define CFT_C_EMIS 307
+#define CFT_C_EMIS2 308
+#define BNF_AGR 309
+#define NFERT_AGR 310
+#define NMANURE_AGR 311
+#define NDEPO_AGR 312
+#define NMINERALIZATION_AGR 313
+#define NIMMOBILIZATION_AGR 314
+#define NUPTAKE_AGR 315
+#define NLEACHING_AGR 316
+#define N2O_DENIT_AGR 317
+#define N2O_NIT_AGR 318
+#define NH3_AGR 319
+#define N2_AGR 320
+#define SEEDN_AGR 321
+#define CELLFRAC_AGR 322
+#define LITFALLC_AGR 323
+#define LITFALLN_AGR 324
+#define HARVESTN_AGR 325
 
 #define RANDOM_SEED 0
+
 #endif

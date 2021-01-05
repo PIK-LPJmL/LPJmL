@@ -80,11 +80,15 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     fprintfilename(file,config->wind_filename);
+  if(config->fire==SPITFIRE||config->fire==SPITFIRE_TMAX||config->cropsheatfrost)
+  {
+    fprintfilename(file,config->tmax_filename);
+    fprintfilename(file,config->tmin_filename);
+  }
+  if(config->fire==SPITFIRE)
+    fprintfilename(file,config->tamp_filename);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    fprintfilename(file,config->tamp_filename);
-    if(config->tmax_filename.name!=NULL)
-      fprintfilename(file,config->tmax_filename);
     if(config->fdi==WVPD_INDEX)
       fprintfilename(file,config->humid_filename);
     fprintfilename(file,config->lightning_filename);
@@ -102,8 +106,12 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     fprintf(file,"%s\n",config->landuse_filename.name);
     if(config->sdate_option==PRESCRIBED_SDATE)
       fprintf(file,"%s\n",config->sdate_filename.name);
+    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+      fprintf(file,"%s\n",config->crop_phu_filename.name);
     if(config->with_nitrogen && config->fertilizer_input)
       fprintfilename(file,config->fertilizer_nr_filename);
+    if (config->with_nitrogen && config->manure_input)
+      fprintfilename(file,config->manure_nr_filename);
   }
   if(config->reservoir)
     fprintf(file,"%s\n"

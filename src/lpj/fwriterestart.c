@@ -96,7 +96,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   index=newvec(long long,config->ngridcell);
   check(index);
   /* write cell data and get index vector */
-  if(fwritecell(file,index,grid,config->ngridcell,ncft,npft,config->sdate_option,config->river_routing)!=config->ngridcell)
+  if(fwritecell(file,index,grid,config->ngridcell,ncft,npft,config->sdate_option,config->crop_phu_option,config->river_routing)!=config->ngridcell)
   {
     fprintf(stderr,"ERROR153: Cannot write data in restart file '%s': %s\n",
             filename,strerror(errno));

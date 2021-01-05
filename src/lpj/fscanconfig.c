@@ -135,6 +135,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   const char *laimax_interpolate[]={"laimax_cft","laimax_interpolate","const_lai_max","laimax_par"};
   const char *fdi[]={"nesterov_index","wvpd_index"};
   const char *nitrogen[]={"no_nitrogen","lim_nitrogen","unlim_nitrogen"};
+  const char *tillage[]={"no_tillage","tillage","read_tillage"};
+  const char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
 
   /*=================================================================*/
@@ -213,8 +215,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #endif
   fscanbool2(file,&config->permafrost,"permafrost");
   config->sdate_option=NO_FIXED_SDATE;
+  config->crop_phu_option=FALSE;
   config->rw_manage=FALSE;
   config->const_climate=FALSE;
+  config->tillage_type=NO_TILLAGE;
+  config->residue_treatment=NO_RESIDUE_REMOVE;
+  config->no_ndeposition=FALSE;
+  config->cropsheatfrost=FALSE;
+  config->black_fallow=FALSE;
   if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
     return TRUE;
   config->storeclimate=TRUE;;
@@ -235,6 +243,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->with_nitrogen==LIM_NITROGEN)
   {
     if(fscanbool(file,&config->const_deposition,"const_deposition",TRUE,verbose))
+      return TRUE;
+    if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
       return TRUE;
   }
   if(config->sim_id!=LPJ)
@@ -259,6 +269,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         fscanint2(file,&config->sdate_fixyear,"sdate_fixyear");
       if(fscankeywords(file,&config->irrig_scenario,"irrigation",irrigation,4,FALSE,verbose))
         return TRUE;
+      if(fscanbool(file,&config->crop_phu_option,"crop_phu_option",TRUE,verbose))
+        return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
       config->crop_resp_fix=TRUE;
       if(config->with_nitrogen)
@@ -269,12 +281,20 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         config->crop_resp_fix=FALSE;
         if(fscanbool(file,&config->crop_resp_fix,"crop_resp_fix",TRUE,verbose))
           return TRUE;
+        config->manure_input=FALSE;
+        if (fscanbool(file,&config->manure_input,"manure_input",TRUE,verbose))
+          return TRUE;
+        config->fix_fertilization=FALSE;
+        if(fscanbool(file,&config->fix_fertilization,"fix_fertilization",TRUE,verbose))
+          return TRUE;
       }
+      if (fscanbool(file, &config->cropsheatfrost, "cropsheatfrost", TRUE, verbose))
+        return TRUE;
+      config->grassonly = FALSE;
+      if (fscanbool(file, &config->grassonly, "grassonly", TRUE, verbose))
+        return TRUE;
       config->istimber=FALSE;
       if(fscanbool(file,&config->istimber,"istimber",TRUE,verbose))
-        return TRUE;
-      config->remove_residuals=FALSE;
-      if(fscanbool(file,&config->remove_residuals,"remove_residuals",TRUE,verbose))
         return TRUE;
       config->residues_fire=FALSE;
       if(fscanbool(file,&config->residues_fire,"residues_fire",TRUE,verbose))
@@ -304,6 +324,17 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       if(fscanmowingdays(file,config))
         return TRUE;
+      if(fscankeywords(file,&config->tillage_type,"tillage_type",tillage,3,TRUE,verbose))
+        return TRUE;
+      if(fscankeywords(file,&config->residue_treatment,"residue_treatment",residue_treatment,3,TRUE,verbose))
+        return TRUE;
+    }
+    if(fscanbool(file,&config->black_fallow,"black_fallow",TRUE,verbose))
+      return TRUE;
+    if(config->black_fallow)
+    {
+      fscanbool2(file,&config->till_fallow,"till_fallow");
+      fscanbool2(file,&config->prescribe_residues,"prescribe_residues");
     }
     if(isboolean(file,"wateruse"))
     {
@@ -445,10 +476,18 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       scanclimatefilename(&input,&config->sdate_filename,config->inputdir,FALSE,"sdate");
     }
-    if(config->with_nitrogen && config->fertilizer_input)
+    if(config->crop_phu_option)
     {
-      scanclimatefilename(&input,&config->fertilizer_nr_filename,config->inputdir,FALSE,"fertilizer_nr");
+      scanclimatefilename(&input,&config->crop_phu_filename,config->inputdir,FALSE,"crop_phu");
     }
+    if(config->with_nitrogen && config->fertilizer_input)
+      scanclimatefilename(&input,&config->fertilizer_nr_filename,config->inputdir,FALSE,"fertilizer_nr");
+    if (config->with_nitrogen && config->manure_input)
+      scanclimatefilename(&input,&config->manure_nr_filename,config->inputdir,FALSE,"manure_nr");
+    if (config->tillage_type==READ_TILLAGE)
+      scanclimatefilename(&input,&config->with_tillage_filename,config->inputdir,FALSE,"with_tillage");
+    if (config->residue_treatment == READ_RESIDUE_DATA)
+      scanclimatefilename(&input,&config->residue_data_filename,config->inputdir,FALSE,"residue_on_field");
     if(grassfix == GRASS_FIXED_PFT)
     {
       scanclimatefilename(&input,&config->grassfix_filename,config->inputdir,FALSE,"grassland_fixed_pft");
@@ -531,15 +570,21 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     scanclimatefilename(&input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,"wind");
   }
+  if(config->fire==SPITFIRE_TMAX || config->cropsheatfrost)
+  {
+    scanclimatefilename(&input,&config->tmin_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmin");
+    scanclimatefilename(&input,&config->tmax_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmax");
+  }
+  else
+    config->tmax_filename.name=config->tmin_filename.name=NULL;
+  if(config->fire==SPITFIRE_TMAX)
+  {
+    scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,"tamp");
+  }
+  else
+    config->tamp_filename.name=NULL; 
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,(config->fire==SPITFIRE_TMAX) ? "tmin" : "tamp");
-    if(config->fire==SPITFIRE_TMAX)
-    {
-      scanclimatefilename(&input,&config->tmax_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmax");
-    }
-    else
-      config->tmax_filename.name=NULL;
     scanclimatefilename(&input,&config->lightning_filename,config->inputdir,FALSE,"lightning");
     scanclimatefilename(&input,&config->human_ignition_filename,
                         config->inputdir,FALSE,"human_ignition");

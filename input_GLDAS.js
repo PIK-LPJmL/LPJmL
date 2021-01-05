@@ -14,6 +14,13 @@
 
 #include "include/conf.h" /* include constant definitions */
 
+/* the following array describes the order of the CFT bands in the land use file */
+
+"cftmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+            "temperate roots", "tropical roots", "oil crops sunflower",
+            "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+            "sugarcane","others","grassland"],
+
 "input" :
 {
   "soil" :         { "fmt" : "raw",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/soil_GLDAS.bin"},

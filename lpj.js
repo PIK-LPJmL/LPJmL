@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j   .  j  s                                            \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.1.001 without land use                \n**/
+/** Configuration file for LPJmL C Version 5.2.002 without land use                \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -30,7 +30,7 @@
 
 "sim_name" : "LPJ run with PNV",   /* Simulation description */
 "sim_id"   : "lpj",       /* LPJML Simulation with natural vegetation only */
-"version"  : "5.1",       /* LPJmL version expected */
+"version"  : "5.2",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : "radiation",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -55,6 +55,7 @@
 "const_deposition" : false,
 "shuffle_climate" : true, /* shuffle spinup climate */
 "fix_climate" : false,
+"no_ndeposition" : false,             /* turn off atmospheric N deposition */
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

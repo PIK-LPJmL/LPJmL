@@ -22,7 +22,7 @@
 
 #include "include/conf.h" /* include constant definitions */
 
-// #define DAILY_OUTPUT 
+// #define DAILY_OUTPUT
 
 {
 
@@ -57,6 +57,9 @@
 "wateruse" : "no_wateruse",
 "grass_harvest_options" : false,
 "rw_manage" : false,
+"shuffle_climate" : true,
+"fix_climate" : false,
+"new_seed" : false,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -105,7 +108,7 @@ ID                         Fmt                    filename
 { "id" : "vegc",             "file" : { "fmt" : "cdf", "name" : "output/vegc.nc"}},
 { "id" : "soilc",            "file" : { "fmt" : "cdf", "name" : "output/soilc.nc"}},
 { "id" : "litc",             "file" : { "fmt" : "cdf", "name" : "output/litc.nc"}},
-{ "id" : "flux_estab",       "file" : { "fmt" : "cdf", "name" : "output/flux_estab.nc"}},
+{ "id" : "flux_estabc",      "file" : { "fmt" : "cdf", "name" : "output/flux_estab.nc"}},
 { "id" : "phen_tmin",        "file" : { "fmt" : "cdf", "name" : "output/mphen_tmin.nc"}},
 { "id" : "phen_tmax",        "file" : { "fmt" : "cdf", "name" : "output/mphen_tmax.nc"}},
 { "id" : "phen_light",       "file" : { "fmt" : "cdf", "name" : "output/mphen_light.nc"}},

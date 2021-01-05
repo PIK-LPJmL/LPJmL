@@ -48,6 +48,7 @@
   "store_climate" : true, /* store climate data in spin-up phase */
   "shuffle_climate" : false,
   "const_climate" : false,
+  "fix_climate" : false,
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "equilsoil" : false,
@@ -78,7 +79,7 @@
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
-  "groundwater_irrigation": false, 
+  "groundwater_irrigation": false,
   "aquifer_irrigation": false,
   "others_to_crop" : false,
   "istimber" : false,
@@ -117,7 +118,7 @@
 
 #ifdef FROM_RESTART
 
-  "output" : 
+  "output" :
   [
 
 /*

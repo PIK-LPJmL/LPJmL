@@ -132,8 +132,7 @@ typedef struct Pft
     Real k1,k2,k3;
     Real soc_k;                 /**< shape-factor for vertical distribution function of soil organic carbon, following Jobbagy et al. 2000*/
     Limit temp_co2;             /**< temperature limit for CO2 uptake (24,27) */
-    Limit temp_photos;          /**< range of temperature optimum for
-                                   photosynthesis(25,26) */
+    Limit temp_photos;          /**< range of temperature optimum for photosynthesis (25,26) */
     Limit temp;                 /**< bioclimatic limits (28,29) */
     Real aprec_min;             /**< minimum annual precipitation (mm) */
     Real flam;
@@ -155,7 +154,7 @@ typedef struct Pft
     /* list of pointers for PFT specific functions */
     /* (Virtual functions in C++)                  */
 
-    void (*newpft)(struct Pft *,int,int);
+    void (*newpft)(struct Pft *,int,int,int);
     void (*init)(struct Pft *);
     Real (*wdf)(struct Pft *,Real,Real);
     Real (*npp)(struct Pft*,Real,Real,Real,int);
@@ -230,7 +229,7 @@ extern  char *path[];
 
 /* Declaration of functions */
 
-extern void newpft(Pft *,Stand *,const Pftpar *,int,int);
+extern void newpft(Pft *,Stand *,const Pftpar *,int,int,int);
 extern void freepft(Pft *);
 extern void freepftpar(Pftpar [],int);
 extern Real temp_stress(const Pftpar *,Real,Real);

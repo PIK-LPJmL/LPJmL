@@ -146,8 +146,8 @@ int main(int argc,char **argv)
       {
     if(riversnew[i]==k)
         {
-	  /* fprintf(ofp,"%d %d\n",(int)(lpjlon[i]*100.),(int)(lpjlat[i]*100.)); */
-	  /* write binary file */
+      /* fprintf(ofp,"%d %d\n",(int)(lpjlon[i]*100.),(int)(lpjlat[i]*100.)); */
+      /* write binary file */
       rbuf2[0]=(short)(lpjlon[i]*100.);
       rbuf2[1]=(short)(lpjlat[i]*100.);
        fwrite(rbuf2,sizeof(short),2,ofp);
@@ -164,8 +164,8 @@ int main(int argc,char **argv)
         {
       if(riversnew[i]==k)
           {
-	    /* fprintf(ofp,"%d %d\n",(int)(lpjlon[i]*100.),(int)(lpjlat[i]*100.)); */
-	    /* write binary file */
+        /* fprintf(ofp,"%d %d\n",(int)(lpjlon[i]*100.),(int)(lpjlat[i]*100.)); */
+        /* write binary file */
         rbuf2[0]=(short)(lpjlon[i]*100.);
         rbuf2[1]=(short)(lpjlat[i]*100.);
          fwrite(rbuf2,sizeof(short),2,ofp);

@@ -20,6 +20,7 @@ void freeclimatedata(Climatedata *data /**< pointer to climate data */
                     )                  /** \return void */
 {
   free(data->tmax);
+  free(data->tmin);
   free(data->prec);
   free(data->temp);
   free(data->sun);
@@ -45,6 +46,8 @@ void freeclimate(Climate *climate, /**< pointer to climate data */
     closeclimatefile(&climate->file_prec,isroot);
     if(climate->data.tmax!=NULL)
       closeclimatefile(&climate->file_tmax,isroot);
+    if(climate->data.tmin!=NULL)
+      closeclimatefile(&climate->file_tmin,isroot);
     if(climate->data.sun!=NULL)
       closeclimatefile(&climate->file_cloud,isroot);
     if(climate->data.lwnet!=NULL)

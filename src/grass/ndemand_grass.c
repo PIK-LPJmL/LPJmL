@@ -26,6 +26,7 @@ Real ndemand_grass(const Pft *pft,    /**< pointer to PFT */
   const Pftgrass *grass;
   const Pftgrasspar *grasspar;
   Real ndemand_tot;
+
   grass=pft->data;
   grasspar=pft->par->data;
   //*ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft))) +param.n0*0.001*(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf)*pft->nind;

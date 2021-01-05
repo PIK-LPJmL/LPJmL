@@ -80,14 +80,19 @@ static size_t isnetcdfinput(const Config *config)
     if(config->soilph_filename.fmt==CDF)
       width=max(width,strlen(config->soilph_filename.var));
   }
+  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  {
+    if(config->tmin_filename.fmt==CDF)
+      width=max(width,strlen(config->tmin_filename.var));
+    if(config->tmax_filename.fmt==CDF)
+      width=max(width,strlen(config->tmax_filename.var));
+  }
+  if(config->fire==SPITFIRE && config->tamp_filename.fmt==CDF)
+    width=max(width,strlen(config->tamp_filename.var));
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX && config->humid_filename.fmt==CDF)
       width=max(width,strlen(config->humid_filename.var));
-    if(config->tamp_filename.fmt==CDF)
-      width=max(width,strlen(config->tamp_filename.var));
-    if(config->fire==SPITFIRE_TMAX && config->tmax_filename.fmt==CDF)
-      width=max(width,strlen(config->tmax_filename.var));
     if(config->lightning_filename.fmt==CDF)
       width=max(width,strlen(config->lightning_filename.var));
     if(config->human_ignition_filename.fmt==CDF)
@@ -107,8 +112,16 @@ static size_t isnetcdfinput(const Config *config)
       width=max(width,strlen(config->landuse_filename.var));
     if(config->sdate_option==PRESCRIBED_SDATE && config->sdate_filename.fmt==CDF)
       width=max(width,strlen(config->sdate_filename.var));
-    if(config->with_nitrogen && config->fertilizer_input && config->fertilizer_nr_filename.fmt==CDF)
-      width=max(width,strlen(config->fertilizer_nr_filename.var));
+    if(config->crop_phu_option && config->crop_phu_filename.fmt==CDF)
+      width=max(width,strlen(config->crop_phu_filename.var));
+    if (config->with_nitrogen && config->fertilizer_input && config->fertilizer_nr_filename.fmt == CDF)
+      width = max(width, strlen(config->fertilizer_nr_filename.var));
+    if (config->with_nitrogen && config->manure_input && config->manure_nr_filename.fmt == CDF)
+      width = max(width, strlen(config->manure_nr_filename.var));
+    if(config->residue_treatment==READ_RESIDUE_DATA && config->residue_data_filename.fmt==CDF)
+      width=max(width, strlen(config->residue_data_filename.var));
+    if(config->tillage_type==READ_TILLAGE && config->with_tillage_filename.fmt==CDF)
+      width=max(width, strlen(config->with_tillage_filename.var));
   }
   if(config->reservoir)
   {
@@ -232,6 +245,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   }
   if(config->const_deposition)
     len=printsim(file,len,&count,"const. deposition");
+  if(config->no_ndeposition)
+    len=printsim(file,len,&count,"no N deposition");
   if(config->river_routing)
     len=printsim(file,len,&count,"river routing");
   if(config->equilsoil)
@@ -240,6 +255,14 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
+  if(config->black_fallow)
+  {
+    len=printsim(file,len,&count,"black fallow");
+    if(config->till_fallow)
+      len=printsim(file,len,&count,"tillage fallow");
+    if(config->prescribe_residues)
+      len=printsim(file,len,&count,"prescribe residues");
+  }
   if(config->prescribe_landcover)
     len=printsim(file,len,&count,(config->prescribe_landcover==LANDCOVEREST) ? "prescribed establishment":"prescribed maximum FPC");
   if(config->new_phenology)
@@ -268,25 +291,40 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       len=printsim(file,len,&count,"rainwater management, ");
     len=fputstring(file,len,irrig[config->irrig_scenario],78);
     len=fputstring(file,len," irrigation",78);
+    if(config->fix_fertilization)
+    {
+      len+=fprintf(file,", ");
+      len=fputstring(file,len,"fixed fertilization",78);
+    }
     if(config->intercrop)
     {
       len+=fprintf(file,", ");
       len=fputstring(file,len,"intercropping",78);
+    }
+    if (config->others_to_crop)
+    {
+      len += fprintf(file, ", ");
+      len = fputstring(file, len, "others to crop", 78);
+    }
+    if (config->cropsheatfrost)
+    {
+      len += fprintf(file, ", ");
+      len = fputstring(file, len, "with crops heat frost", 78);
+    }
+    if (config->grassonly)
+    {
+      len += fprintf(file, ", ");
+      len = fputstring(file, len, "grassonly", 78);
     }
     if(config->istimber)
     {
       len+=fprintf(file,", ");
       len=fputstring(file,len,"timber",78);
     }
-    if(config->remove_residuals)
+    if(config->tillage_type)
     {
       len+=fprintf(file,", ");
-      len=fputstring(file,len,"remove residuals",78);
-    }
-    if (config->others_to_crop)
-    {
-      len += fprintf(file, ", ");
-      len = fputstring(file, len, "others_to_crop", 78);
+      len=fputstring(file,len,"tillage_type",78);
     }
     if (config->crop_resp_fix)
     {
@@ -326,6 +364,12 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       len=fputstring(file,len,", ",78);
       count++;
       len=fputstring(file,len,"prescribed sowing date",78);
+    }
+    if(config->crop_phu_option)
+    {
+        len=fputstring(file,len,", ",78);
+        count++;
+        len=fputstring(file,len,"prescribed crop phus",78);
     }
   }
   if(config->grassfix_filename.name!=NULL)
@@ -409,17 +453,17 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   printinputfile(file,"co2",&config->co2_filename,width);
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     printinputfile(file,"windspeed",&config->wind_filename,width);
+  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  {
+    printinputfile(file,"tmin",&config->tmin_filename,width);
+    printinputfile(file,"tmax",&config->tmax_filename,width);
+  }
+  if(config->fire==SPITFIRE)
+    printinputfile(file,"temp ampl",&config->tamp_filename,width);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX)
       printinputfile(file,"humid",&config->humid_filename,width);
-    if(config->tmax_filename.name!=NULL)
-    {
-      printinputfile(file,"temp min",&config->tamp_filename,width);
-      printinputfile(file,"temp max",&config->tmax_filename,width);
-    }
-    else
-      printinputfile(file,"temp ampl",&config->tamp_filename,width);
     printinputfile(file,"lightning",&config->lightning_filename,width);
     printinputfile(file,"human ign",&config->human_ignition_filename,width);
   }
@@ -441,8 +485,16 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     printinputfile(file,"landuse",&config->landuse_filename,width);
     if(config->sdate_option==PRESCRIBED_SDATE)
       printinputfile(file,"sdates",&config->sdate_filename,width);
-    if(config->with_nitrogen && config->fertilizer_input)
-      printinputfile(file,"fertilizer",&config->fertilizer_nr_filename,width);
+    if(config->crop_phu_option)
+      printinputfile(file,"crop_phu",&config->crop_phu_filename,width);
+    if(config->with_nitrogen&&config->fertilizer_input)
+      printinputfile(file,"fertilizer",&config->fertilizer_nr_filename, width);
+    if(config->with_nitrogen&&config->manure_input)
+      printinputfile(file,"manure_nr",&config->manure_nr_filename, width);
+    if(config->residue_treatment==READ_RESIDUE_DATA)
+      printinputfile(file,"residue",&config->residue_data_filename,width);
+    if(config->tillage_type==READ_TILLAGE)
+      printinputfile(file,"with tillage",&config->with_tillage_filename,width);
   }
   if(config->reservoir)
   {

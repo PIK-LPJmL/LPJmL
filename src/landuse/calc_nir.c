@@ -55,9 +55,9 @@ void calc_nir(Stand *stand,     /**< pointer to non-natural stand */
         if (stand->soil.freeze_depth[l]< soildepth[l])
         {
           /* net irrigation requirement: field capacity soil water deficit */
-          nir+=max(0,(param.irrigation_soilfrac-stand->soil.w[l]-stand->soil.ice_depth[l]/stand->soil.par->whcs[l])*stand->soil.par->whcs[l]*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
+          nir+=max(0,(param.irrigation_soilfrac-stand->soil.w[l]-stand->soil.ice_depth[l]/stand->soil.whcs[l])*stand->soil.whcs[l]*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
           /* farmer's estimate of distribution requirements: satlevel scales max freewater; demand = max freewater + whcs - available water */
-          dist+=max(0,((stand->soil.par->wsats[l]-stand->soil.par->wpwps[l]-stand->soil.par->whcs[l])*satlevel-stand->soil.w_fw[l])*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
+          dist+=max(0,((stand->soil.wsats[l]-stand->soil.wpwps[l]-stand->soil.whcs[l])*satlevel-stand->soil.w_fw[l])*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
         }
         l++;
       }while((soildepth_irrig-=soildepth[l-1])>0);
@@ -67,7 +67,8 @@ void calc_nir(Stand *stand,     /**< pointer to non-natural stand */
 #ifdef DEBUG
       printf("demand:%f supply::%f irrig:%f\n",demand,supply,nir+dist);
 #endif
-
+      /* avoid large irrigation amounts for dist if nir is zero */
+      if(nir<1) dist=0;
       if(nir>data->net_irrig_amount) /* for pft loop */
         data->net_irrig_amount=nir;
       if(dist>data->dist_irrig_amount)

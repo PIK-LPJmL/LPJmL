@@ -89,7 +89,7 @@ extern Standtype grassland_stand;
 extern Real daily_grassland(Stand *,Real,const Dailyclimate *, int,int,
                             Real,const Real [],
                             Real ,Real,Real,Real,Real,Real,
-                            Real ,int, int, int,Bool,const Config *);
+                            Real ,int, int, int,Bool,Real,const Config *);
 extern Bool annual_grassland(Stand *,int,int,Real,int,Bool,Bool,const Config *);
 extern Bool isdailyoutput_grassland(const Output *,const Stand *);
 extern void output_gbw_grassland(Output *,const Stand *,Real,Real,Real,Real,

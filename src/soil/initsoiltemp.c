@@ -88,11 +88,11 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
           {
             whcs_all=0.0;
             foreachsoillayer(l)
-              whcs_all+=stand->soil.par->whcs[l];
+              whcs_all+=stand->soil.whcs[l];
             foreachsoillayer(l)
             {
               stand->soil.temp[l]+=temp/NMONTH/nsoilmeanyears;
-              stand->soil.w[l]+=balance/nsoilmeanyears/stand->soil.par->whcs[l]*stand->soil.par->whcs[l]/whcs_all;
+              stand->soil.w[l]+=balance/nsoilmeanyears/stand->soil.whcs[l]*stand->soil.whcs[l]/whcs_all;
             }
           }
         }
@@ -108,7 +108,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
             stand->soil.w[l]=1.0;
           if(stand->soil.temp[l]<initfrozen)
           {
-            stand->soil.ice_depth[l]=stand->soil.par->whcs[l]*stand->soil.w[l];
+            stand->soil.ice_depth[l]=stand->soil.whcs[l]*stand->soil.w[l];
             stand->soil.w[l]=0;
             stand->soil.freeze_depth[l]=soildepth[l];
             stand->soil.ice_pwp[l]=1;

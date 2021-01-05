@@ -94,6 +94,7 @@ Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
   {
     /* allocate memory for PFT array */
     pftlist->pft=newvec(Pft,pftlist->n);
+    check(pftlist->pft);
     if(pftlist->pft==NULL)
     {
       printallocerr("pftlist");
@@ -129,13 +130,14 @@ void freepftlist(Pftlist *pftlist /**< PFT list */
 Pft *addpft(Stand *stand,         /**< Stand pointer */
             const Pftpar *pftpar, /**< PFT parameter */
             int year,             /**< simulation year (AD) */
-            int day               /**< day of year (1..365) */
+            int day,              /**< day of year (1..365) */
+            int with_nitrogen
            )                      /** \return pointer to added PFT */
 {
   /* resize PFT array */
   stand->pftlist.pft=(Pft *)realloc(stand->pftlist.pft,
                                     sizeof(Pft)*(stand->pftlist.n+1));
   check(stand->pftlist.pft);
-  newpft(stand->pftlist.pft+stand->pftlist.n,stand,pftpar,year,day);
+  newpft(stand->pftlist.pft+stand->pftlist.n,stand,pftpar,year,day,with_nitrogen);
   return stand->pftlist.pft+stand->pftlist.n++;
 } /* of 'addpft' */

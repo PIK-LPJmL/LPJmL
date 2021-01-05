@@ -24,14 +24,14 @@ Real litter_ag_nitrogen_tree(const Litter *litter,int fuel)
   if(fuel==0)
   {
     for(l=0;l<litter->n;l++)
-      if(litter->ag[l].pft->type==TREE)
-        sum+=litter->ag[l].trait.leaf.nitrogen+litter->ag[l].trait.wood[0].nitrogen;
+      if(litter->item[l].pft->type==TREE)
+        sum+=litter->item[l].ag.leaf.nitrogen+litter->item[l].ag.wood[0].nitrogen;
   }
   else
   {
     for(l=0;l<litter->n;l++)
-      if(litter->ag[l].pft->type==TREE)
-        sum+=litter->ag[l].trait.wood[fuel].nitrogen;
+      if(litter->item[l].pft->type==TREE)
+        sum+=litter->item[l].ag.wood[fuel].nitrogen;
   }
   return sum;
 } /* of litter_ag_nitrogen_tree */

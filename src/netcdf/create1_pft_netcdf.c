@@ -74,7 +74,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     return TRUE;
   }
   size=outputsize(index,npft,config->nbiomass,config->nwft,config->ngrass,ncft);
-  if(index==SOILC_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC)
+  if(index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC)
   {
     layer=newvec(float,size);
     if(layer==NULL)
@@ -143,7 +143,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     return TRUE;
   }
   error(rc);
-  rc=nc_def_dim(cdf->ncid,(index==SOILC_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC) ? config->layer_index : config->pft_index,size,&pft_dim_id);
+  rc=nc_def_dim(cdf->ncid,(index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC) ? config->layer_index : config->pft_index,size,&pft_dim_id);
   error(rc);
   rc=nc_def_dim(cdf->ncid,LAT_DIM_NAME,array->nlat,&lat_dim_id);
   error(rc);
@@ -164,7 +164,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     dim[1]=lat_dim_id;
     dim[2]=lon_dim_id;
   }
-  if(index==SOILC_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC)
+  if(index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC)
   {
     rc=nc_def_var(cdf->ncid,"layer",NC_FLOAT,1,&pft_dim_id,&pft_var_id);
     error(rc);
@@ -285,7 +285,7 @@ Bool create1_pft_netcdf(Netcdf *cdf,
     rc=nc_put_var_int(cdf->ncid,time_var_id,days);
     error(rc);
   }
-  if(index==SOILC_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC)
+  if(index==SOILC_LAYER ||  index == SOILC_AGR_LAYER ||index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC)
   {
     rc=nc_put_var_float(cdf->ncid,pft_var_id,layer);
     error(rc);

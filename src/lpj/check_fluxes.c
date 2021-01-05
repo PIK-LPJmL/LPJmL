@@ -149,15 +149,16 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
       totw+=cell->ml.resdata->dfout_irrigation_daily[i]/cell->coord.area;
   }
   cell->balance.awater_flux+=cell->balance.atransp+cell->balance.aevap+cell->balance.ainterc+cell->balance.aevap_lake+cell->balance.aevap_res-cell->balance.airrig;
-  balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux;
+  balanceW=totw-cell->balance.totw-cell->balance.aprec+cell->balance.awater_flux+cell->balance.excess_water;
   if(year>startyear && fabs(balanceW)>1.5)
+  //if(year>1511 && fabs(balanceW)>1.5)
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR005: "
 #else
     fail(INVALID_WATER_BALANCE_ERR,FALSE,
 #endif
-         "y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f\n",
+         "y: %d c: %d (%s) BALANCE_W-error %.2f cell->totw:%.2f totw:%.2f awater_flux:%.2f aprec:%.2f excess water:%.2f\n",
          year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceW,cell->balance.totw,totw,
-         cell->balance.awater_flux,cell->balance.aprec);
+         cell->balance.awater_flux,cell->balance.aprec,cell->balance.excess_water);
   cell->balance.totw=totw;
 } /* of 'check_fluxes' */

@@ -80,6 +80,18 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             param.T_0,param.T_r,param.par_sink_limit);
   if(config->withlanduse!=NO_LANDUSE)
   {
+    if(config->with_nitrogen)
+    {
+      fprintf(file,"nfert_split:\t%g\n",param.nfert_split);
+      fprintf(file,"nfert_split_frac:\t%g\n",param.nfert_split_frac);
+      fprintf(file,"nfert_no3_frac:\t%g\n",param.nfert_no3_frac);
+      fprintf(file,"nmanure_nh4_frac:\t%g\n",param.nmanure_nh4_frac);
+      fprintf(file,"manure_cn:\t%g\n", param.manure_cn);
+      fprintf(file,"manure_rate:\t%g\n", param.manure_rate);
+    }
+    fprintf(file,"residues_frac:\t%g\n",param.residue_frac);
+    fprintf(file,"mixing_efficiency:\t%g\n",param.mixing_efficiency);
+    fprintf(file,"till_staryear:\t%d\n",param.till_startyear);
     fprintf(file,"livestock density on grassland:\t%g\n",
             param.lsuha);
     fprintf(file,"annual prec lim:\t%g (mm)\n",param.aprec_lim);

@@ -36,7 +36,7 @@ typedef struct
   Grassphyspar nc_ratio; /**< N:C mass ratio (13-15) */
   Real ratio;            /**< C:N ratio of roots relative to leaf */
   Grassphyspar sapl;     /**< sapling */
-  Real sapling_C;	 /**< sapling C (gC/m2) */
+  Real sapling_C;  /**< sapling C (gC/m2) */
   Real reprod_cost;      /**< reproduction cost */
 } Pftgrasspar;
 
@@ -52,7 +52,7 @@ typedef struct
 
 /* Declaration of functions */
 
-extern void new_grass(Pft *,int,int);
+extern void new_grass(Pft *,int,int,int);
 extern Real npp_grass(Pft *,Real,Real,Real,int);
 extern Real fpc_grass(Pft *);
 extern Real fpar_grass(const Pft *);

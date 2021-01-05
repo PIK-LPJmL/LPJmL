@@ -19,7 +19,8 @@
 
 void new_crop(Pft *pft, /**< pointer to PFT data */
               int year, /**< year (AD) */
-              int day   /**< day of year */
+              int day,  /**< day of year */
+              int with_nitrogen
              )
 {
   Pftcrop *crop;
@@ -33,7 +34,7 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   pft->nind=1;
 
   crop->growingdays=0;
-
+  crop->basetemp=par->basetemp.low;
   crop->vdsum=crop->husum=crop->fphu=0.0;
   crop->vscal_sum=0.0;
   crop->ind.so.carbon=0.0;
@@ -48,6 +49,7 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   crop->demandsum=0;
   crop->ndemandsum=crop->nuptakesum=0;
   crop->supplysum=0;
+  crop->frostkill=FALSE;
   pft->vmax=0;
 #ifdef DOUBLE_HARVEST
   crop->petsum=0.0;
@@ -56,22 +58,30 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   crop->intercsum=0.0;
   crop->precsum=0.0;
   crop->sradsum=0.0;
-  crop->pirrww=0.0;
+  crop->irrig_apply=0.0;
   crop->tempsum=0.0;
   crop->nirsum=0.0;
   crop->lgp=0.0;
   crop->sowing_year=year;
   crop->sdate=day;
+  crop->runoffsum=0.0;
+  crop->n2o_denitsum=0.0;
+  crop->n2o_nitsum=0.0;
+  crop->n2_emissum=0.0;
+  crop->leachingsum=0.0;
+  crop->c_emissum=0.0;
+
 #endif
   crop->lai=crop->lai000=crop->flaimax*par->laimax;
   crop->lai_nppdeficit=0.0;
   pft->phen=crop->lai/par->laimax;
-  crop->senescence=FALSE;
+  crop->senescence=crop->senescence0=FALSE;
   pft->nleaf = 0;
   pft->vscal = 1;
   crop->nfertilizer=0;
+  crop->nmanure=0;
 
-  allocation_daily_crop(pft,0,NO_WDF,FALSE,NULL);
+  allocation_daily_crop(pft,0,NO_WDF,with_nitrogen,NULL); 
 } /* of 'new_crop' */
 
 /*

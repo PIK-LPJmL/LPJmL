@@ -38,6 +38,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
                    int ncft,   /**< number of crop PFTs   */
                    int year,           /**< simulation year (AD) */
                    Bool intercrop, /**< enable intercropping (TRUE/FALSE) */
+                   Real agrfrac,
                    const Config *config /**< LPJ config */
                   ) /** \return runoff (mm) */
 {
@@ -130,6 +131,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
       output->daily.gpp+=gpp*stand->frac;
     }
     output->npp+=npp*stand->frac;
+    output->npp_agr += npp*stand->frac / agrfrac;
     stand->cell->balance.anpp+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
     output->gpp+=gpp*stand->frac;

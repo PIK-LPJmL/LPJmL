@@ -2,11 +2,10 @@
 | |   |  _ \   | |_ __ ___ | |
 | |   | |_) |  | | '_ ` _ \| |
 | |___|  __/ |_| | | | | | | |___
-|_____|_|   \___/|_| |_| |_|_____| Version 5.1.002
+|_____|_|   \___/|_| |_| |_|_____| Version 5.2.002
 
 
-Installation of LPJmL C Version 5.1.002
-=======================================
+Installation of LPJmL C Version 5.2.002
 
 Installation for Unix-like systems
 ----------------------------------
@@ -28,7 +27,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.1.002.tar.gz|tar -xf -
+gzip -cd lpjml-5.2.002.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -165,6 +164,7 @@ USE_RAND48          use drand48() random number generator
 USE_UDUNITS         enable unit conversion in NetCDF files
 WITH_FIRE_MOISTURE  enable moisture dependent fire emissions
 WITH_FPE            floating point exceptions are enabled for debugging purposes
+CROPSHEATFROST		enables tmin and tmax input effecting senescence, harvest index, and frost kill
 ------------------- ------------------------------------------------------------
 
 Create executables:

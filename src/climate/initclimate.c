@@ -122,8 +122,6 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       climate->firstyear=climate->file_wet.firstyear;
     climate->file_wet.ready=FALSE;
   }
-  else
-    climate->data.wet=NULL;
   if(config->with_nitrogen && config->with_nitrogen!=UNLIM_NITROGEN)
   {
     if(openclimate(&climate->file_no3deposition,&config->no3deposition_filename,"g/m2/day",LPJ_FLOAT,config))
@@ -194,8 +192,6 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     if(climate->firstyear<climate->file_wind.firstyear)
       climate->firstyear=climate->file_wind.firstyear;
   }
-  else
-    climate->data.wind=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX)
@@ -239,19 +235,56 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate);
       return NULL;
     }
-    if((config->tamp_filename.fmt==CLM || config->tamp_filename.fmt==RAW) && climate->file_tamp.version<=1)
-      climate->file_tamp.scalar=0.1;
-    if(climate->firstyear<climate->file_tamp.firstyear)
-      climate->firstyear=climate->file_tamp.firstyear;
-    if(config->tmax_filename.name!=NULL)
+  }
+  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+  {
+    if(openclimate(&climate->file_tmin,&config->tmin_filename,"celsius",LPJ_SHORT,config))
     {
-      if(openclimate(&climate->file_tmax,&config->tmax_filename,"celsius",LPJ_SHORT,config))
+      if(config->with_radiation)
       {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR236: Cannot open tmax data from '%s'.\n",config->tmax_filename.name);
-        if(config->fdi==WVPD_INDEX)
-          closeclimatefile(&climate->file_humid,isroot(*config));
-        closeclimatefile(&climate->file_tamp,isroot(*config));
+        if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
+          closeclimatefile(&climate->file_lwnet,isroot(*config));
+        closeclimatefile(&climate->file_swdown,isroot(*config));
+      }
+      else
+       closeclimatefile(&climate->file_cloud,isroot(*config));
+      if(config->wet_filename.name!=NULL)
+        closeclimatefile(&climate->file_wet,isroot(*config));
+      free(climate);
+      return NULL;
+    }
+    if((config->tmin_filename.fmt==CLM || config->tmin_filename.fmt==RAW) &&climate->file_tmin.version<=1)
+      climate->file_tmin.scalar=0.1;
+    if(openclimate(&climate->file_tmax,&config->tmax_filename,"celsius",LPJ_SHORT,config))
+    {
+      closeclimatefile(&climate->file_tamp,isroot(*config));
+      closeclimatefile(&climate->file_temp,isroot(*config));
+      closeclimatefile(&climate->file_prec,isroot(*config));
+      closeclimatefile(&climate->file_tmin,isroot(*config));
+      if(config->with_radiation)
+      {
+        if(config->with_radiation==RADIATION||config->with_radiation==RADIATION_LWDOWN)
+          closeclimatefile(&climate->file_lwnet,isroot(*config));
+        closeclimatefile(&climate->file_swdown,isroot(*config));
+      }
+      else
+        closeclimatefile(&climate->file_cloud,isroot(*config));
+      if(config->wet_filename.name!=NULL)
+        closeclimatefile(&climate->file_wet,isroot(*config));
+      free(climate);
+      return NULL;
+    }
+    if((config->tmax_filename.fmt==CLM || config->tmax_filename.fmt==RAW) && climate->file_tmax.version<=1)
+      climate->file_tmax.scalar=0.1;
+  }
+  if(config->fire==SPITFIRE)
+  {
+    if(openclimate(&climate->file_tamp,&config->tamp_filename,(config->tamp_filename.fmt==CDF) ? "celsius" : NULL,LPJ_SHORT,config))
+    {
+      closeclimatefile(&climate->file_temp,isroot(*config));
+      closeclimatefile(&climate->file_prec,isroot(*config));
+      if(config->with_radiation)
+      {
         closeclimatefile(&climate->file_temp,isroot(*config));
         closeclimatefile(&climate->file_prec,isroot(*config));
         if(config->with_radiation)
@@ -267,19 +300,31 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate);
         return NULL;
       }
-      if((config->tmax_filename.fmt==CLM || config->tmax_filename.fmt==RAW) && climate->file_tmax.version<=1)
-        climate->file_tmax.scalar=0.1;
-      if(climate->firstyear<climate->file_tmax.firstyear)
-        climate->firstyear=climate->file_tmax.firstyear;
+      else
+        closeclimatefile(&climate->file_cloud,isroot(*config));
+      if(config->wet_filename.name!=NULL)
+        closeclimatefile(&climate->file_wet,isroot(*config));
+      free(climate);
+      return NULL;
     }
+    if(config->tamp_filename.fmt!=CDF && climate->file_tamp.version<=1)
+      climate->file_tamp.scalar=0.1;
+  }
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  {
     if(openclimate(&climate->file_lightning,&config->lightning_filename,"1/day/hectare",LPJ_INT,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open lightning data from '%s'.\n",config->lightning_filename.name);
       if(config->fdi==WVPD_INDEX)
         closeclimatefile(&climate->file_humid,isroot(*config));
-      closeclimatefile(&climate->file_tmax,isroot(*config));
-      closeclimatefile(&climate->file_tamp,isroot(*config));
+      if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+      {
+        closeclimatefile(&climate->file_tmin,isroot(*config));
+        closeclimatefile(&climate->file_tmax,isroot(*config));
+      }
+      else
+        closeclimatefile(&climate->file_tamp,isroot(*config));
       closeclimatefile(&climate->file_temp,isroot(*config));
       closeclimatefile(&climate->file_prec,isroot(*config));
       if(config->with_radiation)
@@ -304,8 +349,13 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         if(config->fdi==WVPD_INDEX)
           closeclimatefile(&climate->file_humid,isroot(*config));
         closeclimatefile(&climate->file_lightning,isroot(*config));
-        closeclimatefile(&climate->file_tmax,isroot(*config));
-        closeclimatefile(&climate->file_tamp,isroot(*config));
+        if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
+        {
+          closeclimatefile(&climate->file_tmin,isroot(*config));
+          closeclimatefile(&climate->file_tmax,isroot(*config));
+        }
+        else
+          closeclimatefile(&climate->file_tamp,isroot(*config));
         closeclimatefile(&climate->file_temp,isroot(*config));
         closeclimatefile(&climate->file_prec,isroot(*config));
         if(config->with_radiation)
@@ -467,6 +517,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       return NULL;
     }
   }
+  else
+    climate->data.no3deposition=climate->data.nh4deposition=NULL;
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->wind_filename.fmt==FMS)
@@ -484,23 +536,36 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       }
     }
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  else
+    climate->data.wind=NULL;
+  if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
   {
-    if(config->fdi==WVPD_INDEX)
+    if((climate->data.tmax=newvec(Real,climate->file_tmax.n))==NULL)
     {
-      if((climate->data.humid=newvec(Real,climate->file_humid.n))==NULL)
-      {
-        printallocerr("humid");
-        free(climate->co2.data);
-        free(climate->data.prec);
-        free(climate->data.temp);
-        free(climate);
-        return NULL;
-      }
+      printallocerr("tmax");
+      free(climate->co2.data);
+      free(climate->data.wind);
+      free(climate->data.prec);
+      free(climate->data.temp);
+      free(climate);
+      return NULL;
     }
-    else
-      climate->data.humid=NULL;
-
+    if((climate->data.tmin=newvec(Real,climate->file_tmin.n))==NULL)
+    {
+      printallocerr("tmin");
+      free(climate->co2.data);
+      free(climate->data.wind);
+      free(climate->data.tmax);
+      free(climate->data.prec);
+      free(climate->data.temp);
+      free(climate);
+      return NULL;
+    }
+  }
+  else
+    climate->data.tmax=climate->data.tmin=NULL;
+  if(config->fire==SPITFIRE)
+  {
     if(config->tamp_filename.fmt==FMS)
       climate->data.tamp=NULL;
     else
@@ -512,26 +577,34 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate->data.wind);
         free(climate->data.prec);
         free(climate->data.temp);
+        free(climate->data.tmax);
+        free(climate->data.tmin);
         free(climate);
         return NULL;
       }
     }
-    if(config->tmax_filename.name!=NULL)
+  }
+  else
+    climate->data.tamp=NULL;
+  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+  {
+    if(config->fdi==WVPD_INDEX)
     {
-      if((climate->data.tmax=newvec(Real,climate->file_tmax.n))==NULL)
+      if((climate->data.humid=newvec(Real,climate->file_humid.n))==NULL)
       {
-        printallocerr("tmax");
+        printallocerr("humid");
         free(climate->co2.data);
         free(climate->data.wind);
-        free(climate->data.tamp);
         free(climate->data.prec);
         free(climate->data.temp);
+        free(climate->data.tmax);
+        free(climate->data.tmin);
         free(climate);
         return NULL;
       }
     }
     else
-      climate->data.tmax=NULL;
+      climate->data.humid=NULL;
     if((climate->data.lightning=newvec(Real,climate->file_lightning.n))==NULL)
     {
       printallocerr("lightning");
@@ -540,6 +613,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate->data.tamp);
       free(climate->data.prec);
       free(climate->data.temp);
+      free(climate->data.tmax);
+      free(climate->data.tmin);
       free(climate);
       return NULL;
     }
@@ -568,7 +643,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
   }
   else
-    climate->data.tamp=climate->data.lightning=climate->data.tmax=climate->data.humid=NULL;
+    climate->data.lightning=climate->data.humid=NULL;
   if(config->with_radiation)
   {
     if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
@@ -583,12 +658,11 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
           free(climate->co2.data);
           free(climate->data.prec);
           free(climate->data.temp);
-          if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-          {
-            free(climate->data.wind);
-            free(climate->data.tamp);
-            free(climate->data.lightning);
-          }
+          free(climate->data.tamp);
+          free(climate->data.wind);
+          free(climate->data.lightning);
+          free(climate->data.tmin);
+          free(climate->data.tmax);
           free(climate);
           return NULL;
         }
@@ -607,12 +681,11 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate->data.prec);
         free(climate->data.temp);
         free(climate->data.lwnet);
-        if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-        {
-          free(climate->data.wind);
-          free(climate->data.tamp);
-          free(climate->data.lightning);
-        }
+        free(climate->data.wind);
+        free(climate->data.tamp);
+        free(climate->data.lightning);
+        free(climate->data.tmin);
+        free(climate->data.tmax);
         free(climate);
         return NULL;
       }
@@ -630,12 +703,11 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate->co2.data);
         free(climate->data.prec);
         free(climate->data.temp);
-        if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-        {
-          free(climate->data.wind);
-          free(climate->data.tamp);
-          free(climate->data.lightning);
-        }
+        free(climate->data.wind);
+        free(climate->data.tamp);
+        free(climate->data.lightning);
+        free(climate->data.tmin);
+        free(climate->data.tmax);
         free(climate);
         return NULL;
       }
@@ -653,12 +725,9 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate->co2.data);
         free(climate->data.prec);
         free(climate->data.temp);
-        if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-        {
-          free(climate->data.wind);
-          free(climate->data.tamp);
-          free(climate->data.lightning);
-        }
+        free(climate->data.wind);
+        free(climate->data.tamp);
+        free(climate->data.lightning);
         if(config->with_radiation)
         {
           free(climate->data.lwnet);
@@ -666,11 +735,15 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         }
         else
           free(climate->data.sun);
+        free(climate->data.tmin);
+        free(climate->data.tmax);
         free(climate);
         return NULL;
       }
     }
   }
+  else
+    climate->data.wet=NULL;
   if(config->prescribe_burntarea && (config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX))
   {
     if((climate->data.burntarea=newvec(Real,climate->file_burntarea.n))==NULL)
@@ -691,10 +764,14 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate->data.sun);
       if(config->wet_filename.name!=NULL)
         free(climate->data.wet);
+      free(climate->data.tmin);
+      free(climate->data.tmax);
       free(climate);
       return NULL;
     }
   }
+  else
+    climate->data.burntarea=NULL;
 
   return climate;
 } /* of 'initclimate' */

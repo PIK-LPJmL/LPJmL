@@ -37,5 +37,6 @@
 #define Si 9
 #define LoSa 10
 #define Sa 11
-#define ROCK 12
-#define ICE 13
+#define Cll 12
+#define ROCK 13
+#define ICE 14

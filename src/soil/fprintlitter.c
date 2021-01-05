@@ -29,9 +29,12 @@ void fprintlitter(FILE *file,           /**< pointer to file */
                "\tPFT                                      below   leaf   ");
   for(i=0;i<NFUELCLASS;i++)
     fprintf(file," wood(%d)",i);
+  fprintf(file," leaf    ");
+  for(i=0;i<NFUELCLASS;i++)
+    fprintf(file," wood(%d)",i);
   fprintf(file,"\n");
   fprintf(file,"\t---------------------------------------- ------- -------");
-  for(i=0;i<NFUELCLASS;i++)
+  for(i=0;i<2*NFUELCLASS+1;i++)
     fputs(" -------",file);
   fputc('\n',file);
   sum.carbon=sum.nitrogen=trait_sum.leaf.carbon=trait_sum.leaf.nitrogen=total.carbon=total.nitrogen=0;
@@ -39,14 +42,20 @@ void fprintlitter(FILE *file,           /**< pointer to file */
      trait_sum.wood[i].carbon=trait_sum.wood[i].nitrogen=0; 
   for(p=0;p<litter->n;p++)
   {
-    fprintf(file,"\t%-40s %7.2f %7.2f",litter->ag[p].pft->name,
-            litter->bg[p].carbon,litter->ag[p].trait.leaf.carbon);
-    sum.carbon+=litter->bg[p].carbon;
-    trait_sum.leaf.carbon+=litter->ag[p].trait.leaf.carbon;
+    fprintf(file,"\t%-40s %7.2f %7.2f",litter->item[p].pft->name,
+            litter->item[p].bg.carbon,litter->item[p].ag.leaf.carbon);
+    sum.carbon+=litter->item[p].bg.carbon;
+    trait_sum.leaf.carbon+=litter->item[p].ag.leaf.carbon;
     for(i=0;i<NFUELCLASS;i++)
     {
-      fprintf(file," %7.2f",litter->ag[p].trait.wood[i].carbon);
-      trait_sum.wood[i].carbon+=litter->ag[p].trait.wood[i].carbon;
+      fprintf(file," %7.2f",litter->item[p].ag.wood[i].carbon);
+      trait_sum.wood[i].carbon+=litter->item[p].ag.wood[i].carbon;
+    }
+    trait_sum.leaf.carbon+=litter->item[p].agsub.leaf.carbon;
+    for(i=0;i<NFUELCLASS;i++)
+    {
+      fprintf(file," %7.2f",litter->item[p].agsub.wood[i].carbon);
+      trait_sum.wood[i].carbon+=litter->item[p].agsub.wood[i].carbon;
     }
     fputc('\n',file);
   }
@@ -67,21 +76,30 @@ void fprintlitter(FILE *file,           /**< pointer to file */
                  "\tPFT                                      below   leaf   ");
     for(i=0;i<NFUELCLASS;i++)
       fprintf(file," wood(%d)",i);
+    fprintf(file," leaf    ");
+    for(i=0;i<NFUELCLASS;i++)
+      fprintf(file," wood(%d)",i);
     fprintf(file,"\n");
     fprintf(file,"\t---------------------------------------- ------- -------");
-    for(i=0;i<NFUELCLASS;i++)
+    for(i=0;i<2*NFUELCLASS+1;i++)
       fprintf(file," -------");
     fprintf(file,"\n");
     for(p=0;p<litter->n;p++)
     {
-      fprintf(file,"\t%-40s %7.2f %7.2f",litter->ag[p].pft->name,
-              litter->bg[p].nitrogen,litter->ag[p].trait.leaf.nitrogen);
-      sum.nitrogen+=litter->bg[p].nitrogen;
-      trait_sum.leaf.nitrogen+=litter->ag[p].trait.leaf.nitrogen;
+      fprintf(file,"\t%-40s %7.2f %7.2f",litter->item[p].pft->name,
+              litter->item[p].bg.nitrogen,litter->item[p].ag.leaf.nitrogen);
+      sum.nitrogen+=litter->item[p].bg.nitrogen;
+      trait_sum.leaf.nitrogen+=litter->item[p].ag.leaf.nitrogen;
       for(i=0;i<NFUELCLASS;i++)
       {
-        fprintf(file," %7.2f",litter->ag[p].trait.wood[i].nitrogen);
-        trait_sum.wood[i].nitrogen+=litter->ag[p].trait.wood[i].nitrogen;
+        fprintf(file," %7.2f",litter->item[p].ag.wood[i].nitrogen);
+        trait_sum.wood[i].nitrogen+=litter->item[p].ag.wood[i].nitrogen;
+      }
+      trait_sum.leaf.nitrogen+=litter->item[p].agsub.leaf.nitrogen;
+      for(i=0;i<NFUELCLASS;i++)
+      {
+        fprintf(file," %7.2f",litter->item[p].agsub.wood[i].nitrogen);
+        trait_sum.wood[i].nitrogen+=litter->item[p].agsub.wood[i].nitrogen;
       }
       fprintf(file,"\n");
     }
@@ -95,6 +113,9 @@ void fprintlitter(FILE *file,           /**< pointer to file */
     fprintf(file,"\n\tTOTAL                            %7.2f %7.2f %7.2f",total.nitrogen,sum.nitrogen,trait_sum.leaf.nitrogen);
     for(i=0;i<NFUELCLASS;i++)
       fprintf(file," %7.2f",trait_sum.wood[i].nitrogen);
-    fputc('\n',file);
+    fprintf(file,"\nagtop_wcap:\t%g\n",litter->agtop_wcap);
+    fprintf(file,"agtop_moist:\t%g\n",litter->agtop_moist);
+    fprintf(file,"agtop_cover:%g\n",litter->agtop_cover);
+    fprintf(file,"agtop_temp:%g (deg C)\n",litter->agtop_temp);
   }
 } /* of 'fprintlitter' */

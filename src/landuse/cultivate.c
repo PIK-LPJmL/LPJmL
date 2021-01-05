@@ -23,21 +23,24 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
                  int day,              /**< day (1..365) */
                  Bool wtype,           /**< winter type (TRUE/FALSE) */
                  Stand *setasidestand, /**< pointer to setaside stand */
-                 Bool istimber,
-                 int irrig_scenario,   /**< irrigation scenario */
+                 Bool with_tillage,    /**< simulation with tillage implementation */
                  int npft,             /**< number of natural PFTs */
                  int ncft,             /**< number of crop PFTs */
                  int cft,              /**< cft index for set_irrigsystem */
-                 int year              /**< AD */
+                 int year,            /**< AD */
+                 const Config *config
                 )                      /** \return establihment flux (gC/m2,gN/m2) */
 {
-  int pos; /*position of new stand in list*/
+  int p,pos; /*position of new stand in list*/
   Pft *pft;
   Stand *cropstand;
   Irrigation *data;
   Stocks bm_inc;
-  Real split_fert=0.5;
+  //Real split_fert=0.5;
+  //Real fmanure_NH4=2/3;
   Pftcrop *crop;
+  Real manure;
+  Real fertil;
 #ifdef IMAGE
   int nagr,s;
   Stand *stand;
@@ -61,24 +64,68 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     setasidestand->type->newstand(setasidestand);
     /* delete all PFTs */
     cutpfts(setasidestand);
-    pft=addpft(setasidestand,pftpar,year,day);
-    phen_variety(pft,vern_date20,cell->coord.lat,day,wtype);
+    if(with_tillage && year>=param.till_startyear)
+    {
+      tillage(&setasidestand->soil,param.residue_frac);
+      updatelitterproperties(setasidestand,setasidestand->frac);
+      pedotransfer(setasidestand,NULL,NULL,setasidestand->frac);
+    }
+    pft=addpft(setasidestand,pftpar,year,day,config->with_nitrogen);
+    phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);
     data=setasidestand->data;
-    data->irrigation= (irrig_scenario==ALL_IRRIGATION) || irrigation;
+    data->irrigation= (config->irrig_scenario==ALL_IRRIGATION) || irrigation;
     set_irrigsystem(setasidestand,cft,ncft,FALSE); /* calls set_irrigsystem() for landusetype AGRICULTURE only */
     bm_inc.carbon=pft->bm_inc.carbon*setasidestand->frac;
     bm_inc.nitrogen=pft->bm_inc.nitrogen*setasidestand->frac;
-    if(cell->ml.fertilizer_nr!=NULL)
+    if (cell->ml.fertilizer_nr != NULL || cell->ml.manure_nr != NULL)
     {
-      if(cell->ml.fertilizer_nr[irrigation].crop[pft->par->id-npft]>param.nfert_split)
+      if (cell->ml.fertilizer_nr != NULL)
+        fertil = cell->ml.fertilizer_nr[irrigation].crop[pft->par->id - npft];
+      else
+        fertil = 0;
+      if (cell->ml.manure_nr != NULL)
+        manure = cell->ml.manure_nr[irrigation].crop[pft->par->id - npft];
+      else
+        manure = 0;
+
+      /* GGCMI phase 3 rules: always apply 20% of all ferilizers (incl. manure) at sowing, rest at fphu=0.25 */
+      //if (fertil+manure<param.nfert_split) /* param.nfert_split set to zero */
+      //{
+        setasidestand->soil.NH4[0] += manure*param.nmanure_nh4_frac*param.nfert_split_frac;
+        setasidestand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn*param.nfert_split_frac;
+        setasidestand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac)*param.nfert_split_frac;
+        cell->output.flux_estab.carbon += manure*param.manure_cn*setasidestand->frac*param.nfert_split_frac;
+        cell->balance.n_influx += manure*setasidestand->frac*param.nfert_split_frac;
+        cell->output.anmanure_agr+=manure*setasidestand->frac*param.nfert_split_frac;
+        setasidestand->soil.NO3[0] += fertil*param.nfert_no3_frac*param.nfert_split_frac;
+        setasidestand->soil.NH4[0] += fertil*(1 - param.nfert_no3_frac)*param.nfert_split_frac;
+        cell->balance.n_influx += fertil*param.nfert_split_frac*setasidestand->frac;
+        cell->output.anfert_agr+=fertil*param.nfert_split_frac*setasidestand->frac;
+        /* store remainder of manure and fertilizer for second application */
+        crop = pft->data;
+        crop->nmanure=manure*(1-param.nfert_split_frac);
+        crop->nfertilizer = fertil*(1-param.nfert_split_frac);
+
+        /*if (fertil <= (param.nfert_split - manure*fmanure_NH4))
+        {
+          setasidestand->soil.NO3[0] += fertil*split_fert;
+          setasidestand->soil.NH4[0] += fertil*(1 - split_fert);
+          cell->balance.n_influx += fertil*setasidestand->frac;
+        }
+        else
+        {
+          setasidestand->soil.NO3[0] += (param.nfert_split - manure*fmanure_NH4)*split_fert;
+          setasidestand->soil.NH4[0] += (param.nfert_split - manure*fmanure_NH4)*(1 - split_fert);
+          cell->balance.n_influx += (param.nfert_split - manure*fmanure_NH4)*setasidestand->frac;
+          crop = pft->data;
+          crop->nfertilizer = fertil - (param.nfert_split - manure*fmanure_NH4);
+        }*/
+      /*}
+      else
       {
-        crop=pft->data;
-        crop->nfertilizer=cell->ml.fertilizer_nr[irrigation].crop[pft->par->id-npft]*split_fert; /* keep 50% for 2nd application */
-        split_fert=0.25;
-      }
-      setasidestand->soil.NO3[0]+=cell->ml.fertilizer_nr[irrigation].crop[pft->par->id-npft]*split_fert;
-      setasidestand->soil.NH4[0]+=cell->ml.fertilizer_nr[irrigation].crop[pft->par->id-npft]*split_fert;
-      cell->balance.n_influx+=cell->ml.fertilizer_nr[irrigation].crop[pft->par->id-npft]*2*split_fert*setasidestand->frac;
+        crop = pft->data;
+        crop->nfertilizer = fertil;
+      }*/
     }
     return bm_inc;
   }
@@ -89,25 +136,74 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     cropstand=getstand(cell->standlist,pos-1);
     data=cropstand->data;
     cropstand->frac=landfrac;
-    data->irrigation= (irrig_scenario==ALL_IRRIGATION) || irrigation;
-    reclaim_land(setasidestand,cropstand,cell,istimber,npft+ncft);
+    data->irrigation= (config->irrig_scenario==ALL_IRRIGATION) || irrigation;
+    reclaim_land(setasidestand,cropstand,cell,config->istimber,npft+ncft);
     set_irrigsystem(cropstand,cft,ncft,FALSE);
-    pft=addpft(cropstand,pftpar,year,day);
-    phen_variety(pft,vern_date20,cell->coord.lat,day,wtype);
+    if(with_tillage && year>=param.till_startyear)
+    {
+      tillage(&cropstand->soil,param.residue_frac);
+      updatelitterproperties(cropstand,cropstand->frac);
+      pedotransfer(cropstand,NULL,NULL,cropstand->frac);
+    }
+    pft=addpft(cropstand,pftpar,year,day,config->with_nitrogen);
+    phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);
     setasidestand->frac-=landfrac;
     bm_inc.carbon=pft->bm_inc.carbon*cropstand->frac;
     bm_inc.nitrogen=pft->bm_inc.nitrogen*cropstand->frac;
-    if(cell->ml.fertilizer_nr!=NULL)
+    if (cell->ml.fertilizer_nr != NULL || cell->ml.manure_nr != NULL)
     {
-      if(cell->ml.fertilizer_nr[irrigation].crop[pft->par->id-npft]>param.nfert_split)
+      if (cell->ml.fertilizer_nr != NULL)
+        fertil = cell->ml.fertilizer_nr[irrigation].crop[pft->par->id - npft];
+      else
+        fertil = 0;
+      if (cell->ml.manure_nr != NULL)
+        manure = cell->ml.manure_nr[irrigation].crop[pft->par->id - npft];
+      else
+        manure = 0;
+
+      cropstand->soil.NH4[0] += manure*param.nmanure_nh4_frac*param.nfert_split_frac;
+      cropstand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn*param.nfert_split_frac;
+      cropstand->soil.litter.item->agsub.leaf.nitrogen += manure*(1-param.nmanure_nh4_frac)*param.nfert_split_frac;
+      cell->output.flux_estab.carbon += manure*param.manure_cn*cropstand->frac*param.nfert_split_frac;
+      cell->balance.n_influx += manure*cropstand->frac*param.nfert_split_frac;
+      cell->output.anmanure_agr+=manure*cropstand->frac*param.nfert_split_frac;
+      cropstand->soil.NO3[0] += fertil*param.nfert_no3_frac*param.nfert_split_frac;
+      cropstand->soil.NH4[0] += fertil*(1 - param.nfert_no3_frac)*param.nfert_split_frac;
+      cell->balance.n_influx += fertil*param.nfert_split_frac*cropstand->frac;
+      cell->output.anfert_agr+=fertil*param.nfert_split_frac*cropstand->frac;
+      /* store remainder of manure and fertilizer for second application */
+      crop = pft->data;
+      crop->nmanure=manure*(1-param.nfert_split_frac);
+      crop->nfertilizer = fertil*(1-param.nfert_split_frac);
+
+      /*cropstand->soil.NH4[0] += manure*fmanure_NH4;
+      cropstand->soil.litter.item->agsub.leaf.carbon += manure*param.manure_cn;
+      cropstand->soil.litter.item->agsub.leaf.nitrogen += manure*(1 - fmanure_NH4);
+      cell->output.flux_estab.carbon += manure*param.manure_cn*cropstand->frac;
+      cell->balance.n_influx += manure*cropstand->frac;
+
+      if (manure*fmanure_NH4 < param.nfert_split)
       {
-        crop=pft->data;
-        crop->nfertilizer=cell->ml.fertilizer_nr[irrigation].crop[pft->par->id-npft]*split_fert; /* keep 50% for 2nd application */
-        split_fert=0.25;
+        if (fertil <= (param.nfert_split - manure*fmanure_NH4))
+        {
+          cropstand->soil.NO3[0] += fertil*split_fert;
+          cropstand->soil.NH4[0] += fertil*(1 - split_fert);
+          cell->balance.n_influx += fertil*cropstand->frac;
+        }
+        else
+        {
+          cropstand->soil.NO3[0] += (param.nfert_split - manure*fmanure_NH4)*split_fert;
+          cropstand->soil.NH4[0] += (param.nfert_split - manure*fmanure_NH4)*(1 - split_fert);
+          cell->balance.n_influx += (param.nfert_split - manure*fmanure_NH4)*cropstand->frac;
+          crop = pft->data;
+          crop->nfertilizer = fertil - (param.nfert_split - manure*fmanure_NH4);
+        }
       }
-      cropstand->soil.NO3[0]+=cell->ml.fertilizer_nr[irrigation].crop[pft->par->id-npft]*split_fert;
-      cropstand->soil.NH4[0]+=cell->ml.fertilizer_nr[irrigation].crop[pft->par->id-npft]*split_fert;
-      cell->balance.n_influx+=cell->ml.fertilizer_nr[irrigation].crop[pft->par->id-npft]*2*split_fert*cropstand->frac;
+      else
+      {
+        crop = pft->data;
+        crop->nfertilizer = fertil;
+      }*/
     }
     return bm_inc;
   }

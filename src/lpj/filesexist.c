@@ -301,11 +301,17 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   {
     if(config.fdi==WVPD_INDEX)
       bad+=checkclmfile(&config,&config.humid_filename,NULL,TRUE);
-    bad+=checkclmfile(&config,&config.tamp_filename,NULL,TRUE);
-    if(config.tamp_filename.fmt==CDF && config.tmax_filename.name!=NULL)
-      bad+=checkclmfile(&config,&config.tmax_filename,"celsius",TRUE);
     bad+=checkdatafile(&config,&config.lightning_filename,NULL);
     bad+=checkinputfile(&config,&config.human_ignition_filename,NULL,0);
+  }
+  if(config.cropsheatfrost || config.fire==SPITFIRE_TMAX)
+  {
+    bad+=checkclmfile(&config,&config.tmin_filename,"celsius",TRUE);
+    bad+=checkclmfile(&config,&config.tmax_filename,"celsius",TRUE);
+  }
+  if(config.fire==SPITFIRE)
+  {
+    bad+=checkclmfile(&config,&config.tamp_filename,NULL,TRUE);
   }
   if(config.wateruse)
     bad+=checkdatafile(&config,&config.wateruse_filename,"dm3/yr");
@@ -356,6 +362,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkdatafile(&config,&config.landuse_filename,"1");
     if(config.sdate_option==PRESCRIBED_SDATE)
       bad+=checkinputfile(&config,&config.sdate_filename,NULL,2*config.npft[CROP]);
+    if(config.crop_phu_option)
+      bad+=checkclmfile(&config,&config.crop_phu_filename,NULL,2*config.npft[CROP]);
     if(config.countrycode_filename.fmt==CDF)
     {
       bad+=checkinputfile(&config,&config.countrycode_filename,NULL,0);
@@ -368,7 +376,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.elevation_filename,"m",0);
       bad+=checkinputfile(&config,&config.reservoir_filename,NULL,10);
     }
-    if(config.with_nitrogen && config.fertilizer_input)
+    if(config.with_nitrogen && config.fertilizer_input &&!config.fix_fertilization)
       bad+=checkinputfile(&config,&config.fertilizer_nr_filename,"g/m2",(config.npft[CROP]+NBIOMASSTYPE+NGRASS)*2);
 #ifdef IMAGE
     if(config.aquifer_irrig==AQUIFER_IRRIG)
@@ -376,6 +384,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.aquifer_filename,NULL,0);
     }
 #endif
+    if (config.with_nitrogen&&config.manure_input&&!config.fix_fertilization)
+      bad+=checkclmfile(&config,&config.manure_nr_filename,"g/m2",(config.npft[CROP]+NBIOMASSTYPE+NGRASS)*2);
   }
   badout=0;
   oldpath=strdup("");

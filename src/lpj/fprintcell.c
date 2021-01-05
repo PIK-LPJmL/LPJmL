@@ -74,6 +74,22 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
             fprintf(file,"%4d",grid[cell].ml.sdate_fixed[cft]);
           fputc('\n',file);
         }
+        if(grid[cell].ml.crop_phu_fixed!=NULL)
+        {
+          fputs("CFT     ",file);
+          for(cft=0;cft<ncft;cft++)
+            fprintf(file,"%4d",cft);
+          fputs("\n--------",file);
+          for(cft=0;cft<ncft;cft++)
+            fputs(" ---",file);
+          fputs("\nfphu  ",file);
+          for(cft=0;cft<ncft;cft++)
+            fprintf(file,"%4g",grid[cell].ml.crop_phu_fixed[cft]);
+          fputs("\nirrphu",file);
+          for(cft=ncft;cft<2*ncft;cft++)
+            fprintf(file,"%4g",grid[cell].ml.crop_phu_fixed[cft]);
+          fputc('\n',file);
+        }
         fprintf(file,"Cropfrac (rf/ir):\t%g\t%g\n",grid[cell].ml.cropfrac_rf,grid[cell].ml.cropfrac_ir);
         fprintcropdates(file,grid[cell].ml.cropdates,config->pftpar+npft,ncft);
       }
@@ -119,6 +135,7 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
       }
       if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
         fprintignition(file,&grid[cell].ignition);
+      fprintf(file,"excess water:\t%g (mm)\n",grid[cell].balance.excess_water);
       fprintstandlist(file,grid[cell].standlist,config->pftpar,npft+ncft,config->with_nitrogen);
     }
   } /* of 'for(cell=...)' */

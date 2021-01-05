@@ -3,7 +3,7 @@
 /**   l  p  j  m  l  _  r  c  p 8  5  _  c  c  _  u  n  l  i  m  i  t  .  j  s     \n**/
 /**                                                                                \n**/
 /** Configuration file for LPJmL C Version 5.1.001 with RCP85 climate and          \n**/
-/** unlimited nitrogen and const climate                                                            \n**/
+/** unlimited nitrogen and const climate                                           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -49,9 +49,11 @@
   "with_nitrogen" : "unlim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : true,
+  "fix_climate" : false,
   "shuffle_climate" : true,
   "const_deposition" : false,
 #ifdef FROM_RESTART
+  "new_seed" : false,
   "equilsoil" :  false,
   "population" : false,
   "landuse" : "landuse", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
@@ -81,6 +83,8 @@
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "others_to_crop" : true,
+  "crop_resp_fix" : false,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -114,7 +118,7 @@
 
 #ifdef FROM_RESTART
 
-  "output" : 
+  "output" :
   [
 
 /*
@@ -132,7 +136,6 @@ ID                         Fmt                    filename
     { "id" : "interc",          "file" : { "fmt" : "raw", "name" : "output/minterc.bin"}},
     { "id" : "swc1",            "file" : { "fmt" : "raw", "name" : "output/mswc1.bin"}},
     { "id" : "swc2",            "file" : { "fmt" : "raw", "name" : "output/mswc2.bin"}},
-    { "id" : "firec",            "file" : { "fmt" : "raw", "name" : "output/firec.bin"}},
     { "id" : "firef",            "file" : { "fmt" : "raw", "name" : "output/firef.bin"}},
     { "id" : "vegc",             "file" : { "fmt" : "raw", "name" : "output/vegc.bin"}},
     { "id" : "soilc",            "file" : { "fmt" : "raw", "name" : "output/soilc.bin"}},
@@ -144,8 +147,8 @@ ID                         Fmt                    filename
     { "id" : "phen_light",      "file" : { "fmt" : "raw", "name" : "output/mphen_light.bin"}},
     { "id" : "phen_water",      "file" : { "fmt" : "raw", "name" : "output/mphen_water.bin"}},
     { "id" : "vegn",             "file" : { "fmt" : "raw", "name" : "output/vegn.bin"}},
-    { "id" : "alitfallc",       "file" : { "fmt" : "raw", "name" : "output/alitfallc.bin"}},
-    { "id" : "alitfalln",       "file" : { "fmt" : "raw", "name" : "output/alitfalln.bin"}},
+    { "id" : "litfallc",         "file" : { "fmt" : "raw", "name" : "output/alitfallc.bin"}},
+    { "id" : "litfalln",         "file" : { "fmt" : "raw", "name" : "output/alitfalln.bin"}},
     { "id" : "soiln",            "file" : { "fmt" : "raw", "name" : "output/soiln.bin"}},
     { "id" : "litn",             "file" : { "fmt" : "raw", "name" : "output/litn.bin"}},
     { "id" : "soiln_layer",      "file" : { "fmt" : "raw", "name" : "output/soiln_layer.bin"}},
@@ -178,9 +181,11 @@ ID                         Fmt                    filename
     { "id" : "pft_chawo",        "file" : { "fmt" : "raw", "name" : "output/pft_chawo.bin"}},
     { "id" : "pft_nhawo",        "file" : { "fmt" : "raw", "name" : "output/pft_nhawo.bin"}},
 #ifdef WITH_SPITFIRE
-    { "id" : "firec",           "file" : { "fmt" : "raw", "name" : "output/mfirec.bin"}},
+    { "id" : "firec",           "file" : { "fmt" : "raw", "timestep" : "monthly", "unit" : "gC/m2/month", "name" : "output/mfirec.bin"}},
     { "id" : "nfire",           "file" : { "fmt" : "raw", "name" : "output/mnfire.bin"}},
     { "id" : "burntarea",       "file" : { "fmt" : "raw", "name" : "output/mburnt_area.bin"}},
+#else
+    { "id" : "firec",            "file" : { "fmt" : "raw", "name" : "output/firec.bin"}},
 #endif
     { "id" : "discharge",       "file" : { "fmt" : "raw", "name" : "output/mdischarge.bin"}},
     { "id" : "wateramount",     "file" : { "fmt" : "raw", "name" : "output/mwateramount.bin"}},

@@ -590,6 +590,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].discharge.wateruse_wd=0.0;
     grid[i].discharge.wateruse_fraction = 0.0;
 #endif
+    grid[i].balance.excess_water=0;
     grid[i].discharge.dmass_lake_max=grid[i].lakefrac*H*grid[i].coord.area*1000;
     grid[i].discharge.dmass_lake=grid[i].discharge.dmass_river=0.0;
     grid[i].discharge.dfout=grid[i].discharge.fout=0.0;
@@ -619,12 +620,18 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         grid[i].ml.fertilizer_nr=newlandfrac(ncft);
         checkptr(grid[i].ml.fertilizer_nr);
+        grid[i].ml.manure_nr=newlandfrac(ncft);
+        checkptr(grid[i].ml.manure_nr);
       }
       else
-        grid[i].ml.fertilizer_nr=NULL;
-
+      {
+        grid[i].ml.fertilizer_nr = NULL;
+        grid[i].ml.manure_nr = NULL;
+      }
       grid[i].ml.irrig_system=new(Irrig_system);
       checkptr(grid[i].ml.irrig_system);
+      grid[i].ml.residue_on_field=newlandfrac(ncft);
+      checkptr(grid[i].ml.residue_on_field);
       grid[i].ml.irrig_system->crop=newvec(IrrigationType,ncft);
       checkptr(grid[i].ml.irrig_system->crop);
 
@@ -642,6 +649,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       grid[i].ml.landfrac=NULL;
       grid[i].ml.fertilizer_nr=NULL;
+      grid[i].ml.manure_nr = NULL;
+      grid[i].ml.residue_on_field = NULL;
       grid[i].ml.irrig_system=NULL;
     }
     if(file_restart==NULL)
@@ -674,12 +683,12 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           n=addstand(&natural_stand,grid+i);
           stand=getstand(grid[i].standlist,n-1);
           stand->frac=1-grid[i].lakefrac;
-          if(initsoil(&stand->soil,config->soilpar+soilcode-1,npft+ncft,config->with_nitrogen))
+          if(initsoil(stand,config->soilpar+soilcode-1,npft+ncft,config->with_nitrogen))
             return NULL;
           for(l=0;l<FRACGLAYER;l++)
             stand->frac_g[l]=1.0;
         }
-        if(new_climbuf(&grid[i].climbuf))
+        if(new_climbuf(&grid[i].climbuf,ncft))
         {
           printallocerr("climbuf");
           return NULL;
@@ -695,6 +704,15 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         }
         else
           grid[i].ml.sdate_fixed=NULL;
+        if(config->crop_phu_option)
+        {
+          grid[i].ml.crop_phu_fixed=newvec(Real,2*ncft);
+          checkptr(grid[i].ml.crop_phu_fixed);
+          for(cft=0;cft<2*ncft;cft++)
+            grid[i].ml.crop_phu_fixed[cft]=0;
+        }
+        else
+          grid[i].ml.crop_phu_fixed=NULL;
       }
     }
     else /* read cell data from restart file */

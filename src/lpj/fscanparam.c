@@ -135,6 +135,14 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal(&f,&param.fire_intens,"fire_intens");
     fscanparamreal(&f,&param.hum_ign,"hum_ign");
   }
+  fscanparamreal(&f,&param.residue_rate,"residue_rate");
+  fscanparamreal(&f,&param.residue_pool,"residue_pool");
+  fscanparamreal(&f,&param.residue_cn,"residue_cn");
+  fscanparamreal(&f,&param.residue_fbg,"residue_fbg");
+  fscanparamreal(&f,&param.fertilizer_rate,"fertilizer_rate");
+  fscanparamreal(&f,&param.residue_frac,"residue_frac");
+  fscanparamreal(&f,&param.mixing_efficiency,"mixing_efficiency");
+  fscanparamint(&f,&param.till_startyear,"till_startyear");
   if(config->withlanduse!=NO_LANDUSE)
   {
     fscanparamreal(&f,&param.lsuha,"lsuha");
@@ -157,7 +165,12 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     fscanparamreal01(&f,&param.residues_in_soil,"residues_in_soil");
     if(config->with_nitrogen)
     {
+      fscanparamreal(&f,&param.manure_cn,"manure_cn");
+      fscanparamreal(&f,&param.manure_rate,"manure_rate");
       fscanparamreal(&f,&param.nfert_split,"nfert_split");
+      fscanparamreal01(&f,&param.nfert_split_frac,"nfert_split_frac");
+      fscanparamreal01(&f,&param.nfert_no3_frac,"nfert_no3_frac");
+      fscanparamreal01(&f,&param.nmanure_nh4_frac,"nmanure_nh4_frac");
     }
     if(config->istimber)
     {

@@ -39,6 +39,8 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   Stocks flux_estab;
 #endif
   Stocks firewood={0,0};
+  if(config->black_fallow)
+    cutpfts(stand);
 
   pft_len=getnpft(&stand->pftlist); /* get number of established PFTs */
   if(pft_len>0)
@@ -113,12 +115,15 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     stand->cell->output.dcflux+=flux.carbon*stand->frac;
   }
 #ifndef DAILY_ESTABLISHMENT
-  flux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year);
-  stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-  stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
-  stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-  stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
-  stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
+  if(!config->black_fallow)
+  {
+    flux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year,config->with_nitrogen);
+    stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+    stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+    stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
+    stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+    stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
+  }
 #if defined IMAGE && defined COUPLED
   if(stand->type->landusetype==NATURAL)
   {

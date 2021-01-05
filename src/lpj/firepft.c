@@ -33,19 +33,19 @@ Stocks firepft(Litter *litter,   /**< Litter pool */
   }
   for(p=0;p<litter->n;p++)
   {
-    flux_litter.carbon+=litter->ag[p].trait.leaf.carbon;
-    flux_litter.nitrogen+=litter->ag[p].trait.leaf.nitrogen;
+    flux_litter.carbon+=litter->item[p].ag.leaf.carbon;
+    flux_litter.nitrogen+=litter->item[p].ag.leaf.nitrogen;
     for(i=0;i<NFUELCLASS;i++)
     {
-      flux_litter.carbon+=litter->ag[p].trait.wood[i].carbon;
-      flux_litter.nitrogen+=litter->ag[p].trait.wood[i].nitrogen;
+      flux_litter.carbon+=litter->item[p].ag.wood[i].carbon;
+      flux_litter.nitrogen+=litter->item[p].ag.wood[i].nitrogen;
     }
-    litter->ag[p].trait.leaf.carbon*=(1-fire_frac);
-    litter->ag[p].trait.leaf.nitrogen*=(1-fire_frac);
+    litter->item[p].ag.leaf.carbon*=(1-fire_frac);
+    litter->item[p].ag.leaf.nitrogen*=(1-fire_frac);
     for(i=0;i<NFUELCLASS;i++)
     {
-      litter->ag[p].trait.wood[i].carbon*=(1-fire_frac);
-      litter->ag[p].trait.wood[i].nitrogen*=(1-fire_frac);
+      litter->item[p].ag.wood[i].carbon*=(1-fire_frac);
+      litter->item[p].ag.wood[i].nitrogen*=(1-fire_frac);
     }
   } /* of 'for(p=0;...)' */
   flux_sum.carbon+=flux_litter.carbon*fire_frac;

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              l  p  j  p  a  r  a  m  .  j  s                                   \n**/
 /**                                                                                \n**/
-/**     LPJ parameter file for LPJmL version 5.1.002                               \n**/
+/**     LPJ parameter file for LPJmL version 5.2.002                               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -52,24 +52,37 @@
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
   "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */
   "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
+  "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
+  "residue_cn": 20,         /* CN ratio of prescribed residues */
+  "residue_fbg": 0.25,      /* belowground fraction of prescribed residues */
+  "manure_cn": 14.5,        /* CN ration of manure gC/gN */
+  "fertilizer_rate" : 10,     /* default: 20; fixed fertilizer application rate in gN/m2/yr */
+  "manure_rate" : 0,          /* default: 20; fixed manure application rate in gN/m2/yr */
+  "residue_frac" : 0.95,      /* fraction of residues to be submerged by tillage */
+  "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
+  "till_startyear" : 1850,    /* year in which tillage should start */
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold (mm) */
-  "irrig_threshold_c3_dry" : 0.8,     /* irrigation threshold C3, prec < aprec_lim */
-  "irrig_threshold_c3_humid" : 0.9,   /* irrigation threshold C3, prec >= aprec_lim */
-  "irrig_threshold_c4" : 0.7,         /* irrigation threshold C4 */
+  "irrig_threshold_c3_dry" : 0.95,     /* irrigation threshold C3, prec < aprec_lim */
+  "irrig_threshold_c3_humid" : 0.95,   /* irrigation threshold C3, prec >= aprec_lim */
+  "irrig_threshold_c4" : 0.95,         /* irrigation threshold C4 */
   "irrig_threshold_rice" : 1.0,       /* irrigation threshold RICE */
   "irrig_soilfrac" : 1.0,             /* fraction of soil filled with water during irrigation event */
   "canal_conveyance_eff_sand" : 0.7,  /* open canal conveyance efficiency, soil type sand (Ks > 20)*/
   "canal_conveyance_eff_loam" : 0.75, /* open canal conveyance efficiency, soil type loam (10<=Ks<=20)*/
   "canal_conveyance_eff_clay" : 0.8,  /* open canal conveyance efficiency, soil type clay (Ks<10) */
   "pipe_conveyance_eff" : 0.95,       /* pressurized conveyance efficiency*/
-  "saturation_level_surf" : 1.15,     /* saturation level surface irrigation*/
+  "saturation_level_surf" : 1.0,      /* saturation level surface irrigation*/
   "saturation_level_sprink" : 0.55,   /* saturation level sprinkler irrigation*/
   "saturation_level_drip" : 0.05,     /* saturation level drip irrigation*/
   "drip_evap_reduction" : 0.6,        /* reduction of drip soil evap */
-  "nfert_split" : 5,                  /* threshold fertilizer input for split application */
-  "residues_in_soil" : 0.1,           /* minimum residues in soil*/
-  "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
-  "ftimber" : 0.76,                   /* timber fraction at deforestation */
+  "nfert_split" : 0,                  /* threshold fertilizer input for split application */
+  "nfert_split_frac" : 0.2,           /* fraction of fertilizer input at sowing */
+  "nfert_no3_frac" : 0.5,             /* fraction of NO3 in fertilizer input */
+  "nmanure_nh4_frac" : 0.666667,      /* fraction of NH4 in manure input */
+  "residues_in_soil" : 0.3,           /* minimum residues in soil*/
+  "fburnt" : 0.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
+  "ftimber" : 1,                   /* timber fraction at deforestation */
   "harvest_fast_frac" : 0.34,         /* fraction of harvested wood going to fast pools */
   "product_turnover" : { "fast" : 0.1, "slow" : 0.01}, /* product turnover (1/yr) */
   "esoil_reduction" : 0.0,            /* reduction of soil evaporation */

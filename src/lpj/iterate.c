@@ -171,7 +171,7 @@ int iterate(Outputfile *output, /**< Output file data */
     if(input.landuse!=NULL)
     {
       calc_seasonality(grid,npft,ncft,config);
-      if(config->withlanduse==CONST_LANDUSE) /* constant landuse? */
+      if(config->withlanduse==CONST_LANDUSE || config->withlanduse == ONLY_CROPS) /* constant landuse? */
         landuse_year=config->landuse_year_const;
       else if(config->fix_landuse && year>config->fix_climate_year)
         landuse_year=config->fix_climate_year;
@@ -197,7 +197,7 @@ int iterate(Outputfile *output, /**< Output file data */
       else
 #endif
       /* read landuse pattern from file */
-      if(getlanduse(input.landuse,grid,landuse_year,ncft,config))
+      if(getlanduse(input.landuse,grid,landuse_year,year,ncft,config))
       {
         fprintf(stderr,"ERROR104: Simulation stopped in getlanduse().\n");
         fflush(stderr);

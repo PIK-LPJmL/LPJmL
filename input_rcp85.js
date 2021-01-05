@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**       i  n  p  u  t  _  r  c  p  8  5  .  j  s                                 \n**/
 /**                                                                                \n**/
-/** Configuration file for input dataset for LPJ C Version 5.1.001                 \n**/
+/** Configuration file for input dataset for LPJ C Version 5.1.002                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,6 +15,13 @@
 #include "include/conf.h" /* include constant definitions */
 
 "inpath" : "/p/projects/lpjml/input/historical",
+
+/* the following array describes the order of the CFT bands in the land use file */
+
+"cftmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+            "temperate roots", "tropical roots", "oil crops sunflower",
+            "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+            "sugarcane","others","grassland"],
 
 "input" :
 {
@@ -37,7 +44,7 @@
   "prec" :         { "fmt" : "clm",  "name" : mkstr(/p/projects/biodiversity/bloh/input/MODEL/pr_1861-2099.clm)},
   "lwnet" :        { "fmt" : "clm",  "name" : mkstr(/p/projects/biodiversity/bloh/input/MODEL/lwnet_1861-2099.clm)},
   "swdown" :       { "fmt" : "clm",  "name" : mkstr(/p/projects/biodiversity/bloh/input/MODEL/rsds_1861-2099.clm)},
-  "wind":          { "fmt" : "clm",  "name" : "input_VERSION2/mwindspeed_1860-2100_67420.clm"},
+  "wind" :         { "fmt" : "clm",  "name" : mkstr(/p/projects/biodiversity/bloh/input/MODEL/sfcWind_1861-2099.clm)},
   "tamp":          { "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
   "lightning" :    { "fmt" : "clm",  "name" : "input_VERSION2/mlightning.clm"},
   "human_ignition": { "fmt" : "clm", "name" : "input_VERSION2/human_ignition.clm"},

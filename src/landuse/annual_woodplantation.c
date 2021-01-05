@@ -180,7 +180,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     {
       if(!present[p] && (estab_store.carbon<epsilon || config->pftpar[p].type!=TREE) && (fpc_type[TREE]<0.7 || config->pftpar[p].type==GRASS))
       {
-        addpft(stand,config->pftpar+p,year,0);
+        addpft(stand,config->pftpar+p,year,0,config->with_nitrogen);
         n_est[config->pftpar[p].type]++;
       }
       if(present[p])
@@ -267,7 +267,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     biomass_tree->age=biomass_tree->growing_time=0;
     stand->cell->discharge.dmass_lake+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->cell->coord.area*stand->frac;
     stand->cell->balance.awater_flux-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac;
-    if(setaside(stand->cell,stand,config->pftpar,intercrop,npft,biomass_tree->irrigation.irrigation,year))
+    if(setaside(stand->cell,stand,config->pftpar,stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,year,config->with_nitrogen))
       return TRUE;
   }
   else

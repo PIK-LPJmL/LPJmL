@@ -25,6 +25,7 @@ void harvest_crop(Output *output,        /**< Output data */
                   Pft *pft,              /**< PFT variables */
                   int npft,              /**< number of natural PFTs */
                   int ncft,              /**< number of crop PFTs */
+                  int year,              /* year of harvest */
                   const Config *config   /**< LPJmL configuration */
                  )
 {
@@ -35,49 +36,46 @@ void harvest_crop(Output *output,        /**< Output data */
   Real fuelratio,bifratio,factor;
   data=stand->data;
   crop=pft->data;
-  stand->soil.litter.ag[pft->litter].trait.leaf.carbon+=(crop->ind.leaf.carbon+crop->ind.pool.carbon)*param.residues_in_soil;
-  stand->cell->output.alittfall.carbon+=(crop->ind.leaf.carbon+crop->ind.pool.carbon)*param.residues_in_soil*stand->frac;
-  stand->soil.litter.ag[pft->litter].trait.leaf.nitrogen+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen)*param.residues_in_soil;
-  stand->cell->output.alittfall.nitrogen+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen)*param.residues_in_soil*stand->frac;
-  if(config->residues_fire)
+  Real res_onfield, res_remove;
+
+  if(config->residue_treatment<READ_RESIDUE_DATA)
+    res_onfield = config->residue_treatment==FIXED_RESIDUE_REMOVE ? param.residues_in_soil : 1 ;
+  else
+    res_onfield=stand->cell->ml.residue_on_field[data->irrigation].crop[pft->par->id-npft];
+  if (year<param.till_startyear)
+    res_onfield=0.1;
+  res_remove = (1-res_onfield);
+  stand->soil.litter.item[pft->litter].ag.leaf.carbon += (crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield;
+  stand->soil.litter.item[pft->litter].ag.leaf.nitrogen += (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*res_onfield;
+  stand->cell->output.alitfalln_agr+=(crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*res_onfield*stand->frac;
+  if (!config->residues_fire)
   {
-    fuelratio=stand->cell->ml.manage.regpar->fuelratio; /* burn outside of field */
-    bifratio=stand->cell->ml.manage.regpar->bifratio; /* burn in field */
-    if(bifratio+fuelratio>(1-param.residues_in_soil))
+    harvest.residuals_burnt.carbon = harvest.residuals_burntinfield.carbon =
+    harvest.residuals_burnt.nitrogen = harvest.residuals_burntinfield.nitrogen = 0;
+  }
+  else
+  {
+    fuelratio = stand->cell->ml.manage.regpar->fuelratio; /* burn outside of field */
+    bifratio = stand->cell->ml.manage.regpar->bifratio; /* burn in field */
+    if (bifratio + fuelratio > res_remove)
     {
-      bifratio*=(1-param.residues_in_soil);
-      fuelratio*=(1-param.residues_in_soil);
+      bifratio *= res_remove;
+      fuelratio *= res_remove;
     }
-    factor=1-param.residues_in_soil-fuelratio-bifratio;
-    harvest.residuals_burnt.carbon=(crop->ind.leaf.carbon+crop->ind.pool.carbon)*fuelratio;
-    harvest.residuals_burnt.nitrogen=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen)*fuelratio;
-    harvest.residuals_burntinfield.carbon=(crop->ind.leaf.carbon+crop->ind.pool.carbon)*bifratio;
-    harvest.residuals_burntinfield.nitrogen=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen)*bifratio;
+    res_remove -= fuelratio - bifratio;
+    harvest.residuals_burnt.carbon = (crop->ind.leaf.carbon + crop->ind.pool.carbon)*fuelratio;
+    harvest.residuals_burntinfield.carbon = (crop->ind.leaf.carbon + crop->ind.pool.carbon)*bifratio;
+    harvest.residuals_burnt.nitrogen = (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*fuelratio;
+    harvest.residuals_burntinfield.nitrogen = (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*bifratio;
   }
-  else
-  {
-    harvest.residuals_burnt.carbon=harvest.residuals_burntinfield.carbon=0;
-    harvest.residuals_burnt.nitrogen=harvest.residuals_burntinfield.nitrogen=0;
-    factor=(1-param.residues_in_soil);
-  }
-  if(config->remove_residuals)
-  {
-    harvest.residual.carbon=(crop->ind.leaf.carbon+crop->ind.pool.carbon)*factor;
-    harvest.residual.nitrogen=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen)*factor;
-  }
-  else
-  {
-    stand->soil.litter.ag[pft->litter].trait.leaf.carbon+=(crop->ind.leaf.carbon+crop->ind.pool.carbon)*factor;
-    stand->cell->output.alittfall.carbon+=(crop->ind.leaf.carbon+crop->ind.pool.carbon)*factor*stand->frac;
-    stand->soil.litter.ag[pft->litter].trait.leaf.nitrogen+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen)*factor;
-    stand->cell->output.alittfall.nitrogen+=(crop->ind.leaf.nitrogen+crop->ind.pool.nitrogen)*factor*stand->frac;
-    harvest.residual.carbon=harvest.residual.nitrogen=0;
-  }
+  harvest.residual.carbon = (crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_remove;
+  harvest.residual.nitrogen = (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*res_remove;
   harvest.harvest=crop->ind.so;
-  stand->soil.litter.bg[pft->litter].carbon+=crop->ind.root.carbon;
+  stand->soil.litter.item[pft->litter].bg.carbon+=crop->ind.root.carbon;
   stand->cell->output.alittfall.carbon+=crop->ind.root.carbon*stand->frac;
-  stand->soil.litter.bg[pft->litter].nitrogen+=crop->ind.root.nitrogen;
+  stand->soil.litter.item[pft->litter].bg.nitrogen+=crop->ind.root.nitrogen;
   stand->cell->output.alittfall.nitrogen+=crop->ind.root.nitrogen*stand->frac;
+  stand->cell->output.alitfalln_agr+=crop->ind.root.nitrogen*stand->frac;
 #ifdef DOUBLE_HARVEST
   if(config->pft_output_scaled)
   {
@@ -148,6 +146,7 @@ void harvest_crop(Output *output,        /**< Output data */
   output->flux_harvest.nitrogen+=(harvest.harvest.nitrogen+harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen)*stand->frac;
   stand->cell->balance.flux_harvest.carbon+=(harvest.harvest.carbon+harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon)*stand->frac;
   stand->cell->balance.flux_harvest.nitrogen+=(harvest.harvest.nitrogen+harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen)*stand->frac;
+  output->aharvestn_agr+=(harvest.harvest.nitrogen+harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen)*stand->frac;
   output->dcflux+=(harvest.harvest.carbon+harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon)*stand->frac;
   output->flux_rharvest_burnt.carbon+=harvest.residuals_burnt.carbon*stand->frac;
   output->flux_rharvest_burnt.nitrogen+=harvest.residuals_burnt.nitrogen*stand->frac;

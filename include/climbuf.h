@@ -45,6 +45,9 @@ typedef struct
   Real mtemp_min20; /*20-year average of coldest month temperature*/
   Real aetp_mean;       /*20-year average of evapotranspiration of the cell*/
   Real aprec;     /**< annual sum of 20-year average monthly precip */
+  Real *V_req;            /* 20-year average of vernalization requirements in days */
+  Real *V_req_a;          /* annual vernalization requirements in days, used to calculate V_req */
+
 } Climbuf;
 
 /* Definitions of macros */
@@ -54,14 +57,15 @@ typedef struct
 
 /* Declaration of functions */
 
-extern Bool new_climbuf(Climbuf *);
-extern void init_climbuf(Climbuf *);
+extern Bool new_climbuf(Climbuf *,int);
+extern void init_climbuf(Climbuf *,int);
 extern void daily_climbuf(Climbuf *,Real,Real);
+extern void getmintemp20_n(const Climbuf *,Real [],int);
 extern Real getavgprec(const Climbuf *);
 extern void monthly_climbuf(Climbuf *,Real,Real,Real,int);
-extern void annual_climbuf(Climbuf *,Real);
-extern Bool fwriteclimbuf(FILE *,const Climbuf *);
-extern Bool freadclimbuf(FILE *,Climbuf *,Bool);
+extern void annual_climbuf(Climbuf *,Real,int,int,Bool,int);
+extern Bool fwriteclimbuf(FILE *,const Climbuf *,int);
+extern Bool freadclimbuf(FILE *,Climbuf *,int,Bool);
 extern void freeclimbuf(Climbuf *);
-
+extern void annual_climbuf(Climbuf *,Real,int,int,int,int); 
 #endif

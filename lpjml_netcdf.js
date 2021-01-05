@@ -22,7 +22,7 @@
 
 #include "include/conf.h" /* include constant definitions */
 
-// #define DAILY_OUTPUT 
+// #define DAILY_OUTPUT
 
 {
 
@@ -41,6 +41,7 @@
 "shuffle_climate" : false,
 "firewood" : false,
 #ifdef FROM_RESTART
+"new_seed" : false,
 "population" : false,
 "landuse" : "landuse",
 #else
@@ -57,7 +58,9 @@
 "with_nitrogen": "lim_nitrogen",
 "store_climate" : true, /* store climate data in spin-up phase */
 "const_climate" : false,
+"fix_climate" : false,
 "const_deposition" : false,
+"fertilizer_input" : true,
 "irrigation" : "pot_irrigation",
 "sowing_date_option" : "fixed_sdate",
 "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
@@ -167,10 +170,8 @@ ID                         Fmt                    filename
 { "id" : "pet",              "file" : { "fmt" : "cdf", "name" : "output/mpet.nc"}},
 { "id" : "albedo",           "file" : { "fmt" : "cdf", "name" : "output/malbedo.nc"}},
 { "id" : "maxthaw_depth",    "file" : { "fmt" : "cdf", "name" : "output/maxthaw_depth.nc"}},
-{ "id" : "soiltemp1",        "file" : { "fmt" : "cdf", "name" : "output/msoiltemp1.nc"}},
-{ "id" : "soiltemp2",        "file" : { "fmt" : "cdf", "name" : "output/msoiltemp2.nc"}},
-{ "id" : "soiltemp3",        "file" : { "fmt" : "cdf", "name" : "output/msoiltemp3.nc"}},
-{ "id" : "oilc_layer",       "file" : { "fmt" : "cdf", "name" : "output/soilc_layer.nc"}},
+{ "id" : "soiltemp",         "file" : { "fmt" : "cdf", "name" : "output/msoiltemp.nc"}},
+{ "id" : "soilc_layer",      "file" : { "fmt" : "cdf", "name" : "output/soilc_layer.nc"}},
 { "id" : "agb",              "file" : { "fmt" : "cdf", "name" : "output/agb.nc"}},
 { "id" : "return_flow_b",    "file" : { "fmt" : "cdf", "name" : "output/mreturn_flow_b.nc"}},
 { "id" : "transp_b",         "file" : { "fmt" : "cdf", "name" : "output/mtransp_b.nc"}},

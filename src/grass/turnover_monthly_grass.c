@@ -27,9 +27,9 @@ void turnover_monthly_grass(Litter *litter,Pft *pft)
     output=&pft->stand->cell->output;
     grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH;
     grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH;
-    litter->bg[pft->litter].carbon+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH*pft->nind;
+    litter->item[pft->litter].bg.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH*pft->nind;
     output->alittfall.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NMONTH*pft->nind*pft->stand->frac;
-    litter->bg[pft->litter].nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover;
+    litter->item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover;
     output->alittfall.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover*pft->stand->frac;
   }
 } /* of 'turnover_monthly_grass' */

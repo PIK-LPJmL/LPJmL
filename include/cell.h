@@ -82,6 +82,7 @@ typedef struct
   Real surface_storage;     /**< total water in surface storages (dm3) */
   Real surface_storage_last;     /**< total water in surface storages (dm3) */
   Real soil_storage_last;        /**< total water in soil storages (dm3) */
+  Real excess_water;        /**< excess water (mm) */
   Real total_reservoir_out; /**< total water extracted from reservoirs (dm3) */
   Real total_irrig_from_reservoir; /**< total water added to fields from reservoirs (dm3)*/
   Real n_influx;            /**< all N inputs: deposition, fertilizer, BNF */
@@ -132,9 +133,9 @@ extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
                          int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
                           Real,int,Bool,Bool,const Config *);
-extern void update_monthly(Cell *,Real,Real,int);
+extern void update_monthly(Cell *,Real,Real,int,int);
 extern void init_annual(Cell *,int,int,const Config *);
-extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,int,Bool);
+extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,int,int,Bool);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
 extern Bool freadcell(FILE *,Cell *,int,int,const Soilpar *,
                       const Standtype [],int,Bool,const Config *);
@@ -162,7 +163,7 @@ extern Wateruse initwateruse(const Filename *,const Config *);
 extern Bool getwateruse_wd(Wateruse, Cell[], int, const Config *);
 #endif
 extern void freewateruse(Wateruse,Bool);
-extern void killstand(Cell *,const Pftpar [],int,Bool,int);
+extern void killstand(Cell *,const Pftpar [],int,Bool,Bool,int,int);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);

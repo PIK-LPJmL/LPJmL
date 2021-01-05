@@ -65,6 +65,8 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     freadreal((Real *)cell->balance.estab_storage_grass,2*sizeof(Stocks)/sizeof(Real),swap,file);
     if(freadignition(file,&cell->ignition,swap))
       return TRUE;
+    freadreal1(&cell->balance.excess_water,swap,file);
+
     /* cell has valid soilcode */
     freadreal1(&cell->discharge.waterdeficit,swap,file);
     cell->gdd=newgdd(npft);
@@ -72,12 +74,12 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     freadreal(cell->gdd,npft,swap,file);
     /* read stand list */
     cell->standlist=freadstandlist(file,cell,config->pftpar,npft+ncft,soilpar,
-                                   standtype,nstand,swap);
+      standtype,nstand,swap);
     if(cell->standlist==NULL)
       return TRUE;
     freadreal1(&cell->ml.cropfrac_rf,swap,file);
     freadreal1(&cell->ml.cropfrac_ir,swap,file);
-    if(freadclimbuf(file,&cell->climbuf,swap))
+    if(freadclimbuf(file,&cell->climbuf,ncft,swap))
       return TRUE;
     cell->ml.cropdates=freadcropdates(file,ncft,swap);
     if(cell->ml.cropdates==NULL)
@@ -89,11 +91,23 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       if(config->sdate_option_restart>NO_FIXED_SDATE)
         freadint(cell->ml.sdate_fixed,2*ncft,swap,file);
       else
-        for(i=0;i<2*ncft;i++)
+        for(i=0; i<2*ncft; i++)
           cell->ml.sdate_fixed[i]=0;
     }
     else
       cell->ml.sdate_fixed=NULL;
+    if(config->crop_phu_option)
+    {
+      cell->ml.crop_phu_fixed=newvec(Real,2*ncft);
+      checkptr(cell->ml.crop_phu_fixed);
+      if(config->sdate_option_restart>SEMISTATIC_CROP_PHU)
+        freadreal(cell->ml.crop_phu_fixed,2*ncft,swap,file);
+      else
+        for(i=0; i<2*ncft; i++)
+          cell->ml.crop_phu_fixed[i]=0;
+    }
+    else
+      cell->ml.crop_phu_fixed=NULL;
     cell->ml.sowing_month=newvec(int,2*ncft);
     checkptr(cell->ml.sowing_month);
     freadint(cell->ml.sowing_month,2*ncft,swap,file);

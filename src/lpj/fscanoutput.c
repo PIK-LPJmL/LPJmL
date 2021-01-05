@@ -79,6 +79,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   {
     config->pft_output_scaled=FALSE;
     config->n_out=0;
+    config->crop_index=-1;
+    config->crop_irrigation=-1;
     return FALSE;
   }
   if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))

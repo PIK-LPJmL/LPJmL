@@ -99,14 +99,18 @@ void freeconfig(Config *config /**< LPJmL configuration */
   {
     if(config->fdi==WVPD_INDEX)
       freefilename(&config->humid_filename);
-    freefilename(&config->tamp_filename);
-    if(config->tamp_filename.fmt==CDF && config->tmax_filename.name!=NULL)
-      freefilename(&config->tmax_filename);
     freefilename(&config->lightning_filename);
     freefilename(&config->human_ignition_filename);
     if(config->prescribe_burntarea)
       freefilename(&config->burntarea_filename);
   }
+  if(config->fire==SPITFIRE||config->fire==SPITFIRE_TMAX || config->cropsheatfrost)
+  {
+    freefilename(&config->tmin_filename);
+    freefilename(&config->tmax_filename);
+  }
+  if(config->fire==SPITFIRE)
+    freefilename(&config->tamp_filename);
   if(config->withlanduse!=NO_LANDUSE)
   {
     free(config->cftmap);
@@ -128,6 +132,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->soilph_filename);
     if(config->withlanduse!=NO_LANDUSE && config->fertilizer_input)
       freefilename(&config->fertilizer_nr_filename);
+    if(config->withlanduse!=NO_LANDUSE&&config->manure_input)
+      freefilename(&config->manure_nr_filename);
   }
   if(config->prescribe_landcover != NO_LANDCOVER)
     freefilename(&config->landcover_filename);

@@ -40,7 +40,6 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
     foreachpft(pft,p,&stand->pftlist)
     {
       wr=getwr(&stand->soil,pft->par->rootdist);
-
       if(!strcmp(pft->par->name,"rice"))
         irrig_threshold=param.irrig_threshold_rice;
       else

@@ -120,7 +120,7 @@
 
 #ifdef FROM_RESTART
 
-  "output" : 
+  "output" :
   [
 
 /*

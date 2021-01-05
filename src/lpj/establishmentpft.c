@@ -29,7 +29,8 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
                         int npft,            /**< number of natural PFTs */
                         int ntypes,          /**< number of different PFT classes */
                         Real aprec,          /**< annual precipitation (mm) */
-                        int year             /**< simulation year (AD) */
+                        int year,            /**< simulation year (AD) */
+                        int with_nitrogen
                        )  /** \return establishment flux (gC/m2,gN/m2) */
 {
   Stocks flux_est={0,0},stocks;
@@ -67,7 +68,7 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
        establish(stand->cell->gdd[p],pftpar+p,&stand->cell->climbuf)))
     {
       if(!present[p])
-        addpft(stand,pftpar+p,year,0);
+        addpft(stand,pftpar+p,year,0,with_nitrogen);
       n_est[pftpar[p].type]++;
     }
   }

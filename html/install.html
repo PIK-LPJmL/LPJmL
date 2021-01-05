@@ -2,11 +2,11 @@
 <HEAD>
 <LINK REL="stylesheet" HREF="style.css" TYPE="text/css">
 <TITLE>
-Installing and running LPJmL C Version 5.1.001
+Installing and running LPJmL C Version 5.2.001
 </TITLE>
 </HEAD>
 <BODY>
-<H1>Installing and running  LPJmL C Version 5.1.001</H1>
+<H1>Installing and running  LPJmL C Version 5.2.001</H1>
 
 <H2>Installation for Unix-like systems</h2>
 
@@ -29,7 +29,7 @@ cd lpjml
 
 untar source files</p>
 <pre class="example">
-gzip -cd lpjml-5.1.001.tar.gz|tar -xf -
+gzip -cd lpjml-5.2.001.tar.gz|tar -xf -
 </pre>
 
 Directory tree after extracting the tar files:</p>
@@ -116,7 +116,7 @@ Then LPJmL can be configured via
 
 <pre class="example">
 % ./configure.sh
-Configuring LPJmL 5.1.001...
+Configuring LPJmL 5.2.001...
 Operating system is Linux
 Intel MPI found
 Create executables with make all
@@ -852,13 +852,13 @@ Depending on your MPI version installed the program can be started interactively
 <pre class="example">
 % mpirun -np 256 $LPJROOT/bin/lpjml
 ******************************************************************************
-****           _     ____     _           _       ____        _           ****
-****          | |   |  _ \   | |_ __ ___ | |     | ___|      / |          ****
-****          | |   | |_) |  | | '_ ` _ \  |     |___ \      | |          ****
-****          | |___|  __/ |_| | | | | | | |___   ___) |  _  | |          ****
-****          |_____|_|   \___/|_| |_| |_|_____| |____/  (_) |_|          ****
+****         _     ____     _           _       ____        ____          ****
+****        | |   |  _ \   | |_ __ ___ | |     | ___|      |___ \         ****
+****        | |   | |_) |  | | '_ ` _ \  |     |___ \        __) |        ****
+****        | |___|  __/ |_| | | | | | | |___   ___) |  _   / __/         ****
+****        |_____|_|   \___/|_| |_| |_|_____| |____/  (_) |_____|        ****
 ****                                                                      ****
-****                lpjml C Version 5.1.001 (Nov 14 2018)                 ****
+****                lpjml C Version 5.2.001 (Jun 17 2019)                 ****
 ****    Dynamic global vegetation model with natural and managed land     ****
 ****                     Compiled for Linux with MPI                      ****
 ****       (C) Potsdam Institute for Climate Impact Research (PIK),       ****
@@ -871,8 +871,8 @@ Depending on your MPI version installed the program can be started interactively
 ****                                                                      ****
 ******************************************************************************
 
-Running for user user on cs-e14c05b07 at Tue Nov  6 20:14:43 2018
-Reading configuration from 'lpjml.js' with options '-DFROM_RESTART'.
+Running for user bloh on cs-e14c02b03 at Mon Jun 17 13:30:15 2019
+Reading configuration from 'lpjml.js'.
 ==============================================================================
 Simulation "LPJmL Run" running on 256 tasks
 Simulation with random precipitation, fire, river routing, permafrost,

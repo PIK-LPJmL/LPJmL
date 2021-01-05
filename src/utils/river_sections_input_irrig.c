@@ -173,7 +173,7 @@ int main(int argc,char **argv)
     if(swap_grid)
           rbuf=swapshort(rbuf);
     lat[cell]=rbuf;
-	/* printf("c:%d %d %d\n",cell,lon[cell],lat[cell]); */
+    /* printf("c:%d %d %d\n",cell,lon[cell],lat[cell]); */
       }
       else
       {
@@ -259,7 +259,7 @@ int main(int argc,char **argv)
       {
     lat_n=YCORNER+25-WIDTH*(ilat_n[j]+1);
     lon_n=XCORNER-25+WIDTH*(ilon_n[j]+1);
-	/* printf("C c:%d lon:%d %d lat:%d %d\n",cell,ilon_n[j],lon_n,ilat_n[j],lat_n); */
+    /* printf("C c:%d lon:%d %d lat:%d %d\n",cell,ilon_n[j],lon_n,ilat_n[j],lat_n); */
     for(k=0;k<ncell;k++)
       if(lat_n==lat[k] && lon_n==lon[k])
           {

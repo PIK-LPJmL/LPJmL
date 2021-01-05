@@ -24,13 +24,12 @@ Real litter_ag_sum(const Litter *litter /**< pointer to litter data */
   sum=0;
   for(l=0;l<litter->n;l++)
   {
-    sum+=litter->ag[l].trait.leaf.carbon;
+    sum+=litter->item[l].ag.leaf.carbon;
     for(i=0;i<NFUELCLASS;i++)
-      sum+=litter->ag[l].trait.wood[i].carbon;
+      sum+=litter->item[l].ag.wood[i].carbon;
   }
   return sum;
 } /* of litter_ag_sum */
-
 
 Real litter_ag_sum_n(const Litter *litter)
 {
@@ -39,9 +38,39 @@ Real litter_ag_sum_n(const Litter *litter)
   sum=0;
   for(l=0;l<litter->n;l++)
   {
-    sum+=litter->ag[l].trait.leaf.nitrogen;
+    sum+=litter->item[l].ag.leaf.nitrogen;
     for(i=0;i<NFUELCLASS;i++)
-      sum+=litter->ag[l].trait.wood[i].nitrogen;
+      sum+=litter->item[l].ag.wood[i].nitrogen;
   }
   return sum;
 } /* of litter_ag_sum_n */
+
+Real litter_agsub_sum(const Litter *litter /**< pointer to litter data */
+                  )                     /** \return aboveground litter (gC/m2) */
+{
+  int i,l;
+  Real sum;
+  sum=0;
+  for(l=0;l<litter->n;l++)
+  {
+    sum+=litter->item[l].agsub.leaf.carbon;
+    for(i=0;i<NFUELCLASS;i++)
+      sum+=litter->item[l].agsub.wood[i].carbon;
+  }
+  return sum;
+} /* of litter_agsub_sum */
+
+Real litter_agsub_sum_n(const Litter *litter)
+{
+  int i,l;
+  Real sum;
+  sum=0;
+  for(l=0;l<litter->n;l++)
+  {
+    sum+=litter->item[l].agsub.leaf.nitrogen;
+    for(i=0;i<NFUELCLASS;i++)
+      sum+=litter->item[l].agsub.wood[i].nitrogen;
+  }
+  return sum;
+} /* of litter_agsub_sum_n */
+

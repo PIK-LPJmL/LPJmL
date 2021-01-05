@@ -14,17 +14,24 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "crop.h"
+#include "agriculture.h"
 
-void denitrification(Stand *stand  /**< pointer to stand */
+void denitrification(Stand *stand,  /**< pointer to stand */
+                     int npft,
+                     int ncft
                     )
 {
   /* determines NO2 and N2 from nitrate NO3 */
   Real N_denit=0; /* amount of nitrate lost to denitrification */
   Real N2O_denit, denit_t;
-  Real FT,FW,TCDF;
+  Real FT=0,FW=0,TCDF=0;
   Real Corg;
   Soil *soil;
-  int l;
+  int l,p;
+  Pft *pft;
+  Pftcrop *crop;
+  Irrigation *data;
   soil=&stand->soil;
 #ifdef DEBUG_N
   printf("NBEFORE");
@@ -47,27 +54,26 @@ void denitrification(Stand *stand  /**< pointer to stand */
     else
       FT=0.0326;
 #ifdef DEBUG_N
-    printf("w=(%g + %g + %g  + %g + %g )/ %g\n",soil->par->wpwps[l],soil->w[l]*soil->par->whcs[l],soil->ice_depth[l],
-           soil->w_fw[l],soil->ice_fw[l],soil->par->wsats[l]);
+    printf("w=(%g + %g + %g  + %g + %g )/ %g\n",soil->wpwps[l],soil->w[l]*soil->whcs[l],soil->ice_depth[l],
+           soil->w_fw[l],soil->ice_fw[l],soil->wsats[l]);
 #endif
-    denit_t = ((soil->par->wpwps[l]+soil->w[l]*soil->par->whcs[l]+soil->ice_depth[l]+
-      soil->w_fw[l]+soil->ice_fw[l])/soil->par->wsats[l]); /* denitrification threshold dependent on water filled pore space */
+    denit_t = (soil->wpwps[l]+soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+
+      soil->w_fw[l]+soil->ice_fw[l])/soil->wsats[l]; /* denitrification threshold dependent on water filled pore space */
 
     /* Version without threshold*/
     N_denit = 0.0;
     N2O_denit = 0.0;
     if(soil->temp[l]<=45.9)
     {
-      FW = 6.664096e-10*exp(21.12912*denit_t); /* newly fitted parameters on curve with threshold */
+      FW = min(1.0,6.664096e-10*exp(21.12912*denit_t)); /* newly fitted parameters on curve with threshold */
       TCDF = 1-exp(-CDN*FT*Corg);
       N_denit = FW*TCDF*soil->NO3[l];
     }
 #ifdef SAFE
-    if((FW*TCDF)>1.0 && N_denit>(soil->NO3[l]-epsilon*10))
+    if((FW*TCDF)>1.0 && N_denit>(soil->NO3[l]+epsilon*10))
     {
-      fprintf(stdout,"too large denitrification in layer %d: N_denit %g FW %g TCDF %g NO3 %g FT %g Corg %g\n",l,N_denit,FW,TCDF,soil->NO3[l],FT,Corg);
-      fflush(stdout);
-
+      fprintf(stderr,"Too large denitrification in layer %d: N_denit %g FW %g TCDF %g NO3 %g FT %g Corg %g\n",l,N_denit,FW,TCDF,soil->NO3[l],FT,Corg);
+      fflush(stderr);
       N_denit=soil->NO3[l];
     }
 #endif
@@ -87,6 +93,26 @@ void denitrification(Stand *stand  /**< pointer to stand */
     stand->cell->output.mn2o_denit+=N2O_denit*stand->frac;
     stand->cell->output.mn2_emissions+=N_denit*stand->frac;
     stand->cell->balance.n_outflux+=(N_denit+N2O_denit)*stand->frac;
+    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+    {
+      stand->cell->output.an2o_denit_agr+=N2O_denit*stand->frac;
+      stand->cell->output.an2_agr+=N_denit*stand->frac;
+    }
+    if(stand->type->landusetype==AGRICULTURE)
+    {
+      data=stand->data;
+      foreachpft(pft,p,&stand->pftlist)
+      {
+        crop=pft->data;
+#ifdef DOUBLE_HARVEST
+        crop->n2o_denitsum+=N2O_denit;
+        crop->n2_emissum+=N_denit;
+#else
+        stand->cell->output.cft_n2o_denit[pft->par->id-npft+data->irrigation*ncft]+=N2O_denit;
+        stand->cell->output.cft_n2_emis[pft->par->id-npft+data->irrigation*ncft]+=N_denit;
+#endif
+      }
+    }
   }
 #ifdef DEBUG_N
   printf("NAFTER");

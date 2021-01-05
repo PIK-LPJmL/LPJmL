@@ -19,6 +19,7 @@ void freeoutput(Output *output /**< Output data */
 {
   free(output->sdate);
   free(output->hdate);
+  free(output->husum);
   free(output->pft_harvest);
   free(output->cft_consump_water_g);
   free(output->cft_consump_water_b);
@@ -61,10 +62,24 @@ void freeoutput(Output *output /**< Output data */
   free(output->wft_vegc);
 #endif
   free(output->cft_irrig_events);
+  free(output->cft_leaf);
+  free(output->cft_root);
+  free(output->cft_veg);
+  free(output->cft_nlimit);
+  free(output->cft_laimax);
+  free(output->cft_mswc);
+  free(output->nday_month);
+  free(output->cft_runoff);
+  free(output->cft_n2o_denit);
+  free(output->cft_n2o_nit);
+  free(output->cft_n2_emis);
+  free(output->cft_leaching);
+  free(output->cft_c_emis);
 #ifdef DOUBLE_HARVEST
   free(output->cftfrac2);
   free(output->sdate2);
   free(output->hdate2);
+  free(output->husum2);
   free(output->pft_harvest2);
   free(output->cft_pet2);
   free(output->cft_transp2);
@@ -79,14 +94,27 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_airrig2);
   free(output->syear);
   free(output->syear2);
+  free(output->pft_nuptake2);
+  free(output->cft_runoff2);
+  free(output->cft_n2o_denit2);
+  free(output->cft_n2o_nit2);
+  free(output->cft_n2_emis2);
+  free(output->cft_leaching2);
+  free(output->cft_c_emis2);
+
   output->sdate2=output->hdate2=output->syear=output->syear2=NULL;
+  output->husum2=NULL;
   output->cft_transp2=output->cft_evap2=output->cft_interc2=output->cft_nir2=
     output->cft_pet2=output->cftfrac2=output->cft_airrig2=NULL;
   output->pft_harvest2=NULL;
-  output->cft_temp2=output->cft_prec2=output->cft_srad2=
-    output->cft_aboveground_biomass2=NULL;
+  output->cft_temp2=output->cft_prec2=output->cft_srad2=NULL;
+  output->cft_aboveground_biomass2=NULL;
+  output->cft_runoff2=output->cft_n2o_denit2=output->cft_n2o_nit2=output->cft_n2_emis2=
+    output->cft_leaching2=output->cft_c_emis2=NULL;
+
 #endif
-  output->sdate=output->hdate=NULL;
+  output->sdate=output->hdate=NULL; 
+  output->husum=NULL;
   output->pft_harvest=NULL;
   output->cft_consump_water_g=output->cft_consump_water_b=output->cft_pet=NULL;
   output->cft_transp=output->cft_transp_b=output->cft_evap=output->cft_evap_b=output->cft_interc=output->cft_interc_b=
@@ -99,4 +127,7 @@ void freeoutput(Output *output /**< Output data */
   output->wft_vegc=NULL;
 #endif
   output->pft_npp=output->fpc=output->cftfrac=output->cft_airrig=output->cft_luc_image=NULL;
+  output->cft_mswc=NULL;
+  output->cft_runoff=output->cft_n2o_denit=output->cft_n2o_nit=output->cft_n2_emis=
+    output->cft_leaching=output->cft_c_emis=NULL;
 } /* of 'freeoutput' */

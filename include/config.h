@@ -49,6 +49,7 @@ struct config
   Filename tamp_filename;
   Filename tmax_filename;
   Filename humid_filename;
+  Filename tmin_filename;
   Filename lightning_filename;
   Filename lwnet_filename;
   Filename swdown_filename;
@@ -67,12 +68,16 @@ struct config
   Filename fertilizer_nr_filename;
   Filename no3deposition_filename;
   Filename nh4deposition_filename;
+  Filename manure_nr_filename;
+  Filename with_tillage_filename;
+  Filename residue_data_filename;
   char *restart_filename;
   Filename lakes_filename;
   Filename wateruse_filename;
   Filename elevation_filename;
   Filename reservoir_filename;
   Filename sdate_filename;
+  Filename crop_phu_filename;
   Filename burntarea_filename;
   Filename landcover_filename;
 #ifdef IMAGE
@@ -116,7 +121,16 @@ struct config
   Bool crop_irrigation;
   int with_nitrogen;      /**< enable nitrogen cycle */
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
-  Bool fertilizer_input; 
+  Bool cropsheatfrost;
+  int tillage_type;      /**< type of tillage NO_TILLAGE=0, TILLAGE=1, READ_TILLAGE=2 */
+  int residue_treatment; /** residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
+  Bool black_fallow;      /**< simulation with black fallow */
+  Bool till_fallow;         /**< apply tillage on black fallow */
+  Bool fix_fertilization;   /**< simulation with fixed fertilizer application rate */
+  Bool no_ndeposition;      /**< turn off atmospheric N deposition */
+  Bool prescribe_residues;  /**< simulation with prescribed residue rate on black fallow */
+  Bool fertilizer_input;   /**< simulation with fertilizer input */
+  Bool manure_input;       /**< simulation with manure input */
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
   Bool float_grid;        /**< enable float datatype for binary grid file */
   Bool landuse_restart;   /**< land use enabled in restart file */
@@ -124,6 +138,7 @@ struct config
   int sdate_option_restart; /**< sdate option in restart file */
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
+  Bool grassonly;            /* set all cropland including others to zero but keep managed grasslands */
   Bool istimber;
   Bool storeclimate;           /**< store climate data in spin-up phase */
   Bool const_climate;           /**< constant climate */
@@ -133,7 +148,6 @@ struct config
   int fix_climate_year;         /**< year at which climate (and land use) is fixed */
   int fix_climate_cycle;        /**< number of years for climate shuffle for fixed climate */
   Bool const_deposition;        /**< constant N deposition */
-  Bool remove_residuals;
   Bool residues_fire;   /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
   Bool check_climate; /**< check climate input data for NetCDF files */
@@ -184,7 +198,8 @@ struct config
   Bool equilsoil;      /**< equilsoil is called */
   Bool from_restart;   /**< reading from restart */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
-  int sdate_fixyear;    /**< year in which sowing dates shall be fixed */
+  int sdate_fixyear;    /**< year after which sowing dates are held constant (for both FIXED_SDATE or NO_FIXED_SDATE), also used to fix updating vernalization requirements */
+  Bool crop_phu_option;    /**< crop phu option (semistatic internally prescribed/computed (LPJmL4): 0, prescribed: 1)*/
   Bool initsoiltemp;
   Pnet *route;         /**< river routing network */
   Pnet *irrig_neighbour; /**< irrigation neighbour network */

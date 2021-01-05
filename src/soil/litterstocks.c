@@ -23,15 +23,19 @@ Stocks litterstocks(const Litter *litter /**< pointer to litter pools */
   Stocks sum={0,0};
   for(l=0;l<litter->n;l++)
   {
-    sum.carbon+=litter->ag[l].trait.leaf.carbon;
-    sum.nitrogen+=litter->ag[l].trait.leaf.nitrogen;
+    sum.carbon+=litter->item[l].ag.leaf.carbon;
+    sum.nitrogen+=litter->item[l].ag.leaf.nitrogen;
+    sum.carbon+=litter->item[l].agsub.leaf.carbon;
+    sum.nitrogen+=litter->item[l].agsub.leaf.nitrogen;
     for(i=0;i<NFUELCLASS;i++)
     {
-      sum.carbon+=litter->ag[l].trait.wood[i].carbon;
-      sum.nitrogen+=litter->ag[l].trait.wood[i].nitrogen;
+      sum.carbon+=litter->item[l].ag.wood[i].carbon;
+      sum.nitrogen+=litter->item[l].ag.wood[i].nitrogen;
+      sum.carbon+=litter->item[l].agsub.wood[i].carbon;
+      sum.nitrogen+=litter->item[l].agsub.wood[i].nitrogen;
     }
-    sum.carbon+=litter->bg[l].carbon;
-    sum.nitrogen+=litter->bg[l].nitrogen;
+    sum.carbon+=litter->item[l].bg.carbon;
+    sum.nitrogen+=litter->item[l].bg.nitrogen;
   }
   return sum;
 } /* of 'litterstocks' */

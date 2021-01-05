@@ -24,6 +24,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
                int ncft,          /**< number of crop PFTs */
                int npft,          /**< number of PFTs */
                int sdate_option,  /**< sowing date option (0-2) */
+               Bool crop_phu_option, /**< phu computation option (0-1) */
                Bool river_routing /**< river routing (TRUE/FALSE) */
               )                   /** \return number of cells written */
 {
@@ -72,6 +73,8 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(fwriteignition(file,&grid[cell].ignition))
         break;
+      if(fwrite(&grid[cell].balance.excess_water,sizeof(Real),1,file)!=1)
+        break;
       if(fwrite(&grid[cell].discharge.waterdeficit,sizeof(Real),1,file)!=1)
         break;
       if(fwrite(grid[cell].gdd,sizeof(Real),npft, file)!=npft)
@@ -83,13 +86,18 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(fwrite(&grid[cell].ml.cropfrac_ir,sizeof(Real),1,file)!=1)
         break;
-      if(fwriteclimbuf(file,&grid[cell].climbuf))
+      if(fwriteclimbuf(file,&grid[cell].climbuf,ncft))
         break;
       if(fwritecropdates(file,grid[cell].ml.cropdates,ncft))
         break;
       if(sdate_option>NO_FIXED_SDATE)
       {
         if(fwrite(grid[cell].ml.sdate_fixed,sizeof(int),2*ncft,file)!=2*ncft)
+          break;
+      }
+      if(crop_phu_option)
+      {
+        if(fwrite(grid[cell].ml.crop_phu_fixed,sizeof(Real),2*ncft,file)!=2*ncft)
           break;
       }
       if(fwrite(grid[cell].ml.sowing_month,sizeof(int),2*ncft,file)!=2*ncft)

@@ -19,7 +19,8 @@
 
 void new_grass(Pft *pft,         /**< pointer to PFT variables */
                int UNUSED(year),
-               int UNUSED(day)
+               int UNUSED(day),
+               int UNUSED(with_nitrogen)
               )        
 {
   Pftgrass *grass;

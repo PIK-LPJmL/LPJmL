@@ -20,7 +20,13 @@
 void mixsoil(Stand *stand1,const Stand *stand2)
 {
   int l,index,i;
-  Real water1,water2,tmp;
+  Real water1,water2;
+  //Real absolute_water1[NSOILLAYER],absolute_water2;
+  //Real absolute_ice1[NSOILLAYER],absolute_ice2;
+#ifdef CHECK_BALANCE
+  Real water_before,water_after;
+  water_before=soilwater(&stand1->soil)*stand1->frac+soilwater(&stand2->soil)*stand2->frac+stand1->cell->balance.excess_water;
+#endif
   forrootsoillayer(l)
   {
     mixpool(stand1->soil.NH4[l],stand2->soil.NH4[l],stand1->frac,stand2->frac);
@@ -40,44 +46,63 @@ void mixsoil(Stand *stand1,const Stand *stand2)
   }
   for(l=0;l<stand2->soil.litter.n;l++)
   {
-    index=findlitter(&stand1->soil.litter,stand2->soil.litter.ag[l].pft);
+    index=findlitter(&stand1->soil.litter,stand2->soil.litter.item[l].pft);
     if(index==NOT_FOUND)
-      index=addlitter(&stand1->soil.litter,stand2->soil.litter.ag[l].pft)-1;
-    mixpool(stand1->soil.litter.ag[index].trait.leaf.carbon,
-            stand2->soil.litter.ag[l].trait.leaf.carbon,stand1->frac,stand2->frac);
-    mixpool(stand1->soil.litter.ag[index].trait.leaf.nitrogen,
-            stand2->soil.litter.ag[l].trait.leaf.nitrogen,stand1->frac,stand2->frac);
-    mixpool(stand1->soil.litter.bg[index].carbon,stand2->soil.litter.bg[l].carbon,
+      index=addlitter(&stand1->soil.litter,stand2->soil.litter.item[l].pft)-1;
+    mixpool(stand1->soil.litter.item[index].ag.leaf.carbon,
+            stand2->soil.litter.item[l].ag.leaf.carbon,stand1->frac,stand2->frac);
+    mixpool(stand1->soil.litter.item[index].ag.leaf.nitrogen,
+            stand2->soil.litter.item[l].ag.leaf.nitrogen,stand1->frac,stand2->frac);
+    mixpool(stand1->soil.litter.item[index].agsub.leaf.carbon,
+            stand2->soil.litter.item[l].agsub.leaf.carbon,stand1->frac,stand2->frac);
+    mixpool(stand1->soil.litter.item[index].agsub.leaf.nitrogen,
+            stand2->soil.litter.item[l].agsub.leaf.nitrogen,stand1->frac,stand2->frac);
+    mixpool(stand1->soil.litter.item[index].bg.carbon,stand2->soil.litter.item[l].bg.carbon,
           stand1->frac,stand2->frac);
-    mixpool(stand1->soil.litter.bg[index].nitrogen,stand2->soil.litter.bg[l].nitrogen,
+    mixpool(stand1->soil.litter.item[index].bg.nitrogen,stand2->soil.litter.item[l].bg.nitrogen,
           stand1->frac,stand2->frac);
     for(i=0;i<NFUELCLASS;i++)
     {
-      mixpool(stand1->soil.litter.ag[index].trait.wood[i].carbon,
-              stand2->soil.litter.ag[l].trait.wood[i].carbon,stand1->frac,stand2->frac);
-      mixpool(stand1->soil.litter.ag[index].trait.wood[i].nitrogen,
-              stand2->soil.litter.ag[l].trait.wood[i].nitrogen,stand1->frac,stand2->frac);
+      mixpool(stand1->soil.litter.item[index].ag.wood[i].carbon,
+              stand2->soil.litter.item[l].ag.wood[i].carbon,stand1->frac,stand2->frac);
+      mixpool(stand1->soil.litter.item[index].ag.wood[i].nitrogen,
+              stand2->soil.litter.item[l].ag.wood[i].nitrogen,stand1->frac,stand2->frac);
+      mixpool(stand1->soil.litter.item[index].agsub.wood[i].carbon,
+              stand2->soil.litter.item[l].agsub.wood[i].carbon,stand1->frac,stand2->frac);
+      mixpool(stand1->soil.litter.item[index].agsub.wood[i].nitrogen,
+              stand2->soil.litter.item[l].agsub.wood[i].nitrogen,stand1->frac,stand2->frac);
     }
   }
   for(l=0;l<stand1->soil.litter.n;l++)
-    if(findlitter(&stand2->soil.litter,stand1->soil.litter.ag[l].pft)==NOT_FOUND)
+    if(findlitter(&stand2->soil.litter,stand1->soil.litter.item[l].pft)==NOT_FOUND)
     {
-      mixpool(stand1->soil.litter.ag[l].trait.leaf.carbon,0,
+      mixpool(stand1->soil.litter.item[l].ag.leaf.carbon,0,
               stand1->frac,stand2->frac);
-      mixpool(stand1->soil.litter.ag[l].trait.leaf.nitrogen,0,
+      mixpool(stand1->soil.litter.item[l].ag.leaf.nitrogen,0,
               stand1->frac,stand2->frac);
-      mixpool(stand1->soil.litter.bg[l].carbon,0,
+      mixpool(stand1->soil.litter.item[l].agsub.leaf.carbon,0,
               stand1->frac,stand2->frac);
-      mixpool(stand1->soil.litter.bg[l].nitrogen,0,
+      mixpool(stand1->soil.litter.item[l].agsub.leaf.nitrogen,0,
+              stand1->frac,stand2->frac);
+      mixpool(stand1->soil.litter.item[l].bg.carbon,0,
+              stand1->frac,stand2->frac);
+      mixpool(stand1->soil.litter.item[l].bg.nitrogen,0,
               stand1->frac,stand2->frac);
       for(i=0;i<NFUELCLASS;i++)
       {
-        mixpool(stand1->soil.litter.ag[l].trait.wood[i].carbon,0,
+        mixpool(stand1->soil.litter.item[l].ag.wood[i].carbon,0,
                 stand1->frac,stand2->frac);
-        mixpool(stand1->soil.litter.ag[l].trait.wood[i].nitrogen,0,
+        mixpool(stand1->soil.litter.item[l].ag.wood[i].nitrogen,0,
+                stand1->frac,stand2->frac);
+        mixpool(stand1->soil.litter.item[l].agsub.wood[i].carbon,0,
+                stand1->frac,stand2->frac);
+        mixpool(stand1->soil.litter.item[l].agsub.wood[i].nitrogen,0,
                 stand1->frac,stand2->frac);
       }
     }
+  mixpool(stand1->soil.litter.agtop_moist,stand2->soil.litter.agtop_moist,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.litter.agtop_temp,stand2->soil.litter.agtop_temp,stand1->frac,stand2->frac);
+
   for(i=0;i<=NFUELCLASS;i++)
     mixpool(stand1->soil.litter.avg_fbd[i],stand2->soil.litter.avg_fbd[i],
             stand1->frac,stand2->frac);
@@ -93,10 +118,25 @@ void mixsoil(Stand *stand1,const Stand *stand2)
 
   mixpool(stand1->soil.snowpack,stand2->soil.snowpack,stand1->frac,
           stand2->frac);
-  foreachsoillayer(l)
+  mixpool(stand1->soil.snowfraction,stand2->soil.snowfraction,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.snowheight,stand2->soil.snowheight,stand1->frac,stand2->frac);
+  forrootsoillayer(l)
   {
-    mixpool(stand1->soil.w[l],stand2->soil.w[l],stand1->frac,stand2->frac);
+    water1 = (stand1->soil.w[l] * stand1->soil.whcs[l] + stand1->soil.ice_depth[l] + stand1->soil.w_fw[l] + stand1->soil.ice_fw[l])*stand1->frac;
+    water2 = (stand2->soil.w[l] * stand2->soil.whcs[l] + stand2->soil.ice_depth[l] + stand2->soil.w_fw[l] + stand2->soil.ice_fw[l])*stand2->frac;
+    if ((water1 + water2)>0)
+      mixpool(stand1->frac_g[l], stand2->frac_g[l], water1, water2);
+    else
+      stand1->frac_g[l]=0;
+    //stand1->soil.state[l]=(short)getstate(stand1->soil.temp+l);
+    stand1->soil.w[l]=(stand1->soil.w[l]*stand1->soil.whcs[l]*stand1->frac+stand2->soil.w[l]*stand2->soil.whcs[l]*stand2->frac)/(stand1->frac+stand2->frac);
+    mixpool(stand1->soil.whcs[l],stand2->soil.whcs[l],stand1->frac,stand2->frac);
+    stand1->soil.w[l]/=stand1->soil.whcs[l];
     mixpool(stand1->soil.w_fw[l],stand2->soil.w_fw[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.wfc[l],stand2->soil.wfc[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.whc[l],stand2->soil.whc[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.wsat[l],stand2->soil.wsat[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.wsats[l],stand2->soil.wsats[l],stand1->frac,stand2->frac);
     mixpool(stand1->soil.ice_depth[l],stand2->soil.ice_depth[l],stand1->frac,
             stand2->frac);
     mixpool(stand1->soil.ice_fw[l],stand2->soil.ice_fw[l],stand1->frac,
@@ -105,26 +145,65 @@ void mixsoil(Stand *stand1,const Stand *stand2)
             stand1->frac,stand2->frac);
     mixpool(stand1->soil.ice_pwp[l],stand2->soil.ice_pwp[l],stand1->frac,
             stand2->frac);
-    tmp=stand1->soil.temp[l];
-    stand1->soil.state[l]=(short)getstate(&tmp);
-    stand1->soil.temp[l]=tmp;
+    mixpool(stand1->soil.wpwp[l],stand2->soil.wpwp[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.wpwps[l],stand2->soil.wpwps[l],stand1->frac,
+            stand2->frac);
+/*
+    absolute_water1[l] = stand1->soil.w[l] * stand1->soil.whcs[l] + stand1->soil.w_fw[l] + stand1->soil.wpwps[l] * (1 - stand1->soil.ice_pwp[l]);
+    absolute_water2 = stand2->soil.w[l] * stand2->soil.whcs[l] + stand2->soil.w_fw[l] + stand2->soil.wpwps[l] * (1 - stand2->soil.ice_pwp[l]);
+    mixpool(absolute_water1[l], absolute_water2, stand1->frac, stand2->frac);
 
-    water1=(stand1->soil.w[l]*stand1->soil.par->whcs[l]+stand1->soil.ice_depth[l]+stand1->soil.w_fw[l]+stand1->soil.ice_fw[l])*stand1->frac;
-    water2=(stand2->soil.w[l]*stand2->soil.par->whcs[l]+stand2->soil.ice_depth[l]+stand2->soil.w_fw[l]+stand2->soil.ice_fw[l])*stand2->frac;
-    if((water1+water2)>0)
-      mixpool(stand1->frac_g[l],stand2->frac_g[l],water1,water2);
+    absolute_ice1[l] = stand1->soil.ice_depth[l] + stand1->soil.ice_fw[l] + stand1->soil.wpwps[l] * stand1->soil.ice_pwp[l];
+    absolute_ice2 = stand2->soil.ice_depth[l] + stand2->soil.ice_fw[l] + stand2->soil.wpwps[l] * stand2->soil.ice_pwp[l];
+    mixpool(absolute_ice1[l], absolute_ice2, stand1->frac, stand2->frac);
+*/
   }
-  mixpool(stand1->soil.w_evap,stand2->soil.w_evap,stand1->frac,stand2->frac);
-  if ((stand1->soil.w_evap*stand1->soil.par->whc[0]*param.soildepth_evap)>(stand1->soil.w[0]*stand1->soil.par->whcs[0]))
-    stand1->soil.w_evap=min(1.0,stand1->soil.w[0]*soildepth[0]/param.soildepth_evap);
-  if (stand1->soil.w_evap<0)
-    stand1->soil.w_evap=0;
+
+  for(l=0;l<NTILLLAYER;l++)
+    mixpool(stand1->soil.df_tillage[l],stand2->soil.df_tillage[l],stand1->frac,stand2->frac);
+
+  updatelitterproperties(stand1,stand1->frac+stand2->frac);
+  pedotransfer(stand1,NULL,NULL,stand1->frac+stand2->frac);
+  //pedotransfer(stand1,absolute_water1,absolute_ice1,stand1->frac+stand2->frac);
+  /* bedrock needs to be mixed seperately */
+  stand1->soil.w[BOTTOMLAYER]=(stand1->soil.w[BOTTOMLAYER]*stand1->soil.whcs[BOTTOMLAYER]*stand1->frac+stand2->soil.w[BOTTOMLAYER]*stand2->soil.whcs[BOTTOMLAYER]*stand2->frac)/(stand1->frac+stand2->frac);
+  mixpool(stand1->soil.whcs[BOTTOMLAYER],stand2->soil.whcs[BOTTOMLAYER],stand1->frac,stand2->frac);
+  stand1->soil.w[BOTTOMLAYER]/=stand1->soil.whcs[BOTTOMLAYER];
+  mixpool(stand1->soil.w_fw[BOTTOMLAYER],stand2->soil.w_fw[BOTTOMLAYER],stand1->frac,stand2->frac);
+  mixpool(stand1->soil.wsat[BOTTOMLAYER],stand2->soil.wsat[BOTTOMLAYER],stand1->frac,stand2->frac);
+  mixpool(stand1->soil.wsats[BOTTOMLAYER],stand2->soil.wsats[BOTTOMLAYER],stand1->frac,stand2->frac);
+  mixpool(stand1->soil.ice_depth[BOTTOMLAYER],stand2->soil.ice_depth[BOTTOMLAYER],stand1->frac,stand2->frac);
+  mixpool(stand1->soil.ice_fw[BOTTOMLAYER],stand2->soil.ice_fw[BOTTOMLAYER],stand1->frac,stand2->frac);
+  mixpool(stand1->soil.freeze_depth[BOTTOMLAYER],stand2->soil.freeze_depth[BOTTOMLAYER],stand1->frac,stand2->frac);
+  mixpool(stand1->soil.ice_pwp[BOTTOMLAYER],stand2->soil.ice_pwp[BOTTOMLAYER],stand1->frac,stand2->frac);
+  mixpool(stand1->soil.wfc[BOTTOMLAYER], stand2->soil.wfc[BOTTOMLAYER], stand1->frac, stand2->frac);
+  mixpool(stand1->soil.whc[BOTTOMLAYER], stand2->soil.whc[BOTTOMLAYER], stand1->frac, stand2->frac);
+  mixpool(stand1->soil.whcs[BOTTOMLAYER], stand2->soil.whcs[BOTTOMLAYER], stand1->frac, stand2->frac);
+  mixpool(stand1->soil.wpwp[BOTTOMLAYER],stand2->soil.wpwp[BOTTOMLAYER],stand1->frac,stand2->frac);
+  mixpool(stand1->soil.wpwps[BOTTOMLAYER], stand2->soil.wpwps[BOTTOMLAYER], stand1->frac, stand2->frac);
+  mixpool(stand1->soil.beta_soil[BOTTOMLAYER], stand2->soil.beta_soil[BOTTOMLAYER], stand1->frac, stand2->frac);
+  mixpool(stand1->soil.bulkdens[BOTTOMLAYER], stand2->soil.bulkdens[BOTTOMLAYER], stand1->frac, stand2->frac);
+  mixpool(stand1->soil.k_dry[BOTTOMLAYER], stand2->soil.k_dry[BOTTOMLAYER], stand1->frac, stand2->frac);
+  mixpool(stand1->soil.Ks[BOTTOMLAYER], stand2->soil.Ks[BOTTOMLAYER], stand1->frac, stand2->frac);
 
   mixpool(stand1->soil.mean_maxthaw,stand2->soil.mean_maxthaw,stand1->frac,
           stand2->frac);
   mixpool(stand1->soil.alag,stand2->soil.alag,stand1->frac,stand2->frac);
   mixpool(stand1->soil.amp,stand2->soil.amp,stand1->frac,stand2->frac);
   mixpool(stand1->soil.rw_buffer,stand2->soil.rw_buffer,stand1->frac,stand2->frac);
+#ifdef CHECK_BALANCE
+  water_after=soilwater(&stand1->soil)*(stand1->frac+stand2->frac)+stand1->cell->balance.excess_water;
+  if(fabs(water_before-water_after)>epsilon*1e-2)
+  {
+#ifndef NO_FAIL_BALANCE
+    fail(INVALID_WATER_BALANCE_ERR,TRUE,
+#else
+    fprintf(stderr,
+#endif
+         "Invalid water balance=%g=%g-%g in mixsoil()",fabs(water_before-water_after),water_before,water_after);
+    fflush(stderr);
+  }
+#endif
 } /* of 'mixsoil' */
 
 void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop)
@@ -147,16 +226,22 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop)
 Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
               Stand *cropstand,      /**< crop stand */
               const Pftpar pftpar[], /**< PFT parameter array */
+              Bool with_tillage,     /**< tillage  (TRUE/FALSE) */
               Bool intercrop,        /**< intercropping possible (TRUE/FALSE) */
               int npft,              /**< number of natural PFTs */
               Bool irrig,            /**< irrigated stand (TRUE/FALSE) */
-              int year               /**< simulation year */
+              int year,              /**< simulation year */
+              int with_nitrogen
              )                       /** \return stand has to be killed (TRUE/FALSE) */
 {
   int s,p,n_est;
   Pft *pft;
   Stocks flux_estab,stocks;
   Irrigation *data;
+  /* call tillage before */
+  if(with_tillage && year >= param.till_startyear)
+    tillage(&cropstand->soil,param.residue_frac);
+
 
   s=findlandusetype(cell->standlist,irrig? SETASIDE_IR : SETASIDE_RF);
   if(s!=NOT_FOUND)
@@ -183,7 +268,7 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
         if(establish(cell->gdd[p],pftpar+p,&cell->climbuf) &&
            pftpar[p].type==GRASS && pftpar[p].cultivation_type==NONE)
         {
-          addpft(cropstand,pftpar+p,year,0);
+          addpft(cropstand,pftpar+p,year,0,with_nitrogen);
           n_est++;
         }
       }

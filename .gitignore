@@ -1,3 +1,9 @@
+.project
+.gitignore
+.cproject
+.settings/
+calc_PHU/tmp/
+
 # Prerequisites
 *.d
 
@@ -75,7 +81,7 @@ core-*
 *.rdata
 *.m
 *.N
-*.csv
+#*.csv
 *.CSV
 
 # Common desktop formats
@@ -155,4 +161,5 @@ bin/cvrtclm
 bin/manage2js
 bin/regridirrig
 bin/headersize
+bin/printglobal
 bin/mergeclm

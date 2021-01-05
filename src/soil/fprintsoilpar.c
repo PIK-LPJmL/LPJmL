@@ -29,7 +29,7 @@ void fprintsoilpar(FILE *file,              /**< pointer to ASCII file */
   fputs(" (mm)\nfbd factors:\t",file);
   for(i=0;i<NFUELCLASS;i++)
     fprintf(file," %g",fbd_fac[i]);
-  fputs("\nName               w_pwp  w_fc  w_sat hsg tdiff0 tdiff15 tdiff100 condpwp cond100 cond100ice",file);
+  fputs("\nName               %sand  %silt %clay hsg tdiff0 tdiff15 tdiff100 condpwp cond100 cond100ice",file);
   if(with_nitrogen)
     fputs(" a_denit b_denit c_denit d_denit anion_excl cn_ratio",file);
   fputs("\n------------------ ------ ----- ----- --- ------ ------- -------- ------- ------- ----------",file);
@@ -39,8 +39,8 @@ void fprintsoilpar(FILE *file,              /**< pointer to ASCII file */
     fputc('\n',file);
   for(i=0;i<nsoil;i++)
   {
-    fprintf(file,"%-18s %6.2f %5.2f %5.2f %3d %6.3f %7.3f %8.3f %7.3f %7.3f %10.3f",
-            soilpar[i].name,soilpar[i].wpwp,soilpar[i].wfc,soilpar[i].wsat,
+    fprintf(file,"%18s %6.2f %5.2f %5.2f %3d %6.3f %7.3f %8.3f %7.3f %7.3f %10.3f",
+            soilpar[i].name,soilpar[i].sand,soilpar[i].silt,soilpar[i].clay,
             soilpar[i].hsg+1,
             soilpar[i].tdiff_0,soilpar[i].tdiff_15,soilpar[i].tdiff_100,
             soilpar[i].tcond_pwp,soilpar[i].tcond_100,soilpar[i].tcond_100_ice);

@@ -30,7 +30,7 @@ typedef struct
   void (*fprint)(FILE *,const Stand *);
   Real (*daily)(Stand *,Real,const Dailyclimate *,int,int,Real,
                 const Real [],Real,Real,Real,Real,Real,
-                Real,Real,int,int,int,Bool,const Config *);
+                Real,Real,int,int,int,Bool,Real,const Config *);
   Bool (*annual)(Stand *,int,int,
                  Real,int,Bool,Bool,const Config *);
   void (*dailyfire)(Stand *,Livefuel *,Real,Real,const Dailyclimate *,const Config *);
@@ -79,7 +79,7 @@ extern int findstand(const Standlist, Landusetype, Bool);
 extern int findlandusetype(const Standlist,Landusetype);
 extern void allocation_today(Stand *,int,int);
 extern void light(Stand *,int,const Real[]);
-extern Stocks establishmentpft(Stand *,const Pftpar[],int,int,Real,int);
+extern Stocks establishmentpft(Stand *,const Pftpar[],int,int,Real,int,int);
 extern Stocks standstocks(const Stand *);
 extern void cutpfts(Stand *);
 extern Real roughnesslength(const Standlist);
@@ -89,9 +89,9 @@ extern Real water_stressed(Pft *,Real [LASTLAYER],Real,Real,
                            Real,Real *,Real *,Real *,Real,Real,
                            Real,Real,Real,Real *,int,int,const Config *);
 
-extern Real infil_perc_irr(Stand *,Real,Real *,const Config *);
-extern Real infil_perc_rain(Stand *,Real,Real *,const Config *);
-extern Real albedo_stand(Stand *);                            
+extern Real infil_perc_irr(Stand *,Real,Real *,int,int,const Config *);
+extern Real infil_perc_rain(Stand *,Real,Real *,int,int,const Config *);
+extern Real albedo_stand(const Stand *);                            
 extern Landcover initlandcover(int,const Config *);
 extern Bool readlandcover(Landcover,const Cell *,int,const Config *);
 extern Real *getlandcover(Landcover,int);
@@ -107,7 +107,7 @@ extern void freelandcover(Landcover,Bool);
  * functions in C++
  */
 
-#define daily_stand(stand,co2,climate,day,month,daylength,gp_pft,gtemp_air,gtemp_soil,gp_stand,gp_stand_leafon,eeq,par,melt,npft,ncft,year,intercrop,config) stand->type->daily(stand,co2,climate,day,month,daylength,gp_pft,gtemp_air,gtemp_soil,gp_stand,gp_stand_leafon,eeq,par,melt,npft,ncft,year,intercrop,config)
+#define daily_stand(stand,co2,climate,day,month,daylength,gp_pft,gtemp_air,gtemp_soil,gp_stand,gp_stand_leafon,eeq,par,melt,npft,ncft,year,intercrop,agrfrac,config) stand->type->daily(stand,co2,climate,day,month,daylength,gp_pft,gtemp_air,gtemp_soil,gp_stand,gp_stand_leafon,eeq,par,melt,npft,ncft,year,intercrop,agrfrac,config)
 #define annual_stand(stand,npft,ncft,popdens,year,isdaily,intercrop,config) stand->type->annual(stand,npft,ncft,popdens,year,isdaily,intercrop,config)
 #define dailyfire_stand(stand,livefuel,popdens,avgprec,climate,config) if(stand->type->dailyfire!=NULL) stand->type->dailyfire(stand,livefuel,popdens,avgprec,climate,config)
 #define isdailyoutput_stand(output,stand) ((stand->type->isdaily_output==NULL) ? FALSE : stand->type->isdaily_output(output,stand))

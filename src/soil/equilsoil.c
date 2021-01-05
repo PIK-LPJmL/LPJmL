@@ -149,18 +149,18 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
         soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=0;
         for(p=0;p<soil->litter.n;p++)
         {
-          socfraction=pow(10,pftpar[soil->litter.ag[p].pft->id].soc_k*logmidlayer[l])
-                      - (l>0 ? pow(10,pftpar[soil->litter.ag[p].pft->id].soc_k*logmidlayer[l-1]): 0);
+          socfraction=pow(10,pftpar[soil->litter.item[p].pft->id].soc_k*logmidlayer[l])
+                      - (l>0 ? pow(10,pftpar[soil->litter.item[p].pft->id].soc_k*logmidlayer[l-1]): 0);
           wood=0;
           for(f=0;f<NFUELCLASS;f++)
-            wood+=soil->litter.ag[p].trait.wood[f].carbon;
-          pftlitter=soil->litter.bg[p].carbon+soil->litter.ag[p].trait.leaf.carbon+wood;
+            wood+=soil->litter.item[p].ag.wood[f].carbon+soil->litter.item[p].agsub.wood[f].carbon;
+          pftlitter=soil->litter.item[p].bg.carbon+soil->litter.item[p].ag.leaf.carbon+soil->litter.item[p].agsub.leaf.carbon+wood;
           if(sumlitter>0)
              //soil->pool[l].slow.carbon+=c0[soil->litter.ag[p].pft->id].slow*soil->c_shift_slow[l][soil->litter.ag[p].pft->id]*pftlitter/sumlitter;
-             soil->pool[l].slow.carbon+=c0[soil->litter.ag[p].pft->id].slow*socfraction*pftlitter/sumlitter;
+             soil->pool[l].slow.carbon+=c0[soil->litter.item[p].pft->id].slow*socfraction*pftlitter/sumlitter;
           if(sumlitter>0)
              //soil->pool[l].fast.carbon+=c0[soil->litter.ag[p].pft->id].fast*soil->c_shift_fast[l][soil->litter.ag[p].pft->id]*pftlitter/sumlitter;
-             soil->pool[l].fast.carbon+=c0[soil->litter.ag[p].pft->id].fast*socfraction*pftlitter/sumlitter;
+             soil->pool[l].fast.carbon+=c0[soil->litter.item[p].pft->id].fast*socfraction*pftlitter/sumlitter;
         }
         //soil->pool[l].slow.nitrogen=soil->pool[l].slow.carbon/soil->par->cn_ratio;
         //soil->pool[l].fast.nitrogen=soil->pool[l].fast.carbon/soil->par->cn_ratio;

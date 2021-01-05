@@ -54,8 +54,9 @@ typedef struct
   Real temp_fall;           /**< threshold for decreasing temperature to determine the crop date */
   Real temp_spring;         /**< threshold for increasing temperature to determine the crop date */
   Real temp_vern;           /**< threshold for increasing temperature to determine the crop date */
-  Limit trg;                /**< temperature under which vernalization is possible (deg C) */
-  Real pvd;                 /**< number of vernalization days required */
+  Limit tv_eff;             /**< lower and upper temperature thresholds for effective vernalization (deg C) */
+  Limit tv_opt;             /**< lower and upper temperature thresholds for optimal vernalization (deg C) */
+  Real pvd_max;             /**< maximum number of vernalization days required */
   Real psens;               /**< sensitivity to the photoperiod effect [0-1] (1 means no sensitivity) */
   Real pb;                  /**< basal photoperiod (h) (pb<ps for longer days plants) */
   Real ps;                  /**< saturating photoperiod (h) (ps<pb for shorter days plants) */
@@ -83,9 +84,9 @@ typedef struct
 {
   Bool wtype;               /**< distinguish between winter and summer crop */
   int growingdays;          /**< counter for the days of the crop cycle */
-  Real pvd;                 /**< vernalization days */
-  Real phu;                 /**< phenological heat unit */
-  Real basetemp;            /**< base temperature */
+  Real pvd;                 /**< actually required vernalization days (only if STATIC_PHU) */
+  Real phu;                 /**< required phenological heat units from emergence to maturity (STATIC_PHU, PRESCRIBED_PHU, CALCULATED_PHU) */
+  Real basetemp;            /**< base temperature for phenological development */
   Bool senescence;          /**< current senescence period */
   Bool senescence0;         /**< senescence period of yesterday */
   Real husum;               /**< sum of heat units */
@@ -101,19 +102,27 @@ typedef struct
   Real ndemandsum;
   Real nuptakesum;
   Real nfertilizer;         /* fertilizer amount */
+  Real nmanure;             /* manure ammount */
   Real vscal_sum;
+  Bool frostkill;           /* set to TRUE in daily_agriculture if tmin<-5 and 0.2<fphu<0.95 */
   Real supplysum;
-#ifdef DOUBLE_HARVEST
+  #ifdef DOUBLE_HARVEST
   Real petsum;
   Real evapsum;
   Real transpsum;
   Real intercsum;
   Real precsum;
   Real sradsum;
-  Real pirrww;
+  Real irrig_apply;
   Real tempsum;
   Real nirsum;
   Real lgp;
+  Real runoffsum;
+  Real n2o_denitsum;
+  Real n2o_nitsum;
+  Real n2_emissum;
+  Real leachingsum;
+  Real c_emissum;
   int sdate;
   int sowing_year;
 #endif
@@ -123,7 +132,7 @@ extern char *calcmethod[];
 
 /* Declaration of functions */
 
-extern void new_crop(Pft *,int,int);
+extern void new_crop(Pft *,int,int,int);
 extern void allocation_daily_crop(Pft *,Real, Real,int,Daily_outputs *);
 extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,int,Bool);
 extern Real fpc_crop(Pft *);
@@ -132,7 +141,7 @@ extern Real alphaa_crop(const Pft *,int,int);
 extern void litter_update_crop(Litter *,Pft *,Real);
 extern Real lai_crop(const Pft *);
 extern Real actual_lai_crop(const Pft *);
-extern Bool phenology_crop(Pft *,Real,Real);
+extern Bool phenology_crop(Pft *,Real,Real,Real,int,const Config *);
 extern void laimax_manage(Manage *,const Pftpar [],int,int,int);
 extern Bool fwrite_crop(FILE *,const Pft *);
 extern void fprint_crop(FILE *,const Pft *,int);
@@ -144,8 +153,8 @@ extern Real vegc_sum_crop(const Pft *);
 extern Real vegn_sum_crop(const Pft *);
 extern Real agb_crop(const Pft *);
 extern void free_crop(Pft *);
-extern void phen_variety(Pft *,int,Real,int,Bool);
-extern void harvest_crop(Output *,Stand *,Pft *,int,int,const Config *);
+extern void phen_variety(Pft *,int,Real,int,Bool,const Config *,int,int);
+extern void harvest_crop(Output *,Stand *,Pft *,int,int,int,const Config *);
 extern void adapt_crop_type(Real [],Real,const Pftpar [],int,int,int);
 extern Real wdf_crop(Pft *,Real,Real);
 extern void fprintpar_crop(FILE *,const Pftpar *,const Config *);

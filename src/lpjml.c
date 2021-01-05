@@ -213,7 +213,7 @@ int main(int argc,char **argv)
   /* Allocation and initialization of grid */
   rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
-
+  
   rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");

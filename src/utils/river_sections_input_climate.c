@@ -129,7 +129,7 @@ int main(int argc,char **argv)
       {
     lon=rbuf1[0];
     lat=rbuf1[1];
-	/* printf("%d %d %d\n",k,lon,lat); */
+    /* printf("%d %d %d\n",k,lon,lat); */
       }
       else
       {

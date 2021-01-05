@@ -41,7 +41,16 @@ Bool fread_crop(FILE *file, /**< file pointer */
   freadreal1(&crop->husum,swap,file);
   freadreal1(&crop->vdsum,swap,file);
   freadreal1(&crop->fphu,swap,file);
-  freadreal((Real *)&crop->ind,sizeof(Cropphys2)/sizeof(Real),swap,file);
+  //freadreal((Real *)&crop->ind,sizeof(Cropphys2)/sizeof(Real),swap,file);
+  freadreal1(&crop->ind.leaf.carbon,swap,file);
+  freadreal1(&crop->ind.leaf.nitrogen,swap,file);
+  freadreal1(&crop->ind.root.carbon,swap,file);
+  freadreal1(&crop->ind.root.nitrogen,swap,file);
+  freadreal1(&crop->ind.pool.carbon,swap,file);
+  freadreal1(&crop->ind.pool.nitrogen,swap,file);
+  freadreal1(&crop->ind.so.carbon,swap,file);
+  freadreal1(&crop->ind.so.nitrogen,swap,file);
+
   freadreal1(&crop->flaimax,swap,file);
   freadreal1(&crop->lai,swap,file);
   freadreal1(&crop->lai000,swap,file);
@@ -51,7 +60,9 @@ Bool fread_crop(FILE *file, /**< file pointer */
   freadreal1(&crop->ndemandsum,swap,file);
   freadreal1(&crop->nuptakesum,swap,file);
   freadreal1(&crop->nfertilizer,swap,file);
+  freadreal1(&crop->nmanure,swap,file);
   freadreal1(&crop->vscal_sum,swap,file);
+  freadint1(&crop->frostkill,swap,file);
 #ifdef DOUBLE_HARVEST
   freadreal1(&crop->supplysum,swap,file);
   freadreal1(&crop->petsum,swap,file);
@@ -60,10 +71,16 @@ Bool fread_crop(FILE *file, /**< file pointer */
   freadreal1(&crop->intercsum,swap,file);
   freadreal1(&crop->precsum,swap,file);
   freadreal1(&crop->sradsum,swap,file);
-  freadreal1(&crop->pirrww,swap,file);
+  freadreal1(&crop->irrig_apply,swap,file);
   freadreal1(&crop->tempsum,swap,file);
   freadreal1(&crop->nirsum,swap,file);
   freadreal1(&crop->lgp,swap,file);
+  freadreal1(&crop->runoffsum,swap,file);
+  freadreal1(&crop->n2o_denitsum,swap,file);
+  freadreal1(&crop->n2o_nitsum,swap,file);
+  freadreal1(&crop->n2_emissum,swap,file);
+  freadreal1(&crop->leachingsum,swap,file);
+  freadreal1(&crop->c_emissum,swap,file);
   freadint1(&crop->sdate,swap,file);
   return freadint1(&crop->sowing_year,swap,file)!=1;
 #else

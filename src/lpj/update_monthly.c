@@ -20,12 +20,13 @@
 void update_monthly(Cell *cell,  /**< Pointer to cell */
                     Real mtemp,  /**< monthly average temperature (deg C) */
                     Real mprec,  /**< monthly average precipitation (mm) */
+                    int ncft,    /**< number of crop PFTs */
                     int month    /**< month (0..11) */
                    )
 {
   int p;
   Pft *pft;
-  int s;
+  int s,l,i;
   Stand *stand;
 
   monthly_climbuf(&cell->climbuf,mtemp,mprec,cell->output.mpet,month);

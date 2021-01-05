@@ -127,7 +127,7 @@ Real snow(Soil *soil,       /**< pointer to soil data */
     {
       /*temperature change of remaining snow layer */
       dT=th_diff_snow*timestep2sec(1.0,heat_steps)/(soil->snowpack*soil->snowpack*1e-6)
-         *(temp+soil->temp[TOPLAYER]-2*soil->temp[SNOWLAYER]);
+         *(temp+(soil->temp[TOPLAYER]*(1-soil->litter.agtop_cover)+soil->litter.agtop_temp*soil->litter.agtop_cover)-2*soil->temp[SNOWLAYER]);
       if(fabs(dT)<epsilon || t==maxheatsteps)
         break;
       /* melting of the whole snow layer*/

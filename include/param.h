@@ -71,6 +71,20 @@ typedef struct
   Real hum_ign;         /**< a parameter for scaling the human ignintions within SPITFIRE */
   Real residues_in_soil;  /**< minimum residues in soil*/
   Real nfert_split;     /**< threshold fertilizer input for split application */
+  Real manure_cn;       /* CN ratio of applied manure gC/gN */
+  Real nfert_split_frac;       /* fraction of fertilizer to be applied at sowing */
+  Real nfert_no3_frac;  /* fraction of NO3 in fertilizer */
+  Real nmanure_nh4_frac;  /* fraction of NH4 in manure */
+  Real residue_frac; /**< fraction of residues to be submerged with tillage */
+  Real mixing_efficiency; /**< density factor to simulate changes in bulk density by tillage */
+  int till_startyear; /* year in which tillage should start */
+
+  Real residue_rate;        /**< fixed residue rate in gC/m2/yr */
+  Real residue_pool;        /**< fixed residue pool in gC/m2 */
+  Real residue_cn;          /**< CN ratio of prescribed residues */
+  Real residue_fbg;         /**< belowground fraction of prescribed residues */
+  Real fertilizer_rate;     /**< fixed fertilizer application rate in gN/m2/yr */
+  Real manure_rate;         /**< fixed manure application rate in gN/m2/yr */
   Real min_c_bnf;
   Real par_sink_limit;  /**< Michaelis-Menten scaling of sink limitation */
   Real k_temp;          /**< factor of temperature dependence of nitrogen demand for Rubisco activity */

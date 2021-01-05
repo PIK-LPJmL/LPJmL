@@ -26,7 +26,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
 #endif
   Pft *pft;
   Stand *stand;
-  init_climbuf(&cell->climbuf);
+  init_climbuf(&cell->climbuf,ncft);
   cell->balance.aprec=cell->balance.anpp=cell->balance.arh=cell->balance.awater_flux=0.0;
   cell->afire_frac=cell->balance.biomass_yield.carbon=cell->balance.biomass_yield.nitrogen=0.0;
   cell->balance.total_irrig_from_reservoir=cell->balance.total_reservoir_out=0.0;
@@ -44,6 +44,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.prod_turnover.fast.carbon=cell->balance.prod_turnover.fast.nitrogen=0;
   cell->balance.prod_turnover.slow.carbon=cell->balance.prod_turnover.slow.nitrogen=0;
   cell->balance.neg_fluxes.carbon=cell->balance.neg_fluxes.nitrogen=0;
+  cell->balance.excess_water=0;
 #if defined IMAGE && defined COUPLED
   cell->output.npp_nat=cell->output.npp_wp=cell->output.flux_estab_nat=cell->output.flux_estab_wp=cell->output.rh_nat=cell->output.rh_wp=0.0;
 #endif
