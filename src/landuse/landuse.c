@@ -1523,33 +1523,30 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     /* do changes for residue rate left on field*/
     for(cell=0; cell<config->ngridcell; cell++)
     {
-      for(i=0; i<WIRRIG; i++)
+      for(j=0; j<ncft; j++)
       {
-        for(j=0; j<ncft; j++)
-        {
-          for(i=0; i<WIRRIG; i++)
-            grid[cell].ml.residue_on_field[i].crop[j]=data[count];
-          count++;
-        }
-        for(j=0; j<NGRASS; j++)
-        {
-          for(i=0; i<WIRRIG; i++)
-            grid[cell].ml.residue_on_field[i].grass[j]=data[count];
-          count++;
-        }
-        if(landuse->residue_on_field.var_len!=ncft+NGRASS)
-        {
-          for(i=0; i<WIRRIG; i++)
-            grid[cell].ml.residue_on_field[i].biomass_grass=data[count];
-          count++;
-          for(i=0; i<WIRRIG; i++)
-            grid[cell].ml.residue_on_field[i].biomass_tree=data[count];
-          count++;
-        }
-        else
-          for(i=0; i<WIRRIG; i++)
-            grid[cell].ml.residue_on_field[i].biomass_grass=grid[cell].ml.residue_on_field[i].biomass_tree=0;
+        for(i=0; i<WIRRIG; i++)
+          grid[cell].ml.residue_on_field[i].crop[j]=data[count];
+        count++;
       }
+      for(j=0; j<NGRASS; j++)
+      {
+        for(i=0; i<WIRRIG; i++)
+          grid[cell].ml.residue_on_field[i].grass[j]=data[count];
+        count++;
+      }
+      if(landuse->residue_on_field.var_len!=ncft+NGRASS)
+      {
+        for(i=0; i<WIRRIG; i++)
+          grid[cell].ml.residue_on_field[i].biomass_grass=data[count];
+        count++;
+        for(i=0; i<WIRRIG; i++)
+          grid[cell].ml.residue_on_field[i].biomass_tree=data[count];
+        count++;
+      }
+      else
+        for(i=0; i<WIRRIG; i++)
+          grid[cell].ml.residue_on_field[i].biomass_grass=grid[cell].ml.residue_on_field[i].biomass_tree=0;
     }
     free(data);
   }
