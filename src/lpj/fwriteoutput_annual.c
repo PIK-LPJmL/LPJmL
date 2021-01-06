@@ -253,6 +253,7 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
   float *vec;
   short *svec;
   Real fracs;
+  Real grassfrac=0;
   if(isopen(output,SEASONALITY))
   {
     count=0;
@@ -661,6 +662,97 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       }
     writeannual(output,AGB_TREE,vec,year,config);
   }
+  if(isopen(output,MGRASS_SOILC))
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        grassfrac=0;
+        foreachstand(stand,s,grid[cell].standlist)
+        {
+          if(stand->type->landusetype==GRASSLAND){
+            for(p=0;p<stand->soil.litter.n;p++)
+              vec[count]+=(float)(stand->soil.litter.item[p].bg.carbon*stand->frac);
+            forrootsoillayer(l)
+              vec[count]+=(float)((stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac);
+            grassfrac+=stand->frac;
+          }
+        }
+        if(grassfrac>epsilon)
+          vec[count]/=grassfrac;
+        count++;
+      }
+    writeannual(output,MGRASS_SOILC,vec,year,config);
+  }
+  if(isopen(output,MGRASS_LITC))
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        grassfrac=0;
+        foreachstand(stand,s,grid[cell].standlist)
+        {
+          if(stand->type->landusetype==GRASSLAND){
+            vec[count]+=(float)(litter_ag_sum(&stand->soil.litter)*stand->frac);
+            grassfrac+=stand->frac;
+          }
+        }
+        if(grassfrac>epsilon)
+          vec[count]/=grassfrac;
+        count++;
+      }
+    writeannual(output,MGRASS_LITC,vec,year,config);
+  }
+  if(isopen(output,MGRASS_SOILN))
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        grassfrac=0;
+        foreachstand(stand,s,grid[cell].standlist)
+        {
+          if(stand->type->landusetype==GRASSLAND){
+            for(p=0;p<stand->soil.litter.n;p++)
+              vec[count]+=(float)(stand->soil.litter.item[p].bg.nitrogen*stand->frac);
+            forrootsoillayer(l)
+              vec[count]+=(float)((stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac);
+            grassfrac+=stand->frac;
+          }
+        }
+        if(grassfrac>epsilon)
+          vec[count]/=grassfrac;
+        count++;
+      }
+    writeannual(output,MGRASS_SOILN,vec,year,config);
+  }
+  if(isopen(output,MGRASS_LITN))
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)
+      if(!grid[cell].skip)
+      {
+        vec[count]=0;
+        grassfrac=0;
+        foreachstand(stand,s,grid[cell].standlist)
+        {
+          if(stand->type->landusetype==GRASSLAND){
+            vec[count]+=(float)(litter_ag_sum_n(&stand->soil.litter)*stand->frac);
+            grassfrac+=stand->frac;
+          }
+        }
+        if(grassfrac>epsilon)
+          vec[count]/=grassfrac;
+        count++;
+      }
+    writeannual(output,MGRASS_LITN,vec,year,config);
+  }
+
   writeoutputvar(NEGC_FLUXES,neg_fluxes.carbon);
   writeoutputvar(NEGN_FLUXES,neg_fluxes.nitrogen);
   writeoutputvar(MEANVEGCMANGRASS,mean_vegc_mangrass);

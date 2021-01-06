@@ -22,6 +22,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
                   int UNUSED(npft),     /**< number of natural PFTs */
                   int nbiomass,         /**< number of biomass PFTs */
                   int ncft,             /**< number of crop PFTs */
+                  int with_nitrogen,    /**< flag for nitrogen setting */
                   Bool permafrost       /**< permafrost enabled? (TRUE/FALSE) */
                  )                      /** \return nitrogen uptake (gN/m2/day) */
 {
@@ -38,6 +39,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real n_uptake=0;
   Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
   Real fixed_n=0;
+  Real autofert_n=0;
   Real rootdist_n[LASTLAYER];
   int l;
   soil=&pft->stand->soil;
@@ -133,13 +135,30 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
       pft->stand->cell->output.abnf_agr += fixed_n*pft->stand->frac;
       pft->vscal = 1;
     }
-    else {
-      *n_plant_demand = pft->bm_inc.nitrogen;
-      *ndemand_leaf = *n_plant_demand*crop->ind.leaf.carbon / (crop->ind.leaf.carbon + (crop->ind.root.carbon / croppar->ratio.root + crop->ind.pool.carbon / croppar->ratio.pool + crop->ind.so.carbon / croppar->ratio.so)); /*these parameters need to be in pft.par and need to be checked as well)*/
-      if (ndemand_leaf_opt < epsilon)
+    else
+    {
+      if(with_nitrogen==AUTO_FERTILIZER)
+      {
+        autofert_n = *n_plant_demand - pft->bm_inc.nitrogen;
+        n_uptake += autofert_n;
+        pft->bm_inc.nitrogen = *n_plant_demand;
         pft->vscal = 1;
+#ifdef DOUBLE_HARVEST
+        crop->nfertsum+=autofert_n*pft->stand->frac;
+#else
+        pft->stand->cell->output.cft_nfert[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=autofert_n;
+#endif
+        pft->stand->cell->output.flux_nfert+=autofert_n*pft->stand->frac;
+      }
       else
-        pft->vscal = min(1, (*ndemand_leaf / (ndemand_leaf_opt / (1 + pft->par->knstore)))); /*eq. C20 in Smith et al. 2014, Biogeosciences */
+      {
+        *n_plant_demand=pft->bm_inc.nitrogen;
+        *ndemand_leaf=*n_plant_demand*crop->ind.leaf.carbon/(crop->ind.leaf.carbon+(crop->ind.root.carbon/croppar->ratio.root+crop->ind.pool.carbon/croppar->ratio.pool+crop->ind.so.carbon/croppar->ratio.so)); /*these parameters need to be in pft.par and need to be checked as well)*/
+        if(ndemand_leaf_opt<epsilon)
+          pft->vscal=1;
+        else
+          pft->vscal=min(1,(*ndemand_leaf/(ndemand_leaf_opt/(1+pft->par->knstore)))); /*eq. C20 in Smith et al. 2014, Biogeosciences */
+      }
     }
   }
   else

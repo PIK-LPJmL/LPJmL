@@ -41,6 +41,7 @@ void initoutput_annual(Output *output, /**< Output data */
   output->anuptake_agr=output->anleaching_agr=output->an2o_denit_agr=output->an2o_nit_agr=output->anh3_agr=output->an2_agr=
   output->alitfalln_agr=output->aharvestn_agr=output->aseedn_agr=output->adelta_norg_soil_agr=output->adelta_nmin_soil_agr=
   output->adelta_nveg_soil_agr=output->cellfrac_agr=0;
+  output->flux_nfert=0;
 
   /* memory allocation now in newgrid.c */
 
@@ -51,12 +52,13 @@ void initoutput_annual(Output *output, /**< Output data */
     output->cft_consump_water_g[i]=output->cft_consump_water_b[i]=
     output->cft_transp[i]=output->cft_transp_b[i]=output->cft_evap[i]=output->cft_evap_b[i]=
     output->cft_interc[i]=output->cft_interc_b[i]=output->cft_return_flow_b[i]=output->cft_nir[i]=
+    output->cft_nfert[i]=
 #ifdef DOUBLE_HARVEST
     output->pft_harvest2[i].harvest.carbon=output->pft_harvest2[i].residual.carbon=
     output->pft_harvest2[i].harvest.nitrogen=output->pft_harvest2[i].residual.nitrogen=
     output->cftfrac2[i]=
     output->cft_transp2[i]=output->cft_evap2[i]=output->cft_interc2[i]=
-    output->cft_nir2[i]=output->cft_airrig2[i]=
+    output->cft_nir2[i]=output->cft_airrig2[i]=output->cft_nfert2[i]=
 #endif
     output->cft_nlimit[i]=output->cft_laimax[i]=
     output->cft_airrig[i]=output->cft_fpar[i]=output->cft_luc_image[i]=output->cft_conv_loss_evap[i]=output->cft_conv_loss_drain[i]=

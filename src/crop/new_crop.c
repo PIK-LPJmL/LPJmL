@@ -55,6 +55,7 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
   crop->petsum=0.0;
   crop->evapsum=0.0;
   crop->transpsum=0.0;
+  crop->nfertsum=0.0;
   crop->intercsum=0.0;
   crop->precsum=0.0;
   crop->sradsum=0.0;

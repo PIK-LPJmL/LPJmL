@@ -171,6 +171,7 @@ typedef struct
   Real *cft_srad2;          /**< cft specific short-wave radiation (W/m2) */
   Stocks *cft_aboveground_biomass2; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
   Real *cftfrac2;           /**< cft fraction */
+  Real *cft_nfert2;        /**< cft specific N ferizlier application (gN/m2/growing season) */
   Real *cft_runoff2;        /**< cft specific runoff (mm) */
   Real *cft_n2o_denit2;        /**< cft specific N2O emissions from denitrification (gN/m2/growing season) */
   Real *cft_n2o_nit2;        /**< cft specific N2O emissions from nitrification (gN/m2/growing season) */
@@ -295,6 +296,8 @@ typedef struct
   Real *cft_mswc;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
   int *nday_month;        /**< day count for monthly cft-specific outputs, needed in update_monthly to divide by number of days */
   Real mean_vegc_mangrass;
+  Real *cft_nfert;        /**< cft specific N ferizlier application (gN/m2/yr) */
+  Real flux_nfert;        /**< automated N ferizlier application (gN/m2/yr) */
   Real abnf_agr;
   Real anfert_agr;
   Real anmanure_agr;

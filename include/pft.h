@@ -177,7 +177,7 @@ typedef struct Pft
     Stocks (*livefuel_consumption)(Litter *,struct Pft *,const Fuel *,
                                    Livefuel *,Bool *,Real,Real);
     Bool (*annual)(Stand *,struct Pft *,Real *,Bool,int,Bool);
-    Real (*nuptake)(struct Pft *,Real *,Real *,int,int,int,Bool);
+    Real (*nuptake)(struct Pft *,Real *,Real *,int,int,int,int,Bool);
     Real (*ndemand)(const struct Pft *,Real *,Real, Real,Real);
     Real (*vmaxlimit)(const struct Pft *,Real,Real);
   } *par;                /**< PFT parameters */
@@ -255,7 +255,7 @@ extern char **createpftnames(int,int,int,int,const Pftpar []);
 extern void freepftnames(char **,int,int,int,int);
 extern int getnbiomass(const Pftpar [],int);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool);
-extern Real nitrogen_stress(Pft *,Real,Real,int,int,int,Bool);
+extern Real nitrogen_stress(Pft *,Real,Real,int,int,int,int,Bool);
 extern Real f_lai(Real);
 
 /* needed for IMAGE, but can also be used otherwise */
@@ -294,7 +294,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar *,Poolpar,Real,Real,Real *,Rea
 #define establishment(pft,fpc_total,fpc,n_est) pft->par->establishment(pft,fpc_total,fpc,n_est)
 #define annualpft(stand,pft,fpc_inc,newphen,nitrogen,isdaily) pft->par->annual(stand,pft,fpc_inc,newphen,nitrogen,isdaily)
 #define albedo_pft(pft,snowheight,snowfraction) pft->par->albedo_pft(pft,snowheight,snowfraction)
-#define nuptake(pft,n_plant_demand,ndemand_leaf,npft,nbiomass,ncft,permafrost) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,nbiomass,ncft,permafrost)
+#define nuptake(pft,n_plant_demand,ndemand_leaf,npft,nbiomass,ncft,with_nitrogen,permafrost) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,nbiomass,ncft,with_nitrogen,permafrost)
 #define ndemand(pft,nleaf,vcmax,daylength,temp) pft->par->ndemand(pft,nleaf,vcmax,daylength,temp)
 #define vmaxlimit(pft,daylength,temp) pft->par->vmaxlimit(pft,daylength,temp)
 

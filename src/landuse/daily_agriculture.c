@@ -156,6 +156,10 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_transp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
         crop->transpsum);
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_nfert+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
+        output->cft_nfert2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
+        crop->nfertsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_evap+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
         output->cft_evap2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
         crop->evapsum);
@@ -419,6 +423,10 @@ Real daily_agriculture(Stand *stand, /**< stand pointer */
         output->cft_transp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
         output->cft_transp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
         crop->transpsum);
+      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_nfert+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
+        output->cft_nfert2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
+        crop->nfertsum);
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_evap+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),
         output->cft_evap2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)),

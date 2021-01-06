@@ -610,6 +610,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputvar(LUC_IMAGE,cft_luc_image,2*(ncft+NGRASS+NBIOMASSTYPE));
   writeoutputvaritem(CFT_ABOVEGBMC,cft_aboveground_biomass,carbon,2*(ncft+NGRASS));
   writeoutputvaritem(CFT_ABOVEGBMN,cft_aboveground_biomass,nitrogen,2*(ncft+NGRASS));
+  writeoutputvar(CFT_NFERT,cft_nfert,2*(ncft+NGRASS+NBIOMASSTYPE));
   /* ATTENTION! Due to allocation rules, this writes away next year's LAImax for trees and grasses */
   if(isopen(output,PFT_LAIMAX))
   {
@@ -955,6 +956,7 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputvar(CFT_LEACHING2,cft_leaching2,2*ncft);
   writeoutputvar(CFT_C_EMIS2,cft_c_emis2,2*ncft);
   writeoutputvar(PFT_NUPTAKE2,pft_nuptake2,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
+  writeoutputvar(CFT_NFERT2,cft_nfert2,2*(ncft+NGRASS+NBIOMASSTYPE));
 #endif
   free(fvec);
 } /* of 'fwriteoutput_pft' */
