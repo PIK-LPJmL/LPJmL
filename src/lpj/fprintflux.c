@@ -39,18 +39,18 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       tabs++;
     fputs("\n       ",file);
     frepeatch(file,' ',(tabs*8-16)/2-1);
-    fputs("Carbon flux (GtC)",file);
+    fprintf(file,"Carbon flux (%ctC)",(convert==1e-15)  ? 'G' : 'k');
     frepeatch(file,' ',(tabs*8-16)/2);
     if(config->river_routing)
       frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 16 : 20);
     else
       frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 8 : 12);
-    fputs("Water (km3)",file);
+    fprintf(file,"Water (%sm3)",(convert==1e-15)  ? "k" : "da");
     if(config->with_nitrogen)
     {
       if(config->river_routing)
         frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 4 : 8);
-      fputs("                Nitrogen (TgN)",file);
+      fprintf(file,"                Nitrogen (%cgN)",(convert==1e-15)  ? 'T' : 'M');
     }
     fputs("\n       ",file);
     frepeatch(file,'-',tabs*8-1);

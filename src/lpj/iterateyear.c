@@ -160,13 +160,15 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           }
           else
           {
-            if(daily.sun<0 || daily.sun>100)
+            if(daily.sun<-1e-5 || daily.sun>100)
               fail(INVALID_CLIMATE_ERR,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
             grid[cell].output.sun+=daily.sun;
           }
           if(config->with_nitrogen && daily.windspeed<0)
             fail(INVALID_CLIMATE_ERR,FALSE,"Wind speed=%g less than zero for cell %d at day %d",daily.windspeed,cell+config->startgrid,day);
 #endif
+          if(config->with_radiation==CLOUDINESS && daily.sun<0)
+            daily.sun=0;
           /* get daily values for temperature, precipitation and sunshine */
           grid[cell].output.temp+=daily.temp;
           grid[cell].output.prec+=daily.prec;
