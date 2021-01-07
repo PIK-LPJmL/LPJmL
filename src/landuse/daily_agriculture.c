@@ -117,6 +117,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         stand->soil.litter.item->ag.leaf.carbon += crop->nmanure*param.manure_cn;
         stand->soil.litter.item->ag.leaf.nitrogen += crop->nmanure*(1-param.nmanure_nh4_frac);
         stand->cell->output.flux_estab.carbon += crop->nmanure*param.manure_cn*stand->frac;
+        stand->cell->balance.flux_estab.carbon += crop->nmanure*param.manure_cn*stand->frac;
         stand->cell->balance.n_influx += crop->nmanure*stand->frac;
         pft->stand->cell->output.anmanure_agr+=crop->nmanure*pft->stand->frac;
         crop->nmanure=0;
@@ -180,7 +181,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_airrig+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
         output->cft_airrig2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-		crop->irrig_apply);
+        crop->irrig_apply);
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
@@ -465,7 +466,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_airrig+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
         output->cft_airrig2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)),
-		crop->irrig_apply);
+        crop->irrig_apply);
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
         output->cft_temp+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
         output->cft_temp2+(pft->par->id-npft+data->irrigation*(ncft+NGRASS)),
