@@ -17,10 +17,11 @@
 #include "lpj.h"
 #include "crop.h"
 
-Bool fread_crop(FILE *file, /**< file pointer */
-                Pft *pft,   /**< PFT data to be read */
-                Bool swap   /**< if true data is in different byte order */
-               )            /** \return TRUE on error */
+Bool fread_crop(FILE *file,          /**< file pointer */
+                Pft *pft,            /**< PFT data to be read */
+                Bool double_harvest, /**< double harvest output enabled? */
+                Bool swap            /**< if true data is in different byte order */
+               )                     /** \return TRUE on error */
 {
   Pftcrop *crop;
   crop=new(Pftcrop);
@@ -41,7 +42,6 @@ Bool fread_crop(FILE *file, /**< file pointer */
   freadreal1(&crop->husum,swap,file);
   freadreal1(&crop->vdsum,swap,file);
   freadreal1(&crop->fphu,swap,file);
-  //freadreal((Real *)&crop->ind,sizeof(Cropphys2)/sizeof(Real),swap,file);
   freadreal1(&crop->ind.leaf.carbon,swap,file);
   freadreal1(&crop->ind.leaf.nitrogen,swap,file);
   freadreal1(&crop->ind.root.carbon,swap,file);
@@ -63,27 +63,35 @@ Bool fread_crop(FILE *file, /**< file pointer */
   freadreal1(&crop->nmanure,swap,file);
   freadreal1(&crop->vscal_sum,swap,file);
   freadint1(&crop->frostkill,swap,file);
-#ifdef DOUBLE_HARVEST
-  freadreal1(&crop->supplysum,swap,file);
-  freadreal1(&crop->petsum,swap,file);
-  freadreal1(&crop->evapsum,swap,file);
-  freadreal1(&crop->transpsum,swap,file);
-  freadreal1(&crop->intercsum,swap,file);
-  freadreal1(&crop->precsum,swap,file);
-  freadreal1(&crop->sradsum,swap,file);
-  freadreal1(&crop->irrig_apply,swap,file);
-  freadreal1(&crop->tempsum,swap,file);
-  freadreal1(&crop->nirsum,swap,file);
-  freadreal1(&crop->lgp,swap,file);
-  freadreal1(&crop->runoffsum,swap,file);
-  freadreal1(&crop->n2o_denitsum,swap,file);
-  freadreal1(&crop->n2o_nitsum,swap,file);
-  freadreal1(&crop->n2_emissum,swap,file);
-  freadreal1(&crop->leachingsum,swap,file);
-  freadreal1(&crop->c_emissum,swap,file);
-  freadint1(&crop->sdate,swap,file);
-  return freadint1(&crop->sowing_year,swap,file)!=1;
-#else
+  if(double_harvest)
+  {
+    crop->dh=new(Double_harvest);
+    if(crop->dh==NULL)
+    {
+      printallocerr("crop");
+      free(crop);
+      return TRUE;
+    }
+    freadreal1(&crop->dh->petsum,swap,file);
+    freadreal1(&crop->dh->evapsum,swap,file);
+    freadreal1(&crop->dh->transpsum,swap,file);
+    freadreal1(&crop->dh->intercsum,swap,file);
+    freadreal1(&crop->dh->precsum,swap,file);
+    freadreal1(&crop->dh->sradsum,swap,file);
+    freadreal1(&crop->dh->irrig_apply,swap,file);
+    freadreal1(&crop->dh->tempsum,swap,file);
+    freadreal1(&crop->dh->nirsum,swap,file);
+    freadreal1(&crop->dh->lgp,swap,file);
+    freadreal1(&crop->dh->runoffsum,swap,file);
+    freadreal1(&crop->dh->n2o_denitsum,swap,file);
+    freadreal1(&crop->dh->n2o_nitsum,swap,file);
+    freadreal1(&crop->dh->n2_emissum,swap,file);
+    freadreal1(&crop->dh->leachingsum,swap,file);
+    freadreal1(&crop->dh->c_emissum,swap,file);
+    freadint1(&crop->dh->sdate,swap,file);
+    freadint1(&crop->dh->sowing_year,swap,file);
+  }
+  else
+    crop->dh=NULL;
   return freadreal1(&crop->supplysum,swap,file)!=1;
-#endif
 } /* of 'fread_crop' */

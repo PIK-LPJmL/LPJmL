@@ -25,7 +25,8 @@ Bool initoutput(Output *output, /**< Output data */
                 int nbiomass,   /**< number of biomass PFTs */
                 int nwft,       /**< number of WFTs */
                 int ngrass,     /**< number of grasses */
-                int ncft        /**< number of crop PFTs */
+                int ncft,       /**< number of crop PFTs */
+                Bool double_harvest
                )                /**\ return TRUE on error */
 {
   output->sdate=newvec(int,2*ncft);/* allocate memory for output */
@@ -145,58 +146,59 @@ Bool initoutput(Output *output, /**< Output data */
   check(output->cft_c_emis);
   output->cft_leaching=newvec(Real,2*ncft);
   check(output->cft_leaching);
-#ifdef DOUBLE_HARVEST
-  output->sdate2=newvec(int,2*ncft); /* allocate memory for output */
-  checkptr(output->sdate2);
-  output->hdate2=newvec(int,2*ncft);
-  checkptr(output->hdate2);
-  output->husum2=newvec(Real,2*ncft);
-  check(output->husum2);
-  output->syear=newvec(int,2*ncft); /* allocate memory for output */
-  checkptr(output->syear);
-  output->syear2=newvec(int,2*ncft); /* allocate memory for output */
-  checkptr(output->syear2);
-  output->pft_harvest2=newvec(Harvest,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  checkptr(output->pft_harvest2);
-  output->cftfrac2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  checkptr(output->cftfrac2);
-  output->cft_pet2=newvec(Real,2*(ncft+NGRASS));
-  checkptr(output->cft_pet2);
-  output->cft_transp2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  checkptr(output->cft_transp2);
-  output->cft_evap2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  checkptr(output->cft_evap2);
-  output->cft_interc2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  checkptr(output->cft_interc2);
-  output->cft_nir2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  checkptr(output->cft_nir2);
-  output->cft_airrig2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  checkptr(output->cft_airrig2);
-  output->growing_period2=newvec(Real,2*(ncft+NGRASS));
-  checkptr(output->growing_period2);
-  output->cft_temp2=newvec(Real,2*(ncft+NGRASS));
-  checkptr(output->cft_temp2);
-  output->cft_prec2=newvec(Real,2*(ncft+NGRASS));
-  checkptr(output->cft_prec2);
-  output->cft_srad2=newvec(Real,2*(ncft+NGRASS));
-  checkptr(output->cft_srad2);
-  output->cft_aboveground_biomass2=newvec(Stocks,2*(ncft+NGRASS));
-  checkptr(output->cft_aboveground_biomass2);
-  output->cft_runoff2=newvec(Real,2*ncft);
-  check(output->cft_runoff2);
-  output->cft_n2o_denit2=newvec(Real,2*ncft);
-  check(output->cft_n2o_denit2);
-  output->cft_n2o_nit2=newvec(Real,2*ncft);
-  check(output->cft_n2o_nit2);
-  output->cft_n2_emis2=newvec(Real,2*ncft);
-  check(output->cft_n2_emis2);
-  output->cft_c_emis2=newvec(Real,2*ncft);
-  check(output->cft_c_emis2);
-  output->cft_leaching2=newvec(Real,2*ncft);
-  check(output->cft_leaching2);
-  output->pft_nuptake2=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
-  checkptr(output->pft_nuptake2);
-#endif
+  if(double_harvest)
+  {
+    output->sdate2=newvec(int,2*ncft); /* allocate memory for output */
+    checkptr(output->sdate2);
+    output->hdate2=newvec(int,2*ncft);
+    checkptr(output->hdate2);
+    output->husum2=newvec(Real,2*ncft);
+    check(output->husum2);
+    output->syear=newvec(int,2*ncft); /* allocate memory for output */
+    checkptr(output->syear);
+    output->syear2=newvec(int,2*ncft); /* allocate memory for output */
+    checkptr(output->syear2);
+    output->pft_harvest2=newvec(Harvest,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    checkptr(output->pft_harvest2);
+    output->cftfrac2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    checkptr(output->cftfrac2);
+    output->cft_pet2=newvec(Real,2*(ncft+NGRASS));
+    checkptr(output->cft_pet2);
+    output->cft_transp2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    checkptr(output->cft_transp2);
+    output->cft_evap2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    checkptr(output->cft_evap2);
+    output->cft_interc2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    checkptr(output->cft_interc2);
+    output->cft_nir2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    checkptr(output->cft_nir2);
+    output->cft_airrig2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    checkptr(output->cft_airrig2);
+    output->growing_period2=newvec(Real,2*(ncft+NGRASS));
+    checkptr(output->growing_period2);
+    output->cft_temp2=newvec(Real,2*(ncft+NGRASS));
+    checkptr(output->cft_temp2);
+    output->cft_prec2=newvec(Real,2*(ncft+NGRASS));
+    checkptr(output->cft_prec2);
+    output->cft_srad2=newvec(Real,2*(ncft+NGRASS));
+    checkptr(output->cft_srad2);
+    output->cft_aboveground_biomass2=newvec(Stocks,2*(ncft+NGRASS));
+    checkptr(output->cft_aboveground_biomass2);
+    output->cft_runoff2=newvec(Real,2*ncft);
+    check(output->cft_runoff2);
+    output->cft_n2o_denit2=newvec(Real,2*ncft);
+    check(output->cft_n2o_denit2);
+    output->cft_n2o_nit2=newvec(Real,2*ncft);
+    check(output->cft_n2o_nit2);
+    output->cft_n2_emis2=newvec(Real,2*ncft);
+    check(output->cft_n2_emis2);
+    output->cft_c_emis2=newvec(Real,2*ncft);
+    check(output->cft_c_emis2);
+    output->cft_leaching2=newvec(Real,2*ncft);
+    check(output->cft_leaching2);
+    output->pft_nuptake2=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
+    checkptr(output->pft_nuptake2);
+  }
   output->daily.cft=cft;
   output->daily.irrigation=irrigation;
   return FALSE;

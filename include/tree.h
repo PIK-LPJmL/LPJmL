@@ -98,7 +98,7 @@ extern char *leaftype[];
 
 /* Declaration of functions */
 
-extern void new_tree(Pft *,int,int,int);
+extern void new_tree(Pft *,int,int,int,Bool);
 extern Pft *newpftage(Pftpar *,int);
 extern Real npp_tree(Pft *,Real,Real,Real,int);
 extern Bool mortality_tree(Litter *,Pft *,Real,Real,Bool);
@@ -115,7 +115,7 @@ extern Stocks turnover_tree(Litter *,Pft *);
 extern void phenology_tree(Pft *,Real,int,Bool);
 extern Bool fwrite_tree(FILE *,const Pft *);
 extern void fprint_tree(FILE *,const Pft *,int);
-extern Bool fread_tree(FILE *,Pft *,Bool);
+extern Bool fread_tree(FILE *,Pft *,Bool,Bool);
 extern Bool fscanpft_tree(LPJfile *,Pftpar *,const Config *);
 extern Bool isneg_tree(const Pft *);
 extern Stocks establishment_tree(Pft *,Real,Real,int);

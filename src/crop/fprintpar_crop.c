@@ -17,8 +17,8 @@
 #include "lpj.h"
 #include "crop.h"
 
-void fprintpar_crop(FILE *file, /**< pointer to text file */
-                    const Pftpar *par, /**< pointer to PFT parameter */
+void fprintpar_crop(FILE *file,          /**< pointer to text file */
+                    const Pftpar *par,   /**< pointer to PFT parameter */
                     const Config *config /**< LPJmL configuration */
                    )
 {
@@ -31,8 +31,8 @@ void fprintpar_crop(FILE *file, /**< pointer to text file */
                "temp fall:\t%g (deg C)\n"
                "temp spring:\t%g (deg C)\n"
                "temp vern:\t%g (deg C)\n"
-               "tv_eff:\t\t%g %g\n"
-               "tv_opt:\t\t%g %g\n"
+               "tv_eff:\t\t%g %g (deg C)\n"
+               "tv_opt:\t\t%g %g (deg C)\n"
                "pvd_max:\t\t%g\n"
                "psens:\t\t%g\n"
                "pb:\t\t%g (h)\n"
@@ -48,7 +48,7 @@ void fprintpar_crop(FILE *file, /**< pointer to text file */
                "fphusen:\t%g\n"
                "flaimaxharvest:\t%g\n"
                "min, max LAI:\t%g %g\n"
-               "opt,min hi:\t%g %g\n"
+               "opt, min hi:\t%g %g\n"
                "shapesenescencenorm:\t%g\n"
                "C:N ratio:\t%g %g %g\n",
           calcmethod[croppar->calcmethod_sdate],

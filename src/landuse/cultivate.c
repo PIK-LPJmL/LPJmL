@@ -64,13 +64,13 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     setasidestand->type->newstand(setasidestand);
     /* delete all PFTs */
     cutpfts(setasidestand);
-    if(with_tillage && year>=param.till_startyear)
+    if(with_tillage && year>=config->till_startyear)
     {
       tillage(&setasidestand->soil,param.residue_frac);
       updatelitterproperties(setasidestand,setasidestand->frac);
       pedotransfer(setasidestand,NULL,NULL,setasidestand->frac);
     }
-    pft=addpft(setasidestand,pftpar,year,day,config->with_nitrogen);
+    pft=addpft(setasidestand,pftpar,year,day,config->with_nitrogen,config->double_harvest);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);
     data=setasidestand->data;
     data->irrigation= (config->irrig_scenario==ALL_IRRIGATION) || irrigation;
@@ -140,13 +140,13 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
     data->irrigation= (config->irrig_scenario==ALL_IRRIGATION) || irrigation;
     reclaim_land(setasidestand,cropstand,cell,config->istimber,npft+ncft);
     set_irrigsystem(cropstand,cft,ncft,FALSE);
-    if(with_tillage && year>=param.till_startyear)
+    if(with_tillage && year>=config->till_startyear)
     {
       tillage(&cropstand->soil,param.residue_frac);
       updatelitterproperties(cropstand,cropstand->frac);
       pedotransfer(cropstand,NULL,NULL,cropstand->frac);
     }
-    pft=addpft(cropstand,pftpar,year,day,config->with_nitrogen);
+    pft=addpft(cropstand,pftpar,year,day,config->with_nitrogen,config->double_harvest);
     phen_variety(pft,vern_date20,cell->coord.lat,day,wtype,config,npft,ncft);
     setasidestand->frac-=landfrac;
     bm_inc.carbon=pft->bm_inc.carbon*cropstand->frac;

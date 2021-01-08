@@ -30,10 +30,10 @@
 Real firedangerindex(Real char_moist_factor,
                      Real nesterov_accum,
                      const Pftlist *pftlist, /**< PFT list */
-		     Real humidity,          /**< specific humidity (kg/kg) */
-		     Real avgprec,           /**< monthly averaged precipitation (mm/day) */
-		     int fid,                /**< fire danger index method (NESTEROV_INDEX,WVPD_INDEX) */
-		     Real temp               /**< air temperature (Celsius) */
+                     Real humidity,          /**< specific humidity (kg/kg) */
+                     Real avgprec,           /**< monthly averaged precipitation (mm/day) */
+                     int fid,                /**< fire danger index method (NESTEROV_INDEX,WVPD_INDEX) */
+                     Real temp               /**< air temperature (Celsius) */
                     )                        /** \return fire danged index */
 {
   Real d_fdi,alpha_fuelp_ave,fpc_sum=0;

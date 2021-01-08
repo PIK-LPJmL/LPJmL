@@ -54,6 +54,7 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
                          const Soilpar *soilpar,/**< soil parameter */
                          const Standtype standtype[],
                          int nstand,            /**< number of stand types */
+                         Bool double_harvest,
                          Bool swap              /**< Byte order has to be changed */
                         ) /** \return allocated stand list or NULL */
 {
@@ -82,7 +83,7 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
   /* Read all stand data */
   for(s=0;s<standlist->n;s++)
     if((standlist->data[s]=freadstand(file,cell,pftpar,ntotpft,soilpar,
-                                      standtype,nstand,swap))==NULL)
+                                      standtype,nstand,double_harvest,swap))==NULL)
       return NULL;
   return standlist;
 } /* of 'freadstandlist' */

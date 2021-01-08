@@ -33,7 +33,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   Pft *pft;
   Stand *stand;
   Pftcroppar *croppar;
-  Pftcrop *pftcrop;
   Real mintemp[N];
   Stocks litter_neg;
   if(cell->ml.dam)
@@ -48,7 +47,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
      for (cft=0;cft<ncft;cft++)
      {
        croppar=config->pftpar[npft+cft].data;
- 	     if (mintemp[m]<=croppar->tv_opt.low && mintemp[m]> -9999)
+       if (mintemp[m]<=croppar->tv_opt.low && mintemp[m]> -9999)
          cell->climbuf.V_req_a[cft]+=croppar->pvd_max/N; /* maximum number of vernalization days per months */
        else if (mintemp[m]>croppar->tv_opt.low && mintemp[m]<croppar->tv_opt.high)
          cell->climbuf.V_req_a[cft]+=croppar->pvd_max/N*(1-(mintemp[m]-croppar->tv_opt.low)/(croppar->tv_opt.high-croppar->tv_opt.low));

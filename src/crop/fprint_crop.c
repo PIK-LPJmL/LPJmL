@@ -44,6 +44,34 @@ void fprint_crop(FILE *file,       /**< pointer to text file */
   fprintf(file,"LAI000:\t\t%g\n",crop->lai000);
   fprintf(file,"LAImax_adjusted:\t%g\n",crop->laimax_adjusted);
   fprintf(file,"Demandsum:\t%g\n",crop->demandsum);
+  if(with_nitrogen)
+  {
+    fprintf(file,"Ndemandsum:\t%g\n",crop->ndemandsum);
+    fprintf(file,"Nuptakesum:\t%g\n",crop->nuptakesum);
+    fprintf(file,"Nfertilizer:\t%g\n",crop->nfertilizer);
+    fprintf(file,"Vscal_sum:\t%g\n",crop->vscal_sum);
+  }
   fprintf(file,"Supplysum:\t%g\n",crop->supplysum);
-  fprintf(file,"Frostkill:\t%s\n",(crop->frostkill) ? "Frostkill" : "No frostkill");
+  fprintf(file,"Frostkill:\t%s\n",bool2str(crop->frostkill));
+  if(crop->dh!=NULL)
+  {
+    fprintf(file,"Petsum:\t%g\n",crop->dh->petsum);
+    fprintf(file,"Evapsum:\t%g\n",crop->dh->evapsum);
+    fprintf(file,"Transpsum:\t%g\n",crop->dh->transpsum);
+    fprintf(file,"Intercsum:\t%g\n",crop->dh->intercsum);
+    fprintf(file,"Precsum:\t%g\n",crop->dh->precsum);
+    fprintf(file,"Sradsum:\t%g\n",crop->dh->sradsum);
+    fprintf(file,"Irrig_apply:\t%g\n",crop->dh->irrig_apply);
+    fprintf(file,"Tempsum:\t%g\n",crop->dh->tempsum);
+    fprintf(file,"Nirsum:\t%g\n",crop->dh->nirsum);
+    fprintf(file,"LGP:\t%g\n",crop->dh->lgp);
+    fprintf(file,"Runoffsum:\t%g\n",crop->dh->runoffsum);
+    fprintf(file,"N2O_denitsum:\t%g\n",crop->dh->n2o_denitsum);
+    fprintf(file,"N2O_nitsum:\t%g\n",crop->dh->n2o_nitsum);
+    fprintf(file,"N2_emissum:\t%g\n",crop->dh->n2_emissum);
+    fprintf(file,"Leachingsum:\t%g\n",crop->dh->leachingsum);
+    fprintf(file,"C_emissum:\t%g\n",crop->dh->c_emissum);
+    fprintf(file,"Sdate:\t\t%d\n",crop->dh->sdate);
+    fprintf(file,"Sowing year:\t%d\n",crop->dh->sowing_year);
+  }
 } /* of 'fprint_crop' */

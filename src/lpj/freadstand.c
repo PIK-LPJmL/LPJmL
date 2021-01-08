@@ -23,6 +23,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
                   const Soilpar *soilpar, /**< soil parameter */
                   const Standtype standtype[], /**< array of stand types */
                   int nstand, /**< number of stand types */
+                  Bool double_harvest,
                   Bool swap /**< Byte order has to be changed (TRUE/FALSE) */
                  ) /** \return allocated stand data or NULL */
 {
@@ -35,7 +36,7 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
     return NULL;
   }
   stand->cell=cell;
-  if(freadpftlist(file,stand,&stand->pftlist,pftpar,ntotpft,swap))
+  if(freadpftlist(file,stand,&stand->pftlist,pftpar,ntotpft,double_harvest,swap))
   {
     free(stand);
     return NULL;

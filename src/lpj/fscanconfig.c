@@ -223,6 +223,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->no_ndeposition=FALSE;
   config->cropsheatfrost=FALSE;
   config->black_fallow=FALSE;
+  config->double_harvest=FALSE;
   if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
     return TRUE;
   config->storeclimate=TRUE;;
@@ -253,6 +254,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
     if(config->withlanduse!=NO_LANDUSE)
     {
+      if(fscanbool(file,&config->double_harvest,"double_harvest",TRUE,verbose))
+        return TRUE;
       if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS || config->withlanduse==ONLY_CROPS)
         fscanint2(file,&config->landuse_year_const,"landuse_year_const");
       config->fix_landuse=FALSE;
@@ -272,24 +275,33 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscanbool(file,&config->crop_phu_option,"crop_phu_option",TRUE,verbose))
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
-      config->crop_resp_fix=TRUE;
+      config->crop_resp_fix=FALSE;
+      config->fertilizer_input=FALSE;
+      config->manure_input=FALSE;
+      config->fix_fertilization=FALSE;
       if(config->with_nitrogen)
       {
-        config->fertilizer_input=TRUE;
-        if(fscanbool(file,&config->fertilizer_input,"fertilizer_input",TRUE,verbose))
-          return TRUE;
-        config->crop_resp_fix=FALSE;
         if(fscanbool(file,&config->crop_resp_fix,"crop_resp_fix",TRUE,verbose))
           return TRUE;
-        config->manure_input=FALSE;
-        if (fscanbool(file,&config->manure_input,"manure_input",TRUE,verbose))
-          return TRUE;
-        config->fix_fertilization=FALSE;
+      }
+      if(config->with_nitrogen==LIM_NITROGEN)
+      {
         if(fscanbool(file,&config->fix_fertilization,"fix_fertilization",TRUE,verbose))
           return TRUE;
+        if(!config->fix_fertilization)
+        {
+          config->fertilizer_input=TRUE;
+          if(fscanbool(file,&config->fertilizer_input,"fertilizer_input",TRUE,verbose))
+            return TRUE;
+          config->manure_input=FALSE;
+          if (fscanbool(file,&config->manure_input,"manure_input",TRUE,verbose))
+            return TRUE;
+        }
       }
-      if (fscanbool(file, &config->cropsheatfrost, "cropsheatfrost", TRUE, verbose))
+      if (fscanbool(file,&config->cropsheatfrost,"cropsheatfrost",TRUE, verbose))
         return TRUE;
+      if(config->cropsheatfrost && config->fire==SPITFIRE)
+        config->fire=SPITFIRE_TMAX;
       config->grassonly = FALSE;
       if (fscanbool(file, &config->grassonly, "grassonly", TRUE, verbose))
         return TRUE;
@@ -326,6 +338,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       if(fscankeywords(file,&config->tillage_type,"tillage_type",tillage,3,TRUE,verbose))
         return TRUE;
+      if(config->tillage_type)
+      {
+        fscanint2(file,&config->till_startyear,"till_startyear");
+      }
       if(fscankeywords(file,&config->residue_treatment,"residue_treatment",residue_treatment,3,TRUE,verbose))
         return TRUE;
     }
@@ -577,12 +593,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
     config->tmax_filename.name=config->tmin_filename.name=NULL;
-  if(config->fire==SPITFIRE_TMAX)
+  if(config->fire==SPITFIRE)
   {
     scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,"tamp");
   }
   else
-    config->tamp_filename.name=NULL; 
+    config->tamp_filename.name=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     scanclimatefilename(&input,&config->lightning_filename,config->inputdir,FALSE,"lightning");
@@ -634,8 +650,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #ifdef IMAGE
     scanclimatefilename(&input,&config->wateruse_wd_filename,config->inputdir,FALSE,"wateruse_wd");
 #endif
-  } 
-   else 
+  }
+  else
   {
     config->wateruse_filename.name=NULL;
 #ifdef IMAGE
@@ -688,7 +704,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(verbose)
         fprintf(stderr,"ERROR233: Invalid string '%s' for startgrid, must be 'all' or number.\n",name);
       return TRUE;
-    } 
+    }
   }
   else if(fscanint(file,&config->startgrid,"startgrid",TRUE,verbose))
     return TRUE;

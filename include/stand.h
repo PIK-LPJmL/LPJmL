@@ -64,9 +64,9 @@ extern void fprintstand(FILE *,const Stand *,const Pftpar[],int,int);
 extern int fwritestandlist(FILE *,const Standlist,int);
 extern void fprintstandlist(FILE *,const Standlist,const Pftpar[],int,int);
 extern Stand *freadstand(FILE *,Cell *,const Pftpar[],int,
-                         const Soilpar *,const Standtype [],int,Bool);
+                         const Soilpar *,const Standtype [],int,Bool,Bool);
 extern Standlist freadstandlist(FILE *,Cell *,const Pftpar [],int,
-                                const Soilpar *,const Standtype [],int,Bool);
+                                const Soilpar *,const Standtype [],int,Bool,Bool);
 extern int addstand(const Standtype *,Cell *);
 extern void initstand (Stand *);
 extern void freestand(Stand *);
@@ -79,7 +79,7 @@ extern int findstand(const Standlist, Landusetype, Bool);
 extern int findlandusetype(const Standlist,Landusetype);
 extern void allocation_today(Stand *,int,int);
 extern void light(Stand *,int,const Real[]);
-extern Stocks establishmentpft(Stand *,const Pftpar[],int,int,Real,int,int);
+extern Stocks establishmentpft(Stand *,int,Real,int,const Config *);
 extern Stocks standstocks(const Stand *);
 extern void cutpfts(Stand *);
 extern Real roughnesslength(const Standlist);

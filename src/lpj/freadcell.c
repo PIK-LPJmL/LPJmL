@@ -74,7 +74,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     freadreal(cell->gdd,npft,swap,file);
     /* read stand list */
     cell->standlist=freadstandlist(file,cell,config->pftpar,npft+ncft,soilpar,
-      standtype,nstand,swap);
+      standtype,nstand,config->double_harvest,swap);
     if(cell->standlist==NULL)
       return TRUE;
     freadreal1(&cell->ml.cropfrac_rf,swap,file);

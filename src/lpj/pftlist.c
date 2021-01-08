@@ -81,6 +81,7 @@ Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
                   Pftlist *pftlist,      /**< PFT list */
                   const Pftpar pftpar[], /**< PFT parameter array */
                   int ntotpft,           /**< total number of PFTs */
+                  Bool double_harvest,
                   Bool swap              /**< if true data is in different byte order */
                  )                       /** \return TRUE on error */
 {
@@ -102,7 +103,7 @@ Bool freadpftlist(FILE *file,            /**< file pointer of a binary file */
       return TRUE;
     }
     for(p=0;p<pftlist->n;p++)
-      if(freadpft(file,stand,pftlist->pft+p,pftpar,ntotpft,swap))
+      if(freadpft(file,stand,pftlist->pft+p,pftpar,ntotpft,double_harvest,swap))
       {
         pftlist->n=p;
         return TRUE;
@@ -131,13 +132,14 @@ Pft *addpft(Stand *stand,         /**< Stand pointer */
             const Pftpar *pftpar, /**< PFT parameter */
             int year,             /**< simulation year (AD) */
             int day,              /**< day of year (1..365) */
-            int with_nitrogen
+            int with_nitrogen,
+            Bool double_harvest
            )                      /** \return pointer to added PFT */
 {
   /* resize PFT array */
   stand->pftlist.pft=(Pft *)realloc(stand->pftlist.pft,
                                     sizeof(Pft)*(stand->pftlist.n+1));
   check(stand->pftlist.pft);
-  newpft(stand->pftlist.pft+stand->pftlist.n,stand,pftpar,year,day,with_nitrogen);
+  newpft(stand->pftlist.pft+stand->pftlist.n,stand,pftpar,year,day,with_nitrogen,double_harvest);
   return stand->pftlist.pft+stand->pftlist.n++;
 } /* of 'addpft' */

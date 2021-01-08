@@ -147,7 +147,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       grid.ml.landfrac=NULL;
       grid.ml.fertilizer_nr=NULL;
     }
-    initoutput(&grid.output,config->crop_index,config->crop_irrigation,npft,config->nbiomass,config->nwft,config->ngrass,ncft);
+    initoutput(&grid.output,config->crop_index,config->crop_irrigation,npft,config->nbiomass,config->nwft,config->ngrass,ncft,config->double_harvest);
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
 
     if(freadcell(file_restart,&grid,npft,ncft,
@@ -161,7 +161,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       printcell(&grid,1,npft,ncft,config);
     freelandfrac(grid.ml.landfrac);
     freelandfrac(grid.ml.fertilizer_nr);
-    freecell(&grid,npft,config->river_routing);
+    freecell(&grid,npft,config);
   } /* of for(i=0;...) */
   fclose(file_restart);
   closecelldata(celldata);

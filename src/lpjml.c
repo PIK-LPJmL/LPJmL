@@ -195,8 +195,8 @@ int main(int argc,char **argv)
   if(isroot(config) && argc)
     fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
   if(isroot(config))
-    printconfig(&config,config.npft[GRASS]+config.npft[TREE],
-                config.npft[CROP]);
+    printconfig(config.npft[GRASS]+config.npft[TREE],
+                config.npft[CROP],&config);
   if(config.sim_id==LPJML_FMS)
   {
     if(isroot(config))

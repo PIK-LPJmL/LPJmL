@@ -91,21 +91,25 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
       n_uptake=0;
     else
     {
-      wscaler=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->whcs[l])) : 0;
-      soil->NO3[l]-=(soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake)/nsum;
-      soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
-      if(soil->NO3[l]<0)
+      pft->bm_inc.nitrogen+=n_uptake;
+      forrootsoillayer(l)
       {
-        pft->bm_inc.nitrogen+=soil->NO3[l];
-        n_upfail+=soil->NO3[l];
-        soil->NO3[l]=0;
-      }
-      if(soil->NH4[l]<0)
-      {
-        pft->bm_inc.nitrogen+=soil->NH4[l];
-        n_upfail+=soil->NH4[l];
-        soil->NH4[l]=0;
-      }
+
+        wscaler=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->whcs[l])) : 0;
+        soil->NO3[l]-=(soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake)/nsum;
+        soil->NH4[l]-=soil->NH4[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
+        if(soil->NO3[l]<0)
+        {
+          pft->bm_inc.nitrogen+=soil->NO3[l];
+          n_upfail+=soil->NO3[l];
+          soil->NO3[l]=0;
+        }
+        if(soil->NH4[l]<0)
+        {
+          pft->bm_inc.nitrogen+=soil->NH4[l];
+          n_upfail+=soil->NH4[l];
+          soil->NH4[l]=0;
+        }
 #ifdef SAFE
         if (soil->NO3[l]<-epsilon)
           fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",
@@ -115,6 +119,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
                pft->stand->cell->coord.lat,pft->stand->cell->coord.lon,soil->NH4[l],l,n_uptake,nsum);
 
 #endif
+      }
     }
   }
   crop->ndemandsum += max(0, *n_plant_demand - pft->bm_inc.nitrogen);
@@ -149,11 +154,10 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   printf("ndemand=%g,ndemand_opt=%g\n",*ndemand_leaf,ndemand_leaf_opt);
 #endif
 
-#ifndef DOUBLE_HARVEST
-   pft->stand->cell->output.pft_nuptake[(pft->par->id-nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=n_uptake;
-#else
-  crop->nuptakesum += n_uptake;
-#endif
+   if(crop->dh!=NULL)
+     crop->nuptakesum += n_uptake;
+   else
+     pft->stand->cell->output.pft_nuptake[(pft->par->id-nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=n_uptake;
    pft->stand->cell->output.pft_ndemand[(pft->par->id-nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=max(0,*n_plant_demand-pft->bm_inc.nitrogen);
    pft->stand->cell->balance.n_uptake+=n_uptake*pft->stand->frac;
    pft->stand->cell->balance.n_demand+=max(0,(*n_plant_demand-pft->bm_inc.nitrogen))*pft->stand->frac;

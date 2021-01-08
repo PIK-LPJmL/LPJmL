@@ -21,7 +21,8 @@ void newpft(Pft *pft,            /**< PFT variables */
             const Pftpar *pftpar,/**< Parameter of PFT */
             int year,            /**< anno domini */
             int day,             /**< day of year (1..365) */
-            int with_nitrogen
+            int with_nitrogen,
+            Bool double_harvest
            )
 {
   int index;
@@ -47,5 +48,5 @@ void newpft(Pft *pft,            /**< PFT variables */
   pft->established=FALSE;
 #endif
   pft->establish.carbon=pft->establish.nitrogen=0;
-  pft->par->newpft(pft,year,day,with_nitrogen); /* type-specific allocation of memory */
+  pft->par->newpft(pft,year,day,with_nitrogen,double_harvest); /* type-specific allocation of memory */
 } /* of 'newpft' */

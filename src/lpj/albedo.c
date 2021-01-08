@@ -60,12 +60,8 @@ static Real albedo_stand(const Stand *stand)
 
   foreachpft(pft,p,&stand->pftlist)
   {
-<<<<<<< HEAD
     albedo_pft(pft, stand->soil.snowheight, stand->soil.snowfraction);
     albstot += pft->albedo;
-=======
-    albstot += albedo(pft,HS,frsg); /* call PFT-specific albedo function */
->>>>>>> ade22a2be1dfe953d9b142f987542268a3870d58
     fbare += pft->fpc;
   } /* pft loop */
   fbare = max((1-fbare),0.0);

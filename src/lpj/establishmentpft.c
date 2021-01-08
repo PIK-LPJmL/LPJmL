@@ -25,12 +25,10 @@
 #include "grass.h"
 
 Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
-                        const Pftpar *pftpar,/**< PFT parameter array */
                         int npft,            /**< number of natural PFTs */
-                        int ntypes,          /**< number of different PFT classes */
                         Real aprec,          /**< annual precipitation (mm) */
                         int year,            /**< simulation year (AD) */
-                        int with_nitrogen
+                        const Config *config /**< LPJmL configuration */
                        )  /** \return establishment flux (gC/m2,gN/m2) */
 {
   Stocks flux_est={0,0},stocks;
@@ -41,9 +39,9 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   Pft *pft;
   present=newvec(Bool,npft);
   check(present);
-  fpc_type=newvec(Real,ntypes);
+  fpc_type=newvec(Real,config->ntypes);
   check(fpc_type);
-  n_est=newvec(int,ntypes);
+  n_est=newvec(int,config->ntypes);
   check(n_est);
   for(p=0;p<npft;p++)
     present[p]=FALSE;
@@ -56,24 +54,24 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
     printf("%s ",bool2str(present[p]));
   printf("\n");
 #endif
-  for(t=0;t<ntypes;t++)
+  for(t=0;t<config->ntypes;t++)
     n_est[t]=0;
 
   /* establish PFTs if observed landcover > 0 or bioclimatic limits are suitable in dynamic mode */
   for(p=0;p<npft;p++)
   {
-    if ((stand->prescribe_landcover !=NO_LANDCOVER &&  pftpar[p].cultivation_type==NONE && stand->cell->landcover[p] > 0 && stand->type->landusetype==NATURAL) ||
-        (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pftpar[p].aprec_min && pftpar[p].cultivation_type==NONE &&
+    if ((stand->prescribe_landcover !=NO_LANDCOVER &&  config->pftpar[p].cultivation_type==NONE && stand->cell->landcover[p] > 0 && stand->type->landusetype==NATURAL) ||
+        (stand->prescribe_landcover == NO_LANDCOVER && aprec>=config->pftpar[p].aprec_min && config->pftpar[p].cultivation_type==NONE &&
         (stand->soil.par->type != ICE && stand->soil.par->type != ROCK) &&
-       establish(stand->cell->gdd[p],pftpar+p,&stand->cell->climbuf)))
+       establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf)))
     {
       if(!present[p])
-        addpft(stand,pftpar+p,year,0,with_nitrogen);
-      n_est[pftpar[p].type]++;
+        addpft(stand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
+      n_est[config->pftpar[p].type]++;
     }
   }
 
-  fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
+  fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
   {
     fpc_obs_cor = 1;
@@ -101,16 +99,16 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
 #endif
     }
   }
-  fpc_sum(fpc_type,ntypes,&stand->pftlist);
+  fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
     if(pft->par->type==TREE)
       adjust_tree(&stand->soil.litter,pft,fpc_type[pft->par->type], param.fpc_tree_max);
-  fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
+  fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)
       if(pft->par->type==GRASS)
         reduce(&stand->soil.litter,pft,fpc_type[GRASS]/(1+fpc_type[GRASS]-fpc_total));
-  fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
+  fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
   {
      if (stand->prescribe_landcover == NO_LANDCOVER && aprec>=pft->par->aprec_min && pft->par->cultivation_type==NONE &&
@@ -138,11 +136,11 @@ Stocks establishmentpft(Stand *stand,        /**< Stand pointer  */
   foreachpft(pft,p,&stand->pftlist)
     if(pft->par->type==GRASS)
       fpc_grass(pft);
-  fpc_sum(fpc_type,ntypes,&stand->pftlist);
+  fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
     if(pft->par->type==TREE)
       adjust_tree(&stand->soil.litter,pft,fpc_type[pft->par->type], param.fpc_tree_max);
-  fpc_total=fpc_sum(fpc_type,ntypes,&stand->pftlist);
+  fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)
       if(pft->par->type==GRASS)

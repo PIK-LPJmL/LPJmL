@@ -71,9 +71,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                                npft,ncft,cft,year,config);
               flux_estab.carbon+=stocks.carbon;
               flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-              cell->output.sdate[cft]=day;
-#endif
+              if(config->double_harvest)
+                cell->output.sdate[cft]=day;
               if(config->sdate_option==FIXED_SDATE)
                 cell->ml.sdate_fixed[cft]=day;
             }
@@ -99,7 +98,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   data->irrigation=irrigation->irrigation;
                   reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
                   set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
-                  setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config->with_nitrogen);
+                  setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                   setasidestand=getstand(cell->standlist,pos-1);
                   if(check_lu(cell->standlist,cell->ml.landfrac[irrigation->irrigation].crop[cft],npft+cft,irrigation->irrigation))
                   {
@@ -115,9 +114,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                                      npft,ncft,cft,year,config);
                     flux_estab.carbon+=stocks.carbon;
                     flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-                    cell->output.sdate[cft]=day;
-#endif
+                    if(config->double_harvest)
+                      cell->output.sdate[cft]=day;
                     if(config->sdate_option==FIXED_SDATE)
                       cell->ml.sdate_fixed[cft]=day;
                   }//if check lu
@@ -147,9 +145,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                                npft,ncft,cft,year,config);
               flux_estab.carbon+=stocks.carbon;
               flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-              cell->output.sdate[cft+ncft]=day;
-#endif
+              if(config->double_harvest)
+                cell->output.sdate[cft+ncft]=day;
               if(config->sdate_option==FIXED_SDATE)
                 cell->ml.sdate_fixed[cft+ncft]=day;
             }
@@ -176,7 +173,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   data->irrigation=irrigation->irrigation;
                   reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
                   set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
-                  setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,TRUE,year,config->with_nitrogen);
+                  setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,TRUE,year,config);
                   setasidestand=getstand(cell->standlist,pos-1);
                   if(cell->ml.cropdates[cft].fallow_irrig<=0&&
                     check_lu(cell->standlist,cell->ml.landfrac[irrigation->irrigation].crop[cft],npft+cft,irrigation->irrigation))
@@ -193,9 +190,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                       npft,ncft,cft,year,config);
                     flux_estab.carbon+=stocks.carbon;
                     flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-                    cell->output.sdate[cft+ncft]=day;
-#endif
+                    if(config->double_harvest)
+                      cell->output.sdate[cft+ncft]=day;
                     if(config->sdate_option==FIXED_SDATE)
                       cell->ml.sdate_fixed[cft+ncft]=day;
                   }//if check lu
@@ -232,9 +228,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                                npft,ncft,cft,year,config);
               flux_estab.carbon+=stocks.carbon;
               flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-              cell->output.sdate[cft]=day;
-#endif
+              if(config->double_harvest)
+                cell->output.sdate[cft]=day;
               if(config->sdate_option==FIXED_SDATE)
                 cell->ml.sdate_fixed[cft]=day;
             }
@@ -263,7 +258,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   data->irrigation=irrigation->irrigation;
                   reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
                   set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
-                  setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config->with_nitrogen);
+                  setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                   setasidestand=getstand(cell->standlist,pos-1);
                   if(cell->ml.cropdates[cft].fallow<=0&&
                     check_lu(cell->standlist,cell->ml.landfrac[irrigation->irrigation].crop[cft],npft+cft,irrigation->irrigation))
@@ -280,9 +275,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                       npft,ncft,cft,year,config);
                     flux_estab.carbon+=stocks.carbon;
                     flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-                    cell->output.sdate[cft]=day;
-#endif
+                    if(config->double_harvest)
+                      cell->output.sdate[cft]=day;
                     if(config->sdate_option==FIXED_SDATE)
                       cell->ml.sdate_fixed[cft]=day;
                   }//if check lu
@@ -315,9 +309,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                                npft,ncft,cft,year,config);
               flux_estab.carbon+=stocks.carbon;
               flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-              cell->output.sdate[cft+ncft]=day;
-#endif
+              if(config->double_harvest)
+                cell->output.sdate[cft+ncft]=day;
               if(config->sdate_option==FIXED_SDATE)
                 cell->ml.sdate_fixed[cft+ncft]=day;
             }
@@ -347,7 +340,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   data->irrigation=irrigation->irrigation;
                   reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
                   set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
-                  setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config->with_nitrogen);
+                  setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                   setasidestand=getstand(cell->standlist,pos-1);
                   if(cell->ml.cropdates[cft].fallow_irrig<=0&&
                     check_lu(cell->standlist,cell->ml.landfrac[irrigation->irrigation].crop[cft],npft+cft,irrigation->irrigation))
@@ -364,9 +357,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                       npft,ncft,cft,year,config);
                     flux_estab.carbon+=stocks.carbon;
                     flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-                    cell->output.sdate[cft+ncft]=day;
-#endif
+                    if(config->double_harvest)
+                      cell->output.sdate[cft+ncft]=day;
                     if(config->sdate_option==FIXED_SDATE)
                       cell->ml.sdate_fixed[cft+ncft]=day;
                   }//if check lu
@@ -411,9 +403,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                                    npft,ncft,cft,year,config);
                   flux_estab.carbon+=stocks.carbon;
                   flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-                  cell->output.sdate[cft]=day;
-#endif
+                  if(config->double_harvest)
+                    cell->output.sdate[cft]=day;
                   if(config->sdate_option==FIXED_SDATE)
                     cell->ml.sdate_fixed[cft]=day;
                 }
@@ -437,9 +428,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                                  npft,ncft,cft,year,config);
                 flux_estab.carbon+=stocks.carbon;
                 flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-                cell->output.sdate[cft]=day;
-#endif
+                if(config->double_harvest)
+                  cell->output.sdate[cft]=day;
                 if(config->sdate_option==FIXED_SDATE)
                   cell->ml.sdate_fixed[cft]=day;
               }
@@ -476,7 +466,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                       data->irrigation=irrigation->irrigation;
                       reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
                       set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
-                      setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config->with_nitrogen);
+                      setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                       setasidestand=getstand(cell->standlist,pos-1);
                       if(cell->ml.cropdates[cft].fallow<=0&&
                         check_lu(cell->standlist,cell->ml.landfrac[irrigation->irrigation].crop[cft],npft+cft,irrigation->irrigation))
@@ -493,9 +483,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                           npft,ncft,cft,year,config);
                         flux_estab.carbon+=stocks.carbon;
                         flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-                        cell->output.sdate[cft]=day;
-#endif
+                        if(config->double_harvest)
+                          cell->output.sdate[cft]=day;
                       }//if check lu
                     }//if too large stand->frac
                   } // if AGRICULTURE
@@ -526,7 +515,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                     data->irrigation=irrigation->irrigation;
                     reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
                     set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
-                    setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config->with_nitrogen);
+                    setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                     setasidestand=getstand(cell->standlist,pos-1);
                     if(cell->ml.cropdates[cft].fallow<=0&&
                       check_lu(cell->standlist,cell->ml.landfrac[irrigation->irrigation].crop[cft],npft+cft,irrigation->irrigation))
@@ -543,9 +532,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                         npft,ncft,cft,year,config);
                       flux_estab.carbon+=stocks.carbon;
                       flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-                      cell->output.sdate[cft]=day;
-#endif
+                      if(config->double_harvest)
+                        cell->output.sdate[cft]=day;
                     }//if check lu
                   }//if too large stand->frac
                 } // if AGRICULTURE
@@ -587,9 +575,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                                    npft,ncft,cft,year,config);
                   flux_estab.carbon+=stocks.carbon;
                   flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-                  cell->output.sdate[cft+ncft]=day;
-#endif
+                  if(config->double_harvest)
+                    cell->output.sdate[cft+ncft]=day;
                   if(config->sdate_option==FIXED_SDATE)
                     cell->ml.sdate_fixed[cft+ncft]=day;
                 }
@@ -613,9 +600,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                                  npft,ncft,cft,year,config);
                 flux_estab.carbon+=stocks.carbon;
                 flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-                cell->output.sdate[cft+ncft]=day;
-#endif
+                if(config->double_harvest)
+                  cell->output.sdate[cft+ncft]=day;
                 if(config->sdate_option==FIXED_SDATE)
                   cell->ml.sdate_fixed[cft+ncft]=day;
               }
@@ -652,7 +638,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                       data->irrigation=irrigation->irrigation;
                       reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
                       set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
-                      setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config->with_nitrogen);
+                      setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                       setasidestand=getstand(cell->standlist,pos-1);
                       if(cell->ml.cropdates[cft].fallow_irrig<=0&&
                         check_lu(cell->standlist,cell->ml.landfrac[irrigation->irrigation].crop[cft],npft+cft,irrigation->irrigation))
@@ -669,9 +655,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                           npft,ncft,cft,year,config);
                         flux_estab.carbon+=stocks.carbon;
                         flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-                        cell->output.sdate[cft+ncft]=day;
-#endif
+                        if(config->double_harvest)
+                          cell->output.sdate[cft+ncft]=day;
                       }//if check lu
                     }//if too large stand->frac
                   } // if AGRICULTURE
@@ -702,7 +687,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                     data->irrigation=irrigation->irrigation;
                     reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
                     set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
-                    setaside(cell,cropstand,config->pftpar,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config->with_nitrogen);
+                    setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                     setasidestand=getstand(cell->standlist,pos-1);
                     if(cell->ml.cropdates[cft].fallow_irrig<=0&&
                       check_lu(cell->standlist,cell->ml.landfrac[irrigation->irrigation].crop[cft],npft+cft,irrigation->irrigation))
@@ -719,9 +704,8 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                         npft,ncft,cft,year,config);
                       flux_estab.carbon+=stocks.carbon;
                       flux_estab.nitrogen+=stocks.nitrogen;
-#ifndef DOUBLE_HARVEST
-                      cell->output.sdate[cft+ncft]=day;
-#endif
+                      if(config->double_harvest)
+                        cell->output.sdate[cft+ncft]=day;
                     }//if check lu
                   }//if too large stand->frac
                 } // if AGRICULTURE

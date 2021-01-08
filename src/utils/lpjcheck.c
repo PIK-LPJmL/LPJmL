@@ -119,8 +119,8 @@ int main(int argc,char **argv)
     if(isout)
     {
       /* print LPJ configuration on stdout if '-q' option is not set */
-      printconfig(&config,config.npft[GRASS]+config.npft[TREE],
-                  config.npft[CROP]);
+      printconfig(config.npft[GRASS]+config.npft[TREE],
+                  config.npft[CROP],&config);
     }
     if(config.n_out)
     {

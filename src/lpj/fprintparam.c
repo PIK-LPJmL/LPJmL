@@ -59,8 +59,8 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"veg_equil_year:\t%d\n",param.veg_equil_year);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     fprintf(file,"firedura:\t%g\n"
-	    "fire_intens:\t%g\n"
-	    "hum_ign:\t%g\n",
+            "fire_intens:\t%g\n"
+            "hum_ign:\t%g\n",
             param.firedura,param.fire_intens,param.hum_ign);
   if(config->with_nitrogen)
     fprintf(file,"k_max:\t\t%g (1/d)\n"
@@ -74,10 +74,12 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             "T_m:\t\t%g (deg C)\n"
             "T_0:\t\t%g (deg C)\n"
             "T_r:\t\t%g (deg C)\n"
+            "residue C:N:\t%g\n"
+            "fertilizer rate:\t%g (gN/m2/yr)\n"
             "par_sink_limit:\t%g\n",
             param.k_max,param.k_2,param.p,param.n0,param.k_temp,
             param.min_c_bnf,param.q_ash,param.sapwood_recovery,param.T_m,
-            param.T_0,param.T_r,param.par_sink_limit);
+            param.T_0,param.T_r,param.fertilizer_rate,param.residue_cn,param.par_sink_limit);
   if(config->withlanduse!=NO_LANDUSE)
   {
     if(config->with_nitrogen)
@@ -90,8 +92,10 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"manure_rate:\t%g\n", param.manure_rate);
     }
     fprintf(file,"residues_frac:\t%g\n",param.residue_frac);
+    fprintf(file,"residue rate:\t%g (gC/m2/yr)\n",param.residue_rate);
+    fprintf(file,"residue pool:\%g (gC/m2)\n",param.residue_pool);
+    fprintf(file,"residue fbg:\t%g\n",param.residue_fbg);
     fprintf(file,"mixing_efficiency:\t%g\n",param.mixing_efficiency);
-    fprintf(file,"till_staryear:\t%d\n",param.till_startyear);
     fprintf(file,"livestock density on grassland:\t%g\n",
             param.lsuha);
     fprintf(file,"annual prec lim:\t%g (mm)\n",param.aprec_lim);

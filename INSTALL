@@ -148,7 +148,6 @@ Flag                Description
 COUPLING_WITH_FMS   enable coupling to FMS
 DAILY_ESTABLISHMENT Enable daily establishment
 DEBUG               diagnostic output is generated for debugging purposes
-DOUBLE_HARVEST      adding correct sequencing of harvest events
 IMAGE               include coupler to IMAGE model
 INCLUDEWP           include wood plantation
 LINEAR_DECAY        use linearized functions for litter decay
@@ -164,7 +163,6 @@ USE_RAND48          use drand48() random number generator
 USE_UDUNITS         enable unit conversion in NetCDF files
 WITH_FIRE_MOISTURE  enable moisture dependent fire emissions
 WITH_FPE            floating point exceptions are enabled for debugging purposes
-CROPSHEATFROST		enables tmin and tmax input effecting senescence, harvest index, and frost kill
 ------------------- ------------------------------------------------------------
 
 Create executables:

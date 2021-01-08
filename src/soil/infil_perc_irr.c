@@ -265,12 +265,13 @@ Real infil_perc_irr(Stand *stand,       /**< Stand pointer */
       {
         foreachpft(pft,p,&stand->pftlist)
         {
-          crop=pft->data;
-#ifdef DOUBLE_HARVEST
-          crop->leachingsum+=NO3perc_ly;
-#else
-          stand->cell->output.cft_leaching[pft->par->id-npft+data_irrig->irrigation*ncft]+=NO3perc_ly;
-#endif
+          if(config->double_harvest)
+          {
+            crop=pft->data;
+            crop->dh->leachingsum+=NO3perc_ly;
+          }
+          else
+            stand->cell->output.cft_leaching[pft->par->id-npft+data_irrig->irrigation*ncft]+=NO3perc_ly;
         }
       }
 

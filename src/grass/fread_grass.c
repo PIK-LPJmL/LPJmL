@@ -17,6 +17,7 @@
 
 Bool fread_grass(FILE *file, /**< pointer to binary file */
                  Pft *pft,   /**< pointer to PFT data read */
+                 Bool UNUSED(double_harvest),
                  Bool swap   /**< byte order has to be swapped (TRUE/FALSE) */
                 )            /** \return TRUE on error */
 {

@@ -33,7 +33,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       int pft_output_scaled, /**< output PFT scaled? (TRUE/FALSE) */
                       int npft,              /**< number of natural PFTs */
                       int ncft,              /**< number of crop PFTs */
-                      int month
+                      int month              /**< month of year (0..11) */
                      )
 {
   int s,p,count;
@@ -46,9 +46,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
   Stand *stand;
   Pft *pft;
   Irrigation *data;
-#ifdef DOUBLE_HARVEST
   Pftcrop *crop;
-#endif
   irrig_threshold=0.0;
   conv_loss=0.0;
 
@@ -110,7 +108,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
         count=0;
         foreachpft(pft,p,&stand->pftlist)
         {
-
+          wr=getwr(&stand->soil,pft->par->rootdist);
           if(pft->par->path==C3)
           {
             if(cell->climbuf.aprec<param.aprec_lim)
@@ -139,15 +137,16 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
             case AGRICULTURE:
                /* write net irrigation requirement */
               pft=getpft(&stand->pftlist,0);
-#ifdef DOUBLE_HARVEST
               crop=pft->data;
-              crop->nirsum+=data->net_irrig_amount;
-#else
-              if(pft_output_scaled)
-                cell->output.cft_nir[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->frac;
+              if(crop->dh!=NULL)
+                crop->dh->nirsum+=data->net_irrig_amount;
               else
-                cell->output.cft_nir[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount;
-#endif
+              {
+                if(pft_output_scaled)
+                  cell->output.cft_nir[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE)]+=data->net_irrig_amount*stand->frac;
+                else
+                  cell->output.cft_nir[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount;
+              }
               break;
             case GRASSLAND:
               if(pft_output_scaled)

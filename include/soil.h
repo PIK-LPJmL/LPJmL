@@ -240,7 +240,7 @@ extern Real litter_agsub_sum(const Litter *);
 extern Real litter_agsub_sum_n(const Litter *);
 extern Real litter_ag_grass(const Litter *);
 extern Real litter_ag_sum_quick(const Litter *);
-extern Stocks littersom(Stand *,Real [NSOILLAYER],int,int,int);
+extern Stocks littersom(Stand *,const Real [NSOILLAYER],int,int,int);
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);
 extern Real moistfactor(const Litter *);

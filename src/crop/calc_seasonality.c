@@ -72,14 +72,14 @@ void calc_seasonality(Cell *grid,          /**< cell grid array */
         cvrtdaymonth(&earliestdayofmonth,&earliest_smonth,earliest_sdate);
         firstwintermonth[cft]=firstspringmonth[cft]=firstwetmonth[cft]=0;
 
-        /*find first month when temperature exceeds (summer variety) or falls below (winter variety) a crop-specific threshold*/      
+        /*find first month when temperature exceeds (summer variety) or falls below (winter variety) a crop-specific threshold*/
 
         /*first look for sowing month of winter variety*/
         if (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE) /*winter and summer variety*/
         {
           for (m=0;m<NMONTH;m++)
           {
-            monthbefore = (m==0) ? NMONTH-1 : m-1; 
+            monthbefore = (m==0) ? NMONTH-1 : m-1;
             m_temp = grid[cell].climbuf.mtemp20[m];
             monthbefore_temp = grid[cell].climbuf.mtemp20[monthbefore];
 
@@ -88,7 +88,7 @@ void calc_seasonality(Cell *grid,          /**< cell grid array */
             /*interpolate.c returns the daily climbuf value from monthly value*/
             if(m_temp < croppar->temp_fall && monthbefore_temp >= croppar->temp_fall)
             {
-              firstwintermonth[cft] = 
+              firstwintermonth[cft] =
                 (interpolate(grid[cell].climbuf.mtemp20,monthbefore,ndaymonth[monthbefore]) < croppar->temp_fall) ? monthbefore : m;
               firstwintermonth[cft] = firstwintermonth[cft]+1; /*force firstwintermonth to run from 1-12*/
               break;
@@ -104,7 +104,7 @@ void calc_seasonality(Cell *grid,          /**< cell grid array */
 
           if(m_temp > croppar->temp_spring && monthbefore_temp <= croppar->temp_spring)
           {
-            firstspringmonth[cft] = 
+            firstspringmonth[cft] =
               (interpolate(grid[cell].climbuf.mtemp20,monthbefore,ndaymonth[monthbefore]) > croppar->temp_spring) ? monthbefore : m;
             firstspringmonth[cft] = firstspringmonth[cft]+1; /*force firstspringmonth to run from 1-12*/
             break;
@@ -116,25 +116,25 @@ void calc_seasonality(Cell *grid,          /**< cell grid array */
 
         /*find sowing month and calculate length of growing season depending on seasonality tpye*/
         grid[cell].ml.seasonality_type=NO_SEASONALITY;
-        
+
         /*start calculating the sowing month depending on the seasonality type*/
         if (var_prec<=0.4 && var_temp<=0.010) /*no seasonality*/
         {
-          grid[cell].ml.sowing_month[cft]=DEFAULT_MONTH; 
+          grid[cell].ml.sowing_month[cft]=DEFAULT_MONTH;
           grid[cell].ml.sowing_month[cft+ncft]=DEFAULT_MONTH;
         }
 
         if (var_prec>0.4 && var_temp<=0.010) /*precipitation seasonality only*/
-          grid[cell].ml.seasonality_type=PRECIP;            
+          grid[cell].ml.seasonality_type=PRECIP;
         if (var_prec>0.4 && (var_temp>0.010 && grid[cell].climbuf.mtemp_min20>TEMPMIN)) /*both seasonalities, but "weak" temperature seasonality (coldest month > 10 deg C)*/
-          grid[cell].ml.seasonality_type=PRECIPTEMP;  
-     
+          grid[cell].ml.seasonality_type=PRECIPTEMP;
+
         if (grid[cell].ml.seasonality_type==PRECIP || grid[cell].ml.seasonality_type==PRECIPTEMP)
         {
-          /*find first month of four wettest months (sum of their precipiation/PET ratios)*/ 
+          /*find first month of four wettest months (sum of their precipiation/PET ratios)*/
           max=sum=0;
-          for (m=0;m<NMONTH;m++)  
-          {       
+          for (m=0;m<NMONTH;m++)
+          {
             sum=0;
             for (i=0;i<MINLGP;i++)
             {
@@ -153,8 +153,8 @@ void calc_seasonality(Cell *grid,          /**< cell grid array */
             firstwetmonth[cft]=DEFAULT_MONTH;
 
           grid[cell].ml.sowing_month[cft]=firstwetmonth[cft]; /*start of four wettest months*/
-          grid[cell].ml.sowing_month[cft+ncft]=firstwetmonth[cft]; 
-                    
+          grid[cell].ml.sowing_month[cft+ncft]=firstwetmonth[cft];
+
           /*calculate length of growing season for just precipitation seasonality*/
           for (m=(grid[cell].ml.sowing_month[cft]-1);m<(grid[cell].ml.sowing_month[cft]-1+NMONTH);m++) /*m runs from 0 to 11, but sowing momth from 1 to 12*/
           {
@@ -166,27 +166,27 @@ void calc_seasonality(Cell *grid,          /**< cell grid array */
               grid[cell].ml.gs[cft+ncft]=m-grid[cell].ml.sowing_month[cft]+1;
               break;
             }
-          }  
+          }
         } /*of precipitation seasonality*/
 
         if (var_temp>0.010 && var_prec<=0.4) /*temperature seasonality only*/
            grid[cell].ml.seasonality_type=TEMPERATURE;
-        if (var_temp>0.010 && (var_prec>0.4 && grid[cell].climbuf.mtemp_min20<=TEMPMIN)) /*both seasonalities but "strong" temperature seasonality (coldest month <= 10 deg C)*/  
+        if (var_temp>0.010 && (var_prec>0.4 && grid[cell].climbuf.mtemp_min20<=TEMPMIN)) /*both seasonalities but "strong" temperature seasonality (coldest month <= 10 deg C)*/
            grid[cell].ml.seasonality_type=TEMPPRECIP;
-         
+
         if (grid[cell].ml.seasonality_type==TEMPERATURE || grid[cell].ml.seasonality_type==TEMPPRECIP)
         {
           earliest_sdatetemp=interpolate(grid[cell].climbuf.mtemp20,earliest_smonth-1,earliestdayofmonth);
           earliestbefore_sdatetemp=interpolate(grid[cell].climbuf.mtemp20,earliest_smonth-1,earliestdayofmonth-1);
-          if (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE && (firstwintermonth[cft] > earliest_smonth 
+          if (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE && (firstwintermonth[cft] > earliest_smonth
             || (earliest_sdatetemp > croppar->temp_fall && earliestbefore_sdatetemp < croppar->temp_fall))) /*winter and summer variety exist and winter not too long*/
           {
             grid[cell].ml.sowing_month[cft] = firstwintermonth[cft];
             grid[cell].ml.sowing_month[cft+ncft] = firstwintermonth[cft];
-                       
-            /*calculate length of growing season for winter variety*/ 
+
+            /*calculate length of growing season for winter variety*/
             /*NOT NICE YET*/
-            if (firstspringmonth[cft] > firstwintermonth[cft]) 
+            if (firstspringmonth[cft] > firstwintermonth[cft])
             {
               grid[cell].ml.gs[cft] = firstspringmonth[cft]-firstwintermonth[cft];
               grid[cell].ml.gs[cft+ncft] = firstspringmonth[cft]-firstwintermonth[cft];
@@ -197,35 +197,35 @@ void calc_seasonality(Cell *grid,          /**< cell grid array */
               grid[cell].ml.gs[cft+ncft] = firstspringmonth[cft]+firstwintermonth[cft];
             }
           }
-          else /*other calc_method or winter too long*/ 
+          else /*other calc_method or winter too long*/
           {
             grid[cell].ml.sowing_month[cft] = firstspringmonth[cft];
             grid[cell].ml.sowing_month[cft+ncft] = firstspringmonth[cft];
-            
+
             /*calculate length of growing season for spring variety*/
             c=0;
             for (m=(grid[cell].ml.sowing_month[cft]-1);m<(grid[cell].ml.sowing_month[cft]-1+NMONTH);m++) /*m runs from 0 to 11, but firstspringmonth from 1 to 12*/
             {
               mm = (m >= NMONTH) ? m-NMONTH : m;
-              if (grid[cell].climbuf.mtemp20[mm] >= croppar->basetemp.low) 
+              if (grid[cell].climbuf.mtemp20[mm] >= croppar->basetemp.low)
               {
                 c++;
                 /*Twindow[mm]=1;*/
               }
               else if(c>0)
                 break;
-            } 
+            }
             grid[cell].ml.gs[cft]=c;
             grid[cell].ml.gs[cft+ncft]=c;
           }
-        } /*of temperature seasonality*/   
+        } /*of temperature seasonality*/
       } /*of loop through cfts*/
     } /*of if(!grid[cell].skip*/
   } /*of for (cell=0;cell<config->ngridcell;cell++)*/
   free(firstwintermonth);
   free(firstspringmonth);
   free(firstwetmonth);
-  
+
 } /*of 'calc_seasonality' */
 
 /*called in iterate.c */

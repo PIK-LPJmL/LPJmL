@@ -123,6 +123,7 @@ struct config
   Bool crop_resp_fix;      /**< with fixed crop respiration (TRUE/FALSE) */
   Bool cropsheatfrost;
   int tillage_type;      /**< type of tillage NO_TILLAGE=0, TILLAGE=1, READ_TILLAGE=2 */
+  int till_startyear;    /**< year in which tillage should start */
   int residue_treatment; /** residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
   Bool black_fallow;      /**< simulation with black fallow */
   Bool till_fallow;         /**< apply tillage on black fallow */
@@ -134,6 +135,7 @@ struct config
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
   Bool float_grid;        /**< enable float datatype for binary grid file */
   Bool landuse_restart;   /**< land use enabled in restart file */
+  Bool double_harvest;
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart; /**< sdate option in restart file */
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
@@ -241,7 +243,7 @@ extern void initmpiconfig(Config *,MPI_Comm);
 extern void initconfig(Config *);
 extern FILE* openconfig(Config *,const char *,int *,char***,const char*);
 extern void freeconfig(Config *);
-extern void fprintconfig(FILE *,const Config *,int,int);
+extern void fprintconfig(FILE *,int,int,const Config *);
 extern Bool filesexist(Config,Bool);
 extern long long outputfilesize(const Config *);
 extern Variable *fscanoutputvar(LPJfile *,int,Verbosity);
@@ -261,7 +263,7 @@ extern size_t getsize(int,const Config *);
 
 /* Definition of macros */
 
-#define printconfig(config,npft,ncft) fprintconfig(stdout,config,npft,ncft)
+#define printconfig(npft,ncft,config) fprintconfig(stdout,npft,ncft,config)
 #define ischeckpointrestart(config) ((config)->checkpoint_restart_filename!=NULL)
 #define iswriterestart(config) ((config)->write_restart_filename!=NULL)
 #define isreadrestart(config) ((config)->restart_filename!=NULL)

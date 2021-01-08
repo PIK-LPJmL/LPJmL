@@ -137,7 +137,6 @@ typedef struct
   Real *cft_airrig;      /**< Yearly irrigation per cft (mm) */
   int *sdate;            /**< sowing date */
   int *hdate;            /**< Harvest date */
-#ifdef DOUBLE_HARVEST
   int *sdate2;           /**< sowing date */
   int *hdate2;           /**< Harvest date */
   int *syear;
@@ -163,7 +162,6 @@ typedef struct
   Real *cft_leaching2;        /**< cft specific leaching (gN/m2/growing season) */
   Real *cft_c_emis2;        /**< cft specific C emissions (gC/m2/growing season) */
   Real *pft_nuptake2;       /* nitrogen uptake per PFT */
-#endif
   Real *cft_runoff;        /**< cft specific runoff (mm) */
   Real *cft_n2o_denit;        /**< cft specific N2O emissions from denitrification (gN/m2/growing season) */
   Real *cft_n2o_nit;        /**< cft specific N2O emissions from nitrification (gN/m2/growing season) */
@@ -396,8 +394,8 @@ typedef struct
 
 /* Declaration of functions */
 
-extern Bool initoutput(Output *,int,Bool,int,int,int,int,int);
-extern void freeoutput(Output *);
+extern Bool initoutput(Output *,int,Bool,int,int,int,int,int,Bool);
+extern void freeoutput(Output *,Bool);
 extern int outputsize(int,int,int,int,int,int);
 extern Type getoutputtype(int,Bool);
 extern int getnyear(const Variable *,int);

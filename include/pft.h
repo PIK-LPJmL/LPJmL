@@ -154,7 +154,7 @@ typedef struct Pft
     /* list of pointers for PFT specific functions */
     /* (Virtual functions in C++)                  */
 
-    void (*newpft)(struct Pft *,int,int,int);
+    void (*newpft)(struct Pft *,int,int,int,Bool);
     void (*init)(struct Pft *);
     Real (*wdf)(struct Pft *,Real,Real);
     Real (*npp)(struct Pft*,Real,Real,Real,int);
@@ -164,7 +164,7 @@ typedef struct Pft
     void (*leaf_phenology)(struct Pft *,Real,int,Bool);
     void (*albedo_pft) (struct Pft *, Real, Real);
     Bool (*fwrite)(FILE *,const struct Pft *);
-    Bool (*fread)(FILE *,struct Pft *,Bool);
+    Bool (*fread)(FILE *,struct Pft *,Bool,Bool);
     void (*fprint)(FILE *,const struct Pft *,int);
     void (*litter_update)(Litter *,struct Pft *,Real);
     Stocks (*establishment)(struct Pft *,Real,Real,int);
@@ -229,7 +229,7 @@ extern  char *path[];
 
 /* Declaration of functions */
 
-extern void newpft(Pft *,Stand *,const Pftpar *,int,int,int);
+extern void newpft(Pft *,Stand *,const Pftpar *,int,int,int,Bool);
 extern void freepft(Pft *);
 extern void freepftpar(Pftpar [],int);
 extern Real temp_stress(const Pftpar *,Real,Real);
@@ -241,7 +241,7 @@ extern void updategdd(Real [],const Pftpar [],int,Real);
 extern Real gp(Pft *,Real,Real,Real,Real);
 extern Bool fwritepft(FILE *,const Pft *);
 extern void fprintpft(FILE *,const Pft *,int);
-extern Bool freadpft(FILE *,Stand *,Pft *,const Pftpar[],int,Bool);
+extern Bool freadpft(FILE *,Stand *,Pft *,const Pftpar[],int,Bool,Bool);
 extern void noinit(Pft *);
 extern Stocks nofire(Pft *,Real *);
 extern Real nowdf(Pft *,Real,Real);

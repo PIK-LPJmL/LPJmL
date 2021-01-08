@@ -87,15 +87,15 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
       freewater+=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)*soil->whcs[l];
   }
 
+  soil_infil *= (1 + soil->litter.agtop_cover*2); /*soil_infil is scaled between 2 and 6, based on Jaegermeyr et al. 2016*/
   while(infil > epsilon || freewater > epsilon)
   {
     NO3perc_ly=0;
     freewater=0.0;
     slug=min(4,infil);
     infil=infil-slug;
-    soil_infil *= (1 + soil->litter.agtop_cover*2); /*soil_infil is scaled between 2 and 6, based on Jaegermeyr et al. 2016*/
     if(1-(soil->w[0]*soil->whcs[0]+soil->w_fw[0]+soil->ice_depth[0]+soil->ice_fw[0])/(soil->wsats[0]-soil->wpwps[0])>=0)
-    influx=slug*pow(1-(soil->w[0]*soil->whcs[0]+soil->w_fw[0]+soil->ice_depth[0]+soil->ice_fw[0])/(soil->wsats[0]-soil->wpwps[0]),(1/soil_infil));
+      influx=slug*pow(1-(soil->w[0]*soil->whcs[0]+soil->w_fw[0]+soil->ice_depth[0]+soil->ice_fw[0])/(soil->wsats[0]-soil->wpwps[0]),(1/soil_infil));
     else
       influx=0;
     runoff_surface+=slug - influx;
@@ -240,12 +240,13 @@ Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
             {
               foreachpft(pft,p,&stand->pftlist)
               {
-                crop=pft->data;
-#ifdef DOUBLE_HARVEST
-                crop->leachingsum+=NO3perc_ly;
-#else
-                stand->cell->output.cft_leaching[pft->par->id-npft+data_irrig->irrigation*ncft]+=NO3perc_ly;
-#endif
+                if(config->double_harvest)
+                {
+                  crop=pft->data;
+                  crop->dh->leachingsum+=NO3perc_ly;
+                }
+                else
+                  stand->cell->output.cft_leaching[pft->par->id-npft+data_irrig->irrigation*ncft]+=NO3perc_ly;
               }
             }
           } /* end of if(config->with_nitrogen) */

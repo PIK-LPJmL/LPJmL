@@ -55,7 +55,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Stand *stand;
   Real bnf;
   Real nh3;
-  Irrigation *data;
   int index,l;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
@@ -110,7 +109,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         stand->soil.litter.item[index].bg.carbon+=param.residue_rate*param.residue_fbg*0.5;
         stand->soil.litter.item[index].bg.nitrogen+=param.residue_rate*param.residue_fbg/param.residue_cn/2;
         stand->cell->output.flux_estab.carbon+=param.residue_rate*0.5;
+        stand->cell->balance.flux_estab.carbon+=param.residue_rate*0.5;
         stand->cell->output.flux_estab.nitrogen+=param.residue_rate/param.residue_cn*0.5;
+        stand->cell->balance.flux_estab.nitrogen+=param.residue_rate/param.residue_cn*0.5;
         updatelitterproperties(stand,stand->frac);
       }
       if(config->fix_fertilization)
@@ -319,7 +320,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       stand->soil.NH4[0]-=nh3;
       cell->output.mn_volatilization+=nh3*stand->frac;
       if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
-	    cell->output.anh3_agr+=nh3*stand->frac;
+        cell->output.anh3_agr+=nh3*stand->frac;
       cell->balance.n_outflux+=nh3*stand->frac;
     }
 
@@ -436,7 +437,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   } /* of 'if(river_routing)' */
   cell->output.daylength+=daylength;
 
-  killstand(cell,config->pftpar,npft, cell->ml.with_tillage,intercrop,year,config->with_nitrogen);
+  killstand(cell,npft, cell->ml.with_tillage,intercrop,year,config);
 #ifdef SAFE
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 #endif

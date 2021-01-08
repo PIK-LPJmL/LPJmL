@@ -203,20 +203,6 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         free(landuse);
         return NULL;
       }
-
-      if(landuse->crop_phu.var_len!=2*ncft)
-      {
-        closeclimate_netcdf(&landuse->crop_phu,isroot(*config));
-        if(isroot(*config))
-          fprintf(stderr,
-                  "ERROR147: Invalid number of bands=%d in sowing date Nr data file.\n",
-                  (int)landuse->crop_phu.var_len);
-        closeclimatefile(&landuse->landuse,isroot(*config));
-        if(landuse->sdate.file!=NULL)
-          closeclimatefile(&landuse->sdate,isroot(*config));
-        free(landuse);
-        return NULL;
-      }
     }
     else
     {
@@ -238,19 +224,6 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       else
       {
-        if(header.nbands!=2*ncft)
-        {
-          closeclimatefile(&landuse->landuse,isroot(*config));
-          if(landuse->sdate.file!=NULL)
-            closeclimatefile(&landuse->sdate,isroot(*config));
-          fclose(landuse->crop_phu.file);
-          if(isroot(*config))
-            fprintf(stderr,
-                    "ERROR147: Invalid number of bands=%d in crop phu data file.\n",
-                    header.nbands);
-          free(landuse);
-          return(NULL);
-        }
         landuse->crop_phu.offset=((long long)config->startgrid-(long long)header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version)+offset;
       }
       landuse->crop_phu.datatype=header.datatype;
@@ -261,14 +234,26 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->crop_phu.var_len=header.nbands;
       landuse->crop_phu.scalar=header.scalar;
     }
+    if(landuse->crop_phu.var_len!=2*ncft)
+    {
+      closeclimatefile(&landuse->crop_phu,isroot(*config));
+      if(isroot(*config))
+        fprintf(stderr,
+                "ERROR147: Invalid number of bands=%d in sowing date Nr data file.\n",
+                (int)landuse->crop_phu.var_len);
+      closeclimatefile(&landuse->landuse,isroot(*config));
+      if(landuse->sdate.file!=NULL)
+        closeclimatefile(&landuse->sdate,isroot(*config));
+      free(landuse);
+      return NULL;
+    }
   }
   else
   {
     landuse->crop_phu.file=NULL;
   } /* End crop_phu */
 
-
-  if(config->with_nitrogen&&config->fertilizer_input&&!config->fix_fertilization)
+  if(config->fertilizer_input)
   {
     /* read fertilizer data */
     landuse->fertilizer_nr.fmt=config->fertilizer_nr_filename.fmt;
@@ -301,29 +286,12 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       if(config->fertilizer_nr_filename.fmt==RAW)
       {
-        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE);
+        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
         header.datatype=LPJ_SHORT;
         landuse->fertilizer_nr.offset=config->startgrid*header.nbands*sizeof(short);
       }
       else
-      {
-        if(header.nbands!=2*(ncft+NGRASS+NBIOMASSTYPE))
-        {
-          closeclimatefile(&landuse->landuse,isroot(*config));
-          if(landuse->sdate.file!=NULL)
-            closeclimatefile(&landuse->sdate,isroot(*config));
-          if(landuse->crop_phu.file!=NULL)
-            closeclimatefile(&landuse->crop_phu,isroot(*config));
-          fclose(landuse->fertilizer_nr.file);
-          if(isroot(*config))
-            fprintf(stderr,
-              "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
-              header.nbands);
-          free(landuse);
-          return(NULL);
-        }
         landuse->fertilizer_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
-      }
       landuse->fertilizer_nr.datatype=header.datatype;
       landuse->fertilizer_nr.firstyear=header.firstyear;
       landuse->fertilizer_nr.nyear=header.nyear;
@@ -346,102 +314,81 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       freelanduse(landuse,isroot(*config));
       return(NULL);
     }
+  }
+  else
+    landuse->fertilizer_nr.file=NULL;
 
-    if(config->with_nitrogen&&config->manure_input&&!config->fix_fertilization)
+  if(config->manure_input)
+  {
+    /* read manure fertilizer data */
+    landuse->manure_nr.fmt=config->manure_nr_filename.fmt;
+    if(config->manure_nr_filename.fmt==CDF)
     {
-      /* read manure fertilizer data */
-      landuse->manure_nr.fmt=config->manure_nr_filename.fmt;
-      if(config->manure_nr_filename.fmt==CDF)
+      if(opendata_netcdf(&landuse->manure_nr,&config->manure_nr_filename,NULL,config))
       {
-        if(opendata_netcdf(&landuse->manure_nr,&config->manure_nr_filename,NULL,config))
-        {
-          closeclimatefile(&landuse->landuse,isroot(*config));
-          if(landuse->sdate.file!=NULL)
-            closeclimatefile(&landuse->sdate,isroot(*config));
-          if(landuse->crop_phu.file!=NULL)
-            closeclimatefile(&landuse->crop_phu,isroot(*config));
-          if(landuse->fertilizer_nr.file!=NULL)
-            closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
-
-          free(landuse);
-          return NULL;
-        }
-        if(landuse->manure_nr.var_len!=2*(ncft+NGRASS+NBIOMASSTYPE))
-        {
-          closeclimate_netcdf(&landuse->manure_nr,isroot(*config));
-          if(isroot(*config))
-            fprintf(stderr,
-                    "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
-                    (int)landuse->manure_nr.var_len);
-          closeclimatefile(&landuse->landuse,isroot(*config));
-          if(landuse->sdate.file!=NULL)
-            closeclimatefile(&landuse->sdate,isroot(*config));
-          if(landuse->crop_phu.file!=NULL)
-            closeclimatefile(&landuse->crop_phu,isroot(*config));
-          if(landuse->fertilizer_nr.file!=NULL)
-            closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
-          free(landuse);
-          return NULL;
-        }
+        closeclimatefile(&landuse->landuse,isroot(*config));
+        if(landuse->sdate.file!=NULL)
+          closeclimatefile(&landuse->sdate,isroot(*config));
+        if(landuse->crop_phu.file!=NULL)
+          closeclimatefile(&landuse->crop_phu,isroot(*config));
+        if(landuse->fertilizer_nr.file!=NULL)
+          closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
+        free(landuse);
+        return NULL;
+      }
+    }
+    else
+    {
+      if((landuse->manure_nr.file=openinputfile(&header,&landuse->manure_nr.swap,
+                                                &config->manure_nr_filename,headername,
+                                                &version,&offset,TRUE,config))==NULL)
+      {
+        closeclimatefile(&landuse->landuse,isroot(*config));
+        if(landuse->sdate.file!=NULL)
+          closeclimatefile(&landuse->sdate,isroot(*config));
+        if(landuse->crop_phu.file!=NULL)
+          closeclimatefile(&landuse->crop_phu,isroot(*config));
+        if(landuse->fertilizer_nr.file!=NULL)
+          closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
+        free(landuse);
+        return NULL;
+      }
+      if(config->manure_nr_filename.fmt==RAW)
+      {
+        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE);
+        header.datatype=LPJ_SHORT;
+        landuse->manure_nr.offset=config->startgrid*header.nbands*sizeof(short);
       }
       else
-      {
-        if((landuse->manure_nr.file=openinputfile(&header,&landuse->manure_nr.swap,
-                                                  &config->manure_nr_filename,headername,
-                                                  &version,&offset,TRUE,config))==NULL)
-        {
-          closeclimatefile(&landuse->landuse,isroot(*config));
-          if(landuse->sdate.file!=NULL)
-            closeclimatefile(&landuse->sdate,isroot(*config));
-          if(landuse->crop_phu.file!=NULL)
-            closeclimatefile(&landuse->crop_phu,isroot(*config));
-          if(landuse->fertilizer_nr.file!=NULL)
-            closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
-          free(landuse);
-          return NULL;
-        }
-        if(config->manure_nr_filename.fmt==RAW)
-        {
-          header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE);
-          header.datatype=LPJ_SHORT;
-          landuse->manure_nr.offset=config->startgrid*header.nbands*sizeof(short);
-        }
-        else
-        {
-          if(header.nbands!=2*(ncft+NGRASS+NBIOMASSTYPE))
-          {
-            closeclimatefile(&landuse->landuse,isroot(*config));
-            if(landuse->sdate.file!=NULL)
-              closeclimatefile(&landuse->sdate,isroot(*config));
-            if(landuse->crop_phu.file!=NULL)
-              closeclimatefile(&landuse->crop_phu,isroot(*config));
-            if(landuse->fertilizer_nr.file!=NULL)
-              closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
-            fclose(landuse->manure_nr.file);
-            if(isroot(*config))
-              fprintf(stderr,
-                      "ERROR147: Invalid number of bands=%d in manure data file.\n",
-                      header.nbands);
-            free(landuse);
-            return(NULL);
-          }
-          landuse->manure_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
-        }
-        landuse->manure_nr.datatype=header.datatype;
-        landuse->manure_nr.firstyear=header.firstyear;
-        landuse->manure_nr.nyear=header.nyear;
-        landuse->manure_nr.size=header.ncell*header.nbands*typesizes[header.datatype];
-        landuse->manure_nr.n=config->ngridcell*header.nbands;
-        landuse->manure_nr.var_len=header.nbands;
-        landuse->manure_nr.scalar=header.scalar;
-      }
+        landuse->manure_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
+      landuse->manure_nr.datatype=header.datatype;
+      landuse->manure_nr.firstyear=header.firstyear;
+      landuse->manure_nr.nyear=header.nyear;
+      landuse->manure_nr.size=header.ncell*header.nbands*typesizes[header.datatype];
+      landuse->manure_nr.n=config->ngridcell*header.nbands;
+      landuse->manure_nr.var_len=header.nbands;
+      landuse->manure_nr.scalar=header.scalar;
+    }
+    if(landuse->manure_nr.var_len!=2*(ncft+NGRASS+NBIOMASSTYPE))
+    {
+      closeclimatefile(&landuse->manure_nr,isroot(*config));
+      if(isroot(*config))
+        fprintf(stderr,
+                "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
+               (int)landuse->manure_nr.var_len);
+      closeclimatefile(&landuse->landuse,isroot(*config));
+      if(landuse->sdate.file!=NULL)
+        closeclimatefile(&landuse->sdate,isroot(*config));
+      if(landuse->crop_phu.file!=NULL)
+         closeclimatefile(&landuse->crop_phu,isroot(*config));
+      if(landuse->fertilizer_nr.file!=NULL)
+        closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
+      free(landuse);
+      return NULL;
     }
   }
   else
-  {
-    landuse->fertilizer_nr.file=NULL;
     landuse->manure_nr.file=NULL;
-  }
 
   if(config->tillage_type==READ_TILLAGE)
   {
@@ -588,8 +535,8 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       closeclimatefile(&landuse->residue_on_field,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
-          "ERROR147: Invalid number of bands=%d in residue extraction data file.\n",
-          (int)landuse->residue_on_field.var_len);
+                "ERROR147: Invalid number of bands=%d in residue extraction data file.\n",
+                (int)landuse->residue_on_field.var_len);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(landuse->sdate.file!=NULL)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -1163,8 +1110,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       sum=reducelanduse(grid+cell,sum-1,ncft);
       if(sum>0.00001)
         fail(CROP_FRACTION_ERR,FALSE,
-          "crop fraction greater 1: %f cell: %d, managed grass is 0",
-          sum+1,cell+config->startgrid);
+             "crop fraction greater 1: %f cell: %d, managed grass is 0",
+             sum+1,cell+config->startgrid);
     }
     if (landuse->onlycrops)
     {

@@ -223,23 +223,22 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop)
   setasidestand->frac+=cropstand->frac;
 } /* of 'mixsetaside' */
 
-Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
-              Stand *cropstand,      /**< crop stand */
-              const Pftpar pftpar[], /**< PFT parameter array */
-              Bool with_tillage,     /**< tillage  (TRUE/FALSE) */
-              Bool intercrop,        /**< intercropping possible (TRUE/FALSE) */
-              int npft,              /**< number of natural PFTs */
-              Bool irrig,            /**< irrigated stand (TRUE/FALSE) */
-              int year,              /**< simulation year */
-              int with_nitrogen
-             )                       /** \return stand has to be killed (TRUE/FALSE) */
+Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
+              Stand *cropstand,    /**< crop stand */
+              Bool with_tillage,   /**< tillage (TRUE/FALSE) */
+              Bool intercrop,      /**< intercropping possible (TRUE/FALSE) */
+              int npft,            /**< number of natural PFTs */
+              Bool irrig,          /**< irrigated stand (TRUE/FALSE) */
+              int year,            /**< simulation year */
+              const Config *config /**< LPJmL configuration */
+             )                     /** \return stand has to be killed (TRUE/FALSE) */
 {
   int s,p,n_est;
   Pft *pft;
   Stocks flux_estab,stocks;
   Irrigation *data;
   /* call tillage before */
-  if(with_tillage && year >= param.till_startyear)
+  if(with_tillage && year >= config->till_startyear)
     tillage(&cropstand->soil,param.residue_frac);
 
 
@@ -265,10 +264,10 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
       n_est=0;
       for(p=0;p<npft;p++)
       {
-        if(establish(cell->gdd[p],pftpar+p,&cell->climbuf) &&
-           pftpar[p].type==GRASS && pftpar[p].cultivation_type==NONE)
+        if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf) &&
+           config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)
         {
-          addpft(cropstand,pftpar+p,year,0,with_nitrogen);
+          addpft(cropstand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
           n_est++;
         }
       }

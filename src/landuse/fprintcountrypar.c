@@ -35,7 +35,7 @@ void fprintcountrypar(FILE *file, /**< pointer to text file */
   fputs(" --------\n",file);
   for(i=0;i<ncountry;i++)
   {
-    fprintf(file,"%44s",countrypar[i].name);
+    fprintf(file,"%-44s",countrypar[i].name);
     if(countrypar[i].laimax_cft!=NULL)
       for(j=0;j<ncft;j++)
         fprintf(file," %2.0g",countrypar[i].laimax_cft[j]);

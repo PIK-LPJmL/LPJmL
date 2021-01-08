@@ -25,7 +25,7 @@
 Bool send_image_data(const Cell grid[],      /**< LPJ grid */
                      const Climate *climate, /**< Climate data */
                      int npft,               /**< number of natural PFTs */
-                     int ncft                /**< number of crop PFTs */
+                     int ncft,               /**< number of crop PFTs */
                      const Config *config    /**< LPJmL configuration */
                     )                        /**< return TRUE on error */
 {

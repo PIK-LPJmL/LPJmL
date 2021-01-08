@@ -21,6 +21,7 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
               Pft *pft,              /**< PFT variables to read */
               const Pftpar pftpar[], /**< PFT parameter array */
               int ntotpft,           /**< total number of PFTs */
+              Bool double_harvest,
               Bool swap              /**< Byte order has to be changed
                                         (TRUE/FALSE) */
              )                       /** \return TRUE on error */
@@ -44,7 +45,7 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
   freadreal1(&pft->aphen,swap,file);
   freadreal1(&pft->phen,swap,file);
   /* read class-dependent PFT variables */
-  if(pft->par->fread(file,pft,swap))
+  if(pft->par->fread(file,pft,double_harvest,swap))
     return TRUE;
   freadreal((Real *)&pft->bm_inc,sizeof(Stocks)/sizeof(Real),swap,file);
   freadreal1(&pft->nind,swap,file);

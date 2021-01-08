@@ -14,21 +14,19 @@
 
 #include "lpj.h"
 
-void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
-                  Irrigation *data, /**< Irrigation data */
+void irrig_amount(Stand *stand,           /**< pointer to non-natural stand */
+                  Irrigation *data,       /**< Irrigation data */
                   Bool pft_output_scaled, /**< output is PFT scaled (TRUE/FALSE) */
-                  int npft,     /**< number of natural PFTs */
-                  int ncft,     /**< number of crop PFTs */
-                  int month
+                  int npft,               /**< number of natural PFTs */
+                  int ncft,               /**< number of crop PFTs */
+                  int month               /**< month (0..11) */
                  )
 {
   int p;
   Pft *pft;
   Real conv_loss,irrig_stand,irrig_threshold;
   Real wr;
-#ifdef DOUBLE_HARVEST
   Pftcrop *crop;
-#endif
   irrig_threshold=0.0;
 
   /* determine if today irrigation dependent on threshold */
@@ -72,15 +70,16 @@ void irrig_amount(Stand *stand, /**< pointer to non-natural stand */
       switch(stand->type->landusetype)
       {
         case AGRICULTURE:
-#ifdef DOUBLE_HARVEST
           crop=pft->data;
-          crop->nirsum+=data->net_irrig_amount;
-#else
-          if(pft_output_scaled)
-            stand->cell->output.cft_nir[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount*stand->frac;
+          if(crop->dh!=NULL)
+            crop->dh->nirsum+=data->net_irrig_amount;
           else
-            stand->cell->output.cft_nir[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount;
-#endif
+          {
+            if(pft_output_scaled)
+              stand->cell->output.cft_nir[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount*stand->frac;
+            else
+              stand->cell->output.cft_nir[pft->par->id-npft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount;
+          }
           break;
         case BIOMASS_GRASS:
           if(pft_output_scaled)

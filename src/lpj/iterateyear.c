@@ -66,7 +66,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     grid[cell].balance.surface_storage=0;
     if(!grid[cell].skip)
     {
-      init_annual(grid+cell,npft,ncft,config);
+      init_annual(grid+cell,ncft,config);
       if(config->withlanduse)
       {
         if(grid[cell].lakefrac<1)
@@ -210,7 +210,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(!grid[cell].skip)
         update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
                        cell,month),getmprec(input.climate,&grid[cell].climbuf,
-                       cell,month),ncft,month);
+                       cell,month),month);
     } /* of 'for(cell=0;...)' */
 
     if(year>=config->outputyear)

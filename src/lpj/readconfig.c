@@ -132,7 +132,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
       return TRUE;
     }
     if(verbosity && strncmp(s,LPJ_VERSION,strlen(s)))
-      fprintf(stderr,"WARNING025: Expected LPJ version '%s' does not match '" LPJ_VERSION "'.\n",s);
+      fprintf(stderr,"WARNING025: LPJ version '%s' does not match '" LPJ_VERSION "'.\n",s);
   }
   /* Read LPJ configuration */
   config->sim_id=LPJML;

@@ -74,11 +74,12 @@ void init_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
     climbuf->V_req_a[c]=0;
 } /* of 'init_climbuf' */
 
-void getmintemp20_n(const Climbuf *climbuf,
-                    Real min[],
-                    int n
+void getmintemp20_n(const Climbuf *climbuf, /**< pointer to climate buffer */
+                    Real min[],             /**< get n coldest months temperarures */
+                    int n                   /**< size of array */
                    )
 {
+  /* calculates n coldest month and returns their values */
   Real temp[NMONTH],swp;
   int m,i,index;
   for(m=0;m<NMONTH;m++)
@@ -97,7 +98,7 @@ void getmintemp20_n(const Climbuf *climbuf,
     temp[i]=temp[index];
     temp[index]=swp;
   }
-} /* of 'getmintemp20_n'  calculates n coldest month and returns their values */
+} /* of 'getmintemp20_n' */
 
 void daily_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
                    Real temp,        /**< daily temperature (deg C) */
@@ -121,7 +122,7 @@ Real getavgprec(const Climbuf *climbuf)
   for(d=0;d<(NDAYS/3);d++)
    avg_prec+=climbuf->prec[d];
   return avg_prec/(NDAYS/3);
-}
+} /* of 'getavgprec' */
 
 void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
                      Real mtemp,       /**< monthly average temperature (deg C) */
@@ -191,11 +192,11 @@ Bool fwriteclimbuf(FILE *file,             /**< pointer to binary file */
   return fwritebuffer(file,climbuf->max);
 } /* of 'fwriteclimbuf' */
 
-Bool freadclimbuf(FILE *file,        /**< pointer to binary file */
-                  Climbuf *climbuf,  /**< pointer to climate buffer read */
-                  int ncft,          /**< number of crop pfts */
+Bool freadclimbuf(FILE *file,       /**< pointer to binary file */
+                  Climbuf *climbuf, /**< pointer to climate buffer read */
+                  int ncft,         /**< number of crop pfts */
                   Bool swap         /**< byte order has to be swapped (TRUE/FALSE) */
-                 )                   /** \return TRUE on error */
+                 )                  /** \return TRUE on error */
 {
   int m;
   freadreal1(&climbuf->temp_max,swap,file);

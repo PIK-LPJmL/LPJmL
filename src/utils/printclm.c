@@ -107,10 +107,12 @@ static void printclm(const char *filename,int output,int nbands,int version,
         freadrestartheader(file,&restartheader,swap);
         printf("Land use:\t\t%s\n"
                "River routing:\t\t%s\n"
-               "Fixed sowing date:\t%s\n",
+               "Fixed sowing date:\t%s\n"
+               "Double harvest:\t%s\n",
                bool2str(restartheader.landuse),
                bool2str(restartheader.river_routing),
-               bool2str(restartheader.sdate_option));
+               bool2str(restartheader.sdate_option),
+               bool2str(restartheader.double_harvest));
         printf("Random seed:\t");
         for(i=0;i<NSEED;i++)
           printf(" %d",restartheader.seed[i]);

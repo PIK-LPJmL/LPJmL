@@ -128,13 +128,13 @@ Received 19 November 1997; accepted 15 January 1999*/
 /* Declaration of functions */
 
 extern void freegrid(Cell [],int,const Config *);
-extern void freecell(Cell *,int,Bool);
+extern void freecell(Cell *,int,const Config *);
 extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
                          int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
                           Real,int,Bool,Bool,const Config *);
-extern void update_monthly(Cell *,Real,Real,int,int);
-extern void init_annual(Cell *,int,int,const Config *);
+extern void update_monthly(Cell *,Real,Real,int);
+extern void init_annual(Cell *,int,const Config *);
 extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,int,int,Bool);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
 extern Bool freadcell(FILE *,Cell *,int,int,const Soilpar *,
@@ -163,7 +163,7 @@ extern Wateruse initwateruse(const Filename *,const Config *);
 extern Bool getwateruse_wd(Wateruse, Cell[], int, const Config *);
 #endif
 extern void freewateruse(Wateruse,Bool);
-extern void killstand(Cell *,const Pftpar [],int,Bool,Bool,int,int);
+extern void killstand(Cell *,int,Bool,Bool,int,const Config *);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);

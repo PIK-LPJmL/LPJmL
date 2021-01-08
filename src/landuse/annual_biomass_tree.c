@@ -176,7 +176,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
     {
       if(!present[p] && (estab_store.carbon<epsilon || config->pftpar[p].type!=TREE) && (fpc_type[TREE]<0.7 || config->pftpar[p].type==GRASS))
       {
-        addpft(stand,config->pftpar+p,year,0,config->with_nitrogen);
+        addpft(stand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
         n_est[config->pftpar[p].type]++;
       }
       if(present[p])
@@ -295,7 +295,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
       biomass_tree->irrigation.irrig_stor=0;
       biomass_tree->irrigation.irrig_amount=0;
     }
-    if(setaside(stand->cell,stand,config->pftpar, stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,year,config->with_nitrogen))
+    if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,biomass_tree->irrigation.irrigation,year,config))
       return TRUE;
   }
   else

@@ -22,7 +22,7 @@
 void dailyfire(Stand *stand,            /**< pointer to stand */
                Livefuel *livefuel,
                Real popdens, /**< population density (capita/km2) */
-	       Real avgprec,
+               Real avgprec,                /**< monthly averaged precipitation (mm/day) */
                const Dailyclimate *climate, /**< daily climate data */
                const Config *config /**< prescribed burnt area (TRUE/FALSE) */
               )

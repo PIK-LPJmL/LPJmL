@@ -15,7 +15,6 @@
 #include "lpj.h"
 
 void init_annual(Cell *cell,          /**< Pointer to cell */
-                 int npft,            /**< number of natural pfts */
                  int ncft,            /**< number of crop pfts */
                  const Config *config /**< LPJ configuration */
                 )

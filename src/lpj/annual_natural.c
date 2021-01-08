@@ -117,7 +117,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
 #ifndef DAILY_ESTABLISHMENT
   if(!config->black_fallow)
   {
-    flux_estab=establishmentpft(stand,config->pftpar,npft,config->ntypes,stand->cell->balance.aprec,year,config->with_nitrogen);
+    flux_estab=establishmentpft(stand,npft,stand->cell->balance.aprec,year,config);
     stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
     stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
     stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;

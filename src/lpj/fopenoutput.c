@@ -201,10 +201,10 @@ static void openfile(Outputfile *output,const Cell grid[],
   output->files[config->outputvars[i].id].oneyear=config->outputvars[i].oneyear;
 } /* of 'openfile' */
 
-Outputfile *fopenoutput(const Cell grid[], /**< LPJ grid */
-                        int n,         /**< size of output file array */
+Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
+                        int n,               /**< size of output file array */
                         const Config *config /**< LPJmL configuration */
-                       )               /** \return output file data */
+                       )                     /** \return output file data or NULL */
 {
   int i;
 #ifdef USE_MPI

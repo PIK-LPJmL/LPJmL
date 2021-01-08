@@ -19,6 +19,7 @@
 
 Bool fread_tree(FILE *file, /**< pointer to binary file */
                 Pft *pft,   /**< pointer to PFT read */
+                Bool UNUSED(double_harvest),
                 Bool swap   /**< Byte order has to be changed (TRUE/FALSE) */
                )            /** \return TRUE on error */
 {

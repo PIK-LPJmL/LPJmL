@@ -78,12 +78,22 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
     fclose(file);
     return NULL;
   }
-  if(restartheader.landuse && (config->withlanduse==NO_LANDUSE))
+  if(restartheader.landuse)
   {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR180: Land-use setting is different in %s file '%s'.\n",type,filename);
-    fclose(file);
-    return NULL;
+    if(config->withlanduse==NO_LANDUSE)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR180: Land-use setting is different in %s file '%s'.\n",type,filename);
+      fclose(file);
+      return NULL;
+    }
+    if(restartheader.double_harvest!=config->double_harvest)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR180: Double harvest setting is different in %s file '%s'.\n",type,filename);
+      fclose(file);
+      return NULL;
+    }
   }
   config->landuse_restart=restartheader.landuse;
   if(restartheader.river_routing!=config->river_routing)

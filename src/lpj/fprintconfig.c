@@ -190,10 +190,10 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
             notnull(filename->name));
 } /* of 'printinputfile' */
 
-void fprintconfig(FILE *file,           /**< File pointer to text output file */
-                  const Config *config, /**< LPJmL configuration */
-                  int npft,             /**< Number of natural PFTs */
-                  int ncft              /**< Number of crop PFTs */
+void fprintconfig(FILE *file,          /**< File pointer to text output file */
+                  int npft,            /**< Number of natural PFTs */
+                  int ncft,            /**< Number of crop PFTs */
+                  const Config *config /**< LPJmL configuration */
                  )
 {
   char *fdi[]={"Nesterov index","water vapour pressure deficit index"};
@@ -323,8 +323,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     }
     if(config->tillage_type)
     {
-      len+=fprintf(file,", ");
-      len=fputstring(file,len,"tillage_type",78);
+      snprintf(s,STRING_LEN,"with tillage at year %d",config->till_startyear);
+      len=printsim(file,len,&count,s);
     }
     if (config->crop_resp_fix)
     {
@@ -372,6 +372,8 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
         len=fputstring(file,len,"prescribed crop phus",78);
     }
   }
+  if(config->double_harvest)
+    len=printsim(file,len,&count,"double harvest");
   if(config->grassfix_filename.name!=NULL)
     len=printsim(file,len,&count,"grassland fixed PFT");
   if(config->grassharvest_filename.name!=NULL)
@@ -399,7 +401,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     fprintf(file,"Mowing days for grassland:");
     for(i=0;i<config->mowingdays_size;i++)
       fprintf(file," %d",config->mowingdays[i]);
-  } 
+  }
   fprintf(file,"\nWorking directory: %s\n",getdir());
   if(isreadrestart(config))
     fprintf(file,"Starting from restart file '%s'.\n",config->restart_filename);
@@ -494,7 +496,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     if(config->residue_treatment==READ_RESIDUE_DATA)
       printinputfile(file,"residue",&config->residue_data_filename,width);
     if(config->tillage_type==READ_TILLAGE)
-      printinputfile(file,"with tillage",&config->with_tillage_filename,width);
+      printinputfile(file,"tillage",&config->with_tillage_filename,width);
   }
   if(config->reservoir)
   {
@@ -625,11 +627,11 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
     {
       index=(item==NULL) ? i : item[i].index;
       if(config->outnames[config->outputvars[index].id].name==NULL)
-        fprintf(file,"%*d",width,config->outputvars[index].id);
+        fprintf(file,"%*d",-width,config->outputvars[index].id);
       else
-        fprintf(file,"%*s",width,config->outnames[config->outputvars[index].id].name);
-      fprintf(file," %s %*s %5s %3s ",fmt[config->outputvars[index].filename.fmt],
-              width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
+        fprintf(file,"%*s",-width,config->outnames[config->outputvars[index].id].name);
+      fprintf(file," %s %*s %-5s %-3s ",fmt[config->outputvars[index].filename.fmt],
+              -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
               typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep));
       printoutname(file,config->outputvars[index].filename.name,config->outputvars[index].oneyear,config);
       putc('\n',file);

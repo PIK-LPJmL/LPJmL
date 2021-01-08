@@ -104,13 +104,16 @@ void denitrification(Stand *stand,  /**< pointer to stand */
       foreachpft(pft,p,&stand->pftlist)
       {
         crop=pft->data;
-#ifdef DOUBLE_HARVEST
-        crop->n2o_denitsum+=N2O_denit;
-        crop->n2_emissum+=N_denit;
-#else
-        stand->cell->output.cft_n2o_denit[pft->par->id-npft+data->irrigation*ncft]+=N2O_denit;
-        stand->cell->output.cft_n2_emis[pft->par->id-npft+data->irrigation*ncft]+=N_denit;
-#endif
+        if(crop->dh!=NULL)
+        {
+          crop->dh->n2o_denitsum+=N2O_denit;
+          crop->dh->n2_emissum+=N_denit;
+        }
+        else
+        {
+          stand->cell->output.cft_n2o_denit[pft->par->id-npft+data->irrigation*ncft]+=N2O_denit;
+          stand->cell->output.cft_n2_emis[pft->par->id-npft+data->irrigation*ncft]+=N_denit;
+        }
       }
     }
   }

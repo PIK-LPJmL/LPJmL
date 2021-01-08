@@ -17,7 +17,7 @@
 #include "lpj.h"
 #include "crop.h"
 
-Bool fwrite_crop(FILE *file, /**< pointer to file data */
+Bool fwrite_crop(FILE *file,    /**< pointer to file data */
                  const Pft *pft /**< pointer to PFT data */
                 )               /** \return TRUE on error */
 {
@@ -34,7 +34,6 @@ Bool fwrite_crop(FILE *file, /**< pointer to file data */
   fwrite1(&crop->husum,sizeof(Real),file);
   fwrite1(&crop->vdsum,sizeof(Real),file);
   fwrite1(&crop->fphu,sizeof(Real),file);
-//  fwrite1(&crop->ind,sizeof(Cropphys2),file);
   fwrite1(&crop->ind.leaf.carbon,sizeof(Real),file);
   fwrite1(&crop->ind.leaf.nitrogen,sizeof(Real),file);
   fwrite1(&crop->ind.root.carbon,sizeof(Real),file);
@@ -56,25 +55,26 @@ Bool fwrite_crop(FILE *file, /**< pointer to file data */
   fwrite1(&crop->vscal_sum,sizeof(Real),file);
   fwrite1(&crop->frostkill,sizeof(int),file);
   fwrite1(&crop->supplysum,sizeof(Real),file);
-#ifdef DOUBLE_HARVEST
-  fwrite1(&crop->petsum,sizeof(Real),file);
-  fwrite1(&crop->evapsum,sizeof(Real),file);
-  fwrite1(&crop->transpsum,sizeof(Real),file);
-  fwrite1(&crop->intercsum,sizeof(Real),file);
-  fwrite1(&crop->precsum,sizeof(Real),file);
-  fwrite1(&crop->sradsum,sizeof(Real),file);
-  fwrite1(&crop->irrig_apply,sizeof(Real),file);
-  fwrite1(&crop->tempsum,sizeof(Real),file);
-  fwrite1(&crop->nirsum,sizeof(Real),file);
-  fwrite1(&crop->lgp,sizeof(Real),file);
-  fwrite1(&crop->runoffsum,sizeof(Real),file);
-  fwrite1(&crop->n2o_denitsum,sizeof(Real),file);
-  fwrite1(&crop->n2o_nitsum,sizeof(Real),file);
-  fwrite1(&crop->n2_emissum,sizeof(Real),file);
-  fwrite1(&crop->leachingsum,sizeof(Real),file);
-  fwrite1(&crop->c_emissum,sizeof(Real),file);
-  fwrite1(&crop->sdate,sizeof(int),file);
-  fwrite1(&crop->sowing_year,sizeof(int),file);
-#endif
+  if(crop->dh!=NULL)
+  {
+    fwrite1(&crop->dh->petsum,sizeof(Real),file);
+    fwrite1(&crop->dh->evapsum,sizeof(Real),file);
+    fwrite1(&crop->dh->transpsum,sizeof(Real),file);
+    fwrite1(&crop->dh->intercsum,sizeof(Real),file);
+    fwrite1(&crop->dh->precsum,sizeof(Real),file);
+    fwrite1(&crop->dh->sradsum,sizeof(Real),file);
+    fwrite1(&crop->dh->irrig_apply,sizeof(Real),file);
+    fwrite1(&crop->dh->tempsum,sizeof(Real),file);
+    fwrite1(&crop->dh->nirsum,sizeof(Real),file);
+    fwrite1(&crop->dh->lgp,sizeof(Real),file);
+    fwrite1(&crop->dh->runoffsum,sizeof(Real),file);
+    fwrite1(&crop->dh->n2o_denitsum,sizeof(Real),file);
+    fwrite1(&crop->dh->n2o_nitsum,sizeof(Real),file);
+    fwrite1(&crop->dh->n2_emissum,sizeof(Real),file);
+    fwrite1(&crop->dh->leachingsum,sizeof(Real),file);
+    fwrite1(&crop->dh->c_emissum,sizeof(Real),file);
+    fwrite1(&crop->dh->sdate,sizeof(int),file);
+    fwrite1(&crop->dh->sowing_year,sizeof(int),file);
+  }
   return FALSE;
 } /* of 'fwrite_crop' */

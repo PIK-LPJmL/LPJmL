@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**     f  s  c  a  n  m  o  w  i  n  g  d  a  y  s  .  c                          \n**/
 /**                                                                                \n**/
-/** Function reads mowing days from file                                           \n**/
+/** Function reads mowing days from configuration file                             \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -20,7 +20,7 @@ Bool fscanmowingdays(LPJfile *file, /**< pointer to LPJ configuration file */
                      Config *config /**< LPJ configuration */
                     )               /** \return TRUE on error */
 {
-  LPJfile array,item; 
+  LPJfile array,item;
   Verbosity verbose;
   int i;
   if(iskeydefined(file,"mowing_days"))
@@ -31,7 +31,7 @@ Bool fscanmowingdays(LPJfile *file, /**< pointer to LPJ configuration file */
     config->mowingdays=newvec(int,config->mowingdays_size);
     if(config->mowingdays==NULL)
     {
-      printallocerr("cftmap");
+      printallocerr("mowingdays");
       return TRUE;
     }
     for(i=0;i<config->mowingdays_size;i++)
@@ -56,7 +56,7 @@ Bool fscanmowingdays(LPJfile *file, /**< pointer to LPJ configuration file */
     config->mowingdays=newvec(int,2);
     if(config->mowingdays==NULL)
     {
-      printallocerr("cftmap");
+      printallocerr("mowingdays");
       return TRUE;
     }
     config->mowingdays_size=2;

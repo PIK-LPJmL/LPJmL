@@ -16,11 +16,11 @@
 
 void freecell(Cell *cell,        /**< Pointer to cell */
               int npft,          /**< number of natural PFTs */
-              Bool river_routing /**< river routing enabled (TRUE/FALSE) */
+              const Config *config /**< LPjmL configuration */
              )
 {
   freemanage(&cell->ml.manage,npft);
-  if(river_routing)
+  if(config->river_routing)
     freequeue(cell->discharge.queue);
   if(!cell->skip)
   {
@@ -30,7 +30,7 @@ void freecell(Cell *cell,        /**< Pointer to cell */
     freelist(cell->standlist);
     freeclimbuf(&cell->climbuf);
     freecropdates(cell->ml.cropdates);
-    freeoutput(&cell->output);
+    freeoutput(&cell->output,config->double_harvest);
     free(cell->gdd);
     free(cell->ml.sowing_month);
     free(cell->ml.gs);

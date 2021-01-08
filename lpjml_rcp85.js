@@ -38,7 +38,7 @@
 
   "sim_name" : mkstr(LPJmL run with RCP85 climate from MODEL), /* Simulation description */
   "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
-  "version"  : "5.1",       /* LPJmL version expected */
+  "version"  : "5.2",       /* LPJmL version expected */
   "random_prec" : false,    /* Random weather generator for precipitation enabled */
   "random_seed" : "random_seed",        /* seed for random number generator */
   "radiation" : "radiation",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -53,6 +53,7 @@
   "const_climate" : false,
   "shuffle_climate" : true,
   "const_deposition" : false,
+  "no_ndeposition" : false,
   "fix_climate" : true,      /* fix climate after specified year */
   "fix_landuse" : false,     /* fix land use after specified year */
   "fix_climate_year" : 2094, /* year at which climate (and land use) is fixed */
@@ -72,6 +73,7 @@
   "reservoir" : false,
   "wateruse" : "no_wateruse",
 #endif
+  "black_fallow" : false,
   "prescribe_burntarea" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */

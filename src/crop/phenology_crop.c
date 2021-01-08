@@ -66,7 +66,7 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
     {
       if(!crop->senescence)
         hu=max(0,temp*as-crop->basetemp);
-      else 
+      else
         hu=max(0,temp-crop->basetemp);
     }
     else
@@ -130,11 +130,11 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
   }
   else
     harvesting=TRUE;
-  
+
   if(crop->growingdays==hlimit)
     harvesting=TRUE;
-  
-  if(crop->frostkill==TRUE)
+
+  if(crop->frostkill)
     harvesting=TRUE;
 
   /* determination of lai */
@@ -148,10 +148,10 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
   }
   else
     crop->lai=crop->flaimax*laimax;
-  
-  lai00=crop->lai000; 
+
+  lai00=crop->lai000;
   crop->lai000=crop->lai;
-  
+
   if(!crop->senescence)
   {
     /* scale daily LAI increment with minimum of wscal and vscal as simplest approach
@@ -159,9 +159,9 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
     lai_inc=(crop->lai-lai00)*min(pft->wscal,pft->vscal);
     crop->lai=lai_inc+lai0;
   }
-  
+
   pft->phen=crop->lai/laimax;
-  
+
   return harvesting;
 } /* of 'phenology_crop' */
 
@@ -169,12 +169,12 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
 - the function is called for each pft in update_daily():
   -> leaf_phenology(pft,temp,day,daylength,npft);
 - initialisation of local variables
-- daily computation of the phenological scalar between 0 at sowing and 1 at 
+- daily computation of the phenological scalar between 0 at sowing and 1 at
   maturity (harvest)
   -> calculation of hu (heat unit)
   -> calculation of vrf (vernalization reduction factor) dependent on pvd
      (vernalization days) to reduce hu (only for winter crops)
-  -> calculation of prf (photoperiodism reduction factor) to reduce hu 
+  -> calculation of prf (photoperiodism reduction factor) to reduce hu
      (still inactive, yet)
   -> calculation of fphu (fraction of phenological heat unit)
   -> calculation of flaimax (fraction of maximum LAI) dependent of fphu
@@ -185,6 +185,6 @@ Bool phenology_crop(Pft *pft,      /**< pointer to PFT variables */
   -> determination of lai (leaf area index) and pft->phen
 
 - returns TRUE on hdate, so that the landusetype will be set to KILL, the litter
-  pools will be updated and the stand will be go to the set-aside stand 
+  pools will be updated and the stand will be go to the set-aside stand
   (see update_daily.c,setaside.c)
 */

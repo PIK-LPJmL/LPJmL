@@ -51,6 +51,6 @@ void fprintsoilpar(FILE *file,              /**< pointer to ASCII file */
   }
   fputs("------------------ ------ ----- ----- --- ------ ------- -------- ------- ------- ----------",file);
   if(with_nitrogen)
-    fputs(" ---------- ------- ------- ------- ------- ---------- --------",file);
+    fputs(" ------- ------- ------- ------- ---------- --------",file);
   fputc('\n',file);
 } /* of 'fprintsoilpar' */

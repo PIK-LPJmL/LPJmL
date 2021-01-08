@@ -65,8 +65,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   /* Establish the connection */
-  printconfig(&config,config.npft[GRASS]+config.npft[TREE],
-              config.npft[CROP]);
+  printconfig(config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   read_socket(socket,id,3);
   if(strncmp(id,"LPJ",3))
   {

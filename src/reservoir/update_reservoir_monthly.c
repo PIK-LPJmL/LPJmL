@@ -16,7 +16,7 @@
 #include "lpj.h"
 
 void update_reservoir_monthly(Cell *cell, /**< pointer to cell */
-                              int month
+                              int month   /**< month of year (0..11) */
                               )           /** \return void */
 {
   int i,j;

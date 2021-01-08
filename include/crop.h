@@ -79,6 +79,27 @@ typedef struct
   Cropratio ratio;          /**< relative C:N ratio for root, storage organ and pool */
 } Pftcroppar;
 
+typedef struct
+{
+  Real petsum;
+  Real evapsum;
+  Real transpsum;
+  Real intercsum;
+  Real precsum;
+  Real sradsum;
+  Real irrig_apply;
+  Real tempsum;
+  Real nirsum;
+  Real lgp;
+  Real runoffsum;
+  Real n2o_denitsum;
+  Real n2o_nitsum;
+  Real n2_emissum;
+  Real leachingsum;
+  Real c_emissum;
+  int sdate;
+  int sowing_year;
+} Double_harvest;
 
 typedef struct
 {
@@ -106,33 +127,14 @@ typedef struct
   Real vscal_sum;
   Bool frostkill;           /* set to TRUE in daily_agriculture if tmin<-5 and 0.2<fphu<0.95 */
   Real supplysum;
-  #ifdef DOUBLE_HARVEST
-  Real petsum;
-  Real evapsum;
-  Real transpsum;
-  Real intercsum;
-  Real precsum;
-  Real sradsum;
-  Real irrig_apply;
-  Real tempsum;
-  Real nirsum;
-  Real lgp;
-  Real runoffsum;
-  Real n2o_denitsum;
-  Real n2o_nitsum;
-  Real n2_emissum;
-  Real leachingsum;
-  Real c_emissum;
-  int sdate;
-  int sowing_year;
-#endif
+  Double_harvest *dh;
 } Pftcrop;
 
 extern char *calcmethod[];
 
 /* Declaration of functions */
 
-extern void new_crop(Pft *,int,int,int);
+extern void new_crop(Pft *,int,int,int,Bool);
 extern void allocation_daily_crop(Pft *,Real, Real,int,Daily_outputs *);
 extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,int,Bool);
 extern Real fpc_crop(Pft *);
@@ -145,7 +147,7 @@ extern Bool phenology_crop(Pft *,Real,Real,Real,int,const Config *);
 extern void laimax_manage(Manage *,const Pftpar [],int,int,int);
 extern Bool fwrite_crop(FILE *,const Pft *);
 extern void fprint_crop(FILE *,const Pft *,int);
-extern Bool fread_crop(FILE *,Pft *,Bool);
+extern Bool fread_crop(FILE *,Pft *,Bool,Bool);
 extern Bool fscanpft_crop(LPJfile *,Pftpar *,const Config *);
 extern Stocks establishment_crop(Pft *,Real,Real,int);
 extern void init_crop(Pft *);

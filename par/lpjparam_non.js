@@ -41,12 +41,9 @@
   "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
   "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
-  "residue_cn": 20,          /* CN ratio of prescribed residues */
   "residue_fbg": 0.25,       /* belowground fraction of prescribed residues */
-  "fertilizer_rate" : 20,     /* fixed fertilizer application rate in gN/m2/yr */
-  "residue_frac" : 0.95,      /* fraction of residues to be submerged by tillage */
-  "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
-  "till_startyear" : 1850,    /* year in which tillage should start */
+  "residue_frac" : 0.95,     /* fraction of residues to be submerged by tillage */
+  "mixing_efficiency" : 0.9, /* mixing efficiency of tillage */
   "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold (mm) */
   "irrig_threshold_c3_dry" : 0.8,     /* irrigation threshold C3, prec < aprec_lim */
