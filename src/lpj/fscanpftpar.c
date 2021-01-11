@@ -310,7 +310,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       pft->fuelbulkdensity=0;
     fscanpftreal(verb,&item,&pft->fuelbulkdensity,pft->name,"fuelbulkdensity");
     fscanpftreal(verb,&item,&pft->aprec_min,pft->name,"aprec_min");
-    if(config->fire==FIRE)
+    if(config->fire!=NO_FIRE)
     {
       fscanpftreal(verb,&item,&pft->flam,pft->name,"flam");
     }

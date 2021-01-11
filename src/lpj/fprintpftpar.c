@@ -102,6 +102,8 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
             pftpar->tmax.sl, pftpar->tmax.base, pftpar->tmax.tau,
             pftpar->light.sl, pftpar->light.base, pftpar->light.tau,
             pftpar->wscal.sl, pftpar->wscal.base, pftpar->wscal.tau);
+  if(config->fire!=NO_FIRE)
+    fprintf(file,"flam:\t\t%g\n",pftpar->flam);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fprintf(file,"alpha_fuelp:\t%g\n"
@@ -113,8 +115,6 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
     if(config->fdi==WVPD_INDEX)
       fprintf(file,"vpd_par:\t%g\n",pftpar->vpd_par);
   }
-  else if(config->fire==FIRE)
-    fprintf(file,"flam:\t\t%g\n",pftpar->flam);
   if(config->with_nitrogen)
     fprintf(file,"vmax_up:\t%g (gN/kgC)\n"
                  "kNmin:\t\t%g\n"
