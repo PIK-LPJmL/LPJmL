@@ -216,25 +216,6 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         return NULL;
       }
     }
-    if(openclimate(&climate->file_tamp,&config->tamp_filename,(config->fire==SPITFIRE_TMAX) ? "celsius" : NULL,LPJ_SHORT,config))
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR236: Cannot open %s data from '%s'.\n",(config->fire==SPITFIRE) ? "tamp" : "tmin",config->tamp_filename.name);
-      closeclimatefile(&climate->file_temp,isroot(*config));
-      closeclimatefile(&climate->file_prec,isroot(*config));
-      if(config->with_radiation)
-      {
-        if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
-          closeclimatefile(&climate->file_lwnet,isroot(*config));
-        closeclimatefile(&climate->file_swdown,isroot(*config));
-      }
-      else
-        closeclimatefile(&climate->file_cloud,isroot(*config));
-      if(config->wet_filename.name!=NULL)
-        closeclimatefile(&climate->file_wet,isroot(*config));
-      free(climate);
-      return NULL;
-    }
   }
   if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
   {
@@ -257,7 +238,6 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       climate->file_tmin.scalar=0.1;
     if(openclimate(&climate->file_tmax,&config->tmax_filename,"celsius",LPJ_SHORT,config))
     {
-      closeclimatefile(&climate->file_tamp,isroot(*config));
       closeclimatefile(&climate->file_temp,isroot(*config));
       closeclimatefile(&climate->file_prec,isroot(*config));
       closeclimatefile(&climate->file_tmin,isroot(*config));
@@ -279,8 +259,10 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(config->fire==SPITFIRE)
   {
-    if(openclimate(&climate->file_tamp,&config->tamp_filename,(config->tamp_filename.fmt==CDF) ? "celsius" : NULL,LPJ_SHORT,config))
+    if(openclimate(&climate->file_tamp,&config->tamp_filename,NULL,LPJ_SHORT,config))
     {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR236: Cannot open 'tamp' data from '%s'.\n",config->tamp_filename.name);
       closeclimatefile(&climate->file_temp,isroot(*config));
       closeclimatefile(&climate->file_prec,isroot(*config));
       if(config->with_radiation)
@@ -744,7 +726,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   else
     climate->data.wet=NULL;
-  if(config->prescribe_burntarea && (config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX))
+  if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
   {
     if((climate->data.burntarea=newvec(Real,climate->file_burntarea.n))==NULL)
     {
