@@ -55,6 +55,15 @@ bisco activity */
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
   "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
+  "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
+  "residue_cn": 20,         /* CN ratio of prescribed residues */
+  "residue_fbg": 0.25,      /* belowground fraction of prescribed residues */
+  "residue_frac" : 0.95,      /* fraction of residues to be submerged by tillage */
+  "manure_cn": 14.5,        /* CN ration of manure gC/gN */
+  "fertilizer_rate" : 10,     /* default: 20; fixed fertilizer application rate in gN/m2/yr */
+  "manure_rate" : 0,          /* default: 20; fixed manure application rate in gN/m2/yr */
+  "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
   "temp_response_a" : 56.02, /* Parameter in temperature response function */
   "temp_response_b" : 46.02, /* Parameter in temperature response function */

@@ -42,7 +42,7 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           fprint_grassland.$O new_biomass_tree.$O fread_biomass_tree.$O\
           fwrite_biomass_tree.$O fprint_biomass_tree.$O init_irrigation.$O\
           isdailyoutput_agriculture.$O isdailyoutput_grassland.$O getcftmap.$O\
-          fscanmowingdays.$O
+          fscanmowingdays.$O getnsoil_agr.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

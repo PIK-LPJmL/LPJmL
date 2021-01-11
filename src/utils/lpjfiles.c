@@ -17,14 +17,14 @@
 #include "tree.h"
 #include "crop.h"
 
-#define LPJFILES_VERSION "1.0.002"
+#define LPJFILES_VERSION "1.0.003"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 #ifdef USE_JSON
 #define dflt_conf_filename "lpjml.js" /* Default LPJ configuration file */
 #else
 #define dflt_conf_filename "lpjml.conf" /* Default LPJ configuration file */
 #endif
-#define USAGE "Usage: %s [-h] [-noinput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
+#define USAGE "Usage: %s [-h] [-noinput] [-nooutput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
 
 int main(int argc,char **argv)
@@ -34,9 +34,10 @@ int main(int argc,char **argv)
   Config config;         /* LPJ configuration */
   int rc;                /* return code of program */
   const char *progname;
-  int argc_save;
+  int argc_save,iarg;
   char **argv_save;
   Bool input;
+  Bool output;
   FILE *file;
   initconfig(&config);
   progname=strippath(argv[0]);
@@ -57,6 +58,7 @@ int main(int argc,char **argv)
       fprintf(file,"\nArguments:\n"
              "-h               print this help text\n"
              "-noinput         does not list input data files\n"
+             "-nooutput        does not list output files\n"
              "-pp cmd          set preprocessor program. Default is 'cpp -P'\n"
              "-outpath dir     directory appended to output filenames\n"
              "-inpath dir      directory appended to input filenames\n"
@@ -71,14 +73,23 @@ int main(int argc,char **argv)
       return EXIT_SUCCESS;
     }
   }
-  if(argc>1 && !strcmp(argv[1],"-noinput"))
+  input=output=TRUE; /* no input files listed */
+  for(iarg=1;iarg<argc;iarg++)
   {
-    argc--; /* adjust command line options */
-    argv++;
-    input=FALSE; /* no input files listed */
+    if(argv[iarg][0]=='-')
+    {
+      if(!strcmp(argv[iarg],"-noinput"))
+        input=FALSE;
+      else if(!strcmp(argv[iarg],"-nooutput"))
+        output=FALSE;
+      else
+        break;
+    }
+    else
+     break;
   }
-  else 
-    input=TRUE; /* list input files */
+  argc-=iarg-1;
+  argv+=iarg-1;
   argc_save=argc;
   argv_save=argv;
   if(readconfig(&config,dflt_conf_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
@@ -89,7 +100,7 @@ int main(int argc,char **argv)
   else
   {
     printincludes(dflt_conf_filename,argc_save,argv_save);
-    printfiles(input,&config);
+    printfiles(input,output,&config);
   }
   return EXIT_SUCCESS;
 } /* of 'main' */

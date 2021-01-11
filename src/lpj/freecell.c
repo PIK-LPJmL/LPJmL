@@ -30,7 +30,7 @@ void freecell(Cell *cell,        /**< Pointer to cell */
     freelist(cell->standlist);
     freeclimbuf(&cell->climbuf);
     freecropdates(cell->ml.cropdates);
-    freeoutput(&cell->output,config->double_harvest);
+    freeoutput(&cell->output);
     free(cell->gdd);
     free(cell->ml.sowing_month);
     free(cell->ml.gs);

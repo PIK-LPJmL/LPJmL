@@ -14,8 +14,7 @@
 
 #include "lpj.h"
 
-void freeoutput(Output *output, /**< Output data */
-                Bool double_harvest
+void freeoutput(Output *output /**< Output data */
                )
 {
   free(output->sdate);
@@ -78,59 +77,33 @@ void freeoutput(Output *output, /**< Output data */
   free(output->cft_n2_emis);
   free(output->cft_leaching);
   free(output->cft_c_emis);
-  if(double_harvest)
+  if(output->dh!=NULL)
   {
-    free(output->cftfrac2);
-    free(output->sdate2);
-    free(output->hdate2);
-    free(output->husum2);
-    free(output->pft_harvest2);
-    free(output->cft_pet2);
-    free(output->cft_transp2);
-    free(output->cft_evap2);
-    free(output->cft_interc2);
-    free(output->cft_nir2);
-    free(output->cft_temp2);
-    free(output->cft_prec2);
-    free(output->cft_srad2);
-    free(output->cft_aboveground_biomass2);
-    free(output->growing_period2);
-    free(output->cft_airrig2);
-    free(output->syear);
-    free(output->syear2);
-    free(output->pft_nuptake2);
-    free(output->cft_runoff2);
-    free(output->cft_n2o_denit2);
-    free(output->cft_n2o_nit2);
-    free(output->cft_n2_emis2);
-    free(output->cft_leaching2);
-    free(output->cft_c_emis2);
-
-    output->sdate2=output->hdate2=output->syear=output->syear2=NULL;
-    output->husum2=NULL;
-    output->cft_transp2=output->cft_evap2=output->cft_interc2=output->cft_nir2=
-      output->cft_pet2=output->cftfrac2=output->cft_airrig2=NULL;
-    output->pft_harvest2=NULL;
-    output->cft_temp2=output->cft_prec2=output->cft_srad2=NULL;
-    output->cft_aboveground_biomass2=NULL;
-    output->cft_runoff2=output->cft_n2o_denit2=output->cft_n2o_nit2=output->cft_n2_emis2=
-      output->cft_leaching2=output->cft_c_emis2=NULL;
+    free(output->dh->cftfrac2);
+    free(output->dh->sdate2);
+    free(output->dh->hdate2);
+    free(output->dh->husum2);
+    free(output->dh->pft_harvest2);
+    free(output->dh->cft_pet2);
+    free(output->dh->cft_transp2);
+    free(output->dh->cft_evap2);
+    free(output->dh->cft_interc2);
+    free(output->dh->cft_nir2);
+    free(output->dh->cft_temp2);
+    free(output->dh->cft_prec2);
+    free(output->dh->cft_srad2);
+    free(output->dh->cft_aboveground_biomass2);
+    free(output->dh->growing_period2);
+    free(output->dh->cft_airrig2);
+    free(output->dh->syear);
+    free(output->dh->syear2);
+    free(output->dh->pft_nuptake2);
+    free(output->dh->cft_runoff2);
+    free(output->dh->cft_n2o_denit2);
+    free(output->dh->cft_n2o_nit2);
+    free(output->dh->cft_n2_emis2);
+    free(output->dh->cft_leaching2);
+    free(output->dh->cft_c_emis2);
+    free(output->dh);
   }
-  output->sdate=output->hdate=NULL; 
-  output->husum=NULL;
-  output->pft_harvest=NULL;
-  output->cft_consump_water_g=output->cft_consump_water_b=output->cft_pet=NULL;
-  output->cft_transp=output->cft_transp_b=output->cft_evap=output->cft_evap_b=output->cft_interc=output->cft_interc_b=
-    output->cft_return_flow_b=output->cft_nir=output->cft_temp=output->cft_prec=output->cft_srad=output->cft_fpar=NULL;
-  output->cft_aboveground_biomass=NULL;
-  output->cft_conv_loss_evap=output->cft_conv_loss_drain=NULL;
-  output->growing_period=NULL;
-  output->cft_irrig_events=NULL;
-#ifdef IMAGE
-  output->wft_vegc=NULL;
-#endif
-  output->pft_npp=output->fpc=output->cftfrac=output->cft_airrig=output->cft_luc_image=NULL;
-  output->cft_mswc=NULL;
-  output->cft_runoff=output->cft_n2o_denit=output->cft_n2o_nit=output->cft_n2_emis=
-    output->cft_leaching=output->cft_c_emis=NULL;
 } /* of 'freeoutput' */

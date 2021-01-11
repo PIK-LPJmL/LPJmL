@@ -80,42 +80,42 @@ void harvest_crop(Output *output,      /**< Output data */
   {
     if(config->pft_output_scaled)
     {
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+      double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
         &(output->pft_harvest[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.carbon),
-        &(output->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.carbon),harvest.harvest.carbon*stand->frac);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        &(output->dh->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.carbon),harvest.harvest.carbon*stand->frac);
+      double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
         &(output->pft_harvest[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.nitrogen),
-        &(output->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.nitrogen),harvest.harvest.nitrogen*stand->frac);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        &(output->dh->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.nitrogen),harvest.harvest.nitrogen*stand->frac);
+      double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
         &(output->pft_harvest[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.carbon),
-        &(output->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.carbon),(harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon)*stand->frac);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        &(output->dh->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.carbon),(harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon)*stand->frac);
+      double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
         &(output->pft_harvest[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.nitrogen),
-        &(output->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.nitrogen),(harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen)*stand->frac);
+        &(output->dh->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.nitrogen),(harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen)*stand->frac);
     }
     else
     {
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+      double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
         &(output->pft_harvest[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.carbon),
-        &(output->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.carbon),harvest.harvest.carbon);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        &(output->dh->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.carbon),harvest.harvest.carbon);
+      double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
         &(output->pft_harvest[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.nitrogen),
-        &(output->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.nitrogen),harvest.harvest.nitrogen);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        &(output->dh->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.nitrogen),harvest.harvest.nitrogen);
+      double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
         &(output->pft_harvest[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.carbon),
-        &(output->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.carbon),harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon);
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+        &(output->dh->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.carbon),harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon);
+      double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
         &(output->pft_harvest[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.nitrogen),
-        &(output->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.nitrogen),harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen);
+        &(output->dh->pft_harvest2[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.nitrogen),harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen);
   }
-    /* harvested area */
-    double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-      output->cftfrac+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE+NWPTYPE),
-      output->cftfrac2+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE+NWPTYPE),stand->frac);
-    if(output->syear2[pft->par->id-npft+data->irrigation*ncft]>0)
-      output->sdate2[pft->par->id-npft+data->irrigation*ncft]=crop->dh->sdate;
-    else
-      output->sdate[pft->par->id-npft+data->irrigation*ncft]=crop->dh->sdate;
+  /* harvested area */
+  double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
+    output->cftfrac+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE+NWPTYPE),
+    output->dh->cftfrac2+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE+NWPTYPE),stand->frac);
+  if(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft]>0)
+    output->dh->sdate2[pft->par->id-npft+data->irrigation*ncft]=crop->dh->sdate;
+  else
+    output->sdate[pft->par->id-npft+data->irrigation*ncft]=crop->dh->sdate;
   }
   else
   {

@@ -40,6 +40,7 @@ static void fprintfilename(FILE *file,Filename filename)
 
 void fprintfiles(FILE *file,          /**< pointer to text output file */
                  Bool withinput,      /**< list input data files (TRUE/FALSE) */
+                 Bool withoutput,     /**< list output data files (TRUE/FALSE) */
                  const Config *config /**< LPJmL configuration */
                 )
 {
@@ -137,15 +138,18 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     fprintf(file, "%s\n", config->wateruse_wd_filename.name);
 #endif
   }
-  if(iswriterestart(config))
-    fprintf(file,"%s\n",config->write_restart_filename);
-  for(i=0;i<config->n_out;i++)
-    if(config->outputvars[i].oneyear)
-      for(j=config->firstyear;j<=config->lastyear;j++)
-      {
-        fprintf(file,config->outputvars[i].filename.name,j);
-        fputc('\n',file);
-      }
-    else
-      fprintf(file,"%s\n",config->outputvars[i].filename.name);
+  if(withoutput)
+  {
+    if(iswriterestart(config))
+      fprintf(file,"%s\n",config->write_restart_filename);
+    for(i=0;i<config->n_out;i++)
+      if(config->outputvars[i].oneyear)
+        for(j=config->firstyear;j<=config->lastyear;j++)
+        {
+          fprintf(file,config->outputvars[i].filename.name,j);
+          fputc('\n',file);
+        }
+      else
+        fprintf(file,"%s\n",config->outputvars[i].filename.name);
+  }
 } /* of 'fprintfiles' */

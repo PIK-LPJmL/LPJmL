@@ -48,13 +48,12 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                  const Config *config /**< LPJ configuration */
                 )
 {
-  Pft *pft;
-  Stand *stand;
   Dailyclimate daily;
   Bool intercrop;
-  int l,p,s,month,dayofmonth,day;
+  int month,dayofmonth,day;
   int cell;
   Real popdens=0; /* population density (capita/km2) */
+  Real norg_soil_agr,nmin_soil_agr,nveg_soil_agr;
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)
   {
@@ -75,27 +74,19 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
             laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
           if(year>config->firstyear-config->nspinup || config->from_restart)
-            landusechange(grid+cell,npft,ncft,grid[cell].ml.with_tillage,intercrop,year,config);
+            landusechange(grid+cell,npft,ncft,intercrop,year,config);
           else if(grid[cell].ml.dam)
-            landusechange_for_reservoir(grid+cell,npft,ncft,grid[cell].ml.with_tillage,
+            landusechange_for_reservoir(grid+cell,npft,ncft,
                                         intercrop,year,config);
         }
 #if defined IMAGE && defined COUPLED
         setoutput_image(grid+cell,ncft);
 #endif
+        getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
+        grid[cell].output.adelta_norg_soil_agr-=norg_soil_agr;
+        grid[cell].output.adelta_nmin_soil_agr-=nmin_soil_agr;
+        grid[cell].output.adelta_nveg_soil_agr-=nveg_soil_agr;
       }
-      foreachstand(stand,s,(grid+cell)->standlist)
-        if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
-        {
-          grid[cell].output.adelta_norg_soil_agr-=litterstocks(&stand->soil.litter).nitrogen*stand->frac;
-          forrootsoillayer(l)
-          {
-            grid[cell].output.adelta_norg_soil_agr-=(stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac;
-            grid[cell].output.adelta_nmin_soil_agr-=(stand->soil.NO3[l]+stand->soil.NH4[l])*stand->frac;
-          }
-          foreachpft(pft,p,&stand->pftlist)
-            grid[cell].output.adelta_nveg_soil_agr-=vegn_sum(pft)*stand->frac;
-        }
       initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/
   } /* of for(cell=...) */
@@ -255,19 +246,13 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(config->nspinup>soil_equil_year &&
          (year==config->firstyear-config->nspinup+soil_equil_year) && !config->from_restart)
         equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
-      foreachstand(stand,s,(grid+cell)->standlist)
-        if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
-        {
-          grid[cell].output.adelta_norg_soil_agr+=litterstocks(&stand->soil.litter).nitrogen*stand->frac;
-          forrootsoillayer(l)
-          {
-            grid[cell].output.adelta_norg_soil_agr+=(stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac;
-            grid[cell].output.adelta_nmin_soil_agr+=(stand->soil.NO3[l]+stand->soil.NH4[l])*stand->frac;
-          }
-          foreachpft(pft,p,&stand->pftlist)
-            grid[cell].output.adelta_nveg_soil_agr+=vegn_sum(pft)*stand->frac;
-        }
-
+      if(config->withlanduse)
+      {
+        getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
+        grid[cell].output.adelta_norg_soil_agr+=norg_soil_agr;
+        grid[cell].output.adelta_nmin_soil_agr+=nmin_soil_agr;
+        grid[cell].output.adelta_nveg_soil_agr+=nveg_soil_agr;
+      }
     }
     if(config->river_routing)
     {

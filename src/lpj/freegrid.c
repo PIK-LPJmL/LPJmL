@@ -48,7 +48,7 @@ void freegrid(Cell grid[],         /**< cell grid */
       free(grid[cell].ml.fraction);
     }
     freelandfrac(grid[cell].ml.landfrac);
-    freeoutput(&grid[cell].output,config->double_harvest);
+    freeoutput(&grid[cell].output);
     if(!grid[cell].skip)
     {
       if(config->withlanduse!=NO_LANDUSE)

@@ -256,7 +256,7 @@ extern Bool readconfig(Config *,const char *,Fscanpftparfcn [],int,int,int *,
                        char ***,const char *);
 extern Bool fscanconfig(Config *,LPJfile *,Fscanpftparfcn [],int,int);
 extern void fprintparam(FILE *,int,int,const Config *);
-extern void fprintfiles(FILE *,Bool,const Config *);
+extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);
 extern size_t getsize(int,const Config *);
@@ -273,7 +273,7 @@ extern size_t getsize(int,const Config *);
 #define isroot(config) TRUE
 #endif
 #define printparam(config,npft,ncft) fprintparam(stdout,config,npft,ncft)
-#define printfiles(isinput,config) fprintfiles(stdout,isinput,config)
+#define printfiles(isinput,isoutput,config) fprintfiles(stdout,isinput,isoutput,config)
 #define printincludes(name,argc,argv) fprintincludes(stdout,name,argc,argv)
 
 #endif /* CONFIG_H */

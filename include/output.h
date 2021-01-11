@@ -93,11 +93,40 @@ typedef struct
 
 typedef struct
 {
+  int *sdate2;              /**< sowing date */
+  int *hdate2;              /**< Harvest date */
+  int *syear;
+  int *syear2;
+  Real *husum2;             /**< accumulated heat units through growing season */
+  Real *cft_airrig2;        /**< Yearly irrigation per cft (mm) */
+  Harvest *pft_harvest2;
+  Real *growing_period2;    /**< lenght of growing period in days */
+  Real *cft_pet2;           /**< cft PET */
+  Real *cft_transp2;        /**< cft specific transpiration (mm) */
+  Real *cft_evap2;          /**< cft specific soil evaporation (mm) */
+  Real *cft_interc2;        /**< cft specific interception (mm) */
+  Real *cft_nir2;           /**< cft specific net irrigation requirement (mm) */
+  Real *cft_temp2;          /**< cft specific temperature sum (day degC) */
+  Real *cft_prec2;          /**< cft specific precipitation (mm) */
+  Real *cft_srad2;          /**< cft specific short-wave radiation (W/m2) */
+  Stocks *cft_aboveground_biomass2; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
+  Real *cftfrac2;           /**< cft fraction */
+  Real *cft_runoff2;        /**< cft specific runoff (mm) */
+  Real *cft_n2o_denit2;     /**< cft specific N2O emissions from denitrification (gN/m2/growing season) */
+  Real *cft_n2o_nit2;       /**< cft specific N2O emissions from nitrification (gN/m2/growing season) */
+  Real *cft_n2_emis2;       /**< cft specific N2 emissions (gN/m2/growing season) */
+  Real *cft_leaching2;      /**< cft specific leaching (gN/m2/growing season) */
+  Real *cft_c_emis2;        /**< cft specific C emissions (gC/m2/growing season) */
+  Real *pft_nuptake2;       /**< nitrogen uptake per PFT */
+} Output_doubleharvest;
+
+typedef struct
+{
   Real npp;              /**< NPP (gC/m2) */
-  Real npp_agr;         /**< Monthly NPP for agricultural stands (gC/m2) */
+  Real npp_agr;          /**< NPP for agricultural stands (gC/m2) */
   Real gpp;              /**< GPP (gC/m2) */
   Real rh;               /**< heterotrophic respiration (gC/m2) */
-  Real rh_agr;          /* annual heterotrophic respiration of agricultural stands (gC/m2) */
+  Real rh_agr;           /**< heterotrophic respiration of agricultural stands (gC/m2) */
   Real rh_litter;        /**< heterotrophic respiration from litter (gC/m2) */
   Real transp;           /**< transpiration (mm) */
   Real mtransp_b;        /**< Monthly transpired irrigation water (mm) */
@@ -137,39 +166,15 @@ typedef struct
   Real *cft_airrig;      /**< Yearly irrigation per cft (mm) */
   int *sdate;            /**< sowing date */
   int *hdate;            /**< Harvest date */
-  int *sdate2;           /**< sowing date */
-  int *hdate2;           /**< Harvest date */
-  int *syear;
-  int *syear2;
-  Real *husum2;          /**< accumulated heat units through growing season */
-  Real *cft_airrig2;     /**< Yearly irrigation per cft (mm) */
-  Harvest *pft_harvest2;
-  Real *growing_period2;      /**< lenght of growing period in days */
-  Real *cft_pet2; /**< cft PET */
-  Real *cft_transp2;        /**< cft specific transpiration (mm) */
-  Real *cft_evap2;          /**< cft specific soil evaporation (mm) */
-  Real *cft_interc2;        /**< cft specific interception (mm) */
-  Real *cft_nir2;           /**< cft specific net irrigation requirement (mm) */
-  Real *cft_temp2;          /**< cft specific temperature sum (day degC) */
-  Real *cft_prec2;          /**< cft specific precipitation (mm) */
-  Real *cft_srad2;          /**< cft specific short-wave radiation (W/m2) */
-  Stocks *cft_aboveground_biomass2; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
-  Real *cftfrac2;           /**< cft fraction */
-  Real *cft_runoff2;        /**< cft specific runoff (mm) */
-  Real *cft_n2o_denit2;        /**< cft specific N2O emissions from denitrification (gN/m2/growing season) */
-  Real *cft_n2o_nit2;        /**< cft specific N2O emissions from nitrification (gN/m2/growing season) */
-  Real *cft_n2_emis2;        /**< cft specific N2 emissions (gN/m2/growing season) */
-  Real *cft_leaching2;        /**< cft specific leaching (gN/m2/growing season) */
-  Real *cft_c_emis2;        /**< cft specific C emissions (gC/m2/growing season) */
-  Real *pft_nuptake2;       /* nitrogen uptake per PFT */
-  Real *cft_runoff;        /**< cft specific runoff (mm) */
-  Real *cft_n2o_denit;        /**< cft specific N2O emissions from denitrification (gN/m2/growing season) */
+  Output_doubleharvest *dh; /**< output for double harvest or NULL */
+  Real *cft_runoff;         /**< cft specific runoff (mm) */
+  Real *cft_n2o_denit;      /**< cft specific N2O emissions from denitrification (gN/m2/growing season) */
   Real *cft_n2o_nit;        /**< cft specific N2O emissions from nitrification (gN/m2/growing season) */
   Real *cft_n2_emis;        /**< cft specific N2 emissions (gN/m2/growing season) */
-  Real *cft_leaching;        /**< cft specific leaching (gN/m2/growing season) */
-  Real *cft_c_emis;        /**< cft specific C emissions (gC/m2/growing season) */
-  Real *pft_npp;         /**< Pft specific NPP (gC/m2) */
-  Real *mpft_lai;         /**< Pft specific LAI */
+  Real *cft_leaching;       /**< cft specific leaching (gN/m2/growing season) */
+  Real *cft_c_emis;         /**< cft specific C emissions (gC/m2/growing season) */
+  Real *pft_npp;            /**< Pft specific NPP (gC/m2) */
+  Real *mpft_lai;           /**< Pft specific LAI */
   Harvest *pft_harvest;
   Real *fpc;             /**< foliar projective cover (FPC) */
   Real *pft_mort;        /**< annual mortality  */
@@ -395,7 +400,7 @@ typedef struct
 /* Declaration of functions */
 
 extern Bool initoutput(Output *,int,Bool,int,int,int,int,int,Bool);
-extern void freeoutput(Output *,Bool);
+extern void freeoutput(Output *);
 extern int outputsize(int,int,int,int,int,int);
 extern Type getoutputtype(int,Bool);
 extern int getnyear(const Variable *,int);

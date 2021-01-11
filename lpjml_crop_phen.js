@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**           l  p  j  m  l  _  c  r  o  p  _  p  h  e  n  .  j  s                 \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.2.002                         \n**/
+/** Configuration file for LPJmL C Version 5.2.002                                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -349,12 +349,12 @@
 /*===================================================================*/
 
   "sim_name" : "LPJmL Run", /* Simulation description */
-  "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
+  "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "version"  : "5.2",       /* LPJmL version expected */
-  "random_prec" : false,     /* Random weather generator for precipitation enabled */
+  "random_prec" : false,    /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
-  "radiation" : "radiation",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
-  "fire" : "fire",            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
+  "radiation" : "radiation",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
+  "fire" : "fire",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
   "new_trf" : false,
@@ -408,16 +408,16 @@
   "irrigation" : "pot_irrigation",
 #endif
 
-  "tillage_type" : "read_tillage",          /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
+  "tillage_type" : "read_tillage",      /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
   "till_startyear" : 1850,              /* year in which tillage should start */
   "black_fallow" : false,               /* simulation with black fallow on PNV */
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
-  "laimax_interpolate" : "laimax_par",    /* laimax values from manage parameter file, */
+  "laimax_interpolate" : "laimax_par",  /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : true,            /* enable fertilizer input */
-  "manure_input" : true,               /* enable manure input */
+  "manure_input" : true,                /* enable manure input */
   "fix_fertilization" : false,          /* fix fertilizer input */
   "others_to_crop" : false,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
@@ -531,7 +531,7 @@ ID                         Fmt                    filename
 //    { "id" : "pft_chawo,        "file" : { "fmt" : "raw", "name" : mkstr(output/pft_chawo.bin)}},
 //    { "id" : "pft_nhawo,        "file" : { "fmt" : "raw", "name" : mkstr(output/pft_nhawo.bin)}},
 #ifdef WITH_SPITFIRE
-    { "id" : "firec",           "file" : { "fmt" : "raw", "name" : mkstr(output/mfirec.bin)}},
+    { "id" : "firec",           "file" : { "fmt" : "raw", "timestep" : "monthly" : "unit" : "gC/m2/month", "name" : "output/mfirec.bin"}},
     { "id" : "nfire",           "file" : { "fmt" : "raw", "name" : mkstr(output/mnfire.bin)}},
     { "id" : "burntarea",       "file" : { "fmt" : "raw", "name" : mkstr(output/mburnt_area.bin)}},
     { "id" : "burntarea",       "file" : { "fmt" : "raw", "name" : mkstr(output/aburnt_area.bin)}},

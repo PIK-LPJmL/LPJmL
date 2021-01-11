@@ -131,7 +131,7 @@ extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real);
 #endif
 extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int);
 extern Bool getlanduse(Landuse,Cell *,int,int,int,const Config *);
-extern void landusechange(Cell *,int,int,Bool,Bool,int,const Config *);
+extern void landusechange(Cell *,int,int,Bool,int,const Config *);
 extern Bool setaside(Cell *,Stand *,Bool,Bool,int,Bool,int,const Config *);
 extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
 extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
@@ -152,6 +152,7 @@ extern Harvest harvest_stand(Output *,Stand *,Real);
 extern int *getcftmap(LPJfile *,int *,int,int,const Config *);
 extern Bool fscanmowingdays(LPJfile *,Config *);
 extern void tillage(Soil *, Real);
+extern void getnsoil_agr(Real *,Real *,Real *,const Cell *);
 
 /* Declaration of variables */
 

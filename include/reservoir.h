@@ -76,7 +76,7 @@ extern Bool initreservoir(Cell *,Config *);
 extern void irrig_amount_reservoir(Cell *,const Config *);
 extern void allocate_reservoir(Cell *,int,const Config *);
 extern void landusechange_for_reservoir(Cell *,int,int,
-                                        Bool,Bool,int,const Config *);
+                                        Bool,int,const Config *);
 extern Bool check_stand_fracs_for_reservoir(const Cell *,Real *);
 extern void update_reservoir_daily(Cell *,Real,Real,int);
 extern void update_reservoir_monthly(Cell *,int);

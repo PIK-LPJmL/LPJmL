@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  v  p  d  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.1.002                                 \n**/
+/** Configuration file for LPJmL C Version 5.2.002                                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -32,7 +32,7 @@
 
   "sim_name" : "LPJmL run with SPITFIRE and VPD fire danger index", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-  "version"  : "5.1",       /* LPJmL version expected */
+  "version"  : "5.2",       /* LPJmL version expected */
   "random_prec" : false,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation", /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -67,7 +67,12 @@
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "sdate_fixyear" : 1970,                 /* year in which sowing dates shall be fixed */
+   "tillage_type" : "tillage",           /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
+  "till_startyear" : 1850,              /* year in which tillage should start */
+  "black_fallow" : false,               /* simulation with black fallow on PNV */
+  "no_ndeposition" : false,             /* turn off atmospheric N deposition */
   "intercrop" : true,                     /* intercrops on setaside */
+  "residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
   "remove_residuals" : false,             /* remove residuals */
   "residues_fire" : false,                /* fire in residuals */
   "irrigation" : "lim_irrigation",        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
@@ -75,10 +80,14 @@
                                           /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
   "rw_manage" : false,                    /* rain water management */
   "laimax" : 5,                           /* maximum LAI for CONST_LAI_MAX */
+  "grassonly" : false,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
   "others_to_crop" : false,
   "istimber" : true,
+  "crop_phu_option" : false,
+  "cropsheatfrost" : false,
+  "double_harvest" : false,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -132,7 +141,7 @@ ID                         Fmt                    filename
     { "id" : "interc",           "file" : { "fmt" : "cdf", "name" : "output/minterc.nc"}},
     { "id" : "swc1",             "file" : { "fmt" : "cdf", "name" : "output/mswc1.nc"}},
     { "id" : "swc2",             "file" : { "fmt" : "cdf", "name" : "output/mswc2.nc"}},
-    { "id" : "firec",            "file" : { "fmt" : "cdf", "name" : "output/firec.nc"}},
+    { "id" : "firec",            "file" : { "fmt" : "cdf", "timestep" : "monthly" : "unit" : "gC/m2/month", "name" : "output/mfirec.nc"}},
     { "id" : "firef",            "file" : { "fmt" : "cdf", "name" : "output/firef.nc"}},
     { "id" : "vegc",             "file" : { "fmt" : "cdf", "name" : "output/vegc.nc"}},
     { "id" : "soilc",            "file" : { "fmt" : "cdf", "name" : "output/soilc.nc"}},
