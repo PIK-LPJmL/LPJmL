@@ -33,7 +33,7 @@ void fprintpar_crop(FILE *file,          /**< pointer to text file */
                "temp vern:\t%g (deg C)\n"
                "tv_eff:\t\t%g %g (deg C)\n"
                "tv_opt:\t\t%g %g (deg C)\n"
-               "pvd_max:\t\t%g\n"
+               "pvd_max:\t%g\n"
                "psens:\t\t%g\n"
                "pb:\t\t%g (h)\n"
                "ps:\t\t%g (h)\n"

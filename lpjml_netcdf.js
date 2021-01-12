@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  e  t  c  d  f  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.1.002                                 \n**/
+/** Configuration file for LPJmL C Version 5.2.002                                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -32,7 +32,7 @@
 
 "sim_name" : "LPJmL Run", /* Simulation description */
 "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-"version"  : "5.1",       /* LPJmL version expected */
+"version"  : "5.2",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : "cloudiness",
@@ -61,24 +61,35 @@
 "fix_climate" : false,
 "const_deposition" : false,
 "fertilizer_input" : true,
+"fix_fertilization" : false,          /* fix fertilizer input */
+"check_climate" : true,               /* check climate input before start */
 "irrigation" : "pot_irrigation",
 "sowing_date_option" : "fixed_sdate",
 "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
+"residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
+"residues_fire" : false,              /* fire in residuals */
 "laimax_interpolate" : "laimax_par",  /* laimax values from manage parameter file */
 "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
+"tillage_type" : "tillage",           /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
+"till_startyear" : 1850,              /* year in which tillage should start */
+"black_fallow" : false,               /* simulation with black fallow on PNV */
+"no_ndeposition" : false,             /* turn off atmospheric N deposition */
 "reservoir" : false,
 "grassland_fixed_pft" : false,
 "wateruse" : "no_wateruse",
 "grass_harvest_options" : false,
 "intercrop" : true,                   /* intercrops on setaside */
 "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
-"remove_residuals" : false,           /* remove residuals */
 "residues_fire" : false,              /* fire in residuals */
 "istimber": false,
 "rw_manage" : false,                  /* rain water management */
-"check_climate" : true,               /* check climate input before start */
+"manure_input" : false,               /* enable manure input */
 "others_to_crop" : true,
+"grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
 "crop_resp_fix" : false,
+"crop_phu_option" : false,
+"cropsheatfrost" : false,
+"double_harvest" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */
@@ -213,7 +224,7 @@ ID                         Fmt                    filename
 "nspinup" : 390,  /* spinup years */
 "nspinyear" : 30, /*cycle length during spinup (yr)*/
 "firstyear": 1901, /* first year of simulation */
-"lastyear" : 2011, /* last year of simulation */
+"lastyear" : 2009, /* last year of simulation */
 "restart" :  true, /* start from restart file */
 "restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
 "write_restart" : true, /* create restart file */

@@ -73,7 +73,6 @@
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
   "intercrop" : true,                     /* intercrops on setaside */
   "residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
-  "remove_residuals" : false,             /* remove residuals */
   "residues_fire" : false,                /* fire in residuals */
   "irrigation" : "lim_irrigation",        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
   "laimax_interpolate" : "laimax_cft",    /* laimax values from manage parameter file, */
@@ -141,7 +140,7 @@ ID                         Fmt                    filename
     { "id" : "interc",           "file" : { "fmt" : "cdf", "name" : "output/minterc.nc"}},
     { "id" : "swc1",             "file" : { "fmt" : "cdf", "name" : "output/mswc1.nc"}},
     { "id" : "swc2",             "file" : { "fmt" : "cdf", "name" : "output/mswc2.nc"}},
-    { "id" : "firec",            "file" : { "fmt" : "cdf", "timestep" : "monthly" : "unit" : "gC/m2/month", "name" : "output/mfirec.nc"}},
+    { "id" : "firec",            "file" : { "fmt" : "cdf", "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output/mfirec.nc"}},
     { "id" : "firef",            "file" : { "fmt" : "cdf", "name" : "output/firef.nc"}},
     { "id" : "vegc",             "file" : { "fmt" : "cdf", "name" : "output/vegc.nc"}},
     { "id" : "soilc",            "file" : { "fmt" : "cdf", "name" : "output/soilc.nc"}},

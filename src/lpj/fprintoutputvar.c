@@ -64,7 +64,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" --  ----- ------- ------ ",file);
+  fputs(" -- ----- ------- ------ ",file);
   frepeatch(file,'-',77-width-width_unit-width_var-7);
   putc('\n',file);
   for(i=0;i<size;i++)
@@ -89,7 +89,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
         default:
           sc="";
       }
-      fprintf(file,"%-*s %-*s %-*s %2s %5s %5g%2s %6g %s\n",width,output[index].name,
+      fprintf(file,"%-*s %-*s %-*s %-2s %5s %5g%-2s %6g %s\n",width,output[index].name,
               width_var,output[index].var,
               width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,sprinttimestep(s,output[index].timestep),
              typenames[getoutputtype(index,config->float_grid)],output[index].scale,sc,output[index].offset,output[index].descr);
