@@ -244,7 +244,7 @@ int main(int argc,char **argv)
   if(isroot(config))
     puts((year>config.lastyear) ? "Simulation ended." : "Simulation stopped.");
   /* free memory */
-  freeinput(input,isroot(config));
+  freeinput(input,&config);
   freegrid(grid,config.npft[GRASS]+config.npft[TREE],&config);
   if(isroot(config))
   {

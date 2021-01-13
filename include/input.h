@@ -32,6 +32,6 @@ typedef struct
 /* Declaration of functions */
 
 extern Bool initinput(Input *,const Cell *,int,int,const Config *);
-extern void freeinput(Input,Bool);
+extern void freeinput(Input,const Config *);
 
 #endif

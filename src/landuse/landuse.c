@@ -198,7 +198,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       if(opendata_netcdf(&landuse->crop_phu,&config->crop_phu_filename,NULL,config))
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
-        if(landuse->sdate.file!=NULL)
+        if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
         free(landuse);
         return NULL;
@@ -211,7 +211,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                                                &version,&offset,TRUE,config))==NULL)
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
-        if(landuse->sdate.file!=NULL)
+        if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
         free(landuse);
         return NULL;
@@ -242,15 +242,11 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                 "ERROR147: Invalid number of bands=%d in crop phu data file, must be %d.\n",
                 (int)landuse->crop_phu.var_len,2*ncft);
       closeclimatefile(&landuse->landuse,isroot(*config));
-      if(landuse->sdate.file!=NULL)
+      if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
       free(landuse);
       return NULL;
     }
-  }
-  else
-  {
-    landuse->crop_phu.file=NULL;
   } /* End crop_phu */
 
   if(config->fertilizer_input)
@@ -262,9 +258,9 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       if(opendata_netcdf(&landuse->fertilizer_nr,&config->fertilizer_nr_filename,"g/m2",config))
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
-        if(landuse->sdate.file!=NULL)
+        if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(landuse->crop_phu.file!=NULL)
+        if(config->crop_phu_option)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
         free(landuse);
         return NULL;
@@ -277,9 +273,9 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                                                     &version,&offset,TRUE,config))==NULL)
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
-        if(landuse->sdate.file!=NULL)
+        if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(landuse->crop_phu.file!=NULL)
+        if(config->crop_phu_option)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
         free(landuse);
         return NULL;
@@ -315,8 +311,6 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       return(NULL);
     }
   }
-  else
-    landuse->fertilizer_nr.file=NULL;
 
   if(config->manure_input)
   {
@@ -327,11 +321,11 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       if(opendata_netcdf(&landuse->manure_nr,&config->manure_nr_filename,NULL,config))
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
-        if(landuse->sdate.file!=NULL)
+        if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(landuse->crop_phu.file!=NULL)
+        if(config->crop_phu_option)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(landuse->fertilizer_nr.file!=NULL)
+        if(config->fertilizer_input)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         free(landuse);
         return NULL;
@@ -344,11 +338,11 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                                                 &version,&offset,TRUE,config))==NULL)
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
-        if(landuse->sdate.file!=NULL)
+        if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(landuse->crop_phu.file!=NULL)
+        if(config->crop_phu_option)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(landuse->fertilizer_nr.file!=NULL)
+        if(config->fertilizer_input)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         free(landuse);
         return NULL;
@@ -382,18 +376,16 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                 "ERROR147: Invalid number of bands=%d in manure Nr data file. must be %d.\n",
                (int)landuse->manure_nr.var_len,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
       closeclimatefile(&landuse->landuse,isroot(*config));
-      if(landuse->sdate.file!=NULL)
+      if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
-      if(landuse->crop_phu.file!=NULL)
+      if(config->crop_phu_option)
          closeclimatefile(&landuse->crop_phu,isroot(*config));
-      if(landuse->fertilizer_nr.file!=NULL)
+      if(config->fertilizer_input)
         closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       free(landuse);
       return NULL;
     }
   }
-  else
-    landuse->manure_nr.file=NULL;
 
   if(config->tillage_type==READ_TILLAGE)
   {
@@ -403,13 +395,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       if(opendata_netcdf(&landuse->with_tillage,&config->with_tillage_filename,NULL,config))
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
-        if(landuse->sdate.file!=NULL)
+        if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(landuse->crop_phu.file!=NULL)
+        if(config->crop_phu_option)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(landuse->fertilizer_nr.file!=NULL)
+        if(config->fertilizer_input)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
-        if(landuse->manure_nr.file!=NULL)
+        if(config->manure_input)
           closeclimatefile(&landuse->manure_nr,isroot(*config));
         free(landuse);
         return NULL;
@@ -422,13 +414,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                                                    &version,&offset,TRUE,config))==NULL)
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
-        if(landuse->sdate.file!=NULL)
+        if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(landuse->crop_phu.file!=NULL)
+        if(config->crop_phu_option)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(landuse->fertilizer_nr.file!=NULL)
+        if(config->fertilizer_input)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
-        if(landuse->manure_nr.file!=NULL)
+        if(config->manure_input)
           closeclimatefile(&landuse->manure_nr,isroot(*config));
         free(landuse);
         return NULL;
@@ -454,13 +446,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     if(landuse->with_tillage.var_len!=1)
     {
       closeclimatefile(&landuse->landuse,isroot(*config));
-      if(landuse->sdate.file!=NULL)
+      if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
-      if(landuse->crop_phu.file!=NULL)
+      if(config->crop_phu_option)
         closeclimatefile(&landuse->crop_phu,isroot(*config));
-      if(landuse->fertilizer_nr.file!=NULL)
+      if(config->fertilizer_input)
         closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
-      if(landuse->manure_nr.file!=NULL)
+      if(config->manure_input)
         closeclimatefile(&landuse->manure_nr,isroot(*config));
       closeclimatefile(&landuse->with_tillage,isroot(*config));
       if(isroot(*config))
@@ -471,8 +463,6 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       return(NULL);
     }
   }
-  else
-    landuse->with_tillage.file=NULL;
 
   if(config->residue_treatment==READ_RESIDUE_DATA)
   {
@@ -483,15 +473,15 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       if(opendata_netcdf(&landuse->residue_on_field,&config->residue_data_filename,NULL,config))
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
-        if(landuse->sdate.file!=NULL)
+        if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(landuse->crop_phu.file!=NULL)
+        if(config->crop_phu_option)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(landuse->fertilizer_nr.file!=NULL)
+        if(config->fertilizer_input)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
-        if(landuse->manure_nr.file!=NULL)
+        if(config->manure_input)
           closeclimatefile(&landuse->manure_nr,isroot(*config));
-        if(landuse->with_tillage.file!=NULL)
+        if(config->tillage_type==READ_TILLAGE)
           closeclimatefile(&landuse->with_tillage,isroot(*config));
         free(landuse);
         return NULL;
@@ -504,15 +494,15 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                                                        &version,&offset,TRUE,config))==NULL)
       {
         closeclimatefile(&landuse->landuse,isroot(*config));
-        if(landuse->sdate.file!=NULL)
+        if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(landuse->crop_phu.file!=NULL)
+        if(config->crop_phu_option)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(landuse->fertilizer_nr.file!=NULL)
+        if(config->fertilizer_input)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
-        if(landuse->manure_nr.file!=NULL)
+        if(config->manure_input)
           closeclimatefile(&landuse->manure_nr,isroot(*config));
-        if(landuse->with_tillage.file!=NULL)
+        if(config->tillage_type==READ_TILLAGE)
           closeclimatefile(&landuse->with_tillage,isroot(*config));
         free(landuse);
         return NULL;
@@ -548,22 +538,20 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                 "ERROR147: Invalid number of bands=%d in residue extraction data file, must be %d.\n",
                 (int)landuse->residue_on_field.var_len,ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
       closeclimatefile(&landuse->landuse,isroot(*config));
-      if(landuse->sdate.file!=NULL)
+      if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
-      if(landuse->crop_phu.file!=NULL)
+      if(config->crop_phu_option)
         closeclimatefile(&landuse->crop_phu,isroot(*config));
-      if(landuse->fertilizer_nr.file!=NULL)
+      if(config->fertilizer_input)
         closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
-      if(landuse->manure_nr.file!=NULL)
+      if(config->manure_input)
         closeclimatefile(&landuse->manure_nr,isroot(*config));
-      if(landuse->with_tillage.file!=NULL)
+      if(config->tillage_type==READ_TILLAGE)
         closeclimatefile(&landuse->with_tillage,isroot(*config));
       free(landuse);
       return NULL;
     }
   }
-  else
-    landuse->residue_on_field.file=NULL;
 
   landuse->intercrop=config->intercrop;
   return landuse;
@@ -664,12 +652,6 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   /* Initialize yearly prescribed sdate */
   if(config->sdate_option==PRESCRIBED_SDATE)
   {
-    dates=newvec(int,config->ngridcell*landuse->sdate.var_len);
-    if(dates==NULL)
-    {
-      printallocerr("dates");
-      return TRUE;
-    }
     yearsdate-=landuse->sdate.firstyear;
     if(yearsdate>=landuse->sdate.nyear)
       yearsdate=landuse->sdate.nyear-1; /* use last year sdate */
@@ -1312,7 +1294,6 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         }
         if(readrealvec(landuse->manure_nr.file,data,0,landuse->manure_nr.scalar,landuse->manure_nr.n,
                        landuse->manure_nr.swap,landuse->manure_nr.datatype))
-        //if(fread(vec,sizeof(short),landuse->manure_nr.n,landuse->manure_nr.file)!=landuse->manure_nr.n)
         {
           fprintf(stderr,
             "ERROR149: Cannot read manure fertilizer of year %d in getlanduse().\n",
@@ -1538,24 +1519,24 @@ Bool getintercrop(const Landuse landuse /**< pointer to landuse data */
 } /* of 'getintercrop' */
 
 void freelanduse(Landuse landuse, /**< pointer to landuse data */
-                 Bool isroot      /**< task is root task */
+                 const Config *config
 )
 {
   if(landuse!=NULL)
   {
-    closeclimatefile(&landuse->landuse,isroot);
-    if(landuse->sdate.file!=NULL)
-      closeclimatefile(&landuse->sdate,isroot);
-    if(landuse->fertilizer_nr.file!=NULL)
-      closeclimatefile(&landuse->fertilizer_nr,isroot);
-    if(landuse->crop_phu.file!=NULL)
-       closeclimatefile(&landuse->crop_phu,isroot);
-    if(landuse->manure_nr.file!=NULL)
-       closeclimatefile(&landuse->manure_nr,isroot);
-    if(landuse->with_tillage.file!=NULL)
-       closeclimatefile(&landuse->with_tillage,isroot);
-    if(landuse->residue_on_field.file!=NULL)
-       closeclimatefile(&landuse->residue_on_field,isroot);
+    closeclimatefile(&landuse->landuse,isroot(*config));
+    if(config->sdate_option==PRESCRIBED_SDATE)
+      closeclimatefile(&landuse->sdate,isroot(*config));
+    if(config->fertilizer_input)
+      closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
+    if(config->crop_phu_option)
+       closeclimatefile(&landuse->crop_phu,isroot(*config));
+    if(config->manure_input)
+       closeclimatefile(&landuse->manure_nr,isroot(*config));
+    if(config->tillage_type==READ_TILLAGE)
+       closeclimatefile(&landuse->with_tillage,isroot(*config));
+    if(config->residue_treatment==READ_RESIDUE_DATA)
+       closeclimatefile(&landuse->residue_on_field,isroot(*config));
     free(landuse);
   }
 } /* of 'freelanduse' */
