@@ -303,11 +303,17 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     }
     else if(landuse->fertilizer_nr.var_len!=2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE))
     {
+      closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
-                "ERROR147: Invalid number of bands=%d in fertilizer Nr data file.\n",
-                (int)landuse->fertilizer_nr.var_len);
-      freelanduse(landuse,isroot(*config));
+                "ERROR147: Invalid number of bands=%d in fertilizer Nr data file, must be %d.\n",
+                (int)landuse->fertilizer_nr.var_len,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+      closeclimatefile(&landuse->landuse,isroot(*config));
+      if(config->sdate_option==PRESCRIBED_SDATE)
+        closeclimatefile(&landuse->sdate,isroot(*config));
+      if(config->crop_phu_option)
+        closeclimatefile(&landuse->crop_phu,isroot(*config));
+      free(landuse);
       return(NULL);
     }
   }
@@ -1416,7 +1422,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   {
     for(cell=0; cell<config->ngridcell; cell++)
     {
-      grid[cell].ml.with_tillage=config->tillage_type==NO_TILLAGE ? FALSE : TRUE;
+      grid[cell].ml.with_tillage=config->tillage_type!=NO_TILLAGE;
     }
   }
 
