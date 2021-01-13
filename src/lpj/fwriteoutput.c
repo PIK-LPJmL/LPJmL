@@ -1675,7 +1675,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   index=0;
   for(i=D_LAI;i<=D_PET;i++)
   {
-    if(isopen(output,i))
+    if(iswrite(output,i))
     {
       count=0;
       for(cell=0;cell<config->ngridcell;cell++)
