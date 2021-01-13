@@ -106,7 +106,7 @@ typedef struct
 /* Declaration of functions */
 
 extern Landuse initlanduse(int,const Config *);
-extern void freelanduse(Landuse,Bool);
+extern void freelanduse(Landuse,const Config *);
 extern Bool getintercrop(const Landuse);
 extern void newlandfrac(Landfrac [2],int);
 extern void initlandfrac(Landfrac [2],int);

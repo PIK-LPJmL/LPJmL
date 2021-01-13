@@ -181,8 +181,6 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       return(NULL);
     }
   }
-  else
-    landuse->sdate.file=NULL;
   landuse->intercrop=config->intercrop;
   return landuse;
 } /* of 'initlanduse' */
@@ -647,16 +645,16 @@ Bool getintercrop(const Landuse landuse /**< pointer to landuse data */
   return (landuse==NULL) ? FALSE : landuse->intercrop;
 } /* of 'getintercrop' */
 
-void freelanduse(Landuse landuse, /**< pointer to landuse data */
-                 Bool isroot      /**< task is root task */
+void freelanduse(Landuse landuse,     /**< pointer to landuse data */
+                 const Config *config /**< LPJmL configuration  */
                 )
 {
   if(landuse!=NULL)
   {
     if(!landuse->allcrops)
-      closeclimatefile(&landuse->landuse,isroot);
-    if(landuse->sdate.file!=NULL)
-      closeclimatefile(&landuse->sdate,isroot);
+      closeclimatefile(&landuse->landuse,isroot(*config));
+    if(config->sdate_option==PRESCRIBED_SDATE)
+      closeclimatefile(&landuse->sdate,isroot(*config));
     free(landuse);
   }
 } /* of 'freelanduse' */
