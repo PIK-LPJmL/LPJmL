@@ -28,6 +28,7 @@ Bool freadrestartheader(FILE *file, /**< file pointer of binary file */
     header->landuse=swapint(header->landuse);
     header->river_routing=swapint(header->river_routing);
     header->sdate_option=swapint(header->sdate_option);
+    header->crop_option=swapint(header->crop_option);
     header->double_harvest=swapint(header->double_harvest);
     for(i=0;i<NSEED;i++)
 #ifdef USE_RAND48

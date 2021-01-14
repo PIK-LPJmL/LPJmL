@@ -31,8 +31,6 @@ void fprintpar_crop(FILE *file,          /**< pointer to text file */
                "temp fall:\t%g (deg C)\n"
                "temp spring:\t%g (deg C)\n"
                "temp vern:\t%g (deg C)\n"
-               "tv_eff:\t\t%g %g (deg C)\n"
-               "tv_opt:\t\t%g %g (deg C)\n"
                "pvd_max:\t%g\n"
                "psens:\t\t%g\n"
                "pb:\t\t%g (h)\n"
@@ -55,8 +53,6 @@ void fprintpar_crop(FILE *file,          /**< pointer to text file */
           croppar->initdate.sdatenh,croppar->initdate.sdatesh,
           croppar->hlimit,croppar->fallow_days,
           croppar->temp_fall,croppar->temp_spring,croppar->temp_vern,
-          croppar->tv_eff.low,croppar->tv_eff.high,
-          croppar->tv_opt.low,croppar->tv_opt.high,
           croppar->pvd_max,
           croppar->psens,
           croppar->pb,
@@ -77,6 +73,14 @@ void fprintpar_crop(FILE *file,          /**< pointer to text file */
           1/croppar->nc_ratio.root,
           1/croppar->nc_ratio.so,
           1/croppar->nc_ratio.pool);
+  if(config->crop_phu_option==OLD_CROP_PHU)
+    fprintf(file,"trg:\t\t%g %g (deg C)\n",
+            croppar->trg.low,croppar->trg.high);
+  else
+    fprintf(file,"tv_eff:\t\t%g %g (deg C)\n"
+                 "tv_opt:\t\t%g %g (deg C)\n",
+            croppar->tv_eff.low,croppar->tv_eff.high,
+            croppar->tv_opt.low,croppar->tv_opt.high);
   if(config->with_nitrogen)
     fprintf(file,"rel. C:N ratio:\t%g %g %g\n",
             croppar->ratio.root,croppar->ratio.so,croppar->ratio.pool);

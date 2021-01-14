@@ -189,7 +189,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
   } /* End sdate */
 
     /* Multiple-years PRESCRIBED_CROP_PHU */
-  if(config->crop_phu_option)
+  if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
   {
     /* read sdate input metadata */
     landuse->crop_phu.fmt=config->crop_phu_filename.fmt;
@@ -260,7 +260,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(config->crop_phu_option)
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
         free(landuse);
         return NULL;
@@ -275,7 +275,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(config->crop_phu_option)
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
         free(landuse);
         return NULL;
@@ -311,7 +311,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
-      if(config->crop_phu_option)
+      if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
         closeclimatefile(&landuse->crop_phu,isroot(*config));
       free(landuse);
       return(NULL);
@@ -329,7 +329,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(config->crop_phu_option)
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
         if(config->fertilizer_input)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
@@ -346,7 +346,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(config->crop_phu_option)
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
         if(config->fertilizer_input)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
@@ -384,7 +384,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
-      if(config->crop_phu_option)
+      if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
          closeclimatefile(&landuse->crop_phu,isroot(*config));
       if(config->fertilizer_input)
         closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
@@ -403,7 +403,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(config->crop_phu_option)
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
         if(config->fertilizer_input)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
@@ -422,7 +422,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(config->crop_phu_option)
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
         if(config->fertilizer_input)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
@@ -454,7 +454,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
-      if(config->crop_phu_option)
+      if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
         closeclimatefile(&landuse->crop_phu,isroot(*config));
       if(config->fertilizer_input)
         closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
@@ -481,7 +481,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(config->crop_phu_option)
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
         if(config->fertilizer_input)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
@@ -502,7 +502,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
-        if(config->crop_phu_option)
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
         if(config->fertilizer_input)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
@@ -546,7 +546,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
-      if(config->crop_phu_option)
+      if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
         closeclimatefile(&landuse->crop_phu,isroot(*config));
       if(config->fertilizer_input)
         closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
@@ -1535,7 +1535,7 @@ void freelanduse(Landuse landuse, /**< pointer to landuse data */
       closeclimatefile(&landuse->sdate,isroot(*config));
     if(config->fertilizer_input)
       closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
-    if(config->crop_phu_option)
+    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
        closeclimatefile(&landuse->crop_phu,isroot(*config));
     if(config->manure_input)
        closeclimatefile(&landuse->manure_nr,isroot(*config));

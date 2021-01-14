@@ -19,14 +19,14 @@
 #define KEYDAY_NHEMISPHERE 365 /* last day of driest month (Dec) of northern hemisphere */
 #define KEYDAY_SHEMISPHERE 181 /* last day of driest month (Jun) of southern hemisphere */
 
-void phen_variety(Pft *pft,      /**< PFT variables */
+void phen_variety(Pft *pft,            /**< PFT variables */
                   int vern_date20,
-                  Real lat,   /**< latitude (deg) */
-                  int sdate,  /**< sowing date (1..365) */
-                  Bool wtype,  /**< winter type (TRUE/FALSE) */
-                  const Config *config, /**< LPJ configuration */
-                  int npft,
-                  int ncft
+                  Real lat,            /**< latitude (deg) */
+                  int sdate,           /**< sowing date (1..365) */
+                  Bool wtype,          /**< winter type (TRUE/FALSE) */
+                  int npft,            /**< number of natural PFTs */
+                  int ncft,            /**< number of crop PFTs */
+                  const Config *config /**< LPJ configuration */
                  )
 {
   int keyday,keyday1;
@@ -39,7 +39,7 @@ void phen_variety(Pft *pft,      /**< PFT variables */
 
   data=pft->stand->data;
 
-  if(config->crop_phu_option)
+  if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
   {
       crop->phu = pft->stand->cell->ml.crop_phu_fixed[pft->par->id-npft+data->irrigation*ncft];
       if (crop->phu < 0) /* phus of winter varieties stored with negative sign in phu input file */
@@ -56,46 +56,48 @@ void phen_variety(Pft *pft,      /**< PFT variables */
   }
   else
   {
-  /* LPJmL4 semi-static PHU approach,
-  PHU requirements function of sdate or
-  base temperature function of mean annual temperature.
-  (config->crop_phu_option == SEMISTATIC_CROP_PHU) */
-      if(lat>=0)
-      {
-          keyday=KEYDAY_NHEMISPHERE;
-          keyday1=0;
-      }
-      else
-          keyday=keyday1=KEYDAY_SHEMISPHERE;
+    /* LPJmL4 semi-static PHU approach,
+       PHU requirements function of sdate or
+       base temperature function of mean annual temperature.
+       (config->crop_phu_option == SEMISTATIC_CROP_PHU) */
+    if(lat>=0)
+    {
+      keyday=KEYDAY_NHEMISPHERE;
+      keyday1=0;
+    }
+    else
+      keyday=keyday1=KEYDAY_SHEMISPHERE;
 
-      if(sdate>365)
-          sdate-=365;
+    if(sdate>365)
+      sdate-=365;
 
-      if(croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE)
+    if(croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE)
+    {
+      if(wtype)
       {
-          if(wtype)
-          {
-              crop->pvd=max(0,min(60,vern_date20-sdate-croppar->pvd_max));
-              crop->phu=max(croppar->phuw.low,-0.1081*pow((sdate-keyday),2)
+        crop->pvd=max(0,min(60,vern_date20-sdate-croppar->pvd_max));
+        crop->phu=max(croppar->phuw.low,-0.1081*pow((sdate-keyday),2)
                   +3.1633*(sdate-keyday)+croppar->phuw.high);
-          }
-          else
-          {
-              crop->pvd=0;/*max(0,min(60,vern_date20-sdate));*/
-                          /* quick fix for too long growing periods in the high latitudes */
-              crop->phu=min(croppar->phus.high,max(croppar->phus.low,
-                  max(croppar->basetemp.low,pft->stand->cell->climbuf.atemp_mean20_fix)*200));
-          }
       }
       else
       {
-          crop->pvd=0;
-          crop->phu=min(croppar->phus.high,max(croppar->phus.low,
-              max(croppar->basetemp.low,pft->stand->cell->climbuf.atemp_mean20_fix)*167));
+        crop->pvd=0;/*max(0,min(60,vern_date20-sdate));*/
+                    /* quick fix for too long growing periods in the high latitudes */
+        crop->phu=min(croppar->phus.high,max(croppar->phus.low,
+                  max(croppar->basetemp.low,pft->stand->cell->climbuf.atemp_mean20_fix)*200));
       }
+    }
+    else
+    {
+      crop->pvd=0;
+      crop->phu=min(croppar->phus.high,max(croppar->phus.low,
+              max(croppar->basetemp.low,pft->stand->cell->climbuf.atemp_mean20_fix)*167));
+    }
   }
-
-  crop->basetemp=croppar->basetemp.low; /* for GGCMI Phase 3 we account for spatial differences through different PHU requirements and hold the basetemp constant */
+  if(config->crop_phu_option==OLD_CROP_PHU)
+    crop->basetemp=min(croppar->basetemp.high,max(croppar->basetemp.low,pft->stand->cell->climbuf.atemp_mean20_fix-3.0));
+  else
+    crop->basetemp=croppar->basetemp.low; /* for GGCMI Phase 3 we account for spatial differences through different PHU requirements and hold the basetemp constant */
 
 } /* of 'phen_variety' */
 

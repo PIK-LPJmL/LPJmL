@@ -18,39 +18,34 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 
-Bool initoutput(Output *output, /**< Output data */
-                int cft,        /**< CFT for daily output */
-                Bool irrigation,/**< irrigation for daily output */
-                int npft,       /**< number of natural PFTs */
-                int nbiomass,   /**< number of biomass PFTs */
-                int nwft,       /**< number of WFTs */
-                int ngrass,     /**< number of grasses */
-                int ncft,       /**< number of crop PFTs */
-                Bool double_harvest
-               )                /**\ return TRUE on error */
+Bool initoutput(Output *output,      /**< Output data */
+                int npft,            /**< number of natural PFTs */
+                int ncft,            /**< number of crop PFTs */
+                const Config *config /**< LPJmL configuration */
+               )                     /**\ return TRUE on error */
 {
   output->sdate=newvec(int,2*ncft);/* allocate memory for output */
   checkptr(output->sdate);
   output->hdate=newvec(int,2*ncft);
   checkptr(output->hdate);
-  output->pft_npp=newvec(Real,(npft-nbiomass-nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_npp=newvec(Real,(npft-config->nbiomass-config->nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_npp);
   output->husum=newvec(Real,2*ncft);
   checkptr(output->husum);
-  output->pft_nuptake=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_nuptake=newvec(Real,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_nuptake);
-  output->pft_ndemand=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  output->mpft_lai=newvec(Real,(npft-nbiomass-nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_ndemand=newvec(Real,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->mpft_lai=newvec(Real,(npft-config->nbiomass-config->nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->mpft_lai);
-  output->pft_gcgp=newvec(Real,(npft-nbiomass-nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_gcgp=newvec(Real,(npft-config->nbiomass-config->nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_gcgp);
-  output->gcgp_count=newvec(Real,(npft-nbiomass-nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->gcgp_count=newvec(Real,(npft-config->nbiomass-config->nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->gcgp_count);
   output->pft_harvest=newvec(Harvest,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_harvest);
-  output->fpc = newvec(Real, (npft-nbiomass-nwft)+1);
+  output->fpc = newvec(Real, (npft-config->nbiomass-config->nwft)+1);
   checkptr(output->fpc);
-  output->pft_mort = newvec(Real, (npft-nbiomass-nwft));
+  output->pft_mort = newvec(Real, (npft-config->nbiomass-config->nwft));
   checkptr(output->pft_mort);
   output->cftfrac=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->cftfrac);
@@ -94,31 +89,31 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_fpar);
   output->cft_luc_image=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->cft_luc_image);
-  output->pft_laimax=newvec(Real,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_laimax=newvec(Real,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_laimax);
-  output->pft_root=newvec(Stocks,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_root=newvec(Stocks,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_root);
-  output->pft_leaf=newvec(Stocks,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_leaf=newvec(Stocks,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_leaf);
-  output->pft_sapw=newvec(Stocks,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_sapw=newvec(Stocks,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_sapw);
-  output->pft_hawo=newvec(Stocks,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_hawo=newvec(Stocks,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_hawo);
-  output->pft_veg=newvec(Stocks,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_veg=newvec(Stocks,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_veg);
-  output->pft_nlimit=newvec(Real,npft-nbiomass-nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_nlimit=newvec(Real,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_nlimit);
 #if defined IMAGE || defined INCLUDEWP
-  output->wft_vegc = newvec(Real, nwft);
+  output->wft_vegc = newvec(Real, config->nwft);
   checkptr(output->wft_vegc);
 #endif
   output->cft_conv_loss_evap=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->cft_conv_loss_evap);
   output->cft_conv_loss_drain=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->cft_conv_loss_drain);
-  output->nv_lai=newvec(Real, (npft-nbiomass-nwft));
+  output->nv_lai=newvec(Real, (npft-config->nbiomass-config->nwft));
   checkptr(output->nv_lai);
-  output->fpc_bft=newvec(Real, (nbiomass+2*ngrass)*2);
+  output->fpc_bft=newvec(Real, (config->nbiomass+2*config->ngrass)*2);
   checkptr(output->fpc_bft);
   output->cft_leaf=newvec(Stocks,2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->cft_leaf);
@@ -146,7 +141,7 @@ Bool initoutput(Output *output, /**< Output data */
   checkptr(output->cft_c_emis);
   output->cft_leaching=newvec(Real,2*ncft);
   checkptr(output->cft_leaching);
-  if(double_harvest)
+  if(config->double_harvest)
   {
     output->dh=new(Output_doubleharvest);
     checkptr(output->dh);
@@ -198,12 +193,12 @@ Bool initoutput(Output *output, /**< Output data */
     checkptr(output->dh->cft_c_emis2);
     output->dh->cft_leaching2=newvec(Real,2*ncft);
     checkptr(output->dh->cft_leaching2);
-    output->dh->pft_nuptake2=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
+    output->dh->pft_nuptake2=newvec(Real,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
     checkptr(output->dh->pft_nuptake2);
   }
   else
     output->dh=NULL;
-  output->daily.cft=cft;
-  output->daily.irrigation=irrigation;
+  output->daily.cft=config->crop_index;
+  output->daily.irrigation=config->crop_irrigation;
   return FALSE;
 } /* of 'initoutput' */

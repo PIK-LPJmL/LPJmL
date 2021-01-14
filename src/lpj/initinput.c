@@ -36,18 +36,18 @@ Bool initinput(Input *input,        /**< Input data */
   {
     if((input->wateruse=initwateruse(&config->wateruse_filename,config))==NULL)
       return TRUE;
+#ifdef IMAGE
+    if((input->wateruse_wd=initwateruse(&config->wateruse_wd_filename,config))==NULL)
+      return TRUE;
+#endif
   }
   else
+  {
     input->wateruse=NULL;
 #ifdef IMAGE
-  if (config->wateruse_wd_filename.name != NULL)
-  {
-    if ((input->wateruse_wd=initwateruse(&config->wateruse_wd_filename,config)) == NULL)
-      return TRUE;
-  }
-  else
-    input->wateruse_wd = NULL;
+    input->wateruse_wd=NULL;
 #endif
+  }
   if(config->ispopulation)
   {
     if((input->popdens=initpopdens(config))==NULL)

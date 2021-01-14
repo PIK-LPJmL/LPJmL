@@ -23,9 +23,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
                int ncell,         /**< number of cells */
                int ncft,          /**< number of crop PFTs */
                int npft,          /**< number of PFTs */
-               int sdate_option,  /**< sowing date option (0-2) */
-               Bool crop_phu_option, /**< phu computation option (0-1) */
-               Bool river_routing /**< river routing (TRUE/FALSE) */
+               const Config *config /**< LPJml configuration  */
               )                   /** \return number of cells written */
 {
   int cell;
@@ -37,7 +35,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
     b=(Byte)grid[cell].skip;
     fwrite(&b,sizeof(b),1,file);
     fwrite(grid[cell].seed,sizeof(Seed),1,file);
-    if(river_routing)
+    if(config->river_routing)
     {
       if(fwrite(&grid[cell].discharge.dmass_lake,sizeof(Real),1,file)!=1)
         break;
@@ -90,12 +88,12 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(fwritecropdates(file,grid[cell].ml.cropdates,ncft))
         break;
-      if(sdate_option>NO_FIXED_SDATE)
+      if(config->sdate_option>NO_FIXED_SDATE)
       {
         if(fwrite(grid[cell].ml.sdate_fixed,sizeof(int),2*ncft,file)!=2*ncft)
           break;
       }
-      if(crop_phu_option)
+      if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
       {
         if(fwrite(grid[cell].ml.crop_phu_fixed,sizeof(Real),2*ncft,file)!=2*ncft)
           break;

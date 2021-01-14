@@ -84,7 +84,9 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     fwriteheader(file,&header,RESTART_HEADER,RESTART_VERSION);
     restartheader.landuse=(config->withlanduse!=NO_LANDUSE);
     restartheader.sdate_option=config->sdate_option;
+    restartheader.crop_option=config->crop_phu_option==PRESCRIBED_CROP_PHU;
     restartheader.river_routing=config->river_routing;
+    restartheader.double_harvest=config->double_harvest;
     for(i=0;i<NSEED;i++)
       restartheader.seed[i]=config->seed[i];
     fwrite(&restartheader,sizeof(restartheader),1,file);
@@ -96,7 +98,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   index=newvec(long long,config->ngridcell);
   check(index);
   /* write cell data and get index vector */
-  if(fwritecell(file,index,grid,config->ngridcell,ncft,npft,config->sdate_option,config->crop_phu_option,config->river_routing)!=config->ngridcell)
+  if(fwritecell(file,index,grid,config->ngridcell,ncft,npft,config)!=config->ngridcell)
   {
     fprintf(stderr,"ERROR153: Cannot write data in restart file '%s': %s\n",
             filename,strerror(errno));

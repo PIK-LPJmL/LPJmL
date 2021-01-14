@@ -93,7 +93,7 @@
   "crop_resp_fix" : false,             /* variable C:N ratio for crop respiration */
                                        /* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration,
                                           which reduces yields at high N inputs */
-  "crop_phu_option" : false,
+  "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : true,
 

@@ -597,6 +597,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate->data.temp);
       free(climate->data.tmax);
       free(climate->data.tmin);
+      free(climate->data.humid);
       free(climate);
       return NULL;
     }
@@ -645,6 +646,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
           free(climate->data.lightning);
           free(climate->data.tmin);
           free(climate->data.tmax);
+          free(climate->data.humid);
           free(climate);
           return NULL;
         }
@@ -668,6 +670,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate->data.lightning);
         free(climate->data.tmin);
         free(climate->data.tmax);
+        free(climate->data.humid);
         free(climate);
         return NULL;
       }
@@ -690,6 +693,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate->data.lightning);
         free(climate->data.tmin);
         free(climate->data.tmax);
+        free(climate->data.humid);
         free(climate);
         return NULL;
       }
@@ -710,15 +714,12 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate->data.wind);
         free(climate->data.tamp);
         free(climate->data.lightning);
-        if(config->with_radiation)
-        {
-          free(climate->data.lwnet);
-          free(climate->data.swdown);
-        }
-        else
-          free(climate->data.sun);
+        free(climate->data.lwnet);
+        free(climate->data.swdown);
+        free(climate->data.sun);
         free(climate->data.tmin);
         free(climate->data.tmax);
+        free(climate->data.humid);
         free(climate);
         return NULL;
       }
@@ -737,17 +738,13 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate->data.wind);
       free(climate->data.tamp);
       free(climate->data.lightning);
-      if(config->with_radiation)
-      {
-        free(climate->data.lwnet);
-        free(climate->data.swdown);
-      }
-      else
-        free(climate->data.sun);
-      if(config->wet_filename.name!=NULL)
-        free(climate->data.wet);
+      free(climate->data.lwnet);
+      free(climate->data.swdown);
+      free(climate->data.sun);
+      free(climate->data.wet);
       free(climate->data.tmin);
       free(climate->data.tmax);
+      free(climate->data.humid);
       free(climate);
       return NULL;
     }

@@ -399,7 +399,7 @@ typedef struct
 
 /* Declaration of functions */
 
-extern Bool initoutput(Output *,int,Bool,int,int,int,int,int,Bool);
+extern Bool initoutput(Output *,int,int,const Config *);
 extern void freeoutput(Output *);
 extern int outputsize(int,int,int,int,int,int);
 extern Type getoutputtype(int,Bool);

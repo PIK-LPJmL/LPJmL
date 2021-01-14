@@ -19,7 +19,7 @@
 /* Definition of constants */
 
 #define RESTART_HEADER "LPJRESTART"
-#define RESTART_VERSION 23
+#define RESTART_VERSION 24
 #define LPJ_CLIMATE_HEADER "LPJCLIM"
 #define LPJ_CLIMATE_VERSION 3
 #define LPJ_LANDUSE_HEADER "LPJLUSE"
@@ -110,11 +110,12 @@ typedef struct
 
 typedef struct
 {
-  Bool landuse;       /**< land use enabled (TRUE/FALSE) */
-  Bool river_routing; /**< river routing enabled (TRUE/FALSE) */
-  int sdate_option;   /**< sowing date option (0-2)*/
-  Bool double_harvest;
-  Seed seed;
+  Bool landuse;        /**< land use enabled (TRUE/FALSE) */
+  Bool river_routing;  /**< river routing enabled (TRUE/FALSE) */
+  int sdate_option;    /**< sowing date option (0-2)*/
+  Bool crop_option;    /**< prescribe crop PHU? (TRUE/FALSE) */
+  Bool double_harvest; /**< double harvest output enabled */
+  Seed seed;           /**< Random seed */
 } Restartheader;
 
 /* Declaration of functions */

@@ -82,7 +82,7 @@
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
   "others_to_crop" : false,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
-  "crop_phu_option" : false,
+  "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : false,
 

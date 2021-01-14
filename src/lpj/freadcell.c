@@ -96,11 +96,11 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     }
     else
       cell->ml.sdate_fixed=NULL;
-    if(config->crop_phu_option)
+    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
     {
       cell->ml.crop_phu_fixed=newvec(Real,2*ncft);
       checkptr(cell->ml.crop_phu_fixed);
-      if(config->sdate_option_restart>SEMISTATIC_CROP_PHU)
+      if(config->crop_option_restart)
         freadreal(cell->ml.crop_phu_fixed,2*ncft,swap,file);
       else
         for(i=0; i<2*ncft; i++)

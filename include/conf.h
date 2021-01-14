@@ -29,8 +29,6 @@
 #define NO_FIXED_SDATE 0
 #define FIXED_SDATE 1
 #define PRESCRIBED_SDATE 2
-#define SEMISTATIC_CROP_PHU 0
-#define PRESCRIBED_CROP_PHU 1
 #define NO_IRRIGATION 0
 #define LIM_IRRIGATION 1
 #define POT_IRRIGATION 2
@@ -102,6 +100,9 @@
 #define NEW_PHENOLOGY 1
 #define OLD_TRF 0
 #define NEW_TRF 1
+#define OLD_CROP_PHU 0
+#define NEW_CROP_PHU 1
+#define PRESCRIBED_CROP_PHU 2
 #define NO_POPULATION 0
 #define POPULATION 1
 #define NO_FIREWOOD 0

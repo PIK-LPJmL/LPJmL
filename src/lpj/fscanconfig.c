@@ -46,6 +46,8 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE; }
 
+const char *crop_phu_options[]={"old","new","prescribed"};
+
 static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const char *path,Verbosity verbose)
 {
   if(readfilename(file,name,key,path,FALSE,verbose))
@@ -215,7 +217,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #endif
   fscanbool2(file,&config->permafrost,"permafrost");
   config->sdate_option=NO_FIXED_SDATE;
-  config->crop_phu_option=FALSE;
+  config->crop_phu_option=NEW_CROP_PHU;
   config->rw_manage=FALSE;
   config->const_climate=FALSE;
   config->tillage_type=NO_TILLAGE;
@@ -272,7 +274,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         fscanint2(file,&config->sdate_fixyear,"sdate_fixyear");
       if(fscankeywords(file,&config->irrig_scenario,"irrigation",irrigation,4,FALSE,verbose))
         return TRUE;
-      if(fscanbool(file,&config->crop_phu_option,"crop_phu_option",TRUE,verbose))
+      if(fscankeywords(file,&config->crop_phu_option,"crop_phu_option",crop_phu_options,3,TRUE,verbose))
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
       config->crop_resp_fix=FALSE;
@@ -492,7 +494,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       scanclimatefilename(&input,&config->sdate_filename,config->inputdir,FALSE,"sdate");
     }
-    if(config->crop_phu_option)
+    if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
     {
       scanclimatefilename(&input,&config->crop_phu_filename,config->inputdir,FALSE,"crop_phu");
     }

@@ -54,6 +54,7 @@ typedef struct
   Real temp_fall;           /**< threshold for decreasing temperature to determine the crop date */
   Real temp_spring;         /**< threshold for increasing temperature to determine the crop date */
   Real temp_vern;           /**< threshold for increasing temperature to determine the crop date */
+  Limit trg;                /**< temperature under which vernalization is possible (deg C) */
   Limit tv_eff;             /**< lower and upper temperature thresholds for effective vernalization (deg C) */
   Limit tv_opt;             /**< lower and upper temperature thresholds for optimal vernalization (deg C) */
   Real pvd_max;             /**< maximum number of vernalization days required */
@@ -155,7 +156,7 @@ extern Real vegc_sum_crop(const Pft *);
 extern Real vegn_sum_crop(const Pft *);
 extern Real agb_crop(const Pft *);
 extern void free_crop(Pft *);
-extern void phen_variety(Pft *,int,Real,int,Bool,const Config *,int,int);
+extern void phen_variety(Pft *,int,Real,int,Bool,int,int,const Config *);
 extern void harvest_crop(Output *,Stand *,Pft *,int,int,int,const Config *);
 extern void adapt_crop_type(Real [],Real,const Pftpar [],int,int,int);
 extern Real wdf_crop(Pft *,Real,Real);

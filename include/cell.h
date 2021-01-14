@@ -135,7 +135,7 @@ extern void update_annual(Cell *,int,int,
                           Real,int,Bool,Bool,const Config *);
 extern void update_monthly(Cell *,Real,Real,int);
 extern void init_annual(Cell *,int,const Config *);
-extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,int,int,Bool);
+extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,const Config *);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
 extern Bool freadcell(FILE *,Cell *,int,int,const Soilpar *,
                       const Standtype [],int,Bool,const Config *);

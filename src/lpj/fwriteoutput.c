@@ -1672,7 +1672,6 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     writeoutputvar2(CFT_C_EMIS2,dh->cft_c_emis2,1,2*ncft);
     writeoutputvar2(PFT_NUPTAKE2,dh->pft_nuptake2,1,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
   }
-  index=0;
   for(i=D_LAI;i<=D_PET;i++)
   {
     if(iswrite(output,i))
@@ -1680,10 +1679,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
       count=0;
       for(cell=0;cell<config->ngridcell;cell++)
        if(!grid[cell].skip)
-         vec[count++]=(float)((Real *)(&grid[cell].output.daily))[index];
+         vec[count++]=(float)((Real *)(&grid[cell].output.daily))[i-D_LAI];
        writedata(output,i,vec,year,date,ndata,config);
     }
-    index++;
   }
   free(vec);
 } /* of 'fwriteoutput' */

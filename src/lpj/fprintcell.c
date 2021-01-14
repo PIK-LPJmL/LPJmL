@@ -62,35 +62,32 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
         {
           fputs("CFT     ",file);
           for(cft=0;cft<ncft;cft++)
-            fprintf(file,"%4d",cft);
+            fprintf(file," %4d",cft);
           fputs("\n--------",file);
           for(cft=0;cft<ncft;cft++)
-            fputs(" ---",file);
+            fputs(" -----",file);
           fputs("\nfsdate  ",file);
           for(cft=0;cft<ncft;cft++)
-            fprintf(file,"%4d",grid[cell].ml.sdate_fixed[cft]);
+            fprintf(file," %5d",grid[cell].ml.sdate_fixed[cft]);
           fputs("\nirrsdate",file);
           for(cft=ncft;cft<2*ncft;cft++)
-            fprintf(file,"%4d",grid[cell].ml.sdate_fixed[cft]);
+            fprintf(file," %5d",grid[cell].ml.sdate_fixed[cft]);
           fputc('\n',file);
         }
         if(grid[cell].ml.crop_phu_fixed!=NULL)
         {
-          fputs("CFT     ",file);
+          fputs("\nfphu    ",file);
           for(cft=0;cft<ncft;cft++)
-            fprintf(file,"%4d",cft);
-          fputs("\n--------",file);
-          for(cft=0;cft<ncft;cft++)
-            fputs(" ---",file);
-          fputs("\nfphu  ",file);
-          for(cft=0;cft<ncft;cft++)
-            fprintf(file,"%4g",grid[cell].ml.crop_phu_fixed[cft]);
-          fputs("\nirrphu",file);
+            fprintf(file," %5g",grid[cell].ml.crop_phu_fixed[cft]);
+          fputs("\nirrphu  ",file);
           for(cft=ncft;cft<2*ncft;cft++)
-            fprintf(file,"%4g",grid[cell].ml.crop_phu_fixed[cft]);
+            fprintf(file," %5g",grid[cell].ml.crop_phu_fixed[cft]);
           fputc('\n',file);
         }
-        fprintf(file,"Cropfrac (rf/ir):\t%g\t%g\n",grid[cell].ml.cropfrac_rf,grid[cell].ml.cropfrac_ir);
+        fputs("--------",file);
+        for(cft=0;cft<ncft;cft++)
+          fputs(" -----",file);
+        fprintf(file,"\nCropfrac (rf/ir):\t%g\t%g\n",grid[cell].ml.cropfrac_rf,grid[cell].ml.cropfrac_ir);
         fprintcropdates(file,grid[cell].ml.cropdates,config->pftpar+npft,ncft);
       }
       if(config->with_nitrogen)

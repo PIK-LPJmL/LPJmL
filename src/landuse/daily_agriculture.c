@@ -36,7 +36,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
                        int ncft,                    /**< [in] number of crop PFTs   */
                        int year,                    /**< [in] simulation year (AD) */
                        Bool UNUSED(intercrop),      /**< [in] enabled intercropping */
-                       Real agrfrac,
+                       Real agrfrac,                /**< [in] total agriculture fraction (0..1) */
                        const Config *config         /**< [in] LPJ config */
                       )                             /** \return runoff (mm/day) */
 {

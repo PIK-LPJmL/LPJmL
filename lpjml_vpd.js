@@ -84,7 +84,7 @@
   "grass_harvest_options" : false,
   "others_to_crop" : false,
   "istimber" : true,
-  "crop_phu_option" : false,
+  "crop_phu_option" : "new",
   "cropsheatfrost" : false,
   "double_harvest" : false,
 

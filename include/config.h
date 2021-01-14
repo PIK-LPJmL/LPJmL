@@ -137,10 +137,11 @@ struct config
   Bool landuse_restart;   /**< land use enabled in restart file */
   Bool double_harvest;
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
-  int sdate_option_restart; /**< sdate option in restart file */
+  int sdate_option_restart;     /**< sdate option in restart file */
+  int crop_option_restart;      /**< crop option in restart file */
   int landuse_year_const;       /**< year landuse is fixed for LANDUSE_CONST case */
   Bool intercrop;               /**< intercropping (TRUE/FALSE) */
-  Bool grassonly;            /* set all cropland including others to zero but keep managed grasslands */
+  Bool grassonly;               /**< set all cropland including others to zero but keep managed grasslands */
   Bool istimber;
   Bool storeclimate;           /**< store climate data in spin-up phase */
   Bool const_climate;           /**< constant climate */
@@ -201,7 +202,7 @@ struct config
   Bool from_restart;   /**< reading from restart */
   int sdate_option;    /**< sowing date option (computed internally: 0, fixed: 1, prescribed: 2)*/
   int sdate_fixyear;    /**< year after which sowing dates are held constant (for both FIXED_SDATE or NO_FIXED_SDATE), also used to fix updating vernalization requirements */
-  Bool crop_phu_option;    /**< crop phu option (semistatic internally prescribed/computed (LPJmL4): 0, prescribed: 1)*/
+  int crop_phu_option;    /**< crop phu option (old LPJmL4, semistatic internally computed, prescribed  */
   Bool initsoiltemp;
   Pnet *route;         /**< river routing network */
   Pnet *irrig_neighbour; /**< irrigation neighbour network */
@@ -234,6 +235,8 @@ struct config
 }; /* LPJ configuration */
 
 typedef Bool (*Fscanpftparfcn)(LPJfile *,Pftpar *,const Config *);
+
+extern const char *crop_phu_options[];
 
 /* Declaration of functions */
 

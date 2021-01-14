@@ -172,8 +172,15 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   fscanpftreal(verb,file,&crop->temp_fall,pft->name,"temp_fall");
   fscanpftreal(verb,file,&crop->temp_spring,pft->name,"temp_spring");
   fscanpftreal(verb,file,&crop->temp_vern,pft->name,"temp_vern");
-  fscanpftlimit(verb,file,&crop->tv_eff,pft->name,"tv_eff");
-  fscanpftlimit(verb,file,&crop->tv_opt,pft->name,"tv_opt");
+  if(config->crop_phu_option==OLD_CROP_PHU)
+  {
+    fscanpftlimit(verb,file,&crop->trg,pft->name,"trg");
+  }
+  else
+  {
+    fscanpftlimit(verb,file,&crop->tv_eff,pft->name,"tv_eff");
+    fscanpftlimit(verb,file,&crop->tv_opt,pft->name,"tv_opt");
+  }
   fscanpftreal(verb,file,&crop->pvd_max,pft->name,"pvd_max");
   fscanpftreal(verb,file,&crop->psens,pft->name,"psens");
   fscanpftreal(verb,file,&crop->pb,pft->name,"pb");

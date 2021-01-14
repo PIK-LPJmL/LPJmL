@@ -47,7 +47,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
                      int ncft,                    /**< number of crop PFTs   */
                      int UNUSED(year),            /**< simulation year (AD) */
                      Bool UNUSED(intercrop),      /**< enabled intercropping */
-                     Real UNUSED(agrfrac),
+                     Real UNUSED(agrfrac),        /**< [in] total agriculture fraction (0..1) */
                      const Config *config         /**< LPJ config */
                     )                             /** \return runoff (mm/day) */
 {

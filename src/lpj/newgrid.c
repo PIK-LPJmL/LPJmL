@@ -753,8 +753,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       grid[i].ml.image_data=NULL;
 #endif
     }
-    if(initoutput(&grid[i].output,config->crop_index,config->crop_irrigation,
-                  npft,config->nbiomass,config->nwft,config->ngrass,ncft,config->double_harvest))
+    if(initoutput(&grid[i].output,npft,ncft,config))
       return NULL;
 
   } /* of for(i=0;...) */

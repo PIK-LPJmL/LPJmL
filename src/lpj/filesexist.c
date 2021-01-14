@@ -362,7 +362,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkdatafile(&config,&config.landuse_filename,"1");
     if(config.sdate_option==PRESCRIBED_SDATE)
       bad+=checkinputfile(&config,&config.sdate_filename,NULL,2*config.npft[CROP]);
-    if(config.crop_phu_option)
+    if(config.crop_phu_option==PRESCRIBED_CROP_PHU)
       bad+=checkclmfile(&config,&config.crop_phu_filename,NULL,2*config.npft[CROP]);
     if(config.countrycode_filename.fmt==CDF)
     {
