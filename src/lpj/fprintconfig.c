@@ -261,7 +261,10 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     if(config->till_fallow)
       len=printsim(file,len,&count,"tillage fallow");
     if(config->prescribe_residues)
-      len=printsim(file,len,&count,"prescribe residues");
+    {
+      snprintf(s,STRING_LEN,"prescribe residues of '%s'",config->pftpar[config->pft_residue].name);
+      len=printsim(file,len,&count,s);
+    }
   }
   if(config->prescribe_landcover)
     len=printsim(file,len,&count,(config->prescribe_landcover==LANDCOVEREST) ? "prescribed establishment":"prescribed maximum FPC");

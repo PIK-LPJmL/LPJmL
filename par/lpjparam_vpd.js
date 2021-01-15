@@ -35,6 +35,7 @@
   "atmfrac" : 0.7,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
   "veg_equil_year" : 990,
+  "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
   "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrifi
 ed Parton, 2001*/
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */

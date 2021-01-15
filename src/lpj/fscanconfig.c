@@ -409,6 +409,18 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->nbiomass=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],BIOMASS);
   config->nwft=getnculttype(config->pftpar, config->npft[GRASS] + config->npft[TREE],WP);
   config->ngrass=getngrassnat(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
+  if(config->black_fallow && config->prescribe_residues)
+  {
+    if(fscanstring(file,name,"residue_pft",FALSE,verbose))
+      return TRUE;
+    config->pft_residue=findpftid(name,config->pftpar,config->npft[GRASS]+config->npft[TREE]+config->npft[CROP]);
+    if(config->pft_residue==NOT_FOUND)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR230: Invalid PFT '%s' fot black fallow.\n",name);
+      return TRUE;
+    }
+  }
   /* Read soil paramater array */
   if(config->withlanduse!=NO_LANDUSE)
   {

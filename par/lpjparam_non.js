@@ -34,6 +34,7 @@
   "kc25" : 30.,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.7,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
+  "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
   "veg_equil_year" : 990,
   "temp_response_a" : 56.02, /* Parameter in temperature response function */
   "temp_response_b" : 46.02, /* Parameter in temperature response function */

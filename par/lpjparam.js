@@ -34,6 +34,7 @@
   "kc25" : 30.,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.6,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
+  "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
   "veg_equil_year" : 2400,
   "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrified Parton, 2001*/
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */

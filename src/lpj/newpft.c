@@ -22,7 +22,7 @@ void newpft(Pft *pft,            /**< PFT variables */
             int year,            /**< anno domini */
             int day,             /**< day of year (1..365) */
             int with_nitrogen,
-            Bool double_harvest
+            Bool double_harvest  /**< double harvest output enabled? */
            )
 {
   int index;

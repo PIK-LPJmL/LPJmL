@@ -191,12 +191,47 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   fscanpftlimit(verb,file,&crop->basetemp,pft->name,"basetemp");
   fscanpftreal(verb,file,&crop->fphuc,pft->name,"fphuc");
   fscanpftreal(verb,file,&crop->flaimaxc,pft->name,"flaimaxc");
+  if(crop->flaimaxc<=0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR201: Invalid value for flaimaxc=%g of CFT '%s', must be >0.\n",
+              crop->flaimaxc,pft->name);
+    return TRUE;
+  }
   fscanpftreal(verb,file,&crop->fphuk,pft->name,"fphuk");
   fscanpftreal(verb,file,&crop->flaimaxk,pft->name,"flaimaxk");
+  if(crop->flaimaxk<=0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR201: Invalid value for flaimaxk=%g of CFT '%s', must be >0.\n",
+              crop->flaimaxk,pft->name);
+    return TRUE;
+  }
   fscanpftreal(verb,file,&crop->fphusen,pft->name,"fphusen");
+  if(crop->fphusen<0 || crop->fphusen>=1)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR201: Invalid value for fphusen=%g of CFT '%s', must be in [0,1).\n",
+              crop->fphusen,pft->name);
+    return TRUE;
+  }
   fscanpftreal(verb,file,&crop->flaimaxharvest,pft->name,"flaimaxharvest");
   fscanpftreal(verb,file,&crop->laimax,pft->name,"laimax");
+  if(crop->laimax<=0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR201: Invalid value for laimax=%g of CFT '%s', must be >0.\n",
+              crop->laimax,pft->name);
+    return TRUE;
+  }
   fscanpftreal(verb,file,&crop->laimin,pft->name,"laimin");
+  if(crop->laimin<=0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR201: Invalid value for laimin=%g of CFT '%s', must be >0.\n",
+              crop->laimin,pft->name);
+    return TRUE;
+  }
   fscanpftreal(verb,file,&crop->hiopt,pft->name,"hiopt");
   fscanpftreal(verb,file,&crop->himin,pft->name,"himin");
   fscanpftreal(verb,file,&crop->shapesenescencenorm,pft->name,

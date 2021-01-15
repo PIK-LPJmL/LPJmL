@@ -20,7 +20,6 @@
 #ifdef IMAGE
 #define GWCOEFF 100 /**< groundwater outflow coefficient (average amount of release time in reservoir) */
 #endif
-#define BIOTURBRATE 0.001897 /* daily rate for 50% annual bioturbation rate [-]*/
 
 void update_daily(Cell *cell,            /**< cell pointer           */
                   Real co2,              /**< atmospheric CO2 (ppmv) */
@@ -91,27 +90,27 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   {
     for(l=0;l<stand->soil.litter.n;l++)
     {
-      stand->soil.litter.item[l].agsub.leaf.carbon += stand->soil.litter.item[l].ag.leaf.carbon*BIOTURBRATE;
-      stand->soil.litter.item[l].ag.leaf.carbon *= (1 - BIOTURBRATE);
-      stand->soil.litter.item[l].agsub.leaf.nitrogen += stand->soil.litter.item[l].ag.leaf.nitrogen*BIOTURBRATE;
-      stand->soil.litter.item[l].ag.leaf.nitrogen *= (1 - BIOTURBRATE);
+      stand->soil.litter.item[l].agsub.leaf.carbon += stand->soil.litter.item[l].ag.leaf.carbon*param.bioturbate;
+      stand->soil.litter.item[l].ag.leaf.carbon *= (1 - param.bioturbate);
+      stand->soil.litter.item[l].agsub.leaf.nitrogen += stand->soil.litter.item[l].ag.leaf.nitrogen*param.bioturbate;
+      stand->soil.litter.item[l].ag.leaf.nitrogen *= (1 - param.bioturbate);
     }
 
     if(stand->type->landusetype==NATURAL && config->black_fallow && (day==152 || day==335))
     {
       if(config->prescribe_residues && param.residue_rate>0 && param.residue_pool<=0)
       {
-        index=findlitter(&stand->soil.litter,config->pftpar+npft);
+        index=findlitter(&stand->soil.litter,config->pftpar+config->pft_residue);
         if(index==NOT_FOUND)
-          index=addlitter(&stand->soil.litter,config->pftpar+npft)-1;
+          index=addlitter(&stand->soil.litter,config->pftpar+config->pft_residue)-1;
         stand->soil.litter.item[index].ag.leaf.carbon+=param.residue_rate*(1-param.residue_fbg)/2;
         stand->soil.litter.item[index].ag.leaf.nitrogen+=param.residue_rate*(1-param.residue_fbg)/param.residue_cn/2;
         stand->soil.litter.item[index].bg.carbon+=param.residue_rate*param.residue_fbg*0.5;
         stand->soil.litter.item[index].bg.nitrogen+=param.residue_rate*param.residue_fbg/param.residue_cn/2;
-        stand->cell->output.flux_estab.carbon+=param.residue_rate*0.5;
-        stand->cell->balance.flux_estab.carbon+=param.residue_rate*0.5;
-        stand->cell->output.flux_estab.nitrogen+=param.residue_rate/param.residue_cn*0.5;
-        stand->cell->balance.flux_estab.nitrogen+=param.residue_rate/param.residue_cn*0.5;
+        cell->output.flux_estab.carbon+=param.residue_rate*stand->frac*0.5;
+        cell->balance.flux_estab.carbon+=param.residue_rate*stand->frac*0.5;
+        cell->output.flux_estab.nitrogen+=param.residue_rate/param.residue_cn*0.5*stand->frac;
+        cell->balance.flux_estab.nitrogen+=param.residue_rate/param.residue_cn*0.5*stand->frac;
         updatelitterproperties(stand,stand->frac);
       }
       if(config->fix_fertilization)
@@ -190,12 +189,14 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     if(stand->type->landusetype==NATURAL && config->black_fallow && config->prescribe_residues && param.residue_pool>0)
     {
-      index=findlitter(&stand->soil.litter,config->pftpar+npft);
+      index=findlitter(&stand->soil.litter,config->pftpar+config->pft_residue);
       if(index==NOT_FOUND)
-        index=addlitter(&stand->soil.litter,config->pftpar+npft)-1;
-      stand->cell->output.flux_estab.carbon+=param.residue_pool-stand->soil.litter.item[index].ag.leaf.carbon;
+        index=addlitter(&stand->soil.litter,config->pftpar+config->pft_residue)-1;
+      cell->output.flux_estab.carbon+=(param.residue_pool-stand->soil.litter.item[index].ag.leaf.carbon)*stand->frac;
+      cell->balance.flux_estab.carbon+=(param.residue_pool-stand->soil.litter.item[index].ag.leaf.carbon)*stand->frac;
       stand->soil.litter.item[index].ag.leaf.carbon=param.residue_pool;
-      stand->cell->output.flux_estab.nitrogen+=param.residue_pool/param.residue_cn-stand->soil.litter.item[index].ag.leaf.nitrogen;
+      cell->output.flux_estab.nitrogen+=(param.residue_pool/param.residue_cn-stand->soil.litter.item[index].ag.leaf.nitrogen)*stand->frac;
+      cell->balance.flux_estab.nitrogen+=(param.residue_pool/param.residue_cn-stand->soil.litter.item[index].ag.leaf.nitrogen)*stand->frac;
       stand->soil.litter.item[index].ag.leaf.nitrogen=param.residue_pool/param.residue_cn;
     }
 
@@ -205,10 +206,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     /*monthly rh for agricutural stands*/
     if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
-      stand->cell->output.rh_agr+=hetres.carbon*stand->frac/agrfrac;
+      cell->output.rh_agr+=hetres.carbon*stand->frac/agrfrac;
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
     if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
-      stand->cell->output.an2o_nit_agr+=hetres.nitrogen*stand->frac;
+      cell->output.an2o_nit_agr+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
     if (stand->type->landusetype == NATURAL)

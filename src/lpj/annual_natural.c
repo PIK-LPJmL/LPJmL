@@ -41,7 +41,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   Stocks firewood={0,0};
   if(config->black_fallow)
     cutpfts(stand);
-
   pft_len=getnpft(&stand->pftlist); /* get number of established PFTs */
   if(pft_len>0)
   {
@@ -123,13 +122,13 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
     stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
     stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
-  }
 #if defined IMAGE && defined COUPLED
-  if(stand->type->landusetype==NATURAL)
-  {
-    stand->cell->output.flux_estab_nat+=flux_estab.carbon*stand->frac;
-  }
+    if(stand->type->landusetype==NATURAL)
+    {
+      stand->cell->output.flux_estab_nat+=flux_estab.carbon*stand->frac;
+    }
 #endif
+  }
 #endif
   foreachpft(pft,p,&stand->pftlist)
   {

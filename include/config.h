@@ -115,6 +115,7 @@ struct config
   Real laimax;        /**< maximum LAI for benchmark */
   Bool withdailyoutput; /**< with daily output (TRUE/FALSE) */
   int crop_index;
+  int pft_residue;
   int fdi;
   char *pft_index;
   char *layer_index;

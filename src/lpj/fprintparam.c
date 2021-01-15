@@ -44,6 +44,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "kc25:\t\t%g (Pa)\n"
                "atmfrac:\t%g\n"
                "fastfrac:\t%g\n"
+               "bioturbate:\t%g (1/yr)\n"
                "K_MORT:\t\t%g\n"
                "fpc_tree_max:\t%g\n"
                "temp_response_a:\t%g\n"
@@ -53,7 +54,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           param.soil_infil,param.co2_p,
           param.k,param.theta,param.k_beer,param.alphac3,param.alphac4,
           param.bc3,param.bc4,param.r_growth,param.GM,param.ALPHAM,
-          param.ko25,param.kc25,param.atmfrac,param.fastfrac,param.k_mort,
+          param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
           param.fpc_tree_max,param.temp_response_a,param.temp_response_b);
   if(config->equilsoil)
     fprintf(file,"veg_equil_year:\t%d\n",param.veg_equil_year);

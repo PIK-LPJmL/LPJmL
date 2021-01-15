@@ -40,7 +40,7 @@ static int findid(const char *name,const Variable var[],int size)
   return NOT_FOUND;
 } /* of 'findid' */
 
-static int findpftid(const char *name,const Pftpar pftpar[],int ntotpft)
+int findpftid(const char *name,const Pftpar pftpar[],int ntotpft)
 {
   int p;
   if(!strcmp(name,"allnatural"))
