@@ -1104,7 +1104,8 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             if(stand->type->landusetype == NATURAL)
-              grid[cell].output.pft_nlimit[pft->par->id]+=pft->nlimit*ndate1;
+              foreachpft(pft,p,&stand->pftlist)
+                grid[cell].output.pft_nlimit[pft->par->id]+=pft->nlimit*ndate1;
           }
         }
       }
@@ -1122,7 +1123,8 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             if(stand->type->landusetype == NATURAL)
-              grid[cell].output.pft_veg[pft->par->id].carbon+=vegc_sum(pft);
+              foreachpft(pft,p,&stand->pftlist)
+                grid[cell].output.pft_veg[pft->par->id].carbon+=vegc_sum(pft);
           }
         }
       }
@@ -1140,7 +1142,8 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             if(stand->type->landusetype == NATURAL)
-              grid[cell].output.pft_veg[pft->par->id].nitrogen+=vegn_sum(pft);
+              foreachpft(pft,p,&stand->pftlist)
+                grid[cell].output.pft_veg[pft->par->id].nitrogen+=vegn_sum(pft);
           }
         }
       }
@@ -1349,17 +1352,18 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           {
             if(stand->type->landusetype == NATURAL)
             {
-              switch(pft->par->type)
-              {
-                case TREE:
-                  tree = pft->data;
-                  grid[cell].output.pft_root[pft->par->id].carbon+=tree->ind.root.carbon;
-                  break;
-                case GRASS:
-                  grass = pft->data;
-                  grid[cell].output.pft_root[pft->par->id].carbon+=grass->ind.root.carbon;
-                  break;
-              }
+              foreachpft(pft,p,&stand->pftlist)
+                switch(pft->par->type)
+                {
+                  case TREE:
+                    tree = pft->data;
+                    grid[cell].output.pft_root[pft->par->id].carbon+=tree->ind.root.carbon;
+                    break;
+                  case GRASS:
+                    grass = pft->data;
+                    grid[cell].output.pft_root[pft->par->id].carbon+=grass->ind.root.carbon;
+                    break;
+                }
             }
           }
         }
