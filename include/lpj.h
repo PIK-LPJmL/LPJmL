@@ -73,9 +73,9 @@ typedef struct stand Stand; /* forward declaration of stand */
 #include "param.h"
 #include "header.h"
 #include "climate.h"
-#ifdef IMAGE            /* Compile with IMAGE coupler? */
+//#ifdef IMAGE            /* Compile with IMAGE coupler? */
 #include "image.h"
-#endif
+//#endif
 #include "cropdates.h"
 #include "reservoir.h"
 #include "landuse.h"

@@ -110,7 +110,11 @@ typedef struct
 extern Image_data *new_image(const Product *);
 extern Bool open_image(Config *);
 extern void close_image(const Config *);
+#ifdef IMAGE
 extern Real product_turnover(Image_data *);
+#else
+extern void product_turnover(Cell *);
+#endif
 extern Bool send_image_data(const Cell *,const  Climate *,int,const Config *);
 extern Bool receive_image_climate(Climate *,const Cell *,int,const Config *);
 extern Bool receive_image_productpools(Cell *,const Config *);

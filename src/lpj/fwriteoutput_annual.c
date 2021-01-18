@@ -612,15 +612,21 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
       vec[cell]=(float)(grid[cell].output.adischarge*1e-9);
     writeannualall(output,ADISCHARGE,vec,year,config);
   }
-  writeoutputvar(PROD_TURNOVER,prod_turnover);
   writeoutputvar(DEFOREST_EMIS,deforest_emissions.carbon);
   writeoutputvar(TRAD_BIOFUEL,trad_biofuel);
   writeoutputvar(AIRRIG,airrig);
   writeoutputvar(FBURN,fburn);
   writeoutputvar(FTIMBER,ftimber);
   writeoutputvar(TIMBER_HARVESTC,timber_harvest.carbon);
+#ifdef IMAGE
   writeoutputvar(PRODUCT_POOL_FAST,product_pool_fast);
   writeoutputvar(PRODUCT_POOL_SLOW,product_pool_slow);
+  writeoutputvar(PROD_TURNOVER,prod_turnover);
+#else
+  writeoutputvar(PRODUCT_POOL_FAST,product_pool_fast.carbon);
+  writeoutputvar(PRODUCT_POOL_SLOW,product_pool_slow.carbon);
+  writeoutputvar(PROD_TURNOVER,prod_turnover.carbon);
+#endif
   if(isopen(output,AFRAC_WD_UNSUST))
   {
     count=0;
