@@ -27,6 +27,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
                    int ncft,            /**< number of crop PFTs      */
                    int year,            /**< year                     */
                    const char *filename,/**< filename of restart file */
+                   Bool ischeckpoint,
                    const Config *config /**< LPJ configuration        */
                   )                     /** \return TRUE on error     */
 {
@@ -98,7 +99,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
   index=newvec(long long,config->ngridcell);
   check(index);
   /* write cell data and get index vector */
-  if(fwritecell(file,index,grid,config->ngridcell,ncft,npft,config)!=config->ngridcell)
+  if(fwritecell(file,index,grid,config->ngridcell,ncft,npft,ischeckpoint,config)!=config->ngridcell)
   {
     fprintf(stderr,"ERROR153: Cannot write data in restart file '%s': %s\n",
             filename,strerror(errno));

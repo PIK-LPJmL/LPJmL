@@ -286,7 +286,7 @@ int iterate(Outputfile *output, /**< Output file data */
     }
 #endif
     if(iswriterestart(config) && year==config->restartyear)
-      fwriterestart(grid,npft,ncft,year,config->write_restart_filename,config); /* write restart file */
+      fwriterestart(grid,npft,ncft,year,config->write_restart_filename,FALSE,config); /* write restart file */
     if(year<config->lastyear && ischeckpointrestart(config))
     {
 #ifdef USE_MPI
@@ -295,8 +295,8 @@ int iterate(Outputfile *output, /**< Output file data */
       if(ischeckpoint)
       {
         if(isroot(*config))
-          printf("SIGTERM catched, restart file '%s' written.\n",config->checkpoint_restart_filename);
-        fwriterestart(grid,npft,ncft,year,config->checkpoint_restart_filename,config); /* write restart file */
+          printf("SIGTERM catched, checkpoint file '%s' written.\n",config->checkpoint_restart_filename);
+        fwriterestart(grid,npft,ncft,year,config->checkpoint_restart_filename,TRUE,config); /* write checkpoint file */
         fcloseoutput(output,config);
 #ifdef USE_MPI
         MPI_Finalize();

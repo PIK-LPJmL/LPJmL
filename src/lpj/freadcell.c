@@ -124,6 +124,11 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     }
     if(cell->ml.fertilizer_nr!=NULL && config->landuse_restart)
       freadlandfrac(file,cell->ml.fertilizer_nr,ncft,swap);
+    if(config->ischeckpoint && config->n_out)
+    {
+      if(freadoutputdata(file,&cell->output,npft,ncft,swap,config))
+        return TRUE;
+    }
   }
   return FALSE;
 } /* of 'freadcell' */

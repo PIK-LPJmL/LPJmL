@@ -23,6 +23,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
                int ncell,         /**< number of cells */
                int ncft,          /**< number of crop PFTs */
                int npft,          /**< number of PFTs */
+               Bool ischeckpoint,
                const Config *config /**< LPJml configuration  */
               )                   /** \return number of cells written */
 {
@@ -111,6 +112,9 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
       }
       if(grid[cell].ml.fertilizer_nr!=NULL)
         fwritelandfrac(file,grid[cell].ml.fertilizer_nr,ncft);
+      if(ischeckpoint && config->n_out)
+       fwriteoutputdata(file,&grid[cell].output,npft,ncft,config);
+
     }
   } /* of 'for(cell=...)' */
   return cell;
