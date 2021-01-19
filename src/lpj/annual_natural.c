@@ -39,8 +39,6 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   Stocks flux_estab;
 #endif
   Stocks firewood={0,0};
-  if(config->black_fallow)
-    cutpfts(stand);
   pft_len=getnpft(&stand->pftlist); /* get number of established PFTs */
   if(pft_len>0)
   {
@@ -56,7 +54,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
              pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
       
-      if(annualpft(stand,pft,fpc_inc+p,config->new_phenology,config->with_nitrogen,isdaily))
+      if(annualpft(stand,pft,fpc_inc+p,config->new_phenology,config->with_nitrogen,isdaily) || config->black_fallow)
       {
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
