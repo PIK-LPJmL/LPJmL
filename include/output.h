@@ -318,11 +318,7 @@ typedef struct
   Real *nv_lai;
   Real *fpc_bft;
   Real daylength;
-  Stocks *cft_leaf;
-  Stocks *cft_veg;
-  Stocks *cft_root;
   Real *cft_nlimit;
-  Real *cft_laimax;
   Real *cft_mswc;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
   int *nday_month;        /**< day count for monthly cft-specific outputs, needed in update_monthly to divide by number of days */
   Real abnf_agr;

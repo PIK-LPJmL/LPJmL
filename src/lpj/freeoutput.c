@@ -64,11 +64,7 @@ void freeoutput(Output *output /**< Output data */
   free(output->wft_vegc);
 #endif
   free(output->cft_irrig_events);
-  free(output->cft_leaf);
-  free(output->cft_root);
-  free(output->cft_veg);
   free(output->cft_nlimit);
-  free(output->cft_laimax);
   free(output->cft_mswc);
   free(output->nday_month);
   free(output->cft_runoff);

@@ -115,16 +115,8 @@ Bool initoutput(Output *output,      /**< Output data */
   checkptr(output->nv_lai);
   output->fpc_bft=newvec(Real, (config->nbiomass+2*config->ngrass)*2);
   checkptr(output->fpc_bft);
-  output->cft_leaf=newvec(Stocks,2*(ncft+NGRASS+NBIOMASSTYPE));
-  checkptr(output->cft_leaf);
-  output->cft_root=newvec(Stocks,2*(ncft+NGRASS+NBIOMASSTYPE));
-  checkptr(output->cft_root);
-  output->cft_veg=newvec(Stocks,2*(ncft+NGRASS+NBIOMASSTYPE));
-  checkptr(output->cft_veg);
   output->cft_nlimit=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->cft_nlimit);
-  output->cft_laimax = newvec(Real, 2*(ncft+NGRASS+NBIOMASSTYPE));
-  checkptr(output->cft_laimax);
   output->cft_mswc=newvec(Real,2*ncft);
   checkptr(output->cft_mswc);
   output->nday_month=newvec(int,2*ncft);
