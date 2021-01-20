@@ -24,7 +24,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
                        int day,                     /**< [in] day (1..365) */
                        int month,                   /**< [in] month (0..11) */
                        Real daylength,              /**< [in] length of day (h) */
-                       const Real gp_pft[],         /**< [out] pot. canopy conductance for PFTs & CFTs (mm/s) */
+                       const Real gp_pft[],         /**< [in] pot. canopy conductance for PFTs & CFTs (mm/s) */
                        Real gtemp_air,              /**< [in] value of air temperature response function */
                        Real gtemp_soil,             /**< [in] value of soil temperature response function */
                        Real gp_stand,               /**< [in] potential stomata conductance  (mm/s) */
@@ -123,6 +123,21 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         crop->nmanure=0;
       }
     }
+    if(!isannual(PFT_NLEAF,config))
+      output->pft_leaf[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].nitrogen=crop->ind.leaf.nitrogen;
+    if(!isannual(PFT_NLIMIT,config))
+      output->pft_nlimit[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]=pft->nlimit;
+    if(!isannual(PFT_CLEAF,config))
+      output->pft_leaf[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].carbon=crop->ind.leaf.carbon;
+    if(!isannual(PFT_NROOT,config))
+      output->pft_root[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].nitrogen=crop->ind.root.nitrogen;
+    if(!isannual(PFT_CROOT,config))
+    output->pft_root[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].carbon=crop->ind.root.carbon;
+    if(!isannual(PFT_VEGN,config))
+      output->pft_veg[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].nitrogen=vegn_sum(pft);
+    if(!isannual(PFT_VEGC,config))
+      output->pft_veg[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].carbon=vegc_sum(pft);
+
     if(phenology_crop(pft,climate->temp,climate->tmax,daylength,npft,config))
     {
       if(pft->par->id==output->daily.cft

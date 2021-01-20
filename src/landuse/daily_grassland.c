@@ -519,7 +519,43 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   output->cft_prec[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS)]+=climate->prec;
   output->cft_srad[rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS)]+=climate->swdown;
   foreachpft(pft, p, &stand->pftlist)
+  {
+    grass=pft->data;
     output->mean_vegc_mangrass+=vegc_sum(pft);
+    if(!isannual(FPC_BFT,config))
+      output->fpc_bft[getpftpar(pft, id)-(npft-config->nbiomass-config->nwft-config->ngrass)+data->irrigation.irrigation*(config->nbiomass+2*config->ngrass)]=pft->fpc;
+    if(!isannual(PFT_VEGC,config))
+    {
+      output->pft_veg[npft-config->nbiomass-config->nwft+rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon=vegc_sum(pft);
+      output->pft_veg[npft-config->nbiomass-config->nwft+rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon=vegc_sum(pft);
+    }
+    if(!isannual(PFT_VEGN,config))
+    {
+      output->pft_veg[npft-config->nbiomass-config->nwft+rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen=vegn_sum(pft);
+      output->pft_veg[npft-config->nbiomass-config->nwft+rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen=vegn_sum(pft);
+    }
+    if(!isannual(PFT_CLEAF,config))
+    {
+      output->pft_leaf[npft-config->nbiomass-config->nwft+rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon=grass->ind.leaf.carbon;
+      output->pft_leaf[npft-config->nbiomass-config->nwft+rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon=grass->ind.leaf.carbon;
+    }
+    if(!isannual(PFT_NLEAF,config))
+    {
+      output->pft_leaf[npft-config->nbiomass-config->nwft+rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen=grass->ind.leaf.nitrogen;
+      output->pft_leaf[npft-config->nbiomass-config->nwft+rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen=grass->ind.leaf.nitrogen;
+    }
+    if(!isannual(PFT_CROOT,config))
+    {
+      output->pft_root[npft-config->nbiomass-config->nwft+rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon=grass->ind.root.carbon;
+      output->pft_root[npft-config->nbiomass-config->nwft+rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon=grass->ind.root.carbon;
+    }
+    if(!isannual(PFT_NROOT,config))
+    {
+      output->pft_root[npft-config->nbiomass-config->nwft+rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen=grass->ind.leaf.nitrogen;
+      output->pft_root[npft-config->nbiomass-config->nwft+rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen=grass->ind.root.nitrogen;
+    }
+
+  }
 
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw_grassland(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,

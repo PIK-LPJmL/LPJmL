@@ -134,16 +134,22 @@ void harvest_crop(Output *output,      /**< Output data */
       output->pft_harvest[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].residual.nitrogen+=(harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen);
     }
     /* harvested area */
-    output->cftfrac[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]=stand->frac;
+    output->cftfrac[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]=+stand->frac;
   }
-
-  output->pft_leaf[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].nitrogen+=crop->ind.leaf.nitrogen;
-  output->pft_nlimit[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=pft->nlimit;
-  output->pft_leaf[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].carbon+=crop->ind.leaf.carbon;
-  output->pft_root[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].nitrogen+=crop->ind.root.nitrogen;
-  output->pft_root[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].carbon+=crop->ind.root.carbon;
-  output->pft_veg[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].nitrogen+=vegn_sum(pft);
-  output->pft_veg[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
+  if(isannual(PFT_NLEAF,config))
+    output->pft_leaf[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].nitrogen+=crop->ind.leaf.nitrogen;
+  if(isannual(PFT_NLIMIT,config))
+    output->pft_nlimit[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=pft->nlimit;
+  if(isannual(PFT_CLEAF,config))
+    output->pft_leaf[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].carbon+=crop->ind.leaf.carbon;
+  if(isannual(PFT_NROOT,config))
+    output->pft_root[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].nitrogen+=crop->ind.root.nitrogen;
+  if(isannual(PFT_CROOT,config))
+    output->pft_root[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].carbon+=crop->ind.root.carbon;
+  if(isannual(PFT_VEGN,config))
+    output->pft_veg[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].nitrogen+=vegn_sum(pft);
+  if(isannual(PFT_VEGC,config))
+    output->pft_veg[npft-config->nbiomass-config->nwft+pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
 
   output->flux_harvest.carbon+=(harvest.harvest.carbon+harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon)*stand->frac;
   output->flux_harvest.nitrogen+=(harvest.harvest.nitrogen+harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen)*stand->frac;

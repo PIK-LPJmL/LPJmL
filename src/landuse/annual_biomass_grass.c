@@ -108,7 +108,7 @@ Bool annual_biomass_grass(Stand *stand,         /* Pointer to stand */
   stand->cell->balance.soil_storage+=(irrigation->irrig_stor+irrigation->irrig_amount)*stand->frac*stand->cell->coord.area;
   foreachpft(pft,p,&stand->pftlist)
   {
-    stand->cell->output.fpc_bft[getpftpar(pft, id)-npft+config->nbiomass+config->nwft+2*config->ngrass+irrigation->irrigation*(config->nbiomass+2*config->ngrass)]=pft->fpc;
+    stand->cell->output.fpc_bft[getpftpar(pft, id)-npft+config->nbiomass+config->nwft+2*config->ngrass+irrigation->irrigation*(config->nbiomass+2*config->ngrass)]=+pft->fpc;
     stand->cell->output.pft_veg[npft-config->nbiomass-config->nwft+rbgrass(ncft)+irrigation->irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
     stand->cell->output.pft_veg[npft-config->nbiomass-config->nwft+rbgrass(ncft)+irrigation->irrigation*(ncft+NGRASS*NBIOMASSTYPE)].nitrogen+=vegn_sum(pft);
   }

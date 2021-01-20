@@ -403,6 +403,7 @@ extern int getnyear(const Variable *,int);
 extern Bool isnitrogen_output(int);
 extern void fwriteoutputdata(FILE *,const Output *,int,int,const Config *);
 extern Bool freadoutputdata(FILE *,Output *,int,int,Bool,const Config *);
+extern Bool isannual(int,const Config *);
 #ifdef USE_MPI
 extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,
                      int *,int,MPI_Comm);
