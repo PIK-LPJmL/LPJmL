@@ -41,10 +41,7 @@ size_t getsize(int index,           /**< index of output file */
   size=getnyear(config->outnames,config->outputvars[index].id);
   size*=outputsize(config->outputvars[index].id,
                    config->npft[GRASS]+config->npft[TREE],
-                   config->nbiomass,
-                   config->nwft,
-                   config->ngrass,
-                   config->npft[CROP]);
+                   config->npft[CROP],config);
   size*=typesizes[getoutputtype(config->outputvars[index].id,config->float_grid)];
   if(config->outputvars[index].id==ADISCHARGE)
     size*=config->nall;

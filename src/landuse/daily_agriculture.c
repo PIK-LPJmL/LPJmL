@@ -231,8 +231,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
           output->dh->cft_c_emis2+(pft->par->id-npft+data->irrigation*ncft),
           crop->dh->c_emissum);
         double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
-          output->pft_nuptake+(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE),
-          output->dh->pft_nuptake2+(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE),
+          output->pft_nuptake+(pft->par->id-config->nbiomass-config->nwft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),
+          output->dh->pft_nuptake2+(pft->par->id-config->nbiomass-config->nwft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),
           crop->nuptakesum);
       }
       else
@@ -523,8 +523,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
           output->dh->cft_c_emis2+(pft->par->id-npft+data->irrigation*ncft),
           crop->dh->c_emissum);
         double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
-          output->pft_nuptake+(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE),
-          output->dh->pft_nuptake2+(pft->par->id-config->nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE),
+          output->pft_nuptake+(pft->par->id-config->nbiomass-config->nwft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),
+          output->dh->pft_nuptake2+(pft->par->id-config->nbiomass-config->nwft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),
           crop->nuptakesum);
       }
       else

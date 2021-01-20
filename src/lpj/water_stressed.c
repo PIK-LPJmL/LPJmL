@@ -198,7 +198,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
       vmax=pft->vmax;
       gc_new=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                       pft->par->gmin*fpar(pft);
-      nitrogen_stress(pft,temp,daylength,npft,config->nbiomass,ncft,config->permafrost);
+      nitrogen_stress(pft,temp,daylength,npft,ncft,config);
 
       adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
                            temp,data.apar,daylength,FALSE);

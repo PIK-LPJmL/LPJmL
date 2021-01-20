@@ -301,7 +301,7 @@ void fwriteoutputdata(FILE *file,           /**< pointer to restart file */
     writeoutputarray(CFT_N2_EMIS2,dh->cft_n2_emis2,2*ncft,Real);
     writeoutputarray(CFT_LEACHING2,dh->cft_leaching2,2*ncft,Real);
     writeoutputarray(CFT_C_EMIS2,dh->cft_c_emis2,2*ncft,Real);
-    writeoutputarray(PFT_NUPTAKE2,dh->pft_nuptake2,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2,Real);
+    writeoutputarray(PFT_NUPTAKE2,dh->pft_nuptake2,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2,Real);
   }
   index=0;
   for(i=D_LAI;i<=D_PET;i++)

@@ -1674,7 +1674,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     writeoutputvar2(CFT_N2_EMIS2,dh->cft_n2_emis2,1,2*ncft);
     writeoutputvar2(CFT_LEACHING2,dh->cft_leaching2,1,2*ncft);
     writeoutputvar2(CFT_C_EMIS2,dh->cft_c_emis2,1,2*ncft);
-    writeoutputvar2(PFT_NUPTAKE2,dh->pft_nuptake2,1,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
+    writeoutputvar2(PFT_NUPTAKE2,dh->pft_nuptake2,1,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
   }
   for(i=D_LAI;i<=D_PET;i++)
   {

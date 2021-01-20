@@ -308,7 +308,7 @@ Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
     readoutputarrayreal(CFT_N2_EMIS2,dh->cft_n2_emis2,2*ncft);
     readoutputarrayreal(CFT_LEACHING2,dh->cft_leaching2,2*ncft);
     readoutputarrayreal(CFT_C_EMIS2,dh->cft_c_emis2,2*ncft);
-    readoutputarrayreal(PFT_NUPTAKE2,dh->pft_nuptake2,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
+    readoutputarrayreal(PFT_NUPTAKE2,dh->pft_nuptake2,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
   }
   index=0;
   for(i=D_LAI;i<=D_PET;i++)

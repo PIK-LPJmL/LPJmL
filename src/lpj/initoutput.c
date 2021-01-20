@@ -32,9 +32,9 @@ Bool initoutput(Output *output,      /**< Output data */
   checkptr(output->pft_npp);
   output->husum=newvec(Real,2*ncft);
   checkptr(output->husum);
-  output->pft_nuptake=newvec(Real,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_nuptake=newvec(Real,(npft-config->nbiomass-config->nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->pft_nuptake);
-  output->pft_ndemand=newvec(Real,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  output->pft_ndemand=newvec(Real,(npft-config->nbiomass-config->nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   output->mpft_lai=newvec(Real,(npft-config->nbiomass-config->nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
   checkptr(output->mpft_lai);
   output->pft_gcgp=newvec(Real,(npft-config->nbiomass-config->nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
@@ -185,7 +185,7 @@ Bool initoutput(Output *output,      /**< Output data */
     checkptr(output->dh->cft_c_emis2);
     output->dh->cft_leaching2=newvec(Real,2*ncft);
     checkptr(output->dh->cft_leaching2);
-    output->dh->pft_nuptake2=newvec(Real,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    output->dh->pft_nuptake2=newvec(Real,(npft-config->nbiomass-config->nwft)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
     checkptr(output->dh->pft_nuptake2);
   }
   else

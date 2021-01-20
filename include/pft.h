@@ -185,7 +185,7 @@ typedef struct Pft
     Stocks (*livefuel_consumption)(Litter *,struct Pft *,const Fuel *,
                                    Livefuel *,Bool *,Real,Real);
     Bool (*annual)(Stand *,struct Pft *,Real *,Bool,int,Bool);
-    Real (*nuptake)(struct Pft *,Real *,Real *,int,int,int,Bool);
+    Real (*nuptake)(struct Pft *,Real *,Real *,int,int,const Config *);
     Real (*ndemand)(const struct Pft *,Real *,Real, Real,Real);
     Real (*vmaxlimit)(const struct Pft *,Real,Real);
   } *par;                /**< PFT parameters */
@@ -257,12 +257,12 @@ extern Real fire_sum(const Litter *,Real);
 extern void output_daily(Daily_outputs *,const Pft *,Real,Real);
 extern void equilsoil(Soil *, int, const Pftpar [],Bool);
 extern void noturnover_monthly(Litter *,Pft *);
-extern char **createpftnames(int,int,int,int,int,int,const Pftpar []);
-extern void freepftnames(char **,int,int,int,int,int,int);
+extern char **createpftnames(int,int,int,const Config *);
+extern void freepftnames(char **,int,int,int,const Config *);
 extern int getnculttype(const Pftpar [],int,int);
 extern int getngrassnat(const Pftpar [],int);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool);
-extern Real nitrogen_stress(Pft *,Real,Real,int,int,int,Bool);
+extern Real nitrogen_stress(Pft *,Real,Real,int,int,const Config *);
 extern Real f_lai(Real);
 extern int findpftid(const char *,const Pftpar[],int);
 
@@ -306,7 +306,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *);
 #define establishment(pft,fpc_total,fpc,n_est) pft->par->establishment(pft,fpc_total,fpc,n_est)
 #define annualpft(stand,pft,fpc_inc,newphen,nitrogen,isdaily) pft->par->annual(stand,pft,fpc_inc,newphen,nitrogen,isdaily)
 #define albedo_pft(pft,snowheight,snowfraction) pft->par->albedo_pft(pft,snowheight,snowfraction)
-#define nuptake(pft,n_plant_demand,ndemand_leaf,npft,nbiomass,ncft,permafrost) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,nbiomass,ncft,permafrost)
+#define nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config)
 #define ndemand(pft,nleaf,vcmax,daylength,temp) pft->par->ndemand(pft,nleaf,vcmax,daylength,temp)
 #define vmaxlimit(pft,daylength,temp) pft->par->vmaxlimit(pft,daylength,temp)
 

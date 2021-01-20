@@ -18,10 +18,8 @@
 
 int outputsize(int index,     /**< output index */
                int npft,      /**< number of natural PFTs */
-               int nbiomass,  /**< number of biomass PFTs */
-               int nwft,      /**< number of WFTs */
-               int ngrass,    /**< number of grass PFTs */
-               int ncft       /**< number of crop PFTs */
+               int ncft,      /**< number of crop PFTs */
+               const Config *config /**< LPJmL configuration */
               )               /** \return number of items per cell */
 {
   switch(index)
@@ -34,7 +32,7 @@ int outputsize(int index,     /**< output index */
     case PFT_CLEAF: case PFT_NLEAF: case PFT_NUPTAKE2:
     case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
     case PFT_CHAWO: case PFT_NHAWO: case PFT_LAI:
-      return npft-nbiomass-nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;
+      return npft-config->nbiomass-config->nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;
     case PFT_HARVESTC: case PFT_RHARVESTC:
     case PFT_HARVESTN: case PFT_RHARVESTN:
     case CFT_CONSUMP_WATER_G:
@@ -52,11 +50,11 @@ int outputsize(int index,     /**< output index */
     case CFT_EVAP2:
       return (ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;
     case FPC:
-      return npft-nbiomass-nwft+1;
+      return npft-config->nbiomass-config->nwft+1;
     case PFT_MORT:
-      return npft-nbiomass-nwft;
+      return npft-config->nbiomass-config->nwft;
     case NV_LAI:
-      return npft-nbiomass-nwft;
+      return npft-config->nbiomass-config->nwft;
     case SOILTEMP: case SWC:
       return NSOILLAYER;
     case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER: case SOILC_AGR_LAYER:
@@ -68,7 +66,7 @@ int outputsize(int index,     /**< output index */
     case CFT_PET: case CFT_PET2:
       return (ncft+NGRASS)*2;
     case FPC_BFT:
-      return (nbiomass+ngrass*2)*2;
+      return (config->nbiomass+config->ngrass*2)*2;
     default:
       return 1;
   } /* of 'switch' */

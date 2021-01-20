@@ -86,7 +86,7 @@ extern Bool annual_grass(Stand *,Pft *,Real *,Bool,int,Bool);
 extern void turnover_monthly_grass(Litter *,Pft *);
 extern void turnover_daily_grass(Litter *,Pft *,Real,Bool);
 extern void albedo_grass(Pft *,Real,Real);
-extern Real nuptake_grass(Pft *,Real *,Real *,int,int,int,Bool);
+extern Real nuptake_grass(Pft *,Real *,Real *,int,int,const Config *);
 extern Real ndemand_grass(const Pft *,Real *,Real,Real,Real);
 extern Real vmaxlimit_grass(const Pft *,Real,Real);
 

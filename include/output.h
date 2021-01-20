@@ -397,7 +397,7 @@ typedef struct
 
 extern Bool initoutput(Output *,int,int,const Config *);
 extern void freeoutput(Output *);
-extern int outputsize(int,int,int,int,int,int);
+extern int outputsize(int,int,int,const Config *);
 extern Type getoutputtype(int,Bool);
 extern int getnyear(const Variable *,int);
 extern Bool isnitrogen_output(int);

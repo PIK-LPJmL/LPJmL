@@ -21,16 +21,13 @@
 
 char **createpftnames(int index,           /**< output index */
                       int npft,            /**< number of natural PFTs */
-                      int nbiomass,        /**< number of biomass types */
-                      int nwft,            /**< number of WFTs */
-                      int ngrass,          /**< number of grasses */
                       int ncft,            /**< number of crop PFTs */
-                      const Pftpar *pftpar /**< PFT parameter vector */
+                      const Config *config /**< LPJmL configuration */
                      )                     /** \return string vector */
 {
   int i,j,incr,size;
   char **pftnames;
-  size=outputsize(index,npft,nbiomass,nwft,ngrass,ncft);
+  size=outputsize(index,npft,ncft,config);
   pftnames=newvec(char *,size);
   if(pftnames==NULL)
     return NULL;
@@ -40,15 +37,15 @@ char **createpftnames(int index,           /**< output index */
     case SDATE2: case HDATE2: case HUSUM2: case SYEAR2:
       for(i=0;i<ncft;i++)
       {
-        pftnames[i]=strdup(pftpar[npft+i].name);
+        pftnames[i]=strdup(config->pftpar[npft+i].name);
         checkptr(pftnames[i]);
       }
       for(i=0;i<ncft;i++)
       {
-        pftnames[i+ncft]=malloc(strlen(pftpar[npft+i].name)+strlen("irrigated ")+1);
+        pftnames[i+ncft]=malloc(strlen(config->pftpar[npft+i].name)+strlen("irrigated ")+1);
         checkptr(pftnames[i+ncft]);
         strcpy(pftnames[i+ncft],"irrigated ");
-        strcat(pftnames[i+ncft],pftpar[npft+i].name);
+        strcat(pftnames[i+ncft],config->pftpar[npft+i].name);
       }
       break;
     case PFT_NPP: case PFT_GCGP: case PFT_NUPTAKE: case PFT_NDEMAND:
@@ -56,25 +53,25 @@ char **createpftnames(int index,           /**< output index */
     case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
     case PFT_CHAWO: case PFT_NHAWO: case PFT_LAIMAX: case PFT_NLIMIT:
     case PFT_LAI: case PFT_NUPTAKE2:
-      for(i=0;i<npft-nbiomass-nwft;i++)
+      for(i=0;i<npft-config->nbiomass-config->nwft;i++)
       {
-        pftnames[i]=strdup(pftpar[i].name);
+        pftnames[i]=strdup(config->pftpar[i].name);
         checkptr(pftnames[i]);
       }
-      incr=npft-nbiomass-nwft;
+      incr=npft-config->nbiomass-config->nwft;
       for(i=0;i<2;i++)
       {
         for(j=0;j<ncft;j++)
           if(i)
           {
-            pftnames[j+incr]=malloc(strlen(pftpar[npft+j].name)+strlen("irrigated ")+1);
+            pftnames[j+incr]=malloc(strlen(config->pftpar[npft+j].name)+strlen("irrigated ")+1);
             checkptr(pftnames[j+incr]);
             strcpy(pftnames[j+incr],"irrigated ");
-            strcat(pftnames[j+incr],pftpar[npft+j].name);
+            strcat(pftnames[j+incr],config->pftpar[npft+j].name);
           }
           else
           {
-            pftnames[j+incr]=strdup(pftpar[npft+j].name);
+            pftnames[j+incr]=strdup(config->pftpar[npft+j].name);
             checkptr(pftnames[j+incr]);
           }
         incr+=ncft;
@@ -107,14 +104,14 @@ char **createpftnames(int index,           /**< output index */
         for(j=0;j<ncft;j++)
           if(i)
           {
-            pftnames[j+incr]=malloc(strlen(pftpar[npft+j].name)+strlen("irrigated ")+1);
+            pftnames[j+incr]=malloc(strlen(config->pftpar[npft+j].name)+strlen("irrigated ")+1);
             checkptr(pftnames[j+incr]);
             strcpy(pftnames[j+incr],"irrigated ");
-            strcat(pftnames[j+incr],pftpar[npft+j].name);
+            strcat(pftnames[j+incr],config->pftpar[npft+j].name);
           }
           else
           {
-            pftnames[j+incr]=strdup(pftpar[npft+j].name);
+            pftnames[j+incr]=strdup(config->pftpar[npft+j].name);
             checkptr(pftnames[j+incr]);
           }
         incr+=ncft;
@@ -144,14 +141,14 @@ char **createpftnames(int index,           /**< output index */
         for(j=0;j<ncft;j++)
           if(i)
           {
-            pftnames[j+incr]=malloc(strlen(pftpar[npft+j].name)+strlen("irrigated ")+1);
+            pftnames[j+incr]=malloc(strlen(config->pftpar[npft+j].name)+strlen("irrigated ")+1);
             checkptr(pftnames[j+incr]);
             strcpy(pftnames[j+incr],"irrigated ");
-            strcat(pftnames[j+incr],pftpar[npft+j].name);
+            strcat(pftnames[j+incr],config->pftpar[npft+j].name);
           }
           else
           {
-            pftnames[j+incr]=strdup(pftpar[npft+j].name);
+            pftnames[j+incr]=strdup(config->pftpar[npft+j].name);
             checkptr(pftnames[j+incr]);
           }
         incr+=ncft;
@@ -165,16 +162,16 @@ char **createpftnames(int index,           /**< output index */
     case FPC:
       pftnames[0]=strdup("natural stand fraction");
       checkptr(pftnames[0]);
-      for(i=0;i<npft-nbiomass-nwft;i++)
+      for(i=0;i<npft-config->nbiomass-config->nwft;i++)
       {
-        pftnames[i+1]=strdup(pftpar[i].name);
+        pftnames[i+1]=strdup(config->pftpar[i].name);
         checkptr(pftnames[i+1]);
       }
       break;
     case PFT_MORT:
-      for(i=0;i<npft-nbiomass-nwft;i++)
+      for(i=0;i<npft-config->nbiomass-config->nwft;i++)
       {
-        pftnames[i]=strdup(pftpar[i].name);
+        pftnames[i]=strdup(config->pftpar[i].name);
         checkptr(pftnames[i]);
       }
       break;
@@ -182,61 +179,61 @@ char **createpftnames(int index,           /**< output index */
       incr=0;
       for (j=0;j<npft;j++)
       {
-        if (pftpar[j].type==TREE && pftpar[j].cultivation_type==WP)
+        if (config->pftpar[j].type==TREE && config->pftpar[j].cultivation_type==WP)
         {
-          pftnames[incr]=strdup(pftpar[j].name);
+          pftnames[incr]=strdup(config->pftpar[j].name);
           incr++;
         }
       }
       break;
     case NV_LAI:
-       for(i=0;i<npft-nbiomass-nwft;i++)
-         pftnames[i]=strdup(pftpar[i].name);
+       for(i=0;i<npft-config->nbiomass-config->nwft;i++)
+         pftnames[i]=strdup(config->pftpar[i].name);
        break;
     case FPC_BFT:
-       for(i=0;i<ngrass;i++)
+       for(i=0;i<config->ngrass;i++)
        {
-         pftnames[i]=malloc(strlen(pftpar[i+npft-nbiomass-nwft-ngrass].name)+strlen("grassland ")+1);
+         pftnames[i]=malloc(strlen(config->pftpar[i+npft-config->nbiomass-config->nwft-config->ngrass].name)+strlen("grassland ")+1);
          strcpy(pftnames[i],"grassland ");
-         strcat(pftnames[i],pftpar[i+npft-nbiomass-ngrass].name);
+         strcat(pftnames[i],config->pftpar[i+npft-config->nbiomass-config->ngrass].name);
        }
-       for(i=0;i<ngrass;i++)
+       for(i=0;i<config->ngrass;i++)
        {
-         pftnames[i+ngrass]=malloc(strlen(pftpar[i+npft-nbiomass-nwft-ngrass].name)+strlen("biomass tree ")+1);
-         strcpy(pftnames[i+ngrass],"biomass tree ");
-         strcat(pftnames[i+ngrass],pftpar[i+npft-nbiomass-ngrass].name);
+         pftnames[i+config->ngrass]=malloc(strlen(config->pftpar[i+npft-config->nbiomass-config->nwft-config->ngrass].name)+strlen("biomass tree ")+1);
+         strcpy(pftnames[i+config->ngrass],"biomass tree ");
+         strcat(pftnames[i+config->ngrass],config->pftpar[i+npft-config->nbiomass-config->ngrass].name);
        }
-       for(i=0;i<nbiomass;i++)
-         pftnames[i+2*ngrass]=strdup(pftpar[i+npft-nbiomass-nwft].name);
-       for(i=0;i<ngrass;i++)
+       for(i=0;i<config->nbiomass;i++)
+         pftnames[i+2*config->ngrass]=strdup(config->pftpar[i+npft-config->nbiomass-config->nwft].name);
+       for(i=0;i<config->ngrass;i++)
        {
-          pftnames[i+ngrass*2+nbiomass]=malloc(strlen(pftpar[i+npft-nbiomass-nwft-ngrass].name)+strlen("grassland irrigated ")+1);
-          strcpy(pftnames[i+ngrass*2+nbiomass],"grassland irrigated ");
-          strcat(pftnames[i+ngrass*2+nbiomass],pftpar[i+npft-nbiomass-nwft-ngrass].name);
+          pftnames[i+config->ngrass*2+config->nbiomass]=malloc(strlen(config->pftpar[i+npft-config->nbiomass-config->nwft-config->ngrass].name)+strlen("grassland irrigated ")+1);
+          strcpy(pftnames[i+config->ngrass*2+config->nbiomass],"grassland irrigated ");
+          strcat(pftnames[i+config->ngrass*2+config->nbiomass],config->pftpar[i+npft-config->nbiomass-config->nwft-config->ngrass].name);
        }
-       for(i=0;i<ngrass;i++)
+       for(i=0;i<config->ngrass;i++)
        {
-          pftnames[i+ngrass*3+nbiomass]=malloc(strlen(pftpar[i+npft-nbiomass-nwft-ngrass].name)+strlen("biomass tree irrigated ")+1);
-          strcpy(pftnames[i+ngrass*3+nbiomass],"biomass tree irrigated ");
-          strcat(pftnames[i+ngrass*3+nbiomass],pftpar[i+npft-nbiomass-nwft-ngrass].name);
+          pftnames[i+config->ngrass*3+config->nbiomass]=malloc(strlen(config->pftpar[i+npft-config->nbiomass-config->nwft-config->ngrass].name)+strlen("biomass tree irrigated ")+1);
+          strcpy(pftnames[i+config->ngrass*3+config->nbiomass],"biomass tree irrigated ");
+          strcat(pftnames[i+config->ngrass*3+config->nbiomass],config->pftpar[i+npft-config->nbiomass-config->nwft-config->ngrass].name);
        }
-       for(i=0;i<nbiomass;i++)
+       for(i=0;i<config->nbiomass;i++)
        {
-          pftnames[i+ngrass*4+nbiomass]=malloc(strlen(pftpar[i+npft-nbiomass-nwft].name)+strlen("irrigated ")+1);
-          strcpy(pftnames[i+ngrass*4+nbiomass],"irrigated ");
-          strcat(pftnames[i+ngrass*4+nbiomass],pftpar[i+npft-nbiomass-nwft].name);
+          pftnames[i+config->ngrass*4+config->nbiomass]=malloc(strlen(config->pftpar[i+npft-config->nbiomass-config->nwft].name)+strlen("irrigated ")+1);
+          strcpy(pftnames[i+config->ngrass*4+config->nbiomass],"irrigated ");
+          strcat(pftnames[i+config->ngrass*4+config->nbiomass],config->pftpar[i+npft-config->nbiomass-config->nwft].name);
        }
        break;
   }
   return pftnames;
 } /* of 'createpftnames' */
 
-void freepftnames(char **pftnames,int index,int npft,int nbiomass,int ngrass,int nwft,int ncft)
+void freepftnames(char **pftnames,int index,int npft,int ncft,const Config *config)
 {
   int i,size;
   if(pftnames!=NULL)
   {
-    size=outputsize(index,npft,nbiomass,nwft,ngrass,ncft);
+    size=outputsize(index,npft,ncft,config);
     for(i=0;i<size;i++)
       free(pftnames[i]);
     free(pftnames);

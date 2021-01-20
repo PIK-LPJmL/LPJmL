@@ -20,9 +20,8 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
                    Real *n_plant_demand, /**< total N plant demand */
                    Real *ndemand_leaf,   /**< N demand of leafs */
                    int npft,             /**< number of natural PFTs */
-                   int nbiomass,         /**< number of biomass PFTs */
                    int ncft,             /**< number of crop PFTs */
-                   Bool permafrost       /**< permafrost enabled? (TRUE/FALSE) */
+                   const Config *config  /**< LPJmL configurtation */
                   )                      /** \return nitrogen uptake (gN/m2/day) */
 {
   Soil *soil;
@@ -40,7 +39,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   Irrigation *data;
   int l;
   soil=&pft->stand->soil;
-  if(permafrost)
+  if(config->permafrost)
     getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
   else
     forrootsoillayer(l)
@@ -129,15 +128,15 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   }
   else if(pft->stand->type->landusetype==BIOMASS_GRASS)
   {
-    pft->stand->cell->output.pft_nuptake[(npft-nbiomass)+rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=n_uptake; /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
-    pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=*n_plant_demand-vegn_sum_grass(pft); /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
+    pft->stand->cell->output.pft_nuptake[(npft-config->nbiomass-config->nwft)+rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=n_uptake; /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
+    pft->stand->cell->output.pft_ndemand[(npft-config->nbiomass-config->nwft)+rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=*n_plant_demand-vegn_sum_grass(pft); /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
   }
   else if(pft->stand->type->landusetype==GRASSLAND)
   {
-    pft->stand->cell->output.pft_nuptake[(npft-nbiomass)+rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=n_uptake;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
-    pft->stand->cell->output.pft_nuptake[(npft-nbiomass)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=n_uptake;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
-    pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=max(0,*n_plant_demand-vegn_sum_grass(pft));/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
-    pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=max(0,*n_plant_demand-vegn_sum_grass(pft));/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
+    pft->stand->cell->output.pft_nuptake[(npft-config->nbiomass-config->nwft)+rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=n_uptake;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
+    pft->stand->cell->output.pft_nuptake[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=n_uptake;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
+    pft->stand->cell->output.pft_ndemand[(npft-config->nbiomass-config->nwft)+rothers(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=max(0,*n_plant_demand-vegn_sum_grass(pft));/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
+    pft->stand->cell->output.pft_ndemand[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=max(0,*n_plant_demand-vegn_sum_grass(pft));/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
   }
   pft->stand->cell->balance.n_uptake+=n_uptake*pft->stand->frac;
   pft->stand->cell->balance.n_demand+=max(0,(*n_plant_demand-vegn_sum_grass(pft)))*pft->stand->frac;
