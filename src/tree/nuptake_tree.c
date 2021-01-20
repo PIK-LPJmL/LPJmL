@@ -126,10 +126,17 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   if(pft->stand->type->landusetype==BIOMASS_TREE)
   {
     data=pft->stand->data;
-    pft->stand->cell->output.pft_nuptake[(npft-nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
-    pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=max(0,*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind)); /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+    pft->stand->cell->output.pft_nuptake[(npft-nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+    pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rbtree(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=max(0,*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind)); /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
   }
-
+#if defined IMAGE || defined INCLUDEWP
+  else if(pft->stand->type->landusetype==WOODPLANTATION)
+  {
+    data=pft->stand->data;
+    pft->stand->cell->output.pft_nuptake[(npft-nbiomass)+rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+    pft->stand->cell->output.pft_ndemand[(npft-nbiomass)+rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=max(0,*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind)); /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+  }
+#endif
   else
   {
     pft->stand->cell->output.pft_nuptake[pft->par->id]+=n_uptake;

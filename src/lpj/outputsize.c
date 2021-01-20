@@ -31,7 +31,7 @@ int outputsize(int index,     /**< output index */
       return ncft*2;
     case PFT_NPP: case PFT_GCGP: case PFT_LAIMAX: case PFT_NLIMIT:
     case PFT_NUPTAKE: case PFT_NDEMAND: case PFT_VEGC: case PFT_VEGN:
-    case PFT_CLEAF: case PFT_NLEAF:
+    case PFT_CLEAF: case PFT_NLEAF: case PFT_NUPTAKE2:
     case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
     case PFT_CHAWO: case PFT_NHAWO: case PFT_LAI:
       return npft-nbiomass-nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2;

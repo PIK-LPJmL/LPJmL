@@ -23,7 +23,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
                    int day,                     /**< [in] day (1..365) */
                    int month,                   /**< [in] month (0..11) */
                    Real daylength,              /**< [in] length of day (h) */
-                   const Real gp_pft[],         /**< [out] pot. canopy conductance for PFTs & CFTs (mm/s) */
+                   const Real gp_pft[],         /**< [in] pot. canopy conductance for PFTs & CFTs (mm/s) */
                    Real gtemp_air,              /**< [in] value of air temperature response function */
                    Real gtemp_soil,             /**< [in] value of soil temperature response function */
                    Real gp_stand,               /**< [in] potential stomata conductance  (mm/s) */

@@ -44,8 +44,6 @@ Real tinyfrac=max(epsilon*10,1e-6);
 struct landuse
 {
   Bool intercrop;      /**< intercropping possible (TRUE/FALSE) */
-  Bool allcrops;       /**< all crops establish (TRUE/FALSE) */
-  Bool onlycrops;       /**< only crops establish (TRUE/FALSE) */
   Climatefile landuse; /**< file pointer */
   Climatefile fertilizer_nr; /**< file pointer to nitrogen fertilizer file */
   Climatefile manure_nr; /**< file pointer to manure fertilizer file */
@@ -70,8 +68,6 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     printallocerr("landuse");
     return NULL;
   }
-  landuse->allcrops=(config->withlanduse==ALL_CROPS);
-  landuse->onlycrops=(config->withlanduse==ONLY_CROPS);
   landuse->landuse.fmt=config->landuse_filename.fmt;
   if(config->landuse_filename.fmt==CDF)
   {
@@ -1041,7 +1037,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
     
     /* force tinyfrac for all crops only on pixels with valid soil */
-    if (landuse->allcrops && !grid[cell].skip && soiltype!=ROCK && soiltype!=ICE && soiltype >= 0)
+    if (config->withlanduse==ALL_CROPS && !grid[cell].skip && soiltype!=ROCK && soiltype!=ICE && soiltype >= 0)
     {
       for(j=0; j<ncft; j++)
       {
@@ -1111,7 +1107,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
              "crop fraction greater 1: %f cell: %d, managed grass is 0",
              sum+1,cell+config->startgrid);
     }
-    if (landuse->onlycrops)
+    if (config->withlanduse==ONLY_CROPS)
     {
       sum = 0;
       for (j = 0; j < ncft; j++)
@@ -1182,7 +1178,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
 #endif
       }
 
-    if(config->fertilizer_input&&!config->fix_fertilization)
+    if(config->fertilizer_input)
     {
       /* assigning fertilizer Nr data */
       yearf-=landuse->fertilizer_nr.firstyear;
@@ -1261,7 +1257,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       free(data);
     }
 
-    if(config->manure_input&&!config->fix_fertilization)
+    if(config->manure_input)
     {
       /* assigning manure fertilizer nr data */
       yearm-=landuse->manure_nr.firstyear;
@@ -1326,14 +1322,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             grid[cell].ml.manure_nr[i].biomass_grass=data[count++];
             grid[cell].ml.manure_nr[i].biomass_tree=data[count++];
 #if defined IMAGE || defined INCLUDEWP
-            grid[cell].ml.manure[i].woodplantation = data[count++];
+            grid[cell].ml.manure_nr[i].woodplantation = data[count++];
 #endif
           }
           else
           {
             grid[cell].ml.manure_nr[i].biomass_grass=grid[cell].ml.manure_nr[i].biomass_tree=0;
 #if defined IMAGE || defined INCLUDEWP
-            grid[cell].ml.manure[i].woodplantation = 0;
+            grid[cell].ml.manure_nr[i].woodplantation = 0;
 #endif
           }
         }

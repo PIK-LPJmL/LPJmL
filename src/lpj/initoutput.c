@@ -185,7 +185,7 @@ Bool initoutput(Output *output,      /**< Output data */
     checkptr(output->dh->cft_c_emis2);
     output->dh->cft_leaching2=newvec(Real,2*ncft);
     checkptr(output->dh->cft_leaching2);
-    output->dh->pft_nuptake2=newvec(Real,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
+    output->dh->pft_nuptake2=newvec(Real,(npft-config->nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
     checkptr(output->dh->pft_nuptake2);
   }
   else

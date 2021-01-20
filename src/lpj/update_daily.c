@@ -252,7 +252,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           cell->output.mn_leaching+=2000*stand->frac;
           cell->balance.n_outflux+=2000*stand->frac;
           if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
-            stand->cell->output.anleaching_agr+=2000*stand->frac;
+            cell->output.anleaching_agr+=2000*stand->frac;
         }
         else
         {
@@ -270,7 +270,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           cell->output.mn_leaching+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
           cell->balance.n_outflux+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
           if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
-            stand->cell->output.anleaching_agr+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+            cell->output.anleaching_agr+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         }
         else
         {

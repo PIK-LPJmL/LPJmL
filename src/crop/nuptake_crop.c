@@ -157,8 +157,8 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
    if(crop->dh!=NULL)
      crop->nuptakesum += n_uptake;
    else
-     pft->stand->cell->output.pft_nuptake[(pft->par->id-nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=n_uptake;
-   pft->stand->cell->output.pft_ndemand[(pft->par->id-nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE)]+=max(0,*n_plant_demand-pft->bm_inc.nitrogen);
+     pft->stand->cell->output.pft_nuptake[(pft->par->id-nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=n_uptake;
+   pft->stand->cell->output.pft_ndemand[(pft->par->id-nbiomass)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=max(0,*n_plant_demand-pft->bm_inc.nitrogen);
    pft->stand->cell->balance.n_uptake+=n_uptake*pft->stand->frac;
    pft->stand->cell->balance.n_demand+=max(0,(*n_plant_demand-pft->bm_inc.nitrogen))*pft->stand->frac;
    if(pft->par->id==pft->stand->cell->output.daily.cft && data->irrigation==pft->stand->cell->output.daily.irrigation)

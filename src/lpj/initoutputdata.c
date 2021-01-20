@@ -313,7 +313,7 @@ void initoutputdata(Output *output,      /**< output data */
     setoutputarray(CFT_N2_EMIS2,dh->cft_n2_emis2,2*ncft);
     setoutputarray(CFT_LEACHING2,dh->cft_leaching2,2*ncft);
     setoutputarray(CFT_C_EMIS2,dh->cft_c_emis2,2*ncft);
-    setoutputarray(PFT_NUPTAKE2,dh->pft_nuptake2,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
+    setoutputarray(PFT_NUPTAKE2,dh->pft_nuptake2,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
   }
   index=0;
   for(i=D_LAI;i<=D_PET;i++)
