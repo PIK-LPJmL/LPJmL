@@ -583,11 +583,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->with_nitrogen)
   {
-    if(config->with_nitrogen!=UNLIM_NITROGEN)
+    if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
     {
       scanclimatefilename(&input,&config->no3deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"no3deposition");
       scanclimatefilename(&input,&config->nh4deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"nh4deposition");
     }
+    else
+      config->no3deposition_filename.name=config->nh4deposition_filename.name=NULL;
     scanclimatefilename(&input,&config->soilph_filename,config->inputdir,config->sim_id==LPJML_FMS,"soilpH");
   }
   else

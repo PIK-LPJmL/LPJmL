@@ -70,7 +70,7 @@ static size_t isnetcdfinput(const Config *config)
     width=max(width,strlen(config->cloud_filename.var));
   if(config->with_nitrogen)
   {
-    if(config->with_nitrogen!=UNLIM_NITROGEN)
+    if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
     {
       if(config->no3deposition_filename.fmt==CDF)
         width=max(width,strlen(config->no3deposition_filename.var));
@@ -446,7 +446,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file,"cloud",&config->cloud_filename,width);
   if(config->with_nitrogen)
   {
-    if(config->with_nitrogen!=UNLIM_NITROGEN)
+    if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
     {
       printinputfile(file,"no3_depo",&config->no3deposition_filename,width);
       printinputfile(file,"nh4_depo",&config->nh4deposition_filename,width);

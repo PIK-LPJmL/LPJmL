@@ -124,7 +124,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   }
   if(config->with_nitrogen)
   {
-    if(config->with_nitrogen!=UNLIM_NITROGEN)
+    if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
     { 
       freefilename(&config->no3deposition_filename);
       freefilename(&config->nh4deposition_filename);

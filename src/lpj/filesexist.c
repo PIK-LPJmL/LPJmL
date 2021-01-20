@@ -284,7 +284,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkdatafile(&config,&config.popdens_filename,"km-2");
   if(config.with_nitrogen)
   {
-    if(config.with_nitrogen==LIM_NITROGEN)
+    if(config.with_nitrogen==LIM_NITROGEN && !config.no_ndeposition)
     {
       bad+=checkclmfile(&config,&config.no3deposition_filename,"g/m2/day",TRUE);
       bad+=checkclmfile(&config,&config.nh4deposition_filename,"g/m2/day",TRUE);
