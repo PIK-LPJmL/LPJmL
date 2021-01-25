@@ -411,6 +411,29 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->nwft=getnculttype(config->pftpar, config->npft[GRASS] + config->npft[TREE],WP);
   config->nwptype=(config->nwft) ? 1 : 0;
   config->ngrass=getngrassnat(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
+  if(config->others_to_crop)
+  {
+    if(fscanstring(file,name,"cft_temp",FALSE,verbose))
+      return TRUE;
+    config->cft_temp=findpftid(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+    if(config->cft_temp<0)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR230: Invalid CFT '%s' for 'cft_temp'.\n",name);
+      return TRUE;
+    }
+    config->cft_temp-=config->npft[GRASS]+config->npft[TREE];
+    if(fscanstring(file,name,"cft_tropic",FALSE,verbose))
+      return TRUE;
+    config->cft_tropic=findpftid(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+    if(config->cft_tropic<0)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR230: Invalid CFT '%s' for 'cft_tropic'.\n",name);
+      return TRUE;
+    }
+    config->cft_tropic-=config->npft[GRASS]+config->npft[TREE];
+  }
   if(config->black_fallow && config->prescribe_residues)
   {
     if(fscanstring(file,name,"residue_pft",FALSE,verbose))

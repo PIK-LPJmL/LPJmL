@@ -86,7 +86,9 @@
   "fertilizer_input" : true,            /* enable fertilizer input */
   "manure_input" : true,               /* enable manure input */
   "fix_fertilization" : false,          /* fix fertilizer input */
-  "others_to_crop" : false,             /* move PFT type others into PFT crop, maize for tropical, wheat for temperate */
+  "others_to_crop" : false,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */
+  "cft_temp" : "temperate cereals",
+  "cft_tropic" : "maize",
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
   "istimber" : true,
   "grassland_fixed_pft" : false,

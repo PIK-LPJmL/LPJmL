@@ -90,7 +90,9 @@
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
-  "others_to_crop" : true,
+  "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */
+  "cft_temp" : "temperate cereals",
+  "cft_tropic" : "maize",
   "crop_resp_fix" : false,
 
 /*===================================================================*/

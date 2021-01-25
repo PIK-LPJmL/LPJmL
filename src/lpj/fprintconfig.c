@@ -317,8 +317,10 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     }
     if (config->others_to_crop)
     {
-      len += fprintf(file, ", ");
-      len = fputstring(file, len, "others to crop", 78);
+      snprintf(s,STRING_LEN,"others to crop '%s' and '%s'",
+               config->pftpar[config->cft_tropic+npft].name,
+               config->pftpar[config->cft_temp+npft].name);
+      len=printsim(file,len,&count,s);
     }
     if (config->cropsheatfrost)
     {

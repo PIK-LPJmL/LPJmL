@@ -166,3 +166,31 @@ Real landfrac_sum(const Landfrac landfrac[2], /**< land fractions (non-irrig., i
   sum+=landfrac[irrig].woodplantation;
   return sum;
 } /* of 'landfrac_sum' */
+
+int readlandfracmap(Landfrac *landfrac,
+                    const int map[],
+                    int size,
+                    const Real data[],
+                    int count,
+                    int ncft,
+                    int nwpt)
+{
+  int i;
+  for(i=0;i<size;i++)
+  {
+    if(map[i]<ncft)
+      landfrac->crop[map[i]]+=data[count++];
+    else if(map[i]<ncft+NGRASS)
+      landfrac->grass[map[i]-ncft]+=data[count++];
+    else if(map[i]==ncft+NGRASS)
+      landfrac->biomass_grass+=data[count++];
+    else if(map[i]==ncft+NGRASS+1)
+      landfrac->biomass_tree+=data[count++];
+    else if(nwpt && map[i]==ncft+NGRASS+NBIOMASSTYPE)
+      landfrac->woodplantation+= data[count++];
+    else
+      landfrac->ag_tree[map[i]-ncft-NGRASS-NBIOMASSTYPE-nwpt]+=data[count++];
+  }
+  return count;
+} /* of 'readlandfracmap*/
+

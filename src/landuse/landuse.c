@@ -844,21 +844,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           grid[cell].ml.irrig_system->biomass_grass=grid[cell].ml.manage.par->default_irrig_system;
           grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
         }
-        for(j=0;j<config->landusemap_size;j++)
-        {
-          if(config->landusemap[j]<ncft)
-            grid[cell].ml.landfrac[i].crop[config->landusemap[j]]+=data[count++];
-          else if(config->landusemap[j]<ncft+NGRASS)
-            grid[cell].ml.landfrac[i].grass[config->landusemap[j]-ncft]+=data[count++];
-          else if(config->landusemap[j]==ncft+NGRASS)
-            grid[cell].ml.landfrac[i].biomass_grass+=data[count++];
-          else if(config->landusemap[j]==ncft+NGRASS+1)
-            grid[cell].ml.landfrac[i].biomass_tree+=data[count++];
-          else if(config->nwptype && config->landusemap[j]==ncft+NGRASS+NBIOMASSTYPE)
-            grid[cell].ml.landfrac[i].woodplantation+=data[count++];
-          else
-            grid[cell].ml.landfrac[i].ag_tree[config->landusemap[j]-ncft-NGRASS-NBIOMASSTYPE-config->nwptype]+=data[count++];
-        }
+        count=readlandfracmap(grid[cell].ml.landfrac+i,config->landusemap,
+                              config->landusemap_size,data,count,ncft,config->nwptype);
       }
       else /* read irrigated cropfrac and irrigation systems from 64 bands input */
       {
@@ -1010,14 +997,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     {
       if(grid[cell].coord.lat>30||grid[cell].coord.lat<-30)
       {
-        grid[cell].ml.landfrac[0].crop[TEMPERATE_CEREALS]+=grid[cell].ml.landfrac[0].grass[0];
-        grid[cell].ml.landfrac[1].crop[TEMPERATE_CEREALS]+=grid[cell].ml.landfrac[1].grass[0];
+        grid[cell].ml.landfrac[0].crop[config->cft_temp]+=grid[cell].ml.landfrac[0].grass[0];
+        grid[cell].ml.landfrac[1].crop[config->cft_temp]+=grid[cell].ml.landfrac[1].grass[0];
         grid[cell].ml.landfrac[0].grass[0]=grid[cell].ml.landfrac[1].grass[0]=0;
       }
       else
       {
-        grid[cell].ml.landfrac[0].crop[MAIZE]+=grid[cell].ml.landfrac[0].grass[0];
-        grid[cell].ml.landfrac[1].crop[MAIZE]+=grid[cell].ml.landfrac[1].grass[0];
+        grid[cell].ml.landfrac[0].crop[config->cft_tropic]+=grid[cell].ml.landfrac[0].grass[0];
+        grid[cell].ml.landfrac[1].crop[config->cft_tropic]+=grid[cell].ml.landfrac[1].grass[0];
         grid[cell].ml.landfrac[0].grass[0]=grid[cell].ml.landfrac[1].grass[0]=0;
       }
     }
