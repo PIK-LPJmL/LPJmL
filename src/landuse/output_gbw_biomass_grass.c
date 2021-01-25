@@ -26,7 +26,7 @@ void output_gbw_biomass_grass(Output *output,  /**< output data */
                           Real intercep_stand,  /**< stand interception (mm) */
                           Real intercep_stand_blue, /**< stand interception from irrigation (mm) */
                           int ncft,            /**< number of CROPS */
-                          Bool pft_output_scaled
+                          const Config *config /**< LPJmL configuration */
                          )
 {
   int l,index;
@@ -45,8 +45,8 @@ void output_gbw_biomass_grass(Output *output,  /**< output data */
     total_g+=green_transp[l];
     total_b+=aet_stand[l]-green_transp[l];
   }
-  index=rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
-  if(pft_output_scaled)
+  index=rbgrass(ncft)+data->irrigation*getnirrig(ncft,config);
+  if(config->pft_output_scaled)
   {
     output->cft_consump_water_g[index]+=total_g*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
     output->cft_consump_water_b[index]+=total_b*stand->cell->ml.landfrac[data->irrigation].biomass_grass;

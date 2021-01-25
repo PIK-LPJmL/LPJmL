@@ -24,11 +24,8 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
                          int day,                     /**< day (1..365) */
                          int month,                   /**< [in] month (0..11) */
                          Real daylength,              /**< length of day (h) */
-                         const Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
                          Real gtemp_air,              /**< value of air temperature response function */
                          Real gtemp_soil,             /**< value of soil temperature response function */
-                         Real gp_stand,               /**< potential stomata conductance  (mm/s) */
-                         Real gp_stand_leafon,        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
                          Real eeq,                    /**< equilibrium evapotranspiration (mm) */
                          Real par,                    /**< photosynthetic active radiation flux  (J/m2/day) */
                          Real melt,                   /**< melting water (mm/day) */
@@ -40,8 +37,12 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
                          const Config *config         /**< LPJ config */
                         )                             /** \return runoff (mm/day) */
 {
-  int p,l,n_pft;
+  int p,l,n_pft,nnat;
   Pft *pft;
+  Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
+  Real gp_stand;               /**< potential stomata conductance  (mm/s) */
+  Real gp_stand_leafon;        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
+  Real fpc_total_stand;
   Output *output;
   Harvest harvest={{0,0},{0,0},{0,0},{0,0}};
   Real aet_stand[LASTLAYER];
@@ -79,9 +80,13 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   }
   else
     wet=NULL;
+  gp_pft=newvec(Real,npft+ncft);
+  check(gp_pft);
+  gp_stand=gp_sum(&stand->pftlist,co2,climate->temp,par,daylength,
+                  &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
 
   if(!config->river_routing)
-    irrig_amount(stand,data,config->pft_output_scaled,npft,ncft,month);
+    irrig_amount(stand,data,npft,ncft,month,config);
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
@@ -90,8 +95,8 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   rainmelt=climate->prec+melt;
   if(rainmelt<0)
     rainmelt=0.0;
-
-  index=rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
+  nnat=npft-config->nbiomass-config->nagtree-config->nwft;
+  index=rbgrass(ncft)+data->irrigation*getnirrig(ncft,config);
 
   if(data->irrigation && data->irrig_amount>epsilon)
   {
@@ -168,8 +173,8 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       gcgp=gc_pft/gp_pft[getpftpar(pft,id)];
       if(stand->cell->ml.landfrac[data->irrigation].biomass_grass>0.0)
       {
-        output->gcgp_count[(npft-config->nbiomass-config->nwft)+index]++;
-        output->pft_gcgp[(npft-config->nbiomass-config->nwft)+index]+=gcgp;
+        output->gcgp_count[nnat+index]++;
+        output->pft_gcgp[nnat+index]+=gcgp;
       }
     }
     npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
@@ -192,13 +197,14 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     output->cft_fpar[index]+=(fpar(pft)*stand->cell->ml.landfrac[data->irrigation].biomass_grass*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
     if(config->pft_output_scaled)
-      output->pft_npp[(npft-config->nbiomass-config->nwft)+index]+=npp*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
+      output->pft_npp[nnat+index]+=npp*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
     else
-      output->pft_npp[(npft-config->nbiomass-config->nwft)+index]+=npp;
-    output->mpft_lai[(npft-config->nbiomass-config->nwft)+index]+=actual_lai(pft);
+      output->pft_npp[nnat+index]+=npp;
+    output->mpft_lai[nnat+index]+=actual_lai(pft);
   } /* of foreachpft */
 
   /* calculate water balance */
+  free(gp_pft);
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
 
@@ -332,7 +338,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   output->mreturn_flow_b+=return_flow_b*stand->frac;
 
   output_gbw_biomass_grass(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,
-                           intercep_stand,intercep_stand_blue,ncft,config->pft_output_scaled);
+                           intercep_stand,intercep_stand_blue,ncft,config);
   free(wet);
   return runoff;
 } /* of 'daily_biomass_grass' */

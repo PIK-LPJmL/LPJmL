@@ -28,7 +28,7 @@
 #ifndef LPJ_H /* Already included? */
 #define LPJ_H
 
-#define LPJ_VERSION  "5.2.002"
+#define LPJ_VERSION  "5.3.001"
 
 /* Necessary header files */
 
@@ -92,9 +92,7 @@ typedef struct config Config; /* forward declaration of stand */
 #include "tree.h"
 #include "biomass_tree.h"
 #include "landuse.h"
-#if defined IMAGE || defined INCLUDEWP
 #include "woodplantation.h"
-#endif
 #include "biomes.h"
 
 /* Definition of constants */

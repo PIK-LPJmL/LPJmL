@@ -35,11 +35,8 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
                      int day,                     /**< day (1..365) */
                      int month,                   /**< [in] month (0..11) */
                      Real daylength,              /**< length of day (h) */
-                     const Real gp_pft[],         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
                      Real gtemp_air,              /**< value of air temperature response function */
                      Real gtemp_soil,             /**< value of soil temperature response function */
-                     Real gp_stand,               /**< potential stomata conductance  (mm/s) */
-                     Real gp_stand_leafon,        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
                      Real eeq,                    /**< equilibrium evapotranspiration (mm) */
                      Real par,                    /**< photosynthetic active radiation flux  (J/m2/day) */
                      Real melt,                   /**< melting water (mm/day) */
@@ -53,6 +50,10 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 {
   int p,l;
   Pft *pft;
+  Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
+  Real gp_stand;               /**< potential stomata conductance  (mm/s) */
+  Real gp_stand_leafon;        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
+  Real fpc_total_stand;
   Output *output;
   Harvest harvest={{0,0},{0,0},{0,0},{0,0}};
   Real aet_stand[LASTLAYER];
@@ -76,13 +77,14 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   Real cleaf=0.0;
   Real cleaf_max=0.0;
   irrig_apply=0.0;
-  int n_pft,index;
+  int n_pft,index,nnat;
   Real *fpc_inc;
 #ifdef PERMUTE
   int *pvec;
 #endif
 
   n_pft=getnpft(&stand->pftlist); /* get number of established PFTs */
+  nnat=npft-config->nbiomass-config->nagtree-config->nwft;
 
   data=stand->data;
   stand->growing_days++;
@@ -108,8 +110,13 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     pvec=NULL;
 #endif
   }
+  gp_pft=newvec(Real,npft+ncft);
+  check(gp_pft);
+  gp_stand=gp_sum(&stand->pftlist,co2,climate->temp,par,daylength,
+                  &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
+
   if(!config->river_routing)
-    irrig_amount(stand,&data->irrigation,config->pft_output_scaled,npft,ncft,month);
+    irrig_amount(stand,&data->irrigation,npft,ncft,month,config);
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
@@ -119,7 +126,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   if(rainmelt<0)
     rainmelt=0.0;
 
-  index=data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
+  index=data->irrigation.irrigation*getnirrig(ncft,config);
 
   if(data->irrigation.irrigation && data->irrigation.irrig_amount>epsilon)
   {
@@ -221,13 +228,13 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
       gcgp=gc_pft/gp_pft[getpftpar(pft,id)];
       if(stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0]>0.0)
       {
-        output->gcgp_count[(npft-config->nbiomass-config->nwft)+rothers(ncft)+index]++;
-        output->pft_gcgp[(npft-config->nbiomass-config->nwft)+rothers(ncft)+index]+=gcgp;
+        output->gcgp_count[nnat+rothers(ncft)+index]++;
+        output->pft_gcgp[nnat+rothers(ncft)+index]+=gcgp;
       }
       if(stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1]>0.0)
       {
-        output->gcgp_count[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+index]++;
-        output->pft_gcgp[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+index]+=gcgp;
+        output->gcgp_count[nnat+rmgrass(ncft)+index]++;
+        output->pft_gcgp[nnat+rmgrass(ncft)+index]+=gcgp;
       }
     }
     npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
@@ -248,16 +255,16 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
     if(config->pft_output_scaled)
     {
-      output->pft_npp[(npft-config->nbiomass-config->nwft)+rothers(ncft)+index]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
-      output->pft_npp[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+index]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
+      output->pft_npp[nnat+rothers(ncft)+index]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
+      output->pft_npp[nnat+rmgrass(ncft)+index]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
     }
     else
     {
-      output->pft_npp[(npft-config->nbiomass-config->nwft)+rothers(ncft)+index]+=npp;
-      output->pft_npp[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+index]+=npp;
+      output->pft_npp[nnat+rothers(ncft)+index]+=npp;
+      output->pft_npp[nnat+rmgrass(ncft)+index]+=npp;
     }
-    output->mpft_lai[(npft-config->nbiomass-config->nwft)+rothers(ncft)+index]+=actual_lai_grass(pft);
-    output->mpft_lai[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)+index]+=actual_lai_grass(pft);
+    output->mpft_lai[nnat+rothers(ncft)+index]+=actual_lai_grass(pft);
+    output->mpft_lai[nnat+rmgrass(ncft)+index]+=actual_lai_grass(pft);
     grass = pft->data;
     if(isdailyoutput_grassland(output,stand))
     {
@@ -281,7 +288,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
       }
     }
   }
-
+  free(gp_pft);
   /* calculate water balance */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
@@ -523,43 +530,43 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     grass=pft->data;
     output->mean_vegc_mangrass+=vegc_sum(pft);
     if(!isannual(FPC_BFT,config))
-      output->fpc_bft[getpftpar(pft, id)-(npft-config->nbiomass-config->nwft-config->ngrass)+data->irrigation.irrigation*(config->nbiomass+2*config->ngrass)]=pft->fpc;
+      output->fpc_bft[getpftpar(pft, id)-(nnat-config->ngrass)+data->irrigation.irrigation*(config->nbiomass+2*config->ngrass)]=pft->fpc;
     if(!isannual(PFT_VEGC,config))
     {
-      output->pft_veg[npft-config->nbiomass-config->nwft+rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon=vegc_sum(pft);
-      output->pft_veg[npft-config->nbiomass-config->nwft+rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon=vegc_sum(pft);
+      output->pft_veg[nnat+rothers(ncft)+index].carbon=vegc_sum(pft);
+      output->pft_veg[nnat+rmgrass(ncft)+index].carbon=vegc_sum(pft);
     }
     if(!isannual(PFT_VEGN,config))
     {
-      output->pft_veg[npft-config->nbiomass-config->nwft+rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen=vegn_sum(pft);
-      output->pft_veg[npft-config->nbiomass-config->nwft+rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen=vegn_sum(pft);
+      output->pft_veg[nnat+rothers(ncft)+index].nitrogen=vegn_sum(pft);
+      output->pft_veg[nnat+rmgrass(ncft)+index].nitrogen=vegn_sum(pft);
     }
     if(!isannual(PFT_CLEAF,config))
     {
-      output->pft_leaf[npft-config->nbiomass-config->nwft+rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon=grass->ind.leaf.carbon;
-      output->pft_leaf[npft-config->nbiomass-config->nwft+rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon=grass->ind.leaf.carbon;
+      output->pft_leaf[nnat+rothers(ncft)+index].carbon=grass->ind.leaf.carbon;
+      output->pft_leaf[nnat+rmgrass(ncft)+index].carbon=grass->ind.leaf.carbon;
     }
     if(!isannual(PFT_NLEAF,config))
     {
-      output->pft_leaf[npft-config->nbiomass-config->nwft+rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen=grass->ind.leaf.nitrogen;
-      output->pft_leaf[npft-config->nbiomass-config->nwft+rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen=grass->ind.leaf.nitrogen;
+      output->pft_leaf[nnat+rothers(ncft)+index].nitrogen=grass->ind.leaf.nitrogen;
+      output->pft_leaf[nnat+rmgrass(ncft)+index].nitrogen=grass->ind.leaf.nitrogen;
     }
     if(!isannual(PFT_CROOT,config))
     {
-      output->pft_root[npft-config->nbiomass-config->nwft+rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon=grass->ind.root.carbon;
-      output->pft_root[npft-config->nbiomass-config->nwft+rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon=grass->ind.root.carbon;
+      output->pft_root[nnat+rothers(ncft)+index].carbon=grass->ind.root.carbon;
+      output->pft_root[nnat+rmgrass(ncft)+index].carbon=grass->ind.root.carbon;
     }
     if(!isannual(PFT_NROOT,config))
     {
-      output->pft_root[npft-config->nbiomass-config->nwft+rothers(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen=grass->ind.leaf.nitrogen;
-      output->pft_root[npft-config->nbiomass-config->nwft+rmgrass(ncft)+data->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen=grass->ind.root.nitrogen;
+      output->pft_root[nnat+rothers(ncft)+index].nitrogen=grass->ind.leaf.nitrogen;
+      output->pft_root[nnat+rmgrass(ncft)+index].nitrogen=grass->ind.root.nitrogen;
     }
 
   }
 
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw_grassland(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,
-                       intercep_stand,intercep_stand_blue,ncft,config->pft_output_scaled);
+                       intercep_stand,intercep_stand_blue,ncft,config);
   free(wet);
 #ifdef PERMUTE
   free(pvec);

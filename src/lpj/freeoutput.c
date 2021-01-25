@@ -60,11 +60,8 @@ void freeoutput(Output *output /**< Output data */
   free(output->pft_hawo);
   free(output->pft_veg);
   free(output->pft_nlimit);
-#if defined IMAGE || defined INCLUDEWP
   free(output->wft_vegc);
-#endif
   free(output->cft_irrig_events);
-  free(output->cft_nlimit);
   free(output->cft_mswc);
   free(output->nday_month);
   free(output->cft_runoff);

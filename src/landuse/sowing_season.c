@@ -16,14 +16,14 @@
 #include "agriculture.h"
 #include "crop.h"
 
-Stocks sowing_season(Cell *cell,            /**< pointer to cell */
-                     int day,               /**< day (1..365) */
-                     int npft,              /**< number of natural PFTs  */
-                     int ncft,              /**< number of crop PFTs */
-                     Real dprec,            /**< today's precipitation (mm) */
-                     int year,              /**< simulation year (AD) */
-                     const Config *config   /**< LPJ settings */
-                    )                       /** \return establishment flux (gC/m2,gN/m2) */
+Stocks sowing_season(Cell *cell,          /**< pointer to cell */
+                     int day,             /**< day (1..365) */
+                     int npft,            /**< number of natural PFTs  */
+                     int ncft,            /**< number of crop PFTs */
+                     Real dprec,          /**< today's precipitation (mm) */
+                     int year,            /**< simulation year (AD) */
+                     const Config *config /**< LPJ settings */
+                    )                     /** \return establishment flux (gC/m2,gN/m2) */
 {
   Bool alloc_today_rf=FALSE, alloc_today_ir=FALSE;
   int cft,m,mm,dayofmonth,month,s,s2;
@@ -80,8 +80,10 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
           else
           {
             difffrac=0;
-            foreachstand(stand,s,cell->standlist){
-              if(stand->type->landusetype==AGRICULTURE){
+            foreachstand(stand,s,cell->standlist)
+            {
+              if(stand->type->landusetype==AGRICULTURE)
+              {
                 irrigation=stand->data;
                 // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
                 foreachpft(pft,p,&stand->pftlist)
@@ -97,7 +99,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
                   data->irrigation=irrigation->irrigation;
                   reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
-                  set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
+                  set_irrigsystem(cropstand,cft,npft,ncft,config);
                   setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                   setasidestand=getstand(cell->standlist,pos-1);
                   if(check_lu(cell->standlist,cell->ml.landfrac[irrigation->irrigation].crop[cft],npft+cft,irrigation->irrigation))
@@ -172,7 +174,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
                   data->irrigation=irrigation->irrigation;
                   reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
-                  set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
+                  set_irrigsystem(cropstand,cft,npft,ncft,config);
                   setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,TRUE,year,config);
                   setasidestand=getstand(cell->standlist,pos-1);
                   if(cell->ml.cropdates[cft].fallow_irrig<=0&&
@@ -240,8 +242,10 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
           if(month==cell->ml.sowing_month[cft]&&(dprec>MIN_PREC||dayofmonth==ndaymonth[month-1])) /*no irrigation, first wet day*/
           {
             difffrac=0;
-            foreachstand(stand,s,cell->standlist){
-              if(stand->type->landusetype==AGRICULTURE){
+            foreachstand(stand,s,cell->standlist)
+            {
+              if(stand->type->landusetype==AGRICULTURE)
+              {
                 irrigation=stand->data;
                 // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
                 foreachpft(pft,p,&stand->pftlist)
@@ -257,7 +261,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
                   data->irrigation=irrigation->irrigation;
                   reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
-                  set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
+                  set_irrigsystem(cropstand,cft,npft,ncft,config);
                   setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                   setasidestand=getstand(cell->standlist,pos-1);
                   if(cell->ml.cropdates[cft].fallow<=0&&
@@ -339,7 +343,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                   //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
                   data->irrigation=irrigation->irrigation;
                   reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
-                  set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
+                  set_irrigsystem(cropstand,cft,npft,ncft,config);
                   setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                   setasidestand=getstand(cell->standlist,pos-1);
                   if(cell->ml.cropdates[cft].fallow_irrig<=0&&
@@ -465,7 +469,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                       stand->frac-=difffrac;
                       data->irrigation=irrigation->irrigation;
                       reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
-                      set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
+                      set_irrigsystem(cropstand,cft,npft,ncft,config);
                       setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                       setasidestand=getstand(cell->standlist,pos-1);
                       if(cell->ml.cropdates[cft].fallow<=0&&
@@ -514,7 +518,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                     //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
                     data->irrigation=irrigation->irrigation;
                     reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
-                    set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
+                    set_irrigsystem(cropstand,cft,npft,ncft,config);
                     setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                     setasidestand=getstand(cell->standlist,pos-1);
                     if(cell->ml.cropdates[cft].fallow<=0&&
@@ -637,7 +641,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                       stand->frac-=difffrac;
                       data->irrigation=irrigation->irrigation;
                       reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
-                      set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
+                      set_irrigsystem(cropstand,cft,npft,ncft,config);
                       setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                       setasidestand=getstand(cell->standlist,pos-1);
                       if(cell->ml.cropdates[cft].fallow_irrig<=0&&
@@ -686,7 +690,7 @@ Stocks sowing_season(Cell *cell,            /**< pointer to cell */
                     //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
                     data->irrigation=irrigation->irrigation;
                     reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
-                    set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
+                    set_irrigsystem(cropstand,cft,npft,ncft,config);
                     setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                     setasidestand=getstand(cell->standlist,pos-1);
                     if(cell->ml.cropdates[cft].fallow_irrig<=0&&

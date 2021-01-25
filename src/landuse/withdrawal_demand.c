@@ -47,11 +47,7 @@ void withdrawal_demand(Cell *grid,          /**< LPJ grid */
       grid[cell].discharge.gir=0.0;
       /* wateruse for irrigation */
       foreachstand(stand,s,grid[cell].standlist)
-#if defined IMAGE || defined INCLUDEWP
         if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==WOODPLANTATION)
-#else
-        if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE)
-#endif
         {
           data=stand->data;
           if(data->irrigation)

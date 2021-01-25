@@ -53,12 +53,12 @@ char **createpftnames(int index,           /**< output index */
     case PFT_CROOT: case PFT_NROOT: case PFT_CSAPW: case PFT_NSAPW:
     case PFT_CHAWO: case PFT_NHAWO: case PFT_LAIMAX: case PFT_NLIMIT:
     case PFT_LAI: case PFT_NUPTAKE2:
-      for(i=0;i<npft-config->nbiomass-config->nwft;i++)
+      for(i=0;i<npft-config->nbiomass-config->nagtree-config->nwft;i++)
       {
         pftnames[i]=strdup(config->pftpar[i].name);
         checkptr(pftnames[i]);
       }
-      incr=npft-config->nbiomass-config->nwft;
+      incr=npft-config->nbiomass-config->nagtree-config->nwft;
       for(i=0;i<2;i++)
       {
         for(j=0;j<ncft;j++)
@@ -85,10 +85,22 @@ char **createpftnames(int index,           /**< output index */
         pftnames[incr+1]=strdup((i) ? "irrigated biomass tree":  "biomass tree");
         checkptr(pftnames[incr+1]);
         incr+=2;
-#if defined IMAGE || defined INCLUDEWP
-        pftnames[incr]=strdup((i) ? "irrigated woodplantation": "woodplantation");
-        incr+=1;
-#endif
+        if(config->nwptype)
+        {
+          pftnames[incr]=strdup((i) ? "irrigated woodplantation": "woodplantation");
+          incr+=1;
+        }
+        for (j=0;j<config->nagtree;j++)
+          if(i)
+          {
+            pftnames[j+incr]=malloc(strlen(config->pftpar[npft-config->nagtree-config->nwft+j].name)+strlen("irrigated ")+1);
+            strcpy(pftnames[j+incr],"irrigated ");
+            strcat(pftnames[j+incr],config->pftpar[npft+j-config->nagtree-config->nwft].name);
+          }
+        else
+          pftnames[j+incr]=strdup(config->pftpar[npft+j-config->nagtree-config->nwft].name);
+        incr+=config->nagtree;
+
       } 
       break;
     case PFT_HARVESTC: case PFT_RHARVESTC: case CFT_CONSUMP_WATER_G: case CFT_EVAP: case CFT_EVAP_B:
@@ -125,10 +137,22 @@ char **createpftnames(int index,           /**< output index */
         pftnames[incr+1]=strdup((i) ? "irrigated biomass tree":  "biomass tree");
         checkptr(pftnames[incr+1]);
         incr+=2;
-#if defined IMAGE || defined INCLUDEWP
-        pftnames[incr]=strdup((i) ? "irrigated woodplantation": "woodplantation");
-        incr+=1;
-#endif
+        if(config->nwptype)
+        {
+          pftnames[incr]=strdup((i) ? "irrigated woodplantation": "woodplantation");
+          incr+=1;
+        }
+        for (j=0;j<config->nagtree;j++)
+          if(i)
+          {
+            pftnames[j+incr] = malloc(strlen(config->pftpar[npft-config->nagtree-config->nwft+j].name)+strlen("irrigated ")+1);
+            strcpy(pftnames[j+incr],"irrigated ");
+            strcat(pftnames[j+incr],config->pftpar[npft+j-config->nagtree-config->nwft].name);
+          }
+          else
+            pftnames[j+incr]=strdup(config->pftpar[npft+j-config->nagtree-config->nwft].name);
+        incr+=config->nagtree;
+
       }
       break;
     case GROWING_PERIOD:case CFT_TEMP:case CFT_PREC:

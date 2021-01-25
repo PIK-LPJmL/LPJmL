@@ -166,7 +166,7 @@ extern void closeinput_netcdf(Input_netcdf);
 extern size_t getindexinput_netcdf(const Input_netcdf,const Coord *);
 extern size_t getindexsize_netcdf(const Input_netcdf);
 extern Bool readinput_netcdf(const Input_netcdf,Real *,const Coord *);
-extern Bool readintinput_netcdf(const Input_netcdf,int *,const Coord *);
+extern Bool readintinput_netcdf(const Input_netcdf,int *,const Coord *,Bool *);
 extern Bool readshortinput_netcdf(const Input_netcdf,short *,const Coord *);
 extern Input_netcdf dupinput_netcdf(const Input_netcdf);
 extern Type getinputtype_netcdf(const Input_netcdf);

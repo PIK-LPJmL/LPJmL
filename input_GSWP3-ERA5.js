@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**       i  n  p  u  t  _  G  S  W  P  3 _  E  R  A  5  .  j  s                   \n**/
 /**                                                                                \n**/
-/** Configuration file for input dataset for LPJ C Version 5.2.002                 \n**/
+/** Configuration file for input dataset for LPJ C Version 5.3.001                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/

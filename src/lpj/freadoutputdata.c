@@ -44,7 +44,9 @@ Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
                      const Config *config /**< LPJ configuration */
                     )
 {
-  int i,index;
+  int i,index,nnat,nirrig;
+  nnat=getnnat(npft,config);
+  nirrig=2*getnirrig(ncft,config);
   readoutputvarreal(DAYLENGTH,daylength);
   readoutputvarreal(TEMP,temp);
   readoutputvarreal(SUN,sun);
@@ -83,18 +85,18 @@ Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
   readoutputarrayitem(SOILN_LAYER,soil_layer,nitrogen,LASTLAYER);
   readoutputarrayreal(SOILNO3_LAYER,soilno3_layer,LASTLAYER);
   readoutputarrayreal(SOILNH4_LAYER,soilnh4_layer,LASTLAYER);
-  readoutputarrayreal(PFT_LAIMAX,pft_laimax,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_NLEAF,pft_leaf,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_CLEAF,pft_leaf,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_NROOT,pft_root,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_CROOT,pft_root,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_NSAPW,pft_sapw,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_CSAPW,pft_sapw,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_NHAWO,pft_hawo,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_CHAWO,pft_hawo,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_VEGC,pft_veg,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_VEGN,pft_veg,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(PFT_NLIMIT,pft_nlimit,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  readoutputarrayreal(PFT_LAIMAX,pft_laimax,nnat+nirrig);
+  readoutputarrayitem(PFT_NLEAF,pft_leaf,nitrogen,nnat+nirrig);
+  readoutputarrayitem(PFT_CLEAF,pft_leaf,carbon,nnat+nirrig);
+  readoutputarrayitem(PFT_NROOT,pft_root,nitrogen,nnat+nirrig);
+  readoutputarrayitem(PFT_CROOT,pft_root,carbon,nnat+nirrig);
+  readoutputarrayitem(PFT_NSAPW,pft_sapw,nitrogen,nnat+nirrig);
+  readoutputarrayitem(PFT_CSAPW,pft_sapw,carbon,nnat+nirrig);
+  readoutputarrayitem(PFT_NHAWO,pft_hawo,nitrogen,nnat+nirrig);
+  readoutputarrayitem(PFT_CHAWO,pft_hawo,carbon,nnat+nirrig);
+  readoutputarrayitem(PFT_VEGC,pft_veg,nitrogen,nnat+nirrig);
+  readoutputarrayitem(PFT_VEGN,pft_veg,carbon,nnat+nirrig);
+  readoutputarrayreal(PFT_NLIMIT,pft_nlimit,nnat+nirrig);
   readoutputvarreal(MAXTHAW_DEPTH,maxthaw_depth);
   readoutputvarreal(SOILNO3,soilno3);
   readoutputvarreal(SOILNH4,soilnh4);
@@ -134,9 +136,8 @@ Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
   readoutputvarreal(FTIMBER,ftimber);
   readoutputvarreal(TIMBER_HARVESTC,timber_harvest.carbon);
   readoutputvarreal(TIMBER_HARVESTC,timber_harvest.nitrogen);
-#if defined IMAGE || defined INCLUDEWP
-  readoutputarrayreal(WFT_VEGC,wft_vegc,config->nwft);
-#endif
+  if(config->nwptype)
+    readoutputarrayreal(WFT_VEGC,wft_vegc,config->nwft);
 #ifdef IMAGE
   readoutputvarreal(WD_GW,mwd_gw);
   readoutputvarreal(WD_AQ,mwd_aq);
@@ -236,9 +237,9 @@ Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
   readoutputarrayint(HDATE,hdate,2*ncft);
   readoutputarrayreal(CFT_SWC,cft_mswc,2*ncft);
   readoutputarrayint(CFT_SWC,nday_month,2*ncft);
-  readoutputarrayreal(PFT_NPP,pft_npp,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
-  readoutputarrayreal(PFT_NUPTAKE,pft_nuptake,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
-  readoutputarrayreal(PFT_NDEMAND,pft_ndemand,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
+  readoutputarrayreal(PFT_NPP,pft_npp,nnat+nirrig);
+  readoutputarrayreal(PFT_NUPTAKE,pft_nuptake,nnat+nirrig);
+  readoutputarrayreal(PFT_NDEMAND,pft_ndemand,nnat+nirrig);
   readoutputarrayreal(HUSUM,husum,2*ncft);
   readoutputarrayreal(CFT_RUNOFF,cft_runoff,2*ncft);
   readoutputarrayreal(CFT_N2O_DENIT,cft_n2o_denit,2*ncft);
@@ -246,56 +247,57 @@ Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
   readoutputarrayreal(CFT_N2_EMIS,cft_n2_emis,2*ncft);
   readoutputarrayreal(CFT_LEACHING,cft_leaching,2*ncft);
   readoutputarrayreal(CFT_C_EMIS,cft_c_emis,2*ncft);
-  readoutputarrayreal(PFT_GCGP,pft_gcgp,npft-config->nbiomass-config->nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
-  readoutputarrayreal(PFT_GCGP,gcgp_count,npft-config->nbiomass-config->nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
-  readoutputarrayitem(PFT_HARVESTC,pft_harvest,harvest.carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_HARVESTN,pft_harvest,harvest.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_RHARVESTC,pft_harvest,residual.carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayitem(PFT_RHARVESTN,pft_harvest,residual.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFT_CONSUMP_WATER_G,cft_consump_water_g,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFT_CONSUMP_WATER_B,cft_consump_water_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  readoutputarrayreal(PFT_GCGP,pft_gcgp,nnat+nirrig);
+  readoutputarrayreal(PFT_GCGP,gcgp_count,nnat+nirrig);
+  readoutputarrayitem(PFT_HARVESTC,pft_harvest,harvest.carbon,nirrig);
+  readoutputarrayitem(PFT_HARVESTN,pft_harvest,harvest.nitrogen,nirrig);
+  readoutputarrayitem(PFT_RHARVESTC,pft_harvest,residual.carbon,nirrig);
+  readoutputarrayitem(PFT_RHARVESTN,pft_harvest,residual.nitrogen,nirrig);
+  readoutputarrayreal(CFT_CONSUMP_WATER_G,cft_consump_water_g,nirrig);
+  readoutputarrayreal(CFT_CONSUMP_WATER_B,cft_consump_water_b,nirrig);
   readoutputarrayreal(GROWING_PERIOD,growing_period,2*(ncft+NGRASS));
-  readoutputarrayreal(FPC,fpc,npft-config->nbiomass-config->nwft+1);
+  readoutputarrayreal(FPC,fpc,nnat+1);
+  readoutputarrayreal(PFT_MORT,pft_mort,nnat);
   readoutputarrayreal(FPC_BFT,fpc_bft,((config->nbiomass+config->ngrass*2)*2));
-  readoutputarrayreal(NV_LAI,nv_lai,npft-config->nbiomass-config->nwft);
+  readoutputarrayreal(NV_LAI,nv_lai,nnat);
   readoutputarrayreal(CFT_PET,cft_pet,2*(ncft+NGRASS));
-  readoutputarrayreal(CFT_TRANSP,cft_transp,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFT_TRANSP_B,cft_transp_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFT_EVAP,cft_evap,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFT_EVAP_B,cft_evap_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFT_INTERC,cft_interc,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFT_INTERC_B,cft_interc_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFT_RETURN_FLOW_B,cft_return_flow_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayint(CFT_IRRIG_EVENTS,cft_irrig_events,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFT_NIR,cft_nir,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  readoutputarrayreal(CFT_TRANSP,cft_transp,nirrig);
+  readoutputarrayreal(CFT_TRANSP_B,cft_transp_b,nirrig);
+  readoutputarrayreal(CFT_EVAP,cft_evap,nirrig);
+  readoutputarrayreal(CFT_EVAP_B,cft_evap_b,nirrig);
+  readoutputarrayreal(CFT_INTERC,cft_interc,nirrig);
+  readoutputarrayreal(CFT_INTERC_B,cft_interc_b,nirrig);
+  readoutputarrayreal(CFT_RETURN_FLOW_B,cft_return_flow_b,nirrig);
+  readoutputarrayint(CFT_IRRIG_EVENTS,cft_irrig_events,nirrig);
+  readoutputarrayreal(CFT_NIR,cft_nir,nirrig);
   readoutputarrayreal(CFT_TEMP,cft_temp,2*(ncft+NGRASS));
   readoutputarrayreal(CFT_PREC,cft_prec,2*(ncft+NGRASS));
   readoutputarrayreal(CFT_SRAD,cft_srad,2*(ncft+NGRASS));
-  readoutputarrayreal(CFT_CONV_LOSS_EVAP,cft_conv_loss_evap,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFT_CONV_LOSS_DRAIN,cft_conv_loss_drain,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFTFRAC,cftfrac,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFT_AIRRIG,cft_airrig,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(CFT_FPAR,cft_fpar,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  readoutputarrayreal(LUC_IMAGE,cft_luc_image,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  readoutputarrayreal(CFT_CONV_LOSS_EVAP,cft_conv_loss_evap,nirrig);
+  readoutputarrayreal(CFT_CONV_LOSS_DRAIN,cft_conv_loss_drain,nirrig);
+  readoutputarrayreal(CFTFRAC,cftfrac,nirrig);
+  readoutputarrayreal(CFT_AIRRIG,cft_airrig,nirrig);
+  readoutputarrayreal(CFT_FPAR,cft_fpar,nirrig);
+  readoutputarrayreal(LUC_IMAGE,cft_luc_image,nirrig);
   readoutputarrayitem(CFT_ABOVEGBMC,cft_aboveground_biomass,carbon,2*(ncft+NGRASS));
   readoutputarrayitem(CFT_ABOVEGBMN,cft_aboveground_biomass,nitrogen,2*(ncft+NGRASS));
   if(config->double_harvest)
   {
-    readoutputarrayitem(PFT_HARVESTC2,dh->pft_harvest2,harvest.carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    readoutputarrayitem(PFT_HARVESTN2,dh->pft_harvest2,harvest.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    readoutputarrayitem(PFT_RHARVESTC2,dh->pft_harvest2,residual.carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    readoutputarrayitem(PFT_RHARVESTN2,dh->pft_harvest2,residual.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    readoutputarrayitem(PFT_HARVESTC2,dh->pft_harvest2,harvest.carbon,nirrig);
+    readoutputarrayitem(PFT_HARVESTN2,dh->pft_harvest2,harvest.nitrogen,nirrig);
+    readoutputarrayitem(PFT_RHARVESTC2,dh->pft_harvest2,residual.carbon,nirrig);
+    readoutputarrayitem(PFT_RHARVESTN2,dh->pft_harvest2,residual.nitrogen,nirrig);
     readoutputarrayreal(GROWING_PERIOD2,dh->growing_period2,2*(ncft+NGRASS));
     readoutputarrayreal(CFT_PET2,dh->cft_pet2,2*(ncft+NGRASS));
-    readoutputarrayreal(CFT_TRANSP2,dh->cft_transp2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    readoutputarrayreal(CFT_EVAP2,dh->cft_evap2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    readoutputarrayreal(CFT_INTERC2,dh->cft_interc2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    readoutputarrayreal(CFT_NIR2,dh->cft_nir2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    readoutputarrayreal(CFT_TRANSP2,dh->cft_transp2,nirrig);
+    readoutputarrayreal(CFT_EVAP2,dh->cft_evap2,nirrig);
+    readoutputarrayreal(CFT_INTERC2,dh->cft_interc2,nirrig);
+    readoutputarrayreal(CFT_NIR2,dh->cft_nir2,nirrig);
     readoutputarrayreal(CFT_TEMP2,dh->cft_temp2,2*(ncft+NGRASS));
     readoutputarrayreal(CFT_PREC2,dh->cft_prec2,2*(ncft+NGRASS));
     readoutputarrayreal(CFT_SRAD2,dh->cft_srad2,2*(ncft+NGRASS));
-    readoutputarrayreal(CFTFRAC2,dh->cftfrac2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    readoutputarrayreal(CFT_AIRRIG2,dh->cft_airrig2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    readoutputarrayreal(CFTFRAC2,dh->cftfrac2,nirrig);
+    readoutputarrayreal(CFT_AIRRIG2,dh->cft_airrig2,nirrig);
     readoutputarrayint(SDATE2,dh->sdate2,2*ncft);
     readoutputarrayint(HDATE2,dh->hdate2,2*ncft);
     readoutputarrayint(SYEAR,dh->syear,2*ncft);
@@ -308,7 +310,7 @@ Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
     readoutputarrayreal(CFT_N2_EMIS2,dh->cft_n2_emis2,2*ncft);
     readoutputarrayreal(CFT_LEACHING2,dh->cft_leaching2,2*ncft);
     readoutputarrayreal(CFT_C_EMIS2,dh->cft_c_emis2,2*ncft);
-    readoutputarrayreal(PFT_NUPTAKE2,dh->pft_nuptake2,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
+    readoutputarrayreal(PFT_NUPTAKE2,dh->pft_nuptake2,nnat+nirrig);
   }
   index=0;
   for(i=D_LAI;i<=D_PET;i++)

@@ -42,6 +42,11 @@ Bool fread_tree(FILE *file, /**< pointer to binary file */
   freadreal((Real *)&tree->turn_litt,sizeof(Treeturn)/sizeof(Real),swap,file);
   freadreal1(&tree->turn_nbminc,swap,file);
   freadreal((Real *)&tree->ind,sizeof(Treephys2)/sizeof(Real),swap,file);
+  if(pft->par->cultivation_type==ANNUAL_TREE)
+  {
+    freadreal((Real *)&tree->fruit,sizeof(Stocks)/sizeof(Real),swap,file);
+    freadint1(&tree->boll_age,swap,file);
+  }
   freadreal1(&tree->excess_carbon,swap,file);
   return freadreal((Real *)&tree->falloc,sizeof(Treephyspar)/sizeof(Real),swap,file)!=sizeof(Treephyspar)/sizeof(Real);
 } /* of 'fread_tree' */

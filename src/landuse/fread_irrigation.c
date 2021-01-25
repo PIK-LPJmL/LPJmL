@@ -30,6 +30,7 @@ Bool fread_irrigation(FILE *file,             /**< pointer to binary file */
     return TRUE;
   }
   irrigation->irrigation=b;
+  freadint1(&irrigation->pft_id,swap,file);
   if(irrigation->irrigation)
   {
     freadint1(&irrigation->irrig_event,swap,file);

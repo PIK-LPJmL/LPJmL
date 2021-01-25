@@ -26,10 +26,10 @@ void output_gbw_grassland(Output *output,      /**< output data */
                           Real intercep_stand, /**< stand interception (mm) */
                           Real intercep_stand_blue, /**< stand interception from irrigation (mm) */
                           int ncft,            /**< number of CROPS */
-                          Bool pft_output_scaled
+                          const Config *config /**< LPJmL configuration */
                          )
 {
-  int l,irrigation;
+  int l,irrigation,index;
   Real total_g,total_b;
   Grassland *data;
   data=stand->data;
@@ -46,53 +46,54 @@ void output_gbw_grassland(Output *output,      /**< output data */
     total_g+=green_transp[l];
     total_b+=aet_stand[l]-green_transp[l];
   }
-  if(pft_output_scaled)
+  index=irrigation*getnirrig(ncft,config);
+  if(config->pft_output_scaled)
   {
-    output->cft_consump_water_g[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_g*stand->cell->ml.landfrac[irrigation].grass[0];
-    output->cft_consump_water_g[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_g*stand->cell->ml.landfrac[irrigation].grass[1];
-    output->cft_consump_water_b[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_b*stand->cell->ml.landfrac[irrigation].grass[0];
-    output->cft_consump_water_b[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_b*stand->cell->ml.landfrac[irrigation].grass[1];
+    output->cft_consump_water_g[rothers(ncft)+index]+=total_g*stand->cell->ml.landfrac[irrigation].grass[0];
+    output->cft_consump_water_g[rmgrass(ncft)+index]+=total_g*stand->cell->ml.landfrac[irrigation].grass[1];
+    output->cft_consump_water_b[rothers(ncft)+index]+=total_b*stand->cell->ml.landfrac[irrigation].grass[0];
+    output->cft_consump_water_b[rmgrass(ncft)+index]+=total_b*stand->cell->ml.landfrac[irrigation].grass[1];
     forrootsoillayer(l)
     {
-      output->cft_transp[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l]*stand->cell->ml.landfrac[irrigation].grass[0];
-      output->cft_transp[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l]*stand->cell->ml.landfrac[irrigation].grass[1];
-      output->cft_transp_b[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=(aet_stand[l]-green_transp[l])*stand->cell->ml.landfrac[irrigation].grass[0];
-      output->cft_transp_b[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=(aet_stand[l]-green_transp[l])*stand->cell->ml.landfrac[irrigation].grass[1];
+      output->cft_transp[rothers(ncft)+index]+=aet_stand[l]*stand->cell->ml.landfrac[irrigation].grass[0];
+      output->cft_transp[rmgrass(ncft)+index]+=aet_stand[l]*stand->cell->ml.landfrac[irrigation].grass[1];
+      output->cft_transp_b[rothers(ncft)+index]+=(aet_stand[l]-green_transp[l])*stand->cell->ml.landfrac[irrigation].grass[0];
+      output->cft_transp_b[rmgrass(ncft)+index]+=(aet_stand[l]-green_transp[l])*stand->cell->ml.landfrac[irrigation].grass[1];
     }
-    output->cft_evap[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap*stand->cell->ml.landfrac[irrigation].grass[0];
-    output->cft_evap[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap*stand->cell->ml.landfrac[irrigation].grass[1];
-    output->cft_evap_b[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap_blue*stand->cell->ml.landfrac[irrigation].grass[0];
-    output->cft_evap_b[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap_blue*stand->cell->ml.landfrac[irrigation].grass[1];
-    output->cft_interc[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand*stand->cell->ml.landfrac[irrigation].grass[0];
-    output->cft_interc[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand*stand->cell->ml.landfrac[irrigation].grass[1];
-    output->cft_interc_b[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand_blue*stand->cell->ml.landfrac[irrigation].grass[0];
-    output->cft_interc_b[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand_blue*stand->cell->ml.landfrac[irrigation].grass[1];
-    output->cft_return_flow_b[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=return_flow_b*stand->cell->ml.landfrac[irrigation].grass[0];
-    output->cft_return_flow_b[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=return_flow_b*stand->cell->ml.landfrac[irrigation].grass[1];
+    output->cft_evap[rothers(ncft)+index]+=evap*stand->cell->ml.landfrac[irrigation].grass[0];
+    output->cft_evap[rmgrass(ncft)+index]+=evap*stand->cell->ml.landfrac[irrigation].grass[1];
+    output->cft_evap_b[rothers(ncft)+index]+=evap_blue*stand->cell->ml.landfrac[irrigation].grass[0];
+    output->cft_evap_b[rmgrass(ncft)+index]+=evap_blue*stand->cell->ml.landfrac[irrigation].grass[1];
+    output->cft_interc[rothers(ncft)+index]+=intercep_stand*stand->cell->ml.landfrac[irrigation].grass[0];
+    output->cft_interc[rmgrass(ncft)+index]+=intercep_stand*stand->cell->ml.landfrac[irrigation].grass[1];
+    output->cft_interc_b[rothers(ncft)+index]+=intercep_stand_blue*stand->cell->ml.landfrac[irrigation].grass[0];
+    output->cft_interc_b[rmgrass(ncft)+index]+=intercep_stand_blue*stand->cell->ml.landfrac[irrigation].grass[1];
+    output->cft_return_flow_b[rothers(ncft)+index]+=return_flow_b*stand->cell->ml.landfrac[irrigation].grass[0];
+    output->cft_return_flow_b[rmgrass(ncft)+index]+=return_flow_b*stand->cell->ml.landfrac[irrigation].grass[1];
   }
   else
   {
-    output->cft_consump_water_g[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_g;
-    output->cft_consump_water_g[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_g;
-    output->cft_consump_water_b[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_b;
-    output->cft_consump_water_b[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=total_b;
+    output->cft_consump_water_g[rothers(ncft)+index]+=total_g;
+    output->cft_consump_water_g[rmgrass(ncft)+index]+=total_g;
+    output->cft_consump_water_b[rothers(ncft)+index]+=total_b;
+    output->cft_consump_water_b[rmgrass(ncft)+index]+=total_b;
     forrootsoillayer(l)
     {
-      output->cft_transp[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l];
-      output->cft_transp[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l];
-      output->cft_transp_b[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l]-green_transp[l];
-      output->cft_transp_b[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=aet_stand[l]-green_transp[l];
+      output->cft_transp[rothers(ncft)+index]+=aet_stand[l];
+      output->cft_transp[rmgrass(ncft)+index]+=aet_stand[l];
+      output->cft_transp_b[rothers(ncft)+index]+=aet_stand[l]-green_transp[l];
+      output->cft_transp_b[rmgrass(ncft)+index]+=aet_stand[l]-green_transp[l];
     }
-    output->cft_evap[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap;
-    output->cft_evap[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap;
-    output->cft_evap_b[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap_blue;
-    output->cft_evap_b[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=evap_blue;
-    output->cft_interc[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand;
-    output->cft_interc[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand;
-    output->cft_interc_b[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand_blue;
-    output->cft_interc_b[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=intercep_stand_blue;
-    output->cft_return_flow_b[rothers(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=return_flow_b;
-    output->cft_return_flow_b[rmgrass(ncft)+irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=return_flow_b;
+    output->cft_evap[rothers(ncft)+index]+=evap;
+    output->cft_evap[rmgrass(ncft)+index]+=evap;
+    output->cft_evap_b[rothers(ncft)+index]+=evap_blue;
+    output->cft_evap_b[rmgrass(ncft)+index]+=evap_blue;
+    output->cft_interc[rothers(ncft)+index]+=intercep_stand;
+    output->cft_interc[rmgrass(ncft)+index]+=intercep_stand;
+    output->cft_interc_b[rothers(ncft)+index]+=intercep_stand_blue;
+    output->cft_interc_b[rmgrass(ncft)+index]+=intercep_stand_blue;
+    output->cft_return_flow_b[rothers(ncft)+index]+=return_flow_b;
+    output->cft_return_flow_b[rmgrass(ncft)+index]+=return_flow_b;
   }
 
   if(irrigation)

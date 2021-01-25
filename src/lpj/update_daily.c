@@ -37,11 +37,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   int s,p;
   Pft *pft;
   Real melt=0,eeq,par,daylength,beta;
-  Real gp_stand,gp_stand_leafon,runoff,snowrunoff;
+  Real runoff,snowrunoff;
 #ifdef IMAGE
   Real fout_gw; // local variable for groundwater outflow (baseflow)
 #endif
-  Real fpc_total_stand;
   Real gtemp_air;  /* value of air temperature response function */
   Real gtemp_soil[NSOILLAYER]; /* value of soil temperature response function */
   Real temp_bs;    /* temperature beneath snow */
@@ -49,7 +48,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Stocks flux_estab={0,0};
   Real evap=0;
   Stocks hetres={0,0};
-  Real *gp_pft;
   Real avgprec;
   Stand *stand;
   Real bnf;
@@ -60,8 +58,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   const Real prec_save=climate.prec;
   Real agrfrac;
 
-  gp_pft=newvec(Real,npft+ncft);
-  check(gp_pft);
 
   forrootmoist(l)
     rootdepth+=soildepth[l];
@@ -297,8 +293,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     } /* of if(config->with_nitrogen) */
 
-    gp_stand=gp_sum(&stand->pftlist,co2,climate.temp,par,daylength,
-                    &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
     if(config->with_nitrogen)
     {
       bnf=biologicalnfixation(stand);
@@ -307,8 +301,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       cell->balance.n_influx+=bnf*stand->frac;
     }
 
-    runoff=daily_stand(stand,co2,&climate,day,month,daylength,gp_pft,
-                       gtemp_air,gtemp_soil[0],gp_stand,gp_stand_leafon,eeq,par,
+    runoff=daily_stand(stand,co2,&climate,day,month,daylength,
+                       gtemp_air,gtemp_soil[0],eeq,par,
                        melt,npft,ncft,year,intercrop,agrfrac,config);
     if(config->with_nitrogen)
     {
@@ -448,5 +442,4 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen;
   cell->balance.flux_estab.carbon+=flux_estab.carbon;
   cell->output.dcflux-=flux_estab.carbon;
-  free(gp_pft);
 } /* of 'update_daily' */

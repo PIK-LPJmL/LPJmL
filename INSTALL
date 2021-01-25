@@ -2,10 +2,10 @@
 | |   |  _ \   | |_ __ ___ | |
 | |   | |_) |  | | '_ ` _ \| |
 | |___|  __/ |_| | | | | | | |___
-|_____|_|   \___/|_| |_| |_|_____| Version 5.2.002
+|_____|_|   \___/|_| |_| |_|_____| Version 5.3.001
 
 
-Installation of LPJmL C Version 5.2.002
+Installation of LPJmL C Version 5.3.002
 
 Installation for Unix-like systems
 ----------------------------------
@@ -27,7 +27,7 @@ cd lpjml
 
 untar source files
 
-gzip -cd lpjml-5.2.002.tar.gz|tar -xf -
+gzip -cd lpjml-5.3.001.tar.gz|tar -xf -
 
 Directory tree after extracting the tar files:
 
@@ -149,7 +149,6 @@ COUPLING_WITH_FMS   enable coupling to FMS
 DAILY_ESTABLISHMENT Enable daily establishment
 DEBUG               diagnostic output is generated for debugging purposes
 IMAGE               include coupler to IMAGE model
-INCLUDEWP           include wood plantation
 LINEAR_DECAY        use linearized functions for litter decay
 MICRO_HEATING       Enable microbial heating
 NO_FAIL_BALANCE     lpjml does not terminate on balance errors

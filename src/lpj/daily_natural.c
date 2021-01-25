@@ -23,11 +23,8 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
                    int day,                     /**< [in] day (1..365) */
                    int month,                   /**< [in] month (0..11) */
                    Real daylength,              /**< [in] length of day (h) */
-                   const Real gp_pft[],         /**< [in] pot. canopy conductance for PFTs & CFTs (mm/s) */
                    Real gtemp_air,              /**< [in] value of air temperature response function */
                    Real gtemp_soil,             /**< [in] value of soil temperature response function */
-                   Real gp_stand,               /**< [in] potential stomata conductance  (mm/s) */
-                   Real gp_stand_leafon,        /**< [in] pot. canopy conduct.at full leaf cover  (mm/s) */
                    Real eeq,                    /**< [in] equilibrium evapotranspiration (mm) */
                    Real par,                    /**< [in] photosynthetic active radiation flux  (J/m2/day) */
                    Real melt,                   /**< [in] melting water (mm/day) */
@@ -44,6 +41,10 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   int *pvec;
 #endif
   Pft *pft;
+  Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
+  Real gp_stand;               /**< potential stomata conductance  (mm/s) */
+  Real gp_stand_leafon;        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
+  Real fpc_total_stand;
   Output *output;
   Real aet_stand[LASTLAYER];
   Real green_transp[LASTLAYER];
@@ -87,6 +88,11 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     pvec=NULL;
 #endif
   }
+  gp_pft=newvec(Real,npft+ncft);
+  check(gp_pft);
+  gp_stand=gp_sum(&stand->pftlist,co2,climate->temp,par,daylength,
+                  &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
+
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
 #ifdef PERMUTE
@@ -180,7 +186,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
       output->mpft_lai[pft->par->id]+=actual_lai(pft);
     }
   } /* of foreachpft */
-
+  free(gp_pft);
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,FALSE);

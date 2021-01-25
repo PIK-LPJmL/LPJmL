@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  r  c  p 8  5  _  c  c  .  j  s             \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.1.001 with RCP85 climate              \n**/
+/** Configuration file for LPJmL C Version 5.3.001 with RCP85 climate              \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -35,7 +35,7 @@
 
   "sim_name" : mkstr(LPJmL run with constant climate from MODEL), /* Simulation description */
   "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
-  "version"  : "5.1",       /* LPJmL version expected */
+  "version"  : "5.3",       /* LPJmL version expected */
   "random_prec" : false,    /* Random weather generator for precipitation enabled */
   "random_seed" : "random_seed",        /* seed for random number generator */
   "radiation" : "radiation",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */

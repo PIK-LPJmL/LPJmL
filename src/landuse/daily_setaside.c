@@ -26,11 +26,8 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
                    int day,    /**< day (1..365) */
                    int month,       /**< [in] month (0..11) */
                    Real daylength, /**< length of day (h) */
-                   const Real gp_pft[], /**< pot. canopy conductance for PFTs & CFTs*/
                    Real gtemp_air,  /**< value of air temperature response function */
                    Real gtemp_soil, /**< value of soil temperature response function */
-                   Real gp_stand,   /* potential stomata conductance */
-                   Real gp_stand_leafon, /**< pot. canopy conduct.at full leaf cover */
                    Real eeq,   /**< equilibrium evapotranspiration (mm) */
                    Real par,   /**< photosynthetic active radiation flux */
                    Real melt,  /**< melting water (mm) */
@@ -44,6 +41,10 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
 {
   int p,l;
   Pft *pft;
+  Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
+  Real gp_stand;               /**< potential stomata conductance  (mm/s) */
+  Real gp_stand_leafon;        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
+  Real fpc_total_stand;
   Output *output;
   Real aet_stand[LASTLAYER];
   Real green_transp[LASTLAYER];
@@ -81,6 +82,10 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   }
   else
     wet=NULL;
+  gp_pft=newvec(Real,npft+ncft);
+  check(gp_pft);
+  gp_stand=gp_sum(&stand->pftlist,co2,climate->temp,par,daylength,
+                  &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
@@ -145,6 +150,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
 
   } /* of foreachpft */
 
+  free(gp_pft);
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);

@@ -141,6 +141,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintf(file,"allocation threshold:\t%g\n",param.allocation_threshold);
     fprintf(file,"hfrac2:\t\t%g (gC/m2)\n",param.hfrac2);
     fprintf(file,"rootreduction:\t%g\n",param.rootreduction);
+    fprintf(file,"Phen limit:\t%g\n",param.phen_limit);
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config->soilpar,config->nsoil,config->with_nitrogen);
@@ -151,7 +152,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
       fprintpftpar(file,config->pftpar+p,config);
     fputs("------------------------------------------------------------------------------\n"
           "Country parameter\n",file);
-    fprintcountrypar(file,config->countrypar,config->ncountries,ncft);
+    fprintcountrypar(file,config->countrypar,npft,ncft,config);
     fputs("Region parameter\n",file);
     fprintregionpar(file,config->regionpar,config->nregions);
   }

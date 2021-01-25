@@ -34,7 +34,8 @@
 #define NONE 0
 #define BIOMASS 1
 #define ANNUAL_CROP 2
-#define WP 3
+#define ANNUAL_TREE 3
+#define WP 4
 
 #define NO_CALC_SDATE 0
 #define PREC_CALC_SDATE 1
@@ -45,11 +46,6 @@
 
 #define NGRASS 2 /* OTHERS + MANAGED GRASSLAND */
 #define NBIOMASSTYPE 2 /* GRASS + TREE */
-#if defined IMAGE || defined INCLUDEWP
-#define NWPTYPE 1
-#else
-#define NWPTYPE 0
-#endif
 #define WIRRIG 2
 #define ALLNATURAL -2 /* ensures summing daily outputs for all natural vegetation pfts */
 #define ALLGRASSLAND -3 /* ensures summing daily outputs for all natural vegetation pfts */

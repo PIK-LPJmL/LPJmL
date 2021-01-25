@@ -39,6 +39,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   Celldata celldata;
   Real lake_scalar;
   Bool swap_restart;
+  Bool missing;
   Infile grassfix_file;
   Infile grassharvest_file;
   unsigned int soilcode;
@@ -444,11 +445,11 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       if(config->countrycode_filename.fmt==CDF)
       {
-        if(readintinput_netcdf(countrycode.cdf,&data,&grid[i].coord))
+        if(readintinput_netcdf(countrycode.cdf,&data,&grid[i].coord,&missing) || missing)
           code.country=-1;
         else
           code.country=(short)data;
-        if(readintinput_netcdf(regioncode.cdf,&data,&grid[i].coord))
+        if(readintinput_netcdf(regioncode.cdf,&data,&grid[i].coord,&missing) || missing)
           code.region=-1;
         else
           code.region=(short)data;
@@ -470,7 +471,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         else
         {
           if(initmanage(&grid[i].ml.manage,config->countrypar+code.country,
-                        config->regionpar+code.region,config->pftpar,npft,ncft,
+                        config->regionpar+code.region,config->pftpar,npft,config->nagtree,ncft,
                         config->laimax_interpolate,config->laimax))
             return NULL;
         }
@@ -480,7 +481,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         if(config->grassfix_filename.fmt==CDF)
         {
-          if(readintinput_netcdf(grassfix_file.cdf,&grid[i].ml.fixed_grass_pft,&grid[i].coord))
+          if(readintinput_netcdf(grassfix_file.cdf,&grid[i].ml.fixed_grass_pft,&grid[i].coord,&missing) || missing)
           {
             fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
                     config->grassfix_filename.name,i+config->startgrid);
@@ -503,7 +504,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         if(config->grassharvest_filename.fmt==CDF)
         {
-          if(readintinput_netcdf(grassharvest_file.cdf,&data,&grid[i].coord))
+          if(readintinput_netcdf(grassharvest_file.cdf,&data,&grid[i].coord,&missing) || missing)
           {
             fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
                     config->grassharvest_filename.name,i+config->startgrid);
@@ -554,7 +555,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     {
       if(config->aquifer_filename.fmt==CDF)
       {
-        if (readintinput_netcdf(aquifers.cdf, &grid[i].discharge.aquifer, &grid[i].coord))
+        if (readintinput_netcdf(aquifers.cdf, &grid[i].discharge.aquifer, &grid[i].coord,&missing) || missing)
         {
           fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
                   config->aquifer_filename.name,i+config->startgrid);
@@ -614,13 +615,13 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #endif
     if(config->withlanduse!=NO_LANDUSE)
     {
-      grid[i].ml.landfrac=newlandfrac(ncft);
+      grid[i].ml.landfrac=newlandfrac(ncft,config->nagtree);
       checkptr(grid[i].ml.landfrac);
       if(config->with_nitrogen)
       {
-        grid[i].ml.fertilizer_nr=newlandfrac(ncft);
+        grid[i].ml.fertilizer_nr=newlandfrac(ncft,config->nagtree);
         checkptr(grid[i].ml.fertilizer_nr);
-        grid[i].ml.manure_nr=newlandfrac(ncft);
+        grid[i].ml.manure_nr=newlandfrac(ncft,config->nagtree);
         checkptr(grid[i].ml.manure_nr);
       }
       else
@@ -630,20 +631,20 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       grid[i].ml.irrig_system=new(Irrig_system);
       checkptr(grid[i].ml.irrig_system);
-      grid[i].ml.residue_on_field=newlandfrac(ncft);
+      grid[i].ml.residue_on_field=newlandfrac(ncft,config->nagtree);
       checkptr(grid[i].ml.residue_on_field);
       grid[i].ml.irrig_system->crop=newvec(IrrigationType,ncft);
+      grid[i].ml.irrig_system->ag_tree=newvec(IrrigationType,config->nagtree);
       checkptr(grid[i].ml.irrig_system->crop);
 
       for(j=0;j<ncft;j++)
         grid[i].ml.irrig_system->crop[j]=NOIRRIG;
       for(j=0;j<NGRASS;j++)
         grid[i].ml.irrig_system->grass[j]=NOIRRIG;
+      for(j=0;j<config->nagtree;j++)
+        grid[i].ml.irrig_system->ag_tree[j]=NOIRRIG;
       grid[i].ml.irrig_system->biomass_grass=grid[i].ml.irrig_system->biomass_tree=NOIRRIG;
-
-#if defined IMAGE || defined INCLUDEWP
       grid[i].ml.irrig_system->woodplantation = NOIRRIG;
-#endif  
     }
     else
     {
@@ -845,6 +846,11 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
   {
     if(initignition(grid,config))
       return NULL;
+  }
+  if(config->withlanduse!=NO_LANDUSE && config->nagtree)
+  {
+    if(readcottondays(grid,config))
+     return NULL;
   }
   return grid;
 } /* of 'newgrid' */

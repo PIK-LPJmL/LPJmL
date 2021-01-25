@@ -66,8 +66,11 @@ void fprintpar_tree(FILE *file,       /**< pointer to text file */
     fprintf(file,"rotation:\t%d (yr)\n"
                  "max. rotation:\t%d (yr)\n",
             partree->rotation,partree->max_rotation_length);
-#if defined IMAGE || defined INCLUDEWP
+  if(par->cultivation_type==ANNUAL_TREE)
+    fprintf(file,"harvest ratio:\t%g\n"
+                 "C:N ratio fruit:\r%g\n"
+                 "with grass:\t%s\n",
+            partree->harvest_ratio,partree->cnratio_fruit,bool2str(partree->with_grass));
   if(par->cultivation_type==WP)
     fprintf(file,"P_init:\t\t%g (1/m2)\n",partree->P_init);
-#endif
 } /* of 'fprintpar_tree' */

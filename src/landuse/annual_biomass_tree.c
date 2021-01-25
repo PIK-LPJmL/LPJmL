@@ -31,7 +31,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
                          const Config *config  /**< LPJmL configuration */
                         )                      /** \return stand has to be killed (TRUE/FALSE) */
 {
-  int p,pft_len,t;
+  int p,pft_len,t,nirrig;
   Bool *present,isdead;
   int *n_est;
   Pft *pft;
@@ -60,6 +60,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
   for(t=0;t<config->ntypes;t++)
     n_est[t]=0;
 
+  nirrig=getnirrig(ncft,config);
   pft_len=getnpft(&stand->pftlist); /* get number of established PFTs */
   if(pft_len>0)
   {
@@ -150,13 +151,13 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
         stand->cell->balance.biomass_yield.nitrogen+=yield.nitrogen*stand->frac;
         if(config->pft_output_scaled)
         {
-          stand->cell->output.pft_harvest[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.carbon+=yield.carbon*stand->frac;
-          stand->cell->output.pft_harvest[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.nitrogen+=yield.nitrogen*stand->frac;
+          stand->cell->output.pft_harvest[rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig].harvest.carbon+=yield.carbon*stand->frac;
+          stand->cell->output.pft_harvest[rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig].harvest.nitrogen+=yield.nitrogen*stand->frac;
         }
         else
         {
-          stand->cell->output.pft_harvest[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.carbon+=yield.carbon;
-          stand->cell->output.pft_harvest[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.nitrogen+=yield.nitrogen;
+          stand->cell->output.pft_harvest[rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig].harvest.carbon+=yield.carbon;
+          stand->cell->output.pft_harvest[rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig].harvest.nitrogen+=yield.nitrogen;
         }
         biomass_tree->growing_time=0;
       }
@@ -250,7 +251,7 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
         isdead=TRUE;
     }
 
-  stand->cell->output.cftfrac[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].biomass_tree;
+  stand->cell->output.cftfrac[rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig]+=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].biomass_tree;
 
   free(present);
   free(fpc_type);
@@ -283,13 +284,13 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
 
       if(config->pft_output_scaled)
       {
-        stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->cell->ml.landfrac[1].biomass_tree;
-        stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap)*stand->cell->ml.landfrac[1].biomass_tree;
+        stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->cell->ml.landfrac[1].biomass_tree;
+        stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap)*stand->cell->ml.landfrac[1].biomass_tree;
       }
       else
       {
-        stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap;
-        stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap);
+        stand->cell->output.cft_conv_loss_evap[rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap;
+        stand->cell->output.cft_conv_loss_drain[rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig]-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap);
       }
 
       biomass_tree->irrigation.irrig_stor=0;
@@ -305,9 +306,9 @@ Bool annual_biomass_tree(Stand *stand,         /**< Pointer to stand */
     biomass_tree->growing_time++;
     foreachpft(pft,p,&stand->pftlist)
     {
-      stand->cell->output.pft_veg[npft-config->nbiomass-config->nwft+rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
-      stand->cell->output.pft_veg[npft-config->nbiomass-config->nwft+rbtree(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen+=vegn_sum(pft);
-      stand->cell->output.fpc_bft[getpftpar(pft, id)-npft+config->nbiomass+config->nwft+2*config->ngrass+biomass_tree->irrigation.irrigation*(config->nbiomass+2*config->ngrass)]+=pft->fpc;
+      stand->cell->output.pft_veg[npft-config->nbiomass-config->nagtree-config->nwft+rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig].carbon+=vegc_sum(pft);
+      stand->cell->output.pft_veg[npft-config->nbiomass-config->nagtree-config->nwft+rbtree(ncft)+biomass_tree->irrigation.irrigation*nirrig].nitrogen+=vegn_sum(pft);
+      stand->cell->output.fpc_bft[getpftpar(pft, id)-npft+config->nbiomass+config->nagtree+config->nwft+2*config->ngrass+biomass_tree->irrigation.irrigation*(config->nbiomass+2*config->ngrass)]+=pft->fpc;
     }
   }
   return FALSE;

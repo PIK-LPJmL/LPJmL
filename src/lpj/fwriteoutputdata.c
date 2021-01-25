@@ -37,7 +37,9 @@ void fwriteoutputdata(FILE *file,           /**< pointer to restart file */
                       const Config *config  /**< LPJ configuration */
                      )
 {
-  int i,index;
+  int i,index,nnat,nirrig;
+  nnat=getnnat(npft,config);
+  nirrig=2*getnirrig(ncft,config);
   writeoutputvar(DAYLENGTH,daylength,Real);
   writeoutputvar(TEMP,temp,Real);
   writeoutputvar(SUN,sun,Real);
@@ -76,18 +78,18 @@ void fwriteoutputdata(FILE *file,           /**< pointer to restart file */
   writeoutputarrayitem(SOILN_LAYER,soil_layer,nitrogen,LASTLAYER,Real);
   writeoutputarray(SOILNO3_LAYER,soilno3_layer,LASTLAYER,Real);
   writeoutputarray(SOILNH4_LAYER,soilnh4_layer,LASTLAYER,Real);
-  writeoutputarray(PFT_LAIMAX,pft_laimax,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_NLEAF,pft_leaf,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_CLEAF,pft_leaf,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_NROOT,pft_root,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_CROOT,pft_root,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_NSAPW,pft_sapw,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_CSAPW,pft_sapw,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_NHAWO,pft_hawo,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_CHAWO,pft_hawo,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_VEGC,pft_veg,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_VEGN,pft_veg,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(PFT_NLIMIT,pft_nlimit,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
+  writeoutputarray(PFT_LAIMAX,pft_laimax,nnat+nirrig,Real);
+  writeoutputarrayitem(PFT_NLEAF,pft_leaf,nitrogen,nnat+nirrig,Real);
+  writeoutputarrayitem(PFT_CLEAF,pft_leaf,carbon,nnat+nirrig,Real);
+  writeoutputarrayitem(PFT_NROOT,pft_root,nitrogen,nnat+nirrig,Real);
+  writeoutputarrayitem(PFT_CROOT,pft_root,carbon,nnat+nirrig,Real);
+  writeoutputarrayitem(PFT_NSAPW,pft_sapw,nitrogen,nnat+nirrig,Real);
+  writeoutputarrayitem(PFT_CSAPW,pft_sapw,carbon,nnat+nirrig,Real);
+  writeoutputarrayitem(PFT_NHAWO,pft_hawo,nitrogen,nnat+nirrig,Real);
+  writeoutputarrayitem(PFT_CHAWO,pft_hawo,carbon,nnat+nirrig,Real);
+  writeoutputarrayitem(PFT_VEGC,pft_veg,nitrogen,nnat+nirrig,Real);
+  writeoutputarrayitem(PFT_VEGN,pft_veg,carbon,nnat+nirrig,Real);
+  writeoutputarray(PFT_NLIMIT,pft_nlimit,nnat+nirrig,Real);
   writeoutputvar(MAXTHAW_DEPTH,maxthaw_depth,Real);
   writeoutputvar(SOILNO3,soilno3,Real);
   writeoutputvar(SOILNH4,soilnh4,Real);
@@ -127,9 +129,8 @@ void fwriteoutputdata(FILE *file,           /**< pointer to restart file */
   writeoutputvar(FTIMBER,ftimber,Real);
   writeoutputvar(TIMBER_HARVESTC,timber_harvest.carbon,Real);
   writeoutputvar(TIMBER_HARVESTC,timber_harvest.nitrogen,Real);
-#if defined IMAGE || defined INCLUDEWP
-  writeoutputarray(WFT_VEGC,wft_vegc,config->nwft,Real);
-#endif
+  if(config->nwptype)
+    writeoutputarray(WFT_VEGC,wft_vegc,config->nwft,Real);
 #ifdef IMAGE
   writeoutputvar(WD_GW,mwd_gw,Real);
   writeoutputvar(WD_AQ,mwd_aq,Real);
@@ -229,9 +230,9 @@ void fwriteoutputdata(FILE *file,           /**< pointer to restart file */
   writeoutputarray(HDATE,hdate,2*ncft,Real);
   writeoutputarray(CFT_SWC,cft_mswc,2*ncft,Real);
   writeoutputarray(CFT_SWC,nday_month,2*ncft,int);
-  writeoutputarray(PFT_NPP,pft_npp,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2,Real);
-  writeoutputarray(PFT_NUPTAKE,pft_nuptake,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2,Real);
-  writeoutputarray(PFT_NDEMAND,pft_ndemand,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2,Real);
+  writeoutputarray(PFT_NPP,pft_npp,nnat+nirrig,Real);
+  writeoutputarray(PFT_NUPTAKE,pft_nuptake,nnat+nirrig,Real);
+  writeoutputarray(PFT_NDEMAND,pft_ndemand,nnat+nirrig,Real);
   writeoutputarray(HUSUM,husum,2*ncft,Real);
   writeoutputarray(CFT_RUNOFF,cft_runoff,2*ncft,Real);
   writeoutputarray(CFT_N2O_DENIT,cft_n2o_denit,2*ncft,Real);
@@ -239,56 +240,57 @@ void fwriteoutputdata(FILE *file,           /**< pointer to restart file */
   writeoutputarray(CFT_N2_EMIS,cft_n2_emis,2*ncft,Real);
   writeoutputarray(CFT_LEACHING,cft_leaching,2*ncft,Real);
   writeoutputarray(CFT_C_EMIS,cft_c_emis,2*ncft,Real);
-  writeoutputarray(PFT_GCGP,pft_gcgp,npft-config->nbiomass-config->nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2,Real);
-  writeoutputarray(PFT_GCGP,gcgp_count,npft-config->nbiomass-config->nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2,Real);
-  writeoutputarrayitem(PFT_HARVESTC,pft_harvest,harvest.carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_HARVESTN,pft_harvest,harvest.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_RHARVESTC,pft_harvest,residual.carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarrayitem(PFT_RHARVESTN,pft_harvest,residual.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFT_CONSUMP_WATER_G,cft_consump_water_g,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFT_CONSUMP_WATER_B,cft_consump_water_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
+  writeoutputarray(PFT_GCGP,pft_gcgp,nnat+nirrig,Real);
+  writeoutputarray(PFT_GCGP,gcgp_count,nnat+nirrig,Real);
+  writeoutputarrayitem(PFT_HARVESTC,pft_harvest,harvest.carbon,nirrig,Real);
+  writeoutputarrayitem(PFT_HARVESTN,pft_harvest,harvest.nitrogen,nirrig,Real);
+  writeoutputarrayitem(PFT_RHARVESTC,pft_harvest,residual.carbon,nirrig,Real);
+  writeoutputarrayitem(PFT_RHARVESTN,pft_harvest,residual.nitrogen,nirrig,Real);
+  writeoutputarray(CFT_CONSUMP_WATER_G,cft_consump_water_g,nirrig,Real);
+  writeoutputarray(CFT_CONSUMP_WATER_B,cft_consump_water_b,nirrig,Real);
   writeoutputarray(GROWING_PERIOD,growing_period,2*(ncft+NGRASS),Real);
-  writeoutputarray(FPC,fpc,npft-config->nbiomass-config->nwft+1,Real);
+  writeoutputarray(FPC,fpc,nnat+1,Real);
+  writeoutputarray(PFT_MORT,pft_mort,nnat,Real);
   writeoutputarray(FPC_BFT,fpc_bft,((config->nbiomass+config->ngrass*2)*2),Real);
-  writeoutputarray(NV_LAI,nv_lai,npft-config->nbiomass-config->nwft,Real);
+  writeoutputarray(NV_LAI,nv_lai,nnat,Real);
   writeoutputarray(CFT_PET,cft_pet,2*(ncft+NGRASS),Real);
-  writeoutputarray(CFT_TRANSP,cft_transp,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFT_TRANSP_B,cft_transp_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFT_EVAP,cft_evap,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFT_EVAP_B,cft_evap_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFT_INTERC,cft_interc,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFT_INTERC_B,cft_interc_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFT_RETURN_FLOW_B,cft_return_flow_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFT_IRRIG_EVENTS,cft_irrig_events,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),int);
-  writeoutputarray(CFT_NIR,cft_nir,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
+  writeoutputarray(CFT_TRANSP,cft_transp,nirrig,Real);
+  writeoutputarray(CFT_TRANSP_B,cft_transp_b,nirrig,Real);
+  writeoutputarray(CFT_EVAP,cft_evap,nirrig,Real);
+  writeoutputarray(CFT_EVAP_B,cft_evap_b,nirrig,Real);
+  writeoutputarray(CFT_INTERC,cft_interc,nirrig,Real);
+  writeoutputarray(CFT_INTERC_B,cft_interc_b,nirrig,Real);
+  writeoutputarray(CFT_RETURN_FLOW_B,cft_return_flow_b,nirrig,Real);
+  writeoutputarray(CFT_IRRIG_EVENTS,cft_irrig_events,nirrig,int);
+  writeoutputarray(CFT_NIR,cft_nir,nirrig,Real);
   writeoutputarray(CFT_TEMP,cft_temp,2*(ncft+NGRASS),Real);
   writeoutputarray(CFT_PREC,cft_prec,2*(ncft+NGRASS),Real);
   writeoutputarray(CFT_SRAD,cft_srad,2*(ncft+NGRASS),Real);
-  writeoutputarray(CFT_CONV_LOSS_EVAP,cft_conv_loss_evap,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFT_CONV_LOSS_DRAIN,cft_conv_loss_drain,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFTFRAC,cftfrac,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFT_AIRRIG,cft_airrig,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(CFT_FPAR,cft_fpar,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-  writeoutputarray(LUC_IMAGE,cft_luc_image,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
+  writeoutputarray(CFT_CONV_LOSS_EVAP,cft_conv_loss_evap,nirrig,Real);
+  writeoutputarray(CFT_CONV_LOSS_DRAIN,cft_conv_loss_drain,nirrig,Real);
+  writeoutputarray(CFTFRAC,cftfrac,nirrig,Real);
+  writeoutputarray(CFT_AIRRIG,cft_airrig,nirrig,Real);
+  writeoutputarray(CFT_FPAR,cft_fpar,nirrig,Real);
+  writeoutputarray(LUC_IMAGE,cft_luc_image,nirrig,Real);
   writeoutputarrayitem(CFT_ABOVEGBMC,cft_aboveground_biomass,carbon,2*(ncft+NGRASS),Real);
   writeoutputarrayitem(CFT_ABOVEGBMN,cft_aboveground_biomass,nitrogen,2*(ncft+NGRASS),Real);
   if(config->double_harvest)
   {
-    writeoutputarrayitem(PFT_HARVESTC2,dh->pft_harvest2,harvest.carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-    writeoutputarrayitem(PFT_HARVESTN2,dh->pft_harvest2,harvest.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-    writeoutputarrayitem(PFT_RHARVESTC2,dh->pft_harvest2,residual.carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-    writeoutputarrayitem(PFT_RHARVESTN2,dh->pft_harvest2,residual.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
+    writeoutputarrayitem(PFT_HARVESTC2,dh->pft_harvest2,harvest.carbon,nirrig,Real);
+    writeoutputarrayitem(PFT_HARVESTN2,dh->pft_harvest2,harvest.nitrogen,nirrig,Real);
+    writeoutputarrayitem(PFT_RHARVESTC2,dh->pft_harvest2,residual.carbon,nirrig,Real);
+    writeoutputarrayitem(PFT_RHARVESTN2,dh->pft_harvest2,residual.nitrogen,nirrig,Real);
     writeoutputarray(GROWING_PERIOD2,dh->growing_period2,2*(ncft+NGRASS),Real);
     writeoutputarray(CFT_PET2,dh->cft_pet2,2*(ncft+NGRASS),Real);
-    writeoutputarray(CFT_TRANSP2,dh->cft_transp2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-    writeoutputarray(CFT_EVAP2,dh->cft_evap2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-    writeoutputarray(CFT_INTERC2,dh->cft_interc2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-    writeoutputarray(CFT_NIR2,dh->cft_nir2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
+    writeoutputarray(CFT_TRANSP2,dh->cft_transp2,nirrig,Real);
+    writeoutputarray(CFT_EVAP2,dh->cft_evap2,nirrig,Real);
+    writeoutputarray(CFT_INTERC2,dh->cft_interc2,nirrig,Real);
+    writeoutputarray(CFT_NIR2,dh->cft_nir2,nirrig,Real);
     writeoutputarray(CFT_TEMP2,dh->cft_temp2,2*(ncft+NGRASS),Real);
     writeoutputarray(CFT_PREC2,dh->cft_prec2,2*(ncft+NGRASS),Real);
     writeoutputarray(CFT_SRAD2,dh->cft_srad2,2*(ncft+NGRASS),Real);
-    writeoutputarray(CFTFRAC2,dh->cftfrac2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
-    writeoutputarray(CFT_AIRRIG2,dh->cft_airrig2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE),Real);
+    writeoutputarray(CFTFRAC2,dh->cftfrac2,nirrig,Real);
+    writeoutputarray(CFT_AIRRIG2,dh->cft_airrig2,nirrig,Real);
     writeoutputarray(SDATE2,dh->sdate2,2*ncft,int);
     writeoutputarray(HDATE2,dh->hdate2,2*ncft,int);
     writeoutputarray(SYEAR,dh->syear,2*ncft,int);
@@ -301,7 +303,7 @@ void fwriteoutputdata(FILE *file,           /**< pointer to restart file */
     writeoutputarray(CFT_N2_EMIS2,dh->cft_n2_emis2,2*ncft,Real);
     writeoutputarray(CFT_LEACHING2,dh->cft_leaching2,2*ncft,Real);
     writeoutputarray(CFT_C_EMIS2,dh->cft_c_emis2,2*ncft,Real);
-    writeoutputarray(PFT_NUPTAKE2,dh->pft_nuptake2,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2,Real);
+    writeoutputarray(PFT_NUPTAKE2,dh->pft_nuptake2,nnat+nirrig,Real);
   }
   index=0;
   for(i=D_LAI;i<=D_PET;i++)

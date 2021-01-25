@@ -42,7 +42,10 @@ OBJS    = cultivate.$O landuse.$O landusechange.$O\
           fprint_grassland.$O new_biomass_tree.$O fread_biomass_tree.$O\
           fwrite_biomass_tree.$O fprint_biomass_tree.$O init_irrigation.$O\
           isdailyoutput_agriculture.$O isdailyoutput_grassland.$O getcftmap.$O\
-          fscanmowingdays.$O getnsoil_agr.$O
+          fscanmowingdays.$O getnsoil_agr.$O agriculture_tree.$O agriculture_grass.$O\
+          daily_agriculture_tree.$O daily_agriculture_grass.$O fscantreedens.$O\
+          findstandpft.$O output_gbw_agriculture_grass.$O output_gbw_agriculture_tree.$O\
+          annual_agriculture_tree.$O annual_agriculture_grass.$O readcottondays.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -58,7 +61,8 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/biomes.h\
           $(INC)/config.h $(INC)/stand.h $(INC)/pft.h $(INC)/pftlist.h\
           $(INC)/reservoir.h $(INC)/soil.h $(INC)/cropdates.h $(INC)/grass.h\
           $(INC)/tree.h $(INC)/outfile.h $(INC)/cdf.h $(INC)/param.h\
-          $(INC)/spitfire.h $(INC)/climbuf.h $(INC)/woodplantation.h
+          $(INC)/spitfire.h $(INC)/climbuf.h $(INC)/woodplantation.h\
+          $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h
 
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)

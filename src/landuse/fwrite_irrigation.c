@@ -23,6 +23,7 @@ Bool fwrite_irrigation(FILE *file,        /**< pointer to binary file */
   Byte b;
   b=(Byte)irrigation->irrigation;
   fwrite(&b,sizeof(b),1,file);
+  fwrite1(&irrigation->pft_id,sizeof(int),file);
   if(irrigation->irrigation)
   {
     fwrite1(&irrigation->irrig_event,sizeof(int),file);

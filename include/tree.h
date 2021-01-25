@@ -73,9 +73,10 @@ typedef struct
   Real k_latosa;                    /**< leaf area to sapwood area */
   int rotation;                     /**< coppicing interval from short rotation woody crops */
   int max_rotation_length;          /**< lifetime of short rotation woody crop plantation */
-#if defined IMAGE  || defined INCLUDEWP
+  Real harvest_ratio;               /**< fraction of biomass increment put into fruits */
+  Real cnratio_fruit;               /**< C:N ration of fruits */
+  Bool with_grass;                  /**< grass PFT allowed under agriculture tree? */
   Real P_init;                      /**< initial stand density (only used for wood plantations)*/
-#endif
 } Pfttreepar;
 
 typedef struct
@@ -89,9 +90,11 @@ typedef struct
   Treeturn turn;
   Treeturn turn_litt;
   Treephys2 ind;
+  Stocks fruit;
   Treephyspar falloc;
   Real turn_nbminc;     /**< storage for recovered nitrogen from turnover */
   Real excess_carbon;   /**< gC/ind; storage for carbon that cannot be allocated under given N limitation */
+  int boll_age;
 } Pfttree;
 
 extern char *leaftype[];
@@ -138,6 +141,7 @@ extern Stocks coppice_tree(Pft *);
 extern void albedo_tree(Pft *,Real,Real);
 extern void turnover_monthly_tree(Litter *,Pft *);
 extern void turnover_daily_tree(Litter *,Pft *,Real,Bool);
+extern Stocks harvest_tree(Pft *);
 extern Real nuptake_tree(Pft *,Real *,Real *,int,int,const Config *);
 extern Real ndemand_tree(const Pft *,Real *,Real,Real,Real);
 extern Real vmaxlimit_tree(const Pft *,Real,Real);

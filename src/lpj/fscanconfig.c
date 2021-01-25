@@ -407,7 +407,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   config->ntypes=ntypes;
   config->nbiomass=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],BIOMASS);
+  config->nagtree=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],ANNUAL_TREE);
   config->nwft=getnculttype(config->pftpar, config->npft[GRASS] + config->npft[TREE],WP);
+  config->nwptype=(config->nwft) ? 1 : 0;
   config->ngrass=getngrassnat(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
   if(config->black_fallow && config->prescribe_residues)
   {
@@ -436,6 +438,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(verbose)
         fputs("ERROR230: Cannot read region parameter.\n",stderr);
       return TRUE;
+    }
+    if(config->nagtree)
+    {
+      if (fscantreedens(file,config->countrypar,config->ncountries,config->nagtree,verbose)==0)
+      {
+        if(verbose)
+          fputs("ERROR230: Cannot read tree density (k_est) parameter.\n",stderr);
+        return TRUE;
+      }
     }
   }
   else
@@ -493,8 +504,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->withlanduse!=NO_LANDUSE)
   {
-    config->cftmap=getcftmap(file,&config->cftmap_size,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
-    if(config->cftmap==NULL)
+    config->landusemap=getcftmap(file,&config->landusemap_size,"landusemap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+    if(config->landusemap==NULL)
       return TRUE;
     scanclimatefilename(&input,&config->countrycode_filename,config->inputdir,FALSE,"countrycode");
     if(config->countrycode_filename.fmt==CDF)
@@ -502,6 +513,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(&input,&config->regioncode_filename,config->inputdir,FALSE,"regioncode");
     }
     scanclimatefilename(&input,&config->landuse_filename,config->inputdir,FALSE,"landuse");
+    if(config->nagtree)
+    {
+      scanclimatefilename(&input,&config->sowing_cotton_rf_filename,config->inputdir,FALSE,"sowing_ag_tree_rf");
+      scanclimatefilename(&input,&config->harvest_cotton_rf_filename,config->inputdir,FALSE,"harvest_ag_tree_rf");
+      scanclimatefilename(&input,&config->sowing_cotton_ir_filename,config->inputdir,FALSE,"sowing_ag_tree_ir");
+      scanclimatefilename(&input,&config->harvest_cotton_ir_filename,config->inputdir,FALSE,"harvest_ag_tree_ir");
+    }
     if(config->sdate_option==PRESCRIBED_SDATE)
     {
       scanclimatefilename(&input,&config->sdate_filename,config->inputdir,FALSE,"sdate");

@@ -41,7 +41,10 @@ void fprint_tree(FILE *file,       /**< pointer to text file */
     fprintf(file,"Turn_litt:\t%6.2f %6.2f (gC/m2) %6.2f %6.2f (gN/m2)\n",
             tree->turn_litt.leaf.carbon,tree->turn_litt.root.carbon,tree->turn_litt.leaf.nitrogen,tree->turn_litt.root.nitrogen);
     fprinttreephys2(file,tree->ind,pft->nind);
-    fprintf(file,"\nExcess carbon:\t%g (gC/m2)\n",tree->excess_carbon*pft->nind);
+    fputc('\n',file);
+    if(pft->par->cultivation_type==ANNUAL_TREE)
+      fprintf(file,"Fruit:\t\t%g (gC/m2)\n",tree->fruit.carbon);
+    fprintf(file,"Excess carbon:\t%g (gC/m2)\n",tree->excess_carbon*pft->nind);
     fprintf(file,"falloc:\t\t%g %g %g\n",tree->falloc.leaf,tree->falloc.root,tree->falloc.sapwood);
   }
   else
@@ -51,6 +54,10 @@ void fprint_tree(FILE *file,       /**< pointer to text file */
     fprintf(file,"Turn_litt:\t%6.2f %6.2f (gC/m2)\n",
             tree->turn_litt.leaf.carbon,tree->turn_litt.root.carbon);
     fprinttreephys2carbon(file,tree->ind,pft->nind);
-    fputc('\n',file);
+    if(pft->par->cultivation_type==ANNUAL_TREE)
+      fprintf(file,"\nFruit:\t\t%g (gC/m2) %g (gN/m2)\n",
+              tree->fruit.carbon,tree->fruit.nitrogen);
   }
+  if(pft->par->cultivation_type==ANNUAL_TREE)
+    fprintf(file,"Bool age:\t%d (d)\n",tree->boll_age);
 } /* of 'fprint_tree' */

@@ -89,7 +89,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     }
     if(config->landuse_filename.fmt==RAW)
     {
-      header.nbands=2*(config->cftmap_size+NBIOMASSTYPE+NWPTYPE);
+      header.nbands=2*config->landusemap_size;
       landuse->landuse.datatype=LPJ_SHORT;
       landuse->landuse.offset=config->startgrid*header.nbands*sizeof(short);
     }
@@ -105,25 +105,17 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     landuse->landuse.var_len=header.nbands;
     landuse->landuse.scalar=(version==1) ? 0.001 : header.scalar;
   }
-  if(landuse->landuse.var_len!=2*(config->cftmap_size+NBIOMASSTYPE+NWPTYPE) && landuse->landuse.var_len!=4*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE))
+  if(landuse->landuse.var_len!=2*config->landusemap_size && landuse->landuse.var_len!=4*config->landusemap_size)
   {
-    if(landuse->landuse.var_len!=2*config->cftmap_size)
-    {
-      closeclimatefile(&landuse->landuse,isroot(*config));
-      if(isroot(*config))
-        fprintf(stderr,
-                "ERROR147: Invalid number of bands=%d in landuse data file.\n",
-                (int)landuse->landuse.var_len);
-      free(landuse);
-      return NULL;
-    }
-    else
-    {
-      if(isroot(*config))
-        fputs("WARNING022: No landuse for biomass defined.\n",stderr);
-    }
+    closeclimatefile(&landuse->landuse,isroot(*config));
+    if(isroot(*config))
+      fprintf(stderr,
+              "ERROR147: Invalid number of bands=%d in landuse data file,must be %d or %d.\n",
+              (int)landuse->landuse.var_len,2*config->landusemap_size,4*config->landusemap_size);
+    free(landuse);
+    return NULL;
   }
-  if(landuse->landuse.var_len!=4*(config->cftmap_size+NBIOMASSTYPE+NWPTYPE) && isroot(*config))
+  if(isroot(*config) && landuse->landuse.var_len!=4*config->landusemap_size)
     fputs("WARNING024: Land-use input does not include irrigation systems, suboptimal country values are used.\n",stderr);
 
   if(config->sdate_option==PRESCRIBED_SDATE)
@@ -278,7 +270,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       if(config->fertilizer_nr_filename.fmt==RAW)
       {
-        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
+        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE+config->nwptype);
         header.datatype=LPJ_SHORT;
         landuse->fertilizer_nr.offset=config->startgrid*header.nbands*sizeof(short);
       }
@@ -295,15 +287,20 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     if(landuse->fertilizer_nr.var_len==2*(ncft+NGRASS))
     {
       if(isroot(*config))
-        fputs("WARNING022: No fertilizer input for biomass defined.\n",stderr);
+        fputs("WARNING022: No fertilizer input for biomass and agriculture trees defined.\n",stderr);
     }
-    else if(landuse->fertilizer_nr.var_len!=2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE))
+    if(landuse->fertilizer_nr.var_len==2*(ncft+NGRASS+NBIOMASSTYPE))
+    {
+      if(isroot(*config))
+        fputs("WARNING022: No fertilizer input for agriculture trees defined.\n",stderr);
+    }
+    else if(landuse->fertilizer_nr.var_len!=2*(ncft+NGRASS+config->nagtree+NBIOMASSTYPE+config->nwptype))
     {
       closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%d in fertilizer Nr data file, must be %d.\n",
-                (int)landuse->fertilizer_nr.var_len,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+                (int)landuse->fertilizer_nr.var_len,2*(ncft+NGRASS+config->nagtree+NBIOMASSTYPE+config->nwptype));
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -351,7 +348,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       if(config->manure_nr_filename.fmt==RAW)
       {
-        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
+        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE+config->nwptype);
         header.datatype=LPJ_SHORT;
         landuse->manure_nr.offset=config->startgrid*header.nbands*sizeof(short);
       }
@@ -368,15 +365,20 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     if(landuse->manure_nr.var_len==2*(ncft+NGRASS))
     {
       if(isroot(*config))
-        fputs("WARNING022: No manure input for biomass defined.\n",stderr);
+        fputs("WARNING022: No manure input for biomass and agriculture trees defined.\n",stderr);
     }
-    else if(landuse->manure_nr.var_len!=2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE))
+    if(landuse->manure_nr.var_len==2*(ncft+NGRASS+NBIOMASSTYPE))
+    {
+      if(isroot(*config))
+        fputs("WARNING022: No manure input for agriculture trees defined.\n",stderr);
+    }
+    else if(landuse->manure_nr.var_len!=2*(ncft+NGRASS+config->nagtree+NBIOMASSTYPE+config->nwptype))
     {
       closeclimatefile(&landuse->manure_nr,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%d in manure Nr data file. must be %d.\n",
-               (int)landuse->manure_nr.var_len,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+               (int)landuse->manure_nr.var_len,2*(ncft+NGRASS+config->nagtree+NBIOMASSTYPE+config->nwptype));
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -511,7 +513,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       if(config->residue_data_filename.fmt==RAW)
       {
-        header.nbands=ncft+NGRASS+NBIOMASSTYPE+NWPTYPE;
+        header.nbands=ncft+NGRASS+NBIOMASSTYPE+config->nwptype;
         header.datatype=LPJ_SHORT;
         landuse->residue_on_field.offset=config->startgrid*header.nbands*sizeof(short);
       }
@@ -530,15 +532,20 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
     if(landuse->residue_on_field.var_len==ncft+NGRASS)
     {
       if(isroot(*config))
-        fputs("WARNING022: No residue input for biomass defined.\n",stderr);
+        fputs("WARNING022: No residue input for biomass and agriculture tress defined.\n",stderr);
     }
-    else if(landuse->residue_on_field.var_len!=ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)
+    if(landuse->residue_on_field.var_len==ncft+NGRASS+NBIOMASSTYPE)
+    {
+      if(isroot(*config))
+        fputs("WARNING022: No residue input for agriculture tress defined.\n",stderr);
+    }
+    else if(landuse->residue_on_field.var_len!=ncft+NGRASS+config->nagtree+NBIOMASSTYPE+config->nwptype)
     {
       closeclimatefile(&landuse->residue_on_field,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%d in residue extraction data file, must be %d.\n",
-                (int)landuse->residue_on_field.var_len,ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
+                (int)landuse->residue_on_field.var_len,ncft+NGRASS+config->nagtree+NBIOMASSTYPE+config->nwptype);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -823,101 +830,79 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     for(i=0;i<WIRRIG;i++)
     {
       /* read cropfrac from 32 bands or rain-fed cropfrac from 64 bands input */
-      if(landuse->landuse.var_len!=4*(config->cftmap_size+NBIOMASSTYPE+NWPTYPE) || i<1)
+      if(landuse->landuse.var_len!=4*config->landusemap_size || i<1)
       {
-        for(j=0;j<ncft;j++)
+        initlandfracitem(grid[cell].ml.landfrac+i,ncft,config->nagtree);
+        if(i>0 && !grid[cell].skip)
         {
-          grid[cell].ml.landfrac[i].crop[j]=0;
-          if(i>0 && !grid[cell].skip)
+          for(j=0;j<ncft;j++)
             grid[cell].ml.irrig_system->crop[j]=grid[cell].ml.manage.par->default_irrig_system; /*default national irrigation system (Rohwer & Gerten 2007)*/
-        }
-        for(j=0;j<NGRASS;j++)
-        {
-          grid[cell].ml.landfrac[i].grass[j]=0;
-          if(i>0 && !grid[cell].skip)
+          for(j=0;j<NGRASS;j++)
             grid[cell].ml.irrig_system->grass[j]=grid[cell].ml.manage.par->default_irrig_system;
-        } 
-        for(j=0;j<config->cftmap_size;j++)
-        {
-          if(config->cftmap[j]>=ncft)
-            grid[cell].ml.landfrac[i].grass[config->cftmap[j]-ncft]+=data[count++];
-          else 
-            grid[cell].ml.landfrac[i].crop[config->cftmap[j]]+=data[count++];
+          for(j=0;j<config->nagtree;j++)
+            grid[cell].ml.irrig_system->ag_tree[j]=grid[cell].ml.manage.par->default_irrig_system;
+          grid[cell].ml.irrig_system->biomass_grass=grid[cell].ml.manage.par->default_irrig_system;
+          grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
         }
-        if(landuse->landuse.var_len!=2*config->cftmap_size)
+        for(j=0;j<config->landusemap_size;j++)
         {
-          grid[cell].ml.landfrac[i].biomass_grass=data[count++];
-          if(i>0 && !grid[cell].skip)
-            grid[cell].ml.irrig_system->biomass_grass=grid[cell].ml.manage.par->default_irrig_system;
-          grid[cell].ml.landfrac[i].biomass_tree=data[count++];
-          if(i>0 && !grid[cell].skip)
-            grid[cell].ml.irrig_system->biomass_tree=grid[cell].ml.manage.par->default_irrig_system;
-#if defined IMAGE || defined INCLUDEWP
-          grid[cell].ml.landfrac[i].woodplantation = data[count++];
-          if (i>0 && !grid[cell].skip)
-            grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
-#endif
-        }
-        else 
-        {
-          grid[cell].ml.landfrac[i].biomass_grass = grid[cell].ml.landfrac[i].biomass_tree=0;
-#if defined IMAGE || defined INCLUDEWP
-          grid[cell].ml.landfrac[i].woodplantation=0;
-#endif
+          if(config->landusemap[j]<ncft)
+            grid[cell].ml.landfrac[i].crop[config->landusemap[j]]+=data[count++];
+          else if(config->landusemap[j]<ncft+NGRASS)
+            grid[cell].ml.landfrac[i].grass[config->landusemap[j]-ncft]+=data[count++];
+          else if(config->landusemap[j]==ncft+NGRASS)
+            grid[cell].ml.landfrac[i].biomass_grass+=data[count++];
+          else if(config->landusemap[j]==ncft+NGRASS+1)
+            grid[cell].ml.landfrac[i].biomass_tree+=data[count++];
+          else if(config->nwptype && config->landusemap[j]==ncft+NGRASS+NBIOMASSTYPE)
+            grid[cell].ml.landfrac[i].woodplantation+=data[count++];
+          else
+            grid[cell].ml.landfrac[i].ag_tree[config->landusemap[j]-ncft-NGRASS-NBIOMASSTYPE-config->nwptype]+=data[count++];
         }
       }
       else /* read irrigated cropfrac and irrigation systems from 64 bands input */
       {
-        for(j=0;j<ncft;j++) /* initialization needed */
-          grid[cell].ml.landfrac[i].crop[j]=0;
-        for(j=0;j<NGRASS;j++)
-          grid[cell].ml.landfrac[i].grass[j]=0;
-        grid[cell].ml.landfrac[i].biomass_grass=0;
-        grid[cell].ml.landfrac[i].biomass_tree=0;
-#if defined IMAGE || defined INCLUDEWP
-        grid[cell].ml.landfrac[i].woodplantation = 0;
-#endif
+        initlandfracitem(grid[cell].ml.landfrac+i,ncft,config->nagtree);
         for(p=SURF;p<=DRIP;p++) /* irrigation system loop; 1: surface, 2: sprinkler, 3: drip */
         {
-          for(j=0;j<config->cftmap_size;j++)
+          for(j=0;j<config->landusemap_size;j++)
           {
             if(data[count]>0)
             {
-              if(config->cftmap[j]>=ncft)
+              if(config->landusemap[j]<ncft)
               {
-                grid[cell].ml.landfrac[i].grass[config->cftmap[j]-ncft]+=data[count++];
-                grid[cell].ml.irrig_system->grass[config->cftmap[j]-ncft]=p;
+                grid[cell].ml.landfrac[i].crop[config->landusemap[j]]+=data[count++];
+                grid[cell].ml.irrig_system->crop[config->landusemap[j]]=p;
               }
-              else 
+              else if(config->landusemap[j]<ncft+NGRASS)
               {
-                grid[cell].ml.landfrac[i].crop[config->cftmap[j]]+=data[count++];
-                grid[cell].ml.irrig_system->crop[config->cftmap[j]]=p;
+                grid[cell].ml.landfrac[i].grass[config->landusemap[j]-ncft]+=data[count++];
+                grid[cell].ml.irrig_system->grass[config->landusemap[j]-ncft]=p;
+              }
+              else if(config->landusemap[j]==ncft+NGRASS)
+              {
+                grid[cell].ml.landfrac[i].biomass_grass+=data[count++];
+                grid[cell].ml.irrig_system->biomass_grass=p;
+              }
+              else if(config->landusemap[j]==ncft+NGRASS+1)
+              {
+                grid[cell].ml.landfrac[i].biomass_tree+=data[count++];
+                grid[cell].ml.irrig_system->biomass_tree=p;
+              }
+              else if(config->nwptype && config->landusemap[j]==ncft+NGRASS+NBIOMASSTYPE)
+              {
+                grid[cell].ml.landfrac[i].woodplantation+=data[count++];
+                grid[cell].ml.irrig_system->woodplantation=p;
+              }
+              else
+              {
+                grid[cell].ml.landfrac[i].ag_tree[config->landusemap[j]-ncft-NGRASS-NBIOMASSTYPE-config->nwptype]+=data[count++];
+                grid[cell].ml.irrig_system[i].ag_tree[config->landusemap[j]-ncft-NGRASS-NBIOMASSTYPE-config->nwptype]=p;
               }
             }
+            else
+              count++;
           }
-          if(data[count]>0)
-          {
-            grid[cell].ml.landfrac[i].biomass_grass=data[count++];
-            grid[cell].ml.irrig_system->biomass_grass=p;
-          }
-          else
-            count++;
-          if (data[count]>0)
-          {
-            grid[cell].ml.landfrac[i].biomass_tree=data[count++];
-            grid[cell].ml.irrig_system->biomass_tree=p;
-          }
-          else
-            count++;
-#if defined IMAGE || defined INCLUDEWP
-          if (data[count]>0)
-          {
-            grid[cell].ml.landfrac[i].woodplantation = data[count++];
-            grid[cell].ml.irrig_system->woodplantation = p;
-          }
-          else
-            count++;
-#endif
         } /* of for(p=SURF;p<=DRIP;p++) */
       }
     } /* of  for(i=0;i<WIRRIG;i++) */
@@ -942,11 +927,15 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         grid[cell].ml.landfrac[0].biomass_tree += grid[cell].ml.landfrac[1].biomass_tree;
         grid[cell].ml.landfrac[1].biomass_tree = 0;
         grid[cell].ml.irrig_system->biomass_tree = NOIRRIG;
-#if defined IMAGE || defined INCLUDEWP
+        for (j = 0; j < config->nagtree; j++)
+        {
+          grid[cell].ml.landfrac[0].ag_tree[j] += grid[cell].ml.landfrac[1].ag_tree[j];
+          grid[cell].ml.landfrac[1].ag_tree[j] = 0;
+          grid[cell].ml.irrig_system->ag_tree[j] = NOIRRIG;
+        }
         grid[cell].ml.landfrac[0].woodplantation += grid[cell].ml.landfrac[1].woodplantation;
         grid[cell].ml.landfrac[1].woodplantation=0;
         grid[cell].ml.irrig_system->woodplantation = NOIRRIG;
-#endif
         break;
       case ALL_IRRIGATION:
         for (j = 0; j < ncft; j++)
@@ -970,12 +959,17 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         grid[cell].ml.landfrac[1].biomass_tree += grid[cell].ml.landfrac[0].biomass_tree;
         grid[cell].ml.landfrac[0].biomass_tree = 0;
         grid[cell].ml.irrig_system->biomass_tree = grid[cell].ml.manage.par->default_irrig_system;
-#if defined IMAGE || defined INCLUDEWP
+        for (j = 0; j < config->nagtree; j++)
+        {
+          grid[cell].ml.landfrac[1].ag_tree[j] += grid[cell].ml.landfrac[0].ag_tree[j];
+          grid[cell].ml.landfrac[0].ag_tree[j] = 0;
+          if (!grid[cell].skip)
+            grid[cell].ml.irrig_system->ag_tree[j] = grid[cell].ml.manage.par->default_irrig_system; /*default national irrigation system (Rohwer & Gerten 2007)*/
+        }
         grid[cell].ml.landfrac[1].woodplantation += grid[cell].ml.landfrac[0].woodplantation;
         grid[cell].ml.landfrac[0].woodplantation = 0;
         if (!grid[cell].skip)
           grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
-#endif
         break;
     } /* of switch(...) */
 
@@ -1031,6 +1025,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     {
       for(j=0; j<ncft; j++)
         grid[cell].ml.landfrac[0].crop[j]=grid[cell].ml.landfrac[1].crop[j]=0;
+      for(j=0; j<config->nagtree; j++)
+        grid[cell].ml.landfrac[0].ag_tree[j]=grid[cell].ml.landfrac[1].ag_tree[j]=0;
       grid[cell].ml.landfrac[0].grass[0]=grid[cell].ml.landfrac[1].grass[0]=0;
       grid[cell].ml.landfrac[0].biomass_grass=grid[cell].ml.landfrac[1].biomass_grass=
         grid[cell].ml.landfrac[0].biomass_tree=grid[cell].ml.landfrac[1].biomass_tree=0;
@@ -1047,6 +1043,15 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           grid[cell].ml.landfrac[1].crop[j] = tinyfrac;
         }
         if (grid[cell].ml.landfrac[0].crop[j] < tinyfrac) grid[cell].ml.landfrac[0].crop[j] = tinyfrac;
+      }
+      for(j=0; j<config->nagtree; j++)
+      {
+        if (grid[cell].ml.landfrac[1].ag_tree[j] < tinyfrac) 
+        {
+          grid[cell].ml.irrig_system->ag_tree[j] = grid[cell].ml.manage.par->default_irrig_system;
+          grid[cell].ml.landfrac[1].ag_tree[j] = tinyfrac;
+        }
+        if (grid[cell].ml.landfrac[0].ag_tree[j] < tinyfrac) grid[cell].ml.landfrac[0].ag_tree[j] = tinyfrac;
       }
       for(j=0; j<NGRASS; j++)
       {
@@ -1069,8 +1074,18 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         grid[cell].ml.irrig_system->biomass_grass = grid[cell].ml.manage.par->default_irrig_system;
       }
       if (grid[cell].ml.landfrac[0].biomass_grass < tinyfrac) grid[cell].ml.landfrac[0].biomass_grass = tinyfrac;
+      if(config->nwptype)
+      {
+        if (grid[cell].ml.landfrac[1].woodplantation < tinyfrac)
+        {
+          grid[cell].ml.landfrac[1].woodplantation = tinyfrac;
+          grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
+        }
+        if (grid[cell].ml.landfrac[0].woodplantation < tinyfrac) grid[cell].ml.landfrac[0].woodplantation = tinyfrac;
+      }
+
     }
-    sum=landfrac_sum(grid[cell].ml.landfrac,ncft,FALSE)+landfrac_sum(grid[cell].ml.landfrac,ncft,TRUE);
+    sum=landfrac_sum(grid[cell].ml.landfrac,ncft,config->nagtree,FALSE)+landfrac_sum(grid[cell].ml.landfrac,ncft,config->nagtree,TRUE);
 
     /* set landuse to zero if no valid soil */
     if ((grid[cell].skip || soiltype==ROCK || soiltype==ICE || soiltype < 0) && sum>0)
@@ -1082,6 +1097,11 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         grid[cell].ml.landfrac[0].crop[j]/=sum;
         grid[cell].ml.landfrac[1].crop[j]/=sum;
       }
+      for(j=0; j<config->nagtree; j++)
+      {
+        grid[cell].ml.landfrac[0].ag_tree[j]/=sum;
+        grid[cell].ml.landfrac[1].ag_tree[j]/=sum;
+      }
       for(j=0; j<NGRASS; j++)
       {
         grid[cell].ml.landfrac[0].grass[j]=0;
@@ -1091,6 +1111,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       grid[cell].ml.landfrac[1].biomass_grass=0;
       grid[cell].ml.landfrac[0].biomass_tree=0;
       grid[cell].ml.landfrac[1].biomass_tree=0;
+      grid[cell].ml.landfrac[0].woodplantation=0;
+      grid[cell].ml.landfrac[1].woodplantation=0;
     }
 
     if(sum>1.00001)
@@ -1127,10 +1149,17 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           grid[cell].ml.landfrac[0].grass[j] = 0;
           grid[cell].ml.landfrac[1].grass[j] = 0;
         }
+        for (j = 0; j < config->nagtree; j++)
+        {
+          grid[cell].ml.landfrac[0].ag_tree[j] = 0;
+          grid[cell].ml.landfrac[1].ag_tree[j] = 0;
+        }
         grid[cell].ml.landfrac[0].biomass_grass = 0;
         grid[cell].ml.landfrac[1].biomass_grass = 0;
         grid[cell].ml.landfrac[0].biomass_tree = 0;
         grid[cell].ml.landfrac[1].biomass_tree = 0;
+        grid[cell].ml.landfrac[0].woodplantation=0;
+        grid[cell].ml.landfrac[1].woodplantation=0;
       }
     }
 /** temporary set everything to irrigated maize */
@@ -1156,27 +1185,10 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   if(config->with_nitrogen)
   {
     for(cell=0; cell<config->ngridcell; cell++)
-      for(i=0; i<WIRRIG; i++)
-      {
-        for(j=0; j<ncft; j++)
-        {
-          grid[cell].ml.fertilizer_nr[i].crop[j]=0;
-          grid[cell].ml.manure_nr[i].crop[j]=0;
-        }
-        for(j=0; j<NGRASS; j++)
-        {
-          grid[cell].ml.fertilizer_nr[i].grass[j]=0;
-          grid[cell].ml.manure_nr[i].grass[j]=0;
-        }
-        grid[cell].ml.fertilizer_nr[i].biomass_grass=0;
-        grid[cell].ml.fertilizer_nr[i].biomass_grass=0;
-        grid[cell].ml.manure_nr[i].biomass_tree=0;
-        grid[cell].ml.manure_nr[i].biomass_tree=0;
-#if defined IMAGE || defined INCLUDEWP
-        grid[cell].ml.fertilizer_nr[i].woodplantation=0;
-        grid[cell].ml.manure_nr[i].woodplantation=0;
-#endif
-      }
+    {
+      initlandfrac(grid[cell].ml.fertilizer_nr,ncft,config->nagtree);
+      initlandfrac(grid[cell].ml.manure_nr,ncft,config->nagtree);
+    }
 
     if(config->fertilizer_input)
     {
@@ -1237,20 +1249,29 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             grid[cell].ml.fertilizer_nr[i].crop[j]=data[count++];
           for(j=0;j<NGRASS;j++)
             grid[cell].ml.fertilizer_nr[i].grass[j]=data[count++];
-          if(landuse->fertilizer_nr.var_len!=2*(ncft+NGRASS))
+          if(landuse->fertilizer_nr.var_len==2*(ncft+NGRASS))
+          {
+            grid[cell].ml.fertilizer_nr[i].biomass_grass=grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
+            for(j=0;j<config->nagtree;j++)
+              grid[cell].ml.fertilizer_nr[i].ag_tree[j]=0;
+            grid[cell].ml.fertilizer_nr[i].woodplantation = 0;
+          }
+          else if(landuse->fertilizer_nr.var_len==2*(ncft+NGRASS+NBIOMASSTYPE))
           {
             grid[cell].ml.fertilizer_nr[i].biomass_grass=data[count++];
             grid[cell].ml.fertilizer_nr[i].biomass_tree=data[count++];
-#if defined IMAGE || defined INCLUDEWP
-            grid[cell].ml.fertilizer_nr[i].woodplantation = data[count++];
-#endif
+            for(j=0;j<config->nagtree;j++)
+              grid[cell].ml.fertilizer_nr[i].ag_tree[j]=0;
+            grid[cell].ml.fertilizer_nr[i].woodplantation = 0;
           }
           else
           {
-            grid[cell].ml.fertilizer_nr[i].biomass_grass=grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
-#if defined IMAGE || defined INCLUDEWP
-            grid[cell].ml.fertilizer_nr[i].woodplantation = 0;
-#endif
+            grid[cell].ml.fertilizer_nr[i].biomass_grass=data[count++];
+            grid[cell].ml.fertilizer_nr[i].biomass_tree=data[count++];
+            if(config->nwptype)
+              grid[cell].ml.fertilizer_nr[i].woodplantation = data[count++];
+            for(j=0;j<config->nagtree;j++)
+              grid[cell].ml.fertilizer_nr[i].ag_tree[j]=data[count++];
           }
         }
       } /* for(cell=0;...) */
@@ -1317,20 +1338,29 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           for(j=0; j<NGRASS; j++)
             grid[cell].ml.manure_nr[i].grass[j]=data[count++];
 
-          if(landuse->manure_nr.var_len!=2*(ncft+NGRASS))
+          if(landuse->manure_nr.var_len==2*(ncft+NGRASS))
+          {
+            grid[cell].ml.manure_nr[i].biomass_grass=grid[cell].ml.manure_nr[i].biomass_tree=0;
+            for(j=0; j<config->nagtree; j++)
+              grid[cell].ml.manure_nr[i].ag_tree[j]=0;
+            grid[cell].ml.manure_nr[i].woodplantation = 0;
+          }
+          else if(landuse->manure_nr.var_len==2*(ncft+NGRASS+NBIOMASSTYPE))
           {
             grid[cell].ml.manure_nr[i].biomass_grass=data[count++];
             grid[cell].ml.manure_nr[i].biomass_tree=data[count++];
-#if defined IMAGE || defined INCLUDEWP
-            grid[cell].ml.manure_nr[i].woodplantation = data[count++];
-#endif
+            for(j=0; j<config->nagtree; j++)
+              grid[cell].ml.manure_nr[i].ag_tree[j]=0;
+            grid[cell].ml.manure_nr[i].woodplantation = 0;
           }
           else
           {
-            grid[cell].ml.manure_nr[i].biomass_grass=grid[cell].ml.manure_nr[i].biomass_tree=0;
-#if defined IMAGE || defined INCLUDEWP
-            grid[cell].ml.manure_nr[i].woodplantation = 0;
-#endif
+            grid[cell].ml.manure_nr[i].biomass_grass=data[count++];
+            grid[cell].ml.manure_nr[i].biomass_tree=data[count++];
+            if(config->nwptype)
+              grid[cell].ml.manure_nr[i].woodplantation = data[count++];
+            for(j=0; j<config->nagtree; j++)
+              grid[cell].ml.manure_nr[i].ag_tree[j]=data[count++];
           }
         }
       } /* for(cell=0;...) */
@@ -1347,14 +1377,22 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             grid[cell].ml.fertilizer_nr[i].crop[j]=param.fertilizer_rate;
             grid[cell].ml.manure_nr[i].crop[j]=param.manure_rate;
           }
-          for(j=0; j<NGRASS; j++){
+          for(j=0; j<NGRASS; j++)
+          {
             grid[cell].ml.fertilizer_nr[i].grass[j]=param.fertilizer_rate;
             grid[cell].ml.manure_nr[i].grass[j]=param.manure_rate;
+          }
+          for(j=0; j<config->nagtree; j++)
+          {
+            grid[cell].ml.fertilizer_nr[i].ag_tree[j]=param.fertilizer_rate;
+            grid[cell].ml.manure_nr[i].ag_tree[j]=param.manure_rate;
           }
           grid[cell].ml.fertilizer_nr[i].biomass_grass=param.fertilizer_rate;
           grid[cell].ml.fertilizer_nr[i].biomass_tree=param.fertilizer_rate;
           grid[cell].ml.manure_nr[i].biomass_grass=param.manure_rate;
           grid[cell].ml.manure_nr[i].biomass_tree=param.manure_rate;
+          grid[cell].ml.fertilizer_nr[i].woodplantation=param.manure_rate;
+          grid[cell].ml.manure_nr[i].woodplantation=param.manure_rate;
         }
       }
     }
@@ -1487,27 +1525,49 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           grid[cell].ml.residue_on_field[i].grass[j]=data[count];
         count++;
       }
-      if(landuse->residue_on_field.var_len!=ncft+NGRASS)
+      if(landuse->residue_on_field.var_len==ncft+NGRASS)
+        for(i=0; i<WIRRIG; i++)
+        {
+          grid[cell].ml.residue_on_field[i].biomass_grass=grid[cell].ml.residue_on_field[i].biomass_tree=0;
+          for(j=0; j<config->nagtree; j++)
+            grid[cell].ml.residue_on_field[i].ag_tree[j]=grid[cell].ml.residue_on_field[i].ag_tree[j]=0;
+          grid[cell].ml.residue_on_field[i].woodplantation = 0;
+        }
+      else if(landuse->residue_on_field.var_len==ncft+NGRASS+NBIOMASSTYPE)
       {
         for(i=0; i<WIRRIG; i++)
           grid[cell].ml.residue_on_field[i].biomass_grass=data[count];
         count++;
         for(i=0; i<WIRRIG; i++)
           grid[cell].ml.residue_on_field[i].biomass_tree=data[count];
-#if defined IMAGE || defined INCLUDEWP
-        for(i=0; i<WIRRIG; i++)
-          grid[cell].ml.residue_on_field[i].woodplantation = data[count];
-#endif
         count++;
+        for(j=0; j<config->nagtree; j++)
+          grid[cell].ml.residue_on_field[i].ag_tree[j]=grid[cell].ml.residue_on_field[i].ag_tree[j]=0;
+          grid[cell].ml.residue_on_field[i].woodplantation = 0;
       }
       else
+      {
         for(i=0; i<WIRRIG; i++)
+          grid[cell].ml.residue_on_field[i].biomass_grass=data[count];
+        count++;
+        for(i=0; i<WIRRIG; i++)
+          grid[cell].ml.residue_on_field[i].biomass_tree=data[count];
+        count++;
+        if(config->nwptype)
         {
-          grid[cell].ml.residue_on_field[i].biomass_grass=grid[cell].ml.residue_on_field[i].biomass_tree=0;
-#if defined IMAGE || defined INCLUDEWP
-          grid[cell].ml.residue_on_field[i].woodplantation = 0;
-#endif
+          for(i=0; i<WIRRIG; i++)
+            grid[cell].ml.residue_on_field[i].woodplantation = data[count];
+          count++;
         }
+        else
+          for(i=0; i<WIRRIG; i++)
+            grid[cell].ml.residue_on_field[i].woodplantation = 0;
+        for(j=0; j<config->nagtree; j++)
+        {
+          grid[cell].ml.residue_on_field[0].ag_tree[j]=grid[cell].ml.residue_on_field[1].ag_tree[j]=data[count];
+          count++;
+        }
+      }
     }
     free(data);
   }
@@ -1520,8 +1580,8 @@ Bool getintercrop(const Landuse landuse /**< pointer to landuse data */
   return (landuse==NULL) ? FALSE : landuse->intercrop;
 } /* of 'getintercrop' */
 
-void freelanduse(Landuse landuse, /**< pointer to landuse data */
-                 const Config *config
+void freelanduse(Landuse landuse,     /**< pointer to landuse data */
+                 const Config *config /**< LPJmL configuration */
 )
 {
   if(landuse!=NULL)

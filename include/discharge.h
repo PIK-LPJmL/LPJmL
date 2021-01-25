@@ -75,7 +75,7 @@ typedef struct wateruse *Wateruse;
 
 extern void wateruse(Cell *,int,int,int,const Config *);
 extern void withdrawal_demand(Cell *,const Config *);
-extern void distribute_water(Cell *,int,int,int,int,int);
+extern void distribute_water(Cell *,int,int,int,const Config *);
 extern Real *transfer_function(Real,int *);
 
 #endif

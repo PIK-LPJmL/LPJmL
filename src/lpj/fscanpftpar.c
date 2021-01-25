@@ -87,7 +87,7 @@
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
 
 char *phenology[]={"evergreen","raingreen","summergreen","any","cropgreen"};
-char *cultivation_type[]={"none","biomass","annual crop","wp"};
+char *cultivation_type[]={"none","biomass","annual crop","annual tree","wp"};
 char *path[]={"no pathway","C3","C4"};
 
 
@@ -105,7 +105,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   Pftpar *pft;
   Real totalroots;
   Cnratio cnratio;
-  Bool isbiomass,iscrop,iswp;
+  Bool isbiomass,isagtree,iscrop,iswp;
   Verbosity verb;
   verb=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   if (verb>=VERB) puts("// PFT parameters");
@@ -126,7 +126,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   checkptr(*pftpar);
   for(n=0;n<count;n++)
     (*pftpar)[n].id=UNDEF;
-  isbiomass=iscrop=iswp=FALSE;
+  isbiomass=isagtree=iscrop=iswp=FALSE;
   for(n=0;n<count;n++)
   {
     fscanarrayindex(&arr,&item,n,verb);
@@ -152,11 +152,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                 pft->type,pft->name,getlinecount(),getfilename());
       return NULL;
     }
-#if defined IMAGE || defined INCLUDEWP
-    if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,4,FALSE,verb))
-#else
-    if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,3,FALSE,verb))
-#endif
+    if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,5,FALSE,verb))
     {
       if(verb)
         fprintf(stderr,"ERROR201: Invalid value for cultivation type of PFT '%s'.\n",pft->name);
@@ -167,6 +163,27 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       if(verb)
         fprintf(stderr,"ERROR210: Natural PFT '%s' must be put before biomass plantation PFT.\n",pft->name);
       return NULL;
+    }
+    if(isagtree)
+    {
+      if(pft->cultivation_type==NONE)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR210: Natural PFT '%s' must be put before agriculture tree plantation PFT.\n",pft->name);
+        return NULL;
+      }
+      else if(pft->cultivation_type==BIOMASS)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR210: Biomass plantation PFT '%s' must be put before agriculture tree plantation PFT.\n",pft->name);
+        return NULL;
+      }
+      else if(pft->cultivation_type==WP)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR210: wood plantation PFT '%s' in line %d of '%s' must be put before agriculture tree plantation PFT.\n",pft->name,getlinecount(),getfilename());
+        return NULL;
+      }
     }
     if(iscrop)
     {
@@ -208,6 +225,9 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     {
       case BIOMASS:
         isbiomass=TRUE;
+        break;
+      case ANNUAL_TREE:
+        isagtree=TRUE;
         break;
       case ANNUAL_CROP:
         iscrop=TRUE;

@@ -152,10 +152,18 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
     }
     return TRUE;
   }
-  vscal=(with_nitrogen) ? min(1,pft->vscal/NDAYYEAR) : 1;
+  if(!strcmp(pft->par->name,"cotton"))
+  {
+    vscal=(with_nitrogen) ? min(1,pft->vscal/(Real)pft->stand->growing_days) : 1;
+    lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/(Real)pft->stand->growing_days);
+  }
+  else
+  {
+    vscal=(with_nitrogen) ? min(1,pft->vscal/NDAYYEAR) : 1;
+    lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/NDAYYEAR);
+  }
   bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
   bm_inc_ind.nitrogen=pft->bm_inc.nitrogen/pft->nind;
-  lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/NDAYYEAR);
   treepar=pft->par->data;
   tinc_ind.heartwood.carbon=tinc_ind.debt.carbon=0.0;
   tinc_ind.heartwood.nitrogen=tinc_ind.debt.nitrogen=0.0;

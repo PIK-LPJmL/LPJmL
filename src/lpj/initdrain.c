@@ -141,6 +141,7 @@ static Bool initirrig(Cell grid[],    /**< Cell grid             */
   Header header;
   String headername,line;
   int cell,neighb_irrig,rc,*index,n,version;
+  Bool missing;
   /* open neighbour irrigation file */
   if(config->neighb_irrig_filename.fmt==CDF)
   {
@@ -206,7 +207,7 @@ static Bool initirrig(Cell grid[],    /**< Cell grid             */
     /* read connection from file */
     if(config->neighb_irrig_filename.fmt==CDF)
     {
-      if(readintinput_netcdf(irrig_file.cdf,&neighb_irrig,&grid[cell].coord))
+      if(readintinput_netcdf(irrig_file.cdf,&neighb_irrig,&grid[cell].coord,&missing) || missing)
       {
         closeinput_netcdf(irrig_file.cdf);
         free(index);
@@ -272,6 +273,7 @@ static Bool initriver(Cell grid[],Config *config)
   String headername,line;
   int *index,n,version,ncoeff;
   Real len;
+  Bool missing;
   if(config->drainage_filename.fmt==CDF)
   {
     drainage.cdf=openinput_netcdf(&config->drainage_filename,
@@ -337,7 +339,7 @@ static Bool initriver(Cell grid[],Config *config)
   {
     if(config->drainage_filename.fmt==CDF)
     {
-      if(readintinput_netcdf(drainage.cdf,&r.index,&grid[cell].coord))
+      if(readintinput_netcdf(drainage.cdf,&r.index,&grid[cell].coord,&missing) || missing)
       {
         closeinput_netcdf(drainage.cdf);
         closeinput_netcdf(river.cdf);

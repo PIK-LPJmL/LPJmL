@@ -12,10 +12,11 @@
 
 #include "lpj.h"
 
-void fprintcountrypar(FILE *file, /**< pointer to text file */
+void fprintcountrypar(FILE *file,          /**< pointer to text file */
                       const Countrypar *countrypar, /**< country params to print */
-                      int ncountry, /**< number of country params */
-                      int ncft      /**< number of crop PFTs */
+                      int npft,            /**< number of natural PFTS */
+                      int ncft,            /**< number of crop PFTS */
+                      const Config *config /**< LPJmL configuration */
                      )
 {
   int i,j;
@@ -25,6 +26,8 @@ void fprintcountrypar(FILE *file, /**< pointer to text file */
       fprintf(file," %2d",i+1);
   else
     fputs(" cereal maize",file);
+  for(i=0;i<config->nagtree;i++)
+    fprintf(file," %15s",config->pftpar[i+npft-config->nagtree].name);
   fputs(" Irrigsys\n",file);
   fputs("--------------------------------------------",file);
   if(countrypar[0].laimax_cft!=NULL)
@@ -32,8 +35,10 @@ void fprintcountrypar(FILE *file, /**< pointer to text file */
       fputs(" --",file);
   else
     fputs(" ------ -----",file);
+  for(i=0;i<config->nagtree;i++)
+    fputs(" ---------------",file);
   fputs(" --------\n",file);
-  for(i=0;i<ncountry;i++)
+  for(i=0;i<config->ncountries;i++)
   {
     fprintf(file,"%-44s",countrypar[i].name);
     if(countrypar[i].laimax_cft!=NULL)
@@ -42,6 +47,8 @@ void fprintcountrypar(FILE *file, /**< pointer to text file */
     else
       fprintf(file," %6.1g %5.1g",countrypar[i].laimax_tempcer,
               countrypar[i].laimax_maize);
+    for(j=0;j<config->nagtree;j++)
+      fprintf(file," %15.2f",countrypar[i].k_est[j]);
     fprintf(file," %s\n",irrigsys[countrypar[i].default_irrig_system]);
   }
   fputs("--------------------------------------------",file);
@@ -50,5 +57,7 @@ void fprintcountrypar(FILE *file, /**< pointer to text file */
       fputs(" --",file);
   else
     fputs(" ------ -----",file);
+  for(i=0;i<config->nagtree;i++)
+    fputs(" ---------------",file);
   fputs(" --------\n",file);
 } /* of 'fprintcountrypar' */

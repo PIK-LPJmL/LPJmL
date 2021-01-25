@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  r  c  p  8  5  _  n  o  n  .  j  s         \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.1.001                                 \n**/
+/** Configuration file for LPJmL C Version 5.3.001                                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -32,7 +32,7 @@
 
   "sim_name" : "LPJmL run with RCP85 climatology without nitrogen", /* Simulation description */
   "sim_id"   : LPJML,       /* LPJML Simulation type with managed land use */
-  "version"  : "5.1",       /* LPJmL version expected */
+  "version"  : "5.3",       /* LPJmL version expected */
   "random_prec" : false,    /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */

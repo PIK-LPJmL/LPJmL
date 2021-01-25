@@ -36,14 +36,22 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
   Pfttreepar *treepar;
   tree=pft->data;
   treepar=getpftpar(pft,data);
+
   if (fpc_type>=param.fpc_tree_max || n_est<=epsilon)
   {
     allometry_tree(pft);
     return flux_est;
   }
-  if (pft->par->cultivation_type==BIOMASS)
+  if (pft->par->cultivation_type == BIOMASS)
     est_nind=treepar->k_est-pft->nind;
-#if defined IMAGE || defined INCLUDEWP
+  else if(pft->par->cultivation_type == ANNUAL_TREE)
+  {
+    if(pft->stand->cell->ml.manage.k_est[pft->par->id]>0)
+      /*assign country specified k_est*/
+      est_nind=pft->stand->cell->ml.manage.k_est[pft->par->id]-pft->nind;
+    else
+      est_nind=treepar->k_est-pft->nind;
+  }
   else if (pft->par->cultivation_type== WP)
     if (pft->stand->frac_change >= 0.0)
     {
@@ -57,8 +65,7 @@ Stocks establishment_tree(Pft *pft,               /**< pointer to tree PFT */
       est_nind = (frac_old * treepar->k_est + pft->stand->frac_change * treepar->P_init) / pft->stand->frac;
     }
   else
-    est_nind = treepar->k_est;
-#endif
+    est_nind=treepar->k_est;
   else
     est_nind=treepar->k_est;
   est_pft=est_nind*(1.0-exp(-5.0*(1.0-fpc_type)))*(1.0-fpc_type)/(Real)n_est;

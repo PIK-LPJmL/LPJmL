@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**       i  n  p  u  t  _  r  c  p  8  5  .  j  s                                 \n**/
 /**                                                                                \n**/
-/** Configuration file for input dataset for LPJ C Version 5.1.002                 \n**/
+/** Configuration file for input dataset for LPJ C Version 5.3.001                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -18,10 +18,10 @@
 
 /* the following array describes the order of the CFT bands in the land use file */
 
-"cftmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
-            "temperate roots", "tropical roots", "oil crops sunflower",
-            "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
-            "sugarcane","others","grassland"],
+"landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                "temperate roots", "tropical roots", "oil crops sunflower",
+                "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                "sugarcane","others","grassland","biomass grass","biomass tree"],
 
 "input" :
 {

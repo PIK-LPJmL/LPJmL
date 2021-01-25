@@ -14,48 +14,65 @@
 
 #include "lpj.h"
 
-Landfrac *newlandfrac(int ncft /**< number of crop PFTs */
-                     )         /** \return allocated landfrac or NULL */
+Landfrac *newlandfrac(int ncft,   /**< number of crop PFTs */
+                      int nagtree /**< number of agriculture tree PFTs */
+                     )            /** \return allocated landfrac or NULL */
 {
+ int i;
  Landfrac *landfrac;
  landfrac=newvec(Landfrac,2);
  if(landfrac==NULL)
    return NULL;
- landfrac[0].crop=newvec(Real,ncft);
- if(landfrac[0].crop==NULL)
+ for(i=0;i<2;i++)
  {
-   free(landfrac);
-   return NULL;
- }
- landfrac[1].crop=newvec(Real,ncft);
- if(landfrac[1].crop==NULL)
- {
-   free(landfrac);
-   return NULL;
+   landfrac[i].crop=newvec(Real,ncft);
+   if(landfrac[i].crop==NULL)
+   {
+     free(landfrac);
+     return NULL;
+   }
+   landfrac[i].ag_tree=newvec(Real,nagtree);
+   if(landfrac[i].ag_tree==NULL)
+   {
+     free(landfrac);
+     return NULL;
+   }
  }
  return landfrac;
 } /* of 'newlandfrac' */
 
-void initlandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
-                  int ncft              /**< number of crop PFTs */
-                 )
+void initlandfracitem(Landfrac *landfrac, /**< land fractions (non-irrig., irrig.) */
+                      int ncft,           /**< number of crop PFTs */
+                      int nagtree         /**< number of agriculture tree PFTs */
+                     )
 {
   int i,j;
   for(i=0;i<2;i++)
   {
     for(j=0;j<ncft;j++)
-      landfrac[i].crop[j]=0;
+      landfrac->crop[j]=0;
+    for(j=0;j<nagtree;j++)
+      landfrac->ag_tree[j]=0;
     for(j=0;j<NGRASS;j++)
-      landfrac[i].grass[j]=0;
-    landfrac[i].biomass_grass=landfrac[i].biomass_tree=0;
-#if defined IMAGE || defined INCLUDEWP
-    landfrac[i].woodplantation=0;
-#endif
+      landfrac->grass[j]=0;
+    landfrac->biomass_grass=landfrac->biomass_tree=0;
+    landfrac->woodplantation=0;
   }
+} /* of 'initlandfracitem' */
+
+void initlandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
+                  int ncft,             /**< number of crop PFTs */
+                  int nagtree           /**< number of agriculture tree PFTs */
+                 )
+{
+  int i,j;
+  for(i=0;i<2;i++)
+    initlandfracitem(landfrac+i,ncft,nagtree);
 } /* of 'initlandfrac' */
 
 void scalelandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
                    int ncft,             /**< number of crop PFTs */
+                   int nagtree,          /**< number of agriculture tree PFTs */
                    Real scale            /**< scaling factor (0..11) */
                   )
 {
@@ -63,14 +80,14 @@ void scalelandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.
   for(i=0;i<2;i++)
   {
     for(j=0;j<ncft;j++)
-        landfrac[i].crop[j]*=scale;
+      landfrac[i].crop[j]*=scale;
+    for(j=0;j<nagtree;j++)
+      landfrac[i].ag_tree[j]*=scale;
     for(j=0;j<NGRASS;j++)
       landfrac[i].grass[j]*=scale;
     landfrac[i].biomass_grass*=scale;
     landfrac[i].biomass_tree*=scale;
-#if defined IMAGE || defined INCLUDEWP
     landfrac[i].woodplantation*=scale;
-#endif
   }
 } /* of 'scalelandfrac' */
 
@@ -81,29 +98,27 @@ void freelandfrac(Landfrac landfrac[2] /**< land fractions (non-irrig., irrig.) 
   {
     free(landfrac[0].crop);
     free(landfrac[1].crop);
+    free(landfrac[0].ag_tree);
+    free(landfrac[1].ag_tree);
     free(landfrac);
   }
 } /* of 'freelandfrac' */
 
 Bool fwritelandfrac(FILE *file,                 /**< pointer to binary file */
                     const Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
-                    int ncft                    /**< number of crop PFTs */
+                    int ncft,                   /**< number of crop PFTs */
+                    int nagtree                 /**< number of agriculture tree PFTs */
                    )                            /** \return TRUE on error */
 {
   int i;
   for(i=0;i<2;i++)
   {
     fwrite(landfrac[i].crop,sizeof(Real),ncft,file);
+    fwrite(landfrac[i].ag_tree,sizeof(Real),nagtree,file);
     fwrite(landfrac[i].grass,sizeof(Real),NGRASS,file);
-    fwrite(&landfrac[i].biomass_grass,sizeof(Real),1,file);
-#if defined IMAGE || defined INCLUDEWP
-    fwrite(&landfrac[i].biomass_tree,sizeof(Real),1,file);
-    if(fwrite(&landfrac[i].woodplantation,sizeof(Real),1,file)!=1)
-      return TRUE;
-#else
+    fwrite(&landfrac[i].woodplantation,sizeof(Real),1,file);
     if(fwrite(&landfrac[i].biomass_tree,sizeof(Real),1,file)!=1)
       return TRUE;
-#endif
 
   }
   return FALSE;
@@ -112,6 +127,7 @@ Bool fwritelandfrac(FILE *file,                 /**< pointer to binary file */
 Bool freadlandfrac(FILE *file,           /**< pointer to binary file */
                    Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
                    int ncft,             /**< number of crop PFTs */
+                   int nagtree,          /**< number of agriculture tree PFTs */
                    Bool swap             /**< byte order has to be swapped (TRUE/FALSE) */
                   )                      /** \return TRUE on error */
 {
@@ -119,22 +135,20 @@ Bool freadlandfrac(FILE *file,           /**< pointer to binary file */
   for(i=0;i<2;i++)
   {
     freadreal(landfrac[i].crop,ncft,swap,file);
+    freadreal(landfrac[i].ag_tree,nagtree,swap,file);
     freadreal(landfrac[i].grass,NGRASS,swap,file);
     freadreal(&landfrac[i].biomass_grass,1,swap,file);
-#if defined IMAGE || defined INCLUDEWP
     freadreal(&landfrac[i].biomass_tree,1,swap,file);
-    if(freadreal(&landfrac[i].woodplantation,1,swap,file)!=1)
-      return TRUE;
-#else
+    freadreal(&landfrac[i].woodplantation,1,swap,file);
     if(freadreal(&landfrac[i].biomass_tree,1,swap,file)!=1)
       return TRUE;
-#endif
   }
   return FALSE;
 } /* of 'freadlandfrac' */
 
 Real landfrac_sum(const Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
                   int ncft,                   /**< number of crop PFTs */
+                  int nagtree,
                   Bool irrig                  /**< irrigated fraction? (TRUE/FALSE) */
                  )                            /** \return sum of non-irrigated/irrigated fraction */
 {
@@ -143,12 +157,12 @@ Real landfrac_sum(const Landfrac landfrac[2], /**< land fractions (non-irrig., i
   sum=0;
   for(j=0;j<ncft;j++)
     sum+=landfrac[irrig].crop[j];
+  for(j=0;j<nagtree;j++)
+    sum+=landfrac[irrig].ag_tree[j];
   for(j=0;j<NGRASS;j++)
     sum+=landfrac[irrig].grass[j];
   sum+=landfrac[irrig].biomass_grass;
   sum+=landfrac[irrig].biomass_tree;
-#if defined IMAGE || defined INCLUDEWP
   sum+=landfrac[irrig].woodplantation;
-#endif
   return sum;
 } /* of 'landfrac_sum' */

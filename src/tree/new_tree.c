@@ -45,5 +45,7 @@ void new_tree(Pft *pft, /**< Parameter of pft */
   tree->ind.debt.carbon=tree->ind.debt.nitrogen=tree->gddtw=tree->aphen_raingreen=0.0;
   tree->height=tree->crownarea=0.0;
   tree->isphen=FALSE;
+  tree->fruit.carbon=tree->fruit.nitrogen=0;
+  tree->boll_age=0;
   pft->vmax=0;
 } /* of 'new_tree' */

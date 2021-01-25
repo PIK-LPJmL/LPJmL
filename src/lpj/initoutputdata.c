@@ -49,7 +49,9 @@ void initoutputdata(Output *output,      /**< output data */
                     const Config *config /**< LPJ configuration */
                    )
 {
-  int i,index;
+  int i,index,nirrig,nnat;
+  nirrig=2*getnirrig(ncft,config);
+  nnat=getnnat(npft,config);
   setoutputvar(DAYLENGTH,daylength);
   setoutputvar(TEMP,temp);
   setoutputvar(SUN,sun);
@@ -88,18 +90,18 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputarrayitem(SOILN_LAYER,soil_layer,nitrogen,LASTLAYER);
   setoutputarray(SOILNO3_LAYER,soilno3_layer,LASTLAYER);
   setoutputarray(SOILNH4_LAYER,soilnh4_layer,LASTLAYER);
-  setoutputarray(PFT_LAIMAX,pft_laimax,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_NLEAF,pft_leaf,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_CLEAF,pft_leaf,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_NROOT,pft_root,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_CROOT,pft_root,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_NSAPW,pft_sapw,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_CSAPW,pft_sapw,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_NHAWO,pft_hawo,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_CHAWO,pft_hawo,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_VEGN,pft_veg,nitrogen,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_VEGC,pft_veg,carbon,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(PFT_NLIMIT,pft_nlimit,npft-config->nbiomass-config->nwft+2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarray(PFT_LAIMAX,pft_laimax,nnat+nirrig);
+  setoutputarrayitem(PFT_NLEAF,pft_leaf,nitrogen,nnat+nirrig);
+  setoutputarrayitem(PFT_CLEAF,pft_leaf,carbon,nnat+nirrig);
+  setoutputarrayitem(PFT_NROOT,pft_root,nitrogen,nnat+nirrig);
+  setoutputarrayitem(PFT_CROOT,pft_root,carbon,nnat+nirrig);
+  setoutputarrayitem(PFT_NSAPW,pft_sapw,nitrogen,nnat+nirrig);
+  setoutputarrayitem(PFT_CSAPW,pft_sapw,carbon,nnat+nirrig);
+  setoutputarrayitem(PFT_NHAWO,pft_hawo,nitrogen,nnat+nirrig);
+  setoutputarrayitem(PFT_CHAWO,pft_hawo,carbon,nnat+nirrig);
+  setoutputarrayitem(PFT_VEGN,pft_veg,nitrogen,nnat+nirrig);
+  setoutputarrayitem(PFT_VEGC,pft_veg,carbon,nnat+nirrig);
+  setoutputarray(PFT_NLIMIT,pft_nlimit,nnat+nirrig);
   setoutputvar(MAXTHAW_DEPTH,maxthaw_depth);
   setoutputvar(SOILNO3,soilno3);
   setoutputvar(SOILNH4,soilnh4);
@@ -139,9 +141,8 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(FTIMBER,ftimber);
   setoutputvar(TIMBER_HARVESTC,timber_harvest.carbon);
   setoutputvar(TIMBER_HARVESTC,timber_harvest.nitrogen);
-#if defined IMAGE || defined INCLUDEWP
-  setoutputarray(WFT_VEGC,wft_vegc,config->nwft);
-#endif
+  if(config->nwptype)
+    setoutputarray(WFT_VEGC,wft_vegc,config->nwft);
 #ifdef IMAGE
   setoutputvar(WD_GW,mwd_gw);
   setoutputvar(WD_AQ,mwd_aq);
@@ -241,9 +242,9 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputarray(HDATE,hdate,2*ncft);
   setoutputarray(CFT_SWC,cft_mswc,2*ncft);
   setoutputarray(CFT_SWC,nday_month,2*ncft);
-  setoutputarray(PFT_NPP,pft_npp,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
-  setoutputarray(PFT_NUPTAKE,pft_nuptake,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
-  setoutputarray(PFT_NDEMAND,pft_ndemand,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
+  setoutputarray(PFT_NPP,pft_npp,nnat+nirrig);
+  setoutputarray(PFT_NUPTAKE,pft_nuptake,nnat+nirrig);
+  setoutputarray(PFT_NDEMAND,pft_ndemand,nnat+nirrig);
   setoutputarray(HUSUM,husum,2*ncft);
   setoutputarray(CFT_RUNOFF,cft_runoff,2*ncft);
   setoutputarray(CFT_N2O_DENIT,cft_n2o_denit,2*ncft);
@@ -251,56 +252,57 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputarray(CFT_N2_EMIS,cft_n2_emis,2*ncft);
   setoutputarray(CFT_LEACHING,cft_leaching,2*ncft);
   setoutputarray(CFT_C_EMIS,cft_c_emis,2*ncft);
-  setoutputarray(PFT_GCGP,pft_gcgp,npft-config->nbiomass-config->nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
-  setoutputarray(PFT_GCGP,gcgp_count,npft-config->nbiomass-config->nwft+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
-  setoutputarrayitem(PFT_HARVESTC,pft_harvest,harvest.carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_HARVESTN,pft_harvest,harvest.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_RHARVESTC,pft_harvest,residual.carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarrayitem(PFT_RHARVESTN,pft_harvest,residual.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_CONSUMP_WATER_G,cft_consump_water_g,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_CONSUMP_WATER_B,cft_consump_water_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarray(PFT_GCGP,pft_gcgp,nnat+nirrig);
+  setoutputarray(PFT_GCGP,gcgp_count,nnat+nirrig);
+  setoutputarrayitem(PFT_HARVESTC,pft_harvest,harvest.carbon,nirrig);
+  setoutputarrayitem(PFT_HARVESTN,pft_harvest,harvest.nitrogen,nirrig);
+  setoutputarrayitem(PFT_RHARVESTC,pft_harvest,residual.carbon,nirrig);
+  setoutputarrayitem(PFT_RHARVESTN,pft_harvest,residual.nitrogen,nirrig);
+  setoutputarray(CFT_CONSUMP_WATER_G,cft_consump_water_g,nirrig);
+  setoutputarray(CFT_CONSUMP_WATER_B,cft_consump_water_b,nirrig);
   setoutputarray(GROWING_PERIOD,growing_period,2*(ncft+NGRASS));
-  setoutputarray(FPC,fpc,npft-config->nbiomass-config->nwft+1);
+  setoutputarray(FPC,fpc,nnat+1);
+  setoutputarray(PFT_MORT,pft_mort,nnat);
   setoutputarray(FPC_BFT,fpc_bft,((config->nbiomass+config->ngrass*2)*2));
-  setoutputarray(NV_LAI,nv_lai,npft-config->nbiomass-config->nwft);
+  setoutputarray(NV_LAI,nv_lai,nnat);
   setoutputarray(CFT_PET,cft_pet,2*(ncft+NGRASS));
-  setoutputarray(CFT_TRANSP,cft_transp,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_TRANSP_B,cft_transp_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_EVAP,cft_evap,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_EVAP_B,cft_evap_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_INTERC,cft_interc,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_INTERC_B,cft_interc_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_RETURN_FLOW_B,cft_return_flow_b,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_IRRIG_EVENTS,cft_irrig_events,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_NIR,cft_nir,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarray(CFT_TRANSP,cft_transp,nirrig);
+  setoutputarray(CFT_TRANSP_B,cft_transp_b,nirrig);
+  setoutputarray(CFT_EVAP,cft_evap,nirrig);
+  setoutputarray(CFT_EVAP_B,cft_evap_b,nirrig);
+  setoutputarray(CFT_INTERC,cft_interc,nirrig);
+  setoutputarray(CFT_INTERC_B,cft_interc_b,nirrig);
+  setoutputarray(CFT_RETURN_FLOW_B,cft_return_flow_b,nirrig);
+  setoutputarray(CFT_IRRIG_EVENTS,cft_irrig_events,nirrig);
+  setoutputarray(CFT_NIR,cft_nir,nirrig);
   setoutputarray(CFT_TEMP,cft_temp,2*(ncft+NGRASS));
   setoutputarray(CFT_PREC,cft_prec,2*(ncft+NGRASS));
   setoutputarray(CFT_SRAD,cft_srad,2*(ncft+NGRASS));
-  setoutputarray(CFT_CONV_LOSS_EVAP,cft_conv_loss_evap,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_CONV_LOSS_DRAIN,cft_conv_loss_drain,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFTFRAC,cftfrac,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_AIRRIG,cft_airrig,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(CFT_FPAR,cft_fpar,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-  setoutputarray(LUC_IMAGE,cft_luc_image,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+  setoutputarray(CFT_CONV_LOSS_EVAP,cft_conv_loss_evap,nirrig);
+  setoutputarray(CFT_CONV_LOSS_DRAIN,cft_conv_loss_drain,nirrig);
+  setoutputarray(CFTFRAC,cftfrac,nirrig);
+  setoutputarray(CFT_AIRRIG,cft_airrig,nirrig);
+  setoutputarray(CFT_FPAR,cft_fpar,nirrig);
+  setoutputarray(LUC_IMAGE,cft_luc_image,nirrig);
   setoutputarrayitem(CFT_ABOVEGBMC,cft_aboveground_biomass,carbon,2*(ncft+NGRASS));
   setoutputarrayitem(CFT_ABOVEGBMN,cft_aboveground_biomass,nitrogen,2*(ncft+NGRASS));
   if(config->double_harvest)
   {
-    setoutputarrayitem(PFT_HARVESTC2,dh->pft_harvest2,harvest.carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    setoutputarrayitem(PFT_HARVESTN2,dh->pft_harvest2,harvest.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    setoutputarrayitem(PFT_RHARVESTC2,dh->pft_harvest2,residual.carbon,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    setoutputarrayitem(PFT_RHARVESTN2,dh->pft_harvest2,residual.nitrogen,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    setoutputarrayitem(PFT_HARVESTC2,dh->pft_harvest2,harvest.carbon,nirrig);
+    setoutputarrayitem(PFT_HARVESTN2,dh->pft_harvest2,harvest.nitrogen,nirrig);
+    setoutputarrayitem(PFT_RHARVESTC2,dh->pft_harvest2,residual.carbon,nirrig);
+    setoutputarrayitem(PFT_RHARVESTN2,dh->pft_harvest2,residual.nitrogen,nirrig);
     setoutputarray(GROWING_PERIOD2,dh->growing_period2,2*(ncft+NGRASS));
     setoutputarray(CFT_PET2,dh->cft_pet2,2*(ncft+NGRASS));
-    setoutputarray(CFT_TRANSP2,dh->cft_transp2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    setoutputarray(CFT_EVAP2,dh->cft_evap2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    setoutputarray(CFT_INTERC2,dh->cft_interc2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    setoutputarray(CFT_NIR2,dh->cft_nir2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    setoutputarray(CFT_TRANSP2,dh->cft_transp2,nirrig);
+    setoutputarray(CFT_EVAP2,dh->cft_evap2,nirrig);
+    setoutputarray(CFT_INTERC2,dh->cft_interc2,nirrig);
+    setoutputarray(CFT_NIR2,dh->cft_nir2,nirrig);
     setoutputarray(CFT_TEMP2,dh->cft_temp2,2*(ncft+NGRASS));
     setoutputarray(CFT_PREC2,dh->cft_prec2,2*(ncft+NGRASS));
     setoutputarray(CFT_SRAD2,dh->cft_srad2,2*(ncft+NGRASS));
-    setoutputarray(CFTFRAC2,dh->cftfrac2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
-    setoutputarray(CFT_AIRRIG2,dh->cft_airrig2,2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE));
+    setoutputarray(CFTFRAC2,dh->cftfrac2,nirrig);
+    setoutputarray(CFT_AIRRIG2,dh->cft_airrig2,nirrig);
     setoutputarray(SDATE2,dh->sdate2,2*ncft);
     setoutputarray(HDATE2,dh->hdate2,2*ncft);
     setoutputarray(SYEAR,dh->syear,2*ncft);
@@ -313,7 +315,7 @@ void initoutputdata(Output *output,      /**< output data */
     setoutputarray(CFT_N2_EMIS2,dh->cft_n2_emis2,2*ncft);
     setoutputarray(CFT_LEACHING2,dh->cft_leaching2,2*ncft);
     setoutputarray(CFT_C_EMIS2,dh->cft_c_emis2,2*ncft);
-    setoutputarray(PFT_NUPTAKE2,dh->pft_nuptake2,(npft-config->nbiomass-config->nwft)+(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)*2);
+    setoutputarray(PFT_NUPTAKE2,dh->pft_nuptake2,nnat+nirrig);
   }
   index=0;
   for(i=D_LAI;i<=D_PET;i++)

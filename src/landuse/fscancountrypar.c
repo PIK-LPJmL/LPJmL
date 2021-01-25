@@ -73,6 +73,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
     country->name=strdup(s);
     checkptr(country->name);
     country->id=id;
+    country->k_est=NULL;
     if(ncft)
     {
       country->laimax_cft=newvec(Real,ncft);

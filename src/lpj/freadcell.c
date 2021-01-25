@@ -117,13 +117,13 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       return TRUE;
     if(cell->ml.landfrac!=NULL && config->landuse_restart)
     {
-      freadlandfrac(file,cell->ml.landfrac,ncft,swap);
+      freadlandfrac(file,cell->ml.landfrac,ncft,config->nagtree,swap);
 #ifndef IMAGE
       freadreal((Real *)&cell->ml.product,sizeof(Pool)/sizeof(Real),swap,file);
 #endif
     }
     if(cell->ml.fertilizer_nr!=NULL && config->landuse_restart)
-      freadlandfrac(file,cell->ml.fertilizer_nr,ncft,swap);
+      freadlandfrac(file,cell->ml.fertilizer_nr,ncft,config->nagtree,swap);
     if(config->ischeckpoint && config->n_out)
     {
       if(freadoutputdata(file,&cell->output,npft,ncft,swap,config))

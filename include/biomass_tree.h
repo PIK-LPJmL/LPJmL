@@ -28,12 +28,12 @@ extern Standtype biomass_tree_stand;
 
 extern Bool annual_biomass_tree(Stand *,int, int,Real,int,Bool,Bool,const Config *);
 extern Real daily_biomass_tree(Stand *,Real,const Dailyclimate *, int,int,
-                               Real,const Real [],
-                               Real ,Real,Real,Real,Real,Real,
+                               Real,
+                               Real,Real,Real,Real,
                                Real ,int, int, int,Bool,Real,const Config *);
 extern void output_gbw_biomass_tree(Output *,const Stand *,Real,Real,Real,Real,
                                     const Real [LASTLAYER],const Real [LASTLAYER],Real,Real,int,
-                                    Bool);
+                                    const Config *);
 extern void new_biomass_tree(Stand *);
 extern Bool fwrite_biomass_tree(FILE *,const Stand *);
 extern void fprint_biomass_tree(FILE *,const Stand *);

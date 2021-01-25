@@ -17,13 +17,8 @@
 
 /* Definitions of datatypes */
 
-#if defined IMAGE || defined INCLUDEWP
 typedef enum {NATURAL,SETASIDE_RF,SETASIDE_IR,AGRICULTURE,MANAGEDFOREST,
-              GRASSLAND,BIOMASS_TREE,BIOMASS_GRASS,WOODPLANTATION,KILL} Landusetype;
-#else
-typedef enum {NATURAL,SETASIDE_RF,SETASIDE_IR,AGRICULTURE,MANAGEDFOREST,
-              GRASSLAND,BIOMASS_TREE,BIOMASS_GRASS,KILL} Landusetype;
-#endif
+              GRASSLAND,BIOMASS_TREE,BIOMASS_GRASS,AGRICULTURE_TREE,AGRICULTURE_GRASS,WOODPLANTATION,KILL} Landusetype;
 
 typedef struct landuse *Landuse;
 
@@ -33,20 +28,18 @@ typedef struct
   Real grass[NGRASS];
   Real biomass_grass;
   Real biomass_tree;
-#if defined IMAGE || defined INCLUDEWP
+  Real *ag_tree;
   Real woodplantation;
-#endif
 } Landfrac;
 
 typedef struct
 {
   IrrigationType *crop;
+  IrrigationType *ag_tree;
   IrrigationType grass[NGRASS];
   IrrigationType biomass_grass;
   IrrigationType biomass_tree;
-#if defined IMAGE || defined INCLUDEWP
   IrrigationType woodplantation;
-#endif
 } Irrig_system;
 
 
@@ -65,6 +58,7 @@ typedef struct
   Real dist_irrig_amount; /**< water requirements for uniform field distribution, depending on irrigation system */
   Real irrig_amount;      /**< irrigation water (mm) that reaches the field, i.e. without conveyance losses */
   Real irrig_stor;        /**< storage buffer (mm), filled if irrig_threshold not reached and if irrig_amount > GIR and with irrig_amount-prec */
+  int pft_id;             /**< PFT of agriculture tree established */
 } Irrigation;
 
 typedef struct
@@ -80,6 +74,8 @@ typedef struct
   Real cropfrac_ir;       /**< irrigated crop fraction (0..1) */
   int *sowing_month;      /**< sowing month (index of month, 1..12), rainfed, irrigated*/
   int *gs;                /**< length of growing season (number of consecutive months, 0..11)*/
+  int sowing_day_cotton[2];
+  int growing_season_cotton[2];
   Seasonality seasonality_type;  /**< seasonality type (0..4) 0:no seasonality, 1 and
                                     2:precipitation seasonality, 3 and 4:temperature
                                     seasonality*/
@@ -107,23 +103,25 @@ typedef struct
 #define rmgrass(ncft) (ncft+1)
 #define rbgrass(ncft) (ncft+2)
 #define rbtree(ncft) (ncft+3)
-#if defined IMAGE || defined INCLUDEWP
 #define rwp(ncft) (ncft+4)
-#endif
+#define agtree(ncft,nwpt) (ncft+4+nwpt)
+#define getnnat(npft,config) (npft-config->nbiomass-config->nagtree-config->nwft)
+#define getnirrig(ncft,config) (ncft+NGRASS+NBIOMASSTYPE+config->nagtree+config->nwptype)
 
 /* Declaration of functions */
 
 extern Landuse initlanduse(int,const Config *);
 extern void freelanduse(Landuse,const Config *);
 extern Bool getintercrop(const Landuse);
-extern Landfrac *newlandfrac(int);
-extern void initlandfrac(Landfrac [2],int);
-extern void scalelandfrac(Landfrac [2],int,Real);
+extern Landfrac *newlandfrac(int,int);
+extern void initlandfracitem(Landfrac *,int,int);
+extern void initlandfrac(Landfrac [2],int,int);
+extern void scalelandfrac(Landfrac [2],int,int,Real);
 extern void freelandfrac(Landfrac [2]);
-extern Bool fwritelandfrac(FILE *,const Landfrac [2],int);
-extern Bool freadlandfrac(FILE *,Landfrac [2],int,Bool);
-extern Real landfrac_sum(const Landfrac [2],int,Bool);
-extern Real crop_sum_frac(Landfrac *,int,Real,Bool);
+extern Bool fwritelandfrac(FILE *,const Landfrac [2],int,int);
+extern Bool freadlandfrac(FILE *,Landfrac [2],int,int,Bool);
+extern Real landfrac_sum(const Landfrac [2],int,int,Bool);
+extern Real crop_sum_frac(Landfrac *,int,int,Real,Bool);
 extern Stocks cultivate(Cell *,const Pftpar *,int,Real,Bool,int,Bool,Stand *,
                         Bool,int,int,int,int,const Config *);
 #ifdef IMAGE
@@ -141,18 +139,19 @@ extern Stocks woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real);
 extern Real rw_irrigation(Stand *,Real,const Real [],Real);
 extern void irrig_amount_river(Cell *,const Config *);
-extern void irrig_amount(Stand *,Irrigation *,Bool,int,int,int);
+extern void irrig_amount(Stand *,Irrigation *,int,int,int,const Config *);
 extern void mixsetaside(Stand *,Stand *,Bool);
-extern void set_irrigsystem(Stand *,int,int,Bool);
+extern void set_irrigsystem(Stand *,int,int,int,const Config *);
 extern void init_irrigation(Irrigation *);
 extern Bool fwrite_irrigation(FILE *,const Irrigation *);
 extern void fprint_irrigation(FILE *,const Irrigation *);
 extern Bool fread_irrigation(FILE *,Irrigation *,Bool);
 extern Harvest harvest_stand(Output *,Stand *,Real);
-extern int *getcftmap(LPJfile *,int *,int,int,const Config *);
+extern int *getcftmap(LPJfile *,int *,const char *,Bool,int,int,const Config *);
 extern Bool fscanmowingdays(LPJfile *,Config *);
 extern void tillage(Soil *, Real);
 extern void getnsoil_agr(Real *,Real *,Real *,const Cell *);
+extern Bool readcottondays(Cell *,const Config *);
 
 /* Declaration of variables */
 

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**       i  n  p  u  t  _  i  m  a  g  e   .  j  s                                \n**/
 /**                                                                                \n**/
-/** Configuration file for input dataset for LPJ C Version 5.1.002                 \n**/
+/** Configuration file for input dataset for LPJ C Version 5.3.001                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -34,5 +34,5 @@
   "co2" :          { "fmt" : "txt",  "name" : "co2_2003.dat"},
   "wetdays" :      { "fmt" : "clm",  "name" : "wet_image_30ymeans.clm"},
   "wateruse" :     { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/wateruse_1900_2000.bin" },
-  "wateruse_wd" :     { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/wateruse_1900_2000.bin" }
+  "wateruse_wd" :  { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/historical/input_VERSION2/wateruse_1900_2000.bin" }
 },

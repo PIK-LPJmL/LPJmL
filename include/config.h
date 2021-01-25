@@ -86,6 +86,10 @@ struct config
 #endif
   Filename grassfix_filename;
   Filename grassharvest_filename;
+  Filename sowing_cotton_rf_filename;
+  Filename harvest_cotton_rf_filename;
+  Filename sowing_cotton_ir_filename;
+  Filename harvest_cotton_ir_filename;
 #ifdef IMAGE
   Filename temp_var_filename; /**< file with CRU-derived temperature variation (K) */
   Filename prec_var_filename; /**< file with CRU-derived precipitation variation (%) */
@@ -101,8 +105,10 @@ struct config
   int sim_id;             /**< Simulation type */
   int *npft;              /**< number of PFTs in each PFT class */
   int nbiomass;           /**< number of biomass PFTs */
+  int nagtree;            /**< number of agricultural tree PFTs */
   int nwft;               /**< numer of WFTs */
   int ngrass;             /**< number of grass PFTs not biomass */
+  int nwptype;
   unsigned int nsoil;     /**< number of soil types */
   Soilpar *soilpar;       /**< Soil parameter array */
   int ncountries;         /**< number of countries */
@@ -212,8 +218,8 @@ struct config
   Pnet *irrig_res_back;
   int withlanduse;
   Bool reservoir;
-  int *cftmap;
-  int cftmap_size;
+  int *landusemap;
+  int landusemap_size;
 #ifdef IMAGE
   Bool groundwater_irrig;   /**< Irrigation from groundwater reservoir */
   Bool aquifer_irrig;       /**< Aquifer irrigation possible?*/

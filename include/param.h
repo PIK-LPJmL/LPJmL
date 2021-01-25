@@ -100,6 +100,7 @@ typedef struct
   Real allocation_threshold; /**< allocation threshold for daily grassland allocation */
   Real hfrac2;
   Real rootreduction;     /**< fraction used to calculate amount of roots dying at harvest in managed grasslands */
+  Real phen_limit; /* limit for agricultural trees */
 } Param;
 
 /* Declaration of global variable */

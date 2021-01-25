@@ -213,9 +213,7 @@ typedef struct
 #ifdef IMAGE
   Real ydischarge;       /**< Annual (1.000.000 m3/year) to send to IMAGE */
 #endif
-#if defined IMAGE || defined INCLUDEWP
   Real *wft_vegc;        /**< WFT specific vegetation carbon for wood plantation stand (gC/m2) */
-#endif
 #if defined IMAGE && defined COUPLED
   Real npp_nat;          /**< NPP natural stand */
   Real npp_wp;           /**< NPP woodplantation */
@@ -318,7 +316,6 @@ typedef struct
   Real *nv_lai;
   Real *fpc_bft;
   Real daylength;
-  Real *cft_nlimit;
   Real *cft_mswc;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
   int *nday_month;        /**< day count for monthly cft-specific outputs, needed in update_monthly to divide by number of days */
   Real abnf_agr;

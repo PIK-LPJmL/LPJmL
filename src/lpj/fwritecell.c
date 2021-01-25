@@ -105,13 +105,13 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(grid[cell].ml.landfrac!=NULL)
       {
-        fwritelandfrac(file,grid[cell].ml.landfrac,ncft);
+        fwritelandfrac(file,grid[cell].ml.landfrac,ncft,config->nagtree);
 #ifndef IMAGE
         fwrite(&grid[cell].ml.product,sizeof(Pool),1,file);
 #endif
       }
       if(grid[cell].ml.fertilizer_nr!=NULL)
-        fwritelandfrac(file,grid[cell].ml.fertilizer_nr,ncft);
+        fwritelandfrac(file,grid[cell].ml.fertilizer_nr,ncft,config->nagtree);
       if(ischeckpoint && config->n_out)
        fwriteoutputdata(file,&grid[cell].output,npft,ncft,config);
 

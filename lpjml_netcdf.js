@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  n  e  t  c  d  f  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.2.002                                 \n**/
+/** Configuration file for LPJmL C Version 5.3.001                                 \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -32,7 +32,7 @@
 
 "sim_name" : "LPJmL Run", /* Simulation description */
 "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-"version"  : "5.2",       /* LPJmL version expected */
+"version"  : "5.3",       /* LPJmL version expected */
 "random_prec" : true,     /* Random weather generator for precipitation enabled */
 "random_seed" : 2,        /* seed for random number generator */
 "radiation" : "cloudiness",

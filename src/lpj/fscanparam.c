@@ -224,6 +224,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     }
     fscanparamreal(&f,&param.hfrac2,"hfrac2");
     fscanparamreal01(&f,&param.rootreduction,"rootreduction");
+    fscanparamreal01(&f,&param.phen_limit,"phen_limit");
   }
   param.k_litter10/=NDAYYEAR;
   param.k_soil10.fast/=NDAYYEAR;

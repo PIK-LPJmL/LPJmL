@@ -2,11 +2,11 @@
 <HEAD>
 <LINK REL="stylesheet" HREF="style.css" TYPE="text/css">
 <TITLE>
-Installing and running LPJmL C Version 5.2.001
+Installing and running LPJmL C Version 5.3.001
 </TITLE>
 </HEAD>
 <BODY>
-<H1>Installing and running  LPJmL C Version 5.2.001</H1>
+<H1>Installing and running  LPJmL C Version 5.3.001</H1>
 
 <H2>Installation for Unix-like systems</h2>
 
@@ -29,7 +29,7 @@ cd lpjml
 
 untar source files</p>
 <pre class="example">
-gzip -cd lpjml-5.2.001.tar.gz|tar -xf -
+gzip -cd lpjml-5.3.001.tar.gz|tar -xf -
 </pre>
 
 Directory tree after extracting the tar files:</p>
@@ -116,7 +116,7 @@ Then LPJmL can be configured via
 
 <pre class="example">
 % ./configure.sh
-Configuring LPJmL 5.2.001...
+Configuring LPJmL 5.3.001...
 Operating system is Linux
 Intel MPI found
 Create executables with make all
@@ -844,22 +844,22 @@ Depending on your MPI version installed the program can be started interactively
 <pre class="example">
 % mpirun -np 256 $LPJROOT/bin/lpjml
 ******************************************************************************
-****         _     ____     _           _       ____        ____          ****
-****        | |   |  _ \   | |_ __ ___ | |     | ___|      |___ \         ****
-****        | |   | |_) |  | | '_ ` _ \  |     |___ \        __) |        ****
-****        | |___|  __/ |_| | | | | | | |___   ___) |  _   / __/         ****
-****        |_____|_|   \___/|_| |_| |_|_____| |____/  (_) |_____|        ****
+****         _     ____     _           _       ____        _____         ****
+****        | |   |  _ \   | |_ __ ___ | |     | ___|      |___ /         ****
+****        | |   | |_) |  | | '_ ` _ \| |     |___ \        |_ \         ****
+****        | |___|  __/ |_| | | | | | | |___   ___) |  _   ___) |        ****
+****        |_____|_|   \___/|_| |_| |_|_____| |____/  (_) |____/         ****
 ****                                                                      ****
-****                lpjml C Version 5.2.001 (Jun 17 2019)                 ****
+****                lpjml C Version 5.2.002 (Jan 25 2021)                 ****
 ****    Dynamic global vegetation model with natural and managed land     ****
-****                     Compiled for Linux with MPI                      ****
+****                          Compiled for Linux                          ****
 ****       (C) Potsdam Institute for Climate Impact Research (PIK),       ****
 ****                          see COPYRIGHT file                          ****
 ****              Authors, and contributors see AUTHORS file              ****
 **** This version of LPJmL is licensed under GNU AGPL Version 3 or later  ****
 ****        See LICENSE file or go to http://www.gnu.org/licenses/        ****
 ****                 or invoke lpjml -l to print license                  ****
-****          Contact: https://github.com/PIK-LPJmL/LPJmL                 ****
+****             Contact: https://github.com/PIK-LPJmL/LPJmL              ****
 ****                                                                      ****
 ******************************************************************************
 
@@ -898,54 +898,88 @@ Number of output files:       45
 Output written in year:       1901
 Byte order in output files:   little endian
 Output method:                gathered
-Variable         Fmt Unit         Type   Filename
----------------- --- ------------ ------ -------------------------------------
-            grid raw       degree  short /p/tmp/user/lpjml/output/grid.bin
-             fpc raw            -  float /p/tmp/user/lpjml/output/fpc.bin
-            mnpp raw  gC/m2/month  float /p/tmp/user/lpjml/output/mnpp.bin
-            mgpp raw  gC/m2/month  float /p/tmp/user/lpjml/output/mgpp.bin
-             mrh raw  gC/m2/month  float /p/tmp/user/lpjml/output/mrh.bin
-          mfapar raw            -  float /p/tmp/user/lpjml/output/mfapar.bin
-         mtransp raw     mm/month  float /p/tmp/user/lpjml/output/mtransp.bin
-         mrunoff raw     mm/month  float /p/tmp/user/lpjml/output/mrunoff.bin
-           mevap raw     mm/month  float /p/tmp/user/lpjml/output/mevap.bin
-         minterc raw     mm/month  float /p/tmp/user/lpjml/output/minterc.bin
-           mswc1 raw            -  float /p/tmp/user/lpjml/output/mswc1.bin
-           mswc2 raw            -  float /p/tmp/user/lpjml/output/mswc2.bin
-           firec raw     gC/m2/yr  float /p/tmp/user/lpjml/output/firec.bin
-           firef raw           yr  float /p/tmp/user/lpjml/output/firef.bin
-            vegc raw        gC/m2  float /p/tmp/user/lpjml/output/vegc.bin
-           soilc raw        gC/m2  float /p/tmp/user/lpjml/output/soilc.bin
-            litc raw        gC/m2  float /p/tmp/user/lpjml/output/litc.bin
-      flux_estab raw     gC/m2/yr  float /p/tmp/user/lpjml/output/flux_estab.bin
-      mphen_tmin raw            -  float /p/tmp/user/lpjml/output/mphen_tmin.bin
-      mphen_tmax raw            -  float /p/tmp/user/lpjml/output/mphen_tmax.bin
-     mphen_light raw            -  float /p/tmp/user/lpjml/output/mphen_light.bin
-     mphen_water raw            -  float /p/tmp/user/lpjml/output/mphen_water.bin
-          mfirec raw  gC/m2/month  float /p/tmp/user/lpjml/output/mfirec.bin
-      mdischarge raw        hm3/d  float /p/tmp/user/lpjml/output/mdischarge.bin
-    mwateramount raw          hm3  float /p/tmp/user/lpjml/output/mwateramount.bin
-         harvest raw     gC/m2/yr  float /p/tmp/user/lpjml/output/flux_harvest.bin
-           sdate raw            -  short /p/tmp/user/lpjml/output/sdate.bin
-     pft_harvest raw     gC/m2/yr  float /p/tmp/user/lpjml/output/pft_harvest.pft.bin
-         cftfrac raw            -  float /p/tmp/user/lpjml/output/cftfrac.bin
-     seasonality raw            -  short /p/tmp/user/lpjml/output/seasonality.bin
-            mpet raw     mm/month  float /p/tmp/user/lpjml/output/mpet.bin
-         malbedo raw            -  float /p/tmp/user/lpjml/output/malbedo.bin
-   maxthaw_depth raw           mm  float /p/tmp/user/lpjml/output/maxthaw_depth.bin
-      msoiltemp1 raw      Celsius  float /p/tmp/user/lpjml/output/msoiltemp1.bin
-      msoiltemp2 raw      Celsius  float /p/tmp/user/lpjml/output/msoiltemp2.bin
-      msoiltemp3 raw      Celsius  float /p/tmp/user/lpjml/output/msoiltemp3.bin
-     soilc_layer raw        gC/m2  float /p/tmp/user/lpjml/output/soilc_layer.bin
-             agb raw        gC/m2  float /p/tmp/user/lpjml/output/agb.bin
-        agb_TREE raw        gC/m2  float /p/tmp/user/lpjml/output/agb_tree.bin
-  mreturn_flow_b raw     mm/month  float /p/tmp/user/lpjml/output/mreturn_flow_b.bin
-       mtransp_b raw     mm/month  float /p/tmp/user/lpjml/output/mtransp_b.bin
-         mevap_b raw     mm/month  float /p/tmp/user/lpjml/output/mevap_b.bin
-       minterc_b raw     mm/month  float /p/tmp/user/lpjml/output/mintec_b.bin
- aconv_loss_evap raw        mm/yr  float /p/tmp/user/lpjml/output/aconv_loss_evap.bin
-aconv_loss_drain raw        mm/yr  float /p/tmp/user/lpjml/output/aconv_loss_drain.bin
----------------- --- ------------ ------ -------------------------------------
+Variable         Fmt Unit        Type  dT  Filename
+---------------- --- ----------- ----- --- ------------------------------------
+agb              raw gC/m2       float Y   output/agb.bin
+agb_tree         raw gC/m2       float Y   output/agb_tree.bin
+albedo           raw -           float M   output/malbedo.bin
+bnf              raw gN/m2/month float M   output/mbnf.bin
+cftfrac          raw -           float Y   output/cftfrac.bin
+conv_loss_drain  raw mm/yr       float Y   output/aconv_loss_drain.bin
+conv_loss_evap   raw mm/yr       float Y   output/aconv_loss_evap.bin
+deforest_emis    raw gC/m2/yr    float Y   output/deforest_emis.bin
+discharge        raw hm3/day     float M   output/mdischarge.bin
+evap             raw mm/month    float M   output/mevap.bin
+evap_b           raw mm/month    float M   output/mevap_b.bin
+fapar            raw -           float M   output/mfapar.bin
+firec            raw gC/m2/yr    float Y   output/firec.bin
+firef            raw yr          float Y   output/firef.bin
+firen            raw gN/m2/yr    float Y   output/firen.bin
+flux_estabc      raw gC/m2/yr    float Y   output/flux_estab.bin
+fpc              raw -           float Y   output/fpc.bin
+gpp              raw gC/m2/month float M   output/mgpp.bin
+grid             raw degree      short Y   output/grid.bin
+harvestc         raw gC/m2/yr    float Y   output/flux_harvest.bin
+interc           raw mm/month    float M   output/minterc.bin
+interc_b         raw mm/month    float M   output/mintec_b.bin
+leaching         raw gN/m2/month float M   output/mleaching.bin
+litc             raw gC/m2       float Y   output/litc.bin
+litn             raw gN/m2       float Y   output/litn.bin
+maxthaw_depth    raw mm          float Y   output/maxthaw_depth.bin
+n2_emis          raw gN/m2/month float M   output/mn2_emis.bin
+n2o_denit        raw gN/m2/month float M   output/mn2o_denit.bin
+n2o_nit          raw gN/m2/month float M   output/mn2o_nit.bin
+n_immo           raw gN/m2/month float M   output/mn_immo.bin
+n_mineralization raw gN/m2/month float M   output/mn_mineralization.bin
+n_volatilization raw gN/m2/month float M   output/mn_volatilization.bin
+npp              raw gC/m2/month float M   output/mnpp.bin
+nuptake          raw gN/m2/month float M   output/mnuptake.bin
+pet              raw mm/month    float M   output/mpet.bin
+pft_chawo        raw gC/m2       float Y   output/pft_chawo.bin
+pft_cleaf        raw gC/m2       float Y   output/pft_cleaf.bin
+pft_croot        raw gC/m2       float Y   output/pft_croot.bin
+pft_csapw        raw gC/m2       float Y   output/pft_csapw.bin
+pft_harvestc     raw gC/m2/yr    float Y   output/pft_harvest.pft.bin
+pft_laimax       raw m2/m2       float Y   output/pft_laimax.bin
+pft_ndemand      raw gN/yr       float Y   output/pft_ndemand.bin
+pft_nhawo        raw gN/m2       float Y   output/pft_nhawo.bin
+pft_nleaf        raw gN/m2       float Y   output/pft_nleaf.bin
+pft_nlimit       raw -           float Y   output/pft_nlimit.bin
+pft_nroot        raw gN/m2       float Y   output/pft_nroot.bin
+pft_nsapw        raw gN/m2       float Y   output/pft_nsapw.bin
+pft_nuptake      raw gN/m2/yr    float Y   output/pft_nuptake.bin
+pft_vegc         raw gC/m2       float Y   output/pft_vegc.bin
+pft_vegn         raw gN/m2       float Y   output/pft_vegn.bin
+phen_light       raw -           float M   output/mphen_light.bin
+phen_tmax        raw -           float M   output/mphen_tmax.bin
+phen_tmin        raw -           float M   output/mphen_tmin.bin
+phen_water       raw -           float M   output/mphen_water.bin
+prod_turnover    raw gC/m2/yr    float Y   output/prod_turnover.bin
+return_flow_b    raw mm/month    float M   output/mreturn_flow_b.bin
+rh               raw gC/m2/month float M   output/mrh.bin
+runoff           raw mm/month    float M   output/mrunoff.bin
+sdate            raw -           short Y   output/sdate.bin
+seasonality      raw -           short Y   output/seasonality.bin
+soilc            raw gC/m2       float Y   output/soilc.bin
+soilc_layer      raw gC/m2       float Y   output/soilc_layer.bin
+soiln            raw gN/m2       float Y   output/soiln.bin
+soiln_layer      raw gN/m2       float Y   output/soiln_layer.bin
+soiln_slow       raw gN/m2       float Y   output/soiln_slow.bin
+soilnh4          raw gN/m2       float Y   output/soilnh4.bin
+soilnh4_layer    raw gN/m2       float Y   output/soilnh4_layer.bin
+soilno3          raw gN/m2       float Y   output/soilno3.bin
+soilno3_layer    raw gN/m2       float Y   output/soilno3_layer.bin
+soiltemp1        raw Celsius     float M   output/msoiltemp1.bin
+soiltemp2        raw Celsius     float M   output/msoiltemp2.bin
+soiltemp3        raw Celsius     float M   output/msoiltemp3.bin
+swc1             raw -           float M   output/mswc1.bin
+swc2             raw -           float M   output/mswc2.bin
+transp           raw mm/month    float M   output/mtransp.bin
+transp_b         raw mm/month    float M   output/mtransp_b.bin
+vegc             raw gC/m2       float Y   output/vegc.bin
+vegn             raw gN/m2       float Y   output/vegn.bin
+wateramount      raw hm3         float M   output/mwateramount.bin
+---------------- --- ----------- ----- --- ------------------------------------
 Spinup years:                   390
 Cycle length during spinup:      30
 First year:                    1901

@@ -360,6 +360,13 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.withlanduse!=NO_LANDUSE)
   {
     bad+=checkdatafile(&config,&config.landuse_filename,"1");
+    if(config.nagtree)
+    {
+      bad+=checkinputfile(&config,&config.sowing_cotton_rf_filename,NULL,0);
+      bad+=checkinputfile(&config,&config.harvest_cotton_rf_filename,NULL,0);
+      bad+=checkinputfile(&config,&config.sowing_cotton_ir_filename,NULL,0);
+      bad+=checkinputfile(&config,&config.harvest_cotton_ir_filename,NULL,0);
+    }
     if(config.sdate_option==PRESCRIBED_SDATE)
       bad+=checkinputfile(&config,&config.sdate_filename,NULL,2*config.npft[CROP]);
     if(config.crop_phu_option==PRESCRIBED_CROP_PHU)

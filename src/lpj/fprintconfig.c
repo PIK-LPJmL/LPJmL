@@ -110,6 +110,17 @@ static size_t isnetcdfinput(const Config *config)
       width=max(width,strlen(config->countrycode_filename.var));
     if(config->landuse_filename.fmt==CDF)
       width=max(width,strlen(config->landuse_filename.var));
+    if(config->nagtree)
+    {
+      if(config->sowing_cotton_rf_filename.fmt==CDF)
+        width=max(width,strlen(config->sowing_cotton_rf_filename.var));
+      if(config->harvest_cotton_rf_filename.fmt==CDF)
+        width=max(width,strlen(config->harvest_cotton_rf_filename.var));
+      if(config->sowing_cotton_ir_filename.fmt==CDF)
+        width=max(width,strlen(config->sowing_cotton_ir_filename.var));
+      if(config->harvest_cotton_ir_filename.fmt==CDF)
+        width=max(width,strlen(config->harvest_cotton_ir_filename.var));
+    }
     if(config->sdate_option==PRESCRIBED_SDATE && config->sdate_filename.fmt==CDF)
       width=max(width,strlen(config->sdate_filename.var));
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU && config->crop_phu_filename.fmt==CDF)
@@ -486,6 +497,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     if(config->countrycode_filename.fmt==CDF)
       printinputfile(file,"regions",&config->regioncode_filename,width);
     printinputfile(file,"landuse",&config->landuse_filename,width);
+    if(config->nagtree)
+    {
+      printinputfile(file,"sowing_rf",&config->sowing_cotton_rf_filename,width);
+      printinputfile(file,"harvest_rf",&config->harvest_cotton_rf_filename,width);
+      printinputfile(file,"sowing_ir",&config->sowing_cotton_ir_filename,width);
+      printinputfile(file,"harvest_ir",&config->harvest_cotton_ir_filename,width);
+    }
     if(config->sdate_option==PRESCRIBED_SDATE)
       printinputfile(file,"sdates",&config->sdate_filename,width);
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)

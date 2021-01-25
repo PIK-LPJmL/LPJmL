@@ -20,8 +20,6 @@
 #include "agriculture.h"
 #include "woodplantation.h"
 
-#define FPC_MAX 0.95
-
 Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
                            int npft,             /**< number of natural pfts */
                            int ncft,             /**< number of crop PFTs */
@@ -32,8 +30,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
                            const Config *config  /**< LPJ configuration */
                           )                      /** \return stand has to be killed (TRUE/FALSE) */
 {
-#if defined IMAGE || defined INCLUDEWP
-  int p,pft_len,t,outIdx;
+  int p,pft_len,t,outIdx,index;
   Bool *present,isdead;
   int *n_est;
   Pft *pft;
@@ -56,7 +53,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   biomass_tree=stand->data;
 
   isdead=FALSE;
-
+  index=rwp(ncft)+biomass_tree->irrigation.irrigation*getnirrig(ncft,config);
   n_est=newvec(int,config->ntypes);
   check(n_est);
   fpc_type=newvec(Real,config->ntypes);
@@ -157,13 +154,13 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         stand->cell->balance.trad_biofuel.nitrogen+=biofuel.nitrogen;
         if(config->pft_output_scaled)
         {
-          stand->cell->output.pft_harvest[rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.carbon+=yield.carbon*stand->frac;
-          stand->cell->output.pft_harvest[rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.nitrogen+=yield.nitrogen*stand->frac;
+          stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon*stand->frac;
+          stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen*stand->frac;
         }
         else
         {
-          stand->cell->output.pft_harvest[rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.carbon+=yield.carbon;
-          stand->cell->output.pft_harvest[rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)].harvest.nitrogen+=yield.nitrogen;
+          stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon;
+          stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen;
         }
         biomass_tree->growing_time=0;
         fpc_tree(pft);
@@ -229,7 +226,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
 
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)
-     adjust(&stand->soil.litter, pft, fpc_type[pft->par->type], FPC_MAX);
+     adjust(&stand->soil.litter, pft, fpc_type[pft->par->type], param.fpc_tree_max);
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
 
   if (fpc_total>1.0)
@@ -254,7 +251,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         isdead=TRUE;
     }
 
-  stand->cell->output.cftfrac[rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].woodplantation;
+  stand->cell->output.cftfrac[index]+=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].woodplantation;
 
   free(present);
   free(fpc_type);
@@ -276,11 +273,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   biomass_tree->growing_time++;
   foreachpft(pft,p,&stand->pftlist)
   {
-    stand->cell->output.pft_veg[npft-config->nbiomass-config->nwft+rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].carbon+=vegc_sum(pft);
-    stand->cell->output.pft_veg[npft-config->nbiomass-config->nwft+rwp(ncft)+biomass_tree->irrigation.irrigation*(ncft+NGRASS*NBIOMASSTYPE+NWPTYPE)].nitrogen+=vegn_sum(pft);
+    stand->cell->output.pft_veg[getnnat(npft,config)+index].carbon+=vegc_sum(pft);
+    stand->cell->output.pft_veg[getnnat(npft,config)+index].nitrogen+=vegn_sum(pft);
   }
   return FALSE;
-#else
-  return TRUE;
-#endif
 } /* of 'annual_woodplantation' */

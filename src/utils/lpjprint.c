@@ -19,19 +19,15 @@
 #include "natural.h"
 #include "grassland.h"
 #include "agriculture.h"
+#include "agriculture_tree.h"
+#include "agriculture_grass.h"
 #include "biomass_tree.h"
 #include "biomass_grass.h"
-#if defined IMAGE || defined INCLUDEWP
 #include "woodplantation.h"
-#endif
 
 #define PRINTLPJ_VERSION "1.0.019"
 #define NTYPES 3
-#if defined IMAGE || defined INCLUDEWP
-#define NSTANDTYPES 10 /* number of stand types */
-#else 
-#define NSTANDTYPES 9 /* number of stand types */
-#endif
+#define NSTANDTYPES 12 /* number of stand types */
 
 #ifdef USE_JSON
 #define dflt_conf_filename "lpjml.js"
@@ -115,7 +111,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       }
       else
         initmanage(&grid.ml.manage,config->countrypar+code.country,
-                   config->regionpar+code.region,config->pftpar,npft,ncft,
+                   config->regionpar+code.region,config->pftpar,npft,config->nagtree,ncft,
                    config->laimax_interpolate,config->laimax);
     }
     else
@@ -135,9 +131,9 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     grid.ml.dam=FALSE;
     if(config->withlanduse!=NO_LANDUSE)
     {
-      grid.ml.landfrac=newlandfrac(ncft);
+      grid.ml.landfrac=newlandfrac(ncft,config->nagtree);
       if(config->with_nitrogen)
-        grid.ml.fertilizer_nr=newlandfrac(ncft);
+        grid.ml.fertilizer_nr=newlandfrac(ncft,config->nagtree);
       else
         grid.ml.fertilizer_nr=NULL;
 
@@ -189,9 +185,9 @@ int main(int argc,char **argv)
   standtype[GRASSLAND]=grassland_stand;
   standtype[BIOMASS_TREE]=biomass_tree_stand;
   standtype[BIOMASS_GRASS]=biomass_grass_stand;
-#if defined IMAGE || defined INCLUDEWP
+  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
   standtype[WOODPLANTATION]=woodplantation_stand,
-#endif
   standtype[KILL]=kill_stand;
 
   progname=strippath(argv[0]);

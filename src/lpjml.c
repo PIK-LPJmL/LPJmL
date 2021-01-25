@@ -81,13 +81,11 @@
 #include "biomass_tree.h"
 #include "biomass_grass.h"
 #include "agriculture.h"
+#include "agriculture_grass.h"
+#include "agriculture_tree.h"
 
 #define NTYPES 3 /* number of plant functional types: grass, tree, annual_crop */
-#if defined IMAGE || defined INCLUDEWP
-#define NSTANDTYPES 10 /* number of stand types / land use types as defined in landuse.h*/
-#else
-#define NSTANDTYPES 9 /* number of stand types / land use types as defined in landuse.h*/
-#endif
+#define NSTANDTYPES 12 /* number of stand types / land use types as defined in landuse.h*/
 
 #ifdef USE_JSON
 #define dflt_conf_filename_ml "lpjml.js" /* Default LPJ configuration file
@@ -123,9 +121,9 @@ int main(int argc,char **argv)
   standtype[GRASSLAND]=grassland_stand;
   standtype[BIOMASS_TREE]=biomass_tree_stand;
   standtype[BIOMASS_GRASS]=biomass_grass_stand;
-#if defined IMAGE || defined INCLUDEWP
+  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
   standtype[WOODPLANTATION]=woodplantation_stand,
-#endif
   standtype[KILL]=kill_stand;
 
 

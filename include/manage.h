@@ -35,7 +35,7 @@ typedef struct
   Real laimax_maize;    /*laimax for maize*/
   /* parameters defined for each country */
   Real *laimax_cft;  /* pointer to crop-specific laimax */
-
+  Real *k_est;
 } Countrypar;
 
 
@@ -54,6 +54,7 @@ typedef struct
   const Countrypar *par;    /* pointer to country-specific parameter */
   const Regionpar *regpar;  /* pointer to region-specific parameter */
   Real *laimax;             /* maximum crop specific LAI */
+  Real *k_est;
 } Manage;
 
 extern char *irrigsys[];
@@ -62,10 +63,11 @@ extern char *irrigsys[];
 
 extern int fscancountrypar(LPJfile *,Countrypar **,Bool,int,Verbosity);
 extern int fscanregionpar(LPJfile *,Regionpar **,Verbosity);
-extern void fprintcountrypar(FILE *,const Countrypar *,int,int);
+extern int fscantreedens(LPJfile *,Countrypar *,int,int,Verbosity);
+extern void fprintcountrypar(FILE *,const Countrypar *,int,int,const Config *);
 extern void fprintregionpar(FILE *,const Regionpar[],int);
 extern Bool initmanage(Manage *, const Countrypar *, const Regionpar *,const Pftpar *,int,
-                       int,int,Real);
+                       int,int,int,Real);
 extern void freemanage(Manage *,int);
 extern FILE *opencountrycode(const Filename *,Bool *,Type *,size_t *,Bool);
 extern FILE *createcountrycode(const char *,int,int);

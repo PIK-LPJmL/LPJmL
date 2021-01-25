@@ -17,18 +17,14 @@
 #include "agriculture.h"
 #include "woodplantation.h"
 
-#if defined IMAGE || defined INCLUDEWP
 Real daily_woodplantation(Stand *stand,       /**< stand pointer */
                         Real co2,             /**< atmospheric CO2 (ppmv) */
                         const Dailyclimate *climate, /**< Daily climate values */
                         int day,              /**< day (1..365) */
                         int month,            /**< [in] month (0..11) */
                         Real daylength,       /**< length of day (h) */
-                        const Real gp_pft[],  /**< pot. canopy conductance for PFTs & CFTs*/
                         Real gtemp_air,       /**< value of air temperature response function */
                         Real gtemp_soil,      /**< value of soil temperature response function */
-                        Real gp_stand,        /**< potential stomata conductance */
-                        Real gp_stand_leafon, /**< pot. canopy conduct.at full leaf cover */
                         Real eeq,             /**< equilibrium evapotranspiration (mm) */
                         Real par,             /**< photosynthetic active radiation flux */
                         Real melt,            /**< melting water (mm) */
@@ -40,8 +36,12 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
                         const Config *config  /**< LPJ config */
                        )                      /** \return runoff (mm) */
 {
-  int p,l;
+  int p,l,nnat,index;
   Pft *pft;
+  Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
+  Real gp_stand;               /**< potential stomata conductance  (mm/s) */
+  Real gp_stand_leafon;        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
+  Real fpc_total_stand;
   Output *output;
   Real aet_stand[LASTLAYER];
   Real green_transp[LASTLAYER];
@@ -64,6 +64,8 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
 
   soil = &stand->soil;
   data=stand->data;
+  nnat=npft-config->nbiomass-config->nwft;
+  index=rwp(ncft)+data->irrigation.irrigation*getnirrig(ncft,config);
   output=&stand->cell->output;
   stand->growing_days++;
   evap=evap_blue=cover_stand=intercep_stand=intercep_stand_blue=runoff=return_flow_b=wet_all=intercept=sprink_interc=rainmelt=irrig_apply=0.0;
@@ -76,13 +78,17 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   }
   else
     wet = NULL;
+  gp_pft=newvec(Real,npft+ncft);
+  check(gp_pft);
+  gp_stand=gp_sum(&stand->pftlist,co2,climate->temp,par,daylength,
+                  &gp_stand_leafon,gp_pft,&fpc_total_stand,config);
   if (!config->river_routing)
-    irrig_amount(stand, &data->irrigation,config->pft_output_scaled, npft, ncft,month);
+    irrig_amount(stand, &data->irrigation, npft, ncft,month,config);
 
   if(config->pft_output_scaled)
-    stand->cell->output.cft_airrig[rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->irrigation.irrig_amount*stand->cell->ml.landfrac[1].woodplantation;
+    stand->cell->output.cft_airrig[index]+=data->irrigation.irrig_amount*stand->cell->ml.landfrac[1].woodplantation;
   else
-    stand->cell->output.cft_airrig[rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->irrigation.irrig_amount;
+    stand->cell->output.cft_airrig[index]+=data->irrigation.irrig_amount;
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[1]=0;
@@ -115,9 +121,9 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
       }
 #endif
       if (config->pft_output_scaled)
-        stand->cell->output.cft_airrig[rwp(ncft) + data->irrigation.irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += irrig_apply*stand->cell->ml.landfrac[1].woodplantation;
+        stand->cell->output.cft_airrig[index] += irrig_apply*stand->cell->ml.landfrac[1].woodplantation;
       else
-        stand->cell->output.cft_airrig[rwp(ncft) + data->irrigation.irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += irrig_apply;
+        stand->cell->output.cft_airrig[index] += irrig_apply;
     }
   }
 
@@ -147,7 +153,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   {
     runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
-    output->cft_irrig_events[rwp(ncft) + data->irrigation.irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)]++;
+    output->cft_irrig_events[index]++;
   }
 
   runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,npft,ncft,config);
@@ -172,8 +178,8 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
     if(stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation>0.0 &&
       gp_pft[getpftpar(pft,id)]>0.0)
    {
-     output->gcgp_count[(npft-config->nbiomass-config->nwft)+rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]++;
-     output->pft_gcgp[(npft-config->nbiomass)+rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=gc_pft/gp_pft[getpftpar(pft,id)];
+     output->gcgp_count[nnat+index]++;
+     output->pft_gcgp[nnat+index]+=gc_pft/gp_pft[getpftpar(pft,id)];
    }
    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
    if(output->daily.cft==ALLSTAND)
@@ -188,13 +194,14 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
 #endif
    output->dcflux-=npp*stand->frac;
    output->gpp+=gpp*stand->frac;
-   output->cft_fpar[rwp(ncft) + data->irrigation.irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += (fpar(pft)*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation*(1.0 / (1 - stand->cell->lakefrac)));
+   output->cft_fpar[index] += (fpar(pft)*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation*(1.0 / (1 - stand->cell->lakefrac)));
    if (config->pft_output_scaled)
-     output->pft_npp[(npft-config->nbiomass-config->nwft)+rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation;
+     output->pft_npp[nnat+index]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation;
    else
-     output->pft_npp[(npft-config->nbiomass-config->nwft)+rwp(ncft)+data->irrigation.irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=npp;
+     output->pft_npp[nnat+index]+=npp;
   } /* of foreachpft */
 
+  free(gp_pft);
   /* soil outflow: evap and transpiration */
   waterbalance(stand,aet_stand,green_transp,&evap,&evap_blue,wet_all,eeq,cover_stand,
                &frac_g_evap,config->rw_manage);
@@ -234,9 +241,8 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
 
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw_woodplantation(output, stand, frac_g_evap, evap, evap_blue, return_flow_b, aet_stand, green_transp,
-                            intercep_stand, intercep_stand_blue, ncft, config->pft_output_scaled);
+                            intercep_stand, intercep_stand_blue, ncft, config);
   free(wet);
   return runoff;
 } /* of 'daily_woodplantation' */
-#endif
 

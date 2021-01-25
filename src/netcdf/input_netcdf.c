@@ -663,7 +663,7 @@ Bool readinput_netcdf(const Input_netcdf input,Real *data,
 } /* of 'readinput_netcdf' */
 
 Bool readintinput_netcdf(const Input_netcdf input,int *data,
-                         const Coord *coord)
+                         const Coord *coord,Bool *ismissing)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int rc,index;
@@ -702,11 +702,7 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
       }
       for(i=0;i<input->var_len;i++)
         if(data[i]==input->missing_value.i)
-        {
-          fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
-                  sprintcoord(line,coord));
-          return TRUE;
-        }
+          *ismissing=TRUE;
       break;
     case LPJ_SHORT:
       s=newvec(short,input->var_len);
@@ -721,12 +717,7 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
       for(i=0;i<input->var_len;i++)
       {
         if(s[i]==input->missing_value.s)
-        {
-          fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
-                  sprintcoord(line,coord));
-          free(s);
-          return TRUE;
-        }
+          *ismissing=TRUE;
         data[i]=s[i];
       }
       free(s);
@@ -736,7 +727,7 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
       checkptr(f);
       if((rc=nc_get_vara_float(input->ncid,input->varid,offsets,counts,f)))
       {
-        fprintf(stderr,"ERROR415: Cannot read short data for cell (%s): %s.\n",
+        fprintf(stderr,"ERROR415: Cannot read float data for cell (%s): %s.\n",
                 sprintcoord(line,coord),nc_strerror(rc));
         free(f);
         return TRUE;
@@ -744,12 +735,7 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
       for(i=0;i<input->var_len;i++)
       {
         if(f[i]==input->missing_value.f)
-        {
-          fprintf(stderr,"ERROR423: Missing value for cell (%s).\n",
-                  sprintcoord(line,coord));
-          free(f);
-          return TRUE;
-        }
+          *ismissing=TRUE;
         data[i]=(int)f[i];
       }
       free(f);

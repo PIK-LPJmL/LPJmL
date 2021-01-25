@@ -18,11 +18,7 @@
 #include "agriculture.h"
 #include "woodplantation.h"
 
-#if defined IMAGE || defined INCLUDEWP
-
 Standtype woodplantation_stand={WOODPLANTATION,"woodplantation",new_biomass_tree,
                                 free_agriculture,fwrite_biomass_tree,
                                 fread_biomass_tree,fprint_biomass_tree,
                                 daily_woodplantation,annual_woodplantation,NULL};
-
-#endif

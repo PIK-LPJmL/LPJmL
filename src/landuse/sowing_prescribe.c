@@ -107,7 +107,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
                 //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
                 data->irrigation=irrigation->irrigation;
                 reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
-                set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
+                set_irrigsystem(cropstand,cft,npft,ncft,config);
                 setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,FALSE,year,config);
                 setasidestand=getstand(cell->standlist,pos-1);
                 wtype=(croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE&&day>earliest_sdate) ? TRUE : FALSE;
@@ -186,7 +186,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
                 //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
                 data->irrigation= irrigation->irrigation;
                 reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft);
-                set_irrigsystem(cropstand,cft,ncft,config->pft_output_scaled);
+                set_irrigsystem(cropstand,cft,npft,ncft,config);
                 setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrigation->irrigation,year,config);
                 setasidestand=getstand(cell->standlist, pos-1);
                 wtype=(croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE&&day>earliest_sdate)?TRUE:FALSE;

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   p  a  r  a  m  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default input parameter file for LPJmL C Version 5.2.001                       \n**/
+/** Default input parameter file for LPJmL C Version 5.3.001                       \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -19,3 +19,4 @@
 #include "par/manage_laimax_alphaa_fao_rev4453_20180507.js" /* Management parameter file */
 #include "par/manage_reg.js"    /* Management parameter file for regions*/
 #include "par/outputvars.js"
+#include "par/manage_treedens.js"
