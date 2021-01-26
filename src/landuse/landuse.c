@@ -594,7 +594,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
 /**                                                                                \n**/
 /**************************************************************************************/
 
-static Real reducelanduse(Cell *cell,Real sum,int ncft)
+static Real reducelanduse(Cell *cell,Real sum,int ncft,int nagtree)
 {
   int i,j;
   if(cell->ml.landfrac[0].grass[1]>sum)
@@ -615,6 +615,12 @@ static Real reducelanduse(Cell *cell,Real sum,int ncft)
         cell->ml.landfrac[j].crop[i]-=sum;
         return 0;
       }
+    for(i=0; i<nagtree; i++)
+      if(cell->ml.landfrac[j].ag_tree[i]>sum)
+      {
+        cell->ml.landfrac[j].ag_tree[i]-=sum;
+        return 0;
+      }
     for(i=0; i<NGRASS; i++)
       if(cell->ml.landfrac[j].grass[i]>sum)
       {
@@ -629,6 +635,11 @@ static Real reducelanduse(Cell *cell,Real sum,int ncft)
     if(cell->ml.landfrac[j].biomass_grass>sum)
     {
       cell->ml.landfrac[j].biomass_grass-=sum;
+      return 0;
+    }
+    if(cell->ml.landfrac[j].woodplantation>sum)
+    {
+      cell->ml.landfrac[j].woodplantation-=sum;
       return 0;
     }
   }
@@ -1016,7 +1027,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         grid[cell].ml.landfrac[0].ag_tree[j]=grid[cell].ml.landfrac[1].ag_tree[j]=0;
       grid[cell].ml.landfrac[0].grass[0]=grid[cell].ml.landfrac[1].grass[0]=0;
       grid[cell].ml.landfrac[0].biomass_grass=grid[cell].ml.landfrac[1].biomass_grass=
-        grid[cell].ml.landfrac[0].biomass_tree=grid[cell].ml.landfrac[1].biomass_tree=0;
+      grid[cell].ml.landfrac[0].biomass_tree=grid[cell].ml.landfrac[1].biomass_tree=0;
+      grid[cell].ml.landfrac[0].woodplantation=grid[cell].ml.landfrac[1].woodplantation=0;
     }
     
     /* force tinyfrac for all crops only on pixels with valid soil */
@@ -1110,7 +1122,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                 cell+config->startgrid,yearl+landuse->landuse.firstyear,sum);
         fflush(stderr);
       }
-      sum=reducelanduse(grid+cell,sum-1,ncft);
+      sum=reducelanduse(grid+cell,sum-1,ncft,config->nagtree);
       if(sum>0.00001)
         fail(CROP_FRACTION_ERR,FALSE,
              "crop fraction greater 1: %f cell: %d, managed grass is 0",
@@ -1439,12 +1451,10 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         count++;
     free(dates);
   }
-  if(config->tillage_type!=READ_TILLAGE)
+  else
   {
     for(cell=0; cell<config->ngridcell; cell++)
-    {
       grid[cell].ml.with_tillage=config->tillage_type!=NO_TILLAGE;
-    }
   }
 
   if(config->residue_treatment==READ_RESIDUE_DATA)

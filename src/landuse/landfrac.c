@@ -41,23 +41,20 @@ Landfrac *newlandfrac(int ncft,   /**< number of crop PFTs */
  return landfrac;
 } /* of 'newlandfrac' */
 
-void initlandfracitem(Landfrac *landfrac, /**< land fractions (non-irrig., irrig.) */
+void initlandfracitem(Landfrac *landfrac, /**< land fractions */
                       int ncft,           /**< number of crop PFTs */
                       int nagtree         /**< number of agriculture tree PFTs */
                      )
 {
-  int i,j;
-  for(i=0;i<2;i++)
-  {
-    for(j=0;j<ncft;j++)
-      landfrac->crop[j]=0;
-    for(j=0;j<nagtree;j++)
-      landfrac->ag_tree[j]=0;
-    for(j=0;j<NGRASS;j++)
-      landfrac->grass[j]=0;
-    landfrac->biomass_grass=landfrac->biomass_tree=0;
-    landfrac->woodplantation=0;
-  }
+  int j;
+  for(j=0;j<ncft;j++)
+    landfrac->crop[j]=0;
+  for(j=0;j<nagtree;j++)
+    landfrac->ag_tree[j]=0;
+  for(j=0;j<NGRASS;j++)
+    landfrac->grass[j]=0;
+  landfrac->biomass_grass=landfrac->biomass_tree=0;
+  landfrac->woodplantation=0;
 } /* of 'initlandfracitem' */
 
 void initlandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
@@ -65,7 +62,7 @@ void initlandfrac(Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.)
                   int nagtree           /**< number of agriculture tree PFTs */
                  )
 {
-  int i,j;
+  int i;
   for(i=0;i<2;i++)
     initlandfracitem(landfrac+i,ncft,nagtree);
 } /* of 'initlandfrac' */
@@ -173,7 +170,8 @@ int readlandfracmap(Landfrac *landfrac,
                     const Real data[],
                     int count,
                     int ncft,
-                    int nwpt)
+                    int nwpt
+                   )
 {
   int i;
   for(i=0;i<size;i++)
