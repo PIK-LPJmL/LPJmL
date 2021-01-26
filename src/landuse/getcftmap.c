@@ -101,7 +101,7 @@ int *getcftmap(LPJfile *file,       /**< pointer to LPJ config file */
           cftmap[cft]=findstr(s,wppft,1);
           if(cftmap[cft]!=NOT_FOUND)
           {
-            cftmap[cft]+=ncft+NGRASS-NBIOMASSTYPE;
+            cftmap[cft]+=ncft+NGRASS+NBIOMASSTYPE;
             undef[cftmap[cft]]=FALSE;
             continue;
           }
@@ -111,7 +111,7 @@ int *getcftmap(LPJfile *file,       /**< pointer to LPJ config file */
           cftmap[cft]=findpftname(s,config->pftpar+npft-config->nagtree,config->nagtree);
           if(cftmap[cft]!=NOT_FOUND)
           {
-            cftmap[cft]+=ncft+NGRASS-NBIOMASSTYPE+config->nwptype;
+            cftmap[cft]+=ncft+NGRASS+NBIOMASSTYPE+config->nwptype;
             undef[cftmap[cft]]=FALSE;
             continue;
           }
