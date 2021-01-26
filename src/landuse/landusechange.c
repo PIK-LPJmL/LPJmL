@@ -354,22 +354,22 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           mixstand->type=&biomass_grass_stand;
           mixstand->type->newstand(mixstand);
           break;
-      case WOOD_PLANTATION:
-        for (p = 0;p < npft;p++)
-          if (establish(cell->gdd[p], config->pftpar + p, &cell->climbuf) &&
-            config->pftpar[p].type == TREE && config->pftpar[p].cultivation_type == WP)
-          {
-            addpft(mixstand, config->pftpar + p, year, 0,config->with_nitrogen,config->double_harvest);
-            n_est[config->pftpar[p].type]++;
-          }
-        mixstand->type->freestand(mixstand);
-        mixstand->type = &woodplantation_stand;
-        mixstand->type->newstand(mixstand);
-      break;
-        default:
-          fail(WRONG_CULTIVATION_TYPE_ERR,TRUE,
-               "WRONG CULTIVATION TYPE in landexpansion()");
-          break;
+        case WOOD_PLANTATION:
+          for (p = 0;p < npft;p++)
+            if (establish(cell->gdd[p], config->pftpar + p, &cell->climbuf) &&
+              config->pftpar[p].type == TREE && config->pftpar[p].cultivation_type == WP)
+            {
+              addpft(mixstand, config->pftpar + p, year, 0,config->with_nitrogen,config->double_harvest);
+              n_est[config->pftpar[p].type]++;
+            }
+          mixstand->type->freestand(mixstand);
+          mixstand->type = &woodplantation_stand;
+          mixstand->type->newstand(mixstand);
+        break;
+          default:
+            fail(WRONG_CULTIVATION_TYPE_ERR,TRUE,
+                 "WRONG CULTIVATION TYPE in landexpansion()");
+            break;
       } /* of switch */
       data=mixstand->data;
       data->irrigation=irrigation;
@@ -969,7 +969,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
   }
 
   foreachstand(stand,s,cell->standlist)
-    if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS) /* do not update for crops, must be done in sowing functions */
+    if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS || stand->type->landusetype=WOODPLANTATION) /* do not update for crops, must be done in sowing functions */
       set_irrigsystem(stand,0,npft,ncft,config); /* no CFT index needed for non-agricultural stands */
 
 #ifdef SAFE
