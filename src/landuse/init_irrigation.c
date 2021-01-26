@@ -21,6 +21,7 @@ void init_irrigation(Irrigation *irrigation)
   irrigation->irrigation=FALSE;
   irrigation->irrig_event=FALSE;
   irrigation->irrig_system=NOIRRIG;
+  irrigation->pft_id=-1;
   irrigation->ec=1;
   irrigation->conv_evap=irrigation->net_irrig_amount=irrigation->dist_irrig_amount=irrigation->irrig_amount=irrigation->irrig_stor=0.0;
 } /* of 'init_irrigation' */
