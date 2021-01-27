@@ -20,13 +20,13 @@
 
 #define NPERCO 0.4  /*controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
 
-Real infil_perc_rain(Stand *stand,       /**< Stand pointer */
-                     Real infil,         /**< rainfall + melting water - interception_stand (mm) + rw_irrig */
+Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
+                     Real infil,          /**< rainfall + melting water - interception_stand (mm) + rw_irrig */
                      Real *return_flow_b, /**< blue water return flow (mm) */
-                     int npft,
-                     int ncft,
+                     int npft,            /**< number of natural PFTs */
+                     int ncft,            /**< number of crop PFTs */
                      const Config *config /**< LPJ configuration */
-                    )                    /** \return water runoff (mm) */
+                    )                     /** \return water runoff (mm) */
 {
   Real runoff;
   Real perc,slug,tolitter;

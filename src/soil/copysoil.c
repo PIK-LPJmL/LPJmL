@@ -44,7 +44,6 @@ void copysoil(Soil *dst,       /**< destination */
   dst->maxthaw_depth=src->maxthaw_depth;
   dst->mean_maxthaw=src->mean_maxthaw;
   dst->decomp_litter_mean=src->decomp_litter_mean;
-  dst->whcs_all=src->whcs_all;
   dst->litter.agtop_wcap=src->litter.agtop_wcap;
   dst->litter.agtop_moist=src->litter.agtop_moist;
   dst->litter.agtop_cover=src->litter.agtop_cover;

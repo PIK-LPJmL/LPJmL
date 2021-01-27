@@ -17,6 +17,18 @@
 
 "inpath" : "/p/projects/biodiversity",
 
+/* the following array describes the order of the CFT bands in the land use file */
+
+"landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                "temperate roots", "tropical roots", "oil crops sunflower",
+                "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                "sugarcane","others","grassland","biomass grass","biomass tree"],
+
+"fertilizermap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                   "temperate roots", "tropical roots", "oil crops sunflower",
+                   "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                   "sugarcane","others","grassland","biomass grass","biomass tree"],
+
 "input" :
 {
   "soil" : { "fmt" : "cdf", "var" : "soilcode", "name" : "cru_netcdf/soil_new_67420.nc"},

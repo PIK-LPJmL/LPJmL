@@ -226,6 +226,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->cropsheatfrost=FALSE;
   config->black_fallow=FALSE;
   config->double_harvest=FALSE;
+  config->others_to_crop = FALSE;
   if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
     return TRUE;
   config->storeclimate=TRUE;;
@@ -319,7 +320,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       if(config->laimax_interpolate==CONST_LAI_MAX)
         fscanreal2(file,&config->laimax,"laimax");
-      config->others_to_crop = FALSE;
       if (fscanbool(file, &config->others_to_crop, "others_to_crop", TRUE, verbose))
         return TRUE;
       if(config->river_routing)
@@ -529,6 +529,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     config->landusemap=getcftmap(file,&config->landusemap_size,"landusemap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
     if(config->landusemap==NULL)
+      return TRUE;
+    config->fertilizermap=getcftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+    if(config->fertilizermap==NULL)
       return TRUE;
     scanclimatefilename(&input,&config->countrycode_filename,config->inputdir,FALSE,"countrycode");
     if(config->countrycode_filename.fmt==CDF)

@@ -120,12 +120,9 @@ int *getcftmap(LPJfile *file,       /**< pointer to LPJ config file */
       if(cftmap[cft]==NOT_FOUND)
       {
         if(verbose)
-          fprintf(stderr,"ERROR241: Invalid CFT '%s' in '%s' array.\n",s,name);
-        free(cftmap);
-        free(undef);
-        return NULL;
+          fprintf(stderr,"WARNING011: Unknown CFT '%s' in '%s' array, will be ignored.\n",s,name);
       }
-    }
+    } /* of for(cft=0...) */
     if(isroot(*config))
     {
     for(cft=0;cft<ncft;cft++)

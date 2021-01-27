@@ -43,15 +43,15 @@ Real tinyfrac=max(epsilon*10,1e-6);
 
 struct landuse
 {
-  Bool intercrop;      /**< intercropping possible (TRUE/FALSE) */
-  Climatefile landuse; /**< file pointer */
-  Climatefile fertilizer_nr; /**< file pointer to nitrogen fertilizer file */
-  Climatefile manure_nr; /**< file pointer to manure fertilizer file */
-  Climatefile with_tillage; /**< file pointer to tillage file */
+  Bool intercrop;               /**< intercropping possible (TRUE/FALSE) */
+  Climatefile landuse;          /**< file pointer */
+  Climatefile fertilizer_nr;    /**< file pointer to nitrogen fertilizer file */
+  Climatefile manure_nr;        /**< file pointer to manure fertilizer file */
+  Climatefile with_tillage;     /**< file pointer to tillage file */
   Climatefile residue_on_field; /**< file pointer to residue extraction file */
-  Climatefile sdate;   /**< file pointer to prescribed sdates */
-  Climatefile crop_phu;   /**< file pointer to prescribed crop phus */
-};                     /**< definition of opaque datatype Landuse */
+  Climatefile sdate;            /**< file pointer to prescribed sdates */
+  Climatefile crop_phu;         /**< file pointer to prescribed crop phus */
+};                              /**< definition of opaque datatype Landuse */
 
 Landuse initlanduse(int ncft,            /**< number of crop PFTs */
                     const Config *config /**< LPJ configuration */
@@ -270,7 +270,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       if(config->fertilizer_nr_filename.fmt==RAW)
       {
-        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE+config->nwptype);
+        header.nbands=2*config->fertilizermap_size;
         header.datatype=LPJ_SHORT;
         landuse->fertilizer_nr.offset=config->startgrid*header.nbands*sizeof(short);
       }
@@ -284,23 +284,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->fertilizer_nr.var_len=header.nbands;
       landuse->fertilizer_nr.scalar=header.scalar;
     }
-    if(landuse->fertilizer_nr.var_len==2*(ncft+NGRASS))
-    {
-      if(isroot(*config))
-        fputs("WARNING022: No fertilizer input for biomass and agriculture trees defined.\n",stderr);
-    }
-    if(landuse->fertilizer_nr.var_len==2*(ncft+NGRASS+NBIOMASSTYPE))
-    {
-      if(isroot(*config))
-        fputs("WARNING022: No fertilizer input for agriculture trees defined.\n",stderr);
-    }
-    else if(landuse->fertilizer_nr.var_len!=2*(ncft+NGRASS+config->nagtree+NBIOMASSTYPE+config->nwptype))
+    if(landuse->fertilizer_nr.var_len!=2*config->fertilizermap_size)
     {
       closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%d in fertilizer Nr data file, must be %d.\n",
-                (int)landuse->fertilizer_nr.var_len,2*(ncft+NGRASS+config->nagtree+NBIOMASSTYPE+config->nwptype));
+                (int)landuse->fertilizer_nr.var_len,2*config->fertilizermap_size);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -348,7 +338,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       if(config->manure_nr_filename.fmt==RAW)
       {
-        header.nbands=2*(ncft+NGRASS+NBIOMASSTYPE+config->nwptype);
+        header.nbands=2*config->fertilizermap_size;
         header.datatype=LPJ_SHORT;
         landuse->manure_nr.offset=config->startgrid*header.nbands*sizeof(short);
       }
@@ -362,23 +352,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->manure_nr.var_len=header.nbands;
       landuse->manure_nr.scalar=header.scalar;
     }
-    if(landuse->manure_nr.var_len==2*(ncft+NGRASS))
-    {
-      if(isroot(*config))
-        fputs("WARNING022: No manure input for biomass and agriculture trees defined.\n",stderr);
-    }
-    if(landuse->manure_nr.var_len==2*(ncft+NGRASS+NBIOMASSTYPE))
-    {
-      if(isroot(*config))
-        fputs("WARNING022: No manure input for agriculture trees defined.\n",stderr);
-    }
-    else if(landuse->manure_nr.var_len!=2*(ncft+NGRASS+config->nagtree+NBIOMASSTYPE+config->nwptype))
+    if(landuse->manure_nr.var_len!=2*config->fertilizermap_size)
     {
       closeclimatefile(&landuse->manure_nr,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%d in manure Nr data file. must be %d.\n",
-               (int)landuse->manure_nr.var_len,2*(ncft+NGRASS+config->nagtree+NBIOMASSTYPE+config->nwptype));
+               (int)landuse->manure_nr.var_len,2*config->fertilizermap_size);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -513,7 +493,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       if(config->residue_data_filename.fmt==RAW)
       {
-        header.nbands=ncft+NGRASS+NBIOMASSTYPE+config->nwptype;
+        header.nbands=config->fertilizermap_size;
         header.datatype=LPJ_SHORT;
         landuse->residue_on_field.offset=config->startgrid*header.nbands*sizeof(short);
       }
@@ -529,23 +509,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->residue_on_field.var_len=header.nbands;
       landuse->residue_on_field.scalar=header.scalar;
     }
-    if(landuse->residue_on_field.var_len==ncft+NGRASS)
-    {
-      if(isroot(*config))
-        fputs("WARNING022: No residue input for biomass and agriculture tress defined.\n",stderr);
-    }
-    if(landuse->residue_on_field.var_len==ncft+NGRASS+NBIOMASSTYPE)
-    {
-      if(isroot(*config))
-        fputs("WARNING022: No residue input for agriculture tress defined.\n",stderr);
-    }
-    else if(landuse->residue_on_field.var_len!=ncft+NGRASS+config->nagtree+NBIOMASSTYPE+config->nwptype)
+    if(landuse->residue_on_field.var_len!=config->fertilizermap_size)
     {
       closeclimatefile(&landuse->residue_on_field,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%d in residue extraction data file, must be %d.\n",
-                (int)landuse->residue_on_field.var_len,ncft+NGRASS+config->nagtree+NBIOMASSTYPE+config->nwptype);
+                (int)landuse->residue_on_field.var_len,config->fertilizermap_size);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -840,10 +810,10 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       soiltype=-1;
     for(i=0;i<WIRRIG;i++)
     {
+      initlandfracitem(grid[cell].ml.landfrac+i,ncft,config->nagtree);
       /* read cropfrac from 32 bands or rain-fed cropfrac from 64 bands input */
       if(landuse->landuse.var_len!=4*config->landusemap_size || i<1)
       {
-        initlandfracitem(grid[cell].ml.landfrac+i,ncft,config->nagtree);
         if(i>0 && !grid[cell].skip)
         {
           for(j=0;j<ncft;j++)
@@ -860,14 +830,15 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       }
       else /* read irrigated cropfrac and irrigation systems from 64 bands input */
       {
-        initlandfracitem(grid[cell].ml.landfrac+i,ncft,config->nagtree);
         for(p=SURF;p<=DRIP;p++) /* irrigation system loop; 1: surface, 2: sprinkler, 3: drip */
         {
           for(j=0;j<config->landusemap_size;j++)
           {
             if(data[count]>0)
             {
-              if(config->landusemap[j]<ncft)
+              if(config->landusemap[j]==NOT_FOUND)
+                count++;
+              else if(config->landusemap[j]<ncft)
               {
                 grid[cell].ml.landfrac[i].crop[config->landusemap[j]]+=data[count++];
                 grid[cell].ml.irrig_system->crop[config->landusemap[j]]=p;
@@ -1244,34 +1215,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         for(i=0; i<WIRRIG; i++)
         {
-          for(j=0;j<ncft;j++)
-            grid[cell].ml.fertilizer_nr[i].crop[j]=data[count++];
-          for(j=0;j<NGRASS;j++)
-            grid[cell].ml.fertilizer_nr[i].grass[j]=data[count++];
-          if(landuse->fertilizer_nr.var_len==2*(ncft+NGRASS))
-          {
-            grid[cell].ml.fertilizer_nr[i].biomass_grass=grid[cell].ml.fertilizer_nr[i].biomass_tree=0;
-            for(j=0;j<config->nagtree;j++)
-              grid[cell].ml.fertilizer_nr[i].ag_tree[j]=0;
-            grid[cell].ml.fertilizer_nr[i].woodplantation = 0;
-          }
-          else if(landuse->fertilizer_nr.var_len==2*(ncft+NGRASS+NBIOMASSTYPE))
-          {
-            grid[cell].ml.fertilizer_nr[i].biomass_grass=data[count++];
-            grid[cell].ml.fertilizer_nr[i].biomass_tree=data[count++];
-            for(j=0;j<config->nagtree;j++)
-              grid[cell].ml.fertilizer_nr[i].ag_tree[j]=0;
-            grid[cell].ml.fertilizer_nr[i].woodplantation = 0;
-          }
-          else
-          {
-            grid[cell].ml.fertilizer_nr[i].biomass_grass=data[count++];
-            grid[cell].ml.fertilizer_nr[i].biomass_tree=data[count++];
-            if(config->nwptype)
-              grid[cell].ml.fertilizer_nr[i].woodplantation = data[count++];
-            for(j=0;j<config->nagtree;j++)
-              grid[cell].ml.fertilizer_nr[i].ag_tree[j]=data[count++];
-          }
+          count=readlandfracmap(grid[cell].ml.fertilizer_nr+i,config->fertilizermap,
+                                config->fertilizermap_size,data,count,ncft,config->nwptype);
         }
       } /* for(cell=0;...) */
       free(data);
@@ -1332,35 +1277,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         for(i=0; i<WIRRIG; i++)
         {
-          for(j=0; j<ncft; j++)
-            grid[cell].ml.manure_nr[i].crop[j]=data[count++];
-          for(j=0; j<NGRASS; j++)
-            grid[cell].ml.manure_nr[i].grass[j]=data[count++];
-
-          if(landuse->manure_nr.var_len==2*(ncft+NGRASS))
-          {
-            grid[cell].ml.manure_nr[i].biomass_grass=grid[cell].ml.manure_nr[i].biomass_tree=0;
-            for(j=0; j<config->nagtree; j++)
-              grid[cell].ml.manure_nr[i].ag_tree[j]=0;
-            grid[cell].ml.manure_nr[i].woodplantation = 0;
-          }
-          else if(landuse->manure_nr.var_len==2*(ncft+NGRASS+NBIOMASSTYPE))
-          {
-            grid[cell].ml.manure_nr[i].biomass_grass=data[count++];
-            grid[cell].ml.manure_nr[i].biomass_tree=data[count++];
-            for(j=0; j<config->nagtree; j++)
-              grid[cell].ml.manure_nr[i].ag_tree[j]=0;
-            grid[cell].ml.manure_nr[i].woodplantation = 0;
-          }
-          else
-          {
-            grid[cell].ml.manure_nr[i].biomass_grass=data[count++];
-            grid[cell].ml.manure_nr[i].biomass_tree=data[count++];
-            if(config->nwptype)
-              grid[cell].ml.manure_nr[i].woodplantation = data[count++];
-            for(j=0; j<config->nagtree; j++)
-              grid[cell].ml.manure_nr[i].ag_tree[j]=data[count++];
-          }
+          count=readlandfracmap(grid[cell].ml.manure_nr+i,config->fertilizermap,
+                                config->fertilizermap_size,data,count,ncft,config->nwptype);
         }
       } /* for(cell=0;...) */
       free(data);
@@ -1372,7 +1290,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         for(i=0; i<WIRRIG; i++)
         {
-          for(j=0; j<ncft; j++){
+          for(j=0; j<ncft; j++)
+         {
             grid[cell].ml.fertilizer_nr[i].crop[j]=param.fertilizer_rate;
             grid[cell].ml.manure_nr[i].crop[j]=param.manure_rate;
           }
@@ -1510,61 +1429,11 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     /* do changes for residue rate left on field*/
     for(cell=0; cell<config->ngridcell; cell++)
     {
-      for(j=0; j<ncft; j++)
-      {
-        for(i=0; i<WIRRIG; i++)
-          grid[cell].ml.residue_on_field[i].crop[j]=data[count];
-        count++;
-      }
-      for(j=0; j<NGRASS; j++)
-      {
-        for(i=0; i<WIRRIG; i++)
-          grid[cell].ml.residue_on_field[i].grass[j]=data[count];
-        count++;
-      }
-      if(landuse->residue_on_field.var_len==ncft+NGRASS)
-        for(i=0; i<WIRRIG; i++)
-        {
-          grid[cell].ml.residue_on_field[i].biomass_grass=grid[cell].ml.residue_on_field[i].biomass_tree=0;
-          for(j=0; j<config->nagtree; j++)
-            grid[cell].ml.residue_on_field[i].ag_tree[j]=grid[cell].ml.residue_on_field[i].ag_tree[j]=0;
-          grid[cell].ml.residue_on_field[i].woodplantation = 0;
-        }
-      else if(landuse->residue_on_field.var_len==ncft+NGRASS+NBIOMASSTYPE)
-      {
-        for(i=0; i<WIRRIG; i++)
-          grid[cell].ml.residue_on_field[i].biomass_grass=data[count];
-        count++;
-        for(i=0; i<WIRRIG; i++)
-          grid[cell].ml.residue_on_field[i].biomass_tree=data[count];
-        count++;
-        for(j=0; j<config->nagtree; j++)
-          grid[cell].ml.residue_on_field[i].ag_tree[j]=grid[cell].ml.residue_on_field[i].ag_tree[j]=0;
-          grid[cell].ml.residue_on_field[i].woodplantation = 0;
-      }
-      else
-      {
-        for(i=0; i<WIRRIG; i++)
-          grid[cell].ml.residue_on_field[i].biomass_grass=data[count];
-        count++;
-        for(i=0; i<WIRRIG; i++)
-          grid[cell].ml.residue_on_field[i].biomass_tree=data[count];
-        count++;
-        if(config->nwptype)
-        {
-          for(i=0; i<WIRRIG; i++)
-            grid[cell].ml.residue_on_field[i].woodplantation = data[count];
-          count++;
-        }
-        else
-          for(i=0; i<WIRRIG; i++)
-            grid[cell].ml.residue_on_field[i].woodplantation = 0;
-        for(j=0; j<config->nagtree; j++)
-        {
-          grid[cell].ml.residue_on_field[0].ag_tree[j]=grid[cell].ml.residue_on_field[1].ag_tree[j]=data[count];
-          count++;
-        }
-      }
+      initlandfrac(grid[cell].ml.residue_on_field,ncft,config->nagtree);
+      readlandfracmap(grid[cell].ml.residue_on_field+i,config->fertilizermap,
+                      config->fertilizermap_size,data,count,ncft,config->nwptype);
+      count=readlandfracmap(grid[cell].ml.residue_on_field+i,config->fertilizermap,
+                            config->fertilizermap_size,data,count,ncft,config->nwptype);
     }
     free(data);
   }

@@ -176,7 +176,9 @@ int readlandfracmap(Landfrac *landfrac,
   int i;
   for(i=0;i<size;i++)
   {
-    if(map[i]<ncft)
+    if(map[i]==NOT_FOUND)
+      count++;
+    else if(map[i]<ncft)
       landfrac->crop[map[i]]+=data[count++];
     else if(map[i]<ncft+NGRASS)
       landfrac->grass[map[i]-ncft]+=data[count++];

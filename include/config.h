@@ -222,6 +222,8 @@ struct config
   Bool reservoir;
   int *landusemap;
   int landusemap_size;
+  int *fertilizermap;
+  int fertilizermap_size;
 #ifdef IMAGE
   Bool groundwater_irrig;   /**< Irrigation from groundwater reservoir */
   Bool aquifer_irrig;       /**< Aquifer irrigation possible?*/
