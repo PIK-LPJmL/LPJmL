@@ -174,7 +174,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   } /* of with_nitrogen */
   *fpc_inc=fpc_grass(pft);
 #ifdef DEBUG
-  printf("allocation grass leaf %g root %g fpcinc %g\n",grass->ind.leaf.carbon,grass->ind.root.carbon,fpc_inc);
+  printf("allocation grass leaf %g root %g fpcinc %g\n",grass->ind.leaf.carbon,grass->ind.root.carbon,*fpc_inc);
 #endif
   return (grass->ind.leaf.carbon<0 || grass->ind.root.carbon<0.0 || pft->fpc<=1e-20);
 } /* of 'allocation_grass' */

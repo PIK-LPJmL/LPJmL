@@ -46,8 +46,8 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   Pfttree *tree;
   Pfttreepar *treepar;
   Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
-  Real gp_stand;               /**< potential stomata conductance  (mm/s) */
-  Real gp_stand_leafon;        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
+  Real gp_stand;        /**< potential stomata conductance  (mm/s) */
+  Real gp_stand_leafon; /**< pot. canopy conduct.at full leaf cover  (mm/s) */
   Real fpc_total_stand;
   Output *output;
   Real aet_stand[LASTLAYER];
@@ -213,14 +213,20 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       output->pft_gcgp[nnat+index]+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
-    //printf("day=%d, irrig=%d, npp=%g, c_fruit=%g,phen=%g\n",day,data->irrigation,npp,tree->c_fruit,pft->phen);
-    //printf("tmin=%g, tmax=%g, light=%g, wscal=%g\n",pft->phen_gsi.tmin,pft->phen_gsi.tmax,pft->phen_gsi.light,pft->phen_gsi.wscal);
-    treepar=pft->par->data;
-    //printf("%s %d %d\n",pft->par->name,stand->age,treepar->rotation);
+#if DEBUG2
+    printf("day=%d, irrig=%d, npp=%g, c_fruit=%g,phen=%g\n",day,data->irrigation.irrigation,npp,tree->fruit.carbon,pft->phen);
+    printf("tmin=%g, tmax=%g, light=%g, wscal=%g\n",pft->phen_gsi.tmin,pft->phen_gsi.tmax,pft->phen_gsi.light,pft->phen_gsi.wscal);
+    if(istree(pft))
+    {
+      treepar=tree->data;
+      printf("%s %d %d\n",pft->par->name,data->age,treepar->rotation);
+    }
+#endif
     //if(istree(pft) && pft->par->id!=TEA && npp>0 && stand->age>treepar->rotation)
     if(istree(pft) && strcmp(pft->par->name,"tea") && npp>0)
     {
       //printf("%s %g %g NPP\n",pft->par->name,pft->gdd,npp);
+      treepar=pft->par->data;
       tree=pft->data;
       switch(pft->par->phenology)
       {
@@ -240,7 +246,10 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
             tree->fruit.nitrogen+=treepar->harvest_ratio*npp/cnratio_fruit;
             pft->bm_inc.carbon-=treepar->harvest_ratio*npp;
             pft->bm_inc.nitrogen-=treepar->harvest_ratio*npp/cnratio_fruit;
-          //           if(pft->par->id==TEA) printf("PFT %s summergreen fruit are growing at month %d, phen=%g, aphen=%g, gdd=%g, temp %.2f, harvest=%g t/ha\n",pft->par->name,day/30+1,pft->phen,pft->aphen,pft->gdd,climate.temp, tree->c_fruit*1e4/0.45*1e-6);
+#ifdef DEBUG
+            if(!strcmp(pft->par->name,"tea"))
+              printf("PFT %s summergreen fruit are growing at month %d, phen=%g, aphen=%g, gdd=%g, temp %.2f, harvest=%g t/ha\n",pft->par->name,day/30+1,pft->phen,pft->aphen,pft->gdd,climate->temp, tree->fruit.carbon*1e4/0.45*1e-6);
+#endif
           }
           break;
         case EVERGREEN:
@@ -248,8 +257,10 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
           if(pft->gdd>0)
           {
 
-            //		if(pft->par->id==TEA) printf("PFT %s evergreen fruit are growing at month %d, harvest=%g,gdd=%g,ramp:%g t/ha\n",pft->par->name,day/30+1,tree->c_fruit*1e4/0.45*1e-6, pft->gdd,pft->par->ramp);
-
+#ifdef DEBUG
+           if(!strcmp(pft->par->name,"tea"))
+             printf("PFT %s evergreen fruit are growing at month %d, harvest=%g,gdd=%g,ramp:%g t/ha\n",pft->par->name,day/30+1,tree->fruit.carbon*1e4/0.45*1e-6, pft->gdd,pft->par->ramp);
+#endif
             tree->fruit.carbon+=treepar->harvest_ratio*npp;
             tree->fruit.nitrogen+=treepar->harvest_ratio*npp/treepar->cnratio_fruit;
             //printf("%s %g fruit\n",pft->par->name,tree->fruit.carbon);
@@ -327,25 +338,28 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
 
   output->mreturn_flow_b+=return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/
 
-                                                       /* output for green and blue water for evaporation, transpiration and interception */
+  /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw_agriculture_tree(output,stand,frac_g_evap,evap,evap_blue,
                               return_flow_b,aet_stand,green_transp,
                               intercep_stand,intercep_stand_blue,npft,
                               ncft,config);
 
   free(wet);
-  //if(stand->pft_id==COTTON)
-  //  printf("growing_day: %d %d %d\n",stand->growing_days,data->irrigation,stand->cell->ml.growing_season_cotton[data->irrigation]);
+#ifdef DEBUG
+  if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton"))
+    printf("growing_day: %d %d %d\n",stand->growing_days,data->irrigation.irrigation,stand->cell->ml.growing_season_cotton[data->irrigation.irrigation]);
+#endif
   if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton") && stand->growing_days==stand->cell->ml.growing_season_cotton[data->irrigation.irrigation])
   {
-    //printf("day=%d, harvest %d\n",day,data->irrigation); 
     pft=getpft(&stand->pftlist,0);
     yield=harvest_tree(pft);
     tree=pft->data;
     tree->boll_age=0;
-    //printf("%s yield %s=%g t/ha, %g indiv/ha, wstress=%g, fpc=%g\n",(irrigation->irrigation) ? "irrigated" :"",pft->par->name,yield*1e4/1e6/0.45,pft->nind*1e4,pft->wscal_mean/365,pft->fpc);
-    //printf("index=%d, yield=%g\n",agtree(ncft)+stand->pft_id-npft+nagtree+irrigation->irrigation*(ncft+NGRASS+NBIOMASSTYPE+nagtree),yield);
-    //printf("harvest(%s) %d: %g %g\n",config->pftpar[stand->pft_id].name,data->irrigation,yield.carbon,yield.nitrogen);
+#ifdef DEBUG
+    printf("%s yield %s=%g t/ha, %g indiv/ha, wstress=%g, fpc=%g\n",(data->irrigation.irrigation) ? "irrigated" :"",pft->par->name,yield.carbon*1e4/1e6/0.45,pft->nind*1e4,pft->wscal_mean/365,pft->fpc);
+    printf("index=%d\n",index);
+    printf("harvest(%s) %d: %g %g\n",config->pftpar[data->irrigation.pft_id].name,data->irrigation.irrigation,yield.carbon,yield.nitrogen);
+#endif
     if(config->pft_output_scaled)
     {
       stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon*stand->frac;

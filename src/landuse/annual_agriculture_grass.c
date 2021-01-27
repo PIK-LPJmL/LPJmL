@@ -33,7 +33,7 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
   int p;
   Bool* present;
   Pft* pft;
-  Real fpc_inc;
+  Real fpc_inc,excess;
   Stocks estab_store={0,0};
   Stocks flux_estab={0,0};
   Stocks stocks;
@@ -83,15 +83,19 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
   foreachpft(pft, p, &stand->pftlist)
     fpc_grass(pft);
 
-  for (p = 0; p < npft; p++)
-  {
-    if (config->pftpar[p].type == GRASS && config->pftpar[p].cultivation_type == BIOMASS
-        && establish(stand->cell->gdd[p], config->pftpar + p, &stand->cell->climbuf))
+  fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
+  if(fpc_type[GRASS]>1.0)
+    foreachpft(pft,p,&stand->pftlist)
     {
-      if (!present[p])
-        addpft(stand, config->pftpar + p, year, 0,config->with_nitrogen,config->double_harvest);
-      n_est++;
+      excess=(fpc_type[GRASS]-1.0)*(pft->fpc/fpc_type[GRASS]);
+      light_grass(&stand->soil.litter,pft,excess);
     }
+
+  if(establish(stand->cell->gdd[irrigation->pft_id],config->pftpar+irrigation->pft_id,&stand->cell->climbuf))
+  {
+    if(!present[p])
+     addpft(stand,config->pftpar+irrigation->pft_id,year,0,config->with_nitrogen,config->double_harvest);
+    n_est++;
   }
 
   fpc_total = fpc_sum(fpc_type, config->ntypes, &stand->pftlist);

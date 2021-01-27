@@ -78,7 +78,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
 #ifdef DEBUG2
       printf("PFT:%s fpc_inc=%g fpc=%g\n",pft->par->name,fpc_inc[p],pft->fpc);
       printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
-      pft->bm_inc,vegc_sum(pft),soilcarbon(&stand->soil));
+      pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
       //printf("PFT=%s, fpc=%g\n",pft->par->name,pft->fpc);
       if(istree(pft))
@@ -211,13 +211,6 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
         flux_estab.carbon+=flux_return.carbon;
         flux_estab.nitrogen+=flux_return.nitrogen;
       }
-    /*fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
-    foreachpft(pft,p,&stand->pftlist)
-    adjust(&stand->soil.litter,pft,fpc_type[pft->par->type]);
-    fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
-    if (fpc_total>1.0)
-    foreachpft(pft,p,&stand->pftlist)
-    reduce(&stand->soil.litter,pft,fpc_total); */
 
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   if(fpc_total>1.0)
@@ -229,7 +222,8 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)
-      reduce(&stand->soil.litter,pft,fpc_total);
+      if(pft->par->type==GRASS)
+        reduce(&stand->soil.litter,pft,fpc_total);
   stand->cell->balance.estab_storage_tree[data->irrigation.irrigation].carbon-=flux_estab.carbon*stand->frac;
   stand->cell->balance.estab_storage_tree[data->irrigation.irrigation].nitrogen-=flux_estab.nitrogen*stand->frac;
   flux_estab.carbon=flux_estab.nitrogen=0;
