@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  .  j  s                                                  \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 5.3.001                          \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.2.002                          \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -779,9 +779,7 @@
     "crown_mort_rck" : 1.00, /* crown damage (rCK) */
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
-    "k_est": K_EST,         /* k_est */
-    "rotation" : 8,         /* rotation */
-    "max_rotation_length" : 40 /* max_rotation_length */
+    "k_est": K_EST         /* k_est */
   },
 /*--------------------------------------------------------------------------*/
 /* 8. pft */
@@ -1237,7 +1235,7 @@
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est" : 0.5,          /* k_est,  Giardina, 2002 */
-    "rotation" : 10,         /* rotation */
+    "rotation" : 8,         /* rotation */
     "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/
@@ -1341,7 +1339,7 @@
     "crown_mort_p" : 3.00,  /* crown damage (p)     */
     "fuelfraction" : [0.045,0.075,0.21,0.67], /* fuel fraction */
     "k_est" : 0.8,          /* k_est TIM 1.5*/
-    "rotation" : 10,         /* rotation */
+    "rotation" : 8,         /* rotation */
     "max_rotation_length" : 40 /* max_rotation_length */
   },
 /*--------------------------------------------------------------------------*/
