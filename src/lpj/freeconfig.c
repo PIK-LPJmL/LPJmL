@@ -116,6 +116,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     free(config->landusemap);
     free(config->fertilizermap);
     free(config->mowingdays);
+    if(config->sdate_option==PRESCRIBED_SDATE || config->crop_phu_option==PRESCRIBED_CROP_PHU)
+      free(config->cftmap);
     freecountrypar(config->countrypar,config->ncountries);
     freeregionpar(config->regionpar,config->nregions);
     freefilename(&config->landuse_filename);

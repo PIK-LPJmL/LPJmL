@@ -16,6 +16,23 @@
 
 "inpath" : "/p/projects/lpjml/input/historical",
 
+/* the following array describes the order of the CFT bands in the land use file */
+
+"landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                "temperate roots", "tropical roots", "oil crops sunflower",
+                "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                "sugarcane","others","grassland","biomass grass","biomass tree"],
+
+"fertilizermap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                   "temperate roots", "tropical roots", "oil crops sunflower",
+                   "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                   "sugarcane","others","grassland","biomass grass","biomass tree"],
+
+"cftmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+            "temperate roots", "tropical roots", "oil crops sunflower",
+            "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+            "sugarcane"],
+
 "input" :
 {
   "soil" :         { "fmt" : "meta", "name" : "input_VERSION2/soil.descr"},

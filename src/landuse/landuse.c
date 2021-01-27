@@ -53,8 +53,7 @@ struct landuse
   Climatefile crop_phu;         /**< file pointer to prescribed crop phus */
 };                              /**< definition of opaque datatype Landuse */
 
-Landuse initlanduse(int ncft,            /**< number of crop PFTs */
-                    const Config *config /**< LPJ configuration */
+Landuse initlanduse(const Config *config /**< LPJ configuration */
                    )                     /** \return allocated landuse or NULL */
 {
   Header header;
@@ -143,7 +142,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       if(config->sdate_filename.fmt==RAW)
       {
-        landuse->sdate.var_len=2*ncft;
+        landuse->sdate.var_len=2*config->cftmap_size;
         landuse->sdate.datatype=LPJ_SHORT;
         landuse->sdate.offset=config->startgrid*header.nbands*sizeof(short);
       }
@@ -159,14 +158,14 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->sdate.n=config->ngridcell*header.nbands;
       landuse->sdate.scalar=header.scalar;
     }
-    if(landuse->sdate.var_len!=2*ncft)
+    if(landuse->sdate.var_len!=2*config->cftmap_size)
     {
       closeclimatefile(&landuse->landuse,isroot(*config));
       closeclimatefile(&landuse->sdate,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
-                "ERROR147: Invalid number of bands=%d in sowing date file.\n",
-                (int)landuse->sdate.var_len);
+                "ERROR147: Invalid number of bands=%d in sowing date file, must be %d.\n",
+                (int)landuse->sdate.var_len,2*config->cftmap_size);
       free(landuse);
       return(NULL);
     }
@@ -206,7 +205,7 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       }
       if(config->crop_phu_filename.fmt==RAW)
       {
-        header.nbands=2*ncft;
+        header.nbands=2*config->cftmap_size;
         header.datatype=LPJ_SHORT;
         landuse->crop_phu.offset=(long long)config->startgrid*header.nbands*sizeof(short);
       }
@@ -222,13 +221,13 @@ Landuse initlanduse(int ncft,            /**< number of crop PFTs */
       landuse->crop_phu.var_len=header.nbands;
       landuse->crop_phu.scalar=header.scalar;
     }
-    if(landuse->crop_phu.var_len!=2*ncft)
+    if(landuse->crop_phu.var_len!=2*config->cftmap_size)
     {
       closeclimatefile(&landuse->crop_phu,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%d in crop phu data file, must be %d.\n",
-                (int)landuse->crop_phu.var_len,2*ncft);
+                (int)landuse->crop_phu.var_len,2*config->cftmap_size);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -688,8 +687,20 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
+      {
         for(j=0;j<2*ncft;j++)
-          grid[cell].ml.sdate_fixed[j]=dates[count++];
+          grid[cell].ml.sdate_fixed[j]=0;
+        for(j=0;j<config->cftmap_size;j++)
+          if(config->cftmap[j]==NOT_FOUND)
+            count++; /* ignore data */
+          else
+            grid[cell].ml.sdate_fixed[config->cftmap[j]]=dates[count++];
+        for(j=0;j<config->cftmap_size;j++)
+          if(config->cftmap[j]==NOT_FOUND)
+            count++; /* ignore data */
+          else
+            grid[cell].ml.sdate_fixed[config->cftmap[j]+ncft]=dates[count++];
+      }
       else
         count+=2*ncft;
     free(dates);
@@ -703,15 +714,15 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     else if(yearphu<0)
       yearphu=0;                        /* use first year sdate */
 
-    dates=newvec(int,config->ngridcell*landuse->crop_phu.var_len);
+    data=newvec(Real,config->ngridcell*landuse->crop_phu.var_len);
     if(dates==NULL)
     {
-      printallocerr("dates");
+      printallocerr("data");
       return TRUE;
      }
     if(landuse->crop_phu.fmt==CDF)
     {
-      if(readintdata_netcdf(&landuse->crop_phu,dates,grid,yearphu,config))
+      if(readdata_netcdf(&landuse->crop_phu,data,grid,yearphu,config))
       {
         fprintf(stderr,
                 "ERROR149: Cannot read crop phus of year %d in getlanduse().\n",
@@ -731,7 +742,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         free(dates);
         return TRUE;
       }
-      if(readintvec(landuse->crop_phu.file,dates,landuse->crop_phu.n,landuse->crop_phu.swap,landuse->crop_phu.datatype))
+      if(readrealvec(landuse->crop_phu.file,data,0,landuse->crop_phu.scalar,landuse->crop_phu.n,landuse->crop_phu.swap,landuse->crop_phu.datatype))
       {
         fprintf(stderr,
                 "ERROR149: Cannot read crop phus of year %d in getlanduse().\n",
@@ -745,11 +756,21 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       if(!grid[cell].skip)
       {
         for(j=0; j<2*ncft; j++)
-          grid[cell].ml.crop_phu_fixed[j]=(Real)dates[count++];
+          grid[cell].ml.crop_phu_fixed[j]=0;
+        for(j=0;j<config->cftmap_size;j++)
+          if(config->cftmap[j]==NOT_FOUND)
+            count++; /* ignore data */
+          else
+            grid[cell].ml.crop_phu_fixed[config->cftmap[j]]=data[count++];
+        for(j=0;j<config->cftmap_size;j++)
+          if(config->cftmap[j]==NOT_FOUND)
+            count++; /* ignore data */
+          else
+            grid[cell].ml.crop_phu_fixed[config->cftmap[j]+ncft]=data[count++];
       }
       else
         count+=2*ncft;
-    free(dates);
+    free(data);
   } /* end crop_phu*/
 
   yearl-=landuse->landuse.firstyear;
@@ -837,7 +858,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
             if(data[count]>0)
             {
               if(config->landusemap[j]==NOT_FOUND)
-                count++;
+                count++; /* ignore data */
               else if(config->landusemap[j]<ncft)
               {
                 grid[cell].ml.landfrac[i].crop[config->landusemap[j]]+=data[count++];
