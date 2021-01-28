@@ -36,6 +36,7 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
   const char *str;
   Bool rc;
 #ifdef USE_JSON
+  int i;
   struct json_object *item;
   if(file->isjson)
   {
@@ -62,7 +63,16 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
       if(*value==NOT_FOUND)
       {
         if(verb)
-          fprintf(stderr,"ERROR166: Keyword '%s' not defined for name '%s'.\n",str,name);
+        {
+          fprintf(stderr,"ERROR166: Keyword '%s' not defined for name '%s', must be",str,name);
+          for(i=0;i<size;i++)
+          {
+            fprintf(stderr," '%s'",array[i]);
+            if(i!=size-1)
+              fputc(',',stderr);
+          }
+          fputs(".\n",stderr);
+        }
         return TRUE;
       }
       return FALSE;
