@@ -114,6 +114,7 @@ Bool fwritelandfrac(FILE *file,                 /**< pointer to binary file */
     fwrite(landfrac[i].ag_tree,sizeof(Real),nagtree,file);
     fwrite(landfrac[i].grass,sizeof(Real),NGRASS,file);
     fwrite(&landfrac[i].woodplantation,sizeof(Real),1,file);
+    fwrite(&landfrac[i].biomass_grass,sizeof(Real),1,file);
     if(fwrite(&landfrac[i].biomass_tree,sizeof(Real),1,file)!=1)
       return TRUE;
 
@@ -134,9 +135,8 @@ Bool freadlandfrac(FILE *file,           /**< pointer to binary file */
     freadreal(landfrac[i].crop,ncft,swap,file);
     freadreal(landfrac[i].ag_tree,nagtree,swap,file);
     freadreal(landfrac[i].grass,NGRASS,swap,file);
-    freadreal(&landfrac[i].biomass_grass,1,swap,file);
-    freadreal(&landfrac[i].biomass_tree,1,swap,file);
     freadreal(&landfrac[i].woodplantation,1,swap,file);
+    freadreal(&landfrac[i].biomass_grass,1,swap,file);
     if(freadreal(&landfrac[i].biomass_tree,1,swap,file)!=1)
       return TRUE;
   }
