@@ -54,7 +54,6 @@ Bool fwrite_crop(FILE *file,    /**< pointer to file data */
   fwrite1(&crop->nmanure,sizeof(Real),file);
   fwrite1(&crop->vscal_sum,sizeof(Real),file);
   fwrite1(&crop->frostkill,sizeof(int),file);
-  fwrite1(&crop->supplysum,sizeof(Real),file);
   if(crop->dh!=NULL)
   {
     fwrite1(&crop->dh->petsum,sizeof(Real),file);
@@ -76,5 +75,6 @@ Bool fwrite_crop(FILE *file,    /**< pointer to file data */
     fwrite1(&crop->dh->sdate,sizeof(int),file);
     fwrite1(&crop->dh->sowing_year,sizeof(int),file);
   }
+  fwrite1(&crop->supplysum,sizeof(Real),file);
   return FALSE;
 } /* of 'fwrite_crop' */
