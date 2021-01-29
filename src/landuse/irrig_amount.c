@@ -84,7 +84,7 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
           break;
         case AGRICULTURE_GRASS : case AGRICULTURE_TREE:
           if(config->pft_output_scaled)
-            stand->cell->output.cft_nir[data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+nirrig]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].biomass_grass;
+            stand->cell->output.cft_nir[data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+nirrig]+=data->net_irrig_amount*stand->frac;
           else
             stand->cell->output.cft_nir[data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+nirrig]+=data->net_irrig_amount;
           break;
