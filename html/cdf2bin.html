@@ -11,7 +11,7 @@
           cdf2bin - convert NetCDF files into raw binary data
 
      <B>SYNOPSIS</B>
-          <B>cdf2bin</B> [-v] [-swap] [-units u] [-var name] [-clm]
+          <B>cdf2bin</B> [-v] [-swap] [-units u] [-var name] [-clm] [-byte]
           [-cellsize size [-o binfile] gridfile netcdffile ...
 
      <B>DESCRIPTION</B>
@@ -30,6 +30,9 @@
 
           -clm gridfile is in CLM format, raw be default
 
+          -byte
+               output data converted to byte
+
           -cellsize size
                cell size in grid file, default is 0.5
 
@@ -38,8 +41,8 @@
                out.bin
 
           <I>gridfile</I>
-               filename of binaray grid data file consisting of short
-               values
+               filename of binary grid data file consisting of short
+               values or clm file is -clm option is set
 
           <I>netcdffile</I>
                filename of NetCDF file(s) converted
@@ -57,7 +60,6 @@
      <B>AUTHORS</B>
           For authors and contributors see AUTHORS file
 
-
      <B>COPYRIGHT</B>
           (C) Potsdam Institute for Climate Impact Research (PIK), see
           COPYRIGHT file
@@ -66,7 +68,6 @@
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="bin2cdf.html">bin2cdf(1)</A></B>, <B><A HREF="country2cdf.html">country2cdf(1)</A></B>, <B><A HREF="regridlpj.html">regridlpj(1)</A></B>, <B><A HREF="lpjml.html">lpjml(1)</A></B>,
           <B><A HREF="txt2clm.html">txt2clm(1)</A></B>, <B><A HREF="cru2clm.html">cru2clm(1)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
-
 
 
 
