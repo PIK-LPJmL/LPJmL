@@ -20,7 +20,7 @@
 
 #define USAGE  "Usage: %s [-var name] [-float] [-scale s] [-soilmap] netcdffile coordfile soilfile\n"
 
-#define error(rc) if(rc){ fprintf(stderr,"ERROR: Cannot read '%s': %s.\n",argv[1],nc_strerror(rc)); return EXIT_FAILURE;}
+#define error(rc) if(rc){ fprintf(stderr,"ERROR: Cannot read '%s': %s.\n",argv[i],nc_strerror(rc)); return EXIT_FAILURE;}
 
 #define SOIL_NAME "stexture"
 
