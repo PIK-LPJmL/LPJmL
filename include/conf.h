@@ -54,6 +54,7 @@
 #define NO_NITROGEN 0
 #define LIM_NITROGEN 1
 #define UNLIM_NITROGEN 2
+#define AUTO_FERTILIZER 3
 #define NO_WATERUSE 0
 #define WATERUSE 1
 #define ALL_WATERUSE 2
@@ -97,7 +98,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 328            /* number of output files */
+#define NOUT 335            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -440,6 +441,14 @@
 #define ADELTA_NMIN_SOIL_AGR 325
 #define ADELTA_NVEG_SOIL_AGR 326
 #define CELLFRAC_AGR 327
+#define MGRASS_LITC 328
+#define MGRASS_SOILC 329
+#define MGRASS_LITN 330
+#define MGRASS_SOILN 331
+#define CFT_NFERT 332
+#define CFT_NFERT2 333
+#define FLUX_AUTOFERT 334
+
 
 #define RANDOM_SEED 0
 

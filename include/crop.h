@@ -106,10 +106,11 @@ typedef struct
   Real vscal_sum;
   Bool frostkill;           /* set to TRUE in daily_agriculture if tmin<-5 and 0.2<fphu<0.95 */
   Real supplysum;
-  #ifdef DOUBLE_HARVEST
+#ifdef DOUBLE_HARVEST
   Real petsum;
   Real evapsum;
   Real transpsum;
+  Real nfertsum;
   Real intercsum;
   Real precsum;
   Real sradsum;
@@ -160,7 +161,7 @@ extern void output_daily_crop(Daily_outputs *,const Pft *,Real,Real);
 extern void calc_seasonality(Cell *,int,int,const Config *);
 extern void albedo_crop(Pft *,Real,Real);
 extern void double_harvest(int, Real *, Real *, Real);
-extern Real nuptake_crop(Pft *,Real *,Real *,int,int,int,Bool);
+extern Real nuptake_crop(Pft *,Real *,Real *,int,int,int,int,Bool);
 extern Real ndemand_crop(const Pft *,Real *,Real,Real,Real);
 extern Real vmaxlimit_crop(const Pft *,Real,Real);
 

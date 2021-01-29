@@ -349,6 +349,14 @@
   { "id" : ADELTA_NORG_SOIL_AGR, "name" : "adelta_norg_soil_agr" , "var" : "ADELTA_NORG_SOIL_agr" , "descr" : "annual change of organic N in soil on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : ADELTA_NMIN_SOIL_AGR, "name" : "adelta_nmin_soil_agr" , "var" : "ADELTA_NMIN_SOIL_agr" , "descr" : "annual change of mineral N in soil on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : ADELTA_NVEG_SOIL_AGR, "name" : "adelta_nveg_soil_agr" , "var" : "ADELTA_NVEG_SOIL_agr" , "descr" : "annual change of N in living biomass on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
-  { "id" : CELLFRAC_AGR, "name" : "cellfrac_agr" , "var" : "CELLFRAC_agr" , "descr" : "fraction of grid cell covered by agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0}  
+  { "id" : CELLFRAC_AGR, "name" : "cellfrac_agr" , "var" : "CELLFRAC_agr" , "descr" : "fraction of grid cell covered by agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+ { "id" : MGRASS_SOILC, "name": "soilc", "var" : "SoilC", "descr" : "total soil carbon density", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MGRASS_LITC, "name": "litc", "var" : "LitC", "descr" : "litter carbon", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MGRASS_SOILN, "name": "soiln", "var" : "SoilN", "descr" : "total soil nitrogen density", "unit" : "gN/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MGRASS_LITN, "name": "litn", "var" : "LitN", "descr" : "litter nitrogen", "unit" : "gN/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : CFT_NFERT, "name": "cft_nfert", "var" : "nfert", "descr" : "CFT-specific fertilizer application", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : CFT_NFERT2, "name": "cft_nfert2", "var" : "nfert", "descr" : "CFT-specific fertilizer application", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : FLUX_AUTOFERT, "name": "nfert", "var" : "nfert", "descr" : "flux of automated fertilizer application", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0}
+ 
   
 ],

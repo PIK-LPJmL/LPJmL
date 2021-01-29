@@ -405,9 +405,12 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
       printinputfile(file,"tmax",&config->tmax_filename,width);
 #else
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-    if(config->tmax_filename.name!=NULL)
+    if(config->tmin_filename.name!=NULL)
     {
       printinputfile(file,"temp min",&config->tmin_filename,width);
+    }
+    if(config->tmax_filename.name!=NULL)
+    {
       printinputfile(file,"temp max",&config->tmax_filename,width);
     }
     else

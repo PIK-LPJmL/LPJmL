@@ -68,6 +68,7 @@ Bool fread_crop(FILE *file, /**< file pointer */
   freadreal1(&crop->petsum,swap,file);
   freadreal1(&crop->evapsum,swap,file);
   freadreal1(&crop->transpsum,swap,file);
+  freadreal1(&crop->nfertsum,swap,file);
   freadreal1(&crop->intercsum,swap,file);
   freadreal1(&crop->precsum,swap,file);
   freadreal1(&crop->sradsum,swap,file);

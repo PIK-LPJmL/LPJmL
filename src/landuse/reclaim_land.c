@@ -35,8 +35,10 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #else
   Poolpar frac1,frac2;
   ftimber=1;
-  frac1.fast=frac2.fast=1.0;
-  frac1.slow=frac2.slow=0.0;
+  /* fast and slow separation based on wood demand for pulpwood and particles (fast) and sawlog, veneer and others (slow) */
+  /* remainder is burnt, if param.fburn is set to 1.0 */
+  frac1.fast=frac2.fast=0.34; /* 76% of cut trees is harvested and 26% of harvested wood into fast pools, so 34% of harvested wood goes to fast pools */
+  frac1.slow=frac2.slow=0.66; /* 50% of all cut trees go to slow, that is 66% of all harvested (76%) */
 #endif
 
   foreachpft(pft,p,&stand->pftlist)
@@ -96,7 +98,7 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 #endif
         cell->output.deforest_emissions.carbon+=stocks.carbon*standfrac;
         cell->output.deforest_emissions.nitrogen+=stocks.nitrogen*(1-param.q_ash)*standfrac;
-        soil->NO3[0]+=stocks.nitrogen*param.q_ash*standfrac;
+        soil->NO3[0]+=stocks.nitrogen*param.q_ash;
       } /* if tree */
     } /* is timber */
 #ifdef DEBUG_IMAGE

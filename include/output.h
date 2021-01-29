@@ -171,6 +171,7 @@ typedef struct
   Real *cft_srad2;          /**< cft specific short-wave radiation (W/m2) */
   Stocks *cft_aboveground_biomass2; /**< above ground biomass for crops before harvest (for grass before last harvest of year)*/
   Real *cftfrac2;           /**< cft fraction */
+  Real *cft_nfert2;        /**< cft specific N ferizlier application (gN/m2/growing season) */
   Real *cft_runoff2;        /**< cft specific runoff (mm) */
   Real *cft_n2o_denit2;        /**< cft specific N2O emissions from denitrification (gN/m2/growing season) */
   Real *cft_n2o_nit2;        /**< cft specific N2O emissions from nitrification (gN/m2/growing season) */
@@ -243,15 +244,21 @@ typedef struct
   Real *cft_conv_loss_evap; /**< cft specific evaporative conveyance losses (mm) */
   Real *cft_conv_loss_drain; /**< cft specific drainage conveyance losses (mm) */
   int  *cft_irrig_events;  /**< number of irrigation days within growing season */
-  Real prod_turnover;      /**< carbon emissions from product turnover [gC/m2/a] in IMAGE coupling */
   Stocks deforest_emissions; /**< carbon and nitrogen emissions from deforested wood burnt [g/m2/a] in IMAGE coupling */
   Real trad_biofuel;       /**< carbon emissions from traditional biofuel burnt [gC/m2/a] in IMAGE coupling */
   Stocks flux_firewood;    /**< carbon and nitrogen emissions from domestic wood use [g/m2/a]*/
   Real fburn;              /**< fraction of deforested wood burnt [0-1]*/
   Real ftimber;            /**< fraction of deforested wood harvested as timber [0-1]*/
   Stocks timber_harvest;   /**< carbon and nitrogen harvested as timber [g/m2/a] */
+#ifdef IMAGE
   Real product_pool_fast;  /**< carbon in the fast product pool */
   Real product_pool_slow;  /**< carbon in the slow product pool */
+  Real prod_turnover;      /**< carbon emissions from product turnover [gC/m2/a] in IMAGE coupling */
+#else
+  Stocks product_pool_fast;  /**< carbon and nitrogen in the fast product pool */
+  Stocks product_pool_slow;  /**< carbon and nitrogen in the slow product pool */
+  Stocks prod_turnover;      /**< carbon and nitrogen emissions from product turnover [gX/m2/a] */
+#endif
   Real msoilc1;            /**< slow+fast+bg litter carbon in the first soil layer (gC/m2/month) */
   Real *cft_luc_image;     /**< LUC data received by IMAGE [0-1], CFT specific */
   Real msoiltemp[NSOILLAYER]; /**< monthly soil temperature in deg C for  6 layer*/
@@ -295,6 +302,8 @@ typedef struct
   Real *cft_mswc;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
   int *nday_month;        /**< day count for monthly cft-specific outputs, needed in update_monthly to divide by number of days */
   Real mean_vegc_mangrass;
+  Real *cft_nfert;        /**< cft specific N ferizlier application (gN/m2/yr) */
+  Real flux_nfert;        /**< automated N ferizlier application (gN/m2/yr) */
   Real abnf_agr;
   Real anfert_agr;
   Real anmanure_agr;

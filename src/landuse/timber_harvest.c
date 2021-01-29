@@ -49,6 +49,10 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   /* 10% of traditional biofuel is assumed to enter fast soil pool -- may not be scaled with standfrac!*/
 #else
   biofuel=0;
+  pft->stand->cell->ml.product.fast.nitrogen+=harvest.nitrogen*f.fast;
+  pft->stand->cell->ml.product.slow.nitrogen+=harvest.nitrogen*f.slow;
+  pft->stand->cell->ml.product.fast.carbon+=harvest.carbon*f.fast;
+  pft->stand->cell->ml.product.slow.carbon+=harvest.carbon*f.slow;
 #endif
   soil->pool[0].fast.carbon+=harvest.carbon*biofuel*0.1/standfrac;
   soil->pool[0].fast.nitrogen+=harvest.nitrogen*biofuel*0.1/standfrac;

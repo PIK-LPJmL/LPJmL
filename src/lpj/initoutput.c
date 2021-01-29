@@ -117,6 +117,8 @@ Bool initoutput(Output *output, /**< Output data */
   check(output->cft_c_emis);
   output->cft_leaching=newvec(Real,2*ncft);
   check(output->cft_leaching);
+  output->cft_nfert=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE));
+  check(output->cft_nfert);
 #ifdef DOUBLE_HARVEST
   output->sdate2=newvec(int,2*ncft); /* allocate memory for output */
   checkptr(output->sdate2);
@@ -168,6 +170,8 @@ Bool initoutput(Output *output, /**< Output data */
   check(output->cft_leaching2);
   output->pft_nuptake2=newvec(Real,(npft-nbiomass)+2*(ncft+NGRASS+NBIOMASSTYPE));
   checkptr(output->pft_nuptake2);
+  output->cft_nfert2=newvec(Real,2*(ncft+NGRASS+NBIOMASSTYPE));
+  check(output->cft_nfert2);
 #endif
   initoutput_annual(output, npft, nbiomass,ncft);
   output->daily.cft=cft;
