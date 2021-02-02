@@ -527,15 +527,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->withlanduse!=NO_LANDUSE)
   {
-    config->landusemap=getcftmap(file,&config->landusemap_size,"landusemap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+    config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
     if(config->landusemap==NULL)
       return TRUE;
-    config->fertilizermap=getcftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+    config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
     if(config->fertilizermap==NULL)
       return TRUE;
     if(config->sdate_option==PRESCRIBED_SDATE || config->crop_phu_option==PRESCRIBED_CROP_PHU)
     {
-      config->cftmap=getcftmap(file,&config->cftmap_size,"cftmap",TRUE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      config->cftmap=scancftmap(file,&config->cftmap_size,"cftmap",TRUE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
       if(config->cftmap==NULL)
         return TRUE;
     }
