@@ -598,6 +598,13 @@ void set_irrigsystem(Stand *stand,          /**< stand pointer */
         stand->cell->balance.aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
         output->mconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
         stand->cell->balance.aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+#if defined IMAGE && defined COUPLED
+        if(stand->cell->ml.image_data!=NULL)
+        {
+          stand->cell->ml.image_data->mirrwatdem[0]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+          stand->cell->ml.image_data->mevapotr[0]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
+        }
+#endif
         if(config->pft_output_scaled)
         {
           stand->cell->output.cft_conv_loss_evap[agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+nirrig]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
@@ -993,8 +1000,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       if(s!=NOT_FOUND)
       {
         stand=getstand(cell->standlist,s);
-        timberharvest  =   stand->frac<=cell->ml.image_data->timber_frac ?
-        stand->frac : cell->ml.image_data->timber_frac;
+        timberharvest=(stand->frac<=cell->ml.image_data->timber_frac) ? stand->frac : cell->ml.image_data->timber_frac;
         //timberharvest=stand->frac*cell->image_data->timber_frac;
 
         if(timberharvest>epsilon)

@@ -246,7 +246,8 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
 
   free(present);
   free(fpc_type);
-  if(pft_len>0) free(fpc_inc2);
+  if(pft_len>0)
+    free(fpc_inc2);
   free(n_est);
   if(isdead)
   {
@@ -263,6 +264,14 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
       stand->cell->balance.aconv_loss_evap-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
       stand->cell->output.mconv_loss_drain-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->frac;
       stand->cell->balance.aconv_loss_drain-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->frac;
+#if defined IMAGE && defined COUPLED
+      if(stand->cell->ml.image_data!=NULL)
+      {
+        stand->cell->ml.image_data->mirrwatdem[NMONTH-1]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*stand->frac;
+        stand->cell->ml.image_data->mevapotr[NMONTH-1]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*stand->frac;
+      }
+#endif
+
       if(config->pft_output_scaled)
       {
         stand->cell->output.cft_conv_loss_evap[index]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
