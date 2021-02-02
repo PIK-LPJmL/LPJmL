@@ -98,6 +98,6 @@ extern void output_gbw_grassland(Output *,const Stand *,Real,Real,Real,Real,
 extern void new_grassland(Stand *);
 extern Bool fread_grassland(FILE *,Stand *,Bool);
 extern Bool fwrite_grassland(FILE *,const Stand *);
-extern void fprint_grassland(FILE *,const Stand *);
+extern void fprint_grassland(FILE *,const Stand *,const Pftpar *);
 
 #endif

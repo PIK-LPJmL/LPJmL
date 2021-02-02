@@ -17,11 +17,12 @@
 #include "lpj.h"
 #include "agriculture.h"
 
-void fprint_agriculture(FILE *file,        /**< pointer to text file */
-                        const Stand *stand /**< pointer to stand */
+void fprint_agriculture(FILE *file,          /**< pointer to text file */
+                        const Stand *stand,  /**< pointer to stand */
+                        const Pftpar *pftpar /**< PFT parameter array */
                        )
 {
   Irrigation *irrigation;
   irrigation=stand->data;
-  fprint_irrigation(file,irrigation);
+  fprint_irrigation(file,irrigation,pftpar);
 } /* of 'fprint_agriculture' */

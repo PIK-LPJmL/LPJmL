@@ -45,5 +45,5 @@ extern void new_agriculture(Stand *);
 extern void free_agriculture(Stand *);
 extern Bool fread_agriculture(FILE *,Stand *,Bool);
 extern Bool fwrite_agriculture(FILE *,const Stand *);
-extern void fprint_agriculture(FILE *,const Stand *);
+extern void fprint_agriculture(FILE *,const Stand *,const Pftpar *);
 #endif

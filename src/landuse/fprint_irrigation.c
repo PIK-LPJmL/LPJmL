@@ -16,13 +16,15 @@
 
 #include "lpj.h"
 
-void fprint_irrigation(FILE *file,                  /**< pointer to text file */
-                       const Irrigation *irrigation /**< pointer to irrigation */
+void fprint_irrigation(FILE *file,                   /**< pointer to text file */
+                       const Irrigation *irrigation, /**< pointer to irrigation */
+                       const Pftpar *pftpar          /**< PFT parameter array */
                       )
 {
   const char *irrig[]={"no","surface","sprinkler","drip"};
   fprintf(file,"Irrigation:\t%s\n",bool2str(irrigation->irrigation));
-  fprintf(file,"Pft id:\t\t%d\n",irrigation->pft_id);
+  if(irrigation->pft_id!=NOT_FOUND)
+    fprintf(file,"Pft id:\t\t%s\n",pftpar[irrigation->pft_id].name);
   if(irrigation->irrigation)
     fprintf(file,"Irrigation event today:\t%s\n"
             "Irrigation system:\t%s\n"

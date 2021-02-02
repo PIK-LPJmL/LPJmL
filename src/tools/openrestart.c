@@ -50,8 +50,8 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
   if(version!=RESTART_VERSION)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR154: Invalid version %d in %s file '%s'.\n",
-              version,type,filename);
+      fprintf(stderr,"ERROR154: Invalid version %d in %s file '%s', must be %d.\n",
+              version,type,filename,RESTART_VERSION);
     fclose(file);
     return NULL;
   }
@@ -119,7 +119,8 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
   {
     if(isroot(*config))
       fprintf(stderr,
-              "ERROR183: Number of PFTs=%d does not match %d in %s file.\n",header.nbands,ntotpft,type);
+              "ERROR183: Number of PFTs=%d does not match %d in %s file '%s'.\n",
+              header.nbands,ntotpft,type,filename);
     fclose(file);
     return NULL;
   }
@@ -140,15 +141,15 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
   else if(config->nspinup==0 && header.firstyear!=config->firstyear-1 &&
      isroot(*config))
     fprintf(stderr,
-            "WARNING005: Year of restartfile=%d not equal start year=%d-1.\n",
+            "WARNING005: Year of restart file=%d not equal start year=%d-1.\n",
             header.firstyear,config->firstyear);
 
   offset=config->startgrid-header.firstcell;
   if(offset<0)
   {
     fprintf(stderr,
-            "WARNING006: First grid cell not in %s file, set to %d.\n",
-            type,header.firstcell);
+            "WARNING006: First grid cell not in %s file '%s', set to %d.\n",
+            type,filename,header.firstcell);
     config->startgrid=header.firstcell;
     offset=0;
   }
@@ -174,8 +175,8 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
   if(header.ncell<config->ngridcell)
   {
     fprintf(stderr,
-            "WARNING007: %s file too short, grid truncated to %d.\n",
-            type,header.ncell);
+            "WARNING007: %s file '%s' too short, grid truncated to %d.\n",
+            type,filename,header.ncell);
     config->ngridcell=header.ncell;
   }
 

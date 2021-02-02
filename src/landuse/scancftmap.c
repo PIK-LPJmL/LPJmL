@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**           g  e  t  c  f  t  m  a  p  .  c                                      \n**/
+/**                    s  c  a  n  c  f  t  m  a  p  .  c                          \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function reads landuse mapping from LPJ configuration file                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -23,14 +25,14 @@ static int findpftname(const char *name,const Pftpar *pftpar,int ncft)
   return NOT_FOUND;
 } /* of 'findpftname' */
 
-int *getcftmap(LPJfile *file,       /**< pointer to LPJ config file */
-               int *size,           /**< size of CFT map array */
-               const char *name,
-               Bool cftonly,
-               int npft,            /**< numbert of natural PFTs */
-               int ncft,            /**< number of crop PFTs */
-               const Config *config /**< LPJ configuration */
-              )                     /** \return CFT map array or NULL on error */
+int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
+                int *size,           /**< size of CFT map array */
+                const char *name,    /**< name of map */
+                Bool cftonly,        /**< scan only crop PFTs */
+                int npft,            /**< numbert of natural PFTs */
+                int ncft,            /**< number of crop PFTs */
+                const Config *config /**< LPJ configuration */
+               )                     /** \return CFT map array or NULL on error */
 {
   static char *grasspft[NGRASS]={"others","grassland"};
   static char *biomasspft[NBIOMASSTYPE]={"biomass grass","biomass tree"};
@@ -215,4 +217,4 @@ int *getcftmap(LPJfile *file,       /**< pointer to LPJ config file */
       cftmap[cft]=cft;
   }
   return cftmap;
-} /* of 'getcftmap' */
+} /* of 'scancftmap' */

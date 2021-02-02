@@ -664,7 +664,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       else
       {
-        setseed(grid[i].seed,config->seed_start+(config->firstgrid+i+config->startgrid)*36363);
+        setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
         grid[i].skip=FALSE;
         grid[i].standlist=newlist();
         checkptr(grid[i].standlist);
@@ -727,7 +727,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         return NULL;
       }
       if(config->new_seed)
-        setseed(grid[i].seed,config->seed_start+(config->firstgrid+i+config->startgrid)*36363);
+        setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
       if(!grid[i].skip)
         check_stand_fracs(grid+i,
                           grid[i].lakefrac+grid[i].ml.reservoirfrac);

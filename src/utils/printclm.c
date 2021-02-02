@@ -121,7 +121,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
         putchar('\n');
       }
       else
-        fprintf(stderr,"Warning: invalid restart version %d.\n",version);
+        fprintf(stderr,"Warning: invalid restart version %d, must be %d.\n",
+                version,RESTART_VERSION);
     }
   }
   if(header.order==CELLINDEX)

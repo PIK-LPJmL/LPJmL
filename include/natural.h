@@ -33,6 +33,6 @@ extern void new_natural(Stand *);
 extern void free_natural(Stand *);
 extern Bool fread_natural(FILE *,Stand *,Bool);
 extern Bool fwrite_natural(FILE *,const Stand *);
-extern void fprint_natural(FILE *,const Stand *);
+extern void fprint_natural(FILE *,const Stand *,const Pftpar *);
 
 #endif

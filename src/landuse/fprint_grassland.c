@@ -17,14 +17,15 @@
 #include "lpj.h"
 #include "grassland.h"
 
-void fprint_grassland(FILE *file,        /**< pointer to text file */
-                      const Stand *stand /**< pointer to stand */
+void fprint_grassland(FILE *file,          /**< pointer to text file */
+                      const Stand *stand,  /**< pointer to stand */
+                      const Pftpar *pftpar /**< PFT parameter array */
                      )
 {
   static char *mode[]={"undefined","grazing","recovery"};
   const Grassland *grassland;
   grassland=stand->data;
-  fprint_irrigation(file,&grassland->irrigation);
+  fprint_irrigation(file,&grassland->irrigation,pftpar);
   fprintf(file,"Nr. of lsus ext:\t%g\n"
           "Nr. of lsus int:\t%g\n"
           "grazing days:\t%d\n"

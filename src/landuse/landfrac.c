@@ -145,7 +145,7 @@ Bool freadlandfrac(FILE *file,           /**< pointer to binary file */
 
 Real landfrac_sum(const Landfrac landfrac[2], /**< land fractions (non-irrig., irrig.) */
                   int ncft,                   /**< number of crop PFTs */
-                  int nagtree,
+                  int nagtree,                /**< number of agriculture tree PFTs */
                   Bool irrig                  /**< irrigated fraction? (TRUE/FALSE) */
                  )                            /** \return sum of non-irrigated/irrigated fraction */
 {
@@ -164,20 +164,20 @@ Real landfrac_sum(const Landfrac landfrac[2], /**< land fractions (non-irrig., i
   return sum;
 } /* of 'landfrac_sum' */
 
-int readlandfracmap(Landfrac *landfrac,
-                    const int map[],
-                    int size,
-                    const Real data[],
-                    int count,
-                    int ncft,
-                    int nwpt
-                   )
+int readlandfracmap(Landfrac *landfrac, /**< land fractions */
+                    const int map[],    /**< map from bands to CFTs */
+                    int size,           /**< size of map */
+                    const Real data[],  /**< data from land-use file */
+                    int count,          /**< index in data array */
+                    int ncft,           /**< number of crop PFTs */
+                    int nwpt            /**< number of woodplantations */
+                   )                    /** \return updated index in data array */
 {
   int i;
   for(i=0;i<size;i++)
   {
     if(map[i]==NOT_FOUND)
-      count++;
+      count++; /* ignore data */
     else if(map[i]<ncft)
       landfrac->crop[map[i]]+=data[count++];
     else if(map[i]<ncft+NGRASS)
@@ -187,7 +187,7 @@ int readlandfracmap(Landfrac *landfrac,
     else if(map[i]==ncft+NGRASS+1)
       landfrac->biomass_tree+=data[count++];
     else if(nwpt && map[i]==ncft+NGRASS+NBIOMASSTYPE)
-      landfrac->woodplantation+= data[count++];
+      landfrac->woodplantation+=data[count++];
     else
       landfrac->ag_tree[map[i]-ncft-NGRASS-NBIOMASSTYPE-nwpt]+=data[count++];
   }

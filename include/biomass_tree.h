@@ -36,7 +36,7 @@ extern void output_gbw_biomass_tree(Output *,const Stand *,Real,Real,Real,Real,
                                     const Config *);
 extern void new_biomass_tree(Stand *);
 extern Bool fwrite_biomass_tree(FILE *,const Stand *);
-extern void fprint_biomass_tree(FILE *,const Stand *);
+extern void fprint_biomass_tree(FILE *,const Stand *,const Pftpar *);
 extern Bool fread_biomass_tree(FILE *,Stand *,Bool);
 
 #endif

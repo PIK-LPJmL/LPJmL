@@ -27,7 +27,7 @@ void fprintstand(FILE *file,           /**< Pointer to text file */
   fprintf(file,"Standfrac:\t%g\n",stand->frac);
   fprintf(file,"Standtype:\t%s\n",stand->type->name);
   /* print stand-specific data */
-  stand->type->fprint(file,stand);
+  stand->type->fprint(file,stand,pftpar);
   fprintsoil(file,&stand->soil,pftpar,ntotpft,with_nitrogen);
   fputs("Frac_g:\t\t",file);
   for(l=0;l<NSOILLAYER;l++)

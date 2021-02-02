@@ -17,13 +17,14 @@
 #include "lpj.h"
 #include "biomass_tree.h"
 
-void fprint_biomass_tree(FILE *file,        /**< pointer to text file */
-                         const Stand *stand /**< pointer to stand */
+void fprint_biomass_tree(FILE *file,          /**< pointer to text file */
+                         const Stand *stand,  /**< pointer to stand */
+                         const Pftpar *pftpar /**< PFT parameter array */
                         )
 {
   const Biomass_tree *biomass_tree;
   biomass_tree=stand->data;
-  fprint_irrigation(file,&biomass_tree->irrigation);
+  fprint_irrigation(file,&biomass_tree->irrigation,pftpar);
   fprintf(file,"Growing time:\t%d (yr)\n"
           "Age:\t\t%d (yr)\n",
           biomass_tree->growing_time,

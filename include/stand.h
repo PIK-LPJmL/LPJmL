@@ -27,7 +27,7 @@ typedef struct
   void (*freestand)(Stand *);
   Bool (*fwrite)(FILE *,const Stand *);
   Bool (*fread)(FILE *,Stand *,Bool);
-  void (*fprint)(FILE *,const Stand *);
+  void (*fprint)(FILE *,const Stand *,const Pftpar *);
   Real (*daily)(Stand *,Real,const Dailyclimate *,int,int,Real,
                 Real,Real,Real,
                 Real,Real,int,int,int,Bool,Real,const Config *);
