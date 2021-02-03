@@ -20,18 +20,20 @@
 
 #define USAGE  "Usage: %s [-var name] [-float] [-scale s] [-soilmap] netcdffile coordfile soilfile\n"
 
-#define error(rc) if(rc){ fprintf(stderr,"ERROR: Cannot read '%s': %s.\n",argv[i],nc_strerror(rc)); return EXIT_FAILURE;}
+#define error(rc) if(rc){ fprintf(stderr,"ERROR403: Cannot read '%s': %s.\n",argv[i],nc_strerror(rc)); return EXIT_FAILURE;}
 
 #define SOIL_NAME "stexture"
 
 int main(int argc,char **argv)
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
-  int rc,ncid,var_id,dim_id,i;
+  int rc,ncid,var_id,i,ndims,dimids[2],latlon_id;
+  char name[NC_MAX_NAME+1];
   size_t ilat,ilon;
   float *lat,*lon;
   size_t lat_len,lon_len;
-  int missing_value,*data;
+  int missing_value;  /**< missing/fill value in file */
+  int *data;
   Header header;
   Intcoord coord;
   FILE *out,*soil;
@@ -105,12 +107,32 @@ int main(int argc,char **argv)
             argv[i],nc_strerror(rc));
     return EXIT_FAILURE;
   }
-  rc=nc_inq_varid(ncid,LON_NAME,&var_id);
-  error(rc);
-  rc=nc_inq_dimid(ncid,LON_NAME,&dim_id);
-  error(rc);
-  rc=nc_inq_dimlen(ncid,dim_id,&lon_len);
-  error(rc);
+  rc=nc_inq_varid(ncid,var,&var_id);
+  if(rc)
+  {
+    fprintf(stderr,"ERRO405: No variable '%s' found in '%s'.\n",var,argv[i]);
+    nc_close(ncid);
+    return EXIT_FAILURE;
+  }
+  nc_inq_varndims(ncid,var_id,&ndims);
+  if(ndims!=2)
+  {
+    fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 2.\n",
+            ndims,argv[i]);
+    nc_close(ncid);
+    return EXIT_FAILURE;
+  }
+  nc_inq_vardimid(ncid,var_id,dimids);
+  nc_inq_dimname(ncid,dimids[1],name);
+  rc=nc_inq_varid(ncid,name,&latlon_id);
+  if(rc)
+  {
+    fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
+            name,argv[i],nc_strerror(rc));
+    nc_close(ncid);
+    return EXIT_FAILURE;
+  }
+  nc_inq_dimlen(ncid,dimids[1],&lon_len);
   lon=newvec(float,lon_len);
   if(lon==NULL)
   {
@@ -118,7 +140,7 @@ int main(int argc,char **argv)
     nc_close(ncid);
     return EXIT_FAILURE;
   }
-  rc=nc_get_var_float(ncid,var_id,lon);
+  rc=nc_get_var_float(ncid,latlon_id,lon);
   if(rc)
   {
     fprintf(stderr,"ERROR410: Cannot read longitude in '%s': %s.\n",
@@ -127,28 +149,19 @@ int main(int argc,char **argv)
     nc_close(ncid);
     return EXIT_FAILURE;
   }
-  rc=nc_inq_varid(ncid,LAT_NAME,&var_id);
+  nc_inq_dimname(ncid,dimids[0],name);
+  rc=nc_inq_varid(ncid,name,&latlon_id);
   if(rc)
   {
-    fprintf(stderr,"ERROR411: Cannot read latitude in '%s': %s.\n",
-            argv[i],nc_strerror(rc));
-    free(lon);
+    fprintf(stderr,"ERROR410: Cannot read %s in '%s': %s.\n",
+            name,argv[i],nc_strerror(rc));
     nc_close(ncid);
     return EXIT_FAILURE;
   }
-  rc=nc_inq_dimid(ncid,LAT_NAME,&dim_id);
+  nc_inq_dimlen(ncid,dimids[0],&lat_len);
   if(rc)
   {
-    fprintf(stderr,"ERROR411: Cannot read latitude in '%s': %s.\n",
-            argv[i],nc_strerror(rc));
-    free(lon);
-    nc_close(ncid);
-    return EXIT_FAILURE;
-  }
-  rc=nc_inq_dimlen(ncid,dim_id,&lat_len);
-  if(rc)
-  {
-    fprintf(stderr,"ERROR403: Cannot read '%s': %s.\n",
+    fprintf(stderr,"ERROR403: Cannot read latitude in '%s': %s.\n",
             argv[i],nc_strerror(rc));
     free(lon);
     nc_close(ncid);
@@ -162,20 +175,11 @@ int main(int argc,char **argv)
     nc_close(ncid);
     return EXIT_FAILURE;
   }
-  rc=nc_get_var_float(ncid,var_id,lat);
+  rc=nc_get_var_float(ncid,latlon_id,lat);
   if(rc)
   {
     fprintf(stderr,"ERROR404: Cannot read latitude in '%s': %s.\n",
             argv[i],nc_strerror(rc));
-    free(lon);
-    free(lat);
-    nc_close(ncid);
-    return EXIT_FAILURE;
-  }
-  rc=nc_inq_varid(ncid,var,&var_id);
-  if(rc)
-  {
-    fprintf(stderr,"ERRO405: No variable found in '%s'.\n",argv[i]);
     free(lon);
     free(lat);
     nc_close(ncid);
@@ -204,6 +208,12 @@ int main(int argc,char **argv)
   }
   fwriteheader(out,&header,LPJGRID_HEADER,LPJGRID_VERSION);
   data=newvec(int,lat_len*lon_len);
+  if(data==NULL)
+  {
+    printallocerr("data");
+    nc_close(ncid);
+    return EXIT_FAILURE;
+  }
   rc=nc_get_var_int(ncid,var_id,data);
   error(rc);
   header.ncell=0;
