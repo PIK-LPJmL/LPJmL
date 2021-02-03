@@ -530,7 +530,6 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       return NULL;
     }
   }
-
   landuse->intercrop=config->intercrop;
   return landuse;
 } /* of 'initlanduse' */

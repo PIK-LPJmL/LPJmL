@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-clm] [-cellsize size] [-o filename] gridfile netcdffile\n"
+#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] gridfile netcdffile\n"
 #else
-#define USAGE "Usage: %s [-swap] [-v] [-var name] [-clm] [-cellsize size] [-o filename] gridfile netcdffile\n"
+#define USAGE "Usage: %s [-swap] [-v] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] gridfile netcdffile\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -26,10 +26,11 @@
 static Bool readdata(Climatefile *file,    /* climate data file */
                      FILE *bin,            /* pointer to output file */
                      const Coord coords[], /* coordinates */
+                     Bool isbyte,
                      const Config *config  /* LPJ configuration */
                     )                      /* returns TRUE on error */
 {
-  int t,cell,rc,index,n;
+  int t,cell,rc,index,n,start;
   size_t i;
   float *f;
   short *s;
@@ -37,15 +38,22 @@ static Bool readdata(Climatefile *file,    /* climate data file */
   size_t offsets[4];
   int address[2];
   size_t counts[4];
+  Byte bdata;
   //printf("len=%d\n",(int)file->var_len);
-  counts[0]=1;
+  if(file->time_step==MISSING_TIME)
+    start=0;
+  else
+  {
+    start=1;
+    counts[0]=1;
+  }
   if(file->var_len>1)
   {
-    counts[1]=1;
-    index=2;
+    counts[start]=1;
+    index=start+1;
   }
   else
-    index=1;
+    index=start;
   offsets[index]=offsets[index+1]=0;
   counts[index]=file->nlat;
   counts[index+1]=file->nlon;
@@ -82,18 +90,19 @@ static Bool readdata(Climatefile *file,    /* climate data file */
     case MONTH:
       n=NMONTH;
       break;
-    case YEAR:
+    case YEAR: case MISSING_TIME:
       n=1;
       break;
   }
   for(t=0;t<file->nyear*n;t++)
   {
-    offsets[0]=t;
+    if(file->time_step!=MISSING_TIME)
+      offsets[0]=t;
     for(i=0;i<file->var_len;i++)
     {
       //printf("t=%d,i=%d\n",t,i);
       if(file->var_len>1)
-        offsets[1]=i;
+        offsets[start]=i;
       if(file->datatype==LPJ_FLOAT)
       {
         //printf("%d %d %d %d\n",(int)offsets[0],(int)offsets[1],(int)offsets[2],(int)offsets[3]);
@@ -102,7 +111,7 @@ static Bool readdata(Climatefile *file,    /* climate data file */
         {
           free(f);
           fprintf(stderr,"ERROR421: Cannot read float data: %s.\n",
-                  nc_strerror(rc)); 
+                  nc_strerror(rc));
           nc_close(file->ncid);
           return TRUE;
         }
@@ -113,7 +122,7 @@ static Bool readdata(Climatefile *file,    /* climate data file */
         {
           free(s);
           fprintf(stderr,"ERROR421: Cannot read short data: %s.\n",
-                 nc_strerror(rc)); 
+                 nc_strerror(rc));
           nc_close(file->ncid);
           return TRUE;
         }
@@ -154,8 +163,28 @@ static Bool readdata(Climatefile *file,    /* climate data file */
             nc_close(file->ncid);
             return TRUE;
           }
-          data=(float)(file->slope*f[file->nlon*address[0]+address[1]]+file->intercept);
-          fwrite(&data,sizeof(float),1,bin);
+          if(isbyte)
+          {
+            if(file->slope*f[file->nlon*address[0]+address[1]]+file->intercept<0 || file->slope*f[file->nlon*address[0]+address[1]]+file->intercept>UCHAR_MAX)
+            {
+              fprintf(stderr,"WARNING423: value %g for cell=%d (",file->slope*f[file->nlon*address[0]+address[1]]+file->intercept,cell);
+              fprintcoord(stderr,coords+cell);
+              fprintf(stderr,") does not fit in byte.\n");
+            }
+            bdata=(Byte)(file->slope*f[file->nlon*address[0]+address[1]]+file->intercept);
+            fwrite(&bdata,sizeof(Byte),1,bin);
+          }
+          else
+          {
+            if(s[file->nlon*address[0]+address[1]]<0 || s[file->nlon*address[0]+address[1]]>UCHAR_MAX)
+            {
+              fprintf(stderr,"WARNING423: value %d for cell=%d (",s[file->nlon*address[0]+address[1]],cell);
+              fprintcoord(stderr,coords+cell);
+              fprintf(stderr,") does not fit in byte.\n");
+            }
+            data=(float)(file->slope*f[file->nlon*address[0]+address[1]]+file->intercept);
+            fwrite(&data,sizeof(float),1,bin);
+          }
         }
         else
         {
@@ -168,14 +197,20 @@ static Bool readdata(Climatefile *file,    /* climate data file */
             nc_close(file->ncid);
             return TRUE;
           }
-          fwrite(s+file->nlon*address[0]+address[1],sizeof(short),1,bin);
+          if(isbyte)
+          {
+            bdata=(Byte)s[file->nlon*address[0]+address[1]];
+            fwrite(&bdata,sizeof(Byte),1,bin);
+          }
+          else
+            fwrite(s+file->nlon*address[0]+address[1],sizeof(short),1,bin);
         }
       }
     }
   }
   if(file->datatype==LPJ_FLOAT)
     free(f);
-  else 
+  else
     free(s);
   return FALSE;
 } /* of 'readdata' */
@@ -195,8 +230,8 @@ int main(int argc,char **argv)
   FILE *file;
   int i,j;
   float cellsize_lon,cellsize_lat;
-  Bool swap,verbose,isclm;
-  swap=verbose=isclm=FALSE;
+  Bool swap,verbose,isclm,isbyte;
+  isbyte=swap=verbose=isclm=FALSE;
   units=NULL;
   var=NULL;
   outname="out.bin"; /* default file name for output */
@@ -207,11 +242,13 @@ int main(int argc,char **argv)
     if(argv[i][0]=='-')
     {
       if(!strcmp(argv[i],"-swap"))
-        swap=TRUE; 
+        swap=TRUE;
       else if(!strcmp(argv[i],"-v"))
-        verbose=TRUE; 
+        verbose=TRUE;
       else if(!strcmp(argv[i],"-clm"))
-        isclm=TRUE; 
+        isclm=TRUE;
+      else if(!strcmp(argv[i],"-byte"))
+        isbyte=TRUE;
       else if(!strcmp(argv[i],"-var"))
       {
         if(argc==i-1)
@@ -350,12 +387,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
-    if(data.time_step==MISSING_TIME)
-    {
-      fprintf(stderr,"ERROR436: Time axis missing in '%s'.\n",argv[j]);
-      return EXIT_FAILURE;
-    }
-    if(readdata(&data,file,grid,&config))
+    if(readdata(&data,file,grid,isbyte,&config))
     {
       fprintf(stderr,"Error reading '%s'.\n",argv[j]);
       return EXIT_FAILURE;

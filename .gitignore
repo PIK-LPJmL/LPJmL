@@ -163,3 +163,4 @@ bin/regridirrig
 bin/headersize
 bin/printglobal
 bin/mergeclm
+bin/country2cdf

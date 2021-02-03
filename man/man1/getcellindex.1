@@ -1,0 +1,42 @@
+.TH getcellindex 1  "March 2, 2013" "version 1.0.001" "USER COMMANDS"
+.SH NAME
+getcellindex \- get cell index for coordinates in grid clm file
+.SH SYNOPSIS
+.B getcellindex
+[\-search] [\-longheader] 
+.I gridfile 
+[lat[N|S] lon[E|W]] ...]
+.SH DESCRIPTION
+Program gets cell index for coordinates in grid file. If no cell coordinates are provided, all coordinates in the grid file are listed.
+.SH OPTIONS
+.TP
+\-search
+search for nearest coordinate in grid file if coordinate was not found
+.TP
+.I gridfile    
+filename of binary grid data file in CLM format
+.TP
+.I lat
+latitude in degree
+.TP
+.I lon
+longitude in degree
+.SH EXAMPLES
+.TP
+Get cell index for 48.25 12.25:
+.B getcountry
+grid.clm 48.25 12.25
+.PP
+.SH EXIT STATUS
+Non zero is returned in case of failure.
+
+.SH AUTHORS
+
+For authors and contributors see AUTHORS file
+
+.SH COPYRIGHT
+
+(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
+
+.SH SEE ALSO
+regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

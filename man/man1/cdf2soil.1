@@ -9,7 +9,7 @@ Program converts NetCDF input data into soil code or binary input data and write
 .SH OPTIONS
 .TP
 \-var name
-variable name in NetCDF file
+variable name in NetCDF file, default is 'stexture'
 .TP
 \-scale factor
 scaling factor for CLM grid file. Default is 0.01
@@ -31,7 +31,7 @@ filename of soil code data file written
 .SH EXAMPLES
 .TP
 .B cdf2soil
-soilcode.nc  -var soil grid.clm soilcode.bin
+soilcode.nc -var soilcode grid.clm soilcode.bin
 .PP
 .SH EXIT STATUS
 .B cdf2soil
@@ -47,4 +47,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-cdf2coord(1), cdf2clm(1), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
+cdf2coord(1), cdf2clm(1), cdf2bin(1), clm2cdf(1), bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
