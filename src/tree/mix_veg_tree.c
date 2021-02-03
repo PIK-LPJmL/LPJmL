@@ -22,6 +22,8 @@ void mix_veg_tree(Pft *pft,Real scaler)
   pft->nind*=scaler;
   pft->bm_inc.nitrogen*=scaler;
   pft->bm_inc.carbon*=scaler; /*not necessary as Carbon should always be zero when this function is called?*/
+  tree->fruit.carbon*=scaler;
+  tree->fruit.nitrogen*=scaler;
   tree->turn_litt.leaf.carbon*=scaler;
   tree->turn_litt.leaf.nitrogen*=scaler;
 } /* of 'mix_veg_tree' */

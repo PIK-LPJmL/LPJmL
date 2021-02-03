@@ -22,7 +22,7 @@ Real vegc_sum_tree(const Pft *pft /**< pointer to tree PFT */
 {
   const Pfttree *tree;
   tree=pft->data;
-  return (phys_sum_tree(tree->ind)-tree->ind.debt.carbon+tree->excess_carbon)*pft->nind-tree->turn_litt.leaf.carbon-tree->turn_litt.root.carbon;
+  return (phys_sum_tree(tree->ind)-tree->ind.debt.carbon+tree->excess_carbon)*pft->nind-tree->turn_litt.leaf.carbon-tree->turn_litt.root.carbon+tree->fruit.carbon;
 } /* of 'vegc_sum_tree' */
 
 Real vegn_sum_tree(const Pft *pft /**< pointer to tree PFT */
@@ -30,5 +30,5 @@ Real vegn_sum_tree(const Pft *pft /**< pointer to tree PFT */
 {
   const Pfttree *tree;
   tree=pft->data;
-  return (phys_sum_tree_n(tree->ind)-tree->ind.debt.nitrogen)*pft->nind+pft->bm_inc.nitrogen-tree->turn_litt.leaf.nitrogen-tree->turn_litt.root.nitrogen;
+  return (phys_sum_tree_n(tree->ind)-tree->ind.debt.nitrogen)*pft->nind+pft->bm_inc.nitrogen-tree->turn_litt.leaf.nitrogen-tree->turn_litt.root.nitrogen+tree->fruit.nitrogen;
 } /* of 'vegn_sum_tree' */
