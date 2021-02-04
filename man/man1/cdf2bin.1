@@ -1,9 +1,9 @@
-.TH cdf2clm 1  "April 23, 2018" "version 1.0.001" "USER COMMANDS"
+.TH cdf2clm 1  "January 29, 2021" "version 1.0.001" "USER COMMANDS"
 .SH NAME
 cdf2bin \- convert NetCDF files into raw binary data
 .SH SYNOPSIS
 .B cdf2bin
-[\-v] [\-swap] [\-units u] [\-var name] [\-clm] [\-cellsize size [\-o binfile] 
+[\-v] [\-swap] [\-units u] [\-var name] [\-clm] [\-byte] [\-cellsize size [\-o binfile] 
 gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF output data into raw binary output data data. 
@@ -23,6 +23,9 @@ variable name in NetCDF file
 \-clm
 gridfile is in CLM format, raw be default
 .TP
+\-byte
+output data converted to byte
+.TP
 \-cellsize size
 cell size in grid file, default is 0.5
 .TP
@@ -30,7 +33,7 @@ cell size in grid file, default is 0.5
 filename of raw binary data file written. Default is out.bin
 .TP
 .I gridfile    
-filename of binaray grid data file consisting of short values
+filename of binary grid data file consisting of short values or clm file is -clm option is set
 .TP
 .I netcdffile     
 filename of NetCDF file(s) converted
