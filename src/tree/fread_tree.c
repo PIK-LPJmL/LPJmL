@@ -47,6 +47,8 @@ Bool fread_tree(FILE *file, /**< pointer to binary file */
     freadreal((Real *)&tree->fruit,sizeof(Stocks)/sizeof(Real),swap,file);
     freadint1(&tree->boll_age,swap,file);
   }
+  else
+    tree->fruit.carbon=tree->fruit.nitrogen=0;
   freadreal1(&tree->excess_carbon,swap,file);
   return freadreal((Real *)&tree->falloc,sizeof(Treephyspar)/sizeof(Real),swap,file)!=sizeof(Treephyspar)/sizeof(Real);
 } /* of 'fread_tree' */
