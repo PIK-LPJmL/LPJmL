@@ -845,8 +845,12 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           grid[cell].ml.irrig_system->biomass_grass=grid[cell].ml.manage.par->default_irrig_system;
           grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
         }
-        count=readlandfracmap(grid[cell].ml.landfrac+i,config->landusemap,
-                              config->landusemap_size,data,count,ncft,config->nwptype);
+        if(readlandfracmap(grid[cell].ml.landfrac+i,config->landusemap,
+                        config->landusemap_size,data,&count,ncft,config->nwptype))
+        {
+          fprintf(stderr,"ERROR149: Land-use input=%g less than zero for cell %d.\n",data[count],cell+config->startgrid);
+          return TRUE;
+        }
       }
       else /* read irrigated cropfrac and irrigation systems from 64 bands input */
       {
@@ -1235,8 +1239,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         for(i=0; i<WIRRIG; i++)
         {
-          count=readlandfracmap(grid[cell].ml.fertilizer_nr+i,config->fertilizermap,
-                                config->fertilizermap_size,data,count,ncft,config->nwptype);
+          if(readlandfracmap(grid[cell].ml.fertilizer_nr+i,config->fertilizermap,
+                             config->fertilizermap_size,data,&count,ncft,config->nwptype))
+          {
+            fprintf(stderr,"ERROR149: Fertilizer input=%g for band %d less than zero for cell %d.\n",
+                    data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
+                    cell+config->startgrid);
+            return TRUE;
+          }
         }
       } /* for(cell=0;...) */
       free(data);
@@ -1297,8 +1307,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         for(i=0; i<WIRRIG; i++)
         {
-          count=readlandfracmap(grid[cell].ml.manure_nr+i,config->fertilizermap,
-                                config->fertilizermap_size,data,count,ncft,config->nwptype);
+          if(readlandfracmap(grid[cell].ml.manure_nr+i,config->fertilizermap,
+                             config->fertilizermap_size,data,&count,ncft,config->nwptype))
+          {
+            fprintf(stderr,"ERROR149: Manure input=%g for band %d less than zero for cell %d.\n",
+                    data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
+                    cell+config->startgrid);
+            return TRUE;
+          }
         }
       } /* for(cell=0;...) */
       free(data);
@@ -1450,10 +1466,17 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     for(cell=0; cell<config->ngridcell; cell++)
     {
       initlandfrac(grid[cell].ml.residue_on_field,ncft,config->nagtree);
+      if(readlandfracmap(grid[cell].ml.residue_on_field+i,config->fertilizermap,
+                         config->fertilizermap_size,data,&count,ncft,config->nwptype))
+      {
+        fprintf(stderr,"ERROR149: Residue rate input=%g for band %d less than zero for cell %d.\n",
+                data[count],count % config->fertilizermap_size,
+                cell+config->startgrid);
+        return TRUE;
+      }
+      count-=config->fertilizermap_size;
       readlandfracmap(grid[cell].ml.residue_on_field+i,config->fertilizermap,
-                      config->fertilizermap_size,data,count,ncft,config->nwptype);
-      count=readlandfracmap(grid[cell].ml.residue_on_field+i,config->fertilizermap,
-                            config->fertilizermap_size,data,count,ncft,config->nwptype);
+                      config->fertilizermap_size,data,&count,ncft,config->nwptype);
     }
     free(data);
   }
