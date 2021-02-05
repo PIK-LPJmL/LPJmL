@@ -122,7 +122,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
       if(cftmap[cft]==NOT_FOUND)
       {
         if(verbose)
-          fprintf(stderr,"WARNING011: Unknown CFT '%s' in '%s' array, will be ignored.\n",s,name);
+          fprintf(stderr,"WARNING011: Unknown CFT '%s' in map '%s', will be ignored.\n",s,name);
       }
     } /* of for(cft=0...) */
     if(isroot(*config))
@@ -132,7 +132,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
       {
         if(first)
         {
-          fprintf(stderr,"WARNING010: '%s' not defined for",name); 
+          fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
           first=FALSE;
         }
         fprintf(stderr," '%s'",config->pftpar[npft+cft].name);
@@ -144,7 +144,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
         {
           if(first)
           {
-            fprintf(stderr,"WARNING010: '%s' not defined for",name); 
+            fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
             first=FALSE;
           }
           else
@@ -156,7 +156,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
         {
           if(first)
           {
-            fprintf(stderr,"WARNING010: '%s' not defined for",name); 
+            fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
             first=FALSE;
           }
           else
@@ -168,7 +168,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
         {
           if(first)
           {
-            fprintf(stderr,"WARNING010: '%s' not defined for",name); 
+            fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
             first=FALSE;
           }
           else
@@ -179,7 +179,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
       {
         if(first && isroot(*config))
         {
-          fprintf(stderr,"WARNING010: '%s' not defined for",name); 
+          fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
           first=FALSE;
         }
         else
@@ -191,7 +191,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
         {
           if(first)
           {
-            fprintf(stderr,"WARNING010: '%s' not defined for",name); 
+            fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
             first=FALSE;
           }
           else
@@ -200,7 +200,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
         }
     }
     if(!first)
-      fprintf(stderr,".\n");
+      fprintf(stderr,", set to zero.\n");
     }
     free(undef);
   }
@@ -215,6 +215,24 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
     }
     for(cft=0;cft<*size;cft++)
       cftmap[cft]=cft;
+    if(isroot(*config))
+    {
+      fprintf(stderr,"WARNING011: Map '%s' not found, set to [",name);
+      for(cft=0;cft<ncft;cft++)
+        fprintf(stderr,(cft==0) ? "'%s'" : ",'%s'",config->pftpar[npft+cft].name);
+      if(!cftonly)
+      {
+        for(cft=0;cft<NGRASS;cft++)
+          fprintf(stderr,",'%s'",grasspft[cft]);
+        for(cft=0;cft<NBIOMASSTYPE;cft++)
+          fprintf(stderr,",'%s'",biomasspft[cft]);
+        if(config->nwft)
+          fprintf(stderr,",'%s'",wppft[0]);
+        for(cft=0;cft<config->nagtree;cft++)
+          fprintf(stderr,",'%s'",config->pftpar[npft-config->nagtree+cft].name);
+      }
+      fputs("].\n",stderr);
+    }
   }
   return cftmap;
 } /* of 'scancftmap' */

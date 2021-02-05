@@ -244,8 +244,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       else if((config->crop_index!=ALLNATURAL && config->crop_index!=ALLGRASSLAND && config->crop_index!=ALLSTAND))
       {
         if(verbosity)
-          fprintf(stderr,"ERROR166: Invalid value for crop index=%d in line %d of '%s'.\n",
-                  config->crop_index,getlinecount(),getfilename());
+          fprintf(stderr,"ERROR166: Invalid value for crop index=%d.\n",
+                  config->crop_index);
         return TRUE;
       }
     }

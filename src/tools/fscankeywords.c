@@ -45,14 +45,14 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
       if(with_default)
       {
         if(verb)
-          fprintf(stderr,"WARNING027: Name '%s' for int not found, set to '%s'.\n",
+          fprintf(stderr,"WARNING027: Name '%s' for keyword not found, set to '%s'.\n",
                   name,array[*value]);
         return FALSE;
       }
       else
       {
         if(verb)
-          fprintf(stderr,"ERROR225: Name '%s' for int not found.\n",name);
+          fprintf(stderr,"ERROR225: Name '%s' for keyword not found.\n",name);
         return TRUE;
       }
     }
