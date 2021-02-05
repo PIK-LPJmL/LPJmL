@@ -95,7 +95,7 @@ clean:
             cft2clm$E printdrain$E lpjcheck$E $(VIEWPRG)$E printharvest$E\
             printreservoir$E setclm$E getcountry$E regridclm$E regridsoil$E\
             cdf2soil$E lpjfiles$E asc2clm$E joingrid$E clm2cdf$E soil2cdf$E\
-            cff2clm$E bin2cdf$E adddrain$E txt2grid$E getcellindex$E\
+            cdf2clm$E bin2cdf$E adddrain$E txt2grid$E getcellindex$E\
             copyheader$E addheader$E mathclm$E cutclm$E cdf2bin$E cvrtclm$E\
             manage2js$E headersize$E regridirrig$E mergeclm$E country2cdf$E)
 
