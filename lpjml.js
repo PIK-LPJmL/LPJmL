@@ -37,13 +37,13 @@
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
   "fire" : "fire",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
-  "fdi" : "nesterov_index", /* different fire danger index formulations: WVPD_INDEX(needs GLDAS input data), NESTEROV_INDEX*/
+  "fdi" : "nesterov",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
   "firewood" : false,
-  "new_phenology": true,    /* GSI phenology enabled */
+  "new_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : true,
   "permafrost" : true,
-  "with_nitrogen" : "lim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "with_nitrogen" : "lim", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
@@ -72,7 +72,7 @@
   "intercrop" : true,                   /* intercrops on setaside */
   "residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
-  "irrigation" : "lim_irrigation",      /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
+  "irrigation" : "lim",                 /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
   "laimax_interpolate" : "laimax_par",  /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
   "tillage_type" : "tillage",           /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */

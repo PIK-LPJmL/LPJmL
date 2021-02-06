@@ -43,7 +43,7 @@
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : false,
   "permafrost" : true,
-  "with_nitrogen" : "lim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "with_nitrogen" : "lim",  /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
@@ -71,7 +71,7 @@
   "intercrop" : true,                   /* intercrops on setaside */
   "residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
   "residues_fire" : false,              /* fire in residuals */
-  "irrigation" : "lim_irrigation",      /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
+  "irrigation" : "lim",                 /* other options "no", "lim", "pot", "all" */
   "laimax_interpolate" : "laimax_par",  /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
   "tillage_type" : "tillage",           /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */

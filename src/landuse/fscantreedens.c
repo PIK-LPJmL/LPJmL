@@ -2,6 +2,7 @@
 /**                                                                                \n**/
 /**          f  s  c  a  n  t  r  e  e  d  e  n  s  .  c                           \n**/
 /**                                                                                \n**/
+/** Function reads tree densities for agriculturual trees for each country         \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -18,7 +19,7 @@
   if(fscanreal(file,var,name,FALSE,verb))\
   {\
     if(verb)\
-      fprintf(stderr,"ERROR102: Cannot read float '%s' for country '%s' \n",name,country);\
+      fprintf(stderr,"ERROR102: Cannot read float '%s' for country '%s'.\n",name,country);\
     return 0;\
   }
 
@@ -27,7 +28,7 @@ int fscantreedens(LPJfile *file,          /**< pointer to LPJ file */
                   int ncountries,         /**< number of countries */
                   int nagtree,            /**< number of agriculture tree PFTs */
                   Verbosity verb          /**< output on stderr (TRUE/FALSE)*/
-                 )                        /** \return number of elements in array */
+                 )                        /** \return number of elements in array or 0 in case of error */
 {
   LPJfile arr,item;
   int n,id,size,i;
@@ -58,7 +59,7 @@ int fscantreedens(LPJfile *file,          /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,
-                "ERROR178: tree density number=%d has been already defined.\n",id);
+                "ERROR178: Tree density number=%d has been already defined.\n",id);
       return 0;
     }
 
@@ -71,7 +72,7 @@ int fscantreedens(LPJfile *file,          /**< pointer to LPJ file */
     if(fscanrealarray(&item,country->k_est,nagtree,"k_est",verb))
     {
       if(verb)
-        fprintf(stderr,"ERROR102: cannot read 'k_est' vector for '%s'.\n",country->name);
+        fprintf(stderr,"ERROR102: Cannot read 'k_est' array for '%s'.\n",country->name);
       return 0;
     }
     /*printf("country tree density in %s: %f\n",country->name,country->k_est[nagtree-1]);*/
@@ -80,7 +81,7 @@ int fscantreedens(LPJfile *file,          /**< pointer to LPJ file */
     if(countrypar[n].k_est==NULL)
     {
       if(verb)
-        fprintf(stderr,"WARNING030: 'k_est' vector for country '%s' not defined, default values assumed.\n",countrypar[n].name);
+        fprintf(stderr,"WARNING030: 'k_est' array for country '%s' not defined, default value of -1 assumed.\n",countrypar[n].name);
       countrypar[n].k_est=newvec(Real,nagtree);
       if(countrypar[n].k_est==NULL)
       {

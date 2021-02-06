@@ -264,7 +264,7 @@ extern int getngrassnat(const Pftpar [],int);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool);
 extern Real nitrogen_stress(Pft *,Real,Real,int,int,const Config *);
 extern Real f_lai(Real);
-extern int findpftid(const char *,const Pftpar[],int);
+extern int findpftname(const char *,const Pftpar[],int);
 
 /* needed for IMAGE, but can also be used otherwise */
 

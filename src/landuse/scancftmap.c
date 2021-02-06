@@ -16,7 +16,10 @@
 
 #include "lpj.h"
 
-static int findpftname(const char *name,const Pftpar *pftpar,int ncft)
+int findpftname(const char *name,     /**< PFT name to find in array */
+                const Pftpar *pftpar, /**< PFT parameter array */
+                int ncft              /**< size of PFT array */
+               )                      /** \return index in PFT array or NOT_FOUND */
 {
   int cft;
   for(cft=0;cft<ncft;cft++)

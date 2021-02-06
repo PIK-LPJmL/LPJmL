@@ -46,31 +46,36 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
   if(size!=nout_max)
   {
     if(verb)
-      fprintf(stderr,"ERROR232: Number of items=%d in 'outputvars' array does not match %d, check NOUT in 'include/conf.h'.\n",size,nout_max);
-    return NULL;
+      fprintf(stderr,"ERROR232: Number of items=%d in 'outputvar' array does not match %d, check NOUT in 'include/conf.h'.\n",size,nout_max);
   }
   outnames=newvec(Variable,nout_max);
   checkptr(outnames);
   for(i=0;i<nout_max;i++)
     outnames[i].name=NULL;
-  for(i=0;i<nout_max;i++)
+  for(i=0;i<size;i++)
   {
     fscanarrayindex(&arr,&item,i,verb);
     fscanint2(&item,&index,"id");
+    if(fscanstring(&item,name,"name",FALSE,verb))
+    {
+      if(verb)
+        fprintf(stderr,"ERROR233: No name defined for output index %d.\n",index);
+      return NULL;
+    }
     if(index<0 || index>=nout_max)
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid index %d for output description.\n",
-               index);
+        fprintf(stderr,"ERROR201: Invalid index %d for description of output '%s'.\n",
+               index,name);
       return NULL;
     }
     if(outnames[index].name!=NULL)
     {
       if(verb)
-        fprintf(stderr,"ERROR202: Index %d already used for output description.\n",index);
+        fprintf(stderr,"ERROR202: Index %d already used for description of output '%s'.\n",
+                index,name);
       return NULL;
     }
-    fscanname(&item,name,"name",outnames[index].name);
     outnames[index].name=strdup(name);
     checkptr(outnames[index].name);
     fscanname(&item,name,"var",outnames[index].name);
@@ -103,5 +108,12 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
       return NULL;
     }
   }
+  for(i=0;i<nout_max;i++)
+    if(outnames[i].name==NULL)
+    {
+      if(verb)
+        fprintf(stderr,"ERRROR230: Output description not defined for index=%d in 'outputvar'\n",i);
+      return NULL;
+    }
   return outnames;
 } /* of 'fscanoutputvar' */

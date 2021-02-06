@@ -367,9 +367,9 @@
   "permafrost" : true,
 
 #if (DNIT==NIT_LIM)
-  "with_nitrogen" : "lim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
 #elif (DNIT==NIT_UNL)
-  "with_nitrogen" : "unlim_nitrogen",
+  "with_nitrogen" : "unlim",
   #else
 #endif
 
@@ -403,9 +403,9 @@
   "residues_fire" : false,              /* fire in residuals */
 
 #if (DIRR==IRR_LIM)
-  "irrigation" : "lim_irrigation",        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
+  "irrigation" : "lim",                 /* other options "no", "lim", "pot", "all" */
 #elif (DIRR==IRR_UNL)
-  "irrigation" : "pot_irrigation",
+  "irrigation" : "pot",
 #endif
 
   "tillage_type" : "read_tillage",      /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */

@@ -128,15 +128,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   int restart,endgrid,israndom,grassfix,grassharvest;
   Verbosity verbose;
   const char *landuse[]={"no_landuse","landuse","const_landuse","all_crops","only_crops"};
-  const char *irrigation[]={"no_irrigation","lim_irrigation","pot_irrigation","all_irrigation"};
+  const char *irrigation[]={"no","lim","pot","all"};
   const char *radiation[]={"cloudiness","radiation","radiation_swonly","radiation_lwdown"};
   const char *fire[]={"no_fire","fire","spitfire","spitfire_tmax"};
   const char *sowing_data_option[]={"no_fixed_sdate","fixed_sdate","prescribed_sdate"};
   const char *wateruse[]={"no_wateruse","wateruse","all_wateruse"};
   const char *prescribe_landcover[]={"no_landcover","landcoverest","landcoverfpc"};
   const char *laimax_interpolate[]={"laimax_cft","laimax_interpolate","const_lai_max","laimax_par"};
-  const char *fdi[]={"nesterov_index","wvpd_index"};
-  const char *nitrogen[]={"no_nitrogen","lim_nitrogen","unlim_nitrogen"};
+  const char *fdi[]={"nesterov","wvpd"};
+  const char *nitrogen[]={"no","lim","unlim"};
   const char *tillage[]={"no_tillage","tillage","read_tillage"};
   const char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
@@ -390,19 +390,19 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscanparam(file,config))
   {
     if(verbose)
-      fputs("ERROR230: Cannot read LPJ parameter.\n",stderr);
+      fputs("ERROR230: Cannot read LPJ parameter 'param'.\n",stderr);
     return TRUE;
   }
   if((config->nsoil=fscansoilpar(file,&config->soilpar,config->with_nitrogen,verbose))==0)
   {
     if(verbose)
-      fputs("ERROR230: Cannot read soil parameter.\n",stderr);
+      fputs("ERROR230: Cannot read soil parameter 'soilpar'.\n",stderr);
     return TRUE;
   }
   if((config->npft=fscanpftpar(file,&config->pftpar,scanfcn,ntypes,config))==NULL)
   {
     if(verbose)
-      fputs("ERROR230: Cannot read PFT parameter.\n",stderr);
+      fputs("ERROR230: Cannot read PFT parameter 'pftpar'.\n",stderr);
     return TRUE;
   }
   config->ntypes=ntypes;
@@ -415,7 +415,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(fscanstring(file,name,"cft_temp",FALSE,verbose))
       return TRUE;
-    config->cft_temp=findpftid(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+    config->cft_temp=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
     if(config->cft_temp<0)
     {
       if(verbose)
@@ -425,7 +425,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->cft_temp-=config->npft[GRASS]+config->npft[TREE];
     if(fscanstring(file,name,"cft_tropic",FALSE,verbose))
       return TRUE;
-    config->cft_tropic=findpftid(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+    config->cft_tropic=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
     if(config->cft_tropic<0)
     {
       if(verbose)
@@ -438,11 +438,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(fscanstring(file,name,"residue_pft",FALSE,verbose))
       return TRUE;
-    config->pft_residue=findpftid(name,config->pftpar,config->npft[GRASS]+config->npft[TREE]+config->npft[CROP]);
+    config->pft_residue=findpftname(name,config->pftpar,config->npft[GRASS]+config->npft[TREE]+config->npft[CROP]);
     if(config->pft_residue==NOT_FOUND)
     {
       if(verbose)
-        fprintf(stderr,"ERROR230: Invalid PFT '%s' fot black fallow.\n",name);
+        fprintf(stderr,"ERROR230: Invalid PFT '%s' for black fallow.\n",name);
       return TRUE;
     }
   }
@@ -453,13 +453,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if((config->ncountries=fscancountrypar(file,&config->countrypar,config->rw_manage,(config->laimax_interpolate==LAIMAX_CFT) ? config->npft[CROP] : 0,verbose))==0)
     {
       if(verbose)
-        fputs("ERROR230: Cannot read country parameter.\n",stderr);
+        fputs("ERROR230: Cannot read country parametern 'countrypar'.\n",stderr);
       return TRUE;
     }
     if((config->nregions=fscanregionpar(file,&config->regionpar,verbose))==0)
     {
       if(verbose)
-        fputs("ERROR230: Cannot read region parameter.\n",stderr);
+        fputs("ERROR230: Cannot read region parametern 'regionpar'.\n",stderr);
       return TRUE;
     }
     if(config->nagtree)
@@ -467,7 +467,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if (fscantreedens(file,config->countrypar,config->ncountries,config->nagtree,verbose)==0)
       {
         if(verbose)
-          fputs("ERROR230: Cannot read tree density (k_est) parameter.\n",stderr);
+          fputs("ERROR230: Cannot read tree density (k_est) parameter 'treedens'.\n",stderr);
         return TRUE;
       }
     }
@@ -497,7 +497,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->outnames==NULL)
   {
     if(verbose)
-      fputs("ERROR230: Cannot read output description.\n",stderr);
+      fputs("ERROR230: Cannot read output description 'outputvar'.\n",stderr);
     return TRUE;
   }
   /*=================================================================*/
@@ -742,7 +742,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscanoutput(file,config,nout_max))
   {
     if(verbose)
-      fputs("ERROR230: Cannot read output data.\n",stderr);
+      fputs("ERROR230: Cannot read output data 'output'.\n",stderr);
     return TRUE;
   }
 
