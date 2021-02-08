@@ -37,7 +37,7 @@
 "radiation" : "radiation",
 "fire" : "fire",               /* fire disturbance enabled */
 "firewood" : false,
-"with_nitrogen" : "no_nitrogen",
+"with_nitrogen" : "no",
 "store_climate" : true, /* store climate data in spin-up phase */
 "const_climate" : false,
 "const_deposition" : false,
@@ -50,7 +50,7 @@
 "equilsoil" :false,
 "permafrost" : true,
 "landuse" : "no_landuse",
-"irrigation" : "lim_irrigation", /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
+"irrigation" : "lim", /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
 "laimax_interpolate" : "laimax_cft", /* laimax values from manage parameter file */
 "reservoir" : false,
 "grassland_fixed_pft" : false,

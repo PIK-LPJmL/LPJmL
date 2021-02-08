@@ -48,7 +48,7 @@
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : true,
   "permafrost" : true,
-  "with_nitrogen" : "lim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "with_nitrogen" : "lim", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true,
@@ -81,7 +81,7 @@
   "intercrop" : true,                   /* intercrops on setaside */
   "remove_residuals" : false,           /* remove residuals */
   "residues_fire" : false,              /* fire in residuals */
-  "irrigation" : "lim_irrigation",        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
+  "irrigation" : "lim",        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
   "laimax_interpolate" : "laimax_par",    /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */

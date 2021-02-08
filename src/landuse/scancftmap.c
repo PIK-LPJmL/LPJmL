@@ -221,8 +221,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
     if(isroot(*config))
     {
       fprintf(stderr,"WARNING011: Map '%s' not found, set to [",name);
-      for(cft=0;cft<ncft;cft++)
-        fprintf(stderr,(cft==0) ? "'%s'" : ",'%s'",config->pftpar[npft+cft].name);
+      fprintpftnames(stderr,config->pftpar+npft,ncft);
       if(!cftonly)
       {
         for(cft=0;cft<NGRASS;cft++)

@@ -52,17 +52,17 @@
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,
-  "landuse" : "landuse", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
-  "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
+  "landuse" : "yes", /* other options: "no", "yes", "const", "all_crops", "only_crops" */
+  "landuse_year_const" : 2000, /* set landuse year for "const" case */
   "reservoir" : true,
-  "wateruse" : "wateruse",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "wateruse" : "yes",  /* other options: "no", "yes", "all" */
   "equilsoil" : false,
 #else
   "equilsoil" : true,
   "population" : false,
-  "landuse" : "no_landuse",
+  "landuse" : "no",
   "reservoir" : false,
-  "wateruse" : "no_wateruse",
+  "wateruse" : "no",
   "equilsoil" : true,
 #endif
   "prescribe_burntarea" : false,
@@ -72,10 +72,10 @@
   "intercrop" : true,                   /* intercrops on setaside */
   "residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
-  "irrigation" : "lim",                 /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
+  "irrigation" : "lim",                 /* other options: "no", "lim", "pot", "all" */
   "laimax_interpolate" : "laimax_par",  /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
-  "tillage_type" : "tillage",           /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
+  "tillage_type" : "all",           /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
   "till_startyear" : 1850,              /* year in which tillage should start */
   "black_fallow" : false,               /* simulation with black fallow on PNV */
   "pft_residue" : "temperate cereals",
@@ -84,7 +84,7 @@
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : true,            /* enable fertilizer input */
-  "manure_input" : true,               /* enable manure input */
+  "manure_input" : true,                /* enable manure input */
   "fix_fertilization" : false,          /* fix fertilizer input */
   "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */
   "cft_temp" : "temperate cereals",

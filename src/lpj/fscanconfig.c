@@ -127,17 +127,17 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   LPJfile input;
   int restart,endgrid,israndom,grassfix,grassharvest;
   Verbosity verbose;
-  const char *landuse[]={"no_landuse","landuse","const_landuse","all_crops","only_crops"};
+  const char *landuse[]={"no","yes","const","all_crops","only_crops"};
   const char *irrigation[]={"no","lim","pot","all"};
   const char *radiation[]={"cloudiness","radiation","radiation_swonly","radiation_lwdown"};
   const char *fire[]={"no_fire","fire","spitfire","spitfire_tmax"};
   const char *sowing_data_option[]={"no_fixed_sdate","fixed_sdate","prescribed_sdate"};
-  const char *wateruse[]={"no_wateruse","wateruse","all_wateruse"};
+  const char *wateruse[]={"no","yes","all"};
   const char *prescribe_landcover[]={"no_landcover","landcoverest","landcoverfpc"};
   const char *laimax_interpolate[]={"laimax_cft","laimax_interpolate","const_lai_max","laimax_par"};
   const char *fdi[]={"nesterov","wvpd"};
   const char *nitrogen[]={"no","lim","unlim"};
-  const char *tillage[]={"no_tillage","tillage","read_tillage"};
+  const char *tillage[]={"no","all","read"};
   const char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
 
@@ -262,8 +262,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS || config->withlanduse==ONLY_CROPS)
         fscanint2(file,&config->landuse_year_const,"landuse_year_const");
       config->fix_landuse=FALSE;
-      if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS)
-        fscanint2(file,&config->landuse_year_const,"landuse_year_const");
       if(config->withlanduse!=CONST_LANDUSE && config->fix_climate)
       {
         if(fscanbool(file,&config->fix_landuse,"fix_landuse",TRUE,verbose))
@@ -416,23 +414,29 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(fscanstring(file,name,"cft_temp",FALSE,verbose))
       return TRUE;
     config->cft_temp=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
-    if(config->cft_temp<0)
+    if(config->cft_temp==NOT_FOUND)
     {
       if(verbose)
-        fprintf(stderr,"ERROR230: Invalid CFT '%s' for 'cft_temp'.\n",name);
+      {
+        fprintf(stderr,"ERROR230: Invalid CFT '%s' for 'cft_temp', must be ",name);
+        fprintpftnames(stderr,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+        fputs(".\n",stderr);
+      }
       return TRUE;
     }
-    config->cft_temp-=config->npft[GRASS]+config->npft[TREE];
     if(fscanstring(file,name,"cft_tropic",FALSE,verbose))
       return TRUE;
     config->cft_tropic=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
-    if(config->cft_tropic<0)
+    if(config->cft_tropic==NOT_FOUND)
     {
       if(verbose)
-        fprintf(stderr,"ERROR230: Invalid CFT '%s' for 'cft_tropic'.\n",name);
+      {
+        fprintf(stderr,"ERROR230: Invalid CFT '%s' for 'cft_tropic', must be ",name);
+        fprintpftnames(stderr,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
+        fputs(".\n",stderr);
+      }
       return TRUE;
     }
-    config->cft_tropic-=config->npft[GRASS]+config->npft[TREE];
   }
   if(config->black_fallow && config->prescribe_residues)
   {
@@ -442,7 +446,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(config->pft_residue==NOT_FOUND)
     {
       if(verbose)
-        fprintf(stderr,"ERROR230: Invalid PFT '%s' for black fallow.\n",name);
+      {
+        fprintf(stderr,"ERROR230: Invalid PFT '%s' for black fallow, must be",name);
+        fprintpftnames(stderr,config->pftpar,config->npft[GRASS]+config->npft[TREE]+config->npft[CROP]);
+        fputs(".\n",stderr);
+      }
       return TRUE;
     }
   }
@@ -453,13 +461,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if((config->ncountries=fscancountrypar(file,&config->countrypar,config->rw_manage,(config->laimax_interpolate==LAIMAX_CFT) ? config->npft[CROP] : 0,verbose))==0)
     {
       if(verbose)
-        fputs("ERROR230: Cannot read country parametern 'countrypar'.\n",stderr);
+        fputs("ERROR230: Cannot read country parameter 'countrypar'.\n",stderr);
       return TRUE;
     }
     if((config->nregions=fscanregionpar(file,&config->regionpar,verbose))==0)
     {
       if(verbose)
-        fputs("ERROR230: Cannot read region parametern 'regionpar'.\n",stderr);
+        fputs("ERROR230: Cannot read region parameter 'regionpar'.\n",stderr);
       return TRUE;
     }
     if(config->nagtree)
@@ -855,9 +863,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     else if(config->outputyear<config->firstyear-config->nspinup)
     {
       if(verbose)
-        fprintf(stderr,"ERROR230: First year output is written=%d less than first simulation year=%d.\n",
-                config->outputyear,config->firstyear-config->nspinup);
-      return TRUE;
+        fprintf(stderr,"ERROR230: First year output is written=%d less than first simulation year=%d, set to %d.\n",
+                config->outputyear,config->firstyear-config->nspinup,config->firstyear-config->nspinup);
+      config->outputyear=config->firstyear-config->nspinup;
     }
   }
   else

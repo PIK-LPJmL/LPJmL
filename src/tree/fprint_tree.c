@@ -59,5 +59,5 @@ void fprint_tree(FILE *file,       /**< pointer to text file */
               tree->fruit.carbon,tree->fruit.nitrogen);
   }
   if(pft->par->cultivation_type==ANNUAL_TREE)
-    fprintf(file,"Bool age:\t%d (d)\n",tree->boll_age);
+    fprintf(file,"Boll age:\t%d (d)\n",tree->boll_age);
 } /* of 'fprint_tree' */
