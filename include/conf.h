@@ -98,7 +98,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 335            /* number of output files */
+#define NOUT 347            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -448,7 +448,18 @@
 #define CFT_NFERT 332
 #define CFT_NFERT2 333
 #define FLUX_AUTOFERT 334
-
+#define ALITFALLC_WOOD 335
+#define ALITFALLN_WOOD 336
+#define RESPONSE_LAYER_AGR 337
+#define RESPONSE_LAYER_NV 338
+#define DECAY_WOOD_AGR 339
+#define DECAY_WOOD_NV 340
+#define DECAY_LEAF_AGR 341
+#define DECAY_LEAF_NV 342
+#define CSHIFT_FAST_NV 343
+#define CSHIFT_SLOW_NV 344
+#define ALITBURNC 345
+#define ALITBURNC_WOOD 346
 
 #define RANDOM_SEED 0
 

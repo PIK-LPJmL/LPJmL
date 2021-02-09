@@ -356,7 +356,17 @@
   { "id" : MGRASS_LITN, "name": "litn", "var" : "LitN", "descr" : "litter nitrogen", "unit" : "gN/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_NFERT, "name": "cft_nfert", "var" : "nfert", "descr" : "CFT-specific fertilizer application", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_NFERT2, "name": "cft_nfert2", "var" : "nfert", "descr" : "CFT-specific fertilizer application", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
-  { "id" : FLUX_AUTOFERT, "name": "nfert", "var" : "nfert", "descr" : "flux of automated fertilizer application", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0}
- 
-  
+  { "id" : FLUX_AUTOFERT, "name": "nfert", "var" : "nfert", "descr" : "flux of automated fertilizer application", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : ALITFALLC_WOOD, "name": "alitfallc_wood", "var": "litfallc_wood", "descr" : "woody litter fall carbon", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : ALITFALLN_WOOD, "name": "alitfalln_wood", "var": "litfalln_wood", "descr" : "woody litter fall nitrogen", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : RESPONSE_LAYER_AGR, "name" : "response_layer_agr" , "var" : "response_layer" , "descr" : "annual sum of response function in layer on agricultural stands", "unit" : "-" , "scale" : 1.0, "offset" : 0.0}, 
+  { "id" : RESPONSE_LAYER_NV, "name" : "response_layer_nv" , "var" : "response_layer" , "descr" : "annual sum of response function in layer on natural vegetation", "unit" : "-" , "scale" : 1.0, "offset" : 0.0}, 
+  { "id" : DECAY_WOOD_AGR, "name" : "decay_wood_agr", "var": "decay_wood", "descr": "annual decay rate of woody litter on agricultural stands", "unit": "-", "scale": 1.0, "offset" : 0.0},
+  { "id" : DECAY_WOOD_NV, "name" : "decay_wood_nv", "var": "decay_wood", "descr": "annual decay rate of woody litter on natural vegetation", "unit": "-", "scale": 1.0, "offset" : 0.0}, 
+  { "id" : DECAY_LEAF_AGR, "name" : "decay_leaf_agr", "var": "decay_leaf", "descr": "annual decay rate of leaf litter on agricultural stands", "unit": "-", "scale": 1.0, "offset" : 0.0},
+  { "id" : DECAY_LEAF_NV, "name" : "decay_leaf_nv", "var": "decay_leaf", "descr": "annual decay rate of leaf litter on natural vegetation", "unit": "-", "scale": 1.0, "offset" : 0.0}, 
+  { "id" : CSHIFT_FAST_NV, "name" : "cshift_fast_nv", "var": "Cshift_fast", "descr": "average annual cshift to fast carbon pools on natural vegetation", "unit": "-", "scale": 1.0, "offset" : 0.0},
+  { "id" : CSHIFT_SLOW_NV, "name" : "cshift_slow_nv", "var": "Cshift_slow", "descr": "average annual cshift to slow carbon pools on natural vegetation", "unit": "-", "scale": 1.0, "offset" : 0.0},
+  { "id" : ALITBURNC, "name": "alitburnc", "var": "litburnc", "descr" : "litter carbon burnt", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : ALITBURNC_WOOD, "name": "alitburnc_wood", "var": "litburnc_wood", "descr" : "woody litter carbon burnt", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0}
 ],

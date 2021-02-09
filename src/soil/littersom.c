@@ -78,6 +78,8 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
   int i,p,l;
   Soil *soil;
   Real yedoma_flux;
+  Real cshift_fast_sum[NSOILLAYER];
+  Real cshift_slow_sum[NSOILLAYER];
   Real F_NO3=0;                /* soil nitrification rate gN *m-2*d-1*/
   Real F_N2O=0;                /* soil nitrification rate gN *m-2*d-1*/
   Real F_Nmineral;  /* net mineralization flux gN *m-2*d-1*/
@@ -88,7 +90,7 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
   Irrigation *data;
   soil=&stand->soil;
   flux.nitrogen=0;
-  foreachsoillayer(l) response[l]=0.0;
+  foreachsoillayer(l) response[l]=cshift_fast_sum[l]=cshift_slow_sum[l]=0.0;
   decom_litter.carbon=decom_litter.nitrogen=soil_cflux=yedoma_flux=decom_sum.carbon=decom_sum.nitrogen=0.0;
 
   foreachsoillayer(l)
@@ -107,6 +109,11 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
         response[l]=0.0;
       if (response[l]>1)
         response[l]=1.0;
+
+      if(stand->type->landusetype==NATURAL)
+        stand->cell->output.response_nv[l]+=response[l];
+      if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+        stand->cell->output.response_agr[l]+=response[l]*stand->frac;
 
       if(l<LASTLAYER)
       {
@@ -266,6 +273,8 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
       {
         soil->pool[l].fast.carbon+=param.fastfrac*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift_fast[l][soil->litter.item[p].pft->id];
         soil->pool[l].slow.carbon+=(1-param.fastfrac)*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift_slow[l][soil->litter.item[p].pft->id];
+        cshift_fast_sum[l]+=decom_sum.carbon*soil->c_shift_fast[l][soil->litter.item[p].pft->id];
+        cshift_slow_sum[l]+=decom_sum.carbon*soil->c_shift_slow[l][soil->litter.item[p].pft->id];
         if(decom_sum.nitrogen>0)
         {
           soil->pool[l].slow.nitrogen+=(1-param.fastfrac)*(1-param.atmfrac)*decom_sum.nitrogen*soil->c_shift_slow[l][soil->litter.item[p].pft->id];
@@ -329,6 +338,16 @@ Stocks littersom(Stand *stand,               /**< pointer to stand data */
       }
       /*sum for equilsom-routine*/
     }   /*end soil->litter.n*/
+
+    if(decom_litter.carbon>0 && stand->type->landusetype==NATURAL)
+    {
+      forrootsoillayer(l)
+      {
+        stand->cell->output.cshift_fast_nv[l]+=cshift_fast_sum[l]/decom_litter.carbon/NDAYYEAR;
+        stand->cell->output.cshift_slow_nv[l]+=cshift_slow_sum[l]/decom_litter.carbon/NDAYYEAR;
+      }
+    }
+
     /*sum for equilsom-routine*/
     soil->decomp_litter_mean.carbon+=decom_litter.carbon;
     soil->decomp_litter_mean.nitrogen+=decom_litter.nitrogen;

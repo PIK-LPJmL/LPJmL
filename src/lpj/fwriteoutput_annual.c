@@ -781,5 +781,14 @@ void fwriteoutput_annual(Outputfile *output,  /**< output file array */
   writeoutputvar(ADELTA_NMIN_SOIL_AGR,adelta_nmin_soil_agr);
   writeoutputvar(ADELTA_NVEG_SOIL_AGR,adelta_nveg_soil_agr);
   writeoutputvar(CELLFRAC_AGR,cellfrac_agr);
+  writeoutputvar(ALITFALLC_WOOD,alittfall_wood.carbon);
+  writeoutputvar(ALITFALLN_WOOD,alittfall_wood.nitrogen);
+  writeoutputvar(DECAY_WOOD_AGR,decay_wood_agr);
+  writeoutputvar(DECAY_WOOD_NV,decay_wood_nv);
+  writeoutputvar(DECAY_LEAF_AGR,decay_leaf_agr);
+  writeoutputvar(DECAY_LEAF_NV,decay_leaf_nv);
+  writeoutputvar(ALITBURNC,alitburnc);
+  writeoutputvar(ALITBURNC_WOOD,alitburnc_wood);
+
   free(vec);
 } /* of 'fwriteoutput_annual' */

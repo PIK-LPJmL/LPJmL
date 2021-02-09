@@ -116,5 +116,10 @@ void update_annual(Cell *cell,           /**< Pointer to cell */
   cell->output.product_pool_slow.carbon=cell->ml.product.slow.carbon;
   cell->output.product_pool_fast.nitrogen=cell->ml.product.fast.nitrogen;
   cell->output.product_pool_slow.nitrogen=cell->ml.product.slow.nitrogen;
+  /* calculate annual litter decay rates */
+  cell->output.decay_wood_nv=1.0-cell->output.decay_wood_nv;
+  cell->output.decay_leaf_nv=1.0-cell->output.decay_leaf_nv;
+  cell->output.decay_wood_agr=1.0-cell->output.decay_wood_agr;
+  cell->output.decay_leaf_agr=1.0-cell->output.decay_leaf_agr;
 #endif
 } /* of 'update_annual' */

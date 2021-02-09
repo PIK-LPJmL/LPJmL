@@ -20,6 +20,8 @@
 
 #define length 1.0 /* characteristic length (m) */
 #define BIOTURBRATE 0.001897 /* daily rate for 50% annual bioturbation rate [-]*/
+#define LEAF 0
+#define WOOD 1
 
 void update_daily(Cell *cell,            /**< cell pointer           */
                   Real co2,              /**< atmospheric CO2 (ppmv) */
@@ -52,11 +54,13 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real bnf;
   Real nh3;
   Irrigation *data;
-  int index,l;
+  int index,l,i;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
   Real agrfrac;
+  Real litsum_old_nv[2]={0,0},litsum_new_nv[2]={0,0};
+  Real litsum_old_agr[2]={0,0},litsum_new_agr[2]={0,0};
 
   gp_pft=newvec(Real,npft+ncft);
   check(gp_pft);
@@ -154,7 +158,37 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
 
+    if(stand->type->landusetype==NATURAL)
+      for(l=0;l<stand->soil.litter.n;l++)
+      {
+        litsum_old_nv[LEAF]+=stand->soil.litter.item[l].ag.leaf.carbon+stand->soil.litter.item[l].agsub.leaf.carbon+stand->soil.litter.item[l].bg.carbon;
+        for(i=0;i<NFUELCLASS;i++)
+          litsum_old_nv[WOOD]+=stand->soil.litter.item[l].ag.wood[i].carbon+stand->soil.litter.item[l].agsub.wood[i].carbon;
+      }
+    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+      for(l=0;l<stand->soil.litter.n;l++)
+      {
+        litsum_old_agr[LEAF]+=stand->soil.litter.item[l].ag.leaf.carbon+stand->soil.litter.item[l].agsub.leaf.carbon+stand->soil.litter.item[l].bg.carbon;
+        for(i=0;i<NFUELCLASS;i++)
+          litsum_old_agr[WOOD]+=stand->soil.litter.item[l].ag.wood[i].carbon+stand->soil.litter.item[l].agsub.wood[i].carbon;
+      }
+
     hetres=littersom(stand,gtemp_soil,npft,ncft);
+
+    if(stand->type->landusetype==NATURAL)
+      for(l=0;l<stand->soil.litter.n;l++)
+      {
+        litsum_new_nv[LEAF]+=stand->soil.litter.item[l].ag.leaf.carbon+stand->soil.litter.item[l].agsub.leaf.carbon+stand->soil.litter.item[l].bg.carbon;
+        for(i=0;i<NFUELCLASS;i++)
+          litsum_new_nv[WOOD]+=stand->soil.litter.item[l].ag.wood[i].carbon+stand->soil.litter.item[l].agsub.wood[i].carbon;
+      }
+    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+      for(l=0;l<stand->soil.litter.n;l++)
+      {
+        litsum_new_agr[LEAF]+=stand->soil.litter.item[l].ag.leaf.carbon+stand->soil.litter.item[l].agsub.leaf.carbon+stand->soil.litter.item[l].bg.carbon;
+        for(i=0;i<NFUELCLASS;i++)
+          litsum_new_agr[WOOD]+=stand->soil.litter.item[l].ag.wood[i].carbon+stand->soil.litter.item[l].agsub.wood[i].carbon;
+      }
 
     if(stand->type->landusetype==NATURAL && config->black_fallow && config->prescribe_residues && param.residue_pool>0)
     {
@@ -310,6 +344,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   } /* of foreachstand */
 
   cell->output.cellfrac_agr+=agrfrac/NDAYYEAR;
+  cell->output.decay_leaf_nv*=litsum_old_nv[LEAF]>0 ? litsum_new_nv[LEAF]/litsum_old_nv[LEAF] : 1;
+  cell->output.decay_wood_nv*=litsum_old_nv[WOOD]>0 ? litsum_new_nv[WOOD]/litsum_old_nv[WOOD] : 1;
+  cell->output.decay_leaf_agr*=litsum_old_agr[LEAF]>0 ? litsum_new_agr[LEAF]/litsum_old_agr[LEAF] : 1;
+  cell->output.decay_wood_agr*=litsum_old_agr[WOOD]>0 ? litsum_new_agr[WOOD]/litsum_old_agr[WOOD] : 1;
+
 
 #ifdef COUPLING_WITH_FMS
   if (cell->lakefrac > 0)

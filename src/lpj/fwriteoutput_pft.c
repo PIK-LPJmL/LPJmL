@@ -958,6 +958,76 @@ void fwriteoutput_pft(Outputfile *output,  /**< Output file array */
   writeoutputvar(PFT_NUPTAKE2,pft_nuptake2,(npft-config->nbiomass)+(ncft+NGRASS+NBIOMASSTYPE)*2);
   writeoutputvar(CFT_NFERT2,cft_nfert2,2*(ncft+NGRASS+NBIOMASSTYPE));
 #endif
+  if(isopen(output,RESPONSE_LAYER_AGR))
+  {
+    outindex(output,RESPONSE_LAYER_AGR,config->rank);
+    forrootsoillayer(i)
+    {
+      count=0;
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if(!grid[cell].skip)
+        {
+          fvec[count]=0;
+          if(grid[cell].output.cellfrac_agr>0)
+            fvec[count] = (float)grid[cell].output.response_agr[i]/grid[cell].output.cellfrac_agr;
+          count++;
+        }
+      }
+      writepft(output,RESPONSE_LAYER_AGR,fvec,BOTTOMLAYER,year,i,config);
+    }
+  }
+  if(isopen(output,RESPONSE_LAYER_NV))
+  {
+    outindex(output,RESPONSE_LAYER_NV,config->rank);
+    forrootsoillayer(i)
+    {
+      count=0;
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if(!grid[cell].skip)
+        {
+          fvec[count]=(float)grid[cell].output.response_nv[i];
+          count++;
+        }
+      }
+      writepft(output,RESPONSE_LAYER_NV,fvec,BOTTOMLAYER,year,i,config);
+    }
+  }
+  if(isopen(output,CSHIFT_FAST_NV))
+  {
+    outindex(output,CSHIFT_FAST_NV,config->rank);
+    forrootsoillayer(i)
+    {
+      count=0;
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if(!grid[cell].skip)
+        {
+          fvec[count]=(float)grid[cell].output.cshift_fast_nv[i];
+          count++;
+        }
+      }
+      writepft(output,CSHIFT_FAST_NV,fvec,BOTTOMLAYER,year,i,config);
+    }
+  }
+  if(isopen(output,CSHIFT_SLOW_NV))
+  {
+    outindex(output,CSHIFT_SLOW_NV,config->rank);
+    forrootsoillayer(i)
+    {
+      count=0;
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if(!grid[cell].skip)
+        {
+          fvec[count]=(float)grid[cell].output.cshift_slow_nv[i];
+          count++;
+        }
+      }
+      writepft(output,CSHIFT_SLOW_NV,fvec,BOTTOMLAYER,year,i,config);
+    }
+  }
   free(fvec);
 } /* of 'fwriteoutput_pft' */
 

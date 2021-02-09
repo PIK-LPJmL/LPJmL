@@ -42,6 +42,11 @@ void initoutput_annual(Output *output, /**< Output data */
   output->flux_nfert=0;
   output->deforest_emissions.carbon=output->deforest_emissions.nitrogen=output->fburn=output->ftimber=output->timber_harvest.carbon=output->timber_harvest.nitrogen=0;
   output->trad_biofuel=output->mean_vegc_mangrass=0;
+  output->alittfall_wood.carbon=output->alittfall_wood.nitrogen=
+  output->alitburnc=output->alitburnc_wood=0;
+
+  /* these need to be initialized to one! */
+  output->decay_wood_agr=output->decay_wood_nv=output->decay_leaf_agr=output->decay_leaf_nv=1;
 
 #ifdef IMAGE
   output->prod_turnover=0;
@@ -52,6 +57,10 @@ void initoutput_annual(Output *output, /**< Output data */
 #endif
 
   /* memory allocation now in newgrid.c */
+
+  for(i=0;i<NSOILLAYER;i++)
+    output->response_agr[i]=output->response_nv[i]=
+    output->cshift_fast_nv[i]=output->cshift_slow_nv[i]=0;
 
   for(i=0;i<(ncft+NGRASS+NBIOMASSTYPE)*2;i++)
     output->pft_harvest[i].harvest.carbon=output->pft_harvest[i].residual.carbon=
