@@ -24,12 +24,10 @@
 
 //#define DAILY_OUTPUT  /* enables daily output */
 
-/* ifdefs for CROP_PHENOLOGY_v01 runs*/
-
 /*Identifiers (preprocessor only understands integer expressions in #if)*/
 #define GLOBALRUN 0
 #define PIXELRUN  1
-#define DRUN GLOBALRUN
+#define DRUN PIXELRUN //GLOBALRUN
 
 #if (DRUN==PIXELRUN)
   #define DAILY_OUTPUT
@@ -42,6 +40,7 @@
 #define CLM_GFD 1
 #define CLM_IPS 2
 #define CLM_MIR 3
+#define CLM_WFD 4
 
 #define IRR_LIM 0
 #define IRR_UNL 1
@@ -55,6 +54,7 @@
 #define GS_SA3 4      /* adaptation of hdate only (fixed sdate) */
 #define GS_SA4 5      /* adaptation of sdate only (fixed hdate) */
 #define GS_SA0_swh 6  /* reference sdate & phus for runs with spring wheat everywhere */
+#define GS_OA0 7      /* observed crop calendars (ggcmi ph3) */
 
 #define CO2_DYNA 0    /* transient CO2 */
 #define CO2_STAT 1    /* static CO2 fixed at 2005 level */
@@ -64,279 +64,31 @@
 #define DIRR IRR_UNL   /* assuming unlimited water available for irrigation */
 #define DNIT NIT_LIM   /* limited nitrogen to represent actual management */
 
-/* HadGEM2-ES */
+
+/* Run with WFDEI climate (computed crop calendars) */
 #ifdef RUN_ID_01
     #define DTIM TIM_1986_2005
-    #define DCLM CLM_HAD
+    #define DCLM CLM_WFD
     #define DGS  GS_SA0
-    #define DCO2 CO2_DYNA
+    #define DCO2_DYNA
     #define output_run  01
     #define restart_run 01
+/* Run with WFDEI climate (ggcmi ph3 crop calendars) */
 #elif defined(RUN_ID_02)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_HAD
-    #define DGS  GS_SA0
-    #define DCO2 CO2_DYNA
+    #define DTIM TIM_1986_2005
+    #define DCLM CLM_WFD
+    #define DGS  GS_OA0
+    #define DCO2_DYNA
     #define output_run  02
-    #define restart_run 01
+    #define restart_run 02
+/* Run with CRU climate (ggcmi ph3 crop calendars) */
 #elif defined(RUN_ID_03)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_HAD
-    #define DGS  GS_SA1
-    #define DCO2 CO2_DYNA
+    #define DTIM TIM_1986_2005
+    //#define DCLM CLM_WFD
+    #define DGS  GS_OA0
+    #define DCO2_DYNA
     #define output_run  03
-    #define restart_run 01
-#elif defined(RUN_ID_04)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_HAD
-    #define DGS  GS_SA2
-    #define DCO2 CO2_DYNA
-    #define output_run  04
-    #define restart_run 01
-#elif defined(RUN_ID_05)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_HAD
-    #define DGS  GS_SA0
-    #define DCO2 CO2_STAT
-    #define output_run  05
-    #define restart_run 01
-#elif defined(RUN_ID_06)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_HAD
-    #define DGS  GS_SA1
-    #define DCO2 CO2_STAT
-    #define output_run  06
-    #define restart_run 01
-#elif defined(RUN_ID_07)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_HAD
-    #define DGS  GS_SA2
-    #define DCO2 CO2_STAT
-    #define output_run  07
-    #define restart_run 01
-
- /* GFDL-ESM2M */
-#elif RUN_ID_08
-    #define DTIM TIM_1986_2005
-    #define DCLM CLM_GFD
-    #define DGS  GS_SA0
-    #define DCO2 CO2_DYNA
-    #define output_run  08
-    #define restart_run 08
-#elif defined(RUN_ID_09)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_GFD
-    #define DGS  GS_SA0
-    #define DCO2 CO2_DYNA
-    #define output_run  09
-    #define restart_run 08
-#elif defined(RUN_ID_10)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_GFD
-    #define DGS  GS_SA1
-    #define DCO2 CO2_DYNA
-    #define output_run  10
-    #define restart_run 08
-#elif defined(RUN_ID_11)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_GFD
-    #define DGS  GS_SA2
-    #define DCO2 CO2_DYNA
-    #define output_run  11
-    #define restart_run 08
-#elif defined(RUN_ID_12)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_GFD
-    #define DGS  GS_SA0
-    #define DCO2 CO2_STAT
-    #define output_run  12
-    #define restart_run 08
-#elif defined(RUN_ID_13)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_GFD
-    #define DGS  GS_SA1
-    #define DCO2 CO2_STAT
-    #define output_run  13
-    #define restart_run 08
-#elif defined(RUN_ID_14)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_GFD
-    #define DGS  GS_SA2
-    #define DCO2 CO2_STAT
-    #define output_run  14
-    #define restart_run 08
-
-/* IPSL-CM5A-LR */
-#elif RUN_ID_15
-    #define DTIM TIM_1986_2005
-    #define DCLM CLM_IPS
-    #define DGS  GS_SA0
-    #define DCO2 CO2_DYNA
-    #define restart_run 15
-    #define output_run  15
-#elif defined(RUN_ID_16)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_IPS
-    #define DGS  GS_SA0
-    #define DCO2 CO2_DYNA
-    #define output_run  16
-    #define restart_run 15
-#elif defined(RUN_ID_17)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_IPS
-    #define DGS  GS_SA1
-    #define DCO2 CO2_DYNA
-    #define output_run  17
-    #define restart_run 15
-#elif defined(RUN_ID_18)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_IPS
-    #define DGS  GS_SA2
-    #define DCO2 CO2_DYNA
-    #define output_run  18
-    #define restart_run 15
-#elif defined(RUN_ID_19)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_IPS
-    #define DGS  GS_SA0
-    #define DCO2 CO2_STAT
-    #define output_run  19
-    #define restart_run 15
-#elif defined(RUN_ID_20)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_IPS
-    #define DGS  GS_SA1
-    #define DCO2 CO2_STAT
-    #define output_run  20
-    #define restart_run 15
-#elif defined(RUN_ID_21)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_IPS
-    #define DGS  GS_SA2
-    #define DCO2 CO2_STAT
-    #define output_run  21
-    #define restart_run 15
-
- /* MIROC5 */
-#elif RUN_ID_22
-    #define DTIM TIM_1986_2005
-    #define DCLM CLM_MIR
-    #define DGS  GS_SA0
-    #define DCO2 CO2_DYNA
-    #define output_run  22
-    #define restart_run 22
-#elif defined(RUN_ID_23)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_MIR
-    #define DGS  GS_SA0
-    #define DCO2 CO2_DYNA
-    #define output_run  23
-    #define restart_run 22
-#elif defined(RUN_ID_24)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_MIR
-    #define DGS  GS_SA1
-    #define DCO2 CO2_DYNA
-    #define output_run  24
-    #define restart_run 22
-#elif defined(RUN_ID_25)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_MIR
-    #define DGS  GS_SA2
-    #define DCO2 CO2_DYNA
-    #define output_run  25
-    #define restart_run 22
-#elif defined(RUN_ID_26)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_MIR
-    #define DGS  GS_SA0
-    #define DCO2 CO2_STAT
-    #define output_run  26
-    #define restart_run 22
-#elif defined(RUN_ID_27)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_MIR
-    #define DGS  GS_SA1
-    #define DCO2 CO2_STAT
-    #define output_run  27
-    #define restart_run 22
-#elif defined(RUN_ID_28)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_MIR
-    #define DGS  GS_SA2
-    #define DCO2 CO2_STAT
-    #define output_run  28
-    #define restart_run 22
-
-/* RUNS with fixed sdate or hdate */
-#elif defined(RUN_ID_29)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_HAD
-    #define DGS  GS_SA3
-    #define DCO2 CO2_DYNA
-    #define output_run  29
-    #define restart_run 01
-#elif defined(RUN_ID_30)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_HAD
-    #define DGS  GS_SA4
-    #define DCO2 CO2_DYNA
-    #define output_run  30
-    #define restart_run 01
-
-#elif defined(RUN_ID_31) 
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_GFD
-    #define DGS  GS_SA3
-    #define DCO2 CO2_DYNA
-    #define output_run  31
-    #define restart_run 08
-#elif defined(RUN_ID_32)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_GFD
-    #define DGS  GS_SA4
-    #define DCO2 CO2_DYNA
-    #define output_run  32
-    #define restart_run 08
-
-#elif defined(RUN_ID_33)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_IPS
-    #define DGS  GS_SA3
-    #define DCO2 CO2_DYNA
-    #define output_run  33
-    #define restart_run 15
-#elif defined(RUN_ID_34)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_IPS
-    #define DGS  GS_SA4
-    #define DCO2 CO2_DYNA
-    #define output_run  34
-    #define restart_run 15
-
-#elif defined(RUN_ID_35)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_MIR
-    #define DGS  GS_SA3
-    #define DCO2 CO2_DYNA
-    #define output_run  35
-    #define restart_run 22
-#elif defined(RUN_ID_36)
-    #define DTIM TIM_2080_2099
-    #define DCLM CLM_MIR
-    #define DGS  GS_SA4
-    #define DCO2 CO2_DYNA
-    #define output_run  36
-    #define restart_run 22
-
-#elif defined(RUN_ID_37)
-    #define DTIM TIM_1986_2005
-    #define DCLM CLM_HAD
-    #define DGS  GS_SA0_swh
-    #define DCO2 CO2_DYNA
-    #define output_run  37
-    #define restart_run 01
-
+    #define restart_run 03
 #endif
 
 
@@ -376,15 +128,17 @@
   "const_deposition" : false,
 #ifdef FROM_RESTART
   "population" : false,
-  "landuse" : CONST_LANDUSE, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS, ONLY_CROPS (crops scaled to 100% of cell) */
+  "landuse" : ALL_CROPS, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS, ONLY_CROPS (crops scaled to 100% of cell) */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
   "wateruse" : WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "equilsoil" : false,
 #else
   "population" : false,
   "landuse" : NO_LANDUSE,
   "reservoir" : false,
   "wateruse" : NO_WATERUSE,
+  "equilsoil" : true,
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
@@ -392,7 +146,7 @@
   "crop_phu_option" : PRESCRIBED_CROP_PHU,    /* PRESCRIBED_CROP_PHU (PHU dataset used, requires PRESCRIBED_SDATE), SEMISTATIC_CROP_PHU (LPJmL4 semi-static PHU approach) */
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
   "intercrop" : true,                   /* intercrops on setaside */
-  "residue_treatment" : READ_RESIDUE_DATA, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
+  "residue_treatment" : FIXED_RESIDUE_REMOVE, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
 
 #if (DIRR==IRR_LIM)
@@ -401,7 +155,7 @@
   "irrigation" : POT_IRRIGATION,
 #endif
 
-  "tillage_type" : READ_TILLAGE,          /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
+  "tillage_type" : TILLAGE,          /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
   "black_fallow" : false,               /* simulation with black fallow on PNV */
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
   "laimax_interpolate" : LAIMAX_PAR,    /* laimax values from manage parameter file, */
@@ -421,13 +175,14 @@
 /*  II. Input parameter section                                      */
 /*===================================================================*/
 
-#include "param_crop_phen.js"    /* Input parameter file */
+#include "param_mappy_test_yields.js"    /* Input parameter file */
 
 /*===================================================================*/
 /*  III. Input data section                                          */
 /*===================================================================*/
 
-#include "input_crop_phen.js"    /* Input files of CRU dataset */
+//#include "input_mappy_test_yields.js"    /* Input files of CRU dataset */
+#include "input_nbalance_cru_test1.js"
 
 /*===================================================================*/
 /*  IV. Output data section                                          */
@@ -449,7 +204,7 @@
     #define restart_run pixel
 #endif
 
-#define workdir /p/projects/macmit/users/minoli/PROJECTS/CROP_PHENOLOGY_v01/LPJmL/outputs /* global runs output main directory */
+#define workdir /p/projects/macmit/users/minoli/PROJECTS/MAPPY/LPJmL/outputs
 #define output workdir/output_run
 #define restart workdir/restart_run
 
@@ -527,14 +282,22 @@ ID                         Fmt                    filename
 #endif
     { "id" : MDISCHARGE,       "file" : { "fmt" : RAW, "name" : mkstr(output/mdischarge.bin)}},
 //    { "id" : MWATERAMOUNT,     "file" : { "fmt" : RAW, "name" : mkstr(output/mwateramount.bin)}},
+    { "id" : SYEAR,            "file" : { "fmt" : RAW, "name" : mkstr(output/syear.bin)}},
+    { "id" : SYEAR2,           "file" : { "fmt" : RAW, "name" : mkstr(output/syear2.bin)}},
     { "id" : HARVESTC,         "file" : { "fmt" : RAW, "name" : mkstr(output/flux_harvestc.bin)}},
     { "id" : HARVESTN,         "file" : { "fmt" : RAW, "name" : mkstr(output/flux_harvestn.bin)}},
     { "id" : SDATE,            "file" : { "fmt" : RAW, "name" : mkstr(output/sdate.bin)}},
+    { "id" : SDATE2,           "file" : { "fmt" : RAW, "name" : mkstr(output/sdate2.bin)}},
     { "id" : HDATE,            "file" : { "fmt" : RAW, "name" : mkstr(output/hdate.bin)}},
+    { "id" : HDATE2,           "file" : { "fmt" : RAW, "name" : mkstr(output/hdate2.bin)}},
     { "id" : GROWING_PERIOD,   "file" : { "fmt" : RAW, "name" : mkstr(output/growing_period.bin)}},
+    { "id" : GROWING_PERIOD2,  "file" : { "fmt" : RAW, "name" : mkstr(output/growing_period2.bin)}},
     { "id" : HUSUM,            "file" : { "fmt" : RAW, "name" : mkstr(output/husum.bin)}},
+    { "id" : HUSUM2,           "file" : { "fmt" : RAW, "name" : mkstr(output/husum2.bin)}},
     { "id" : PFT_HARVESTC,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestc.SUFFIX)}},
+    { "id" : PFT_HARVESTC2,    "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestc2.SUFFIX)}},
     { "id" : PFT_HARVESTN,     "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestn.SUFFIX)}},
+    { "id" : PFT_HARVESTN2,    "file" : { "fmt" : RAW, "name" : mkstr(output/pft_harvestn2.SUFFIX)}},
     { "id" : CFT_AIRRIG,       "file" : { "fmt" : RAW, "name" : mkstr(output/cft_airrig.SUFFIX)}},
     { "id" : CFT_PET,          "file" : { "fmt" : RAW, "name" : mkstr(output/cft_pet.SUFFIX)}},
     { "id" : CFT_TRANSP,       "file" : { "fmt" : RAW, "name" : mkstr(output/cft_transp.SUFFIX)}},
@@ -585,8 +348,8 @@ ID                         Fmt                    filename
 /*  V. Run settings section                                          */
 /*===================================================================*/
 #if (DRUN==PIXELRUN)
-  "startgrid" :  7187, //9353, //7223, //7175, //7212, //30115, /*31374, 27410, 67208 60400 all grid cells */
-  "endgrid" :    7187, //9353, //7223, //7234, //7212, //30115,
+  "startgrid" :  7187, //7187, //9353, //7223, //7175, //7212, //30115, /*31374, 27410, 67208 60400 all grid cells */
+  "endgrid" :    7187, //7187, //9353, //7223, //7234, //7212, //30115,
 #else
   "startgrid" :  ALL, /*31374, 27410, 67208 60400 all grid cells */
   "endgrid" :    ALL,
@@ -596,49 +359,35 @@ ID                         Fmt                    filename
   "checkpoint_filename" : mkstr(output/restart_checkpoint.lpj), /* filename of checkpoint file */
 #endif
 
-#if (DTIM==TIM_1986_2005)
-     
-  #ifndef FROM_RESTART
 
-    "nspinup" : 5000,  /* spinup years */
-    "nspinyear" : 30,  /* cycle length during spinup (yr) */
-    "firstyear": 1901, /* first year of simulation */
-    "lastyear" : 1901, /* last year of simulation */
-    "restart" : false, /* do not start from restart file */
-    "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
-    "write_restart_filename" : mkstr(output/restart_1861_nv_stdfire.lpj), /* filename of restart file */
-    "restart_year": 1840 /* write restart at year */
+#ifndef FROM_RESTART
 
-  #else
-   #if (DRUN==PIXELRUN)
-    "nspinup" : 60,   /* spinup years */
-   #else
-    "nspinup" : 390,   /* spinup years */
-   #endif
-    "nspinyear" : 30,  /* cycle length during spinup (yr)*/
-    "firstyear": 1901, /* first year of simulation */
-    "lastyear" : 2005, /* last year of simulation */
-    "outputyear": 1901, /* first year output is written  */
-    "restart" :  true, /* start from restart file */
-    "restart_filename" : mkstr(restart/restart_1861_nv_stdfire.lpj), /* filename of restart file */
-    "write_restart" : true, /* create restart file */
-    "write_restart_filename" : mkstr(output/restart_2005_crop_stdfire.lpj), /* filename of restart file */
-    "restart_year": 2005 /* write restart at year */
+  "nspinup" : 5000,  /* spinup years */
+  "nspinyear" : 30,  /* cycle length during spinup (yr) */
+  "firstyear": 1979, /* first year of simulation */
+  "lastyear" : 1979, /* last year of simulation */
+  "restart" : false, /* do not start from restart file */
+  "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
+  "write_restart_filename" : mkstr(output/restart_1861_nv_stdfire.lpj), /* filename of restart file */ /*restart_1861_nv_stdfire_rrouting_true.lpj*/
+  "restart_year": 1919 /* write restart at year */
 
-  #endif /* FROM_RESTART */
+#else
 
-#elif (DTIM==TIM_2080_2099)
-	 
-    "nspinup" : 0,   /* spinup years */
-    "nspinyear" : 30,  /* cycle length during spinup (yr)*/
-    "firstyear": 2006, /* first year of simulation */
-    "lastyear" : 2099, /* last year of simulation */
-    "outputyear": 2006, /* first year output is written  */
-    "restart" :  true, /* start from restart file */
-    "restart_filename" : mkstr(restart/restart_2005_crop_stdfire.lpj), /* filename of restart file */
-    "write_restart" : false, /* create restart file */
-    "write_restart_filename" : mkstr(output/restart_2005_crop_stdfire.lpj), /* filename of restart file */
-    "restart_year": 2005 /* write restart at year */
-     
-#endif /* TIM_2080_2099 */
+ #if (DRUN==PIXELRUN)
+  "nspinup" : 60,   /* spinup years */
+ #else
+  "nspinup" : 390,   /* spinup years */
+ #endif
+  "nspinyear" : 30,  /* cycle length during spinup (yr)*/
+  "firstyear": 1979, /* first year of simulation */
+  "lastyear" : 2012, /* last year of simulation */
+  "outputyear": 1979, /* first year output is written  */
+  "restart" :  true, /* start from restart file */
+  "restart_filename" : mkstr(restart/restart_1861_nv_stdfire.lpj), /* filename of restart file */
+  "write_restart" : false, /* create restart file */
+  "write_restart_filename" : mkstr(output/restart_2005_crop_stdfire.lpj), /* filename of restart file */
+  "restart_year": 2005 /* write restart at year */
+
+#endif /* FROM_RESTART */
+
 }
