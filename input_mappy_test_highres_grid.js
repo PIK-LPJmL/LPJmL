@@ -78,7 +78,7 @@
   "prec" :   { "fmt" : CDF, "var" : "pr", "name" : "/p/projects/macmit/data/MAPPY/climate/climate_CLMcom-UK-CCLM5-0-16_1980_2000/pr_IP-3i_ECMWF-ERA5_evaluation_r1i1p1_CLMcom-UK-CCLM5-0-16_MAPPY-x0n1v1_day_19800101-20001231.nc"},
   "lwnet" :  { "fmt" : CDF, "var" : "rlds", "name" : "/p/projects/macmit/data/MAPPY/climate/climate_CLMcom-UK-CCLM5-0-16_1980_2000/rlds_IP-3i_ECMWF-ERA5_evaluation_r1i1p1_CLMcom-UK-CCLM5-0-16_MAPPY-x0n1v1_day_19800101-20001231.nc"},
   "swdown" : { "fmt" : CDF, "var" : "rsds", "name" : "/p/projects/macmit/data/MAPPY/climate/climate_CLMcom-UK-CCLM5-0-16_1980_2000/rsds_IP-3i_ECMWF-ERA5_evaluation_r1i1p1_CLMcom-UK-CCLM5-0-16_MAPPY-x0n1v1_day_19800101-20001231.nc"},
-  "wind"   : { "fmt" : CDF, "var" : "sfcwind", "name" : "/p/projects/macmit/data/MAPPY/lpjml_inputs/climate_CLMcom-UK-CCLM5-0-16_1980_2004_converted/sfcwind_CEi_CLMcom-UK-CCLM5_day_1980-2003_just_for_testing.nc"},
+  "wind"   : { "fmt" : CDF, "var" : "sfcwind", "name" : "/p/projects/macmit/data/MAPPY/climate/climate_CLMcom-UK-CCLM5-0-16_1980_2000/sfcwind_IP-3i_ECMWF-ERA5_evaluation_r1i1p1_CLMcom-UK-CCLM5-0-16_MAPPY-x0n1v1_day_19800101-20001231.nc"},
 
 
 /*  "temp" : { "fmt" : CDF, "var" : "temp", "name" : "/p/projects/biodiversity/cru_netcdf/cru_ts_3_10.1901.2009.tmp.nc"},
