@@ -357,5 +357,12 @@
   { "id" : DELTA_NORG_SOIL_AGR, "name" : "delta_norg_soil_agr" , "timestep" : "annual", "var" : "ADELTA_NORG_SOIL_agr" , "descr" : "annual change of organic N in soil on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : DELTA_NMIN_SOIL_AGR, "name" : "delta_nmin_soil_agr" , "timestep" : "annual", "var" : "ADELTA_NMIN_SOIL_agr" , "descr" : "annual change of mineral N in soil on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
   { "id" : DELTA_NVEG_SOIL_AGR, "name" : "delta_nveg_soil_agr" , "timestep" : "annual", "var" : "ADELTA_NVEG_SOIL_agr" , "descr" : "annual change of N in living biomass on agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
-  { "id" : CELLFRAC_AGR, "name" : "cellfrac_agr" , "timestep" : "annual", "var" : "CELLFRAC_agr" , "descr" : "fraction of grid cell covered by agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0}  
+  { "id" : CELLFRAC_AGR, "name" : "cellfrac_agr" , "timestep" : "annual", "var" : "CELLFRAC_agr" , "descr" : "fraction of grid cell covered by agricultural stands", "unit" : "gN/m2/year" , "scale" : 1.0, "offset" : 0.0},
+  { "id" : MGRASS_SOILC, "name": "soilc", "timestep" : "annual", "var" : "SoilC", "descr" : "total soil carbon density of managed grass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MGRASS_LITC, "name": "litc", "timestep" : "annual", "var" : "LitC", "descr" : "litter carbon of managed grass", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MGRASS_SOILN, "name": "soiln", "timestep" : "annual", "var" : "SoilN", "descr" : "total soil nitrogen density of managed grass", "unit" : "gN/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : MGRASS_LITN, "name": "litn", "timestep" : "annual", "var" : "LitN", "descr" : "litter nitrogen of managed grass", "unit" : "gN/m2", "scale" : 1.0, "offset" : 0.0},
+  { "id" : CFT_NFERT, "name": "cft_nfert", "timestep" : "annual", "var" : "nfert", "descr" : "CFT-specific fertilizer application", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : CFT_NFERT2, "name": "cft_nfert2", "timestep" : "annual", "var" : "nfert", "descr" : "CFT-specific fertilizer application", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0},
+  { "id" : FLUX_AUTOFERT, "name": "nfert", "timestep" : "annual", "var" : "nfert", "descr" : "flux of automated fertilizer application", "unit" : "gN/m2/yr", "scale" : 1.0, "offset" : 0.0}
 ],

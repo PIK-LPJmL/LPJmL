@@ -138,6 +138,8 @@ Bool initoutput(Output *output,      /**< Output data */
   checkptr(output->cft_c_emis);
   output->cft_leaching=newvec(Real,2*ncft);
   checkptr(output->cft_leaching);
+  output->cft_nfert=newvec(Real,2*nirrig);
+  check(output->cft_nfert);
   if(config->double_harvest)
   {
     output->dh=new(Output_doubleharvest);
@@ -192,6 +194,8 @@ Bool initoutput(Output *output,      /**< Output data */
     checkptr(output->dh->cft_leaching2);
     output->dh->pft_nuptake2=newvec(Real,nnat+nirrig);
     checkptr(output->dh->pft_nuptake2);
+    output->dh->cft_nfert2=newvec(Real,2*nirrig);
+    check(output->dh->cft_nfert2);
   }
   else
     output->dh=NULL;

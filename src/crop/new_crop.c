@@ -74,6 +74,7 @@ void new_crop(Pft *pft, /**< pointer to PFT data */
     crop->dh->n2_emissum=0.0;
     crop->dh->leachingsum=0.0;
     crop->dh->c_emissum=0.0;
+    crop->dh->nfertsum=0.0;
   }
   else
     crop->dh=NULL;

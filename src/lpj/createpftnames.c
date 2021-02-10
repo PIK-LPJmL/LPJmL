@@ -107,7 +107,7 @@ char **createpftnames(int index,           /**< output index */
     case CFT_CONSUMP_WATER_B: case CFTFRAC: case CFT_AIRRIG: case CFT_FPAR: case CFT_IRRIG_EVENTS:
     case CFT_TRANSP: case CFT_TRANSP_B: case CFT_INTERC: case CFT_INTERC_B: case CFT_RETURN_FLOW_B:
     case CFT_CONV_LOSS_EVAP: case CFT_CONV_LOSS_DRAIN: case CFT_NIR:
-    case PFT_HARVESTN: case PFT_RHARVESTN:
+    case PFT_HARVESTN: case PFT_RHARVESTN: case CFT_NFERT: case CFT_NFERT2:
     case PFT_HARVESTC2: case PFT_RHARVESTC2: case CFT_EVAP2: case CFT_TRANSP2: case CFT_INTERC2:
     case CFT_NIR2: case CFT_AIRRIG2: case CFTFRAC2: case PFT_HARVESTN2: case PFT_RHARVESTN2:
       incr=0;

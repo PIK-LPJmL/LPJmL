@@ -128,6 +128,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   int restart,endgrid,israndom,grassfix,grassharvest;
   Verbosity verbose;
   const char *landuse[]={"no","yes","const","all_crops","only_crops"};
+  const char *fertilizer[]={"no","yes","auto"};
   const char *irrigation[]={"no","lim","pot","all"};
   const char *radiation[]={"cloudiness","radiation","radiation_swonly","radiation_lwdown"};
   const char *fire[]={"no_fire","fire","spitfire","spitfire_tmax"};
@@ -277,7 +278,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
       config->crop_resp_fix=FALSE;
-      config->fertilizer_input=FALSE;
+      config->fertilizer_input=NO_FERTILIZER;
       config->manure_input=FALSE;
       config->fix_fertilization=FALSE;
       if(config->with_nitrogen)
@@ -291,8 +292,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
           return TRUE;
         if(!config->fix_fertilization)
         {
-          config->fertilizer_input=TRUE;
-          if(fscanbool(file,&config->fertilizer_input,"fertilizer_input",TRUE,verbose))
+          config->fertilizer_input=FERTILIZER;
+          if(fscankeywords(file,&config->fertilizer_input,"fertilizer_input",fertilizer,3,TRUE,verbose))
             return TRUE;
           config->manure_input=FALSE;
           if (fscanbool(file,&config->manure_input,"manure_input",TRUE,verbose))
@@ -568,7 +569,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       scanclimatefilename(&input,&config->crop_phu_filename,config->inputdir,FALSE,"crop_phu");
     }
-    if(config->with_nitrogen && config->fertilizer_input)
+    if(config->with_nitrogen && config->fertilizer_input==FERTILIZER)
       scanclimatefilename(&input,&config->fertilizer_nr_filename,config->inputdir,FALSE,"fertilizer_nr");
     if (config->with_nitrogen && config->manure_input)
       scanclimatefilename(&input,&config->manure_nr_filename,config->inputdir,FALSE,"manure_nr");

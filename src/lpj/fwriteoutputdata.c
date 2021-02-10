@@ -74,6 +74,7 @@ void fwriteoutputdata(FILE *file,           /**< pointer to restart file */
   writeoutputvar(DELTA_NMIN_SOIL_AGR,adelta_nmin_soil_agr,Real);
   writeoutputvar(DELTA_NVEG_SOIL_AGR,adelta_nveg_soil_agr,Real);
   writeoutputvar(CELLFRAC_AGR,cellfrac_agr,Real);
+  writeoutputvar(FLUX_AUTOFERT,flux_nfert,Real);
   writeoutputarrayitem(SOILC_LAYER,soil_layer,carbon,LASTLAYER,Real);
   writeoutputarrayitem(SOILN_LAYER,soil_layer,nitrogen,LASTLAYER,Real);
   writeoutputarray(SOILNO3_LAYER,soilno3_layer,LASTLAYER,Real);

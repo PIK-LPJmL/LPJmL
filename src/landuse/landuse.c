@@ -236,7 +236,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     }
   } /* End crop_phu */
 
-  if(config->fertilizer_input)
+  if(config->fertilizer_input==FERTILIZER)
   {
     /* read fertilizer data */
     landuse->fertilizer_nr.fmt=config->fertilizer_nr_filename.fmt;
@@ -313,7 +313,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
           closeclimatefile(&landuse->sdate,isroot(*config));
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(config->fertilizer_input)
+        if(config->fertilizer_input==FERTILIZER)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         free(landuse);
         return NULL;
@@ -330,7 +330,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
           closeclimatefile(&landuse->sdate,isroot(*config));
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(config->fertilizer_input)
+        if(config->fertilizer_input==FERTILIZER)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         free(landuse);
         return NULL;
@@ -363,7 +363,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         closeclimatefile(&landuse->sdate,isroot(*config));
       if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
          closeclimatefile(&landuse->crop_phu,isroot(*config));
-      if(config->fertilizer_input)
+      if(config->fertilizer_input==FERTILIZER)
         closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       free(landuse);
       return NULL;
@@ -382,7 +382,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
           closeclimatefile(&landuse->sdate,isroot(*config));
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(config->fertilizer_input)
+        if(config->fertilizer_input==FERTILIZER)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         if(config->manure_input)
           closeclimatefile(&landuse->manure_nr,isroot(*config));
@@ -401,7 +401,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
           closeclimatefile(&landuse->sdate,isroot(*config));
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(config->fertilizer_input)
+        if(config->fertilizer_input==FERTILIZER)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         if(config->manure_input)
           closeclimatefile(&landuse->manure_nr,isroot(*config));
@@ -433,7 +433,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         closeclimatefile(&landuse->sdate,isroot(*config));
       if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
         closeclimatefile(&landuse->crop_phu,isroot(*config));
-      if(config->fertilizer_input)
+      if(config->fertilizer_input==FERTILIZER)
         closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       if(config->manure_input)
         closeclimatefile(&landuse->manure_nr,isroot(*config));
@@ -460,7 +460,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
           closeclimatefile(&landuse->sdate,isroot(*config));
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(config->fertilizer_input)
+        if(config->fertilizer_input==FERTILIZER)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         if(config->manure_input)
           closeclimatefile(&landuse->manure_nr,isroot(*config));
@@ -481,7 +481,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
           closeclimatefile(&landuse->sdate,isroot(*config));
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(config->fertilizer_input)
+        if(config->fertilizer_input==FERTILIZER)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         if(config->manure_input)
           closeclimatefile(&landuse->manure_nr,isroot(*config));
@@ -520,7 +520,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         closeclimatefile(&landuse->sdate,isroot(*config));
       if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
         closeclimatefile(&landuse->crop_phu,isroot(*config));
-      if(config->fertilizer_input)
+      if(config->fertilizer_input==FERTILIZER)
         closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       if(config->manure_input)
         closeclimatefile(&landuse->manure_nr,isroot(*config));
@@ -1184,7 +1184,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       initlandfrac(grid[cell].ml.manure_nr,ncft,config->nagtree);
     }
 
-    if(config->fertilizer_input)
+    if(config->fertilizer_input==FERTILIZER)
     {
       /* assigning fertilizer Nr data */
       yearf-=landuse->fertilizer_nr.firstyear;
@@ -1498,7 +1498,7 @@ void freelanduse(Landuse landuse,     /**< pointer to landuse data */
     closeclimatefile(&landuse->landuse,isroot(*config));
     if(config->sdate_option==PRESCRIBED_SDATE)
       closeclimatefile(&landuse->sdate,isroot(*config));
-    if(config->fertilizer_input)
+    if(config->fertilizer_input==FERTILIZER)
       closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
        closeclimatefile(&landuse->crop_phu,isroot(*config));

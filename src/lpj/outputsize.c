@@ -47,7 +47,7 @@ int outputsize(int index,     /**< output index */
     case CFT_INTERC2:
     case CFTFRAC2: case CFT_AIRRIG2:
     case CFT_TRANSP2: case CFT_NIR2:
-    case CFT_EVAP2:
+    case CFT_EVAP2: case CFT_NFERT: case CFT_NFERT2:
       return 2*getnirrig(ncft,config);
     case FPC:
       return getnnat(npft,config)+1;

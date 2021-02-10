@@ -83,7 +83,7 @@
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
-  "fertilizer_input" : true,            /* enable fertilizer input */
+  "fertilizer_input" : "yes",           /* enable fertilizer input, other options: "no", "yes", "other" */
   "manure_input" : true,                /* enable manure input */
   "fix_fertilization" : false,          /* fix fertilizer input */
   "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */

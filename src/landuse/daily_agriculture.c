@@ -235,6 +235,10 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
           output->cft_leaching+(pft->par->id-npft+data->irrigation*ncft),
           output->dh->cft_leaching2+(pft->par->id-npft+data->irrigation*ncft),
           crop->dh->leachingsum);
+      double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
+        output->cft_nfert+(pft->par->id-npft+data->irrigation*nirrig),
+        output->dh->cft_nfert2+(pft->par->id-npft+data->irrigation*nirrig),
+        crop->dh->nfertsum);
         double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
           output->cft_c_emis+(pft->par->id-npft+data->irrigation*ncft),
           output->dh->cft_c_emis2+(pft->par->id-npft+data->irrigation*ncft),
@@ -531,6 +535,10 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
           output->cft_c_emis+(pft->par->id-npft+data->irrigation*ncft),
           output->dh->cft_c_emis2+(pft->par->id-npft+data->irrigation*ncft),
           crop->dh->c_emissum);
+        double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
+          output->cft_nfert+(pft->par->id-npft+data->irrigation*nirrig),
+          output->dh->cft_nfert2+(pft->par->id-npft+data->irrigation*nirrig),
+          crop->dh->nfertsum);
         double_harvest(output->dh->syear2[pft->par->id-npft+data->irrigation*ncft],
           output->pft_nuptake+(nnat+pft->par->id-npft+data->irrigation*nirrig),
           output->dh->pft_nuptake2+(nnat+pft->par->id-npft+data->irrigation*nirrig),

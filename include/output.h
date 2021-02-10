@@ -104,6 +104,7 @@ typedef struct
   Real *cft_pet2;           /**< cft PET */
   Real *cft_transp2;        /**< cft specific transpiration (mm) */
   Real *cft_evap2;          /**< cft specific soil evaporation (mm) */
+  Real *cft_nfert2;         /**< cft specific N ferizlier application (gN/m2/growing season) */
   Real *cft_interc2;        /**< cft specific interception (mm) */
   Real *cft_nir2;           /**< cft specific net irrigation requirement (mm) */
   Real *cft_temp2;          /**< cft specific temperature sum (day degC) */
@@ -292,6 +293,8 @@ typedef struct
   Real mean_vegc_mangrass; /**< annual mean vegetation carbon of managed grasslands */
   Stocks veg;              /**< vegetation carbon (gC/m2) */
   Stocks soil;             /**< soil carbon and nitrogen (gC/m2, gN/m2) */
+  Stocks mgrass_soil;      /**< grassland soil carbon and nitrogen (gC/m2, gN/m2) */
+  Stocks mgrass_litter;    /**< grassland litter carbon and nitrogen (gC/m2, gN/m2) */
   Stocks soil_slow;        /**< slow carbon and nitrogen pool (gC/m2, gN/m2) */
   Stocks litter;           /**< litter carbon and nitrogen (gC/m2, gN/m2) */
   Real maxthaw_depth;      /**< maximum thawing depth (mm) */
@@ -318,6 +321,8 @@ typedef struct
   Real daylength;
   Real *cft_mswc;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
   int *nday_month;        /**< day count for monthly cft-specific outputs, needed in update_monthly to divide by number of days */
+  Real *cft_nfert;        /**< cft specific N ferizlier application (gN/m2/yr) */
+  Real flux_nfert;        /**< automated N ferizlier application (gN/m2/yr) */
   Real abnf_agr;
   Real anfert_agr;
   Real anmanure_agr;

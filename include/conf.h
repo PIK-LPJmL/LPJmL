@@ -109,7 +109,10 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 326            /* number of output files */
+#define NO_FERTILIZER 0
+#define FERTILIZER 1
+#define AUTO_FERTILIZER 2
+#define NOUT 333            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -453,6 +456,13 @@
 #define LITFALLC_AGR 323
 #define LITFALLN_AGR 324
 #define HARVESTN_AGR 325
+#define MGRASS_LITC 326
+#define MGRASS_SOILC 327
+#define MGRASS_LITN 328
+#define MGRASS_SOILN 329
+#define CFT_NFERT 330
+#define CFT_NFERT2 331
+#define FLUX_AUTOFERT 332
 
 #define RANDOM_SEED 0
 

@@ -81,8 +81,8 @@
   "nfert_no3_frac" : 0.5,             /* fraction of NO3 in fertilizer input */
   "nmanure_nh4_frac" : 0.666667,      /* fraction of NH4 in manure input */
   "residues_in_soil" : 0.3,           /* minimum residues in soil*/
-  "fburnt" : 0.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
-  "ftimber" : 1,                   /* timber fraction at deforestation */
+  "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
+  "ftimber" : 0.76,                   /* timber fraction at deforestation */
   "harvest_fast_frac" : 0.34,         /* fraction of harvested wood going to fast pools */
   "product_turnover" : { "fast" : 0.1, "slow" : 0.01}, /* product turnover (1/yr) */
   "esoil_reduction" : 0.0,            /* reduction of soil evaporation */

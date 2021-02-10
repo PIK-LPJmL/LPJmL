@@ -62,16 +62,16 @@
   "new_seed" : false,
   "equilsoil" :  false,
   "population" : false,
-  "landuse" : "landuse", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
+  "landuse" : "yes", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
-  "wateruse" : "all_wateruse",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "wateruse" : "all",  /* other options: "no", "yes", "all" */
 #else
   "equilsoil" :  true,
   "population" : false,
-  "landuse" : "no_landuse",
+  "landuse" : "no",
   "reservoir" : false,
-  "wateruse" : "no_wateruse",
+  "wateruse" : "no",
 #endif
   "black_fallow" : false,
   "prescribe_burntarea" : false,
@@ -86,7 +86,7 @@
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
-  "fertilizer_input" : true,            /* enable fertilizer input */
+  "fertilizer_input" : "yes",           /* enable fertilizer input, other options: "no", "yes", "auto" */
   "istimber" : true,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,

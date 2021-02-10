@@ -125,7 +125,7 @@ static size_t isnetcdfinput(const Config *config)
       width=max(width,strlen(config->sdate_filename.var));
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU && config->crop_phu_filename.fmt==CDF)
       width=max(width,strlen(config->crop_phu_filename.var));
-    if (config->with_nitrogen && config->fertilizer_input && config->fertilizer_nr_filename.fmt == CDF)
+    if (config->with_nitrogen && config->fertilizer_input==FERTILIZER && config->fertilizer_nr_filename.fmt == CDF)
       width = max(width, strlen(config->fertilizer_nr_filename.var));
     if (config->with_nitrogen && config->manure_input && config->manure_nr_filename.fmt == CDF)
       width = max(width, strlen(config->manure_nr_filename.var));
@@ -347,6 +347,11 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len += fprintf(file, ", ");
       len = fputstring(file, len, "C:N fixed crop respiration", 78);
     }
+    if (config->fertilizer_input==AUTO_FERTILIZER)
+    {
+      len += fprintf(file, ", ");
+      len = fputstring(file, len, "with auto fertilizer", 78);
+    }
     if(config->residues_fire)
     {
       len+=fprintf(file,", ");
@@ -510,7 +515,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       printinputfile(file,"sdates",&config->sdate_filename,width);
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
       printinputfile(file,"crop_phu",&config->crop_phu_filename,width);
-    if(config->with_nitrogen&&config->fertilizer_input)
+    if(config->with_nitrogen&&config->fertilizer_input==FERTILIZER)
       printinputfile(file,"fertilizer",&config->fertilizer_nr_filename, width);
     if(config->with_nitrogen&&config->manure_input)
       printinputfile(file,"manure_nr",&config->manure_nr_filename, width);

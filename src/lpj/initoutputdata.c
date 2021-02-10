@@ -58,6 +58,10 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(VEGC,veg.carbon);
   setoutputvar(VEGN,veg.nitrogen);
   setoutputvar(SOILC,soil.carbon);
+  setoutputvar(MGRASS_SOILC,mgrass_soil.carbon);
+  setoutputvar(MGRASS_SOILN,mgrass_soil.nitrogen);
+  setoutputvar(MGRASS_LITC,mgrass_litter.carbon);
+  setoutputvar(MGRASS_LITN,mgrass_litter.nitrogen);
   setoutputvar(SOILN,soil.nitrogen);
   setoutputvar(MG_VEGC,mg_vegc);
   setoutputvar(MG_SOILC,mg_soilc);
@@ -238,6 +242,7 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(IRRIG_RW,mirrig_rw);
   setoutputvar(LAKEVOL,mlakevol);
   setoutputvar(LAKETEMP,mlaketemp);
+  setoutputvar(FLUX_AUTOFERT,flux_nfert);
   setoutputarray(SDATE,sdate,2*ncft);
   setoutputarray(HDATE,hdate,2*ncft);
   setoutputarray(CFT_SWC,cft_mswc,2*ncft);
@@ -286,6 +291,7 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputarray(LUC_IMAGE,cft_luc_image,nirrig);
   setoutputarrayitem(CFT_ABOVEGBMC,cft_aboveground_biomass,carbon,2*(ncft+NGRASS));
   setoutputarrayitem(CFT_ABOVEGBMN,cft_aboveground_biomass,nitrogen,2*(ncft+NGRASS));
+  setoutputarray(CFT_NFERT,cft_nfert,nirrig);
   if(config->double_harvest)
   {
     setoutputarrayitem(PFT_HARVESTC2,dh->pft_harvest2,harvest.carbon,nirrig);
@@ -315,6 +321,7 @@ void initoutputdata(Output *output,      /**< output data */
     setoutputarray(CFT_N2_EMIS2,dh->cft_n2_emis2,2*ncft);
     setoutputarray(CFT_LEACHING2,dh->cft_leaching2,2*ncft);
     setoutputarray(CFT_C_EMIS2,dh->cft_c_emis2,2*ncft);
+    setoutputarray(CFT_NFERT2,dh->cft_nfert2,nirrig);
     setoutputarray(PFT_NUPTAKE2,dh->pft_nuptake2,nnat+nirrig);
   }
   index=0;

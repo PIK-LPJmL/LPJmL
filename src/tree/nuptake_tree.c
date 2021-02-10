@@ -36,6 +36,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   Real up_temp_f;
   Real totn,nsum;
   Real wscaler;
+  Real autofert_n;
   Real n_uptake=0;
   Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
   int l,nnat,nirrig;
@@ -105,25 +106,50 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
       }
     }
   }
-  if(*n_plant_demand/(1+pft->par->knstore)>(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind))   /*HERE RECALCULATION OF N-demand TO N-supply*/
+  if(config->fertilizer_input==AUTO_FERTILIZER && pft->stand->type->landusetype!=NATURAL)
   {
-    *n_plant_demand=(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind);
-    NC_actual=(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind)/(vegc_sum_tree(pft)-tree->ind.heartwood.carbon*pft->nind);
-    NC_leaf=NC_actual/(tree->falloc.sapwood/treepar->ratio.sapwood+tree->falloc.root/treepar->ratio.root+tree->falloc.leaf);
-    if(NC_leaf< pft->par->ncleaf.low)
-      NC_leaf=pft->par->ncleaf.low;
-    else if (NC_leaf>pft->par->ncleaf.high)
-      NC_leaf=pft->par->ncleaf.high;
-//    *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf)*NC_leaf;
-    *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind)*NC_leaf;
-  }
-
-  if(ndemand_leaf_opt<epsilon)
+    data=pft->stand->data;
+    autofert_n=*n_plant_demand-(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind);
+    n_uptake += autofert_n;
+    pft->bm_inc.nitrogen += autofert_n;
     pft->vscal+=1;
+    pft->stand->cell->balance.n_influx += autofert_n*pft->stand->frac;
+    pft->stand->cell->output.flux_nfert+=autofert_n*pft->stand->frac;
+    switch(pft->stand->type->landusetype)
+    {
+      case BIOMASS_TREE:
+        pft->stand->cell->output.cft_nfert[rwp(ncft)+data->irrigation*nirrig]+=autofert_n;
+        break;
+      case WOODPLANTATION:
+        pft->stand->cell->output.cft_nfert[rbtree(ncft)+data->irrigation*nirrig]+=autofert_n;
+        break;
+      case AGRICULTURE_TREE:
+        pft->stand->cell->output.cft_nfert[data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig]+=autofert_n;
+        break;
+    }
+  }
   else
-   pft->vscal+=min(1,*ndemand_leaf/(ndemand_leaf_opt/(1+pft->par->knstore))); /*eq. C20 in Smith et al. 2014, Biogeosciences */
-  /* correcting for failed uptake from depleted soils in outputs */
-  n_uptake+=n_upfail;
+  {
+    if(*n_plant_demand/(1+pft->par->knstore)>(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind))   /*HERE RECALCULATION OF N-demand TO N-supply*/
+    {
+      *n_plant_demand=(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind);
+      NC_actual=(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind)/(vegc_sum_tree(pft)-tree->ind.heartwood.carbon*pft->nind);
+      NC_leaf=NC_actual/(tree->falloc.sapwood/treepar->ratio.sapwood+tree->falloc.root/treepar->ratio.root+tree->falloc.leaf);
+      if(NC_leaf< pft->par->ncleaf.low)
+        NC_leaf=pft->par->ncleaf.low;
+      else if (NC_leaf>pft->par->ncleaf.high)
+        NC_leaf=pft->par->ncleaf.high;
+//    *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf)*NC_leaf;
+      *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind)*NC_leaf;
+    }
+
+    if(ndemand_leaf_opt<epsilon)
+      pft->vscal+=1;
+    else
+     pft->vscal+=min(1,*ndemand_leaf/(ndemand_leaf_opt/(1+pft->par->knstore))); /*eq. C20 in Smith et al. 2014, Biogeosciences */
+    /* correcting for failed uptake from depleted soils in outputs */
+    n_uptake+=n_upfail;
+  }
   switch(pft->stand->type->landusetype)
   {
     case BIOMASS_TREE:
