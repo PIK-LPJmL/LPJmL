@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   p  a  r  a  m  .  j  s                                       \n**/
+/**                   p  a  r  a  m  _  a  g  t  r  e  e  .  j  s                  \n**/
 /**                                                                                \n**/
 /** Default input parameter file for LPJmL C Version 5.3.001                       \n**/
 /**                                                                                \n**/
@@ -14,8 +14,9 @@
 
 #include "par/lpjparam.js"      /* LPJ parameter file */
 #include "par/soil.js"          /* Soil parameter file */
-#include "par/pft_phase3_12cft.js"           /* PFT parameter file*/
+#include "par/pft_agtree.js"    /* PFT parameter file*/
 
 #include "par/manage_laimax_alphaa_fao_rev4453_20180507.js" /* Management parameter file */
 #include "par/manage_reg.js"    /* Management parameter file for regions*/
 #include "par/outputvars.js"
+#include "par/manage_treedens.js"
