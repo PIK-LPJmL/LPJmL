@@ -33,17 +33,17 @@
   "sim_name" : "LPJmL run with SPITFIRE and VPD fire danger index", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "version"  : "5.3",       /* LPJmL version expected */
-  "random_prec" : false,     /* Random weather generator for precipitation enabled */
+  "random_prec" : false,    /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
-  "radiation" : "radiation", /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
-  "fire" : "spitfire_tmax",  /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
-  "fdi" : "wvpd_index",      /* different fire danger index formulations: WVPD_INDEX, NESTEROV_INDEX*/
+  "radiation" : "radiation",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
+  "fire" : "spitfire_tmax", /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
+  "fdi" : "wvpd",           /* different fire danger index formulations: WVPD_INDEX, NESTEROV_INDEX*/
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : false,
   "permafrost" : true,
-  "with_nitrogen" : "no_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "with_nitrogen" : "no", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : false,
@@ -52,29 +52,29 @@
   "new_seed" : false, /* read random seed from restart file */
   "equilsoil" : false,
   "population" : true,
-  "landuse" : "landuse", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
-  "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
+  "landuse" : "yes",   /* other options: "no", "yes", "const", "all_crops" */
+  "landuse_year_const" : 2000, /* set landuse year for "const" or "all_crops" case */
   "reservoir" : true,
-  "wateruse" : "wateruse",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "wateruse" : "yes",  /* other options: "no", "yes", "all" */
 #else
   "equilsoil" : true,
   "population" : false,
-  "landuse" : "no_landuse",
+  "landuse" : "no",
   "reservoir" : false,
-  "wateruse" : "no_wateruse",
+  "wateruse" : "no",
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "sdate_fixyear" : 1970,                 /* year in which sowing dates shall be fixed */
-   "tillage_type" : "tillage",           /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
-  "till_startyear" : 1850,              /* year in which tillage should start */
-  "black_fallow" : false,               /* simulation with black fallow on PNV */
-  "no_ndeposition" : false,             /* turn off atmospheric N deposition */
+  "tillage_type" : "all",                 /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
+  "till_startyear" : 1850,                /* year in which tillage should start */
+  "black_fallow" : false,                 /* simulation with black fallow on PNV */
+  "no_ndeposition" : false,               /* turn off atmospheric N deposition */
   "intercrop" : true,                     /* intercrops on setaside */
   "residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
   "residues_fire" : false,                /* fire in residuals */
-  "irrigation" : "lim_irrigation",        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
+  "irrigation" : "lim",                   /* other options: "no", "lim", "pot", "all" */
   "laimax_interpolate" : "laimax_cft",    /* laimax values from manage parameter file, */
                                           /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
   "rw_manage" : false,                    /* rain water management */

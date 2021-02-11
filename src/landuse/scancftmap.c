@@ -130,85 +130,88 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
     } /* of for(cft=0...) */
     if(isroot(*config))
     {
-    for(cft=0;cft<ncft;cft++)
-      if(undef[cft])
+      for(cft=0;cft<ncft;cft++)
+        if(undef[cft])
+        {
+          if(first)
+          {
+            fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
+            first=FALSE;
+          }
+          else
+            fputc(',',stderr);
+          fprintf(stderr," '%s'",config->pftpar[npft+cft].name);
+        }
+      if(!cftonly)
       {
-        if(first)
+        for(cft=0;cft<NGRASS;cft++)
+          if(undef[cft+ncft])
+          {
+            if(first)
+            {
+              fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
+              first=FALSE;
+            }
+            else
+              fputc(',',stderr);
+            fprintf(stderr," '%s'",grasspft[cft]);
+          }
+        for(cft=0;cft<NGRASS;cft++)
+          if(undef[cft+ncft])
+          {
+            if(first)
+            {
+              fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
+              first=FALSE;
+            }
+            else
+              fputc(',',stderr);
+            fprintf(stderr," '%s'",grasspft[cft]);
+          }
+        for(cft=0;cft<NBIOMASSTYPE;cft++)
+          if(undef[cft+ncft+NGRASS])
+          {
+            if(first)
+            {
+              fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
+              first=FALSE;
+            }
+            else
+              fputc(',',stderr);
+            fprintf(stderr," '%s'",biomasspft[cft]);
+          }
+        if(config->nwptype && undef[ncft+NGRASS+NBIOMASSTYPE])
         {
-          fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
-          first=FALSE;
+          if(first && isroot(*config))
+          {
+            fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
+            first=FALSE;
+          }
+          else
+            fputc(',',stderr);
+          fprintf(stderr," '%s'",wppft[0]);
         }
-        fprintf(stderr," '%s'",config->pftpar[npft+cft].name);
+        for(cft=0;cft<config->nagtree;cft++)
+          if(undef[cft+ncft+NGRASS+NBIOMASSTYPE+config->nwptype])
+          {
+            if(first)
+            {
+              fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
+              first=FALSE;
+            }
+            else
+              fputc(',',stderr);
+            fprintf(stderr," '%s'",config->pftpar[npft-config->nagtree+cft].name);
+          }
       }
-    if(!cftonly)
-    {
-      for(cft=0;cft<NGRASS;cft++)
-        if(undef[cft+ncft])
-        {
-          if(first)
-          {
-            fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
-            first=FALSE;
-          }
-          else
-            fprintf(stderr,",");
-          fprintf(stderr," '%s'",grasspft[cft]);
-        }
-      for(cft=0;cft<NGRASS;cft++)
-        if(undef[cft+ncft])
-        {
-          if(first)
-          {
-            fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
-            first=FALSE;
-          }
-          else
-            fprintf(stderr,",");
-          fprintf(stderr," '%s'",grasspft[cft]);
-        }
-      for(cft=0;cft<NBIOMASSTYPE;cft++)
-        if(undef[cft+ncft+NGRASS])
-        {
-          if(first)
-          {
-            fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
-            first=FALSE;
-          }
-          else
-            fprintf(stderr,",");
-          fprintf(stderr," '%s'",biomasspft[cft]);
-        }
-      if(config->nwptype && undef[cft+ncft+NGRASS+NBIOMASSTYPE])
-      {
-        if(first && isroot(*config))
-        {
-          fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
-          first=FALSE;
-        }
-        else
-          fprintf(stderr,",");
-        fprintf(stderr," '%s'",wppft[0]);
-      }
-      for(cft=0;cft<config->nagtree;cft++)
-        if(undef[cft+ncft+NGRASS+NBIOMASSTYPE+config->nwptype])
-        {
-          if(first)
-          {
-            fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
-            first=FALSE;
-          }
-          else
-            fprintf(stderr,",");
-          fprintf(stderr," '%s'",config->pftpar[npft-config->nagtree+cft].name);
-        }
-    }
-    if(!first)
-      fprintf(stderr,", set to zero.\n");
-    }
+      if(!first)
+        fprintf(stderr,", set to zero.\n");
+    } /* of isroot(*config) */
     free(undef);
   }
   else
   {
+    /* no map defined, set default one */
     *size=(cftonly) ? ncft : getnirrig(ncft,config);
     cftmap=newvec(int,*size);
     if(cftmap==NULL)
