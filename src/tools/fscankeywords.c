@@ -87,7 +87,16 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
     if(*value<0 || *value>=size)
     {
       if(verb)
-        fprintf(stderr,"ERROR226: Invalid value %d for name '%s'.\n",*value,name);
+      {
+        fprintf(stderr,"ERROR226: Invalid value %d for name '%s', must be <%d or",*value,name,size);
+        for(i=0;i<size;i++)
+        {
+          fprintf(stderr," '%s'",array[i]);
+          if(i!=size-1)
+            fputc(',',stderr);
+        }
+        fputs(".\n",stderr);
+      }
       return TRUE;
     }
     if (verb >= VERB)
