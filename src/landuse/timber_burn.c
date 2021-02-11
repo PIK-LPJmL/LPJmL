@@ -39,8 +39,10 @@ Stocks timber_burn(const Pft *pft, /**< Pointer to tree PFT */
   {
     litter->item[pft->litter].ag.wood[i].carbon-=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0+tree->excess_carbon)*fburnt*nind*treepar->fuelfrac[i];
     output->alittfall.carbon-=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0+tree->excess_carbon)*fburnt*nind*treepar->fuelfrac[i]*pft->stand->frac;
+    output->alittfall_wood.carbon-=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0+tree->excess_carbon)*fburnt*nind*treepar->fuelfrac[i]*pft->stand->frac;
     litter->item[pft->litter].ag.wood[i].nitrogen-=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*fburnt*nind*treepar->fuelfrac[i];
     output->alittfall.nitrogen-=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*fburnt*nind*treepar->fuelfrac[i]*pft->stand->frac;
+    output->alittfall_wood.nitrogen-=(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen*2.0/3.0)*fburnt*nind*treepar->fuelfrac[i]*pft->stand->frac;
   }
   /* computing deforestation fire emissions */
   burn.carbon=(tree->ind.heartwood.carbon+tree->ind.sapwood.carbon*2.0/3.0+tree->excess_carbon)*fburnt*nind;

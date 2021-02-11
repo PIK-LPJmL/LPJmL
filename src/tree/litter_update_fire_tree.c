@@ -49,9 +49,13 @@ void litter_update_fire_tree(Litter *litter, /**< Litter pool */
                                   tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i];
     output->alittfall.carbon+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
                                   tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+    output->alittfall_wood.carbon+=(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-
+                                  tree->ind.debt.carbon+tree->excess_carbon)*frac*treepar->fuelfrac[i]*pft->stand->frac;
     litter->item[pft->litter].ag.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
                                   tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i];
     output->alittfall.nitrogen+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
+                                  tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i]*pft->stand->frac;
+    output->alittfall_wood.nitrogen+=(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen-
                                   tree->ind.debt.nitrogen)*frac*treepar->fuelfrac[i]*pft->stand->frac;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,
                     (tree->ind.sapwood.carbon+tree->ind.heartwood.carbon-tree->ind.debt.carbon)

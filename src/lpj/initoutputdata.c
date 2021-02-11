@@ -90,6 +90,18 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(DELTA_NMIN_SOIL_AGR,adelta_nmin_soil_agr);
   setoutputvar(DELTA_NVEG_SOIL_AGR,adelta_nveg_soil_agr);
   setoutputvar(CELLFRAC_AGR,cellfrac_agr);
+  setoutputvar(LITFALLC_WOOD,alittfall_wood.carbon);
+  setoutputvar(LITFALLN_WOOD,alittfall_wood.nitrogen);
+  setoutputvar(LITBURNC,alitburnc);
+  setoutputvar(LITBURNC_WOOD,alitburnc_wood);
+  if(isinit(DECAY_WOOD_AGR))
+    output->decay_wood_agr=1;
+  if(isinit(DECAY_WOOD_NV))
+    output->decay_wood_nv=1;
+  if(isinit(DECAY_LEAF_AGR))
+    output->decay_leaf_agr=1;
+  if(isinit(DECAY_LEAF_NV))
+    output->decay_leaf_nv=1;
   setoutputarrayitem(SOILC_LAYER,soil_layer,carbon,LASTLAYER);
   setoutputarrayitem(SOILN_LAYER,soil_layer,nitrogen,LASTLAYER);
   setoutputarray(SOILNO3_LAYER,soilno3_layer,LASTLAYER);
@@ -168,6 +180,10 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(TRANSP_B,mtransp_b);
   setoutputvar(EVAP_B,mevap_b);
   setoutputvar(INTERC_B,minterc_b);
+  setoutputarray(RESPONSE_LAYER_AGR,response_agr,NSOILLAYER);
+  setoutputarray(RESPONSE_LAYER_NV,response_nv,NSOILLAYER);
+  setoutputarray(CSHIFT_FAST_NV,cshift_fast_nv,NSOILLAYER);
+  setoutputarray(CSHIFT_SLOW_NV,cshift_slow_nv,NSOILLAYER);
   setoutputarray(SWC,mswc,NSOILLAYER);
   setoutputvar(SWC1,mswc2[0]);
   setoutputvar(SWC2,mswc2[1]);

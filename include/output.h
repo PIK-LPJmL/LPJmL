@@ -342,6 +342,17 @@ typedef struct
   Real adelta_nmin_soil_agr;
   Real adelta_nveg_soil_agr;
   Real cellfrac_agr;
+  Stocks alittfall_wood;    /**< woody litter fall (gC/m2/yr) */
+  Real response_agr[NSOILLAYER]; /**< annual sum of response function on croplands */
+  Real response_nv[NSOILLAYER];  /**< annual sum of response function on natural vegetation */
+  Real decay_wood_agr;        /**< annual decay rate of woody litter on croplands */
+  Real decay_wood_nv;         /**< annual decay rate of woody litter on natural vegetation */
+  Real decay_leaf_agr;        /**< annual decay rate of leaf litter on croplands */
+  Real decay_leaf_nv;         /**< annual decay rate of leaf litter on natural vegetation */
+  Real cshift_fast_nv[NSOILLAYER];
+  Real cshift_slow_nv[NSOILLAYER];
+  Real alitburnc;             /**< annual litter carbon burnt (gC/m2/yr) */
+  Real alitburnc_wood;        /**< annual woody litter carbon burnt (gC/m2/yr) */
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 

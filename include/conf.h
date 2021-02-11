@@ -112,7 +112,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 333            /* number of output files */
+#define NOUT 345            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -463,6 +463,18 @@
 #define CFT_NFERT 330
 #define CFT_NFERT2 331
 #define FLUX_AUTOFERT 332
+#define LITFALLC_WOOD 333
+#define LITFALLN_WOOD 334
+#define RESPONSE_LAYER_AGR 335
+#define RESPONSE_LAYER_NV 336
+#define DECAY_WOOD_AGR 337
+#define DECAY_WOOD_NV 338
+#define DECAY_LEAF_AGR 339
+#define DECAY_LEAF_NV 340
+#define CSHIFT_FAST_NV 341
+#define CSHIFT_SLOW_NV 342
+#define LITBURNC 343
+#define LITBURNC_WOOD 344
 
 #define RANDOM_SEED 0
 

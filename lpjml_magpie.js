@@ -265,6 +265,14 @@ ID                         Fmt                    filename
     { "id" : "cft_transp_b",       "file" : { "fmt" : "raw", "name" : mkstr(output/cft_transp_b.SUFFIX)}},
     { "id" : "cft_evap_b",         "file" : { "fmt" : "raw", "name" : mkstr(output/cft_evap_b.SUFFIX)}},
     { "id" : "cft_interc_b",       "file" : { "fmt" : "raw", "name" : mkstr(output/cft_interc_b.SUFFIX)}}
+    { "id" : "decay_leaf_nv",      "file" : { "fmt" : "raw", "name" : mkstr(output/decay_leaf_nv.bin)}},
+    { "id" : "decay_leaf_agr",     "file" : { "fmt" : "raw", "name" : mkstr(output/decay_leaf_agr.bin)}},
+    { "id" : "decay_wood_nv",      "file" : { "fmt" : "raw", "name" : mkstr(output/decay_wood_nv.bin)}},
+    { "id" : "decay_wood_agr",     "file" : { "fmt" : "raw", "name" : mkstr(output/decay_wood_agr.bin)}},
+    { "id" : "response_layer_nv",  "file" : { "fmt" : "raw", "name" : mkstr(output/response_layer_nv.bin)}},
+    { "id" : "response_layer_agr", "file" : { "fmt" : "raw", "name" : mkstr(output/response_layer_agr.bin)}},
+    { "id" : "cshift_fast_nv",     "file" : { "fmt" : "raw", "name" : mkstr(output/cshift_fast_nv.bin)}},
+    { "id" : "cshift_slow_nv",     "file" : { "fmt" : "raw", "name" : mkstr(output/cshift_slow_agr.bin)}}
 
 /*------------------------ ---------------------- ------------------------------- */
   ],

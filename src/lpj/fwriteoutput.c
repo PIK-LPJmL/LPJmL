@@ -668,6 +668,47 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(DELTA_NMIN_SOIL_AGR,adelta_nmin_soil_agr);
   writeoutputvar(DELTA_NVEG_SOIL_AGR,adelta_nveg_soil_agr);
   writeoutputvar(CELLFRAC_AGR,cellfrac_agr);
+  writeoutputvar(LITFALLC_WOOD,alittfall_wood.carbon);
+  writeoutputvar(LITFALLN_WOOD,alittfall_wood.nitrogen);
+  if(iswrite(output,DECAY_WOOD_AGR))
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)\
+      if(!grid[cell].skip)
+        vec[count++]=(float)(1-grid[cell].output.decay_wood_agr);
+    writedata(output,DECAY_WOOD_AGR,vec,year,date,0,config);
+  }
+  if(iswrite(output,DECAY_WOOD_NV))
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)\
+      if(!grid[cell].skip)
+        vec[count++]=(float)(1-grid[cell].output.decay_wood_nv);
+    writedata(output,DECAY_WOOD_NV,vec,year,date,0,config);
+  }
+  if(iswrite(output,DECAY_LEAF_AGR))
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)\
+      if(!grid[cell].skip)
+        vec[count++]=(float)(1-grid[cell].output.decay_leaf_agr);
+    writedata(output,DECAY_LEAF_AGR,vec,year,date,0,config);
+  }
+  if(iswrite(output,DECAY_LEAF_NV))
+  {
+    count=0;
+    for(cell=0;cell<config->ngridcell;cell++)\
+      if(!grid[cell].skip)
+        vec[count++]=(float)(1-grid[cell].output.decay_leaf_nv);
+    writedata(output,DECAY_LEAF_NV,vec,year,date,0,config);
+  }
+  writeoutputvar(LITBURNC,alitburnc);
+  writeoutputvar(LITBURNC_WOOD,alitburnc_wood);
+  writeoutputvar2(RESPONSE_LAYER_AGR,response_agr,0,NSOILLAYER);
+  writeoutputvar2(RESPONSE_LAYER_NV,response_nv,1,NSOILLAYER);
+  writeoutputvar2(CSHIFT_FAST_NV,cshift_fast_nv,1,NSOILLAYER);
+  writeoutputvar2(CSHIFT_SLOW_NV,cshift_slow_nv,1,NSOILLAYER);
+
   if(isopen(output,VEGC))
   {
     if(iswrite2(VEGC,timestep,year,config) || (timestep==ANNUAL && config->outnames[VEGC].timestep>0))
