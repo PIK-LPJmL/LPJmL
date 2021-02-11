@@ -372,12 +372,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.msoilc1+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
   } /* of foreachstand */
 
-  cell->output.cellfrac_agr+=agrfrac/NDAYYEAR;
+  cell->output.cellfrac_agr+=agrfrac;
   cell->output.decay_leaf_nv*=litsum_old_nv[LEAF]>0 ? litsum_new_nv[LEAF]/litsum_old_nv[LEAF] : 1;
   cell->output.decay_wood_nv*=litsum_old_nv[WOOD]>0 ? litsum_new_nv[WOOD]/litsum_old_nv[WOOD] : 1;
   cell->output.decay_leaf_agr*=litsum_old_agr[LEAF]>0 ? litsum_new_agr[LEAF]/litsum_old_agr[LEAF] : 1;
   cell->output.decay_wood_agr*=litsum_old_agr[WOOD]>0 ? litsum_new_agr[WOOD]/litsum_old_agr[WOOD] : 1;
-
 
 #ifdef COUPLING_WITH_FMS
   if (cell->lakefrac > 0)

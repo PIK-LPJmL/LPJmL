@@ -591,7 +591,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                  )
 {
   int i,count,s,p,cell,l,index,ndata,nirrig,nnat;
-  Real ndate1,grassfrac;
+  Real ndate1,sumfrac;
   const Stand *stand;
   const Pft *pft;
   const Pfttree *tree;
@@ -667,6 +667,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(DELTA_NORG_SOIL_AGR,adelta_norg_soil_agr);
   writeoutputvar(DELTA_NMIN_SOIL_AGR,adelta_nmin_soil_agr);
   writeoutputvar(DELTA_NVEG_SOIL_AGR,adelta_nveg_soil_agr);
+  writeoutputvar(CELLFRAC_AGR,cellfrac_agr*ndate1);
   writeoutputvar(CELLFRAC_AGR,cellfrac_agr);
   writeoutputvar(LITFALLC_WOOD,alittfall_wood.carbon);
   writeoutputvar(LITFALLN_WOOD,alittfall_wood.nitrogen);
@@ -708,7 +709,6 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar2(RESPONSE_LAYER_NV,response_nv,1,NSOILLAYER);
   writeoutputvar2(CSHIFT_FAST_NV,cshift_fast_nv,1,NSOILLAYER);
   writeoutputvar2(CSHIFT_SLOW_NV,cshift_slow_nv,1,NSOILLAYER);
-
   if(isopen(output,VEGC))
   {
     if(iswrite2(VEGC,timestep,year,config) || (timestep==ANNUAL && config->outnames[VEGC].timestep>0))
@@ -1253,6 +1253,37 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvaritem(SOILC_LAYER,soil_layer,carbon,BOTTOMLAYER);
   }
+  if(isopen(output,SOILC_AGR_LAYER))
+  {
+    if(iswrite2(SOILC_AGR_LAYER,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC_LAYER].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+      {
+        if(!grid[cell].skip)
+        {
+          sumfrac=0;
+          foreachstand(stand,s,grid[cell].standlist)
+            if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
+                stand->type->landusetype == AGRICULTURE)
+              sumfrac+=stand->frac;
+
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
+                stand->type->landusetype == AGRICULTURE)
+            {
+              for(p=0;p<stand->soil.litter.n;p++)
+                grid[cell].output.soilc_agr_layer[0]+=stand->soil.litter.item[p].bg.carbon*stand->frac/sumfrac;
+              forrootsoillayer(i)
+                grid[cell].output.soilc_agr_layer[i]+=(stand->soil.pool[i].slow.carbon+stand->soil.pool[i].fast.carbon)*stand->frac/sumfrac;
+            }
+          }
+        }
+      }
+    }
+    writeoutputvar2(SOILC_AGR_LAYER,soilc_agr_layer,1,BOTTOMLAYER);
+  }
+
   if(isopen(output,SOILN_LAYER))
   {
     if(iswrite2(SOILN_LAYER,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILN_LAYER].timestep>0))
@@ -1688,20 +1719,18 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
         {
-          grassfrac=0;
+          sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
             if(stand->type->landusetype==GRASSLAND)
-              grassfrac+=stand->frac;
-          if(grassfrac<epsilon)
-            grassfrac=1;
+              sumfrac+=stand->frac;
           foreachstand(stand,s,grid[cell].standlist)
           {
             if(stand->type->landusetype==GRASSLAND)
             {
               for(p=0;p<stand->soil.litter.n;p++)
-                grid[cell].output.mgrass_soil.carbon+=stand->soil.litter.item[p].bg.carbon*stand->frac/grassfrac;
+                grid[cell].output.mgrass_soil.carbon+=stand->soil.litter.item[p].bg.carbon*stand->frac/sumfrac;
               forrootsoillayer(l)
-                grid[cell].output.mgrass_soil.carbon+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac/grassfrac;
+                grid[cell].output.mgrass_soil.carbon+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac/sumfrac;
             }
           }
         }
@@ -1715,20 +1744,18 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
         {
-          grassfrac=0;
+          sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
             if(stand->type->landusetype==GRASSLAND)
-              grassfrac+=stand->frac;
-          if(grassfrac<epsilon)
-            grassfrac=1;
+              sumfrac+=stand->frac;
           foreachstand(stand,s,grid[cell].standlist)
           {
             if(stand->type->landusetype==GRASSLAND)
             {
               for(p=0;p<stand->soil.litter.n;p++)
-                grid[cell].output.mgrass_soil.nitrogen+=stand->soil.litter.item[p].bg.nitrogen*stand->frac/grassfrac;
+                grid[cell].output.mgrass_soil.nitrogen+=stand->soil.litter.item[p].bg.nitrogen*stand->frac/sumfrac;
               forrootsoillayer(l)
-                grid[cell].output.mgrass_soil.nitrogen+=(stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac/grassfrac;
+                grid[cell].output.mgrass_soil.nitrogen+=(stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac/sumfrac;
             }
           }
         }
@@ -1742,16 +1769,14 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
         {
-          grassfrac=0;
+          sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
             if(stand->type->landusetype==GRASSLAND)
-              grassfrac+=stand->frac;
-          if(grassfrac<epsilon)
-            grassfrac=1;
+              sumfrac+=stand->frac;
           foreachstand(stand,s,grid[cell].standlist)
           {
             if(stand->type->landusetype==GRASSLAND)
-              grid[cell].output.mgrass_litter.carbon+=litter_ag_sum(&stand->soil.litter)*stand->frac/grassfrac;
+              grid[cell].output.mgrass_litter.carbon+=litter_ag_sum(&stand->soil.litter)*stand->frac/sumfrac;
           }
         }
     }
@@ -1764,16 +1789,14 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
         {
-          grassfrac=0;
+          sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
             if(stand->type->landusetype==GRASSLAND)
-              grassfrac+=stand->frac;
-          if(grassfrac<epsilon)
-            grassfrac=1;
+              sumfrac+=stand->frac;
           foreachstand(stand,s,grid[cell].standlist)
           {
             if(stand->type->landusetype==GRASSLAND)
-              grid[cell].output.mgrass_litter.nitrogen+=litter_ag_sum_n(&stand->soil.litter)*stand->frac/grassfrac;
+              grid[cell].output.mgrass_litter.nitrogen+=litter_ag_sum_n(&stand->soil.litter)*stand->frac/sumfrac;
           }
         }
     }

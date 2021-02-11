@@ -101,12 +101,12 @@
 /*===================================================================*/
 
   "sim_name" : "LPJmL Run", /* Simulation description */
-  "sim_id"   : LPJML,       /* LPJML Simulation type with managed land use */
-  "version"  : "5.2",       /* LPJmL version expected */
+  "sim_id"   : "lpjml",       /* LPJML Simulation type with managed land use */
+  "version"  : "5.3",       /* LPJmL version expected */
   "random_prec" : false,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
-  "radiation" : RADIATION,  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
-  "fire" : FIRE,            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
+  "radiation" : "radiation",  /* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
+  "fire" : "fire",            /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX */
   "firewood" : false,
   "new_phenology": true,    /* GSI phenology enabled */
 #if (DRUN==PIXELRUN)
@@ -118,9 +118,9 @@
   "permafrost" : true,
 
 #if (DNIT==NIT_LIM)
-  "with_nitrogen" : LIM_NITROGEN, /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "with_nitrogen" : "lim", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
 #elif (DNIT==NIT_UNL)
-  "with_nitrogen" : UNLIM_NITROGEN,
+  "with_nitrogen" : "unlim",
   #else
 #endif
 
@@ -128,37 +128,37 @@
   "const_deposition" : false,
 #ifdef FROM_RESTART
   "population" : false,
-  "landuse" : ALL_CROPS, /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS, ONLY_CROPS (crops scaled to 100% of cell) */
+  "landuse" : "all_crops", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS, ONLY_CROPS (crops scaled to 100% of cell) */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : false,
-  "wateruse" : NO_WATERUSE,  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "wateruse" : "no",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
   "equilsoil" : false,
 #else
   "population" : false,
-  "landuse" : NO_LANDUSE,
+  "landuse" : "no",
   "reservoir" : false,
-  "wateruse" : NO_WATERUSE,
+  "wateruse" : "no",
   "equilsoil" : true,
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : NO_LANDCOVER, /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : NO_FIXED_SDATE, //PRESCRIBED_SDATE,   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
-  "crop_phu_option" : SEMISTATIC_CROP_PHU, //PRESCRIBED_CROP_PHU,    /* PRESCRIBED_CROP_PHU (PHU dataset used, requires PRESCRIBED_SDATE), SEMISTATIC_CROP_PHU (LPJmL4 semi-static PHU approach) */
+  "crop_phu_option" : "new", //PRESCRIBED_CROP_PHU,    /* PRESCRIBED_CROP_PHU (PHU dataset used, requires PRESCRIBED_SDATE), SEMISTATIC_CROP_PHU (LPJmL4 semi-static PHU approach) */
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
   "intercrop" : true,                   /* intercrops on setaside */
   "residue_treatment" : FIXED_RESIDUE_REMOVE, /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */ 
   "residues_fire" : false,              /* fire in residuals */
 
 #if (DIRR==IRR_LIM)
-  "irrigation" : LIM_IRRIGATION,        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
+  "irrigation" : "lim",        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
 #elif (DIRR==IRR_UNL)
-  "irrigation" : POT_IRRIGATION,
+  "irrigation" : "pot",
 #endif
 
-  "tillage_type" : TILLAGE,          /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
+  "tillage_type" : "all",          /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
   "black_fallow" : false,               /* simulation with black fallow on PNV */
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
-  "laimax_interpolate" : LAIMAX_PAR,    /* laimax values from manage parameter file, */
+  "laimax_interpolate" : "laimax_par",    /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
@@ -275,12 +275,11 @@ ID                         Fmt                    filename
 //    { "id" : PFT_CHAWO,        "file" : { "fmt" : RAW, "name" : mkstr(output/pft_chawo.bin)}},
 //    { "id" : PFT_NHAWO,        "file" : { "fmt" : RAW, "name" : mkstr(output/pft_nhawo.bin)}},
 #ifdef WITH_SPITFIRE
-    { "id" : MFIREC,           "file" : { "fmt" : RAW, "name" : mkstr(output/mfirec.bin)}},
-    { "id" : MNFIRE,           "file" : { "fmt" : RAW, "name" : mkstr(output/mnfire.bin)}},
-    { "id" : MBURNTAREA,       "file" : { "fmt" : RAW, "name" : mkstr(output/mburnt_area.bin)}},
-    { "id" : ABURNTAREA,       "file" : { "fmt" : RAW, "name" : mkstr(output/aburnt_area.bin)}},
+    { "id" : FIREC,           "file" : { "fmt" : RAW, "name" : mkstr(output/mfirec.bin)}},
+    { "id" : NFIRE,           "file" : { "fmt" : RAW, "name" : mkstr(output/mnfire.bin)}},
+    { "id" : BURNTAREA,       "file" : { "fmt" : RAW, "name" : mkstr(output/aburnt_area.bin)}},
 #endif
-    { "id" : MDISCHARGE,       "file" : { "fmt" : RAW, "name" : mkstr(output/mdischarge.bin)}},
+    { "id" : DISCHARGE,       "file" : { "fmt" : RAW, "name" : mkstr(output/mdischarge.bin)}},
 //    { "id" : MWATERAMOUNT,     "file" : { "fmt" : RAW, "name" : mkstr(output/mwateramount.bin)}},
     { "id" : SYEAR,            "file" : { "fmt" : RAW, "name" : mkstr(output/syear.bin)}},
     { "id" : SYEAR2,           "file" : { "fmt" : RAW, "name" : mkstr(output/syear2.bin)}},
@@ -320,21 +319,21 @@ ID                         Fmt                    filename
     { "id" : D_HUSUM,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_husum.bin)}},
     { "id" : D_VDSUM,          "file" : { "fmt" : RAW, "name" : mkstr(output/d_vdsum.bin)}}
 #endif
-/*    { "id" : MPET,             "file" : { "fmt" : RAW, "name" : "output/mpet.bin"}},
-    { "id" : MALBEDO,          "file" : { "fmt" : RAW, "name" : "output/malbedo.bin"}},
+/*    { "id" : PET,             "file" : { "fmt" : RAW, "name" : "output/mpet.bin"}},
+    { "id" : ALBEDO,          "file" : { "fmt" : RAW, "name" : "output/malbedo.bin"}},
     { "id" : MAXTHAW_DEPTH,    "file" : { "fmt" : RAW, "name" : "output/maxthaw_depth.bin"}},
-    { "id" : MSOILTEMP1,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp1.bin"}},
-    { "id" : MSOILTEMP2,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp2.bin"}},
-    { "id" : MSOILTEMP3,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp3.bin"}},
+    { "id" : SOILTEMP1,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp1.bin"}},
+    { "id" : SOILTEMP2,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp2.bin"}},
+    { "id" : SOILTEMP3,       "file" : { "fmt" : RAW, "name" : "output/msoiltemp3.bin"}},
     { "id" : SOILC_LAYER,      "file" : { "fmt" : RAW, "name" : "output/soilc_layer.bin"}},
     { "id" : AGB,              "file" : { "fmt" : RAW, "name" : "output/agb.bin"}},
     { "id" : AGB_TREE,         "file" : { "fmt" : RAW, "name" : "output/agb_tree.bin"}},
-    { "id" : MRETURN_FLOW_B,   "file" : { "fmt" : RAW, "name" : "output/mreturn_flow_b.bin"}},
-    { "id" : MTRANSP_B,        "file" : { "fmt" : RAW, "name" : "output/mtransp_b.bin"}},
-    { "id" : MEVAP_B,          "file" : { "fmt" : RAW, "name" : "output/mevap_b.bin"}},
-    { "id" : MINTERC_B,        "file" : { "fmt" : RAW, "name" : "output/mintec_b.bin"}},
-    { "id" : ACONV_LOSS_EVAP,  "file" : { "fmt" : RAW, "name" : "output/aconv_loss_evap.bin"}},
-    { "id" : ACONV_LOSS_DRAIN, "file" : { "fmt" : RAW, "name" : "output/aconv_loss_drain.bin"}}*/
+    { "id" : RETURN_FLOW_B,   "file" : { "fmt" : RAW, "name" : "output/mreturn_flow_b.bin"}},
+    { "id" : TRANSP_B,        "file" : { "fmt" : RAW, "name" : "output/mtransp_b.bin"}},
+    { "id" : EVAP_B,          "file" : { "fmt" : RAW, "name" : "output/mevap_b.bin"}},
+    { "id" : INTERC_B,        "file" : { "fmt" : RAW, "name" : "output/mintec_b.bin"}},
+    { "id" : CONV_LOSS_EVAP,  "file" : { "fmt" : RAW, "name" : "output/aconv_loss_evap.bin"}},
+    { "id" : CONV_LOSS_DRAIN, "file" : { "fmt" : RAW, "name" : "output/aconv_loss_drain.bin"}}*/
 /*------------------------ ---------------------- ------------------------------- */
   ],
 
