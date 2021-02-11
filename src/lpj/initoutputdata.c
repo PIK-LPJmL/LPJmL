@@ -92,6 +92,7 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(CELLFRAC_AGR,cellfrac_agr);
   setoutputarrayitem(SOILC_LAYER,soil_layer,carbon,LASTLAYER);
   setoutputarrayitem(SOILN_LAYER,soil_layer,nitrogen,LASTLAYER);
+  setoutputarray(SOILC_AGR_LAYER,soilc_agr_layer,LASTLAYER);
   setoutputarray(SOILNO3_LAYER,soilno3_layer,LASTLAYER);
   setoutputarray(SOILNH4_LAYER,soilnh4_layer,LASTLAYER);
   setoutputarray(PFT_LAIMAX,pft_laimax,nnat+nirrig);

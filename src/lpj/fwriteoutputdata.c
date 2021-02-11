@@ -77,6 +77,7 @@ void fwriteoutputdata(FILE *file,           /**< pointer to restart file */
   writeoutputvar(FLUX_AUTOFERT,flux_nfert,Real);
   writeoutputarrayitem(SOILC_LAYER,soil_layer,carbon,LASTLAYER,Real);
   writeoutputarrayitem(SOILN_LAYER,soil_layer,nitrogen,LASTLAYER,Real);
+  writeoutputarray(SOILC_AGR_LAYER,soilc_agr_layer,LASTLAYER,Real);
   writeoutputarray(SOILNO3_LAYER,soilno3_layer,LASTLAYER,Real);
   writeoutputarray(SOILNH4_LAYER,soilnh4_layer,LASTLAYER,Real);
   writeoutputarray(PFT_LAIMAX,pft_laimax,nnat+nirrig,Real);

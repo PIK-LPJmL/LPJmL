@@ -20,6 +20,7 @@
 /* Definition of datatypes */
 
 #define DEFAULT_PORT 2222 /* default port for socket connection */
+#define issoil(index) (index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC)
 
 typedef struct
 {
@@ -301,6 +302,7 @@ typedef struct
   Real soilno3;                 /**< soil NO3 content (gC/m2) */
   Real soilnh4;                 /**< soil NH4 content (gC/m2) */
   Stocks soil_layer[LASTLAYER]; /**< layer-specific soil carbon (gC2/m2) */
+  Real soilc_agr_layer[LASTLAYER];
   Real soilno3_layer[LASTLAYER];
   Real soilnh4_layer[LASTLAYER];
   Real agb;                     /**< above-ground biomass (gC/m2) */

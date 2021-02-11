@@ -336,7 +336,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.msoilc1+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
   } /* of foreachstand */
 
-  cell->output.cellfrac_agr+=agrfrac/NDAYYEAR;
+  cell->output.cellfrac_agr+=agrfrac;
 
 #ifdef COUPLING_WITH_FMS
   if (cell->lakefrac > 0)

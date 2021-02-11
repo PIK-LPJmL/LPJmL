@@ -83,6 +83,7 @@ Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
   readoutputvarreal(CELLFRAC_AGR,cellfrac_agr);
   readoutputarrayitem(SOILC_LAYER,soil_layer,carbon,LASTLAYER);
   readoutputarrayitem(SOILN_LAYER,soil_layer,nitrogen,LASTLAYER);
+  readoutputarrayreal(SOILC_AGR_LAYER,soilc_agr_layer,LASTLAYER);
   readoutputarrayreal(SOILNO3_LAYER,soilno3_layer,LASTLAYER);
   readoutputarrayreal(SOILNH4_LAYER,soilnh4_layer,LASTLAYER);
   readoutputarrayreal(PFT_LAIMAX,pft_laimax,nnat+nirrig);
