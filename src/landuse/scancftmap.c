@@ -73,7 +73,11 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
     for(cft=0;cft<*size;cft++)
     {
       fscanarrayindex(&array,&item,cft,verbose);
-
+      if(isnull(&item))
+      {
+        cftmap[cft]=NOT_FOUND;
+        continue;
+      }
       if(fscanstring(&item,s,NULL,FALSE,verbose))
       {
         free(cftmap);
@@ -125,7 +129,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
       if(cftmap[cft]==NOT_FOUND)
       {
         if(verbose)
-          fprintf(stderr,"WARNING011: Unknown CFT '%s' in map '%s', will be ignored.\n",s,name);
+          fprintf(stderr,"WARNING011: Unknown CFT \"%s\" in map '%s', will be ignored.\n",s,name);
       }
     } /* of for(cft=0...) */
     if(isroot(*config))
@@ -140,7 +144,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
           }
           else
             fputc(',',stderr);
-          fprintf(stderr," '%s'",config->pftpar[npft+cft].name);
+          fprintf(stderr," \"%s\"",config->pftpar[npft+cft].name);
         }
       if(!cftonly)
       {
@@ -154,7 +158,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
             }
             else
               fputc(',',stderr);
-            fprintf(stderr," '%s'",grasspft[cft]);
+            fprintf(stderr," \"%s\"",grasspft[cft]);
           }
         for(cft=0;cft<NGRASS;cft++)
           if(undef[cft+ncft])
@@ -166,7 +170,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
             }
             else
               fputc(',',stderr);
-            fprintf(stderr," '%s'",grasspft[cft]);
+            fprintf(stderr," \"%s\"",grasspft[cft]);
           }
         for(cft=0;cft<NBIOMASSTYPE;cft++)
           if(undef[cft+ncft+NGRASS])
@@ -178,7 +182,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
             }
             else
               fputc(',',stderr);
-            fprintf(stderr," '%s'",biomasspft[cft]);
+            fprintf(stderr," \"%s\"",biomasspft[cft]);
           }
         if(config->nwptype && undef[ncft+NGRASS+NBIOMASSTYPE])
         {
@@ -189,7 +193,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
           }
           else
             fputc(',',stderr);
-          fprintf(stderr," '%s'",wppft[0]);
+          fprintf(stderr," \"%s\"",wppft[0]);
         }
         for(cft=0;cft<config->nagtree;cft++)
           if(undef[cft+ncft+NGRASS+NBIOMASSTYPE+config->nwptype])
@@ -201,7 +205,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
             }
             else
               fputc(',',stderr);
-            fprintf(stderr," '%s'",config->pftpar[npft-config->nagtree+cft].name);
+            fprintf(stderr," \"%s\"",config->pftpar[npft-config->nagtree+cft].name);
           }
       }
       if(!first)
@@ -228,13 +232,13 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
       if(!cftonly)
       {
         for(cft=0;cft<NGRASS;cft++)
-          fprintf(stderr,",'%s'",grasspft[cft]);
+          fprintf(stderr,",\"%s\"",grasspft[cft]);
         for(cft=0;cft<NBIOMASSTYPE;cft++)
-          fprintf(stderr,",'%s'",biomasspft[cft]);
+          fprintf(stderr,",\"%s\"",biomasspft[cft]);
         if(config->nwft)
-          fprintf(stderr,",'%s'",wppft[0]);
+          fprintf(stderr,",\"%s\"",wppft[0]);
         for(cft=0;cft<config->nagtree;cft++)
-          fprintf(stderr,",'%s'",config->pftpar[npft-config->nagtree+cft].name);
+          fprintf(stderr,",\"%s\"",config->pftpar[npft-config->nagtree+cft].name);
       }
       fputs("].\n",stderr);
     }

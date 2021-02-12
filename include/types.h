@@ -120,6 +120,7 @@ extern Bool fscanline(FILE *,char [],int,Verbosity);
 extern Bool fscantoken(FILE *,String);
 extern Bool fscankeywords(LPJfile *,int *,const char *,const char *const *,
                           int,Bool,Verbosity);
+extern Bool isnull(const LPJfile *);
 extern char *sysname(void);
 extern char *getpath(const char *);
 extern char *gethost(void);

@@ -232,7 +232,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       if(config->crop_index==NOT_FOUND)
       {
         if(verbosity)
-          fprintf(stderr,"ERROR166: Invalid crop index '%s' for daily output.\n",name);
+          fprintf(stderr,"ERROR166: Invalid crop index \"%s\" for daily output.\n",name);
         return TRUE;
       }
     }

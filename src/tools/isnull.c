@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                p  r  i  n  t  p  f  t  n  a  m  e  s  .  c                     \n**/
+/**                                  i  s  n  u  l  l  .  c                        \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes PFT names to text file                                     \n**/
+/**     Function determines whether JSON object is null                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,14 +14,21 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+#ifdef USE_JSON
+#include <json-c/json.h>
+#endif
+#include "types.h"
 
-void fprintpftnames(FILE *file,            /**< pointer to text file */
-                    const Pftpar pftpar[], /**< PFT parameter array */
-                    int npft               /**< size of array */
-                   )
+Bool isnull(const LPJfile *file /**< pointer to a LPJ file             */
+           )                    /** \return TRUE if JSON object is null */
 {
-  int p;
-  for(p=0;p<npft;p++)
-    fprintf(file,(p==0) ? "\"%s\"" : ",\"%s\"",pftpar[p].name);
-} /* of 'fprintpftnames' */
+#ifdef USE_JSON
+  return json_object_get_type(file->file.obj)==json_type_null;
+#else
+  return FALSE;
+#endif
+} /* of 'isnull' */
