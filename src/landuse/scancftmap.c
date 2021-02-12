@@ -160,18 +160,6 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
               fputc(',',stderr);
             fprintf(stderr," \"%s\"",grasspft[cft]);
           }
-        for(cft=0;cft<NGRASS;cft++)
-          if(undef[cft+ncft])
-          {
-            if(first)
-            {
-              fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
-              first=FALSE;
-            }
-            else
-              fputc(',',stderr);
-            fprintf(stderr," \"%s\"",grasspft[cft]);
-          }
         for(cft=0;cft<NBIOMASSTYPE;cft++)
           if(undef[cft+ncft+NGRASS])
           {
