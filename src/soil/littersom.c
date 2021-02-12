@@ -60,7 +60,7 @@ static Real f_ph(Real ph)
 
 Stocks littersom(Stand *stand,                /**< pointer to stand data */
                  const Real gtemp_soil[NSOILLAYER], /**< respiration coefficents */
-                 Real cellfrac_agr,
+                 Real cellfrac_agr,           /**< stand fraction of agricultural cells (0..1) */
                  int npft,                    /**< number of natural PFTs */
                  int ncft,                    /**< number of crop PFTs */
                  int with_nitrogen            /**< nitrogen enabled? */
@@ -349,8 +349,8 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
     {
       forrootsoillayer(l)
       {
-        stand->cell->output.cshift_fast_nv[l]+=cshift_fast_sum[l]/decom_litter.carbon/NDAYYEAR;
-        stand->cell->output.cshift_slow_nv[l]+=cshift_slow_sum[l]/decom_litter.carbon/NDAYYEAR;
+        stand->cell->output.cshift_fast_nv[l]+=cshift_fast_sum[l]/decom_litter.carbon;
+        stand->cell->output.cshift_slow_nv[l]+=cshift_slow_sum[l]/decom_litter.carbon;
       }
     }
 

@@ -707,8 +707,8 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(LITBURNC_WOOD,alitburnc_wood);
   writeoutputvar2(RESPONSE_LAYER_AGR,response_agr,0,NSOILLAYER);
   writeoutputvar2(RESPONSE_LAYER_NV,response_nv,1,NSOILLAYER);
-  writeoutputvar2(CSHIFT_FAST_NV,cshift_fast_nv,1,NSOILLAYER);
-  writeoutputvar2(CSHIFT_SLOW_NV,cshift_slow_nv,1,NSOILLAYER);
+  writeoutputvar2(CSHIFT_FAST_NV,cshift_fast_nv,ndate1,NSOILLAYER);
+  writeoutputvar2(CSHIFT_SLOW_NV,cshift_slow_nv,ndate1,NSOILLAYER);
   if(isopen(output,VEGC))
   {
     if(iswrite2(VEGC,timestep,year,config) || (timestep==ANNUAL && config->outnames[VEGC].timestep>0))
