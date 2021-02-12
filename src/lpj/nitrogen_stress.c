@@ -14,13 +14,13 @@
 
 #include "lpj.h"
 
-Real nitrogen_stress(Pft *pft,       /**< PFT */
-                     Real temp,      /**< temperature (deg C) */
-                     Real daylength, /**< daylength (h) */
-                     int npft,       /**< number of natural PFTs */
-                     int ncft,       /**< number of crop PFTs */
+Real nitrogen_stress(Pft *pft,             /**< PFT */
+                     Real temp,            /**< temperature (deg C) */
+                     Real daylength,       /**< daylength (h) */
+                     int npft,             /**< number of natural PFTs */
+                     int ncft,             /**< number of crop PFTs */
                      const Config *config  /**< LPJmL configuration  */
-                    )                /** \return total N demand (gN/m2) */
+                    )                      /** \return total N demand (gN/m2) */
 {
   Real nplant_demand,ndemand_leaf;
   Real ndemand_leaf_opt;
@@ -44,7 +44,7 @@ Real nitrogen_stress(Pft *pft,       /**< PFT */
     else if(pft->stand->type->landusetype!=AGRICULTURE)
       pft->vscal+=1;
     pft->stand->cell->output.mn_uptake+=nup*pft->stand->frac;
-    if(pft->stand->type->landusetype==SETASIDE_RF || pft->stand->type->landusetype==SETASIDE_IR || pft->stand->type->landusetype==AGRICULTURE)
+    if(isagriculture(pft->stand->type->landusetype))
       pft->stand->cell->output.anuptake_agr+=nup*pft->stand->frac;
     pft->nleaf=max(pft->nleaf,ndemand_leaf);
     if(ndemand_leaf_opt>ndemand_leaf)

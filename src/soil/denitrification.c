@@ -93,7 +93,7 @@ void denitrification(Stand *stand,  /**< pointer to stand */
     stand->cell->output.mn2o_denit+=N2O_denit*stand->frac;
     stand->cell->output.mn2_emissions+=N_denit*stand->frac;
     stand->cell->balance.n_outflux+=(N_denit+N2O_denit)*stand->frac;
-    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+    if(isagriculture(stand->type->landusetype))
     {
       stand->cell->output.an2o_denit_agr+=N2O_denit*stand->frac;
       stand->cell->output.an2_agr+=N_denit*stand->frac;

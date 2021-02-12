@@ -60,7 +60,9 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
   runoff_surface=runoff=outflux=0;
   soil_infil=param.soil_infil;
    /*infiltration*/
-  if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE))
+  if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND ||
+                           stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE ||
+                           stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS))
     soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate */
 
   for(l=0;l<NSOILLAYER;l++)
@@ -239,7 +241,7 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
 
               stand->cell->output.mn_leaching+=(NO3surf + NO3lat)*stand->frac;
               stand->cell->balance.n_outflux+=(NO3surf + NO3lat)*stand->frac;
-              if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+              if(isagriculture(stand->type->landusetype))
                 stand->cell->output.anleaching_agr+=(NO3surf+NO3lat)*stand->frac;
             } /* end of if(config->with_nitrogen) */
           } /*end percolation*/
@@ -247,7 +249,7 @@ Real infil_perc_irr(Stand *stand,        /**< Stand pointer */
       } /* soil layer loop */
       stand->cell->output.mn_leaching+=NO3perc_ly*stand->frac;
       stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
-      if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+      if(isagriculture(stand->type->landusetype))
          stand->cell->output.anleaching_agr+=NO3perc_ly*stand->frac;
       if(config->withdailyoutput && (stand->type->landusetype==NATURAL && ALLNATURAL==stand->cell->output.daily.cft))
         stand->cell->output.daily.leaching+=NO3perc_ly;

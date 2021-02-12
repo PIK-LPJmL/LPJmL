@@ -85,7 +85,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   agrfrac=0;
   foreachstand(stand,s,cell->standlist)
-    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+    if(isagriculture(stand->type->landusetype))
       agrfrac+=stand->frac;
 
   foreachstand(stand,s,cell->standlist)
@@ -190,7 +190,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         for(i=0;i<NFUELCLASS;i++)
           litsum_old_nv[WOOD]+=stand->soil.litter.item[l].ag.wood[i].carbon+stand->soil.litter.item[l].agsub.wood[i].carbon;
       }
-    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+    if(isagriculture(stand->type->landusetype))
       for(l=0;l<stand->soil.litter.n;l++)
       {
         litsum_old_agr[LEAF]+=stand->soil.litter.item[l].ag.leaf.carbon+stand->soil.litter.item[l].agsub.leaf.carbon+stand->soil.litter.item[l].bg.carbon;
@@ -211,7 +211,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         for(i=0;i<NFUELCLASS;i++)
           litsum_new_nv[WOOD]+=stand->soil.litter.item[l].ag.wood[i].carbon+stand->soil.litter.item[l].agsub.wood[i].carbon;
       }
-    if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+    if(isagriculture(stand->type->landusetype))
       for(l=0;l<stand->soil.litter.n;l++)
       {
         litsum_new_agr[LEAF]+=stand->soil.litter.item[l].ag.leaf.carbon+stand->soil.litter.item[l].agsub.leaf.carbon+stand->soil.litter.item[l].bg.carbon;
@@ -237,11 +237,12 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     updatelitterproperties(stand,stand->frac);
 
     /*monthly rh for agricutural stands*/
-    if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
+    if (isagriculture(stand->type->landusetype))
+    {
       cell->output.rh_agr+=hetres.carbon*stand->frac/agrfrac;
-    cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
-    if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
       cell->output.an2o_nit_agr+=hetres.nitrogen*stand->frac;
+    }
+    cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
     if (stand->type->landusetype == NATURAL)
@@ -283,7 +284,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         {
           cell->output.mn_leaching+=2000*stand->frac;
           cell->balance.n_outflux+=2000*stand->frac;
-          if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+          if (isagriculture(stand->type->landusetype))
             cell->output.anleaching_agr+=2000*stand->frac;
         }
         else
@@ -292,7 +293,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           stand->soil.NO3[0]+=1000;
         }
         cell->balance.n_influx+=2000*stand->frac;
-        if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+        if (isagriculture(stand->type->landusetype))
           cell->output.andepo_agr+=2000*stand->frac;
       }
       else if(!config->no_ndeposition)
@@ -301,7 +302,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         {
           cell->output.mn_leaching+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
           cell->balance.n_outflux+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
-          if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+          if (isagriculture(stand->type->landusetype))
             cell->output.anleaching_agr+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         }
         else
@@ -311,7 +312,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           stand->soil.NO3[0]+=climate.no3deposition;
         }
         cell->balance.n_influx+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
-        if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+        if (isagriculture(stand->type->landusetype))
           cell->output.andepo_agr+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
       }
 #ifdef DEBUG_N
@@ -350,7 +351,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         nh3=stand->soil.NH4[0];
       stand->soil.NH4[0]-=nh3;
       cell->output.mn_volatilization+=nh3*stand->frac;
-      if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+      if (isagriculture(stand->type->landusetype))
         cell->output.anh3_agr+=nh3*stand->frac;
       cell->balance.n_outflux+=nh3*stand->frac;
     }

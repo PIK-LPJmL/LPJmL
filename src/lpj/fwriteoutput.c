@@ -1263,14 +1263,12 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           sumfrac=0;
           foreachstand(stand,s,grid[cell].standlist)
-            if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
-                stand->type->landusetype == AGRICULTURE)
+            if(isagriculture(stand->type->landusetype))
               sumfrac+=stand->frac;
 
           foreachstand(stand,s,grid[cell].standlist)
           {
-            if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
-                stand->type->landusetype == AGRICULTURE)
+            if(isagriculture(stand->type->landusetype))
             {
               for(p=0;p<stand->soil.litter.n;p++)
                 grid[cell].output.soilc_agr_layer[0]+=stand->soil.litter.item[p].bg.carbon*stand->frac/sumfrac;

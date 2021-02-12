@@ -115,7 +115,7 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
 
       if(stand->type->landusetype==NATURAL)
         stand->cell->output.response_nv[l]+=response[l];
-      if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+      if(isagriculture(stand->type->landusetype))
         stand->cell->output.response_agr[l]+=response[l]*stand->frac/cellfrac_agr;
 
       if(l<LASTLAYER)
@@ -159,7 +159,7 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
 #endif
         soil->NO3[l]+=F_Nmineral*k_l;
         stand->cell->output.mn_mineralization+=F_Nmineral*stand->frac;
-        if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+        if(isagriculture(stand->type->landusetype))
           stand->cell->output.anmineralization_agr+=F_Nmineral*stand->frac;
         soil->k_mean[l].fast+=(param.k_soil10.fast*response[l]);
         soil->k_mean[l].slow+=(param.k_soil10.slow*response[l]);
@@ -293,7 +293,7 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
 #endif
             soil->NO3[l]+=F_Nmineral*k_l;
             stand->cell->output.mn_mineralization+=F_Nmineral*stand->frac;
-            if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+            if(isagriculture(stand->type->landusetype))
               stand->cell->output.anmineralization_agr+=F_Nmineral*stand->frac;
           }
           N_sum=soil->NH4[l]+soil->NO3[l];
@@ -306,7 +306,7 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
                 n_immo=N_sum;
               soil->pool[l].fast.nitrogen+=n_immo;
               stand->cell->output.mn_immo+=n_immo*stand->frac;
-              if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+              if(isagriculture(stand->type->landusetype))
                 stand->cell->output.animmobilization_agr+=n_immo*stand->frac;
               soil->NH4[l]-=n_immo*soil->NH4[l]/N_sum;
               soil->NO3[l]-=n_immo*soil->NO3[l]/N_sum;
@@ -328,7 +328,7 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
                 n_immo=N_sum;
               soil->pool[l].slow.nitrogen+=n_immo;
               stand->cell->output.mn_immo+=n_immo*stand->frac;
-              if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR)
+              if(isagriculture(stand->type->landusetype))
                 stand->cell->output.animmobilization_agr+=n_immo*stand->frac;
               soil->NH4[l]-=n_immo*soil->NH4[l]/N_sum;
               soil->NO3[l]-=n_immo*soil->NO3[l]/N_sum;
@@ -406,7 +406,7 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
 #endif
   soil->count++;
   stand->cell->output.rh_litter+=decom_litter.carbon*param.atmfrac*stand->frac;
-  if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
+  if(isagriculture(stand->type->landusetype))
     stand->cell->output.rh_agr += (decom_litter.carbon*param.atmfrac+soil_cflux)*stand->frac;
   flux.carbon=decom_litter.carbon*param.atmfrac+soil_cflux;
   return flux;
