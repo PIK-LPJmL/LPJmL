@@ -52,6 +52,10 @@ void initoutputdata(Output *output,      /**< output data */
   int i,index,nirrig,nnat;
   nirrig=2*getnirrig(ncft,config);
   nnat=getnnat(npft,config);
+  #ifdef IMAGE
+    setoutputvar(YDISCHARGE,ydischarge);
+#endif
+  setoutputvar(ADISCHARGE,adischarge);
   setoutputvar(DAYLENGTH,daylength);
   setoutputvar(TEMP,temp);
   setoutputvar(SUN,sun);
