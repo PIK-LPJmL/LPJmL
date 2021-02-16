@@ -167,11 +167,18 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
               else
                 stand->cell->output.cft_nir[agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+nirrig]+=data->net_irrig_amount;
               break;
-            default:
+            case WOODPLANTATION:
+              if(config->pft_output_scaled)
+                cell->output.cft_nir[rwp(ncft)+nirrig]+=data->net_irrig_amount*cell->ml.landfrac[1].biomass_tree;
+              else
+                cell->output.cft_nir[rwp(ncft)+nirrig]+=data->net_irrig_amount;
+              break;
+            case BIOMASS_TREE:
               if(config->pft_output_scaled)
                 cell->output.cft_nir[rbtree(ncft)+nirrig]+=data->net_irrig_amount*cell->ml.landfrac[1].biomass_tree;
               else
                 cell->output.cft_nir[rbtree(ncft)+nirrig]+=data->net_irrig_amount;
+              break;
           } /* of switch */
 
           data->irrig_amount=data->irrig_stor+irrig_stand;
