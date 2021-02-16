@@ -39,7 +39,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     update_reservoir_annual(cell);
 
   /* Vernalization requirements in case not STATIC_PHU */
-  if(config->crop_phu_option && year<=config->sdate_fixyear) /* update only until sdate_fixyear */
+  if(config->crop_phu_option==PRESCRIBED_CROP_PHU  && year<=config->sdate_fixyear) /* update only until sdate_fixyear */
   {
     getmintemp20_n(&cell->climbuf,mintemp,N);
     for (m=0;m<N;m++)

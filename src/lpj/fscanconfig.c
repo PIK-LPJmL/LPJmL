@@ -228,6 +228,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->black_fallow=FALSE;
   config->double_harvest=FALSE;
   config->others_to_crop = FALSE;
+  config->fertilizer_input=NO_FERTILIZER;
   if(fscanbool(file,&config->const_climate,"const_climate",TRUE,verbose))
     return TRUE;
   config->storeclimate=TRUE;;
@@ -278,7 +279,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
       config->crop_resp_fix=FALSE;
-      config->fertilizer_input=NO_FERTILIZER;
       config->manure_input=FALSE;
       config->fix_fertilization=FALSE;
       if(config->with_nitrogen)
