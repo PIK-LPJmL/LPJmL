@@ -1,10 +1,8 @@
-/**************************************************************************************/
+/*************************************************************************************/
 /**                                                                                \n**/
-/**                       c  u  t  p  f  t  s  .  c                                \n**/
+/**                     o  u  t  p  u  t  i  n  d  e  x  .  c                      \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function deletes all PFTs and transfers carbon to litter                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,13 +14,9 @@
 
 #include "lpj.h"
 
-void cutpfts(Stand *stand, /**< Pointer to stand */
-             const Config *config
-            )
+int outputindex(int index,int i,const Config *config)
 {
-  int p;
-  Pft *pft;
-  foreachpft(pft,p,&stand->pftlist)
-    litter_update(&stand->soil.litter,pft,pft->nind,config);
-  freepftlist(&stand->pftlist);
-} /* of 'cutpfts' */
+  if(i<0 || i>=config->outputsize[index])
+   fail(INVALID_BOUNDARY_ERR,TRUE,"Boundary=%d for output %d out of bounds, must be <%d",i,index,config->outputsize[index]);
+  return config->outputmap[index]+i;
+} /* of 'outputindex' */

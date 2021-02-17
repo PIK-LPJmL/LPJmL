@@ -267,7 +267,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
         if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf) &&
            config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)
         {
-          addpft(cropstand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
+          addpft(cropstand,config->pftpar+p,year,0,config);
           n_est++;
         }
       }
@@ -278,8 +278,8 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
         flux_estab.carbon+=stocks.carbon;
         flux_estab.nitrogen+=stocks.nitrogen;
       }
-      cell->output.flux_estab.carbon+=flux_estab.carbon*cropstand->frac;
-      cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*cropstand->frac;
+      getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*cropstand->frac;
+      getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*cropstand->frac;
       cell->balance.flux_estab.carbon+=flux_estab.carbon*cropstand->frac;
       cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*cropstand->frac;
     }

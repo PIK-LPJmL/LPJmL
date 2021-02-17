@@ -705,7 +705,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         }
         else
           grid[i].ml.sdate_fixed=NULL;
-        if(config->crop_phu_option)
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
         {
           grid[i].ml.crop_phu_fixed=newvec(Real,2*ncft);
           checkptr(grid[i].ml.crop_phu_fixed);
@@ -754,9 +754,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       grid[i].ml.image_data=NULL;
 #endif
     }
-    if(initoutput(&grid[i].output,npft,ncft,config))
-      return NULL;
-
   } /* of for(i=0;...) */
   if(file_restart!=NULL)
     fclose(file_restart);

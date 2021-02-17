@@ -29,7 +29,8 @@
 void adjust_tree(Litter *litter, /**< pointer to litter */
                  Pft *pft,       /**< pointer to tree PFT */
                  Real tree_fpc,  /**< tree foliage projective cover */
-                 Real fpc_max    /**< maximum foliage projectove cover */
+                 Real fpc_max,   /**< maximum foliage projectove cover */
+                 const Config *config
                 )
 {
 
@@ -49,7 +50,7 @@ void adjust_tree(Litter *litter, /**< pointer to litter */
     }
     nind_new=pft->nind;
     pft->nind=nind_old;
-    litter_update_tree(litter,pft,nind_old-nind_new);
+    litter_update_tree(litter,pft,nind_old-nind_new,config);
     if(pft->nind>0)
       pft->bm_inc.nitrogen*=(pft->nind-nind_old+nind_new)/pft->nind;
     pft->nind=nind_new;

@@ -16,7 +16,8 @@
 
 Stocks firepft(Litter *litter,   /**< Litter pool */
                Pftlist *pftlist, /**< list of established PFTs */
-               Real fire_frac    /**< fire fraction (0..1) */
+               Real fire_frac,    /**< fire fraction (0..1) */
+               const Config *config
               )                  /** \return fire flux (gC/m2) */
 {
   int i,p;
@@ -44,12 +45,12 @@ Stocks firepft(Litter *litter,   /**< Litter pool */
     litter->item[p].ag.leaf.nitrogen*=(1-fire_frac);
     for(i=0;i<NFUELCLASS;i++)
     {
-      pft->stand->cell->output.alitburnc_wood+=litter->item[p].ag.wood[i].carbon*fire_frac;
+      getoutput(&pft->stand->cell->output,LITBURNC_WOOD,config)+=litter->item[p].ag.wood[i].carbon*fire_frac;
       litter->item[p].ag.wood[i].carbon*=(1-fire_frac);
       litter->item[p].ag.wood[i].nitrogen*=(1-fire_frac);
     }
   } /* of 'for(p=0;...)' */
-  pft->stand->cell->output.alitburnc+=flux_litter.carbon*fire_frac;
+  getoutput(&pft->stand->cell->output,LITBURNC,config)+=flux_litter.carbon*fire_frac;
   flux_sum.carbon+=flux_litter.carbon*fire_frac;
   flux_sum.nitrogen+=flux_litter.nitrogen*fire_frac;
   return flux_sum; 

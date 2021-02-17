@@ -124,9 +124,9 @@
 #define DAILY -4
 /*monthly and annual output*/
 #define GRID 0
-#define FPC 1
-#define NPP 2
-#define GPP 3
+#define COUNTRY 1 
+#define REGION 2
+#define FPC 3
 #define RH 4
 #define TRANSP 5
 #define RUNOFF 6
@@ -152,8 +152,8 @@
 #define PFT_HARVEST PFT_HARVESTC
 #define PFT_RHARVESTC 24
 #define PFT_RHARVEST PFT_RHARVESTC
-#define COUNTRY 25
-#define REGION 26
+#define NPP 25
+#define GPP 26 
 #define MG_VEGC 27
 #define MG_SOILC 28
 #define MG_LITC 29
@@ -475,7 +475,8 @@
 #define CSHIFT_SLOW_NV 342
 #define LITBURNC 343
 #define LITBURNC_WOOD 344
-
+#define PFT_GCGP_COUNT 0
+#define NDAY_MONTH 1
 #define RANDOM_SEED 0
 
 #endif

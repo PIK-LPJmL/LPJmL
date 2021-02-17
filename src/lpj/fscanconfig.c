@@ -252,6 +252,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
       return TRUE;
   }
+  config->fertilizer_input=NO_FERTILIZER;
   if(config->sim_id!=LPJ)
   {
     if(fscankeywords(file,&config->withlanduse,"landuse",landuse,5,FALSE,verbose))
@@ -278,7 +279,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         return TRUE;
       fscanbool2(file,&config->intercrop,"intercrop");
       config->crop_resp_fix=FALSE;
-      config->fertilizer_input=NO_FERTILIZER;
       config->manure_input=FALSE;
       config->fix_fertilization=FALSE;
       if(config->with_nitrogen)

@@ -127,10 +127,10 @@ void drain(Cell grid[],         /**< Cell array */
 
       grid[i].discharge.dmass_river-=grid[i].discharge.fout;
       grid[i].discharge.dfout+=grid[i].discharge.fout;
-      grid[i].output.mdischarge+=grid[i].discharge.fout;
+      getoutput(&grid[i].output,DISCHARGE,config)+=grid[i].discharge.fout;
       if(grid[i].discharge.next<0)
       {
-        grid[i].output.adischarge+=grid[i].discharge.fout;           /* only endcell outflow */
+        getoutput(&grid[i].output,ADISCHARGE,config)+=grid[i].discharge.fout;           /* only endcell outflow */
         grid[i].balance.adischarge+=grid[i].discharge.fout;           /* only endcell outflow */
       }
       grid[i].discharge.mfout+=grid[i].discharge.fout;
@@ -196,7 +196,7 @@ void drain(Cell grid[],         /**< Cell array */
   
   for(cell=0;cell<config->ngridcell;cell++)
   {
-    grid[cell].output.mwateramount+=grid[cell].discharge.dmass_sum/count;
+    getoutput(&grid[cell].output,WATERAMOUNT,config)+=grid[cell].discharge.dmass_sum/count;
     grid[cell].discharge.dmass_sum=0.0;
     if(grid[cell].discharge.withdrawal<grid[cell].discharge.wd_demand)
     {
@@ -213,7 +213,7 @@ void drain(Cell grid[],         /**< Cell array */
         grid[cell].discharge.dmass_lake=0.0;
       }
     }
-    grid[cell].output.mwd_local+=grid[cell].discharge.withdrawal/grid[cell].coord.area; /* withdrawal in local cell */
+    getoutput(&grid[cell].output,WD_LOCAL,config)+=grid[cell].discharge.withdrawal/grid[cell].coord.area; /* withdrawal in local cell */
   }
 
 }  /* of 'drain' */

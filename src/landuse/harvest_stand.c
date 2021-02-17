@@ -19,7 +19,8 @@
 #include "grassland.h"
 
 static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
-                             Real hfrac    /**< harvest fraction */
+                             Real hfrac,   /**< harvest fraction */
+                             const Config *config
                             )              /** \return harvested grass (gC/m2) */
 {
   Harvest harvest;
@@ -39,9 +40,9 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
     grass->ind.leaf.carbon*=(1-hfrac);
     grass->ind.leaf.nitrogen*=(1-hfrac);
     stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
-    output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
+    getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
     stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
-    output->alittfall.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
+    getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
     pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
     grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
     grass->ind.root.nitrogen*=(1-hfrac*param.rootreduction);
@@ -54,7 +55,7 @@ static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   return sum;
 } /* of 'harvest_grass' */
 
-static Harvest harvest_grass_mowing(Stand *stand)
+static Harvest harvest_grass_mowing(Stand *stand,const Config *config)
 {
   Harvest harvest;
   Harvest sum={{0,0},{0,0},{0,0},{0,0}};
@@ -78,9 +79,9 @@ static Harvest harvest_grass_mowing(Stand *stand)
     grass->ind.leaf.nitrogen -= harvest.harvest.nitrogen;
 
     stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
-    output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
+    getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
     stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
-    output->alittfall.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
+    getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
     pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
 
     grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
@@ -92,7 +93,7 @@ static Harvest harvest_grass_mowing(Stand *stand)
   return sum;
 } /* of 'harvest_grass_mowing' */
 
-static Harvest harvest_grass_grazing_ext(Stand *stand)
+static Harvest harvest_grass_grazing_ext(Stand *stand,const Config *config)
 {
   Harvest sum={{0,0},{0,0},{0,0},{0,0}};
   Pftgrass *grass;
@@ -147,9 +148,9 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
     stand->soil.pool->fast.nitrogen += MANURE * bm_grazed_pft.nitrogen*pft->nind;             // 25% back to soil
 
     stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
-    output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
+    getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
     stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
-    output->alittfall.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
+    getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
     pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
 
     grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
@@ -159,7 +160,7 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
   return sum;
 } /* of 'harvest_grass_grazing_ext' */
 
-static Harvest harvest_grass_grazing_int(Stand *stand)
+static Harvest harvest_grass_grazing_int(Stand *stand,const Config *config)
 {
   Harvest sum={{0,0},{0,0},{0,0},{0,0}};
   Pftgrass *grass;
@@ -229,9 +230,9 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
       stand->soil.pool->fast.nitrogen += MANURE * bm_grazed_pft.nitrogen*pft->nind;    // 25% back to soil
 
       stand->soil.litter.item[pft->litter].bg.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
-      output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
+      getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
       stand->soil.litter.item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->par->fn_turnover;
-      output->alittfall.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
+      getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*stand->frac*pft->par->fn_turnover;
       pft->bm_inc.nitrogen+=grass->ind.root.nitrogen*hfrac*param.rootreduction*pft->nind*pft->nind*(1-pft->par->fn_turnover);
 
       grass->ind.root.carbon*=(1-hfrac*param.rootreduction);
@@ -259,7 +260,8 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
 
 Harvest harvest_stand(Output *output, /**< Output data */
                       Stand *stand,   /**< pointer to grassland stand */
-                      Real hfrac      /**< harvest fraction */
+                      Real hfrac,     /**< harvest fraction */
+                      const Config *config
                      )                /** \return harvested carbon (gC/m2) */
 {
   Harvest harvest;
@@ -268,25 +270,25 @@ Harvest harvest_stand(Output *output, /**< Output data */
     switch (stand->cell->ml.grass_scenario)
     {
       case GS_DEFAULT: // default
-        harvest=harvest_grass(stand,hfrac);
+        harvest=harvest_grass(stand,hfrac,config);
         break;
       case GS_MOWING: // mowing
-        harvest=harvest_grass_mowing(stand);
+        harvest=harvest_grass_mowing(stand,config);
         break;
       case GS_GRAZING_EXT: // ext. grazing
-        harvest=harvest_grass_grazing_ext(stand);
+        harvest=harvest_grass_grazing_ext(stand,config);
         break;
       case GS_GRAZING_INT: // int. grazing
-        harvest=harvest_grass_grazing_int(stand);
+        harvest=harvest_grass_grazing_int(stand,config);
         break;
     }
   }
   else /* option for biomass_grass */
   {
-    harvest=harvest_grass(stand,hfrac);
+    harvest=harvest_grass(stand,hfrac,config);
   }
-  output->flux_harvest.carbon+=(harvest.harvest.carbon+harvest.residual.carbon)*stand->frac;
-  output->flux_harvest.nitrogen+=(harvest.harvest.nitrogen+harvest.residual.nitrogen)*stand->frac;
+  getoutput(output,HARVESTC,config)+=(harvest.harvest.carbon+harvest.residual.carbon)*stand->frac;
+  getoutput(output,HARVESTN,config)+=(harvest.harvest.nitrogen+harvest.residual.nitrogen)*stand->frac;
   stand->cell->balance.flux_harvest.carbon+=(harvest.harvest.carbon+harvest.residual.carbon)*stand->frac;
   stand->cell->balance.flux_harvest.nitrogen+=(harvest.harvest.nitrogen+harvest.residual.nitrogen)*stand->frac;
   output->dcflux+=(harvest.harvest.carbon+harvest.residual.carbon)*stand->frac;

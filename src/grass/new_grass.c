@@ -20,8 +20,7 @@
 void new_grass(Pft *pft,         /**< pointer to PFT variables */
                int UNUSED(year),
                int UNUSED(day),
-               int UNUSED(with_nitrogen),
-               Bool UNUSED(double_harvest)
+               const Config * UNUSED(config)
               )        
 {
   Pftgrass *grass;

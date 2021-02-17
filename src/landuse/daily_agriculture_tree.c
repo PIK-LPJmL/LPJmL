@@ -91,10 +91,10 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton") && day==stand->cell->ml.sowing_day_cotton[data->irrigation.irrigation])
   {
     //printf("day=%d, sowing %d\n",day,data->irrigation);
-    pft=addpft(stand,config->pftpar+data->irrigation.pft_id,year,0,config->with_nitrogen,config->double_harvest);
+    pft=addpft(stand,config->pftpar+data->irrigation.pft_id,year,0,config);
     flux_estab=establishment(pft,0,0,1);
-    stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-    stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+    getoutput(output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
+    getoutput(output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
     stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
     stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
     stand->growing_days=0;
@@ -107,12 +107,12 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
     foreachpft(pft,p,&stand->pftlist)
       if(pft->par->type==TREE)
-        adjust_tree(&stand->soil.litter,pft,fpc_type[pft->par->type], param.fpc_tree_max);
+        adjust_tree(&stand->soil.litter,pft,fpc_type[pft->par->type], param.fpc_tree_max,config);
     fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
     if (fpc_total>1.0)
       foreachpft(pft,p,&stand->pftlist)
         if(pft->par->type==GRASS)
-          reduce(&stand->soil.litter,pft,fpc_type[GRASS]/(1+fpc_type[GRASS]-fpc_total));
+          reduce(&stand->soil.litter,pft,fpc_type[GRASS]/(1+fpc_type[GRASS]-fpc_total),config);
     free(fpc_type);
     albedo_stand(stand);
   }
@@ -157,7 +157,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     else
     {
       /* write irrig_apply to output */
-      stand->cell->output.irrig+=irrig_apply*stand->frac;
+      getoutput(output,IRRIG,config)+=irrig_apply*stand->frac;
       stand->cell->balance.airrig+=irrig_apply*stand->frac;
 #if defined IMAGE && defined COUPLED
       if(stand->cell->ml.image_data!=NULL)
@@ -168,9 +168,9 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
 #endif
 
       if(config->pft_output_scaled)
-        stand->cell->output.cft_airrig[index]+=irrig_apply*stand->frac;
+        getoutputindex(output,CFT_AIRRIG,index,config)+=irrig_apply*stand->frac;
       else
-        stand->cell->output.cft_airrig[index]+=irrig_apply;
+        getoutputindex(output,CFT_AIRRIG,index,config)+=irrig_apply;
     }
   }
 
@@ -179,9 +179,9 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   {
     /* calculate old or new phenology */
     if (config->new_phenology)
-      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp);
+      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
-      leaf_phenology(pft,climate->temp,day,climate->isdailytemp);
+      leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
     sprink_interc=(data->irrigation.irrig_system==SPRINK) ? 1 : 0;
 
     intercept=interception(&wet[p],pft,eeq,climate->prec+irrig_apply*sprink_interc); /* in case of sprinkler, irrig_amount goes through interception, in case of mixed, 0.5 of irrig_amount */
@@ -198,7 +198,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   {
       runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,npft,ncft,config);
       /* count irrigation events*/
-      output->cft_irrig_events[index]++;
+      getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++;
   }
 
   runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,npft,ncft,config);
@@ -220,8 +220,8 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
                        &wet[p],eeq,co2,climate->temp,par,daylength,&wdf,npft,ncft,config);
     if(stand->frac>0.0 && gp_pft[getpftpar(pft,id)]>0.0)
     {
-      output->gcgp_count[nnat+index]++;
-      output->pft_gcgp[nnat+index]+=gc_pft/gp_pft[getpftpar(pft,id)];
+      getoutputindex(output,PFT_GCGP_COUNT,nnat+index,config)++;
+      getoutputindex(output,PFT_GCGP,nnat+index,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
     }
     npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
 #ifdef DEBUG2
@@ -282,22 +282,22 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       } /* of switch */
     } /* of foreachpft() */
 
-    output->npp+=npp*stand->frac;
+    getoutput(output,NPP,config)+=npp*stand->frac;
     stand->cell->balance.anpp+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
-    output->gpp+=gpp*stand->frac;
-    output->fapar+= pft->fapar * stand->frac*(1.0/(1-stand->cell->lakefrac));
-    output->mphen_tmin += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac));
-    output->mphen_tmax += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0/(1-stand->cell->lakefrac));
-    output->mphen_light += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac));
-    output->mphen_water += pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0/(1-stand->cell->lakefrac));
-    output->mwscal += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac));
-    output->cft_fpar[index]+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac)));
+    getoutput(output,GPP,config)+=gpp*stand->frac;
+    getoutput(output,FAPAR,config)+= pft->fapar * stand->frac*(1.0/(1-stand->cell->lakefrac));
+    getoutput(output,PHEN_TMIN,config) += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac));
+    getoutput(output,PHEN_TMAX,config) += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0/(1-stand->cell->lakefrac));
+    getoutput(output,PHEN_LIGHT,config) += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac));
+    getoutput(output,PHEN_WATER,config) += pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0/(1-stand->cell->lakefrac));
+    getoutput(output,WSCAL,config) += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac));
+    getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac)));
 
     if(config->pft_output_scaled)
-      output->pft_npp[nnat+index]+=npp*stand->frac;
+      getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
     else
-      output->pft_npp[nnat+index]+=npp;
+      getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
   } /* of foreachpft */
   free(gp_pft);
   /* soil outflow: evap and transpiration */
@@ -307,20 +307,20 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   if(config->withdailyoutput)
   {
     foreachpft(pft,p,&stand->pftlist)
-      if(pft->par->id==output->daily.cft && data->irrigation.irrigation==output->daily.irrigation)
+      if(pft->par->id==config->crop_index && data->irrigation.irrigation==config->crop_irrigation)
       {
-        output->daily.evap+=evap;
-        output->daily.interc+=intercep_stand;
+        getoutput(output,D_EVAP,config)+=evap;
+        getoutput(output,D_INTERC,config)+=intercep_stand;
         forrootsoillayer(l)
-          output->daily.trans+=aet_stand[l];
+          getoutput(output,D_TRANS,config)+=aet_stand[l];
         /*output->daily.w0=stand->soil.w[1];
           output->daily.w1=stand->soil.w[2];
           output->daily.wevap=stand->soil.w[0];*/
-        output->daily.par+=par;
-        output->daily.so.carbon=tree->fruit.carbon;
-        output->daily.npp+=npp;
-        output->daily.gpp+=gpp;
-        output->daily.phen+=pft->phen;
+        getoutput(output,D_PAR,config)+=par;
+        getoutput(output,D_CSO,config)=tree->fruit.carbon;
+        getoutput(output,D_NPP,config)+=npp;
+        getoutput(output,D_GPP,config)+=gpp;
+        getoutput(output,D_PHEN,config)+=pft->phen;
       }
   }
 
@@ -328,23 +328,23 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   forrootsoillayer(l)
   {
     transp+=aet_stand[l]*stand->frac;
-    output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
+    getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
-  output->transp+=transp;
+  getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
-  output->interc+=intercep_stand*stand->frac; /* Note: including blue fraction*/
-  output->minterc_b+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
+  getoutput(output,INTERC,config)+=intercep_stand*stand->frac; /* Note: including blue fraction*/
+  getoutput(output,INTERC_B,config)+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
 
-  output->evap+=evap*stand->frac;
+  getoutput(output,EVAP,config)+=evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;
   stand->cell->balance.ainterc+=intercep_stand*stand->frac;
-  output->mevap_b+=evap_blue*stand->frac;   /* blue soil evap */
+  getoutput(output,EVAP_B,config)+=evap_blue*stand->frac;   /* blue soil evap */
 #if defined(IMAGE) && defined(COUPLED)
   if(stand->cell->ml.image_data!=NULL)
     stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
 #endif
 
-  output->mreturn_flow_b+=return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/
+  getoutput(output,RETURN_FLOW_B,config)+=return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/
 
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw_agriculture_tree(output,stand,frac_g_evap,evap,evap_blue,
@@ -372,58 +372,24 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
 #endif
       if(config->pft_output_scaled)
       {
-        stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon*stand->frac;
-        stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen*stand->frac;
+        getoutputindex(output,PFT_HARVESTC,index,config)+=yield.carbon*stand->frac;
+        getoutputindex(output,PFT_HARVESTN,index,config)+=yield.nitrogen*stand->frac;
       }
       else
       {
-        stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon;
-        stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen;
+        getoutputindex(output,PFT_HARVESTC,index,config)+=yield.carbon;
+        getoutputindex(output,PFT_HARVESTN,index,config)+=yield.nitrogen;
       }
       stand->cell->balance.biomass_yield.carbon+=yield.carbon*stand->frac;
       stand->cell->balance.biomass_yield.nitrogen+=yield.nitrogen*stand->frac;
       stand->cell->output.dcflux+=yield.carbon*stand->frac;
-      annual_tree(stand,pft,&fpc_inc,config->new_phenology,config->with_nitrogen,climate->isdailytemp);
-      litter_update_tree(&stand->soil.litter,pft,pft->nind);
+      annual_tree(stand,pft,&fpc_inc,climate->isdailytemp,config);
+      litter_update_tree(&stand->soil.litter,pft,pft->nind,config);
       delpft(&stand->pftlist,0);
     }
     else
       fprintf(stderr,"ERROR124: Cotton PFT not found in cell %s.\n",sprintcoord(line,&stand->cell->coord));
-    stand->growing_days=0;
-    cutpfts(stand);
-    data->growing_time=0;
-    if(data->irrigation.irrigation)
-    {
-      stand->cell->discharge.dmass_lake+=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*stand->cell->coord.area*stand->frac;
-      stand->cell->balance.awater_flux-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*stand->frac;
-      stand->cell->discharge.dmass_lake+=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->cell->coord.area*stand->frac;
-      stand->cell->balance.awater_flux-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
-      stand->cell->output.mstor_return+=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*stand->frac;
-      stand->cell->output.mconv_loss_evap-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
-      stand->cell->balance.aconv_loss_evap-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
-      stand->cell->output.mconv_loss_drain-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->frac;
-      stand->cell->balance.aconv_loss_drain-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->frac;
-#if defined IMAGE && defined COUPLED
-      if(stand->cell->ml.image_data!=NULL)
-      {
-        stand->cell->ml.image_data->mirrwatdem[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->irrigation.ec-1)*stand->frac;
-        stand->cell->ml.image_data->mevapotr[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->irrigation.ec-1)*stand->frac;
-      }
-#endif
-
-      if(config->pft_output_scaled)
-      {
-        stand->cell->output.cft_conv_loss_evap[index]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
-        stand->cell->output.cft_conv_loss_drain[index]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->frac;
-      }
-      else
-      {
-        stand->cell->output.cft_conv_loss_evap[index]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap;
-        stand->cell->output.cft_conv_loss_drain[index]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap);
-      }
-      data->irrigation.irrig_stor=0;
-      data->irrigation.irrig_amount=0;
-    }
+    update_irrig(stand,agtree(ncft,config->nwptype),ncft,config);
     //if(setaside(stand->cell,stand,config->pftpar,TRUE,npft,data->irrigation,year))
     // return TRUE;
   }

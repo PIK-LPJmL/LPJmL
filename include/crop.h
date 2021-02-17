@@ -136,13 +136,13 @@ extern char *calcmethod[];
 
 /* Declaration of functions */
 
-extern void new_crop(Pft *,int,int,int,Bool);
-extern void allocation_daily_crop(Pft *,Real, Real,int,Daily_outputs *);
-extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,int,Bool);
+extern void new_crop(Pft *,int,int,const Config *);
+extern void allocation_daily_crop(Pft *,Real, Real,Bool,const Config *);
+extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,int,const Config *);
 extern Real fpc_crop(Pft *);
 extern Real fpar_crop(const Pft *);
 extern Real alphaa_crop(const Pft *,int,int);
-extern void litter_update_crop(Litter *,Pft *,Real);
+extern void litter_update_crop(Litter *,Pft *,Real,const Config *);
 extern Real lai_crop(const Pft *);
 extern Real actual_lai_crop(const Pft *);
 extern Bool phenology_crop(Pft *,Real,Real,Real,int,const Config *);
@@ -162,7 +162,7 @@ extern void harvest_crop(Output *,Stand *,Pft *,int,int,int,const Config *);
 extern void adapt_crop_type(Real [],Real,const Pftpar [],int,int,int);
 extern Real wdf_crop(Pft *,Real,Real);
 extern void fprintpar_crop(FILE *,const Pftpar *,const Config *);
-extern void output_daily_crop(Daily_outputs *,const Pft *,Real,Real);
+extern void output_daily_crop(Output *,const Pft *,Real,Real,const Config *);
 extern void calc_seasonality(Cell *,int,int,const Config *);
 extern void albedo_crop(Pft *,Real,Real);
 extern void double_harvest(int, Real *, Real *, Real);

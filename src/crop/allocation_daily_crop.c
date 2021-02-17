@@ -36,8 +36,8 @@ static void solve(Real *a,Real *b,Real *c,Real *d,
 void allocation_daily_crop(Pft *pft,             /**< PFT variables */
                            Real npp,             /**< net primary production (gC/m2) */
                            Real wdf,             /**< water deficit fraction */
-                           int with_nitrogen,    /**< with nitrogen (TRUE/FALSE) */
-                           Daily_outputs* output /**< daily output data */
+                           Bool isoutput,
+                           const Config *config    /**< with nitrogen (TRUE/FALSE) */
                           )
 {
   Pftcrop *crop;
@@ -49,18 +49,19 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
   Real fhiopt,himind,hi,hiopt=0;
   /*Real leaf_nitrogen_lastday;*/
   Irrigation *data;
+  Output *output;
   Real ndf=100; /* nitrogen deficit factor in percent, computed as wdf from accumulated n_demand and n_uptake */
   Real df;
   /*int l;*/
   data=pft->stand->data;
   crop=pft->data;
   par=pft->par->data;
-
+  output=&pft->stand->cell->output;
   /* vegetation growth */
   pft->bm_inc.carbon+=npp;
 
   /* root growth */
-  if(with_nitrogen)
+  if(config->with_nitrogen)
   {
    // ndf=(crop->ndemandsum>0.0) ? 100.0*crop->nuptakesum/crop->ndemandsum: 100.0;
     crop->vscal_sum+=pft->vscal;
@@ -177,7 +178,7 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
     }
   }
 #if 1
-  if(with_nitrogen)
+  if(config->with_nitrogen)
   {
   // Nitrogen allocation
   if(crop->ind.leaf.carbon>epsilon && pft->bm_inc.nitrogen>0)
@@ -302,14 +303,14 @@ void allocation_daily_crop(Pft *pft,             /**< PFT variables */
     pft->bm_inc,crop->ind.leaf,crop->ind.pool,crop->ind.root,crop->ind.so,
     crop->ind_n.leaf,crop->ind_n.pool,crop->ind_n.root,crop->ind_n.so);*/
 #endif
-  if(output!=NULL && pft->par->id==output->cft &&
-     data->irrigation==output->irrigation)
+  if(isoutput && pft->par->id==config->crop_index &&
+     data->irrigation==config->crop_irrigation)
   {
-    output->froot=froot;
-    output->hi=hi;
-    output->himind=himind;
-    output->fhiopt=fhiopt;
-    output->lainppdeficit=crop->lai_nppdeficit;
+    getoutput(output,D_FROOT,config)=froot;
+    getoutput(output,D_HI,config)=hi;
+    getoutput(output,D_HIMIND,config)=himind;
+    getoutput(output,D_FHIOPT,config)=fhiopt;
+    getoutput(output,D_LAINPPDEF,config)=crop->lai_nppdeficit;
   }
 } /* of 'allocation_daily_crop' */
 

@@ -31,7 +31,8 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
                     Pft *pft,         /**< Pointer to pft                      */
                     Real turnover_ind,/**< indivudual turnover                 */
                     Real mtemp_max,   /**< maximum temperature of month (deg C)*/
-                    Bool isdaily      /**< daily temperature data (TRUE/FALSE) */
+                    Bool isdaily,     /**< daily temperature data (TRUE/FALSE) */
+                    const Config *config
                    )                  /** \return TRUE on death                */
 {
   Real mort,bm_delta,heatstress,nind_kill,mort_max;
@@ -57,11 +58,11 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
   else
     heatstress=0;
   nind_kill=(mort>1) ? pft->nind : pft->nind*mort;
-  litter_update_tree(litter,pft,nind_kill);
+  litter_update_tree(litter,pft,nind_kill,config);
   pft->bm_inc.nitrogen*=(pft->nind-nind_kill)/pft->nind;
   pft->nind-=nind_kill;
   fpc_tree(pft);
   if(pft->stand->type->landusetype==NATURAL)
-    pft->stand->cell->output.pft_mort[pft->par->id]=min(mort,1);
+    getoutputindex(&pft->stand->cell->output,PFT_MORT,pft->par->id,config)+=min(mort,1);
   return isneg_tree(pft);
 } /* of 'mortality_tree' */

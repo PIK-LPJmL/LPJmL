@@ -16,8 +16,7 @@
 #include "grass.h"
 
 void allocation_today(Stand *setasidestand, /**< pointer to setaside stand */
-                      int ntypes,           /**< number of different PFT classes */
-                      int with_nitrogen     /**< nitrogen cycle enabled */
+                      const Config *config  /**< nitrogen cycle enabled */
                      )
 {
   int p,npft;
@@ -31,11 +30,11 @@ void allocation_today(Stand *setasidestand, /**< pointer to setaside stand */
     foreachpft(pft,p,&setasidestand->pftlist)
     {
       /* only grass PFTs are established on setaside stand */
-      if(allocation_grass(&setasidestand->soil.litter,pft,fpc_inc+p,with_nitrogen))
+      if(allocation_grass(&setasidestand->soil.litter,pft,fpc_inc+p,config))
       {
         /* kill PFT from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&setasidestand->pftlist)-1]; /*moved here by W. von Bloh */
-        litter_update_grass(&setasidestand->soil.litter,pft,pft->nind);
+        litter_update_grass(&setasidestand->soil.litter,pft,pft->nind,config);
         delpft(&setasidestand->pftlist,p);
         p--; /* adjust loop variable */
       }
@@ -43,7 +42,7 @@ void allocation_today(Stand *setasidestand, /**< pointer to setaside stand */
        // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
        pft->bm_inc.carbon=0;
     } /* of foreachpft */
-    light(setasidestand,ntypes,fpc_inc);
+    light(setasidestand,fpc_inc,config);
     free(fpc_inc);
   }
 } /* of 'allocation_today' */

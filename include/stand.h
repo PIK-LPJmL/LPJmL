@@ -34,7 +34,7 @@ typedef struct
   Bool (*annual)(Stand *,int,int,
                  Real,int,Bool,Bool,const Config *);
   void (*dailyfire)(Stand *,Livefuel *,Real,Real,const Dailyclimate *,const Config *);
-  Bool (*isdaily_output)(const Output *,const Stand *);
+  Bool (*isdaily_output)(const Config *,const Stand *);
 } Standtype;
 
 struct stand
@@ -76,11 +76,11 @@ extern void check_stand_fracs(const Cell *,Real);
 extern int findstand(const Standlist, Landusetype, Bool);
 extern int findstandpft(const Standlist,int,Bool);
 extern int findlandusetype(const Standlist,Landusetype);
-extern void allocation_today(Stand *,int,int);
-extern void light(Stand *,int,const Real[]);
+extern void allocation_today(Stand *,const Config *);
+extern void light(Stand *,const Real[],const Config *);
 extern Stocks establishmentpft(Stand *,int,Real,int,const Config *);
 extern Stocks standstocks(const Stand *);
-extern void cutpfts(Stand *);
+extern void cutpfts(Stand *,const Config *);
 extern Real roughnesslength(const Standlist);
 extern void waterbalance(Stand *,Real [BOTTOMLAYER],Real [BOTTOMLAYER],Real *,Real *,Real,Real,
                          Real,Real *,Bool);

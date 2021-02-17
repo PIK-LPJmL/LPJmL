@@ -20,8 +20,7 @@
 void new_tree(Pft *pft, /**< Parameter of pft */
               int UNUSED(year),
               int UNUSED(day),
-              int UNUSED(withnitrogen),
-              Bool UNUSED(double_harvest)
+              const Config *UNUSED(config)
              )         
 {
   Pfttree *tree;

@@ -86,9 +86,9 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
     irrig_amount(stand, &data->irrigation, npft, ncft,month,config);
 
   if(config->pft_output_scaled)
-    stand->cell->output.cft_airrig[index]+=data->irrigation.irrig_amount*stand->cell->ml.landfrac[1].woodplantation;
+    getoutputindex(&stand->cell->output,CFT_AIRRIG,index,config)+=data->irrigation.irrig_amount*stand->cell->ml.landfrac[1].woodplantation;
   else
-    stand->cell->output.cft_airrig[index]+=data->irrigation.irrig_amount;
+    getoutputindex(&stand->cell->output,CFT_AIRRIG,index,config)+=data->irrigation.irrig_amount;
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[1]=0;
@@ -111,7 +111,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
     else
     {
       /* write irrig_apply to output */
-      stand->cell->output.irrig += irrig_apply*stand->frac;
+      getoutput(&stand->cell->output,IRRIG,config) += irrig_apply*stand->frac;
       stand->cell->balance.airrig += irrig_apply*stand->frac;
 #if defined IMAGE && defined COUPLED
       if(stand->cell->ml.image_data!=NULL)
@@ -121,9 +121,9 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
       }
 #endif
       if (config->pft_output_scaled)
-        stand->cell->output.cft_airrig[index] += irrig_apply*stand->cell->ml.landfrac[1].woodplantation;
+        getoutputindex(&stand->cell->output,CFT_AIRRIG,index,config) += irrig_apply*stand->cell->ml.landfrac[1].woodplantation;
       else
-        stand->cell->output.cft_airrig[index] += irrig_apply;
+        getoutputindex(&stand->cell->output,CFT_AIRRIG,index,config) += irrig_apply;
     }
   }
 
@@ -134,9 +134,9 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   {
     /* calculate old or new phenology */
     if (config->new_phenology)
-      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp);
+      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
-      leaf_phenology(pft,climate->temp,day,climate->isdailytemp);
+      leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
     sprink_interc = (data->irrigation.irrig_system == SPRINK) ? 1 : 0;
 
     intercept = interception(&wet[p], pft, eeq, climate->prec + irrig_apply*sprink_interc); /* in case of sprinkler, irrig_amount goes through interception, in case of mixed, 0.5 of irrig_amount */
@@ -153,7 +153,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   {
     runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
-    output->cft_irrig_events[index]++;
+    getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++;
   }
 
   runoff+=infil_perc_rain(stand,rainmelt,&return_flow_b,npft,ncft,config);
@@ -178,27 +178,27 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
     if(stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation>0.0 &&
       gp_pft[getpftpar(pft,id)]>0.0)
    {
-     output->gcgp_count[nnat+index]++;
-     output->pft_gcgp[nnat+index]+=gc_pft/gp_pft[getpftpar(pft,id)];
+     getoutputindex(output,PFT_GCGP_COUNT,nnat+index,config)++;
+     getoutputindex(output,PFT_GCGP,nnat+index,config)+=gc_pft/gp_pft[getpftpar(pft,id)];
    }
    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
-   if(output->daily.cft==ALLSTAND)
+   if(config->crop_index==ALLSTAND)
    {
-     output->daily.npp+=npp*stand->frac;
-     output->daily.gpp+=gpp*stand->frac;
+     getoutput(output,D_NPP,config)+=npp*stand->frac;
+     getoutput(output,D_GPP,config)+=gpp*stand->frac;
    }
-   output->npp+=npp*stand->frac;
+   getoutput(output,NPP,config)+=npp*stand->frac;
    stand->cell->balance.anpp+=npp*stand->frac;
 #ifdef COUPLED
    output->npp_wp+=npp*stand->frac;
 #endif
    output->dcflux-=npp*stand->frac;
-   output->gpp+=gpp*stand->frac;
-   output->cft_fpar[index] += (fpar(pft)*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation*(1.0 / (1 - stand->cell->lakefrac)));
+   getoutput(output,GPP,config)+=gpp*stand->frac;
+   getoutputindex(output,CFT_FPAR,index,config) += (fpar(pft)*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation*(1.0 / (1 - stand->cell->lakefrac)));
    if (config->pft_output_scaled)
-     output->pft_npp[nnat+index]+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation;
+     getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->cell->ml.landfrac[data->irrigation.irrigation].woodplantation;
    else
-     output->pft_npp[nnat+index]+=npp;
+     getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
   } /* of foreachpft */
 
   free(gp_pft);
@@ -212,32 +212,32 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
   forrootsoillayer(l)
   {
     transp += aet_stand[l] * stand->frac;
-    output->mtransp_b += (aet_stand[l] - green_transp[l])*stand->frac;
+    getoutput(output,TRANSP_B,config) += (aet_stand[l] - green_transp[l])*stand->frac;
   }
-  if(output->daily.cft==ALLSTAND)
+  if(config->crop_index==ALLSTAND)
   {
-    output->daily.evap+=evap*stand->frac;
-    output->daily.trans+=transp;
-    output->daily.w0+=stand->soil.w[1]*stand->frac;
-    output->daily.w1+=stand->soil.w[2]*stand->frac;
-    output->daily.wevap+=stand->soil.w[0]*stand->frac;
-    output->daily.interc+=intercep_stand*stand->frac;
+    getoutput(output,D_EVAP,config)+=evap*stand->frac;
+    getoutput(output,D_TRANS,config)+=transp;
+    getoutput(output,D_W0,config)+=stand->soil.w[1]*stand->frac;
+    getoutput(output,D_W1,config)+=stand->soil.w[2]*stand->frac;
+    getoutput(output,D_WEVAP,config)+=stand->soil.w[0]*stand->frac;
+    getoutput(output,D_INTERC,config)+=intercep_stand*stand->frac;
   }
-  output->transp+=transp;
+  getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
-  output->interc += intercep_stand*stand->frac; /* Note: including blue fraction*/
+  getoutput(output,INTERC,config) += intercep_stand*stand->frac; /* Note: including blue fraction*/
   stand->cell->balance.ainterc+=intercep_stand*stand->frac;
-  output->minterc_b += intercep_stand_blue*stand->frac;   /* blue interception and evap */
+  getoutput(output,INTERC_B,config) += intercep_stand_blue*stand->frac;   /* blue interception and evap */
 
-  output->evap += evap*stand->frac;
+  getoutput(output,EVAP,config) += evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;
-  output->mevap_b += evap_blue*stand->frac;   /* blue soil evap */
+  getoutput(output,EVAP_B,config) += evap_blue*stand->frac;   /* blue soil evap */
 #ifdef COUPLED
   if(stand->cell->ml.image_data!=NULL)
     stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
 #endif
 
-  output->mreturn_flow_b += return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/
+  getoutput(output,RETURN_FLOW_B,config) += return_flow_b*stand->frac; /* now only changed in waterbalance_new.c*/
 
   /* output for green and blue water for evaporation, transpiration and interception */
   output_gbw_woodplantation(output, stand, frac_g_evap, evap, evap_blue, return_flow_b, aet_stand, green_transp,

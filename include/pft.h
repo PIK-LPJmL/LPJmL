@@ -154,25 +154,25 @@ typedef struct Pft
     /* list of pointers for PFT specific functions */
     /* (Virtual functions in C++)                  */
 
-    void (*newpft)(struct Pft *,int,int,int,Bool);
+    void (*newpft)(struct Pft *,int,int,const Config *);
     void (*init)(struct Pft *);
     Real (*wdf)(struct Pft *,Real,Real);
     Real (*npp)(struct Pft*,Real,Real,Real,int);
     Real (*fpar) (const struct Pft*);
     void (*snow_canopy) (struct Pft*, Real, Real);
     Real (*alphaa_manage) (const struct Pft*,int,int);
-    void (*leaf_phenology)(struct Pft *,Real,int,Bool);
+    void (*leaf_phenology)(struct Pft *,Real,int,Bool,const Config *);
     void (*albedo_pft) (struct Pft *, Real, Real);
     Bool (*fwrite)(FILE *,const struct Pft *);
     Bool (*fread)(FILE *,struct Pft *,Bool,Bool);
     void (*fprint)(FILE *,const struct Pft *,int);
-    void (*litter_update)(Litter *,struct Pft *,Real);
+    void (*litter_update)(Litter *,struct Pft *,Real,const Config *);
     Stocks (*establishment)(struct Pft *,Real,Real,int);
     Stocks (*fire)(struct Pft *,Real *);
     Real (*actual_lai)(const struct Pft *);
     Real (*lai)(const struct Pft *);
-    void (*adjust)(Litter *,struct Pft *,Real,Real);
-    void (*reduce)(Litter *,struct Pft *,Real);
+    void (*adjust)(Litter *,struct Pft *,Real,Real,const Config *);
+    void (*reduce)(Litter *,struct Pft *,Real,const Config *);
     void (*free)(struct Pft *);
     Real (*vegc_sum)(const struct Pft *);
     Real (*vegn_sum)(const struct Pft *);
@@ -180,11 +180,11 @@ typedef struct Pft
     void (*mix_veg)(struct Pft *,Real);
     void (*fprintpar)(FILE *,const struct Pftpar *,const Config *);
     //void (*output_daily)(Daily_outputs *,const struct Pft *);
-    void (*turnover_monthly)(Litter *,struct Pft *);
-    void (*turnover_daily)(Litter *,struct Pft *,Real,Bool);
+    void (*turnover_monthly)(Litter *,struct Pft *,const Config *);
+    void (*turnover_daily)(Litter *,struct Pft *,Real,Bool,const Config *);
     Stocks (*livefuel_consumption)(Litter *,struct Pft *,const Fuel *,
-                                   Livefuel *,Bool *,Real,Real);
-    Bool (*annual)(Stand *,struct Pft *,Real *,Bool,int,Bool);
+                                   Livefuel *,Bool *,Real,Real,const Config *);
+    Bool (*annual)(Stand *,struct Pft *,Real *,Bool,const Config *);
     Real (*nuptake)(struct Pft *,Real *,Real *,int,int,const Config *);
     Real (*ndemand)(const struct Pft *,Real *,Real, Real,Real);
     Real (*vmaxlimit)(const struct Pft *,Real,Real);
@@ -229,7 +229,7 @@ extern  char *path[];
 
 /* Declaration of functions */
 
-extern void newpft(Pft *,Stand *,const Pftpar *,int,int,int,Bool);
+extern void newpft(Pft *,Stand *,const Pftpar *,int,int,const Config *);
 extern void freepft(Pft *);
 extern void freepftpar(Pftpar [],int);
 extern Real temp_stress(const Pftpar *,Real,Real);
@@ -245,7 +245,7 @@ extern Bool freadpft(FILE *,Stand *,Pft *,const Pftpar[],int,Bool,Bool);
 extern void noinit(Pft *);
 extern Stocks nofire(Pft *,Real *);
 extern Real nowdf(Pft *,Real,Real);
-extern void noadjust(Litter *,Pft *,Real,Real);
+extern void noadjust(Litter *,Pft *,Real,Real,const Config *);
 extern void nomix_veg(Pft *,Real);
 extern Bool establish(Real,const Pftpar *,const Climbuf *);
 extern Stocks noestablishment(Pft *,Real,Real,int);
@@ -254,14 +254,14 @@ extern Bool fscancnratio(LPJfile *,Cnratio *,const char *,Verbosity);
 extern Bool fscanemissionfactor(LPJfile *,Tracegas *,const char *,Verbosity);
 extern Bool fscanphenparam(LPJfile *,Phen_param *,const char *,Verbosity);
 extern Real fire_sum(const Litter *,Real);
-extern void output_daily(Daily_outputs *,const Pft *,Real,Real);
+extern void output_daily(const Pft *,Real,Real,const Config *);
 extern void equilsoil(Soil *, int, const Pftpar [],Bool);
-extern void noturnover_monthly(Litter *,Pft *);
+extern void noturnover_monthly(Litter *,Pft *,const Config *);
 extern char **createpftnames(int,int,int,const Config *);
 extern void freepftnames(char **,int,int,int,const Config *);
 extern int getnculttype(const Pftpar [],int,int);
 extern int getngrassnat(const Pftpar [],int);
-extern void phenology_gsi(Pft *, Real, Real, int,Bool);
+extern void phenology_gsi(Pft *, Real, Real, int,Bool,const Config *);
 extern Real nitrogen_stress(Pft *,Real,Real,int,int,const Config *);
 extern Real f_lai(Real);
 extern int findpftname(const char *,const Pftpar[],int);
@@ -269,11 +269,11 @@ extern void fprintpftnames(FILE *,const Pftpar[],int);
 
 /* needed for IMAGE, but can also be used otherwise */
 
-extern Stocks timber_burn(const Pft *, Real,Litter *,Real);
+extern Stocks timber_burn(const Pft *, Real,Litter *,Real,const Config *);
 #if defined(IMAGE) && defined(COUPLED)
-extern Stocks timber_harvest(Pft *,Soil *,Pool *,Poolpar,Real,Real,Real *,Stocks *,Real, Real[] );
+extern Stocks timber_harvest(Pft *,Soil *,Pool *,Poolpar,Real,Real,Real *,Stocks *,const Config *,Real, Real[] );
 #else
-extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *);
+extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,const Config *);
 #endif
 
 /* Definition of macros */
@@ -288,12 +288,12 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *);
  */
 
 #define fpar(pft) pft->par->fpar(pft)
-#define turnover_monthly(litter,pft) pft->par->turnover_monthly(litter,pft)
-#define turnover_daily(litter,pft,temp,isdaily) pft->par->turnover_daily(litter,pft,temp,isdaily)
+#define turnover_monthly(litter,pft,config) pft->par->turnover_monthly(litter,pft,config)
+#define turnover_daily(litter,pft,temp,isdaily,config) pft->par->turnover_daily(litter,pft,temp,isdaily,config)
 #define alphaa(pft,with_nitrogen,lai_opt) pft->par->alphaa_manage(pft,with_nitrogen,lai_opt)
 #define npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen) pft->par->npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen)
-#define leaf_phenology(pft,temp,day,isdaily) pft->par->leaf_phenology(pft,temp,day,isdaily)
-#define litter_update(litter,pft,frac) pft->par->litter_update(litter,pft,frac)
+#define leaf_phenology(pft,temp,day,isdaily,config) pft->par->leaf_phenology(pft,temp,day,isdaily,config)
+#define litter_update(litter,pft,frac,config) pft->par->litter_update(litter,pft,frac,config)
 #define fire(pft,fireprob) pft->par->fire(pft,fireprob)
 #define actual_lai(pft) pft->par->actual_lai(pft)
 #define init(pft) pft->par->init(pft)
@@ -301,11 +301,11 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *);
 #define vegn_sum(pft) pft->par->vegn_sum(pft)
 #define agb(pft) pft->par->agb(pft)
 #define mix_veg(pft,scaler) pft->par->mix_veg(pft,scaler)
-#define adjust(litter,pft,fpc,fpc_max) pft->par->adjust(litter,pft,fpc,fpc_max)
-#define reduce(litter,pft,fpc) pft->par->reduce(litter,pft,fpc)
+#define adjust(litter,pft,fpc,fpc_max,config) pft->par->adjust(litter,pft,fpc,fpc_max,config)
+#define reduce(litter,pft,fpc,config) pft->par->reduce(litter,pft,fpc,config)
 #define wdf(pft,demand,supply) pft->par->wdf(pft,demand,supply)
 #define establishment(pft,fpc_total,fpc,n_est) pft->par->establishment(pft,fpc_total,fpc,n_est)
-#define annualpft(stand,pft,fpc_inc,newphen,nitrogen,isdaily) pft->par->annual(stand,pft,fpc_inc,newphen,nitrogen,isdaily)
+#define annualpft(stand,pft,fpc_inc,isdaily,config) pft->par->annual(stand,pft,fpc_inc,isdaily,config)
 #define albedo_pft(pft,snowheight,snowfraction) pft->par->albedo_pft(pft,snowheight,snowfraction)
 #define nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config) pft->par->nuptake(pft,n_plant_demand,ndemand_leaf,npft,ncft,config)
 #define ndemand(pft,nleaf,vcmax,daylength,temp) pft->par->ndemand(pft,nleaf,vcmax,daylength,temp)

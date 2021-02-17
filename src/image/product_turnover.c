@@ -17,6 +17,7 @@
 
 void product_turnover(Cell *cell)
 {
+#if 0
   cell->output.prod_turnover+=cell->ml.product.fast.carbon*param.product_turnover.fast;
   cell->balance.prod_turnover.fast.carbon+=cell->ml.product.fast.carbon*param.product_turnover.fast;
   cell->output.prod_turnover+=cell->ml.product.slow.carbon*param.product_turnover.slow;
@@ -29,4 +30,5 @@ void product_turnover(Cell *cell)
   cell->ml.product.slow.nitrogen*=(1.0-param.product_turnover.slow);
   cell->output.product_pool.fast=cell->ml.product.fast.carbon;
   cell->output.product_pool.slow=cell->ml.product.slow.carbon;
+#endif
 } /* of 'product_turnover' */

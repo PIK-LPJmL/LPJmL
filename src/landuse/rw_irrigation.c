@@ -19,7 +19,8 @@
 Real rw_irrigation(Stand *stand,     /**< Pointer to non-natural stand */
                    Real gp_stand,    /**< potential stomata conductance */
                    const Real wet[], /**< wet array for PFT list */
-                   Real eeq          /**< potential evapotranspiration (mm) */
+                   Real eeq,         /**< potential evapotranspiration (mm) */
+                   const Config *config
                   )                  /** \return irrigation applied (mm) */
 {
 
@@ -64,7 +65,7 @@ Real rw_irrigation(Stand *stand,     /**< Pointer to non-natural stand */
   stand->soil.rw_buffer-=irrig_apply;
 
   /* write to output */
-  stand->cell->output.mirrig_rw+=irrig_apply*stand->frac;
+  getoutput(&stand->cell->output,IRRIG_RW,config)+=irrig_apply*stand->frac;
 
   return irrig_apply;
 } /* of 'rw_irrigation' */

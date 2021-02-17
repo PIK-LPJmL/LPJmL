@@ -133,7 +133,7 @@ extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
                          int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
                           Real,int,Bool,Bool,const Config *);
-extern void update_monthly(Cell *,Real,Real,int);
+extern void update_monthly(Cell *,Real,Real,int,const Config *);
 extern void init_annual(Cell *,int,const Config *);
 extern int fwritecell(FILE *,long long [],const Cell [],int,int,int,Bool,const Config *);
 extern void fprintcell(FILE *,const Cell [],int,int,int,const Config *);
@@ -146,7 +146,7 @@ extern int iterate(Outputfile *,Cell [],Input,
                    int,int,Config *);
 extern void iterateyear(Outputfile *,Cell [],Input,
                         Real,int,int,int,const Config *);
-extern void initoutputdata(Output *,int,int,int,int,const Config *);
+extern void initoutputdata(Output *,int,int,const Config *);
 extern void fwriteoutput(Outputfile *,Cell [],int,int,int,int,int,const Config *);
 extern void equilsom(Cell *,int, const Pftpar [],Bool);
 extern void equilveg(Cell *);
@@ -170,6 +170,7 @@ extern Bool seekcelldata(Celldata,int);
 extern Bool readcelldata(Celldata,Coord *,unsigned int *,Real *,int,Config *);
 extern void closecelldata(Celldata);
 extern Real albedo(Cell *, Real , Real );
+extern Bool initoutput(Outputfile *,Cell [],int,int,Config *);
 
 /* Definition of macros */
 

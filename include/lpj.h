@@ -53,6 +53,7 @@ typedef struct config Config; /* forward declaration of stand */
 
 /*  Defined header files for LPJ */
 
+#include "conf.h"
 #include "list.h"
 #include "types.h"
 #include "swap.h"
@@ -83,7 +84,6 @@ typedef struct config Config; /* forward declaration of stand */
 #include "pftlist.h"
 #include "spitfire.h"
 #include "units.h"
-#include "conf.h"
 #include "stand.h"
 #include "crop.h"
 #include "discharge.h"

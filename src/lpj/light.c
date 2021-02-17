@@ -19,8 +19,8 @@
 #include "grass.h"
 
 void light(Stand *stand,        /**< Pointer to stand */
-           int ntypes,          /**< number of PFT classes */
-           const Real fpc_inc[] /**< FPC increment for each established PFT */
+           const Real fpc_inc[], /**< FPC increment for each established PFT */
+           const Config *config
           )
 
 {
@@ -38,9 +38,9 @@ void light(Stand *stand,        /**< Pointer to stand */
   ntree=0;
   fpc_all=0;
   f=g=h=epsilon;
-  fpc_total=newvec(Real,ntypes);
+  fpc_total=newvec(Real,config->ntypes);
   check(fpc_total);
-  fpc_sum(fpc_total,ntypes,&stand->pftlist);
+  fpc_sum(fpc_total,config->ntypes,&stand->pftlist);
 
   foreachpft(pft,p,&stand->pftlist)
     if(istree(pft))
@@ -65,7 +65,7 @@ void light(Stand *stand,        /**< Pointer to stand */
           /* so that total tree FPC reduced to 'fpc_tree_max'*/
           /* changed by Werner von Bloh to avoid FPE */
 
-          light_tree(&stand->soil.litter,pft,excess);
+          light_tree(&stand->soil.litter,pft,excess,config);
         }
         break;
 
@@ -80,7 +80,7 @@ void light(Stand *stand,        /**< Pointer to stand */
     } /* of 'switch' */
   }  /* of 'foreachpft' */
 
-  fpc_all=fpc_sum(fpc_total,ntypes,&stand->pftlist);
+  fpc_all=fpc_sum(fpc_total,config->ntypes,&stand->pftlist);
   i=0;
   while(fpc_all>1 && i<50)
   {
@@ -93,7 +93,7 @@ void light(Stand *stand,        /**< Pointer to stand */
         light_grass(&stand->soil.litter,pft,excess);
       }
     }
-    fpc_all=fpc_sum(fpc_total,ntypes,&stand->pftlist)-epsilon;
+    fpc_all=fpc_sum(fpc_total,config->ntypes,&stand->pftlist)-epsilon;
     i++;
   }
   free(fpc_total);

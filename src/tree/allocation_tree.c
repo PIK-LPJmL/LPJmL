@@ -126,7 +126,7 @@ static Real f(Real leaf_inc,Data *data)
 Bool allocation_tree(Litter *litter,   /**< litter pool */
                      Pft *pft,         /**< pointer to PFT */
                      Real *fpc_inc,    /**< fpc increment */
-                     int with_nitrogen /**< with nitrogen (TRUE/FALSE) */
+                     const Config *config /**< with nitrogen (TRUE/FALSE) */
                     )                  /** \return TRUE on death */
 {
   Stocks bm_inc_ind={0,0};
@@ -154,12 +154,12 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
   }
   if(!strcmp(pft->par->name,"cotton"))
   {
-    vscal=(with_nitrogen) ? min(1,pft->vscal/(Real)pft->stand->growing_days) : 1;
+    vscal=(config->with_nitrogen) ? min(1,pft->vscal/(Real)pft->stand->growing_days) : 1;
     lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/(Real)pft->stand->growing_days);
   }
   else
   {
-    vscal=(with_nitrogen) ? min(1,pft->vscal/NDAYYEAR) : 1;
+    vscal=(config->with_nitrogen) ? min(1,pft->vscal/NDAYYEAR) : 1;
     lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/NDAYYEAR);
   }
   bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
@@ -248,7 +248,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
         tinc_ind.root.carbon=bm_inc_ind.carbon;
         tinc_ind.leaf.carbon=(tree->ind.root.carbon+tinc_ind.root.carbon)*lmtorm-tree->ind.leaf.carbon;
         litter->item[pft->litter].ag.leaf.carbon+=-tinc_ind.leaf.carbon*pft->nind;
-        pft->stand->cell->output.alittfall.carbon+=-tinc_ind.leaf.carbon*pft->nind*pft->stand->frac;
+        getoutput(&pft->stand->cell->output,LITFALLC,config)+=-tinc_ind.leaf.carbon*pft->nind*pft->stand->frac;
       }
       tinc_ind.sapwood.carbon=(tinc_ind.leaf.carbon+tree->ind.leaf.carbon)*wooddens*tree->height*
                        pft->par->sla/treepar->k_latosa-tree->ind.sapwood.carbon;
@@ -270,7 +270,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
   /* all carbon from bm_inc_ind.carbon has been allocated according to rules*/
   /* check if there is too much carbon for allowed CN ratios and eventually put
      some carbon back to bm_inc_ind.carbon */
-  if(with_nitrogen)
+  if(config->with_nitrogen)
   {
 
     /* nitrogen allocation */
@@ -343,7 +343,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
       }
     }
     pft->bm_inc.nitrogen=bm_inc_ind.nitrogen*pft->nind;
-  } /* of with_nitrogen */
+  } /* of config->with_nitrogen */
   allometry_tree(pft);
   *fpc_inc=fpc_tree(pft);
   return isneg_tree(pft);

@@ -20,7 +20,8 @@
 void update_monthly(Cell *cell,  /**< Pointer to cell */
                     Real mtemp,  /**< monthly average temperature (deg C) */
                     Real mprec,  /**< monthly average precipitation (mm) */
-                    int month    /**< month (0..11) */
+                    int month,   /**< month (0..11) */
+                    const Config *config
                    )
 {
   int p;
@@ -30,12 +31,12 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
 
   monthly_climbuf(&cell->climbuf,mtemp,mprec,cell->output.mpet,month);
   if(cell->ml.dam) /* to store the monthly inflow and demand */
-    update_reservoir_monthly(cell,month);
+    update_reservoir_monthly(cell,month,config);
   foreachstand(stand,s,cell->standlist)
   {
     getlag(&stand->soil,month);
     foreachpft(pft,p,&stand->pftlist)
-      turnover_monthly(&stand->soil.litter,pft);
+      turnover_monthly(&stand->soil.litter,pft,config);
   } /* of foreachstand */
 #if defined IMAGE && defined COUPLED
   if(cell->ml.image_data!=NULL)

@@ -27,7 +27,8 @@
 #define CDEBT_PAYBACK_RATE 0.2
 
 Stocks turnover_tree(Litter *litter, /**< Litter pool */
-                     Pft *pft        /**< Pointer to PFT */
+                     Pft *pft,       /**< Pointer to PFT */
+                     const Config *config
                     )                /** \return turnover (gC/m2,gN/m2) */
 {
   Pfttree *tree;
@@ -58,19 +59,19 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
     if(pft->establish.carbon<reprod)
     {
       reprod-=pft->establish.carbon;
-      pft->stand->cell->output.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
+      getoutput(output,FLUX_ESTABC,config)-=pft->establish.carbon*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.carbon-=pft->establish.carbon*pft->stand->frac;
       pft->establish.carbon=0;
     }
     else
     {
-      pft->stand->cell->output.flux_estab.carbon-=reprod*pft->stand->frac;
+      getoutput(output,FLUX_ESTABC,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.carbon-=reprod*pft->stand->frac;
       pft->establish.carbon-=reprod;
       reprod=0;
     }
     litter->item[pft->litter].ag.leaf.carbon+=reprod;
-    output->alittfall.carbon+=reprod*pft->stand->frac;
+    getoutput(output,LITFALLC,config)+=reprod*pft->stand->frac;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,reprod,0);
     reprod=pft->bm_inc.nitrogen*treepar->reprod_cost;
     //litter->item[pft->litter].ag.leaf.nitrogen+=reprod;
@@ -84,7 +85,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
         if (cmass_excess>pft->bm_inc.carbon)
           cmass_excess=pft->bm_inc.carbon;
         litter->item[pft->litter].ag.leaf.carbon+=cmass_excess;
-        output->alittfall.carbon+=cmass_excess*pft->stand->frac;
+        getoutput(output,LITFALLC,config)+=cmass_excess*pft->stand->frac;
         update_fbd_tree(litter,pft->par->fuelbulkdensity,cmass_excess,0);
         pft->bm_inc.carbon-=cmass_excess;
       }
@@ -105,7 +106,7 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   litter->item[pft->litter].bg.nitrogen+=turn.root.nitrogen*pft->nind-tree->turn_litt.root.nitrogen;
   /* turnover of excess carbon as root exudates */
   litter->item[pft->litter].bg.carbon+=tree->excess_carbon*pft->nind*treepar->turnover.root;
-  output->alittfall.carbon+=tree->excess_carbon*pft->nind*treepar->turnover.root*pft->stand->frac;
+  getoutput(output,LITFALLC,config)+=tree->excess_carbon*pft->nind*treepar->turnover.root*pft->stand->frac;
   tree->excess_carbon-=tree->excess_carbon*treepar->turnover.root;
   tree->turn.root.carbon=tree->turn.leaf.carbon=tree->turn_litt.leaf.carbon=tree->turn_litt.root.carbon=0.0;
   tree->turn.root.nitrogen=tree->turn.leaf.nitrogen=tree->turn_litt.leaf.nitrogen=tree->turn_litt.root.nitrogen=0.0;
@@ -117,14 +118,14 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   if (tree->ind.leaf.carbon<epsilon)
   {
     litter->item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*pft->nind;
-    output->alittfall.carbon+=tree->ind.leaf.carbon*pft->nind*pft->stand->frac;
+    getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*pft->nind*pft->stand->frac;
     update_fbd_tree(litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*pft->nind,0);
     tree->ind.leaf.carbon=0.0;
   }
   if (tree->ind.root.carbon<epsilon)
   {
     litter->item[pft->litter].bg.carbon+=tree->ind.root.carbon*pft->nind;
-    output->alittfall.carbon+=tree->ind.root.carbon*pft->nind*pft->stand->frac;
+    getoutput(output,LITFALLC,config)+=tree->ind.root.carbon*pft->nind*pft->stand->frac;
     tree->ind.root.carbon=0.0;
   }
   turn.sapwood.nitrogen=tree->ind.sapwood.nitrogen*treepar->turnover.sapwood*(1-param.sapwood_recovery);   /*0.7 is a bit arbitrary (check for literature values), but not all nitrogen of the sapwood should go to heartwood*/
@@ -137,13 +138,13 @@ Stocks turnover_tree(Litter *litter, /**< Litter pool */
   if (tree->ind.leaf.nitrogen<epsilon)
   {
     litter->item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*pft->nind;
-    output->alittfall.nitrogen+=tree->ind.leaf.nitrogen*pft->nind*pft->stand->frac;
+    getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*pft->nind*pft->stand->frac;
     tree->ind.leaf.nitrogen=0.0;
   }
   if (tree->ind.root.nitrogen<epsilon)
   {
     litter->item[pft->litter].bg.nitrogen+=tree->ind.root.nitrogen*pft->nind;
-    output->alittfall.nitrogen+=tree->ind.root.nitrogen*pft->nind*pft->stand->frac;
+    getoutput(output,LITFALLN,config)+=tree->ind.root.nitrogen*pft->nind*pft->stand->frac;
     tree->ind.root.nitrogen=0.0;
   }
 

@@ -17,7 +17,8 @@
 
 void litter_update_grass(Litter *litter, /**< Litter pool */
                          Pft *pft,       /**< PFT variables */
-                         Real frac       /**< fraction added to litter (0..1) */
+                         Real frac,      /**< fraction added to litter (0..1) */
+                         const Config *config
                         )
 {
   Pftgrass *grass;
@@ -25,15 +26,15 @@ void litter_update_grass(Litter *litter, /**< Litter pool */
   grass=pft->data;
   output=&pft->stand->cell->output; 
   litter->item[pft->litter].ag.leaf.carbon+=grass->ind.leaf.carbon*frac;
-  output->alittfall.carbon+=grass->ind.leaf.carbon*frac*pft->stand->frac;
+  getoutput(output,LITFALLC,config)+=grass->ind.leaf.carbon*frac*pft->stand->frac;
   litter->item[pft->litter].ag.leaf.nitrogen+=grass->ind.leaf.nitrogen*frac;
-  output->alittfall.nitrogen+=grass->ind.leaf.nitrogen*frac*pft->stand->frac;
+  getoutput(output,LITFALLN,config)+=grass->ind.leaf.nitrogen*frac*pft->stand->frac;
   litter->item[pft->litter].ag.leaf.nitrogen+=pft->bm_inc.nitrogen*frac;
-  output->alittfall.nitrogen+=pft->bm_inc.nitrogen*frac*pft->stand->frac;
+  getoutput(output,LITFALLN,config)+=pft->bm_inc.nitrogen*frac*pft->stand->frac;
   update_fbd_grass(litter,pft->par->fuelbulkdensity,
                    grass->ind.leaf.carbon*frac);
   litter->item[pft->litter].bg.carbon+=grass->ind.root.carbon*frac;
-  output->alittfall.carbon+=grass->ind.root.carbon*frac*pft->stand->frac;
+  getoutput(output,LITFALLC,config)+=grass->ind.root.carbon*frac*pft->stand->frac;
   litter->item[pft->litter].bg.nitrogen+=grass->ind.root.nitrogen*frac;
-  output->alittfall.nitrogen+=grass->ind.root.nitrogen*frac*pft->stand->frac;
+  getoutput(output,LITFALLN,config)+=grass->ind.root.nitrogen*frac*pft->stand->frac;
 } /* of 'litter_update_grass' */

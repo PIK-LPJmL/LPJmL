@@ -21,53 +21,40 @@
 
 #define iswrite(output,index) (isopen(output,index) && iswrite2(index,timestep,year,config))
 
-#define writeoutputvar(index,name) if(iswrite(output,index))\
+#define writeoutputvar(index,scale) if(iswrite(output,index))\
   {\
     count=0;\
     for(cell=0;cell<config->ngridcell;cell++)\
       if(!grid[cell].skip)\
-        vec[count++]=(float)(grid[cell].output.name);\
+        vec[count++]=(float)(grid[cell].output.data[config->outputmap[index]]*scale);\
     writedata(output,index,vec,year,date,ndata,config);\
   }
 
-#define writeoutputvar2(index,name,scale,n) if(iswrite(output,index))\
+#define writeoutputarray(index,scale) if(iswrite(output,index))\
   {\
     outindex(output,index,config->rank);\
-    for(i=0;i<n;i++)\
+    for(i=0;i<config->outputsize[index];i++)\
     {\
       count=0;\
       for(cell=0;cell<config->ngridcell;cell++)\
         if(!grid[cell].skip)\
-          vec[count++]=(float)(grid[cell].output.name[i]*scale);\
-      writepft(output,index,vec,year,date,ndata,i,n,config);\
+          vec[count++]=(float)(grid[cell].output.data[config->outputmap[index]+i]*scale);\
+      writepft(output,index,vec,year,date,ndata,i,config->outputsize[index],config);\
     }\
   }
 
-#define writeoutputvaritem(index,name,item,n) if(iswrite(output,index))\
-  {\
-    outindex(output,index,config->rank);\
-    for(i=0;i<n;i++)\
-    {\
-      count=0;\
-      for(cell=0;cell<config->ngridcell;cell++)\
-        if(!grid[cell].skip)\
-          vec[count++]=(float)grid[cell].output.name[i].item;\
-      writepft(output,index,vec,year,date,ndata,i,n,config);\
-    }\
-  }
-
-#define writeoutputshortvar(index,name,n) if(iswrite(output,index))\
+#define writeoutputshortvar(index) if(iswrite(output,index))\
   {\
     outindex(output,index,config->rank);\
     svec=newvec(short,config->count);\
     check(svec);\
-    for(i=0;i<n;i++)\
+    for(i=0;i<config->outputsize[index];i++)\
     {\
       count=0;\
       for(cell=0;cell<config->ngridcell;cell++)\
         if(!grid[cell].skip)\
-          svec[count++]=(short)grid[cell].output.name[i];\
-      writeshortpft(output,index,svec,year,date,ndata,i,n,config);\
+          svec[count++]=(short)(grid[cell].output.data[config->outputmap[index]+i]);\
+      writeshortpft(output,index,svec,year,date,ndata,i,config->outputsize[index],config);\
     }\
     free(svec);\
   }
@@ -629,53 +616,54 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   vec=newvec(float,config->ngridcell);
   check(vec);
-  writeoutputvar(DAYLENGTH,daylength*ndate1);
-  writeoutputvar(TEMP,temp*ndate1);
-  writeoutputvar(SUN,sun*ndate1);
-  writeoutputvar(NPP,npp);
-  writeoutputvar(NPP_AGR,npp_agr);
-  writeoutputvar(GPP,gpp);
-  writeoutputvar(RH,rh);
-  writeoutputvar(RH_AGR,rh_agr);
-  writeoutputvar(EVAP,evap);
-  writeoutputvar(INTERC,interc);
-  writeoutputvar(TRANSP,transp);
-  writeoutputvar(PET,pet);
-  writeoutputvar(RUNOFF,runoff);
-  writeoutputvar(LITFALLC,alittfall.carbon);
-  writeoutputvar(LITFALLN,alittfall.nitrogen);
-  writeoutputvar(FIREC,fire.carbon);
-  writeoutputvar(FIREN,fire.nitrogen);
-  writeoutputvar(FLUX_FIREWOOD,flux_firewood.carbon);
-  writeoutputvar(FIREF,firef);
-  writeoutputvar(MEANVEGCMANGRASS,mean_vegc_mangrass);
-  writeoutputvar(BNF_AGR,abnf_agr);
-  writeoutputvar(NFERT_AGR,anfert_agr);
-  writeoutputvar(NMANURE_AGR,anmanure_agr);
-  writeoutputvar(NDEPO_AGR,andepo_agr);
-  writeoutputvar(NMINERALIZATION_AGR,anmineralization_agr);
-  writeoutputvar(NIMMOBILIZATION_AGR,animmobilization_agr);
-  writeoutputvar(NUPTAKE_AGR,anuptake_agr);
-  writeoutputvar(NLEACHING_AGR,anleaching_agr);
-  writeoutputvar(N2O_DENIT_AGR,an2o_denit_agr);
-  writeoutputvar(N2O_NIT_AGR,an2o_nit_agr);
-  writeoutputvar(NH3_AGR,anh3_agr);
-  writeoutputvar(N2_AGR,an2_agr);
-  writeoutputvar(LITFALLN_AGR,alitfalln_agr);
-  writeoutputvar(HARVESTN_AGR,aharvestn_agr);
-  writeoutputvar(SEEDN_AGR,aseedn_agr);
-  writeoutputvar(DELTA_NORG_SOIL_AGR,adelta_norg_soil_agr);
-  writeoutputvar(DELTA_NMIN_SOIL_AGR,adelta_nmin_soil_agr);
-  writeoutputvar(DELTA_NVEG_SOIL_AGR,adelta_nveg_soil_agr);
-  writeoutputvar(CELLFRAC_AGR,cellfrac_agr*ndate1);
-  writeoutputvar(LITFALLC_WOOD,alittfall_wood.carbon);
-  writeoutputvar(LITFALLN_WOOD,alittfall_wood.nitrogen);
+  writeoutputarray(FPC,1);
+  writeoutputvar(NPP,1);
+  writeoutputvar(GPP,1);
+  writeoutputvar(DAYLENGTH,ndate1);
+  writeoutputvar(TEMP,ndate1);
+  writeoutputvar(SUN,ndate1);
+  writeoutputvar(NPP_AGR,1);
+  writeoutputvar(RH,1);
+  writeoutputvar(RH_AGR,1);
+  writeoutputvar(EVAP,1);
+  writeoutputvar(INTERC,1);
+  writeoutputvar(TRANSP,1);
+  writeoutputvar(PET,1);
+  writeoutputvar(RUNOFF,1);
+  writeoutputvar(LITFALLC,1);
+  writeoutputvar(LITFALLN,1);
+  writeoutputvar(FIREC,1);
+  writeoutputvar(FIREN,1);
+  writeoutputvar(FLUX_FIREWOOD,1);
+  writeoutputvar(FIREF,1);
+  writeoutputvar(MEANVEGCMANGRASS,1);
+  writeoutputvar(BNF_AGR,1);
+  writeoutputvar(NFERT_AGR,1);
+  writeoutputvar(NMANURE_AGR,1);
+  writeoutputvar(NDEPO_AGR,1);
+  writeoutputvar(NMINERALIZATION_AGR,1);
+  writeoutputvar(NIMMOBILIZATION_AGR,1);
+  writeoutputvar(NUPTAKE_AGR,1);
+  writeoutputvar(NLEACHING_AGR,1);
+  writeoutputvar(N2O_DENIT_AGR,1);
+  writeoutputvar(N2O_NIT_AGR,1);
+  writeoutputvar(NH3_AGR,1);
+  writeoutputvar(N2_AGR,1);
+  writeoutputvar(LITFALLN_AGR,1);
+  writeoutputvar(HARVESTN_AGR,1);
+  writeoutputvar(SEEDN_AGR,1);
+  writeoutputvar(DELTA_NORG_SOIL_AGR,1);
+  writeoutputvar(DELTA_NMIN_SOIL_AGR,1);
+  writeoutputvar(DELTA_NVEG_SOIL_AGR,1);
+  writeoutputvar(CELLFRAC_AGR,ndate1);
+  writeoutputvar(LITFALLC_WOOD,1);
+  writeoutputvar(LITFALLN_WOOD,1);
   if(iswrite(output,DECAY_WOOD_AGR))
   {
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)\
       if(!grid[cell].skip)
-        vec[count++]=(float)(1-grid[cell].output.decay_wood_agr);
+        vec[count++]=(float)(1-getoutput(&grid[cell].output,DECAY_WOOD_AGR,config));
     writedata(output,DECAY_WOOD_AGR,vec,year,date,0,config);
   }
   if(iswrite(output,DECAY_WOOD_NV))
@@ -683,7 +671,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)\
       if(!grid[cell].skip)
-        vec[count++]=(float)(1-grid[cell].output.decay_wood_nv);
+        vec[count++]=(float)(1-getoutput(&grid[cell].output,DECAY_WOOD_NV,config));
     writedata(output,DECAY_WOOD_NV,vec,year,date,0,config);
   }
   if(iswrite(output,DECAY_LEAF_AGR))
@@ -691,7 +679,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)\
       if(!grid[cell].skip)
-        vec[count++]=(float)(1-grid[cell].output.decay_leaf_agr);
+        vec[count++]=(float)(1-getoutput(&grid[cell].output,DECAY_LEAF_AGR,config));
     writedata(output,DECAY_LEAF_AGR,vec,year,date,0,config);
   }
   if(iswrite(output,DECAY_LEAF_NV))
@@ -699,15 +687,15 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)\
       if(!grid[cell].skip)
-        vec[count++]=(float)(1-grid[cell].output.decay_leaf_nv);
+        vec[count++]=(float)(1-getoutput(&grid[cell].output,DECAY_LEAF_NV,config));
     writedata(output,DECAY_LEAF_NV,vec,year,date,0,config);
   }
-  writeoutputvar(LITBURNC,alitburnc);
-  writeoutputvar(LITBURNC_WOOD,alitburnc_wood);
-  writeoutputvar2(RESPONSE_LAYER_AGR,response_agr,1,NSOILLAYER);
-  writeoutputvar2(RESPONSE_LAYER_NV,response_nv,1,NSOILLAYER);
-  writeoutputvar2(CSHIFT_FAST_NV,cshift_fast_nv,ndate1,NSOILLAYER);
-  writeoutputvar2(CSHIFT_SLOW_NV,cshift_slow_nv,ndate1,NSOILLAYER);
+  writeoutputvar(LITBURNC,1);
+  writeoutputvar(LITBURNC_WOOD,1);
+  writeoutputvar(RESPONSE_LAYER_AGR,1);
+  writeoutputvar(RESPONSE_LAYER_NV,1);
+  writeoutputvar(CSHIFT_FAST_NV,ndate1);
+  writeoutputvar(CSHIFT_SLOW_NV,ndate1);
   if(isopen(output,VEGC))
   {
     if(iswrite2(VEGC,timestep,year,config) || (timestep==ANNUAL && config->outnames[VEGC].timestep>0))
@@ -720,11 +708,11 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
             foreachstand(stand,s,grid[cell].standlist)
               /*if(stand->type->landusetype==NATURAL) */
               foreachpft(pft,p,&stand->pftlist)
-                grid[cell].output.veg.carbon+=vegc_sum(pft)*stand->frac;
+                getoutput(&grid[cell].output,VEGC,config)+=vegc_sum(pft)*stand->frac;
           }
         }
     }
-    writeoutputvar(VEGC,veg.carbon);
+    writeoutputvar(VEGC,1);
   }
   if(isopen(output,VEGN))
   {
@@ -738,11 +726,11 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
             foreachstand(stand,s,grid[cell].standlist)
               /*if(stand->type->landusetype==NATURAL) */
               foreachpft(pft,p,&stand->pftlist)
-                grid[cell].output.veg.nitrogen+=vegn_sum(pft)*stand->frac;
+                getoutput(&grid[cell].output,VEGN,config)+=vegn_sum(pft)*stand->frac;
           }
         }
     }
-    writeoutputvar(VEGN,veg.carbon);
+    writeoutputvar(VEGN,1);
   }
   if(isopen(output,SOILC))
   {
@@ -754,13 +742,13 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             for(p=0;p<stand->soil.litter.n;p++)
-              grid[cell].output.soil.carbon+=stand->soil.litter.item[p].bg.carbon*stand->frac;
+              getoutput(&grid[cell].output,SOILC,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
             forrootsoillayer(l)
-              grid[cell].output.soil.carbon+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
+              getoutput(&grid[cell].output,SOILC,config)+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
           }
         }
     }
-    writeoutputvar(SOILC,soil.carbon);
+    writeoutputvar(SOILC,1);
   }
   if(isopen(output,SOILN))
   {
@@ -772,13 +760,13 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             for(p=0;p<stand->soil.litter.n;p++)
-              grid[cell].output.soil.nitrogen+=stand->soil.litter.item[p].bg.nitrogen*stand->frac;
+              getoutput(&grid[cell].output,SOILN,config)+=stand->soil.litter.item[p].bg.nitrogen*stand->frac;
             forrootsoillayer(l)
-              grid[cell].output.soil.nitrogen+=(stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac;
+              getoutput(&grid[cell].output,SOILN,config)+=(stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac;
           }
         }
     }
-    writeoutputvar(SOILN,soil.nitrogen);
+    writeoutputvar(SOILN,1);
   }
   if(isopen(output,SOILC_SLOW))
   {
@@ -790,12 +778,12 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             forrootsoillayer(l)
-              grid[cell].output.soil_slow.carbon+=stand->soil.pool[l].slow.carbon*stand->frac;
-            grid[cell].output.soil.carbon+=stand->soil.YEDOMA*stand->frac;
+              getoutput(&grid[cell].output,SOILC_SLOW,config)+=stand->soil.pool[l].slow.carbon*stand->frac;
+            getoutput(&grid[cell].output,SOILC_SLOW,config)+=stand->soil.YEDOMA*stand->frac;
           }
         }
     }
-    writeoutputvar(SOILC_SLOW,soil_slow.carbon);
+    writeoutputvar(SOILC_SLOW,1);
   }
   if(isopen(output,SOILN_SLOW))
   {
@@ -807,11 +795,11 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             forrootsoillayer(l)
-              grid[cell].output.soil_slow.nitrogen+=stand->soil.pool[l].slow.nitrogen*stand->frac;
+              getoutput(&grid[cell].output,SOILN_SLOW,config)+=stand->soil.pool[l].slow.nitrogen*stand->frac;
           }
         }
     }
-    writeoutputvar(SOILN_SLOW,soil_slow.nitrogen);
+    writeoutputvar(SOILN_SLOW,1);
   }
   if(isopen(output,LITC))
   {
@@ -822,10 +810,10 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           /* if(stand->type->landusetype==NATURAL) */
-            grid[cell].output.litter.carbon+=litter_ag_sum(&stand->soil.litter)*stand->frac;
+            getoutput(&grid[cell].output,LITC,config)+=litter_ag_sum(&stand->soil.litter)*stand->frac;
         }
     }
-    writeoutputvar(LITC,litter.carbon);
+    writeoutputvar(LITC,1);
   }
   if(isopen(output,LITN))
   {
@@ -836,10 +824,10 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           /* if(stand->type->landusetype==NATURAL) */
-            grid[cell].output.litter.nitrogen+=litter_ag_sum_n(&stand->soil.litter)*stand->frac;
+            getoutput(&grid[cell].output,LITN,config)+=litter_ag_sum_n(&stand->soil.litter)*stand->frac;
         }
     }
-    writeoutputvar(LITN,litter.nitrogen);
+    writeoutputvar(LITN,1);
   }
   if(isopen(output,SOILNO3))
   {
@@ -853,13 +841,13 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
             forrootsoillayer(l)
             {
               if(stand->soil.mean_maxthaw>=layerbound[l])
-                grid[cell].output.soilno3+=stand->soil.NO3[l]*stand->frac;
+                getoutput(&grid[cell].output,SOILNO3,config)+=stand->soil.NO3[l]*stand->frac;
             /*vec[count]+=(float)(stand->soil.YEDOMA*stand->frac);*/
             }
           }
         }
     }
-    writeoutputvar(SOILNO3,soilno3);
+    writeoutputvar(SOILNO3,1);
   }
   if(isopen(output,SOILNH4))
   {
@@ -873,13 +861,13 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
             forrootsoillayer(l)
             {
               if(stand->soil.mean_maxthaw>=layerbound[l])
-                grid[cell].output.soilnh4+=stand->soil.NH4[l]*stand->frac;
+                getoutput(&grid[cell].output,SOILNH4,config)+=stand->soil.NH4[l]*stand->frac;
             /*vec[count]+=(float)(stand->soil.YEDOMA*stand->frac);*/
             }
           }
         }
     }
-    writeoutputvar(SOILNH4,soilnh4);
+    writeoutputvar(SOILNH4,1);
   }
   if(isopen(output,MAXTHAW_DEPTH))
   {
@@ -888,18 +876,18 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
           foreachstand(stand,s,grid[cell].standlist)
-            grid[cell].output.maxthaw_depth+=stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+            getoutput(&grid[cell].output,MAXTHAW_DEPTH,config)+=stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     }
-    writeoutputvar(MAXTHAW_DEPTH,maxthaw_depth);
+    writeoutputvar(MAXTHAW_DEPTH,1);
   }
-  writeoutputvar(FLUX_ESTABC,flux_estab.carbon);
-  writeoutputvar(FLUX_ESTABN,flux_estab.nitrogen);
-  writeoutputvar(HARVESTC,flux_harvest.carbon);
-  writeoutputvar(HARVESTN,flux_harvest.nitrogen);
-  writeoutputvar(RHARVEST_BURNTC,flux_rharvest_burnt.carbon);
-  writeoutputvar(RHARVEST_BURNTN,flux_rharvest_burnt.nitrogen);
-  writeoutputvar(RHARVEST_BURNT_IN_FIELDC,flux_rharvest_burnt_in_field.carbon);
-  writeoutputvar(RHARVEST_BURNT_IN_FIELDN,flux_rharvest_burnt_in_field.nitrogen);
+  writeoutputvar(FLUX_ESTABC,1);
+  writeoutputvar(FLUX_ESTABN,1);
+  writeoutputvar(HARVESTC,1);
+  writeoutputvar(HARVESTN,1);
+  writeoutputvar(RHARVEST_BURNTC,1);
+  writeoutputvar(RHARVEST_BURNTN,1);
+  writeoutputvar(RHARVEST_BURNT_IN_FIELDC,1);
+  writeoutputvar(RHARVEST_BURNT_IN_FIELDN,1);
   if(isopen(output,MG_VEGC))
   {
     if(iswrite2(MG_VEGC,timestep,year,config) || (timestep==ANNUAL && config->outnames[MG_VEGC].timestep>0))
@@ -910,10 +898,10 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
             if(stand->type->landusetype!=NATURAL)
               foreachpft(pft,p,&stand->pftlist)
-                grid[cell].output.mg_vegc+=(float)(vegc_sum(pft)*stand->frac);
+                getoutput(&grid[cell].output,MG_VEGC,config)+=(vegc_sum(pft)*stand->frac);
         }
     }
-    writeoutputvar(MG_VEGC,mg_vegc);
+    writeoutputvar(MG_VEGC,1);
   }
   if(isopen(output,MG_SOILC))
   {
@@ -927,14 +915,14 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
             if(stand->type->landusetype!=NATURAL)
             {
               for(p=0;p<stand->soil.litter.n;p++)
-                grid[cell].output.mg_soilc+=stand->soil.litter.item[p].bg.carbon*stand->frac;
+                getoutput(&grid[cell].output,MG_SOILC,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
               forrootsoillayer(l)
-                grid[cell].output.mg_soilc+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
+                getoutput(&grid[cell].output,MG_SOILC,config)+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
             }
           }
         }
     }
-    writeoutputvar(MG_SOILC,mg_soilc);
+    writeoutputvar(MG_SOILC,1);
   }
   if(isopen(output,MG_LITC))
   {
@@ -945,26 +933,26 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
             if(stand->type->landusetype!=NATURAL)
-              grid[cell].output.mg_litc+=litter_ag_sum(&stand->soil.litter)*stand->frac;
+              getoutput(&grid[cell].output,MG_LITC,config)+=litter_ag_sum(&stand->soil.litter)*stand->frac;
         }
     }
-    writeoutputvar(MG_LITC,mg_litc);
+    writeoutputvar(MG_LITC,1);
   }
-  writeoutputvar(INPUT_LAKE,input_lake*1e-9);
+  writeoutputvar(INPUT_LAKE,1e-9);
   if(iswrite(output,ADISCHARGE))
   {
     for(cell=0;cell<config->ngridcell;cell++)
-      vec[cell]=(float)(grid[cell].output.adischarge*1e-9);
+      vec[cell]=(float)(getoutput(&grid[cell].output,ADISCHARGE,config)*1e-9);
     writealldata(output,ADISCHARGE,vec,year,date,ndata,config);
   }
-  writeoutputvar(DEFOREST_EMIS,deforest_emissions.carbon);
-  writeoutputvar(TRAD_BIOFUEL,trad_biofuel);
-  writeoutputvar(FBURN,fburn);
-  writeoutputvar(FTIMBER,ftimber);
-  writeoutputvar(TIMBER_HARVESTC,timber_harvest.carbon);
-  writeoutputvar(PRODUCT_POOL_FAST,product_pool.fast);
-  writeoutputvar(PRODUCT_POOL_SLOW,product_pool.slow);
-  writeoutputvar(PROD_TURNOVER,prod_turnover);
+  writeoutputvar(DEFOREST_EMIS,1);
+  writeoutputvar(TRAD_BIOFUEL,1);
+  writeoutputvar(FBURN,1);
+  writeoutputvar(FTIMBER,1);
+  writeoutputvar(TIMBER_HARVESTC,1);
+  writeoutputvar(PRODUCT_POOL_FAST,1);
+  writeoutputvar(PRODUCT_POOL_SLOW,1);
+  writeoutputvar(PROD_TURNOVER,1);
   if(iswrite(output,AFRAC_WD_UNSUST))
   {
     count=0;
@@ -974,9 +962,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
             grid[cell].balance.aconv_loss_evap + grid[cell].balance.aconv_loss_drain)*grid[cell].coord.area));
     writedata(output,AFRAC_WD_UNSUST,vec,year,date,ndata,config);
   }
-  writeoutputvar(WATERUSE_HIL,awateruse_hil);
-  writeoutputvar(WATERUSECONS,waterusecons);
-  writeoutputvar(WATERUSEDEM,waterusedem);
+  writeoutputvar(WATERUSE_HIL,1);
+  writeoutputvar(WATERUSECONS,1);
+  writeoutputvar(WATERUSEDEM,1);
   if(isopen(output,AGB))
   {
     if(iswrite2(AGB,timestep,year,config) || (timestep==ANNUAL && config->outnames[AGB].timestep>0))
@@ -986,10 +974,10 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
             foreachpft(pft,p,&stand->pftlist)
-              grid[cell].output.agb+=agb(pft)*stand->frac;
+              getoutput(&grid[cell].output,AGB,config)+=agb(pft)*stand->frac;
         }
     }
-    writeoutputvar(AGB,agb);
+    writeoutputvar(AGB,1);
   }
   if(isopen(output,AGB_TREE))
   {
@@ -1001,114 +989,98 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
             foreachpft(pft,p,&stand->pftlist)
               if(istree(pft))
-                grid[cell].output.agb_tree+=agb(pft)*stand->frac;
+                getoutput(&grid[cell].output,AGB_TREE,config)+=agb(pft)*stand->frac;
         }
     }
-    writeoutputvar(AGB_TREE,agb_tree);
+    writeoutputvar(AGB_TREE,1);
   }
-  writeoutputvar(NEGC_FLUXES,neg_fluxes.carbon);
-  writeoutputvar(NEGN_FLUXES,neg_fluxes.nitrogen);
-  writeoutputvar(MEAN_VEGC_MANGRASS,mean_vegc_mangrass*ndate1);
-  writeoutputvar(VEGC_AVG,vegc_avg*ndate1);
-  writeoutputvar(RH_LITTER,rh_litter);
-  writeoutputvar(DISCHARGE,mdischarge*1e-9);     /* daily mean discharge per month in 1.000.000 m3 per cell */
-  writeoutputvar(WATERAMOUNT,mwateramount*1e-9); /* mean wateramount per month in 1.000.000 m3 per cell */
-  writeoutputvar(TRANSP_B,mtransp_b);
-  writeoutputvar(EVAP_B,mevap_b);
-  writeoutputvar(INTERC_B,minterc_b);
-  if(iswrite(output,SWC))
-    for(l=0;l<NSOILLAYER;l++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(float)(grid[cell].output.mswc[l]*ndate1);
-      writepft(output,SWC,vec,year,date,ndata,l,NSOILLAYER,config);
-    }
-  writeoutputvar(SWC1,mswc2[0]*ndate1);
-  writeoutputvar(SWC2,mswc2[1]*ndate1);
-  writeoutputvar(SWC3,mswc2[2]*ndate1);
-  writeoutputvar(SWC4,mswc2[3]*ndate1);
-  writeoutputvar(SWC5,mswc2[4]*ndate1);
-  writeoutputvar(ROOTMOIST,mrootmoist*ndate1);
-  writeoutputvar(IRRIG,irrig);
-  writeoutputvar(RETURN_FLOW_B,mreturn_flow_b);
-  writeoutputvar(EVAP_LAKE,mevap_lake);
-  writeoutputvar(EVAP_RES,mevap_res);
-  writeoutputvar(PREC_RES,mprec_res);
-  writeoutputvar(NFIRE,mnfire);
-  writeoutputvar(FIREDI,mfiredi*ndate1);
-  writeoutputvar(FIREEMISSION_CO2,mfireemission.co2);
-  writeoutputvar(FIREEMISSION_CO,mfireemission.co);
-  writeoutputvar(FIREEMISSION_CH4,mfireemission.ch4);
-  writeoutputvar(FIREEMISSION_VOC,mfireemission.voc);
-  writeoutputvar(FIREEMISSION_TPM,mfireemission.tpm);
-  writeoutputvar(FIREEMISSION_NOX,mfireemission.nox);
-  writeoutputvar(BURNTAREA,burntarea);
-  writeoutputvar(TEMP_IMAGE,mtemp_image);
-  writeoutputvar(PREC_IMAGE,mprec_image);
-  writeoutputvar(SUN_IMAGE,msun_image);
-  writeoutputvar(WET_IMAGE,mwet_image);
-  if(iswrite(output,SOILTEMP))
-    for(l=0;l<NSOILLAYER;l++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)
-          vec[count++]=(float)(grid[cell].output.msoiltemp[l]*ndate1);
-      writepft(output,SOILTEMP,vec,year,date,ndata,l,NSOILLAYER,config);
-    }
-  writeoutputvar(SOILTEMP1,msoiltemp2[0]*ndate1);
-  writeoutputvar(SOILTEMP2,msoiltemp2[1]*ndate1);
-  writeoutputvar(SOILTEMP3,msoiltemp2[2]*ndate1);
-  writeoutputvar(SOILTEMP4,msoiltemp2[3]*ndate1);
-  writeoutputvar(SOILTEMP5,msoiltemp2[4]*ndate1);
-  writeoutputvar(SOILTEMP6,msoiltemp2[5]*ndate1);
-  writeoutputvar(NUPTAKE,mn_uptake);
-  writeoutputvar(LEACHING,mn_leaching);
-  writeoutputvar(N2O_DENIT,mn2o_denit);
-  writeoutputvar(N2O_NIT,mn2o_nit);
-  writeoutputvar(N2_EMIS,mn2_emissions);
-  writeoutputvar(BNF,mbnf);
-  writeoutputvar(N_MINERALIZATION,mn_mineralization);
-  writeoutputvar(N_VOLATILIZATION,mn_volatilization);
-  writeoutputvar(N_IMMO,mn_immo);
-  writeoutputvar(RES_STORAGE,mres_storage*1e-9*ndate1);  /* mean monthly reservoir storage in 1.000.000 m3 per cell */
-  writeoutputvar(RES_DEMAND,mres_demand);
-  writeoutputvar(TARGET_RELEASE,mtarget_release);
-  writeoutputvar(RES_CAP,mres_cap);
-  writeoutputvar(WD_UNSUST,mwd_unsustainable);
-  writeoutputvar(UNMET_DEMAND,munmet_demand);
-  writeoutputvar(WD_LOCAL,mwd_local);
-  writeoutputvar(WD_NEIGHB,mwd_neighb);
-  writeoutputvar(WD_RES,mwd_res);
-  writeoutputvar(CONV_LOSS_EVAP,mconv_loss_evap);
-  writeoutputvar(CONV_LOSS_DRAIN,mconv_loss_drain);
-  writeoutputvar(STOR_RETURN,mstor_return);
-  writeoutputvar(PREC,prec);
-  writeoutputvar(RAIN,mrain);
-  writeoutputvar(SNOWF,msnowf);
-  writeoutputvar(MELT,mmelt);
-  writeoutputvar(SWE,mswe*ndate1);
-  writeoutputvar(SNOWRUNOFF,msnowrunoff);
-  writeoutputvar(RUNOFF_SURF,mrunoff_surf);
-  writeoutputvar(RUNOFF_LAT,mrunoff_lat);
-  writeoutputvar(SEEPAGE,mseepage);
-  writeoutputvar(FAPAR,fapar*ndate1);
-  writeoutputvar(ALBEDO,malbedo*ndate1);
-  writeoutputvar(PHEN_TMIN,mphen_tmin*ndate1);
-  writeoutputvar(PHEN_TMAX,mphen_tmax*ndate1);
-  writeoutputvar(PHEN_LIGHT,mphen_light*ndate1);
-  writeoutputvar(PHEN_WATER,mphen_water*ndate1);
-  writeoutputvar(WSCAL,mwscal*ndate1);
-  writeoutputvar(GCONS_RF,mgcons_rf);
-  writeoutputvar(GCONS_IRR,mgcons_irr);
-  writeoutputvar(BCONS_IRR,mbcons_irr);
-  writeoutputvar(IRRIG_RW,mirrig_rw);
-  writeoutputvar(LAKEVOL,mlakevol*ndate1);
-  writeoutputvar(LAKETEMP,mlaketemp*ndate1);
-  writeoutputshortvar(SDATE,sdate,2*ncft);
-  writeoutputshortvar(HDATE,hdate,2*ncft);
+  writeoutputvar(NEGC_FLUXES,1);
+  writeoutputvar(NEGN_FLUXES,1);
+  writeoutputvar(MEAN_VEGC_MANGRASS,ndate1);
+  writeoutputvar(VEGC_AVG,ndate1);
+  writeoutputvar(RH_LITTER,1);
+  writeoutputvar(DISCHARGE,1e-9);     /* daily mean discharge per month in 1.000.000 m3 per cell */
+  writeoutputvar(WATERAMOUNT,1e-9); /* mean wateramount per month in 1.000.000 m3 per cell */
+  writeoutputvar(TRANSP_B,1);
+  writeoutputvar(EVAP_B,1);
+  writeoutputvar(INTERC_B,1);
+  writeoutputarray(SWC,ndate1);
+  writeoutputvar(SWC1,ndate1);
+  writeoutputvar(SWC2,ndate1);
+  writeoutputvar(SWC3,ndate1);
+  writeoutputvar(SWC4,ndate1);
+  writeoutputvar(SWC5,ndate1);
+  writeoutputvar(ROOTMOIST,ndate1);
+  writeoutputvar(IRRIG,1);
+  writeoutputvar(RETURN_FLOW_B,1);
+  writeoutputvar(EVAP_LAKE,1);
+  writeoutputvar(EVAP_RES,1);
+  writeoutputvar(PREC_RES,1);
+  writeoutputvar(NFIRE,1);
+  writeoutputvar(FIREDI,ndate1);
+  writeoutputvar(FIREEMISSION_CO2,1);
+  writeoutputvar(FIREEMISSION_CO,1);
+  writeoutputvar(FIREEMISSION_CH4,1);
+  writeoutputvar(FIREEMISSION_VOC,1);
+  writeoutputvar(FIREEMISSION_TPM,1);
+  writeoutputvar(FIREEMISSION_NOX,1);
+  writeoutputvar(BURNTAREA,1);
+  writeoutputvar(TEMP_IMAGE,ndate1);
+  writeoutputvar(PREC_IMAGE,1);
+  writeoutputvar(SUN_IMAGE,ndate1);
+  writeoutputvar(WET_IMAGE,1);
+  writeoutputarray(SOILTEMP,ndate1);
+  writeoutputvar(SOILTEMP1,ndate1);
+  writeoutputvar(SOILTEMP2,ndate1);
+  writeoutputvar(SOILTEMP3,ndate1);
+  writeoutputvar(SOILTEMP4,ndate1);
+  writeoutputvar(SOILTEMP5,ndate1);
+  writeoutputvar(SOILTEMP6,ndate1);
+  writeoutputvar(NUPTAKE,1);
+  writeoutputvar(LEACHING,1);
+  writeoutputvar(N2O_DENIT,1);
+  writeoutputvar(N2O_NIT,1);
+  writeoutputvar(N2_EMIS,1);
+  writeoutputvar(BNF,1);
+  writeoutputvar(N_MINERALIZATION,1);
+  writeoutputvar(N_VOLATILIZATION,1);
+  writeoutputvar(N_IMMO,1);
+  writeoutputvar(RES_STORAGE,1e-9*ndate1);  /* mean monthly reservoir storage in 1.000.000 m3 per cell */
+  writeoutputvar(RES_DEMAND,1);
+  writeoutputvar(TARGET_RELEASE,1);
+  writeoutputvar(RES_CAP,1);
+  writeoutputvar(WD_UNSUST,1);
+  writeoutputvar(UNMET_DEMAND,1);
+  writeoutputvar(WD_LOCAL,1);
+  writeoutputvar(WD_NEIGHB,1);
+  writeoutputvar(WD_RES,1);
+  writeoutputvar(CONV_LOSS_EVAP,1);
+  writeoutputvar(CONV_LOSS_DRAIN,1);
+  writeoutputvar(STOR_RETURN,1);
+  writeoutputvar(PREC,1);
+  writeoutputvar(RAIN,1);
+  writeoutputvar(SNOWF,1);
+  writeoutputvar(MELT,1);
+  writeoutputvar(SWE,ndate1);
+  writeoutputvar(SNOWRUNOFF,1);
+  writeoutputvar(RUNOFF_SURF,1);
+  writeoutputvar(RUNOFF_LAT,1);
+  writeoutputvar(SEEPAGE,1);
+  writeoutputvar(FAPAR,ndate1);
+  writeoutputvar(ALBEDO,ndate1);
+  writeoutputvar(PHEN_TMIN,ndate1);
+  writeoutputvar(PHEN_TMAX,ndate1);
+  writeoutputvar(PHEN_LIGHT,ndate1);
+  writeoutputvar(PHEN_WATER,ndate1);
+  writeoutputvar(WSCAL,ndate1);
+  writeoutputvar(GCONS_RF,1);
+  writeoutputvar(GCONS_IRR,1);
+  writeoutputvar(BCONS_IRR,1);
+  writeoutputvar(IRRIG_RW,1);
+  writeoutputvar(LAKEVOL,ndate1);
+  writeoutputvar(LAKETEMP,ndate1);
+  writeoutputshortvar(SDATE);
+  writeoutputshortvar(HDATE);
   if(iswrite(output,CFT_SWC))
   {
     for(cell=0;cell<config->ngridcell;cell++)
@@ -1116,24 +1088,24 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
       if(!grid[cell].skip)
       {
         for(i=0;i<ncft*2;i++)
-          if(grid[cell].output.nday_month[i]>0)
-            grid[cell].output.cft_mswc[i]/=grid[cell].output.nday_month[i];
+          if(getoutputindex(&grid[cell].output,NDAY_MONTH,i,config)>0)
+            getoutputindex(&grid[cell].output,CFT_SWC,i,config)/=getoutputindex(&grid[cell].output,NDAY_MONTH,i,config);
           else
-            grid[cell].output.cft_mswc[i]=0;
+            getoutputindex(&grid[cell].output,CFT_SWC,i,config)=0;
       }
     }
-    writeoutputvar2(CFT_SWC,cft_mswc,1,2*ncft);
+    writeoutputarray(CFT_SWC,1);
   }
-  writeoutputvar2(PFT_NPP,pft_npp,1,nnat+nirrig);
-  writeoutputvar2(PFT_NUPTAKE,pft_nuptake,1,nnat+nirrig);
-  writeoutputvar2(PFT_NDEMAND,pft_ndemand,1,nnat+nirrig);
-  writeoutputvar2(HUSUM,husum,1,2*ncft);
-  writeoutputvar2(CFT_RUNOFF,cft_runoff,1,2*ncft);
-  writeoutputvar2(CFT_N2O_DENIT,cft_n2o_denit,1,2*ncft);
-  writeoutputvar2(CFT_N2O_NIT,cft_n2o_nit,1,2*ncft);
-  writeoutputvar2(CFT_N2_EMIS,cft_n2_emis,1,2*ncft);
-  writeoutputvar2(CFT_LEACHING,cft_leaching,1,2*ncft);
-  writeoutputvar2(CFT_C_EMIS,cft_c_emis,1,2*ncft);
+  writeoutputarray(PFT_NPP,1);
+  writeoutputarray(PFT_NUPTAKE,1);
+  writeoutputarray(PFT_NDEMAND,1);
+  writeoutputarray(HUSUM,1);
+  writeoutputarray(CFT_RUNOFF,1);
+  writeoutputarray(CFT_N2O_DENIT,1);
+  writeoutputarray(CFT_N2O_NIT,1);
+  writeoutputarray(CFT_N2_EMIS,1);
+  writeoutputarray(CFT_LEACHING,1);
+  writeoutputarray(CFT_C_EMIS,1);
 
   if(isopen(output,PFT_NLIMIT))
   {
@@ -1147,12 +1119,12 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           {
             if(stand->type->landusetype == NATURAL)
               foreachpft(pft,p,&stand->pftlist)
-                grid[cell].output.pft_nlimit[pft->par->id]+=pft->nlimit*ndate1;
+                getoutputindex(&grid[cell].output,PFT_NLIMIT,pft->par->id,config)+=pft->nlimit*ndate1;
           }
         }
       }
     }
-    writeoutputvar2(PFT_NLIMIT,pft_nlimit,1,nnat+nirrig)
+    writeoutputarray(PFT_NLIMIT,1)
   }
   if(isopen(output,PFT_VEGC))
   {
@@ -1166,12 +1138,12 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           {
             if(stand->type->landusetype == NATURAL)
               foreachpft(pft,p,&stand->pftlist)
-                grid[cell].output.pft_veg[pft->par->id].carbon+=vegc_sum(pft);
+                getoutputindex(&grid[cell].output,PFT_VEGC,pft->par->id,config)+=vegc_sum(pft);
           }
         }
       }
     }
-    writeoutputvaritem(PFT_VEGC,pft_veg,carbon,nnat+nirrig);
+    writeoutputarray(PFT_VEGC,1);
   }
   if(isopen(output,PFT_VEGN))
   {
@@ -1185,12 +1157,12 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           {
             if(stand->type->landusetype == NATURAL)
               foreachpft(pft,p,&stand->pftlist)
-                grid[cell].output.pft_veg[pft->par->id].nitrogen+=vegn_sum(pft);
+                getoutputindex(&grid[cell].output,PFT_VEGN,pft->par->id,config)+=vegn_sum(pft);
           }
         }
       }
     }
-    writeoutputvaritem(PFT_VEGN,pft_veg,nitrogen,nnat+nirrig);
+    writeoutputarray(PFT_VEGN,1);
   }
   if(iswrite(output,PFT_GCGP))
   {
@@ -1201,37 +1173,25 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
       for(cell=0;cell<config->ngridcell;cell++)
         if(!grid[cell].skip)
         {
-          if(grid[cell].output.gcgp_count[i] > 0)
-            grid[cell].output.pft_gcgp[i]/=grid[cell].output.gcgp_count[i];
+          if(getoutputindex(&grid[cell].output,PFT_GCGP_COUNT,i,config) > 0)
+            getoutputindex(&grid[cell].output,PFT_GCGP,i,config)/=getoutputindex(&grid[cell].output,PFT_GCGP_COUNT,i,config);
           else
-            grid[cell].output.pft_gcgp[i]=-9;
-          vec[count++]=(float)grid[cell].output.pft_gcgp[i];
+            getoutputindex(&grid[cell].output,PFT_GCGP,i,config)=-9;
+          vec[count++]=(float)getoutputindex(&grid[cell].output,PFT_GCGP,i,config);
         }
       writepft(output,PFT_GCGP,vec,year,date,ndata,i,nnat+nirrig,config);
     }
   }
-  writeoutputvaritem(PFT_HARVESTC,pft_harvest,harvest.carbon,nirrig);
-  writeoutputvaritem(PFT_HARVESTN,pft_harvest,harvest.nitrogen,nirrig);
-  writeoutputvaritem(PFT_RHARVESTC,pft_harvest,residual.carbon,nirrig);
-  writeoutputvaritem(PFT_RHARVESTN,pft_harvest,residual.nitrogen,nirrig);
-  writeoutputvar2(CFT_CONSUMP_WATER_G,cft_consump_water_g,1,nirrig);
-  writeoutputvar2(CFT_CONSUMP_WATER_B,cft_consump_water_b,1,nirrig);
-  writeoutputvar2(GROWING_PERIOD,growing_period,1,2*(ncft+NGRASS));
-  writeoutputvar2(FPC,fpc,1,nnat+1);
-  writeoutputvar2(PFT_MORT,pft_mort,1,nnat);
-  writeoutputvar2(FPC_BFT,fpc_bft,1,((config->nbiomass+config->ngrass*2)*2));
-  if(iswrite(output,NV_LAI))
-  {
-    outindex(output,NV_LAI,config->rank);
-    for(i=0;i<nnat;i++)
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-        if(!grid[cell].skip)\
-          vec[count++]=(float)(grid[cell].output.nv_lai[i]*ndate1);
-      writepft(output,NV_LAI,vec,year,date,ndata,i,nnat,config);
-    }
-  }
+  writeoutputarray(PFT_HARVESTC,1);
+  writeoutputarray(PFT_HARVESTN,1);
+  writeoutputarray(PFT_RHARVESTC,1);
+  writeoutputarray(PFT_RHARVESTN,1);
+  writeoutputarray(CFT_CONSUMP_WATER_G,1);
+  writeoutputarray(CFT_CONSUMP_WATER_B,1);
+  writeoutputarray(GROWING_PERIOD,1);
+  writeoutputarray(PFT_MORT,1);
+  writeoutputarray(FPC_BFT,1);
+  writeoutputarray(NV_LAI,ndate1);
   if(isopen(output,SOILC_LAYER))
   {
     if(iswrite2(SOILC_LAYER,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC_LAYER].timestep>0))
@@ -1243,14 +1203,14 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             for(p=0;p<stand->soil.litter.n;p++)
-              grid[cell].output.soil_layer[0].carbon+=stand->soil.litter.item[p].bg.carbon*stand->frac;
+              getoutputindex(&grid[cell].output,SOILC_LAYER,0,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac;
             forrootsoillayer(i)
-              grid[cell].output.soil_layer[i].carbon+=(stand->soil.pool[i].slow.carbon+stand->soil.pool[i].fast.carbon)*stand->frac;
+              getoutputindex(&grid[cell].output,SOILC_LAYER,i,config)+=(stand->soil.pool[i].slow.carbon+stand->soil.pool[i].fast.carbon)*stand->frac;
           }
         }
       }
     }
-    writeoutputvaritem(SOILC_LAYER,soil_layer,carbon,BOTTOMLAYER);
+    writeoutputarray(SOILC_LAYER,1);
   }
   if(isopen(output,SOILC_AGR_LAYER))
   {
@@ -1270,15 +1230,15 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
             if(isagriculture(stand->type->landusetype))
             {
               for(p=0;p<stand->soil.litter.n;p++)
-                grid[cell].output.soilc_agr_layer[0]+=stand->soil.litter.item[p].bg.carbon*stand->frac/sumfrac;
+                getoutputindex(&grid[cell].output,SOILC_AGR_LAYER,0,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac/sumfrac;
               forrootsoillayer(i)
-                grid[cell].output.soilc_agr_layer[i]+=(stand->soil.pool[i].slow.carbon+stand->soil.pool[i].fast.carbon)*stand->frac/sumfrac;
+                getoutputindex(&grid[cell].output,SOILC_AGR_LAYER,i,config)+=(stand->soil.pool[i].slow.carbon+stand->soil.pool[i].fast.carbon)*stand->frac/sumfrac;
             }
           }
         }
       }
     }
-    writeoutputvar2(SOILC_AGR_LAYER,soilc_agr_layer,1,BOTTOMLAYER);
+    writeoutputarray(SOILC_AGR_LAYER,1);
   }
 
   if(isopen(output,SOILN_LAYER))
@@ -1292,14 +1252,14 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             for(p=0;p<stand->soil.litter.n;p++)
-              grid[cell].output.soil_layer[0].nitrogen+=stand->soil.litter.item[p].bg.nitrogen*stand->frac;
+              getoutputindex(&grid[cell].output,SOILN_LAYER,0,config)+=stand->soil.litter.item[p].bg.nitrogen*stand->frac;
             forrootsoillayer(i)
-              grid[cell].output.soil_layer[i].nitrogen+=(stand->soil.pool[i].slow.nitrogen+stand->soil.pool[i].fast.nitrogen)*stand->frac;
+              getoutputindex(&grid[cell].output,SOILN_LAYER,i,config)+=(stand->soil.pool[i].slow.nitrogen+stand->soil.pool[i].fast.nitrogen)*stand->frac;
           }
         }
       }
     }
-    writeoutputvaritem(SOILN_LAYER,soil_layer,nitrogen,BOTTOMLAYER);
+    writeoutputarray(SOILN_LAYER,1);
   }
   if(isopen(output,SOILNO3_LAYER))
   {
@@ -1312,12 +1272,12 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             forrootsoillayer(i)
-              grid[cell].output.soilno3_layer[i]+=stand->soil.NO3[i]*stand->frac;
+              getoutputindex(&grid[cell].output,SOILNO3_LAYER,i,config)+=stand->soil.NO3[i]*stand->frac;
           }
         }
       }
     }
-    writeoutputvar2(SOILNO3_LAYER,soilno3_layer,1,BOTTOMLAYER);
+    writeoutputarray(SOILNO3_LAYER,1);
   }
   if(isopen(output,SOILNH4_LAYER))
   {
@@ -1330,37 +1290,37 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             forrootsoillayer(i)
-              grid[cell].output.soilnh4_layer[i]+=stand->soil.NH4[i]*stand->frac;
+              getoutputindex(&grid[cell].output,SOILNH4_LAYER,i,config)+=stand->soil.NH4[i]*stand->frac;
           }
         }
       }
     }
-    writeoutputvar2(SOILNH4_LAYER,soilnh4_layer,1,BOTTOMLAYER);
+    writeoutputarray(SOILNH4_LAYER,1);
   }
   if(config->nwptype)
-    writeoutputvar2(WFT_VEGC,wft_vegc,1,config->nwft);
-  writeoutputvar2(CFT_PET,cft_pet,1,2*(ncft+NGRASS));
-  writeoutputvar2(CFT_TRANSP,cft_transp,1,nirrig);
-  writeoutputvar2(CFT_TRANSP_B,cft_transp_b,1,nirrig);
-  writeoutputvar2(CFT_EVAP,cft_evap,1,nirrig);
-  writeoutputvar2(CFT_EVAP_B,cft_evap_b,1,nirrig);
-  writeoutputvar2(CFT_INTERC,cft_interc,1,nirrig);
-  writeoutputvar2(CFT_INTERC_B,cft_interc_b,1,nirrig);
-  writeoutputvar2(CFT_RETURN_FLOW_B,cft_return_flow_b,1,nirrig);
-  writeoutputshortvar(CFT_IRRIG_EVENTS,cft_irrig_events,nirrig);
-  writeoutputvar2(CFT_NIR,cft_nir,1,nirrig);
-  writeoutputvar2(CFT_TEMP,cft_temp,ndate1,2*(ncft+NGRASS));
-  writeoutputvar2(CFT_PREC,cft_prec,1,2*(ncft+NGRASS));
-  writeoutputvar2(CFT_SRAD,cft_srad,ndate1,2*(ncft+NGRASS));
-  writeoutputvar2(CFT_CONV_LOSS_EVAP,cft_conv_loss_evap,1,nirrig);
-  writeoutputvar2(CFT_CONV_LOSS_DRAIN,cft_conv_loss_drain,1,nirrig);
-  writeoutputvar2(CFTFRAC,cftfrac,1,nirrig);
-  writeoutputvar2(CFT_AIRRIG,cft_airrig,1,nirrig);
-  writeoutputvar2(CFT_FPAR,cft_fpar,ndate1,nirrig);
-  writeoutputvar2(LUC_IMAGE,cft_luc_image,1,nirrig);
-  writeoutputvar2(CFT_NFERT,cft_nfert,1,nirrig);
-  writeoutputvaritem(CFT_ABOVEGBMC,cft_aboveground_biomass,carbon,2*(ncft+NGRASS));
-  writeoutputvaritem(CFT_ABOVEGBMN,cft_aboveground_biomass,nitrogen,2*(ncft+NGRASS));
+    writeoutputarray(WFT_VEGC,1);
+  writeoutputarray(CFT_PET,1);
+  writeoutputarray(CFT_TRANSP,1);
+  writeoutputarray(CFT_TRANSP_B,1);
+  writeoutputarray(CFT_EVAP,1);
+  writeoutputarray(CFT_EVAP_B,1);
+  writeoutputarray(CFT_INTERC,1);
+  writeoutputarray(CFT_INTERC_B,1);
+  writeoutputarray(CFT_RETURN_FLOW_B,1);
+  writeoutputshortvar(CFT_IRRIG_EVENTS);
+  writeoutputarray(CFT_NIR,1);
+  writeoutputarray(CFT_TEMP,ndate1);
+  writeoutputarray(CFT_PREC,1);
+  writeoutputarray(CFT_SRAD,ndate1);
+  writeoutputarray(CFT_CONV_LOSS_EVAP,1);
+  writeoutputarray(CFT_CONV_LOSS_DRAIN,1);
+  writeoutputarray(CFTFRAC,1);
+  writeoutputarray(CFT_AIRRIG,1);
+  writeoutputarray(CFT_FPAR,ndate1);
+  writeoutputarray(LUC_IMAGE,1);
+  writeoutputarray(CFT_NFERT,1);
+  writeoutputarray(CFT_ABOVEGBMC,1);
+  writeoutputarray(CFT_ABOVEGBMN,1);
   /* ATTENTION! Due to allocation rules, this writes away next year's LAImax for trees and grasses */
   if(isopen(output,PFT_LAIMAX))
   {
@@ -1374,12 +1334,12 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           {
             if(stand->type->landusetype == NATURAL)
               foreachpft(pft,p,&stand->pftlist)
-                grid[cell].output.pft_laimax[pft->par->id]+=pft->par->lai(pft);
+                getoutputindex(&grid[cell].output,PFT_LAIMAX,pft->par->id,config)+=pft->par->lai(pft);
           }
         }
       }
     }
-    writeoutputvar2(PFT_LAIMAX,pft_laimax,1,nnat+nirrig);
+    writeoutputarray(PFT_LAIMAX,1);
   }
   if(isopen(output,PFT_NROOT))
   {
@@ -1398,11 +1358,11 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                 {
                   case TREE:
                     tree = pft->data;
-                    grid[cell].output.pft_root[pft->par->id].nitrogen+=tree->ind.root.nitrogen;
+                    getoutputindex(&grid[cell].output,PFT_NROOT,pft->par->id,config)+=tree->ind.root.nitrogen;
                     break;
                   case GRASS:
                     grass = pft->data;
-                    grid[cell].output.pft_root[pft->par->id].nitrogen+=grass->ind.root.nitrogen;
+                    getoutputindex(&grid[cell].output,PFT_NROOT,pft->par->id,config)+=grass->ind.root.nitrogen;
                     break;
                 }
             }
@@ -1410,7 +1370,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         }
       }
     }
-    writeoutputvaritem(PFT_NROOT,pft_root,nitrogen,nnat+nirrig);
+    writeoutputarray(PFT_NROOT,1);
   }
   if(isopen(output,PFT_CROOT))
   {
@@ -1429,11 +1389,11 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                 {
                   case TREE:
                     tree = pft->data;
-                    grid[cell].output.pft_root[pft->par->id].carbon+=tree->ind.root.carbon;
+                    getoutputindex(&grid[cell].output,PFT_CROOT,pft->par->id,config)+=tree->ind.root.carbon;
                     break;
                   case GRASS:
                     grass = pft->data;
-                    grid[cell].output.pft_root[pft->par->id].carbon+=grass->ind.root.carbon;
+                    getoutputindex(&grid[cell].output,PFT_CROOT,pft->par->id,config)+=grass->ind.root.carbon;
                     break;
                 }
             }
@@ -1441,7 +1401,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         }
       }
     }
-    writeoutputvaritem(PFT_CROOT,pft_root,carbon,nnat+nirrig);
+    writeoutputarray(PFT_CROOT,1);
   }
   if(isopen(output,PFT_CLEAF))
   {
@@ -1460,11 +1420,11 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                 {
                   case TREE:
                     tree = pft->data;
-                    grid[cell].output.pft_leaf[pft->par->id].carbon+=tree->ind.leaf.carbon;
+                    getoutputindex(&grid[cell].output,PFT_CLEAF,pft->par->id,config)+=tree->ind.leaf.carbon;
                     break;
                   case GRASS:
                     grass = pft->data;
-                    grid[cell].output.pft_leaf[pft->par->id].carbon+=grass->ind.leaf.carbon;
+                    getoutputindex(&grid[cell].output,PFT_CLEAF,pft->par->id,config)+=grass->ind.leaf.carbon;
                     break;
                 }
             }
@@ -1472,7 +1432,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         }
       }
     }
-    writeoutputvaritem(PFT_CLEAF,pft_leaf,carbon,nnat+nirrig);
+    writeoutputarray(PFT_CLEAF,1);
   }
   if(isopen(output,PFT_NLEAF))
   {
@@ -1491,11 +1451,11 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                 {
                   case TREE:
                     tree = pft->data;
-                    grid[cell].output.pft_leaf[pft->par->id].nitrogen+=tree->ind.leaf.nitrogen;
+                    getoutputindex(&grid[cell].output,PFT_NLEAF,pft->par->id,config)+=tree->ind.leaf.nitrogen;
                     break;
                   case GRASS:
                     grass = pft->data;
-                    grid[cell].output.pft_leaf[pft->par->id].nitrogen+=grass->ind.leaf.nitrogen;
+                    getoutputindex(&grid[cell].output,PFT_NLEAF,pft->par->id,config)+=grass->ind.leaf.nitrogen;
                     break;
                 }
             }
@@ -1503,7 +1463,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         }
       }
     }
-    writeoutputvaritem(PFT_NLEAF,pft_leaf,nitrogen,nnat+nirrig);
+    writeoutputarray(PFT_NLEAF,1);
   }
   if(isopen(output,PFT_CSAPW))
   {
@@ -1524,7 +1484,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   if(pft->par->type==TREE)
                   {
                     tree=pft->data;
-                    grid[cell].output.pft_sapw[nnat+rwp(ncft)+data->irrigation*getnirrig(ncft,config)].carbon+=tree->ind.sapwood.carbon;
+                    getoutputindex(&grid[cell].output,PFT_CSAPW,nnat+rwp(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.carbon;
                   }
                 }
                 break;
@@ -1535,7 +1495,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   if(pft->par->type==TREE)
                   {
                     tree=pft->data;
-                    grid[cell].output.pft_sapw[nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config)].carbon+=tree->ind.sapwood.carbon;
+                    getoutputindex(&grid[cell].output,PFT_CSAPW,nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.carbon;
                   }
                 }
                 break;
@@ -1545,7 +1505,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   if(pft->par->type==TREE)
                   {
                     tree=pft->data;
-                    grid[cell].output.pft_sapw[pft->par->id].carbon+=tree->ind.sapwood.carbon;
+                    getoutputindex(&grid[cell].output,PFT_CSAPW,pft->par->id,config)+=tree->ind.sapwood.carbon;
                   }
                 }
                 break;
@@ -1554,7 +1514,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         }
       }
     }
-    writeoutputvaritem(PFT_CSAPW,pft_sapw,carbon,nnat+nirrig);
+    writeoutputarray(PFT_CSAPW,1);
   }
   if(isopen(output,PFT_NSAPW))
   {
@@ -1575,7 +1535,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   if(pft->par->type==TREE)
                   {
                     tree=pft->data;
-                    grid[cell].output.pft_sapw[nnat+rwp(ncft)+data->irrigation*getnirrig(ncft,config)].nitrogen+=tree->ind.sapwood.nitrogen;
+                    getoutputindex(&grid[cell].output,PFT_NSAPW,nnat+rwp(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.nitrogen;
                   }
                 }
                 break;
@@ -1586,7 +1546,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   if(pft->par->type==TREE)
                   {
                     tree=pft->data;
-                    grid[cell].output.pft_sapw[nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config)].nitrogen+=tree->ind.sapwood.nitrogen;
+                    getoutputindex(&grid[cell].output,PFT_NSAPW,nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.nitrogen;
                   }
                 }
                 break;
@@ -1596,7 +1556,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   if(pft->par->type==TREE)
                   {
                     tree=pft->data;
-                    grid[cell].output.pft_sapw[pft->par->id].nitrogen+=tree->ind.sapwood.nitrogen;
+                    getoutputindex(&grid[cell].output,PFT_NSAPW,pft->par->id,config)+=tree->ind.sapwood.nitrogen;
                   }
                 }
                 break;
@@ -1605,7 +1565,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         }
       }
     }
-    writeoutputvaritem(PFT_NSAPW,pft_sapw,nitrogen,nnat+nirrig);
+    writeoutputarray(PFT_NSAPW,1);
   }
   if(isopen(output,PFT_CHAWO))
   {
@@ -1626,7 +1586,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   if(pft->par->type==TREE)
                   {
                     tree=pft->data;
-                    grid[cell].output.pft_hawo[nnat+rwp(ncft)+data->irrigation*getnirrig(ncft,config)].carbon+=tree->ind.heartwood.carbon;
+                    getoutputindex(&grid[cell].output,PFT_CHAWO,nnat+rwp(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.carbon;
                   }
                 }
                 break;
@@ -1637,7 +1597,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   if(pft->par->type==TREE)
                   {
                     tree=pft->data;
-                    grid[cell].output.pft_hawo[nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config)].carbon+=tree->ind.heartwood.carbon;
+                    getoutputindex(&grid[cell].output,PFT_CHAWO,nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.carbon;
                   }
                 }
                 break;
@@ -1647,7 +1607,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   if(pft->par->type==TREE)
                   {
                     tree=pft->data;
-                    grid[cell].output.pft_hawo[pft->par->id].carbon+=tree->ind.heartwood.carbon;
+                    getoutputindex(&grid[cell].output,PFT_CHAWO,pft->par->id,config)+=tree->ind.heartwood.carbon;
                   }
                 }
                 break;
@@ -1656,7 +1616,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         }
       }
     }
-    writeoutputvaritem(PFT_CHAWO,pft_hawo,carbon,nnat+nirrig);
+    writeoutputarray(PFT_CHAWO,1);
   }
   if(isopen(output,PFT_NHAWO))
   {
@@ -1677,7 +1637,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   if(pft->par->type==TREE)
                   {
                     tree=pft->data;
-                    grid[cell].output.pft_hawo[nnat+rwp(ncft)+data->irrigation*getnirrig(ncft,config)].nitrogen+=tree->ind.heartwood.nitrogen;
+                    getoutputindex(&grid[cell].output,PFT_NHAWO,nnat+rwp(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.nitrogen;
                   }
                 }
                 break;
@@ -1688,7 +1648,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   if(pft->par->type==TREE)
                   {
                     tree=pft->data;
-                    grid[cell].output.pft_hawo[nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config)].nitrogen+=tree->ind.heartwood.nitrogen;
+                    getoutputindex(&grid[cell].output,PFT_NHAWO,nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.nitrogen;
                   }
                 }
                 break;
@@ -1698,7 +1658,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   if(pft->par->type==TREE)
                   {
                     tree=pft->data;
-                    grid[cell].output.pft_hawo[pft->par->id].nitrogen+=tree->ind.heartwood.nitrogen;
+                    getoutputindex(&grid[cell].output,PFT_NHAWO,pft->par->id,config)+=tree->ind.heartwood.nitrogen;
                   }
                 }
                 break;
@@ -1707,7 +1667,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         }
       }
     }
-    writeoutputvaritem(PFT_NHAWO,pft_hawo,nitrogen,nnat+nirrig);
+    writeoutputarray(PFT_NHAWO,1);
   }
   if(isopen(output,MGRASS_SOILC))
   {
@@ -1725,14 +1685,14 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
             if(stand->type->landusetype==GRASSLAND)
             {
               for(p=0;p<stand->soil.litter.n;p++)
-                grid[cell].output.mgrass_soil.carbon+=stand->soil.litter.item[p].bg.carbon*stand->frac/sumfrac;
+                getoutput(&grid[cell].output,MGRASS_SOILC,config)+=stand->soil.litter.item[p].bg.carbon*stand->frac/sumfrac;
               forrootsoillayer(l)
-                grid[cell].output.mgrass_soil.carbon+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac/sumfrac;
+                getoutput(&grid[cell].output,MGRASS_SOILC,config)+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac/sumfrac;
             }
           }
         }
     }
-    writeoutputvar(MGRASS_SOILC,mgrass_soil.carbon);
+    writeoutputvar(MGRASS_SOILC,1);
   }
   if(isopen(output,MGRASS_SOILN))
   {
@@ -1750,14 +1710,14 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
             if(stand->type->landusetype==GRASSLAND)
             {
               for(p=0;p<stand->soil.litter.n;p++)
-                grid[cell].output.mgrass_soil.nitrogen+=stand->soil.litter.item[p].bg.nitrogen*stand->frac/sumfrac;
+                getoutput(&grid[cell].output,MGRASS_SOILN,config)+=stand->soil.litter.item[p].bg.nitrogen*stand->frac/sumfrac;
               forrootsoillayer(l)
-                grid[cell].output.mgrass_soil.nitrogen+=(stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac/sumfrac;
+                getoutput(&grid[cell].output,MGRASS_SOILN,config)+=(stand->soil.pool[l].slow.nitrogen+stand->soil.pool[l].fast.nitrogen)*stand->frac/sumfrac;
             }
           }
         }
     }
-    writeoutputvar(MGRASS_SOILN,mgrass_soil.nitrogen);
+    writeoutputvar(MGRASS_SOILN,1);
   }
   if(isopen(output,MGRASS_LITC))
   {
@@ -1773,11 +1733,11 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             if(stand->type->landusetype==GRASSLAND)
-              grid[cell].output.mgrass_litter.carbon+=litter_ag_sum(&stand->soil.litter)*stand->frac/sumfrac;
+              getoutput(&grid[cell].output,MGRASS_LITC,config)+=litter_ag_sum(&stand->soil.litter)*stand->frac/sumfrac;
           }
         }
     }
-    writeoutputvar(MGRASS_LITC,mgrass_litter.carbon);
+    writeoutputvar(MGRASS_LITC,1);
   }
   if(isopen(output,MGRASS_LITN))
   {
@@ -1793,55 +1753,45 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
           foreachstand(stand,s,grid[cell].standlist)
           {
             if(stand->type->landusetype==GRASSLAND)
-              grid[cell].output.mgrass_litter.nitrogen+=litter_ag_sum_n(&stand->soil.litter)*stand->frac/sumfrac;
+              getoutput(&grid[cell].output,MGRASS_LITN,config)+=litter_ag_sum_n(&stand->soil.litter)*stand->frac/sumfrac;
           }
         }
     }
-    writeoutputvar(MGRASS_LITN,mgrass_litter.nitrogen);
+    writeoutputvar(MGRASS_LITN,1);
   }
-
   if(config->double_harvest)
   {
-    writeoutputvaritem(PFT_HARVESTC2,dh->pft_harvest2,harvest.carbon,nirrig);
-    writeoutputvaritem(PFT_HARVESTN2,dh->pft_harvest2,harvest.nitrogen,nirrig);
-    writeoutputvaritem(PFT_RHARVESTC2,dh->pft_harvest2,residual.carbon,nirrig);
-    writeoutputvaritem(PFT_RHARVESTN2,dh->pft_harvest2,residual.nitrogen,nirrig);
-    writeoutputvar2(GROWING_PERIOD2,dh->growing_period2,1,2*(ncft+NGRASS));
-    writeoutputvar2(CFT_PET2,dh->cft_pet2,1,2*(ncft+NGRASS));
-    writeoutputvar2(CFT_TRANSP2,dh->cft_transp2,1,nirrig);
-    writeoutputvar2(CFT_EVAP2,dh->cft_evap2,1,nirrig);
-    writeoutputvar2(CFT_INTERC2,dh->cft_interc2,1,nirrig);
-    writeoutputvar2(CFT_NIR2,dh->cft_nir2,1,nirrig);
-    writeoutputvar2(CFT_TEMP2,dh->cft_temp2,ndate1,2*(ncft+NGRASS));
-    writeoutputvar2(CFT_PREC2,dh->cft_prec2,1,2*(ncft+NGRASS));
-    writeoutputvar2(CFT_SRAD2,dh->cft_srad2,ndate1,2*(ncft+NGRASS));
-    writeoutputvar2(CFTFRAC2,dh->cftfrac2,1,nirrig);
-    writeoutputvar2(CFT_AIRRIG2,dh->cft_airrig2,1,nirrig);
-    writeoutputshortvar(SDATE2,dh->sdate2,2*ncft);
-    writeoutputshortvar(HDATE2,dh->hdate2,2*ncft);
-    writeoutputshortvar(SYEAR,dh->syear,2*ncft);
-    writeoutputshortvar(SYEAR2,dh->syear2,2*ncft);
-    writeoutputvaritem(CFT_ABOVEGBMC2,dh->cft_aboveground_biomass2,carbon,2*(ncft+NGRASS));
-    writeoutputvaritem(CFT_ABOVEGBMN2,dh->cft_aboveground_biomass2,nitrogen,2*(ncft+NGRASS));
-    writeoutputvar2(CFT_RUNOFF2,dh->cft_runoff2,1,2*ncft);
-    writeoutputvar2(CFT_N2O_DENIT2,dh->cft_n2o_denit2,1,2*ncft);
-    writeoutputvar2(CFT_N2O_NIT2,dh->cft_n2o_nit2,1,2*ncft);
-    writeoutputvar2(CFT_N2_EMIS2,dh->cft_n2_emis2,1,2*ncft);
-    writeoutputvar2(CFT_LEACHING2,dh->cft_leaching2,1,2*ncft);
-    writeoutputvar2(CFT_C_EMIS2,dh->cft_c_emis2,1,2*ncft);
-    writeoutputvar2(CFT_NFERT2,dh->cft_nfert2,1,nirrig);
-    writeoutputvar2(PFT_NUPTAKE2,dh->pft_nuptake2,1,nnat+nirrig);
+    writeoutputarray(PFT_HARVESTC2,1);
+    writeoutputarray(PFT_HARVESTN2,1);
+    writeoutputarray(PFT_RHARVESTC2,1);
+    writeoutputarray(PFT_RHARVESTN2,1);
+    writeoutputarray(GROWING_PERIOD2,1);
+    writeoutputarray(CFT_PET2,1);
+    writeoutputarray(CFT_TRANSP2,1);
+    writeoutputarray(CFT_EVAP2,1);
+    writeoutputarray(CFT_INTERC2,1);
+    writeoutputarray(CFT_NIR2,1);
+    writeoutputarray(CFT_TEMP2,ndate1);
+    writeoutputarray(CFT_PREC2,1);
+    writeoutputarray(CFT_SRAD2,ndate1);
+    writeoutputarray(CFTFRAC2,1)
+    writeoutputarray(CFT_AIRRIG2,1)
+    writeoutputshortvar(SDATE2);
+    writeoutputshortvar(HDATE2);
+    writeoutputshortvar(SYEAR);
+    writeoutputshortvar(SYEAR2);
+    writeoutputarray(CFT_ABOVEGBMC2,1);
+    writeoutputarray(CFT_ABOVEGBMN2,1);
+    writeoutputarray(CFT_RUNOFF2,1);
+    writeoutputarray(CFT_N2O_DENIT2,1);
+    writeoutputarray(CFT_N2O_NIT2,1);
+    writeoutputarray(CFT_N2_EMIS2,1);
+    writeoutputarray(CFT_LEACHING2,1);
+    writeoutputarray(CFT_C_EMIS2,1);
+    writeoutputarray(CFT_NFERT2,1);
+    writeoutputarray(PFT_NUPTAKE2,1);
   }
   for(i=D_LAI;i<=D_PET;i++)
-  {
-    if(iswrite(output,i))
-    {
-      count=0;
-      for(cell=0;cell<config->ngridcell;cell++)
-       if(!grid[cell].skip)
-         vec[count++]=(float)((Real *)(&grid[cell].output.daily))[i-D_LAI];
-       writedata(output,i,vec,year,date,ndata,config);
-    }
-  }
+    writeoutputarray(i,1);
   free(vec);
 } /* of 'fwriteoutput' */

@@ -15,29 +15,30 @@
 #include "lpj.h"
 #include "crop.h"
 
-void output_daily_crop(Daily_outputs* output, /**< daily output data */
+void output_daily_crop(Output* output, /**< daily output data */
                        const  Pft* pft, /**< pointer to PFT data */
                        Real gpp,         /**< GPP (gC/m2/day) */
-                       Real rd           /**< leaf respiration (gC/m2/day) */
+                       Real rd,          /**< leaf respiration (gC/m2/day) */
+                       const Config *config
                       )
 {
   const Pftcrop *crop;
   crop=pft->data;
-  if(output->cft==ALLSTAND)
-    output->gpp+=gpp*pft->stand->frac;
+  if(config->crop_index==ALLSTAND)
+    getoutput(output,D_GPP,config)+=gpp*pft->stand->frac;
   else
   {
-    output->lai=crop->lai;
-    output->laimaxad=crop->laimax_adjusted;
-    output->lainppdeficit=crop->lai_nppdeficit;
-    output->husum=crop->husum;
-    output->vdsum=crop->vdsum;
-    output->fphu=crop->fphu;
-    output->phen=pft->phen;
-    output->growingday=crop->growingdays;
-    output->pvd=crop->pvd;
-    output->phu=crop->phu;
-    output->gpp=gpp;
-    output->rd=rd;
+    getoutput(output,D_LAI,config)=crop->lai;
+    getoutput(output,D_LAIMAXAD,config)=crop->laimax_adjusted;
+    getoutput(output,D_LAINPPDEF,config)=crop->lai_nppdeficit;
+    getoutput(output,D_HUSUM,config)=crop->husum;
+    getoutput(output,D_VDSUM,config)=crop->vdsum;
+    getoutput(output,D_FPHU,config)=crop->fphu;
+    getoutput(output,D_PHEN,config)=pft->phen;
+    getoutput(output,D_GROWINGDAY,config)=crop->growingdays;
+    getoutput(output,D_PVD,config)=crop->pvd;
+    getoutput(output,D_PHU,config)=crop->phu;
+    getoutput(output,D_GPP,config)=gpp;
+    getoutput(output,D_RD,config)=rd;
   }
 } /* of 'output_daily_crop' */

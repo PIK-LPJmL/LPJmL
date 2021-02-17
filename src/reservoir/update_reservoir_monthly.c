@@ -16,7 +16,8 @@
 #include "lpj.h"
 
 void update_reservoir_monthly(Cell *cell, /**< pointer to cell */
-                              int month   /**< month of year (0..11) */
+                              int month,   /**< month of year (0..11) */
+                              const Config *config
                               )           /** \return void */
 {
   int i,j;
@@ -37,9 +38,9 @@ void update_reservoir_monthly(Cell *cell, /**< pointer to cell */
     printf("%g %g\n",cell->discharge.mfin,cell->output.mprec_res);
 #endif
   cell->ml.resdata->demand_hist[HIST_YEARS-1][month]=cell->ml.resdata->mdemand; /* changed because the mdemand is now updated every month */
-  cell->output.mres_demand=cell->ml.resdata->mdemand/1e9; /*fill output with mdemand in million liters*/
-  cell->output.mtarget_release=cell->ml.resdata->target_release_month[month]*1e-9; /*fill output with target release month in 1.000.000 m3/day */
-  cell->output.mres_cap=cell->ml.resdata->reservoir.capacity*1e-9; /*fill output with the reservoir capacity in 1.000.000 m3 */
+  getoutput(&cell->output,RES_DEMAND,config)+=cell->ml.resdata->mdemand/1e9; /*fill output with mdemand in million liters*/
+  getoutput(&cell->output,TARGET_RELEASE,config)+=cell->ml.resdata->target_release_month[month]*1e-9; /*fill output with target release month in 1.000.000 m3/day */
+  getoutput(&cell->output,RES_CAP,config)+=cell->ml.resdata->reservoir.capacity*1e-9; /*fill output with the reservoir capacity in 1.000.000 m3 */
   cell->ml.resdata->mdemand=0.0; /* Reset mdemand to zero at the end of each month*/
   cell->ml.resdata->level_hist[HIST_YEARS-1][month]=cell->ml.resdata->dmass; /* at end of every month store the reservoir mass  */
 

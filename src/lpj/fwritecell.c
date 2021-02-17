@@ -113,7 +113,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
       if(grid[cell].ml.fertilizer_nr!=NULL)
         fwritelandfrac(file,grid[cell].ml.fertilizer_nr,ncft,config->nagtree);
       if(ischeckpoint && config->n_out)
-       fwriteoutputdata(file,&grid[cell].output,npft,ncft,config);
+       fwriteoutputdata(file,&grid[cell].output,config);
 
     }
   } /* of 'for(cell=...)' */

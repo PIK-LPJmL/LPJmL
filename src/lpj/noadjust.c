@@ -15,7 +15,7 @@
 
 #include "lpj.h"
 
-void noadjust(Litter * UNUSED(litter),Pft * UNUSED(pft),Real UNUSED(fpc), Real UNUSED(fpc_max))
+void noadjust(Litter * UNUSED(litter),Pft * UNUSED(pft),Real UNUSED(fpc), Real UNUSED(fpc_max),const Config * UNUSED(config))
 {
   return;
 } /* of 'noadjust' */

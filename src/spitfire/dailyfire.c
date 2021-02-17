@@ -124,7 +124,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     if(surface_fi>50)
     {
       livefuel_consump_pft=pft->par->livefuel_consumption(&stand->soil.litter, pft,
-                                                          &fuel, livefuel, &isdead, surface_fi, fire_frac);
+                                                          &fuel, livefuel, &isdead, surface_fi, fire_frac,config);
 #ifdef WITH_FIRE_MOISTURE
       emission.co2+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co2 * (livefuel->CME/0.94);
       emission.co+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.co * (2- livefuel->CME/0.94);
@@ -150,20 +150,20 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   total_fire.nitrogen = (deadfuel_consump.nitrogen + livefuel_consump.nitrogen);
 
   /* write SPITFIRE outputs to LPJ output structures */
-  output->mfiredi +=fire_danger_index;
-  output->mnfire +=num_fires;
-  output->firef += fire_frac;
-  output->burntarea += burnt_area; /*ha*/
-  output->fire.carbon+= total_fire.carbon;
+  getoutput(output,FIREDI,config) +=fire_danger_index;
+  getoutput(output,NFIRE,config) +=num_fires;
+  getoutput(output,FIREF,config) += fire_frac;
+  getoutput(output,BURNTAREA,config) += burnt_area; /*ha*/
+  getoutput(output,FIREC,config)+= total_fire.carbon;
   stand->cell->balance.fire.carbon+=total_fire.carbon;
-  output->fire.nitrogen+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;
+  getoutput(output,FIREN,config)+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;
   stand->cell->balance.fire.nitrogen+=total_fire.nitrogen*(1-param.q_ash)*stand->frac;
   stand->soil.NO3[0]+=total_fire.nitrogen*param.q_ash;
   output->dcflux+=total_fire.carbon;
-  output->mfireemission.co2+=emission.co2*stand->frac;
-  output->mfireemission.co+=emission.co*stand->frac;
-  output->mfireemission.ch4+=emission.ch4*stand->frac;
-  output->mfireemission.voc+=emission.voc*stand->frac;
-  output->mfireemission.tpm+=emission.tpm*stand->frac;
-  output->mfireemission.nox+=emission.nox*stand->frac;
+  getoutput(output,FIREEMISSION_CO2,config)+=emission.co2*stand->frac;
+  getoutput(output,FIREEMISSION_CO,config)+=emission.co*stand->frac;
+  getoutput(output,FIREEMISSION_CH4,config)+=emission.ch4*stand->frac;
+  getoutput(output,FIREEMISSION_VOC,config)+=emission.voc*stand->frac;
+  getoutput(output,FIREEMISSION_TPM,config)+=emission.tpm*stand->frac;
+  getoutput(output,FIREEMISSION_NOX,config)+=emission.nox*stand->frac;
 }  /* of 'dailyfire' */

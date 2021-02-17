@@ -126,7 +126,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       freadlandfrac(file,cell->ml.fertilizer_nr,ncft,config->nagtree,swap);
     if(config->ischeckpoint && config->n_out)
     {
-      if(freadoutputdata(file,&cell->output,npft,ncft,swap,config))
+      if(freadoutputdata(file,&cell->output,swap,config))
         return TRUE;
     }
   }

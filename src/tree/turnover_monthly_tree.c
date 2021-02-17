@@ -16,7 +16,8 @@
 #include "tree.h"
 
 void turnover_monthly_tree(Litter *litter, /**< pointer to litter pool */
-                           Pft *pft        /**< pointer to tree PFT */
+                           Pft *pft,        /**< pointer to tree PFT */
+                           const Config *config
                           )
 {
   Pfttree *tree;
@@ -28,10 +29,10 @@ void turnover_monthly_tree(Litter *litter, /**< pointer to litter pool */
   tree->turn.root.carbon+=tree->ind.root.carbon*treepar->turnover.root/NMONTH;
   tree->turn_litt.root.carbon+=tree->ind.root.carbon*treepar->turnover.root/NMONTH*pft->nind;
   litter->item[pft->litter].bg.carbon+=tree->ind.root.carbon*treepar->turnover.root/NMONTH*pft->nind;
-  output->alittfall.carbon+=tree->ind.root.carbon*treepar->turnover.root/NMONTH*pft->nind*pft->stand->frac;
+  getoutput(output,LITFALLC,config)+=tree->ind.root.carbon*treepar->turnover.root/NMONTH*pft->nind*pft->stand->frac;
   tree->turn.root.nitrogen+=tree->ind.root.nitrogen*treepar->turnover.root/NMONTH;
   tree->turn_litt.root.nitrogen+=tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind;//*pft->par->fn_turnover;
   litter->item[pft->litter].bg.nitrogen+=tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover;
-  output->alittfall.nitrogen+=tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover*pft->stand->frac;
+  getoutput(output,LITFALLN,config)+=tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind*pft->par->fn_turnover*pft->stand->frac;
   tree->turn_nbminc+= tree->ind.root.nitrogen*treepar->turnover.root/NMONTH*pft->nind*(1-pft->par->fn_turnover);
 } /* of 'turnover_monthly_tree' */

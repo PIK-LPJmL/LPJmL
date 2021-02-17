@@ -15,12 +15,12 @@
 #include "lpj.h"
 #include "grassland.h"
 
-Bool isdailyoutput_grassland(const Output *output, /**< Output data */
+Bool isdailyoutput_grassland(const Config *config, /**< Output data */
                              const Stand *stand    /**< stand pointer */
                            )
 {
   const Grassland *data;
   data = stand->data;
-  return (output->daily.cft==ALLSTAND || (output->daily.cft==ALLGRASSLAND &&
-     output->daily.irrigation==data->irrigation.irrigation));
+  return (config->crop_index==ALLSTAND || (config->crop_index==ALLGRASSLAND &&
+     config->crop_irrigation==data->irrigation.irrigation));
 } /* of 'isdailyoutput_grassland' */

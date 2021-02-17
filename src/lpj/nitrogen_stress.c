@@ -43,9 +43,9 @@ Real nitrogen_stress(Pft *pft,             /**< PFT */
       nup=nuptake(pft,&nplant_demand,&ndemand_leaf,npft,ncft,config);
     else if(pft->stand->type->landusetype!=AGRICULTURE)
       pft->vscal+=1;
-    pft->stand->cell->output.mn_uptake+=nup*pft->stand->frac;
+    getoutput(&pft->stand->cell->output,NUPTAKE,config)+=nup*pft->stand->frac;
     if(isagriculture(pft->stand->type->landusetype))
-      pft->stand->cell->output.anuptake_agr+=nup*pft->stand->frac;
+      getoutput(&pft->stand->cell->output,NUPTAKE_AGR,config)+=nup*pft->stand->frac;
     pft->nleaf=max(pft->nleaf,ndemand_leaf);
     if(ndemand_leaf_opt>ndemand_leaf)
     {

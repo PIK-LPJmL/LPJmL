@@ -115,18 +115,18 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     pft->bm_inc.nitrogen += autofert_n;
     pft->vscal+=1;
     pft->stand->cell->balance.n_influx += autofert_n*pft->stand->frac;
-    pft->stand->cell->output.flux_nfert+=autofert_n*pft->stand->frac;
+    getoutput(&pft->stand->cell->output,FLUX_AUTOFERT,config)+=autofert_n*pft->stand->frac;
     switch(pft->stand->type->landusetype)
     {
       case GRASSLAND:
-        pft->stand->cell->output.cft_nfert[rothers(ncft)+data->irrigation*nirrig]+=autofert_n;
-        pft->stand->cell->output.cft_nfert[rmgrass(ncft)+data->irrigation*nirrig]+=autofert_n;
+        getoutputindex(&pft->stand->cell->output,CFT_NFERT,rothers(ncft)+data->irrigation*nirrig,config)+=autofert_n;
+        getoutputindex(&pft->stand->cell->output,CFT_NFERT,rmgrass(ncft)+data->irrigation*nirrig,config)+=autofert_n;
         break;
       case BIOMASS_GRASS:
-        pft->stand->cell->output.cft_nfert[rbgrass(ncft)+data->irrigation*nirrig]+=autofert_n;
+        getoutputindex(&pft->stand->cell->output,CFT_NFERT,rbgrass(ncft)+data->irrigation*nirrig,config)+=autofert_n;
         break;
       case AGRICULTURE_GRASS:
-        pft->stand->cell->output.cft_nfert[data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig]+=autofert_n;
+        getoutputindex(&pft->stand->cell->output,CFT_NFERT,data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=autofert_n;
         break;
     }
   }
@@ -153,22 +153,22 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   switch(pft->stand->type->landusetype)
   {
     case NATURAL: case SETASIDE_RF: case SETASIDE_IR:
-      pft->stand->cell->output.pft_nuptake[pft->par->id]+=n_uptake;
-      pft->stand->cell->output.pft_ndemand[pft->par->id]+=*n_plant_demand-vegn_sum_grass(pft);
+      getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,pft->par->id,config)+=n_uptake;
+      getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,pft->par->id,config)+=*n_plant_demand-vegn_sum_grass(pft);
       break;
     case BIOMASS_GRASS:
-      pft->stand->cell->output.pft_nuptake[nnat+rbgrass(ncft)+data->irrigation*nirrig]+=n_uptake; /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
-      pft->stand->cell->output.pft_ndemand[nnat+rbgrass(ncft)+data->irrigation*nirrig]+=*n_plant_demand-vegn_sum_grass(pft); /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
+      getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=n_uptake; /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
+      getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=*n_plant_demand-vegn_sum_grass(pft); /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
       break;
     case AGRICULTURE_GRASS:
-      pft->stand->cell->output.pft_nuptake[nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig]+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
-      pft->stand->cell->output.pft_ndemand[nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig]+=max(0,*n_plant_demand-vegn_sum_grass(pft)); /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+      getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+      getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=max(0,*n_plant_demand-vegn_sum_grass(pft)); /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
       break;
     case GRASSLAND:
-      pft->stand->cell->output.pft_nuptake[nnat+rothers(ncft)+data->irrigation*nirrig]+=n_uptake;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
-      pft->stand->cell->output.pft_nuptake[nnat+rmgrass(ncft)+data->irrigation*nirrig]+=n_uptake;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
-      pft->stand->cell->output.pft_ndemand[nnat+rothers(ncft)+data->irrigation*nirrig]+=max(0,*n_plant_demand-vegn_sum_grass(pft));/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
-      pft->stand->cell->output.pft_ndemand[nnat+rmgrass(ncft)+data->irrigation*nirrig]+=max(0,*n_plant_demand-vegn_sum_grass(pft));/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
+      getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+rothers(ncft)+data->irrigation*nirrig,config)+=n_uptake;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
+      getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+rmgrass(ncft)+data->irrigation*nirrig,config)+=n_uptake;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
+      getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rothers(ncft)+data->irrigation*nirrig,config)+=max(0,*n_plant_demand-vegn_sum_grass(pft));/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
+      getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rmgrass(ncft)+data->irrigation*nirrig,config)+=max(0,*n_plant_demand-vegn_sum_grass(pft));/*pft->stand->cell->ml.landfrac[data->irrigation].grass[1];*/
       break;
   } /* of 'switch' */
   pft->stand->cell->balance.n_uptake+=n_uptake*pft->stand->frac;
