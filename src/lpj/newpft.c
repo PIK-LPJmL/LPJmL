@@ -21,7 +21,7 @@ void newpft(Pft *pft,            /**< PFT variables */
             const Pftpar *pftpar,/**< Parameter of PFT */
             int year,            /**< anno domini */
             int day,             /**< day of year (1..365) */
-            const Config *config
+            const Config *config /**< LPJmL configuration */
            )
 {
   int index;

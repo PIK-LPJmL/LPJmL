@@ -132,8 +132,8 @@ Received 19 November 1997; accepted 15 January 1999*/
   Real rh_nat;              /**< soil respiration natural stand */
   Real flux_estab_wp;       /**< flux_estab woodplantation */
   Real rh_wp;               /**< soil respiration woodplantation */
-  Real ydischarge;
-  Real *pft_harvest;
+  Real ydischarge;          /**< annual discharge */
+  Real *pft_harvest;        /**< harvested carbon */
 #endif
 };
 

@@ -569,7 +569,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
     if(!isannual(PFT_NROOT,config))
     {
-      getoutputindex(output,PFT_NROOT,nnat+rothers(ncft)+index,config)=grass->ind.leaf.nitrogen;
+      getoutputindex(output,PFT_NROOT,nnat+rothers(ncft)+index,config)=grass->ind.root.nitrogen;
       getoutputindex(output,PFT_NROOT,nnat+rmgrass(ncft)+index,config)=grass->ind.root.nitrogen;
     }
 

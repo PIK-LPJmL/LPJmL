@@ -42,12 +42,12 @@ typedef struct
 
 typedef struct
 {
-  Real *data;
+  Real *data;            /**< storage for output */
   Real mpet;             /**< monthly PET (mm) */
-  Real mprec_res;
-  Real dcflux;             /**< daily carbon flux from LPJ to atmosphere (gC/m2/day) */
+  Real mprec_res;        /**< monthly reservoir precipitation (mm) */
+  Real dcflux;           /**< daily carbon flux from LPJ to atmosphere (gC/m2/day) */
 #ifdef COUPLING_WITH_FMS
-  Real dwflux;             /**< daily water flux from LPJ to atmosphere (kg/m2/day) */
+  Real dwflux;           /**< daily water flux from LPJ to atmosphere (kg/m2/day) */
 #endif
 } Output;
 

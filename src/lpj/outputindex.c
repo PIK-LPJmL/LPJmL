@@ -1,4 +1,4 @@
-/*************************************************************************************/
+/**************************************************************************************/
 /**                                                                                \n**/
 /**                     o  u  t  p  u  t  i  n  d  e  x  .  c                      \n**/
 /**                                                                                \n**/
@@ -14,9 +14,13 @@
 
 #include "lpj.h"
 
-int outputindex(int index,int i,const Config *config)
+int outputindex(int index,           /**< index of output file */
+                int i,               /**< index in output array */
+                const Config *config /**< LPJmL configuration */
+               )                     /** \return index in output storage to write data */
 {
   if(i<0 || i>=config->outputsize[index])
-   fail(INVALID_BOUNDARY_ERR,TRUE,"Boundary=%d for output %d out of bounds, must be <%d",i,index,config->outputsize[index]);
+   fail(INVALID_BOUNDARY_ERR,TRUE,"Boundary=%d for output %d out of bounds, must be <%d",
+        i,index,config->outputsize[index]);
   return config->outputmap[index]+i;
 } /* of 'outputindex' */

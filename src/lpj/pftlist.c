@@ -132,7 +132,7 @@ Pft *addpft(Stand *stand,         /**< Stand pointer */
             const Pftpar *pftpar, /**< PFT parameter */
             int year,             /**< simulation year (AD) */
             int day,              /**< day of year (1..365) */
-            const Config *config
+            const Config *config  /**< LPJmL configuration */
            )                      /** \return pointer to added PFT */
 {
   /* resize PFT array */
