@@ -372,11 +372,17 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
 #endif
       if(config->pft_output_scaled)
       {
+#if defined IMAGE && defined COUPLED
+        stand->cell->pft_harvest[index]+=yield.carbon*stand->frac;
+#endif
         getoutputindex(output,PFT_HARVESTC,index,config)+=yield.carbon*stand->frac;
         getoutputindex(output,PFT_HARVESTN,index,config)+=yield.nitrogen*stand->frac;
       }
       else
       {
+#if defined IMAGE && defined COUPLED
+        stand->cell->pft_harvest[index]+=yield.carbon;
+#endif
         getoutputindex(output,PFT_HARVESTC,index,config)+=yield.carbon;
         getoutputindex(output,PFT_HARVESTN,index,config)+=yield.nitrogen;
       }

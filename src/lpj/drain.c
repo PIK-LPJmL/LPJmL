@@ -128,6 +128,13 @@ void drain(Cell grid[],         /**< Cell array */
       grid[i].discharge.dmass_river-=grid[i].discharge.fout;
       grid[i].discharge.dfout+=grid[i].discharge.fout;
       getoutput(&grid[i].output,DISCHARGE,config)+=grid[i].discharge.fout;
+#ifdef IMAGE
+      getoutput(&grid[i].output,YDISCHARGE,config)+=grid[i].discharge.fout;
+#ifdef COUPLED
+     grid[i].ydischarge+=grid[i].discharge.fout;
+#endif
+#endif
+
       if(grid[i].discharge.next<0)
       {
         getoutput(&grid[i].output,ADISCHARGE,config)+=grid[i].discharge.fout;           /* only endcell outflow */

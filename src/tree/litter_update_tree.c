@@ -18,7 +18,7 @@
 void litter_update_tree(Litter *litter, /**< Litter pool */
                         Pft *pft,       /**< PFT variables */
                         Real frac,      /**< fraction added to litter (0..1) */
-                        const Config *config
+                        const Config *config /**< LPJmL configuration */
                        )
 {
   int i;

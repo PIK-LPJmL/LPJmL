@@ -125,6 +125,9 @@ void harvest_crop(Output *output,      /**< Output data */
   {
     if(config->pft_output_scaled)
     {
+#if defined IMAGE && defined COUPLED
+      stand->cell->pft_harvest[pft->par->id-npft+data->irrigation*nirrig]+=harvest.harvest.carbon*stand->frac;
+#endif
       getoutputindex(output,PFT_HARVESTC,pft->par->id-npft+data->irrigation*nirrig,config)+=harvest.harvest.carbon*stand->frac;
       getoutputindex(output,PFT_HARVESTN,pft->par->id-npft+data->irrigation*nirrig,config)+=harvest.harvest.nitrogen*stand->frac;
       getoutputindex(output,PFT_RHARVESTC,pft->par->id-npft+data->irrigation*nirrig,config)+=(harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon)*stand->frac;
@@ -132,6 +135,9 @@ void harvest_crop(Output *output,      /**< Output data */
     }
     else
     {
+#if defined IMAGE && defined COUPLED
+      stand->cell->pft_harvest[pft->par->id-npft+data->irrigation*nirrig]+=harvest.harvest.carbon;
+#endif
       getoutputindex(output,PFT_HARVESTC,pft->par->id-npft+data->irrigation*nirrig,config)+=harvest.harvest.carbon;
       getoutputindex(output,PFT_HARVESTN,pft->par->id-npft+data->irrigation*nirrig,config)+=harvest.harvest.nitrogen;
       getoutputindex(output,PFT_RHARVESTC,pft->par->id-npft+data->irrigation*nirrig,config)+=(harvest.residual.carbon+harvest.residuals_burnt.carbon+harvest.residuals_burntinfield.carbon);

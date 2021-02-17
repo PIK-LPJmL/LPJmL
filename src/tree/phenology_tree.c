@@ -19,7 +19,7 @@ void phenology_tree(Pft *pft,    /**< pointer to PFT variables */
                     Real temp,   /**< temperature (deg C) */
                     int day,     /**< day of year (1..365) */
                     Bool isdaily, /**< daily temperatures (TRUE/FALSE) */
-                    const Config *config
+                    const Config *config /**< LPJmL configuration */
                    )
 {
   Pfttree *tree;

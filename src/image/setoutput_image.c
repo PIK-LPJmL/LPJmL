@@ -17,24 +17,24 @@
 
 #if defined IMAGE && defined COUPLED
 
-void setoutput_image(Cell *cell,int ncft)
+void setoutput_image(Cell *cell,int ncft,const Config *config)
 {
   int cft;
   for(cft=0;cft<ncft;cft++)
   {
-    cell->output.cft_luc_image[cft]=cell->ml.landfrac[0].crop[cft];
-    cell->output.cft_luc_image[cft+ncft+NGRASS+NBIOMASSTYPE+NWPTYPE]=cell->ml.landfrac[1].crop[cft];
+    getoutputindex(&cell->output,LUC_IMAGE,cft,config)=cell->ml.landfrac[0].crop[cft];
+    getoutputindex(&cell->output,LUC_IMAGE,cft+getnirrig(ncft,config),config)=cell->ml.landfrac[1].crop[cft];
   }
-  cell->output.cft_luc_image[rothers(ncft)]=cell->ml.landfrac[0].grass[0];
-  cell->output.cft_luc_image[rmgrass(ncft)]=cell->ml.landfrac[0].grass[1];
-  cell->output.cft_luc_image[rbgrass(ncft)]=cell->ml.landfrac[0].biomass_grass;
-  cell->output.cft_luc_image[rbtree(ncft)]=cell->ml.landfrac[0].biomass_tree;
-  cell->output.cft_luc_image[rwp(ncft)]=cell->ml.landfrac[0].woodplantation;
-  cell->output.cft_luc_image[rothers(ncft)+ncft+NGRASS+NBIOMASSTYPE+NWPTYPE]=cell->ml.landfrac[1].grass[0];
-  cell->output.cft_luc_image[rmgrass(ncft)+ncft+NGRASS+NBIOMASSTYPE+NWPTYPE]=cell->ml.landfrac[1].grass[1];
-  cell->output.cft_luc_image[rbgrass(ncft)+ncft+NGRASS+NBIOMASSTYPE+NWPTYPE]=cell->ml.landfrac[1].biomass_grass;
-  cell->output.cft_luc_image[rbtree(ncft)+ncft+NGRASS+NBIOMASSTYPE+NWPTYPE]=cell->ml.landfrac[1].biomass_tree;
-  cell->output.cft_luc_image[rwp(ncft)+ncft+NGRASS+NBIOMASSTYPE+NWPTYPE]=cell->ml.landfrac[1].woodplantation;
+  getoutputindex(&cell->output,LUC_IMAGE,rothers(ncft),config)=cell->ml.landfrac[0].grass[0];
+  getoutputindex(&cell->output,LUC_IMAGE,rmgrass(ncft),config)=cell->ml.landfrac[0].grass[1];
+  getoutputindex(&cell->output,LUC_IMAGE,rbgrass(ncft),config)=cell->ml.landfrac[0].biomass_grass;
+  getoutputindex(&cell->output,LUC_IMAGE,rbtree(ncft),config)=cell->ml.landfrac[0].biomass_tree;
+  getoutputindex(&cell->output,LUC_IMAGE,rwp(ncft),config)=cell->ml.landfrac[0].woodplantation;
+  getoutputindex(&cell->output,LUC_IMAGE,rothers(ncft)+getnirrig(ncft,config),config)=cell->ml.landfrac[1].grass[0];
+  getoutputindex(&cell->output,LUC_IMAGE,rmgrass(ncft)+getnirrig(ncft,config),config)=cell->ml.landfrac[1].grass[1];
+  getoutputindex(&cell->output,LUC_IMAGE,rbgrass(ncft)+getnirrig(ncft,config),config)=cell->ml.landfrac[1].biomass_grass;
+  getoutputindex(&cell->output,LUC_IMAGE,rbtree(ncft)+getnirrig(ncft,config),config)=cell->ml.landfrac[1].biomass_tree;
+  getoutputindex(&cell->output,LUC_IMAGE,rwp(ncft)+getnirrig(ncft,config),config)=cell->ml.landfrac[1].woodplantation;
 } /* of 'setoutput_image' */
 
 #endif

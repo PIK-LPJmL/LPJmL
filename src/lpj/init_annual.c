@@ -39,13 +39,18 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.flux_firewood.carbon=cell->balance.flux_firewood.nitrogen=0;
   cell->balance.flux_estab.carbon=cell->balance.flux_estab.nitrogen=0;
   cell->balance.flux_harvest.carbon=cell->balance.flux_harvest.nitrogen=0;
+  cell->balance.timber_harvest.carbon=cell->balance.timber_harvest.nitrogen=0;
   cell->balance.deforest_emissions.carbon=cell->balance.deforest_emissions.nitrogen=0;
   cell->balance.prod_turnover.fast.carbon=cell->balance.prod_turnover.fast.nitrogen=0;
   cell->balance.prod_turnover.slow.carbon=cell->balance.prod_turnover.slow.nitrogen=0;
   cell->balance.neg_fluxes.carbon=cell->balance.neg_fluxes.nitrogen=0;
   cell->balance.excess_water=0;
 #if defined IMAGE && defined COUPLED
-  cell->output.npp_nat=cell->output.npp_wp=cell->output.flux_estab_nat=cell->output.flux_estab_wp=cell->output.rh_nat=cell->output.rh_wp=0.0;
+  cell->npp_nat=cell->npp_wp=cell->flux_estab_nat=cell->flux_estab_wp=cell->rh_nat=cell->rh_wp=0.0;
+  for(p=0;p<config->outputsize[PFT_HARVESTC];p++)
+    cell->pft_harvest[p]=0;
+  cell->ydischarge=0;
+  cell->npp_grass=0;
 #endif
   foreachstand(stand,s,cell->standlist)
   {

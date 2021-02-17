@@ -18,7 +18,7 @@
 void light_tree(Litter *litter, /**< pointer to litter pools */
                 Pft *pft,       /**< pointer to tree PFT */
                 Real excess,    /**< excess in FPC */
-                const Config *config
+                const Config *config /**< LPJmL configuration */
                )
 {
   

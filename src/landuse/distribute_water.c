@@ -65,9 +65,9 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
     frac_unsustainable=frac_unsustainable>0 ? frac_unsustainable : 0.0;
     // coord area added to change to mm
     cell->balance.awd_unsustainable+=frac_unsustainable*cell->discharge.gir/cell->coord.area;
-    cell->output.mwd_unsustainable+=frac_unsustainable*cell->discharge.gir/cell->coord.area; 
+    getoutput(&cell->output,WD_UNSUST,config)+=frac_unsustainable*cell->discharge.gir/cell->coord.area;
     if(cell->discharge.aquifer)
-      cell->output.mwd_aq+=frac_unsustainable*cell->discharge.gir/cell->coord.area; 
+      getoutput(&cell->output,WD_AQ,config)+=frac_unsustainable*cell->discharge.gir/cell->coord.area;
   }
 #else
    /* actual irrigation requirement */

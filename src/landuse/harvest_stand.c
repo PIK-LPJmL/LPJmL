@@ -20,7 +20,7 @@
 
 static Harvest harvest_grass(Stand *stand, /**< pointer to stand */
                              Real hfrac,   /**< harvest fraction */
-                             const Config *config
+                             const Config *config /**< LPJmL configuration */
                             )              /** \return harvested grass (gC/m2) */
 {
   Harvest harvest;
@@ -261,7 +261,7 @@ static Harvest harvest_grass_grazing_int(Stand *stand,const Config *config)
 Harvest harvest_stand(Output *output, /**< Output data */
                       Stand *stand,   /**< pointer to grassland stand */
                       Real hfrac,     /**< harvest fraction */
-                      const Config *config
+                      const Config *config /**< LPJmL configuration */
                      )                /** \return harvested carbon (gC/m2) */
 {
   Harvest harvest;

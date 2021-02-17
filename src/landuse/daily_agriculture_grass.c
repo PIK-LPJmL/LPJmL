@@ -297,11 +297,17 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
 
   if (config->pft_output_scaled)
   {
+#if defined(IMAGE) && defined(COUPLED)
+    stand->cell->pft_harvest[index]+=harvest.harvest.carbon*stand->frac;
+#endif
     getoutputindex(output,PFT_HARVESTC,index,config)+= harvest.harvest.carbon * stand->frac;
     getoutputindex(output,PFT_HARVESTN,index,config)+= harvest.harvest.nitrogen * stand->frac;
   }
   else
   {
+#if defined(IMAGE) && defined(COUPLED)
+    stand->cell->pft_harvest[index]+=harvest.harvest.carbon;
+#endif
     getoutputindex(output,PFT_HARVESTC,index,config)+= harvest.harvest.carbon;
     getoutputindex(output,PFT_HARVESTN,index,config)+= harvest.harvest.nitrogen;
   }

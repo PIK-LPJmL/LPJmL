@@ -17,7 +17,7 @@
 
 void turnover_monthly_tree(Litter *litter, /**< pointer to litter pool */
                            Pft *pft,        /**< pointer to tree PFT */
-                           const Config *config
+                           const Config *config /**< LPJmL configuration */
                           )
 {
   Pfttree *tree;

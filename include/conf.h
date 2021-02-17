@@ -124,7 +124,7 @@
 #define DAILY -4
 /*monthly and annual output*/
 #define GRID 0
-#define COUNTRY 1 
+#define COUNTRY 1
 #define REGION 2
 #define FPC 3
 #define RH 4
@@ -153,7 +153,7 @@
 #define PFT_RHARVESTC 24
 #define PFT_RHARVEST PFT_RHARVESTC
 #define NPP 25
-#define GPP 26 
+#define GPP 26
 #define MG_VEGC 27
 #define MG_SOILC 28
 #define MG_LITC 29

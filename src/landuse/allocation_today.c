@@ -16,7 +16,7 @@
 #include "grass.h"
 
 void allocation_today(Stand *setasidestand, /**< pointer to setaside stand */
-                      const Config *config  /**< nitrogen cycle enabled */
+                      const Config *config  /**< LPJmL configuration */
                      )
 {
   int p,npft;

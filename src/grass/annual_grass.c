@@ -19,7 +19,7 @@ Bool annual_grass(Stand *stand,        /**< pointer to stand */
                   Pft *pft,            /**< pointer to PFT variables */
                   Real *fpc_inc,       /**< FPC increment */
                   Bool UNUSED(isdaily), /**< daily temperature data? */
-                  const Config *config
+                  const Config *config /**< LPJmL configuration */
                  )                     /** \return TRUE on death */
 {
   Bool isdead=FALSE;

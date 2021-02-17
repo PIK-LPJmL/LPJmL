@@ -19,7 +19,7 @@ void adjust_grass(Litter * UNUSED(litter), /**< pointer to litter */
                   Pft *pft,                /**< pointer to grass PFT */
                   Real grass_fpc,          /**< grass foliage projective cover */
                   Real fpc_max,            /**< maximum foliage projective cover */
-                  const Config *config
+                  const Config * UNUSED(config) /**< LPJmL configuration */
                  )
 {
   Real fpc_end;

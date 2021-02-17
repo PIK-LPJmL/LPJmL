@@ -19,7 +19,7 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
                          Pft *pft,       /**< pointer to tree PFT */
                          Real temp,      /**< air temperature (deg C) */
                          Bool isdaily,   /**< daily temperature data? */
-                         const Config *config
+                         const Config *config /**< LPJmL configuration */
                         )
 {
   Pfttree *tree;

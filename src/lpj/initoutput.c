@@ -18,27 +18,28 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 
-Bool initoutput(Outputfile *outputfile,      /**< Output data */
-                Cell grid[],
-                int npft,            /**< number of natural PFTs */
-                int ncft,            /**< number of crop PFTs */
-                Config *config /**< LPJmL configuration */
-               )                     /**\ return TRUE on error */
+Bool initoutput(Outputfile *outputfile, /**< Output data */
+                Cell grid[],            /**< LPJ grid */
+                int npft,               /**< number of natural PFTs */
+                int ncft,               /**< number of crop PFTs */
+                Config *config          /**< LPJmL configuration */
+               )                        /**\ return TRUE on error */
 {
   int i,maxsize,index;
   Bool isall;
   maxsize=1;
   config->totalsize=0;
   isall=TRUE;
+  /* calculate size of output storage */
   for(i=FPC;i<NOUT;i++)
   {
     config->outputsize[i]=outputsize(i,npft,ncft,config);
     if(config->outputsize[i]>maxsize)
       maxsize=config->outputsize[i];
     if(isopen(outputfile,i))
-       config->totalsize+=config->outputsize[i];
+      config->totalsize+=config->outputsize[i];
     else
-     isall=FALSE;
+      isall=FALSE;
   }
   config->outputsize[PFT_GCGP_COUNT]=config->outputsize[PFT_GCGP];
   config->outputsize[NDAY_MONTH]=config->outputsize[CFT_SWC];
@@ -50,11 +51,13 @@ Bool initoutput(Outputfile *outputfile,      /**< Output data */
     config->totalsize+=config->outputsize[SYEAR2];
   if(!isall)
   {
+    /* not all output is writtem add trash */
     config->totalsize+=maxsize;
     index=maxsize;
   }
   else
     index=0;
+  /* calculate indices into output storage */
   for(i=FPC;i<NOUT;i++)
   {
     if(isopen(outputfile,i))
@@ -63,7 +66,7 @@ Bool initoutput(Outputfile *outputfile,      /**< Output data */
       index+=config->outputsize[i];
     }
     else
-      config->outputmap[i]=0;
+      config->outputmap[i]=0; /* no output used, point to trash */
    
   }
   if(isopen(outputfile,PFT_GCGP))
@@ -82,11 +85,15 @@ Bool initoutput(Outputfile *outputfile,      /**< Output data */
     config->outputmap[NDAY_MONTH]=0;
   if(config->double_harvest && !isopen(outputfile,SYEAR2))
     config->outputmap[SYEAR2]=index;
-    
+
   for(i=0;i<config->ngridcell;i++)
   {
     grid[i].output.data=newvec(Real,config->totalsize);
     checkptr(grid[i].output.data);
+#if defined IMAGE && defined COUPLED
+    grid[i].pft_harvest=newvec(Real,config->outputsize[PFT_HARVESTC]);
+    checkptr(grid[i].pft_harvest);
+#endif
   }
   return FALSE;
 } /* of 'initoutput' */

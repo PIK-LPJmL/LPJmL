@@ -76,7 +76,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                                         intercrop,year,config);
         }
 #if defined IMAGE && defined COUPLED
-        setoutput_image(grid+cell,ncft);
+        setoutput_image(grid+cell,ncft,config);
 #endif
         getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
         getoutput(&grid[cell].output,DELTA_NORG_SOIL_AGR,config)-=norg_soil_agr;
@@ -101,7 +101,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
 
 #if defined IMAGE && defined COUPLED
-        monthlyoutput_image(&grid[cell].output,input.climate,cell,month);
+        monthlyoutput_image(&grid[cell].output,input.climate,cell,month,config);
 #endif
 
 #ifdef DEBUG
@@ -193,12 +193,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     /* Calculate resdata->mdemand as sum of ddemand to reservoir, instead of the sum of evaporation deficits per cell*/
     for(cell=0;cell<config->ngridcell;cell++)
     {
-      if(config->river_routing)
-      {
-#ifdef IMAGE
-        grid[cell].output.ydischarge += grid[cell].output.mdischarge;
-#endif
-      }
       if(!grid[cell].skip)
         update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
                        cell,month),getmprec(input.climate,&grid[cell].climbuf,

@@ -20,7 +20,7 @@
 void reduce_tree(Litter *litter, /**< pointer to litter */
                  Pft *pft,       /**< pointer to tree PFT */
                  Real factor,    /**< factor for reduction of tree density */
-                 const Config *config
+                 const Config *config /**< LPJmL configuration */
                 ) 
 {
   pft->fpc/=factor;

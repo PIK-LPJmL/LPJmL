@@ -87,7 +87,7 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   {
     soil->litter.item[pft->litter].ag.wood[i].carbon+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon)*
                                          ftimber*(*nind)*treepar->fuelfrac[i]*(1-takeAway[3]);
-    getoutput(output->alittfall.carbon+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon)*
+    getoutput(output,LITFALLC,config)+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon)*
                                          ftimber*(*nind)*treepar->fuelfrac[i]*(1-takeAway[3])*standfrac;
     soil->litter.item[pft->litter].ag.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*
                                          ftimber*(*nind)*treepar->fuelfrac[i]*(1-takeAway[3]);

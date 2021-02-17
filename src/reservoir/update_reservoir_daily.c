@@ -17,8 +17,8 @@
 void update_reservoir_daily(Cell *cell, /**< pointer to cell */
                             Real prec,  /**< precipitation (mm) */
                             Real eeq,    /**< equilibrium evapotranspiration (mm) */
-                            int month,
-                            const Config *config
+                            int month,   /**< month of year (0..11) */
+                            const Config *config /**< LPJmL configuration */
                            )
 {
   cell->ml.resdata->dmass+=prec*cell->coord.area*cell->ml.reservoirfrac;

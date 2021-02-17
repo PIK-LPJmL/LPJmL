@@ -127,7 +127,7 @@ extern Real crop_sum_frac(Landfrac *,int,int,Real,Bool);
 extern Stocks cultivate(Cell *,const Pftpar *,int,Real,Bool,int,Bool,Stand *,
                         Bool,int,int,int,int,const Config *);
 #ifdef IMAGE
-extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real);
+extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real,const Config *);
 #endif
 extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int,const Config *);
 extern Bool getlanduse(Landuse,Cell *,int,int,int,const Config *);

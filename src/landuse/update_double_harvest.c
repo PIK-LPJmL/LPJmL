@@ -20,9 +20,9 @@ void update_double_harvest(Output *output,
                            Pft *pft,
                            Bool irrigation,
                            int day,
-                           int npft,
-                           int ncft,
-                           const Config *config
+                           int npft,            /**< number of natural PFTs */
+                           int ncft,            /**< number of crop PFTs */
+                           const Config *config /**< LPJmL configuration */
                           )
 {
   Pftcrop *crop;

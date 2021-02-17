@@ -239,6 +239,9 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
     npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
     getoutput(output,NPP,config)+=npp*stand->frac;
+#if defined IMAGE && defined COUPLED
+    stand->cell->npp_grass+=npp*stand->frac;
+#endif
     stand->cell->balance.anpp+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
     getoutput(output,GPP,config)+=gpp*stand->frac;
@@ -440,6 +443,10 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     } /* of if(data->irrigation.irrigation) */
     if(config->pft_output_scaled)
     {
+#if defined IMAGE && defined COUPLED
+      stand->cell->pft_harvest[rothers(ncft)+index]+=harvest.harvest.carbon*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
+      stand->cell->pft_harvest[rmgrass(ncft)+index]+=harvest.harvest.carbon*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
+#endif
       getoutputindex(output,PFT_HARVESTC,rothers(ncft)+index,config)+=harvest.harvest.carbon*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
       getoutputindex(output,PFT_HARVESTC,rmgrass(ncft)+index,config)+=harvest.harvest.carbon*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1];
       getoutputindex(output,PFT_HARVESTN,rothers(ncft)+index,config)+=harvest.harvest.nitrogen*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0];
@@ -452,6 +459,10 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
     else
     {
+#if defined IMAGE && defined COUPLED
+      stand->cell->pft_harvest[rothers(ncft)+index]+=harvest.harvest.carbon;
+      stand->cell->pft_harvest[rmgrass(ncft)+index]+=harvest.harvest.carbon;
+#endif
       getoutputindex(output,PFT_HARVESTC,rothers(ncft)+index,config)+=harvest.harvest.carbon;
       getoutputindex(output,PFT_HARVESTC,rmgrass(ncft)+index,config)+=harvest.harvest.carbon;
       getoutputindex(output,PFT_HARVESTN,rothers(ncft)+index,config)+=harvest.harvest.nitrogen;

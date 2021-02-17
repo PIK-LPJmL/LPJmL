@@ -243,7 +243,6 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     totw_before+=(cell->discharge.dmass_lake)/cell->coord.area;
     totw_before+=cell->ml.resdata->dmass/cell->coord.area;
     totw_before+=cell->ml.resdata->dfout_irrigation/cell->coord.area;
-#if 0
     /* carbon */
     foreachstand(stand,s,cell->standlist)
     {
@@ -253,13 +252,12 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     }
     tot_before.carbon+=cell->ml.resdata->pool.carbon;
     tot_before.nitrogen+=cell->ml.resdata->pool.nitrogen;
-    tot_before.carbon+=cell->output.timber_harvest.carbon;
-    tot_before.nitrogen+=cell->output.timber_harvest.nitrogen;
-    tot_before.carbon+=cell->output.deforest_emissions.carbon;
-    tot_before.nitrogen+=cell->output.deforest_emissions.nitrogen;
-    tot_before.carbon-=cell->output.flux_estab.carbon;
-    tot_before.nitrogen-=cell->output.flux_estab.nitrogen;
-#endif
+    tot_before.carbon+=cell->balance.timber_harvest.carbon;
+    tot_before.nitrogen+=cell->balance.timber_harvest.nitrogen;
+    tot_before.carbon+=cell->balance.deforest_emissions.carbon;
+    tot_before.nitrogen+=cell->balance.deforest_emissions.nitrogen;
+    tot_before.carbon-=cell->balance.flux_estab.carbon;
+    tot_before.nitrogen-=cell->balance.flux_estab.nitrogen;
     /* cut cut entire natural stand if lakefraction+reservoir fraction equals 1 */
     if(difffrac>=1-cell->lakefrac-minnatfrac_res)
       minnatfrac_res=0.0;
@@ -347,7 +345,6 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     totw_after+=(cell->discharge.dmass_lake)/cell->coord.area;
     totw_after+=cell->ml.resdata->dmass/cell->coord.area;
     totw_after+=cell->ml.resdata->dfout_irrigation/cell->coord.area;
-#if 0
     /* carbon */
     foreachstand(stand,s,cell->standlist)
     {
@@ -357,16 +354,15 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
     }
     tot_after.carbon+=cell->ml.resdata->pool.carbon;
     tot_after.nitrogen+=cell->ml.resdata->pool.nitrogen;
-    tot_after.carbon+=cell->output.timber_harvest.carbon;
-    tot_after.nitrogen+=cell->output.timber_harvest.nitrogen;
-    tot_after.carbon+=cell->output.deforest_emissions.carbon;
-    tot_after.nitrogen+=cell->output.deforest_emissions.nitrogen;
-    tot_after.carbon-=cell->output.flux_estab.carbon;
-    tot_after.nitrogen-=cell->output.flux_estab.nitrogen;
+    tot_after.carbon+=cell->balance.timber_harvest.carbon;
+    tot_after.nitrogen+=cell->balance.timber_harvest.nitrogen;
+    tot_after.carbon+=cell->balance.deforest_emissions.carbon;
+    tot_after.nitrogen+=cell->balance.deforest_emissions.nitrogen;
+    tot_after.carbon-=cell->balance.flux_estab.carbon;
+    tot_after.nitrogen-=cell->balance.flux_estab.nitrogen;
     /* check if the same */
     balance.carbon=tot_before.carbon-tot_after.carbon;
     balance.nitrogen=tot_before.nitrogen-tot_after.nitrogen;
-#endif
     balanceW=totw_before-totw_after;
 
 #ifndef IMAGE /*  Because the timber harvest is not accounted for in the carbon balance check*/
@@ -378,7 +374,6 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
 #endif
            "water balance error in the building of the reservoir, balanceW=%g",
            balanceW);
-#if 0
     if(fabs(balance.nitrogen)>0.1)
     {
 #ifdef NO_FAIL_BALANCE
@@ -398,7 +393,6 @@ void landusechange_for_reservoir(Cell *cell,          /**< pointer to cell */
 #endif
            "carbon balance error in the building of the reservoir, balanceC=%g",
            balance.carbon);
-#endif
 #endif
     /* check if total fractions add up to 1 again */
     check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);

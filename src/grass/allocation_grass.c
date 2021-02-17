@@ -20,7 +20,7 @@
 Bool allocation_grass(Litter *litter,   /**< litter pool */
                       Pft *pft,         /**< pointer to PFT */
                       Real *fpc_inc,    /**< fpc increment */
-                      const Config *config /**< with nitrogen (TRUE/FALSE) */
+                      const Config *config /**< LPJmL configuration */
                      )                  /** \return TRUE on death */
 {
   Stocks bm_inc_ind={0,0};

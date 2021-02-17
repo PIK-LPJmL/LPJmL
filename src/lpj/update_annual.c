@@ -100,7 +100,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   getoutputindex(&cell->output,FPC,0,config) += 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
-    product_turnover(cell);
+    product_turnover(cell,config);
 #else
   /* reset product pools after first year with land use to avoid large peak */
   if(year==config->firstyear-config->nspinup&&!config->landuse_restart)
@@ -111,6 +111,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     getoutput(&cell->output,DEFOREST_EMIS,config)=0;
     cell->balance.deforest_emissions.carbon=cell->balance.deforest_emissions.nitrogen=0;
   }
-  product_turnover(cell);
+  product_turnover(cell,config);
 #endif
 } /* of 'update_annual' */

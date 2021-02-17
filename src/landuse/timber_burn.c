@@ -19,7 +19,7 @@ Stocks timber_burn(const Pft *pft, /**< Pointer to tree PFT */
                  Real fburnt,    /**< fraction burnt (0..1) */
                  Litter *litter,  /**< Litter pools */
                  Real nind,      /**< cannot use pft->nind, since pft is on different stand */
-                 const Config *config
+                 const Config *config /**< LPJmL configuration */
                 )                /** \return fire emissions (gC/m2) */
 {
   Stocks burn={0,0};

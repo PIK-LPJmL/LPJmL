@@ -17,7 +17,7 @@
 Stocks firepft(Litter *litter,   /**< Litter pool */
                Pftlist *pftlist, /**< list of established PFTs */
                Real fire_frac,    /**< fire fraction (0..1) */
-               const Config *config
+               const Config *config /**< LPJmL configuration */
               )                  /** \return fire flux (gC/m2) */
 {
   int i,p;

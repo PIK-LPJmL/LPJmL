@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 void cutpfts(Stand *stand, /**< Pointer to stand */
-             const Config *config
+             const Config *config /**< LPJmL configuration */
             )
 {
   int p;

@@ -19,7 +19,7 @@ Bool annual_tree(Stand *stand,       /**< pointer to stand */
                  Pft *pft,           /**< pointer to PFT */
                  Real *fpc_inc,      /**< FPC increment */
                  Bool isdaily,       /**< daily temperature data (TRUE/FALSE) */
-                 const Config *config
+                 const Config *config /**< LPJmL configuration */
                 )                    /** \return TRUE on death */
 {
   Stocks turnover_ind;

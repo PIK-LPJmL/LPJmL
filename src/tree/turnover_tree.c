@@ -28,7 +28,7 @@
 
 Stocks turnover_tree(Litter *litter, /**< Litter pool */
                      Pft *pft,       /**< Pointer to PFT */
-                     const Config *config
+                     const Config *config /**< LPJmL configuration */
                     )                /** \return turnover (gC/m2,gN/m2) */
 {
   Pfttree *tree;

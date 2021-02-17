@@ -189,8 +189,8 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
    }
    getoutput(output,NPP,config)+=npp*stand->frac;
    stand->cell->balance.anpp+=npp*stand->frac;
-#ifdef COUPLED
-   output->npp_wp+=npp*stand->frac;
+#if defined IMAGE && defined COUPLED
+   stand->cell->npp_wp+=npp*stand->frac;
 #endif
    output->dcflux-=npp*stand->frac;
    getoutput(output,GPP,config)+=gpp*stand->frac;

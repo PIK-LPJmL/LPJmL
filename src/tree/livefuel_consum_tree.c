@@ -22,7 +22,8 @@ Stocks livefuel_consum_tree(Litter *litter,
                             Bool *isdead,
                             Real surface_fi,
                             Real fire_frac,
-                            const Config *config)
+                            const Config *config /**< LPJmL configuration */
+                           )
 {
   Stocks live_consum_tree;
   Pfttree *tree;

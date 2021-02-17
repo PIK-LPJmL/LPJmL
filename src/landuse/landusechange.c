@@ -86,7 +86,8 @@ void deforest_for_timber(Cell *cell,     /**< pointer to cell */
                          int npft,       /**< number of natural PFTs */
                          Bool istimber,
                          int ncft,       /**< number of crop PFTs */
-                         Real minnatfrac
+                         Real minnatfrac,
+                         const Config *config /**< LPJmL configuration */
                         )
 {
   int s, pos, p;
@@ -906,6 +907,9 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       landexpansion(cell,difffrac,npft,NULL,
                     irrigation,cultivation_type,0,ncft,year,config);
     }
+    /* End biomass plantations */
+
+    /* agriculture tree plantations */
     cultivation_type=AGRICULTURE_TREE_PLANTATION;
     irrigation=i;
     for(p=0;p<config->nagtree;p++)
@@ -949,8 +953,6 @@ void landusechange(Cell *cell,          /**< pointer to cell */
       landexpansion(cell,difffrac,npft,NULL,
                     irrigation,cultivation_type,0,ncft,year,config);
     }
-
-    /* End biomass plantations */
 
     /* Woodplantations */
     cultivation_type=WOOD_PLANTATION;
@@ -1006,7 +1008,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
         if(timberharvest>epsilon)
         {
           /* deforestation without conversion to agricultural land */
-          deforest_for_timber(cell,timberharvest,npft,config->istimber,ncft,minnatfrac_luc);
+          deforest_for_timber(cell,timberharvest,npft,config->istimber,ncft,minnatfrac_luc,config);
         }
         cell->ml.image_data->timber_frac=0.0;
       }

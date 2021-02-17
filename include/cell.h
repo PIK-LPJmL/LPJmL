@@ -70,6 +70,7 @@ typedef struct
   Stocks flux_firewood;     /**< carbon and nitrogen emissions from domestic wood use [g/m2/a]*/
   Stocks flux_estab;        /**< establishment flux (gC/m2,gN/m2) */
   Stocks flux_harvest;      /**< harvest flux (gC/m2,g/N/m2) */
+  Stocks timber_harvest;    /**< timber flux (gC/m2,g/N/m2) */
   Stocks deforest_emissions;/**< carbon and nitrogen emissions from deforested wood burnt [g/m2/a] in IMAGE coupling */
   Pool prod_turnover;     /**< carbon and nitrogen emissions from product turnover [gX/m2/a] */
   Stocks neg_fluxes;        /**< negative carbon and nitrogen fluxes which occur for negative allocation; needed for balance check*/
@@ -123,6 +124,17 @@ Received 19 November 1997; accepted 15 January 1999*/
   const Real *landcover;    /**< prescribed landcover or NULL */
   Balance balance;          /**< balance checks */
   Seed seed;                /**< seed for random generator */
+#if defined IMAGE || defined INCLUDEWP
+  Real npp_nat;             /**< NPP natural stand */
+  Real npp_wp;              /**< NPP woodplantation */
+  Real npp_grass;           /**< NPP woodplantation */
+  Real flux_estab_nat;      /**< flux_estab natural stand */
+  Real rh_nat;              /**< soil respiration natural stand */
+  Real flux_estab_wp;       /**< flux_estab woodplantation */
+  Real rh_wp;               /**< soil respiration woodplantation */
+  Real ydischarge;
+  Real *pft_harvest;
+#endif
 };
 
 /* Declaration of functions */

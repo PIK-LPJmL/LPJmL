@@ -69,12 +69,13 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         }
 #endif
         /* harvesting timber */
-        cell->output.ftimber=ftimber;
+        getoutput(&cell->output,FTIMBER,config)=ftimber;
         harvest=timber_harvest(pft,soil,&cell->ml.product,
-                               cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&trad_biofuel,cell->ml.image_data->timber_frac,cell->ml.image_data->takeaway);
-        cell->output.timber_harvest.carbon+=harvest.carbon;
-        cell->output.timber_harvest.nitrogen+=harvest.nitrogen;
-        cell->output.trad_biofuel+=trad_biofuel.carbon;
+                               cell->ml.image_data->timber_f,ftimber,standfrac,&nind,&trad_biofuel,config,cell->ml.image_data->timber_frac,cell->ml.image_data->takeaway);
+        cell->balance.timber_harvest.carbon+=harvest.carbon;
+        cell->balance.timber_harvest.nitrogen+=harvest.nitrogen;
+        getoutput(&cell->output,TIMBER_HARVESTC,config)+=harvest.carbon;
+        getoutput(&cell->output,TRAD_BIOFUEL,config)+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.carbon+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.nitrogen+=trad_biofuel.nitrogen;
 #ifdef DEBUG_IMAGE
@@ -94,15 +95,17 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
         getoutput(&cell->output,TRAD_BIOFUEL,config)+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.carbon+=trad_biofuel.carbon;
         cell->balance.trad_biofuel.nitrogen+=trad_biofuel.nitrogen;
+        cell->balance.timber_harvest.carbon+=harvest.carbon;
+        cell->balance.timber_harvest.nitrogen+=harvest.nitrogen;
         getoutput(&cell->output,TIMBER_HARVESTC,config)+=harvest.carbon;
 #if defined IMAGE && defined COUPLED
         /* burning wood */
-        cell->output.fburn=cell->ml.image_data->fburnt;
+        getoutput(&cell->output,FBURN,config)=cell->ml.image_data->fburnt;
 #ifdef DEBUG_IMAGE_CELL
         printf("fburnt %g %g\n",cell->output.fburn,cell->ml.image_data->fburnt);
         fflush(stdout);
 #endif
-        stocks=timber_burn(pft,cell->ml.image_data->fburnt,&soil->litter,nind);
+        stocks=timber_burn(pft,cell->ml.image_data->fburnt,&soil->litter,nind,config);
 #else
         stocks=timber_burn(pft,param.fburnt,&soil->litter,nind,config);
 #endif
@@ -146,7 +149,8 @@ static void remove_vegetation_copy(Soil *soil, /* soil pointer */
 
 }/* of 'remove_vegetation_copy' */
 
-void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool istimber,int ntotpft,const Config *config)
+void reclaim_land(const Stand *stand1,Stand *stand2,Cell *cell,Bool istimber,int ntotpft,
+                  const Config *config)
 {
   int l,p;
   Soil *soil;

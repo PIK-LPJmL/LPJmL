@@ -17,7 +17,7 @@
 
 void update_reservoir_monthly(Cell *cell, /**< pointer to cell */
                               int month,   /**< month of year (0..11) */
-                              const Config *config
+                              const Config *config /**< LPJmL configuration */
                               )           /** \return void */
 {
   int i,j;

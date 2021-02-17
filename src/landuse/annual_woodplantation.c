@@ -147,20 +147,22 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
 
         yield=timber_harvest(pft,&stand->soil,&stand->cell->ml.product,
                              stand->cell->ml.image_data->timber_f,ftimber,stand->frac,&pft->nind,
-                             &biofuel,stand->cell->ml.image_data->timber_frac_wp,
+                             &biofuel,config,stand->cell->ml.image_data->timber_frac_wp,
                              stand->cell->ml.image_data->takeaway);
         getoutput(&stand->cell->output,TRAD_BIOFUEL,config)+=biofuel.carbon;
         stand->cell->balance.trad_biofuel.carbon+=biofuel.carbon;
         stand->cell->balance.trad_biofuel.nitrogen+=biofuel.nitrogen;
         if(config->pft_output_scaled)
         {
-          stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon*stand->frac;
-          stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen*stand->frac;
+          stand->cell->pft_harvest[index]+=yield.carbon*stand->frac;
+          getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon*stand->frac;
+          getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen*stand->frac;
         }
         else
         {
-          stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon;
-          stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen;
+          stand->cell->pft_harvest[index]+=yield.carbon;
+          getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon;
+          getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen;
         }
         biomass_tree->growing_time=0;
         fpc_tree(pft);
@@ -239,7 +241,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
   getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
 #ifdef COUPLED
-  getoutput(&stand->cell->output,FLUX_ESTAB_WP,config)+=flux_estab.carbon*stand->frac;
+  stand->cell->flux_estab_wp+=flux_estab.carbon*stand->frac;
 #endif
   stand->cell->output.dcflux+=flux_estab.carbon*stand->frac;
 

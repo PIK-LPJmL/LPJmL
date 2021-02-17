@@ -32,7 +32,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
                     Real turnover_ind,/**< indivudual turnover                 */
                     Real mtemp_max,   /**< maximum temperature of month (deg C)*/
                     Bool isdaily,     /**< daily temperature data (TRUE/FALSE) */
-                    const Config *config
+                    const Config *config /**< LPJmL configuration              */
                    )                  /** \return TRUE on death                */
 {
   Real mort,bm_delta,heatstress,nind_kill,mort_max;

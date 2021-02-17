@@ -27,7 +27,7 @@
 Stocks turnover_grass(Litter *litter, /**< Litter pool */
                       Pft *pft,       /**< Pointer to PFT variables */
                       Real fraction,   /**< fraction of annual turnover (0..1) */
-                      const Config *config
+                      const Config *config /**< LPJmL configuration*/
                      )                /** \return turnover (gC/m2,gN/m2) */
 {
   Pftgrass *grass;

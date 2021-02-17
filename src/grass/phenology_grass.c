@@ -19,7 +19,7 @@ void phenology_grass(Pft *pft,  /**< pointer to PFT variables */
                      Real temp, /**< temperature (deg C) */
                      int day,   /**< day of year (1..365) */
                      Bool UNUSED(isdaily), /**< daily temperature data? */
-                     const Config *config
+                     const Config *config /**< LPJmL configuration */
                     )
 {
   Real dtemp;

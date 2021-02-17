@@ -250,11 +250,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #if defined IMAGE && defined COUPLED
     if (stand->type->landusetype == NATURAL)
     {
-      cell->output.rh_nat += hetres.carbon*stand->frac;
+      cell->rh_nat += hetres.carbon*stand->frac;
     } /* if NATURAL */
     if (stand->type->landusetype == WOODPLANTATION)
     {
-      cell->output.rh_wp += hetres.carbon*stand->frac;
+      cell->rh_wp += hetres.carbon*stand->frac;
     } /* if woodplantation */
 #endif
 
