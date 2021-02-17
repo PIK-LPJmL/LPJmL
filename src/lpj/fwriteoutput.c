@@ -692,10 +692,10 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   writeoutputvar(LITBURNC,1);
   writeoutputvar(LITBURNC_WOOD,1);
-  writeoutputvar(RESPONSE_LAYER_AGR,1);
-  writeoutputvar(RESPONSE_LAYER_NV,1);
-  writeoutputvar(CSHIFT_FAST_NV,ndate1);
-  writeoutputvar(CSHIFT_SLOW_NV,ndate1);
+  writeoutputarray(RESPONSE_LAYER_AGR,1);
+  writeoutputarray(RESPONSE_LAYER_NV,1);
+  writeoutputarray(CSHIFT_FAST_NV,ndate1);
+  writeoutputarray(CSHIFT_SLOW_NV,ndate1);
   if(isopen(output,VEGC))
   {
     if(iswrite2(VEGC,timestep,year,config) || (timestep==ANNUAL && config->outnames[VEGC].timestep>0))
