@@ -57,7 +57,7 @@
 #define INVALID_NITROGEN_BALANCE_ERR 37
 #define INVALID_CLIMATE_ERR 38
 #define INVALID_FPC_ERR 39
-#define INVALID_BOUNDARY_ERR 39
+#define INVALID_BOUNDARY_ERR 40
 
 /* Definition of macros */
 
