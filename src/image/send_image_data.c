@@ -255,10 +255,10 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
       if (config->river_routing)
         adischarge[cell] = (float)(grid[cell].ydischarge*1e-9);
 #ifdef DEBUG_IMAGE_CELL
-      if (grid[cell].pft_harvest[11] > 0)
+      if (grid[cell].pft_harvest[SURARCANE] > 0)
       {
-        printf("pft_harvest.sugarcane = %d, %g\n", cell, grid[cell].pft_harvest[11]);
-        printf("yields sugarcane = %d %g\n", cell, yields[cell][11]);
+        printf("pft_harvest.sugarcane = %d, %g\n", cell, grid[cell].pft_harvest[SUGARCANE]);
+        printf("yields sugarcane = %d %g\n", cell, yields[cell][SUGARCANE]);
       }
       fflush(stdout);
 #endif
@@ -737,7 +737,7 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
 #endif
 /* sending yield data to interface -- needs to be read at the same position! */
   getcounts(counts,offsets,config->nall,ncrops,config->ntask);
-  mpi_write_socket(config->out,yields,MPI_FLOAT,
+  mpi_write_socket(config->out,yields[0],MPI_FLOAT,
                    config->nall*ncrops,counts,offsets,config->rank,config->comm);
   getcounts(counts,offsets,config->nall,1,config->ntask);
   mpi_write_socket(config->out,adischarge,MPI_FLOAT,
@@ -831,7 +831,7 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
   writefloat_socket(config->out, trad_biofuel_image_wp, config->ngridcell);
 #endif
   /* sending yield data to interface -- needs to be read at the same position! */
-  writefloat_socket(config->out,yields, ncrops*config->ngridcell); /*NCROPS should be made generic somewhere*/
+  writefloat_socket(config->out,yields[0], ncrops*config->ngridcell); /*NCROPS should be made generic somewhere*/
   writefloat_socket(config->out, adischarge, config->ngridcell);
   writefloat_socket(config->out,nppgrass_image, config->ngridcell);
   writefloat_socket(config->out, natfrac_image, config->ngridcell);
