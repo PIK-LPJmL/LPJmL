@@ -577,7 +577,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   const Config *config /**< LPJ configuration */
                  )
 {
-  int i,count,s,p,cell,l,index,ndata,nirrig,nnat;
+  int i,count,s,p,cell,l,ndata,nirrig,nnat;
   Real ndate1,sumfrac;
   const Stand *stand;
   const Pft *pft;

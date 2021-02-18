@@ -97,7 +97,7 @@ typedef struct
   int boll_age;
 } Pfttree;
 
-extern char *leaftype[];
+extern const char *leaftype[];
 
 /* Declaration of functions */
 

@@ -55,7 +55,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Stand *stand;
   Real bnf;
   Real nh3;
-  Irrigation *data;
   int index,l,i;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};

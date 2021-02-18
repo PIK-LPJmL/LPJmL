@@ -48,13 +48,6 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   if(config->double_harvest)
     for(p=0;p<2*ncft;p++)
       cell->output.syear2[p]=0;
-#if defined IMAGE && defined COUPLED
-  cell->npp_nat=cell->npp_wp=cell->flux_estab_nat=cell->flux_estab_wp=cell->rh_nat=cell->rh_wp=0.0;
-  for(p=0;p<config->outputsize[PFT_HARVESTC];p++)
-    cell->pft_harvest[p]=0;
-  cell->ydischarge=0;
-  cell->npp_grass=0;
-#endif
   foreachstand(stand,s,cell->standlist)
   {
 #ifdef DEBUG3
@@ -66,6 +59,11 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
       init(pft);
   } /* of foreachstand */
 #if defined IMAGE && defined COUPLED
+  cell->npp_nat=cell->npp_wp=cell->flux_estab_nat=cell->flux_estab_wp=cell->rh_nat=cell->rh_wp=0.0;
+  for(p=0;p<config->outputsize[PFT_HARVESTC];p++)
+    cell->pft_harvest[p]=0;
+  cell->ydischarge=0;
+  cell->npp_grass=0;
   if(config->sim_id==LPJML_IMAGE)
   {
     for(m=0;m<NMONTH;m++)

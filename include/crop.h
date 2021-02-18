@@ -132,7 +132,7 @@ typedef struct
   Double_harvest *dh;
 } Pftcrop;
 
-extern char *calcmethod[];
+extern const char *calcmethod[];
 
 /* Declaration of functions */
 
