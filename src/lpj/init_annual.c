@@ -45,6 +45,9 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.prod_turnover.slow.carbon=cell->balance.prod_turnover.slow.nitrogen=0;
   cell->balance.neg_fluxes.carbon=cell->balance.neg_fluxes.nitrogen=0;
   cell->balance.excess_water=0;
+  if(config->double_harvest)
+    for(p=0;p<2*ncft;p++)
+      cell->output.syear2[p]=0;
 #if defined IMAGE && defined COUPLED
   cell->npp_nat=cell->npp_wp=cell->flux_estab_nat=cell->flux_estab_wp=cell->rh_nat=cell->rh_wp=0.0;
   for(p=0;p<config->outputsize[PFT_HARVESTC];p++)

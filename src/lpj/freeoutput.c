@@ -18,4 +18,5 @@ void freeoutput(Output *output /**< Output data */
                )
 {
   free(output->data);
+  free(output->syear2);
 } /* of 'freeoutput' */

@@ -47,8 +47,6 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
     config->totalsize+=config->outputsize[PFT_GCGP];
   if(isopen(outputfile,CFT_SWC))
     config->totalsize+=config->outputsize[CFT_SWC];
-  if(config->double_harvest && !isopen(outputfile,SYEAR2))
-    config->totalsize+=config->outputsize[SYEAR2];
   if(!isall)
   {
     /* not all output is writtem add trash */
@@ -83,13 +81,23 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
   }
   else
     config->outputmap[NDAY_MONTH]=0;
-  if(config->double_harvest && !isopen(outputfile,SYEAR2))
-    config->outputmap[SYEAR2]=index;
-
+  if(isroot(*config))
+  {
+    printf("Memory allocated for output: ");
+    printintf((int)(config->totalsize*sizeof(Real)));
+    printf(" bytes/cell\n");
+  }
   for(i=0;i<config->ngridcell;i++)
   {
     grid[i].output.data=newvec(Real,config->totalsize);
     checkptr(grid[i].output.data);
+    if(config->double_harvest)
+    {
+      grid[i].output.syear2=newvec(int,2*ncft);
+      checkptr(grid[i].output.syear2);
+    }
+    else
+      grid[i].output.syear2=NULL;
 #if defined IMAGE && defined COUPLED
     grid[i].pft_harvest=newvec(Real,config->outputsize[PFT_HARVESTC]);
     checkptr(grid[i].pft_harvest);

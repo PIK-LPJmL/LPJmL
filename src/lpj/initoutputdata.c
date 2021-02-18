@@ -18,23 +18,6 @@
 
 #define isinit(index) (isinit2(index,timestep,year,config))
 
-#define setoutputvar(index,name) if(isinit(index))\
-   output->name=0
-#define setoutputvar(index,name) if(isinit(index))\
-   output->name=0
-
-#define setoutputarray(index,name,n) if(isinit(index))\
-  {\
-    for(i=0;i<n;i++)\
-      output->name[i]=0;\
-  }
-
-#define setoutputarrayitem(index,name,item,n) if(isinit(index))\
-  {\
-    for(i=0;i<n;i++)\
-      output->name[i].item=0;\
-  }
-
 static Bool isinit2(int index,int timestep,int year,const Config *config)
 {
   if(timestep==ANNUAL && config->outnames[index].timestep>0)
@@ -51,9 +34,9 @@ void initoutputdata(Output *output,      /**< output data */
 {
   int i,index;
   for(index=FPC;index<=NPP;index++)
-   if(isinit(index))
-     for(i=0;i<config->outputsize[index];i++)
-       output->data[config->outputmap[index]+i]=0;
+    if(isinit(index))
+      for(i=0;i<config->outputsize[index];i++)
+        output->data[config->outputmap[index]+i]=0;
    if(isinit(PFT_GCGP))
      for(i=0;i<config->outputsize[PFT_GCGP];i++)
        output->data[config->outputmap[PFT_GCGP_COUNT]+i]=0;

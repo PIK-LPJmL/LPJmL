@@ -113,13 +113,13 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
       if (response[l]>1)
         response[l]=1.0;
 
-      if(stand->type->landusetype==NATURAL)
-        getoutputindex(&stand->cell->output,RESPONSE_LAYER_NV,l,config)+=response[l];
-      if(isagriculture(stand->type->landusetype))
-        getoutputindex(&stand->cell->output,RESPONSE_LAYER_AGR,l,config)+=response[l]*stand->frac/cellfrac_agr;
 
       if(l<LASTLAYER)
       {
+        if(stand->type->landusetype==NATURAL)
+          getoutputindex(&stand->cell->output,RESPONSE_LAYER_NV,l,config)+=response[l];
+        if(isagriculture(stand->type->landusetype))
+          getoutputindex(&stand->cell->output,RESPONSE_LAYER_AGR,l,config)+=response[l]*stand->frac/cellfrac_agr;
 #ifdef SAFE
         if(soil->NO3[l]<-epsilon)
           fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"littersom: Negative soil NO3=%g in layer %d in cell (%s) before update",soil->NO3[l],l,sprintcoord(line,&stand->cell->coord));
