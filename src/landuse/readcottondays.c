@@ -92,8 +92,8 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     }
     if(readintvec(file.bin.file,vec,config->ngridcell,file.bin.swap,header.datatype))
     {
-      fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->sowing_cotton_rf_filename.name,cell+config->startgrid);
+      fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",
+              config->sowing_cotton_rf_filename.name);
       free(vec);
       fclose(file.bin.file);
       return TRUE;
@@ -159,8 +159,8 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     }
     if(readintvec(file.bin.file,vec,config->ngridcell,file.bin.swap,header.datatype))
     {
-      fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->harvest_cotton_rf_filename.name,cell+config->startgrid);
+      fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",
+              config->harvest_cotton_rf_filename.name);
       free(vec);
       fclose(file.bin.file);
       return TRUE;
@@ -237,8 +237,8 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     }
     if(readintvec(file.bin.file,vec,config->ngridcell,file.bin.swap,header.datatype))
     {
-      fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->sowing_cotton_ir_filename.name,cell+config->startgrid);
+      fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",
+              config->sowing_cotton_ir_filename.name);
       free(vec);
       fclose(file.bin.file);
       return TRUE;
@@ -298,8 +298,8 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     }
     if(readintvec(file.bin.file,vec,config->ngridcell,file.bin.swap,header.datatype))
     {
-      fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->harvest_cotton_ir_filename.name,cell+config->startgrid);
+      fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",
+              config->harvest_cotton_ir_filename.name);
       free(vec);
       fclose(file.bin.file);
       return TRUE;
