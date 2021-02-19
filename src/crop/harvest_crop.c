@@ -50,7 +50,9 @@ void harvest_crop(Output *output,      /**< Output data */
     res_onfield=0.1;
   res_remove = (1-res_onfield);
   stand->soil.litter.item[pft->litter].ag.leaf.carbon += (crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield;
+  getoutput(output,LITFALLC,config)+=(crop->ind.leaf.carbon + crop->ind.pool.carbon)*res_onfield*stand->frac;
   stand->soil.litter.item[pft->litter].ag.leaf.nitrogen += (crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*res_onfield;
+  getoutput(output,LITFALLN,config)+=(crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*res_onfield*stand->frac;
   getoutput(output,LITFALLN_AGR,config)+=(crop->ind.leaf.nitrogen + crop->ind.pool.nitrogen)*res_onfield*stand->frac;
   if (!config->residues_fire)
   {
