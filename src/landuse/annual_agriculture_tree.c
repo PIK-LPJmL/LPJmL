@@ -247,14 +247,16 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
   free(n_est);
   if(isdead)
   {
-    update_irrig(stand,agtree(ncft,config->nwptype),ncft,config);
+    update_irrig(stand,index,ncft,config);
     if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,data->irrigation.irrigation,year,config))
       return TRUE;
   }
   else
+  {
     stand->cell->balance.soil_storage+=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
-  data->age++;
-  data->growing_time++;
+    data->age++;
+    data->growing_time++;
+  }
 
   return FALSE;
 } /* of 'annual_agriculture_tree' */
