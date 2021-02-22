@@ -8,6 +8,7 @@
 /**  to day-1 or sec-1, e.g.:                                                      \n**/
 /**  "unit" : "g/m2/month"  ->  "unit" : "g m-2 day-1"                             \n**/
 /**  Then output is divided my the number of days in each month                    \n**/
+/**                                                                                \n**/
 /**  Time step for output can be set via keyword:                                  \n**/
 /**  "timstep" : "annual", "monthly" or "daily"                                    \n**/
 /**  If time step is an integer number output is averaged of this number of years  \n**/
@@ -327,10 +328,10 @@
   { "id" : PFT_NUPTAKE2, "name": "pft_nuptake2", "timestep" : "annual", "var": "pft_nuptake2", "descr": "N uptake per PFT", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : CFT_RUNOFF, "name": "cft_runoff", "timestep" : "annual", "var": "runoff_cft", "descr": "CFT runoff", "unit" : "mm/growing season","scale": 1.0, "offset" : 0.0},
   { "id" : CFT_RUNOFF2, "name": "cft_runoff2", "timestep" : "annual", "var": "runoff_cft2", "descr": "CFT runoff", "unit" : "mm/growing season","scale": 1.0, "offset" : 0.0},
-  { "id" : CFT_N2O_NIT, "name": "CFT_N2O_NIT", "timestep" : "annual", "var": "n2o_nit_cft", "descr": "CFT N2O emissions from nitrificaiton", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
-  { "id" : CFT_N2O_NIT2, "name": "CFT_N2O_NIT2", "timestep" : "annual", "var": "n2o_nit_cft2", "descr": "CFT N2O emissions from nitrificaiton", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
-  { "id" : CFT_N2O_DENIT, "name": "CFT_N2O_DENIT", "timestep" : "annual", "var": "n2o_denit_cft", "descr": "CFT N2O emissions from denitrificaiton", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
-  { "id" : CFT_N2O_DENIT2, "name": "CFT_N2O_DENIT2", "timestep" : "annual", "var": "n2o_denit_cft2", "descr": "CFT N2O emissions from denitrificaiton", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_N2O_NIT, "name": "cft_n2o_nit", "timestep" : "annual", "var": "n2o_nit_cft", "descr": "CFT N2O emissions from nitrificaiton", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_N2O_NIT2, "name": "cft_n2o_nit2", "timestep" : "annual", "var": "n2o_nit_cft2", "descr": "CFT N2O emissions from nitrificaiton", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_N2O_DENIT, "name": "cft_n2o_denit", "timestep" : "annual", "var": "n2o_denit_cft", "descr": "CFT N2O emissions from denitrificaiton", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
+  { "id" : CFT_N2O_DENIT2, "name": "cft_n2o_denit2", "timestep" : "annual", "var": "n2o_denit_cft2", "descr": "CFT N2O emissions from denitrificaiton", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
   { "id" : CFT_N2_EMIS, "name": "cft_n2_emis", "timestep" : "annual", "var": "n2_emis_cft", "descr": "CFT N2 emissions", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
   { "id" : CFT_N2_EMIS2, "name": "cft_n2_emis2", "timestep" : "annual", "var": "n2_emis_cft2", "descr": "CFT N2 emissions", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
   { "id" : CFT_LEACHING, "name": "cft_leaching", "timestep" : "annual", "var": "leaching_cft", "descr": "CFT leaching", "unit" : "gN/m2/growing season","scale": 1.0, "offset" : 0.0},
