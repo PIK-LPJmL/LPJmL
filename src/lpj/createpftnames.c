@@ -186,7 +186,7 @@ char **createpftnames(int index,           /**< output index */
     case FPC:
       pftnames[0]=strdup("natural stand fraction");
       checkptr(pftnames[0]);
-      for(i=0;i<npft-config->nbiomass-config->nwft;i++)
+      for(i=0;i<npft-config->nbiomass-config->nagtree-config->nwft;i++)
       {
         pftnames[i+1]=strdup(config->pftpar[i].name);
         checkptr(pftnames[i+1]);
