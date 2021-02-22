@@ -26,6 +26,7 @@ int outputsize(int index,     /**< output index */
   {
     case SDATE: case HDATE: case HDATE2: case SDATE2: case CFT_SWC:
     case SYEAR: case SYEAR2: case HUSUM: case HUSUM2: case CFT_LEACHING:
+    case CFT_N2O_DENIT : case CFT_N2O_NIT: case CFT_N2_EMIS: case CFT_C_EMIS:
       return ncft*2;
     case PFT_NPP: case PFT_GCGP: case PFT_LAIMAX: case PFT_NLIMIT:
     case PFT_NUPTAKE: case PFT_NDEMAND: case PFT_VEGC: case PFT_VEGN:
