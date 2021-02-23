@@ -439,7 +439,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   {
     /* read cell coordinate and soil code from file */
     if(readcelldata(celldata,&grid[i].coord,&soilcode,&grid[i].soilph,&grid[i].kbf,&grid[i].Hag_beta,&grid[i].slope,
-        &grid[i].slope_min,&grid[i].slope_max,&grid[i].discharge.runoff2ocean_coord,i,config))
+        &grid[i].slope_min,&grid[i].slope_max,i,config))
       return NULL;
 
     if(config->countrypar!=NULL)

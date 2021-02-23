@@ -52,11 +52,14 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real evap=0;
   Real MT_water=0;
   Stocks hetres={0,0};
-  Real *gp_pft;
   Real avgprec;
   Stand *stand;
-  Real ende, start, ebul;
-  ende = start = ebul = 0;
+  Real ebul;
+#ifdef CHECK_BALANCE
+  Real ende, start;
+  ende = start=0;
+#endif
+  ebul = 0;
   Real bnf;
   Real nh3;
   int index,l;

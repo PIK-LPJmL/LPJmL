@@ -51,12 +51,6 @@ struct celldata
     } bin;
     Input_netcdf cdf;
   } soilph;
-  struct
-  {
-    Bool swap;
-    size_t offset;
-    FILE *file;
-  } runoff2ocean_map;
   union
   {
     struct
@@ -274,41 +268,10 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   }
   else
     celldata->with_nitrogen=FALSE;
-  if(config->sim_id==LPJML_FMS)
-  {
-    celldata->runoff2ocean_map.file=openinputfile(&header,&celldata->runoff2ocean_map.swap,
-                                                  &config->runoff2ocean_filename,
-                                                  headername,
-                                                  &version,&celldata->runoff2ocean_map.offset,FALSE,config);
-    if(celldata->runoff2ocean_map.file==NULL)
-    {
-      if(isroot(*config))
-        printfopenerr(config->runoff2ocean_filename.name);
-      if(config->soil_filename.fmt==CDF)
-        closecoord_netcdf(celldata->soil.cdf);
-      else
-      {
-        closecoord(celldata->soil.bin.file_coord);
-        fclose(celldata->soil.bin.file);
-      }
-      if (config->kbf_filename.fmt == CDF)
-        closeinput_netcdf(celldata->kbf.cdf);
-      else
-        fclose(celldata->kbf.bin.file);
-      if(config->soilph_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->soilph.cdf);
-      else
-          fclose(celldata->soilph.bin.file);
-      free(celldata);
-      return NULL;
-    }
-  }
-  else
-    celldata->runoff2ocean_map.file=NULL;
   celldata->slope_fmt=config->slope_filename.fmt;
   if(config->slope_filename.fmt==CDF)
   {
-    celldata->slope.cdf=openinput_netcdf(config->slope_filename.name,
+    celldata->slope.cdf=openinput_netcdf(&config->slope_filename,
                                          NULL,0,config);
     if(celldata->slope.cdf==NULL)
     {
@@ -329,7 +292,6 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     	  closeinput_netcdf(celldata->soilph.cdf);
       else
           fclose(celldata->soilph.bin.file);
-      fclose(celldata->runoff2ocean_map.file);
       free(celldata);
       return NULL;
     }
@@ -360,7 +322,6 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     	  closeinput_netcdf(celldata->soilph.cdf);
       else
           fclose(celldata->soilph.bin.file);
-      fclose(celldata->runoff2ocean_map.file);
       free(celldata);
       return NULL;
     }
@@ -373,7 +334,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   celldata->slope_min_fmt=config->slope_min_filename.fmt;
   if(config->slope_min_filename.fmt==CDF)
   {
-    celldata->slope_min.cdf=openinput_netcdf(config->slope_min_filename.name,
+    celldata->slope_min.cdf=openinput_netcdf(&config->slope_min_filename,
                                              NULL,0,config);
     if(celldata->slope_min.cdf==NULL)
     {
@@ -390,7 +351,6 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     	  closeinput_netcdf(celldata->kbf.cdf);
       else
          fclose(celldata->kbf.bin.file);
-      fclose(celldata->runoff2ocean_map.file);
       if(config->slope_filename.fmt==CDF)
     	  closeinput_netcdf(celldata->slope.cdf);
       else
@@ -425,7 +385,6 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     	  closeinput_netcdf(celldata->kbf.cdf);
       else
          fclose(celldata->kbf.bin.file);
-      fclose(celldata->runoff2ocean_map.file);
       if(config->slope_filename.fmt==CDF)
     	  closeinput_netcdf(celldata->slope.cdf);
       else
@@ -446,7 +405,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   celldata->slope_max_fmt=config->slope_max_filename.fmt;
   if(config->slope_max_filename.fmt==CDF)
   {
-    celldata->slope_max.cdf=openinput_netcdf(config->slope_max_filename.name,
+    celldata->slope_max.cdf=openinput_netcdf(&config->slope_max_filename,
                                              NULL,0,config);
     if(celldata->slope_max.cdf==NULL)
     {
@@ -463,7 +422,6 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     	  closeinput_netcdf(celldata->kbf.cdf);
       else
          fclose(celldata->kbf.bin.file);
-      fclose(celldata->runoff2ocean_map.file);
       if(config->slope_filename.fmt==CDF)
     	  closeinput_netcdf(celldata->slope.cdf);
       else
@@ -502,7 +460,6 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         closeinput_netcdf(celldata->kbf.cdf);
       else
         fclose(celldata->kbf.bin.file);
-      fclose(celldata->runoff2ocean_map.file);
       if(config->slope_filename.fmt==CDF)
         closeinput_netcdf(celldata->slope.cdf);
       else
@@ -609,8 +566,6 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
     }
 
   }
-  if(celldata->runoff2ocean_map.file!=NULL)
-    fseek(celldata->runoff2ocean_map.file,startgrid*sizeof(Intcoord)+celldata->runoff2ocean_map.offset,SEEK_CUR);
   return FALSE;
 } /* of 'seekcelldata' */
 
@@ -623,7 +578,6 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
                   Real *slope,
                   Real *slope_min, 
                   Real *slope_max,
-                  Intcoord *runoff2ocean_coord, /**< coordinate for runoff */
                   int cell,          /**< cell index */
                   Config *config     /**< LPJmL configuration */
                  )                   /** \return TRUE on error */
@@ -755,15 +709,6 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
       }
     }
   }
-  if(celldata->runoff2ocean_map.file!=NULL)
-  {
-    fread(runoff2ocean_coord,sizeof(Intcoord),1,celldata->runoff2ocean_map.file);
-    if(celldata->runoff2ocean_map.swap)
-    {
-      runoff2ocean_coord->lon=swapshort(runoff2ocean_coord->lon);
-      runoff2ocean_coord->lat=swapshort(runoff2ocean_coord->lat);
-    }
-  }
   return FALSE;
 } /* of 'readcelldata' */
 
@@ -800,7 +745,5 @@ void closecelldata(Celldata celldata /**< pointer to celldata */
     else
       fclose(celldata->soilph.bin.file);
   }
-  if(celldata->runoff2ocean_map.file!=NULL)
-    fclose(celldata->runoff2ocean_map.file);
   free(celldata);
 } /* of 'closecelldata' */

@@ -625,10 +625,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         scanclimatefilename(file,&config->aquifer_filename,config->inputdir,FALSE,"aquifer");
 #endif
     }
-    if(config->sim_id==LPJML_FMS)
-    {
-      scanfilename(&input,&config->runoff2ocean_filename,config->inputdir,"runoff2ocean_map");
-    }
   }
   if (config->isanomaly)
     scanclimatefilename(&input, &config->icefrac_filename, config->inputdir, config->sim_id == LPJML_FMS, "icefrac");
