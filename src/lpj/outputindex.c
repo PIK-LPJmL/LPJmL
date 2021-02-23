@@ -4,6 +4,9 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
+/**     Function calculates index in output storage and checks for valid index     \n**/
+/**     into array                                                                 \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -20,7 +23,7 @@ int outputindex(int index,           /**< index of output file */
                )                     /** \return index in output storage to write data */
 {
   if(i<0 || i>=config->outputsize[index])
-   fail(INVALID_BOUNDARY_ERR,TRUE,"Boundary=%d for output %d out of bounds, must be <%d",
-        i,index,config->outputsize[index]);
+    fail(INVALID_BOUNDARY_ERR,TRUE,"Boundary=%d for output '%s' out of bounds, must be <%d",
+         i,config->outnames[index].name,config->outputsize[index]);
   return config->outputmap[index]+i;
 } /* of 'outputindex' */
