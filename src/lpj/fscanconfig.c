@@ -216,6 +216,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->aquifer_irrig = NO_AQUIFER_IRRIG;
 #endif
   fscanbool2(file,&config->permafrost,"permafrost");
+  fscanbool2(file, &config->with_dynamic_ch4, "dynamic_CH4");
+  fscanbool2(file, &config->isanomaly, "anomaly");
   config->sdate_option=NO_FIXED_SDATE;
   config->crop_phu_option=NEW_CROP_PHU;
   config->rw_manage=FALSE;
@@ -399,6 +401,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR230: Cannot read soil parameter.\n",stderr);
     return TRUE;
   }
+  if (fscanhydropar(file,verbose))
+  {
+    if(verbose)
+      fputs("ERROR230: Cannot read hydrotope parameter.\n",stderr);
+    return TRUE;
+  }
   if((config->npft=fscanpftpar(file,&config->pftpar,scanfcn,ntypes,config))==NULL)
   {
     if(verbose)
@@ -520,11 +528,21 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(fscanstruct(file,&input,"input",verbose))
     return TRUE;
+  if (config->isanomaly)
+  {
+    fscanint2(&input, &config->delta_year, "delta_year");
+  }
+  else
+    config->delta_year = 1;
   scanclimatefilename(&input,&config->soil_filename,config->inputdir,FALSE,"soil");
   if(config->soil_filename.fmt!=CDF)
   {
     scanfilename(&input,&config->coord_filename,config->inputdir,"coord");
   }
+  scanclimatefilename(&input, &config->kbf_filename, config->inputdir, FALSE, "kbf");
+  scanclimatefilename(&input, &config->slope_filename, config->inputdir, FALSE, "slope_mean");
+  scanclimatefilename(&input, &config->slope_min_filename, config->inputdir, FALSE, "slope_min");
+  scanclimatefilename(&input, &config->slope_max_filename, config->inputdir, FALSE, "slope_max");
   if(config->withlanduse!=NO_LANDUSE)
   {
     config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
@@ -607,25 +625,45 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
         scanclimatefilename(file,&config->aquifer_filename,config->inputdir,FALSE,"aquifer");
 #endif
     }
+    if(config->sim_id==LPJML_FMS)
+    {
+      scanfilename(&input,&config->runoff2ocean_filename,config->inputdir,"runoff2ocean_map");
+    }
   }
+  if (config->isanomaly)
+    scanclimatefilename(&input, &config->icefrac_filename, config->inputdir, config->sim_id == LPJML_FMS, "icefrac");
   scanclimatefilename(&input,&config->temp_filename,config->inputdir,config->sim_id==LPJML_FMS,"temp");
+  if (config->isanomaly)
+    scanclimatefilename(&input, &config->delta_temp_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_temp");
   scanclimatefilename(&input,&config->prec_filename,config->inputdir,config->sim_id==LPJML_FMS,"prec");
+  if (config->isanomaly)
+    scanclimatefilename(&input, &config->delta_prec_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_prec");
   switch(config->with_radiation)
   {
     case RADIATION:
       scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwnet");
+      if (config->isanomaly)
+        scanclimatefilename(&input, &config->delta_lwnet_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_lwnet");
       scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
+      if (config->isanomaly)
+        scanclimatefilename(&input, &config->delta_swdown_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_swdown");
       break;
     case RADIATION_LWDOWN:
       scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwdown");
+      if (config->isanomaly)
+        scanclimatefilename(&input, &config->delta_lwnet_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_lwnet");
       scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
+      if (config->isanomaly)
+        scanclimatefilename(&input, &config->delta_swdown_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_swdown");
       break;
     case CLOUDINESS:
       scanclimatefilename(&input,&config->cloud_filename,config->inputdir,config->sim_id==LPJML_FMS,"cloud");
       break;
     case RADIATION_SWONLY:
       scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
-      break;
+      if (config->isanomaly)
+        scanclimatefilename(&input, &config->delta_swdown_filename, config->inputdir, config->sim_id == LPJML_FMS, "delta_swdown");
+     break;
     default:
       if(verbose)
         fprintf(stderr,"ERROR213: Invalid setting %d for radiation.\n",config->with_radiation);
@@ -695,7 +733,22 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR197: Only text file is supported for CO2 input in this version of LPJmL.\n",stderr);
     return TRUE;
   }
-
+  if (!config->with_dynamic_ch4)
+  {
+    if (readfilename(&input, &config->ch4_filename, "ch4", config->inputdir, FALSE, verbose))
+    {
+      if (verbose)
+        fputs("ERROR209: Cannot read input filename for 'co2'.\n", stderr);
+      return TRUE;
+    }
+    if (config->ch4_filename.fmt != TXT && (config->sim_id != LPJML_FMS || config->ch4_filename.fmt != FMS))
+    {
+      if (verbose)
+        fputs("ERROR197: Only text file is supported for CH4 input in this version of LPJmL.\n", stderr);
+      return TRUE;
+    }
+  }
+  scanclimatefilename(&input, &config->hydrotopes_filename, config->inputdir, FALSE, "hydrotopes");
   if(israndom==RANDOM_PREC)
   {
     scanclimatefilename(&input,&config->wet_filename,config->inputdir,config->sim_id==LPJML_FMS,"wetdays");
@@ -873,7 +926,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
   }
   else
+  {
     config->restart_filename=NULL;
+    if(verbose && config->nspinup<soil_equil_year)
+      fprintf(stderr,"WARNING031: Number of spinup years less than %d necessary for soil equilibration.\n",soil_equil_year);
+  }
   if(iskeydefined(file,"checkpoint_filename"))
   {
     fscanname(file,name,"checkpoint_filename");

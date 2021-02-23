@@ -47,6 +47,13 @@ Bool initinput(Input *input,        /**< Input data */
     input->wateruse_wd=NULL;
 #endif
   }
+  if (config->isanomaly)
+  {
+    if ((input->icefrac = initicefrac(config)) == NULL)
+      return TRUE;
+  }
+  else
+    input->icefrac = NULL;
   if(config->ispopulation)
   {
     if((input->popdens=initpopdens(config))==NULL)

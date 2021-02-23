@@ -49,6 +49,8 @@ Bool initoutput(Output *output,      /**< Output data */
   checkptr(output->pft_harvest);
   output->fpc = newvec(Real,nnat+1);
   checkptr(output->fpc);
+  output->wpc = newvec(Real,nnat+1);
+  check(output->wpc);
   output->pft_mort = newvec(Real,nnat);
   checkptr(output->pft_mort);
   output->cftfrac=newvec(Real,nirrig);

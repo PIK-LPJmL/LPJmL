@@ -30,6 +30,8 @@ Bool fwritepft(FILE *file,    /**< File pointer to binary file */
   fwrite1(&pft->vscal,sizeof(Real),file);
   fwrite1(&pft->aphen,sizeof(Real),file);
   fwrite1(&pft->phen,sizeof(Real),file);
+  fwrite1(&pft->inun_count, sizeof(int), file);
+  fwrite1(&pft->inun_stress, sizeof(int), file);
   /* write type-dependent PFT variables */
   if(pft->par->fwrite(file,pft))
     return TRUE;

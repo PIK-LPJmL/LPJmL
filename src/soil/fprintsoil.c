@@ -67,6 +67,14 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   forrootsoillayer(l)
     fputs(" -----",file);
   fputc('\n',file);
+  fputs("Gas pools:\n"
+    "\tlayer  O2 (g/m2)   CH4 (mg/m2)\n"
+    "\t----- ------------ ------------\n", file);
+  forrootsoillayer(l)
+  {
+    fprintf(file, "\t%5d %12.2f %6.8f\n", l, soil->O2[l], soil->CH4[l] * 1000);
+    /*fprintf(file,"k_mean:\t %.5f %.5f\n",soil->k_mean[l].slow,soil->k_mean[l].fast);*/
+  }
   if(with_nitrogen)
   {
     fputs("Stock pools:\n"
@@ -137,12 +145,18 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   fputs("\nfree Water  ",file);
   foreachsoillayer(l)
     fprintf(file," %12.2f",soil->w_fw[l]);
+  fputs("\nfree Pores  ", file);
+  foreachsoillayer(l)
+    fprintf(file, " %12.2f", soil->wsats[l] - soil->whcs[l] - soil->wpwps[l]);
   fputs("\nfree ice    ",file);
   foreachsoillayer(l)
     fprintf(file," %12.2f",soil->ice_fw[l]);
   fputs("\nTemp        ",file);
   for(l=0;l<NSOILLAYER+1;l++)
     fprintf(file," %12.2f",soil->temp[l]);
+  fputs("\nMean annual Temp        ", file);
+  for (l = 0; l<NSOILLAYER + 1; l++)
+    fprintf(file, " %12.2f", soil->amean_temp[l]);
   fputs("\nIce depth   ",file);
   foreachsoillayer(l)
     fprintf(file," %12.2f",soil->ice_depth[l]);
@@ -159,4 +173,6 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   fprintf(file,"Snowheight:\t%g (mm)\n",soil->snowheight);
   fprintf(file,"Snowfraction:\t%g\n",soil->snowfraction);
   fprintf(file,"rw_buffer:\t%g (mm)\n",soil->rw_buffer);
+  fprintf(file, "\nWater table:\t%.2f (mm)", soil->wtable);
+  fprintf(file, "\nWater in aquifer:\t%.2f (mm)\n", soil->wa);
 } /* of 'fprintsoil' */

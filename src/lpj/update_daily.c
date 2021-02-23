@@ -20,9 +20,12 @@
 #ifdef IMAGE
 #define GWCOEFF 100 /**< groundwater outflow coefficient (average amount of release time in reservoir) */
 #endif
+#define BIOTURBRATE 0.001897 /* daily rate for 50% annual bioturbation rate [-]*/
+#define kkk (1/365)
 
 void update_daily(Cell *cell,            /**< cell pointer           */
                   Real co2,              /**< atmospheric CO2 (ppmv) */
+                  Real ch4,              /* atmospheric CH4 (ppmv) */
                   Real popdensity,       /**< population density (capita/km2) */
                   Dailyclimate climate,  /**< Daily climate values */
                   int day,               /**< day (1..365)           */
@@ -36,8 +39,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 {
   int s,p;
   Pft *pft;
-  Real melt=0,eeq,par,daylength,beta;
-  Real runoff,snowrunoff;
+  Real melt=0,eeq,par,daylength,beta,gw_outflux,CH4_em;
+  Real runoff,snowrunoff,epsilon_gas,soilmoist,V;
 #ifdef IMAGE
   Real fout_gw; // local variable for groundwater outflow (baseflow)
 #endif
@@ -47,26 +50,30 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   Real prec_energy; /* energy from temperature difference between rain and soil [J/m2]*/
   Stocks flux_estab={0,0};
   Real evap=0;
+  Real MT_water=0;
   Stocks hetres={0,0};
+  Real *gp_pft;
   Real avgprec;
   Stand *stand;
+  Real ende, start, ebul;
+  ende = start = ebul = 0;
   Real bnf;
   Real nh3;
   int index,l;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
   const Real prec_save=climate.prec;
-  Real agrfrac;
-
+  Real agrfrac,fpc_total_stand;
 
   forrootmoist(l)
     rootdepth+=soildepth[l];
 
   updategdd(cell->gdd,config->pftpar,npft,climate.temp);
   cell->balance.aprec+=climate.prec;
-  gtemp_air=temp_response(climate.temp);
+  gtemp_air=temp_response(climate.temp,cell->climbuf.atemp_mean);
   daily_climbuf(&cell->climbuf,climate.temp,climate.prec);
   avgprec=getavgprec(&cell->climbuf);
+  
   cell->output.msnowf+=climate.temp<tsnow ? climate.prec : 0;
   cell->output.mrain+=climate.temp<tsnow ? 0 : climate.prec;
 
@@ -79,11 +86,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   agrfrac=0;
   foreachstand(stand,s,cell->standlist)
+  {
     if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
       agrfrac+=stand->frac;
-
-  foreachstand(stand,s,cell->standlist)
-  {
     for(l=0;l<stand->soil.litter.n;l++)
     {
       stand->soil.litter.item[l].agsub.leaf.carbon += stand->soil.litter.item[l].ag.leaf.carbon*param.bioturbate;
@@ -141,7 +146,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   if(cell->ml.image_data!=NULL)
     cell->ml.image_data->mevapotr[month] += evap*stand->frac;
 #endif
-
       if(cell->output.daily.cft==ALLSTAND)
         cell->output.daily.evap+=evap*stand->frac;
       prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
@@ -153,7 +157,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         stand->soil.micro_heating[l]=m_heat*stand->soil.decomC[l];
       stand->soil.micro_heating[0]+=m_heat*stand->soil.litter.decomC;
 #endif
-
       soiltemp(&stand->soil,temp_bs,config->permafrost);
     }
     else
@@ -166,18 +169,48 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
 
     foreachsoillayer(l)
-      gtemp_soil[l]=temp_response(stand->soil.temp[l]);
+    {
+      gtemp_soil[l]=temp_response(stand->soil.temp[l],stand->soil.amean_temp[l]);
+      stand->soil.amean_temp[l]=(1-1./365)*stand->soil.amean_temp[l]+1./365*stand->soil.temp[l];
+    }
+    stand->soil.amean_temp[SNOWLAYER]=(1-1./365)*stand->soil.amean_temp[SNOWLAYER]+1./365*stand->soil.temp[SNOWLAYER];
     foreachsoillayer(l)
     {
       cell->output.msoiltemp[l]+=stand->soil.temp[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
       cell->output.msoiltemp2[l]+=stand->soil.temp[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     }
+    plant_gas_transport(stand,climate.temp,ch4);
+    CH4_em=runoff=0;
+    gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_em,&runoff);
+    cell->discharge.drunoff += runoff*stand->frac;
+    if (CH4_em>0)
+      cell->output.mCH4_em += CH4_em*stand->frac;
+    else
+      cell->output.mCH4_sink += CH4_em*stand->frac;
+    CH4_em = runoff = MT_water = 0;
+    fpc_total_stand = 0;
+    foreachpft(pft, p, &stand->pftlist)
+      fpc_total_stand += pft->fpc;
+#ifdef CHECK_BALANCE
+    start = standstocks(stand).carbon + soilmethane(&stand->soil);
+#endif
+    ebul = ebullition(&stand->soil, fpc_total_stand);
+    //cell->output.mCH4_em+=ebullition(&stand->soil,fpc_total_stand)*stand->frac;
+    cell->output.mCH4_em += ebul*stand->frac;
+    cell->output.mCH4_ebull += ebul*stand->frac;
+#ifdef CHECK_BALANCE
+    ende = standstocks(stand).carbon + soilmethane(&stand->soil);
+    if (fabs(start - ende - ebul)>epsilon) fprintf(stdout, "C-ERROR: %g start:%g  ende:%g daily: %g\n", start - ende - ebul, start, ende, ebul);
+#endif
+
+    cell->discharge.drunoff += runoff*stand->frac;
+    runoff = 0;
 
     /* update soil and litter properties to account for all changes since last call of littersom */
     pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
 
-    hetres=littersom(stand,gtemp_soil,npft,ncft,config->with_nitrogen);
+    hetres=littersom(stand,gtemp_soil,npft,ncft,config->with_nitrogen,&CH4_em,climate.temp,ch4,&runoff,&MT_water);
     cell->balance.arh+=hetres.carbon*stand->frac;
     cell->output.rh+=hetres.carbon*stand->frac;
     cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
@@ -200,6 +233,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
 
+    cell->output.mCH4_em += CH4_em*stand->frac;
+    cell->output.rh+=hetres.carbon*stand->frac;
+    cell->balance.aMT_water += MT_water*stand->frac;
     /*monthly rh for agricutural stands*/
     if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR || stand->type->landusetype == AGRICULTURE)
       cell->output.rh_agr+=hetres.carbon*stand->frac/agrfrac;
@@ -236,7 +272,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.msnowrunoff+=snowrunoff;
     cell->output.mmelt+=melt*stand->frac;
 
-    if(config->fire==FIRE && climate.temp>0)
+    if(config->fire==FIRE && climate.temp>0 && stand->soil.wtable>400)
       stand->fire_sum+=fire_sum(&stand->soil.litter,stand->soil.w[0]);
 
     if(config->with_nitrogen)
@@ -334,6 +370,22 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       cell->output.mrootmoist+=stand->soil.w[l]*stand->soil.whcs[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); /* absolute soil water content between wilting point and field capacity (mm) */
       /*cell->output.mrootmoist+=stand->soil.w[l]*soildepth[l]/rootdepth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); previous implementation that doesn't make sense to me, because the sum of soildepth[l]/rootdepth over the first 3 layers equals 1 (JJ, June 25, 2020)*/
     cell->output.msoilc1+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
+    foreachsoillayer(l) {
+      V = (stand->soil.wsats[l] - (stand->soil.w[l] * stand->soil.whcs[l] + stand->soil.ice_depth[l] + stand->soil.ice_fw[l] + stand->soil.wpwps[l] + stand->soil.w_fw[l])) / soildepth[l];  /*soil air content (m3 air/m3 soil)*/
+      soilmoist = (stand->soil.w[l] * stand->soil.whcs[l] + (stand->soil.wpwps[l + 1] * (1 - stand->soil.ice_pwp[l + 1])) + stand->soil.w_fw[l]) / stand->soil.wsats[l];
+      epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BO2);
+      cell->output.ameansoilo2 += stand->soil.O2[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac / NDAYYEAR;
+      epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BCH4);
+      cell->output.ameansoilch4 += stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac / NDAYYEAR;
+#ifdef DEBUG
+      if (p_s / R_gas / (climate.temp + 273.15)*ch4*1e-6*WCH4 * 100000<stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000)
+      {
+        fprintf(stdout, "Cell lat %.2f lon %.2f CH4[%d]:%.8f dCH4:%.8f \n", cell->coord.lat, cell->coord.lon, l, stand->soil.CH4[l]);
+        fprintf(stdout, "CH4[%d]:%.8f\n", l, stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000);
+        fprintf(stdout, "epsilon:%.8f day=%d\n\n\n", epsilon_gas, day);
+      }
+#endif
+    }
   } /* of foreachstand */
 
   cell->output.cellfrac_agr+=agrfrac/NDAYYEAR;
@@ -348,6 +400,17 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mlaketemp=config->missing_value;
 #endif
 
+  gw_outflux = cell->ground_st*cell->kbf;
+  cell->ground_st -= gw_outflux;
+  //cell->discharge.drunoff+=(gw_outflux+cell->ground_st_am*cell->kbf/100);
+  cell->output.mgw_outflux += (gw_outflux + cell->ground_st_am*cell->kbf / 100);
+  cell->ground_st_am -= cell->ground_st_am*cell->kbf / 100;
+
+  cell->output.mgw_storage += (cell->ground_st + cell->ground_st_am);
+
+  hydrotopes(cell);
+  cell->output.mmwater += cell->hydrotopes.meanwater;
+  cell->output.wetland_mwtable += cell->hydrotopes.wetland_wtable_current;
 #ifdef IMAGE
   // outflow from groundwater reservoir to river
   if (cell->discharge.dmass_gw > 0)

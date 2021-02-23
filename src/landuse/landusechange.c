@@ -295,7 +295,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
       {
         case PASTURE:
           for(p=0;p<npft;p++)
-            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf) &&
+            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND) &&
               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)
             {
               addpft(mixstand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
@@ -307,7 +307,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           break;
         case BIOMASS_TREE_PLANTATION:
           for(p=0;p<npft;p++)
-            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf) &&
+            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND) &&
               config->pftpar[p].type==TREE && config->pftpar[p].cultivation_type==BIOMASS)
             {
               addpft(mixstand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
@@ -322,7 +322,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           if(strcmp(config->pftpar[pft_id].name,"cotton"))
           {
             for(p=0;p<npft;p++)
-              if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf) &&
+              if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND) &&
                  config->pftpar[p].id==pft_id)
               {
                 //printf("is establish=%s\n",pftpar[pft_id].name);
@@ -344,7 +344,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           break;
         case BIOMASS_GRASS_PLANTATION:
           for(p=0;p<npft;p++)
-            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf) &&
+            if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf,mixstand->type->landusetype==WETLAND) &&
               config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==BIOMASS)
             {
               addpft(mixstand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
@@ -356,7 +356,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
           break;
         case WOOD_PLANTATION:
           for (p = 0;p < npft;p++)
-            if (establish(cell->gdd[p], config->pftpar + p, &cell->climbuf) &&
+            if (establish(cell->gdd[p], config->pftpar + p, &cell->climbuf,mixstand->type->landusetype==WETLAND) &&
               config->pftpar[p].type == TREE && config->pftpar[p].cultivation_type == WP)
             {
               addpft(mixstand, config->pftpar + p, year, 0,config->with_nitrogen,config->double_harvest);

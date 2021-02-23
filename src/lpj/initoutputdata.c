@@ -219,7 +219,6 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(PREC,prec);
   setoutputvar(RAIN,mrain);
   setoutputvar(SNOWF,msnowf);
-  setoutputvar(MELT,mmelt);
   setoutputvar(SWE,mswe);
   setoutputvar(SNOWRUNOFF,msnowrunoff);
   setoutputvar(RUNOFF_SURF,mrunoff_surf);
@@ -232,6 +231,21 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(PHEN_LIGHT,mphen_light);
   setoutputvar(PHEN_WATER,mphen_water);
   setoutputvar(WSCAL,mwscal);
+  setoutputvar(MWATER,mmwater);
+  setoutputvar(WETFRAC,wetfrac);
+  setoutputvar(WTAB,wetland_mwtable);
+  setoutputvar(CTI_AREA,cti_area);
+  setoutputvar(CTI_VAL,cti_val);
+  setoutputvar(CH4_EMISSIONS,mCH4_em);
+  setoutputvar(CH4_SINK,mCH4_sink);
+  setoutputvar(PCH4,pch4);
+  setoutputvar(PCO2,pco2);
+  setoutputvar(MT_WATER,aMT_water);
+  setoutputvar(MEANSOILO2,ameansoilo2);
+  setoutputvar(MEANSOILCH4,ameansoilch4);
+  setoutputvar(CH4_EBULLITION,mCH4_ebull);
+  setoutputvar(CH4_PLANT_GAS,mCH4_plantgas);
+  setoutputvar(CH4_SINK, mCH4_sink);
   setoutputvar(GCONS_RF,mgcons_rf);
   setoutputvar(GCONS_IRR,mgcons_irr);
   setoutputvar(BCONS_IRR,mbcons_irr);
@@ -262,6 +276,7 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputarray(CFT_CONSUMP_WATER_B,cft_consump_water_b,nirrig);
   setoutputarray(GROWING_PERIOD,growing_period,2*(ncft+NGRASS));
   setoutputarray(FPC,fpc,nnat+1);
+  setoutputarray(WPC,fpc,nnat+1);
   setoutputarray(PFT_MORT,pft_mort,nnat);
   setoutputarray(FPC_BFT,fpc_bft,((config->nbiomass+config->ngrass*2)*2));
   setoutputarray(NV_LAI,nv_lai,nnat);

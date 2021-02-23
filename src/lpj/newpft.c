@@ -44,6 +44,7 @@ void newpft(Pft *pft,            /**< PFT variables */
            pft->gdd=pft->phen=pft->fapar=0.0;
  pft->phen_gsi.tmin=pft->phen_gsi.light=pft->albedo=0;
  pft->phen_gsi.tmax=pft->phen_gsi.wscal=1;
+ pft->inun_count=0;
 #ifdef DAILY_ESTABLISHMENT
   pft->established=FALSE;
 #endif

@@ -37,6 +37,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     stocks=standstocks(stand);
     tot.carbon+=stocks.carbon*stand->frac;
     tot.nitrogen+=stocks.nitrogen*stand->frac;
+    tot.carbon += soilmethane(&stand->soil)*stand->frac;
   }
   if(cell->ml.dam)
   {

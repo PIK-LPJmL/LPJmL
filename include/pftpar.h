@@ -36,6 +36,8 @@
 #define ANNUAL_CROP 2
 #define ANNUAL_TREE 3
 #define WP 4
+#define NOPEATLAND 0
+#define PEATLAND 1
 
 #define NO_CALC_SDATE 0
 #define PREC_CALC_SDATE 1
@@ -64,6 +66,9 @@
 #define TROPICAL_HERBACEOUS 8
 #define TEMPERATE_HERBACEOUS 9
 #define POLAR_HERBACEOUS 10
+#define C3_graminoid 11
+#define Sphagnum_moss 12
+
 
 #define TEMPERATE_CEREALS 0
 #define RICE 1

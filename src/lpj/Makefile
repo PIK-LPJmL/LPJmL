@@ -34,7 +34,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           fprintconfig.$O freepftpar.$O drain.$O initdrain.$O\
           openconfig.$O freeconfig.$O readconfig.$O initconfig.$O\
           check_stand_fracs.$O waterusefcns.$O getoutputtype.$O\
-          fscanlimit.$O filesexist.$O freeoutputvar.$O\
+          fscanlimit.$O filesexist.$O freeoutputvar.$O icefrac.$O\
           fprintflux.$O fwriteoutput.$O freadoutputdata.$O fwriteoutputdata.$O\
           outputfilesize.$O nowdf.$O printlicense.$O isannual.$O\
           initmpiconfig.$O fscanparam.$O fprintparam.$O\
@@ -45,7 +45,8 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           fprintfiles.$O roughnesslength.$O closeoutput_yearly.$O\
           getnculttype.$O getextension.$O albedo_stand.$O phenology_gsi.$O\
           fscanphenparam.$O landcover.$O standstocks.$O nitrogen_stress.$O\
-          f_lai.$O getsize.$O fprintoutputvar.$O isdailyoutput_natural.$O\
+          f_lai.$O getsize.$O  wetland.$O copypft.$O plant_gas_transport.$O\
+          fprintoutputvar.$O isdailyoutput_natural.$O check_glaciated.$O fwriteoutput_ch4.$O\
           getngrassnat.$O fscancnratio.$O isnitrogen_output.$O initoutputdata.$O
 
 INC     = ../../include
@@ -62,7 +63,8 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h $(INC)/output.h\
           $(INC)/config.h $(INC)/pnet.h $(INC)/channel.h $(INC)/param.h\
           $(INC)/natural.h $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/grass.h\
-          $(INC)/cropdates.h $(INC)/tree.h $(INC)/outfile.h $(INC)/cdf.h
+          $(INC)/cropdates.h $(INC)/tree.h $(INC)/outfile.h $(INC)/cdf.h\
+          $(INC)/wetland.h $(INC)/hydrotope.h $(INC)/icefrac.h
 
 
 $(LIBDIR)/$(LIB): $(OBJS)

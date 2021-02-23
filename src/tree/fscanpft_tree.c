@@ -115,6 +115,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   pft->leaf_phenology=phenology_tree;
   pft->fwrite=fwrite_tree;
   pft->mix_veg=mix_veg_tree;
+  pft->mix_veg_stock=mix_veg_stock_tree;
   pft->fprint=fprint_tree;
   pft->fread=fread_tree;
   pft->litter_update=litter_update_tree;
@@ -133,6 +134,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   pft->livefuel_consumption=livefuel_consum_tree;
   pft->turnover_monthly=turnover_monthly_tree;
   pft->turnover_daily=turnover_daily_tree;
+  pft->copy=copy_tree;
   pft->albedo_pft=albedo_tree;
   pft->nuptake=nuptake_tree;
   pft->ndemand=ndemand_tree;

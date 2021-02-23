@@ -22,13 +22,17 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
              )                     /** \return total flux (gC) */
 {
   int cell;
-  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  int s, p, l;
+  Stand *stand;
+  Pft *pft;
+  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   for(cell=0;cell<config->ngridcell;cell++)
   {
     if(!grid[cell].skip)
     {
       flux.area+=grid[cell].coord.area;
       flux.nep+=(grid[cell].balance.anpp-grid[cell].balance.arh)*grid[cell].coord.area;
+      flux.anpp+=grid[cell].balance.anpp*grid[cell].coord.area;
       flux.fire+=(grid[cell].balance.fire.carbon+grid[cell].balance.flux_firewood.carbon)*grid[cell].coord.area;
       flux.estab+=grid[cell].balance.flux_estab.carbon*grid[cell].coord.area;
       flux.harvest+=(grid[cell].balance.flux_harvest.carbon+grid[cell].balance.biomass_yield.carbon)*grid[cell].coord.area;
@@ -56,6 +60,21 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.n_influx+=grid[cell].balance.n_influx*grid[cell].coord.area;
       flux.n_outflux+=grid[cell].balance.n_outflux*grid[cell].coord.area;
       flux.excess_water+=grid[cell].balance.excess_water*grid[cell].coord.area;
+      flux.aCH4_emissions+=grid[cell].balance.aCH4_em*grid[cell].coord.area;
+      flux.aCH4_sink+=grid[cell].balance.aCH4_sink*grid[cell].coord.area;
+      flux.aCH4_fire+=grid[cell].balance.aCH4_fire*grid[cell].coord.area;
+      foreachstand(stand,s,grid[cell].standlist)
+      {
+        for (p = 0; p<stand->soil.litter.n; p++)
+          flux.soilc+=(float)(stand->soil.litter.item[p].bg.carbon*stand->frac)*grid[cell].coord.area;
+        forrootsoillayer(l)
+        {
+          flux.soilc+=(float)((stand->soil.pool[l].fast.carbon+stand->soil.pool[l].slow.carbon)*stand->frac*grid[cell].coord.area);
+          flux.soilc_slow+=(float)(stand->soil.pool[l].slow.carbon*stand->frac*grid[cell].coord.area);
+        }
+        foreachpft(pft,p,&stand->pftlist)
+          flux.vegc+=(float)(vegc_sum(pft)*stand->frac)*grid[cell].coord.area;
+      }
     }
     flux.discharge+=grid[cell].balance.adischarge;
     flux.delta_surface_storage+=grid[cell].balance.surface_storage-grid[cell].balance.surface_storage_last;

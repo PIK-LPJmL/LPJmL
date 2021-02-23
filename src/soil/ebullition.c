@@ -1,0 +1,72 @@
+/***************************************************************************/
+/**                                                                       **/
+/**                 e b u l l i t i o n . c                               **/
+/**                                                                       **/
+/**     Calculates gas transport through the soil layers                  **/
+/**                                                                       **/
+/**     written by Sibyll Schaphoff                                       **/
+/**     Potsdam Institute for Climate Impact Research                     **/
+/**     PO Box 60 12 03                                                   **/
+/**     14412 Potsdam/Germany                                             **/
+/**                                                                       **/
+/**     Last change: 23.05.2016                                           **/
+/**                                                                       **/
+/***************************************************************************/
+
+
+#include "lpj.h"
+#include "soil.h"
+
+#define CH4_min  0.012      /* threshold value at which ebullition occur at totally vegetated soils g*m-3 8/1000*/
+#define k_e 1                /* rate constant h-1 */
+
+static void printch4(const Real CH4[LASTLAYER])
+{
+  int i;
+  for (i = 0; i<LASTLAYER; i++)
+    printf(" %g", CH4[i]);
+  printf("\n");
+}
+
+Real ebullition(Soil *soil,        /* pointer to soil data */
+  Real fpc_all                   /* plant cover  */
+)
+{
+  Real C_thres, Q_ebull, ratio, Q_ebull_day, soil_moist[NSOILLAYER], V[NSOILLAYER], epsilon_CH4, epsilon_CH4_u;
+  int l, i;
+  Q_ebull = Q_ebull_day = 0.0;
+  //printf("EBULL before:");
+  //printch4(soil->CH4);
+  for (l = 0; l<NSOILLAYER; l++) {
+    soil_moist[l] = (soil->w[l] * soil->whcs[l] + (soil->wpwps[l] * (1 - soil->ice_pwp[l])) + soil->w_fw[l]) / soil->wsats[l];
+    V[l] = (soil->wsats[l] - (soil->w[l] * soil->whcs[l] + soil->ice_depth[l] + soil->ice_fw[l] + soil->wpwps[l] + soil->w_fw[l])) / soildepth[l];  /*soil air content (m3 air/m3 soil)*/
+  }
+  C_thres = CH4_min*(2 - fpc_all);
+
+  for (l = LASTLAYER - 1; l >= 0; l--)
+  {
+    epsilon_CH4 = max(0.001, V[l] + soil_moist[l] * soil->wsat[l]*BCH4);
+    if (l == 0)
+      epsilon_CH4_u = epsilon_CH4;
+    else
+      epsilon_CH4_u = max(0.001, V[l - 1] + soil_moist[l - 1] * soil->wsat[l]*BCH4);
+    ratio = min((layerbound[l] - soil->wtable) / soildepth[l], 1);
+    for (i = 1; i <= 24; i++)
+    {
+      if ((soil->CH4[l] / soildepth[l] * 1000 / epsilon_CH4*ratio)>C_thres && soil->wtable<layerbound[l] && soil->CH4[l] / soildepth[l] * 1000 / epsilon_CH4 > soil->CH4[l - 1] / soildepth[l - 1] * 1000 / epsilon_CH4_u)
+      {
+        Q_ebull = k_e*(soil->CH4[l] / soildepth[l] / epsilon_CH4 * 1000 * ratio - C_thres)*soildepth[l] * epsilon_CH4*1e-3;
+        soil->CH4[l] -= Q_ebull;
+        if (l == 0)
+          Q_ebull_day += Q_ebull;
+        else
+          soil->CH4[l - 1] += Q_ebull;
+      }
+      else
+        break;
+    }
+  }
+  //  printf("EBULL after:");
+  // printch4(soil->CH4);
+  return Q_ebull_day;
+}

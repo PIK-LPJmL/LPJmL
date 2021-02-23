@@ -438,7 +438,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   for(i=0;i<config->ngridcell;i++)
   {
     /* read cell coordinate and soil code from file */
-    if(readcelldata(celldata,&grid[i].coord,&soilcode,&grid[i].soilph,i,config))
+    if(readcelldata(celldata,&grid[i].coord,&soilcode,&grid[i].soilph,&grid[i].kbf,&grid[i].Hag_beta,&grid[i].slope,
+        &grid[i].slope_min,&grid[i].slope_max,&grid[i].discharge.runoff2ocean_coord,i,config))
       return NULL;
 
     if(config->countrypar!=NULL)
@@ -604,8 +605,23 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
 #endif
     grid[i].discharge.wd_neighbour=grid[i].discharge.wd_deficit=0.0;
     grid[i].discharge.mfout=grid[i].discharge.mfin=0.0;
+    grid[i].ground_st = 0.0;
+    grid[i].ground_st_am = 0.0;
     grid[i].discharge.dmass_sum=0.0;
     grid[i].discharge.queue=NULL;
+    grid[i].icefrac = 0;
+    grid[i].hydrotopes.meanwater = 0.;
+    grid[i].hydrotopes.changecount = 0;
+    grid[i].hydrotopes.wetland_area = 0.;
+    grid[i].hydrotopes.wetland_area_runmean = 0.;
+    grid[i].hydrotopes.wetland_cti = 0.;
+    grid[i].hydrotopes.wetland_cti_runmean = 0.;
+    grid[i].hydrotopes.wetland_wtable_current = -99.9999;
+    grid[i].hydrotopes.wetland_wtable_max = -99.9999;
+    grid[i].hydrotopes.wetland_wtable_mean = -99.9999;
+    grid[i].hydrotopes.wtable_mean = -99.9999;
+    grid[i].is_glaciated = FALSE;
+    grid[i].was_glaciated = FALSE;
     grid[i].ignition.nesterov_accum=0;
     grid[i].ignition.nesterov_max=0;
     grid[i].ignition.nesterov_day=0;
@@ -684,6 +700,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           n=addstand(&natural_stand,grid+i);
           stand=getstand(grid[i].standlist,n-1);
           stand->frac=1-grid[i].lakefrac;
+          stand->Hag_Beta = grid[i].Hag_beta;
+          stand->slope_mean = grid[i].slope;
           if(initsoil(stand,config->soilpar+soilcode-1,npft+ncft,config->with_nitrogen))
             return NULL;
           for(l=0;l<FRACGLAYER;l++)
@@ -852,5 +870,7 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
     if(readcottondays(grid,config))
      return NULL;
   }
+  if(inithydro(grid,config))
+      return NULL;
   return grid;
 } /* of 'newgrid' */

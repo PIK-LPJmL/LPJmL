@@ -143,7 +143,10 @@ typedef struct
   Real sun;
   Real mswc[NSOILLAYER]; /**< monthly soil water content*/
   Real mswc2[NSOILLAYER]; /**< monthly soil water content*/
+  Real mgw_storage;      /**<  monthly mean ground water storage*/
+  Real mgw_outflux;      /**<  monthly mean ground water outflux*/
   Real mrootmoist;        /**< monthly plant available water for evapotranspiration fractional*/
+  Real aMT_water;        /**<  water produced during Methanogenesis */
   Stocks fire;           /**< fire carbon and nitrogen emissions (g/m2)*/
   Real mnfire;           /**< monthly number of fires */
   Real mfiredi;          /**< monthly fire danger index */
@@ -177,6 +180,7 @@ typedef struct
   Real *mpft_lai;           /**< Pft specific LAI */
   Harvest *pft_harvest;
   Real *fpc;             /**< foliar projective cover (FPC) */
+  Real *wpc;
   Real *pft_mort;        /**< annual mortality  */
   Real *pft_gcgp;
   Real *gcgp_count;
@@ -337,6 +341,22 @@ typedef struct
   Real adelta_nmin_soil_agr;
   Real adelta_nveg_soil_agr;
   Real cellfrac_agr;
+  Real mmwater;
+  Real aCH4_em;            /*  Yearly methane emissions (g/m2/year) */
+  Real aCH4_sink;          /* mCH4_sink */
+  Real aCH4_fire;
+  Real mCH4_em;
+  Real mCH4_ebull;
+  Real mCH4_plantgas;
+  Real mCH4_sink;
+  Real pch4;
+  Real pco2;
+  Real cti_area;
+  Real cti_val;
+  Real wetland_mwtable;
+  Real ameansoilo2;
+  Real ameansoilch4;
+  Real wetfrac;
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 
@@ -367,9 +387,14 @@ typedef struct
   Real n_uptake;              /**< total N uptake by plants */
   Real n_influx;              /**< total N inputs */
   Real n_outflux;             /**< total N losses */
-  Real anpp_flux;             /**< Total NPP (gC/yr) */
+  Real anpp;                  /**< Total NPP (gC/yr) */
   Real excess_water;          /**< Exess water (dm3) */
-
+  Real aCH4_emissions;         /* Total Emissions (gCH4/yr)) positive and negative*/
+  Real aCH4_sink;
+  Real aCH4_fire;
+  Real soilc;
+  Real soilc_slow;
+  Real vegc;
 } Flux;
 
 typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;

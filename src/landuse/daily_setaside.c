@@ -194,7 +194,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
     for(p=0;p<npft;p++)
     {
       if(config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE /* still correct?? */ && (!present[p]) &&
-         establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf))
+         establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf,stand->type->landusetype == WETLAND))
         addpft(stand,config->pftpar+p,year,day);
         n_est++;
     }

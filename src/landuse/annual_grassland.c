@@ -33,6 +33,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   Bool *present;
   Pft *pft;
   Pftgrass *grass;
+  Bool peatland=FALSE;
   Real fpc_inc;
   Stocks flux_estab,stocks;
   int n_est=0;
@@ -82,7 +83,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   for(p=0;p<npft;p++)
   {
     if(config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE &&
-       establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf))
+       establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf,peatland))
     {
       if(!present[p])
        addpft(stand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
@@ -91,7 +92,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   }
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   foreachpft(pft,p,&stand->pftlist)
-    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
+    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf, stand->type->landusetype == WETLAND))
     {
       stocks=establishment_grass(pft,fpc_total,fpc_type[pft->par->type],n_est);
       flux_estab.carbon+=stocks.carbon;

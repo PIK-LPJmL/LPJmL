@@ -57,6 +57,10 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   Real wdf; /* water deficit fraction */
   Real gc_pft;
   Real transp;
+#ifdef CHECK_BALANCE
+  Real start = 0;
+  Real ende = 0;
+#endif
 
 #ifdef DAILY_ESTABLISHMENT
   Stocks flux_estab = {0,0};
@@ -64,7 +68,9 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   Soil *soil;
   soil = &stand->soil;
   output=&stand->cell->output;
-
+#ifdef CHECK_BALANCE
+  start = standstocks(stand).carbon + soilmethane(&stand->soil);
+#endif
   evap=evap_blue=cover_stand=intercep_stand=wet_all=0;
 
   runoff=return_flow_b=0.0;
@@ -118,7 +124,20 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   }
 
   /* soil inflow: infiltration and percolation */
-  runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,npft,ncft,config);
+  if (stand->type->landusetype!=WETLAND || stand->frac<0.001)
+  {
+    runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,npft,ncft,config);
+    if (stand->type->landusetype==WETLAND)
+    {
+      runoff+= stand->cell->lateral_water/stand->frac;
+      stand->cell->lateral_water=0;
+    }
+  }
+  else
+  {
+    runoff+= infil_perc_rain(stand,climate->prec+stand->cell->lateral_water/stand->frac+melt-intercep_stand,&return_flow_b,npft,ncft,config);
+    stand->cell->lateral_water=0;
+  }
 #ifdef PERMUTE
   for(p=0;p<getnpft(&stand->pftlist);p++)
 #else
@@ -263,6 +282,10 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   output->dcflux-=flux_estab.carbon*stand->frac;
+#endif
+#ifdef CHECK_BALANCE
+  ende = standstocks(stand).carbon + soilmethane(&stand->soil);
+  if (fabs(start - ende)>epsilon) fprintf(stderr, "C-ERROR daily: %g start:%g  ende:%g \n", start - ende, start, ende);
 #endif
 
   free(wet);

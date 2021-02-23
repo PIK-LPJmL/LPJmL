@@ -47,6 +47,9 @@ struct stand
   Real frac;                  /**< Stand fraction (0..1) */
   Real frac_change;           /**< Expansion fraction due to landuse change (only used for woodplantations) */
   Real frac_g[NSOILLAYER];    /**< fraction of green water in total available soil water, including free water */
+  Real Hag_Beta;              /* Haggard et al. 2005, effects of slope on runoff 2005*/
+  Real slope_mean;
+  int growing_time;           /**< for TREES years since harvest*/
   int growing_days;           /**< for GRASS days since harvest*/
   int prescribe_landcover;
   void *data;                 /**< stand-specific extensions */
@@ -90,6 +93,7 @@ extern Real water_stressed(Pft *,Real [LASTLAYER],Real,Real,
 
 extern Real infil_perc_irr(Stand *,Real,Real *,int,int,const Config *);
 extern Real infil_perc_rain(Stand *,Real,Real *,int,int,const Config *);
+extern void plant_gas_transport(Stand*, Real, Real);
 extern Real albedo_stand(const Stand *);                            
 extern Landcover initlandcover(int,const Config *);
 extern Bool readlandcover(Landcover,const Cell *,int,const Config *);

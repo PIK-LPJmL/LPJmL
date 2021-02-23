@@ -89,6 +89,10 @@ typedef struct
   Real n_outflux;           /**< all N outputs: n2onit, n2odenit, n2denit, leaching */
   Real n_demand;            /**< N demand by plants (gN)*/
   Real n_uptake;            /**< N uptake by plants (gN) */
+  Real aCH4_em;            /* includes mCH4_em */
+  Real aCH4_sink;          /* mCH4_sink */
+  Real aCH4_fire;
+  Real aMT_water;          /* water produced during Methanogenesis */
 } Balance;
 
 typedef struct celldata *Celldata;
@@ -102,6 +106,7 @@ struct cell
   Real afire_frac;          /**< fraction of grid cell burnt this year */
   Real *gdd;                /**< Growing degree days array */
   Real lakefrac;            /**< lake fraction (0..1) */
+  Real icefrac;             /**< ice fraction (0..1) */
 #ifdef COUPLING_WITH_FMS
   Real laketemp;            /**< temperatures in this cell, for now only one layer */
   Real day_after_snowfall;  /**< days after snowfall, to compute the albedo of lakes following:
@@ -116,11 +121,22 @@ Received 19 November 1997; accepted 15 January 1999*/
 #endif
   Real soilph;              /**< soil pH */
   Bool skip;                /**< Invalid soil code in cell (TRUE/FALSE) */
+  Bool was_glaciated;
+  Bool is_glaciated;
   Managed_land ml;          /**< Managed land */
   Output output;            /**< Output data */
   Discharge discharge;
   int elevation;            /**< cell elevation (m) */
   const Real *landcover;    /**< prescribed landcover or NULL */
+  Real slope;
+  Real slope_min;
+  Real slope_max;
+  Real kbf;                 /* baseflow recession coefficient */
+  Real Hag_beta;            /* Haggard et al. 2005, effects of slope on runoff 2005*/
+  Real ground_st;
+  Real ground_st_am;
+  Real lateral_water;       /* water which will be transported from upland area to lowland area */
+  Hydrotope hydrotopes;
   Balance balance;          /**< balance checks */
   Seed seed;                /**< seed for random generator */
 };
@@ -129,7 +145,7 @@ Received 19 November 1997; accepted 15 January 1999*/
 
 extern void freegrid(Cell [],int,const Config *);
 extern void freecell(Cell *,int,const Config *);
-extern void update_daily(Cell *,Real,Real,Dailyclimate,int,
+extern void update_daily(Cell *,Real,Real,Real,Dailyclimate,int,
                          int,int,int,int,Bool,const Config *);
 extern void update_annual(Cell *,int,int,
                           Real,int,Bool,Bool,const Config *);
@@ -145,14 +161,16 @@ extern int writeregioncode(Outputfile *,int,const Cell [],const Config *);
 extern int iterate(Outputfile *,Cell [],Input,
                    int,int,Config *);
 extern void iterateyear(Outputfile *,Cell [],Input,
-                        Real,int,int,int,const Config *);
+                        Real,Real,int,int,int,const Config *);
 extern void initoutputdata(Output *,int,int,int,int,const Config *);
+extern void fwriteoutput_ch4(Outputfile *,Real,Real,const Config *);
 extern void fwriteoutput(Outputfile *,Cell [],int,int,int,int,int,const Config *);
 extern void equilsom(Cell *,int, const Pftpar [],Bool);
 extern void equilveg(Cell *);
 extern void check_fluxes(Cell *,int,int,const Config *);
 extern void check_balance(Flux,int,const Config *);
 extern Bool initdrain(Cell [],Config *);
+extern Bool inithydro(Cell *, Config *);
 extern void drain(Cell [],int,const Config *);
 extern Real nep_sum(const Cell [],const Config *);
 extern Real cflux_sum(const Cell [],const Config *);
@@ -167,9 +185,12 @@ extern void killstand(Cell *,int,Bool,Bool,int,const Config *);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);
-extern Bool readcelldata(Celldata,Coord *,unsigned int *,Real *,int,Config *);
+extern Bool readcelldata(Celldata,Coord *,unsigned int *,Real *,Real *,Real *,Real *,Real *,Real *,Intcoord *,int,Config *);
 extern void closecelldata(Celldata);
 extern Real albedo(Cell *, Real , Real );
+extern void hydrotopes(Cell*);
+extern void update_wetland(Cell *, int, int);
+extern void check_glaciated(Cell *);
 
 /* Definition of macros */
 

@@ -50,6 +50,8 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(fwrite(&grid[cell].discharge.dmass_sum,sizeof(Real),1,file)!=1)
         break;
+      if (fwrite(&grid[cell].lateral_water, sizeof(Real), 1, file) != 1)
+        break;
 #ifdef COUPLING_WITH_FMS
       if(fwrite(&grid[cell].laketemp,sizeof(Real),1,file)!=1)
         break;
@@ -81,6 +83,10 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
       if(fwritestandlist(file,grid[cell].standlist,npft+ncft)!=
          grid[cell].standlist->n)
         break;
+      if (fwrite(&grid[cell].ground_st, sizeof(Real), 1, file) != 1)
+        break;
+      if (fwrite(&grid[cell].ground_st_am, sizeof(Real), 1, file) != 1)
+        break;
       if(fwrite(&grid[cell].ml.cropfrac_rf,sizeof(Real),1,file)!=1)
         break;
       if(fwrite(&grid[cell].ml.cropfrac_ir,sizeof(Real),1,file)!=1)
@@ -102,6 +108,8 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
       if(fwrite(grid[cell].ml.sowing_month,sizeof(int),2*ncft,file)!=2*ncft)
         break;
       if(fwrite(grid[cell].ml.gs,sizeof(int),2*ncft,file)!=2*ncft)
+        break;
+      if (fwritehydrotope(file, grid[cell].hydrotopes))
         break;
       if(grid[cell].ml.landfrac!=NULL)
       {

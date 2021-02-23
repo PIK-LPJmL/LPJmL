@@ -31,6 +31,8 @@ Bool fwritesoil(FILE *file, /**< pointer to binary file */
     return TRUE;
   fwriten(soil->NO3,sizeof(Real),LASTLAYER,file);
   fwriten(soil->NH4,sizeof(Real),LASTLAYER,file);
+  fwriten(soil->CH4, sizeof(Real), LASTLAYER, file);
+  fwriten(soil->O2, sizeof(Real), LASTLAYER, file);
   fwriten(soil->wsat, sizeof(Real), NSOILLAYER, file);
   fwriten(soil->wpwp, sizeof(Real), NSOILLAYER, file);
   fwriten(soil->wfc, sizeof(Real), NSOILLAYER, file);
@@ -50,6 +52,7 @@ Bool fwritesoil(FILE *file, /**< pointer to binary file */
   fwrite1(&soil->snowheight,sizeof(Real),file);
   fwrite1(&soil->snowfraction,sizeof(Real),file);
   fwriten(soil->temp,sizeof(Real),NSOILLAYER+1,file);
+  fwriten(soil->amean_temp, sizeof(Real), NSOILLAYER + 1, file);
   fwriten(soil->ice_depth,sizeof(Real),NSOILLAYER,file);
   fwriten(soil->ice_fw,sizeof(Real),NSOILLAYER,file);
   fwriten(soil->freeze_depth,sizeof(Real),NSOILLAYER,file);
@@ -64,5 +67,9 @@ Bool fwritesoil(FILE *file, /**< pointer to binary file */
   fwrite1(&soil->decomp_litter_mean,sizeof(Stocks),file);
   fwrite1(&soil->count,sizeof(int),file);
   fwrite1(&soil->meanw1,sizeof(Real),file);
+  fwrite1(&soil->wtable, sizeof(Real), file);
+  fwrite1(&soil->wa, sizeof(Real), file);
+  fwrite1(&soil->iswetland, sizeof(int), file);
+  fwrite1(&soil->snowdens, sizeof(Real), file);
   return FALSE;
 } /* of 'fwritesoil' */

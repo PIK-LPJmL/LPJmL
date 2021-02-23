@@ -20,6 +20,10 @@
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
   "soil_infil" : 2.0,        /* default soil infiltration */
   "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
+  "lgm_co2" : 180,           /* LGM CO2 (ppmv) */
+  "ch4_p" :  801,            /* pre-industrial atmospheric CH4 (ppb) */
+  "lgm_ch4" : 460,           /* Eemian (460) LGM (466) atmospheric CH4 (ppb) */
+  "ch4_ip" : 1790,           /* initial  pre-industrial amount of atmospheric CH4 (ppb) */
   "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
   "theta" : 0.7,             /* theta */
   "k_beer" : 0.5,            /* k_beer */

@@ -26,7 +26,7 @@ OBJS    = lai_tree.$O turnover_tree.$O npp_tree.$O phenology_tree.$O\
           annual_tree.$O coppice_tree.$O turnover_monthly_tree.$O\
           albedo_tree.$O turnover_daily_tree.$O agb_tree.$O\
           litter_update_fire_tree.$O nitrogen_allocation_tree.$O nuptake_tree.$O\
-          ndemand_tree.$O vmaxlimit_tree.$O harvest_tree.$O
+          ndemand_tree.$O vmaxlimit_tree.$O copy_tree.$O harvest_tree.$O
 
 
 INC     = ../../include

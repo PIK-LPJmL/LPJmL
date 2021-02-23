@@ -41,6 +41,8 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
     return TRUE;
   freadreal(soil->NO3,LASTLAYER,swap,file);
   freadreal(soil->NH4,LASTLAYER,swap,file);
+  freadreal(soil->CH4, LASTLAYER, swap, file);
+  freadreal(soil->O2, LASTLAYER, swap, file);
   freadreal(soil->wsat, NSOILLAYER, swap, file);
   freadreal(soil->wpwp, NSOILLAYER, swap, file);
   freadreal(soil->wfc, NSOILLAYER, swap, file);
@@ -60,6 +62,7 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   freadreal1(&soil->snowheight,swap,file);
   freadreal1(&soil->snowfraction,swap,file);
   freadreal(soil->temp,NSOILLAYER+1,swap,file);
+  freadreal(soil->amean_temp, NSOILLAYER + 1, swap, file);
   freadreal(soil->ice_depth,NSOILLAYER,swap,file);
   freadreal(soil->ice_fw,NSOILLAYER,swap,file);
   freadreal(soil->freeze_depth,NSOILLAYER,swap,file);
@@ -80,5 +83,10 @@ Bool freadsoil(FILE *file,             /**< pointer to binary file */
   soil->litter.decomC=0;
 #endif
   soil->YEDOMA=0;
-  return (freadreal1(&soil->meanw1,swap,file)!=1);
+  soil->snowheight=soil->snowfraction=0;
+  freadreal1(&soil->meanw1, swap, file);
+  freadreal1(&soil->wtable, swap, file);
+  freadreal1(&soil->wa, swap, file);
+  freadint1(&soil->iswetland, swap, file);
+  return (freadreal1(&soil->snowdens, swap, file) != 1);
 } /* of 'freadsoil' */

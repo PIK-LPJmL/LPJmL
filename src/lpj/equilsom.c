@@ -13,6 +13,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "wetland.h"
 
 /**
  *  DESCRIPTION
@@ -32,5 +33,5 @@ void equilsom(Cell *cell,           /**< pointer to cell */
   Stand *stand;
   
   foreachstand(stand,s,cell->standlist)
-    equilsoil(&stand->soil,ntotpft,pftpar,shift);
+    equilsoil(&stand->soil,ntotpft,pftpar,shift,stand->type->landusetype == WETLAND);
 } /* of 'equilsom' */

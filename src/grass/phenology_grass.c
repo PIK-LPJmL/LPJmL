@@ -37,7 +37,7 @@ void phenology_grass(Pft *pft,  /**< pointer to PFT variables */
   if ((pft->stand->cell->coord.lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE) ||
       (pft->stand->cell->coord.lat<0.0 && day==COLDEST_DAY_SHEMISPHERE)) 
     pft->aphen=pft->gdd=0.0;
-  if (pft->stand->type->landusetype==NATURAL)
+  if (pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype == WETLAND)
   {
     grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
     grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;

@@ -51,27 +51,30 @@ int iterate(Outputfile *output, /**< Output file data */
             Config *config      /**< LPJ configuration data */
            )                    /** \return last year+1 on success */
 {
-  Real co2,cflux_total;
+  Real co2, ch4, pch4,cflux_total;
   Flux flux;
-  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year,climate_year,year_co2;
+  int year,landuse_year,wateruse_year,startyear,firstspinupyear,spinup_year,climate_year,year_co2,index,data_index,rnd_year;
   Bool rc;
   Climatedata store,data_save;
 
 #if defined IMAGE && defined COUPLED
   Real finish;
 #endif
-
+  if (config->isanomaly)
+    data_index = (config->delta_year>1) ? 3 : 1;
+  else
+    data_index = 0;
   firstspinupyear=(config->isfirstspinupyear) ?  config->firstspinupyear : input.climate->firstyear;
   if(isroot(*config) && config->nspinup && !config->isfirstspinupyear)
     printf("Spinup using climate starting from year %d\n",input.climate->firstyear);
-  if(config->storeclimate && config->nspinup)
+  if((config->storeclimate && config->nspinup) || (config->storeclimate && config->isanomaly))
   {
     /* climate for the first nspinyear years is stored in memory
        to avoid reading repeatedly from disk */
     rc=storeclimate(&store,input.climate, grid,firstspinupyear,config->nspinyear,config);
     failonerror(config,rc,STORE_CLIMATE_ERR,"Storage of climate failed");
 
-    data_save=input.climate->data;
+    data_save=input.climate->data[data_index];
   }
   if(config->initsoiltemp)
   {
@@ -85,6 +88,8 @@ int iterate(Outputfile *output, /**< Output file data */
 #endif
   startyear=(config->ischeckpoint) ? config->checkpointyear+1 : config->firstyear-config->nspinup;
   /* main loop over spinup + simulation years  */
+  pch4 = param.pch4*1e-3;
+  ch4 = pch4*1e15*2.123; /* convert ppm to gC */
   if(isroot(*config) && config->ischeckpoint)
     printf("Starting from checkpoint file '%s'.\n",config->checkpoint_restart_filename);
   for(year=startyear;year<=config->lastyear;year++)
@@ -104,10 +109,21 @@ int iterate(Outputfile *output, /**< Output file data */
         fprintf(stderr,"ERROR015: Invalid year %d in getco2().\n",year);
       break;
     }
+    if(!config->with_dynamic_ch4  && config->from_restart)
+    {
+      if(getch4(input.climate,&ch4,year_co2)) /* get atmospheric CH4 concentration */
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR015: Invalid year %d in getch4().\n",year);
+        break;
+      }
+      pch4=ch4*1e-3;
+     }
+    
     if(year<input.climate->firstyear) /* are we in spinup phase? */
     {
       /* yes, let climate data point to stored data */
-      if(config->shuffle_climate)
+      if(config->shuffle_climate || config->isanomaly)
       {
         if(isroot(*config))
           spinup_year=(int)(erand48(config->seed)*config->nspinyear);
@@ -118,16 +134,22 @@ int iterate(Outputfile *output, /**< Output file data */
       else
         spinup_year=(year-config->firstyear+config->nspinup) % config->nspinyear;
       if(config->storeclimate)
-        moveclimate(input.climate,&store,spinup_year);
+        moveclimate(input.climate,&store,data_index,spinup_year);
       else
-        getclimate(input.climate,grid,firstspinupyear+spinup_year,config);
+        getclimate(input.climate,grid,data_index,firstspinupyear+spinup_year,config);
+      if (config->isanomaly)
+      {
+        getclimate(input.climate,grid,0,config->firstyear,config);
+        readicefrac(input.icefrac,grid,0,config->firstyear,config);
+        addanomaly_climate(input.climate,data_index);
+      }
     }
     else
     {
-      if(config->storeclimate && year==input.climate->firstyear && config->nspinup)
+      if(config->storeclimate && !config->isanomaly && year==input.climate->firstyear && config->nspinup)
       {
         /* restore climate data pointers to initial data */
-        input.climate->data=data_save;
+        input.climate->data[0]=data_save;
         freeclimatedata(&store); /* free data not used anymore */
       }
       /* read climate from files */
@@ -143,9 +165,82 @@ int iterate(Outputfile *output, /**< Output file data */
       }
       else
 #endif
+      if(config->isanomaly)
       {
-        if(config->fix_climate && year>config->fix_climate_year)
+        rnd_year = (int)(drand48()*config->nspinyear);
+#ifdef USE_MPI
+        MPI_Bcast(&rnd_year, 1, MPI_INT, 0, config->comm);
+#endif
+        moveclimate(input.climate,&store,data_index,rnd_year);
+        if (config->delta_year>1)
         {
+          if (year==config->firstyear || (config->ischeckpoint && year==startyear))
+          {
+            if (getclimate(input.climate,grid,1,year,config))
+            {
+              fprintf(stderr, "ERROR104: Simulation stopped in getclimate().\n");
+              fflush(stderr);
+              break; /* leave time loop */
+            }
+            if (getclimate(input.climate, grid, 2, year + config->delta_year, config))
+            {
+              fprintf(stderr, "ERROR104: Simulation stopped in getclimate().\n");
+              fflush(stderr);
+              break; /* leave time loop */
+            }
+            if (readicefrac(input.icefrac, grid, 1, year, config))
+            {
+              fprintf(stderr, "ERROR104: Simulation stopped in readicefrac().\n");
+              fflush(stderr);
+              break; /* leave time loop */
+            }
+            if (readicefrac(input.icefrac, grid, 2, year + config->delta_year, config))
+            {
+              fprintf(stderr, "ERROR104: Simulation stopped in readicefrac().\n");
+              fflush(stderr);
+              break; /* leave time loop */
+            }
+            index = 0;
+          }
+          else if (year != config->lastyear && (year - config->firstyear) % config->delta_year == 0)
+          {
+            if (getclimate(input.climate, grid, index + 1, year, config))
+            {
+              fprintf(stderr, "ERROR104: Simulation stopped in getclimate().\n");
+              fflush(stderr);
+              break; /* leave time loop */
+            }
+            if (readicefrac(input.icefrac, grid, index + 1, year, config))
+            {
+              fprintf(stderr, "ERROR104: Simulation stopped in readicefrac().\n");
+              fflush(stderr);
+              break; /* leave time loop */
+            }
+            index = (index + 1) % 2;
+          }
+          interpolate_climate(input.climate, index, (Real)((year - config->firstyear) % config->delta_year) / config->delta_year);
+          interpolate_icefrac(input.icefrac, index, (Real)((year - config->firstyear) % config->delta_year) / config->delta_year);
+        }
+        else
+        {
+          if(getclimate(input.climate,grid,0,year,config))
+          {
+            fputs("ERROR104: Simulation stopped in getclimate().\n",stderr);
+            fflush(stderr);             break; /* leave time loop */
+          }
+          if (readicefrac(input.icefrac,grid,0,year,config))
+          {
+            fprintf(stderr, "ERROR104: Simulation stopped in readicefrac().\n");
+            fflush(stderr);
+            break; /* leave time loop */
+          }
+        }
+        addanomaly_climate(input.climate,data_index);
+      }
+      else
+      {
+    	if(config->fix_climate && year>config->fix_climate_year)
+    	{
           if(config->shuffle_climate)
           {
             if(isroot(*config))
@@ -159,8 +254,7 @@ int iterate(Outputfile *output, /**< Output file data */
         }
         else
           climate_year=year;
-
-        if(getclimate(input.climate,grid,climate_year,config))
+        if(getclimate(input.climate,grid,0,climate_year,config))
         {
           fprintf(stderr,"ERROR104: Simulation stopped in getclimate().\n");
           fflush(stderr);
@@ -251,13 +345,18 @@ int iterate(Outputfile *output, /**< Output file data */
     /* perform iteration for one year */
     if(year>=config->outputyear)
       openoutput_yearly(output,year,config);
-    iterateyear(output,grid,input,co2,npft,ncft,year,config);
+    iterateyear(output,grid,input,co2,pch4,npft,ncft,year,config);
     if(year>=config->outputyear)
       closeoutput_yearly(output,config);
     /* calculating total carbon and water fluxes collected from all tasks */
     cflux_total=flux_sum(&flux,grid,config);
     if(isroot(*config))
     {
+      if (config->with_dynamic_ch4)
+      {
+        ch4 += flux.aCH4_emissions - flux.aCH4_sink + flux.aCH4_fire - 1 / tau_CH4*ch4;
+        pch4 = ch4*1e-15 / 2.123;
+      }
       /* output of total carbon flux and water on stdout on root task */
       printflux(flux,cflux_total,year,config);
       if(output->method==LPJ_SOCKET && output->socket!=NULL &&
@@ -268,7 +367,11 @@ int iterate(Outputfile *output, /**< Output file data */
       check_balance(flux,year,config);
 #endif
     }
-#if defined IMAGE && defined COUPLED
+#ifdef USE_MPI
+    if (config->with_dynamic_ch4)
+      MPI_Bcast(&pch4, sizeof(Real), MPI_BYTE, 0, config->comm);
+#endif
+#ifdef IMAGE#if defined IMAGE && defined COUPLED#ifdef IMAGE
     if(year>=config->start_imagecoupling)
     {
       /* send data to IMAGE */
@@ -305,10 +408,10 @@ int iterate(Outputfile *output, /**< Output file data */
       }
     }
   } /* of 'for(year=...)' */
-  if(config->storeclimate && config->nspinup && (config->lastyear<input.climate->firstyear || year<input.climate->firstyear))
+  if(config->isanomaly || (config->storeclimate && config->nspinup && (config->lastyear<input.climate->firstyear || year<input.climate->firstyear)))
   {
     /* restore climate data pointers to initial data */
-    input.climate->data=data_save;
+    input.climate->data[data_index]=data_save;
     freeclimatedata(&store); /* free data not used anymore */
   }
   if(year>config->lastyear && config->ischeckpoint)

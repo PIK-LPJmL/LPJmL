@@ -71,6 +71,10 @@
 #define NO_RESIDUE_REMOVE 0
 #define FIXED_RESIDUE_REMOVE 1
 #define READ_RESIDUE_DATA 2
+#define ANOMALY 1
+#define NO_ANOMALY 0
+#define PRESCRIBE_CH4 0
+#define DYNAMIC_CH4 1
 #define RADIATION_LWDOWN 3
 #define RADIATION_SWONLY 2
 #define RADIATION 1
@@ -109,7 +113,7 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 326            /* number of output files */
+#define NOUT 343            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -453,6 +457,23 @@
 #define LITFALLC_AGR 323
 #define LITFALLN_AGR 324
 #define HARVESTN_AGR 325
+#define MWATER 326
+#define WETFRAC 327
+#define WTAB 328
+#define CTI_AREA 329
+#define CTI_VAL 330
+#define CH4_EMISSIONS 331
+#define CH4_SINK 332
+#define PCH4 333
+#define PCO2 334
+#define MT_WATER 335
+#define MEANSOILO2 336
+#define MEANSOILCH4 337
+#define CH4_EBULLITION 338
+#define CH4_PLANT_GAS 339
+#define WPC 340
+#define MGW_STORAGE 341
+#define MGW_OUTFLUX 342
 
 #define RANDOM_SEED 0
 

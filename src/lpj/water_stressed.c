@@ -65,20 +65,33 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
                     const Config *config       /**< [in] LPJ configuration */
                    )                           /** \return gross primary productivity (gC/m2/day) */
 {
-  int l,iter;
+  int l,i,iter;
   Real supply,supply_pft,demand,demand_pft,wr,lambda,gpd,agd,gc,aet,aet_cor,aet_frac;
   Data data;
-  Real vmax;
+  Real roots,vmax;
   Real rootdist_n[LASTLAYER];
   Real aet_tmp[LASTLAYER];
   Real layer,root_u,root_nu;
+  Real freeze_depth,thaw_depth;
   Real adtmm;
   Real gc_new;
   Real A,B,psi;
   Real trf[LASTLAYER];
   Irrigation *irrig;
+  Real istress = 0;
+  aet_frac = 1;
 
-  gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
+  if (-pft->stand->soil.wtable >= pft->par->inun_thres)
+    pft->inun_count++;
+  else
+    pft->inun_count--;
+  if (pft->inun_count<0) pft->inun_count = 0;
+  if (pft->inun_count>pft->par->inun_dur)
+    istress = 1;
+  else
+    istress = pft->inun_count / pft->par->inun_dur;
+
+  wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
   forrootsoillayer(l)
     rootdist_n[l]=pft->par->rootdist[l];
@@ -106,7 +119,14 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     *wet=0.99;
 
   if(pft->stand->type->landusetype==AGRICULTURE)
+  {
     supply=pft->par->emax*wr*(1-exp(-0.04*((Pftcrop *)pft->data)->ind.root.carbon));
+    if (pft->phen>0)
+    {
+       gp_stand=gp_stand/pft->phen*fpar(pft);
+       gp_pft=gp_pft/pft->phen*fpar(pft);
+    }
+  }
   else
     supply=pft->par->emax*wr*pft->phen;
 

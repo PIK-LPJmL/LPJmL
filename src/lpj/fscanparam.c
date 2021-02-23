@@ -76,6 +76,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     return TRUE;
   }
   fscanparamreal(&f,&param.co2_p,"co2_p");
+  fscanparamreal(&f, &param.pch4, "pch4");
   fscanparamreal(&f,&param.k,"k");
   if(param.k<=0)
   {

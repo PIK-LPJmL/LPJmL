@@ -16,6 +16,7 @@
 
 #ifndef GRASS_H /* Already included? */
 #define GRASS_H
+#define grassDM_vol 0.2*0.75/1000*1e9  /*gDM/m-3 Ryser 1996: "The Importance of Tissue Density"*/
 
 
 /* Definition of datatypes */
@@ -73,6 +74,7 @@ extern Real vegc_sum_grass(const Pft *);
 extern Real vegn_sum_grass(const Pft *);
 extern Real agb_grass(const Pft *);
 extern void mix_veg_grass(Pft *,Real);
+extern void mix_veg_stock_grass(Pft *, Pft *, Real, Real);
 extern Stocks fire_grass(Pft *,Real *);
 extern void init_grass(Pft *);
 extern void free_grass(Pft *);
@@ -86,6 +88,7 @@ extern Bool annual_grass(Stand *,Pft *,Real *,Bool,int,Bool);
 extern void turnover_monthly_grass(Litter *,Pft *);
 extern void turnover_daily_grass(Litter *,Pft *,Real,Bool);
 extern void albedo_grass(Pft *,Real,Real);
+extern void copy_grass(Pft *, const Pft *);
 extern Real nuptake_grass(Pft *,Real *,Real *,int,int,const Config *);
 extern Real ndemand_grass(const Pft *,Real *,Real,Real,Real);
 extern Real vmaxlimit_grass(const Pft *,Real,Real);

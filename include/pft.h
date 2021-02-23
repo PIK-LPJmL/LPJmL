@@ -90,7 +90,8 @@ typedef struct Pft
   {
     int id;                     /**< unique PFT identifier */
     int type;                   /**< type --> whether CROP or TREE or GRASS*/
-    int cultivation_type;       /**< cultivation_type----> NONE, BIOMASS, ANNUAL_CROP, WP, */
+    int peatland;               /**< peatland_pft --> NOPEATLAND, PEATLAND */
+    int cultivation_type;       /**< cultivation_type----> NONE, BIOMASS, ANNUAL_CROP*/
     Bool nfixing;               /**< PFT can fix N (TRUE/FALSE) */
     char *name;                 /**< Pft name */
     Real cn[NHSG];              /**< pft specific curve number for each hydr. soil group */
@@ -145,7 +146,9 @@ typedef struct Pft
     Cnratio ncleaf;             /**< minimum, median, maximum leaf foliage N concentration */
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
-    Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */
+    Real inun_thres;            /**< inund_height: max WTP tolerated [m]*/
+    Real inun_dur;              /**< max days of inundation tolerated */
+    Real alpha_fuelp;           /**< fire danger parameter */
     Real vpd_par;               /**< scaling factor for VPD fire danger index  */
     Real fuelbulkdensity;       /**< fuel bulk density*/
     Tracegas emissionfactor;    /**< trace gas emission factors */
@@ -178,6 +181,7 @@ typedef struct Pft
     Real (*vegn_sum)(const struct Pft *);
     Real (*agb)(const struct Pft *);
     void (*mix_veg)(struct Pft *,Real);
+    void(*mix_veg_stock)(struct Pft *, struct Pft *, Real, Real);
     void (*fprintpar)(FILE *,const struct Pftpar *,const Config *);
     //void (*output_daily)(Daily_outputs *,const struct Pft *);
     void (*turnover_monthly)(Litter *,struct Pft *);
@@ -188,6 +192,7 @@ typedef struct Pft
     Real (*nuptake)(struct Pft *,Real *,Real *,int,int,const Config *);
     Real (*ndemand)(const struct Pft *,Real *,Real, Real,Real);
     Real (*vmaxlimit)(const struct Pft *,Real,Real);
+    void (*copy)(struct Pft *, const struct Pft *);
   } *par;                /**< PFT parameters */
   Real fpc;              /**< foliar projective cover (FPC) under full leaf
                             cover as fraction of modelled area */
@@ -204,6 +209,8 @@ typedef struct Pft
   Real nleaf;            /**< nitrogen in leaf (gN/m2) */
   Real vscal;            /**< nitrogen stress scaling factor for allocation, used as mean for trees and grasses, initialized daily for crops */
   Real nlimit;
+  Bool inun_stress;
+  int inun_count;
 #ifdef DAILY_ESTABLISHMENT
   Bool established;
 #endif
@@ -247,7 +254,8 @@ extern Stocks nofire(Pft *,Real *);
 extern Real nowdf(Pft *,Real,Real);
 extern void noadjust(Litter *,Pft *,Real,Real);
 extern void nomix_veg(Pft *,Real);
-extern Bool establish(Real,const Pftpar *,const Climbuf *);
+extern void nomix_veg_carbon(Pft *,Real);
+extern Bool establish(Real, const Pftpar *, const Climbuf *, Bool);
 extern Stocks noestablishment(Pft *,Real,Real,int);
 extern Bool fscanlimit(LPJfile *,Limit *,const char *,Verbosity);
 extern Bool fscancnratio(LPJfile *,Cnratio *,const char *,Verbosity);
@@ -255,12 +263,13 @@ extern Bool fscanemissionfactor(LPJfile *,Tracegas *,const char *,Verbosity);
 extern Bool fscanphenparam(LPJfile *,Phen_param *,const char *,Verbosity);
 extern Real fire_sum(const Litter *,Real);
 extern void output_daily(Daily_outputs *,const Pft *,Real,Real);
-extern void equilsoil(Soil *, int, const Pftpar [],Bool);
+extern void equilsoil(Soil *, int, const Pftpar [],Bool,Bool);
 extern void noturnover_monthly(Litter *,Pft *);
 extern char **createpftnames(int,int,int,const Config *);
 extern void freepftnames(char **,int,int,int,const Config *);
 extern int getnculttype(const Pftpar [],int,int);
 extern int getngrassnat(const Pftpar [],int);
+extern void copypft(Pft *, const Pft *);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool);
 extern Real nitrogen_stress(Pft *,Real,Real,int,int,const Config *);
 extern Real f_lai(Real);
@@ -300,6 +309,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *);
 #define vegn_sum(pft) pft->par->vegn_sum(pft)
 #define agb(pft) pft->par->agb(pft)
 #define mix_veg(pft,scaler) pft->par->mix_veg(pft,scaler)
+#define mix_veg_stock(pft1,pft2,frac1,frac2) pft->par->mix_veg_stock(pft1,pft2,frac1,frac2)
 #define adjust(litter,pft,fpc,fpc_max) pft->par->adjust(litter,pft,fpc,fpc_max)
 #define reduce(litter,pft,fpc) pft->par->reduce(litter,pft,fpc)
 #define wdf(pft,demand,supply) pft->par->wdf(pft,demand,supply)

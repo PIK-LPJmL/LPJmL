@@ -24,189 +24,194 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
                   const Config *config /**< LPJ configuration */
                  )                     /** \return TRUE on error */
 {
-  int year,j;
+  int year,j,index;
   long count;
   /**
   * allocate arrays for climate storage
   **/
+  if (config->isanomaly)
+    index = (config->delta_year>1) ? 3 : 1;
+  else
+    index = 0;
   store->temp=newvec(Real,climate->file_temp.n*nyear);
   checkptr(store->temp);
   store->prec=newvec(Real,climate->file_prec.n*nyear);
   checkptr(store->prec);
-  if(climate->data.tmax!=NULL)
+  if(climate->data[0].tmax!=NULL)
   {
     store->tmax=newvec(Real,climate->file_tmax.n*nyear);
     checkptr(store->tmax);
   }
   else
     store->tmax=NULL;
-  if(climate->data.humid!=NULL)
+  if(climate->data[0].humid!=NULL)
   {
     store->humid=newvec(Real,climate->file_humid.n*nyear);
     checkptr(store->humid);
   }
   else
     store->humid=NULL;
-  if(climate->data.tmin!=NULL)
+  if(climate->data[0].tmin!=NULL)
   {
     store->tmin=newvec(Real,climate->file_tmin.n*nyear);
     checkptr(store->tmin);
   }
   else
     store->tmin=NULL;
-  if(climate->data.sun!=NULL)
+  if(climate->data[0].sun!=NULL)
   {
     store->sun=newvec(Real,climate->file_cloud.n*nyear);
     checkptr(store->sun);
   }
   else
     store->sun=NULL;
-  if(climate->data.lwnet!=NULL)
+  if(climate->data[0].lwnet!=NULL)
   {
     store->lwnet=newvec(Real,climate->file_lwnet.n*nyear);
     checkptr(store->lwnet);
   }
   else
     store->lwnet=NULL;
-  if(climate->data.swdown!=NULL)
+  if(climate->data[0].swdown!=NULL)
   {
     store->swdown=newvec(Real,climate->file_swdown.n*nyear);
     checkptr(store->swdown);
   }
   else
     store->swdown=NULL;
-  if(climate->data.wet!=NULL)
+  if(climate->data[0].wet!=NULL)
   {
     store->wet=newvec(Real,climate->file_wet.n*nyear);
     checkptr(store->wet);
   }
   else
     store->wet=NULL;
-  if(climate->data.wind!=NULL)
+  if(climate->data[0].wind!=NULL)
   {
     store->wind=newvec(Real,climate->file_wind.n*nyear);
     checkptr(store->wind);
   }
   else
     store->wind=NULL;
-  if(climate->data.tamp!=NULL)
+  if(climate->data[0].tamp!=NULL)
   {
     store->tamp=newvec(Real,climate->file_tamp.n*nyear);
     checkptr(store->tamp);
   }
   else
     store->tamp=NULL;
-  if(climate->data.burntarea!=NULL)
+  if(climate->data[0].burntarea!=NULL)
   {
     store->burntarea=newvec(Real,climate->file_burntarea.n*nyear);
     checkptr(store->burntarea);
   }
   else
     store->burntarea=NULL;
-  if(climate->data.no3deposition!=NULL)
+  if(climate->data[0].no3deposition!=NULL)
   {
     store->no3deposition=newvec(Real,climate->file_no3deposition.n*nyear);
     checkptr(store->no3deposition);
   }
   else
     store->no3deposition=NULL;
-  if(climate->data.nh4deposition!=NULL)
+  if(climate->data[0].nh4deposition!=NULL)
   {
     store->nh4deposition=newvec(Real,climate->file_nh4deposition.n*nyear);
     checkptr(store->nh4deposition);
   }
   else
     store->nh4deposition=NULL;
-  if(climate->data.lightning!=NULL)
+  if(climate->data[0].lightning!=NULL)
   {
     store->lightning=newvec(Real,climate->file_lightning.n);
     checkptr(store->lightning);
     for(j=0;j<climate->file_lightning.n;j++)
-      store->lightning[j]=climate->data.lightning[j];
+      store->lightning[j]=climate->data[0].lightning[j];
   }
   else
     store->lightning=NULL;
   for(year=firstyear;year<firstyear+nyear;year++)
   {
-    if(getclimate(climate,grid,year,config))
+    if(getclimate(climate,grid,index,year,config))
       return TRUE;
     count=climate->file_temp.n*(year-firstyear);
     for(j=0;j<climate->file_temp.n;j++)
-      store->temp[count++]=climate->data.temp[j];
+      store->temp[count++]=climate->data[index].temp[j];
     count=climate->file_prec.n*(year-firstyear);
     for(j=0;j<climate->file_prec.n;j++)
-      store->prec[count++]=climate->data.prec[j];
+      store->prec[count++]=climate->data[index].prec[j];
     if(store->sun!=NULL)
     {
       count=climate->file_cloud.n*(year-firstyear);
       for(j=0;j<climate->file_cloud.n;j++)
-        store->sun[count++]=climate->data.sun[j];
+        store->sun[count++]=climate->data[index].sun[j];
     }
     if(store->tmax!=NULL)
     {
       count=climate->file_tmax.n*(year-firstyear);
       for(j=0;j<climate->file_tmax.n;j++)
-        store->tmax[count++]=climate->data.tmax[j];
+        store->tmax[count++]=climate->data[index].tmax[j];
+        store->tmax[count++]=climate->data[index].tmax[j];
     }
     if(store->humid!=NULL)
     {
       count=climate->file_humid.n*(year-firstyear);
       for(j=0;j<climate->file_humid.n;j++)
-        store->humid[count++]=climate->data.humid[j];
+        store->humid[count++]=climate->data[index].humid[j];
     }
     if(store->tmin!=NULL)
     {
       count=climate->file_tmin.n*(year-firstyear);
       for(j=0;j<climate->file_tmin.n;j++)
-        store->tmin[count++]=climate->data.tmin[j];
+        store->tmin[count++]=climate->data[index].tmin[j];
     }
     if(store->lwnet!=NULL)
     {
       count=climate->file_lwnet.n*(year-firstyear);
       for(j=0;j<climate->file_lwnet.n;j++)
-        store->lwnet[count++]=climate->data.lwnet[j];
+        store->lwnet[count++]=climate->data[index].lwnet[j];
     }
     if(store->swdown!=NULL)
     {
       count=climate->file_swdown.n*(year-firstyear);
       for(j=0;j<climate->file_swdown.n;j++)
-        store->swdown[count++]=climate->data.swdown[j];
+        store->swdown[count++]=climate->data[index].swdown[j];
     }
     if(store->wet!=NULL)
     {
       count=climate->file_wet.n*(year-firstyear);
       for(j=0;j<climate->file_wet.n;j++)
-        store->wet[count++]=climate->data.wet[j];
+        store->wet[count++]=climate->data[index].wet[j];
     }
     if(store->wind!=NULL)
     {
       count=climate->file_wind.n*(year-firstyear);
       for(j=0;j<climate->file_wind.n;j++)
-        store->wind[count++]=climate->data.wind[j];
+        store->wind[count++]=climate->data[index].wind[j];
     }
     if(store->tamp!=NULL)
     {
       count=climate->file_tamp.n*(year-firstyear);
       for(j=0;j<climate->file_tamp.n;j++)
-        store->tamp[count++]=climate->data.tamp[j];
+        store->tamp[count++]=climate->data[index].tamp[j];
     }
     if(store->burntarea!=NULL)
     {
       count=climate->file_burntarea.n*(year-firstyear);
       for(j=0;j<climate->file_burntarea.n;j++)
-        store->burntarea[count++]=climate->data.burntarea[j];
+        store->burntarea[count++]=climate->data[index].burntarea[j];
     }
     if(store->no3deposition!=NULL)
     {
       count=climate->file_no3deposition.n*(year-firstyear);
       for(j=0;j<climate->file_no3deposition.n;j++)
-        store->no3deposition[count++]=climate->data.no3deposition[j];
+        store->no3deposition[count++]=climate->data[index].no3deposition[j];
     }
     if(store->nh4deposition!=NULL)
     {
       count=climate->file_nh4deposition.n*(year-firstyear);
       for(j=0;j<climate->file_nh4deposition.n;j++)
-        store->nh4deposition[count++]=climate->data.nh4deposition[j];
+        store->nh4deposition[count++]=climate->data[index].nh4deposition[j];
     }
   }
   return FALSE;
@@ -221,113 +226,114 @@ void restoreclimate(Climate *climate,         /**< pointer to climate data */
   long index;
   index=year*climate->file_temp.n;
   for(i=0;i<climate->file_temp.n;i++)
-    climate->data.temp[i]=store->temp[index++];
+    climate->data[0].temp[i]=store->temp[index++];
   index=year*climate->file_prec.n;
   for(i=0;i<climate->file_prec.n;i++)
-    climate->data.prec[i]=store->prec[index++];
+    climate->data[0].prec[i]=store->prec[index++];
   if(store->tmax!=NULL)
   {
     index=year*climate->file_tmax.n;
     for(i=0;i<climate->file_tmax.n;i++)
-      climate->data.tmax[i]=store->tmax[index++];
+      climate->data[0].tmax[i]=store->tmax[index++];
   }
   if(store->humid!=NULL)
   {
     index=year*climate->file_humid.n;
     for(i=0;i<climate->file_humid.n;i++)
-      climate->data.humid[i]=store->humid[index++];
+      climate->data[0].humid[i]=store->humid[index++];
   }
   if(store->tmin!=NULL)
   {
     index=year*climate->file_tmin.n;
     for(i=0;i<climate->file_tmin.n;i++)
-      climate->data.tmin[i]=store->tmin[index++];
+      climate->data[0].tmin[i]=store->tmin[index++];
   }
   if(store->sun!=NULL)
   {
     index=year*climate->file_cloud.n;
     for(i=0;i<climate->file_cloud.n;i++)
-      climate->data.sun[i]=store->sun[index++];
+      climate->data[0].sun[i]=store->sun[index++];
   }
   if(store->lwnet!=NULL)
   {
     index=year*climate->file_lwnet.n;
     for(i=0;i<climate->file_lwnet.n;i++)
-      climate->data.lwnet[i]=store->lwnet[index++];
+      climate->data[0].lwnet[i]=store->lwnet[index++];
   }
   if(store->swdown!=NULL)
   {
     index=year*climate->file_swdown.n;
     for(i=0;i<climate->file_swdown.n;i++)
-      climate->data.swdown[i]=store->swdown[index++];
+      climate->data[0].swdown[i]=store->swdown[index++];
   }
   if(store->wet!=NULL)
   {
     index=year*climate->file_wet.n;
     for(i=0;i<climate->file_wet.n;i++)
-      climate->data.wet[i]=store->wet[index++];
+      climate->data[0].wet[i]=store->wet[index++];
   }
   if(store->wind!=NULL)
   {
     index=year*climate->file_wind.n;
     for(i=0;i<climate->file_wind.n;i++)
-      climate->data.wind[i]=store->wind[index++];
+      climate->data[0].wind[i]=store->wind[index++];
   }
   if(store->tamp!=NULL)
   {
     index=year*climate->file_tamp.n;
     for(i=0;i<climate->file_tamp.n;i++)
-      climate->data.tamp[i]=store->tamp[index++];
+      climate->data[0].tamp[i]=store->tamp[index++];
   }
   if(store->burntarea!=NULL)
   {
     index=year*climate->file_burntarea.n;
     for(i=0;i<climate->file_burntarea.n;i++)
-      climate->data.burntarea[i]=store->burntarea[index++];
+      climate->data[0].burntarea[i]=store->burntarea[index++];
   }
   if(store->no3deposition!=NULL)
   {
     index=year*climate->file_no3deposition.n;
     for(i=0;i<climate->file_no3deposition.n;i++)
-      climate->data.no3deposition[i]=store->no3deposition[index++];
+      climate->data[0].no3deposition[i]=store->no3deposition[index++];
   }
   if(store->nh4deposition!=NULL)
   {
     index=year*climate->file_nh4deposition.n;
     for(i=0;i<climate->file_nh4deposition.n;i++)
-      climate->data.nh4deposition[i]=store->nh4deposition[index++];
+      climate->data[0].nh4deposition[i]=store->nh4deposition[index++];
   }
 } /* of 'restoreclimate' */
 
 void moveclimate(Climate *climate,  /**< Pointer to climate data */
                  const Climatedata *store, /**< climate buffer */
+                 int index,
                  int year           /**< year (AD) */
                  )                  /** \return void */
 {
-  climate->data.prec=store->prec+climate->file_prec.n*year;
-  climate->data.temp=store->temp+climate->file_temp.n*year;
-  if(climate->data.tmax!=NULL)
-    climate->data.tmax=store->tmax+climate->file_tmax.n*year;
-  if(climate->data.humid!=NULL)
-    climate->data.humid=store->humid+climate->file_humid.n*year;
-  if(climate->data.tmin!=NULL)
-    climate->data.tmin=store->tmin+climate->file_tmin.n*year;
-  if(climate->data.sun!=NULL)
-    climate->data.sun=store->sun+climate->file_cloud.n*year;
-  if(climate->data.lwnet!=NULL)
-    climate->data.lwnet=store->lwnet+climate->file_lwnet.n*year;
-  if(climate->data.swdown!=NULL)
-    climate->data.swdown=store->swdown+climate->file_swdown.n*year;
-  if(climate->data.wet!=NULL)
-    climate->data.wet=store->wet+climate->file_wet.n*year;
-  if(climate->data.wind!=NULL)
-    climate->data.wind=store->wind+climate->file_wind.n*year;
-  if(climate->data.tamp!=NULL)
-    climate->data.tamp=store->tamp+climate->file_tamp.n*year;
-  if(climate->data.burntarea!=NULL)
-    climate->data.burntarea=store->burntarea+climate->file_burntarea.n*year;
-  if(climate->data.no3deposition!=NULL)
-    climate->data.no3deposition=store->no3deposition+climate->file_no3deposition.n*year;
-  if(climate->data.nh4deposition!=NULL)
-    climate->data.nh4deposition=store->nh4deposition+climate->file_nh4deposition.n*year;
+  climate->data[index].prec=store->prec+climate->file_prec.n*year;
+  climate->data[index].temp=store->temp+climate->file_temp.n*year;
+  if(climate->data[index].tmax!=NULL)
+    climate->data[index].tmax=store->tmax+climate->file_tmax.n*year;
+  if(climate->data[index].tmin!=NULL)
+    climate->data[index].tmin=store->tmin+climate->file_tmin.n*year;
+  if(climate->data[index].humid!=NULL)
+    climate->data[index].humid=store->humid+climate->file_humid.n*year;
+  if(climate->data[index].sun!=NULL)
+    climate->data[index].sun=store->sun+climate->file_cloud.n*year;
+  if(climate->data[index].lwnet!=NULL)
+    climate->data[index].lwnet=store->lwnet+climate->file_lwnet.n*year;
+  if(climate->data[index].swdown!=NULL)
+    climate->data[index].swdown=store->swdown+climate->file_swdown.n*year;
+  if(climate->data[index].wet!=NULL)
+    climate->data[index].wet=store->wet+climate->file_wet.n*year;
+  if(climate->data[index].wind!=NULL)
+    climate->data[index].wind=store->wind+climate->file_wind.n*year;
+  if(climate->data[index].tamp!=NULL)
+    climate->data[index].tamp=store->tamp+climate->file_tamp.n*year;
+  if(climate->data[index].burntarea!=NULL)
+    climate->data[index].burntarea=store->burntarea+climate->file_burntarea.n*year;
+  if(climate->data[index].no3deposition!=NULL)
+    climate->data[index].no3deposition=store->no3deposition+climate->file_no3deposition.n*year;
+  if(climate->data[index].nh4deposition!=NULL)
+    climate->data[index].nh4deposition=store->nh4deposition+climate->file_nh4deposition.n*year;
 } /* of 'moveclimate' */

@@ -30,6 +30,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "evap soildepth:\t%g (mm)\n"
                "soil infil:\t%g\n"
                "pre. CO2:\t%g (ppm)\n"
+               "pCH4:\t%g (ppb)\n"
                "k:\t\t%g (1/yr)\n"
                "theta:\t\t%g\n"
                "k_beer:\t\t%g\n"
@@ -50,9 +51,9 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "temp_response_a:\t%g\n"
                "temp_response_b:\t%g\n",
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
-          param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,
-          param.soil_infil,param.co2_p,
-          param.k,param.theta,param.k_beer,param.alphac3,param.alphac4,
+          param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,param.soil_infil,
+          param.co2_p,param.pch4,param.k,
+          param.theta,param.k_beer,param.alphac3,param.alphac4,
           param.bc3,param.bc4,param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
           param.fpc_tree_max,param.temp_response_a,param.temp_response_b);
@@ -145,6 +146,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
   }
   fputs("Soil parameter\n",file);
   fprintsoilpar(file,config->soilpar,config->nsoil,config->with_nitrogen);
+  fprinthydropar(file);
   fputs("PFT parameter\n",file);
   if(config->withlanduse!=NO_LANDUSE)
   {

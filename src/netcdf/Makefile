@@ -38,7 +38,8 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h $(INC)/reservoir.h\
           $(INC)/list.h $(INC)/cell.h $(INC)/units.h $(INC)/climbuf.h\
           $(INC)/config.h $(INC)/queue.h $(INC)/output.h $(INC)/spitfire.h\
-          $(INC)/cdf.h $(INC)/soil.h $(INC)/landuse.h $(INC)/discharge.h
+          $(INC)/cdf.h $(INC)/soil.h $(INC)/landuse.h $(INC)/discharge.h\
+          $(INC)/hydrotope.h
 
 
 $(LIBDIR)/$(LIB): $(OBJS)

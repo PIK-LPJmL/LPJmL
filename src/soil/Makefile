@@ -20,12 +20,15 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           fire_sum.$O fire_prob.$O freadsoil.$O fwritesoil.$O fprintsoil.$O\
           freesoilpar.$O seeksoilcode.$O freadsoilcode.$O getnsoilcode.$O\
           fopensoilcode.$O litter_ag_sum.$O littercarbon.$O fprintlitter.$O\
+          hydrotopes.$O inithydro.$O update_wetland.$O\
+          freadhydrotope.$O fscanhydropar.$O fwritehydrotope.$O \
           freadlitter.$O fwritelitter.$O newsoil.$O freesoil.$O copysoil.$O\
           findlitter.$O addlitter.$O freelitter.$O fprintsoilpar.$O\
           soilwater.$O soilcarbon.$O litter_ag_tree.$O litter_ag_grass.$O\
           moistfactor.$O litter_ag_sum_quick.$O freesoilpar.$O moisture2soilice.$O\
           soilconduct.$O soilheatcap.$O soilice2moisture.$O getlag.$O convert_water.$O\
-          getstate.$O initsoiltemp.$O infil_perc_rain.$O infil_perc_irr.$O\
+          gasdiffusion.$O getstate.$O initsoiltemp.$O infil_perc_rain.$O infil_perc_irr.$O\
+          ebullition.$O fprinthydrotope.$O fprinthydropar.$O soilmethane.$O\
           fscanpoolpar.$O denitrification.$O biologicalNfixation.$O\
           litter_ag_nitrogen_tree.$O soilstocks.$O litterstocks.$O\
           checklitter.$O getrootdist.$O nuptake_temp_fcn.$O volatilization.$O\
@@ -42,7 +45,8 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h $(INC)/stand.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h $(INC)/output.h\
           $(INC)/config.h $(INC)/param.h $(INC)/cdf.h $(INC)/discharge.h\
-          $(INC)/climbuf.h $(INC)/reservoir.h $(INC)/agriculture.h
+          $(INC)/climbuf.h $(INC)/reservoir.h $(INC)/agriculture.h\
+          $(INC)/wetland.h $(INC)/hydrotope.h
 
 $(LIBDIR)/$(LIB): $(OBJS)
 	$(AR) $(ARFLAGS)$(LIBDIR)/$(LIB) $(OBJS)

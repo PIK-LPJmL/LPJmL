@@ -28,6 +28,8 @@ Bool fwritestand(FILE *file,        /**< pointer to binary file */
   /* write soil data to file */
   if(fwritesoil(file,&stand->soil,ntotpft))
     return TRUE;
+  fwrite1(&stand->Hag_Beta, sizeof(Real), file);
+  fwrite1(&stand->slope_mean, sizeof(Real), file);
   fwrite1(&stand->frac,sizeof(Real),file);
   b=(Byte)stand->type->landusetype;
   fwrite(&b,sizeof(b),1,file);

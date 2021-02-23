@@ -30,6 +30,7 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/natural.h $(INC)/grassland.h $(INC)/agriculture.h\
           $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/biomass_tree.h\
           $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h\
+          $(INC)/wetland.h  $(INC)/hydrotope.h $(INC)/icefrac.h\
           $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h
 
 JSON	= lpjml.js input_crumonthly.js param.js lpj.js param_non.js\

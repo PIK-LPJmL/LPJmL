@@ -83,9 +83,10 @@
 #include "agriculture.h"
 #include "agriculture_grass.h"
 #include "agriculture_tree.h"
+#include "wetland.h"
 
 #define NTYPES 3 /* number of plant functional types: grass, tree, annual_crop */
-#define NSTANDTYPES 12 /* number of stand types / land use types as defined in landuse.h*/
+#define NSTANDTYPES 13 /* number of stand types / land use types as defined in landuse.h*/
 
 #ifdef USE_JSON
 #define dflt_conf_filename_ml "lpjml.js" /* Default LPJ configuration file
@@ -114,6 +115,7 @@ int main(int argc,char **argv)
   Fscanpftparfcn scanfcn[NTYPES]={fscanpft_grass,fscanpft_tree,fscanpft_crop};
 
   standtype[NATURAL]=natural_stand;
+  standtype[WETLAND]=wetland_stand;
   standtype[SETASIDE_RF]=setaside_rf_stand;
   standtype[SETASIDE_IR]=setaside_ir_stand;
   standtype[AGRICULTURE]=agriculture_stand;

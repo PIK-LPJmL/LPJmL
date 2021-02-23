@@ -33,3 +33,24 @@ void mix_veg_grass(Pft *pft,Real scaler)
   pft->bm_inc.nitrogen*=scaler;
   
 } /* of 'mix_veg_grass' */
+
+void mix_veg_stock_grass(Pft *pft1, Pft *pft2, Real frac1, Real frac2)  /*mix pft1 into pft2*/
+{
+  Pftgrass *grass1;
+  Pftgrass *grass2;
+  grass1=pft1->data;
+  grass2=pft2->data;
+
+  pft1->nind=(pft1->nind*frac1+pft2->nind*frac2)/(frac1+frac2);
+  pft1->bm_inc.carbon=(pft1->bm_inc.carbon*frac1+pft2->bm_inc.carbon*frac2)/(frac1+frac2);
+  pft1->bm_inc.nitrogen=(pft1->bm_inc.nitrogen*frac1+pft2->bm_inc.nitrogen*frac2)/(frac1+frac2);
+  grass1->ind.leaf.carbon=(grass1->ind.leaf.carbon*frac1 + grass2->ind.leaf.carbon*frac2)/(frac1+frac2);
+  grass1->ind.root.carbon=(grass1->ind.root.carbon*frac1 + grass2->ind.root.carbon*frac2)/(frac1+frac2);
+  grass1->turn.leaf.carbon=(grass1->turn.leaf.carbon*frac1 + grass2->turn.leaf.carbon*frac2)/(frac1+frac2);
+  grass1->turn.root.carbon=(grass1->turn.root.carbon*frac1 + grass2->turn.root.carbon*frac2)/(frac1+frac2);
+  grass1->ind.leaf.nitrogen=(grass1->ind.leaf.nitrogen*frac1 + grass2->ind.leaf.nitrogen*frac2)/(frac1+frac2);
+  grass1->ind.root.nitrogen=(grass1->ind.root.nitrogen*frac1 + grass2->ind.root.nitrogen*frac2)/(frac1+frac2);
+  grass1->turn.leaf.nitrogen=(grass1->turn.leaf.nitrogen*frac1 + grass2->turn.leaf.nitrogen*frac2)/(frac1+frac2);
+  grass1->turn.root.nitrogen=(grass1->turn.root.nitrogen*frac1 + grass2->turn.root.nitrogen*frac2)/(frac1+frac2);
+  fpc_grass(pft1);
+} /* of 'mix_veg_stock_grass' */

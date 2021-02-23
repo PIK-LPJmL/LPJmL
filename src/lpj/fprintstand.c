@@ -26,6 +26,8 @@ void fprintstand(FILE *file,           /**< Pointer to text file */
   int l;
   fprintf(file,"Standfrac:\t%g\n",stand->frac);
   fprintf(file,"Standtype:\t%s\n",stand->type->name);
+  fprintf(file, "Hag Beta value:\t%g\n", stand->Hag_Beta);
+  fprintf(file, "Slope mean value:\t%g\n", stand->slope_mean);
   /* print stand-specific data */
   stand->type->fprint(file,stand,pftpar);
   fprintsoil(file,&stand->soil,pftpar,ntotpft,with_nitrogen);

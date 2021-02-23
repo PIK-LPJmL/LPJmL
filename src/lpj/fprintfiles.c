@@ -52,6 +52,10 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   if(config->soil_filename.fmt!=CDF)
     fprintf(file,"%s\n",config->coord_filename.name);
   fprintf(file,"%s\n",config->soil_filename.name);
+  fprintfilename(file,config->kbf_filename);
+  fprintfilename(file,config->slope_filename);
+  fprintfilename(file,config->slope_min_filename);
+  fprintfilename(file,config->slope_max_filename);
   fprintfilename(file,config->temp_filename);
   fprintfilename(file,config->prec_filename);
 #if defined IMAGE && defined COUPLED
@@ -69,7 +73,10 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   else
     fprintfilename(file,config->cloud_filename);
+  fprintf(file,"%s\n",config->hydrotopes_filename.name);
   fprintf(file,"%s\n",config->co2_filename.name);
+  if (config->with_dynamic_ch4)
+    fprintf(file,"%s\n",config->ch4_filename.name);
   if(config->with_nitrogen)
   {
     if(config->with_nitrogen!=UNLIM_NITROGEN)

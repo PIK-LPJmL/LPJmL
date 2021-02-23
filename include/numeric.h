@@ -27,6 +27,13 @@
 
 typedef Real (*Bisectfcn)(Real,void *);
 
+typedef struct
+{
+  Real ecc;     /* Eccentricity */
+  Real obl;     /* Obliquity */
+  Real per;     /* Perihelion length */
+} Orbit;
+
 #ifdef USE_RAND48
 typedef unsigned short int Seed[NSEED]; /* Seed for erand48() random number generator */
 #else
@@ -45,6 +52,19 @@ extern void petpar(Real *,Real *,Real *,Real *,Real,int,Real,Real,Real);
 extern void petpar2(Real *,Real *,Real *,Real,int,Real,Real,Real,Bool,Real);
 extern void petpar3(Real *,Real *,Real *,Real,int,Real,Real,Real);
 extern int ivec_sum(const int[],int); /* vector sum of integers */
+extern Real delta2c(Real, Real);
+extern Real c2delta(Real, Real);
+extern Real DELTA2delta(Real, Real);
+extern Real delta2DELTA(Real, Real);
+extern Real gamma(Real);
+extern Real gammln(Real);
+extern Real gammq(Real,Real);
+extern void gcf(Real *, Real, Real, Real *);
+extern void gser(Real *, Real, Real, Real *);
+extern Real runmean_add(Real, Real, Real);
+extern Real gammp(Real, Real);
+extern Real itersolve(Real, Real, Real, Real, Real, Real, Real, Real, int);
+extern void interpolate_data(Real *, Real *, Real *, int n, Real);
 extern void permute(int [],int,Seed);
 
 #ifndef USE_RAND48

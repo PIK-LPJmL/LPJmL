@@ -22,6 +22,7 @@ typedef struct
   Climate *climate;
   Landuse landuse;
   Wateruse wateruse;
+  Icefrac icefrac;
 #ifdef IMAGE
   Wateruse wateruse_wd;
 #endif

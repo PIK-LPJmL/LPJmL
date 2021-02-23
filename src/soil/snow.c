@@ -16,6 +16,7 @@
 
 #define km 3.0
 #define c_roughness 0.06 /* Roughness height of vegetation below the canopy. Source: FOAM/LPJ */
+#define FUKUSAKO
 
 /*
  *    Function snow
@@ -73,6 +74,8 @@ Real snow(Soil *soil,       /**< pointer to soil data */
   Real HS;    /* Height of the Snow (m) */
 
   unsigned long int heat_steps,t;
+  Real Ksnow, Csnow;              /* thermal conductivity of snow [W m-1 K-1], heat capacity of snow (J m-2 K-1)*/
+  Real thermal_diff;
 
   *snowmelt=0.0;
   /* precipitation falls as snow */
@@ -94,35 +97,53 @@ Real snow(Soil *soil,       /**< pointer to soil data */
   }
   else
     *evap=0;
+
+#ifdef FUKUSAKO
+  Ksnow = 0.0209 + 2.93*1e-6*soil->snowdens*soil->snowdens;          // Fukusako 1990
+  Csnow = (0.185 + 0.689*(273 + temp)*0.01) * 1000 * soil->snowdens;     // Fukusako 1990
+  thermal_diff = Ksnow / Csnow;
+#else
+  thermal_diff = th_diff_snow;
+  Ksnow = lambda_snow;
+#endif
+
   /* snow layer is insulating */
-  if(soil->snowpack>epsilon)
+  /* TODO: temp_bsnow should be a composite from snow / soil to avoid steps, see SPEEDY version*/
+  /* TODO: incorporate snow density for dt and dT?*/
+  /* melting at the top */
+  if(temp > T_zero && soil->snowpack>0)
   {
-    /* TODO: temp_bsnow should be a composite from snow / soil to avoid steps, see SPEEDY version*/
-    /* TODO: incorporate snow density for dt and dT?*/
-    /* melting at the top */
-    if(temp > T_zero)
-    {
-      /* TODO: snow-T to 0 before melting */
-      depth=min(soil->snowpack,snow_skin_depth);
+    /* TODO: snow-T to 0 before melting */
+    depth=min(soil->snowpack,snow_skin_depth);
+#ifdef FUKUSAKO
+      dT = Ksnow / Csnow*timestep2sec(1.0, NSTEP_DAILY) / (depth*depth)*1000000.0
+        *(temp - tsnow);
+      heatflux = Ksnow*(tsnow - T_zero + dT) / depth * 1000;
+#else
       dT=th_diff_snow*timestep2sec(1.0,NSTEP_DAILY)/(depth*depth)*1000000.0
          *(temp-tsnow);
       heatflux=lambda_snow*(tsnow-T_zero+dT)/depth*1000;
+#endif
       melt_heat=min(heatflux*timestep2sec(1.0,NSTEP_DAILY),depth*1e-3*c_water2ice);/*[J/m2]*/
-      *snowmelt+=melt_heat/c_water2ice*1000; /* [J/m2]/[J/m3]*1000 = [mm] */
-      soil->snowpack-=melt_heat/c_water2ice*1000;
-      if (soil->snowpack<epsilon)
-      {
-        *temp_bsnow=temp;
-        soil->snowpack=0.0;
-        soil->snowheight=0.0;
-        soil->snowfraction=0.0;
-        return runoff;
-      }
+    *snowmelt+= min(soil->snowpack, melt_heat/c_water2ice*1000); /* [J/m2]/[J/m3]*1000 = [mm] */
+    soil->snowpack-=melt_heat/c_water2ice*1000;
+    if (soil->snowpack<epsilon)
+    {
+      *temp_bsnow=temp;
+      soil->snowpack=0.0;
+      soil->snowdens=snowdens_first;
+      soil->temp[SNOWLAYER]=temp;
+      soil->snowheight=0.0;
+      soil->snowfraction=0.0;
+      return runoff;
     }
-    /* stability criterion for finite-difference solution */
-    dt=0.5*(soil->snowpack*soil->snowpack*1e-6)/th_diff_snow;
-    heat_steps= (unsigned long int)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1;
-    *temp_bsnow=temp;
+  }
+  /* stability criterion for finite-difference solution */
+  dt= max(1, 0.5*(soil->snowpack*soil->snowpack*1e-6)/th_diff_snow);
+  heat_steps= (unsigned long int)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1;
+  *temp_bsnow=temp;
+  if (soil->snowpack>1 && heat_steps <= maxheatsteps)
+  {
     for (t=0; t<heat_steps;++t)
     {
       /*temperature change of remaining snow layer */
@@ -158,23 +179,30 @@ Real snow(Soil *soil,       /**< pointer to soil data */
     } /*foreach heatstep*/
   } /* snow present?*/
   else
-    *temp_bsnow=temp;
-
-  /* calculate snow height and fraction of snow coverage */
-  if(soil->snowpack>epsilon)
   {
+    *temp_bsnow=temp;
+    soil->temp[SNOWLAYER] = temp;
+  }
+  /* calculate snow height and fraction of snow coverage */
+  if (soil->snowpack>epsilon)
+  {
+    soil->snowdens += (Real)((snowdens_end-snowdens_first))/(Real)(snowdens_end)*snowdens_end/soil->snowdens;
     HS = c_watertosnow * (soil->snowpack/1000.0); /* mm -> m */
     frsg = HS / (HS+0.5*c_roughness);
-
     soil->snowheight = HS;
     soil->snowfraction = frsg;
   }
+
   else
   {
+    runoff=soil->snowpack;
     soil->snowpack=0.0;
     soil->snowheight=0.0;
     soil->snowfraction=0.0;
   }
-
+  if (soil->snowdens>snowdens_end) soil->snowdens = snowdens_end;
+  if (soil->snowpack<0.000000001)
+    soil->snowdens = snowdens_first;
+  if (*temp_bsnow<-80)   *temp_bsnow = -80;
   return runoff;
 } /* of 'snow' */

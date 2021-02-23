@@ -34,6 +34,7 @@ void freeoutput(Output *output /**< Output data */
   free(output->fpc_bft);
   free(output->nv_lai);
   free(output->pft_mort);
+  free(output->wpc);
   free(output->cftfrac);
   free(output->cft_pet);
   free(output->cft_transp);

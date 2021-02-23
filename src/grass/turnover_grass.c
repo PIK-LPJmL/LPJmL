@@ -83,7 +83,7 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
   }
 
   /* turnover */
-  if (pft->stand->type->landusetype==NATURAL)
+  if (pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype == WETLAND)
   {
     gturn.root=grass->turn.root;
     gturn.leaf=grass->turn.leaf;

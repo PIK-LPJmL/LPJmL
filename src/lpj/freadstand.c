@@ -47,6 +47,8 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
     free(stand);
     return NULL;
   }
+  freadreal1(&stand->Hag_Beta, swap, file);
+  freadreal1(&stand->slope_mean, swap, file);
   freadreal1(&stand->frac,swap,file);
   if(fread(&landusetype,sizeof(landusetype),1,file)!=1)
   {

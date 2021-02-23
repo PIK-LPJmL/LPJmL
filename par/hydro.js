@@ -1,0 +1,22 @@
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                   h y d r o  .  j  s                                           \n**/
+/**                                                                                \n**/
+/** Default input parameter file for LPJmL C Version 5.2.001                       \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
+
+"hydropar" :
+{
+  "wland_min" : 0.0,	    /* wland_min */
+  "cti_max" : 10.0,   	    /* maximum compound topographic index (cti_max)*/
+  "lat_min" : -80.0,	    /* lat_min */
+  "wtab_thres" : 0.1,	    /* wtab_thres */
+  "cti_thres" :  5.0	    /* cti_thres */
+},

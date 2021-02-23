@@ -16,10 +16,13 @@
 
 Bool establish(Real gdd,              /**< growing degree days */
                const Pftpar *pftpar,  /**< PFT parameter */
-               const Climbuf *climbuf /**< climate buffer */
+               const Climbuf *climbuf, /**< climate buffer */
+               Bool peatland           /* if stand == PEATLAND */
               )                       /** \return if established */ 
 {
   Real temp_min20;
+  if (pftpar->peatland && !peatland)
+    return FALSE;
   if(isemptybuffer(climbuf->min)) /* check to avoid division by zero */
     return FALSE;
   temp_min20=getbufferavg(climbuf->min);

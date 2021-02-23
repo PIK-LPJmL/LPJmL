@@ -47,6 +47,14 @@ static size_t isnetcdfinput(const Config *config)
     width=max(width,strlen(config->temp_filename.var));
   if(config->prec_filename.fmt==CDF)
     width=max(width,strlen(config->prec_filename.var));
+  if(config->kbf_filename.fmt==CDF)
+    width=max(width,strlen(config->kbf_filename.var));
+  if(config->slope_filename.fmt==CDF)
+    width=max(width,strlen(config->slope_filename.var));
+  if(config->slope_min_filename.fmt==CDF)
+    width=max(width,strlen(config->slope_min_filename.var));
+  if(config->slope_max_filename.fmt==CDF)
+    width=max(width,strlen(config->slope_max_filename.var));
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
@@ -262,10 +270,14 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"river routing");
   if(config->equilsoil)
     len=printsim(file,len,&count,"equilsoil is called");
+  if (config->with_dynamic_ch4)
+    len=printsim(file,len,&count,"dynamic CH4");
   if(config->with_nitrogen)
     len=printsim(file,len,&count,(config->with_nitrogen==UNLIM_NITROGEN) ? "unlimited nitrogen" : "nitrogen limitation");
   if(config->permafrost)
     len=printsim(file,len,&count,"permafrost");
+  if (config->isanomaly)
+    len=printsim(file,len,&count,"anomalies");
   if(config->black_fallow)
   {
     len=printsim(file,len,&count,"black fallow");
@@ -421,6 +433,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fprintf(file,"Starting from restart file '%s'.\n",config->restart_filename);
   else
     fputs("Starting from scratch.\n",file);
+  if (config->isanomaly && config->delta_year>1)
+    fprintf(file, "Delta year: %d (yr)\n", config->delta_year);
   width=(int)isnetcdfinput(config);
   fputs("Input files:\n",file);
   if(width)
@@ -438,8 +452,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   printinputfile(file,"soil",&config->soil_filename,width);
   if(config->soil_filename.fmt!=CDF)
     printinputfile(file,"coord",&config->coord_filename,width);
+  printinputfile(file, "kbf", &config->kbf_filename, width);
+  printinputfile(file, "slope", &config->slope_filename, width);
+  printinputfile(file, "slope_min", &config->slope_min_filename, width);
+  printinputfile(file, "slope_max", &config->slope_max_filename, width);
   printinputfile(file,"temp",&config->temp_filename,width);
   printinputfile(file,"prec",&config->prec_filename,width);
+  printinputfile(file, "hydrotopes", &config->hydrotopes_filename, width);
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
@@ -467,6 +486,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file,"soilpH",&config->soilph_filename,width);
   }
   printinputfile(file,"co2",&config->co2_filename,width);
+  if (!config->with_dynamic_ch4)
+    printinputfile(file,"ch4",&config->ch4_filename,width);
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     printinputfile(file,"windspeed",&config->wind_filename,width);
   if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
@@ -482,6 +503,14 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       printinputfile(file,"humid",&config->humid_filename,width);
     printinputfile(file,"lightning",&config->lightning_filename,width);
     printinputfile(file,"human ign",&config->human_ignition_filename,width);
+  }
+  if (config->isanomaly)
+  {
+    printinputfile(file, "icefrac", &config->icefrac_filename, width);
+    printinputfile(file, "delta temp", &config->delta_temp_filename, width);
+    printinputfile(file, "delta prec", &config->delta_prec_filename, width);
+    printinputfile(file, "delta lwnet", &config->delta_lwnet_filename, width);
+    printinputfile(file, "delta swdown", &config->delta_swdown_filename, width);
   }
   if(config->ispopulation)
     printinputfile(file,"pop. dens",&config->popdens_filename,width);

@@ -42,7 +42,9 @@ struct config
   char *outputdir;            /**< output directory */
   char *restartdir;           /**< restart directory */
   Filename temp_filename;
+  Filename delta_temp_filename;
   Filename prec_filename;
+  Filename delta_prec_filename;
   Filename cloud_filename;
   Filename wet_filename;
   Filename wind_filename;
@@ -52,19 +54,28 @@ struct config
   Filename tmin_filename;
   Filename lightning_filename;
   Filename lwnet_filename;
+  Filename delta_lwnet_filename;
   Filename swdown_filename;
+  Filename delta_swdown_filename;
   Filename popdens_filename;
   Filename human_ignition_filename;
   Filename co2_filename;
+  Filename ch4_filename;
+  Filename icefrac_filename;
   Filename drainage_filename;
   Filename neighb_irrig_filename;
   Filename coord_filename;
   Filename soil_filename;
   Filename soilph_filename;
   Filename river_filename;
+  Filename kbf_filename;
+  Filename slope_filename;
+  Filename slope_min_filename;
+  Filename slope_max_filename;
   Filename countrycode_filename;
   Filename regioncode_filename;
   Filename landuse_filename;
+  Filename hydrotopes_filename;
   Filename fertilizer_nr_filename;
   Filename no3deposition_filename;
   Filename nh4deposition_filename;
@@ -80,6 +91,7 @@ struct config
   Filename crop_phu_filename;
   Filename burntarea_filename;
   Filename landcover_filename;
+  Filename runoff2ocean_filename; /**< map with indices of the ocean cells where the coast cells send their runoff into */
 #ifdef IMAGE
   Filename aquifer_filename;
   Filename wateruse_wd_filename;
@@ -171,6 +183,10 @@ struct config
   Outputmethod outputmethod;
   char *hostname;               /**< hostname to send data */
   int port;                     /**< port of socket connection */
+  Bool isanomaly;
+  int delta_year;
+  Bool with_glacier;
+  Bool with_dynamic_ch4;
 #ifdef USE_MPI
   MPI_Comm comm; /**< MPI communicator */
   int offset;

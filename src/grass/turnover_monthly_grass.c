@@ -20,7 +20,7 @@ void turnover_monthly_grass(Litter *litter,Pft *pft)
   Pftgrass *grass;
   Pftgrasspar *grasspar;
   Output *output;
-  if(pft->stand->type->landusetype==NATURAL)
+  if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype == WETLAND)
   {
     grasspar=pft->par->data;
     grass=pft->data;

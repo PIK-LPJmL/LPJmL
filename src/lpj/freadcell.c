@@ -44,6 +44,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     freadreal1(&cell->discharge.dfout,swap,file);
     freadreal1(&cell->discharge.dmass_river,swap,file);
     freadreal1(&cell->discharge.dmass_sum,swap,file);
+    freadreal1(&cell->lateral_water, swap, file);
 #ifdef COUPLING_WITH_FMS
     freadreal1(&cell->laketemp,swap,file);
 #endif
@@ -77,6 +78,8 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
       standtype,nstand,config->double_harvest,swap);
     if(cell->standlist==NULL)
       return TRUE;
+    freadreal1(&cell->ground_st, swap, file);
+    freadreal1(&cell->ground_st_am, swap, file);
     freadreal1(&cell->ml.cropfrac_rf,swap,file);
     freadreal1(&cell->ml.cropfrac_ir,swap,file);
     if(freadclimbuf(file,&cell->climbuf,ncft,swap))
@@ -115,6 +118,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     checkptr(cell->ml.gs);
     if(freadint(cell->ml.gs,2*ncft,swap,file)!=2*ncft)
       return TRUE;
+    if (freadhydrotope(file, &cell->hydrotopes, swap))
     if(cell->ml.landfrac!=NULL && config->landuse_restart)
     {
       freadlandfrac(file,cell->ml.landfrac,ncft,config->nagtree,swap);

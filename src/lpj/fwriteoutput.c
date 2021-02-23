@@ -757,6 +757,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(SOILC_SLOW,soil_slow.carbon);
   }
+
   if(isopen(output,SOILN_SLOW))
   {
     if(iswrite2(SOILN_SLOW,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILN_SLOW].timestep>0))
@@ -801,6 +802,50 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputvar(LITN,litter.nitrogen);
   }
+/*
+  if(isopen(output,SOILC_AGR))
+  {
+    if(iswrite2(SOILC_AGR,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILC_AGR].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
+                 stand->type->landusetype == AGRICULTURE)
+            {
+              for (p = 0; p<stand->soil.litter.n; p++)
+                grid[cell].output.soilc_agr+=stand->soil.litter.item[p].bg.carbon*stand->frac;
+              forrootsoillayer(l)
+                grid[cell].output.soilc_agr+=(stand->soil.pool[l].slow.carbon + stand->soil.pool[l].fast.carbon)*stand->frac;
+            }
+          }
+        }
+    }
+    writeoutputvar(SOILC_AGR,soilc_agr);
+  }
+*/
+/*
+  if(isopen(output,LITC_AGR))
+  {
+    if(iswrite2(LITC_AGR,timestep,year,config) || (timestep==ANNUAL && config->outnames[LITC_AGR].timestep>0))
+    {
+      for(cell=0;cell<config->ngridcell;cell++)
+        if(!grid[cell].skip)
+        {
+          foreachstand(stand,s,grid[cell].standlist)
+          {
+            if (stand->type->landusetype == SETASIDE_RF || stand->type->landusetype == SETASIDE_IR ||
+                 stand->type->landusetype == AGRICULTURE)
+            {
+              grid[cell].output.litc_agr +=(litter_ag_sum(&stand->soil.litter) + litter_agsub_sum(&stand->soil.litter))*stand->frac;            }
+          }
+        }
+    }
+    writeoutputvar(LITC_AGR,litc_agr);
+  }
+*/
   if(isopen(output,SOILNO3))
   {
     if(iswrite2(SOILNO3,timestep,year,config) || (timestep==ANNUAL && config->outnames[SOILNO3].timestep>0))

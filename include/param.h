@@ -26,6 +26,7 @@ typedef struct
   Real soil_infil;      /**< soil infiltration */
   Real co2_p;       /**< pre-industrial CO2 concentration (ppm) */
   Real k;
+  Real pch4;       /* Initial concentration of atmospheric CH4 (ppb) */
   Real theta;      /**< co-limitation (shape) parameter */
   Real k_beer;     /**< Extinction coefficient */
   Real alphac3;    /**< intrinsic quantum efficiency of CO2 uptake in C4 plants */

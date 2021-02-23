@@ -64,55 +64,60 @@ typedef struct
   int firstyear;    /**< first year of CO2 data (AD) */
   int nyear;        /**< number of years of climate data */
   Real *data;       /**< atmospheric CO2 (ppmv) */
-} Co2data;
+} Tracedata;
 
 typedef struct
 {
   int firstyear;    /**< first year of data available for all variables (AD) */
-  Co2data co2;      /**< CO2 data */
+  Tracedata co2;      /**< CO2 data */
+  Tracedata ch4;      /* CH4 data */
   Climatefile file_temp,file_prec,file_wet; /**< file pointers */
   Climatefile file_cloud,file_lwnet,file_swdown;
   Climatefile file_wind,file_tamp,file_tmax,file_tmin,file_lightning;
   Climatefile file_no3deposition,file_nh4deposition;
   Climatefile file_humid;
+  Climatefile file_delta_temp, file_delta_prec, file_delta_lwnet, file_delta_swdown;
 #if defined IMAGE && defined COUPLED
   Climatefile file_temp_var,file_prec_var;
 #endif
   Climatefile file_burntarea;
-  Climatedata data; /**< climate data arrays */
+  Climatedata data[4]; /**< climate data arrays */
 } Climate;
 
 /* Definitions of macros */
 
-#define getcelltemp(climate,cell) climate->data.temp+(cell)*NMONTH
-#define getcellprec(climate,cell) climate->data.prec+(cell)*NMONTH
-#define getcellsun(climate,cell) climate->data.sun+(cell)*NMONTH
-#define getcelllwnet(climate,cell) climate->data.lwnet+(cell)*NMONTH
-#define getcellswdown(climate,cell) climate->data.swdown+(cell)*NMONTH
-#define getcellwet(climate,cell) climate->data.wet+(cell)*NMONTH
-#define getcellwind(climate,cell) climate->data.wind+(cell)*NMONTH
-#define getcelltamp(climate,cell) climate->data.tamp+(cell)*NMONTH
-#define getcelltmax(climate,cell) climate->data.tmax+(cell)*NMONTH
-#define getcellhumid(climate,cell) climate->data.humid+(cell)*NMONTH
-#define getcelltmin(climate,cell) climate->data.tmin+(cell)*NMONTH
-#define getcelllightning(climate,cell) climate->data.lightning+(cell)*NMONTH
-#define getcellburntarea(climate,cell) climate->data.burntarea+(cell)*NMONTH
-#define getcellno3deposition(climate,cell) climate->data.no3deposition+(cell)*NMONTH
-#define getcellnh4deposition(climate,cell) climate->data.nh4deposition+(cell)*NMONTH
+#define getcelltemp(climate,cell) climate->data[0].temp+(cell)*NMONTH
+#define getcellprec(climate,cell) climate->data[0].prec+(cell)*NMONTH
+#define getcellsun(climate,cell) climate->data[0].sun+(cell)*NMONTH
+#define getcelllwnet(climate,cell) climate->data[0].lwnet+(cell)*NMONTH
+#define getcellswdown(climate,cell) climate->data[0].swdown+(cell)*NMONTH
+#define getcellwet(climate,cell) climate->data[0].wet+(cell)*NMONTH
+#define getcellwind(climate,cell) climate->data[0].wind+(cell)*NMONTH
+#define getcelltamp(climate,cell) climate->data[0].tamp+(cell)*NMONTH
+#define getcelltmax(climate,cell) climate->data[0].tmax+(cell)*NMONTH
+#define getcellhumid(climate,cell) climate->data[0].humid+(cell)*NMONTH
+#define getcelltmin(climate,cell) climate->data[0].tmin+(cell)*NMONTH
+#define getcelllightning(climate,cell) climate->data[0].lightning+(cell)*NMONTH
+#define getcellburntarea(climate,cell) climate->data[0].burntarea+(cell)*NMONTH
+#define getcellno3deposition(climate,cell) climate->data[0].no3deposition+(cell)*NMONTH
+#define getcellnh4deposition(climate,cell) climate->data[0].nh4deposition+(cell)*NMONTH
 #define getprec(cell,d) (cell).climbuf.dval_prec[(d)+1]
-#define israndomprec(climate) ((climate)->data.wet!=NULL)
+#define israndomprec(climate) ((climate)->data[0].wet!=NULL)
 
 /* Declaration of functions */
 
 extern Climate *initclimate(const Cell *,const Config *);
-extern Bool getclimate(Climate *,const Cell *,int,const Config *);
+extern Bool getclimate(Climate *,const Cell *,int,int,const Config *);
 extern Bool getco2(const Climate *,Real *,int);
-extern void freeclimate(Climate *,Bool);
+extern Bool getch4(const Climate *,Real *,int);
+extern void closeclimateanomalies(Climate *,const Config *);
+extern void closeclimatefiles(Climate *,const Config *);
+extern void freeclimate(Climate *,const Config *);
 extern Bool storeclimate(Climatedata *,Climate *,const Cell *,int,int,
                          const Config *);
 extern void freeclimatedata(Climatedata *);
 extern void restoreclimate(Climate *,const Climatedata *,int);
-extern void moveclimate(Climate *,const Climatedata *,int);
+extern void moveclimate(Climate *,const Climatedata *,int,int);
 extern void prdaily(Real [],int,Real,Real,Seed);
 extern void dailyclimate(Dailyclimate *,const Climate *,Climbuf *,
                          int,int,int,int);
@@ -124,10 +129,12 @@ extern Bool openclimate(Climatefile *,const Filename *,const char *,Type,
 extern Real avgtemp(const Climate *,int cell);
 extern Real avgprec(const Climate *,int cell);
 extern void closeclimatefile(Climatefile *,Bool);
-extern Bool readclimate(Climatefile *,Real *,Real,Real,const Cell *,int,
+extern Bool readclimate(Climatefile *,Real *,Real,Real,const Cell *,int,int,
                         const Config *);
 extern Bool checkvalidclimate(Climate *,Cell *,Config *);
-extern Bool readco2(Co2data *,const Filename *,Bool);
+extern Bool readtracegas(Tracedata *,const Filename *,Bool);
 extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,int);
+extern void interpolate_climate(Climate *, int, Real);
+extern void addanomaly_climate(Climate *, int);
 
 #endif

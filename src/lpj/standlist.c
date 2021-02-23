@@ -113,6 +113,7 @@ void initstand(Stand *stand /**< Pointer to stand */
   /* Function initializes stand */
   stand->fire_sum=0.0;
   stand->growing_days=0;
+  stand->Hag_Beta=stand->cell->Hag_beta;
   stand->prescribe_landcover=NO_LANDCOVER;
 } /* of 'initstand' */
 

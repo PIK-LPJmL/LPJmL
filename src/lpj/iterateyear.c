@@ -42,6 +42,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                  Cell grid[],         /**< cell array */
                  Input input,         /**< input data */
                  Real co2,            /**< atmospheric CO2 (ppmv) */
+                 Real ch4,            /**< CH4 concentration (ppmv) */
                  int npft,            /**< number of natural PFTs */
                  int ncft,            /**< number of crop PFTs */
                  int year,            /**< simulation year (AD) */
@@ -66,28 +67,33 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     if(!grid[cell].skip)
     {
       init_annual(grid+cell,ncft,config);
-      if(config->withlanduse)
+      if (grid[cell].is_glaciated)
+        check_glaciated(grid + cell);
+      else
       {
-        if(grid[cell].lakefrac<1)
+        if(config->withlanduse)
         {
-          /* calculate landuse change */
-          if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
-            laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
-          if(year>config->firstyear-config->nspinup || config->from_restart)
-            landusechange(grid+cell,npft,ncft,intercrop,year,config);
-          else if(grid[cell].ml.dam)
-            landusechange_for_reservoir(grid+cell,npft,ncft,
+          if(grid[cell].lakefrac<1)
+          {
+            /* calculate landuse change */
+            if(config->laimax_interpolate==LAIMAX_INTERPOLATE)
+              laimax_manage(&grid[cell].ml.manage,config->pftpar+npft,npft,ncft,year);
+            if(year>config->firstyear-config->nspinup || config->from_restart)
+              landusechange(grid+cell,npft,ncft,intercrop,year,config);
+            else if(grid[cell].ml.dam)
+              landusechange_for_reservoir(grid+cell,npft,ncft,
                                         intercrop,year,config);
-        }
+          }
 #if defined IMAGE && defined COUPLED
-        setoutput_image(grid+cell,ncft);
+          setoutput_image(grid+cell,ncft);
 #endif
-        getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
-        grid[cell].output.adelta_norg_soil_agr-=norg_soil_agr;
-        grid[cell].output.adelta_nmin_soil_agr-=nmin_soil_agr;
-        grid[cell].output.adelta_nveg_soil_agr-=nveg_soil_agr;
-      }
-      initgdd(grid[cell].gdd,npft);
+          getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
+          grid[cell].output.adelta_norg_soil_agr-=norg_soil_agr;
+          grid[cell].output.adelta_nmin_soil_agr-=nmin_soil_agr;
+          grid[cell].output.adelta_nveg_soil_agr-=nveg_soil_agr;
+        }
+        initgdd(grid[cell].gdd,npft);
+      } /*isglaciated*/
     } /*gridcell skipped*/
   } /* of for(cell=...) */
 
@@ -101,7 +107,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       initoutputdata(&((grid+cell)->output),MONTHLY,npft,ncft,year,config);
       if(!grid[cell].skip)
       {
-        initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
+        if(!config->isanomaly)
+         initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
 
 #if defined IMAGE && defined COUPLED
         monthlyoutput_image(&grid[cell].output,input.climate,cell,month);
@@ -136,6 +143,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
         {
           if(config->ispopulation)
             popdens=getpopdens(input.popdens,cell);
+          if (config->isanomaly)
+            grid[cell].icefrac = geticefrac(input.icefrac, cell);
           grid[cell].output.dcflux=0;
           initoutputdata(&((grid+cell)->output),DAILY,npft,ncft,year,config);
           /* get daily values for temperature, precipitation and sunshine */
@@ -168,7 +177,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           printf("day=%d cell=%d\n",day,cell);
           fflush(stdout);
 #endif
-          update_daily(grid+cell,co2,popdens,daily,day,npft,
+          update_daily(grid+cell,co2,ch4,popdens,daily,day,npft,
                        ncft,year,month,intercrop,config);
         }
       }
@@ -266,6 +275,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     }
   } /* of for(cell=0,...) */
 
+  fwriteoutput_ch4(output,ch4,co2,config);
   if(year>=config->outputyear)
   {
     /* write out annual output */

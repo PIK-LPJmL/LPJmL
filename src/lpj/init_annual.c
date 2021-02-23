@@ -39,6 +39,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.flux_firewood.carbon=cell->balance.flux_firewood.nitrogen=0;
   cell->balance.flux_estab.carbon=cell->balance.flux_estab.nitrogen=0;
   cell->balance.flux_harvest.carbon=cell->balance.flux_harvest.nitrogen=0;
+  cell->balance.aCH4_em=cell->balance.aCH4_sink=cell->balance.aCH4_fire=cell->balance.aMT_water=0;
   cell->balance.deforest_emissions.carbon=cell->balance.deforest_emissions.nitrogen=0;
   cell->balance.prod_turnover.fast.carbon=cell->balance.prod_turnover.fast.nitrogen=0;
   cell->balance.prod_turnover.slow.carbon=cell->balance.prod_turnover.slow.nitrogen=0;
@@ -49,6 +50,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
 #endif
   foreachstand(stand,s,cell->standlist)
   {
+	stand->soil.icefrac=cell->icefrac;
 #ifdef DEBUG3
     printf("init npft=%d\n",stand->pftlist.n);
 #endif

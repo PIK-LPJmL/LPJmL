@@ -152,6 +152,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                 pft->type,pft->name,getlinecount(),getfilename());
       return NULL;
     }
+    fscanpftint(verb,&item,&pft->peatland,pft->name,"peatland_pft");
     if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,5,FALSE,verb))
     {
       if(verb)
@@ -369,6 +370,9 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,&item,&pft->windspeed,pft->name,"windspeed_dampening");
     fscanpftreal(verb,&item,&pft->roughness,pft->name,
                  "roughness_length");
+    fscanpftreal(verb,&item,&pft->inun_thres,pft->name,"ist_m");
+    fscanpftreal(verb,&item,&pft->inun_dur,pft->name,"idt_d");
+    pft->inun_thres*=1000;
     pft->k_litter10.leaf/=NDAYYEAR;
     pft->k_litter10.wood/=NDAYYEAR;
     npft[pft->type]++;

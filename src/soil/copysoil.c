@@ -30,6 +30,9 @@ void copysoil(Soil *dst,       /**< destination */
     dst->NO3[l]=src->NO3[l];
     dst->k_mean[l].slow=src->k_mean[l].slow;
     dst->k_mean[l].fast=src->k_mean[l].fast;
+    dst->CH4[l] = src->CH4[l];
+    dst->O2[l] = src->O2[l];
+    dst->layer_exists[l] = src->layer_exists[l];
     for(p=0;p<ntotpft;p++)
       dst->c_shift[l][p]=src->c_shift[l][p];
   }
@@ -41,9 +44,11 @@ void copysoil(Soil *dst,       /**< destination */
   dst->amp=src->amp;
   dst->meanw1=src->meanw1;
   dst->snowpack=src->snowpack;
+  dst->snowdens = src->snowdens;
   dst->maxthaw_depth=src->maxthaw_depth;
   dst->mean_maxthaw=src->mean_maxthaw;
   dst->decomp_litter_mean=src->decomp_litter_mean;
+  dst->whcs_all=src->whcs_all;
   dst->litter.agtop_wcap=src->litter.agtop_wcap;
   dst->litter.agtop_moist=src->litter.agtop_moist;
   dst->litter.agtop_cover=src->litter.agtop_cover;
@@ -88,8 +93,14 @@ void copysoil(Soil *dst,       /**< destination */
   }
   dst->w_evap=src->w_evap;
   for(i=0;i<NSOILLAYER+1;i++)
+  {
     dst->temp[i]=src->temp[i];
+    dst->amean_temp[i] = src->amean_temp[i];
+  }
   dst->rw_buffer=src->rw_buffer;
+  dst->wa = src->wa;
+  dst->wtable = src->wtable;
+  dst->iswetland = src->iswetland;
   for(i=0;i<NTILLLAYER;i++)
     dst->df_tillage[i]=src->df_tillage[i];
 } /* of 'copysoil' */

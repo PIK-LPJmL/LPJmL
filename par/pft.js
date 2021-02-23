@@ -75,6 +75,7 @@
   {
     "name" : "tropical broadleaved evergreen tree",
     "type" : TREE,
+    "peatland_pft" : NOPEATLAND, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -149,6 +150,8 @@
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 2.0, "sapwood" : 30.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -176,6 +179,7 @@
   {
     "name" : "tropical broadleaved raingreen tree",
     "type" : TREE,
+    "peatland_pft" : NOPEATLAND, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -250,6 +254,8 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
+    "ist_m" : -0.2,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 30.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -277,6 +283,7 @@
   {
     "name": "temperate needleleaved evergreen tree",
     "type" : TREE,
+    "peatland_pft" : NOPEATLAND, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -351,6 +358,8 @@
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
+    "ist_m" : -0.25,             /* inundation stress threshold [m] */
+    "idt_d" : 10.0,             /* inundation duration threshold [days] */
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -378,6 +387,7 @@
   {
     "name" : "temperate broadleaved evergreen tree",
     "type" : TREE,
+    "peatland_pft" : NOPEATLAND, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -452,6 +462,8 @@
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
+    "ist_m" : -0.25,            /* inundation stress threshold [m] */
+    "idt_d" : 10.0,             /* inundation duration threshold [days] */
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -479,6 +491,7 @@
   {
     "name" : "temperate broadleaved summergreen tree",
     "type" : TREE,
+    "peatland_pft" : NOPEATLAND, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -553,6 +566,8 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
+    "ist_m" : -0.25,             /* inundation stress threshold [m] */
+    "idt_d" : 15.0,             /* inundation duration threshold [days] */
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -582,6 +597,7 @@
   {
     "name" : "boreal needleleaved evergreen tree",
     "type" : TREE,
+    "peatland_pft" : NOPEATLAND, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -656,6 +672,8 @@
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
+    "ist_m" : -0.25,             /* inundation stress threshold [m] */
+    "idt_d" : 15.0,             /* inundation duration threshold [days] */
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -683,6 +701,7 @@
   {
     "name" : "boreal broadleaved summergreen tree",
     "type" : TREE,
+    "peatland_pft" : NOPEATLAND, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -757,6 +776,8 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
+    "ist_m" : -0.25,             /* inundation stress threshold [m] */
+    "idt_d" : 15.0,             /* inundation duration threshold [days] */
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -786,6 +807,7 @@
   {
     "name" : "boreal needleleaved summergreen tree",
     "type" : TREE,
+    "peatland_pft" : NOPEATLAND, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -860,6 +882,8 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
+    "ist_m" : -0.25,             /* inundation stress threshold [m] */
+    "idt_d" : 15.0,             /* inundation duration threshold [days] */
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -889,6 +913,7 @@
   {
     "name" : "Tropical C4 grass",
     "type" : GRASS,
+    "peatland_pft" : NOPEATLAND, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
@@ -963,6 +988,8 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 15.0,             /* inundation duration threshold [days] */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
@@ -973,6 +1000,7 @@
   {
     "name" : "Temperate C3 grass",
     "type" : GRASS,
+    "peatland_pft" : NOPEATLAND, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
@@ -1047,6 +1075,8 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "ist_m" : 0.2,             /* inundation stress threshold [m] */
+    "idt_d" : 31.0,             /* inundation duration threshold [days] */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
@@ -1057,6 +1087,7 @@
   {
     "name" : "Polar C3 grass",
     "type" : GRASS,
+    "peatland_pft" : NOPEATLAND, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
@@ -1131,11 +1162,188 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */                           //NOT the POLAR_HERBACEOUS value!!! Needs update!
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */                      //NOT the POLAR_HERBACEOUS value!!! Needs update!
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "ratio" : 1.16,
     "reprod_cost" : REPROD_COST /* reproduction cost */
   },
+/*--------------------------------------------------------------------------*/
+/* 12. pft */
+  {
+    "name" : "C3 graminoid flood tolerant",
+    "type" : GRASS,
+    "peatland_pft" : PEATLAND, /* if peatland pft */
+    "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
+    "cn" : [39., 61., 74., 80.], /* curve number */
+    "beta_root" : 0.92,     /* beta_root */
+    "minwscal" : 0.10,      /* minwscal 3*/
+    "gmin"  : 0.8,          /* gmin 4*/
+    "respcoeff" : 0.5,      /* respcoeff 5*/
+    "nmax" : 30.,          /* nmax 7*/
+    "resist" : 0.01,        /* resist 8*/
+    "longevity" : 0.32,     /* leaf longevity 10*/
+    "sla" : 0.042242,        /* specific leaf area */
+    "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
+    "ramp" : 100.,          /* ramp 19*/
+    "lai_sapl" : 0.1,     /* lai_sapl 21*/
+    "gdd5min" : 0.01,       /* gdd5min 30*/
+    "twmax" : 1000.,        /* twmax 31*/
+    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "gddbase" : 5.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000,  /* min_temprange 34*/
+    "emax": 7.0,            /* emax 35*/
+    "intc" : 0.01,          /* intc 36*/
+    "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+    "albedo_leaf" : 0.23,   /* albedo of green leaves */
+    "albedo_stem" : 0.1,    /* albedo of stems */
+    "albedo_litter" : 0.1,  /* albedo of litter */
+    "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
+    "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+    "tmin" :
+    {
+      "slope" : 0.13,       /* new phenology: slope of cold-temperature limiting function */
+      "base" : 2.79,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+    },
+    "tmax" :
+    {
+      "slope" : 0.24,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 26.12,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+    },
+    "light" :
+    {
+      "slope" : 23,         /* new phenology: slope of light limiting function */
+      "base" : 50,          /* new phenology: inflection point of light limiting function (Wm-2) */
+      "tau" : 0.38          /* new phenology: change rate of actual to previous day light limiting function */
+    },
+    "wscal" :
+    {
+      "slope" : 0.88,       /* new phenology: slope of water limiting function */
+      "base" : 1,           /* new phenology: inflection point of water limiting function (% water availability)  */
+      "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
+    },
+    "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
+    "phenology" : "any",      /* phenology */
+    "path" : "C3",            /* pathway */
+    "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
+    "temp_photos" : { "low" : 5., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "soc_k" : 0.54056,     /* shape factor for soil organic matter vertical distribution*/
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "fuelbulkdensity" : 4.0, /* fuel bulk density */
+    "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
+    "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
+    "flam" : FLAM_GRASS,     /* flam */
+    "k_litter10" : { "leaf" : 1.2, "wood" : 1.2 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 1., /* Q10_wood */
+    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
+    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
+    "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+    "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "windspeed_dampening" : 0.6,  /* windspeed dampening */
+    "roughness_length" : 0.03,    /* roughness length */
+    "ist_m" : 0.2,             /* inundation stress threshold [m] */                           //NOT the POLAR_HERBACEOUS value!!! Needs update!
+    "idt_d" : 31.0,             /* inundation duration threshold [days] */                      //NOT the POLAR_HERBACEOUS value!!! Needs update!
+    "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
+    "ratio" : 1.16,
+    "reprod_cost" : REPROD_COST /* reproduction cost */
+  },
+/*--------------------------------------------------------------------------*/
+/* 12. pft */
+  {
+    "name" : "Sphagnum moss",
+    "type" : GRASS,
+    "peatland_pft" : PEATLAND, /* if peatland pft */
+    "cultivation_type" : "none", /* cultivation_type */
+    "nfixing" : false,           /* no N fixing */
+    "cn" : [39., 61., 74., 80.], /* curve number */
+    "beta_root" : 0.90,     /* beta_root */
+    "minwscal" : 0.0,       /* minwscal 3*/
+    "gmin"  : 0.8,          /* gmin 4*/
+    "respcoeff" : 0.5,      /* respcoeff 5*/
+    "nmax" : 20.,          /* nmax 7*/
+    "resist" : 0.01,        /* resist 8*/
+    "longevity" : 0.2,     /* leaf longevity 10*/
+    "sla" : 0.042242,        /* specific leaf area */
+    "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
+    "ramp" : 75.,          /* ramp 19*/
+    "lai_sapl" : 0.1,     /* lai_sapl 21*/
+    "gdd5min" : 0.01,       /* gdd5min 30*/
+    "twmax" : 1000.,        /* twmax 31*/
+    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "gddbase" : 5.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000,  /* min_temprange 34*/
+    "emax": 2.0,            /* emax 35*/
+    "intc" : 0.01,          /* intc 36*/
+    "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
+    "albedo_leaf" : 0.23,   /* albedo of green leaves */
+    "albedo_stem" : 0.1,    /* albedo of stems */
+    "albedo_litter" : 0.1,  /* albedo of litter */
+    "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
+    "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
+    "tmin" :
+    {
+      "slope" : 0.13,       /* new phenology: slope of cold-temperature limiting function */
+      "base" : 2.79,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+    },
+    "tmax" :
+    {
+      "slope" : 0.24,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 26.12,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+    },
+    "light" :
+    {
+      "slope" : 23,         /* new phenology: slope of light limiting function */
+      "base" : 50,          /* new phenology: inflection point of light limiting function (Wm-2) */
+      "tau" : 0.38          /* new phenology: change rate of actual to previous day light limiting function */
+    },
+    "wscal" :
+    {
+      "slope" : 0.88,       /* new phenology: slope of water limiting function */
+      "base" : 1,           /* new phenology: inflection point of water limiting function (% water availability)  */
+      "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
+    },
+    "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
+    "phenology" : "any",      /* phenology */
+    "path" : "C3",            /* pathway */
+    "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
+    "temp_photos" : { "low" : 0., "high" : 20. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp" : { "low" : -1000.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "soc_k" : 0.60235 ,     /* shape factor for soil organic matter vertical distribution*/
+    "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
+    "vpd_par" : 6, /*scaling factor vpd fire danger index*/
+    "fuelbulkdensity" : 4.0, /* fuel bulk density */
+    "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
+    "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
+    "flam" : FLAM_GRASS,     /* flam */
+    "k_litter10" : { "leaf" : 1.2, "wood" : 1.2 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 1., /* Q10_wood */
+    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
+    "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
+    "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
+    "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
+    "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "windspeed_dampening" : 0.6,  /* windspeed dampening */
+    "roughness_length" : 0.03,    /* roughness length */
+    "ist_m" : 0.1,             /* inundation stress threshold [m] */                           //NOT the POLAR_HERBACEOUS value!!! Needs update!
+    "idt_d" : 15.0,             /* inundation duration threshold [days] */                      //NOT the POLAR_HERBACEOUS value!!! Needs update!
+    "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
+    "ratio" : 1.16,
+    "reprod_cost" : REPROD_COST /* reproduction cost */
+  },
+  
 /*----------------------------------------------------------------------------------------*/
 /* 1. bft */
   {

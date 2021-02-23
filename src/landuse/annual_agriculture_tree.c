@@ -169,7 +169,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
   treepar=config->pftpar[data->irrigation.pft_id].data;
   for(p=0;p<npft;p++)
   {
-    if(establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf) &&
+    if(establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf,stand->type->landusetype==WETLAND) &&
        (config->pftpar[p].id==data->irrigation.pft_id ||
        (treepar->with_grass && config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)))
     {
@@ -188,7 +188,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
   foreachpft(pft,p,&stand->pftlist) fpc_inc2[p]=0;
 
   foreachpft(pft,p,&stand->pftlist)
-    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf))
+    if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf,stand->type->landusetype==WETLAND))
       if (istree(pft))
       {
         treepar=pft->par->data;

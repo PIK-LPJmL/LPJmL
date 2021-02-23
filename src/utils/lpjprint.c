@@ -50,7 +50,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
   Bool swap,swap_cow;
   unsigned int soilcode;
   Code code;
-  long offset;
+  size_t offset;
   FILE *file_restart,*file_countrycode;
   Type cow_type;
   Celldata celldata;

@@ -16,6 +16,8 @@
 
 #ifndef SOIL_H /* Already included? */
 #define SOIL_H
+#include "hydrotope.h"
+
 
 /* Definition of constants */
 
@@ -35,11 +37,14 @@
 #define c_water 4.2e6 /* J/m3/K */
 #define c_ice   2.1e6 /* J/m3/K */
 #define c_snow  2.1e6 /* snow heat capacity (J/ton/K) */
-#define m_heat  4.0e4  /*J/gC microb. heating*/
+#define m_heat  4.0e4  /*J/gC microb. heating by oxid decomp.*/
+#define m_heat_mt  5.5e3   /*J/gC microb. heating by methanogenesis */
+#define m_heat_ox  3.75e4  /*J/gC microb. heating by methane oxidation */
 #define lambda_snow 0.2
 #define th_diff_snow (lambda_snow/snowheatcap) /* thermal diffusivity of snow [m2/s]*/
 #define snow_density     0.3   /*ton/m3*/
 #define snowheatcap     6.3e5  /*c_snow*snow_density [J/m3/K]*/
+#define th_diff_snow (lambda_snow/snowheatcap) /* thermal diffusivity of snow [m2/s]*/
 #define c_soilheatcapdry 1.2e6/*1.2e6   J/m3/K */
 #define c_albsnow        0.65 /* Albedo of snow (0-1) */
 #define c_albsoil        0.30 /* Albedo of bare soil (0-1). Should be soil and soil moisture dependent */
@@ -61,6 +66,30 @@
 #define PRIESTLEY_TAYLOR 1.32 /* Priestley-Taylor coefficient */
 #define SOILDEPTH_IRRIG 500 /*size of layer considered for calculation of irrigation ammount*/
 #define CDN 1.2         /* shape factor for denitrification from SWAT; beta_denit eq 3:1.4.1, SWAT Manual 2009 , take smaller value as it seems to be to high 1.4 originally*/
+
+#define WC  12               /*12g/mol*/
+#define WO2 32               /*32g/mol*/
+#define WCH4 16
+#define WH2O 18
+#define WCO2 44
+#define O2star 2.5             /*g/m3*/
+#define BO2 0.038            /*Bunsen coefficient of oxygen*/
+#define BCH4 0.043           /*Bunsen coefficient of methane  0.043 Khvorostynov etal. 2008*/
+#define Vmax_CH4 10          /*Michaelis-Menten coefficient in mikroM/h =  mikro mol/l/h = 10−3 mol/m3/h  20 original */
+#define km_CH4 5             /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3*/
+#define km_O2 200            /*mikroM Michaelis-Menten coefficient in mikroM  convert  to 10−3 mol/m3 Seger 1998*/
+#define tau_CH4 12.5 /* life time of methane (yr) */
+#define R_gas 8.314          /* universal gas constant J mol-1 K-1 */
+#define p_s 1.01e5           /* atmospheric pressure (Pa=kg m-1 s-2) */
+#define D_O2_air 1.596e-5    /* free air oxygen diffusivity (m2s-1)*/
+#define D_O2_water 1.6e-9    /* O2 diffusivity in water (m2s-1)*/
+#define eta 2/3              /* tortuosity factor ( 2/3 )*/
+#define O2s 0.209            /* atmospheric content of oxygen */
+#define D_CH4_air 1.702e-5   /* free air methane diffusivity (m2s-1)*/
+#define D_CH4_water 2e-9     /* methane diffusivity in water (m2s-1)*/
+                                //#define CH4s 0.00000179      /* atmospheric CH4 content (mol/mol)*/
+#define snowdens_first 150
+#define snowdens_end 500
 
 /* Declaration of variables */
 
@@ -138,6 +167,7 @@ typedef struct
   Real sand;  /**< fraction of sand content in soil texture*/
   Real silt;  /**< fraction of silt content in soil texture*/
   Real clay;  /**< fraction of clay content in soil texture*/
+  Real psi_sat;  /* soil suction at saturation (mm) */
   int hsg;        /**< hydrological soil group for CN */
   Real tdiff_0;   /**< thermal diffusivity (mm^2/s) at wilting point (0% whc) */
   Real tdiff_15;  /**< thermal diffusivity (mm^2/s) at 15% whc */
@@ -155,6 +185,9 @@ typedef struct
   Real denit_rate;
   Real anion_excl; /* fraction of porosity from which anions are excluded (from SWAT) */
   Real cn_ratio; /* C:N ration in soil pools */
+  Real efold;
+  Real ctimax;
+  Real b;
 } Soilpar;  /* soil parameters */
 
 typedef struct
@@ -167,6 +200,8 @@ typedef struct
   Real NH4[LASTLAYER];           /**< NH4 per soillayer (gN/m2) */
   Real w[NSOILLAYER],            /**< soil water as fraction of whc (fractional water holding capacity) */
     w_fw[NSOILLAYER];            /**< free water or gravitational water (mm), absolute water content between field capacity and saturation */
+  Real O2[LASTLAYER];            /*mass of soil oxygen per soil layer*/
+  Real CH4[LASTLAYER];           /*mass of soil methane per soil layer*/
   Real w_evap;                   /**< soil moisture content which is not transpired and can evaporate? correct? */
   Real perc_energy[NSOILLAYER];  /**< energy transfer by percolation */
 #ifdef MICRO_HEATING
@@ -178,15 +213,18 @@ typedef struct
   Real snowheight; /**< height of snow */
   Real snowfraction;  /**< fraction of snow-covered ground */
   Real temp[NSOILLAYER+1];      /**< [deg C]; last layer=snow*/
+  Real amean_temp[NSOILLAYER + 1];
   Real Ks[NSOILLAYER];    /**< saturated hydraulic conductivity (mm/h) per layer*/
   Real wpwp[NSOILLAYER];  /**< relative water content at wilting point */
   Real wfc[NSOILLAYER];   /**< relative water content at field capacity */
   Real wsat[NSOILLAYER];  /**< relative water content at saturation */
+  Real whcs_all;
   Real whc[NSOILLAYER];   /**< water holding capacity (fraction), whc = wfc - wpwp */
   Real wsats[NSOILLAYER]; /**< absolute water content at saturation (mm), wsats = wsat * soildepth */
   Real whcs[NSOILLAYER];  /**< absolute water holding capacity (mm), whcs = whc * soildepth */
   Real wpwps[NSOILLAYER]; /**< water at permanent wilting point in mm, depends on soildepth */
   Real ice_depth[NSOILLAYER];   /**< mm */
+  Real icefrac;               /* fraction covered by ice */
   Real ice_fw[NSOILLAYER];      /**< mm */
   Real freeze_depth[NSOILLAYER]; /**< mm */
   Real ice_pwp[NSOILLAYER];      /**< fraction of water below pwp frozen */
@@ -197,11 +235,16 @@ typedef struct
   short state[NSOILLAYER];
   Real maxthaw_depth;
   Real mean_maxthaw;
+  Real layer_exists[LASTLAYER]; /* allows variable soil depth */
   Stocks decomp_litter_mean;
   int count;
   Real YEDOMA;       /**< g/m2 */
   Litter litter;     /**< Litter pool */
   Real rw_buffer;    /**< available rain water amount in buffer (mm) */
+  Real wa;                    /* water in the unconfined aquifer (mm) */
+  Real wtable;                /* mm below surface*/
+  Real snowdens;
+  int iswetland;
 } Soil;
 
 struct Pftpar; /* forward declaration */
@@ -239,7 +282,7 @@ extern Real litter_agsub_sum(const Litter *);
 extern Real litter_agsub_sum_n(const Litter *);
 extern Real litter_ag_grass(const Litter *);
 extern Real litter_ag_sum_quick(const Litter *);
-extern Stocks littersom(Stand *,const Real [NSOILLAYER],int,int,int);
+extern Stocks littersom(Stand *,const Real [NSOILLAYER],int,int,int,Real *,Real,Real,Real *,Real *);
 extern Real littercarbon(const Litter *);
 extern Stocks litterstocks(const Litter *);
 extern Real moistfactor(const Litter *);
@@ -260,8 +303,14 @@ extern Real soilwater(const Soil *);
 extern Real soilconduct(const Soil *,int);
 extern Real soilheatcap(const Soil *,int);
 extern void soilice2moisture(Soil *, Real *,int);
-extern Real temp_response(Real);
+extern void gasdiffusion(Soil*, Real, Real, Real *, Real *);
+extern Real ebullition(Soil*, Real);
+extern Real temp_response(Real, Real);
 extern Real litter_ag_tree(const Litter *,int);
+extern Bool freadhydrotope(FILE *, Hydrotope *, Bool);
+extern Bool fwritehydrotope(FILE *, Hydrotope);
+extern void fprinthydrotope(FILE *, Hydrotope);
+extern Real soilmethane(const Soil *);
 extern Real litter_ag_nitrogen_tree(const Litter *,int);
 extern Real biologicalnfixation(const Stand *);
 extern void leaching(Soil *,const Real);

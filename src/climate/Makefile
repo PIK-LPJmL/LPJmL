@@ -18,8 +18,9 @@ include ../../Makefile.inc
 OBJS    = initclimate.$O getclimate.$O freeclimate.$O avgtemp.$O\
           prdaily.$O getco2.$O storeclimate.$O dailyclimate.$O\
           getmtemp.$O initclimate_monthly.$O openclimate.$O\
-          getmprec.$O checkvalidclimate.$O readco2.$O\
-          closeclimate.$O radiation.$O
+          getmprec.$O checkvalidclimate.$O readtracegas.$O\
+          closeclimate.$O getch4.$O radiation.$O interpolate_climate.$O\
+          addanomaly_climate.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -28,7 +29,7 @@ LIB     = libclimate.$A
 HDRS    = $(INC)/buffer.h $(INC)/lpj.h\
           $(INC)/climate.h $(INC)/date.h\
           $(INC)/pftpar.h $(INC)/types.h $(INC)/header.h\
-          $(INC)/errmsg.h $(INC)/numeric.h\
+          $(INC)/errmsg.h $(INC)/numeric.h $(INC)/hydrotope.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h\
           $(INC)/config.h $(INC)/param.h $(INC)/cdf.h

@@ -121,6 +121,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     fscanreal2(verb,&item,&soil->sand,soil->name,"sand");
     fscanreal2(verb,&item,&soil->silt,soil->name,"silt");
     fscanreal2(verb,&item,&soil->clay,soil->name,"clay");
+    fscanreal2(verb, &item, &soil->psi_sat, soil->name, "psi_sat");
     if(fabs(soil->sand+soil->silt+soil->clay-1)>epsilon)
     {
       if(verb)
@@ -161,6 +162,9 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
       soil->n_nit=soil->a_nit-soil->b_nit;
       fscanreal2(verb,&item,&soil->cn_ratio,soil->name,"cn_ratio");
     }
+    fscanreal2(verb, &item, &soil->b, soil->name, "b");
+    fscanreal2(verb, &item, &soil->efold, soil->name, "efold");
+    fscanreal2(verb, &item, &soil->ctimax, soil->name, "ctimax");
   } /* of 'for(n=0;...)' */
   return n;
 } /* of 'fscansoilpar' */

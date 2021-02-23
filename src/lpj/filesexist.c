@@ -273,6 +273,10 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   else
     bad+=checkcoordfile(&config,&config.soil_filename);
+  bad+=checkinputfile(&config, &config.kbf_filename,NULL,0);
+  bad+=checkinputfile(&config, &config.slope_filename,NULL,0);
+  bad+=checkinputfile(&config, &config.slope_min_filename,NULL,0);
+  bad+=checkinputfile(&config, &config.slope_max_filename,NULL,0);
   if(config.river_routing)
   {
     bad+=checkinputfile(&config,&config.drainage_filename,NULL,(config.drainage_filename.fmt==CDF) ? 0 : 2);
@@ -296,7 +300,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.grassharvest_filename.name!=NULL)
     bad+=checkinputfile(&config,&config.grassharvest_filename,NULL,0);
   if(config.with_nitrogen || config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
-    bad+=checkclmfile(&config,&config.wind_filename,"m/s",TRUE);
+    bad+=checkclmfile(&config,&config.wind_filename,"m/s",!config.isanomaly);
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
     if(config.fdi==WVPD_INDEX)
@@ -324,13 +328,25 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.with_radiation)
   {
     if(config.with_radiation==RADIATION || config.with_radiation==RADIATION_LWDOWN)
-      bad+=checkclmfile(&config,&config.lwnet_filename,"W/m2",TRUE);
-    bad+=checkclmfile(&config,&config.swdown_filename,"W/m2",TRUE);
+      bad+=checkclmfile(&config,&config.lwnet_filename,"W/m2",!config.isanomaly);
+    bad+=checkclmfile(&config,&config.swdown_filename,"W/m2",!config.isanomaly);
   }
   else
     bad+=checkclmfile(&config,&config.cloud_filename,"%",TRUE);
+  if (config.isanomaly)
+  {
+    bad+=checkdatafile(&config, &config.icefrac_filename,NULL);
+    bad+=checkclmfile(&config, &config.delta_temp_filename,"celsius", TRUE);
+    bad+=checkclmfile(&config, &config.delta_prec_filename,"kg/m2/day", TRUE);
+    bad+=checkclmfile(&config, &config.delta_lwnet_filename,"W/m2", TRUE);
+    bad+=checkclmfile(&config, &config.delta_swdown_filename,"W/m2", TRUE);
+  }
+  if (config.hydrotopes_filename.fmt != FMS)
+    bad += checkfile(config.hydrotopes_filename.name);
    if(config.co2_filename.fmt!=FMS)
     bad+=checkfile(config.co2_filename.name);
+   if (!config.with_dynamic_ch4 && config.ch4_filename.fmt != FMS)
+    bad += checkfile(config.ch4_filename.name);
   if(config.wet_filename.name!=NULL)
     bad+=checkclmfile(&config,&config.wet_filename,"day",FALSE);
 #ifdef IMAGE

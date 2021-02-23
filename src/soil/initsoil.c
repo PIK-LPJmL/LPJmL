@@ -45,12 +45,15 @@ Bool initsoil(Stand *stand,            /**< Pointer to stand data */
     checkptr(soil->c_shift[l]);
   }
   soil->YEDOMA=soil->alag=soil->amp=soil->meanw1=soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
-  soil->snowpack=0.0;
+  soil->snowpack=soil->icefrac = 0.0;
 #ifdef MICRO_HEATING
   soil->litter.decomC=0.0;
 #endif
   soil->w_evap=0.0;
   soil->count=0;
+  soil->wa = 5000;
+  soil->wtable = 3500;
+  soil->iswetland = FALSE;
   for (l=0;l<NSOILLAYER;l++)
   {
     soil->w[l]=0.0;
@@ -67,6 +70,11 @@ Bool initsoil(Stand *stand,            /**< Pointer to stand data */
     soil->decomC[l]=0;
 #endif
   }
+  for (l=0;l<LASTLAYER;l++)
+  {
+    soil->O2[l]=266*soildepth[l]*((1-soil->wsat[l])+soil->wsat[l]*BO2)/1000;
+    soil->CH4[l]=p_s/R_gas/(10+273.15)*param.pch4*1e-9*WCH4*soildepth[l]*((1-soil->wsat[l])+soil->wsat[l]*BCH4)/1000;
+  }
   for (p=0;p<ntotpft;p++)
     {
       soil->c_shift[0][p].fast=0.55;
@@ -81,10 +89,11 @@ Bool initsoil(Stand *stand,            /**< Pointer to stand data */
   soil->maxthaw_depth=2;
   soil->mean_maxthaw=layerbound[BOTTOMLAYER];
   for(l=0;l<NSOILLAYER+1;++l)
-    soil->temp[l]=0.0;
+    soil->temp[l] = soil->amean_temp[l] =0.0;
   for (l=0;l<=NFUELCLASS;l++)
     soil->litter.avg_fbd[l]=0.0;
   soil->snowheight=soil->snowfraction=soil->rw_buffer=0;
+  soil->snowdens = snowdens_first;
   for(l=0;l<NTILLLAYER;l++)
     soil->df_tillage[l]=1.0;
   if(soil->par->type==ROCK)

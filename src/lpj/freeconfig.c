@@ -34,6 +34,10 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->outputdir);
   free(config->inputdir);
   free(config->restartdir);
+  freefilename(&config->kbf_filename);
+  freefilename(&config->slope_filename);
+  freefilename(&config->slope_min_filename);
+  freefilename(&config->slope_max_filename);
   free(config->arglist);
   free(config->sim_name);
   free(config->pft_index);
@@ -76,6 +80,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   else
     freefilename(&config->cloud_filename);
   freefilename(&config->co2_filename);
+  freefilename(&config->ch4_filename);
   if(config->wet_filename.name!=NULL)
     freefilename(&config->wet_filename);
   for(i=0;i<config->n_out;i++)
