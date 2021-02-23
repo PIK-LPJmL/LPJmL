@@ -70,7 +70,8 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                "soc_k:\t\t%g\n"
                "fuel bulk dens.:\t%g (kg/m3)\n"
                "wind damp.:\t%g\n"
-               "roughness length:\t%g\n",
+               "roughness length:\t%g\n"
+               "emis. factor:\t%g %g %g %g %g %g\n",
           pftpar->beta_root,
           pftpar->minwscal,pftpar->gmin,pftpar->respcoeff,pftpar->nmax,
           pftpar->resist,
@@ -84,7 +85,11 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
           pftpar->temp_photos.high,pftpar->temp.low,pftpar->temp.high,
           pftpar->aprec_min,pftpar->k_litter10.leaf*NDAYYEAR,
           pftpar->k_litter10.wood*NDAYYEAR,pftpar->k_litter10.q10_wood,
-          pftpar->soc_k,pftpar->fuelbulkdensity,pftpar->windspeed,pftpar->roughness);
+          pftpar->soc_k,pftpar->fuelbulkdensity,pftpar->windspeed,pftpar->roughness,
+          pftpar->emissionfactor.co2,
+          pftpar->emissionfactor.co,pftpar->emissionfactor.ch4,
+          pftpar->emissionfactor.voc,pftpar->emissionfactor.tpm,
+          pftpar->emissionfactor.nox);
   if(config->new_phenology)
     fprintf(file,"tmin_sl:\t%g\n"
                 "tmin_base:\t%g (deg C)\n"
@@ -106,12 +111,8 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
     fprintf(file,"flam:\t\t%g\n",pftpar->flam);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    fprintf(file,"alpha_fuelp:\t%g\n"
-                 "emis. factor:\t%g %g %g %g %g %g\n",
-            pftpar->alpha_fuelp,pftpar->emissionfactor.co2,
-            pftpar->emissionfactor.co,pftpar->emissionfactor.ch4,
-            pftpar->emissionfactor.voc,pftpar->emissionfactor.tpm,
-            pftpar->emissionfactor.nox);
+    fprintf(file,"alpha_fuelp:\t%g\n",
+            pftpar->alpha_fuelp);
     if(config->fdi==WVPD_INDEX)
       fprintf(file,"vpd_par:\t%g\n",pftpar->vpd_par);
   }
