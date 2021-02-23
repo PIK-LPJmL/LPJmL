@@ -472,8 +472,8 @@
 #define CH4_EBULLITION 338
 #define CH4_PLANT_GAS 339
 #define WPC 340
-#define MGW_STORAGE 341
-#define MGW_OUTFLUX 342
+#define GW_STORAGE 341
+#define GW_OUTFLUX 342
 
 #define RANDOM_SEED 0
 

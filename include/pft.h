@@ -90,7 +90,7 @@ typedef struct Pft
   {
     int id;                     /**< unique PFT identifier */
     int type;                   /**< type --> whether CROP or TREE or GRASS*/
-    int peatland;               /**< peatland_pft --> NOPEATLAND, PEATLAND */
+    Bool peatland;               /**< peatland_pft --> NOPEATLAND, PEATLAND */
     int cultivation_type;       /**< cultivation_type----> NONE, BIOMASS, ANNUAL_CROP*/
     Bool nfixing;               /**< PFT can fix N (TRUE/FALSE) */
     char *name;                 /**< Pft name */

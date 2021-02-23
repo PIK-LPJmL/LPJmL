@@ -152,7 +152,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                 pft->type,pft->name,getlinecount(),getfilename());
       return NULL;
     }
-    fscanpftint(verb,&item,&pft->peatland,pft->name,"peatland_pft");
+    fscanpftbool(verb,&item,&pft->peatland,pft->name,"peatland_pft");
     if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,5,FALSE,verb))
     {
       if(verb)

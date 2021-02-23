@@ -75,7 +75,7 @@
   {
     "name" : "tropical broadleaved evergreen tree",
     "type" : TREE,
-    "peatland_pft" : NOPEATLAND, /* if peatland pft */
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -179,7 +179,7 @@
   {
     "name" : "tropical broadleaved raingreen tree",
     "type" : TREE,
-    "peatland_pft" : NOPEATLAND, /* if peatland pft */
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -283,7 +283,7 @@
   {
     "name": "temperate needleleaved evergreen tree",
     "type" : TREE,
-    "peatland_pft" : NOPEATLAND, /* if peatland pft */
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -387,7 +387,7 @@
   {
     "name" : "temperate broadleaved evergreen tree",
     "type" : TREE,
-    "peatland_pft" : NOPEATLAND, /* if peatland pft */
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -491,7 +491,7 @@
   {
     "name" : "temperate broadleaved summergreen tree",
     "type" : TREE,
-    "peatland_pft" : NOPEATLAND, /* if peatland pft */
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -597,7 +597,7 @@
   {
     "name" : "boreal needleleaved evergreen tree",
     "type" : TREE,
-    "peatland_pft" : NOPEATLAND, /* if peatland pft */
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -701,7 +701,7 @@
   {
     "name" : "boreal broadleaved summergreen tree",
     "type" : TREE,
-    "peatland_pft" : NOPEATLAND, /* if peatland pft */
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -807,7 +807,7 @@
   {
     "name" : "boreal needleleaved summergreen tree",
     "type" : TREE,
-    "peatland_pft" : NOPEATLAND, /* if peatland pft */
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -913,7 +913,7 @@
   {
     "name" : "Tropical C4 grass",
     "type" : GRASS,
-    "peatland_pft" : NOPEATLAND, /* if peatland pft */
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
@@ -1000,7 +1000,7 @@
   {
     "name" : "Temperate C3 grass",
     "type" : GRASS,
-    "peatland_pft" : NOPEATLAND, /* if peatland pft */
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
@@ -1087,7 +1087,7 @@
   {
     "name" : "Polar C3 grass",
     "type" : GRASS,
-    "peatland_pft" : NOPEATLAND, /* if peatland pft */
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
@@ -1174,7 +1174,7 @@
   {
     "name" : "C3 graminoid flood tolerant",
     "type" : GRASS,
-    "peatland_pft" : PEATLAND, /* if peatland pft */
+    "peatland_pft" : true, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
@@ -1261,7 +1261,7 @@
   {
     "name" : "Sphagnum moss",
     "type" : GRASS,
-    "peatland_pft" : PEATLAND, /* if peatland pft */
+    "peatland_pft" : true, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
@@ -1349,6 +1349,7 @@
   {
     "name" : "bioenergy tropical tree",
     "type" : TREE,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "biomass",/* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -1423,6 +1424,8 @@
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 1.0,/* roughness length */
     "leaftype" : "broadleaved",/* leaftype */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "turnover" : {"leaf" : 2.0, "sapwood" : 10.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
@@ -1451,6 +1454,7 @@
   {
     "name" : "bioenergy temperate tree",
     "type" : TREE,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "biomass",/* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30., 55., 70., 77.], /* curve number */
@@ -1525,6 +1529,8 @@
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "leaftype" : "broadleaved",/* leaftype */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "turnover" : {"leaf" : 1.0, "sapwood" : 10.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
@@ -1555,6 +1561,7 @@
   {
     "name" : "bioenergy C4 grass",
     "type" : GRASS,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "biomass", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
@@ -1628,6 +1635,8 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf and root 13,15*/
     "ratio" : 1.16,
@@ -1638,6 +1647,7 @@
   {
     "name" : "temperate cereals",
     "type" : CROP,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
@@ -1703,6 +1713,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -1747,6 +1759,7 @@
   {
     "name" : "rice",
     "type" : CROP,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
@@ -1812,6 +1825,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -1856,6 +1871,7 @@
   {
     "name" : "maize",
     "type" : CROP,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
@@ -1921,6 +1937,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -1965,6 +1983,7 @@
   {
     "name" : "tropical cereals",
     "type" : CROP,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
@@ -2030,6 +2049,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -2074,6 +2095,7 @@
   {
     "name" : "pulses",
     "type" : CROP,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : true,           /* N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
@@ -2139,6 +2161,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -2183,6 +2207,7 @@
   {
     "name": "temperate roots",
     "type" : CROP,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
@@ -2248,6 +2273,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -2292,6 +2319,7 @@
   {
     "name" : "tropical roots", /* re-parameterized as Cassava, 14.12.2009 KW */
     "type" : CROP,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
@@ -2357,6 +2385,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -2401,6 +2431,7 @@
   {
     "name" : "oil crops sunflower",
     "type" : CROP,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
@@ -2466,6 +2497,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -2510,6 +2543,7 @@
   {
     "name" : "oil crops soybean",
     "type" : CROP,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : true,           /* N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
@@ -2575,6 +2609,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -2619,6 +2655,7 @@
   {
     "name": "oil crops groundnut",
     "type" : CROP,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
@@ -2684,6 +2721,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -2728,6 +2767,7 @@
   {
     "name" : "oil crops rapeseed",
     "type" : CROP,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
@@ -2793,6 +2833,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -2837,6 +2879,7 @@
   {
     "name" : "sugarcane",
     "type" : CROP,
+    "peatland_pft" : false, /* if peatland pft */
     "cultivation_type": "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60., 72., 80., 84.], /* curve number */
@@ -2902,6 +2945,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
+    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */

@@ -734,7 +734,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if (readfilename(&input, &config->ch4_filename, "ch4", config->inputdir, FALSE, verbose))
     {
       if (verbose)
-        fputs("ERROR209: Cannot read input filename for 'co2'.\n", stderr);
+        fputs("ERROR209: Cannot read input filename for 'ch4'.\n", stderr);
       return TRUE;
     }
     if (config->ch4_filename.fmt != TXT && (config->sim_id != LPJML_FMS || config->ch4_filename.fmt != FMS))

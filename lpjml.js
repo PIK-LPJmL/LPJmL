@@ -44,6 +44,8 @@
   "river_routing" : true,
   "permafrost" : true,
   "with_nitrogen" : "lim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "dynamic_CH4" : false,
+  "anomaly" : false,
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
