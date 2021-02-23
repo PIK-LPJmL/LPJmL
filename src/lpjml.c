@@ -86,7 +86,7 @@
 #include "wetland.h"
 
 #define NTYPES 3 /* number of plant functional types: grass, tree, annual_crop */
-#define NSTANDTYPES 13 /* number of stand types / land use types as defined in landuse.h*/
+#define NSTANDTYPES 14 /* number of stand types / land use types as defined in landuse.h*/
 
 #ifdef USE_JSON
 #define dflt_conf_filename_ml "lpjml.js" /* Default LPJ configuration file
@@ -113,11 +113,12 @@ int main(int argc,char **argv)
 
   /* Create array of functions, uses the typedef of (*Fscanpftparfcn) in pft.h */
   Fscanpftparfcn scanfcn[NTYPES]={fscanpft_grass,fscanpft_tree,fscanpft_crop};
-
+#if 0
   standtype[NATURAL]=natural_stand;
   standtype[WETLAND]=wetland_stand;
   standtype[SETASIDE_RF]=setaside_rf_stand;
   standtype[SETASIDE_IR]=setaside_ir_stand;
+  standtype[SETASIDE_WETLAND]=setaside_wetland_stand;
   standtype[AGRICULTURE]=agriculture_stand;
   standtype[MANAGEDFOREST]=managedforest_stand;
   standtype[GRASSLAND]=grassland_stand;
@@ -125,13 +126,13 @@ int main(int argc,char **argv)
   standtype[BIOMASS_GRASS]=biomass_grass_stand;
   standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
   standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
-  standtype[WOODPLANTATION]=woodplantation_stand,
+  standtype[WOODPLANTATION]=woodplantation_stand;
   standtype[KILL]=kill_stand;
-
-
+#endif
   time(&tbegin);         /* Start timing for total wall clock time */
 #ifdef USE_MPI
-  MPI_Init(&argc,&argv); /* Initialize MPI */
+ 
+# MPI_Init(&argc,&argv); /* Initialize MPI */
 /*
  * Use default communicator containing all processors. In defining your own
  * communicator it is possible to run LPJ on a subset of processors

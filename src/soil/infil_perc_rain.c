@@ -164,7 +164,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     runoff_surface+=slug-influx;
     srunoff=slug-influx; /*surface runoff used for leaching */
     frac_g_influx=1; /* first layer has only green influx, but lower layers with percolation have mixed frac_g_influx */
-    if(data_irrig->irrig_system==DRIP)
+    if(data_irrig!=NULL && data_irrig->irrig_system==DRIP)
     {
       /* in case of Drip: directly fill up field cap of first two soil layers, no surface runoff, lateral runoff or percolation */
       /* -> this allows simulating perfect irrigation: drip + irrg_threshold = 1 (keep in mind: plant can still be somewhat stressed, if roots go deeper than 2. layer) */
