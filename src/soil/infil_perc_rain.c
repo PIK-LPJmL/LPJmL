@@ -39,7 +39,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   Real outflux,grunoff,inactive_water[NSOILLAYER],active_water[NSOILLAYER],lat_runoff_last;
   Real runoff_surface,freewater,soil_infil;
   Real srunoff;
-  Real lrunoff[BOTTOMLAYER],nrsub_top[BOTTOMLAYER],ndrain_perched_out[BOTTOMLAYER]; /* intermediate variable for leaching of lateral runoff */
+  Real lrunoff[NSOILLAYER],nrsub_top[BOTTOMLAYER],ndrain_perched_out[BOTTOMLAYER]; /* intermediate variable for leaching of lateral runoff */
   Real pperc[BOTTOMLAYER]; /* intermediate variable for leaching of via percolation */
   Real NO3surf=0; /* amount of nitrate transported with surface runoff gN/m2 */
   Real NO3perc_ly=0; /* nitrate leached to next lower layer with percolation gN/m2 */
