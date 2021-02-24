@@ -185,7 +185,7 @@ extern void killstand(Cell *,int,Bool,Bool,int,const Config *);
 extern Bool initsoiltemp(Climate *, Cell*,const Config *);
 extern Celldata opencelldata(Config *);
 extern Bool seekcelldata(Celldata,int);
-extern Bool readcelldata(Celldata,Coord *,unsigned int *,Real *,Real *,Real *,Real *,Real *,Real *,int,Config *);
+extern Bool readcelldata(Celldata,unsigned int *,Cell *,int,Config *);
 extern void closecelldata(Celldata);
 extern Real albedo(Cell *, Real , Real );
 extern void hydrotopes(Cell*);

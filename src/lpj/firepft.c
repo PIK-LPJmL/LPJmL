@@ -15,7 +15,6 @@
 #include "lpj.h"
 
 Stocks firepft(Stand *stand,   /**< Litter pool */
-               Pftlist *pftlist, /**< list of established PFTs */
                Real fire_frac    /**< fire fraction (0..1) */
               )                  /** \return fire flux (gC/m2) */
 {
@@ -24,10 +23,10 @@ Stocks firepft(Stand *stand,   /**< Litter pool */
   Stocks flux,flux_litter,flux_sum;
   Litter *litter;
   flux_litter.carbon=flux_litter.nitrogen=flux_sum.carbon=flux_sum.nitrogen=0;
-  if(isempty(pftlist)) /*if(pftlist->n==0)*/
+  if(isempty(&stand->pftlist)) /*if(pftlist->n==0)*/
     return flux_sum;
   litter=&stand->soil.litter;
-  foreachpft(pft,p,pftlist)
+  foreachpft(pft,p,&stand->pftlist)
   {
     flux=fire(pft,&fire_frac);
     flux_sum.carbon+=flux.carbon;

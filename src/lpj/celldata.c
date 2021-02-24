@@ -18,14 +18,26 @@
 
 #include "lpj.h"
 
+typedef struct
+{
+  int fmt;
+  union
+  {
+    struct
+    {
+      Bool swap;
+      size_t offset;
+      float scalar;
+      Type type;
+      FILE *file;
+    } bin;
+    Input_netcdf cdf;
+  } file;
+} Inputfile;
+
 struct celldata
 {
   Bool with_nitrogen;
-  int soil_fmt;
-  int kbf_fmt;
-  int slope_fmt;
-  int slope_min_fmt;
-  int slope_max_fmt;
   union
   {
     struct
@@ -38,72 +50,21 @@ struct celldata
     } bin;
     Coord_netcdf cdf;
   } soil;
-  int soilph_fmt;
-  union
-  {
-    struct
-    {
-      Bool swap;
-      size_t offset;
-      float scalar;
-      Type type;
-      FILE *file;
-    } bin;
-    Input_netcdf cdf;
-  } soilph;
-  union
-  {
-    struct
-    {
-      Bool swap;
-      size_t offset;
-      int version;
-      Real scalar;
-      Type type;
-      FILE *file;
-    } bin;
-    Input_netcdf cdf;
-  } kbf;
-  union
-  {
-    struct
-    {
-      Bool swap;
-      size_t offset;
-      int version;
-      Real scalar;
-      Type type;
-      FILE *file;
-    } bin;
-    Input_netcdf cdf;
-  } slope;
-  union
-  {
-    struct
-    {
-      Bool swap;
-      size_t offset;
-      int version;
-      Real scalar;
-      Type type;
-      FILE *file;
-    } bin;
-    Input_netcdf cdf;
-  } slope_min;
-  union
-  {
-    struct
-    {
-      Bool swap;
-      size_t offset;
-      int version;
-      Real scalar;
-      Type type;
-      FILE *file;
-    } bin;
-    Input_netcdf cdf;
-  } slope_max;
+  int soil_fmt;
+  Inputfile kbf;
+  Inputfile slope;
+  Inputfile slope_min;
+  Inputfile slope_max;
+  Inputfile soilph;
 };
+
+static void closefile(Inputfile *input)
+{
+   if(input->fmt==CDF)
+     closeinput_netcdf(input->file.cdf);
+   else
+     fclose(input->file.bin.file);
+}
 
 Celldata opencelldata(Config *config /**< LPJmL configuration */
                      )               /** \return pointer to cell data or NULL */
@@ -158,12 +119,12 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       return NULL;
     }
   }
-  celldata->kbf_fmt = config->kbf_filename.fmt;
+  celldata->kbf.fmt = config->kbf_filename.fmt;
   if (config->kbf_filename.fmt == CDF)
   {
-    celldata->kbf.cdf = openinput_netcdf(&config->kbf_filename,
-                                         NULL, 0, config);
-    if (celldata->kbf.cdf == NULL)
+    celldata->kbf.file.cdf = openinput_netcdf(&config->kbf_filename,
+                                              NULL, 0, config);
+    if (celldata->kbf.file.cdf == NULL)
     {
       if (isroot(*config))
         printfopenerr(config->kbf_filename.name);
@@ -181,12 +142,12 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   else
   {
 
-    celldata->kbf.bin.file = openinputfile(&header, &celldata->kbf.bin.swap,
+    celldata->kbf.file.bin.file = openinputfile(&header, &celldata->kbf.file.bin.swap,
                                            &config->kbf_filename,
                                            headername,
-                                           &version,&celldata->kbf.bin.offset,FALSE,config);
+                                           &version,&celldata->kbf.file.bin.offset,FALSE,config);
 
-    if (celldata->kbf.bin.file == NULL)
+    if (celldata->kbf.file.bin.file == NULL)
     {
       if (isroot(*config))
         printfopenerr(config->kbf_filename.name);
@@ -200,21 +161,21 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       free(celldata);
       return NULL;
     }
-    celldata->kbf.bin.scalar = (version == 1) ? 0.001 : header.scalar;
-    if(celldata->kbf.bin.version<3)
-      celldata->kbf.bin.type=LPJ_FLOAT;
+    celldata->kbf.file.bin.scalar = (version == 1) ? 0.001 : header.scalar;
+    if(version<3)
+      celldata->kbf.file.bin.type=LPJ_FLOAT;
     else
-      celldata->kbf.bin.type=header.datatype;
+      celldata->kbf.file.bin.type=header.datatype;
   }
   if(config->with_nitrogen)
   {
-    celldata->soilph_fmt=config->soilph_filename.fmt;
+    celldata->soilph.fmt=config->soilph_filename.fmt;
     celldata->with_nitrogen=TRUE;
     if(config->soilph_filename.fmt==CDF)
     {
-      celldata->soilph.cdf=openinput_netcdf(&config->soilph_filename,
+      celldata->soilph.file.cdf=openinput_netcdf(&config->soilph_filename,
                                             NULL,0,config);
-      if(celldata->soilph.cdf==NULL)
+      if(celldata->soilph.file.cdf==NULL)
       {
         if(isroot(*config))
           printfopenerr(config->soilph_filename.name);
@@ -225,21 +186,18 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
           closecoord(celldata->soil.bin.file_coord);
           fclose(celldata->soil.bin.file);
         }
-        if (config->kbf_filename.fmt == CDF)
-          closeinput_netcdf(celldata->kbf.cdf);
-        else
-          fclose(celldata->kbf.bin.file);
+        closefile(&celldata->kbf);
         free(celldata);
         return NULL;
       }
     }
     else
     {
-      celldata->soilph.bin.file=openinputfile(&header,&celldata->soilph.bin.swap,
+      celldata->soilph.file.bin.file=openinputfile(&header,&celldata->soilph.file.bin.swap,
                                               &config->soilph_filename,
                                               headername,
-                                              &version,&celldata->soilph.bin.offset,FALSE,config);
-      if(celldata->soilph.bin.file==NULL)
+                                              &version,&celldata->soilph.file.bin.offset,FALSE,config);
+      if(celldata->soilph.file.bin.file==NULL)
       {
         if(isroot(*config))
           printfopenerr(config->soilph_filename.name);
@@ -250,30 +208,27 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
           closecoord(celldata->soil.bin.file_coord);
           fclose(celldata->soil.bin.file);
         }
-        if(config->kbf_filename.fmt==CDF)
-      	  closeinput_netcdf(celldata->kbf.cdf);
-        else
-           fclose(celldata->kbf.bin.file);
+        closefile(&celldata->kbf);
         free(celldata);
         return NULL;
       }
       if(version==1)
-        celldata->soilph.bin.scalar=0.01;
+        celldata->soilph.file.bin.scalar=0.01;
       else
-        celldata->soilph.bin.scalar=header.scalar;
-      celldata->soilph.bin.type=header.datatype;
+        celldata->soilph.file.bin.scalar=header.scalar;
+      celldata->soilph.file.bin.type=header.datatype;
 
     }
 
   }
   else
     celldata->with_nitrogen=FALSE;
-  celldata->slope_fmt=config->slope_filename.fmt;
+  celldata->slope.fmt=config->slope_filename.fmt;
   if(config->slope_filename.fmt==CDF)
   {
-    celldata->slope.cdf=openinput_netcdf(&config->slope_filename,
-                                         NULL,0,config);
-    if(celldata->slope.cdf==NULL)
+    celldata->slope.file.cdf=openinput_netcdf(&config->slope_filename,
+                                              NULL,0,config);
+    if(celldata->slope.file.cdf==NULL)
     {
       if(isroot(*config))
         printfopenerr(config->slope_filename.name);
@@ -284,26 +239,21 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         closecoord(celldata->soil.bin.file_coord);
         fclose(celldata->soil.bin.file);
       }
-      if(config->kbf_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->kbf.cdf);
-      else
-         fclose(celldata->kbf.bin.file);
-      if(config->soilph_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->soilph.cdf);
-      else
-          fclose(celldata->soilph.bin.file);
+      closefile(&celldata->kbf);
+      if(config->with_nitrogen)
+        closefile(&celldata->soilph);
       free(celldata);
       return NULL;
     }
   }
   else
   {
-    celldata->slope.bin.file=openinputfile(&header,&celldata->slope.bin.swap,
+    celldata->slope.file.bin.file=openinputfile(&header,&celldata->slope.file.bin.swap,
                                            &config->slope_filename,
                                            headername,
-                                           &version,&celldata->slope.bin.offset,FALSE,config);
+                                           &version,&celldata->slope.file.bin.offset,FALSE,config);
 
-    if(celldata->slope.bin.file==NULL)
+    if(celldata->slope.file.bin.file==NULL)
     {
       if(isroot(*config))
         printfopenerr(config->slope_filename.name);
@@ -314,29 +264,24 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         closecoord(celldata->soil.bin.file_coord);
         fclose(celldata->soil.bin.file);
       }
-      if(config->kbf_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->kbf.cdf);
-      else
-         fclose(celldata->kbf.bin.file);
-      if(config->soilph_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->soilph.cdf);
-      else
-          fclose(celldata->soilph.bin.file);
+      closefile(&celldata->kbf);
+      if(config->with_nitrogen)
+        closefile(&celldata->soilph);
       free(celldata);
       return NULL;
     }
-    celldata->slope.bin.scalar=(version==1) ? 1 : header.scalar;
+    celldata->slope.file.bin.scalar=(version==1) ? 1 : header.scalar;
     if(version<3)
-      celldata->slope.bin.type=LPJ_FLOAT;
+      celldata->slope.file.bin.type=LPJ_FLOAT;
     else
-      celldata->slope.bin.type=header.datatype;
+      celldata->slope.file.bin.type=header.datatype;
   }
-  celldata->slope_min_fmt=config->slope_min_filename.fmt;
+  celldata->slope_min.fmt=config->slope_min_filename.fmt;
   if(config->slope_min_filename.fmt==CDF)
   {
-    celldata->slope_min.cdf=openinput_netcdf(&config->slope_min_filename,
+    celldata->slope_min.file.cdf=openinput_netcdf(&config->slope_min_filename,
                                              NULL,0,config);
-    if(celldata->slope_min.cdf==NULL)
+    if(celldata->slope_min.file.cdf==NULL)
     {
       if(isroot(*config))
         printfopenerr(config->slope_min_filename.name);
@@ -347,30 +292,22 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         closecoord(celldata->soil.bin.file_coord);
         fclose(celldata->soil.bin.file);
       }
-      if(config->kbf_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->kbf.cdf);
-      else
-         fclose(celldata->kbf.bin.file);
-      if(config->slope_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->slope.cdf);
-      else
-         fclose(celldata->slope.bin.file);
-      if(config->soilph_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->soilph.cdf);
-      else
-          fclose(celldata->soilph.bin.file);
-     free(celldata);
+      closefile(&celldata->kbf);
+      if(config->with_nitrogen)
+        closefile(&celldata->soilph);
+      closefile(&celldata->slope);
+      free(celldata);
       return NULL;
     }
   }
   else
   {
-    celldata->slope_min.bin.file=openinputfile(&header,&celldata->slope_min.bin.swap,
+    celldata->slope_min.file.bin.file=openinputfile(&header,&celldata->slope_min.file.bin.swap,
                                                &config->slope_min_filename,
                                                headername,
-                                               &version,&celldata->slope_min.bin.offset,
+                                               &version,&celldata->slope_min.file.bin.offset,
                                                FALSE,config);
-    if(celldata->slope_min.bin.file==NULL)
+    if(celldata->slope_min.file.bin.file==NULL)
     {
       if(isroot(*config))
         printfopenerr(config->slope_min_filename.name);
@@ -381,33 +318,25 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         closecoord(celldata->soil.bin.file_coord);
         fclose(celldata->soil.bin.file);
       }
-      if(config->kbf_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->kbf.cdf);
-      else
-         fclose(celldata->kbf.bin.file);
-      if(config->slope_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->slope.cdf);
-      else
-         fclose(celldata->slope.bin.file);
-      if(config->soilph_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->soilph.cdf);
-      else
-          fclose(celldata->soilph.bin.file);
+      closefile(&celldata->kbf);
+      if(config->with_nitrogen)
+        closefile(&celldata->soilph);
+      closefile(&celldata->slope);
       free(celldata);
       return NULL;
     }
-    celldata->slope_min.bin.scalar=(version==1) ? 1 : header.scalar;
+    celldata->slope_min.file.bin.scalar=(version==1) ? 1 : header.scalar;
     if(version<3)
-      celldata->slope_min.bin.type=LPJ_FLOAT;
+      celldata->slope_min.file.bin.type=LPJ_FLOAT;
     else
-      celldata->slope_min.bin.type=header.datatype;
+      celldata->slope_min.file.bin.type=header.datatype;
   }
-  celldata->slope_max_fmt=config->slope_max_filename.fmt;
+  celldata->slope_max.fmt=config->slope_max_filename.fmt;
   if(config->slope_max_filename.fmt==CDF)
   {
-    celldata->slope_max.cdf=openinput_netcdf(&config->slope_max_filename,
-                                             NULL,0,config);
-    if(celldata->slope_max.cdf==NULL)
+    celldata->slope_max.file.cdf=openinput_netcdf(&config->slope_max_filename,
+                                                  NULL,0,config);
+    if(celldata->slope_max.file.cdf==NULL)
     {
       if(isroot(*config))
         printfopenerr(config->slope_max_filename.name);
@@ -418,34 +347,23 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         closecoord(celldata->soil.bin.file_coord);
         fclose(celldata->soil.bin.file);
       }
-      if(config->kbf_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->kbf.cdf);
-      else
-         fclose(celldata->kbf.bin.file);
-      if(config->slope_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->slope.cdf);
-      else
-         fclose(celldata->slope.bin.file);
-      if(config->slope_min_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->slope_min.cdf);
-      else
-         fclose(celldata->slope_min.bin.file);
-      if(config->soilph_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->soilph.cdf);
-      else
-          fclose(celldata->soilph.bin.file);
+      closefile(&celldata->kbf);
+      if(config->with_nitrogen)
+        closefile(&celldata->soilph);
+      closefile(&celldata->slope);
+      closefile(&celldata->slope_min);
       free(celldata);
       return NULL;
     }
   }
   else
   {
-    celldata->slope_max.bin.file=openinputfile(&header,&celldata->slope_max.bin.swap,
+    celldata->slope_max.file.bin.file=openinputfile(&header,&celldata->slope_max.file.bin.swap,
                                                &config->slope_max_filename,
-                                               headername,&version,&celldata->slope_max.bin.offset,FALSE,config);
+                                               headername,&version,&celldata->slope_max.file.bin.offset,FALSE,config);
 
 
-    if(celldata->slope_max.bin.file==NULL)
+    if(celldata->slope_max.file.bin.file==NULL)
     {
       if(isroot(*config))
         printfopenerr(config->slope_max_filename.name);
@@ -456,30 +374,19 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         closecoord(celldata->soil.bin.file_coord);
         fclose(celldata->soil.bin.file);
       }
-      if(config->kbf_filename.fmt==CDF)
-        closeinput_netcdf(celldata->kbf.cdf);
-      else
-        fclose(celldata->kbf.bin.file);
-      if(config->slope_filename.fmt==CDF)
-        closeinput_netcdf(celldata->slope.cdf);
-      else
-        fclose(celldata->slope.bin.file);
-      if(config->slope_min_filename.fmt==CDF)
-        closeinput_netcdf(celldata->slope_min.cdf);
-      else
-        fclose(celldata->slope_min.bin.file);
-      if(config->soilph_filename.fmt==CDF)
-    	  closeinput_netcdf(celldata->soilph.cdf);
-      else
-          fclose(celldata->soilph.bin.file);
+      closefile(&celldata->kbf);
+      if(config->with_nitrogen)
+        closefile(&celldata->soilph);
+      closefile(&celldata->slope);
+      closefile(&celldata->slope_min);
       free(celldata);
       return NULL;
     }
-    celldata->slope_max.bin.scalar=(version==1) ? 1 : header.scalar;
+    celldata->slope_max.file.bin.scalar=(version==1) ? 1 : header.scalar;
     if(version<3)
-      celldata->slope_max.bin.type=LPJ_FLOAT;
+      celldata->slope_max.file.bin.type=LPJ_FLOAT;
     else
-      celldata->slope_max.bin.type=header.datatype;
+      celldata->slope_max.file.bin.type=header.datatype;
   }
   return celldata;
 } /* of 'opencelldata' */
@@ -516,8 +423,8 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
       return TRUE;
     }
   }
-  if(celldata->kbf_fmt!=CDF &&
-     fseek(celldata->kbf.bin.file,startgrid*typesizes[celldata->kbf.bin.type],SEEK_CUR))
+  if(celldata->kbf.fmt!=CDF &&
+     fseek(celldata->kbf.file.bin.file,startgrid*typesizes[celldata->kbf.file.bin.type],SEEK_CUR))
   {
     /* seeking to position of first grid cell failed */
     fprintf(stderr,
@@ -525,8 +432,8 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
             startgrid);
     return TRUE;
   }
-  if(celldata->slope_fmt!=CDF &&
-     fseek(celldata->slope.bin.file,startgrid*typesizes[celldata->slope.bin.type],SEEK_CUR))
+  if(celldata->slope.fmt!=CDF &&
+     fseek(celldata->slope.file.bin.file,startgrid*typesizes[celldata->slope.file.bin.type],SEEK_CUR))
   {
     /* seeking to position of first grid cell failed */
     fprintf(stderr,
@@ -534,8 +441,8 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
             startgrid);
     return TRUE;
   }
-  if(celldata->slope_min_fmt!=CDF &&
-     fseek(celldata->slope_min.bin.file,startgrid*typesizes[celldata->slope_min.bin.type],SEEK_CUR))
+  if(celldata->slope_min.fmt!=CDF &&
+     fseek(celldata->slope_min.file.bin.file,startgrid*typesizes[celldata->slope_min.file.bin.type],SEEK_CUR))
   {
     /* seeking to position of first grid cell failed */
     fprintf(stderr,
@@ -543,8 +450,8 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
             startgrid);
     return TRUE;
   }
-  if(celldata->slope_max_fmt!=CDF &&
-     fseek(celldata->slope_max.bin.file,startgrid*typesizes[celldata->slope_max.bin.type],SEEK_CUR))
+  if(celldata->slope_max.fmt!=CDF &&
+     fseek(celldata->slope_max.file.bin.file,startgrid*typesizes[celldata->slope_max.file.bin.type],SEEK_CUR))
   {
     /* seeking to position of first grid cell failed */
     fprintf(stderr,
@@ -555,8 +462,8 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
 
   if(celldata->with_nitrogen)
   {
-    if(celldata->soilph_fmt!=CDF &&
-       fseek(celldata->soilph.bin.file,startgrid*typesizes[celldata->soilph.bin.type],SEEK_CUR))
+    if(celldata->soilph.fmt!=CDF &&
+       fseek(celldata->soilph.file.bin.file,startgrid*typesizes[celldata->soilph.file.bin.type],SEEK_CUR))
     {
       /* seeking to position of first grid cell failed */
       fprintf(stderr,
@@ -570,33 +477,27 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
 } /* of 'seekcelldata' */
 
 Bool readcelldata(Celldata celldata, /**< pointer to celldata */
-                  Coord *coord,      /**< lon,lat coordinate */
                   unsigned int *soilcode,     /**< soil code */
-                  Real *soil_ph,                /**< soil pH */
-                  Real *kbf,
-                  Real *Hag_beta, 
-                  Real *slope,
-                  Real *slope_min, 
-                  Real *slope_max,
-                  int cell,          /**< cell index */
+                  Cell *cell,
+                  int cell_id,       /**< cell index */
                   Config *config     /**< LPJmL configuration */
                  )                   /** \return TRUE on error */
 {
   if(celldata->soil_fmt==CDF)
   {
-    if(readcoord_netcdf(celldata->soil.cdf,coord,&config->resolution,soilcode))
+    if(readcoord_netcdf(celldata->soil.cdf,&cell->coord,&config->resolution,soilcode))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->soil_filename.name,cell+config->startgrid);
+              config->soil_filename.name,cell_id+config->startgrid);
       return TRUE;
     }
   }
   else
   {
-    if(readcoord(celldata->soil.bin.file_coord,coord,&config->resolution))
+    if(readcoord(celldata->soil.bin.file_coord,&cell->coord,&config->resolution))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->coord_filename.name,cell+config->startgrid);
+              config->coord_filename.name,cell_id+config->startgrid);
       return TRUE;
     }
     /* read soilcode from file */
@@ -605,106 +506,108 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
                      celldata->soil.bin.swap,celldata->soil.bin.type))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->soil_filename.name,cell+config->startgrid);
-      config->ngridcell=cell;
+              config->soil_filename.name,cell_id+config->startgrid);
+      config->ngridcell=cell_id;
       return TRUE;
     }
   }
   /* read kbf value*/
-  if(celldata->kbf_fmt==CDF)
+  if(celldata->kbf.fmt==CDF)
   {
-    if(readinput_netcdf(celldata->kbf.cdf,kbf,coord))
+    if(readinput_netcdf(celldata->kbf.file.cdf,&cell->kbf,&cell->coord))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->kbf_filename.name,cell+config->startgrid);
+              config->kbf_filename.name,cell_id+config->startgrid);
       return TRUE;
     }
   }
   else
   {
-    if(readrealvec(celldata->kbf.bin.file,kbf,0,celldata->kbf.bin.scalar,1,celldata->kbf.bin.swap,celldata->kbf.bin.type))
+    if(readrealvec(celldata->kbf.file.bin.file,&cell->kbf,0,celldata->kbf.file.bin.scalar,1,celldata->kbf.file.bin.swap,celldata->kbf.file.bin.type))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->kbf_filename.name,cell+config->startgrid);
+              config->kbf_filename.name,cell_id+config->startgrid);
       return TRUE;
     }
   }
   /* read slope value and calculate Haggard Beta value*/
-  if(celldata->slope_fmt==CDF)
+  if(celldata->slope.fmt==CDF)
   {
-    if(readinput_netcdf(celldata->slope.cdf,slope,coord))
+    if(readinput_netcdf(celldata->slope.file.cdf,&cell->slope,&cell->coord))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->slope_filename.name,cell+config->startgrid);
+              config->slope_filename.name,cell_id+config->startgrid);
       return TRUE;
     }
   }
   else
   {
-    if(readrealvec(celldata->slope.bin.file,slope,0,celldata->slope.bin.scalar,1,celldata->slope.bin.swap,celldata->slope.bin.type))
+    if(readrealvec(celldata->slope.file.bin.file,&cell->slope,0,celldata->slope.file.bin.scalar,1,celldata->slope.file.bin.swap,celldata->slope.file.bin.type))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->slope_filename.name,cell+config->startgrid);
+              config->slope_filename.name,cell_id+config->startgrid);
       return TRUE;
     }
   }
 
-  *Hag_beta=min(1,(0.06*log(*slope+0.1)+0.22)/0.43);
-  if(*Hag_beta>1) fail(HAG_BETA_ERR,FALSE,"HAG_BETA greater than 1 HAG_BETA= %.2f  slope= %.2f lat=e= %.2f lon=e= %.2f\n", *Hag_beta,*slope,coord->lat,coord->lon);
+  cell->Hag_beta=min(1,(0.06*log(cell->slope+0.1)+0.22)/0.43);
+  if(cell->Hag_beta>1)
+    fail(HAG_BETA_ERR,FALSE,"HAG_BETA greater than 1 HAG_BETA= %.2f  slope= %.2f lat=e= %.2f lon=e= %.2f\n",
+         cell->Hag_beta,cell->slope,cell->coord.lat,cell->coord.lon);
 
-  if(celldata->slope_min_fmt==CDF)
+  if(celldata->slope_min.fmt==CDF)
   {
-    if(readinput_netcdf(celldata->slope_min.cdf,slope_min,coord))
+    if(readinput_netcdf(celldata->slope_min.file.cdf,&cell->slope_min,&cell->coord))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->slope_min_filename.name,cell+config->startgrid);
+              config->slope_min_filename.name,cell_id+config->startgrid);
       return TRUE;
     }
   }
   else
   {
-    if(readrealvec(celldata->slope_min.bin.file,slope_min,0,celldata->slope_min.bin.scalar,1,celldata->slope_min.bin.swap,celldata->slope_min.bin.type))
+    if(readrealvec(celldata->slope_min.file.bin.file,&cell->slope_min,0,celldata->slope_min.file.bin.scalar,1,celldata->slope_min.file.bin.swap,celldata->slope_min.file.bin.type))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->slope_min_filename.name,cell+config->startgrid);
+              config->slope_min_filename.name,cell_id+config->startgrid);
       return TRUE;
     }
   }
-  if(celldata->slope_max_fmt==CDF)
+  if(celldata->slope_max.fmt==CDF)
   {
-    if(readinput_netcdf(celldata->slope_max.cdf,slope_max,coord))
+    if(readinput_netcdf(celldata->slope_max.file.cdf,&cell->slope_max,&cell->coord))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->slope_max_filename.name,cell+config->startgrid);
+              config->slope_max_filename.name,cell_id+config->startgrid);
       return TRUE;
     }
   }
   else
   {
-    if(readrealvec(celldata->slope_max.bin.file,slope_max,0,celldata->slope_max.bin.scalar,1,celldata->slope_max.bin.swap,celldata->slope_max.bin.type))
+    if(readrealvec(celldata->slope_max.file.bin.file,&cell->slope_max,0,celldata->slope_max.file.bin.scalar,1,celldata->slope_max.file.bin.swap,celldata->slope_max.file.bin.type))
     {
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->slope_max_filename.name,cell+config->startgrid);
+              config->slope_max_filename.name,cell_id+config->startgrid);
       return TRUE;
     }
   }
   if(config->with_nitrogen)
   {
-    if(celldata->soilph_fmt==CDF)
+    if(celldata->soilph.fmt==CDF)
     {
-      if(readinput_netcdf(celldata->soilph.cdf,soil_ph,coord))
+      if(readinput_netcdf(celldata->soilph.file.cdf,&cell->soilph,&cell->coord))
       {
         fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                config->soilph_filename.name,cell+config->startgrid);
+                config->soilph_filename.name,cell_id+config->startgrid);
         return TRUE;
       }
     }
     else
     {
-      if(readrealvec(celldata->soilph.bin.file,soil_ph,0,celldata->soilph.bin.scalar,1,celldata->soilph.bin.swap,celldata->soilph.bin.type))
+      if(readrealvec(celldata->soilph.file.bin.file,&cell->soilph,0,celldata->soilph.file.bin.scalar,1,celldata->soilph.file.bin.swap,celldata->soilph.file.bin.type))
       {
         fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                config->soilph_filename.name,cell+config->startgrid);
+                config->soilph_filename.name,cell_id+config->startgrid);
         return TRUE;
       }
     }
@@ -722,28 +625,11 @@ void closecelldata(Celldata celldata /**< pointer to celldata */
     closecoord(celldata->soil.bin.file_coord);
     fclose(celldata->soil.bin.file);
   }
-  if(celldata->kbf_fmt==CDF)
-    closeinput_netcdf(celldata->kbf.cdf);
-  else
-    fclose(celldata->kbf.bin.file);
-  if(celldata->slope_fmt==CDF)
-    closeinput_netcdf(celldata->slope.cdf);
-  else
-    fclose(celldata->slope.bin.file);
-  if(celldata->slope_min_fmt==CDF)
-    closeinput_netcdf(celldata->slope_min.cdf);
-  else
-    fclose(celldata->slope_min.bin.file);
-  if(celldata->slope_max_fmt==CDF)
-    closeinput_netcdf(celldata->slope_max.cdf);
-  else
-    fclose(celldata->slope_max.bin.file);
+  closefile(&celldata->kbf);
   if(celldata->with_nitrogen)
-  {
-    if(celldata->soilph_fmt==CDF)
-      closeinput_netcdf(celldata->soilph.cdf);
-    else
-      fclose(celldata->soilph.bin.file);
-  }
+    closefile(&celldata->soilph);
+  closefile(&celldata->slope);
+  closefile(&celldata->slope_min);
+  closefile(&celldata->slope_max);
   free(celldata);
 } /* of 'closecelldata' */
