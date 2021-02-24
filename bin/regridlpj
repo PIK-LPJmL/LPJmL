@@ -51,26 +51,26 @@ else
     cp grid_$name.clm $dir
   fi
 fi
-if  regridsoil -same  $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/soil_new_67420.bin $dir/soil_$name.bin
+if  regridsoil $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/soil_new_67420.bin $dir/soil_$name.bin
 then
-  regridsoil -same  $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/glwd_lakes_and_rivers.bin $dir/lakes_$name.bin
-  regridclm -same -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/mlightning.clm $dir/lightning_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/human_ignition.clm $dir/human_ignition_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/popdens_HYDE_1901_2010_bi.clm $dir/popdens_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin $dir/landuse_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cru_ts_3_10.1901.2009.dtr.clm $dir/tamp_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/mwindspeed_1860-2100_67420.clm $dir/windspeed_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cru_ts_3_10.1901.2009.tmp.clm $dir/tmp_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/gpcc_cru09_prec_monthly_1901_2009.clm $dir/prec_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cru_ts_3_10.1901.2009.cld.clm $dir/cld_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/lwnet_erainterim_1901-2011.clm $dir/lwnet_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/swdown_erainterim_1901-2011.clm $dir/swdown_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/gpcc_cru09_wet_monthly_1901_2009.clm $dir/wet_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cow_mg_2006_full.bin $dir/country_$name.clm
-  regridclm -same -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/no3_deposition_rcp8p5.clm $dir/no3_deposition_$name.clm
-  regridclm -same -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/nh4_deposition_rcp8p5.clm $dir/nh4_deposition_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/soil_ph.clm $dir/soil_ph_$name.clm
-  regridclm -same $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/fertilizer_ggcmi.clm2 $dir/fertilizer_ggcmi_$name.clm
+  regridsoil $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/glwd_lakes_and_rivers.bin $dir/lakes_$name.bin
+  regridclm -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/mlightning.clm $dir/lightning_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/human_ignition.clm $dir/human_ignition_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/popdens_HYDE_1901_2010_bi.clm $dir/popdens_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin $dir/landuse_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cru_ts_3_10.1901.2009.dtr.clm $dir/tamp_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/mwindspeed_1860-2100_67420.clm $dir/windspeed_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cru_ts_3_10.1901.2009.tmp.clm $dir/tmp_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/gpcc_cru09_prec_monthly_1901_2009.clm $dir/prec_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cru_ts_3_10.1901.2009.cld.clm $dir/cld_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/lwnet_erainterim_1901-2011.clm $dir/lwnet_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/swdown_erainterim_1901-2011.clm $dir/swdown_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/gpcc_cru09_wet_monthly_1901_2009.clm $dir/wet_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm  $LPJINPATH/input_VERSION2/cow_mg_2006_full.bin $dir/country_$name.clm
+  regridclm -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/no3_deposition_rcp8p5.clm $dir/no3_deposition_$name.clm
+  regridclm -size4 $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/nh4_deposition_rcp8p5.clm $dir/nh4_deposition_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/soil_ph.clm $dir/soil_ph_$name.clm
+  regridclm $LPJINPATH/input_VERSION2/grid.bin $dir/grid_$name.clm $LPJINPATH/input_VERSION2/fertilizer_ggcmi.clm2 $dir/fertilizer_ggcmi_$name.clm
 
   cat << EOF >input_$name.js
 /*********************************************************************/

@@ -107,6 +107,7 @@ typedef struct
 #define agtree(ncft,nwpt) (ncft+4+nwpt)
 #define getnnat(npft,config) (npft-config->nbiomass-config->nagtree-config->nwft)
 #define getnirrig(ncft,config) (ncft+NGRASS+NBIOMASSTYPE+config->nagtree+config->nwptype)
+#define isagriculture(type) (type==AGRICULTURE || type==SETASIDE_RF || type==SETASIDE_IR || type==AGRICULTURE_TREE || type==AGRICULTURE_GRASS)
 
 /* Declaration of functions */
 
@@ -120,7 +121,7 @@ extern void scalelandfrac(Landfrac [2],int,int,Real);
 extern void freelandfrac(Landfrac [2]);
 extern Bool fwritelandfrac(FILE *,const Landfrac [2],int,int);
 extern Bool freadlandfrac(FILE *,Landfrac [2],int,int,Bool);
-extern int readlandfracmap(Landfrac *,const int [],int,const Real [],int,int,int);
+extern Bool readlandfracmap(Landfrac *,const int [],int,const Real [],int *,int,int);
 extern Real landfrac_sum(const Landfrac [2],int,int,Bool);
 extern Real crop_sum_frac(Landfrac *,int,int,Real,Bool);
 extern Stocks cultivate(Cell *,const Pftpar *,int,Real,Bool,int,Bool,Stand *,

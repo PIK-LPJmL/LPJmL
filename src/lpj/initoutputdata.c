@@ -52,12 +52,20 @@ void initoutputdata(Output *output,      /**< output data */
   int i,index,nirrig,nnat;
   nirrig=2*getnirrig(ncft,config);
   nnat=getnnat(npft,config);
+  #ifdef IMAGE
+    setoutputvar(YDISCHARGE,ydischarge);
+#endif
+  setoutputvar(ADISCHARGE,adischarge);
   setoutputvar(DAYLENGTH,daylength);
   setoutputvar(TEMP,temp);
   setoutputvar(SUN,sun);
   setoutputvar(VEGC,veg.carbon);
   setoutputvar(VEGN,veg.nitrogen);
   setoutputvar(SOILC,soil.carbon);
+  setoutputvar(MGRASS_SOILC,mgrass_soil.carbon);
+  setoutputvar(MGRASS_SOILN,mgrass_soil.nitrogen);
+  setoutputvar(MGRASS_LITC,mgrass_litter.carbon);
+  setoutputvar(MGRASS_LITN,mgrass_litter.nitrogen);
   setoutputvar(SOILN,soil.nitrogen);
   setoutputvar(MG_VEGC,mg_vegc);
   setoutputvar(MG_SOILC,mg_soilc);
@@ -86,8 +94,21 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(DELTA_NMIN_SOIL_AGR,adelta_nmin_soil_agr);
   setoutputvar(DELTA_NVEG_SOIL_AGR,adelta_nveg_soil_agr);
   setoutputvar(CELLFRAC_AGR,cellfrac_agr);
+  setoutputvar(LITFALLC_WOOD,alittfall_wood.carbon);
+  setoutputvar(LITFALLN_WOOD,alittfall_wood.nitrogen);
+  setoutputvar(LITBURNC,alitburnc);
+  setoutputvar(LITBURNC_WOOD,alitburnc_wood);
+  if(isinit(DECAY_WOOD_AGR))
+    output->decay_wood_agr=1;
+  if(isinit(DECAY_WOOD_NV))
+    output->decay_wood_nv=1;
+  if(isinit(DECAY_LEAF_AGR))
+    output->decay_leaf_agr=1;
+  if(isinit(DECAY_LEAF_NV))
+    output->decay_leaf_nv=1;
   setoutputarrayitem(SOILC_LAYER,soil_layer,carbon,LASTLAYER);
   setoutputarrayitem(SOILN_LAYER,soil_layer,nitrogen,LASTLAYER);
+  setoutputarray(SOILC_AGR_LAYER,soilc_agr_layer,LASTLAYER);
   setoutputarray(SOILNO3_LAYER,soilno3_layer,LASTLAYER);
   setoutputarray(SOILNH4_LAYER,soilnh4_layer,LASTLAYER);
   setoutputarray(PFT_LAIMAX,pft_laimax,nnat+nirrig);
@@ -164,6 +185,10 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(TRANSP_B,mtransp_b);
   setoutputvar(EVAP_B,mevap_b);
   setoutputvar(INTERC_B,minterc_b);
+  setoutputarray(RESPONSE_LAYER_AGR,response_agr,NSOILLAYER);
+  setoutputarray(RESPONSE_LAYER_NV,response_nv,NSOILLAYER);
+  setoutputarray(CSHIFT_FAST_NV,cshift_fast_nv,NSOILLAYER);
+  setoutputarray(CSHIFT_SLOW_NV,cshift_slow_nv,NSOILLAYER);
   setoutputarray(SWC,mswc,NSOILLAYER);
   setoutputvar(SWC1,mswc2[0]);
   setoutputvar(SWC2,mswc2[1]);
@@ -252,6 +277,7 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputvar(IRRIG_RW,mirrig_rw);
   setoutputvar(LAKEVOL,mlakevol);
   setoutputvar(LAKETEMP,mlaketemp);
+  setoutputvar(FLUX_AUTOFERT,flux_nfert);
   setoutputarray(SDATE,sdate,2*ncft);
   setoutputarray(HDATE,hdate,2*ncft);
   setoutputarray(CFT_SWC,cft_mswc,2*ncft);
@@ -301,6 +327,7 @@ void initoutputdata(Output *output,      /**< output data */
   setoutputarray(LUC_IMAGE,cft_luc_image,nirrig);
   setoutputarrayitem(CFT_ABOVEGBMC,cft_aboveground_biomass,carbon,2*(ncft+NGRASS));
   setoutputarrayitem(CFT_ABOVEGBMN,cft_aboveground_biomass,nitrogen,2*(ncft+NGRASS));
+  setoutputarray(CFT_NFERT,cft_nfert,nirrig);
   if(config->double_harvest)
   {
     setoutputarrayitem(PFT_HARVESTC2,dh->pft_harvest2,harvest.carbon,nirrig);
@@ -330,6 +357,7 @@ void initoutputdata(Output *output,      /**< output data */
     setoutputarray(CFT_N2_EMIS2,dh->cft_n2_emis2,2*ncft);
     setoutputarray(CFT_LEACHING2,dh->cft_leaching2,2*ncft);
     setoutputarray(CFT_C_EMIS2,dh->cft_c_emis2,2*ncft);
+    setoutputarray(CFT_NFERT2,dh->cft_nfert2,nirrig);
     setoutputarray(PFT_NUPTAKE2,dh->pft_nuptake2,nnat+nirrig);
   }
   index=0;

@@ -12,6 +12,7 @@ cdf2soil (1) - convert NetCDF file into binary file
 cft2clm (1) - convert binary landuse data files to clm data files for LPJmL
 clm2cdf (1) - convert CLM files into NetCDF files
 configure.sh (1) - Configure LPJmL
+country2cdf (1) - convert country/region code file into NetCDF file
 cru2clm (1) - convert raw binary data files to clm data files for LPJmL
 cutclm (1) - cuts LPJmL climate data files
 cvrtclm (1) - converts version of clm file to latest version 3
@@ -29,6 +30,7 @@ freelanduse (3) - close file and deallocates land use data
 freepopdens (3) - close file and deallocates population density data
 freewateruse (3) - close file and deallocates water use data
 fwriterestart (3) - write restart file
+getcellindex (1) - get cell index for coordinates in grid clm file
 getclimate (3) - get climate data for specified year
 getco2 (3) - get atmospheric CO2 concentration
 getcountry (1) - extract grid cells for specified countries

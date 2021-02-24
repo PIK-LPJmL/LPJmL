@@ -120,22 +120,22 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
       stand->cell->output.pft_veg[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].nitrogen+=vegn_sum(pft);
       stand->cell->output.pft_veg[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].nitrogen+=vegn_sum(pft);
     }
-    if(isannual(PFT_CLEAF,config))
+    if(isannual(PFT_CROOT,config))
     {
-      stand->cell->output.pft_leaf[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=grass->ind.leaf.carbon;
-      stand->cell->output.pft_leaf[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=grass->ind.leaf.carbon;
+      stand->cell->output.pft_leaf[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=grass->ind.root.carbon;
+      stand->cell->output.pft_leaf[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=grass->ind.root.carbon;
     } 
-    if(isannual(PFT_NLEAF,config))
+    if(isannual(PFT_NROOT,config))
     {
       stand->cell->output.pft_root[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].nitrogen+=grass->ind.root.nitrogen;
       stand->cell->output.pft_root[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].nitrogen+=grass->ind.root.nitrogen;
     } 
-    if(isannual(PFT_CROOT,config))
+    if(isannual(PFT_CLEAF,config))
     {
-      stand->cell->output.pft_root[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=grass->ind.leaf.carbon;
-      stand->cell->output.pft_root[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=grass->ind.root.carbon;
+      stand->cell->output.pft_leaf[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=grass->ind.leaf.carbon;
+      stand->cell->output.pft_leaf[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=grass->ind.root.carbon;
     } 
-    if(isannual(PFT_NROOT,config))
+    if(isannual(PFT_NLEAF,config))
     {
       stand->cell->output.pft_leaf[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].nitrogen+=grass->ind.leaf.nitrogen;
       stand->cell->output.pft_leaf[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].nitrogen+=grass->ind.leaf.nitrogen;

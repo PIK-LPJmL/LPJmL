@@ -20,6 +20,8 @@
 /* Definition of datatypes */
 
 #define DEFAULT_PORT 2222 /* default port for socket connection */
+#define issoil(index) (index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC || \
+                       index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV || index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV || index == SOILC_AGR_LAYER)
 
 typedef struct
 {
@@ -104,6 +106,7 @@ typedef struct
   Real *cft_pet2;           /**< cft PET */
   Real *cft_transp2;        /**< cft specific transpiration (mm) */
   Real *cft_evap2;          /**< cft specific soil evaporation (mm) */
+  Real *cft_nfert2;         /**< cft specific N ferizlier application (gN/m2/growing season) */
   Real *cft_interc2;        /**< cft specific interception (mm) */
   Real *cft_nir2;           /**< cft specific net irrigation requirement (mm) */
   Real *cft_temp2;          /**< cft specific temperature sum (day degC) */
@@ -296,12 +299,15 @@ typedef struct
   Real mean_vegc_mangrass; /**< annual mean vegetation carbon of managed grasslands */
   Stocks veg;              /**< vegetation carbon (gC/m2) */
   Stocks soil;             /**< soil carbon and nitrogen (gC/m2, gN/m2) */
+  Stocks mgrass_soil;      /**< grassland soil carbon and nitrogen (gC/m2, gN/m2) */
+  Stocks mgrass_litter;    /**< grassland litter carbon and nitrogen (gC/m2, gN/m2) */
   Stocks soil_slow;        /**< slow carbon and nitrogen pool (gC/m2, gN/m2) */
   Stocks litter;           /**< litter carbon and nitrogen (gC/m2, gN/m2) */
   Real maxthaw_depth;      /**< maximum thawing depth (mm) */
   Real soilno3;                 /**< soil NO3 content (gC/m2) */
   Real soilnh4;                 /**< soil NH4 content (gC/m2) */
   Stocks soil_layer[LASTLAYER]; /**< layer-specific soil carbon (gC2/m2) */
+  Real soilc_agr_layer[LASTLAYER];
   Real soilno3_layer[LASTLAYER];
   Real soilnh4_layer[LASTLAYER];
   Real agb;                     /**< above-ground biomass (gC/m2) */
@@ -322,6 +328,8 @@ typedef struct
   Real daylength;
   Real *cft_mswc;          /**< cft-specific monthly absolute soil water content in mm (same as rootmoist but cft-specific) */
   int *nday_month;        /**< day count for monthly cft-specific outputs, needed in update_monthly to divide by number of days */
+  Real *cft_nfert;        /**< cft specific N ferizlier application (gN/m2/yr) */
+  Real flux_nfert;        /**< automated N ferizlier application (gN/m2/yr) */
   Real abnf_agr;
   Real anfert_agr;
   Real anmanure_agr;
@@ -357,6 +365,17 @@ typedef struct
   Real ameansoilo2;
   Real ameansoilch4;
   Real wetfrac;
+  Stocks alittfall_wood;    /**< woody litter fall (gC/m2/yr) */
+  Real response_agr[NSOILLAYER]; /**< annual sum of response function on croplands */
+  Real response_nv[NSOILLAYER];  /**< annual sum of response function on natural vegetation */
+  Real decay_wood_agr;        /**< annual decay rate of woody litter on croplands */
+  Real decay_wood_nv;         /**< annual decay rate of woody litter on natural vegetation */
+  Real decay_leaf_agr;        /**< annual decay rate of leaf litter on croplands */
+  Real decay_leaf_nv;         /**< annual decay rate of leaf litter on natural vegetation */
+  Real cshift_fast_nv[NSOILLAYER];
+  Real cshift_slow_nv[NSOILLAYER];
+  Real alitburnc;             /**< annual litter carbon burnt (gC/m2/yr) */
+  Real alitburnc_wood;        /**< annual woody litter carbon burnt (gC/m2/yr) */
   Daily_outputs daily;     /**< structure for daily outputs */
 } Output;
 

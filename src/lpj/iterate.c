@@ -291,10 +291,14 @@ int iterate(Outputfile *output, /**< Output file data */
       else
 #endif
       /* read landuse pattern from file */
-      if(getlanduse(input.landuse,grid,landuse_year,year,ncft,config))
+      rc=getlanduse(input.landuse,grid,landuse_year,year,ncft,config);
+      if(iserror(rc,config))
       {
-        fprintf(stderr,"ERROR104: Simulation stopped in getlanduse().\n");
-        fflush(stderr);
+        if(isroot(*config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in getlanduse().\n");
+          fflush(stderr);
+        }
         break; /* leave time loop */
       }
       if(config->reservoir)
@@ -304,10 +308,14 @@ int iterate(Outputfile *output, /**< Output file data */
     if(config->wateruse)
     {
       /* read wateruse data from file */
-      if(getwateruse(input.wateruse,grid,wateruse_year,config))
+      rc=getwateruse(input.wateruse,grid,wateruse_year,config);
+      if(iserror(rc,config))
       {
-        fprintf(stderr,"ERROR104: Simulation stopped in getwateruse().\n");
-        fflush(stderr);
+        if(isroot(*config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in getwateruse().\n");
+          fflush(stderr);
+        }
         break; /* leave time loop */
       }
     }
@@ -315,10 +323,14 @@ int iterate(Outputfile *output, /**< Output file data */
     if (input.wateruse_wd!= NULL && input.landuse!=NULL)
     {
       /* read wateruse data from file */
-      if (getwateruse_wd(input.wateruse_wd, grid, wateruse_year, config))
+      rc=getwateruse_wd(input.wateruse_wd, grid, wateruse_year, config);
+      if(iserror(rc,config))
       {
-        fprintf(stderr, "ERROR104: Simulation stopped in getwateruse_wd().\n");
-        fflush(stderr);
+        if(isroot(*config))
+        {
+          fprintf(stderr, "ERROR104: Simulation stopped in getwateruse_wd().\n");
+          fflush(stderr);
+        }
         break; /* leave time loop */
       }
     }
@@ -326,19 +338,27 @@ int iterate(Outputfile *output, /**< Output file data */
 #endif
     if(config->ispopulation)
     {
-      if(readpopdens(input.popdens,year,grid,config))
+      rc=readpopdens(input.popdens,year,grid,config);
+      if(iserror(rc,config))
       {
-        fprintf(stderr,"ERROR104: Simulation stopped in getpopdens().\n");
-        fflush(stderr);
+        if(isroot(*config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in getpopdens().\n");
+          fflush(stderr);
+        }
         break; /* leave time loop */
       }
     }
     if (config->prescribe_landcover != NO_LANDCOVER)
     {
-      if (readlandcover(input.landcover,grid,year,config))
+      rc=readlandcover(input.landcover,grid,year,config);
+      if(iserror(rc,config))
       {
-        fprintf(stderr,"ERROR104: Simulation stopped in readlandcover().\n");
-        fflush(stderr);
+        if(isroot(*config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in readlandcover().\n");
+          fflush(stderr);
+        }
         break; /* leave time loop */
       }
     }

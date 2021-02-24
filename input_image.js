@@ -16,13 +16,18 @@
 
 "inpath" : "/p/projects/lpjml/input/coupling_image/coupling1970/ddm30",
 
+"landusemap" :  ["temperate cereals","rice","maize","tropical cereals","pulses",
+                 "temperate roots","tropical roots","oil crops sunflower",
+                 "oil crops soybean","oil crops groundnut","oil crops rapeseed",
+                 "sugarcane","others","grassland","biomass grass","biomass tree",
+                 "woodplantation"],
+
 "input" :
 {
   "soil" :         { "fmt" : "meta", "name" : "soil.descr"},
   "coord" :        { "fmt" : "clm",  "name" : "grid_cru2000_image.clm"},
   "countrycode" :  { "fmt" : "clm",  "name" : "cow_coast_2006_image.bin"},
   "landuse" :      { "fmt" : "clm",  "name" : "landuse4spinup_IM32_C38.bin"},
-  /* insert prescribed sdate file name here */
   "lakes" :        { "fmt" : "meta", "name" : "sealakefrac_image.descr"},
   "drainage" :     { "fmt" : "clm",  "name" : "drainage_image.bin"},
   "neighb_irrig" : { "fmt" : "clm",  "name" : "neighb_irrig_image2.bin"},

@@ -85,6 +85,7 @@ typedef struct
   Real petsum;
   Real evapsum;
   Real transpsum;
+  Real nfertsum;
   Real intercsum;
   Real precsum;
   Real sradsum;

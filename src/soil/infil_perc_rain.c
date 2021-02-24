@@ -75,7 +75,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   anfang = ende = 0;
 #endif
 
-  if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND)
+  if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND ||  stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
     data_irrig=stand->data;
   else
     data_irrig=NULL;
@@ -101,7 +101,9 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   rsub_top_layer=k_drai_perch=k_perch=icesum=k_perch_max=slug=fill=srunoff=0.0;
   runoff_surface=runoff=outflux=rsub_top=rsub_top_tot=drain_perched_out=qcharge_tot1=drain_perched_layer=drain_perched=0.0;
   q_perch_max=active_wa=runoff_out=depthsum=wtable_tmp=alpha=s1=vol_eq=NO3perc_ly=0;
-  if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE))
+  if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND ||
+                           stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE ||
+                           stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS))
     soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate */
 
   // The layer index of the first unsaturated layer, i.e., the layer right above the water table
@@ -846,7 +848,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
 
             stand->cell->output.mn_leaching+=(NO3surf+NO3lat)*stand->frac;
             stand->cell->balance.n_outflux+=(NO3surf + NO3lat)*stand->frac;
-            if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+            if(isagriculture(stand))
               stand->cell->output.anleaching_agr+=(NO3surf+NO3lat)*stand->frac;
             if(stand->type->landusetype==AGRICULTURE)
             {
@@ -864,7 +866,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
           } /* if soil depth > freeze_depth */
        stand->cell->output.mn_leaching+=NO3perc_ly*stand->frac;
        stand->cell->balance.n_outflux+=NO3perc_ly*stand->frac;
-       if(stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==AGRICULTURE)
+       if(isagriculture(stand))
          stand->cell->output.anleaching_agr+=NO3perc_ly*stand->frac;
        if(config->withdailyoutput && (stand->type->landusetype==NATURAL && ALLNATURAL==stand->cell->output.daily.cft))
          stand->cell->output.daily.leaching+=NO3perc_ly;

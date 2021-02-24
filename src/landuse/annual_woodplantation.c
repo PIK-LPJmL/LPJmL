@@ -268,13 +268,15 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
       return TRUE;
   }
   else
-    stand->cell->balance.soil_storage+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
-  biomass_tree->age++;
-  biomass_tree->growing_time++;
-  foreachpft(pft,p,&stand->pftlist)
   {
-    stand->cell->output.pft_veg[getnnat(npft,config)+index].carbon+=vegc_sum(pft);
-    stand->cell->output.pft_veg[getnnat(npft,config)+index].nitrogen+=vegn_sum(pft);
+    stand->cell->balance.soil_storage+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
+    biomass_tree->age++;
+    biomass_tree->growing_time++;
+    foreachpft(pft,p,&stand->pftlist)
+    {
+      stand->cell->output.pft_veg[getnnat(npft,config)+index].carbon+=vegc_sum(pft);
+      stand->cell->output.pft_veg[getnnat(npft,config)+index].nitrogen+=vegn_sum(pft);
+    }
   }
   return FALSE;
 } /* of 'annual_woodplantation' */

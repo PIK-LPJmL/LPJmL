@@ -338,3 +338,29 @@ void fprintcoord(FILE *file,        /**< pointer to text file */
   else
     fprintf(file," %.6gE",coord->lon);
 } /* of 'fprintcoord' */
+
+int findnextcoord(Real *dist_min,     /**< [out] minimum distance */
+                  const Coord *item,  /**< [in] coordinate to search for */
+                  const Coord grid[], /**< [in] array of coordinates */
+                  int size            /**< [in] size of array */
+                 )                    /** \return index in array for nearest cell */
+{
+  int i,i_min;
+  Real dist,dist_lon;
+  *dist_min=HUGE_VAL;
+  i_min=0;
+  for(i=0;i<size;i++)
+  {
+    dist_lon=fabs(item->lon-grid[i].lon);
+    if(360-dist_lon<dist_lon)
+      dist_lon=360-dist_lon;
+    dist=(item->lat-grid[i].lat)*(item->lat-grid[i].lat)+dist_lon*dist_lon;
+    if(*dist_min>dist)
+    {
+      *dist_min=dist;
+      i_min=i;
+    }
+  }
+  *dist_min=sqrt(*dist_min);
+  return i_min;
+} /* of 'findnextcoord' */

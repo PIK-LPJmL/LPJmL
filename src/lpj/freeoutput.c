@@ -71,6 +71,7 @@ void freeoutput(Output *output /**< Output data */
   free(output->cft_n2_emis);
   free(output->cft_leaching);
   free(output->cft_c_emis);
+  free(output->cft_nfert);
   if(output->dh!=NULL)
   {
     free(output->dh->cftfrac2);
@@ -98,6 +99,7 @@ void freeoutput(Output *output /**< Output data */
     free(output->dh->cft_n2_emis2);
     free(output->dh->cft_leaching2);
     free(output->dh->cft_c_emis2);
+    free(output->dh->cft_nfert2);
     free(output->dh);
   }
 } /* of 'freeoutput' */

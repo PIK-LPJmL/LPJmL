@@ -148,7 +148,7 @@ struct config
   Bool fix_fertilization;   /**< simulation with fixed fertilizer application rate */
   Bool no_ndeposition;      /**< turn off atmospheric N deposition */
   Bool prescribe_residues;  /**< simulation with prescribed residue rate on black fallow */
-  Bool fertilizer_input;   /**< simulation with fertilizer input */
+  int fertilizer_input;     /**< simulation with fertilizer input */
   Bool manure_input;       /**< simulation with manure input */
   Bool global_netcdf;     /**< enable global grid for NetCDF output */
   Bool float_grid;        /**< enable float datatype for binary grid file */

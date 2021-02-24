@@ -113,7 +113,10 @@
 #define FIREWOOD 1
 #define RANDOM_PREC 1
 #define INTERPOLATE_PREC 0
-#define NOUT 343            /* number of output files */
+#define NO_FERTILIZER 0
+#define FERTILIZER 1
+#define AUTO_FERTILIZER 2
+#define NOUT 362            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -474,6 +477,25 @@
 #define WPC 340
 #define GW_STORAGE 341
 #define GW_OUTFLUX 342
+#define MGRASS_LITC 343
+#define MGRASS_SOILC 344
+#define MGRASS_LITN 345
+#define MGRASS_SOILN 346
+#define CFT_NFERT 347
+#define CFT_NFERT2 348
+#define FLUX_AUTOFERT 349
+#define LITFALLC_WOOD 350
+#define LITFALLN_WOOD 351
+#define RESPONSE_LAYER_AGR 352
+#define RESPONSE_LAYER_NV 353
+#define DECAY_WOOD_AGR 354
+#define DECAY_WOOD_NV 355
+#define DECAY_LEAF_AGR 356
+#define DECAY_LEAF_NV 357
+#define CSHIFT_FAST_NV 358
+#define CSHIFT_SLOW_NV 359
+#define LITBURNC 360
+#define LITBURNC_WOOD 361
 
 #define RANDOM_SEED 0
 

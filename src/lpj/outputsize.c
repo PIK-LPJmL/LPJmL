@@ -25,7 +25,7 @@ int outputsize(int index,     /**< output index */
   switch(index)
   {
     case SDATE: case HDATE: case HDATE2: case SDATE2: case CFT_SWC:
-    case SYEAR: case SYEAR2: case HUSUM: case HUSUM2:
+    case SYEAR: case SYEAR2: case HUSUM: case HUSUM2: case CFT_LEACHING:
       return ncft*2;
     case PFT_NPP: case PFT_GCGP: case PFT_LAIMAX: case PFT_NLIMIT:
     case PFT_NUPTAKE: case PFT_NDEMAND: case PFT_VEGC: case PFT_VEGN:
@@ -47,15 +47,16 @@ int outputsize(int index,     /**< output index */
     case CFT_INTERC2:
     case CFTFRAC2: case CFT_AIRRIG2:
     case CFT_TRANSP2: case CFT_NIR2:
-    case CFT_EVAP2:
+    case CFT_EVAP2: case CFT_NFERT: case CFT_NFERT2:
       return 2*getnirrig(ncft,config);
     case FPC:
       return getnnat(npft,config)+1;
     case PFT_MORT: case NV_LAI:
       return getnnat(npft,config);
-    case SOILTEMP: case SWC:
+    case SOILTEMP: case SWC: case RESPONSE_LAYER_AGR: case RESPONSE_LAYER_NV:
       return NSOILLAYER;
     case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER: case SOILC_AGR_LAYER:
+    case CSHIFT_FAST_NV: case CSHIFT_SLOW_NV:
       return LASTLAYER;
     case GROWING_PERIOD: case CFT_TEMP:case CFT_PREC:
     case CFT_SRAD: case CFT_ABOVEGBMC: case CFT_ABOVEGBMN:

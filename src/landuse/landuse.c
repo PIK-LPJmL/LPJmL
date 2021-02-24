@@ -53,6 +53,25 @@ struct landuse
   Climatefile crop_phu;         /**< file pointer to prescribed crop phus */
 };                              /**< definition of opaque datatype Landuse */
 
+static void checkyear(const char *name,const Climatefile *file,const Config *config)
+{
+  int lastyear;
+  if(isroot(*config))
+  {
+    if(config->withlanduse==LANDUSE)
+    {
+      lastyear=(config->fix_landuse) ? config->fix_climate_year : config->lastyear;
+      if(file->firstyear+file->nyear-1<lastyear)
+        fprintf(stderr,"WARNING024: Last year in %s data file=%d is less than last simulation year %d, data from last year used.\n",
+                name,file->firstyear+file->nyear-1,lastyear);
+    }
+    else if(file->firstyear+file->nyear-1<config->landuse_year_const)
+      fprintf(stderr,"WARNING024: Last year in %s data file=%d is less than const. landuse year %d, data from last year used.\n",
+              name,file->firstyear+file->nyear-1,config->landuse_year_const);
+
+  }
+} /* of 'checkyear' */
+
 Landuse initlanduse(const Config *config /**< LPJ configuration */
                    )                     /** \return allocated landuse or NULL */
 {
@@ -116,7 +135,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   }
   if(isroot(*config) && landuse->landuse.var_len!=4*config->landusemap_size)
     fputs("WARNING024: Land-use input does not include irrigation systems, suboptimal country values are used.\n",stderr);
-
+  checkyear("land-use",&landuse->landuse,config);
   if(config->sdate_option==PRESCRIBED_SDATE)
   {
     /* read sdate input metadata */
@@ -234,9 +253,10 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       free(landuse);
       return NULL;
     }
+    checkyear("crop phu",&landuse->crop_phu,config);
   } /* End crop_phu */
 
-  if(config->fertilizer_input)
+  if(config->fertilizer_input==FERTILIZER)
   {
     /* read fertilizer data */
     landuse->fertilizer_nr.fmt=config->fertilizer_nr_filename.fmt;
@@ -288,7 +308,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
-                "ERROR147: Invalid number of bands=%d in fertilizer Nr data file, must be %d.\n",
+                "ERROR147: Invalid number of bands=%d in fertilizer data file, must be %d.\n",
                 (int)landuse->fertilizer_nr.var_len,2*config->fertilizermap_size);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
@@ -298,6 +318,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       free(landuse);
       return(NULL);
     }
+    checkyear("fertilizer",&landuse->fertilizer_nr,config);
   }
 
   if(config->manure_input)
@@ -313,7 +334,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
           closeclimatefile(&landuse->sdate,isroot(*config));
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(config->fertilizer_input)
+        if(config->fertilizer_input==FERTILIZER)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         free(landuse);
         return NULL;
@@ -330,7 +351,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
           closeclimatefile(&landuse->sdate,isroot(*config));
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(config->fertilizer_input)
+        if(config->fertilizer_input==FERTILIZER)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         free(landuse);
         return NULL;
@@ -356,18 +377,19 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       closeclimatefile(&landuse->manure_nr,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
-                "ERROR147: Invalid number of bands=%d in manure Nr data file. must be %d.\n",
+                "ERROR147: Invalid number of bands=%d in manure data file. must be %d.\n",
                (int)landuse->manure_nr.var_len,2*config->fertilizermap_size);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
       if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
          closeclimatefile(&landuse->crop_phu,isroot(*config));
-      if(config->fertilizer_input)
+      if(config->fertilizer_input==FERTILIZER)
         closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       free(landuse);
       return NULL;
     }
+    checkyear("manure",&landuse->manure_nr,config);
   }
 
   if(config->tillage_type==READ_TILLAGE)
@@ -382,7 +404,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
           closeclimatefile(&landuse->sdate,isroot(*config));
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(config->fertilizer_input)
+        if(config->fertilizer_input==FERTILIZER)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         if(config->manure_input)
           closeclimatefile(&landuse->manure_nr,isroot(*config));
@@ -401,7 +423,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
           closeclimatefile(&landuse->sdate,isroot(*config));
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(config->fertilizer_input)
+        if(config->fertilizer_input==FERTILIZER)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         if(config->manure_input)
           closeclimatefile(&landuse->manure_nr,isroot(*config));
@@ -433,7 +455,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         closeclimatefile(&landuse->sdate,isroot(*config));
       if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
         closeclimatefile(&landuse->crop_phu,isroot(*config));
-      if(config->fertilizer_input)
+      if(config->fertilizer_input==FERTILIZER)
         closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       if(config->manure_input)
         closeclimatefile(&landuse->manure_nr,isroot(*config));
@@ -445,6 +467,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       free(landuse);
       return(NULL);
     }
+    checkyear("tillage",&landuse->with_tillage,config);
   }
 
   if(config->residue_treatment==READ_RESIDUE_DATA)
@@ -460,7 +483,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
           closeclimatefile(&landuse->sdate,isroot(*config));
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(config->fertilizer_input)
+        if(config->fertilizer_input==FERTILIZER)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         if(config->manure_input)
           closeclimatefile(&landuse->manure_nr,isroot(*config));
@@ -481,7 +504,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
           closeclimatefile(&landuse->sdate,isroot(*config));
         if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
           closeclimatefile(&landuse->crop_phu,isroot(*config));
-        if(config->fertilizer_input)
+        if(config->fertilizer_input==FERTILIZER)
           closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
         if(config->manure_input)
           closeclimatefile(&landuse->manure_nr,isroot(*config));
@@ -520,7 +543,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         closeclimatefile(&landuse->sdate,isroot(*config));
       if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
         closeclimatefile(&landuse->crop_phu,isroot(*config));
-      if(config->fertilizer_input)
+      if(config->fertilizer_input==FERTILIZER)
         closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       if(config->manure_input)
         closeclimatefile(&landuse->manure_nr,isroot(*config));
@@ -529,8 +552,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       free(landuse);
       return NULL;
     }
+    checkyear("residue",&landuse->residue_on_field,config);
   }
-
   landuse->intercrop=config->intercrop;
   return landuse;
 } /* of 'initlanduse' */
@@ -846,8 +869,13 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           grid[cell].ml.irrig_system->biomass_grass=grid[cell].ml.manage.par->default_irrig_system;
           grid[cell].ml.irrig_system->woodplantation = grid[cell].ml.manage.par->default_irrig_system;
         }
-        count=readlandfracmap(grid[cell].ml.landfrac+i,config->landusemap,
-                              config->landusemap_size,data,count,ncft,config->nwptype);
+        if(readlandfracmap(grid[cell].ml.landfrac+i,config->landusemap,
+                        config->landusemap_size,data,&count,ncft,config->nwptype))
+        {
+          fprintf(stderr,"ERROR149: Land-use input=%g less than zero for cell %d in year %d.\n",
+                  data[count],cell+config->startgrid,yearl+landuse->landuse.firstyear);
+          return TRUE;
+        }
       }
       else /* read irrigated cropfrac and irrigation systems from 64 bands input */
       {
@@ -1181,7 +1209,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       initlandfrac(grid[cell].ml.manure_nr,ncft,config->nagtree);
     }
 
-    if(config->fertilizer_input)
+    if(config->fertilizer_input==FERTILIZER)
     {
       /* assigning fertilizer Nr data */
       yearf-=landuse->fertilizer_nr.firstyear;
@@ -1236,8 +1264,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         for(i=0; i<WIRRIG; i++)
         {
-          count=readlandfracmap(grid[cell].ml.fertilizer_nr+i,config->fertilizermap,
-                                config->fertilizermap_size,data,count,ncft,config->nwptype);
+          if(readlandfracmap(grid[cell].ml.fertilizer_nr+i,config->fertilizermap,
+                             config->fertilizermap_size,data,&count,ncft,config->nwptype))
+          {
+            fprintf(stderr,"ERROR149: Fertilizer input=%g for band %d less than zero for cell %d in year %d.\n",
+                    data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
+                    cell+config->startgrid,yearf+landuse->fertilizer_nr.firstyear);
+            return TRUE;
+          }
         }
       } /* for(cell=0;...) */
       free(data);
@@ -1298,8 +1332,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         for(i=0; i<WIRRIG; i++)
         {
-          count=readlandfracmap(grid[cell].ml.manure_nr+i,config->fertilizermap,
-                                config->fertilizermap_size,data,count,ncft,config->nwptype);
+          if(readlandfracmap(grid[cell].ml.manure_nr+i,config->fertilizermap,
+                             config->fertilizermap_size,data,&count,ncft,config->nwptype))
+          {
+            fprintf(stderr,"ERROR149: Manure input=%g for band %d less than zero for cell %d in year %d.\n",
+                    data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
+                    cell+config->startgrid,yearm+landuse->manure_nr.firstyear);
+            return TRUE;
+          }
         }
       } /* for(cell=0;...) */
       free(data);
@@ -1451,10 +1491,17 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     for(cell=0; cell<config->ngridcell; cell++)
     {
       initlandfrac(grid[cell].ml.residue_on_field,ncft,config->nagtree);
+      if(readlandfracmap(grid[cell].ml.residue_on_field+i,config->fertilizermap,
+                         config->fertilizermap_size,data,&count,ncft,config->nwptype))
+      {
+        fprintf(stderr,"ERROR149: Residue rate input=%g for band %d less than zero for cell %d in year %d.\n",
+                data[count],count % config->fertilizermap_size,
+                cell+config->startgrid,yearr+landuse->residue_on_field.firstyear);
+        return TRUE;
+      }
+      count-=config->fertilizermap_size;
       readlandfracmap(grid[cell].ml.residue_on_field+i,config->fertilizermap,
-                      config->fertilizermap_size,data,count,ncft,config->nwptype);
-      count=readlandfracmap(grid[cell].ml.residue_on_field+i,config->fertilizermap,
-                            config->fertilizermap_size,data,count,ncft,config->nwptype);
+                      config->fertilizermap_size,data,&count,ncft,config->nwptype);
     }
     free(data);
   }
@@ -1476,7 +1523,7 @@ void freelanduse(Landuse landuse,     /**< pointer to landuse data */
     closeclimatefile(&landuse->landuse,isroot(*config));
     if(config->sdate_option==PRESCRIBED_SDATE)
       closeclimatefile(&landuse->sdate,isroot(*config));
-    if(config->fertilizer_input)
+    if(config->fertilizer_input==FERTILIZER)
       closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
        closeclimatefile(&landuse->crop_phu,isroot(*config));

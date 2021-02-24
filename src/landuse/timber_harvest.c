@@ -119,6 +119,7 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
   pft->stand->cell->ml.product.slow.nitrogen+=harvest.nitrogen*f.slow;
   pft->stand->cell->ml.product.fast.carbon+=harvest.carbon*f.fast;
   pft->stand->cell->ml.product.slow.carbon+=harvest.carbon*f.slow;
+#endif
   soil->pool[0].fast.carbon+=harvest.carbon*biofuel*0.1/standfrac;
   soil->pool[0].fast.nitrogen+=harvest.nitrogen*biofuel*0.1/standfrac;
   /* transfer non-harvested wood, leaves, and roots of trees cut to litter */
@@ -134,16 +135,19 @@ Stocks timber_harvest(Pft *pft,      /**< Pointer to tree PFT */
                                          ftimber*(*nind)*treepar->fuelfrac[i];
     output->alittfall.carbon+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon+tree->excess_carbon)*
                                          ftimber*(*nind)*treepar->fuelfrac[i]*standfrac;
+    output->alittfall_wood.carbon+=(tree->ind.sapwood.carbon/3.0-tree->ind.debt.carbon+tree->excess_carbon)*
+                                         ftimber*(*nind)*treepar->fuelfrac[i]*standfrac;
     soil->litter.item[pft->litter].ag.wood[i].nitrogen+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*
                                          ftimber*(*nind)*treepar->fuelfrac[i];
     output->alittfall.nitrogen+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*
+                                         ftimber*(*nind)*treepar->fuelfrac[i]*standfrac;
+    output->alittfall_wood.nitrogen+=(tree->ind.sapwood.nitrogen/3.0-tree->ind.debt.nitrogen)*
                                          ftimber*(*nind)*treepar->fuelfrac[i]*standfrac;
   }
   soil->litter.item[pft->litter].bg.carbon+=tree->ind.root.carbon*ftimber*(*nind);
   output->alittfall.carbon+=tree->ind.root.carbon*ftimber*(*nind)*standfrac;
   soil->litter.item[pft->litter].bg.nitrogen+=tree->ind.root.nitrogen*ftimber*(*nind);
   output->alittfall.nitrogen+=tree->ind.root.nitrogen*ftimber*(*nind)*standfrac;
-#endif
   /* update carbon pools by reducing nind by number of trees cut */
   *nind*=(1-ftimber);
   return harvest;

@@ -33,6 +33,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   Real up_temp_f;
   Real totn,nsum;
   Real wscaler;
+  Real autofert_n;
   Real n_uptake=0;
   Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
   Real rootdist_n[LASTLAYER];
@@ -106,6 +107,31 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
       }
     }
   }
+  if(config->fertilizer_input==AUTO_FERTILIZER && (pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==BIOMASS_GRASS || pft->stand->type->landusetype==AGRICULTURE_GRASS))
+  {
+    data=pft->stand->data;
+    autofert_n=vegn_sum_grass(pft);
+    n_uptake += autofert_n;
+    pft->bm_inc.nitrogen += autofert_n;
+    pft->vscal+=1;
+    pft->stand->cell->balance.n_influx += autofert_n*pft->stand->frac;
+    pft->stand->cell->output.flux_nfert+=autofert_n*pft->stand->frac;
+    switch(pft->stand->type->landusetype)
+    {
+      case GRASSLAND:
+        pft->stand->cell->output.cft_nfert[rothers(ncft)+data->irrigation*nirrig]+=autofert_n;
+        pft->stand->cell->output.cft_nfert[rmgrass(ncft)+data->irrigation*nirrig]+=autofert_n;
+        break;
+      case BIOMASS_GRASS:
+        pft->stand->cell->output.cft_nfert[rbgrass(ncft)+data->irrigation*nirrig]+=autofert_n;
+        break;
+      case AGRICULTURE_GRASS:
+        pft->stand->cell->output.cft_nfert[data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig]+=autofert_n;
+        break;
+    }
+  }
+  else
+
   if(*n_plant_demand/(1+pft->par->knstore)>vegn_sum_grass(pft))
   {
     *n_plant_demand=vegn_sum_grass(pft);

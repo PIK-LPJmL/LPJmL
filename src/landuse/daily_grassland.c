@@ -558,7 +558,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
     if(!isannual(PFT_NROOT,config))
     {
-      output->pft_root[nnat+rothers(ncft)+index].nitrogen=grass->ind.leaf.nitrogen;
+      output->pft_root[nnat+rothers(ncft)+index].nitrogen=grass->ind.root.nitrogen;
       output->pft_root[nnat+rmgrass(ncft)+index].nitrogen=grass->ind.root.nitrogen;
     }
 

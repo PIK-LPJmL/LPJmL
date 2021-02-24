@@ -58,10 +58,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)
   {
-#ifdef IMAGE
-    grid[cell].output.ydischarge=0;
-#endif
-    grid[cell].output.adischarge=0;
     initoutputdata(&grid[cell].output,ANNUAL,npft,ncft,year,config);
     grid[cell].balance.surface_storage=0;
     if(!grid[cell].skip)
@@ -152,7 +148,11 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                        month,dayofmonth);
 #ifdef SAFE
           if(degCtoK(daily.temp)<0)
-            fail(INVALID_CLIMATE_ERR,FALSE,"Temperature=%g K less than zero for cell %d at day %d",degCtoK(daily.temp),cell+config->startgrid,day);
+          {
+            if(degCtoK(daily.temp)<(-0.2)) /* avoid precision errors: only fail if values are more negative than -0.2 */
+              fail(INVALID_CLIMATE_ERR,FALSE,"Temperature=%g K less than zero for cell %d at day %d",degCtoK(daily.temp),cell+config->startgrid,day);
+            daily.temp=-273.15;
+          }
           if(config->with_radiation)
           {
             if(daily.swdown<0)

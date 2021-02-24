@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function of NPP update of agriculture tree stand                           \n**/
+/**     Function of daily update of agriculture tree stand                         \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -20,6 +20,16 @@
 #include "tree.h"
 #include "agriculture.h"
 #include "agriculture_tree.h"
+
+static Pft *findagtree(Pftlist *pftlist,int pft_id)
+{
+  Pft *pft;
+  int p;
+  foreachpft(pft,p,pftlist)
+    if(pft->par->id==pft_id)
+      return pft;
+  return NULL; /* not found */
+} /* of 'findagtree' */
 
 Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
                             Real co2,                    /**< atmospheric CO2 (ppmv) */
@@ -69,6 +79,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   Real cnratio_fruit;
   Biomass_tree *data;
   Soil *soil;
+  String line;
   irrig_apply=0.0;
 
   soil = &stand->soil;
@@ -79,7 +90,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   evap=evap_blue=cover_stand=intercep_stand=intercep_stand_blue=runoff=return_flow_b=wet_all=intercept=sprink_interc=rainmelt=irrig_apply=0.0;
   if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton") && day==stand->cell->ml.sowing_day_cotton[data->irrigation.irrigation])
   {
-    //printf("day=%d, sowing %d\n",day,data->irrigation); 
+    //printf("day=%d, sowing %d\n",day,data->irrigation);
     pft=addpft(stand,config->pftpar+data->irrigation.pft_id,year,0,config->with_nitrogen,config->double_harvest);
     flux_estab=establishment(pft,0,0,1);
     stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
@@ -88,8 +99,8 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
     stand->growing_days=0;
     foreachpft(pft,p,&stand->pftlist)
-       if(pft->par->type==GRASS)
-         fpc_grass(pft);
+      if(pft->par->type==GRASS)
+        fpc_grass(pft);
     fpc_type=newvec(Real,config->ntypes);
     check(fpc_type);
 
@@ -128,7 +139,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   /* green water inflow */
   rainmelt=climate->prec+melt;
   if(rainmelt<0)
-      rainmelt=0.0;
+    rainmelt=0.0;
 
   nnat=getnnat(npft,config);
   index=agtree(ncft,config->nwptype)+data->irrigation.pft_id-npft+config->nagtree+data->irrigation.irrigation*getnirrig(ncft,config);
@@ -196,7 +207,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   {
     cover_stand+=pft->fpc*pft->phen;
 
-    /* calculate albedo and FAPAR of PFT  already called in update_daily via albedo_stand*/ 
+    /* calculate albedo and FAPAR of PFT  already called in update_daily via albedo_stand*/
     albedo_pft(pft, soil->snowheight, soil->snowfraction);
 
     /*
@@ -268,7 +279,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
             pft->bm_inc.nitrogen-=treepar->harvest_ratio*npp/treepar->cnratio_fruit;
           }
           break;
-      }
+      } /* of switch */
     } /* of foreachpft() */
 
     output->npp+=npp*stand->frac;
@@ -313,9 +324,6 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       }
   }
 
-  if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
-    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq);
-
   transp=0;
   forrootsoillayer(l)
   {
@@ -344,39 +352,43 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
                               intercep_stand,intercep_stand_blue,npft,
                               ncft,config);
 
-  free(wet);
 #ifdef DEBUG
   if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton"))
     printf("growing_day: %d %d %d\n",stand->growing_days,data->irrigation.irrigation,stand->cell->ml.growing_season_cotton[data->irrigation.irrigation]);
 #endif
   if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton") && stand->growing_days==stand->cell->ml.growing_season_cotton[data->irrigation.irrigation])
   {
-    pft=getpft(&stand->pftlist,0);
-    yield=harvest_tree(pft);
-    tree=pft->data;
-    tree->boll_age=0;
-#ifdef DEBUG
-    printf("%s yield %s=%g t/ha, %g indiv/ha, wstress=%g, fpc=%g\n",(data->irrigation.irrigation) ? "irrigated" :"",pft->par->name,yield.carbon*1e4/1e6/0.45,pft->nind*1e4,pft->wscal_mean/365,pft->fpc);
-    printf("index=%d\n",index);
-    printf("harvest(%s) %d: %g %g\n",config->pftpar[data->irrigation.pft_id].name,data->irrigation.irrigation,yield.carbon,yield.nitrogen);
-#endif
-    if(config->pft_output_scaled)
+    /* find cotton in PFT list */
+    pft=findagtree(&stand->pftlist,data->irrigation.pft_id);
+    if(pft!=NULL)
     {
-      stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon*stand->frac;
-      stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen*stand->frac;
+      yield=harvest_tree(pft);
+      tree=pft->data;
+      tree->boll_age=0;
+#ifdef DEBUG
+      printf("%s yield %s=%g t/ha, %g indiv/ha, wstress=%g, fpc=%g\n",(data->irrigation.irrigation) ? "irrigated" :"",pft->par->name,yield.carbon*1e4/1e6/0.45,pft->nind*1e4,pft->wscal_mean/365,pft->fpc);
+      printf("index=%d\n",index);
+      printf("harvest(%s) %d: %g %g\n",config->pftpar[data->irrigation.pft_id].name,data->irrigation.irrigation,yield.carbon,yield.nitrogen);
+#endif
+      if(config->pft_output_scaled)
+      {
+        stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon*stand->frac;
+        stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen*stand->frac;
+      }
+      else
+      {
+        stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon;
+        stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen;
+      }
+      stand->cell->balance.biomass_yield.carbon+=yield.carbon*stand->frac;
+      stand->cell->balance.biomass_yield.nitrogen+=yield.nitrogen*stand->frac;
+      stand->cell->output.dcflux+=yield.carbon*stand->frac;
+      annual_tree(stand,pft,&fpc_inc,config->new_phenology,config->with_nitrogen,climate->isdailytemp);
+      litter_update_tree(&stand->soil.litter,pft,pft->nind);
+      delpft(&stand->pftlist,0);
     }
     else
-    {
-      stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon;
-      stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen;
-    }
-    stand->cell->balance.biomass_yield.carbon+=yield.carbon*stand->frac;
-    stand->cell->balance.biomass_yield.nitrogen+=yield.nitrogen*stand->frac;
-    stand->cell->output.dcflux+=yield.carbon*stand->frac;
-    annualpft(stand,pft,&fpc_inc,config->new_phenology,config->with_nitrogen,climate->isdailytemp);
-    litter_update(&stand->soil.litter,pft,pft->nind);
-    pft->nind=0;
-    delpft(&stand->pftlist,0);
+      fprintf(stderr,"ERROR124: Cotton PFT not found in cell %s.\n",sprintcoord(line,&stand->cell->coord));
     stand->growing_days=0;
     cutpfts(stand);
     data->growing_time=0;
@@ -392,11 +404,11 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       stand->cell->output.mconv_loss_drain-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->frac;
       stand->cell->balance.aconv_loss_drain-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->frac;
 #if defined IMAGE && defined COUPLED
-        if(stand->cell->ml.image_data!=NULL)
-        {
-          stand->cell->ml.image_data->mirrwatdem[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
-          stand->cell->ml.image_data->mevapotr[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
-        }
+      if(stand->cell->ml.image_data!=NULL)
+      {
+        stand->cell->ml.image_data->mirrwatdem[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->irrigation.ec-1)*stand->frac;
+        stand->cell->ml.image_data->mevapotr[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->irrigation.ec-1)*stand->frac;
+      }
 #endif
 
       if(config->pft_output_scaled)
@@ -415,5 +427,9 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     //if(setaside(stand->cell,stand,config->pftpar,TRUE,npft,data->irrigation,year))
     // return TRUE;
   }
+  if(data->irrigation.irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
+    calc_nir(stand,&data->irrigation,gp_stand,wet,eeq);
+  free(wet);
+
   return runoff;
 } /* of 'daily_agriculture_tree' */

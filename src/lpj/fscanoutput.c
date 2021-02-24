@@ -40,7 +40,7 @@ static int findid(const char *name,const Variable var[],int size)
   return NOT_FOUND;
 } /* of 'findid' */
 
-int findpftid(const char *name,const Pftpar pftpar[],int ntotpft)
+static int findpftid(const char *name,const Pftpar pftpar[],int ntotpft)
 {
   int p;
   if(!strcmp(name,"allnatural"))
@@ -232,7 +232,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       if(config->crop_index==NOT_FOUND)
       {
         if(verbosity)
-          fprintf(stderr,"ERROR166: Invalid crop index '%s' for daily output.\n",name);
+          fprintf(stderr,"ERROR166: Invalid crop index \"%s\" for daily output.\n",name);
         return TRUE;
       }
     }
@@ -244,8 +244,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       else if((config->crop_index!=ALLNATURAL && config->crop_index!=ALLGRASSLAND && config->crop_index!=ALLSTAND))
       {
         if(verbosity)
-          fprintf(stderr,"ERROR166: Invalid value for crop index=%d in line %d of '%s'.\n",
-                  config->crop_index,getlinecount(),getfilename());
+          fprintf(stderr,"ERROR166: Invalid value for crop index=%d.\n",
+                  config->crop_index);
         return TRUE;
       }
     }

@@ -110,24 +110,16 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
         litter_update(&stand->soil.litter,pft,pft->nind);
-        if(istree(pft))
-        {
-          //printf("kill tree %s\n",pft->par->name);
-          yield=harvest_tree(pft);
-          stand->soil.litter.item[pft->litter].ag.leaf.carbon+=yield.carbon;
-          stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=yield.nitrogen;
-        }
-        pft->nind=0;
         delpft(&stand->pftlist,p);
         p--; /* adjust loop variable */
         continue;
       }
       if(istree(pft))
       {
-         if(data->age>treepar->rotation)
+        if(data->age>treepar->rotation)
         {
           yield=harvest_tree(pft);
-          //printf("%s yield %s=%g t/ha, %g indiv/ha, wstress=%g, fpc=%g\n",(irrigation->irrigation) ? "irrigated" :"",pft->par->name,yield*1e4/1e6/0.45,pft->nind*1e4,pft->wscal_mean/365,pft->fpc);
+          //printf("%s yield %s=%g t/ha, %g indiv/ha, wstress=%g, fpc=%g\n",(data->irrigation.irrigation) ? "irrigated" :"",pft->par->name,yield.carbon*1e4/1e6/0.45,pft->nind*1e4,pft->wscal_mean/365,pft->fpc);
           //printf("index=%d, yield=%g\n",index,yield);
           if(config->pft_output_scaled)
           {
@@ -251,6 +243,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
   free(n_est);
   if(isdead)
   {
+    //printf("dead %s\n",stand->type->name);
     cutpfts(stand);
     data->age=data->growing_time=0;
     if(data->irrigation.irrigation)

@@ -49,7 +49,7 @@
 "new_trf" : false,
 "river_routing" : true,
 "permafrost" : true,
-"with_nitrogen" : "lim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+"with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
 "store_climate" : true,
 "const_climate" : false,
 "const_deposition" : false,

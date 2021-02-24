@@ -45,14 +45,14 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
       if(with_default)
       {
         if(verb)
-          fprintf(stderr,"WARNING027: Name '%s' for int not found, set to '%s'.\n",
+          fprintf(stderr,"WARNING027: Name '%s' for keyword not found, set to \"%s\".\n",
                   name,array[*value]);
         return FALSE;
       }
       else
       {
         if(verb)
-          fprintf(stderr,"ERROR225: Name '%s' for int not found.\n",name);
+          fprintf(stderr,"ERROR225: Name '%s' for keyword not found.\n",name);
         return TRUE;
       }
     }
@@ -67,7 +67,7 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
           fprintf(stderr,"ERROR166: Keyword '%s' not defined for name '%s', must be",str,name);
           for(i=0;i<size;i++)
           {
-            fprintf(stderr," '%s'",array[i]);
+            fprintf(stderr," \"%s\"",array[i]);
             if(i!=size-1)
               fputc(',',stderr);
           }
@@ -87,7 +87,16 @@ Bool fscankeywords(LPJfile *file,    /**< pointer to LPJ file */
     if(*value<0 || *value>=size)
     {
       if(verb)
-        fprintf(stderr,"ERROR226: Invalid value %d for name '%s'.\n",*value,name);
+      {
+        fprintf(stderr,"ERROR226: Invalid value %d for name '%s', must be <%d or",*value,name,size);
+        for(i=0;i<size;i++)
+        {
+          fprintf(stderr," \"%s\"",array[i]);
+          if(i!=size-1)
+            fputc(',',stderr);
+        }
+        fputs(".\n",stderr);
+      }
       return TRUE;
     }
     if (verb >= VERB)
