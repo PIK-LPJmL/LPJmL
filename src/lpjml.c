@@ -129,8 +129,7 @@ int main(int argc,char **argv)
   standtype[KILL]=kill_stand;
   time(&tbegin);         /* Start timing for total wall clock time */
 #ifdef USE_MPI
- 
-# MPI_Init(&argc,&argv); /* Initialize MPI */
+  MPI_Init(&argc,&argv); /* Initialize MPI */
 /*
  * Use default communicator containing all processors. In defining your own
  * communicator it is possible to run LPJ on a subset of processors
