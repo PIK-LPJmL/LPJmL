@@ -113,12 +113,11 @@ int main(int argc,char **argv)
 
   /* Create array of functions, uses the typedef of (*Fscanpftparfcn) in pft.h */
   Fscanpftparfcn scanfcn[NTYPES]={fscanpft_grass,fscanpft_tree,fscanpft_crop};
-#if 0
   standtype[NATURAL]=natural_stand;
   standtype[WETLAND]=wetland_stand;
   standtype[SETASIDE_RF]=setaside_rf_stand;
   standtype[SETASIDE_IR]=setaside_ir_stand;
-  standtype[SETASIDE_WETLAND]=setaside_wetland_stand;
+  standtype[SETASIDE_WETLAND]=setaside_wetland;
   standtype[AGRICULTURE]=agriculture_stand;
   standtype[MANAGEDFOREST]=managedforest_stand;
   standtype[GRASSLAND]=grassland_stand;
@@ -128,7 +127,6 @@ int main(int argc,char **argv)
   standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
   standtype[WOODPLANTATION]=woodplantation_stand;
   standtype[KILL]=kill_stand;
-#endif
   time(&tbegin);         /* Start timing for total wall clock time */
 #ifdef USE_MPI
  

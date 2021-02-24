@@ -143,7 +143,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     if (soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>1)
       freewater+=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)*soil->whcs[l];
   }
-  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND || (stand->type->landusetype!=NATURAL && data_irrig->irrig_system==SPRINK))
+  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND || (data_irrig!=NULL && data_irrig->irrig_system==SPRINK))
    soil_infil *= (1 + soil->litter.agtop_cover*2);
   while(infil > epsilon || freewater > epsilon)
   {
@@ -151,7 +151,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     freewater=0.0;
     slug=min(4,infil);
     infil=infil-slug;
-    if(stand->type->landusetype!=NATURAL && (data_irrig->irrig_system==SPRINK || data_irrig->irrig_system==DRIP))
+    if(data_irrig!=NULL  && (data_irrig->irrig_system==SPRINK || data_irrig->irrig_system==DRIP))
       influx=slug;        /*no surface runoff for DRIP and Sprinkler*/
     else
     {
