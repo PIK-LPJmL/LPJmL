@@ -91,7 +91,7 @@ static int checkdatafile(const Config *config,const Filename *filename,const cha
   return 0;
 } /* of 'checkdatafile' */
 
-static int checkclmfile(const Config *config,const Filename *filename,const char *unit,Bool checklast)
+static int checkclmfile(const Config *config,const Filename *filename,const char *unit,int delta_year,Bool check)
 {
   FILE *file;
   Header header;
@@ -137,13 +137,13 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
       if(openclimate_netcdf(&input,filename->name,filename->time,filename->var,filename->unit,unit,config))
         return 1;
       closeclimate_netcdf(&input,TRUE);
-      if(input.firstyear>config->firstyear)
+      if(check)
       {
-        fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",input.firstyear,filename->name,config->firstyear);
-        return 1;
-      }
-      if(checklast)
-      {
+        if(input.firstyear>config->firstyear)
+        {
+          fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",input.firstyear,filename->name,config->firstyear);
+          return 1;
+        }
         if(!config->fix_climate && input.firstyear+input.nyear-1<config->lastyear)
         {
           fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,config->lastyear);
@@ -163,21 +163,21 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
     if(file==NULL)
       return 1;
     fclose(file);
-    if(header.firstyear>config->firstyear)
+    if(check)
     {
-      fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
-      return 1;
-    }
-    if(checklast)
-    {
-      if(!config->fix_climate && header.firstyear+header.nyear-1<config->lastyear)
+      if(header.firstyear>config->firstyear)
       {
-        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->lastyear);
+        fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
         return 1;
       }
-        else if(config->fix_climate && header.firstyear+header.nyear-1<config->fix_climate_year+config->fix_climate_cycle/2)
+      if(!config->fix_climate && header.firstyear+header.nyear*delta_year-1<config->lastyear)
+      {
+        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear*delta_year-1,filename->name,config->lastyear);
+        return 1;
+      }
+        else if(config->fix_climate && header.firstyear+header.nyear*delta_year-1<config->fix_climate_year+config->fix_climate_cycle/2)
         {
-          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->fix_climate_year+config->fix_climate_cycle/2);
+          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear*delta_year-1,filename->name,config->fix_climate_year+config->fix_climate_cycle/2);
           return 1;
         }
     }
@@ -290,8 +290,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   {
     if(config.with_nitrogen==LIM_NITROGEN && !config.no_ndeposition)
     {
-      bad+=checkclmfile(&config,&config.no3deposition_filename,"g/m2/day",TRUE);
-      bad+=checkclmfile(&config,&config.nh4deposition_filename,"g/m2/day",TRUE);
+      bad+=checkclmfile(&config,&config.no3deposition_filename,"g/m2/day",1,!config.isanomaly);
+      bad+=checkclmfile(&config,&config.nh4deposition_filename,"g/m2/day",1,!config.isanomaly);
     }
     bad+=checkinputfile(&config,&config.soilph_filename,NULL,0);
   }
@@ -300,27 +300,27 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.grassharvest_filename.name!=NULL)
     bad+=checkinputfile(&config,&config.grassharvest_filename,NULL,0);
   if(config.with_nitrogen || config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
-    bad+=checkclmfile(&config,&config.wind_filename,"m/s",!config.isanomaly);
+    bad+=checkclmfile(&config,&config.wind_filename,"m/s",1,!config.isanomaly);
   if(config.fire==SPITFIRE || config.fire==SPITFIRE_TMAX)
   {
     if(config.fdi==WVPD_INDEX)
-      bad+=checkclmfile(&config,&config.humid_filename,NULL,TRUE);
+      bad+=checkclmfile(&config,&config.humid_filename,NULL,1,TRUE);
     bad+=checkdatafile(&config,&config.lightning_filename,NULL);
     bad+=checkinputfile(&config,&config.human_ignition_filename,NULL,0);
   }
   if(config.cropsheatfrost || config.fire==SPITFIRE_TMAX)
   {
-    bad+=checkclmfile(&config,&config.tmin_filename,"celsius",TRUE);
-    bad+=checkclmfile(&config,&config.tmax_filename,"celsius",TRUE);
+    bad+=checkclmfile(&config,&config.tmin_filename,"celsius",1,TRUE);
+    bad+=checkclmfile(&config,&config.tmax_filename,"celsius",1,TRUE);
   }
   if(config.fire==SPITFIRE)
   {
-    bad+=checkclmfile(&config,&config.tamp_filename,NULL,TRUE);
+    bad+=checkclmfile(&config,&config.tamp_filename,NULL,1,TRUE);
   }
   if(config.wateruse)
     bad+=checkdatafile(&config,&config.wateruse_filename,"dm3/yr");
-  bad+=checkclmfile(&config,&config.temp_filename,"celsius",TRUE);
-  bad+=checkclmfile(&config,&config.prec_filename,"kg/m2/day",TRUE);
+  bad+=checkclmfile(&config,&config.temp_filename,"celsius",1,!config.isanomaly);
+  bad+=checkclmfile(&config,&config.prec_filename,"kg/m2/day",1,!config.isanomaly);
 #ifdef IMAGE
   if (config.wateruse_wd_filename.name != NULL)
     bad += checkdatafile(&config, &config.wateruse_wd_filename,"dm3/yr");
@@ -328,18 +328,18 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.with_radiation)
   {
     if(config.with_radiation==RADIATION || config.with_radiation==RADIATION_LWDOWN)
-      bad+=checkclmfile(&config,&config.lwnet_filename,"W/m2",!config.isanomaly);
-    bad+=checkclmfile(&config,&config.swdown_filename,"W/m2",!config.isanomaly);
+      bad+=checkclmfile(&config,&config.lwnet_filename,"W/m2",1,!config.isanomaly);
+    bad+=checkclmfile(&config,&config.swdown_filename,"W/m2",1,!config.isanomaly);
   }
   else
-    bad+=checkclmfile(&config,&config.cloud_filename,"%",TRUE);
+    bad+=checkclmfile(&config,&config.cloud_filename,"%",1,TRUE);
   if (config.isanomaly)
   {
     bad+=checkdatafile(&config, &config.icefrac_filename,NULL);
-    bad+=checkclmfile(&config, &config.delta_temp_filename,"celsius", TRUE);
-    bad+=checkclmfile(&config, &config.delta_prec_filename,"kg/m2/day", TRUE);
-    bad+=checkclmfile(&config, &config.delta_lwnet_filename,"W/m2", TRUE);
-    bad+=checkclmfile(&config, &config.delta_swdown_filename,"W/m2", TRUE);
+    bad+=checkclmfile(&config, &config.delta_temp_filename,"celsius",config.delta_year, TRUE);
+    bad+=checkclmfile(&config, &config.delta_prec_filename,"kg/m2/day",config.delta_year, TRUE);
+    bad+=checkclmfile(&config, &config.delta_lwnet_filename,"W/m2",config.delta_year, TRUE);
+    bad+=checkclmfile(&config, &config.delta_swdown_filename,"W/m2",config.delta_year, TRUE);
   }
   if (config.hydrotopes_filename.fmt != FMS)
     bad += checkfile(config.hydrotopes_filename.name);
@@ -348,13 +348,13 @@ Bool filesexist(Config config, /**< LPJmL configuration */
    if (!config.with_dynamic_ch4 && config.ch4_filename.fmt != FMS)
     bad += checkfile(config.ch4_filename.name);
   if(config.wet_filename.name!=NULL)
-    bad+=checkclmfile(&config,&config.wet_filename,"day",FALSE);
+    bad+=checkclmfile(&config,&config.wet_filename,"day",1,FALSE);
 #ifdef IMAGE
   if(config.sim_id==LPJML_IMAGE)
   {
-    bad+=checkclmfile(&config,&config.temp_var_filename,NULL,FALSE);
-    bad+=checkclmfile(&config,&config.prec_var_filename,NULL,FALSE);
-    bad+=checkclmfile(&config,&config.prodpool_init_filename,NULL,FALSE);
+    bad+=checkclmfile(&config,&config.temp_var_filename,NULL,1,FALSE);
+    bad+=checkclmfile(&config,&config.prec_var_filename,NULL,1,FALSE);
+    bad+=checkclmfile(&config,&config.prodpool_init_filename,NULL,1,FALSE);
   }
 #endif
   if(ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1)
@@ -384,9 +384,9 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.harvest_cotton_ir_filename,NULL,0);
     }
     if(config.sdate_option==PRESCRIBED_SDATE)
-      bad+=checkinputfile(&config,&config.sdate_filename,NULL,2*config.npft[CROP]);
+      bad+=checkinputfile(&config,&config.sdate_filename,NULL,TRUE);
     if(config.crop_phu_option==PRESCRIBED_CROP_PHU)
-      bad+=checkclmfile(&config,&config.crop_phu_filename,NULL,2*config.npft[CROP]);
+      bad+=checkclmfile(&config,&config.crop_phu_filename,NULL,1,TRUE);
     if(config.countrycode_filename.fmt==CDF)
     {
       bad+=checkinputfile(&config,&config.countrycode_filename,NULL,0);
@@ -400,7 +400,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.reservoir_filename,NULL,10);
     }
     if(config.with_nitrogen&& config.fertilizer_input==FERTILIZER &&!config.fix_fertilization)
-      bad+=checkclmfile(&config,&config.fertilizer_nr_filename,"g/m2",(config.npft[CROP]+NBIOMASSTYPE+NGRASS)*2);
+      bad+=checkclmfile(&config,&config.fertilizer_nr_filename,"g/m2",1,TRUE);
 #ifdef IMAGE
     if(config.aquifer_irrig==AQUIFER_IRRIG)
     {
@@ -408,7 +408,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     }
 #endif
     if (config.with_nitrogen&&config.manure_input&&!config.fix_fertilization)
-      bad+=checkclmfile(&config,&config.manure_nr_filename,"g/m2",(config.npft[CROP]+NBIOMASSTYPE+NGRASS)*2);
+      bad+=checkclmfile(&config,&config.manure_nr_filename,"g/m2",1,TRUE);
   }
   badout=0;
   oldpath=strdup("");

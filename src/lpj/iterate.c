@@ -167,7 +167,7 @@ int iterate(Outputfile *output, /**< Output file data */
 #endif
       if(config->isanomaly)
       {
-        rnd_year = (int)(drand48()*config->nspinyear);
+        rnd_year = (int)(erand48(config->seed)*config->nspinyear);
 #ifdef USE_MPI
         MPI_Bcast(&rnd_year, 1, MPI_INT, 0, config->comm);
 #endif
@@ -391,7 +391,7 @@ int iterate(Outputfile *output, /**< Output file data */
     if (config->with_dynamic_ch4)
       MPI_Bcast(&pch4, sizeof(Real), MPI_BYTE, 0, config->comm);
 #endif
-#ifdef IMAGE#if defined IMAGE && defined COUPLED#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
     if(year>=config->start_imagecoupling)
     {
       /* send data to IMAGE */
