@@ -134,11 +134,10 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
 #endif
   getoutputindex(&cell->output,FPC,0,config) += 1 - cell->ml.cropfrac_rf - cell->ml.cropfrac_ir - cell->lakefrac - cell->ml.reservoirfrac - cell->hydrotopes.wetland_area;
   getoutputindex(&cell->output,WPC,0,config) += cell->hydrotopes.wetland_area;
-  cell->balance.soil_storage += soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   cell->hydrotopes.wetland_wtable_mean /= 12.;
   cell->hydrotopes.wtable_mean /= 12.;
-
-  update_wetland(cell, npft + ncft,year,config);
+  if(cell->lakefrac<1)
+    update_wetland(cell, npft + ncft,year,config);
 
 #ifdef CHECK_BALANCE
   ende.carbon=ende.nitrogen = 0;
