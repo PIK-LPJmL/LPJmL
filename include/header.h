@@ -78,7 +78,7 @@
 #define CELLSEQ 4
 #define READ_VERSION -1
 
-extern char *ordernames[];
+extern const char *ordernames[];
 
 /* Definition of datatypes */
 

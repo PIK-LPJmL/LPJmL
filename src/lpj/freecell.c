@@ -22,6 +22,9 @@ void freecell(Cell *cell,        /**< Pointer to cell */
   freemanage(&cell->ml.manage,npft);
   if(config->river_routing)
     freequeue(cell->discharge.queue);
+#if defined IMAGE && defined COUPLED
+  free(cell->pft_harvest);
+#endif
   if(!cell->skip)
   {
     while(!isempty(cell->standlist))

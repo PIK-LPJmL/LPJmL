@@ -62,10 +62,10 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
 #endif
 
     present[pft->par->id]=TRUE;
-    if(annual_grass(stand,pft,&fpc_inc,config->new_phenology,config->with_nitrogen,isdaily))
+    if(annual_grass(stand,pft,&fpc_inc,isdaily,config))
     {
       /* PFT killed, delete from list of established PFTs */
-      litter_update_grass(&stand->soil.litter,pft,pft->nind);
+      litter_update_grass(&stand->soil.litter,pft,pft->nind,config);
       delpft(&stand->pftlist,p);
       p--; /* adjust loop variable */
     }
@@ -86,7 +86,7 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
        establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf,peatland))
     {
       if(!present[p])
-       addpft(stand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
+       addpft(stand,config->pftpar+p,year,0,config);
       n_est++;
     }
   }
@@ -98,8 +98,8 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
       flux_estab.carbon+=stocks.carbon;
       flux_estab.nitrogen+=stocks.nitrogen;
     }
-  stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-  stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
+  getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
   stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
@@ -109,36 +109,36 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
   {
     grass=pft->data;
     if(isannual(FPC_BFT,config))
-      stand->cell->output.fpc_bft[getpftpar(pft, id)-(nnat-config->ngrass)+grassland->irrigation.irrigation*(config->nbiomass+2*config->ngrass)]+=pft->fpc;
+      getoutputindex(&stand->cell->output,FPC_BFT,getpftpar(pft, id)-(nnat-config->ngrass)+grassland->irrigation.irrigation*(config->nbiomass+2*config->ngrass),config)+=pft->fpc;
     if(isannual(PFT_VEGC,config))
     {
-      stand->cell->output.pft_veg[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=vegc_sum(pft);
-      stand->cell->output.pft_veg[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=vegc_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGC,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegc_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGC,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegc_sum(pft);
     }
     if(isannual(PFT_VEGN,config))
     {
-      stand->cell->output.pft_veg[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].nitrogen+=vegn_sum(pft);
-      stand->cell->output.pft_veg[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].nitrogen+=vegn_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegn_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegn_sum(pft);
     }
     if(isannual(PFT_CROOT,config))
     {
-      stand->cell->output.pft_leaf[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=grass->ind.root.carbon;
-      stand->cell->output.pft_leaf[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=grass->ind.root.carbon;
+      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.carbon;
+      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.carbon;
     } 
     if(isannual(PFT_NROOT,config))
     {
-      stand->cell->output.pft_root[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].nitrogen+=grass->ind.root.nitrogen;
-      stand->cell->output.pft_root[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].nitrogen+=grass->ind.root.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.nitrogen;
     } 
     if(isannual(PFT_CLEAF,config))
     {
-      stand->cell->output.pft_leaf[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=grass->ind.leaf.carbon;
-      stand->cell->output.pft_leaf[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].carbon+=grass->ind.root.carbon;
+      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.leaf.carbon;
+      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.root.carbon;
     } 
     if(isannual(PFT_NLEAF,config))
     {
-      stand->cell->output.pft_leaf[nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig].nitrogen+=grass->ind.leaf.nitrogen;
-      stand->cell->output.pft_leaf[nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig].nitrogen+=grass->ind.leaf.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.leaf.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=grass->ind.leaf.nitrogen;
     } 
   }
 

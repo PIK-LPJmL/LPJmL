@@ -167,7 +167,7 @@ typedef struct
 extern Bool new_image(Cell *,const Product *);
 extern Bool open_image(Config *);
 extern void close_image(const Config *);
-extern void product_turnover(Cell *);
+extern void product_turnover(Cell *,const Config *);
 extern Bool send_image_data(const Cell *,const  Climate *,int, int,const Config *);
 extern Bool receive_image_climate(Climate *,const Cell *,int,const Config *);
 extern Bool receive_image_productpools(Cell *,const Config *);
@@ -178,7 +178,7 @@ extern Real receive_image_finish(const Config *);
 extern Productinit *initproductinit(const Config *);
 extern Bool getproductpools(Productinit *,Product [],int);
 extern void freeproductinit(Productinit *);
-extern void setoutput_image(Cell *,int);
-extern void monthlyoutput_image(Output *,const Climate *,int,int);
+extern void setoutput_image(Cell *,int,const Config *);
+extern void monthlyoutput_image(Output *,const Climate *,int,int,const Config *);
 
 #endif /* IMAGE_H */

@@ -57,9 +57,10 @@
 #define INVALID_NITROGEN_BALANCE_ERR 37
 #define INVALID_CLIMATE_ERR 38
 #define INVALID_FPC_ERR 39
-#define GAMMA_FUNC_ERR 38
-#define WETL_ERR 39
-#define HAG_BETA_ERR 40
+#define GAMMA_FUNC_ERR 40
+#define WETL_ERR 41
+#define HAG_BETA_ERR 42
+#define INVALID_BOUNDARY_ERR 43
 
 /* Definition of macros */
 

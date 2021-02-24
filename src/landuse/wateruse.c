@@ -42,7 +42,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
     surplus=surplus>0 ? surplus : 0.0;
     grid[cell].discharge.withdrawal-=surplus;
     /*withdrawal which can be used for neighbour irrigation*/
-    grid[cell].output.mwd_neighb-=surplus/grid[cell].coord.area;
+    getoutput(&grid[cell].output,WD_NEIGHB,config)-=surplus/grid[cell].coord.area;
     grid[cell].discharge.wd_neighbour=grid[cell].discharge.wd_neighbour>0 ? surplus/grid[cell].discharge.wd_neighbour : 0.0;
   }
   /* fill output buffer with fraction of satisfiable neighbour demand */
@@ -58,7 +58,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
     for(i=0;i<pnet_inlen(config->irrig_back,cell+config->startgrid-config->firstgrid);i++)
       wd_neighbour+=in[pnet_inindex(config->irrig_back,cell+config->startgrid-config->firstgrid,i)]*grid[cell].discharge.wd_deficit;
 
-    grid[cell].output.mwd_neighb+=wd_neighbour/grid[cell].coord.area;
+    getoutput(&grid[cell].output,WD_NEIGHB,config)+=wd_neighbour/grid[cell].coord.area;
     grid[cell].discharge.withdrawal+=wd_neighbour;
 
     /* water use for household, industry and livestock */
@@ -66,12 +66,12 @@ void wateruse(Cell *grid,          /**< LPJ grid */
     {
       grid[cell].discharge.waterdeficit-=grid[cell].discharge.withdrawal;
 #ifdef IMAGE
-      grid[cell].output.awateruse_hil+=grid[cell].discharge.wateruse_fraction*grid[cell].discharge.withdrawal;
-      grid[cell].output.mwateruse_hil+=grid[cell].discharge.wateruse_fraction*grid[cell].discharge.withdrawal;
+      getoutput(&grid[cell].output,WATERUSE_HIL,config)+=grid[cell].discharge.wateruse_fraction*grid[cell].discharge.withdrawal;
+      grid[cell].balance.awateruse_hil+=grid[cell].discharge.wateruse_fraction*grid[cell].discharge.withdrawal;
       grid[cell].discharge.dmass_lake += (1 - grid[cell].discharge.wateruse_fraction)*grid[cell].discharge.withdrawal;//return flow
       grid[cell].discharge.mfin += (1 - grid[cell].discharge.wateruse_fraction)*grid[cell].discharge.withdrawal;//return flow
 #else
-      grid[cell].output.awateruse_hil+=grid[cell].discharge.withdrawal;
+      getoutput(&grid[cell].output,WATERUSE_HIL,config)+=grid[cell].discharge.withdrawal;
       grid[cell].balance.awateruse_hil+=grid[cell].discharge.withdrawal;
 #endif
       grid[cell].discharge.withdrawal=0.0;
@@ -80,13 +80,12 @@ void wateruse(Cell *grid,          /**< LPJ grid */
     {
       grid[cell].discharge.withdrawal-=grid[cell].discharge.waterdeficit;
 #ifdef IMAGE
-      grid[cell].output.mwateruse_hil+=grid[cell].discharge.wateruse_fraction*grid[cell].discharge.waterdeficit;
-      grid[cell].output.awateruse_hil += grid[cell].discharge.wateruse_fraction*grid[cell].discharge.waterdeficit;// wateruse fraction
+      getoutput(&grid[cell].output,WATERUSE_HIL,config) += grid[cell].discharge.wateruse_fraction*grid[cell].discharge.waterdeficit;// wateruse fraction
       grid[cell].discharge.dmass_lake += (1 - grid[cell].discharge.wateruse_fraction)*grid[cell].discharge.waterdeficit;//return flow
       grid[cell].discharge.mfin += (1 - grid[cell].discharge.wateruse_fraction)*grid[cell].discharge.waterdeficit;//return flow
 #else
       grid[cell].balance.awateruse_hil+=grid[cell].discharge.waterdeficit;
-      grid[cell].output.awateruse_hil+=grid[cell].discharge.waterdeficit;
+      getoutput(&grid[cell].output,WATERUSE_HIL,config)+=grid[cell].discharge.waterdeficit;
 #endif
       grid[cell].discharge.waterdeficit=0.0;
 
@@ -101,15 +100,14 @@ void wateruse(Cell *grid,          /**< LPJ grid */
       if((grid[cell].discharge.withdrawal-grid[cell].discharge.gir)<grid[cell].discharge.waterdeficit)
       {
         grid[cell].discharge.waterdeficit-=(grid[cell].discharge.withdrawal-grid[cell].discharge.gir);
-        grid[cell].output.awateruse_hil+=grid[cell].discharge.wateruse_fraction*(grid[cell].discharge.withdrawal-grid[cell].discharge.gir);
-        grid[cell].output.mwateruse_hil+=grid[cell].discharge.wateruse_fraction*(grid[cell].discharge.withdrawal-grid[cell].discharge.gir);
+        getoutput(&grid[cell].output,WATERUSE_HIL,config)+=grid[cell].discharge.wateruse_fraction*(grid[cell].discharge.withdrawal-grid[cell].discharge.gir);
         grid[cell].discharge.withdrawal-=(grid[cell].discharge.withdrawal-grid[cell].discharge.gir);
       }
       else
       {
         grid[cell].discharge.withdrawal-=grid[cell].discharge.waterdeficit;
-        grid[cell].output.awateruse_hil+=grid[cell].discharge.waterdeficit;
-        grid[cell].output.mwateruse_hil+=grid[cell].discharge.waterdeficit;
+        getoutput(&grid[cell].output,WATERUSE_HIL,config)+=grid[cell].discharge.waterdeficit;
+        grid[cell].balance.awateruse_hil+=grid[cell].discharge.waterdeficit;
         grid[cell].discharge.waterdeficit=0.0;
       }
     }
@@ -129,7 +127,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
 
       grid[cell].balance.total_irrig_from_reservoir+=grid[cell].discharge.act_irrig_amount_from_reservoir;
       grid[cell].discharge.withdrawal+=grid[cell].discharge.act_irrig_amount_from_reservoir;
-      grid[cell].output.mwd_res+=grid[cell].discharge.act_irrig_amount_from_reservoir/grid[cell].coord.area;
+      getoutput(&grid[cell].output,WD_RES,config)+=grid[cell].discharge.act_irrig_amount_from_reservoir/grid[cell].coord.area;
 
 #ifndef IMAGE
       distribute_water(&grid[cell],npft,ncft,month,config);
@@ -153,14 +151,14 @@ void wateruse(Cell *grid,          /**< LPJ grid */
           grid[cell].discharge.withdrawal_gw+=grid[cell].discharge.irrig_unmet;
           grid[cell].discharge.dmass_gw-=grid[cell].discharge.irrig_unmet;
           grid[cell].balance.awater_flux+=grid[cell].discharge.irrig_unmet/grid[cell].coord.area;
-          grid[cell].output.mwd_gw+=grid[cell].discharge.irrig_unmet/grid[cell].coord.area;
+          getoutput(&grid[cell].output,WD_GW,config)+=grid[cell].discharge.irrig_unmet/grid[cell].coord.area;
           grid[cell].discharge.irrig_unmet=0; // no unmet demand
         }
         else
         {
           grid[cell].discharge.withdrawal_gw+=grid[cell].discharge.dmass_gw;
           grid[cell].balance.awater_flux+=grid[cell].discharge.dmass_gw/grid[cell].coord.area;
-          grid[cell].output.mwd_gw+=grid[cell].discharge.dmass_gw/grid[cell].coord.area;
+          getoutput(&grid[cell].output,WD_GW,config)+=grid[cell].discharge.dmass_gw/grid[cell].coord.area;
           grid[cell].discharge.irrig_unmet-=grid[cell].discharge.dmass_gw; //rest of unmet demand
           grid[cell].discharge.dmass_gw=0.0;
         }

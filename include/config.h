@@ -260,6 +260,9 @@ struct config
   Socket *in;  /**< socket for ingoing data */
   Socket *out; /**< socket for outgoing data */
 #endif
+  int totalsize;
+  int outputmap[NOUT];
+  int outputsize[NOUT];
 }; /* LPJ configuration */
 
 typedef Bool (*Fscanpftparfcn)(LPJfile *,Pftpar *,const Config *);

@@ -69,10 +69,10 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
       stand->cell->balance.estab_storage_grass[irrigation->irrigation].carbon += estab_store.carbon * stand->frac;
       stand->cell->balance.estab_storage_grass[irrigation->irrigation].nitrogen += estab_store.nitrogen * stand->frac;
     }
-    if (annual_grass(stand, pft, &fpc_inc,config->new_phenology,config->with_nitrogen,isdaily))
+    if (annual_grass(stand, pft, &fpc_inc,isdaily,config))
     {
       /* PFT killed, delete from list of established PFTs */
-      litter_update_grass(&stand->soil.litter, pft, pft->nind);
+      litter_update_grass(&stand->soil.litter, pft, pft->nind,config);
       delpft(&stand->pftlist, p);
       p--; /* adjust loop variable */
     }
@@ -94,7 +94,7 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
   if(establish(stand->cell->gdd[irrigation->pft_id],config->pftpar+irrigation->pft_id,&stand->cell->climbuf,stand->type->landusetype==WETLAND))
   {
     if(!present[p])
-     addpft(stand,config->pftpar+irrigation->pft_id,year,0,config->with_nitrogen,config->double_harvest);
+     addpft(stand,config->pftpar+irrigation->pft_id,year,0,config);
     n_est++;
   }
 

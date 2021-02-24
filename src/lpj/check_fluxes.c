@@ -55,12 +55,12 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   balance.carbon=cell->balance.anpp-cell->balance.arh-cell->balance.fire.carbon-cell->balance.flux_firewood.carbon+cell->balance.flux_estab.carbon-cell->balance.flux_harvest.carbon-cell->balance.biomass_yield.carbon-delta_tot.carbon-cell->balance.neg_fluxes.carbon;
   balance.nitrogen=cell->balance.n_influx-cell->balance.fire.nitrogen-cell->balance.flux_firewood.nitrogen-cell->balance.n_outflux+cell->balance.flux_estab.nitrogen-
     cell->balance.biomass_yield.nitrogen-cell->balance.flux_harvest.nitrogen-delta_tot.nitrogen-cell->balance.neg_fluxes.nitrogen-
-    cell->balance.deforest_emissions.nitrogen;//cell->output.timber_harvest.nitrogen;
+    cell->balance.deforest_emissions.nitrogen;//cell->balance.timber_harvest.nitrogen;
   /* for IMAGE but can also be used without IMAGE */
 #ifdef IMAGE
-  balance.carbon-=cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon+cell->output.timber_harvest.carbon;
+  balance.carbon-=cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon+cell->balance.timber_harvest.carbon;
 #else
-  balance.carbon-=cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon; // +cell->output.timber_harvest.carbon;
+  balance.carbon-=cell->balance.deforest_emissions.carbon+cell->balance.prod_turnover.fast.carbon+cell->balance.prod_turnover.slow.carbon+cell->balance.trad_biofuel.carbon; // +cell->balance.timber_harvest.carbon;
   balance.nitrogen-=cell->balance.prod_turnover.fast.nitrogen+cell->balance.prod_turnover.slow.nitrogen;
 #endif
   if(config->ischeckpoint)
@@ -92,7 +92,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          cell->balance.fire.carbon,
          cell->balance.flux_estab.carbon,cell->balance.flux_harvest.carbon,delta_tot.carbon,
          cell->balance.deforest_emissions.carbon,cell->balance.prod_turnover,cell->balance.trad_biofuel.carbon,
-         cell->ml.product.slow.carbon,cell->ml.product.fast.carbon,cell->output.timber_harvest.carbon,
+         cell->ml.product.slow.carbon,cell->ml.product.fast.carbon,cell->balance.timber_harvest.carbon,
          cell->ml.image_data->timber_f,cell->ml.image_data->fburnt);
 #else
 #ifdef NO_FAIL_BALANCE

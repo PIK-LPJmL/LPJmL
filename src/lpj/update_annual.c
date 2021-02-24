@@ -91,7 +91,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     stand->prescribe_landcover = config->prescribe_landcover;
 
     stand->soil.mean_maxthaw=(stand->soil.mean_maxthaw-stand->soil.mean_maxthaw/CLIMBUFSIZE)+stand->soil.maxthaw_depth/CLIMBUFSIZE;
-    cell->output.maxthaw_depth+=stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac));
+    getoutput(&cell->output,MAXTHAW_DEPTH,config)+=stand->soil.maxthaw_depth*stand->frac*(1.0/(1-stand->cell->lakefrac));
     if(!config->with_nitrogen)
       foreachpft(pft,p,&stand->pftlist)
         pft->vscal=NDAYYEAR;
@@ -104,10 +104,10 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     }
     if (stand->type->landusetype == WETLAND)
       foreachpft(pft, p, &stand->pftlist)
-        cell->output.wpc[getpftpar(pft, id) + 1] += pft->fpc;
+        getoutputindex(&cell->output,WPC,getpftpar(pft, id) + 1,config) += pft->fpc;
     else if(stand->type->landusetype == NATURAL)
       foreachpft(pft, p, &stand->pftlist)
-        cell->output.fpc[getpftpar(pft, id) + 1] += pft->fpc;
+        getoutputindex(&cell->output,FPC,getpftpar(pft, id) + 1,config) += pft->fpc;
 /*
     cell->output.lit.carbon+=litter_ag_sum(&stand->soil.litter)*stand->frac;
     cell->output.lit.nitrogen+=litter_ag_sum_n(&stand->soil.litter)*stand->frac;
@@ -132,13 +132,13 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   if (fabs(anfang_w - ende_w)>0.001) fprintf(stdout, "W_ERROR update annual - annual stand: year=%d: W_ERROR=%g anfang : %g ende : %g\n", year, anfang_w - ende_w, anfang_w, ende_w);
   if (fabs(anfang.nitrogen - ende.nitrogen)>0.001) fprintf(stdout, "N_ERROR update annual - annual stand: year=%d: error=%g anfang : %g ende : %g\n", year, anfang.nitrogen - ende.nitrogen, anfang.nitrogen, ende.nitrogen);
 #endif
-  cell->output.fpc[0] += 1 - cell->ml.cropfrac_rf - cell->ml.cropfrac_ir - cell->lakefrac - cell->ml.reservoirfrac - cell->hydrotopes.wetland_area;
-  cell->output.wpc[0] += cell->hydrotopes.wetland_area;
+  getoutputindex(&cell->output,FPC,0,config) += 1 - cell->ml.cropfrac_rf - cell->ml.cropfrac_ir - cell->lakefrac - cell->ml.reservoirfrac - cell->hydrotopes.wetland_area;
+  getoutputindex(&cell->output,WPC,0,config) += cell->hydrotopes.wetland_area;
   cell->balance.soil_storage += soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   cell->hydrotopes.wetland_wtable_mean /= 12.;
   cell->hydrotopes.wtable_mean /= 12.;
 
-  update_wetland(cell, npft + ncft,year);
+  update_wetland(cell, npft + ncft,year,config);
 
 #ifdef CHECK_BALANCE
   ende.carbon=ende.nitrogen = 0;
@@ -167,32 +167,32 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
       litc_agr +=(litter_ag_sum(&stand->soil.litter) + litter_agsub_sum(&stand->soil.litter))*stand->frac;
     }
     else if(stand->type->landusetype==WETLAND)
-      cell->output.wetfrac+=stand->frac;
+      getoutput(&cell->output,WETFRAC,config)+=stand->frac;
     if(config->with_nitrogen)
     {
       litter_neg=checklitter(&stand->soil.litter);
-      cell->output.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
-      cell->output.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
+      getoutput(&cell->output,NEGC_FLUXES,config)+=litter_neg.carbon*stand->frac;
+      getoutput(&cell->output,NEGN_FLUXES,config)+=litter_neg.nitrogen*stand->frac;
       cell->balance.neg_fluxes.carbon+=litter_neg.carbon*stand->frac;
       cell->balance.neg_fluxes.nitrogen+=litter_neg.nitrogen*stand->frac;
     }
     stand->cell->balance.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   }
   //cell->output.soil_storage+=cell->balance.excess_water*cell->coord.area; /* now tracked in separate flux */
-  cell->output.fpc[0] = 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;
+  getoutputindex(&cell->output,FPC,0,config) += 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
-    product_turnover(cell);
+    product_turnover(cell,config);
 #else
   /* reset product pools after first year with land use to avoid large peak */
   if(year==config->firstyear-config->nspinup&&!config->landuse_restart)
   {
     cell->ml.product.fast.carbon=cell->ml.product.fast.nitrogen=0;
     cell->ml.product.slow.carbon=cell->ml.product.slow.nitrogen=0;
-    cell->output.timber_harvest.carbon=cell->output.timber_harvest.nitrogen=0;
-    cell->output.deforest_emissions.carbon=cell->output.deforest_emissions.nitrogen=0;
+    getoutput(&cell->output,TIMBER_HARVESTC,config)=0;
+    getoutput(&cell->output,DEFOREST_EMIS,config)=0;
     cell->balance.deforest_emissions.carbon=cell->balance.deforest_emissions.nitrogen=0;
   }
-  product_turnover(cell);
+  product_turnover(cell,config);
 #endif
 } /* of 'update_annual' */

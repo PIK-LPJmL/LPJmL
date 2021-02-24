@@ -64,7 +64,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   ebul = 0;
   Real bnf;
   Real nh3;
-  Irrigation *data;
   int index,l,i;
   Real rootdepth=0.0;
   Livefuel livefuel={0,0,0,0,0};
@@ -82,9 +81,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   gtemp_air=temp_response(climate.temp,cell->climbuf.atemp_mean);
   daily_climbuf(&cell->climbuf,climate.temp,climate.prec);
   avgprec=getavgprec(&cell->climbuf);
-  
-  cell->output.msnowf+=climate.temp<tsnow ? climate.prec : 0;
-  cell->output.mrain+=climate.temp<tsnow ? 0 : climate.prec;
+  getoutput(&cell->output,SNOWF,config)+=climate.temp<tsnow ? climate.prec : 0;
+  getoutput(&cell->output,RAIN,config)+=climate.temp<tsnow ? 0 : climate.prec;
 
   if(config->withlanduse) /* landuse enabled? */
     flux_estab=sowing(cell,climate.prec,day,year,npft,ncft,config); 
@@ -117,9 +115,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         stand->soil.litter.item[index].ag.leaf.nitrogen+=param.residue_rate*(1-param.residue_fbg)/param.residue_cn/2;
         stand->soil.litter.item[index].bg.carbon+=param.residue_rate*param.residue_fbg*0.5;
         stand->soil.litter.item[index].bg.nitrogen+=param.residue_rate*param.residue_fbg/param.residue_cn/2;
-        cell->output.flux_estab.carbon+=param.residue_rate*stand->frac*0.5;
+        getoutput(&cell->output,FLUX_ESTABC,config)+=param.residue_rate*stand->frac*0.5;
         cell->balance.flux_estab.carbon+=param.residue_rate*stand->frac*0.5;
-        cell->output.flux_estab.nitrogen+=param.residue_rate/param.residue_cn*0.5*stand->frac;
+        getoutput(&cell->output,FLUX_ESTABN,config)+=param.residue_rate/param.residue_cn*0.5*stand->frac;
         cell->balance.flux_estab.nitrogen+=param.residue_rate/param.residue_cn*0.5*stand->frac;
         updatelitterproperties(stand,stand->frac);
       }
@@ -138,9 +136,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
     beta=albedo_stand(stand);
     radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,beta,config->with_radiation);
-    cell->output.pet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
+    getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*stand->frac;
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*stand->frac;
-    cell->output.malbedo += beta * stand->frac;
+    getoutput(&cell->output,ALBEDO,config) += beta * stand->frac;
 
     if((config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)&& cell->afire_frac<1)
       dailyfire_stand(stand,&livefuel,popdensity,avgprec,&climate,config);
@@ -149,14 +147,15 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       snowrunoff=snow(&stand->soil,&climate.prec,&melt,
                       climate.temp,&temp_bs,&evap)*stand->frac;
       cell->discharge.drunoff+=snowrunoff;
-      cell->output.evap+=evap*stand->frac; /* evap from snow runoff*/
+      getoutput(&cell->output,EVAP,config)+=evap*stand->frac; /* evap from snow runoff*/
       cell->balance.aevap+=evap*stand->frac; /* evap from snow runoff*/
 #if defined IMAGE && defined COUPLED
   if(cell->ml.image_data!=NULL)
     cell->ml.image_data->mevapotr[month] += evap*stand->frac;
 #endif
-      if(cell->output.daily.cft==ALLSTAND)
-        cell->output.daily.evap+=evap*stand->frac;
+
+      if(config->crop_index==ALLSTAND)
+        getoutput(&cell->output,D_EVAP,config)+=evap*stand->frac;
       prec_energy = ((climate.temp-stand->soil.temp[TOPLAYER])*climate.prec*1e-3
                     +melt*1e-3*(T_zero-stand->soil.temp[TOPLAYER]))*c_water;
       stand->soil.perc_energy[TOPLAYER]=prec_energy;
@@ -183,19 +182,22 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       stand->soil.amean_temp[l]=(1-1./365)*stand->soil.amean_temp[l]+1./365*stand->soil.temp[l];
     }
     stand->soil.amean_temp[SNOWLAYER]=(1-1./365)*stand->soil.amean_temp[SNOWLAYER]+1./365*stand->soil.temp[SNOWLAYER];
+    getoutput(&cell->output,SOILTEMP1,config)+=stand->soil.temp[0]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(&cell->output,SOILTEMP2,config)+=stand->soil.temp[1]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(&cell->output,SOILTEMP3,config)+=stand->soil.temp[2]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(&cell->output,SOILTEMP4,config)+=stand->soil.temp[3]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(&cell->output,SOILTEMP5,config)+=stand->soil.temp[4]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(&cell->output,SOILTEMP6,config)+=stand->soil.temp[5]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     foreachsoillayer(l)
-    {
-      cell->output.msoiltemp[l]+=stand->soil.temp[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-      cell->output.msoiltemp2[l]+=stand->soil.temp[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    }
-    plant_gas_transport(stand,climate.temp,ch4);
+      getoutputindex(&cell->output,SOILTEMP,l,config)+=stand->soil.temp[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    plant_gas_transport(stand,climate.temp,ch4,config);
     CH4_em=runoff=0;
     gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_em,&runoff);
     cell->discharge.drunoff += runoff*stand->frac;
     if (CH4_em>0)
-      cell->output.mCH4_em += CH4_em*stand->frac;
+      getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
     else
-      cell->output.mCH4_sink += CH4_em*stand->frac;
+      getoutput(&cell->output,CH4_SINK,config) += CH4_em*stand->frac;
     CH4_em = runoff = MT_water = 0;
     fpc_total_stand = 0;
     foreachpft(pft, p, &stand->pftlist)
@@ -205,8 +207,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
     ebul = ebullition(&stand->soil, fpc_total_stand);
     //cell->output.mCH4_em+=ebullition(&stand->soil,fpc_total_stand)*stand->frac;
-    cell->output.mCH4_em += ebul*stand->frac;
-    cell->output.mCH4_ebull += ebul*stand->frac;
+    getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
+    getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
 #ifdef CHECK_BALANCE
     ende = standstocks(stand).carbon + soilmethane(&stand->soil);
     if (fabs(start - ende - ebul)>epsilon) fprintf(stdout, "C-ERROR: %g start:%g  ende:%g daily: %g\n", start - ende - ebul, start, ende, ebul);
@@ -234,10 +236,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           litsum_old_agr[WOOD]+=stand->soil.litter.item[l].ag.wood[i].carbon+stand->soil.litter.item[l].agsub.wood[i].carbon;
       }
 
-    hetres=littersom(stand,gtemp_soil,agrfrac,npft,ncft,config->with_nitrogen,&CH4_em,climate.temp,ch4,&runoff,&MT_water);
+    hetres=littersom(stand,gtemp_soil,agrfrac,&CH4_em,climate.temp,ch4,&runoff,&MT_water,npft,ncft,config);
     cell->balance.arh+=hetres.carbon*stand->frac;
-    cell->output.rh+=hetres.carbon*stand->frac;
-    cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
+    getoutput(&cell->output,RH,config)+=hetres.carbon*stand->frac;
+    getoutput(&cell->output,N2O_DENIT,config)+=hetres.nitrogen*stand->frac;
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
 
     if(stand->type->landusetype==NATURAL)
@@ -260,10 +262,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       index=findlitter(&stand->soil.litter,config->pftpar+config->pft_residue);
       if(index==NOT_FOUND)
         index=addlitter(&stand->soil.litter,config->pftpar+config->pft_residue)-1;
-      cell->output.flux_estab.carbon+=(param.residue_pool-stand->soil.litter.item[index].ag.leaf.carbon)*stand->frac;
+      getoutput(&cell->output,FLUX_ESTABC,config)+=(param.residue_pool-stand->soil.litter.item[index].ag.leaf.carbon)*stand->frac;
       cell->balance.flux_estab.carbon+=(param.residue_pool-stand->soil.litter.item[index].ag.leaf.carbon)*stand->frac;
       stand->soil.litter.item[index].ag.leaf.carbon=param.residue_pool;
-      cell->output.flux_estab.nitrogen+=(param.residue_pool/param.residue_cn-stand->soil.litter.item[index].ag.leaf.nitrogen)*stand->frac;
+      getoutput(&cell->output,FLUX_ESTABN,config)+=(param.residue_pool/param.residue_cn-stand->soil.litter.item[index].ag.leaf.nitrogen)*stand->frac;
       cell->balance.flux_estab.nitrogen+=(param.residue_pool/param.residue_cn-stand->soil.litter.item[index].ag.leaf.nitrogen)*stand->frac;
       stand->soil.litter.item[index].ag.leaf.nitrogen=param.residue_pool/param.residue_cn;
     }
@@ -272,45 +274,44 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
 
-    cell->output.mCH4_em += CH4_em*stand->frac;
-    cell->output.rh+=hetres.carbon*stand->frac;
+    getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
     cell->balance.aMT_water += MT_water*stand->frac;
     /*monthly rh for agricutural stands*/
     if (isagriculture(stand->type->landusetype))
     {
-      cell->output.rh_agr+=hetres.carbon*stand->frac/agrfrac;
-      cell->output.an2o_nit_agr+=hetres.nitrogen*stand->frac;
+      getoutput(&cell->output,RH_AGR,config)+=hetres.carbon*stand->frac/agrfrac;
+      getoutput(&cell->output,N2O_NIT_AGR,config)+=hetres.nitrogen*stand->frac;
     }
-    cell->output.mn2o_nit+=hetres.nitrogen*stand->frac;
+    getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
     if (stand->type->landusetype == NATURAL)
     {
-      cell->output.rh_nat += hetres.carbon*stand->frac;
+      cell->rh_nat += hetres.carbon*stand->frac;
     } /* if NATURAL */
     if (stand->type->landusetype == WOODPLANTATION)
     {
-      cell->output.rh_wp += hetres.carbon*stand->frac;
+      cell->rh_wp += hetres.carbon*stand->frac;
     } /* if woodplantation */
 #endif
 
-    cell->output.mswe+=stand->soil.snowpack*stand->frac;
-    if(isdailyoutput_stand(&cell->output,stand))
+    getoutput(&cell->output,SWE,config)+=stand->soil.snowpack*stand->frac;
+    if(isdailyoutput_stand(config,stand))
     {
-      if(cell->output.daily.cft==ALLSTAND)
+      if(config->crop_index==ALLSTAND)
       {
-        cell->output.daily.rh  += hetres.carbon*stand->frac;
-        cell->output.daily.swe += stand->soil.snowpack*stand->frac;
+        getoutput(&cell->output,D_RH,config) += hetres.carbon*stand->frac;
+        getoutput(&cell->output,D_SWE,config)+= stand->soil.snowpack*stand->frac;
       }
       else
       {
-        cell->output.daily.rh  += hetres.carbon;
-        cell->output.daily.swe += stand->soil.snowpack;
+        getoutput(&cell->output,D_RH,config)  += hetres.carbon;
+        getoutput(&cell->output,D_SWE,config) += stand->soil.snowpack;
       }
     }
 
-    cell->output.msnowrunoff+=snowrunoff;
-    cell->output.mmelt+=melt*stand->frac;
+    getoutput(&cell->output,SNOWRUNOFF,config)+=snowrunoff;
+    getoutput(&cell->output,MELT,config)+=melt*stand->frac;
 
     if(config->fire==FIRE && climate.temp>0 && stand->soil.wtable>400)
       stand->fire_sum+=fire_sum(&stand->soil.litter,stand->soil.w[0]);
@@ -321,10 +322,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       {
         if(stand->soil.par->type==ROCK)
         {
-          cell->output.mn_leaching+=2000*stand->frac;
+          getoutput(&cell->output,LEACHING,config)+=2000*stand->frac;
           cell->balance.n_outflux+=2000*stand->frac;
           if (isagriculture(stand->type->landusetype))
-            cell->output.anleaching_agr+=2000*stand->frac;
+            getoutput(&cell->output,NLEACHING_AGR,config)+=2000*stand->frac;
         }
         else
         {
@@ -333,16 +334,16 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         }
         cell->balance.n_influx+=2000*stand->frac;
         if (isagriculture(stand->type->landusetype))
-          cell->output.andepo_agr+=2000*stand->frac;
+          getoutput(&cell->output,NDEPO_AGR,config)+=2000*stand->frac;
       }
       else if(!config->no_ndeposition)
       {
         if(stand->soil.par->type==ROCK)
         {
-          cell->output.mn_leaching+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+          getoutput(&cell->output,LEACHING,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
           cell->balance.n_outflux+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
           if (isagriculture(stand->type->landusetype))
-            cell->output.anleaching_agr+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+            getoutput(&cell->output,NLEACHING_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         }
         else
         {
@@ -352,7 +353,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         }
         cell->balance.n_influx+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
         if (isagriculture(stand->type->landusetype))
-          cell->output.andepo_agr+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
+          getoutput(&cell->output,NDEPO_AGR,config)+=(climate.nh4deposition+climate.no3deposition)*stand->frac;
       }
 #ifdef DEBUG_N
       printf("BEFORE_STRESS[%s], day %d: ",stand->type->name,day);
@@ -373,7 +374,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     {
       bnf=biologicalnfixation(stand);
       stand->soil.NH4[0]+=bnf;
-      cell->output.mbnf+=bnf*stand->frac;
+      getoutput(&cell->output,BNF,config)+=bnf*stand->frac;
       cell->balance.n_influx+=bnf*stand->frac;
     }
 
@@ -382,41 +383,47 @@ void update_daily(Cell *cell,            /**< cell pointer           */
                        melt,npft,ncft,year,intercrop,agrfrac,config);
     if(config->with_nitrogen)
     {
-      denitrification(stand,npft,ncft);
+      denitrification(stand,npft,ncft,config);
 
       nh3=volatilization(stand->soil.NH4[0],climate.windspeed,climate.temp,
                          length,cell->soilph);
       if(nh3>stand->soil.NH4[0])
         nh3=stand->soil.NH4[0];
       stand->soil.NH4[0]-=nh3;
-      cell->output.mn_volatilization+=nh3*stand->frac;
+      getoutput(&cell->output,N_VOLATILIZATION,config)+=nh3*stand->frac;
       if (isagriculture(stand->type->landusetype))
-        cell->output.anh3_agr+=nh3*stand->frac;
+        getoutput(&cell->output,NH3_AGR,config)+=nh3*stand->frac;
       cell->balance.n_outflux+=nh3*stand->frac;
     }
 
     cell->discharge.drunoff+=runoff*stand->frac;
     climate.prec=prec_save;
     foreachpft(pft, p, &stand->pftlist)
-      cell->output.vegc_avg+=(float)(vegc_sum(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
+      getoutput(&cell->output,VEGC_AVG,config)+=vegc_sum(pft)*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(&cell->output,SWC1,config)+=(stand->soil.w[0]*stand->soil.whcs[0]+stand->soil.w_fw[0]+stand->soil.wpwps[0]+
+              stand->soil.ice_depth[0]+stand->soil.ice_fw[0])/stand->soil.wsats[0]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(&cell->output,SWC2,config)+=(stand->soil.w[1]*stand->soil.whcs[1]+stand->soil.w_fw[1]+stand->soil.wpwps[1]+
+              stand->soil.ice_depth[1]+stand->soil.ice_fw[1])/stand->soil.wsats[1]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(&cell->output,SWC3,config)+=(stand->soil.w[2]*stand->soil.whcs[2]+stand->soil.w_fw[2]+stand->soil.wpwps[1]+
+              stand->soil.ice_depth[2]+stand->soil.ice_fw[2])/stand->soil.wsats[2]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(&cell->output,SWC4,config)+=(stand->soil.w[3]*stand->soil.whcs[3]+stand->soil.w_fw[3]+stand->soil.wpwps[1]+
+              stand->soil.ice_depth[3]+stand->soil.ice_fw[3])/stand->soil.wsats[3]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(&cell->output,SWC5,config)+=(stand->soil.w[4]*stand->soil.whcs[4]+stand->soil.w_fw[4]+stand->soil.wpwps[1]+
+              stand->soil.ice_depth[4]+stand->soil.ice_fw[4])/stand->soil.wsats[4]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     foreachsoillayer(l)
-    {
-      cell->output.mswc[l]+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
+      getoutputindex(&cell->output,SWC,l,config)+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
                      stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.wsats[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-      cell->output.mswc2[l]+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+
-                     stand->soil.ice_depth[l]+stand->soil.ice_fw[l])/stand->soil.wsats[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    }
     forrootmoist(l)
-      cell->output.mrootmoist+=stand->soil.w[l]*stand->soil.whcs[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); /* absolute soil water content between wilting point and field capacity (mm) */
+      getoutput(&cell->output,ROOTMOIST,config)+=stand->soil.w[l]*stand->soil.whcs[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); /* absolute soil water content between wilting point and field capacity (mm) */
       /*cell->output.mrootmoist+=stand->soil.w[l]*soildepth[l]/rootdepth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); previous implementation that doesn't make sense to me, because the sum of soildepth[l]/rootdepth over the first 3 layers equals 1 (JJ, June 25, 2020)*/
-    cell->output.msoilc1+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
+    //getoutput(&cell->output,SOILC1,config)+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
     foreachsoillayer(l) {
       V = (stand->soil.wsats[l] - (stand->soil.w[l] * stand->soil.whcs[l] + stand->soil.ice_depth[l] + stand->soil.ice_fw[l] + stand->soil.wpwps[l] + stand->soil.w_fw[l])) / soildepth[l];  /*soil air content (m3 air/m3 soil)*/
       soilmoist = (stand->soil.w[l] * stand->soil.whcs[l] + (stand->soil.wpwps[l + 1] * (1 - stand->soil.ice_pwp[l + 1])) + stand->soil.w_fw[l]) / stand->soil.wsats[l];
       epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BO2);
-      cell->output.ameansoilo2 += stand->soil.O2[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac / NDAYYEAR;
+      getoutput(&cell->output,MEANSOILO2,config) += stand->soil.O2[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac / NDAYYEAR;
       epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BCH4);
-      cell->output.ameansoilch4 += stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac / NDAYYEAR;
+      getoutput(&cell->output,MEANSOILCH4,config) += stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac / NDAYYEAR;
 #ifdef DEBUG
       if (p_s / R_gas / (climate.temp + 273.15)*ch4*1e-6*WCH4 * 100000<stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000)
       {
@@ -428,11 +435,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
   } /* of foreachstand */
 
-  cell->output.cellfrac_agr+=agrfrac;
-  cell->output.decay_leaf_nv*=litsum_old_nv[LEAF]>0 ? litsum_new_nv[LEAF]/litsum_old_nv[LEAF] : 1;
-  cell->output.decay_wood_nv*=litsum_old_nv[WOOD]>0 ? litsum_new_nv[WOOD]/litsum_old_nv[WOOD] : 1;
-  cell->output.decay_leaf_agr*=litsum_old_agr[LEAF]>0 ? litsum_new_agr[LEAF]/litsum_old_agr[LEAF] : 1;
-  cell->output.decay_wood_agr*=litsum_old_agr[WOOD]>0 ? litsum_new_agr[WOOD]/litsum_old_agr[WOOD] : 1;
+  getoutput(&cell->output,CELLFRAC_AGR,config)+=agrfrac;
+  getoutput(&cell->output,DECAY_LEAF_NV,config)*=litsum_old_nv[LEAF]>0 ? litsum_new_nv[LEAF]/litsum_old_nv[LEAF] : 1;
+  getoutput(&cell->output,DECAY_WOOD_NV,config)*=litsum_old_nv[WOOD]>0 ? litsum_new_nv[WOOD]/litsum_old_nv[WOOD] : 1;
+  getoutput(&cell->output,DECAY_LEAF_AGR,config)*=litsum_old_agr[LEAF]>0 ? litsum_new_agr[LEAF]/litsum_old_agr[LEAF] : 1;
+  getoutput(&cell->output,DECAY_WOOD_AGR,config)*=litsum_old_agr[WOOD]>0 ? litsum_new_agr[WOOD]/litsum_old_agr[WOOD] : 1;
 
 #ifdef COUPLING_WITH_FMS
   if (cell->lakefrac > 0)
@@ -441,20 +448,20 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->output.mlaketemp+=cell->laketemp;
   }
   else
-    cell->output.mlaketemp=config->missing_value;
+    getoutput(&cell->output,LAKETEMP,config)=config->missing_value;
 #endif
 
   gw_outflux = cell->ground_st*cell->kbf;
   cell->ground_st -= gw_outflux;
   //cell->discharge.drunoff+=(gw_outflux+cell->ground_st_am*cell->kbf/100);
-  cell->output.mgw_outflux += (gw_outflux + cell->ground_st_am*cell->kbf / 100);
+  getoutput(&cell->output,GW_OUTFLUX,config) += (gw_outflux + cell->ground_st_am*cell->kbf / 100);
   cell->ground_st_am -= cell->ground_st_am*cell->kbf / 100;
 
-  cell->output.mgw_storage += (cell->ground_st + cell->ground_st_am);
+  getoutput(&cell->output,GW_STORAGE,config) += (cell->ground_st + cell->ground_st_am);
 
   hydrotopes(cell);
-  cell->output.mmwater += cell->hydrotopes.meanwater;
-  cell->output.wetland_mwtable += cell->hydrotopes.wetland_wtable_current;
+  getoutput(&cell->output,MWATER,config) += cell->hydrotopes.meanwater;
+  getoutput(&cell->output,WTAB,config) += cell->hydrotopes.wetland_wtable_current;
 #ifdef IMAGE
   // outflow from groundwater reservoir to river
   if (cell->discharge.dmass_gw > 0)
@@ -462,26 +469,26 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     fout_gw=cell->discharge.dmass_gw/GWCOEFF;
     cell->discharge.drunoff+=fout_gw/cell->coord.area;
     cell->discharge.dmass_gw-=fout_gw;
-    cell->output.mseepage+=fout_gw/cell->coord.area;
+    getoutput(&cell->output,SEEPAGE,config)+=fout_gw/cell->coord.area;
   }
 #endif
 
-  cell->output.runoff+=cell->discharge.drunoff;
+  getoutput(&cell->output,RUNOFF,config)+=cell->discharge.drunoff;
   cell->balance.awater_flux+=cell->discharge.drunoff;
   if(config->river_routing)
   {
     radiation(&daylength,&par,&eeq,cell->coord.lat,day,&climate,c_albwater,config->with_radiation);
-    cell->output.pet+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
+    getoutput(&cell->output,PET,config)+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
     cell->output.mpet+=eeq*PRIESTLEY_TAYLOR*(cell->lakefrac+cell->ml.reservoirfrac);
-    cell->output.malbedo+=c_albwater*(cell->lakefrac+cell->ml.reservoirfrac);
+    getoutput(&cell->output,ALBEDO,config)+=c_albwater*(cell->lakefrac+cell->ml.reservoirfrac);
 
     /* reservoir waterbalance */
     if(cell->ml.dam)
-      update_reservoir_daily(cell,climate.prec,eeq,month);
+      update_reservoir_daily(cell,climate.prec,eeq,month,config);
 
     /* lake waterbalance */
     cell->discharge.dmass_lake+=climate.prec*cell->coord.area*cell->lakefrac;
-    cell->output.input_lake+=climate.prec*cell->coord.area*cell->lakefrac;
+    getoutput(&cell->output,INPUT_LAKE,config)+=climate.prec*cell->coord.area*cell->lakefrac;
 #ifdef COUPLING_WITH_FMS
     if(cell->discharge.next==-1 && cell->lakefrac>=0.999)
       /*this if statement allows to identify the caspian sea to be an evaporating surface by lakefrac map of lpj and river rooting DDM30 map*/
@@ -489,7 +496,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         which is DDM30-coarsemask-zerofill.asc in /p/projects/climber3/gengel/POEM/mom5.0.2/exp/.../Data_for_LPJ), hence discharge next is not -1*/
       {
         /*here evaporation for casp sea is computed*/
-        cell->output.mevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
+        getoutput(&cell->output,EVAP_LAKE,config)+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
         cell->balance.aevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
 #if defined IMAGE && defined COUPLED
         if(cell->ml.image_data!=NULL)
@@ -509,7 +516,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
             
           else1.4.2016  changed the grid initialization in newgrid.c such that we have here no problem anymore, since the lakefraction now is nearly zero everywhere. */
           {
-            cell->output.mevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
+            getoutput(&cell->output,EVAP_LAKE,config)+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
             cell->balance.aevap_lake+=eeq*PRIESTLEY_TAYLOR*cell->lakefrac;
 #if defined IMAGE && defined COUPLED
             if(cell->ml.image_data!=NULL)
@@ -521,9 +528,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     else
 #endif
     {
-    cell->output.mevap_lake+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
-    if(cell->output.daily.cft==ALLSTAND)
-      cell->output.daily.evap+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
+    getoutput(&cell->output,EVAP_LAKE,config)+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
+    if(config->crop_index==ALLSTAND)
+      getoutput(&cell->output,D_EVAP,config)+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
     cell->balance.aevap_lake+=min(cell->discharge.dmass_lake/cell->coord.area,eeq*PRIESTLEY_TAYLOR*cell->lakefrac);
 #if defined IMAGE && defined COUPLED
      if(cell->ml.image_data!=NULL)
@@ -535,17 +542,17 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     cell->discharge.dmass_lake=max(cell->discharge.dmass_lake-eeq*PRIESTLEY_TAYLOR*cell->coord.area*cell->lakefrac,0.0);
     }
 
-    cell->output.mlakevol+=cell->discharge.dmass_lake;
+    getoutput(&cell->output,LAKEVOL,config)+=cell->discharge.dmass_lake;
   } /* of 'if(river_routing)' */
-  cell->output.daylength+=daylength;
+  getoutput(&cell->output,DAYLENGTH,config)+=daylength;
 
   killstand(cell,npft, cell->ml.with_tillage,intercrop,year,config);
 #ifdef SAFE
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 #endif
   /* Establishment fluxes are area weighted in subroutines */
-  cell->output.flux_estab.nitrogen+=flux_estab.nitrogen;
-  cell->output.flux_estab.carbon+=flux_estab.carbon;
+  getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.nitrogen;
+  getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.carbon;
   cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen;
   cell->balance.flux_estab.carbon+=flux_estab.carbon;
   cell->output.dcflux-=flux_estab.carbon;

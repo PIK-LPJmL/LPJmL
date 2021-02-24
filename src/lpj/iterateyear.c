@@ -58,13 +58,13 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   intercrop=getintercrop(input.landuse);
   for(cell=0;cell<config->ngridcell;cell++)
   {
-    initoutputdata(&grid[cell].output,ANNUAL,npft,ncft,year,config);
+    initoutputdata(&grid[cell].output,ANNUAL,year,config);
     grid[cell].balance.surface_storage=0;
     if(!grid[cell].skip)
     {
       init_annual(grid+cell,ncft,config);
       if (grid[cell].is_glaciated)
-        check_glaciated(grid + cell);
+        check_glaciated(grid + cell,config);
       else
       {
         if(config->withlanduse)
@@ -81,15 +81,15 @@ void iterateyear(Outputfile *output,  /**< Output file data */
                                         intercrop,year,config);
           }
 #if defined IMAGE && defined COUPLED
-          setoutput_image(grid+cell,ncft);
+          setoutput_image(grid+cell,ncft,config);
 #endif
           getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
-          grid[cell].output.adelta_norg_soil_agr-=norg_soil_agr;
-          grid[cell].output.adelta_nmin_soil_agr-=nmin_soil_agr;
-          grid[cell].output.adelta_nveg_soil_agr-=nveg_soil_agr;
+          getoutput(&grid[cell].output,DELTA_NORG_SOIL_AGR,config)-=norg_soil_agr;
+          getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)-=nmin_soil_agr;
+          getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)-=nveg_soil_agr;
         }
-        initgdd(grid[cell].gdd,npft);
-      } /*isglaciated*/
+      }
+      initgdd(grid[cell].gdd,npft);
     } /*gridcell skipped*/
   } /* of for(cell=...) */
 
@@ -100,14 +100,15 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     {
       grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].ml.mdemand=0.0;
       grid[cell].output.mpet=0;
-      initoutputdata(&((grid+cell)->output),MONTHLY,npft,ncft,year,config);
+      grid[cell].output.mprec_res=0;
+      initoutputdata(&((grid+cell)->output),MONTHLY,year,config);
       if(!grid[cell].skip)
       {
         if(!config->isanomaly)
          initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
 
 #if defined IMAGE && defined COUPLED
-        monthlyoutput_image(&grid[cell].output,input.climate,cell,month);
+        monthlyoutput_image(&grid[cell].output,input.climate,cell,month,config);
 #endif
 
 #ifdef DEBUG
@@ -142,7 +143,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           if (config->isanomaly)
             grid[cell].icefrac = geticefrac(input.icefrac, cell);
           grid[cell].output.dcflux=0;
-          initoutputdata(&((grid+cell)->output),DAILY,npft,ncft,year,config);
+          initoutputdata(&((grid+cell)->output),DAILY,year,config);
           /* get daily values for temperature, precipitation and sunshine */
           dailyclimate(&daily,input.climate,&grid[cell].climbuf,cell,day,
                        month,dayofmonth);
@@ -162,7 +163,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           {
             if(daily.sun<-1e-5 || daily.sun>100)
               fail(INVALID_CLIMATE_ERR,FALSE,"Cloudiness=%g%% not in [0,100] for cell %d at day %d",daily.sun,cell+config->startgrid,day);
-            grid[cell].output.sun+=daily.sun;
+            getoutput(&grid[cell].output,SUN,config)+=daily.sun;
           }
           if(config->with_nitrogen && daily.windspeed<0)
             fail(INVALID_CLIMATE_ERR,FALSE,"Wind speed=%g less than zero for cell %d at day %d",daily.windspeed,cell+config->startgrid,day);
@@ -170,8 +171,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           if(config->with_radiation==CLOUDINESS && daily.sun<0)
             daily.sun=0;
           /* get daily values for temperature, precipitation and sunshine */
-          grid[cell].output.temp+=daily.temp;
-          grid[cell].output.prec+=daily.prec;
+          getoutput(&grid[cell].output,TEMP,config)+=daily.temp;
+          getoutput(&grid[cell].output,PREC,config)+=daily.prec;
 
 #ifdef DEBUG
           printf("day=%d cell=%d\n",day,cell);
@@ -201,16 +202,10 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     /* Calculate resdata->mdemand as sum of ddemand to reservoir, instead of the sum of evaporation deficits per cell*/
     for(cell=0;cell<config->ngridcell;cell++)
     {
-      if(config->river_routing)
-      {
-#ifdef IMAGE
-        grid[cell].output.ydischarge += grid[cell].output.mdischarge;
-#endif
-      }
       if(!grid[cell].skip)
         update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
                        cell,month),getmprec(input.climate,&grid[cell].climbuf,
-                       cell,month),month);
+                       cell,month),month,config);
     } /* of 'for(cell=0;...)' */
 
     if(year>=config->outputyear)
@@ -258,9 +253,9 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(config->withlanduse)
       {
         getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
-        grid[cell].output.adelta_norg_soil_agr+=norg_soil_agr;
-        grid[cell].output.adelta_nmin_soil_agr+=nmin_soil_agr;
-        grid[cell].output.adelta_nveg_soil_agr+=nveg_soil_agr;
+        getoutput(&grid[cell].output,DELTA_NORG_SOIL_AGR,config)+=norg_soil_agr;
+        getoutput(&grid[cell].output,DELTA_NMIN_SOIL_AGR,config)+=nmin_soil_agr;
+        getoutput(&grid[cell].output,DELTA_NVEG_SOIL_AGR,config)+=nveg_soil_agr;
       }
     }
     if(config->river_routing)

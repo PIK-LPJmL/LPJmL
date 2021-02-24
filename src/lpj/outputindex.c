@@ -1,10 +1,11 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                       n  e  w  _  g  r  a  s  s  .  c                          \n**/
+/**                     o  u  t  p  u  t  i  n  d  e  x  .  c                      \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function allocates and initializes grass-specific variables                \n**/
+/**     Function calculates index in output storage and checks for valid index     \n**/
+/**     into array                                                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,30 +16,14 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include "grass.h"
 
-void new_grass(Pft *pft,         /**< pointer to PFT variables */
-               int UNUSED(year),
-               int UNUSED(day),
-               const Config * UNUSED(config)
-              )        
+int outputindex(int index,           /**< index of output file */
+                int i,               /**< index in output array */
+                const Config *config /**< LPJmL configuration */
+               )                     /** \return index in output storage to write data */
 {
-  Pftgrass *grass;
-  Pftgrasspar *grasspar;
-  grass=new(Pftgrass);
-  check(grass);
-  pft->data=grass;
-  grasspar=pft->par->data;
-  pft->bm_inc.carbon=pft->wscal_mean=pft->phen=0;
-  pft->bm_inc.nitrogen=0;
-  grass->growing_days=0;
-  grass->max_leaf=0;
-  grass->excess_carbon=0;
-  pft->vmax=0;
-  pft->nind=1;
-  pft->stand->growing_days=0;
-  grass->falloc.leaf=grasspar->sapl.leaf/(grasspar->sapl.leaf+grasspar->sapl.root);
-  grass->falloc.root=grasspar->sapl.root/(grasspar->sapl.leaf+grasspar->sapl.root);
-  grass->ind.leaf.carbon=grass->ind.root.carbon=grass->turn.leaf.carbon=grass->turn.root.carbon=0;
-  grass->ind.leaf.nitrogen=grass->ind.root.nitrogen=grass->turn.leaf.nitrogen=grass->turn.root.nitrogen=0;
-} /* of 'new_grass' */
+  if(i<0 || i>=config->outputsize[index])
+    fail(INVALID_BOUNDARY_ERR,TRUE,"Boundary=%d for output '%s' out of bounds, must be <%d",
+         i,config->outnames[index].name,config->outputsize[index]);
+  return config->outputmap[index]+i;
+} /* of 'outputindex' */

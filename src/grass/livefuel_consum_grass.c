@@ -19,7 +19,9 @@ Stocks livefuel_consum_grass(Litter * UNUSED(litter),Pft *pft,
                              const Fuel * UNUSED(fuel),
                              Livefuel *livefuel,
                              Bool *isdead,Real UNUSED(surface_fi),
-                             Real fire_frac)
+                             Real fire_frac,
+                             const Config * UNUSED(config)
+                            )
 {
 
   Pftgrass *grass;

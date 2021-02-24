@@ -8,7 +8,7 @@
 
 #include "lpj.h"
 
-void check_glaciated(Cell *cell)
+void check_glaciated(Cell *cell,const Config *config)
 {
   int s, p;
   Pft *pft;
@@ -19,7 +19,7 @@ void check_glaciated(Cell *cell)
     {
       foreachpft(pft, p, &stand->pftlist)
       {
-        litter_update(&stand->soil.litter, pft, pft->nind);
+        litter_update(&stand->soil.litter, pft, pft->nind,config);
         delpft(&stand->pftlist, p);
         p--;
       }

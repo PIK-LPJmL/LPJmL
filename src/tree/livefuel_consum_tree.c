@@ -21,7 +21,9 @@ Stocks livefuel_consum_tree(Litter *litter,
                             Livefuel *livefuel,
                             Bool *isdead,
                             Real surface_fi,
-                            Real fire_frac)
+                            Real fire_frac,
+                            const Config *config /**< LPJmL configuration */
+                           )
 {
   Stocks live_consum_tree;
   Pfttree *tree;
@@ -62,7 +64,7 @@ Stocks livefuel_consum_tree(Litter *litter,
     update_fbd_tree(litter,pft->par->fuelbulkdensity,pft->bm_inc.carbon*fire_nind_kill/pft->nind,0);
     pft->bm_inc.carbon*=(pft->nind-fire_nind_kill)/pft->nind;
   }
-  litter_update_fire_tree(litter,pft,fire_nind_kill);
+  litter_update_fire_tree(litter,pft,fire_nind_kill,config);
   pft->nind-=fire_nind_kill;
   if (fire_nind_kill > 0 && pft->nind < epsilon)
   {
@@ -81,7 +83,7 @@ Stocks livefuel_consum_tree(Litter *litter,
     else
       live_consum_tree.nitrogen+=pft->bm_inc.nitrogen;
     pft->bm_inc.nitrogen=0;
-    litter_update_tree(litter,pft,pft->nind);
+    litter_update_tree(litter,pft,pft->nind,config);
   }
   else
     *isdead=FALSE;

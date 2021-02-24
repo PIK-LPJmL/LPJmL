@@ -132,14 +132,13 @@ Pft *addpft(Stand *stand,         /**< Stand pointer */
             const Pftpar *pftpar, /**< PFT parameter */
             int year,             /**< simulation year (AD) */
             int day,              /**< day of year (1..365) */
-            int with_nitrogen,
-            Bool double_harvest
+            const Config *config  /**< LPJmL configuration */
            )                      /** \return pointer to added PFT */
 {
   /* resize PFT array */
   stand->pftlist.pft=(Pft *)realloc(stand->pftlist.pft,
                                     sizeof(Pft)*(stand->pftlist.n+1));
   check(stand->pftlist.pft);
-  newpft(stand->pftlist.pft+stand->pftlist.n,stand,pftpar,year,day,with_nitrogen,double_harvest);
+  newpft(stand->pftlist.pft+stand->pftlist.n,stand,pftpar,year,day,config);
   return stand->pftlist.pft+stand->pftlist.n++;
 } /* of 'addpft' */

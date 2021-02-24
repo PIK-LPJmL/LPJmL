@@ -53,18 +53,18 @@ typedef struct
 
 /* Declaration of functions */
 
-extern void new_grass(Pft *,int,int,int,Bool);
+extern void new_grass(Pft *,int,int,const Config *);
 extern Real npp_grass(Pft *,Real,Real,Real,int);
 extern Real fpc_grass(Pft *);
 extern Real fpar_grass(const Pft *);
 extern Real alphaa_grass(const Pft *,int,int);
-extern void litter_update_grass(Litter *, Pft*,Real);
-extern Bool allocation_grass(Litter *,Pft *,Real *,int);
-extern void output_daily_grass(Daily_outputs *,const Pft *,Real, Real);
+extern void litter_update_grass(Litter *, Pft*,Real,const Config *);
+extern Bool allocation_grass(Litter *,Pft *,Real *,const Config *);
+extern void output_daily_grass(const Pft *,Real, Real,const Config *);
 extern Real lai_grass(const Pft *);
 extern Real actual_lai_grass(const Pft *);
-extern Stocks turnover_grass(Litter *,Pft *,Bool,Real);
-extern void phenology_grass(Pft *,Real,int,Bool);
+extern Stocks turnover_grass(Litter *,Pft *,Real,const Config *);
+extern void phenology_grass(Pft *,Real,int,Bool,const Config *);
 extern Bool fwrite_grass(FILE *,const Pft *);
 extern void fprint_grass(FILE *,const Pft *,int);
 extern Bool fread_grass(FILE *,Pft *,Bool,Bool);
@@ -79,14 +79,14 @@ extern Stocks fire_grass(Pft *,Real *);
 extern void init_grass(Pft *);
 extern void free_grass(Pft *);
 extern void light_grass(Litter *,Pft *,Real);
-extern void adjust_grass(Litter *,Pft *,Real,Real);
-extern void reduce_grass(Litter *,Pft *,Real);
+extern void adjust_grass(Litter *,Pft *,Real,Real,const Config *);
+extern void reduce_grass(Litter *,Pft *,Real,const Config *);
 extern void fprintpar_grass(FILE *,const Pftpar *,const Config *);
 extern Stocks livefuel_consum_grass(Litter *,Pft *,const Fuel *,Livefuel *,
-                                    Bool *,Real, Real);
-extern Bool annual_grass(Stand *,Pft *,Real *,Bool,int,Bool);
-extern void turnover_monthly_grass(Litter *,Pft *);
-extern void turnover_daily_grass(Litter *,Pft *,Real,Bool);
+                                    Bool *,Real, Real,const Config *);
+extern Bool annual_grass(Stand *,Pft *,Real *,Bool,const Config *);
+extern void turnover_monthly_grass(Litter *,Pft *,const Config *);
+extern void turnover_daily_grass(Litter *,Pft *,Real,Bool,const Config *);
 extern void albedo_grass(Pft *,Real,Real);
 extern void copy_grass(Pft *, const Pft *);
 extern Real nuptake_grass(Pft *,Real *,Real *,int,int,const Config *);

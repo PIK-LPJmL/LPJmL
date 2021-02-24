@@ -18,9 +18,8 @@
 Bool annual_grass(Stand *stand,        /**< pointer to stand */
                   Pft *pft,            /**< pointer to PFT variables */
                   Real *fpc_inc,       /**< FPC increment */
-                  Bool new_phenology,  /**< new phenology (TRUE/FALSE) */
-                  int with_nitrogen,   /**< with nitrogen (TRUE/FALSE) */
-                  Bool UNUSED(isdaily) /**< daily temperature data? */
+                  Bool UNUSED(isdaily), /**< daily temperature data? */
+                  const Config *config /**< LPJmL configuration */
                  )                     /** \return TRUE on death */
 {
   Bool isdead=FALSE;
@@ -35,8 +34,8 @@ Bool annual_grass(Stand *stand,        /**< pointer to stand */
 #endif
   if(stand->type->landusetype!=GRASSLAND && stand->type->landusetype!=BIOMASS_GRASS)
   {
-    turnover_grass(&stand->soil.litter,pft,new_phenology,(Real)stand->growing_days/NDAYYEAR);
-    isdead=allocation_grass(&stand->soil.litter,pft,fpc_inc,with_nitrogen);
+    turnover_grass(&stand->soil.litter,pft,(Real)stand->growing_days/NDAYYEAR,config);
+    isdead=allocation_grass(&stand->soil.litter,pft,fpc_inc,config);
   }
   stand->growing_days=0;
   if (pft->inun_count>pft->par->inun_dur)

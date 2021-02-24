@@ -145,6 +145,7 @@ LPJFLAGS= -Dflag1 ...
 
 Flag                Description
 ------------------- ------------------------------------------------------------
+CHECK_BOUNDARY      check array boundaries of output
 COUPLING_WITH_FMS   enable coupling to FMS
 DAILY_ESTABLISHMENT Enable daily establishment
 DEBUG               diagnostic output is generated for debugging purposes
@@ -346,6 +347,7 @@ Error code Description                                   Error type
         37 Invalid nitrogen balance                      Internal
         38 Invalid climate data                          External
         39 Invalid FPC value                             Internal
+        40 Boundary check error                          Internal
 ---------- --------------------------------------------- ----------
 
 External errors are caused by invalid or missing input files while internal

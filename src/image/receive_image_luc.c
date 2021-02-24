@@ -210,7 +210,7 @@ Bool receive_image_luc(Cell *grid,          /**< LPJ grid */
       grid[i].ml.image_data->totwatcons = (Real)image_data[i];
       grid[i].discharge.wateruse = grid[i].ml.image_data->totwatcons;//HB->check of er nog unit conversie nodig is.
       grid[i].discharge.wateruse = grid[i].discharge.wateruse * 1000;
-      grid[i].output.waterusecons = grid[i].discharge.wateruse*NDAYYEAR;
+      getoutput(&grid[i].output,WATERUSECONS,config) = grid[i].discharge.wateruse*NDAYYEAR;
     }
 #ifdef DEBUG_IMAGE
     if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
@@ -248,7 +248,7 @@ Bool receive_image_luc(Cell *grid,          /**< LPJ grid */
       grid[i].ml.image_data->totwatdem = (Real)image_data[i];
       grid[i].discharge.wateruse_wd = grid[i].ml.image_data->totwatdem;
       grid[i].discharge.wateruse_wd = grid[i].discharge.wateruse_wd * 1000;
-      grid[i].output.waterusedem = grid[i].discharge.wateruse_wd*NDAYYEAR;
+      getoutput(&grid[i].output,WATERUSEDEM,config) = grid[i].discharge.wateruse_wd*NDAYYEAR;
     }
 #ifdef DEBUG_IMAGE
     if (grid[i].coord.lon>5.0 && grid[i].coord.lon<5.5 && grid[i].coord.lat>48.0 && grid[i].coord.lat<48.5)/*(i==1 || i==67032)*/
@@ -624,7 +624,7 @@ Bool receive_image_luc(Cell *grid,          /**< LPJ grid */
       printf("done with reducing timber in %d, now reducing too large fractions\n",i);
       fflush(stdout);
 #endif
-      cropsum=landfrac_sum(grid[i].ml.landfrac,ncft,FALSE)+landfrac_sum(grid[i].ml.landfrac,ncft,TRUE);
+      cropsum=landfrac_sum(grid[i].ml.landfrac,ncft,config->nagtree,FALSE)+landfrac_sum(grid[i].ml.landfrac,ncft,config->nagtree,TRUE);
       if(cropsum>(1.0+epsilon))
       {
 #ifdef SAFE

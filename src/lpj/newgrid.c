@@ -771,9 +771,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       grid[i].ml.image_data=NULL;
 #endif
     }
-    if(initoutput(&grid[i].output,npft,ncft,config))
-      return NULL;
-
   } /* of for(i=0;...) */
   if(file_restart!=NULL)
     fclose(file_restart);

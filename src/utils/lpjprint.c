@@ -143,7 +143,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       grid.ml.landfrac=NULL;
       grid.ml.fertilizer_nr=NULL;
     }
-    initoutput(&grid.output,npft,ncft,config);
+    grid.output.data=NULL;
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
 
     if(freadcell(file_restart,&grid,npft,ncft,

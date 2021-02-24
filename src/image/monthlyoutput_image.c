@@ -20,15 +20,16 @@
 void monthlyoutput_image(Output *output,
                          const Climate *climate, /**< climate data */
                          int cell,               /**< index of cell */
-                         int month               /**< month (0..11) */
+                         int month,              /**< month (0..11) */
+                         const Config *config    /**< LPJml configuration */
                         )
 {
-  output->mtemp_image=(getcelltemp(climate,cell))[month];
-  output->mprec_image=(getcellprec(climate,cell))[month];
+  getoutput(output,TEMP_IMAGE,config)+=(getcelltemp(climate,cell))[month];
+  getoutput(output,PREC_IMAGE,config)+=(getcellprec(climate,cell))[month];
   if(climate->data.sun!=NULL)
-    output->msun_image=(getcellsun(climate,cell))[month];
+    getoutput(output,SUN_IMAGE,config)+=(getcellsun(climate,cell))[month];
   if(climate->data.wet!=NULL)
-    output->mwet_image=(getcellwet(climate,cell))[month];
+    getoutput(output,WET_IMAGE,config)+=(getcellwet(climate,cell))[month];
 } /* of 'monthlyoutput_image' */
 
 #endif

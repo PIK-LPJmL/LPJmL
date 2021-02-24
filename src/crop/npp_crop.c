@@ -34,7 +34,7 @@ Real npp_crop(Pft *pft,           /**< PFT variables */
               Bool *negbm,        /**< on return: biomass is negative */
               Real wdf,           /**< water deficit fraction */
               Bool crop_resp_var, /**< with variable crop respiration (TRUE,FALSE) */
-              int with_nitrogen   /**< with nitrogen (TRUE,FALSE) */
+              const Config *config/**< with nitrogen (TRUE,FALSE) */
              )                    /** \return net primary productivity (gC/m2) */
 {
   Pftcrop *crop;
@@ -43,8 +43,8 @@ Real npp_crop(Pft *pft,           /**< PFT variables */
   Real rosoresp,presp,gresp;
   Cropratio nc_ratio;
   Irrigation *data;
-  Daily_outputs *output;
-  output=&pft->stand->cell->output.daily;
+  Output *output;
+  output=&pft->stand->cell->output;
   data=pft->stand->data;
   crop=pft->data;
   par=pft->par->data;
@@ -77,26 +77,26 @@ Real npp_crop(Pft *pft,           /**< PFT variables */
     pft->bm_inc.carbon+=npp;
   }
   else
-    allocation_daily_crop(pft,npp,wdf,with_nitrogen,output);
-  if(output->cft==ALLSTAND)
-    output->npp+=npp*pft->stand->frac;
-  else if(output->cft==pft->par->id && output->irrigation==data->irrigation)
+    allocation_daily_crop(pft,npp,wdf,TRUE,config);
+  if(config->crop_index==ALLSTAND)
+    getoutput(output,D_NPP,config)+=npp*pft->stand->frac;
+  else if(config->crop_index==pft->par->id && config->crop_irrigation==data->irrigation)
   {
-    output->rroot+=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil;
-    output->rso+=crop->ind.so.carbon*pft->par->respcoeff*param.k*nc_ratio.so*gtemp_air;
-    output->rpool+=presp;
-    output->gresp+=gresp;
-    output->npp+=npp;
-    output->leaf.carbon=crop->ind.leaf.carbon;
-    output->root.carbon=crop->ind.root.carbon;
-    output->so.carbon=crop->ind.so.carbon;
-    output->pool.carbon=crop->ind.pool.carbon;
-    output->leaf.nitrogen=crop->ind.leaf.nitrogen;
-    output->pool.nitrogen=crop->ind.pool.nitrogen;
-    output->so.nitrogen=crop->ind.so.nitrogen;
-    output->root.carbon=crop->ind.root.nitrogen;
-    output->wdf=wdf;
-    output->wscal=pft->wscal;
+    getoutput(output,D_RROOT,config)+=crop->ind.root.carbon*pft->par->respcoeff*param.k*nc_ratio.root*gtemp_soil;
+    getoutput(output,D_RSO,config)+=crop->ind.so.carbon*pft->par->respcoeff*param.k*nc_ratio.so*gtemp_air;
+    getoutput(output,D_RPOOL,config)+=presp;
+    getoutput(output,D_GRESP,config)+=gresp;
+    getoutput(output,D_NPP,config)+=npp;
+    getoutput(output,D_CLEAF,config)=crop->ind.leaf.carbon;
+    getoutput(output,D_CROOT,config)=crop->ind.root.carbon;
+    getoutput(output,D_CSO,config)=crop->ind.so.carbon;
+    getoutput(output,D_CPOOL,config)=crop->ind.pool.carbon;
+    getoutput(output,D_NLEAF,config)=crop->ind.leaf.nitrogen;
+    getoutput(output,D_NPOOL,config)=crop->ind.pool.nitrogen;
+    getoutput(output,D_NSO,config)=crop->ind.so.nitrogen;
+    getoutput(output,D_CROOT,config)=crop->ind.root.nitrogen;
+    getoutput(output,D_WDF,config)=wdf;
+    getoutput(output,D_WSCAL,config)=pft->wscal;
   }
   return npp;
 } /* of 'npp_crop' */

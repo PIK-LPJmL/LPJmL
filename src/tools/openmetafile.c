@@ -30,7 +30,7 @@
 
 #include "lpj.h"
 
-char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
+const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
 
 FILE *openmetafile(Header *header, /**< pointer to file header */
                    Bool *swap, /**< byte order has to be changed (TRUE/FALSE) */

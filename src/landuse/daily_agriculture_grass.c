@@ -18,6 +18,7 @@
 #include "grass.h"
 #include "agriculture.h"
 #include "agriculture_grass.h"
+#include "agriculture_tree.h"
 
 Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
                              Real co2,                    /**< atmospheric CO2 (ppmv) */
@@ -111,7 +112,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
     else
     {
       /* write irrig_apply to output */
-      stand->cell->output.irrig += irrig_apply * stand->frac;
+      getoutput(output,IRRIG,config) += irrig_apply * stand->frac;
       stand->cell->balance.airrig+=irrig_apply*stand->frac;
 #if defined IMAGE && defined COUPLED
       if(stand->cell->ml.image_data!=NULL)
@@ -122,9 +123,9 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
 #endif
 
       if (config->pft_output_scaled)
-        stand->cell->output.cft_airrig[index] += irrig_apply * stand->frac;
+        getoutputindex(output,CFT_AIRRIG,index,config) += irrig_apply * stand->frac;
       else
-        stand->cell->output.cft_airrig[index] += irrig_apply;
+        getoutputindex(output,CFT_AIRRIG,index,config) += irrig_apply;
     }
   }
 
@@ -146,7 +147,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   {
     //runoff += infil_perc_irr(stand, irrig_apply, &return_flow_b,npft,ncft,config);
     /* count irrigation events*/
-    output->cft_irrig_events[index]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
+    getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
     }
 
     runoff+=infil_perc_rain(stand,rainmelt+irrig_apply,&return_flow_b,npft,ncft,config);
@@ -160,9 +161,9 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   {
     // pft->phen = 1.0; /* phenology is calculated from biomass */
     if (config->new_phenology)
-      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp);
+      phenology_gsi(pft, climate->temp, climate->swdown, day,climate->isdailytemp,config);
     else
-      leaf_phenology(pft, climate->temp, day,climate->isdailytemp);
+      leaf_phenology(pft, climate->temp, day,climate->isdailytemp,config);
     cover_stand += pft->fpc * pft->phen;
 
     /* calculate albedo and FAPAR of PFT */
@@ -184,27 +185,27 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
       gcgp = gc_pft / gp_pft[getpftpar(pft, id)];
       if (stand->frac > 0.0)
       {
-         output->gcgp_count[npft - config->nbiomass-config->nagtree + index]++;
-         output->pft_gcgp[npft - config->nbiomass-config->nagtree + index] += gcgp;
+         getoutputindex(output,PFT_GCGP_COUNT,npft - config->nbiomass-config->nagtree + index,config)++;
+         getoutputindex(output,PFT_GCGP,npft - config->nbiomass-config->nagtree + index,config) += gcgp;
       }
     }
     npp = npp_grass(pft, gtemp_air, gtemp_soil, gpp - rd,config->with_nitrogen);
-    output->npp += npp * stand->frac;
+    getoutput(output,NPP,config) += npp * stand->frac;
     output->dcflux -= npp * stand->frac;
-    output->gpp += gpp * stand->frac;
-    output->fapar += pft->fapar * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
-    output->mphen_tmin += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
-    output->mphen_tmax += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
-    output->mphen_light += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
-    output->mphen_water += pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
-    output->mwscal += pft->fpc * pft->wscal * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
+    getoutput(output,GPP,config) += gpp * stand->frac;
+    getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
+    getoutput(output,PHEN_TMIN,config)+= pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
+    getoutput(output,PHEN_TMAX,config)+= pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
+    getoutput(output,PHEN_LIGHT,config)+= pft->fpc * pft->phen_gsi.light * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
+    getoutput(output,PHEN_WATER,config)+= pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
+    getoutput(output,WSCAL,config)+= pft->fpc * pft->wscal * stand->frac * (1.0 / (1 - stand->cell->lakefrac));
 
-    output->cft_fpar[index] += (fpar(pft) * stand->frac * (1.0 / (1 - stand->cell->lakefrac)));
+    getoutputindex(output,CFT_FPAR,index,config) += (fpar(pft) * stand->frac * (1.0 / (1 - stand->cell->lakefrac)));
 
     if (config->pft_output_scaled)
-      output->pft_npp[nnat+index]+=npp*stand->frac;
+      getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
     else
-      output->pft_npp[nnat+index]+=npp;
+      getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
   } /* of foreachpft */
   free(gp_pft);
   /* calculate water balance */
@@ -215,8 +216,8 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   stand->growing_days = 1;
     /* turnover must happen before allocation */
   foreachpft(pft, p, &stand->pftlist)
-    turnover_grass(&stand->soil.litter, pft,config->new_phenology, (Real)stand->growing_days / NDAYYEAR);
-  allocation_today(stand, config->ntypes,config->with_nitrogen);
+    turnover_grass(&stand->soil.litter, pft,(Real)stand->growing_days / NDAYYEAR,config);
+  allocation_today(stand, config);
 
   /* daily turnover and harvest check*/
   isphen = FALSE;
@@ -230,19 +231,19 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
 
   if (isphen)
   {
-    harvest = harvest_stand(output, stand, 0.75);
+    harvest = harvest_stand(output, stand, 0.75,config);
     if (data->irrigation)
     {
       stand->cell->discharge.dmass_lake += (data->irrig_stor + data->irrig_amount) * stand->cell->coord.area * stand->frac;
       stand->cell->balance.awater_flux -= (data->irrig_stor + data->irrig_amount) * stand->frac;
-      output->mstor_return += (data->irrig_stor + data->irrig_amount) * stand->frac;
+      getoutput(output,STOR_RETURN,config) += (data->irrig_stor + data->irrig_amount) * stand->frac;
 
       /* pay back conveyance losses that have already been consumed by transport into irrig_stor */
       stand->cell->discharge.dmass_lake += (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * data->conv_evap * stand->cell->coord.area * stand->frac;
       stand->cell->balance.awater_flux -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * data->conv_evap * stand->frac;
-      output->mconv_loss_evap -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * data->conv_evap * stand->frac;
+      getoutput(output,CONV_LOSS_EVAP,config)-= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * data->conv_evap * stand->frac;
       stand->cell->balance.aconv_loss_evap -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * data->conv_evap * stand->frac;
-      output->mconv_loss_drain -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * (1 - data->conv_evap) * stand->frac;
+      getoutput(output,CONV_LOSS_DRAIN,config) -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * (1 - data->conv_evap) * stand->frac;
       stand->cell->balance.aconv_loss_drain -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * (1 - data->conv_evap) * stand->frac;
 #if defined IMAGE && defined COUPLED
       if(stand->cell->ml.image_data!=NULL)
@@ -254,14 +255,14 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
 
       if (config->pft_output_scaled)
       {
-        stand->cell->output.cft_conv_loss_evap[index] -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * data->conv_evap * stand->frac;
-        stand->cell->output.cft_conv_loss_drain[index] -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * (1 - data->conv_evap) * stand->frac;
+        getoutputindex(output,CFT_CONV_LOSS_EVAP,index,config) -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * data->conv_evap * stand->frac;
+        getoutputindex(output,CFT_CONV_LOSS_DRAIN,index,config) -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * (1 - data->conv_evap) * stand->frac;
 
       }
       else
       {
-        stand->cell->output.cft_conv_loss_evap[index] -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * data->conv_evap;
-        stand->cell->output.cft_conv_loss_drain[index] -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * (1 - data->conv_evap);
+        getoutputindex(output,CFT_CONV_LOSS_EVAP,index,config) -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * data->conv_evap;
+        getoutputindex(output,CFT_CONV_LOSS_DRAIN,index,config) -= (data->irrig_stor + data->irrig_amount) * (1 / data->ec - 1) * (1 - data->conv_evap);
       }
 
       data->irrig_stor = 0;
@@ -275,40 +276,46 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   forrootsoillayer(l)
   {
     transp += aet_stand[l] * stand->frac;
-    output->mtransp_b += (aet_stand[l] - green_transp[l]) * stand->frac;
+    getoutput(output,TRANSP_B,config) += (aet_stand[l] - green_transp[l]) * stand->frac;
   }
-  output->transp+=transp;
+  getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
-  output->evap += evap * stand->frac;
+  getoutput(output,EVAP,config) += evap * stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;
-  output->interc += intercep_stand * stand->frac;
+  getoutput(output,INTERC,config) += intercep_stand * stand->frac;
   stand->cell->balance.ainterc+=intercep_stand*stand->frac;
 
-  output->mevap_b += evap_blue * stand->frac;   /* blue soil evap */
+  getoutput(output,EVAP_B,config) += evap_blue * stand->frac;   /* blue soil evap */
 
-  output->minterc_b += intercep_stand_blue * stand->frac;   /* blue interception and evap */
+  getoutput(output,INTERC_B,config) += intercep_stand_blue * stand->frac;   /* blue interception and evap */
 #if defined(IMAGE) && defined(COUPLED)
   if(stand->cell->ml.image_data!=NULL)
     stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
 #endif
 
-  output->mreturn_flow_b += return_flow_b * stand->frac;
+  getoutput(output,RETURN_FLOW_B,config) += return_flow_b * stand->frac;
 
   if (config->pft_output_scaled)
   {
-    output->pft_harvest[index].harvest.carbon += harvest.harvest.carbon * stand->frac;
-    output->pft_harvest[index].harvest.nitrogen += harvest.harvest.nitrogen * stand->frac;
+#if defined(IMAGE) && defined(COUPLED)
+    stand->cell->pft_harvest[index]+=harvest.harvest.carbon*stand->frac;
+#endif
+    getoutputindex(output,PFT_HARVESTC,index,config)+= harvest.harvest.carbon * stand->frac;
+    getoutputindex(output,PFT_HARVESTN,index,config)+= harvest.harvest.nitrogen * stand->frac;
   }
   else
   {
-    output->pft_harvest[index].harvest.carbon += harvest.harvest.carbon;
-    output->pft_harvest[index].harvest.nitrogen += harvest.harvest.nitrogen;
+#if defined(IMAGE) && defined(COUPLED)
+    stand->cell->pft_harvest[index]+=harvest.harvest.carbon;
+#endif
+    getoutputindex(output,PFT_HARVESTC,index,config)+= harvest.harvest.carbon;
+    getoutputindex(output,PFT_HARVESTN,index,config)+= harvest.harvest.nitrogen;
   }
 
   /* harvested area */
   if (isphen)
-    output->cftfrac[index] = stand->frac;
-  output_gbw_agriculture_grass(output, stand, frac_g_evap, evap, evap_blue,
+    getoutputindex(output,CFTFRAC,index,config) = stand->frac;
+  output_gbw_agriculture_tree(output, stand, frac_g_evap, evap, evap_blue,
                                return_flow_b, aet_stand, green_transp,
                                intercep_stand, intercep_stand_blue, npft,
                                ncft, config);

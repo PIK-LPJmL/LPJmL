@@ -255,6 +255,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(fscanbool(file,&config->no_ndeposition,"no_ndeposition",TRUE,verbose))
       return TRUE;
   }
+  config->fertilizer_input=NO_FERTILIZER;
   if(config->sim_id!=LPJ)
   {
     if(fscankeywords(file,&config->withlanduse,"landuse",landuse,5,FALSE,verbose))

@@ -97,25 +97,25 @@ typedef struct
   int boll_age;
 } Pfttree;
 
-extern char *leaftype[];
+extern const char *leaftype[];
 
 /* Declaration of functions */
 
-extern void new_tree(Pft *,int,int,int,Bool);
+extern void new_tree(Pft *,int,int,const Config *);
 extern Pft *newpftage(Pftpar *,int);
 extern Real npp_tree(Pft *,Real,Real,Real,int);
-extern Bool mortality_tree(Litter *,Pft *,Real,Real,Bool);
+extern Bool mortality_tree(Litter *,Pft *,Real,Real,Bool,const Config *);
 extern Real fpc_tree(Pft *);
 extern Real fpar_tree(const Pft *);
 extern Real alphaa_tree(const Pft *,int,int);
-extern void litter_update_tree(Litter *, Pft *,Real);
-extern void litter_update_fire_tree(Litter *, Pft *,Real);
+extern void litter_update_tree(Litter *, Pft *,Real,const Config *);
+extern void litter_update_fire_tree(Litter *, Pft *,Real,const Config *);
 extern void allometry_tree(Pft *pft);
-extern Bool allocation_tree(Litter *,Pft *,Real *,int);
+extern Bool allocation_tree(Litter *,Pft *,Real *,const Config *);
 extern Real lai_tree(const Pft *);
 extern Real actual_lai_tree(const Pft *);
-extern Stocks turnover_tree(Litter *,Pft *);
-extern void phenology_tree(Pft *,Real,int,Bool);
+extern Stocks turnover_tree(Litter *,Pft *,const Config *);
+extern void phenology_tree(Pft *,Real,int,Bool,const Config *);
 extern Bool fwrite_tree(FILE *,const Pft *);
 extern void fprint_tree(FILE *,const Pft *,int);
 extern Bool fread_tree(FILE *,Pft *,Bool,Bool);
@@ -130,19 +130,19 @@ extern Real agb_tree(const Pft *);
 extern void mix_veg_tree(Pft *,Real);
 extern void mix_veg_stock_tree(Pft *, Pft *, Real, Real);
 extern void free_tree(Pft *);
-extern void light_tree(Litter *,Pft *,Real);
-extern void adjust_tree(Litter *,Pft *,Real,Real);
-extern void reduce_tree(Litter *,Pft *,Real);
+extern void light_tree(Litter *,Pft *,Real,const Config *);
+extern void adjust_tree(Litter *,Pft *,Real,Real,const Config *);
+extern void reduce_tree(Litter *,Pft *,Real,const Config *);
 extern void fprintpar_tree(FILE *,const Pftpar *,const Config *);
-extern void output_daily_tree(Daily_outputs *,const Pft *);
+extern void output_daily_tree(const Pft *,const Config *);
 extern Stocks livefuel_consum_tree(Litter *,Pft *,const Fuel *,Livefuel *,
-                                   Bool *,Real,Real);
-extern Bool annual_tree(Stand *,Pft *,Real *,Bool,int,Bool);
+                                   Bool *,Real,Real,const Config *);
+extern Bool annual_tree(Stand *,Pft *,Real *,Bool,const Config *);
 extern Stocks coppice_tree(Pft *);
 extern void albedo_tree(Pft *,Real,Real);
-extern void turnover_monthly_tree(Litter *,Pft *);
 extern void copy_tree(Pft *, const Pft *);
-extern void turnover_daily_tree(Litter *,Pft *,Real,Bool);
+extern void turnover_monthly_tree(Litter *,Pft *,const Config *);
+extern void turnover_daily_tree(Litter *,Pft *,Real,Bool,const Config *);
 extern Stocks harvest_tree(Pft *);
 extern Real nuptake_tree(Pft *,Real *,Real *,int,int,const Config *);
 extern Real ndemand_tree(const Pft *,Real *,Real,Real,Real);

@@ -26,6 +26,9 @@ int outputsize(int index,     /**< output index */
   {
     case SDATE: case HDATE: case HDATE2: case SDATE2: case CFT_SWC:
     case SYEAR: case SYEAR2: case HUSUM: case HUSUM2: case CFT_LEACHING:
+    case CFT_N2O_DENIT : case CFT_N2O_NIT: case CFT_N2_EMIS: case CFT_C_EMIS:
+    case CFT_N2O_DENIT2: case CFT_N2O_NIT2: case CFT_N2_EMIS2: case CFT_C_EMIS2:
+    case CFT_LEACHING2: case CFT_RUNOFF: case CFT_RUNOFF2:
       return ncft*2;
     case PFT_NPP: case PFT_GCGP: case PFT_LAIMAX: case PFT_NLIMIT:
     case PFT_NUPTAKE: case PFT_NDEMAND: case PFT_VEGC: case PFT_VEGN:
@@ -49,14 +52,14 @@ int outputsize(int index,     /**< output index */
     case CFT_TRANSP2: case CFT_NIR2:
     case CFT_EVAP2: case CFT_NFERT: case CFT_NFERT2:
       return 2*getnirrig(ncft,config);
-    case FPC:
+    case FPC: case WPC:
       return getnnat(npft,config)+1;
     case PFT_MORT: case NV_LAI:
       return getnnat(npft,config);
-    case SOILTEMP: case SWC: case RESPONSE_LAYER_AGR: case RESPONSE_LAYER_NV:
+    case SOILTEMP: case SWC:
       return NSOILLAYER;
     case SOILC_LAYER: case SOILN_LAYER: case SOILNO3_LAYER: case SOILNH4_LAYER: case SOILC_AGR_LAYER:
-    case CSHIFT_FAST_NV: case CSHIFT_SLOW_NV:
+    case RESPONSE_LAYER_AGR: case RESPONSE_LAYER_NV: case CSHIFT_FAST_NV: case CSHIFT_SLOW_NV:
       return LASTLAYER;
     case GROWING_PERIOD: case CFT_TEMP:case CFT_PREC:
     case CFT_SRAD: case CFT_ABOVEGBMC: case CFT_ABOVEGBMN:

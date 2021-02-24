@@ -19,7 +19,8 @@
 
 void denitrification(Stand *stand,  /**< pointer to stand */
                      int npft,
-                     int ncft
+                     int ncft,
+                     const Config *config
                     )
 {
   /* determines NO2 and N2 from nitrate NO3 */
@@ -88,15 +89,15 @@ void denitrification(Stand *stand,  /**< pointer to stand */
     N2O_denit = 0.11 * N_denit;
     N_denit -= N2O_denit;
 
-    stand->cell->output.daily.n2_denit  += N_denit;
-    stand->cell->output.daily.n2o_denit += N2O_denit;
-    stand->cell->output.mn2o_denit+=N2O_denit*stand->frac;
-    stand->cell->output.mn2_emissions+=N_denit*stand->frac;
+    getoutput(&stand->cell->output,D_N2_DENIT,config) += N_denit;
+    getoutput(&stand->cell->output,D_N2O_DENIT,config) += N2O_denit;
+    getoutput(&stand->cell->output,N2O_DENIT,config)+=N2O_denit*stand->frac;
+    getoutput(&stand->cell->output,N2_EMIS,config)+=N_denit*stand->frac;
     stand->cell->balance.n_outflux+=(N_denit+N2O_denit)*stand->frac;
     if(isagriculture(stand->type->landusetype))
     {
-      stand->cell->output.an2o_denit_agr+=N2O_denit*stand->frac;
-      stand->cell->output.an2_agr+=N_denit*stand->frac;
+      getoutput(&stand->cell->output,N2O_DENIT_AGR,config)+=N2O_denit*stand->frac;
+      getoutput(&stand->cell->output,N2_AGR,config)+=N_denit*stand->frac;
     }
     if(stand->type->landusetype==AGRICULTURE)
     {
@@ -111,8 +112,8 @@ void denitrification(Stand *stand,  /**< pointer to stand */
         }
         else
         {
-          stand->cell->output.cft_n2o_denit[pft->par->id-npft+data->irrigation*ncft]+=N2O_denit;
-          stand->cell->output.cft_n2_emis[pft->par->id-npft+data->irrigation*ncft]+=N_denit;
+          getoutputindex(&stand->cell->output,CFT_N2O_DENIT,pft->par->id-npft+data->irrigation*ncft,config)+=N2O_denit;
+          getoutputindex(&stand->cell->output,CFT_N2_EMIS,pft->par->id-npft+data->irrigation*ncft,config)+=N_denit;
         }
       }
     }

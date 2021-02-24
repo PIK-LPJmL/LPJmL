@@ -68,10 +68,10 @@ Bool annual_biomass_grass(Stand *stand,         /* Pointer to stand */
       stand->cell->balance.estab_storage_grass[irrigation->irrigation].carbon+=estab_store.carbon*stand->frac;
       stand->cell->balance.estab_storage_grass[irrigation->irrigation].nitrogen+=estab_store.nitrogen*stand->frac;
     }
-    if(annual_grass(stand,pft,&fpc_inc,config->new_phenology,config->with_nitrogen,isdaily))
+    if(annual_grass(stand,pft,&fpc_inc,isdaily,config))
     {
       /* PFT killed, delete from list of established PFTs */
-      litter_update_grass(&stand->soil.litter,pft,pft->nind);
+      litter_update_grass(&stand->soil.litter,pft,pft->nind,config);
       delpft(&stand->pftlist,p);
       p--; /* adjust loop variable */
     }
@@ -88,7 +88,7 @@ Bool annual_biomass_grass(Stand *stand,         /* Pointer to stand */
        && establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf,stand->type->landusetype == WETLAND))
     {
       if(!present[p])
-       addpft(stand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
+        addpft(stand,config->pftpar+p,year,0,config);
       n_est++;
     }
   }
@@ -108,9 +108,9 @@ Bool annual_biomass_grass(Stand *stand,         /* Pointer to stand */
   stand->cell->balance.soil_storage+=(irrigation->irrig_stor+irrigation->irrig_amount)*stand->frac*stand->cell->coord.area;
   foreachpft(pft,p,&stand->pftlist)
   {
-    stand->cell->output.fpc_bft[getpftpar(pft, id)-npft+config->nbiomass+config->nagtree+config->nwft+2*config->ngrass+irrigation->irrigation*(config->nbiomass+2*config->ngrass)]=+pft->fpc;
-    stand->cell->output.pft_veg[npft-config->nbiomass-config->nwft-config->nagtree+rbgrass(ncft)+irrigation->irrigation*getnirrig(ncft,config)].carbon+=vegc_sum(pft);
-    stand->cell->output.pft_veg[npft-config->nbiomass-config->nwft-config->nagtree+rbgrass(ncft)+irrigation->irrigation*getnirrig(ncft,config)].nitrogen+=vegn_sum(pft);
+    getoutputindex(&stand->cell->output,FPC_BFT,getpftpar(pft, id)-npft+config->nbiomass+config->nagtree+config->nwft+2*config->ngrass+irrigation->irrigation*(config->nbiomass+2*config->ngrass),config)=+pft->fpc;
+    getoutputindex(&stand->cell->output,PFT_VEGC,npft-config->nbiomass-config->nwft-config->nagtree+rbgrass(ncft)+irrigation->irrigation*getnirrig(ncft,config),config)+=vegc_sum(pft);
+    getoutputindex(&stand->cell->output,PFT_VEGN,npft-config->nbiomass-config->nwft-config->nagtree+rbgrass(ncft)+irrigation->irrigation*getnirrig(ncft,config),config)+=vegn_sum(pft);
   }
 
   free(fpc_type);

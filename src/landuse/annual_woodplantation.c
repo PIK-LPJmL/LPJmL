@@ -96,11 +96,11 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         }
       }
 
-      if(annualpft(stand,pft,fpc_inc+p,config->new_phenology,config->with_nitrogen,isdaily))
+      if(annualpft(stand,pft,fpc_inc+p,isdaily,config))
       {
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
-        litter_update(&stand->soil.litter,pft,pft->nind);
+        litter_update(&stand->soil.litter,pft,pft->nind,config);
         pft->nind=0;
         delpft(&stand->pftlist,p);
         p--; /* adjust loop variable */
@@ -111,7 +111,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     printf("Number of updated pft: %d\n",stand->pftlist.n);
 #endif
 
-    light(stand,config->ntypes,fpc_inc);
+    light(stand,fpc_inc,config);
     free(fpc_inc);
   } /* END if(pft_len>0) */
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
@@ -122,7 +122,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     if (pft->par->type==TREE && pft->par->cultivation_type==WP) // tree
     {
       outIdx = pft->par->id-(npft-config->nwft);
-      stand->cell->output.wft_vegc[outIdx]+=(float)(vegc_sum(pft));
+      getoutputindex(&stand->cell->output,WFT_VEGC,outIdx,config)+=vegc_sum(pft);
     }
   }
     /*
@@ -147,20 +147,22 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
 
         yield=timber_harvest(pft,&stand->soil,&stand->cell->ml.product,
                              stand->cell->ml.image_data->timber_f,ftimber,stand->frac,&pft->nind,
-                             &biofuel,stand->cell->ml.image_data->timber_frac_wp,
+                             &biofuel,config,stand->cell->ml.image_data->timber_frac_wp,
                              stand->cell->ml.image_data->takeaway);
-        stand->cell->output.trad_biofuel+=biofuel.carbon;
+        getoutput(&stand->cell->output,TRAD_BIOFUEL,config)+=biofuel.carbon;
         stand->cell->balance.trad_biofuel.carbon+=biofuel.carbon;
         stand->cell->balance.trad_biofuel.nitrogen+=biofuel.nitrogen;
         if(config->pft_output_scaled)
         {
-          stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon*stand->frac;
-          stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen*stand->frac;
+          stand->cell->pft_harvest[index]+=yield.carbon*stand->frac;
+          getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon*stand->frac;
+          getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen*stand->frac;
         }
         else
         {
-          stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon;
-          stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen;
+          stand->cell->pft_harvest[index]+=yield.carbon;
+          getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon;
+          getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen;
         }
         biomass_tree->growing_time=0;
         fpc_tree(pft);
@@ -177,7 +179,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     {
       if(!present[p] && (estab_store.carbon<epsilon || config->pftpar[p].type!=TREE) && (fpc_type[TREE]<0.7 || config->pftpar[p].type==GRASS))
       {
-        addpft(stand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
+        addpft(stand,config->pftpar+p,year,0,config);
         n_est[config->pftpar[p].type]++;
       }
       if(present[p])
@@ -221,25 +223,25 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   }
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   if(fpc_total>1.0)
-    light(stand,config->ntypes,fpc_inc2);
+    light(stand,fpc_inc2,config);
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
 
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)
-     adjust(&stand->soil.litter, pft, fpc_type[pft->par->type], param.fpc_tree_max);
+     adjust(&stand->soil.litter, pft, fpc_type[pft->par->type], param.fpc_tree_max,config);
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
 
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)
-      reduce(&stand->soil.litter,pft,fpc_total);
+      reduce(&stand->soil.litter,pft,fpc_total,config);
   stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].carbon-=flux_estab.carbon*stand->frac;
   stand->cell->balance.estab_storage_tree[biomass_tree->irrigation.irrigation].nitrogen-=flux_estab.nitrogen*stand->frac;
   flux_estab.carbon=flux_estab.nitrogen=0;
 
-  stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-  stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+  getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
+  getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
 #ifdef COUPLED
-  stand->cell->output.flux_estab_wp+=flux_estab.carbon*stand->frac;
+  stand->cell->flux_estab_wp+=flux_estab.carbon*stand->frac;
 #endif
   stand->cell->output.dcflux+=flux_estab.carbon*stand->frac;
 
@@ -251,7 +253,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         isdead=TRUE;
     }
 
-  stand->cell->output.cftfrac[index]+=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].woodplantation;
+  getoutputindex(&stand->cell->output,CFTFRAC,index,config)+=stand->cell->ml.landfrac[biomass_tree->irrigation.irrigation].woodplantation;
 
   free(present);
   free(fpc_type);
@@ -260,7 +262,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     free(fpc_inc2);
   if(isdead)
   {
-    cutpfts(stand);
+    cutpfts(stand,config);
     biomass_tree->age=biomass_tree->growing_time=0;
     stand->cell->discharge.dmass_lake+=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->cell->coord.area*stand->frac;
     stand->cell->balance.awater_flux-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*stand->frac;
@@ -274,8 +276,8 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     biomass_tree->growing_time++;
     foreachpft(pft,p,&stand->pftlist)
     {
-      stand->cell->output.pft_veg[getnnat(npft,config)+index].carbon+=vegc_sum(pft);
-      stand->cell->output.pft_veg[getnnat(npft,config)+index].nitrogen+=vegn_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGC,getnnat(npft,config)+index,config)+=vegc_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGN,getnnat(npft,config)+index,config)+=vegn_sum(pft);
     }
   }
   return FALSE;

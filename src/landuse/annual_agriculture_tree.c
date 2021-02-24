@@ -105,11 +105,11 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
         }
       }
 
-      if(annualpft(stand,pft,fpc_inc+p,config->new_phenology,config->with_nitrogen,isdaily))
+      if(annualpft(stand,pft,fpc_inc+p,isdaily,config))
       {
         /* PFT killed, delete from list of established PFTs */
         fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1];
-        litter_update(&stand->soil.litter,pft,pft->nind);
+        litter_update(&stand->soil.litter,pft,pft->nind,config);
         delpft(&stand->pftlist,p);
         p--; /* adjust loop variable */
         continue;
@@ -123,13 +123,19 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
           //printf("index=%d, yield=%g\n",index,yield);
           if(config->pft_output_scaled)
           {
-            stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon*stand->frac;
-            stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen*stand->frac;
+#if defined IMAGE && defined COUIPLED
+            stand->cell->pft_harvest[index]+=yield.carbon*stand->frac;
+#endif
+            getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon*stand->frac;
+            getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen*stand->frac;
           }
           else
           {
-            stand->cell->output.pft_harvest[index].harvest.carbon+=yield.carbon;
-            stand->cell->output.pft_harvest[index].harvest.nitrogen+=yield.nitrogen;
+#if defined IMAGE && defined COUIPLED
+            stand->cell->pft_harvest[index]+=yield.carbon;
+#endif
+            getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon;
+            getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen;
           }
           stand->cell->balance.biomass_yield.carbon+=yield.carbon*stand->frac;
           stand->cell->balance.biomass_yield.nitrogen+=yield.nitrogen*stand->frac;
@@ -142,7 +148,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
     printf("Number of updated pft: %d\n",stand->pftlist.n);
 #endif
 
-    light(stand,config->ntypes,fpc_inc);
+    light(stand,fpc_inc,config);
     free(fpc_inc);
   } /* END if(pft_len>0) */
 
@@ -166,7 +172,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
        (treepar->with_grass && config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)))
     {
       if(!present[p])
-        addpft(stand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
+        addpft(stand,config->pftpar+p,year,0,config);
       n_est[config->pftpar[p].type]++;
     }
   }
@@ -206,22 +212,20 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
 
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   if(fpc_total>1.0)
-    light(stand,config->ntypes,fpc_inc2);
+    light(stand,fpc_inc2,config);
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)
-      adjust(&stand->soil.litter,pft,fpc_type[pft->par->type],FPC_MAX);
+      adjust(&stand->soil.litter,pft,fpc_type[pft->par->type],FPC_MAX,config);
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   if (fpc_total>1.0)
     foreachpft(pft,p,&stand->pftlist)
       if(pft->par->type==GRASS)
-        reduce(&stand->soil.litter,pft,fpc_total);
+        reduce(&stand->soil.litter,pft,fpc_total,config);
   stand->cell->balance.estab_storage_tree[data->irrigation.irrigation].carbon-=flux_estab.carbon*stand->frac;
   stand->cell->balance.estab_storage_tree[data->irrigation.irrigation].nitrogen-=flux_estab.nitrogen*stand->frac;
   flux_estab.carbon=flux_estab.nitrogen=0;
 
-  stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-  stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
   stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
   stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
@@ -234,7 +238,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
         isdead=TRUE;
     }
 
-  stand->cell->output.cftfrac[index]+=stand->frac;
+  getoutputindex(&stand->cell->output,CFTFRAC,index,config)+=stand->frac;
 
   free(present);
   free(fpc_type);
@@ -243,48 +247,16 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
   free(n_est);
   if(isdead)
   {
-    //printf("dead %s\n",stand->type->name);
-    cutpfts(stand);
-    data->age=data->growing_time=0;
-    if(data->irrigation.irrigation)
-    {
-      stand->cell->discharge.dmass_lake+=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*stand->cell->coord.area*stand->frac;
-      stand->cell->balance.awater_flux-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*stand->frac;
-      stand->cell->discharge.dmass_lake+=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->cell->coord.area*stand->frac;
-      stand->cell->balance.awater_flux-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
-      stand->cell->output.mstor_return+=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*stand->frac;
-      stand->cell->output.mconv_loss_evap-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
-      stand->cell->balance.aconv_loss_evap-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
-      stand->cell->output.mconv_loss_drain-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->frac;
-      stand->cell->balance.aconv_loss_drain-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->frac;
-#if defined IMAGE && defined COUPLED
-      if(stand->cell->ml.image_data!=NULL)
-      {
-        stand->cell->ml.image_data->mirrwatdem[NMONTH-1]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*stand->frac;
-        stand->cell->ml.image_data->mevapotr[NMONTH-1]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*stand->frac;
-      }
-#endif
-
-      if(config->pft_output_scaled)
-      {
-        stand->cell->output.cft_conv_loss_evap[index]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap*stand->frac;
-        stand->cell->output.cft_conv_loss_drain[index]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap)*stand->frac;
-      }
-      else
-      {
-        stand->cell->output.cft_conv_loss_evap[index]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*data->irrigation.conv_evap;
-        stand->cell->output.cft_conv_loss_drain[index]-=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*(1/data->irrigation.ec-1)*(1-data->irrigation.conv_evap);
-      }
-      data->irrigation.irrig_stor=0;
-      data->irrigation.irrig_amount=0;
-    }
+    update_irrig(stand,index,ncft,config);
     if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,data->irrigation.irrigation,year,config))
       return TRUE;
   }
   else
+  {
     stand->cell->balance.soil_storage+=(data->irrigation.irrig_stor+data->irrigation.irrig_amount)*stand->frac*stand->cell->coord.area;
-  data->age++;
-  data->growing_time++;
+    data->age++;
+    data->growing_time++;
+  }
 
   return FALSE;
 } /* of 'annual_agriculture_tree' */

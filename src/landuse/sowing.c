@@ -36,6 +36,6 @@ Stocks sowing(Cell *cell,          /**< cell pointer */
   }
   else
     flux_estab=sowing_prescribe(cell,day,npft,ncft,year,config);
-  cell->output.aseedn_agr+=flux_estab.nitrogen;
+  getoutput(&cell->output,SEEDN_AGR,config)+=flux_estab.nitrogen;
   return flux_estab;
 } /* of 'sowing' */

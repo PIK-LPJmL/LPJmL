@@ -23,7 +23,8 @@
 
 void update_wetland(Cell *cell,
                     int ntotpft,
-                    int year
+                    int year,
+                    const Config *config
                    )
 {
   Stand *stand;
@@ -209,8 +210,7 @@ void update_wetland(Cell *cell,
             //        copy PFT list to wetland stand
           foreachpft(pft, p, &natstand->pftlist)
           {
-            pos = addpft(wetstand,pft->par,year,365,TRUE,0) - 1;
-            wetpft = getpft(&wetstand->pftlist, pos);
+            wetpft = addpft(wetstand,pft->par,year,365,config);
             mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac);
           }
           natstand->frac = frac - delta_wetland;
@@ -243,8 +243,7 @@ void update_wetland(Cell *cell,
             }
             else
             {
-              pos = addpft(wetstand,pft->par,year,365,TRUE,0) - 1;
-              wetpft = getpft(&wetstand->pftlist, pos);
+              wetpft = addpft(wetstand,pft->par,year,365,config);
               mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac);
             }
           }
@@ -315,13 +314,12 @@ void update_wetland(Cell *cell,
             {
               if (wetpft->par->peatland != TRUE)
               {
-                pos = addpft(natstand,wetpft->par,year,365,TRUE,0) - 1;
-                pft = getpft(&natstand->pftlist, pos);
+                pft = addpft(natstand,wetpft->par,year,365,config);
                 mix_veg_stock(pft, wetpft, natstand->frac, wetstand->frac);
               }
               else
               {
-                litter_update(&natstand->soil.litter, wetpft, -delta_wetland);
+                litter_update(&natstand->soil.litter, wetpft, -delta_wetland,config);
               }
             }
           }

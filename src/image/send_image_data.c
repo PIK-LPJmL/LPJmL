@@ -63,7 +63,7 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
 #ifdef USE_MPI
   int *counts,*offsets;
 #endif
-  ncrops = 2*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE);
+  ncrops = getnirrig(ncft,config);
   yields=newmatrix(float,config->ngridcell,ncrops);
   check(yields);
   monthirrig=newvec(Mirrig_to_image,config->ngridcell);
@@ -244,7 +244,7 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
     if(!grid[cell].skip)
     {
       for(i=0;i<ncrops;i++)
-        yields[cell][i] = (float)grid[cell].output.pft_harvest[i].harvest.carbon;
+        yields[cell][i] = (float)grid[cell].pft_harvest[i];
 
       for(m=0;m<NMONTH;m++)
       {
@@ -253,12 +253,12 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
         monthpetim[cell][m] = (float)grid[cell].ml.image_data->mpetim[m];
       }
       if (config->river_routing)
-        adischarge[cell] = (float)(grid[cell].output.ydischarge*1e-9);
+        adischarge[cell] = (float)(grid[cell].ydischarge*1e-9);
 #ifdef DEBUG_IMAGE_CELL
-      if (grid[cell].output.pft_harvest[11].harvest.carbon > 0)
+      if (grid[cell].pft_harvest[SURARCANE] > 0)
       {
-        printf("pft_harvest.sugarcane = %d, %g\n", cell, grid[cell].output.pft_harvest[11].harvest.carbon);
-        printf("yields sugarcane = %d %g\n", cell, yields[cell][11]);
+        printf("pft_harvest.sugarcane = %d, %g\n", cell, grid[cell].pft_harvest[SUGARCANE]);
+        printf("yields sugarcane = %d %g\n", cell, yields[cell][SUGARCANE]);
       }
       fflush(stdout);
 #endif
@@ -268,17 +268,17 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
         printf("NPP isnan in cell %d\n",cell);
         fflush(stdout);
       }
-      if(isnan(grid[cell].output.flux_estab.carbon))
+      if(isnan(grid[cell].balance.flux_estab.carbon))
       {
         printf("flux estab isnan in cell %d\n",cell);
         fflush(stdout);
       }
-      if(isnan(grid[cell].output.flux_harvest.carbon))
+      if(isnan(grid[cell].balance.flux_harvest.carbon))
       {
         printf("flux harvest isnan in cell %d\n",cell);
         fflush(stdout);
       }
-      if(isnan(grid[cell].output.prod_turnover))
+      if(isnan(grid[cell].balance.prod_turnover))
       {
         printf("prod_turnover isnan in cell %d\n",cell);
         fflush(stdout);
@@ -286,16 +286,16 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
 #endif
 #ifdef SENDSEP
       nep_image[cell]=(float)(grid[cell].balance.anpp-grid[cell].balance.arh+grid[cell].balance.flux_estab.carbon);
-      nep_image_nat[cell]=(float)(grid[cell].output.npp_nat+grid[cell].output.flux_estab_nat-grid[cell].output.rh_nat);
-      nep_image_wp[cell]=(float)(grid[cell].output.npp_wp+grid[cell].output.flux_estab_wp-grid[cell].output.rh_wp);
+      nep_image_nat[cell]=(float)(grid[cell].npp_nat+grid[cell].flux_estab_nat-grid[cell].rh_nat);
+      nep_image_wp[cell]=(float)(grid[cell].npp_wp+grid[cell].flux_estab_wp-grid[cell].rh_wp);
       harvest_agric_image[cell]=(float)grid[cell].balance.flux_harvest.carbon;
       harvest_biofuel_image[cell]=(float)grid[cell].balance.biomass_yield.carbon;
       harvest_timber_image[cell]=(float)grid[cell].output.timber_harvest.carbon;
       product_turnover_fast_image[cell]=(float)grid[cell].balance.prod_turnover.fast.carbon;
       product_turnover_slow_image[cell]=(float)grid[cell].balance.prod_turnover.slow.carbon;
       trad_biofuel_image[cell]=(float)grid[cell].balance.trad_biofuel.carbon;
-      rh_image_nat[cell]=(float)(grid[cell].output.rh_nat);
-      rh_image_wp[cell]=(float)(grid[cell].output.rh_wp);
+      rh_image_nat[cell]=(float)(grid[cell].rh_nat);
+      rh_image_wp[cell]=(float)(grid[cell].rh_wp);
 #else
       nep_image[cell]=(float)(grid[cell].balance.anpp-grid[cell].balance.arh+grid[cell].balance.flux_estab.carbon-grid[cell].balance.flux_harvest.carbon)
         -grid[cell].balance.biomass_yield.carbon;
@@ -309,13 +309,13 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
       fire_image[cell]=(float)grid[cell].balance.fire.carbon;
       npp_image[cell]=(float)(grid[cell].balance.anpp+grid[cell].balance.flux_estab.carbon);
       fire_image[cell]=(float)grid[cell].balance.fire.carbon;
-      npp_image_nat[cell]=(float)(grid[cell].output.npp_nat+grid[cell].output.flux_estab_nat);
-      npp_image_wp[cell]=(float)(grid[cell].output.npp_wp+grid[cell].output.flux_estab_wp);
+      npp_image_nat[cell]=(float)(grid[cell].npp_nat+grid[cell].flux_estab_nat);
+      npp_image_wp[cell]=(float)(grid[cell].npp_wp+grid[cell].flux_estab_wp);
       fireemission_deforest_image[cell]=(float)grid[cell].balance.deforest_emissions.carbon;
       /*printf("sending pix %d trad_biof %g deforest_emiss %g\n",
         cell,trad_biofuel_image[cell],fireemission_deforest_image[cell]);*/
       /* pft_npp voor rainfed managed grass */
-      nppgrass_image[cell]=(float)grid[cell].output.pft_npp[(npft-config->nbiomass-config->nwft)+rmgrass(ncft)];
+      nppgrass_image[cell]=(float)grid[cell].npp_grass;
 #ifdef DEBUG_IMAGE
       if(grid[cell].coord.lon>-2.5 && grid[cell].coord.lon<-2.0 && grid[cell].coord.lat>48.0 && grid[cell].coord.lat<48.5)
       {
@@ -737,7 +737,7 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
 #endif
 /* sending yield data to interface -- needs to be read at the same position! */
   getcounts(counts,offsets,config->nall,ncrops,config->ntask);
-  mpi_write_socket(config->out,yields,MPI_FLOAT,
+  mpi_write_socket(config->out,yields[0],MPI_FLOAT,
                    config->nall*ncrops,counts,offsets,config->rank,config->comm);
   getcounts(counts,offsets,config->nall,1,config->ntask);
   mpi_write_socket(config->out,adischarge,MPI_FLOAT,
@@ -831,7 +831,7 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
   writefloat_socket(config->out, trad_biofuel_image_wp, config->ngridcell);
 #endif
   /* sending yield data to interface -- needs to be read at the same position! */
-  writefloat_socket(config->out,yields, ncrops*config->ngridcell); /*NCROPS should be made generic somewhere*/
+  writefloat_socket(config->out,yields[0], ncrops*config->ngridcell); /*NCROPS should be made generic somewhere*/
   writefloat_socket(config->out, adischarge, config->ngridcell);
   writefloat_socket(config->out,nppgrass_image, config->ngridcell);
   writefloat_socket(config->out, natfrac_image, config->ngridcell);

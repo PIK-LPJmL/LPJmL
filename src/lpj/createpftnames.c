@@ -34,7 +34,10 @@ char **createpftnames(int index,           /**< output index */
   switch(index)
   {
     case SDATE: case HDATE: case HUSUM: case SYEAR: case CFT_SWC:
-    case SDATE2: case HDATE2: case HUSUM2: case SYEAR2:
+    case SDATE2: case HDATE2: case HUSUM2: case SYEAR2: case CFT_LEACHING:
+    case CFT_N2O_DENIT : case CFT_N2O_NIT: case CFT_N2_EMIS: case CFT_C_EMIS:
+    case CFT_N2O_DENIT2: case CFT_N2O_NIT2: case CFT_N2_EMIS2: case CFT_C_EMIS2:
+    case CFT_LEACHING2: case CFT_RUNOFF: case CFT_RUNOFF2:
       for(i=0;i<ncft;i++)
       {
         pftnames[i]=strdup(config->pftpar[npft+i].name);
@@ -186,7 +189,7 @@ char **createpftnames(int index,           /**< output index */
     case FPC:
       pftnames[0]=strdup("natural stand fraction");
       checkptr(pftnames[0]);
-      for(i=0;i<npft-config->nbiomass-config->nwft;i++)
+      for(i=0;i<npft-config->nbiomass-config->nagtree-config->nwft;i++)
       {
         pftnames[i+1]=strdup(config->pftpar[i].name);
         checkptr(pftnames[i+1]);

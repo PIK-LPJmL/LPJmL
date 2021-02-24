@@ -91,7 +91,7 @@ extern Real daily_grassland(Stand *,Real,const Dailyclimate *, int,int,
                             Real,Real,Real,Real,
                             Real ,int, int, int,Bool,Real,const Config *);
 extern Bool annual_grassland(Stand *,int,int,Real,int,Bool,Bool,const Config *);
-extern Bool isdailyoutput_grassland(const Output *,const Stand *);
+extern Bool isdailyoutput_grassland(const Config *,const Stand *);
 extern void output_gbw_grassland(Output *,const Stand *,Real,Real,Real,Real,
                                  const Real [LASTLAYER],const Real [LASTLAYER],Real,Real,int,
                                  const Config *);

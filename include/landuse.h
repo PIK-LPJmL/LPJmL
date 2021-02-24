@@ -127,9 +127,9 @@ extern Real crop_sum_frac(Landfrac *,int,int,Real,Bool);
 extern Stocks cultivate(Cell *,const Pftpar *,int,Real,Bool,int,Bool,Stand *,
                         Bool,int,int,int,int,const Config *);
 #ifdef IMAGE
-extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real);
+extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real,const Config *);
 #endif
-extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int);
+extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int,const Config *);
 extern Bool getlanduse(Landuse,Cell *,int,int,int,const Config *);
 extern void landusechange(Cell *,int,int,Bool,int,const Config *);
 extern Bool setaside(Cell *,Stand *,Bool,Bool,int,Bool,int,const Config *);
@@ -139,7 +139,7 @@ extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
 extern void deforest(Cell *,Real,Bool,int,Bool,Bool,int,int,Real,const Config *);
 extern Stocks woodconsum(Stand*,Real);
 extern void calc_nir(Stand *,Irrigation *,Real,Real [],Real);
-extern Real rw_irrigation(Stand *,Real,const Real [],Real);
+extern Real rw_irrigation(Stand *,Real,const Real [],Real,const Config *);
 extern void irrig_amount_river(Cell *,const Config *);
 extern void irrig_amount(Stand *,Irrigation *,int,int,int,const Config *);
 extern void mixsetaside(Stand *,Stand *,Bool);
@@ -148,12 +148,14 @@ extern void init_irrigation(Irrigation *);
 extern Bool fwrite_irrigation(FILE *,const Irrigation *);
 extern void fprint_irrigation(FILE *,const Irrigation *,const Pftpar *);
 extern Bool fread_irrigation(FILE *,Irrigation *,Bool);
-extern Harvest harvest_stand(Output *,Stand *,Real);
+extern Harvest harvest_stand(Output *,Stand *,Real,const Config *);
 extern int *scancftmap(LPJfile *,int *,const char *,Bool,int,int,const Config *);
 extern Bool fscanmowingdays(LPJfile *,Config *);
 extern void tillage(Soil *, Real);
 extern void getnsoil_agr(Real *,Real *,Real *,const Cell *);
 extern Bool readcottondays(Cell *,const Config *);
+extern void update_irrig(Stand *,int,int,const Config *);
+extern void update_double_harvest(Output *,Pft *,Bool,int,int,int,const Config *);
 
 /* Declaration of variables */
 

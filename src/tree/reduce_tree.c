@@ -19,11 +19,12 @@
 
 void reduce_tree(Litter *litter, /**< pointer to litter */
                  Pft *pft,       /**< pointer to tree PFT */
-                 Real factor     /**< factor for reduction of tree density */
+                 Real factor,    /**< factor for reduction of tree density */
+                 const Config *config /**< LPJmL configuration */
                 ) 
 {
   pft->fpc/=factor;
-  litter_update_tree(litter,pft,pft->nind-pft->nind/factor);
+  litter_update_tree(litter,pft,pft->nind-pft->nind/factor,config);
   if(pft->nind>0)
     pft->bm_inc.nitrogen/=factor;
   pft->nind/=factor;

@@ -132,9 +132,9 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
       fixed_n = *n_plant_demand - pft->bm_inc.nitrogen;
       n_uptake += fixed_n;
       pft->bm_inc.nitrogen = *n_plant_demand;
-      pft->stand->cell->output.mbnf += fixed_n*pft->stand->frac;
+      getoutput(&pft->stand->cell->output,BNF,config) += fixed_n*pft->stand->frac;
       pft->stand->cell->balance.n_influx += fixed_n*pft->stand->frac;
-      pft->stand->cell->output.abnf_agr += fixed_n*pft->stand->frac;
+      getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
       pft->vscal = 1;
     }
     else
@@ -148,9 +148,9 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         if(config->double_harvest)
           crop->dh->nfertsum+=autofert_n*pft->stand->frac;
         else
-          pft->stand->cell->output.cft_nfert[pft->par->id-npft+data->irrigation*nirrig]+=autofert_n;
+          getoutputindex(&pft->stand->cell->output,CFT_NFERT,pft->par->id-npft+data->irrigation*nirrig,config)+=autofert_n;
         pft->stand->cell->balance.n_influx += autofert_n*pft->stand->frac;
-        pft->stand->cell->output.flux_nfert+=autofert_n*pft->stand->frac;
+        getoutput(&pft->stand->cell->output,FLUX_AUTOFERT,config)+=autofert_n*pft->stand->frac;
       }
       else
       {
@@ -174,14 +174,14 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
    if(crop->dh!=NULL)
      crop->nuptakesum += n_uptake;
    else
-     pft->stand->cell->output.pft_nuptake[(pft->par->id-config->nbiomass-config->nagtree-config->nwft)+data->irrigation*nirrig]+=n_uptake;
-   pft->stand->cell->output.pft_ndemand[(pft->par->id-config->nbiomass-config->nagtree-config->nwft)+data->irrigation*nirrig]+=max(0,*n_plant_demand-pft->bm_inc.nitrogen);
+     getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,(pft->par->id-config->nbiomass-config->nagtree-config->nwft)+data->irrigation*nirrig,config)+=n_uptake;
+   getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,(pft->par->id-config->nbiomass-config->nagtree-config->nwft)+data->irrigation*nirrig,config)+=max(0,*n_plant_demand-pft->bm_inc.nitrogen);
    pft->stand->cell->balance.n_uptake+=n_uptake*pft->stand->frac;
    pft->stand->cell->balance.n_demand+=max(0,(*n_plant_demand-pft->bm_inc.nitrogen))*pft->stand->frac;
-   if(pft->par->id==pft->stand->cell->output.daily.cft && data->irrigation==pft->stand->cell->output.daily.irrigation)
+   if(pft->par->id==config->crop_index && data->irrigation==config->crop_irrigation)
    {
-     pft->stand->cell->output.daily.nuptake+=n_uptake;
-     pft->stand->cell->output.daily.vscal+=pft->vscal;
+     getoutput(&pft->stand->cell->output,D_NUPTAKE,config)+=n_uptake;
+     getoutput(&pft->stand->cell->output,D_VSCAL,config)+=pft->vscal;
    }
    return n_uptake;
 } /* of 'nuptake_crop' */

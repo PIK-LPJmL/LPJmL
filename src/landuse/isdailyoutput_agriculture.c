@@ -15,7 +15,7 @@
 #include "lpj.h"
 #include "agriculture.h"
 
-Bool isdailyoutput_agriculture(const Output *output, /**< Output data */
+Bool isdailyoutput_agriculture(const Config *config, /**< Output data */
                                const Stand *stand    /**< stand pointer */
                               )
 {
@@ -23,12 +23,12 @@ Bool isdailyoutput_agriculture(const Output *output, /**< Output data */
   const Pft *pft;
   int p;
   data = stand->data;
-  if(output->daily.cft==ALLSTAND)
+  if(config->crop_index==ALLSTAND)
     return TRUE;
-  if(output->daily.irrigation != data->irrigation)
+  if(config->crop_irrigation != data->irrigation)
     return FALSE;
   foreachpft(pft,p,&stand->pftlist)
-    if (pft->par->id == output->daily.cft)
+    if (pft->par->id == config->crop_index)
       return TRUE;
   return FALSE;
 } /* of 'isdailyoutput_agriculture' */

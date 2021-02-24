@@ -70,6 +70,7 @@ void freegrid(Cell grid[],         /**< cell grid */
 
 #if defined IMAGE && defined COUPLED
       free(grid[cell].ml.image_data);
+      free(grid[cell].pft_harvest);
 #endif
     }
   } /* of 'for(cell=...)' */

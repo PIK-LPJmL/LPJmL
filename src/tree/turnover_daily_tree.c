@@ -18,7 +18,8 @@
 void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
                          Pft *pft,       /**< pointer to tree PFT */
                          Real temp,      /**< air temperature (deg C) */
-                         Bool isdaily    /**< daily temperature data? */
+                         Bool isdaily,   /**< daily temperature data? */
+                         const Config *config /**< LPJmL configuration */
                         )
 {
   Pfttree *tree;
@@ -42,9 +43,9 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
         tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
         tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
         pft->stand->soil.litter.item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
-        output->alittfall.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind*pft->stand->frac;
+        getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind*pft->stand->frac;
         pft->stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
-        output->alittfall.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->stand->frac;
+        getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->stand->frac;
         update_fbd_tree(&pft->stand->soil.litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind,0);
         tree->isphen=TRUE;
       }
@@ -56,9 +57,9 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
         tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
         tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
         litter->item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind;
-        output->alittfall.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind*pft->stand->frac;
+        getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind*pft->stand->frac;
         litter->item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind;
-        output->alittfall.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->stand->frac;
+        getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*treepar->turnover.leaf*pft->nind*pft->stand->frac;
         update_fbd_tree(litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf*pft->nind,0);
 
       }
@@ -69,9 +70,9 @@ void turnover_daily_tree(Litter *litter, /**< pointer to litter data */
       tree->turn_litt.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind;
       tree->turn_litt.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR*pft->nind;
       litter->item[pft->litter].ag.leaf.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind;
-      output->alittfall.carbon+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac;
+      getoutput(output,LITFALLC,config)+=tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac;
       litter->item[pft->litter].ag.leaf.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR*pft->nind;
-      output->alittfall.nitrogen+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac;
+      getoutput(output,LITFALLN,config)+=tree->ind.leaf.nitrogen*treepar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac;
       update_fbd_tree(litter,pft->par->fuelbulkdensity,tree->ind.leaf.carbon*treepar->turnover.leaf/NDAYYEAR*pft->nind,0);
       break;
   } /*switch*/

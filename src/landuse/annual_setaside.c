@@ -58,10 +58,10 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
 #ifndef DAILY_ESTABLISHMENT
     present[pft->par->id]=TRUE;
 #endif
-    if(annual_grass(stand,pft,&fpc_inc,config->new_phenology,config->with_nitrogen,isdaily))
+    if(annual_grass(stand,pft,&fpc_inc,isdaily,config))
     {
       /* PFT killed, delete from list of established PFTs */
-      litter_update_grass(&stand->soil.litter,pft,pft->nind);
+      litter_update_grass(&stand->soil.litter,pft,pft->nind,config);
       delpft(&stand->pftlist,p);
       p--; /* adjust loop variable */ 
     }
@@ -85,7 +85,7 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
          && establish(stand->cell->gdd[p],config->pftpar+p,&stand->cell->climbuf, stand->type->landusetype == WETLAND))
       {
         if(!present[p])
-         addpft(stand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
+         addpft(stand,config->pftpar+p,year,0,config);
         n_est++;
       }
     }
@@ -98,8 +98,8 @@ Bool annual_setaside(Stand *stand,         /**< Pointer to stand */
         flux_estab.nitrogen+=stocks.nitrogen;
       }
 
-    stand->cell->output.flux_estab.carbon+=flux_estab.carbon*stand->frac;
-    stand->cell->output.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
+    getoutput(&stand->cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
+    getoutput(&stand->cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*stand->frac;
     stand->cell->balance.flux_estab.carbon+=flux_estab.carbon*stand->frac;
     stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
     stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;

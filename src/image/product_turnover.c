@@ -15,11 +15,11 @@
 
 #include "lpj.h"
 
-void product_turnover(Cell *cell)
+void product_turnover(Cell *cell,const Config *config)
 {
-  cell->output.prod_turnover+=cell->ml.product.fast.carbon*param.product_turnover.fast;
+  getoutput(&cell->output,PROD_TURNOVER,config)+=cell->ml.product.fast.carbon*param.product_turnover.fast;
   cell->balance.prod_turnover.fast.carbon+=cell->ml.product.fast.carbon*param.product_turnover.fast;
-  cell->output.prod_turnover+=cell->ml.product.slow.carbon*param.product_turnover.slow;
+  getoutput(&cell->output,PROD_TURNOVER,config)+=cell->ml.product.slow.carbon*param.product_turnover.slow;
   cell->balance.prod_turnover.slow.carbon+=cell->ml.product.slow.carbon*param.product_turnover.slow;
   cell->ml.product.fast.carbon*=(1.0-param.product_turnover.fast);
   cell->ml.product.slow.carbon*=(1.0-param.product_turnover.slow);
@@ -27,6 +27,6 @@ void product_turnover(Cell *cell)
   cell->balance.prod_turnover.slow.nitrogen+=cell->ml.product.slow.nitrogen*param.product_turnover.slow;
   cell->ml.product.fast.nitrogen*=(1.0-param.product_turnover.fast);
   cell->ml.product.slow.nitrogen*=(1.0-param.product_turnover.slow);
-  cell->output.product_pool.fast=cell->ml.product.fast.carbon;
-  cell->output.product_pool.slow=cell->ml.product.slow.carbon;
+  getoutput(&cell->output,PRODUCT_POOL_FAST,config)=cell->ml.product.fast.carbon;
+  getoutput(&cell->output,PRODUCT_POOL_SLOW,config)=cell->ml.product.slow.carbon;
 } /* of 'product_turnover' */

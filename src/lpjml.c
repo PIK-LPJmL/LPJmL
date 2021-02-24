@@ -223,7 +223,9 @@ int main(int argc,char **argv)
   }
   /* open output files */  
   output=fopenoutput(grid,NOUT,&config);
-
+  rc=initoutput(output,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+  failonerror(&config,rc,INIT_INPUT_ERR,
+              "Initialization of output data failed");
   if(isopen(output,GRID))
     writecoords(output,GRID,grid,&config);
   if(isopen(output,COUNTRY) && config.withlanduse)

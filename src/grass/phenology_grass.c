@@ -18,7 +18,8 @@
 void phenology_grass(Pft *pft,  /**< pointer to PFT variables */
                      Real temp, /**< temperature (deg C) */
                      int day,   /**< day of year (1..365) */
-                     Bool UNUSED(isdaily) /**< daily temperature data? */
+                     Bool UNUSED(isdaily), /**< daily temperature data? */
+                     const Config *config /**< LPJmL configuration */
                     )
 {
   Real dtemp;
@@ -42,9 +43,9 @@ void phenology_grass(Pft *pft,  /**< pointer to PFT variables */
     grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
     grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
     pft->stand->soil.litter.item[pft->litter].ag.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
-    output->alittfall.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac;
+    getoutput(output,LITFALLC,config)+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->stand->frac;
     pft->stand->soil.litter.item[pft->litter].ag.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover;
-    output->alittfall.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover*pft->stand->frac;
+    getoutput(output,LITFALLN,config)+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind*pft->par->fn_turnover*pft->stand->frac;
     update_fbd_grass(&pft->stand->soil.litter,pft->par->fuelbulkdensity,grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind);
   }
   pft->aphen+=pft->phen;

@@ -111,7 +111,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     else
     {
       /* write irrig_apply to output */
-      output->irrig+=irrig_apply*stand->frac;
+      getoutput(output,IRRIG,config)+=irrig_apply*stand->frac;
       stand->cell->balance.airrig+=irrig_apply*stand->frac;
 #if defined IMAGE && defined COUPLED
       if(stand->cell->ml.image_data!=NULL)
@@ -121,9 +121,9 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       }
 #endif
       if(config->pft_output_scaled)
-        output->cft_airrig[index]+=irrig_apply*stand->cell->ml.landfrac[1].biomass_grass;
+        getoutputindex(output,CFT_AIRRIG,index,config)+=irrig_apply*stand->cell->ml.landfrac[1].biomass_grass;
       else
-        output->cft_airrig[index]+=irrig_apply;
+        getoutputindex(output,CFT_AIRRIG,index,config)+=irrig_apply;
     }
   }
 
@@ -145,7 +145,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   {
     //runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
-    output->cft_irrig_events[index]++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
+    getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
   runoff+=infil_perc_rain(stand,rainmelt+irrig_apply,&return_flow_b,npft,ncft,config);
@@ -153,7 +153,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   isphen=FALSE;
   foreachpft(pft,p,&stand->pftlist)
   {
-    leaf_phenology(pft,climate->temp,day,climate->isdailytemp);
+    leaf_phenology(pft,climate->temp,day,climate->isdailytemp,config);
     cover_stand+=pft->fpc*pft->phen;
 
     /* calculate albedo and FAPAR of PFT */
@@ -173,34 +173,34 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       gcgp=gc_pft/gp_pft[getpftpar(pft,id)];
       if(stand->cell->ml.landfrac[data->irrigation].biomass_grass>0.0)
       {
-        output->gcgp_count[nnat+index]++;
-        output->pft_gcgp[nnat+index]+=gcgp;
+        getoutputindex(output,PFT_GCGP_COUNT,nnat+index,config)++;
+        getoutputindex(output,PFT_GCGP,nnat+index,config)+=gcgp;
       }
     }
     npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
-    if(output->daily.cft==ALLSTAND)
+    if(config->crop_index==ALLSTAND)
     {
-      output->daily.npp+=npp*stand->frac;
-      output->daily.gpp+=gpp*stand->frac;
+      getoutput(output,D_NPP,config)+=npp*stand->frac;
+      getoutput(output,D_GPP,config)+=gpp*stand->frac;
     }
-    output->npp+=npp*stand->frac;
+    getoutput(output,NPP,config)+=npp*stand->frac;
     stand->cell->balance.anpp+=npp*stand->frac;
     output->dcflux-=npp*stand->frac;
-    output->gpp+=gpp*stand->frac;
-    output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    output->mphen_tmin += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    output->mphen_tmax += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    output->mphen_light += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    output->mphen_water += pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    output->mwscal += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,GPP,config)+=gpp*stand->frac;
+    getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,PHEN_TMIN,config) += pft->fpc * pft->phen_gsi.tmin * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,PHEN_TMAX,config) += pft->fpc * pft->phen_gsi.tmax * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,PHEN_LIGHT,config) += pft->fpc * pft->phen_gsi.light * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,PHEN_WATER,config) += pft->fpc * pft->phen_gsi.wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
+    getoutput(output,WSCAL,config) += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
-    output->cft_fpar[index]+=(fpar(pft)*stand->cell->ml.landfrac[data->irrigation].biomass_grass*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
+    getoutputindex(output,CFT_FPAR,index,config)+=(fpar(pft)*stand->cell->ml.landfrac[data->irrigation].biomass_grass*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)));
 
     if(config->pft_output_scaled)
-      output->pft_npp[nnat+index]+=npp*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
+      getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
     else
-      output->pft_npp[nnat+index]+=npp;
-    output->mpft_lai[nnat+index]+=actual_lai(pft);
+      getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
+    getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai(pft);
   } /* of foreachpft */
 
   /* calculate water balance */
@@ -219,12 +219,12 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       grass=pft->data;
       if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
       {
-        turnover_grass(&stand->soil.litter,pft,config->new_phenology,(Real)grass->growing_days/NDAYYEAR);
-        if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config->with_nitrogen))
+        turnover_grass(&stand->soil.litter,pft,(Real)grass->growing_days/NDAYYEAR,config);
+        if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config))
         {
           /* kill PFT from list of established PFTs */
           fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */
-          litter_update_grass(&stand->soil.litter,pft,pft->nind);
+          litter_update_grass(&stand->soil.litter,pft,pft->nind,config);
           delpft(&stand->pftlist,p);
           p--; /* adjust loop variable */
         }
@@ -238,7 +238,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
          fpc_inc[p]=0;
        }
     }
-    light(stand,config->ntypes,fpc_inc);
+    light(stand,fpc_inc,config);
     free(fpc_inc);
   }
   /* daily turnover and harvest check*/
@@ -253,19 +253,19 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
 
   if(isphen)
   {
-    harvest=harvest_stand(output,stand,0.75);
+    harvest=harvest_stand(output,stand,0.75,config);
     if(data->irrigation)
     {
       stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
       stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*stand->frac;
-      output->mstor_return+=(data->irrig_stor+data->irrig_amount)*stand->frac;
+      getoutput(output,STOR_RETURN,config)+=(data->irrig_stor+data->irrig_amount)*stand->frac;
 
       /* pay back conveyance losses that have already been consumed by transport into irrig_stor */
       stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->coord.area*stand->frac;
       stand->cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-      output->mconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
+      getoutput(output,CONV_LOSS_EVAP,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
       stand->cell->balance.aconv_loss_evap-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
-      output->mconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
+      getoutput(output,CONV_LOSS_DRAIN,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
       stand->cell->balance.aconv_loss_drain-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->frac;
 #if defined IMAGE && defined COUPLED
       if(stand->cell->ml.image_data!=NULL)
@@ -277,13 +277,13 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
 
       if(config->pft_output_scaled)
       {
-        output->cft_conv_loss_evap[index]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->ml.landfrac[1].biomass_grass;
-        output->cft_conv_loss_drain[index]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->cell->ml.landfrac[1].biomass_grass;
+        getoutputindex(output,CFT_CONV_LOSS_EVAP,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->cell->ml.landfrac[1].biomass_grass;
+        getoutputindex(output,CFT_CONV_LOSS_DRAIN,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap)*stand->cell->ml.landfrac[1].biomass_grass;
       }
       else
       {
-        output->cft_conv_loss_evap[index]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
-        output->cft_conv_loss_drain[index]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
+        getoutputindex(output,CFT_CONV_LOSS_EVAP,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap;
+        getoutputindex(output,CFT_CONV_LOSS_DRAIN,index,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*(1-data->conv_evap);
       }
 
       data->irrig_stor=0;
@@ -291,16 +291,16 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
     }
     if(config->pft_output_scaled)
     {
-      output->pft_harvest[index].harvest.carbon+=harvest.harvest.carbon*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
-      output->pft_harvest[index].harvest.nitrogen+=harvest.harvest.nitrogen*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
+      getoutputindex(output,PFT_HARVESTC,index,config)+=harvest.harvest.carbon*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
+      getoutputindex(output,PFT_HARVESTN,index,config)+=harvest.harvest.nitrogen*stand->cell->ml.landfrac[data->irrigation].biomass_grass;
     }
     else
     {
-      output->pft_harvest[index].harvest.carbon+=harvest.harvest.carbon;
-      output->pft_harvest[index].harvest.nitrogen+=harvest.harvest.nitrogen;
+      getoutputindex(output,PFT_HARVESTC,index,config)+=harvest.harvest.carbon;
+      getoutputindex(output,PFT_HARVESTN,index,config)+=harvest.harvest.nitrogen;
     }
     /* harvested area */
-    output->cftfrac[index]=stand->cell->ml.landfrac[data->irrigation].biomass_grass;
+    getoutputindex(output,CFTFRAC,index,config)+=stand->cell->ml.landfrac[data->irrigation].biomass_grass;
   } /* of if(isphen) */
 
   if(data->irrigation && stand->pftlist.n>0) /*second element to avoid irrigation on just harvested fields */
@@ -309,33 +309,33 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   forrootsoillayer(l)
   {
     transp+=aet_stand[l]*stand->frac;
-    output->mtransp_b+=(aet_stand[l]-green_transp[l])*stand->frac;
+    getoutput(output,TRANSP_B,config)+=(aet_stand[l]-green_transp[l])*stand->frac;
   }
-  if(output->daily.cft==ALLSTAND)
+  if(config->crop_index==ALLSTAND)
   {
-    output->daily.evap+=evap*stand->frac;
-    output->daily.trans+=transp;
-    output->daily.w0+=stand->soil.w[1]*stand->frac;
-    output->daily.w1+=stand->soil.w[2]*stand->frac;
-    output->daily.wevap+=stand->soil.w[0]*stand->frac;
-    output->daily.interc+=intercep_stand*stand->frac;
+    getoutput(output,D_EVAP,config)+=evap*stand->frac;
+    getoutput(output,D_TRANS,config)+=transp;
+    getoutput(output,D_W0,config)+=stand->soil.w[1]*stand->frac;
+    getoutput(output,D_W1,config)+=stand->soil.w[2]*stand->frac;
+    getoutput(output,D_WEVAP,config)+=stand->soil.w[0]*stand->frac;
+    getoutput(output,D_INTERC,config)+=intercep_stand*stand->frac;
   }
 
-  output->transp+=transp;
+  getoutput(output,TRANSP,config)+=transp;
   stand->cell->balance.atransp+=transp;
-  output->evap+=evap*stand->frac;
+  getoutput(output,EVAP,config)+=evap*stand->frac;
   stand->cell->balance.aevap+=evap*stand->frac;
   stand->cell->balance.ainterc+=intercep_stand*stand->frac;
-  output->mevap_b+=evap_blue*stand->frac;   /* blue soil evap */
+  getoutput(output,EVAP_B,config)+=evap_blue*stand->frac;   /* blue soil evap */
 
-  output->interc+=intercep_stand*stand->frac;
-  output->minterc_b+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
+  getoutput(output,INTERC,config)+=intercep_stand*stand->frac;
+  getoutput(output,INTERC_B,config)+=intercep_stand_blue*stand->frac;   /* blue interception and evap */
 #if defined(IMAGE) && defined(COUPLED)
   if(stand->cell->ml.image_data!=NULL)
     stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
 #endif
 
-  output->mreturn_flow_b+=return_flow_b*stand->frac;
+  getoutput(output,RETURN_FLOW_B,config)+=return_flow_b*stand->frac;
 
   output_gbw_biomass_grass(output,stand,frac_g_evap,evap,evap_blue,return_flow_b,aet_stand,green_transp,
                            intercep_stand,intercep_stand_blue,ncft,config);

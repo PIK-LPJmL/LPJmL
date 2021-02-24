@@ -247,12 +247,11 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
       if(pft->stand->type->landusetype==AGRICULTURE)
       {
         irrig=pft->stand->data;
-        if(&pft->stand->cell->output.daily!=NULL &&
-           pft->par->id==pft->stand->cell->output.daily.cft &&
-           irrig->irrigation==pft->stand->cell->output.daily.irrigation &&
+        if( pft->par->id==config->crop_index &&
+           irrig->irrigation==config->crop_irrigation &&
            vmax>0)
         {
-          pft->stand->cell->output.daily.nlimit=pft->vmax/vmax;
+          getoutput(&pft->stand->cell->output,D_NLIMIT,config)=pft->vmax/vmax;
         }
       }
     } /* of if(config->with_nitrogen) */

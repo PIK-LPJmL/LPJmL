@@ -33,9 +33,10 @@ static void printch4(const Real CH4[LASTLAYER])
 //#define CHECK_BALANCE
 
 void plant_gas_transport(Stand *stand,  /* pointer to soil data */
-  Real airtemp,  /* air temperature (deg C) */
-  Real pch4      /* atmospheric CH4 content (ppm) */
-)
+                         Real airtemp,  /* air temperature (deg C) */
+                         Real pch4,     /* atmospheric CH4 content (ppm) */
+                         const Config *config
+                        )
 {
   Pft *pft;
   Pftgrass *grass;
@@ -122,10 +123,10 @@ void plant_gas_transport(Stand *stand,  /* pointer to soil data */
     }
   }
   if (CH4_plant_all>0)
-    stand->cell->output.mCH4_em+=CH4_plant_all*stand->frac;
+    getoutput(&stand->cell->output,CH4_EMISSIONS,config)+=CH4_plant_all*stand->frac;
   else
-    stand->cell->output.mCH4_sink+=CH4_plant_all*stand->frac;
-  stand->cell->output.mCH4_plantgas+=CH4_plant_all*stand->frac;
+    getoutput(&stand->cell->output,CH4_SINK,config)+=CH4_plant_all*stand->frac;
+  getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
   //printf("plantgas after");
   //printch4(stand->soil.CH4);
 #ifdef CHECK_BALANCE
