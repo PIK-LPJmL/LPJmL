@@ -123,7 +123,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
     printf("NC_leaf, NC_root: %g %g\n",grass->ind.leaf.nitrogen/grass->ind.leaf.carbon,
            grass->ind.root.nitrogen/grass->ind.root.carbon);
 #endif
-    if (grass->ind.leaf.carbon >0 && bm_inc_ind.nitrogen>0)
+    if (grass->ind.leaf.carbon >epsilon && bm_inc_ind.nitrogen>epsilon)
     {
       a = (grasspar->ratio*grass->ind.root.nitrogen*grass->ind.leaf.carbon - grass->ind.leaf.nitrogen*grass->ind.root.carbon + grass->ind.leaf.carbon*bm_inc_ind.nitrogen*grasspar->ratio) /
         (bm_inc_ind.nitrogen*grass->ind.root.carbon + bm_inc_ind.nitrogen*grasspar->ratio*grass->ind.leaf.carbon);

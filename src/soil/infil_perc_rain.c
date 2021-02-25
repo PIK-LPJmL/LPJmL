@@ -326,6 +326,8 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     }
    if (soil->w[l]<0)
    {
+    if(soil->w[l]<-1e-5)
+    {
     fprintf(stderr,"Cell (%s) infil= %3.10f icedepth[%d]= %3.8f fw_ice= %.6f w_fw=%.6f w=%.6f soilwater=%.6f wsats=%.6f whcs=%f\n",
             sprintcoord(line,&stand->cell->coord),infil,l,soil->ice_depth[l],soil->ice_fw[l],soil->w_fw[l],soil->w[l]*soil->whcs[l],
             allwater(soil,l)+allice(soil,l),soil->wsats[l],soil->whcs[l]);
@@ -333,6 +335,8 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,
          "Cell (%s) Soil-moisture %d negative: %g, lutype %s soil_type %s in infil_perc_rain\n",
          sprintcoord(line,&stand->cell->coord),l,soil->w[l],stand->type->name,soil->par->name);
+    }
+    soil->w[l]=0;
    }
 #endif
   } /* soil layer loop */

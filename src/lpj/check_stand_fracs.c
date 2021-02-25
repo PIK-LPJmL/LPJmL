@@ -37,8 +37,12 @@ void check_stand_fracs(const Cell *cell, /**< pointer to cell */
     if(stand->frac>0) 
       frac_sum+=stand->frac;
     else 
+    {
+      foreachstand(stand,s,cell->standlist)
+        fprintf(stderr,"frac[%s]=%g\n",stand->type->name,stand->frac);
       fail(NEGATIVE_STAND_FRAC_ERR,TRUE,"negative STAND_FRAC %g, lakefrac: %g, cell (%s)",
            stand->frac,lakefrac,sprintcoord(line,&cell->coord));
+    }
   }
   
   if(fabs(frac_sum-1)>accuracy)

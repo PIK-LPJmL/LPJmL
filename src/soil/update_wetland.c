@@ -29,26 +29,17 @@ void update_wetland(Cell *cell,
 {
   Stand *stand;
   Pft *pft, *wetpft;
-  Real fpc_total;
-  int p, l, f;
+  int p, l;
   int s, pos;
   int wetlandstandnum;
-  int path;
   int *position;
   Bool *present;
   Real wetlandarea_old, wetlandarea_new, delta_wetland;
   Stand *natstand, *wetstand;
-  Real tmp, A_frac, slope, slope_max;
+  Real tmp, slope, slope_max;
   Real wtable_use, lambda;
   Real cti_min, cti_max, p_min, p_max;
-  Real cti_min_max, p_min_max;
-  Real p_min_sumean;
-  Real p_min_sumin;
-  Real p_min_sumax;
-  Real totc_ox_pre, totc_anox_pre;
-  Real totc_ox_post, totc_anox_post;
-  Real V_frac_remove, C_remove;
-  Real efold_current, acflux_est;
+  //Real cti_min_max, p_min_max;
   Bool iswetland_change, iswetland;
   Pool ctotal;
   Poolpar kmean_pft, cshift;
@@ -65,7 +56,6 @@ void update_wetland(Cell *cell,
   check(present);
   for (p = 0; p<ntotpft; p++)
     present[p] = FALSE;
-  acflux_est = 0.0;
 #ifdef CHECK_BALANCE
   foreachstand(stand, s, cell->standlist)
   {
@@ -77,11 +67,11 @@ void update_wetland(Cell *cell,
   wetlandstandnum = NOT_FOUND;
   wetlandarea_old = wetlandarea_new = 0.;
   iswetland_change = iswetland = FALSE;
-  path = 0;
   s = findlandusetype(cell->standlist, NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
   natstand = getstand(cell->standlist, s);
   s = findlandusetype(cell->standlist, WETLAND);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
-  if (s != NOT_FOUND) {
+  if (s != NOT_FOUND) 
+  {
     wetstand = getstand(cell->standlist, s);
     iswetland = TRUE;
   }
@@ -90,7 +80,7 @@ void update_wetland(Cell *cell,
   wtable_use = cell->hydrotopes.wtable_mean;        /*mean over stands, NEXT try should cell->hydrotopes.wtable_mean*/
   if (wtable_use>0) wtable_use = 0;
 
-  if ((cell->hydrotopes.skip_cell == FALSE) && (wtable_use >= -4.5))
+  if (!cell->hydrotopes.skip_cell && wtable_use >= -4.5)
   {
     // -----------------------------------------------------------------------------------------------
     //  determine wetland area
@@ -123,7 +113,7 @@ void update_wetland(Cell *cell,
 
       //   determine CTI index at wetland area mean
       tmp = itersolve(p_min, p_max, cti_min, cti_max, (p_min + p_max) / 2., cell->hydrotopes.cti_phi,
-        cell->hydrotopes.cti_chi, cell->hydrotopes.cti_mu, 0);
+                      cell->hydrotopes.cti_chi, cell->hydrotopes.cti_mu, 0);
       //   running mean of cti in wetland area
       cell->hydrotopes.wetland_cti_runmean = runmean_add(cell->hydrotopes.wetland_cti_runmean, tmp, (Real)HYD_AV_TIME);
     }
@@ -182,7 +172,6 @@ void update_wetland(Cell *cell,
         if (wetlandstandnum == NOT_FOUND)
         {
           //printf("XXX update_wetland.c wetland not exist .\n");
-          path = 1;
           pos = addstand(&wetland_stand, cell) - 1;
           wetlandstandnum = pos;
           wetstand = getstand(cell->standlist, pos);
@@ -218,7 +207,6 @@ void update_wetland(Cell *cell,
         else
         {
           //        currently there is wetland stand
-          path = 2;
           wetstand = getstand(cell->standlist, wetlandstandnum);
           //printf("XXX update_wetland.c wetland expands delta_wetland=%g.\n",delta_wetland);
           frac = natstand->frac;
@@ -284,7 +272,6 @@ void update_wetland(Cell *cell,
         }
         else
         {
-          path = 3;
           wetstand = getstand(cell->standlist, wetlandstandnum);
           //printf("XXX update_wetland.c wants to shrink .\n");
 

@@ -321,14 +321,14 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
           tree->excess_carbon+=(tree->ind.leaf.carbon-cleaf);
           tree->ind.leaf.carbon=cleaf;
         }
-        if(tree->ind.root.nitrogen/tree->ind.root.carbon<pft->par->ncleaf.low/treepar->ratio.root)
+        if(tree->ind.root.carbon>0 && tree->ind.root.nitrogen/tree->ind.root.carbon<pft->par->ncleaf.low/treepar->ratio.root)
         {
           croot=tree->ind.root.nitrogen/pft->par->ncleaf.low*treepar->ratio.root;
           //litter->bg[pft->litter].carbon+=(tree->ind.root.carbon-croot)*pft->nind;
           tree->excess_carbon+=(tree->ind.root.carbon-croot);
           tree->ind.root.carbon=croot;
         }
-        if(tree->ind.sapwood.carbon>0 && tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon<pft->par->ncleaf.low/treepar->ratio.sapwood)
+        if(tree->ind.sapwood.carbon>0 && tree->ind.sapwood.carbon>0 && tree->ind.sapwood.nitrogen/tree->ind.sapwood.carbon<pft->par->ncleaf.low/treepar->ratio.sapwood)
         {
           csapwood=tree->ind.sapwood.nitrogen/pft->par->ncleaf.low*treepar->ratio.sapwood;
           /*for(i=0;i<NFUELCLASS;i++)

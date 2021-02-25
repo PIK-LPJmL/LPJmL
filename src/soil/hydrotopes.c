@@ -10,10 +10,9 @@
 /*----------------------------------------------------------*/
 
 #include "lpj.h"
-#include "hydrotope.h"
 
-void hydrotopes(Cell *cell                   /* Pointer to cell */
-)                           /* should it return anything? */
+void hydrotopes(Cell *cell /**< Pointer to cell */
+               )
 {
   Real meanwater;
   Real mean_wet, tmp, wtable;
@@ -24,7 +23,8 @@ void hydrotopes(Cell *cell                   /* Pointer to cell */
   int s, h, l;
   iswetland = FALSE;
   s = findlandusetype(cell->standlist, WETLAND);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
-  if (s != NOT_FOUND) {
+  if (s != NOT_FOUND)
+  {
     wetstand = getstand(cell->standlist, s);
     iswetland = TRUE;
   }
@@ -32,7 +32,7 @@ void hydrotopes(Cell *cell                   /* Pointer to cell */
   meanwater = -(soildepth[0] + soildepth[1]);
   h = 0;
   mean_wet = wtable = 0;
-  // 	determine mean water table position, use modified Stieglitz et al (1997) 
+  // 	determine mean water table position, use modified Stieglitz et al (1997)
   // 	formulation
 
   // 	mean_wet = (stand->soil.w[1]*soildepth[1] + stand->soil.w[0]*soildepth[0]) / (soildepth[0] + soildepth[1]);
@@ -45,7 +45,7 @@ void hydrotopes(Cell *cell                   /* Pointer to cell */
     {
       if (s == 0)
       {
-        mean_wet = (stand->soil.w[1] * stand->soil.whcs[1] + stand->soil.w_fw[1] + stand->soil.wpwps[1] + stand->soil.w[0] * 
+        mean_wet = (stand->soil.w[1] * stand->soil.whcs[1] + stand->soil.w_fw[1] + stand->soil.wpwps[1] + stand->soil.w[0] *
           stand->soil.whcs[0] + stand->soil.w_fw[0] + stand->soil.wpwps[0]) / (stand->soil.wsats[0] + stand->soil.wsats[1]);
         if (mean_wet > hydropar.wtab_thres)
         {
@@ -58,7 +58,7 @@ void hydrotopes(Cell *cell                   /* Pointer to cell */
     {
       h++;
       forrootsoillayer(l)
-        mean_wet += (stand->soil.w[l] * stand->soil.whcs[l] + stand->soil.w_fw[l] + stand->soil.wpwps[l] + 
+        mean_wet += (stand->soil.w[l] * stand->soil.whcs[l] + stand->soil.w_fw[l] + stand->soil.wpwps[l] +
           stand->soil.ice_depth[l] + stand->soil.ice_fw[l]) / stand->soil.wsats[l];
       wtable += stand->soil.wtable*stand->frac*(1.0 / (1 - stand->cell->lakefrac));
       if (mean_wet > hydropar.wtab_thres)
@@ -85,7 +85,7 @@ void hydrotopes(Cell *cell                   /* Pointer to cell */
   cell->hydrotopes.meanwater = wtable;
 
   // 	determine hydrotope water level
-  if (cell->hydrotopes.skip_cell == FALSE)
+  if (!cell->hydrotopes.skip_cell)
   {
     if (TOPMODEL)
     {
