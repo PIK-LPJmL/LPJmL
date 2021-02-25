@@ -91,7 +91,7 @@ static int checkdatafile(const Config *config,const Filename *filename,const cha
   return 0;
 } /* of 'checkdatafile' */
 
-static int checkclmfile(const Config *config,const Filename *filename,const char *unit,Bool checklast)
+static int checkclmfile(const Config *config,const Filename *filename,const char *unit,Bool check)
 {
   FILE *file;
   Header header;
@@ -134,16 +134,16 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
     }
     else
     {
-      if(openclimate_netcdf(&input,filename->name,filename->time,filename->var,filename->unit,unit,config))
-        return 1;
-      closeclimate_netcdf(&input,TRUE);
-      if(input.firstyear>config->firstyear)
+      if(check)
       {
-        fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",input.firstyear,filename->name,config->firstyear);
-        return 1;
-      }
-      if(checklast)
-      {
+        if(openclimate_netcdf(&input,filename->name,filename->time,filename->var,filename->unit,unit,config))
+          return 1;
+        closeclimate_netcdf(&input,TRUE);
+        if(input.firstyear>config->firstyear)
+        {
+          fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",input.firstyear,filename->name,config->firstyear);
+          return 1;
+        }
         if(!config->fix_climate && input.firstyear+input.nyear-1<config->lastyear)
         {
           fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",input.firstyear+input.nyear-1,filename->name,config->lastyear);
@@ -163,13 +163,13 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
     if(file==NULL)
       return 1;
     fclose(file);
-    if(header.firstyear>config->firstyear)
+    if(check)
     {
-      fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
-      return 1;
-    }
-    if(checklast)
-    {
+      if(header.firstyear>config->firstyear)
+      {
+        fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
+        return 1;
+      }
       if(!config->fix_climate && header.firstyear+header.nyear-1<config->lastyear)
       {
         fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear-1,filename->name,config->lastyear);
@@ -370,7 +370,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.sdate_option==PRESCRIBED_SDATE)
       bad+=checkinputfile(&config,&config.sdate_filename,NULL,2*config.npft[CROP]);
     if(config.crop_phu_option==PRESCRIBED_CROP_PHU)
-      bad+=checkclmfile(&config,&config.crop_phu_filename,NULL,2*config.npft[CROP]);
+      bad+=checkclmfile(&config,&config.crop_phu_filename,NULL,FALSE);
     if(config.countrycode_filename.fmt==CDF)
     {
       bad+=checkinputfile(&config,&config.countrycode_filename,NULL,0);
@@ -384,7 +384,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.reservoir_filename,NULL,10);
     }
     if(config.with_nitrogen&& config.fertilizer_input==FERTILIZER &&!config.fix_fertilization)
-      bad+=checkclmfile(&config,&config.fertilizer_nr_filename,"g/m2",(config.npft[CROP]+NBIOMASSTYPE+NGRASS)*2);
+      bad+=checkclmfile(&config,&config.fertilizer_nr_filename,"g/m2",FALSE);
 #ifdef IMAGE
     if(config.aquifer_irrig==AQUIFER_IRRIG)
     {
@@ -392,7 +392,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     }
 #endif
     if (config.with_nitrogen&&config.manure_input&&!config.fix_fertilization)
-      bad+=checkclmfile(&config,&config.manure_nr_filename,"g/m2",(config.npft[CROP]+NBIOMASSTYPE+NGRASS)*2);
+      bad+=checkclmfile(&config,&config.manure_nr_filename,"g/m2",FALSE);
   }
   badout=0;
   oldpath=strdup("");
