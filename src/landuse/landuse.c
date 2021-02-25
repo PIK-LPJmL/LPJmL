@@ -1491,7 +1491,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     for(cell=0; cell<config->ngridcell; cell++)
     {
       initlandfrac(grid[cell].ml.residue_on_field,ncft,config->nagtree);
-      if(readlandfracmap(grid[cell].ml.residue_on_field+i,config->fertilizermap,
+      if(readlandfracmap(grid[cell].ml.residue_on_field,config->fertilizermap,
                          config->fertilizermap_size,data,&count,ncft,config->nwptype))
       {
         fprintf(stderr,"ERROR149: Residue rate input=%g for band %d less than zero for cell %d in year %d.\n",
@@ -1500,7 +1500,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         return TRUE;
       }
       count-=config->fertilizermap_size;
-      readlandfracmap(grid[cell].ml.residue_on_field+i,config->fertilizermap,
+      readlandfracmap(grid[cell].ml.residue_on_field+1,config->fertilizermap,
                       config->fertilizermap_size,data,&count,ncft,config->nwptype);
     }
     free(data);
