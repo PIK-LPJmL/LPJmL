@@ -547,10 +547,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
                   config->lakes_filename.name,i+config->startgrid);
           return NULL;
         }
-        if(grid[i].lakefrac>1-epsilon)
-          grid[i].lakefrac=1;
 
       }
+      if(grid[i].lakefrac>1-epsilon)
+        grid[i].lakefrac=1;
     }
 #ifdef IMAGE
     grid[i].discharge.aquifer=0;
