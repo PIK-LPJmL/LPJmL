@@ -160,5 +160,5 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     for(p=0;p<npft-config->nbiomass;p++)
       fprintpftpar(file,config->pftpar+p,config);
   fputs("------------------------------------------------------------------------------\n",file);
-  fprintoutputvar(file,config->outnames,NOUT,config);
+  fprintoutputvar(file,config->outnames,NOUT,npft,ncft,config);
 } /* of 'fprintparam' */
