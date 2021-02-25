@@ -169,7 +169,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
               break;
             case WOODPLANTATION:
               if(config->pft_output_scaled)
-                getoutputindex(&cell->output,CFT_NIR,rwp(ncft)+nirrig,config)+=data->net_irrig_amount*cell->ml.landfrac[1].biomass_tree;
+                getoutputindex(&cell->output,CFT_NIR,rwp(ncft)+nirrig,config)+=data->net_irrig_amount*cell->ml.landfrac[1].woodplantation;
               else
                 getoutputindex(&cell->output,CFT_NIR,rwp(ncft)+nirrig,config)+=data->net_irrig_amount;
               break;
