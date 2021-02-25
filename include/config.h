@@ -268,7 +268,7 @@ extern long long outputfilesize(const Config *);
 extern Variable *fscanoutputvar(LPJfile *,int,Verbosity);
 extern int* fscanpftpar(LPJfile *,Pftpar **,const Fscanpftparfcn [],int,const Config *);
 extern void fprintpftpar(FILE *,const Pftpar [],const Config *);
-extern void fprintoutputvar(FILE *,const Variable *,int,const Config *);
+extern void fprintoutputvar(FILE *,const Variable *,int,int,int,const Config *);
 extern void freeoutputvar(Variable *,int);
 extern Bool fscanoutput(LPJfile *,Config *,int);
 extern Bool readconfig(Config *,const char *,Fscanpftparfcn [],int,int,int *,
