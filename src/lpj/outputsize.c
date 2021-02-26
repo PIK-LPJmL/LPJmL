@@ -69,6 +69,8 @@ int outputsize(int index,     /**< output index */
       return (ncft+NGRASS)*2;
     case FPC_BFT:
       return (config->nbiomass+config->ngrass*2)*2;
+    case WFT_VEGC:
+      return config->nwft;
     default:
       return 1;
   } /* of 'switch' */

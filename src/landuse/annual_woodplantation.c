@@ -121,7 +121,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   {
     if (pft->par->type==TREE && pft->par->cultivation_type==WP) // tree
     {
-      outIdx = pft->par->id-(npft-config->nwft);
+      outIdx = pft->par->id-(npft-config->nwft-config->nagtree);
       getoutputindex(&stand->cell->output,WFT_VEGC,outIdx,config)+=vegc_sum(pft);
     }
   }

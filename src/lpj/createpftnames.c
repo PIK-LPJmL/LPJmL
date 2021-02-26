@@ -195,8 +195,8 @@ char **createpftnames(int index,           /**< output index */
         checkptr(pftnames[i+1]);
       }
       break;
-    case PFT_MORT:
-      for(i=0;i<npft-config->nbiomass-config->nwft;i++)
+    case PFT_MORT: case NV_LAI:
+      for(i=0;i<npft-config->nbiomass-config->nagtree-config->nwft;i++)
       {
         pftnames[i]=strdup(config->pftpar[i].name);
         checkptr(pftnames[i]);
@@ -213,10 +213,6 @@ char **createpftnames(int index,           /**< output index */
         }
       }
       break;
-    case NV_LAI:
-       for(i=0;i<npft-config->nbiomass-config->nwft;i++)
-         pftnames[i]=strdup(config->pftpar[i].name);
-       break;
     case FPC_BFT:
        for(i=0;i<config->ngrass;i++)
        {
