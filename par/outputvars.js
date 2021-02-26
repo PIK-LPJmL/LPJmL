@@ -374,8 +374,8 @@
   { "id" : DECAY_WOOD_NV, "name" : "decay_wood_nv", "timestep" : "annual", "var": "decay_wood", "descr": "annual decay rate of woody litter on natural vegetation", "unit": "-", "scale": 1.0, "offset" : 0.0}, 
   { "id" : DECAY_LEAF_AGR, "name" : "decay_leaf_agr", "timestep" : "annual", "var": "decay_leaf", "descr": "annual decay rate of leaf litter on agricultural stands", "unit": "-", "scale": 1.0, "offset" : 0.0},
   { "id" : DECAY_LEAF_NV, "name" : "decay_leaf_nv", "timestep" : "annual", "var": "decay_leaf", "descr": "annual decay rate of leaf litter on natural vegetation", "unit": "-", "scale": 1.0, "offset" : 0.0}, 
-  { "id" : CSHIFT_FAST_NV, "name" : "cshift_fast_nv", "timestep" : "annual", "var": "Cshift_fast", "descr": "average annual cshift to fast carbon pools on natural vegetation", "unit": "-", "scale": 1.0, "offset" : 0.0},
-  { "id" : CSHIFT_SLOW_NV, "name" : "cshift_slow_nv", "timestep" : "annual", "var": "Cshift_slow", "descr": "average annual cshift to slow carbon pools on natural vegetation", "unit": "-", "scale": 1.0, "offset" : 0.0},
+  { "id" : CSHIFT_FAST_NV, "name" : "cshift_fast_nv", "timestep" : "annual", "var": "Cshift_fast", "descr": "annual sum of carbon to fast pools per layer on natural vegetation", "unit": "gC/m2/yr", "scale": 1.0, "offset" : 0.0},
+  { "id" : CSHIFT_SLOW_NV, "name" : "cshift_slow_nv", "timestep" : "annual", "var": "Cshift_slow", "descr": "annual sum of carbon to slow pools per layer on natural vegetation", "unit": "gC/m2/yr", "scale": 1.0, "offset" : 0.0},
   { "id" : LITBURNC, "name": "litburnc", "timestep" : "annual", "var": "litburnc", "descr" : "litter carbon burnt", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : LITBURNC_WOOD, "name": "litburnc_wood", "timestep" : "annual", "var": "litburnc_wood", "descr" : "woody litter carbon burnt", "unit" : "gC/m2/yr", "scale" : 1.0, "offset" : 0.0}
 ],
