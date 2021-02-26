@@ -170,8 +170,8 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
       }
       forrootsoillayer(l)
       {
-        nc_ratio[l].slow=soil->pool[l].slow.nitrogen/soil->pool[l].slow.carbon;
-        nc_ratio[l].fast=soil->pool[l].fast.nitrogen/soil->pool[l].fast.carbon;
+        nc_ratio[l].slow=(soil->pool[l].slow.carbon==0) ? 0 : soil->pool[l].slow.nitrogen/soil->pool[l].slow.carbon;
+        nc_ratio[l].fast=(soil->pool[l].fast.carbon==0) ? 0 : soil->pool[l].fast.nitrogen/soil->pool[l].fast.carbon;
         soil->pool[l].slow.carbon=soil->pool[l].fast.carbon=0;
         soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=0;
         for(p=0;p<soil->litter.n;p++)
