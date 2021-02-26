@@ -623,6 +623,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].hydrotopes.wtable_mean = -99.9999;
     grid[i].is_glaciated = FALSE;
     grid[i].was_glaciated = FALSE;
+    grid[i].lateral_water = 0.0;
     grid[i].ignition.nesterov_accum=0;
     grid[i].ignition.nesterov_max=0;
     grid[i].ignition.nesterov_day=0;
