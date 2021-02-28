@@ -200,6 +200,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     }
     fscanpftlimit(verb,&item,&pft->temp_co2,pft->name,"temp_co2");
     fscanpftlimit(verb,&item,&pft->temp_photos,pft->name,"temp_photos");
+    fscanpftreal(verb,&item,&pft->bc,pft->name,"bc");
     /* store precalculated k1, k2, k3 values */
     pft->k1=2*log(1/0.99-1)/(pft->temp_co2.low-pft->temp_photos.low);
     pft->k2=(pft->temp_co2.low+pft->temp_photos.low)*0.5;

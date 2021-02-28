@@ -48,8 +48,6 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.k_beer,"k_beer");
   fscanparamreal(&f,&param.alphac3,"alphac3");
   fscanparamreal(&f,&param.alphac4,"alphac4");
-  fscanparamreal(&f,&param.bc3,"bc3");
-  fscanparamreal(&f,&param.bc4,"bc4");
   fscanparamreal(&f,&param.r_growth,"r_growth");
   fscanparamreal(&f,&param.GM,"GM");
   fscanparamreal(&f,&param.ALPHAM,"ALPHAM");

@@ -24,8 +24,6 @@
   "k_beer" : 0.5,            /* k_beer */
   "alphac3" : 0.08,          /* alphac3 */
   "alphac4" : 0.053,         /* alphac4 */
-  "bc3" : 0.015,             /* bc3 leaf respiration as fraction of Vmax for C3 plants */
-  "bc4" : 0.035,             /* bc4 leaf respiration as fraction of Vmax for C4 plants */
   "r_growth" : 0.25,         /* r_growth */
   "GM" : 3.26,               /* GM empirical parameter in demand function */
   "ALPHAM" : 1.391,          /* ALPHAM Priestley-Taylor coefficient*/

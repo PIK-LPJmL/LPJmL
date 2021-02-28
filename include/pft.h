@@ -126,6 +126,7 @@ typedef struct Pft
     Limit temp_co2;             /**< temperature limit for CO2 uptake (24,27) */
     Limit temp_photos;          /**< range of temperature optimum for
                                    photosynthesis(25,26) */
+    Real bc;                    /**< leaf respiration as fraction of vmax */
     Limit temp;                 /**< bioclimatic limits (28,29) */
     Real aprec_min;             /**< minimum annual precipitation (mm) */
     Real flam;
@@ -228,7 +229,7 @@ extern void freepft(Pft *);
 extern void freepftpar(Pftpar [],int);
 extern int* fscanpftpar(LPJfile *,Pftpar **,const Fscanpftparfcn [],int,Verbosity);
 extern Real temp_stress(const Pftpar *,Real,Real);
-extern Real photosynthesis(Real *,Real *,Real *,int,Real,Real,Real,Real,Real ,Real);
+extern Real photosynthesis(Real *,Real *,Real *,int,Real,Real,Real,Real,Real,Real ,Real);
 extern Bool survive(const Pftpar *,const Climbuf *);
 extern Real interception(Real *,const Pft *,Real,Real);
 extern void initgdd(Real [],int);

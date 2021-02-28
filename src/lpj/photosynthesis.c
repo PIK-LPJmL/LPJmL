@@ -51,6 +51,7 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
                     int path,      /**< Path (C3/C4) */
                     Real lambda,   /**< ratio of intercellular to ambient CO2 concentration */
                     Real tstress,  /**< temperature-related stress factor */
+                    Real bc,       /**< leaf respiration as fraction of vmax (0..1) */
                     Real co2,      /**< atmospheric CO2 partial pressure (Pa) */
                     Real temp,     /**< temperature (deg C) */
                     Real apar,     /**< absorbed photosynthetic active radiation (J/m2/day) */
@@ -58,7 +59,7 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
                    )               /** \return CO2 gas flux (mm/m2/day) */
 {
   Real ko,kc,tau,pi,c1,c2;
-  Real je,jc,phipi,adt,b,s,sigma;
+  Real je,jc,phipi,adt,s,sigma;
   Real fac,gammastar;
   if(tstress<1e-2)
   {
@@ -84,10 +85,9 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
 
       c2=(pi-gammastar)/(pi+fac);
 
-      s=(24/daylength)*param.bc3;
+      s=(24/daylength)*bc;
       sigma=1-(c2-s)/(c2-param.theta*s);
       sigma= (sigma<=0) ? 0 : sqrt(sigma);
-      b=param.bc3;
       /* Choose C3 value of b for Eqn 10, Haxeltine & Prentice 1996 */
       /*
        *       Intercellular CO2 partial pressure in Pa
@@ -97,7 +97,7 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
       /* Calculation of V_max (Rubisco activity) in gC/d/m2*/
 
       if(*vm==0)
-        *vm=(1.0/param.bc3)*(c1/c2)*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*
+        *vm=(1.0/bc)*(c1/c2)*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*
          cmass*cq;
 
       pi=lambda*co2;
@@ -112,12 +112,11 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
     {
       c1=tstress*param.alphac4;
       c2=1.0;
-      b=param.bc4;
-      s=(24/daylength)*param.bc4;
+      s=(24/daylength)*bc;
       sigma=1-(c2-s)/(c2-param.theta*s);
       sigma= (sigma<=0) ? 0 : sqrt(sigma);
       if(*vm==0)
-       *vm=(1.0/param.bc4)*c1/c2*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*
+       *vm=(1.0/bc)*c1/c2*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*
          cmass*cq;
 
       /*
@@ -158,7 +157,7 @@ Real photosynthesis(Real *agd,     /**< gross photosynthesis rate (gC/m2/day) */
     /*    Daily leaf respiration, Rd, gC/m2/day
      *    Eqn 10, Haxeltine & Prentice 1996
      */
-    *rd=b**vm;
+    *rd=bc**vm;
     //if(*vm<-100)
     //  abort();
 

@@ -34,8 +34,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "k_beer:\t\t%g\n"
                "alphac3:\t%g\n"
                "alphac4:\t%g\n"
-               "bc3:\t\t%g\n"
-               "bc4:\t\t%g\n"
                "r_growth:\t%g\n"
                "GM:\t\t%g\n"
                "ALPHAM:\t\t%g\n"
@@ -49,7 +47,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
           param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,param.co2_p,
           param.k,param.theta,param.k_beer,param.alphac3,param.alphac4,
-          param.bc3,param.bc4,param.r_growth,param.GM,param.ALPHAM,
+          param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,param.k_mort,
           param.temp_response_a,param.temp_response_b);
   if(config->with_nitrogen)

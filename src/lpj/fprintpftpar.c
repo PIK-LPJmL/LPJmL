@@ -77,6 +77,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                "path:\t\t%s\n"
                "temp CO2:\t%g %g (deg C)\n"
                "temp photos:\t%g %g (deg C)\n"
+               "bc:\t\t%g\n"
                "temp:\t\t%g %g (deg C)\n"
                "min aprec:\t%g (mm)\n"
                "flam:\t\t%g\n"
@@ -99,7 +100,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
           pftpar->tmin.sl, pftpar->tmin.base, pftpar->tmin.tau, pftpar->tmax.sl, pftpar->tmax.base, pftpar->tmax.tau, pftpar->light.sl, pftpar->light.base, pftpar->light.tau, pftpar->wscal.sl, pftpar->wscal.base, pftpar->wscal.tau,
           pftpar->mort_max,phenology[pftpar->phenology],path[pftpar->path],
           pftpar->temp_co2.low,pftpar->temp_co2.high,pftpar->temp_photos.low,
-          pftpar->temp_photos.high,pftpar->temp.low,pftpar->temp.high,
+          pftpar->temp_photos.high,pftpar->bc,pftpar->temp.low,pftpar->temp.high,
           pftpar->aprec_min,
           pftpar->flam,pftpar->k_litter10.leaf*NDAYYEAR,
           pftpar->k_litter10.wood*NDAYYEAR,pftpar->k_litter10.q10_wood,
