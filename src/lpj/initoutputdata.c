@@ -33,6 +33,7 @@ void initoutputdata(Output *output,      /**< output data */
                    )
 {
   int i,index;
+  /* set output data to zero */
   for(index=FPC;index<NOUT;index++)
     if(isinit(index))
       for(i=0;i<config->outputsize[index];i++)
@@ -43,6 +44,7 @@ void initoutputdata(Output *output,      /**< output data */
    if(isinit(CFT_SWC))
      for(i=0;i<config->outputsize[CFT_SWC];i++)
        output->data[config->outputmap[NDAY_MONTH]+i]=0;
+  /* set specific output data to one */
   if(isinit(DECAY_WOOD_AGR))
      output->data[config->outputmap[DECAY_WOOD_AGR]]=1;
   if(isinit(DECAY_WOOD_NV))

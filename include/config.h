@@ -220,8 +220,8 @@ struct config
   Pnet *irrig_res_back;
   int withlanduse;
   Bool reservoir;
-  int *landusemap;
-  int landusemap_size;
+  int *landusemap;          /**< mapping of bands in land-use file to CFTs */
+  int landusemap_size;      /**< size of landusmap */
   int *fertilizermap;
   int fertilizermap_size;
   int *cftmap;
@@ -245,9 +245,9 @@ struct config
   Socket *in;  /**< socket for ingoing data */
   Socket *out; /**< socket for outgoing data */
 #endif
-  int totalsize;
-  int outputmap[NOUT];
-  int outputsize[NOUT];
+  int totalsize;          /**< size of shared output storage */
+  int outputmap[NOUT];    /**< index into output storage */
+  int outputsize[NOUT];   /**< number of bands for each output */
 }; /* LPJ configuration */
 
 typedef Bool (*Fscanpftparfcn)(LPJfile *,Pftpar *,const Config *);

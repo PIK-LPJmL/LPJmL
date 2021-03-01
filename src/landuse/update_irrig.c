@@ -14,7 +14,11 @@
 
 #include "lpj.h"
 
-void update_irrig(Stand *stand,int index,int ncft,const Config *config)
+void update_irrig(Stand *stand,        /**< pointer to stand */
+                  int index,           /**< index in output data */
+                  int ncft,            /**< number of crop PFTs */
+                  const Config *config /**< LPJmL configuration */
+                 )
 {
   int nirrig;
   Biomass_tree *biomass_tree;

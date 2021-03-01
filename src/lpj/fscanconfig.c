@@ -410,7 +410,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->nbiomass=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],BIOMASS);
   config->nagtree=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],ANNUAL_TREE);
   config->nwft=getnculttype(config->pftpar, config->npft[GRASS] + config->npft[TREE],WP);
-  config->nwptype=(config->nwft) ? 1 : 0;
+  config->nwptype=(config->nwft) ? NWPTYPE : 0;
   config->ngrass=getngrassnat(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
   if(config->others_to_crop)
   {

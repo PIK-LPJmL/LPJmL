@@ -17,6 +17,7 @@
 #include "grass.h"
 #include "tree.h"
 #include "crop.h"
+#include "grassland.h"
 
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 
@@ -59,13 +60,13 @@ int main(int argc,char **argv)
   Coord coord;
   Coordfile coordfile;
   String s;
-  char *name;
+  const char *name;
   Intcoord intcoord;
   Coord_netcdf cdf;
   FILE *file;
   struct stat filestat;
   int i,j,n,index,cell,year;
-  float harvest,lon,lat;
+  float harvest,lon,lat,scale;
   Real harvest_total;
   Landfrac *harvest_sum;
   initconfig(&config);
@@ -151,14 +152,18 @@ int main(int argc,char **argv)
             config.outputvars[index].filename.name,strerror(errno));
     return EXIT_FAILURE;
   }
+  printf("Unit: %s\n",(config.ngridcell<100) ? "Gg" : "Pg");
   printf("Year");
   for(i=0;i<config.npft[CROP];i++)
     printf(" %-7s",shorten(s,config.pftpar[i+config.npft[GRASS]+config.npft[TREE]].name,7));
   for(i=0;i<config.nagtree;i++)
     printf(" %-7s",shorten(s,config.pftpar[i+config.npft[GRASS]+config.npft[TREE]-config.nagtree].name,7));
-  printf(" %-7s %-7s %-7s %-7s","Pasture","Others", "Biomass","Biomass");
-  if(config.nwptype)
-    printf(" Woodpla");
+  for(i=0;i<NGRASS;i++)
+    printf(" %-7s",shorten(s,grassland_names[i],7));
+  for(i=0;i<NBIOMASSTYPE;i++)
+    printf(" %-7s",shorten(s,biomass_names[i],7));
+  for(i=0;i<config.nwptype;i++)
+    printf(" %-7s",shorten(s,woodplantation_names[i],7));
   printf(" Total\n");
   for(j=1;j<=2;j++)
   {
@@ -173,24 +178,28 @@ int main(int argc,char **argv)
       name=config.pftpar[i+config.npft[GRASS]+config.npft[TREE]-config.nagtree].name;
       printf(" %-7s",(strlen(name)>7*j) ? shorten(s,name+7*j,7) : "");
     }
-    if(j==1)
+    for(i=0;i<NGRASS;i++)
     {
-      printf("                 grass   tree   ");
-      if(config.nwptype)
-       printf("ntation\n");
-     else 
-      printf("\n");
+      name=grassland_names[i];
+      printf(" %-7s",(strlen(name)>7*j) ? shorten(s,name+7*j,7) : "");
     }
-    else
-      printf("\n");
+    for(i=0;i<NBIOMASSTYPE;i++)
+    {
+      name=biomass_names[i];
+      printf(" %-7s",(strlen(name)>7*j) ? shorten(s,name+7*j,7) : "");
+    }
+    for(i=0;i<config.nwptype;i++)
+    {
+      name=woodplantation_names[i];
+      printf(" %-7s",(strlen(name)>7*j) ? shorten(s,name+7*j,7) : "");
+    }
+    printf("\n");
   }
   harvest_sum=newlandfrac(config.npft[CROP],config.nagtree);
   printf("----");
-  for(i=0;i<config.npft[CROP];i++)
+  for(i=0;i<config.npft[CROP]+config.nagtree+NGRASS+NBIOMASSTYPE+config.nwptype+1;i++)
     printf(" -------");
-  for(i=0;i<config.nagtree;i++)
-    printf(" -------");
-  printf(" ------- ------- ------- ------- -------\n");
+  printf("\n");
   for(year=config.firstyear;year<=config.lastyear;year++)
   {
     for(i=0;i<2;i++)
@@ -226,11 +235,11 @@ int main(int argc,char **argv)
         harvest_sum[i].biomass_tree+=harvest*area[cell];
       }
       if(config.nwptype)
-      for(cell=0;cell<n;cell++)
-      {
-        fread_harvest(file,&harvest);
-        harvest_sum[i].woodplantation+=harvest*area[cell];
-      }
+        for(cell=0;cell<n;cell++)
+        {
+          fread_harvest(file,&harvest);
+          harvest_sum[i].woodplantation+=harvest*area[cell];
+        }
       for(j=0;j<config.nagtree;j++)
       {
         harvest_sum[i].ag_tree[j]=0;
@@ -243,31 +252,32 @@ int main(int argc,char **argv)
     }
     harvest_total=0;
     printf("%4d",year);
+    scale=(config.ngridcell<100) ? 1e-9 : 1e-15;
     for(i=0;i<config.npft[CROP];i++)
     {
-      printf(" %7.2f",(harvest_sum[0].crop[i]+harvest_sum[1].crop[i])*1e-15);
+      printf(" %7.2f",(harvest_sum[0].crop[i]+harvest_sum[1].crop[i])*scale);
       harvest_total+=harvest_sum[0].crop[i]+harvest_sum[1].crop[i];
     }
     for(i=0;i<config.nagtree;i++)
     {
-      printf(" %7.2f",(harvest_sum[0].ag_tree[i]+harvest_sum[1].ag_tree[i])*1e-15);
+      printf(" %7.2f",(harvest_sum[0].ag_tree[i]+harvest_sum[1].ag_tree[i])*scale);
       harvest_total+=harvest_sum[0].ag_tree[i]+harvest_sum[1].ag_tree[i];
     }
     for(i=0;i<NGRASS;i++)
     {
-      printf(" %7.2f",(harvest_sum[0].grass[i]+harvest_sum[1].grass[i])*1e-15);
+      printf(" %7.2f",(harvest_sum[0].grass[i]+harvest_sum[1].grass[i])*scale);
       harvest_total+=harvest_sum[0].grass[i]+harvest_sum[1].grass[i];
     }
-    printf(" %7.2f",(harvest_sum[0].biomass_grass+harvest_sum[1].biomass_grass)*1e-15);
+    printf(" %7.2f",(harvest_sum[0].biomass_grass+harvest_sum[1].biomass_grass)*scale);
     harvest_total+=harvest_sum[0].biomass_grass+harvest_sum[1].biomass_grass;
-    printf(" %7.2f",(harvest_sum[0].biomass_tree+harvest_sum[1].biomass_tree)*1e-15);
+    printf(" %7.2f",(harvest_sum[0].biomass_tree+harvest_sum[1].biomass_tree)*scale);
     harvest_total+=harvest_sum[0].biomass_tree+harvest_sum[1].biomass_tree;
-    printf(" %7.2f\n",harvest_total*1e-15);
     if(config.nwptype)
     {
       harvest_total+=harvest_sum[0].woodplantation+harvest_sum[1].woodplantation;
-      printf(" %7.2f\n",harvest_total*1e-15);
+      printf(" %7.2f",(harvest_sum[0].woodplantation+harvest_sum[1].woodplantation)*scale);
     }
+    printf(" %7.1f\n",harvest_total*scale);
   }
   fclose(file);
   return EXIT_SUCCESS;

@@ -85,6 +85,7 @@ typedef struct
 /* Declaration of functions */
 
 extern Standtype grassland_stand;
+extern const char *grassland_names[NGRASS];
 
 extern Real daily_grassland(Stand *,Real,const Dailyclimate *, int,int,
                             Real,
