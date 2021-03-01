@@ -42,7 +42,7 @@ Real gp_sum(const Pftlist *pftlist, /**< Pft list */
     if(pft->par->type==CROP)
     {
       adtmm=photosynthesis(&agd,&rd,&vmax,pft->par->path,LAMBDA_OPT,
-                           temp_stress(pft->par,temp,daylength),pft->par->bc,ppm2Pa(co2),
+                           temp_stress(pft->par,temp,daylength),pft->par->b,ppm2Pa(co2),
                            temp,
                            par*(1-getpftpar(pft,albedo_leaf))*fpar_crop(pft)*alphaa(pft,config->with_nitrogen,config->laimax_interpolate),
                            daylength);
@@ -54,7 +54,7 @@ Real gp_sum(const Pftlist *pftlist, /**< Pft list */
     else
     {
       adtmm=photosynthesis(&agd,&rd,&vmax,pft->par->path,LAMBDA_OPT,
-                           temp_stress(pft->par,temp,daylength),pft->par->bc,ppm2Pa(co2),
+                           temp_stress(pft->par,temp,daylength),pft->par->b,ppm2Pa(co2),
                            temp,
                            par*pft->fpc*alphaa(pft,config->with_nitrogen,config->laimax_interpolate)*(1-getpftpar(pft,albedo_leaf))*(1-pft->snowcover),
                            daylength);

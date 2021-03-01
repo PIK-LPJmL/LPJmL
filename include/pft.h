@@ -126,7 +126,7 @@ typedef struct Pft
     Limit temp_co2;             /**< temperature limit for CO2 uptake (24,27) */
     Limit temp_photos;          /**< range of temperature optimum for
                                    photosynthesis(25,26) */
-    Real bc;                    /**< leaf respiration as fraction of vmax */
+    Real b;                     /**< leaf respiration as fraction of vmax */
     Limit temp;                 /**< bioclimatic limits (28,29) */
     Real aprec_min;             /**< minimum annual precipitation (mm) */
     Real flam;
