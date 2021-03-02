@@ -56,6 +56,8 @@ static int findpftid(const char *name,const Pftpar pftpar[],int ntotpft)
 } /* of 'findpftid' */
 
 Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
+                 int npft,       /**< number of natural PFTs */
+                 int ncft,       /**< number of crop PFTs */
                  Config *config, /**< LPJ configuration */
                  int nout_max    /**< maximum number of output files */
                 )                /** \return TRUE on error */
@@ -165,6 +167,12 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       {
         if(verbosity)
           fprintf(stderr,"WARNING006: Output file for '%s' is opened twice, will be ignored.\n",
+                config->outnames[flag].name);
+      }
+      else if(outputsize(flag,npft,ncft,config)==0)
+      {
+        if(verbosity)
+          fprintf(stderr,"WARNING006: Number of bands in output file for '%s' is zero, will be ignored.\n",
                 config->outnames[flag].name);
       }
       else if(!config->with_nitrogen && isnitrogen_output(flag))

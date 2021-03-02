@@ -671,12 +671,12 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
               config->missing_value,
               config->global_netcdf ? "global" : "local");
     }
-    fprintf(file,"%*s Fmt %*s Type  dT  Filename\n",-width,"Variable",-width_unit,"Unit");
+    fprintf(file,"%*s Fmt %*s Type  dt  nbd Filename\n",-width,"Variable",-width_unit,"Unit");
     frepeatch(file,'-',width);
     fputs(" --- ",file);
     frepeatch(file,'-',width_unit);
-    fputs(" ----- --- ",file);
-    frepeatch(file,'-',77-width-4-width_unit-7-3);
+    fputs(" ----- --- --- ",file);
+    frepeatch(file,'-',77-width-4-width_unit-7-3-4);
     putc('\n',file);
     for(i=0;i<config->n_out;i++)
     {
@@ -685,9 +685,10 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
         fprintf(file,"%*d",-width,config->outputvars[index].id);
       else
         fprintf(file,"%*s",-width,config->outnames[config->outputvars[index].id].name);
-      fprintf(file," %s %*s %-5s %-3s ",fmt[config->outputvars[index].filename.fmt],
+      fprintf(file," %s %*s %-5s %-3s %3d ",fmt[config->outputvars[index].filename.fmt],
               -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
-              typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep));
+              typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],
+              sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep),outputsize(config->outputvars[index].id,npft,ncft,config));
       printoutname(file,config->outputvars[index].filename.name,config->outputvars[index].oneyear,config);
       putc('\n',file);
     }
@@ -695,8 +696,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     frepeatch(file,'-',width);
     fputs(" --- ",file);
     frepeatch(file,'-',width_unit);
-    fputs(" ----- --- ",file);
-    frepeatch(file,'-',77-width-4-width_unit-7-3);
+    fputs(" ----- --- --- ",file);
+    frepeatch(file,'-',77-width-4-width_unit-7-3-4);
     putc('\n',file);
     switch(config->crop_index)
     {

@@ -803,7 +803,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   /*=================================================================*/
 
   if (verbose>=VERB) puts("// IV. output data section");
-  if(fscanoutput(file,config,nout_max))
+  if(fscanoutput(file,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config,nout_max))
   {
     if(verbose)
       fputs("ERROR230: Cannot read output data 'output'.\n",stderr);

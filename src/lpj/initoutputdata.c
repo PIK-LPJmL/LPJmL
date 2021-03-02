@@ -33,7 +33,7 @@ void initoutputdata(Output *output,      /**< output data */
                    )
 {
   int i,index;
-  for(index=FPC;index<=NPP;index++)
+  for(index=FPC;index<NOUT;index++)
     if(isinit(index))
       for(i=0;i<config->outputsize[index];i++)
         output->data[config->outputmap[index]+i]=0;

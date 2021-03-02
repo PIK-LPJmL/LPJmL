@@ -386,7 +386,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.sdate_option==PRESCRIBED_SDATE)
       bad+=checkinputfile(&config,&config.sdate_filename,NULL,TRUE);
     if(config.crop_phu_option==PRESCRIBED_CROP_PHU)
-      bad+=checkclmfile(&config,&config.crop_phu_filename,NULL,1,TRUE);
+      bad+=checkclmfile(&config,&config.crop_phu_filename,NULL,1,FALSE);
     if(config.countrycode_filename.fmt==CDF)
     {
       bad+=checkinputfile(&config,&config.countrycode_filename,NULL,0);
@@ -400,7 +400,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       bad+=checkinputfile(&config,&config.reservoir_filename,NULL,10);
     }
     if(config.with_nitrogen&& config.fertilizer_input==FERTILIZER &&!config.fix_fertilization)
-      bad+=checkclmfile(&config,&config.fertilizer_nr_filename,"g/m2",1,TRUE);
+      bad+=checkclmfile(&config,&config.fertilizer_nr_filename,"g/m2",1,FALSE);
 #ifdef IMAGE
     if(config.aquifer_irrig==AQUIFER_IRRIG)
     {
@@ -408,7 +408,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     }
 #endif
     if (config.with_nitrogen&&config.manure_input&&!config.fix_fertilization)
-      bad+=checkclmfile(&config,&config.manure_nr_filename,"g/m2",1,TRUE);
+      bad+=checkclmfile(&config,&config.manure_nr_filename,"g/m2",1,FALSE);
   }
   badout=0;
   oldpath=strdup("");

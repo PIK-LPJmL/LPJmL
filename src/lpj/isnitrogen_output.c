@@ -30,7 +30,11 @@ Bool isnitrogen_output(int index /**< index for output file */
     case N_IMMO: case PFT_NLEAF: case PFT_VEGN: case NEGN_FLUXES: case PFT_NROOT:
     case PFT_NSAPW: case PFT_NHAWO: case PFT_HARVESTN2: case PFT_RHARVESTN2:
     case CFT_ABOVEGBMN2: case N_VOLATILIZATION: case PFT_NLIMIT: case SOILNO3_LAYER:
-    case SOILNH4_LAYER: case LITFALLN:
+    case SOILNH4_LAYER: case LITFALLN: case LITFALLN_WOOD: case MGRASS_SOILN:
+    case MGRASS_LITN: case LITFALLN_AGR: case HARVESTN_AGR: case NFERT_AGR:
+    case NMANURE_AGR: case NDEPO_AGR: case NMINERALIZATION_AGR: case NIMMOBILIZATION_AGR:
+    case NUPTAKE_AGR: case NLEACHING_AGR: case N2O_DENIT_AGR: case N2O_NIT_AGR:
+    case NH3_AGR: case N2_AGR:
       return TRUE;
     default:
       return FALSE;
