@@ -33,6 +33,7 @@ Stocks firepft(Stand *stand,        /**< pointer to stand */
     flux_sum.carbon+=flux.carbon;
     flux_sum.nitrogen+=flux.nitrogen;
     stand->cell->balance.aCH4_fire+=flux.carbon*pft->par->emissionfactor.ch4*stand->frac;
+    getoutput(&stand->cell->output,FIREEMISSION_CH4,config)+=flux.carbon*pft->par->emissionfactor.ch4*stand->frac;
   }
   for(p=0;p<litter->n;p++)
   {
@@ -42,6 +43,7 @@ Stocks firepft(Stand *stand,        /**< pointer to stand */
     for(i=0;i<NFUELCLASS;i++)
     {
       stand->cell->balance.aCH4_fire+=litter->item[p].ag.wood[i].carbon*fire_frac*litter->item[p].pft->emissionfactor.ch4*stand->frac;
+      getoutput(&stand->cell->output,FIREEMISSION_CH4,config)+=litter->item[p].ag.wood[i].carbon*fire_frac*litter->item[p].pft->emissionfactor.ch4*stand->frac;
       flux_litter.carbon+=litter->item[p].ag.wood[i].carbon;
       flux_litter.nitrogen+=litter->item[p].ag.wood[i].nitrogen;
     }

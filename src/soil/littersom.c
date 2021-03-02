@@ -453,11 +453,21 @@ Stocks littersom(Stand *stand,                       /**< pointer to stand data 
               if(isagriculture(stand->type->landusetype))
                 getoutput(&stand->cell->output,NIMMOBILIZATION_AGR,config)+=n_immo*stand->frac;
               soil->NH4[l]-=n_immo*soil->NH4[l]/N_sum;
+              if(soil->NH4[l]<0)
+              {
+                 soil->pool[l].fast.nitrogen+=soil->NH4[l];
+                 soil->NH4[l]=0;
+              }
               soil->NO3[l]-=n_immo*soil->NO3[l]/N_sum;
+              if(soil->NO3[l]<0)
+              {
+                 soil->pool[l].fast.nitrogen+=soil->NO3[l];
+                 soil->NO3[l]=0;
+              }
 #ifdef SAFE
-              if(soil->NO3[l]<-epsilon)
+              if(soil->NO3[l]<-10*epsilon)
                 fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Negative soil NO3=%g in layer %d in cell (%s) at immobilization in littersom()",soil->NO3[l],l,sprintcoord(line,&stand->cell->coord));
-              if(soil->NH4[l]<-epsilon)
+              if(soil->NH4[l]<-10*epsilon)
                 fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4=%g in layer %d in cell (%s) at immobilization in littersom()",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
             }
@@ -476,10 +486,21 @@ Stocks littersom(Stand *stand,                       /**< pointer to stand data 
                 getoutput(&stand->cell->output,NIMMOBILIZATION_AGR,config)+=n_immo*stand->frac;
               soil->NH4[l]-=n_immo*soil->NH4[l]/N_sum;
               soil->NO3[l]-=n_immo*soil->NO3[l]/N_sum;
+              if(soil->NH4[l]<0)
+              {
+                 soil->pool[l].slow.nitrogen+=soil->NH4[l];
+                 soil->NH4[l]=0;
+              }
+              soil->NO3[l]-=n_immo*soil->NO3[l]/N_sum;
+              if(soil->NO3[l]<0)
+              {
+                 soil->pool[l].slow.nitrogen+=soil->NO3[l];
+                 soil->NO3[l]=0;
+              }
 #ifdef SAFE
-              if(soil->NO3[l]<-epsilon)
+              if(soil->NO3[l]<-10*epsilon)
                 fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Negative soil NO3=%g in layer %d in cell (%s) at immobilization in littersom()",soil->NO3[l],l,sprintcoord(line,&stand->cell->coord));
-              if(soil->NH4[l]<-epsilon)
+              if(soil->NH4[l]<-10*epsilon)
                 fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4=%g in layer %d in cell (%s) at immobilization in littersom()",soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
             }

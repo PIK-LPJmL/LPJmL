@@ -195,9 +195,15 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_em,&runoff);
     cell->discharge.drunoff += runoff*stand->frac;
     if (CH4_em>0)
+    {
       getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
+      cell->balance.aCH4_em+=CH4_em*stand->frac;
+    }
     else
-      getoutput(&cell->output,CH4_SINK,config) += CH4_em*stand->frac;
+    {
+      getoutput(&cell->output,CH4_SINK,config) -= CH4_em*stand->frac;
+      cell->balance.aCH4_sink-=CH4_em*stand->frac;
+    }
     CH4_em = runoff = MT_water = 0;
     fpc_total_stand = 0;
     foreachpft(pft, p, &stand->pftlist)
@@ -208,6 +214,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     ebul = ebullition(&stand->soil, fpc_total_stand);
     //cell->output.mCH4_em+=ebullition(&stand->soil,fpc_total_stand)*stand->frac;
     getoutput(&cell->output,CH4_EMISSIONS,config) += ebul*stand->frac;
+    cell->balance.aCH4_em+=ebul*stand->frac;
     getoutput(&cell->output,CH4_EBULLITION,config) += ebul*stand->frac;
 #ifdef CHECK_BALANCE
     ende = standstocks(stand).carbon + soilmethane(&stand->soil);
@@ -275,6 +282,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     updatelitterproperties(stand,stand->frac);
 
     getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
+    cell->balance.aCH4_em+=CH4_em*stand->frac;
     cell->balance.aMT_water += MT_water*stand->frac;
     /*monthly rh for agricutural stands*/
     if (isagriculture(stand->type->landusetype))
