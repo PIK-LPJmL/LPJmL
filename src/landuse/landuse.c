@@ -738,7 +738,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       yearphu=0;                        /* use first year sdate */
 
     data=newvec(Real,config->ngridcell*landuse->crop_phu.var_len);
-    if(dates==NULL)
+    if(data==NULL)
     {
       printallocerr("data");
       return TRUE;
@@ -750,7 +750,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         fprintf(stderr,
                 "ERROR149: Cannot read crop phus of year %d in getlanduse().\n",
                 yearphu+landuse->crop_phu.firstyear);
-        free(dates);
+        free(data);
         fflush(stderr);
         return TRUE;
       }
@@ -762,7 +762,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         fprintf(stderr,
                 "ERROR148: Cannot seek crop phus to year %d in getlanduse().\n",
                 yearphu);
-        free(dates);
+        free(data);
         return TRUE;
       }
       if(readrealvec(landuse->crop_phu.file,data,0,landuse->crop_phu.scalar,landuse->crop_phu.n,landuse->crop_phu.swap,landuse->crop_phu.datatype))
@@ -770,7 +770,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         fprintf(stderr,
                 "ERROR149: Cannot read crop phus of year %d in getlanduse().\n",
                 yearphu);
-        free(dates);
+        free(data);
         return TRUE;
       }
     }
