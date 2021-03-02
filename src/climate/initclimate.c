@@ -513,7 +513,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(isroot(*config) && climate->co2.firstyear>climate->file_temp.firstyear)
       fprintf(stderr,"WARNING001: First year in '%s'=%d greater than climate->file_temp.firstyear=%d.\n"
-              "            Preindustrial value=%g is used.\n",
+              "            Preindustrial value=%g for CO2 is used.\n",
               config->co2_filename.name,climate->co2.firstyear,climate->file_temp.firstyear,param.co2_p);
   if (!config->with_dynamic_ch4)
   {
@@ -524,7 +524,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if (isroot(*config) && climate->ch4.firstyear>climate->file_temp.firstyear)
       fprintf(stderr, "WARNING001: First year in '%s'=%d greater than climate->file_temp.firstyear=%d.\n"
-        "            Preindustrial values are used.\n",
+        "            Preindustrial value for CH4 is used.\n",
         config->ch4_filename.name, climate->ch4.firstyear, climate->file_temp.firstyear);
   }
 #ifdef DEBUG7
@@ -537,13 +537,13 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   else
   {
     for (i = 0; i<ndata; i++)
-    if((climate->data[i].prec=newvec(Real,climate->file_prec.n))==NULL)
-    {
-      printallocerr("prec");
-      free(climate->co2.data);
-      free(climate);
-      return NULL;
-    }
+      if((climate->data[i].prec=newvec(Real,climate->file_prec.n))==NULL)
+      {
+        printallocerr("prec");
+        free(climate->co2.data);
+        free(climate);
+        return NULL;
+      }
   }
   if(config->temp_filename.fmt==FMS)
     for (i = 0; i<ndata; i++)
@@ -551,31 +551,31 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   else
   {
     for (i = 0; i<ndata; i++)
-    if((climate->data[i].temp=newvec(Real,climate->file_temp.n))==NULL)
-    {
-      printallocerr("temp");
-      free(climate->co2.data);
-      for (i = 0; i<ndata; i++)
-        free(climate->data[i].prec);
-      free(climate);
-      return NULL;
+      if((climate->data[i].temp=newvec(Real,climate->file_temp.n))==NULL)
+      {
+        printallocerr("temp");
+        free(climate->co2.data);
+        for (i = 0; i<ndata; i++)
+          free(climate->data[i].prec);
+        free(climate);
+        return NULL;
     }
   }
   if(config->with_nitrogen && config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
   {
     for (i = 0; i<ndata; i++)
-    if((climate->data[i].no3deposition=newvec(Real,climate->file_no3deposition.n))==NULL)
-    {
-      printallocerr("no3deposition");
-      free(climate->co2.data);
-      for (i = 0; i<ndata; i++)
+      if((climate->data[i].no3deposition=newvec(Real,climate->file_no3deposition.n))==NULL)
       {
-        free(climate->data[i].prec);
-        free(climate->data[i].temp);
+        printallocerr("no3deposition");
+        free(climate->co2.data);
+        for (i = 0; i<ndata; i++)
+        {
+          free(climate->data[i].prec);
+          free(climate->data[i].temp);
+        }
+        free(climate);
+        return NULL;
       }
-      free(climate);
-      return NULL;
-    }
     for (i = 0; i<ndata; i++)
       if((climate->data[i].nh4deposition=newvec(Real,climate->file_nh4deposition.n))==NULL)
       {
@@ -709,25 +709,25 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       else
         for (i = 0; i<ndata; i++)
           climate->data[i].humid=NULL;
-    for (i = 0; i<ndata; i++)
-      if((climate->data[i].lightning=newvec(Real,climate->file_lightning.n))==NULL)
-      {
-        printallocerr("lightning");
-        free(climate->co2.data);
-        free(climate->ch4.data);
-        for (i = 0; i<ndata; i++)
+      for (i = 0; i<ndata; i++)
+        if((climate->data[i].lightning=newvec(Real,climate->file_lightning.n))==NULL)
         {
-          free(climate->data[i].humid);
-          free(climate->data[i].tamp);
-          free(climate->data[i].tmin);
-          free(climate->data[i].wind);
-          free(climate->data[i].prec);
-          free(climate->data[i].tmax);
-          free(climate->data[i].temp);
+          printallocerr("lightning");
+          free(climate->co2.data);
+          free(climate->ch4.data);
+          for (i = 0; i<ndata; i++)
+          {
+            free(climate->data[i].humid);
+            free(climate->data[i].tamp);
+            free(climate->data[i].tmin);
+            free(climate->data[i].wind);
+            free(climate->data[i].prec);
+            free(climate->data[i].tmax);
+            free(climate->data[i].temp);
+          }
+          free(climate);
+          return NULL;
         }
-        free(climate);
-        return NULL;
-      }
       if((climate->file_lightning.fmt==CLM || climate->file_lightning.fmt==RAW) && climate->file_lightning.version<=1)
         climate->file_lightning.scalar=1e-7;
       if(climate->file_lightning.fmt==CDF)
@@ -800,29 +800,29 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     else
     {
       for (i = 0; i < ndata; i++)
-      if((climate->data[i].swdown=newvec(Real,climate->file_swdown.n))==NULL)
-      {
-        printallocerr("swdown");
-        free(climate->ch4.data);
-        free(climate->co2.data);
-        for (i = 0; i < ndata; i++)
+        if((climate->data[i].swdown=newvec(Real,climate->file_swdown.n))==NULL)
         {
-          free(climate->data[i].prec);
-          free(climate->data[i].temp);
-          free(climate->data[i].lwnet);
-        }
-        if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-        {
+          printallocerr("swdown");
+          free(climate->ch4.data);
+          free(climate->co2.data);
           for (i = 0; i < ndata; i++)
           {
-            free(climate->data[i].wind);
-            free(climate->data[i].tamp);
-            free(climate->data[i].lightning);
+            free(climate->data[i].prec);
+            free(climate->data[i].temp);
+            free(climate->data[i].lwnet);
           }
+          if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+          {
+            for (i = 0; i < ndata; i++)
+            {
+              free(climate->data[i].wind);
+              free(climate->data[i].tamp);
+              free(climate->data[i].lightning);
+            }
+          }
+          free(climate);
+          return NULL;
         }
-        free(climate);
-        return NULL;
-      }
     }
   }
   else
@@ -865,24 +865,59 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     else
     {
       for (i = 0; i < ndata; i++)
-      if((climate->data[i].wet=newvec(Real,climate->file_wet.n))==NULL)
+        if((climate->data[i].wet=newvec(Real,climate->file_wet.n))==NULL)
+        {
+          printallocerr("wet");
+          free(climate->co2.data);
+          free(climate->ch4.data);
+          for (i = 0; i < ndata; i++)
+          {
+            free(climate->data[i].prec);
+            free(climate->data[i].temp);
+          }
+          if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+          {
+            for (i = 0; i < ndata; i++)
+            {
+              free(climate->data[i].wind);
+              free(climate->data[i].tamp);
+              free(climate->data[i].lightning);
+            }
+          }
+          if(config->with_radiation)
+          {
+            for (i = 0; i < ndata; i++)
+            {
+              free(climate->data[i].lwnet);
+              free(climate->data[i].swdown);
+            }
+          }
+          else
+            for (i = 0; i < ndata; i++)
+              free(climate->data[i].sun);
+          free(climate);
+          return NULL;
+        }
+    }
+  }
+  else
+    for (i = 0; i < ndata; i++)
+      climate->data[i].wet=NULL;
+  if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
+  {
+    for (i = 0; i < ndata; i++)
+      if((climate->data[i].burntarea=newvec(Real,climate->file_burntarea.n))==NULL)
       {
-        printallocerr("wet");
+        printallocerr("burntarea");
         free(climate->co2.data);
         free(climate->ch4.data);
         for (i = 0; i < ndata; i++)
         {
           free(climate->data[i].prec);
           free(climate->data[i].temp);
-        }
-        if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-        {
-          for (i = 0; i < ndata; i++)
-          {
-            free(climate->data[i].wind);
-            free(climate->data[i].tamp);
-            free(climate->data[i].lightning);
-          }
+          free(climate->data[i].wind);
+          free(climate->data[i].tamp);
+          free(climate->data[i].lightning);
         }
         if(config->with_radiation)
         {
@@ -895,47 +930,12 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         else
           for (i = 0; i < ndata; i++)
             free(climate->data[i].sun);
+        if(config->wet_filename.name!=NULL)
+          for (i = 0; i < ndata; i++)
+            free(climate->data[i].wet);
         free(climate);
         return NULL;
       }
-    }
-  }
-  else
-    for (i = 0; i < ndata; i++)
-      climate->data[i].wet=NULL;
-  if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
-  {
-    for (i = 0; i < ndata; i++)
-    if((climate->data[i].burntarea=newvec(Real,climate->file_burntarea.n))==NULL)
-    {
-      printallocerr("burntarea");
-      free(climate->co2.data);
-      free(climate->ch4.data);
-      for (i = 0; i < ndata; i++)
-      {
-        free(climate->data[i].prec);
-        free(climate->data[i].temp);
-        free(climate->data[i].wind);
-        free(climate->data[i].tamp);
-        free(climate->data[i].lightning);
-      }
-      if(config->with_radiation)
-      {
-        for (i = 0; i < ndata; i++)
-        {
-          free(climate->data[i].lwnet);
-          free(climate->data[i].swdown);
-        }
-      }
-      else
-        for (i = 0; i < ndata; i++)
-          free(climate->data[i].sun);
-      if(config->wet_filename.name!=NULL)
-        for (i = 0; i < ndata; i++)
-          free(climate->data[i].wet);
-      free(climate);
-      return NULL;
-    }
   }
 
   return climate;
