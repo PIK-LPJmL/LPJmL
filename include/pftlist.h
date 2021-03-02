@@ -33,7 +33,7 @@ extern int fwritepftlist(FILE *,const Pftlist *);
 extern void fprintpftlist(FILE *,const Pftlist *,int);
 extern Bool freadpftlist(FILE *,Stand *,Pftlist *,const Pftpar[],int,
                          Bool,Bool);
-extern Stocks firepft(Litter *,Pftlist *,Real,const Config *);
+extern Stocks firepft(Stand *,Real,const Config *);
 extern void newpftlist(Pftlist *);
 extern Pft *addpft(Stand *,const Pftpar *,int,int,const Config *);
 

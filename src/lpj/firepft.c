@@ -14,19 +14,20 @@
 
 #include "lpj.h"
 
-Stocks firepft(Litter *litter,   /**< Litter pool */
-               Pftlist *pftlist, /**< list of established PFTs */
+Stocks firepft(Stand *stand,   /**< Litter pool */
                Real fire_frac,    /**< fire fraction (0..1) */
                const Config *config /**< LPJmL configuration */
               )                  /** \return fire flux (gC/m2) */
 {
   int i,p;
   Pft *pft;
+  Litter *litter;
   Stocks flux,flux_litter,flux_sum;
+  litter=&stand->soil.litter;
   flux_litter.carbon=flux_litter.nitrogen=flux_sum.carbon=flux_sum.nitrogen=0;
-  if(isempty(pftlist)) /*if(pftlist->n==0)*/
+  if(isempty(&stand->pftlist)) /*if(pftlist->n==0)*/
     return flux_sum;
-  foreachpft(pft,p,pftlist)
+  foreachpft(pft,p,&stand->pftlist)
   {
     flux=fire(pft,&fire_frac);
     flux_sum.carbon+=flux.carbon;
@@ -45,12 +46,12 @@ Stocks firepft(Litter *litter,   /**< Litter pool */
     litter->item[p].ag.leaf.nitrogen*=(1-fire_frac);
     for(i=0;i<NFUELCLASS;i++)
     {
-      getoutput(&pft->stand->cell->output,LITBURNC_WOOD,config)+=litter->item[p].ag.wood[i].carbon*fire_frac;
+      getoutput(&stand->cell->output,LITBURNC_WOOD,config)+=litter->item[p].ag.wood[i].carbon*fire_frac;
       litter->item[p].ag.wood[i].carbon*=(1-fire_frac);
       litter->item[p].ag.wood[i].nitrogen*=(1-fire_frac);
     }
   } /* of 'for(p=0;...)' */
-  getoutput(&pft->stand->cell->output,LITBURNC,config)+=flux_litter.carbon*fire_frac;
+  getoutput(&stand->cell->output,LITBURNC,config)+=flux_litter.carbon*fire_frac;
   flux_sum.carbon+=flux_litter.carbon*fire_frac;
   flux_sum.nitrogen+=flux_litter.nitrogen*fire_frac;
   return flux_sum; 

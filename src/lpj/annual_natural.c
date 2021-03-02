@@ -94,7 +94,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   {  
     fire_frac=fire_prob(&stand->soil.litter,stand->fire_sum);
     getoutput(&stand->cell->output,FIREF,config)+=1.0/fire_frac;
-    flux=firepft(&stand->soil.litter,&stand->pftlist,fire_frac,config);
+    flux=firepft(stand,fire_frac,config);
     getoutput(&stand->cell->output,FIREC,config)+=flux.carbon*stand->frac;
     stand->cell->balance.fire.carbon+=flux.carbon*stand->frac;
     if(flux.nitrogen<0)
