@@ -395,7 +395,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     }
     else
       fprintf(stderr,"ERROR124: Cotton PFT not found in cell %s.\n",sprintcoord(line,&stand->cell->coord));
-    update_irrig(stand,agtree(ncft,config->nwptype),ncft,config);
+    update_irrig(stand,agtree(ncft,config->nwptype)+data->irrigation.pft_id-npft,ncft,config);
     //if(setaside(stand->cell,stand,config->pftpar,TRUE,npft,data->irrigation,year))
     // return TRUE;
   }

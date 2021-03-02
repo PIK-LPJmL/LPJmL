@@ -247,7 +247,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
   free(n_est);
   if(isdead)
   {
-    update_irrig(stand,index,ncft,config);
+    update_irrig(stand,agtree(ncft,config->nwptype)+data->irrigation.pft_id-npft,ncft,config);
     if(setaside(stand->cell,stand,stand->cell->ml.with_tillage,intercrop,npft,data->irrigation.irrigation,year,config))
       return TRUE;
   }

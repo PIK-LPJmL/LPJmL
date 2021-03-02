@@ -15,6 +15,7 @@
 /**************************************************************************************/
 
 #include "lpj.h"
+#include "grassland.h"
 
 int findpftname(const char *name,     /**< PFT name to find in array */
                 const Pftpar *pftpar, /**< PFT parameter array */
@@ -32,14 +33,11 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
                 int *size,           /**< size of CFT map array */
                 const char *name,    /**< name of map */
                 Bool cftonly,        /**< scan only crop PFTs */
-                int npft,            /**< numbert of natural PFTs */
+                int npft,            /**< number of natural PFTs */
                 int ncft,            /**< number of crop PFTs */
                 const Config *config /**< LPJ configuration */
                )                     /** \return CFT map array or NULL on error */
 {
-  static char *grasspft[NGRASS]={"others","grassland"};
-  static char *biomasspft[NBIOMASSTYPE]={"biomass grass","biomass tree"};
-  static char *wppft[1]={"woodplantation"};
   Bool *undef;
   LPJfile array,item;
   int *cftmap;
@@ -91,14 +89,14 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
       }
       if(!cftonly)
       {
-        cftmap[cft]=findstr(s,grasspft,NGRASS);
+        cftmap[cft]=findstr(s,grassland_names,NGRASS);
         if(cftmap[cft]!=NOT_FOUND)
         {
           cftmap[cft]+=ncft;
           undef[cftmap[cft]]=FALSE;
           continue;
         }
-        cftmap[cft]=findstr(s,biomasspft,NBIOMASSTYPE);
+        cftmap[cft]=findstr(s,biomass_names,NBIOMASSTYPE);
         if(cftmap[cft]!=NOT_FOUND)
         {
           cftmap[cft]+=ncft+NGRASS;
@@ -107,7 +105,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
         }
         if(config->nwptype)
         {
-          cftmap[cft]=findstr(s,wppft,1);
+          cftmap[cft]=findstr(s,woodplantation_names,config->nwptype);
           if(cftmap[cft]!=NOT_FOUND)
           {
             cftmap[cft]+=ncft+NGRASS+NBIOMASSTYPE;
@@ -158,7 +156,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
             }
             else
               fputc(',',stderr);
-            fprintf(stderr," \"%s\"",grasspft[cft]);
+            fprintf(stderr," \"%s\"",grassland_names[cft]);
           }
         for(cft=0;cft<NBIOMASSTYPE;cft++)
           if(undef[cft+ncft+NGRASS])
@@ -170,19 +168,20 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
             }
             else
               fputc(',',stderr);
-            fprintf(stderr," \"%s\"",biomasspft[cft]);
+            fprintf(stderr," \"%s\"",biomass_names[cft]);
           }
-        if(config->nwptype && undef[ncft+NGRASS+NBIOMASSTYPE])
-        {
-          if(first && isroot(*config))
+        for(cft=0;cft<config->nwptype;cft++)
+          if(undef[ncft+NGRASS+NBIOMASSTYPE+cft])
           {
-            fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
-            first=FALSE;
+            if(first && isroot(*config))
+            {
+              fprintf(stderr,"WARNING010: Map '%s' not defined for",name);
+              first=FALSE;
+            }
+            else
+              fputc(',',stderr);
+            fprintf(stderr," \"%s\"",woodplantation_names[cft]);
           }
-          else
-            fputc(',',stderr);
-          fprintf(stderr," \"%s\"",wppft[0]);
-        }
         for(cft=0;cft<config->nagtree;cft++)
           if(undef[cft+ncft+NGRASS+NBIOMASSTYPE+config->nwptype])
           {
@@ -220,11 +219,11 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
       if(!cftonly)
       {
         for(cft=0;cft<NGRASS;cft++)
-          fprintf(stderr,",\"%s\"",grasspft[cft]);
+          fprintf(stderr,",\"%s\"",grassland_names[cft]);
         for(cft=0;cft<NBIOMASSTYPE;cft++)
-          fprintf(stderr,",\"%s\"",biomasspft[cft]);
-        if(config->nwft)
-          fprintf(stderr,",\"%s\"",wppft[0]);
+          fprintf(stderr,",\"%s\"",biomass_names[cft]);
+        for(cft=0;cft<config->nwft;cft++)
+          fprintf(stderr,",\"%s\"",woodplantation_names[cft]);
         for(cft=0;cft<config->nagtree;cft++)
           fprintf(stderr,",\"%s\"",config->pftpar[npft-config->nagtree+cft].name);
       }

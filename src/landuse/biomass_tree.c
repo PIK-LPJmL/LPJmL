@@ -18,6 +18,8 @@
 #include "agriculture.h"
 #include "biomass_tree.h"
 
+const char *biomass_names[NBIOMASSTYPE]={"biomass grass","biomass tree"};
+
 Standtype biomass_tree_stand={BIOMASS_TREE,"biomass_tree",new_biomass_tree,
                               free_agriculture,fwrite_biomass_tree,
                               fread_biomass_tree,fprint_biomass_tree,

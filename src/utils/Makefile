@@ -58,13 +58,13 @@ LIBDIR  = ../../lib
 BIN     = ../../bin
 
 LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libtree.$A $(LIBDIR)/libgrass.$A\
-          $(LIBDIR)/libspitfire.$A $(LIBDIR)/libsoil.$A\
-          $(LIBDIR)/libgrass.$A  $(LIBDIR)/liblanduse.$A\
+          $(LIBDIR)/libspitfire.$A $(LIBDIR)/liblanduse.$A\
           $(LIBDIR)/libreservoir.$A $(LIBDIR)/libclimate.$A\
           $(LIBDIR)/libnum.$A $(LIBDIR)/libtools.$A\
           $(LIBDIR)/libcrop.$A $(LIBDIR)/libpnet.$A $(LIBDIR)/libsoil.$A\
-          $(LIBDIR)/libtree.$A $(LIBDIR)/liblpj.$A $(LIBDIR)/libcdf.$A\
-          $(LIBDIR)/libtools.$A $(LIBDIR)/libnum.$A
+          $(LIBDIR)/liblpj.$A $(LIBDIR)/libcdf.$A\
+          $(LIBDIR)/libtools.$A $(LIBDIR)/libnum.$A $(LIBDIR)/libsoil.$A\
+          $(LIBDIR)/libgrass.$A $(LIBDIR)/libtree.$A
 
 all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/river_sections_input_grid$E $(BIN)/river_sections_input_soil$E\

@@ -1354,7 +1354,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     }
     writeoutputarray(SOILNH4_LAYER,1);
   }
-  if(config->nwptype)
+  if(config->nwft)
     writeoutputarray(WFT_VEGC,1);
   writeoutputarray(CFT_PET,1);
   writeoutputarray(CFT_TRANSP,1);

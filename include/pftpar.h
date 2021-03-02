@@ -48,6 +48,7 @@
 
 #define NGRASS 2 /* OTHERS + MANAGED GRASSLAND */
 #define NBIOMASSTYPE 2 /* GRASS + TREE */
+#define NWPTYPE 1
 #define WIRRIG 2
 #define ALLNATURAL -2 /* ensures summing daily outputs for all natural vegetation pfts */
 #define ALLGRASSLAND -3 /* ensures summing daily outputs for all natural vegetation pfts */

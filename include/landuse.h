@@ -160,5 +160,6 @@ extern void update_double_harvest(Output *,Pft *,Bool,int,int,int,const Config *
 /* Declaration of variables */
 
 extern Real tinyfrac;
+extern const char *biomass_names[NBIOMASSTYPE];
 
 #endif
