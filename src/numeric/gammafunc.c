@@ -21,14 +21,14 @@
 #define FPMIN 1.0e-30        /*                      Number near the smallest representable fp number */
 
 Real itersolve(Real p_min,
-  Real p_max,
-  Real cti_min,
-  Real cti_max,
-  Real target,
-  Real phi,
-  Real chi,
-  Real mu,
-  int itercount)
+               Real p_max,
+               Real cti_min,
+               Real cti_max,
+               Real target,
+               Real phi,
+               Real chi,
+               Real mu,
+               int itercount)
 {
   Real cti_mid, p_mid;
 

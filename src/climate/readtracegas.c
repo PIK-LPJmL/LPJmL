@@ -1,24 +1,25 @@
-/***************************************************************************/
-/**                                                                       **/
-/**               r  e  a  d  t  r  a  c  e  g  a  s  .  c                **/
-/**                                                                       **/
-/**     C implementation of LPJ, derived from the Fortran/C++ version     **/
-/**                                                                       **/
-/**     Function initclimate read atmopsheric trace gas concentration     **/
-/**     from text file.                                                   **/
-/**                                                                       **/
-/**     written by Werner von Bloh, Sibyll Schaphoff                      **/
-/**     Potsdam Institute for Climate Impact Research                     **/
-/**     PO Box 60 12 03                                                   **/
-/**     14412 Potsdam/Germany                                             **/
-/**                                                                       **/
-/**     Last change: 01.03.2013                                           **/
-/**                                                                       **/
-/***************************************************************************/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**               r  e  a  d  t  r  a  c  e  g  a  s  .  c                         \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function reads atmopsheric trace gas concentration from text file.         \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include "lpj.h"
 
-Bool readtracegas(Tracedata *trace, const Filename *filename, Bool isout)
+Bool readtracegas(Tracedata *trace,         /**< trace gas data read */
+                  const Filename *filename, /**< filename of trace gas file */
+                  Bool isout                /**< error output? */
+                 )                          /** \return TRUE on error */
 {
   LPJfile file;
   int yr, yr_old;
@@ -50,7 +51,7 @@ Bool readtracegas(Tracedata *trace, const Filename *filename, Bool isout)
     {
       if (isout)
         fprintf(stderr, "ERROR129: Cannot read trace gas data in first line of '%s'.\n",
-          filename->name);
+                filename->name);
       free(trace->data);
       fclose(file.file.file);
       return TRUE;
@@ -73,7 +74,7 @@ Bool readtracegas(Tracedata *trace, const Filename *filename, Bool isout)
           break;
         if (isout)
           fprintf(stderr, "ERROR129: Cannot read trace gas data in line %d of '%s'.\n",
-            trace->nyear + 1, filename->name);
+                  trace->nyear + 1, filename->name);
         free(trace->data);
         fclose(file.file.file);
         return TRUE;
@@ -82,14 +83,14 @@ Bool readtracegas(Tracedata *trace, const Filename *filename, Bool isout)
       {
         if (isout)
           fprintf(stderr, "ERROR157: Invalid year=%d in line %d of '%s'.\n",
-            yr, trace->nyear + 1, filename->name);
+                  yr, trace->nyear + 1, filename->name);
         free(trace->data);
         fclose(file.file.file);
         return TRUE;
       }
       trace->nyear++;
       yr_old = yr;
-    }
+    } /* of while */
     fclose(file.file.file);
   }
   else

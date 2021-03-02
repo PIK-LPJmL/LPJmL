@@ -524,8 +524,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if (isroot(*config) && climate->ch4.firstyear>climate->file_temp.firstyear)
       fprintf(stderr, "WARNING001: First year in '%s'=%d greater than climate->file_temp.firstyear=%d.\n"
-        "            Preindustrial value for CH4 is used.\n",
-        config->ch4_filename.name, climate->ch4.firstyear, climate->file_temp.firstyear);
+        "            value=%g for CH4 is used.\n",
+        config->ch4_filename.name, climate->ch4.firstyear, climate->file_temp.firstyear,climate->ch4.data[0]);
   }
 #ifdef DEBUG7
   printf("climate->file_temp.firstyear: %d  co2-year: %d  value: %f\n",
@@ -671,10 +671,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate->ch4.data);
         for (i = 0; i<ndata; i++)
         {
-          free(climate->data[i].tmin);
           free(climate->data[i].wind);
           free(climate->data[i].prec);
-          free(climate->data[i].tmax);
           free(climate->data[i].temp);
         }
         free(climate);
@@ -690,7 +688,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     if(config->fdi==WVPD_INDEX)
     {
       for (i = 0; i<ndata; i++)
-         if((climate->data[i].humid=newvec(Real,climate->file_humid.n))==NULL)
+        if((climate->data[i].humid=newvec(Real,climate->file_humid.n))==NULL)
         {
           printallocerr("humid");
           free(climate->co2.data);
@@ -705,45 +703,45 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
           }
           return NULL;
         }
-      }
-      else
-        for (i = 0; i<ndata; i++)
-          climate->data[i].humid=NULL;
+    }
+    else
       for (i = 0; i<ndata; i++)
-        if((climate->data[i].lightning=newvec(Real,climate->file_lightning.n))==NULL)
-        {
-          printallocerr("lightning");
-          free(climate->co2.data);
-          free(climate->ch4.data);
-          for (i = 0; i<ndata; i++)
-          {
-            free(climate->data[i].humid);
-            free(climate->data[i].tamp);
-            free(climate->data[i].tmin);
-            free(climate->data[i].wind);
-            free(climate->data[i].prec);
-            free(climate->data[i].tmax);
-            free(climate->data[i].temp);
-          }
-          free(climate);
-          return NULL;
-        }
-      if((climate->file_lightning.fmt==CLM || climate->file_lightning.fmt==RAW) && climate->file_lightning.version<=1)
-        climate->file_lightning.scalar=1e-7;
-      if(climate->file_lightning.fmt==CDF)
+        climate->data[i].humid=NULL;
+    for (i = 0; i<ndata; i++)
+      if((climate->data[i].lightning=newvec(Real,climate->file_lightning.n))==NULL)
       {
+        printallocerr("lightning");
+        free(climate->co2.data);
+        free(climate->ch4.data);
         for (i = 0; i<ndata; i++)
-          if(readclimate_netcdf(&climate->file_lightning,climate->data[i].lightning,grid,0,config))
-           return NULL;
-      }
-      else
-      {
-        if(fseek(climate->file_lightning.file,climate->file_lightning.offset,SEEK_SET))
         {
-          fputs("ERROR191: Cannot seek lightning in initclimate().\n",stderr);
-          closeclimatefile(&climate->file_lightning,isroot(*config));
-          return NULL;
+          free(climate->data[i].humid);
+          free(climate->data[i].tamp);
+          free(climate->data[i].tmin);
+          free(climate->data[i].wind);
+          free(climate->data[i].prec);
+          free(climate->data[i].tmax);
+          free(climate->data[i].temp);
         }
+        free(climate);
+        return NULL;
+      }
+    if((climate->file_lightning.fmt==CLM || climate->file_lightning.fmt==RAW) && climate->file_lightning.version<=1)
+       climate->file_lightning.scalar=1e-7;
+    if(climate->file_lightning.fmt==CDF)
+    {
+      for (i = 0; i<ndata; i++)
+        if(readclimate_netcdf(&climate->file_lightning,climate->data[i].lightning,grid,0,config))
+          return NULL;
+    }
+    else
+    {
+      if(fseek(climate->file_lightning.file,climate->file_lightning.offset,SEEK_SET))
+      {
+        fputs("ERROR191: Cannot seek lightning in initclimate().\n",stderr);
+        closeclimatefile(&climate->file_lightning,isroot(*config));
+        return NULL;
+      }
       for (i = 0; i<ndata; i++)
         if(readrealvec(climate->file_lightning.file,climate->data[i].lightning,0,climate->file_lightning.scalar,climate->file_lightning.n,climate->file_lightning.swap,climate->file_lightning.datatype))
         {
@@ -753,7 +751,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         }
         closeclimatefile(&climate->file_lightning,isroot(*config));
       }
-  }
+  } /* of if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) */
   else
     for (i = 0; i<ndata; i++)
       climate->data[i].tamp=climate->data[i].lightning=climate->data[i].tmax=climate->data[i].humid=NULL;
@@ -833,28 +831,28 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     else
     {
       for (i = 0; i < ndata; i++)
-      if((climate->data[i].sun=newvec(Real,climate->file_cloud.n))==NULL)
-      {
-        printallocerr("cloud");
-        free(climate->co2.data);
-        free(climate->ch4.data);
-        for (i = 0; i < ndata; i++)
+        if((climate->data[i].sun=newvec(Real,climate->file_cloud.n))==NULL)
         {
-          free(climate->data[i].prec);
-          free(climate->data[i].temp);
-        }
-        if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-        {
+          printallocerr("cloud");
+          free(climate->co2.data);
+          free(climate->ch4.data);
           for (i = 0; i < ndata; i++)
           {
-            free(climate->data[i].wind);
-            free(climate->data[i].tamp);
-            free(climate->data[i].lightning);
+            free(climate->data[i].prec);
+            free(climate->data[i].temp);
           }
+          if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+          {
+            for (i = 0; i < ndata; i++)
+            {
+              free(climate->data[i].wind);
+              free(climate->data[i].tamp);
+              free(climate->data[i].lightning);
+            }
+          }
+          free(climate);
+          return NULL;
         }
-        free(climate);
-        return NULL;
-      }
     }
   }
   if(config->wet_filename.name!=NULL)

@@ -151,7 +151,6 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
       count=climate->file_tmax.n*(year-firstyear);
       for(j=0;j<climate->file_tmax.n;j++)
         store->tmax[count++]=climate->data[index].tmax[j];
-        store->tmax[count++]=climate->data[index].tmax[j];
     }
     if(store->humid!=NULL)
     {

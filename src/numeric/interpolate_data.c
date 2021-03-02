@@ -1,19 +1,18 @@
-/***************************************************************************/
-/**                                                                       **/
-/**       i  n  t  e  r  p  o  l  a  t  e  _  d  a  t  a  .  c            **/
-/**                                                                       **/
-/**     C implementation of LPJ, derived from the Fortran/C++ version     **/
-/**                                                                       **/
-/**     Linear interpolation function of arrays                           **/
-/**                                                                       **/
-/**     written by Werner von Bloh, Sibyll Schaphoff                      **/
-/**     Potsdam Institute for Climate Impact Research                     **/
-/**     PO Box 60 12 03                                                   **/
-/**     14412 Potsdam/Germany                                             **/
-/**                                                                       **/
-/**     Last change: 21.10.2004                                           **/
-/**                                                                       **/
-/***************************************************************************/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**       i  n  t  e  r  p  o  l  a  t  e  _  d  a  t  a  .  c                     \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Linear interpolation function of arrays                                    \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include <stdio.h>
 #include "types.h"
