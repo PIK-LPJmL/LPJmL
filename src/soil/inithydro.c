@@ -30,7 +30,6 @@ Bool inithydro(Cell *grid,
   int cell;
   int swap;
   short ctidata_in[CTI_DATA_LENGTH];
-  Input_netcdf input;
   size_t offset;
 
   if ((hydrofile = openinputfile(&header, &swap, &config->hydrotopes_filename,

@@ -20,6 +20,7 @@
 #define CH4_min  0.012      /* threshold value at which ebullition occur at totally vegetated soils g*m-3 8/1000*/
 #define k_e 1                /* rate constant h-1 */
 
+#ifdef DEBUG
 static void printch4(const Real CH4[LASTLAYER])
 {
   int i;
@@ -27,16 +28,19 @@ static void printch4(const Real CH4[LASTLAYER])
     printf(" %g", CH4[i]);
   printf("\n");
 }
+#endif
 
-Real ebullition(Soil *soil,        /* pointer to soil data */
-  Real fpc_all                   /* plant cover  */
-)
+Real ebullition(Soil *soil,   /**< pointer to soil data */
+                Real fpc_all  /**< plant cover  (0..1) */
+              )
 {
   Real C_thres, Q_ebull, ratio, Q_ebull_day, soil_moist[NSOILLAYER], V[NSOILLAYER], epsilon_CH4, epsilon_CH4_u;
   int l, i;
   Q_ebull = Q_ebull_day = 0.0;
-  //printf("EBULL before:");
-  //printch4(soil->CH4);
+#ifdef DEBUG
+  printf("EBULL before:");
+  printch4(soil->CH4);
+#endif
   for (l = 0; l<NSOILLAYER; l++) {
     soil_moist[l] = (soil->w[l] * soil->whcs[l] + (soil->wpwps[l] * (1 - soil->ice_pwp[l])) + soil->w_fw[l]) / soil->wsats[l];
     V[l] = (soil->wsats[l] - (soil->w[l] * soil->whcs[l] + soil->ice_depth[l] + soil->ice_fw[l] + soil->wpwps[l] + soil->w_fw[l])) / soildepth[l];  /*soil air content (m3 air/m3 soil)*/
@@ -66,7 +70,9 @@ Real ebullition(Soil *soil,        /* pointer to soil data */
         break;
     }
   }
-  //  printf("EBULL after:");
-  // printch4(soil->CH4);
+#ifdef DEBUG
+  printf("EBULL after:");
+  printch4(soil->CH4);
+#endif
   return Q_ebull_day;
-}
+} /* of 'ebullition */

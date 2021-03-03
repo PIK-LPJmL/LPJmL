@@ -65,14 +65,13 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
                     const Config *config       /**< [in] LPJ configuration */
                    )                           /** \return gross primary productivity (gC/m2/day) */
 {
-  int l,i,iter;
+  int l,iter;
   Real supply,supply_pft,demand,demand_pft,wr,lambda,gpd,agd,gc,aet,aet_cor,aet_frac;
   Data data;
-  Real roots,vmax;
+  Real vmax;
   Real rootdist_n[LASTLAYER];
   Real aet_tmp[LASTLAYER];
   Real layer,root_u,root_nu;
-  Real freeze_depth,thaw_depth;
   Real adtmm;
   Real gc_new;
   Real A,B,psi;

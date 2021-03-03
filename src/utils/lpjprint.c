@@ -24,10 +24,11 @@
 #include "biomass_tree.h"
 #include "biomass_grass.h"
 #include "woodplantation.h"
+#include "wetland.h"
 
 #define PRINTLPJ_VERSION "1.0.019"
 #define NTYPES 3
-#define NSTANDTYPES 12 /* number of stand types */
+#define NSTANDTYPES 14 /* number of stand types */
 
 #ifdef USE_JSON
 #define dflt_conf_filename "lpjml.js"
@@ -144,6 +145,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       grid.ml.fertilizer_nr=NULL;
     }
     grid.output.data=NULL;
+    grid.output.syear2=NULL;
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
 
     if(freadcell(file_restart,&grid,npft,ncft,
@@ -178,6 +180,7 @@ int main(int argc,char **argv)
   Standtype standtype[NSTANDTYPES];
 
   standtype[NATURAL]=natural_stand;
+  standtype[WETLAND]=wetland_stand;
   standtype[SETASIDE_RF]=setaside_rf_stand;
   standtype[SETASIDE_IR]=setaside_ir_stand;
   standtype[AGRICULTURE]=agriculture_stand;
@@ -187,7 +190,7 @@ int main(int argc,char **argv)
   standtype[BIOMASS_GRASS]=biomass_grass_stand;
   standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
   standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
-  standtype[WOODPLANTATION]=woodplantation_stand,
+  standtype[WOODPLANTATION]=woodplantation_stand;
   standtype[KILL]=kill_stand;
 
   progname=strippath(argv[0]);

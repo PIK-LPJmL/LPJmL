@@ -749,8 +749,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
           closeclimatefile(&climate->file_lightning,isroot(*config));
           return NULL;
         }
-        closeclimatefile(&climate->file_lightning,isroot(*config));
-      }
+      closeclimatefile(&climate->file_lightning,isroot(*config));
+    }
   } /* of if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) */
   else
     for (i = 0; i<ndata; i++)
