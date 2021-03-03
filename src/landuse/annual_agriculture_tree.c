@@ -183,7 +183,8 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
     fpc_inc2=newvec(Real,pft_len);
     check(fpc_inc2);
   }
-  foreachpft(pft,p,&stand->pftlist) fpc_inc2[p]=0;
+  foreachpft(pft,p,&stand->pftlist)
+    fpc_inc2[p]=0;
 
   foreachpft(pft,p,&stand->pftlist)
     if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf,stand->type->landusetype==WETLAND))

@@ -35,5 +35,6 @@ void fwriteoutputdata(FILE *file,           /**< pointer to restart file */
                       const Config *config  /**< LPJ configuration */
                      )
 {
+  fwrite(&config->totalsize,sizeof(int),1,file);
   fwrite(output->data,sizeof(Real),config->totalsize,file);
 } /* of 'fwriteoutputdata' */

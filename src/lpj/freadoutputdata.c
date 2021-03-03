@@ -39,8 +39,16 @@
 Bool freadoutputdata(FILE *file,          /**< pointer to restart file */
                      Output *output,      /**< output data */
                      Bool swap,           /**< byte order has to be changed? */
-                     const Config *config /**< LPJ configuration */
+                     Config *config /**< LPJ configuration */
                     )
 {
+  if(freadint(&config->totalsize,1,swap,file)!=1)
+    return TRUE;
+  output->data=newvec(Real,config->totalsize);
+  if(output->data==NULL)
+  {
+    printallocerr("data");
+    return TRUE;
+  }
   return freadreal(output->data,config->totalsize,swap,file)!=config->totalsize;
 } /* of 'freadoutputdata' */

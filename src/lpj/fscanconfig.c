@@ -927,14 +927,17 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   else
     config->outputyear=config->firstyear;
   fscanbool2(file,&config->from_restart,"restart");
+  config->new_seed=FALSE;
   if(config->from_restart)
   {
     fscanname(file,name,"restart_filename");
     config->restart_filename=addpath(name,config->restartdir);
     checkptr(config->restart_filename);
-    config->new_seed=FALSE;
-    if(fscanbool(file,&config->new_seed,"new_seed",TRUE,verbose))
-      return TRUE;
+    if(config->ischeckpoint)
+    {
+      if(fscanbool(file,&config->new_seed,"new_seed",TRUE,verbose))
+        return TRUE;
+    }
   }
   else
   {

@@ -26,7 +26,7 @@
 #include "woodplantation.h"
 #include "wetland.h"
 
-#define PRINTLPJ_VERSION "1.0.019"
+#define PRINTLPJ_VERSION "1.0.020"
 #define NTYPES 3
 #define NSTANDTYPES 14 /* number of stand types */
 
@@ -151,7 +151,8 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     if(freadcell(file_restart,&grid,npft,ncft,
                  config->soilpar+soilcode-1,standtype,NSTANDTYPES,swap,config))
     {
-      fprintf(stderr,"WARNING008: Unexpected end of file in '%s', number of gridcells truncated to %d.\n",config->write_restart_filename,i);
+      fprintf(stderr,"WARNING008: Unexpected end of file in '%s', number of gridcells truncated to %d.\n",
+              (config->ischeckpoint) ? config->checkpoint_restart_filename : config->write_restart_filename,i);
       config->ngridcell=i;
       break;
     }

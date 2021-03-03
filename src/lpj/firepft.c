@@ -51,12 +51,12 @@ Stocks firepft(Stand *stand,        /**< pointer to stand */
     litter->item[p].ag.leaf.nitrogen*=(1-fire_frac);
     for(i=0;i<NFUELCLASS;i++)
     {
-      getoutput(&pft->stand->cell->output,LITBURNC_WOOD,config)+=litter->item[p].ag.wood[i].carbon*fire_frac;
+      getoutput(&stand->cell->output,LITBURNC_WOOD,config)+=litter->item[p].ag.wood[i].carbon*fire_frac;
       litter->item[p].ag.wood[i].carbon*=(1-fire_frac);
       litter->item[p].ag.wood[i].nitrogen*=(1-fire_frac);
     }
   } /* of 'for(p=0;...)' */
-  getoutput(&pft->stand->cell->output,LITBURNC,config)+=flux_litter.carbon*fire_frac;
+  getoutput(&stand->cell->output,LITBURNC,config)+=flux_litter.carbon*fire_frac;
   flux_sum.carbon+=flux_litter.carbon*fire_frac;
   flux_sum.nitrogen+=flux_litter.nitrogen*fire_frac;
   return flux_sum; 
