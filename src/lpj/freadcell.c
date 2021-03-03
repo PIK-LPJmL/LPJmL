@@ -26,7 +26,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
                const Standtype standtype[], /**< array of stand types */
                int nstand,             /**< number of stand types */
                Bool swap, /**< Byte order has to be changed (TRUE/FALSE) */
-               const Config *config    /**< LPJ configuration */
+               Config *config          /**< LPJ configuration */
               )                        /** \return TRUE on error */
 {
   int i;

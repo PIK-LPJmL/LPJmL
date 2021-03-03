@@ -25,10 +25,10 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
                 Config *config          /**< LPJmL configuration */
                )                        /**\ return TRUE on error */
 {
-  int i,maxsize,index;
+  int i,maxsize,index,totalsize;
   Bool isall;
   maxsize=1;
-  config->totalsize=0;
+  totalsize=0;
   isall=TRUE;
   /* calculate size of output storage */
   for(i=FPC;i<NOUT;i++)
@@ -37,20 +37,20 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
     if(config->outputsize[i]>maxsize)
       maxsize=config->outputsize[i];
     if(isopen(outputfile,i))
-      config->totalsize+=config->outputsize[i];
+      totalsize+=config->outputsize[i];
     else
       isall=FALSE;
   }
   config->outputsize[PFT_GCGP_COUNT]=config->outputsize[PFT_GCGP];
   config->outputsize[NDAY_MONTH]=config->outputsize[CFT_SWC];
   if(isopen(outputfile,PFT_GCGP))
-    config->totalsize+=config->outputsize[PFT_GCGP];
+    totalsize+=config->outputsize[PFT_GCGP];
   if(isopen(outputfile,CFT_SWC))
-    config->totalsize+=config->outputsize[CFT_SWC];
+    totalsize+=config->outputsize[CFT_SWC];
   if(!isall)
   {
     /* not all output is writtem add trash */
-    config->totalsize+=maxsize;
+    totalsize+=maxsize;
     index=maxsize;
   }
   else
@@ -84,13 +84,26 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
   if(isroot(*config))
   {
     printf("Memory allocated for output: ");
-    printintf((int)(config->totalsize*sizeof(Real)));
+    printintf((int)(totalsize*sizeof(Real)));
     printf(" bytes/cell\n");
   }
   for(i=0;i<config->ngridcell;i++)
   {
-    grid[i].output.data=newvec(Real,config->totalsize);
-    checkptr(grid[i].output.data);
+    if(grid[i].output.data==NULL)
+    {
+      grid[i].output.data=newvec(Real,totalsize);
+      checkptr(grid[i].output.data);
+    }
+    else
+    {
+      if(config->totalsize!=totalsize)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR221: Output size=%d differs from output sizei=%d in checkpoint file.\n",
+                  totalsize,config->totalsize);
+        return TRUE;
+      }
+    }
     if(config->double_harvest)
     {
       grid[i].output.syear2=newvec(int,2*ncft);
@@ -103,5 +116,6 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
     checkptr(grid[i].pft_harvest);
 #endif
   }
+  config->totalsize=totalsize;
   return FALSE;
 } /* of 'initoutput' */

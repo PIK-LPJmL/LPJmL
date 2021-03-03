@@ -166,7 +166,18 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
               cell);
       fprintcoord(stderr,coords+cell);
       fputs(") in data file.\n",stderr);
-      free(f);
+      switch(file->datatype)
+      {
+        case LPJ_FLOAT:
+          free(f);
+          break;
+        case LPJ_DOUBLE:
+          free(d);
+          break;
+        case LPJ_SHORT:
+          free(s);
+          break;
+      }
       nc_close(file->ncid);
       return TRUE;
     }

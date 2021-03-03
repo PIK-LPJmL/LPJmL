@@ -25,7 +25,7 @@
 #include "biomass_grass.h"
 #include "woodplantation.h"
 
-#define PRINTLPJ_VERSION "1.0.019"
+#define PRINTLPJ_VERSION "1.0.020"
 #define NTYPES 3
 #define NSTANDTYPES 12 /* number of stand types */
 
@@ -50,7 +50,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
   Bool swap,swap_cow;
   unsigned int soilcode;
   Code code;
-  long offset;
+  size_t offset;
   FILE *file_restart,*file_countrycode;
   Type cow_type;
   Celldata celldata;
@@ -144,12 +144,14 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       grid.ml.fertilizer_nr=NULL;
     }
     grid.output.data=NULL;
+    grid.output.syear2=NULL;
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
 
     if(freadcell(file_restart,&grid,npft,ncft,
                  config->soilpar+soilcode-1,standtype,NSTANDTYPES,swap,config))
     {
-      fprintf(stderr,"WARNING008: Unexpected end of file in '%s', number of gridcells truncated to %d.\n",config->write_restart_filename,i);
+      fprintf(stderr,"WARNING008: Unexpected end of file in '%s', number of gridcells truncated to %d.\n",
+              (config->ischeckpoint) ? config->checkpoint_restart_filename : config->write_restart_filename,i);
       config->ngridcell=i;
       break;
     }

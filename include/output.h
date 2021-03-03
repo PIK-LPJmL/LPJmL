@@ -110,7 +110,7 @@ extern Type getoutputtype(int,Bool);
 extern int getnyear(const Variable *,int);
 extern Bool isnitrogen_output(int);
 extern void fwriteoutputdata(FILE *,const Output *,const Config *);
-extern Bool freadoutputdata(FILE *,Output *,Bool,const Config *);
+extern Bool freadoutputdata(FILE *,Output *,Bool,Config *);
 extern Bool isannual(int,const Config *);
 extern int outputindex(int,int,const Config *);
 #ifdef USE_MPI
