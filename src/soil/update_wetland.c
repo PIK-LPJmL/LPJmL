@@ -427,8 +427,8 @@ void update_wetland(Cell *cell,
             if (ctotal.slow.carbon>1000)   stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].slow = (socfraction*stand->soil.k_mean[l].slow / (stand->soil.count / NDAYYEAR)) / kmean_pft.slow;
             // stand->soil.c_shift_slow[l][stand->soil.litter.ag[p].pft->id]*=socfraction*ctotal.slow/stand->soil.cpool[l].slow;
           }
-          cshift.slow += stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].fast;
-          cshift.fast += stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].slow;
+          cshift.fast += stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].fast;
+          cshift.slow += stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].slow;
         }
         forrootsoillayer(l)
         {
