@@ -89,8 +89,6 @@ Stocks littersom(Stand *stand,                      /**< pointer to stand data *
   int i,p,l;
   Soil *soil;
   Real yedoma_flux;
-  Real cshift_fast_sum[NSOILLAYER];
-  Real cshift_slow_sum[NSOILLAYER];
   Real F_NO3=0;                /* soil nitrification rate gN *m-2*d-1*/
   Real F_N2O=0;                /* soil nitrification rate gN *m-2*d-1*/
   Real F_Nmineral;  /* net mineralization flux gN *m-2*d-1*/
@@ -118,7 +116,7 @@ Stocks littersom(Stand *stand,                      /**< pointer to stand data *
 #endif
   flux.nitrogen=0;
   foreachsoillayer(l)
-     response[l]=cshift_fast_sum[l]=cshift_slow_sum[l]=0.0;
+    response[l]=0.0;
   decom_litter.carbon=decom_litter.nitrogen=soil_cflux=yedoma_flux=decom_sum.carbon=decom_sum.nitrogen=0.0;
   //CH4_air = p_s / R_gas / (airtemp + 273.15)*pch4*1e-6*WCH4;    /*g/m3 methane concentration*/
   foreachsoillayer(l)
@@ -417,8 +415,11 @@ Stocks littersom(Stand *stand,                      /**< pointer to stand data *
       {
         soil->pool[l].fast.carbon+=param.fastfrac*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].fast;
         soil->pool[l].slow.carbon+=(1-param.fastfrac)*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].slow;
-        cshift_fast_sum[l]+=decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].fast;
-        cshift_slow_sum[l]+=decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].slow;
+        if(decom_sum.carbon>0 && stand->type->landusetype==NATURAL)
+        {
+          getoutputindex(&stand->cell->output,CSHIFT_FAST_NV,l,config)+=param.fastfrac*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].fast;
+          getoutputindex(&stand->cell->output,CSHIFT_SLOW_NV,l,config)+=(1-param.fastfrac)*(1-param.atmfrac)*decom_sum.carbon*soil->c_shift[l][soil->litter.item[p].pft->id].slow;
+        }
         if(config->with_nitrogen)
         {
           if(decom_sum.nitrogen>0)
@@ -505,16 +506,6 @@ Stocks littersom(Stand *stand,                      /**< pointer to stand data *
       } /* of forrootlayer */
       /*sum for equilsom-routine*/
     }   /*end soil->litter.n*/
-
-    if(decom_litter.carbon>0 && stand->type->landusetype==NATURAL)
-    {
-      forrootsoillayer(l)
-      {
-        getoutputindex(&stand->cell->output,CSHIFT_FAST_NV,l,config)+=cshift_fast_sum[l]/decom_litter.carbon;
-        getoutputindex(&stand->cell->output,CSHIFT_SLOW_NV,l,config)+=cshift_slow_sum[l]/decom_litter.carbon;
-      }
-    }
-
     /*sum for equilsom-routine*/
     soil->decomp_litter_mean.carbon+=decom_litter.carbon;
     soil->decomp_litter_mean.nitrogen+=decom_litter.nitrogen;
