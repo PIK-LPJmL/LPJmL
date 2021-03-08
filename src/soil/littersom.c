@@ -1,4 +1,4 @@
-
+/**************************************************************************************/
 /**                                                                                \n**/
 /**                      l  i  t  t  e  r  s  o  m  .  c                           \n**/
 /**                                                                                \n**/
@@ -63,17 +63,17 @@ static Real f_ph(Real ph)
 
 //#define CHECK_BALANCE
 
-Stocks littersom(Stand *stand,                       /**< pointer to stand data */
-                 const Real gtemp_soil[NSOILLAYER],  /**< respiration coefficents */
-                 Real cellfrac_agr,                  /**< stand fraction of agricultural cells (0..1) */
-                 Real *methaneflux_litter,
-                 Real airtemp,
-                 Real pch4,
-                 Real *runoff,
+Stocks littersom(Stand *stand,                      /**< pointer to stand data */
+                 const Real gtemp_soil[NSOILLAYER], /**< respiration coefficents */
+                 Real cellfrac_agr,                 /**< stand fraction of agricultural cells (0..1) */
+                 Real *methaneflux_litter,          /**< CH4 emissions (gC/m2/day) */
+                 Real airtemp,                      /**< air temperature (deg C) */
+                 Real pch4,                         /**< atmoshoperic methane (ppb) */
+                 Real *runoff,                      /**< runoff (mm/day) */
                  Real *MT_water,
-                 int npft,                           /**< number of natural PFTs */
-                 int ncft,                           /**< number of crop PFTs */
-                 const Config *config         /**< nitrogen enabled? */
+                 int npft,                          /**< number of natural PFTs */
+                 int ncft,                          /**< number of crop PFTs */
+                 const Config *config               /**< LPJmL configuration */
                 ) /** \return decomposed carbon/nitrogen (g/m2) */
 {
   Real response[NSOILLAYER];
@@ -139,7 +139,7 @@ Stocks littersom(Stand *stand,                       /**< pointer to stand data 
   /* forrootsoillayer(l)
   if(soil->O2[l]>1000 ||soil->O2[l]< 0  ){
 
-  //	  fprintf(stdout,"BLÖD WA O2[%d]: %g\n",l,soil->O2[l]);
+  //	  fprintf(stdout,"BL WA O2[%d]: %g\n",l,soil->O2[l]);
   //         abort();
   }*/
 
@@ -224,7 +224,7 @@ Stocks littersom(Stand *stand,                       /**< pointer to stand data 
           //fprintf(stderr,"\t\t methanogenese layer[%d] O2: %g CH4: %g C_max: %g\n",l,soil->O2[l],soil->CH4[l],C_max[l]);
           soil->O2[l] = 0;
         }
-        /*Methane production (Rprod) (anoxic decomposition rate is taken from Khovorostyanov et al., 2008) C6H12O6 → 3CO2 + 3CH4*/
+        /*Methane production (Rprod) (anoxic decomposition rate is taken from Khovorostyanov et al., 2008) C6H12O6 -> 3CO2 + 3CH4*/
         methaneflux_soil = soil->pool[l].fast.carbon*param.k_soil10.fast / k_red*gtemp_soil[l] * exp(-(soil->O2[l] / soildepth[l] * 1000) / O2star);
         if (methaneflux_soil<0) methaneflux_soil= 0;
         //fprintf(stdout,"\t\t Methane production: layer:%d methane-flux: %g\n",l,methaneflux_soil[l]);
@@ -239,11 +239,12 @@ Stocks littersom(Stand *stand,                       /**< pointer to stand data 
         soil->k_mean[l].slow += (param.k_soil10.slow*response[l]);
 
         /*methanotrophy */
-        if ((soil_moist[l]<1) && layerbound[l] <= soil->wtable) {    //if((soil_moist[l]<1 && soil_moist[l]>epsilon) && soil->CH4[l]/soildepth[l]/epsilon_O2*1000>CH4_air && layerbound[l]<=soil->wtable)
-                                                                     /*maybe calculating during diffusivity */
-                                                                     //fprintf(stdout,"\t\t oxidation layer[%d] O2: %g CH4: %g\n",l,soil->O2[l],soil->CH4[l]);
-          oxidation = (Vmax_CH4*1e-3 * 24 * WCH4*soil->CH4[l] / soildepth[l] / epsilon_O2 * 1000) / (km_CH4*1e-3*WCH4 + soil->CH4[l] / soildepth[l] / epsilon_O2 * 1000)*gtemp_soil[l] * (soildepth[l] - soil->freeze_depth[l])*epsilon_O2 / 1000;   // gCH4/m³/h*24 = gCH4/m³/d ->g/layer/m2
-                                                                                                                                                                                                                                                     //oxidation=oxidation*(soil->O2[l]/soildepth[l]/epsilon_O2*1000)/(km_O2*1e-3*WO2+soil->O2[l]/soildepth[l]/epsilon_O2*1000); //SEGERS 1997 if ----- >> CH4 + 2O2 → CO2 + 2H2O
+        if ((soil_moist[l]<1) && layerbound[l] <= soil->wtable)
+        {    //if((soil_moist[l]<1 && soil_moist[l]>epsilon) && soil->CH4[l]/soildepth[l]/epsilon_O2*1000>CH4_air && layerbound[l]<=soil->wtable)
+           /*maybe calculating during diffusivity */
+          //fprintf(stdout,"\t\t oxidation layer[%d] O2: %g CH4: %g\n",l,soil->O2[l],soil->CH4[l]);
+          oxidation = (Vmax_CH4*1e-3 * 24 * WCH4*soil->CH4[l] / soildepth[l] / epsilon_O2 * 1000) / (km_CH4*1e-3*WCH4 + soil->CH4[l] / soildepth[l] / epsilon_O2 * 1000)*gtemp_soil[l] * (soildepth[l] - soil->freeze_depth[l])*epsilon_O2 / 1000;   // gCH4/m3/h*24 = gCH4/m3/d ->g/layer/m2
+          //oxidation=oxidation*(soil->O2[l]/soildepth[l]/epsilon_O2*1000)/(km_O2*1e-3*WO2+soil->O2[l]/soildepth[l]/epsilon_O2*1000); //SEGERS 1997 if ----- >> CH4 + 2O2 -> CO2 + 2H2O
           O2_need = min(oxidation*soildepth[l] * epsilon_O2 / 1000 * 2 * WO2 / WCH4, soil->O2[l] * oxid_frac);
           oxidation = O2_need / (2 * WO2)*WCH4;
           oxidation = min(oxidation, soil->CH4[l]);
@@ -256,9 +257,9 @@ Stocks littersom(Stand *stand,                       /**< pointer to stand data 
           soil->micro_heating[l] += oxidation*m_heat_ox;
 #endif
           h2o_mt+=oxidation*2*WH2O/WCH4/1000;                               // water produced during methane oxidation CH4 + 2O2 -> CO2 + 2H2O
-                                                                                      /*if(soil->O2[l]>1000  ||soil->O2[l]< 0 ||soil->CH4[l]< 0 ){*/
-                                                                                      // fprintf(stdout,"\t\t oxidation: %g %g O2: %g CH4: %g\n",oxidation,oxidation*WO2/WCH4,soil->O2[l],soil->CH4[l]);
-                                                                                      /*}*/
+         /*if(soil->O2[l]>1000  ||soil->O2[l]< 0 ||soil->CH4[l]< 0 ){*/
+        // fprintf(stdout,"\t\t oxidation: %g %g O2: %g CH4: %g\n",oxidation,oxidation*WO2/WCH4,soil->O2[l],soil->CH4[l]);
+           /*}*/
         }
         if (h2o_mt>0)
         {
