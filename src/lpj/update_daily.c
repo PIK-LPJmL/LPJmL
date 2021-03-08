@@ -191,7 +191,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     foreachsoillayer(l)
       getoutputindex(&cell->output,SOILTEMP,l,config)+=stand->soil.temp[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     plant_gas_transport(stand,climate.temp,ch4,config);
-    CH4_em=runoff=0;
     gasdiffusion(&stand->soil,climate.temp,ch4,&CH4_em,&runoff);
     cell->discharge.drunoff += runoff*stand->frac;
     if (CH4_em>0)
@@ -204,7 +203,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutput(&cell->output,CH4_SINK,config) -= CH4_em*stand->frac;
       cell->balance.aCH4_sink-=CH4_em*stand->frac;
     }
-    CH4_em = runoff = MT_water = 0;
     fpc_total_stand = 0;
     foreachpft(pft, p, &stand->pftlist)
       fpc_total_stand += pft->fpc;
@@ -220,9 +218,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     ende = standstocks(stand).carbon + soilmethane(&stand->soil);
     if (fabs(start - ende - ebul)>epsilon) fprintf(stdout, "C-ERROR: %g start:%g  ende:%g daily: %g\n", start - ende - ebul, start, ende, ebul);
 #endif
-
-    cell->discharge.drunoff += runoff*stand->frac;
-    runoff = 0;
 
     /* update soil and litter properties to account for all changes since last call of littersom */
     pedotransfer(stand,NULL,NULL,stand->frac);
@@ -244,6 +239,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       }
 
     hetres=littersom(stand,gtemp_soil,agrfrac,&CH4_em,climate.temp,ch4,&runoff,&MT_water,npft,ncft,config);
+    cell->discharge.drunoff += runoff*stand->frac;
+    //hetres.carbon=hetres.nitrogen=0;
     cell->balance.arh+=hetres.carbon*stand->frac;
     getoutput(&cell->output,RH,config)+=hetres.carbon*stand->frac;
     getoutput(&cell->output,N2O_DENIT,config)+=hetres.nitrogen*stand->frac;
@@ -429,9 +426,9 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       V = (stand->soil.wsats[l] - (stand->soil.w[l] * stand->soil.whcs[l] + stand->soil.ice_depth[l] + stand->soil.ice_fw[l] + stand->soil.wpwps[l] + stand->soil.w_fw[l])) / soildepth[l];  /*soil air content (m3 air/m3 soil)*/
       soilmoist = (stand->soil.w[l] * stand->soil.whcs[l] + (stand->soil.wpwps[l + 1] * (1 - stand->soil.ice_pwp[l + 1])) + stand->soil.w_fw[l]) / stand->soil.wsats[l];
       epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BO2);
-      getoutput(&cell->output,MEANSOILO2,config) += stand->soil.O2[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac / NDAYYEAR;
+      getoutput(&cell->output,MEANSOILO2,config) += stand->soil.O2[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac;
       epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BCH4);
-      getoutput(&cell->output,MEANSOILCH4,config) += stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac / NDAYYEAR;
+      getoutput(&cell->output,MEANSOILCH4,config) += stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac;
 #ifdef DEBUG
       if (p_s / R_gas / (climate.temp + 273.15)*ch4*1e-6*WCH4 * 100000<stand->soil.CH4[l] / soildepth[l] / epsilon_gas * 1000)
       {
