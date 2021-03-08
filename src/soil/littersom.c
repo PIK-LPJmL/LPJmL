@@ -76,7 +76,7 @@ Stocks littersom(Stand *stand,                       /**< pointer to stand data 
                  const Config *config         /**< nitrogen enabled? */
                 ) /** \return decomposed carbon/nitrogen (g/m2) */
 {
-  Real response[NSOILLAYER], response_wood;
+  Real response[NSOILLAYER];
   Real response_agtop_leaves,response_agtop_wood,response_agsub_leaves,response_agsub_wood,response_bg_litter,w_agtop;
   Real decay_litter, oxidation, litter_flux;
   Pool flux_soil[LASTLAYER];
@@ -99,37 +99,32 @@ Stocks littersom(Stand *stand,                       /**< pointer to stand data 
   Pft *pft;
   Pftcrop *crop;
   Irrigation *data;
+  /* FOR METHANE IMPLEMENTATION */
+  Real C_max[LASTLAYER], V;
+  Real methaneflux_soil;
+  Real h2o_mt;   /* methane production */
+  //Real CH4_air;
+  Real O2_need;
+  Real epsilon_O2 = 0;
+  Real oxid_frac = 0.5;  // Assume that 1/2 of the O2 is utilized by other electron acceptors (Wania etal.,2010)
+#ifdef CHECK_BALANCE
+  Stocks start;
+  Stocks end;
+#endif
   soil=&stand->soil;
+#ifdef CHECK_BALANCE
+  start = soilstocks(soil);
+  start.carbon+=soilmethane(soil);
+#endif
   flux.nitrogen=0;
   foreachsoillayer(l)
      response[l]=cshift_fast_sum[l]=cshift_slow_sum[l]=0.0;
   decom_litter.carbon=decom_litter.nitrogen=soil_cflux=yedoma_flux=decom_sum.carbon=decom_sum.nitrogen=0.0;
-  /* FOR METHANE IMPLEMENTATION */
-  Real C_max[LASTLAYER], CH4_max[LASTLAYER], V, c_max_test[LASTLAYER];
-  Real methaneflux_soil[LASTLAYER];
-  Pool k2;              /* methanogenesis rate */
-  Pool k_soil;
-  Real R_prod, h2o_mt;   /* methane production */
-  Real CH4_air, test_cshift, O2_need;
-  Real epsilon_O2 = 0;
-  Real x;
-  Real oxid_frac = 0.5;  // Assume that 1/2 of the O2 is utilized by other electron acceptors (Wania etal.,2010)
-
-  k_soil.fast.carbon = param.k_soil10.fast;   //*(1-soil->icefrac)+DECOM_FAST*soil->icefrac;
-  k_soil.slow.carbon = param.k_soil10.slow;   //*(1-soil->icefrac)+DECOM_SLOW*soil->icefrac;
-
-#ifdef CHECK_BALANCE
-  Stocks start;
-  Stocks end;
-  start = soilstocks(soil);
-  start.carbon+=soilmethane(soil);
-#endif
-  CH4_air = p_s / R_gas / (airtemp + 273.15)*pch4*1e-6*WCH4;    /*g/m3 methane concentration*/
+  //CH4_air = p_s / R_gas / (airtemp + 273.15)*pch4*1e-6*WCH4;    /*g/m3 methane concentration*/
   foreachsoillayer(l)
     response[l] = epsilon + epsilon;
-  forrootsoillayer(l)
-    methaneflux_soil[l] = 0.0;
   decom_litter.carbon = soil_cflux = yedoma_flux = decom_sum.carbon = oxidation = litter_flux = 0.0;
+  *methaneflux_litter=*runoff=*MT_water=0;
   foreachsoillayer(l)
     if(gtemp_soil[l]>0)
     {
@@ -224,20 +219,21 @@ Stocks littersom(Stand *stand,                       /**< pointer to stand data 
           getoutput(&stand->cell->output,NMINERALIZATION_AGR,config)+=F_Nmineral*stand->frac;
         soil->k_mean[l].fast+=(param.k_soil10.fast*response[l]);
         soil->k_mean[l].slow+=(param.k_soil10.slow*response[l]);
-        if (soil->O2[l]<0) {
+        if (soil->O2[l]<0)
+        {
           //fprintf(stderr,"\t\t methanogenese layer[%d] O2: %g CH4: %g C_max: %g\n",l,soil->O2[l],soil->CH4[l],C_max[l]);
           soil->O2[l] = 0;
-      }
+        }
         /*Methane production (Rprod) (anoxic decomposition rate is taken from Khovorostyanov et al., 2008) C6H12O6 → 3CO2 + 3CH4*/
-        methaneflux_soil[l] = soil->pool[l].fast.carbon*param.k_soil10.fast / k_red*gtemp_soil[l] * exp(-(soil->O2[l] / soildepth[l] * 1000) / O2star);
-        if (methaneflux_soil[l]<0) methaneflux_soil[l] = 0;
+        methaneflux_soil = soil->pool[l].fast.carbon*param.k_soil10.fast / k_red*gtemp_soil[l] * exp(-(soil->O2[l] / soildepth[l] * 1000) / O2star);
+        if (methaneflux_soil<0) methaneflux_soil= 0;
         //fprintf(stdout,"\t\t Methane production: layer:%d methane-flux: %g\n",l,methaneflux_soil[l]);
-        soil->pool[l].fast.carbon -= methaneflux_soil[l];
-        soil->CH4[l] += methaneflux_soil[l];
+        soil->pool[l].fast.carbon -= methaneflux_soil;
+        soil->CH4[l] += methaneflux_soil;
 
         /*THIS IS DEDICATED TO MICROBIOLOGICAL HEATING*/
 #ifdef MICRO_HEATING
-        soil->micro_heating[l] += methaneflux_soil[l] * m_heat_mt;
+        soil->micro_heating[l] += methaneflux_soil * m_heat_mt;
 #endif
         soil->k_mean[l].fast += (param.k_soil10.fast*response[l]);
         soil->k_mean[l].slow += (param.k_soil10.slow*response[l]);
@@ -485,7 +481,6 @@ Stocks littersom(Stand *stand,                       /**< pointer to stand data 
               if(isagriculture(stand->type->landusetype))
                 getoutput(&stand->cell->output,NIMMOBILIZATION_AGR,config)+=n_immo*stand->frac;
               soil->NH4[l]-=n_immo*soil->NH4[l]/N_sum;
-              soil->NO3[l]-=n_immo*soil->NO3[l]/N_sum;
               if(soil->NH4[l]<0)
               {
                  soil->pool[l].slow.nitrogen+=soil->NH4[l];
@@ -579,7 +574,7 @@ Stocks littersom(Stand *stand,                       /**< pointer to stand data 
   end.carbon+=soilmethane(soil);
   if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter))>0.00000001)
     fprintf(stdout, "C-ERROR in littersom: iswetland: %d %.5f start:%.5f  ende:%.5f decomCO2: %g methane_em: %.5f\n", soil->iswetland, start.carbon - end.carbon - (flux.carbon + *methaneflux_litter), start.carbon, end.carbon, flux.carbon, *methaneflux_litter);
-  if (fabs(start.nitrogen - end.nitrogen - flux.nitrogen)>0.00000001)
+  if (fabs(start.nitrogen - end.nitrogen - flux.nitrogen)>0.00001)
     fprintf(stdout, "N-ERROR in littersom: iswetland: %d %.5f start:%.5f  end:%.5f decomCO2: %g\n", soil->iswetland, start.nitrogen - end.nitrogen - flux.nitrogen, start.nitrogen, end.nitrogen, flux.nitrogen);
 #endif
   return flux;
