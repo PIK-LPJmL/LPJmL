@@ -636,7 +636,6 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(FIREN,1);
   writeoutputvar(FLUX_FIREWOOD,1);
   writeoutputvar(FIREF,1);
-  writeoutputvar(MEANVEGCMANGRASS,1);
   writeoutputvar(BNF_AGR,1);
   writeoutputvar(NFERT_AGR,1);
   writeoutputvar(NMANURE_AGR,1);
@@ -996,7 +995,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   writeoutputvar(NEGC_FLUXES,1);
   writeoutputvar(NEGN_FLUXES,1);
-  writeoutputvar(MEAN_VEGC_MANGRASS,ndate1);
+  writeoutputvar(MEANVEGCMANGRASS,ndate1);
   writeoutputvar(VEGC_AVG,ndate1);
   writeoutputvar(RH_LITTER,1);
   writeoutputvar(DISCHARGE,1e-9);     /* daily mean discharge per month in 1.000.000 m3 per cell */

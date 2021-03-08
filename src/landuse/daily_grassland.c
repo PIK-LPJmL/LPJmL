@@ -539,7 +539,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   foreachpft(pft, p, &stand->pftlist)
   {
     grass=pft->data;
-    getoutput(output,MEAN_VEGC_MANGRASS,config)+=vegc_sum(pft);
+    getoutput(output,MEANVEGCMANGRASS,config)+=vegc_sum(pft);
     if(!isannual(FPC_BFT,config))
       getoutputindex(output,FPC_BFT,getpftpar(pft, id)-(nnat-config->ngrass)+data->irrigation.irrigation*(config->nbiomass+2*config->ngrass),config)=pft->fpc;
     if(!isannual(PFT_VEGC,config))
