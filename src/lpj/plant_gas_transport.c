@@ -22,6 +22,7 @@
 #define tiller_radius 0.003
 #define tiller_por 0.7
 #define water_min 0.01
+
 static void printch4(const Real CH4[LASTLAYER])
 {
   int i;
@@ -123,9 +124,15 @@ void plant_gas_transport(Stand *stand,  /* pointer to soil data */
     }
   }
   if (CH4_plant_all>0)
+  {
     getoutput(&stand->cell->output,CH4_EMISSIONS,config)+=CH4_plant_all*stand->frac;
+    stand->cell->balance.aCH4_em+=CH4_plant_all*stand->frac;
+  }
   else
-    getoutput(&stand->cell->output,CH4_SINK,config)+=CH4_plant_all*stand->frac;
+  {
+    getoutput(&stand->cell->output,CH4_SINK,config)-=CH4_plant_all*stand->frac;
+    stand->cell->balance.aCH4_sink-=CH4_plant_all*stand->frac;
+  }
   getoutput(&stand->cell->output,CH4_PLANT_GAS,config)+=CH4_plant_all*stand->frac;
   //printf("plantgas after");
   //printch4(stand->soil.CH4);
