@@ -14,17 +14,16 @@
 #include "lpj.h"
 #include "natural.h"
 #include "wetland.h"
-#include "hydrotope.h"
 
 //#define CHECK_BALANCE
 #define MINCHANGE 1.e-4
 #define MINSIZE 4.e-6
 #define ADJUST_CSHIFT
 
-void update_wetland(Cell *cell,
-                    int ntotpft,
-                    int year,
-                    const Config *config
+void update_wetland(Cell *cell,          /**< pointer to cell */
+                    int ntotpft,         /**< total number of PFTs */
+                    int year,            /**< simulation year */
+                    const Config *config /**< LPJmL configuration */
                    )
 {
   Stand *stand;
@@ -68,6 +67,8 @@ void update_wetland(Cell *cell,
   wetlandarea_old = wetlandarea_new = 0.;
   iswetland_change = iswetland = FALSE;
   s = findlandusetype(cell->standlist, NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
+  if(s==NOT_FOUND)
+    return;
   natstand = getstand(cell->standlist, s);
   s = findlandusetype(cell->standlist, WETLAND);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
   if (s != NOT_FOUND) 
@@ -92,9 +93,7 @@ void update_wetland(Cell *cell,
     //  min / max p
     p_min = gammp(cell->hydrotopes.cti_phi, ((cti_min - cell->hydrotopes.cti_mu) / cell->hydrotopes.cti_chi));
     if (cti_max >= cell->hydrotopes.cti_mu)
-    {
       p_max = gammp(cell->hydrotopes.cti_phi, ((cti_max - cell->hydrotopes.cti_mu) / cell->hydrotopes.cti_chi));
-    }
     else
     {
       p_max = 0.;
@@ -104,7 +103,7 @@ void update_wetland(Cell *cell,
     //p_min_max = gammp(cell->hydrotopes.cti_phi,((cti_min_max - cell->hydrotopes.cti_mu) / cell->hydrotopes.cti_chi));
 
     wetlandarea_old = cell->hydrotopes.wetland_area;
-    wetlandarea_new = p_max - p_min;
+    wetlandarea_new = (p_max - p_min)*(1-cell->lakefrac);
 
     if (wetlandarea_new > 0.)
     {
@@ -299,14 +298,12 @@ void update_wetland(Cell *cell,
             }
             else
             {
-              if (wetpft->par->peatland != TRUE)
+              if (wetpft->par->peatland)
+                litter_update(&natstand->soil.litter, wetpft, -delta_wetland,config);
+              else
               {
                 pft = addpft(natstand,wetpft->par,year,365,config);
                 mix_veg_stock(pft, wetpft, natstand->frac, wetstand->frac);
-              }
-              else
-              {
-                litter_update(&natstand->soil.litter, wetpft, -delta_wetland,config);
               }
             }
           }
@@ -329,7 +326,8 @@ void update_wetland(Cell *cell,
       s = findlandusetype(cell->standlist, NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
       natstand = getstand(cell->standlist, s);
       s = findlandusetype(cell->standlist, WETLAND);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
-      if (s != NOT_FOUND) {
+      if (s != NOT_FOUND)
+      {
         wetstand = getstand(cell->standlist, s);
         iswetland = TRUE;
       }
@@ -381,7 +379,8 @@ void update_wetland(Cell *cell,
 #ifdef ADJUST_CSHIFT
   foreachstand(stand, s, cell->standlist)
   {
-    if ((stand->soil.count / NDAYYEAR) >= 100 && stand->soil.c_shift[0][0].fast>soildepth[0] / layerbound[BOTTOMLAYER - 1]) {
+    if ((stand->soil.count / NDAYYEAR) >= 100 && stand->soil.c_shift[0][0].fast>soildepth[0] / layerbound[BOTTOMLAYER - 1])
+    {
       ctotal.fast.carbon = ctotal.slow.carbon = 0.0;
       ctotal.fast.nitrogen = ctotal.slow.nitrogen = 0.0;
       forrootsoillayer(l)
@@ -436,7 +435,7 @@ void update_wetland(Cell *cell,
           stand->soil.c_shift[l][stand->soil.litter.item[p].pft->id].fast /= cshift.fast;
           //fprintf(stdout,"c_shift_slow = %.5f cshift.slow = %.5f %s k.mean_slow= %.5f decom_mean= %.5f \n",stand->soil.c_shift_slow[l][stand->soil.litter.ag[p].pft->id],cshift.slow,stand->soil.litter.ag[p].pft->name,stand->soil.k_mean[l].slow/(stand->soil.count/NDAYYEAR),stand->soil.decomp_litter_mean/(stand->soil.count/NDAYYEAR));
         }
-      }
+      } /* of for(p=0;p<stand->soil.litter.n;p++) */
       forrootsoillayer(l)
         stand->soil.k_mean[l].slow = stand->soil.k_mean[l].fast = 0.0;
       stand->soil.count = 0;

@@ -145,10 +145,12 @@ Stocks littersom(Stand *stand,                      /**< pointer to stand data *
   {
     if(gtemp_soil[l]>0)
     {
-      if (moist[l]<epsilon) moist[l]=epsilon;
+      if (moist[l]<epsilon)
+        moist[l]=epsilon;
 
-      V = (soil->wsats[l] - (soil->w[l] * soil->whcs[l] + soil->ice_depth[l] + soil->ice_fw[l] + soil->wpwps[l] + soil->w_fw[l])) / soildepth[l];  /*soil air content (m3 air/m3 soil)*/
-      if (V <= 0) V = epsilon + epsilon;
+      V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
+      if (V <= 0)
+         V = epsilon + epsilon;
       epsilon_O2 = max(0.00004, V + soil_moist[l] * soil->wsat[l]*BO2);
 
       response[l]=gtemp_soil[l]*(INTERCEPT+MOIST_3*(moist[l]*moist[l]*moist[l])+MOIST_2*(moist[l]*moist[l])+MOIST*moist[l]);
@@ -156,7 +158,6 @@ Stocks littersom(Stand *stand,                      /**< pointer to stand data *
         response[l]= epsilon + epsilon;
       if (response[l]>1)
         response[l]=1.0;
-
 
       if(l<LASTLAYER)
       {

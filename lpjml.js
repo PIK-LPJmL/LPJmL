@@ -41,7 +41,7 @@
   "firewood" : false,
   "new_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
-  "river_routing" : true,
+  "river_routing" : false,
   "permafrost" : true,
   "with_nitrogen" : "lim", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "dynamic_CH4" : false,
@@ -54,10 +54,10 @@
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,
-  "landuse" : "yes", /* other options: "no", "yes", "const", "all_crops", "only_crops" */
+  "landuse" : "no", /* other options: "no", "yes", "const", "all_crops", "only_crops" */
   "landuse_year_const" : 2000, /* set landuse year for "const" case */
   "reservoir" : true,
-  "wateruse" : "yes",  /* other options: "no", "yes", "all" */
+  "wateruse" : "no",  /* other options: "no", "yes", "all" */
   "equilsoil" : false,
 #else
   "equilsoil" : true,
@@ -197,6 +197,15 @@ ID                               Fmt                        filename
     { "id" : "pft_nsapw",        "file" : { "fmt" : "raw", "name" : "output/pft_nsapw.bin"}},
     { "id" : "pft_chawo",        "file" : { "fmt" : "raw", "name" : "output/pft_chawo.bin"}},
     { "id" : "pft_nhawo",        "file" : { "fmt" : "raw", "name" : "output/pft_nhawo.bin"}},
+    { "id" : "wtab",             "file" : { "fmt" : "raw", "name" : "output/mwtab.bin"}},
+    { "id" : "mwater",           "file" : { "fmt" : "raw", "name" : "output/mmwater.bin"}},
+    { "id" : "wetfrac",          "file" : { "fmt" : "raw", "name" : "output/wetfrac.bin"}},
+    { "id" : "ch4_emissions",    "file" : { "fmt" : "raw", "name" : "output/mch4_emissions.bin"}},
+    { "id" : "ch4_sink",         "file" : { "fmt" : "raw", "name" : "output/mch4_sink.bin"}},
+    { "id" : "ch4_ebullition",   "file" : { "fmt" : "raw", "name" : "output/mch4_ebullition.bin"}},
+    { "id" : "ch4_plant_gas",    "file" : { "fmt" : "raw", "name" : "output/mch4_plant_gras.bin"}},
+    { "id" : "meansoilo2",       "file" : { "fmt" : "raw", "name" : "output/mmeansoilo2.bin"}},
+    { "id" : "meansoilch4",      "file" : { "fmt" : "raw", "name" : "output/mmeansoilch4.bin"}},
 #ifdef WITH_SPITFIRE
     { "id" : "firec",            "file" : { "fmt" : "raw", "timestep" : "monthly" : "unit" : "gC/m2/month", "name" : "output/mfirec.bin"}},
     { "id" : "nfire",            "file" : { "fmt" : "raw", "name" : "output/mnfire.bin"}},

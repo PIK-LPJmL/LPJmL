@@ -135,6 +135,6 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
       fprintf(file,"excess water:\t%g (mm)\n",grid[cell].balance.excess_water);
       fprintstandlist(file,grid[cell].standlist,config->pftpar,npft+ncft,config->with_nitrogen);
     }
-    fprinthydrotope(file, grid[cell].hydrotopes);
+    fprinthydrotope(file,&grid[cell].hydrotopes);
   } /* of 'for(cell=...)' */
 } /* of 'fprintcell' */

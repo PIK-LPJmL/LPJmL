@@ -1,40 +1,43 @@
-/***************************************************************************/
-/**                                                                       **/
-/**                 g a s d i f f u s i o n . c                           **/
-/**                                                                       **/
-/**     Calculates gas transport through the soil layers                  **/
-/**                                                                       **/
-/**     written by Sibyll Schaphoff                                       **/
-/**     Potsdam Institute for Climate Impact Research                     **/
-/**     PO Box 60 12 03                                                   **/
-/**     14412 Potsdam/Germany                                             **/
-/**                                                                       **/
-/**     Last change: $Date:: 2019-08-24 17:59:28 +0200 (Sa, 24 Aug 2019#$ **/
-/**     By         : $Author:: sibylls                         $          **/
-/**                                                                       **/
-/***************************************************************************/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                 g a s d i f f u s i o n . c                                    \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Calculates gas transport through the soil layers                           \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include "lpj.h"
 
-void gasdiffusion(Soil *soil,   /* pointer to soil data */
-  Real airtemp, /* air temperature (deg C) */
-  Real pch4,    /* atmospheric CH4 (ppm) */
-  Real *CH4_out,
-  Real *runoff
-)
+void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
+                  Real airtemp,  /**< [in] air temperature (deg C) */
+                  Real pch4,     /**< [in] atmospheric CH4 (ppm) */
+                  Real *CH4_out, /**< [out] CH4 emissions (gC/m2/day) */
+                  Real *runoff   /**< [out] runoff (mm/day) */
+                 )
 {
   int l;
-  Real D_O2[LASTLAYER], D_CH4[LASTLAYER], epsilon_CH4[LASTLAYER], epsilon_O2[LASTLAYER];                /* oxygen/methane diffusivity [m2/s]*/
+  Real D_O2[LASTLAYER], D_CH4[LASTLAYER]; /* oxygen/methane diffusivity [m2/s]*/
+  Real epsilon_CH4[LASTLAYER], epsilon_O2[LASTLAYER];
   Real V;                 /* total oxygen porosity */
   Real soil_moist, O2_air, O2_upper, O2_lower, dO2;
-  Real dt, CH4_air, CH4_upper, CH4_lower, dCH4, CH4_current;
-  Real CH4_in, tmp_water;
+  Real dt, CH4_air, CH4_upper, CH4_lower, dCH4;
+  Real tmp_water;
   Real end, start;
   unsigned long int steps, t;
-  CH4_in = end = start = tmp_water = 0;
+  end = start = tmp_water = 0;
   /*waterbalance needs to be updated*/
   start = soilmethane(soil);
-  for (l = 0; l<BOTTOMLAYER; l++) {
+  *runoff=0;
+  for (l = 0; l<BOTTOMLAYER; l++)
+  {
     if ((soil->w[l] * soil->whcs[l] + soil->w_fw[l] + soil->ice_depth[l] + soil->ice_fw[l])>(soil->wsats[l] - soil->wpwps[l]))
     {
       tmp_water = (soil->w[l] * soil->whcs[l] + soil->w_fw[l] + soil->ice_depth[l] + soil->ice_fw[l]) - (soil->wsats[l] - soil->wpwps[l]);
@@ -57,12 +60,12 @@ void gasdiffusion(Soil *soil,   /* pointer to soil data */
   */
   /*********************Diffusion of oxygen*************************************/
 
-  O2_air = p_s / R_gas / (airtemp + 273.15)*O2s*WO2;       /*g/m3 oxygen concentration*/
+  O2_air = p_s / R_gas / degCtoK(airtemp)*O2s*WO2;       /*g/m3 oxygen concentration*/
   steps = 0;
   for (l = 0; l<LASTLAYER; l++)
   {
-    soil_moist = (soil->w[l] * soil->whcs[l] + (soil->wpwps[l] * (1 - soil->ice_pwp[l])) + soil->w_fw[l]) / soil->wsats[l];
-    V = (soil->wsats[l] - (soil->w[l] * soil->whcs[l] + soil->ice_depth[l] + soil->ice_fw[l] + soil->wpwps[l] + soil->w_fw[l])) / soildepth[l];  /*soil air content (m3 air/m3 soil)*/
+    soil_moist = getsoilmoist(soil,l);
+    V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
     epsilon_O2[l] = max(0.01, V + soil_moist*soil->wsat[l]*BO2);
     if (V<0)
     {
@@ -105,7 +108,8 @@ void gasdiffusion(Soil *soil,   /* pointer to soil data */
 
         soil->O2[l] += dO2*(soildepth[l] * epsilon_O2[l]) / 1000;
 
-        if (soil->O2[l]< 0) {
+        if (soil->O2[l]< 0)
+        {
           //fprintf(stderr,"1 O2 gasdiffusion layer[%d] diffussion:%g O2:%g O2_concentration: %g diffussion2:%g\n",l,dO2*(soildepth[l]*epsilon_O2)/1000,soil->O2[l],soil->O2[l]/soil->par->wsats[l]/(1-soil_moist)/soildepth[l]*1000,dO2*(soildepth[l+1]*epsilon_O2_l)/(soildepth[l]*epsilon_O2)*(soildepth[l]*epsilon_O2)/1000);
           soil->O2[l] = 0;
         }
@@ -139,13 +143,13 @@ void gasdiffusion(Soil *soil,   /* pointer to soil data */
   /*********************Diffusion of methane*************************************/
 
 
-  CH4_air = p_s / R_gas / (airtemp + 273.15)*pch4*1e-6*WCH4;    /*g/m3 air methane concentration*/
+  CH4_air = p_s / R_gas / degCtoK(airtemp)*pch4*1e-6*WCH4;    /*g/m3 air methane concentration*/
   CH4_upper = CH4_air;
   steps = 0;
   for (l = 0; l<LASTLAYER; l++)
   {
-    soil_moist = (soil->w[l] * soil->whcs[l] + (soil->wpwps[l] * (1 - soil->ice_pwp[l])) + soil->w_fw[l]) / soil->wsats[l];
-    V = (soil->wsats[l] - (soil->w[l] * soil->whcs[l] + soil->ice_depth[l] + soil->ice_fw[l] + soil->wpwps[l] + soil->w_fw[l])) / soildepth[l];  /*soil air content (m3 air/m3 soil)*/
+    soil_moist = getsoilmoist(soil,l);
+    V = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
     epsilon_CH4[l] = max(0.01, V + soil_moist*soil->wsat[l]*BCH4);
     if (V<0)
     {
@@ -204,12 +208,14 @@ void gasdiffusion(Soil *soil,   /* pointer to soil data */
           soil->CH4[l + 1] -= dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;
         if (l != BOTTOMLAYER - 1) soil->CH4[l] += dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000;
 
-        if (soil->CH4[l]< 0) {
+        if (soil->CH4[l]< 0)
+        {
           //fprintf(stderr,"2 CH4 gasdiffusion layer[%d] diffussion:%g CH4:%g CH4_concentration: %g diffussion2:%g\n",l,dCH4*(soildepth[l]*epsilon_CH4)/1000,soil->CH4[l],soil->CH4[l]/soil->par->wsats[l]/(1-soil_moist)/soildepth[l]*1000,dCH4*(soildepth[l+1]*epsilon_CH4_l)/(soildepth[l]*epsilon_CH4)*(soildepth[l]*epsilon_CH4)/1000);
           soil->CH4[l] = 0;
         }
 
-        if (soil->CH4[l + 1]< 0 && l != (BOTTOMLAYER - 1)) {
+        if (soil->CH4[l + 1]< 0 && l != (BOTTOMLAYER - 1))
+        {
           fprintf(stderr, "2.1 CH4 gasdiffusion layer[%d] diffussion:%g CH4:%g  DCH4: %g CH4_lower:%g epsilon_02:%g steps:%lu\n", l, dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000, soil->CH4[l + 1], D_CH4[l], CH4_lower, epsilon_CH4[l], steps);
         }
         if (fabs(dCH4)<1e-18 || t == maxheatsteps)
@@ -219,7 +225,7 @@ void gasdiffusion(Soil *soil,   /* pointer to soil data */
   }
   end = soilmethane(soil);
 #ifdef CHECK_BALANCE
-  if (fabs(start - end - *CH4_out)>epsilon)
+  if (fabs(start - end - *CH4_out)>0.1)
     fprintf(stderr, "C-ERROR: %g start:%g  ende:%g gasdiff: %g\n", start - end - *CH4_out, start, end, *CH4_out);
 #endif
   *CH4_out = start - end;

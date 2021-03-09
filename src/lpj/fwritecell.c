@@ -109,7 +109,7 @@ int fwritecell(FILE *file,        /**< File pointer of binary file */
         break;
       if(fwrite(grid[cell].ml.gs,sizeof(int),2*ncft,file)!=2*ncft)
         break;
-      if (fwritehydrotope(file, grid[cell].hydrotopes))
+      if (fwritehydrotope(file,&grid[cell].hydrotopes))
         break;
       if(grid[cell].ml.landfrac!=NULL)
       {

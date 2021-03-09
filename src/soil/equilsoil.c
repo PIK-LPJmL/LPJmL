@@ -33,7 +33,7 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
                int ntotpft,          /**< total number of PFTs */
                const Pftpar pftpar[], /**< PFT parameter array */
                Bool shift,
-               Bool iswetland
+               Bool iswetland        /**< stand is wetland (TRUE/FALSE) */
               )                      /** \return void         */
 {
   int l,p,f;
@@ -59,8 +59,8 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
     k_mean[p].fast=k_mean[p].slow=sum[p].fast=sum[p].slow=c0[p].fast=c0[p].slow=0.0;
   forrootsoillayer(l)
   {
-    V=(soil->wsats[l]-(soil->w[l]* soil->whcs[l]+soil->ice_depth[l]+soil->ice_fw[l]+soil->wpwps[l]+soil->w_fw[l]))/soildepth[l];  /*soil air content (m3 air/m3 soil)*/
-    soilmoist=(soil->w[l]* soil->whcs[l]+(soil->wpwps[l+1]* (1-soil->ice_pwp[l+1]))+soil->w_fw[l])/soil->wsats[l];
+    V=getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
+    soilmoist=getsoilmoist(soil,l);
     epsilon_gas=max(0.00004, V+soilmoist*soil->wsat[l]*BO2);
     soil->O2[l]=p_s/R_gas/(10+273.15)*O2s*WO2*soildepth[l]* epsilon_gas/1000; /*266 g/m3 converted to g/m2 per layer*/
     epsilon_gas=max(0.00004, V+soilmoist*soil->wsat[l]*BCH4);
@@ -82,7 +82,7 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
       k_mean_layer[l].slow=soil->k_mean[l].slow/(cshift_year+1);
       for(p=0;p<ntotpft;p++)
       {
-        if (iswetland && present[p]==TRUE)
+        if (iswetland && present[p])
           socfraction=pow(10,pftpar[p].soc_k*0.9*logmidlayer[l])
                         -(l>0 ? pow(10,pftpar[p].soc_k*0.9*logmidlayer[l-1]): 0);
         else
@@ -96,7 +96,7 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
     {
       for(p=0;p<ntotpft;p++)
       {
-        if (iswetland && present[p]==TRUE)
+        if (iswetland && present[p])
           socfraction=pow(10,pftpar[p].soc_k*0.9*logmidlayer[l])
                         -(l>0 ? pow(10,pftpar[p].soc_k*0.9*logmidlayer[l-1]): 0);
         else
@@ -152,7 +152,7 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
         k_mean_layer[l].slow=soil->k_mean[l].slow/(soil_equil_year-param.veg_equil_year);
         for(p=0;p<ntotpft;p++)
         {
-        if (iswetland && present[p]==TRUE)
+        if (iswetland && present[p])
           socfraction=pow(10,pftpar[p].soc_k*0.9*logmidlayer[l])
                         -(l>0 ? pow(10,pftpar[p].soc_k*0.9*logmidlayer[l-1]): 0);
         else
@@ -176,7 +176,7 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
         soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=0;
         for(p=0;p<soil->litter.n;p++)
         {
-          if (iswetland && present[p]==TRUE)
+          if (iswetland && present[p])
             socfraction=pow(10, pftpar[p].soc_k*0.9*logmidlayer[l])
           -   (l>0 ? pow(10, pftpar[p].soc_k*0.9*logmidlayer[l-1]) : 0);
           else

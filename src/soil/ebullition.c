@@ -1,26 +1,26 @@
-/***************************************************************************/
-/**                                                                       **/
-/**                 e b u l l i t i o n . c                               **/
-/**                                                                       **/
-/**     Calculates gas transport through the soil layers                  **/
-/**                                                                       **/
-/**     written by Sibyll Schaphoff                                       **/
-/**     Potsdam Institute for Climate Impact Research                     **/
-/**     PO Box 60 12 03                                                   **/
-/**     14412 Potsdam/Germany                                             **/
-/**                                                                       **/
-/**     Last change: 23.05.2016                                           **/
-/**                                                                       **/
-/***************************************************************************/
-
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                          e b u l l i t i o n . c                               \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Calculates gas transport through the soil layers                           \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include "lpj.h"
-#include "soil.h"
 
-#define CH4_min  0.012      /* threshold value at which ebullition occur at totally vegetated soils g*m-3 8/1000*/
-#define k_e 1                /* rate constant h-1 */
+#define CH4_min  0.012 /* threshold value at which ebullition occur at totally vegetated soils g*m-3 8/1000*/
+#define k_e 1          /* rate constant h-1 */
 
 #ifdef DEBUG
+
 static void printch4(const Real CH4[LASTLAYER])
 {
   int i;
@@ -28,6 +28,7 @@ static void printch4(const Real CH4[LASTLAYER])
     printf(" %g", CH4[i]);
   printf("\n");
 }
+
 #endif
 
 Real ebullition(Soil *soil,   /**< pointer to soil data */
@@ -41,9 +42,10 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
   printf("EBULL before:");
   printch4(soil->CH4);
 #endif
-  for (l = 0; l<NSOILLAYER; l++) {
-    soil_moist[l] = (soil->w[l] * soil->whcs[l] + (soil->wpwps[l] * (1 - soil->ice_pwp[l])) + soil->w_fw[l]) / soil->wsats[l];
-    V[l] = (soil->wsats[l] - (soil->w[l] * soil->whcs[l] + soil->ice_depth[l] + soil->ice_fw[l] + soil->wpwps[l] + soil->w_fw[l])) / soildepth[l];  /*soil air content (m3 air/m3 soil)*/
+  for (l = 0; l<NSOILLAYER; l++)
+  {
+    soil_moist[l] = getsoilmoist(soil,l);
+    V[l] = getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
   }
   C_thres = CH4_min*(2 - fpc_all);
 
@@ -53,7 +55,7 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
     if (l == 0)
       epsilon_CH4_u = epsilon_CH4;
     else
-      epsilon_CH4_u = max(0.001, V[l - 1] + soil_moist[l - 1] * soil->wsat[l]*BCH4);
+      epsilon_CH4_u = max(0.001, V[l - 1] + soil_moist[l - 1] * soil->wsat[l-1]*BCH4);
     ratio = min((layerbound[l] - soil->wtable) / soildepth[l], 1);
     for (i = 1; i <= 24; i++)
     {

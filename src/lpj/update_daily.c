@@ -422,9 +422,10 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutput(&cell->output,ROOTMOIST,config)+=stand->soil.w[l]*stand->soil.whcs[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); /* absolute soil water content between wilting point and field capacity (mm) */
       /*cell->output.mrootmoist+=stand->soil.w[l]*soildepth[l]/rootdepth*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac)); previous implementation that doesn't make sense to me, because the sum of soildepth[l]/rootdepth over the first 3 layers equals 1 (JJ, June 25, 2020)*/
     //getoutput(&cell->output,SOILC1,config)+=(stand->soil.pool[l].slow.carbon+stand->soil.pool[l].fast.carbon)*stand->frac;
-    foreachsoillayer(l) {
-      V = (stand->soil.wsats[l] - (stand->soil.w[l] * stand->soil.whcs[l] + stand->soil.ice_depth[l] + stand->soil.ice_fw[l] + stand->soil.wpwps[l] + stand->soil.w_fw[l])) / soildepth[l];  /*soil air content (m3 air/m3 soil)*/
-      soilmoist = (stand->soil.w[l] * stand->soil.whcs[l] + (stand->soil.wpwps[l + 1] * (1 - stand->soil.ice_pwp[l + 1])) + stand->soil.w_fw[l]) / stand->soil.wsats[l];
+    forrootsoillayer(l)
+    {
+      V = getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
+      soilmoist = getsoilmoist(&stand->soil,l);
       epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BO2);
       getoutput(&cell->output,MEANSOILO2,config) += stand->soil.O2[l] / soildepth[l] / epsilon_gas * 1000 / LASTLAYER*stand->frac;
       epsilon_gas = max(0.1, V + soilmoist*stand->soil.wsat[l]*BCH4);

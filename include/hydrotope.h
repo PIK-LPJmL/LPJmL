@@ -22,7 +22,7 @@
 
 /* Definition of constants */
 
-#define TOPMODEL 0
+#define TOPMODEL FALSE
 #define NHYD 10
 #define HYD_AV_TIME 50
 #define WTAB_THRES 0.1
@@ -53,12 +53,12 @@ typedef struct
 
 typedef struct
 {
+  Bool skip_cell;
+  int changecount;
   Real cti_mean;
   Real cti_chi;
   Real cti_phi;
   Real cti_mu;
-
-  Bool skip_cell;
 
   Real wtable_mean;
   Real wtable_min;
@@ -69,8 +69,6 @@ typedef struct
   Real wetland_area_runmean;
   Real wetland_cti;
   Real wetland_cti_runmean;
-
-  int changecount;
 
   Real wetland_wtable_current;
   Real wetland_wtable_max;

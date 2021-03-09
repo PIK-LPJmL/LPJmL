@@ -138,7 +138,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   cell->hydrotopes.wtable_mean /= 12.;
   if(cell->lakefrac<1)
     update_wetland(cell, npft + ncft,year,config);
-
 #ifdef CHECK_BALANCE
   ende.carbon=ende.nitrogen = 0;
   foreachstand(stand, s, cell->standlist)

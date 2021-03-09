@@ -125,8 +125,8 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
           }
           if (l<BOTTOMLAYER)
           {
-            V = (stand->soil.wsats[l] - (stand->soil.w[l] * stand->soil.whcs[l] + stand->soil.ice_depth[l] + stand->soil.ice_fw[l] + stand->soil.wpwps[l] + stand->soil.w_fw[l])) / soildepth[l];  /*soil air content (m3 air/m3 soil)*/
-            soilmoist = (stand->soil.w[l] * stand->soil.whcs[l] + (stand->soil.wpwps[l + 1] * (1 - stand->soil.ice_pwp[l + 1])) + stand->soil.w_fw[l]) / stand->soil.wsats[l];
+            V = getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
+            soilmoist = getsoilmoist(&stand->soil,l);
             epsilon_gas = max(0.00004, V + soilmoist*stand->soil.wsat[l]*BO2);
             stand->soil.O2[l] = 266 * soildepth[l] * epsilon_gas / 1000;                                  /*266 g/m3 converted to g/m2 per layer*/
             epsilon_gas = max(0.00004, V + soilmoist*stand->soil.wsat[l]*BCH4);

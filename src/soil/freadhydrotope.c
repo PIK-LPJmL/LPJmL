@@ -1,16 +1,20 @@
-/*----------------------------------------------------------*/
-/*                                                          */
-/*             freadhydrotopes.c                            */
-/*  read hydrotopes to restart for climLPJ                  */
-/*                                                          */
-/*  Thomas Kleinen (kleinen@pik-potsdam.de)                 */
-/*  20/08/2009                                              */
-/*                                                          */
-/*                                                          */
-/*----------------------------------------------------------*/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**               f  r  e  a  d  h  y  d  r  o  t  o  p  e  .  c                   \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function reads hydrotope variables from restart file                       \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include "lpj.h"
-#include "hydrotope.h"
 
 Bool freadhydrotope(FILE *file, Hydrotope *hydrotopes, Bool swap)
 {

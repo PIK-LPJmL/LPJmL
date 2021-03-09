@@ -5,7 +5,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function prints LPJ configuration                                          \n**/
+/**     Function read hydrologic parameter from config file                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -17,7 +17,7 @@
 
 #include "lpj.h"
 
-#define fscanhydroreal(isout,file,var,fcn,name) \
+#define fscanhydroreal(isout,file,var,name) \
   if(fscanreal(file,var,name,FALSE,isout)) return TRUE;
 
 Hydropar hydropar;
@@ -29,10 +29,10 @@ Bool fscanhydropar(LPJfile *file,  /**< file  pointer */
   LPJfile f;
   if(fscanstruct(file,&f,"hydropar",verb))
     return TRUE;
-  fscanhydroreal(verb,&f,&hydropar.wland_min,"fscanhydropar","wland_min");
-  fscanhydroreal(verb,&f,&hydropar.cti_max,"fscanhydropar","cti_max");
-  fscanhydroreal(verb,&f,&hydropar.lat_min,"fscanhydropar","lat_min");
-  fscanhydroreal(verb,&f,&hydropar.wtab_thres,"fscanhydropar","wtab_thres");
-  fscanhydroreal(verb,&f,&hydropar.cti_thres,"fscanhydropar","cti_thres");
+  fscanhydroreal(verb,&f,&hydropar.wland_min,"wland_min");
+  fscanhydroreal(verb,&f,&hydropar.cti_max,"cti_max");
+  fscanhydroreal(verb,&f,&hydropar.lat_min,"lat_min");
+  fscanhydroreal(verb,&f,&hydropar.wtab_thres,"wtab_thres");
+  fscanhydroreal(verb,&f,&hydropar.cti_thres,"cti_thres");
   return FALSE;
 } /* of 'fscanhydropar' */
