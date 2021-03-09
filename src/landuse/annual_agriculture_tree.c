@@ -188,6 +188,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
 
   foreachpft(pft,p,&stand->pftlist)
     if(establish(stand->cell->gdd[pft->par->id],pft->par,&stand->cell->climbuf,stand->type->landusetype==WETLAND))
+    {
       if (istree(pft))
       {
         treepar=pft->par->data;
@@ -210,7 +211,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
         flux_estab.carbon+=flux_return.carbon;
         flux_estab.nitrogen+=flux_return.nitrogen;
       }
-
+    }
   fpc_total=fpc_sum(fpc_type,config->ntypes,&stand->pftlist);
   if(fpc_total>1.0)
     light(stand,fpc_inc2,config);
