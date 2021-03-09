@@ -41,16 +41,16 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   Stocks firewood={0,0};
 #ifdef CHECK_BALANCE
   Real start = 0;
-  Real ende = 0;
-#endif
-  Real bm_inc=0;
+  Real end = 0;
   Real firec=0;
+  Real bm_inc=0;
+#endif
 
   pft_len=getnpft(&stand->pftlist); /* get number of established PFTs */
   if(pft_len>0)
   {
 #ifdef CHECK_BALANCE
-    start = (standstocks(stand).carbon + soilmethane(&stand->soil));
+    start = standstocks(stand).carbon + soilmethane(&stand->soil);
 #endif
     fpc_inc=newvec(Real,pft_len);
     check(fpc_inc);
@@ -63,7 +63,9 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
       printf("PFT:%s bm_inc=%g vegc=%g soil=%g\n",pft->par->name,
              pft->bm_inc.carbon,vegc_sum(pft),soilcarbon(&stand->soil));
 #endif
+#ifdef CHECK_BALANCE
       bm_inc+=pft->bm_inc.nitrogen;            // BE CAREFUL gturn already added to soil carbon
+#endif
       
       if(annualpft(stand,pft,fpc_inc+p,isdaily,config) || config->black_fallow)
       {
@@ -75,9 +77,10 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
       }      
     } /* of foreachpft */
 #ifdef CHECK_BALANCE
-    ende = standstocks(stand).carbon + soilmethane(&stand->soil);
-    if (fabs(ende - start)>0.0001)
-      fprintf(stdout, "C-ERROR annual PFT: %g start:%g  ende:%g annual: %g  type:%s\n", ende - start, start, ende, bm_inc, stand->type->name);
+    end = standstocks(stand).carbon + soilmethane(&stand->soil);
+    if (fabs(end - start)>0.0001)
+      fprintf(stderr, "C-ERROR annual PFT: %g start:%g  end:%g annual: %g  type:%s\n",
+              end - start, start, end, bm_inc, stand->type->name);
 #endif
 
     /* separate calculation of grass FPC after all grass PFTs have been updated */
@@ -110,8 +113,10 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     light(stand,fpc_inc,config);
     free(fpc_inc);
 #ifdef CHECK_BALANCE
-    ende = standstocks(stand).carbon + soilmethane(&stand->soil);
-    if (fabs(ende - start)>epsilon) fprintf(stdout, "C-ERROR light: %g start:%g  ende:%g light:\n", ende - start, start, ende);
+    end = standstocks(stand).carbon + soilmethane(&stand->soil);
+    if (fabs(end - start)>epsilon)
+      fprintf(stderr, "C-ERROR light: %g start:%g  end:%g light:\n",
+              end - start, start, end);
 #endif
   }
 #ifdef CHECK_BALANCE
@@ -122,6 +127,9 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     fire_frac=fire_prob(&stand->soil.litter,stand->fire_sum);
     getoutput(&stand->cell->output,FIREF,config)+=1.0/fire_frac;
     flux=firepft(stand,fire_frac,config);
+#ifdef CHECK_BALANCE
+    firec=flux.carbon;
+#endif
     getoutput(&stand->cell->output,FIREC,config)+=flux.carbon*stand->frac;
     stand->cell->balance.fire.carbon+=flux.carbon*stand->frac;
     if(flux.nitrogen<0)
@@ -149,16 +157,17 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
     if(stand->type->landusetype==NATURAL)
-    {
       stand->cell->flux_estab_nat+=flux_estab.carbon*stand->frac;
-    }
 #endif
   }
 #endif
 
 #ifdef CHECK_BALANCE
-  ende = standstocks(stand).carbon + soilmethane(&stand->soil);
-  if (fabs(start - ende + flux_estab.carbon - firec)>epsilon) fprintf(stdout, "C-ERROR: %g start:%g  ende:%g estab: %g fire: %g bm_inc: %g\n", start - ende + flux_estab.carbon - firec + bm_inc, start, ende, flux_estab.carbon, firec, bm_inc);
+  end = standstocks(stand).carbon + soilmethane(&stand->soil);
+  if (fabs(start - end + flux_estab.carbon - firec)>epsilon)
+     fprintf(stderr, "C-ERROR: %g start:%g  end:%g estab: %g fire: %g bm_inc: %g\n",
+             start - end + flux_estab.carbon - firec + bm_inc, start, end,
+             flux_estab.carbon, firec, bm_inc);
 #endif
   foreachpft(pft,p,&stand->pftlist)
   {
