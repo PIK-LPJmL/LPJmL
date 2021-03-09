@@ -39,7 +39,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 {
   int p,l,nnat,nirrig;
   Pft *pft;
-  const Pftpar *pftpar;
   Real *gp_pft;         /**< pot. canopy conductance for PFTs & CFTs (mm/s) */
   Real gp_stand;               /**< potential stomata conductance  (mm/s) */
   Real gp_stand_leafon;        /**< pot. canopy conduct.at full leaf cover  (mm/s) */
@@ -96,7 +95,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   foreachpft(pft,p,&stand->pftlist)
   {
-    pftpar=pft->par;
     /* kill crop at frost events */
     if(config->cropsheatfrost && climate->tmin<(-5))
     {
@@ -227,21 +225,24 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       }
 #endif
 
-      pft=getpft(&stand->pftlist,0);
-      if(config->double_harvest)
+      if(getnpft(&stand->pftlist)>0)
       {
-        crop=pft->data;
-        crop->dh->irrig_apply+=irrig_apply;
-      }
-      else
-      {
-        if(config->pft_output_scaled)
-          getoutputindex(output,CFT_AIRRIG,pft->par->id-npft+data->irrigation*nirrig,config)+=irrig_apply*stand->frac;
+        pft=getpft(&stand->pftlist,0);
+        if(config->double_harvest)
+        {
+          crop=pft->data;
+          crop->dh->irrig_apply+=irrig_apply;
+        }
         else
-          getoutputindex(output,CFT_AIRRIG,pft->par->id-npft+data->irrigation*nirrig,config)+=irrig_apply;
+        {
+          if(config->pft_output_scaled)
+            getoutputindex(output,CFT_AIRRIG,pft->par->id-npft+data->irrigation*nirrig,config)+=irrig_apply*stand->frac;
+          else
+            getoutputindex(output,CFT_AIRRIG,pft->par->id-npft+data->irrigation*nirrig,config)+=irrig_apply;
+        }
+        if(pft->par->id==config->crop_index && data->irrigation==config->crop_irrigation)
+          getoutput(output,D_IRRIG,config)=irrig_apply;
       }
-      if(pftpar->id==config->crop_index && data->irrigation==config->crop_irrigation)
-        getoutput(output,D_IRRIG,config)=irrig_apply;
     }
   }
 
