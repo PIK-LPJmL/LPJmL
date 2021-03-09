@@ -18,9 +18,9 @@
 #include "agriculture.h"
 #include "crop.h"
 
-#define NPERCO 0.4  /*controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
-#define OMEGA  6       /*adjustable parameter for impedance factor*/
-#define maxWTP -500     /*max height of standing water [mm]*/
+#define NPERCO 0.4  /* controls the amount of nitrate removed from the surface layer in runoff relative to the amount removed via percolation.  0.5 in Neitsch:SWAT MANUAL*/
+#define OMEGA  6    /* adjustable parameter for impedance factor*/
+#define maxWTP -500 /* max height of standing water [mm]*/
 
 Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
                      Real infil,          /**< rainfall + melting water - interception_stand (mm) + rw_irrig */
@@ -36,7 +36,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   Real HC; /*hydraulic conductivity in [mm/h]*/
   Real influx,alpha;
   Real frac_g_influx;
-  Real outflux,grunoff,inactive_water[NSOILLAYER],active_water[NSOILLAYER],lat_runoff_last;
+  Real outflux,grunoff,inactive_water[NSOILLAYER],lat_runoff_last;
   Real runoff_surface,freewater,soil_infil;
   Real srunoff;
   Real lrunoff[NSOILLAYER],nrsub_top[BOTTOMLAYER],ndrain_perched_out[BOTTOMLAYER]; /* intermediate variable for leaching of lateral runoff */
@@ -48,8 +48,9 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   Real concNO3_mobile; /* concentration of nitrate in solution gN/mm */
   Real vno3; /* temporary for calculating concNO3_mobile */
   Real ww; /* temporary for calculating concNO3_mobile */
-  int sz,f,jwt,icet;
+  int jwt,icet;
   Real infil_layer[NTILLLAYER];
+  Real sz,f;
   Soil *soil;
   int l,p;
   Real updated_soil_water=0,previous_soil_water[NSOILLAYER];
@@ -61,18 +62,17 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   Real Theta_ice, k_perch_max, frost_depth;
   Real icefrac[NSOILLAYER];
   Real s_node = 0;                                                //soil wetness
-  Real s1, vol_eq, tempi, temp0, voleq1, wa, fff,ka;
+  Real s1, vol_eq, tempi, temp0, voleq1, fff,ka;
   Real icesum, depthsum, rsub_top_max, rsub_top, wtable_tmp;
   Real tmp_vol, zq, smp, smpmin, smp1, wh_zwt, wh, layerbound2;
-  Real grunoff_layer[NSOILLAYER];
   Real q_perch_max, k_drai_perch, k_perch, wtsub, drain_perched, drain_perched_out, drain_perched_layer;
   Real rsub_top_tot, rsub_top_layer, active_wa, tmp_water, tmp_water2;
   Real sat_lev = 0.9;
 
-#ifdef LOCALBALANCE
-  Real anfang, ende;
+#ifdef CHECK_BALANCE
+  Real start, end;
   Stocks n_before,n_after;
-  anfang = ende = 0;
+  start = end = 0;
 #endif
 
   if(stand->type->landusetype==AGRICULTURE || stand->type->landusetype==SETASIDE_RF || stand->type->landusetype==SETASIDE_IR || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==GRASSLAND ||  stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS)
@@ -82,7 +82,8 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
 
   soil=&stand->soil;
   soil_infil=param.soil_infil; /* default to draw square root for infiltration factor*/
-  if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE))
+  if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE ||
+                           stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS))
     soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate */
   if(soil_infil<2)
     soil_infil=2;
@@ -108,8 +109,6 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
 
   // The layer index of the first unsaturated layer, i.e., the layer right above the water table
   jwt = 0;
-  foreachsoillayer(l)
-    grunoff_layer[l] = 0;
   forrootsoillayer(l)
     lrunoff[l]=pperc[l]=ndrain_perched_out[l]=nrsub_top[l]=0.0;
   foreachsoillayer(l)
@@ -117,8 +116,10 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       jwt = l;
     else
       break;
-  if (soil->wtable<0) jwt=0;
-  if (soil->wtable<maxWTP) soil->wtable=maxWTP;
+  if (soil->wtable<0)
+    jwt=0;
+  if (soil->wtable<maxWTP)
+    soil->wtable=maxWTP;
   icet=NSOILLAYER-1;
   foreachsoillayer(l)
     if (soil->freeze_depth[l]/(soildepth[l])>0.05)
@@ -131,8 +132,8 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     icefrac[l]=(soil->ice_depth[l]+soil->ice_fw[l]+soil->wpwps[l]*soil->ice_pwp[l])/soil->wsats[l];
   Theta_ice=pow(10,-OMEGA*icefrac[jwt]);
 
-#ifdef LOCALBALANCE
-  anfang=soil->wa;
+#ifdef CHECK_BALANCE
+  start=soil->wa;
   n_before=soilstocks(soil);
   n_before.nitrogen=n_before.nitrogen*stand->frac+stand->cell->output.mn_leaching;
 #endif
@@ -914,13 +915,13 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   getoutput(&stand->cell->output,RUNOFF_LAT,config)+=runoff*stand->frac;
   getoutput(&stand->cell->output,RUNOFF_SURF,config)+=runoff_surface*stand->frac;
 
-#ifdef LOCALBALANCE
-   ende=soil->wa;
+#ifdef CHECK_BALANCE
+   end=soil->wa;
    for(l=0;l<NSOILLAYER;l++)
-     ende+=soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l];
+     end+=soil->w[l]*soil->whcs[l]+soil->ice_depth[l]+soil->w_fw[l]+soil->ice_fw[l];
 
-//  if(fabs(anfang-ende+test-runoff_out-runoff_surface-drain_perched_out-rsub_top)>epsilon)
- //  fprintf(stdout,"in infil Pixel: lat:%g lon:%g Bilanz:%g\n",stand->cell->coord.lat,stand->cell->coord.lon,anfang-ende+test-runoff_out-runoff_surface-drain_perched_out-rsub_top);
+//  if(fabs(start-end+test-runoff_out-runoff_surface-drain_perched_out-rsub_top)>epsilon)
+ //  fprintf(stdout,"in infil Pixel: lat:%g lon:%g Bilanz:%g\n",stand->cell->coord.lat,stand->cell->coord.lon,start-end+test-runoff_out-runoff_surface-drain_perched_out-rsub_top);
   n_after=soilstocks(soil);
   n_after.nitrogen=n_after.nitrogen*stand->frac+stand->cell->output.mn_leaching;
   if(fabs(n_after.nitrogen-n_before.nitrogen)>0.0001)
