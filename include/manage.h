@@ -57,7 +57,7 @@ typedef struct
   Real *k_est;
 } Manage;
 
-extern char *irrigsys[];
+extern const char *irrigsys[];
 
 /* Declaration of functions */
 

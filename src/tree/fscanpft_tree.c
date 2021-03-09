@@ -225,8 +225,8 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
     fscanreal2(verb,file,&tree->cnratio_fruit,pft->name,"cnratio_fruit");
     if(tree->cnratio_fruit<=0)
     {
-    if(verb)
-      fprintf(stderr,"ERROR112: Invalid value for 'cnnratio_fruit'=%g of PFT '%s', must be >0.\n",tree->cnratio_fruit,pft->name);
+      if(verb)
+        fprintf(stderr,"ERROR112: Invalid value for 'cnratio_fruit'=%g of PFT '%s', must be >0.\n",tree->cnratio_fruit,pft->name);
       return TRUE;
     }
     fscanbool2(verb,file,&tree->with_grass,pft->name,"with_grass");
