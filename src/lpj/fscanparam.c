@@ -105,6 +105,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     }
     fscanparamreal(&f,&param.allocation_threshold,"allocation_threshold");
     fscanparamreal(&f,&param.rootreduction,"rootreduction");
+    fscanparamreal(&f,&param.nfrac_grassharvest,"nfrac_grassharvest");
   }
   param.k_litter10/=NDAYYEAR;
   param.k_soil10.fast/=NDAYYEAR;

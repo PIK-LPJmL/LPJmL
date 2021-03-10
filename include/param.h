@@ -77,6 +77,7 @@ typedef struct
   Real yield_gap_bridge; /**< yield-gap bridge: factor by which laimax value is closed (7 - country-value)*factor */
   Real allocation_threshold; /**< allocation threshold for daily grassland allocation */
   Real rootreduction; /**< fraction used to calculate amouont of roots dying at harvest in managed grasslands */
+  Real nfrac_grassharvest; /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure, Mowing: application after harvest Grazing: daily application*/
 } Param;
 
 /* Declaration of global variable */
