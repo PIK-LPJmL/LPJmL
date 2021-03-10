@@ -47,6 +47,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 8 : 12);
     fprintf(file,"Water (%sm3)",(convert==1e-15)  ? "k" : "da");
     fprintf(file,"          CH4 fluxes (TgCH4)");
+      fprintf(file,"              Carbon (%ctC)    ",(convert==1e-15)  ? 'G' : 'k');
     if(config->with_nitrogen)
     {
       if(config->river_routing)
@@ -106,18 +107,18 @@ void fprintflux(FILE *file,          /**< Output file pointer */
   if(config->withlanduse!=NO_LANDUSE)
     fprintf(file," %7.3f",flux.harvest*convert);
   fprintf(file," %7.3f",cflux_total*convert);
-  fprintf(file," %7.3f ,", flux.anpp*convert);
+  fprintf(file," %7.3f",flux.anpp*convert);
   fprintf(file," %10.1f %7.1f %7.1f",
           flux.transp*convert*1000,flux.evap*convert*1000,flux.interc*convert*1000);
   if(config->withlanduse!=NO_LANDUSE)
     fprintf(file," %7.1f",flux.wd*convert*1000);
   if(config->river_routing)
     fprintf(file," %10.1f ",flux.discharge*convert);
-  fprintf(file, " %9.3f ,", flux.aCH4_emissions*convert);
-  fprintf(file, " %9.3f ,", flux.aCH4_sink*convert);
-  fprintf(file, " %9.3f ,", flux.aCH4_fire*convert);
-  fprintf(file, " %9.3f ,", flux.soilc*convert);
-  fprintf(file, " %9.3f ,", flux.soilc_slow*convert);
+  fprintf(file, " %9.3f ", flux.aCH4_emissions*convert);
+  fprintf(file, " %9.3f ", flux.aCH4_sink*convert);
+  fprintf(file, " %9.3f ", flux.aCH4_fire*convert);
+  fprintf(file, " %9.3f ", flux.soilc*convert);
+  fprintf(file, " %9.3f ", flux.soilc_slow*convert);
   fprintf(file, " %9.3f", flux.vegc*convert);
   if(config->with_nitrogen)
     fprintf(file," %7.1f %8.1f %7.1f %7.1f",flux.n_uptake*convert*1000,flux.n_demand*convert*1000,flux.n_outflux*convert*1000,

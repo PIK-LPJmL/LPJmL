@@ -116,7 +116,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 361            /* number of output files */
+#define NOUT 362            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -130,8 +130,8 @@
 #define GRID 0
 #define COUNTRY 1
 #define REGION 2
-#define FPC 3
-#define RH 4
+#define GLOBALFLUX 3
+#define FPC 4
 #define TRANSP 5
 #define RUNOFF 6
 #define DISCHARGE 7
@@ -495,6 +495,7 @@
 #define CSHIFT_FAST_NV 358
 #define CSHIFT_SLOW_NV 359
 #define LITBURNC 360
+#define RH 361
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 
