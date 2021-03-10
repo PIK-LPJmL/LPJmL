@@ -72,12 +72,12 @@ static Harvest harvest_grass_mowing(Stand *stand)
   foreachpft(pft,p,&stand->pftlist)
   {
     grass=pft->data;
-    harvest.harvest.carbon = grass->ind.leaf.carbon - STUBBLE_HEIGHT_MOWING*pft->fpc/fpc_sum;
+    harvest.harvest.carbon = max(0.0, grass->ind.leaf.carbon - STUBBLE_HEIGHT_MOWING*pft->fpc/fpc_sum);
     hfrac=harvest.harvest.carbon/grass->ind.leaf.carbon;
+    grass->ind.leaf.carbon -= max(0.0, grass->ind.leaf.carbon - STUBBLE_HEIGHT_MOWING*pft->fpc/fpc_sum);
     harvest.harvest.nitrogen = hfrac*grass->ind.leaf.nitrogen*0.25;
     stand->soil.NH4[0]+=hfrac*grass->ind.leaf.nitrogen*0.75*pft->nind;
-    grass->ind.leaf.carbon = STUBBLE_HEIGHT_MOWING*pft->fpc/fpc_sum;
-    grass->ind.leaf.nitrogen -= harvest.harvest.nitrogen;
+    grass->ind.leaf.nitrogen *= (1-hfrac);
 
     stand->soil.litter.bg[pft->litter].carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
     output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
@@ -143,9 +143,9 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
     sum.harvest.carbon     += (1-MANURE)*bm_grazed_pft.carbon*pft->nind;                       // 60% atmosphere, 15% cows
     stand->soil.pool->fast.carbon += MANURE * bm_grazed_pft.carbon*pft->nind;             // 25% back to soil
 
-    grass->ind.leaf.nitrogen -=  bm_grazed_pft.nitrogen;
-    sum.harvest.nitrogen     += (1-MANURE)*bm_grazed_pft.nitrogen*pft->nind;                       // 60% atmosphere, 15% cows
-    stand->soil.pool->fast.nitrogen += MANURE * bm_grazed_pft.nitrogen*pft->nind;             // 25% back to soil
+    grass->ind.leaf.nitrogen -=  bm_grazed_pft.nitrogen*pft->nind;
+    sum.harvest.nitrogen     += 0.5*bm_grazed_pft.nitrogen*pft->nind;                       // 60% atmosphere, 15% cows
+    stand->soil.NH4[0] += 0.5 * bm_grazed_pft.nitrogen*pft->nind;             // 25% back to soil
 
     stand->soil.litter.bg[pft->litter].carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
     output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
