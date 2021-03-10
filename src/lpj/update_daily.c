@@ -468,6 +468,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   hydrotopes(cell);
   getoutput(&cell->output,MWATER,config) += cell->hydrotopes.meanwater;
   getoutput(&cell->output,WTAB,config) += cell->hydrotopes.wetland_wtable_current;
+  cell->hydrotopes.wetland_wtable_monthly+= cell->hydrotopes.wetland_wtable_current;
+  cell->hydrotopes.wtable_monthly+= cell->hydrotopes.meanwater;
 #ifdef IMAGE
   // outflow from groundwater reservoir to river
   if (cell->discharge.dmass_gw > 0)

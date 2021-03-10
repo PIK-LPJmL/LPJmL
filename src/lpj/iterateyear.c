@@ -101,6 +101,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].ml.mdemand=0.0;
       grid[cell].output.mpet=0;
       grid[cell].output.mprec_res=0;
+      grid[cell].hydrotopes.wetland_wtable_monthly=0;
+      grid[cell].hydrotopes.wtable_monthly=0;
       initoutputdata(&((grid+cell)->output),MONTHLY,year,config);
       if(!grid[cell].skip)
       {

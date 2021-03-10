@@ -57,6 +57,7 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
     else
     {
       h++;
+      mean_wet = wtable = 0;
       forrootsoillayer(l)
         mean_wet += (stand->soil.w[l] * stand->soil.whcs[l] + stand->soil.w_fw[l] + stand->soil.wpwps[l] +
           stand->soil.ice_depth[l] + stand->soil.ice_fw[l]) / stand->soil.wsats[l];

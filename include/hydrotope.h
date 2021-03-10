@@ -61,6 +61,7 @@ typedef struct
   Real cti_mu;
 
   Real wtable_mean;
+  Real wtable_monthly;
   Real wtable_min;
   Real wtable_max;
 
@@ -71,6 +72,7 @@ typedef struct
   Real wetland_cti_runmean;
 
   Real wetland_wtable_current;
+  Real wetland_wtable_monthly;
   Real wetland_wtable_max;
   Real wetland_wtable_mean;
 

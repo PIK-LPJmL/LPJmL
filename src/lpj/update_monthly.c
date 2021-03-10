@@ -46,6 +46,22 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
     cell->ml.image_data->mpetim[month] += cell->output.mpet;
   }
 #endif
+  cell->hydrotopes.wetland_wtable_monthly*=ndaymonth1[month];
+  cell->hydrotopes.wtable_monthly*=ndaymonth1[month];
+  if(month==0)
+  {
+    cell->hydrotopes.wtable_min=cell->hydrotopes.wtable_monthly;
+    cell->hydrotopes.wtable_max=cell->hydrotopes.wtable_monthly;
+    cell->hydrotopes.wetland_wtable_max=cell->hydrotopes.wetland_wtable_monthly;
+  }
+  else
+  {
+    cell->hydrotopes.wtable_min=min(cell->hydrotopes.wtable_min,cell->hydrotopes.wtable_monthly);
+    cell->hydrotopes.wtable_max=max(cell->hydrotopes.wtable_max,cell->hydrotopes.wtable_monthly);
+    cell->hydrotopes.wetland_wtable_max=max(cell->hydrotopes.wetland_wtable_max,cell->hydrotopes.wetland_wtable_monthly);
+  }
+  cell->hydrotopes.wetland_wtable_mean+=cell->hydrotopes.wetland_wtable_monthly;
+  cell->hydrotopes.wtable_mean+=cell->hydrotopes.wtable_monthly;
   /* for water balance check */
   cell->balance.awater_flux+=((cell->discharge.mfout-cell->discharge.mfin)/cell->coord.area);
 
