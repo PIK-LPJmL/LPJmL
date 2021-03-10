@@ -34,7 +34,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
      (year>=config->firstyear && (year-config->firstyear) % LINES_PER_HEADER==0))
   {
     /* print header */
-    tabs=(config->fire) ? 4 : 3;
+    tabs=(config->fire) ? 5 : 4;
     if(config->withlanduse!=NO_LANDUSE)
       tabs++;
     fputs("\n       ",file);
@@ -46,7 +46,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     else
       frepeatch(file,' ',(config->withlanduse==NO_LANDUSE) ? 8 : 12);
     fprintf(file,"Water (%sm3)",(convert==1e-15)  ? "k" : "da");
-    fprintf(file,"    CH4 fluxes (TgCH4)");
+    fprintf(file,"          CH4 fluxes (TgCH4)");
     if(config->with_nitrogen)
     {
       if(config->river_routing)
@@ -61,7 +61,8 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" --------------------------",file);
     if(config->river_routing)
       fputs("-----------",file);
-    fputs("--------", file);
+    //fputs("--------", file);
+    fputs(" -------------------------------- ------------------------------",file);
     if(config->with_nitrogen)
       fputs(" --------------------------------",file);
     fputc('\n',file);
@@ -75,13 +76,13 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     if(config->withlanduse!=NO_LANDUSE)
       fputs(" harvest",file);
     fputs(" total  ",file);
-    fputs(" NPP     ", file);
+    fputs(" NPP    ",file);
     fputs(" transp     evap    interc ",file);
     if(config->withlanduse!=NO_LANDUSE)
       fputs(" wd     ",file);
     if(config->river_routing)
       fputs(" discharge ",file);
-    fputs("   CH4 emiss.   CH4 sink   CH4 fire emiss.   SoilC    slowSoilC     VegC", file);
+    fputs(" CH4 emiss.   CH4 sink   CH4 fire SoilC     slowSoilC  VegC     ",file);
     if(config->with_nitrogen)
       fputs(" nuptake ndemand  nlosses ninflux",file);
     fputc('\n',file);
@@ -93,7 +94,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" -------",file);
     if(config->river_routing)
       fputs(" ----------",file);
-    fputs("----------  -----------  -----------  ---------- ---------- ---------", file);
+    fputs(" ---------- ---------- ---------- --------- ---------- ---------", file);
     if(config->with_nitrogen)
       fputs(" ------- -------- ------- -------",file);
     fputc('\n',file);
