@@ -180,7 +180,8 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       excess+=wmm+imm;
       /* check if plant available water and ice do not exceed 1.0 */
       dispose=soil->w[l] + soil->ice_depth[l]/soil->whcs[l] - 1.0;
-      if(dispose > 0){
+      if(dispose > 0)
+      {
         if(soil->w[l]*soil->whcs[l]>epsilon){
           dispose2=min(soil->w[l],dispose);
           soil->w[l]-=dispose2;
@@ -199,14 +200,14 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       }
     } /* end of forrootsoillayer */
 
-  stand->cell->balance.excess_water+=excess*standfrac;
-  //stand->cell->discharge.drunoff+=excess*standfrac;
+    stand->cell->balance.excess_water+=excess*standfrac;
+    //stand->cell->discharge.drunoff+=excess*standfrac;
 #ifdef CHECK_BALANCE
-  w_after=soilwater(&stand->soil)+excess;
-  if(fabs(w_before-w_after)>epsilon)
-    fprintf(stderr,"ERROR: %.2f/%.2f water balance=%.10f=%.10f-%.10f (excess is %.10f) in pedotransfer() wmm %.10f imm %.10f.\n",stand->cell->coord.lon,stand->cell->coord.lat,fabs(w_before-w_after),w_before,w_after+excess,excess,wmm,imm);
+    w_after=soilwater(&stand->soil)+excess;
+    if(fabs(w_before-w_after)>epsilon)
+      fprintf(stderr,"ERROR: %.2f/%.2f water balance=%.10f=%.10f-%.10f (excess is %.10f) in pedotransfer() wmm %.10f imm %.10f.\n",stand->cell->coord.lon,stand->cell->coord.lat,fabs(w_before-w_after),w_before,w_after+excess,excess,wmm,imm);
 #endif
   } /* end of if not ROCK */
-}
+} /* of 'pedotransfer' */
 
 /* Reference: Saxton and Rawls (2006): Soil Water Characteristic Estimates by Texture and Organic Matter for Hydrologic Solutions, Soil Sci. Soc. Am. J. 70:1569-1578 */

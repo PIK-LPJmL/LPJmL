@@ -1,21 +1,18 @@
-/***************************************************************************/
-/**                                                                       **/
-/**                     i  c  e  f  r  a  c  .  c                         **/
-/**                                                                       **/
-/**     C implementation of LPJ, derived from the Fortran/C++ version     **/
-/**                                                                       **/
-/**     Definition of datatype Icefrac                                    **/
-/**                                                                       **/
-/**     written by Werner von Bloh, Sibyll Schaphoff                      **/
-/**     Potsdam Institute for Landuse Impact Research                     **/
-/**     PO Box 60 12 03                                                   **/
-/**     14412 Potsdam/Germany                                             **/
-/**                                                                       **/
-/**     Last change: 21.02.2007 M. Gumpenberger                           **/
-/**     Last change: $Date:: 2014-11-28 14:33:41 +0100 (Fri, 28 Nov 201#$ **/
-/**     By         : $Author:: bloh                            $          **/
-/**                                                                       **/
-/***************************************************************************/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                     i  c  e  f  r  a  c  .  c                                  \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Definition of datatype Icefrac                                             \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include "lpj.h"
 
@@ -25,9 +22,8 @@ struct icefrac
   Real *data[3];
 }; /* Definition of opaque datatype Icefrac */
 
-Icefrac initicefrac(const Config *config /* LPJ configuration */
-)                     /* returns pointer to icefrac
-                      struct or NULL */
+Icefrac initicefrac(const Config *config /**< LPJ configuration */
+                   )                     /** \return pointer to icefrac struct or NULL */
 {
   Header header;
   Icefrac icefrac;
@@ -39,12 +35,14 @@ Icefrac initicefrac(const Config *config /* LPJ configuration */
     return NULL;
   icefrac = new(struct icefrac);
   if (icefrac == NULL)
+  {
+    printallocerr("icefrac");
     return NULL;
+  }
   icefrac->file.fmt = config->icefrac_filename.fmt;
   if (config->icefrac_filename.fmt == CDF)
   {
-    if (opendata_netcdf(&icefrac->file,&config->icefrac_filename,
-      "fraction",config))
+    if (opendata_netcdf(&icefrac->file,&config->icefrac_filename,"fraction",config))
     {
       free(icefrac);
       return NULL;
@@ -53,9 +51,9 @@ Icefrac initicefrac(const Config *config /* LPJ configuration */
   else
   {
     if ((icefrac->file.file = openinputfile(&header, &icefrac->file.swap,
-      &config->icefrac_filename,
-      headername,
-      &version, &offset,TRUE, config)) == NULL)
+                                            &config->icefrac_filename,
+                                            headername,
+                                            &version, &offset,TRUE, config)) == NULL)
     {
       free(icefrac);
       return NULL;
@@ -92,12 +90,12 @@ Icefrac initicefrac(const Config *config /* LPJ configuration */
   - sets the icefrac variables (see also manage.h)
   */
 
-Bool readicefrac(Icefrac icefrac,     /* pointer to population data */
-  const Cell grid[],   /* LPJ grid */
-  int index,
-  int year,            /* year (AD) */
-  const Config *config /* LPJ configuration */
-)                     /* returns TRUE on error */
+Bool readicefrac(Icefrac icefrac,     /**< pointer to population data */
+                 const Cell grid[],   /**< LPJ grid */
+                 int index,
+                 int year,            /**< year (AD) */
+                 const Config *config /**< LPJ configuration */
+                )                     /** \return TRUE on error */
 {
   short *vec;
   int i, index_year;

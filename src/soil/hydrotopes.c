@@ -1,13 +1,18 @@
-/*----------------------------------------------------------*/
-/*                                                          */
-/*                  hydrotopes.c                            */
-/*  hydrotope determination for climLPJ                     */
-/*                                                          */
-/*  Thomas Kleinen (kleinen@pik-potsdam.de)                 */
-/*  18/08/2008                                              */
-/*                                                          */
-/*                                                          */
-/*----------------------------------------------------------*/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                    h  y  d  r  o  t  o  p  e  s  .  c                          \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**  hydrotope determination for climLPJ by Thomas Kleinen                         \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include "lpj.h"
 
@@ -21,7 +26,7 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
   Bool iswetland;
   int s, h, l;
   iswetland = FALSE;
-  s = findlandusetype(cell->standlist, WETLAND);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
+  s = findlandusetype(cell->standlist, WETLAND); /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
   if (s != NOT_FOUND)
   {
     wetstand = getstand(cell->standlist, s);
@@ -99,4 +104,4 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
     else
       cell->hydrotopes.wetland_wtable_current = (iswetland) ? wetstand->soil.wtable / -1000 : -99;
   }
-} /* of 'hydrotope' */
+} /* of 'hydrotopes' */
