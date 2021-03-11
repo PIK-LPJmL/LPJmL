@@ -35,8 +35,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "k_beer:\t\t%g\n"
                "alphac3:\t%g\n"
                "alphac4:\t%g\n"
-               "bc3:\t\t%g\n"
-               "bc4:\t\t%g\n"
                "r_growth:\t%g\n"
                "GM:\t\t%g\n"
                "ALPHAM:\t\t%g\n"
@@ -53,7 +51,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,
           param.soil_infil,param.co2_p,
           param.k,param.theta,param.k_beer,param.alphac3,param.alphac4,
-          param.bc3,param.bc4,param.r_growth,param.GM,param.ALPHAM,
+          param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
           param.fpc_tree_max,param.temp_response_a,param.temp_response_b);
   if(config->equilsoil)
@@ -119,7 +117,11 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"drip evap. reduction:\t%g\n",param.drip_evap);
     fprintf(file,"residues in soil:\t%g\n",param.residues_in_soil);
     if(config->with_nitrogen)
+    {
       fprintf(file,"nfert split:\t%g\n",param.nfert_split);
+      fprintf(file,"nfrac grazing:\t%g\n",param.nfrac_grazing);
+      fprintf(file,"nfrac grassharvest:\t%g\n",param.nfrac_grassharvest);
+    }
     if(config->istimber)
     {
       fprintf(file,"fraction burnt:\t%g\n",param.fburnt);

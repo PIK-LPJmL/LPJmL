@@ -88,8 +88,6 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.k_beer,"k_beer");
   fscanparamreal(&f,&param.alphac3,"alphac3");
   fscanparamreal(&f,&param.alphac4,"alphac4");
-  fscanparamreal(&f,&param.bc3,"bc3");
-  fscanparamreal(&f,&param.bc4,"bc4");
   fscanparamreal01(&f,&param.r_growth,"r_growth");
   fscanparamreal(&f,&param.GM,"GM");
   fscanparamreal(&f,&param.ALPHAM,"ALPHAM");
@@ -221,7 +219,11 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     if(config->with_nitrogen)
     {
       fscanparamreal(&f,&param.allocation_threshold,"allocation_threshold");
+      fscanparamreal01(&f,&param.nfrac_grassharvest,"nfrac_grassharvest");
+      fscanparamreal01(&f,&param.nfrac_grazing,"nfrac_grazing");
     }
+    else
+      param.nfrac_grassharvest=param.nfrac_grazing=0;
     fscanparamreal(&f,&param.hfrac2,"hfrac2");
     fscanparamreal01(&f,&param.rootreduction,"rootreduction");
     fscanparamreal01(&f,&param.phen_limit,"phen_limit");

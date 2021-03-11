@@ -39,6 +39,7 @@ Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/
                     int path,       /**< [in] Path (C3/C4) */
                     Real lambda,    /**< [in] ratio of intercellular to ambient CO2 concentration */
                     Real tstress,   /**< [in] temperature-related stress factor */
+                    Real b,         /**< [in] leaf respiration as fraction of vmax (0..1) */
                     Real co2,       /**< [in] atmospheric CO2 partial pressure (Pa) */
                     Real temp,      /**< [in] temperature (deg C) */
                     Real apar,      /**< [in] absorbed photosynthetic active radiation (J/m2/day) */
@@ -47,7 +48,7 @@ Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/
                    )                /** \return CO2 gas flux (mm/m2/day) */
 {
   Real ko,kc,tau,pi,c1,c2;
-  Real je,jc,phipi,adt,b,s,sigma;
+  Real je,jc,phipi,adt,s,sigma;
   Real fac,gammastar;
   if(tstress<1e-2)
   {
@@ -73,10 +74,9 @@ Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/
 
       c2=(pi-gammastar)/(pi+fac);
 
-      s=(24/daylength)*param.bc3;
+      s=(24/daylength)*b;
       sigma=1-(c2-s)/(c2-param.theta*s);
       sigma= (sigma<=0) ? 0 : sqrt(sigma);
-      b=param.bc3;
       /* Choose C3 value of b for Eqn 10, Haxeltine & Prentice 1996 */
       /*
        *       Intercellular CO2 partial pressure in Pa
@@ -86,7 +86,7 @@ Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/
       /* Calculation of V_max (Rubisco activity) in gC/d/m2*/
 
       if(comp_vm)
-        *vm=(1.0/param.bc3)*(c1/c2)*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*cmass*cq;
+        *vm=(1.0/b)*(c1/c2)*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*cmass*cq;
 
       pi=lambda*co2;
 
@@ -100,12 +100,11 @@ Real photosynthesis(Real *agd,      /**< [out] gross photosynthesis rate (gC/m2/
     {
       c1=tstress*param.alphac4;
       c2=1.0;
-      b=param.bc4;
-      s=(24/daylength)*param.bc4;
+      s=(24/daylength)*b;
       sigma=1-(c2-s)/(c2-param.theta*s);
       sigma= (sigma<=0) ? 0 : sqrt(sigma);
       if(comp_vm)
-        *vm=(1.0/param.bc4)*c1/c2*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*cmass*cq;
+        *vm=(1.0/b)*c1/c2*((2.0*param.theta-1.0)*s-(2.0*param.theta*s-c2)*sigma)*apar*cmass*cq;
 
       /*
        *       Parameter accounting for effect of reduced intercellular CO2
