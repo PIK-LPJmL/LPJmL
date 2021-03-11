@@ -22,7 +22,6 @@
   "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
   "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
   "theta" : 0.9,             /* theta */
-  "k_beer" : 0.5,            /* k_beer */
   "alphac3" : 0.08,          /* alphac3 */
   "alphac4" : 0.053,         /* alphac4 */
   "r_growth" : 0.25,         /* r_growth */
