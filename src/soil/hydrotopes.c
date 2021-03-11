@@ -17,8 +17,7 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
   Real meanwater;
   Real mean_wet, tmp, wtable;
   Stand *stand;
-  Stand *natstand, *wetstand;
-  Real efold_current;
+  Stand *wetstand;
   Bool iswetland;
   int s, h, l;
   iswetland = FALSE;
@@ -57,7 +56,7 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
     else
     {
       h++;
-      mean_wet = wtable = 0;
+      mean_wet = 0;
       forrootsoillayer(l)
         mean_wet += (stand->soil.w[l] * stand->soil.whcs[l] + stand->soil.w_fw[l] + stand->soil.wpwps[l] +
           stand->soil.ice_depth[l] + stand->soil.ice_fw[l]) / stand->soil.wsats[l];
@@ -77,9 +76,7 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
       meanwater *= 100000000.;
   }
   else
-  {
     wtable /= -1000;         // transform from mm to m, negative values = under surface
-  }
 
   meanwater /= 1000.;		// transform from mm to m
 
@@ -90,9 +87,8 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
   {
     if (TOPMODEL)
     {
-      if (cell->hydrotopes.wetland_area <= 0) {
+      if (cell->hydrotopes.wetland_area <= 0)
         cell->hydrotopes.wetland_wtable_current = -99.;
-      }
       else
       {
         cell->hydrotopes.wetland_wtable_current = meanwater +
@@ -101,11 +97,6 @@ void hydrotopes(Cell *cell /**< Pointer to cell */
       }
     }
     else
-    {
-      if (iswetland)
-        cell->hydrotopes.wetland_wtable_current = wetstand->soil.wtable / -1000;
-      else
-        cell->hydrotopes.wetland_wtable_current = -99;
-    }
+      cell->hydrotopes.wetland_wtable_current = (iswetland) ? wetstand->soil.wtable / -1000 : -99;
   }
-}
+} /* of 'hydrotope' */
