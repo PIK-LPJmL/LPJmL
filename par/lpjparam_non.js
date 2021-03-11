@@ -74,5 +74,6 @@
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
   "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
   "rootreduction" : 0.5,               /*fraction used to calculate amouont of roots dying at harvest in managed grasslands */
-  "nfrac_grassharvest" : 0.5          /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure, Mowing: application after harvest Grazing: daily application*/
+  "nfrac_grassharvest" : 0.5,         /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/
+  "nfrac_grazing" : 0.5           /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure from livestock*/
 },
