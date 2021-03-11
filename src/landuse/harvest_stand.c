@@ -35,7 +35,7 @@ Harvest harvest_grass(Stand *stand, /**< pointer to stand */
   {
     grass=pft->data;
     harvest.harvest.carbon=grass->ind.leaf.carbon*hfrac;
-    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest; /*0.25*/
+    harvest.harvest.nitrogen=grass->ind.leaf.nitrogen*hfrac*param.nfrac_grassharvest; 
     stand->soil.NH4[0]+=grass->ind.leaf.nitrogen*hfrac*(1-param.nfrac_grassharvest)*pft->nind;
     grass->ind.leaf.carbon*=(1-hfrac);
     grass->ind.leaf.nitrogen*=(1-hfrac);
@@ -140,12 +140,12 @@ static Harvest harvest_grass_grazing_ext(Stand *stand)
     bm_grazed_pft.nitrogen = hfrac*grass->ind.leaf.nitrogen;
 
     grass->ind.leaf.carbon -= bm_grazed_pft.carbon;
-    sum.harvest.carbon     += (1-MANURE)*bm_grazed_pft.carbon*pft->nind;                       // 60% atmosphere, 15% cows
-    stand->soil.pool->fast.carbon += MANURE * bm_grazed_pft.carbon*pft->nind;             // 25% back to soil
+    sum.harvest.carbon     += (1-MANURE)*bm_grazed_pft.carbon*pft->nind;                       // removed to atmosphere or animal bodies
+    stand->soil.pool->fast.carbon += MANURE * bm_grazed_pft.carbon*pft->nind;             // remainder goes to soil as manure
 
     grass->ind.leaf.nitrogen -=  bm_grazed_pft.nitrogen*pft->nind;
-    sum.harvest.nitrogen     += param.nfrac_grazing*bm_grazed_pft.nitrogen*pft->nind;                       // 60% atmosphere, 15% cows
-    stand->soil.NH4[0] += (1-param.nfrac_grazing) * bm_grazed_pft.nitrogen*pft->nind;             // 25% back to soil
+    sum.harvest.nitrogen     += param.nfrac_grazing*bm_grazed_pft.nitrogen*pft->nind;                       // removed to atmosphere or animal boides
+    stand->soil.NH4[0] += (1-param.nfrac_grazing) * bm_grazed_pft.nitrogen*pft->nind;             // remainder goes to soil as manure
 
     stand->soil.litter.bg[pft->litter].carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
     output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
@@ -222,12 +222,12 @@ static Harvest harvest_grass_grazing_int(Stand *stand)
       bm_grazed_pft.nitrogen = hfrac*grass->ind.leaf.nitrogen;
 
       grass->ind.leaf.carbon -= bm_grazed_pft.carbon;
-      sum.harvest.carbon     += (1-MANURE)*bm_grazed_pft.carbon*pft->nind;              // 60% atmosphere, 15% cows
-      stand->soil.pool->fast.carbon += MANURE * bm_grazed_pft.carbon*pft->nind;    // 25% back to soil
+      sum.harvest.carbon     += (1-MANURE)*bm_grazed_pft.carbon*pft->nind;              // removed to atmosphere or animal boides
+      stand->soil.pool->fast.carbon += MANURE * bm_grazed_pft.carbon*pft->nind;    // remainder goes to soil as manure
 
       grass->ind.leaf.nitrogen -= bm_grazed_pft.nitrogen;
-      sum.harvest.nitrogen     += param.nfrac_grazing*bm_grazed_pft.nitrogen*pft->nind;              // 60% atmosphere, 15% cows
-      stand->soil.NH4[0] += (1-param.nfrac_grazing) * bm_grazed_pft.nitrogen*pft->nind;    // 25% back to soil
+      sum.harvest.nitrogen     += param.nfrac_grazing*bm_grazed_pft.nitrogen*pft->nind;              // removed to atmosphere or animal boides
+      stand->soil.NH4[0] += (1-param.nfrac_grazing) * bm_grazed_pft.nitrogen*pft->nind;    // remainder goes to soil as manure
 
       stand->soil.litter.bg[pft->litter].carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind;
       output->alittfall.carbon+=grass->ind.root.carbon*hfrac*param.rootreduction*pft->nind*stand->frac;
