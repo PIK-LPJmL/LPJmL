@@ -1,28 +1,22 @@
-/***************************************************************************/
-/**                                                                       **/
-/**                         h y d r o t o p e . h                         **/
-/**                                                                       **/
-/**     C implementation of LPJ, derived from the Fortran version         **/
-/**                                                                       **/
-/**     written by Werner von Bloh, Sibyll Schaphoff                      **/
-/**     Potsdam Institute for Climate Impact Research                     **/
-/**     PO Box 60 12 03                                                   **/
-/**     14412 Potsdam/Germany                                             **/
-/**                                                                       **/
-/**     hydrotopes data definitions for wetland code                      **/
-/**     Thomas Kleinen, 27/06/2008                                        **/
-/**                                                                       **/
-/**     Last change: $Date:: 2019-01-15 09:01:03 +0100 (Di, 15 Jan 2019#$ **/
-/**     By         : $Author:: bloh                            $          **/
-/**                                                                       **/
-/***************************************************************************/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                       h y d r o t o p e  .  h                                  \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
-#ifndef HYDRO_H /* Already included? */
+#ifndef HYDRO_H
 #define HYDRO_H
 
 /* Definition of constants */
 
-#define TOPMODEL FALSE
 #define NHYD 10
 #define HYD_AV_TIME 50
 #define WTAB_THRES 0.1
