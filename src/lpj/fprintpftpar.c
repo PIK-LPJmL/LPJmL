@@ -63,6 +63,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                "path:\t\t%s\n"
                "temp CO2:\t%g %g (deg C)\n"
                "temp photos:\t%g %g (deg C)\n"
+               "b:\t\t%g\n"
                "temp:\t\t%g %g (deg C)\n"
                "min aprec:\t%g (mm)\n"
                "k_litter10:\t%g %g (1/yr)\n"
@@ -82,7 +83,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
           pftpar->alphaa, pftpar->albedo_leaf, pftpar->albedo_stem, pftpar->albedo_litter, pftpar->snowcanopyfrac, pftpar->lightextcoeff, 
           pftpar->mort_max,phenology[pftpar->phenology],path[pftpar->path],
           pftpar->temp_co2.low,pftpar->temp_co2.high,pftpar->temp_photos.low,
-          pftpar->temp_photos.high,pftpar->temp.low,pftpar->temp.high,
+          pftpar->temp_photos.high,pftpar->b,pftpar->temp.low,pftpar->temp.high,
           pftpar->aprec_min,pftpar->k_litter10.leaf*NDAYYEAR,
           pftpar->k_litter10.wood*NDAYYEAR,pftpar->k_litter10.q10_wood,
           pftpar->soc_k,pftpar->fuelbulkdensity,pftpar->windspeed,pftpar->roughness,

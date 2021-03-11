@@ -31,8 +31,6 @@ typedef struct
   Real k_beer;     /**< Extinction coefficient */
   Real alphac3;    /**< intrinsic quantum efficiency of CO2 uptake in C4 plants */
   Real alphac4;    /**< intrinsic quantum efficiency of CO2 uptake in C3 plants */
-  Real bc3;        /**< leaf respiration as fraction of Vmax for C3 plants */
-  Real bc4;        /**< leaf respiration as fraction of vmax for C4 plants */
   Real r_growth;     /**< growth respiration */
   Real GM;           /**< empirical parameter in demand function */
   Real ALPHAM;       /**< Priestley-Taylor coefficient (Demand,maximum-value) */
@@ -102,6 +100,8 @@ typedef struct
   Real hfrac2;
   Real rootreduction;     /**< fraction used to calculate amount of roots dying at harvest in managed grasslands */
   Real phen_limit; /* limit for agricultural trees */
+  Real nfrac_grassharvest; /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/
+  Real nfrac_grazing; /**< fraction of nitrogen from grass harvest not returned to NH4 pool via manure from livestock*/
 } Param;
 
 /* Declaration of global variable */

@@ -29,8 +29,6 @@
   "k_beer" : 0.5,            /* k_beer */
   "alphac3" : 0.08,          /* alphac3 */
   "alphac4" : 0.053,         /* alphac4 */
-  "bc3" : 0.015,             /* bc3 leaf respiration as fraction of Vmax for C3 plants */
-  "bc4" : 0.035,             /* bc4 leaf respiration as fraction of Vmax for C4 plants */
   "r_growth" : 0.25,         /* r_growth */
   "GM" : 2.41,               /* GM empirical parameter in demand function */
   "ALPHAM" : 1.485,          /* ALPHAM Priestley-Taylor coefficient*/
@@ -101,5 +99,7 @@
   "hum_ign" : -0.50,		      /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */
   "rootreduction" : 0.5,              /* fraction used to calculate amount of roots dying at harvest in managed grasslands */
-  "phen_limit" : 0.5                  /* phen. limit for agricultural trees */
+  "phen_limit" : 0.5,                 /* phen. limit for agricultural trees */
+  "nfrac_grassharvest" : 0.5,         /* fraction of nitrogen from grass harvest not returned to NH4 pool via manure after mowing*/
+  "nfrac_grazing" : 0.5               /* fraction of nitrogen from grass harvest not returned to NH4 pool via manure from livestock*/
 },

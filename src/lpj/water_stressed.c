@@ -18,7 +18,7 @@
 
 typedef struct
 {
-  Real fac,co2,temp,apar,daylength,tstress,vmax;
+  Real fac,co2,temp,apar,daylength,tstress,b,vmax;
   int path;
 } Data;
 
@@ -33,7 +33,7 @@ static Real fcn(Real lambda,Data *data)
  *              guess for lambda (xmid)
  */
   return data->fac*(1-lambda)-photosynthesis(&agd,&rd,&data->vmax,data->path,lambda,
-                                             data->tstress,data->co2,
+                                             data->tstress,data->b,data->co2,
                                              data->temp,data->apar,
                                              data->daylength,FALSE);
 /*
@@ -201,12 +201,13 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     data.fac=gpd/1.6*ppm2bar(co2);
     data.path=pft->par->path;
     data.temp=temp;
+    data.b=pft->par->b;
     data.co2=ppm2Pa(co2);
     data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->with_nitrogen,config->laimax_interpolate)*fpar(pft); /** par calculation do not include albedo*/
     data.daylength=daylength;
     data.vmax=pft->vmax;
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);
-    adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
+    adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
                          temp,data.apar,daylength,TRUE);
     if(config->with_nitrogen)
     {
@@ -215,7 +216,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
                       pft->par->gmin*fpar(pft);
       nitrogen_stress(pft,temp,daylength,npft,ncft,config);
 
-      adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
+      adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
                            temp,data.apar,daylength,FALSE);
       gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                     pft->par->gmin*fpar(pft);
@@ -229,7 +230,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
         data.fac=gpd/1.6*ppm2bar(co2);
         data.vmax=pft->vmax;
         lambda=bisect((Bisectfcn)fcn,0.02,lambda,&data,0,EPSILON,20,&iter);
-        adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.co2,
+        adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
                              temp,data.apar,daylength,FALSE);
         gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                       pft->par->gmin*fpar(pft);
