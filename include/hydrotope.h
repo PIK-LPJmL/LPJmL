@@ -4,9 +4,6 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     hydrotopes data definitions for wetland code                               \n**/
-/**     Thomas Kleinen, 27/06/2008                                                 \n**/
-/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -20,7 +17,6 @@
 
 /* Definition of constants */
 
-#define TOPMODEL FALSE
 #define NHYD 10
 #define HYD_AV_TIME 50
 #define WTAB_THRES 0.1
