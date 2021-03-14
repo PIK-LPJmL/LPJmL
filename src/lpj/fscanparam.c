@@ -86,7 +86,6 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     return TRUE;
   }
   fscanparamreal01(&f,&param.theta,"theta");
-  fscanparamreal(&f,&param.k_beer,"k_beer");
   fscanparamreal(&f,&param.alphac3,"alphac3");
   fscanparamreal(&f,&param.alphac4,"alphac4");
   fscanparamreal01(&f,&param.r_growth,"r_growth");

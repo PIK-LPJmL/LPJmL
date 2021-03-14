@@ -33,7 +33,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "pCH4:\t%g (ppb)\n"
                "k:\t\t%g (1/yr)\n"
                "theta:\t\t%g\n"
-               "k_beer:\t\t%g\n"
                "alphac3:\t%g\n"
                "alphac4:\t%g\n"
                "r_growth:\t%g\n"
@@ -51,7 +50,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
           param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,param.soil_infil,
           param.co2_p,param.pch4,param.k,
-          param.theta,param.k_beer,param.alphac3,param.alphac4,
+          param.theta,param.alphac3,param.alphac4,
           param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
           param.fpc_tree_max,param.temp_response_a,param.temp_response_b);
