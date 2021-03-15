@@ -42,6 +42,7 @@ void mix_veg_stock_tree(Pft *pft1,Pft *pft2,Real frac1, Real frac2)
   if (test>epsilon)
   {
     tree1->ind.leaf.carbon=(pft1->nind*frac1*tree1->ind.leaf.carbon+pft2->nind*frac2*tree2->ind.leaf.carbon)/(pft1->nind*frac1+pft2->nind*frac2);
+    tree1->excess_carbon=(pft1->nind*frac1*tree1->excess_carbon+pft2->nind*frac2*tree2->excess_carbon)/(pft1->nind*frac1+pft2->nind*frac2);
     tree1->ind.root.carbon=(pft1->nind*frac1*tree1->ind.root.carbon+pft2->nind*frac2*tree2->ind.root.carbon)/(pft1->nind*frac1+pft2->nind*frac2);
     tree1->ind.sapwood.carbon=(pft1->nind*frac1*tree1->ind.sapwood.carbon+pft2->nind*frac2*tree2->ind.sapwood.carbon)/(pft1->nind*frac1+pft2->nind*frac2);
     tree1->ind.heartwood.carbon=(pft1->nind*frac1*tree1->ind.heartwood.carbon+pft2->nind*frac2*tree2->ind.heartwood.carbon)/(pft1->nind*frac1+pft2->nind*frac2);

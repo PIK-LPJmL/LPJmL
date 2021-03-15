@@ -165,6 +165,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         wetstand = getstand(cell->standlist, wetlandstandnum);
       // -----------------------------------------------------------------------------------------------
       //    wetland grows
+      // printf("delta_wetland=%g\n",delta_wetland);
       if (delta_wetland > 0)
       {
         //      currently no wetland stand
@@ -234,7 +235,13 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
               mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac);
             }
           }
-
+          for (p = 0; p<ntotpft; p++)
+            present[p] = FALSE;
+          foreachpft(pft, p, &natstand->pftlist)
+            present[pft->par->id] = TRUE;
+          foreachpft(pft, p, &wetstand->pftlist)
+            if(!present[pft->par->id])
+              mix_veg(pft,wetstand->frac/(wetstand->frac+natstand->frac));
           wetstand->frac = wetlandarea_new;
           natstand->frac = frac - delta_wetland;
 
@@ -299,7 +306,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             else
             {
               if (wetpft->par->peatland)
-                litter_update(&natstand->soil.litter, wetpft, -delta_wetland,config);
+                litter_update(&natstand->soil.litter, wetpft, -delta_wetland/(natstand->frac+wetstand->frac),config);
               else
               {
                 pft = addpft(natstand,wetpft->par,year,365,config);
@@ -307,6 +314,13 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
               }
             }
           }
+          for (p = 0; p<ntotpft; p++)
+            present[p] = FALSE;
+          foreachpft(pft, p, &wetstand->pftlist)
+            present[pft->par->id] = TRUE;
+          foreachpft(pft, p, &natstand->pftlist)
+            if(!present[pft->par->id])
+              mix_veg(pft,natstand->frac/(natstand->frac+wetstand->frac));
 
           //        shrink wetland stand
           wetstand->frac = wetlandarea_new;

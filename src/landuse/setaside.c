@@ -43,6 +43,9 @@ void mixsoil(Stand *stand1,const Stand *stand2)
             stand1->frac,stand2->frac);
     mixpool(stand1->soil.k_mean[l].slow,stand2->soil.k_mean[l].slow,
             stand1->frac,stand2->frac);
+    mixpool(stand1->soil.CH4[l],stand2->soil.CH4[l],stand1->frac,stand2->frac);
+    mixpool(stand1->soil.O2[l],stand2->soil.O2[l],stand1->frac,stand2->frac);
+
   }
   for(l=0;l<stand2->soil.litter.n;l++)
   {
