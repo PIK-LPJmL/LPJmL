@@ -123,6 +123,7 @@ void mixsoil(Stand *stand1,const Stand *stand2)
           stand2->frac);
   mixpool(stand1->soil.snowfraction,stand2->soil.snowfraction,stand1->frac,stand2->frac);
   mixpool(stand1->soil.snowheight,stand2->soil.snowheight,stand1->frac,stand2->frac);
+  mixpool(stand1->soil.wa,stand2->soil.wa,stand1->frac,stand2->frac);
   forrootsoillayer(l)
   {
     water1 = (stand1->soil.w[l] * stand1->soil.whcs[l] + stand1->soil.ice_depth[l] + stand1->soil.w_fw[l] + stand1->soil.ice_fw[l])*stand1->frac;
@@ -199,7 +200,7 @@ void mixsoil(Stand *stand1,const Stand *stand2)
   if(fabs(water_before-water_after)>epsilon*1e-2)
   {
 #ifndef NO_FAIL_BALANCE
-    fail(INVALID_WATER_BALANCE_ERR,TRUE,
+    fail(INVALID_WATER_BALANCE_ERR,FALSE,
 #else
     fprintf(stderr,
 #endif
