@@ -208,7 +208,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     data.vmax=pft->vmax;
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);
     adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
-                         temp,data.apar,daylength,TRUE);
+                         temp,data.apar,daylength,FALSE);
     if(config->with_nitrogen)
     {
       vmax=pft->vmax;
