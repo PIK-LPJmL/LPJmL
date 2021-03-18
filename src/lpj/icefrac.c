@@ -60,12 +60,24 @@ Icefrac initicefrac(const Config *config /**< LPJ configuration */
     }
 
     icefrac->file.firstyear = header.firstyear;
-    icefrac->file.size = header.ncell * sizeof(short);
+    icefrac->file.size = header.ncell * typesizes[header.datatype];
     icefrac->file.scalar = header.scalar;
+    icefrac->file.datatype = header.datatype;
     if (config->icefrac_filename.fmt == RAW)
       icefrac->file.offset = config->startgrid * sizeof(short);
     else
-      icefrac->file.offset = config->startgrid * sizeof(short) + headersize(headername, version);
+    {
+      if(header.nbands!=1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR218: Number of bands=%d in ice fraction file '%s' is not 1.\n",
+                  header.nbands,config->icefrac_filename.name);
+        fclose(icefrac->file.file);
+        free(icefrac);
+        return NULL;
+      }
+      icefrac->file.offset = config->startgrid * typesizes[header.datatype] + headersize(headername, version)+offset;
+    }
   }
   icefrac->file.n = config->ngridcell;
   ndata = (config->delta_year>1) ? 3 : 1;
@@ -97,8 +109,7 @@ Bool readicefrac(Icefrac icefrac,     /**< pointer to population data */
                  const Config *config /**< LPJ configuration */
                 )                     /** \return TRUE on error */
 {
-  short *vec;
-  int i, index_year;
+  int index_year;
   index_year = (year - icefrac->file.firstyear) / config->delta_year;
   if (icefrac->file.fmt == CDF)
     return readdata_netcdf(&icefrac->file, icefrac->data[index], grid, index_year, config);
@@ -107,27 +118,11 @@ Bool readicefrac(Icefrac icefrac,     /**< pointer to population data */
     fprintf(stderr, "ERROR184: Cannot seek to ice fraction of year %d in geticefrac().\n", year);
     return TRUE;
   }
-  vec = newvec(short, icefrac->file.n);
-  if (vec == NULL)
-  {
-    printallocerr("vec");
-    return TRUE;
-  }
-  if (fread(vec, sizeof(short), icefrac->file.n, icefrac->file.file) != icefrac->file.n)
+  if(readrealvec(icefrac->file.file,icefrac->data[index],0,icefrac->file.scalar,icefrac->file.n,icefrac->file.swap,icefrac->file.datatype))
   {
     fprintf(stderr, "ERROR184: Cannot read ice fraction of year %d in geticefrac().\n", year);
-    free(vec);
     return TRUE;
   }
-
-  if (icefrac->file.swap)
-    for (i = 0; i<icefrac->file.n; i++)
-      icefrac->data[index][i] = swapshort(vec[i])*icefrac->file.scalar;
-  else
-    for (i = 0; i<icefrac->file.n; i++)
-      icefrac->data[index][i] = vec[i] * icefrac->file.scalar;
-  free(vec);
-
   return FALSE;
 } /* of 'readicefrac' */
 
