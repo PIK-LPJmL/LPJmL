@@ -25,7 +25,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
 {
   Real convert;
   if(config->ngridcell > 2) convert = 1e-15;
-    else convert = 1e-9;
+     else convert = 1e-9;
   if(year==config->firstyear-config->nspinup)
   {
     fputs("Year,NEP,estab",file);
@@ -52,19 +52,19 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
   fprintf(file,",%7.3f",cflux_total*convert);
   fprintf(file,",%7.3f", flux.anpp*convert);
   fprintf(file,",%10.1f,%7.1f,%7.1f",
-          flux.transp*convert*1000,flux.evap*convert*1000,flux.interc*convert*1000);
+          flux.transp*convert,flux.evap*convert,flux.interc*convert);
   if(config->withlanduse!=NO_LANDUSE)
-    fprintf(file,",%7.1f",flux.wd*convert*1000);
+    fprintf(file,",%7.1f",flux.wd*convert);
   if(config->river_routing)
     fprintf(file,",%10.1f",flux.discharge*convert);
-  fprintf(file, ",%9.3f", flux.aCH4_emissions*convert);
-  fprintf(file, ",%9.3f", flux.aCH4_sink*convert);
-  fprintf(file, ",%9.3f", flux.aCH4_fire*convert);
+  fprintf(file, ",%9.3f", flux.aCH4_emissions*convert*1000);
+  fprintf(file, ",%9.3f", flux.aCH4_sink*convert*1000);
+  fprintf(file, ",%9.3f", flux.aCH4_fire*convert*1000);
   fprintf(file, ",%9.3f", flux.soilc*convert);
   fprintf(file, ",%9.3f", flux.soilc_slow*convert);
   fprintf(file, ",%9.3f", flux.vegc*convert);
   if(config->with_nitrogen)
     fprintf(file,",%7.1f,%8.1f,%7.1f,%7.1f",flux.n_uptake*convert*1000,flux.n_demand*convert*1000,flux.n_outflux*convert*1000,
-    flux.n_influx*convert*1000);
+    flux.n_influx*convert);
   fputc('\n',file);
 } /* of 'fprintcsvflux' */
