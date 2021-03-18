@@ -249,9 +249,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
            (year==config->firstyear-config->nspinup+soil_equil_year) && !config->from_restart)
           equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
       }
-      if(config->nspinup>soil_equil_year &&
-         (year==config->firstyear-config->nspinup+soil_equil_year) && !config->from_restart)
-        equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
       if(config->withlanduse)
       {
         getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
