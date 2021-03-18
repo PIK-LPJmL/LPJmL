@@ -26,7 +26,7 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/output.h $(INC)/pft.h $(INC)/pftlist.h $(INC)/pftpar.h\
           $(INC)/soil.h $(INC)/soilpar.h $(INC)/stand.h $(INC)/swap.h\
           $(INC)/types.h $(INC)/units.h $(INC)/climbuf.h $(INC)/intlist.h\
-          $(INC)/queue.h $(INC)/pnet.h $(INC)/channel.h\
+          $(INC)/queue.h $(INC)/pnet.h $(INC)/channel.h $(INC)/woodplantation.h\
           $(INC)/natural.h $(INC)/grassland.h $(INC)/agriculture.h\
           $(INC)/reservoir.h $(INC)/spitfire.h $(INC)/biomass_tree.h\
           $(INC)/biomass_grass.h $(INC)/cdf.h $(INC)/outfile.h $(INC)/cpl.h\
@@ -36,7 +36,7 @@ JSON	= lpjml.js input_crumonthly.js param.js lpj.js param_non.js\
           lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js lpjml_non.js
 
 DATA    = par/*.js
-JSON	= lpjml.js input_crumonthly.js param.js lpj.js\
+JSON	= lpjml.js input_crumonthly.js param.js lpj.js input_GSWP3-ERA5.js\
           lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js\
           lpjml_vpd.js input_GLDAS.js param_vpd.js param_non.js lpjml_non.js
 
