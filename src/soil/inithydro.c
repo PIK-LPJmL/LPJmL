@@ -1,27 +1,26 @@
-/***************************************************************************/
-/**                                                                       **/
-/**                 i  n  i  t  h  y  d  r  o . c                         **/
-/**                                                                       **/
-/**     C implementation of LPJ, derived from the Fortran/C++ version     **/
-/**                                                                       **/
-/**     written by Werner von Bloh, Sibyll Schaphoff                      **/
-/**     Potsdam Institute for Climate Impact Research                     **/
-/**     PO Box 60 12 03                                                   **/
-/**     14412 Potsdam/Germany                                             **/
-/**                                                                       **/
-/**                                                                       **/
-/**     Hydrotopes code                                                   **/
-/**     Thomas Kleinen, 27/06/2008                                        **/
-/**                                                                       **/
-/**     initialisation of cti fields                                      **/
-/***************************************************************************/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                 i  n  i  t  h  y  d  r  o . c                                  \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Initialisation of cti fields                                               \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include "lpj.h"
 
 #define CTI_DATA_LENGTH 3
 
-Bool inithydro(Cell *grid,
-  Config *config)
+Bool inithydro(Cell *grid,    /**< LPJ grid */
+               Config *config /**< LPJmL configuation */
+              )               /** \return TRUE on error */
 {
   FILE *hydrofile;
   Header header;
@@ -33,11 +32,29 @@ Bool inithydro(Cell *grid,
   size_t offset;
 
   if ((hydrofile = openinputfile(&header, &swap, &config->hydrotopes_filename,
-    headername,
-    &version, &offset, FALSE,config)) == NULL)
+                                 headername,
+                                 &version, &offset, FALSE,config)) == NULL)
     return TRUE;
-  if (fseek(hydrofile, config->startgrid * sizeof(short)*CTI_DATA_LENGTH, SEEK_CUR))
+  if(header.nbands!=CTI_DATA_LENGTH)
   {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR218: Number of bands=%d in CTI file '%s' is not %d.\n",
+              header.nbands,config->hydrotopes_filename.name,CTI_DATA_LENGTH);
+    fclose(hydrofile);
+    return TRUE;
+  }
+  if(header.datatype!=LPJ_SHORT)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR218: Datatype %s in CTI file '%s' is not short.\n",
+              typenames[header.datatype],config->hydrotopes_filename.name);
+    fclose(hydrofile);
+    return TRUE;
+  }
+  if (fseek(hydrofile, config->startgrid * sizeof(short)*CTI_DATA_LENGTH+offset, SEEK_CUR))
+  {
+    fprintf(stderr,"ERROR150: Cannot seek to cell %d in CTI file '%s'.\n",
+            config->startgrid,config->hydrotopes_filename.name);
     fclose(hydrofile);
     return TRUE;
   }
@@ -45,6 +62,8 @@ Bool inithydro(Cell *grid,
   {
     if (freadshort(ctidata_in, CTI_DATA_LENGTH, swap, hydrofile) != CTI_DATA_LENGTH)
     {
+      fprintf(stderr,"ERROR151: Cannot read cell %d in CTI file '%s'.\n",
+              config->startgrid+cell,config->hydrotopes_filename.name);
       fclose(hydrofile);
       return TRUE;
     }

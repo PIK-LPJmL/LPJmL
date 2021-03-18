@@ -106,8 +106,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       initoutputdata(&((grid+cell)->output),MONTHLY,year,config);
       if(!grid[cell].skip)
       {
-        if(!config->isanomaly)
-         initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
+       initclimate_monthly(input.climate,&grid[cell].climbuf,cell,month,grid[cell].seed);
 
 #if defined IMAGE && defined COUPLED
         monthlyoutput_image(&grid[cell].output,input.climate,cell,month,config);
@@ -159,7 +158,11 @@ void iterateyear(Outputfile *output,  /**< Output file data */
           if(config->with_radiation)
           {
             if(daily.swdown<0)
-              fail(INVALID_CLIMATE_ERR,FALSE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",daily.swdown,cell+config->startgrid,day);
+            {
+              if(!config->isanomaly)
+                fail(INVALID_CLIMATE_ERR,FALSE,"Short wave radiation=%g W/m2 less than zero for cell %d at day %d",daily.swdown,cell+config->startgrid,day);
+              daily.swdown=0;
+            }
           }
           else
           {
@@ -249,9 +252,6 @@ void iterateyear(Outputfile *output,  /**< Output file data */
            (year==config->firstyear-config->nspinup+soil_equil_year) && !config->from_restart)
           equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
       }
-      if(config->nspinup>soil_equil_year &&
-         (year==config->firstyear-config->nspinup+soil_equil_year) && !config->from_restart)
-        equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
       if(config->withlanduse)
       {
         getnsoil_agr(&norg_soil_agr,&nmin_soil_agr,&nveg_soil_agr,grid+cell);
