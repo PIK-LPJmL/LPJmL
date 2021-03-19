@@ -1098,6 +1098,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(CH4_SINK,1);
   writeoutputvar(CH4_PLANT_GAS,1);
   writeoutputvar(WTAB,ndate1);
+  writeoutputvar(MT_WATER,1);
   writeoutputvar(MWATER,ndate1);
   writeoutputvar(WETFRAC,1);
   writeoutputvar(MEANSOILO2,ndate1);
