@@ -51,7 +51,7 @@
   "slope_mean" :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_mean.clm"},
   "slope_min"  :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_min.clm"},
   "slope_max"  :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_max.clm"},
-  "ch4" :          { "fmt" : "txt", "name" : "/home/bloh/git/lpjml_methane/CH4_concentration_lpj.csv"},
+  "ch4" :          { "fmt" : "txt", "name" : "input_VERSION2/CH4_concentration_lpj.csv"},
   "hydrotopes" :   { "fmt" : "clm", "name" : "input_VERSION2/hydro2_shuffle.bin"},
 
 //  "landuse" :      { "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
