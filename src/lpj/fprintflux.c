@@ -83,7 +83,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
       fputs(" wd     ",file);
     if(config->river_routing)
       fputs(" discharge ",file);
-    fputs(" CH4 emiss.   CH4 sink   CH4 fire SoilC     slowSoilC  VegC     ",file);
+    fputs(" CH4 emiss. CH4 sink   CH4 fire   SoilC     slowSoilC  VegC     ",file);
     if(config->with_nitrogen)
       fputs(" nuptake ndemand  nlosses ninflux",file);
     fputc('\n',file);
