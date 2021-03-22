@@ -131,9 +131,9 @@
 #define COUNTRY 1
 #define REGION 2
 #define GLOBALFLUX 3
-#define FPC 4
-#define TRANSP 5
-#define RUNOFF 6
+#define PCH4 4
+#define PCO2 5
+#define FPC 6
 #define DISCHARGE 7
 #define EVAP 8
 #define INTERC 9
@@ -467,8 +467,8 @@
 #define CTI_VAL 330
 #define CH4_EMISSIONS 331
 #define CH4_SINK 332
-#define PCH4 333
-#define PCO2 334
+#define CSHIFT_FAST_NV 333
+#define CSHIFT_SLOW_NV 334
 #define MT_WATER 335
 #define MEANSOILO2 336
 #define MEANSOILCH4 337
@@ -492,8 +492,8 @@
 #define DECAY_WOOD_NV 355
 #define DECAY_LEAF_AGR 356
 #define DECAY_LEAF_NV 357
-#define CSHIFT_FAST_NV 358
-#define CSHIFT_SLOW_NV 359
+#define TRANSP 358
+#define RUNOFF 359
 #define LITBURNC 360
 #define RH 361
 #define PFT_GCGP_COUNT 0
