@@ -219,6 +219,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   fscanbool2(file,&config->permafrost,"permafrost");
   fscanbool2(file, &config->with_dynamic_ch4, "dynamic_CH4");
   fscanbool2(file, &config->isanomaly, "anomaly");
+  if(config->isanomaly && config->with_radiation!=RADIATION)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR208: Radiation setting '%s' not supported for anomalies, must be 'radiation'.\n",
+              radiation[config->with_radiation]);
+    return TRUE;
+  }
   config->sdate_option=NO_FIXED_SDATE;
   config->crop_phu_option=NEW_CROP_PHU;
   config->rw_manage=FALSE;
@@ -543,6 +550,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if (config->isanomaly)
   {
     fscanint2(&input, &config->delta_year, "delta_year");
+    if(config->delta_year<1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR239: delta_year=%d must be greater then 0.\n",
+                config->delta_year);
+      return TRUE;
+    }
   }
   else
     config->delta_year = 1;
