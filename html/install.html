@@ -2,11 +2,11 @@
 <HEAD>
 <LINK REL="stylesheet" HREF="style.css" TYPE="text/css">
 <TITLE>
-Installing and running LPJmL C Version 5.3.001
+Installing and running LPJmL C Version 6.0.001
 </TITLE>
 </HEAD>
 <BODY>
-<H1>Installing and running  LPJmL C Version 5.3.001</H1>
+<H1>Installing and running  LPJmL C Version 6.0.001</H1>
 
 <H2>Installation for Unix-like systems</h2>
 
@@ -29,7 +29,7 @@ cd lpjml
 
 untar source files</p>
 <pre class="example">
-gzip -cd lpjml-5.3.001.tar.gz|tar -xf -
+gzip -cd lpjml-6.0.001.tar.gz|tar -xf -
 </pre>
 
 Directory tree after extracting the tar files:</p>
@@ -116,7 +116,7 @@ Then LPJmL can be configured via
 
 <pre class="example">
 % ./configure.sh
-Configuring LPJmL 5.3.001...
+Configuring LPJmL 6.0.001...
 Operating system is Linux
 Intel MPI found
 Create executables with make all
@@ -649,7 +649,7 @@ Concatenates output files from distributed LPJmL simulations
 </table>
 An installation directory can be defined during configuration:
 <pre class="example">
-./configure.sh -prefix /data/biosx/lpjml-5.1.001
+./configure.sh -prefix /data/biosx/lpjml-6.0.001
 </pre>
 Then the binaries can be copied in the installation directory by invoking</p>
 <pre class="example">
@@ -858,15 +858,15 @@ lpjsubmit ntasks LPJmL_args...
 Depending on your MPI version installed the program can be started interactively:</p>
 
 <pre class="example">
-% mpirun -np 256 $LPJROOT/bin/lpjml
+% mpirun -np 256 $LPJROOT/bin/lpjml -DCHECKPOINT
 ******************************************************************************
-****         _     ____     _           _       ____        _____         ****
-****        | |   |  _ \   | |_ __ ___ | |     | ___|      |___ /         ****
-****        | |   | |_) |  | | '_ ` _ \| |     |___ \        |_ \         ****
-****        | |___|  __/ |_| | | | | | | |___   ___) |  _   ___) |        ****
-****        |_____|_|   \___/|_| |_| |_|_____| |____/  (_) |____/         ****
+****         _     ____     _           _        __          ___          ****
+****        | |   |  _ \   | |_ __ ___ | |      / /_        / _ \         ****
+****        | |   | |_) |  | | '_ ` _ \| |     | '_ \      | | | |        ****
+****        | |___|  __/ |_| | | | | | | |___  | (_) |  _  | |_| |        ****
+****        |_____|_|   \___/|_| |_| |_|_____|  \___/  (_)  \___/         ****
 ****                                                                      ****
-****                lpjml C Version 5.2.002 (Jan 25 2021)                 ****
+****                lpjml C Version 6.0.001 (Mar 22 2021)                 ****
 ****    Dynamic global vegetation model with natural and managed land     ****
 ****                          Compiled for Linux                          ****
 ****       (C) Potsdam Institute for Climate Impact Research (PIK),       ****
@@ -879,147 +879,95 @@ Depending on your MPI version installed the program can be started interactively
 ****                                                                      ****
 ******************************************************************************
 
-Running for user bloh on cs-e14c02b03 at Mon Jun 17 13:30:15 2019
-Reading configuration from 'lpjml.js'.
-==============================================================================
-Simulation "LPJmL Run" running on 256 tasks
-Simulation with random precipitation, fire, river routing, permafrost,
-new phenology, land use, limited irrigation, intercropping,
-fixed sowing date after 1970, dam reservoirs, water use.
-Working directory: /home/user/git/lpjml
-Starting from restart file '/p/tmp/user/lpjml/restart/restart_1840_nv_stdfire.lpj'.
+Simulation with random precipitation, fire, shuffle climate, 
+equilsoil is called, nitrogen limitation, permafrost, new phenology.
+
+Working directory: /home/bloh/git/lpjml_methane
+Starting from scratch.
 Input files:
-Variable   Fmt  Filename
----------- ---- --------------------------------------------------------------
-soil       meta /p/projects/lpjml/input/historical/input_VERSION2/soil.descr
-coord      clm  /p/projects/lpjml/input/historical/input_VERSION2/grid.bin
-temp       clm  /p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm
-prec       clm  /p/projects/lpjml/input/historical/CRUDATA_TS3_23/gpcc_v7_cruts3_23_precip_1901_2013.clm
-lwnet      clm  /p/projects/lpjml/input/historical/input_VERSION2/lwnet_erainterim_1901-2011.clm
-swdown     clm  /p/projects/lpjml/input/historical/input_VERSION2/swdown_erainterim_1901-2011.clm
-co2        txt  /p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2012.dat
-countries  clm  /p/projects/lpjml/input/historical/input_VERSION2/cow_mg_2006_full.bin
-landuse    clm  /p/projects/lpjml/input/historical/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin
-elevation  clm  /p/projects/lpjml/input/historical/input_VERSION2/elevation.bin
-reservoir  clm  /p/projects/lpjml/input/historical/input_VERSION2/reservoir_info_grand5.bin
-wetdays    clm  /p/projects/lpjml/input/historical/CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm
-drainage   clm  /p/projects/lpjml/input/historical/input_VERSION2/drainagestn.bin
-lakes      meta /p/projects/lpjml/input/historical/input_VERSION2/glwd_lakes_and_rivers.descr
-neighbour  clm  /p/projects/lpjml/input/historical/input_VERSION2/neighb_irrig_stn.bin
-wateruse   clm  /p/projects/lpjml/input/historical/input_VERSION2/wateruse_1900_2000.bin
----------- ---- --------------------------------------------------------------
-Writing restart file '/p/tmp/user/lpjml/restart/restart_1900_crop_stdfire.lpj' after year 1900.
+Variable   Fmt  Varname Filename
+---------- ---- ------- ------------------------------------------------------
+soil       meta         /p/projects/lpjml/input/historical/input_VERSION2/soil.descr
+coord      clm          /p/projects/lpjml/input/historical/input_VERSION2/grid.bin
+kbf        cdf  KBF     /p/projects/lpjml/input/historical/input_VERSION2/kbf_mar.nc
+slope      clm          /p/projects/lpjml/input/historical/input_VERSION2/GloSlope-30as_mean.clm
+slope_min  clm          /p/projects/lpjml/input/historical/input_VERSION2/GloSlope-30as_min.clm
+slope_max  clm          /p/projects/lpjml/input/historical/input_VERSION2/GloSlope-30as_max.clm
+temp       clm          /p/projects/lpjml/input/historical/CRUDATA_TS3_23/cru_ts3.23.1901.2014.tmp.dat.clm
+prec       clm          /p/projects/lpjml/input/historical/CRUDATA_TS3_23/gpcc_v7_cruts3_23_precip_1901_2013.clm
+hydrotopes clm          /p/projects/lpjml/input/historical/input_VERSION2/hydro2_shuffle.bin
+lwnet      clm          /p/projects/lpjml/input/historical/input_VERSION2/lwnet_erainterim_1901-2011.clm
+swdown     clm          /p/projects/lpjml/input/historical/input_VERSION2/swdown_erainterim_1901-2011.clm
+no3_depo   clm          /p/projects/lpjml/input/historical/input_VERSION2/no3_deposition_rcp8p5.clm
+nh4_depo   clm          /p/projects/lpjml/input/historical/input_VERSION2/nh4_deposition_rcp8p5.clm
+soilpH     clm          /p/projects/lpjml/input/historical/input_VERSION2/soil_ph.clm
+co2        txt          /p/projects/lpjml/input/historical/input_VERSION2/co2_1841-2012.dat
+ch4        txt          /home/bloh/git/lpjml_methane/CH4_concentration_lpj.csv
+windspeed  clm          /p/projects/lpjml/input/historical/input_VERSION2/mwindspeed_1860-2100_67420.clm
+wetdays    clm          /p/projects/lpjml/input/historical/CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm
+---------- ---- ------- ------------------------------------------------------
+Writing restart file '/p/tmp/bloh/lpjml51/lpjml_methane/restart/restart_1840_nv_stdfire.lpj' after year 1840.
+Checkpoint restart file: '/p/tmp/bloh/lpjml51/lpjml_methane/restart/restart_checkpoint.lpj'.
 Random seed: 2
-Number of output files:       45
-Output written in year:       1901
+Number of output files:       1
+Output written in year:       -6099
 Byte order in output files:   little endian
 Output method:                gathered
-Variable         Fmt Unit        Type  dT  Filename
----------------- --- ----------- ----- --- ------------------------------------
-agb              raw gC/m2       float Y   output/agb.bin
-agb_tree         raw gC/m2       float Y   output/agb_tree.bin
-albedo           raw -           float M   output/malbedo.bin
-bnf              raw gN/m2/month float M   output/mbnf.bin
-cftfrac          raw -           float Y   output/cftfrac.bin
-conv_loss_drain  raw mm/yr       float Y   output/aconv_loss_drain.bin
-conv_loss_evap   raw mm/yr       float Y   output/aconv_loss_evap.bin
-deforest_emis    raw gC/m2/yr    float Y   output/deforest_emis.bin
-discharge        raw hm3/day     float M   output/mdischarge.bin
-evap             raw mm/month    float M   output/mevap.bin
-evap_b           raw mm/month    float M   output/mevap_b.bin
-fapar            raw -           float M   output/mfapar.bin
-firec            raw gC/m2/yr    float Y   output/firec.bin
-firef            raw yr          float Y   output/firef.bin
-firen            raw gN/m2/yr    float Y   output/firen.bin
-flux_estabc      raw gC/m2/yr    float Y   output/flux_estab.bin
-fpc              raw -           float Y   output/fpc.bin
-gpp              raw gC/m2/month float M   output/mgpp.bin
-grid             raw degree      short Y   output/grid.bin
-harvestc         raw gC/m2/yr    float Y   output/flux_harvest.bin
-interc           raw mm/month    float M   output/minterc.bin
-interc_b         raw mm/month    float M   output/mintec_b.bin
-leaching         raw gN/m2/month float M   output/mleaching.bin
-litc             raw gC/m2       float Y   output/litc.bin
-litn             raw gN/m2       float Y   output/litn.bin
-maxthaw_depth    raw mm          float Y   output/maxthaw_depth.bin
-n2_emis          raw gN/m2/month float M   output/mn2_emis.bin
-n2o_denit        raw gN/m2/month float M   output/mn2o_denit.bin
-n2o_nit          raw gN/m2/month float M   output/mn2o_nit.bin
-n_immo           raw gN/m2/month float M   output/mn_immo.bin
-n_mineralization raw gN/m2/month float M   output/mn_mineralization.bin
-n_volatilization raw gN/m2/month float M   output/mn_volatilization.bin
-npp              raw gC/m2/month float M   output/mnpp.bin
-nuptake          raw gN/m2/month float M   output/mnuptake.bin
-pet              raw mm/month    float M   output/mpet.bin
-pft_chawo        raw gC/m2       float Y   output/pft_chawo.bin
-pft_cleaf        raw gC/m2       float Y   output/pft_cleaf.bin
-pft_croot        raw gC/m2       float Y   output/pft_croot.bin
-pft_csapw        raw gC/m2       float Y   output/pft_csapw.bin
-pft_harvestc     raw gC/m2/yr    float Y   output/pft_harvest.pft.bin
-pft_laimax       raw m2/m2       float Y   output/pft_laimax.bin
-pft_ndemand      raw gN/yr       float Y   output/pft_ndemand.bin
-pft_nhawo        raw gN/m2       float Y   output/pft_nhawo.bin
-pft_nleaf        raw gN/m2       float Y   output/pft_nleaf.bin
-pft_nlimit       raw -           float Y   output/pft_nlimit.bin
-pft_nroot        raw gN/m2       float Y   output/pft_nroot.bin
-pft_nsapw        raw gN/m2       float Y   output/pft_nsapw.bin
-pft_nuptake      raw gN/m2/yr    float Y   output/pft_nuptake.bin
-pft_vegc         raw gC/m2       float Y   output/pft_vegc.bin
-pft_vegn         raw gN/m2       float Y   output/pft_vegn.bin
-phen_light       raw -           float M   output/mphen_light.bin
-phen_tmax        raw -           float M   output/mphen_tmax.bin
-phen_tmin        raw -           float M   output/mphen_tmin.bin
-phen_water       raw -           float M   output/mphen_water.bin
-prod_turnover    raw gC/m2/yr    float Y   output/prod_turnover.bin
-return_flow_b    raw mm/month    float M   output/mreturn_flow_b.bin
-rh               raw gC/m2/month float M   output/mrh.bin
-runoff           raw mm/month    float M   output/mrunoff.bin
-sdate            raw -           short Y   output/sdate.bin
-seasonality      raw -           short Y   output/seasonality.bin
-soilc            raw gC/m2       float Y   output/soilc.bin
-soilc_layer      raw gC/m2       float Y   output/soilc_layer.bin
-soiln            raw gN/m2       float Y   output/soiln.bin
-soiln_layer      raw gN/m2       float Y   output/soiln_layer.bin
-soiln_slow       raw gN/m2       float Y   output/soiln_slow.bin
-soilnh4          raw gN/m2       float Y   output/soilnh4.bin
-soilnh4_layer    raw gN/m2       float Y   output/soilnh4_layer.bin
-soilno3          raw gN/m2       float Y   output/soilno3.bin
-soilno3_layer    raw gN/m2       float Y   output/soilno3_layer.bin
-soiltemp1        raw Celsius     float M   output/msoiltemp1.bin
-soiltemp2        raw Celsius     float M   output/msoiltemp2.bin
-soiltemp3        raw Celsius     float M   output/msoiltemp3.bin
-swc1             raw -           float M   output/mswc1.bin
-swc2             raw -           float M   output/mswc2.bin
-transp           raw mm/month    float M   output/mtransp.bin
-transp_b         raw mm/month    float M   output/mtransp_b.bin
-vegc             raw gC/m2       float Y   output/vegc.bin
-vegn             raw gN/m2       float Y   output/vegn.bin
-wateramount      raw hm3         float M   output/mwateramount.bin
----------------- --- ----------- ----- --- ------------------------------------
-Spinup years:                   390
+Variable   Fmt Unit Type  dt  nbd Filename
+---------- --- ---- ----- --- --- ---------------------------------------------
+globalflux txt -    float Y     1 /p/tmp/bloh/lpjml51/lpjml_methane/output/globalflux.csv
+---------- --- ---- ----- --- --- ---------------------------------------------
+Spinup years:                  8000
 Cycle length during spinup:      30
 First year:                    1901
-Last year:                     2011
+Last year:                     1901
 Number of grid cells:         67420
 ==============================================================================
+Memory allocated for output: 360 bytes/cell
 Simulation begins...
+Spinup using climate starting from year 1901
 
-                  Carbon flux (GtC)                                Water (km3)
-       --------------------------------------- ---------------------------------------------
-Spinup NEP     estab   fire    harvest total   transp     evap    interc  wd      discharge
------- ------- ------- ------- ------- ------- ---------- ------- ------- ------- ----------
-  1511   2.088   0.004   3.620   0.000  -1.528    47957.3  9976.7  6895.2     0.0    51348.1
-  1512  -1.062   0.036   3.629   0.095  -4.750    45776.6 11529.4  6555.8    20.8    50481.0
-  1513   2.715   0.035   3.613   0.458  -1.321    47354.0 11195.4  6634.2    22.1    50551.0
-  1514   4.357   0.035   3.229   0.739   0.423    48562.6 10554.8  6682.2    23.1    50039.0
+                  Carbon flux (GtC)                    Water (km3)          CH4 fluxes (TgCH4)              Carbon (GtC)                    Nitrogen (TgN)
+       --------------------------------------- -------------------------- -------------------------------- ------------------------------ --------------------------------
+Spinup NEP     estab   fire    total   NPP     transp     evap    interc  CH4 emiss.   CH4 sink   CH4 fire SoilC     slowSoilC  VegC      nuptake ndemand  nlosses ninflux
+------ ------- ------- ------- ------- ------- ---------- ------- ------- ---------- ---------- ---------- --------- ---------- --------- ------- -------- ------- -------
+ -6099 -49.886   0.787   0.000 -49.099   0.000        0.0 56735.6     0.0     0.396      0.003      0.000   5523.291   2784.612      0.787     0.0      0.0 11160.6    25.1
+ -6098 -43.955   0.210   0.000 -43.745   5.999      429.4 61003.6     3.3     0.516      0.003      0.000   5473.425   2781.370      5.846    80.0      4.6  4267.8    23.4
+ -6097  -3.584  -0.185   0.007  -3.775  46.035    16402.7 44612.2   267.4     0.578      0.002      0.000   5427.778   2777.956     40.529   656.1    184.6  3268.4    26.8
+ -6096  36.046   0.014   0.100  35.959  88.924    52714.1 13916.9  5864.1     0.612      0.003      0.000   5394.724   2774.850     92.227  1986.8  10231.2  1995.4    40.3
+ -6095  34.628   0.050   0.285  34.394  96.454    54949.7 11028.5 10955.5     0.439      0.003      0.001   5385.658   2772.066    110.524  2536.3  19110.9  1206.2    46.7
+ -6094  13.185   0.078   0.356  12.907  86.248    53478.4 10978.0 11687.2     0.385      0.003      0.001   5387.845   2769.429    102.815  2088.2  27462.9   925.1    52.4
+ -6093   8.140   0.075   0.392   7.824  89.409    56539.9 10475.4 11263.1     0.388      0.003      0.001   5392.520   2766.808     94.967  1707.3  30315.1   914.5    59.6
+ -6092  -2.067   0.074   0.461  -2.454  84.851    54574.8 10583.5  9744.7     0.374      0.003      0.001   5396.254   2764.190     83.420  1484.9  26096.2   928.7    63.8
+ -6091  -3.219   0.072   0.364  -3.511  86.837    55537.5 10553.2  8636.0     0.372      0.003      0.001   5398.048   2761.491     76.699  1403.0  21777.8   882.8    68.3
+ -6090  -8.069   0.097   0.345  -8.317  83.941    55377.1 10765.7  7582.2     0.375      0.003      0.001   5395.888   2758.833     71.847  1359.4  16877.9   886.3    75.1
+ -6089  -6.790   0.084   0.378  -7.084  85.031    55460.5 10487.6  7356.5     0.390      0.003      0.001   5392.566   2756.114     68.506  1445.8  14802.8   862.7    76.8
+ -6088 -11.569   0.084   0.383 -11.868  80.467    53745.0 10383.9  6774.6     0.413      0.003      0.001   5385.784   2753.389     65.438  1465.6  13602.0   845.6    82.8
+ -6087  -6.078   0.078   0.357  -6.357  86.355    55690.8 10649.1  6507.9     0.421      0.003      0.001   5379.245   2750.626     65.950  1455.7  13117.8   895.2    85.3
+ -6086 -11.280   0.096   0.348 -11.532  81.594    54111.8 10367.9  6190.3     0.442      0.003      0.001   5370.590   2747.759     64.216  1546.1  13078.0   836.9    90.7
+ -6085  -7.077   0.074   0.362  -7.365  85.224    54169.7 10658.8  6069.6     0.435      0.003      0.001   5361.899   2744.899     65.726  1504.1  12745.9   833.6    92.6
 ...
-  2009  13.477   0.162   3.074   8.476   2.090    47712.6  9357.4  8168.6  2496.7    52281.5
-  2010  14.199   0.162   3.069   8.765   2.528    48559.7 10116.4  8488.2  2356.5    54515.1
-  2011  15.201   0.162   3.063   8.667   3.633    48735.4  9536.9  8527.0  2577.8    56086.4
+  1890   6.423   0.078   3.333   3.168  88.102    52166.4  9267.1 11838.7     0.826      0.003      0.014   2770.640    833.635    892.557  1843.7  28459.1   205.1   148.0
+  1891   4.257   0.086   3.305   1.038  86.357    51874.6  8935.2 12388.3     0.843      0.003      0.014   2771.122    833.671    892.115  1833.5  28302.3   209.4   150.0
+  1892   8.775   0.079   3.216   5.638  89.209    52640.0  9061.1 12538.1     0.875      0.003      0.013   2772.387    833.688    894.709  1814.1  28495.2   214.4   148.5
+  1893   3.281   0.095   3.227   0.149  86.028    52290.1  9191.9 12198.6     0.839      0.003      0.013   2773.114    833.751    892.735  1848.1  28732.8   201.3   148.2
+  1894   5.752   0.083   3.387   2.448  88.536    52806.1  9612.2 12094.5     0.806      0.003      0.014   2773.351    833.811    893.970  1845.4  28541.7   207.9   147.8
+  1895   5.669   0.077   3.434   2.313  88.117    52674.9  8986.0 11952.5     0.817      0.003      0.014   2774.159    833.869    894.876  1850.9  28602.8   210.0   149.5
+  1896   3.241   0.073   3.539  -0.226  86.015    51630.3  8977.4 11959.5     0.826      0.003      0.015   2774.758    833.906    893.291  1819.3  28175.3   223.0   148.9
+  1897   4.470   0.096   3.227   1.338  87.168    52310.0  9312.2 11820.2     0.814      0.003      0.013   2775.098    833.954    893.709  1825.9  28611.5   252.7   150.4
+  1898   5.089   0.078   3.271   1.896  87.415    52182.8  8951.7 12425.0     0.840      0.003      0.014   2775.339    833.986    894.675  1818.1  29051.2   210.1   150.0
+  1899   4.889   0.084   3.326   1.646  86.880    52178.8  9069.7 12017.0     0.845      0.003      0.014   2775.832    834.013    895.346  1807.5  28892.2   221.3   148.8
+  1900   7.009   0.090   3.067   4.032  88.951    52889.6  9386.7 12244.5     0.851      0.003      0.013   2776.633    834.033    898.088  1838.4  29322.6   208.0   149.5
+
+                  Carbon flux (GtC)                    Water (km3)          CH4 fluxes (TgCH4)              Carbon (GtC)                    Nitrogen (TgN)
+       --------------------------------------- -------------------------- -------------------------------- ------------------------------ --------------------------------
+Year   NEP     estab   fire    total   NPP     transp     evap    interc  CH4 emiss.   CH4 sink   CH4 fire SoilC     slowSoilC  VegC      nuptake ndemand  nlosses ninflux
+------ ------- ------- ------- ------- ------- ---------- ------- ------- ---------- ---------- ---------- --------- ---------- --------- ------- -------- ------- -------
+  1901   4.264   0.089   3.265   1.088  86.618    52228.1  9132.2 12234.4     0.838      0.003      0.014   2777.329    834.095    897.016  1832.5  28837.8   202.5   148.8
 Simulation ended.
 lpjml successfully terminated, 67420 grid cells processed.
-Wall clock time:        1776 sec, 5.3e-05 sec/cell/year.
-Total wall clock time:  1778 sec (00:29:38).
+Wall clock time:	47318 sec, 8.8e-05 sec/cell/year.
+Total wall clock time:	47323 sec (13:08:43).
 </pre>
 
 <h3>Error codes</h3>

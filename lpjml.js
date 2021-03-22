@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  .  j  s                                       \n**/
 /**                                                                                \n**/
-/** Default configuration file for LPJmL C Version 5.3.001                         \n**/
+/** Default configuration file for LPJmL C Version 6.0.001                         \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -32,7 +32,7 @@
 
   "sim_name" : "LPJmL Run", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-  "version"  : "5.3",       /* LPJmL version expected */
+  "version"  : "6.0",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -144,8 +144,9 @@
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
-    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_transient.csv"}},
     { "id" : "fpc",              "file" : { "fmt" : "raw", "name" : "output/fpc.bin"}},
+    { "id" : "wpc",              "file" : { "fmt" : "raw", "name" : "output/wpc.bin"}},
     { "id" : "npp",              "file" : { "fmt" : "raw", "name" : "output/mnpp.bin"}},
     { "id" : "gpp",              "file" : { "fmt" : "raw", "name" : "output/mgpp.bin"}},
     { "id" : "rh",               "file" : { "fmt" : "raw", "name" : "output/mrh.bin"}},
@@ -240,7 +241,11 @@ ID                               Fmt                        filename
     { "id" : "conv_loss_drain",  "file" : { "fmt" : "raw", "name" : "output/aconv_loss_drain.bin"}}
 /*------------------------------ ------------------------- ------------------------------- */
   ],
-
+#else
+  "output" :
+  [
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}}
+  ],
 #endif
 
 /*===================================================================*/
@@ -260,6 +265,7 @@ ID                               Fmt                        filename
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
+  "outputyear" : -6099, /* last year of simulation */
   "restart" :  false, /* start from restart file */
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
   "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */

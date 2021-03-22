@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**       i  n  p  u  t  _  c  r  u  m  o  n  t  h  l  y  .  j  s                  \n**/
 /**                                                                                \n**/
-/** Configuration file for input dataset for LPJ C Version 5.3.001                 \n**/
+/** Configuration file for input dataset for LPJ C Version 6.0.001                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -35,18 +35,24 @@
 
 "input" :
 {
+  "delta_year" : 100,
+  "icefrac" :      { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_ice_0.5.clm"},
+  "delta_temp" :   { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_temp_0.5.clm"},
+  "delta_prec" :   { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_prec_0.5.clm"},
+  "delta_lwnet" :  { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_lwnet_0.5.clm"},
+  "delta_swdown" : { "fmt" : "clm", "name" : "/p/projects/open/sibyll/palmod/climber_experiment/climber2_lgc_swdown_0.5.clm"},
   "soil" :         { "fmt" : "meta", "name" : "input_VERSION2/soil.descr"},
-  "coord" :        { "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},
-  "countrycode" :  { "fmt" : "clm",  "name" : "input_VERSION2/cow_full_2018.bin"},
-  "no3deposition" : { "fmt" : "clm", "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
-  "nh4deposition" : { "fmt" : "clm", "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
-  "soilpH" :        { "fmt" : "clm", "name" : "input_VERSION2/soil_ph.clm"},
-  "kbf" :           { "fmt" : "cdf", "var" : "KBF", "name" :"input_VERSION2/kbf_mar.nc"},
-  "slope_mean" :    { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_mean.clm"},
-  "slope_min"  :    { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_min.clm"},
-  "slope_max"  :    { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_max.clm"},
-  "ch4" :           { "fmt" : "txt", "name" : "input_VERSION2/CH4_concentration_lpj.csv"},
-  "hydrotopes" :    { "fmt" : "clm", "name" : "input_VERSION2/hydro2_shuffle.bin"},
+  "coord" :        { "fmt" : "clm", "name" : "input_VERSION2/grid.bin"},
+  "countrycode" :  { "fmt" : "clm", "name" : "input_VERSION2/cow_full_2018.bin"},
+  "no3deposition" :{ "fmt" : "clm", "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
+  "nh4deposition" :{ "fmt" : "clm", "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
+  "soilpH" :       { "fmt" : "clm", "name" : "input_VERSION2/soil_ph.clm"},
+  "kbf" :          { "fmt" : "cdf", "var" : "KBF", "name" :"input_VERSION2/kbf_mar.nc"},
+  "slope_mean" :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_mean.clm"},
+  "slope_min"  :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_min.clm"},
+  "slope_max"  :   { "fmt" : "clm", "name" : "input_VERSION2/GloSlope-30as_max.clm"},
+  "ch4" :          { "fmt" : "txt", "name" : "/home/bloh/git/lpjml_methane/CH4_concentration_lpj.csv"},
+  "hydrotopes" :   { "fmt" : "clm", "name" : "input_VERSION2/hydro2_shuffle.bin"},
 
 //  "landuse" :      { "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
   "landuse" :      { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/MADRAT/lu_madrat_850-2015_32bands.clm"},

@@ -63,18 +63,18 @@ static Real f_ph(Real ph)
 
 //#define CHECK_BALANCE
 
-Stocks littersom(Stand *stand,                      /**< pointer to stand data */
-                 const Real gtemp_soil[NSOILLAYER], /**< respiration coefficents */
-                 Real cellfrac_agr,                 /**< stand fraction of agricultural cells (0..1) */
-                 Real *methaneflux_litter,          /**< CH4 emissions (gC/m2/day) */
-                 Real airtemp,                      /**< air temperature (deg C) */
-                 Real pch4,                         /**< atmoshoperic methane (ppb) */
-                 Real *runoff,                      /**< runoff (mm/day) */
-                 Real *MT_water,
-                 int npft,                          /**< number of natural PFTs */
-                 int ncft,                          /**< number of crop PFTs */
-                 const Config *config               /**< LPJmL configuration */
-                ) /** \return decomposed carbon/nitrogen (g/m2) */
+Stocks littersom(Stand *stand,                      /**< [inout] pointer to stand data */
+                 const Real gtemp_soil[NSOILLAYER], /**< [in] respiration coefficents */
+                 Real cellfrac_agr,                 /**< [in] stand fraction of agricultural cells (0..1) */
+                 Real *methaneflux_litter,          /**< [out] CH4 emissions (gC/m2/day) */
+                 Real airtemp,                      /**< [in] air temperature (deg C) */
+                 Real pch4,                         /**< [in] atmoshoperic methane (ppm) */
+                 Real *runoff,                      /**< [out] runoff (mm/day) */
+                 Real *MT_water,                    /**< [out] water from oxidized methane (mm/day) */
+                 int npft,                          /**< [in] number of natural PFTs */
+                 int ncft,                          /**< [in] number of crop PFTs */
+                 const Config *config               /**< [in] LPJmL configuration */
+                )                                   /** \return decomposed carbon/nitrogen (g/m2) */
 {
   Real response[NSOILLAYER];
   Real response_agtop_leaves,response_agtop_wood,response_agsub_leaves,response_agsub_wood,response_bg_litter,w_agtop;
@@ -89,8 +89,8 @@ Stocks littersom(Stand *stand,                      /**< pointer to stand data *
   int i,p,l;
   Soil *soil;
   Real yedoma_flux;
-  Real F_NO3=0;                /* soil nitrification rate gN *m-2*d-1*/
-  Real F_N2O=0;                /* soil nitrification rate gN *m-2*d-1*/
+  Real F_NO3=0;     /* soil nitrification rate gN *m-2*d-1*/
+  Real F_N2O=0;     /* soil nitrification rate gN *m-2*d-1*/
   Real F_Nmineral;  /* net mineralization flux gN *m-2*d-1*/
   Real fac_wfps, fac_temp;
   String line;

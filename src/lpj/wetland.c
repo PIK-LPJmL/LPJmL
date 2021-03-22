@@ -1,20 +1,18 @@
-/***************************************************************************/
-/**                                                                       **/
-/**                     w  e  t  l  a  n  d  .  c                         **/
-/**                                                                       **/
-/**     C implementation of LPJ, derived from the Fortran/C++ version     **/
-/**                                                                       **/
-/**     Definition of wetland stand                                       **/
-/**                                                                       **/
-/**     written by Sibyll Schaphoff                                       **/
-/**     Potsdam Institute for Climate Impact Research                     **/
-/**     PO Box 60 12 03                                                   **/
-/**     14412 Potsdam/Germany                                             **/
-/**                                                                       **/
-/**     Last change: $Date:: 2016-07-04 13:09:30 +0200 (Mo, 04 Jul 2016#$ **/
-/**     By         : $Author:: bloh                            $          **/
-/**                                                                       **/
-/***************************************************************************/
+/**************************************************************************************/
+/**                                                                                \n**/
+/**                     w  e  t  l  a  n  d  .  c                                  \n**/
+/**                                                                                \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Definition of wetland stand                                                \n**/
+/**                                                                                \n**/
+/** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
+/** authors, and contributors see AUTHORS file                                     \n**/
+/** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
+/** or later. See LICENSE file or go to http://www.gnu.org/licenses/               \n**/
+/** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
+/**                                                                                \n**/
+/**************************************************************************************/
 
 #include "lpj.h"
 #include "natural.h"
@@ -22,11 +20,11 @@
 #include "agriculture.h"
 
 Standtype wetland_stand = {WETLAND,"wetland",new_natural,free_natural,
-fwrite_natural,fread_natural,fprint_natural,
-daily_natural,annual_natural,dailyfire,isdailyoutput_natural };
+                           fwrite_natural,fread_natural,fprint_natural,
+                           daily_natural,annual_natural,dailyfire,isdailyoutput_natural};
 Standtype setaside_wetland = {SETASIDE_WETLAND,"wetland setaside",new_agriculture,
-        free_agriculture,fwrite_agriculture,
-        fread_agriculture,fprint_agriculture,
+                              free_agriculture,fwrite_agriculture,
+                              fread_agriculture,fprint_agriculture,
 #ifdef DAILY_ESTABLISHMENT
         daily_setaside,
 #else
