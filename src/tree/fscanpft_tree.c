@@ -24,6 +24,13 @@
     fprintf(stderr,"ERROR110: Cannot read float '%s' for PFT '%s'.\n",name,pft); \
     return TRUE; \
   }
+#define fscanreal012(verb,file,var,pft,name) \
+  if(fscanreal01(file,var,name,FALSE,verb)) \
+  { \
+    if(verb)\
+    fprintf(stderr,"ERROR110: Cannot read float '%s' for PFT '%s'.\n",name,pft); \
+    return TRUE; \
+  }
 #define fscanint2(verb,file,var,pft,name) \
   if(fscanint(file,var,name,FALSE,verb)) \
   { \
@@ -156,6 +163,13 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   if(iskeydefined(file,"sla"))
   {
     fscanreal2(verb,file,&pft->sla,pft->name,"sla");
+    if(pft->sla<=0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR112: Invalid value for 'sla'=%g of PFT '%s', must be >0.\n",
+                pft->sla,pft->name);
+      return TRUE;
+    }
   }
   else
   {
@@ -174,7 +188,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   if(config->with_nitrogen)
   {
     fscanratio2(verb,file,&tree->ratio,pft->name,"ratio");
-  } 
+  }
   fscanreal2(verb,file,&tree->crownarea_max,pft->name,"crownarea_max");
   fscanreal2(verb,file,&wood_sapl,pft->name,"wood_sapl");
   if(pft->phenology==SUMMERGREEN)
@@ -189,6 +203,13 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   fscanreal2(verb,file,&tree->allom4,pft->name,"allom4");
   fscanreal2(verb,file,&tree->height_max,pft->name,"height_max");
   fscanreal2(verb,file,&tree->k_latosa,pft->name,"k_latosa");
+  if(tree->k_latosa<=0)
+  {
+    if(verb)
+      fprintf(stderr,"ERROR112: Invalid value for 'k_latosa'=%g of PFT '%s', must be >0.\n",
+              tree->k_latosa,pft->name);
+    return TRUE;
+  }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     fscanreal2(verb,file,&tree->scorchheight_f_param,pft->name,"scorchheight_f_param");
@@ -221,7 +242,7 @@ Bool fscanpft_tree(LPJfile *file, /**< pointer to LPJ file */
   }
   if(pft->cultivation_type==ANNUAL_TREE)
   {
-    fscanreal2(verb,file,&tree->harvest_ratio,pft->name,"harvest_ratio");
+    fscanreal012(verb,file,&tree->harvest_ratio,pft->name,"harvest_ratio");
     fscanreal2(verb,file,&tree->cnratio_fruit,pft->name,"cnratio_fruit");
     if(tree->cnratio_fruit<=0)
     {

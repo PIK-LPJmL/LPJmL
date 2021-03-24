@@ -157,6 +157,13 @@ Bool fscanpft_crop(LPJfile *file,  /**< pointer to LPJ file */
   if(iskeydefined(file,"sla"))
   {
     fscanpftreal(verb,file,&pft->sla,pft->name,"sla");
+    if(pft->sla<=0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR201: Invalid value for SLA=%g of CFT '%s', must be >0.\n",
+                pft->sla,pft->name);
+      return TRUE;
+    }
   }
   else
     pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;   //"A photothermal model of leaf area index for greenhouse crops Xu etal.  "

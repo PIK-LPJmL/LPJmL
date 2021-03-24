@@ -38,7 +38,7 @@ void fprintpft(FILE *file,       /**< pointer to text file */
     fprintf(file,"bminc:\t\t%g (gC/m2) %g (gN/m2)\n",pft->bm_inc.carbon,
             pft->bm_inc.nitrogen);
     fprintf(file,"Nleaf:\t\t%g (gN/m2)\n",pft->nleaf);
-    fprintf(file,"Establish:\t %g (gC/m2) %g (gN/(m2)\n",
+    fprintf(file,"Establish:\t %g (gC/m2) %g (gN/m2)\n",
             pft->establish.carbon,pft->establish.nitrogen);
   }
   else
@@ -46,7 +46,7 @@ void fprintpft(FILE *file,       /**< pointer to text file */
     fprintf(file,"bminc:\t\t%g (gC/m2)\n",pft->bm_inc.carbon);
     fprintf(file,"Establish:\t %g (gC/m2)\n",pft->establish.carbon);
   }
-  fprintf(file,"gdd:\t\t%g\n",pft->gdd); 
+  fprintf(file,"gdd:\t\t%g\n",pft->gdd);
   /* Print type specific variables */
   pft->par->fprint(file,pft,with_nitrogen);
 } /* of 'fprintpft' */
