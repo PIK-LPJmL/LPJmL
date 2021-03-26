@@ -33,8 +33,7 @@
   "fastfrac" : 0.98,         /* fastfrac */
   "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
   "veg_equil_year" : 990,
-  "temp_response_a" : 56.02, /* Parameter in temperature response function */
-  "temp_response_b" : 46.02, /* Parameter in temperature response function */
+  "temp_response" : 46.02,   /* Parameter in temperature response function */
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
   "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */

@@ -44,15 +44,14 @@ void fprintparam(FILE *file,    /**< pointer to text file */
                "bioturbate:\t%g (1/yr)\n"
                "K_MORT:\t\t%g\n"
                "fpc_tree_max:\t%g\n"
-               "temp_response_a:\t%g\n"
-               "temp_response_b:\t%g\n",
+               "temp_response:\t%g\n",
           param.k_litter10*NDAYYEAR,param.k_soil10.fast*NDAYYEAR,
           param.k_soil10.slow*NDAYYEAR,param.maxsnowpack,param.soildepth_evap,
           param.soil_infil,param.co2_p,
           param.k,param.theta,param.alphac3,param.alphac4,
           param.r_growth,param.GM,param.ALPHAM,
           param.ko25,param.kc25,param.atmfrac,param.fastfrac,1-pow(1-param.bioturbate,NDAYYEAR),param.k_mort,
-          param.fpc_tree_max,param.temp_response_a,param.temp_response_b);
+          param.fpc_tree_max,param.temp_response);
   if(config->equilsoil)
     fprintf(file,"veg_equil_year:\t%d\n",param.veg_equil_year);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)

@@ -43,8 +43,7 @@ typedef struct
 
   Real k_mort;       /**< coefficient of growth efficiency in mortality equation (k_mort2) */
   Real fpc_tree_max; /**< maximum foliage projective cover for trees */
-  Real temp_response_a; /**< parameter in temperature response fucntion */
-  Real temp_response_b; /**< parameter in temperature response fucntion */
+  Real temp_response; /**< parameter in temperature response function */
   Real p;            /**< regression coefficent from Haxeltine and Prentice : N=p Vmax+n0 */
   Real n0;           /**< regression coefficient from Haxltine and Prentice */
   Real q_ash;        /**< fraction of nitrogen going to litter after fire */

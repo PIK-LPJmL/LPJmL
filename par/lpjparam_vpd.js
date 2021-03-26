@@ -38,8 +38,7 @@
   "k_max": 0.10,             /* k_max, maximum fraction of soil->NH4 assumed to be nitrifi
 ed Parton, 2001*/
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
-  "temp_response_a" : 66.02, /* Parameter in temperature response function */
-  "temp_response_b" : 56.02, /* Parameter in temperature response function */
+  "temp_response" : 56.02,   /* Parameter in temperature response function */
   "k_2": 0.02,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001
 */
   "p" : 25,                  /* Haxeltine & Prentice regression coefficient */
