@@ -162,7 +162,7 @@ static Bool write_short_cdf(const Cdf *cdf,const short vec[],int size)
   free(grid);
   if(rc!=NC_NOERR)
   {
-    fprintf(stderr,"ERRROR428: Cannot write output data: %s.\n",
+    fprintf(stderr,"ERROR428: Cannot write output data: %s.\n",
             nc_strerror(rc));
     return TRUE;
   }

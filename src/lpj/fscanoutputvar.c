@@ -19,11 +19,11 @@
 
 #define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verb)) return NULL;
 #define fscanfloat2(file,var,name,out) if(fscanfloat(file,var,name,TRUE,verb)){ \
-    if(verb) fprintf(stderr,"ERRROR229: Cannot read float '%s' for output '%s'.\n",name,out);\
+    if(verb) fprintf(stderr,"ERROR229: Cannot read float '%s' for output '%s'.\n",name,out);\
     return NULL;}
 #define fscanname(file,var,name,out) {              \
     if(fscanstring(file,var,name,FALSE,verb)) {                 \
-    if(verb) fprintf(stderr,"ERRROR229: Cannot read string '%s' for output '%s'.\n",name,out);\
+    if(verb) fprintf(stderr,"ERROR229: Cannot read string '%s' for output '%s'.\n",name,out);\
       return NULL;                              \
     }                                              \
   }
