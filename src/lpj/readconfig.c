@@ -29,7 +29,7 @@ static void closeconfig(LPJfile *file)
     json_object_put(file->file.obj);
   else
 #endif
-    pclose(file->file.file); 
+    pclose(file->file.file);
 } /* of 'closeconfig' */
 
 Bool readconfig(Config *config,        /**< LPJ configuration */
@@ -59,7 +59,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     return TRUE;
   verbosity=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   lpjfile.file.file=file;
-  lpjfile.isjson=FALSE; 
+  lpjfile.isjson=FALSE;
   if(fscanstring(&lpjfile,s,"sim_name",FALSE,verbosity))
   {
     if(verbosity)
@@ -88,8 +88,11 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     if(json_error!=json_tokener_success)
     {
       if(verbosity)
-        fprintf(stderr,"ERROR228: Cannot parse json file '%s' in line %d, %s.\n",
+      {
+        fprintf(stderr,"ERROR228: Cannot parse json file '%s' in line %d, %s:\n",
                 getfilename(),getlinecount()-1,(json_error==json_tokener_continue) ? "missing closing '}'" : json_tokener_error_desc(json_error));
+        fprintf(stderr,"%s:%d:%s",getfilename(),getlinecount()-1,line);
+      }
       json_object_put(lpjfile.file.obj);
       return TRUE;
     }
