@@ -64,8 +64,8 @@ bisco activity */
   "manure_rate" : 0,          /* default: 20; fixed manure application rate in gN/m2/yr */
   "mixing_efficiency" : 0.9,  /* mixing efficiency of tillage */
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
-  "temp_response_a" : 56.02, /* Parameter in temperature response function */
-  "temp_response_b" : 46.02, /* Parameter in temperature response function */
+  "temp_response" : 46.02,   /* Parameter in temperature response function */
+  "percthres" : 1.0,
   "lsuha" : 0.0,             /* livestock density */
   "aprec_lim" : 900,         /* annual prec limit for C3 threshold*/
   "irrig_threshold_c3_dry" : 0.8,     /* irrigation threshold C3, prec < aprec_lim */
