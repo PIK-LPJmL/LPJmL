@@ -61,7 +61,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     closeinput_netcdf(file.cdf);
   }
   else
-  {  
+  {
     file.bin.file=openinputfile(&header,&file.bin.swap,&config->sowing_cotton_rf_filename,headername,&version,&offset,FALSE,config);
     if(file.bin.file==NULL)
     {
@@ -214,14 +214,6 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
       fclose(file.bin.file);
       return TRUE;
     }
-    if(header.nbands!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR218: Number of bands=%d in ir harvest cotton data file '%s' is not 1.\n",
-                header.nbands,config->harvest_cotton_ir_filename.name);
-      fclose(file.bin.file);
-      return TRUE;
-    }
     if(fseek(file.bin.file,typesizes[header.datatype]*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
     {
       fprintf(stderr,"ERROR150: Cannot seek ir sowing cotton data file '%s' to position %d.\n",
@@ -281,6 +273,14 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     {
       if(isroot(*config))
         printfopenerr(config->harvest_cotton_ir_filename.name);
+      return TRUE;
+    }
+    if(header.nbands!=1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR218: Number of bands=%d in ir harvest cotton data file '%s' is not 1.\n",
+                header.nbands,config->harvest_cotton_ir_filename.name);
+      fclose(file.bin.file);
       return TRUE;
     }
     if(fseek(file.bin.file,typesizes[header.datatype]*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
