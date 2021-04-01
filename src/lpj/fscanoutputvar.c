@@ -104,7 +104,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     if(fscantimestep(&item,&outnames[index].timestep,verb))
     {
       if(verb)
-        fprintf(stderr,"ERRROR229: Cannot read int 'timestep' for output '%s'.\n",outnames[index].name);
+        fprintf(stderr,"ERROR229: Cannot read int 'timestep' for output '%s'.\n",outnames[index].name);
       return NULL;
     }
   }
@@ -112,7 +112,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     if(outnames[i].name==NULL)
     {
       if(verb)
-        fprintf(stderr,"ERRROR230: Output description not defined for index=%d in 'outputvar'\n",i);
+        fprintf(stderr,"ERROR230: Output description not defined for index=%d in 'outputvar'\n",i);
       return NULL;
     }
   return outnames;

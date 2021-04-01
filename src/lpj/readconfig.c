@@ -91,7 +91,8 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
       {
         fprintf(stderr,"ERROR228: Cannot parse json file '%s' in line %d, %s:\n",
                 getfilename(),getlinecount()-1,(json_error==json_tokener_continue) ? "missing closing '}'" : json_tokener_error_desc(json_error));
-        fprintf(stderr,"%s:%d:%s",getfilename(),getlinecount()-1,line);
+        if(json_error!=json_tokener_continue)
+          fprintf(stderr,"%s:%d:%s",getfilename(),getlinecount()-1,line);
       }
       json_object_put(lpjfile.file.obj);
       return TRUE;

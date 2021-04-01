@@ -181,7 +181,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     if(fscantimestep(&f,&filename->timestep,verb))
     {
       if(verb)
-        fputs("ERRROR229: Cannot read int 'timestep'.\n",stderr);
+        fputs("ERROR229: Cannot read int 'timestep'.\n",stderr);
       return TRUE;
     }
   }
