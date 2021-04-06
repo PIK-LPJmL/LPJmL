@@ -63,7 +63,6 @@
   "landuse" : "no",
   "reservoir" : false,
   "wateruse" : "no",
-  "equilsoil" : true,
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
@@ -142,7 +141,7 @@
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
-    { "id" : "fpc",              "file" : { "fmt" : "raw", "name" : "output/fpc.bin"}},
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
     { "id" : "npp",              "file" : { "fmt" : "raw", "name" : "output/mnpp.bin"}},
     { "id" : "gpp",              "file" : { "fmt" : "raw", "name" : "output/mgpp.bin"}},
     { "id" : "rh",               "file" : { "fmt" : "raw", "name" : "output/mrh.bin"}},
@@ -229,6 +228,11 @@ ID                               Fmt                        filename
 /*------------------------------ ------------------------- ------------------------------- */
   ],
 
+#else
+  output=
+  [
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
+  ],
 #endif
 
 /*===================================================================*/

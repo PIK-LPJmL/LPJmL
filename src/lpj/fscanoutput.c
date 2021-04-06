@@ -192,6 +192,13 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         if(flag>=D_LAI && flag<=D_PET)
           isdaily=TRUE;
         config->outputvars[count].id=flag;
+        if(flag==GLOBALFLUX && config->outputvars[count].filename.fmt!=TXT)
+        {
+          if(verbosity)
+            fprintf(stderr,"ERROR224: Invalid format '%s' for 'globalflux' output, only 'txt' allowed.\n",
+                    fmt[config->outputvars[count].filename.fmt]);
+          return TRUE;
+        }
         if(config->outputvars[count].filename.var!=NULL)
         {
           free(config->outnames[flag].var);

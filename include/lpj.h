@@ -121,6 +121,7 @@ extern void copyright(const char *);
 extern void printlicense(void);
 extern void help(const char *,const char *);
 extern void fprintflux(FILE *file,Flux,Real,int,const Config *);
+extern void fprintcsvflux(FILE *file,Flux,Real,int,const Config *);
 #ifdef USE_MPI
 extern void failonerror(const Config *,int,int,const char *);
 extern Bool iserror(int,const Config *);
@@ -132,5 +133,6 @@ extern Bool iserror(int,const Config *);
 /* Definition of macros */
 
 #define printflux(flux,total,year,config) fprintflux(stdout,flux,total,year,config)
+#define printcsvflux(flux,total,year,config) fprintcsvflux(stdout,flux,total,year,config)
 
 #endif

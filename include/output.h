@@ -55,6 +55,7 @@ typedef struct
 typedef struct
 {
   Real nep;      /**< Total NEP (gC) */
+  Real npp;      /**< Total NPP (gC) */
   Real fire;     /**< Total fire (gC) */
   Real estab;    /**< Total extablishment flux (gC) */
   Real harvest;  /**< Total harvested carbon (gC) */
@@ -81,7 +82,9 @@ typedef struct
   Real n_outflux;             /**< total N losses */
   Real anpp_flux;             /**< Total NPP (gC/yr) */
   Real excess_water;          /**< Exess water (dm3) */
-
+  Real soilc;                 /**< soil carbon (gC) */
+  Real litc;                  /**< litter carbon (gC) */
+  Real vegc;                  /**< vegetation carbon (gC) */
 } Flux;
 
 typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;

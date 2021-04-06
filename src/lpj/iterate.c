@@ -97,7 +97,7 @@ int iterate(Outputfile *output, /**< Output file data */
     if(config->fix_climate && year>config->fix_climate_year)
       year_co2=config->fix_climate_year;
     else
-      year_co2=year; 
+      year_co2=year;
     if(getco2(input.climate,&co2,year_co2)) /* get atmospheric CO2 concentration */
     {
       if(isroot(*config))
@@ -280,6 +280,8 @@ int iterate(Outputfile *output, /**< Output file data */
     {
       /* output of total carbon flux and water on stdout on root task */
       printflux(flux,cflux_total,year,config);
+      if(isopen(output,GLOBALFLUX))
+        fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,year,config);
       if(output->method==LPJ_SOCKET && output->socket!=NULL &&
          year>=config->outputyear)
         output_flux(output,flux);

@@ -46,7 +46,8 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           getnculttype.$O getextension.$O albedo_stand.$O phenology_gsi.$O\
           fscanphenparam.$O landcover.$O standstocks.$O nitrogen_stress.$O\
           f_lai.$O getsize.$O fprintoutputvar.$O isdailyoutput_natural.$O\
-          getngrassnat.$O fscancnratio.$O isnitrogen_output.$O initoutputdata.$O
+          getngrassnat.$O fscancnratio.$O isnitrogen_output.$O initoutputdata.$O\
+          fprintcsvflux.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
