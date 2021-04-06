@@ -281,7 +281,8 @@ int iterate(Outputfile *output, /**< Output file data */
       /* output of total carbon flux and water on stdout on root task */
       printflux(flux,cflux_total,year,config);
       if(isopen(output,GLOBALFLUX))
-        fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,year,config);
+        fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,
+                      config->outnames[GLOBALFLUX].scale,year,config);
       if(output->method==LPJ_SOCKET && output->socket!=NULL &&
          year>=config->outputyear)
         output_flux(output,flux);

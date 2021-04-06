@@ -19,49 +19,47 @@
 void fprintcsvflux(FILE *file,          /**< Output file pointer */
                    Flux flux,           /**< Carbon and water fluxes */
                    Real cflux_total,    /**< Total carbon flux  (gC) */
+                   Real scale,          /**< scaling factor */
                    int year,            /**< Simulation year (AD) */
                    const Config *config /**< LPJ configuration */
                   )
 {
-  Real convert;
-  if(config->ngridcell > 2) convert = 1e-15;
-     else convert = 1e-9;
   if(year==config->firstyear-config->nspinup)
   {
-    fputs("Year,NEP,estab",file);
+    fprintf(file,"Year,NEP(%ggC/yr),estab(%ggC/yr)",scale,scale);
     if(config->fire)
-      fputs(",fire",file);
+      fprintf(file,",fire(%ggC/yr)",scale);
     if(config->withlanduse!=NO_LANDUSE)
-      fputs(",harvest",file);
-    fputs(",total,NPP,transp,evap,interc",file);
+      fprintf(file,",harvest(%ggC/yr)",scale);
+    fprintf(file,",total(%ggC/yr),NPP(%ggC/yr),transp(%gdm3/yr),evap(%gdm3/yr),interc(%gdm3/yr)",scale,scale,scale,scale,scale);
     if(config->withlanduse!=NO_LANDUSE)
-      fputs(",wd",file);
+      fprintf(file,",wd(%gdm3/yr)",scale);
     if(config->river_routing)
-      fputs(",discharge",file);
-    fputs(",SoilC,Litc,VegC",file);
+      fprintf(file,",discharge(%gdm3/yr)",scale);
+    fprintf(file,",SoilC(%ggC),Litc(%ggC),VegC(%ggC)",scale,scale,scale);
     if(config->with_nitrogen)
-      fputs(",nuptake,ndemand,nlosses,ninflux",file);
+      fprintf(file,",nuptake(%ggN/yr),ndemand(%ggN/yr),nlosses(%ggN/yr),ninflux(%ggN/yr)",scale,scale,scale,scale);
     fputc('\n',file);
   }
   /* print data */
-  fprintf(file,"%d,%g,%g",year,flux.nep*convert,flux.estab*convert);
+  fprintf(file,"%d,%g,%g",year,flux.nep*scale,flux.estab*scale);
   if(config->fire)
-    fprintf(file,",%g",flux.fire*convert);
+    fprintf(file,",%g",flux.fire*scale);
   if(config->withlanduse!=NO_LANDUSE)
-    fprintf(file,",%g",flux.harvest*convert);
-  fprintf(file,",%g",cflux_total*convert);
-  fprintf(file,",%g", flux.npp*convert);
+    fprintf(file,",%g",flux.harvest*scale);
+  fprintf(file,",%g",cflux_total*scale);
+  fprintf(file,",%g", flux.npp*scale);
   fprintf(file,",%g,%g,%g",
-          flux.transp*convert,flux.evap*convert,flux.interc*convert);
+          flux.transp*scale,flux.evap*scale,flux.interc*scale);
   if(config->withlanduse!=NO_LANDUSE)
-    fprintf(file,",%g",flux.wd*convert);
+    fprintf(file,",%g",flux.wd*scale);
   if(config->river_routing)
-    fprintf(file,",%g",flux.discharge*convert);
-  fprintf(file,",%g", flux.soilc*convert);
-  fprintf(file,",%g", flux.litc*convert);
-  fprintf(file,",%g", flux.vegc*convert);
+    fprintf(file,",%g",flux.discharge*scale);
+  fprintf(file,",%g", flux.soilc*scale);
+  fprintf(file,",%g", flux.litc*scale);
+  fprintf(file,",%g", flux.vegc*scale);
   if(config->with_nitrogen)
-    fprintf(file,",%g,%g,%g,%g",flux.n_uptake*convert*1000,flux.n_demand*convert*1000,flux.n_outflux*convert*1000,
-    flux.n_influx*convert);
+    fprintf(file,",%g,%g,%g,%g",flux.n_uptake*scale,flux.n_demand*scale,flux.n_outflux*scale,
+            flux.n_influx*scale);
   fputc('\n',file);
 } /* of 'fprintcsvflux' */

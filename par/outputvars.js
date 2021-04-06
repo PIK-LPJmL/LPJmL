@@ -30,7 +30,7 @@
 [
   /* id           name   timestep       variable(NetCDF) description             unit               scale          offset */
   { "id" : GRID, "name" : "grid", "timestep" : "annual", "var" : "soil", "descr" : "coordinates", "unit" : "degree", "scale" : 1.0, "offset" : 0.0},
-  { "id" : GLOBALFLUX, "name" : "globalflux", "timestep" : "annual", "var" : "globalflux", "descr" : "global fluxes", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+  { "id" : GLOBALFLUX, "name" : "globalflux", "timestep" : "annual", "var" : "globalflux", "descr" : "global fluxes", "unit" : "", "scale" : 1.0e-15, "offset" : 0.0},
   { "id" : FPC, "name" : "fpc", "timestep" : "annual", "var" : "FPC", "descr" : "foliage projected cover", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : NPP, "name": "npp", "timestep" : "monthly", "var" : "NPP", "descr" : "monthly NPP", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : GPP, "name": "gpp", "timestep" : "monthly", "var" : "GPP", "descr" : "monthly GPP", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
