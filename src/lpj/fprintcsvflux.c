@@ -62,4 +62,5 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
     fprintf(file,",%g,%g,%g,%g",flux.n_uptake*scale,flux.n_demand*scale,flux.n_outflux*scale,
             flux.n_influx*scale);
   fputc('\n',file);
+  fflush(file);
 } /* of 'fprintcsvflux' */
