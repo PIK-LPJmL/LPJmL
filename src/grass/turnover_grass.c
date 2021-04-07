@@ -75,8 +75,8 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     {
       getoutput(output,FLUX_ESTABN,config)-=reprod*pft->stand->frac;
       pft->stand->cell->balance.flux_estab.nitrogen-=reprod*pft->stand->frac;
-      reprod=0;
       pft->establish.nitrogen-=reprod;
+      reprod=0;
     }
     litter->item[pft->litter].ag.leaf.nitrogen+=reprod;
     getoutput(output,LITFALLN,config)+=reprod*pft->stand->frac;
