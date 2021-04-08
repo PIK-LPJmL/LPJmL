@@ -46,6 +46,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.prod_turnover.slow.carbon=cell->balance.prod_turnover.slow.nitrogen=0;
   cell->balance.neg_fluxes.carbon=cell->balance.neg_fluxes.nitrogen=0;
   cell->balance.excess_water=0;
+  cell->balance.temp=0;
   cell->hydrotopes.wetland_wtable_mean=0;
   cell->hydrotopes.wtable_mean=0;
   if(config->double_harvest)

@@ -28,12 +28,12 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
      else convert = 1e-9;
   if(year==config->firstyear-config->nspinup)
   {
-    fputs("Year,NEP,estab",file);
+    fputs("Year,temp,NEP,estab",file);
     if(config->fire)
       fputs(",fire",file);
     if(config->withlanduse!=NO_LANDUSE)
       fputs(",harvest",file);
-    fputs(",total,NPP,transp,evap,interc",file);
+    fputs(",total,NPP,prec,transp,evap,interc",file);
     if(config->withlanduse!=NO_LANDUSE)
       fputs(",wd",file);
     if(config->river_routing)
@@ -44,13 +44,14 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
     fputc('\n',file);
   }
   /* print data */
-  fprintf(file,"%6d,%7.3f,%7.3f",year,flux.nep*convert,flux.estab*convert);
+  fprintf(file,"%6d,%7.2f,%7.3f,%7.3f",year,flux.temp,flux.nep*convert,flux.estab*convert);
   if(config->fire)
     fprintf(file,",%7.3f",flux.fire*convert);
   if(config->withlanduse!=NO_LANDUSE)
     fprintf(file,",%7.3f",flux.harvest*convert);
   fprintf(file,",%7.3f",cflux_total*convert);
   fprintf(file,",%7.3f", flux.anpp*convert);
+  fprintf(file,",%10.1f",flux.prec*convert);
   fprintf(file,",%10.1f,%7.1f,%7.1f",
           flux.transp*convert,flux.evap*convert,flux.interc*convert);
   if(config->withlanduse!=NO_LANDUSE)

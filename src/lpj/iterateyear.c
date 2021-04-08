@@ -177,6 +177,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
             daily.sun=0;
           /* get daily values for temperature, precipitation and sunshine */
           getoutput(&grid[cell].output,TEMP,config)+=daily.temp;
+          grid[cell].balance.temp+=daily.temp;
           getoutput(&grid[cell].output,PREC,config)+=daily.prec;
 
 #ifdef DEBUG

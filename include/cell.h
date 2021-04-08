@@ -94,6 +94,7 @@ typedef struct
   Real aCH4_sink;          /* mCH4_sink */
   Real aCH4_fire;
   Real aMT_water;          /* water produced during Methanogenesis */
+  Real temp;               /**< air temperature (celsius) */
 } Balance;
 
 typedef struct celldata *Celldata;

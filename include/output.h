@@ -87,6 +87,7 @@ typedef struct
   Real soilc;
   Real soilc_slow;
   Real vegc;
+  Real temp;                 /**< gobal average temperature (celsius) */
 } Flux;
 
 typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;

@@ -25,12 +25,13 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
   int s, p, l;
   Stand *stand;
   Pft *pft;
-  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   for(cell=0;cell<config->ngridcell;cell++)
   {
     if(!grid[cell].skip)
     {
       flux.area+=grid[cell].coord.area;
+      flux.temp+=grid[cell].balance.temp/NDAYYEAR*grid[cell].coord.area;
       flux.nep+=(grid[cell].balance.anpp-grid[cell].balance.arh)*grid[cell].coord.area;
       flux.anpp+=grid[cell].balance.anpp*grid[cell].coord.area;
       flux.fire+=(grid[cell].balance.fire.carbon+grid[cell].balance.flux_firewood.carbon)*grid[cell].coord.area;
@@ -94,5 +95,6 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
 #else
   *flux_global=flux;
 #endif
+  flux_global->temp/=flux_global->area;
   return flux_global->nep-flux_global->fire-flux_global->harvest+flux_global->estab;
 } /* of 'flux_sum' */
