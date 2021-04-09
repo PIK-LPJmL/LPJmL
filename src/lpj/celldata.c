@@ -84,7 +84,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     getcellsizecoord(&lon,&lat,celldata->soil.bin.file_coord);
     config->resolution.lon=lon;
     config->resolution.lat=lat;
-    if(isroot(*config) && config->nall>numcoord(celldata->soil.bin.file_coord))
+    if(config->nall>numcoord(celldata->soil.bin.file_coord))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR249: Number of cells in grid file '%s'=%d less than %d.\n",
