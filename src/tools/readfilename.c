@@ -117,6 +117,12 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
           readstringerr("scale");
         return TRUE;
       }
+      if(filename->scale==0)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR229: Scale must not be zero.\n");
+        return TRUE;
+      }
     }
     else
       filename->isscale=FALSE;

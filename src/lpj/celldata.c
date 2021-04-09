@@ -85,9 +85,13 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
     config->resolution.lon=lon;
     config->resolution.lat=lat;
     if(isroot(*config) && config->nall>numcoord(celldata->soil.bin.file_coord))
-      fprintf(stderr,
-              "WARNING003: Number of gridcells in '%s' distinct from %d.\n",
-              config->coord_filename.name,numcoord(celldata->soil.bin.file_coord));
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR249: Number of cells in grid file '%s'=%d less than %d.\n",
+                config->coord_filename.name,numcoord(celldata->soil.bin.file_coord),config->nall);
+      free(celldata);
+      return NULL;
+    }
 
     /* Open soiltype file */
     celldata->soil.bin.file=fopensoilcode(&config->soil_filename,
@@ -112,8 +116,6 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
                                             NULL,0,config);
       if(celldata->soilph.cdf==NULL)
       {
-        if(isroot(*config))
-          printfopenerr(config->soilph_filename.name);
         if(config->soil_filename.fmt==CDF)
           closecoord_netcdf(celldata->soil.cdf);
         else
@@ -133,8 +135,6 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
                                               &version,&celldata->soilph.bin.offset,FALSE,config);
       if(celldata->soilph.bin.file==NULL)
       {
-        if(isroot(*config))
-          printfopenerr(config->soilph_filename.name);
         if(config->soil_filename.fmt==CDF)
           closecoord_netcdf(celldata->soil.cdf);
         else

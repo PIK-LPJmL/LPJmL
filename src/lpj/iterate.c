@@ -160,10 +160,14 @@ int iterate(Outputfile *output, /**< Output file data */
         else
           climate_year=year;
 
-        if(getclimate(input.climate,grid,climate_year,config))
+        rc=getclimate(input.climate,grid,climate_year,config);
+        if(iserror(rc,config))
         {
-          fprintf(stderr,"ERROR104: Simulation stopped in getclimate().\n");
-          fflush(stderr);
+          if(isroot(*config))
+          {
+            fprintf(stderr,"ERROR104: Simulation stopped in getclimate().\n");
+            fflush(stderr);
+          }
           break; /* leave time loop */
         }
       }
@@ -249,7 +253,7 @@ int iterate(Outputfile *output, /**< Output file data */
       {
         if(isroot(*config))
         {
-          fprintf(stderr,"ERROR104: Simulation stopped in getpopdens().\n");
+          fprintf(stderr,"ERROR104: Simulation stopped in readpopdens().\n");
           fflush(stderr);
         }
         break; /* leave time loop */

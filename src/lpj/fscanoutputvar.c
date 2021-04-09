@@ -99,6 +99,12 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     checkptr(outnames[index].unit);
     outnames[index].scale=1.0;
     fscanfloat2(&item,&outnames[index].scale,"scale",outnames[index].name);
+    if(outnames[index].scale==0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR229: Scale for output '%s' must not be zero.\n",outnames[index].name);
+      return NULL;
+    }
     outnames[index].offset=0.0;
     fscanfloat2(&item,&outnames[index].offset,"offset",outnames[index].name);
     if(fscantimestep(&item,&outnames[index].timestep,verb))
