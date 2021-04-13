@@ -20,6 +20,7 @@ typedef struct
 {
   Real fac,co2,temp,apar,daylength,tstress,b,vmax;
   int path;
+  Bool compvm;
 } Data;
 
 static Real fcn(Real lambda,Data *data)
@@ -35,7 +36,7 @@ static Real fcn(Real lambda,Data *data)
   return data->fac*(1-lambda)-photosynthesis(&agd,&rd,&data->vmax,data->path,lambda,
                                              data->tstress,data->b,data->co2,
                                              data->temp,data->apar,
-                                             data->daylength,FALSE);
+                                             data->daylength,data->compvm);
 /*
  *              Calculate total daytime photosynthesis implied by
  *              canopy conductance from water balance routine and
@@ -203,12 +204,13 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     data.temp=temp;
     data.b=pft->par->b;
     data.co2=ppm2Pa(co2);
+    data.compvm=FALSE;
     data.apar=par*(1-getpftpar(pft, albedo_leaf))*alphaa(pft,config->with_nitrogen,config->laimax_interpolate)*fpar(pft); /** par calculation do not include albedo*/
     data.daylength=daylength;
     data.vmax=pft->vmax;
     lambda=bisect((Bisectfcn)fcn,0.02,LAMBDA_OPT+0.05,&data,0,EPSILON,30,&iter);
     adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
-                         temp,data.apar,daylength,FALSE);
+                         temp,data.apar,daylength,TRUE);
     if(config->with_nitrogen)
     {
       vmax=pft->vmax;
@@ -221,6 +223,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
       gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                     pft->par->gmin*fpar(pft);
       demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
+      data.compvm=FALSE;
       if(gc_new-gc>0.01 &&  demand-supply_pft>0.1)
       {
         gc=(param.GM*param.ALPHAM)*supply_pft/((1.0-*wet)*eeq*param.ALPHAM-supply_pft);
@@ -239,15 +242,17 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
       aet=(wr>0) ? demand*fpar(pft)/wr :0 ;
 
       if(vmax>epsilon)
-        pft->nlimit+=pft->vmax/vmax;
-      if(pft->stand->type->landusetype==AGRICULTURE)
       {
-        irrig=pft->stand->data;
-        if( pft->par->id==config->crop_index &&
-           irrig->irrigation==config->crop_irrigation &&
-           vmax>0)
+        pft->nlimit+=pft->vmax/vmax;
+        if(pft->stand->type->landusetype==AGRICULTURE)
         {
-          getoutput(&pft->stand->cell->output,D_NLIMIT,config)=pft->vmax/vmax;
+          irrig=pft->stand->data;
+          if( pft->par->id==config->crop_index &&
+             irrig->irrigation==config->crop_irrigation &&
+             vmax>0)
+          {
+            getoutput(&pft->stand->cell->output,D_NLIMIT,config)=pft->vmax/vmax;
+          }
         }
       }
     } /* of if(config->with_nitrogen) */

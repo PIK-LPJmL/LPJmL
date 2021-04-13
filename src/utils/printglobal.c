@@ -74,8 +74,8 @@ int main(int argc,char **argv)
       {
         if(iarg==argc-1)
         {
-           fputs("Argument missing after '-cellsize' option.\n"
-                 USAGE,stderr);
+           fprintf(stderr,"Missing argument after option '-cellsize'.\n"
+                   USAGE,argv[0]);
            return EXIT_FAILURE;
         }
         resolution.lon=resolution.lat=strtod(argv[++iarg],&endptr);

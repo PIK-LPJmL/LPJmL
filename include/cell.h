@@ -51,6 +51,7 @@
 typedef struct
 {
   Real anpp;                /**< annual NPP (gC/m2) */
+  Real agpp;                /**< annual GPP (gC/m2) */
   Real arh;                 /**< annual heterotrophic respiration (gC/m2) */
   Real awater_flux;         /**< annual water flux (mm) */
   Real aprec;               /**< annual precipitation (mm) */
@@ -141,7 +142,7 @@ Received 19 November 1997; accepted 15 January 1999*/
   Hydrotope hydrotopes;
   Balance balance;          /**< balance checks */
   Seed seed;                /**< seed for random generator */
-#if defined IMAGE || defined INCLUDEWP
+#if defined IMAGE && defined COUPLED
   Real npp_nat;             /**< NPP natural stand */
   Real npp_wp;              /**< NPP woodplantation */
   Real npp_grass;           /**< NPP woodplantation */

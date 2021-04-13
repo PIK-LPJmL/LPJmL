@@ -43,7 +43,7 @@ Real temp_response(Real temp, /**< air or soil temperature (deg C) */
   gtemp = (temp >= -20.0) ? pow(Q10, (temp - temp_mean) / 10) : 0.0;
 #else
   if (temp>40) temp = 40;
-  gtemp = (temp >= -20.0) ? exp(e0*(1.0 / 70.02 - 1.0 / (temp + 60.02))) : 0.0;
+  gtemp= (temp>=-20.0) ? exp(e0*(1.0/(param.temp_response+10)-1.0/(temp+param.temp_response))) : 0.0;
 #endif
   return gtemp;
 } /* of 'temp_response' */

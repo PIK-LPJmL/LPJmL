@@ -19,11 +19,11 @@
 
 #define fscanint2(file,var,name) if(fscanint(file,var,name,FALSE,verb)) return NULL;
 #define fscanfloat2(file,var,name,out) if(fscanfloat(file,var,name,TRUE,verb)){ \
-    if(verb) fprintf(stderr,"ERRROR229: Cannot read float '%s' for output '%s'.\n",name,out);\
+    if(verb) fprintf(stderr,"ERROR229: Cannot read float '%s' for output '%s'.\n",name,out);\
     return NULL;}
 #define fscanname(file,var,name,out) {              \
     if(fscanstring(file,var,name,FALSE,verb)) {                 \
-    if(verb) fprintf(stderr,"ERRROR229: Cannot read string '%s' for output '%s'.\n",name,out==NULL ? "N/A" : out);\
+    if(verb) fprintf(stderr,"ERROR229: Cannot read string '%s' for output '%s'.\n",name,out==NULL ? "N/A" : out);\
       return NULL;                              \
     }                                              \
   }
@@ -99,12 +99,18 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     checkptr(outnames[index].unit);
     outnames[index].scale=1.0;
     fscanfloat2(&item,&outnames[index].scale,"scale",outnames[index].name);
+    if(outnames[index].scale==0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR229: Scale for output '%s' must not be zero.\n",outnames[index].name);
+      return NULL;
+    }
     outnames[index].offset=0.0;
     fscanfloat2(&item,&outnames[index].offset,"offset",outnames[index].name);
     if(fscantimestep(&item,&outnames[index].timestep,verb))
     {
-      if(verb) 
-        fprintf(stderr,"ERRROR229: Cannot read int 'timestep' for output '%s'.\n",outnames[index].name);
+      if(verb)
+        fprintf(stderr,"ERROR229: Cannot read int 'timestep' for output '%s'.\n",outnames[index].name);
       return NULL;
     }
   }
@@ -112,7 +118,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     if(outnames[i].name==NULL)
     {
       if(verb)
-        fprintf(stderr,"ERRROR230: Output description not defined for index=%d in 'outputvar'\n",i);
+        fprintf(stderr,"ERROR230: Output description not defined for index=%d in 'outputvar'\n",i);
       return NULL;
     }
   return outnames;

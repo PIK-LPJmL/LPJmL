@@ -54,7 +54,9 @@ typedef struct
 
 typedef struct
 {
-  Real nep;      /**< Total NEP (gC) */
+  Real npp;      /**< Total NPP (gC) */
+  Real gpp;      /**< Total GPP (gC) */
+  Real rh;       /**< Total heterotrophic respiration (gC) */
   Real fire;     /**< Total fire (gC) */
   Real estab;    /**< Total extablishment flux (gC) */
   Real harvest;  /**< Total harvested carbon (gC) */
@@ -84,9 +86,10 @@ typedef struct
   Real aCH4_emissions;         /* Total Emissions (gCH4/yr)) positive and negative*/
   Real aCH4_sink;
   Real aCH4_fire;
-  Real soilc;
+  Real soilc;                 /**< soil carbon (gC) */
   Real soilc_slow;
-  Real vegc;
+  Real litc;                  /**< litter carbon (gC) */
+  Real vegc;                  /**< vegetation carbon (gC) */
   Real temp;                 /**< gobal average temperature (celsius) */
 } Flux;
 

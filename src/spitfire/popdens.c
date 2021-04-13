@@ -31,11 +31,11 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
   String headername;
   int i,version;
   size_t offset;
- 
+
   if(config->popdens_filename.name==NULL)
     return NULL;
   popdens=new(struct popdens);
-  if(popdens==NULL)  
+  if(popdens==NULL)
     return NULL;
   popdens->file.fmt=config->popdens_filename.fmt;
   if(config->popdens_filename.fmt==CDF)
@@ -47,7 +47,7 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
     }
   }
   else
-  { 
+  {
     if((popdens->file.file=openinputfile(&header,&popdens->file.swap,
                                          &config->popdens_filename,
                                          headername,
@@ -77,6 +77,9 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
     free(popdens);
     return NULL;
   }
+  if(isroot(*config) && config->lastyear>popdens->file.firstyear+popdens->file.nyear-1)
+    fprintf(stderr,"WARNING024: Last year in popdens data file=%d is less than last simulation year %d, data from last year used.\n",
+            popdens->file.firstyear+popdens->file.nyear-1,config->lastyear);
 
   popdens->file.n=config->ngridcell;
   if((popdens->npopdens=newvec(Real,popdens->file.n))==NULL)

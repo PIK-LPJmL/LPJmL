@@ -110,8 +110,8 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   }
   fscanparamreal(&f,&param.k_mort,"k_mort");
   fscanparamreal01(&f,&param.fpc_tree_max,"fpc_tree_max");
-  fscanparamreal(&f,&param.temp_response_a,"temp_response_a");
-  fscanparamreal(&f,&param.temp_response_b,"temp_response_b");
+  fscanparamreal(&f,&param.temp_response,"temp_response");
+  fscanparamreal01(&f,&param.percthres,"percthres");
   if(config->with_nitrogen)
   {
     fscanparamreal(&f,&param.k_max,"k_max");

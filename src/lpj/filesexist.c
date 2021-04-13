@@ -206,7 +206,8 @@ static int checksoilfile(Config *config,const Filename *filename)
     return 1;
   if(size<config->nall+config->firstgrid)
   {
-    fprintf(stderr,"File '%s' too short.\n",filename->name);
+    fprintf(stderr,"Number of cells=%d in soil code file '%s' too short, must be %d.\n",
+            size,filename->name,config->nall+config->firstgrid);
     return 1;
   }
   return 0;

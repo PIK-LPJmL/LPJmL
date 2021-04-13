@@ -109,6 +109,13 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
   if(iskeydefined(file,"sla"))
   {
     fscanreal2(verb,file,&pft->sla,pft->name,"sla");
+    if(pft->sla<=0)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR235: SLA=%g must be greater than zero for PFT '%s'.\n",
+                pft->sla,pft->name);
+      return TRUE;
+    }
   }
   else
     pft->sla=2e-4*pow(10,2.25-0.4*log(pft->longevity*12)/log(10))/CCpDM;
@@ -122,7 +129,8 @@ Bool fscanpft_grass(LPJfile *file, /**< pointer to LPJ file */
     if(grass->ratio<=0)
     {
       if(verb)
-        fprintf(stderr,"ERROR235: Grass ratio=%g must be greater than zero.\n",grass->ratio);
+        fprintf(stderr,"ERROR235: Grass ratio=%g must be greater than zero for PFT '%s'.\n",
+                grass->ratio,pft->name);
       return TRUE;
     }
   }

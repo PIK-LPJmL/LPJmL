@@ -95,7 +95,7 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
   rainmelt = climate->prec + melt;
   if (rainmelt < 0)
     rainmelt = 0.0;
-  
+
   nnat=getnnat(npft,config);
   index=agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+data->irrigation*getnirrig(ncft,config);
 
@@ -190,6 +190,8 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
       }
     }
     npp = npp_grass(pft, gtemp_air, gtemp_soil, gpp - rd,config->with_nitrogen);
+    stand->cell->balance.anpp+=npp*stand->frac;
+    stand->cell->balance.agpp+=gpp*stand->frac;
     getoutput(output,NPP,config) += npp * stand->frac;
     output->dcflux -= npp * stand->frac;
     getoutput(output,GPP,config) += gpp * stand->frac;

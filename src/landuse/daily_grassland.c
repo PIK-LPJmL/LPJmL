@@ -243,6 +243,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     stand->cell->npp_grass+=npp*stand->frac;
 #endif
     stand->cell->balance.anpp+=npp*stand->frac;
+    stand->cell->balance.agpp+=gpp*stand->frac;
     output->dcflux-=npp*stand->frac;
     getoutput(output,GPP,config)+=gpp*stand->frac;
     getoutput(output,FAPAR,config)+= pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));

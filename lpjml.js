@@ -35,7 +35,7 @@
   "version"  : "6.0",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
-  "radiation" : "radiation",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
+  "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */
   "fire" : "fire",          /* fire disturbance enabled, other options: NO_FIRE, FIRE, SPITFIRE, SPITFIRE_TMAX (for GLDAS input data) */
   "fdi" : "nesterov",       /* different fire danger index formulations: "wvpd" (needs GLDAS input data), "nesterov" */
   "firewood" : false,
@@ -65,7 +65,6 @@
   "landuse" : "no",
   "reservoir" : false,
   "wateruse" : "no",
-  "equilsoil" : true,
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
@@ -85,7 +84,7 @@
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
-  "fertilizer_input" : "yes",           /* enable fertilizer input, other options: "no", "yes", "other" */
+  "fertilizer_input" : "yes",           /* enable fertilizer input, other options: "no", "yes", "auto" */
   "manure_input" : true,                /* enable manure input */
   "fix_fertilization" : false,          /* fix fertilizer input */
   "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */
@@ -144,7 +143,7 @@
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
-    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_transient.csv"}},
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
     { "id" : "fpc",              "file" : { "fmt" : "raw", "name" : "output/fpc.bin"}},
     { "id" : "wpc",              "file" : { "fmt" : "raw", "name" : "output/wpc.bin"}},
     { "id" : "npp",              "file" : { "fmt" : "raw", "name" : "output/mnpp.bin"}},
@@ -244,7 +243,7 @@ ID                               Fmt                        filename
 #else
   "output" :
   [
-    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}}
+    { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
   ],
 #endif
 

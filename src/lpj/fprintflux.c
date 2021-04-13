@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#define LINES_PER_HEADER 25 
+#define LINES_PER_HEADER 25
 
 void fprintflux(FILE *file,          /**< Output file pointer */
                 Flux flux,           /**< Carbon and water fluxes */
@@ -30,7 +30,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
   if(config->ngridcell > 2) convert = 1e-15;
     else convert = 1e-9;
   if((year<config->firstyear &&
-     (year-config->firstyear+config->nspinup) % LINES_PER_HEADER==0) || 
+     (year-config->firstyear+config->nspinup) % LINES_PER_HEADER==0) ||
      (year>=config->firstyear && (year-config->firstyear) % LINES_PER_HEADER==0))
   {
     /* print header */
@@ -101,7 +101,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     fputc('\n',file);
   }
   /* print data */
-  fprintf(file,"%6d %7.3f %7.3f",year,flux.nep*convert,flux.estab*convert);
+  fprintf(file,"%6d %7.3f %7.3f",year,(flux.npp-flux.rh)*convert,flux.estab*convert);
   if(config->fire)
     fprintf(file," %7.3f",flux.fire*convert);
   if(config->withlanduse!=NO_LANDUSE)

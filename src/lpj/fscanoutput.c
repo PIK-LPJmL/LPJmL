@@ -184,7 +184,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       else if(config->outputvars[count].filename.fmt==CLM2)
       {
         if(verbosity)
-          fprintf(stderr,"ERRROR223: File format CLM2 is not supported for output file '%s'.\n",
+          fprintf(stderr,"ERROR223: File format CLM2 is not supported for output file '%s'.\n",
                   config->outputvars[count].filename.name);
       }
       else
@@ -192,6 +192,13 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         if(flag>=D_LAI && flag<=D_PET)
           isdaily=TRUE;
         config->outputvars[count].id=flag;
+        if(flag==GLOBALFLUX && config->outputvars[count].filename.fmt!=TXT)
+        {
+          if(verbosity)
+            fprintf(stderr,"ERROR224: Invalid format '%s' for 'globalflux' output, only 'txt' allowed.\n",
+                    fmt[config->outputvars[count].filename.fmt]);
+          return TRUE;
+        }
         if(config->outputvars[count].filename.var!=NULL)
         {
           free(config->outnames[flag].var);
@@ -219,13 +226,13 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         if(config->outputvars[count].oneyear && checkfmt(config->outputvars[count].filename.name,'d'))
         {
           if(verbosity)
-            fprintf(stderr,"ERRROR224: Invalid format specifier in filename '%s'.\n",
+            fprintf(stderr,"ERROR224: Invalid format specifier in filename '%s'.\n",
                     config->outputvars[count].filename.name);
         }
         else if(config->outputvars[count].oneyear && (flag==GRID || flag==COUNTRY || flag==REGION || flag==GLOBALFLUX))
         {
           if(verbosity)
-            fprintf(stderr,"ERRROR225: One year output not allowed for grid, country or region.\n");
+            fprintf(stderr,"ERROR225: One year output not allowed for grid, country or region.\n");
         }
         else
         {

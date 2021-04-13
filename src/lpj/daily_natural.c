@@ -183,6 +183,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     }
 #endif
     stand->cell->balance.anpp+=npp*stand->frac;
+    stand->cell->balance.agpp+=gpp*stand->frac;
     getoutput(output,NPP,config)+=npp*stand->frac;
     getoutput(output,GPP,config)+=gpp*stand->frac;
     getoutput(output,FAPAR,config) += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
