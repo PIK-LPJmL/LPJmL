@@ -303,6 +303,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
                  !config->crop_resp_fix,config);
     getoutput(output,NPP,config)+=npp*stand->frac;
     stand->cell->balance.anpp+=npp*stand->frac;
+    stand->cell->balance.agpp+=gpp*stand->frac;
     getoutput(output,NPP_AGR,config) += npp*stand->frac / agrfrac;
     output->dcflux-=npp*stand->frac;
     getoutput(output,GPP,config)+=gpp*stand->frac;
@@ -415,7 +416,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
       forrootsoillayer(l)
         getoutput(output,D_TRANS,config)+=aet_stand[l];
       getoutput(output,D_PET,config)=eeq*PRIESTLEY_TAYLOR;
-      /* if there are already values from the setaside stand, which does not know if there's the cropstand of interest 
+      /* if there are already values from the setaside stand, which does not know if there's the cropstand of interest
          these values are overwritten here */
       if(getoutput(output,D_NH4,config)>0) getoutput(output,D_NH4,config)=0;
       if(getoutput(output,D_NO3,config)>0) getoutput(output,D_NO3,config)=0;

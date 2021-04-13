@@ -54,8 +54,9 @@ typedef struct
 
 typedef struct
 {
-  Real nep;      /**< Total NEP (gC) */
   Real npp;      /**< Total NPP (gC) */
+  Real gpp;      /**< Total GPP (gC) */
+  Real rh;       /**< Total heterotrophic respiration (gC) */
   Real fire;     /**< Total fire (gC) */
   Real estab;    /**< Total extablishment flux (gC) */
   Real harvest;  /**< Total harvested carbon (gC) */

@@ -26,7 +26,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
 {
   if(year==config->firstyear-config->nspinup)
   {
-    fprintf(file,"Year,NEP(%ggC/yr),estab(%ggC/yr)",1/scale,1/scale);
+    fprintf(file,"Year,NEP(%ggC/yr),GPP(%gC/yr),NPP(%gC/yr),RH(%gC/yr),estab(%ggC/yr)",1/scale,1/scale,1/scale,1/scale,1/scale);
     if(config->fire)
       fprintf(file,",fire(%ggC/yr)",1/scale);
     if(config->withlanduse!=NO_LANDUSE)
@@ -42,7 +42,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
     fputc('\n',file);
   }
   /* print data */
-  fprintf(file,"%d,%g,%g",year,flux.nep*scale,flux.estab*scale);
+  fprintf(file,"%d,%g,%g,%g,%g,%g",year,(flux.npp-flux.rh)*scale,flux.gpp*scale,flux.npp*scale,flux.rh*scale,flux.estab*scale);
   if(config->fire)
     fprintf(file,",%g",flux.fire*scale);
   if(config->withlanduse!=NO_LANDUSE)

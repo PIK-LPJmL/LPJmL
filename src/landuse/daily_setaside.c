@@ -138,6 +138,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
     output->npp+=npp*stand->frac;
     output->npp_agr += npp*stand->frac / agrfrac;
     stand->cell->balance.anpp+=npp*stand->frac;
+    stand->cell->balance.agpp+=gpp*stand->frac;
     output->dcflux-=npp*stand->frac;
     output->gpp+=gpp*stand->frac;
     output->fapar += pft->fapar * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
