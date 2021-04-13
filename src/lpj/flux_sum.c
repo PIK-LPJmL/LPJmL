@@ -90,5 +90,5 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
 #else
   *flux_global=flux;
 #endif
-  return flux_global->npp-flux_global->fire-flux_global->harvest+flux_global->estab;
+  return flux_global->npp-flux_global->rh-flux_global->fire-flux_global->harvest+flux_global->estab;
 } /* of 'flux_sum' */
