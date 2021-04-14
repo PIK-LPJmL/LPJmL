@@ -26,19 +26,32 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
 {
   if(year==config->firstyear-config->nspinup)
   {
-    fprintf(file,"Year,NEP(%ggC/yr),GPP(%gC/yr),NPP(%gC/yr),RH(%gC/yr),estab(%ggC/yr)",1/scale,1/scale,1/scale,1/scale,1/scale);
+    fprintf(file,"Year,NEP,GPP,NPP,RH,estab");
     if(config->fire)
-      fprintf(file,",fire(%ggC/yr)",1/scale);
+      fprintf(file,",fire");
     if(config->withlanduse!=NO_LANDUSE)
-      fprintf(file,",harvest(%ggC/yr)",1/scale);
-    fprintf(file,",total(%ggC/yr),transp(%gdm3/yr),evap(%gdm3/yr),interc(%gdm3/yr)",1/scale,1/scale,1/scale,1/scale,1/scale);
+      fprintf(file,",harvest");
+    fprintf(file,",total,transp,evap,interc");
     if(config->withlanduse!=NO_LANDUSE)
-      fprintf(file,",wd(%gdm3/yr)",1/scale);
+      fprintf(file,",wd");
     if(config->river_routing)
-      fprintf(file,",discharge(%gdm3/yr)",1/scale);
-    fprintf(file,",prec(%gdm3/yr),SoilC(%ggC),Litc(%ggC),VegC(%ggC)",1/scale,1/scale,1/scale,1/scale);
+      fprintf(file,",discharge");
+    fprintf(file,",prec,SoilC,Litc,VegC");
     if(config->with_nitrogen)
-      fprintf(file,",nuptake(%ggN/yr),ndemand(%ggN/yr),nlosses(%ggN/yr),ninflux(%ggN/yr)",1/scale,1/scale,1/scale,1/scale);
+      fprintf(file,",nuptake,ndemand,nlosses,ninflux");
+    fprintf(file,"\n(AD),(%g gC/yr),(%g gC/yr),(%g gC/yr),(%g gC/yr),(%g gC/yr)",1/scale,1/scale,1/scale,1/scale,1/scale);
+    if(config->fire)
+      fprintf(file,",(%g gC/yr)",1/scale);
+    if(config->withlanduse!=NO_LANDUSE)
+      fprintf(file,",(%g gC/yr)",1/scale);
+    fprintf(file,",(%g gC/yr),(%g dm3/yr),(%g dm3/yr),(%g dm3/yr)",1/scale,1/scale,1/scale,1/scale);
+    if(config->withlanduse!=NO_LANDUSE)
+      fprintf(file,",(%g dm3/yr)",1/scale);
+    if(config->river_routing)
+      fprintf(file,",(%g dm3/yr)",1/scale);
+    fprintf(file,",(%g dm3/yr),(%g gC),(%g gC),(%g gC)",1/scale,1/scale,1/scale,1/scale);
+    if(config->with_nitrogen)
+      fprintf(file,",(%g gN/yr),(%g gN/yr),(%g gN/yr),(%g gN/yr)",1/scale,1/scale,1/scale,1/scale);
     fputc('\n',file);
   }
   /* print data */
@@ -55,9 +68,9 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
   if(config->river_routing)
     fprintf(file,",%g",flux.discharge*scale);
   fprintf(file,",%g",flux.prec*scale);
-  fprintf(file,",%g", flux.soilc*scale);
-  fprintf(file,",%g", flux.litc*scale);
-  fprintf(file,",%g", flux.vegc*scale);
+  fprintf(file,",%g",flux.soilc*scale);
+  fprintf(file,",%g",flux.litc*scale);
+  fprintf(file,",%g",flux.vegc*scale);
   if(config->with_nitrogen)
     fprintf(file,",%g,%g,%g,%g",flux.n_uptake*scale,flux.n_demand*scale,flux.n_outflux*scale,
             flux.n_influx*scale);
