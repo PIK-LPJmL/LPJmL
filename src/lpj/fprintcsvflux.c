@@ -31,7 +31,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
       fprintf(file,",fire(%ggC/yr)",1/scale);
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,",harvest(%ggC/yr)",1/scale);
-    fprintf(file,",total(%ggC/yr),NPP(%ggC/yr),transp(%gdm3/yr),evap(%gdm3/yr),interc(%gdm3/yr)",1/scale,1/scale,1/scale,1/scale,1/scale);
+    fprintf(file,",total(%ggC/yr),transp(%gdm3/yr),evap(%gdm3/yr),interc(%gdm3/yr)",1/scale,1/scale,1/scale,1/scale,1/scale);
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,",wd(%gdm3/yr)",1/scale);
     if(config->river_routing)
@@ -48,7 +48,6 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
   if(config->withlanduse!=NO_LANDUSE)
     fprintf(file,",%g",flux.harvest*scale);
   fprintf(file,",%g",cflux_total*scale);
-  fprintf(file,",%g", flux.npp*scale);
   fprintf(file,",%g,%g,%g",
           flux.transp*scale,flux.evap*scale,flux.interc*scale);
   if(config->withlanduse!=NO_LANDUSE)
