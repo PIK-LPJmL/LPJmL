@@ -50,7 +50,7 @@ Real deadfuel_consumption(const Litter *litter, /* litter pools */
 
   /*1000hr fuel consumption, not influencing rate of spread or I_surface (Rothermel 1972)*/
   /*Approximate form. No data. */
-  fuel->deadfuel_consum[3]=(-0.8*fuel->mw_weight+0.8);
+  fuel->deadfuel_consum[3]=(-0.8*fuel->mw_weight+0.8)*(1.0-MINER_TOT)*fire_frac;
 
   /* total fuel consumption (without 1000hr fuel) in g Biomass per m2 i.e. "/0.45"!!!
    * Used to calculate fire intensity in the FLAMING FRONT.
