@@ -163,7 +163,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
       if(soil->cn_ratio<=0)
       {
         if(verb)
-          fprintf(stderr,"ERROR199: CN ratio=%g must not be greater than zero for soil '%s'.\n",
+          fprintf(stderr,"ERROR199: CN ratio=%g must not be less than zero for soil '%s'.\n",
                   soil->cn_ratio,soil->name);
         return 0;
       }
