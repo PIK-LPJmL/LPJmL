@@ -65,6 +65,24 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
               param.k_soil10.fast);
     return TRUE;
   }
+  if(config->with_nitrogen)
+  {
+    fscanparampoolpar(&f,&param.init_soiln,"init_soiln");
+    if(param.init_soiln.slow<=0)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR234: Parameter 'init_soiln.slow'=%g must be greater than zero.\n",
+                param.init_soiln.slow);
+      return TRUE;
+    }
+    if(param.init_soiln.fast<=0)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR234: Parameter 'init_soiln.fast'=%g must be greater than zero.\n",
+                param.init_soiln.fast);
+      return TRUE;
+    }
+  }
   fscanparamreal(&f,&param.maxsnowpack,"maxsnowpack");
   fscanparamreal(&f,&param.soildepth_evap,"soildepth_evap");
   fscanparamreal(&f,&param.soil_infil,"soil_infil");

@@ -72,11 +72,14 @@ void fprintparam(FILE *file,    /**< pointer to text file */
             "T_m:\t\t%g (deg C)\n"
             "T_0:\t\t%g (deg C)\n"
             "T_r:\t\t%g (deg C)\n"
+            "init_soiln:\t%g %g (gN/m2)\n"
             "fertilizer rate:\t%g (gN/m2/yr)\n"
             "par_sink_limit:\t%g\n",
             param.k_max,param.k_2,param.p,param.n0,param.k_temp,
             param.min_c_bnf,param.q_ash,param.sapwood_recovery,param.T_m,
-            param.T_0,param.T_r,param.fertilizer_rate,param.par_sink_limit);
+            param.T_0,param.T_r,
+            param.init_soiln.fast,param.init_soiln.slow,
+            param.fertilizer_rate,param.par_sink_limit);
   if(config->withlanduse!=NO_LANDUSE)
   {
     if(config->with_nitrogen)
