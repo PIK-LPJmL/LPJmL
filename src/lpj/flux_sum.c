@@ -64,11 +64,11 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       {
         flux.litc+=litter_ag_sum(&stand->soil.litter)*stand->frac*grid[cell].coord.area;
         for (p = 0; p<stand->soil.litter.n; p++)
-          flux.soilc+=(float)(stand->soil.litter.item[p].bg.carbon*stand->frac)*grid[cell].coord.area;
+          flux.soilc+=stand->soil.litter.item[p].bg.carbon*stand->frac*grid[cell].coord.area;
         forrootsoillayer(l)
-          flux.soilc+=(float)((stand->soil.pool[l].fast.carbon+stand->soil.pool[l].slow.carbon)*stand->frac*grid[cell].coord.area);
+          flux.soilc+=(stand->soil.pool[l].fast.carbon+stand->soil.pool[l].slow.carbon)*stand->frac*grid[cell].coord.area;
         foreachpft(pft,p,&stand->pftlist)
-          flux.vegc+=(float)(vegc_sum(pft)*stand->frac)*grid[cell].coord.area;
+          flux.vegc+=vegc_sum(pft)*stand->frac*grid[cell].coord.area;
       }
 
     }
