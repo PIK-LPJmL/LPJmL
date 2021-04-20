@@ -24,7 +24,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
   int cell,s,p,l;
   Stand *stand;
   Pft *pft;
-  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   for(cell=0;cell<config->ngridcell;cell++)
   {
     if(!grid[cell].skip)
@@ -66,7 +66,10 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
         for (p = 0; p<stand->soil.litter.n; p++)
           flux.soilc+=stand->soil.litter.item[p].bg.carbon*stand->frac*grid[cell].coord.area;
         forrootsoillayer(l)
+        {
           flux.soilc+=(stand->soil.pool[l].fast.carbon+stand->soil.pool[l].slow.carbon)*stand->frac*grid[cell].coord.area;
+          flux.soilc_slow+=stand->soil.pool[l].slow.carbon*stand->frac*grid[cell].coord.area;
+        }
         foreachpft(pft,p,&stand->pftlist)
           flux.vegc+=vegc_sum(pft)*stand->frac*grid[cell].coord.area;
       }

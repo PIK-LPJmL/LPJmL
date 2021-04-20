@@ -84,6 +84,7 @@ typedef struct
   Real anpp_flux;             /**< Total NPP (gC/yr) */
   Real excess_water;          /**< Exess water (dm3) */
   Real soilc;                 /**< soil carbon (gC) */
+  Real soilc_slow;            /**< slow soil carbon (gC) */
   Real litc;                  /**< litter carbon (gC) */
   Real vegc;                  /**< vegetation carbon (gC) */
 } Flux;
