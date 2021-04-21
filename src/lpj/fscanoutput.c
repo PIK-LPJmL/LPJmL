@@ -212,6 +212,19 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
           free(config->outnames[flag].unit);
           config->outnames[flag].unit=strdup(config->outputvars[count].filename.unit);
           checkptr(config->outnames[flag].unit);
+          if(config->outnames[flag].unit!=NULL)
+          {
+            if(strstr(config->outnames[flag].unit,"/month")!=NULL)
+              config->outnames[flag].time=MONTH;
+            else if(strstr(config->outnames[flag].unit,"/yr")!=NULL)
+              config->outnames[flag].time=YEAR;
+            else if(strstr(config->outnames[flag].unit,"/day")!=NULL || strstr(config->outnames[flag].unit,"d-1")!=NULL)
+              config->outnames[flag].time=DAY;
+            else if(strstr(config->outnames[flag].unit,"/sec")!=NULL || strstr(config->outnames[flag].unit,"s-1")!=NULL)
+              config->outnames[flag].time=SECOND;
+            else
+              config->outnames[flag].time=MISSING_TIME;
+          }
         }
         if(config->outputvars[count].filename.isscale)
           config->outnames[flag].scale=config->outputvars[count].filename.scale;

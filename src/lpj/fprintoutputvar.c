@@ -60,13 +60,13 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
     width_var=max(width_var,strlen(output[i].var));
   }
   fprintf(file,"Output files available\n"
-          "%-*s %-*s %-*s dt nbd Type  Scale   Offset Description\n",width,"Name",width_var,"Variable",width_unit,"Unit");
+          "%-*s %-*s %-*s dt  nbd Type  Scale   Offset Description\n",width,"Name",width_var,"Variable",width_unit,"Unit");
   frepeatch(file,'-',width);
   fputc(' ',file);
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" -- --- ----- ------- ------ ",file);
+  fputs(" --- --- ----- ------- ------ ",file);
   frepeatch(file,'-',77-width-width_unit-width_var-7-4);
   putc('\n',file);
   for(i=0;i<size;i++)
@@ -91,7 +91,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
         default:
           sc="";
       }
-      fprintf(file,"%-*s %-*s %-*s %-2s %3d %5s %5g%-2s %6g %s\n",width,output[index].name,
+      fprintf(file,"%-*s %-*s %-*s %-3s %3d %5s %5g%-2s %6g %s\n",width,output[index].name,
               width_var,output[index].var,
               width_unit,strlen(output[index].unit)==0 ? "-" : output[index].unit,sprinttimestep(s,output[index].timestep),
               outputsize(index,npft,ncft,config),
@@ -104,7 +104,7 @@ void fprintoutputvar(FILE *file,              /**< pointer to text file */
   frepeatch(file,'-',width_var);
   fputc(' ',file);
   frepeatch(file,'-',width_unit);
-  fputs(" -- --- ----- ------- ------ ",file);
+  fputs(" --- --- ----- ------- ------ ",file);
   frepeatch(file,'-',77-width-width_unit-width_var-7-4);
   putc('\n',file);
 } /* of 'fprintoutputvar' */
