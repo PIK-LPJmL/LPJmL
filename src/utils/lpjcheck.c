@@ -126,7 +126,7 @@ int main(int argc,char **argv)
     {
       config.nall=config.total=config.ngridcell;
       printf("Estimated disk usage for output: ");
-      printintf((int)(outputfilesize(&config)/(1024*1204)));
+      printintf((int)(outputfilesize(&config)/(1024*1024)));
       printf(" MByte\n");
     }
     rc=(filesexist(config,isout)) ? EXIT_FAILURE : EXIT_SUCCESS;
