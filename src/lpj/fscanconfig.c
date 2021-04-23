@@ -855,12 +855,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
               config->firstyear-config->nspinup,config->lastyear);
     return TRUE;
   }
-  fscanname(file,name,"compress_cmd");
-  config->compress_cmd=strdup(name);
-  checkptr(config->compress_cmd);
-  fscanname(file,name,"compress_suffix");
-  config->compress_suffix=strdup(name);
-  checkptr(config->compress_suffix);
   if(config->n_out && iskeydefined(file,"outputyear"))
   {
     fscanint2(file,&config->outputyear,"outputyear");

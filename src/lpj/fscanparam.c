@@ -121,10 +121,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     return TRUE;
   }
   param.bioturbate= 1-pow(1-param.bioturbate,1./NDAYYEAR);
-  if(config->equilsoil)
-  {
-    fscanparamint(&f,&param.veg_equil_year,"veg_equil_year");
-  }
+  fscanparamint(&f,&param.veg_equil_year,"veg_equil_year");
   fscanparamreal(&f,&param.k_mort,"k_mort");
   fscanparamreal01(&f,&param.fpc_tree_max,"fpc_tree_max");
   fscanparamreal(&f,&param.temp_response,"temp_response");

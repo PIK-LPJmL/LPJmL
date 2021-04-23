@@ -68,6 +68,20 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   String outpath,name;
   Verbosity verbosity;
   verbosity=isroot(*config) ? config->scan_verbose : NO_ERR;
+  if(fscanstring(file,name,"compress_cmd",FALSE,verbosity))
+    return TRUE;
+  config->compress_cmd=strdup(name);
+  checkptr(config->compress_cmd);
+  if(fscanstring(file,name,"compress_suffix",FALSE,verbosity))
+    return TRUE;
+  config->compress_suffix=strdup(name);
+  checkptr(config->compress_suffix);
+  if(config->compress_suffix[0]!='.')
+  {
+    if(verbosity)
+      fprintf(stderr,"ERROR251: Suffix '%s' must start with '.'.\n",config->compress_suffix);
+    return TRUE;
+  }
   config->outputvars=newvec(Outputvar,nout_max);
   if(config->outputvars==NULL)
   {
