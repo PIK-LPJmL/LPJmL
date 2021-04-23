@@ -116,6 +116,8 @@ struct config
   int nregions;           /**< number of regions */
   Regionpar *regionpar;
   Outputvar *outputvars;
+  char *compress_cmd;    /**< command for compressing output files */
+  char *compress_suffix; /**< suffix for compressed output files */
   int n_out;     /**< number of output files */
   int laimax_interpolate;
   Real laimax;        /**< maximum LAI for benchmark */

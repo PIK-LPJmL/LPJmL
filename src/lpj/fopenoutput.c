@@ -266,7 +266,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
   outputnames(output,config);
   for(i=0;i<config->n_out;i++)
   {
-    if(hassuffix(config->outputvars[i].filename.name,".gz"))
+    if(hassuffix(config->outputvars[i].filename.name,config->compress_suffix))
     { 
       output->files[config->outputvars[i].id].compress=TRUE;
       filename=stripsuffix(config->outputvars[i].filename.name);

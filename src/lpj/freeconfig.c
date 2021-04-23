@@ -28,6 +28,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
                )
 {
   int i;
+  free(config->compress_cmd);
+  free(config->compress_suffix);
   if(config->soil_filename.fmt!=CDF)
     freefilename(&config->coord_filename);
   freefilename(&config->soil_filename);
@@ -129,7 +131,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   if(config->with_nitrogen)
   {
     if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
-    { 
+    {
       freefilename(&config->no3deposition_filename);
       freefilename(&config->nh4deposition_filename);
     }

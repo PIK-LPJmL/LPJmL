@@ -210,7 +210,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
-  fscanbool2(file,&config->equilsoil,"equilsoil");
   config->reservoir=FALSE;
 #ifdef IMAGE
   config->groundwater_irrig = NO_GROUNDWATER_IRRIG;
@@ -856,6 +855,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
               config->firstyear-config->nspinup,config->lastyear);
     return TRUE;
   }
+  fscanname(file,name,"compress_cmd");
+  config->compress_cmd=strdup(name);
+  checkptr(config->compress_cmd);
+  fscanname(file,name,"compress_suffix");
+  config->compress_suffix=strdup(name);
+  checkptr(config->compress_suffix);
   if(config->n_out && iskeydefined(file,"outputyear"))
   {
     fscanint2(file,&config->outputyear,"outputyear");
@@ -878,6 +883,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->outputyear=config->firstyear;
   fscanbool2(file,&config->from_restart,"restart");
   config->new_seed=FALSE;
+  config->equilsoil=FALSE;
   if(config->from_restart)
   {
     fscanname(file,name,"restart_filename");
@@ -890,7 +896,10 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
   }
   else
+  {
     config->restart_filename=NULL;
+    fscanbool2(file,&config->equilsoil,"equilsoil");
+  }
   if(iskeydefined(file,"checkpoint_filename"))
   {
     fscanname(file,name,"checkpoint_filename");
