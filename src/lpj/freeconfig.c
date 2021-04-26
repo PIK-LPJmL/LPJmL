@@ -106,7 +106,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
     if(config->prescribe_burntarea)
       freefilename(&config->burntarea_filename);
   }
-  if(config->fire==SPITFIRE||config->fire==SPITFIRE_TMAX || config->cropsheatfrost)
+  if(config->fire==SPITFIRE_TMAX || config->cropsheatfrost)
   {
     freefilename(&config->tmin_filename);
     freefilename(&config->tmax_filename);
