@@ -18,22 +18,22 @@
 
 #ifdef USE_MPI
 
-static int write_float(FILE *file,const float vec[],int n)
+static int write_float(FILE *file,const float vec[],int n,char d)
 {
   int i,rc;
   rc=0;
   for(i=0;i<n-1;i++)
-    rc+=fprintf(file,"%g ",vec[i]);
+    rc+=fprintf(file,"%g%c",vec[i],d);
   rc+=fprintf(file,"%g\n",vec[n-1]);
   return rc;
 } /* of 'write_float' */
 
-static int write_short(FILE *file,const short vec[],int n)
+static int write_short(FILE *file,const short vec[],int n,char d)
 {
   int i,rc;
   rc=0;
   for(i=0;i<n-1;i++)
-    rc+=fprintf(file,"%d ",vec[i]);
+    rc+=fprintf(file,"%d%c",vec[i]);
   rc+=fprintf(file,"%d\n",vec[n-1]);
   return rc;
 } /* of 'write_short' */
@@ -45,6 +45,7 @@ int mpi_write_txt(FILE *file,        /**< File pointer to text file */
                   int counts[],
                   int offsets[],
                   int rank,          /**< MPI rank */
+                  char d,            /**< delimiter */
                   MPI_Comm comm      /**< MPI communicator */
                  )                   /** \return number of items written to disk */
 {
@@ -60,7 +61,7 @@ int mpi_write_txt(FILE *file,        /**< File pointer to text file */
       printallocerr("vec");
       rc=TRUE;
     }
-    else 
+    else
       rc=FALSE;
   }
   MPI_Bcast(&rc,1,MPI_INT,0,comm);
@@ -70,9 +71,9 @@ int mpi_write_txt(FILE *file,        /**< File pointer to text file */
   if(rank==0)
   {
     if(type==MPI_FLOAT)
-      rc=write_float(file,vec,size); /* write float data to file */
+      rc=write_float(file,vec,size,d); /* write float data to file */
     else if(type==MPI_SHORT)
-      rc=write_short(file,vec,size); /* write short data to file */
+      rc=write_short(file,vec,size,d); /* write short data to file */
     free(vec);
   }
   MPI_Barrier(comm);

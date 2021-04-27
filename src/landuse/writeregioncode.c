@@ -35,7 +35,7 @@ int writeregioncode(Outputfile *output, /**< output file array */
   else
     rc=FALSE;
   if(iserror(rc,config))
-    return 0; 
+    return 0;
   count=0;
   for(cell=0;cell<config->ngridcell;cell++)
     if(!grid[cell].skip)
@@ -56,7 +56,7 @@ int writeregioncode(Outputfile *output, /**< output file array */
           break;
         case TXT:
           mpi_write_txt(output->files[index].fp.file,vec,MPI_SHORT,config->total,
-                        output->counts,output->offsets,config->rank,config->comm);
+                        output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
           break;
         case CDF:
           mpi_write_netcdf(&output->files[index].fp.cdf,vec,MPI_SHORT,config->total,
@@ -80,7 +80,7 @@ int writeregioncode(Outputfile *output, /**< output file array */
         break;
       case TXT:
         for(cell=0;cell<count-1;cell++)
-          fprintf(output->files[index].fp.file,"%d ",vec[cell]);
+          fprintf(output->files[index].fp.file,"%d%c",vec[cell],config->csv_delimit);
         fprintf(output->files[index].fp.file,"%d\n",vec[count-1]);
         break;
       case CDF:

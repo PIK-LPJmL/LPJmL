@@ -82,12 +82,17 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       fprintf(stderr,"ERROR251: Suffix '%s' must start with '.'.\n",config->compress_suffix);
     return TRUE;
   }
-  config->outputvars=newvec(Outputvar,nout_max);
-  if(config->outputvars==NULL)
+  if(fscanstring(file,name,"csv_delimit",FALSE,verbosity))
+    return TRUE;
+  if(strlen(name)!=1)
   {
-    printallocerr("outputvars");
+    if(verbosity)
+      fprintf(stderr,"ERROR252: Delimiter '%s' must be one character.\n",name);
     return TRUE;
   }
+  config->csv_delimit=name[0];
+  config->outputvars=newvec(Outputvar,nout_max);
+  checkptr(config->outputvars);
   count=index=0;
   config->withdailyoutput=FALSE;
   size=nout_max;

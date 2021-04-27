@@ -122,7 +122,7 @@ extern int outputindex(int,int,const Config *);
 extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,
                      int *,int,MPI_Comm);
 extern int mpi_write_txt(FILE *,void *,MPI_Datatype,int,int *,
-                         int *,int,MPI_Comm);
+                         int *,int,char,MPI_Comm);
 #endif
 
 /* Definition of macros */
