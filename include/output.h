@@ -87,6 +87,7 @@ typedef struct
   Real soilc_slow;            /**< slow soil carbon (gC) */
   Real litc;                  /**< litter carbon (gC) */
   Real vegc;                  /**< vegetation carbon (gC) */
+  Real productc;              /**< product pool carbon (gC) */
   Real area_agr;              /**< agriculture area (m2) */
 } Flux;
 
