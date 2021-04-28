@@ -32,7 +32,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
     if(config->fire)
       fprintf(file,"%cfire",d);
     if(config->withlanduse!=NO_LANDUSE)
-      fprintf(file,"%charvest",d);
+      fprintf(file,"%carea%charvest",d,d);
     fprintf(file,"%ctotal%ctransp%cevap%cinterc",d,d,d,d);
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,"%cwd",d);
@@ -45,7 +45,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
     if(config->fire)
       fprintf(file,"%c(%g gC/yr)",d,1/scale);
     if(config->withlanduse!=NO_LANDUSE)
-      fprintf(file,"%c(%g gC/yr)",d,1/scale);
+      fprintf(file,"%c(m2)%c(%g gC/yr)",d,d,1/scale);
     fprintf(file,"%c(%g gC/yr)%c(%g dm3/yr)%c(%g dm3/yr)%c(%g dm3/yr)",d,1/scale,d,1/scale,d,1/scale,d,1/scale);
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,"%c(%g dm3/yr)",d,1/scale);
@@ -61,7 +61,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
   if(config->fire)
     fprintf(file,"%c%g",d,flux.fire*scale);
   if(config->withlanduse!=NO_LANDUSE)
-    fprintf(file,"%c%g",d,flux.harvest*scale);
+    fprintf(file,"%c%g%c%g",d,flux.area_agr,d,flux.harvest*scale);
   fprintf(file,"%c%g",d,cflux_total*scale);
   fprintf(file,"%c%g%c%g%c%g",
           d,flux.transp*scale,d,flux.evap*scale,d,flux.interc*scale);

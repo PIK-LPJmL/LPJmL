@@ -87,6 +87,7 @@ typedef struct
   Real soilc_slow;            /**< slow soil carbon (gC) */
   Real litc;                  /**< litter carbon (gC) */
   Real vegc;                  /**< vegetation carbon (gC) */
+  Real area_agr;              /**< agriculture area (m2) */
 } Flux;
 
 typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;
