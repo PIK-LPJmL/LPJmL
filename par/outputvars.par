@@ -19,6 +19,7 @@ layer /* name of index variabel for soil layer output */
 
   /* id name variable(NetCDF) description unit scale offset */
   GRID "grid" "soil" "coordinates" "degree" 1.0 0.0
+  GLOBALFLUX "globalflux" "globalflux" "global fluxes" "" 1.0e-15 0.0
   FPC "fpc" "FPC" "foliage projected cover" "" 1.0 0.0
   MNPP "mnpp" "NPP" "monthly NPP" "gC/m2/month" 1.0 0.0
   MGPP "mgpp" "GPP" "monthly GPP" "gC/m2/month" 1.0 0.0

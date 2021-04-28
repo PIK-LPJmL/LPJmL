@@ -64,6 +64,7 @@ typedef char String[STRING_LEN+1];
 
 extern size_t typesizes[];
 extern char *typenames[];
+extern const char *fmt[];
 
 typedef enum {LPJ_BYTE,LPJ_SHORT,LPJ_INT,LPJ_FLOAT,LPJ_DOUBLE} Type;
 typedef enum {NO_ERR, ERR, VERB } Verbosity;

@@ -140,7 +140,7 @@ static void printoutname(FILE *file,const char *filename,Bool isoneyear,
     fputs(filename,file);
 } /* of printoutname' */
 
-static char *fmt[]={"raw","clm","clm2","txt","fms","meta","cdf"};
+const char *fmt[]={"raw","clm","clm2","txt","fms","meta","cdf"};
 
 static void printinputfile(FILE *file,const char *descr,const Filename *filename,
                            int width)
@@ -380,6 +380,10 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   }
   if(config->wateruse)
     printinputfile(file,"wateruse",&config->wateruse_filename,width);
+#ifdef IMAGE
+  if (config->wateruse_wd_filename.name != NULL)
+    printinputfile(file,"wateruse wd", &config->wateruse_wd_filename,width);
+#endif
   if(width)
   {
     fputs("---------- ---- ",file);
@@ -390,14 +394,6 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   }
   else
     fputs("---------- ---- --------------------------------------------------------------\n",file);
-#ifdef IMAGE
-  if (config->wateruse_wd_filename.name != NULL)
-    printinputfile(file,"wateruse wd", &config->wateruse_wd_filename,width);
-  if(width)
-    fputs("---------- ---- -------- -----------------------------------------------------\n",file);
-  else
-    fputs("---------- ---- -------- -----------------------------------------------------\n",file);
-#endif
   if(config->param_out)
     fprintparam(file,npft,ncft,config);
   if(iswriterestart(config))

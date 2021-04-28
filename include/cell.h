@@ -51,7 +51,9 @@
 
 typedef struct
 {
-  Real nep;                 /**< annual NEP (gC/m2) */
+  Real npp;                 /**< annual NPP (gC/m2) */
+  Real gpp;                 /**< annual GPP (gC/m2) */
+  Real rh;                  /**< annual heterotrophic respiration (gC/m2) */
   Real awater_flux;         /**< annual water flux (mm) */
   Real aprec;               /**< annual precipitation (mm) */
   Real totc;                /**< total carbon (gC/m2) */

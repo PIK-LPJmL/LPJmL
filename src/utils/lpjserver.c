@@ -195,8 +195,8 @@ int main(int argc,char **argv)
       printf("\nYear NEP     fire    estab   harvest total\n"
                "---- ------- ------- ------- ------- -------\n");
     printf("%4d %7.3f %7.3f %7.3f %7.3f %7.3f\n",
-           year,flux.nep*1e-15,flux.fire*1e-15,flux.estab*1e-15,
-           flux.harvest*1e-15,(flux.nep-flux.fire-flux.harvest+flux.estab)*1e-15);
+           year,(flux.npp-flux.rh)*1e-15,flux.fire*1e-15,flux.estab*1e-15,
+           flux.harvest*1e-15,(flux.npp-flux.rh-flux.fire-flux.harvest+flux.estab)*1e-15);
   }
   time(&end);
   printf("Frame rate: %.1f (1/sec)\n",

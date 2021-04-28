@@ -122,6 +122,7 @@ extern void copyright(const char *);
 extern void printlicense(void);
 extern void help(const char *,const char *);
 extern void fprintflux(FILE *file,Flux,Real,int,const Config *);
+extern void fprintcsvflux(FILE *file,Flux,Real,Real,int,const Config *);
 #ifdef USE_MPI
 extern void failonerror(const Config *,int,int,const char *);
 extern Bool iserror(int,const Config *);

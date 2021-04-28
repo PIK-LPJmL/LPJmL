@@ -38,7 +38,7 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O \
           check_stand_fracs.$O waterusefcns.$O getoutputtype.$O\
           fscanlimit.$O filesexist.$O freeoutputvar.$O\
           fprintflux.$O initoutput_daily.$O fwriteoutput_daily.$O\
-          outputfilesize.$O nowdf.$O printlicense.$O\
+          outputfilesize.$O nowdf.$O printlicense.$O fprintcsvflux.$O\
           ismonthlyoutput.$O initmpiconfig.$O fscanparam.$O fprintparam.$O\
           fprintpftpar.$O help.$O copyright.$O initinput.$O freeinput.$O\
           natural.$O daily_natural.$O fread_natural.$O fprint_natural.$O\

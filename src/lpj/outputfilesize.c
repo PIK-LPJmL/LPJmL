@@ -28,6 +28,10 @@ long long outputfilesize(const Config *config /**< LPJ configuration */
   iscdf=FALSE;
   for(i=0;i<config->n_out;i++)
   {
+    if(config->outputvars[i].id==GLOBALFLUX)
+      sum+=(config->lastyear-config->firstyear+config->nspinup+1)*200;
+    else
+    {
     size=getsize(i,config);
     size*=config->lastyear-config->outputyear+1;
     if(config->outputvars[i].filename.fmt==CDF)
@@ -56,6 +60,7 @@ long long outputfilesize(const Config *config /**< LPJ configuration */
     }
     else
       sum+=size;
+    }
   }
   return sum;
 } /* of 'outputfilesize' */

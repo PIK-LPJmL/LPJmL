@@ -110,6 +110,7 @@
 ID                         Fmt                    filename
 -------------------------- ---------------------- ----------------------------- */
     { "id" : GRID,             "file" : { "fmt" : RAW, "name" : "output/grid.bin" }},
+    { "id" : GLOBALFLUX,       "file" : { "fmt" : TXT, "name" : "output/globalflux.csv" }},
     { "id" : FPC,              "file" : { "fmt" : RAW, "name" : "output/fpc.bin"}},
     { "id" : MNPP,             "file" : { "fmt" : RAW, "name" : "output/mnpp.bin"}},
     { "id" : MGPP,             "file" : { "fmt" : RAW, "name" : "output/mgpp.bin"}},
@@ -172,7 +173,10 @@ ID                         Fmt                    filename
 
 #else
 
-  "output" : [],  /* no output written */
+  "output" : 
+  [
+    { "id" : GLOBALFLUX,       "file" : { "fmt" : TXT, "name" : "output/globalflux_spinup.csv" }}
+  ],
 
 #endif
 

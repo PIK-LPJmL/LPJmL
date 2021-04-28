@@ -28,7 +28,7 @@ void init_annual(Cell *cell,   /**< Pointer to cell */
   Pft *pft;
   Stand *stand;
   init_climbuf(&cell->climbuf);
-  cell->balance.aprec=cell->balance.nep=cell->balance.awater_flux=0.0;
+  cell->balance.aprec=cell->balance.npp=cell->balance.gpp=cell->balance.rh=cell->balance.awater_flux=0.0;
   cell->afire_frac=cell->balance.biomass_yield=0.0;
   cell->balance.total_irrig_from_reservoir=cell->balance.total_reservoir_out=0.0;
 #if defined IMAGE && defined COUPLED
