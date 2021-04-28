@@ -47,7 +47,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
   delta_totc=totc-cell->balance.totc;
   cell->balance.totc=totc;
 
-  balanceC=cell->balance.nep-cell->output.firec-cell->output.flux_firewood+cell->output.flux_estab-cell->output.flux_harvest-cell->balance.biomass_yield-delta_totc;
+  balanceC=cell->balance.npp-cell->balance.rh-cell->output.firec-cell->output.flux_firewood+cell->output.flux_estab-cell->output.flux_harvest-cell->balance.biomass_yield-delta_totc;
   /* for IMAGE but can also be used without IMAGE */
   balanceC-=cell->output.deforest_emissions+cell->output.prod_turnover+cell->output.trad_biofuel;
   if(config->ischeckpoint)
@@ -73,7 +73,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
     fail(INVALID_CARBON_BALANCE_ERR,TRUE,
 #endif
           "y: %d c: %d (%s) BALANCE_C-error %.10f nep: %.2f firec: %.2f flux_estab: %.2f flux_harvest: %.2f delta_totc: %.2f\ndeforest_emissions: %.2f product_turnover: %.2f trad_biofuel: %.2f product pools %.2f %.2f timber_harvest %.2f ftimber %.2f fburn %.2f\n",
-         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceC,cell->balance.nep,
+         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceC,cell->balance.npp-cell->balance.rh,
          cell->output.firec,
          cell->output.flux_estab,cell->output.flux_harvest,delta_totc,
          cell->output.deforest_emissions,cell->output.prod_turnover,cell->output.trad_biofuel,
@@ -90,7 +90,7 @@ void check_fluxes(Cell *cell,          /**< cell pointer */
          "                            flux_harvest: %.2f delta_totc: %.2f biomass_yield: %.2f\n"
          "                            estab_storage_grass: %.2f %.2f estab_storage_tree %.2f %.2f\n"
          "                            deforest_emissions: %.2f product_turnover: %.2f\n",
-         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceC,cell->balance.nep,cell->output.firec,
+         year,cellid+config->startgrid,sprintcoord(line,&cell->coord),balanceC,cell->balance.npp-cell->balance.rh,cell->output.firec,
          cell->output.flux_estab,cell->output.flux_harvest,delta_totc,cell->balance.biomass_yield,
          cell->balance.estab_storage_grass[0],cell->balance.estab_storage_grass[1],cell->balance.estab_storage_tree[0],cell->balance.estab_storage_tree[1],
          cell->output.deforest_emissions,cell->output.prod_turnover);

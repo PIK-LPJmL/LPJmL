@@ -72,7 +72,9 @@ void update_monthly(Cell *cell,  /**< Pointer to cell */
   cell->ml.image_data->mpetim[month] += cell->output.mpet;
 #endif
   /* for carbon balance check  */
-  cell->balance.nep+=cell->output.mnpp-cell->output.mrh;
+  cell->balance.npp+=cell->output.mnpp;
+  cell->balance.gpp+=cell->output.mgpp;
+  cell->balance.rh+=cell->output.mrh;
 
   /* for water balance check */
   cell->balance.awater_flux+=cell->output.mrunoff+cell->output.mtransp+

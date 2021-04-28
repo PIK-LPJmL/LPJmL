@@ -79,7 +79,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     fputc('\n',file);
   }
   /* print data */
-  fprintf(file,"%6d %7.3f %7.3f",year,flux.nep*1e-15,flux.estab*1e-15);
+  fprintf(file,"%6d %7.3f %7.3f",year,(flux.npp-flux.rh)*1e-15,flux.estab*1e-15);
   if(config->fire)
     fprintf(file," %7.3f",flux.fire*1e-15);
   if(config->withlanduse!=NO_LANDUSE)

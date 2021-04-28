@@ -26,6 +26,7 @@
 [
   /* id           name            variable(NetCDF) description             unit               scale */
   { "id" : GRID, "name" : "grid", "var" : "soil", "descr" : "coordinates", "unit" : "degree", "scale" : 1.0, "offset" : 0.0},
+  { "id" : GLOBALFLUX, "name" : "globalflux", "var" : "globalflux", "descr" : "global fluxes", "unit" : "", "scale" : 1.0e-15, "offset" : 0.0},
   { "id" : FPC, "name" : "fpc", "var" : "FPC", "descr" : "foliage projected cover", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MNPP, "name": "mnpp", "var" : "NPP", "descr" : "monthly NPP", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : MGPP, "name": "mgpp", "var" : "GPP", "descr" : "monthly GPP", "unit" : "gC/m2/month", "scale" : 1.0, "offset" : 0.0},
