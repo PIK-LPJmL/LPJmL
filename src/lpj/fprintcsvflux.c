@@ -31,12 +31,12 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
       fprintf(file,",fire");
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,",area,harvest");
-    fprintf(file,",total,transp,evap,interc");
+    fprintf(file,",NBP,transp,evap,interc");
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,",wd");
     if(config->river_routing)
       fprintf(file,",discharge");
-    fprintf(file,",prec,SoilC,Litc,VegC");
+    fprintf(file,",prec,SoilC,LitC,VegC");
     fprintf(file,"\n(AD),(%g gC/yr),(%g gC/yr),(%g gC/yr),(%g gC/yr),(%g gC/yr)",1/scale,1/scale,1/scale,1/scale,1/scale);
     if(config->fire)
       fprintf(file,",(%g gC/yr)",1/scale);
