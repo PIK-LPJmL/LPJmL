@@ -77,7 +77,8 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
         foreachpft(pft,p,&stand->pftlist)
           flux.vegc+=vegc_sum(pft)*stand->frac*grid[cell].coord.area;
       }
-
+      if(grid[cell].ml.dam)
+        flux.soilc+=grid[cell].ml.resdata->pool.carbon*grid[cell].coord.area;
     }
     flux.discharge+=grid[cell].balance.adischarge;
     flux.delta_surface_storage+=grid[cell].balance.surface_storage-grid[cell].balance.surface_storage_last;
