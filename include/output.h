@@ -88,6 +88,8 @@ typedef struct
   Real litc;                  /**< litter carbon (gC) */
   Real vegc;                  /**< vegetation carbon (gC) */
   Real productc;              /**< product pool carbon (gC) */
+  Real product_turnover;      /**< product pool carbon turnover (gC/yr) */
+  Real neg_fluxes;
   Real area_agr;              /**< agriculture area (m2) */
 } Flux;
 
