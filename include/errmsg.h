@@ -58,6 +58,7 @@
 #define INVALID_CLIMATE_ERR 38
 #define INVALID_FPC_ERR 39
 #define INVALID_BOUNDARY_ERR 40
+#define INVALID_TIMESTEP_ERR 41
 
 /* Definition of macros */
 

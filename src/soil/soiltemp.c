@@ -120,6 +120,10 @@ void soiltemp(Soil *soil,     /**< pointer to soil data */
 #endif
     /* stability criterion for finite-difference solution; */
     dt = 0.5*(soildepth[l]*soildepth[l]*1e-6)/lambda[l]*heatcap[l];
+#ifdef SAFE
+    if(isnan(dt))
+      fail(INVALID_TIMESTEP_ERR,TRUE,"Invalid time step in soiltemp()");
+#endif
     heat_steps=max(heat_steps,(unsigned long)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1);
     /* convert any latent energy present in this soil layer */
     if(permafrost && ((soil->state[l]==BELOW_T_ZERO && allwater(soil,l)>epsilon)
@@ -141,7 +145,7 @@ void soiltemp(Soil *soil,     /**< pointer to soil data */
 #ifndef USE_LINEAR_CONTACT_T
   admit_upper=admit[0]*(1-soil->litter.agtop_cover)+sqrt(lambda_litter*heatcap_litter)*soil->litter.agtop_cover;
 #endif
- 
+
   /* calculate soil temperatures */
   for (t=0; t<heat_steps;++t)
   {
