@@ -33,7 +33,7 @@ static int write_short(FILE *file,const short vec[],int n,char d)
   int i,rc;
   rc=0;
   for(i=0;i<n-1;i++)
-    rc+=fprintf(file,"%d%c",vec[i]);
+    rc+=fprintf(file,"%d%c",vec[i],d);
   rc+=fprintf(file,"%d\n",vec[n-1]);
   return rc;
 } /* of 'write_short' */
