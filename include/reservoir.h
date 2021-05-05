@@ -39,6 +39,7 @@ typedef struct
 {
   Reservoir reservoir;
   Real *fraction;
+  Real mprec_res;        /**< monthly reservoir precipitation (mm) */
   Real dmass;            /* water currently stored (dm3) */
   Real dfout_res;        /* daily outflow from reservoir to river */
   Real dfout_irrigation; /* daily outflow from reservoir for irrigation */

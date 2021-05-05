@@ -44,7 +44,6 @@ typedef struct
 {
   Real *data;            /**< storage for output */
   Real mpet;             /**< monthly PET (mm) */
-  Real mprec_res;        /**< monthly reservoir precipitation (mm) */
   Real dcflux;           /**< daily carbon flux from LPJ to atmosphere (gC/m2/day) */
   int *syear2;
 #ifdef COUPLING_WITH_FMS

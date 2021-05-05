@@ -94,7 +94,8 @@ void iterateyear(Outputfile *output,  /**< Output file data */
     {
       grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].ml.mdemand=0.0;
       grid[cell].output.mpet=0;
-      grid[cell].output.mprec_res=0;
+      if(grid[cell].ml.dam)
+        grid[cell].ml.resdata->mprec_res=0;
       initoutputdata(&((grid+cell)->output),MONTHLY,year,config);
       if(!grid[cell].skip)
       {
@@ -227,15 +228,15 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       if(config->equilsoil)
       {
         if(config->nspinup>param.veg_equil_year &&
-           (year==config->firstyear-config->nspinup+param.veg_equil_year) && !config->from_restart)
+           (year==config->firstyear-config->nspinup+param.veg_equil_year))
           equilveg(grid+cell);
 
         if(config->nspinup>soil_equil_year &&
-           (year==config->firstyear-config->nspinup+cshift_year) && !config->from_restart)
+           (year==config->firstyear-config->nspinup+cshift_year))
           equilsom(grid+cell,npft+ncft,config->pftpar,TRUE);
 
         if(config->nspinup>soil_equil_year &&
-           (year==config->firstyear-config->nspinup+soil_equil_year) && !config->from_restart)
+           (year==config->firstyear-config->nspinup+soil_equil_year))
           equilsom(grid+cell,npft+ncft,config->pftpar,FALSE);
       }
       if(config->withlanduse)
