@@ -157,10 +157,10 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
                (MINERALDENS-0.947*soil->bulkdens[l]);
     }
     /*assume last layer is bedrock in 6-layer version */
-    soil->whc[BOTTOMLAYER]=0.002;/*0.006 wsats - 0.002 whc - 0.001 wpwps = 0.003 for free water */
+    soil->whc[BOTTOMLAYER]=0.02;/*0.10 wsats - 0.02 whc - 0.01 wpwps = 0.07 for free water */
     soil->whcs[BOTTOMLAYER]=soil->whc[BOTTOMLAYER]*soildepth[BOTTOMLAYER];
-    soil->wpwps[BOTTOMLAYER]=0.001*soildepth[BOTTOMLAYER];
-    soil->wsats[BOTTOMLAYER]=0.006*soildepth[BOTTOMLAYER];
+    soil->wpwps[BOTTOMLAYER]=0.01*soildepth[BOTTOMLAYER];
+    soil->wsats[BOTTOMLAYER]=0.10*soildepth[BOTTOMLAYER];
     soil->bulkdens[BOTTOMLAYER]=(1-soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER])*MINERALDENS;
     soil->k_dry[BOTTOMLAYER]=0.039*pow(soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER],-2.2);
     fscanint2(verb,&item,&soil->hsg,soil->name,"hsg");
