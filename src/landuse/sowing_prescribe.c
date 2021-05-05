@@ -70,7 +70,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
                              npft,ncft,cft,year,config);
             flux_estab.carbon+=stocks.carbon;
             flux_estab.nitrogen+=stocks.nitrogen;
-            if(config->double_harvest)
+            if(!config->double_harvest)
               getoutputindex(&cell->output,SDATE,cft,config)=day;
           }
         }/*of rainfed CFTs*/
@@ -125,7 +125,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
                     npft,ncft,cft,year,config);
                   flux_estab.carbon+=stocks.carbon;
                   flux_estab.nitrogen+=stocks.nitrogen;
-                  if(config->double_harvest)
+                  if(!config->double_harvest)
                     getoutputindex(&cell->output,SDATE,cft,config)=day;
                 }//if check lu
               }//if too large stand->frac
@@ -159,7 +159,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
                              npft,ncft,cft,year,config);
             flux_estab.carbon+=stocks.carbon;
             flux_estab.nitrogen+=stocks.nitrogen;
-            if(config->double_harvest)
+            if(!config->double_harvest)
               getoutputindex(&cell->output,SDATE,cft+ncft,config)=day;
           }
         }/*of irrigated CFTs*/
@@ -204,7 +204,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
                                    npft, ncft, cft, year,config);
                   flux_estab.carbon+=stocks.carbon;
                   flux_estab.nitrogen+=stocks.nitrogen;
-                  if(config->double_harvest)
+                  if(!config->double_harvest)
                     getoutputindex(&cell->output,SDATE,cft+ncft,config)=day;
                 }//if check lu
               }//if too large stand->frac
