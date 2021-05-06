@@ -39,6 +39,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 #endif
   soil=&stand->soil;
   soilpar = soil->par;
+  String line;
 #ifdef CHECK_BALANCE
   if(abswmm==NULL)
     w_before=soilwater(soil);
@@ -96,9 +97,9 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
 
 #ifdef SAFE
       if (soil->wsat[l] > 1)
-        printf("wsat[%d] %g, wpwp[%d] %g, wfc[%d] %g, om_soil %g, ice_pwp:%g in pedotransfer\n", l, soil->wsat[l], l, soil->wpwp[l], l, soil->wfc[l], om_layer, soil->ice_pwp[l]);
+        printf("Cell (%s) wsat[%d] %g, wpwp[%d] %g, wfc[%d] %g, om_soil %g, ice_pwp:%g in pedotransfer\n", sprintcoord(line,&stand->cell->coord),l, soil->wsat[l], l, soil->wpwp[l], l, soil->wfc[l], om_layer, soil->ice_pwp[l]);
       if (soil->wsats[l]<1e-10)
-        printf("wsat[%d] %3.3f,  wfc[%d] %3.3f, ws33 %3.3f, sand %3.3f, in pedotransfer\n", l, soil->wsat[l], l, soil->wfc[l], ws33, soilpar->sand);
+        printf("Cell (%s) wsat[%d] %3.3f,  wfc[%d] %3.3f, ws33 %3.3f, sand %3.3f, in pedotransfer\n",sprintcoord(line,&stand->cell->coord), l, soil->wsat[l], l, soil->wfc[l], ws33, soilpar->sand);
 #endif
 
       soil->beta_soil[l] = -2.655 / log10(soil->wfc[l] / soil->wsat[l]);
