@@ -99,7 +99,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     if(config->cropsheatfrost && climate->tmin<(-5))
     {
       crop=pft->data;
-      if(crop->fphu>0.45 || !crop->wtype) /* frost damage possible for winter crops after storage organs develop, for other crops always possible */
+      //if(crop->fphu>0.45 || !crop->wtype) /* frost damage possible for winter crops after storage organs develop, for other crops always possible */
+      if(crop->fphu>0.45) /* frost damage possible after storage organs develop */
         crop->frostkill=TRUE;
     }
     if(!config->with_nitrogen)
