@@ -29,8 +29,8 @@ static int checksoilcode(const Config *config)
   Bool *exist;
   size_t offset;
   Type type;
-  int i,cell,ncell;
-  unsigned int soilcode;
+  int cell,ncell;
+  unsigned int i,soilcode;
   if(config->soil_filename.fmt!=CDF)
   {
     file=fopensoilcode(&config->soil_filename,&swap,&offset,&type,config->nsoil,TRUE);
@@ -55,7 +55,7 @@ static int checksoilcode(const Config *config)
       }
       if(soilcode>config->nsoil)
       {
-        fprintf(stderr,"Invalid soilcode %u of cell %d in '%s', must be in [0,%d].\n",
+        fprintf(stderr,"Invalid soilcode %u of cell %d in '%s', must be in [0,%u].\n",
                 soilcode,cell,config->soil_filename.name,config->nsoil);
         return 1;
       }
@@ -63,7 +63,7 @@ static int checksoilcode(const Config *config)
     }
     for(i=1;i<=config->nsoil;i++)
       if(!exist[i])
-        fprintf(stderr,"Warning: soilcode %d ('%s') not found in '%s'.\n",
+        fprintf(stderr,"Warning: soilcode %u ('%s') not found in '%s'.\n",
                 i,config->soilpar[i-1].name,config->soil_filename.name);
         
   }
