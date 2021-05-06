@@ -71,7 +71,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                                npft,ncft,cft,year,config);
               flux_estab.carbon+=stocks.carbon;
               flux_estab.nitrogen+=stocks.nitrogen;
-              if(config->double_harvest)
+              if(!config->double_harvest)
                 getoutputindex(&cell->output,SDATE,cft,config)=day;
               if(config->sdate_option==FIXED_SDATE)
                 cell->ml.sdate_fixed[cft]=day;
@@ -116,7 +116,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                                      npft,ncft,cft,year,config);
                     flux_estab.carbon+=stocks.carbon;
                     flux_estab.nitrogen+=stocks.nitrogen;
-                    if(config->double_harvest)
+                    if(!config->double_harvest)
                       getoutputindex(&cell->output,SDATE,cft,config)=day;
                     if(config->sdate_option==FIXED_SDATE)
                       cell->ml.sdate_fixed[cft]=day;
@@ -147,7 +147,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                                npft,ncft,cft,year,config);
               flux_estab.carbon+=stocks.carbon;
               flux_estab.nitrogen+=stocks.nitrogen;
-              if(config->double_harvest)
+              if(!config->double_harvest)
                 getoutputindex(&cell->output,SDATE,cft+ncft,config)=day;
               if(config->sdate_option==FIXED_SDATE)
                 cell->ml.sdate_fixed[cft+ncft]=day;
@@ -192,7 +192,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                       npft,ncft,cft,year,config);
                     flux_estab.carbon+=stocks.carbon;
                     flux_estab.nitrogen+=stocks.nitrogen;
-                    if(config->double_harvest)
+                    if(!config->double_harvest)
                       getoutputindex(&cell->output,SDATE,cft+ncft,config)=day;
                     if(config->sdate_option==FIXED_SDATE)
                       cell->ml.sdate_fixed[cft+ncft]=day;
@@ -230,7 +230,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                                npft,ncft,cft,year,config);
               flux_estab.carbon+=stocks.carbon;
               flux_estab.nitrogen+=stocks.nitrogen;
-              if(config->double_harvest)
+              if(!config->double_harvest)
                 getoutputindex(&cell->output,SDATE,cft,config)=day;
               if(config->sdate_option==FIXED_SDATE)
                 cell->ml.sdate_fixed[cft]=day;
@@ -279,7 +279,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                       npft,ncft,cft,year,config);
                     flux_estab.carbon+=stocks.carbon;
                     flux_estab.nitrogen+=stocks.nitrogen;
-                    if(config->double_harvest)
+                    if(!config->double_harvest)
                       getoutputindex(&cell->output,SDATE,cft,config)=day;
                     if(config->sdate_option==FIXED_SDATE)
                       cell->ml.sdate_fixed[cft]=day;
@@ -313,7 +313,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                                npft,ncft,cft,year,config);
               flux_estab.carbon+=stocks.carbon;
               flux_estab.nitrogen+=stocks.nitrogen;
-              if(config->double_harvest)
+              if(!config->double_harvest)
                 getoutputindex(&cell->output,SDATE,cft+ncft,config)=day;
               if(config->sdate_option==FIXED_SDATE)
                 cell->ml.sdate_fixed[cft+ncft]=day;
@@ -361,7 +361,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                       npft,ncft,cft,year,config);
                     flux_estab.carbon+=stocks.carbon;
                     flux_estab.nitrogen+=stocks.nitrogen;
-                    if(config->double_harvest)
+                    if(!config->double_harvest)
                       getoutputindex(&cell->output,SDATE,cft+ncft,config)=day;
                     if(config->sdate_option==FIXED_SDATE)
                       cell->ml.sdate_fixed[cft+ncft]=day;
@@ -407,7 +407,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                                    npft,ncft,cft,year,config);
                   flux_estab.carbon+=stocks.carbon;
                   flux_estab.nitrogen+=stocks.nitrogen;
-                  if(config->double_harvest)
+                  if(!config->double_harvest)
                     getoutputindex(&cell->output,SDATE,cft,config)=day;
                   if(config->sdate_option==FIXED_SDATE)
                     cell->ml.sdate_fixed[cft]=day;
@@ -432,7 +432,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                                  npft,ncft,cft,year,config);
                 flux_estab.carbon+=stocks.carbon;
                 flux_estab.nitrogen+=stocks.nitrogen;
-                if(config->double_harvest)
+                if(!config->double_harvest)
                   getoutputindex(&cell->output,SDATE,cft,config)=day;
                 if(config->sdate_option==FIXED_SDATE)
                   cell->ml.sdate_fixed[cft]=day;
@@ -487,7 +487,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                           npft,ncft,cft,year,config);
                         flux_estab.carbon+=stocks.carbon;
                         flux_estab.nitrogen+=stocks.nitrogen;
-                        if(config->double_harvest)
+                        if(!config->double_harvest)
                           getoutputindex(&cell->output,SDATE,cft,config)=day;
                       }//if check lu
                     }//if too large stand->frac
@@ -536,7 +536,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                         npft,ncft,cft,year,config);
                       flux_estab.carbon+=stocks.carbon;
                       flux_estab.nitrogen+=stocks.nitrogen;
-                      if(config->double_harvest)
+                      if(!config->double_harvest)
                         getoutputindex(&cell->output,SDATE,cft,config)=day;
                     }//if check lu
                   }//if too large stand->frac
@@ -579,7 +579,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                                    npft,ncft,cft,year,config);
                   flux_estab.carbon+=stocks.carbon;
                   flux_estab.nitrogen+=stocks.nitrogen;
-                  if(config->double_harvest)
+                  if(!config->double_harvest)
                     getoutputindex(&cell->output,SDATE,cft+ncft,config)=day;
                   if(config->sdate_option==FIXED_SDATE)
                     cell->ml.sdate_fixed[cft+ncft]=day;
@@ -604,7 +604,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                                  npft,ncft,cft,year,config);
                 flux_estab.carbon+=stocks.carbon;
                 flux_estab.nitrogen+=stocks.nitrogen;
-                if(config->double_harvest)
+                if(!config->double_harvest)
                   getoutputindex(&cell->output,SDATE,cft+ncft,config)=day;
                 if(config->sdate_option==FIXED_SDATE)
                   cell->ml.sdate_fixed[cft+ncft]=day;
@@ -659,7 +659,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                           npft,ncft,cft,year,config);
                         flux_estab.carbon+=stocks.carbon;
                         flux_estab.nitrogen+=stocks.nitrogen;
-                        if(config->double_harvest)
+                        if(!config->double_harvest)
                           getoutputindex(&cell->output,SDATE,cft+ncft,config)=day;
                       }//if check lu
                     }//if too large stand->frac
@@ -708,7 +708,7 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                         npft,ncft,cft,year,config);
                       flux_estab.carbon+=stocks.carbon;
                       flux_estab.nitrogen+=stocks.nitrogen;
-                      if(config->double_harvest)
+                      if(!config->double_harvest)
                         getoutputindex(&cell->output,SDATE,cft+ncft,config)=day;
                     }//if check lu
                   }//if too large stand->frac
