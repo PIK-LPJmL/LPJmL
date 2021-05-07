@@ -27,7 +27,7 @@ OBJS    = initsoil.$O waterbalance.$O equilsoil.$O littersom.$O\
           soilconduct.$O soilheatcap.$O soilice2moisture.$O getlag.$O convert_water.$O\
           getstate.$O initsoiltemp.$O infil_perc_rain.$O infil_perc_irr.$O\
           fscanpoolpar.$O denitrification.$O biologicalNfixation.$O\
-          litter_ag_nitrogen_tree.$O soilstocks.$O litterstocks.$O\
+          litter_ag_nitrogen_tree.$O soilstocks.$O litterstocks.$O fscansoilmap.$O\
           checklitter.$O getrootdist.$O nuptake_temp_fcn.$O volatilization.$O\
           getwr.$O updatelitterproperties.$O pedotransfer.$O tillage.$O
 

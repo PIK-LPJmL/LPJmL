@@ -37,13 +37,13 @@ static int checksoilcode(const Config *config)
     if(file==NULL)
       return 1;
     ncell=getnsoilcode(&config->soil_filename,config->nsoil,TRUE);
-    exist=newvec(Bool,config->nsoil+1);
+    exist=newvec(Bool,config->soilmap_size+1);
     if(exist==NULL)
     {
       printallocerr("exist");
       return 0;
     }
-    for(i=0;i<=config->nsoil;i++)
+    for(i=0;i<=config->soilmap_size;i++)
       exist[i]=FALSE;
     for(cell=0;cell<ncell;cell++)
     {
@@ -53,7 +53,7 @@ static int checksoilcode(const Config *config)
                 config->soil_filename.name,cell);
         return 1;
       }
-      if(soilcode>config->nsoil)
+      if(soilcode>config->soilmap_size)
       {
         fprintf(stderr,"Invalid soilcode %u of cell %d in '%s', must be in [0,%u].\n",
                 soilcode,cell,config->soil_filename.name,config->nsoil);
@@ -61,10 +61,10 @@ static int checksoilcode(const Config *config)
       }
       exist[soilcode]=TRUE;
     }
-    for(i=1;i<=config->nsoil;i++)
+    for(i=1;i<=config->soilmap_size;i++)
       if(!exist[i])
         fprintf(stderr,"Warning: soilcode %u ('%s') not found in '%s'.\n",
-                i,config->soilpar[i-1].name,config->soil_filename.name);
+                i,config->soilpar[config->soilmap[i-1]].name,config->soil_filename.name);
         
   }
   return 0;

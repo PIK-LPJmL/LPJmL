@@ -399,6 +399,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR230: Cannot read soil parameter 'soilpar'.\n",stderr);
     return TRUE;
   }
+  config->soilmap=fscansoilmap(file,&config->soilmap_size,config);
+  if(config->soilmap==NULL)
+    return TRUE;
   if((config->npft=fscanpftpar(file,&config->pftpar,scanfcn,ntypes,config))==NULL)
   {
     if(verbose)

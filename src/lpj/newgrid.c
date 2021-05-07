@@ -463,7 +463,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           return NULL;
         }
       }
-      if(soilcode>=1 && soilcode<=config->nsoil)
+      if(soilcode>=1 && soilcode<=config->soilmap_size)
       {
         if(code.country<0 || code.country>=config->ncountries ||
            code.region<0 || code.region>=config->nregions)
@@ -660,7 +660,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     }
     if(file_restart==NULL)
     {
-      if(soilcode<1 || soilcode>config->nsoil)
+      if(soilcode<1 || soilcode>config->soilmap_size)
       {
         (*count)++;
         fprintf(stderr,"Invalid soilcode=%u, cell %d skipped\n",soilcode,i+config->startgrid);
@@ -668,6 +668,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       else
       {
+        soilcode=config->soilmap[soilcode-1];
         setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
         grid[i].skip=FALSE;
         grid[i].standlist=newlist();
@@ -688,7 +689,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           n=addstand(&natural_stand,grid+i);
           stand=getstand(grid[i].standlist,n-1);
           stand->frac=1-grid[i].lakefrac;
-          if(initsoil(stand,config->soilpar+soilcode-1,npft+ncft,config->with_nitrogen))
+          if(initsoil(stand,config->soilpar+soilcode,npft+ncft,config->with_nitrogen))
             return NULL;
           for(l=0;l<FRACGLAYER;l++)
             stand->frac_g[l]=1.0;
@@ -723,7 +724,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     else /* read cell data from restart file */
     {
       if(freadcell(file_restart,grid+i,npft,ncft,
-                   config->soilpar+soilcode-1,standtype,nstand,
+                   config->soilpar+soilcode,standtype,nstand,
                    swap_restart,config))
       {
         fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
