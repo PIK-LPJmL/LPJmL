@@ -38,41 +38,62 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
   String name;
   Verbosity verbose;
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
-  if(fscanarray(file,&array,size,FALSE,"soilmap",verbose))
-    return NULL;
-  soilmap=newvec(int,*size);
-  if(soilmap==NULL)
+  if(iskeydefined(file,"soilmap"))
   {
-    printallocerr("soilmap");
-    return NULL;
-  } 
-  for(s=0;s<*size;s++)
-  {
-    fscanarrayindex(&array,&item,s,verbose); 
-    if(fscanstring(&item,name,NULL,FALSE,verbose))
-    {
-      free(soilmap);
+    if(fscanarray(file,&array,size,FALSE,"soilmap",verbose))
       return NULL;
-    }
-    soilmap[s]=findsoilid(name,config->soilpar,config->nsoil);
-    if(soilmap[s]==NOT_FOUND)
+    soilmap=newvec(int,*size);
+    if(soilmap==NULL)
     {
-      if(verbose)
+      printallocerr("soilmap");
+      return NULL;
+    } 
+    for(s=0;s<*size;s++)
+    {
+      fscanarrayindex(&array,&item,s,verbose); 
+      if(isnull(&item))
       {
-        fprintf(stderr,"ERROR254: Soil type '%s' not in soil parameter array, must be in [",name);
-        for(s=0;s<config->nsoil;s++)
-        {
-          fprintf(stderr,"'%s'",config->soilpar[s].name);
-          if(s<config->nsoil-1)
-           fprintf(stderr,",");
-        }
-        fprintf(stderr,"].\n");
+        soilmap[s]=0;
+        continue;
+      }
+      if(fscanstring(&item,name,NULL,FALSE,verbose))
+      {
         free(soilmap);
         return NULL;
       }
-      free(soilmap);
-      return NULL;
+      soilmap[s]=findsoilid(name,config->soilpar,config->nsoil);
+      if(soilmap[s]==NOT_FOUND)
+      {
+        if(verbose)
+        {
+          fprintf(stderr,"ERROR254: Soil type '%s' not in soil parameter array, must be in [",name);
+          for(s=0;s<config->nsoil;s++)
+          {
+            fprintf(stderr,"'%s'",config->soilpar[s].name);
+            if(s<config->nsoil-1)
+              fprintf(stderr,",");
+          }
+          fprintf(stderr,"].\n");
+          free(soilmap);
+          return NULL;
+        }
+        free(soilmap);
+        return NULL;
+      }
+      soilmap[s]++;
     }
   }
+  else
+  {
+    *size=config->nsoil+1;
+    soilmap=newvec(int,*size);
+    if(soilmap==NULL)
+    {
+      printallocerr("soilmap");
+      return NULL;
+    }
+    for(s=0;s<=config->nsoil;s++)
+      soilmap[s]=s;
+  } 
   return soilmap;
 } /* of 'fscansoilmap' */

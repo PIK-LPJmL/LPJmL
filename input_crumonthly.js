@@ -16,7 +16,7 @@
 
 "inpath" : "/p/projects/lpjml/input/historical",
 
-"soilmap" : ["clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
+"soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
              "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
              "loamy sand", "sand", "rock and ice"],
 
