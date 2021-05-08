@@ -46,7 +46,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
              )
 {
   Cell grid;
-  int i;
+  int i,soil_id;
   Bool swap,swap_cow;
   unsigned int soilcode;
   Code code;
@@ -103,7 +103,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       if(code.country<0 || code.country>=config->ncountries ||
          code.region<0 || code.region>=config->nregions)
       {
-          if(soilcode>=1 && soilcode<=config->nsoil)
+          if(soilcode<config->soilmap_size)
             fprintf(stderr,"WARNING009: Invalid countrycode=%d or regioncode=%d with valid soilcode in cell (not skipped)\n",code.country,code.region);
           grid.ml.manage.laimax=NULL;
           grid.ml.manage.par=NULL;
@@ -146,9 +146,9 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     grid.output.data=NULL;
     grid.output.syear2=NULL;
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
-
+    soil_id=config->soilmap[soilcode]-1;
     if(freadcell(file_restart,&grid,npft,ncft,
-                 config->soilpar+soilcode-1,standtype,NSTANDTYPES,swap,config))
+                 config->soilpar+soil_id,standtype,NSTANDTYPES,swap,config))
     {
       fprintf(stderr,"WARNING008: Unexpected end of file in '%s', number of gridcells truncated to %d.\n",
               (config->ischeckpoint) ? config->checkpoint_restart_filename : config->write_restart_filename,i);
