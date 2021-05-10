@@ -43,7 +43,7 @@ static int checksoilcode(const Config *config)
       printallocerr("exist");
       return 0;
     }
-    for(i=0;i<=config->soilmap_size;i++)
+    for(i=0;i<config->soilmap_size;i++)
       exist[i]=FALSE;
     for(cell=0;cell<ncell;cell++)
     {
