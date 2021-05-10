@@ -55,7 +55,7 @@ static int checksoilcode(const Config *config)
       }
       if(soilcode>=config->soilmap_size)
       {
-        fprintf(stderr,"ERROR250: Invalid soilcode %u of cell %d in '%s', must be in [0,%u].\n",
+        fprintf(stderr,"ERROR250: Invalid soilcode %u of cell %d in '%s', must be in [0,%d].\n",
                 soilcode,cell,config->soil_filename.name,config->soilmap_size-1);
         return 1;
       }
