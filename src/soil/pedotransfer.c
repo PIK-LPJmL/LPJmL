@@ -15,8 +15,8 @@
 #include "lpj.h"
 
 void pedotransfer(Stand *stand,  /**< pointer to stand */
-                  Real *abswmm, 
-                  Real *absimm, 
+                  Real *abswmm,
+                  Real *absimm,
                   Real standfrac /**< stand fraction (0..1) */
                  )
 {
@@ -134,7 +134,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       }
       else
         soil->w[l] = soil->w_fw[l] = 0;
-        
+
       /* assure numerical stability */
       /* if more water than soil can hold (above pwp) */
       if((soil->w[l]*soil->whcs[l]+soil->w_fw[l]+soil->ice_depth[l]+soil->ice_fw[l])>(soil->wsats[l]-soil->wpwps[l]))
@@ -165,7 +165,7 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
           soil->w[l]=max(0,soil->w[l]);
           excess+=dispose2;
           dispose-=dispose2;
-        }  
+        }
         if(dispose>epsilon && soil->ice_depth[l]>epsilon)
         {
           dispose2=min(soil->ice_depth[l],dispose);
@@ -173,21 +173,23 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
           soil->ice_depth[l]=max(0,soil->ice_depth[l]);
           excess+=dispose2;
           dispose-=dispose2;
-        }  
+        }
       }
       soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;
       soil->k_dry[l] = (0.135*soil->bulkdens[l] + 64.7) / (MINERALDENS - 0.947*soil->bulkdens[l]);
       excess+=wmm+imm;
       /* check if plant available water and ice do not exceed 1.0 */
       dispose=soil->w[l] + soil->ice_depth[l]/soil->whcs[l] - 1.0;
-      if(dispose > 0){
-        if(soil->w[l]*soil->whcs[l]>epsilon){
+      if(dispose > 0)
+      {
+        if(soil->w[l]*soil->whcs[l]>epsilon)
+        {
           dispose2=min(soil->w[l],dispose);
           soil->w[l]-=dispose2;
           soil->w[l]=max(0,soil->w[l]);
           excess+=dispose2*soil->whcs[l];
           dispose-=dispose2;
-        } 
+        }
         if(dispose*soil->whcs[l]>epsilon && soil->ice_depth[l] > epsilon)
         {
           dispose2=min(soil->ice_depth[l]/soil->whcs[l],dispose);
@@ -199,14 +201,15 @@ void pedotransfer(Stand *stand,  /**< pointer to stand */
       }
     } /* end of forrootsoillayer */
 
-  stand->cell->balance.excess_water+=excess*standfrac;
-  //stand->cell->discharge.drunoff+=excess*standfrac;
+    stand->cell->balance.excess_water+=excess*standfrac;
+    //stand->cell->discharge.drunoff+=excess*standfrac;
 #ifdef CHECK_BALANCE
-  w_after=soilwater(&stand->soil)+excess;
-  if(fabs(w_before-w_after)>epsilon)
-    fprintf(stderr,"ERROR: %.2f/%.2f water balance=%.10f=%.10f-%.10f (excess is %.10f) in pedotransfer() wmm %.10f imm %.10f.\n",stand->cell->coord.lon,stand->cell->coord.lat,fabs(w_before-w_after),w_before,w_after+excess,excess,wmm,imm);
+    w_after=soilwater(&stand->soil)+excess;
+    if(fabs(w_before-w_after)>epsilon)
+      fprintf(stderr,"ERROR: %.2f/%.2f water balance=%.10f=%.10f-%.10f (excess is %.10f) in pedotransfer() wmm %.10f imm %.10f.\n",
+              stand->cell->coord.lon,stand->cell->coord.lat,fabs(w_before-w_after),w_before,w_after+excess,excess,wmm,imm);
 #endif
   } /* end of if not ROCK */
-}
+} /* of 'pedotransfer' */
 
 /* Reference: Saxton and Rawls (2006): Soil Water Characteristic Estimates by Texture and Organic Matter for Hydrologic Solutions, Soil Sci. Soc. Am. J. 70:1569-1578 */
