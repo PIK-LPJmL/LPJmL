@@ -674,6 +674,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       grid[i].ml.residue_on_field = NULL;
       grid[i].ml.irrig_system=NULL;
     }
+    soil_id=config->soilmap[soilcode]-1;
     if(file_restart==NULL)
     {
       if(config->soilmap[soilcode]==0)
@@ -684,7 +685,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       }
       else
       {
-        soil_id=config->soilmap[soilcode]-1;
         setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
         grid[i].skip=FALSE;
         grid[i].standlist=newlist();
