@@ -103,7 +103,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
       if(code.country<0 || code.country>=config->ncountries ||
          code.region<0 || code.region>=config->nregions)
       {
-          if(soilcode<config->soilmap_size)
+          if(config->soilmap[soilcode]>0)
             fprintf(stderr,"WARNING009: Invalid countrycode=%d or regioncode=%d with valid soilcode in cell (not skipped)\n",code.country,code.region);
           grid.ml.manage.laimax=NULL;
           grid.ml.manage.par=NULL;

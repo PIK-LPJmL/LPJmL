@@ -33,10 +33,12 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
                   const Config *config /**< LPJ configuration */
                  )                     /** \return soil map array or NULL on error */
 {
+  Bool *undef;
   int s,*soilmap;
   LPJfile array,item;
   String name;
   Verbosity verbose;
+  Bool first;
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   if(iskeydefined(file,"soilmap"))
   {
@@ -47,10 +49,19 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
     {
       printallocerr("soilmap");
       return NULL;
-    } 
+    }
+    undef=newvec(Bool,config->nsoil);
+    if(undef==NULL)
+    {
+      printallocerr("undef");
+      free(soilmap);
+      return NULL;
+    }
+    for(s=0;s<config->nsoil;s++)
+      undef[s]=TRUE;
     for(s=0;s<*size;s++)
     {
-      fscanarrayindex(&array,&item,s,verbose); 
+      fscanarrayindex(&array,&item,s,verbose);
       if(isnull(&item))
       {
         soilmap[s]=0;
@@ -59,6 +70,7 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
       if(fscanstring(&item,name,NULL,FALSE,verbose))
       {
         free(soilmap);
+        free(undef);
         return NULL;
       }
       soilmap[s]=findsoilid(name,config->soilpar,config->nsoil);
@@ -74,14 +86,32 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
               fprintf(stderr,",");
           }
           fprintf(stderr,"].\n");
-          free(soilmap);
-          return NULL;
         }
+        free(undef);
         free(soilmap);
         return NULL;
       }
+      undef[soilmap[s]]=FALSE;
       soilmap[s]++;
     }
+    if(verbose)
+    {
+      first=TRUE;
+      for(s=0;s<config->nsoil;s++)
+        if(undef[s])
+        {
+          if(first)
+          {
+            fprintf(stderr,"WANRNING036: 'soilmap' not defined for soil type");
+            first=FALSE;
+          }
+          else
+            fputc(',',stderr);
+          fprintf(stderr," '%s'",config->soilpar[s].name);
+        }
+      fprintf(stderr,".\n");
+    }
+    free(undef);
   }
   else
   {
@@ -94,6 +124,6 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
     }
     for(s=0;s<=config->nsoil;s++)
       soilmap[s]=s;
-  } 
+  }
   return soilmap;
 } /* of 'fscansoilmap' */
