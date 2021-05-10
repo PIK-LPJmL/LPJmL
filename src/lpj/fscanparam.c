@@ -65,6 +65,24 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
               param.k_soil10.fast);
     return TRUE;
   }
+  if(config->with_nitrogen)
+  {
+    fscanparampoolpar(&f,&param.init_soiln,"init_soiln");
+    if(param.init_soiln.slow<=0)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR234: Parameter 'init_soiln.slow'=%g must be greater than zero.\n",
+                param.init_soiln.slow);
+      return TRUE;
+    }
+    if(param.init_soiln.fast<=0)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR234: Parameter 'init_soiln.fast'=%g must be greater than zero.\n",
+                param.init_soiln.fast);
+      return TRUE;
+    }
+  }
   fscanparamreal(&f,&param.maxsnowpack,"maxsnowpack");
   fscanparamreal(&f,&param.soildepth_evap,"soildepth_evap");
   fscanparamreal(&f,&param.soil_infil,"soil_infil");
@@ -104,10 +122,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     return TRUE;
   }
   param.bioturbate= 1-pow(1-param.bioturbate,1./NDAYYEAR);
-  if(config->equilsoil)
-  {
-    fscanparamint(&f,&param.veg_equil_year,"veg_equil_year");
-  }
+  fscanparamint(&f,&param.veg_equil_year,"veg_equil_year");
   fscanparamreal(&f,&param.k_mort,"k_mort");
   fscanparamreal01(&f,&param.fpc_tree_max,"fpc_tree_max");
   fscanparamreal(&f,&param.temp_response,"temp_response");

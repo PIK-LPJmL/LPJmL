@@ -36,7 +36,7 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     /* print header */
     tabs=(config->fire) ? 5 : 4;
     if(config->withlanduse!=NO_LANDUSE)
-      tabs++;
+      tabs+=2;
     fputs("\n       ",file);
     frepeatch(file,' ',(tabs*8-16)/2-1);
     fprintf(file,"Carbon flux (%ctC)",(convert==1e-15)  ? 'G' : 'k');
@@ -75,8 +75,8 @@ void fprintflux(FILE *file,          /**< Output file pointer */
     if(config->fire)
       fputs(" fire   ",file);
     if(config->withlanduse!=NO_LANDUSE)
-      fputs(" harvest",file);
-    fputs(" total  ",file);
+      fputs(" harvest product",file);
+    fputs(" NBP    ",file);
     fputs(" NPP    ",file);
     fputs(" transp     evap    interc ",file);
     if(config->withlanduse!=NO_LANDUSE)
@@ -105,9 +105,9 @@ void fprintflux(FILE *file,          /**< Output file pointer */
   if(config->fire)
     fprintf(file," %7.3f",flux.fire*convert);
   if(config->withlanduse!=NO_LANDUSE)
-    fprintf(file," %7.3f",flux.harvest*convert);
+    fprintf(file," %7.3f %7.3f",flux.harvest*convert,flux.product_turnover*convert);
   fprintf(file," %7.3f",cflux_total*convert);
-  fprintf(file," %7.3f",flux.anpp*convert);
+  fprintf(file," %7.3f",flux.npp*convert);
   fprintf(file," %10.1f %7.1f %7.1f",
           flux.transp*convert*1000,flux.evap*convert*1000,flux.interc*convert*1000);
   if(config->withlanduse!=NO_LANDUSE)

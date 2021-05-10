@@ -22,6 +22,54 @@
 #define S_ISDIR(a) (a & _S_IFDIR)
 #endif
 
+static int checksoilcode(const Config *config)
+{
+  FILE *file;
+  Bool swap;
+  Bool *exist;
+  size_t offset;
+  Type type;
+  int cell,ncell;
+  unsigned int i,soilcode;
+  if(config->soil_filename.fmt!=CDF)
+  {
+    file=fopensoilcode(&config->soil_filename,&swap,&offset,&type,config->nsoil,TRUE);
+    if(file==NULL)
+      return 1;
+    ncell=getnsoilcode(&config->soil_filename,config->nsoil,TRUE);
+    exist=newvec(Bool,config->soilmap_size);
+    if(exist==NULL)
+    {
+      printallocerr("exist");
+      return 0;
+    }
+    for(i=0;i<=config->soilmap_size;i++)
+      exist[i]=FALSE;
+    for(cell=0;cell<ncell;cell++)
+    {
+      if(freadsoilcode(file,&soilcode,swap,type))
+      {
+        fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
+                config->soil_filename.name,cell);
+        return 1;
+      }
+      if(soilcode>=config->soilmap_size)
+      {
+        fprintf(stderr,"ERROR250: Invalid soilcode %u of cell %d in '%s', must be in [0,%u].\n",
+                soilcode,cell,config->soil_filename.name,config->soilmap_size-1);
+        return 1;
+      }
+      exist[soilcode]=TRUE;
+    }
+    for(i=0;i<config->soilmap_size;i++)
+      if(!exist[i] && config->soilmap[i]!=0)
+        fprintf(stderr,"Warning: soilcode %u ('%s') not found in '%s'.\n",
+                i,config->soilpar[config->soilmap[i]-1].name,config->soil_filename.name);
+        
+  }
+  return 0;
+} /* of 'checksoilcode' */
+
 static int checkfile(const char *filename)
 {
   if(getfilesize(filename)==-1)
@@ -270,7 +318,10 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.soil_filename.fmt!=CDF)
   {
     bad+=checkcoordfileclm(&config,&config.coord_filename);
-    bad+=checksoilfile(&config,&config.soil_filename);
+    if(checksoilfile(&config,&config.soil_filename))
+      bad++;
+    else
+      bad+=checksoilcode(&config);
   }
   else
     bad+=checkcoordfile(&config,&config.soil_filename);

@@ -23,7 +23,7 @@ void update_reservoir_daily(Cell *cell, /**< pointer to cell */
 {
   cell->ml.resdata->dmass+=prec*cell->coord.area*cell->ml.reservoirfrac;
   getoutput(&cell->output,PREC_RES,config)+=prec*cell->ml.reservoirfrac;
-  cell->output.mprec_res+=prec*cell->ml.reservoirfrac;
+  cell->ml.resdata->mprec_res+=prec*cell->ml.reservoirfrac;
   if(cell->ml.resdata->dmass>cell->ml.resdata->reservoir.capacity)
   {
     cell->discharge.dmass_lake+=cell->ml.resdata->dmass-cell->ml.resdata->reservoir.capacity;

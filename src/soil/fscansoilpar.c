@@ -154,13 +154,20 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
       if(soil->m_nit==0)
       {
         if(verb)
-          fprintf(stderr,"ERROR199: a_nit=%g must not be equal c_nit=%g  in soil '%s'.\n",
+          fprintf(stderr,"ERROR199: a_nit=%g must not be equal c_nit=%g for soil '%s'.\n",
                   soil->a_nit,soil->c_nit,soil->name);
         return 0;
       }
       soil->z_nit=soil->d_nit*(soil->b_nit-soil->a_nit)/(soil->a_nit-soil->c_nit);
       soil->n_nit=soil->a_nit-soil->b_nit;
       fscanreal2(verb,&item,&soil->cn_ratio,soil->name,"cn_ratio");
+      if(soil->cn_ratio<=0)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR199: CN ratio=%g must not be less than zero for soil '%s'.\n",
+                  soil->cn_ratio,soil->name);
+        return 0;
+      }
     }
     fscanreal2(verb, &item, &soil->b, soil->name, "b");
     fscanreal2(verb, &item, &soil->efold, soil->name, "efold");

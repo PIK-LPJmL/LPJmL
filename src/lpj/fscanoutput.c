@@ -68,12 +68,31 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   String outpath,name;
   Verbosity verbosity;
   verbosity=isroot(*config) ? config->scan_verbose : NO_ERR;
-  config->outputvars=newvec(Outputvar,nout_max);
-  if(config->outputvars==NULL)
+  if(fscanstring(file,name,"compress_cmd",FALSE,verbosity))
+    return TRUE;
+  config->compress_cmd=strdup(name);
+  checkptr(config->compress_cmd);
+  if(fscanstring(file,name,"compress_suffix",FALSE,verbosity))
+    return TRUE;
+  config->compress_suffix=strdup(name);
+  checkptr(config->compress_suffix);
+  if(config->compress_suffix[0]!='.')
   {
-    printallocerr("outputvars");
+    if(verbosity)
+      fprintf(stderr,"ERROR251: Suffix '%s' must start with '.'.\n",config->compress_suffix);
     return TRUE;
   }
+  if(fscanstring(file,name,"csv_delimit",FALSE,verbosity))
+    return TRUE;
+  if(strlen(name)!=1)
+  {
+    if(verbosity)
+      fprintf(stderr,"ERROR252: Delimiter '%s' must be one character.\n",name);
+    return TRUE;
+  }
+  config->csv_delimit=name[0];
+  config->outputvars=newvec(Outputvar,nout_max);
+  checkptr(config->outputvars);
   count=index=0;
   config->withdailyoutput=FALSE;
   size=nout_max;
@@ -212,6 +231,19 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
           free(config->outnames[flag].unit);
           config->outnames[flag].unit=strdup(config->outputvars[count].filename.unit);
           checkptr(config->outnames[flag].unit);
+          if(config->outnames[flag].unit!=NULL)
+          {
+            if(strstr(config->outnames[flag].unit,"/month")!=NULL)
+              config->outnames[flag].time=MONTH;
+            else if(strstr(config->outnames[flag].unit,"/yr")!=NULL)
+              config->outnames[flag].time=YEAR;
+            else if(strstr(config->outnames[flag].unit,"/day")!=NULL || strstr(config->outnames[flag].unit,"d-1")!=NULL)
+              config->outnames[flag].time=DAY;
+            else if(strstr(config->outnames[flag].unit,"/sec")!=NULL || strstr(config->outnames[flag].unit,"s-1")!=NULL)
+              config->outnames[flag].time=SECOND;
+            else
+              config->outnames[flag].time=MISSING_TIME;
+          }
         }
         if(config->outputvars[count].filename.isscale)
           config->outnames[flag].scale=config->outputvars[count].filename.scale;

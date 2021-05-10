@@ -591,6 +591,12 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
       return TRUE;
     }
   }
+  if(*soilcode>=config->soilmap_size)
+  {
+    fprintf(stderr,"ERROR250: Invalid soilcode %u of cell %d in '%s', must be in [0,%d].\n",
+            *soilcode,cell_id,config->soil_filename.name,config->soilmap_size-1);
+    return TRUE;
+  }
   if(config->with_nitrogen)
   {
     if(celldata->soilph.fmt==CDF)

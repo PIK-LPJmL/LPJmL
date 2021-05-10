@@ -17,22 +17,24 @@
 
 #include "lpj.h"
 
-static int compress(const char *filename)
+static int compress(const char *filename,const char *compress_cmd)
 {
   int rc;
   char *cmd,*newfile;
   newfile=stripsuffix(filename);
   if(newfile==NULL)
     return TRUE;
-  cmd=malloc(strlen(newfile)+strlen("gzip -f")+2);
+  cmd=malloc(strlen(newfile)+strlen(compress_cmd)+2);
   if(cmd==NULL)
   {
     free(newfile);
     return TRUE;
   }
-  strcat(strcpy(cmd,"gzip -f "),newfile);
-  free(newfile);
+  strcat(strcat(strcpy(cmd,compress_cmd)," "),newfile);
   rc=system(cmd);
+  if(rc)
+    fprintf(stderr,"ERROR250: Cannot compress output '%s', file not compressed.\n",newfile);
+  free(newfile);
   free(cmd);
   return rc;
 } /* of 'compress' */
@@ -52,9 +54,9 @@ void fcloseoutput(Outputfile *output,  /**< Output file array */
           MPI_File_close(&output->files[i].fp.mpi_file);
           if(output->files[i].compress)
           {
-            MPI_Barrier(config->comm); 
+            MPI_Barrier(config->comm);
             if(isroot(*config))
-              compress(output->files[i].filename);
+              compress(output->files[i].filename,config->compress_cmd);
           }
           break;
         case LPJ_GATHER:
@@ -70,7 +72,7 @@ void fcloseoutput(Outputfile *output,  /**< Output file array */
                 break;
             }
             if(output->files[i].compress)
-              compress(output->files[i].filename);
+              compress(output->files[i].filename,config->compress_cmd);
           }
           break;
       } /* of switch */
@@ -87,7 +89,7 @@ void fcloseoutput(Outputfile *output,  /**< Output file array */
              break;
          } /* of switch */
          if(output->files[i].compress)
-           compress(output->files[i].filename);
+           compress(output->files[i].filename,config->compress_cmd);
       }
 #endif
     }

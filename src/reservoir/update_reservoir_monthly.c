@@ -32,10 +32,10 @@ void update_reservoir_monthly(Cell *cell, /**< pointer to cell */
     cell->ml.resdata->demand_hist[i-1][month]=cell->ml.resdata->demand_hist[i][month];
     cell->ml.resdata->level_hist[i-1][month]=cell->ml.resdata->level_hist[i][month];
   }
-  cell->ml.resdata->inflow_hist[HIST_YEARS-1][month]=cell->discharge.mfin+cell->output.mprec_res*cell->coord.area; /*added the monthly prec to the reservoir as input, should mevap be subtracted?  */
+  cell->ml.resdata->inflow_hist[HIST_YEARS-1][month]=cell->discharge.mfin+cell->ml.resdata->mprec_res*cell->coord.area; /*added the monthly prec to the reservoir as input, should mevap be subtracted?  */
 #ifdef DEBUG
-  if(cell->discharge.mfin<0 || cell->output.mprec_res<0)
-    printf("%g %g\n",cell->discharge.mfin,cell->output.mprec_res);
+  if(cell->discharge.mfin<0 || cell->ml.resdata->mprec_res<0)
+    printf("%g %g\n",cell->discharge.mfin,cell->ml.resdata->mprec_res);
 #endif
   cell->ml.resdata->demand_hist[HIST_YEARS-1][month]=cell->ml.resdata->mdemand; /* changed because the mdemand is now updated every month */
   getoutput(&cell->output,RES_DEMAND,config)+=cell->ml.resdata->mdemand/1e9; /*fill output with mdemand in million liters*/

@@ -210,7 +210,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
-  fscanbool2(file,&config->equilsoil,"equilsoil");
   config->reservoir=FALSE;
 #ifdef IMAGE
   config->groundwater_irrig = NO_GROUNDWATER_IRRIG;
@@ -416,6 +415,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR230: Cannot read hydrotope parameter.\n",stderr);
     return TRUE;
   }
+  config->soilmap=fscansoilmap(file,&config->soilmap_size,config);
+  if(config->soilmap==NULL)
+    return TRUE;
   if((config->npft=fscanpftpar(file,&config->pftpar,scanfcn,ntypes,config))==NULL)
   {
     if(verbose)
@@ -942,6 +944,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->outputyear=config->firstyear;
   fscanbool2(file,&config->from_restart,"restart");
   config->new_seed=FALSE;
+  config->equilsoil=FALSE;
   if(config->from_restart)
   {
     fscanname(file,name,"restart_filename");
@@ -958,6 +961,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->restart_filename=NULL;
     if(verbose && config->nspinup<soil_equil_year)
       fprintf(stderr,"WARNING031: Number of spinup years less than %d necessary for soil equilibration.\n",soil_equil_year);
+    fscanbool2(file,&config->equilsoil,"equilsoil");
   }
   if(iskeydefined(file,"checkpoint_filename"))
   {

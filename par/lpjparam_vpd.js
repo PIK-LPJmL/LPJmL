@@ -16,6 +16,7 @@
 {
   "k_litter10" : 0.3,        /* k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
+  "init_soiln" : { "fast" : 5500.0, "slow":  5500.0}, /* initial fast and slow soil nitrogen (gN/m2) */
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
   "soil_infil" : 2.0,        /* default soil infiltration */

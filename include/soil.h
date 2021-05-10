@@ -180,9 +180,6 @@ typedef struct
   Real d_nit;
   Real m_nit;
   Real n_nit;
-  Real a_denit;
-  Real b_denit;
-  Real denit_rate;
   Real anion_excl; /* fraction of porosity from which anions are excluded (from SWAT) */
   Real cn_ratio; /* C:N ration in soil pools */
   Real efold;
@@ -259,6 +256,7 @@ extern void copysoil(Soil *,const Soil *, int);
 extern int findlitter(const Litter *,const struct Pftpar *);
 extern Real fire_prob(const Litter *,Real);
 extern unsigned int fscansoilpar(LPJfile *,Soilpar **,int,Verbosity);
+extern int *fscansoilmap(LPJfile *,int *,const Config *);
 extern Bool fscanpoolpar(LPJfile *,Poolpar *,const char *,Verbosity);
 extern Bool freadlitter(FILE *,Litter *,const struct Pftpar *,int,Bool);
 extern Bool freadsoil(FILE *,Soil *,const Soilpar *,const struct Pftpar *,int,Bool);

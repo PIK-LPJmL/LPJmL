@@ -44,7 +44,6 @@ typedef struct
 {
   Real *data;            /**< storage for output */
   Real mpet;             /**< monthly PET (mm) */
-  Real mprec_res;        /**< monthly reservoir precipitation (mm) */
   Real dcflux;           /**< daily carbon flux from LPJ to atmosphere (gC/m2/day) */
   int *syear2;
 #ifdef COUPLING_WITH_FMS
@@ -81,16 +80,19 @@ typedef struct
   Real n_uptake;              /**< total N uptake by plants */
   Real n_influx;              /**< total N inputs */
   Real n_outflux;             /**< total N losses */
-  Real anpp;                  /**< Total NPP (gC/yr) */
   Real excess_water;          /**< Exess water (dm3) */
   Real aCH4_emissions;         /* Total Emissions (gCH4/yr)) positive and negative*/
   Real aCH4_sink;
   Real aCH4_fire;
   Real soilc;                 /**< soil carbon (gC) */
-  Real soilc_slow;
+  Real temp;                  /**< global average temperature (celsius) */
+  Real soilc_slow;            /**< slow soil carbon (gC) */
   Real litc;                  /**< litter carbon (gC) */
   Real vegc;                  /**< vegetation carbon (gC) */
-  Real temp;                 /**< gobal average temperature (celsius) */
+  Real productc;              /**< product pool carbon (gC) */
+  Real product_turnover;      /**< product pool carbon turnover (gC/yr) */
+  Real neg_fluxes;
+  Real area_agr;              /**< agriculture area (m2) */
 } Flux;
 
 typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;
@@ -126,7 +128,7 @@ extern int outputindex(int,int,const Config *);
 extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,
                      int *,int,MPI_Comm);
 extern int mpi_write_txt(FILE *,void *,MPI_Datatype,int,int *,
-                         int *,int,MPI_Comm);
+                         int *,int,char,MPI_Comm);
 #endif
 
 /* Definition of macros */

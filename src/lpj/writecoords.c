@@ -197,10 +197,10 @@ int writecoords(Outputfile *output,  /**< output struct */
                   break;
                 case TXT:
                   for(cell=0;cell<config->total-1;cell++)
-                    fprintf(output->files[index].fp.file,"%g %g ",
-                            fdst[cell].lon,fdst[cell].lat);
-                  fprintf(output->files[index].fp.file,"%g %g\n",
-                          fdst[config->total-1].lon,fdst[config->total-1].lat);
+                    fprintf(output->files[index].fp.file,"%g%c%g%c",
+                            fdst[cell].lon,config->csv_delimit,fdst[cell].lat,config->csv_delimit);
+                  fprintf(output->files[index].fp.file,"%g%c%g\n",
+                          fdst[config->total-1].lon,config->csv_delimit,fdst[config->total-1].lat);
                   break;
               }
             free(fdst);
@@ -244,10 +244,10 @@ int writecoords(Outputfile *output,  /**< output struct */
                   break;
                 case TXT:
                   for(cell=0;cell<config->total-1;cell++)
-                    fprintf(output->files[index].fp.file,"%g %g ",
-                            dst[cell].lon*0.01,dst[cell].lat*0.01);
-                  fprintf(output->files[index].fp.file,"%g %g\n",
-                          dst[config->total-1].lon*0.01,dst[config->total-1].lat*0.01);
+                    fprintf(output->files[index].fp.file,"%g%c%g%c",
+                            dst[cell].lon*0.01,config->csv_delimit,dst[cell].lat*0.01,config->csv_delimit);
+                  fprintf(output->files[index].fp.file,"%g%c%g\n",
+                          dst[config->total-1].lon*0.01,config->csv_delimit,dst[config->total-1].lat*0.01);
                   break;
               }
             free(dst);
@@ -270,10 +270,10 @@ int writecoords(Outputfile *output,  /**< output struct */
           break;
         case TXT:
           for(cell=0;cell<count-1;cell++)
-            fprintf(output->files[index].fp.file,"%g %g ",
-                    fvec[cell].lon,fvec[cell].lat*0.01);
-          fprintf(output->files[index].fp.file,"%g %g\n",
-                  fvec[count-1].lon,fvec[count-1].lat);
+            fprintf(output->files[index].fp.file,"%g%c%g%c",
+                    fvec[cell].lon,config->csv_delimit,fvec[cell].lat*0.01,config->csv_delimit);
+          fprintf(output->files[index].fp.file,"%g%c%g\n",
+                  fvec[count-1].lon,config->csv_delimit,fvec[count-1].lat);
           free(fvec);
           break;
         case CDF:
@@ -291,10 +291,10 @@ int writecoords(Outputfile *output,  /**< output struct */
           break;
         case TXT:
           for(cell=0;cell<count-1;cell++)
-            fprintf(output->files[index].fp.file,"%g %g ",
-                    vec[cell].lon*0.01,vec[cell].lat*0.01);
-          fprintf(output->files[index].fp.file,"%g %g\n",
-                  vec[count-1].lon*0.01,vec[count-1].lat*0.01);
+            fprintf(output->files[index].fp.file,"%g%c%g%c",
+                    vec[cell].lon*0.01,config->csv_delimit,vec[cell].lat*0.01,config->csv_delimit);
+          fprintf(output->files[index].fp.file,"%g%c%g\n",
+                  vec[count-1].lon*0.01,config->csv_delimit,vec[count-1].lat*0.01);
           free(vec);
           break;
         case CDF:

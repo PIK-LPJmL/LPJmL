@@ -144,7 +144,7 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
           break;
         case TXT:
           mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                        output->counts,output->offsets,config->rank,config->comm);
+                        output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
           break;
         case CDF:
           if(output->files[index].oneyear)
@@ -179,7 +179,7 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
-          fprintf(output->files[index].fp.file,"%g ",data[i]);
+          fprintf(output->files[index].fp.file,"%g%c",data[i],config->csv_delimit);
         fprintf(output->files[index].fp.file,"%g\n",data[config->count-1]);
         break;
       case CDF:
@@ -227,7 +227,7 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
           break;
         case TXT:
           mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                        output->counts,output->offsets,config->rank,config->comm);
+                        output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
           break;
         case CDF:
           if(output->files[index].oneyear)
@@ -262,7 +262,7 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
-          fprintf(output->files[index].fp.file,"%d ",data[i]);
+          fprintf(output->files[index].fp.file,"%d%c",data[i],config->csv_delimit);
         fprintf(output->files[index].fp.file,"%d\n",data[config->count-1]);
         break;
       case CDF:
@@ -322,7 +322,7 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
           break;
         case TXT:
           mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
-                        offsets,config->rank,config->comm);
+                        offsets,config->rank,config->csv_delimit,config->comm);
           break;
         case CDF:
           if(output->files[index].oneyear)
@@ -365,7 +365,7 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
         break;
       case TXT:
         for(i=0;i<config->ngridcell-1;i++)
-          fprintf(output->files[index].fp.file,"%g ",data[i]);
+          fprintf(output->files[index].fp.file,"%g%c",data[i],config->csv_delimit);
         fprintf(output->files[index].fp.file,"%g\n",data[config->ngridcell-1]);
         break;
       case CDF:
@@ -419,7 +419,7 @@ static void writepft(Outputfile *output,int index,float *data,int year,
           break;
         case TXT:
           mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                        output->counts,output->offsets,config->rank,config->comm);
+                        output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
           break;
         case CDF:
           if(output->files[index].oneyear)
@@ -506,7 +506,7 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
           break;
         case TXT:
           mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                        output->counts,output->offsets,config->rank,config->comm);
+                        output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
           break;
         case CDF:
           if(output->files[index].oneyear)
@@ -547,7 +547,7 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
-          fprintf(output->files[index].fp.file,"%d ",data[i]);
+          fprintf(output->files[index].fp.file,"%d%c",data[i],config->csv_delimit);
         fprintf(output->files[index].fp.file,"%d\n",data[config->count-1]);
         break;
       case CDF:

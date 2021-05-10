@@ -18,7 +18,7 @@
 
 Bool getextension(Extension *ext,const Config *config)
 {
-  Coord coord;
+  Coord coord,resolution;
   Coordfile file_coord;
   float lon,lat;
   int i;
@@ -32,6 +32,8 @@ Bool getextension(Extension *ext,const Config *config)
   getcellsizecoord(&lon,&lat,file_coord);
   ext->lon_res=lon;
   ext->lat_res=lat;
+  resolution.lon=lon;
+  resolution.lat=lat;
   if(config->global_netcdf)
   {
     ext->lon_min=-180+0.5*lon;
@@ -50,12 +52,12 @@ Bool getextension(Extension *ext,const Config *config)
               config->firstgrid);
       closecoord(file_coord);
       return TRUE;
-    }  
+    }
     ext->lat_min=ext->lon_min=1000;
     ext->lat_max=ext->lon_max=-1000;
     for(i=0;i<config->nall;i++)
     {
-      if(readcoord(file_coord,&coord,&config->resolution))
+      if(readcoord(file_coord,&coord,&resolution))
       {
         fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",
                 config->coord_filename.name);
@@ -64,11 +66,11 @@ Bool getextension(Extension *ext,const Config *config)
         break;
       }
       if(ext->lon_min>coord.lon)
-      ext->lon_min=coord.lon; 
+        ext->lon_min=coord.lon;
       if(ext->lon_max<coord.lon)
-        ext->lon_max=coord.lon; 
+        ext->lon_max=coord.lon;
       if(ext->lat_min>coord.lat)
-        ext->lat_min=coord.lat; 
+        ext->lat_min=coord.lat;
       if(ext->lat_max<coord.lat)
         ext->lat_max=coord.lat;
     }

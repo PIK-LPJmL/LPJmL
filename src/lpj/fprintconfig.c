@@ -653,6 +653,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fputc('\n',file);
     isnetcdf=FALSE;
     for(i=0;i<config->n_out;i++)
+      if(hassuffix(config->outputvars[i].filename.name,config->compress_suffix))
+      {
+        fprintf(file,"Output with %s suffix is compressed with '%s'.\n",
+                config->compress_suffix,config->compress_cmd);
+        break;
+      }
+    for(i=0;i<config->n_out;i++)
       if(config->outputvars[i].filename.fmt==CDF)
       {
         isnetcdf=TRUE;

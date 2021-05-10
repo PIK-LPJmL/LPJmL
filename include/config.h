@@ -127,6 +127,9 @@ struct config
   int nregions;           /**< number of regions */
   Regionpar *regionpar;
   Outputvar *outputvars;
+  char *compress_cmd;    /**< command for compressing output files */
+  char *compress_suffix; /**< suffix for compressed output files */
+  char csv_delimit;      /**< delimiter of CSV files */
   int n_out;     /**< number of output files */
   int laimax_interpolate;
   Real laimax;        /**< maximum LAI for benchmark */
@@ -241,6 +244,8 @@ struct config
   int fertilizermap_size;
   int *cftmap;
   int cftmap_size;
+  int *soilmap;
+  int soilmap_size;
 #ifdef IMAGE
   Bool groundwater_irrig;   /**< Irrigation from groundwater reservoir */
   Bool aquifer_irrig;       /**< Aquifer irrigation possible?*/
