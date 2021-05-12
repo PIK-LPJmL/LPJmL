@@ -129,7 +129,7 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
         {
           if(first)
           {
-            fprintf(stderr,"WANRNING036: 'soilmap' not defined for soil type");
+            fprintf(stderr,"WARNING036: 'soilmap' not defined for soil type");
             first=FALSE;
           }
           else
