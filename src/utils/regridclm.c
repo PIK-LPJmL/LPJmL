@@ -165,8 +165,23 @@ int main(int argc,char **argv)
     }
     if(size!=(long long)header.ncell*header.nyear*header.nbands*sizeof(int))
     {
-      header.nyear=size/(sizeof(int)*header.ncell*header.nbands);
-      fprintf(stderr,"File '%s' too short, number of years set to %d.\n",argv[3],header.nyear);
+      if((long long)header.ncell*header.nyear*header.nbands*sizeof(short)==size)
+      {
+        fprintf(stderr,"File size of '%s' does not match header, set datatype to 2 byte size.\n",argv[3]);  
+        isint=FALSE;
+        free(idata);
+        data=newvec(short,(long long)header.ncell*header.nbands);
+        if(data==NULL)
+        {
+          printallocerr("data");
+          return EXIT_FAILURE;
+        }
+      }
+      else
+      {
+        header.nyear=size/(sizeof(int)*header.ncell*header.nbands);
+        fprintf(stderr,"File size of '%s' does not match header, number of years set to %d.\n",argv[3],header.nyear);
+      }
     }
   }
   else
@@ -184,8 +199,23 @@ int main(int argc,char **argv)
     }
     if(size!=(long long)header.ncell*header.nyear*header.nbands*sizeof(short))
     {
-      header.nyear=size/(sizeof(short)*header.ncell*header.nbands);
-      fprintf(stderr,"File '%s' too short, number of years set to %d.\n",argv[3],header.nyear);
+      if((long long)header.ncell*header.nyear*header.nbands*sizeof(int)==size)
+      {
+        fprintf(stderr,"File size of '%s' does not match header, set datatype to 4 byte size.\n",argv[3]);  
+        isint=TRUE;
+        free(data);
+        idata=newvec(int,(long long)header.ncell*header.nbands);
+        if(idata==NULL)
+        {
+          printallocerr("idata");
+          return EXIT_FAILURE;
+        }
+      }
+      else
+      {
+        header.nyear=size/(sizeof(short)*header.ncell*header.nbands);
+        fprintf(stderr,"File size of '%s'does not match header, number of years set to %d.\n",argv[3],header.nyear);
+      }
     }
   }
   file=fopen(argv[4],"wb");

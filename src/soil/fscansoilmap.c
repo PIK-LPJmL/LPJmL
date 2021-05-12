@@ -143,6 +143,8 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
   else
   {
     /* set default soil map if array is not defined */
+    if(verbose)
+      fprintf(stderr,"WARNING011: Map 'soilmap' not found, default 1:1 mapping assumed.\n");
     *size=config->nsoil+1;
     soilmap=newvec(int,*size);
     if(soilmap==NULL)
