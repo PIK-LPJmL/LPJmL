@@ -15,6 +15,8 @@
 
 #include "lpj.h"
 
+#define USAGE "Usage: %s [-size4] [-search] [-zero] [-longheader] coord_old.clm coord_new.clm data_old.clm data_new.clm\n"
+
 int main(int argc,char **argv)
 {
   FILE *file,*data_file;
@@ -47,7 +49,8 @@ int main(int argc,char **argv)
         iszero=TRUE;
       else
       {
-        fprintf(stderr,"Invalid option '%s'.\n",argv[i]);
+        fprintf(stderr,"Invalid option '%s'.\n"
+                USAGE,argv[i],argv[0]);
         return EXIT_FAILURE;
       }
     }
@@ -58,8 +61,7 @@ int main(int argc,char **argv)
   if(argc<5)
   {
     fprintf(stderr,"Error: Missing arguments.\n"
-            "Usage: %s [-size4] [-search] [-zero] [-longheader] coord_old.clm coord_new.clm data_old.clm data_new.clm\n",
-            argv[1-i]);
+            USAGE,argv[1-i]);
     return EXIT_FAILURE;
   }
   filename.name=argv[1];
