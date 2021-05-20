@@ -432,7 +432,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         closeinput(grassharvest_file,config->grassharvest_filename.fmt);
       return NULL;
     }
-    if(config->new_seed)
+    if(!config->ischeckpoint && config->new_seed)
       setseed(config->seed,config->seed_start);
   }
   *count=0;
