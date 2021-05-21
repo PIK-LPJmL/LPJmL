@@ -19,7 +19,7 @@
 /* Definition of constants */
 
 #define RESTART_HEADER "LPJRESTART"
-#define RESTART_VERSION 24
+#define RESTART_VERSION 25
 #define LPJ_CLIMATE_HEADER "LPJCLIM"
 #define LPJ_CLIMATE_VERSION 3
 #define LPJ_LANDUSE_HEADER "LPJLUSE"
@@ -123,6 +123,7 @@ typedef struct
 extern Bool fwriteheader(FILE *,const Header *, const char *,int);
 extern Bool freadheader(FILE *,Header *,Bool *,const char *,int *);
 extern Bool freadrestartheader(FILE *,Restartheader *,Bool);
+extern Bool fwriterestartheader(FILE *,const Restartheader *);
 extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *);
 extern size_t headersize(const char *,int);
 extern FILE *openinputfile(Header *, Bool *,const Filename *,
@@ -133,5 +134,6 @@ extern void fprintheader(FILE *,const Header *);
 /* Definition of macros */
 
 #define printheader(header) fprintheader(stdout,header)
+#define restartsize() (5*sizeof(int)+sizeof(Seed)) /* size of Restartheader without padding */
 
 #endif

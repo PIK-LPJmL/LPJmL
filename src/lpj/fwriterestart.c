@@ -90,7 +90,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     restartheader.double_harvest=config->double_harvest;
     for(i=0;i<NSEED;i++)
       restartheader.seed[i]=config->seed[i];
-    fwrite(&restartheader,sizeof(restartheader),1,file);
+    fwriterestartheader(file,&restartheader);
     /* skip index vector */
     fseek(file,sizeof(long long)*config->nall,SEEK_CUR);
   }
@@ -113,7 +113,7 @@ Bool fwriterestart(const Cell grid[],   /**< cell array               */
     return TRUE;
   }
   /* seek just after header + config->startgrid-config->firstgrid  */
-  fseek(file,headersize(RESTART_HEADER,RESTART_VERSION)+sizeof(Restartheader)+sizeof(long long)*(config->startgrid-config->firstgrid),SEEK_SET);
+  fseek(file,headersize(RESTART_HEADER,RESTART_VERSION)+restartsize()+sizeof(long long)*(config->startgrid-config->firstgrid),SEEK_SET);
   /* write position vector */
   fwrite(index,sizeof(long long),config->ngridcell,file);
 #ifndef _WIN32
