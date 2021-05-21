@@ -43,40 +43,41 @@
 #ifdef FROM_RESTART
 "new_seed" : false,
 "population" : false,
-"landuse" : "landuse",
+"landuse" : "yes",
+"equilsoil" : false,
 #else
+"equilsoil" : true,
 "population" : false,
-"landuse" : "no_landuse",
+"landuse" : "no",
 #endif
 "prescribe_burntarea" : false,
 "prescribe_landcover" : "no_landcover",
 "new_phenology": false,
 "new_trf" : false,        /* new transpiration reduction function disabled */
 "river_routing": false,
-"equilsoil" :false,
 "permafrost" : true,
-"with_nitrogen": "lim_nitrogen",
+"with_nitrogen": "lim",
 "store_climate" : true, /* store climate data in spin-up phase */
 "const_climate" : false,
 "fix_climate" : false,
 "const_deposition" : false,
-"fertilizer_input" : true,
+"fertilizer_input" : "yes",
 "fix_fertilization" : false,          /* fix fertilizer input */
 "check_climate" : true,               /* check climate input before start */
-"irrigation" : "pot_irrigation",
+"irrigation" : "pot",
 "sowing_date_option" : "fixed_sdate",
 "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
 "residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
 "residues_fire" : false,              /* fire in residuals */
 "laimax_interpolate" : "laimax_par",  /* laimax values from manage parameter file */
 "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
-"tillage_type" : "tillage",           /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
+"tillage_type" : "all",           /* Options: TILLAGE (all agr. cells tilled), NO_TILLAGE (no cells tilled) and READ_TILLAGE (tillage dataset used) */
 "till_startyear" : 1850,              /* year in which tillage should start */
 "black_fallow" : false,               /* simulation with black fallow on PNV */
 "no_ndeposition" : false,             /* turn off atmospheric N deposition */
 "reservoir" : false,
 "grassland_fixed_pft" : false,
-"wateruse" : "no_wateruse",
+"wateruse" : "no",
 "grass_harvest_options" : false,
 "intercrop" : true,                   /* intercrops on setaside */
 "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
@@ -85,9 +86,11 @@
 "rw_manage" : false,                  /* rain water management */
 "manure_input" : false,               /* enable manure input */
 "others_to_crop" : true,
+"cft_temp" : "temperate cereals",
+"cft_tropic" : "maize",
 "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
 "crop_resp_fix" : false,
-"crop_phu_option" : false,
+"crop_phu_option" : "new",
 "cropsheatfrost" : false,
 "double_harvest" : true,
 

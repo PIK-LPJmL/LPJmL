@@ -118,9 +118,10 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
   if(header.nbands!=ntotpft)
   {
     if(isroot(*config))
+
       fprintf(stderr,
-              "ERROR183: Number of PFTs=%d does not match %d in %s file '%s'.\n",
-              header.nbands,ntotpft,type,filename);
+              "ERROR183: Number of PFTs=%d does not match %d present in %s file '%s'.\n",
+              ntotpft,header.nbands,type,filename);
     fclose(file);
     return NULL;
   }

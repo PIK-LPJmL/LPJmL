@@ -123,8 +123,8 @@ int main(int argc,char **argv)
   header.firstyear=item[0].header.firstyear;
   header.ncell=ncell;
   fwriteheader(out,&header,RESTART_HEADER,RESTART_VERSION);
-  fwrite(&restartheader,sizeof(Restartheader),1,out);
-  header_offset=strlen(RESTART_HEADER)+sizeof(Restartheader)+sizeof(int)+sizeof(Header);
+  fwriterestartheader(out,&restartheader);
+  header_offset=strlen(RESTART_HEADER)+restartsize()+sizeof(int)+sizeof(Header);
   o_offset=header_offset;
   offset=0;
   for(i=0;i<count;i++)

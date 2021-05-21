@@ -154,11 +154,11 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   {
     case NATURAL: case SETASIDE_RF: case SETASIDE_IR:
       getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,pft->par->id,config)+=n_uptake;
-      getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,pft->par->id,config)+=*n_plant_demand-vegn_sum_grass(pft);
+      getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,pft->par->id,config)+=max(0,*n_plant_demand-vegn_sum_grass(pft));
       break;
     case BIOMASS_GRASS:
       getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=n_uptake; /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
-      getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=*n_plant_demand-vegn_sum_grass(pft); /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
+      getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=max(0,*n_plant_demand-vegn_sum_grass(pft)); /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
       break;
     case AGRICULTURE_GRASS:
       getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */

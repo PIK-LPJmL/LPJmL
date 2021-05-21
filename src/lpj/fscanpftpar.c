@@ -148,8 +148,8 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     if(pft->type<0 || pft->type>=ntypes)
     {
       if(verb)
-        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s' in line %d of '%s'.\n",
-                pft->type,pft->name,getlinecount(),getfilename());
+        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s'.\n",
+                pft->type,pft->name);
       return NULL;
     }
     fscanpftbool(verb,&item,&pft->peatland,pft->name,"peatland_pft");
@@ -182,7 +182,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       else if(pft->cultivation_type==WP)
       {
         if(verb)
-          fprintf(stderr,"ERROR210: wood plantation PFT '%s' in line %d of '%s' must be put before agriculture tree plantation PFT.\n",pft->name,getlinecount(),getfilename());
+          fprintf(stderr,"ERROR210: wood plantation PFT '%s' must be put before agriculture tree plantation PFT.\n",pft->name);
         return NULL;
       }
     }
@@ -191,19 +191,19 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       if(pft->cultivation_type==NONE)
       {
         if(verb)
-          fprintf(stderr,"ERROR210: Natural PFT '%s' in line %d of '%s' must be put before crop PFT.\n",pft->name,getlinecount(),getfilename());
+          fprintf(stderr,"ERROR210: Natural PFT '%s' must be put before crop PFT.\n",pft->name);
         return NULL;
       }
       else if(pft->cultivation_type==BIOMASS)
       {
         if(verb)
-          fprintf(stderr,"ERROR210: Biomass plantation PFT '%s' in line %d of '%s' must be put before crop PFT.\n",pft->name,getlinecount(),getfilename());
+          fprintf(stderr,"ERROR210: Biomass plantation PFT '%s' must be put before crop PFT.\n",pft->name);
         return NULL;
       }
       else if(pft->cultivation_type==WP)
       {
         if(verb)
-          fprintf(stderr,"ERROR210: wood plantation PFT '%s' in line %d of '%s' must be put before crop PFT.\n",pft->name,getlinecount(),getfilename());
+          fprintf(stderr,"ERROR210: wood plantation PFT '%s' must be put before crop PFT.\n",pft->name);
         return NULL;
       }
     }
@@ -212,13 +212,13 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       if(pft->cultivation_type==NONE)
       {
         if(verb)
-          fprintf(stderr,"ERROR210: Natural PFT '%s' in line %d of '%s' must be put before wood plantation PFT.\n",pft->name,getlinecount(),getfilename());
+          fprintf(stderr,"ERROR210: Natural PFT '%s' must be put before wood plantation PFT.\n",pft->name);
         return NULL;
       }
       else if(pft->cultivation_type==BIOMASS)
       {
         if(verb)
-          fprintf(stderr,"ERROR210: Biomass plantation PFT '%s' in line %d of '%s' must be put before wood planatation PFT.\n",pft->name,getlinecount(),getfilename());
+          fprintf(stderr,"ERROR210: Biomass plantation PFT '%s' must be put before wood planatation PFT.\n",pft->name);
         return NULL;
       }
     }

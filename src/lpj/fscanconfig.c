@@ -950,11 +950,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     fscanname(file,name,"restart_filename");
     config->restart_filename=addpath(name,config->restartdir);
     checkptr(config->restart_filename);
-    if(!config->ischeckpoint)
-    {
-      if(fscanbool(file,&config->new_seed,"new_seed",TRUE,verbose))
-        return TRUE;
-    }
+    if(fscanbool(file,&config->new_seed,"new_seed",TRUE,verbose))
+      return TRUE;
   }
   else
   {

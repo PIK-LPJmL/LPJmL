@@ -1,9 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**      f  r  e  a  d  r  e  s  t  a  r  t  h  e  a  d  e  r  .  c                \n**/
+/**      f  w  r  i  t  e  r  e  s  t  a  r  t  h  e  a  d  e  r  .  c             \n**/
 /**                                                                                \n**/
-/**     Reading file header for LPJ restart files. Detects                         \n**/
-/**     whether byte order has to be changed                                       \n**/
+/**     Writing file header for LPJ restart files.                                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,24 +14,23 @@
 
 #include "lpj.h"
 
-Bool freadrestartheader(FILE *file,            /**< file pointer of binary file */
-                        Restartheader *header, /**< file header to be read */
-                        Bool swap              /**< set to TRUE if data is in different byte order */
-                       )                       /** \return TRUE on error */
+Bool fwriterestartheader(FILE *file,                 /**< file pointer of binary file */
+                         const Restartheader *header /**< file header to be written */
+                        )                            /** \return TRUE on error */
 {
-  if(freadint(&header->landuse,1,swap,file)!=1)
+  if(fwrite(&header->landuse,sizeof(int),1,file)!=1)
     return TRUE;
-  if(freadint(&header->river_routing,1,swap,file)!=1)
+  if(fwrite(&header->river_routing,sizeof(int),1,file)!=1)
     return TRUE;
-  if(freadint(&header->sdate_option,1,swap,file)!=1)
+  if(fwrite(&header->sdate_option,sizeof(int),1,file)!=1)
     return TRUE;
-  if(freadint(&header->crop_option,1,swap,file)!=1)
+  if(fwrite(&header->crop_option,sizeof(int),1,file)!=1)
     return TRUE;
-  if(freadint(&header->double_harvest,1,swap,file)!=1)
+  if(fwrite(&header->double_harvest,sizeof(int),1,file)!=1)
     return TRUE;
 #ifdef USE_RAND48
-  return freadshort(header->seed,NSEED,swap,file)!=NSEED;
+  return fwrite(header->seed,sizeof(short),NSEED,file)!=NSEED;
 #else
-  return freadint(header->seed,NSEED,swap,file)!=NSEED;
+  return fwrite(header->seed,sizeof(int),NSEED,file)!=NSEED;
 #endif
-} /* of 'freadrestartheader' */
+} /* of 'fwriterestartheader' */

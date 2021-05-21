@@ -16,6 +16,25 @@
 
 "inpath" : "/p/projects/lpjml/input/historical",
 
+"soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
+             "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
+             "loamy sand", "sand", "rock and ice"],
+
+"landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                "temperate roots", "tropical roots", "oil crops sunflower",
+                "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                "sugarcane","others","grassland","biomass grass","biomass tree"],
+
+"fertilizermap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                   "temperate roots", "tropical roots", "oil crops sunflower",
+                   "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                   "sugarcane","others","grassland","biomass grass","biomass tree"],
+
+"cftmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+            "temperate roots", "tropical roots", "oil crops sunflower",
+            "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+            "sugarcane"],
+
 "input" :
 {
   "soil" :         { "fmt" : "meta", "name" : "input_VERSION2/soil.descr"},

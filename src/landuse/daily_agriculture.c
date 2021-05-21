@@ -27,7 +27,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
                        Real gtemp_air,              /**< [in] value of air temperature response function */
                        Real gtemp_soil,             /**< [in] value of soil temperature response function */
                        Real eeq,                    /**< [in] equilibrium evapotranspiration (mm) */
-                       Real par,                    /**< photosynthetic active radiation flux  (J/m2/day) */
+                       Real par,                    /**< [in] photosynthetic active radiation flux  (J/m2/day) */
                        Real melt,                   /**< [in] melting water (mm/day) */
                        int npft,                    /**< [in] number of natural PFTs */
                        int ncft,                    /**< [in] number of crop PFTs   */
@@ -99,7 +99,8 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     if(config->cropsheatfrost && climate->tmin<(-5))
     {
       crop=pft->data;
-      if(crop->fphu>0.45 || !crop->wtype) /* frost damage possible for winter crops after storage organs develop, for other crops always possible */
+      //if(crop->fphu>0.45 || !crop->wtype) /* frost damage possible for winter crops after storage organs develop, for other crops always possible */
+      if(crop->fphu>0.45) /* frost damage possible after storage organs develop */
         crop->frostkill=TRUE;
     }
     if(!config->with_nitrogen)

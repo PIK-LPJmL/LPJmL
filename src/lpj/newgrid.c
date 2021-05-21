@@ -432,7 +432,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         closeinput(grassharvest_file,config->grassharvest_filename.fmt);
       return NULL;
     }
-    if(config->new_seed)
+    if(!config->ischeckpoint && config->new_seed)
       setseed(config->seed,config->seed_start);
   }
   *count=0;
@@ -749,7 +749,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
                 (config->ischeckpoint) ? config->checkpoint_restart_filename : config->restart_filename,i+config->startgrid);
         return NULL;
       }
-      if(config->new_seed)
+      if(!config->ischeckpoint && config->new_seed)
         setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
       if(!grid[i].skip)
         check_stand_fracs(grid+i,

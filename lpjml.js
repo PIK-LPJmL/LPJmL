@@ -76,7 +76,7 @@
   "irrigation" : "lim",                 /* other options: "no", "lim", "pot", "all" */
   "laimax_interpolate" : "laimax_par",  /* laimax values from manage parameter file, */
                                         /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
-  "tillage_type" : "all",           /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
+  "tillage_type" : "all",               /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
   "till_startyear" : 1850,              /* year in which tillage should start */
   "black_fallow" : false,               /* simulation with black fallow on PNV */
   "pft_residue" : "temperate cereals",
@@ -143,6 +143,7 @@
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+    { "id" : "fpc",              "file" : { "fmt" : "raw", "name" : "output/fpc.bin" }},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
     { "id" : "fpc",              "file" : { "fmt" : "raw", "name" : "output/fpc.bin"}},
     { "id" : "wpc",              "file" : { "fmt" : "raw", "name" : "output/wpc.bin"}},
@@ -243,6 +244,7 @@ ID                               Fmt                        filename
 #else
   "output" :
   [
+    { "id" : "soilc",            "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc.bin"}},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup.csv"}}
   ],
 #endif
@@ -260,12 +262,13 @@ ID                               Fmt                        filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 8000,  /* spinup years */
+  "nspinup" : 30000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
   "outputyear" : -6099, /* last year of simulation */
   "restart" :  false, /* start from restart file */
+  "outputyear" : -28099,
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
   "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "restart_year": 1840 /* write restart at year */

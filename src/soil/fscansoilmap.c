@@ -44,6 +44,12 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
   {
     if(fscanarray(file,&array,size,FALSE,"soilmap",verbose))
       return NULL;
+    if(*size==0)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR255: Size of 'soilmap' array must not be zero.\n");
+      return NULL;
+    }
     soilmap=newvec(int,*size);
     if(soilmap==NULL)
     {
@@ -67,29 +73,50 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
         soilmap[s]=0;
         continue;
       }
-      if(fscanstring(&item,name,NULL,FALSE,verbose))
+      if(isstring(&item,NULL))
       {
-        free(soilmap);
-        free(undef);
-        return NULL;
-      }
-      soilmap[s]=findsoilid(name,config->soilpar,config->nsoil);
-      if(soilmap[s]==NOT_FOUND)
-      {
-        if(verbose)
+        if(fscanstring(&item,name,NULL,FALSE,verbose))
         {
-          fprintf(stderr,"ERROR254: Soil type '%s' not in soil parameter array, must be in [",name);
-          for(s=0;s<config->nsoil;s++)
-          {
-            fprintf(stderr,"'%s'",config->soilpar[s].name);
-            if(s<config->nsoil-1)
-              fprintf(stderr,",");
-          }
-          fprintf(stderr,"].\n");
+          free(soilmap);
+          free(undef);
+          return NULL;
         }
-        free(undef);
-        free(soilmap);
-        return NULL;
+        soilmap[s]=findsoilid(name,config->soilpar,config->nsoil);
+        if(soilmap[s]==NOT_FOUND)
+        {
+          if(verbose)
+          {
+            fprintf(stderr,"ERROR254: Soil type '%s' not in soil parameter array, must be in [",name);
+            for(s=0;s<config->nsoil;s++)
+            {
+              fprintf(stderr,"'%s'",config->soilpar[s].name);
+              if(s<config->nsoil-1)
+                fprintf(stderr,",");
+            }
+            fprintf(stderr,"].\n");
+          }
+          free(undef);
+          free(soilmap);
+          return NULL;
+        }
+      }
+      else
+      {
+        if(fscanint(&item,soilmap+s,NULL,FALSE,verbose))
+        {
+          free(soilmap);
+          free(undef);
+          return NULL;
+        }
+        if(soilmap[s]<0 || soilmap[s]>=config->nsoil)
+        {
+          if(verbose)
+            fprintf(stderr,"ERROR254: Invalid soil type %d in 'soilmap', must be in [0,%d].\n",
+                    soilmap[s],config->nsoil-1);
+          free(soilmap);
+          free(undef);
+          return NULL;
+        }
       }
       undef[soilmap[s]]=FALSE;
       soilmap[s]++;
@@ -102,7 +129,7 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
         {
           if(first)
           {
-            fprintf(stderr,"WANRNING036: 'soilmap' not defined for soil type");
+            fprintf(stderr,"WARNING036: 'soilmap' not defined for soil type");
             first=FALSE;
           }
           else
@@ -115,6 +142,9 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
   }
   else
   {
+    /* set default soil map if array is not defined */
+    if(verbose)
+      fprintf(stderr,"WARNING011: Map 'soilmap' not found, default 1:1 mapping assumed.\n");
     *size=config->nsoil+1;
     soilmap=newvec(int,*size);
     if(soilmap==NULL)

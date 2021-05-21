@@ -116,6 +116,8 @@ int main(int argc,char **argv)
   }
   else
   {
+    if(argc)
+      fputs("WARNING018: Arguments listed after configuration filename, will be ignored.\n",stderr);
     if(isout)
     {
       /* print LPJ configuration on stdout if '-q' option is not set */
