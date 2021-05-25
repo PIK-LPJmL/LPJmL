@@ -149,7 +149,8 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       if (soildepth[l]>soil->freeze_depth[l])
       {
         /*percolation*/
-        if((soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-param.percthres)>epsilon/soil->whcs[l])
+        if(soil->ice_depth[l]<epsilon && soil->w[l]-param.percthres>epsilon)
+        //if((soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-param.percthres)>epsilon/soil->whcs[l])
         {
           HC=soil->par->Ks*pow(((soil->w[l]*soil->whcs[l]+inactive_water[l])/soil->wsats[l]),soil->beta_soil[l]);
           TT=((soil->w[l]-param.percthres)*soil->whcs[l]+soil->ice_depth[l])/HC;
@@ -158,10 +159,10 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
           /*correction of percolation for water content of the following layer*/
           if (l<BOTTOMLAYER)
           {
-            if(1-(soil->w[l+1]*soil->whcs[l+1]+soil->w_fw[l+1]+soil->ice_depth[l+1]+soil->ice_fw[l+1])/(soil->wsats[l+1]-soil->wpwps[l+1])<0)
+            if(param.percthres-(soil->w[l+1]*soil->whcs[l+1]+soil->w_fw[l+1]+soil->ice_depth[l+1]+soil->ice_fw[l+1])/(soil->wsats[l+1]-soil->wpwps[l+1])<0)
               perc=0;
             else
-              perc*=sqrt(1-(soil->w[l+1]*soil->whcs[l+1]+soil->w_fw[l+1]+soil->ice_depth[l+1]+soil->ice_fw[l+1])/(soil->wsats[l+1]-soil->wpwps[l+1]));
+              perc*=sqrt(param.percthres-(soil->w[l+1]*soil->whcs[l+1]+soil->w_fw[l+1]+soil->ice_depth[l+1]+soil->ice_fw[l+1])/(soil->wsats[l+1]-soil->wpwps[l+1]));
           }
 #ifdef SAFE
           if (perc< 0)
@@ -177,6 +178,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
             perc+=(soil->w[l])*soil->whcs[l];
             soil->w[l]=0;
           }
+          getoutputindex(&stand->cell->output,PERC,l,config)+=perc*stand->frac;
           if(l==BOTTOMLAYER)
           {
 #ifdef IMAGE

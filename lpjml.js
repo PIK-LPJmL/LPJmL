@@ -212,6 +212,7 @@ ID                               Fmt                        filename
     { "id" : "pet",              "file" : { "fmt" : "raw", "name" : "output/mpet.bin"}},
     { "id" : "albedo",           "file" : { "fmt" : "raw", "name" : "output/malbedo.bin"}},
     { "id" : "maxthaw_depth",    "file" : { "fmt" : "raw", "name" : "output/maxthaw_depth.bin"}},
+    { "id" : "perc",             "file" : { "fmt" : "raw", "name" : "output/mperc.bin"}},
     { "id" : "soiltemp1",        "file" : { "fmt" : "raw", "name" : "output/msoiltemp1.bin"}},
     { "id" : "soiltemp2",        "file" : { "fmt" : "raw", "name" : "output/msoiltemp2.bin"}},
     { "id" : "soiltemp3",        "file" : { "fmt" : "raw", "name" : "output/msoiltemp3.bin"}},
