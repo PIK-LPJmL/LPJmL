@@ -161,7 +161,7 @@ void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
   climbuf->aprec=0;
   for(m=0;m<NMONTH;m++)
     climbuf->aprec+=climbuf->mprec20[m];
-  if(crop_phu_option==PRESCRIBED_CROP_PHU  && year<=sdate_fixyear) /* update only until sdate_fixyear */
+  if(crop_phu_option!=OLD_CROP_PHU  && year<=sdate_fixyear) /* update only until sdate_fixyear; included NEW_CROP_PHU option for World Modelers */
   {
     for(cft=0;cft<ncft;cft++)
       climbuf->V_req[cft]= (climbuf->V_req[cft]< -9998) ? climbuf->V_req_a[cft] : (1-kk)*climbuf->V_req[cft]+kk*climbuf->V_req_a[cft];
