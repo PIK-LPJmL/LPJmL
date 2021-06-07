@@ -83,7 +83,7 @@ int main(int argc,char **argv)
         }
         if(multiplier<=0)
         {
-          fprintf(stderr,"Scale=%g must be greater then zero.\n",multiplier);
+          fprintf(stderr,"Scale=%g must be greater than zero.\n",multiplier);
           return EXIT_FAILURE;
         }
       }
@@ -104,7 +104,7 @@ int main(int argc,char **argv)
         }
         if(header.cellsize_lon<=0)
         {
-          fprintf(stderr,"Cell size=%g must be greater then zero.\n",header.cellsize_lon);
+          fprintf(stderr,"Cell size=%g must be greater than zero.\n",header.cellsize_lon);
           return EXIT_FAILURE;
         }
       }
@@ -125,7 +125,7 @@ int main(int argc,char **argv)
         }
         if(header.nbands<1)
         {
-          fprintf(stderr,"Number of bands=%d must be greater then zero.\n",header.nbands);
+          fprintf(stderr,"Number of bands=%d must be greater than zero.\n",header.nbands);
           return EXIT_FAILURE;
         }
       }
@@ -162,7 +162,7 @@ int main(int argc,char **argv)
         }
         if(header.ncell<1)
         {
-          fprintf(stderr,"Number of cells=%d must be greater then zero.\n",header.ncell);
+          fprintf(stderr,"Number of cells=%d must be greater than zero.\n",header.ncell);
           return EXIT_FAILURE;
         }
       }
