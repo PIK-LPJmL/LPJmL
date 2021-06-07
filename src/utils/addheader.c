@@ -134,9 +134,9 @@ int main(int argc,char **argv)
           fprintf(stderr,"Invalid number '%s' for option '-firstcell'.\n",argv[index]);
           return EXIT_FAILURE;
         }
-        if(header.nyear<=0)
+        if(header.firstcell<0)
         {
-          fputs("Number of years less than one.\n",stderr);
+          fputs("First cell is less than zero.\n",stderr);
           return EXIT_FAILURE;
         }
       }
