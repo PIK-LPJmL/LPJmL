@@ -123,7 +123,7 @@ int main(int argc,char **argv)
   standtype[BIOMASS_GRASS]=biomass_grass_stand;
   standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
   standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
-  standtype[WOODPLANTATION]=woodplantation_stand,
+  standtype[WOODPLANTATION]=woodplantation_stand;
   standtype[KILL]=kill_stand;
 
 
