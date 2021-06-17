@@ -32,13 +32,16 @@ void update_double_harvest(Output *output,      /**< pointer to output */
   nirrig=getnirrig(ncft,config);
   if(config->double_harvest)
   {
-    if(output->syear2[pft->par->id-npft+irrigation*ncft]>epsilon)
+    if(output->syear[pft->par->id-npft+irrigation*ncft]>epsilon)
     {
       output->syear2[pft->par->id-npft+irrigation*ncft]=crop->dh->sowing_year;
       getoutputindex(output,SYEAR2,pft->par->id-npft+irrigation*ncft,config)=crop->dh->sowing_year;
     }
     else
+    {
+      output->syear[pft->par->id-npft+irrigation*ncft]=crop->dh->sowing_year;
       getoutputindex(output,SYEAR,pft->par->id-npft+irrigation*ncft,config)=crop->dh->sowing_year;
+    }
     if(output->syear2[pft->par->id-npft+irrigation*ncft]>epsilon)
       getoutputindex(output,HDATE2,pft->par->id-npft+irrigation*ncft,config)=day;
     else

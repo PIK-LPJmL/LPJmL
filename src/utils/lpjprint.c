@@ -145,6 +145,7 @@ static Bool printgrid(Config *config, /* Pointer to LPJ configuration */
     }
     grid.output.data=NULL;
     grid.output.syear2=NULL;
+    grid.output.syear=NULL;
     /*grid.cropdates=init_cropdates(&config.pftpar+npft,ncft,grid.coord.lat); */
     soil_id=config->soilmap[soilcode]-1;
     if(freadcell(file_restart,&grid,npft,ncft,

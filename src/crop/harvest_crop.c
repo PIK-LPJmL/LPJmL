@@ -113,15 +113,15 @@ void harvest_crop(Output *output,      /**< Output data */
       double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
                      &(getoutputindex(output,PFT_RHARVESTN,pft->par->id-npft+data->irrigation*nirrig,config)),
                      &(getoutputindex(output,PFT_RHARVESTN2,pft->par->id-npft+data->irrigation*nirrig,config)),harvest.residual.nitrogen+harvest.residuals_burnt.nitrogen+harvest.residuals_burntinfield.nitrogen);
-  }
-  /* harvested area */
-      double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
-                     &(getoutputindex(output,CFTFRAC,pft->par->id-npft+data->irrigation*nirrig,config)),
-                     &(getoutputindex(output,CFTFRAC2,pft->par->id-npft+data->irrigation*nirrig,config)),stand->frac);
-  if(output->syear2[pft->par->id-npft+data->irrigation*ncft]>0)
-    getoutputindex(output,SDATE2,pft->par->id-npft+data->irrigation*ncft,config)=crop->dh->sdate;
-  else
-    getoutputindex(output,SDATE,pft->par->id-npft+data->irrigation*ncft,config)=crop->dh->sdate;
+    }
+    /* harvested area */
+    double_harvest(output->syear2[pft->par->id-npft+data->irrigation*ncft],
+                   &(getoutputindex(output,CFTFRAC,pft->par->id-npft+data->irrigation*nirrig,config)),
+                   &(getoutputindex(output,CFTFRAC2,pft->par->id-npft+data->irrigation*nirrig,config)),stand->frac);
+    if(output->syear2[pft->par->id-npft+data->irrigation*ncft]>0)
+      getoutputindex(output,SDATE2,pft->par->id-npft+data->irrigation*ncft,config)=crop->dh->sdate;
+    else
+      getoutputindex(output,SDATE,pft->par->id-npft+data->irrigation*ncft,config)=crop->dh->sdate;
   }
   else
   {
