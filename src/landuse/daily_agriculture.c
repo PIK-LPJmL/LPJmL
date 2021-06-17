@@ -95,10 +95,10 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   foreachpft(pft,p,&stand->pftlist)
   {
+    crop=pft->data;
     /* kill crop at frost events */
     if(config->cropsheatfrost && climate->tmin<(-5))
     {
-      crop=pft->data;
       //if(crop->fphu>0.45 || !crop->wtype) /* frost damage possible for winter crops after storage organs develop, for other crops always possible */
       if(crop->fphu>0.45) /* frost damage possible after storage organs develop */
         crop->frostkill=TRUE;
@@ -108,7 +108,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     else
     {
       /* trigger 2nd fertilization */
-      crop=pft->data;
       /* GGCMI phase 3 rule: apply second dosis at fphu=0.25*/
       if(crop->fphu>0.25 && crop->nfertilizer>0)
       {
@@ -150,7 +149,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     {
       if(pft->par->id==config->crop_index && data->irrigation==config->crop_irrigation)
         output_daily_crop(output,pft,0.0,0.0,config);
-      crop=pft->data;
       update_double_harvest(output,pft,data->irrigation,day,npft,ncft,config);
       harvest_crop(output,stand,pft,npft,ncft,year,config);
       /* return irrig_stor and irrig_amount */
@@ -174,8 +172,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
           stand->cell->ml.image_data->mevapotr[month]-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*stand->frac;
         }
 #endif
-
-
         if(config->pft_output_scaled)
         {
           getoutputindex(output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+data->irrigation*nirrig,config)-=(data->irrig_stor+data->irrig_amount)*(1/data->ec-1)*data->conv_evap*stand->frac;
@@ -260,7 +256,6 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   irrig_apply-=intercep_stand_blue;
   rainmelt-=(intercep_stand-intercep_stand_blue);
-
 
   /* rain-water harvesting*/
   if(!data->irrigation && config->rw_manage && rainmelt<5)

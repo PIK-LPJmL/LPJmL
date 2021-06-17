@@ -1074,6 +1074,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(PREC_IMAGE,1);
   writeoutputvar(SUN_IMAGE,ndate1);
   writeoutputvar(WET_IMAGE,1);
+  writeoutputarray(PERC,1);
   writeoutputarray(SOILTEMP,ndate1);
   writeoutputvar(SOILTEMP1,ndate1);
   writeoutputvar(SOILTEMP2,ndate1);

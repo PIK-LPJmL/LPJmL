@@ -287,6 +287,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
               perc+=(soil->w[l])*soil->whcs[l];
               soil->w[l]=0;
             }
+            getoutputindex(&stand->cell->output,PERC,l,config)+=perc*stand->frac;
             if(l==BOTTOMLAYER)
             {
 #ifdef IMAGE

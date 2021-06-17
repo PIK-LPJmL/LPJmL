@@ -167,6 +167,7 @@
   { "id" : PRODUCT_POOL_SLOW, "name": "product_pool_slow", "timestep" : "annual", "var" :  "product_pool_slow", "descr" :  "carbon in the slow product pool", "unit" : "gC/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : LUC_IMAGE, "name": "luc_image", "timestep" : "annual", "var" :  "luc_image", "descr" :  "", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : MAXTHAW_DEPTH, "name": "maxthaw_depth", "timestep" : "annual", "var" :  "maxthaw_depth", "descr" :  "maximum thawing depth", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
+  { "id" : PERC, "name": "perc", "timestep" : "monthly", "var" :  "perc", "descr" :  "percolation", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILTEMP, "name": "soiltemp", "timestep" : "monthly", "var" :  "soiltemp", "descr" :  "soil temperature", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILTEMP1, "name": "soiltemp1", "timestep" : "monthly", "var" :  "soiltemp1", "descr" :  "soil temperature in layer 1", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
   { "id" : SOILTEMP2, "name": "soiltemp2", "timestep" : "monthly", "var" :  "soiltemp2", "descr" :  "soil temperature in layer 2", "unit" : "Celsius", "scale" : 1.0, "offset" : 0.0},
