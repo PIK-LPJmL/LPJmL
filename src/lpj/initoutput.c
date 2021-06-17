@@ -108,9 +108,14 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
     {
       grid[i].output.syear2=newvec(int,2*ncft);
       checkptr(grid[i].output.syear2);
+      grid[i].output.syear=newvec(int,2*ncft);
+      checkptr(grid[i].output.syear);
     }
     else
+    {
       grid[i].output.syear2=NULL;
+      grid[i].output.syear=NULL;
+    }
 #if defined IMAGE && defined COUPLED
     grid[i].pft_harvest=newvec(Real,config->outputsize[PFT_HARVESTC]);
     checkptr(grid[i].pft_harvest);

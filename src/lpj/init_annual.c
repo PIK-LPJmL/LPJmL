@@ -47,7 +47,7 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
   cell->balance.excess_water=cell->balance.agpp=0;
   if(config->double_harvest)
     for(p=0;p<2*ncft;p++)
-      cell->output.syear2[p]=0;
+      cell->output.syear2[p]=cell->output.syear[p]=0;
   foreachstand(stand,s,cell->standlist)
   {
 #ifdef DEBUG3
