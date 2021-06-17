@@ -65,7 +65,7 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
     }
     else
       config->outputmap[i]=0; /* no output used, point to trash */
-   
+
   }
   if(isopen(outputfile,PFT_GCGP))
   {
