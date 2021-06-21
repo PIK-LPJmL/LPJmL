@@ -170,6 +170,37 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         }
       }
     }
+    else
+    {
+      /* testing if there is too much nitrogen for allowed NC ratios */
+      if (grass->ind.leaf.nitrogen/grass->ind.leaf.carbon>pft->par->ncleaf.high)
+      {
+        grass->ind.leaf.nitrogen = grass->ind.leaf.carbon*pft->par->ncleaf.high;
+        pft->bm_inc.nitrogen += (lastday.leaf.nitrogen-grass->ind.leaf.nitrogen)*pft->nind;
+      }
+      if(grass->ind.root.nitrogen/grass->ind.root.carbon>pft->par->ncleaf.high/grasspar->ratio)
+      {
+        grass->ind.root.nitrogen = grass->ind.root.carbon*pft->par->ncleaf.high/grasspar->ratio;
+        pft->bm_inc.nitrogen += (lastday.root.nitrogen-grass->ind.root.nitrogen)*pft->nind;
+      }
+      /* testing if there is too much carbon for allowed NC ratios */
+      if(grass->ind.leaf.nitrogen / grass->ind.leaf.carbon<pft->par->ncleaf.low)
+      {
+        lastday.leaf.carbon = grass->ind.leaf.carbon;
+        grass->ind.leaf.carbon = grass->ind.leaf.nitrogen / pft->par->ncleaf.low;
+        litter->item[pft->litter].ag.leaf.carbon += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind;
+        getoutput(output,LITFALLC,config) += (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind*pft->stand->frac;
+        update_fbd_grass(litter, pft->par->fuelbulkdensity,
+          (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind);
+      }
+      if(grass->ind.root.nitrogen/grass->ind.root.carbon<pft->par->ncleaf.low/grasspar->ratio)
+       {
+        lastday.root.carbon = grass->ind.root.carbon;
+        grass->ind.root.carbon = grass->ind.root.nitrogen / pft->par->ncleaf.low*grasspar->ratio;
+        litter->item[pft->litter].bg.carbon += (lastday.root.carbon - grass->ind.root.carbon)*pft->nind;
+        getoutput(output,LITFALLC,config) += (lastday.root.carbon - grass->ind.root.carbon)*pft->nind*pft->stand->frac;
+      }
+    }
     pft->nleaf = grass->ind.leaf.nitrogen;
   } /* of config->with_nitrogen */
   *fpc_inc=fpc_grass(pft);
