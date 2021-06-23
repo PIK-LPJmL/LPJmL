@@ -192,9 +192,9 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     gc=0;
 
   if(pft->par->type==CROP)
-    gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar(pft));
+    gpd=hour2sec(daylength)*(gc-pft->par->gmin*fpar_crop(pft));
   else
-    gpd=hour2sec(daylength)*(gc-pft->par->gmin*pft->phen)*pft->fpc*(1-pft->snowcover);
+    gpd=hour2sec(daylength)*(gc*pft->fpc-pft->par->gmin*fpar(pft));
 
   data.tstress=temp_stress(pft->par,temp,daylength);
   if(gpd>1e-5 && isphoto(data.tstress))
