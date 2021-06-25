@@ -140,13 +140,23 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error reading data in year %d.\n",i);
       return EXIT_FAILURE;
     }
-    for(j=0;j<ngrid*nitem;j++)
-      data_sum[j]+=data[j];
+    if(main && nsum==NMONTH)
+      for(j=0;j<ngrid*nitem;j++)
+        data_sum[j]+=data[j]*ndaymonth[i % NMONTH];
+    else
+      for(j=0;j<ngrid*nitem;j++)
+        data_sum[j]+=data[j];
     if((i+1) % nsum==0)
     {
       if(mean)
-        for(j=0;j<ngrid*nitem;j++)
-          data_sum[j]/=nsum;
+      {
+        if(nsum==NMONTH)
+          for(j=0;j<ngrid*nitem;j++)
+            data_sum[j]/=NDAYYEAR;
+        else
+          for(j=0;j<ngrid*nitem;j++)
+            data_sum[j]/=nsum;
+      }
       if(fwrite(data_sum,sizeof(float),ngrid*nitem,out)!=ngrid*nitem)
       {
         fprintf(stderr,"Error writing data in year %d.\n",i);

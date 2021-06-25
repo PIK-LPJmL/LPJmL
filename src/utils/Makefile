@@ -148,8 +148,8 @@ cdf2coord.$O: cdf2coord.c
 $(BIN)/cdf2coord$E: cdf2coord.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/cdf2coord$E cdf2coord.$O $(LPJLIBS) $(LIBS)
 
-$(BIN)/binsum$E: binsum.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/binsum$E binsum.$O $(LIBDIR)/libtools.$A $(LIBS)
+$(BIN)/binsum$E: binsum.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/binsum$E binsum.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/joingrid$E: joingrid.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/joingrid$E joingrid.$O $(LIBDIR)/libtools.$A $(LIBS)
