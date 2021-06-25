@@ -117,7 +117,7 @@ int main(int argc,char **argv)
   }
   nyear=getfilesize(argv[iarg+1])/sizeof(float)/ngrid/nitem;
   if(getfilesize(argv[iarg+1]) % (sizeof(float)*ngrid*nitem))
-    fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg+2],nitem,ngrid);
+    fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg+1],nitem,ngrid);
   data=newvec(float,ngrid*nitem);
   if(data==NULL)
   {
