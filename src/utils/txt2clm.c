@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 #define TXT2CLM_VERSION "1.0.001"
-#define USAGE "Usage: txt2clm [-h] [-scale s] [-float] [-nbands n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] txtfile clmfile\n"
+#define USAGE "Usage: txt2clm [-h] [-scale s] [-float] [-int] [-nbands n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] txtfile clmfile\n"
 
 int main(int argc,char **argv)
 {
@@ -26,6 +26,7 @@ int main(int argc,char **argv)
   char *endptr;
   float value;
   short s;
+  int data;
   Header header;
   char *id;
   int i,iarg,rc;
@@ -52,6 +53,7 @@ int main(int argc,char **argv)
                "Arguments:\n"
                "-h           print this help text\n"
                "-float       write data as float, default is short\n"
+               "-int         write data as int, default is short\n"
                "-nbands n    number of bands, default is %d\n"
                "-firstcell n index of first cell\n"
                "-ncell n     number of cells, default is %d\n"
@@ -66,6 +68,8 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[iarg],"-float"))
         header.datatype=LPJ_FLOAT;
+      else if(!strcmp(argv[iarg],"-int"))
+        header.datatype=LPJ_INT;
       else if(!strcmp(argv[iarg],"-scale"))
       {
         if(iarg==argc-1)
@@ -224,21 +228,46 @@ int main(int argc,char **argv)
   fwriteheader(out,&header,id,LPJ_CLIMATE_VERSION);
   do
   {
-    for(i=0;i<header.ncell*header.nbands;i++)
+    if(header.datatype==LPJ_INT)
     {
-      rc=fscanf(file,"%g",&value);
-      if(rc!=1)
-        break;
-      if(header.datatype==LPJ_SHORT)
+      for(i=0;i<header.ncell*header.nbands;i++)
       {
-        if(value*multiplier<SHRT_MIN || value*multiplier>SHRT_MAX)
-           fprintf(stderr,"WARNING: Data overflow %g in year %d at cell %d and band %d\n",
-                   value*multiplier,header.nyear,i/header.nbands+1,i % header.nbands+1);
-        s=(short)(value*multiplier);
-        fwrite(&s,sizeof(short),1,out);
+        rc=fscanf(file,"%d",&data);
+        if(rc!=1)
+          break;
+        if(fwrite(&data,sizeof(data),1,out)!=1)
+        {
+          fprintf(stderr,"Error writing data in '%s': %s.\n",argv[iarg+1],strerror(errno));
+          return EXIT_FAILURE;
+        }
       }
-      else
-        fwrite(&value,sizeof(float),1,out);
+    }
+    else
+      for(i=0;i<header.ncell*header.nbands;i++)
+      {
+        rc=fscanf(file,"%g",&value);
+        if(rc!=1)
+          break;
+        if(header.datatype==LPJ_SHORT)
+        {
+          if(value*multiplier<SHRT_MIN || value*multiplier>SHRT_MAX)
+             fprintf(stderr,"WARNING: Data overflow %g in year %d at cell %d and band %d\n",
+                     value*multiplier,header.nyear,i/header.nbands+1,i % header.nbands+1);
+          s=(short)(value*multiplier);
+          if(fwrite(&s,sizeof(short),1,out)!=1)
+          {
+            fprintf(stderr,"Error writing data in '%s': %s.\n",argv[iarg+1],strerror(errno));
+            return EXIT_FAILURE;
+          }
+        }
+        else
+        {
+          if(fwrite(&value,sizeof(float),1,out)!=1)
+          {
+            fprintf(stderr,"Error writing data in '%s': %s.\n",argv[iarg+1],strerror(errno));
+            return EXIT_FAILURE;
+          }
+        }
     }
     if(i==header.ncell*header.nbands)
       header.nyear++;
@@ -248,8 +277,9 @@ int main(int argc,char **argv)
     else if(!feof(file))
       fprintf(stderr,"End of file not reached in '%s'.\n",argv[iarg]);
   } while(rc==1);
+  fclose(file);
   rewind(out);
   fwriteheader(out,&header,id,LPJ_CLIMATE_VERSION);
-  fclose(file);
+  fclose(out);
   return EXIT_SUCCESS;
 } /* of 'main' */
