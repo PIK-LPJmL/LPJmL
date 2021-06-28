@@ -53,6 +53,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
 {
   int cell,rc;
   short *s;
+  int *idata;
   float *f;
   double *d;
   int index,start;
@@ -145,6 +146,24 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
         return TRUE;
       }
       break;
+    case LPJ_INT:
+      idata=newvec(int,size*file->var_len*file->nlon*file->nlat);
+      if(idata==NULL)
+      {
+        printallocerr("data");
+        nc_close(file->ncid);
+        return TRUE;
+      }
+      if((rc=nc_get_vara_int(file->ncid,file->varid,offsets,counts,idata)))
+      {
+        free(idata);
+        fprintf(stderr,"ERROR421: Cannot read int data: %s.\n",
+               nc_strerror(rc));
+        nc_close(file->ncid);
+        return TRUE;
+      }
+      break;
+
     default:
       fprintf(stderr,"Datatype %s not supported.\n",typenames[file->datatype]);
       nc_close(file->ncid);
@@ -173,6 +192,9 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
           break;
         case LPJ_DOUBLE:
           free(d);
+          break;
+        case LPJ_INT:
+          free(idata);
           break;
         case LPJ_SHORT:
           free(s);
@@ -235,6 +257,20 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
           }
           data[cell*size*file->var_len+i]=file->slope*d[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept;
           break;
+        case LPJ_INT:
+          if(idata[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.i)
+          {
+            fprintf(stderr,"ERROR423: Missing value for cell=%d (",cell);
+            fprintcoord(stderr,coords+cell);
+            fprintf(stderr,") ");
+            printindex(i,file->time_step,file->var_len);
+            fprintf(stderr,".\n");
+            free(s);
+            nc_close(file->ncid);
+            return TRUE;
+          }
+          data[cell*size*file->var_len+i]=file->slope*idata[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]+file->intercept;
+          break;
         case LPJ_SHORT:
           if(s[file->nlon*(i*file->nlat+offsets[index])+offsets[index+1]]==file->missing_value.s)
           {
@@ -259,6 +295,9 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       break;
     case LPJ_DOUBLE:
       free(d);
+      break;
+    case LPJ_INT:
+      free(idata);
       break;
     case LPJ_SHORT:
       free(s);
