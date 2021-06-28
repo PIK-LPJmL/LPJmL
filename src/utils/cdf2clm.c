@@ -265,7 +265,7 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
             fprintf(stderr,") ");
             printindex(i,file->time_step,file->var_len);
             fprintf(stderr,".\n");
-            free(s);
+            free(idata);
             nc_close(file->ncid);
             return TRUE;
           }
