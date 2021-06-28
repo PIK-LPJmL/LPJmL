@@ -691,6 +691,7 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
   else
     offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  *ismissing=FALSE;
   switch(input->type)
   {
     case LPJ_INT:
