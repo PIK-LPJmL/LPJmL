@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s {add|sub|mul|div|avg|max|min} infile1.clm {infile2.clm|value} outfile.clm\n"
+#define USAGE "Usage: %s [-longheader] {add|sub|mul|div|avg|max|min} infile1.clm {infile2.clm|value} outfile.clm\n"
 
 int main(int argc,char **argv)
 {
@@ -25,69 +25,88 @@ int main(int argc,char **argv)
   float *data1,*data2,*data3;
   int *idata1,*idata2,*idata3;
   float value;
-  int ivalue;
+  int iarg,ivalue,setversion;
   char *endptr;
+  size_t size;
   Bool isvalue,intvalue,isint;
   enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN} op;
   FILE *in1,*in2,*out;
-  if(argc<5)
+  setversion=READ_VERSION;
+  for(iarg=1;iarg<argc;iarg++)
+    if(argv[iarg][0]=='-')
+    {
+      if(!strcmp(argv[iarg],"-longheader"))
+        setversion=2;
+      else
+      {
+        fprintf(stderr,"Invalid option '%s'.\n",argv[iarg]);
+        fprintf(stderr,USAGE,argv[0]);
+        return EXIT_FAILURE;
+      }
+    }
+    else
+      break;
+  if(argc<iarg+4)
   {
     fprintf(stderr,"Missing argument(s).\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  if(!strcmp(argv[1],"add"))
+  if(!strcmp(argv[iarg],"add"))
     op=ADD;
-  else if(!strcmp(argv[1],"sub"))
+  else if(!strcmp(argv[iarg],"sub"))
     op=SUB;
-  else if(!strcmp(argv[1],"mul"))
+  else if(!strcmp(argv[iarg],"mul"))
     op=MUL;
-  else if(!strcmp(argv[1],"div"))
+  else if(!strcmp(argv[iarg],"div"))
     op=DIV;
-  else if(!strcmp(argv[1],"avg"))
+  else if(!strcmp(argv[iarg],"avg"))
     op=AVG;
-  else if(!strcmp(argv[1],"max"))
+  else if(!strcmp(argv[iarg],"max"))
     op=MAX;
-  else if(!strcmp(argv[1],"min"))
+  else if(!strcmp(argv[iarg],"min"))
     op=MIN;
   else
   {
-    fprintf(stderr,"Invalid operator '%s'.\n",argv[1]);
+    fprintf(stderr,"Invalid operator '%s'.\n",argv[iarg]);
     fprintf(stderr,USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  in1=fopen(argv[2],"rb");
+  in1=fopen(argv[iarg+1],"rb");
   if(in1==NULL)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[2],strerror(errno));
+    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+1],strerror(errno));
     return EXIT_FAILURE;
   }
-  version=READ_VERSION;
+  version=setversion;
   if(freadanyheader(in1,&header1,&swap1,id,&version))
   {
-    fprintf(stderr,"Error reading header in '%s'.\n",argv[2]);
+    fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+1]);
     return EXIT_FAILURE;
   }
-  value=(float)strtod(argv[3],&endptr);
+  size=getfilesize(argv[iarg+1])-headersize(id,version);
+  if(size!=(long long)header1.nyear*header1.ncell*header1.nbands*typesizes[header1.datatype])
+    fprintf(stderr,"Warning: File size of '%s' is not multiple of nbands*ncell*nyear.\n",argv[iarg+1]);
+  value=(float)strtod(argv[iarg+2],&endptr);
   if(*endptr=='\0')
   {
-    ivalue=(float)strtol(argv[3],&endptr,10);
+    ivalue=(float)strtol(argv[iarg+2],&endptr,10);
     intvalue=(*endptr=='\0');
     isvalue=TRUE;
   }
   else
   {
     isvalue=FALSE;
-    in2=fopen(argv[3],"rb");
+    in2=fopen(argv[iarg+2],"rb");
     if(in2==NULL)
     {
-      fprintf(stderr,"Error opening '%s': %s.\n",argv[3],strerror(errno));
+      fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
       return EXIT_FAILURE;
     }
-    version=READ_VERSION;
+    version=setversion;
     if(freadheader(in2,&header2,&swap2,id,&version))
     {
-      fprintf(stderr,"Error reading header in '%s'.\n",argv[3]);
+      fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+2]);
       return EXIT_FAILURE;
     }
     if(header1.nyear!=header2.nyear)
@@ -125,6 +144,9 @@ int main(int argc,char **argv)
       fprintf(stderr,"cellsize %g differs from %g.\n",header1.cellsize_lat,header2.cellsize_lat);
       return EXIT_FAILURE;
     }
+    size=getfilesize(argv[iarg+2])-headersize(id,version);
+    if(size!=(long long)header2.nyear*header2.ncell*header1.nbands*typesizes[header2.datatype])
+      fprintf(stderr,"Warning: File size of '%s' is not multiple of nbands*ncell*nyear.\n",argv[iarg+2]);
   }
   if(isvalue)
     isint=(intvalue && header1.datatype==LPJ_INT && header1.scalar==1);
@@ -154,10 +176,10 @@ int main(int argc,char **argv)
       check(data2);
     }
   }
-  out=fopen(argv[4],"wb");
+  out=fopen(argv[iarg+3],"wb");
   if(out==NULL)
   {
-    fprintf(stderr,"Error creating '%s': %s.\n",argv[4],strerror(errno));
+    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+3],strerror(errno));
     return EXIT_FAILURE;
   }
   header3=header1;
@@ -171,7 +193,7 @@ int main(int argc,char **argv)
         if(readintvec(in1,idata1,header1.nbands,swap1,header1.datatype))
         {
           fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
-                  argv[2],yr+header1.firstyear);
+                  argv[iarg+1],yr+header1.firstyear);
           return EXIT_FAILURE;
         }
         if(isvalue)
@@ -211,7 +233,7 @@ int main(int argc,char **argv)
           if(readintvec(in2,idata2,header1.nbands,swap2,header2.datatype))
           {
             fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
-                    argv[3],yr+header1.firstyear);
+                    argv[iarg+2],yr+header1.firstyear);
             return EXIT_FAILURE;
           }
           switch(op)
@@ -250,7 +272,7 @@ int main(int argc,char **argv)
         if(fwrite(idata3,sizeof(int),header1.nbands,out)!=header1.nbands)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
-                  argv[4],yr+header1.firstyear);
+                  argv[iarg+3],yr+header1.firstyear);
           return EXIT_FAILURE;
         }
       }
@@ -261,7 +283,7 @@ int main(int argc,char **argv)
         if(readfloatvec(in1,data1,header1.scalar,header1.nbands,swap1,header1.datatype))
         {
           fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
-                  argv[2],yr+header1.firstyear);
+                  argv[iarg+1],yr+header1.firstyear);
           return EXIT_FAILURE;
         }
         if(isvalue)
@@ -301,7 +323,7 @@ int main(int argc,char **argv)
           if(readfloatvec(in2,data2,header2.scalar,header1.nbands,swap2,header2.datatype))
           {
             fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
-                    argv[3],yr+header1.firstyear);
+                    argv[iarg+2],yr+header1.firstyear);
             return EXIT_FAILURE;
           }
           switch(op)
@@ -340,7 +362,7 @@ int main(int argc,char **argv)
         if(fwrite(data3,sizeof(float),header1.nbands,out)!=header1.nbands)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
-                  argv[4],yr+header1.firstyear);
+                  argv[iarg+3],yr+header1.firstyear);
           return EXIT_FAILURE;
         }
       }
