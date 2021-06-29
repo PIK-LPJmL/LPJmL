@@ -85,6 +85,8 @@ int main(int argc,char **argv)
       fprintf(stderr,"Invalid size of data=%Ld.\n",size);
       return EXIT_FAILURE;
     }
+    if((filestat.st_size-headersize(id,version)) % ((long long)header.ncell*header.nbands*header.nyear)!=0)
+      fprintf(stderr,"Warning: file size of '%s' is not multiple of ncell*nbands*nyear.\n",argv[index+1]);
   }
   if(year<header.firstyear || year>=header.firstyear+header.nyear)
   {
