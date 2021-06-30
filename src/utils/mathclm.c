@@ -93,6 +93,11 @@ int main(int argc,char **argv)
     ivalue=(float)strtol(argv[iarg+2],&endptr,10);
     intvalue=(*endptr=='\0');
     isvalue=TRUE;
+    if(intvalue && ivalue==0 && op==DIV)
+    {
+      fprintf(stderr,"Value must not be zero for div operator.\n");
+      return EXIT_FAILURE;
+    }
   }
   else
   {
@@ -252,7 +257,15 @@ int main(int argc,char **argv)
               break;
             case DIV:
               for(k=0;k<header1.nbands;k++)
+              {     
+                if(idata2[k]==0)
+                {
+                  fprintf(stderr,"Value is zero for year %d and band %d.\n",
+                          yr+header1.firstyear,k+1);
+                  return EXIT_FAILURE;
+                }
                 idata3[k]=idata1[k]/idata2[k];
+              }
               break;
             case AVG:
               for(k=0;k<header1.nbands;k++)
