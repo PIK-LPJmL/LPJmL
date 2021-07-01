@@ -216,6 +216,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->aquifer_irrig = NO_AQUIFER_IRRIG;
 #endif
   fscanbool2(file,&config->permafrost,"permafrost");
+  config->johansen = TRUE;
+  if(fscanbool(file,&config->johansen,"johansen",TRUE,verbose))
+    return TRUE;
   config->sdate_option=NO_FIXED_SDATE;
   config->crop_phu_option=NEW_CROP_PHU;
   config->rw_manage=FALSE;
