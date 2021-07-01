@@ -352,7 +352,6 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
                               return_flow_b,aet_stand,green_transp,
                               intercep_stand,intercep_stand_blue,npft,
                               ncft,config);
-
 #ifdef DEBUG
   if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton"))
     printf("growing_day: %d %d %d\n",stand->growing_days,data->irrigation.irrigation,stand->cell->ml.growing_season_cotton[data->irrigation.irrigation]);
@@ -393,6 +392,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       annual_tree(stand,pft,&fpc_inc,climate->isdailytemp,config);
       litter_update_tree(&stand->soil.litter,pft,pft->nind,config);
       delpft(&stand->pftlist,0);
+      stand->growing_days=0;
     }
     else
       fprintf(stderr,"ERROR124: Cotton PFT not found in cell %s.\n",sprintcoord(line,&stand->cell->coord));
