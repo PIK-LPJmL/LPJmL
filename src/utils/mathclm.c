@@ -116,7 +116,7 @@ int main(int argc,char **argv)
     header1.datatype=type;
   size=getfilesize(argv[iarg+1])-headersize(id,version);
   if(size!=(long long)header1.nyear*header1.ncell*header1.nbands*typesizes[header1.datatype])
-    fprintf(stderr,"Warning: File size of '%s' is not multiple of nbands*ncell*nyear.\n",argv[iarg+1]);
+    fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+1]);
   if(op!=FLOAT)
   {
     value=(float)strtod(argv[iarg+2],&endptr);
@@ -185,7 +185,7 @@ int main(int argc,char **argv)
       }
       size=getfilesize(argv[iarg+2])-headersize(id,version);
       if(size!=(long long)header2.nyear*header2.ncell*header1.nbands*typesizes[header2.datatype])
-        fprintf(stderr,"Warning: File size of '%s' is not multiple of nbands*ncell*nyear.\n",argv[iarg+2]);
+        fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+2]);
     }
     if(isvalue)
       isint=(intvalue && header1.datatype==LPJ_INT && header1.scalar==1);
@@ -316,7 +316,7 @@ int main(int argc,char **argv)
               break;
             case DIV:
               for(k=0;k<header1.nbands;k++)
-              {     
+              {
                 if(idata2[k]==0)
                 {
                   fprintf(stderr,"Value is zero for year %d and band %d.\n",

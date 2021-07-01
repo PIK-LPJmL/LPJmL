@@ -62,6 +62,12 @@ int main(int argc,char **argv)
     header.scalar=0.01;
     header.cellsize_lon=header.cellsize_lat=0.5;
   }
+  if(version>2 && header.datatype!=LPJ_SHORT)
+  {
+    fprintf(stderr,"Datatype %s not supported in '%s', must be short.\n",typenames[header.datatype],argv[1]);
+    fclose(file);
+    return EXIT_FAILURE;
+  }
   c=newvec(Intcoord,header.ncell);
   if(c==NULL)
   {
@@ -92,6 +98,12 @@ int main(int argc,char **argv)
   }
   if(base_version==1)
     header2.scalar=0.01;
+  if(version>2 && header2.datatype!=LPJ_SHORT)
+  {
+    fprintf(stderr,"Datatype %s not supported in '%s', must be short.\n",typenames[header2.datatype],argv[2]);
+    fclose(file);
+    return EXIT_FAILURE;
+  }
   c2=newvec(Intcoord,header2.ncell);
   if(c2==NULL)
   {

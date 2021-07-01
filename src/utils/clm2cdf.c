@@ -572,7 +572,7 @@ int main(int argc,char **argv)
       header.datatype=(istype)  ? type  : LPJ_SHORT;
     filesize=getfilesize(argv[iarg+1])-headersize(headername,version);
     if(filesize!=(long long)header.nyear*header.ncell*header.nbands*typesizes[header.datatype])
-      fprintf(stderr,"Warning: File size of '%s' is not multiple of nbands*ncell*nyear.\n",argv[iarg+2]);
+      fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+2]);
 
     if(notime && (header.nyear>1 || (!landuse && header.nbands>1)))
     {

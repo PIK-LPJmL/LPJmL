@@ -284,7 +284,7 @@ int main(int argc,char **argv)
   fstat(fileno(infile),&filestat);
   if(filestat.st_size!=(long long)header.ncell*header.nbands*header.nyear*len)
   {
-     fprintf(stderr,"Error: File size of '%s' is not multiple of nyear*nbands*ncell*%d.\n",argv[index],(int)len);
+     fprintf(stderr,"Error: File size of '%s' does not match nyear*nbands*ncell*%d.\n",argv[index],(int)len);
      fclose(infile);
      return EXIT_FAILURE;
   }
