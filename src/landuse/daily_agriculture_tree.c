@@ -21,14 +21,14 @@
 #include "agriculture.h"
 #include "agriculture_tree.h"
 
-static Pft *findagtree(Pftlist *pftlist,int pft_id)
+static int findagtree(Pftlist *pftlist,int pft_id)
 {
   Pft *pft;
   int p;
   foreachpft(pft,p,pftlist)
     if(pft->par->id==pft_id)
-      return pft;
-  return NULL; /* not found */
+      return p;
+  return NOT_FOUND; /* not found */
 } /* of 'findagtree' */
 
 Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
@@ -359,9 +359,10 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton") && stand->growing_days==stand->cell->ml.growing_season_cotton[data->irrigation.irrigation])
   {
     /* find cotton in PFT list */
-    pft=findagtree(&stand->pftlist,data->irrigation.pft_id);
-    if(pft!=NULL)
+    p=findagtree(&stand->pftlist,data->irrigation.pft_id);
+    if(p!=NOT_FOUND)
     {
+      pft=getpft(&stand->pftlist,p);
       yield=harvest_tree(pft);
       tree=pft->data;
       tree->boll_age=0;
@@ -391,7 +392,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       stand->cell->output.dcflux+=yield.carbon*stand->frac;
       annual_tree(stand,pft,&fpc_inc,climate->isdailytemp,config);
       litter_update_tree(&stand->soil.litter,pft,pft->nind,config);
-      delpft(&stand->pftlist,0);
+      delpft(&stand->pftlist,p);
       stand->growing_days=0;
     }
     else
