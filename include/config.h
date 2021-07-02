@@ -223,6 +223,7 @@ struct config
   Bool ispopulation;
   Bool river_routing;  /**< river routing enabled */
   Bool permafrost;     /**< permafrost module enabled */
+  Bool johansen;       /**< johansen enabled */
   Bool new_phenology;	/**< new phenology enabled */
   Bool new_trf;         /**< new transpiration reduction function enabled */
   Bool equilsoil;      /**< equilsoil is called */

@@ -140,7 +140,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error reading data in year %d.\n",i);
       return EXIT_FAILURE;
     }
-    if(main && nsum==NMONTH)
+    if(mean && nsum==NMONTH)
       for(j=0;j<ngrid*nitem;j++)
         data_sum[j]+=data[j]*ndaymonth[i % NMONTH];
     else

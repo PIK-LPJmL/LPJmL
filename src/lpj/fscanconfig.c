@@ -216,6 +216,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->aquifer_irrig = NO_AQUIFER_IRRIG;
 #endif
   fscanbool2(file,&config->permafrost,"permafrost");
+  config->johansen = TRUE;
+  if(fscanbool(file,&config->johansen,"johansen",TRUE,verbose))
+    return TRUE;
   fscanbool2(file, &config->with_dynamic_ch4, "dynamic_CH4");
   fscanbool2(file, &config->isanomaly, "anomaly");
   if(config->isanomaly && config->with_radiation!=RADIATION)

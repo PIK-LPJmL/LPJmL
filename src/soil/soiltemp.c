@@ -41,7 +41,7 @@ Real soiltemp_lag(const Soil *soil,      /**< Soil data */
 
 void soiltemp(Soil *soil,     /**< pointer to soil data */
               Real airtemp,   /**< air temperature (deg C) */
-              Bool permafrost /**< permafrost enabled? (TRUE/FALSE) */
+              const Config *config /**< LPJmL configuration */
              )
 {
   Real heatcap[NSOILLAYER],      /* heat capacity [J/m2/K] or [J/m3/K]*/
@@ -86,7 +86,7 @@ void soiltemp(Soil *soil,     /**< pointer to soil data */
           dT=min(heat/heatcap[l],T_zero-soil->temp[l]);
           heat2=heat-dT*heatcap[l];
           heat-=heat2;
-          if(permafrost && heat2>epsilon && allice(soil,l)>epsilon)
+          if(config->permafrost && heat2>epsilon && allice(soil,l)>epsilon)
             soilice2moisture(soil,&heat2,l);
           heat+=heat2;
         }
@@ -99,7 +99,7 @@ void soiltemp(Soil *soil,     /**< pointer to soil data */
         {
           dT=max(heat/heatcap[l],T_zero-soil->temp[l]);
           heat2=heat-dT*heatcap[l];
-          if(permafrost && heat2<-epsilon && allwater(soil,l)>epsilon)
+          if(config->permafrost && heat2<-epsilon && allwater(soil,l)>epsilon)
             moisture2soilice(soil,&heat2,l);
           heat+=heat2;
         }
@@ -114,7 +114,7 @@ void soiltemp(Soil *soil,     /**< pointer to soil data */
   {
     /* calculate thermal diffusivities */
     heatcap[l]=soilheatcap(soil,l)/soildepth[l]*1000.; /*[J/m3/K]*/
-    lambda[l]=soilconduct(soil,l);
+    lambda[l]=soilconduct(soil,l,config->johansen);
 #ifndef USE_LINEAR_CONTACT_T
     admit[l]=sqrt(lambda[l]*heatcap[l]);
 #endif
@@ -126,7 +126,7 @@ void soiltemp(Soil *soil,     /**< pointer to soil data */
 #endif
     heat_steps=max(heat_steps,(unsigned long)(timestep2sec(1.0,NSTEP_DAILY)/dt)+1);
     /* convert any latent energy present in this soil layer */
-    if(permafrost && ((soil->state[l]==BELOW_T_ZERO && allwater(soil,l)>epsilon)
+    if(config->permafrost && ((soil->state[l]==BELOW_T_ZERO && allwater(soil,l)>epsilon)
         || (soil->state[l]==ABOVE_T_ZERO && (allice(soil,l)>epsilon))))
     {
       heat=0;
@@ -164,7 +164,7 @@ void soiltemp(Soil *soil,     /**< pointer to soil data */
         dT=timestep2sec(1.0,heat_steps)*(0.5*(lambda[l+1]+lambda[l])*(t_lower-soil->temp[l])/soildepth[l+1]-0.5*(lambda[l]+((l==0)? lambda[0] : lambda[l-1]))*(soil->temp[l]-t_upper)/soildepth[l])/(0.5*(soildepth[l]+soildepth[l+1]))*1e6/heatcap[l];
     //  dT=th_diff[l]*timestep2sec(1.0,heat_steps)/(soildepth[l]*soildepth[l])*1000000
      //     *(t_upper+t_lower-2*soil->temp[l]);
-      if(!permafrost ||( soil->temp[l]*t_upper>0 && t_upper*t_lower>0 && (soil->temp[l]+dT)*t_upper>0))
+      if(!config->permafrost ||( soil->temp[l]*t_upper>0 && t_upper*t_lower>0 && (soil->temp[l]+dT)*t_upper>0))
       {
         soil->temp[l]+=dT;
         soil->state[l]=(short)getstate(soil->temp+l);

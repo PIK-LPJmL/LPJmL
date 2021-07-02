@@ -49,6 +49,7 @@
 "new_trf" : false,
 "river_routing" : true,
 "permafrost" : true,
+"johansen" : true,
 "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
 "store_climate" : true,
 "const_climate" : false,

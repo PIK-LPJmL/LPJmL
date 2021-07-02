@@ -110,7 +110,7 @@ country2cdf.$O: country2cdf.c
 	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) -c country2cdf.c
 
 $(BIN)/country2cdf$E: country2cdf.$O $(LPJLIBS)
-	$(LINK) $(LNOPTS)$(BIN)/country2cdf$E country2cdf.$O $(LPJLIBS) $(LIBS) $(NETCDF_LIB)
+	$(LINK) $(LNOPTS)$(BIN)/country2cdf$E country2cdf.$O $(LPJLIBS) $(LIBS)
 
 cdf2bin.$O: cdf2bin.c
 	$(CC) $(CFLAGS) -I$(INC) $(NETCDF_INC) -c cdf2bin.c

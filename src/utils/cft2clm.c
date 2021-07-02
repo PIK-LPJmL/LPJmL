@@ -143,7 +143,7 @@ int main(int argc,char **argv)
   fstat(fileno(ifile),&filestat);
   n=filestat.st_size/sizeof(short)/header.nyear;
   if(filestat.st_size % (sizeof(short)*header.nyear*header.nbands))
-    fprintf(stderr,"Warning: File size is multiple of nbands * nyear\n"); 
+    fprintf(stderr,"Warning: File size is not multiple of nbands * nyear\n"); 
   printf("Number of cells: %d\n",n/header.nbands);
   ofile=fopen(argv[i+1],"wb");
   if(ofile==NULL)

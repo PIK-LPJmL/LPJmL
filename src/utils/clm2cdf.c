@@ -386,6 +386,7 @@ int main(int argc,char **argv)
   char *units,*descr,*endptr,*arglist;
   const char *progname;
   Filename filename;
+  size_t filesize;
   units=descr=NULL;
   scale=1.0;
   compress=0;
@@ -569,6 +570,10 @@ int main(int argc,char **argv)
       header.scalar=scale;
     if(version<3)
       header.datatype=(istype)  ? type  : LPJ_SHORT;
+    filesize=getfilesize(argv[iarg+1])-headersize(headername,version);
+    if(filesize!=(long long)header.nyear*header.ncell*header.nbands*typesizes[header.datatype])
+      fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+2]);
+
     if(notime && (header.nyear>1 || (!landuse && header.nbands>1)))
     {
       fprintf(stderr,"No time axis set, but number of time steps>1 in '%s'.\n",
@@ -614,7 +619,7 @@ int main(int argc,char **argv)
     header.scalar=scale;
     header.nyear=getfilesize(argv[iarg+2])/typesizes[type]/ngrid/header.nbands;
     if(getfilesize(argv[iarg+2]) % (typesizes[type]*ngrid*header.nbands))
-      fprintf(stderr,"Warning: file size of '%s' is not multiple bands %d and number of cells %d.\n",argv[iarg+2],header.nbands,ngrid);
+      fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg+2],header.nbands,ngrid);
   }
   index=createindex(grid,ngrid,res,isglobal);
   if(index==NULL)

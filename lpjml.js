@@ -43,6 +43,7 @@
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : false,
   "permafrost" : true,
+  "johansen" : true,
   "with_nitrogen" : "lim", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "dynamic_CH4" : false,
   "anomaly" : false,

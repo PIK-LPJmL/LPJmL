@@ -21,7 +21,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-firstyear y] [-nitem n] [-cellsize size] [-ispft] [-swap]\n       [-global] [-short] [-compress level] [-units u] [-descr d] varname gridfile\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-floatgrid] [-firstyear y] [-nitem n] [-cellsize size] [-ispft] [-swap]\n       [-global] [-short] [-compress level] [-units u] [-descr d] varname gridfile\n       binfile netcdffile\n"
 
 typedef struct
 {
@@ -357,8 +357,8 @@ int main(int argc,char **argv)
   float *data;
   short *data_short;
   int i,j,ngrid,iarg,compress;
-  Bool swap,ispft,isshort,isglobal;
-  float cellsize;
+  Bool swap,ispft,isshort,isglobal,floatgrid;
+  float cellsize,fcoord[2];
   char *units,*descr,*endptr,*cmdline;
   units=descr=NULL;
   compress=0;
@@ -368,6 +368,7 @@ int main(int argc,char **argv)
   header.nbands=1;
   ispft=FALSE;
   isshort=FALSE;
+  floatgrid=FALSE;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -381,6 +382,8 @@ int main(int argc,char **argv)
         }
         units=argv[++iarg];
       }
+      else if(!strcmp(argv[iarg],"-floatgrid"))
+        floatgrid=TRUE;
       else if(!strcmp(argv[iarg],"-ispft"))
         ispft=TRUE;
       else if(!strcmp(argv[iarg],"-short"))
@@ -487,7 +490,10 @@ int main(int argc,char **argv)
             strerror(errno));
     return EXIT_FAILURE;
   }
-  ngrid=getfilesize(argv[iarg+1])/sizeof(short)/2;
+  if(floatgrid)
+    ngrid=getfilesize(argv[iarg+1])/sizeof(float)/2;
+  else
+    ngrid=getfilesize(argv[iarg+1])/sizeof(short)/2;
   if(ngrid==0)
   {
      fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg+1]);
@@ -499,12 +505,20 @@ int main(int argc,char **argv)
     printallocerr("grid");
     return EXIT_FAILURE;
   }
-  for(i=0;i<ngrid;i++)
-  {
-    readintcoord(file,&intcoord,swap);
-    grid[i].lat=intcoord.lat*0.01;
-    grid[i].lon=intcoord.lon*0.01;
-  }
+  if(floatgrid)
+    for(i=0;i<ngrid;i++)
+    {
+      freadfloat(fcoord,2,swap,file);
+      grid[i].lon=fcoord[0];
+      grid[i].lat=fcoord[1];
+    }
+  else
+    for(i=0;i<ngrid;i++)
+    {
+      readintcoord(file,&intcoord,swap);
+      grid[i].lat=intcoord.lat*0.01;
+      grid[i].lon=intcoord.lon*0.01;
+    }
   fclose(file);
   file=fopen(argv[iarg+2],"rb");
   if(file==NULL)

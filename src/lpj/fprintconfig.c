@@ -278,6 +278,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"permafrost");
   if (config->isanomaly)
     len=printsim(file,len,&count,"anomalies");
+  if(config->johansen)
+    len=printsim(file,len,&count,"Johansen conductivity");
   if(config->black_fallow)
   {
     len=printsim(file,len,&count,"black fallow");

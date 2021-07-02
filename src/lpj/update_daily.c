@@ -165,7 +165,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
         stand->soil.micro_heating[l]=m_heat*stand->soil.decomC[l];
       stand->soil.micro_heating[0]+=m_heat*stand->soil.litter.decomC;
 #endif
-      soiltemp(&stand->soil,temp_bs,config->permafrost);
+      soiltemp(&stand->soil,temp_bs,config);
     }
     else
     {

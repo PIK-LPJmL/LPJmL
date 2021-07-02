@@ -47,7 +47,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     update_reservoir_annual(cell);
 
   /* Vernalization requirements in case not STATIC_PHU */
-  if(config->crop_phu_option!=OLD_CROP_PHU && year<=config->sdate_fixyear) /* update only until sdate_fixyear, included NEW_CROP_PHU option for World Modelers */
+  if(config->crop_phu_option!=OLD_CROP_PHU && (config->sdate_option==NO_FIXED_SDATE || year<=config->sdate_fixyear)) /* update only until sdate_fixyear, included NEW_CROP_PHU option for World Modelers */
   {
     getmintemp20_n(&cell->climbuf,mintemp,N);
     for (m=0;m<N;m++)
@@ -63,7 +63,7 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     }
   }
 
-  annual_climbuf(&cell->climbuf,cell->balance.aevap+cell->balance.atransp,ncft,year,config->crop_phu_option,config->sdate_fixyear);
+  annual_climbuf(&cell->climbuf,cell->balance.aevap+cell->balance.atransp,ncft,config->crop_phu_option!=OLD_CROP_PHU && (config->sdate_option==NO_FIXED_SDATE || year<=config->sdate_fixyear));
   if(config->sdate_option==NO_FIXED_SDATE ||
     (config->sdate_option==FIXED_SDATE && year<=config->sdate_fixyear)||
     (config->sdate_option==PRESCRIBED_SDATE && year<=config->sdate_fixyear))

@@ -11,14 +11,17 @@
           bin2cdf - convert binary output files into NetCDF files
 
      <B>SYNOPSIS</B>
-          <B>bin2cdf</B> [-cellsize size] [-compress level] [-descr d]
-          [-units u] [-global] {-swap] [-short] [-nitem n} [-ispft]
-          [-firstyear y] <I>varname</I> <I>gridfile</I> <I>binfile</I> <I>netcdffile</I>
+          <B>bin2cdf</B> [-floatgrid] [-cellsize size] [-compress level]
+          [-descr d] [-units u] [-global] {-swap] [-short] [-nitem n}
+          [-ispft] [-firstyear y] <I>varname</I> <I>gridfile</I> <I>binfile</I> <I>netcdffile</I>
 
      <B>DESCRIPTION</B>
           Program converts binary output files into NetCDF file.
 
      <B>OPTIONS</B>
+          -floatgrid
+               set datatype of grid file to float, default is short.
+
           -cellsize size
                set cell size in grid file to size. Default is 0.5 deg.
 
@@ -88,9 +91,6 @@
 
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="soil2cdf.html">soil2cdf(1)</A></B>, <B><A HREF="clm2cdf.html">clm2cdf(1)</A></B>, <B><A HREF="country2cdf.html">country2cdf(1)</A></B>, <B><A HREF="lpjml.html">lpjml(1)</A></B>
-
-
-
 
 
 

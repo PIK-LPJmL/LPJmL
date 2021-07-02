@@ -145,9 +145,7 @@ void monthly_climbuf(Climbuf *climbuf, /**< pointer to climate buffer */
 void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
                     Real aetp,           /**< annual evapotranspiration (mm) */
                     int ncft,            /**< number of crop pfts */
-                    int year,            /**< current year */
-                    int crop_phu_option,
-                    int sdate_fixyear    /**< year in which sowing dates shall be fixed */
+                    Bool update_v_req    /**< update V_req vector (TRUE/FALSE) */
                    )
 {
   int m;
@@ -161,7 +159,7 @@ void annual_climbuf(Climbuf *climbuf,    /**< pointer to climate buffer */
   climbuf->aprec=0;
   for(m=0;m<NMONTH;m++)
     climbuf->aprec+=climbuf->mprec20[m];
-  if(crop_phu_option!=OLD_CROP_PHU  && year<=sdate_fixyear) /* update only until sdate_fixyear; included NEW_CROP_PHU option for World Modelers */
+  if(update_v_req)
   {
     for(cft=0;cft<ncft;cft++)
       climbuf->V_req[cft]= (climbuf->V_req[cft]< -9998) ? climbuf->V_req_a[cft] : (1-kk)*climbuf->V_req[cft]+kk*climbuf->V_req_a[cft];

@@ -289,7 +289,7 @@ extern void newsoil(Soil *);
 extern int seeksoilcode(FILE *,int,size_t,Type);
 extern Real snow(Soil *,Real *,Real *,Real, Real *,Real *);
 extern Real snow_old(Real *,Real *,Real *,Real);
-extern void soiltemp(Soil*, Real,Bool);
+extern void soiltemp(Soil*, Real,const Config *);
 #ifdef COUPLING_WITH_FMS
 extern void laketemp(Cell*, const struct Dailyclimate *);
 #endif
@@ -298,7 +298,7 @@ extern Real soilcarbon(const Soil *);
 extern Real soilcarbon_slow(const Soil *);
 extern Stocks soilstocks(const Soil *);
 extern Real soilwater(const Soil *);
-extern Real soilconduct(const Soil *,int);
+extern Real soilconduct(const Soil *,int,Bool);
 extern Real soilheatcap(const Soil *,int);
 extern void soilice2moisture(Soil *, Real *,int);
 extern void gasdiffusion(Soil*, Real, Real, Real *, Real *);

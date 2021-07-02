@@ -182,7 +182,13 @@ int main(int argc,char **argv)
       else
       {
         header.nyear=size/(sizeof(int)*header.ncell*header.nbands);
-        fprintf(stderr,"File size of '%s' does not match header, number of years set to %d.\n",argv[3],header.nyear);
+        if(size % (sizeof(int)*header.ncell*header.nbands)==0)
+          fprintf(stderr,"File size of '%s' does not match header, number of years set to %d.\n",argv[3],header.nyear);
+        else
+        {
+          fprintf(stderr,"File size of '%s' is not multiple of ncell and nbands.\n",argv[3]);
+          return EXIT_FAILURE;
+        }
       }
     }
   }
@@ -216,7 +222,13 @@ int main(int argc,char **argv)
       else
       {
         header.nyear=size/(sizeof(short)*header.ncell*header.nbands);
-        fprintf(stderr,"File size of '%s'does not match header, number of years set to %d.\n",argv[3],header.nyear);
+        if(size % (sizeof(short)*header.ncell*header.nbands)==0)
+          fprintf(stderr,"File size of '%s' does not match header, number of years set to %d.\n",argv[3],header.nyear);
+        else
+        {
+          fprintf(stderr,"File size of '%s' is not multiple of ncell and nbands.\n",argv[3]);
+          return EXIT_FAILURE;
+        }
       }
     }
   }

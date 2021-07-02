@@ -49,6 +49,7 @@
 "river_routing" : true,
 "equilsoil" :false,
 "permafrost" : true,
+"johansen" : true,
 "landuse" : "no_landuse",
 "irrigation" : "lim", /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
 "laimax_interpolate" : "laimax_cft", /* laimax values from manage parameter file */

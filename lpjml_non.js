@@ -42,6 +42,7 @@
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : true,
   "permafrost" : true,
+  "johansen" : true,
   "with_nitrogen" : "no", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
