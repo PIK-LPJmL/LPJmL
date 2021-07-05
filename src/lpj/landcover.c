@@ -58,13 +58,13 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
       free(landcover);
       return NULL;
     }
-    if(version==1)
+    if(version<2)
       landcover->file.scalar=0.01;
     else
       landcover->file.scalar=header.scalar;
     landcover->file.firstyear=header.firstyear;
     landcover->file.nyear=header.nyear;
-    if(landcover->file.version<=2)
+    if(version<=2)
       landcover->file.datatype=LPJ_SHORT;
     else
       landcover->file.datatype=header.datatype;
