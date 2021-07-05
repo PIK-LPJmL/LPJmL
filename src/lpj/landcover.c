@@ -29,7 +29,7 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
   Header header;
   Landcover landcover;
   String headername;
-  size_t offset;
+  size_t offset,filesize;
   int i,version,len;
   
   landcover=new(struct landcover);
@@ -68,6 +68,13 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
       landcover->file.datatype=LPJ_SHORT;
     else
       landcover->file.datatype=header.datatype;
+    if(isroot(*config))
+    {
+       filesize=getfilesizep(landcover->file.file)-headersize(headername,version)-offset;
+       if(filesize!=typesizes[landcover->file.datatype]*header.nyear*header.nbands*header.ncell)
+         fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",config->landcover_filename.name);
+    }
+
     landcover->file.var_len=header.nbands;
     landcover->file.size=header.ncell*header.nbands*typesizes[landcover->file.datatype];
     landcover->file.n=header.nbands*config->ngridcell;

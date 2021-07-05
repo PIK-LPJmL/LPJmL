@@ -12,7 +12,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <sys/stat.h>
 #include "lpj.h"
 #include "grass.h"
 #include "tree.h"
@@ -64,7 +63,6 @@ int main(int argc,char **argv)
   Intcoord intcoord;
   Coord_netcdf cdf;
   FILE *file;
-  struct stat filestat;
   int i,j,n,index,cell,year;
   float harvest,lon,lat,scale;
   Real harvest_total;
@@ -116,8 +114,7 @@ int main(int argc,char **argv)
             config.outputvars[index].filename.name,strerror(errno));
     return EXIT_FAILURE;
   }
-  fstat(fileno(file),&filestat);
-  n=filestat.st_size/sizeof(Intcoord);
+  n=getfilesizep(file)/sizeof(Intcoord);
   if(n==0)
   {
     fprintf(stderr,"Error: No coordinates written in grid file '%s'.\n",

@@ -15,7 +15,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include <sys/stat.h>
 
 struct coordfile
 {
@@ -40,9 +39,9 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
 {
   Coordfile coordfile;
   Header header;
-  struct stat filestat;
   coordfile=new(struct coordfile);
   int version;
+  size_t filesize;
   if(coordfile==NULL)
   {
     printallocerr("coord");
@@ -84,6 +83,12 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
       free(coordfile);
       return NULL;
     }
+    if(isout)
+    {
+      filesize=getfilesizep(coordfile->file)-coordfile->offset;
+      if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+        fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
+    }
     return coordfile;
   }
   coordfile->file=fopen(filename->name,"rb");
@@ -96,8 +101,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
   }
   if(filename->fmt==RAW)
   {
-    fstat(fileno(coordfile->file),&filestat);
-    coordfile->n=filestat.st_size/sizeof(Intcoord);
+    coordfile->n=getfilesizep(coordfile->file)/sizeof(Intcoord);
     coordfile->first=0;
     coordfile->swap=FALSE;
     coordfile->scalar=0.01;
@@ -136,6 +140,10 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
       free(coordfile);
       return NULL;
     }
+    filesize=getfilesizep(coordfile->file)-coordfile->offset;
+    if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+           fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
+
   }
   coordfile->fmt=filename->fmt;
   return coordfile;

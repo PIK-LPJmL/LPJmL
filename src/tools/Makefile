@@ -21,7 +21,7 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           openrestart.$O fbanner.$O getdir.$O freadanyheader.$O\
           getpath.$O getuser.$O gethost.$O failonerror.$O\
           addpath.$O frepeatch.$O isabspath.$O mpi_write.$O\
-          printflags.$O getfilesize.$O enablefpe.$O\
+          printflags.$O getfilesize.$O enablefpe.$O getfilesizep.$O\
           strippath.$O diskfree.$O fprintintf.$O freadrestartheader.$O\
           fwriteheader.$O getcounts.$O getfiledate.$O fscanint.$O\
           iserror.$O mpi_write_txt.$O mkfilename.$O stripsuffix.$O\

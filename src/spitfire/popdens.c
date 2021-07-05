@@ -30,7 +30,7 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
   Popdens popdens;
   String headername;
   int i,version;
-  size_t offset;
+  size_t offset,filesize;
 
   if(config->popdens_filename.name==NULL)
     return NULL;
@@ -66,7 +66,15 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
     if(config->popdens_filename.fmt==RAW)
       popdens->file.offset=config->startgrid*sizeof(short);
     else
+    {
       popdens->file.offset=(config->startgrid-header.firstcell)*typesizes[header.datatype]+headersize(headername,version)+offset;
+      if(isroot(*config))
+      {
+         filesize=getfilesizep(popdens->file.file)-headersize(headername,version)-offset;
+         if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+           fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",config->popdens_filename.name);
+      }
+    }
   }
   if(popdens->file.var_len>1)
   {
