@@ -44,6 +44,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   Infile grassharvest_file;
   unsigned int soilcode;
   int soil_id;
+  long long filesize;
 #ifdef IMAGE
   Infile aquifers;
 #endif
@@ -256,8 +257,16 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           closeinput(grassharvest_file,config->grassharvest_filename.fmt);
         return NULL;
       }
+      if(config->lakes_filename.fmt==RAW)
+        header.nyear=1;
       lake_scalar=(version<=1) ? 0.01 : header.scalar;
       lakes.bin.type=(version<3) ? LPJ_BYTE : header.datatype;
+      if(isroot(*config))
+      {
+        filesize=getfilesizep(lakes.bin.file)-headersize(headername,version)-lakes.bin.offset;
+        if(filesize!=typesizes[lakes.bin.type]*header.nyear*header.nbands*header.ncell)
+          fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",config->lakes_filename.name);
+      }
       if(fseek(lakes.bin.file,(config->startgrid-header.firstcell)*typesizes[lakes.bin.type]+lakes.bin.offset,SEEK_CUR))
       {
         /* seeking to position of first grid cell failed */

@@ -146,7 +146,9 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         free(celldata);
         return NULL;
       }
-      if(version==1)
+      if(config->soilph_filename.fmt==RAW)
+        header.nyear=1;
+      if(version<2)
         celldata->soilph.bin.scalar=0.01;
       else
         celldata->soilph.bin.scalar=header.scalar;

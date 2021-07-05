@@ -55,6 +55,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     header.nbands=2;
     header.firstcell=0;
     header.ncell=0;
+    header.nyear=1;
     header.cellsize_lon=header.cellsize_lat=0.5;
     coordfile->file=openmetafile(&header,&coordfile->swap,&coordfile->offset,filename->name,isout);
     if(coordfile->file==NULL)

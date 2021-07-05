@@ -114,7 +114,7 @@ int main(int argc,char **argv)
   }
   if(index!=NOT_FOUND)
     header1.datatype=type;
-  size=getfilesize(argv[iarg+1])-headersize(id,version);
+  size=getfilesizep(in1)-headersize(id,version);
   if(size!=(long long)header1.nyear*header1.ncell*header1.nbands*typesizes[header1.datatype])
     fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+1]);
   if(op!=FLOAT)
@@ -183,7 +183,7 @@ int main(int argc,char **argv)
         fprintf(stderr,"cellsize %g differs from %g.\n",header1.cellsize_lat,header2.cellsize_lat);
         return EXIT_FAILURE;
       }
-      size=getfilesize(argv[iarg+2])-headersize(id,version);
+      size=getfilesizep(in2)-headersize(id,version);
       if(size!=(long long)header2.nyear*header2.ncell*header1.nbands*typesizes[header2.datatype])
         fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+2]);
     }
