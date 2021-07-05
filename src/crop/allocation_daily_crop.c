@@ -34,10 +34,10 @@ static void solve(Real *a,Real *b,Real *c,Real *d,
 }
 
 void allocation_daily_crop(Pft *pft,             /**< PFT variables */
-                           Real npp,             /**< net primary production (gC/m2) */
+                           Real npp,             /**< net primary production (gC/m2/day) */
                            Real wdf,             /**< water deficit fraction */
-                           Bool isoutput,
-                           const Config *config    /**< with nitrogen (TRUE/FALSE) */
+                           Bool isoutput,        /**< daily output enabled? (TRUE/FALSE) */
+                           const Config *config  /**< LPJmL configuration */
                           )
 {
   Pftcrop *crop;

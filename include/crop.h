@@ -138,7 +138,7 @@ extern const char *calcmethod[];
 
 extern void new_crop(Pft *,int,int,const Config *);
 extern void allocation_daily_crop(Pft *,Real, Real,Bool,const Config *);
-extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,int,const Config *);
+extern Real npp_crop(Pft *,Real,Real,Real,Bool *,Real,const Config *);
 extern Real fpc_crop(Pft *);
 extern Real fpar_crop(const Pft *);
 extern Real alphaa_crop(const Pft *,int,int);
