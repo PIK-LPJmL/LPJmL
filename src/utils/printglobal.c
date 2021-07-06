@@ -136,7 +136,7 @@ int main(int argc,char **argv)
   for(i=iarg+1;i<argc;i++)
   {
     file[i-iarg-1]=fopen(argv[i],"rb");
-    if(file==NULL)
+    if(file[i-iarg-1]==NULL)
     {
       fprintf(stderr,"Error opening '%s': %s.\n",
               argv[i],strerror(errno));
