@@ -64,6 +64,8 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
       landcover->file.scalar=header.scalar;
     landcover->file.firstyear=header.firstyear;
     landcover->file.nyear=header.nyear;
+    if(config->landcover_filename.fmt==RAW)
+      header.nbands=getnnat(npft,config);
     if(version<=2)
       landcover->file.datatype=LPJ_SHORT;
     else
@@ -82,11 +84,11 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
                            typesizes[landcover->file.datatype]+headersize(headername,version)+offset;
     len=landcover->file.n;
   }
-  if(landcover->file.var_len!=npft-config->nbiomass)
+  if(landcover->file.var_len!=getnnat(npft,config))
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR225: Number of bands=%d is not %d\n",
-              (int)landcover->file.var_len,npft-config->nbiomass);
+      fprintf(stderr,"ERROR225: Number of bands=%zu in landcover file '%s' is not %d\n",
+              landcover->file.var_len,config->landcover_filename.name,getnnat(npft,config));
     closeclimatefile(&landcover->file,isroot(*config));
     free(landcover);
     return NULL;
