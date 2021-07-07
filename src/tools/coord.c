@@ -84,12 +84,6 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
       free(coordfile);
       return NULL;
     }
-    if(isout)
-    {
-      filesize=getfilesizep(coordfile->file)-coordfile->offset;
-      if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-        fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
-    }
     return coordfile;
   }
   coordfile->file=fopen(filename->name,"rb");
