@@ -137,7 +137,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     }
     filesize=getfilesizep(coordfile->file)-coordfile->offset;
     if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-           fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
+           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
 
   }
   coordfile->fmt=filename->fmt;
