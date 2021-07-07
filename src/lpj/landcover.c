@@ -70,11 +70,11 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
       landcover->file.datatype=LPJ_SHORT;
     else
       landcover->file.datatype=header.datatype;
-    if(isroot(*config))
+    if(isroot(*config) && config->landcover_filename.fmt!=META)
     {
        filesize=getfilesizep(landcover->file.file)-headersize(headername,version)-offset;
        if(filesize!=typesizes[landcover->file.datatype]*header.nyear*header.nbands*header.ncell)
-         fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",config->landcover_filename.name);
+         fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->landcover_filename.name);
     }
 
     landcover->file.var_len=header.nbands;

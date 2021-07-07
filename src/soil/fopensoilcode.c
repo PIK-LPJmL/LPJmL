@@ -34,11 +34,20 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
     header.datatype=LPJ_BYTE;
     header.firstcell=0;
     header.ncell=0;
+    header.nyear=1;
     header.cellsize_lon=header.cellsize_lat=0.5;
     file=openmetafile(&header,swap,offset,filename->name,isout);
+    if(file==NULL)
+      return file;
     *type=header.datatype;
-    if(file==NULL && isout)
-      fprintf(stderr,"ERROR224: Cannot read description file '%s'.\n",filename->name);
+    if(header.nbands!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR127: Invalid number of bands %d in '%s', must be 1.\n",
+                header.nbands,filename->name);
+      fclose(file);
+      return NULL;
+    }
     return file;
   }
   file=fopen(filename->name,"rb");
@@ -80,7 +89,18 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
       *type=LPJ_SHORT;
     else
       *type=LPJ_INT;
+    if(header.nbands!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR127: Invalid number of bands %d in '%s', must be 1.\n",
+                header.nbands,filename->name);
+      fclose(file);
+      return NULL;
+    }
+
     *offset=headersize(LPJSOIL_HEADER,version);
+    if(isout && getfilesizep(file)!=typesizes[*type]*header.ncell+*offset)
+      fprintf(stderr,"WARNING032: File size of '%s' does not match header.\n",filename->name);
   }
   return file;
 } /* of 'fopensoilcode' */

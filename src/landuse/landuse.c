@@ -115,11 +115,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     {
       landuse->landuse.datatype=header.datatype;
       landuse->landuse.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version)+offset;
-      if(isroot(*config))
+      if(isroot(*config) && config->landuse_filename.fmt!=META)
       {
          filesize=getfilesizep(landuse->landuse.file)-headersize(headername,version)-offset;
          if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-           fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",config->landuse_filename.name);
+           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->landuse_filename.name);
       }
     }
     landuse->landuse.firstyear=header.firstyear;
@@ -176,11 +176,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         landuse->sdate.var_len=header.nbands;
         landuse->sdate.datatype=header.datatype;
         landuse->sdate.offset=((long long)config->startgrid-(long long)header.firstcell)*header.nbands*typesizes[landuse->sdate.datatype]+headersize(headername,version)+offset;
-        if(isroot(*config))
+        if(isroot(*config) && config->sdate_filename.fmt!=META)
         {
            filesize=getfilesizep(landuse->sdate.file)-headersize(headername,version)-offset;
            if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",config->sdate_filename.name);
+             fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->sdate_filename.name);
         }
       }
       landuse->sdate.firstyear=header.firstyear;
@@ -243,11 +243,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       else
       {
         landuse->crop_phu.offset=((long long)config->startgrid-(long long)header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version)+offset;
-        if(isroot(*config))
+        if(isroot(*config) && config->crop_phu_filename.fmt!=META)
         {
            filesize=getfilesizep(landuse->crop_phu.file)-headersize(headername,version)-offset;
            if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",config->crop_phu_filename.name);
+             fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->crop_phu_filename.name);
         }
       }
       landuse->crop_phu.datatype=header.datatype;
@@ -314,11 +314,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       else
       {
         landuse->fertilizer_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
-        if(isroot(*config))
+        if(isroot(*config) && config->fertilizer_nr_filename.fmt!=META)
         {
            filesize=getfilesizep(landuse->fertilizer_nr.file)-headersize(headername,version)-offset;
            if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",config->fertilizer_nr_filename.name);
+             fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->fertilizer_nr_filename.name);
         }
       }
       landuse->fertilizer_nr.datatype=header.datatype;
@@ -391,11 +391,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       else
       {
         landuse->manure_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
-        if(isroot(*config))
+        if(isroot(*config) && config->manure_nr_filename.fmt!=META)
         {
            filesize=getfilesizep(landuse->manure_nr.file)-headersize(headername,version)-offset;
            if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",config->manure_nr_filename.name);
+             fprintf(stderr,"WARNING033: File size of '%s' does not match nyear*ncell*nbands.\n",config->manure_nr_filename.name);
         }
       }
       landuse->manure_nr.datatype=header.datatype;
@@ -473,11 +473,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       else
       {
         landuse->with_tillage.offset=(config->startgrid-header.firstcell)*header.nbands*sizeof(short)+headersize(headername,version);
-        if(isroot(*config))
+        if(isroot(*config) && config->with_tillage_filename.fmt!=META)
         {
            filesize=getfilesizep(landuse->with_tillage.file)-headersize(headername,version)-offset;
            if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",config->with_tillage_filename.name);
+             fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->with_tillage_filename.name);
         }
       }
       landuse->with_tillage.datatype=header.datatype;
@@ -562,11 +562,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       else
       {
         landuse->residue_on_field.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
-        if(isroot(*config))
+        if(isroot(*config) && config->residue_data_filename.fmt!=META)
         {
            filesize=getfilesizep(landuse->residue_on_field.file)-headersize(headername,version)-offset;
            if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",config->residue_data_filename.name);
+             fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->residue_data_filename.name);
         }
       }
       landuse->residue_on_field.datatype=header.datatype;
