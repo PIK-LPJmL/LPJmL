@@ -74,7 +74,7 @@ int getnsoilcode(const Filename *filename, /**< filename of soil code file */
     if(file==NULL)
     {
       if(isout)
-        fprintf(stderr,"ERROR224: Cannot read description file '%s'.\n",filename->name);
+        fputs("ERROR165: Cannot get number of cells from soil code file.\n",stderr);
       return -1;
     }
     return header.ncell; 
