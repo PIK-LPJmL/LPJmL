@@ -14,7 +14,6 @@
 
 #undef USE_MPI
 #include "lpj.h"
-#include <sys/stat.h>
 
 #define GRID2CLM_VERSION "1.0.002"
 #define USAGE "Usage: %s [-h] [-swap] [-scale s] [-cellsize c] gridfile outfile\n"
@@ -26,7 +25,7 @@ int main(int argc,char **argv)
   int i,n;
   Header header;
   Bool swap;
-  struct stat filestat;
+  long long filesize;
   char *endptr;
   swap=FALSE;
   header.nyear=0;
@@ -108,9 +107,9 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error opening '%s': %s\n",argv[i],strerror(errno));
     return EXIT_FAILURE;
   }
-  fstat(fileno(file),&filestat);
-  n=filestat.st_size/sizeof(short);
-  if(filestat.st_size % (sizeof(short)*2))
+  filesize=getfilesizep(file);
+  n=filesize/sizeof(short);
+  if(filesize % (sizeof(short)*2))
     fprintf(stderr,"Warning: file size is not multiple of 2*short.\n"); 
   printf("Number of cells: %d\n",n/2);
   data=(short *)malloc(n*sizeof(short));

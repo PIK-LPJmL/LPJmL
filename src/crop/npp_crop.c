@@ -27,15 +27,14 @@
   -> calculation of carbon mass pool (additional pool stem + reserve)
 */
 
-Real npp_crop(Pft *pft,           /**< PFT variables */
-              Real gtemp_air,     /**< value of air temperature response function */
-              Real gtemp_soil,    /**< value of soil temperature response function */
-              Real assim,         /**< assimilation (gC/m2) */
-              Bool *negbm,        /**< on return: biomass is negative */
-              Real wdf,           /**< water deficit fraction */
-              Bool crop_resp_var, /**< with variable crop respiration (TRUE,FALSE) */
-              const Config *config/**< with nitrogen (TRUE,FALSE) */
-             )                    /** \return net primary productivity (gC/m2) */
+Real npp_crop(Pft *pft,           /**< [inout] PFT variables */
+              Real gtemp_air,     /**< [in] value of air temperature response function */
+              Real gtemp_soil,    /**< [in] value of soil temperature response function */
+              Real assim,         /**< [in] assimilation (gC/m2/day) */
+              Bool *negbm,        /**< [out] on return: biomass is negative */
+              Real wdf,           /**< [in] water deficit fraction */
+              const Config *config/**< [in] LPJmL configuration */
+             )                    /** \return net primary productivity (gC/m2/day) */
 {
   Pftcrop *crop;
   const Pftcroppar *par;
@@ -48,15 +47,15 @@ Real npp_crop(Pft *pft,           /**< PFT variables */
   data=pft->stand->data;
   crop=pft->data;
   par=pft->par->data;
-  if(crop_resp_var && crop->ind.root.carbon>epsilon)
+  if(!config->crop_resp_fix && crop->ind.root.carbon>epsilon)
     nc_ratio.root=crop->ind.root.nitrogen/crop->ind.root.carbon;
   else
     nc_ratio.root=par->nc_ratio.root;
-  if(crop_resp_var && crop->ind.so.carbon>epsilon)
+  if(!config->crop_resp_fix && crop->ind.so.carbon>epsilon)
     nc_ratio.so=crop->ind.so.nitrogen/crop->ind.so.carbon;
   else
     nc_ratio.so=par->nc_ratio.so;
-  if(crop_resp_var && crop->ind.pool.carbon>epsilon)
+  if(!config->crop_resp_fix && crop->ind.pool.carbon>epsilon)
     nc_ratio.pool=crop->ind.pool.nitrogen/crop->ind.pool.carbon;
   else
     nc_ratio.pool=par->nc_ratio.pool;

@@ -156,20 +156,20 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
         pft=getpft(&stand->pftlist,0);
         if(config->pft_output_scaled)
         {
-          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+data->irrigation*nirrig,config)+=conv_loss*data->conv_evap*stand->frac;
-          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,pft->par->id-npft+data->irrigation*nirrig,config)+=conv_loss*(1-data->conv_evap)*stand->frac;
+          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+nirrig,config)+=conv_loss*data->conv_evap*stand->frac;
+          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,pft->par->id-npft+nirrig,config)+=conv_loss*(1-data->conv_evap)*stand->frac;
         }
         else
         {
-          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+data->irrigation*nirrig,config)+=conv_loss*data->conv_evap;
-          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,pft->par->id-npft+data->irrigation*nirrig,config)+=conv_loss*(1-data->conv_evap);
+          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,pft->par->id-npft+nirrig,config)+=conv_loss*data->conv_evap;
+          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,pft->par->id-npft+nirrig,config)+=conv_loss*(1-data->conv_evap);
         }
         break;
       case AGRICULTURE_TREE: case AGRICULTURE_GRASS:
         if(config->pft_output_scaled)
         {
-          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+nirrig,config)+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].biomass_grass;
-          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+nirrig,config)+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].biomass_grass;
+          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+nirrig,config)+=conv_loss*data->conv_evap*stand->frac;
+          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+nirrig,config)+=conv_loss*(1-data->conv_evap)*stand->frac;
         }
         else
         {
@@ -207,9 +207,15 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
         break;
       case WOODPLANTATION:
         if(config->pft_output_scaled)
+        {
           getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,rwp(ncft)+nirrig,config)+=conv_loss*data->conv_evap*stand->cell->ml.landfrac[1].woodplantation;
+          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_DRAIN ,rwp(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap)*stand->cell->ml.landfrac[1].woodplantation;
+        }
         else
-          getoutputindex(&stand->cell->output, CFT_CONV_LOSS_EVAP ,rwp(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
+        {
+          getoutputindex(&stand->cell->output,CFT_CONV_LOSS_EVAP,rwp(ncft)+nirrig,config)+=conv_loss*data->conv_evap;
+          getoutputindex(&stand->cell->output,CFT_CONV_LOSS_DRAIN,rwp(ncft)+nirrig,config)+=conv_loss*(1-data->conv_evap);
+        }
         break;
       case BIOMASS_TREE:
         if(config->pft_output_scaled)

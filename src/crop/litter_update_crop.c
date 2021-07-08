@@ -18,7 +18,7 @@
 void litter_update_crop(Litter *litter, /**< Litter pools */
                         Pft *pft,       /**< PFT variables */
                         Real frac,      /**< fraction (0..1) */
-                        const Config *config
+                        const Config *config /**< LPJmL configuration */
                        )
 {
   Pftcrop *crop;

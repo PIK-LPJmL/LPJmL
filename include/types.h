@@ -132,6 +132,7 @@ extern Bool isabspath(const char *);
 extern char *addpath(const char *,const char *);
 extern void printflags(const char *);
 extern long long getfilesize(const char *);
+extern long long getfilesizep(FILE *);
 extern const char *strippath(const char *);
 extern long long diskfree(const char *);
 extern void fprintintf(FILE *,int);

@@ -20,7 +20,7 @@
 void new_crop(Pft *pft, /**< pointer to PFT data */
               int year, /**< year (AD) */
               int day,  /**< day of year */
-              const Config *config
+              const Config *config /**< LPJmL configuration */
              )
 {
   Pftcrop *crop;

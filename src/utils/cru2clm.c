@@ -15,7 +15,6 @@
 #undef USE_MPI /* no MPI */
 
 #include "lpj.h"
-#include <sys/stat.h>
 
 #define CRU2CLM_VERSION "1.0.003"
 #define NYEAR 103  /* default value for number of years */
@@ -36,7 +35,6 @@ int main(int argc,char **argv)
   long int k;
   int i,j,n;
   Bool swap;
-  struct stat filestat;
   header.nyear=NYEAR;
   header.firstyear=FIRSTYEAR;
   header.order=CELLYEAR;
@@ -166,8 +164,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error opening '%s': %s\n",argv[i],strerror(errno));
     return EXIT_FAILURE;
   }
-  fstat(fileno(file),&filestat);
-  n=filestat.st_size/header.nyear/sizeof(Data);
+  n=getfilesizep(file)/header.nyear/sizeof(Data);
   printf("Number of cells: %d\n",n);
   data=(Data *)malloc(n*sizeof(Data)*header.nyear);
   if(data==NULL)

@@ -13,7 +13,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include <sys/stat.h>
 
 #define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-scale] [-longheader] [-type {byte|short|int|float|double}]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
 #define NO_HEADER 1
@@ -38,7 +37,6 @@ static void printclm(const char *filename,int output,int nbands,int version,
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
-  struct stat filestat;
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;
@@ -129,17 +127,13 @@ static void printclm(const char *filename,int output,int nbands,int version,
   {
     if(version<3)
       type=LPJ_FLOAT;
-    size=getfilesize(filename)-headersize(id,version)-sizeof(int)*header.ncell;
+    size=getfilesizep(file)-headersize(id,version)-sizeof(int)*header.ncell;
     if(size!=(long long)typesizes[type]*header.ncell*header.nbands*header.nyear)
       fputs("Warning: file length does not match header.\n",stderr);
   }
-  else if(!isrestart && !isreservoir)
+  else if(!isrestart && !isreservoir && !ismeta)
   {
-    fstat(fileno(file),&filestat);
-    if(ismeta)
-      size=filestat.st_size-offset;
-    else
-      size=filestat.st_size-headersize(id,version);
+    size=getfilesizep(file)-headersize(id,version);
     if(size!=typesizes[type]*header.ncell*header.nbands*header.nyear)
       fputs("Warning: file length does not match header.\n",stderr);
   }

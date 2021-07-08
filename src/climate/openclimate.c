@@ -27,7 +27,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   String headername;
   int last,version;
   char *s;
-  size_t offset;
+  size_t offset,filesize;
   file->fmt=filename->fmt;
   if(filename->fmt==FMS)
   {
@@ -146,8 +146,16 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     file->offset=config->startgrid*header.nbands*typesizes[datatype];
   }
   else
+  {
     file->offset=(config->startgrid-header.firstcell)*header.nbands*
                  typesizes[file->datatype]+headersize(headername,version)+offset;
+    if(isroot(*config) && filename->fmt!=META)
+    {
+       filesize=getfilesizep(file->file)-headersize(headername,version)-offset;
+       if(filesize!=typesizes[file->datatype]*header.nyear*header.nbands*header.ncell)
+         fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
+    }
+  }
   file->time_step=(header.nbands==NDAYYEAR) ? DAY : MONTH;
   file->size=header.ncell*header.nbands*typesizes[file->datatype];
   file->n=header.nbands*config->ngridcell;

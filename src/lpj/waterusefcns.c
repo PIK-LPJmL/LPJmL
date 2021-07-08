@@ -29,7 +29,7 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
   Header header;
   String headername;
   int version;
-  size_t offset;
+  size_t offset,filesize;
   wateruse=new(struct wateruse);
   if(wateruse==NULL)
   {
@@ -69,6 +69,12 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
       else
         wateruse->file.datatype=LPJ_INT;
       wateruse->file.offset=headersize(headername,version)+typesizes[wateruse->file.datatype]*(config->startgrid-header.firstcell)+offset;
+      if(isroot(*config))
+      {
+         filesize=getfilesizep(wateruse->file.file)-headersize(headername,version)-offset;
+         if(filesize!=typesizes[wateruse->file.datatype]*header.nyear*header.nbands*header.ncell)
+           fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
+      }
     }
     wateruse->file.var_len=header.nbands;
     wateruse->file.size=header.ncell*typesizes[wateruse->file.datatype];

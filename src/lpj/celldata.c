@@ -74,6 +74,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   String headername;
   int version;
   float lon,lat;
+  size_t filesize;
   celldata=new(struct celldata);
   if(celldata==NULL)
     return NULL;
@@ -212,12 +213,19 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         free(celldata);
         return NULL;
       }
-      if(version==1)
+      if(config->soilph_filename.fmt==RAW)
+        header.nyear=1;
+      if(version<2)
         celldata->soilph.file.bin.scalar=0.01;
       else
         celldata->soilph.file.bin.scalar=header.scalar;
+      if(isroot(*config) && config->soilph_filename.fmt!=META)
+      {
+         filesize=getfilesizep(celldata->soilph.file.bin.file)-headersize(headername,version)-celldata->soilph.file.bin.offset;
+         if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->soilph_filename.name);
+      }
       celldata->soilph.file.bin.type=header.datatype;
-
     }
 
   }

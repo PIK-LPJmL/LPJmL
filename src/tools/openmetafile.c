@@ -282,6 +282,9 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
   /* open data file */
   if((data=fopen(name,"rb"))==NULL  && isout)
     printfopenerr(name);
+  /* check file size of binary file */
+  if(isout && data!=NULL && getfilesizep(data)!=typesizes[header->datatype]*header->ncell*header->nbands*header->nyear+*offset)
+    fprintf(stderr,"WARNING032: File size of '%s' does not match settings in description file '%s'.\n",name,filename);
   free(name);
   return data;
 } /* of 'openmetafile' */

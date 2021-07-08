@@ -13,7 +13,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include <sys/stat.h>
 
 #define USAGE "Usage: %s [-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n]\n       [-firstcell n] [-nbands n] [-order n] [-version n] [-cellsize s]\n       [-scale s] [-id s] [-type {byte|short|int|float|double}] binfile clmfile\n"
 
@@ -29,7 +28,7 @@ int main(int argc,char **argv)
   char *endptr;
   int i,index;
   size_t len;
-  struct stat filestat;
+  long long filesize;
   void *buffer;
   Bool swap;
   progname=strippath(argv[0]);
@@ -281,8 +280,8 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error opening '%s': %s.\n",argv[index],strerror(errno));
     return EXIT_FAILURE;
   }
-  fstat(fileno(infile),&filestat);
-  if(filestat.st_size!=(long long)header.ncell*header.nbands*header.nyear*len)
+  filesize=getfilesizep(infile);
+  if(filesize!=(long long)header.ncell*header.nbands*header.nyear*len)
   {
      fprintf(stderr,"Error: File size of '%s' does not match nyear*nbands*ncell*%d.\n",argv[index],(int)len);
      fclose(infile);
@@ -301,7 +300,7 @@ int main(int argc,char **argv)
     printallocerr("buffer");
     return EXIT_FAILURE;
   }
-  for(i=0;i<filestat.st_size / BUFSIZE;i++)
+  for(i=0;i<filesize / BUFSIZE;i++)
   {
     switch(len)
     {
@@ -323,23 +322,23 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
-  if(filestat.st_size % BUFSIZE>0)
+  if(filesize % BUFSIZE>0)
   {
     switch(len)
     {
       case 2:
-        freadshort(buffer,(filestat.st_size % BUFSIZE)/2,swap,infile);
+        freadshort(buffer,(filesize % BUFSIZE)/2,swap,infile);
         break;
       case 4:
-        freadint(buffer,(filestat.st_size % BUFSIZE)/4,swap,infile);
+        freadint(buffer,(filesize % BUFSIZE)/4,swap,infile);
         break;
       case 8:
-        freadlong(buffer,(filestat.st_size % BUFSIZE)/8,swap,infile);
+        freadlong(buffer,(filesize % BUFSIZE)/8,swap,infile);
         break;
       default:
-        fread(buffer,1,filestat.st_size % BUFSIZE,infile);
+        fread(buffer,1,filesize % BUFSIZE,infile);
     }
-    if(fwrite(buffer,1,filestat.st_size % BUFSIZE,outfile)!=filestat.st_size % BUFSIZE)
+    if(fwrite(buffer,1,filesize % BUFSIZE,outfile)!=filesize % BUFSIZE)
     {
       fprintf(stderr,"Error writing data in '%s'.\n",argv[index+1]);
       return EXIT_FAILURE;

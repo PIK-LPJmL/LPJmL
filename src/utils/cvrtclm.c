@@ -13,7 +13,6 @@
 /**************************************************************************************/
 
 #include "lpj.h"
-#include <sys/stat.h>
 
 #define USAGE "Usage: %s [-scale s] [-type {byte|short|int|float|double}] [-cellsize size] infile outfile\n"
 
@@ -29,7 +28,7 @@ int main(int argc,char **argv)
   char *endptr;
   int index;
   size_t i,size;
-  struct stat filestat;
+  long long filesize;
   void *buffer;
   Type datatype;
   float scalar,cellsize;
@@ -135,8 +134,8 @@ int main(int argc,char **argv)
   }
   if(version<3)
     header.datatype=datatype;
-  fstat(fileno(infile),&filestat);
-  if(filestat.st_size!=(long long)header.ncell*header.nbands*header.nyear*typesizes[header.datatype]+headersize(id,version))
+  filesize=getfilesizep(infile);
+  if(filesize!=(long long)header.ncell*header.nbands*header.nyear*typesizes[header.datatype]+headersize(id,version))
   {
      fprintf(stderr,"Error: File size of '%s' does not match nyear*nbands*ncell.\n",argv[index]);
      fclose(infile);
@@ -155,7 +154,7 @@ int main(int argc,char **argv)
     printallocerr("buffer");
     return EXIT_FAILURE;
   }
-  size=filestat.st_size-headersize(id,version);
+  size=filesize-headersize(id,version);
   for(i=0;i<size / BUFSIZE;i++)
   {
     switch(typesizes[header.datatype])

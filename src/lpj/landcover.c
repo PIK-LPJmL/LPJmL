@@ -29,7 +29,7 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
   Header header;
   Landcover landcover;
   String headername;
-  size_t offset;
+  size_t offset,filesize;
   int i,version,len;
   
   landcover=new(struct landcover);
@@ -58,16 +58,25 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
       free(landcover);
       return NULL;
     }
-    if(version==1)
+    if(version<2)
       landcover->file.scalar=0.01;
     else
       landcover->file.scalar=header.scalar;
     landcover->file.firstyear=header.firstyear;
     landcover->file.nyear=header.nyear;
-    if(landcover->file.version<=2)
+    if(config->landcover_filename.fmt==RAW)
+      header.nbands=getnnat(npft,config);
+    if(version<=2)
       landcover->file.datatype=LPJ_SHORT;
     else
       landcover->file.datatype=header.datatype;
+    if(isroot(*config) && config->landcover_filename.fmt!=META)
+    {
+       filesize=getfilesizep(landcover->file.file)-headersize(headername,version)-offset;
+       if(filesize!=typesizes[landcover->file.datatype]*header.nyear*header.nbands*header.ncell)
+         fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->landcover_filename.name);
+    }
+
     landcover->file.var_len=header.nbands;
     landcover->file.size=header.ncell*header.nbands*typesizes[landcover->file.datatype];
     landcover->file.n=header.nbands*config->ngridcell;
@@ -75,11 +84,11 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
                            typesizes[landcover->file.datatype]+headersize(headername,version)+offset;
     len=landcover->file.n;
   }
-  if(landcover->file.var_len!=npft-config->nbiomass)
+  if(landcover->file.var_len!=getnnat(npft,config))
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR225: Number of bands=%d is not %d\n",
-              (int)landcover->file.var_len,npft-config->nbiomass);
+      fprintf(stderr,"ERROR225: Number of bands=%zu in landcover file '%s' is not %d\n",
+              landcover->file.var_len,config->landcover_filename.name,getnnat(npft,config));
     closeclimatefile(&landcover->file,isroot(*config));
     free(landcover);
     return NULL;

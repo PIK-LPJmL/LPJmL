@@ -12,7 +12,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <sys/stat.h>
 #include "lpj.h"
 
 #define USAGE "Usage: %s [-firstyear year] [-nbands n] [-cellsize size] [-day|month] [-noheader] [-csv] [-mean] grid.bin out.bin ...\n"
@@ -24,7 +23,6 @@ int main(int argc,char **argv)
   Intcoord intcoord;
   FILE *gridfile;
   FILE **file;
-  struct stat filestat;
   int i,n,nyear,cell,year,iarg,firstyear,step,nstep,nbands,band,nyear_first;
   Bool header,ismean,csv;
   float data;
@@ -117,8 +115,7 @@ int main(int argc,char **argv)
             argv[iarg],strerror(errno));
     return EXIT_FAILURE;
   }
-  fstat(fileno(gridfile),&filestat);
-  n=filestat.st_size/sizeof(Intcoord);
+  n=getfilesizep(gridfile)/sizeof(Intcoord);
   if(n==0)
   {
     fprintf(stderr,"Error: No coordinates written in grid file.\n");
@@ -139,7 +136,7 @@ int main(int argc,char **argv)
   for(i=iarg+1;i<argc;i++)
   {
     file[i-iarg-1]=fopen(argv[i],"rb");
-    if(file==NULL)
+    if(file[i-iarg-1]==NULL)
     {
       fprintf(stderr,"Error opening '%s': %s.\n",
               argv[i],strerror(errno));
