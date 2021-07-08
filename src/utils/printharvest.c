@@ -122,6 +122,11 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   area=newvec(Real,n);
+  if(area==NULL)
+  {
+    printallocerr("area");
+    return EXIT_FAILURE;
+  }
   for(i=0;i<n;i++)
   {
     fread(&intcoord,sizeof(Intcoord),1,file);

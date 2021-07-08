@@ -37,7 +37,6 @@ static void printclm(const char *filename,int output,int nbands,int version,
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
-  long long filesize;
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;
@@ -132,13 +131,9 @@ static void printclm(const char *filename,int output,int nbands,int version,
     if(size!=(long long)typesizes[type]*header.ncell*header.nbands*header.nyear)
       fputs("Warning: file length does not match header.\n",stderr);
   }
-  else if(!isrestart && !isreservoir)
+  else if(!isrestart && !isreservoir && !ismeta)
   {
-    filesize=getfilesizep(file);
-    if(ismeta)
-      size=filesize-offset;
-    else
-      size=filesize-headersize(id,version);
+    size=getfilesizep(file)-headersize(id,version);
     if(size!=typesizes[type]*header.ncell*header.nbands*header.nyear)
       fputs("Warning: file length does not match header.\n",stderr);
   }
