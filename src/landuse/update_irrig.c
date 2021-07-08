@@ -48,8 +48,8 @@ void update_irrig(Stand *stand,        /**< pointer to stand */
 
     if(config->pft_output_scaled)
     {
-      getoutputindex(&stand->cell->output,CFT_CONV_LOSS_EVAP,index+biomass_tree->irrigation.irrigation*nirrig,config)-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->cell->ml.landfrac[1].biomass_tree;
-      getoutputindex(&stand->cell->output,CFT_CONV_LOSS_DRAIN,index+biomass_tree->irrigation.irrigation*nirrig,config)-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap)*stand->cell->ml.landfrac[1].biomass_tree;
+      getoutputindex(&stand->cell->output,CFT_CONV_LOSS_EVAP,index+biomass_tree->irrigation.irrigation*nirrig,config)-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*biomass_tree->irrigation.conv_evap*stand->frac;
+      getoutputindex(&stand->cell->output,CFT_CONV_LOSS_DRAIN,index+biomass_tree->irrigation.irrigation*nirrig,config)-=(biomass_tree->irrigation.irrig_stor+biomass_tree->irrigation.irrig_amount)*(1/biomass_tree->irrigation.ec-1)*(1-biomass_tree->irrigation.conv_evap)*stand->frac;
     }
     else
     {
