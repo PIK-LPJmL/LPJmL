@@ -797,15 +797,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     config->startgrid=0;
     endgrid=getnsoilcode(&config->soil_filename,config->nsoil,isroot(*config));
-    if(endgrid==-1)
-      return TRUE;
-    else if(endgrid==0)
+    if(endgrid==0)
     {
       if(verbose)
         fputs("ERROR135: No soil code found.\n",stderr);
       return TRUE;
     }
-    else
+    else if(endgrid>0)
       endgrid--;
   }
   else
@@ -814,25 +812,34 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(fscanint(file,&endgrid,"endgrid",TRUE,verbose))
       return TRUE;
   }
-  if(endgrid<config->startgrid)
+  if(endgrid==-1)
   {
-    if(verbose)
-      fprintf(stderr,"ERROR136: Endgrid=%d less than startgrid=%d.\n",
-              endgrid,config->startgrid);
-    return TRUE;
+   /* no soilcode file found */
+   config->nall=-1;
+   config->firstgrid=0;
   }
-  config->nall=endgrid-config->startgrid+1;
-  config->firstgrid=config->startgrid;
-  if(config->nall<config->ntask)
+  else
   {
-    if(verbose)
-      fprintf(stderr,"ERROR198: Number of cells %d less than number of tasks.\n",config->nall);
-    return TRUE;
+    if(endgrid<config->startgrid)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR136: Endgrid=%d less than startgrid=%d.\n",
+                endgrid,config->startgrid);
+      return TRUE;
+    }
+    config->nall=endgrid-config->startgrid+1;
+    config->firstgrid=config->startgrid;
+    if(config->nall<config->ntask)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR198: Number of cells %d less than number of tasks.\n",config->nall);
+      return TRUE;
+    }
+    if(config->ntask>1) /* parallel mode? */
+      divide(&config->startgrid,&endgrid,config->rank,
+             config->ntask);
+    config->ngridcell=endgrid-config->startgrid+1;
   }
-  if(config->ntask>1) /* parallel mode? */
-    divide(&config->startgrid,&endgrid,config->rank,
-           config->ntask);
-  config->ngridcell=endgrid-config->startgrid+1;
   fscanint2(file,&config->nspinup,"nspinup");
   config->isfirstspinupyear=FALSE;
   if(config->nspinup)

@@ -124,7 +124,7 @@ int main(int argc,char **argv)
       printconfig(config.npft[GRASS]+config.npft[TREE],
                   config.npft[CROP],&config);
     }
-    if(config.n_out)
+    if(config.nall>0 && config.n_out)
     {
       config.nall=config.total=config.ngridcell;
       printf("Estimated disk usage for output: ");

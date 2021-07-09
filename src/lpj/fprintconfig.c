@@ -720,9 +720,14 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     fprintf(file,"Start IMAGE coupling:        %6d\n",
             config->start_imagecoupling);
 #endif
-  if(config->firstgrid)
-    fprintf(file,"Index of first cell:        %7d\n",config->firstgrid);
-  fprintf(file,"Number of grid cells:       %7d\n",config->nall);
+  if(config->nall==-1)
+    fprintf(file,"Number of grid cells:       N/A\n");
+  else
+  {
+    if(config->firstgrid)
+      fprintf(file,"Index of first cell:        %7d\n",config->firstgrid);
+    fprintf(file,"Number of grid cells:       %7d\n",config->nall);
+  }
   fputs("==============================================================================\n",file);
   fflush(file);
 } /* of 'fprintconfig' */

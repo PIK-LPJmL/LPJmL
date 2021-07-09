@@ -448,7 +448,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   badout=0;
   oldpath=strdup("");
-  if(config.n_out)
+  if(config.nall!=-1 && config.n_out)
     size=outputfilesize(&config);
   for(i=0;i<config.n_out;i++)
   {
@@ -457,7 +457,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     {
       if(checkdir(path))
         badout++;
-      else if(diskfree(path)<size)
+      else if(config.nall!=-1 && diskfree(path)<size)
         fprintf(stderr,"Warning: Disk space on '%s' is insufficient for output files.\n",path);
       free(oldpath);
       oldpath=path;
