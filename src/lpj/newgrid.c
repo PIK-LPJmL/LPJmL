@@ -47,14 +47,20 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   long long filesize;
 #ifdef IMAGE
   Infile aquifers;
+#ifdef COUPLED
+  Productinit *productinit;
+  Product *productpool;
+#endif
 #endif
   Code code;
   FILE *file_restart;
   Infile lakes,countrycode,regioncode;
 
+  /* Open coordinate and soil file */
+  celldata=opencelldata(config);
+  if(celldata==NULL)
+    return NULL;
 #if defined IMAGE && defined COUPLED
-  Productinit *productinit;
-  Product *productpool;
   if(config->sim_id==LPJML_IMAGE)
   {
     if((productpool=newvec(Product,config->ngridcell))==NULL)
@@ -65,11 +71,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     }
   }
 #endif
-
-  /* Open coordinate and soil file */
-  celldata=opencelldata(config);
-  if(celldata==NULL)
-    return NULL;
   if(seekcelldata(celldata,config->startgrid))
   {
     closecelldata(celldata);
