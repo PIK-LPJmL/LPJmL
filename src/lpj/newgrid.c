@@ -141,7 +141,23 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           }
           return NULL;
         }
+        if(config->grassfix_filename.fmt==RAW)
+          header.nyear=1;
         grassfix_file.bin.type=(version<3) ? LPJ_BYTE : header.datatype;
+        if(header.nbands!=1)
+        {
+          if(isroot(*config))
+            fprintf(stderr,"ERROR218: Invalid number of bands %d in '%s', must be 1.\n",
+                  header.nbands,config->grassfix_filename.name);
+          free(celldata);
+          return NULL;
+        }
+        if(isroot(*config) && config->grassfix_filename.fmt!=META)
+        {
+          filesize=getfilesizep(grassfix_file.bin.file)-headersize(headername,version)-grassfix_file.bin.offset;
+          if(filesize!=typesizes[grassfix_file.bin.type]*header.nyear*header.nbands*header.ncell)
+            fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->grassfix_filename.name);
+        }
         if(fseek(grassfix_file.bin.file,(config->startgrid-header.firstcell)*typesizes[grassfix_file.bin.type]+grassfix_file.bin.offset,SEEK_CUR))
         {
           /* seeking to position of first grid cell failed */
@@ -190,7 +206,23 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
             closeinput(grassfix_file,config->grassfix_filename.fmt);
           return NULL;
         }
+        if(config->grassharvest_filename.fmt==RAW)
+          header.nyear=1;
         grassharvest_file.bin.type=(version<3) ? LPJ_BYTE : header.datatype;
+         if(header.nbands!=1)
+        {
+          if(isroot(*config))
+            fprintf(stderr,"ERROR218: Invalid number of bands %d in '%s', must be 1.\n",
+                  header.nbands,config->grassharvest_filename.name);
+          free(celldata);
+          return NULL;
+        }
+        if(isroot(*config) && config->grassharvest_filename.fmt!=META)
+        {
+          filesize=getfilesizep(grassharvest_file.bin.file)-headersize(headername,version)-grassharvest_file.bin.offset;
+          if(filesize!=typesizes[grassharvest_file.bin.type]*header.nyear*header.nbands*header.ncell)
+            fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->grassharvest_filename.name);
+        }
         if(fseek(grassharvest_file.bin.file,config->startgrid*typesizes[grassharvest_file.bin.type]+grassharvest_file.bin.offset,SEEK_CUR))
         {
           /* seeking to position of first grid cell failed */
@@ -261,6 +293,14 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         header.nyear=1;
       lake_scalar=(version<=1) ? 0.01 : header.scalar;
       lakes.bin.type=(version<3) ? LPJ_BYTE : header.datatype;
+      if(header.nbands!=1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR218: Invalid number of bands %d in '%s', must be 1.\n",
+                  header.nbands,config->lakes_filename.name);
+        free(celldata);
+        return NULL;
+      }
       if(isroot(*config) && config->lakes_filename.fmt!=META)
       {
         filesize=getfilesizep(lakes.bin.file)-headersize(headername,version)-lakes.bin.offset;

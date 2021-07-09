@@ -152,6 +152,14 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         celldata->soilph.bin.scalar=0.01;
       else
         celldata->soilph.bin.scalar=header.scalar;
+      if(header.nbands!=1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR218: Invalid number of bands %d in '%s', must be 1.\n",
+                  header.nbands,config->soilph_filename.name);
+        free(celldata);
+        return NULL;
+      }
       if(isroot(*config) && config->soilph_filename.fmt!=META)
       {
          filesize=getfilesizep(celldata->soilph.bin.file)-headersize(headername,version)-celldata->soilph.bin.offset;
