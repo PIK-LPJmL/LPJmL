@@ -178,6 +178,8 @@ static Bool initirrig(Cell grid[],    /**< Cell grid             */
       fclose(irrig_file.bin.file);
       return TRUE;
     }
+    if(isroot(*config) && getfilesizep(irrig_file.bin.file)!=sizeof(int)*header.ncell+headersize(headername,version)+irrig_file.bin.offset)
+      fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->neighb_irrig_filename.name);
     if(fseek(irrig_file.bin.file,sizeof(neighb_irrig)*(config->startgrid-header.firstcell)+irrig_file.bin.offset,SEEK_CUR))
     {
       fprintf(stderr,"ERROR139: Cannot seek to irrigation neighbour of %d.\n",
@@ -315,6 +317,8 @@ static Bool initriver(Cell grid[],Config *config)
       fclose(drainage.bin.file);
       return TRUE;
     }
+    if(isroot(*config) && getfilesizep(drainage.bin.file)!=sizeof(Routing)*header.ncell+headersize(headername,version)+drainage.bin.offset)
+      fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->drainage_filename.name);
     /* seek startgrid positions in drainage file */
     if(fseek(drainage.bin.file,sizeof(Routing)*(config->startgrid-header.firstcell)+drainage.bin.offset,SEEK_CUR))
       return TRUE;

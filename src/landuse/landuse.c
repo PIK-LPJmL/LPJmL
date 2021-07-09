@@ -395,7 +395,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         {
            filesize=getfilesizep(landuse->manure_nr.file)-headersize(headername,version)-offset;
            if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING033: File size of '%s' does not match nyear*ncell*nbands.\n",config->manure_nr_filename.name);
+             fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->manure_nr_filename.name);
         }
       }
       landuse->manure_nr.datatype=header.datatype;
