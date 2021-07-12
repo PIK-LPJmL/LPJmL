@@ -123,7 +123,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
                 version,RESTART_VERSION);
     }
   }
-  if(header.order==CELLINDEX)
+  if(!ismeta && header.order==CELLINDEX)
   {
     if(version<3)
       type=LPJ_FLOAT;

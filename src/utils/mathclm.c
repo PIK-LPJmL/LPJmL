@@ -30,6 +30,7 @@ int main(int argc,char **argv)
   size_t size;
   Type type;
   int index;
+  int *cell_index,*cell_index2;
   Bool isvalue,intvalue,isint;
   enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,FLOAT,INT} op;
   FILE *in1,*in2,*out;
@@ -117,7 +118,8 @@ int main(int argc,char **argv)
   if(index!=NOT_FOUND)
     header1.datatype=type;
   size=getfilesizep(in1)-headersize(id,version);
-  if(size!=(long long)header1.nyear*header1.ncell*header1.nbands*typesizes[header1.datatype])
+  if((header1.order==CELLINDEX && size!=sizeof(int)*header1.ncell+(long long)header1.nyear*header1.ncell*header1.nbands*typesizes[header1.datatype]) ||
+     (header1.order!=CELLINDEX && size!=(long long)header1.nyear*header1.ncell*header1.nbands*typesizes[header1.datatype]))
     fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+1]);
   if(op!=FLOAT && op!=INT)
   {
@@ -185,8 +187,14 @@ int main(int argc,char **argv)
         fprintf(stderr,"cellsize %g differs from %g.\n",header1.cellsize_lat,header2.cellsize_lat);
         return EXIT_FAILURE;
       }
+      if(header1.order!=header2.order)
+      {
+        fprintf(stderr,"cell order %d differs from %d.\n",header1.order,header2.order);
+        return EXIT_FAILURE;
+      }
       size=getfilesizep(in2)-headersize(id,version);
-      if(size!=(long long)header2.nyear*header2.ncell*header1.nbands*typesizes[header2.datatype])
+      if((header1.order==CELLINDEX && size!=sizeof(int)*header2.ncell+(long long)header2.nyear*header2.ncell*header2.nbands*typesizes[header2.datatype]) ||
+         (header1.order!=CELLINDEX && size!=(long long)header2.nyear*header2.ncell*header2.nbands*typesizes[header2.datatype]))
         fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+2]);
     }
     if(isvalue)
@@ -246,6 +254,46 @@ int main(int argc,char **argv)
     header3.datatype=(op!=FLOAT && isint) ? LPJ_INT : LPJ_FLOAT;
   }
   fwriteheader(out,&header3,id,3);
+  if(header1.order==CELLINDEX)
+  {
+    cell_index=newvec(int,header1.ncell);
+    if(cell_index==NULL)
+    {
+      printallocerr("index");
+      return EXIT_FAILURE;
+    }
+    if(freadint(cell_index,header1.ncell,swap1,in1)!=header1.ncell)
+    {
+      fprintf(stderr,"Unexpected end of file in '%s' at reading cell index.\n",
+              argv[iarg+1]);
+      return EXIT_FAILURE;
+    }
+    fwrite(cell_index,sizeof(int),header1.ncell,out);
+    if(op!=FLOAT && op!=INT && !isvalue)
+    {
+      cell_index2=newvec(int,header1.ncell);
+      if(cell_index2==NULL)
+      {
+        printallocerr("index2");
+        return EXIT_FAILURE;
+      }
+      if(freadint(cell_index2,header1.ncell,swap2,in2)!=header1.ncell)
+      {
+        fprintf(stderr,"Unexpected end of file in '%s' at reading cell index.\n",
+                argv[iarg+2]);
+        return EXIT_FAILURE;
+      }
+      for(cell=0;cell<header1.ncell;cell++)
+        if(cell_index[cell]!=cell_index2[cell])
+        {
+          fprintf(stderr,"Cell index in '%s' of %d=%d not equal %d in '%s'.\n",
+                  argv[iarg+1],cell,cell_index[cell],cell_index2[cell],argv[iarg+2]);
+          return EXIT_FAILURE;
+        }
+      free(cell_index);
+      free(cell_index2);
+    }
+  }
   if(op==FLOAT)
   {
     for(yr=0;yr<header1.nyear;yr++)
