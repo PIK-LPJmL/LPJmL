@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-longheader] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|float} infile1.clm [{infile2.clm|value}] outfile.clm\n"
+#define USAGE "Usage: %s [-longheader] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|float|int} infile1.clm [{infile2.clm|value}] outfile.clm\n"
 
 int main(int argc,char **argv)
 {
@@ -31,7 +31,7 @@ int main(int argc,char **argv)
   Type type;
   int index;
   Bool isvalue,intvalue,isint;
-  enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,FLOAT} op;
+  enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,FLOAT,INT} op;
   FILE *in1,*in2,*out;
   setversion=READ_VERSION;
   index=NOT_FOUND;
@@ -88,13 +88,15 @@ int main(int argc,char **argv)
     op=MIN;
   else if(!strcmp(argv[iarg],"float"))
     op=FLOAT;
+  else if(!strcmp(argv[iarg],"int"))
+    op=INT;
   else
   {
     fprintf(stderr,"Invalid operator '%s'.\n",argv[iarg]);
     fprintf(stderr,USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  if(op!=FLOAT && argc<iarg+4)
+  if(op!=FLOAT && op!=INT && argc<iarg+4)
   {
     fprintf(stderr,"Missing argument(s).\n"
             USAGE,argv[0]);
@@ -117,7 +119,7 @@ int main(int argc,char **argv)
   size=getfilesizep(in1)-headersize(id,version);
   if(size!=(long long)header1.nyear*header1.ncell*header1.nbands*typesizes[header1.datatype])
     fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+1]);
-  if(op!=FLOAT)
+  if(op!=FLOAT && op!=INT)
   {
     value=(float)strtod(argv[iarg+2],&endptr);
     if(*endptr=='\0')
@@ -216,20 +218,33 @@ int main(int argc,char **argv)
       }
     }
   }
+  else if(op==INT)
+  {
+    idata1=newvec(int,header1.nbands);
+    check(idata1);
+  }
   else
   {
     data1=newvec(float,header1.nbands);
     check(data1);
   }
-  out=fopen(argv[iarg+((op==FLOAT) ? 2 : 3)],"wb");
+  out=fopen(argv[iarg+((op==FLOAT || op==INT) ? 2 : 3)],"wb");
   if(out==NULL)
   {
     fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+((op==FLOAT) ? 2 : 3)],strerror(errno));
     return EXIT_FAILURE;
   }
   header3=header1;
-  header3.scalar=1;
-  header3.datatype=(op!=FLOAT && isint) ? LPJ_INT : LPJ_FLOAT;
+  if(op==INT)
+  {
+    header3.datatype=LPJ_INT;
+    header3.scalar=header1.scalar;
+  }
+  else
+  {
+    header3.scalar=1;
+    header3.datatype=(op!=FLOAT && isint) ? LPJ_INT : LPJ_FLOAT;
+  }
   fwriteheader(out,&header3,id,3);
   if(op==FLOAT)
   {
@@ -243,6 +258,25 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         if(fwrite(data1,sizeof(float),header1.nbands,out)!=header1.nbands)
+        {
+          fprintf(stderr,"Error writing '%s' in year %d.\n",
+                  argv[iarg+2],yr+header1.firstyear);
+          return EXIT_FAILURE;
+        }
+      }
+  }
+  else if(op==INT)
+  {
+    for(yr=0;yr<header1.nyear;yr++)
+      for(cell=0;cell<header1.ncell;cell++)
+      {
+        if(readintvec(in1,idata1,header1.nbands,swap1,header1.datatype))
+        {
+          fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
+                  argv[iarg+1],yr+header1.firstyear);
+          return EXIT_FAILURE;
+        }
+        if(fwrite(idata1,sizeof(int),header1.nbands,out)!=header1.nbands)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
                   argv[iarg+2],yr+header1.firstyear);
