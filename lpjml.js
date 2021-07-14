@@ -45,7 +45,7 @@
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
-  "with_nitrogen" : "lim", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
@@ -82,7 +82,6 @@
   "black_fallow" : false,               /* simulation with black fallow on PNV */
   "pft_residue" : "temperate cereals",
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
-                                        /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : "yes",           /* enable fertilizer input, other options: "no", "yes", "auto" */
