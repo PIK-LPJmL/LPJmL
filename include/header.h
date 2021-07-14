@@ -121,10 +121,10 @@ typedef struct
 /* Declaration of functions */
 
 extern Bool fwriteheader(FILE *,const Header *, const char *,int);
-extern Bool freadheader(FILE *,Header *,Bool *,const char *,int *);
+extern Bool freadheader(FILE *,Header *,Bool *,const char *,int *,Bool);
 extern Bool freadrestartheader(FILE *,Restartheader *,Bool);
 extern Bool fwriterestartheader(FILE *,const Restartheader *);
-extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *);
+extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
 extern size_t headersize(const char *,int);
 extern FILE *openinputfile(Header *, Bool *,const Filename *,
                            String, int *,size_t *,Bool,const Config *);

@@ -187,8 +187,8 @@ $(BIN)/mathclm$E: mathclm.$O $(LIBDIR)/libtools.$A
 $(BIN)/cutclm$E: cutclm.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/cutclm$E cutclm.$O $(LIBDIR)/libtools.$A
 
-$(BIN)/setclm$E: setclm.$O $(LIBDIR)/libtools.$A
-	$(LINK) $(LNOPTS)$(BIN)/setclm$E setclm.$O $(LIBDIR)/libtools.$A
+$(BIN)/setclm$E: setclm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/setclm$E setclm.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/mergeclm$E: mergeclm.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/mergeclm$E mergeclm.$O $(LIBDIR)/libtools.$A

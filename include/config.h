@@ -57,6 +57,7 @@ struct config
   Filename human_ignition_filename;
   Filename co2_filename;
   Filename drainage_filename;
+  Filename extflow_filename;
   Filename neighb_irrig_filename;
   Filename coord_filename;
   Filename soil_filename;
@@ -207,6 +208,7 @@ struct config
   Coord resolution;    /**< size of grid cell (deg) */
   Bool ispopulation;
   Bool river_routing;  /**< river routing enabled */
+  Bool extflow;        /** external flow enabled */
   Bool permafrost;     /**< permafrost module enabled */
   Bool johansen;       /**< johansen enabled */
   Bool new_phenology;	/**< new phenology enabled */

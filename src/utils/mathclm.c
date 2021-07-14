@@ -110,7 +110,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   version=setversion;
-  if(freadanyheader(in1,&header1,&swap1,id,&version))
+  if(freadanyheader(in1,&header1,&swap1,id,&version,TRUE))
   {
     fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+1]);
     return EXIT_FAILURE;
@@ -145,7 +145,7 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
       version=setversion;
-      if(freadheader(in2,&header2,&swap2,id,&version))
+      if(freadheader(in2,&header2,&swap2,id,&version,TRUE))
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+2]);
         return EXIT_FAILURE;

@@ -75,7 +75,7 @@ int main(int argc,char **argv)
       continue;
     }
     version=READ_VERSION;
-    if(freadheader(item[count].file,&item[count].header,&swap,RESTART_HEADER,&version))
+    if(freadheader(item[count].file,&item[count].header,&swap,RESTART_HEADER,&version,TRUE))
     {
       fprintf(stderr,"Error reading header of file '%s'\n",argv[i]);
       continue;

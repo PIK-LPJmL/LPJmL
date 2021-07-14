@@ -40,7 +40,7 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
   /* Read restart header */
   version=READ_VERSION;
   type=(config->ischeckpoint) ? "checkpoint" : "restart";
-  if(freadheader(file,&header,swap,RESTART_HEADER,&version))
+  if(freadheader(file,&header,swap,RESTART_HEADER,&version,isroot(*config)))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR154: Invalid header in %s file '%s'.\n",type,filename);

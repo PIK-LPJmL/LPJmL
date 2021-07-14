@@ -327,6 +327,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     bad+=checkcoordfile(&config,&config.soil_filename);
   if(config.river_routing)
   {
+    if(config.extflow)
+      bad+=checkclmfile(&config,&config.extflow_filename,NULL,0);
     bad+=checkinputfile(&config,&config.drainage_filename,NULL,(config.drainage_filename.fmt==CDF) ? 0 : 2);
     bad+=checkinputfile(&config,&config.lakes_filename,"1",0);
     if(config.withlanduse!=NO_LANDUSE)

@@ -96,7 +96,7 @@ int main(int argc,char **argv)
             strerror(errno));
     return EXIT_FAILURE;
   }
-  ngrid=getfilesize(argv[iarg])/sizeof(short)/2;
+  ngrid=getfilesizep(file)/sizeof(short)/2;
   if(ngrid==0)
   {
      fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg]);
@@ -115,8 +115,8 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+2],strerror(errno));
     return EXIT_FAILURE;
   }
-  nyear=getfilesize(argv[iarg+1])/sizeof(float)/ngrid/nitem;
-  if(getfilesize(argv[iarg+1]) % (sizeof(float)*ngrid*nitem))
+  nyear=getfilesizep(file)/sizeof(float)/ngrid/nitem;
+  if(getfilesizep(file) % (sizeof(float)*ngrid*nitem))
     fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg+1],nitem,ngrid);
   data=newvec(float,ngrid*nitem);
   if(data==NULL)

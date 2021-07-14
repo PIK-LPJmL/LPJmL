@@ -45,6 +45,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->drainage_filename);
     if(config->drainage_filename.fmt==CDF)
       freefilename(&config->river_filename);
+    if(config->extflow)
+      freefilename(&config->extflow_filename);
     freefilename(&config->lakes_filename);
     if(config->withlanduse!=NO_LANDUSE)
     {

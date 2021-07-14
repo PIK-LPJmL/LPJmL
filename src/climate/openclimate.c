@@ -116,11 +116,18 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
                                headername,
                                &version,&offset,TRUE,config))==NULL)
     return TRUE;
-  if (header.order==YEARCELL)
+  if (header.order!=CELLYEAR)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR127: Order YEARCELL in '%s' is not supported in this LPJ-Version.\n"
-              "Please reorganize your input data!\n",filename->name);
+    {
+      fprintf(stderr,"ERROR127: Order in '%s' must be cellyear, order",filename->name);
+      if(header.order>0 || header.order<=CELLSEQ)
+        fprintf(stderr,"%s",ordernames[header.order-1]);
+      else
+        fprintf(stderr,"%d",header.order);
+      fprintf(stderr," is not supported in this LPJ-Version.\n"
+              "Please reorganize your input data!\n");
+    }
     fclose(file->file);
     return TRUE;
   }

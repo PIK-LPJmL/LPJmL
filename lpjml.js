@@ -42,6 +42,7 @@
   "new_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : true,
+  "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
   "with_nitrogen" : "lim", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */

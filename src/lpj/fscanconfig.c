@@ -210,6 +210,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
+  config->extflow=FALSE;
+  if(config->river_routing)
+  {
+    if(fscanbool(file,&config->extflow,"extflow",TRUE,verbose))
+      return TRUE;
+  }
   config->reservoir=FALSE;
 #ifdef IMAGE
   config->groundwater_irrig = NO_GROUNDWATER_IRRIG;
@@ -612,6 +618,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(config->drainage_filename.fmt==CDF)
     {
       scanclimatefilename(&input,&config->river_filename,config->inputdir,FALSE,"river");
+    }
+    if(config->extflow)
+    {
+      scanclimatefilename(&input,&config->extflow_filename,config->inputdir,FALSE,"extflow");
+      if(config->extflow_filename.fmt!=META && config->extflow_filename.fmt!=CLM && config->extflow_filename.fmt!=CLM2)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR197: clm file is only supported for input '%s' in this version of LPJmL.\n",config->extflow_filename.name);
+        return TRUE;
+      }
     }
     if(config->withlanduse!=NO_LANDUSE)
     {

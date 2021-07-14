@@ -59,6 +59,7 @@ void iterateyear(Outputfile *output,  /**< Output file data */
   {
     initoutputdata(&grid[cell].output,ANNUAL,year,config);
     grid[cell].balance.surface_storage=0;
+    grid[cell].discharge.afin_ext=0;
     if(!grid[cell].skip)
     {
       init_annual(grid+cell,ncft,config);
@@ -179,7 +180,11 @@ void iterateyear(Outputfile *output,  /**< Output file data */
       {
         if(config->withlanduse)
           withdrawal_demand(grid,config);
-
+        if(config->extflow)
+        {
+          if(getextflow(input.extflow,grid,day-1,year))
+             fail(INVALID_EXTFLOW_ERR,FALSE,"Cannot read external flow data");
+        }
         drain(grid,month,config);
 
         if(config->withlanduse)

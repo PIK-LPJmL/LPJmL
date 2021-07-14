@@ -111,7 +111,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   data_version=READ_VERSION;
-  if(freadanyheader(file,&header,&swap,id,&data_version))
+  if(freadanyheader(file,&header,&swap,id,&data_version,TRUE))
   {
     fprintf(stderr,"Error reading header in '%s'.\n",argv[3]);
     return EXIT_FAILURE;

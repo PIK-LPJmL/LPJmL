@@ -59,6 +59,7 @@
 #define INVALID_FPC_ERR 39
 #define INVALID_BOUNDARY_ERR 40
 #define INVALID_TIMESTEP_ERR 41
+#define INVALID_EXTFLOW_ERR 42
 
 /* Definition of macros */
 

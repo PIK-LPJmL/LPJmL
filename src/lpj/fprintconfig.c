@@ -260,6 +260,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"no N deposition");
   if(config->river_routing)
     len=printsim(file,len,&count,"river routing");
+  if(config->extflow)
+    len=printsim(file,len,&count,"external flow");
   if(config->equilsoil)
     len=printsim(file,len,&count,"equilsoil is called");
   if(config->with_nitrogen)
@@ -545,6 +547,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file,"drainage",&config->drainage_filename,width);
     if(config->drainage_filename.fmt==CDF)
       printinputfile(file,"river",&config->river_filename,width);
+    if(config->extflow)
+      printinputfile(file,"extflow",&config->extflow_filename,width);
     printinputfile(file,"lakes",&config->lakes_filename,width);
     if(config->withlanduse!=NO_LANDUSE)
       printinputfile(file,"neighbour",&config->neighb_irrig_filename,width);

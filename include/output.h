@@ -67,6 +67,7 @@ typedef struct
   Real wd_unsustainable;      /**< Total irrigation water withdrawal from unsustainable source (dm3) */
   Real wateruse;              /**< Total wateruse for household industry and livestock */
   Real discharge;             /**< Total discharge (dm3) */
+  Real ext;                   /**< Total external flux (dm3) */
   Real evap_lake;             /**< Total evaporation from lakes (dm3) */
   Real evap_res;              /**< Total evaporation from reservoirs (dm3) */
   Real irrig;                 /**< Total field irrigation (dm3) */

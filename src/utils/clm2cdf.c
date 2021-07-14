@@ -560,7 +560,7 @@ int main(int argc,char **argv)
   if(!israw)
   {
     version=setversion;
-    if(freadanyheader(file,&header,&swap,headername,&version))
+    if(freadanyheader(file,&header,&swap,headername,&version,TRUE))
     {
       fprintf(stderr,"Error reading header of '%s'.\n",argv[iarg+2]);
       fclose(file);
@@ -570,7 +570,7 @@ int main(int argc,char **argv)
       header.scalar=scale;
     if(version<3)
       header.datatype=(istype)  ? type  : LPJ_SHORT;
-    filesize=getfilesize(argv[iarg+1])-headersize(headername,version);
+    filesize=getfilesizep(file)-headersize(headername,version);
     if(filesize!=(long long)header.nyear*header.ncell*header.nbands*typesizes[header.datatype])
       fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+2]);
 
@@ -617,8 +617,8 @@ int main(int argc,char **argv)
     header.ncell=ngrid;
     header.nbands=nbands;
     header.scalar=scale;
-    header.nyear=getfilesize(argv[iarg+2])/typesizes[type]/ngrid/header.nbands;
-    if(getfilesize(argv[iarg+2]) % (typesizes[type]*ngrid*header.nbands))
+    header.nyear=getfilesizep(file)/typesizes[type]/ngrid/header.nbands;
+    if(getfilesizep(file) % (typesizes[type]*ngrid*header.nbands))
       fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg+2],header.nbands,ngrid);
   }
   index=createindex(grid,ngrid,res,isglobal);

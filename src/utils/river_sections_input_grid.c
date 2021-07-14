@@ -75,7 +75,7 @@ int main(int argc,char **argv)
   }
 
   /* reading original grid file */
-  if(freadheader(ifp1,&header,&swap_grid,LPJGRID_HEADER,&version))
+  if(freadheader(ifp1,&header,&swap_grid,LPJGRID_HEADER,&version,TRUE))
   {
     fclose(ifp1);
     fprintf(stderr,"Invalid header in original grid file.\n");

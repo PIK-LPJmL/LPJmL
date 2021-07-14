@@ -139,7 +139,7 @@ int main(int argc,char **argv)
   fclose(mfp);
 
   /* HEADER */
-  if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&grid_version))
+  if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&grid_version,TRUE))
   {
     fclose(ifp);
     fprintf(stderr,"Invalid header in re-ordered grid file '%s'.",argv[1]);

@@ -67,14 +67,14 @@ int main(int argc,char **argv)
 
   /* reading header of original grid file */
   version=setversion;
-  if(freadheader(mfp,&header_grid,&swap_grid,LPJGRID_HEADER,&version)){
+  if(freadheader(mfp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE)){
     fclose(mfp);
     fail(23,FALSE,"Invalid header in original grid file.");
   }
 
   /* reading header of countrycodefile */
   country_version=setversion;
-  if(freadanyheader(country_file,&header_cow,&swap_cow,headername,&country_version)){
+  if(freadanyheader(country_file,&header_cow,&swap_cow,headername,&country_version,TRUE)){
     fclose(country_file);
     fail(24,FALSE,"Invalid header in country-infile.");
   }
@@ -112,7 +112,7 @@ int main(int argc,char **argv)
   fclose(country_file);
   version=setversion;
 
-  if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&version)){
+  if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE)){
     fclose(ifp);
     fail(23,FALSE,"Invalid header in re-ordered grid file.");
   }

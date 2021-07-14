@@ -142,13 +142,13 @@ int main(int argc,char **argv)
               argv[i],strerror(errno));
       return EXIT_FAILURE;
     }
-    nyear=getfilesize(argv[i])/sizeof(float)/n/nstep/nbands;
+    nyear=getfilesizep(file[i-iarg-1])/sizeof(float)/n/nstep/nbands;
     if(nyear==0)
     {
       fprintf(stderr,"No data written for on year in '%s'.\n",argv[i]);
       return EXIT_FAILURE;
     }
-    if(getfilesize(argv[i]) % (sizeof(float)*n*nstep*nbands))
+    if(getfilesizep(file[i-iarg-1]) % (sizeof(float)*n*nstep*nbands))
       fprintf(stderr,"Warning: Filesize of '%s' is not multiple of cell size and number and years.\n",argv[i]);
     if(i==iarg+1)
       nyear_first=nyear;
