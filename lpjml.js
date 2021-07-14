@@ -51,6 +51,7 @@
   "shuffle_climate" : true, /* shuffle spinup climate */
   "const_deposition" : false,
   "fix_climate" : false,
+  "fix_landuse" : false,
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,

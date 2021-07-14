@@ -177,15 +177,15 @@ int iterate(Outputfile *output, /**< Output file data */
       calc_seasonality(grid,npft,ncft,config);
       if(config->withlanduse==CONST_LANDUSE || config->withlanduse == ONLY_CROPS) /* constant landuse? */
         landuse_year=config->landuse_year_const;
-      else if(config->fix_landuse && year>config->fix_climate_year)
-        landuse_year=config->fix_climate_year;
+      else if(config->fix_landuse && year>config->fix_landuse_year)
+        landuse_year=config->fix_landuse_year;
       else
         landuse_year=year;
       /* under constant landuse also keep wateruse at landuse_year_const */
       if(config->withlanduse==CONST_LANDUSE)
         wateruse_year=config->landuse_year_const;
-      else if(config->fix_landuse && year>config->fix_climate_year)
-        wateruse_year=config->fix_climate_year;
+      else if(config->fix_landuse && year>config->fix_landuse_year)
+        wateruse_year=config->fix_landuse_year;
       else
         wateruse_year=year;
 #if defined IMAGE && defined COUPLED

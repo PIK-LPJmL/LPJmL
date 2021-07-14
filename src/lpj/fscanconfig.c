@@ -272,10 +272,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS || config->withlanduse==ONLY_CROPS)
         fscanint2(file,&config->landuse_year_const,"landuse_year_const");
       config->fix_landuse=FALSE;
-      if(config->withlanduse!=CONST_LANDUSE && config->fix_climate)
+      if(config->withlanduse!=CONST_LANDUSE)
       {
         if(fscanbool(file,&config->fix_landuse,"fix_landuse",TRUE,verbose))
           return TRUE;
+        if(config->fix_landuse)
+        {
+          fscanint2(file,&config->fix_landuse_year,"fix_landuse_year");
+        }
       }
       if(fscankeywords(file,&config->sdate_option,"sowing_date_option",sowing_data_option,3,FALSE,verbose))
         return TRUE;
