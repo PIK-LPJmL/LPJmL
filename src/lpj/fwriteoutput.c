@@ -1780,6 +1780,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
     writeoutputshortvar(HDATE2);
     writeoutputshortvar(SYEAR);
     writeoutputshortvar(SYEAR2);
+    writeoutputarray(HUSUM2,1);
     writeoutputarray(CFT_ABOVEGBMC2,1);
     writeoutputarray(CFT_ABOVEGBMN2,1);
     writeoutputarray(CFT_RUNOFF2,1);
