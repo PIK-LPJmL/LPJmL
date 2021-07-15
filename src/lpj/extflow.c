@@ -138,6 +138,8 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
     free(extflow);
     return NULL;
   }
+  if(config->extflow_filename.fmt==META)
+    fseek(extflow->file,offset,SEEK_SET);
   if(freadint(index,header.ncell,extflow->swap,extflow->file)!=header.ncell)
   {
     fprintf(stderr,"ERROR131: Cannot read cell index array from '%s'.\n",
@@ -146,6 +148,30 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
     fclose(extflow->file);
     free(extflow);
     return NULL;
+  }
+  /* check for correct order and boundaries in index vector */
+  for(start=0;start<header.ncell;start++)
+  {
+    if(start<header.ncell-1 && index[start]>=index[start+1])
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR141: Cell index array in '%s' is not in ascending order at index=%d: %d>%d.\n",
+                config->extflow_filename.name,start,index[start],index[start+1]);
+      free(index);
+      fclose(extflow->file);
+      free(extflow);
+      return NULL;
+    }
+    else if(index[start]<0 || index[start]>=config->nall)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR141: Cell index array in '%s' is out of bounds at index=%d: %d.\n",
+                config->extflow_filename.name,start,index[start]);
+      free(index);
+      fclose(extflow->file);
+      free(extflow);
+      return NULL;
+    }
   }
   for(start=0;start<header.ncell;start++)
     if(index[start]>=config->startgrid)
