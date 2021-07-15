@@ -178,7 +178,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         grass->ind.leaf.nitrogen = grass->ind.leaf.carbon*pft->par->ncleaf.high;
         pft->bm_inc.nitrogen += (lastday.leaf.nitrogen-grass->ind.leaf.nitrogen)*pft->nind;
       }
-      if(grass->ind.leaf.carbon>0 && grass->ind.root.nitrogen/grass->ind.root.carbon>pft->par->ncleaf.high/grasspar->ratio)
+      if(grass->ind.root.carbon>0 && grass->ind.root.nitrogen/grass->ind.root.carbon>pft->par->ncleaf.high/grasspar->ratio)
       {
         grass->ind.root.nitrogen = grass->ind.root.carbon*pft->par->ncleaf.high/grasspar->ratio;
         pft->bm_inc.nitrogen += (lastday.root.nitrogen-grass->ind.root.nitrogen)*pft->nind;
