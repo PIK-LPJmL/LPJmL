@@ -103,7 +103,10 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
                  /(soil->wsats[l]-soil->ice_depth[l]-soil->ice_fw[l]-(soil->wpwps[l]*soil->ice_pwp[l]));
       else
         moist[l]=epsilon;
-      if (moist[l]<epsilon) moist[l]=epsilon;
+      if (moist[l]<epsilon)
+        moist[l]=epsilon;
+      else if (moist[l]>1)
+        moist[l]=1;
 
       response[l]=gtemp_soil[l]*(INTERCEPT+MOIST_3*(moist[l]*moist[l]*moist[l])+MOIST_2*(moist[l]*moist[l])+MOIST*moist[l]);
       if (response[l]<epsilon)
