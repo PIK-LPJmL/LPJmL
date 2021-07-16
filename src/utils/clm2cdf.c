@@ -613,7 +613,7 @@ int main(int argc,char **argv)
   {
     header.cellsize_lon=res.lon;
     header.cellsize_lat=res.lat;
-    header.datatype=type;
+    header.datatype=(istype)  ? type  : LPJ_SHORT;
     header.ncell=ngrid;
     header.nbands=nbands;
     header.scalar=scale;
@@ -626,11 +626,11 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   free(grid);
   arglist=catstrvec(argv,argc);
-  cdf=create_cdf(argv[iarg+3],argv[iarg],units,descr,arglist,&header,compress,landuse,notime,(type==LPJ_INT || type==LPJ_BYTE) && header.scalar==1,index);
+  cdf=create_cdf(argv[iarg+3],argv[iarg],units,descr,arglist,&header,compress,landuse,notime,(header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1,index);
   free(arglist);
   if(cdf==NULL)
     return EXIT_FAILURE;
-  if((type==LPJ_INT || type==LPJ_BYTE) && header.scalar==1)
+  if((header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1)
   {
     idata=newvec(int,ngrid*header.nbands);
     if(idata==NULL)
