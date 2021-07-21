@@ -902,7 +902,7 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
     if(initignition(grid,config))
       return NULL;
   }
-  if(config->withlanduse!=NO_LANDUSE && config->nagtree)
+  if(config->withlanduse!=NO_LANDUSE && config->iscotton)
   {
     if(readcottondays(grid,config))
      return NULL;

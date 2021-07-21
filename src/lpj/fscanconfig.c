@@ -427,6 +427,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->nwft=getnculttype(config->pftpar, config->npft[GRASS] + config->npft[TREE],WP);
   config->nwptype=(config->nwft) ? NWPTYPE : 0;
   config->ngrass=getngrassnat(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
+  config->iscotton=findpftname("cotton",config->pftpar+config->npft[GRASS]+config->npft[TREE]-config->nagtree,config->nagtree)!=NOT_FOUND;
   if(config->others_to_crop)
   {
     if(fscanstring(file,name,"cft_temp",FALSE,verbose))
@@ -556,6 +557,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
     if(config->landusemap==NULL)
       return TRUE;
+    if(config->withlanduse!=ALL_CROPS && !findcftmap("cotton",config->pftpar,config->landusemap,config->landusemap_size))
+      config->iscotton=FALSE;
     if(config->fertilizer_input==FERTILIZER || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
     {
       config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
@@ -574,7 +577,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(&input,&config->regioncode_filename,config->inputdir,FALSE,"regioncode");
     }
     scanclimatefilename(&input,&config->landuse_filename,config->inputdir,FALSE,"landuse");
-    if(config->nagtree)
+    if(config->iscotton)
     {
       scanclimatefilename(&input,&config->sowing_cotton_rf_filename,config->inputdir,FALSE,"sowing_ag_tree_rf");
       scanclimatefilename(&input,&config->harvest_cotton_rf_filename,config->inputdir,FALSE,"harvest_ag_tree_rf");

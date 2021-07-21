@@ -414,7 +414,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.withlanduse!=NO_LANDUSE)
   {
     bad+=checkdatafile(&config,&config.landuse_filename,"1");
-    if(config.nagtree)
+    if(config.iscotton)
     {
       bad+=checkinputfile(&config,&config.sowing_cotton_rf_filename,NULL,0);
       bad+=checkinputfile(&config,&config.harvest_cotton_rf_filename,NULL,0);

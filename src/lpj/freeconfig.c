@@ -130,6 +130,13 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->countrycode_filename);
     if(config->countrycode_filename.fmt==CDF)
       freefilename(&config->regioncode_filename);
+    if(config->iscotton)
+    {
+      freefilename(&config->sowing_cotton_rf_filename);
+      freefilename(&config->harvest_cotton_rf_filename);
+      freefilename(&config->sowing_cotton_ir_filename);
+      freefilename(&config->harvest_cotton_ir_filename);
+    }
   }
   if(config->with_nitrogen)
   {
