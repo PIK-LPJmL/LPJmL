@@ -26,7 +26,7 @@ int main(int argc,char **argv)
   String id;
   const char *progname;
   char *endptr;
-  int index;
+  int iarg,*index;
   size_t i,size;
   long long filesize;
   void *buffer;
@@ -38,20 +38,20 @@ int main(int argc,char **argv)
   scalar=1;
   cellsize=0.5;
   progname=strippath(argv[0]);
-  for(index=1;index<argc;index++)
-    if(argv[index][0]=='-')
+  for(iarg=1;iarg<argc;iarg++)
+    if(argv[iarg][0]=='-')
     {
-      if(!strcmp(argv[index],"-scale"))
+      if(!strcmp(argv[iarg],"-scale"))
       {
-        if(index==argc-1)
+        if(iarg==argc-1)
         {
           fprintf(stderr,"Argument missing for option '-scale'.\n");
           return EXIT_FAILURE;
         }
-        scalar=(float)strtod(argv[++index],&endptr);
+        scalar=(float)strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-scale'.\n",argv[index]);
+          fprintf(stderr,"Invalid number '%s' for option '-scale'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
         if(scalar<=0)
@@ -60,33 +60,33 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
-      else if(!strcmp(argv[index],"-type"))
+      else if(!strcmp(argv[iarg],"-type"))
       {
-        if(index==argc-1)
+        if(iarg==argc-1)
         {
           fprintf(stderr,"Argument missing for option '-type'.\n");
           return EXIT_FAILURE;
         }
-        i=findstr(argv[++index],typenames,5);
+        i=findstr(argv[++iarg],typenames,5);
         if(i==NOT_FOUND)
         {
           fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"
-                  USAGE,argv[index],progname);
+                  USAGE,argv[iarg],progname);
           return EXIT_FAILURE;
         }
         datatype=(Type)i;
       }
-      else if(!strcmp(argv[index],"-cellsize"))
+      else if(!strcmp(argv[iarg],"-cellsize"))
       {
-        if(index==argc-1)
+        if(iarg==argc-1)
         {
           fprintf(stderr,"Argument missing for option '-cellsize'.\n");
           return EXIT_FAILURE;
         }
-        cellsize=(float)strtod(argv[++index],&endptr);
+        cellsize=(float)strtod(argv[++iarg],&endptr);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-cellsize'.\n",argv[index]);
+          fprintf(stderr,"Invalid number '%s' for option '-cellsize'.\n",argv[iarg]);
           return EXIT_FAILURE;
         }
         if(cellsize<=0)
@@ -98,33 +98,33 @@ int main(int argc,char **argv)
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
-                USAGE,argv[index],progname);
+                USAGE,argv[iarg],progname);
         return EXIT_FAILURE;
       }
     }
     else
       break;
-  if(argc<index+2)
+  if(argc<iarg+2)
   {
     fprintf(stderr,"Argument(s) missing.\n"
             USAGE,progname);
     return EXIT_FAILURE;
   }
-  if(!strcmp(argv[index],argv[index+1]))
+  if(!strcmp(argv[iarg],argv[iarg+1]))
   {
     fputs("Error: source and destination filename are the same.\n",stderr);
     return EXIT_FAILURE;
   }
-  infile=fopen(argv[index],"rb");
+  infile=fopen(argv[iarg],"rb");
   if(infile==NULL)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[index],strerror(errno));
+    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg],strerror(errno));
     return EXIT_FAILURE;
   }
   version=READ_VERSION;
-  if(freadanyheader(infile,&header,&swap,id,&version))
+  if(freadanyheader(infile,&header,&swap,id,&version,TRUE))
   {
-    fprintf(stderr,"Error reading header in '%s'.\n",argv[index]);
+    fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg]);
     return EXIT_FAILURE;
   }
   if(version==1)
@@ -135,16 +135,17 @@ int main(int argc,char **argv)
   if(version<3)
     header.datatype=datatype;
   filesize=getfilesizep(infile);
-  if(filesize!=(long long)header.ncell*header.nbands*header.nyear*typesizes[header.datatype]+headersize(id,version))
+  if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+(long long)header.ncell*header.nbands*header.nyear*typesizes[header.datatype]+headersize(id,version)) ||
+     (header.order!=CELLINDEX && filesize!=(long long)header.ncell*header.nbands*header.nyear*typesizes[header.datatype]+headersize(id,version)))
   {
-     fprintf(stderr,"Error: File size of '%s' does not match nyear*nbands*ncell.\n",argv[index]);
+     fprintf(stderr,"Error: File size of '%s' does not match nyear*nbands*ncell.\n",argv[iarg]);
      fclose(infile);
      return EXIT_FAILURE;
   }
-  outfile=fopen(argv[index+1],"wb");
+  outfile=fopen(argv[iarg+1],"wb");
   if(outfile==NULL)
   {
-    fprintf(stderr,"Error creating '%s': %s.\n",argv[index+1],strerror(errno));
+    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
     return EXIT_FAILURE;
   }
   fwriteheader(outfile,&header,id,3);
@@ -155,6 +156,22 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   size=filesize-headersize(id,version);
+  if(header.order==CELLINDEX)
+  {
+    index=newvec(int,header.ncell);
+    if(index==NULL)
+    {
+      printallocerr("index");
+      return EXIT_FAILURE;
+    }
+    size-=sizeof(int)*header.ncell;
+    freadint(index,header.ncell,swap,infile);
+    if(fwrite(index,sizeof(int),header.ncell,outfile)!=header.ncell)
+    {
+      fprintf(stderr,"Error writing data in '%s'.\n",argv[iarg+1]);
+      return EXIT_FAILURE;
+    }
+  }
   for(i=0;i<size / BUFSIZE;i++)
   {
     switch(typesizes[header.datatype])
@@ -173,7 +190,7 @@ int main(int argc,char **argv)
     }
     if(fwrite(buffer,1,BUFSIZE,outfile)!=BUFSIZE)
     {
-      fprintf(stderr,"Error writing data in '%s'.\n",argv[index+1]);
+      fprintf(stderr,"Error writing data in '%s'.\n",argv[iarg+1]);
       return EXIT_FAILURE;
     }
   }
@@ -195,7 +212,7 @@ int main(int argc,char **argv)
     }
     if(fwrite(buffer,1,size % BUFSIZE,outfile)!=size % BUFSIZE)
     {
-      fprintf(stderr,"Error writing data in '%s'.\n",argv[index+1]);
+      fprintf(stderr,"Error writing data in '%s'.\n",argv[iarg+1]);
       return EXIT_FAILURE;
     }
   }

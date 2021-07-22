@@ -331,6 +331,8 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   bad+=checkinputfile(&config, &config.slope_max_filename,NULL,0);
   if(config.river_routing)
   {
+    if(config.extflow)
+      bad+=checkclmfile(&config,&config.extflow_filename,NULL,0,TRUE);
     bad+=checkinputfile(&config,&config.drainage_filename,NULL,(config.drainage_filename.fmt==CDF) ? 0 : 2);
     bad+=checkinputfile(&config,&config.lakes_filename,"1",0);
     if(config.withlanduse!=NO_LANDUSE)
@@ -428,7 +430,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   if(config.withlanduse!=NO_LANDUSE)
   {
     bad+=checkdatafile(&config,&config.landuse_filename,"1");
-    if(config.nagtree)
+    if(config.iscotton)
     {
       bad+=checkinputfile(&config,&config.sowing_cotton_rf_filename,NULL,0);
       bad+=checkinputfile(&config,&config.harvest_cotton_rf_filename,NULL,0);

@@ -349,6 +349,10 @@ Error code Description                                   Error type
         39 Invalid FPC value                             Internal
         40 Boundary check error                          Internal
         41 Invalid time step in soiltemp()               Internal
+        42 Gamma function error                          Internal
+        43 Wetland error                                 Internal
+        44 Imvalid hag_beta error                        External
+        45 Cannot read external flow                     External
 ---------- --------------------------------------------- ----------
 
 External errors are caused by invalid or missing input files while internal

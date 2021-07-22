@@ -36,6 +36,7 @@ void freegrid(Cell grid[],         /**< cell grid */
     if(grid[cell].ml.irrig_system!=NULL)
     {
       free(grid[cell].ml.irrig_system->crop);
+      free(grid[cell].ml.irrig_system->ag_tree);
       free(grid[cell].ml.irrig_system);
     }
     if(config->reservoir)

@@ -66,7 +66,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error opening '%s': %s\n",argv[index+1],strerror(errno));
     return EXIT_FAILURE;
   }
-  if(freadanyheader(file,&header,&swap,id,&version))
+  if(freadanyheader(file,&header,&swap,id,&version,TRUE))
   {
     fprintf(stderr,"Error reading header in '%s'.\n",
             argv[index+1]);

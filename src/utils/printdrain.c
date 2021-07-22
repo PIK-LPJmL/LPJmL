@@ -73,7 +73,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error opening '%s': %s.\n",argv[1],strerror(errno));
     return EXIT_FAILURE;
   }
-  if(freadanyheader(drainage,&header,&swap,headername,&version))
+  if(freadanyheader(drainage,&header,&swap,headername,&version,TRUE))
   {
     fprintf(stderr,"Error reading header in '%s'.\n",argv[1]);
     return EXIT_FAILURE;

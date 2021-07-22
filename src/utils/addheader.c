@@ -30,6 +30,7 @@ int main(int argc,char **argv)
   size_t len;
   long long filesize;
   void *buffer;
+  int *vector;
   Bool swap;
   progname=strippath(argv[0]);
   /* set default values for header */
@@ -206,8 +207,13 @@ int main(int argc,char **argv)
         header.order=strtol(argv[++index],&endptr,10);
         if(*endptr!='\0')
         {
-          fprintf(stderr,"Invalid number '%s' for option '-order'.\n",argv[index]);
-          return EXIT_FAILURE;
+          header.order=findstr(argv[index],ordernames,4);
+          if(header.order==NOT_FOUND)
+          {
+            fprintf(stderr,"Invalid number '%s' for order.\n",argv[index]);
+            return EXIT_FAILURE;
+          }
+          header.order++;
         }
       }
       else if(!strcmp(argv[index],"-version"))
@@ -281,7 +287,8 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   filesize=getfilesizep(infile);
-  if(filesize!=(long long)header.ncell*header.nbands*header.nyear*len)
+  if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+(long long)header.ncell*header.nbands*header.nyear*len) ||
+    (header.order!=CELLINDEX && filesize!=(long long)header.ncell*header.nbands*header.nyear*len))
   {
      fprintf(stderr,"Error: File size of '%s' does not match nyear*nbands*ncell*%d.\n",argv[index],(int)len);
      fclose(infile);
@@ -294,6 +301,20 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   fwriteheader(outfile,&header,id,version);
+  if(header.order==CELLINDEX)
+  {
+    filesize-=sizeof(int)*header.ncell;
+    vector=newvec(int,header.ncell);
+    if(vector==NULL)
+    {
+      printallocerr("index");
+      return EXIT_FAILURE;
+    }
+    freadint(vector,header.ncell,swap,infile);
+    if(fwrite(vector,sizeof(int),header.ncell,outfile)!=header.ncell)
+      fprintf(stderr,"Error writing index in '%s'.\n",argv[index+1]);
+    free(vector);
+  }
   buffer=malloc(BUFSIZE);
   if(buffer==NULL)
   {

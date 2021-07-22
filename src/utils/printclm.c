@@ -69,7 +69,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
       fprintf(stderr,"Error opening '%s': %s.\n",filename,strerror(errno));
       return;
     }
-    if(freadanyheader(file,&header,&swap,id,&version))
+    if(freadanyheader(file,&header,&swap,id,&version,TRUE))
     {
       fprintf(stderr,"Error reading header in '%s', perhaps not a clm file.\n",
               filename);
@@ -123,7 +123,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
                 version,RESTART_VERSION);
     }
   }
-  if(header.order==CELLINDEX)
+  if(!ismeta && header.order==CELLINDEX)
   {
     if(version<3)
       type=LPJ_FLOAT;

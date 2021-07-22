@@ -49,6 +49,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->drainage_filename);
     if(config->drainage_filename.fmt==CDF)
       freefilename(&config->river_filename);
+    if(config->extflow)
+      freefilename(&config->extflow_filename);
     freefilename(&config->lakes_filename);
     if(config->withlanduse!=NO_LANDUSE)
     {
@@ -133,6 +135,13 @@ void freeconfig(Config *config /**< LPJmL configuration */
     freefilename(&config->countrycode_filename);
     if(config->countrycode_filename.fmt==CDF)
       freefilename(&config->regioncode_filename);
+    if(config->iscotton)
+    {
+      freefilename(&config->sowing_cotton_rf_filename);
+      freefilename(&config->harvest_cotton_rf_filename);
+      freefilename(&config->sowing_cotton_ir_filename);
+      freefilename(&config->harvest_cotton_ir_filename);
+    }
   }
   if(config->with_nitrogen)
   {

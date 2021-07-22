@@ -118,7 +118,7 @@ static size_t isnetcdfinput(const Config *config)
       width=max(width,strlen(config->countrycode_filename.var));
     if(config->landuse_filename.fmt==CDF)
       width=max(width,strlen(config->landuse_filename.var));
-    if(config->nagtree)
+    if(config->iscotton)
     {
       if(config->sowing_cotton_rf_filename.fmt==CDF)
         width=max(width,strlen(config->sowing_cotton_rf_filename.var));
@@ -250,17 +250,16 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"const. climate");
   if(config->shuffle_climate)
     len=printsim(file,len,&count,"shuffle climate");
-   if(config->fix_climate)
+  if(config->fix_climate)
   {
     snprintf(s,STRING_LEN,"fix climate after year %d cycling %d years",
              config->fix_climate_year, config->fix_climate_cycle);
     len=printsim(file,len,&count,s);
-    if(config->withlanduse!=CONST_LANDUSE && config->withlanduse!=NO_LANDUSE && config->fix_landuse)
-    {
-      snprintf(s,STRING_LEN,"fix landuse after year %d",
-               config->fix_climate_year);
-      len=printsim(file,len,&count,s);
-    }
+  }
+  if(config->withlanduse!=CONST_LANDUSE && config->withlanduse!=NO_LANDUSE && config->fix_landuse)
+  {
+    snprintf(s,STRING_LEN,"fix landuse after year %d",config->fix_landuse_year);
+    len=printsim(file,len,&count,s);
   }
   if(config->const_deposition)
     len=printsim(file,len,&count,"const. deposition");
@@ -268,6 +267,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"no N deposition");
   if(config->river_routing)
     len=printsim(file,len,&count,"river routing");
+  if(config->extflow)
+    len=printsim(file,len,&count,"external flow");
   if(config->equilsoil)
     len=printsim(file,len,&count,"equilsoil is called");
   if (config->with_dynamic_ch4)
@@ -535,7 +536,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     if(config->countrycode_filename.fmt==CDF)
       printinputfile(file,"regions",&config->regioncode_filename,width);
     printinputfile(file,"landuse",&config->landuse_filename,width);
-    if(config->nagtree)
+    if(config->iscotton)
     {
       printinputfile(file,"sowing_rf",&config->sowing_cotton_rf_filename,width);
       printinputfile(file,"harvest_rf",&config->harvest_cotton_rf_filename,width);
@@ -574,6 +575,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     printinputfile(file,"drainage",&config->drainage_filename,width);
     if(config->drainage_filename.fmt==CDF)
       printinputfile(file,"river",&config->river_filename,width);
+    if(config->extflow)
+      printinputfile(file,"extflow",&config->extflow_filename,width);
     printinputfile(file,"lakes",&config->lakes_filename,width);
     if(config->withlanduse!=NO_LANDUSE)
       printinputfile(file,"neighbour",&config->neighb_irrig_filename,width);

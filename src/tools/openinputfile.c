@@ -104,7 +104,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
   else
   {
     *version=(filename->fmt==CLM) ? READ_VERSION : 2;
-    if(freadanyheader(file,header,swap,headername,version))
+    if(freadanyheader(file,header,swap,headername,version,isroot(*config)))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR154: Invalid header in '%s'.\n",filename->name);
@@ -134,15 +134,18 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
       if(isyear && isroot(*config))
         fprintf(stderr,"WARNING004: First year in '%s'=%d greater than %d.\n",
                 filename->name,header->firstyear,config->firstyear);
-    if(config->firstgrid<header->firstcell ||
-       config->nall+config->firstgrid>header->ncell+header->firstcell)
+    if(header->order!=CELLINDEX)
     {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR155: gridcells [%d,%d] in '%s' not in [%d,%d].\n",
-                header->firstcell,header->ncell+header->firstcell-1,filename->name,
-                config->firstgrid,config->nall+config->firstgrid-1);
-      fclose(file);
-      return NULL;
+      if(config->firstgrid<header->firstcell ||
+         config->nall+config->firstgrid>header->ncell+header->firstcell)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR155: gridcells [%d,%d] in '%s' not in [%d,%d].\n",
+                  header->firstcell,header->ncell+header->firstcell-1,filename->name,
+                  config->firstgrid,config->nall+config->firstgrid-1);
+        fclose(file);
+        return NULL;
+      }
     }
   }
   return file;

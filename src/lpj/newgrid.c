@@ -660,6 +660,8 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
     grid[i].ground_st = 0.0;
     grid[i].ground_st_am = 0.0;
     grid[i].discharge.dmass_sum=0.0;
+    grid[i].discharge.fin_ext=0.0;
+    grid[i].discharge.afin_ext=0.0;
     grid[i].discharge.queue=NULL;
     grid[i].icefrac = 0;
     grid[i].hydrotopes.meanwater = 0.;
@@ -917,7 +919,7 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
     if(initignition(grid,config))
       return NULL;
   }
-  if(config->withlanduse!=NO_LANDUSE && config->nagtree)
+  if(config->withlanduse!=NO_LANDUSE && config->iscotton)
   {
     if(readcottondays(grid,config))
      return NULL;

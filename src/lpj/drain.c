@@ -152,8 +152,14 @@ void drain(Cell grid[],         /**< Cell array */
 
     for(i=pnet_lo(config->route);i<=pnet_hi(config->route);i++)
     {
+      if(iter==0)
+      {
+        fin=grid[i].discharge.fin_ext;
+        grid[i].discharge.afin_ext+=fin;
+      }
+      else
+        fin=0;
       /* sum up all inflows from other cells */
-      fin=0.0;
       for(j=0;j<pnet_inlen(config->route,i);j++)
         fin+=in[pnet_inindex(config->route,i,j)];
 

@@ -48,6 +48,7 @@
 "new_phenology": true,
 "new_trf" : false,
 "river_routing" : true,
+"extflow" : false,
 "permafrost" : true,
 "johansen" : true,
 "with_nitrogen" : "lim", /* other options: "no", "lim", "unlim" */

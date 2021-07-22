@@ -42,12 +42,14 @@
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : true,
   "permafrost" : true,
+  "extflow" : false,
   "johansen" : true,
   "with_nitrogen" : "no", /* other options: "no", "lim", "unlim" */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : false,
   "fix_climate" : false,
+  "fix_landuse" : false,
   "const_deposition" : false,
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */

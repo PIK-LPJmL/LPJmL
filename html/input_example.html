@@ -24,24 +24,38 @@
 
 "inpath" : "/p/projects/lpjml/input/historical",
 
+"soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
+             "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
+             "loamy sand", "sand", "rock and ice"],
+
 /* the following array describes the order of the CFT bands in the land use file */
+
 
 "landusemap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
                 "temperate roots", "tropical roots", "oil crops sunflower",
                 "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
                 "sugarcane","others","grassland","biomass grass","biomass tree"],
 
+"fertilizermap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+                   "temperate roots", "tropical roots", "oil crops sunflower",
+                   "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+                   "sugarcane","others","grassland","biomass grass","biomass tree"],
+
+"cftmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+            "temperate roots", "tropical roots", "oil crops sunflower",
+            "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+            "sugarcane"],
 
 "input" :
 {
   "soil" :         { "fmt" : "meta", "name" : "input_VERSION2/soil.descr"},
   "coord" :        { "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},
-  "countrycode" :  { "fmt" : CLM,  "name" : "input_VERSION2/cow_mg_2006_full.bin"},
-  "no3deposition" : { "fmt" : CLM,  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
-  "nh4deposition" : { "fmt" : CLM,  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
-  "soilpH" :        { "fmt" : CLM,  "name" : "input_VERSION2/soil_ph.clm"},
-  "landuse" :      { "fmt" : CLM,  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
-  "fertilizer_nr" : { "fmt" : CLM,  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
+  "countrycode" :  { "fmt" : "clm",  "name" : "input_VERSION2/cow_mg_2006_full.bin"},
+  "no3deposition" : { "fmt" : "clm",  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
+  "nh4deposition" : { "fmt" : "clm",  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
+  "soilpH" :        { "fmt" : "clm",  "name" : "input_VERSION2/soil_ph.clm"},
+  "landuse" :      { "fmt" : "clm",  "name" : "input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"},
+  "fertilizer_nr" : { "fmt" : "clm",  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
   "grassland_fixed_pft" : { "fmt" : "raw", "name" : "/home/rolinski/LPJ/Newinput/scenario_MO0.bin"},
   "lakes" :        { "fmt" : "meta", "name" : "input_VERSION2/glwd_lakes_and_rivers.descr"},
   "drainage" :     { "fmt" : "clm",  "name" : "input_VERSION2/drainagestn.bin"},

@@ -348,9 +348,9 @@ int main(int argc,char **argv)
               strerror(errno));
       return EXIT_FAILURE;
     }
-    if(getfilesize(argv[i]) % (sizeof(short)*2)!=0)
+    if(getfilesizep(file) % (sizeof(short)*2)!=0)
       fprintf(stderr,"Warning: File size of '%s' is not multiple of %d.\n",argv[i],(int)(sizeof(short)*2));
-    config.ngridcell=getfilesize(argv[i])/sizeof(short)/2;
+    config.ngridcell=getfilesizep(file)/sizeof(short)/2;
     if(config.ngridcell==0)
     {
       fprintf(stderr,"Number of cells is zero in '%s'.\n",argv[i]);

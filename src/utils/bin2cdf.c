@@ -491,9 +491,9 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   if(floatgrid)
-    ngrid=getfilesize(argv[iarg+1])/sizeof(float)/2;
+    ngrid=getfilesizep(file)/sizeof(float)/2;
   else
-    ngrid=getfilesize(argv[iarg+1])/sizeof(short)/2;
+    ngrid=getfilesizep(file)/sizeof(short)/2;
   if(ngrid==0)
   {
      fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg+1]);
@@ -528,14 +528,14 @@ int main(int argc,char **argv)
   }
   if(isshort)
   {
-    header.nyear=getfilesize(argv[iarg+2])/sizeof(short)/ngrid/header.nbands;
-    if(getfilesize(argv[iarg+2]) % (sizeof(short)*ngrid*header.nbands))
+    header.nyear=getfilesizep(file)/sizeof(short)/ngrid/header.nbands;
+    if(getfilesizep(file) % (sizeof(short)*ngrid*header.nbands))
       fprintf(stderr,"Warning: file size of '%s' is not multiple bands %d and number of cells %d.\n",argv[iarg+2],header.nbands,ngrid);
   }
   else
   {
-    header.nyear=getfilesize(argv[iarg+2])/sizeof(float)/ngrid/header.nbands;
-    if(getfilesize(argv[iarg+2]) % (sizeof(float)*ngrid*header.nbands))
+    header.nyear=getfilesizep(file)/sizeof(float)/ngrid/header.nbands;
+    if(getfilesizep(file) % (sizeof(float)*ngrid*header.nbands))
       fprintf(stderr,"Warning: file size of '%s' is not multiple bands %d and number of cells %d.\n",argv[iarg+2],header.nbands,ngrid);
   }
   index=createindex(grid,ngrid,res,isglobal);

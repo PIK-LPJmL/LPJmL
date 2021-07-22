@@ -25,7 +25,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
   int s, p, l;
   Stand *stand;
   Pft *pft;
-  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  Flux flux={0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
   for(cell=0;cell<config->ngridcell;cell++)
   {
     if(!grid[cell].skip)
@@ -85,6 +85,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
         flux.soilc+=grid[cell].ml.resdata->pool.carbon*grid[cell].coord.area;
     }
     flux.discharge+=grid[cell].balance.adischarge;
+    flux.ext+=grid[cell].discharge.afin_ext;
     flux.delta_surface_storage+=grid[cell].balance.surface_storage-grid[cell].balance.surface_storage_last;
     grid[cell].balance.surface_storage_last=grid[cell].balance.surface_storage;
 

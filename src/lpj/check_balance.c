@@ -26,7 +26,7 @@ void check_balance(Flux flux,           /**< global carbon and water fluxes */
   int startyear;
 
   if(config->river_routing)
-    balance=flux.prec+flux.wd_unsustainable-flux.evap-flux.transp-flux.interc-flux.evap_lake-flux.evap_res
+    balance=flux.ext+flux.prec+flux.wd_unsustainable-flux.evap-flux.transp-flux.interc-flux.evap_lake-flux.evap_res
             -flux.discharge-flux.conv_loss_evap-flux.delta_surface_storage-flux.delta_soil_storage-flux.wateruse-flux.excess_water;
 
   balance=(flux.area>0) ? balance/flux.area : 0.0;

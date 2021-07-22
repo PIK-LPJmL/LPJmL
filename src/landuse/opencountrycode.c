@@ -66,7 +66,7 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
   else
   {
     version=(filename->fmt==CLM) ? READ_VERSION : 2;
-    if(freadanyheader(file,&header,swap,headername,&version))
+    if(freadanyheader(file,&header,swap,headername,&version,isout))
     {
       if(isout)
         fprintf(stderr,"ERROR154: Invalid header in '%s'.\n",filename->name);

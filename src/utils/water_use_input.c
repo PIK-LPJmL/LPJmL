@@ -116,7 +116,7 @@ int main(int argc,char **argv)
             argv[4],strerror(errno));
     return EXIT_FAILURE;
   }
-  if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&version)){
+  if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE)){
     fclose(ifp);
     fputs("Invalid header in re-ordered grid-file.",stderr);
     return EXIT_FAILURE;

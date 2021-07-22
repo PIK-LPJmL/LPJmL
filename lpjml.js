@@ -42,6 +42,7 @@
   "new_phenology" : true,   /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : false,
+  "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
   "with_nitrogen" : "lim", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
@@ -52,6 +53,7 @@
   "shuffle_climate" : true, /* shuffle spinup climate */
   "const_deposition" : false,
   "fix_climate" : false,
+  "fix_landuse" : false,
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "population" : false,
@@ -82,7 +84,6 @@
   "black_fallow" : false,               /* simulation with black fallow on PNV */
   "pft_residue" : "temperate cereals",
   "no_ndeposition" : false,             /* turn off atmospheric N deposition */
-                                        /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
   "fertilizer_input" : "yes",           /* enable fertilizer input, other options: "no", "yes", "auto" */

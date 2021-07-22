@@ -24,6 +24,13 @@ Bool initinput(Input *input,        /**< Input data */
 {
   if((input->climate=initclimate(grid,config))==NULL)
     return TRUE;
+  if(config->extflow)
+  {
+    if((input->extflow=initextflow(config))==NULL)
+      return TRUE;
+  }
+  else
+    input->extflow=NULL;
   if(config->withlanduse!=NO_LANDUSE)
   {
     if((input->landuse=initlanduse(config))==NULL)
