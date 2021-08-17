@@ -176,12 +176,6 @@ static Bool readdata(Climatefile *file,    /* climate data file */
           }
           else
           {
-            if(s[file->nlon*address[0]+address[1]]<0 || s[file->nlon*address[0]+address[1]]>UCHAR_MAX)
-            {
-              fprintf(stderr,"WARNING423: value %d for cell=%d (",s[file->nlon*address[0]+address[1]],cell);
-              fprintcoord(stderr,coords+cell);
-              fprintf(stderr,") does not fit in byte.\n");
-            }
             data=(float)(file->slope*f[file->nlon*address[0]+address[1]]+file->intercept);
             fwrite(&data,sizeof(float),1,bin);
           }
@@ -199,6 +193,12 @@ static Bool readdata(Climatefile *file,    /* climate data file */
           }
           if(isbyte)
           {
+            if(s[file->nlon*address[0]+address[1]]<0 || s[file->nlon*address[0]+address[1]]>UCHAR_MAX)
+            {
+              fprintf(stderr,"WARNING423: value %d for cell=%d (",s[file->nlon*address[0]+address[1]],cell);
+              fprintcoord(stderr,coords+cell);
+              fprintf(stderr,") does not fit in byte.\n");
+            }
             bdata=(Byte)s[file->nlon*address[0]+address[1]];
             fwrite(&bdata,sizeof(Byte),1,bin);
           }
