@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-firstyear year] [-nbands n] [-cellsize size] [-day|month] [-noheader] [-csv] [-mean] grid.bin out.bin ...\n"
+#define USAGE "Usage: %s [-firstyear year] [-nbands n] [-cellsize size] [-day|month] [-noheader] [-csv] [-mean] [-yearsum] grid.bin out.bin ...\n"
 
 int main(int argc,char **argv)
 {
@@ -24,9 +24,9 @@ int main(int argc,char **argv)
   FILE *gridfile;
   FILE **file;
   int i,n,nyear,cell,year,iarg,firstyear,step,nstep,nbands,band,nyear_first;
-  Bool header,ismean,csv;
+  Bool header,ismean,csv,yearsum;
   float data;
-  Real sum,area_sum;
+  Real sum,area_sum,*sum_array;
   char *endptr;
   /* set default values */
   firstyear=1901;
@@ -34,6 +34,7 @@ int main(int argc,char **argv)
   nbands=1;
   header=TRUE;
   ismean=csv=FALSE;
+  yearsum=FALSE;
   resolution.lon=resolution.lat=0.5;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -93,6 +94,8 @@ int main(int argc,char **argv)
         ismean=TRUE;
       else if(!strcmp(argv[iarg],"-csv"))
         csv=TRUE;
+      else if(!strcmp(argv[iarg],"-yearsum"))
+        yearsum=TRUE;
       else
       {
         fprintf(stderr,"Error: Invalid option '%s'.\n"
@@ -160,15 +163,16 @@ int main(int argc,char **argv)
   if(header)
   {
     printf("Year");
-    switch(nstep)
-    {
-      case NMONTH:
-        printf("%cMonth",(csv) ? ',' : ' ');
-        break;
-      case NDAYYEAR:
-        printf("%cDay",(csv) ? ',' : ' ');
-        break;
-    }
+    if(!yearsum)
+      switch(nstep)
+      {
+        case NMONTH:
+          printf("%cMonth",(csv) ? ',' : ' ');
+          break;
+        case NDAYYEAR:
+          printf("%cDay",(csv) ? ',' : ' ');
+          break;
+      }
     for(i=iarg+1;i<argc;i++)
     {
       if(nbands==1)
@@ -181,27 +185,55 @@ int main(int argc,char **argv)
     }
     printf("\n");
   }
+  if(yearsum)
+  {
+    sum_array=newvec(Real,nbands*(argc-iarg-1));
+    if(sum_array==NULL)
+    {
+      printallocerr("sum");
+      return EXIT_FAILURE;
+    }
+  }
   for(year=firstyear;year<firstyear+nyear;year++)
   {
-    for(step=0;step<nstep;step++)
+    if(yearsum)
     {
-      if(nstep==1)
-        printf("%d",year);
-      else
-        printf((csv) ? ",%d,%d" : "%d %d",year,step+1);
-      for(i=0;i<argc-iarg-1;i++)
-        for(band=0;band<nbands;band++)
-        {
-          sum=0;
-          for(cell=0;cell<n;cell++)
-          {
-            fread(&data,sizeof(float),1,file[i]);
-            sum+=data*area[cell];
-          }
-          printf((csv) ? ",%g" : " %g",(ismean) ? sum/area_sum : sum);
-        }
+      printf("%d",year);
+      for(i=0;i<nbands*(argc-iarg-1);i++)
+        sum_array[i]=0;
+      for(step=0;step<nstep;step++)
+        for(i=0;i<argc-iarg-1;i++)
+          for(band=0;band<nbands;band++)
+            for(cell=0;cell<n;cell++)
+            {
+              fread(&data,sizeof(float),1,file[i]);
+              sum_array[i*nbands+band]+=data*area[cell];
+            }
+        for(i=0;i<argc-iarg-1;i++)
+          for(band=0;band<nbands;band++)
+            printf((csv) ? ",%g" : " %g",(ismean) ? sum_array[i*nbands+band]/area_sum : sum_array[i*nbands+band]);
       printf("\n");
     }
+    else
+      for(step=0;step<nstep;step++)
+      {
+        if(nstep==1)
+          printf("%d",year);
+        else
+          printf((csv) ? ",%d,%d" : "%d %d",year,step+1);
+        for(i=0;i<argc-iarg-1;i++)
+          for(band=0;band<nbands;band++)
+          {
+            sum=0;
+            for(cell=0;cell<n;cell++)
+            {
+              fread(&data,sizeof(float),1,file[i]);
+              sum+=data*area[cell];
+            }
+            printf((csv) ? ",%g" : " %g",(ismean) ? sum/area_sum : sum);
+          }
+        printf("\n");
+      }
   }
   for(i=0;i<argc-iarg-1;i++)
     fclose(file[i]);
