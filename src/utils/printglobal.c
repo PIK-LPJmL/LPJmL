@@ -23,7 +23,7 @@ int main(int argc,char **argv)
   Intcoord intcoord;
   FILE *gridfile;
   FILE **file;
-  int i,n,nyear,cell,year,iarg,firstyear,step,nstep,nbands,band,nyear_first;
+  int i,n,nyear,cell,year,iarg,firstyear,step,nstep,nbands,band,nyear_min;
   Bool header,ismean,csv,yearsum;
   float data;
   Real sum,area_sum,*sum_array;
@@ -154,10 +154,11 @@ int main(int argc,char **argv)
     if(getfilesizep(file[i-iarg-1]) % (sizeof(float)*n*nstep*nbands))
       fprintf(stderr,"Warning: Filesize of '%s' is not multiple of cell size and number and years.\n",argv[i]);
     if(i==iarg+1)
-      nyear_first=nyear;
-    else if(nyear<nyear_first)
+      nyear_min=nyear;
+    else if(nyear<nyear_min)
     {
-      fprintf(stderr,"Error: Number of years=%d in '%s' is less than number of years=%d in '%s'.\n",nyear,argv[i],nyear_first,argv[iarg+1]);
+      fprintf(stderr,"Warning: Number of years=%d in '%s' is less than number of years=%d in '%s'.\n",nyear,argv[i],nyear_min,argv[iarg+1]);
+      nyear_min=nyear;
     }
   }
   if(header)
@@ -194,7 +195,7 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
   }
-  for(year=firstyear;year<firstyear+nyear;year++)
+  for(year=firstyear;year<firstyear+nyear_min;year++)
   {
     if(yearsum)
     {
