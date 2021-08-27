@@ -126,7 +126,7 @@ int main(int argc,char **argv)
   if(op!=FLOAT && op!=INT)
   {
     value=(float)strtod(argv[iarg+2],&endptr);
-    if(*endptr=='\0')
+    if(op!=REPL && *endptr=='\0')
     {
       ivalue=(float)strtol(argv[iarg+2],&endptr,10);
       intvalue=(*endptr=='\0');
