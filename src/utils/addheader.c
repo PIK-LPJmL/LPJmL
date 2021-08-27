@@ -98,7 +98,7 @@ int main(int argc,char **argv)
         }
         if(header.nyear<=0)
         {
-          fputs("Number of year less than one.\n",stderr);
+          fputs("Number of years less than one.\n",stderr);
           return EXIT_FAILURE;
         }
       }

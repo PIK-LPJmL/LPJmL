@@ -91,7 +91,7 @@ static Cdf *create_cdf(const char *filename,
         for(i=0;i<header->nyear;i++)
           year[i]=header->firstyear+i;
         break;
-      case 12:
+      case NMONTH:
         for(i=0;i<header->nyear;i++)
           for(j=0;j<12;j++)
             if(i==0 && j==0)
@@ -104,7 +104,7 @@ static Cdf *create_cdf(const char *filename,
           year[i]=i;
         break;
       default:
-        fprintf(stderr,"ERROR425: Invalid value for number=%d of data points per year.\n",
+        fprintf(stderr,"ERROR425: Invalid value=%d for number of data points per year, must be 1, 12 or 365.\n",
                 header->nbands);
         free(year);
         free(lon);
