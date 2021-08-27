@@ -128,7 +128,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
   else
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 2 or 3.\n",
               ndims,filename->name);
     return TRUE;
   }

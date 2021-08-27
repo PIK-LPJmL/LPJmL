@@ -54,7 +54,7 @@ static Bool myopen_netcdf(Climatefile *file,int year,const Config *config)
   if(ndims!=3)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 3.\n",
               ndims,s);
     nc_close(file->ncid);
     free(s);

@@ -53,7 +53,8 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
     if(id<0 || id>=ncountries)
     {
       if(verb)
-        fprintf(stderr,"ERROR125: Invalid range=%d of 'countrynumber'.\n",id);
+        fprintf(stderr,"ERROR125: Invalid range=%d of 'countrynumber', must be in [0,%d].\n",
+                id,ncountries-1);
       return 0;
     }
     country=(*countrypar)+id;
@@ -99,7 +100,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,"ERROR215: Invalid value for irrigation system for %s.\n",country->name);
-       return 0;
+      return 0;
     }
   } /* of 'for(n=0;...)' */
   return n;

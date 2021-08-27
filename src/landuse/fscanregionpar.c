@@ -58,7 +58,8 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,
-                "ERROR126: Invalid range of region number=%d in fscanregionpar().\n",id);
+                "ERROR126: Invalid range of region number=%d in fscanregionpar(), must be in [0,%d].\n",
+                id,nregions-1);
       return 0;
     }
     region=(*regionpar)+id;
