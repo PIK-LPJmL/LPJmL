@@ -210,9 +210,9 @@ int main(int argc,char **argv)
               fread(&data,sizeof(float),1,file[i]);
               sum_array[i*nbands+band]+=data*area[cell];
             }
-        for(i=0;i<argc-iarg-1;i++)
-          for(band=0;band<nbands;band++)
-            printf((csv) ? ",%g" : " %g",(ismean) ? sum_array[i*nbands+band]/area_sum : sum_array[i*nbands+band]);
+      for(i=0;i<argc-iarg-1;i++)
+        for(band=0;band<nbands;band++)
+          printf((csv) ? ",%g" : " %g",(ismean) ? sum_array[i*nbands+band]/area_sum : sum_array[i*nbands+band]);
       printf("\n");
     }
     else

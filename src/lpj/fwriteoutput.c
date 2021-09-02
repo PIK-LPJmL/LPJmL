@@ -175,7 +175,7 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
     {
       case RAW: case CLM:
         if(fwrite(data,sizeof(float),config->count,output->files[index].fp.file)!=config->count)
-          fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno));
+          fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
@@ -456,7 +456,7 @@ static void writepft(Outputfile *output,int index,float *data,int year,
     {
       case RAW: case CLM:
         if(fwrite(data,sizeof(float),config->count,output->files[index].fp.file)!=config->count)
-          fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno));
+          fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)
@@ -543,7 +543,7 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
     {
       case RAW: case CLM:
         if(fwrite(data,sizeof(short),config->count,output->files[index].fp.file)!=config->count)
-          fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno));
+          fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
         break;
       case TXT:
         for(i=0;i<config->count-1;i++)

@@ -193,7 +193,7 @@ int writecoords(Outputfile *output,  /**< output struct */
               {
                 case RAW: case CLM:
                   if(fwrite(fdst,sizeof(Floatcoord),config->total,output->files[index].fp.file)!=config->total)
-                    fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno));
+                    fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
                   break;
                 case TXT:
                   for(cell=0;cell<config->total-1;cell++)
@@ -240,7 +240,7 @@ int writecoords(Outputfile *output,  /**< output struct */
               {
                 case RAW: case CLM:
                   if(fwrite(dst,sizeof(Intcoord),config->total,output->files[index].fp.file)!=config->total)
-                    fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno));
+                    fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
                   break;
                 case TXT:
                   for(cell=0;cell<config->total-1;cell++)
@@ -265,7 +265,7 @@ int writecoords(Outputfile *output,  /**< output struct */
       {
         case RAW: case CLM:
           if(fwrite(fvec,sizeof(Floatcoord),count,output->files[index].fp.file)!=count)
-            fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno));
+            fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
           free(fvec);
           break;
         case TXT:
@@ -286,7 +286,7 @@ int writecoords(Outputfile *output,  /**< output struct */
       {
         case RAW: case CLM:
           if(fwrite(vec,sizeof(Intcoord),count,output->files[index].fp.file)!=count)
-            fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno));
+            fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
           free(vec);
           break;
         case TXT:
