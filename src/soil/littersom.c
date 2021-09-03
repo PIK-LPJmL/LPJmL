@@ -66,7 +66,6 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
                  const Config *config         /**< nitrogen enabled? */
                 ) /** \return decomposed carbon/nitrogen (g/m2) */
 {
-
   Real response[NSOILLAYER];
   Real response_agtop_leaves,response_agtop_wood,response_agsub_leaves,response_agsub_wood,response_bg_litter,w_agtop;
   Real decay_litter;
@@ -103,6 +102,7 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
                  /(soil->wsats[l]-soil->ice_depth[l]-soil->ice_fw[l]-(soil->wpwps[l]*soil->ice_pwp[l]));
       else
         moist[l]=epsilon;
+      /* moist[l] must be in the inteval [0,1] */
       if (moist[l]<epsilon)
         moist[l]=epsilon;
       else if (moist[l]>1)
@@ -366,13 +366,15 @@ Stocks littersom(Stand *stand,                /**< pointer to stand data */
       soil->NO3[l]+=F_NO3*(1-param.k_2);
 #ifdef SAFE
       if(soil->NO3[l]<-epsilon)
-        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"littersom: Negative soil NO3=%g in layer %d in cell (%.2f %.2f)",soil->NO3[l],l,stand->cell->coord.lat,stand->cell->coord.lon);
+        fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"littersom: Negative soil NO3=%g in layer %d in cell (%s)",
+             soil->NO3[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
 
       soil->NH4[l]-=F_NO3;
 #ifdef SAFE
       if(soil->NH4[l]<-epsilon)
-        fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4=%g in layer %d in cell (%.2f,%.2f)",soil->NH4[l],l,stand->cell->coord.lat,stand->cell->coord.lon);
+        fail(NEGATIVE_SOIL_NH4_ERR,TRUE,"Negative soil NH4=%g in layer %d in cell (%s)",
+             soil->NH4[l],l,sprintcoord(line,&stand->cell->coord));
 #endif
       flux.nitrogen += F_N2O;
       /* F_N2O is given back for output */

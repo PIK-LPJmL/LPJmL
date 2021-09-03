@@ -137,8 +137,8 @@ whcs_evap+=soil->whcs[l]*min(1,soildepth_evap/soildepth[l]);
     }
     if (soil->w[l]< -1e-12)
     {
-      fprintf(stderr,"Pixel: %.2f %.2f negative soil water after evap and transp w= %3.5f evap=  %3.5f transp=  %3.2f\n",
-          stand->cell->coord.lat,stand->cell->coord.lon,soil->w[l],evap_out[l],aet_stand[l]);
+      fprintf(stderr,"Cell (%s) negative soil water after evap and transp w= %3.5f evap=  %3.5f transp=  %3.2f\n",
+              sprintcoord(line,&stand->cell->coord),soil->w[l],evap_out[l],aet_stand[l]);
       fflush(stderr);
     }
     /* reallocate water above field capacity to freewater; needed here since thawing permafrost can increase soil->w */
@@ -165,8 +165,8 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
       if (soil->w[l]<-epsilon)
       {
         fail(NEGATIVE_SOIL_MOISTURE_ERR, TRUE,
-             "LINE 146 Pixel: %f %f Soil-moisture %d negative: %g, lutype %s soil_type %s in waterbalance()",
-             stand->cell->coord.lat, stand->cell->coord.lon, l, soil->w[l], stand->type->name, soil->par->name);
+             "Cell (%s) soil-moisture %d negative: %g, lutype %s soil_type %s in waterbalance()",
+             sprintcoord(line,&stand->cell->coord), l, soil->w[l], stand->type->name, soil->par->name);
       }
       marginal += soil->w[l] * soil->whcs[l];
       soil->w[l] = 0;
@@ -183,7 +183,8 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
 #ifdef SAFE
         if(fabs(updated_soil_water+marginal-previous_soil_water[l])-fabs(aet_stand[l]+evap_out[l])>epsilon)
         {
-          fprintf(stderr,"Pixel: %.2f %.2f, soil water balance error change=  %3.5f evap=  %3.5f transp=  %3.5f balance=  %3.5f\n",stand->cell->coord.lat,stand->cell->coord.lon,previous_soil_water[l]-updated_soil_water,evap_out[l],aet_stand[l],previous_soil_water[l]-updated_soil_water-aet_stand[l]-evap_out[l]);
+          fprintf(stderr,"Cell (%s) soil water balance error, change= %3.5f evap= %3.5f transp= %3.5f balance= %3.5f\n",
+                  sprintcoord(line,&stand->cell->coord),previous_soil_water[l]-updated_soil_water,evap_out[l],aet_stand[l],previous_soil_water[l]-updated_soil_water-aet_stand[l]-evap_out[l]);
           fflush(stderr);
         }   
 #endif
@@ -203,7 +204,8 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
       }
       if(stand->frac_g[l]< -0.01 || stand->frac_g[l]>1.01)
       {
-        fprintf(stderr,"ERROR214: cell %.2f %.2f frac_g error in waterbalance(), frac_g=  %3.6f layer= %d w= %3.9f w_fw= %3.9f evap= %3.9f transp= %3.9f marginal= %3.9f standtype= %s\n",stand->cell->coord.lat,stand->cell->coord.lon,stand->frac_g[l],l,soil->w[l]*soil->whcs[l],soil->w_fw[l],evap_out[l],aet_stand[l],marginal,stand->type->name);
+        fprintf(stderr,"ERROR214: Cell (%s) frac_g error in waterbalance(), frac_g= %3.6f layer= %d w= %3.9f w_fw= %3.9f evap= %3.9f transp= %3.9f marginal= %3.9f standtype= %s\n",
+                sprintcoord(line,&stand->cell->coord),stand->frac_g[l],l,soil->w[l]*soil->whcs[l],soil->w_fw[l],evap_out[l],aet_stand[l],marginal,stand->type->name);
         fflush(stderr);
       }
     }
@@ -213,18 +215,19 @@ fprintf(stderr,"w[%d] %3.12f, fw[%d] %3.12f, icedepth[%d] %3.12f, whcs[%d] %3.12
     {
       if(stand->frac_g[l]< -0.01 || stand->frac_g[l]>1.01)
       {
-        fprintf(stderr,"ERROR214: cell  %.2f %.2f frac_g error in waterbalance() at bottomlayer, frac_g=  %3.6f layer= %d w= %3.9f w_fw= %3.9f standtype= %s\n",stand->cell->coord.lat,stand->cell->coord.lon,stand->frac_g[l],l,soil->w[l]*soil->whcs[l],soil->w_fw[l],stand->type->name);
+        fprintf(stderr,"ERROR214: Cell (%s) frac_g error in waterbalance() at bottomlayer, frac_g= %3.6f layer= %d w= %3.9f w_fw= %3.9f standtype= %s\n",
+                sprintcoord(line,&stand->cell->coord),stand->frac_g[l],l,soil->w[l]*soil->whcs[l],soil->w_fw[l],stand->type->name);
         fflush(stderr);
       }
       if(fabs(updated_soil_water+marginal-previous_soil_water[l])>epsilon)
       {
-        fprintf(stderr,"bottomlayer error updated=  %3.12f previous=  %3.5f standtype= %s\n",updated_soil_water,previous_soil_water[l],stand->type->name);
+        fprintf(stderr,"bottomlayer error updated= %3.12f previous= %3.5f standtype= %s\n",updated_soil_water,previous_soil_water[l],stand->type->name);
         fflush(stderr);
       }
     }
     if (soil->w[l]< -1e-12)
     {
-     fprintf(stderr,"Cell (%s) aet= %3.5f evap=  %3.5f cover=  %3.2f soilwater=%.6f wsats=%.6f\n",
+     fprintf(stderr,"Cell (%s) aet= %3.5f evap= %3.5f cover= %3.2f soilwater=%.6f wsats=%.6f\n",
              sprintcoord(line,&stand->cell->coord),aet_stand[l],*evap,cover,allwater(soil,l)+allice(soil,l),soil->wsats[l]);
      fflush(stderr);
      fail(NEGATIVE_SOIL_MOISTURE_ERR,TRUE,

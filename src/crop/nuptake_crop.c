@@ -24,6 +24,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
                   const Config *config  /**< LPJmL configuration */
                  )                      /** \return nitrogen uptake (gN/m2/day) */
 {
+  String line;
   Soil *soil;
   Pftcrop *crop;
   const Pftcroppar *croppar;
@@ -113,11 +114,11 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
         }
 #ifdef SAFE
         if (soil->NO3[l]<-epsilon)
-          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",
-               pft->stand->cell->coord.lat,pft->stand->cell->coord.lon,soil->NO3[l],l,n_uptake,nsum);
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Cell (%s) NO3=%g<0 in layer %d, nuptake=%g, nsum=%g",
+               sprintcoord(line,&pft->stand->cell->coord),soil->NO3[l],l,n_uptake,nsum);
         if (soil->NH4[l]<-epsilon)
-          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Pixel: %.2f %.2f NH4=%g<0 in layer %d, nuptake=%g, nsum=%g",
-               pft->stand->cell->coord.lat,pft->stand->cell->coord.lon,soil->NH4[l],l,n_uptake,nsum);
+          fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"Cell (%s) NH4=%g<0 in layer %d, nuptake=%g, nsum=%g",
+               sprintcoord(line,&pft->stand->cell->coord),soil->NH4[l],l,n_uptake,nsum);
 
 #endif
       }
