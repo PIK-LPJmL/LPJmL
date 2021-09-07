@@ -575,7 +575,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         }
       }
       else
-        grid[i].ml.grass_scenario=GS_DEFAULT;
+        grid[i].ml.grass_scenario=(GrassScenarioType)config->grazing;
 
     }
     grid[i].lakefrac=0.0;
