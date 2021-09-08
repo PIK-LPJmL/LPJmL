@@ -473,7 +473,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       if(verbose)
       {
-        fprintf(stderr,"ERROR230: Invalid PFT '%s' for black fallow, must be",name);
+        fprintf(stderr,"ERROR230: Invalid PFT '%s' for black fallow, must be ",name);
         fprintpftnames(stderr,config->pftpar,config->npft[GRASS]+config->npft[TREE]+config->npft[CROP]);
         fputs(".\n",stderr);
       }
