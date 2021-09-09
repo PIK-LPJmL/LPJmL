@@ -157,7 +157,8 @@ Coord_array *createcoord_all(const Cell grid[],const Config *config)
 #ifdef SAFE
         if(array->index[cell]<0 || array->index[cell]>=array->nlon*array->nlat)
         {
-          fprintf(stderr,"ERROR433: Invalid index %d in createcoord_all().\n",array->index[cell]);
+          fprintf(stderr,"ERROR433: Invalid index %d in createcoord_all(), must be in [0,%d].\n",
+                  array->index[cell],array->nlon*array->nlat-1);
           free(array->index);
           break;
         }

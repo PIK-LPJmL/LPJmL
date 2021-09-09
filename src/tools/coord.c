@@ -67,7 +67,8 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     if(header.ncell<=0)
     {
       if(isout)
-        fprintf(stderr,"ERROR221: Invalid number of cells in description file '%s'.\n",filename->name);
+        fprintf(stderr,"ERROR221: Invalid number %d of cells in description file '%s', must be greater than zero.\n",
+                header.ncell,filename->name);
       free(coordfile);
       return NULL;
     }

@@ -71,10 +71,8 @@ Bool readintdata_netcdf(const Climatefile *file,int data[],const Cell grid[],
           offsets[2]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
         else
           offsets[2]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-        if(offsets[1]>=file->nlat || offsets[2]>=file->nlon)
+        if(checkcoord(offsets+1,cell+config->startgrid,&grid[cell].coord,file))
         {
-          fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-                  cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
           free(f);
           return TRUE;
         }
@@ -123,10 +121,8 @@ Bool readintdata_netcdf(const Climatefile *file,int data[],const Cell grid[],
           offsets[2]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
         else
           offsets[2]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-        if(offsets[1]>=file->nlat || offsets[2]>=file->nlon)
+        if(checkcoord(offsets+1,cell+config->startgrid,&grid[cell].coord,file))
         {
-          fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-                  cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
           free(s);
           return TRUE;
         }

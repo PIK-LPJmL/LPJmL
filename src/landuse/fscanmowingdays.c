@@ -45,7 +45,8 @@ Bool fscanmowingdays(LPJfile *file, /**< pointer to LPJ configuration file */
       if(config->mowingdays[i]<1 || config->mowingdays[i]>NDAYYEAR)
       {
         if(verbose)
-          fprintf(stderr,"ERROR241: Invalid value for mowing day=%d.\n", config->mowingdays[i]);
+          fprintf(stderr,"ERROR241: Invalid value for mowing day=%d, must be in [1,%d].\n",
+                  config->mowingdays[i],NDAYYEAR);
         free(config->mowingdays);
         return TRUE;
       }

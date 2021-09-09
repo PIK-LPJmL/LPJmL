@@ -65,8 +65,8 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     if(index<0 || index>=nout_max)
     {
       if(verb)
-        fprintf(stderr,"ERROR201: Invalid index %d for description of output '%s'.\n",
-               index,name);
+        fprintf(stderr,"ERROR201: Invalid index %d for description of output '%s', must be in [0,%d].\n",
+               index,name,nout_max-1);
       return NULL;
     }
     if(outnames[index].name!=NULL)

@@ -86,8 +86,8 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
       if(yr!=yr_old+1)
       {
         if(isout)
-          fprintf(stderr,"ERROR157: Invalid year=%d in line %d of '%s'.\n",
-                  yr,getlinecount(),filename->name);
+          fprintf(stderr,"ERROR157: Invalid year=%d in line %d of '%s', must be %d.\n",
+                  yr,getlinecount(),filename->name,yr_old+1);
         free(co2->data);
         fclose(file.file.file);
         return TRUE;

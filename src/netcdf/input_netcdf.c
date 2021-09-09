@@ -45,6 +45,40 @@ struct input_netcdf
   } missing_value;
 };
 
+static Bool checkinput(const size_t *offsets,const Coord *coord,const Input_netcdf file)
+{
+  String line;
+  if(offsets[0]>=file->lat_len)
+  {
+    fprintf(stderr,"ERROR422: Invalid latitude coordinate for cell (%s) in data file, must be in [",
+            sprintcoord(line,coord));
+    if(file->lat_min<0)
+      fprintf(stderr,"%.6gS,",-file->lat_min);
+    else
+      fprintf(stderr,"%.6gN,",file->lat_min);
+    if(file->lat_min+file->lat_res*(file->lat_len-1)<0)
+      fprintf(stderr,"%.6gS].\n",-(file->lat_min+file->lat_res*(file->lat_len-1)));
+    else
+      fprintf(stderr,"%.6gN].\n",file->lat_min+file->lat_res*(file->lat_len-1));
+     return TRUE;
+  }
+  if(offsets[1]>=file->lon_len)
+  {
+    fprintf(stderr,"ERROR422: Invalid longitude coordinate for cell (%s) in data file, must be in [",
+            sprintcoord(line,coord));
+    if(file->lon_min<0)
+      fprintf(stderr,"%.6gW,",-file->lon_min);
+    else
+      fprintf(stderr,"%.6gE,",file->lon_min);
+    if(file->lon_min+file->lon_res*(file->lon_len-1)<0)
+      fprintf(stderr,"%.6gW].\n",-(file->lon_min+file->lon_res*(file->lon_len-1)));
+    else
+      fprintf(stderr,"%.6gE].\n",file->lon_min+file->lon_res*(file->lon_len-1));
+     return TRUE;
+  }
+  return FALSE;
+} /* of 'checkinput' */
+
 void closeinput(Infile file,int fmt)
 {
   if(fmt==CDF)
@@ -544,6 +578,8 @@ Bool readinput_netcdf(const Input_netcdf input,Real *data,
   else
     offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(checkinput(offsets+index,coord,input))
+    return TRUE;
   switch(input->type)
   {
     case LPJ_FLOAT:
@@ -691,6 +727,8 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
   else
     offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(checkinput(offsets+index,coord,input))
+    return TRUE;
   *ismissing=FALSE;
   switch(input->type)
   {
@@ -778,6 +816,8 @@ Bool readshortinput_netcdf(const Input_netcdf input,short *data,
   else
     offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(checkinput(offsets+index,coord,input))
+    return TRUE;
   if((rc=nc_get_vara_short(input->ncid,input->varid,offsets,counts,data)))
   {
     fprintf(stderr,"ERROR415: Cannot read short data for cell (%s): %s.\n",
