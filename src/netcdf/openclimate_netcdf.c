@@ -63,7 +63,8 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
     error("time dim",rc);
     if(ndims!=1)
     {
-      fprintf(stderr,"ERROR408: Invalid number of dimensions for time in '%s'.\n",filename);
+      fprintf(stderr,"ERROR408: Invalid number %d of dimensions for time in '%s', must be 1.\n",
+              ndims,filename);
       free_netcdf(file->ncid);
       return TRUE;
     }

@@ -20,7 +20,7 @@
 #include <netcdf.h>
 #endif
 
-#define error(rc) if(rc){ fprintf(stderr,"ERROR: Cannot read '%s': %s.\n",argv[i],nc_strerror(rc)); return EXIT_FAILURE;}
+#define error(rc) if(rc){ fprintf(stderr,"ERROR421: Cannot read '%s': %s.\n",argv[i],nc_strerror(rc)); return EXIT_FAILURE;}
 
 int main(int argc,char **argv)
 {

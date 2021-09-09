@@ -115,7 +115,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   if(count<0 || count>UCHAR_MAX)
   {
     if(verb)
-      fprintf(stderr,"ERROR171: Invalid number of PFTs=%d.\n",count);
+      fprintf(stderr,"ERROR171: Invalid number of PFTs=%d, must be in [0,%d].\n",count,UCHAR_MAX);
     return NULL;
   }
   npft=newvec(int,ntypes);

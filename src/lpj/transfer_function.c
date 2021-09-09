@@ -51,7 +51,7 @@ Real *transfer_function(Real rlength, /**< river length in m */
     }
     if(data[i]<0 || data[i]>1) /* is coefficient positive and lest than one? */
     {
-      fprintf(stderr,"ERROR145: Invalid coefficient in transfer function: transf[%d] = %g\n",
+      fprintf(stderr,"ERROR145: Invalid coefficient in transfer function: transf[%d] = %g, must be in [0,1].\n",
               i,data[i]);
       free(data);
       return NULL;
