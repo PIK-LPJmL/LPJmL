@@ -212,7 +212,7 @@ int main(int argc,char **argv)
             }
       for(i=0;i<argc-iarg-1;i++)
         for(band=0;band<nbands;band++)
-          printf((csv) ? ",%g" : " %g",(ismean) ? sum_array[i*nbands+band]/area_sum : sum_array[i*nbands+band]);
+          printf((csv) ? ",%g" : " %g",(ismean) ? sum_array[i*nbands+band]/area_sum/nstep : sum_array[i*nbands+band]);
       printf("\n");
     }
     else
