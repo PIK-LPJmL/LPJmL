@@ -36,7 +36,7 @@ static Bool readdata(Climatefile *file,    /* climate data file */
   short *s;
   float data;
   size_t offsets[4];
-  int address[2];
+  size_t address[2];
   size_t counts[4];
   Byte bdata;
   //printf("len=%d\n",(int)file->var_len);
@@ -134,11 +134,8 @@ static Bool readdata(Climatefile *file,    /* climate data file */
         else
           address[0]=(int)((coords[cell].lat-file->lat_min)/config->resolution.lat+0.5);
         address[1]=(int)((coords[cell].lon-file->lon_min)/config->resolution.lon+0.5);
-        if(address[0]>=file->nlat || address[1]>=file->nlon)
+        if(checkcoord(address,cell,coords+cell,file))
         {
-          fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (",cell);
-          fprintcoord(stderr,coords+cell);
-          fputs(") in data file.\n",stderr);
           free(f);
           nc_close(file->ncid);
           return TRUE;

@@ -179,12 +179,8 @@ static Bool readclimate2(Climatefile *file,    /* climate data file */
       offsets[index+1]=(int)((360+coords[cell].lon-file->lon_min)/file->lon_res+0.5);
     else
       offsets[index+1]=(int)((coords[cell].lon-file->lon_min)/file->lon_res+0.5);
-    if(offsets[index]>=file->nlat || offsets[index+1]>=file->nlon)
+    if(checkcoord(offsets+index,cell,coords+cell,file))
     {
-      fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (",
-              cell);
-      fprintcoord(stderr,coords+cell);
-      fputs(") in data file.\n",stderr);
       switch(file->datatype)
       {
         case LPJ_FLOAT:
