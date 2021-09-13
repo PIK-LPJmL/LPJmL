@@ -132,7 +132,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     if(soil->hsg<1 || soil->hsg>NHSG)
     {
       if(verb)
-        fprintf(stderr,"ERROR199: Invalid value=%d for hsg in soil '%s', must be in [0,%d].\n",
+        fprintf(stderr,"ERROR199: Invalid value=%d for hsg in soil '%s', must be in [1,%d].\n",
                 soil->hsg,soil->name,NHSG);
       return 0;
     }
