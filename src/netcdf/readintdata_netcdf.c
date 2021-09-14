@@ -20,8 +20,12 @@
 #include <netcdf.h>
 #endif
 
-Bool readintdata_netcdf(const Climatefile *file,int data[],const Cell grid[],
-                        int year,const Config *config)
+Bool readintdata_netcdf(const Climatefile *file, /**< climate data file */
+                        int data[],              /**< data to read */
+                        const Cell grid[],       /**< LPJ grid */
+                        int year,                /**< simulation year (0..nyear-1) */
+                        const Config *config     /**< LPJmL configuration */
+                       )                         /** \return TRUE on error */
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int cell,rc;

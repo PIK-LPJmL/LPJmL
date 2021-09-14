@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function checks whether LPJ cell is with NetCDF data set                   \n**/
+/**     Function checks whether LPJ cell is within NetCDF data set                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,7 +16,11 @@
 
 #include "lpj.h"
 
-Bool checkcoord(const size_t *offsets,int cell,const Coord *coord,const Climatefile *file)
+Bool checkcoord(const size_t offsets[], /**< offsets in NetCDF file */
+                int cell,               /**< cell index */
+                const Coord *coord,     /**< cell coordinate */
+                const Climatefile *file /**< climate data file */
+               )                        /** \return cell is within NetCDF data (TRUE/FALSE) */
 {
   String line;
   if(offsets[0]>=file->nlat)
