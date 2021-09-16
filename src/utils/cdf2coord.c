@@ -144,7 +144,7 @@ int main(int argc,char **argv)
   nc_inq_varndims(ncid,var_id,&ndims);
   if(ndims<2)
   {
-    fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+    fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be >1.\n",
             ndims,argv[i]);
     return TRUE;
   }

@@ -69,7 +69,7 @@ static Bool fscancropdate(LPJfile *file,Initdate *initdate,Verbosity verb)
   if(fscancropratio(file,var,name,verb))\
   {\
     if(verb)\
-    fprintf(stderr,"ERROR114: Cannot read cropphys '%s' of CFT '%s'.\n",name,pft); \
+    fprintf(stderr,"ERROR114: Cannot read cropratio '%s' of CFT '%s'.\n",name,pft); \
     return TRUE; \
   }
 

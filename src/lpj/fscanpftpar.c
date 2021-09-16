@@ -148,8 +148,8 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     if(pft->type<0 || pft->type>=ntypes)
     {
       if(verb)
-        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s'.\n",
-                pft->type,pft->name);
+        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s', must be in [0,%d].\n",
+                pft->type,pft->name,ntypes-1);
       return NULL;
     }
     if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,5,FALSE,verb))
