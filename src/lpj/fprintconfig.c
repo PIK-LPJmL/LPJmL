@@ -89,6 +89,9 @@ static size_t isnetcdfinput(const Config *config)
   }
   if(config->fire==SPITFIRE && config->tamp_filename.fmt==CDF)
     width=max(width,strlen(config->tamp_filename.var));
+  if((config->with_nitrogen || config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX) &&
+     config->wind_filename.fmt==CDF)
+    width=max(width,strlen(config->wind_filename.var));
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX && config->humid_filename.fmt==CDF)
