@@ -157,3 +157,4 @@ bin/regridirrig
 bin/headersize
 bin/mergeclm
 bin/country2cdf
+bin/arr2clm
