@@ -26,7 +26,7 @@ OBJS    = cru2clm.$O cvrtsoil.$O grid2clm.$O cfts26_lu2clm.$O drainage.$O\
           joingrid.$O clm2cdf.$O cdf2clm.$O bin2cdf.$O adddrain.$O\
           getcellindex.$O copyheader.$O addheader.$O mathclm.$O cutclm.$O\
           cvrtclm.$O manage2js.$O getheadersize.$O regridirrig.$O mergeclm.$O\
-          printglobal.$O binsum.$O
+          printglobal.$O binsum.$O arr2clm.$O
 
 SRC    = cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           river_sections_input_grid.c river_sections_input_soil.c\
@@ -39,7 +39,8 @@ SRC    = cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           cdf2soil.c lpjfiles.c asc2clm.c joingrid.c clm2cdf.c\
           cdf2clm.c bin2cdf.c adddrain.c txt2grid.c getcellindex.c\
           copyheader.c addheader.c mathclm.c cutclm.c cdf2bin.c cvrtclm.c\
-          manage2js.c getheadersize.c regridirrig.c mergeclm.c printglobal.c
+          manage2js.c getheadersize.c regridirrig.c mergeclm.c printglobal.c\
+          arr2clm.c
 
 INC     = ../../include
 
@@ -83,7 +84,7 @@ all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/getcellindex$E $(BIN)/copyheader$E $(BIN)/addheader$E\
      $(BIN)/mathclm$E $(BIN)/cutclm$E $(BIN)/cvrtclm$E $(BIN)/manage2js$E\
      $(BIN)/headersize$E $(BIN)/regridirrig$E $(BIN)/mergeclm$E\
-     $(BIN)/country2cdf$E $(BIN)/printglobal$E $(BIN)/binsum$E
+     $(BIN)/country2cdf$E $(BIN)/printglobal$E $(BIN)/binsum$E $(BIN)/arr2clm$E
 
 clean:
 	$(RM) $(RMFLAGS) $(OBJS)
@@ -91,7 +92,7 @@ clean:
             drainage$E river_sections_input_grid$E river_sections_input_soil$E\
             river_sections_input_climate$E river_sections_input_landuse$E\
             river_sections_input_countrycode$E txt2clm$E catclm$E cdf2coord$E\
-            lpjcat$E cat2bsq$E grd2bsq$E lpjprint$E printclm$E\
+            lpjcat$E cat2bsq$E grd2bsq$E lpjprint$E printclm$E arr2clm$E\
             cvrtsoil$E river_sections_input_irrig$E water_use_input$E\
             cft2clm$E printdrain$E lpjcheck$E $(VIEWPRG)$E printharvest$E\
             printreservoir$E setclm$E getcountry$E regridclm$E regridsoil$E\
@@ -162,6 +163,9 @@ $(BIN)/cvrtclm$E: cvrtclm.$O $(LPJLIBS)
 
 $(BIN)/addheader$E: addheader.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/addheader$E addheader.$O $(LPJLIBS) $(LIBS)
+
+$(BIN)/arr2clm$E: arr2clm.$O $(LPJLIBS)
+	$(LINK) $(LNOPTS)$(BIN)/arr2clm$E arr2clm.$O $(LPJLIBS) $(LIBS)
 
 $(BIN)/copyheader$E: copyheader.$O $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/copyheader$E copyheader.$O $(LPJLIBS) $(LIBS)
