@@ -249,8 +249,8 @@ Bool writecoord(FILE *file,        /**< pointer to binary file */
                )                   /** \return FALSE for successful write */
 {
   Intcoord icoord;
-  icoord.lat=(short)(coord->lat*100);
-  icoord.lon=(short)(coord->lon*100);
+  icoord.lat=(short)round(coord->lat*100);
+  icoord.lon=(short)round(coord->lon*100);
   return fwrite(&icoord,sizeof(icoord),1,file)!=1;
 } /* of 'writecoord' */
 
