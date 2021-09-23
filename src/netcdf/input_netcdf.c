@@ -35,6 +35,7 @@ struct input_netcdf
   size_t lon_len,lat_len;
   size_t var_len;
   Type type;
+  Bool is360;
   union
   {
     Byte b;
@@ -442,6 +443,9 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
     //free(input);
     //return NULL;
   }
+  input->is360=(dim[input->lon_len-1]>180);
+  if(isroot(*config) && input->is360)
+    fprintf(stderr,"REMARK401: Longitudinal values>180 in '%s', will be transformed.\n",filename);
   free(dim);
   nc_inq_dimname(input->ncid,dimids[index],name);
   rc=nc_inq_varid(input->ncid,name,&var_id);
@@ -537,7 +541,10 @@ size_t getindexinput_netcdf(const Input_netcdf input,
     offsets[0]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   else
     offsets[0]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
-  offsets[1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(input->is360 && coord->lon<0)
+    offsets[1]=(int)((360+coord->lon-input->lon_min)/input->lon_res+0.5);
+  else
+    offsets[1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
   return offsets[0]*input->lon_len+offsets[1];
 } /* of 'getindexinput_netcdf' */
 
@@ -577,7 +584,10 @@ Bool readinput_netcdf(const Input_netcdf input,Real *data,
     offsets[index]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   else
     offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
-  offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(input->is360 && coord->lon<0)
+    offsets[index+1]=(int)((360+coord->lon-input->lon_min)/input->lon_res+0.5);
+  else
+    offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
   if(checkinput(offsets+index,coord,input))
     return TRUE;
   switch(input->type)
@@ -726,7 +736,10 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
     offsets[index]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   else
     offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
-  offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(input->is360 && coord->lon<0)
+    offsets[index+1]=(int)((360+coord->lon-input->lon_min)/input->lon_res+0.5);
+  else
+    offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
   if(checkinput(offsets+index,coord,input))
     return TRUE;
   *ismissing=FALSE;
@@ -815,7 +828,10 @@ Bool readshortinput_netcdf(const Input_netcdf input,short *data,
     offsets[index]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   else
     offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
-  offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(input->is360 && coord->lon<0)
+    offsets[index+1]=(int)((360+coord->lon-input->lon_min)/input->lon_res+0.5);
+  else
+    offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
   if(checkinput(offsets+index,coord,input))
     return TRUE;
   if((rc=nc_get_vara_short(input->ncid,input->varid,offsets,counts,data)))
