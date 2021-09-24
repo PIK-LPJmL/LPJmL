@@ -125,7 +125,7 @@ int main(int argc,char **argv)
       }
       else if(!strcmp(argv[iarg],"-id"))
       {
-        if(argc==i+1)
+        if(iarg==argc-1)
         {
           fprintf(stderr,"Missing argument after option '-id'.\n"
                  USAGE);
