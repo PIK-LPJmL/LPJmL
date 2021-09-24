@@ -445,7 +445,7 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
   }
   input->is360=(dim[input->lon_len-1]>180);
   if(isroot(*config) && input->is360)
-    fprintf(stderr,"REMARK401: Longitudinal values>180 in '%s', will be transformed.\n",filename);
+    fprintf(stderr,"REMARK401: Longitudinal values>180 in '%s', will be transformed.\n",filename->name);
   free(dim);
   nc_inq_dimname(input->ncid,dimids[index],name);
   rc=nc_inq_varid(input->ncid,name,&var_id);
