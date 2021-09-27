@@ -132,8 +132,10 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
   if (fabs(anfang_w - ende_w)>0.001) fprintf(stdout, "W_ERROR update annual - annual stand: year=%d: W_ERROR=%g anfang : %g ende : %g\n", year, anfang_w - ende_w, anfang_w, ende_w);
   if (fabs(anfang.nitrogen - ende.nitrogen)>0.001) fprintf(stdout, "N_ERROR update annual - annual stand: year=%d: error=%g anfang : %g ende : %g\n", year, anfang.nitrogen - ende.nitrogen, anfang.nitrogen, ende.nitrogen);
 #endif
-  getoutputindex(&cell->output,FPC,0,config) += 1 - cell->ml.cropfrac_rf - cell->ml.cropfrac_ir - cell->lakefrac - cell->ml.reservoirfrac - cell->hydrotopes.wetland_area;
-  getoutputindex(&cell->output,WPC,0,config) += cell->hydrotopes.wetland_area;
+  if(stand->type->landusetype==NATURAL)
+    getoutputindex(&cell->output,FPC,0,config) += 1 - cell->ml.cropfrac_rf - cell->ml.cropfrac_ir - cell->lakefrac - cell->ml.reservoirfrac - cell->hydrotopes.wetland_area;
+  if(stand->type->landusetype==WETLAND)
+    getoutputindex(&cell->output,WPC,0,config) += cell->hydrotopes.wetland_area;
   cell->hydrotopes.wetland_wtable_mean /= NMONTH;
   cell->hydrotopes.wtable_mean /= NMONTH;
   if(cell->lakefrac<1)
@@ -177,7 +179,6 @@ void update_annual(Cell *cell,          /**< Pointer to cell */
     stand->cell->balance.soil_storage+=soilwater(&stand->soil)*stand->frac*stand->cell->coord.area;
   }
   //cell->output.soil_storage+=cell->balance.excess_water*cell->coord.area; /* now tracked in separate flux */
-  getoutputindex(&cell->output,FPC,0,config) += 1-cell->ml.cropfrac_rf-cell->ml.cropfrac_ir-cell->lakefrac-cell->ml.reservoirfrac;
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     product_turnover(cell,config);
