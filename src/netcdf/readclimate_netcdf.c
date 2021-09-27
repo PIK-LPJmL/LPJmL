@@ -535,7 +535,6 @@ int checkvalidclimate_netcdf(Climatefile *file,   /* climate data file */
   int size,count;
   size_t offsets[3];
   size_t counts[3];
-  String line;
   size=isdaily(*file) ? NDAYYEAR : NMONTH;
   if(file->oneyear)
   {

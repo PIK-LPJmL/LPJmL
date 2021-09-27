@@ -841,6 +841,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     endgrid=config->startgrid;
     if(fscanint(file,&endgrid,"endgrid",TRUE,verbose))
       return TRUE;
+    if(endgrid<config->startgrid)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR136: Endgrid=%d less than startgrid=%d.\n",
+                endgrid,config->startgrid);
+      return TRUE;
+    }
   }
   if(endgrid==-1)
   {
@@ -850,13 +857,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
   {
-    if(endgrid<config->startgrid)
-    {
-      if(verbose)
-        fprintf(stderr,"ERROR136: Endgrid=%d less than startgrid=%d.\n",
-                endgrid,config->startgrid);
-      return TRUE;
-    }
     config->nall=endgrid-config->startgrid+1;
     config->firstgrid=config->startgrid;
     if(config->nall<config->ntask)
