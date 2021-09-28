@@ -136,7 +136,8 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
        || config->checkpointyear>config->lastyear)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR233: Year %d in checkpoint file '%s' outside simulation years.\n",config->checkpointyear,filename);
+        fprintf(stderr,"ERROR233: Year %d in checkpoint file '%s' outside simulation years.\n",
+                config->checkpointyear,filename);
       fclose(file);
       return NULL;
     }
@@ -147,24 +148,45 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
             "WARNING005: Year of restart file=%d not equal start year=%d-1.\n",
             header.firstyear,config->firstyear);
 
-  offset=config->startgrid-header.firstcell;
-  if(offset<0)
+  if(config->firstgrid<header.firstcell)
   {
-    fprintf(stderr,
-            "WARNING006: First grid cell not in %s file '%s', set to %d.\n",
-            type,filename,header.firstcell);
-    config->startgrid=header.firstcell;
-    offset=0;
+    if(isroot(*config))
+      fprintf(stderr,"ERROR155: First grid cell %d not in %s file '%s', starts at %d.\n",
+              config->startgrid,type,filename,header.firstcell);
+    fclose(file);
+    return NULL;
   }
-  if(offset>0)
+  if(config->firstgrid>header.firstcell+header.ncell-1)
   {
-    if(offset>=header.ncell)
-    {
-      fprintf(stderr,"ERROR155: First grid cell not in %s file '%s'.\n",type,filename);
-      fclose(file);
-      return NULL;
-    }
-    fseek(file,offset*sizeof(long long),SEEK_CUR);
+    if(isroot(*config))
+      fprintf(stderr,"ERROR155: First grid cell %d not in %s file '%s', starts at %d.\n",
+              config->startgrid,type,filename,header.firstcell);
+    fclose(file);
+    return NULL;
+  }
+  if(config->nall>header.ncell)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR155: %s file '%s' is too short, has only %d cells, %d needed.\n",
+              type,filename,header.ncell,config->nall);
+    fclose(file);
+    return NULL;
+  }
+  if(config->firstgrid+config->nall>header.firstcell+header.ncell)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR155: %s file '%s' has cells in [%d,%d], must be [%d,%d].\n",
+              type,filename,header.firstcell,header.firstcell+header.ncell-1,
+              config->firstgrid,config->firstgrid+config->nall-1);
+    fclose(file);
+    return NULL;
+  }
+  offset=config->startgrid-header.firstcell;
+  if(fseek(file,offset*sizeof(long long),SEEK_CUR))
+  {
+    fprintf(stderr,"ERROR156: Cannot seek to index %d in %s file '%s'.\n",offset,type,filename);
+    fclose(file);
+    return NULL;
   }
   /* read index from file */
   freadlong1(&offsetl,*swap,file);
@@ -175,13 +197,5 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
     fclose(file);
     return NULL;
   }
-  if(header.ncell<config->ngridcell)
-  {
-    fprintf(stderr,
-            "WARNING007: %s file '%s' too short, grid truncated to %d.\n",
-            type,filename,header.ncell);
-    config->ngridcell=header.ncell;
-  }
-
   return file;
 } /* of 'openrestart' */
