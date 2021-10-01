@@ -150,6 +150,7 @@ extern void fprint_irrigation(FILE *,const Irrigation *,const Pftpar *);
 extern Bool fread_irrigation(FILE *,Irrigation *,Bool);
 extern Harvest harvest_stand(Output *,Stand *,Real,const Config *);
 extern int *scancftmap(LPJfile *,int *,const char *,Bool,int,int,const Config *);
+extern int *fscanagtreemap(LPJfile *,const char *,int,const Config *);
 extern Bool fscanmowingdays(LPJfile *,Config *);
 extern void tillage(Soil *, Real);
 extern void getnsoil_agr(Real *,Real *,Real *,const Cell *);

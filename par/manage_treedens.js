@@ -14,6 +14,10 @@
 
 #include "../include/managepar.h"
 
+/* the following array describes the order of the agricultural trees in the k_est array */
+
+"treemap" : ["oil palm","tea","cotton"],
+
 "treedens" :
 [
 { "id" : Afghanistan, "k_est" : [ -1, -1, -1]},

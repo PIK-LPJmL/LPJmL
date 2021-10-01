@@ -374,9 +374,9 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
     if(isroot(*config))
     {
       if(len==0)
-        fprintf(stderr,"ERROR436: Input data '%s' in '%s' must be a scalar, is a vector of length %d.\n",(filename->var==NULL) ? "" : filename->var, filename->name,(int)input->var_len);
+        fprintf(stderr,"ERROR436: Input data '%s' in '%s' must be a scalar, is a vector of length %zu.\n",(filename->var==NULL) ? "" : filename->var, filename->name,input->var_len);
       else
-        fprintf(stderr,"ERROR433: Invalid length %d in '%s' of input vector '%s', must be %d.\n",(int)input->var_len,filename->name,(filename->var==NULL) ? "" : filename->var,(int)len);
+        fprintf(stderr,"ERROR433: Invalid length %zu in '%s' of input vector '%s', must be %zu.\n",input->var_len,filename->name,(filename->var==NULL) ? "" : filename->var,len);
     }
     nc_close(input->ncid);
     free(input);

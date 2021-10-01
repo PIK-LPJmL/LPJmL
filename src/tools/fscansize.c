@@ -41,7 +41,7 @@ Bool fscansize(LPJfile *file,    /**< pointer to LPJ file */
       if(with_default)
       {
         if(verb)
-          fprintf(stderr,"WARNING027: Name '%s' for size not found, set to %llu.\n",name,(unsigned long long)*value);
+          fprintf(stderr,"WARNING027: Name '%s' for size not found, set to %zu.\n",name,*value);
         return FALSE;
       }
       else
@@ -59,7 +59,7 @@ Bool fscansize(LPJfile *file,    /**< pointer to LPJ file */
     }
     *value=json_object_get_int(item);
     if (verb >= VERB)
-      printf("\"%s\" : %llu\n", name, (unsigned long long)*value);
+      printf("\"%s\" : %zu\n",name,*value);
     return FALSE;
   }
 #endif
@@ -89,6 +89,6 @@ Bool fscansize(LPJfile *file,    /**< pointer to LPJ file */
       fputs("EOF reached.\n",stderr);
   }
   else if(verb>=VERB)
-    printf("\"%s\" : %llu\n", name, (unsigned long long)*value);
+    printf("\"%s\" : %zu\n",name,*value);
   return rc;
 } /* of 'fscansize' */

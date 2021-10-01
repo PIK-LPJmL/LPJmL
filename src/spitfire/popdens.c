@@ -79,8 +79,8 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
   if(popdens->file.var_len>1)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR218: Number of bands=%d in population density file '%s' is not 1.\n",
-              (int)popdens->file.var_len,config->popdens_filename.name);
+      fprintf(stderr,"ERROR218: Number of bands=%zu in population density file '%s' is not 1.\n",
+              popdens->file.var_len,config->popdens_filename.name);
     closeclimatefile(&popdens->file,isroot(*config));
     free(popdens);
     return NULL;

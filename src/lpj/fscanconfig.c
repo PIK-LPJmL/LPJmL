@@ -484,7 +484,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->withlanduse!=NO_LANDUSE)
   {
     /* landuse enabled */
-    if((config->ncountries=fscancountrypar(file,&config->countrypar,config->rw_manage,(config->laimax_interpolate==LAIMAX_CFT) ? config->npft[CROP] : 0,verbose))==0)
+    if((config->ncountries=fscancountrypar(file,&config->countrypar,config->npft[GRASS]+config->npft[TREE],(config->laimax_interpolate==LAIMAX_CFT) ? config->npft[CROP] : 0,verbose,config))==0)
     {
       if(verbose)
         fputs("ERROR230: Cannot read country parameter 'countrypar'.\n",stderr);
@@ -498,7 +498,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->nagtree)
     {
-      if (fscantreedens(file,config->countrypar,config->ncountries,config->nagtree,verbose)==0)
+      if (fscantreedens(file,config->countrypar,config->ncountries,config->npft[GRASS]+config->npft[TREE],verbose,config)==0)
       {
         if(verbose)
           fputs("ERROR230: Cannot read tree density (k_est) parameter 'treedens'.\n",stderr);
