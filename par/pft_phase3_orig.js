@@ -15,11 +15,11 @@
 
 #include "../include/pftpar.h" /* include constant definitions */
 
-#define CTON_LEAF 30.
-#define CTON_ROOT 30.
-#define CTON_POOL 100.
-#define CTON_SO 100.
-#define CTON_SAP 330.
+#define CTON_LEAF 30.0
+#define CTON_ROOT 30.0
+#define CTON_POOL 100.0
+#define CTON_SO 100.0
+#define CTON_SAP 330.0
 #ifdef WITH_SPITFIRE
 #define FLAM_TREE 0.3
 #define FLAM_GRASS 0.3
@@ -37,7 +37,7 @@
 #define ALLOM4 0.3
 #define APHEN_MAX 245
 #define APHEN_MIN 60    /* minimum aphen for cold-induced senescence */
-#define HEIGHT_MAX 100.  /* maximum height of trees */
+#define HEIGHT_MAX 100.0  /* maximum height of trees */
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
 #ifdef WITH_SPITFIRE
@@ -1462,7 +1462,7 @@
     {
       "slope" : 23,         /* new phenology: slope of light limiting function */
       "base" : 75.94,       /* new phenology: inflection point of light limiting function (Wm-2) */
-      "tau" : 0.22,         /* new phenology: change rate of actual to previous day light limiting function */
+      "tau" : 0.22         /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {

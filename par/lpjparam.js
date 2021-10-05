@@ -29,7 +29,7 @@
   "GM" : 2.41,               /* GM empirical parameter in demand function */
   "ALPHAM" : 1.485,          /* ALPHAM Priestley-Taylor coefficient*/
   "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */
-  "kc25" : 30.,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
+  "kc25" : 30.0,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.6,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
   "bioturbate" : 0.5,        /* bioturbation (0 = no bioturbation) */
