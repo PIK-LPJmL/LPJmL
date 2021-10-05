@@ -77,7 +77,7 @@ int writecountrycode(Outputfile *output, /**< output file array */
     {
       case RAW: case CLM:
         if(fwrite(vec,sizeof(short),count,output->files[index].fp.file)!=count)
-          fprintf(stderr,"ERROR204: Error writing output: %s.\n",strerror(errno));
+          fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
         break;
       case TXT:
         for(cell=0;cell<count-1;cell++)

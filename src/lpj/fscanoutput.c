@@ -162,7 +162,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     else if(count==nout_max)
     {
       if(verbosity)
-        fprintf(stderr,"ERROR160: Invalid value=%d for number of output files.\n",
+        fprintf(stderr,"ERROR160: Maximum number %d of output files reached.\n",
                 count);
       return TRUE;
     }
@@ -179,8 +179,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       {
         if(verbosity)
           fprintf(stderr,
-                  "ERROR161: Invalid value=%d for index of output file '%s'.\n",
-                  flag,config->outputvars[count].filename.name);
+                  "ERROR161: Invalid value=%d for index of output file '%s', must be in [0,%d].\n",
+                  flag,config->outputvars[count].filename.name,nout_max-1);
       }
       else if(isopenoutput(flag,config->outputvars,count))
       {

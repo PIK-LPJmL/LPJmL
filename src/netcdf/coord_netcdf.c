@@ -547,7 +547,7 @@ Coord_netcdf opencoord_netcdf(const char *filename,const char *var,Bool isout)
   if(ndims!=2)
   {
     if(isout)
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 2.\n",
               ndims,filename);
     nc_close(coord->ncid);
     free(coord);

@@ -54,7 +54,7 @@ static Bool myopen_netcdf(Climatefile *file,int year,const Config *config)
   if(ndims!=3)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 3.\n",
               ndims,s);
     nc_close(file->ncid);
     free(s);
@@ -167,10 +167,8 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
             offsets[2]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
           else
             offsets[2]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-          if(offsets[1]>=file->nlat || offsets[2]>=file->nlon)
+          if(checkcoord(offsets+1,cell+config->startgrid,&grid[cell].coord,file))
           {
-            fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
             free(f);
             if(file->oneyear)
               nc_close(file->ncid);
@@ -240,10 +238,8 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
             offsets[2]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
           else
             offsets[2]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-          if(offsets[1]>=file->nlat || offsets[2]>=file->nlon)
+          if(checkcoord(offsets+1,cell+config->startgrid,&grid[cell].coord,file))
           {
-            fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
             free(d);
             if(file->oneyear)
               nc_close(file->ncid);
@@ -312,10 +308,8 @@ Bool readclimate_netcdf(Climatefile *file,   /**< climate data file */
             offsets[2]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
           else
             offsets[2]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-          if(offsets[1]>=file->nlat || offsets[2]>=file->nlon)
+          if(checkcoord(offsets+1,cell+config->startgrid,&grid[cell].coord,file))
           {
-            fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
             free(s);
             if(file->oneyear && isroot(*config))
               nc_close(file->ncid);
@@ -426,10 +420,8 @@ Bool readintclimate_netcdf(Climatefile *file,   /* climate data file */
             offsets[2]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
           else
           offsets[2]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-          if(offsets[1]>=file->nlat || offsets[2]>=file->nlon)
+          if(checkcoord(offsets+1,cell+config->startgrid,&grid[cell].coord,file))
           {
-            fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
             free(f);
             if(file->oneyear && isroot(*config))
               nc_close(file->ncid);
@@ -489,10 +481,8 @@ Bool readintclimate_netcdf(Climatefile *file,   /* climate data file */
             offsets[2]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
           else
             offsets[2]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-          if(offsets[1]>=file->nlat || offsets[2]>=file->nlon)
+          if(checkcoord(offsets+1,cell+config->startgrid,&grid[cell].coord,file))
           {
-            fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
             free(s);
             if(file->oneyear && isroot(*config))
               nc_close(file->ncid);
@@ -545,7 +535,6 @@ int checkvalidclimate_netcdf(Climatefile *file,   /* climate data file */
   int size,count;
   size_t offsets[3];
   size_t counts[3];
-  String line;
   size=isdaily(*file) ? NDAYYEAR : NMONTH;
   if(file->oneyear)
   {
@@ -602,10 +591,8 @@ int checkvalidclimate_netcdf(Climatefile *file,   /* climate data file */
             offsets[2]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
           else
             offsets[2]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-          if(offsets[1]>=file->nlat || offsets[2]>=file->nlon)
+          if(checkcoord(offsets+1,cell+config->startgrid,&grid[cell].coord,file))
           {
-            fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
             free(f);
             if(file->oneyear && isroot(*config))
               nc_close(file->ncid);
@@ -659,10 +646,8 @@ int checkvalidclimate_netcdf(Climatefile *file,   /* climate data file */
             offsets[2]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
           else
             offsets[2]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-          if(offsets[1]>=file->nlat || offsets[2]>=file->nlon)
+          if(checkcoord(offsets+1,cell+config->startgrid,&grid[cell].coord,file))
           {
-            fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
             free(d);
             if(file->oneyear && isroot(*config))
               nc_close(file->ncid);
@@ -716,10 +701,8 @@ int checkvalidclimate_netcdf(Climatefile *file,   /* climate data file */
             offsets[2]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
           else
             offsets[2]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-          if(offsets[1]>=file->nlat || offsets[2]>=file->nlon)
+          if(checkcoord(offsets+1,cell+config->startgrid,&grid[cell].coord,file))
           {
-            fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
             free(s);
             if(file->oneyear && isroot(*config))
               nc_close(file->ncid);

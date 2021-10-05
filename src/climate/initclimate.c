@@ -482,8 +482,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   if(!config->isanomaly && (config->sim_id == LPJML || config->sim_id == LPJ) && climate->firstyear>config->firstyear)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR200: Climate data starts at %d, later than first simulation year.\n",
-              climate->firstyear);
+      fprintf(stderr,"ERROR200: Climate data starts at %d, later than first simulation year %d.\n",
+              climate->firstyear,config->firstyear);
     closeclimatefile(&climate->file_temp,isroot(*config));
     closeclimatefile(&climate->file_prec,isroot(*config));
     if(config->with_radiation)

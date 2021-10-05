@@ -99,7 +99,7 @@ Bool initoutput(Outputfile *outputfile, /**< Output data */
       if(config->totalsize!=totalsize)
       {
         if(isroot(*config))
-          fprintf(stderr,"ERROR221: Output size=%d differs from output sizei=%d in checkpoint file.\n",
+          fprintf(stderr,"ERROR221: Output size=%d differs from output size=%d in checkpoint file.\n",
                   totalsize,config->totalsize);
         return TRUE;
       }

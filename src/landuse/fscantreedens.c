@@ -51,7 +51,7 @@ int fscantreedens(LPJfile *file,          /**< pointer to LPJ file */
     if(id<0 || id>=ncountries)
     {
       if(verb)
-        fprintf(stderr,"ERROR125: Invalid range=%d of 'id'.\n",id);
+        fprintf(stderr,"ERROR125: Invalid range=%d of 'id', must be in [0,%d].\n",id,ncountries-1);
       return 0;
     }
     country=countrypar+id;

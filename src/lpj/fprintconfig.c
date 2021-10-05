@@ -97,6 +97,9 @@ static size_t isnetcdfinput(const Config *config)
   }
   if(config->fire==SPITFIRE && config->tamp_filename.fmt==CDF)
     width=max(width,strlen(config->tamp_filename.var));
+  if((config->with_nitrogen || config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX) &&
+     config->wind_filename.fmt==CDF)
+    width=max(width,strlen(config->wind_filename.var));
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX && config->humid_filename.fmt==CDF)
@@ -400,6 +403,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len=fputstring(file,len,", ",78);
       count++;
       len=fputstring(file,len,"prescribed sowing date",78);
+    }
+    if(config->grassfix_filename.name==NULL)
+    {
+      len=fputstring(file,len,", ",78);
+      count++;
+      snprintf(s,STRING_LEN,"%s grazing",grazing_type[config->grazing]);
+      len=fputstring(file,len,s,78);
     }
     len=fputstring(file,len,", ",78);
     count++;

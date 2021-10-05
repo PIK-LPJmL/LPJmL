@@ -33,7 +33,7 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
     return TRUE;
   if(id>=ntotpft)
   {
-    fprintf(stderr,"ERROR195: Invalid value %d for PFT index.\n",id); 
+    fprintf(stderr,"ERROR195: Invalid value %d for PFT index, must be in [0,%d].\n",id,ntotpft-1);
     return TRUE;
   }
   pft->par=pftpar+id;
@@ -51,7 +51,7 @@ Bool freadpft(FILE *file,            /**< pointer to binary file */
     return TRUE;
   freadreal((Real *)&pft->bm_inc,sizeof(Stocks)/sizeof(Real),swap,file);
   freadreal1(&pft->nind,swap,file);
-  freadreal1(&pft->gdd,swap,file); 
+  freadreal1(&pft->gdd,swap,file);
   freadreal1(&pft->fpc,swap,file);
   freadreal1(&pft->albedo,swap,file);
   freadreal1(&pft->fapar,swap,file);

@@ -33,13 +33,6 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     return TRUE;
   if(fscankeywords(&f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
     return TRUE;
-  if(filename->fmt<0 || filename->fmt>CDF)
-  {
-    if(verb)
-      fprintf(stderr,"ERROR205: Invalid value %d for input format.\n",
-              filename->fmt);
-    return TRUE;
-  }
   if(filename->fmt==FMS)
   {
     filename->var=NULL;

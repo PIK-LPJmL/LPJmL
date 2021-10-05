@@ -14,13 +14,13 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-longheader] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|float|int} infile1.clm [{infile2.clm|value}] outfile.clm\n"
+#define USAGE "Usage: %s [-longheader] [-type {byte|short|int|float|double}] {add|sub|mul|div|avg|max|min|repl|float|int} infile1.clm [{infile2.clm|value}] outfile.clm\n"
 
 int main(int argc,char **argv)
 {
   Header header1,header2,header3;
   int version,yr,cell,k;
-  Bool swap1,swap2;
+  Bool swap1,swap2,flag;
   String id;
   float *data1,*data2,*data3;
   int *idata1,*idata2,*idata3;
@@ -32,7 +32,7 @@ int main(int argc,char **argv)
   int index;
   int *cell_index,*cell_index2;
   Bool isvalue,intvalue,isint;
-  enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,FLOAT,INT} op;
+  enum {ADD,SUB,MUL,DIV,AVG,MAX,MIN,REPL,FLOAT,INT} op;
   FILE *in1,*in2,*out;
   setversion=READ_VERSION;
   index=NOT_FOUND;
@@ -52,8 +52,8 @@ int main(int argc,char **argv)
         index=findstr(argv[++iarg],typenames,5);
         if(index==NOT_FOUND)
         {
-          fprintf(stderr,"Invalid argument for option '-type'.\n"
-                  USAGE,argv[0]);
+          fprintf(stderr,"Invalid argument '%s' for option '-type'.\n"
+                  USAGE,argv[iarg],argv[0]);
           return EXIT_FAILURE;
         }
         type=(Type)index;
@@ -87,6 +87,8 @@ int main(int argc,char **argv)
     op=MAX;
   else if(!strcmp(argv[iarg],"min"))
     op=MIN;
+  else if(!strcmp(argv[iarg],"repl"))
+    op=REPL;
   else if(!strcmp(argv[iarg],"float"))
     op=FLOAT;
   else if(!strcmp(argv[iarg],"int"))
@@ -124,7 +126,7 @@ int main(int argc,char **argv)
   if(op!=FLOAT && op!=INT)
   {
     value=(float)strtod(argv[iarg+2],&endptr);
-    if(*endptr=='\0')
+    if(op!=REPL && *endptr=='\0')
     {
       ivalue=(float)strtol(argv[iarg+2],&endptr,10);
       intvalue=(*endptr=='\0');
@@ -420,6 +422,21 @@ int main(int argc,char **argv)
               for(k=0;k<header1.nbands;k++)
                 idata3[k]=min(idata1[k],idata2[k]);
               break;
+            case REPL:
+              flag=FALSE;
+              for(k=0;k<header1.nbands;k++)
+                if(idata2[k]!=0)
+                {
+                  flag=TRUE;
+                  break;
+                }
+              if(flag)
+                for(k=0;k<header1.nbands;k++)
+                  idata3[k]=idata2[k];
+              else
+                for(k=0;k<header1.nbands;k++)
+                  idata3[k]=idata1[k];
+              break;
           } /* of switch */
         }
         /* write int data to file */
@@ -509,6 +526,21 @@ int main(int argc,char **argv)
             case MIN:
               for(k=0;k<header1.nbands;k++)
                 data3[k]=min(data1[k],data2[k]);
+              break;
+            case REPL:
+              flag=FALSE;
+              for(k=0;k<header1.nbands;k++)
+                if(data2[k]!=0)
+                {
+                  flag=TRUE;
+                  break;
+                }
+              if(flag)
+                for(k=0;k<header1.nbands;k++)
+                  data3[k]=data2[k];
+              else
+                for(k=0;k<header1.nbands;k++)
+                  data3[k]=data1[k];
               break;
           } /* of switch */
         }

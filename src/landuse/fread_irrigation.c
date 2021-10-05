@@ -26,7 +26,7 @@ Bool fread_irrigation(FILE *file,             /**< pointer to binary file */
     return TRUE;
   if(b>1)
   {
-    fprintf(stderr,"ERROR195: Invalid value %d for irrigation.\n",b);
+    fprintf(stderr,"ERROR195: Invalid value %d for irrigation, must be 0 or 1.\n",b);
     return TRUE;
   }
   irrigation->irrigation=b;

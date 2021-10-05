@@ -251,6 +251,7 @@ struct config
   int cftmap_size;
   int *soilmap;
   int soilmap_size;
+  int grazing;
 #ifdef IMAGE
   Bool groundwater_irrig;   /**< Irrigation from groundwater reservoir */
   Bool aquifer_irrig;       /**< Aquifer irrigation possible?*/
@@ -278,6 +279,7 @@ struct config
 typedef Bool (*Fscanpftparfcn)(LPJfile *,Pftpar *,const Config *);
 
 extern const char *crop_phu_options[];
+extern const char *grazing_type[];
 
 /* Declaration of functions */
 

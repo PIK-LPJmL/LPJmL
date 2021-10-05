@@ -152,7 +152,8 @@ Coord_array *createcoord(Outputfile *output,
 #ifdef SAFE
         if(array->index[cell]<0 || array->index[cell]>=array->nlon*array->nlat)
         {
-          fprintf(stderr,"ERROR433: Invalid index %d in createcoord().\n",array->index[cell]);
+          fprintf(stderr,"ERROR433: Invalid index %d in createcoord(), must be in [0,%d].\n",
+                  array->index[cell],array->nlon*array->nlat-1);
           free(array->index);
           break;
         }

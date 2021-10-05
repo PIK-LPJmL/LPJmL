@@ -67,7 +67,8 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     if(header.ncell<=0)
     {
       if(isout)
-        fprintf(stderr,"ERROR221: Invalid number of cells in description file '%s'.\n",filename->name);
+        fprintf(stderr,"ERROR221: Invalid number %d of cells in description file '%s', must be greater than zero.\n",
+                header.ncell,filename->name);
       free(coordfile);
       return NULL;
     }
@@ -136,10 +137,12 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
       free(coordfile);
       return NULL;
     }
-    filesize=getfilesizep(coordfile->file)-coordfile->offset;
-    if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
-
+    if(isout)
+    {
+      filesize=getfilesizep(coordfile->file)-coordfile->offset;
+      if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+        fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
+    }
   }
   coordfile->fmt=filename->fmt;
   return coordfile;
@@ -253,8 +256,8 @@ Bool writecoord(FILE *file,        /**< pointer to binary file */
                )                   /** \return FALSE for successful write */
 {
   Intcoord icoord;
-  icoord.lat=(short)(coord->lat*100);
-  icoord.lon=(short)(coord->lon*100);
+  icoord.lat=(short)round(coord->lat*100);
+  icoord.lon=(short)round(coord->lon*100);
   return fwrite(&icoord,sizeof(icoord),1,file)!=1;
 } /* of 'writecoord' */
 

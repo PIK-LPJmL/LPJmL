@@ -59,8 +59,8 @@ Stand *freadstand(FILE *file, /**< File pointer to binary file */
   }
   if(landusetype>=nstand)
   {
-    fprintf(stderr,"ERROR196: Invalid value %d for stand type.\n",
-            landusetype);
+    fprintf(stderr,"ERROR196: Invalid value %d for stand type, must be in [0,%d].\n",
+            landusetype,nstand-1);
     freepftlist(&stand->pftlist);
     freesoil(&stand->soil);
     free(stand);

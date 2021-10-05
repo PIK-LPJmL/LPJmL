@@ -115,7 +115,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   if(count<0 || count>UCHAR_MAX)
   {
     if(verb)
-      fprintf(stderr,"ERROR171: Invalid number of PFTs=%d.\n",count);
+      fprintf(stderr,"ERROR171: Invalid number of PFTs=%d, must be in [0,%d].\n",count,UCHAR_MAX);
     return NULL;
   }
   npft=newvec(int,ntypes);
@@ -148,8 +148,8 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     if(pft->type<0 || pft->type>=ntypes)
     {
       if(verb)
-        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s'.\n",
-                pft->type,pft->name);
+        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s', must be in [0,%d].\n",
+                pft->type,pft->name,ntypes-1);
       return NULL;
     }
     fscanpftbool(verb,&item,&pft->peatland,pft->name,"peatland_pft");

@@ -104,7 +104,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       if(file->var_len>1)
       {
         if(isroot(*config))
-          fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+          fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 1.\n",
                   (int)file->var_len,filename->name);
         return TRUE;
       }
@@ -134,7 +134,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   if(filename->fmt!=RAW && header.nbands!=NMONTH && header.nbands!=NDAYYEAR)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR127: Invalid number of bands %d in '%s'.\n",
+      fprintf(stderr,"ERROR127: Invalid number of bands %d in '%s', must be 12 or 365.\n",
               header.nbands,filename->name);
     fclose(file->file);
     return TRUE;

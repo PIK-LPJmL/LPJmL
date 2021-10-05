@@ -26,6 +26,7 @@ int main(int argc,char **argv)
   short *svec;
   int *ivec;
   float *fvec;
+  double *dvec;
   void *vec;
   struct stat filestat;
   char c;
@@ -204,6 +205,9 @@ int main(int argc,char **argv)
     case LPJ_FLOAT:
       vec=fvec=newvec(float,nbands_sum);
       break;
+    case LPJ_DOUBLE:
+      vec=dvec=newvec(double,nbands_sum);
+      break;
   }
   if(vec==NULL)
   {
@@ -242,6 +246,12 @@ int main(int argc,char **argv)
               fvec[index]=0;
             else
               rc=freadfloat(fvec+index,nbands[i],swap[i],files[i]);
+            break;
+          case LPJ_DOUBLE:
+            if(files[i]==NULL)
+              dvec[index]=0;
+            else
+              rc=freaddouble(dvec+index,nbands[i],swap[i],files[i]);
             break;
         }
         if(rc!=nbands[i])

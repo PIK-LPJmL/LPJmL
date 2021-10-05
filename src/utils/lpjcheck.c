@@ -111,7 +111,7 @@ int main(int argc,char **argv)
 
   if(readconfig(&config,dflt_conf_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
-    fputs("Error occurred in processing configuration file.\n",stderr);
+    fputs("ERROR001: Cannot process configuration file.\n",stderr);
     rc=EXIT_FAILURE;
   }
   else

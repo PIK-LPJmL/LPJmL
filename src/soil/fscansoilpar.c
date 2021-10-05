@@ -80,7 +80,7 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
   if(nsoil<1)
   {
     if(verb)
-      fprintf(stderr,"ERROR170: Invalid value for number of soil types=%d.\n",
+      fprintf(stderr,"ERROR170: Invalid value for number of soil types=%d, must be greater than zero.\n",
               nsoil);
     return 0;
   }
@@ -133,8 +133,8 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     if(soil->hsg<1 || soil->hsg>NHSG)
     {
       if(verb)
-        fprintf(stderr,"ERROR199: Invalid value=%d for hsg in soil '%s'.\n",
-                soil->hsg,soil->name);
+        fprintf(stderr,"ERROR199: Invalid value=%d for hsg in soil '%s', must be in [1,%d].\n",
+                soil->hsg,soil->name,NHSG);
       return 0;
     }
     fscanreal2(verb,&item,&soil->tdiff_0,soil->name,"tdiff_0");

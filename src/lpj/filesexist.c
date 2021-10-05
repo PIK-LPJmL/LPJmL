@@ -63,7 +63,7 @@ static int checksoilcode(const Config *config)
     }
     for(i=0;i<config->soilmap_size;i++)
       if(!exist[i] && config->soilmap[i]!=0)
-        fprintf(stderr,"Warning: soilcode %u ('%s') not found in '%s'.\n",
+        fprintf(stderr,"WARNING035: Soilcode %u ('%s') not found in '%s'.\n",
                 i,config->soilpar[config->soilmap[i]-1].name,config->soil_filename.name);
         
   }
@@ -74,7 +74,7 @@ static int checkfile(const char *filename)
 {
   if(getfilesize(filename)==-1)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",filename,strerror(errno));
+    printfopenerr(filename);
     return 1;
   }
   else
@@ -254,7 +254,7 @@ static int checksoilfile(Config *config,const Filename *filename)
     return 1;
   if(size<config->nall+config->firstgrid)
   {
-    fprintf(stderr,"Number of cells=%d in soil code file '%s' too short, must be %d.\n",
+    fprintf(stderr,"ERROR240: Number of cells=%d in soil code file '%s' too short, must be %d.\n",
             size,filename->name,config->nall+config->firstgrid);
     return 1;
   }
@@ -266,13 +266,13 @@ static int checkdir(const char *path)
   struct stat filestat;
   if(stat(path,&filestat))
   {
-    fprintf(stderr,"Directory '%s' cannot be openend: %s.\n",path,
+    fprintf(stderr,"ERROR100: Directory '%s' cannot be openend: %s.\n",path,
             strerror(errno));
     return 1;
   }
   else if(!S_ISDIR(filestat.st_mode))
   {
-    fprintf(stderr,"'%s' is not a directory.\n",path);
+    fprintf(stderr,"ERROR241: '%s' is not a directory.\n",path);
     return 1;
   }
   else
@@ -476,7 +476,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
       if(checkdir(path))
         badout++;
       else if(config.nall!=-1 && diskfree(path)<size)
-        fprintf(stderr,"Warning: Disk space on '%s' is insufficient for output files.\n",path);
+        fprintf(stderr,"WARNING033: Disk space on '%s' is insufficient for output files.\n",path);
       free(oldpath);
       oldpath=path;
     }

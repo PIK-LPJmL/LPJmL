@@ -37,7 +37,8 @@ Bool readclimate(Climatefile *file,   /**< climate data file */
   if(index<0 || index>=file->nyear)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR130: Invalid year %d in readclimate().\n",year);
+      fprintf(stderr,"ERROR130: Invalid year %d in readclimate(), must be in [%d,%d].\n",
+              year,file->firstyear,file->firstyear+file->nyear-1);
     return TRUE;
   }
   if(file->fmt==CDF)
@@ -215,7 +216,8 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
       if(index<0)
       {
         if(isroot(*config))
-          fprintf(stderr,"ERROR130: Invalid year %d in getclimate().\n",year_climate);
+          fprintf(stderr,"ERROR130: Invalid year %d for wet days in getclimate(), must be >%d.\n",
+                  year_climate,climate->file_wet.firstyear-1);
         return TRUE;
       }
       if(index<climate->file_wet.nyear)

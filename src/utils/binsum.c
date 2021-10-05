@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-nitem n] [-nsum n] [-swap] [-mean] gridfile binfile sumfile\n"
+#define USAGE "Usage: %s [-nitem n] [-nsum n] [-month|day] [-swap] [-mean] gridfile binfile sumfile\n"
 
 int main(int argc,char **argv)
 {
@@ -74,6 +74,10 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
+      else if(!strcmp(argv[iarg],"-day"))
+        nsum=NDAYYEAR;
+      else if(!strcmp(argv[iarg],"-month"))
+        nsum=NMONTH;
       else
       {
         fprintf(stderr,"Error: Invalid option '%s'.\n"
@@ -159,7 +163,7 @@ int main(int argc,char **argv)
       }
       if(fwrite(data_sum,sizeof(float),ngrid*nitem,out)!=ngrid*nitem)
       {
-        fprintf(stderr,"Error writing data in year %d.\n",i);
+        fprintf(stderr,"Error writing data in year %d.\n",i/nsum);
         return EXIT_FAILURE;
       }
     }

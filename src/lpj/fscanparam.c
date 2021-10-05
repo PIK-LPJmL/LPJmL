@@ -155,7 +155,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
       if(param.residue_cn<=0)
       {
         if(isroot(*config))
-          fprintf(stderr,"ERROR238: Parameter residue_cn=%g must not greater than zero.\n",
+          fprintf(stderr,"ERROR238: Parameter residue_cn=%g must be greater than zero.\n",
                   param.residue_cn);
         return TRUE;
       }

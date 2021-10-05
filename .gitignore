@@ -165,3 +165,4 @@ bin/printglobal
 bin/mergeclm
 bin/country2cdf
 bin/binsum
+bin/arr2clm

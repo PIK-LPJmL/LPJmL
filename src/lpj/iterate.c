@@ -106,7 +106,8 @@ int iterate(Outputfile *output, /**< Output file data */
     if(getco2(input.climate,&co2,year_co2)) /* get atmospheric CO2 concentration */
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR015: Invalid year %d in getco2().\n",year);
+        fprintf(stderr,"ERROR015: Invalid year %d in getco2(), must be <%d.\n",
+                year_co2,input.climate->co2.firstyear+input.climate->co2.nyear);
       break;
     }
     if(!config->with_dynamic_ch4  && config->from_restart)

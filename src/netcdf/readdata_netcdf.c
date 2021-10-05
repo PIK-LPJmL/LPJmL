@@ -20,8 +20,12 @@
 #include <netcdf.h>
 #endif
 
-Bool readdata_netcdf(const Climatefile *file,Real data[],const Cell grid[],
-                     int year,const Config *config)
+Bool readdata_netcdf(const Climatefile *file, /**< climate data file */
+                     Real data[],             /**< data to read */
+                     const Cell grid[],       /**< LPJ grid */
+                     int year,                /**< simulation year (0..nyear-1) */
+                     const Config *config     /**< LPJmL configuration */
+                    )                         /** \return TRUE on error */
 {
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
   int cell,rc,start;
@@ -78,10 +82,8 @@ Bool readdata_netcdf(const Climatefile *file,Real data[],const Cell grid[],
           offsets[start+1]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
         else
           offsets[start+1]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-        if(offsets[start]>=file->nlat || offsets[start+1]>=file->nlon)
+        if(checkcoord(offsets+start,cell+config->startgrid,&grid[cell].coord,file))
         {
-          fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-                  cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
           free(f);
           return TRUE;
         }
@@ -141,10 +143,8 @@ Bool readdata_netcdf(const Climatefile *file,Real data[],const Cell grid[],
           offsets[start+1]=(int)((360+grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
         else
           offsets[start+1]=(int)((grid[cell].coord.lon-file->lon_min)/file->lon_res+0.5);
-        if(offsets[start]>=file->nlat || offsets[start+1]>=file->nlon)
+        if(checkcoord(offsets+start,cell+config->startgrid,&grid[cell].coord,file))
         {
-          fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (%s) in data file.\n",
-                  cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
           free(s);
           return TRUE;
         }

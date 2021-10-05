@@ -49,7 +49,8 @@ Bool freadlitter(FILE *file, /**< File pointer to binary file */
       litter->item[i].pft=pftpar+b;
       if(b>=ntotpft)
       {
-        fprintf(stderr,"ERROR195: Invalid value %d for PFT index litter.\n",(int)b);
+        fprintf(stderr,"ERROR195: Invalid value %d for PFT index litter, must be in [0,%d].\n",
+                (int)b,ntotpft-1);
         free(litter->item);
         litter->n=0;
         litter->item=NULL;

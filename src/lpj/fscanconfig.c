@@ -47,6 +47,7 @@
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE; }
 
 const char *crop_phu_options[]={"old","new","prescribed"};
+const char *grazing_type[]={"default","mowing","ext","int","none"};
 
 static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const char *path,Verbosity verbose)
 {
@@ -359,6 +360,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       grassharvest=FALSE;
       if(fscanbool(file,&grassharvest,"grass_harvest_options", TRUE, verbose))
         return TRUE;
+      if(!grassharvest)
+      {
+        config->grazing=GS_DEFAULT;
+        if(fscankeywords(file,&config->grazing,"grazing",grazing_type,5,TRUE,verbose))
+          return TRUE;
+      }
       if(fscanmowingdays(file,config))
         return TRUE;
       if(fscankeywords(file,&config->tillage_type,"tillage_type",tillage,3,TRUE,verbose))
@@ -482,7 +489,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     {
       if(verbose)
       {
-        fprintf(stderr,"ERROR230: Invalid PFT '%s' for black fallow, must be",name);
+        fprintf(stderr,"ERROR230: Invalid PFT '%s' for black fallow, must be ",name);
         fprintpftnames(stderr,config->pftpar,config->npft[GRASS]+config->npft[TREE]+config->npft[CROP]);
         fputs(".\n",stderr);
       }
@@ -898,6 +905,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     endgrid=config->startgrid;
     if(fscanint(file,&endgrid,"endgrid",TRUE,verbose))
       return TRUE;
+    if(endgrid<config->startgrid)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR136: Endgrid=%d less than startgrid=%d.\n",
+                endgrid,config->startgrid);
+      return TRUE;
+    }
   }
   if(endgrid==-1)
   {
@@ -907,13 +921,6 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   else
   {
-    if(endgrid<config->startgrid)
-    {
-      if(verbose)
-        fprintf(stderr,"ERROR136: Endgrid=%d less than startgrid=%d.\n",
-                endgrid,config->startgrid);
-      return TRUE;
-    }
     config->nall=endgrid-config->startgrid+1;
     config->firstgrid=config->startgrid;
     if(config->nall<config->ntask)

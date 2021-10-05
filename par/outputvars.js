@@ -326,7 +326,7 @@
   { "id" : SOILC_AGR_LAYER, "name" : "soilc_agr_layer" , "timestep" : "annual", "var" : "SoilC agric" , "descr" : "total soil carbon density agricultural stands in layer", "unit" : "gC/m2" , "scale" : 1.0, "offset" : 0.0},
   { "id" : LITC_AGR, "name" : "litc_agr" , "timestep" : "annual", "var" : "LitC_agr" , "descr" : "above and below ground litter carbon for agricultural stands", "unit" : "gC/m2" , "scale" : 1.0, "offset" : 0.0},
   { "id" : HUSUM, "name" : "husum", "timestep" : "annual", "var" : "husum", "descr" : "crop growing season accumulated heat units", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
-  { "id" : HUSUM2, "name" : "husum2", "timestep" : "annual", "var" : "husum2", "descr" : "crop growing season accumulated heat units 2nd seaso", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
+  { "id" : HUSUM2, "name" : "husum2", "timestep" : "annual", "var" : "husum2", "descr" : "crop growing season accumulated heat units 2nd season", "unit" : "deg C", "scale" : 1.0, "offset" : 0.0},
   { "id" : CFT_SWC, "name": "cft_swc", "timestep" : "monthly", "var" : "SWC_cft", "descr" : "CFT-specific monthly absolute soil water content 1 m, available for evapotranspiration", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
   { "id" : MEANVEGCMANGRASS, "name": "meanvegcmangrass", "timestep" : "annual", "var": "VegC", "descr": "Mean veg. C of managed grasslands", "unit": "gC/m2", "scale": 1.0, "offset" : 0.0},
   { "id" : PFT_NUPTAKE2, "name": "pft_nuptake2", "timestep" : "annual", "var": "pft_nuptake2", "descr": "N uptake per PFT", "unit": "gN/m2/yr", "scale": 1.0, "offset" : 0.0},

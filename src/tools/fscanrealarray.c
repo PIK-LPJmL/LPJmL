@@ -50,7 +50,8 @@ Bool fscanrealarray(LPJfile *file,    /**< pointer to LPJ file */
   if(json_object_array_length(array)!=size)
   {
     if(verb)
-      fprintf(stderr,"ERROR227: Size of %s is not %d.\n",key,size);
+      fprintf(stderr,"ERROR227: Size of %s=%zu is not %d.\n",
+              key,json_object_array_length(array),size);
     return TRUE;
   }
   if (verb >= VERB)
@@ -63,7 +64,7 @@ Bool fscanrealarray(LPJfile *file,    /**< pointer to LPJ file */
       if(json_object_get_type(item)!=json_type_int)
       {
         if(verb)
-          fprintf(stderr,"ERROR226: Type of item %d in array %s is not double.\n",i,key);
+          fprintf(stderr,"ERROR226: Type of item %d in array %s is not double or int.\n",i,key);
         return TRUE;
       }
       value[i]=json_object_get_int(item);

@@ -35,6 +35,7 @@ struct input_netcdf
   size_t lon_len,lat_len;
   size_t var_len;
   Type type;
+  Bool is360;
   union
   {
     Byte b;
@@ -44,6 +45,40 @@ struct input_netcdf
     double d;
   } missing_value;
 };
+
+static Bool checkinput(const size_t *offsets,const Coord *coord,const Input_netcdf file)
+{
+  String line;
+  if(offsets[0]>=file->lat_len)
+  {
+    fprintf(stderr,"ERROR422: Invalid latitude coordinate for cell (%s) in data file, must be in [",
+            sprintcoord(line,coord));
+    if(file->lat_min<0)
+      fprintf(stderr,"%.6gS,",-file->lat_min);
+    else
+      fprintf(stderr,"%.6gN,",file->lat_min);
+    if(file->lat_min+file->lat_res*(file->lat_len-1)<0)
+      fprintf(stderr,"%.6gS].\n",-(file->lat_min+file->lat_res*(file->lat_len-1)));
+    else
+      fprintf(stderr,"%.6gN].\n",file->lat_min+file->lat_res*(file->lat_len-1));
+     return TRUE;
+  }
+  if(offsets[1]>=file->lon_len)
+  {
+    fprintf(stderr,"ERROR422: Invalid longitude coordinate for cell (%s) in data file, must be in [",
+            sprintcoord(line,coord));
+    if(file->lon_min<0)
+      fprintf(stderr,"%.6gW,",-file->lon_min);
+    else
+      fprintf(stderr,"%.6gE,",file->lon_min);
+    if(file->lon_min+file->lon_res*(file->lon_len-1)<0)
+      fprintf(stderr,"%.6gW].\n",-(file->lon_min+file->lon_res*(file->lon_len-1)));
+    else
+      fprintf(stderr,"%.6gE].\n",file->lon_min+file->lon_res*(file->lon_len-1));
+     return TRUE;
+  }
+  return FALSE;
+} /* of 'checkinput' */
 
 void closeinput(Infile file,int fmt)
 {
@@ -128,7 +163,7 @@ static Bool setvarinput_netcdf(Input_netcdf input,const Filename *filename,
   else
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s'.\n",
+      fprintf(stderr,"ERROR408: Invalid number of dimensions %d in '%s', must be 2 or 3.\n",
               ndims,filename->name);
     return TRUE;
   }
@@ -341,7 +376,7 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
       if(len==0)
         fprintf(stderr,"ERROR436: Input data '%s' in '%s' must be a scalar, is a vector of length %d.\n",(filename->var==NULL) ? "" : filename->var, filename->name,(int)input->var_len);
       else
-        fprintf(stderr,"ERROR433: Invalid length %d in '%s' of input vector '%s'.\n",(int)input->var_len,filename->name,(filename->var==NULL) ? "" : filename->var);
+        fprintf(stderr,"ERROR433: Invalid length %d in '%s' of input vector '%s', must be %d.\n",(int)input->var_len,filename->name,(filename->var==NULL) ? "" : filename->var,(int)len);
     }
     nc_close(input->ncid);
     free(input);
@@ -408,6 +443,9 @@ Input_netcdf openinput_netcdf(const Filename *filename, /**< filename */
     //free(input);
     //return NULL;
   }
+  input->is360=(dim[input->lon_len-1]>180);
+  if(isroot(*config) && input->is360)
+    fprintf(stderr,"REMARK401: Longitudinal values>180 in '%s', will be transformed.\n",filename->name);
   free(dim);
   nc_inq_dimname(input->ncid,dimids[index],name);
   rc=nc_inq_varid(input->ncid,name,&var_id);
@@ -503,7 +541,10 @@ size_t getindexinput_netcdf(const Input_netcdf input,
     offsets[0]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   else
     offsets[0]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
-  offsets[1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(input->is360 && coord->lon<0)
+    offsets[1]=(int)((360+coord->lon-input->lon_min)/input->lon_res+0.5);
+  else
+    offsets[1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
   return offsets[0]*input->lon_len+offsets[1];
 } /* of 'getindexinput_netcdf' */
 
@@ -543,7 +584,12 @@ Bool readinput_netcdf(const Input_netcdf input,Real *data,
     offsets[index]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   else
     offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
-  offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(input->is360 && coord->lon<0)
+    offsets[index+1]=(int)((360+coord->lon-input->lon_min)/input->lon_res+0.5);
+  else
+    offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(checkinput(offsets+index,coord,input))
+    return TRUE;
   switch(input->type)
   {
     case LPJ_FLOAT:
@@ -690,7 +736,12 @@ Bool readintinput_netcdf(const Input_netcdf input,int *data,
     offsets[index]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   else
     offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
-  offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(input->is360 && coord->lon<0)
+    offsets[index+1]=(int)((360+coord->lon-input->lon_min)/input->lon_res+0.5);
+  else
+    offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(checkinput(offsets+index,coord,input))
+    return TRUE;
   *ismissing=FALSE;
   switch(input->type)
   {
@@ -777,7 +828,12 @@ Bool readshortinput_netcdf(const Input_netcdf input,short *data,
     offsets[index]=input->offset-(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
   else
     offsets[index]=(int)((coord->lat-input->lat_min)/input->lat_res+0.5);
-  offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(input->is360 && coord->lon<0)
+    offsets[index+1]=(int)((360+coord->lon-input->lon_min)/input->lon_res+0.5);
+  else
+    offsets[index+1]=(int)((coord->lon-input->lon_min)/input->lon_res+0.5);
+  if(checkinput(offsets+index,coord,input))
+    return TRUE;
   if((rc=nc_get_vara_short(input->ncid,input->varid,offsets,counts,data)))
   {
     fprintf(stderr,"ERROR415: Cannot read short data for cell (%s): %s.\n",
