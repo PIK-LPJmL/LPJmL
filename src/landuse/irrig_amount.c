@@ -112,7 +112,6 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
           else
             getoutputindex(&stand->cell->output,CFT_NIR,rwp(ncft) +nirrig,config)+= data->net_irrig_amount;
           break;
-        default:
         case BIOMASS_TREE:
           if(config->pft_output_scaled)
             getoutputindex(&stand->cell->output,CFT_NIR,rbtree(ncft)+nirrig,config)+=data->net_irrig_amount*stand->cell->ml.landfrac[1].biomass_tree;
