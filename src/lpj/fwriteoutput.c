@@ -1499,6 +1499,17 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   }
                 }
                 break;
+              case AGRICULTURE_TREE:
+                data=stand->data;
+                foreachpft(pft,p,&stand->pftlist)
+                {
+                  if(pft->par->type==TREE)
+                  {
+                    tree=pft->data;
+                    getoutputindex(&grid[cell].output,PFT_CSAPW,nnat+agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.carbon;
+                  }
+                }
+                break;
               case NATURAL:
                 foreachpft(pft,p,&stand->pftlist)
                 {
@@ -1547,6 +1558,17 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   {
                     tree=pft->data;
                     getoutputindex(&grid[cell].output,PFT_NSAPW,nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.nitrogen;
+                  }
+                }
+                break;
+              case AGRICULTURE_TREE:
+                data=stand->data;
+                foreachpft(pft,p,&stand->pftlist)
+                {
+                  if(pft->par->type==TREE)
+                  {
+                    tree=pft->data;
+                    getoutputindex(&grid[cell].output,PFT_NSAPW,nnat+agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.sapwood.nitrogen;
                   }
                 }
                 break;
@@ -1601,6 +1623,17 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   }
                 }
                 break;
+              case AGRICULTURE_TREE:
+                data=stand->data;
+                foreachpft(pft,p,&stand->pftlist)
+                {
+                  if(pft->par->type==TREE)
+                  {
+                    tree=pft->data;
+                    getoutputindex(&grid[cell].output,PFT_CHAWO,nnat+agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.carbon;
+                  }
+                }
+                break;
               case NATURAL:
                 foreachpft(pft,p,&stand->pftlist)
                 {
@@ -1649,6 +1682,17 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
                   {
                     tree=pft->data;
                     getoutputindex(&grid[cell].output,PFT_NHAWO,nnat+rbtree(ncft)+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.nitrogen;
+                  }
+                }
+                break;
+              case AGRICULTURE_TREE:
+                data=stand->data;
+                foreachpft(pft,p,&stand->pftlist)
+                {
+                  if(pft->par->type==TREE)
+                  {
+                    tree=pft->data;
+                    getoutputindex(&grid[cell].output,PFT_NHAWO,nnat+agtree(ncft,config->nwptype)+data->pft_id-npft+config->nagtree+data->irrigation*getnirrig(ncft,config),config)+=tree->ind.heartwood.nitrogen;
                   }
                 }
                 break;

@@ -22,7 +22,7 @@
 
 Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
                               int npft,             /**< number of natural pfts */
-                              int UNUSED(ncft),     /**< number of crop PFTs */
+                              int ncft,             /**< number of crop PFTs */
                               Real UNUSED(popdens), /**< population density (capita/km2) */
                               int year,
                               Bool isdaily,         /**< daily temperature data? */
@@ -30,7 +30,7 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
                               const Config* config  /**< LPJmL configuration */
                              )
 {
-  int p;
+  int p,nnat,index;
   Bool* present;
   Pft* pft;
   Real fpc_inc,excess;
@@ -41,7 +41,7 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
   Real fpc_total, * fpc_type;
   Irrigation* irrigation;
   Pftgrasspar* grasspar;
-
+  Pftgrass *grass;
   irrigation = stand->data;
   fpc_type = newvec(Real, config->ntypes);
   check(fpc_type);
@@ -49,7 +49,8 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
   check(present);
   for (p = 0; p < npft; p++)
     present[p] = FALSE;
-
+  nnat=getnnat(npft,config);
+  index=agtree(ncft,config->nwptype)+irrigation->pft_id-npft+config->nagtree+irrigation->irrigation*getnirrig(ncft,config);
   foreachpft(pft, p, &stand->pftlist)
   {
 #ifdef DEBUG2
@@ -110,6 +111,16 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
   stand->cell->balance.estab_storage_grass[irrigation->irrigation].carbon -= flux_estab.carbon * stand->frac;
   stand->cell->balance.estab_storage_grass[irrigation->irrigation].nitrogen -= flux_estab.nitrogen * stand->frac;
   stand->cell->balance.soil_storage += (irrigation->irrig_stor + irrigation->irrig_amount) * stand->frac * stand->cell->coord.area;
+  foreachpft(pft,p,&stand->pftlist)
+  {
+    grass=pft->data;
+    getoutputindex(&stand->cell->output,PFT_VEGC,nnat+index,config)+=vegc_sum(pft);
+    getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index,config)+=vegn_sum(pft);
+    getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index,config)+=grass->ind.root.carbon;
+    getoutputindex(&stand->cell->output,PFT_NROOT,nnat+index,config)+=grass->ind.root.nitrogen;
+    getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+index,config)+=grass->ind.leaf.carbon;
+    getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+index,config)+=grass->ind.leaf.nitrogen;
+  }
 
   free(fpc_type);
   free(present);

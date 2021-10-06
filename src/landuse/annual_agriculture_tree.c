@@ -34,7 +34,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
                             )                      /** \return stand has to be killed (TRUE/FALSE) */
 {
   int p,pft_len,t,index;
-  Bool *present,isdead;
+  Bool *present,isdead,nnat;
   int *n_est;
   Pft *pft;
   Real *fpc_inc,*fpc_inc2,*fpc_type;
@@ -44,6 +44,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
   Stocks estab_store={0,0};
   Stocks yield={0.0,0};
   Pfttreepar *treepar;
+  Pfttree *tree;
   Biomass_tree *data;
   Real k_est_thiscell,sapling_C_thiscell;
   data=stand->data;
@@ -66,6 +67,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
     present[p]=FALSE;
   for(t=0;t<config->ntypes;t++)
     n_est[t]=0;
+  nnat=getnnat(npft,config);
   index=agtree(ncft,config->nwptype)+data->irrigation.pft_id-npft+config->nagtree+data->irrigation.irrigation*getnirrig(ncft,config);
   pft_len=getnpft(&stand->pftlist); /* get number of established PFTs */
   if(pft_len>0)
@@ -259,6 +261,18 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
     data->age++;
     data->growing_time++;
   }
-
+  foreachpft(pft,p,&stand->pftlist)
+  {
+    if(pft->par->type==TREE)
+    {
+      tree=pft->data;
+      getoutputindex(&stand->cell->output,PFT_VEGC,nnat+index,config)+=vegc_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index,config)+=vegn_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index,config)+=tree->ind.root.carbon;
+      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+index,config)+=tree->ind.root.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+index,config)+=tree->ind.leaf.carbon;
+      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+index,config)+=tree->ind.leaf.nitrogen;
+    }
+  }
   return FALSE;
 } /* of 'annual_agriculture_tree' */
