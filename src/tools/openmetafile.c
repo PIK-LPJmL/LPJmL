@@ -44,7 +44,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
   int index;
   file.isjson=FALSE;
   /* open description file */
-  if((file.file.file=fopen(filename,"rb"))==NULL)
+  if((file.file.file=fopen(filename,"r"))==NULL)
   {
     if(isout)
       printfopenerr(filename);
