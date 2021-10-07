@@ -32,7 +32,8 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           fscaninteof.$O fputprintable.$O fscanrealarray.$O fscanstruct.$O\
           fscanarray.$O fscanarrayindex.$O fscanbool.$O iskeydefined.$O\
           isboolean.$O fscanreal01.$O fscankeywords.$O isstring.$O\
-          sprinttimestep.$O fscantimestep.$O isnull.$O fwriterestartheader.$O
+          sprinttimestep.$O fscantimestep.$O isnull.$O fwriterestartheader.$O\
+          getfilefrommeta.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

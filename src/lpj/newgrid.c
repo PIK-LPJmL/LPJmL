@@ -45,6 +45,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
   unsigned int soilcode;
   int soil_id;
   long long filesize;
+  char *name;
 #ifdef IMAGE
   Infile aquifers;
 #ifdef COUPLED
@@ -594,8 +595,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         if(readrealvec(lakes.bin.file,&grid[i].lakefrac,0,lake_scalar,1,lakes.bin.swap,lakes.bin.type))
         {
+          name=getrealfilename(&config->lakes_filename);
           fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                  config->lakes_filename.name,i+config->startgrid);
+                  name,i+config->startgrid);
+          free(name);
           return NULL;
         }
 

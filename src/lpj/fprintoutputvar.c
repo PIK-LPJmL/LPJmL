@@ -30,8 +30,8 @@ static int compare(const Item *a,const Item *b)
 void fprintoutputvar(FILE *file,              /**< pointer to text file */
                      const Variable output[], /**< array of output variables */
                      int size,                /**< size of array */
-                     int npft,
-                     int ncft,
+                     int npft,                /**< number of natural PFTs */
+                     int ncft,                /**< number of crop PFTs */
                      const Config *config     /**< LPJ configuration */
                     )
 {

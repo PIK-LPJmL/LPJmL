@@ -231,6 +231,7 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
                   Config *config     /**< LPJmL configuration */
                  )                   /** \return TRUE on error */
 {
+  char *name;
   if(celldata->soil_fmt==CDF)
   {
     if(readcoord_netcdf(celldata->soil.cdf,coord,&config->resolution,soilcode))
@@ -244,8 +245,10 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   {
     if(readcoord(celldata->soil.bin.file_coord,coord,&config->resolution))
     {
+      name=getrealfilename(&config->coord_filename);
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->coord_filename.name,cell+config->startgrid);
+              name,cell+config->startgrid);
+      free(name);
       return TRUE;
     }
     /* read soilcode from file */
@@ -253,16 +256,20 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
     if(freadsoilcode(celldata->soil.bin.file,soilcode,
                      celldata->soil.bin.swap,celldata->soil.bin.type))
     {
+      name=getrealfilename(&config->soil_filename);
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->soil_filename.name,cell+config->startgrid);
+              name,cell+config->startgrid);
       config->ngridcell=cell;
+      free(name);
       return TRUE;
     }
   }
   if(*soilcode>=config->soilmap_size)
   {
+    name=getrealfilename(&config->soil_filename);
     fprintf(stderr,"ERROR250: Invalid soilcode %u of cell %d in '%s', must be in [0,%d].\n",
-            *soilcode,cell,config->soil_filename.name,config->soilmap_size-1);
+            *soilcode,cell,name,config->soilmap_size-1);
+    free(name);
     return TRUE;
   }
   if(config->with_nitrogen)
@@ -280,8 +287,10 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
     {
       if(readrealvec(celldata->soilph.bin.file,soil_ph,0,celldata->soilph.bin.scalar,1,celldata->soilph.bin.swap,celldata->soilph.bin.type))
       {
+        name=getrealfilename(&config->soilph_filename);
         fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                config->soilph_filename.name,cell+config->startgrid);
+                name,cell+config->startgrid);
+        free(name);
         return TRUE;
       }
     }

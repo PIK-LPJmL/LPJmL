@@ -34,6 +34,14 @@ static void fprintfilename(FILE *file,Filename filename)
       free(s);
     }
   }
+  else if(filename.fmt==META)
+  {
+    fprintf(file,"%s\n",filename.name);
+    s=getfilefrommeta(filename.name,TRUE);
+    if(s!=NULL)
+      fprintf(file,"%s\n",s);
+    free(s);
+  }
   else
     fprintf(file,"%s\n",filename.name);
 } /* of 'fprintfilename' */
@@ -51,7 +59,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   {
   if(config->soil_filename.fmt!=CDF)
     fprintf(file,"%s\n",config->coord_filename.name);
-  fprintf(file,"%s\n",config->soil_filename.name);
+  fprintfilename(file,config->soil_filename);
   fprintfilename(file,config->temp_filename);
   fprintfilename(file,config->prec_filename);
 #if defined IMAGE && defined COUPLED
@@ -126,8 +134,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
     fprintfilename(file,config->wet_filename);
   if(config->river_routing)
   {
-    fprintf(file,"%s\n",config->drainage_filename.name);
-    fprintf(file,"%s\n",config->lakes_filename.name);
+    fprintfilename(file,config->drainage_filename);
+    fprintfilename(file,config->lakes_filename);
     if(config->withlanduse!=NO_LANDUSE)
       fprintf(file,"%s\n",config->neighb_irrig_filename.name);
   }

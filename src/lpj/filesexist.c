@@ -31,6 +31,7 @@ static int checksoilcode(const Config *config)
   Type type;
   int cell,ncell;
   unsigned int i,soilcode;
+  char *name;
   if(config->soil_filename.fmt!=CDF)
   {
     file=fopensoilcode(&config->soil_filename,&swap,&offset,&type,config->nsoil,TRUE);
@@ -41,31 +42,44 @@ static int checksoilcode(const Config *config)
     if(exist==NULL)
     {
       printallocerr("exist");
+      fclose(file);
       return 0;
     }
     for(i=0;i<config->soilmap_size;i++)
       exist[i]=FALSE;
+    name=getrealfilename(&config->soil_filename);
+    if(name==NULL)
+    {
+      printallocerr("name");
+      fclose(file);
+      return 0;
+    }
     for(cell=0;cell<ncell;cell++)
     {
       if(freadsoilcode(file,&soilcode,swap,type))
       {
         fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                config->soil_filename.name,cell);
+                name,cell);
+        free(name);
+        fclose(file);
         return 1;
       }
       if(soilcode>=config->soilmap_size)
       {
         fprintf(stderr,"ERROR250: Invalid soilcode %u of cell %d in '%s', must be in [0,%d].\n",
-                soilcode,cell,config->soil_filename.name,config->soilmap_size-1);
+                soilcode,cell,name,config->soilmap_size-1);
+        free(name);
+        fclose(file);
         return 1;
       }
       exist[soilcode]=TRUE;
     }
+    fclose(file);
     for(i=0;i<config->soilmap_size;i++)
       if(!exist[i] && config->soilmap[i]!=0)
         fprintf(stderr,"WARNING035: Soilcode %u ('%s') not found in '%s'.\n",
-                i,config->soilpar[config->soilmap[i]-1].name,config->soil_filename.name);
-        
+                i,config->soilpar[config->soilmap[i]-1].name,name);
+    free(name);
   }
   return 0;
 } /* of 'checksoilcode' */
