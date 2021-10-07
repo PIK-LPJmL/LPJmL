@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**               g  e  t  f  i  l  e  f  r  o  m  m  e  t  a  ,  c                \n**/
+/**               g  e  t  f  i  l  e  f  r  o  m  m  e  t  a  .  c                \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -25,7 +25,7 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
   char *name,*path,*fullname;
   file.isjson=FALSE;
   /* open description file */
-  if((file.file.file=fopen(filename,"rb"))==NULL)
+  if((file.file.file=fopen(filename,"r"))==NULL)
   {
     if(isout)
       printfopenerr(filename);
