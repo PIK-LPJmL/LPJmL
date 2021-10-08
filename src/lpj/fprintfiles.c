@@ -29,12 +29,17 @@ static void fprintfilename(FILE *file,               /**< pointer to text file *
     if(s!=NULL && sscanf(s,"[%d-%d]",&first,&last)==2)
     {
       s=mkfilename(filename->name);
-      for(year=first;year<=last;year++)
+      if(s==NULL)
+        fprintf(stderr,"ERROR225: Cannot parse filename '%s'.\n",filename->name);
+      else
       {
-        fprintf(file,s,year);
-        fputc('\n',file);
+        for(year=first;year<=last;year++)
+        {
+          fprintf(file,s,year);
+          fputc('\n',file);
+        }
+        free(s);
       }
-      free(s);
     }
     else
       fprintf(file,"%s\n",filename->name);

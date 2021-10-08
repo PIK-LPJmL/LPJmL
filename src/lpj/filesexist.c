@@ -121,7 +121,7 @@ static int checkinputfile(const Config *config,const Filename *filename,const ch
       len=1;
     if(header.nbands!=len)
     {
-      fprintf(stderr,"ERROR228: Number of bands %d in '%s' is not '%d'.\n",header.nbands,filename->name,(int)len);
+      fprintf(stderr,"ERROR218: Number of bands %d in '%s' is not %zu.\n",header.nbands,filename->name,len);
       return 1;
     }
   }

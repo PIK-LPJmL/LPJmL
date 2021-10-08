@@ -706,6 +706,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   Stand *stand;
   int soiltype=-1;
   int yearl=year;
+  String line;
 
   /* Initialize yearly prescribed sdate */
   if(config->sdate_option==PRESCRIBED_SDATE)
@@ -918,8 +919,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         if(readlandfracmap(grid[cell].ml.landfrac+i,config->landusemap,
                         config->landusemap_size,data,&count,ncft,config->nwptype))
         {
-          fprintf(stderr,"ERROR149: Land-use input=%g less than zero for cell %d in year %d.\n",
-                  data[count],cell+config->startgrid,yearl+landuse->landuse.firstyear);
+          fprintf(stderr,"ERROR149: Land-use input=%g less than zero for cell %d (%s) in year %d.\n",
+                  data[count],cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearl+landuse->landuse.firstyear);
           return TRUE;
         }
       }
@@ -1313,9 +1314,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           if(readlandfracmap(grid[cell].ml.fertilizer_nr+i,config->fertilizermap,
                              config->fertilizermap_size,data,&count,ncft,config->nwptype))
           {
-            fprintf(stderr,"ERROR149: Fertilizer input=%g for band %d less than zero for cell %d in year %d.\n",
+            fprintf(stderr,"ERROR149: Fertilizer input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                     data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
-                    cell+config->startgrid,yearf+landuse->fertilizer_nr.firstyear);
+                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearf+landuse->fertilizer_nr.firstyear);
             return TRUE;
           }
         }
@@ -1381,9 +1382,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           if(readlandfracmap(grid[cell].ml.manure_nr+i,config->fertilizermap,
                              config->fertilizermap_size,data,&count,ncft,config->nwptype))
           {
-            fprintf(stderr,"ERROR149: Manure input=%g for band %d less than zero for cell %d in year %d.\n",
+            fprintf(stderr,"ERROR149: Manure input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                     data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
-                    cell+config->startgrid,yearm+landuse->manure_nr.firstyear);
+                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearm+landuse->manure_nr.firstyear);
             return TRUE;
           }
         }
@@ -1540,9 +1541,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       if(readlandfracmap(grid[cell].ml.residue_on_field,config->fertilizermap,
                          config->fertilizermap_size,data,&count,ncft,config->nwptype))
       {
-        fprintf(stderr,"ERROR149: Residue rate input=%g for band %d less than zero for cell %d in year %d.\n",
+        fprintf(stderr,"ERROR149: Residue rate input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                 data[count],count % config->fertilizermap_size,
-                cell+config->startgrid,yearr+landuse->residue_on_field.firstyear);
+                cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearr+landuse->residue_on_field.firstyear);
         return TRUE;
       }
       count-=config->fertilizermap_size;
