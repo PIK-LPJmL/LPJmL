@@ -29,12 +29,17 @@ static void fprintfilename(FILE *file,               /**< pointer to text file *
     if(s!=NULL && sscanf(s,"[%d-%d]",&first,&last)==2)
     {
       s=mkfilename(filename->name);
-      for(year=first;year<=last;year++)
+      if(s==NULL)
+        fprintf(stderr,"ERROR225: Cannot parse filename '%s'.\n",filename->name);
+      else
       {
-        fprintf(file,s,year);
-        fputc('\n',file);
+        for(year=first;year<=last;year++)
+        {
+          fprintf(file,s,year);
+          fputc('\n',file);
+        }
+        free(s);
       }
-      free(s);
     }
     else
       fprintf(file,"%s\n",filename->name);
@@ -101,7 +106,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     fprintfilename(file,&config->wind_filename,TRUE);
-  if(config->fire==SPITFIRE||config->fire==SPITFIRE_TMAX||config->cropsheatfrost)
+  if(config->fire==SPITFIRE_TMAX||config->cropsheatfrost)
   {
     fprintfilename(file,&config->tmax_filename,TRUE);
     fprintfilename(file,&config->tmin_filename,TRUE);
@@ -133,6 +138,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       fprintfilename(file,&config->fertilizer_nr_filename,TRUE);
     if (config->with_nitrogen && config->manure_input)
       fprintfilename(file,&config->manure_nr_filename,TRUE);
+    if(config->residue_treatment==READ_RESIDUE_DATA)
+      fprintfilename(file,&config->residue_data_filename,TRUE);
   }
   if(config->reservoir)
   {

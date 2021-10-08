@@ -114,6 +114,7 @@ Bool readpopdens(Popdens popdens,     /**< pointer to population data */
                  const Config *config /**< LPJ configuration */
                 )                     /** \return TRUE on error */
 {
+  char *name;
   year-=popdens->file.firstyear;
   if(year<0)
     year=0;
@@ -123,19 +124,26 @@ Bool readpopdens(Popdens popdens,     /**< pointer to population data */
   {
     if(readdata_netcdf(&popdens->file,popdens->npopdens,grid,year,config))
     {
-      fprintf(stderr,"ERROR185: Cannot read population density of year %d in readpopdens().\n",year+popdens->file.firstyear);
+      fprintf(stderr,"ERROR185: Cannot read population density of year %d from '%s'.\n",
+              year+popdens->file.firstyear,config->popdens_filename.name);
       return TRUE;
     }
     return FALSE;
   }
   if(fseek(popdens->file.file,year*popdens->file.size+popdens->file.offset,SEEK_SET))
   {
-    fprintf(stderr,"ERROR184: Cannot seek to population density of year %d in readpopdens().\n",year+popdens->file.firstyear);
+    name=getrealfilename(&config->popdens_filename);
+    fprintf(stderr,"ERROR184: Cannot seek to population density of year %d in '%s'.\n",
+            year+popdens->file.firstyear,name);
+    free(name);
     return TRUE;
   }
   if(readrealvec(popdens->file.file,popdens->npopdens,0,popdens->file.scalar,popdens->file.n,popdens->file.swap,popdens->file.datatype))
   {
-    fprintf(stderr,"ERROR185: Cannot read population density of year %d in readpopdens().\n",year+popdens->file.firstyear);
+    name=getrealfilename(&config->popdens_filename);
+    fprintf(stderr,"ERROR185: Cannot read population density of year %d from '%s'.\n",
+            year+popdens->file.firstyear,name);
+    free(name);
     return TRUE;
   }
    return FALSE;
