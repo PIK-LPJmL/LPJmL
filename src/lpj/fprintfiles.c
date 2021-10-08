@@ -99,7 +99,7 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   }
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
     fprintfilename(file,&config->wind_filename,TRUE);
-  if(config->fire==SPITFIRE||config->fire==SPITFIRE_TMAX||config->cropsheatfrost)
+  if(config->fire==SPITFIRE_TMAX||config->cropsheatfrost)
   {
     fprintfilename(file,&config->tmax_filename,TRUE);
     fprintfilename(file,&config->tmin_filename,TRUE);
@@ -131,6 +131,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
       fprintfilename(file,&config->fertilizer_nr_filename,TRUE);
     if (config->with_nitrogen && config->manure_input)
       fprintfilename(file,&config->manure_nr_filename,TRUE);
+    if(config->residue_treatment==READ_RESIDUE_DATA)
+      fprintfilename(file,&config->residue_data_filename,TRUE);
   }
   if(config->reservoir)
   {
