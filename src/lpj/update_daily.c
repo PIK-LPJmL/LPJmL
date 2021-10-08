@@ -409,11 +409,11 @@ void update_daily(Cell *cell,            /**< cell pointer           */
               stand->soil.ice_depth[0]+stand->soil.ice_fw[0])/stand->soil.wsats[0]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     getoutput(&cell->output,SWC2,config)+=(stand->soil.w[1]*stand->soil.whcs[1]+stand->soil.w_fw[1]+stand->soil.wpwps[1]+
               stand->soil.ice_depth[1]+stand->soil.ice_fw[1])/stand->soil.wsats[1]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    getoutput(&cell->output,SWC3,config)+=(stand->soil.w[2]*stand->soil.whcs[2]+stand->soil.w_fw[2]+stand->soil.wpwps[1]+
+    getoutput(&cell->output,SWC3,config)+=(stand->soil.w[2]*stand->soil.whcs[2]+stand->soil.w_fw[2]+stand->soil.wpwps[2]+
               stand->soil.ice_depth[2]+stand->soil.ice_fw[2])/stand->soil.wsats[2]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    getoutput(&cell->output,SWC4,config)+=(stand->soil.w[3]*stand->soil.whcs[3]+stand->soil.w_fw[3]+stand->soil.wpwps[1]+
+    getoutput(&cell->output,SWC4,config)+=(stand->soil.w[3]*stand->soil.whcs[3]+stand->soil.w_fw[3]+stand->soil.wpwps[3]+
               stand->soil.ice_depth[3]+stand->soil.ice_fw[3])/stand->soil.wsats[3]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
-    getoutput(&cell->output,SWC5,config)+=(stand->soil.w[4]*stand->soil.whcs[4]+stand->soil.w_fw[4]+stand->soil.wpwps[1]+
+    getoutput(&cell->output,SWC5,config)+=(stand->soil.w[4]*stand->soil.whcs[4]+stand->soil.w_fw[4]+stand->soil.wpwps[4]+
               stand->soil.ice_depth[4]+stand->soil.ice_fw[4])/stand->soil.wsats[4]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
     foreachsoillayer(l)
       getoutputindex(&cell->output,SWC,l,config)+=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.w_fw[l]+stand->soil.wpwps[l]+

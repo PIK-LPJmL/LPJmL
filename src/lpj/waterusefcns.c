@@ -83,8 +83,8 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
   if(wateruse->file.var_len!=1)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR218: Number of bands=%d in wateruse file '%s' is not 1.\n",
-              (int)wateruse->file.var_len,config->wateruse_filename.name);
+      fprintf(stderr,"ERROR218: Number of bands=%zu in wateruse file '%s' is not 1.\n",
+              wateruse->file.var_len,config->wateruse_filename.name);
 
     closeclimatefile(&wateruse->file,isroot(*config));
     free(wateruse);

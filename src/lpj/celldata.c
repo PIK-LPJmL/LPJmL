@@ -499,6 +499,7 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
                   Config *config     /**< LPJmL configuration */
                  )                   /** \return TRUE on error */
 {
+  char *name;
   if(celldata->soil_fmt==CDF)
   {
     if(readcoord_netcdf(celldata->soil.cdf,&cell->coord,&config->resolution,soilcode))
@@ -512,8 +513,10 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   {
     if(readcoord(celldata->soil.bin.file_coord,&cell->coord,&config->resolution))
     {
+      name=getrealfilename(&config->coord_filename);
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->coord_filename.name,cell_id+config->startgrid);
+              name,cell_id+config->startgrid);
+      free(name);
       return TRUE;
     }
     /* read soilcode from file */
@@ -521,8 +524,10 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
     if(freadsoilcode(celldata->soil.bin.file,soilcode,
                      celldata->soil.bin.swap,celldata->soil.bin.type))
     {
+      name=getrealfilename(&config->soil_filename);
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->soil_filename.name,cell_id+config->startgrid);
+              name,cell_id+config->startgrid);
+      free(name);
       config->ngridcell=cell_id;
       return TRUE;
     }
@@ -541,8 +546,10 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   {
     if(readrealvec(celldata->kbf.file.bin.file,&cell->kbf,0,celldata->kbf.file.bin.scalar,1,celldata->kbf.file.bin.swap,celldata->kbf.file.bin.type))
     {
+      name=getrealfilename(&config->kbf_filename);
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->kbf_filename.name,cell_id+config->startgrid);
+              name,cell_id+config->startgrid);
+      free(name);
       return TRUE;
     }
   }
@@ -560,8 +567,10 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   {
     if(readrealvec(celldata->slope.file.bin.file,&cell->slope,0,celldata->slope.file.bin.scalar,1,celldata->slope.file.bin.swap,celldata->slope.file.bin.type))
     {
+      name=getrealfilename(&config->slope_filename);
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->slope_filename.name,cell_id+config->startgrid);
+              name,cell_id+config->startgrid);
+      free(name);
       return TRUE;
     }
   }
@@ -584,8 +593,10 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   {
     if(readrealvec(celldata->slope_min.file.bin.file,&cell->slope_min,0,celldata->slope_min.file.bin.scalar,1,celldata->slope_min.file.bin.swap,celldata->slope_min.file.bin.type))
     {
+      name=getrealfilename(&config->slope_min_filename);
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->slope_min_filename.name,cell_id+config->startgrid);
+              name,cell_id+config->startgrid);
+      free(name);
       return TRUE;
     }
   }
@@ -593,8 +604,10 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   {
     if(readinput_netcdf(celldata->slope_max.file.cdf,&cell->slope_max,&cell->coord))
     {
+      name=getrealfilename(&config->slope_max_filename);
       fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-              config->slope_max_filename.name,cell_id+config->startgrid);
+              name,cell_id+config->startgrid);
+      free(name);
       return TRUE;
     }
   }
@@ -609,8 +622,10 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   }
   if(*soilcode>=config->soilmap_size)
   {
+    name=getrealfilename(&config->soil_filename);
     fprintf(stderr,"ERROR250: Invalid soilcode %u of cell %d in '%s', must be in [0,%d].\n",
-            *soilcode,cell_id,config->soil_filename.name,config->soilmap_size-1);
+            *soilcode,cell_id,name,config->soilmap_size-1);
+    free(name);
     return TRUE;
   }
   if(config->with_nitrogen)
@@ -628,8 +643,10 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
     {
       if(readrealvec(celldata->soilph.file.bin.file,&cell->soilph,0,celldata->soilph.file.bin.scalar,1,celldata->soilph.file.bin.swap,celldata->soilph.file.bin.type))
       {
+        name=getrealfilename(&config->soilph_filename);
         fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                config->soilph_filename.name,cell_id+config->startgrid);
+                name,cell_id+config->startgrid);
+        free(name);
         return TRUE;
       }
     }

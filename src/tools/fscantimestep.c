@@ -24,7 +24,7 @@
 #include "types.h"
 
 Bool fscantimestep(LPJfile *file, /**< pointer to a LPJ file */
-                   int *timestep, /**< time szep (ANNUAL,MONTHLY,DAILY) */
+                   int *timestep, /**< time step (ANNUAL,MONTHLY,DAILY) */
                    Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
                   )               /** \return TRUE on error */
 {
@@ -44,7 +44,7 @@ Bool fscantimestep(LPJfile *file, /**< pointer to a LPJ file */
     else if(*timestep<0 && *timestep!=ANNUAL && *timestep!=MONTHLY && *timestep!=DAILY)
     {
       if(verb)
-        fprintf(stderr,"ERROR229: Invalid value %d for time step, muste be >0.\n",
+        fprintf(stderr,"ERROR229: Invalid value %d for time step, must be >0.\n",
                 *timestep);
       return TRUE;
     }

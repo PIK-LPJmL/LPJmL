@@ -15,11 +15,11 @@
 
 #include "../include/pftpar.h" /* include constant definitions */
 
-#define CTON_LEAF 30.
-#define CTON_ROOT 30.
-#define CTON_POOL 100.
-#define CTON_SO 100.
-#define CTON_SAP 330.
+#define CTON_LEAF 30.0
+#define CTON_ROOT 30.0
+#define CTON_POOL 100.0
+#define CTON_SO 100.0
+#define CTON_SAP 330.0
 #ifdef WITH_SPITFIRE
 #define FLAM_TREE 0.3
 #define FLAM_GRASS 0.3
@@ -35,7 +35,7 @@
 #define ALLOM4 0.3
 #define APHEN_MAX 245
 #define APHEN_MIN 60    /* minimum aphen for cold-induced senescence */
-#define HEIGHT_MAX 100.  /* maximum height of trees */
+#define HEIGHT_MAX 100.0  /* maximum height of trees */
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
 #ifdef WITH_SPITFIRE
@@ -78,23 +78,23 @@
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [30., 55., 70., 77.], /* curve number */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.962,    /* beta_root */
     "minwscal" : 0.0,       /* minwscal 3*/
     "gmin"  : 1.6,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 1.6,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "ramp" : 1000.,         /* ramp 19*/
+    "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000., /* min_temprange 34*/
-    "emax": 10.,            /* emax 35*/
+    "min_temprange" : -1000.0, /* min_temprange 34*/
+    "emax": 10.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.14,   /* albedo of green leaves */
@@ -130,9 +130,9 @@
     "phenology" : "evergreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 2.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 25., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 25.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-    "temp" : { "low" : 15.5, "high" : 1000. }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "temp" : { "low" : 15.5, "high" : 1000.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38009,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
     "vpd_par" : 47.22296, /*scaling factor vpd fire danger index*/
@@ -180,22 +180,22 @@
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [30., 55., 70., 77.], /* curve number */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.961,    /* beta_root */
     "minwscal" : 0.35,      /* minwscal 3*/
     "gmin"  : 1.8,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "ramp" : 1000.,         /* ramp 19*/
+    "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000., /* min_temprange 34*/
+    "min_temprange" : -1000.0, /* min_temprange 34*/
     "emax": 10.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -232,9 +232,9 @@
     "phenology" : "raingreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 2.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 25., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 25.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-    "temp" : { "low" : 15.5, "high" : 1000. }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "temp" : { "low" : 15.5, "high" : 1000.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.51395,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000334, /* scaling factor nesterov fire danger index */
     "vpd_par" : 15.43195, /*scaling factor vpd fire danger index*/
@@ -282,22 +282,22 @@
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [30., 55., 70., 77.], /* curve number */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.976,    /* beta_root 1 */
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 1.0,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 4.0,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "ramp" : 1000.,         /* ramp 19*/
+    "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 900.0,      /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000., /* min_temprange 34*/
+    "min_temprange" : -1000.0, /* min_temprange 34*/
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -334,7 +334,7 @@
     "phenology" : "evergreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 20., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 20.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -2.0, "high" : 22.0 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.32198,     /* shape factor for soil organic matter vertical distribution*/
@@ -384,22 +384,22 @@
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [30., 55., 70., 77.], /* curve number */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.964,    /* beta_root 1 */
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 1.5,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 1.6,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "ramp" : 1000.,         /* ramp 19*/
+    "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 1200.0,     /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000., /* min_temprange 34*/
+    "min_temprange" : -1000.0, /* min_temprange 34*/
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -436,7 +436,7 @@
     "phenology" : "evergreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 20., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 20.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : 3.0, "high" : 18.8 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.43740,     /* shape factor for soil organic matter vertical distribution*/
@@ -486,22 +486,22 @@
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [30., 55., 70., 77.], /* curve number */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 1.0,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
-    "nmax" : 120.,          /* nmax 7*/
+    "nmax" : 120.0,          /* nmax 7*/
     "resist" : 0.3,         /* resist 8*/
     "longevity" : 0.45,     /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "ramp" : 300.,          /* ramp 19*/
+    "ramp" : 300.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 1200.0,     /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000., /* min_temprange 34*/
+    "min_temprange" : -1000.0, /* min_temprange 34*/
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -538,7 +538,7 @@
     "phenology" : "summergreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 20., "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 20.0, "high" : 25.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -17.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28880,     /* shape factor for soil organic matter vertical distribution*/
@@ -590,22 +590,22 @@
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [30., 55., 70., 77.], /* curve number */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 4.0,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "ramp" : 1000.,         /* ramp 19*/
+    "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 600.0,      /* gdd5min 30*/
-    "twmax" : 23.,          /* twmax 31*/
-    "twmax_daily" : 25.,    /* twmax_daily 31*/
+    "twmax" : 23.0,          /* twmax 31*/
+    "twmax_daily" : 25.0,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000., /* min_temprange 34*/
+    "min_temprange" : -1000.0, /* min_temprange 34*/
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -642,9 +642,9 @@
     "phenology" : "evergreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 15., "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 15.0, "high" : 25.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-    "temp" : { "low" : -32.5, "high" : -2. }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "temp" : { "low" : -32.5, "high" : -2.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -692,22 +692,22 @@
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [30., 55., 70., 77.], /* curve number */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.3,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "ramp" : 200.,          /* ramp 19*/
+    "ramp" : 200.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 350.0,      /* gdd5min 30*/
-    "twmax" : 23.,          /* twmax 31*/
-    "twmax_daily" : 25.,    /* twmax_daily 31*/
+    "twmax" : 23.0,          /* twmax 31*/
+    "twmax_daily" : 25.0,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000., /* min_temprange 34*/
+    "min_temprange" : -1000.0, /* min_temprange 34*/
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -744,9 +744,9 @@
     "phenology" : "summergreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 15., "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 15.0, "high" : 25.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-    "temp" : { "low" : -1000, "high" : -2. }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "temp" : { "low" : -1000, "high" : -2.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -796,22 +796,22 @@
     "type" : TREE,
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [30., 55., 70., 77.], /* curve number */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.3,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 0.65,     /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "ramp" : 200.,          /* ramp 19*/
+    "ramp" : 200.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 350.0,      /* gdd5min 30*/
-    "twmax" : 23.,          /* twmax 31*/
-    "twmax_daily" : 25.,    /* twmax_daily 31*/
+    "twmax" : 23.0,          /* twmax 31*/
+    "twmax_daily" : 25.0,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : 30.,  /* min_temprange 34*/
+    "min_temprange" : 30.0,  /* min_temprange 34*/
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -848,7 +848,7 @@
     "phenology" : "summergreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 15., "high" : 25. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 15.0, "high" : 25.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -46, "high" : -5.4 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
@@ -900,22 +900,22 @@
     "type" : GRASS,
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [39., 61., 74., 80.], /* curve number */
+    "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
     "gmin"  : 1.5,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.4,      /* leaf longevity 10*/
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
-    "ramp" : 100.,          /* ramp 19*/
+    "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 10.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -952,7 +952,7 @@
     "phenology" : "any",      /* phenology */
     "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 20., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 20.0, "high" : 45.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
     "temp" : { "low" : 7.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.46513,     /* shape factor for soil organic matter vertical distribution*/
@@ -963,7 +963,7 @@
     "aprec_min" : 100,                        /* minimum annual precipitation to establish */
     "flam" : FLAM_GRASS,     /* flam */
     "k_litter10" : { "leaf" : 0.97, "wood" : 0.97 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 1., /* Q10_wood */
+    "k_litter10_q10_wood" : 1.0, /* Q10_wood */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -985,22 +985,22 @@
     "type" : GRASS,
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [39., 61., 74., 80.], /* curve number */
+    "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.35,     /* leaf longevity 10*/
     "lmro_ratio" : 0.8,     /* lmro_ratio 18*/
-    "ramp" : 100.,          /* ramp 19*/
+    "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -1037,7 +1037,7 @@
     "phenology" : "any",      /* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 10.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -39.0, "high" : 15.5 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38184,     /* shape factor for soil organic matter vertical distribution*/
@@ -1048,7 +1048,7 @@
     "aprec_min" : 100,       /* minimum annual precipitation to establish */
     "flam" : FLAM_GRASS,     /* flam */
     "k_litter10" : { "leaf" : 1.2, "wood" : 1.2 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 1., /* Q10_wood */
+    "k_litter10_q10_wood" : 1.0, /* Q10_wood */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -1070,22 +1070,22 @@
     "type" : GRASS,
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [39., 61., 74., 80.], /* curve number */
+    "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 1.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.35,     /* leaf longevity 10*/
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
-    "ramp" : 100.,          /* ramp 19*/
+    "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.01,       /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : 18.,  /* min_temprange 34*/
+    "min_temprange" : 18.0,  /* min_temprange 34*/
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -1122,7 +1122,7 @@
     "phenology" : "any",      /* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 10.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : -2.6 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38184,     /* shape factor for soil organic matter vertical distribution*/
@@ -1133,7 +1133,7 @@
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_GRASS,     /* flam */
     "k_litter10" : { "leaf" : 1.2, "wood" : 1.2 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 1., /* Q10_wood */
+    "k_litter10_q10_wood" : 1.0, /* Q10_wood */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -1155,22 +1155,22 @@
     "type" : TREE,
     "cultivation_type" : BIOMASS,/* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [30., 55., 70., 77.], /* curve number */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.975,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.2,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 1.0,         /* resist 8*/
     "longevity" : 2.0,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "ramp" : 1000.,         /* ramp 19*/
+    "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.6,       /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : 0.8,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -1207,7 +1207,7 @@
     "phenology" : "evergreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 2.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 25., "high" : 38. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 25.0, "high" : 38.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : 7.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.38009,     /* shape factor for soil organic matter vertical distribution*/
@@ -1259,22 +1259,22 @@
     "type" : TREE,
     "cultivation_type" : BIOMASS,/* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [30., 55., 70., 77.], /* curve number */
+    "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.2,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
-    "nmax" : 120.,          /* nmax 7*/
+    "nmax" : 120.0,          /* nmax 7*/
     "resist" : 0.95,        /* resist 8*/
     "longevity" : 0.45,     /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "ramp" : 300.,          /* ramp 19*/
+    "ramp" : 300.0,          /* ramp 19*/
     "lai_sapl" : 1.6,       /* lai_sapl 2.1, larger sapling used for plantations, original value 1.5  */
     "gdd5min" : 300.0,      /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 5.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : 0.8,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -1311,7 +1311,7 @@
     "phenology" : "summergreen", /* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 15., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 15.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -30.0, "high" : 8 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28880,     /* shape factor for soil organic matter vertical distribution*/
@@ -1365,22 +1365,22 @@
     "type" : GRASS,
     "cultivation_type" : BIOMASS, /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [39., 61., 74., 80.], /* curve number */
+    "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 1.0,         /* resist 8*/
     "longevity" : 0.25,     /* leaf longevity 10*/
     "lmro_ratio" : 0.75,   /* lmro_ratio 18*/
-    "ramp" : 100.,          /* ramp 19*/
+    "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -1417,7 +1417,7 @@
     "phenology" : "any",      /* phenology */
     "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 4.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 15., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 15.0, "high" : 45.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
     "temp" : { "low" : -40.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.46513,     /* shape factor for soil organic matter vertical distribution*/
@@ -1428,7 +1428,7 @@
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_GRASS,     /* flam */
     "k_litter10" : { "leaf" : 0.97, "wood" : 0.97 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 1., /* Q10_wood */
+    "k_litter10_q10_wood" : 1.0, /* Q10_wood */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -1450,22 +1450,22 @@
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [60., 72., 80., 84.], /* curve number */
+    "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "ramp" : 500.,          /* ramp 19*/
+    "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.0001,    /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 0.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 8.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -1490,7 +1490,7 @@
     {
       "slope" : 23,         /* new phenology: slope of light limiting function */
       "base" : 75.94,       /* new phenology: inflection point of light limiting function (Wm-2) */
-      "tau" : 0.22,         /* new phenology: change rate of actual to previous day light limiting function */
+      "tau" : 0.22         /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
@@ -1502,7 +1502,7 @@
     "phenology" : "cropgreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 0.0, "high" : 40.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 12., "high" : 17. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 12.0, "high" : 17.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
@@ -1561,22 +1561,22 @@
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [60., 72., 80., 84.], /* curve number */
+    "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.33,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "ramp" : 500.,          /* ramp 19*/
+    "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
-    "gddbase" : 10.,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 10.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 8.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -1613,7 +1613,7 @@
     "phenology" : "cropgreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 20., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 20.0, "high" : 45.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
@@ -1672,22 +1672,22 @@
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [60., 72., 80., 84.], /* curve number */
+    "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.33,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "ramp" : 500.,          /* ramp 19*/
+    "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
-    "gddbase" : 6.,         /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 6.0,         /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 8.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -1724,7 +1724,7 @@
     "phenology" : "cropgreen",/* phenology */
     "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 8.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 21., "high" : 26. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 21.0, "high" : 26.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
@@ -1783,22 +1783,22 @@
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [60., 72., 80., 84.], /* curve number */
+    "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "ramp" : 500.,          /* ramp 19*/
+    "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
-    "gddbase" : 10.,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 10.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 8.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -1835,7 +1835,7 @@
     "phenology" : "cropgreen",/* phenology */
     "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 20., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 20.0, "high" : 45.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
@@ -1893,23 +1893,23 @@
     "name" : "pulses",
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "cn" : [60., 72., 80., 84.], /* curve number */
+    "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "nfixing" : true,           /* N fixing */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "ramp" : 500.,          /* ramp 19*/
+    "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
-    "gddbase" : 1.,         /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 1.0,         /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 8.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -1946,7 +1946,7 @@
     "phenology" : "cropgreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 10.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
@@ -2005,22 +2005,22 @@
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [60., 72., 80., 84.], /* curve number */
+    "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "ramp" : 500.,          /* ramp 19*/
+    "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
-    "gddbase" : 3.,         /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 3.0,         /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 8.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -2057,7 +2057,7 @@
     "phenology" : "cropgreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 10., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 10.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
@@ -2116,22 +2116,22 @@
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [60., 72., 80., 84.], /* curve number */
+    "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "ramp" : 500.,          /* ramp 19*/
+    "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
-    "gddbase" : 15.,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 15.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 8.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -2168,7 +2168,7 @@
     "phenology" : "cropgreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 20., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 20.0, "high" : 45.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
@@ -2227,22 +2227,22 @@
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [60., 72., 80., 84.], /* curve number */
+    "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.3,       /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.33,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "ramp" : 500.,          /* ramp 19*/
+    "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
-    "gddbase" : 6.,         /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 6.0,         /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 8.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -2279,7 +2279,7 @@
     "phenology" : "cropgreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 8.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 25., "high" : 32. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 25.0, "high" : 32.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
@@ -2338,22 +2338,22 @@
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : true,           /* N fixing */
-    "cn" : [60., 72., 80., 84.], /* curve number */
+    "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.66,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "ramp" : 500.,          /* ramp 19*/
+    "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
-    "gddbase" : 10.,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 10.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 8.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -2390,7 +2390,7 @@
     "phenology" : "cropgreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 5.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 28., "high" : 32. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 28.0, "high" : 32.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
@@ -2449,22 +2449,22 @@
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [60., 72., 80., 84.], /* curve number */
+    "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "ramp" : 500.,          /* ramp 19*/
+    "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
-    "gddbase" : 14.,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 14.0,        /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 8.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -2501,7 +2501,7 @@
     "phenology" : "cropgreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 20., "high" : 45. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 20.0, "high" : 45.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
@@ -2560,22 +2560,22 @@
     "type" : CROP,
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [60., 72., 80., 84.], /* curve number */
+    "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 1.0,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.41,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "ramp" : 500.,          /* ramp 19*/
+    "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
-    "gddbase" : 0.,         /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
+    "gddbase" : 0.0,         /* gddbase (deg C) 33*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 8.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -2612,7 +2612,7 @@
     "phenology" : "cropgreen",/* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 0.0, "high" : 40.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 12., "high" : 17. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 12.0, "high" : 17.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/
@@ -2670,22 +2670,22 @@
     "type" : CROP,
     "cultivation_type": "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
-    "cn" : [60., 72., 80., 84.], /* curve number */
+    "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
-    "nmax" : 100.,          /* nmax 7*/
+    "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.66,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
-    "ramp" : 500.,          /* ramp 19*/
+    "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
-    "twmax" : 1000.,        /* twmax 31*/
-    "twmax_daily" : 1000.,  /* twmax_daily 31*/
+    "twmax" : 1000.0,        /* twmax 31*/
+    "twmax_daily" : 1000.0,  /* twmax_daily 31*/
     "gddbase" : 6.0,        /* gddbase (deg C) 33*/
-    "min_temprange" : -1000.,/* min_temprange 34*/
+    "min_temprange" : -1000.0,/* min_temprange 34*/
     "emax": 8.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : 1.0,         /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
@@ -2722,7 +2722,7 @@
     "phenology" : "cropgreen",/* phenology */
     "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 8.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 18., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 18.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.40428,     /* shape factor for soil organic matter vertical distribution*/

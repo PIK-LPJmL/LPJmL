@@ -391,6 +391,16 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       stand->cell->balance.biomass_yield.nitrogen+=yield.nitrogen*stand->frac;
       stand->cell->output.dcflux+=yield.carbon*stand->frac;
       annual_tree(stand,pft,&fpc_inc,climate->isdailytemp,config);
+      getoutputindex(&stand->cell->output,PFT_VEGC,nnat+index,config)+=vegc_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index,config)+=vegn_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index,config)+=tree->ind.root.carbon;
+      getoutputindex(&stand->cell->output,PFT_NROOT,nnat+index,config)+=tree->ind.root.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+index,config)+=tree->ind.leaf.carbon;
+      getoutputindex(&stand->cell->output,PFT_NLEAF,nnat+index,config)+=tree->ind.leaf.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_CSAPW,nnat+index,config)+=tree->ind.sapwood.carbon;
+      getoutputindex(&stand->cell->output,PFT_NSAPW,nnat+index,config)+=tree->ind.sapwood.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_CHAWO,nnat+index,config)+=tree->ind.heartwood.carbon;
+      getoutputindex(&stand->cell->output,PFT_NHAWO,nnat+index,config)+=tree->ind.heartwood.nitrogen;
       litter_update_tree(&stand->soil.litter,pft,pft->nind,config);
       delpft(&stand->pftlist,p);
       stand->growing_days=0;

@@ -63,7 +63,7 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
 #ifdef USE_MPI
   int *counts,*offsets;
 #endif
-  ncrops = getnirrig(ncft,config);
+  ncrops = 2*getnirrig(ncft,config);
   yields=newmatrix(float,config->ngridcell,ncrops);
   check(yields);
   monthirrig=newvec(Mirrig_to_image,config->ngridcell);

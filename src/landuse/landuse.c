@@ -134,8 +134,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     closeclimatefile(&landuse->landuse,isroot(*config));
     if(isroot(*config))
       fprintf(stderr,
-              "ERROR147: Invalid number of bands=%d in landuse data file,must be %d or %d.\n",
-              (int)landuse->landuse.var_len,2*config->landusemap_size,4*config->landusemap_size);
+              "ERROR147: Invalid number of bands=%zu in landuse data file,must be %d or %d.\n",
+              landuse->landuse.var_len,2*config->landusemap_size,4*config->landusemap_size);
     free(landuse);
     return NULL;
   }
@@ -195,8 +195,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       closeclimatefile(&landuse->sdate,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
-                "ERROR147: Invalid number of bands=%d in sowing date file, must be %d.\n",
-                (int)landuse->sdate.var_len,2*config->cftmap_size);
+                "ERROR147: Invalid number of bands=%zu in sowing date file, must be %d.\n",
+                landuse->sdate.var_len,2*config->cftmap_size);
       free(landuse);
       return(NULL);
     }
@@ -263,8 +263,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       closeclimatefile(&landuse->crop_phu,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
-                "ERROR147: Invalid number of bands=%d in crop phu data file, must be %d.\n",
-                (int)landuse->crop_phu.var_len,2*config->cftmap_size);
+                "ERROR147: Invalid number of bands=%zu in crop phu data file, must be %d.\n",
+                landuse->crop_phu.var_len,2*config->cftmap_size);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -334,8 +334,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
-                "ERROR147: Invalid number of bands=%d in fertilizer data file, must be %d.\n",
-                (int)landuse->fertilizer_nr.var_len,2*config->fertilizermap_size);
+                "ERROR147: Invalid number of bands=%zu in fertilizer data file, must be %d.\n",
+                landuse->fertilizer_nr.var_len,2*config->fertilizermap_size);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -411,8 +411,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       closeclimatefile(&landuse->manure_nr,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
-                "ERROR147: Invalid number of bands=%d in manure data file. must be %d.\n",
-               (int)landuse->manure_nr.var_len,2*config->fertilizermap_size);
+                "ERROR147: Invalid number of bands=%zu in manure data file. must be %d.\n",
+                landuse->manure_nr.var_len,2*config->fertilizermap_size);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -502,8 +502,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       closeclimatefile(&landuse->with_tillage,isroot(*config));
       if(isroot(*config))
          fprintf(stderr,
-                "ERROR147: Invalid number of bands=%d in tillage type file, must be 1.\n",
-                (int)landuse->with_tillage.var_len);
+                "ERROR147: Invalid number of bands=%zu in tillage type file, must be 1.\n",
+                landuse->with_tillage.var_len);
       free(landuse);
       return(NULL);
     }
@@ -582,8 +582,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       closeclimatefile(&landuse->residue_on_field,isroot(*config));
       if(isroot(*config))
         fprintf(stderr,
-                "ERROR147: Invalid number of bands=%d in residue extraction data file, must be %d.\n",
-                (int)landuse->residue_on_field.var_len,config->fertilizermap_size);
+                "ERROR147: Invalid number of bands=%zu in residue extraction data file, must be %d.\n",
+                landuse->residue_on_field.var_len,config->fertilizermap_size);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));

@@ -572,22 +572,22 @@ Bool receive_image_luc(Cell *grid,          /**< LPJ grid */
       grid[i].ml.irrig_system->crop[TEMPERATE_ROOTS] = grid[i].ml.manage.par->default_irrig_system;
       /* 23 cassava */
       grid[i].ml.landfrac[1].crop[TROPICAL_ROOTS]= (Real)image_landuse[i].trop_roots_tub_ir;
-      grid[i].ml.irrig_system->crop[TROPICAL_ROOTS - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.irrig_system->crop[TROPICAL_ROOTS] = grid[i].ml.manage.par->default_irrig_system;
       /* 24 sunflower  irrigated*/
       grid[i].ml.landfrac[1].crop[OIL_CROPS_SUNFLOWER]= (Real)image_landuse[i].temp_oilcrops_ir * 0.5;
-      grid[i].ml.irrig_system->crop[OIL_CROPS_SUNFLOWER - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.irrig_system->crop[OIL_CROPS_SUNFLOWER] = grid[i].ml.manage.par->default_irrig_system;
       /* 25 soybean irrigated  */
       grid[i].ml.landfrac[1].crop[OIL_CROPS_GROUNDNUT]= (Real)image_landuse[i].soybeans_ir;
-      grid[i].ml.irrig_system->crop[OIL_CROPS_GROUNDNUT - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.irrig_system->crop[OIL_CROPS_GROUNDNUT] = grid[i].ml.manage.par->default_irrig_system;
       /* 26 groundnut irrigated  */
       grid[i].ml.landfrac[1].crop[OIL_CROPS_RAPESEED]= (Real)image_landuse[i].trop_oilcrops_ir;
-      grid[i].ml.irrig_system->crop[OIL_CROPS_RAPESEED - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.irrig_system->crop[OIL_CROPS_RAPESEED] = grid[i].ml.manage.par->default_irrig_system;
       /* 27 rapeseed irrigated  */
       grid[i].ml.landfrac[1].crop[OIL_CROPS_SOYBEAN] = (Real)image_landuse[i].temp_oilcrops_ir * 0.5;
-      grid[i].ml.irrig_system->crop[OIL_CROPS_SOYBEAN - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.irrig_system->crop[OIL_CROPS_SOYBEAN] = grid[i].ml.manage.par->default_irrig_system;
       /* 28 suger cane irrigation */
       grid[i].ml.landfrac[1].crop[SUGARCANE]= (Real)image_landuse[i].suger_cain_ir;
-      grid[i].ml.irrig_system->crop[SUGARCANE - npft] = grid[i].ml.manage.par->default_irrig_system;
+      grid[i].ml.irrig_system->crop[SUGARCANE] = grid[i].ml.manage.par->default_irrig_system;
       /* 29 grass(0) = ir others irrigated  */
       grid[i].ml.landfrac[1].grass[0]= (Real)image_landuse[i].oil_palmfruit_ir + (Real)image_landuse[i].veg_fruits_ir + (Real)image_landuse[i].oth_non_ir + (Real)image_landuse[i].plant_fibres_ir;
       grid[i].ml.irrig_system->grass[0] = grid[i].ml.manage.par->default_irrig_system;
