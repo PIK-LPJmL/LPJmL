@@ -76,6 +76,12 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   fprintfilename(file,&config->slope_max_filename,FALSE);
   fprintfilename(file,&config->temp_filename,TRUE);
   fprintfilename(file,&config->prec_filename,TRUE);
+  if(config->isanomaly)
+  {
+    fprintfilename(file,&config->icefrac_filename,TRUE);
+    fprintfilename(file,&config->delta_temp_filename,TRUE);
+    fprintfilename(file,&config->delta_prec_filename,TRUE);
+  }
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
@@ -88,6 +94,11 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   {
     fprintfilename(file,&config->lwnet_filename,TRUE);
     fprintfilename(file,&config->swdown_filename,TRUE);
+    if(config->isanomaly)
+    {
+      fprintfilename(file,&config->delta_lwnet_filename,TRUE);
+      fprintfilename(file,&config->delta_swdown_filename,TRUE);
+    }
   }
   else
     fprintfilename(file,&config->cloud_filename,TRUE);
