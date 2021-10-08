@@ -33,6 +33,8 @@ static void fprintfilename(FILE *file,Filename filename)
       }
       free(s);
     }
+    else
+      fprintf(file,"%s\n",filename.name);
   }
   else
     fprintf(file,"%s\n",filename.name);
