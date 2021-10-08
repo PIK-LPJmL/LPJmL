@@ -21,6 +21,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
                   const Config *config /**< LPJmL configuration */
                  )                     /** \return TRUE on error */
 {
+  char *name;
   int year,s,l,day,dayofmonth;
   int month;
   int cell;
@@ -34,15 +35,23 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
     if(readclimate(&climate->file_temp,climate->data.temp,0,climate->file_temp.scalar,grid,year,config))
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR131: Cannot read temperature of year %d in initsoiltemp().\n",
-                year);
+      {
+        name=getrealfilename(&config->temp_filename);
+        fprintf(stderr,"ERROR131: Cannot read temperature of year %d from '%s'.\n",
+                year,name);
+        free(name);
+      }
       return TRUE;
     }
     if(readclimate(&climate->file_prec,climate->data.prec,0,climate->file_prec.scalar,grid,year,config))
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR131: Cannot read precipitation of year %d in initsoiltemp().\n",
-                year);
+      {
+        name=getrealfilename(&config->prec_filename);
+        fprintf(stderr,"ERROR131: Cannot read precipitation of year %d from '%s'.\n",
+                year,name);
+        free(name);
+      }
       return TRUE;
     }
     day=0;

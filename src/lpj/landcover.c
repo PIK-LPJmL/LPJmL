@@ -117,6 +117,7 @@ Bool readlandcover(Landcover landcover, /**< landcover data */
                    const Config *config /**< LPJmL configuration */
                   )                     /** \return TRUE on error */
 {
+  char *name;
   int index;
   index = year - landcover->file.firstyear;
   if(index >= landcover->file.nyear)
@@ -144,13 +145,19 @@ Bool readlandcover(Landcover landcover, /**< landcover data */
     /* read last year of file if iteration year is later */
   
     if(fseek(landcover->file.file, landcover->file.size * index + landcover->file.offset,SEEK_SET))
-    {  
-      fprintf(stderr,"ERROR184: Cannot seek to landcover fractions of year %d in readlandcover().\n", index+landcover->file.firstyear);
+    {
+      name=getrealfilename(&config->landcover_filename);
+      fprintf(stderr,"ERROR184: Cannot seek to landcover fractions of year %d in '%s'.\n",
+              index+landcover->file.firstyear,name);
+      free(name);
       return TRUE;
     }
     if(readrealvec(landcover->file.file,landcover->frac,0,landcover->file.scalar,landcover->file.n,landcover->file.swap,landcover->file.datatype))
     {
-      fprintf(stderr,"ERROR184: Cannot read landcover fractions of year %d in readlandcover().\n",index+landcover->file.firstyear);
+      name=getrealfilename(&config->landcover_filename);
+      fprintf(stderr,"ERROR184: Cannot read landcover fractions of year %d from '%s'.\n",
+              index+landcover->file.firstyear,name);
+      free(name);
       return TRUE;
     }
   }

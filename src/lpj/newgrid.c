@@ -211,7 +211,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         if(config->grassharvest_filename.fmt==RAW)
           header.nyear=1;
         grassharvest_file.bin.type=(version<3) ? LPJ_BYTE : header.datatype;
-         if(header.nbands!=1)
+        if(header.nbands!=1)
         {
           if(isroot(*config))
             fprintf(stderr,"ERROR218: Invalid number of bands %d in '%s', must be 1.\n",
@@ -510,8 +510,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         if(readcountrycode(countrycode.bin.file,&code,countrycode.bin.type,countrycode.bin.swap))
         {
+          name=getrealfilename(&config->countrycode_filename);
           fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                  config->countrycode_filename.name,i+config->startgrid);
+                  name,i+config->startgrid);
+          free(name);
           return NULL;
         }
       }
@@ -519,7 +521,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         if(code.country<0 || code.country>=config->ncountries ||
            code.region<0 || code.region>=config->nregions)
-          fprintf(stderr,"WARNING009: Invalid countrycode=%d or regioncode=%d with valid soilcode in cell (not skipped)\n",code.country,code.region);
+          fprintf(stderr,"WARNING009: Invalid countrycode=%d or regioncode=%d with valid soilcode in cell %d (not skipped)\n",code.country,code.region,i+config->startgrid);
         else
         {
           if(initmanage(&grid[i].ml.manage,config->countrypar+code.country,
@@ -544,8 +546,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         {
           if(readintvec(grassfix_file.bin.file,&grid[i].ml.fixed_grass_pft,1,grassfix_file.bin.swap,grassfix_file.bin.type))
           {
+            name=getrealfilename(&config->grassfix_filename);
             fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                    config->grassharvest_filename.name,i+config->startgrid);
+                    name,i+config->startgrid);
+            free(name);
             return NULL;
           }
         }
@@ -568,8 +572,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         {
           if(readintvec(grassharvest_file.bin.file,(int *)(&grid[i].ml.grass_scenario),1,grassharvest_file.bin.swap,grassharvest_file.bin.type))
           {
+            name=getrealfilename(&config->grassharvest_filename);
             fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                    config->grassharvest_filename.name,i+config->startgrid);
+                    name,i+config->startgrid);
+            free(name);
             return NULL;
           }
           //grid[i].ml.grass_scenario=GS_NONE;
@@ -624,8 +630,10 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         if(readintvec(aquifers.bin.file,&grid[i].discharge.aquifer,1,aquifers.bin.swap,aquifers.bin.type))
         {
+          name=getrealfilename(&config->aquifer_filename);
           fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                  config->aquifer_filename.name,i+config->startgrid);
+                  name,i+config->startgrid);
+          free(name);
           return NULL;
         }
       }

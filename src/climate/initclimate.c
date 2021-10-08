@@ -22,6 +22,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
                      const Config *config /**< pointer to LPJ configuration */
                     )                     /** \return allocated climate data struct or NULL on error */
 {
+  char *name;
   Climate *climate;
   climate=new(Climate);
   if(climate==NULL)
@@ -612,13 +613,17 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     {
       if(fseek(climate->file_lightning.file,climate->file_lightning.offset,SEEK_SET))
       {
-        fputs("ERROR191: Cannot seek lightning in initclimate().\n",stderr);
+        name=getrealfilename(&config->lightning_filename);
+        fprintf(stderr,"ERROR191: Cannot seek lightning in '%s'.\n",name);
+        free(name);
         closeclimatefile(&climate->file_lightning,isroot(*config));
         return NULL;
       }
       if(readrealvec(climate->file_lightning.file,climate->data.lightning,0,climate->file_lightning.scalar,climate->file_lightning.n,climate->file_lightning.swap,climate->file_lightning.datatype))
       {
-        fputs("ERROR192: Cannot read lightning in initclimate().\n",stderr);
+        name=getrealfilename(&config->lightning_filename);
+        fprintf(stderr,"ERROR192: Cannot read lightning from '%s'.\n",name);
+        free(name);
         closeclimatefile(&climate->file_lightning,isroot(*config));
         return NULL;
       }
