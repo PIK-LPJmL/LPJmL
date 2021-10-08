@@ -82,7 +82,8 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
 #endif
   if(config->with_radiation)
   {
-    fprintfilename(file,&config->lwnet_filename,TRUE);
+    if(config->with_radiation!=RADIATION_SWONLY)
+      fprintfilename(file,&config->lwnet_filename,TRUE);
     fprintfilename(file,&config->swdown_filename,TRUE);
   }
   else
