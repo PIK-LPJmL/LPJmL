@@ -243,7 +243,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
         {
           name=getrealfilename(&config->no3deposition_filename);
           fprintf(stderr,"ERROR131: Cannot read no3deposition of year %d from '%s'.\n",
-                  year,name);
+                  year_depos,name);
           free(name);
         }
         return TRUE;
@@ -257,7 +257,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
         {
           name=getrealfilename(&config->nh4deposition_filename);
           fprintf(stderr,"ERROR131: Cannot read nh4deposition of year %d from '%s'\n",
-                  year,name);
+                  year_depos,name);
           free(name);
         }
         return TRUE;

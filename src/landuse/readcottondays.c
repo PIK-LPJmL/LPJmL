@@ -21,6 +21,8 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
                    )                     /** \return TRUE on error */
 {
   int *vec;
+  char *name;
+  size_t filesize;
   int cell,version;
   size_t offset;
   String headername;
@@ -41,11 +43,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     file.cdf=openinput_netcdf(&config->sowing_cotton_rf_filename,
                               NULL,0,config);
     if(file.cdf==NULL)
-    {
-      if(isroot(*config))
-        printfopenerr(config->sowing_cotton_rf_filename.name);
       return TRUE;
-    }
     for(cell=0;cell<config->ngridcell;cell++)
     {
       if(readintinput_netcdf(file.cdf,grid[cell].ml.sowing_day_cotton,&grid[cell].coord,&missing))
@@ -64,11 +62,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
   {
     file.bin.file=openinputfile(&header,&file.bin.swap,&config->sowing_cotton_rf_filename,headername,&version,&offset,FALSE,config);
     if(file.bin.file==NULL)
-    {
-      if(isroot(*config))
-        printfopenerr(config->sowing_cotton_rf_filename.name);
       return TRUE;
-    }
     if(header.nbands!=1)
     {
       if(isroot(*config))
@@ -77,10 +71,19 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
       fclose(file.bin.file);
       return TRUE;
     }
+    if(isroot(*config) && config->sowing_cotton_rf_filename.fmt!=META)
+    {
+      filesize=getfilesizep(file.bin.file)-headersize(headername,version)-offset;
+      if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+        fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",
+                config->sowing_cotton_rf_filename.name);
+    }
     if(fseek(file.bin.file,typesizes[header.datatype]*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
     {
+      name=getrealfilename(&config->sowing_cotton_rf_filename);
       fprintf(stderr,"ERROR150: Cannot seek rf sowing cotton data file '%s' to position %d.\n",
-              config->sowing_cotton_rf_filename.name,config->startgrid);
+              name,config->startgrid);
+      free(name);
       fclose(file.bin.file);
       return TRUE;
     }
@@ -92,8 +95,9 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     }
     if(readintvec(file.bin.file,vec,config->ngridcell,file.bin.swap,header.datatype))
     {
-      fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",
-              config->sowing_cotton_rf_filename.name);
+      name=getrealfilename(&config->sowing_cotton_rf_filename);
+      fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",name);
+      free(name);
       free(vec);
       fclose(file.bin.file);
       return TRUE;
@@ -108,11 +112,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     file.cdf=openinput_netcdf(&config->harvest_cotton_rf_filename,
                               NULL,0,config);
     if(file.cdf==NULL)
-    {
-      if(isroot(*config))
-        printfopenerr(config->harvest_cotton_rf_filename.name);
       return TRUE;
-    }
     for(cell=0;cell<config->ngridcell;cell++)
     {
       if(readintinput_netcdf(file.cdf,grid[cell].ml.growing_season_cotton,&grid[cell].coord,&missing))
@@ -131,11 +131,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
   {
     file.bin.file=openinputfile(&header,&file.bin.swap,&config->harvest_cotton_rf_filename,headername,&version,&offset,FALSE,config);
     if(file.bin.file==NULL)
-    {
-      if(isroot(*config))
-        printfopenerr(config->harvest_cotton_rf_filename.name);
       return TRUE;
-    }
     if(header.nbands!=1)
     {
       if(isroot(*config))
@@ -144,10 +140,19 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
       fclose(file.bin.file);
       return TRUE;
     }
+    if(isroot(*config) && config->harvest_cotton_rf_filename.fmt!=META)
+    {
+      filesize=getfilesizep(file.bin.file)-headersize(headername,version)-offset;
+      if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+        fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",
+                config->harvest_cotton_rf_filename.name);
+    }
     if(fseek(file.bin.file,typesizes[header.datatype]*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
     {
+      name=getrealfilename(&config->harvest_cotton_rf_filename);
       fprintf(stderr,"ERROR150: Cannot seek rf harvest cotton data file '%s' to position %d.\n",
-              config->harvest_cotton_rf_filename.name,config->startgrid);
+              name,config->startgrid);
+      free(name);
       fclose(file.bin.file);
       return TRUE;
     }
@@ -159,8 +164,9 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     }
     if(readintvec(file.bin.file,vec,config->ngridcell,file.bin.swap,header.datatype))
     {
-      fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",
-              config->harvest_cotton_rf_filename.name);
+      name=getrealfilename(&config->harvest_cotton_rf_filename);
+      fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",name);
+      free(name);
       free(vec);
       fclose(file.bin.file);
       return TRUE;
@@ -175,11 +181,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     file.cdf=openinput_netcdf(&config->sowing_cotton_ir_filename,
                               NULL,0,config);
     if(file.cdf==NULL)
-    {
-      if(isroot(*config))
-        printfopenerr(config->sowing_cotton_ir_filename.name);
       return TRUE;
-    }
     for(cell=0;cell<config->ngridcell;cell++)
     {
       //if(readintinput_netcdf(file.cdf,grid[cell].ml.sowing_day_cotton+1,&grid[cell].coord,&missing))
@@ -201,11 +203,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
   {
     file.bin.file=openinputfile(&header,&file.bin.swap,&config->sowing_cotton_ir_filename,headername,&version,&offset,FALSE,config);
     if(file.bin.file==NULL)
-    {
-      if(isroot(*config))
-        printfopenerr(config->sowing_cotton_ir_filename.name);
       return TRUE;
-    }
     if(header.nbands!=1)
     {
       if(isroot(*config))
@@ -214,10 +212,19 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
       fclose(file.bin.file);
       return TRUE;
     }
+    if(isroot(*config) && config->sowing_cotton_ir_filename.fmt!=META)
+    {
+      filesize=getfilesizep(file.bin.file)-headersize(headername,version)-offset;
+      if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+        fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",
+                config->sowing_cotton_ir_filename.name);
+    }
     if(fseek(file.bin.file,typesizes[header.datatype]*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
     {
+      name=getrealfilename(&config->sowing_cotton_ir_filename);
       fprintf(stderr,"ERROR150: Cannot seek ir sowing cotton data file '%s' to position %d.\n",
-              config->sowing_cotton_ir_filename.name,config->startgrid);
+              name,config->startgrid);
+      free(name);
       fclose(file.bin.file);
       return TRUE;
     }
@@ -229,8 +236,9 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     }
     if(readintvec(file.bin.file,vec,config->ngridcell,file.bin.swap,header.datatype))
     {
-      fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",
-              config->sowing_cotton_ir_filename.name);
+      name=getrealfilename(&config->sowing_cotton_ir_filename);
+      fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",name);
+      free(name);
       free(vec);
       fclose(file.bin.file);
       return TRUE;
@@ -245,11 +253,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     file.cdf=openinput_netcdf(&config->harvest_cotton_ir_filename,
                               NULL,0,config);
     if(file.cdf==NULL)
-    {
-      if(isroot(*config))
-        printfopenerr(config->harvest_cotton_ir_filename.name);
       return TRUE;
-    }
     for(cell=0;cell<config->ngridcell;cell++)
     {
       if(readintinput_netcdf(file.cdf,&data,&grid[cell].coord,&missing))
@@ -270,11 +274,7 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
   {
     file.bin.file=openinputfile(&header,&file.bin.swap,&config->harvest_cotton_ir_filename,headername,&version,&offset,FALSE,config);
     if(file.bin.file==NULL)
-    {
-      if(isroot(*config))
-        printfopenerr(config->harvest_cotton_ir_filename.name);
       return TRUE;
-    }
     if(header.nbands!=1)
     {
       if(isroot(*config))
@@ -283,10 +283,19 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
       fclose(file.bin.file);
       return TRUE;
     }
+    if(isroot(*config) && config->harvest_cotton_ir_filename.fmt!=META)
+    {
+      filesize=getfilesizep(file.bin.file)-headersize(headername,version)-offset;
+      if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+        fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",
+                config->harvest_cotton_ir_filename.name);
+    }
     if(fseek(file.bin.file,typesizes[header.datatype]*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
     {
+      name=getrealfilename(&config->harvest_cotton_ir_filename);
       fprintf(stderr,"ERROR150: Cannot seek ir harvest cotton data file '%s' to position %d.\n",
-              config->harvest_cotton_ir_filename.name,config->startgrid);
+              name,config->startgrid);
+      free(name);
       fclose(file.bin.file);
       return TRUE;
     }
@@ -298,8 +307,9 @@ Bool readcottondays(Cell grid[],         /**< LPJ grid */
     }
     if(readintvec(file.bin.file,vec,config->ngridcell,file.bin.swap,header.datatype))
     {
-      fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",
-              config->harvest_cotton_ir_filename.name);
+      name=getrealfilename(&config->harvest_cotton_ir_filename);
+      fprintf(stderr,"ERROR190: Unexpected end of file in '%s'.\n",name);
+      free(name);
       free(vec);
       fclose(file.bin.file);
       return TRUE;

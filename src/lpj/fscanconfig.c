@@ -28,7 +28,7 @@
 
 #define scanfilename(file,var,path,what) {                              \
     if(readfilename2(file,var,what,path,verbose)) {                  \
-      if(verbose) fprintf(stderr,"ERROR209: Cannot read input filename for '%s'.\n",what); \
+      if(verbose) fprintf(stderr,"ERROR209: Cannot read filename for '%s' input.\n",what); \
       return TRUE;                                                      \
     }                                                                   \
     if(verbose>=VERB)                      \
@@ -37,7 +37,7 @@
 
 #define scanclimatefilename(file,var,path,isfms,what) {                 \
     if(readclimatefilename(file,var,what,path,isfms,verbose)) {      \
-      if(verbose) fprintf(stderr,"ERROR209: Cannot read input filename for '%s'.\n",what); \
+      if(verbose) fprintf(stderr,"ERROR209: Cannot read filename for '%s' input.\n",what); \
       return TRUE;                                                      \
     }                                                                   \
     if(verbose>=VERB)                      \
@@ -672,7 +672,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->extflow_filename.fmt!=META && config->extflow_filename.fmt!=CLM && config->extflow_filename.fmt!=CLM2)
       {
         if(isroot(*config))
-          fprintf(stderr,"ERROR197: clm file is only supported for input '%s' in this version of LPJmL.\n",config->extflow_filename.name);
+          fprintf(stderr,"ERROR197: Only clm format is supported for extflow input in this version of LPJmL, %s not allowed.\n",
+                  fmt[config->extflow_filename.fmt]);
         return TRUE;
       }
     }
@@ -784,13 +785,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(readfilename(&input,&config->co2_filename,"co2",config->inputdir,FALSE,verbose))
   {
     if(verbose)
-      fputs("ERROR209: Cannot read input filename for 'co2'.\n",stderr);
+      fputs("ERROR209: Cannot read filename for 'co2' input.\n",stderr);
     return TRUE;
   }
   if(config->co2_filename.fmt!=TXT &&  (config->sim_id!=LPJML_FMS || config->co2_filename.fmt!=FMS))
   {
     if(verbose)
-      fputs("ERROR197: Only text file is supported for CO2 input in this version of LPJmL.\n",stderr);
+      fprintf(stderr,"ERROR197: Only txt format is supported for CO2 input in this version of LPJmL, %s not allowed.\n",
+              fmt[config->co2_filename.fmt]);
     return TRUE;
   }
   if (!config->with_dynamic_ch4)

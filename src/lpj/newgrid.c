@@ -363,8 +363,6 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(aquifers.bin.file==NULL)
       {
         /* opening of aquifer file failed */
-        if(isroot(*config))
-          printfopenerr(config->aquifer_filename.name);
         closecelldata(celldata);
         if(config->river_routing)
           closeinput(lakes,config->lakes_filename.fmt);
