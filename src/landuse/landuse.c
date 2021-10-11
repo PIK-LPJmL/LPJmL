@@ -741,15 +741,15 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         fprintf(stderr,
                 "ERROR148: Cannot seek sowing dates to year %d in getlanduse().\n",
-                year);
+                yearsdate+landuse->sdate.firstyear);
         free(dates);
         return TRUE;
       }
       if(readintvec(landuse->sdate.file,dates,landuse->sdate.n,landuse->sdate.swap,landuse->sdate.datatype))
       {
         fprintf(stderr,
-          "ERROR149: Cannot read sowing dates of year %d in getlanduse().\n",
-          yearsdate);
+                "ERROR149: Cannot read sowing dates of year %d in getlanduse().\n",
+                yearsdate+landuse->sdate.firstyear);
         free(dates);
         return TRUE;
       }
@@ -808,7 +808,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         fprintf(stderr,
                 "ERROR148: Cannot seek crop phus to year %d in getlanduse().\n",
-                yearphu);
+                yearphu+landuse->crop_phu.firstyear);
         free(data);
         return TRUE;
       }
@@ -816,7 +816,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         fprintf(stderr,
                 "ERROR149: Cannot read crop phus of year %d in getlanduse().\n",
-                yearphu);
+                yearphu+landuse->crop_phu.firstyear);
         free(data);
         return TRUE;
       }
@@ -1503,7 +1503,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       if(readdata_netcdf(&landuse->residue_on_field,data,grid,yearr,config))
       {
         fprintf(stderr,
-                "ERROR149: Cannot read residue extract of year %d in getlanduse().\n",
+                "ERROR149: Cannot read residue extraction of year %d in getlanduse().\n",
                 yearr+landuse->residue_on_field.firstyear);
         fflush(stderr);
         free(data);
@@ -1525,7 +1525,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                      landuse->residue_on_field.swap,landuse->residue_on_field.datatype))
       {
         fprintf(stderr,
-                "ERROR149: Cannot read residue extract of year %d in getlanduse().\n",
+                "ERROR149: Cannot read residue extraction of year %d in getlanduse().\n",
                 yearr+landuse->residue_on_field.firstyear);
         fflush(stderr);
         free(data);

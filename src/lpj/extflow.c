@@ -36,6 +36,7 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
   Header header;
   int version,*index,start,i;
   size_t offset;
+  char *name;
   extflow=new(struct extflow);
   if(extflow==NULL)
     return NULL;
@@ -142,8 +143,9 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
     fseek(extflow->file,offset,SEEK_SET);
   if(freadint(index,header.ncell,extflow->swap,extflow->file)!=header.ncell)
   {
-    fprintf(stderr,"ERROR131: Cannot read cell index array from '%s'.\n",
-            config->extflow_filename.name);
+    name=getrealfilename(&config->extflow_filename);
+    fprintf(stderr,"ERROR131: Cannot read cell index array from '%s'.\n",name);
+    free(name);
     free(index);
     fclose(extflow->file);
     free(extflow);
@@ -155,8 +157,12 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
     if(start<header.ncell-1 && index[start]>=index[start+1])
     {
       if(isroot(*config))
+      {
+        name=getrealfilename(&config->extflow_filename);
         fprintf(stderr,"ERROR141: Cell index array in '%s' is not in ascending order at index=%d: %d>%d.\n",
-                config->extflow_filename.name,start,index[start],index[start+1]);
+                name,start,index[start],index[start+1]);
+        free(name);
+      }
       free(index);
       fclose(extflow->file);
       free(extflow);
@@ -165,8 +171,12 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
     else if(index[start]<0 || index[start]>=config->nall)
     {
       if(isroot(*config))
+      {
+        name=getrealfilename(&config->extflow_filename);
         fprintf(stderr,"ERROR141: Cell index array in '%s' is out of bounds at index=%d: %d.\n",
-                config->extflow_filename.name,start,index[start]);
+                name,start,index[start]);
+        free(name);
+      }
       free(index);
       fclose(extflow->file);
       free(extflow);

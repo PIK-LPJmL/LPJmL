@@ -31,6 +31,8 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
   String headername;
   int version;
   FILE *file;
+  char *name;
+  size_t filesize;
   Input_netcdf input;
   Reservoir reservoir;
   size_t offset;
@@ -65,11 +67,19 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
       fclose(file);
       return TRUE;
     }
- 
+    if(isroot(*config) && config->elevation_filename.fmt!=META)
+    {
+      filesize=getfilesizep(file)-headersize(headername,version)-offset;
+      if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+        fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",
+                config->elevation_filename.name);
+    }
     if(fseek(file,typesizes[header.datatype]*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
     {
+      name=getrealfilename(&config->elevation_filename);
       fprintf(stderr,"ERROR150: Cannot seek elevation data file '%s' to position %d.\n",
-              config->elevation_filename.name,config->startgrid);
+              name,config->startgrid);
+      free(name);
       fclose(file);
       return TRUE;
     }
@@ -82,8 +92,9 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
     }
     if(readrealvec(file,vec,0,header.scalar,config->ngridcell,swap,header.datatype))
     {
-      fprintf(stderr,"ERROR151: Cannot read elevation data file '%s'.\n",
-              config->elevation_filename.name);
+      name=getrealfilename(&config->elevation_filename);
+      fprintf(stderr,"ERROR151: Cannot read elevation data file '%s'.\n",name);
+      free(name);
       free(vec);
       fclose(file);
       return TRUE;
@@ -105,10 +116,19 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
     fclose(file);
     return TRUE;
   }
+  if(isroot(*config) && config->reservoir_filename.fmt!=META)
+  {
+    filesize=getfilesizep(file)-headersize(headername,version)-offset;
+    if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+      fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",
+              config->reservoir_filename.name);
+  }
   if(fseek(file,sizeof(Reservoir)*(config->startgrid-header.firstcell)+offset,SEEK_CUR))
   {
-      fprintf(stderr,"ERROR150: Cannot seek reservoir data file '%s' to position %d.\n",
-              config->reservoir_filename.name,config->startgrid);
+    name=getrealfilename(&config->reservoir_filename);
+    fprintf(stderr,"ERROR150: Cannot seek reservoir data file '%s' to position %d.\n",
+            name,config->startgrid);
+    free(name);
     fclose(file);
     return TRUE;
   }
@@ -116,8 +136,10 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
   {
     if(readreservoir(&reservoir,swap,file))
     {
+      name=getrealfilename(&config->reservoir_filename);
       fprintf(stderr,"ERROR151: Cannot read reservoir data file '%s'.\n",
-              config->reservoir_filename.name);
+              name);
+      free(name);
       fclose(file);
       return TRUE;
     }

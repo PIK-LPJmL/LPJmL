@@ -158,9 +158,9 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
                  typesizes[file->datatype]+headersize(headername,version)+offset;
     if(isroot(*config) && filename->fmt!=META)
     {
-       filesize=getfilesizep(file->file)-headersize(headername,version)-offset;
-       if(filesize!=typesizes[file->datatype]*header.nyear*header.nbands*header.ncell)
-         fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
+      filesize=getfilesizep(file->file)-headersize(headername,version)-offset;
+      if(filesize!=typesizes[file->datatype]*header.nyear*header.nbands*header.ncell)
+        fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
     }
   }
   file->time_step=(header.nbands==NDAYYEAR) ? DAY : MONTH;

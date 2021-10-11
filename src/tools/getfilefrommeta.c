@@ -90,8 +90,12 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
 
 char *getrealfilename(const Filename *filename)
 {
+  char *name;
   if(filename->fmt==META)
-    return getfilefrommeta(filename->name,TRUE);
+  {
+    name=getfilefrommeta(filename->name,TRUE);
+    return (name==NULL) ? strdup(filename->name) : name;
+  }
   else
     return strdup(filename->name);
 } /* of 'getrealfilename' */

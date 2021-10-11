@@ -133,8 +133,8 @@ Bool readlandcover(Landcover landcover, /**< landcover data */
     if(readdata_netcdf(&landcover->file,landcover->frac,grid,year,config))
     {
       fprintf(stderr,
-              "ERROR149: Cannot read landcover of year %d in readlandcover().\n",
-              year+landcover->file.firstyear);
+              "ERROR149: Cannot read landcover of year %d from '%s'.\n",
+              year+landcover->file.firstyear,config->landcover_filename.name);
       fflush(stderr);
       return TRUE;
     }
