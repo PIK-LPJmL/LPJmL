@@ -222,22 +222,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
           }
         }
       }
-      else if(!strcmp((*argv)[i],"-pp"))
-      {
-        if(i==*argc-1)
-        {
-          if(isroot(*config))
-          {
-            fprintf(stderr,"ERROR164: Argument missing for '-pp' option.\n");
-            if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
-          }
-          free(options);
-          return NULL;
-        }
-        filter=(*argv)[++i];
-        iscpp=FALSE;
-      }
       else if(!strcmp((*argv)[i],"-image"))
       {
         if(i==*argc-1)
@@ -287,6 +271,22 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         }
       }
 #endif
+      else if(!strcmp((*argv)[i],"-pp"))
+      {
+        if(i==*argc-1)
+        {
+          if(isroot(*config))
+          {
+            fprintf(stderr,"ERROR164: Argument missing for '-pp' option.\n");
+            if(usage!=NULL)
+              fprintf(stderr,usage,(*argv)[0]);
+          }
+          free(options);
+          return NULL;
+        }
+        filter=(*argv)[++i];
+        iscpp=FALSE;
+      }
       else if(!strcmp((*argv)[i],"-param"))
         config->param_out=TRUE;
       else if(!strcmp((*argv)[i],"-vv"))
