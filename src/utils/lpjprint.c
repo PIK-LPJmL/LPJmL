@@ -200,10 +200,11 @@ int main(int argc,char **argv)
            "-restartpath dir directory appended to restart filename\n"
            "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
            "-Idir            directory to search for include files\n"
-           "filename         configuration filename. Default is 'lpjml.conf'\n"
+           "filename         configuration filename. Default is '%s'\n"
            "-check           check only restart file\n"
            "start            index of first grid cell to print\n"
-           "end              index of last grid cell to print\n");
+           "end              index of last grid cell to print\n",
+           dflt_conf_filename);
     return EXIT_SUCCESS;
   }
   snprintf(line,78-10,
