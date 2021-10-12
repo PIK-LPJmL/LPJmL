@@ -117,9 +117,9 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       landuse->landuse.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version)+offset;
       if(isroot(*config) && config->landuse_filename.fmt!=META)
       {
-         filesize=getfilesizep(landuse->landuse.file)-headersize(headername,version)-offset;
-         if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->landuse_filename.name);
+        filesize=getfilesizep(landuse->landuse.file)-headersize(headername,version)-offset;
+        if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+          fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->landuse_filename.name);
       }
     }
     landuse->landuse.firstyear=header.firstyear;
@@ -178,9 +178,9 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         landuse->sdate.offset=((long long)config->startgrid-(long long)header.firstcell)*header.nbands*typesizes[landuse->sdate.datatype]+headersize(headername,version)+offset;
         if(isroot(*config) && config->sdate_filename.fmt!=META)
         {
-           filesize=getfilesizep(landuse->sdate.file)-headersize(headername,version)-offset;
-           if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->sdate_filename.name);
+          filesize=getfilesizep(landuse->sdate.file)-headersize(headername,version)-offset;
+          if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+            fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->sdate_filename.name);
         }
       }
       landuse->sdate.firstyear=header.firstyear;
@@ -245,9 +245,9 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         landuse->crop_phu.offset=((long long)config->startgrid-(long long)header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version)+offset;
         if(isroot(*config) && config->crop_phu_filename.fmt!=META)
         {
-           filesize=getfilesizep(landuse->crop_phu.file)-headersize(headername,version)-offset;
-           if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->crop_phu_filename.name);
+          filesize=getfilesizep(landuse->crop_phu.file)-headersize(headername,version)-offset;
+          if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+            fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->crop_phu_filename.name);
         }
       }
       landuse->crop_phu.datatype=header.datatype;
@@ -316,9 +316,9 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         landuse->fertilizer_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
         if(isroot(*config) && config->fertilizer_nr_filename.fmt!=META)
         {
-           filesize=getfilesizep(landuse->fertilizer_nr.file)-headersize(headername,version)-offset;
-           if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->fertilizer_nr_filename.name);
+          filesize=getfilesizep(landuse->fertilizer_nr.file)-headersize(headername,version)-offset;
+          if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+            fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->fertilizer_nr_filename.name);
         }
       }
       landuse->fertilizer_nr.datatype=header.datatype;
@@ -393,9 +393,9 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         landuse->manure_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
         if(isroot(*config) && config->manure_nr_filename.fmt!=META)
         {
-           filesize=getfilesizep(landuse->manure_nr.file)-headersize(headername,version)-offset;
-           if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->manure_nr_filename.name);
+          filesize=getfilesizep(landuse->manure_nr.file)-headersize(headername,version)-offset;
+          if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+            fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->manure_nr_filename.name);
         }
       }
       landuse->manure_nr.datatype=header.datatype;
@@ -475,9 +475,9 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         landuse->with_tillage.offset=(config->startgrid-header.firstcell)*header.nbands*sizeof(short)+headersize(headername,version);
         if(isroot(*config) && config->with_tillage_filename.fmt!=META)
         {
-           filesize=getfilesizep(landuse->with_tillage.file)-headersize(headername,version)-offset;
-           if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->with_tillage_filename.name);
+          filesize=getfilesizep(landuse->with_tillage.file)-headersize(headername,version)-offset;
+          if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+            fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->with_tillage_filename.name);
         }
       }
       landuse->with_tillage.datatype=header.datatype;
@@ -501,7 +501,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         closeclimatefile(&landuse->manure_nr,isroot(*config));
       closeclimatefile(&landuse->with_tillage,isroot(*config));
       if(isroot(*config))
-         fprintf(stderr,
+        fprintf(stderr,
                 "ERROR147: Invalid number of bands=%zu in tillage type file, must be 1.\n",
                 landuse->with_tillage.var_len);
       free(landuse);
@@ -564,9 +564,9 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         landuse->residue_on_field.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
         if(isroot(*config) && config->residue_data_filename.fmt!=META)
         {
-           filesize=getfilesizep(landuse->residue_on_field.file)-headersize(headername,version)-offset;
-           if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-             fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->residue_data_filename.name);
+          filesize=getfilesizep(landuse->residue_on_field.file)-headersize(headername,version)-offset;
+          if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+            fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->residue_data_filename.name);
         }
       }
       landuse->residue_on_field.datatype=header.datatype;
@@ -1355,8 +1355,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         if(fseek(landuse->manure_nr.file,(long long)yearm*landuse->manure_nr.size+landuse->manure_nr.offset,SEEK_SET))
         {
           fprintf(stderr,
-            "ERROR148: Cannot seek manure fertilizer to year %d in getlanduse().\n",
-            yearm+landuse->manure_nr.firstyear);
+                  "ERROR148: Cannot seek manure fertilizer to year %d in getlanduse().\n",
+                  yearm+landuse->manure_nr.firstyear);
           fflush(stderr);
           free(data);
           return TRUE;
@@ -1365,8 +1365,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                        landuse->manure_nr.swap,landuse->manure_nr.datatype))
         {
           fprintf(stderr,
-            "ERROR149: Cannot read manure fertilizer of year %d in getlanduse().\n",
-            yearm+landuse->manure_nr.firstyear);
+                  "ERROR149: Cannot read manure fertilizer of year %d in getlanduse().\n",
+                  yearm+landuse->manure_nr.firstyear);
           fflush(stderr);
           free(data);
           return TRUE;
@@ -1445,7 +1445,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         fprintf(stderr,
                 "ERROR149: Cannot read tillage types of year %d in getlanduse().\n",
-                year+landuse->with_tillage.firstyear);
+                yeart+landuse->with_tillage.firstyear);
         free(dates);
         fflush(stderr);
         return TRUE;

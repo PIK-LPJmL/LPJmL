@@ -73,7 +73,7 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
       {
          filesize=getfilesizep(wateruse->file.file)-headersize(headername,version)-offset;
          if(filesize!=typesizes[wateruse->file.datatype]*header.nyear*header.nbands*header.ncell)
-           fprintf(stderr,"WARNING031: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
+           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
       }
     }
     wateruse->file.var_len=header.nbands;
