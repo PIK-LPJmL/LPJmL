@@ -19,11 +19,7 @@
 
 #define LPJFILES_VERSION "1.0.003"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
-#ifdef USE_JSON
-#define dflt_conf_filename "lpjml.js" /* Default LPJ configuration file */
-#else
-#define dflt_conf_filename "lpjml.conf" /* Default LPJ configuration file */
-#endif
+
 #define USAGE "Usage: %s [-h] [-noinput] [-nooutput] [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
 
@@ -67,7 +63,7 @@ int main(int argc,char **argv)
              "-Idir            directory to search for include files\n"
              "filename         configuration filename. Default is '%s'\n\n"
              "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-             dflt_conf_filename);
+             dflt_conf_filename_ml);
       if(file!=stdout)
         pclose(file);
       return EXIT_SUCCESS;
@@ -92,14 +88,14 @@ int main(int argc,char **argv)
   argv+=iarg-1;
   argc_save=argc;
   argv_save=argv;
-  if(readconfig(&config,dflt_conf_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
     fputs("Syntax error found in configuration file.\n",stderr);
     return EXIT_FAILURE;
   }
   else
   {
-    printincludes(dflt_conf_filename,argc_save,argv_save);
+    printincludes(dflt_conf_filename_ml,argc_save,argv_save);
     printfiles(input,output,&config);
   }
   return EXIT_SUCCESS;
