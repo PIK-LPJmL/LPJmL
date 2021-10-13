@@ -280,7 +280,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
           }
           break;
       } /* of switch */
-    } /* of foreachpft() */
+    } /* of istree() */
 
     getoutput(output,NPP,config)+=npp*stand->frac;
     stand->cell->balance.anpp+=npp*stand->frac;
@@ -299,6 +299,14 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
     else
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
+    if(config->withdailyoutput &&
+       pft->par->id==config->crop_index && data->irrigation.irrigation==config->crop_irrigation)
+      {
+        tree=pft->data;
+        getoutput(output,D_NPP,config)+=npp;
+        getoutput(output,D_GPP,config)+=gpp;
+        getoutput(output,D_CSO,config)=tree->fruit.carbon;
+      }
   } /* of foreachpft */
   free(gp_pft);
   /* soil outflow: evap and transpiration */
@@ -318,9 +326,6 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
           output->daily.w1=stand->soil.w[2];
           output->daily.wevap=stand->soil.w[0];*/
         getoutput(output,D_PAR,config)+=par;
-        getoutput(output,D_CSO,config)=tree->fruit.carbon;
-        getoutput(output,D_NPP,config)+=npp;
-        getoutput(output,D_GPP,config)+=gpp;
         getoutput(output,D_PHEN,config)+=pft->phen;
       }
   }
