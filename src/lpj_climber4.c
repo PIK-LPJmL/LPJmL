@@ -46,6 +46,8 @@
 #include "biomass_tree.h"
 #include "biomass_grass.h"
 #include "agriculture.h"
+#include "agriculture_tree.h"
+#include "agriculture_grass.h"
 
 #include "cpl.h"
 
@@ -54,12 +56,7 @@
 #endif
 
 #define NTYPES 3 /*< number of plant functional types: grass, tree, crop, bioenergy */
-#define NSTANDTYPES 9 /*< number of stand types / land use types as defined in landuse.h */
-
-#define dflt_conf_filename_ml "lpjml_fms.conf" /*< Default LPJ configuration file
-                                              if called by lpjml */
-#define dflt_conf_filename "lpj.conf" /*< Default LPJ configuration file
-                                         if called by lpj */
+#define NSTANDTYPES 12 /*< number of stand types / land use types as defined in landuse.h */
 
 static const char *progname;
 
@@ -377,9 +374,12 @@ void lpj_init_
   standtype[SETASIDE_IR]=setaside_ir_stand;
   standtype[AGRICULTURE]=agriculture_stand;
   standtype[MANAGEDFOREST]=managedforest_stand;
-  standtype[GRASSLAND]=grassland_stand,
-  standtype[BIOMASS_TREE]=biomass_tree_stand,
-  standtype[BIOMASS_GRASS]=biomass_grass_stand,
+  standtype[GRASSLAND]=grassland_stand;
+  standtype[BIOMASS_TREE]=biomass_tree_stand;
+  standtype[BIOMASS_GRASS]=biomass_grass_stand;
+  standtype[AGRICULTURE_TREE]=agriculture_tree_stand;
+  standtype[AGRICULTURE_GRASS]=agriculture_grass_stand;
+  standtype[WOODPLANTATION]=woodplantation_stand;
   standtype[KILL]=kill_stand;
 
   /*
@@ -479,7 +479,7 @@ void lpj_init_
 
   rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
-  rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
+  rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");
 
@@ -1416,9 +1416,9 @@ void lpj_update_
           intercrop=getintercrop(input.landuse);
           for(cell=0;cell<config.ngridcell;cell++)
           {
-            grid[cell].output.adischarge=0;
-            initoutputdata(&grid[cell].output,ANNUAL,npft,ncft,year,&config);
+            initoutputdata(&grid[cell].output,ANNUAL,year,&config);
             grid[cell].balance.surface_storage=0;
+            grid[cell].discharge.afin_ext=0;
             if(!grid[cell].skip)
             {
               init_annual(grid+cell,npft,&config);
@@ -1450,11 +1450,14 @@ void lpj_update_
         if (newmoon) {
           for(cell=0;cell<config.ngridcell;cell++)
           {
-            grid[cell].discharge.mfin=grid[cell].discharge.mfout=grid[cell].output.mdischarge=
+            grid[cell].discharge.mfin=grid[cell].discharge.mfout=
               grid[cell].ml.mdemand=0.0;
+            grid[cell].output.mpet=0;
+            if(grid[cell].ml.dam)
+              grid[cell].ml.resdata->mprec_res=0;
+            initoutputdata(&((grid+cell)->output),MONTHLY,year,&config);
             if(!grid[cell].skip)
             {
-              initoutputdata(&((grid+cell)->output),MONTHLY,npft,ncft,year,&config);
               // reset yesterday's saved values
               mevap_yesterday[cell] = mtransp_yesterday[cell] = 0.0;
               mevap_lake_yesterday[cell] = mevap_res_yesterday[cell] = 0.0;
@@ -1522,7 +1525,7 @@ void lpj_update_
               if(config.ispopulation)
                 popdens=getpopdens(input.popdens,cell);
               grid[cell].output.dcflux=0;
-              initoutputdata(&(grid[cell].output),DAILY,npft,ncft,year,&config);
+              initoutputdata(&(grid[cell].output),DAILY,year,&config);
               /* get daily values for temperature, precipitation and sunshine */
 
               /******* get INPUT from land_lad ****************************************         \n**/
@@ -1547,8 +1550,8 @@ void lpj_update_
                 // co2 = 300; // for testing, set CO2 concentration to arbitrary constant
               }
               /* get daily values for temperature, precipitation and sunshine */
-              grid[cell].output.temp+=daily.temp;
-              grid[cell].output.prec+=daily.prec;
+              getoutput(&grid[cell].output,TEMP,&config)+=daily.temp;
+              getoutput(&grid[cell].output,PREC,&config)+=daily.prec;
               //grid[cell].output.daily.sun=daily.sun; not used for FMS coupling
 
               /******* now do the MAIN work ****************************************         \n**/
@@ -1639,16 +1642,16 @@ void lpj_update_
               // Here we remember yesterdays's monthly accumulated transpiration and evaporation,
               // and subtract it from today's monthly sum.
               //assert(lpj_to_fms_indices[cell] >= 0 && lpj_to_fms_indices[cell] < nlons*nlats);
-              tmp_evap_out[cell] = 
-                grid[cell].output.transp - mtransp_yesterday[cell]
-                + grid[cell].output.evap - mevap_yesterday[cell]
-                + grid[cell].output.mevap_lake - mevap_lake_yesterday[cell]
-                + grid[cell].output.mevap_res - mevap_res_yesterday[cell];
+              //tmp_evap_out[cell] = 
+              //  grid[cell].output.transp - mtransp_yesterday[cell]
+              //  + grid[cell].output.evap - mevap_yesterday[cell]
+              //  + grid[cell].output.mevap_lake - mevap_lake_yesterday[cell]
+              //  + grid[cell].output.mevap_res - mevap_res_yesterday[cell];
 
-              mtransp_yesterday[cell] = grid[cell].output.transp;
-              mevap_yesterday[cell] = grid[cell].output.evap;
-              mevap_lake_yesterday[cell] = grid[cell].output.mevap_lake;
-              mevap_res_yesterday[cell] = grid[cell].output.mevap_res;
+              //mtransp_yesterday[cell] = grid[cell].output.transp;
+              //mevap_yesterday[cell] = grid[cell].output.evap;
+              //mevap_lake_yesterday[cell] = grid[cell].output.mevap_lake;
+              //mevap_res_yesterday[cell] = grid[cell].output.mevap_res;
 
 #if 0
               // Runoff: grid[cell].discharge.dfout contains the daily runoff [m3/s]
@@ -1724,16 +1727,10 @@ void lpj_update_
         if (monthend) {
           for(cell=0;cell<config.ngridcell;cell++)
           {
-            if(grid[cell].output.mdischarge<0)
-              grid[cell].output.mdischarge=0;
-            if(grid[cell].discharge.next<0)
-              grid[cell].output.adischarge+=grid[cell].output.mdischarge;
-            grid[cell].output.mdischarge*=1e-9/ndaymonth[month]; /* daily mean discharge per month in 1.000.000 m3 per cell */
-            grid[cell].output.mres_storage*=1e-9/ndaymonth[month]; /* hb 5-11-09 mean monthly reservoir storage in 1.000.000 m3 per cell */
             if(!grid[cell].skip)
               update_monthly(grid+cell,getmtemp(input.climate,&grid[cell].climbuf,
                                                 cell,month),getmprec(input.climate,&grid[cell].climbuf,
-                                                                     cell,month),month);
+                                                                     cell,month),month,&config);
 #ifdef DEBUG
             printcell(grid+cell,1,ncft,input.landuse!=NULL,TRUE);
 #endif
@@ -1838,7 +1835,7 @@ void lpj_update_
       }
 #endif
       if(iswriterestart(&config) && year==config.restartyear)
-        fwriterestart(grid,npft,ncft,year,config.write_restart_filename,&config); /* write restart file */
+        fwriterestart(grid,npft,ncft,year,config.write_restart_filename,FALSE,&config); /* write restart file */
     } /* if (silvester) */
 
     yesterday = dayofmonth;

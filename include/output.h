@@ -23,11 +23,11 @@
 #define issoil(index) (index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC || \
                        index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV || index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV || index == SOILC_AGR_LAYER || index==PERC)
 
-#define getoutput(output,index,config) (output)->data[config->outputmap[index]]
+#define getoutput(output,index,config) (output)->data[(config)->outputmap[index]]
 #ifdef CHECK_BOUNDARY
 #define getoutputindex(output,index,i,config) (output)->data[outputindex(index,i,config)]
 #else
-#define getoutputindex(output,index,i,config) (output)->data[config->outputmap[index]+i]
+#define getoutputindex(output,index,i,config) (output)->data[(config)->outputmap[index]+i]
 #endif
 
 typedef struct
