@@ -351,7 +351,7 @@
   { "id" : CH4_SINK, "name" :  "ch4_sink" , "timestep" : "monthly" , "var" : "CH4_sink"  , "descr" : " CH4 soil sink" , "unit" : "gCH4/m2/month"  , "scale" : 1.0, "offset" : 0.0},
   { "id" : PCO2, "name" :  "pco2" , "timestep" : "annual" , "var" : "Pco2" , "descr" :  "atmospheric CO2 content" , "unit" : "ppm"  , "scale" : 1.0, "offset" : 0.0},
   { "id" : PCH4, "name" :  "pch4" , "timestep" : "annual" , "var" : "Pch4"  , "descr" : "atmospheric CH4 content", "unit" :  "ppm" , "scale" :  1.0, "offset" : 0.0},
-  { "id" : MT_WATER, "name" :  "MT_water" , "timestep" : "monthly" , "var" : "AMT_water" , "descr" :  "water produced during Methanogenesis" , "unit" : "mm/yr" , "scale" :  1.0, "offset" : 0.0},
+  { "id" : MT_WATER, "name" :  "mt_water" , "timestep" : "monthly" , "var" : "AMT_water" , "descr" :  "water produced during Methanogenesis" , "unit" : "mm/yr" , "scale" :  1.0, "offset" : 0.0},
   { "id" : MEANSOILO2, "name" :  "meansoilo2" , "timestep" : "monthly" , "var" : "mean_SoilO2"  , "descr" : "mean soil oxygen concentration of soil column" , "unit" :  "g/m2"  , "scale" : 1.0, "offset" : 0.0},
   { "id" : MEANSOILCH4, "name" :  "meansoilch4" , "timestep" : "monthly" , "var" : "mean_Soilch4"  , "descr" : "mean soil methane concentration of soil column" , "unit" :  "g/m2"  , "scale" : 1.0, "offset" : 0.0},
   { "id" : CH4_EBULLITION, "name" :  "ch4_ebullition" , "timestep" : "monthly" , "var" :   "CH4_ebull"  , "descr" : "mean monthly ebullition", "unit" :  "gCH4/m2/month"  , "scale" : 1.0, "offset" : 0.0},
