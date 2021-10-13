@@ -30,11 +30,6 @@
 #define NTYPES 3
 #define NSTANDTYPES 14 /* number of stand types */
 
-#ifdef USE_JSON
-#define dflt_conf_filename "lpjml.js"
-#else
-#define dflt_conf_filename "lpjml.conf"
-#endif
 #define USAGE "Usage: %s [-h] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename [-check] [start [end]]]\n"
 
@@ -198,18 +193,25 @@ int main(int argc,char **argv)
   progname=strippath(argv[0]);
   if(argc>1 && !strcmp(argv[1],"-h"))
   {
-    printf("%s Version %s (" __DATE__ ") - print contents of restart files for LPJmL\n",progname,PRINTLPJ_VERSION);
+    fputs("     ",stdout);
+    rc=printf("%s Version " PRINTLPJ_VERSION " (" __DATE__ ") Help",
+              progname);
+    fputs("\n     ",stdout);
+    repeatch('=',rc);
+    fputs("\n\nPrint content of restart files for LPJmL " LPJ_VERSION "\n\n",stdout);
     printf(USAGE,progname);
-    printf("Arguments:\n"
+    printf("\nArguments:\n"
            "-h               print this help text\n"
            "-inpath dir      directory appended to input filenames\n"
            "-restartpath dir directory appended to restart filename\n"
            "-Dmacro[=value]  define macro for preprocessor of configuration file\n"
            "-Idir            directory to search for include files\n"
-           "filename         configuration filename. Default is 'lpjml.conf'\n"
+           "filename         configuration filename. Default is '%s'\n"
            "-check           check only restart file\n"
            "start            index of first grid cell to print\n"
-           "end              index of last grid cell to print\n");
+           "end              index of last grid cell to print\n\n"
+           "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
+           dflt_conf_filename_ml);
     return EXIT_SUCCESS;
   }
   snprintf(line,78-10,
@@ -220,7 +222,7 @@ int main(int argc,char **argv)
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
   initconfig(&config);
-  if(readconfig(&config,dflt_conf_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
     fail(READ_CONFIG_ERR,FALSE,"Error opening config");
   printf("Simulation: %s\n",config.sim_name);
   config.ischeckpoint=ischeckpointrestart(&config) && getfilesize(config.checkpoint_restart_filename)!=-1;

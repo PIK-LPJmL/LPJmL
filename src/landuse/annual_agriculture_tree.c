@@ -125,7 +125,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
           //printf("index=%d, yield=%g\n",index,yield);
           if(config->pft_output_scaled)
           {
-#if defined IMAGE && defined COUIPLED
+#if defined IMAGE && defined COUPLED
             stand->cell->pft_harvest[index]+=yield.carbon*stand->frac;
 #endif
             getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon*stand->frac;
@@ -133,7 +133,7 @@ Bool annual_agriculture_tree(Stand *stand,         /**< Pointer to stand */
           }
           else
           {
-#if defined IMAGE && defined COUIPLED
+#if defined IMAGE && defined COUPLED
             stand->cell->pft_harvest[index]+=yield.carbon;
 #endif
             getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon;

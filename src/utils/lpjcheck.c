@@ -20,11 +20,6 @@
 
 #define LPJCHECK_VERSION "1.0.003"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
-#ifdef USE_JSON
-#define dflt_conf_filename "lpjml.js" /* Default LPJ configuration file */
-#else
-#define dflt_conf_filename "lpjml.conf" /* Default LPJ configuration file */
-#endif
 #ifdef USE_MPI
 #define USAGE "Usage: %s [-h] [-q] [-param] [-vv]\n"\
               "       [-output {mpi2|gather|socket=hostname[:port]}]\n"\
@@ -92,7 +87,7 @@ int main(int argc,char **argv)
              "-Idir            directory to search for include files\n"
              "filename         configuration filename. Default is '%s'\n\n"
              "(C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file\n",
-             dflt_conf_filename);
+             dflt_conf_filename_ml);
       if(file!=stdout)
         pclose(file);
       return EXIT_SUCCESS;
@@ -109,7 +104,7 @@ int main(int argc,char **argv)
     banner(title,4,78);
   }
 
-  if(readconfig(&config,dflt_conf_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
+  if(readconfig(&config,dflt_conf_filename_ml,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
   {
     fputs("ERROR001: Cannot process configuration file.\n",stderr);
     rc=EXIT_FAILURE;

@@ -99,6 +99,18 @@ typedef struct config Config; /* forward declaration of stand */
 
 /* Definition of constants */
 
+#ifdef USE_JSON
+#define dflt_conf_filename_ml "lpjml.js"   /* Default LPJ configuration file
+                                              if called by lpjml */
+#define dflt_conf_filename "lpj.js"        /* Default LPJ configuration file
+                                              if called by lpj */
+#else
+#define dflt_conf_filename_ml "lpjml.conf" /* Default LPJ configuration file
+                                              if called by lpjml */
+#define dflt_conf_filename "lpj.conf"      /* Default LPJ configuration file
+                                              if called by lpj */
+#endif
+
 /* Environment variables */
 
 #define LPJROOT "LPJROOT"            /* LPJ root directory */

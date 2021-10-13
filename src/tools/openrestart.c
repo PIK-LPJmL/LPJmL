@@ -151,7 +151,7 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
   if(config->firstgrid<header.firstcell)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR155: First grid cell %d not in %s file '%s', starts at %d.\n",
+      fprintf(stderr,"ERROR155: First grid cell %d not in %s file '%s', starts at cell %d.\n",
               config->startgrid,type,filename,header.firstcell);
     fclose(file);
     return NULL;
@@ -159,7 +159,7 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
   if(config->firstgrid>header.firstcell+header.ncell-1)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR155: First grid cell %d not in %s file '%s', starts at %d.\n",
+      fprintf(stderr,"ERROR155: First grid cell %d not in %s file '%s', starts at cell %d.\n",
               config->startgrid,type,filename,header.firstcell);
     fclose(file);
     return NULL;
