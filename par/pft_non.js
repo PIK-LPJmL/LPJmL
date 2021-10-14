@@ -13,8 +13,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "../include/pftpar.h" /* include constant definitions */
-
 #define CTON_LEAF 30.0
 #define CTON_ROOT 30.0
 #define CTON_POOL 100.0
@@ -47,25 +45,6 @@
 #define FN_TURNOVER_EV 0.8   /* fraction of N not recovered before turnover */
 #define ALPHAA 0.4  /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
-#define CN_BL_EG_MX 46.2
-#define CN_BL_EG_MN 15.6
-#define CN_BL_EG_MD 26.8
-#define CN_NL_EG_MX 63.8
-#define CN_NL_EG_MN 31.8
-#define CN_NL_EG_MD 45.0
-#define CN_BL_DC_MX 34.6
-#define CN_BL_DC_MN 15.4
-#define CN_BL_DC_MD 23.1
-#define CN_NL_DC_MX 36.9
-#define CN_NL_DC_MN 18.4
-#define CN_NL_DC_MD 26.0
-#define CN_GC3_MX 37.9
-#define CN_GC3_MN 10.5
-#define CN_GC3_MD 19.9
-#define CN_GC4_MX 66.9
-#define CN_GC4_MN 17.4
-#define CN_GC4_MD 34.0
-#define CN_CROPS_MEAN 25.0 /* cnleaf mean for grasses, table A.3.1, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
 #define K_LATOSA 4e3      /* leaf area to sapwood area */
 #define BC3 0.015         /*leaf respiration as fraction of Vmax for C3 plants */
 #define BC4 0.035         /* leaf respiration as fraction of Vmax for C4 plants */
@@ -75,7 +54,7 @@
   /* first pft */
   {
     "name" : "tropical broadleaved evergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -128,7 +107,7 @@
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "evergreen",/* phenology */
-    "path" : C3,            /* pathway */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 2.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 25.0, "high" : 30.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b" : BC3,        /*leaf respiration as fraction of Vmax for C3 plants */
@@ -147,7 +126,6 @@
     "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 2.0, "sapwood" : 20.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
-    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 15.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "reprod_cost" : REPROD_COST,  /* reproduction cost */
@@ -170,7 +148,7 @@
 /* 2. pft */
   {
     "name" : "tropical broadleaved raingreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -242,7 +220,6 @@
     "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
-    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 12.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "reprod_cost" : REPROD_COST, /* reproduction cost */
@@ -265,7 +242,7 @@
 /* 3. pft */
   {
     "name": "temperate needleleaved evergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -337,7 +314,6 @@
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 4.0, "sapwood" : 20.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
-    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 15.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "reprod_cost" : REPROD_COST, /* reproduction cost */
@@ -360,7 +336,7 @@
 /* 4. pft */
   {
     "name" : "temperate broadleaved evergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -432,7 +408,6 @@
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
-    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 15.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "reprod_cost" : REPROD_COST, /* reproduction cost */
@@ -455,7 +430,7 @@
 /* 5. pft */
   {
     "name" : "temperate broadleaved summergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -527,7 +502,6 @@
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
-    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 15.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "aphen_min" : APHEN_MIN,
@@ -552,7 +526,7 @@
 /* 6. pft */
   {
     "name" : "boreal needleleaved evergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -624,7 +598,6 @@
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 4.0, "sapwood" : 20.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
-    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 15.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "reprod_cost" : REPROD_COST, /* reproduction cost */
@@ -647,7 +620,7 @@
 /* 7. pft */
   {
     "name" : "boreal broadleaved summergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -719,7 +692,6 @@
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
-    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 15.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "aphen_min" : APHEN_MIN,
@@ -744,7 +716,7 @@
 /* 8. pft */
   {
     "name" : "boreal needleleaved summergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -816,7 +788,6 @@
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
-    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 15.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "aphen_min" : 10,
@@ -841,7 +812,7 @@
 /* 9. pft */
   {
     "name" : "Tropical C4 grass",
-    "type" : GRASS,
+    "type" : "grass",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
@@ -912,14 +883,13 @@
     "roughness_length" : 0.03,  /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
-    "ratio" : 1.16,
     "reprod_cost" : REPROD_COST /* reproduction cost */
   },
 /*--------------------------------------------------------------------------*/
 /* 10. pft */
   {
     "name" : "Temperate C3 grass",
-    "type" : GRASS,
+    "type" : "grass",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
@@ -991,14 +961,13 @@
     "roughness_length" : 0.03,   /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
-    "ratio" : 1.16,
     "reprod_cost" : REPROD_COST /* reproduction cost */
   },
 /*--------------------------------------------------------------------------*/
 /* 11. pft */
   {
     "name" : "Polar C3 grass",
-    "type" : GRASS,
+    "type" : "grass",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
@@ -1069,14 +1038,13 @@
     "roughness_length" : 0.03,    /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
-    "ratio" : 1.16,
     "reprod_cost" : REPROD_COST /* reproduction cost */
   },
 /*----------------------------------------------------------------------------------------*/
 /* 1. bft */
   {
     "name" : "bioenergy tropical tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "biomass",/* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1148,7 +1116,6 @@
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 2.0, "sapwood" : 10.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
-    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 2.0,  /* crownarea_max 20*/
     "wood_sapl" : 2.2,      /* sapwood sapling 22*/
     "reprod_cost" : REPROD_COST, /* reproduction cost */
@@ -1173,7 +1140,7 @@
 /* 2. bft */
   {
     "name" : "bioenergy temperate tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "biomass",/* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1245,7 +1212,6 @@
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 10.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
-    "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 1.5,  /* crownarea_max 20*/
     "wood_sapl" : 2.5,      /* sapwood sapling 22*/
     "aphen_min" : APHEN_MIN,
@@ -1272,7 +1238,7 @@
 /* 3. bft ONLY FOR BIOENERGY*/
   {
     "name" : "bioenergy C4 grass",
-    "type" : GRASS,
+    "type" : "grass",
     "cultivation_type" : "biomass", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
@@ -1343,14 +1309,13 @@
     "roughness_length" : 0.03,  /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf and root 13,15*/
-    "ratio" : 1.16,
     "reprod_cost" : REPROD_COST /* reproduction cost */
   },
 /*--------------------------------------------------------------------------*/
 /* 1. cft */
   {
     "name" : "temperate cereals",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -1419,7 +1384,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03, /* roughness length */
-    "calcmethod_sdate" : TEMP_WTYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp wtyp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 258, "sdatesh" : 90, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 330,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -1447,14 +1412,13 @@
     "hiopt" : 0.50,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.20,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 0.99, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL} /* C:N mass ratio for root, storage organ, and pool */
   },
 /*--------------------------------------------------------------------------*/
 /* 2. cft */
   {
     "name" : "rice",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -1523,7 +1487,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 100, "sdatesh" : 180, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 180,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -1551,14 +1515,13 @@
     "hiopt" : 0.50,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.25,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 1.3, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL} /* C:N mass ratio for root, storage organ, and pool */
   },
 /*--------------------------------------------------------------------------*/
 /* 3. cft */
   {
     "name" : "maize",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -1627,7 +1590,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
-    "calcmethod_sdate" : TEMP_PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" : 181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -1655,14 +1618,13 @@
     "hiopt" : 0.50,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.30,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 0.83, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL} /* C:N mass ratio for root, storage organ, and pool */
   },
 /*--------------------------------------------------------------------------*/
 /* 4. cft */
   {
     "name" : "tropical cereals",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -1731,7 +1693,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 80, "sdatesh" : 260, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -1759,14 +1721,13 @@
     "hiopt" : 0.25,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 0.99, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL} /* C:N mass ratio for root, storage organ, and pool */
   },
 /*--------------------------------------------------------------------------*/
 /* 5. cft */
   {
     "name" : "pulses",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : true,           /* N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -1835,7 +1796,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : TEMP_PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" : 181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 300,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -1863,14 +1824,13 @@
     "hiopt" : 0.45,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 0.45, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL} /* C:N mass ratio for root, storage organ, and pool */
   },
 /*--------------------------------------------------------------------------*/
 /* 6. cft */
   {
     "name": "temperate roots",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -1939,7 +1899,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6,   /* windspeed dampening */
     "roughness_length" : 0.03,     /* roughness length */
-    "calcmethod_sdate" : TEMP_STYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 90, "sdatesh" : 270, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 260,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -1967,14 +1927,13 @@
     "hiopt" : 3.5,          /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 1.25,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 0.5, /* shapesenescencenorm */
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 1.74, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL} /* C:N mass ratio for root, storage organ, and pool */
   },
 /*--------------------------------------------------------------------------*/
 /* 7. cft */
   {
     "name" : "tropical roots", /* re-parameterized as Cassava, 14.12.2009 KW */
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -2043,7 +2002,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 80, "sdatesh" :  180, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 330,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -2071,14 +2030,13 @@
     "hiopt" : 2.0,          /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 1.10,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 0.5, /* shapesenescencenorm */
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 3.27, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL} /* C:N mass ratio for root, storage organ, and pool */
   },
 /*--------------------------------------------------------------------------*/
 /* 8. cft */
   {
     "name" : "oil crops sunflower",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -2147,7 +2105,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : TEMP_STYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" :  181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -2175,14 +2133,13 @@
     "hiopt" : 0.40,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.20,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 1.04, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL} /* C:N mass ratio for root, storage organ, and pool */
   },
 /*--------------------------------------------------------------------------*/
 /* 9. cft */
   {
     "name" : "oil crops soybean",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : true,           /* N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -2251,7 +2208,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 140, "sdatesh" :  320, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -2279,14 +2236,13 @@
     "hiopt" : 0.40,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.10,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 0.5, /* shapesenescencenorm */
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 0.42, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL} /* C:N mass ratio for root, storage organ, and pool */
   },
 /*--------------------------------------------------------------------------*/
 /* 10. cft */
   {
     "name": "oil crops groundnut",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -2339,7 +2295,7 @@
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "cropgreen",/* phenology */
-    "path" : C3,            /* pathway */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 20.0, "high" : 45.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b" : BC3,        /*leaf respiration as fraction of Vmax for C3 plants */
@@ -2355,7 +2311,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 100, "sdatesh" :  280, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -2383,14 +2339,13 @@
     "hiopt" : 0.40,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.30,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 0.5, /* shapesenescencenorm */
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 0.68, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL} /* C:N mass ratio for root, storage organ, and pool */
   },
 /*--------------------------------------------------------------------------*/
 /* 11. cft */
   {
     "name" : "oil crops rapeseed",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -2459,7 +2414,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : TEMP_WTYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp wtyp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 241, "sdatesh" :  61, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 210,         /* hlimit: max length of crop cycle  */
     "fallow_days" : 0,      /* fallow_days: wait after harvest until next sowing */
@@ -2487,14 +2442,13 @@
     "hiopt" : 0.30,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.15,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 0.76, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL} /* C:N mass ratio for root, storage organ, and pool */
   },
 /*--------------------------------------------------------------------------*/
 /* 12. cft */
   {
     "name" : "sugarcane",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type": "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -2591,8 +2545,7 @@
     "hiopt" : 0.80,         /* hiopt: optimum harvest index HI reached at harvest*/
     "himin" : 0.80,         /* himin: minimum harvest index HI reached at harvest*/
     "shapesenescencenorm" : 2.0, /* shapesenescencenorm */
-    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL}, /* C:N mass ratio for root, storage organ, and pool */
-    "ratio" : {"root": 1.16, "so": 4.57, "pool": 3}                    /* relative C:N ratios of root, storage organ, and pool; for roots: Friend et al. 1997, Ecological Modeling, Table 4 */
+    "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT, "so" : CTON_SO, "pool" : CTON_POOL} /* C:N mass ratio for root, storage organ, and pool */
   }
 ],
 /*--------------------------------------------------------------------------*/

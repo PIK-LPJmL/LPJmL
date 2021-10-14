@@ -45,7 +45,12 @@ int main(int argc,char **argv)
   const char *title[3];
   time_t start,end;
   Flux flux;
-  Fscanpftparfcn scanfcn[NTYPES]={fscanpft_grass,fscanpft_tree,fscanpft_crop};
+  Pfttype scanfcn[NTYPES]=
+  {
+    {name_grass,fscanpft_grass},
+    {name_tree,fscanpft_tree},
+    {name_crop,fscanpft_crop}
+  };
   progname=strippath(argv[0]);
   config.rank=0;
   config.ntask=1;

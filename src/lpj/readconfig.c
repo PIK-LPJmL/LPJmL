@@ -34,7 +34,7 @@ static void closeconfig(LPJfile *file)
 
 Bool readconfig(Config *config,        /**< LPJ configuration */
                 const char *filename,  /**< Default configuration filename */
-                Fscanpftparfcn scanfcn[], /**< array of PFT-specific scan
+                Pfttype scanfcn[],     /**< array of PFT-specific scan
                                              functions */
                 int ntypes,            /**< Number of PFT classes */
                 int nout,              /**< Maximum number of output files */

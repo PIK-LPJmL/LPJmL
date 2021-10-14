@@ -76,7 +76,7 @@
   /* first pft */
   {
     "name" : "tropical broadleaved evergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -178,7 +178,7 @@
 /* 2. pft */
   {
     "name" : "tropical broadleaved raingreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -280,7 +280,7 @@
 /* 3. pft */
   {
     "name": "temperate needleleaved evergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -382,7 +382,7 @@
 /* 4. pft */
   {
     "name" : "temperate broadleaved evergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -484,7 +484,7 @@
 /* 5. pft */
   {
     "name" : "temperate broadleaved summergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -588,7 +588,7 @@
 /* 6. pft */
   {
     "name" : "boreal needleleaved evergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -690,7 +690,7 @@
 /* 7. pft */
   {
     "name" : "boreal broadleaved summergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -794,7 +794,7 @@
 /* 8. pft */
   {
     "name" : "boreal needleleaved summergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -898,7 +898,7 @@
 /* 9. pft */
   {
     "name" : "Tropical C4 grass",
-    "type" : GRASS,
+    "type" : "grass",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
@@ -983,7 +983,7 @@
 /* 10. pft */
   {
     "name" : "Temperate C3 grass",
-    "type" : GRASS,
+    "type" : "grass",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
@@ -1068,7 +1068,7 @@
 /* 11. pft */
   {
     "name" : "Polar C3 grass",
-    "type" : GRASS,
+    "type" : "grass",
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
@@ -1153,7 +1153,7 @@
 /* 1. bft */
   {
     "name" : "bioenergy tropical tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "biomass",/* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1256,7 +1256,7 @@
 /* 2. bft */
   {
     "name" : "bioenergy temperate tree",
-    "type" : TREE,
+    "type" : "tree",
     "cultivation_type" : "biomass",/* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
@@ -1361,7 +1361,7 @@
 /* 3. bft ONLY FOR BIOENERGY*/
   {
     "name" : "bioenergy C4 grass",
-    "type" : GRASS,
+    "type" : "grass",
     "cultivation_type" : "biomass", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
@@ -1445,7 +1445,7 @@
 /* 1. cft */
   {
     "name" : "temperate cereals",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -1555,7 +1555,7 @@
 /* 2. cft */
   {
     "name" : "rice",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -1665,7 +1665,7 @@
 /* 3. cft */
   {
     "name" : "maize",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -1775,7 +1775,7 @@
 /* 4. cft */
   {
     "name" : "tropical cereals",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -1885,7 +1885,7 @@
 /* 5. cft */
   {
     "name" : "pulses",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : true,           /* N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -1995,7 +1995,7 @@
 /* 6. cft */
   {
     "name": "temperate roots",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -2105,7 +2105,7 @@
 /* 7. cft */
   {
     "name" : "tropical roots", /* re-parameterized as Cassava, 14.12.2009 KW */
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -2215,7 +2215,7 @@
 /* 8. cft */
   {
     "name" : "oil crops sunflower",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -2325,7 +2325,7 @@
 /* 9. cft */
   {
     "name" : "oil crops soybean",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : true,           /* N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -2435,7 +2435,7 @@
 /* 10. cft */
   {
     "name": "oil crops groundnut",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -2545,7 +2545,7 @@
 /* 11. cft */
   {
     "name" : "oil crops rapeseed",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
@@ -2655,7 +2655,7 @@
 /* 12. cft */
   {
     "name" : "sugarcane",
-    "type" : CROP,
+    "type" : "crop",
     "cultivation_type": "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */

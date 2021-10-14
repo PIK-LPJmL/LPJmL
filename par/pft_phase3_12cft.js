@@ -13,8 +13,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "../include/pftpar.h" /* include constant definitions */
-
 #define CTON_LEAF 30.0
 #define CTON_ROOT 30.0
 #define CTON_POOL 100.0
@@ -78,8 +76,8 @@
   /* first pft */
   {
     "name" : "tropical broadleaved evergreen tree",
-    "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "type" : "tree",
+    "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.932,    /* beta_root */
@@ -131,8 +129,8 @@
       "tau" : 0.44          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : EVERGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "evergreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 2.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 25.0, "high" : 30.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -153,7 +151,7 @@
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
-    "leaftype" : BROADLEAVED,  /* leaftype */
+    "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 2.0, "sapwood" : 30.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
@@ -181,8 +179,8 @@
 /* 2. pft */
   {
     "name" : "tropical broadleaved raingreen tree",
-    "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "type" : "tree",
+    "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.981,    /* beta_root */
@@ -234,8 +232,8 @@
       "tau" : 0.1348        /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : RAINGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "raingreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 2.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 25.0, "high" : 30.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -256,7 +254,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
-    "leaftype" : BROADLEAVED,  /* leaftype */
+    "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 30.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
@@ -284,8 +282,8 @@
 /* 3. pft */
   {
     "name": "temperate needleleaved evergreen tree",
-    "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "type" : "tree",
+    "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.976,    /* beta_root 1 */
@@ -337,8 +335,8 @@
       "tau" : 0.7           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : EVERGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "evergreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 20.0, "high" : 30.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -359,7 +357,7 @@
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
-    "leaftype" : NEEDLELEAVED,/* leaftype */
+    "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
@@ -387,8 +385,8 @@
 /* 4. pft */
   {
     "name" : "temperate broadleaved evergreen tree",
-    "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "type" : "tree",
+    "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.964,    /* beta_root 1 */
@@ -440,8 +438,8 @@
       "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : EVERGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "evergreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 20.0, "high" : 30.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -462,7 +460,7 @@
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
-    "leaftype" : BROADLEAVED,/* leaftype */
+    "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
@@ -490,8 +488,8 @@
 /* 5. pft */
   {
     "name" : "temperate broadleaved summergreen tree",
-    "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "type" : "tree",
+    "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
@@ -543,8 +541,8 @@
       "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : SUMMERGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "summergreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 20.0, "high" : 25.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -565,7 +563,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
-    "leaftype" : BROADLEAVED,/* leaftype */
+    "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
@@ -595,8 +593,8 @@
 /* 6. pft */
   {
     "name" : "boreal needleleaved evergreen tree",
-    "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "type" : "tree",
+    "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.955,    /* beta_root */
@@ -648,8 +646,8 @@
       "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : EVERGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "evergreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 15.0, "high" : 25.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -670,7 +668,7 @@
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
-    "leaftype" : NEEDLELEAVED,/* leaftype */
+    "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 4.0, "sapwood" : 25.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
@@ -698,8 +696,8 @@
 /* 7. pft */
   {
     "name" : "boreal broadleaved summergreen tree",
-    "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "type" : "tree",
+    "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.955,    /* beta_root */
@@ -751,8 +749,8 @@
       "tau" : 0.7           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : SUMMERGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "summergreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 15.0, "high" : 25.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -773,7 +771,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
-    "leaftype" : BROADLEAVED,/* leaftype */
+    "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
@@ -803,8 +801,8 @@
 /* 8. pft */
   {
     "name" : "boreal needleleaved summergreen tree",
-    "type" : TREE,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "type" : "tree",
+    "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.955,    /* beta_root */
@@ -856,8 +854,8 @@
       "tau" : 0.8            /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : SUMMERGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "summergreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 15.0, "high" : 25.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -878,7 +876,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
-    "leaftype" : NEEDLELEAVED,/* leaftype */
+    "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 25.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
@@ -908,8 +906,8 @@
 /* 9. pft */
   {
     "name" : "Tropical C4 grass",
-    "type" : GRASS,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "type" : "grass",
+    "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
@@ -961,8 +959,8 @@
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : ANY,      /* phenology */
-    "path" : C4,            /* pathway */
+    "phenology" : "any",      /* phenology */
+    "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 20.0, "high" : 45.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
@@ -992,8 +990,8 @@
 /* 10. pft */
   {
     "name" : "Temperate C3 grass",
-    "type" : GRASS,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "type" : "grass",
+    "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
@@ -1045,8 +1043,8 @@
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : ANY,      /* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "any",      /* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 10.0, "high" : 30.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -1076,8 +1074,8 @@
 /* 11. pft */
   {
     "name" : "Polar C3 grass",
-    "type" : GRASS,
-    "cultivation_type" : NONE, /* cultivation_type */
+    "type" : "grass",
+    "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
@@ -1129,8 +1127,8 @@
       "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : ANY,      /* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "any",      /* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 10.0, "high" : 25.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -1160,8 +1158,8 @@
 /* 1. bft */
   {
     "name" : "bioenergy tropical tree",
-    "type" : TREE,
-    "cultivation_type" : BIOMASS,/* cultivation_type */
+    "type" : "tree",
+    "cultivation_type" : "biomass",/* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.975,    /* beta_root */
@@ -1212,8 +1210,8 @@
       "tau" : 0.44          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : 0.005,     /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : EVERGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "evergreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 2.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 25.0, "high" : 38.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -1234,7 +1232,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 1.0,/* roughness length */
-    "leaftype" : BROADLEAVED,/* leaftype */
+    "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 2.0, "sapwood" : 10.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
@@ -1262,8 +1260,8 @@
 /* 2. bft */
   {
     "name" : "bioenergy temperate tree",
-    "type" : TREE,
-    "cultivation_type" : BIOMASS,/* cultivation_type */
+    "type" : "tree",
+    "cultivation_type" : "biomass",/* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
@@ -1314,8 +1312,8 @@
       "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : 0.005,     /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : SUMMERGREEN, /* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "summergreen", /* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 15.0, "high" : 30.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -1336,7 +1334,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
-    "leaftype" : BROADLEAVED,/* leaftype */
+    "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 10.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
@@ -1366,8 +1364,8 @@
 /* 3. bft ONLY FOR BIOENERGY*/
   {
     "name" : "bioenergy C4 grass",
-    "type" : GRASS,
-    "cultivation_type" : BIOMASS, /* cultivation_type */
+    "type" : "grass",
+    "cultivation_type" : "biomass", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
@@ -1418,8 +1416,8 @@
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : ANY,      /* phenology */
-    "path" : C4,            /* pathway */
+    "phenology" : "any",      /* phenology */
+    "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 4.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 15.0, "high" : 45.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
@@ -1449,8 +1447,8 @@
 /* 1. cft */
   {
     "name" : "temperate cereals",
-    "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "type" : "crop",
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
@@ -1501,8 +1499,8 @@
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : CROPGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "cropgreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 0.0, "high" : 40.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 12.0, "high" : 17.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -1523,7 +1521,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03, /* roughness length */
-    "calcmethod_sdate" : TEMP_WTYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp wtyp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 258, "sdatesh" : 90, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 365,         /* hlimit: max. growing season length (days) after which harvest is triggered, GGCMI Phase 3 max. value plus 15% to allow for annual variation */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -1556,8 +1554,8 @@
 /* 2. cft */
   {
     "name" : "rice",
-    "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "type" : "crop",
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
@@ -1608,8 +1606,8 @@
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : CROPGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "cropgreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 20.0, "high" : 45.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -1630,7 +1628,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 100, "sdatesh" : 180, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 288,         /* hlimit: max. growing season length (days) after which harvest is triggered, GGCMI Phase 3 max. value plus 15% to allow for annual variation */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -1663,8 +1661,8 @@
 /* 3. cft */
   {
     "name" : "maize",
-    "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "type" : "crop",
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
@@ -1715,8 +1713,8 @@
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : CROPGREEN,/* phenology */
-    "path" : C4,            /* pathway */
+    "phenology" : "cropgreen",/* phenology */
+    "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 8.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 21.0, "high" : 26.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
@@ -1737,7 +1735,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
-    "calcmethod_sdate" : TEMP_PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" : 181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 334,         /* hlimit: max. growing season length (days) after which harvest is triggered, GGCMI Phase 3 max. value plus 15% to allow for annual variation */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -1770,8 +1768,8 @@
 /* 4. cft */
   {
     "name" : "tropical cereals",
-    "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "type" : "crop",
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
@@ -1822,8 +1820,8 @@
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : CROPGREEN,/* phenology */
-    "path" : C4,            /* pathway */
+    "phenology" : "cropgreen",/* phenology */
+    "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 20.0, "high" : 45.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
@@ -1844,7 +1842,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 80, "sdatesh" : 260, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 299,         /* hlimit: max. growing season length (days) after which harvest is triggered, GGCMI Phase 3 max. value plus 15% to allow for annual variation */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -1877,8 +1875,8 @@
 /* 5. cft */
   {
     "name" : "pulses",
-    "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "type" : "crop",
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : true,         /* N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
@@ -1929,8 +1927,8 @@
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : CROPGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "cropgreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 10.0, "high" : 30.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -1951,7 +1949,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : TEMP_PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" : 181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 282,         /* hlimit: max. growing season length (days) after which harvest is triggered, GGCMI Phase 3 max. value plus 15% to allow for annual variation */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -1984,8 +1982,8 @@
 /* 6. cft */
   {
     "name": "temperate roots",
-    "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "type" : "crop",
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
@@ -2036,8 +2034,8 @@
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : CROPGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "cropgreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 10.0, "high" : 30.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -2058,7 +2056,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,   /* windspeed dampening */
     "roughness_length" : 0.03,     /* roughness length */
-    "calcmethod_sdate" : TEMP_STYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 90, "sdatesh" : 270, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 299,         /* hlimit: max. growing season length (days) after which harvest is triggered, GGCMI Phase 3 max. value plus 15% to allow for annual variation */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -2091,8 +2089,8 @@
 /* 7. cft */
   {
     "name" : "tropical roots", /* re-parameterized as Cassava, 14.12.2009 KW */
-    "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "type" : "crop",
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
@@ -2143,8 +2141,8 @@
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : CROPGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "cropgreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 20.0, "high" : 45.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -2165,7 +2163,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 80, "sdatesh" :  180, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 365,         /* hlimit: max. growing season length (days) after which harvest is triggered, GGCMI Phase 3 max. value plus 15% to allow for annual variation */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -2198,8 +2196,8 @@
 /* 8. cft */
   {
     "name" : "oil crops sunflower",
-    "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "type" : "crop",
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
@@ -2250,8 +2248,8 @@
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : CROPGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "cropgreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 8.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 25.0, "high" : 32.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -2272,7 +2270,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : TEMP_STYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" :  181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 282,         /* hlimit: max. growing season length (days) after which harvest is triggered, GGCMI Phase 3 max. value plus 15% to allow for annual variation */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -2305,8 +2303,8 @@
 /* 9. cft */
   {
     "name" : "oil crops soybean",
-    "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "type" : "crop",
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : true,       /* N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
@@ -2357,8 +2355,8 @@
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : CROPGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "cropgreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 5.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 28.0, "high" : 32.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -2379,7 +2377,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 140, "sdatesh" :  320, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 282,         /* hlimit: max. growing season length (days) after which harvest is triggered, GGCMI Phase 3 max. value plus 15% to allow for annual variation */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -2412,8 +2410,8 @@
 /* 10. cft */
   {
     "name": "oil crops groundnut",
-    "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "type" : "crop",
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
@@ -2464,8 +2462,8 @@
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : CROPGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "cropgreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 6.0, "high" : 55.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 20.0, "high" : 45.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -2486,7 +2484,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 100, "sdatesh" :  280, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 282,         /* hlimit: max. growing season length (days) after which harvest is triggered, GGCMI Phase 3 max. value plus 15% to allow for annual variation */
     "fallow_days" : 30,     /* fallow_days: wait after harvest until next sowing */
@@ -2519,8 +2517,8 @@
 /* 11. cft */
   {
     "name" : "oil crops rapeseed",
-    "type" : CROP,
-    "cultivation_type" : ANNUAL_CROP, /* cultivation_type */
+    "type" : "crop",
+    "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
@@ -2571,8 +2569,8 @@
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : CROPGREEN,/* phenology */
-    "path" : C3,            /* pathway */
+    "phenology" : "cropgreen",/* phenology */
+    "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : 0.0, "high" : 40.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 12.0, "high" : 17.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
@@ -2593,7 +2591,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : TEMP_WTYP_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp wtyp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 241, "sdatesh" :  61, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 365,         /* hlimit: max. growing season length (days) after which harvest is triggered, GGCMI Phase 3 max. value plus 15% to allow for annual variation */
     "fallow_days" : 0,      /* fallow_days: wait after harvest until next sowing */
@@ -2626,8 +2624,8 @@
 /* 12. cft */
   {
     "name" : "sugarcane",
-    "type" : CROP,
-    "cultivation_type": ANNUAL_CROP, /* cultivation_type */
+    "type" : "crop",
+    "cultivation_type": "annual crop", /* cultivation_type */
     "nfixing" : false,         /* no N fixing */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
@@ -2678,8 +2676,8 @@
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
-    "phenology" : CROPGREEN,/* phenology */
-    "path" : C4,            /* pathway */
+    "phenology" : "cropgreen",/* phenology */
+    "path" : "C4",            /* pathway */
     "temp_co2" : { "low" : 8.0, "high" : 42.0 }, /* lower and upper temperature limit for co2 uptake (deg C) 24 27 */
     "temp_photos" : { "low" : 18.0, "high" : 30.0}, /* lower and upper limit of temperature optimum for photosynthesis (deg C) 25 26*/
     "b":  BC4, /* leaf respiration as fraction of Vmax for C4 plants */
@@ -2700,7 +2698,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "calcmethod_sdate" : TEMP_PREC_CALC_SDATE, /* calc_sdate: method to calculate the sowing date*/
+    "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 120, "sdatesh" : 300, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 365,         /* hlimit: max. growing season length (days) after which harvest is triggered, GGCMI Phase 3 max. value plus 15% to allow for annual variation */
     "fallow_days" : 0,      /* fallow_days: wait after harvest until next sowing */

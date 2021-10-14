@@ -1,9 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                 manage_laimax_alphaa_fao_rev4453_20180507.js                   \n**/
+/**                 manage_laimax_alphaa_all7.js                                   \n**/
 /**                                                                                \n**/
 /**     management parameter data with maximum LAI values for all crops            \n**/
-/**               LPJmL Version 4.0.002                                            \n**/
+/**               LPJmL Version 5.3.001                                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,6 +14,13 @@
 /**************************************************************************************/
 
 #include "../include/managepar.h"
+
+/* the following array describes the order of the CFTs in the laimax array */
+
+"laimaxmap" : ["temperate cereals","rice", "maize", "tropical cereals", "pulses",
+               "temperate roots", "tropical roots", "oil crops sunflower",
+               "oil crops soybean", "oil crops groundnut", "oil crops rapeseed",
+               "sugarcane"],
 
 "countrypar" :
 [

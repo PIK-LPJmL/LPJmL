@@ -25,8 +25,9 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
   fputs("------------------------------------------------------------------------------\n",file);
   fprintf(file,"Id:\t\t%d\n"
                "Name:\t\t%s\n"
+               "Type:\t\t%s\n"
                "Cult. type:\t%s\n",
-          pftpar->id,pftpar->name,cultivation_type[pftpar->cultivation_type]);
+          pftpar->id,pftpar->name,config->pfttypes[pftpar->type],cultivation_type[pftpar->cultivation_type]);
   fprintf(file,"rootdist:\t");
   for(i=0;i<LASTLAYER;i++)
     fprintf(file,"%g ",pftpar->rootdist[i]);

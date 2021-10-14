@@ -19,6 +19,7 @@
 
 /* Definition of constants */
 
+#define name_tree "tree"
 #define reinickerp 1.6
 #define wooddens 2e5      /* wood density (gC/m3) */
 

@@ -98,8 +98,13 @@ int main(int argc,char **argv)
   Standtype standtype[NSTANDTYPES];
   Config config;         /* LPJ configuration */
 
-  /* Create array of functions, uses the typedef of (*Fscanpftparfcn) in pft.h */
-  Fscanpftparfcn scanfcn[NTYPES]={fscanpft_grass,fscanpft_tree,fscanpft_crop};
+  /* Create array of functions, uses the typedef of Pfttype in config.h */
+  Pfttype scanfcn[NTYPES]=
+  {
+    {name_grass,fscanpft_grass},
+    {name_tree,fscanpft_tree},
+    {name_crop,fscanpft_crop}
+  };
 
   standtype[NATURAL]=natural_stand;
   standtype[SETASIDE_RF]=setaside_rf_stand;

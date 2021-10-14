@@ -17,6 +17,9 @@
 #ifndef GRASS_H /* Already included? */
 #define GRASS_H
 
+/* Definition of constants */
+
+#define name_grass "grass"
 
 /* Definition of datatypes */
 

@@ -20,8 +20,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "include/conf.h" /* include constant definitions */
-
 //#define DAILY_OUTPUT  /* enables daily output */
 
 {   /* LPJmL configuration in JSON format */
@@ -246,7 +244,6 @@ ID                               Fmt                        filename
 /*===================================================================*/
 
   "startgrid" : "all", /* 27410, 67208 60400 47284 47293 47277 all grid cells */
-  "endgrid" : ALL,
 
 #ifdef CHECKPOINT
   "checkpoint_filename" : "restart/restart_checkpoint.lpj", /* filename of checkpoint file */

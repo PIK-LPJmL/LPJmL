@@ -172,7 +172,13 @@ int main(int argc,char **argv)
   const char *progname;
   const char *title[4];
   String line;
-  Fscanpftparfcn scanfcn[NTYPES]={fscanpft_grass,fscanpft_tree,fscanpft_crop};
+  Pfttype scanfcn[NTYPES]=
+  {
+    {name_grass,fscanpft_grass},
+    {name_tree,fscanpft_tree},
+    {name_crop,fscanpft_crop}
+  };
+
   Standtype standtype[NSTANDTYPES];
 
   standtype[NATURAL]=natural_stand;

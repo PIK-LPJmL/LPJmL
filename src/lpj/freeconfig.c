@@ -88,6 +88,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->restart_filename);
   free(config->checkpoint_restart_filename);
   free(config->write_restart_filename);
+  free(config->pfttypes);
   freepftpar(config->pftpar,ivec_sum(config->npft,config->ntypes));
   freesoilpar(config->soilpar,config->nsoil);
   free(config->soilmap);

@@ -12,8 +12,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "include/conf.h" /* include constant definitions */
-
 "inpath" : "/p/projects/lpjml/input/coupling_image/coupling1970/ddm30",
 
 "landusemap" :  ["temperate cereals","rice","maize","tropical cereals","pulses",

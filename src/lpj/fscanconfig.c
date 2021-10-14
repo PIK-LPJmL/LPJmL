@@ -117,9 +117,9 @@ static void divide(int *start, /**< index of first grid cell */
 } /* of 'divide' */
 
 Bool fscanconfig(Config *config,    /**< LPJ configuration */
-                 LPJfile *file,        /**< File pointer to LPJ file */
-                 Fscanpftparfcn scanfcn[], /**< array of PFT-specific scan
-                                              functions */
+                 LPJfile *file,     /**< File pointer to LPJ file */
+                 Pfttype scanfcn[], /**< array of PFT-specific scan
+                                         functions */
                  int ntypes,        /**< Number of PFT classes */
                  int nout_max       /**< maximum number of output files */
                 )                   /** \return TRUE on error */
@@ -422,13 +422,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->soilmap=fscansoilmap(file,&config->soilmap_size,config);
   if(config->soilmap==NULL)
     return TRUE;
-  if((config->npft=fscanpftpar(file,&config->pftpar,scanfcn,ntypes,config))==NULL)
+  config->ntypes=ntypes;
+  if(fscanpftpar(file,scanfcn,config))
   {
     if(verbose)
       fputs("ERROR230: Cannot read PFT parameter 'pftpar'.\n",stderr);
     return TRUE;
   }
-  config->ntypes=ntypes;
   config->nbiomass=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],BIOMASS);
   config->nagtree=getnculttype(config->pftpar,config->npft[GRASS]+config->npft[TREE],ANNUAL_TREE);
   config->nwft=getnculttype(config->pftpar, config->npft[GRASS] + config->npft[TREE],WP);
