@@ -23,7 +23,7 @@ Bool freadseed(FILE *file, /**< pointer to binary file */
               )            /** \return TRUE on error */
 {
 #ifdef USE_RAND48
-  return freadshort(seed,NSEED,swap,file)!=NSEED;
+  return freadushort(seed,NSEED,swap,file)!=NSEED;
 #else
   return freadint(seed,NSEED,swap,file)!=NSEED;
 #endif
