@@ -86,6 +86,7 @@
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
   "others_to_crop" : false,
+  "grazing" : "default",                  /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
   "istimber" : true,
   "crop_phu_option" : "new",
   "cropsheatfrost" : false,

@@ -24,82 +24,79 @@
   { \
     if(verb)\
     fprintf(stderr,"ERROR110: Cannot read real '%s' for PFT '%s'.\n",name,pft); \
-    return NULL; \
+    return TRUE; \
   }
 #define fscanpftreal01(verb,file,var,pft,name) \
   if(fscanreal01(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR110: Cannot read real '%s' for PFT '%s'.\n",name,pft); \
-    return NULL; \
+    return TRUE; \
   }
 #define fscanpftrealarray(verb,file,var,size,pft,name) \
   if(fscanrealarray(file,var,size,name,verb))\
   { \
     if(verb)\
     fprintf(stderr,"ERROR110: Cannot read array '%s' for PFT '%s'.\n",name,pft); \
-    return NULL; \
+    return TRUE; \
   }
 
 #define fscanpftint(verb,file,var,pft,name) \
   if(fscanint(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
-    fprintf(stderr,"ERROR110: Cannot read int '%s' for PFT '%s').\n",name,pft); \
-    return NULL; \
+    fprintf(stderr,"ERROR110: Cannot read int '%s' for PFT '%s'.\n",name,pft); \
+    return TRUE; \
   }
 #define fscanpftbool(verb,file,var,pft,name) \
   if(fscanbool(file,var,name,FALSE,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR110: Cannot read boolean '%s' for PFT '%s').\n",name,pft); \
-    return NULL; \
+    return TRUE; \
   }
 #define fscanpftlimit(verb,file,var,pft,name) \
   if(fscanlimit(file,var,name,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR112: Cannot read limit '%s' for PFT '%s'.\n",name,pft); \
-    return NULL; \
+    return TRUE; \
   }
 #define fscanpftcnratio(verb,file,var,pft,name) \
   if(fscancnratio(file,var,name,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR112: Cannot read C:N ratio '%s' for PFT '%s'.\n",name,pft); \
-    return NULL; \
+    return TRUE; \
   }
 #define fscanpftphenpar(verb,file,var,pft,name) \
   if(fscanphenparam(file,var,name,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR112: Cannot read phenology param '%s' for PFT '%s'.\n",name,pft); \
-    return NULL; \
+    return TRUE; \
   }
 #define fscanpftemissionfactor(verb,file,var,pft,name) \
   if(fscanemissionfactor(file,var,name,verb)) \
   { \
     if(verb)\
     fprintf(stderr,"ERROR128: Cannot read emission factor '%s' for PFT '%s'.\n",name,pft); \
-    return NULL; \
+    return TRUE; \
   }
 
-#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return 0;}
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 
 const char *phenology[]={"evergreen","raingreen","summergreen","any","cropgreen"};
 const char *cultivation_type[]={"none","biomass","annual crop","annual tree","wp"};
 const char *path[]={"no pathway","C3","C4"};
 
-
-int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
-                 Pftpar **pftpar,     /**< Pointer to PFT parameter array */
-                 const Fscanpftparfcn scanfcn[], /**< array of PFT-specific scan
+Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
+                 const Pfttype scanfcn[], /**< array of PFT-specific scan
                                                     functions */
-                 int ntypes,          /**< number of PFT classes */
-                 const Config *config       /**< LPJ configuration */
-                )                     /** \return array of size ntypes or NULL */
+                 Config *config       /**< LPJ configuration */
+                )                     /** \return TRUE on error */
 {
-  int *npft,n,l,count;
+  int n,l,count;
   LPJfile arr,item,subitem;
   String s;
   Pftpar *pft;
@@ -111,26 +108,30 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   if (verb>=VERB) puts("// PFT parameters");
   /* Read total number of defined PFTs */
   if(fscanarray(file,&arr,&count,TRUE,"pftpar",verb))
-    return NULL;
+    return TRUE;
   if(count<0 || count>UCHAR_MAX)
   {
     if(verb)
       fprintf(stderr,"ERROR171: Invalid number of PFTs=%d, must be in [0,%d].\n",count,UCHAR_MAX);
-    return NULL;
+    return TRUE;
   }
-  npft=newvec(int,ntypes);
-  checkptr(npft);
-  for(n=0;n<ntypes;n++)
-    npft[n]=0;
-  *pftpar=newvec(Pftpar,count);
-  checkptr(*pftpar);
+  config->npft=newvec(int,config->ntypes);
+  checkptr(config->npft);
+  for(n=0;n<config->ntypes;n++)
+    config->npft[n]=0;
+  config->pfttypes=newvec(char *,config->ntypes);
+  checkptr(config->pfttypes);
+  for(n=0;n<config->ntypes;n++)
+    config->pfttypes[n]=scanfcn[n].name;
+  config->pftpar=newvec(Pftpar,count);
+  checkptr(config->pftpar);
   for(n=0;n<count;n++)
-    (*pftpar)[n].id=UNDEF;
+    config->pftpar[n].id=UNDEF;
   isbiomass=isagtree=iscrop=iswp=FALSE;
   for(n=0;n<count;n++)
   {
     fscanarrayindex(&arr,&item,n,verb);
-    pft=(*pftpar)+n;
+    pft=config->pftpar+n;
     pft->id=n;
 
     /* Read pft->name */
@@ -138,32 +139,30 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     {
       if(verb)
         readstringerr("name");
-      return NULL;
+      return TRUE;
     }
     pft->name=strdup(s); /* store PFT name */
     checkptr(pft->name);
 
     /* Read pft->type, defined in pftpar.h */
-    fscanpftint(verb,&item,&pft->type,pft->name,"type");
-    if(pft->type<0 || pft->type>=ntypes)
+    if(fscankeywords(&item,&pft->type,"type",config->pfttypes,config->ntypes,FALSE,verb))
     {
       if(verb)
-        fprintf(stderr,"ERROR116: Invalid PFT class=%d of PFT '%s', must be in [0,%d].\n",
-                pft->type,pft->name,ntypes-1);
-      return NULL;
+        fprintf(stderr,"ERROR116: Invalid type of PFT '%s'.\n",pft->name);
+      return TRUE;
     }
     fscanpftbool(verb,&item,&pft->peatland,pft->name,"peatland_pft");
     if(fscankeywords(&item,&pft->cultivation_type,"cultivation_type",cultivation_type,5,FALSE,verb))
     {
       if(verb)
         fprintf(stderr,"ERROR201: Invalid value for cultivation type of PFT '%s'.\n",pft->name);
-      return NULL;
+      return TRUE;
     }
     if(isbiomass && pft->cultivation_type==NONE)
     {
       if(verb)
         fprintf(stderr,"ERROR210: Natural PFT '%s' must be put before biomass plantation PFT.\n",pft->name);
-      return NULL;
+      return TRUE;
     }
     if(isagtree)
     {
@@ -171,19 +170,19 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       {
         if(verb)
           fprintf(stderr,"ERROR210: Natural PFT '%s' must be put before agriculture tree plantation PFT.\n",pft->name);
-        return NULL;
+        return TRUE;
       }
       else if(pft->cultivation_type==BIOMASS)
       {
         if(verb)
           fprintf(stderr,"ERROR210: Biomass plantation PFT '%s' must be put before agriculture tree plantation PFT.\n",pft->name);
-        return NULL;
+        return TRUE;
       }
       else if(pft->cultivation_type==WP)
       {
         if(verb)
           fprintf(stderr,"ERROR210: wood plantation PFT '%s' must be put before agriculture tree plantation PFT.\n",pft->name);
-        return NULL;
+        return TRUE;
       }
     }
     if(iscrop)
@@ -192,19 +191,19 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       {
         if(verb)
           fprintf(stderr,"ERROR210: Natural PFT '%s' must be put before crop PFT.\n",pft->name);
-        return NULL;
+        return TRUE;
       }
       else if(pft->cultivation_type==BIOMASS)
       {
         if(verb)
           fprintf(stderr,"ERROR210: Biomass plantation PFT '%s' must be put before crop PFT.\n",pft->name);
-        return NULL;
+        return TRUE;
       }
       else if(pft->cultivation_type==WP)
       {
         if(verb)
           fprintf(stderr,"ERROR210: wood plantation PFT '%s' must be put before crop PFT.\n",pft->name);
-        return NULL;
+        return TRUE;
       }
     }
     if(iswp)
@@ -213,13 +212,13 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       {
         if(verb)
           fprintf(stderr,"ERROR210: Natural PFT '%s' must be put before wood plantation PFT.\n",pft->name);
-        return NULL;
+        return TRUE;
       }
       else if(pft->cultivation_type==BIOMASS)
       {
         if(verb)
           fprintf(stderr,"ERROR210: Biomass plantation PFT '%s' must be put before wood planatation PFT.\n",pft->name);
-        return NULL;
+        return TRUE;
       }
     }
     switch(pft->cultivation_type)
@@ -254,7 +253,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       if(verb)
         fprintf(stderr,"ERROR234: Parameter 'longevity'=%g must be greater than zero for PFT '%s'.\n",
                 pft->longevity,pft->name);
-      return NULL;
+      return TRUE;
     }
     fscanpftreal(verb,&item,&pft->lmro_ratio,pft->name,"lmro_ratio");
     if(pft->lmro_ratio<=0)
@@ -262,7 +261,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       if(verb)
         fprintf(stderr,"ERROR234: Parameter 'lmro_ratio'=%g must be greater than zero for PFT '%s'.\n",
                 pft->lmro_ratio,pft->name);
-      return NULL;
+      return TRUE;
     }
     fscanpftreal(verb,&item,&pft->ramp,pft->name,"ramp");
     if(pft->ramp<=0)
@@ -270,7 +269,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       if(verb)
         fprintf(stderr,"ERROR234: Parameter 'ramp'=%g must be greater than zero for PFT '%s'.\n",
                 pft->ramp,pft->name);
-      return NULL;
+      return TRUE;
     }
     pft->ramp=1/pft->ramp; /* store reciprocal to speed up calculations */
     fscanpftreal(verb,&item,&pft->lai_sapl,pft->name,"lai_sapl");
@@ -302,13 +301,13 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,"ERROR201: Invalid value for phenology of PFT '%s'.\n",pft->name);
-      return NULL;
+      return TRUE;
     }
     if(fscankeywords(&item,&pft->path,"path",path,3,FALSE,verb))
     {
       if(verb)
         fprintf(stderr,"ERROR201: Invalid value for path of PFT '%s'.\n",pft->name);
-      return NULL;
+      return TRUE;
     }
     fscanpftlimit(verb,&item,&pft->temp_co2,pft->name,"temp_co2");
     fscanpftlimit(verb,&item,&pft->temp_photos,pft->name,"temp_photos");
@@ -340,7 +339,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     {
       if(verb)
         fprintf(stderr,"ERROR112: Cannot find k_litter10 in PFT '%s'.\n",pft->name);
-      return NULL;
+      return TRUE;
     }
     fscanpftreal(verb,&subitem,&pft->k_litter10.leaf,pft->name,"leaf");
     fscanpftreal(verb,&subitem,&pft->k_litter10.wood,pft->name,"wood");
@@ -360,7 +359,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
         if(verb)
           fprintf(stderr,"ERROR235: CN ratio limits=(%g,%g,%g) must be greater than zero for PFT '%s'.\n",
                   cnratio.low,cnratio.median,cnratio.high,pft->name);
-        return NULL;
+        return TRUE;
       }
       pft->ncleaf.median=1/cnratio.median;
       pft->ncleaf.low=1/cnratio.high;
@@ -376,7 +375,7 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     pft->inun_thres*=1000;
     pft->k_litter10.leaf/=NDAYYEAR;
     pft->k_litter10.wood/=NDAYYEAR;
-    npft[pft->type]++;
+    config->npft[pft->type]++;
     /* set default PFT-specific functions */
     pft->init=noinit;
     pft->fire=nofire;
@@ -386,8 +385,8 @@ int *fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     pft->wdf=nowdf;
     pft->turnover_monthly=noturnover_monthly;
     /* Now scan PFT-specific parameters and set specific functions */
-    if(scanfcn[pft->type](&item,pft,config))
-      return NULL;
+    if(scanfcn[pft->type].fcn(&item,pft,config))
+      return TRUE;
   }
-  return npft;
+  return FALSE;
 } /* of 'fscanpftpar' */

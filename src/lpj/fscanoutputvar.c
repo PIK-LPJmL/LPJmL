@@ -118,7 +118,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     if(outnames[i].name==NULL)
     {
       if(verb)
-        fprintf(stderr,"ERROR230: Output description not defined for index=%d in 'outputvar'\n",i);
+        fprintf(stderr,"ERROR230: Output description not defined for index=%d in 'outputvar'.\n",i);
       return NULL;
     }
   return outnames;

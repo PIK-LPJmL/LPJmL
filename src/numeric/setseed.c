@@ -22,8 +22,8 @@ void setseed(Seed seed,int start)
 {
 #ifdef USE_RAND48
   seed[0]=13070;
-  seed[1]=start % (USHRT_MAX+1);
-  seed[2]=start / (USHRT_MAX+1);
+  seed[1]=(unsigned short)(start % (USHRT_MAX+1));
+  seed[2]=(unsigned short)(start / (USHRT_MAX+1));
   seed48(seed);
 #else
   seed[0]=start;

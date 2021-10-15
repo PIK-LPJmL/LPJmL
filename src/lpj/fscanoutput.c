@@ -246,7 +246,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
           }
         }
         if(config->outputvars[count].filename.isscale)
-          config->outnames[flag].scale=config->outputvars[count].filename.scale;
+          config->outnames[flag].scale=(float)config->outputvars[count].filename.scale;
         if(flag==GLOBALFLUX && config->outputvars[count].filename.fmt!=TXT)
         {
           if(verbosity)

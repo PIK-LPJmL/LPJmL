@@ -19,6 +19,7 @@
 
 /* Definition of constants */
 
+#define name_crop "crop"
 #define MINLGP 4              /* minimum length of growing period, used in calc_seasonality */
 #define DEFAULT_MONTH 1       /* default setting if no sowing month can be found in calc_seasonality*/
 #define MIN_PREC 0.1          /* minimum daily precipitation (mm) at a wet day - definition from CRU*/

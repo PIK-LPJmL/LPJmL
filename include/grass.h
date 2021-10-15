@@ -18,6 +18,9 @@
 #define GRASS_H
 #define grassDM_vol 0.2*0.75/1000*1e9  /*gDM/m-3 Ryser 1996: "The Importance of Tissue Density"*/
 
+/* Definition of constants */
+
+#define name_grass "grass"
 
 /* Definition of datatypes */
 

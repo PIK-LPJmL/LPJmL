@@ -200,6 +200,7 @@ struct config
   char *checkpoint_restart_filename; /**< filename of checkpoint restart file */
   Bool ischeckpoint;      /**< run from checkpoint file ? (TRUE/FALSE) */
   int checkpointyear;     /**< year stored in restart file */
+  char **pfttypes;
   Pftpar *pftpar;         /**< PFT parameter array */
   int restartyear; /**< year restart file is written */
   int ntypes;    /**< number of PFT classes */
@@ -276,7 +277,11 @@ struct config
   int outputsize[NOUT];   /**< number of bands for each output */
 }; /* LPJ configuration */
 
-typedef Bool (*Fscanpftparfcn)(LPJfile *,Pftpar *,const Config *);
+typedef struct
+{
+  char *name;                                     /**< name of PFT type */
+  Bool (*fcn)(LPJfile *,Pftpar *,const Config *); /**< pointer to PFT-specific scan function */
+} Pfttype;
 
 extern const char *crop_phu_options[];
 extern const char *grazing_type[];
@@ -293,14 +298,14 @@ extern void fprintconfig(FILE *,int,int,const Config *);
 extern Bool filesexist(Config,Bool);
 extern long long outputfilesize(const Config *);
 extern Variable *fscanoutputvar(LPJfile *,int,Verbosity);
-extern int* fscanpftpar(LPJfile *,Pftpar **,const Fscanpftparfcn [],int,const Config *);
+extern Bool fscanpftpar(LPJfile *,const Pfttype [],Config *);
 extern void fprintpftpar(FILE *,const Pftpar [],const Config *);
 extern void fprintoutputvar(FILE *,const Variable *,int,int,int,const Config *);
 extern void freeoutputvar(Variable *,int);
 extern Bool fscanoutput(LPJfile *,int,int,Config *,int);
-extern Bool readconfig(Config *,const char *,Fscanpftparfcn [],int,int,int *,
+extern Bool readconfig(Config *,const char *,Pfttype [],int,int,int *,
                        char ***,const char *);
-extern Bool fscanconfig(Config *,LPJfile *,Fscanpftparfcn [],int,int);
+extern Bool fscanconfig(Config *,LPJfile *,Pfttype [],int,int);
 extern void fprintparam(FILE *,int,int,const Config *);
 extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);

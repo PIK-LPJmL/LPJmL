@@ -12,8 +12,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "include/conf.h" /* include constant definitions */
-
 "soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
              "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
              "loamy sand", "sand", "rock and ice"],
@@ -59,7 +57,7 @@
   "tmax":          { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Tair_max.clm"},
   "humid":         { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/GLDAS_NOAH05_daily_1948-2017.Qair_f_inst.clm"},
   "lightning":     { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/dlightning.clm"},
-  //"lightning" :    { "fmt" : CDF, "var" : "HRAC_COM_FR",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/dlightning.nc"},
+  //"lightning" :    { "fmt" : "cdf", "var" : "HRAC_COM_FR",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/dlightning.nc"},
   "human_ignition": { "fmt" : "clm", "name" : "/p/projects/lpjml/input/GLDAS/INPUT/human_ignition_GLDAS.clm"},
   "popdens" :      { "fmt" : "clm",  "name" : "/p/projects/lpjml/input/GLDAS/INPUT/popdens_GLDAS.clm"},
   "burntarea" :    { "fmt" : "clm",  "name" : "/p/projects/biodiversity/drueke/mburntarea.clm"},

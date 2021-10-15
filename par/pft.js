@@ -76,7 +76,7 @@
   /* first pft */
   {
     "name" : "tropical broadleaved evergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -181,7 +181,7 @@
 /* 2. pft */
   {
     "name" : "tropical broadleaved raingreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -286,7 +286,7 @@
 /* 3. pft */
   {
     "name": "temperate needleleaved evergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -391,7 +391,7 @@
 /* 4. pft */
   {
     "name" : "temperate broadleaved evergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -496,7 +496,7 @@
 /* 5. pft */
   {
     "name" : "temperate broadleaved summergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -603,7 +603,7 @@
 /* 6. pft */
   {
     "name" : "boreal needleleaved evergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -708,7 +708,7 @@
 /* 7. pft */
   {
     "name" : "boreal broadleaved summergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -815,7 +815,7 @@
 /* 8. pft */
   {
     "name" : "boreal needleleaved summergreen tree",
-    "type" : TREE,
+    "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -922,7 +922,7 @@
 /* 9. pft */
   {
     "name" : "Tropical C4 grass",
-    "type" : GRASS,
+    "type" : "grass",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -1010,7 +1010,7 @@
 /* 10. pft */
   {
     "name" : "Temperate C3 grass",
-    "type" : GRASS,
+    "type" : "grass",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -1098,7 +1098,7 @@
 /* 11. pft */
   {
     "name" : "Polar C3 grass",
-    "type" : GRASS,
+    "type" : "grass",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -1274,7 +1274,7 @@
 /* 12. pft */
   {
     "name" : "Sphagnum moss",
-    "type" : GRASS,
+    "type" : "grass",
     "peatland_pft" : true, /* if peatland pft */
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -1363,7 +1363,7 @@
 /* 1. bft */
   {
     "name" : "bioenergy tropical tree",
-    "type" : TREE,
+    "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "biomass",/* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -1469,7 +1469,7 @@
 /* 2. bft */
   {
     "name" : "bioenergy temperate tree",
-    "type" : TREE,
+    "type" : "tree",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "biomass",/* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -1577,7 +1577,7 @@
 /* 3. bft ONLY FOR BIOENERGY*/
   {
     "name" : "bioenergy C4 grass",
-    "type" : GRASS,
+    "type" : "grass",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "biomass", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -1664,7 +1664,7 @@
 /* 1. cft */
   {
     "name" : "temperate cereals",
-    "type" : CROP,
+    "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -1777,7 +1777,7 @@
 /* 2. cft */
   {
     "name" : "rice",
-    "type" : CROP,
+    "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -1890,7 +1890,7 @@
 /* 3. cft */
   {
     "name" : "maize",
-    "type" : CROP,
+    "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -2003,7 +2003,7 @@
 /* 4. cft */
   {
     "name" : "tropical cereals",
-    "type" : CROP,
+    "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -2116,7 +2116,7 @@
 /* 5. cft */
   {
     "name" : "pulses",
-    "type" : CROP,
+    "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : true,           /* N fixing */
@@ -2229,7 +2229,7 @@
 /* 6. cft */
   {
     "name": "temperate roots",
-    "type" : CROP,
+    "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -2342,7 +2342,7 @@
 /* 7. cft */
   {
     "name" : "tropical roots", /* re-parameterized as Cassava, 14.12.2009 KW */
-    "type" : CROP,
+    "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -2455,7 +2455,7 @@
 /* 8. cft */
   {
     "name" : "oil crops sunflower",
-    "type" : CROP,
+    "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -2568,7 +2568,7 @@
 /* 9. cft */
   {
     "name" : "oil crops soybean",
-    "type" : CROP,
+    "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : true,           /* N fixing */
@@ -2681,7 +2681,7 @@
 /* 10. cft */
   {
     "name": "oil crops groundnut",
-    "type" : CROP,
+    "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -2794,7 +2794,7 @@
 /* 11. cft */
   {
     "name" : "oil crops rapeseed",
-    "type" : CROP,
+    "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type" : "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
@@ -2907,7 +2907,7 @@
 /* 12. cft */
   {
     "name" : "sugarcane",
-    "type" : CROP,
+    "type" : "crop",
     "peatland_pft" : false, /* if peatland pft */
     "cultivation_type": "annual crop", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
