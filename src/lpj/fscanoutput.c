@@ -246,7 +246,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
           }
         }
         if(config->outputvars[count].filename.isscale)
-          config->outnames[flag].scale=config->outputvars[count].filename.scale;
+          config->outnames[flag].scale=(float)config->outputvars[count].filename.scale;
         config->outputvars[count].oneyear=(strstr(config->outputvars[count].filename.name,"%d")!=NULL);
         if(config->outputvars[count].oneyear && checkfmt(config->outputvars[count].filename.name,'d'))
         {

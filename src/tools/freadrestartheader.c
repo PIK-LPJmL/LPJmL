@@ -31,7 +31,7 @@ Bool freadrestartheader(FILE *file,            /**< file pointer of binary file 
   if(freadint(&header->double_harvest,1,swap,file)!=1)
     return TRUE;
 #ifdef USE_RAND48
-  return freadshort(header->seed,NSEED,swap,file)!=NSEED;
+  return freadushort(header->seed,NSEED,swap,file)!=NSEED;
 #else
   return freadint(header->seed,NSEED,swap,file)!=NSEED;
 #endif

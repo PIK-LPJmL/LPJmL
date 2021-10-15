@@ -63,7 +63,8 @@ int main(int argc,char **argv)
   Coord_netcdf cdf;
   FILE *file;
   int i,j,n,index,cell,year;
-  float harvest,lon,lat,scale;
+  float harvest,lon,lat;
+  Real scale;
   Real harvest_total;
   Landfrac *harvest_sum;
   initconfig(&config);

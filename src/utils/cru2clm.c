@@ -136,7 +136,7 @@ int main(int argc,char **argv)
                 USAGE,stderr);
           return EXIT_FAILURE;
         }
-        header.scalar=strtod(argv[++i],&endptr);
+        header.scalar=(float)strtod(argv[++i],&endptr);
         if(*endptr!='\0')
         {
           fprintf(stderr,"Invalid value '%s' for option '-scale'.\n",

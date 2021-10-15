@@ -401,7 +401,7 @@ static void writepft(Outputfile *output,int index,float *data,int year,
 #endif
   scale=getscale(date,ndata,(config->outnames[index].timestep==ANNUAL) ? 1 : config->outnames[index].timestep,config->outnames[index].time);
   for(i=0;i<config->count;i++)
-    data[i]=config->outnames[index].scale*scale*data[i]+config->outnames[index].offset;
+    data[i]=(float)(config->outnames[index].scale*scale*data[i]+config->outnames[index].offset);
 #ifdef USE_MPI
   switch(output->method)
   {
