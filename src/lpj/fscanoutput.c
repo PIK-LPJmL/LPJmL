@@ -247,13 +247,6 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         }
         if(config->outputvars[count].filename.isscale)
           config->outnames[flag].scale=(float)config->outputvars[count].filename.scale;
-        if(flag==GLOBALFLUX && config->outputvars[count].filename.fmt!=TXT)
-        {
-          if(verbosity)
-            fprintf(stderr,"ERROR224: Invalid format '%s' for 'globalflux' output, only 'txt' allowed.\n",
-                    fmt[config->outputvars[count].filename.fmt]);
-          return TRUE;
-        }
         config->outputvars[count].oneyear=(strstr(config->outputvars[count].filename.name,"%d")!=NULL);
         if(config->outputvars[count].oneyear && checkfmt(config->outputvars[count].filename.name,'d'))
         {
