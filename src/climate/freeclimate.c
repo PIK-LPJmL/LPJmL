@@ -16,10 +16,12 @@
 
 #include "lpj.h"
 
-static void freeclimatedata2(Climate *climate, int n)
+void freeclimatedata2(Climate *climate)
 {
   int i;
-  for (i = 0; i<n; i++)
+  free(climate->co2.data);
+  free(climate->ch4.data);
+  for (i = 0; i<4; i++)
   {
     free(climate->data[i].tmax);
     free(climate->data[i].tmin);
@@ -30,9 +32,13 @@ static void freeclimatedata2(Climate *climate, int n)
     free(climate->data[i].swdown);
     free(climate->data[i].wet);
     free(climate->data[i].wind);
+    free(climate->data[i].humid);
+    free(climate->data[i].burntarea);
     free(climate->data[i].tamp);
+    free(climate->data[i].no3deposition);
+    free(climate->data[i].nh4deposition);
+    free(climate->data[i].lightning);
   }
-  free(climate->data[0].lightning);
 } /* of 'freeclimatedata2' */
 
 void closeclimateanomalies(Climate *climate,    /**< pointer to climate data */
@@ -122,17 +128,10 @@ void freeclimate(Climate *climate,    /**< pointer to climate data */
                  const Config *config /**< LPJ configuration */
                 )                     /** \return void */
 {
-  int n;
   if(climate!=NULL)
   {
     closeclimatefiles(climate,config);
-    free(climate->co2.data);
-    free(climate->ch4.data);
-    if(config->isanomaly)
-      n=(config->delta_year>1) ? 4 : 2;
-    else
-      n=1;
-    freeclimatedata2(climate,n);
+    freeclimatedata2(climate);
   }
   free(climate);
 } /* of 'freeclimate' */

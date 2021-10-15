@@ -116,6 +116,7 @@ extern void freeclimate(Climate *,const Config *);
 extern Bool storeclimate(Climatedata *,Climate *,const Cell *,int,int,
                          const Config *);
 extern void freeclimatedata(Climatedata *);
+extern void freeclimatedata2(Climate *);
 extern void restoreclimate(Climate *,const Climatedata *,int);
 extern void moveclimate(Climate *,const Climatedata *,int,int);
 extern void prdaily(Real [],int,Real,Real,Seed);
