@@ -63,10 +63,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
               allocation_today(setasidestand,config);
               alloc_today_rf=TRUE;
             }
-            stocks=cultivate(cell,config->pftpar+npft+cft,
-                             cell->ml.cropdates[cft].vern_date20,
-                             cell->ml.landfrac[0].crop[cft],FALSE,day,wtype,
-                             setasidestand,cell->ml.with_tillage,
+            stocks=cultivate(cell,FALSE,day,wtype,setasidestand,
                              npft,ncft,cft,year,config);
             flux_estab.carbon+=stocks.carbon;
             flux_estab.nitrogen+=stocks.nitrogen;
@@ -118,11 +115,8 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
                     allocation_today(setasidestand,config);
                     alloc_today_rf=TRUE;
                   }
-                  stocks=cultivate(cell,config->pftpar+npft+cft,
-                    cell->ml.cropdates[cft].vern_date20,
-                    cell->ml.landfrac[0].crop[cft],FALSE,day,wtype,
-                    setasidestand,cell->ml.with_tillage,
-                    npft,ncft,cft,year,config);
+                  stocks=cultivate(cell,FALSE,day,wtype,setasidestand,
+                                   npft,ncft,cft,year,config);
                   flux_estab.carbon+=stocks.carbon;
                   flux_estab.nitrogen+=stocks.nitrogen;
                   if(!config->double_harvest)
@@ -152,10 +146,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
               allocation_today(setasidestand, config);
               alloc_today_ir=TRUE;
             }
-            stocks=cultivate(cell,config->pftpar+npft+cft,
-                             cell->ml.cropdates[cft].vern_date20,
-                             cell->ml.landfrac[1].crop[cft],TRUE,day,wtype,
-                             setasidestand,cell->ml.with_tillage,
+            stocks=cultivate(cell,TRUE,day,wtype,setasidestand,
                              npft,ncft,cft,year,config);
             flux_estab.carbon+=stocks.carbon;
             flux_estab.nitrogen+=stocks.nitrogen;
@@ -197,10 +188,7 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
                     allocation_today(setasidestand, config);
                     alloc_today_ir=TRUE;
                   }
-                  stocks=cultivate(cell, config->pftpar+npft+cft,
-                                   cell->ml.cropdates[cft].vern_date20,
-                                   cell->ml.landfrac[irrigation->irrigation].crop[cft], irrigation->irrigation, day, wtype,
-                                   setasidestand, cell->ml.with_tillage,
+                  stocks=cultivate(cell,irrigation->irrigation, day, wtype,setasidestand,
                                    npft, ncft, cft, year,config);
                   flux_estab.carbon+=stocks.carbon;
                   flux_estab.nitrogen+=stocks.nitrogen;
