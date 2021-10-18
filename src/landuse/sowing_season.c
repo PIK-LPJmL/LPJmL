@@ -51,91 +51,63 @@ static void cultcftstand(Stocks *flux_estab, /**< establishment flux */
   }//if check lu
 } /* of 'cultcftstand' */
 
-static void cultcft(Stocks *flux_estab, /**< establishment flux */
-                    Bool *alloc_today,
-                    Cell *cell,          /**< pointer to cell */
-                    Bool irrig,          /** stand is irrigated? */ 
-                    int npft,            /**< number of natural PFTs  */
-                    int ncft,            /**< number of crop PFTs */
-                    int cft,
-                    int year,            /**< simulation year (AD) */
-                    int day,             /**< day (1..365) */
-                    const Config *config /**< LPJmL settings */
-                   )
+static void sowingcft(Stocks *flux_estab, /**< establishment flux */
+                     Bool *alloc_today,
+                     Cell *cell,          /**< pointer to cell */
+                     Bool irrig,          /** stand is irrigated? */
+                     int npft,            /**< number of natural PFTs  */
+                     int ncft,            /**< number of crop PFTs */
+                     int cft,
+                     int year,            /**< simulation year (AD) */
+                     int day,             /**< day (1..365) */
+                     const Config *config /**< LPJmL settings */
+                    )
 {
   Stand *stand,*cropstand,*setasidestand;
   Pft *pft;
-  Real difffrac; 
+  Real difffrac;
   int s,p,cft_id,pos;
   Irrigation *irrigation,*data;
-  difffrac=0;
-  foreachstand(stand,s,cell->standlist)
+  s=findlandusetype(cell->standlist,(irrig) ? SETASIDE_IR : SETASIDE_RF);
+
+  if(s!=NOT_FOUND)
   {
-    if(stand->type->landusetype==AGRICULTURE)
+    setasidestand=getstand(cell->standlist,s);
+    cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,npft,ncft,cft,year,day,config);
+  }
+  else
+  {
+    difffrac=0;
+    foreachstand(stand,s,cell->standlist)
     {
-      irrigation=stand->data;
-      // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
-      foreachpft(pft,p,&stand->pftlist)
-        cft_id=pft->par->id-npft;
-      if(irrigation->irrigation==irrig && stand->frac > (2*tinyfrac+epsilon) && stand->frac > (cell->ml.landfrac[irrig].crop[cft_id]+epsilon))
+      if(stand->type->landusetype==AGRICULTURE)
       {
-        difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrig].crop[cft_id]);
-        pos=addstand(&agriculture_stand,cell);
-        cropstand=getstand(cell->standlist,pos-1);
-        data=cropstand->data;
-        cropstand->frac=difffrac;
-        stand->frac-=difffrac;
-        //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
-        data->irrigation=irrig;
-        reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft,config);
-        set_irrigsystem(cropstand,cft,npft,ncft,config);
-        setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrig,year,config);
-        setasidestand=getstand(cell->standlist,pos-1);
-        cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,npft,ncft,cft,year,day,config);
-      }//if too large stand->frac
-    } // if AGRICULTURE
-    if(difffrac>epsilon)
-      break;
-  } // foreachstand
-} /* of 'cultcft' */
-
-static void sowingcft(Stocks *flux_estab,  /**< establishment flux */
-                      Bool alloc_today[2],
-                      Cell *cell,          /**< pointer to cell */
-                      int npft,            /**< number of natural PFTs  */
-                      int ncft,            /**< number of crop PFTs */
-                      int cft,
-                      int year,            /**< simulation year (AD) */
-                      int day,             /**< day (1..365) */
-                      const Config *config /**< LPJmL settings */
-                     )
-{
-  Stand *setasidestand;
-  int s;
-  /*rainfed CFTs*/
-  s=findlandusetype(cell->standlist,SETASIDE_RF);
-
-  if(s!=NOT_FOUND)
-  {
-    setasidestand=getstand(cell->standlist,s);
-    cultcftstand(flux_estab,alloc_today,cell,setasidestand,FALSE,npft,ncft,cft,year,day,config);
+        irrigation=stand->data;
+        // determine PFT-ID of crop grown here (use last as there is only one crop per cropstand)
+        foreachpft(pft,p,&stand->pftlist)
+          cft_id=pft->par->id-npft;
+        if(irrigation->irrigation==irrig && stand->frac > (2*tinyfrac+epsilon) && stand->frac > (cell->ml.landfrac[irrig].crop[cft_id]+epsilon))
+        {
+          difffrac=min(stand->frac-tinyfrac,stand->frac-cell->ml.landfrac[irrig].crop[cft_id]);
+          pos=addstand(&agriculture_stand,cell);
+          cropstand=getstand(cell->standlist,pos-1);
+          data=cropstand->data;
+          cropstand->frac=difffrac;
+          stand->frac-=difffrac;
+          //printf("taking %g from %g of %s\n",difffrac,stand->frac+difffrac,pft->par->name);
+          data->irrigation=irrig;
+          reclaim_land(stand,cropstand,cell,config->istimber,npft+ncft,config);
+          set_irrigsystem(cropstand,cft,npft,ncft,config);
+          setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrig,year,config);
+          setasidestand=getstand(cell->standlist,pos-1);
+          cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,npft,ncft,cft,year,day,config);
+        }//if too large stand->frac
+      } // if AGRICULTURE
+      if(difffrac>epsilon)
+        break;
+    } // foreachstand
   }
-  else
-  {
-    cultcft(flux_estab,alloc_today,cell,FALSE,npft,ncft,cft,year,day,config);
-  }/*of rainfed CFTs*/
-  /*irrigated CFTs*/
-  s=findlandusetype(cell->standlist,SETASIDE_IR);
-  if(s!=NOT_FOUND)
-  {
-    setasidestand=getstand(cell->standlist,s);
-    cultcftstand(flux_estab,alloc_today+1,cell,setasidestand,TRUE,npft,ncft,cft,year,day,config);
-  }
-  else
-  {
-    cultcft(flux_estab,alloc_today+1,cell,TRUE,npft,ncft,cft,year,day,config);
-  }/*of irrigated CFTs*/
-}
+} /* of 'sowingcft' */
 
 Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                      int day,             /**< day (1..365) */
@@ -155,27 +127,33 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
   s2=findlandusetype(cell->standlist,SETASIDE_IR);
   if(s!=NOT_FOUND||s2!=NOT_FOUND)
   {
-
     for(cft=0; cft<ncft; cft++)
     {
       croppar=config->pftpar[npft+cft].data;
       cvrtdaymonth(&dayofmonth,&month,day);
 
-      if(cell->ml.seasonality_type==NO_SEASONALITY) /*no seasonality*/
+      if(cell->ml.seasonality_type==NO_SEASONALITY && dayofmonth==1) /*no seasonality*/
       {
-        if(month==cell->ml.sowing_month[cft] && dayofmonth==1)
-          sowingcft(&flux_estab,alloc_today,cell,npft,ncft,cft,year,day,config);
+        if(month==cell->ml.sowing_month[cft])
+          sowingcft(&flux_estab,alloc_today,cell,FALSE,npft,ncft,cft,year,day,config);
+        if(month==cell->ml.sowing_month[cft+ncft])
+          sowingcft(&flux_estab,alloc_today+1,cell,TRUE,npft,ncft,cft,year,day,config);
       } /*of no seasonality*/
 
       if (cell->ml.seasonality_type==PRECIP || cell->ml.seasonality_type==PRECIPTEMP) /*precipitation-dependent rules*/
       {
-        if(month==cell->ml.sowing_month[cft]&&(dprec>MIN_PREC||dayofmonth==ndaymonth[month-1])) /*no irrigation, first wet day*/
-          sowingcft(&flux_estab,alloc_today,cell,npft,ncft,cft,year,day,config);
+        if(dprec>MIN_PREC || dayofmonth==ndaymonth[month-1])
+        {
+          if(month==cell->ml.sowing_month[cft]) /*no irrigation, first wet day*/
+            sowingcft(&flux_estab,alloc_today,cell,FALSE,npft,ncft,cft,year,day,config);
+          if(month==cell->ml.sowing_month[cft+ncft]) /* irrigation, first wet day*/
+            sowingcft(&flux_estab,alloc_today+1,cell,TRUE,npft,ncft,cft,year,day,config);
+        }
       } /*of precipitation seasonality*/
 
       if (cell->ml.seasonality_type==TEMPERATURE || cell->ml.seasonality_type==TEMPPRECIP) /*temperature-dependent rule*/
       {
-        if(month==cell->ml.sowing_month[cft]) /*no irrigation*/
+        if(month==cell->ml.sowing_month[cft]) /* no irrigation */
         {
           m=month-1; /*m runs from 0 to 11*/
           mm=(m-1<0) ? NMONTH-1 : m-1; /*mm is the month before*/
@@ -185,17 +163,36 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
             if(((cell->climbuf.temp[NDAYS-1]<croppar->temp_fall)
                &&(cell->climbuf.temp[NDAYS-2]>=croppar->temp_fall||dayofmonth==1))||dayofmonth==ndaymonth[m]) /*sow winter variety*/
             {
-              sowingcft(&flux_estab,alloc_today,cell,npft,ncft,cft,year,day,config);
+              sowingcft(&flux_estab,alloc_today,cell,FALSE,npft,ncft,cft,year,day,config);
             }
           }
           else if(((cell->climbuf.temp[NDAYS-1]>croppar->temp_spring)
                   &&(cell->climbuf.temp[NDAYS-2]<=croppar->temp_spring||dayofmonth==1))||dayofmonth==ndaymonth[m]) /*sow summer variety */
           {
-            sowingcft(&flux_estab,alloc_today,cell,npft,ncft,cft,year,day,config);
+            sowingcft(&flux_estab,alloc_today,cell,FALSE,npft,ncft,cft,year,day,config);
           } /*of cultivating summer variety*/
         } /*of if month==ml.sowing_month[cft]*/
-      }
-    }  /*for(cft=...) */
+        if(month==cell->ml.sowing_month[cft+ncft]) /* irrigation */
+        {
+          m=month-1; /*m runs from 0 to 11*/
+          mm=(m-1<0) ? NMONTH-1 : m-1; /*mm is the month before*/
+          if(cell->climbuf.mtemp20[mm]>cell->climbuf.mtemp20[m]&&croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE)
+          {
+            /*calculate day when temperature exceeds or falls below a crop-specific temperature threshold - from former function calc_cropdates*/
+            if(((cell->climbuf.temp[NDAYS-1]<croppar->temp_fall)
+               &&(cell->climbuf.temp[NDAYS-2]>=croppar->temp_fall||dayofmonth==1))||dayofmonth==ndaymonth[m]) /*sow winter variety*/
+            {
+              sowingcft(&flux_estab,alloc_today+1,cell,TRUE,npft,ncft,cft,year,day,config);
+            }
+          }
+          else if(((cell->climbuf.temp[NDAYS-1]>croppar->temp_spring)
+                  &&(cell->climbuf.temp[NDAYS-2]<=croppar->temp_spring||dayofmonth==1))||dayofmonth==ndaymonth[m]) /*sow summer variety */
+          {
+            sowingcft(&flux_estab,alloc_today+1,cell,TRUE,npft,ncft,cft,year,day,config);
+          } /*of cultivating summer variety*/
+        } /*of if month==ml.sowing_month[cft+npft]*/
+      } /* of temperature-dependent rule */
+    }  /* for(cft=...) */
   }
   return flux_estab;
 } /* of 'sowing_season' */
