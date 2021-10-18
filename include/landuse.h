@@ -133,6 +133,7 @@ extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int,const Config *);
 extern Bool getlanduse(Landuse,Cell *,int,int,int,const Config *);
 extern void landusechange(Cell *,int,int,Bool,int,const Config *);
 extern Bool setaside(Cell *,Stand *,Bool,Bool,int,Bool,int,const Config *);
+extern void sowingcft(Stocks *,Bool *,Cell *,Bool,Bool,int,int,int,int,int,const Config *);
 extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
 extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
 extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);
