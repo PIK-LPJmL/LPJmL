@@ -15,9 +15,9 @@
 #include "lpj.h"
 
 #ifdef USE_UDUNITS
-#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] gridfile netcdffile\n"
+#define USAGE "Usage: %s [-swap] [-v] [-units unit] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] gridfile netcdffile ...\n"
 #else
-#define USAGE "Usage: %s [-swap] [-v] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] gridfile netcdffile\n"
+#define USAGE "Usage: %s [-swap] [-v] [-var name] [-clm] [-cellsize size] [-byte] [-o filename] gridfile netcdffile ...\n"
 #endif
 
 #if defined(USE_NETCDF) || defined(USE_NETCDF4)
@@ -176,12 +176,6 @@ static Bool readdata(Climatefile *file,    /* climate data file */
           }
           else
           {
-            if(s[file->nlon*address[0]+address[1]]<0 || s[file->nlon*address[0]+address[1]]>UCHAR_MAX)
-            {
-              fprintf(stderr,"WARNING423: value %d for cell=%d (",s[file->nlon*address[0]+address[1]],cell);
-              fprintcoord(stderr,coords+cell);
-              fprintf(stderr,") does not fit in byte.\n");
-            }
             data=(float)(file->slope*f[file->nlon*address[0]+address[1]]+file->intercept);
             fwrite(&data,sizeof(float),1,bin);
           }
@@ -199,6 +193,12 @@ static Bool readdata(Climatefile *file,    /* climate data file */
           }
           if(isbyte)
           {
+            if(s[file->nlon*address[0]+address[1]]<0 || s[file->nlon*address[0]+address[1]]>UCHAR_MAX)
+            {
+              fprintf(stderr,"WARNING423: value %d for cell=%d (",s[file->nlon*address[0]+address[1]],cell);
+              fprintcoord(stderr,coords+cell);
+              fprintf(stderr,") does not fit in byte.\n");
+            }
             bdata=(Byte)s[file->nlon*address[0]+address[1]];
             fwrite(&bdata,sizeof(Byte),1,bin);
           }
@@ -348,9 +348,9 @@ int main(int argc,char **argv)
               strerror(errno));
       return EXIT_FAILURE;
     }
-    if(getfilesize(argv[i]) % (sizeof(short)*2)!=0)
+    if(getfilesizep(file) % (sizeof(short)*2)!=0)
       fprintf(stderr,"Warning: File size of '%s' is not multiple of %d.\n",argv[i],(int)(sizeof(short)*2));
-    config.ngridcell=getfilesize(argv[i])/sizeof(short)/2;
+    config.ngridcell=getfilesizep(file)/sizeof(short)/2;
     if(config.ngridcell==0)
     {
       fprintf(stderr,"Number of cells is zero in '%s'.\n",argv[i]);

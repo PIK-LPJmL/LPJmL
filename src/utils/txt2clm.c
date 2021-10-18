@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 #define TXT2CLM_VERSION "1.0.001"
-#define USAGE "Usage: txt2clm [-h] [-scale s] [-float] [-int] [-nbands n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] txtfile clmfile\n"
+#define USAGE "Usage: txt2clm [-h] [-cellindex] [-scale s] [-float] [-int] [-nbands n] [-cellsize size]\n               [-firstcell n] [-ncell n] [-firstyear f] [-header id] txtfile clmfile\n"
 
 int main(int argc,char **argv)
 {
@@ -52,6 +52,7 @@ int main(int argc,char **argv)
         printf(USAGE
                "Arguments:\n"
                "-h           print this help text\n"
+               "-cellindex   set order to cell index\n"
                "-float       write data as float, default is short\n"
                "-int         write data as int, default is short\n"
                "-nbands n    number of bands, default is %d\n"
@@ -70,6 +71,8 @@ int main(int argc,char **argv)
         header.datatype=LPJ_FLOAT;
       else if(!strcmp(argv[iarg],"-int"))
         header.datatype=LPJ_INT;
+      else if(!strcmp(argv[iarg],"-cellindex"))
+        header.order=CELLINDEX;
       else if(!strcmp(argv[iarg],"-scale"))
       {
         if(iarg==argc-1)
@@ -226,6 +229,22 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   fwriteheader(out,&header,id,LPJ_CLIMATE_VERSION);
+  if(header.order==CELLINDEX)
+  {
+    for(i=0;i<header.ncell;i++)
+    {
+      if(fscanf(file,"%d",&data)!=1)
+      {
+        fprintf(stderr,"Unexpected end of file in '%s' reading cell index.\n",argv[iarg]);
+        return EXIT_FAILURE;
+      }
+      if(fwrite(&data,sizeof(int),1,out)!=1)
+      {
+        fprintf(stderr,"Error writing data in '%s': %s.\n",argv[iarg+1],strerror(errno));
+        return EXIT_FAILURE;
+      }
+    }
+  }
   do
   {
     if(header.datatype==LPJ_INT)

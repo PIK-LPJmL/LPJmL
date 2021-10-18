@@ -66,6 +66,7 @@ int getnsoilcode(const Filename *filename, /**< filename of soil code file */
   else if(filename->fmt==META)
   {
     header.ncell=-1;
+    header.order=CELLYEAR;
     header.firstcell=0;
     header.nyear=1;
     header.datatype=LPJ_BYTE;
@@ -93,7 +94,7 @@ int getnsoilcode(const Filename *filename, /**< filename of soil code file */
     else
       version=2;
     /* read header */
-    if(freadheader(file,&header,&swap,LPJSOIL_HEADER,&version))
+    if(freadheader(file,&header,&swap,LPJSOIL_HEADER,&version,isout))
     {
       if(isout)
         fprintf(stderr,"ERROR154: Invalid header in '%s'.\n",filename->name);

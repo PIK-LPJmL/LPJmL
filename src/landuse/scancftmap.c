@@ -17,6 +17,19 @@
 #include "lpj.h"
 #include "grassland.h"
 
+Bool findcftmap(const char *name,       /**< PFT name to find in landuse map */
+                const Pftpar *pftpar,   /**< PFT parameter array */
+                const int landusemap[], /**< landuse map array */
+                int size                /**< size of landuse map araay */
+               )                        /** \return whether  PFT name was found (TRUE/FALSE) */
+{
+  int cft;
+  for(cft=0;cft<size;cft++)
+    if(landusemap[cft]!=NOT_FOUND && !strcmp(name,pftpar[landusemap[cft]].name))
+      return TRUE;
+  return FALSE;
+} /* of 'findcftmap' */
+
 int findpftname(const char *name,     /**< PFT name to find in array */
                 const Pftpar *pftpar, /**< PFT parameter array */
                 int ncft              /**< size of PFT array */

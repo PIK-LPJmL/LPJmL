@@ -42,6 +42,7 @@
   "new_phenology": true,    /* GSI phenology enabled */
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : false,
+  "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
   "with_nitrogen" : "no", /* other options: "no", "lim", "unlim" */
@@ -49,6 +50,7 @@
   "const_climate" : false,
   "shuffle_climate" : false,
   "fix_climate" : false,
+  "fix_landuse" : false,
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "equilsoil" : false,

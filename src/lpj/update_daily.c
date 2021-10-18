@@ -559,8 +559,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 #endif
   /* Establishment fluxes are area weighted in subroutines */
-  getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.nitrogen;
-  getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.carbon;
+  getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon;
+  getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen;
   cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen;
   cell->balance.flux_estab.carbon+=flux_estab.carbon;
   cell->output.dcflux-=flux_estab.carbon;

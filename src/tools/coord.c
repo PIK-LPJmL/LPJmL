@@ -56,6 +56,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     header.firstcell=0;
     header.ncell=0;
     header.nyear=1;
+    header.order=CELLYEAR;
     header.cellsize_lon=header.cellsize_lat=0.5;
     coordfile->file=openmetafile(&header,&coordfile->swap,&coordfile->offset,filename->name,isout);
     if(coordfile->file==NULL)
@@ -111,7 +112,7 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
     else
       version=2;
     if(freadheader(coordfile->file,&header,&coordfile->swap,
-                   LPJGRID_HEADER,&version))
+                   LPJGRID_HEADER,&version,isout))
     {
       if(isout)
         fprintf(stderr,"ERROR154: Invalid header in '%s'.\n",filename->name);

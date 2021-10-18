@@ -51,7 +51,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   version=setversion;
-  if(freadheader(file,&header,&swap,LPJGRID_HEADER,&version))
+  if(freadheader(file,&header,&swap,LPJGRID_HEADER,&version,TRUE))
   {
     fprintf(stderr,"Error reading header in '%s'.\n",argv[1]);
     fclose(file);
@@ -90,7 +90,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   base_version=setversion;
-  if(freadheader(file,&header2,&swap,LPJGRID_HEADER,&base_version))
+  if(freadheader(file,&header2,&swap,LPJGRID_HEADER,&base_version,TRUE))
   {
     fprintf(stderr,"Error reading header in '%s'.\n",argv[2]);
     fclose(file);

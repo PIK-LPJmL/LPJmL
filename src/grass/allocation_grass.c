@@ -173,18 +173,18 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
     else
     {
       /* testing if there is too much nitrogen for allowed NC ratios */
-      if (grass->ind.leaf.nitrogen/grass->ind.leaf.carbon>pft->par->ncleaf.high)
+      if (grass->ind.leaf.carbon>0 && grass->ind.leaf.nitrogen/grass->ind.leaf.carbon>pft->par->ncleaf.high)
       {
         grass->ind.leaf.nitrogen = grass->ind.leaf.carbon*pft->par->ncleaf.high;
         pft->bm_inc.nitrogen += (lastday.leaf.nitrogen-grass->ind.leaf.nitrogen)*pft->nind;
       }
-      if(grass->ind.root.nitrogen/grass->ind.root.carbon>pft->par->ncleaf.high/grasspar->ratio)
+      if(grass->ind.root.carbon>0 && grass->ind.root.nitrogen/grass->ind.root.carbon>pft->par->ncleaf.high/grasspar->ratio)
       {
         grass->ind.root.nitrogen = grass->ind.root.carbon*pft->par->ncleaf.high/grasspar->ratio;
         pft->bm_inc.nitrogen += (lastday.root.nitrogen-grass->ind.root.nitrogen)*pft->nind;
       }
       /* testing if there is too much carbon for allowed NC ratios */
-      if(grass->ind.leaf.nitrogen / grass->ind.leaf.carbon<pft->par->ncleaf.low)
+      if(grass->ind.leaf.carbon>0 && grass->ind.leaf.nitrogen / grass->ind.leaf.carbon<pft->par->ncleaf.low)
       {
         lastday.leaf.carbon = grass->ind.leaf.carbon;
         grass->ind.leaf.carbon = grass->ind.leaf.nitrogen / pft->par->ncleaf.low;
@@ -193,8 +193,8 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         update_fbd_grass(litter, pft->par->fuelbulkdensity,
           (lastday.leaf.carbon - grass->ind.leaf.carbon)*pft->nind);
       }
-      if(grass->ind.root.nitrogen/grass->ind.root.carbon<pft->par->ncleaf.low/grasspar->ratio)
-       {
+      if(grass->ind.root.carbon>0 && grass->ind.root.nitrogen/grass->ind.root.carbon<pft->par->ncleaf.low/grasspar->ratio)
+      {
         lastday.root.carbon = grass->ind.root.carbon;
         grass->ind.root.carbon = grass->ind.root.nitrogen / pft->par->ncleaf.low*grasspar->ratio;
         litter->item[pft->litter].bg.carbon += (lastday.root.carbon - grass->ind.root.carbon)*pft->nind;

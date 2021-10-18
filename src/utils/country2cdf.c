@@ -302,7 +302,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   version=READ_VERSION;
-  if(freadanyheader(file,&header,&swap,headername,&version))
+  if(freadanyheader(file,&header,&swap,headername,&version,TRUE))
   {
     fprintf(stderr,"Error reading header of '%s'.\n",argv[iarg+2]);
     fclose(file);

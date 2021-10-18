@@ -62,6 +62,7 @@
 #define GAMMA_FUNC_ERR 42
 #define WETL_ERR 43
 #define HAG_BETA_ERR 44
+#define INVALID_EXTFLOW_ERR 45
 
 /* Definition of macros */
 

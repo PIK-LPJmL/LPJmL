@@ -914,7 +914,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
     irrigation=i;
     for(p=0;p<config->nagtree;p++)
     {
-      if(!strcmp(config->pftpar[p+npft-config->nagtree].name,"cotton") && cell->ml.sowing_day_cotton[irrigation]==-1)
+      if(config->iscotton && !strcmp(config->pftpar[p+npft-config->nagtree].name,"cotton") && cell->ml.sowing_day_cotton[irrigation]==-1)
         continue;
       s=findstandpft(cell->standlist,p+npft-config->nagtree,irrigation);
       if(s!=NOT_FOUND)

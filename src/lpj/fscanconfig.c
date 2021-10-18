@@ -210,6 +210,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(fscanbool(file,&config->new_trf,"new_trf",TRUE,verbose))
     return TRUE;
   fscanbool2(file,&config->river_routing,"river_routing");
+  config->extflow=FALSE;
+  if(config->river_routing)
+  {
+    if(fscanbool(file,&config->extflow,"extflow",TRUE,verbose))
+      return TRUE;
+  }
   config->reservoir=FALSE;
 #ifdef IMAGE
   config->groundwater_irrig = NO_GROUNDWATER_IRRIG;
@@ -276,10 +282,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS || config->withlanduse==ONLY_CROPS)
         fscanint2(file,&config->landuse_year_const,"landuse_year_const");
       config->fix_landuse=FALSE;
-      if(config->withlanduse!=CONST_LANDUSE && config->fix_climate)
+      if(config->withlanduse!=CONST_LANDUSE)
       {
         if(fscanbool(file,&config->fix_landuse,"fix_landuse",TRUE,verbose))
           return TRUE;
+        if(config->fix_landuse)
+        {
+          fscanint2(file,&config->fix_landuse_year,"fix_landuse_year");
+        }
       }
       if(fscankeywords(file,&config->sdate_option,"sowing_date_option",sowing_data_option,3,FALSE,verbose))
         return TRUE;
@@ -433,6 +443,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->nwft=getnculttype(config->pftpar, config->npft[GRASS] + config->npft[TREE],WP);
   config->nwptype=(config->nwft) ? NWPTYPE : 0;
   config->ngrass=getngrassnat(config->pftpar,config->npft[GRASS]+config->npft[TREE]);
+  config->iscotton=findpftname("cotton",config->pftpar+config->npft[GRASS]+config->npft[TREE]-config->nagtree,config->nagtree)!=NOT_FOUND;
   if(config->others_to_crop)
   {
     if(fscanstring(file,name,"cft_temp",FALSE,verbose))
@@ -579,6 +590,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->landusemap=scancftmap(file,&config->landusemap_size,"landusemap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
     if(config->landusemap==NULL)
       return TRUE;
+    if(config->withlanduse!=ALL_CROPS && !findcftmap("cotton",config->pftpar,config->landusemap,config->landusemap_size))
+      config->iscotton=FALSE;
     if(config->fertilizer_input==FERTILIZER || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
     {
       config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
@@ -597,7 +610,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(&input,&config->regioncode_filename,config->inputdir,FALSE,"regioncode");
     }
     scanclimatefilename(&input,&config->landuse_filename,config->inputdir,FALSE,"landuse");
-    if(config->nagtree)
+    if(config->iscotton)
     {
       scanclimatefilename(&input,&config->sowing_cotton_rf_filename,config->inputdir,FALSE,"sowing_ag_tree_rf");
       scanclimatefilename(&input,&config->harvest_cotton_rf_filename,config->inputdir,FALSE,"harvest_ag_tree_rf");
@@ -645,6 +658,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(config->drainage_filename.fmt==CDF)
     {
       scanclimatefilename(&input,&config->river_filename,config->inputdir,FALSE,"river");
+    }
+    if(config->extflow)
+    {
+      scanclimatefilename(&input,&config->extflow_filename,config->inputdir,FALSE,"extflow");
+      if(config->extflow_filename.fmt!=META && config->extflow_filename.fmt!=CLM && config->extflow_filename.fmt!=CLM2)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR197: clm file is only supported for input '%s' in this version of LPJmL.\n",config->extflow_filename.name);
+        return TRUE;
+      }
     }
     if(config->withlanduse!=NO_LANDUSE)
     {

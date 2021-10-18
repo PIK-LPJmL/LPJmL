@@ -21,6 +21,7 @@ void freeinput(Input input,          /**< Input struct */
               )
 {
   freeclimate(input.climate,config);
+  freeextflow(input.extflow);
   freewateruse(input.wateruse,isroot(*config));
 #ifdef IMAGE
   freewateruse(input.wateruse_wd,isroot(*config));

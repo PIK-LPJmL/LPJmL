@@ -41,6 +41,9 @@
           -mean
                Print global mean value instead of global sum
 
+          -yearsum
+               Print yearly sum of monthly or daily data
+
           <I>gridfile</I>
                Filename of binary grid file
 
@@ -48,8 +51,8 @@
                Filename(s) of raw binary output files
 
      <B>EXAMPLE</B>
-          Print global sum of NPP and heterotrophic respiration:
-               <B>printglobal</B> -month grid.bin mnpp.bin mrh.bin
+          Print global annual sum of NPP and heterotrophic respiration:
+               <B>printglobal</B> -month -yearsum grid.bin mnpp.bin mrh.bin
 
      <B>EXIT</B> <B>STATUS</B>
           <B>printglobal</B> returns a zero exit status if the output files
@@ -59,6 +62,7 @@
      <B>AUTHORS</B>
           For authors and contributors see AUTHORS file
 
+
      <B>COPYRIGHT</B>
           (C) Potsdam Institute for Climate Impact Research (PIK), see
           COPYRIGHT file
@@ -66,10 +70,6 @@
 
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="printharvest.html">printharvest(1)</A></B>, <B><A HREF="bin2cdf.html">bin2cdf(1)</A></B>, <B><A HREF="cdf2bin.html">cdf2bin(1)</A></B>, <B><A HREF="lpjml.html">lpjml(1)</A></B>
-
-
-
-
 
 
 

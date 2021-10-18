@@ -23,6 +23,7 @@ Bool freadresdata(FILE *file,  /**< pointer to restart file */
   if(cell->ml.resdata==NULL)
     return TRUE;
   /*initialize other characteristics of this reservoir*/
+  cell->ml.resdata->reservoir.area=0; /* to avoid uninitialized variable */
   initresdata(cell);
   /* read from restart file */
   freadreal1(&cell->ml.reservoirfrac,swap,file);

@@ -30,6 +30,7 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
   if(filename->fmt==META)
   {
     header.scalar=1;
+    header.order=CELLYEAR;
     header.nbands=1;
     header.datatype=LPJ_BYTE;
     header.firstcell=0;
@@ -74,7 +75,7 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
       version=READ_VERSION;
     else
       version=2;
-    if(freadheader(file,&header,swap,LPJSOIL_HEADER,&version))
+    if(freadheader(file,&header,swap,LPJSOIL_HEADER,&version,isout))
     {
       if(isout)
         fprintf(stderr,"ERROR154: Invalid header in '%s'.\n",filename->name);

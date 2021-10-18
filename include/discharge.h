@@ -45,6 +45,8 @@ typedef struct
   Real drunoff;           /**< daily runoff (mm) */
   Real dfout;
   Real fout;
+  Real fin_ext;           /**< external flow (dm3/day) */
+  Real afin_ext;          /**< annual sum of external flow (dm3/yr) */
   Real mfin;              /**< pool for all incoming water fluxes into cell, used to close cell water balance in update_monthly and check_fluxes */
   Real mfout;             /**< pool for all water fluxes leaving the cell, used to close cell water balance in update_monthly and check_fluxes */
   Real waterdeficit;
@@ -71,6 +73,7 @@ typedef struct
 } Discharge;
 
 typedef struct wateruse *Wateruse;
+typedef struct extflow *Extflow;
 
 /* Declaration of functions */
 
@@ -78,5 +81,8 @@ extern void wateruse(Cell *,int,int,int,const Config *);
 extern void withdrawal_demand(Cell *,const Config *);
 extern void distribute_water(Cell *,int,int,int,const Config *);
 extern Real *transfer_function(Real,int *);
+extern Extflow initextflow(const Config *);
+extern Bool getextflow(Extflow,Cell *,int,int);
+extern void freeextflow(Extflow);
 
 #endif

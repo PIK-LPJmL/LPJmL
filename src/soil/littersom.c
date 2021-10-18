@@ -157,6 +157,10 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
                  /(soil->wsats[l]-soil->ice_depth[l]-soil->ice_fw[l]-(soil->wpwps[l]*soil->ice_pwp[l]));
       else
         moist[l]=epsilon;
+      if (moist[l]<epsilon)
+        moist[l]=epsilon;
+      else if (moist[l]>1)
+        moist[l]=1;
     }
   foreachsoillayer(l)
     soil_moist[l] = (soil->w[l] * soil->whcs[l] + soil->wpwps[l] + soil->w_fw[l]) / soil->wsats[l];

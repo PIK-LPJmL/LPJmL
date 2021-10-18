@@ -32,7 +32,7 @@ int main(int argc,char **argv)
       {
         if(argc-1==iarg)
         {
-          fprintf(stderr,"Error Argument missing for option '-version'.\n"
+          fprintf(stderr,"Error: Argument missing for option '-version'.\n"
                   USAGE);
           return EXIT_FAILURE;
         }
@@ -69,7 +69,7 @@ int main(int argc,char **argv)
       continue;
     }
     version=version_set;
-    if(freadanyheader(file,&header,&swap,id,&version))
+    if(freadanyheader(file,&header,&swap,id,&version,TRUE))
     {
       fprintf(stderr,"Error reading header in '%s'.\n",argv[i]);
       fclose(file);

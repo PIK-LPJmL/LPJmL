@@ -123,7 +123,7 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
       version=setversion;
-      if(freadanyheader(files[i],&header,swap+i,id,&version))
+      if(freadanyheader(files[i],&header,swap+i,id,&version,TRUE))
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+iarg]);
         return EXIT_FAILURE;

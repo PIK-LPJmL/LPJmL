@@ -113,7 +113,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   data_version=setversion;
-  if(freadanyheader(data_file,&header,&swap,id,&data_version))
+  if(freadanyheader(data_file,&header,&swap,id,&data_version,TRUE))
   {
     fprintf(stderr,"Error reading header in '%s'.\n",argv[3]);
     return EXIT_FAILURE;
@@ -129,7 +129,7 @@ int main(int argc,char **argv)
             header.ncell,argv[3],ngrid);
     return EXIT_FAILURE;
   }
-  size=getfilesize(argv[3])-headersize(id,data_version);
+  size=getfilesizep(data_file)-headersize(id,data_version);
   data=newvec(int,header.ncell);
   if(data==NULL)
   {

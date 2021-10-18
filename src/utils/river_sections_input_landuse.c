@@ -66,7 +66,7 @@ int main(int argc,char **argv)
   }
 
   landuse_version=setversion;
-  if(freadanyheader(landuse_file,&header,&swap,headername,&landuse_version)){
+  if(freadanyheader(landuse_file,&header,&swap,headername,&landuse_version,TRUE)){
     fclose(landuse_file);
     fail(3,FALSE,"Invalid header in landuse-infile.");
   }
@@ -82,7 +82,7 @@ int main(int argc,char **argv)
 
   /* reading original grid file */
   version=setversion;
-  if(freadheader(mfp,&header_grid,&swap_grid,LPJGRID_HEADER,&version)){
+  if(freadheader(mfp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE)){
     fclose(mfp);
     fail(23,FALSE,"Invalid header in original grid file.");
   }  
@@ -103,7 +103,7 @@ int main(int argc,char **argv)
   }
   fclose(mfp);
   version=setversion;
-  if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&version)){
+  if(freadheader(ifp,&header_grid,&swap_grid,LPJGRID_HEADER,&version,TRUE)){
     fclose(ifp);
     fail(23,FALSE,"Invalid header in re-ordered grid file.");
   }
