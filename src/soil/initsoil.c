@@ -25,6 +25,7 @@ Bool initsoil(Stand *stand,            /**< Pointer to stand data */
              )                        /** \return TRUE on error */
 {
   Soil *soil;
+  Real epsilon_gas,V,soilmoist;
   int l,p;
   soil=&stand->soil;
   soil->par=soilpar;
@@ -70,11 +71,6 @@ Bool initsoil(Stand *stand,            /**< Pointer to stand data */
     soil->decomC[l]=0;
 #endif
   }
-  for (l=0;l<LASTLAYER;l++)
-  {
-    soil->O2[l]=266*soildepth[l]*((1-soil->wsat[l])+soil->wsat[l]*BO2)/1000;
-    soil->CH4[l]=p_s/R_gas/(10+273.15)*param.pch4*1e-9*WCH4*soildepth[l]*((1-soil->wsat[l])+soil->wsat[l]*BCH4)/1000;
-  }
   for (p=0;p<ntotpft;p++)
     {
       soil->c_shift[0][p].fast=0.55;
@@ -107,7 +103,7 @@ Bool initsoil(Stand *stand,            /**< Pointer to stand data */
       soil->whcs[l] = soil->whc[l] * soildepth[l];
       soil->wpwps[l] = soil->wpwp[l] * soildepth[l];
       soil->wsats[l] = soil->wsat[l] * soildepth[l];
-      soil->bulkdens[l] = (1 - soil->wsats[l] / soildepth[l])*MINERALDENS;
+      soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;
       soil->k_dry[l] = 8.8;
       soil->Ks[l] = 0.1;
       soil->beta_soil[l] = -2.655 / log10(soil->wfc[l] / soil->wsat[l]);
@@ -117,16 +113,16 @@ Bool initsoil(Stand *stand,            /**< Pointer to stand data */
   {
     foreachsoillayer(l)
     {
-      soil->wsat[l] = 0.0;
-      soil->wpwp[l] = 0.0;
-      soil->wfc[l] = 0.0;
-      soil->whc[l] = 0.0;
-      soil->whcs[l] = 0.0;
-      soil->wpwps[l] = 0.0;
-      soil->wsats[l] = 0.0;
-      soil->bulkdens[l] = 0.0;
-      soil->k_dry[l] = 0.0;
-      soil->Ks[l] = 0.0;
+      soil->wsat[l] = 0.468;
+      soil->wpwp[l] = 0.284;
+      soil->wfc[l] = 0.398;
+      soil->whc[l] = soil->wfc[l]-soil->wpwp[l];
+      soil->whcs[l] = soil->wsat[l] * soildepth[l];
+      soil->wpwps[l] = soil->wpwp[l] * soildepth[l];
+      soil->wsats[l] = soil->wsat[l] * soildepth[l];
+      soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;
+      soil->k_dry[l] = (0.135*soil->bulkdens[l] + 64.7) / (MINERALDENS - 0.947*soil->bulkdens[l]);
+      soil->Ks[l] = 3.5;
     }
     pedotransfer(stand,NULL,NULL,stand->frac);
   }
@@ -142,5 +138,14 @@ Bool initsoil(Stand *stand,            /**< Pointer to stand data */
   soil->k_dry[BOTTOMLAYER] = 0.039*pow(soil->wsats[BOTTOMLAYER] / soildepth[BOTTOMLAYER], -2.2);
   soil->Ks[BOTTOMLAYER] = 0.1;
   soil->beta_soil[BOTTOMLAYER] = -2.655 / log10(soil->wfc[BOTTOMLAYER] / soil->wsat[BOTTOMLAYER]);
+  for (l=0;l<LASTLAYER;l++)
+  {
+    V=getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
+    soilmoist=getsoilmoist(soil,l);
+    epsilon_gas=max(0.00004, V+soilmoist*soil->wsat[l]*BO2);
+    soil->O2[l]=p_s/R_gas/(10+273.15)*O2s*WO2*soildepth[l]*epsilon_gas/1000; /*266 g/m3 converted to g/m2 per layer*/
+    epsilon_gas=max(0.00004, V+soilmoist*soil->wsat[l]*BCH4);
+    soil->CH4[l]=p_s/R_gas/(10+273.15)*param.pch4*1e-9*WCH4*soildepth[l]*epsilon_gas/1000;    /* corresponding to atmospheric CH4 concentration to g/m2 per layer*/
+  }
   return FALSE;
 } /* of 'initsoil' */

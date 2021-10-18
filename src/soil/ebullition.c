@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-#define CH4_min  0.012 /* threshold value at which ebullition occur at totally vegetated soils g*m-3 8/1000*/
+#define CH4_min  0.006 /* 0.012 threshold value at which ebullition occur at totally vegetated soils g*m-3 8/1000*/
 #define k_e 1          /* rate constant h-1 */
 
 #ifdef DEBUG
@@ -59,14 +59,21 @@ Real ebullition(Soil *soil,   /**< pointer to soil data */
     ratio = min((layerbound[l] - soil->wtable) / soildepth[l], 1);
     for (i = 1; i <= 24; i++)
     {
+
+      if ((soil->CH4[l] / soildepth[l] * 1000 / epsilon_CH4*ratio)>C_thres ) // && soil->CH4[l] / soildepth[l] * 1000 / epsilon_CH4 > soil->CH4[l - 1] / soildepth[l - 1] * 1000 / epsilon_CH4_u)
+      {
+/*
       if ((soil->CH4[l] / soildepth[l] * 1000 / epsilon_CH4*ratio)>C_thres && soil->wtable<layerbound[l] && soil->CH4[l] / soildepth[l] * 1000 / epsilon_CH4 > soil->CH4[l - 1] / soildepth[l - 1] * 1000 / epsilon_CH4_u)
       {
-        Q_ebull = k_e*(soil->CH4[l] / soildepth[l] / epsilon_CH4 * 1000 * ratio - C_thres)*soildepth[l] * epsilon_CH4*1e-3;
+*/
+    	Q_ebull = k_e*(soil->CH4[l] / soildepth[l] / epsilon_CH4 * 1000 * ratio - C_thres)*soildepth[l] * epsilon_CH4*1e-3;
+
         soil->CH4[l] -= Q_ebull;
         if (l == 0)
           Q_ebull_day += Q_ebull;
         else
           soil->CH4[l - 1] += Q_ebull;
+        //printf("ebullition: %g layer: %d\n",Q_ebull,l);
       }
       else
         break;

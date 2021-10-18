@@ -156,7 +156,7 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
     fprintf(file," %12.2f",soil->temp[l]);
   fputs("\nMean annual Temp        ", file);
   for (l = 0; l<NSOILLAYER + 1; l++)
-    fprintf(file, " %12.2f", soil->amean_temp[l]);
+    fprintf(file, " %10.2f", soil->amean_temp[l]);
   fputs("\nIce depth   ",file);
   foreachsoillayer(l)
     fprintf(file," %12.2f",soil->ice_depth[l]);

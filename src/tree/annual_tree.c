@@ -24,8 +24,15 @@ Bool annual_tree(Stand *stand,       /**< pointer to stand */
 {
   Stocks turnover_ind;
   Bool isdead;
+  Real stress;
   turnover_ind=turnover_tree(&stand->soil.litter,pft,config);
   isdead=allocation_tree(&stand->soil.litter,pft,fpc_inc,config);
+  if(pft->inun_count>pft->par->inun_dur)
+  {
+    stress=pft->inun_count/pft->par->inun_dur;
+    if(stress>2)
+      isdead=TRUE;
+  }
   if(!isdead)
   {
     isdead=mortality_tree(&stand->soil.litter,pft,turnover_ind.carbon,

@@ -78,6 +78,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
   Real A,B,psi;
   Real trf[LASTLAYER];
   Irrigation *irrig;
+  Real istress=0;
   aet_frac = 1;
 
   if (-pft->stand->soil.wtable >= pft->par->inun_thres)
@@ -86,7 +87,13 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     pft->inun_count--;
   if (pft->inun_count<0)
     pft->inun_count = 0;
-
+/*
+  if(pft->inun_count>pft->par->inun_dur)
+    istress=1;
+  else
+    istress=pft->inun_count/pft->par->inun_dur;
+*/
+  pft->inun_stress+=istress/NDAYYEAR;
   wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
   forrootsoillayer(l)
@@ -257,7 +264,8 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
       }
     } /* of if(config->with_nitrogen) */
     /* in rare occasions, agd(=GPP) can be negative, but shouldn't */
-    agd=max(0,agd);
+    agd=max(0,agd*(1-istress));
+    *rd=*rd*(1-istress);
   }
   else
     agd=0;

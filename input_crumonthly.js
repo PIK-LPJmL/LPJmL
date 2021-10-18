@@ -18,7 +18,7 @@
 
 "soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
              "sandy clay loam", "loam", "silt loam", "sandy loam", "silt",
-             "loamy sand", "sand", "rock and ice"],
+             "loamy sand", "sand" , "rock and ice"],
 
 /* the following array describes the order of the CFT bands in the land use file */
 

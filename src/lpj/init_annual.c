@@ -61,7 +61,10 @@ void init_annual(Cell *cell,          /**< Pointer to cell */
     stand->fire_sum=0;
     stand->soil.maxthaw_depth=0;
     foreachpft(pft,p,&stand->pftlist)
+    {
+      pft->inun_stress=0;
       init(pft);
+    }
   } /* of foreachstand */
 #if defined IMAGE && defined COUPLED
   cell->npp_nat=cell->npp_wp=cell->flux_estab_nat=cell->flux_estab_wp=cell->rh_nat=cell->rh_wp=0.0;

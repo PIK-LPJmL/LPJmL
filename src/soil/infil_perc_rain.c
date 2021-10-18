@@ -117,11 +117,6 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   rsub_top_layer=k_drai_perch=k_perch=icesum=k_perch_max=slug=fill=srunoff=0.0;
   runoff_surface=runoff=outflux=rsub_top=rsub_top_tot=drain_perched_out=qcharge_tot1=drain_perched_layer=drain_perched=0.0;
   q_perch_max=active_wa=runoff_out=depthsum=wtable_tmp=alpha=s1=vol_eq=NO3perc_ly=0;
-  if(config->rw_manage && (stand->type->landusetype==AGRICULTURE || stand->type->landusetype==GRASSLAND ||
-                           stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE ||
-                           stand->type->landusetype==AGRICULTURE_TREE || stand->type->landusetype==AGRICULTURE_GRASS))
-    soil_infil=param.soil_infil_rw; /* parameter to increase soil infiltration rate */
-
   // The layer index of the first unsaturated layer, i.e., the layer right above the water table
   forrootsoillayer(l)
     lrunoff[l]=pperc[l]=ndrain_perched_out[l]=nrsub_top[l]=0.0;
@@ -154,8 +149,8 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     if (soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>1)
       freewater+=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)*soil->whcs[l];
   }
-  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND || (data_irrig!=NULL && data_irrig->irrig_system==SPRINK))
-   soil_infil *= (1 + soil->litter.agtop_cover*2);
+  //if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND || (data_irrig!=NULL && data_irrig->irrig_system==SPRINK))
+   //soil_infil*=(1 + soil->litter.agtop_cover);                     //soil_infil*=(1 + soil->litter.agtop_cover*2);
   while(infil > epsilon || freewater > epsilon)
   {
     NO3perc_ly=0;
@@ -691,7 +686,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     if(jwt>=(BOTTOMLAYER-1))
       depthsum=layerbound[BOTTOMLAYER-1];
     Theta_ice=pow(10,(-OMEGA*(icesum/depthsum)));                                               // OMEGA of 6 gives a high impact on low ice fractions (0.1 -> 0.2511886)
-    rsub_top_max=20*sin(stand->slope_mean*M_PI/180)*sin(stand->slope_mean*M_PI/180);            // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1
+    rsub_top_max=50*sin(stand->slope_mean*M_PI/180);     //*sin(stand->slope_mean*M_PI/180);            // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1
     rsub_top=Theta_ice*rsub_top_max*exp(-fff*soil->wtable/1000);
     rsub_top=min(rsub_top,active_wa);
     //rsub_top=max(0,rsub_top-outflux-lat_runoff_last);
@@ -709,6 +704,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       tmp_water=max(0,(soil->wa-5000));
       soil->w_fw[BOTTOMLAYER-1]+=tmp_water;
       soil->wa-=tmp_water;
+      nrsub_top[BOTTOMLAYER-1]+=tmp_water;
       if(soil->w_fw[BOTTOMLAYER-1]>soil->wsats[BOTTOMLAYER-1]-soil->wpwps[BOTTOMLAYER-1]-soil->ice_fw[BOTTOMLAYER-1]-soil->whcs[BOTTOMLAYER-1])
       {
         runoff_out+=soil->w_fw[BOTTOMLAYER-1]-(soil->wsats[BOTTOMLAYER-1]-soil->wpwps[BOTTOMLAYER-1]-soil->ice_fw[BOTTOMLAYER-1]-soil->whcs[BOTTOMLAYER-1]);
@@ -730,7 +726,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       {                                         //deepening water table
         for(l=(jwt+1);l<BOTTOMLAYER-1;l++)
         {
-          nrsub_top[l]=0.0;
+          //nrsub_top[l]=0.0;
           layerbound2=(layerbound[l]>soil->wtable) ?  layerbound[l] : layerbound[l+1];
           if (soil->wtable>0)
             S=soil->wsat[l]*(1.-pow((1.+(soil->wtable/soil->par->psi_sat)),(-1./soil->par->b)));

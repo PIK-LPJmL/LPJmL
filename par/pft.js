@@ -37,11 +37,11 @@
 #define APHEN_MIN 60    /* minimum aphen for cold-induced senescence */
 #define HEIGHT_MAX 100.  /* maximum height of trees */
 #define REPROD_COST 0.1 /* reproduction cost */
-#define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
+#define K_EST 0.06 /* maximum overall sapling establishment rate (indiv/m2) */
 #ifdef WITH_SPITFIRE
-#define MORT_MAX 0.03
+#define MORT_MAX 0.02
 #else
-#define MORT_MAX 0.03
+#define MORT_MAX 0.02
 #endif
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.3      /* fraction of N not recovered before turnover */
@@ -84,7 +84,7 @@
     "beta_root" : 0.932,    /* beta_root original 0.962*/
     "minwscal" : 0.0,       /* minwscal 3*/
     "gmin"  : 1.6,          /* gmin 4*/
-    "respcoeff" : 0.2,      /* respcoeff 5*/
+    "respcoeff" : 0.6,      /* respcoeff 5*/
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 1.6,      /* leaf longevity 10*/
@@ -143,8 +143,8 @@
     "emission_factor" : { "co2" : 1580.0, "co" :  103.0, "ch4" : 6.80, "voc" : 8.10, "tpm" : 8.50, "nox" : 1.999}, /* emission factors */
     "aprec_min" : APREC_MIN,  /* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,  /* flam */
-    "k_litter10" : { "leaf" : 0.93, "wood" : 0.039 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 2.75, /* Q10_wood */
+    "k_litter10" : { "leaf" : 1.17, "wood" : 0.124 }, /* 0.039K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 3, /* Q10_wood */
     "vmax_up" : 2.8,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -153,7 +153,7 @@
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "ist_m" : -0.15,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 2.0, "sapwood" : 30.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
@@ -189,7 +189,7 @@
     "beta_root" : 0.981,    /* beta_root  original 0.962*/
     "minwscal" : 0.35,      /* minwscal 3*/
     "gmin"  : 1.8,          /* gmin 4*/
-    "respcoeff" : 0.2,      /* respcoeff 5*/
+    "respcoeff" : 0.6,      /* respcoeff 5*/
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
@@ -248,8 +248,8 @@
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,     /* flam */
-    "k_litter10" : { "leaf" : 1.17, "wood" : 0.039 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 2.75, /* Q10_wood */
+    "k_litter10" : { "leaf" : 1.17, "wood" : 0.124 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 3, /* Q10_wood */
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -258,7 +258,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
-    "ist_m" : -0.2,             /* inundation stress threshold [m] */
+    "ist_m" : -0.25,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 30.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
@@ -307,7 +307,7 @@
     "twmax_daily" : 1000.,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000., /* min_temprange 34*/
-    "emax": 5.0, //7.0,            /* emax 35*/
+    "emax": 7.0, //7.0,            /* emax 35*/
     "intc" : 0.02,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.137,  /* albedo of green leaves */
@@ -353,8 +353,8 @@
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,     /* flam */
-    "k_litter10" : { "leaf" : 0.7, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 1.97, /* Q10_wood */
+    "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 2.22, /* Q10_wood */
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -458,8 +458,8 @@
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,     /* flam */
-    "k_litter10" : { "leaf" : 0.86, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 1.37, /* Q10_wood */
+    "k_litter10" : { "leaf" : 0.94, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 1.62, /* Q10_wood */
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -563,8 +563,8 @@
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,     /* flam */
-    "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 1.37, /* Q10_wood */
+    "k_litter10" : { "leaf" : 1.2, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 1.62, /* Q10_wood */
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -624,7 +624,7 @@
     "twmax_daily" : 25.,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000., /* min_temprange 34*/
-    "emax": 5.0, //7.0,            /* emax 35*/
+    "emax": 7.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.18,   /* albedo of green leaves */
@@ -670,8 +670,8 @@
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,     /* flam */
-    "k_litter10" : { "leaf" : 0.76, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 1.97, /* Q10_wood */
+    "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 2.22, /* Q10_wood */
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -775,8 +775,8 @@
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,     /* flam */
-    "k_litter10" : { "leaf" : 0.94, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 1.37, /* Q10_wood */
+    "k_litter10" : { "leaf" : 1.2, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 1.62, /* Q10_wood */
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -836,7 +836,7 @@
     "twmax_daily" : 25.,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : 30.,  /* min_temprange 34*/
-    "emax": 5.0, //7.0,            /* emax 35*/
+    "emax": 6.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.12,   /* albedo of green leaves */
@@ -882,8 +882,8 @@
     "emission_factor" : { "co2" : 1568.0, "co" :  106.0, "ch4" : 4.80, "voc" : 5.70, "tpm" : 17.60, "nox" : 3.240}, /* emission factors */
     "aprec_min" : APREC_MIN,/* minimum annual precipitation to establish */
     "flam" : FLAM_TREE,     /* flam */
-    "k_litter10" : { "leaf" : 0.76, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
-    "k_litter10_q10_wood" : 1.97, /* Q10_wood */
+    "k_litter10" : { "leaf" : 0.95, "wood" : 0.104 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10_q10_wood" : 2.22, /* Q10_wood */
     "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -930,7 +930,7 @@
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
     "gmin"  : 1.5,          /* gmin 4*/
-    "respcoeff" : 0.2,      /* respcoeff 5*/
+    "respcoeff" : 0.6,      /* respcoeff 5*/
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.4,      /* leaf longevity 10*/
@@ -989,7 +989,7 @@
     "emission_factor" : { "co2" : 1664.0, "co" :  63.0, "ch4" : 2.20, "voc" : 3.40, "tpm" : 8.50, "nox" : 2.540}, /* emission factors */
     "aprec_min" : 100,                        /* minimum annual precipitation to establish */
     "flam" : FLAM_GRASS,     /* flam */
-    "k_litter10" : { "leaf" : 0.97, "wood" : 0.97 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
+    "k_litter10" : { "leaf" : 1.2, "wood" : 0.97 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1., /* Q10_wood */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -1087,7 +1087,7 @@
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
-    "ist_m" : 0.2,             /* inundation stress threshold [m] */
+    "ist_m" : -0.05,             /* inundation stress threshold [m] */
     "idt_d" : 31.0,             /* inundation duration threshold [days] */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
@@ -1191,7 +1191,7 @@
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
-    "beta_root" : 0.92,     /* beta_root */
+    "beta_root" : 0.95,     /* beta_root */
     "minwscal" : 0.10,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 0.5,      /* respcoeff 5*/
@@ -1210,40 +1210,40 @@
     "emax": 7.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
-    "albedo_leaf" : 0.23,   /* albedo of green leaves */
+    "albedo_leaf" : 0.18,   /* albedo of green leaves */
     "albedo_stem" : 0.1,    /* albedo of stems */
     "albedo_litter" : 0.1,  /* albedo of litter */
     "snowcanopyfrac" : 0.4, /* maximum snow coverage in green canopy */
     "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 0.13,       /* new phenology: slope of cold-temperature limiting function */
-      "base" : 2.79,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
-      "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+      "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
+      "base" : 4.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "tau" : 0.01011       /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
       "slope" : 0.24,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
-      "base" : 26.12,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "base" : 32.04,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
       "slope" : 23,         /* new phenology: slope of light limiting function */
-      "base" : 50,          /* new phenology: inflection point of light limiting function (Wm-2) */
-      "tau" : 0.38          /* new phenology: change rate of actual to previous day light limiting function */
+      "base" : 75.94,       /* new phenology: inflection point of light limiting function (Wm-2) */
+      "tau" : 0.22          /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
-      "slope" : 0.88,       /* new phenology: slope of water limiting function */
-      "base" : 1,           /* new phenology: inflection point of water limiting function (% water availability)  */
-      "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
+      "slope" : 0.5222,     /* new phenology: slope of water limiting function */
+      "base" : 53.07,       /* new phenology: inflection point of water limiting function (% water availability)  */
+      "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "any",      /* phenology */
     "path" : "C3",            /* pathway */
     "temp_co2" : { "low" : -4.0, "high" : 45.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
-    "temp_photos" : { "low" : 5., "high" : 30. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
+    "temp_photos" : { "low" : 5., "high" : 35. },/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
     "temp" : { "low" : -1000.0, "high" : 1000 }, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.54056,     /* shape factor for soil organic matter vertical distribution*/
@@ -1279,7 +1279,7 @@
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [39., 61., 74., 80.], /* curve number */
-    "beta_root" : 0.90,     /* beta_root */
+    "beta_root" : 0.95,     /* beta_root */
     "minwscal" : 0.0,       /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
     "respcoeff" : 0.5,      /* respcoeff 5*/
@@ -1295,7 +1295,7 @@
     "twmax_daily" : 1000.,  /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000,  /* min_temprange 34*/
-    "emax": 2.0,            /* emax 35*/
+    "emax": 4.0,            /* emax 35*/
     "intc" : 0.01,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.23,   /* albedo of green leaves */
@@ -1371,7 +1371,7 @@
     "beta_root" : 0.975,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.2,          /* gmin 4*/
-    "respcoeff" : 0.2,      /* respcoeff 5*/
+    "respcoeff" : 0.6,      /* respcoeff 5*/
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 1.0,         /* resist 8*/
     "longevity" : 2.0,      /* leaf longevity 10*/
@@ -1585,7 +1585,7 @@
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
-    "respcoeff" : 0.2,      /* respcoeff 5*/
+    "respcoeff" : 	0.6,      /* respcoeff 5*/
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 1.0,         /* resist 8*/
     "longevity" : 0.25,     /* leaf longevity 10*/
@@ -1845,8 +1845,8 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
-    "idt_d" : 20.0,             /* inundation duration threshold [days] */
+    "ist_m" : 0.05,           /* inundation stress threshold [m] */
+    "idt_d" : 50.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
@@ -1958,7 +1958,7 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "ist_m" : 0.05,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -2071,7 +2071,7 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "ist_m" : 0.05,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -2184,7 +2184,7 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "ist_m" : 0.05,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -2297,7 +2297,7 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "ist_m" : 0.05,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -2410,7 +2410,7 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "ist_m" : 0.05,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -2523,7 +2523,7 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "ist_m" : 0.05,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -2636,7 +2636,7 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "ist_m" : 0.05,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -2749,7 +2749,7 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "ist_m" : 0.05,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -2862,7 +2862,7 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "ist_m" : 0.05,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
@@ -2915,7 +2915,7 @@
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
     "gmin"  : 0.5,          /* gmin 4*/
-    "respcoeff" : 0.2,      /* respcoeff 5*/
+    "respcoeff" : 0.6,      /* respcoeff 5*/
     "nmax" : 100.,          /* nmax 7*/
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.66,     /* leaf longevity 10*/
@@ -2975,7 +2975,7 @@
     "flam" : FLAM_GRASS,    /* flam */
     "k_litter10" : { "leaf" : K_LITTER10, "wood" : K_LITTER10}, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1, /* Q10_wood */
-    "ist_m" : -0.1,             /* inundation stress threshold [m] */
+    "ist_m" : 0.05,             /* inundation stress threshold [m] */
     "idt_d" : 20.0,             /* inundation duration threshold [days] */
     "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */

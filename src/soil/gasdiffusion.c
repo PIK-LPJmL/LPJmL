@@ -216,7 +216,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
 
         if (soil->CH4[l + 1]< 0 && l != (BOTTOMLAYER - 1))
         {
-          fprintf(stderr, "2.1 CH4 gasdiffusion layer[%d] diffussion:%g CH4:%g  DCH4: %g CH4_lower:%g epsilon_02:%g steps:%lu\n", l, dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000, soil->CH4[l + 1], D_CH4[l], CH4_lower, epsilon_CH4[l], steps);
+          fprintf(stderr, "2.1 CH4 gasdiffusion layer[%d] diffussion:%g CH4:%g  DCH4: %g CH4_lower:%g epsilon_CH4:%g steps:%lu\n", l, dCH4*(soildepth[l] * epsilon_CH4[l]) / 1000, soil->CH4[l + 1], D_CH4[l], CH4_lower, epsilon_CH4[l], steps);
         }
         if (fabs(dCH4)<1e-18 || t == maxheatsteps)
           break;

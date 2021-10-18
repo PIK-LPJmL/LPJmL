@@ -14,22 +14,22 @@
 
 "param" :
 {
-  "k_litter10" : 0.3,        /* k_litter10  (1/yr) */
+  "k_litter10" : 0.3,        /* 0.3 k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
-  "init_soiln" : { "fast" : 5500.0, "slow":  5500.0}, /* initial fast and slow soil nitrogen (gN/m2) */
+  "init_soiln" : { "fast" : 5500.0, "slow":  5500.0}, /* initial fast and slow soil nitrogen (gN/m2) 5500*/
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
   "soil_infil" : 2.0,        /* default soil infiltration */
   "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
   "lgm_co2" : 180,           /* LGM CO2 (ppmv) */
-  "pch4" :  801,            /* pre-industrial atmospheric CH4 (ppb) */
+  "pch4" :  801,             /* pre-industrial atmospheric CH4 (801 ppb) */
   "lgm_ch4" : 460,           /* Eemian (460) LGM (466) atmospheric CH4 (ppb) */
   "ch4_ip" : 1790,           /* initial  pre-industrial amount of atmospheric CH4 (ppb) */
   "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
-  "theta" : 0.9,             /* theta */
-  "alphac3" : 0.08,          /* alphac3 */
-  "alphac4" : 0.053,         /* alphac4 */
-  "r_growth" : 0.25,         /* r_growth */
+  "theta" : 0.8,             /* theta */
+  "alphac3" : 0.06,          /* alphac3 Intrinsic quantum efficiency of CO2 uptake in C3 plants 0.08 */
+  "alphac4" : 0.04,          /* alphac4 Intrinsic quantum efficiency of CO2 uptake in C4 plants 0.053*/
+  "r_growth" : 0.30,         /* r_growthgrowth respiration per unit NPP 0.25*/
   "GM" : 2.41,               /* GM empirical parameter in demand function */
   "ALPHAM" : 1.485,          /* ALPHAM Priestley-Taylor coefficient*/
   "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */

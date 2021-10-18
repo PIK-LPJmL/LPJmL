@@ -42,6 +42,7 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
   Poolpar *k_mean, *c0, *sum,*k_mean_layer;
   Poolpar nc_ratio[LASTLAYER];
   Bool *present;
+  Pool totalsum={{0,0},{0,0}};
   present=newvec(Bool,ntotpft);
   for (p=0;p<ntotpft;p++)
     present[p]=FALSE;
@@ -62,9 +63,13 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
     V=getV(soil,l);  /*soil air content (m3 air/m3 soil)*/
     soilmoist=getsoilmoist(soil,l);
     epsilon_gas=max(0.00004, V+soilmoist*soil->wsat[l]*BO2);
-    soil->O2[l]=p_s/R_gas/(10+273.15)*O2s*WO2*soildepth[l]* epsilon_gas/1000; /*266 g/m3 converted to g/m2 per layer*/
+    soil->O2[l]=p_s/R_gas/(10+273.15)*O2s*WO2*soildepth[l]*epsilon_gas/1000; /*266 g/m3 converted to g/m2 per layer*/
     epsilon_gas=max(0.00004, V+soilmoist*soil->wsat[l]*BCH4);
-    soil->CH4[l]=p_s/R_gas/(10+273.15)*param.pch4*1e-9*WCH4*soildepth[l]* epsilon_gas/1000;    /* corresponding to atmospheric CH4 concentration to g/m2 per layer*/
+    soil->CH4[l]=p_s/R_gas/(10+273.15)*param.pch4*1e-9*WCH4*soildepth[l]*epsilon_gas/1000;    /* corresponding to atmospheric CH4 concentration to g/m2 per layer*/
+    totalsum.fast.carbon+=soil->pool[l].fast.carbon;
+    totalsum.slow.carbon+=soil->pool[l].slow.carbon;
+    totalsum.fast.nitrogen+=soil->pool[l].fast.nitrogen;
+    totalsum.slow.nitrogen+=soil->pool[l].slow.nitrogen;
   }
 
   if(!shift)
@@ -113,10 +118,12 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
         sum[p].fast+=soil->c_shift[l][p].fast;
         sum[p].slow+=soil->c_shift[l][p].slow;
       }
+      soil->pool[l].slow.carbon=totalsum.slow.carbon*socfraction;
+      soil->pool[l].fast.carbon=totalsum.fast.carbon*socfraction;
+      soil->pool[l].slow.nitrogen=totalsum.slow.nitrogen*socfraction;
+      soil->pool[l].fast.nitrogen=totalsum.fast.nitrogen*socfraction;
       soil->k_mean[l].slow=soil->k_mean[l].fast=0.0;
     }
-    soil->count=0;
-    soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
     for(p=0;p<ntotpft;p++)
     {
       if(sum[p].fast<1.0 && sum[p].fast>0.0)
@@ -140,6 +147,21 @@ void equilsoil(Soil *soil,           /**< pointer to soil data */
           soil->c_shift[l][p].slow=0;
       }
     }
+    if(soil->decomp_litter_mean.carbon<epsilon)
+    { /* if there is no carbon, remove mineral N from initialization */
+      forrootsoillayer(l)
+      {
+        soil->NH4[l]=soil->NO3[l]=0.0;
+        soil->pool[l].slow.nitrogen=0;
+        soil->pool[l].fast.nitrogen=0;
+        soil->pool[l].slow.carbon=0;
+        soil->pool[l].fast.carbon=0;
+        soil->k_mean[l].slow=soil->k_mean[l].fast=0.0;
+        soil->count=0;
+      }
+    }
+    soil->count=0;
+    soil->decomp_litter_mean.carbon=soil->decomp_litter_mean.nitrogen=0.0;
   }//if(shift==TRUE)
 
   if(!shift)

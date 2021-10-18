@@ -32,7 +32,7 @@
 #define SNOWLAYER NSOILLAYER
 
 #define soil_equil_year (param.veg_equil_year+1320)
-#define cshift_year 120
+#define cshift_year 240
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
 #define c_water 4.2e6 /* J/m3/K */
 #define c_ice   2.1e6 /* J/m3/K */
@@ -72,7 +72,7 @@
 #define WCH4 16
 #define WH2O 18
 #define WCO2 44
-#define O2star 2.5             /*g/m3*/
+#define O2star 2             /*g/m3*/
 #define BO2 0.038            /*Bunsen coefficient of oxygen*/
 #define BCH4 0.043           /*Bunsen coefficient of methane  0.043 Khvorostynov etal. 2008*/
 #define Vmax_CH4 10          /*Michaelis-Menten coefficient in mikroM/h =  mikro mol/l/h = 10−3 mol/m3/h  20 original */
