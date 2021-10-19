@@ -16,15 +16,15 @@
 #include "agriculture.h"
 #include "crop.h"
 
-static void cultcftstand(Stocks *flux_estab, /**< establishment flux */
-                         Bool *alloc_today,
+static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
+                         Bool *alloc_today,   /**< first allocation? (TRUE/FALSE) */
                          Cell *cell,          /**< pointer to cell */
-                         Stand *setasidestand,/** pointer to setaside stand */
-                         Bool irrig,          /** stand irrigated? (TRUE/FALSE) */
-                         Bool wtype,
+                         Stand *setasidestand,/**< pointer to setaside stand */
+                         Bool irrig,          /**< stand irrigated? (TRUE/FALSE) */
+                         Bool wtype,          /**< winter type (TRUE/FALSE) */
                          int npft,            /**< number of natural PFTs  */
                          int ncft,            /**< number of crop PFTs */
-                         int cft,
+                         int cft,             /**< index of CFT to establish */
                          int year,            /**< simulation year (AD) */
                          int day,             /**< day (1..365) */
                          const Config *config /**< LPJmL settings */
@@ -52,18 +52,18 @@ static void cultcftstand(Stocks *flux_estab, /**< establishment flux */
   }//if check lu
 } /* of 'cultcftstand' */
 
-void sowingcft(Stocks *flux_estab, /**< establishment flux */
-                     Bool *alloc_today,
-                     Cell *cell,          /**< pointer to cell */
-                     Bool irrig,          /** stand is irrigated? */
-                     Bool wtype,
-                     int npft,            /**< number of natural PFTs  */
-                     int ncft,            /**< number of crop PFTs */
-                     int cft,
-                     int year,            /**< simulation year (AD) */
-                     int day,             /**< day (1..365) */
-                     const Config *config /**< LPJmL settings */
-                    )
+void sowingcft(Stocks *flux_estab,  /**< establishment flux */
+               Bool *alloc_today,   /**< first allocation? (TRUE/FALSE) */
+               Cell *cell,          /**< pointer to cell */
+               Bool irrig,          /**< stand is irrigated? */
+               Bool wtype,          /**< winter type (TRUE/FALSE) */
+               int npft,            /**< number of natural PFTs  */
+               int ncft,            /**< number of crop PFTs */
+               int cft,             /**< index of CFT to establish */
+               int year,            /**< simulation year (AD) */
+               int day,             /**< day (1..365) */
+               const Config *config /**< LPJmL configuration */
+              )
 {
   Stand *stand,*cropstand,*setasidestand;
   Pft *pft;
