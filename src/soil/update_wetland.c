@@ -248,8 +248,9 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           //        make sure there is no C in slow pool
           forrootsoillayer(l)
           {
-            wetstand->soil.pool[l].fast.carbon += wetstand->soil.pool[l].slow.carbon;
-            wetstand->soil.pool[l].slow.carbon = 0.;
+            wetstand->soil.pool[l].fast.carbon+=wetstand->soil.pool[l].slow.carbon;
+            wetstand->soil.pool[l].fast.nitrogen+=wetstand->soil.pool[l].slow.nitrogen;
+            wetstand->soil.pool[l].slow.carbon=wetstand->soil.pool[l].slow.nitrogen=0.;
 
           } /* of forrootsoillayer */
         }
@@ -361,7 +362,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           slope = (exp(lambda*-slope_max)*(-1 / lambda - slope_max)) - (exp(lambda*-cell->slope_min)*(-1 / lambda - cell->slope_min));  //calculation of the integral of the PDF to get  mean slope
           slope /= (-(exp(-lambda*slope_max) - (exp(-lambda*cell->slope_min))));                                                 //normalising the mean slope for a specific range
         }
-        wetstand->Hag_Beta = max(0, (0.05*log(slope + 0.1) + 0.12) / 0.43);
+        wetstand->Hag_Beta = min(1, (0.09*log(slope + 0.1) + 0.22) / 0.43);
         wetstand->slope_mean = slope;
 
         slope = exp(lambda*-cell->slope_max)*(-1 / lambda - cell->slope_max) - exp(lambda*-slope_max)*(-1 / lambda - slope_max);  //calculation of the integral of the PDF to get  mean slope

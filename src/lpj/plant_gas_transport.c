@@ -21,7 +21,8 @@
 #define tiller_weight  0.22  /* [gc] PARAMETER*/
 #define tiller_radius 0.003
 #define tiller_por 0.7
-#define water_min 0.01
+#define water_min 0.05
+//#define DEBUG
 
 #ifdef DEBUG
 
@@ -29,7 +30,15 @@ static void printch4(const Real CH4[LASTLAYER])
 {
   int i;
   for (i = 0; i<LASTLAYER; i++)
-    printf(" %g", CH4[i]);
+    printf(" %g", CH4[i] / soildepth[i] * 1000);
+  printf("\n");
+}
+
+static void printO2(const Real O2[LASTLAYER])
+{
+  int i;
+  for (i = 0; i<LASTLAYER; i++)
+    printf(" %g", O2[i] / soildepth[i] * 1000);
   printf("\n");
 }
 
@@ -63,13 +72,16 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
    */
   start = standstocks(stand).carbon + soilmethane(&stand->soil);
 #endif
-#ifdef DEBUG
-  printf("plantgas before");
-  printch4(stand->soil.CH4);
-#endif
   CH4_plant_all=0;
   CH4_air=p_s/R_gas/degCtoK(airtemp)*pch4*1e-6*WCH4; /*g/m3 methane concentration*/
   O2_air=p_s/R_gas/degCtoK(airtemp)*O2s*WO2;         /*g/m3 oxygen concentration*/
+#ifdef DEBUG
+  printf("plantgas before");
+  printch4(stand->soil.CH4);
+  printO2(stand->soil.O2);
+  printf("CH4_air:%g O2_air:%g\n",CH4_air,O2_air);
+#endif
+
   /* Calculate Schmidt number and gas transfer velocity in the*/
   /* top soil layer.*/
   /*--------------------------------------------------------*/
@@ -102,17 +114,19 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
         V=getV(&stand->soil,l);  /*soil air content (m3 air/m3 soil)*/
         epsilon_CH4=max(0.0004,V+soil_moist*stand->soil.wsat[l]*BCH4);
         epsilon_O2=max(0.0004,V+soil_moist*stand->soil.wsat[l]*BO2);
-        soil_water_vol=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.wpwps[l]*(1-stand->soil.ice_pwp[l])+stand->soil.w_fw[l]);
-        if (soil_water_vol/soildepth[l]>water_min)
+        soil_water_vol=(stand->soil.w[l]*stand->soil.whcs[l]+stand->soil.wpwps[l]*(1-stand->soil.ice_pwp[l])+stand->soil.w_fw[l])/soildepth[l];  //in  m-3 *1000/1000/soildepth
+        //printf("CH4 %g O2 %g\n",stand->soil.CH4[l] / soildepth[l] / epsilon_CH4 * 1000,stand->soil.O2[l]/soildepth[l]/epsilon_O2*1000);
+        if (soil_moist>water_min)
         {
           tillers = grass->ind.leaf.carbon*pft->nind*pft->phen / tiller_weight;
           tiller_frac = tillers*pft->par->rootdist[l];
-          tiller_area = tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por;
+          tiller_area = max(0.0001,tiller_radius*tiller_radius*M_PI*tiller_frac*tiller_por);
           Conc_new = 0;
           CH4 = stand->soil.CH4[l] / soildepth[l] / epsilon_CH4 * 1000;
           if (CH4>CH4_air && tiller_area>0 && soil_water_vol>epsilon)
           {
             Conc_new=CH4_air+(CH4-CH4_air)*exp(-kCH4/(soil_water_vol/tiller_area));
+            //printf("Conc_new: %g exp_t:%g tiller_area: %g \n",Conc_new,exp(-kCH4/(soil_water_vol/tiller_area)),tiller_area);
             CH4_plant=(CH4-Conc_new)*(soildepth[l]*epsilon_CH4)/1000;
             stand->soil.CH4[l]-= CH4_plant;
             CH4_plant_all+=CH4_plant;
@@ -144,6 +158,7 @@ void plant_gas_transport(Stand *stand,        /**< pointer to soil data */
 #ifdef DEBUG
   printf("plantgas after");
   printch4(stand->soil.CH4);
+  printO2(stand->soil.O2);
 #endif
 #ifdef CHECK_BALANCE
   end = standstocks(stand).carbon + soilmethane(&stand->soil);
