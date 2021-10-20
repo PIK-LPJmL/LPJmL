@@ -14,6 +14,7 @@
 
 #include "par/lpjparam.js"      /* LPJ parameter file */
 #include "par/soil.js"          /* Soil parameter file */
+#include "par/hydro.js"         /* wetland parameter file */
 #include "par/pft_wp.js"        /* PFT parameter file with woodplantations */
 
 #ifdef IMAGE

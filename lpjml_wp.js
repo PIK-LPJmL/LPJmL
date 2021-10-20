@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  w  p  .  j  s                              \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.3.001 with wood plantations           \n**/
+/** Configuration file for LPJmL C Version 6.0.001 with wood plantations           \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -32,7 +32,7 @@
 
   "sim_name" : "LPJmL run with wood plantations", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-  "version"  : "5.3",       /* LPJmL version expected */
+  "version"  : "6.0",       /* LPJmL version expected */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -46,6 +46,8 @@
   "permafrost" : true,
   "johansen" : true,
   "with_nitrogen" : "lim",  /* other options: "no", "lim", "unlim" */
+  "dynamic_CH4" : false,
+  "anomaly" : false,
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : true, /* shuffle spinup climate */
