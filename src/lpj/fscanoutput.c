@@ -257,7 +257,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         else if(config->outputvars[count].oneyear && (flag==GRID || flag==COUNTRY || flag==REGION || flag==GLOBALFLUX))
         {
           if(verbosity)
-            fprintf(stderr,"ERROR225: One year output not allowed for grid, country or region.\n");
+            fprintf(stderr,"ERROR225: One year output not allowed for grid, globalflux, country or region.\n");
         }
         else
         {
