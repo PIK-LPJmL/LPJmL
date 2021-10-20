@@ -160,14 +160,15 @@ struct config
   Bool fix_climate;             /**< fix climate after specified year */
   Bool fix_landuse;             /**< fix land use after specified year */
   Bool iscotton;                /**< cotton present in PFT parameter file */
+  Bool fire_on_grassland;       /**< enable fires on grassland for Spitfire */
   int fix_landuse_year;         /**< year at which land use is fixed */
   int fix_climate_year;         /**< year at which climate is fixed */
   int fix_climate_cycle;        /**< number of years for climate shuffle for fixed climate */
   Bool const_deposition;        /**< constant N deposition */
-  Bool residues_fire;   /**< use parameters for agricultural fires */
+  Bool residues_fire;           /**< use parameters for agricultural fires */
   Bool param_out;               /**< print LPJmL parameter */
-  Bool check_climate; /**< check climate input data for NetCDF files */
-  Bool others_to_crop;       /**< move PFT type others into PFT crop, maize for tropical, wheat for temperate */
+  Bool check_climate;           /**< check climate input data for NetCDF files */
+  Bool others_to_crop;          /**< move PFT type others into PFT crop, cft_tropic for tropical, cft_temp for temperate */
   int cft_temp;
   int cft_tropic;
   Verbosity scan_verbose;       /**< option -vv 2: verbosely print the read values during fscanconfig. default 1; 0 would supress even error messages */
@@ -185,7 +186,7 @@ struct config
   char *checkpoint_restart_filename; /**< filename of checkpoint restart file */
   Bool ischeckpoint;      /**< run from checkpoint file ? (TRUE/FALSE) */
   int checkpointyear;     /**< year stored in restart file */
-  char **pfttypes;
+  char **pfttypes;        /**< array for PFT type names of size ntypes */
   Pftpar *pftpar;         /**< PFT parameter array */
   int restartyear; /**< year restart file is written */
   int ntypes;    /**< number of PFT classes */
