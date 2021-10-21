@@ -28,6 +28,7 @@ fi
 class=short
 group=""
 wtime=""
+depend=""
 blocking="unlimited"
 output="lpjml.%j.out"
 error="lpjml.%j.err"
@@ -39,7 +40,7 @@ while(( "$#" )); do
     if [ $# -lt 2 ]
     then
       echo >&2 Error: class missing
-      echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] ntasks [args ...]
+      echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] ntasks [args ...]
       exit 1
     fi
     shift 1
@@ -50,7 +51,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: group missing
-        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] ntasks [args ...]
+        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] ntasks [args ...]
         exit 1
       fi
       shift 1
@@ -61,7 +62,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: wall clock time missing
-        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] ntasks [args ...]
+        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] ntasks [args ...]
         exit 1
       fi
       shift 1
@@ -72,7 +73,7 @@ while(( "$#" )); do
       if [ $# -lt 2 ]
       then
         echo >&2 Error: blocking factor missing
-        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] ntasks [args ...]
+        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] ntasks [args ...]
         exit 1
       fi
       shift 1
@@ -83,7 +84,7 @@ while(( "$#" )); do
      if [ $# -lt 2 ]
      then
        echo >&2 Error: output filename missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] ntasks [args ...]
+       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] n[-dependency id] tasks [args ...]
        exit 1
      fi
      shift 1
@@ -94,7 +95,7 @@ while(( "$#" )); do
      if [ $# -lt 2 ]
      then
        echo >&2 Error: error filename  missing
-       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] ntasks [args ...]
+       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] n[-dependency id] tasks [args ...]
        exit 1
      fi
      shift 1
@@ -104,6 +105,16 @@ while(( "$#" )); do
    -q)
      shift 1
      quiet="-Q"
+     ;;
+   -dependency)
+     if [ $# -lt 2 ]
+     then
+       echo >&2 Error: jobid filename  missing
+       echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] n[-dependency id] tasks [args ...]
+     fi
+     shift 1
+     depend="--dependency=afterok:"$1
+     shift 1
      ;;
    -nocheck)
      shift 1
@@ -115,7 +126,7 @@ while(( "$#" )); do
      ;;
    -*)
      echo >&2 Invalid option $1
-     echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] ntasks [args ...]
+     echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] ntasks [args ...]
      exit 1
      ;;
    *)
@@ -127,7 +138,7 @@ done
 if [ $# -lt 1 ]
 then
   echo >&2 Error: Number of tasks missing
-  echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] ntasks [args ...]
+  echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] [-dependency id] ntasks [args ...]
   exit 1
 fi
 
@@ -197,7 +208,7 @@ EOF
   if [ "$norun" = "0" ]
   then
 #   submit job
-    if sbatch $quiet slurm.jcf ;
+    if sbatch $quiet $depend slurm.jcf ;
     then
       if [ "$quiet" != "-Q" ]
       then

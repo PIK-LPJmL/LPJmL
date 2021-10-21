@@ -13,8 +13,8 @@
 
      <B>SYNOPSIS</B>
           <B>lpjsubmit</B> [-class c] [-group g] [-wtime time] [-blocking n]
-          [-o output] [-e error] [-q] [-nocheck] [-norun] ntasks [args
-          ...]
+          [-o output] [-e error] [-q] [-nocheck] [-norun] [-
+          dependency id] ntasks [args ...]
 
      <B>DESCRIPTION</B>
           Script creates SLURM/LoadLeveler job control file <I>job</I>.<I>jcf</I>
@@ -62,6 +62,10 @@
                does not submit job to batch queue, creates <I>slurm</I>.<I>jcf</I>
                file only.
 
+          -dependency id
+               slurm job will be scheduled after job with job id id
+               finished successfully.
+
           ntasks
                set the number of parallel MPI tasks.
 
@@ -95,10 +99,6 @@
 
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="lpjcheck.html">lpjcheck(1)</A></B>, <B><A HREF="lpj_paths.sh.html">lpj_paths.sh(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>
-
-
-
-
 
 
 
