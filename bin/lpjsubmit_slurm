@@ -109,8 +109,9 @@ while(( "$#" )); do
    -dependency)
      if [ $# -lt 2 ]
      then
-       echo >&2 Error: jobid filename  missing
+       echo >&2 Error: jobid missing
        echo >&2 Usage: $0 [-class c] [-group g] [-wtime time] [-blocking n] [-o output] [-e error] [-q] [-nocheck] [-norun] n[-dependency id] tasks [args ...]
+       exit 1
      fi
      shift 1
      depend="--dependency=afterok:"$1
