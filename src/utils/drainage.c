@@ -413,8 +413,12 @@ int main(int argc,char **argv)
         }
         else
         {
-          if(next_value==nodata)
+          if(next_value==nodata) 
+          {
             drain[i].r.index = LPJ_outflow;
+            c5++;
+            fprintf(stderr, "Warning: cell %d (%.5f E, %.5f N) drains into cell with missing value. Set as outflow cell. Please check your DDM.\n", i, drain[i].lon, drain[i].lat);
+          }
           else 
             switch (next_value)
             {
@@ -429,7 +433,7 @@ int main(int argc,char **argv)
               default:
                 /* note: nodata should not happen, points to error in DDM */
                 drain[i].r.index = LPJ_nodata;
-                fprintf(stderr, "Error: cell (%d, %d) has undefined next value %d in DDM\n", ilon, ilat,next_value);
+                fprintf(stderr, "Error: cell (%d, %d) has undefined next value %d in DDM\n", ilonnew, ilatnew,next_value);
             }
         }
       } /* end value > 0 */
