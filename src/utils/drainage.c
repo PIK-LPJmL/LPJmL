@@ -413,20 +413,24 @@ int main(int argc,char **argv)
         }
         else
         {
-          switch (next_value)
-          {
-            case DDM_outflow:
-              drain[i].r.index = LPJ_outflow;
-              c5++;
-              break;
-            case DDM_internalsink:
-              drain[i].r.index = LPJ_internalsink;
-              c5++;
-              break;
-            default:
-              /* note: nodata should not happen, points to error in DDM */
-              drain[i].r.index = LPJ_nodata;
-          }
+          if(next_value==nodata)
+            drain[i].r.index = LPJ_outflow;
+          else 
+            switch (next_value)
+            {
+              case DDM_outflow:
+                drain[i].r.index = LPJ_outflow;
+                c5++;
+                break;
+              case DDM_internalsink:
+                drain[i].r.index = LPJ_internalsink;
+                c5++;
+                break;
+              default:
+                /* note: nodata should not happen, points to error in DDM */
+                drain[i].r.index = LPJ_nodata;
+                fprintf(stderr, "Error: cell (%d, %d) has undefined next value %d in DDM\n", ilon, ilat,next_value);
+            }
         }
       } /* end value > 0 */
     } /* end of ilon-loop */
