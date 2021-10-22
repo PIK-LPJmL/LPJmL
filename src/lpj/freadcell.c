@@ -75,7 +75,7 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
     freadreal(cell->gdd,npft,swap,file);
     /* read stand list */
     cell->standlist=freadstandlist(file,cell,config->pftpar,npft+ncft,soilpar,
-      standtype,nstand,config->double_harvest,swap);
+                                   standtype,nstand,config->double_harvest,swap);
     if(cell->standlist==NULL)
       return TRUE;
     freadreal1(&cell->ground_st, swap, file);
@@ -98,7 +98,11 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
           cell->ml.sdate_fixed[i]=0;
     }
     else
+    {
       cell->ml.sdate_fixed=NULL;
+      if(config->sdate_option_restart)
+        fseek(file,sizeof(int)*2*ncft,SEEK_CUR);
+    }
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
     {
       cell->ml.crop_phu_fixed=newvec(Real,2*ncft);
@@ -110,7 +114,11 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
           cell->ml.crop_phu_fixed[i]=0;
     }
     else
+    {
       cell->ml.crop_phu_fixed=NULL;
+      if(config->crop_option_restart)
+        fseek(file,sizeof(Real)*2*ncft,SEEK_CUR);
+    }
     cell->ml.sowing_month=newvec(int,2*ncft);
     checkptr(cell->ml.sowing_month);
     freadint(cell->ml.sowing_month,2*ncft,swap,file);

@@ -272,12 +272,18 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
   }
   config->fertilizer_input=NO_FERTILIZER;
+  config->fire_on_grassland=FALSE;
   if(config->sim_id!=LPJ)
   {
     if(fscankeywords(file,&config->withlanduse,"landuse",landuse,5,FALSE,verbose))
       return TRUE;
     if(config->withlanduse!=NO_LANDUSE)
     {
+      if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && !config->prescribe_burntarea)
+      {
+        if(fscanbool(file,&config->fire_on_grassland,"fire_on_grassland",TRUE,verbose))
+          return TRUE;
+      }
       if(fscanbool(file,&config->double_harvest,"double_harvest",TRUE,verbose))
         return TRUE;
       if(config->withlanduse==CONST_LANDUSE || config->withlanduse==ALL_CROPS || config->withlanduse==ONLY_CROPS)
