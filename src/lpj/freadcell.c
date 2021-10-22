@@ -91,7 +91,11 @@ Bool freadcell(FILE *file,             /**< File pointer to binary file */
           cell->ml.sdate_fixed[i]=0;
     }
     else
+    {
       cell->ml.sdate_fixed=NULL;
+      if(config->sdate_option_restart>NO_FIXED_SDATE)
+         fseek(file,sizeof(int)*2*ncft,SEEK_CUR);
+    }
     cell->ml.sowing_month=newvec(int,2*ncft);
     checkptr(cell->ml.sowing_month);
     freadint(cell->ml.sowing_month,2*ncft,swap,file);
