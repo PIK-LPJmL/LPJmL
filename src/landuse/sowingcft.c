@@ -22,6 +22,7 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
                          Stand *setasidestand,/**< pointer to setaside stand */
                          Bool irrig,          /**< stand irrigated? (TRUE/FALSE) */
                          Bool wtype,          /**< winter type (TRUE/FALSE) */
+                         Bool nofallow,       /**< fallow will not be checked */
                          int npft,            /**< number of natural PFTs  */
                          int ncft,            /**< number of crop PFTs */
                          int cft,             /**< index of CFT to establish */
@@ -31,7 +32,7 @@ static void cultcftstand(Stocks *flux_estab,  /**< establishment flux */
                         )
 {
   Stocks stocks;
-  if(cell->ml.cropdates[cft].fallow[irrig]<=0 &&
+  if((nofallow || cell->ml.cropdates[cft].fallow[irrig]<=0) &&
      check_lu(cell->standlist,cell->ml.landfrac[irrig].crop[cft],npft+cft,irrig))
   {
     if(!(*alloc_today))
@@ -57,6 +58,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
                Cell *cell,          /**< pointer to cell */
                Bool irrig,          /**< stand is irrigated? */
                Bool wtype,          /**< winter type (TRUE/FALSE) */
+               Bool nofallow,       /**< fallow will not be checked */
                int npft,            /**< number of natural PFTs  */
                int ncft,            /**< number of crop PFTs */
                int cft,             /**< index of CFT to establish */
@@ -75,7 +77,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
   if(s!=NOT_FOUND)
   {
     setasidestand=getstand(cell->standlist,s);
-    cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,npft,ncft,cft,year,day,config);
+    cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,config);
   }
   else
   {
@@ -102,7 +104,7 @@ void sowingcft(Stocks *flux_estab,  /**< establishment flux */
           set_irrigsystem(cropstand,cft,npft,ncft,config);
           setaside(cell,cropstand,cell->ml.with_tillage,config->intercrop,npft,irrig,year,config);
           setasidestand=getstand(cell->standlist,pos-1);
-          cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,npft,ncft,cft,year,day,config);
+          cultcftstand(flux_estab,alloc_today,cell,setasidestand,irrig,wtype,nofallow,npft,ncft,cft,year,day,config);
         }//if too large stand->frac
       } // if AGRICULTURE
       if(difffrac>epsilon)

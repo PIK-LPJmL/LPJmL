@@ -42,9 +42,9 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
       if(cell->ml.seasonality_type==NO_SEASONALITY && dayofmonth==1) /*no seasonality*/
       {
         if(month==cell->ml.sowing_month[cft])
-          sowingcft(&flux_estab,alloc_today,cell,FALSE,FALSE,npft,ncft,cft,year,day,config);
+          sowingcft(&flux_estab,alloc_today,cell,FALSE,FALSE,FALSE,npft,ncft,cft,year,day,config);
         if(month==cell->ml.sowing_month[cft+ncft])
-          sowingcft(&flux_estab,alloc_today+1,cell,TRUE,FALSE,npft,ncft,cft,year,day,config);
+          sowingcft(&flux_estab,alloc_today+1,cell,TRUE,FALSE,FALSE,npft,ncft,cft,year,day,config);
       } /*of no seasonality*/
 
       if (cell->ml.seasonality_type==PRECIP || cell->ml.seasonality_type==PRECIPTEMP) /*precipitation-dependent rules*/
@@ -52,9 +52,9 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
         if(dprec>MIN_PREC || dayofmonth==ndaymonth[month-1])
         {
           if(month==cell->ml.sowing_month[cft]) /*no irrigation, first wet day*/
-            sowingcft(&flux_estab,alloc_today,cell,FALSE,FALSE,npft,ncft,cft,year,day,config);
+            sowingcft(&flux_estab,alloc_today,cell,FALSE,FALSE,FALSE,npft,ncft,cft,year,day,config);
           if(month==cell->ml.sowing_month[cft+ncft]) /* irrigation, first wet day*/
-            sowingcft(&flux_estab,alloc_today+1,cell,TRUE,FALSE,npft,ncft,cft,year,day,config);
+            sowingcft(&flux_estab,alloc_today+1,cell,TRUE,FALSE,FALSE,npft,ncft,cft,year,day,config);
         }
       } /*of precipitation seasonality*/
 
@@ -70,13 +70,13 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
             if(((cell->climbuf.temp[NDAYS-1]<croppar->temp_fall)
                &&(cell->climbuf.temp[NDAYS-2]>=croppar->temp_fall||dayofmonth==1))||dayofmonth==ndaymonth[m]) /*sow winter variety*/
             {
-              sowingcft(&flux_estab,alloc_today,cell,FALSE,FALSE,npft,ncft,cft,year,day,config);
+              sowingcft(&flux_estab,alloc_today,cell,FALSE,FALSE,FALSE,npft,ncft,cft,year,day,config);
             }
           }
           else if(((cell->climbuf.temp[NDAYS-1]>croppar->temp_spring)
                   &&(cell->climbuf.temp[NDAYS-2]<=croppar->temp_spring||dayofmonth==1))||dayofmonth==ndaymonth[m]) /*sow summer variety */
           {
-            sowingcft(&flux_estab,alloc_today,cell,FALSE,FALSE,npft,ncft,cft,year,day,config);
+            sowingcft(&flux_estab,alloc_today,cell,FALSE,FALSE,FALSE,npft,ncft,cft,year,day,config);
           } /*of cultivating summer variety*/
         } /*of if month==ml.sowing_month[cft]*/
         if(month==cell->ml.sowing_month[cft+ncft]) /* irrigation */
@@ -89,13 +89,13 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
             if(((cell->climbuf.temp[NDAYS-1]<croppar->temp_fall)
                &&(cell->climbuf.temp[NDAYS-2]>=croppar->temp_fall||dayofmonth==1))||dayofmonth==ndaymonth[m]) /*sow winter variety*/
             {
-              sowingcft(&flux_estab,alloc_today+1,cell,TRUE,FALSE,npft,ncft,cft,year,day,config);
+              sowingcft(&flux_estab,alloc_today+1,cell,TRUE,FALSE,FALSE,npft,ncft,cft,year,day,config);
             }
           }
           else if(((cell->climbuf.temp[NDAYS-1]>croppar->temp_spring)
                   &&(cell->climbuf.temp[NDAYS-2]<=croppar->temp_spring||dayofmonth==1))||dayofmonth==ndaymonth[m]) /*sow summer variety */
           {
-            sowingcft(&flux_estab,alloc_today+1,cell,TRUE,FALSE,npft,ncft,cft,year,day,config);
+            sowingcft(&flux_estab,alloc_today+1,cell,TRUE,FALSE,FALSE,npft,ncft,cft,year,day,config);
           } /*of cultivating summer variety*/
         } /*of if month==ml.sowing_month[cft+npft]*/
       } /* of temperature-dependent rule */

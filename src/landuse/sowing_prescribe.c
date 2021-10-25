@@ -41,9 +41,9 @@ Stocks sowing_prescribe(Cell *cell,          /**< pointer to cell */
       earliest_sdate=(cell->coord.lat>=0)?croppar->initdate.sdatenh:croppar->initdate.sdatesh;
       wtype = (croppar->calcmethod_sdate==TEMP_WTYP_CALC_SDATE && day>earliest_sdate);
       if(day==cell->ml.sdate_fixed[cft])
-        sowingcft(&flux_estab,alloc_today,cell,FALSE,wtype,npft,ncft,cft,year,day,config);
+        sowingcft(&flux_estab,alloc_today,cell,FALSE,wtype,TRUE,npft,ncft,cft,year,day,config);
       if(day==cell->ml.sdate_fixed[cft+ncft])
-        sowingcft(&flux_estab,alloc_today+1,cell,TRUE,wtype,npft,ncft,cft,year,day,config);
+        sowingcft(&flux_estab,alloc_today+1,cell,TRUE,wtype,TRUE,npft,ncft,cft,year,day,config);
     }
   }
   return flux_estab;
