@@ -81,7 +81,6 @@ typedef struct
                                     seasonality*/
   int *sdate_fixed;       /**< array to store fixed or prescribed sowing dates */
   Real *crop_phu_fixed;   /**< array to store prescribed crop phus */
-  int *tilltypes;         /* array to store tillage types */
   Resdata *resdata;       /**< Reservoir data */
   Real *fraction;
   Real reservoirfrac;     /**< reservoir fraction (0..1) */

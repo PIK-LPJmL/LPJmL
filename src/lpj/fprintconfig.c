@@ -240,6 +240,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len=printsim(file,len,&count,"prescribe burntarea");
     if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
       len=printsim(file,len,&count,fdi[config->fdi]);
+    if(config->fire_on_grassland)
+      len=printsim(file,len,&count,"fire on grassland");
   }
   if(config->const_climate)
     len=printsim(file,len,&count,"const. climate");
