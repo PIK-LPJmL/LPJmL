@@ -26,13 +26,13 @@ Stocks sowing_season(Cell *cell,          /**< pointer to cell */
                     )                     /** \return establishment flux (gC/m2,gN/m2) */
 {
   Bool alloc_today[2]={FALSE,FALSE};
-  int cft,m,mm,dayofmonth,month,s,s2;
+  int cft,m,mm,dayofmonth,month;
   Stocks flux_estab={0,0};
   const Pftcroppar *croppar;
 
-  s=findlandusetype(cell->standlist,SETASIDE_RF);
-  s2=findlandusetype(cell->standlist,SETASIDE_IR);
-  if(s!=NOT_FOUND || s2!=NOT_FOUND)
+  if(config->sdate_option==FIXED_SDATE ||
+     findlandusetype(cell->standlist,SETASIDE_RF)!=NOT_FOUND ||
+     findlandusetype(cell->standlist,SETASIDE_IR)!=NOT_FOUND)
   {
     for(cft=0; cft<ncft; cft++)
     {
