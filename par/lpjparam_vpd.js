@@ -30,7 +30,7 @@
   "GM" : 3.26,               /* GM empirical parameter in demand function */
   "ALPHAM" : 1.391,          /* ALPHAM Priestley-Taylor coefficient*/
   "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */
-  "kc25" : 30.,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
+  "kc25" : 30.0,              /* Michaelis constant for CO2 (Pa) at 25 deg C */
   "atmfrac" : 0.7,           /* atmfrac */
   "fastfrac" : 0.98,         /* fastfrac */
   "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
