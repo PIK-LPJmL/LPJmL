@@ -11,10 +11,10 @@
           lpjcheck - Checks syntax of LPJmL configuration files
 
      <B>SYNOPSIS</B>
-          <B>lpjcheck</B> [-h] [-q] [-vv] [-param] [-pp cmd] [-output
-          {write|gather|mpi2|socket=hostname[:port]}] [-outpath <I>dir</I>]
-          [-inpath <I>dir</I>] [-restartpath <I>dir</I>] [[-Dmacro[=value]] [-I<I>dir</I>]
-          ...]  [<I>filename</I>]
+          <B>lpjcheck</B> [-h] [-q] [-nocheck] [-vv] [-param] [-pp cmd]
+          [-output {write|gather|mpi2|socket=hostname[:port]}]
+          [-outpath <I>dir</I>] [-inpath <I>dir</I>] [-restartpath <I>dir</I>]
+          [[-Dmacro[=value]] [-I<I>dir</I>] ...]  [<I>filename</I>]
 
      <B>DESCRIPTION</B>
           Program checks the syntax of LPJmL configuration files. It
@@ -27,6 +27,9 @@
 
           -q   Only error messages are displayed, other output is
                suppressed.
+
+          -nocheck
+               Does not check for input/output files
 
           -vv  verbosely print the actual values during reading of the
                configuration files.
@@ -122,10 +125,6 @@
 
      <B>SEE</B> <B>ALSO</B>
           <B><A HREF="lpjml.html">lpjml(1)</A></B>, <B><A HREF="lpjfiles.html">lpjfiles(1)</A></B>, <B><A HREF="lpjsubmit.html">lpjsubmit(1)</A></B>, <B><A HREF="lpjml.conf.html">lpjml.conf(5)</A></B>
-
-
-
-
 
 
 

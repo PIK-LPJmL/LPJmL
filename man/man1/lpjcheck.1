@@ -1,9 +1,9 @@
-.TH lpjcheck 1  "April 27, 2009" "version 4.0.002" "USER COMMANDS"
+.TH lpjcheck 1  "October 27, 2021" "version 1.0.004" "USER COMMANDS"
 .SH NAME
 lpjcheck \- Checks syntax of LPJmL configuration files 
 .SH SYNOPSIS
 .B lpjcheck
-[\-h] [\-q] [-vv] [\-param] [-pp cmd] [\-output {write|gather|mpi2|socket=hostname[:port]}] [\-outpath \fIdir\fP]
+[\-h] [\-q] [\-nocheck] [-vv] [\-param] [-pp cmd] [\-output {write|gather|mpi2|socket=hostname[:port]}] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
 [\fIfilename\fP]
 .SH DESCRIPTION
@@ -16,6 +16,9 @@ display a short help text
 .TP
 \-q
 Only error messages are displayed, other output is suppressed.
+.TP
+\-nocheck
+Does not check for input/output files
 .TP
 \-vv
 verbosely print the actual values during reading of the configuration files.
