@@ -119,7 +119,7 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
   if(isroot(*config) && config->reservoir_filename.fmt!=META)
   {
     filesize=getfilesizep(file)-headersize(headername,version)-offset;
-    if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
+    if(filesize!=sizeof(int)*header.nyear*header.nbands*header.ncell)
       fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",
               config->reservoir_filename.name);
   }
