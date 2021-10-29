@@ -123,8 +123,8 @@ extern Bool freadlandfrac(FILE *,Landfrac [2],int,int,Bool);
 extern Bool readlandfracmap(Landfrac *,const int [],int,const Real [],int *,int,int);
 extern Real landfrac_sum(const Landfrac [2],int,int,Bool);
 extern Real crop_sum_frac(Landfrac *,int,int,Real,Bool);
-extern Stocks cultivate(Cell *,const Pftpar *,int,Real,Bool,int,Bool,Stand *,
-                        Bool,int,int,int,int,const Config *);
+extern Stocks cultivate(Cell *,Bool,int,Bool,Stand *,
+                        int,int,int,int,const Config *);
 #ifdef IMAGE
 extern void deforest_for_timber(Cell *,Real,int,Bool,int,Real,const Config *);
 #endif
@@ -132,6 +132,7 @@ extern void reclaim_land(const Stand *, Stand *,Cell *,Bool,int,const Config *);
 extern Bool getlanduse(Landuse,Cell *,int,int,int,const Config *);
 extern void landusechange(Cell *,int,int,Bool,int,const Config *);
 extern Bool setaside(Cell *,Stand *,Bool,Bool,int,Bool,int,const Config *);
+extern void sowingcft(Stocks *,Bool *,Cell *,Bool,Bool,Bool,int,int,int,int,int,const Config *);
 extern Stocks sowing_season(Cell *,int,int,int,Real,int,const Config *);
 extern Stocks sowing_prescribe(Cell *,int,int,int,int,const Config *);
 extern Stocks sowing(Cell *,Real,int,int,int,int,const Config *);

@@ -33,7 +33,7 @@ Cropdates *init_cropdates(const Pftpar par[], /**< CFT parameter array */
   
     cropdates[cft].last_update_fall=cropdates[cft].last_update_spring=cropdates[cft].last_update_vern=0;  
     cropdates[cft].fall_sdate20=cropdates[cft].spring_sdate20=cropdates[cft].vern_date20=0;
-    cropdates[cft].fallow=cropdates[cft].fallow_irrig=0;
+    cropdates[cft].fallow[0]=cropdates[cft].fallow[1]=0;
 
     if(croppar->calcmethod_sdate==NO_CALC_SDATE || croppar->calcmethod_sdate==MULTICROP)
     {

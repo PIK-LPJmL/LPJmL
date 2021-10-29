@@ -49,12 +49,8 @@ typedef struct
   int last_update_vern;
   /* Counts years since last non-zero value of verndate20 */
 
-  int fallow;
-  /* counts days to wait before next crop cycle of each cft to control multicropping */
-  int fallow_irrig;
-  /* counts days to wait before next crop cycle of each cft to control multicropping
-   * for irrigated stand
-   */
+  int fallow[2];
+  /* counts days to wait before next crop cycle of each cft to control multicropping for rain fed and irrigated crops */
 
 } Cropdates;
 

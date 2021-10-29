@@ -25,12 +25,12 @@ void update_fallowdays(Cropdates *cropdates, /**< crop dates */
   for(cft=0;cft<ncft;cft++)
   {
 
-    cropdates[cft].fallow--;
-    cropdates[cft].fallow_irrig--;
+    cropdates[cft].fallow[0]--;
+    cropdates[cft].fallow[1]--;
   
     if((lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE) ||
        (lat<0.0 && day==COLDEST_DAY_SHEMISPHERE)) 
-      cropdates[cft].fallow=cropdates[cft].fallow_irrig=0;
+      cropdates[cft].fallow[0]=cropdates[cft].fallow[1]=0;
   }
 } /* of 'update_fallowdays' */
 
