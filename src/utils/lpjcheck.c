@@ -18,15 +18,15 @@
 #include "tree.h"
 #include "crop.h"
 
-#define LPJCHECK_VERSION "1.0.003"
+#define LPJCHECK_VERSION "1.0.004"
 #define NTYPES 3 /* number of PFT types: grass, tree, crop */
 #ifdef USE_MPI
-#define USAGE "Usage: %s [-h] [-q] [-param] [-vv]\n"\
+#define USAGE "Usage: %s [-h] [-q] [-nocheck] [-param] [-vv]\n"\
               "       [-output {mpi2|gather|socket=hostname[:port]}]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
 #else
-#define USAGE "Usage: %s [-h] [-q] [-param] [-vv]\n"\
+#define USAGE "Usage: %s [-h] [-q] [-nocheck] [-param] [-vv]\n"\
               "       [-output {write|socket=hostname[:port]}]\n"\
               "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
               "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
@@ -43,13 +43,13 @@ int main(int argc,char **argv)
   };
   Config config;         /* LPJ configuration */
   int rc;                /* return code of program */
-  Bool isout;
+  Bool isout,check;
   const char *progname;
   const char *title[4];
   String line;
   FILE *file;
   initconfig(&config);
-  isout=TRUE;
+  isout=check=TRUE;
   progname=strippath(argv[0]);
   if(argc>1)
   {
@@ -98,6 +98,12 @@ int main(int argc,char **argv)
       return EXIT_SUCCESS;
     }
   }
+  if(argc>1 && !strcmp(argv[1],"-nocheck"))
+  {
+    argc--; /* adjust command line options */
+    argv++;
+    check=FALSE; /* no checking */
+  }
   if(isout)
   {
     snprintf(line,78-10,
@@ -131,7 +137,10 @@ int main(int argc,char **argv)
       printintf((int)(outputfilesize(&config)/(1024*1024)));
       printf(" MByte\n");
     }
-    rc=(filesexist(config,isout)) ? EXIT_FAILURE : EXIT_SUCCESS;
+    if(check)
+      rc=(filesexist(config,isout)) ? EXIT_FAILURE : EXIT_SUCCESS;
+    else
+      rc=EXIT_SUCCESS;
   }
   return rc;
 } /* of 'main' */
