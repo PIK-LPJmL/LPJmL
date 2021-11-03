@@ -121,7 +121,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
     hetres=littersom(&stand->soil,gtemp_soil);
     cell->output.mrh+=hetres*stand->frac;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
     if (stand->type->landusetype == NATURAL)
     {
        cell->rh_nat += hetres*stand->frac;

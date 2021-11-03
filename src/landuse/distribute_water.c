@@ -164,6 +164,14 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                 stand->cell->output.cft_nir[rmgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount;
               }
               break;
+#if defined IMAGE || defined INCLUDEWP
+            case WOODPLANTATION:
+              if(pft_output_scaled)
+                stand->cell->output.cft_nir[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].woodplantation;
+              else
+                stand->cell->output.cft_nir[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount;
+              break;
+#endif
             case BIOMASS_GRASS:
               if(pft_output_scaled)
                 stand->cell->output.cft_nir[rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount*stand->cell->ml.landfrac[1].biomass_grass;
@@ -245,7 +253,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
             stand->cell->output.cft_conv_loss_drain[rbgrass(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=conv_loss*(1-data->conv_evap);
           }
         }
-#ifdef IMAGE
+#if defined IMAGE || defined INCLUDEWP
         else if (stand->type->landusetype == WOODPLANTATION)
         {
           if (pft_output_scaled)

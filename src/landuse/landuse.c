@@ -257,6 +257,13 @@ static Real reducelanduse(Cell *cell,Real sum,int ncft)
       cell->ml.landfrac[j].biomass_grass-=sum;
       return 0;
     }
+#if defined IMAGE || defined INCLUDEWP
+    if(cell->ml.landfrac[j].woodplantation > sum)
+    {
+      cell->ml.landfrac[j].woodplantation-=sum;
+      return 0;
+    }
+#endif
   }
   return sum;
 } /* of 'reducelanduse' */
