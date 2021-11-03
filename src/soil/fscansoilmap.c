@@ -102,6 +102,14 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
       }
       else
       {
+        if(!isint(&item,NULL))
+        {
+          if(verbose)
+            fprintf(stderr,"ERROR226: Invalid datatype of element %d in 'soilmap', must be string or int.\n",s+1);
+          free(soilmap);
+          free(undef);
+          return NULL;
+        }
         if(fscanint(&item,soilmap+s,NULL,FALSE,verbose))
         {
           free(soilmap);

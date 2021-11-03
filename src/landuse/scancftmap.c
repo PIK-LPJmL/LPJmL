@@ -89,6 +89,14 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
         cftmap[cft]=NOT_FOUND;
         continue;
       }
+      if(!isstring(&item,NULL))
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR226: Datatype of element %d in map '%s' is not of type string.\n",
+                  cft+1,name);
+        free(cftmap);
+        return NULL;
+      }
       if(fscanstring(&item,s,NULL,FALSE,verbose))
       {
         free(cftmap);
