@@ -144,7 +144,8 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
             fputc(',',stderr);
           fprintf(stderr," '%s'",config->soilpar[s].name);
         }
-      fprintf(stderr,".\n");
+      if(!first)
+        fprintf(stderr,".\n");
     }
     free(undef);
   }
