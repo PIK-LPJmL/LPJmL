@@ -62,11 +62,11 @@ void fprintcell(FILE *file,            /**< file pointer to text file */
         {
           fputs("CFT     ",file);
           for(cft=0;cft<ncft;cft++)
-            fprintf(file," %4d",cft);
+            fprintf(file," %5d",cft);
           fputs("\n--------",file);
           for(cft=0;cft<ncft;cft++)
             fputs(" -----",file);
-          fputs("\nfsdate  ",file);
+          fputs("\nrfsdate ",file);
           for(cft=0;cft<ncft;cft++)
             fprintf(file," %5d",grid[cell].ml.sdate_fixed[cft]);
           fputs("\nirrsdate",file);

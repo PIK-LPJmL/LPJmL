@@ -406,7 +406,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       count++;
       len=fputstring(file,len,"prescribed sowing date",78);
     }
-    if(config->grassfix_filename.name==NULL)
+    if(config->grassharvest_filename.name==NULL)
     {
       len=fputstring(file,len,", ",78);
       count++;

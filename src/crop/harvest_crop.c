@@ -174,8 +174,5 @@ void harvest_crop(Output *output,      /**< Output data */
   getoutput(output,RHARVEST_BURNT_IN_FIELDC,config)+=harvest.residuals_burntinfield.carbon*stand->frac;
   getoutput(output,RHARVEST_BURNT_IN_FIELDN,config)+=harvest.residuals_burntinfield.nitrogen*stand->frac;
   croppar=pft->par->data;
-  if(data->irrigation)
-    stand->cell->ml.cropdates[pft->par->id-npft].fallow_irrig=croppar->fallow_days;
-  else
-    stand->cell->ml.cropdates[pft->par->id-npft].fallow=croppar->fallow_days;
+  stand->cell->ml.cropdates[pft->par->id-npft].fallow[data->irrigation]=croppar->fallow_days;
 } /* of 'harvest_crop' */

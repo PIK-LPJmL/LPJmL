@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**       u  p  d  a  t  e  _  f  a  l  l  o  w  d  a  y  s  .  c                  \n**/
+/**                               i  s  i  n  t  .  c                              \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function determines whether JSON keyword is of type int                    \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,26 +14,31 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#ifdef USE_JSON
+#include <json-c/json.h>
+#endif
+#include "types.h"
 
-void update_fallowdays(Cropdates *cropdates, /**< crop dates */
-                       Real lat,             /**< Latitude (deg) */
-                       int day,              /**< day (1..365) */
-                       int ncft              /**< number of crop PFTs */
-                      )
+Bool isint(const LPJfile *file, /**< pointer to LPJ file */
+           const char *name     /**< variable name or NULL */
+          )                     /** \return TRUE if type is int */
 {
-  int cft;
-  
-  for(cft=0;cft<ncft;cft++)
+#ifdef USE_JSON
+  struct json_object *item;
+  if(file->isjson)
   {
-
-    cropdates[cft].fallow[0]--;
-    cropdates[cft].fallow[1]--;
-  
-    if((lat>=0.0 && day==COLDEST_DAY_NHEMISPHERE) ||
-       (lat<0.0 && day==COLDEST_DAY_SHEMISPHERE)) 
-      cropdates[cft].fallow[0]=cropdates[cft].fallow[1]=0;
+    if(name==NULL)
+      return (json_object_get_type(file->file.obj)==json_type_int);
+    if(!json_object_object_get_ex(file->file.obj,name,&item))
+      return FALSE;
+    return (json_object_get_type(item)==json_type_int);
   }
-} /* of 'update_fallowdays' */
-
-/*local function update_fallowdays() is called in sowing()*/
+  else
+   return FALSE;
+#else
+   return FALSE;
+#endif
+} /* of 'isint' */

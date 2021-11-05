@@ -115,6 +115,7 @@ extern Bool fscanarray(LPJfile *,LPJfile *,int *,Bool,const char *,Verbosity);
 extern Bool fscanarrayindex(const LPJfile *,LPJfile *,int,Verbosity);
 extern Bool iskeydefined(const LPJfile *,const char *);
 extern Bool isboolean(const LPJfile *,const char *);
+extern Bool isint(const LPJfile *,const char *);
 extern Bool isstring(const LPJfile *,const char *);
 extern Bool fscanline(FILE *,char [],int,Verbosity);
 extern Bool fscantoken(FILE *,String);

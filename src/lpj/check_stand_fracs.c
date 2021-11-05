@@ -40,17 +40,17 @@ void check_stand_fracs(const Cell *cell, /**< pointer to cell */
     {
       foreachstand(stand,s,cell->standlist)
         fprintf(stderr,"frac[%s]=%g\n",stand->type->name,stand->frac);
-      fail(NEGATIVE_STAND_FRAC_ERR,TRUE,"negative STAND_FRAC %g, lakefrac: %g, cell (%s)",
-           stand->frac,lakefrac,sprintcoord(line,&cell->coord));
+      fail(NEGATIVE_STAND_FRAC_ERR,TRUE,"Negative or zero stand fraction %g for %s stand, lakefrac: %g, cell (%s)",
+           stand->frac,stand->type->name,lakefrac,sprintcoord(line,&cell->coord));
     }
   }
   
   if(fabs(frac_sum-1)>accuracy)
 #if defined IMAGE && defined COUPLED
-    fail(STAND_FRAC_SUM_ERR,TRUE,"STAND_FRAC_SUM-error %g frac_sum %glakefrac: %g, cell (%g/%g), reservoirfrac %g",
-    fabs(frac_sum-1),frac_sum, lakefrac,stand->cell->coord.lon,stand->cell->coord.lat,stand->cell->ml.reservoirfrac);
+    fail(STAND_FRAC_SUM_ERR,TRUE,"Sum of stand fractions differs from 1 by %g, frac_sum %g, lakefrac: %g, cell (%s), reservoirfrac %g",
+         fabs(frac_sum-1),frac_sum, lakefrac,sprintcoord(line,&cell->coord),cell->ml.reservoirfrac);
 #else
-    fail(STAND_FRAC_SUM_ERR,TRUE,"STAND_FRAC_SUM-error %g lakefrac: %g, cell (%g/%g)",
-         fabs(frac_sum-1),lakefrac,cell->coord.lon,cell->coord.lat);
+    fail(STAND_FRAC_SUM_ERR,TRUE,"Sum of stand fractions differs from 1 by %g, lakefrac: %g, cell (%s)",
+         fabs(frac_sum-1),lakefrac,sprintcoord(line,&cell->coord));
 #endif
 } /* of 'check_stand_fracs' */
