@@ -219,7 +219,7 @@ Bool annual_woodplantation(Stand *stand,         /* Pointer to stand */
   acflux_estab=0;
 
   stand->cell->output.flux_estab+=acflux_estab*stand->frac;
-#ifdef IMAGE
+#if defined IMAGE && defined COUPLED
   stand->cell->flux_estab_wp+=acflux_estab*stand->frac;
 #endif
   stand->cell->output.dcflux+=acflux_estab*stand->frac;

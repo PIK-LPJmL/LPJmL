@@ -165,10 +165,9 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
    }
    npp=npp(pft,gtemp_air,gtemp_soil,gpp-rd);
    output->mnpp+=npp*stand->frac;
-   if(stand->type->landusetype==WOODPLANTATION)
-   {
-      stand->cell->npp_wp+=npp*stand->frac;
-   }
+#if defined IMAGE && defined COUPLED
+   stand->cell->npp_wp+=npp*stand->frac;
+#endif
    output->dcflux-=npp*stand->frac;
    output->mgpp+=gpp*stand->frac;
    output->cft_fpar[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE+NWPTYPE)] += (fpar(pft)*stand->cell->ml.landfrac[data->irrigation].woodplantation*(1.0 / (1 - stand->cell->lakefrac)));

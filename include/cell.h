@@ -96,7 +96,7 @@ Received 19 November 1997; accepted 15 January 1999*/
   Output output;            /**< Output data */
   Discharge discharge;
   int elevation;            /**< cell elevation (m) */
-#if defined IMAGE || defined INCLUDEWP
+#if defined IMAGE && defined COUPLED
   Real npp_nat;             /**< NPP natural stand */
   Real npp_wp;              /**< NPP woodplantation */
   Real flux_estab_nat;      /**< flux_estab natural stand */

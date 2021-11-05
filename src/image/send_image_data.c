@@ -264,9 +264,9 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
       fflush(stdout);
 #endif
 #ifdef DEBUG_IMAGE
-      if(isnan(grid[cell].balance.nep))
+      if(isnan(grid[cell].balance.npp))
       {
-        printf("NEP isnan in cell %d\n",cell);
+        printf("NPP isnan in cell %d\n",cell);
         fflush(stdout);
       }
       if(isnan(grid[cell].output.flux_estab))
@@ -286,7 +286,7 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
       }
 #endif
 #ifdef SENDSEP
-      nep_image[cell]=(float)(grid[cell].balance.nep+grid[cell].output.flux_estab);
+      nep_image[cell]=(float)(grid[cell].balance.npp-grid[cell].balance.rh+grid[cell].output.flux_estab);
       nep_image_nat[cell]=(float)(grid[cell].npp_nat+grid[cell].flux_estab_nat-grid[cell].rh_nat);
       nep_image_wp[cell]=(float)(grid[cell].npp_wp+grid[cell].flux_estab_wp-grid[cell].rh_wp);
       harvest_agric_image[cell]=(float)grid[cell].output.flux_harvest;
@@ -299,8 +299,8 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
       rh_image_nat[cell]=(float)(grid[cell].rh_nat);
       rh_image_wp[cell]=(float)(grid[cell].rh_wp);
 #else
-      nep_image[cell]=(float)(grid[cell].balance.nep+grid[cell].output.flux_estab-grid[cell].output.flux_harvest)
-        -grid[cell].balance.biomass_yield;
+      nep_image[cell]=(float)(grid[cell].balance.npp-grid[cell].balance.rh+grid[cell].output.flux_estab-grid[cell].output.flux_harvest
+        -grid[cell].balance.biomass_yield);
 #endif
       /* timber harvest is computed in IMAGE based on LPJmL carbon pools, 
          not the extraction is a carbon flux to the atmosphere but the product-pool 
@@ -735,7 +735,7 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
 #endif
 /* sending yield data to interface -- needs to be read at the same position! */
   getcounts(counts,offsets,config->nall,ncrops,config->ntask);
-  mpi_write_socket(config->out,yields,MPI_FLOAT,
+  mpi_write_socket(config->out,yields[0],MPI_FLOAT,
                    config->nall*ncrops,counts,offsets,config->rank,config->comm);
   getcounts(counts,offsets,config->nall,1,config->ntask);
   mpi_write_socket(config->out,adischarge,MPI_FLOAT,
@@ -828,7 +828,7 @@ Bool send_image_data(const Config *config,   /**< Grid configuration */
   writefloat_socket(config->out, trad_biofuel_image_wp, config->ngridcell);
 #endif
   /* sending yield data to interface -- needs to be read at the same position! */
-  writefloat_socket(config->out,yields, ncrops*config->ngridcell); /*NCROPS should be made generic somewhere*/
+  writefloat_socket(config->out,yields[0], ncrops*config->ngridcell); /*NCROPS should be made generic somewhere*/
   writefloat_socket(config->out, adischarge, config->ngridcell);
   writefloat_socket(config->out,nppgrass_image, config->ngridcell);
   writefloat_socket(config->out, natfrac_image, config->ngridcell);

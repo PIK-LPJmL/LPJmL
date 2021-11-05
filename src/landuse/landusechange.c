@@ -849,7 +849,12 @@ void landusechange(Cell *cell,            /**< pointer to cell */
   }
 
   foreachstand(stand,s,cell->standlist)
+#if defined IMAGE || defined INCLUDEWP
+    if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS ||
+       stand->type->landusetype==BIOMASS_TREE || stand->type->landusetype==WOODPLANTATION) /* do not update for crops, must be done in sowing functions */
+#else
     if(stand->type->landusetype==GRASSLAND || stand->type->landusetype==BIOMASS_GRASS || stand->type->landusetype==BIOMASS_TREE) /* do not update for crops, must be done in sowing functions */
+#endif
       set_irrigsystem(stand,0,ncft,pft_output_scaled); /* no CFT index needed for non-agricultural stands */
 
 #ifdef SAFE
