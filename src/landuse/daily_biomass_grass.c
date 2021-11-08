@@ -95,7 +95,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
   rainmelt=climate->prec+melt;
   if(rainmelt<0)
     rainmelt=0.0;
-  nnat=npft-config->nbiomass-config->nagtree-config->nwft;
+  nnat=getnnat(npft,config);
   index=rbgrass(ncft)+data->irrigation*getnirrig(ncft,config);
 
   if(data->irrigation && data->irrig_amount>epsilon)

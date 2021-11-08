@@ -64,7 +64,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
 
   soil = &stand->soil;
   data=stand->data;
-  nnat=npft-config->nbiomass-config->nwft;
+  nnat=getnnat(npft,config);
   index=rwp(ncft)+data->irrigation.irrigation*getnirrig(ncft,config);
   output=&stand->cell->output;
   stand->growing_days++;
