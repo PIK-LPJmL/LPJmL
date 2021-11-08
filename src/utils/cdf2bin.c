@@ -139,7 +139,10 @@ static Bool readdata(Climatefile *file,    /* climate data file */
           fprintf(stderr,"ERROR422: Invalid coordinate for cell %d (",cell);
           fprintcoord(stderr,coords+cell);
           fputs(") in data file.\n",stderr);
-          free(f);
+          if(file->datatype==LPJ_FLOAT)
+            free(f);
+          else
+            free(s);
           nc_close(file->ncid);
           return TRUE;
         }
