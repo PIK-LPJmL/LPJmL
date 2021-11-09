@@ -107,8 +107,9 @@ FILE *openrestart(const char *filename, /**< filename of restart file */
   }
   config->sdate_option_restart=restartheader.sdate_option;
   config->crop_option_restart=restartheader.crop_option;
-  if(isroot(*config) && restartheader.sdate_option==NO_FIXED_SDATE && config->sdate_option>NO_FIXED_SDATE)
-    fputs("WARNING024: Sowing dates are missing in restart file.\n",stderr);
+  if(isroot(*config) && restartheader.sdate_option==NO_FIXED_SDATE && config->sdate_option>NO_FIXED_SDATE && config->firstyear-config->nspinup>config->sdate_fixyear)
+    fprintf(stderr,"ERROR245: Sowing dates are missing in restart file, sowing date fixed at year %d, but simulation starts at %d.\n",
+            config->sdate_fixyear,config->firstyear-config->nspinup);
   if((sizeof(Real)==sizeof(float)  && header.datatype!=LPJ_FLOAT) ||
      (sizeof(Real)==sizeof(double) && header.datatype!=LPJ_DOUBLE))
   {
