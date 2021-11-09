@@ -136,7 +136,10 @@ static Bool readdata(Climatefile *file,    /* climate data file */
         address[1]=(int)((coords[cell].lon-file->lon_min)/config->resolution.lon+0.5);
         if(checkcoord(address,cell,coords+cell,file))
         {
-          free(f);
+          if(file->datatype==LPJ_FLOAT)
+            free(f);
+          else
+            free(s);
           nc_close(file->ncid);
           return TRUE;
         }

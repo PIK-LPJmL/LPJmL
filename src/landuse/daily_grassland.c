@@ -84,7 +84,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 #endif
 
   n_pft=getnpft(&stand->pftlist); /* get number of established PFTs */
-  nnat=npft-config->nbiomass-config->nagtree-config->nwft;
+  nnat=getnnat(npft,config);
 
   data=stand->data;
   stand->growing_days++;

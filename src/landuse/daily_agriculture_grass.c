@@ -185,8 +185,8 @@ Real daily_agriculture_grass(Stand *stand,                /**< stand pointer */
       gcgp = gc_pft / gp_pft[getpftpar(pft, id)];
       if (stand->frac > 0.0)
       {
-         getoutputindex(output,PFT_GCGP_COUNT,npft - config->nbiomass-config->nagtree + index,config)++;
-         getoutputindex(output,PFT_GCGP,npft - config->nbiomass-config->nagtree + index,config) += gcgp;
+         getoutputindex(output,PFT_GCGP_COUNT,nnat + index,config)++;
+         getoutputindex(output,PFT_GCGP,nnat + index,config) += gcgp;
       }
     }
     npp = npp_grass(pft, gtemp_air, gtemp_soil, gpp - rd,config->with_nitrogen);

@@ -163,7 +163,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintregionpar(file,config->regionpar,config->nregions);
   }
   else
-    for(p=0;p<npft-config->nbiomass;p++)
+    for(p=0;p<getnnat(npft,config);p++)
       fprintpftpar(file,config->pftpar+p,config);
   fputs("------------------------------------------------------------------------------\n",file);
   fprintoutputvar(file,config->outnames,NOUT,npft,ncft,config);
