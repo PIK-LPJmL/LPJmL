@@ -120,7 +120,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   {
     if(isroot(*config))
     {
-      fprintf(stderr,"ERROR127: Order in '%s' must be cellyear, order",filename->name);
+      fprintf(stderr,"ERROR127: Order in '%s' must be cellyear, order ",filename->name);
       if(header.order>0 || header.order<=CELLSEQ)
         fprintf(stderr,"%s",ordernames[header.order-1]);
       else

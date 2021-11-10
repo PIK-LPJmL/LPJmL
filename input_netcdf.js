@@ -41,7 +41,7 @@
   "regioncode" : { "fmt" : "cdf", "var" : "region", "name" : "cru_netcdf/reg_full_2018.nc"},
   "landuse" : { "fmt" : "cdf", "var" :  "landfrac", "name" : "cru_netcdf/cft1700_2005_irrigation_systems_64bands.nc"},
   "fertilizer_nr" : { "fmt" : "cdf",  "var" : "nfert", "name" : "cru_netcdf/fertilizer_ggcmi.nc"},
-  "temp" : { "fmt" : "cdf", "var" : "temp", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.tmp[1900].nc"},
+  "temp" : { "fmt" : "cdf", "var" : "temp", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.tmp.nc"},
   "prec" : { "fmt" : "cdf", "var" : "prec", "name" : "cru_netcdf/gpcc_cru09_prec_monthly_1901_2009.nc"},
   "cloud" : { "fmt" : "cdf", "var" : "cloud", "name" : "cru_netcdf/cru_ts_3_10.1901.2009.cld.nc"},
   "wind" : { "fmt" : "cdf", "var" : "windspeed", "name" : "cru_netcdf/mwindspeed_1860-2100_67420.nc"},

@@ -870,7 +870,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(config->nall<config->ntask)
     {
       if(verbose)
-        fprintf(stderr,"ERROR198: Number of cells %d less than number of tasks.\n",config->nall);
+        fprintf(stderr,"ERROR198: Number of cells %d less than number of tasks %d.\n",
+                config->nall,config->ntask);
       return TRUE;
     }
     if(config->ntask>1) /* parallel mode? */
