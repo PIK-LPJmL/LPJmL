@@ -572,7 +572,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       return TRUE;
     if(config->withlanduse!=ALL_CROPS && !findcftmap("cotton",config->pftpar,config->landusemap,config->landusemap_size))
       config->iscotton=FALSE;
-    if(config->fertilizer_input==FERTILIZER || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
+    if(config->fertilizer_input==FERTILIZER || config->manure_input || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
     {
       config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
       if(config->fertilizermap==NULL)
