@@ -87,6 +87,7 @@ typedef struct
   Real k_temp;          /**< factor of temperature dependence of nitrogen demand for Rubisco activity */
   Real fburnt;          /**< fraction of trees burnt at deforestation */
   Real ftimber;         /**< timber fraction at deforestation */
+  Real ftimber_wp;      /**< timber fraction for wood plantations */
   Real harvest_fast_frac;  /**< fraction of harvested wood going to fast pools */
   Real esoil_reduction; /**< reduction of soil evaporation */
   Poolpar product_turnover; /**< fast and slow product turnover (1/yr) */

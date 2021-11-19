@@ -93,6 +93,7 @@ bisco activity */
   "residues_in_soil" : 0.1,           /* minimum residues in soil*/
   "fburnt" : 1.0,                     /* fraction of trees burnt at deforestation, refers to remainder after timber harvest */
   "ftimber" : 0.76,                   /* timber fraction at deforestation */
+  "ftimber_wp" : 0.76,                /* timber fraction for wood plantations */
   "harvest_fast_frac" : 0.34,         /* fraction of harvested wood going to fast pools */
   "product_turnover" : { "fast" : 0.1, "slow" : 0.01}, /* product turnover (1/yr) */
   "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */

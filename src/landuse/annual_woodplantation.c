@@ -39,15 +39,14 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
   Stocks flux_return;
   Stocks flux_estab={0,0};
   Stocks estab_store={0,0};
-#ifdef COUPLED
   Stocks biofuel;
-#endif
   Pfttreepar *treepar;
   Biomass_tree *biomass_tree;
-
+  Stocks yield={0.0,0.0};
 #ifdef COUPLED
   Real ftimber;
-  Stocks yield={0.0,0.0};
+#else
+  Poolpar frac;
 #endif
 
   biomass_tree=stand->data;
@@ -166,6 +165,42 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
         }
         biomass_tree->growing_time=0;
         fpc_tree(pft);
+      } /* of if(istree) */
+    } /* of foreachpft */
+  }
+#else
+  if(param.ftimber_wp>0)
+  {
+    frac.fast=param.harvest_fast_frac;
+    frac.slow=1-param.harvest_fast_frac;
+    foreachpft(pft,p,&stand->pftlist)
+    {
+      if(istree(pft))
+      {
+        treepar=pft->par->data;
+        if(biomass_tree->growing_time>=treepar->rotation && biomass_tree->growing_time%treepar->rotation==0)
+        {
+
+          yield=timber_harvest(pft,&stand->soil,frac,param.ftimber_wp,stand->frac,&pft->nind,&biofuel,config);
+          getoutput(&stand->cell->output,TRAD_BIOFUEL,config)+=biofuel.carbon;
+          stand->cell->balance.trad_biofuel.carbon+=biofuel.carbon;
+          stand->cell->balance.trad_biofuel.nitrogen+=biofuel.nitrogen;
+          stand->cell->balance.timber_harvest.carbon+=yield.carbon;
+          stand->cell->balance.timber_harvest.nitrogen+=yield.nitrogen;
+          getoutput(&stand->cell->output,TIMBER_HARVESTC,config)+=yield.carbon;
+          if(config->pft_output_scaled)
+          {
+            getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon*stand->frac;
+            getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen*stand->frac;
+          }
+          else
+          {
+            getoutputindex(&stand->cell->output,PFT_HARVESTC,index,config)+=yield.carbon;
+            getoutputindex(&stand->cell->output,PFT_HARVESTN,index,config)+=yield.nitrogen;
+          }
+          biomass_tree->growing_time=0;
+          fpc_tree(pft);
+        }
       } /* of if(istree) */
     } /* of foreachpft */
   }
