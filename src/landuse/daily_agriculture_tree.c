@@ -299,6 +299,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp*stand->frac;
     else
       getoutputindex(output,PFT_NPP,nnat+index,config)+=npp;
+      getoutputindex(output,PFT_LAI,nnat+index,config)+=actual_lai(pft);
     if(config->withdailyoutput &&
        pft->par->id==config->crop_index && data->irrigation.irrigation==config->crop_irrigation)
       {
