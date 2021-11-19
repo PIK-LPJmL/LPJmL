@@ -210,37 +210,48 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
                &frac_g_evap,config->rw_manage);
 
   /* allocation, turnover and harvest AFTER photosynthesis */
-  if(n_pft>0)
+  if(config->with_nitrogen)
   {
-    fpc_inc=newvec(Real,n_pft);
-    check(fpc_inc);
-
-    foreachpft(pft,p,&stand->pftlist)
+    if(n_pft>0)
     {
-      grass=pft->data;
-      if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
+      fpc_inc=newvec(Real,n_pft);
+      check(fpc_inc);
+
+        foreachpft(pft,p,&stand->pftlist)
       {
-        turnover_grass(&stand->soil.litter,pft,(Real)grass->growing_days/NDAYYEAR,config);
-        if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config))
+        grass=pft->data;
+        if (pft->bm_inc.carbon > 5.0|| day==NDAYYEAR)
         {
-          /* kill PFT from list of established PFTs */
-          fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */
-          litter_update_grass(&stand->soil.litter,pft,pft->nind,config);
-          delpft(&stand->pftlist,p);
-          p--; /* adjust loop variable */
-        }
-        else
-         // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
-         pft->bm_inc.carbon=0;
-       }
-       else
-       {
-         grass->growing_days++;
-         fpc_inc[p]=0;
-       }
+          turnover_grass(&stand->soil.litter,pft,(Real)grass->growing_days/NDAYYEAR,config);
+          if(allocation_grass(&stand->soil.litter,pft,fpc_inc+p,config))
+          {
+            /* kill PFT from list of established PFTs */
+            fpc_inc[p]=fpc_inc[getnpft(&stand->pftlist)-1]; /*moved here by W. von Bloh */
+            litter_update_grass(&stand->soil.litter,pft,pft->nind,config);
+            delpft(&stand->pftlist,p);
+            p--; /* adjust loop variable */
+          }
+          else
+           // pft->bm_inc.carbon=pft->bm_inc.nitrogen=0;
+           pft->bm_inc.carbon=0;
+         }
+         else
+         {
+           grass->growing_days++;
+           fpc_inc[p]=0;
+         }
+      }
+      light(stand,fpc_inc,config);
+      free(fpc_inc);
     }
-    light(stand,fpc_inc,config);
-    free(fpc_inc);
+  }
+  else
+  {
+    stand->growing_days = 1;
+    /* turnover must happen before allocation */
+    foreachpft(pft,p,&stand->pftlist)
+      turnover_grass(&stand->soil.litter,pft,(Real)stand->growing_days/NDAYYEAR,config);
+    allocation_today(stand,config);
   }
   /* daily turnover and harvest check*/
   isphen=FALSE;
