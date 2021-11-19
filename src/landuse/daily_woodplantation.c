@@ -82,7 +82,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
     stand->cell->output.cft_airrig[rwp(ncft)+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->irrig_amount;
 
   for(l=0;l<LASTLAYER;l++)
-    aet_stand[l]=green_transp[1]=0;
+    aet_stand[l]=green_transp[l]=0;
 
   /* green water inflow */
   rainmelt = climate->prec + melt;
