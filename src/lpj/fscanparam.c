@@ -240,6 +240,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
     else
       param.nfrac_grassharvest=param.nfrac_grazing=0;
     fscanparamreal(&f,&param.hfrac2,"hfrac2");
+    fscanparamreal01(&f,&param.hfrac_biomass,"hfrac_biomass");
     fscanparamreal01(&f,&param.rootreduction,"rootreduction");
     fscanparamreal01(&f,&param.phen_limit,"phen_limit");
   }

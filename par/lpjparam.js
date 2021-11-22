@@ -92,6 +92,7 @@
   "yield_gap_bridge" : 0.0,           /* factor by which laimax value is closed (7 - country-value)*factor */
   "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
   "hfrac2" : 2500.0,
+  "hfrac_biomass" : 0.75,             /* harvest fraction of biomass grass */
   "firedura" : -11.06,                /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.50,		      /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.000001,           /* threshold of fireintensity for which burnt area can be modeled */

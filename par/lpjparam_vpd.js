@@ -98,6 +98,7 @@ bisco activity */
   "product_turnover" : { "fast" : 0.1, "slow" : 0.01}, /* product turnover (1/yr) */
   "allocation_threshold" : 35.0,      /* allocation threshold for daily grassland allocation */
   "hfrac2" : 2500.0,
+  "hfrac_biomass" : 0.75,             /* harvest fraction of biomass grass */
   "firedura" : -8.79,                 /* scaling factor for fire duration for the WVPD*/
   "hum_ign" : -0.53,		      /* a parameter for scaling the human ignintions within SPITFIRE */
   "fire_intens" : 0.0104,             /* threshold of fireintensity for which burnt area can be modeled */

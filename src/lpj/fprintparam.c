@@ -145,6 +145,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     if(config->with_nitrogen)
       fprintf(file,"allocation threshold:\t%g\n",param.allocation_threshold);
     fprintf(file,"hfrac2:\t\t%g (gC/m2)\n",param.hfrac2);
+    fprintf(file,"hfrac biomass:\t%g\n",param.hfrac_biomass);
     fprintf(file,"rootreduction:\t%g\n",param.rootreduction);
     fprintf(file,"Phen limit:\t%g\n",param.phen_limit);
   }

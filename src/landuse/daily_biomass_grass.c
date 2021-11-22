@@ -265,7 +265,7 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
 
   if(isphen)
   {
-    harvest=harvest_stand(output,stand,0.75,config);
+    harvest=harvest_stand(output,stand,param.hfrac_biomass,config);
     if(data->irrigation)
     {
       stand->cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*stand->cell->coord.area*stand->frac;
