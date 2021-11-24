@@ -22,12 +22,10 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
                   const Config *config /**< LPJmL configuration */
                  )
 {
-  int p,nirrig;
+  int nirrig;
   Pft *pft;
-  Real conv_loss,irrig_stand,irrig_threshold;
-  Real wr;
+  Real conv_loss,irrig_stand;
   Pftcrop *crop;
-  irrig_threshold=0.0;
 
   /* determine if today irrigation dependent on threshold */
   data->irrig_event=FALSE;
@@ -36,27 +34,7 @@ void irrig_amount(Stand *stand,        /**< pointer to non-natural stand */
 
   if(data->irrigation)
   {
-    foreachpft(pft,p,&stand->pftlist)
-    {
-      wr=getwr(&stand->soil,pft->par->rootdist);
-      if(!strcmp(pft->par->name,"rice"))
-        irrig_threshold=param.irrig_threshold_rice;
-      else
-      {
-        if(pft->par->path==C3)
-        {
-          if(stand->cell->climbuf.aprec<param.aprec_lim)
-            irrig_threshold=param.irrig_threshold_c3_dry;
-          else
-            irrig_threshold=param.irrig_threshold_c3_humid;
-        }
-        else
-          irrig_threshold=param.irrig_threshold_c4;
-      }
-
-      if(wr<irrig_threshold)
-        data->irrig_event=TRUE; /* if one of possibly two (grass) pfts requests irrigation, both get irrigated */
-    } /*for each pft*/
+    data->irrig_event=isirrigevent(stand);
 
     irrig_stand=max(data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor,0);
 

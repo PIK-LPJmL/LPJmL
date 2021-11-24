@@ -157,6 +157,7 @@ extern void getnsoil_agr(Real *,Real *,Real *,const Cell *);
 extern Bool readcottondays(Cell *,const Config *);
 extern void update_irrig(Stand *,int,int,const Config *);
 extern void update_double_harvest(Output *,Pft *,Bool,int,int,int,const Config *);
+extern Bool isirrigevent(const Stand *);
 
 /* Declaration of variables */
 

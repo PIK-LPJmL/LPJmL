@@ -56,10 +56,6 @@ typedef struct
   Real lsuha;       /**< livestock density for grassland management (lsuha) */
   /* IRRIGATION */
   Real aprec_lim;    /**< annual precipitation limit for C3 irrigation threshold */
-  Real irrig_threshold_c3_dry; /**< soil moisture irrigation threshold for C3 crops, annual precip < aprec_lim */
-  Real irrig_threshold_c3_humid; /**< soil moisture irrigation threshold for C3 crops, annual precip >= aprec_lim */
-  Real irrig_threshold_c4; /**< soil moisture irrigation threshold for C4 crops*/
-  Real irrig_threshold_rice; /**< soil moisture irrigation threshold for RICE */
   Real irrigation_soilfrac; /**< fraction of soil filled with water during irrigation event */
   Real ec_canal[3];     /**< conveyance efficiency for open canal irrigation systems for soil types sand, loam, clay */
   Real ec_pipe;      /**< conveyance efficiency for pressurized irrigation systems */

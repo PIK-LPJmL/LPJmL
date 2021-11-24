@@ -104,11 +104,6 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"livestock density on grassland:\t%g\n",
             param.lsuha);
     fprintf(file,"annual prec lim:\t%g (mm)\n",param.aprec_lim);
-    fprintf(file,"irrig. threshold C3 dry:\t%g\n",param.irrig_threshold_c3_dry);
-    fprintf(file,"irrig. threshold C3 humid:\t%g\n",
-            param.irrig_threshold_c3_humid);
-    fprintf(file,"irrig. threshold C4:\t%g\n",param.irrig_threshold_c4);
-    fprintf(file,"irrig. threshold Rice:\t%g\n",param.irrig_threshold_rice);
     fprintf(file,"irrigation soilfrac:\t%g\n",param.irrigation_soilfrac);
     fprintf(file,"canal conveyance eff. sand:\t%g\n",param.ec_canal[0]);
     fprintf(file,"canal conveyance eff. loam:\t%g\n",param.ec_canal[1]);

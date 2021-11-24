@@ -48,6 +48,9 @@
 #define K_LATOSA 4e3      /* leaf area to sapwood area */
 #define BC3 0.015         /*leaf respiration as fraction of Vmax for C3 plants */
 #define BC4 0.035         /* leaf respiration as fraction of Vmax for C4 plants */
+#define IRRIG_THRESHOLD_C3_DRY   0.8 /* irrigation threshold C3, prec < aprec_lim */
+#define IRRIG_THRESHOLD_C3_HUMID 0.9 /* irrigation threshold C3, prec >= aprec_lim */
+#define IRRIG_THRESHOLD_C4       0.7 /* irrigation threshold C4 */
 
 "pftpar" :
 [
@@ -123,6 +126,7 @@
     "k_litter10_q10_wood" : 2.75, /* Q10_wood */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 2.0, "sapwood" : 20.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -217,6 +221,7 @@
     "k_litter10_q10_wood" : 2.75, /* Q10_wood */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",  /* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -311,6 +316,7 @@
     "k_litter10_q10_wood" : 1.97, /* Q10_wood */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 4.0, "sapwood" : 20.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -405,6 +411,7 @@
     "k_litter10_q10_wood" : 1.37, /* Q10_wood */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -499,6 +506,7 @@
     "k_litter10_q10_wood" : 1.37, /* Q10_wood */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -595,6 +603,7 @@
     "k_litter10_q10_wood" : 1.97, /* Q10_wood */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 4.0, "sapwood" : 20.0, "root" : 4.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -689,6 +698,7 @@
     "k_litter10_q10_wood" : 1.37, /* Q10_wood */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -785,6 +795,7 @@
     "k_litter10_q10_wood" : 1.97, /* Q10_wood */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "needleleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 20.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -881,6 +892,7 @@
     "k_litter10_q10_wood" : 1.0, /* Q10_wood */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "reprod_cost" : REPROD_COST /* reproduction cost */
@@ -959,6 +971,7 @@
     "k_litter10_q10_wood" : 1.0, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "reprod_cost" : REPROD_COST /* reproduction cost */
@@ -1036,6 +1049,7 @@
     "k_litter10_q10_wood" : 1.0, /* Q10_wood */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, and root 13,15*/
     "reprod_cost" : REPROD_COST /* reproduction cost */
@@ -1113,6 +1127,7 @@
     "k_litter10_q10_wood" : 2.75, /* Q10_wood */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 1.0,/* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 2.0, "sapwood" : 10.0, "root" : 2.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -1209,6 +1224,7 @@
     "k_litter10_q10_wood" : 1.37, /* Q10_wood */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "leaftype" : "broadleaved",/* leaftype */
     "turnover" : {"leaf" : 1.0, "sapwood" : 10.0, "root" : 1.0}, /* turnover leaf  sapwood root 9 11 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "sapwood" :  CTON_SAP, "root" : CTON_ROOT}, /* C:N mass ratio for leaf, sapwood, and root 13,14,15*/
@@ -1307,6 +1323,7 @@
     "k_litter10_q10_wood" : 1.0, /* Q10_wood */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
     "cn_ratio" : {"leaf" : CTON_LEAF, "root" : CTON_ROOT}, /* C:N mass ratio for leaf and root 13,15*/
     "reprod_cost" : REPROD_COST /* reproduction cost */
@@ -1384,6 +1401,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03, /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "temp wtyp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 258, "sdatesh" : 90, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 330,         /* hlimit: max length of crop cycle  */
@@ -1487,6 +1505,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : 1.0, "humid" : 1.0 },
     "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 100, "sdatesh" : 180, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 180,         /* hlimit: max length of crop cycle  */
@@ -1590,6 +1609,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
     "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" : 181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
@@ -1693,6 +1713,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
     "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 80, "sdatesh" : 260, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
@@ -1796,6 +1817,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" : 181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 300,         /* hlimit: max length of crop cycle  */
@@ -1899,6 +1921,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6,   /* windspeed dampening */
     "roughness_length" : 0.03,     /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 90, "sdatesh" : 270, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 260,         /* hlimit: max length of crop cycle  */
@@ -2002,6 +2025,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 80, "sdatesh" :  180, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 330,         /* hlimit: max length of crop cycle  */
@@ -2105,6 +2129,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "temp styp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 1, "sdatesh" :  181, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
@@ -2208,6 +2233,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 140, "sdatesh" :  320, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
@@ -2311,6 +2337,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 100, "sdatesh" :  280, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 240,         /* hlimit: max length of crop cycle  */
@@ -2414,6 +2441,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C3_DRY, "humid" : IRRIG_THRESHOLD_C3_HUMID },
     "calcmethod_sdate" : "temp wtyp calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 241, "sdatesh" :  61, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 210,         /* hlimit: max length of crop cycle  */
@@ -2517,6 +2545,7 @@
     "k_litter10_q10_wood" : 1, /* Q10_wood */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
+    "irrig_threshold" : { "dry" : IRRIG_THRESHOLD_C4, "humid" : IRRIG_THRESHOLD_C4 },
     "calcmethod_sdate" : "temp prec calc", /* calc_sdate: method to calculate the sowing date*/
     "sdatenh" : 120, "sdatesh" : 300, /* sdatenh,sdatesh: init sowing date for northern and southern hemisphere (julian day) */
     "hlimit" : 360,         /* hlimit: max length of crop cycle  */

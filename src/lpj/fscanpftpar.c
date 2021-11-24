@@ -84,11 +84,31 @@
     return TRUE; \
   }
 
+#define fscanpftirrig2(verb,file,var,pft,name)\
+  if(fscanpftirrig(file,var,name,verb))\
+  {\
+    if(verb)\
+    fprintf(stderr,"ERROR112: Cannot read '%s' for PFT '%s'.\n",name,pft); \
+    return TRUE; \
+  }
+
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 
 const char *phenology[]={"evergreen","raingreen","summergreen","any","cropgreen"};
 const char *cultivation_type[]={"none","biomass","annual crop","annual tree","wp"};
 const char *path[]={"no pathway","C3","C4"};
+
+static Bool fscanpftirrig(LPJfile *file,Irrig_threshold *irrig_threshold,const char *name,Verbosity verb)
+{
+  LPJfile f;
+  if(fscanstruct(file,&f,name,verb))
+    return TRUE;
+  if(fscanreal(&f,&irrig_threshold->dry,"dry",FALSE,verb))
+    return TRUE;
+  if(fscanreal(&f,&irrig_threshold->humid,"humid",FALSE,verb))
+    return TRUE;
+  return FALSE;
+} /* of 'fscanpftirrig' */
 
 Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                  const Pfttype scanfcn[], /**< array of PFT-specific scan
@@ -369,6 +389,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     fscanpftreal(verb,&item,&pft->windspeed,pft->name,"windspeed_dampening");
     fscanpftreal(verb,&item,&pft->roughness,pft->name,
                  "roughness_length");
+    fscanpftirrig2(verb,&item,&pft->irrig_threshold,pft->name,"irrig_threshold");
     pft->k_litter10.leaf/=NDAYYEAR;
     pft->k_litter10.wood/=NDAYYEAR;
     config->npft[pft->type]++;

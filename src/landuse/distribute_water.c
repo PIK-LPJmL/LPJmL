@@ -35,10 +35,9 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
                       const Config *config   /**< LPJmL configuration */
                      )
 {
-  int s,p,count,nirrig;
-  Real wr;
+  int s,nirrig;
   Real conv_loss,irrig_stand;
-  Real frac_irrig_amount,frac_unsustainable,irrig_threshold;
+  Real frac_irrig_amount,frac_unsustainable;
 #ifdef IMAGE
   Real frac_sw;
 #endif
@@ -46,7 +45,6 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
   Pft *pft;
   Irrigation *data;
   Pftcrop *crop;
-  irrig_threshold=0.0;
   conv_loss=0.0;
   nirrig=getnirrig(ncft,config);
 #ifdef IMAGE
@@ -100,25 +98,7 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
       if(data->irrigation)
       {
         /* determine if irrigation today */
-        count=0;
-        foreachpft(pft,p,&stand->pftlist)
-        {
-          wr=getwr(&stand->soil,pft->par->rootdist);
-          if(pft->par->path==C3)
-          {
-            if(cell->climbuf.aprec<param.aprec_lim)
-              irrig_threshold=param.irrig_threshold_c3_dry;
-            else
-              irrig_threshold=param.irrig_threshold_c3_humid;
-          }
-          else
-            irrig_threshold=param.irrig_threshold_c4;
-          if(!strcmp(pft->par->name,"rice"))
-            irrig_threshold=param.irrig_threshold_rice;
-
-          count+=(wr>irrig_threshold) ? 0 : 1; /* if single grass pft needs irrigation both grass pft are irrigated */
-        } /*for each pft*/
-        data->irrig_event=(count>0);
+        data->irrig_event=isirrigevent(stand);
 
         irrig_stand=max(data->net_irrig_amount+data->dist_irrig_amount-data->irrig_stor,0)*frac_irrig_amount;
 

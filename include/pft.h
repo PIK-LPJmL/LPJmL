@@ -84,6 +84,12 @@ typedef struct
   Real tau;  /**< rate of change of function to actual value */
 } Phen_param;
 
+typedef struct
+{
+  Real dry;       /**< irrigation threshold for dry conditions (0..1) */
+  Real humid;     /**< irrigation threshold for humid conditions (0..1) */
+} Irrig_threshold;
+
 typedef struct Pft
 {
   const struct Pftpar
@@ -150,6 +156,7 @@ typedef struct Pft
     Real vpd_par;               /**< scaling factor for VPD fire danger index  */
     Real fuelbulkdensity;       /**< fuel bulk density*/
     Tracegas emissionfactor;    /**< trace gas emission factors */
+    Irrig_threshold irrig_threshold; /**< threshold for irrigation */
     void *data;                 /**< pointer for PFT specific extensions */
 
     /* list of pointers for PFT specific functions */
