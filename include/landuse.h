@@ -159,6 +159,7 @@ extern void update_irrig(Stand *,int,int,const Config *);
 extern void update_double_harvest(Output *,Pft *,Bool,int,int,int,const Config *);
 extern Bool isirrigevent(const Stand *);
 extern int fertday_biomass(const Cell *,const Config *);
+extern void fertilize_tree(Stand *,Real,Real,const Config *);
 
 /* Declaration of variables */
 
