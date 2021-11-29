@@ -138,19 +138,6 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
 
   for(l=0;l<LASTLAYER;l++)
      aet_stand[l]=green_transp[l]=0;
-  if (config->with_nitrogen && stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
-  {
- 
-    if((!iscotton && day==fertday_biomass(stand->cell,config)) ||
-       (iscotton && stand->growing_days==0))
-    {
-      fertil = stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].ag_tree[data->irrigation.pft_id-npft+config->nagtree];
-      stand->soil.NO3[0]+=fertil*0.5; /* *param.nfert_no3_frac;*/
-      stand->soil.NH4[0]+=fertil*0.5; /* *(1-param.nfert_no3_frac);*/
-      stand->cell->balance.n_influx+=fertil*stand->frac;
-      getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
-    } /* end fday==day */
-  }
 
   /* green water inflow */
   rainmelt=climate->prec+melt;
@@ -159,6 +146,73 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
 
   nnat=getnnat(npft,config);
   index=agtree(ncft,config->nwptype)+data->irrigation.pft_id-npft+config->nagtree+data->irrigation.irrigation*getnirrig(ncft,config);
+  /* Loop over PFTs for applying fertilizer */
+  foreachpft(pft,p,&stand->pftlist)
+  {
+    if(istree(pft))
+    {
+      tree = pft->data;
+
+      if (config->with_nitrogen)
+      {
+        /* Apply fertilizer depending on how much there is (currently always) and split parameters */
+
+        /* First fertilizer application,
+           Assuming 10 on-leaves days, as early-season proxy */
+        if (pft->aphen > 10 && tree->nfertilizer < epsilon)
+        {
+          /* The index for ag_tree in ml.fertilizer_nr.ag_tree structure (fertil)
+             takes PFT id (according to pft.js or similar),
+             subtracts the number of all non-crop PFTs (npft),
+             adds the number of ag_trees (config->nagtree),
+             so that the first element in ag_tree fertilizer vector (indexed as 0)
+             is read for the first ag_tree in pftpar list */
+          fertil = stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].ag_tree[pft->par->id-(npft-config->nagtree)];
+          stand->soil.NO3[0] += fertil * param.nfert_no3_frac * param.nfert_split_frac;
+          stand->soil.NH4[0] += fertil * (1 - param.nfert_no3_frac) * param.nfert_split_frac;
+          stand->cell->balance.n_influx += fertil * param.nfert_split_frac * stand->frac;
+          getoutput(output, NFERT_AGR, config) += fertil * param.nfert_split_frac * pft->stand->frac;
+          /* Store remainder of fertilizer for second application */
+          tree->nfertilizer = fertil * (1 - param.nfert_split_frac);
+        }
+        /* Second fertilizer application */
+        else if (pft->aphen > 30 && tree->nfertilizer > epsilon)
+        {
+          fertil = tree->nfertilizer;
+          stand->soil.NO3[0] += fertil * param.nfert_no3_frac;
+          stand->soil.NH4[0] += fertil * (1 - param.nfert_no3_frac);
+          stand->cell->balance.n_influx += fertil * stand->frac;
+          getoutput(output, NFERT_AGR, config) += fertil * pft->stand->frac;
+          tree->nfertilizer = 0;
+        }
+
+        /* Apply manure depending on how much there is (currently always) and split parameters */
+
+        /* First manure application,
+           Assuming 10 on-leaves days, as early-season proxy */
+        if (pft->aphen > 10 && tree->nmanure < epsilon)
+        {
+          fertil = stand->cell->ml.manure_nr[data->irrigation.irrigation].ag_tree[pft->par->id-(npft-config->nagtree)];
+          stand->soil.NO3[0] += fertil * param.nfert_no3_frac * param.nfert_split_frac;
+          stand->soil.NH4[0] += fertil * (1 - param.nfert_no3_frac) * param.nfert_split_frac;
+          stand->cell->balance.n_influx += fertil * param.nfert_split_frac * stand->frac;
+          getoutput(output, NFERT_AGR, config) += fertil * param.nfert_split_frac * pft->stand->frac;
+          /* Store remainder of manure for second application */
+          tree->nmanure = fertil * (1 - param.nfert_split_frac);
+        }
+        /* Second manure application */
+        else if (pft->aphen > 30 && tree->nmanure > epsilon)
+        {
+          fertil = tree->nmanure;
+          stand->soil.NO3[0] += fertil * param.nfert_no3_frac;
+          stand->soil.NH4[0] += fertil * (1 - param.nfert_no3_frac);
+          stand->cell->balance.n_influx += fertil * stand->frac;
+          getoutput(output, NFERT_AGR, config) += fertil * pft->stand->frac;
+          tree->nmanure = 0;
+        }
+      }
+    }
+  }
 
   if(data->irrigation.irrigation && data->irrigation.irrig_amount>epsilon)
   {

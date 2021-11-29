@@ -39,6 +39,8 @@ Bool fwrite_tree(FILE *file,    /**< pointer to binary file */
     fwrite1(&tree->boll_age,sizeof(int),file);
   }
   fwrite1(&tree->excess_carbon,sizeof(Real),file);
+  fwrite1(&tree->nfertilizer,sizeof(Real),file);
+  fwrite1(&tree->nmanure,sizeof(Real),file);
   fwrite1(&tree->falloc,sizeof(Treephyspar),file);
   return FALSE;
 } /* of 'fwrite_tree' */

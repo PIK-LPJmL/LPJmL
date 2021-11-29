@@ -95,6 +95,8 @@ typedef struct
   Treephyspar falloc;
   Real turn_nbminc;     /**< storage for recovered nitrogen from turnover */
   Real excess_carbon;   /**< gC/ind; storage for carbon that cannot be allocated under given N limitation */
+  Real nfertilizer;     /**< gN/m2; fertilier N to be applied in 2nd or additional doses */
+  Real nmanure;         /**< gN/m2; manure N to be applied in 2nd or additional doses */
   int boll_age;
 } Pfttree;
 
