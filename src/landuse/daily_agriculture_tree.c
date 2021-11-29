@@ -77,18 +77,21 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   Stocks flux_estab,yield;
   Real fpc_inc,fpc_total,*fpc_type;
   Real cnratio_fruit;
+  Real fertil;
   Biomass_tree *data;
   Soil *soil;
   String line;
+  Bool iscotton;
   irrig_apply=0.0;
 
   soil = &stand->soil;
   data=stand->data;
   output=&stand->cell->output;
-  if(strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton")  || getnpft(&stand->pftlist)>0)
+  iscotton=!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton");
+  if(!iscotton  || getnpft(&stand->pftlist)>0)
     stand->growing_days++;
   evap=evap_blue=cover_stand=intercep_stand=intercep_stand_blue=runoff=return_flow_b=wet_all=intercept=sprink_interc=rainmelt=irrig_apply=0.0;
-  if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton") && day==stand->cell->ml.sowing_day_cotton[data->irrigation.irrigation])
+  if(iscotton && day==stand->cell->ml.sowing_day_cotton[data->irrigation.irrigation])
   {
     //printf("day=%d, sowing %d\n",day,data->irrigation);
     pft=addpft(stand,config->pftpar+data->irrigation.pft_id,year,0,config);
@@ -135,6 +138,19 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
 
   for(l=0;l<LASTLAYER;l++)
      aet_stand[l]=green_transp[l]=0;
+  if (config->with_nitrogen && stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
+  {
+ 
+    if((!iscotton && day==fertday_biomass(stand->cell,config)) ||
+       (iscotton && stand->growing_days==0))
+    {
+      fertil = stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].ag_tree[data->irrigation.pft_id-npft+config->nagtree];
+      stand->soil.NO3[0]+=fertil*0.5; /* *param.nfert_no3_frac;*/
+      stand->soil.NH4[0]+=fertil*0.5; /* *(1-param.nfert_no3_frac);*/
+      stand->cell->balance.n_influx+=fertil*stand->frac;
+      getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
+    } /* end fday==day */
+  }
 
   /* green water inflow */
   rainmelt=climate->prec+melt;
@@ -244,7 +260,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
         case SUMMERGREEN:
           if(pft->phen>param.phen_limit)
           {
-            if(!strcmp(pft->par->name,"cotton"))
+            if(iscotton)
             {
               if(tree->boll_age<45)
                 tree->boll_age++;
@@ -359,10 +375,10 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
                               intercep_stand,intercep_stand_blue,npft,
                               ncft,config);
 #ifdef DEBUG
-  if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton"))
+  if(iscotton)
     printf("growing_day: %d %d %d\n",stand->growing_days,data->irrigation.irrigation,stand->cell->ml.growing_season_cotton[data->irrigation.irrigation]);
 #endif
-  if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton") && stand->growing_days==stand->cell->ml.growing_season_cotton[data->irrigation.irrigation])
+  if(iscotton && stand->growing_days==stand->cell->ml.growing_season_cotton[data->irrigation.irrigation])
   {
     /* find cotton in PFT list */
     p=findagtree(&stand->pftlist,data->irrigation.pft_id);
