@@ -153,7 +153,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     {
       tree = pft->data;
 
-      if (config->with_nitrogen)
+      if (config->with_nitrogen && stand->cell->ml.fertilizer_nr!=NULL)
       {
         /* Apply fertilizer depending on how much there is (currently always) and split parameters */
 
