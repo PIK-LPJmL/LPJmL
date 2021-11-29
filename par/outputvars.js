@@ -213,7 +213,7 @@
   { "id" : CFT_ABOVEGBMN, "name": "cft_abovegbmn", "timestep" : "annual", "var" :  "aboveground_biomassn", "descr" :  "CFT aboveground nitrogen", "unit" : "gN/m2", "scale" : 1.0, "offset" : 0.0},
   { "id" : GCONS_RF, "name": "gcons_rf", "timestep" : "monthly", "var" :  "gcons_rf", "descr" : "monthly green water consumption on rainfed stands ", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
   { "id" : GCONS_IRR, "name": "gcons_irr", "timestep" : "monthly", "var" :  "gcons_irr", "descr" :  "monthly green water consumption on irrigated stands ", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
-  { "id" : BCONS_IRR, "name": "bcons_irr", "timestep" : "monthly", "var" :  "bcons_irr", "descr" :  "monthly green water consumption on irrigated stands ", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
+  { "id" : BCONS_IRR, "name": "bcons_irr", "timestep" : "monthly", "var" :  "bcons_irr", "descr" :  "monthly blue water consumption on irrigated stands ", "unit" : "mm", "scale" : 1.0, "offset" : 0.0},
   { "id" : WATERUSE_HIL, "name": "wateruse_hil", "timestep" : "annual", "var" :  "wateruse_hil", "descr" :  "", "unit" : "l/yr", "scale" : 1.0, "offset" : 0.0},
   { "id" : WATERUSECONS, "name": "waterusecons", "timestep" : "annual","var" :  "waterusecons", "descr" :  "", "unit" : "m3/day", "scale" : 1.0, "offset" : 0.0},
   { "id" : WATERUSEDEM, "name": "waterusedem", "timestep" : "annual","var" :  "waterusedem", "descr" :  "", "unit" : "m3/day", "scale" : 1.0, "offset" : 0.0},
