@@ -74,7 +74,7 @@ void fertilize_tree(Stand *stand,        /**< pointer to stand */
           stand->soil.NO3[0] += manure * param.nfert_no3_frac * param.nfert_split_frac;
           stand->soil.NH4[0] += manure * (1 - param.nfert_no3_frac) * param.nfert_split_frac;
           stand->cell->balance.n_influx += manure * param.nfert_split_frac * stand->frac;
-          getoutput(output, NFERT_AGR, config) += manure * param.nfert_split_frac * pft->stand->frac;
+          getoutput(output, NMANURE_AGR, config) += manure * param.nfert_split_frac * pft->stand->frac;
           /* Store remainder of manure for second application */
           tree->nmanure = manure * (1 - param.nfert_split_frac);
         }
@@ -85,7 +85,7 @@ void fertilize_tree(Stand *stand,        /**< pointer to stand */
           stand->soil.NO3[0] += manure * param.nfert_no3_frac;
           stand->soil.NH4[0] += manure * (1 - param.nfert_no3_frac);
           stand->cell->balance.n_influx += manure * stand->frac;
-          getoutput(output, NFERT_AGR, config) += manure * pft->stand->frac;
+          getoutput(output, NMANURE_AGR, config) += manure * pft->stand->frac;
           tree->nmanure = 0;
         }
       }
