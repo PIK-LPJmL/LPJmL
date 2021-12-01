@@ -67,6 +67,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   Bool isdaily;
   String outpath,name;
   Verbosity verbosity;
+  String s,s2;
   verbosity=isroot(*config) ? config->scan_verbose : NO_ERR;
   if(fscanstring(file,name,"compress_cmd",FALSE,verbosity))
     return TRUE;
@@ -225,7 +226,16 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
           checkptr(config->outnames[flag].var);
         }
         if(config->outputvars[count].filename.timestep!=NOT_FOUND)
+        {
+          if(verbosity && config->outputvars[count].filename.timestep<getmintimestep(flag))
+          {
+            fprintf(stderr,"ERROR246: Time step %s for '%s' output too short, must be %s.\n",
+                    sprinttimestep(s,config->outputvars[count].filename.timestep),
+                    config->outnames[flag].name,
+                    sprinttimestep(s2,getmintimestep(flag)));
+          }
           config->outnames[flag].timestep=config->outputvars[count].filename.timestep;
+        }
         if(config->outputvars[count].filename.unit!=NULL)
         {
           free(config->outnames[flag].unit);
