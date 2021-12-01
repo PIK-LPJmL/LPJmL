@@ -205,6 +205,14 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         if(verbosity)
           fprintf(stderr,"ERROR223: File format CLM2 is not supported for output file '%s'.\n",
                   config->outputvars[count].filename.name);
+        return TRUE;
+      }
+      else if(config->outputvars[count].filename.fmt==SOCK && config->sim_id!=LPJML_COPAN)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR223: File format 'sock' not allowd without COPAN coupling for outputt file '%s'.\n",
+                  config->outputvars[count].filename.name);
+        return TRUE;
       }
       else
       {
@@ -247,7 +255,10 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         }
         if(config->outputvars[count].filename.isscale)
           config->outnames[flag].scale=(float)config->outputvars[count].filename.scale;
-        config->outputvars[count].oneyear=(strstr(config->outputvars[count].filename.name,"%d")!=NULL);
+        if(config->outputvars[count].filename.fmt==SOCK)
+           config->outputvars[count].oneyear=FALSE;
+        else
+          config->outputvars[count].oneyear=(strstr(config->outputvars[count].filename.name,"%d")!=NULL);
         if(config->outputvars[count].oneyear && checkfmt(config->outputvars[count].filename.name,'d'))
         {
           if(verbosity)

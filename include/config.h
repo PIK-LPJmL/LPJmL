@@ -257,6 +257,13 @@ struct config
                               (e.g. 1970), set to 9999 if IMAGE is not used */
   Socket *in;  /**< socket for ingoing data */
   Socket *out; /**< socket for outgoing data */
+#else
+  Socket *in;  /**< socket for ingoing data */
+  Socket *out; /**< socket for outgoing data */
+  char *copan_host;       /**< hostname for computer running the IMAGE model */
+  int copan_inport;       /**< port numbert for ingoing data */
+  int copan_outport;      /**< port number for outgoing data */
+  int wait_copan;         /**< time to wait for image connection (sec) */
 #endif
   int totalsize;          /**< size of shared output storage */
   int outputmap[NOUT];    /**< index into output storage */

@@ -21,6 +21,7 @@
 #define LPJML_IMAGE 2  /* LPJ simulation with managed land coupled to IMAGE
                           model */
 #define LPJML_FMS 3  /* LPJ simulation with managed land coupled to FMS */
+#define LPJML_COPAN 4  /* LPJ simulation with managed land coupled to COPAN */
 #define LANDUSE 1
 #define NO_LANDUSE 0
 #define CONST_LANDUSE 2
@@ -83,6 +84,7 @@
 #define FMS 4
 #define META 5
 #define CDF 6
+#define SOCK 7
 #define RESTART 1
 #define NO_RESTART 0
 #define NO_FIRE 0

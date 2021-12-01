@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                c  l  o  s  e  c  l  i  m  a  t  e  .  c                        \n**/
+/**                  r  e  c  e  i  v  e  _  c  o  p  a  n  .  c                   \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function closes open file                                                  \n**/
+/**     extension of LPJ to couple LPJ online with COPAN                           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,15 +14,40 @@
 
 #include "lpj.h"
 
-void closeclimatefile(Climatefile *file, /**< pointer to climate data file */
-                      Bool isroot        /**< task is root task (TRUE/FALSE) */
-                     )                   /** \return void */
+Bool receive_copan(Real *data,int size,const Config *config)
 {
-  if(file->fmt!=FMS && file->fmt!=SOCK)
+  float *f;
+  int i;
+  f=newvec(float,config->nall*size);
+  check(f);
+#ifdef USE_MPI
+  int *counts;
+  int *offsets;
+  counts=newvec(int,config->ntask);
+  check(counts);
+  offsets=newvec(int,config->ntask);
+  check(offsets);
+
+  getcounts(counts,offsets,config->nall,size,config->ntask);
+  if(mpi_read_socket(config->in,f,MPI_FLOAT,config->nall*size,
+                     counts,offsets,config->rank,config->comm))
   {
-    if(file->fmt==CDF)
-      closeclimate_netcdf(file,isroot);
-    else
-      fclose(file->file);
+    free(f);
+    free(offsets);
+    free(counts);
+    return TRUE;
   }
-} /* of 'closeclimatefile' */
+  free(offsets);
+  free(counts);
+#else
+  if(readfloat_socket(config->in,f,config->nall*size))
+  {
+    free(f);
+    return TRUE;
+  }
+#endif
+  for(i=0;i<config->nall*size;i++)
+     data[i]=f[i];
+  free(f);
+  return FALSE;
+} /* of 'receive_copan' */

@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-const char *fmt[N_FMT]={"raw","clm","clm2","txt","fms","meta","cdf"};
+const char *fmt[N_FMT]={"raw","clm","clm2","txt","fms","meta","cdf","sock"};
 const char *time_step[]={"annual","monthly","daily"};
 
 Bool readfilename(LPJfile *file,      /**< pointer to text file read */
@@ -33,8 +33,9 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     return TRUE;
   if(fscankeywords(&f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
     return TRUE;
-  if(filename->fmt==FMS)
+  if(filename->fmt==FMS || filename->fmt==SOCK)
   {
+    filename->timestep=NOT_FOUND;
     filename->var=NULL;
     filename->name=NULL;
     filename->time=NULL;

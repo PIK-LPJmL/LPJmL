@@ -77,6 +77,7 @@ typedef struct config Config; /* forward declaration of stand */
 #include "header.h"
 #include "climate.h"
 #include "image.h"
+#include "copan.h"
 #include "cropdates.h"
 #include "reservoir.h"
 #include "landuse.h"

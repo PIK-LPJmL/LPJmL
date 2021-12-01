@@ -1,10 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                c  l  o  s  e  c  l  i  m  a  t  e  .  c                        \n**/
+/**                  o  p  e  n  _  c  o  p  a  n  .  c                            \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function closes open file                                                  \n**/
+/**     extension of LPJ to couple LPJ online with COPAN                           \n**/
+/**     Opens connection to COPAN model using TDT compliant socket                 \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,15 +15,29 @@
 
 #include "lpj.h"
 
-void closeclimatefile(Climatefile *file, /**< pointer to climate data file */
-                      Bool isroot        /**< task is root task (TRUE/FALSE) */
-                     )                   /** \return void */
+Bool open_copan(Config *config /**< LPJmL configuration */
+               )               /** \return TRUE on error */
 {
-  if(file->fmt!=FMS && file->fmt!=SOCK)
+  int rev=1;
+  if(isroot(*config))
   {
-    if(file->fmt==CDF)
-      closeclimate_netcdf(file,isroot);
-    else
-      fclose(file->file);
+    /* Establish the TDT connection */
+    printf("Connecting to COPAN model...\n");
+    fflush(stdout);
+    config->in=opentdt_socket(config->copan_inport,config->wait_copan);
+    if(config->in==NULL)
+      return TRUE;
+    config->out=connecttdt_socket(config->copan_host,config->copan_outport);
+    if(config->out==NULL)
+    {
+      close_socket(config->in);
+      config->in=NULL;
+      return TRUE;
+    }
+    writeint_socket(config->out, &rev,1);
+#ifdef DEBUG_COPAN
+    printf("open_copan %d \n",IRevision);
+#endif
   }
-} /* of 'closeclimatefile' */
+  return FALSE;
+} /* of 'open_copan' */

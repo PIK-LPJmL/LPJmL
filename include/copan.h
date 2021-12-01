@@ -1,10 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                c  l  o  s  e  c  l  i  m  a  t  e  .  c                        \n**/
+/**                      i  m  a  g  e  .  h                                       \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function closes open file                                                  \n**/
+/**     Declaration of COPAN coupler functions and related datatypes               \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,17 +12,20 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include "lpj.h"
 
-void closeclimatefile(Climatefile *file, /**< pointer to climate data file */
-                      Bool isroot        /**< task is root task (TRUE/FALSE) */
-                     )                   /** \return void */
-{
-  if(file->fmt!=FMS && file->fmt!=SOCK)
-  {
-    if(file->fmt==CDF)
-      closeclimate_netcdf(file,isroot);
-    else
-      fclose(file->file);
-  }
-} /* of 'closeclimatefile' */
+#ifndef COPAN_H /* already included? */
+#define COPAN_H
+
+/* Definition of constants for biomass pools used in COPAN */
+
+#define LPJCOPAN "LPJCOPAN"  /* Environment variable for COPAN coupler */
+#define LPJWAITCOPAN "LPJWAITCOPAN"  /* time to wait for IMAGE connection */
+#define DEFAULT_COPAN_HOST "localhost" /* Default host for COPAN model */
+#define DEFAULT_COPAN_INPORT 2225  /* Default port for ingoing connection */
+#define DEFAULT_COPAN_OUTPORT 2224 /* Default port for outgoing connection */
+#define WAIT_COPAN 12000             /* wait for COPAN connection (sec) */
+extern Bool open_copan(Config *);
+extern void close_copan(const Config *);
+extern Bool receive_copan(Real *,int,const Config *);
+
+#endif /* COPAN_H */

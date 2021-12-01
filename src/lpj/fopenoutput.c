@@ -311,16 +311,24 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
         output->files[config->outputvars[i].id].isopen=TRUE;
         break;
       case LPJ_GATHER:
-        openfile(output,grid,filename,i,config);
-        MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,
-                  0,config->comm);
+        if(config->outputvars[i].filename.fmt==SOCK)
+          output->files[config->outputvars[i].id].isopen=TRUE;
+        else
+        {
+          openfile(output,grid,filename,i,config);
+          MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,
+                    0,config->comm);
+        }
         break;
     } /* of 'switch' */
 #else
     switch(output->method)
     {
       case LPJ_FILES:
-        openfile(output,grid,filename,i,config);
+        if(config->outputvars[i].filename.fmt==SOCK)
+          output->files[config->outputvars[i].id].isopen=TRUE;
+        else
+          openfile(output,grid,filename,i,config);
         break;
       case LPJ_SOCKET:
         output->files[config->outputvars[i].id].isopen=TRUE;

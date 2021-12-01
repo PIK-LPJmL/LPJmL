@@ -228,6 +228,9 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     len=printsim(file,len,&count,"IMAGE coupling");
+#else
+  if(config->sim_id==LPJML_COPAN)
+    len=printsim(file,len,&count,"COPAN coupling");
 #endif
   if(config->wet_filename.name!=NULL)
     len=printsim(file,len,&count,"random precipitation");
@@ -597,7 +600,15 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
             config->image_host,config->image_inport,
             config->image_outport,config->wait_image);
 
+#else
+  if(config->sim_id==LPJML_COPAN)
+    fprintf(file,
+            "Coupled to COPAN model running on host %s using port %d and %d.\n"
+            "Time to wait for connection: %6d sec\n",
+            config->copan_host,config->copan_inport,
+            config->copan_outport,config->wait_copan);
 #endif
+
 #ifndef PERMUTE
   if(config->wet_filename.name!=NULL)
 #endif
@@ -680,7 +691,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
               -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
               typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],
               sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep),outputsize(config->outputvars[index].id,npft,ncft,config));
-      printoutname(file,config->outputvars[index].filename.name,config->outputvars[index].oneyear,config);
+      if(config->outputvars[index].filename.fmt!=SOCK)
+        printoutname(file,config->outputvars[index].filename.name,config->outputvars[index].oneyear,config);
       putc('\n',file);
     }
     free(item);

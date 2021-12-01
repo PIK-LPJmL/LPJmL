@@ -1,10 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                c  l  o  s  e  c  l  i  m  a  t  e  .  c                        \n**/
+/**                  c  l  o  s  e  _  c  o  p  a  n  .  c                         \n**/
 /**                                                                                \n**/
-/**     C implementation of LPJmL                                                  \n**/
-/**                                                                                \n**/
-/**     Function closes open file                                                  \n**/
+/**     extension of LPJ to couple LPJ online with COPAN                           \n**/
+/**     Closes connection to COPAN model                                           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,15 +15,14 @@
 
 #include "lpj.h"
 
-void closeclimatefile(Climatefile *file, /**< pointer to climate data file */
-                      Bool isroot        /**< task is root task (TRUE/FALSE) */
-                     )                   /** \return void */
+void close_copan(const Config *config /**< LPJmL configuration */
+                )
 {
-  if(file->fmt!=FMS && file->fmt!=SOCK)
+  if(config->rank==0)
   {
-    if(file->fmt==CDF)
-      closeclimate_netcdf(file,isroot);
-    else
-      fclose(file->file);
+    if(config->in!=NULL)
+      close_socket(config->in);
+    if(config->out!=NULL)
+      close_socket(config->out);
   }
-} /* of 'closeclimatefile' */
+} /* of 'close_copan' */

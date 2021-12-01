@@ -95,6 +95,9 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       return NULL;
     }
   }
+  else if(config->landuse_filename.fmt==SOCK)
+  {
+  }
   else
   {
     if((landuse->landuse.file=openinputfile(&header, &landuse->landuse.swap,
@@ -861,6 +864,16 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       fprintf(stderr,
               "ERROR149: Cannot read landuse of year %d in getlanduse().\n",
               yearl+landuse->landuse.firstyear);
+      fflush(stderr);
+      free(data);
+      return TRUE;
+    }
+  }
+  else if(landuse->landuse.fmt==SOCK)
+  {
+    if(receive_copan(data,config->cftmap_size*4,config))
+    {
+      fprintf(stderr,"ERROR149: Cannot receive landuse of year %d in getlanduse().\n",year);
       fflush(stderr);
       free(data);
       return TRUE;

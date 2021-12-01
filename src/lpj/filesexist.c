@@ -164,7 +164,7 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
   Climatefile input;
   size_t offset;
   int first,last,year,count;
-  if(filename->fmt==FMS)
+  if(filename->fmt==FMS || filename->fmt==SOCK)
     return 0;
   if(filename->fmt==CDF)
   {
@@ -468,18 +468,21 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     size=outputfilesize(&config);
   for(i=0;i<config.n_out;i++)
   {
-    path=getpath(config.outputvars[i].filename.name);
-    if(strcmp(path,oldpath))
+    if(config.outputvars[i].filename.fmt!=SOCK)
     {
-      if(checkdir(path))
-        badout++;
-      else if(config.nall!=-1 && diskfree(path)<size)
-        fprintf(stderr,"WARNING033: Disk space on '%s' is insufficient for output files.\n",path);
-      free(oldpath);
-      oldpath=path;
+      path=getpath(config.outputvars[i].filename.name);
+      if(strcmp(path,oldpath))
+      {
+        if(checkdir(path))
+          badout++;
+        else if(config.nall!=-1 && diskfree(path)<size)
+          fprintf(stderr,"WARNING033: Disk space on '%s' is insufficient for output files.\n",path);
+        free(oldpath);
+        oldpath=path;
+      }
+      else
+        free(path);
     }
-    else
-      free(path);
   }
   free(oldpath);
   if(config.write_restart_filename!=NULL)

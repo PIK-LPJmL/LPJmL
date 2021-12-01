@@ -53,7 +53,7 @@
 /* #pragma warning ( disable : 869 )*/ /* disable warning about unused parameter */
 #endif
 
-#define N_FMT 7 /* number of format types for input/output files */
+#define N_FMT 8 /* number of format types for input/output files */
 
 /* Definition of datatypes */
 

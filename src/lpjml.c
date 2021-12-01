@@ -200,6 +200,12 @@ int main(int argc,char **argv)
     rc=open_image(&config);
     failonerror(&config,rc,OPEN_IMAGE_ERR,"Cannot open IMAGE coupler");
   }
+#else
+  if(config.sim_id==LPJML_COPAN)
+  {
+    rc=open_copan(&config);
+    failonerror(&config,rc,OPEN_COPAN_ERR,"Cannot open COPAN coupler");
+  }
 #endif
   /* Allocation and initialization of grid */
   rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
@@ -251,6 +257,10 @@ int main(int argc,char **argv)
 #if defined IMAGE && defined COUPLED
   if(config.sim_id==LPJML_IMAGE)
     close_image(&config);
+#endif
+#ifdef COPAN
+  if(config.sim_id==LPJML_COPAN)
+    close_copan(&config);
 #endif
   freeconfig(&config);
 #ifdef USE_MPI
