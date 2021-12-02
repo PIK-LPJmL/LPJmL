@@ -18,10 +18,8 @@
 
 #define COPAN_COUPLER_VERSION 1
 #define LPJCOPAN "LPJCOPAN"            /* Environment variable for COPAN coupler */
-#define LPJWAITCOPAN "LPJWAITCOPAN"    /* time to wait for COPAN connection */
 #define DEFAULT_COPAN_HOST "localhost" /* Default host for COPAN model */
 #define DEFAULT_COPAN_PORT 2224        /* Default port for in and outgoing connection */
-#define WAIT_COPAN 12000               /* wait for COPAN connection (sec) */
 
 extern Bool open_copan(Config *);
 extern void close_copan(const Config *);
