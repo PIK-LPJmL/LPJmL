@@ -20,9 +20,7 @@ void close_copan(const Config *config /**< LPJmL configuration */
 {
   if(config->rank==0)
   {
-    if(config->in!=NULL)
-      close_socket(config->in);
-    if(config->out!=NULL)
-      close_socket(config->out);
+    if(config->socket!=NULL)
+      close_socket(config->socket);
   }
 } /* of 'close_copan' */

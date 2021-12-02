@@ -312,7 +312,10 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
         break;
       case LPJ_GATHER:
         if(config->outputvars[i].filename.fmt==SOCK)
+        {
           output->files[config->outputvars[i].id].isopen=TRUE;
+          output->files[config->outputvars[i].id].fmt=SOCK;
+        }
         else
         {
           openfile(output,grid,filename,i,config);
@@ -326,7 +329,10 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
     {
       case LPJ_FILES:
         if(config->outputvars[i].filename.fmt==SOCK)
+        {
           output->files[config->outputvars[i].id].isopen=TRUE;
+          output->files[config->outputvars[i].id].fmt=SOCK;
+        }
         else
           openfile(output,grid,filename,i,config);
         break;

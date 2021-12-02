@@ -97,6 +97,14 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   }
   else if(config->landuse_filename.fmt==SOCK)
   {
+    if(isroot(*config))
+    {
+     readint_socket(config->socket,&header.nbands,1);
+    }
+#ifdef USE_MPI
+   MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
+#endif
+    landuse->landuse.var_len=header.nbands;
   }
   else
   {
@@ -871,7 +879,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   }
   else if(landuse->landuse.fmt==SOCK)
   {
-    if(receive_copan(data,config->cftmap_size*4,config))
+    if(receive_copan(data,landuse->landuse.var_len*config->nall,config))
     {
       fprintf(stderr,"ERROR149: Cannot receive landuse of year %d in getlanduse().\n",year);
       fflush(stderr);

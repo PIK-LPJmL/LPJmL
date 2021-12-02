@@ -29,7 +29,7 @@ Bool receive_copan(Real *data,int size,const Config *config)
   check(offsets);
 
   getcounts(counts,offsets,config->nall,size,config->ntask);
-  if(mpi_read_socket(config->in,f,MPI_FLOAT,config->nall*size,
+  if(mpi_read_socket(config->socket,f,MPI_FLOAT,config->nall*size,
                      counts,offsets,config->rank,config->comm))
   {
     free(f);
@@ -40,14 +40,14 @@ Bool receive_copan(Real *data,int size,const Config *config)
   free(offsets);
   free(counts);
 #else
-  if(readfloat_socket(config->in,f,config->nall*size))
+  if(readfloat_socket(config->socket,f,config->nall*size))
   {
     free(f);
     return TRUE;
   }
 #endif
   for(i=0;i<config->nall*size;i++)
-     data[i]=f[i];
+    data[i]=f[i];
   free(f);
   return FALSE;
 } /* of 'receive_copan' */

@@ -51,10 +51,10 @@ void outputnames(Outputfile *outfile, /**< output file array */
           break;
         }
     }
-    else if(isroot(*config))
+    else if(isroot(*config) && config->outputvars[i].filename.fmt!=SOCK)
     {
       for(j=i-1;j>=0;j--)
-        if(!strcmp(config->outputvars[j].filename.name,config->outputvars[i].filename.name))
+        if(config->outputvars[j].filename.fmt!=SOCK && !strcmp(config->outputvars[j].filename.name,config->outputvars[i].filename.name))
           fprintf(stderr,"WARNING023: Filename is identical for %s and %s.\n",
                   config->outnames[config->outputvars[i].id].name,
                   config->outnames[config->outputvars[j].id].name);

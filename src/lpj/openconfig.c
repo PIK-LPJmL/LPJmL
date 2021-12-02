@@ -130,8 +130,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     }
   }
 #else
-  config->copan_inport=DEFAULT_COPAN_INPORT;
-  config->copan_outport=DEFAULT_COPAN_OUTPORT;
+  config->copan_port=DEFAULT_COPAN_PORT;
   config->copan_host=getenv(LPJCOPAN);
   pos=getenv(LPJWAITCOPAN);
   if(pos!=NULL)
@@ -154,27 +153,13 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     if(pos!=NULL)
     {
       *pos='\0';
-       config->copan_inport=strtol(pos+1,&endptr,10);
-       if(pos+1==endptr || config->copan_inport<1 || config->copan_inport>USHRT_MAX)
+       config->copan_port=strtol(pos+1,&endptr,10);
+       if(pos+1==endptr || config->copan_port<1 || config->copan_port>USHRT_MAX)
        {
          if(isroot(*config))
-           fprintf(stderr,"ERROR193: Invalid number %d for COPAN input port.\n",
-                   config->copan_inport);
+           fprintf(stderr,"ERROR193: Invalid number %d for COPAN port.\n",
+                   config->copan_port);
          return NULL;
-       }
-       if(*endptr==',')
-       {
-         pos=endptr;
-         config->copan_outport=strtol(endptr+1,&endptr,10);
-         if(pos+1==endptr || *endptr!='\0' || config->copan_outport<1
-                          || config->copan_outport>USHRT_MAX)
-         {
-           if(isroot(*config))
-             fprintf(stderr,
-                     "ERROR194: Invalid number %d for COPAN output port.\n",
-                     config->copan_outport);
-           return NULL;
-         }
        }
     }
   }
@@ -377,30 +362,16 @@ FILE *openconfig(Config *config,      /**< configuration struct */
            if(pos!=NULL)
            {
              *pos='\0';
-             config->copan_inport=strtol(pos+1,&endptr,10);
-             if(pos+1==endptr || config->copan_inport<1
-                              || config->copan_inport>USHRT_MAX)
+             config->copan_port=strtol(pos+1,&endptr,10);
+             if(pos+1==endptr || config->copan_port<1
+                              || config->copan_port>USHRT_MAX)
              {
                if(isroot(*config))
                  fprintf(stderr,
-                         "ERROR193: Invalid number %d for COPAN input port.\n",
-                         config->copan_inport);
+                         "ERROR193: Invalid number %d for COPAN port.\n",
+                         config->copan_port);
                free(options);
                return NULL;
-             }
-             if(*endptr==',')
-             {
-               pos=endptr;
-               config->copan_outport=strtol(endptr+1,&endptr,10);
-               if(endptr==pos+1 || *endptr!='\0' || config->copan_outport<1
-                                || config->copan_outport>USHRT_MAX)
-               {
-                 if(isroot(*config))
-                   fprintf(stderr,"ERROR194: Invalid number %d for COPAN output port.\n",
-                           config->copan_outport);
-                 free(options);
-                 return NULL;
-               }
              }
            }
         }

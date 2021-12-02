@@ -148,8 +148,8 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
           break;
         case SOCK:
           if(isroot(*config))
-            writeint_socket(output->socket,&index,1);
-          mpi_write_socket(output->socket,data,MPI_FLOAT,config->total,
+            writeint_socket(config->socket,&index,1);
+          mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
         case CDF:
@@ -189,8 +189,8 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
         fprintf(output->files[index].fp.file,"%g\n",data[config->count-1]);
         break;
       case SOCK:
-        writeint_socket(output->socket,&index,1);
-        writefloat_socket(output->socket,data,config->count);
+        writeint_socket(config->socket,&index,1);
+        writefloat_socket(config->socket,data,config->count);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -241,8 +241,8 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
           break;
         case SOCK:
           if(isroot(*config))
-            writeint_socket(output->socket,&index,1);
-          mpi_write_socket(output->socket,data,MPI_SHORT,config->total,
+            writeint_socket(config->socket,&index,1);
+          mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
         case CDF:
@@ -263,8 +263,8 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
       break;
     case LPJ_SOCKET:
       if(isroot(*config))
-        writeint_socket(output->socket,&index,1);
-      mpi_write_socket(output->socket,data,MPI_SHORT,config->total,
+        writeint_socket(config->socket,&index,1);
+      mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
                        output->counts,output->offsets,config->rank,config->comm);
       break;
   } /* of switch */
@@ -282,8 +282,8 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
         fprintf(output->files[index].fp.file,"%d\n",data[config->count-1]);
         break;
       case SOCK:
-        writeint_socket(output->socket,&index,1);
-        writeshort_socket(output->socket,data,config->count);
+        writeint_socket(config->socket,&index,1);
+        writeshort_socket(config->socket,data,config->count);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -351,8 +351,8 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
           check(offsets);
           getcounts(counts,offsets,config->nall,1,config->ntask);
           if(isroot(*config))
-            writeint_socket(output->socket,&index,1);
-          mpi_write_socket(output->socket,data,MPI_FLOAT,config->nall,counts,
+            writeint_socket(config->socket,&index,1);
+          mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
                        offsets,config->rank,config->comm);
           free(counts);
           free(offsets);
@@ -402,8 +402,8 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
         fprintf(output->files[index].fp.file,"%g\n",data[config->ngridcell-1]);
         break;
       case SOCK:
-        writeint_socket(output->socket,&index,1);
-        writefloat_socket(output->socket,data,config->ngridcell);
+        writeint_socket(config->socket,&index,1);
+        writefloat_socket(config->socket,data,config->ngridcell);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -460,8 +460,8 @@ static void writepft(Outputfile *output,int index,float *data,int year,
           break;
         case SOCK:
           if(isroot(*config))
-            writeint_socket(output->socket,&index,1);
-          mpi_write_socket(output->socket,data,MPI_FLOAT,config->total,
+            writeint_socket(config->socket,&index,1);
+          mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
         case CDF:
@@ -507,8 +507,8 @@ static void writepft(Outputfile *output,int index,float *data,int year,
         fprintf(output->files[index].fp.file,"%g\n",data[config->count-1]);
         break;
       case SOCK:
-        writeint_socket(output->socket,&index,1);
-        writefloat_socket(output->socket,data,config->count);
+        writeint_socket(config->socket,&index,1);
+        writefloat_socket(config->socket,data,config->count);
         break;
       case CDF:
         if(output->files[index].oneyear)
@@ -557,8 +557,8 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
           break;
         case SOCK:
           if(isroot(*config))
-            writeint_socket(output->socket,&index,1);
-          mpi_write_socket(output->socket,data,MPI_SHORT,config->total,
+            writeint_socket(config->socket,&index,1);
+          mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
         case CDF:
@@ -604,8 +604,8 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
         fprintf(output->files[index].fp.file,"%d\n",data[config->count-1]);
         break;
       case SOCK:
-        writeint_socket(output->socket,&index,1);
-        writeshort_socket(output->socket,data,config->count);
+        writeint_socket(config->socket,&index,1);
+        writeshort_socket(config->socket,data,config->count);
         break;
       case CDF:
         if(output->files[index].oneyear)

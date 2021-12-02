@@ -21,8 +21,7 @@
 #define LPJCOPAN "LPJCOPAN"  /* Environment variable for COPAN coupler */
 #define LPJWAITCOPAN "LPJWAITCOPAN"  /* time to wait for IMAGE connection */
 #define DEFAULT_COPAN_HOST "localhost" /* Default host for COPAN model */
-#define DEFAULT_COPAN_INPORT 2225  /* Default port for ingoing connection */
-#define DEFAULT_COPAN_OUTPORT 2224 /* Default port for outgoing connection */
+#define DEFAULT_COPAN_PORT 2224 /* Default port for outgoing connection */
 #define WAIT_COPAN 12000             /* wait for COPAN connection (sec) */
 extern Bool open_copan(Config *);
 extern void close_copan(const Config *);

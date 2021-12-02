@@ -33,7 +33,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     return TRUE;
   if(fscankeywords(&f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
     return TRUE;
-  if(filename->fmt==FMS || filename->fmt==SOCK)
+  if(filename->fmt==FMS)
   {
     filename->timestep=NOT_FOUND;
     filename->var=NULL;
@@ -142,19 +142,24 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   }
   else
     filename->unit=NULL;
-  if(fscanstring(&f,name,"name",FALSE,verb))
+  if(filename->fmt==SOCK)
+    filename->name=NULL;
+  else
   {
-    if(verb)
-      readstringerr("filename");
-    free(filename->var);
-    return TRUE;
-  }
-  filename->name=addpath(name,path); /* add path to filename */
-  if(filename->name==NULL)
-  {
-    printallocerr("name");
-    free(filename->var);
-    return TRUE;
+    if(fscanstring(&f,name,"name",FALSE,verb))
+    {
+      if(verb)
+        readstringerr("filename");
+      free(filename->var);
+      return TRUE;
+    }
+    filename->name=addpath(name,path); /* add path to filename */
+    if(filename->name==NULL)
+    {
+      printallocerr("name");
+      free(filename->var);
+      return TRUE;
+    }
   }
   if(iskeydefined(&f,"unit"))
   {

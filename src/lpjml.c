@@ -200,17 +200,15 @@ int main(int argc,char **argv)
     rc=open_image(&config);
     failonerror(&config,rc,OPEN_IMAGE_ERR,"Cannot open IMAGE coupler");
   }
-#else
+#endif
+  /* Allocation and initialization of grid */
+  rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
+  failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
   if(config.sim_id==LPJML_COPAN)
   {
     rc=open_copan(&config);
     failonerror(&config,rc,OPEN_COPAN_ERR,"Cannot open COPAN coupler");
   }
-#endif
-  /* Allocation and initialization of grid */
-  rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
-  failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
-  
   rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of input data failed");

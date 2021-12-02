@@ -23,28 +23,19 @@
 #define NTYPES 3
 #define LPJSERVER_VERSION "0.9.005"
 #define USAGE "%s [LPJargs ...]"
-#define dflt_filename "lpjml.conf"
+#define dflt_filename "lpjml.js"
 
 int main(int argc,char **argv)
 {
-  Socket *socket;
-  float **data;
-  struct
-  {
-    FILE *file;
-    int count;
-  } files[NOUT];
-  int total,year,index,i,j,count_max,sub,nmonth,month;
-  char id[3];
-  Intcoord *coords;
-  short *svec,**sdata;
-  Bool isgrid,isregion,iscountry;
+  Socket *insocket,*outsocket;
+  float **data,*landuse;
+  int count[NOUT];
+  int total,year,index,i,j,k,count_max,n_out,nmonth,month,version;
+  short **sdata;
   Config config;
   String line;
   const char *progname;
   const char *title[3];
-  time_t start,end;
-  Flux flux;
   Pfttype scanfcn[NTYPES]=
   {
     {name_grass,fscanpft_grass},
@@ -62,99 +53,82 @@ int main(int argc,char **argv)
   banner(title,3,78);
   if(readconfig(&config,dflt_filename,scanfcn,NTYPES,NOUT,&argc,&argv,USAGE))
     fail(READ_CONFIG_ERR,FALSE,"Error opening config");
-  socket=open_socket(config.port,0);
-  if(socket==NULL)
+#if 0
+  outsocket=connecttdt_socket("localhost",config.copan_inport);
+  if(outsocket==NULL)
   {
     fprintf(stderr,"Error opening communication channel at port %d: %s\n",
-            config.port,strerror(errno));
+            config.copan_inport,strerror(errno));
+    return EXIT_FAILURE;
+  }
+#endif
+  insocket=opentdt_socket(config.copan_port,0);
+  if(insocket==NULL)
+  {
+    fprintf(stderr,"Error opening communication channel at port %d: %s\n",
+            config.copan_port,strerror(errno));
     return EXIT_FAILURE;
   }
   /* Establish the connection */
   printconfig(config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
-  read_socket(socket,id,3);
-  if(strncmp(id,"LPJ",3))
-  {
-    fprintf(stderr,"Invalid id opening communication channel\n");
-    return EXIT_FAILURE;
-  }
-  readint_socket(socket,&total,1);
+  readint_socket(insocket,&version,1);
+  printf("Version: %d\n",version);
+  readint_socket(insocket,&total,1);
   if(total<1 || total>config.ngridcell)
   {
     fprintf(stderr,"Invalid number of cells=%d\n",total);
     return EXIT_FAILURE;
   }
-  isgrid=isregion=iscountry=FALSE;
+  //printf("Number of cells: %d\n",total);
   for(i=0;i<NOUT;i++)
-    files[i].file=NULL;
+    count[i]=-1;
   count_max=0;
-  sub=nmonth=0;
+  n_out=nmonth=0;
   for(i=0;i<config.n_out;i++)
   {
-    switch(config.outputvars[i].id)
+    if(config.outputvars[i].filename.fmt==SOCK)
     {
-      case GRID:
-        isgrid=TRUE;
-        sub++;
-        break;
-      case REGION:
-        isregion=TRUE;
-        sub++;
-        break;
-      case COUNTRY:
-        iscountry=TRUE;
-        sub++;
-        break;
-      default:
-        if(config.outnames[config.outputvars[i].id].timestep==MONTHLY)
-        {
-          nmonth++;
-          sub++;
-        }
-        break;
+      if(config.outnames[config.outputvars[i].id].timestep==MONTHLY)
+        nmonth++;
+      n_out++;
+      count[config.outputvars[i].id]=outputsize(config.outputvars[i].id,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config);
+      //printf("%s:%d\n",config.outnames[config.outputvars[i].id].name,count[config.outputvars[i].id]);
+      if(count[config.outputvars[i].id]>count_max)
+        count_max=count[config.outputvars[i].id];
     }
-    files[config.outputvars[i].id].file=fopen(config.outputvars[i].filename.name,"wb");
-    files[config.outputvars[i].id].count=outputsize(config.outputvars[i].id,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config);
-    if(files[config.outputvars[i].id].count>count_max)
-      count_max=files[config.outputvars[i].id].count;
   }
-  if(!isgrid)
+  if(count[SDATE]!=-1 || count[HDATE]!=-1)
   {
-    fprintf(stderr,"Grid output is missing.\n");
-    return EXIT_FAILURE;
-  }
-  coords=newvec(Intcoord,total);
-  readshort_socket(socket,(short *)coords,2*total);
-  fwrite(coords,sizeof(Intcoord),total,files[GRID].file);
-  free(coords);
-  if(iscountry)
-  {
-    svec=newvec(short,total);
-    readshort_socket(socket,svec,total);
-    fwrite(svec,sizeof(short),total,files[COUNTRY].file);
-    free(svec);
-  }
-  if(isregion)
-  {
-    svec=newvec(short,total);
-    readshort_socket(socket,svec,total);
-    fwrite(svec,sizeof(short),total,files[REGION].file);
-    free(svec);
-  }
-  if(files[SDATE].file!=NULL || files[HDATE].file!=NULL)
-  {
-    sdata=newmatrix(short,files[SDATE].count,total);
+    sdata=newmatrix(short,count[SDATE],total);
     check(sdata);
   }
   data=newmatrix(float,count_max,total);
   check(data);
-  time(&start);
-  for(year=config.outputyear;year<=config.lastyear;year++)
+  if(config.landuse_filename.fmt==SOCK)
   {
+    landuse=newvec(float,config.nall*outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2);
+    index=outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2;
+    if(writeint_socket(insocket,&index,1))
+    {
+      fprintf(stderr,"Error writing size of landuse data of output\n");
+      return EXIT_FAILURE;
+    }
+  }
+  for(year=config.firstyear;year<=config.lastyear;year++)
+  {
+    if(config.landuse_filename.fmt==SOCK)
+    { 
+      for(k=0;k<config.nall*outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2;k++)
+        landuse[k]=.0001;
+        writefloat_socket(insocket,landuse,config.nall*outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2);
+    }
+    if(year>=config.outputyear)
+    {
     for(j=0;j<nmonth;j++)
     {
-      for(month=0;month<12;month++)
+      for(month=0;month<11;month++)
       {
-        if(readint_socket(socket,&index,1))
+        if(readint_socket(insocket,&index,1))
         {
           fprintf(stderr,"Error reading index of output\n");
           return EXIT_FAILURE;
@@ -164,50 +138,57 @@ int main(int argc,char **argv)
           fprintf(stderr,"Invalid index %d of output\n",index);
           return EXIT_FAILURE;
         }
-        readfloat_socket(socket,data[0],total);
-        fwrite(data[0],sizeof(float),total,files[index].file);
+        readfloat_socket(insocket,data[0],total);
+        printf("%s:",config.outnames[index].name);
+        for(k=0;k<total;k++)
+          printf(" %g\n",data[0][k]);
+        printf("\n");
       }
     }
 
-    for(i=0;i<config.n_out-sub;i++)
+    for(i=0;i<n_out;i++)
     {
-      if(readint_socket(socket,&index,1))
+      if(readint_socket(insocket,&index,1))
       {
-        fprintf(stderr,"Error reading index of output\n");
+        fprintf(stderr,"Error reading index of output 0\n");
         return EXIT_FAILURE;
       }
       if(index<0 || index>=NOUT)
       {
-        fprintf(stderr,"Invalid index %d of output\n",index);
+        fprintf(stderr,"Invalid index %d of output 0\n",index);
         return EXIT_FAILURE;
       }
-      if(index==SDATE || index==HDATE)
-        for(j=0;j<files[index].count;j++)
+      printf("index: %d\n",index);
+      for(j=0;j<count[index];j++)
+      {
+        if(j>0) 
         {
-          readshort_socket(socket,sdata[j],total);
-          fwrite(sdata[j],sizeof(short),total,files[index].file);
+          if(readint_socket(insocket,&index,1))
+          {
+            fprintf(stderr,"Error reading index of output\n");
+            return EXIT_FAILURE;
+          }
         }
-      else
-        for(j=0;j<files[index].count;j++)
+        if(index==SDATE || index==HDATE)
         {
-          readfloat_socket(socket,data[j],total);
-          fwrite(data[j],sizeof(float),total,files[index].file);
+          readshort_socket(insocket,sdata[j],total);
+          printf("%s:",config.outnames[index].name);
+          for(k=0;k<total;k++)
+            printf(" %d\n",sdata[j][k]);
+          printf("\n");
         }
+        else
+        {
+          readfloat_socket(insocket,data[j],total);
+          printf("%s:",config.outnames[index].name);
+          for(k=0;k<total;k++)
+            printf(" %g\n",data[j][k]);
+          printf("\n");
+        }
+      }
     }
-    readdouble_socket(socket,(Real *)&flux,sizeof(Flux)/sizeof(Real));
-    if((year-config.outputyear) % 20==0)
-      printf("\nYear NEP     fire    estab   harvest total\n"
-               "---- ------- ------- ------- ------- -------\n");
-    printf("%4d %7.3f %7.3f %7.3f %7.3f %7.3f\n",
-           year,(flux.npp-flux.rh)*1e-15,flux.fire*1e-15,flux.estab*1e-15,
-           flux.harvest*1e-15,(flux.npp-flux.rh-flux.fire-flux.harvest+flux.estab)*1e-15);
+    }
   }
-  time(&end);
-  printf("Frame rate: %.1f (1/sec)\n",
-         (config.lastyear-config.outputyear+1)/(float)(end-start));
-  for(i=0;i<NOUT;i++)
-   if(files[i].file!=NULL)
-     fclose(files[i].file);
-  close_socket(socket);
+  close_socket(insocket);
   return EXIT_SUCCESS;
 } /* of 'main' */

@@ -603,10 +603,9 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
 #else
   if(config->sim_id==LPJML_COPAN)
     fprintf(file,
-            "Coupled to COPAN model running on host %s using port %d and %d.\n"
+            "Coupled to COPAN model running on host %s using port %d.\n"
             "Time to wait for connection: %6d sec\n",
-            config->copan_host,config->copan_inport,
-            config->copan_outport,config->wait_copan);
+            config->copan_host,config->copan_port,config->wait_copan);
 #endif
 
 #ifndef PERMUTE

@@ -13,31 +13,36 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
+#include <signal.h>
 #include "lpj.h"
+
+static void handler(int UNUSED(num))
+{
+  fail(SOCKET_ERR,FALSE,"Output channel is broken");
+} /* of 'handler' */
 
 Bool open_copan(Config *config /**< LPJmL configuration */
                )               /** \return TRUE on error */
 {
-  int rev=1;
+  int version=1;
   if(isroot(*config))
   {
+
     /* Establish the TDT connection */
     printf("Connecting to COPAN model...\n");
     fflush(stdout);
-    config->in=opentdt_socket(config->copan_inport,config->wait_copan);
-    if(config->in==NULL)
-      return TRUE;
-    config->out=connecttdt_socket(config->copan_host,config->copan_outport);
-    if(config->out==NULL)
+    config->socket=connecttdt_socket(config->copan_host,config->copan_port);
+    if(config->socket==NULL)
     {
-      close_socket(config->in);
-      config->in=NULL;
+      close_socket(config->socket);
+      config->socket=NULL;
       return TRUE;
     }
-    writeint_socket(config->out, &rev,1);
-#ifdef DEBUG_COPAN
-    printf("open_copan %d \n",IRevision);
+#ifndef _WIN32
+    signal(SIGPIPE,handler);
 #endif
+    writeint_socket(config->socket,&version,1);
+    writeint_socket(config->socket,&config->total,1);
   }
   return FALSE;
 } /* of 'open_copan' */
