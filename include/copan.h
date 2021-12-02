@@ -23,6 +23,7 @@
 
 extern Bool open_copan(Config *);
 extern void close_copan(const Config *);
-extern Bool receive_copan(Real *,int,const Config *);
+extern Bool receive_real_copan(Real *,int,const Config *);
+extern Bool receive_int_copan(int *,int,const Config *);
 
 #endif /* COPAN_H */

@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                  r  e  c  e  i  v  e  _  c  o  p  a  n  .  c                   \n**/
+/**           r  e  c  e  i  v  e  _  i  n  t  _  c  o  p  a  n  .  c              \n**/
 /**                                                                                \n**/
 /**     extension of LPJ to couple LPJ online with COPAN                           \n**/
 /**                                                                                \n**/
@@ -14,12 +14,8 @@
 
 #include "lpj.h"
 
-Bool receive_copan(Real *data,int size,const Config *config)
+Bool receive_int_copan(int *data,int size,const Config *config)
 {
-  float *f;
-  int i;
-  f=newvec(float,config->nall*size);
-  check(f);
 #ifdef USE_MPI
   int *counts;
   int *offsets;
@@ -29,10 +25,9 @@ Bool receive_copan(Real *data,int size,const Config *config)
   check(offsets);
 
   getcounts(counts,offsets,config->nall,size,config->ntask);
-  if(mpi_read_socket(config->socket,f,MPI_FLOAT,config->nall*size,
+  if(mpi_read_socket(config->socket,data,MPI_INT,config->nall*size,
                      counts,offsets,config->rank,config->comm))
   {
-    free(f);
     free(offsets);
     free(counts);
     return TRUE;
@@ -40,14 +35,8 @@ Bool receive_copan(Real *data,int size,const Config *config)
   free(offsets);
   free(counts);
 #else
-  if(readfloat_socket(config->socket,f,config->nall*size))
-  {
-    free(f);
+  if(readint_socket(config->socket,data,config->nall*size))
     return TRUE;
-  }
 #endif
-  for(i=0;i<config->nall*size;i++)
-    data[i]=f[i];
-  free(f);
   return FALSE;
-} /* of 'receive_copan' */
+} /* of 'receive_int_copan' */
