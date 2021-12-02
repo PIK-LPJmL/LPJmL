@@ -132,19 +132,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
 #else
   config->copan_port=DEFAULT_COPAN_PORT;
   config->copan_host=getenv(LPJCOPAN);
-  pos=getenv(LPJWAITCOPAN);
-  if(pos!=NULL)
-  {
-    config->wait_copan=strtol(pos,&endptr,10);
-    if(*endptr!='\0')
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR193: Invalid number '%s' for COPAN wait in environment variable.\n",pos);
-      return NULL;
-    }
-  }
-  else
-    config->wait_copan=WAIT_COPAN;
   if(config->copan_host==NULL)
     config->copan_host=DEFAULT_COPAN_HOST;
   else
@@ -317,31 +304,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         }
       }
 #else
-      else if(!strcmp((*argv)[i],"-wait"))
-      {
-        if(i==*argc-1)
-        {
-          if(isroot(*config))
-          {
-            fprintf(stderr,"ERROR164: Argument missing for '-wait' option.\n");
-            if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
-          }
-          free(options);
-          return NULL;
-        }
-        else
-        {
-          config->wait_copan=strtol((*argv)[++i],&endptr,10);
-          if(*endptr!='\0')
-          {
-            if(isroot(*config))
-              fprintf(stderr,"ERROR193: Invalid number '%s' for COPAN wait in option.\n",(*argv)[i]);
-            free(options);
-            return NULL;
-          }
-        }
-      }
       else if(!strcmp((*argv)[i],"-copan"))
       {
         if(i==*argc-1)

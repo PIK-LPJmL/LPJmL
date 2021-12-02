@@ -18,7 +18,7 @@
 void close_copan(const Config *config /**< LPJmL configuration */
                 )
 {
-  if(config->rank==0)
+  if(isroot(*config))
   {
     if(config->socket!=NULL)
       close_socket(config->socket);

@@ -28,11 +28,13 @@
 #endif
 #ifdef USE_MPI
 #define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-param] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
+                "       [-copan host[:port]]\n"\
                 "       [-output {gather|mpi2|socket=hostname[:port]}]\n"\
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
                 "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
 #else
 #define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-param] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
+                "       [-copan host[:port]]\n"\
                 "       [-output {write|socket=hostname[:port]}]\n"\
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
                 "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"

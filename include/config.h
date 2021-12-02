@@ -261,7 +261,6 @@ struct config
   Socket *socket;  /**< socket for ingoing data */
   char *copan_host;       /**< hostname for computer running the IMAGE model */
   int copan_port;       /**< port numbert for ingoing data */
-  int wait_copan;         /**< time to wait for image connection (sec) */
   int totalsize;          /**< size of shared output storage */
   int outputmap[NOUT];    /**< index into output storage */
   int outputsize[NOUT];   /**< number of bands for each output */

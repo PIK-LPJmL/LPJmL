@@ -24,7 +24,7 @@ static void handler(int UNUSED(num))
 Bool open_copan(Config *config /**< LPJmL configuration */
                )               /** \return TRUE on error */
 {
-  int version=1;
+  int version=COPAN_COUPLER_VERSION;
   if(isroot(*config))
   {
 

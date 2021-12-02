@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                      i  m  a  g  e  .  h                                       \n**/
+/**                      c  o  p  a  n  .  h                                       \n**/
 /**                                                                                \n**/
 /**     Declaration of COPAN coupler functions and related datatypes               \n**/
 /**                                                                                \n**/
@@ -16,13 +16,13 @@
 #ifndef COPAN_H /* already included? */
 #define COPAN_H
 
-/* Definition of constants for biomass pools used in COPAN */
-
-#define LPJCOPAN "LPJCOPAN"  /* Environment variable for COPAN coupler */
-#define LPJWAITCOPAN "LPJWAITCOPAN"  /* time to wait for IMAGE connection */
+#define COPAN_COUPLER_VERSION 1
+#define LPJCOPAN "LPJCOPAN"            /* Environment variable for COPAN coupler */
+#define LPJWAITCOPAN "LPJWAITCOPAN"    /* time to wait for COPAN connection */
 #define DEFAULT_COPAN_HOST "localhost" /* Default host for COPAN model */
-#define DEFAULT_COPAN_PORT 2224 /* Default port for outgoing connection */
-#define WAIT_COPAN 12000             /* wait for COPAN connection (sec) */
+#define DEFAULT_COPAN_PORT 2224        /* Default port for in and outgoing connection */
+#define WAIT_COPAN 12000               /* wait for COPAN connection (sec) */
+
 extern Bool open_copan(Config *);
 extern void close_copan(const Config *);
 extern Bool receive_copan(Real *,int,const Config *);
