@@ -76,6 +76,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     return TRUE;
   config->compress_suffix=strdup(name);
   checkptr(config->compress_suffix);
+  config->copan_out=0;
   if(config->compress_suffix[0]!='.')
   {
     if(verbosity)
@@ -256,7 +257,10 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         if(config->outputvars[count].filename.isscale)
           config->outnames[flag].scale=(float)config->outputvars[count].filename.scale;
         if(config->outputvars[count].filename.fmt==SOCK)
-           config->outputvars[count].oneyear=FALSE;
+        {
+          config->outputvars[count].oneyear=FALSE;
+          config->copan_out++;
+        }
         else
           config->outputvars[count].oneyear=(strstr(config->outputvars[count].filename.name,"%d")!=NULL);
         if(config->outputvars[count].oneyear && checkfmt(config->outputvars[count].filename.name,'d'))

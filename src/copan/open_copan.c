@@ -18,7 +18,7 @@
 
 static void handler(int UNUSED(num))
 {
-  fail(SOCKET_ERR,FALSE,"Output channel is broken");
+  fail(SOCKET_ERR,FALSE,"Channel to COPAN is broken");
 } /* of 'handler' */
 
 Bool open_copan(Config *config /**< LPJmL configuration */

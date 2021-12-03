@@ -602,8 +602,11 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
 
 #else
   if(config->sim_id==LPJML_COPAN)
-    fprintf(file,"Coupled to COPAN model running on host %s using port %d.\n",
-            config->copan_host,config->copan_port);
+    fprintf(file,"Coupled to COPAN model running on host %s using port %d.\n"
+            "Number of inputs from COPAN:  %d\n"
+            "Number of output to COPAN:    %d\n",
+            config->copan_host,config->copan_port,
+            config->copan_in,config->copan_out);
 #endif
 
 #ifndef PERMUTE
@@ -641,7 +644,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
                  "Output written in year:       %d\n"
                  "Byte order in output files:   %s\n"
                  "Output method:                %s",
-            config->n_out,config->outputyear,
+            config->n_out-config->copan_out,config->outputyear,
             bigendian() ? "big endian" : "little endian",
             method[config->outputmethod]);
     if(config->outputmethod==LPJ_SOCKET)
@@ -670,12 +673,12 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
               config->missing_value,
               config->global_netcdf ? "global" : "local");
     }
-    fprintf(file,"%*s Fmt %*s Type  dt  nbd Filename\n",-width,"Variable",-width_unit,"Unit");
+    fprintf(file,"%*s Fmt  %*s Type  dt  nbd Filename\n",-width,"Variable",-width_unit,"Unit");
     frepeatch(file,'-',width);
-    fputs(" --- ",file);
+    fputs(" ---- ",file);
     frepeatch(file,'-',width_unit);
     fputs(" ----- --- --- ",file);
-    frepeatch(file,'-',77-width-4-width_unit-7-3-4);
+    frepeatch(file,'-',76-width-4-width_unit-7-3-4);
     putc('\n',file);
     for(i=0;i<config->n_out;i++)
     {
@@ -684,7 +687,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
         fprintf(file,"%*d",-width,config->outputvars[index].id);
       else
         fprintf(file,"%*s",-width,config->outnames[config->outputvars[index].id].name);
-      fprintf(file," %s %*s %-5s %-3s %3d ",fmt[config->outputvars[index].filename.fmt],
+      fprintf(file," %-4s %*s %-5s %-3s %3d ",fmt[config->outputvars[index].filename.fmt],
               -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
               typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],
               sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep),outputsize(config->outputvars[index].id,npft,ncft,config));
@@ -694,10 +697,10 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     }
     free(item);
     frepeatch(file,'-',width);
-    fputs(" --- ",file);
+    fputs(" ---- ",file);
     frepeatch(file,'-',width_unit);
     fputs(" ----- --- --- ",file);
-    frepeatch(file,'-',77-width-4-width_unit-7-3-4);
+    frepeatch(file,'-',76-width-4-width_unit-7-3-4);
     putc('\n',file);
     switch(config->crop_index)
     {

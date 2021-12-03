@@ -27,7 +27,7 @@
 
 int main(int argc,char **argv)
 {
-  Socket *insocket,*outsocket;
+  Socket *socket;
   float **data,*landuse;
   int count[NOUT];
   int total,year,index,i,j,k,count_max,n_out,nmonth,month,version;
@@ -62,8 +62,8 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
 #endif
-  insocket=opentdt_socket(config.copan_port,0);
-  if(insocket==NULL)
+  socket=opentdt_socket(config.copan_port,0);
+  if(socket==NULL)
   {
     fprintf(stderr,"Error opening communication channel at port %d: %s\n",
             config.copan_port,strerror(errno));
@@ -71,9 +71,9 @@ int main(int argc,char **argv)
   }
   /* Establish the connection */
   printconfig(config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
-  readint_socket(insocket,&version,1);
+  readint_socket(socket,&version,1);
   printf("Version: %d\n",version);
-  readint_socket(insocket,&total,1);
+  readint_socket(socket,&total,1);
   if(total<1 || total>config.ngridcell)
   {
     fprintf(stderr,"Invalid number of cells=%d\n",total);
@@ -108,7 +108,7 @@ int main(int argc,char **argv)
   {
     landuse=newvec(float,config.nall*outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2);
     index=outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2;
-    if(writeint_socket(insocket,&index,1))
+    if(writeint_socket(socket,&index,1))
     {
       fprintf(stderr,"Error writing size of landuse data of output\n");
       return EXIT_FAILURE;
@@ -120,7 +120,7 @@ int main(int argc,char **argv)
     { 
       for(k=0;k<config.nall*outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2;k++)
         landuse[k]=.0001;
-        writefloat_socket(insocket,landuse,config.nall*outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2);
+        writefloat_socket(socket,landuse,config.nall*outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2);
     }
     if(year>=config.outputyear)
     {
@@ -128,7 +128,7 @@ int main(int argc,char **argv)
     {
       for(month=0;month<11;month++)
       {
-        if(readint_socket(insocket,&index,1))
+        if(readint_socket(socket,&index,1))
         {
           fprintf(stderr,"Error reading index of output\n");
           return EXIT_FAILURE;
@@ -138,17 +138,17 @@ int main(int argc,char **argv)
           fprintf(stderr,"Invalid index %d of output\n",index);
           return EXIT_FAILURE;
         }
-        readfloat_socket(insocket,data[0],total);
+        readfloat_socket(socket,data[0],total);
         printf("%s:",config.outnames[index].name);
         for(k=0;k<total;k++)
-          printf(" %g\n",data[0][k]);
+          printf(" %g",data[0][k]);
         printf("\n");
       }
     }
 
     for(i=0;i<n_out;i++)
     {
-      if(readint_socket(insocket,&index,1))
+      if(readint_socket(socket,&index,1))
       {
         fprintf(stderr,"Error reading index of output 0\n");
         return EXIT_FAILURE;
@@ -163,7 +163,7 @@ int main(int argc,char **argv)
       {
         if(j>0) 
         {
-          if(readint_socket(insocket,&index,1))
+          if(readint_socket(socket,&index,1))
           {
             fprintf(stderr,"Error reading index of output\n");
             return EXIT_FAILURE;
@@ -171,24 +171,24 @@ int main(int argc,char **argv)
         }
         if(index==SDATE || index==HDATE)
         {
-          readshort_socket(insocket,sdata[j],total);
-          printf("%s:",config.outnames[index].name);
+          readshort_socket(socket,sdata[j],total);
+          printf("%s[%d]:",config.outnames[index].name,j);
           for(k=0;k<total;k++)
-            printf(" %d\n",sdata[j][k]);
+            printf(" %d",sdata[j][k]);
           printf("\n");
         }
         else
         {
-          readfloat_socket(insocket,data[j],total);
-          printf("%s:",config.outnames[index].name);
+          readfloat_socket(socket,data[j],total);
+          printf("%s[%d]:",config.outnames[index].name,j);
           for(k=0;k<total;k++)
-            printf(" %g\n",data[j][k]);
+            printf(" %g",data[j][k]);
           printf("\n");
         }
       }
     }
     }
   }
-  close_socket(insocket);
+  close_socket(socket);
   return EXIT_SUCCESS;
 } /* of 'main' */

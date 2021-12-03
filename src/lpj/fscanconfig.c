@@ -36,7 +36,7 @@
   }
 
 #define scanclimatefilename(file,var,path,isfms,iscopan,what) {                 \
-    if(readclimatefilename(file,var,what,path,isfms,iscopan,verbose)) {      \
+    if(readclimatefilename(file,var,what,path,&config->copan_in,isfms,iscopan,verbose)) {      \
       if(verbose) fprintf(stderr,"ERROR209: Cannot read filename for '%s' input.\n",what); \
       return TRUE;                                                      \
     }                                                                   \
@@ -68,7 +68,7 @@ static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const cha
   return FALSE;
 } /* of 'readfilename2' */
 
-static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,const char *path,Bool isfms,Bool iscopan,Verbosity verbose)
+static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,const char *path,int *copan_in,Bool isfms,Bool iscopan,Verbosity verbose)
 {
   if(readfilename(file,name,key,path,TRUE,verbose))
     return TRUE;
@@ -84,6 +84,8 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,con
       fprintf(stderr,"ERROR197: File format 'sock' not allowed without COPAN coupling for input '%s'.\n",name->name);
     return TRUE;
   }
+  if(name->fmt==SOCK)
+    (*copan_in)++;
   if(name->fmt==TXT)
   {
     if(verbose)
@@ -152,7 +154,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   /*=================================================================*/
   /* I. Reading type section                                         */
   /*=================================================================*/
-
+  config->copan_in=0;
   if (verbose>=VERB) puts("// I. type section");
   fscanbool2(file,&israndom,"random_prec");
   config->seed_start=RANDOM_SEED;
