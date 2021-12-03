@@ -25,7 +25,7 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
   int yr,yr_old;
   Bool iseof;
   file.isjson=FALSE;
-  if(filename->fmt==FMS)
+  if(filename->fmt==FMS || filename->fmt==SOCK)
   {
     co2->data=NULL;
     co2->nyear=0;

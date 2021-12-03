@@ -672,23 +672,23 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #endif
     }
   }
-  scanclimatefilename(&input,&config->temp_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"temp");
-  scanclimatefilename(&input,&config->prec_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"prec");
+  scanclimatefilename(&input,&config->temp_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"temp");
+  scanclimatefilename(&input,&config->prec_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"prec");
   switch(config->with_radiation)
   {
     case RADIATION:
-      scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"lwnet");
-      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"swdown");
+      scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"lwnet");
+      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"swdown");
       break;
     case RADIATION_LWDOWN:
-      scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"lwdown");
-      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"swdown");
+      scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"lwdown");
+      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"swdown");
       break;
     case CLOUDINESS:
-      scanclimatefilename(&input,&config->cloud_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"cloud");
+      scanclimatefilename(&input,&config->cloud_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"cloud");
       break;
     case RADIATION_SWONLY:
-      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"swdown");
+      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"swdown");
       break;
     default:
       if(verbose)
@@ -699,8 +699,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
     {
-      scanclimatefilename(&input,&config->no3deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"no3deposition");
-      scanclimatefilename(&input,&config->nh4deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"nh4deposition");
+      scanclimatefilename(&input,&config->no3deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"no3deposition");
+      scanclimatefilename(&input,&config->nh4deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"nh4deposition");
     }
     else
       config->no3deposition_filename.name=config->nh4deposition_filename.name=NULL;
@@ -718,14 +718,14 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->fire==SPITFIRE_TMAX || config->cropsheatfrost)
   {
-    scanclimatefilename(&input,&config->tmin_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"tmin");
-    scanclimatefilename(&input,&config->tmax_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"tmax");
+    scanclimatefilename(&input,&config->tmin_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"tmin");
+    scanclimatefilename(&input,&config->tmax_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"tmax");
   }
   else
     config->tmax_filename.name=config->tmin_filename.name=NULL;
   if(config->fire==SPITFIRE)
   {
-    scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"tamp");
+    scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"tamp");
   }
   else
     config->tamp_filename.name=NULL;
@@ -753,7 +753,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR209: Cannot read filename for 'co2' input.\n",stderr);
     return TRUE;
   }
-  if(config->co2_filename.fmt!=TXT &&  (config->sim_id!=LPJML_FMS || config->co2_filename.fmt!=FMS))
+  if(config->co2_filename.fmt!=TXT &&  (config->sim_id==LPJML_FMS && config->co2_filename.fmt!=FMS) && (config->sim_id==LPJML_COPAN && config->co2_filename.fmt!=SOCK))
   {
     if(verbose)
       fprintf(stderr,"ERROR197: Only txt format is supported for CO2 input in this version of LPJmL, %s not allowed.\n",

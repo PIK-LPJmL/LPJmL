@@ -35,6 +35,21 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     file->firstyear=config->firstyear;
     return FALSE;
   }
+  if(filename->fmt==SOCK)
+  {
+    if(filename->timestep==DAILY)
+    {
+      file->time_step=DAY;
+      file->n=NDAYYEAR*config->ngridcell;
+    }
+    else
+    {
+      file->time_step=MONTH;
+      file->n=NMONTH*config->ngridcell;
+    }
+    file->firstyear=config->firstyear;
+    return FALSE;
+  }
   file->oneyear=FALSE;
   if(filename->fmt==CDF) /** file is in NetCDF format? */
   {

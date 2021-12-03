@@ -137,6 +137,8 @@ static int checkdatafile(const Config *config,const Filename *filename,const cha
   Bool swap;
   Climatefile input;
   size_t offset;
+  if(filename->fmt==SOCK)
+    return 0;
   if(filename->fmt==CDF)
   {
     if(openfile_netcdf(&input,filename,unit,config))
@@ -397,7 +399,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
   }
   else
     bad+=checkclmfile(&config,&config.cloud_filename,"%",TRUE);
-   if(config.co2_filename.fmt!=FMS)
+   if(config.co2_filename.fmt!=FMS && config.co2_filename.fmt!=SOCK)
     bad+=checkfile(config.co2_filename.name);
   if(config.wet_filename.name!=NULL)
     bad+=checkclmfile(&config,&config.wet_filename,"day",FALSE);

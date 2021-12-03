@@ -152,7 +152,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   }
   if(isroot(*config) && landuse->landuse.var_len!=4*config->landusemap_size)
     fputs("WARNING024: Land-use input does not include irrigation systems, suboptimal country values are used.\n",stderr);
-  checkyear("land-use",&landuse->landuse,config);
+  if(config->landuse_filename.fmt!=SOCK)
+    checkyear("land-use",&landuse->landuse,config);
   if(config->sdate_option==PRESCRIBED_SDATE)
   {
     /* read sdate input metadata */
@@ -527,7 +528,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       free(landuse);
       return(NULL);
     }
-    checkyear("tillage",&landuse->with_tillage,config);
+    if(config->with_tillage_filename.fmt!=SOCK)
+      checkyear("tillage",&landuse->with_tillage,config);
   }
 
   if(config->residue_treatment==READ_RESIDUE_DATA)
@@ -627,7 +629,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       free(landuse);
       return NULL;
     }
-    checkyear("residue",&landuse->residue_on_field,config);
+    if(config->residue_data_filename.fmt!=SOCK)
+      checkyear("residue",&landuse->residue_on_field,config);
   }
   landuse->intercrop=config->intercrop;
   return landuse;

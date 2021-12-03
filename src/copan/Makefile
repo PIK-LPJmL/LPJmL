@@ -15,7 +15,8 @@
 
 include ../../Makefile.inc
 
-OBJS    = receive_real_copan.$O open_copan.$O close_copan.$O receive_int_copan.$O
+OBJS    = receive_real_copan.$O open_copan.$O close_copan.$O receive_int_copan.$O\
+          receive_real_scalar_copan.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

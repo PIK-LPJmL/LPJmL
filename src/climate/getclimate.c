@@ -32,6 +32,18 @@ Bool readclimate(Climatefile *file,   /**< climate data file */
   long long index;
   if(file->fmt==FMS)
     return FALSE;
+  if(file->fmt==SOCK)
+  {
+    if(receive_real_copan(data,(file->time_step==DAY) ? NDAYYEAR : NMONTH,config))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR149: Cannot receive climate of year %d in readclimate().\n",year);
+      fflush(stderr);
+      free(data);
+      return TRUE;
+    }
+    return FALSE;
+  }
   index=year-file->firstyear;
   if(index<0 || index>=file->nyear)
   {

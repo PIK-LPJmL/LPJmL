@@ -18,12 +18,18 @@
 
 Bool getco2(const Climate *climate, /**< Pointer to climate data */
             Real *pco2,             /** atmospheric CO2 (ppm) */
-            int year                /**< year (AD) */
+            int year,                /**< year (AD) */
+            const Config *config    /**< LPJmL configuration */
            )                        /** \return TRUE on error */
 {
-  year-=climate->co2.firstyear;
-  if(year>=climate->co2.nyear)
-    return TRUE;
-  *pco2=(year<0) ? param.co2_p : climate->co2.data[year];
+  if(config->co2_filename.fmt==SOCK)
+    return receive_real_scalar_copan(pco2,1,config);
+  else
+  {
+    year-=climate->co2.firstyear;
+    if(year>=climate->co2.nyear)
+      return TRUE;
+    *pco2=(year<0) ? param.co2_p : climate->co2.data[year];
+  }
   return FALSE;
 } /* of 'getco2' */

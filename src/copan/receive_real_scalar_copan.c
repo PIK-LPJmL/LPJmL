@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                      c  o  p  a  n  .  h                                       \n**/
+/**           r  e  c  e  i  v  e  _  r  e  a  l  _  c  o  p  a  n  .  c           \n**/
 /**                                                                                \n**/
-/**     Declaration of COPAN coupler functions and related datatypes               \n**/
+/**     extension of LPJ to couple LPJ online with COPAN                           \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,19 +12,21 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
+#include "lpj.h"
 
-#ifndef COPAN_H /* already included? */
-#define COPAN_H
-
-#define COPAN_COUPLER_VERSION 1
-#define LPJCOPAN "LPJCOPAN"            /* Environment variable for COPAN coupler */
-#define DEFAULT_COPAN_HOST "localhost" /* Default host for COPAN model */
-#define DEFAULT_COPAN_PORT 2224        /* Default port for in and outgoing connection */
-
-extern Bool open_copan(Config *);
-extern void close_copan(const Config *);
-extern Bool receive_real_copan(Real *,int,const Config *);
-extern Bool receive_real_scalar_copan(Real *,int,const Config *);
-extern Bool receive_int_copan(int *,int,const Config *);
-
-#endif /* COPAN_H */
+Bool receive_real_scalar_copan(Real *data,int size,const Config *config)
+{
+  float *f;
+  int i;
+  f=newvec(float,config->nall*size);
+  check(f);
+  if(isroot(*config))
+    readfloat_socket(config->socket,f,size);
+#ifdef USE_MPI
+  MPI_Bcast(&f,size,MPI_FLOAT,0,config->comm);
+#endif
+  for(i=0;i<size;i++)
+    data[i]=f[i];
+  free(f);
+  return FALSE;
+} /* of 'receive_real_scalar_copan' */
