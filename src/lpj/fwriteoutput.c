@@ -23,7 +23,6 @@
 
 #define writeoutputvar(index,scale) if(iswrite(output,index))\
   {\
-    outindex(output,index,config);\
     count=0;\
     for(cell=0;cell<config->ngridcell;cell++)\
       if(!grid[cell].skip)\
