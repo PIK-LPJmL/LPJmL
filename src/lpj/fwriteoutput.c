@@ -23,6 +23,7 @@
 
 #define writeoutputvar(index,scale) if(iswrite(output,index))\
   {\
+    outindex(output,index,config);\
     count=0;\
     for(cell=0;cell<config->ngridcell;cell++)\
       if(!grid[cell].skip)\
@@ -321,7 +322,7 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
           check(offsets);
           getcounts(counts,offsets,config->nall,1,config->ntask);
           mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
-                       offsets,config->rank,config->comm);
+                           offsets,config->rank,config->comm);
           free(counts);
           free(offsets);
           break;
