@@ -58,18 +58,17 @@ int writecountrycode(Outputfile *output, /**< output file array */
           mpi_write_txt(output->files[index].fp.file,vec,MPI_SHORT,config->total,
                         output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
           break;
+        case SOCK:
+          writeint_socket(config->socket,&index,1);
+          mpi_write_socket(config->socket,vec,MPI_SHORT,config->total,
+                           output->counts,output->offsets,config->rank,config->comm);
+          break;
         case CDF:
           mpi_write_netcdf(&output->files[index].fp.cdf,vec,MPI_SHORT,config->total,
                            NO_TIME,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
       }
-      break;
-    case LPJ_SOCKET:
-      mpi_write_socket(output->socket,vec,MPI_SHORT,config->total,
-                       output->counts,output->offsets,config->rank,config->comm);
-      break;
-
   } /* of 'switch' */
 #else
   if(output->method==LPJ_FILES)
@@ -84,12 +83,14 @@ int writecountrycode(Outputfile *output, /**< output file array */
           fprintf(output->files[index].fp.file,"%d%c",vec[cell],config->csv_delimit);
         fprintf(output->files[index].fp.file,"%d\n",vec[count-1]);
         break;
+      case SOCK:
+        writeint_socket(config->socket,&index,1);
+        writeshort_socket(config->socket,vec,count);
+        break;
       case CDF:
         write_short_netcdf(&output->files[index].fp.cdf,vec,NO_TIME,count);
         break;
     }
-  else
-    writeshort_socket(output->socket,vec,count);
 #endif
   free(vec);
   return count;

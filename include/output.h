@@ -94,7 +94,7 @@ typedef struct
   Real area_agr;              /**< agriculture area (m2) */
 } Flux;
 
-typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER,LPJ_SOCKET} Outputmethod;
+typedef enum {LPJ_FILES,LPJ_MPI2,LPJ_GATHER} Outputmethod;
 
 typedef enum { MISSING_TIME,SECOND,DAY,MONTH,YEAR } Time;
 

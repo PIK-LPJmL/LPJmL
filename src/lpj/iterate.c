@@ -288,9 +288,6 @@ int iterate(Outputfile *output, /**< Output file data */
       if(isopen(output,GLOBALFLUX))
         fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,
                       config->outnames[GLOBALFLUX].scale,year,config);
-      if(output->method==LPJ_SOCKET && output->socket!=NULL &&
-         year>=config->outputyear)
-        output_flux(output,flux);
       fflush(stdout); /* force output to console */
 #ifdef SAFE
       check_balance(flux,year,config);

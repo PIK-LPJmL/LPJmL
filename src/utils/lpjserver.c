@@ -161,30 +161,11 @@ int main(int argc,char **argv)
       printf("index: %d\n",index);
       for(j=0;j<count[index];j++)
       {
-        if(j>0) 
-        {
-          if(readint_socket(socket,&index,1))
-          {
-            fprintf(stderr,"Error reading index of output\n");
-            return EXIT_FAILURE;
-          }
-        }
-        if(index==SDATE || index==HDATE)
-        {
-          readshort_socket(socket,sdata[j],total);
-          printf("%s[%d]:",config.outnames[index].name,j);
-          for(k=0;k<total;k++)
-            printf(" %d",sdata[j][k]);
-          printf("\n");
-        }
-        else
-        {
-          readfloat_socket(socket,data[j],total);
-          printf("%s[%d]:",config.outnames[index].name,j);
-          for(k=0;k<total;k++)
-            printf(" %g",data[j][k]);
-          printf("\n");
-        }
+        readfloat_socket(socket,data[j],total);
+        printf("%s[%d]:",config.outnames[index].name,j);
+        for(k=0;k<total;k++)
+          printf(" %g",data[j][k]);
+        printf("\n");
       }
     }
     }

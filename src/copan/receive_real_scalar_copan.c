@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**           r  e  c  e  i  v  e  _  r  e  a  l  _  c  o  p  a  n  .  c           \n**/
+/**          r e c e i v e _ r e a l _ s c a l a r _ c o p a n . c                 \n**/
 /**                                                                                \n**/
 /**     extension of LPJ to couple LPJ online with COPAN                           \n**/
 /**                                                                                \n**/

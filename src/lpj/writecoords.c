@@ -127,7 +127,7 @@ int writecoords(Outputfile *output,  /**< output struct */
         free(vec);
       }
       break;
-    case LPJ_GATHER: case LPJ_SOCKET:
+    case LPJ_GATHER:
       if(output->method==LPJ_GATHER && output->files[index].fmt==CDF)
       {
         rc=FALSE;
@@ -186,23 +186,24 @@ int writecoords(Outputfile *output,  /**< output struct */
           MPI_Type_free(&type);
           if(isroot(*config))
           {
-            if(output->method==LPJ_SOCKET)
-              writefloat_socket(output->socket,fdst,config->total*2);
-            else
-              switch(output->files[index].fmt)
-              {
-                case RAW: case CLM:
-                  if(fwrite(fdst,sizeof(Floatcoord),config->total,output->files[index].fp.file)!=config->total)
-                    fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-                  break;
-                case TXT:
-                  for(cell=0;cell<config->total-1;cell++)
-                    fprintf(output->files[index].fp.file,"%g%c%g%c",
-                            fdst[cell].lon,config->csv_delimit,fdst[cell].lat,config->csv_delimit);
-                  fprintf(output->files[index].fp.file,"%g%c%g\n",
-                          fdst[config->total-1].lon,config->csv_delimit,fdst[config->total-1].lat);
-                  break;
-              }
+            switch(output->files[index].fmt)
+            {
+              case RAW: case CLM:
+                if(fwrite(fdst,sizeof(Floatcoord),config->total,output->files[index].fp.file)!=config->total)
+                  fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+                break;
+              case SOCK:
+                writeint_socket(config->socket,&index,1);
+                writefloat_socket(config->socket,fdst,config->total*2);
+                break;
+              case TXT:
+                for(cell=0;cell<config->total-1;cell++)
+                  fprintf(output->files[index].fp.file,"%g%c%g%c",
+                          fdst[cell].lon,config->csv_delimit,fdst[cell].lat,config->csv_delimit);
+                fprintf(output->files[index].fp.file,"%g%c%g\n",
+                        fdst[config->total-1].lon,config->csv_delimit,fdst[config->total-1].lat);
+                break;
+            }
             free(fdst);
           }
           free(fvec);
@@ -233,23 +234,24 @@ int writecoords(Outputfile *output,  /**< output struct */
           MPI_Type_free(&type);
           if(isroot(*config))
           {
-            if(output->method==LPJ_SOCKET)
-              writeshort_socket(output->socket,dst,config->total*2);
-            else
-              switch(output->files[index].fmt)
-              {
-                case RAW: case CLM:
-                  if(fwrite(dst,sizeof(Intcoord),config->total,output->files[index].fp.file)!=config->total)
-                    fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-                  break;
-                case TXT:
-                  for(cell=0;cell<config->total-1;cell++)
-                    fprintf(output->files[index].fp.file,"%g%c%g%c",
-                            dst[cell].lon*0.01,config->csv_delimit,dst[cell].lat*0.01,config->csv_delimit);
-                  fprintf(output->files[index].fp.file,"%g%c%g\n",
-                          dst[config->total-1].lon*0.01,config->csv_delimit,dst[config->total-1].lat*0.01);
-                  break;
-              }
+            switch(output->files[index].fmt)
+            {
+              case RAW: case CLM:
+                if(fwrite(dst,sizeof(Intcoord),config->total,output->files[index].fp.file)!=config->total)
+                  fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+                break;
+              case SOCK:
+                writeint_socket(config->socket,&index,1);
+                writeshort_socket(config->socket,dst,config->total*2);
+                break;
+              case TXT:
+                for(cell=0;cell<config->total-1;cell++)
+                  fprintf(output->files[index].fp.file,"%g%c%g%c",
+                          dst[cell].lon*0.01,config->csv_delimit,dst[cell].lat*0.01,config->csv_delimit);
+                fprintf(output->files[index].fp.file,"%g%c%g\n",
+                        dst[config->total-1].lon*0.01,config->csv_delimit,dst[config->total-1].lat*0.01);
+                break;
+            }
             free(dst);
           }
           free(vec);
@@ -276,6 +278,9 @@ int writecoords(Outputfile *output,  /**< output struct */
                   fvec[count-1].lon,config->csv_delimit,fvec[count-1].lat);
           free(fvec);
           break;
+        case SOCK:
+          writeint_socket(config->socket,&index,1);
+          writefloat_socket(output->socket,fvec,count*2);
         case CDF:
           write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
           free(soilcode);
@@ -297,24 +302,15 @@ int writecoords(Outputfile *output,  /**< output struct */
                   vec[count-1].lon*0.01,config->csv_delimit,vec[count-1].lat*0.01);
           free(vec);
           break;
+        case SOCK:
+          writeint_socket(config->socket,&index,1);
+          writeshort_socket(output->socket,vec,count*2);
+          break;
         case CDF:
           write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
           free(soilcode);
           break;
       }
-  }
-  else
-  {
-    if(config->float_grid)
-    {
-      writefloat_socket(output->socket,fvec,count*2);
-      free(fvec);
-    }
-    else
-    {
-      writeshort_socket(output->socket,vec,count*2);
-      free(vec);
-    }
   }
 #endif
   return count;

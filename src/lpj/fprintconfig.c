@@ -647,8 +647,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
             config->n_out-config->copan_out,config->outputyear,
             bigendian() ? "big endian" : "little endian",
             method[config->outputmethod]);
-    if(config->outputmethod==LPJ_SOCKET)
-      fprintf(file," to %s using port %d",config->hostname,config->port);
     fputc('\n',file);
     isnetcdf=FALSE;
     for(i=0;i<config->n_out;i++)

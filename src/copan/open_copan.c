@@ -41,7 +41,9 @@ Bool open_copan(Config *config /**< LPJmL configuration */
 #ifndef _WIN32
     signal(SIGPIPE,handler);
 #endif
+    /* send coupler version */
     writeint_socket(config->socket,&version,1);
+    /* send total number of cells */
     writeint_socket(config->socket,&config->total,1);
   }
   return FALSE;

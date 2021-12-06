@@ -77,7 +77,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     checkptr(config->restartdir);
   }
   env_options=getenv(LPJOUTPUTMETHOD);
-  config->port=DEFAULT_PORT;
   config->param_out=FALSE;
   config->scan_verbose=ERR; /* NO_ERR would suppress also error messages */
 #if defined IMAGE && defined COUPLED
@@ -167,38 +166,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   else if(!strcmp(env_options,"write"))
     config->outputmethod=LPJ_FILES;
 #endif
-  else if(!strncmp(env_options,"socket",6))
-  {
-    config->outputmethod=LPJ_SOCKET;
-    if(env_options[6]=='=')
-    {
-      config->hostname=env_options+7;
-      pos=strchr(config->hostname,':');
-      if(pos!=NULL)
-      {
-        *pos='\0';
-        config->port=strtol(pos+1,&endptr,10);
-        if(endptr==pos+1 || *endptr!='\0' || config->port<1  || config->port>USHRT_MAX)
-        {
-          if(isroot(*config))
-            fprintf(stderr,
-                    "ERROR169: Invalid port number for output method socket.\n");
-          return NULL;
-        }
-      }
-    }
-    else 
-    {
-      if(isroot(*config))
-      {
-        fprintf(stderr,
-                "ERROR168: Hostname missing for output method socket.\n");
-        if(usage!=NULL)
-          fprintf(stderr,usage,(*argv)[0]);
-      }
-      return NULL;
-    }
-  }
   else
   {
     if(isroot(*config))
@@ -449,40 +416,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         else if(!strcmp((*argv)[i+1],"write"))
           config->outputmethod=LPJ_FILES;
 #endif
-        else if(!strncmp((*argv)[i+1],"socket",6))
-        {
-          config->outputmethod=LPJ_SOCKET;
-          if((*argv)[i+1][6]=='=')
-          {
-            config->hostname=&((*argv)[i+1][7]);
-            pos=strchr(config->hostname,':');
-            if(pos!=NULL)
-            {
-              *pos='\0';
-              config->port=strtol(pos+1,&endptr,10);
-              if(endptr==pos+1 || *endptr!='\0' || config->port<1
-                               || config->port>USHRT_MAX)
-              {
-                if(isroot(*config))
-                  fprintf(stderr,"ERROR169: Invalid port number %d for output method socket.\n",
-                          config->port);
-                free(options);
-                return NULL;
-              }
-            }
-          }
-          else 
-          {
-            if(isroot(*config))
-            {
-              fprintf(stderr,"ERROR168: Hostname missing for output method socket.\n");
-              if(usage!=NULL)
-                fprintf(stderr,usage,(*argv)[0]);
-            }
-            free(options);
-            return NULL;
-          }
-        }
         else
         {
           if(isroot(*config))

@@ -14,13 +14,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <signal.h>
 #include "lpj.h"
-
-static void handler(int UNUSED(num))
-{
-  fail(SOCKET_ERR,FALSE,"Output channel is broken"); 
-} /* of 'handler' */
 
 static Bool create(Netcdf *cdf,const char *filename,int index,
                    Coord_array *array,const Config *config)
@@ -232,37 +226,6 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
       output->offsets[i]=output->offsets[i-1]+output->counts[i-1];
   }
 #endif
-  if(output->method==LPJ_SOCKET)
-  {
-    if(isroot(*config))
-    {
-      output->socket=connect_socket(config->hostname,config->port,0);
-      if(output->socket==NULL)
-      {
-        fputs("ERROR167: Cannot establish connection.\n",stderr);
-        isopen=FALSE;
-      }
-      else
-      {
-#ifndef _WIN32
-        signal(SIGPIPE,handler);
-#endif
-        isopen=TRUE;
-        write_socket(output->socket,"LPJ",3);
-        writeint_socket(output->socket,&config->total,1);
-      }
-    }
-#ifdef USE_MPI
-    MPI_Bcast(&isopen,1,MPI_INT,0,config->comm);
-#endif
-    if(!isopen)
-    {
-#ifdef USE_MPI
-      output->counts=output->offsets=NULL;
-#endif
-      return output; 
-    }
-  }
   outputnames(output,config);
   for(i=0;i<config->n_out;i++)
   {
@@ -307,9 +270,6 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
           output->files[config->outputvars[i].id].isopen=TRUE;
         }
         break;
-      case LPJ_SOCKET:
-        output->files[config->outputvars[i].id].isopen=TRUE;
-        break;
       case LPJ_GATHER:
         if(config->outputvars[i].filename.fmt==SOCK)
         {
@@ -335,9 +295,6 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
         }
         else
           openfile(output,grid,filename,i,config);
-        break;
-      case LPJ_SOCKET:
-        output->files[config->outputvars[i].id].isopen=TRUE;
         break;
     } /* of 'switch' */
 #endif

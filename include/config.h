@@ -176,8 +176,6 @@ struct config
   float missing_value;    /**< Missing value in NetCDF files */
   Variable *outnames;
   Outputmethod outputmethod;
-  char *hostname;               /**< hostname to send data */
-  int port;                     /**< port of socket connection */
 #ifdef USE_MPI
   MPI_Comm comm; /**< MPI communicator */
   int offset;
@@ -260,7 +258,7 @@ struct config
 #endif
   Socket *socket;         /**< socket for in- and outgoing data */
   char *copan_host;       /**< hostname for computer running the IMAGE model */
-  int copan_port;         /**< port number for ingoing data */
+  int copan_port;         /**< port number for in- and outgoing data */
   int copan_out;          /**< number of outgoing data streams */ 
   int copan_in;           /**< number of ingoing data streams */
   int totalsize;          /**< size of shared output storage */

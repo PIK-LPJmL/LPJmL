@@ -98,8 +98,6 @@ void fcloseoutput(Outputfile *output,  /**< Output file array */
   {
     free(output->counts);
     free(output->offsets);
-    if(output->method==LPJ_SOCKET && isroot(*config) && output->socket!=NULL)
-      close_socket(output->socket);
   }
 #else
   if(output->method==LPJ_SOCKET && output->socket!=NULL)
