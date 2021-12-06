@@ -147,6 +147,8 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
                         output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
           break;
         case SOCK:
+          if(isroot(*config))
+            writeint_socket(config->socket,&index,1);
           mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -180,6 +182,7 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
       fprintf(output->files[index].fp.file,"%g\n",data[config->count-1]);
       break;
     case SOCK:
+      writeint_socket(config->socket,&index,1);
       writefloat_socket(config->socket,data,config->count);
       break;
     case CDF:
@@ -225,6 +228,8 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
                         output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
           break;
         case SOCK:
+          if(isroot(*config))
+            writeint_socket(config->socket,&index,1);
           mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -258,6 +263,7 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
       fprintf(output->files[index].fp.file,"%d\n",data[config->count-1]);
       break;
     case SOCK:
+      writeint_socket(config->socket,&index,1);
       writeshort_socket(config->socket,data,config->count);
       break;
     case CDF:
@@ -320,8 +326,10 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
           offsets=newvec(int,config->ntask);
           check(offsets);
           getcounts(counts,offsets,config->nall,1,config->ntask);
+          if(isroot(*config))
+            writeint_socket(config->socket,&index,1);
           mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
-                       offsets,config->rank,config->comm);
+                           offsets,config->rank,config->comm);
           free(counts);
           free(offsets);
           break;
@@ -356,6 +364,7 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
       fprintf(output->files[index].fp.file,"%g\n",data[config->ngridcell-1]);
       break;
     case SOCK:
+      writeint_socket(config->socket,&index,1);
       writefloat_socket(config->socket,data,config->ngridcell);
       break;
     case CDF:
@@ -580,6 +589,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   if(iswrite(output,SEASONALITY))
   {
+    outindex(output,SEASONALITY,config);
     count=0;
     svec=newvec(short,config->ngridcell);
     check(svec);
