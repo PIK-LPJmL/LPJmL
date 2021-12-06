@@ -26,5 +26,6 @@ extern void close_copan(const Config *);
 extern Bool receive_real_copan(Real *,int,const Config *);
 extern Bool receive_real_scalar_copan(Real *,int,const Config *);
 extern Bool receive_int_copan(int *,int,const Config *);
+extern void send_flux_copan(const Flux *,Real,int,const Config *);
 
 #endif /* COPAN_H */

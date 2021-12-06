@@ -228,9 +228,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
     len=printsim(file,len,&count,"IMAGE coupling");
-#else
-  if(config->sim_id==LPJML_COPAN)
-    len=printsim(file,len,&count,"COPAN coupling");
 #endif
   if(config->wet_filename.name!=NULL)
     len=printsim(file,len,&count,"random precipitation");

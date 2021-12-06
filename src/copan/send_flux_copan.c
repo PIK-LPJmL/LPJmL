@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                w  r  i  t  e  f  l  u  x  _  s  o  c  k  e  t  .  c            \n**/
+/**                s  e  n  d  _  f  l  u  x  _  c  o  p  a  n  .  c               \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes fluxe into socket                                          \n**/
+/**     Function writes fluxes into socket                                         \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,11 +16,11 @@
 
 #include "lpj.h"
 
-void writeflux_socket(const Flux *flux,    /**< Carbon and water fluxes */
-                      Real scale,          /**< scaling factor */
-                      int year,            /**< Simulation year (AD) */
-                      const Config *config /**< LPJ configuration */
-                     )
+void send_flux_copan(const Flux *flux,    /**< Carbon and water fluxes */
+                     Real scale,          /**< scaling factor */
+                     int year,            /**< Simulation year (AD) */
+                     const Config *config /**< LPJ configuration */
+                    )
 {
   int index;
   float *vec;
@@ -34,4 +34,4 @@ void writeflux_socket(const Flux *flux,    /**< Carbon and water fluxes */
     vec[i]=(float)(((const Real *)flux)[i]*scale);
   writefloat_socket(config->socket,vec,sizeof(Flux)/sizeof(Real));
   free(vec);
-} /* of 'writeflux_socket' */
+} /* of 'send_flux_copan' */

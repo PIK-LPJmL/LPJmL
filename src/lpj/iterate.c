@@ -291,7 +291,7 @@ int iterate(Outputfile *output, /**< Output file data */
           fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,
                         config->outnames[GLOBALFLUX].scale,year,config);
         else
-          writeflux_socket(&flux,config->outnames[GLOBALFLUX].scale,year,config);
+          send_flux_copan(&flux,config->outnames[GLOBALFLUX].scale,year,config);
       }
       fflush(stdout); /* force output to console */
 #ifdef SAFE

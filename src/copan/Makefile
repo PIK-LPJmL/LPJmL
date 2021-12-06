@@ -16,7 +16,7 @@
 include ../../Makefile.inc
 
 OBJS    = receive_real_copan.$O open_copan.$O close_copan.$O receive_int_copan.$O\
-          receive_real_scalar_copan.$O
+          receive_real_scalar_copan.$O send_flux_copan.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -38,9 +38,9 @@ $(LIBDIR)/$(LIB): $(OBJS)
 
 $(OBJS): $(HDRS)
 
-.c.$O: 
+.c.$O:
 	$(CC) $(CFLAGS) -I$(INC) -c $*.c
 
-clean: 
+clean:
 	$(RM) $(RMFLAGS) $(OBJS)
 	(cd $(LIBDIR) && $(RM) $(RMFLAGS) $(LIB))
