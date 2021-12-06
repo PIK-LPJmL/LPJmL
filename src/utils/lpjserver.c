@@ -30,7 +30,7 @@ int main(int argc,char **argv)
   Socket *socket;
   float **data,*landuse;
   int count[NOUT];
-  int total,year,index,i,j,k,count_max,n_out,nmonth,month,version;
+  int total,year,index,i,j,k,count_max,n_out,nmonth,month,version,year_flux;
   short **sdata;
   Config config;
   String line;
@@ -159,14 +159,26 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
       printf("index: %d\n",index);
-      for(j=0;j<count[index];j++)
+      if(index==GLOBALFLUX)
       {
-        readfloat_socket(socket,data[j],total);
-        printf("%s[%d]:",config.outnames[index].name,j);
-        for(k=0;k<total;k++)
-          printf(" %g",data[j][k]);
+        readint_socket(socket,&year_flux,1);
+        printf("%s[%d]:",config.outnames[index].name,year_flux);
+        for(j=0;j<sizeof(Flux)/sizeof(Real);j++)
+        {
+          readfloat_socket(socket,data[0],1);
+          printf(" %g",data[0][0]);
+        }
         printf("\n");
       }
+      else
+        for(j=0;j<count[index];j++)
+        {
+          readfloat_socket(socket,data[j],total);
+          printf("%s[%d]:",config.outnames[index].name,j);
+          for(k=0;k<total;k++)
+            printf(" %g",data[j][k]);
+          printf("\n");
+        }
     }
     }
   }
