@@ -281,6 +281,7 @@ int writecoords(Outputfile *output,  /**< output struct */
         case SOCK:
           writeint_socket(config->socket,&index,1);
           writefloat_socket(output->socket,fvec,count*2);
+          break;
         case CDF:
           write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
           free(soilcode);
