@@ -59,7 +59,8 @@ int writecountrycode(Outputfile *output, /**< output file array */
                         output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
           break;
         case SOCK:
-          writeint_socket(config->socket,&index,1);
+          if(isroot(*config))
+            writeint_socket(config->socket,&index,1);
           mpi_write_socket(config->socket,vec,MPI_SHORT,config->total,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
