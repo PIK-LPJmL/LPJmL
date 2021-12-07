@@ -321,17 +321,10 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
                         offsets,config->rank,config->csv_delimit,config->comm);
           break;
         case SOCK:
-          counts=newvec(int,config->ntask);
-          check(counts);
-          offsets=newvec(int,config->ntask);
-          check(offsets);
-          getcounts(counts,offsets,config->nall,1,config->ntask);
           if(isroot(*config))
             writeint_socket(config->socket,&index,1);
           mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
                            offsets,config->rank,config->comm);
-          free(counts);
-          free(offsets);
           break;
         case CDF:
           if(output->files[index].oneyear)
