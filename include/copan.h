@@ -21,8 +21,12 @@
 #define DEFAULT_COPAN_HOST "localhost" /* Default host for COPAN model */
 #define DEFAULT_COPAN_PORT 2224        /* Default port for in and outgoing connection */
 
-#define GET_DATA 0
-#define PUT_DATA 1
+/* List of tokens */
+
+#define GET_DATA 0      /* Receiving data from COPAN */
+#define PUT_DATA 1      /* Sending data to COPAN */
+#define GET_DATA_SIZE 2 /* Receiving data size from COPAN */
+
 #define TEMP_DATA 1
 #define PREC_DATA 2
 #define SWDOWN_DATA 3

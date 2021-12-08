@@ -99,7 +99,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   {
     if(isroot(*config))
     {
-     send_token_copan(GET_DATA,LANDUSE_DATA,config);
+     send_token_copan(GET_DATA_SIZE,LANDUSE_DATA,config);
      readint_socket(config->socket,&header.nbands,1);
     }
 #ifdef USE_MPI
@@ -463,7 +463,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     {
       if(isroot(*config))
       {
-        send_token_copan(GET_DATA,TILLAGE_DATA,config);
+        send_token_copan(GET_DATA_SIZE,TILLAGE_DATA,config);
         readint_socket(config->socket,&header.nbands,1);
       }
 #ifdef USE_MPI
@@ -563,7 +563,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     {
       if(isroot(*config))
       {
-        send_token_copan(GET_DATA,RESIDUE_DATA,config);
+        send_token_copan(GET_DATA_SIZE,RESIDUE_DATA,config);
         readint_socket(config->socket,&header.nbands,1);
       }
 #ifdef USE_MPI

@@ -110,9 +110,9 @@ int main(int argc,char **argv)
     landuse=newvec(float,config.nall*outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2);
     index=outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2;
     readint_socket(socket,&token,1);
-    if(token!=GET_DATA)
+    if(token!=GET_DATA_SIZE)
     {
-      fprintf(stderr,"Token for landuse data=%d is not GET_DATA.\n",token);
+      fprintf(stderr,"Token for landuse data=%d is not GET_DATA_SIZE.\n",token);
       return EXIT_FAILURE;
     }
     readint_socket(socket,&token,1);
