@@ -295,6 +295,17 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
+    if(config->prescribe_ignition)
+    {
+      if(openclimate(&climate->file_ignition,&config->ignition_filename,NULL,LPJ_SHORT,config))
+      {
+        free(climate);
+        return NULL;
+      }
+      climate->data.lightning=NULL;
+    }
+    else
+    {
     if(openclimate(&climate->file_lightning,&config->lightning_filename,"1/day/hectare",LPJ_INT,config))
     {
       if(isroot(*config))
@@ -323,6 +334,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       free(climate);
       return NULL;
     }
+      climate->data.ignition=NULL;
+    }
     if (config->prescribe_burntarea)
     {
       if(openclimate(&climate->file_burntarea,&config->burntarea_filename,(config->burntarea_filename.fmt==CDF) ?  (char *)NULL : (char *)NULL,LPJ_SHORT,config))
@@ -331,7 +344,10 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
           fprintf(stderr,"ERROR236: Cannot open burntarea data from '%s'.\n",config->burntarea_filename.name);
         if(config->fdi==WVPD_INDEX)
           closeclimatefile(&climate->file_humid,isroot(*config));
-        closeclimatefile(&climate->file_lightning,isroot(*config));
+        if(config->prescribe_ignition)
+          closeclimatefile(&climate->file_ignition,isroot(*config));
+        else
+          closeclimatefile(&climate->file_lightning,isroot(*config));
         if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
         {
           closeclimatefile(&climate->file_tmin,isroot(*config));
@@ -588,20 +604,41 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     else
       climate->data.humid=NULL;
-    if((climate->data.lightning=newvec(Real,climate->file_lightning.n))==NULL)
+    if(config->prescribe_ignition)
     {
-      printallocerr("lightning");
-      free(climate->co2.data);
-      free(climate->data.wind);
-      free(climate->data.tamp);
-      free(climate->data.prec);
-      free(climate->data.temp);
-      free(climate->data.tmax);
-      free(climate->data.tmin);
-      free(climate->data.humid);
-      free(climate);
-      return NULL;
+      climate->data.lightning=NULL;
+      if((climate->data.ignition=newvec(Real,climate->file_ignition.n))==NULL)
+      {
+        printallocerr("lightning");
+        free(climate->co2.data);
+        free(climate->data.wind);
+        free(climate->data.tamp);
+        free(climate->data.prec);
+        free(climate->data.temp);
+        free(climate->data.tmax);
+        free(climate->data.tmin);
+        free(climate->data.humid);
+        free(climate);
+        return NULL;
+      }
     }
+    else
+    {
+      climate->data.ignition=NULL;
+      if((climate->data.lightning=newvec(Real,climate->file_lightning.n))==NULL)
+      {
+        printallocerr("lightning");
+        free(climate->co2.data);
+        free(climate->data.wind);
+        free(climate->data.tamp);
+        free(climate->data.prec);
+        free(climate->data.temp);
+        free(climate->data.tmax);
+        free(climate->data.tmin);
+        free(climate->data.humid);
+        free(climate);
+        return NULL;
+      }
     if((climate->file_lightning.fmt==CLM || climate->file_lightning.fmt==RAW) && climate->file_lightning.version<=1)
       climate->file_lightning.scalar=1e-7;
     if(climate->file_lightning.fmt==CDF)
@@ -630,8 +667,9 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       closeclimatefile(&climate->file_lightning,isroot(*config));
     }
   }
+  }
   else
-    climate->data.lightning=climate->data.humid=NULL;
+    climate->data.lightning=climate->data.humid=climate->data.ignition=NULL;
   if(config->with_radiation)
   {
     if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)

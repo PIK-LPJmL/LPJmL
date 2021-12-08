@@ -71,16 +71,20 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     stand->cell->ignition.nesterov_max = stand->cell->ignition.nesterov_accum;
   }
 
-  fuelload(stand, &fuel, livefuel, stand->cell->ignition.nesterov_max);
   fire_danger_index=firedangerindex(fuel.char_moist_factor,
                                     stand->cell->ignition.nesterov_max,
                                     &stand->pftlist,climate->humid,
                                     avgprec,config->fdi,climate->temp);
-  human_ignition=humanignition(popdens,&stand->cell->ignition);
-  num_fires=wildfire_ignitions(fire_danger_index,
-                               human_ignition+climate->lightning*CG*LER,
-                               stand->cell->coord.area*stand->frac);
-  windsp_cover=windspeed_fpc(climate->windspeed  ,&stand->pftlist); 
+  if(config->prescribe_ignition)
+    num_fires=climate->ignition;
+  else
+  {
+    human_ignition=humanignition(popdens,&stand->cell->ignition);
+    num_fires=wildfire_ignitions(fire_danger_index,
+                                 human_ignition+climate->lightning*CG*LER,
+                                 stand->cell->coord.area*stand->frac);
+  }
+  windsp_cover=windspeed_fpc(climate->windspeed,&stand->pftlist);
   ros_forward=rateofspread(windsp_cover,&fuel);
 
   /* use prescribed burnt area or calculate burnt area */
@@ -98,7 +102,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   if(stand->cell->afire_frac > 1.0)
   {
     fire_frac = 1.0 - stand->cell->afire_frac + fire_frac;
-    burnt_area = stand->cell->coord.area * 1e-4 * stand->frac* fire_frac; 
+    burnt_area = stand->cell->coord.area * 1e-4 * stand->frac* fire_frac;
     stand->cell->afire_frac = 1.0;
   }
   /*fuel consumption in gBiomass/m2 for calculation of surface fire intensity*/
@@ -138,7 +142,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
       emission.voc+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.voc;
       emission.tpm+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.tpm;
       emission.nox+=c2biomass(livefuel_consump_pft.carbon)*pft->par->emissionfactor.nox;
-     
+
       livefuel_consump.carbon+=livefuel_consump_pft.carbon;
       livefuel_consump.nitrogen+=livefuel_consump_pft.nitrogen;
       if(isdead)

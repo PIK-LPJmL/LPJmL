@@ -105,8 +105,13 @@ void freeconfig(Config *config /**< LPJmL configuration */
   {
     if(config->fdi==WVPD_INDEX)
       freefilename(&config->humid_filename);
-    freefilename(&config->lightning_filename);
-    freefilename(&config->human_ignition_filename);
+    if(config->prescribe_ignition)
+      freefilename(&config->ignition_filename);
+    else
+    {
+      freefilename(&config->lightning_filename);
+      freefilename(&config->human_ignition_filename);
+    }
     if(config->prescribe_burntarea)
       freefilename(&config->burntarea_filename);
   }

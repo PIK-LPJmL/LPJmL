@@ -111,8 +111,13 @@ void fprintfiles(FILE *file,          /**< pointer to text output file */
   {
     if(config->fdi==WVPD_INDEX)
       fprintfilename(file,&config->humid_filename,TRUE);
-    fprintfilename(file,&config->lightning_filename,FALSE);
-    fprintfilename(file,&config->human_ignition_filename,FALSE);
+    if(config->prescribe_ignition)
+      fprintfilename(file,&config->ignition_filename,TRUE);
+    else
+    {
+      fprintfilename(file,&config->lightning_filename,FALSE);
+      fprintfilename(file,&config->human_ignition_filename,FALSE);
+    }
   }
   if(config->ispopulation)
     fprintfilename(file,&config->popdens_filename,TRUE);

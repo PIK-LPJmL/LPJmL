@@ -67,6 +67,7 @@
   "wateruse" : "no",
 #endif
   "prescribe_burntarea" : false,
+  "prescribe_ignition" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "sdate_fixyear" : 1970,                 /* year in which sowing dates shall be fixed */

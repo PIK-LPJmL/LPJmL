@@ -180,6 +180,20 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
       return TRUE;
     }
   }
+  if(climate->data.ignition!=NULL)
+  {
+    if(readclimate(&climate->file_ignition,climate->data.ignition,0,climate->file_ignition.scalar,grid,year,config))
+    {
+      if(isroot(*config))
+      {
+        name=getrealfilename(&config->ignition_filename);
+        fprintf(stderr,"ERROR131: Cannot read ignition of year %d from '%s'.\n",
+                year_climate,name);
+        free(name);
+      }
+      return TRUE;
+    }
+  }
   if(climate->data.wind!=NULL)
   {
     if(readclimate(&climate->file_wind,climate->data.wind,0,climate->file_wind.scalar,grid,year_climate,config))

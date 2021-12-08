@@ -189,20 +189,20 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     fscanbool2(file,&config->firewood,"firewood");
   }
+  config->prescribe_burntarea=FALSE;
+  config->prescribe_ignition=FALSE;
   if(config->fire==SPITFIRE  || config->fire==SPITFIRE_TMAX)
   {
     if(fscankeywords(file,&config->fdi,"fdi",fdi,2,FALSE,verbose))
       return TRUE;
     if(config->fdi==WVPD_INDEX && verbose)
       fputs("WARNING029: VPD index only calibrated for South America.\n",stderr);
-  }
-  fscanbool2(file,&config->ispopulation,"population");
-  config->prescribe_burntarea=FALSE;
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-  {
     if(fscanbool(file,&config->prescribe_burntarea,"prescribe_burntarea",TRUE,verbose))
       return TRUE;
+    if(fscanbool(file,&config->prescribe_ignition,"prescribe_ignition",TRUE,verbose))
+      return TRUE;
   }
+  fscanbool2(file,&config->ispopulation,"population");
   config->prescribe_landcover=NO_LANDCOVER;
   if(fscankeywords(file,&config->prescribe_landcover,"prescribe_landcover",prescribe_landcover,3,TRUE,verbose))
     return TRUE;
@@ -723,9 +723,16 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->tamp_filename.name=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    scanclimatefilename(&input,&config->lightning_filename,config->inputdir,FALSE,"lightning");
-    scanclimatefilename(&input,&config->human_ignition_filename,
-                        config->inputdir,FALSE,"human_ignition");
+    if(config->prescribe_ignition)
+    {
+      scanclimatefilename(&input,&config->ignition_filename,config->inputdir,FALSE,"ignition");
+    }
+    else
+    {
+      scanclimatefilename(&input,&config->lightning_filename,config->inputdir,FALSE,"lightning");
+      scanclimatefilename(&input,&config->human_ignition_filename,
+                          config->inputdir,FALSE,"human_ignition");
+    }
   }
   if(config->ispopulation)
   {

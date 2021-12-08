@@ -51,6 +51,7 @@ struct config
   Filename humid_filename;
   Filename tmin_filename;
   Filename lightning_filename;
+  Filename ignition_filename;
   Filename lwnet_filename;
   Filename swdown_filename;
   Filename popdens_filename;
@@ -247,7 +248,8 @@ struct config
   Bool rw_manage;           /**< rain-water management enabled: reduced soil evaporation + rain-water harvesting */
   Bool pft_output_scaled;   /**< PFT output grid scaled */
   int with_radiation;       /**< input of radiation components (CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN) */
-  Bool prescribe_burntarea;	/**< use input to prescribe burnt area to SPITFIRE? */
+  Bool prescribe_burntarea; /**< use input to prescribe burnt area to SPITFIRE? */
+  Bool prescribe_ignition;  /**< use input to prescribe ignition to SPITFIRE? */
   int prescribe_landcover; /**< use input to prescribe land cover ? */
   int* mowingdays;         /**< mowing days for grassland */
   int mowingdays_size;     /**< size of mowing days array */

@@ -33,6 +33,7 @@ typedef struct
   Real *tmax; /**< maximum temperature (deg C) */
   Real *humid; /**< specific humidity (kg/kg) */
   Real *tmin; /**< minimum temperature (deg C) */
+  Real *ignition;
   Real *lightning;
   Real *lwnet;   /**< long wave net downward flux (W m-2) */
   Real *swdown;  /**< short wave downward flux component (W m-2) */
@@ -51,6 +52,7 @@ typedef struct Dailyclimate
   Real tmax;       /**< maximum temperature (deg C) */
   Real humid;      /**< specific humidity (kg/kg) */
   Real lightning;  /**< daily lightning ignition  */
+  Real ignition;
   Real lwnet;      /**< long wave net downward flux (W/m2) */
   Real swdown;     /**< short wave downward flux component (W/m2) */
   Real burntarea;  /**< burnt area (ha) */
@@ -75,6 +77,7 @@ typedef struct
   Climatefile file_wind,file_tamp,file_tmax,file_tmin,file_lightning;
   Climatefile file_no3deposition,file_nh4deposition;
   Climatefile file_humid;
+  Climatefile file_ignition;
 #if defined IMAGE && defined COUPLED
   Climatefile file_temp_var,file_prec_var;
 #endif
@@ -94,6 +97,7 @@ typedef struct
 #define getcelltamp(climate,cell) climate->data.tamp+(cell)*NMONTH
 #define getcelltmax(climate,cell) climate->data.tmax+(cell)*NMONTH
 #define getcellhumid(climate,cell) climate->data.humid+(cell)*NMONTH
+#define getcellignition(climate,cell) climate->data.ignition+(cell)*NMONTH
 #define getcelltmin(climate,cell) climate->data.tmin+(cell)*NMONTH
 #define getcelllightning(climate,cell) climate->data.lightning+(cell)*NMONTH
 #define getcellburntarea(climate,cell) climate->data.burntarea+(cell)*NMONTH

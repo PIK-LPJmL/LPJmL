@@ -96,10 +96,18 @@ static size_t isnetcdfinput(const Config *config)
   {
     if(config->fdi==WVPD_INDEX && config->humid_filename.fmt==CDF)
       width=max(width,strlen(config->humid_filename.var));
-    if(config->lightning_filename.fmt==CDF)
-      width=max(width,strlen(config->lightning_filename.var));
-    if(config->human_ignition_filename.fmt==CDF)
-      width=max(width,strlen(config->human_ignition_filename.var));
+    if(config->prescribe_ignition)
+    {
+      if(config->ignition_filename.fmt==CDF)
+        width=max(width,strlen(config->ignition_filename.var));
+    }
+    else
+    {
+      if(config->lightning_filename.fmt==CDF)
+        width=max(width,strlen(config->lightning_filename.var));
+      if(config->human_ignition_filename.fmt==CDF)
+        width=max(width,strlen(config->human_ignition_filename.var));
+    }
   }
   if(config->ispopulation && config->popdens_filename.fmt==CDF)
     width=max(width,strlen(config->popdens_filename.var));
@@ -237,7 +245,9 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->ispopulation)
       len=printsim(file,len,&count,"and population");
     if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->prescribe_burntarea)
-      len=printsim(file,len,&count,"prescribe burntarea");
+      len=printsim(file,len,&count,"prescribed burntarea");
+    if(config->prescribe_ignition)
+      len=printsim(file,len,&count,"prescribed ignitions");
     if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
       len=printsim(file,len,&count,fdi[config->fdi]);
     if(config->fire_on_grassland)
@@ -500,8 +510,13 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   {
     if(config->fdi==WVPD_INDEX)
       printinputfile(file,"humid",&config->humid_filename,width);
-    printinputfile(file,"lightning",&config->lightning_filename,width);
-    printinputfile(file,"human ign",&config->human_ignition_filename,width);
+    if(config->prescribe_ignition)
+      printinputfile(file,"ignition",&config->ignition_filename,width);
+    else
+    {
+      printinputfile(file,"lightning",&config->lightning_filename,width);
+      printinputfile(file,"human ign",&config->human_ignition_filename,width);
+    }
   }
   if(config->ispopulation)
     printinputfile(file,"pop. dens",&config->popdens_filename,width);

@@ -31,6 +31,7 @@ void freeclimatedata(Climatedata *data /**< pointer to climate data */
   free(data->wind);
   free(data->tamp);
   free(data->burntarea);
+  free(data->ignition);
   free(data->lightning);
   free(data->no3deposition);
   free(data->nh4deposition);

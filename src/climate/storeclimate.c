@@ -103,6 +103,13 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
   }
   else
     store->burntarea=NULL;
+  if(climate->data.ignition!=NULL)
+  {
+    store->ignition=newvec(Real,climate->file_ignition.n*nyear);
+    checkptr(store->ignition);
+  }
+  else
+    store->ignition=NULL;
   if(climate->data.no3deposition!=NULL)
   {
     store->no3deposition=newvec(Real,climate->file_no3deposition.n*nyear);
@@ -196,6 +203,12 @@ Bool storeclimate(Climatedata *store,  /**< pointer to climate data to be stored
       for(j=0;j<climate->file_burntarea.n;j++)
         store->burntarea[count++]=climate->data.burntarea[j];
     }
+    if(store->ignition!=NULL)
+    {
+      count=climate->file_ignition.n*(year-firstyear);
+      for(j=0;j<climate->file_ignition.n;j++)
+        store->ignition[count++]=climate->data.ignition[j];
+    }
     if(store->no3deposition!=NULL)
     {
       count=climate->file_no3deposition.n*(year-firstyear);
@@ -285,6 +298,12 @@ void restoreclimate(Climate *climate,         /**< pointer to climate data */
     for(i=0;i<climate->file_burntarea.n;i++)
       climate->data.burntarea[i]=store->burntarea[index++];
   }
+  if(store->ignition!=NULL)
+  {
+    index=year*climate->file_ignition.n;
+    for(i=0;i<climate->file_ignition.n;i++)
+      climate->data.ignition[i]=store->ignition[index++];
+  }
   if(store->no3deposition!=NULL)
   {
     index=year*climate->file_no3deposition.n;
@@ -326,6 +345,8 @@ void moveclimate(Climate *climate,  /**< Pointer to climate data */
     climate->data.tamp=store->tamp+climate->file_tamp.n*year;
   if(climate->data.burntarea!=NULL)
     climate->data.burntarea=store->burntarea+climate->file_burntarea.n*year;
+  if(climate->data.ignition!=NULL)
+    climate->data.ignition=store->ignition+climate->file_ignition.n*year;
   if(climate->data.no3deposition!=NULL)
     climate->data.no3deposition=store->no3deposition+climate->file_no3deposition.n*year;
   if(climate->data.nh4deposition!=NULL)
