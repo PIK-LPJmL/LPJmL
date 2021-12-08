@@ -22,11 +22,9 @@ void send_flux_copan(const Flux *flux,    /**< Carbon and water fluxes */
                      const Config *config /**< LPJ configuration */
                     )
 {
-  int index;
   float *vec;
   size_t i;
-  index=GLOBALFLUX;
-  writeint_socket(config->socket,&index,1);
+  send_token_copan(PUT_DATA,GLOBALFLUX,config);
   writeint_socket(config->socket,&year,1);
   vec=newvec(float,sizeof(Flux)/sizeof(Real));
   check(vec);

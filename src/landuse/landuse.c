@@ -99,6 +99,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   {
     if(isroot(*config))
     {
+     send_token_copan(GET_DATA,LANDUSE_DATA,config);
      readint_socket(config->socket,&header.nbands,1);
     }
 #ifdef USE_MPI
@@ -461,7 +462,10 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     else if(config->with_tillage_filename.fmt==SOCK)
     {
       if(isroot(*config))
+      {
+        send_token_copan(GET_DATA,TILLAGE_DATA,config);
         readint_socket(config->socket,&header.nbands,1);
+      }
 #ifdef USE_MPI
       MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
 #endif
@@ -558,7 +562,10 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     else if(config->residue_data_filename.fmt==SOCK)
     {
       if(isroot(*config))
+      {
+        send_token_copan(GET_DATA,RESIDUE_DATA,config);
         readint_socket(config->socket,&header.nbands,1);
+      }
 #ifdef USE_MPI
       MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
 #endif
@@ -900,7 +907,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   }
   else if(landuse->landuse.fmt==SOCK)
   {
-    if(receive_real_copan(data,landuse->landuse.var_len,config))
+    if(receive_real_copan(LANDUSE_DATA,data,landuse->landuse.var_len,year,config))
     {
       fprintf(stderr,"ERROR149: Cannot receive landuse of year %d in getlanduse().\n",year);
       fflush(stderr);
@@ -1495,7 +1502,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
     else if(landuse->landuse.fmt==SOCK)
     {
-      if(receive_int_copan(dates,1,config))
+      if(receive_int_copan(TILLAGE_DATA,dates,1,year,config))
       {
         fprintf(stderr,"ERROR149: Cannot receive tillage types  of year %d in getlanduse().\n",year);
         fflush(stderr);
@@ -1564,7 +1571,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
     else if(landuse->residue_on_field.fmt==SOCK)
     {
-      if(receive_real_copan(data,landuse->residue_on_field.var_len,config))
+      if(receive_real_copan(RESIDUE_DATA,data,landuse->residue_on_field.var_len,year,config))
       {
         fprintf(stderr,"ERROR149: Cannot receive residue extraction data  of year %d in getlanduse().\n",year);
         fflush(stderr);

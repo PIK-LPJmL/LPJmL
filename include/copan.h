@@ -21,11 +21,33 @@
 #define DEFAULT_COPAN_HOST "localhost" /* Default host for COPAN model */
 #define DEFAULT_COPAN_PORT 2224        /* Default port for in and outgoing connection */
 
+#define GET_DATA 0
+#define PUT_DATA 1
+#define TEMP_DATA 1
+#define PREC_DATA 2
+#define SWDOWN_DATA 3
+#define LWNET_DATA 4
+#define CO2_DATA 5
+#define LANDUSE_DATA 6
+#define TILLAGE_DATA 7
+#define RESIDUE_DATA 8
+#define TMIN_DATA 9
+#define TMAX_DATA 10
+#define TAMP_DATA 11
+#define WET_DATA 12
+#define BURNTAREA_DATA 13
+#define HUMID_DATA 14
+#define WIND_DATA 15
+#define NH4_DATA 16
+#define NO3_DATA 17
+#define CLOUD_DATA 18
+
 extern Bool open_copan(Config *);
 extern void close_copan(const Config *);
-extern Bool receive_real_copan(Real *,int,const Config *);
+extern Bool receive_real_copan(int,Real *,int,int,const Config *);
 extern Bool receive_real_scalar_copan(Real *,int,const Config *);
-extern Bool receive_int_copan(int *,int,const Config *);
+extern Bool receive_int_copan(int,int *,int,int,const Config *);
 extern void send_flux_copan(const Flux *,Real,int,const Config *);
+extern void send_token_copan(int,int,const Config *);
 
 #endif /* COPAN_H */

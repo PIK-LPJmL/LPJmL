@@ -60,7 +60,7 @@ int writeregioncode(Outputfile *output, /**< output file array */
           break;
         case SOCK:
           if(isroot(*config))
-            writeint_socket(config->socket,&index,1);
+            send_token_copan(PUT_DATA,index,config);
           mpi_write_socket(config->socket,vec,MPI_SHORT,config->total,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -86,7 +86,7 @@ int writeregioncode(Outputfile *output, /**< output file array */
         fprintf(output->files[index].fp.file,"%d\n",vec[count-1]);
         break;
       case SOCK:
-        writeint_socket(config->socket,&index,1);
+        send_token_copan(PUT_DATA,index,config);
         writeshort_socket(config->socket,vec,count);
         break;
       case CDF:

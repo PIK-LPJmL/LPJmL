@@ -193,7 +193,7 @@ int writecoords(Outputfile *output,  /**< output struct */
                   fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
                 break;
               case SOCK:
-                writeint_socket(config->socket,&index,1);
+                send_token_copan(PUT_DATA,index,config);
                 writefloat_socket(config->socket,fdst,config->total*2);
                 break;
               case TXT:
@@ -241,7 +241,7 @@ int writecoords(Outputfile *output,  /**< output struct */
                   fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
                 break;
               case SOCK:
-                writeint_socket(config->socket,&index,1);
+                send_token_copan(PUT_DATA,index,config);
                 writeshort_socket(config->socket,dst,config->total*2);
                 break;
               case TXT:
@@ -279,7 +279,7 @@ int writecoords(Outputfile *output,  /**< output struct */
           free(fvec);
           break;
         case SOCK:
-          writeint_socket(config->socket,&index,1);
+          send_token_copan(PUT_DATA,index,config);
           writefloat_socket(output->socket,fvec,count*2);
           break;
         case CDF:
@@ -304,7 +304,7 @@ int writecoords(Outputfile *output,  /**< output struct */
           free(vec);
           break;
         case SOCK:
-          writeint_socket(config->socket,&index,1);
+          send_token_copan(PUT_DATA,index,config);
           writeshort_socket(output->socket,vec,count*2);
           break;
         case CDF:

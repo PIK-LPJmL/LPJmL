@@ -70,7 +70,7 @@ static Bool iswrite2(int index,int timestep,int year,const Config *config)
 static void outindex(Outputfile *output,int index,const Config *config)
 {
   if(output->files[index].fmt==SOCK && isroot(*config))
-    writeint_socket(config->socket,&index,1);
+    send_token_copan(PUT_DATA,index,config);
 } /* of 'outindex' */
 
 static Real getscale(int date,int ndata,int timestep,Time time)
@@ -148,7 +148,7 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
           break;
         case SOCK:
           if(isroot(*config))
-            writeint_socket(config->socket,&index,1);
+            send_token_copan(PUT_DATA,index,config);
           mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -182,7 +182,7 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
       fprintf(output->files[index].fp.file,"%g\n",data[config->count-1]);
       break;
     case SOCK:
-      writeint_socket(config->socket,&index,1);
+      send_token_copan(PUT_DATA,index,config);
       writefloat_socket(config->socket,data,config->count);
       break;
     case CDF:
@@ -229,7 +229,7 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
           break;
         case SOCK:
           if(isroot(*config))
-            writeint_socket(config->socket,&index,1);
+            send_token_copan(PUT_DATA,index,config);
           mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -263,7 +263,7 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
       fprintf(output->files[index].fp.file,"%d\n",data[config->count-1]);
       break;
     case SOCK:
-      writeint_socket(config->socket,&index,1);
+      send_token_copan(PUT_DATA,index,config);
       writeshort_socket(config->socket,data,config->count);
       break;
     case CDF:
@@ -322,7 +322,7 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
           break;
         case SOCK:
           if(isroot(*config))
-            writeint_socket(config->socket,&index,1);
+            send_token_copan(PUT_DATA,index,config);
           mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
                            offsets,config->rank,config->comm);
           break;
@@ -357,7 +357,7 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
       fprintf(output->files[index].fp.file,"%g\n",data[config->ngridcell-1]);
       break;
     case SOCK:
-      writeint_socket(config->socket,&index,1);
+      send_token_copan(PUT_DATA,index,config);
       writefloat_socket(config->socket,data,config->ngridcell);
       break;
     case CDF:

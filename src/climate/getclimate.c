@@ -19,7 +19,8 @@
 
 #include "lpj.h"
 
-Bool readclimate(Climatefile *file,   /**< climate data file */
+Bool readclimate(int what,            /**< which output data */
+                 Climatefile *file,   /**< climate data file */
                  Real data[],         /**< climate data read */
                  Real intercept,      /**< offset for data */
                  Real slope,          /**< scale factor for data*/
@@ -34,12 +35,13 @@ Bool readclimate(Climatefile *file,   /**< climate data file */
     return FALSE;
   if(file->fmt==SOCK)
   {
-    if(receive_real_copan(data,(file->time_step==DAY) ? NDAYYEAR : NMONTH,config))
+    if(receive_real_copan(what,data,(file->time_step==DAY) ? NDAYYEAR : NMONTH,year,config))
     {
       if(isroot(*config))
+      {
         fprintf(stderr,"ERROR149: Cannot receive climate of year %d in readclimate().\n",year);
-      fflush(stderr);
-      free(data);
+        fflush(stderr);
+      }
       return TRUE;
     }
     return FALSE;
@@ -83,7 +85,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
     year_depos=climate->firstyear+(year-config->firstyear) % 30;
   else
     year_depos=year;
-  if(readclimate(&climate->file_temp,climate->data.temp,0,climate->file_temp.scalar,grid,year_climate,config))
+  if(readclimate(TEMP_DATA,&climate->file_temp,climate->data.temp,0,climate->file_temp.scalar,grid,year_climate,config))
   {
     if(isroot(*config))
     {
@@ -94,7 +96,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
     }
     return TRUE;
   }
-  if(readclimate(&climate->file_prec,climate->data.prec,0,climate->file_prec.scalar,grid,year_climate,config))
+  if(readclimate(PREC_DATA,&climate->file_prec,climate->data.prec,0,climate->file_prec.scalar,grid,year_climate,config))
   {
     if(isroot(*config))
     {
@@ -107,7 +109,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.tmax!=NULL)
   {
-    if(readclimate(&climate->file_tmax,climate->data.tmax,0,climate->file_tmax.scalar,grid,year_climate,config))
+    if(readclimate(TMAX_DATA,&climate->file_tmax,climate->data.tmax,0,climate->file_tmax.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
       {
@@ -121,7 +123,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.tmin!=NULL)
   {
-    if(readclimate(&climate->file_tmin,climate->data.tmin,0,climate->file_tmin.scalar,grid,year_climate,config))
+    if(readclimate(TMIN_DATA,&climate->file_tmin,climate->data.tmin,0,climate->file_tmin.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
       {
@@ -135,7 +137,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.sun!=NULL)
   {
-    if(readclimate(&climate->file_cloud,climate->data.sun,100,-climate->file_cloud.scalar,grid,year_climate,config))
+    if(readclimate(CLOUD_DATA,&climate->file_cloud,climate->data.sun,100,-climate->file_cloud.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
       {
@@ -152,7 +154,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.lwnet!=NULL)
   {
-    if(readclimate(&climate->file_lwnet,climate->data.lwnet,0,climate->file_lwnet.scalar,grid,year_climate,config))
+    if(readclimate(LWNET_DATA,&climate->file_lwnet,climate->data.lwnet,0,climate->file_lwnet.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
       {
@@ -166,7 +168,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.swdown!=NULL)
   {
-    if(readclimate(&climate->file_swdown,climate->data.swdown,0,climate->file_swdown.scalar,grid,year_climate,config))
+    if(readclimate(SWDOWN_DATA,&climate->file_swdown,climate->data.swdown,0,climate->file_swdown.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
       {
@@ -180,7 +182,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.humid!=NULL)
   {
-    if(readclimate(&climate->file_humid,climate->data.humid,0,climate->file_humid.scalar,grid,year,config))
+    if(readclimate(HUMID_DATA,&climate->file_humid,climate->data.humid,0,climate->file_humid.scalar,grid,year,config))
     {
       if(isroot(*config))
       {
@@ -194,7 +196,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.wind!=NULL)
   {
-    if(readclimate(&climate->file_wind,climate->data.wind,0,climate->file_wind.scalar,grid,year_climate,config))
+    if(readclimate(WIND_DATA,&climate->file_wind,climate->data.wind,0,climate->file_wind.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
       {
@@ -208,7 +210,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.tamp!=NULL)
   {
-    if(readclimate(&climate->file_tamp,climate->data.tamp,0,climate->file_tamp.scalar,grid,year_climate,config))
+    if(readclimate(TAMP_DATA,&climate->file_tamp,climate->data.tamp,0,climate->file_tamp.scalar,grid,year_climate,config))
     {
       if(isroot(*config))
       {
@@ -222,7 +224,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.burntarea!=NULL)
   {
-    if(readclimate(&climate->file_burntarea,climate->data.burntarea,0,climate->file_burntarea.scalar,grid,year,config))
+    if(readclimate(BURNTAREA_DATA,&climate->file_burntarea,climate->data.burntarea,0,climate->file_burntarea.scalar,grid,year,config))
     {
       if(isroot(*config))
       {
@@ -236,7 +238,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.no3deposition!=NULL)
   {
-    if(readclimate(&climate->file_no3deposition,climate->data.no3deposition,0,climate->file_no3deposition.scalar,grid,year_depos,config))
+    if(readclimate(NO3_DATA,&climate->file_no3deposition,climate->data.no3deposition,0,climate->file_no3deposition.scalar,grid,year_depos,config))
     {
       if(isroot(*config))
       {
@@ -250,7 +252,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
   }
   if(climate->data.nh4deposition!=NULL)
   {
-    if(readclimate(&climate->file_nh4deposition,climate->data.nh4deposition,0,climate->file_nh4deposition.scalar,grid,year_depos,config))
+    if(readclimate(NH4_DATA,&climate->file_nh4deposition,climate->data.nh4deposition,0,climate->file_nh4deposition.scalar,grid,year_depos,config))
     {
       if(isroot(*config))
       {
@@ -274,7 +276,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
     }
     if(index<climate->file_wet.nyear)
     {
-      if(readclimate(&climate->file_wet,climate->data.wet,0,climate->file_wet.scalar,grid,year_climate,config))
+      if(readclimate(WET_DATA,&climate->file_wet,climate->data.wet,0,climate->file_wet.scalar,grid,year_climate,config))
       {
         if(isroot(*config))
         {
@@ -307,7 +309,7 @@ Bool getclimate(Climate *climate,    /**< pointer to climate data */
       **/
       for(index=1960;index<1990;index++)
       {
-        if(readclimate(&climate->file_wet,wet,0,climate->file_wet.scalar,grid,index,config))
+        if(readclimate(WET_DATA,&climate->file_wet,wet,0,climate->file_wet.scalar,grid,index,config))
         {
           if(isroot(*config))
           {

@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                      g  e  t  c  o  2  .  c                                    \n**/
+/**                s  e  n  d  _  t  o  k  e  n  _  c  o  p  a  n  .  c             \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function get atmospheric CO2 concentration for specified year.             \n**/
+/**     Function writes token into socket                                         \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,30 +16,11 @@
 
 #include "lpj.h"
 
-Bool getco2(const Climate *climate, /**< Pointer to climate data */
-            Real *pco2,             /** atmospheric CO2 (ppm) */
-            int year,               /**< year (AD) */
-            const Config *config    /**< LPJmL configuration */
-           )                        /** \return TRUE on error */
+void send_token_copan(int token,           /**< Token (GET_DATA,PUT_DATA) */
+                      int index,           /**< index for in- or output */
+                      const Config *config /**< LPJ configuration */
+                     )
 {
-  if(config->co2_filename.fmt==SOCK)
-  {
-    if(isroot(*config))
-    {
-      send_token_copan(GET_DATA,CO2_DATA,config);
-      writeint_socket(config->socket,&year,1);
-      receive_real_scalar_copan(pco2,1,config);
-    }
-#ifdef USE_MPI
-    MPI_Bcast(&pco2,1,(sizeof(Real)==sizeof(double)) ? MPI_DOUBLE : MPI_FLOAT,0,config->comm);
-#endif
-  }
-  else
-  {
-    year-=climate->co2.firstyear;
-    if(year>=climate->co2.nyear)
-      return TRUE;
-    *pco2=(year<0) ? param.co2_p : climate->co2.data[year];
-  }
-  return FALSE;
-} /* of 'getco2' */
+  writeint_socket(config->socket,&token,1);
+  writeint_socket(config->socket,&index,1);
+} /* of 'send_token_copan' */

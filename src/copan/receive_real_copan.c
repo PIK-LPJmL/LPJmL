@@ -14,15 +14,22 @@
 
 #include "lpj.h"
 
-Bool receive_real_copan(Real *data,int size,const Config *config)
+Bool receive_real_copan(int index,Real *data,int size,int year,const Config *config)
 {
+#ifdef USE_MPI
+  int *counts;
+  int *offsets;
+#endif
   float *f;
   int i;
   f=newvec(float,config->nall*size);
   check(f);
+  if(isroot(*config))
+  {
+    send_token_copan(GET_DATA,index,config);
+    writeint_socket(config->socket,&year,1);
+  }
 #ifdef USE_MPI
-  int *counts;
-  int *offsets;
   counts=newvec(int,config->ntask);
   check(counts);
   offsets=newvec(int,config->ntask);

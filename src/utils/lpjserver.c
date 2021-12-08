@@ -36,6 +36,7 @@ int main(int argc,char **argv)
   String line;
   const char *progname;
   const char *title[3];
+  int token;
   Pfttype scanfcn[NTYPES]=
   {
     {name_grass,fscanpft_grass},
@@ -108,6 +109,18 @@ int main(int argc,char **argv)
   {
     landuse=newvec(float,config.nall*outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2);
     index=outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2;
+    readint_socket(socket,&token,1);
+    if(token!=GET_DATA)
+    {
+      fprintf(stderr,"Token for landuse data=%d is not GET_DATA.\n",token);
+      return EXIT_FAILURE;
+    }
+    readint_socket(socket,&token,1);
+    if(token!=LANDUSE_DATA)
+    {
+      fprintf(stderr,"Token for landuse data=%d is not LANDUSE_DATA.\n",token);
+      return EXIT_FAILURE;
+    }
     if(writeint_socket(socket,&index,1))
     {
       fprintf(stderr,"Error writing size of landuse data of output\n");
@@ -118,6 +131,20 @@ int main(int argc,char **argv)
   {
     if(config.landuse_filename.fmt==SOCK)
     { 
+      readint_socket(socket,&token,1);
+      if(token!=GET_DATA)
+      {
+        fprintf(stderr,"Token for landuse data=%d is not GET_DATA.\n",token);
+        return EXIT_FAILURE;
+      }
+      readint_socket(socket,&token,1);
+      if(token!=LANDUSE_DATA)
+      {
+        fprintf(stderr,"Token for landuse data=%d is not LANDUSE_DATA.\n",token);
+        return EXIT_FAILURE;
+      }
+      readint_socket(socket,&year_flux,1);
+      printf("Landuse year: %d\n",year_flux);
       for(k=0;k<config.nall*outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2;k++)
         landuse[k]=.0001;
         writefloat_socket(socket,landuse,config.nall*outputsize(PFT_HARVESTC,config.npft[TREE]+config.npft[GRASS],config.npft[CROP],&config)*2);
@@ -128,6 +155,12 @@ int main(int argc,char **argv)
     {
       for(month=0;month<11;month++)
       {
+        readint_socket(socket,&token,1);
+        if(token!=PUT_DATA)
+        {
+          fprintf(stderr,"Token for output data=%d is not PUT_DATA.\n",token);
+          return EXIT_FAILURE;
+        }
         if(readint_socket(socket,&index,1))
         {
           fprintf(stderr,"Error reading index of output\n");
@@ -148,6 +181,12 @@ int main(int argc,char **argv)
 
     for(i=0;i<n_out;i++)
     {
+      readint_socket(socket,&token,1);
+      if(token!=PUT_DATA)
+      {
+        fprintf(stderr,"Token for output data=%d is not PUT_DATA.\n",token);
+        return EXIT_FAILURE;
+      }
       if(readint_socket(socket,&index,1))
       {
         fprintf(stderr,"Error reading index of output 0\n");

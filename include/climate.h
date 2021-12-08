@@ -124,7 +124,7 @@ extern Bool openclimate(Climatefile *,const Filename *,const char *,Type,
 extern Real avgtemp(const Climate *,int cell);
 extern Real avgprec(const Climate *,int cell);
 extern void closeclimatefile(Climatefile *,Bool);
-extern Bool readclimate(Climatefile *,Real *,Real,Real,const Cell *,int,
+extern Bool readclimate(int,Climatefile *,Real *,Real,Real,const Cell *,int,
                         const Config *);
 extern Bool checkvalidclimate(Climate *,Cell *,Config *);
 extern Bool readco2(Co2data *,const Filename *,Bool);
