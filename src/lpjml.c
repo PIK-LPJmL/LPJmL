@@ -256,10 +256,8 @@ int main(int argc,char **argv)
   if(config.sim_id==LPJML_IMAGE)
     close_image(&config);
 #endif
-#ifdef COPAN
   if(config.sim_id==LPJML_COPAN)
     close_copan(&config);
-#endif
   freeconfig(&config);
 #ifdef USE_MPI
   /* Wait until all tasks have finished to measure total wall clock time */

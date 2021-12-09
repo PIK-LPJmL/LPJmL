@@ -16,7 +16,8 @@
 
 #include "lpj.h"
 
-Bool openclimate(Climatefile *file,        /**< pointer to climate file */
+Bool openclimate(int index,
+                 Climatefile *file,        /**< pointer to climate file */
                  const Filename *filename, /**< file name and format */
                  const char *units,        /**< units in NetCDF file or NULL */
                  Type datatype,            /**< data type in binary file */
@@ -25,7 +26,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
 {
   Header header;
   String headername;
-  int last,version;
+  int last,version,nbands;
   char *s;
   size_t offset,filesize;
   file->fmt=filename->fmt;
@@ -37,15 +38,30 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   }
   if(filename->fmt==SOCK)
   {
-    if(filename->timestep==DAILY)
+    if(isroot(*config))
+    {
+      send_token_copan(GET_DATA_SIZE,index,config);
+      readint_socket(config->socket,&nbands,1);
+    }
+#ifdef USE_MPI
+    MPI_Bcast(&nbands,1,MPI_INT,0,config->comm);
+#endif
+    if(nbands==NDAYYEAR)
     {
       file->time_step=DAY;
       file->n=NDAYYEAR*config->ngridcell;
     }
-    else
+    else if(nbands==NMONTH)
     {
       file->time_step=MONTH;
       file->n=NMONTH*config->ngridcell;
+    }
+    else
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR127: Invalid number of bands %d received from socket, must be 12 or 365.\n",
+                nbands);
+      return TRUE;
     }
     file->firstyear=config->firstyear;
     return FALSE;

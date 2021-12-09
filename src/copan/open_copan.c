@@ -33,11 +33,7 @@ Bool open_copan(Config *config /**< LPJmL configuration */
     fflush(stdout);
     config->socket=connecttdt_socket(config->copan_host,config->copan_port);
     if(config->socket==NULL)
-    {
-      close_socket(config->socket);
-      config->socket=NULL;
       return TRUE;
-    }
 #ifndef _WIN32
     signal(SIGPIPE,handler);
 #endif
@@ -45,6 +41,8 @@ Bool open_copan(Config *config /**< LPJmL configuration */
     writeint_socket(config->socket,&version,1);
     /* send total number of cells */
     writeint_socket(config->socket,&config->total,1);
+    writeint_socket(config->socket,&config->copan_in,1);
+    writeint_socket(config->socket,&config->copan_out,1);
   }
   return FALSE;
 } /* of 'open_copan' */

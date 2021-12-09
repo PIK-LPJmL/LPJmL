@@ -16,7 +16,9 @@
 #ifndef COPAN_H /* already included? */
 #define COPAN_H
 
-#define COPAN_COUPLER_VERSION 1
+/* Definition of constants */
+
+#define COPAN_COUPLER_VERSION 1        /* Protocol version */
 #define LPJCOPAN "LPJCOPAN"            /* Environment variable for COPAN coupler */
 #define DEFAULT_COPAN_HOST "localhost" /* Default host for COPAN model */
 #define DEFAULT_COPAN_PORT 2224        /* Default port for in and outgoing connection */
@@ -26,7 +28,11 @@
 #define GET_DATA 0      /* Receiving data from COPAN */
 #define PUT_DATA 1      /* Sending data to COPAN */
 #define GET_DATA_SIZE 2 /* Receiving data size from COPAN */
+#define PUT_DATA_SIZE 3 /* Sending data size to COPAN */
+#define END_DATA 4      /* Ending communication */
 
+#define N_IN 18         /* Number of available input data streams */
+#define CLOUD_DATA 0
 #define TEMP_DATA 1
 #define PREC_DATA 2
 #define SWDOWN_DATA 3
@@ -44,7 +50,8 @@
 #define WIND_DATA 15
 #define NH4_DATA 16
 #define NO3_DATA 17
-#define CLOUD_DATA 18
+
+/* Declaration of functions */
 
 extern Bool open_copan(Config *);
 extern void close_copan(const Config *);

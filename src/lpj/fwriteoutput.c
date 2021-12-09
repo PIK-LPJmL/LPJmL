@@ -32,7 +32,7 @@
 
 #define writeoutputarray(index,scale) if(iswrite(output,index))\
   {\
-    outindex(output,index,config);\
+    outindex(output,index,year,config);\
     for(i=0;i<config->outputsize[index];i++)\
     {\
       count=0;\
@@ -45,7 +45,7 @@
 
 #define writeoutputshortvar(index) if(iswrite(output,index))\
   {\
-    outindex(output,index,config);\
+    outindex(output,index,year,config);\
     svec=newvec(short,config->count);\
     check(svec);\
     for(i=0;i<config->outputsize[index];i++)\
@@ -67,10 +67,13 @@ static Bool iswrite2(int index,int timestep,int year,const Config *config)
     return config->outnames[index].timestep==timestep;
 } /* of 'iswrite2' */
 
-static void outindex(Outputfile *output,int index,const Config *config)
+static void outindex(Outputfile *output,int index,int year,const Config *config)
 {
   if(output->files[index].fmt==SOCK && isroot(*config))
+  {
     send_token_copan(PUT_DATA,index,config);
+    writeint_socket(config->socket,&year,1);
+  }
 } /* of 'outindex' */
 
 static Real getscale(int date,int ndata,int timestep,Time time)
@@ -148,7 +151,10 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
           break;
         case SOCK:
           if(isroot(*config))
+          {
             send_token_copan(PUT_DATA,index,config);
+            writeint_socket(config->socket,&year,1);
+          }
           mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -183,6 +189,7 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
       break;
     case SOCK:
       send_token_copan(PUT_DATA,index,config);
+      writeint_socket(config->socket,&year,1);
       writefloat_socket(config->socket,data,config->count);
       break;
     case CDF:
@@ -229,7 +236,10 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
           break;
         case SOCK:
           if(isroot(*config))
+          {
             send_token_copan(PUT_DATA,index,config);
+            writeint_socket(config->socket,&year,1);
+          }
           mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
                            output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -264,6 +274,7 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
       break;
     case SOCK:
       send_token_copan(PUT_DATA,index,config);
+      writeint_socket(config->socket,&year,1);
       writeshort_socket(config->socket,data,config->count);
       break;
     case CDF:
@@ -322,7 +333,10 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
           break;
         case SOCK:
           if(isroot(*config))
+          {
             send_token_copan(PUT_DATA,index,config);
+            writeint_socket(config->socket,&year,1);
+          }
           mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
                            offsets,config->rank,config->comm);
           break;
@@ -358,6 +372,7 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
       break;
     case SOCK:
       send_token_copan(PUT_DATA,index,config);
+      writeint_socket(config->socket,&year,1);
       writefloat_socket(config->socket,data,config->ngridcell);
       break;
     case CDF:
@@ -582,7 +597,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   if(iswrite(output,SEASONALITY))
   {
-    outindex(output,SEASONALITY,config);
+    outindex(output,SEASONALITY,year,config);
     count=0;
     svec=newvec(short,config->ngridcell);
     check(svec);
@@ -1144,7 +1159,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   }
   if(iswrite(output,PFT_GCGP))
   {
-    outindex(output,PFT_GCGP,config);
+    outindex(output,PFT_GCGP,year,config);
     for(i=0;i<nnat+nirrig;i++)
     {
       count=0;

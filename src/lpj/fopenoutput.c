@@ -194,7 +194,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
                         const Config *config /**< LPJmL configuration */
                        )                     /** \return output file data or NULL */
 {
-  int i;
+  int i,size;
 #ifdef USE_MPI
   int count;
 #endif
@@ -275,6 +275,14 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
         {
           output->files[config->outputvars[i].id].isopen=TRUE;
           output->files[config->outputvars[i].id].fmt=SOCK;
+          if(isroot(*config))
+          {
+            send_token_copan(PUT_DATA_SIZE,config->outputvars[i].id,config);
+            size=outputsize(config->outputvars[i].id,
+                            config->npft[GRASS]+config->npft[TREE],
+                            config->npft[CROP],config);
+            writeint_socket(config->socket,&size,1);
+          }
         }
         else
         {
@@ -292,6 +300,11 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
         {
           output->files[config->outputvars[i].id].isopen=TRUE;
           output->files[config->outputvars[i].id].fmt=SOCK;
+          send_token_copan(PUT_DATA_SIZE,config->outputvars[i].id,config);
+          size=outputsize(config->outputvars[i].id,
+                          config->npft[GRASS]+config->npft[TREE],
+                          config->npft[CROP],config);
+          writeint_socket(config->socket,&size,1);
         }
         else
           openfile(output,grid,filename,i,config);

@@ -18,8 +18,10 @@
 void close_copan(const Config *config /**< LPJmL configuration */
                 )
 {
+  int token=END_DATA;
   if(isroot(*config))
   {
+    writeint_socket(config->socket,&token,1);
     if(config->socket!=NULL)
       close_socket(config->socket);
   }
