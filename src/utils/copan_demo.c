@@ -29,16 +29,18 @@ int main(int argc,char **argv)
   int port;
   String line;
   const char *progname;
-  const char *title[3];
-  int i,j,k,token,n_out,n_in,total,index,year,version,n_out_1;
+  const char *title[4];
+  int i,j,k,token,n_out,n_in,ncell,index,year,version,n_out_1;
   progname=strippath(argv[0]);
-  snprintf(line,STRING_LEN,                                               
+  snprintf(line,STRING_LEN,
            "%s C Version %s (" __DATE__ ")",progname,COPANDEMO_VERSION);
   title[0]=line;
   title[1]="COPAN demo for LPJmL";
-  title[2]="(c)2008-2015 PIK Potsdam";
-  banner(title,3,78);
+  title[2]="(c) Potsdam Institute for Climate Impact Research (PIK),";
+  title[3]="see COPYRIGHT file";
+  banner(title,4,78);
   port=DEFAULT_COPAN_PORT;
+  printf("Waiting for LPJmL model...\n");
   /* Establish the connection */
   socket=opentdt_socket(port,0);
   if(socket==NULL)
@@ -54,9 +56,8 @@ int main(int argc,char **argv)
     fprintf(stderr,"Unsupported coupler version %d.\n",version);
     return EXIT_FAILURE;
   }
-  printf("Version: %d\n",version);
-  readint_socket(socket,&total,1);
-  printf("Number of cells: %d\n",total);
+  readint_socket(socket,&ncell,1);
+  printf("Number of cells: %d\n",ncell);
   readint_socket(socket,&n_in,1);
   readint_socket(socket,&n_out,1);
   printf("Number of input streams: %d\n"
@@ -80,17 +81,17 @@ int main(int argc,char **argv)
     switch(index)
     {
       case LANDUSE_DATA:
-        /* send number of bands */
         index=64;
-        landuse=newvec(float,total*64);
+        landuse=newvec(float,ncell*64);
         break;
       case CO2_DATA:
         index=1;
         break;
       default:
-        fprintf(stderr,"Invalid index %d of input\n",index);
+        fprintf(stderr,"Unsupported index %d of input\n",index);
         return EXIT_FAILURE;
     }
+    /* send number of bands */
     writeint_socket(socket,&index,1);
   }
   /* Get number of items per cell for each output data strean */
@@ -108,48 +109,50 @@ int main(int argc,char **argv)
     readint_socket(socket,&index,1);
     if(index<0 || index>=NOUT)
     {
-      fprintf(stderr,"Invalid index %d of output\n",index);
+      fprintf(stderr,"Invalid index %d of output.\n",index);
       return EXIT_FAILURE;
     }
     /* get number of bands for output */
     readint_socket(socket,count+index,1);
+    /* check for static output */
     if(index==GRID || index==COUNTRY || index==REGION)
       n_out_1++;
   }
+  /* read all static non time dependent outputs */
   for(i=0;i<n_out_1;i++)
   {
     readint_socket(socket,&token,1);
     if(token!=PUT_DATA)
     {
-      fprintf(stderr,"Token for input data=%d is not PUT_DATA.\n",token);
+      fprintf(stderr,"Token for output data=%d is not PUT_DATA.\n",token);
       return EXIT_FAILURE;
     }
     if(readint_socket(socket,&index,1))
     {
-      fprintf(stderr,"Error reading index of input\n");
+      fprintf(stderr,"Error reading index of output.\n");
       return EXIT_FAILURE;
     }
     switch(index)
     {
       case GRID:
-        coords=newvec(Intcoord,total);
-        readshort_socket(socket,(short *)coords,total*2);
-        for(j=0;j<total;j++)
+        coords=newvec(Intcoord,ncell);
+        readshort_socket(socket,(short *)coords,ncell*2);
+        printf("Grid:\n");
+        for(j=0;j<ncell;j++)
           printf("%g %g\n",coords[j].lat*.01,coords[j].lon*.01);
         break;
       default:
-      {
-        fprintf(stderr,"Invalid index %d of input\n",index);
+        fprintf(stderr,"Unsupported index %d of output.\n",index);
         return EXIT_FAILURE;
-      }
     }
   }
+  /* reduce the number of output streams by the number of static streams */
   n_out-=n_out_1;
-  data=newvec(float,total);
+  data=newvec(float,ncell);
   /* main simulation loop */
   for(;;)
   {
-    /* get input from LPJmL */
+    /* send input to LPJmL */
     for(i=0;i<n_in;i++)
     {
       readint_socket(socket,&token,1);
@@ -170,21 +173,20 @@ int main(int argc,char **argv)
         fprintf(stderr,"Invalid index %d of input\n",index);
         return EXIT_FAILURE;
       }
+      readint_socket(socket,&year,1);
       switch(index)
       {
         case LANDUSE_DATA:
-          readint_socket(socket,&year,1);
-          for(j=0;j<total*64;j++)
+          for(j=0;j<ncell*64;j++)
             landuse[j]=0.001;
-          writefloat_socket(socket,landuse,total*64);
+          writefloat_socket(socket,landuse,ncell*64);
           break;
         case CO2_DATA:
           co2=288.0;
-          readint_socket(socket,&year,1);
           writefloat_socket(socket,&co2,1);
           break;
         default:
-          fprintf(stderr,"Invalid index %d of input\n",index);
+          fprintf(stderr,"Unsupported index %d of input\n",index);
           return EXIT_FAILURE;
       }
     }
@@ -213,15 +215,15 @@ int main(int argc,char **argv)
       }
       if(count[index]<0)
       {
-        fprintf(stderr,"No output define for index %d.\n",index);
+        fprintf(stderr,"No output defined for index %d.\n",index);
         return EXIT_FAILURE;
       }
       readint_socket(socket,&year,1);
       for(j=0;j<count[index];j++)
       {
-        readfloat_socket(socket,data,total);
+        readfloat_socket(socket,data,ncell);
         printf("%d %d[%d]:",year,index,j);
-        for(k=0;k<total;k++)
+        for(k=0;k<ncell;k++)
           printf(" %g",data[k]);
         printf("\n");
       }

@@ -22,7 +22,7 @@ Bool receive_real_copan(int index,Real *data,int size,int year,const Config *con
 #endif
   float *f;
   int i;
-  f=newvec(float,config->nall*size);
+  f=newvec(float,config->ngridcell*size);
   check(f);
   if(isroot(*config))
   {
@@ -53,7 +53,7 @@ Bool receive_real_copan(int index,Real *data,int size,int year,const Config *con
     return TRUE;
   }
 #endif
-  for(i=0;i<config->nall*size;i++)
+  for(i=0;i<config->ngridcell*size;i++)
     data[i]=f[i];
   free(f);
   return FALSE;

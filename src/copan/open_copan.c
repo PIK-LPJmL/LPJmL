@@ -41,6 +41,7 @@ Bool open_copan(Config *config /**< LPJmL configuration */
     writeint_socket(config->socket,&version,1);
     /* send total number of cells */
     writeint_socket(config->socket,&config->total,1);
+    /* send number of input and output streams */
     writeint_socket(config->socket,&config->copan_in,1);
     writeint_socket(config->socket,&config->copan_out,1);
   }
