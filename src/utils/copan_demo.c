@@ -22,7 +22,7 @@
 int main(int argc,char **argv)
 {
   Socket *socket;
-  float *data,*landuse;
+  float *data,*landuse,*flux;
   float co2;
   Intcoord *coords;
   int count[NOUT];
@@ -115,7 +115,9 @@ int main(int argc,char **argv)
     /* get number of bands for output */
     readint_socket(socket,count+index,1);
     /* check for static output */
-    if(index==GRID || index==COUNTRY || index==REGION)
+    if(index==GLOBALFLUX)
+      flux=newvec(float,count[index]);
+    else if(index==GRID || index==COUNTRY || index==REGION)
       n_out_1++;
   }
   /* read all static non time dependent outputs */
@@ -219,14 +221,23 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
       readint_socket(socket,&year,1);
-      for(j=0;j<count[index];j++)
+      if(index==GLOBALFLUX)
       {
-        readfloat_socket(socket,data,ncell);
-        printf("%d %d[%d]:",year,index,j);
-        for(k=0;k<ncell;k++)
-          printf(" %g",data[k]);
+        printf("%d flux:",year);
+        readfloat_socket(socket,flux,count[index]);
+        for(j=0;j<count[index];j++)
+          printf(" %g",flux[j]);
         printf("\n");
       }
+      else
+        for(j=0;j<count[index];j++)
+        {
+          readfloat_socket(socket,data,ncell);
+          printf("%d %d[%d]:",year,index,j);
+          for(k=0;k<ncell;k++)
+            printf(" %g",data[k]);
+          printf("\n");
+        }
     }
     if(token==END_DATA) /* Did we receive end token? */
       break;
