@@ -18,24 +18,31 @@
 
 Bool readco2(Co2data *co2,             /**< pointer to co2 data */
              const Filename *filename, /**< file name */
-             Bool isout                /**< enable error output */
+             const Config *config      /**< enable error output */
             )                          /** \return TRUE on error */
 {
   LPJfile file;
-  int yr,yr_old;
+  int yr,yr_old,size;
   Bool iseof;
+  Verbosity verbose;
+  verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   file.isjson=FALSE;
   if(filename->fmt==FMS || filename->fmt==SOCK)
   {
     co2->data=NULL;
     co2->nyear=0;
     co2->firstyear=0;
+    if(filename->fmt==SOCK && isroot(*config))
+    {
+      send_token_copan(GET_DATA_SIZE,CO2_DATA,config);
+      readint_socket(config->socket,&size,1);
+    }
   }
   else if(filename->fmt==TXT)
   {
     if((file.file.file=fopen(filename->name,"r"))==NULL)
     {
-      if(isout)
+      if(verbose)
         printfopenerr(filename->name);
       return TRUE;
     }
@@ -50,9 +57,9 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
     /**
     * find start year in co2-file
     **/
-    if(fscanint(&file,&yr,"year",FALSE,isout ? ERR : NO_ERR) || fscanreal(&file,co2->data,"co2",FALSE,isout ? ERR : NO_ERR))
+    if(fscanint(&file,&yr,"year",FALSE,verbose) || fscanreal(&file,co2->data,"co2",FALSE,verbose))
     {
-      if(isout)
+      if(verbose)
         fprintf(stderr,"ERROR129: Cannot read CO2 data in first line of '%s'.\n",
                 filename->name);
       free(co2->data);
@@ -71,12 +78,12 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
         fclose(file.file.file);
         return TRUE;
       }
-      if(fscaninteof(file.file.file,&yr,"year",&iseof,isout) || fscanreal(&file,co2->data+co2->nyear,"co2",FALSE,isout ? ERR : NO_ERR))
+      if(fscaninteof(file.file.file,&yr,"year",&iseof,verbose) || fscanreal(&file,co2->data+co2->nyear,"co2",FALSE,verbose))
 
       {
         if(iseof)
           break;
-        if(isout)
+        if(verbose)
           fprintf(stderr,"ERROR129: Cannot read CO2 data in line %d of '%s'.\n",
                   getlinecount(),filename->name);
         free(co2->data);
@@ -85,7 +92,7 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
       }
       if(yr!=yr_old+1)
       {
-        if(isout)
+        if(verbose)
           fprintf(stderr,"ERROR157: Invalid year=%d in line %d of '%s', must be %d.\n",
                   yr,getlinecount(),filename->name,yr_old+1);
         free(co2->data);

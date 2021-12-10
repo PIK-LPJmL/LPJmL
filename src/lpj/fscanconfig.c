@@ -760,6 +760,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
               fmt[config->co2_filename.fmt]);
     return TRUE;
   }
+  if(config->co2_filename.fmt==SOCK)
+    config->copan_in++;
 
   if(israndom==RANDOM_PREC)
   {

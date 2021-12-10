@@ -440,7 +440,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     free(climate);
     return NULL;
   }
-  if(readco2(&climate->co2,&config->co2_filename,isroot(*config)))
+  if(readco2(&climate->co2,&config->co2_filename,config))
   {
     free(climate);
     return NULL;
