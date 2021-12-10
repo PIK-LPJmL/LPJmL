@@ -72,25 +72,18 @@
 
           -copan host[:port]
                set host where the COPAN model is running. Default is
-               localhost. port is the port numbers for ingoing and
-               outgoing data. Default port numbers are 2225 and 2224,
-               respectively.
-
-          -wait time
-               set time to wait for connection to IMAGE model. Time is
-               measured in seconds. Default value is 10 sec. This
-               option is only available for the IMAGE version of the
-               code.
+               localhost. Port is the port number for ingoing and
+               outgoing data. Default port number is 2224.
 
           -output {gather|mpi2}
                use the given output method to write data to disk or to
                a output channel. Valid output methods are write,
-               gather, mpi2, and socket. The default output method for
-               the MPI version is gather sending all output to the
-               root task, while the default method is write for the
-               sequential version of the code. Method mpi2 uses MPI-2
-               parallel file functions.The mpi2 and gather output
-               methods are only valid for the MPI version of the code.
+               gather, mpi2. The default output method for the MPI
+               version is gather sending all output to the root task,
+               while the default method is write for the sequential
+               version of the code. Method mpi2 uses MPI-2 parallel
+               file functions.The mpi2 and gather output methods are
+               only valid for the MPI version of the code.
 
           -outpath <I>dir</I>
                set the output directory path. The path is added to the
@@ -123,9 +116,6 @@
           Perform simulation with input from the /scratch file system:
                <B>lpjml</B> -inpath /scratch/02/lpj
 
-          Perform simulation with output sent to host aix:
-               <B>lpjml</B> -output socket=aix
-
      enabled:
           Start simulation from restart file with floating point exceptions
                <B>lpjml</B> -DFROM_RESTART -fpe lpjml.js
@@ -154,10 +144,6 @@
           LPJIMAGE
                sets the host where IMAGE model is running. Same as '-
                image' option.
-
-          LPJWAITIMAGE
-               sets time to wait for connection to IMAGE model. Same
-               as in '-wait' option.
 
           LPJINPATH
                path appended to the input filenames. Only done for
@@ -376,43 +362,6 @@
           <B><A HREF="lpjml_image.conf.html">lpjml_image.conf(5)</A></B>, <B><A HREF="clm.html">clm(5)</A></B>
 
           Contact: https://github.com/PIK-LPJmL/LPJmL /lpjml
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

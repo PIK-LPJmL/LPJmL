@@ -1,9 +1,9 @@
-.TH lpjcheck 1  "October 27, 2021" "version 1.0.004" "USER COMMANDS"
+.TH lpjcheck 1  "December 10, 2021" "version 1.0.004" "USER COMMANDS"
 .SH NAME
 lpjcheck \- Checks syntax of LPJmL configuration files 
 .SH SYNOPSIS
 .B lpjcheck
-[\-h] [\-q] [\-nocheck] [-vv] [\-param] [-pp cmd] [\-output {write|gather|mpi2|socket=hostname[:port]}] [\-outpath \fIdir\fP]
+[\-h] [\-q] [\-nocheck] [-vv] [\-param] [-pp cmd] [\-copan host[:port]] [\-output {write|gather|mpi2}] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP] [[\-Dmacro[=value]] [\-I\fIdir\fP] ...]
 [\fIfilename\fP]
 .SH DESCRIPTION
@@ -29,9 +29,12 @@ Print LPJmL parameter.
 \-pp cmd
 Set preprocessor program to cmd. Default is \fBcpp -P\fP.
 .TP
-\-output {gather|mpi2|socket=hostname[:port]}
+\-copan host[:port]
+set host where the COPAN model is running. Default is localhost. Port is the port number for ingoing and outgoing data. Default port number is 2224.
+.TP
+\-output {gather|mpi2}
 use the given output method to write data to disk. Valid output methods are
-write, mpi2, gather, and socket. The default output method for the MPI version is gather sending all output to the root task, while the default method for the sequential code is write. 
+write, mpi2, gather. The default output method for the MPI version is gather sending all output to the root task, while the default method for the sequential code is write. 
 The methods gather and mpi2 are only valid for the MPI version of the code.
 .TP
 \-outpath \fIdir\fP
@@ -52,7 +55,7 @@ name of configuration file, default is \fIlpjml.js\fP.
 .TP
 Check default configuration file with input files located in the scratch file system
 .B lpjcheck
-\-input /scratch/02/lpj
+\-inpath /scratch/02/lpj
 .PP
 .SH ENVIRONMENT
 .TP
