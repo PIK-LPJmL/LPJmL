@@ -82,7 +82,6 @@ typedef struct
   Real n_uptake;              /**< total N uptake by plants */
   Real n_influx;              /**< total N inputs */
   Real n_outflux;             /**< total N losses */
-  Real anpp_flux;             /**< Total NPP (gC/yr) */
   Real excess_water;          /**< Exess water (dm3) */
   Real soilc;                 /**< soil carbon (gC) */
   Real soilc_slow;            /**< slow soil carbon (gC) */
