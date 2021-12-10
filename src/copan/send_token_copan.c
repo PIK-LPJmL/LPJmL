@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                s  e  n  d  _  t  o  k  e  n  _  c  o  p  a  n  .  c             \n**/
+/**               s  e  n  d  _  t  o  k  e  n  _  c  o  p  a  n  .  c             \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes token into socket                                         \n**/
+/**     Function writes token into socket                                          \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,8 +16,8 @@
 
 #include "lpj.h"
 
-void send_token_copan(int token,           /**< Token (GET_DATA,PUT_DATA) */
-                      int index,           /**< index for in- or output */
+void send_token_copan(int token,           /**< Token (GET_DATA,PUT_DATA, ...) */
+                      int index,           /**< index for in- or output stream */
                       const Config *config /**< LPJ configuration */
                      )
 {

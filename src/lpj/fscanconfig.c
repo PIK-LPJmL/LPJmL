@@ -582,7 +582,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       config->iscotton=FALSE;
     if(config->fertilizer_input==FERTILIZER || config->manure_input || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
     {
-      config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",config->sim_id==LPJML_COPAN,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
       if(config->fertilizermap==NULL)
         return TRUE;
     }
@@ -616,7 +616,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(config->with_nitrogen && config->fertilizer_input==FERTILIZER)
       scanclimatefilename(&input,&config->fertilizer_nr_filename,config->inputdir,FALSE,FALSE,"fertilizer_nr");
     if (config->with_nitrogen && config->manure_input)
-      scanclimatefilename(&input,&config->manure_nr_filename,config->inputdir,FALSE,FALSE,"manure_nr");
+      scanclimatefilename(&input,&config->manure_nr_filename,config->inputdir,FALSE,config->sim_id==LPJML_COPAN,"manure_nr");
     if (config->tillage_type==READ_TILLAGE)
       scanclimatefilename(&input,&config->with_tillage_filename,config->inputdir,FALSE,config->sim_id==LPJML_COPAN,"with_tillage");
     if (config->residue_treatment == READ_RESIDUE_DATA)

@@ -14,9 +14,9 @@
 
 #include "lpj.h"
 
-int writecountrycode(Outputfile *output, /**< output file array */
-                     int index, /**< output index */
-                     const Cell grid[] /**< LPJ cell array */,
+int writecountrycode(Outputfile *output,  /**< output file array */
+                     int index,           /**< output index */
+                     const Cell grid[]    /**< LPJ cell array */,
                      const Config *config /**< LPJmL configuration*/
                     )                     /** \return number of country codes written */
 {

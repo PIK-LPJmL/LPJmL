@@ -304,6 +304,18 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         return NULL;
       }
     }
+    else if(config->fertilizer_nr_filename.fmt==SOCK)
+    {
+      if(isroot(*config))
+      {
+       send_token_copan(GET_DATA_SIZE,FERTILIZER_DATA,config);
+       readint_socket(config->socket,&header.nbands,1);
+      }
+#ifdef USE_MPI
+      MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
+#endif
+      landuse->fertilizer_nr.var_len=header.nbands;
+    }
     else
     {
       if((landuse->fertilizer_nr.file=openinputfile(&header,&landuse->fertilizer_nr.swap,
@@ -357,7 +369,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       free(landuse);
       return(NULL);
     }
-    checkyear("fertilizer",&landuse->fertilizer_nr,config);
+    if(config->fertilizer_nr_filename.fmt!=SOCK)
+      checkyear("fertilizer",&landuse->fertilizer_nr,config);
   }
 
   if(config->manure_input)
@@ -378,6 +391,18 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         free(landuse);
         return NULL;
       }
+    }
+    else if(config->manure_nr_filename.fmt==SOCK)
+    {
+      if(isroot(*config))
+      {
+       send_token_copan(GET_DATA_SIZE,MANURE_DATA,config);
+       readint_socket(config->socket,&header.nbands,1);
+      }
+#ifdef USE_MPI
+      MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
+#endif
+      landuse->manure_nr.var_len=header.nbands;
     }
     else
     {
@@ -436,6 +461,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       free(landuse);
       return NULL;
     }
+    if(config->manure_nr_filename.fmt!=SOCK)
     checkyear("manure",&landuse->manure_nr,config);
   }
 
@@ -1331,6 +1357,16 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           return TRUE;
         }
       }
+      else if(landuse->fertilizer_nr.fmt==SOCK)
+      {
+        if(receive_real_copan(FERTILIZER_DATA,data,landuse->fertilizer_nr.var_len,year,config))
+        {
+          fprintf(stderr,"ERROR149: Cannot receive fertilizer of year %d in getlanduse().\n",year);
+          fflush(stderr);
+          free(data);
+          return TRUE;
+        }
+      }
       else
       {
         if(fseek(landuse->fertilizer_nr.file,(long long)yearf*landuse->fertilizer_nr.size+landuse->fertilizer_nr.offset,SEEK_SET))
@@ -1394,6 +1430,16 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           fprintf(stderr,
             "ERROR149: Cannot read manure fertilizer of year %d in getlanduse().\n",
             yearm+landuse->manure_nr.firstyear);
+          fflush(stderr);
+          free(data);
+          return TRUE;
+        }
+      }
+      else if(landuse->manure_nr.fmt==SOCK)
+      {
+        if(receive_real_copan(MANURE_DATA,data,landuse->manure_nr.var_len,year,config))
+        {
+          fprintf(stderr,"ERROR149: Cannot receive manure of year %d in getlanduse().\n",year);
           fflush(stderr);
           free(data);
           return TRUE;

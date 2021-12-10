@@ -23,6 +23,7 @@ int main(int argc,char **argv)
 {
   Socket *socket;
   float *data,*landuse,*flux;
+  short *country;
   float co2;
   Intcoord *coords;
   int count[NOUT];
@@ -142,6 +143,10 @@ int main(int argc,char **argv)
         printf("Grid:\n");
         for(j=0;j<ncell;j++)
           printf("%g %g\n",coords[j].lat*.01,coords[j].lon*.01);
+        break;
+      case COUNTRY:
+        country=newvec(short,ncell);
+        readshort_socket(socket,country,ncell);
         break;
       default:
         fprintf(stderr,"Unsupported index %d of output.\n",index);

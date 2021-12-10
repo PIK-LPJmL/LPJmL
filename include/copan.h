@@ -31,7 +31,7 @@
 #define PUT_DATA_SIZE 3 /* Sending data size to COPAN */
 #define END_DATA 4      /* Ending communication */
 
-#define N_IN 18         /* Number of available input data streams */
+#define N_IN 20         /* Number of available input data streams */
 #define CLOUD_DATA 0
 #define TEMP_DATA 1
 #define PREC_DATA 2
@@ -50,6 +50,8 @@
 #define WIND_DATA 15
 #define NH4_DATA 16
 #define NO3_DATA 17
+#define FERTILIZER_DATA 18
+#define MANURE_DATA 19
 
 /* Declaration of functions */
 
