@@ -31,6 +31,8 @@
 #define PUT_DATA_SIZE 3 /* Sending data size to COPAN */
 #define END_DATA 4      /* Ending communication */
 
+/* List of input data streams */
+
 #define N_IN 22         /* Number of available input data streams */
 #define CLOUD_DATA 0
 #define TEMP_DATA 1
@@ -62,7 +64,7 @@ extern void close_copan(const Config *);
 extern Bool receive_real_copan(int,Real *,int,int,const Config *);
 extern Bool receive_real_scalar_copan(Real *,int,const Config *);
 extern Bool receive_int_copan(int,int *,int,int,const Config *);
-extern void send_flux_copan(const Flux *,Real,int,const Config *);
-extern void send_token_copan(int,int,const Config *);
+extern Bool send_flux_copan(const Flux *,Real,int,const Config *);
+extern Bool send_token_copan(int,int,const Config *);
 
 #endif /* COPAN_H */

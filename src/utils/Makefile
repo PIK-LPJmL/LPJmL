@@ -53,7 +53,8 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h $(INC)/pftlist.h\
           $(INC)/list.h $(INC)/cell.h  $(INC)/units.h $(INC)/output.h\
           $(INC)/config.h $(INC)/intlist.h $(INC)/queue.h $(INC)/pnet.h\
           $(INC)/discharge.h $(INC)/channel.h $(INC)/reservoir.h $(INC)/soil.h\
-          $(INC)/tree.h $(INC)/cdf.h $(INC)/spitfire.h $(INC)/climbuf.h
+          $(INC)/tree.h $(INC)/cdf.h $(INC)/spitfire.h $(INC)/climbuf.h\
+          $(INC)/copan.h
 
 LIBDIR  = ../../lib
 BIN     = ../../bin

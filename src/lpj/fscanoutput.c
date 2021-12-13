@@ -211,8 +211,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       else if(config->outputvars[count].filename.fmt==SOCK && config->sim_id!=LPJML_COPAN)
       {
         if(verbosity)
-          fprintf(stderr,"ERROR223: File format 'sock' not allowd without COPAN coupling for outputt file '%s'.\n",
-                  config->outputvars[count].filename.name);
+          fprintf(stderr,"ERROR223: File format 'sock' not allowed without COPAN coupling for '%s' output.\n",
+                  config->outnames[flag].name);
         return TRUE;
       }
       else

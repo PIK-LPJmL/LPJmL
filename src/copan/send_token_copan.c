@@ -16,11 +16,11 @@
 
 #include "lpj.h"
 
-void send_token_copan(int token,           /**< Token (GET_DATA,PUT_DATA, ...) */
+Bool send_token_copan(int token,           /**< Token (GET_DATA,PUT_DATA, ...) */
                       int index,           /**< index for in- or output stream */
                       const Config *config /**< LPJ configuration */
-                     )
+                     )                     /** \return TRUE on error */
 {
   writeint_socket(config->socket,&token,1);
-  writeint_socket(config->socket,&index,1);
+  return writeint_socket(config->socket,&index,1);
 } /* of 'send_token_copan' */
