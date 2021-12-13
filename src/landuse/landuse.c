@@ -103,7 +103,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
      readint_socket(config->socket,&header.nbands,1);
     }
 #ifdef USE_MPI
-   MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
+    MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
 #endif
     landuse->landuse.var_len=header.nbands;
   }
@@ -495,7 +495,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
 #ifdef USE_MPI
       MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
 #endif
-       landuse->with_tillage.var_len=header.nbands;
+      landuse->with_tillage.var_len=header.nbands;
     }
     else
     {
@@ -595,7 +595,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
 #ifdef USE_MPI
       MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
 #endif
-       landuse->residue_on_field.var_len=header.nbands;
+      landuse->residue_on_field.var_len=header.nbands;
     }
     else
     {

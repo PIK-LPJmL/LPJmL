@@ -614,7 +614,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       scanclimatefilename(&input,&config->crop_phu_filename,config->inputdir,FALSE,FALSE,"crop_phu");
     }
     if(config->with_nitrogen && config->fertilizer_input==FERTILIZER)
-      scanclimatefilename(&input,&config->fertilizer_nr_filename,config->inputdir,FALSE,FALSE,"fertilizer_nr");
+      scanclimatefilename(&input,&config->fertilizer_nr_filename,config->inputdir,FALSE,config->sim_id==LPJML_COPAN,"fertilizer_nr");
     if (config->with_nitrogen && config->manure_input)
       scanclimatefilename(&input,&config->manure_nr_filename,config->inputdir,FALSE,config->sim_id==LPJML_COPAN,"manure_nr");
     if (config->tillage_type==READ_TILLAGE)
@@ -710,11 +710,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->no3deposition_filename.name=config->nh4deposition_filename.name=config->soilph_filename.name=NULL;
   if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->fdi==WVPD_INDEX)
   {
-    scanclimatefilename(&input,&config->humid_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"humid");
+    scanclimatefilename(&input,&config->humid_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"humid");
   }
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    scanclimatefilename(&input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"wind");
+    scanclimatefilename(&input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"wind");
   }
   if(config->fire==SPITFIRE_TMAX || config->cropsheatfrost)
   {
@@ -737,7 +737,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->ispopulation)
   {
-    scanclimatefilename(&input,&config->popdens_filename,config->inputdir,FALSE,FALSE,"popdens");
+    scanclimatefilename(&input,&config->popdens_filename,config->inputdir,FALSE,config->sim_id==LPJML_COPAN,"popdens");
   }
   if(config->prescribe_burntarea)
   {
@@ -765,7 +765,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 
   if(israndom==RANDOM_PREC)
   {
-    scanclimatefilename(&input,&config->wet_filename,config->inputdir,config->sim_id==LPJML_FMS,FALSE,"wetdays");
+    scanclimatefilename(&input,&config->wet_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"wetdays");
   }
 #if defined IMAGE && defined COUPLED
   else if(config->sim_id==LPJML_IMAGE)
@@ -779,7 +779,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->wet_filename.name=NULL;
   if(config->wateruse)
   {
-    scanclimatefilename(&input,&config->wateruse_filename,config->inputdir,FALSE,FALSE,"wateruse");
+    scanclimatefilename(&input,&config->wateruse_filename,config->inputdir,FALSE,config->sim_id==LPJML_COPAN,"wateruse");
 #ifdef IMAGE
     scanclimatefilename(&input,&config->wateruse_wd_filename,config->inputdir,FALSE,FALSE,"wateruse_wd");
 #endif

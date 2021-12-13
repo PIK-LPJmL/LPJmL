@@ -45,6 +45,18 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
       return NULL;
     }
   }
+  else if(filename->fmt==SOCK)
+  {
+    if(isroot(*config))
+    {
+     send_token_copan(GET_DATA_SIZE,WATERUSE_DATA,config);
+     readint_socket(config->socket,&header.nbands,1);
+    }
+#ifdef USE_MPI
+    MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
+#endif
+    wateruse->file.var_len=header.nbands;
+  }
   else
   {
     if((wateruse->file.file=openinputfile(&header,&wateruse->file.swap,
@@ -101,6 +113,23 @@ static Real *readwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
 {
   int cell;
   Real *data;
+  if(wateruse->file.fmt==SOCK)
+  {
+    data=newvec(Real,config->ngridcell);
+    if(data==NULL)
+    {
+      printallocerr("data");
+      return NULL;
+    }
+    if(receive_real_copan(WATERUSE_DATA,data,1,year,config))
+    {
+      fprintf(stderr,"ERROR149: Cannot receive wateruse of year %d in readwateruse().\n",year);
+      fflush(stderr);
+      free(data);
+      return NULL;
+    }
+    return data;
+  }
   if(config->wateruse==ALL_WATERUSE)
   {
     /* first and last wateruse data is used outside available wateruse data */

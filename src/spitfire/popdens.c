@@ -46,6 +46,18 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
       return NULL;
     }
   }
+  else if(config->popdens_filename.fmt==SOCK)
+  {
+    if(isroot(*config))
+    {
+     send_token_copan(GET_DATA_SIZE,POPDENS_DATA,config);
+     readint_socket(config->socket,&header.nbands,1);
+    }
+#ifdef USE_MPI
+    MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
+#endif
+    popdens->file.var_len=header.nbands;
+  }
   else
   {
     if((popdens->file.file=openinputfile(&header,&popdens->file.swap,
@@ -85,7 +97,7 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
     free(popdens);
     return NULL;
   }
-  if(isroot(*config) && config->lastyear>popdens->file.firstyear+popdens->file.nyear-1)
+  if(isroot(*config) && config->popdens_filename.fmt!=SOCK && config->lastyear>popdens->file.firstyear+popdens->file.nyear-1)
     fprintf(stderr,"WARNING024: Last year in popdens data file=%d is less than last simulation year %d, data from last year used.\n",
             popdens->file.firstyear+popdens->file.nyear-1,config->lastyear);
 
@@ -126,6 +138,15 @@ Bool readpopdens(Popdens popdens,     /**< pointer to population data */
     {
       fprintf(stderr,"ERROR185: Cannot read population density of year %d from '%s'.\n",
               year+popdens->file.firstyear,config->popdens_filename.name);
+      return TRUE;
+    }
+    return FALSE;
+  }
+  if(popdens->file.fmt==SOCK)
+  {
+    if(receive_real_copan(POPDENS_DATA,popdens->npopdens,1,year,config))
+    {
+      fprintf(stderr,"ERROR149: Cannot receive population density of year %d.\n",year);
       return TRUE;
     }
     return FALSE;

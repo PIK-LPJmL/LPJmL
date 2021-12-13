@@ -14,7 +14,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
 #include "lpj.h"
 
 #define COPANDEMO_VERSION "0.9.001"
@@ -23,7 +22,7 @@ int main(int argc,char **argv)
 {
   Socket *socket;
   float *data,*landuse,*flux;
-  short *country;
+  short *country,*region,*sdata;
   float co2;
   Intcoord *coords;
   int count[NOUT];
@@ -64,7 +63,7 @@ int main(int argc,char **argv)
   printf("Number of input streams: %d\n"
          "Number of output streams: %d\n",
          n_in,n_out);
-  /* Send number of items per cell for each input data strean */
+  /* Send number of items per cell for each input data stream */
   for(i=0;i<n_in;i++)
   {
     readint_socket(socket,&token,1);
@@ -84,6 +83,7 @@ int main(int argc,char **argv)
       case LANDUSE_DATA:
         index=64;
         landuse=newvec(float,ncell*64);
+        check(landuse);
         break;
       case CO2_DATA:
         index=1;
@@ -117,11 +117,16 @@ int main(int argc,char **argv)
     readint_socket(socket,count+index,1);
     /* check for static output */
     if(index==GLOBALFLUX)
+    {
       flux=newvec(float,count[index]);
+      check(flux);
+    }
     else if(index==GRID || index==COUNTRY || index==REGION)
       n_out_1++;
   }
   /* read all static non time dependent outputs */
+  region=country=NULL;
+  coords=NULL;
   for(i=0;i<n_out_1;i++)
   {
     readint_socket(socket,&token,1);
@@ -139,6 +144,7 @@ int main(int argc,char **argv)
     {
       case GRID:
         coords=newvec(Intcoord,ncell);
+        check(coords);
         readshort_socket(socket,(short *)coords,ncell*2);
         printf("Grid:\n");
         for(j=0;j<ncell;j++)
@@ -146,7 +152,13 @@ int main(int argc,char **argv)
         break;
       case COUNTRY:
         country=newvec(short,ncell);
+        check(country);
         readshort_socket(socket,country,ncell);
+        break;
+      case REGION:
+        region=newvec(short,ncell);
+        check(region);
+        readshort_socket(socket,region,ncell);
         break;
       default:
         fprintf(stderr,"Unsupported index %d of output.\n",index);
@@ -156,6 +168,9 @@ int main(int argc,char **argv)
   /* reduce the number of output streams by the number of static streams */
   n_out-=n_out_1;
   data=newvec(float,ncell);
+  check(data);
+  sdata=newvec(short,ncell);
+  check(sdata);
   /* main simulation loop */
   for(;;)
   {
@@ -235,14 +250,26 @@ int main(int argc,char **argv)
         printf("\n");
       }
       else
-        for(j=0;j<count[index];j++)
-        {
-          readfloat_socket(socket,data,ncell);
-          printf("%d %d[%d]:",year,index,j);
-          for(k=0;k<ncell;k++)
-            printf(" %g",data[k]);
-          printf("\n");
-        }
+      {
+        if(getoutputtype(index,FALSE)==LPJ_SHORT)
+          for(j=0;j<count[index];j++)
+          {
+            readshort_socket(socket,sdata,ncell);
+            printf("%d %d[%d]:",year,index,j);
+            for(k=0;k<ncell;k++)
+              printf(" %d",sdata[k]);
+            printf("\n");
+          }
+        else
+          for(j=0;j<count[index];j++)
+          {
+            readfloat_socket(socket,data,ncell);
+            printf("%d %d[%d]:",year,index,j);
+            for(k=0;k<ncell;k++)
+              printf(" %g",data[k]);
+            printf("\n");
+          }
+      }
     }
     if(token==END_DATA) /* Did we receive end token? */
       break;

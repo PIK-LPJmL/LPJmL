@@ -170,19 +170,21 @@ static size_t isnetcdfinput(const Config *config)
   return width;
 } /* of 'isnetcdfinput' */
 
-static void printoutname(FILE *file,const char *filename,Bool isoneyear,
+static void printoutname(FILE *file,const Filename *filename,Bool isoneyear,
                          const Config *config)
 {
   char *fmt;
   char *pos;
-  if(isoneyear)
+  if(filename->fmt==SOCK)
+    fprintf(file,"-> %s:%d",config->copan_host,config->copan_port);
+  else if(isoneyear)
   {
-    fmt=malloc(strlen(filename)+6);
+    fmt=malloc(strlen(filename->name)+6);
     if(fmt!=NULL)
     {
-      pos=strstr(filename,"%d");
-      strncpy(fmt,filename,pos-filename);
-      fmt[pos-filename]='\0';
+      pos=strstr(filename->name,"%d");
+      strncpy(fmt,filename->name,pos-filename->name);
+      fmt[pos-filename->name]='\0';
       strcat(fmt,"[%d-%d]");
       strcat(fmt,pos+2);
       fprintf(file,fmt,config->firstyear,config->lastyear);
@@ -190,18 +192,21 @@ static void printoutname(FILE *file,const char *filename,Bool isoneyear,
     }
   }
   else
-    fputs(filename,file);
+    fputs(filename->name,file);
 } /* of printoutname' */
 
 static void printinputfile(FILE *file,const char *descr,const Filename *filename,
-                           int width)
+                           int width,const Config *config)
 {
   if(width)
-    fprintf(file,"%-11s %-4s %-*s %s\n",descr,fmt[filename->fmt],
-            width,notnull(filename->var),notnull(filename->name));
+    fprintf(file,"%-11s %-4s %-*s ",descr,fmt[filename->fmt],
+            width,notnull(filename->var));
   else
-    fprintf(file,"%-11s %-4s %s\n",descr,fmt[filename->fmt],
-            notnull(filename->name));
+    fprintf(file,"%-11s %-4s ",descr,fmt[filename->fmt]);
+  if(filename->fmt==SOCK)
+    fprintf(file,"<- %s:%d\n",config->copan_host,config->copan_port);
+  else
+    fprintf(file,"%s\n",notnull(filename->name));
 } /* of 'printinputfile' */
 
 void fprintconfig(FILE *file,          /**< File pointer to text output file */
@@ -455,94 +460,94 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   else
     fputs("Variable    Fmt  Filename\n"
           "----------- ---- --------------------------------------------------------------\n",file);
-  printinputfile(file,"soil",&config->soil_filename,width);
+  printinputfile(file,"soil",&config->soil_filename,width,config);
   if(config->soil_filename.fmt!=CDF)
-    printinputfile(file,"coord",&config->coord_filename,width);
-  printinputfile(file,"temp",&config->temp_filename,width);
-  printinputfile(file,"prec",&config->prec_filename,width);
+    printinputfile(file,"coord",&config->coord_filename,width,config);
+  printinputfile(file,"temp",&config->temp_filename,width,config);
+  printinputfile(file,"prec",&config->prec_filename,width,config);
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
-    printinputfile(file,"temp var",&config->temp_var_filename,width);
-    printinputfile(file,"prec var",&config->prec_var_filename,width);
-    printinputfile(file,"prod pool",&config->prodpool_init_filename,width);
+    printinputfile(file,"temp var",&config->temp_var_filename,width,config);
+    printinputfile(file,"prec var",&config->prec_var_filename,width,config);
+    printinputfile(file,"prod pool",&config->prodpool_init_filename,width,config);
   }
 #endif
   if(config->with_radiation)
   {
     if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
       printinputfile(file,(config->with_radiation==RADIATION) ? "lwnet" : "lwdown",
-                     &config->lwnet_filename,width);
-    printinputfile(file,"swdown",&config->swdown_filename,width);
+                     &config->lwnet_filename,width,config);
+    printinputfile(file,"swdown",&config->swdown_filename,width,config);
   }
   else
-    printinputfile(file,"cloud",&config->cloud_filename,width);
+    printinputfile(file,"cloud",&config->cloud_filename,width,config);
   if(config->with_nitrogen)
   {
     if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
     {
-      printinputfile(file,"no3_depo",&config->no3deposition_filename,width);
-      printinputfile(file,"nh4_depo",&config->nh4deposition_filename,width);
+      printinputfile(file,"no3_depo",&config->no3deposition_filename,width,config);
+      printinputfile(file,"nh4_depo",&config->nh4deposition_filename,width,config);
     }
-    printinputfile(file,"soilpH",&config->soilph_filename,width);
+    printinputfile(file,"soilpH",&config->soilph_filename,width,config);
   }
-  printinputfile(file,"co2",&config->co2_filename,width);
+  printinputfile(file,"co2",&config->co2_filename,width,config);
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-    printinputfile(file,"windspeed",&config->wind_filename,width);
+    printinputfile(file,"windspeed",&config->wind_filename,width,config);
   if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
   {
-    printinputfile(file,"tmin",&config->tmin_filename,width);
-    printinputfile(file,"tmax",&config->tmax_filename,width);
+    printinputfile(file,"tmin",&config->tmin_filename,width,config);
+    printinputfile(file,"tmax",&config->tmax_filename,width,config);
   }
   if(config->fire==SPITFIRE)
-    printinputfile(file,"temp ampl",&config->tamp_filename,width);
+    printinputfile(file,"temp ampl",&config->tamp_filename,width,config);
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
     if(config->fdi==WVPD_INDEX)
-      printinputfile(file,"humid",&config->humid_filename,width);
-    printinputfile(file,"lightning",&config->lightning_filename,width);
-    printinputfile(file,"human ign",&config->human_ignition_filename,width);
+      printinputfile(file,"humid",&config->humid_filename,width,config);
+    printinputfile(file,"lightning",&config->lightning_filename,width,config);
+    printinputfile(file,"human ign",&config->human_ignition_filename,width,config);
   }
   if(config->ispopulation)
-    printinputfile(file,"pop. dens",&config->popdens_filename,width);
+    printinputfile(file,"pop. dens",&config->popdens_filename,width,config);
   if(config->prescribe_burntarea)
-    printinputfile(file,"burntarea",&config->burntarea_filename,width);
+    printinputfile(file,"burntarea",&config->burntarea_filename,width,config);
   if(config->prescribe_landcover)
-    printinputfile(file,"landcover",&config->landcover_filename,width);
+    printinputfile(file,"landcover",&config->landcover_filename,width,config);
   if(config->grassfix_filename.name!=NULL)
-    printinputfile(file,"Grassfix",&config->grassfix_filename,width);
+    printinputfile(file,"Grassfix",&config->grassfix_filename,width,config);
   if(config->grassharvest_filename.name!=NULL)
-    printinputfile(file,"Grassharvest",&config->grassharvest_filename,width);
+    printinputfile(file,"Grassharvest",&config->grassharvest_filename,width,config);
   if(config->withlanduse!=NO_LANDUSE)
   {
-    printinputfile(file,"countries",&config->countrycode_filename,width);
+    printinputfile(file,"countries",&config->countrycode_filename,width,config);
     if(config->countrycode_filename.fmt==CDF)
-      printinputfile(file,"regions",&config->regioncode_filename,width);
-    printinputfile(file,"landuse",&config->landuse_filename,width);
+      printinputfile(file,"regions",&config->regioncode_filename,width,config);
+    printinputfile(file,"landuse",&config->landuse_filename,width,config);
     if(config->iscotton)
     {
-      printinputfile(file,"sowing_rf",&config->sowing_cotton_rf_filename,width);
-      printinputfile(file,"harvest_rf",&config->harvest_cotton_rf_filename,width);
-      printinputfile(file,"sowing_ir",&config->sowing_cotton_ir_filename,width);
-      printinputfile(file,"harvest_ir",&config->harvest_cotton_ir_filename,width);
+      printinputfile(file,"sowing_rf",&config->sowing_cotton_rf_filename,width,config);
+      printinputfile(file,"harvest_rf",&config->harvest_cotton_rf_filename,width,config);
+      printinputfile(file,"sowing_ir",&config->sowing_cotton_ir_filename,width,config);
+      printinputfile(file,"harvest_ir",&config->harvest_cotton_ir_filename,width,config);
     }
     if(config->sdate_option==PRESCRIBED_SDATE)
-      printinputfile(file,"sdates",&config->sdate_filename,width);
+      printinputfile(file,"sdates",&config->sdate_filename,width,config);
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
-      printinputfile(file,"crop_phu",&config->crop_phu_filename,width);
+      printinputfile(file,"crop_phu",&config->crop_phu_filename,width,config);
     if(config->with_nitrogen&&config->fertilizer_input==FERTILIZER)
-      printinputfile(file,"fertilizer",&config->fertilizer_nr_filename, width);
+      printinputfile(file,"fertilizer",&config->fertilizer_nr_filename, width,config);
     if(config->with_nitrogen&&config->manure_input)
-      printinputfile(file,"manure_nr",&config->manure_nr_filename, width);
+      printinputfile(file,"manure_nr",&config->manure_nr_filename, width,config);
     if(config->residue_treatment==READ_RESIDUE_DATA)
-      printinputfile(file,"residue",&config->residue_data_filename,width);
+      printinputfile(file,"residue",&config->residue_data_filename,width,config);
     if(config->tillage_type==READ_TILLAGE)
-      printinputfile(file,"tillage",&config->with_tillage_filename,width);
+      printinputfile(file,"tillage",&config->with_tillage_filename,width,config);
   }
   if(config->reservoir)
   {
-    printinputfile(file,"elevation",&config->elevation_filename,width);
-    printinputfile(file,"reservoir",&config->reservoir_filename,width);
+    printinputfile(file,"elevation",&config->elevation_filename,width,config);
+    printinputfile(file,"reservoir",&config->reservoir_filename,width,config);
   }
 #ifdef IMAGE
   if(config->aquifer_irrig==AQUIFER_IRRIG)
@@ -552,23 +557,23 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
             config->aquifer_filename.name);
 #endif
   if(config->wet_filename.name!=NULL)
-    printinputfile(file,"wetdays",&config->wet_filename,width);
+    printinputfile(file,"wetdays",&config->wet_filename,width,config);
   if(config->river_routing)
   {
-    printinputfile(file,"drainage",&config->drainage_filename,width);
+    printinputfile(file,"drainage",&config->drainage_filename,width,config);
     if(config->drainage_filename.fmt==CDF)
-      printinputfile(file,"river",&config->river_filename,width);
+      printinputfile(file,"river",&config->river_filename,width,config);
     if(config->extflow)
-      printinputfile(file,"extflow",&config->extflow_filename,width);
-    printinputfile(file,"lakes",&config->lakes_filename,width);
+      printinputfile(file,"extflow",&config->extflow_filename,width,config);
+    printinputfile(file,"lakes",&config->lakes_filename,width,config);
     if(config->withlanduse!=NO_LANDUSE)
-      printinputfile(file,"neighbour",&config->neighb_irrig_filename,width);
+      printinputfile(file,"neighbour",&config->neighb_irrig_filename,width,config);
   }
   if(config->wateruse)
-    printinputfile(file,"wateruse",&config->wateruse_filename,width);
+    printinputfile(file,"wateruse",&config->wateruse_filename,width,config);
 #ifdef IMAGE
   if (config->wateruse_wd_filename.name != NULL)
-    printinputfile(file,"wateruse wd", &config->wateruse_wd_filename,width);
+    printinputfile(file,"wateruse wd", &config->wateruse_wd_filename,width,config);
 #endif
   if(width)
   {
@@ -686,8 +691,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
               -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
               typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],
               sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep),outputsize(config->outputvars[index].id,npft,ncft,config));
-      if(config->outputvars[index].filename.fmt!=SOCK)
-        printoutname(file,config->outputvars[index].filename.name,config->outputvars[index].oneyear,config);
+      printoutname(file,&config->outputvars[index].filename,config->outputvars[index].oneyear,config);
       putc('\n',file);
     }
     free(item);
