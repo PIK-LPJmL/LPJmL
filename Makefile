@@ -15,6 +15,7 @@
 #################################################################################
 
 include Makefile.inc
+
 INC     = include
 
 HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
@@ -33,10 +34,8 @@ HDRS    = $(INC)/buffer.h $(INC)/cell.h $(INC)/climate.h $(INC)/conf.h\
           $(INC)/wetland.h  $(INC)/hydrotope.h $(INC)/icefrac.h\
           $(INC)/agriculture_tree.h $(INC)/agriculture_grass.h
 
-JSON	= lpjml.js input_crumonthly.js param.js lpj.js param_non.js\
-          lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js lpjml_non.js
-
 DATA    = par/*.js
+
 JSON	= lpjml.js input_crumonthly.js param.js lpj.js input_GSWP3-ERA5.js\
           lpjml_netcdf.js input_netcdf.js lpjml_fms.js input_fms.js\
           lpjml_vpd.js input_GLDAS.js param_vpd.js param_non.js lpjml_non.js
