@@ -18,7 +18,7 @@
 
 Bool readco2(Co2data *co2,             /**< pointer to co2 data */
              const Filename *filename, /**< file name */
-             const Config *config      /**< enable error output */
+             const Config *config      /**< LPJmL configuration */
             )                          /** \return TRUE on error */
 {
   LPJfile file;
@@ -32,10 +32,22 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
     co2->data=NULL;
     co2->nyear=0;
     co2->firstyear=0;
-    if(filename->fmt==SOCK && isroot(*config))
+    if(filename->fmt==SOCK)
     {
-      send_token_copan(GET_DATA_SIZE,CO2_DATA,config);
-      readint_socket(config->socket,&size,1);
+      if(isroot(*config))
+      {
+        send_token_copan(GET_DATA_SIZE,CO2_DATA,config);
+        readint_socket(config->socket,&size,1);
+      }
+#ifdef USE_MPI
+      MPI_Bcast(&size,1,MPI_INT,0,config->comm);
+#endif
+      if(size!=1)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR149: Invalid number of bands=%d received from socket, must be 1.\n",size);
+        return TRUE;
+      }
     }
   }
   else if(filename->fmt==TXT)

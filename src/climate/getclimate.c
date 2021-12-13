@@ -19,7 +19,7 @@
 
 #include "lpj.h"
 
-Bool readclimate(int what,            /**< which output data */
+Bool readclimate(int what,            /**< which input data */
                  Climatefile *file,   /**< climate data file */
                  Real data[],         /**< climate data read */
                  Real intercept,      /**< offset for data */

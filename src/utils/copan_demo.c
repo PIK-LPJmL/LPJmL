@@ -23,6 +23,7 @@ int main(int argc,char **argv)
   Socket *socket;
   float *data,*landuse,*flux;
   short *country,*region,*sdata;
+  char *endptr;
   float co2;
   Intcoord *coords;
   int count[NOUT];
@@ -31,6 +32,21 @@ int main(int argc,char **argv)
   const char *progname;
   const char *title[4];
   int i,j,k,token,n_out,n_in,ncell,index,year,version,n_out_1;
+  port=DEFAULT_COPAN_PORT;
+  if(argc>1)
+  {
+    port=strtol(argv[1],&endptr,10);
+    if(*endptr!='\0')
+    {
+      fprintf(stderr,"Invalid number '%s' for port.\n",argv[1]);
+      return EXIT_FAILURE;
+    }
+    if(port<0 || port>USHRT_MAX)
+    {
+      fprintf(stderr,"Invalid port number %d.\n",port);
+      return EXIT_FAILURE;
+    }
+  }
   progname=strippath(argv[0]);
   snprintf(line,STRING_LEN,
            "%s C Version %s (" __DATE__ ")",progname,COPANDEMO_VERSION);
@@ -39,7 +55,6 @@ int main(int argc,char **argv)
   title[2]="(c) Potsdam Institute for Climate Impact Research (PIK),";
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
-  port=DEFAULT_COPAN_PORT;
   printf("Waiting for LPJmL model...\n");
   /* Establish the connection */
   socket=opentdt_socket(port,0);

@@ -396,8 +396,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     {
       if(isroot(*config))
       {
-       send_token_copan(GET_DATA_SIZE,MANURE_DATA,config);
-       readint_socket(config->socket,&header.nbands,1);
+        send_token_copan(GET_DATA_SIZE,MANURE_DATA,config);
+        readint_socket(config->socket,&header.nbands,1);
       }
 #ifdef USE_MPI
       MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
@@ -462,7 +462,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       return NULL;
     }
     if(config->manure_nr_filename.fmt!=SOCK)
-    checkyear("manure",&landuse->manure_nr,config);
+      checkyear("manure",&landuse->manure_nr,config);
   }
 
   if(config->tillage_type==READ_TILLAGE)
@@ -1550,7 +1550,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     {
       if(receive_int_copan(TILLAGE_DATA,dates,1,year,config))
       {
-        fprintf(stderr,"ERROR149: Cannot receive tillage types  of year %d in getlanduse().\n",year);
+        fprintf(stderr,"ERROR149: Cannot receive tillage types of year %d in getlanduse().\n",year);
         fflush(stderr);
         free(dates);
         return TRUE;
@@ -1619,7 +1619,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     {
       if(receive_real_copan(RESIDUE_DATA,data,landuse->residue_on_field.var_len,year,config))
       {
-        fprintf(stderr,"ERROR149: Cannot receive residue extraction data  of year %d in getlanduse().\n",year);
+        fprintf(stderr,"ERROR149: Cannot receive residue extraction data of year %d in getlanduse().\n",year);
         fflush(stderr);
         free(dates);
         return TRUE;

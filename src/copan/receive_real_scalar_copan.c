@@ -18,12 +18,12 @@ Bool receive_real_scalar_copan(Real *data,int size,const Config *config)
 {
   float *f;
   int i;
-  f=newvec(float,config->nall*size);
+  f=newvec(float,size);
   check(f);
   if(isroot(*config))
     readfloat_socket(config->socket,f,size);
 #ifdef USE_MPI
-  MPI_Bcast(&f,size,MPI_FLOAT,0,config->comm);
+  MPI_Bcast(f,size,MPI_FLOAT,0,config->comm);
 #endif
   for(i=0;i<size;i++)
     data[i]=f[i];

@@ -14,7 +14,12 @@
 
 #include "lpj.h"
 
-Bool receive_real_copan(int index,Real *data,int size,int year,const Config *config)
+Bool receive_real_copan(int index,           /**< index of input file */
+                        Real data[],         /**< data received from socket */
+                        int size,            /**< number of items per cell */
+                        int year,            /**< year (AD) */
+                        const Config *config /**< LPJmL configuration */
+                       )                     /** \return TRUE on error */
 {
 #ifdef USE_MPI
   int *counts;
@@ -26,6 +31,7 @@ Bool receive_real_copan(int index,Real *data,int size,int year,const Config *con
   check(f);
   if(isroot(*config))
   {
+    /* send token and year */
     send_token_copan(GET_DATA,index,config);
     writeint_socket(config->socket,&year,1);
   }

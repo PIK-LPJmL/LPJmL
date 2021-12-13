@@ -14,7 +14,12 @@
 
 #include "lpj.h"
 
-Bool receive_int_copan(int index,int *data,int size,int year,const Config *config)
+Bool receive_int_copan(int index,           /**< index of input file */
+                       int data[],          /**< data received from socket */
+                       int size,            /**< number of items per cell */
+                       int year,            /**< year (AD) */
+                       const Config *config /**< LPJmL configuration */
+                      )                     /** \return TRUE on error */
 {
 #ifdef USE_MPI
   int *counts;

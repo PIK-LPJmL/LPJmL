@@ -28,11 +28,8 @@ Bool getco2(const Climate *climate, /**< Pointer to climate data */
     {
       send_token_copan(GET_DATA,CO2_DATA,config);
       writeint_socket(config->socket,&year,1);
-      receive_real_scalar_copan(pco2,1,config);
     }
-#ifdef USE_MPI
-    MPI_Bcast(&pco2,1,(sizeof(Real)==sizeof(double)) ? MPI_DOUBLE : MPI_FLOAT,0,config->comm);
-#endif
+    receive_real_scalar_copan(pco2,1,config);
   }
   else
   {
