@@ -48,6 +48,9 @@
   "shuffle_climate" : false,
   "const_climate" : false,
   "fix_climate" : false,
+  "fix_landuse" : false,
+  "extflow" : false,
+  "johansen" : true,
 #ifdef FROM_RESTART
   "new_seed" : false, /* read random seed from restart file */
   "equilsoil" : false,
@@ -84,6 +87,7 @@
   "groundwater_irrigation": false,
   "aquifer_irrigation": false,
   "others_to_crop" : false,
+  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
   "istimber" : false,
   "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
   "crop_phu_option" : "new",

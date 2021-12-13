@@ -61,7 +61,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
     fputc('\n',file);
   }
   /* print data */
-  fprintf(file,"%d%c%g%c%g%c%g%c%g%c%g%c%g",year,d,(flux.npp-flux.rh)*scale,d,flux.gpp*scale,d,flux.npp*scale,d,flux.rh*scale,d,flux.estab*scale,d,flux.neg_fluxes);
+  fprintf(file,"%d%c%g%c%g%c%g%c%g%c%g%c%g",year,d,(flux.npp-flux.rh)*scale,d,flux.gpp*scale,d,flux.npp*scale,d,flux.rh*scale,d,flux.estab*scale,d,flux.neg_fluxes*scale);
   if(config->fire)
     fprintf(file,"%c%g",d,flux.fire*scale);
   if(config->withlanduse!=NO_LANDUSE)
