@@ -553,7 +553,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   }
 #ifdef IMAGE
   if(config->aquifer_irrig==AQUIFER_IRRIG)
-    printinputfile(file,"aquifer",&config->aquifer_filename,width);
+    printinputfile(file,"aquifer",&config->aquifer_filename,width,config);
 #endif
   if(config->wet_filename.name!=NULL)
     printinputfile(file,"wetdays",&config->wet_filename,width,config);
