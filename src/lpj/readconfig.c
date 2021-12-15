@@ -149,20 +149,15 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   if(config->sim_id!=LPJML && config->sim_id!=LPJ && config->sim_id!=LPJML_IMAGE)
   {
     if(verbosity)
-      fprintf(stderr,"ERROR123: Invalid simulation type, must be 'LPJML' or 'LPJ' or 'LPJML_IMAGE'.\n");
+      fprintf(stderr,"ERROR123: Invalid simulation type, must be \"lpjml\" or \"lpj\" or \"lpjml_image\".\n");
     closeconfig(&lpjfile);
     return TRUE;
   }
 #else
-  if(config->sim_id!=LPJML && config->sim_id!=LPJ && config->sim_id!=LPJML_FMS && config->sim_id!=LPJML_COPAN)
+  if(config->sim_id==LPJML_IMAGE)
   {
     if(verbosity)
-    {
-      if(config->sim_id==LPJML_IMAGE)
-        fputs("ERROR219: LPJmL has to be compiled with '-DIMAGE -DCOUPLED' for simulation type 'LPJML_IMAGE'.\n",stderr);
-      else
-        fprintf(stderr,"ERROR123: Invalid simulation type, must be 'LPJML', 'LPJML_FMS' or 'LPJ'.\n");
-    }
+      fputs("ERROR219: LPJmL has to be compiled with '-DIMAGE -DCOUPLED' for simulation type \"lpjml_image\".\n",stderr);
     closeconfig(&lpjfile);
     return TRUE;
   }

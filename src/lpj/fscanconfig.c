@@ -582,7 +582,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       config->iscotton=FALSE;
     if(config->fertilizer_input==FERTILIZER || config->manure_input || config->residue_treatment==READ_RESIDUE_DATA || config->tillage_type==READ_TILLAGE)
     {
-      config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",config->sim_id==LPJML_COPAN,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+      config->fertilizermap=scancftmap(file,&config->fertilizermap_size,"fertilizermap",FALSE,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
       if(config->fertilizermap==NULL)
         return TRUE;
     }
