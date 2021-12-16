@@ -70,7 +70,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
     /* if burnt area is simulated use the actual Nesterov index instead the maximum */
     stand->cell->ignition.nesterov_max = stand->cell->ignition.nesterov_accum;
   }
-
+  fuelload(stand, &fuel, livefuel, stand->cell->ignition.nesterov_max);
   fire_danger_index=firedangerindex(fuel.char_moist_factor,
                                     stand->cell->ignition.nesterov_max,
                                     &stand->pftlist,climate->humid,
