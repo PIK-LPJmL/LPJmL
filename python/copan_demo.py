@@ -8,12 +8,16 @@
 ### authors, and contributors see AUTHORS file                                      ###
 ### This file is part of LPJmL and licensed under GNU AGPL Version 3                ###
 ### or later. See LICENSE file or go to http://www.gnu.org/licenses/                ###
-### Contact: https://github.com/PIK-LPJmL/LPJmL                                     ### 
+### Contact: https://github.com/PIK-LPJmL/LPJmL                                     ###
 ###                                                                                 ###
 #######################################################################################
 
 import socket
 import struct
+
+COPAN_COUPLER_VERSION=1        # Protocol version
+
+# List of tokens
 
 GET_DATA=0      # Receiving data from COPAN
 PUT_DATA=1      # Sending data to COPAN
@@ -104,6 +108,10 @@ num=read_int(channel)
 num=1
 write_int(channel,num)
 version=read_int(channel)
+if version!=COPAN_COUPLER_VERSION:
+  print("Invalid coupler version "+str(version)+", must be "+str(COPAN_COUPLER_VERSION))
+  channel.close()
+  quit()
 ncell=read_int(channel)
 print('Number of cells: '+str(ncell))
 n_in=read_int(channel)
@@ -112,6 +120,10 @@ print("Number of input streams:  "+str(n_in))
 print("Number of output streams: "+str(n_out))
 for i in range(0,n_in):
   token=read_int(channel)
+  if token!=GET_DATA_SIZE:
+    print("Token "+str(token)+" is not GET_DATA_SIZE")
+    channel.close()
+    quit()
   index=read_int(channel)
   if index==LANDUSE_DATA:
     landuse=[0.001]*64*ncell
@@ -126,6 +138,10 @@ data=[0.0]*ncell
 n_out_1=0
 for i in range(0,n_out):
   token=read_int(channel)
+  if token!=PUT_DATA_SIZE:
+    print("Token "+str(token)+" is not PUT_DATA_SIZE")
+    channel.close()
+    quit()
   index=read_int(channel)
   count[index]=read_int(channel)
   if index==GLOBALFLUX:
@@ -134,6 +150,10 @@ for i in range(0,n_out):
     n_out_1=n_out_1+1
 for i in range(0,n_out_1):
   token=read_int(channel)
+  if token!=PUT_DATA:
+    print("Token "+str(token)+" is not PUT_DATA")
+    channel.close()
+    quit()
   index=read_int(channel)
   if index==GRID:
     for i in range(0,ncell):
@@ -147,7 +167,11 @@ while True:
   for i in range(0,n_in):
     token=read_int(channel)
     if(token==END_DATA):
-      break 
+      break
+    if token!=GET_DATA:
+      print("Token "+str(token)+" is not GET_DATA")
+      channel.close()
+      quit()
     index=read_int(channel)
     year=read_int(channel)
     if index==LANDUSE_DATA:
@@ -158,9 +182,13 @@ while True:
     else:
       print("Unsupported input "+str(index))
   if(token==END_DATA):
-    break 
+    break
   for i in range(0,n_out):
     token=read_int(channel)
+    if token!=PUT_DATA:
+      print("Token "+str(token)+" is not PUT_DATA")
+      channel.close()
+      quit()
     index=read_int(channel)
     print(index)
     print(count[index])
@@ -173,7 +201,7 @@ while True:
     else:
       for j in range(0,count[index]):
         for k in range(0,ncell):
-          data[k]=read_float(channel) 
+          data[k]=read_float(channel)
         print(data)
 print("End of communication")
 channel.close()
