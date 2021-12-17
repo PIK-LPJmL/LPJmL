@@ -906,11 +906,6 @@ Cell *newgrid(Config *config,          /**< Pointer to LPJ configuration */
     if(initreservoir(grid,config))
       return NULL;
   }
-  if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
-  {
-    if(initignition(grid,config))
-      return NULL;
-  }
   if(config->withlanduse!=NO_LANDUSE && config->iscotton)
   {
     if(readcottondays(grid,config))

@@ -28,5 +28,6 @@ void freeinput(Input input,          /**< Input struct */
 #endif
   freelanduse(input.landuse,config);
   freepopdens(input.popdens,isroot(*config));
+  freehumanignition(input.human_ignition,isroot(*config));
   freelandcover(input.landcover,isroot(*config));
 } /* of 'freeinput' */

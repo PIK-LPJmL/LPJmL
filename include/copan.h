@@ -33,7 +33,7 @@
 
 /* List of input data streams */
 
-#define N_IN 22         /* Number of available input data streams */
+#define N_IN 23         /* Number of available input data streams */
 #define CLOUD_DATA 0
 #define TEMP_DATA 1
 #define PREC_DATA 2
@@ -56,6 +56,7 @@
 #define MANURE_DATA 19
 #define WATERUSE_DATA 20
 #define POPDENS_DATA 21
+#define HUMAN_IGNITION_DATA 22
 
 /* Declaration of functions */
 

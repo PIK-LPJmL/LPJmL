@@ -260,6 +260,19 @@ int iterate(Outputfile *output, /**< Output file data */
         break; /* leave time loop */
       }
     }
+    if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
+    {
+      rc=gethumanignition(input.human_ignition,year,grid,config);
+      if(iserror(rc,config))
+      {
+        if(isroot(*config))
+        {
+          fprintf(stderr,"ERROR104: Simulation stopped in gethumanignition().\n");
+          fflush(stderr);
+        }
+        break; /* leave time loop */
+      }
+    }
     if (config->prescribe_landcover != NO_LANDCOVER)
     {
       rc=readlandcover(input.landcover,grid,year,config);
