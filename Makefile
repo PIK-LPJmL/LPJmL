@@ -106,7 +106,7 @@ tar:
             src/image/Makefile src/image/*.c src/reservoir/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
-            src/cpl/Makefile src/cpl/*.c src/copan/*.c
+            src/cpl/Makefile src/cpl/*.c src/copan/Makefile src/copan/*.c
 	    gzip -f lpjml-5.3.001.tar
 
 zipfile: 
@@ -123,4 +123,4 @@ zipfile:
             src/image/*.c src/image/Makefile src/reservoir/*.c\
             src/pnet/Makefile REFERENCES COPYRIGHT src/utils/*.c src/utils/Makefile\
             src/spitfire/Makefile src/spitfire/*.c src/netcdf/Makefile src/netcdf/*.c\
-            src/cpl/Makefile src/cpl/*.c src/copan/*.c
+            src/cpl/Makefile src/cpl/*.c src/copan/Makefile src/copan/*.c
