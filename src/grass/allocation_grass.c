@@ -131,10 +131,10 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         a = 0;
       if (a>1)
         a = 1;
-      if ((grass->ind.leaf.nitrogen + a*bm_inc_ind.nitrogen) / grass->ind.leaf.carbon>pft->par->ncleaf.high)
+      if ((grass->ind.leaf.nitrogen+a*bm_inc_ind.nitrogen)/grass->ind.leaf.carbon > pft->par->ncleaf.high)
       {
         grass->ind.leaf.nitrogen = grass->ind.leaf.carbon*pft->par->ncleaf.high;
-        pft->bm_inc.nitrogen -= grass->ind.leaf.nitrogen - lastday.leaf.nitrogen;
+        pft->bm_inc.nitrogen -= grass->ind.leaf.nitrogen-lastday.leaf.nitrogen;
         if (pft->bm_inc.nitrogen >= grass->ind.root.carbon*pft->par->ncleaf.high / grasspar->ratio - grass->ind.root.nitrogen)
         {
           grass->ind.root.nitrogen = grass->ind.root.carbon*pft->par->ncleaf.high / grasspar->ratio;
@@ -201,7 +201,7 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         getoutput(output,LITFALLC,config) += (lastday.root.carbon - grass->ind.root.carbon)*pft->nind*pft->stand->frac;
       }
     }
-    pft->nleaf = grass->ind.leaf.nitrogen;
+    pft->nleaf = grass->ind.leaf.nitrogen*pft->nind;
   } /* of config->with_nitrogen */
   *fpc_inc=fpc_grass(pft);
 #ifdef DEBUG

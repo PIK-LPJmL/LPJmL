@@ -550,8 +550,8 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
     }
     if(!isannual(PFT_VEGN,config))
     {
-      getoutputindex(output,PFT_VEGN,nnat+rothers(ncft)+index,config)=vegn_sum(pft);
-      getoutputindex(output,PFT_VEGN,nnat+rmgrass(ncft)+index,config)=vegn_sum(pft);
+      getoutputindex(output,PFT_VEGN,nnat+rothers(ncft)+index,config)=vegn_sum(pft)+pft->bm_inc.nitrogen;
+      getoutputindex(output,PFT_VEGN,nnat+rmgrass(ncft)+index,config)=vegn_sum(pft)+pft->bm_inc.nitrogen;
     }
     if(!isannual(PFT_CLEAF,config))
     {

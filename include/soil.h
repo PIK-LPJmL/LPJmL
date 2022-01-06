@@ -284,4 +284,5 @@ extern void pedotransfer(Stand *, Real *, Real *,Real);
 #define fprintpool(file,pool) fprintf(file,"%.2f %.2f",pool.slow,pool.fast)
 #define f_temp(soiltemp) exp(-(soiltemp-18.79)*(soiltemp-18.79)/(2*5.26*5.26)) /* Parton et al 2001*/
 #define f_NH4(nh4) (1-exp(-0.0105*(nh4))) /* Parton et al 1996 */
+#define getsoilmoist(soil,l) (((soil)->w[l] * (soil)->whcs[l] + ((soil)->wpwps[l] * (1 - (soil)->ice_pwp[l])) + (soil)->w_fw[l]) / (soil)->wsats[l])
 #endif /* SOIL_H */
