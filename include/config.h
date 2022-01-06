@@ -99,9 +99,9 @@ struct config
   char *image_host;       /**< hostname for computer running the IMAGE model */
   int image_inport;       /**< port numbert for ingoing data */
   int image_outport;      /**< port number for outgoing data */
-  int wait_image;         /**< time to wait for image connection (sec) */
 #endif
 #endif
+  int wait;               /**< time to wait for connection (sec) */
   char *sim_name;         /**< Desciption of LPJ simulation */
   int sim_id;             /**< Simulation type */
   int *npft;              /**< number of PFTs in each PFT class */

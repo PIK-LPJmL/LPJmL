@@ -20,8 +20,10 @@
 
 #define COPAN_COUPLER_VERSION 1        /* Protocol version */
 #define LPJCOPAN "LPJCOPAN"            /* Environment variable for COPAN coupler */
+#define LPJWAIT "LPJWAIT"              /* Time to wait for connection */
 #define DEFAULT_COPAN_HOST "localhost" /* Default host for COPAN model */
 #define DEFAULT_COPAN_PORT 2224        /* Default port for in and outgoing connection */
+#define DEFAULT_WAIT 0                 /* Default time to wait for connection */
 
 /* List of tokens */
 

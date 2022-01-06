@@ -79,23 +79,30 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   env_options=getenv(LPJOUTPUTMETHOD);
   config->param_out=FALSE;
   config->scan_verbose=ERR; /* NO_ERR would suppress also error messages */
-#if defined IMAGE && defined COUPLED
-  config->image_inport=DEFAULT_IMAGE_INPORT;
-  config->image_outport=DEFAULT_IMAGE_OUTPORT;
-  config->image_host=getenv(LPJIMAGE);
-  pos=getenv(LPJWAITIMAGE);
+  pos=getenv(LPJWAIT);
   if(pos!=NULL)
   {
-    config->wait_image=strtol(pos,&endptr,10);
+    config->wait=strtol(pos,&endptr,10);
     if(*endptr!='\0')
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR193: Invalid number '%s' for IMAGE wait in environment variable.\n",pos);
+        fprintf(stderr,"ERROR193: Invalid number '%s' for wait in environment variable.\n",pos);
+      return NULL;
+    }
+    if(config->wait<0)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR193: Invalid number %d for wait in environment variable, must be >=0.\n",config->wait);
       return NULL;
     }
   }
   else
-    config->wait_image=WAIT_IMAGE;
+    config->wait=DEFAULT_WAIT;
+
+#if defined IMAGE && defined COUPLED
+  config->image_inport=DEFAULT_IMAGE_INPORT;
+  config->image_outport=DEFAULT_IMAGE_OUTPORT;
+  config->image_host=getenv(LPJIMAGE);
   if(config->image_host==NULL)
     config->image_host=DEFAULT_IMAGE_HOST;
   else
@@ -196,7 +203,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         options[dcount++]=(*argv)[i];
         len+=strlen((*argv)[i])+1;
       }
-#if defined IMAGE && defined COUPLED
       else if(!strcmp((*argv)[i],"-wait"))
       {
         if(i==*argc-1)
@@ -212,16 +218,24 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         }
         else
         {
-          config->wait_image=strtol((*argv)[++i],&endptr,10);
+          config->wait=strtol((*argv)[++i],&endptr,10);
           if(*endptr!='\0')
           {
             if(isroot(*config))
-              fprintf(stderr,"ERROR193: Invalid number '%s' for IMAGE wait in option.\n",(*argv)[i]);
+              fprintf(stderr,"ERROR193: Invalid number '%s' for wait in option.\n",(*argv)[i]);
+            free(options);
+            return NULL;
+          }
+          if(config->wait<0)
+          {
+            if(isroot(*config))
+              fprintf(stderr,"ERROR193: Invalid number %d for wait in option, must be >=0.\n",config->wait);
             free(options);
             return NULL;
           }
         }
       }
+#if defined IMAGE && defined COUPLED
       else if(!strcmp((*argv)[i],"-image"))
       {
         if(i==*argc-1)

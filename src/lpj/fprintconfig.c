@@ -599,15 +599,19 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
             "Coupled to IMAGE model running on host %s using port %d and %d.\n"
             "Time to wait for connection: %6d sec\n",
             config->image_host,config->image_inport,
-            config->image_outport,config->wait_image);
+            config->image_outport,config->wait);
 
 #else
   if(config->sim_id==LPJML_COPAN)
-    fprintf(file,"Coupled to COPAN model running on host %s using port %d.\n"
-            "Number of inputs from COPAN:  %d\n"
-            "Number of output to COPAN:    %d\n",
-            config->copan_host,config->copan_port,
+  {
+    fprintf(file,"Coupled to COPAN model running on host %s using port %d.\n",
+            config->copan_host,config->copan_port);
+    if(config->wait)
+      fprintf(file,"Time to wait for connection: %5d sec\n",config->wait);
+    fprintf(file,"Number of inputs from COPAN: %5d\n"
+            "Number of output to COPAN:   %5d\n",
             config->copan_in,config->copan_out);
+  }
 #endif
 
 #ifndef PERMUTE

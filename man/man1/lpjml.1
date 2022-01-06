@@ -3,12 +3,12 @@
 lpj, lpjml \- Dynamic global vegetation model with managed land and river routing
 .SH SYNOPSIS
 .B lpjml
-[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-copan host[:port]] [\-output {write|gather|mpi2}] [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-copan host[:port]] [\-wait time] [\-output {write|gather|mpi2}] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
 
 .B lpj
-[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-copan host[:port]] [\-output {write|gather|mpi2} [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-copan host[:port]] [\-wait time] [\-output {write|gather|mpi2} [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
 .SH DESCRIPTION
@@ -49,6 +49,9 @@ set host where IMAGE model is running. Default is localhost. inport and outport 
 .TP
 \-copan host[:port]
 set host where the COPAN model is running. Default is localhost. Port is the port number for ingoing and outgoing data. Default port number is 2224.
+.TP
+\-wait time
+set time to wait for connection to COPAN/IMAGE model. Time is measured in seconds.
 .TP
 \-output {gather|mpi2}
 use the given output method to write data to disk or to a output channel. Valid output methods are write,
@@ -101,6 +104,9 @@ environment variable correctly.
 LPJCOPAN
 sets the host where the COPAN model is running. Same as '-copan' option.
 .TP
+LPJWAIT
+sets time to waitit for connection to COPAN/IMAGE modelg. Same as '-wait' option.
+.TP
 LPJIMAGE
 sets the host where IMAGE model is running. Same as '-image' option.
 .TP
@@ -118,7 +124,7 @@ path appended to the restart filenames. Only done for filenames without absolute
 .TP
 LPJOUTPUT
 default method for generating output files. Valid values
-are mpi2, gather, and socket. Same as '-output method' option.
+are mpi2 or gather. Same as '-output method' option.
 
 .SH EXIT STATUS
 .B lpjml
@@ -197,7 +203,7 @@ ERROR022
 Negative establishment rate. Internal error.
 .TP
 ERROR023
-Output channel is broken. This error is only raised if '-output socket' option is set. It is usually caused by a premature end of the corresponding live view program. External error.
+Output channel is broken. This error is only raised if LPJml is coupled to COPAN or IMAGE. It is usually caused by a premature end of the corresponding COPAN/IMAGE program. External error.
 .TP
 ERROR024
 Error sending data to the IMAGE model. This error can only be raised if LPJmL is compiled with the -DIMAGE flag set in \fIMakefile.inc\fP. External error.

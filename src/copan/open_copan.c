@@ -14,12 +14,20 @@
 /**************************************************************************************/
 
 #include <signal.h>
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 #include "lpj.h"
 
 static void handler(int UNUSED(num))
 {
   fail(SOCKET_ERR,FALSE,"Channel to COPAN is broken");
 } /* of 'handler' */
+
+static void alarmhandler(int UNUSED(num))
+{
+  fail(OPEN_COPAN_ERR,FALSE,"Timeout in COPAN connection");
+} /* of 'alarmhandler' */
 
 Bool open_copan(Config *config /**< LPJmL configuration */
                )               /** \return TRUE on error */
@@ -31,7 +39,21 @@ Bool open_copan(Config *config /**< LPJmL configuration */
     /* Establish the TDT connection */
     printf("Connecting to COPAN model...\n");
     fflush(stdout);
+    if(config->wait)
+    {
+#ifndef _WIN32
+      signal(SIGALRM,alarmhandler);
+      alarm(config->wait);
+#endif
+    }
     config->socket=connecttdt_socket(config->copan_host,config->copan_port);
+#ifndef _WIN32
+    if(config->wait)
+    {
+      alarm(0);
+      signal(SIGALRM,SIG_DFL);
+    }
+#endif
     if(config->socket==NULL)
       return TRUE;
 #ifndef _WIN32
