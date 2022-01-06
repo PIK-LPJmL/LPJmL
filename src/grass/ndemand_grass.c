@@ -32,7 +32,7 @@ Real ndemand_grass(const Pft *pft,    /**< pointer to PFT */
   //*ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft))) +param.n0*0.001*(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf)*pft->nind;
   //*ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft))) +pft->par->ncleaf.low*(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf)*pft->nind;
   //*ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft)))+pft->par->ncleaf.low*(grass->ind.leaf.carbon)*pft->nind;
-  *ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft)))+pft->par->ncleaf.median*(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf)*pft->nind;
+  *ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft)))+pft->par->ncleaf.median*(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf);
   
   nc_ratio=*ndemand_leaf/(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf);
   if(nc_ratio>pft->par->ncleaf.high)

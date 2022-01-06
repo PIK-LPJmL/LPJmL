@@ -110,7 +110,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   if(config->fertilizer_input==AUTO_FERTILIZER && (pft->stand->type->landusetype==GRASSLAND || pft->stand->type->landusetype==BIOMASS_GRASS || pft->stand->type->landusetype==AGRICULTURE_GRASS))
   {
     data=pft->stand->data;
-    autofert_n=*n_plant_demand-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen);
+    autofert_n=*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen);
     n_uptake += autofert_n;
     pft->bm_inc.nitrogen += autofert_n;
     pft->vscal+=1;
