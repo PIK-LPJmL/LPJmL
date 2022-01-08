@@ -97,7 +97,7 @@ Real daily_woodplantation(Stand *stand,       /**< stand pointer */
     fertilize_tree(stand,
                    (stand->cell->ml.fertilizer_nr==NULL) ? 0.0 : stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].woodplantation,
                    (stand->cell->ml.manure_nr==NULL) ? 0.0 : stand->cell->ml.manure_nr[data->irrigation.irrigation].woodplantation,
-                   config);
+                   day,config);
 
   /* green water inflow */
   rainmelt = climate->prec + melt;

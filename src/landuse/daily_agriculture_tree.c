@@ -143,14 +143,23 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   if(rainmelt<0)
     rainmelt=0.0;
 
+  /* The index for ag_tree in ml.fertilizer_nr.ag_tree structure (fertil)
+     takes PFT id (according to pft.js or similar),
+     subtracts the number of all non-crop PFTs (npft),
+     adds the number of ag_trees (config->nagtree),
+     so that the first element in ag_tree fertilizer vector (indexed as 0)
+     is read for the first ag_tree in pftpar list */
   nnat=getnnat(npft,config);
   index=agtree(ncft,config->nwptype)+data->irrigation.pft_id-npft+config->nagtree+data->irrigation.irrigation*getnirrig(ncft,config);
+
+  /* Apply fertilizers */
   if(config->with_nitrogen)
     fertilize_tree(stand,
                    (stand->cell->ml.fertilizer_nr==NULL) ? 0.0 : stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].ag_tree[data->irrigation.pft_id-npft+config->nagtree],
                    (stand->cell->ml.manure_nr==NULL) ? 0.0 : stand->cell->ml.manure_nr[data->irrigation.irrigation].ag_tree[data->irrigation.pft_id-npft+config->nagtree],
-                   config); /* apply irrigation */
+                   day, config);
 
+  /* Apply irrigation */
   if(data->irrigation.irrigation && data->irrigation.irrig_amount>epsilon)
   {
     irrig_apply=max(data->irrigation.irrig_amount-rainmelt,0);  /*irrigate only missing deficit after rain, remainder goes to stor */

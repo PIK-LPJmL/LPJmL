@@ -97,6 +97,7 @@ typedef struct
   Real excess_carbon;   /**< gC/ind; storage for carbon that cannot be allocated under given N limitation */
   Real nfertilizer;     /**< gN/m2; fertilier N to be applied in 2nd or additional doses */
   Real nmanure;         /**< gN/m2; manure N to be applied in 2nd or additional doses */
+  Real nfert_event      /**< count of N-fertilization events */;
   int boll_age;
 } Pfttree;
 
