@@ -49,6 +49,7 @@ void fprint_tree(FILE *file,       /**< pointer to text file */
     {
       fprintf(file,"N fertilizer:\t%g (gN/m2)\n",tree->nfertilizer);
       fprintf(file,"N manure:\t%g (gN/m2)\n",tree->nmanure);
+      fprintf(file,"Nfert event:\t%d\n",tree->nfert_event);
     }
     fprintf(file,"falloc:\t\t%g %g %g\n",tree->falloc.leaf,tree->falloc.root,tree->falloc.sapwood);
   }
