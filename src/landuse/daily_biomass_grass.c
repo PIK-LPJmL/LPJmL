@@ -91,16 +91,30 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
-  if (config->with_nitrogen && stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
+  if (config->with_nitrogen)
   {
-    if(day==fertday_biomass(stand->cell,config))
+    if(stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
     {
-      fertil = stand->cell->ml.fertilizer_nr[data->irrigation].biomass_grass;
-      stand->soil.NO3[0]+=fertil*0.5; /* *param.nfert_no3_frac;*/
-      stand->soil.NH4[0]+=fertil*0.5; /* *(1-param.nfert_no3_frac);*/
-      stand->cell->balance.n_influx+=fertil*stand->frac;
-      getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
-    } /* end fday==day */
+      if(day==fertday_biomass(stand->cell,config))
+      {
+        fertil = stand->cell->ml.fertilizer_nr[data->irrigation].biomass_grass;
+        stand->soil.NO3[0]+=fertil*0.5; /* *param.nfert_no3_frac;*/
+        stand->soil.NH4[0]+=fertil*0.5; /* *(1-param.nfert_no3_frac);*/
+        stand->cell->balance.n_influx+=fertil*stand->frac;
+        getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
+      } /* end fday==day */
+    }
+    if(stand->cell->ml.manure_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
+    {
+      if(day==fertday_biomass(stand->cell,config))
+      {
+        fertil = stand->cell->ml.manure_nr[data->irrigation].biomass_grass;
+        stand->soil.NO3[0]+=fertil*0.5; /* *param.nfert_no3_frac;*/
+        stand->soil.NH4[0]+=fertil*0.5; /* *(1-param.nfert_no3_frac);*/
+        stand->cell->balance.n_influx+=fertil*stand->frac;
+        getoutput(output,NMANURE_AGR,config)+=fertil*stand->frac;
+      } /* end fday==day */
+    }
   }
 
   /* green water inflow */
