@@ -98,8 +98,8 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       if(day==fertday_biomass(stand->cell,config))
       {
         fertil = stand->cell->ml.fertilizer_nr[data->irrigation].biomass_grass;
-        stand->soil.NO3[0]+=fertil*0.5; /* *param.nfert_no3_frac;*/
-        stand->soil.NH4[0]+=fertil*0.5; /* *(1-param.nfert_no3_frac);*/
+        stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
+        stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
         stand->cell->balance.n_influx+=fertil*stand->frac;
         getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
       } /* end fday==day */
@@ -109,8 +109,8 @@ Real daily_biomass_grass(Stand *stand,                /**< stand pointer */
       if(day==fertday_biomass(stand->cell,config))
       {
         fertil = stand->cell->ml.manure_nr[data->irrigation].biomass_grass;
-        stand->soil.NO3[0]+=fertil*0.5; /* *param.nfert_no3_frac;*/
-        stand->soil.NH4[0]+=fertil*0.5; /* *(1-param.nfert_no3_frac);*/
+        stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
+        stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
         stand->cell->balance.n_influx+=fertil*stand->frac;
         getoutput(output,NMANURE_AGR,config)+=fertil*stand->frac;
       } /* end fday==day */

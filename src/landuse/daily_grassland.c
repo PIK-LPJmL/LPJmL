@@ -130,8 +130,8 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         fertil = (stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].grass[0]*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0]+
                  stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].grass[1]*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1])/
                  (stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0]+stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1]);
-        stand->soil.NO3[0]+=fertil*0.5; /* *param.nfert_no3_frac;*/
-        stand->soil.NH4[0]+=fertil*0.5; /* *(1-param.nfert_no3_frac);*/
+        stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
+        stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
         stand->cell->balance.n_influx+=fertil*stand->frac;
         getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
       } /* end fday==day */
@@ -143,8 +143,8 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         fertil = (stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[0]*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0]+
                  stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[1]*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1])/
                  (stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0]+stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1]);
-        stand->soil.NO3[0]+=fertil*0.5; /* *param.nfert_no3_frac;*/
-        stand->soil.NH4[0]+=fertil*0.5; /* *(1-param.nfert_no3_frac);*/
+        stand->soil.NO3[0]+=fertil*param.nfert_no3_frac;
+        stand->soil.NH4[0]+=fertil*(1-param.nfert_no3_frac);
         stand->cell->balance.n_influx+=fertil*stand->frac;
         getoutput(output,NMANURE_AGR,config)+=fertil*stand->frac;
       } /* end fday==day */
