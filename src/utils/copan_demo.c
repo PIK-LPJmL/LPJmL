@@ -18,6 +18,8 @@
 
 #define COPANDEMO_VERSION "0.9.001"
 
+#define LANDUSE_NBANDS 64
+
 int main(int argc,char **argv)
 {
   Socket *socket;
@@ -96,8 +98,8 @@ int main(int argc,char **argv)
     switch(index)
     {
       case LANDUSE_DATA:
-        index=64;
-        landuse=newvec(float,ncell*64);
+        index=LANDUSE_NBANDS;
+        landuse=newvec(float,ncell*LANDUSE_NBANDS);
         check(landuse);
         break;
       case CO2_DATA:
@@ -110,7 +112,7 @@ int main(int argc,char **argv)
     /* send number of bands */
     writeint_socket(socket,&index,1);
   }
-  /* Get number of items per cell for each output data strean */
+  /* Get number of items per cell for each output data stream */
   for(i=0;i<NOUT;i++)
     count[i]=-1;
   n_out_1=0;
@@ -214,9 +216,9 @@ int main(int argc,char **argv)
       switch(index)
       {
         case LANDUSE_DATA:
-          for(j=0;j<ncell*64;j++)
+          for(j=0;j<ncell*LANDUSE_NBANDS;j++)
             landuse[j]=0.001;
-          writefloat_socket(socket,landuse,ncell*64);
+          writefloat_socket(socket,landuse,ncell*LANDUSE_NBANDS);
           break;
         case CO2_DATA:
           co2=288.0;

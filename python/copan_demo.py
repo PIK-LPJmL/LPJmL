@@ -1,6 +1,6 @@
 #######################################################################################
 ###                                                                                 ###
-###                c  o  p  a  n  _  d  e  m  o  .  c                               ###
+###                c  o  p  a  n  _  d  e  m  o  .  p  y                            ###
 ###                                                                                 ###
 ###     Demonstration program for coupling LPJmL to COPAN                           ###
 ###                                                                                 ###
@@ -15,18 +15,20 @@
 import socket
 import struct
 
-COPAN_COUPLER_VERSION=1        # Protocol version
+COPAN_COUPLER_VERSION=1 # Protocol version
+DEFAULT_PORT=2224       # default port for in- and outgoing data
 
 # List of tokens
 
-GET_DATA=0      # Receiving data from COPAN
-PUT_DATA=1      # Sending data to COPAN
-GET_DATA_SIZE=2 # Receiving data size from COPAN
-PUT_DATA_SIZE=3 # Sending data size to COPAN
-END_DATA=4      # Ending communication
+GET_DATA=0       # Receiving data from COPAN
+PUT_DATA=1       # Sending data to COPAN
+GET_DATA_SIZE=2  # Receiving data size from COPAN
+PUT_DATA_SIZE=3  # Sending data size to COPAN
+END_DATA=4       # Ending communication
 
-N_OUT=346
+N_OUT=346       # Number of available output data streams
 N_IN=23         # Number of available input data streams
+
 CLOUD_DATA=0
 TEMP_DATA=1
 PREC_DATA=2
@@ -55,6 +57,8 @@ GRID=0
 COUNTRY=1
 REGION=2
 GLOBALFLUX=3
+
+LANDUSE_NBANDS=64 # number of bands in landuse data
 
 def recvall (channel, size):
   str   = ""
@@ -93,20 +97,26 @@ def read_float (channel):
   floattup = struct.unpack ('f', floatstr)
   return floattup[0]
 
+def opentdt(port):
 # create an INET, STREAMing socket
-print("Waiting for LPJmL model...")
-serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # bind the socket to a public host, and a well-known port
-serversocket.bind(("", 2224))
+  serversocket.bind(("", port))
 # become a server socket
-serversocket.listen(5)
+  serversocket.listen(5)
 # accept connections from outside
-(channel, address) = serversocket.accept()
-channel.send('1')
-known_int=read_int(channel)
-num=read_int(channel)
-num=1
-write_int(channel,num)
+  (channel, address) = serversocket.accept()
+  channel.send('1')
+  known_int=read_int(channel)
+  num=read_int(channel)
+  num=1
+  write_int(channel,num)
+  return channel
+
+print("Waiting for LPJmL model...")
+# Establish the connection
+channel=opentdt(DEFAULT_PORT)
+# Get protocol version
 version=read_int(channel)
 if version!=COPAN_COUPLER_VERSION:
   print("Invalid coupler version "+str(version)+", must be "+str(COPAN_COUPLER_VERSION))
@@ -118,6 +128,9 @@ n_in=read_int(channel)
 n_out=read_int(channel)
 print("Number of input streams:  "+str(n_in))
 print("Number of output streams: "+str(n_out))
+
+# Send number of items per cell for each input data stream
+
 for i in range(0,n_in):
   token=read_int(channel)
   if token!=GET_DATA_SIZE:
@@ -126,13 +139,17 @@ for i in range(0,n_in):
     quit()
   index=read_int(channel)
   if index==LANDUSE_DATA:
-    landuse=[0.001]*64*ncell
-    index=64
+    landuse=[0.001]*LANDUSE_NBANDS*ncell
+    index=LANDUSE_NBANDS
   elif index==CO2_DATA:
     index=1
   else:
     print("Unsupported input "+str(index))
+# Send number of bands
   write_int(channel,index)
+
+# Get number of items per cell for each output data stream
+
 count=[-1]*N_OUT
 data=[0.0]*ncell
 n_out_1=0
@@ -143,11 +160,16 @@ for i in range(0,n_out):
     channel.close()
     quit()
   index=read_int(channel)
+# Get number of bands for output
   count[index]=read_int(channel)
+# Check for static output
   if index==GLOBALFLUX:
     flux=[0]*count[index]
   elif index==GRID or index==COUNTRY or index==REGION:
     n_out_1=n_out_1+1
+
+# Read all static non time dependent outputs
+
 for i in range(0,n_out_1):
   token=read_int(channel)
   if token!=PUT_DATA:
@@ -162,11 +184,16 @@ for i in range(0,n_out_1):
       print(lon,lat)
   else:
     print("Unsupported output "+str(index))
+# Reduce the number of output streams by the number of static streams
 n_out=n_out-n_out_1
+
+# Main simulation loop
+
 while True:
+# Send input to LPJmL
   for i in range(0,n_in):
     token=read_int(channel)
-    if(token==END_DATA):
+    if(token==END_DATA): # Did we receive end token?
       break
     if token!=GET_DATA:
       print("Token "+str(token)+" is not GET_DATA")
@@ -175,7 +202,7 @@ while True:
     index=read_int(channel)
     year=read_int(channel)
     if index==LANDUSE_DATA:
-      for j in range(0,ncell*64):
+      for j in range(0,ncell*LANDUSE_NBANDS):
         write_float(channel,landuse[j])
     elif index==CO2_DATA:
       write_float(channel,288.)
@@ -183,6 +210,7 @@ while True:
       print("Unsupported input "+str(index))
   if(token==END_DATA):
     break
+# Get output from LPJmL
   for i in range(0,n_out):
     token=read_int(channel)
     if token!=PUT_DATA:
