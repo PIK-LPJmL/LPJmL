@@ -76,12 +76,13 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   Real hfrac=0.5;
   Real cleaf=0.0;
   Real cleaf_max=0.0;
-  irrig_apply=0.0;
+  Real fertil;
   int n_pft,index,nnat;
   Real *fpc_inc;
 #ifdef PERMUTE
   int *pvec;
 #endif
+  irrig_apply=0.0;
 
   n_pft=getnpft(&stand->pftlist); /* get number of established PFTs */
   nnat=getnnat(npft,config);
@@ -120,6 +121,35 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
 
   for(l=0;l<LASTLAYER;l++)
     aet_stand[l]=green_transp[l]=0;
+  if (config->with_nitrogen)
+  {
+    if(stand->cell->ml.fertilizer_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
+    {
+      if(day==fertday_biomass(stand->cell,config))
+      {
+        fertil = (stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].grass[0]*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0]+
+                 stand->cell->ml.fertilizer_nr[data->irrigation.irrigation].grass[1]*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1])/
+                 (stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0]+stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1]);
+        stand->soil.NO3[0]+=fertil*0.5; /* *param.nfert_no3_frac;*/
+        stand->soil.NH4[0]+=fertil*0.5; /* *(1-param.nfert_no3_frac);*/
+        stand->cell->balance.n_influx+=fertil*stand->frac;
+        getoutput(output,NFERT_AGR,config)+=fertil*stand->frac;
+      } /* end fday==day */
+    }
+    if(stand->cell->ml.manure_nr!=NULL) /* has to be adapted if fix_fertilization option is added */
+    {
+      if(day==fertday_biomass(stand->cell,config))
+      {
+        fertil = (stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[0]*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0]+
+                 stand->cell->ml.manure_nr[data->irrigation.irrigation].grass[1]*stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1])/
+                 (stand->cell->ml.landfrac[data->irrigation.irrigation].grass[0]+stand->cell->ml.landfrac[data->irrigation.irrigation].grass[1]);
+        stand->soil.NO3[0]+=fertil*0.5; /* *param.nfert_no3_frac;*/
+        stand->soil.NH4[0]+=fertil*0.5; /* *(1-param.nfert_no3_frac);*/
+        stand->cell->balance.n_influx+=fertil*stand->frac;
+        getoutput(output,NMANURE_AGR,config)+=fertil*stand->frac;
+      } /* end fday==day */
+    }
+  }
 
   /* green water inflow */
   rainmelt=climate->prec+melt;
