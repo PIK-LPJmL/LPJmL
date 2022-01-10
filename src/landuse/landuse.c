@@ -1417,7 +1417,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           grid[cell].ml.fertilizer_nr[i].biomass_tree=param.fertilizer_rate;
           grid[cell].ml.manure_nr[i].biomass_grass=param.manure_rate;
           grid[cell].ml.manure_nr[i].biomass_tree=param.manure_rate;
-          grid[cell].ml.fertilizer_nr[i].woodplantation=param.manure_rate;
+          grid[cell].ml.fertilizer_nr[i].woodplantation=param.fertilizer_rate;
           grid[cell].ml.manure_nr[i].woodplantation=param.manure_rate;
         }
       }
