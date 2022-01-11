@@ -209,7 +209,7 @@ ID                               Fmt                        filename
     { "id" : "meansoilo2",       "file" : { "fmt" : "cdf", "name" : "output/mmeansoilo2.nc"}},
     { "id" : "meansoilch4",      "file" : { "fmt" : "cdf", "name" : "output/mmeansoilch4.nc"}},
 #ifdef WITH_SPITFIRE
-    { "id" : "firec",            "file" : { "fmt" : "cdf", "timestep" : "monthly" : "unit" : "gC/m2/month", "name" : "output/mfirec.nc"}},
+    { "id" : "firec",            "file" : { "fmt" : "cdf", "timestep" : "monthly", "unit" : "gC/m2/month", "name" : "output/mfirec.nc"}},
     { "id" : "nfire",            "file" : { "fmt" : "cdf", "name" : "output/mnfire.nc"}},
     { "id" : "burntarea",        "file" : { "fmt" : "cdf", "name" : "output/mburnt_area.nc"}},
 #else

@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   l  p  j  m  l  _  f  m  s  .  j  s                           \n**/
 /**                                                                                \n**/
-/** Configuration file for LPJmL C Version 5.0.002 with FMS coupler                \n**/
+/** Configuration file for LPJmL C Version 5.3.001 with FMS coupler                \n**/
 /**                                                                                \n**/
 /** Configuration file is divided into five sections:                              \n**/
 /**                                                                                \n**/
@@ -50,16 +50,18 @@
 "equilsoil" :false,
 "permafrost" : true,
 "johansen" : true,
-"landuse" : "no_landuse",
+"landuse" : "no",
 "irrigation" : "lim", /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
 "laimax_interpolate" : "laimax_cft", /* laimax values from manage parameter file */
 "reservoir" : false,
 "grassland_fixed_pft" : false,
-"wateruse" : "no_wateruse",
+"wateruse" : "no",
 "grass_harvest_options" : false,
 "rw_manage" : false,
 "shuffle_climate" : true,
 "fix_climate" : false,
+"black_fallow" : false,
+"extflow" : false,
 "new_seed" : false,
 
 /*===================================================================*/
