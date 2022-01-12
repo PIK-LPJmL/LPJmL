@@ -5,8 +5,8 @@ import warnings
 
 class LpjmlConfig:
     """This serves as an LPJmL config class that can be easily accessed,
-    converted to a dictionary or written as a json file. It also provides 
-    methods to set sockets for model coupling.
+    converted to a dictionary or written as a json file. It also provides
+    methods to get/set outputs, restarts and sockets for model coupling.
 
     :param config_dict: takes a dictionary (ideally LPJmL config dictionary)
         and builds up a nested LpjmLConfig class with corresponding fields
@@ -20,17 +20,29 @@ class LpjmlConfig:
     def fields(self):
         """Return object fields
         """
-        return(list(self.__dict__.keys()))
+        return list(self.__dict__.keys())
+
+    def get_inputs(self, only_ids=True):
+        """
+        Get defined inputs as list
+        """
+        if only_ids:
+            return self.input.__dict__.keys()
+        else:
+            return self.input.to_dict()
 
     def get_outputs_avail(self):
         """Get available output (outputvar) names (== output ids) as list
         """
         return [out.name for out in self.outputvar]
 
-    def get_outputs(self):
+    def get_outputs(self, only_ids=True):
         """Get defined output ids as list
         """
-        return [out.id for out in self.output]
+        if only_ids:
+            return [out.id for out in self.output]
+        else:
+            return self.to_dict()['output']
 
     def set_outputs(self, output_path, outputs=[], file_format="raw",
                     temporal_resolution="annual", append_output=False):
@@ -80,7 +92,7 @@ class LpjmlConfig:
             ov.name: idx for idx, ov in enumerate(self.outputvar)
         }
         # extract dict of outputvar for manipulation
-        outputvars = self.to_dict()["outputvar"]
+        outputvars = self.to_dict()['outputvar']
         # empty list to collect if defined outputs are not in outputvar
         not_found = []
         if not append_output:
@@ -182,7 +194,7 @@ class LpjmlConfig:
             json.dump(config_dict, con, indent=2)
 
     def __repr__(self):
-        return(f"<{self.__class__.__name__} object>")
+        return f"<{self.__class__.__name__} object>"
 
 
 def parse_config(path, js_filename="lpjml.js", spin_up=False,
@@ -209,7 +221,7 @@ def parse_config(path, js_filename="lpjml.js", spin_up=False,
     cmd = ["cpp", "-P"]
     # add arguments
     if not spin_up:
-        cmd.append("-DFROM_RESTART")
+        cmd.append('-DFROM_RESTART')
     if macros:
         if isinstance(macros, list):
             cmd.extend(macros)
@@ -224,4 +236,5 @@ def parse_config(path, js_filename="lpjml.js", spin_up=False,
     tmp_json_str = subprocess.run(cmd, cwd=path, capture_output=True)
     # convert to dict
     tmp_json = json.loads(tmp_json_str.stdout, object_hook=config)
-    return(tmp_json)
+    return tmp_json
+
