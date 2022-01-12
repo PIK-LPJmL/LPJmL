@@ -7,11 +7,36 @@ class LpjmlConfig:
     This serves as an LPJmL config class that can be easily accessed, converted
     to dict or written as a json file. It also provides methods to set sockets
     for model coupling.
+
+    :param config_dict: takes a dictionary (ideally LPJmL config dictionary)
+        and builds up a nested LpjmLConfig class with corresponding fields
+    :type config_dict: dict
     """
-    def __init__(self, dict1):
+    def __init__(self, config_dict):
         """Constructor method
         """
-        self.__dict__.update(dict1)
+        self.__dict__.update(config_dict)
+
+    def fields(self):
+        """return object fields
+        """
+        return(list(self.__dict__.keys()))
+
+    def set_sockets(self, inputs=[], outputs=[]):
+        """Set sockets for inputs (corresponding key) and outputs (via id)
+        :param inputs: list of inputs to be used as socket for coupling.
+            Provide dictionary/json key as identifier -> entry in list.
+        :type inputs: list
+        :param inputs: list of outputs to be used as socket for coupling.
+            Provide output id as identifier -> entry in list.
+        :type inputs: list
+        """
+        for inp in inputs:
+            sock_input = getattr(self, inp)
+            sock_input.__dict__ = {"fmt": "sock"}
+        for out in self.output:
+            if out.id in outputs:
+                out.file.__dict__ = {"fmt": "sock"}
 
     def to_dict(self):
         """Convert class object to dictionary
@@ -33,25 +58,15 @@ class LpjmlConfig:
             return result
         return obj_to_dict(self)
 
-    def fields(self):
-        """return object fields
-        """
-        return(list(self.__dict__.keys()))
-
-    def set_sockets(self, inputs=[], outputs=[]):
-        """Set sockets for inputs and outputs (id)
-        """
-        for inp in inputs:
-            sock_input = getattr(self, inp)
-            sock_input.__dict__ = {"fmt": "sock"}
-        for out in self.output:
-            if out.id in outputs:
-                out.file.__dict__ = {"fmt": "sock"}
-
     def to_json(self, file="./config.json"):
         """Write json file
+        :param file: file name (including relative/absolute path) to write json
+            to
+        :type: str
         """
+        # convert class to dict
         config_dict = self.to_dict()
+        # write json and prettify via indent
         with open(file, 'w') as con:
             json.dump(config_dict, con, indent=2)
 
@@ -62,7 +77,7 @@ class LpjmlConfig:
 def parse_config(path, js_filename="lpjml.js", from_restart=False,
                  macros=None, return_lpjmlconfig=False):
     """Precompile lpjml.js and return LpjmlConfig object or dict. Also
-    evaluates macros.
+    evaluate macros.
     :param path: path to lpjml root
     :type path: str
     :param js_filename: js file filename, defaults to lpjml.js
@@ -75,7 +90,7 @@ def parse_config(path, js_filename="lpjml.js", from_restart=False,
     :param return_lpjmlconfig: if `True` an LpjmlConfig object is returned,
         else (`False`) a dictionary is returned
     :type return_lpjmlconfig: bool
-    :return: if `return_lpjmlconfig == True` -> LpjmlConfig object, else a  
+    :return: if `return_lpjmlconfig == True` -> LpjmlConfig object, else a
         a dictionary
     :rtype: LpjmlConfig, dict
     """
