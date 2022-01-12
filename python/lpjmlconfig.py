@@ -3,10 +3,9 @@ import json
 
 
 class LpjmlConfig:
-    """
-    This serves as an LPJmL config class that can be easily accessed, converted
-    to dict or written as a json file. It also provides methods to set sockets
-    for model coupling.
+    """This serves as an LPJmL config class that can be easily accessed,
+    converted to dict or written as a json file. It also provides methods to
+    set sockets for model coupling.
 
     :param config_dict: takes a dictionary (ideally LPJmL config dictionary)
         and builds up a nested LpjmLConfig class with corresponding fields
@@ -18,9 +17,23 @@ class LpjmlConfig:
         self.__dict__.update(config_dict)
 
     def fields(self):
-        """return object fields
+        """Return object fields
         """
         return(list(self.__dict__.keys()))
+
+    def get_outputs_avail(self):
+        """Get available output (outputvars) ids as list
+        """
+        pass
+
+    def set_outputs(self, path, outputs, temporal_resolution):
+        """Set outputs to be written by LPJmL, define temporal resolution
+        """
+        pass
+
+    def set_restart(self, file):
+        """Set restart file from which LPJmL starts the transient run
+        """
 
     def set_sockets(self, inputs=[], outputs=[]):
         """Set sockets for inputs (corresponding key) and outputs (via id)
@@ -74,10 +87,10 @@ class LpjmlConfig:
         return(f"<{self.__class__.__name__} object>")
 
 
-def parse_config(path, js_filename="lpjml.js", from_restart=False,
-                 macros=None, return_lpjmlconfig=False):
+def parse_config(path, js_filename="lpjml.js", spin_up=False,
+                 macros=None, return_dict=False):
     """Precompile lpjml.js and return LpjmlConfig object or dict. Also
-    evaluate macros.
+    evaluate macros. Analogous to R function `lpjmlKit::parse_config`.
     :param path: path to lpjml root
     :type path: str
     :param js_filename: js file filename, defaults to lpjml.js
@@ -97,7 +110,7 @@ def parse_config(path, js_filename="lpjml.js", from_restart=False,
     # precompile command
     cmd = ["cpp", "-P"]
     # add arguments
-    if from_restart:
+    if not spin_up:
         cmd.append("-DFROM_RESTART")
     if macros:
         if isinstance(macros, list):
@@ -105,7 +118,7 @@ def parse_config(path, js_filename="lpjml.js", from_restart=False,
         else:
             cmd.append(macros)
     cmd.append(f"./{js_filename}")
-    if return_lpjmlconfig:
+    if not return_dict:
         config = LpjmlConfig
     else:
         config = None
