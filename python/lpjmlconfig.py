@@ -39,8 +39,9 @@ class LpjmlConfig:
             `append_output == True` output_path is only altered for appended
             `outputs`.
         :type output_path: str
-        :param outputs: output ids of `outputs` to be written by LPJmL. Make sure
-            to check if required output is available via `get_outputs_avail`
+        :param outputs: output ids of `outputs` to be written by LPJmL. Make
+            sure to check if required output is available via
+            `get_outputs_avail`
         :type outputs: list
         :param file_format: file format for `outputs` (not to be used for
             sockets!). "raw" (binary), "clm" (binary with header) and "cdf"
@@ -229,5 +230,3 @@ def parse_config(path, js_filename="lpjml.js", spin_up=False,
 config = parse_config(
     path="/p/projects/open/Jannes/copan_core/lpjml/LPJmL_internal"
 )
-
-config.set_outputs("./lol",["grid","npp","gpp"], temporal_resolution=["monthly","daily","lol"], append_output=False)
