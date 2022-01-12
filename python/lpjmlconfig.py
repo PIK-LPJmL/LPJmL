@@ -225,8 +225,3 @@ def parse_config(path, js_filename="lpjml.js", spin_up=False,
     # convert to dict
     tmp_json = json.loads(tmp_json_str.stdout, object_hook=config)
     return(tmp_json)
-
-
-config = parse_config(
-    path="/p/projects/open/Jannes/copan_core/lpjml/LPJmL_internal"
-)
