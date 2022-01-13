@@ -22,12 +22,12 @@ class LpjmlConfig:
         """
         return list(self.__dict__.keys())
 
-    def get_inputs(self, only_ids=True):
+    def get_inputs(self, id_only=True):
         """
         Get defined inputs as list
         """
-        if only_ids:
-            return self.input.__dict__.keys()
+        if id_only:
+            return list(self.input.__dict__.keys())
         else:
             return self.input.to_dict()
 
@@ -36,10 +36,10 @@ class LpjmlConfig:
         """
         return [out.name for out in self.outputvar]
 
-    def get_outputs(self, only_ids=True):
+    def get_outputs(self, id_only=True):
         """Get defined output ids as list
         """
-        if only_ids:
+        if id_only:
             return [out.id for out in self.output]
         else:
             return self.to_dict()['output']
@@ -97,7 +97,13 @@ class LpjmlConfig:
         not_found = []
         if not append_output:
             # empty output to be filled with defined entries (outputs)
-            self.output = []
+            self.output = [{
+                "id": "grid",
+                "file": {
+                    "fmt": file_format,
+                    "name": f"{output_path}/grid.bin"
+                }
+            }]
         # handle each defined output
         for idx, out in enumerate(outputs):
             # check temporal_resolution instance list/str
@@ -125,6 +131,12 @@ class LpjmlConfig:
             warnings.warn("The following outputs do not exist in the" +
                           f" current model version: {not_found}")
 
+    def set_output_path(self, output_path):
+        for out in self.output:
+            file_name = out.file.name.split("/")
+            file_name.reverse()
+            out.file.name = f"{output_path}/{file_name[0]}"
+
     def get_startfrom(self):
         """Set restart file from which LPJmL starts the transient run
         """
@@ -145,8 +157,53 @@ class LpjmlConfig:
         else:
             raise ValueError('Please provide either a path or a file_name.')
 
+    def get_restart(self):
+        """Set restart file from which LPJmL starts the transient run
+        """
+        return self.write_restart_filename
+
+    def set_restart(self, path=None, file_name=None):
+        """Set restart file from which LPJmL starts the transient run
+        """
+        if path is not None:
+            file_name = self.write_restart_filename.split("/")
+            file_name.reverse()
+            self.write_restart_filename = f"{path}/{file_name[0]}"
+        elif file_name is not None:
+            file_check = file_name.split(".")
+            file_check.reverse()
+            if file_check[0] == 'lpj':
+                self.write_restart_filename = file_name
+        else:
+            raise ValueError('Please provide either a path or a file_name.')
+
+    def set_timerange(self, start=1901, end=2017):
+        """Set simulation time range, outputyear to start as a default here.
+        :param start: start year of simulation
+        :type start: int
+        :param end: end year of simulation
+        :type end: int
+        """
+        self.firstyear = start
+        self.outputyear = start
+        self.lastyear = end
+
+    def set_coupled(self, inputs, outputs):
+        """Coupled settings - no spinup, not write restart file and set sockets
+        for inputs and outputs (via corresponding ids)
+        :param inputs: list of inputs to be used as socket for coupling.
+            Provide dictionary/json key as identifier -> entry in list.
+        :type inputs: list
+        :param inputs: list of outputs to be used as socket for coupling.
+            Provide output id as identifier -> entry in list.
+        :type inputs: list
+        """
+        self.restart = False
+        self.nspinup = 0
+        self.set_sockets(inputs, outputs)
+
     def set_sockets(self, inputs=[], outputs=[]):
-        """Set sockets for inputs (corresponding key) and outputs (via id)
+        """Set sockets for inputs and outputs (via corresponding ids)
         :param inputs: list of inputs to be used as socket for coupling.
             Provide dictionary/json key as identifier -> entry in list.
         :type inputs: list
@@ -237,4 +294,3 @@ def parse_config(path, js_filename="lpjml.js", spin_up=False,
     # convert to dict
     tmp_json = json.loads(tmp_json_str.stdout, object_hook=config)
     return tmp_json
-

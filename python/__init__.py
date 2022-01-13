@@ -1,2 +1,2 @@
-__all__ = ["LpjmlConfig", "parse_config", "submit_spinup",
-           "submit_copan_lpjml"]
+__all__ = ["LpjmlConfig", "parse_config", "submit_lpjml",
+           "submit_couple", "compile_lpjml", "check_lpjml"]
