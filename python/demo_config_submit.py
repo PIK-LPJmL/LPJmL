@@ -51,7 +51,7 @@ check_lpjml(config_historic_fn, model_path)
 historic_jobid = submit_lpjml(config_historic_fn, model_path, output_path)
 
 
-# define historic run ------------------------------------------------------- #
+# define coupled run -------------------------------------------------------- #
 
 # set config for spinup run
 config_coupled = parse_config(path=model_path)
