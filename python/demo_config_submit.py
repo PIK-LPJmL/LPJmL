@@ -48,7 +48,8 @@ config_historic.to_json(file=config_historic_fn)
 # check if everything is set correct
 check_lpjml(config_historic_fn, model_path)
 # submit spinup job and get corresponding id
-historic_jobid = submit_lpjml(config_historic_fn, model_path, output_path)
+historic_jobid = submit_lpjml(
+    config_historic_fn, model_path, output_path, dependency=spinup_jobid)
 
 
 # define coupled run -------------------------------------------------------- #
