@@ -144,7 +144,10 @@ void distribute_water(Cell *cell,            /**< pointer to LPJ cell */
               pft=getpft(&stand->pftlist,0);
 #ifdef DOUBLE_HARVEST
               crop=pft->data;
-              crop->nirsum+=data->net_irrig_amount;
+              if(pft_output_scaled)
+                crop->nirsum+=data->net_irrig_amount*stand->frac;
+              else
+                crop->nirsum+=data->net_irrig_amount;
 #else
               if(pft_output_scaled)
                 stand->cell->output.cft_nir[pft->par->id-npft+data->irrigation*(ncft+NGRASS+NBIOMASSTYPE+NWPTYPE)]+=data->net_irrig_amount*stand->frac;
