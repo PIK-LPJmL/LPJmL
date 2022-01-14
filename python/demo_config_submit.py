@@ -1,15 +1,22 @@
-from copan_core.lpjml.LPJmL_internal.python.utils import check_lpjml
-from lpjmlconfig import parse_config, LpjmlConfig
+from utils import check_lpjml, compile_lpjml, clone_lpjml
+from lpjmlconfig import parse_config
 from submit import submit_lpjml
-from utils import check_lpjml
 
 
-# set paths
-model_path = "/p/projects/open/Jannes/copan_core/lpjml/LPJmL_internal"
-base_path = "/p/projects/open/Jannes/copan_core/coupling_tests"
+# paths
+model_location = ""
+model_path = f"{model_location}/LPJmL_internal"
+base_path = ""
 output_path = f"{base_path}/output"
 restart_path = f"{base_path}/restart"
 
+
+# set up lpjml -------------------------------------------------------------- #
+# to be done only once or if model version has to be patched
+clone_lpjml(model_location)
+# if patched and existing compiled version use make_fast=True or if throwing
+#   an error, use arg make_clean=True without make_fast=True
+compile_lpjml(model_path)
 
 # define and submit spinup run ---------------------------------------------- #
 
@@ -49,7 +56,8 @@ config_historic.to_json(file=config_historic_fn)
 check_lpjml(config_historic_fn, model_path)
 # submit spinup job and get corresponding id
 historic_jobid = submit_lpjml(
-    config_historic_fn, model_path, output_path, dependency=spinup_jobid)
+    config_historic_fn, model_path, output_path, dependency=spinup_jobid
+)
 
 
 # define coupled run -------------------------------------------------------- #
@@ -67,7 +75,9 @@ config_coupled.set_outputs(
     temporal_resolution=["monthly", "monthly", "monthly", "monthly",
                          "monthly", "monthly", "annual", "annual", "annual",
                          "annual", "annual", "annual", "annual", "monthly",
-                         "monthly"], file_format="cdf")
+                         "monthly"],
+    file_format="cdf"
+)
 # set coupling parameters
 config_coupled.set_coupled(
     inputs=["landuse", "fertilizer_nr", "with_tillage", "residue_on_field"],

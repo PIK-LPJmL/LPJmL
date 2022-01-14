@@ -1,5 +1,29 @@
-from os import path
+from os import path, environ
 from subprocess import run, Popen, PIPE, CalledProcessError
+
+
+def clone_lpjml(model_location=".", branch="lpjml53_copan"):
+    git_url = environ.get("GIT_LPJML_URL")
+    git_token = environ.get("GIT_READ_TOKEN")
+    cmd = ["git", "clone", f"https://oauth2:{git_token}@{git_url}"]
+    with Popen(
+        cmd, stdout=PIPE, bufsize=1, universal_newlines=True,
+        cwd=model_location
+    ) as p:
+        for line in p.stdout:
+            print(line, end='')
+    # raise error if returncode does not reflect successfull call
+    if p.returncode != 0:
+        raise CalledProcessError(p.returncode, p.args)
+    # check if branch required
+    if branch:
+        with Popen(
+            ["git", "checkout", branch],
+            stdout=PIPE, bufsize=1, universal_newlines=True,
+            cwd=f"{model_location}/LPJmL_internal"
+        ) as p:
+            for line in p.stdout:
+                print(line, end='')
 
 
 def compile_lpjml(model_path=".", make_fast=False, make_clean=False):
