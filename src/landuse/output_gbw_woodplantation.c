@@ -78,18 +78,17 @@ void output_gbw_woodplantation(Output *output, /**< output data */
     output->cft_interc[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE + NWPTYPE)] += intercep_stand;
     output->cft_interc_b[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE + NWPTYPE)] += intercep_stand_blue;
     output->cft_return_flow_b[rwp(ncft) + data->irrigation*(ncft + NGRASS + NBIOMASSTYPE + NWPTYPE)] += return_flow_b;
+  }
 
-
-    if (data->irrigation)
-    {
-      output->mgcons_irr += total_g*stand->cell->ml.landfrac[1].woodplantation;
-      output->mbcons_irr += total_b*stand->cell->ml.landfrac[1].woodplantation;
-    }
-    else
-    {
-      output->mgcons_rf += total_g*stand->cell->ml.landfrac[0].woodplantation;
-      output->mgcons_rf += total_b*stand->cell->ml.landfrac[0].woodplantation;
-    }
+  if (data->irrigation)
+  {
+    output->mgcons_irr += total_g*stand->cell->ml.landfrac[1].woodplantation;
+    output->mbcons_irr += total_b*stand->cell->ml.landfrac[1].woodplantation;
+  }
+  else
+  {
+    output->mgcons_rf += total_g*stand->cell->ml.landfrac[0].woodplantation;
+    output->mgcons_rf += total_b*stand->cell->ml.landfrac[0].woodplantation;
   }
 #endif
 } /* of 'output_gbw_woodplantation' */

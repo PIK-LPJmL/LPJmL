@@ -111,6 +111,8 @@ static size_t isnetcdfinput(const Config *config)
 #ifdef IMAGE
   if(config->wateruse_wd_filename.name!=NULL && config->wateruse_wd_filename.fmt==CDF)
     width=max(width,strlen(config->wateruse_wd_filename.var));
+  if(config->aquifer_irrig==AQUIFER_IRRIG && config->aquifer_filename.fmt==CDF)
+    width=max(width,strlen(config->aquifer_filename.var));
 #endif
   if(width)
     width=max(width,strlen("Varname"));
@@ -362,10 +364,7 @@ void fprintconfig(FILE *file,           /**< File pointer to text output file */
   }
 #ifdef IMAGE
   if(config->aquifer_irrig==AQUIFER_IRRIG)
-    fprintf(file,"aquifer  %-4s %-8s %s\n",
-            fmt[config->aquifer_filename.fmt],
-            (config->aquifer_filename.var==NULL) ? "": config->aquifer_filename.var,
-            config->aquifer_filename.name);
+    printinputfile(file,"aquifer",&config->aquifer_filename,width);
 #endif
   if(config->wet_filename.name!=NULL)
     printinputfile(file,"wetdays",&config->wet_filename,width);
