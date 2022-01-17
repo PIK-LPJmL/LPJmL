@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-scale s] [-type {byte|short|int|float|double}] [-cellsize size] infile outfile\n"
+#define USAGE "Usage: %s [-4] [-scale s] [-type {byte|short|int|float|double}] [-cellsize size] [-swapnstep] infile outfile\n"
 
 #define BUFSIZE (1024*1024) /* size of read buffer */
 
@@ -22,7 +22,7 @@ int main(int argc,char **argv)
 {
   FILE *infile,*outfile;
   Header header;
-  int version;
+  int version,new_version;
   String id;
   const char *progname;
   char *endptr;
@@ -32,11 +32,13 @@ int main(int argc,char **argv)
   void *buffer;
   Type datatype;
   float scalar,cellsize;
-  Bool swap;
+  Bool swap,swapnstep;
   /* set default values */
   datatype=LPJ_SHORT;
   scalar=1;
   cellsize=0.5;
+  new_version=3;
+  swapnstep=FALSE;
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -60,6 +62,10 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
+      else if(!strcmp(argv[iarg],"-4"))
+        new_version=4;
+      else if(!strcmp(argv[iarg],"-swapnstep"))
+        swapnstep=TRUE;
       else if(!strcmp(argv[iarg],"-type"))
       {
         if(iarg==argc-1)
@@ -134,11 +140,16 @@ int main(int argc,char **argv)
   }
   if(version<3)
     header.datatype=datatype;
-  filesize=getfilesizep(infile);
-  if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+(long long)header.ncell*header.nbands*header.nyear*typesizes[header.datatype]+headersize(id,version)) ||
-     (header.order!=CELLINDEX && filesize!=(long long)header.ncell*header.nbands*header.nyear*typesizes[header.datatype]+headersize(id,version)))
+  if(new_version==4 && swapnstep)
   {
-     fprintf(stderr,"Error: File size of '%s' does not match nyear*nbands*ncell.\n",argv[iarg]);
+     header.nstep=header.nbands;
+     header.nbands=1;
+  }
+  filesize=getfilesizep(infile);
+  if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+(long long)header.ncell*header.nbands*header.nstep*header.nyear*typesizes[header.datatype]+headersize(id,version)) ||
+     (header.order!=CELLINDEX && filesize!=(long long)header.ncell*header.nbands*header.nstep*header.nyear*typesizes[header.datatype]+headersize(id,version)))
+  {
+     fprintf(stderr,"Error: File size of '%s' does not match nyear*nbands*nstep*ncell.\n",argv[iarg]);
      fclose(infile);
      return EXIT_FAILURE;
   }
@@ -148,7 +159,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
     return EXIT_FAILURE;
   }
-  fwriteheader(outfile,&header,id,3);
+  fwriteheader(outfile,&header,id,new_version);
   buffer=malloc(BUFSIZE);
   if(buffer==NULL)
   {

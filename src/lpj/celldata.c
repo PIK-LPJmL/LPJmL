@@ -160,6 +160,14 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         free(celldata);
         return NULL;
       }
+      if(header.nstep!=1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR218: Invalid number of steps %d in '%s', must be 1.\n",
+                  header.nstep,config->soilph_filename.name);
+        free(celldata);
+        return NULL;
+      }
       if(isroot(*config) && config->soilph_filename.fmt!=META)
       {
          filesize=getfilesizep(celldata->soilph.bin.file)-headersize(headername,version)-celldata->soilph.bin.offset;

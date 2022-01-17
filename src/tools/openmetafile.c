@@ -113,6 +113,15 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
         return NULL;
       }
     }
+    else if(!strcmp(key,"nstep"))
+    {
+      if(fscanint(&file,&header->nstep,"nstep",FALSE,isout ? ERR : NO_ERR))
+      {
+        free(name);
+        fclose(file.file.file);
+        return NULL;
+      }
+    }
     else if(!strcmp(key,"order"))
     {
       if(fscanstring(&file,value,"order",FALSE,isout ? ERR : NO_ERR))
@@ -285,7 +294,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
   /* check file size of binary file */
   if(isout && data!=NULL)
   {
-    if((header->order==CELLINDEX  && getfilesizep(data)!=sizeof(int)*header->ncell+typesizes[header->datatype]*header->ncell*header->nbands*header->nyear+*offset) || (header->order!=CELLINDEX && getfilesizep(data)!=typesizes[header->datatype]*header->ncell*header->nbands*header->nyear+*offset))
+    if((header->order==CELLINDEX  && getfilesizep(data)!=sizeof(int)*header->ncell+typesizes[header->datatype]*header->ncell*header->nbands*header->nyear+*offset) || (header->order!=CELLINDEX && getfilesizep(data)!=typesizes[header->datatype]*header->ncell*header->nbands*header->nyear*header->nstep+*offset))
       fprintf(stderr,"WARNING032: File size of '%s' does not match settings in description file '%s'.\n",name,filename);
   }
   free(name);

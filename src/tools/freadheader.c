@@ -75,6 +75,7 @@ Bool freadheader(FILE *file,     /**< file pointer of binary file */
       header->cellsize_lon=0.5;
       header->scalar=1;
       header->datatype=LPJ_SHORT;
+      header->nstep=1;
       break;
     case 2:
       if(fread(header,sizeof(Header2),1,file)!=1)
@@ -84,14 +85,24 @@ Bool freadheader(FILE *file,     /**< file pointer of binary file */
         return TRUE;
       }
       header->datatype=LPJ_SHORT;
+      header->nstep=1;
       break;
-    default:
+    case 4:
       if(fread(header,sizeof(Header),1,file)!=1)
       {
         if(isout)
           fprintf(stderr,"ERROR239: Cannot read header data: %s.\n",strerror(errno));
         return TRUE;
       }
+      break;
+    default:
+      if(fread(header,sizeof(Header3),1,file)!=1)
+      {
+        if(isout)
+          fprintf(stderr,"ERROR239: Cannot read header data: %s.\n",strerror(errno));
+        return TRUE;
+      }
+      header->nstep=1;
   } /* of switch */
   if(*swap)  /* is data in different byte order? */
   {
@@ -115,6 +126,8 @@ Bool freadheader(FILE *file,     /**< file pointer of binary file */
       header->cellsize_lat=swapfloat(*ptr);
       header->datatype=(Type)swapint(header->datatype);
     }
+    if(*version==4)
+      header->nstep=swapint(header->nstep);
  }
  if(*version<3)
    header->cellsize_lat=header->cellsize_lon;

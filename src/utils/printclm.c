@@ -33,7 +33,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
   char byte;
   float fdata;
   double ddata;
-  int year,cell,i,*index,rc;
+  int year,cell,i,*index,rc,t;
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
@@ -46,6 +46,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     header.firstcell=0;
     header.nyear=1;
     header.nbands=(nbands==-1)  ? 1 : nbands;
+    header.nstep=1;
     header.datatype=type;
     header.order=CELLYEAR;
     file=openmetafile(&header,&swap,&offset,filename,TRUE);
@@ -58,7 +59,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
       return;
     }
     type=header.datatype;
-    version=4;
+    version=5;
     strcpy(id,"description file");
   }
   else
@@ -128,13 +129,13 @@ static void printclm(const char *filename,int output,int nbands,int version,
     if(version<3)
       type=LPJ_FLOAT;
     size=getfilesizep(file)-headersize(id,version)-sizeof(int)*header.ncell;
-    if(size!=(long long)typesizes[type]*header.ncell*header.nbands*header.nyear)
+    if(size!=(long long)typesizes[type]*header.ncell*header.nbands*header.nstep*header.nyear)
       fputs("Warning: file length does not match header.\n",stderr);
   }
   else if(!isrestart && !isreservoir && !ismeta)
   {
     size=getfilesizep(file)-headersize(id,version);
-    if(size!=typesizes[type]*header.ncell*header.nbands*header.nyear)
+    if(size!=typesizes[type]*header.ncell*header.nbands*header.nyear*header.nstep)
       fputs("Warning: file length does not match header.\n",stderr);
   }
   if((output & NO_DATA)==0)
@@ -221,7 +222,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
         }
         fseek(file,sizeof(int)*(header.ncell-last-first+header.firstcell),SEEK_CUR);
       }
-      if(fseek(file,typesizes[type]*header.ncell*header.nbands*(start-header.firstyear),SEEK_CUR))
+      if(fseek(file,typesizes[type]*header.ncell*header.nstep*header.nbands*(start-header.firstyear),SEEK_CUR))
       {
         fprintf(stderr,"Error seeking to year %d.\n",start);
         fclose(file);
@@ -230,10 +231,11 @@ static void printclm(const char *filename,int output,int nbands,int version,
       if(header.order==CELLINDEX || header.order==CELLSEQ)
       {
         for(year=start;year<=stop;year++)
+          for(t=0;t<header.nstep;t++)
           for(i=0;i<header.nbands;i++)
           {
             if((output & NO_TEXT)==0)
-              printf("Band, Year: %d %d\n",i,year);
+              printf("Year, Step, Band: %d %d %d\n",year,t,i);
             fseek(file,typesizes[type]*(first-header.firstcell),SEEK_CUR);
             for(cell=0;cell<last;cell++)
             {
@@ -304,19 +306,20 @@ static void printclm(const char *filename,int output,int nbands,int version,
             }
             fseek(file,typesizes[type]*(header.ncell-last-first+header.firstcell),SEEK_CUR);
           }
-        free(index);
+        if(header.order==CELLINDEX)
+          free(index);
       }
       else
         for(year=start;year<=stop;year++)
         {
         if((output & NO_TEXT)==0)
           printf("Year: %d\n",year);
-        fseek(file,typesizes[type]*header.nbands*(first-header.firstcell),SEEK_CUR);
+        fseek(file,typesizes[type]*header.nbands*header.nstep*(first-header.firstcell),SEEK_CUR);
         for(cell=0;cell<last;cell++)
         {
           if((output & NO_TEXT)==0)
             printf("%5d:",cell+first);
-          for(i=0;i<header.nbands;i++)
+          for(i=0;i<header.nbands*header.nstep;i++)
             switch(type)
             {
               case LPJ_BYTE:
@@ -381,7 +384,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
             }
           putchar('\n');
         } /* of for(cell=...) */
-        fseek(file,typesizes[type]*header.nbands*(header.ncell-last-first+header.firstcell),SEEK_CUR);
+        fseek(file,typesizes[type]*header.nbands*header.nstep*(header.ncell-last-first+header.firstcell),SEEK_CUR);
       }
     }
   }

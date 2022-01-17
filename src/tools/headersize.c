@@ -23,13 +23,15 @@ size_t headersize(const char *headername, /**< header string in CLM file */
 {
   switch(version)
   {
-    case 0: case 4:
+    case 0: case 5:
       return 0; /* version=0 -> no header */
     case 1:
       return sizeof(int)+strlen(headername)+sizeof(Header_old);
     case 2:
       return sizeof(int)+strlen(headername)+sizeof(Header2);
-    default:
+    case 4:
       return sizeof(int)+strlen(headername)+sizeof(Header);
+    default:
+      return sizeof(int)+strlen(headername)+sizeof(Header3);
   }
 } /* of 'headersize' */

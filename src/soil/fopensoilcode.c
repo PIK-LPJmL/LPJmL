@@ -32,6 +32,7 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
     header.scalar=1;
     header.order=CELLYEAR;
     header.nbands=1;
+    header.nstep=1;
     header.datatype=LPJ_BYTE;
     header.firstcell=0;
     header.ncell=0;
@@ -49,6 +50,15 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
       fclose(file);
       return NULL;
     }
+    if(header.nstep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR127: Invalid number of steps %d in '%s', must be 1.\n",
+                header.nstep,filename->name);
+      fclose(file);
+      return NULL;
+    }
+
     return file;
   }
   file=fopen(filename->name,"rb");
@@ -95,6 +105,14 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
       if(isout)
         fprintf(stderr,"ERROR127: Invalid number of bands %d in '%s', must be 1.\n",
                 header.nbands,filename->name);
+      fclose(file);
+      return NULL;
+    }
+    if(header.nstep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR127: Invalid number of steps %d in '%s', must be 1.\n",
+                header.nstep,filename->name);
       fclose(file);
       return NULL;
     }
