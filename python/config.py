@@ -31,10 +31,13 @@ class LpjmlConfig:
         else:
             return self.input.to_dict()
 
-    def get_outputs_avail(self):
+    def get_outputs_avail(self, id_only=True):
         """Get available output (outputvar) names (== output ids) as list
         """
-        return [out.name for out in self.outputvar]
+        if id_only:
+            return [out.name for out in self.outputvar]
+        else:
+            return self.to_dict()["outputvar"]
 
     def get_outputs(self, id_only=True):
         """Get defined output ids as list
@@ -177,18 +180,23 @@ class LpjmlConfig:
         else:
             raise ValueError('Please provide either a path or a file_name.')
 
-    def set_timerange(self, start=1901, end=2017):
+    def set_timerange(self, start=1901, end=2017, write_start=None):
         """Set simulation time range, outputyear to start as a default here.
         :param start: start year of simulation
         :type start: int
         :param end: end year of simulation
         :type end: int
+        :param write_start: first year of output being written
+        :type write_start: int
         """
         self.firstyear = start
-        self.outputyear = start
+        if write_start:
+            self.outputyear = write_start
+        else:
+            self.outputyear = start
         self.lastyear = end
 
-    def set_coupled(self, inputs, outputs):
+    def set_coupler(self, inputs, outputs):
         """Coupled settings - no spinup, not write restart file and set sockets
         for inputs and outputs (via corresponding ids)
         :param inputs: list of inputs to be used as socket for coupling.
@@ -217,6 +225,14 @@ class LpjmlConfig:
         for out in self.output:
             if out.id in outputs:
                 out.file.__dict__ = {'fmt': 'sock'}
+
+    def get_input_sockets(self):
+        inputs = self.input.to_dict()
+        return {
+           inp: inputs[inp]["fmt"] for inp in inputs if inputs[
+               inp
+            ]["fmt"] == "sock"
+        }
 
     def to_dict(self):
         """Convert class object to dictionary
@@ -294,3 +310,12 @@ def parse_config(path, js_filename="lpjml.js", spin_up=False,
     # convert to dict
     tmp_json = json.loads(tmp_json_str.stdout, object_hook=config)
     return tmp_json
+
+
+def read_config(file_name, return_dict=False):
+    if not return_dict:
+        config = LpjmlConfig
+    else:
+        config = None
+    with open(file_name) as file_con:
+        return json.load(file_con, object_hook=config)
