@@ -571,6 +571,22 @@ int main(int argc,char **argv)
     if(version<3)
       header.datatype=(istype)  ? type  : LPJ_SHORT;
     filesize=getfilesizep(file)-headersize(headername,version);
+    if(version==4)
+    {
+      if(header.nstep==1 && header.nbands>1)
+        landuse=TRUE;
+      else if(header.nstep>1)
+      {
+        if(header.nbands>1)
+        {
+          fprintf(stderr,"Error: Number of bands %d and number of steps %d >1 in '%s' not supported.\n",
+                  header.nbands,header.nstep,argv[iarg+2]);
+          fclose(file);
+          return EXIT_FAILURE;
+        }
+        header.nbands=header.nstep;
+      }
+    }
     if(filesize!=(long long)header.nyear*header.ncell*header.nbands*typesizes[header.datatype])
       fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+2]);
 

@@ -22,6 +22,7 @@ int main(int argc,char **argv)
   FILE **files;
   FILE *out;
   int i,iarg,year,cell,version,version_out,*nbands,setversion,numfiles,nbands_sum,index;
+  Bool swapnstep;
   Byte *bvec;
   short *svec;
   int *ivec;
@@ -39,6 +40,7 @@ int main(int argc,char **argv)
   force=FALSE;
   verbose=FALSE;
   size4=FALSE;
+  swapnstep=FALSE;
   setversion=READ_VERSION;
   /* process command options */
   for(iarg=1;iarg<argc;iarg++)
@@ -129,7 +131,19 @@ int main(int argc,char **argv)
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+iarg]);
         return EXIT_FAILURE;
       }
-      nbands[i]=header.nbands;
+      if(version==4 && header.nstep>1)
+      {
+        if(header.nbands>1)
+        {
+          fprintf(stderr,"Number of bands %d and number of steps %d >1 in '%s'.\n",
+                  header.nbands,header.nstep,argv[i+iarg]);
+          return EXIT_FAILURE;
+        }
+        swapnstep=TRUE;
+        nbands[i]=header.nstep;
+      }
+      else
+        nbands[i]=header.nbands;
       nbands_sum+=nbands[i];
       if(first)
       {
@@ -190,6 +204,12 @@ int main(int argc,char **argv)
   }
   printf("Number of nbands: %d\n",nbands_sum);
   header_out.nbands=nbands_sum;
+  if(swapnstep)
+  {
+    version_out=4;
+    header_out.nstep=header_out.nbands;
+    header_out.nbands=1;
+  } 
   fwriteheader(out,&header_out,id_out,version_out);
   switch(header_out.datatype)
   {

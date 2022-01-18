@@ -120,9 +120,9 @@ int main(int argc,char **argv)
   if(index!=NOT_FOUND)
     header1.datatype=type;
   size=getfilesizep(in1)-headersize(id,version);
-  if((header1.order==CELLINDEX && size!=sizeof(int)*header1.ncell+(long long)header1.nyear*header1.ncell*header1.nbands*typesizes[header1.datatype]) ||
-     (header1.order!=CELLINDEX && size!=(long long)header1.nyear*header1.ncell*header1.nbands*typesizes[header1.datatype]))
-    fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+1]);
+  if((header1.order==CELLINDEX && size!=sizeof(int)*header1.ncell+(long long)header1.nyear*header1.ncell*header1.nbands*header1.nstep*typesizes[header1.datatype]) ||
+     (header1.order!=CELLINDEX && size!=(long long)header1.nyear*header1.ncell*header1.nbands*header1.nstep*typesizes[header1.datatype]))
+    fprintf(stderr,"Warning: File size of '%s' does not match nbands*nstep*ncell*nyear.\n",argv[iarg+1]);
   if(op!=FLOAT && op!=INT)
   {
     value=(float)strtod(argv[iarg+2],&endptr);
@@ -164,6 +164,11 @@ int main(int argc,char **argv)
         fprintf(stderr,"nbands %d differs from %d.\n",header1.nbands,header2.nbands);
         return EXIT_FAILURE;
       }
+      if(header1.nstep!=header2.nstep)
+      {
+        fprintf(stderr,"nstep %d differs from %d.\n",header1.nstep,header2.nstep);
+        return EXIT_FAILURE;
+      }
       if(header1.firstyear!=header2.firstyear)
       {
         fprintf(stderr,"firstyear %d differs from %d.\n",header1.firstyear,header2.firstyear);
@@ -195,9 +200,9 @@ int main(int argc,char **argv)
         return EXIT_FAILURE;
       }
       size=getfilesizep(in2)-headersize(id,version);
-      if((header1.order==CELLINDEX && size!=sizeof(int)*header2.ncell+(long long)header2.nyear*header2.ncell*header2.nbands*typesizes[header2.datatype]) ||
-         (header1.order!=CELLINDEX && size!=(long long)header2.nyear*header2.ncell*header2.nbands*typesizes[header2.datatype]))
-        fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+2]);
+      if((header1.order==CELLINDEX && size!=sizeof(int)*header2.ncell+(long long)header2.nyear*header2.ncell*header2.nbands*header2.nstep*typesizes[header2.datatype]) ||
+         (header1.order!=CELLINDEX && size!=(long long)header2.nyear*header2.ncell*header2.nbands*header2.nstep*typesizes[header2.datatype]))
+        fprintf(stderr,"Warning: File size of '%s' does not match nbands*nstep*ncell*nyear.\n",argv[iarg+2]);
     }
     if(isvalue)
       isint=(intvalue && header1.datatype==LPJ_INT && header1.scalar==1);
@@ -205,37 +210,37 @@ int main(int argc,char **argv)
       isint=(header1.datatype==LPJ_INT && header2.datatype==LPJ_INT && header1.scalar==1 && header2.scalar==1);
     if(isint)
     {
-      idata1=newvec(int,header1.nbands);
+      idata1=newvec(int,header1.nbands*header1.nstep);
       check(idata1);
-      idata3=newvec(int,header1.nbands);
+      idata3=newvec(int,header1.nbands*header1.nstep);
       check(idata3);
       if(!isvalue)
       {
-        idata2=newvec(int,header1.nbands);
+        idata2=newvec(int,header1.nbands*header1.nstep);
         check(idata2);
       }
     }
     else
     {
-      data1=newvec(float,header1.nbands);
+      data1=newvec(float,header1.nbands*header1.nstep);
       check(data1);
-      data3=newvec(float,header1.nbands);
+      data3=newvec(float,header1.nbands*header1.nstep);
       check(data3);
       if(!isvalue)
       {
-        data2=newvec(float,header1.nbands);
+        data2=newvec(float,header1.nbands*header1.nstep);
         check(data2);
       }
     }
   }
   else if(op==INT)
   {
-    idata1=newvec(int,header1.nbands);
+    idata1=newvec(int,header1.nbands*header1.nstep);
     check(idata1);
   }
   else
   {
-    data1=newvec(float,header1.nbands);
+    data1=newvec(float,header1.nbands*header1.nstep);
     check(data1);
   }
   out=fopen(argv[iarg+((op==FLOAT || op==INT) ? 2 : 3)],"wb");
@@ -255,7 +260,7 @@ int main(int argc,char **argv)
     header3.scalar=1;
     header3.datatype=(op!=FLOAT && isint) ? LPJ_INT : LPJ_FLOAT;
   }
-  fwriteheader(out,&header3,id,3);
+  fwriteheader(out,&header3,id,max(version,3));
   if(header1.order==CELLINDEX)
   {
     cell_index=newvec(int,header1.ncell);
@@ -301,13 +306,13 @@ int main(int argc,char **argv)
     for(yr=0;yr<header1.nyear;yr++)
       for(cell=0;cell<header1.ncell;cell++)
       {
-        if(readfloatvec(in1,data1,header1.scalar,header1.nbands,swap1,header1.datatype))
+        if(readfloatvec(in1,data1,header1.scalar,header1.nbands*header1.nstep,swap1,header1.datatype))
         {
           fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                   argv[iarg+1],yr+header1.firstyear);
           return EXIT_FAILURE;
         }
-        if(fwrite(data1,sizeof(float),header1.nbands,out)!=header1.nbands)
+        if(fwrite(data1,sizeof(float),header1.nbands*header1.nstep,out)!=header1.nbands*header1.nstep)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
                   argv[iarg+2],yr+header1.firstyear);
@@ -320,13 +325,13 @@ int main(int argc,char **argv)
     for(yr=0;yr<header1.nyear;yr++)
       for(cell=0;cell<header1.ncell;cell++)
       {
-        if(readintvec(in1,idata1,header1.nbands,swap1,header1.datatype))
+        if(readintvec(in1,idata1,header1.nbands*header1.nstep,swap1,header1.datatype))
         {
           fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                   argv[iarg+1],yr+header1.firstyear);
           return EXIT_FAILURE;
         }
-        if(fwrite(idata1,sizeof(int),header1.nbands,out)!=header1.nbands)
+        if(fwrite(idata1,sizeof(int),header1.nbands*header1.nstep,out)!=header1.nbands)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
                   argv[iarg+2],yr+header1.firstyear);
@@ -338,7 +343,7 @@ int main(int argc,char **argv)
     for(yr=0;yr<header1.nyear;yr++)
       for(cell=0;cell<header1.ncell;cell++)
       {
-        if(readintvec(in1,idata1,header1.nbands,swap1,header1.datatype))
+        if(readintvec(in1,idata1,header1.nbands*header1.nstep,swap1,header1.datatype))
         {
           fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                   argv[iarg+1],yr+header1.firstyear);
@@ -348,37 +353,37 @@ int main(int argc,char **argv)
           switch(op)
           {
             case ADD:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=idata1[k]+ivalue;
               break;
             case SUB:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=idata1[k]-ivalue;
               break;
             case MUL:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=idata1[k]*ivalue;
               break;
             case DIV:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=idata1[k]/ivalue;
               break;
             case AVG:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=(idata1[k]+ivalue)/2;
               break;
             case MAX:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=max(idata1[k],ivalue);
               break;
             case MIN:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=min(idata1[k],ivalue);
               break;
           } /* of switch */
         else
         {
-          if(readintvec(in2,idata2,header1.nbands,swap2,header2.datatype))
+          if(readintvec(in2,idata2,header1.nbands*header1.nstep,swap2,header2.datatype))
           {
             fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                     argv[iarg+2],yr+header1.firstyear);
@@ -387,19 +392,19 @@ int main(int argc,char **argv)
           switch(op)
           {
             case ADD:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=idata1[k]+idata2[k];
               break;
             case SUB:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=idata1[k]-idata2[k];
               break;
             case MUL:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=idata1[k]*idata2[k];
               break;
             case DIV:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
               {
                 if(idata2[k]==0)
                 {
@@ -411,36 +416,36 @@ int main(int argc,char **argv)
               }
               break;
             case AVG:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=(idata1[k]+idata2[k])/2;
               break;
             case MAX:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=max(idata1[k],idata2[k]);
               break;
             case MIN:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 idata3[k]=min(idata1[k],idata2[k]);
               break;
             case REPL:
               flag=FALSE;
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 if(idata2[k]!=0)
                 {
                   flag=TRUE;
                   break;
                 }
               if(flag)
-                for(k=0;k<header1.nbands;k++)
+                for(k=0;k<header1.nbands*header1.nstep;k++)
                   idata3[k]=idata2[k];
               else
-                for(k=0;k<header1.nbands;k++)
+                for(k=0;k<header1.nbands*header1.nstep;k++)
                   idata3[k]=idata1[k];
               break;
           } /* of switch */
         }
         /* write int data to file */
-        if(fwrite(idata3,sizeof(int),header1.nbands,out)!=header1.nbands)
+        if(fwrite(idata3,sizeof(int),header1.nbands*header1.nstep,out)!=header1.nbands*header1.nstep)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
                   argv[iarg+3],yr+header1.firstyear);
@@ -451,7 +456,7 @@ int main(int argc,char **argv)
     for(yr=0;yr<header1.nyear;yr++)
       for(cell=0;cell<header1.ncell;cell++)
       {
-        if(readfloatvec(in1,data1,header1.scalar,header1.nbands,swap1,header1.datatype))
+        if(readfloatvec(in1,data1,header1.scalar,header1.nbands*header1.nstep,swap1,header1.datatype))
         {
           fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                   argv[iarg+1],yr+header1.firstyear);
@@ -461,37 +466,37 @@ int main(int argc,char **argv)
           switch(op)
           {
             case ADD:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
               data3[k]=data1[k]+value;
               break;
             case SUB:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=data1[k]-value;
               break;
             case MUL:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=data1[k]*value;
               break;
             case DIV:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=data1[k]/value;
               break;
             case AVG:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=(data1[k]+value)*0.5f;
               break;
             case MAX:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=max(data1[k],value);
               break;
             case MIN:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=min(data1[k],value);
               break;
           } /* of switch */
         else
         {
-          if(readfloatvec(in2,data2,header2.scalar,header1.nbands,swap2,header2.datatype))
+          if(readfloatvec(in2,data2,header2.scalar,header1.nbands*header1.nstep,swap2,header2.datatype))
           {
             fprintf(stderr,"Unexpected end of file in '%s' in year %d.\n",
                     argv[iarg+2],yr+header1.firstyear);
@@ -500,52 +505,52 @@ int main(int argc,char **argv)
           switch(op)
           {
             case ADD:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=data1[k]+data2[k];
               break;
             case SUB:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=data1[k]-data2[k];
               break;
           case MUL:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=data1[k]*data2[k];
               break;
             case DIV:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=data1[k]/data2[k];
               break;
             case AVG:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=(data1[k]+data2[k])*0.5f;
               break;
             case MAX:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=max(data1[k],data2[k]);
               break;
             case MIN:
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=min(data1[k],data2[k]);
               break;
             case REPL:
               flag=FALSE;
-              for(k=0;k<header1.nbands;k++)
+              for(k=0;k<header1.nbands*header1.nstep;k++)
                 if(data2[k]!=0)
                 {
                   flag=TRUE;
                   break;
                 }
               if(flag)
-                for(k=0;k<header1.nbands;k++)
+                for(k=0;k<header1.nbands*header1.nstep;k++)
                   data3[k]=data2[k];
               else
-                for(k=0;k<header1.nbands;k++)
+                for(k=0;k<header1.nbands*header1.nstep;k++)
                   data3[k]=data1[k];
               break;
           } /* of switch */
         }
         /* write float data to file */
-        if(fwrite(data3,sizeof(float),header1.nbands,out)!=header1.nbands)
+        if(fwrite(data3,sizeof(float),header1.nbands*header1.nstep,out)!=header1.nbands*header1.nstep)
         {
           fprintf(stderr,"Error writing '%s' in year %d.\n",
                   argv[iarg+3],yr+header1.firstyear);
