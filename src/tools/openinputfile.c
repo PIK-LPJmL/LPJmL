@@ -29,7 +29,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
   FILE *file;
   if(filename->fmt==META)
   {
-    *version=5;
+    *version=CLM_MAX_VERSION+1;
     /* set default values for header */
     header->order=CELLYEAR;
     header->firstyear=config->firstyear;
@@ -132,11 +132,11 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
         return NULL;
       }
     }
-    if(*version>4)
+    if(*version>CLM_MAX_VERSION)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR154: Invalid version %d in '%s', must be less than 5.\n",
-                *version,filename->name);
+        fprintf(stderr,"ERROR154: Unsupported version %d in '%s', must be less than %d.\n",
+                *version,filename->name,CLM_MAX_VERSION+1);
       fclose(file);
       return NULL;
     }

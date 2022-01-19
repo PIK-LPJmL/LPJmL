@@ -72,6 +72,12 @@ int main(int argc,char **argv)
             argv[index+1]);
     return EXIT_FAILURE;
   }
+  if(version>CLM_MAX_VERSION)
+  {
+    fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+            version,argv[index+1],CLM_MAX_VERSION+1);
+    return EXIT_FAILURE;
+  }
   if(version==3)
     size=typesizes[header.datatype];
   else

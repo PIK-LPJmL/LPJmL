@@ -67,6 +67,7 @@
 #define CELLINDEX 3
 #define CELLSEQ 4
 #define READ_VERSION -1
+#define CLM_MAX_VERSION 4  /* highest version for clm files supported */
 
 extern const char *ordernames[];
 

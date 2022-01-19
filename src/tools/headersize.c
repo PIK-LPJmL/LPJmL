@@ -23,7 +23,7 @@ size_t headersize(const char *headername, /**< header string in CLM file */
 {
   switch(version)
   {
-    case 0: case 5:
+    case 0: case CLM_MAX_VERSION+1:
       return 0; /* version=0 -> no header */
     case 1:
       return sizeof(int)+strlen(headername)+sizeof(Header_old);

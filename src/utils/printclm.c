@@ -124,6 +124,9 @@ static void printclm(const char *filename,int output,int nbands,int version,
                 version,RESTART_VERSION);
     }
   }
+  if(!ismeta && !isrestart && version>CLM_MAX_VERSION)
+    fprintf(stderr,"Warning: Unsupported version %d, must be less than %d.\n",
+            version,CLM_MAX_VERSION+1);
   if(!ismeta && header.order==CELLINDEX)
   {
     if(version<3)

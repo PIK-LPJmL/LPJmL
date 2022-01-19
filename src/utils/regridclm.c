@@ -130,6 +130,12 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error reading header in '%s'.\n",argv[3]);
     return EXIT_FAILURE;
   }
+  if(data_version>CLM_MAX_VERSION)
+  {
+    fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+            data_version,argv[3],CLM_MAX_VERSION+1);
+      return EXIT_FAILURE;
+  }
   if(header.nyear<=0)
   {
     fprintf(stderr,"Invalid nyear=%d, set to one.\n",header.nyear);

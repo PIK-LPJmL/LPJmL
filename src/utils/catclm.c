@@ -94,6 +94,12 @@ int main(int argc,char **argv)
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+iarg]);
         return EXIT_FAILURE;
       }
+      if(version>CLM_MAX_VERSION)
+      {
+        fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+                version,argv[i+iarg],CLM_MAX_VERSION+1);
+        return EXIT_FAILURE;
+      }
       filesize=getfilesizep(in)-headersize(id,version);
       if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear) ||
          (header.order!=CELLINDEX && filesize!=((version==3) ? typesizes[header.datatype] : size)*header.ncell*header.nbands*header.nstep*header.nyear))
@@ -157,6 +163,12 @@ int main(int argc,char **argv)
       if(freadanyheader(in,&header,&swap,id,&version,TRUE))
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[i+iarg]);
+        return EXIT_FAILURE;
+      }
+      if(version>CLM_MAX_VERSION)
+      {
+        fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+                version,argv[i+iarg],CLM_MAX_VERSION+1);
         return EXIT_FAILURE;
       }
       filesize=getfilesizep(in)-headersize(id,version);

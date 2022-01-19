@@ -131,6 +131,15 @@ Coordfile opencoord(const Filename *filename, /**< filename of coord file */
       free(coordfile);
       return NULL;
     }
+    if(version>CLM_MAX_VERSION)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR154: Unsupported version %d in '%s', must be less than %d.\n",
+                version,filename->name,CLM_MAX_VERSION+1);
+      fclose(coordfile->file);
+      free(coordfile);
+      return NULL;
+    }
     coordfile->n=header.ncell;
     coordfile->first=header.firstcell;
     coordfile->cellsize.lon=header.cellsize_lon;
