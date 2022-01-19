@@ -117,6 +117,12 @@ int main(int argc,char **argv)
     fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+1]);
     return EXIT_FAILURE;
   }
+  if(version>CLM_MAX_VERSION)
+  {
+    fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+            version,argv[iarg+1],CLM_MAX_VERSION+1);
+    return EXIT_FAILURE;
+  }
   if(index!=NOT_FOUND)
     header1.datatype=type;
   size=getfilesizep(in1)-headersize(id,version);
@@ -150,6 +156,12 @@ int main(int argc,char **argv)
       if(freadheader(in2,&header2,&swap2,id,&version,TRUE))
       {
         fprintf(stderr,"Error reading header in '%s'.\n",argv[iarg+2]);
+        return EXIT_FAILURE;
+      }
+      if(version>CLM_MAX_VERSION)
+      {
+        fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+                version,argv[iarg+2],CLM_MAX_VERSION+1);
         return EXIT_FAILURE;
       }
       if(index!=NOT_FOUND)
