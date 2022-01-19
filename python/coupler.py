@@ -2,53 +2,7 @@ import socket
 import struct
 import numpy as np
 from enum import Enum
-from config import LpjmlConfig, read_config
-
-COPAN_COUPLER_VERSION = 1  # Protocol version
-DEFAULT_PORT = 2224        # default port for in- and outgoing data
-
-# List of tokens
-
-GET_DATA = 0       # Receiving data from COPAN
-PUT_DATA = 1       # Sending data to COPAN
-GET_DATA_SIZE = 2  # Receiving data size from COPAN
-PUT_DATA_SIZE = 3  # Sending data size to COPAN
-END_DATA = 4       # Ending communication
-
-N_OUT = 346       # Number of available output data streams
-N_IN = 23         # Number of available input data streams
-
-CLOUD_DATA = 0
-TEMP_DATA = 1
-PREC_DATA = 2
-SWDOWN_DATA = 3
-LWNET_DATA = 4
-CO2_DATA = 5
-LANDUSE_DATA = 6
-TILLAGE_DATA = 7
-RESIDUE_DATA = 8
-TMIN_DATA = 9
-TMAX_DATA = 10
-TAMP_DATA = 11
-WET_DATA = 12
-BURNTAREA_DATA = 13
-HUMID_DATA = 14
-WIND_DATA = 15
-NH4_DATA = 16
-NO3_DATA = 17
-FERTILIZER_DATA = 18
-MANURE_DATA = 19
-WATERUSE_DATA = 20
-POPDENS_DATA = 21
-HUMAN_IGNITION_DATA = 22
-
-GRID = 0
-COUNTRY = 1
-REGION = 2
-GLOBALFLUX = 3
-
-LANDUSE_NBANDS = 64  # number of bands in landuse data
-FERTILIZER_NBANDS = 32  # number of bands in fertilizer data
+from config import read_config
 
 
 def recvall(channel, size):
@@ -134,20 +88,6 @@ class Inputs(Enum):
     manure_nr: int = 32  # number of bands in manure data
     residue_on_field: int = 32  # number of bands in residue data
     with_tillage: int = 2  # number of bands in tillage data
-
-
-class StaticOutputs(Enum):
-    """Static LPJmL Outputs
-    """
-    GRID: int = 0
-    COUNTRY: int = 1
-    REGION: int = 2
-
-
-class GlobalFluxOutput(Enum):
-    """Which is global flux
-    """
-    GLOBALFLUX: int = 3
 
 
 class Coupler:
@@ -264,51 +204,3 @@ class Coupler:
             for ii in range(0, self.ncell):
                 self.grid[1, ii] = read_short(self.channel) * 0.01
                 self.grid[2, ii] = read_short(self.channel) * 0.01
-
-
-# Main simulation loop
-while True:
-    # Send input to LPJmL
-    for i in range(0, n_in):
-        token = read_int(channel)
-        # Did we receive end token?
-        if(token == END_DATA):
-            break
-        if token != GET_DATA:
-            print("Token " + str(token) + " is not GET_DATA")
-            channel.close()
-            quit()
-        index = read_int(channel)
-        year = read_int(channel)
-        if index == LANDUSE_DATA:
-            for j in range(0, ncell * LANDUSE_NBANDS):
-                write_float(channel, landuse[j])
-        elif index == CO2_DATA:
-            write_float(channel, 288.0)
-        else:
-            print("Unsupported input " + str(index))
-    if(token == END_DATA):
-        break
-# Get output from LPJmL
-    for i in range(0, n_out):
-        token = read_int(channel)
-        if token != PUT_DATA:
-            print("Token " + str(token) + " is not PUT_DATA")
-            channel.close()
-            quit()
-        index = read_int(channel)
-        print(index)
-        print(count[index])
-        year = read_int(channel)
-        print(year)
-        if index == GLOBALFLUX:
-            for j in range(0, count[index]):
-                flux[j] = read_float(channel)
-            print("Flux:" + str(flux))
-        else:
-            for j in range(0, count[index]):
-                for k in range(0, ncell):
-                    data[k] = read_float(channel)
-                print(data)
-print("End of communication")
-channel.close()
