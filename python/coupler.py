@@ -1,5 +1,6 @@
 import socket
 import struct
+import numpy as np
 from enum import Enum
 from config import LpjmlConfig, read_config
 
@@ -169,42 +170,62 @@ class Coupler:
         # read amount of output streams
         self.n_out = read_int(self.channel)
         # Send number of bands per cell for each input data stream
-        self.iterate_operation(
-            length=self.n_in, fun=self.write_input_size,
+        self.__iterate_operation(
+            length=self.n_in, fun=self.__write_input_size,
             token=Token.GET_DATA_SIZE,
-            args={"input_bands": self.read_config_sockets()}
+            args={"input_bands": self.__read_config_sockets()}
         )
+        # init list to be filled with nband per output
+        self.__out_bands = [-1] * self.n_out
+        # self.__out_data = [0.0] * self.ncell
+        # init counter to be filled with number of static outputs
+        self.__out_static = 0
+        # Check for static output
+        outputs_avail = self.config.get_outputs_avail(id_only=False)
+        self.__globalflux_id = [out["id"] for out in outputs_avail if out[
+            "name"] == "globalflux"][0]
+        self.__grid_id = [out["id"] for out in outputs_avail if out[
+            "name"] == "grid"][0]
+        self.__static_id = [out["id"] for out in outputs_avail if out[
+            "name"] in ["grid", "country", "region"]]
         # Get number of bands per cell for each output data stream
-        self.out_bands = [-1] * self.n_out
-        self.out_data = [0.0] * self.ncell
-        self.out_static = 0
-        self.iterate_operation(
-            length=self.n_out, fun=self.read_output_details,
+        self.__iterate_operation(
+            length=self.n_out, fun=self.__read_output_details,
             token=Token.PUT_DATA_SIZE
         )
         # Read all static non time dependent outputs
+        self.grid = np.zeros(shape=(self.ncell, 2), dtype=np.float64)
+        self.__iterate_operation(
+            length=self.__out_static, fun=self.__read_static_data,
+            token=Token.PUT_DATA
+        )
+        self.n_out -= self.__out_static
 
-    def iterate_operation(self, length, fun, token, args):
-        token_check, received_token = self.check_token(token)
-        if token_check:
-            val = fun(self.channel, **args)
-        else:
+    def write_data(self):
+        pass
+
+    def read_data(self):
+        pass
+
+    def __iterate_operation(self, length, fun, token, args=None):
+        token_check, received_token = self.__check_token(token)
+        if not token_check:
             raise ValueError(
                 f"Token {received_token.name} is not {token.name}"
             )
+        fun(self.channel, **args)
+        # recursive iteration
         if length > 0:
-            return self.iterate_operation(length-1, fun)
-        else:
-            return val
+            self.__iterate_operation(length-1, fun)
 
-    def check_token(self, token):
+    def __check_token(self, token):
         received_token = read_token(self.channel)
         if received_token is token:
             return True, token
         else:
             return False, token
 
-    def write_input_size(self, input_bands):
+    def __write_input_size(self, input_bands):
         val = read_int(self.channel)
         if val in input_bands.keys():
             # Send number of bands
@@ -212,7 +233,7 @@ class Coupler:
         else:
             write_int(self.channel, val=0)
 
-    def read_config_sockets(self):
+    def __read_config_sockets(self):
         sockets = self.config.get_input_sockets
         input_names = [inp.name for inp in Inputs]
         valid_inputs = {
@@ -227,45 +248,22 @@ class Coupler:
             )
         return valid_inputs
 
-    def read_output_size(self):
+    def __read_output_details(self):
         val = read_int(self.channel)
         # Get number of bands for output
-        self.out_bands[val] = read_int(self.channel)
+        self.__out_bands[val] = read_int(self.channel)
         # Check for static output
-        outputs_avail = self.config.get_outputs_avail(id_only=False)
-        globalflux = [out["id"] for out in outputs_avail if out[
-            "name"] == "globalflux"]
-        output_static = [out["id"] for out in outputs_avail if out[
-            "name"] in ["grid", "country", "region"]]
-        if val in globalflux:
-            self.flux = [0] * count[val]
-        elif val in output_static:
-            self.out_static += 1
+        if val in self.__globalflux_id:
+            self.flux = [0] * self.__out_bands[val]
+        elif val in self.__static_id:
+            self.__out_static += 1
 
-    def send_data(self):
-        pass
-
-    def receive_data(self):
-        pass
-
-
-# Read all static non time dependent outputs
-for i in range(0, n_out_1):
-    token = read_int(channel)
-    if token != PUT_DATA:
-        print("Token " + str(token) + " is not PUT_DATA")
-        channel.close()
-        quit()
-    index = read_int(channel)
-    if index == GRID:
-        for i in range(0, ncell):
-            lon = read_short(channel) * 0.01
-            lat = read_short(channel) * 0.01
-            print(lon, lat)
-    else:
-        print("Unsupported output " + str(index))
-# Reduce the number of output streams by the number of static streams
-n_out = n_out - n_out_1
+    def __read_static_data(self):
+        val = read_int(self.channel)
+        if val == self.__grid_id:
+            for ii in range(0, self.ncell):
+                self.grid[1, ii] = read_short(self.channel) * 0.01
+                self.grid[2, ii] = read_short(self.channel) * 0.01
 
 
 # Main simulation loop
