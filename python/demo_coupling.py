@@ -27,7 +27,7 @@ PUT_DATA_SIZE=3  # Sending data size to COPAN
 END_DATA=4       # Ending communication
 
 N_OUT=346       # Number of available output data streams
-N_IN=23         # Number of available input data streams
+N_IN=24         # Number of available input data streams
 
 CLOUD_DATA=0
 TEMP_DATA=1
@@ -52,6 +52,7 @@ MANURE_DATA=19
 WATERUSE_DATA=20
 POPDENS_DATA=21
 HUMAN_IGNITION_DATA=22
+LIGHTNING_DATA=23
 
 GRID=0
 COUNTRY=1

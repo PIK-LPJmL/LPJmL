@@ -1,7 +1,7 @@
 import socket
 import struct
 
-COPAN_COUPLER_VERSION = 1  # Protocol version
+COPAN_COUPLER_VERSION = 2  # Protocol version
 DEFAULT_PORT = 2224        # default port for in- and outgoing data
 
 # List of tokens
@@ -13,7 +13,7 @@ PUT_DATA_SIZE = 3  # Sending data size to COPAN
 END_DATA = 4       # Ending communication
 
 N_OUT = 346       # Number of available output data streams
-N_IN = 23         # Number of available input data streams
+N_IN = 24         # Number of available input data streams
 
 CLOUD_DATA = 0
 TEMP_DATA = 1
@@ -38,11 +38,20 @@ MANURE_DATA = 19
 WATERUSE_DATA = 20
 POPDENS_DATA = 21
 HUMAN_IGNITION_DATA = 22
+LIGHTNING_DATA=23
 
 GRID = 0
 COUNTRY = 1
 REGION = 2
 GLOBALFLUX = 3
+
+# LPJ datatypes
+
+LPJ_BYTE=0
+LPJ_SHORT=1
+LPJ_INT=2
+LPJ_FLOAT=3
+LPJ_DOUBLE=4
 
 LANDUSE_NBANDS = 64  # number of bands in landuse data
 
@@ -127,6 +136,7 @@ n_out = read_int(channel)
 print("Number of input streams:  " + str(n_in))
 print("Number of output streams: " + str(n_out))
 
+types_in= [-1]* N_IN
 
 # Send number of items per cell for each input data stream
 for i in range(0, n_in):
@@ -136,6 +146,8 @@ for i in range(0, n_in):
         channel.close()
         quit()
     index = read_int(channel)
+    # Get datatype for input
+    types_in[index]= read_int(channel)
     if index == LANDUSE_DATA:
         landuse = [0.001] * LANDUSE_NBANDS*ncell
         index = LANDUSE_NBANDS
@@ -148,6 +160,8 @@ for i in range(0, n_in):
 
 # Get number of items per cell for each output data stream
 count = [-1] * N_OUT
+nstep = [-1] * N_OUT
+types = [-1] * N_OUT
 data = [0.0] * ncell
 n_out_1 = 0
 for i in range(0, n_out):
@@ -157,8 +171,12 @@ for i in range(0, n_out):
         channel.close()
         quit()
     index = read_int(channel)
+    # Get number of time steps for output
+    nstep[index] = read_int(channel)
     # Get number of bands for output
     count[index] = read_int(channel)
+    # Get datatype for output
+    types[index]= read_int(channel)
     # Check for static output
     if index == GLOBALFLUX:
         flux = [0] * count[index]
@@ -175,10 +193,16 @@ for i in range(0, n_out_1):
         quit()
     index = read_int(channel)
     if index == GRID:
-        for i in range(0, ncell):
-            lon = read_short(channel) * 0.01
-            lat = read_short(channel) * 0.01
-            print(lon, lat)
+        if types[GRID] == LPJ_SHORT:
+            for i in range(0, ncell):
+                lon = read_short(channel) * 0.01
+                lat = read_short(channel) * 0.01
+                print(lon, lat)
+        else:
+            for i in range(0, ncell):
+                lon = read_float(channel)
+                lat = read_float(channel)
+                print(lon, lat)
     else:
         print("Unsupported output " + str(index))
 # Reduce the number of output streams by the number of static streams
