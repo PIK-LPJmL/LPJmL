@@ -38,7 +38,7 @@
 
 "input" :
 {
-  "soil" :         { "id" : 23, "fmt" : "meta", "name" : "input_VERSION2/soil.descr"},
+  "soil" :         { "id" : 41, "fmt" : "meta", "name" : "input_VERSION2/soil.descr"},
   "coord" :        { "id" : 24, "fmt" : "clm",  "name" : "input_VERSION2/grid.bin"},
   "countrycode" :  { "id" : 25, "fmt" : "clm",  "name" : "input_VERSION2/cow_full_2018.bin"},
   "no3deposition" : { "id" : 17, "fmt" : "clm",  "name" : "input_VERSION2/no3_deposition_rcp8p5.clm"},
@@ -76,7 +76,7 @@
   "cloud":         { "id" : 0, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.cld.dat.clm"},
   "wind":          { "id" : 15, "fmt" : "clm",  "name" : "input_VERSION2/mwindspeed_1860-2100_67420.clm"},
   "tamp":          { "id" : 3, "fmt" : "clm",  "name" : "CRUDATA_TS3_23/cru_ts3.23.1901.2014.dtr.dat.clm"}, /* diurnal temp. range */
-  "lightning" :    { "id" : 41, "fmt" : "clm",  "name" : "input_VERSION2/mlightning.clm"},
+  "lightning" :    { "id" : 23, "fmt" : "clm",  "name" : "input_VERSION2/mlightning.clm"},
   "human_ignition": { "id" : 22, "fmt" : "clm", "name" : "input_VERSION2/human_ignition.clm"},
   "popdens" :      { "id" : 21, "fmt" : "clm",  "name" : "input_VERSION2/popdens_HYDE3_1901_2011_bi.clm"},
   "burntarea" :    { "id" : 13, "fmt" : "clm",  "name" : "/data/biosx/mforkel/input_new/GFED_CNFDB_ALFDB_Interp.BA.360.720.1901.2012.30days.clm"},
