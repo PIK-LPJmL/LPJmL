@@ -18,7 +18,7 @@
 
 /* Definition of constants */
 
-#define COPAN_COUPLER_VERSION 1        /* Protocol version */
+#define COPAN_COUPLER_VERSION 2        /* Protocol version */
 #define LPJCOPAN "LPJCOPAN"            /* Environment variable for COPAN coupler */
 #define LPJWAIT "LPJWAIT"              /* Time to wait for connection */
 #define DEFAULT_COPAN_HOST "localhost" /* Default host for COPAN model */
@@ -35,7 +35,7 @@
 
 /* List of input data streams */
 
-#define N_IN 23         /* Number of available input data streams */
+#define N_IN 24         /* Number of available input data streams */
 #define CLOUD_DATA 0
 #define TEMP_DATA 1
 #define PREC_DATA 2
@@ -59,6 +59,7 @@
 #define WATERUSE_DATA 20
 #define POPDENS_DATA 21
 #define HUMAN_IGNITION_DATA 22
+#define LIGHTNING_DATA 23
 
 /* Declaration of functions */
 

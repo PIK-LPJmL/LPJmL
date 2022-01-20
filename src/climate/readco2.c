@@ -25,6 +25,7 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
   int yr,yr_old,size;
   Bool iseof;
   Verbosity verbose;
+  Type type;
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   file.isjson=FALSE;
   if(filename->fmt==FMS || filename->fmt==SOCK)
@@ -37,6 +38,8 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
       if(isroot(*config))
       {
         send_token_copan(GET_DATA_SIZE,CO2_DATA,config);
+        type=LPJ_FLOAT;
+        writeint_socket(config->socket,&type,1);
         readint_socket(config->socket,&size,1);
       }
 #ifdef USE_MPI

@@ -50,6 +50,8 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
     if(isroot(*config))
     {
      send_token_copan(GET_DATA_SIZE,HUMAN_IGNITION_DATA,config);
+     header.datatype=LPJ_FLOAT;
+     writeint_socket(config->socket,&header.datatype,1);
      readint_socket(config->socket,&header.nbands,1);
     }
 #ifdef USE_MPI

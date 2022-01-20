@@ -50,6 +50,8 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
     if(isroot(*config))
     {
      send_token_copan(GET_DATA_SIZE,WATERUSE_DATA,config);
+     header.datatype=LPJ_FLOAT;
+     writeint_socket(config->socket,&header.datatype,1);
      readint_socket(config->socket,&header.nbands,1);
     }
 #ifdef USE_MPI

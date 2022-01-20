@@ -15,7 +15,7 @@
 import socket
 import struct
 
-COPAN_COUPLER_VERSION=1 # Protocol version
+COPAN_COUPLER_VERSION=2 # Protocol version
 DEFAULT_PORT=2224       # default port for in- and outgoing data
 
 # List of tokens
@@ -57,6 +57,14 @@ GRID=0
 COUNTRY=1
 REGION=2
 GLOBALFLUX=3
+
+# LPJ datatypes
+
+LPJ_BYTE=0
+LPJ_SHORT=1
+LPJ_INT=2
+LPJ_FLOAT=3
+LPJ_DOUBLE=4
 
 LANDUSE_NBANDS=64 # number of bands in landuse data
 
@@ -130,6 +138,7 @@ print("Number of input streams:  "+str(n_in))
 print("Number of output streams: "+str(n_out))
 
 # Send number of items per cell for each input data stream
+types_in=[-1]*N_IN
 
 for i in range(0,n_in):
   token=read_int(channel)
@@ -138,6 +147,7 @@ for i in range(0,n_in):
     channel.close()
     quit()
   index=read_int(channel)
+  types_in[index]=read_int(channel)
   if index==LANDUSE_DATA:
     landuse=[0.001]*LANDUSE_NBANDS*ncell
     index=LANDUSE_NBANDS
@@ -151,6 +161,8 @@ for i in range(0,n_in):
 # Get number of items per cell for each output data stream
 
 count=[-1]*N_OUT
+nstep=[-1]*N_OUT
+types=[-1]*N_OUT
 data=[0.0]*ncell
 n_out_1=0
 for i in range(0,n_out):
@@ -160,8 +172,12 @@ for i in range(0,n_out):
     channel.close()
     quit()
   index=read_int(channel)
+# Get number of time steps per year  for output
+  nstep[index]=read_int(channel)
 # Get number of bands for output
   count[index]=read_int(channel)
+# Get datatype for output
+  types[index]=read_int(channel)
 # Check for static output
   if index==GLOBALFLUX:
     flux=[0]*count[index]

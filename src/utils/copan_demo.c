@@ -16,25 +16,139 @@
 #include <stdio.h>
 #include "lpj.h"
 
-#define COPANDEMO_VERSION "0.9.001"
+#define COPANDEMO_VERSION "0.9.002"
 
 #define LANDUSE_NBANDS 64
+
+static Bool readdata(Socket *socket,int ncell,int day,int count[],Type type[])
+{
+  int token;
+  int index;
+  int year;
+  int j,k;
+  float *data;
+  short *sdata;
+  readint_socket(socket,&token,1);
+  if(token==END_DATA)
+    return TRUE;
+  if(token!=PUT_DATA)
+  {
+    fprintf(stderr,"Token for output data=%d is not PUT_DATA.\n",token);
+    return TRUE;
+  }
+  if(readint_socket(socket,&index,1))
+  {
+    fprintf(stderr,"Error reading index of output\n");
+    return TRUE;
+  }
+  if(index<0 || index>=NOUT)
+  {
+    fprintf(stderr,"Invalid index %d of output\n",index);
+    return TRUE;
+  }
+  if(count[index]<0)
+  {
+    fprintf(stderr,"No output defined for index %d.\n",index);
+    return TRUE;
+  }
+  readint_socket(socket,&year,1);
+  if(index==GLOBALFLUX)
+  {
+    data=newvec(float,count[index]);
+    check(data);
+    printf("%d flux:",year);
+    readfloat_socket(socket,data,count[index]);
+    for(j=0;j<count[index];j++)
+      printf(" %g",data[j]);
+    printf("\n");
+    free(data);
+  }
+  else
+  {
+    if(type[index]==LPJ_SHORT)
+    {
+      sdata=newvec(short,ncell);
+      check(sdata);
+      for(j=0;j<count[index];j++)
+      {
+        readshort_socket(socket,sdata,ncell);
+        printf("%d/%d %d[%d]:",day,year,index,j);
+        for(k=0;k<ncell;k++)
+          printf(" %d",sdata[k]);
+        printf("\n");
+      }
+      free(sdata);
+    }
+    else
+    {
+      data=newvec(float,ncell);
+      check(data);
+      for(j=0;j<count[index];j++)
+      {
+        readfloat_socket(socket,data,ncell);
+        printf("%d/%d %d[%d]:",day,year,index,j);
+        for(k=0;k<ncell;k++)
+          printf(" %g",data[k]);
+        printf("\n");
+      }
+      free(data);
+    }
+  }
+  return FALSE;
+} /* of 'readdata' */
+
+static Bool readyeardata(Socket *socket,int ncell,int nday_out,int nmonth_out,int n_out,int counts[],Type type[])
+{
+  int month;
+  int day,dayofyear;
+  int i;
+  dayofyear=1;
+  for(month=0;month<12;month++)
+  {
+    /* read daily data */
+    for(day=0;day<ndaymonth[month];day++)
+    {
+      for(i=0;i<nday_out;i++)
+        if(readdata(socket,ncell,dayofyear,counts,type))
+          return TRUE;
+      dayofyear++;
+    }
+    /* read monthly data */
+    for(i=0;i<nmonth_out;i++)
+      if(readdata(socket,ncell,dayofyear-1,counts,type))
+        return TRUE;
+  }
+  /* read annual data */
+  for(i=0;i<n_out-nday_out-nmonth_out;i++)
+    if(readdata(socket,ncell,NDAYYEAR,counts,type))
+      return TRUE;
+  return FALSE;
+} /* of 'readyeardata' */
 
 int main(int argc,char **argv)
 {
   Socket *socket;
-  float *data,*landuse,*flux;
-  short *country,*region,*sdata;
+  float *landuse;
+  short *country,*region;
   char *endptr;
   float co2;
   Intcoord *coords;
   int count[NOUT];
+  int nstep[NOUT];
+  Type type[NOUT];
+  Type type_in[N_IN];
   int port;
+  int nmonth_out;
+  int nday_out;
   String line;
   const char *progname;
   const char *title[4];
-  int i,j,k,token,n_out,n_in,ncell,index,year,version,n_out_1;
+  int i,j,token,n_out,n_in,ncell,index,year,version,n_out_1;
   port=DEFAULT_COPAN_PORT;
+  struct coord
+  {
+    float lon,lat;
+  } *fcoords;
   if(argc>1)
   {
     port=strtol(argv[1],&endptr,10);
@@ -95,6 +209,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Invalid index %d of input\n",index);
       return EXIT_FAILURE;
     }
+    readint_socket(socket,(int *)(type_in+index),1);
     switch(index)
     {
       case LANDUSE_DATA:
@@ -116,6 +231,8 @@ int main(int argc,char **argv)
   for(i=0;i<NOUT;i++)
     count[i]=-1;
   n_out_1=0;
+  nmonth_out=0;
+  nday_out=0;
   for(i=0;i<n_out;i++)
   {
     readint_socket(socket,&token,1);
@@ -130,20 +247,33 @@ int main(int argc,char **argv)
       fprintf(stderr,"Invalid index %d of output.\n",index);
       return EXIT_FAILURE;
     }
+    /* get number of steps per year for output */
+    readint_socket(socket,nstep+index,1);
+    switch(nstep[index])
+    {
+      case NMONTH:
+        nmonth_out++;
+        break;
+      case NDAYYEAR:
+        nday_out++;
+        break;
+      case 0 : case 1:
+        break;
+      default:
+        fprintf(stderr,"Invalid number of steps %d for index %d.\n",nstep[index],index);
+        return EXIT_FAILURE;
+    }
     /* get number of bands for output */
     readint_socket(socket,count+index,1);
+    readint_socket(socket,(int *)(type+index),1);
     /* check for static output */
-    if(index==GLOBALFLUX)
-    {
-      flux=newvec(float,count[index]);
-      check(flux);
-    }
-    else if(index==GRID || index==COUNTRY || index==REGION)
+    if(index==GRID || index==COUNTRY || index==REGION)
       n_out_1++;
   }
   /* read all static non time dependent outputs */
   region=country=NULL;
   coords=NULL;
+  fcoords=NULL;
   for(i=0;i<n_out_1;i++)
   {
     readint_socket(socket,&token,1);
@@ -160,12 +290,24 @@ int main(int argc,char **argv)
     switch(index)
     {
       case GRID:
-        coords=newvec(Intcoord,ncell);
-        check(coords);
-        readshort_socket(socket,(short *)coords,ncell*2);
-        printf("Grid:\n");
-        for(j=0;j<ncell;j++)
-          printf("%g %g\n",coords[j].lat*.01,coords[j].lon*.01);
+        if(type[GRID]==LPJ_SHORT)
+        {
+          coords=newvec(Intcoord,ncell);
+          check(coords);
+          readshort_socket(socket,(short *)coords,ncell*2);
+          printf("Grid:\n");
+          for(j=0;j<ncell;j++)
+            printf("%g %g\n",coords[j].lat*.01,coords[j].lon*.01);
+        }
+        else
+        {
+          fcoords=newvec(struct coord,ncell);
+          check(fcoords);
+          readfloat_socket(socket,(float *)fcoords,ncell*2);
+          printf("Grid:\n");
+          for(j=0;j<ncell;j++)
+            printf("%g %g\n",fcoords[j].lat,fcoords[j].lon);
+        }
         break;
       case COUNTRY:
         country=newvec(short,ncell);
@@ -184,10 +326,6 @@ int main(int argc,char **argv)
   }
   /* reduce the number of output streams by the number of static streams */
   n_out-=n_out_1;
-  data=newvec(float,ncell);
-  check(data);
-  sdata=newvec(short,ncell);
-  check(sdata);
   /* main simulation loop */
   for(;;)
   {
@@ -232,63 +370,7 @@ int main(int argc,char **argv)
     if(token==END_DATA) /* Did we receive end token? */
       break;
     /* get output from LPJmL */
-    for(i=0;i<n_out;i++)
-    {
-      readint_socket(socket,&token,1);
-      if(token==END_DATA)
-        break; /* Did we receive end token? */
-      if(token!=PUT_DATA)
-      {
-        fprintf(stderr,"Token for output data=%d is not PUT_DATA.\n",token);
-        return EXIT_FAILURE;
-      }
-      if(readint_socket(socket,&index,1))
-      {
-        fprintf(stderr,"Error reading index of output\n");
-        return EXIT_FAILURE;
-      }
-      if(index<0 || index>=NOUT)
-      {
-        fprintf(stderr,"Invalid index %d of output\n",index);
-        return EXIT_FAILURE;
-      }
-      if(count[index]<0)
-      {
-        fprintf(stderr,"No output defined for index %d.\n",index);
-        return EXIT_FAILURE;
-      }
-      readint_socket(socket,&year,1);
-      if(index==GLOBALFLUX)
-      {
-        printf("%d flux:",year);
-        readfloat_socket(socket,flux,count[index]);
-        for(j=0;j<count[index];j++)
-          printf(" %g",flux[j]);
-        printf("\n");
-      }
-      else
-      {
-        if(getoutputtype(index,FALSE)==LPJ_SHORT)
-          for(j=0;j<count[index];j++)
-          {
-            readshort_socket(socket,sdata,ncell);
-            printf("%d %d[%d]:",year,index,j);
-            for(k=0;k<ncell;k++)
-              printf(" %d",sdata[k]);
-            printf("\n");
-          }
-        else
-          for(j=0;j<count[index];j++)
-          {
-            readfloat_socket(socket,data,ncell);
-            printf("%d %d[%d]:",year,index,j);
-            for(k=0;k<ncell;k++)
-              printf(" %g",data[k]);
-            printf("\n");
-          }
-      }
-    }
-    if(token==END_DATA) /* Did we receive end token? */
+    if(readyeardata(socket,ncell,nday_out,nmonth_out,n_out,count,type))
       break;
   } /* of for(;;) */
   printf("End of communication.\n");

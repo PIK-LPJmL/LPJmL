@@ -295,7 +295,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    if(openclimate(0,&climate->file_lightning,&config->lightning_filename,"1/day/hectare",LPJ_INT,config))
+    if(openclimate(LIGHTNING_DATA,&climate->file_lightning,&config->lightning_filename,"1/day/hectare",LPJ_INT,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open lightning data from '%s'.\n",config->lightning_filename.name);
@@ -608,6 +608,18 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     {
      if(readclimate_netcdf(&climate->file_lightning,climate->data.lightning,grid,0,config))
        return NULL;
+    }
+    else if(climate->file_lightning.fmt==SOCK)
+    {
+      if(receive_real_copan(LIGHTNING_DATA,climate->data.lightning,NMONTH,0,config))
+      {
+        if(isroot(*config))
+        {
+          fprintf(stderr,"ERROR149: Cannot receive lightning.\n");
+          fflush(stderr);
+        }
+        return NULL;
+      }
     }
     else
     {
