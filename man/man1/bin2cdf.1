@@ -3,11 +3,14 @@
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-floatgrid] [\-cellsize size] [\-compress level] [\-descr d] [\-units u] [-global] {-swap] [\-short] [\-nitem n} [\-ispft] [\-firstyear y]
+[\-clm] [\-floatgrid] [\-cellsize size] [\-compress level] [\-descr d] [\-units u] [-global] {-swap] [\-short] [\-nitem n} [\-ispft] [\-firstyear y]
 .I varname gridfile binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
 .SH OPTIONS
+.TP
+\-clm
+File is in clm format, default is raw.
 .TP
 \-floatgrid
 set datatype of grid file to float, default is short.
