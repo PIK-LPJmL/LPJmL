@@ -89,10 +89,17 @@ class Inputs(Enum):
     residue_on_field: int = 32  # number of bands in residue data
     with_tillage: int = 2  # number of bands in tillage data
 
+class Datatypes(Enum)
+    """Available datatypes"""
+    LPJ_BYTE: int =0
+    LPJ_SHORT: int =1
+    LPJ_INT: int =2
+    LPJ_FLOAT: int =3
+    LPJ_DOUBLE: int =4
 
 class Coupler:
     # constructor; set channel
-    def __init__(self, config_file, version=1, port=2224):
+    def __init__(self, config_file, version=2, port=2224):
         config = read_config(config_file)
         # open/initialize socket channel
         self.channel = opentdt(port)
@@ -115,8 +122,11 @@ class Coupler:
             token=Token.GET_DATA_SIZE,
             args={"input_bands": self.__read_config_sockets()}
         )
+        self.__in_types = [-1] * self.n_in
         # init list to be filled with nband per output
         self.__out_bands = [-1] * self.n_out
+        self.__out_steps = [-1] * self.n_out
+        self.__out_types = [-1] * self.n_out
         # self.__out_data = [0.0] * self.ncell
         # init counter to be filled with number of static outputs
         self.__out_static = 0
@@ -167,6 +177,7 @@ class Coupler:
 
     def __write_input_size(self, input_bands):
         val = read_int(self.channel)
+        self.__in_types[val] = read_int(self.channel)
         if val in input_bands.keys():
             # Send number of bands
             write_int(self.channel, val=input_bands[val])
@@ -190,8 +201,12 @@ class Coupler:
 
     def __read_output_details(self):
         val = read_int(self.channel)
+        # Get number of steps for output
+        self.__out_steps[val] = read_int(self.channel)
         # Get number of bands for output
         self.__out_bands[val] = read_int(self.channel)
+        # Get datatype for output
+        self.__out_types[val] = read_int(self.channel)
         # Check for static output
         if val in self.__globalflux_id:
             self.flux = [0] * self.__out_bands[val]
@@ -201,6 +216,11 @@ class Coupler:
     def __read_static_data(self):
         val = read_int(self.channel)
         if val == self.__grid_id:
-            for ii in range(0, self.ncell):
-                self.grid[1, ii] = read_short(self.channel) * 0.01
-                self.grid[2, ii] = read_short(self.channel) * 0.01
+            if self.__out_types[self.__grid_id] == Datatypes.LPJ_SHORT:
+                for ii in range(0, self.ncell):
+                    self.grid[1, ii] = read_short(self.channel) * 0.01
+                    self.grid[2, ii] = read_short(self.channel) * 0.01
+            else:
+                for ii in range(0, self.ncell):
+                    self.grid[1, ii] = read_float(self.channel)
+                    self.grid[2, ii] = read_float(self.channel)
