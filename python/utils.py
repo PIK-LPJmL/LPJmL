@@ -3,6 +3,15 @@ from subprocess import run, Popen, PIPE, CalledProcessError
 
 
 def clone_lpjml(model_location=".", branch="lpjml53_copan"):
+    """Git clone lpjml via oauth using git url and token provided as
+    environment variables. If copan implementation still on branch use branch
+    argument.
+    :param model_location: location to `git clone` lpjml -> LPJmL_internaö
+    :type model_location: str
+    :param branch: switch/`git checkout` to branch with copan implementation.
+        Defaults to "lpjml53_copan".
+    :type branch: str
+    """
     git_url = environ.get("GIT_LPJML_URL")
     git_token = environ.get("GIT_READ_TOKEN")
     cmd = ["git", "clone", f"https://oauth2:{git_token}@{git_url}"]
@@ -27,7 +36,7 @@ def clone_lpjml(model_location=".", branch="lpjml53_copan"):
 
 
 def compile_lpjml(model_path=".", make_fast=False, make_clean=False):
-    """ Compile or make lpjml after model clone/changes. make_fast for small
+    """Compile or make lpjml after model clone/changes. make_fast for small
     changes, make_clean to delete previous compiled version (clean way)
     :param model_path: path to `LPJmL_internal` (lpjml repository)
     :type model_path: str
@@ -79,11 +88,11 @@ def check_lpjml(config_file, model_path):
         )
     if path.isfile(f"{model_path}/bin/lpjcheck"):
         proc_status = run(
-            ["./bin/lpjcheck", config_file], capture_output=True,
+            ["./bin/lpjcheck", "-param", config_file], capture_output=True,
             cwd=model_path
         )
     if proc_status.returncode == 0:
-        print(proc_status.stdout.decode('utf-8'))
+        return(proc_status.stdout.decode('utf-8'))
     else:
         print(proc_status.stdout.decode('utf-8'))
         print(proc_status.stderr.decode('utf-8'))
