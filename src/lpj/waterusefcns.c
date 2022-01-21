@@ -49,10 +49,11 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
   {
     if(isroot(*config))
     {
-     send_token_copan(GET_DATA_SIZE,WATERUSE_DATA,config);
-     header.datatype=LPJ_FLOAT;
-     writeint_socket(config->socket,&header.datatype,1);
-     readint_socket(config->socket,&header.nbands,1);
+      send_token_copan(GET_DATA_SIZE,filename->id,config);
+      wateruse->file.id=filename->id;
+      header.datatype=LPJ_FLOAT;
+      writeint_socket(config->socket,&header.datatype,1);
+      readint_socket(config->socket,&header.nbands,1);
     }
 #ifdef USE_MPI
     MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
@@ -123,7 +124,7 @@ static Real *readwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
       printallocerr("data");
       return NULL;
     }
-    if(receive_real_copan(WATERUSE_DATA,data,1,year,config))
+    if(receive_real_copan(wateruse->file.id,data,1,year,config))
     {
       fprintf(stderr,"ERROR149: Cannot receive wateruse of year %d in readwateruse().\n",year);
       fflush(stderr);

@@ -211,6 +211,7 @@ LPJROOT        - defines the root directory for LPJmL. This directory is added t
                  include directories of the preprocessor
 LPJIMAGE       - sets host where IMAGE is running
 LPJCOPAN       - sets host where the COPAN model is running
+LPJWAIT        - sets time to wait for connection to IMAGE/COPAN model
 LPJINPATH      - Path append to the input filenames. Only done for filenames
                  without absolute path.
 LPJRESTARTPATH - Path append to the restart filenames. Only done for filenames
@@ -283,6 +284,7 @@ The following runtime options are defined:
 -image host       - set host where IMAGE model is running. Option is only
                     available for the IMAGE version
 -copan host[:port]- set host and port where the COPAN model is running
+-wait time        - set time to wait for connection to IMAGE/COPAN model
 -output method    - Method for generating output files. Valid values for method
                     are mpi2, gather. Methods mpi2 and
                     gather are only available for the MPI version

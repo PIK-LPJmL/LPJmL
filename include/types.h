@@ -82,6 +82,7 @@ typedef struct
   Bool isscale; /* scale factor defined? */
   int timestep; /* time step for output (ANNUAL,MONTHLY,DAILY) */
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
+  int id;     /* id for input socket */
 } Filename;
 
 typedef struct
@@ -155,7 +156,7 @@ extern Bool readrealvec(FILE *,Real *,Real,Real,size_t,Bool,Type);
 extern Bool readfloatvec(FILE *,float *,float,size_t,Bool,Type);
 extern Bool readintvec(FILE *,int *,size_t,Bool,Type);
 extern Bool readuintvec(FILE *,unsigned int *,size_t,Bool,Type);
-extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Verbosity);
+extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Bool,Verbosity);
 extern void **newmat(size_t,int,int);
 extern void freemat(void **);
 extern char *catstrvec(const char * const *,int);

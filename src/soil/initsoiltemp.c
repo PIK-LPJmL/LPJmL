@@ -32,7 +32,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
   nsoilmeanyears = min(30,climate->file_temp.nyear);
   for (year=climate->file_temp.firstyear; year < climate->file_temp.firstyear+nsoilmeanyears; ++year)
   {
-    if(readclimate(TEMP_DATA,&climate->file_temp,climate->data.temp,0,climate->file_temp.scalar,grid,year,config))
+    if(readclimate(&climate->file_temp,climate->data.temp,0,climate->file_temp.scalar,grid,year,config))
     {
       if(isroot(*config))
       {
@@ -43,7 +43,7 @@ Bool initsoiltemp(Climate* climate,    /**< pointer to climate data */
       }
       return TRUE;
     }
-    if(readclimate(PREC_DATA,&climate->file_prec,climate->data.prec,0,climate->file_prec.scalar,grid,year,config))
+    if(readclimate(&climate->file_prec,climate->data.prec,0,climate->file_prec.scalar,grid,year,config))
     {
       if(isroot(*config))
       {

@@ -63,6 +63,7 @@ typedef struct
 {
   int firstyear;    /**< first year of CO2 data (AD) */
   int nyear;        /**< number of years of climate data */
+  int id;           /**< id for socket communication */
   Real *data;       /**< atmospheric CO2 (ppmv) */
 } Co2data;
 
@@ -119,12 +120,12 @@ extern void dailyclimate(Dailyclimate *,const Climate *,Climbuf *,
 extern Real getmtemp(const Climate *,const Climbuf *,int,int);
 extern Real getmprec(const Climate *,const Climbuf *,int,int);
 extern void initclimate_monthly(const Climate *,Climbuf *,int,int,Seed);
-extern Bool openclimate(int,Climatefile *,const Filename *,const char *,Type,
+extern Bool openclimate(Climatefile *,const Filename *,const char *,Type,
                         const Config *);
 extern Real avgtemp(const Climate *,int cell);
 extern Real avgprec(const Climate *,int cell);
 extern void closeclimatefile(Climatefile *,Bool);
-extern Bool readclimate(int,Climatefile *,Real *,Real,Real,const Cell *,int,
+extern Bool readclimate(Climatefile *,Real *,Real,Real,const Cell *,int,
                         const Config *);
 extern Bool checkvalidclimate(Climate *,Cell *,Config *);
 extern Bool readco2(Co2data *,const Filename *,const Config *);

@@ -169,7 +169,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     }
     else
     {
-      if(readfilename(&item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,verbosity))
+      if(readfilename(&item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,FALSE,verbosity))
       {
         if(verbosity)
           fprintf(stderr,"ERROR231: Cannot read filename for output '%s'.\n",

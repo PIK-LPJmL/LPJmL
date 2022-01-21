@@ -12,6 +12,8 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
+#include "include/copanpar.h"
+
 "inpath" : "/p/projects/lpjml/input/historical",
 
 "soilmap" : [null,"clay", "silty clay", "sandy clay", "clay loam", "silty clay loam",
@@ -45,7 +47,7 @@
   "nh4deposition" : { "fmt" : "clm",  "name" : "input_VERSION2/nh4_deposition_rcp8p5.clm"},
   "soilpH" :        { "fmt" : "clm",  "name" : "input_VERSION2/soil_ph.clm"},
   "extflow" :        { "fmt" : "cdf",  "var" : "txt","name" : "input_VERSION2/soil_ph.clm"},
-  "landuse" :      { "fmt" : "sock" },
+  "landuse" :      { "fmt" : "sock", "id" : LANDUSE_DATA },
 //  "fertilizer_nr" : { "fmt" :"clm",  "name" : "input_VERSION2/fertilizer_ggcmi.clm2"},
   "fertilizer_nr" : { "fmt" :"clm",  "name" : "input_VERSION3/fertilizer_luh2v2_1900-2015_32bands.clm"},
   "manure_nr" :    { "fmt" : "clm", "name" : "input_VERSION3/manure_zhang17_1860-2014_32bands_clm2.clm"},
@@ -80,7 +82,8 @@
   "popdens" :      { "fmt" : "clm",  "name" : "input_VERSION2/popdens_HYDE3_1901_2011_bi.clm"},
   "burntarea" :    { "fmt" : "clm",  "name" : "/data/biosx/mforkel/input_new/GFED_CNFDB_ALFDB_Interp.BA.360.720.1901.2012.30days.clm"},
   "landcover":     { "fmt" : "clm",  "name" : "/data/biosx/mforkel/input_new/landcover_synmap_koeppen_vcf_newPFT_forLPJ_20130910.clm"},/*synmap_koeppen_vcf_NewPFT_adjustedByLanduse_SpinupTransitionPrescribed_forLPJ.clm*/
-  "co2" :          { "fmt" : "txt",  "name" : "input_VERSION2/co2_1841-2012.dat"},
+  "co2" :          { "fmt" : "sock",  "id" : CO2_DATA},
+  //"co2" :          { "fmt" : "txt",  "name" : "input_VERSION2/co2_1841-2012.dat"},
   "wetdays" :      { "fmt" : "clm",  "name" : "CRUDATA_TS3_23/gpcc_v7_cruts3_23_wet_1901_2013.clm"},
   "wateruse" :     { "fmt" : "clm",  "name" : "input_VERSION2/wateruse_1900_2000.bin" } /* water consumption for industry,household and livestock */
 },

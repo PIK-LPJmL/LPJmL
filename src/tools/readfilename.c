@@ -24,6 +24,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
                   const char *key,    /**< name of json object */
                   const char *path,   /**< path added to filename or NULL */
                   Bool isvar,         /**< variable name supplied */
+                  Bool isid,          /**< if for socket supplied */
                   Verbosity verb      /**< verbosity level (NO_ERR,ERR,VERB) */
                  )                    /** \return TRUE on error */
 {
@@ -143,7 +144,14 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   else
     filename->unit=NULL;
   if(filename->fmt==SOCK)
+  {
+    if(isid)
+    {
+      if(fscanint(&f,&filename->id,"id",FALSE,verb))
+        return TRUE;
+    }
     filename->name=NULL;
+  }
   else
   {
     if(fscanstring(&f,name,"name",FALSE,verb))

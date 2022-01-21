@@ -35,7 +35,10 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
     return NULL;
   ignition=new(struct human_ignition);
   if(ignition==NULL)
+  {
+    printallocerr("ignition");
     return NULL;
+  }
   ignition->file.fmt=config->human_ignition_filename.fmt;
   if(config->human_ignition_filename.fmt==CDF)
   {
@@ -49,10 +52,11 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
   {
     if(isroot(*config))
     {
-     send_token_copan(GET_DATA_SIZE,HUMAN_IGNITION_DATA,config);
-     header.datatype=LPJ_FLOAT;
-     writeint_socket(config->socket,&header.datatype,1);
-     readint_socket(config->socket,&header.nbands,1);
+      send_token_copan(GET_DATA_SIZE,config->human_ignition_filename.id,config);
+      ignition->file.id=config->human_ignition_filename.id;
+      header.datatype=LPJ_FLOAT;
+      writeint_socket(config->socket,&header.datatype,1);
+      readint_socket(config->socket,&header.nbands,1);
     }
 #ifdef USE_MPI
     MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
@@ -130,7 +134,7 @@ Bool gethumanignition(Human_ignition ignition, /**< pointer to population data *
   {
     printallocerr("data");
     return TRUE;
-  } 
+  }
   if(ignition->file.fmt==CDF)
   {
     if(readdata_netcdf(&ignition->file,data,grid,year,config))
@@ -144,7 +148,7 @@ Bool gethumanignition(Human_ignition ignition, /**< pointer to population data *
   }
   if(ignition->file.fmt==SOCK)
   {
-    if(receive_real_copan(POPDENS_DATA,data,1,year,config))
+    if(receive_real_copan(ignition->file.id,data,1,year,config))
     {
       fprintf(stderr,"ERROR149: Cannot receive ignition density of year %d.\n",year);
       free(data);

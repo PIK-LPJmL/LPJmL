@@ -51,7 +51,7 @@ const char *grazing_type[]={"default","mowing","ext","int","none"};
 
 static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const char *path,Verbosity verbose)
 {
-  if(readfilename(file,name,key,path,FALSE,verbose))
+  if(readfilename(file,name,key,path,FALSE,FALSE,verbose))
     return TRUE;
   if(name->fmt==CDF)
   {
@@ -70,7 +70,7 @@ static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const cha
 
 static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,const char *path,int *copan_in,Bool isfms,Bool iscopan,Verbosity verbose)
 {
-  if(readfilename(file,name,key,path,TRUE,verbose))
+  if(readfilename(file,name,key,path,TRUE,TRUE,verbose))
     return TRUE;
   if(!isfms && name->fmt==FMS)
   {
@@ -81,7 +81,7 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,con
   if(!iscopan && name->fmt==SOCK)
   {
     if(verbose)
-      fprintf(stderr,"ERROR197: File format 'sock' not allowed without COPAN coupling for input '%s'.\n",key);
+      fprintf(stderr,"ERROR197: File format 'sock' not allowed for input '%s'.\n",key);
     return TRUE;
   }
   if(name->fmt==SOCK)
@@ -747,7 +747,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     scanclimatefilename(&input,&config->landcover_filename,config->inputdir,FALSE,FALSE,"landcover");
   }
-  if(readfilename(&input,&config->co2_filename,"co2",config->inputdir,FALSE,verbose))
+  if(readfilename(&input,&config->co2_filename,"co2",config->inputdir,FALSE,TRUE,verbose))
   {
     if(verbose)
       fputs("ERROR209: Cannot read filename for 'co2' input.\n",stderr);

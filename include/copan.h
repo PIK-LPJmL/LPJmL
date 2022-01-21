@@ -12,9 +12,10 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-
 #ifndef COPAN_H /* already included? */
 #define COPAN_H
+
+#include "copanpar.h"
 
 /* Definition of constants */
 
@@ -36,30 +37,6 @@
 /* List of input data streams */
 
 #define N_IN 24         /* Number of available input data streams */
-#define CLOUD_DATA 0
-#define TEMP_DATA 1
-#define PREC_DATA 2
-#define SWDOWN_DATA 3
-#define LWNET_DATA 4
-#define CO2_DATA 5
-#define LANDUSE_DATA 6
-#define TILLAGE_DATA 7
-#define RESIDUE_DATA 8
-#define TMIN_DATA 9
-#define TMAX_DATA 10
-#define TAMP_DATA 11
-#define WET_DATA 12
-#define BURNTAREA_DATA 13
-#define HUMID_DATA 14
-#define WIND_DATA 15
-#define NH4_DATA 16
-#define NO3_DATA 17
-#define FERTILIZER_DATA 18
-#define MANURE_DATA 19
-#define WATERUSE_DATA 20
-#define POPDENS_DATA 21
-#define HUMAN_IGNITION_DATA 22
-#define LIGHTNING_DATA 23
 
 /* Declaration of functions */
 

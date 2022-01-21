@@ -30,7 +30,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     printallocerr("climate");
     return NULL;
   }
-  if(openclimate(TEMP_DATA,&climate->file_temp,&config->temp_filename,"celsius",LPJ_SHORT,config))
+  if(openclimate(&climate->file_temp,&config->temp_filename,"celsius",LPJ_SHORT,config))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR236: Cannot open temp data from '%s'.\n",config->temp_filename.name);
@@ -40,7 +40,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   if((config->temp_filename.fmt==CLM || config->temp_filename.fmt==RAW)  && climate->file_temp.version<=1)
     climate->file_temp.scalar=0.1;
   climate->firstyear=climate->file_temp.firstyear;
-  if(openclimate(PREC_DATA,&climate->file_prec,&config->prec_filename,"kg/m2/day" /* "mm" */,LPJ_SHORT,config))
+  if(openclimate(&climate->file_prec,&config->prec_filename,"kg/m2/day" /* "mm" */,LPJ_SHORT,config))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR236: Cannot open prec data from '%s'.\n",config->prec_filename.name);
@@ -54,7 +54,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   {
     if(config->with_radiation==RADIATION || config->with_radiation==RADIATION_LWDOWN)
     {
-      if(openclimate(LWNET_DATA,&climate->file_lwnet,&config->lwnet_filename,"W/m2",LPJ_SHORT,config))
+      if(openclimate(&climate->file_lwnet,&config->lwnet_filename,"W/m2",LPJ_SHORT,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open %s data from '%s'.\n",(config->with_radiation==RADIATION) ? "lwnet" : "lwdown",config->lwnet_filename.name);
@@ -68,7 +68,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       if(climate->firstyear<climate->file_lwnet.firstyear)
         climate->firstyear=climate->file_lwnet.firstyear;
     }
-    if(openclimate(SWDOWN_DATA,&climate->file_swdown,&config->swdown_filename,"W/m2",LPJ_SHORT,config))
+    if(openclimate(&climate->file_swdown,&config->swdown_filename,"W/m2",LPJ_SHORT,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open swdown data from '%s'.\n",config->swdown_filename.name);
@@ -87,7 +87,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   else
   {
-    if(openclimate(CLOUD_DATA,&climate->file_cloud,&config->cloud_filename,"%",LPJ_SHORT,config))
+    if(openclimate(&climate->file_cloud,&config->cloud_filename,"%",LPJ_SHORT,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open cloud data from '%s'.\n",config->cloud_filename.name);
@@ -102,7 +102,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(config->wet_filename.name!=NULL)
   {
-    if(openclimate(WET_DATA,&climate->file_wet,&config->wet_filename,"day",LPJ_SHORT,config))
+    if(openclimate(&climate->file_wet,&config->wet_filename,"day",LPJ_SHORT,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open wet data from '%s'.\n",config->wet_filename.name);
@@ -125,7 +125,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(config->with_nitrogen && config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
   {
-    if(openclimate(NO3_DATA,&climate->file_no3deposition,&config->no3deposition_filename,"g/m2/day",LPJ_FLOAT,config))
+    if(openclimate(&climate->file_no3deposition,&config->no3deposition_filename,"g/m2/day",LPJ_FLOAT,config))
     {
       closeclimatefile(&climate->file_temp,isroot(*config));
       closeclimatefile(&climate->file_prec,isroot(*config));
@@ -143,7 +143,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if(climate->firstyear<climate->file_no3deposition.firstyear)
       climate->firstyear=climate->file_no3deposition.firstyear;
-    if(openclimate(NH4_DATA,&climate->file_nh4deposition,&config->nh4deposition_filename,"g/m2/day",LPJ_FLOAT,config))
+    if(openclimate(&climate->file_nh4deposition,&config->nh4deposition_filename,"g/m2/day",LPJ_FLOAT,config))
     {
       closeclimatefile(&climate->file_temp,isroot(*config));
       closeclimatefile(&climate->file_prec,isroot(*config));
@@ -167,7 +167,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     climate->data.no3deposition=climate->data.nh4deposition=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX || config->with_nitrogen)
   {
-    if(openclimate(WIND_DATA,&climate->file_wind,&config->wind_filename,"m/s",LPJ_SHORT,config))
+    if(openclimate(&climate->file_wind,&config->wind_filename,"m/s",LPJ_SHORT,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open wind data from '%s'.\n",config->wind_filename.name);
@@ -197,7 +197,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   {
     if(config->fdi==WVPD_INDEX)
     {
-      if(openclimate(HUMID_DATA,&climate->file_humid,&config->humid_filename,NULL,LPJ_SHORT,config))
+      if(openclimate(&climate->file_humid,&config->humid_filename,NULL,LPJ_SHORT,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open humid data from '%s'.\n",config->humid_filename.name);
@@ -220,7 +220,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(config->cropsheatfrost || config->fire==SPITFIRE_TMAX)
   {
-    if(openclimate(TMIN_DATA,&climate->file_tmin,&config->tmin_filename,"celsius",LPJ_SHORT,config))
+    if(openclimate(&climate->file_tmin,&config->tmin_filename,"celsius",LPJ_SHORT,config))
     {
       if(config->with_radiation)
       {
@@ -237,7 +237,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if((config->tmin_filename.fmt==CLM || config->tmin_filename.fmt==RAW) &&climate->file_tmin.version<=1)
       climate->file_tmin.scalar=0.1;
-    if(openclimate(TMAX_DATA,&climate->file_tmax,&config->tmax_filename,"celsius",LPJ_SHORT,config))
+    if(openclimate(&climate->file_tmax,&config->tmax_filename,"celsius",LPJ_SHORT,config))
     {
       closeclimatefile(&climate->file_temp,isroot(*config));
       closeclimatefile(&climate->file_prec,isroot(*config));
@@ -260,7 +260,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(config->fire==SPITFIRE)
   {
-    if(openclimate(TAMP_DATA,&climate->file_tamp,&config->tamp_filename,NULL,LPJ_SHORT,config))
+    if(openclimate(&climate->file_tamp,&config->tamp_filename,NULL,LPJ_SHORT,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open 'tamp' data from '%s'.\n",config->tamp_filename.name);
@@ -295,7 +295,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
   }
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    if(openclimate(LIGHTNING_DATA,&climate->file_lightning,&config->lightning_filename,"1/day/hectare",LPJ_INT,config))
+    if(openclimate(&climate->file_lightning,&config->lightning_filename,"1/day/hectare",LPJ_INT,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open lightning data from '%s'.\n",config->lightning_filename.name);
@@ -325,7 +325,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if (config->prescribe_burntarea)
     {
-      if(openclimate(BURNTAREA_DATA,&climate->file_burntarea,&config->burntarea_filename,(config->burntarea_filename.fmt==CDF) ?  (char *)NULL : (char *)NULL,LPJ_SHORT,config))
+      if(openclimate(&climate->file_burntarea,&config->burntarea_filename,(config->burntarea_filename.fmt==CDF) ?  (char *)NULL : (char *)NULL,LPJ_SHORT,config))
       {
         if(isroot(*config))
           fprintf(stderr,"ERROR236: Cannot open burntarea data from '%s'.\n",config->burntarea_filename.name);
@@ -366,7 +366,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
 #if defined IMAGE && defined COUPLED
   if(config->sim_id==LPJML_IMAGE)
   {
-    if(openclimate(0,&climate->file_temp_var,&config->temp_var_filename,NULL,LPJ_SHORT,config))
+    if(openclimate(&climate->file_temp_var,&config->temp_var_filename,NULL,LPJ_SHORT,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open tempvar data from '%s'.\n",config->temp_var_filename.name);
@@ -387,7 +387,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     if((config->temp_var_filename.fmt==CLM || config->temp_var_filename.fmt==RAW)&& climate->file_temp_var.version<=1)
       climate->file_temp_var.scalar=0.1;
-    if(openclimate(0,&climate->file_prec_var,&config->prec_var_filename,NULL,LPJ_SHORT,config))
+    if(openclimate(&climate->file_prec_var,&config->prec_var_filename,NULL,LPJ_SHORT,config))
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open precvar data from '%s'.\n",config->prec_var_filename.name);
@@ -611,7 +611,7 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     }
     else if(climate->file_lightning.fmt==SOCK)
     {
-      if(receive_real_copan(LIGHTNING_DATA,climate->data.lightning,NMONTH,0,config))
+      if(receive_real_copan(climate->file_lightning.id,climate->data.lightning,NMONTH,0,config))
       {
         if(isroot(*config))
         {

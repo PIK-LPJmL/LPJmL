@@ -36,7 +36,10 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
     return NULL;
   popdens=new(struct popdens);
   if(popdens==NULL)
+  {
+    printallocerr("popdens");
     return NULL;
+  }
   popdens->file.fmt=config->popdens_filename.fmt;
   if(config->popdens_filename.fmt==CDF)
   {
@@ -50,10 +53,11 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
   {
     if(isroot(*config))
     {
-     send_token_copan(GET_DATA_SIZE,POPDENS_DATA,config);
-     header.datatype=LPJ_FLOAT;
-     writeint_socket(config->socket,&header.datatype,1);
-     readint_socket(config->socket,&header.nbands,1);
+      send_token_copan(GET_DATA_SIZE,config->popdens_filename.id,config);
+      popdens->file.id=config->popdens_filename.id;
+      header.datatype=LPJ_FLOAT;
+      writeint_socket(config->socket,&header.datatype,1);
+      readint_socket(config->socket,&header.nbands,1);
     }
 #ifdef USE_MPI
     MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
@@ -146,7 +150,7 @@ Bool readpopdens(Popdens popdens,     /**< pointer to population data */
   }
   if(popdens->file.fmt==SOCK)
   {
-    if(receive_real_copan(POPDENS_DATA,popdens->npopdens,1,year,config))
+    if(receive_real_copan(popdens->file.id,popdens->npopdens,1,year,config))
     {
       fprintf(stderr,"ERROR149: Cannot receive population density of year %d.\n",year);
       return TRUE;

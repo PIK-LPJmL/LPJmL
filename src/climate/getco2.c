@@ -26,7 +26,7 @@ Bool getco2(const Climate *climate, /**< Pointer to climate data */
   {
     if(isroot(*config))
     {
-      send_token_copan(GET_DATA,CO2_DATA,config);
+      send_token_copan(GET_DATA,climate->co2.id,config);
       writeint_socket(config->socket,&year,1);
     }
     receive_real_scalar_copan(pco2,1,config);

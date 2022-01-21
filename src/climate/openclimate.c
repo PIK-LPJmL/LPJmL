@@ -16,8 +16,7 @@
 
 #include "lpj.h"
 
-Bool openclimate(int index,                /**< output index used by the COPAN coupler */
-                 Climatefile *file,        /**< pointer to climate file */
+Bool openclimate(Climatefile *file,        /**< pointer to climate file */
                  const Filename *filename, /**< file name and format */
                  const char *units,        /**< units in NetCDF file or NULL */
                  Type datatype,            /**< data type in binary file */
@@ -41,11 +40,12 @@ Bool openclimate(int index,                /**< output index used by the COPAN c
   {
     if(isroot(*config))
     {
-      send_token_copan(GET_DATA_SIZE,index,config);
+      send_token_copan(GET_DATA_SIZE,filename->id,config);
       type=LPJ_FLOAT;
       writeint_socket(config->socket,&type,1);
       readint_socket(config->socket,&nbands,1);
     }
+    file->id=filename->id;
 #ifdef USE_MPI
     MPI_Bcast(&nbands,1,MPI_INT,0,config->comm);
 #endif

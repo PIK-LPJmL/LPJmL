@@ -99,10 +99,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   {
     if(isroot(*config))
     {
-     send_token_copan(GET_DATA_SIZE,LANDUSE_DATA,config);
-     header.datatype=LPJ_FLOAT;
-     writeint_socket(config->socket,&header.datatype,1);
-     readint_socket(config->socket,&header.nbands,1);
+      send_token_copan(GET_DATA_SIZE,config->landuse_filename.id,config);
+      landuse->landuse.id=config->landuse_filename.id;
+      header.datatype=LPJ_FLOAT;
+      writeint_socket(config->socket,&header.datatype,1);
+      readint_socket(config->socket,&header.nbands,1);
     }
 #ifdef USE_MPI
     MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
@@ -310,10 +311,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     {
       if(isroot(*config))
       {
-       send_token_copan(GET_DATA_SIZE,FERTILIZER_DATA,config);
-       header.datatype=LPJ_FLOAT;
-       writeint_socket(config->socket,&header.datatype,1);
-       readint_socket(config->socket,&header.nbands,1);
+        send_token_copan(GET_DATA_SIZE,config->fertilizer_nr_filename.id,config);
+        landuse->fertilizer_nr.id=config->fertilizer_nr_filename.id;
+        header.datatype=LPJ_FLOAT;
+        writeint_socket(config->socket,&header.datatype,1);
+        readint_socket(config->socket,&header.nbands,1);
       }
 #ifdef USE_MPI
       MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
@@ -400,7 +402,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     {
       if(isroot(*config))
       {
-        send_token_copan(GET_DATA_SIZE,MANURE_DATA,config);
+        send_token_copan(GET_DATA_SIZE,config->manure_nr_filename.id,config);
+        landuse->manure_nr.id=config->manure_nr_filename.id;
         header.datatype=LPJ_FLOAT;
         writeint_socket(config->socket,&header.datatype,1);
         readint_socket(config->socket,&header.nbands,1);
@@ -495,7 +498,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     {
       if(isroot(*config))
       {
-        send_token_copan(GET_DATA_SIZE,TILLAGE_DATA,config);
+        send_token_copan(GET_DATA_SIZE,config->with_tillage_filename.id,config);
+        landuse->with_tillage.id=config->with_tillage_filename.id;
         header.datatype=LPJ_INT;
         writeint_socket(config->socket,&header.datatype,1);
         readint_socket(config->socket,&header.nbands,1);
@@ -597,7 +601,8 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     {
       if(isroot(*config))
       {
-        send_token_copan(GET_DATA_SIZE,RESIDUE_DATA,config);
+        send_token_copan(GET_DATA_SIZE,config->residue_data_filename.id,config);
+        landuse->residue_on_field.id=config->residue_data_filename.id;
         header.datatype=LPJ_FLOAT;
         writeint_socket(config->socket,&header.datatype,1);
         readint_socket(config->socket,&header.nbands,1);
@@ -943,7 +948,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   }
   else if(landuse->landuse.fmt==SOCK)
   {
-    if(receive_real_copan(LANDUSE_DATA,data,landuse->landuse.var_len,year,config))
+    if(receive_real_copan(landuse->landuse.id,data,landuse->landuse.var_len,year,config))
     {
       fprintf(stderr,"ERROR149: Cannot receive landuse of year %d in getlanduse().\n",year);
       fflush(stderr);
@@ -1369,7 +1374,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       }
       else if(landuse->fertilizer_nr.fmt==SOCK)
       {
-        if(receive_real_copan(FERTILIZER_DATA,data,landuse->fertilizer_nr.var_len,year,config))
+        if(receive_real_copan(landuse->fertilizer_nr.id,data,landuse->fertilizer_nr.var_len,year,config))
         {
           fprintf(stderr,"ERROR149: Cannot receive fertilizer of year %d in getlanduse().\n",year);
           fflush(stderr);
@@ -1447,7 +1452,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       }
       else if(landuse->manure_nr.fmt==SOCK)
       {
-        if(receive_real_copan(MANURE_DATA,data,landuse->manure_nr.var_len,year,config))
+        if(receive_real_copan(landuse->manure_nr.id,data,landuse->manure_nr.var_len,year,config))
         {
           fprintf(stderr,"ERROR149: Cannot receive manure of year %d in getlanduse().\n",year);
           fflush(stderr);
@@ -1556,9 +1561,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         return TRUE;
       }
     }
-    else if(landuse->landuse.fmt==SOCK)
+    else if(landuse->with_tillage.fmt==SOCK)
     {
-      if(receive_int_copan(TILLAGE_DATA,dates,1,year,config))
+      if(receive_int_copan(landuse->with_tillage.id,dates,1,year,config))
       {
         fprintf(stderr,"ERROR149: Cannot receive tillage types of year %d in getlanduse().\n",year);
         fflush(stderr);
@@ -1627,7 +1632,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     }
     else if(landuse->residue_on_field.fmt==SOCK)
     {
-      if(receive_real_copan(RESIDUE_DATA,data,landuse->residue_on_field.var_len,year,config))
+      if(receive_real_copan(landuse->residue_on_field.id,data,landuse->residue_on_field.var_len,year,config))
       {
         fprintf(stderr,"ERROR149: Cannot receive residue extraction data of year %d in getlanduse().\n",year);
         fflush(stderr);

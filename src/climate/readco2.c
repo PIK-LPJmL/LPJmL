@@ -37,8 +37,9 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
     {
       if(isroot(*config))
       {
-        send_token_copan(GET_DATA_SIZE,CO2_DATA,config);
+        send_token_copan(GET_DATA_SIZE,filename->id,config);
         type=LPJ_FLOAT;
+        co2->id=filename->id;
         writeint_socket(config->socket,&type,1);
         readint_socket(config->socket,&size,1);
       }

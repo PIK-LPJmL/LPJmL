@@ -172,13 +172,13 @@ static size_t isnetcdfinput(const Config *config)
   return width;
 } /* of 'isnetcdfinput' */
 
-static void printoutname(FILE *file,const Filename *filename,Bool isoneyear,
+static void printoutname(FILE *file,const Filename *filename,int index,Bool isoneyear,
                          const Config *config)
 {
   char *fmt;
   char *pos;
   if(filename->fmt==SOCK)
-    fprintf(file,"-> %s:%d",config->copan_host,config->copan_port);
+    fprintf(file,"%d -> %s:%d",index,config->copan_host,config->copan_port);
   else if(isoneyear)
   {
     fmt=malloc(strlen(filename->name)+6);
@@ -206,7 +206,7 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
   else
     fprintf(file,"%-11s %-4s ",descr,fmt[filename->fmt]);
   if(filename->fmt==SOCK)
-    fprintf(file,"<- %s:%d\n",config->copan_host,config->copan_port);
+    fprintf(file,"%d <- %s:%d\n",filename->id,config->copan_host,config->copan_port);
   else
     fprintf(file,"%s\n",notnull(filename->name));
 } /* of 'printinputfile' */
@@ -694,7 +694,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
               -width_unit,strlen(config->outnames[config->outputvars[index].id].unit)==0 ? "-" : config->outnames[config->outputvars[index].id].unit,
               typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],
               sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep),outputsize(config->outputvars[index].id,npft,ncft,config));
-      printoutname(file,&config->outputvars[index].filename,config->outputvars[index].oneyear,config);
+      printoutname(file,&config->outputvars[index].filename,config->outputvars[index].id,config->outputvars[index].oneyear,config);
       putc('\n',file);
     }
     free(item);
