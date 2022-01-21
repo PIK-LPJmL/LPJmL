@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJ                                                    \n**/
 /**                                                                                \n**/
-/**     Function reads human ignitions from file                                   \n**/ 
+/**     Function reads human ignitions from file                                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -56,13 +56,24 @@ Bool initignition(Cell grid[],         /* LPJ grid */
     }
     if(version<=1)
       header.scalar=0.001;
-    if(config->human_ignition_filename.fmt!=RAW && header.nbands!=1)
+    if(config->human_ignition_filename.fmt!=RAW)
     {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR218: Number of bands=%d in human ignition file '%s' is not 1.\n",
-                header.nbands,config->human_ignition_filename.name);
-      fclose(file);
-      return TRUE;
+      if(header.nbands!=1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR218: Number of bands=%d in human ignition file '%s' is not 1.\n",
+                  header.nbands,config->human_ignition_filename.name);
+        fclose(file);
+        return TRUE;
+      }
+      if(header.nstep!=1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR218: Number of steps=%d in human ignition file '%s' is not 1.\n",
+                  header.nstep,config->human_ignition_filename.name);
+        fclose(file);
+        return TRUE;
+      }
     }
     if(fseek(file,(config->startgrid-header.firstcell)*typesizes[header.datatype]+offset,SEEK_CUR))
     {

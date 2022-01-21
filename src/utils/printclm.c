@@ -59,7 +59,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
       return;
     }
     type=header.datatype;
-    version=5;
+    version=CLM_MAX_VERSION+1;
     strcpy(id,"description file");
   }
   else

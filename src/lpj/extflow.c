@@ -42,7 +42,7 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
     return NULL;
   if(config->extflow_filename.fmt==META)
   {
-    version=5;
+    version=CLM_MAX_VERSION+1;
     /* set default values for header */
     header.order=CELLINDEX;
     header.firstyear=config->firstyear;

@@ -541,7 +541,7 @@ int main(int argc,char **argv)
     }
     if(header.ncell!=ngrid)
     {
-      fprintf(stderr,"Number of cells=%d in '%s' does not match %d.\n",header.ncell,argv[iarg+2],ngrid);
+      fprintf(stderr,"Number of cells=%d in '%s' does not match %d in grid file.\n",header.ncell,argv[iarg+2],ngrid);
       return EXIT_FAILURE;
     }
     if(version<4)
@@ -556,6 +556,12 @@ int main(int argc,char **argv)
       isshort=header.datatype==LPJ_SHORT;
     if(header.nbands>1)
       ispft=TRUE;
+    if(version>CLM_MAX_VERSION)
+    {
+      fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+              version,argv[iarg+2],CLM_MAX_VERSION+1);
+      return EXIT_FAILURE;
+    }
     if(header.order!=CELLSEQ)
     {
       fprintf(stderr,"Error: Order in '%s' must be cellseq, order ",argv[iarg+2]);

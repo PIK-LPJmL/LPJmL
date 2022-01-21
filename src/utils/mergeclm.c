@@ -215,7 +215,7 @@ int main(int argc,char **argv)
     version_out=4;
     header_out.nstep=header_out.nbands;
     header_out.nbands=1;
-  } 
+  }
   fwriteheader(out,&header_out,id_out,version_out);
   switch(header_out.datatype)
   {
