@@ -36,7 +36,7 @@
 #define APHEN_MAX 245
 #define APHEN_MIN 60    /* minimum aphen for cold-induced senescence */
 #define HEIGHT_MAX 100.0  /* maximum height of trees */
-#define REPROD_COST 0.08 /* reproduction cost */
+#define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
 #ifdef WITH_SPITFIRE
 #define MORT_MAX 0.02
