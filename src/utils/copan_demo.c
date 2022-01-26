@@ -12,8 +12,6 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <stdlib.h>
-#include <stdio.h>
 #include "lpj.h"
 
 #define COPANDEMO_VERSION "0.9.002"
@@ -43,7 +41,7 @@ static Bool readdata(Socket *socket,int ncell,int day,int count[],Type type[])
   }
   if(index<0 || index>=NOUT)
   {
-    fprintf(stderr,"Invalid index %d of output\n",index);
+    fprintf(stderr,"Invalid index %d of output, must be [0,%d],\n",index,NOUT-1);
     return TRUE;
   }
   if(count[index]<0)
@@ -206,7 +204,7 @@ int main(int argc,char **argv)
     readint_socket(socket,&index,1);
     if(index<0 || index>=N_IN)
     {
-      fprintf(stderr,"Invalid index %d of input\n",index);
+      fprintf(stderr,"Invalid index %d of input, must be in [0,%d].\n",index,N_IN-1);
       return EXIT_FAILURE;
     }
     readint_socket(socket,(int *)(type_in+index),1);
@@ -244,7 +242,7 @@ int main(int argc,char **argv)
     readint_socket(socket,&index,1);
     if(index<0 || index>=NOUT)
     {
-      fprintf(stderr,"Invalid index %d of output.\n",index);
+      fprintf(stderr,"Invalid index %d of output,l must be in[0,%d].\n",index,NOUT-1);
       return EXIT_FAILURE;
     }
     /* get number of steps per year for output */
@@ -260,7 +258,7 @@ int main(int argc,char **argv)
       case 0 : case 1:
         break;
       default:
-        fprintf(stderr,"Invalid number of steps %d for index %d.\n",nstep[index],index);
+        fprintf(stderr,"Invalid number of steps %d for index %d, must be 1, 12, or 365.\n",nstep[index],index);
         return EXIT_FAILURE;
     }
     /* get number of bands for output */
@@ -342,12 +340,12 @@ int main(int argc,char **argv)
       }
       if(readint_socket(socket,&index,1))
       {
-        fprintf(stderr,"Error reading index of input\n");
+        fprintf(stderr,"Error reading index of input.\n");
         return EXIT_FAILURE;
       }
       if(index<0 || index>=N_IN)
       {
-        fprintf(stderr,"Invalid index %d of input\n",index);
+        fprintf(stderr,"Invalid index %d of input.\n",index);
         return EXIT_FAILURE;
       }
       readint_socket(socket,&year,1);
@@ -363,7 +361,7 @@ int main(int argc,char **argv)
           writefloat_socket(socket,&co2,1);
           break;
         default:
-          fprintf(stderr,"Unsupported index %d of input\n",index);
+          fprintf(stderr,"Unsupported index %d of input.\n",index);
           return EXIT_FAILURE;
       }
     }

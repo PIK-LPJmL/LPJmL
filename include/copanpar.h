@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                      c  o  p  a  n  p  a  r  .  h                              \n**/
 /**                                                                                \n**/
-/**     Declaration of COPAN coupler functions and related datatypes               \n**/
+/**     Definition of COPAN input indices                                          \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -15,6 +15,10 @@
 
 #ifndef COPANPAR_H /* already included? */
 #define COPANPAR_H
+
+/* List of input data streams */
+
+#define N_IN 24         /* Number of available input data streams */
 
 #define CLOUD_DATA 0
 #define TEMP_DATA 1

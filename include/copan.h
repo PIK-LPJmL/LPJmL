@@ -34,10 +34,6 @@
 #define PUT_DATA_SIZE 3 /* Sending data size to COPAN */
 #define END_DATA 4      /* Ending communication */
 
-/* List of input data streams */
-
-#define N_IN 24         /* Number of available input data streams */
-
 /* Declaration of functions */
 
 extern Bool open_copan(Config *);

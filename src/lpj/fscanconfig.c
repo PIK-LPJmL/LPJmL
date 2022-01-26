@@ -36,7 +36,7 @@
   }
 
 #define scanclimatefilename(file,var,path,isfms,iscopan,what) {                 \
-    if(readclimatefilename(file,var,what,path,&config->copan_in,isfms,iscopan,verbose)) {      \
+    if(readclimatefilename(file,var,what,path,&config->copan_in,def,FALSE,isfms,iscopan,verbose)) {      \
       if(verbose) fprintf(stderr,"ERROR209: Cannot read filename for '%s' input.\n",what); \
       return TRUE;                                                      \
     }                                                                   \
@@ -68,7 +68,7 @@ static Bool readfilename2(LPJfile *file,Filename *name,const char *key,const cha
   return FALSE;
 } /* of 'readfilename2' */
 
-static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,const char *path,int *copan_in,Bool isfms,Bool iscopan,Verbosity verbose)
+static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,const char *path,int *copan_in,Bool def[N_IN],Bool istxt,Bool isfms,Bool iscopan,Verbosity verbose)
 {
   if(readfilename(file,name,key,path,TRUE,TRUE,verbose))
     return TRUE;
@@ -85,8 +85,30 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,con
     return TRUE;
   }
   if(name->fmt==SOCK)
+  {
     (*copan_in)++;
-  if(name->fmt==TXT)
+    if(name->id<0 || name->id>=N_IN)
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR197: Invalid index %d for COPAN input, must be in [0,%d].\n",name->id,N_IN-1);
+      return TRUE;
+    }
+    if(def[name->id])
+    {
+      if(verbose)
+        fprintf(stderr,"ERROR197: Index %d already defined for COPAN input.\n",name->id);
+      return TRUE;
+    }
+    def[name->id]=TRUE;
+  }
+  if(istxt && name->fmt!=TXT && name->fmt!=FMS && name->fmt!=SOCK)
+  {
+    if(verbose)
+      fprintf(stderr,"ERROR197: Only txt format is supported for input '%s' in this version of LPJmL, %s not allowed.\n",
+              name->name,fmt[name->fmt]);
+    return TRUE;
+  }
+  if(!istxt && name->fmt==TXT)
   {
     if(verbose)
       fprintf(stderr,"ERROR197: text file is not supported for input '%s' in this version of LPJmL.\n",name->name);
@@ -134,7 +156,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
  {
   String name;
   LPJfile input;
-  int restart,endgrid,israndom,grassfix,grassharvest;
+  int i,restart,endgrid,israndom,grassfix,grassharvest;
   Verbosity verbose;
   const char *landuse[]={"no","yes","const","all_crops","only_crops"};
   const char *fertilizer[]={"no","yes","auto"};
@@ -149,6 +171,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   const char *nitrogen[]={"no","lim","unlim"};
   const char *tillage[]={"no","all","read"};
   const char *residue_treatment[]={"no_residue_remove","fixed_residue_remove","read_residue_data"};
+  Bool def[N_IN];
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
 
   /*=================================================================*/
@@ -568,6 +591,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(fscanstruct(file,&input,"input",verbose))
     return TRUE;
+  for(i=0;i<N_IN;i++)
+    def[i]=FALSE;
   scanclimatefilename(&input,&config->soil_filename,config->inputdir,FALSE,FALSE,"soil");
   if(config->soil_filename.fmt!=CDF)
   {
@@ -747,22 +772,12 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     scanclimatefilename(&input,&config->landcover_filename,config->inputdir,FALSE,FALSE,"landcover");
   }
-  if(readfilename(&input,&config->co2_filename,"co2",config->inputdir,FALSE,TRUE,verbose))
+  if(readclimatefilename(&input,&config->co2_filename,"co2",config->inputdir,&config->copan_in,def,TRUE,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,verbose))
   {
     if(verbose)
-      fputs("ERROR209: Cannot read filename for 'co2' input.\n",stderr);
+      fprintf(stderr,"ERROR209: Cannot read filename for CO2 input.\n");
     return TRUE;
   }
-  if(config->co2_filename.fmt!=TXT &&  (config->sim_id==LPJML_FMS && config->co2_filename.fmt!=FMS) && (config->sim_id==LPJML_COPAN && config->co2_filename.fmt!=SOCK))
-  {
-    if(verbose)
-      fprintf(stderr,"ERROR197: Only txt format is supported for CO2 input in this version of LPJmL, %s not allowed.\n",
-              fmt[config->co2_filename.fmt]);
-    return TRUE;
-  }
-  if(config->co2_filename.fmt==SOCK)
-    config->copan_in++;
-
   if(israndom==RANDOM_PREC)
   {
     scanclimatefilename(&input,&config->wet_filename,config->inputdir,config->sim_id==LPJML_FMS,config->sim_id==LPJML_COPAN,"wetdays");
