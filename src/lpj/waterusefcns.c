@@ -28,7 +28,7 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
   Wateruse wateruse;
   Header header;
   String headername;
-  int version,token;
+  int version;
   size_t offset,filesize;
   wateruse=new(struct wateruse);
   if(wateruse==NULL)
@@ -68,12 +68,9 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
     if(header.nbands!=1)
     {
       if(isroot(*config))
-      {
         fprintf(stderr,"ERROR218: Number of bands=%d in wateruse socket stream is not 1.\n",
                 header.nbands);
-        token=END_DATA;
-        writeint_socket(config->socket,&token,1);
-      }
+      close_copan(config);
       free(wateruse);
       return NULL;
     }

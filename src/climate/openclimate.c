@@ -25,7 +25,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
 {
   Header header;
   String headername;
-  int last,version,nbands,token;
+  int last,version,nbands;
   char *s;
   size_t offset,filesize;
   Type type;
@@ -68,12 +68,9 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     else
     {
       if(isroot(*config))
-      {
         fprintf(stderr,"ERROR127: Invalid number of bands %d received from socket, must be 12 or 365.\n",
                 nbands);
-        token=END_DATA;
-        writeint_socket(config->socket,&token,1);
-      }
+      close_copan(config);
       return TRUE;
     }
     file->firstyear=config->firstyear;

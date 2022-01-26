@@ -28,7 +28,7 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
   Header header;
   Human_ignition ignition;
   String headername;
-  int version,token;
+  int version;
   size_t offset,filesize;
 
   ignition=new(struct human_ignition);
@@ -69,12 +69,9 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
     if(header.nbands!=1)
     {
       if(isroot(*config))
-      {
         fprintf(stderr,"ERROR218: Number of bands=%d in ignition data socket stream is not 1.\n",
                 header.nbands);
-        token=END_DATA;
-        writeint_socket(config->socket,&token,1);
-      }
+      close_copan(config);
       free(ignition);
       return NULL;
     }

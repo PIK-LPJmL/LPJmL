@@ -77,7 +77,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
 {
   Header header;
   String headername;
-  int version,token;
+  int version;
   Landuse landuse;
   size_t offset,filesize;
   landuse=new(struct landuse);
@@ -155,16 +155,10 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   {
     closeclimatefile(&landuse->landuse,isroot(*config));
     if(isroot(*config))
-    {
       fprintf(stderr,
               "ERROR147: Invalid number of bands=%zu in landuse data file,must be %d or %d.\n",
               landuse->landuse.var_len,2*config->landusemap_size,4*config->landusemap_size);
-      if(config->landuse_filename.fmt==SOCK)
-      {
-        token=END_DATA;
-        writeint_socket(config->socket,&token,1);
-      }
-    }
+    close_copan(config);
     free(landuse);
     return NULL;
   }
@@ -390,16 +384,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     {
       closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
       if(isroot(*config))
-      {
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%zu in fertilizer data file, must be %d.\n",
                 landuse->fertilizer_nr.var_len,2*config->fertilizermap_size);
-        if(config->fertilizer_nr_filename.fmt==SOCK)
-        {
-          token=END_DATA;
-          writeint_socket(config->socket,&token,1);
-        }
-      }
+      if(config->fertilizer_nr_filename.fmt==SOCK)
+        close_copan(config);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -504,16 +493,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     {
       closeclimatefile(&landuse->manure_nr,isroot(*config));
       if(isroot(*config))
-      {
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%zu in manure data file. must be %d.\n",
                 landuse->manure_nr.var_len,2*config->fertilizermap_size);
-        if(config->manure_nr_filename.fmt==SOCK)
-        {
-          token=END_DATA;
-          writeint_socket(config->socket,&token,1);
-        }
-      }
+      if(config->manure_nr_filename.fmt==SOCK)
+        close_copan(config);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
@@ -634,16 +618,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         closeclimatefile(&landuse->manure_nr,isroot(*config));
       closeclimatefile(&landuse->with_tillage,isroot(*config));
       if(isroot(*config))
-      {
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%zu in tillage type file, must be 1.\n",
                 landuse->with_tillage.var_len);
-        if(config->with_tillage_filename.fmt==SOCK)
-        {
-          token=END_DATA;
-          writeint_socket(config->socket,&token,1);
-        }
-      }
+      if(config->with_tillage_filename.fmt==SOCK)
+        close_copan(config);
       free(landuse);
       return(NULL);
     }
@@ -756,16 +735,11 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     {
       closeclimatefile(&landuse->residue_on_field,isroot(*config));
       if(isroot(*config))
-      {
         fprintf(stderr,
                 "ERROR147: Invalid number of bands=%zu in residue extraction data file, must be %d.\n",
                 landuse->residue_on_field.var_len,config->fertilizermap_size);
-        if(config->residue_data_filename.fmt==SOCK)
-        {
-          token=END_DATA;
-          writeint_socket(config->socket,&token,1);
-        }
-      }
+      if(config->residue_data_filename.fmt==SOCK)
+        close_copan(config);
       closeclimatefile(&landuse->landuse,isroot(*config));
       if(config->sdate_option==PRESCRIBED_SDATE)
         closeclimatefile(&landuse->sdate,isroot(*config));
