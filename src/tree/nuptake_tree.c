@@ -31,7 +31,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   Soil *soil;
   const Pfttreepar *treepar;
   Real NO3_up=0;
-  Real NCplant,ndemand_leaf_opt,NC_actual,NC_leaf;
+  Real NCplant,ndemand_leaf_opt,NC_actual,NC_leaf,ndemand_all;
   Real f_NCplant=0;
   Real up_temp_f;
   Real totn,nsum;
@@ -43,6 +43,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   Irrigation *data;
   Real rootdist_n[LASTLAYER];
   soil=&pft->stand->soil;
+  ndemand_all=*n_plant_demand;
   if(config->permafrost)
     getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
   else
@@ -52,26 +53,29 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   treepar=pft->par->data;
   nnat=getnnat(npft,config);
   nirrig=getnirrig(ncft,config);
+ // NCplant = (vegn_sum_tree(pft)-(tree->ind.sapwood.nitrogen+tree->ind.heartwood.nitrogen)*pft->nind+pft->bm_inc.nitrogen*(tree->falloc.leaf+tree->falloc.leaf))/(vegc_sum_tree(pft)-(tree->ind.sapwood.carbon+tree->ind.heartwood.carbon)*pft->nind+pft->bm_inc.carbon*(tree->falloc.leaf+tree->falloc.leaf)); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
   NCplant = (tree->ind.leaf.nitrogen+ tree->ind.root.nitrogen) / (tree->ind.leaf.carbon+ tree->ind.root.carbon); /* Plant's mobile nitrogen concentration, Eq.9, Zaehle&Friend 2010 Supplementary */
   f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1); /*zaehle supple 10*/
   ndemand_leaf_opt=*ndemand_leaf;
   nsum=0;
-  forrootsoillayer(l)
-  {
-    wscaler=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->whcs[l])) : 0;
-    totn=(soil->NO3[l]+soil->NH4[l])*wscaler;
-    if(totn>0)
+  NC_leaf=(tree->ind.leaf.nitrogen+pft->bm_inc.nitrogen*tree->falloc.leaf/pft->nind)/(tree->ind.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind);
+  if(NC_leaf<(pft->par->ncleaf.high*(1+pft->par->knstore)))
+    forrootsoillayer(l)
     {
-      up_temp_f = nuptake_temp_fcn(soil->temp[l]);
-      //up_temp_f=1;
-      NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin +totn/(totn+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))* up_temp_f * f_NCplant * (tree->ind.root.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.root)*rootdist_n[l]/1000; //Smith et al. Eq. C14-C15, Navail=totn
-      /* reducing uptake according to availability */
-      if(NO3_up>totn)
-        NO3_up=totn;
-      n_uptake+=NO3_up;
-      nsum+=totn*rootdist_n[l];
+      wscaler=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->whcs[l])) : 0;
+      totn=(soil->NO3[l]+soil->NH4[l])*wscaler;
+      if(totn>0)
+      {
+        up_temp_f = nuptake_temp_fcn(soil->temp[l]);
+        //up_temp_f=1;
+        NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin +totn/(totn+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))* up_temp_f * f_NCplant * (tree->ind.root.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.root)*rootdist_n[l]/1000; //Smith et al. Eq. C14-C15, Navail=totn
+        /* reducing uptake according to availability */
+        if(NO3_up>totn)
+          NO3_up=totn;
+        n_uptake+=NO3_up;
+        nsum+=totn*rootdist_n[l];
+      }
     }
-  }
 #ifdef DEBUG_N
   printf("TREE n_uptake=%g, nplant_demand=%g vegn=%g\n",n_uptake,*n_plant_demand,(vegn_sum_tree(pft)-tree->ind.heartwood.nitrogen*pft->nind));
 #endif
@@ -133,13 +137,30 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
     if(*n_plant_demand/(1+pft->par->knstore)>(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))   /*HERE RECALCULATION OF N-demand TO N-supply*/
     {
       NC_actual=(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind)/(vegc_sum_tree(pft)+pft->bm_inc.carbon-tree->ind.heartwood.carbon*pft->nind);
-      NC_leaf=(tree->ind.leaf.nitrogen+pft->bm_inc.nitrogen*tree->falloc.leaf)/(tree->ind.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf);
+      NC_leaf=(tree->ind.leaf.nitrogen+pft->bm_inc.nitrogen*tree->falloc.leaf/pft->nind)/(tree->ind.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind);
       if(NC_leaf< pft->par->ncleaf.low)
         NC_leaf=pft->par->ncleaf.low;
       else if (NC_leaf>pft->par->ncleaf.high)
         NC_leaf=pft->par->ncleaf.high;
-     *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf)*NC_leaf;
+      /**ndemand_leaf=(vegn_sum_tree(pft)-(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen+tree->ind.root.nitrogen)*pft->nind+pft->bm_inc.nitrogen)-
+            NC_leaf*(pft->bm_inc.carbon*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood));*/
+     // *ndemand_leaf=vegn_sum_tree(pft)-(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen+tree->ind.root.nitrogen)*pft->nind+pft->bm_inc.nitrogen*tree->falloc.leaf;
+      *ndemand_leaf=tree->ind.leaf.nitrogen*pft->nind+pft->bm_inc.nitrogen*tree->falloc.leaf;
+      *ndemand_leaf=max(tree->ind.leaf.nitrogen*pft->nind,*ndemand_leaf);
+      /*N das für excess und bm inc für Wurzeln (und sapwood)  angefordert wurde.
+      Jetzt aber mit NC_leaf das wirklich möglich ist, statt dem aus dem N demand.*/
+    // *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf)*NC_leaf;
       //*ndemand_leaf=(tree->ind.leaf.carbon*pft->nind)*NC_leaf;
+
+ /*     *ndemand_leaf=vegn_sum_tree(pft)-(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen+tree->ind.root.nitrogen)*pft->nind+pft->bm_inc.nitrogen-
+            NC_leaf*(pft->bm_inc.carbon*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood));
+*/
+     *n_plant_demand=*ndemand_leaf+(tree->ind.root.nitrogen+tree->ind.sapwood.nitrogen)*pft->nind+NC_leaf*(tree->excess_carbon*pft->nind+pft->bm_inc.carbon)*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood);
+/*
+     printf("in NUPTAKE PFT: %s ndemand_to = %g ndemand_leaf %g ndemand_leaf minus  %g  nc_ratio %g nc_leaf %g \n",pft->par->name,*n_plant_demand,*ndemand_leaf,
+           vegn_sum_tree(pft)-(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen+tree->ind.root.nitrogen)*pft->nind+pft->bm_inc.nitrogen-
+                    NC_leaf*(pft->bm_inc.carbon*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood)),NC_actual,NC_leaf);
+*/
     }
 
     if(ndemand_leaf_opt<epsilon)
@@ -149,28 +170,29 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
     /* correcting for failed uptake from depleted soils in outputs */
     n_uptake+=n_upfail;
   }
+
   switch(pft->stand->type->landusetype)
   {
   case BIOMASS_TREE:
     data=pft->stand->data;
     getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+rbtree(ncft)+data->irrigation*nirrig,config)+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
-    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rbtree(ncft)+data->irrigation*nirrig,config)+=max(0,*n_plant_demand-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind)); /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rbtree(ncft)+data->irrigation*nirrig,config)+=max(0,ndemand_all-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))/365; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
     break;
   case AGRICULTURE_TREE:
     data=pft->stand->data;
     getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
-    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=max(0,*n_plant_demand-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind)); /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=max(0,ndemand_all-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))/365; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
     break;
   case WOODPLANTATION:
     data=pft->stand->data;
     getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+rwp(ncft)+data->irrigation*nirrig,config)+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
-    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rwp(ncft)+data->irrigation*nirrig,config)+=max(0,*n_plant_demand-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind)); /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rwp(ncft)+data->irrigation*nirrig,config)+=max(0,ndemand_all-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))/365; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
     break;
   default:
     getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,pft->par->id,config)+=n_uptake;
-    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,pft->par->id,config)+=max(0,*n_plant_demand-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind));
+    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,pft->par->id,config)+=max(0,ndemand_all-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))/365;
   } /* of 'switch' */
   pft->stand->cell->balance.n_uptake+=n_uptake*pft->stand->frac;
-  pft->stand->cell->balance.n_demand+=max(0,(*n_plant_demand-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind)))*pft->stand->frac;
+  pft->stand->cell->balance.n_demand+=max(0,(ndemand_all-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind)))*pft->stand->frac/365;
   return n_uptake;
 } /* of 'nuptake_tree' */

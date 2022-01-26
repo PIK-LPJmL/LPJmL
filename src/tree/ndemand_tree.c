@@ -34,17 +34,22 @@ Real ndemand_tree(const Pft *pft,     /**< pointer to PFT */
   //*ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.low*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind);
   //*ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.low*(tree->ind.leaf.carbon*pft->nind);
   //*ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.median*(tree->ind.leaf.carbon*pft->nind);
-  *ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.median*((tree->excess_carbon*pft->nind+pft->bm_inc.carbon)*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind);
+  *ndemand_leaf=((daylength==0) ?  0: param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_tree(pft)))+pft->par->ncleaf.median*(pft->bm_inc.carbon*tree->falloc.leaf+tree->ind.leaf.carbon*pft->nind);
 
  if(tree->ind.leaf.carbon==0)
     nc_ratio=pft->par->ncleaf.low;
   else
-    nc_ratio=tree->ind.leaf.nitrogen/tree->ind.leaf.carbon;
+    nc_ratio=(tree->ind.leaf.nitrogen+pft->bm_inc.nitrogen*tree->falloc.leaf/pft->nind)/(tree->ind.leaf.carbon+pft->bm_inc.carbon*tree->falloc.leaf/pft->nind);
   if(nc_ratio>pft->par->ncleaf.high)
     nc_ratio=pft->par->ncleaf.high;
   else if(nc_ratio<pft->par->ncleaf.low)
     nc_ratio=pft->par->ncleaf.low;
   ndemand_tot=*ndemand_leaf+(tree->ind.root.nitrogen+tree->ind.sapwood.nitrogen)*pft->nind+nc_ratio*(tree->excess_carbon*pft->nind+pft->bm_inc.carbon)*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood);
+
+  //  printf("in NDEMAND PFT: %s ndemand_to = %g ndemand_leaf %g vmax %g nc_ratio %g %g \n",pft->par->name,ndemand_tot,*ndemand_leaf,vmax,nc_ratio,(*ndemand_leaf+pft->bm_inc.nitrogen*tree->falloc.leaf)/(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf));
+  //  printf("bminc.carbon %g bminc.carbon.leaf %g leaf.carbon %g bminc.nitrogen %g daylength %g f_lai %g temp %g\n",pft->bm_inc.carbon,pft->bm_inc.carbon*tree->falloc.leaf,tree->ind.leaf.carbon*pft->nind, pft->bm_inc.nitrogen,daylength,f_lai(lai_tree(pft)),temp);
+  //fprinttreephys2(stdout,tree->ind,pft->nind);
+  //printf("\n");
   //ndemand_tot=*ndemand_leaf+tree->ind.root.nitrogen*pft->nind+tree->ind.sapwood.nitrogen*pft->nind+nc_ratio*(tree->excess_carbon*pft->nind);
  //ndemand_tot=*ndemand_leaf+tree->ind.root.nitrogen*pft->nind+tree->ind.sapwood.nitrogen*pft->nind;
 #ifdef DEBUG_N
