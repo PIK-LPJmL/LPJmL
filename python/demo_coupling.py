@@ -26,6 +26,8 @@ GET_DATA_SIZE=2  # Receiving data size from COPAN
 PUT_DATA_SIZE=3  # Sending data size to COPAN
 END_DATA=4       # Ending communication
 
+COPAN_ERR=-1
+
 N_OUT=346       # Number of available output data streams
 N_IN=24         # Number of available input data streams
 
@@ -143,6 +145,10 @@ types_in=[-1]*N_IN
 
 for i in range(0,n_in):
   token=read_int(channel)
+  if token==END_DATA:
+    print("Unexpected end token received.\n")
+    channel.close()
+    quit()
   if token!=GET_DATA_SIZE:
     print("Token "+str(token)+" is not GET_DATA_SIZE")
     channel.close()
@@ -156,8 +162,12 @@ for i in range(0,n_in):
     index=1
   else:
     print("Unsupported input "+str(index))
+    index=COPAN_ERR
 # Send number of bands
   write_int(channel,index)
+  if index==COPAN_ERR:
+    channel.close()
+    quit()
 
 # Get number of items per cell for each output data stream
 
@@ -168,6 +178,10 @@ data=[0.0]*ncell
 n_out_1=0
 for i in range(0,n_out):
   token=read_int(channel)
+  if token==END_DATA:
+    print("Unexpected end token received.\n")
+    channel.close()
+    quit()
   if token!=PUT_DATA_SIZE:
     print("Token "+str(token)+" is not PUT_DATA_SIZE")
     channel.close()

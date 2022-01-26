@@ -22,7 +22,7 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
             )                          /** \return TRUE on error */
 {
   LPJfile file;
-  int yr,yr_old,size;
+  int yr,yr_old,size,token;
   Bool iseof;
   Verbosity verbose;
   Type type;
@@ -46,10 +46,20 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
 #ifdef USE_MPI
       MPI_Bcast(&size,1,MPI_INT,0,config->comm);
 #endif
+      if(size==COPAN_ERR)
+      {
+        if(verbose)
+          fputs("ERROR149: Cannot initialize socket stream.\n",stderr);
+        return TRUE;
+      }
       if(size!=1)
       {
         if(verbose)
+        {
           fprintf(stderr,"ERROR149: Invalid number of bands=%d received from socket, must be 1.\n",size);
+          token=END_DATA;
+          writeint_socket(config->socket,&token,1);
+        }
         return TRUE;
       }
     }

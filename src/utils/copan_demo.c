@@ -196,6 +196,12 @@ int main(int argc,char **argv)
   for(i=0;i<n_in;i++)
   {
     readint_socket(socket,&token,1);
+    if(token==END_DATA)
+    {
+      fprintf(stderr,"Unexpected end token received.\n");
+      close_socket(socket);
+      return EXIT_SUCCESS;
+    }
     if(token!=GET_DATA_SIZE)
     {
       fprintf(stderr,"Token=%d is not GET_DATA_SIZE.\n",token);
@@ -207,6 +213,7 @@ int main(int argc,char **argv)
       fprintf(stderr,"Invalid index %d of input, must be in [0,%d].\n",index,N_IN-1);
       return EXIT_FAILURE;
     }
+    printf("index=%d\n",index);
     readint_socket(socket,(int *)(type_in+index),1);
     switch(index)
     {
@@ -220,10 +227,12 @@ int main(int argc,char **argv)
         break;
       default:
         fprintf(stderr,"Unsupported index %d of input\n",index);
-        return EXIT_FAILURE;
+        index=COPAN_ERR ;
     }
     /* send number of bands */
     writeint_socket(socket,&index,1);
+    if(index==COPAN_ERR)
+      return EXIT_FAILURE;
   }
   /* Get number of items per cell for each output data stream */
   for(i=0;i<NOUT;i++)
@@ -234,6 +243,12 @@ int main(int argc,char **argv)
   for(i=0;i<n_out;i++)
   {
     readint_socket(socket,&token,1);
+    if(token==END_DATA)
+    {
+      fprintf(stderr,"Unexpected end token received.\n");
+      close_socket(socket);
+      return EXIT_SUCCESS;
+    }
     if(token!=PUT_DATA_SIZE)
     {
       fprintf(stderr,"Token=%d is not PUT_DATA_SIZE.\n",token);

@@ -28,7 +28,7 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
   Wateruse wateruse;
   Header header;
   String headername;
-  int version;
+  int version,token;
   size_t offset,filesize;
   wateruse=new(struct wateruse);
   if(wateruse==NULL)
@@ -58,6 +58,25 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
 #ifdef USE_MPI
     MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
 #endif
+    if(header.nbands==COPAN_ERR)
+    {
+      if(isroot(*config))
+        fputs("ERROR218: Socket stream for wateruse cannot be initialized.\n",stderr);
+      free(wateruse);
+      return NULL;
+    }
+    if(header.nbands!=1)
+    {
+      if(isroot(*config))
+      {
+        fprintf(stderr,"ERROR218: Number of bands=%d in wateruse socket stream is not 1.\n",
+                header.nbands);
+        token=END_DATA;
+        writeint_socket(config->socket,&token,1);
+      }
+      free(wateruse);
+      return NULL;
+    }
     wateruse->file.var_len=header.nbands;
   }
   else

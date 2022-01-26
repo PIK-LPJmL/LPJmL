@@ -25,7 +25,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
 {
   Header header;
   String headername;
-  int last,version,nbands;
+  int last,version,nbands,token;
   char *s;
   size_t offset,filesize;
   Type type;
@@ -59,11 +59,21 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       file->time_step=MONTH;
       file->n=NMONTH*config->ngridcell;
     }
+    else if(nbands==COPAN_ERR)
+    {
+      if(isroot(*config))
+        fputs("ERROOR217: Cannot initialize socket stream.\n",stderr);
+      return TRUE;
+    }
     else
     {
       if(isroot(*config))
+      {
         fprintf(stderr,"ERROR127: Invalid number of bands %d received from socket, must be 12 or 365.\n",
                 nbands);
+        token=END_DATA;
+        writeint_socket(config->socket,&token,1);
+      }
       return TRUE;
     }
     file->firstyear=config->firstyear;

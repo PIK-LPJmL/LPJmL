@@ -758,7 +758,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     scanclimatefilename(&input,&config->lightning_filename,config->inputdir,FALSE,config->sim_id==LPJML_COPAN,"lightning");
     scanclimatefilename(&input,&config->human_ignition_filename,
-                        config->inputdir,FALSE,FALSE,"human_ignition");
+                        config->inputdir,FALSE,config->sim_id==LPJML_COPAN,"human_ignition");
   }
   if(config->ispopulation)
   {

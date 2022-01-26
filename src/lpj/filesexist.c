@@ -372,7 +372,7 @@ Bool filesexist(Config config, /**< LPJmL configuration */
     if(config.fdi==WVPD_INDEX)
       bad+=checkclmfile(&config,&config.humid_filename,NULL,TRUE);
     bad+=checkdatafile(&config,&config.lightning_filename,NULL);
-    bad+=checkinputfile(&config,&config.human_ignition_filename,NULL,1);
+    bad+=checkdatafile(&config,&config.human_ignition_filename,NULL);
   }
   if(config.cropsheatfrost || config.fire==SPITFIRE_TMAX)
   {

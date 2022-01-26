@@ -26,6 +26,8 @@
 #define DEFAULT_COPAN_PORT 2224        /* Default port for in and outgoing connection */
 #define DEFAULT_WAIT 0                 /* Default time to wait for connection */
 
+#define COPAN_ERR -1
+
 /* List of tokens */
 
 #define GET_DATA 0      /* Receiving data from COPAN */

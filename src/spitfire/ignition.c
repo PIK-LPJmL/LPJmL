@@ -28,11 +28,9 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
   Header header;
   Human_ignition ignition;
   String headername;
-  int version;
+  int version,token;
   size_t offset,filesize;
 
-  if(config->human_ignition_filename.name==NULL)
-    return NULL;
   ignition=new(struct human_ignition);
   if(ignition==NULL)
   {
@@ -61,6 +59,25 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
 #ifdef USE_MPI
     MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
 #endif
+    if(header.nbands==COPAN_ERR)
+    {
+      if(isroot(*config))
+        fputs("ERROR218: Cannot initialize ignition data socket stream.\n",stderr);
+      free(ignition);
+      return NULL;
+    }
+    if(header.nbands!=1)
+    {
+      if(isroot(*config))
+      {
+        fprintf(stderr,"ERROR218: Number of bands=%d in ignition data socket stream is not 1.\n",
+                header.nbands);
+        token=END_DATA;
+        writeint_socket(config->socket,&token,1);
+      }
+      free(ignition);
+      return NULL;
+    }
     ignition->file.var_len=header.nbands;
   }
   else
@@ -96,7 +113,7 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
   if(ignition->file.var_len>1)
   {
     if(isroot(*config))
-      fprintf(stderr,"ERROR218: Number of bands=%zu in population density file '%s' is not 1.\n",
+      fprintf(stderr,"ERROR218: Number of bands=%zu in ignition data file '%s' is not 1.\n",
               ignition->file.var_len,config->human_ignition_filename.name);
     closeclimatefile(&ignition->file,isroot(*config));
     free(ignition);

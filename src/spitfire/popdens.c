@@ -29,7 +29,7 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
   Header header;
   Popdens popdens;
   String headername;
-  int i,version;
+  int i,version,token;
   size_t offset,filesize;
 
   if(config->popdens_filename.name==NULL)
@@ -62,6 +62,25 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
 #ifdef USE_MPI
     MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
 #endif
+    if(header.nbands==COPAN_ERR)
+    {
+      if(isroot(*config))
+        fputs("ERROR218: Cannot initialize population density socket stream.\n",stderr);
+      free(popdens);
+      return NULL;
+    }
+    if(header.nbands!=1)
+    {
+      if(isroot(*config))
+      {
+        fprintf(stderr,"ERROR218: Number of bands=%d  in population density stream is not 1.\n",
+                header.nbands);
+        token=END_DATA;
+        writeint_socket(config->socket,&token,1);
+      }
+      free(popdens);
+      return NULL;
+    }
     popdens->file.var_len=header.nbands;
   }
   else
