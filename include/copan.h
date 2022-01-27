@@ -19,14 +19,15 @@
 
 /* Definition of constants */
 
-#define COPAN_COUPLER_VERSION 2        /* Protocol version */
+#define COPAN_COUPLER_VERSION 3        /* Protocol version */
 #define LPJCOPAN "LPJCOPAN"            /* Environment variable for COPAN coupler */
 #define LPJWAIT "LPJWAIT"              /* Time to wait for connection */
 #define DEFAULT_COPAN_HOST "localhost" /* Default host for COPAN model */
 #define DEFAULT_COPAN_PORT 2224        /* Default port for in and outgoing connection */
 #define DEFAULT_WAIT 0                 /* Default time to wait for connection */
 
-#define COPAN_ERR -1
+#define COPAN_OK 0                     /* COPAN status ok */
+#define COPAN_ERR -1                   /* error occurred in COPAN */
 
 /* List of tokens */
 
@@ -35,10 +36,12 @@
 #define GET_DATA_SIZE 2 /* Receiving data size from COPAN */
 #define PUT_DATA_SIZE 3 /* Sending data size to COPAN */
 #define END_DATA 4      /* Ending communication */
+#define GET_STATUS 5    /* Check status of COPAN */
 
 /* Declaration of functions */
 
 extern Bool open_copan(Config *);
+extern Bool check_copan(const Config *);
 extern void close_copan(const Config *);
 extern Bool receive_real_copan(int,Real *,int,int,const Config *);
 extern Bool receive_real_scalar_copan(Real *,int,const Config *);

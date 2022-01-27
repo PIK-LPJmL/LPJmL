@@ -198,7 +198,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
 #ifdef USE_MPI
   int count;
 #endif
-  Bool isopen;
+  int status;
   char *filename;
   Outputfile *output;
   output=new(Outputfile);
@@ -289,14 +289,19 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
             writeint_socket(config->socket,&size,1);
             size=getoutputtype(config->outputvars[i].id,config->float_grid);
             writeint_socket(config->socket,&size,1);
+            readint_socket(config->socket,&status,1);
+            if(status==COPAN_ERR)
+            {
+              output->files[config->outputvars[i].id].isopen=FALSE;
+              fprintf(stderr,"ERROR100: Cannot open socket stream for output '%s'.\n",
+                      config->outnames[config->outputvars[i].id].name);
+            }
           }
         }
         else
-        {
           openfile(output,grid,filename,i,config);
-          MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,
-                    0,config->comm);
-        }
+        MPI_Bcast(&output->files[config->outputvars[i].id].isopen,1,MPI_INT,
+                  0,config->comm);
         break;
     } /* of 'switch' */
 #else
@@ -316,6 +321,13 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
           writeint_socket(config->socket,&size,1);
           size=getoutputtype(config->outputvars[i].id,config->float_grid);
           writeint_socket(config->socket,&size,1);
+          readint_socket(config->socket,&status,1);
+          if(status==COPAN_ERR)
+          {
+            output->files[config->outputvars[i].id].isopen=FALSE;
+            fprintf(stderr,"ERROR100: Cannot open socket stream for output '%s'.\n",
+                    config->outnames[config->outputvars[i].id].name);
+          }
         }
         else
           openfile(output,grid,filename,i,config);

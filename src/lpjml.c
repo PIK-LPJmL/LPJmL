@@ -222,6 +222,11 @@ int main(int argc,char **argv)
   rc=initoutput(output,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of output data failed");
+  if(config.sim_id==LPJML_COPAN)
+  {
+    rc=check_copan(&config);
+    failonerror(&config,rc,OPEN_COPAN_ERR,"Cannot initialize COPAN coupler");
+  }
   if(isopen(output,GRID))
     writecoords(output,GRID,grid,&config);
   if(isopen(output,COUNTRY) && config.withlanduse)

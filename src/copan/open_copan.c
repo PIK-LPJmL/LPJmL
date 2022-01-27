@@ -42,6 +42,7 @@ Bool open_copan(Config *config /**< LPJmL configuration */
     if(config->wait)
     {
 #ifndef _WIN32
+      /* set alarm timer */
       signal(SIGALRM,alarmhandler);
       alarm(config->wait);
 #endif

@@ -14,7 +14,9 @@
 
 #include "lpj.h"
 
-#define COPANDEMO_VERSION "0.9.002"
+#define COPANDEMO_VERSION "0.9.003"
+
+#define USAGE "Usage: %s [-port n] [-wait n]\n"
 
 #define LANDUSE_NBANDS 64
 
@@ -141,27 +143,69 @@ int main(int argc,char **argv)
   String line;
   const char *progname;
   const char *title[4];
-  int i,j,token,n_out,n_in,ncell,index,year,version,n_out_1;
-  port=DEFAULT_COPAN_PORT;
+  int i,j,token,n_out,n_in,ncell,index,year,version,n_out_1,n_err,wait;
   struct coord
   {
     float lon,lat;
   } *fcoords;
-  if(argc>1)
-  {
-    port=strtol(argv[1],&endptr,10);
-    if(*endptr!='\0')
-    {
-      fprintf(stderr,"Invalid number '%s' for port.\n",argv[1]);
-      return EXIT_FAILURE;
-    }
-    if(port<0 || port>USHRT_MAX)
-    {
-      fprintf(stderr,"Invalid port number %d.\n",port);
-      return EXIT_FAILURE;
-    }
-  }
+  Bool islanduse=FALSE;
+  port=DEFAULT_COPAN_PORT;
+  wait=0;
   progname=strippath(argv[0]);
+  for(i=1;i<argc;i++)
+    if(argv[i][0]=='-')
+    {
+      if(!strcmp(argv[i],"-port"))
+      {
+        if(i==argc-1)
+        {
+          fprintf(stderr,"Argument missing after '-port' option.\n"
+                USAGE,progname);
+          return EXIT_FAILURE;
+        }
+        port=strtol(argv[++i],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-port'.\n",
+                  argv[i]);
+          return EXIT_FAILURE;
+        }
+        if(port<0 || port>USHRT_MAX)
+        {
+          fprintf(stderr,"Invalid port number %d.\n",port);
+          return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[i],"-wait"))
+      {
+        if(i==argc-1)
+        {
+          fprintf(stderr,"Argument missing after '-wait' option.\n"
+                USAGE,progname);
+          return EXIT_FAILURE;
+        }
+        wait=strtol(argv[++i],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid value '%s' for option '-wait'.\n",
+                  argv[i]);
+          return EXIT_FAILURE;
+        }
+        if(wait<0)
+        {
+          fprintf(stderr,"Invalid value for wait %d, muset be >=0.\n",wait);
+          return EXIT_FAILURE;
+        }
+      }
+      else
+      {
+        fprintf(stderr,"Invalid option '%s'.\n"
+                USAGE,argv[i],progname);
+        return EXIT_FAILURE;
+      }
+    }
+    else
+      break;
   snprintf(line,STRING_LEN,
            "%s C Version %s (" __DATE__ ")",progname,COPANDEMO_VERSION);
   title[0]=line;
@@ -169,13 +213,16 @@ int main(int argc,char **argv)
   title[2]="(c) Potsdam Institute for Climate Impact Research (PIK),";
   title[3]="see COPYRIGHT file";
   banner(title,4,78);
-  printf("Waiting for LPJmL model...\n");
+  if(wait)
+    printf("Waiting for LPJmL model for %d sec...\n",wait);
+  else
+    printf("Waiting for LPJmL model...\n");
   /* Establish the connection */
-  socket=opentdt_socket(port,0);
+  socket=opentdt_socket(port,wait);
   if(socket==NULL)
   {
-    fprintf(stderr,"Error opening communication channel at port %d: %s\n",
-            port,strerror(errno));
+    fprintf(stderr,"Error opening communication channel at port %d.\n",
+            port);
     return EXIT_FAILURE;
   }
   /* Get protocol version */
@@ -200,7 +247,7 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Unexpected end token received.\n");
       close_socket(socket);
-      return EXIT_SUCCESS;
+      return EXIT_FAILURE;
     }
     if(token!=GET_DATA_SIZE)
     {
@@ -211,23 +258,30 @@ int main(int argc,char **argv)
     if(index<0 || index>=N_IN)
     {
       fprintf(stderr,"Invalid index %d of input, must be in [0,%d].\n",index,N_IN-1);
+      readint_socket(socket,&index,1);
+      index=COPAN_ERR;
+      writeint_socket(socket,&index,1);
       return EXIT_FAILURE;
     }
-    printf("index=%d\n",index);
     readint_socket(socket,(int *)(type_in+index),1);
     switch(index)
     {
       case LANDUSE_DATA:
         index=LANDUSE_NBANDS;
         landuse=newvec(float,ncell*LANDUSE_NBANDS);
-        check(landuse);
+        if(landuse==NULL)
+        {
+          printallocerr("landuse");
+          index=COPAN_ERR;
+        }
+        islanduse=TRUE;
         break;
       case CO2_DATA:
         index=1;
         break;
       default:
         fprintf(stderr,"Unsupported index %d of input\n",index);
-        index=COPAN_ERR ;
+        index=COPAN_ERR;
     }
     /* send number of bands */
     writeint_socket(socket,&index,1);
@@ -240,6 +294,7 @@ int main(int argc,char **argv)
   n_out_1=0;
   nmonth_out=0;
   nday_out=0;
+  n_err=0;
   for(i=0;i<n_out;i++)
   {
     readint_socket(socket,&token,1);
@@ -247,7 +302,7 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Unexpected end token received.\n");
       close_socket(socket);
-      return EXIT_SUCCESS;
+      return EXIT_FAILURE;
     }
     if(token!=PUT_DATA_SIZE)
     {
@@ -257,32 +312,66 @@ int main(int argc,char **argv)
     readint_socket(socket,&index,1);
     if(index<0 || index>=NOUT)
     {
-      fprintf(stderr,"Invalid index %d of output,l must be in[0,%d].\n",index,NOUT-1);
-      return EXIT_FAILURE;
+      fprintf(stderr,"Invalid index %d of output, must be in[0,%d].\n",index,NOUT-1);
+      readint_socket(socket,&index,1);
+      readint_socket(socket,&index,1);
+      readint_socket(socket,&index,1);
+      index=COPAN_ERR;
+      writeint_socket(socket,&index,1);
+      n_err++;
+      continue;
     }
     /* get number of steps per year for output */
     readint_socket(socket,nstep+index,1);
-    switch(nstep[index])
-    {
-      case NMONTH:
-        nmonth_out++;
-        break;
-      case NDAYYEAR:
-        nday_out++;
-        break;
-      case 0 : case 1:
-        break;
-      default:
-        fprintf(stderr,"Invalid number of steps %d for index %d, must be 1, 12, or 365.\n",nstep[index],index);
-        return EXIT_FAILURE;
-    }
     /* get number of bands for output */
     readint_socket(socket,count+index,1);
     readint_socket(socket,(int *)(type+index),1);
     /* check for static output */
     if(index==GRID || index==COUNTRY || index==REGION)
       n_out_1++;
+    switch(nstep[index])
+    {
+      case NMONTH:
+        nmonth_out++;
+        index=COPAN_OK;
+        break;
+      case NDAYYEAR:
+        nday_out++;
+        index=COPAN_OK;
+        break;
+      case 0 : case 1:
+        index=COPAN_OK;
+        break;
+      default:
+        index=COPAN_ERR;
+        n_err++;
+        fprintf(stderr,"Invalid number of steps %d for index %d, must be 1, 12, or 365.\n",nstep[index],index);
+    }
+    writeint_socket(socket,&index,1);
   }
+  readint_socket(socket,&token,1);
+  if(token==END_DATA)
+  {
+    fprintf(stderr,"Unexpected end token received.\n");
+    close_socket(socket);
+    return EXIT_FAILURE;
+  }
+  if(token!=GET_STATUS)
+  {
+    fprintf(stderr,"Token %d is not GET_STATUS.\n",token);
+    return EXIT_FAILURE;
+  }
+  if(islanduse)
+    token=COPAN_OK;
+  else
+  {
+    token=COPAN_ERR;
+    writeint_socket(socket,&token,1);
+    fprintf(stderr,"Landuse output is missing from LPJmL.\n");
+    return EXIT_FAILURE;
+  }
+  writeint_socket(socket,&token,1);
+  n_out-=n_err;
   /* read all static non time dependent outputs */
   region=country=NULL;
   coords=NULL;
