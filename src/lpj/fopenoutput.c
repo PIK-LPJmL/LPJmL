@@ -290,7 +290,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
             size=getoutputtype(config->outputvars[i].id,config->float_grid);
             writeint_socket(config->socket,&size,1);
             readint_socket(config->socket,&status,1);
-            if(status==COPAN_ERR)
+            if(status!=COPAN_OK)
             {
               output->files[config->outputvars[i].id].isopen=FALSE;
               fprintf(stderr,"ERROR100: Cannot open socket stream for output '%s'.\n",
@@ -322,7 +322,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
           size=getoutputtype(config->outputvars[i].id,config->float_grid);
           writeint_socket(config->socket,&size,1);
           readint_socket(config->socket,&status,1);
-          if(status==COPAN_ERR)
+          if(status!=COPAN_OK)
           {
             output->files[config->outputvars[i].id].isopen=FALSE;
             fprintf(stderr,"ERROR100: Cannot open socket stream for output '%s'.\n",
