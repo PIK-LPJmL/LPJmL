@@ -71,7 +71,6 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
       if(isroot(*config))
         fprintf(stderr,"ERROR218: Number of bands=%d in ignition data socket stream is not 1.\n",
                 header.nbands);
-      close_copan(config);
       free(ignition);
       return NULL;
     }

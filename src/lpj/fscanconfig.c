@@ -178,6 +178,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   /* I. Reading type section                                         */
   /*=================================================================*/
   config->copan_in=0;
+  config->socket=NULL;
   if (verbose>=VERB) puts("// I. type section");
   fscanbool2(file,&israndom,"random_prec");
   config->seed_start=RANDOM_SEED;

@@ -15,14 +15,18 @@
 
 #include "lpj.h"
 
-void close_copan(const Config *config /**< LPJmL configuration */
+void close_copan(Bool iserror,        /**< closing on error? */
+                 const Config *config /**< LPJmL configuration */
                 )
 {
-  int token=END_DATA;
+  int token;
   if(isroot(*config))
   {
-    writeint_socket(config->socket,&token,1);
     if(config->socket!=NULL)
+    {
+      token=(iserror) ? FAIL_DATA : END_DATA;
+      writeint_socket(config->socket,&token,1);
       close_socket(config->socket);
+    }
   }
 } /* of 'close_copan' */

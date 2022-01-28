@@ -45,7 +45,7 @@ HDRS    = $(INC)/buffer.h $(INC)/coord.h $(INC)/lpj.h\
           $(INC)/errmsg.h $(INC)/numeric.h $(INC)/channel.h\
           $(INC)/conf.h $(INC)/swap.h $(INC)/soilpar.h\
           $(INC)/list.h $(INC)/cell.h $(INC)/units.h\
-          $(INC)/config.h $(INC)/queue.h $(INC)/output.h
+          $(INC)/config.h $(INC)/queue.h $(INC)/output.h $(INC)/copan.h
 
 
 $(LIBDIR)/$(LIB): $(OBJS)

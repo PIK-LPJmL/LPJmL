@@ -135,11 +135,10 @@ extern void printlicense(void);
 extern void help(const char *,const char *);
 extern void fprintflux(FILE *file,Flux,Real,int,const Config *);
 extern void fprintcsvflux(FILE *file,Flux,Real,Real,int,const Config *);
-#ifdef USE_MPI
 extern void failonerror(const Config *,int,int,const char *);
+#ifdef USE_MPI
 extern Bool iserror(int,const Config *);
 #else
-#define failonerror(config,rc,errorcode,msg) if(rc) fail(errorcode,FALSE,msg)
 #define iserror(rc,config) rc
 #endif
 

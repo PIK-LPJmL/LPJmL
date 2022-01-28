@@ -56,7 +56,6 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
       {
         if(verbose)
           fprintf(stderr,"ERROR149: Invalid number of bands=%d received from socket, must be 1.\n",size);
-        close_copan(config);
         return TRUE;
       }
     }

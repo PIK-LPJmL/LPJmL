@@ -31,6 +31,11 @@ static Bool readdata(Socket *socket,int ncell,int day,int count[],Type type[])
   readint_socket(socket,&token,1);
   if(token==END_DATA)
     return TRUE;
+  if(token==FAIL_DATA)
+  {
+    fprintf(stderr,"LPJml stopped with error.\n");
+    return TRUE;
+  }
   if(token!=PUT_DATA)
   {
     fprintf(stderr,"Token for output data=%d is not PUT_DATA.\n",token);
@@ -249,6 +254,12 @@ int main(int argc,char **argv)
       close_socket(socket);
       return EXIT_FAILURE;
     }
+    if(token==FAIL_DATA)
+    {
+      fprintf(stderr,"LPJmL stopped with error.\n");
+      close_socket(socket);
+      return EXIT_FAILURE;
+    }
     if(token!=GET_DATA_SIZE)
     {
       fprintf(stderr,"Token=%d is not GET_DATA_SIZE.\n",token);
@@ -304,6 +315,12 @@ int main(int argc,char **argv)
       close_socket(socket);
       return EXIT_FAILURE;
     }
+    if(token==FAIL_DATA)
+    {
+      fprintf(stderr,"LPJmL stopped with error.\n");
+      close_socket(socket);
+      return EXIT_FAILURE;
+    }
     if(token!=PUT_DATA_SIZE)
     {
       fprintf(stderr,"Token=%d is not PUT_DATA_SIZE.\n",token);
@@ -353,6 +370,12 @@ int main(int argc,char **argv)
   if(token==END_DATA)
   {
     fprintf(stderr,"Unexpected end token received.\n");
+    close_socket(socket);
+    return EXIT_FAILURE;
+  }
+  if(token==FAIL_DATA)
+  {
+    fprintf(stderr,"LPJmL stopped with error.\n");
     close_socket(socket);
     return EXIT_FAILURE;
   }
@@ -437,6 +460,12 @@ int main(int argc,char **argv)
       readint_socket(socket,&token,1);
       if(token==END_DATA) /* Did we receive end token? */
         break;
+      if(token==FAIL_DATA)
+      {
+        fprintf(stderr,"LPJmL stopped with error.\n");
+        close_socket(socket);
+        return EXIT_FAILURE;
+      }
       if(token!=GET_DATA)
       {
         fprintf(stderr,"Token for input data=%d is not GET_DATA.\n",token);

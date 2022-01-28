@@ -70,7 +70,6 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
       if(isroot(*config))
         fprintf(stderr,"ERROR218: Number of bands=%d in wateruse socket stream is not 1.\n",
                 header.nbands);
-      close_copan(config);
       free(wateruse);
       return NULL;
     }

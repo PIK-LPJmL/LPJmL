@@ -15,8 +15,8 @@
 
 #include "lpj.h"
 
-Bool check_copan(const Config *config /**< LPJmL configuration */
-                )                     /** \return TRUE on COPAN error */
+int check_copan(Config *config /**< LPJmL configuration */
+               )               /** \return error code from COPAN */
 {
   int token=GET_STATUS;
   int status;
@@ -24,7 +24,12 @@ Bool check_copan(const Config *config /**< LPJmL configuration */
   {
     writeint_socket(config->socket,&token,1);
     readint_socket(config->socket,&status,1);
-    return status!=COPAN_OK;
+    if(status)
+    {
+      close_socket(config->socket);
+      config->socket=NULL;
+    }
+    return status;
   }
-  return FALSE;
+  return COPAN_OK;
 } /* of 'check_copan' */

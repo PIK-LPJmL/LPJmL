@@ -37,12 +37,13 @@
 #define PUT_DATA_SIZE 3 /* Sending data size to COPAN */
 #define END_DATA 4      /* Ending communication */
 #define GET_STATUS 5    /* Check status of COPAN */
+#define FAIL_DATA 6     /* Ending communication on error */
 
 /* Declaration of functions */
 
 extern Bool open_copan(Config *);
-extern Bool check_copan(const Config *);
-extern void close_copan(const Config *);
+extern int check_copan(Config *);
+extern void close_copan(Bool,const Config *);
 extern Bool receive_real_copan(int,Real *,int,int,const Config *);
 extern Bool receive_real_scalar_copan(Real *,int,const Config *);
 extern Bool receive_int_copan(int,int *,int,int,const Config *);

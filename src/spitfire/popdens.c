@@ -74,7 +74,6 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
       if(isroot(*config))
         fprintf(stderr,"ERROR218: Number of bands=%d  in population density stream is not 1.\n",
                 header.nbands);
-      close_copan(config);
       free(popdens);
       return NULL;
     }

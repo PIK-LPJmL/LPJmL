@@ -70,7 +70,6 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       if(isroot(*config))
         fprintf(stderr,"ERROR127: Invalid number of bands %d received from socket, must be 12 or 365.\n",
                 nbands);
-      close_copan(config);
       return TRUE;
     }
     file->firstyear=config->firstyear;

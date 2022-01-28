@@ -262,7 +262,7 @@ int main(int argc,char **argv)
     close_image(&config);
 #endif
   if(config.sim_id==LPJML_COPAN)
-    close_copan(&config);
+    close_copan(year<=config.lastyear,&config);
   freeconfig(&config);
 #ifdef USE_MPI
   /* Wait until all tasks have finished to measure total wall clock time */
