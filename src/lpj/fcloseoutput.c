@@ -99,9 +99,6 @@ void fcloseoutput(Outputfile *output,  /**< Output file array */
     free(output->counts);
     free(output->offsets);
   }
-#else
-  if(output->method==LPJ_SOCKET && output->socket!=NULL)
-    close_socket(output->socket);
 #endif
   free(output->files);
   freecoordarray(output->index);

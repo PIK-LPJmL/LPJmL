@@ -19,7 +19,6 @@
 
 /* Definition of datatypes */
 
-#define DEFAULT_PORT 2222 /* default port for socket connection */
 #define issoil(index) (index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC || \
                        index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV || index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV || index == SOILC_AGR_LAYER || index==PERC)
 
@@ -132,6 +131,5 @@ extern int mpi_write_txt(FILE *,void *,MPI_Datatype,int,int *,
 /* Definition of macros */
 
 #define isopen(output,index) output->files[index].isopen
-#define output_flux(output,flux) writedouble_socket(output->socket,(Real *)&flux,sizeof(Flux)/sizeof(Real))
 
 #endif

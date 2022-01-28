@@ -280,7 +280,7 @@ int writecoords(Outputfile *output,  /**< output struct */
           break;
         case SOCK:
           send_token_copan(PUT_DATA,index,config);
-          writefloat_socket(output->socket,fvec,count*2);
+          writefloat_socket(config->socket,fvec,count*2);
           break;
         case CDF:
           write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
@@ -305,7 +305,7 @@ int writecoords(Outputfile *output,  /**< output struct */
           break;
         case SOCK:
           send_token_copan(PUT_DATA,index,config);
-          writeshort_socket(output->socket,vec,count*2);
+          writeshort_socket(config->socket,vec,count*2);
           break;
         case CDF:
           write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);

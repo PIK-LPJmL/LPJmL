@@ -315,9 +315,12 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
           send_token_copan(PUT_DATA_SIZE,config->outputvars[i].id,config);
           size=getnyear(config->outnames,config->outputvars[i].id);
           writeint_socket(config->socket,&size,1);
-          size=outputsize(config->outputvars[i].id,
-                          config->npft[GRASS]+config->npft[TREE],
-                          config->npft[CROP],config);
+          if(config->outputvars[i].id==GLOBALFLUX)
+            size=sizeof(Flux)/sizeof(Real);
+          else
+            size=outputsize(config->outputvars[i].id,
+                            config->npft[GRASS]+config->npft[TREE],
+                            config->npft[CROP],config);
           writeint_socket(config->socket,&size,1);
           size=getoutputtype(config->outputvars[i].id,config->float_grid);
           writeint_socket(config->socket,&size,1);

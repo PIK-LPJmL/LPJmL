@@ -26,11 +26,17 @@ void failonerror(const Config *config, /**< LPJmL configuration */
 {
   int sum;
   /* sum up error codes of all tasks and broadcast result */
+#ifdef USE_MPI
   MPI_Allreduce(&rc,&sum,1,MPI_INT,MPI_SUM,config->comm);
+#else
+  sum=rc;
+#endif
   if(sum)
   {
     /* error occurred, end program */
+#ifdef USE_MPI
     MPI_Finalize(); /* finish MPI */
+#endif
     if(config->rank==0)
     {
       if(config->ntask==1)
