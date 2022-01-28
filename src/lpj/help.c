@@ -75,9 +75,8 @@ void help(const char *progname, /**< program filename */
 #endif
 #if defined IMAGE && defined COUPLED
           "-image host[:inport[,outport]] set host where IMAGE model is running\n"
-#else
-          "-copan host[:port] set host and port here COPAN model is running\n"
 #endif
+          "-copan host[:port] set host and port where COPAN model is running\n"
           "-wait time         time to wait for connection to COPAN/IMAGE model (sec)\n"
 #ifdef USE_MPI
           "-output method     output method. Must be gather or mpi2\n"

@@ -34,7 +34,7 @@ Bool receive_image_climate(Climate *climate,    /**< Climate data */
   for(i=0;i<climate->file_temp_var.n;i++)
     climate->data.temp[i]=0; /* setting varibility to 0 */
 #else
-  if(readclimate(0,&climate->file_temp_var,climate->data.temp,0,climate->file_temp_var.scalar,grid,year,config))
+  if(readclimate(&climate->file_temp_var,climate->data.temp,0,climate->file_temp_var.scalar,grid,year,config))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR190: Cannot read temperature variability of year %d receive_image_climate().\n",
@@ -86,7 +86,7 @@ Bool receive_image_climate(Climate *climate,    /**< Climate data */
   for(i=0;i<climate->file_prec_var.n;i++)
     climate->data.prec[i]=1; /* setting relative varibility to 1 */
 #else
-  if(readclimate(0,&climate->file_prec_var,climate->data.prec,0,climate->file_prec_var.scalar,grid,year,config))
+  if(readclimate(&climate->file_prec_var,climate->data.prec,0,climate->file_prec_var.scalar,grid,year,config))
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR189: Cannot read precipitation variability of year %d in receive_image_climate().\n",
