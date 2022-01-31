@@ -254,8 +254,8 @@ int main(int argc,char **argv)
     printf(" terminated, %d grid cells processed.\n"
            "Wall clock time:\t%d sec, %.2g sec/cell/year.\n",
            config.total,(int)(tend-tstart),
-           (double)(tend-tstart)/config.total/(year-config.firstyear+
-                                                   config.nspinup));
+           (double)(tend-tstart)/config.total/max(year-config.firstyear+
+                                                   config.nspinup,1));
   }
 #if defined IMAGE && defined COUPLED
   if(config.sim_id==LPJML_IMAGE)

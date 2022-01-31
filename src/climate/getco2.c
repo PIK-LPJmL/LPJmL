@@ -30,12 +30,24 @@ Bool getco2(const Climate *climate, /**< Pointer to climate data */
       writeint_socket(config->socket,&year,1);
     }
     receive_real_scalar_copan(pco2,1,config);
+    if(*pco2<0)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR246: Atmospheric CO2=%g less than zero in year %d.\n",*pco2,year);
+      return TRUE;
+    }
   }
   else
   {
     year-=climate->co2.firstyear;
     if(year>=climate->co2.nyear)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR015: Invalid year %d in getco2(), must be <%d.\n",
+                year+climate->co2.firstyear,climate->co2.firstyear+climate->co2.nyear);
+
       return TRUE;
+    }
     *pco2=(year<0) ? param.co2_p : climate->co2.data[year];
   }
   return FALSE;

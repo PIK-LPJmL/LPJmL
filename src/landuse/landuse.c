@@ -990,12 +990,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         count+=2*ncft;
     free(data);
   } /* end crop_phu*/
-
-  yearl-=landuse->landuse.firstyear;
-  if(yearl>=landuse->landuse.nyear)
-    yearl=landuse->landuse.nyear-1;
-  else if(yearl<0)
-    yearl=0;
+  if(landuse->landuse.fmt!=SOCK)
+  {
+    yearl-=landuse->landuse.firstyear;
+    if(yearl>=landuse->landuse.nyear)
+      yearl=landuse->landuse.nyear-1;
+    else if(yearl<0)
+      yearl=0;
+  }
   data=newvec(Real,config->ngridcell*landuse->landuse.var_len);
   if(data==NULL)
   {
@@ -1078,7 +1080,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
                         config->landusemap_size,data,&count,ncft,config->nwptype))
         {
           fprintf(stderr,"ERROR149: Land-use input=%g less than zero for cell %d (%s) in year %d.\n",
-                  data[count],cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearl+landuse->landuse.firstyear);
+                  data[count],cell+config->startgrid,sprintcoord(line,&grid[cell].coord),
+                  landuse->landuse.fmt==SOCK ? year : yearl+landuse->landuse.firstyear);
           return TRUE;
         }
       }
@@ -1343,15 +1346,17 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     {
       if(yearl>0&&sum>1.01)
       {
-        fprintf(stderr,"WARNING013: in cell %d at year %d: sum of crop fractions greater 1: %f\n",
-                cell+config->startgrid,yearl+landuse->landuse.firstyear,sum);
+        fprintf(stderr,"WARNING013: In cell %d at year %d: sum of crop fractions greater 1: %g\n",
+                cell+config->startgrid,(landuse->landuse.fmt==SOCK) ? year : yearl+landuse->landuse.firstyear,sum);
         fflush(stderr);
       }
       sum=reducelanduse(grid+cell,sum-1,ncft,config->nagtree);
       if(sum>0.00001)
-        fail(CROP_FRACTION_ERR,FALSE,
-             "crop fraction greater 1: %f cell: %d, managed grass is 0",
-             sum+1,cell+config->startgrid);
+      {
+        fprintf(stderr,"ERROR016: Crop fraction=%g greater than 1 in cell %d (%s), managed grass is 0.\n",
+                sum+1,cell+config->startgrid,sprintcoord(line,&grid[cell].coord));
+        return TRUE;
+      }
     }
     if (config->withlanduse==ONLY_CROPS)
     {
@@ -1417,11 +1422,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     if(config->fertilizer_input==FERTILIZER)
     {
       /* assigning fertilizer Nr data */
-      yearf-=landuse->fertilizer_nr.firstyear;
-      if(yearf>=landuse->fertilizer_nr.nyear)
-        yearf=landuse->fertilizer_nr.nyear-1;
-      else if(yearf<0)
-        yearf=0;
+      if(landuse->fertilizer_nr.fmt!=SOCK)
+      {
+        yearf-=landuse->fertilizer_nr.firstyear;
+        if(yearf>=landuse->fertilizer_nr.nyear)
+          yearf=landuse->fertilizer_nr.nyear-1;
+        else if(yearf<0)
+          yearf=0;
+      }
       data=newvec(Real,config->ngridcell*landuse->fertilizer_nr.var_len);
       if(data==NULL)
       {
@@ -1484,7 +1492,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           {
             fprintf(stderr,"ERROR149: Fertilizer input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                     data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearf+landuse->fertilizer_nr.firstyear);
+                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord),
+                    landuse->fertilizer_nr.fmt==SOCK ? year : yearf+landuse->fertilizer_nr.firstyear);
             return TRUE;
           }
         }
@@ -1495,11 +1504,15 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     if(config->manure_input)
     {
       /* assigning manure fertilizer nr data */
-      yearm-=landuse->manure_nr.firstyear;
-      if(yearm>=landuse->manure_nr.nyear)
-        yearm=landuse->manure_nr.nyear-1;
-      else if(yearm<0)
-        yearm=0;
+
+      if(landuse->manure_nr.fmt!=SOCK)
+      {
+        yearm-=landuse->manure_nr.firstyear;
+        if(yearm>=landuse->manure_nr.nyear)
+          yearm=landuse->manure_nr.nyear-1;
+        else if(yearm<0)
+          yearm=0;
+      }
       data=newvec(Real,config->ngridcell*landuse->manure_nr.var_len);
       if(data==NULL)
       {
@@ -1562,7 +1575,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           {
             fprintf(stderr,"ERROR149: Manure input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                     data[count],count % config->fertilizermap_size+i*config->fertilizermap_size,
-                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearm+landuse->manure_nr.firstyear);
+                    cell+config->startgrid,sprintcoord(line,&grid[cell].coord),
+                    (landuse->manure_nr.fmt==SOCK)  ? year :  yearm+landuse->manure_nr.firstyear);
             return TRUE;
           }
         }
@@ -1606,11 +1620,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   if(config->tillage_type==READ_TILLAGE)
   {
     /* read in tillage data */
-    yeart-=landuse->with_tillage.firstyear;
-    if(yeart>=landuse->with_tillage.nyear)
-      yeart=landuse->with_tillage.nyear-1;
-    else if(yeart<0)
-      yeart=0;
+    if(landuse->with_tillage.fmt!=SOCK)
+    {
+      yeart-=landuse->with_tillage.firstyear;
+      if(yeart>=landuse->with_tillage.nyear)
+        yeart=landuse->with_tillage.nyear-1;
+      else if(yeart<0)
+        yeart=0;
+    }
     dates=newvec(int,config->ngridcell*landuse->with_tillage.var_len);
     if(dates==NULL)
     {
@@ -1675,11 +1692,14 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   if(config->residue_treatment==READ_RESIDUE_DATA)
   {
     /* assigning residue extraction data */
-    yearr-=landuse->residue_on_field.firstyear;
-    if(yearr>=landuse->residue_on_field.nyear)
-      yearr=landuse->residue_on_field.nyear-1;
-    else if(yearr<0)
-      yearr=0;
+    if(landuse->residue_on_field.fmt!=SOCK)
+    {
+      yearr-=landuse->residue_on_field.firstyear;
+      if(yearr>=landuse->residue_on_field.nyear)
+        yearr=landuse->residue_on_field.nyear-1;
+      else if(yearr<0)
+        yearr=0;
+    }
     data=newvec(Real,config->ngridcell*landuse->residue_on_field.var_len);
     if(data==NULL)
     {
@@ -1741,7 +1761,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       {
         fprintf(stderr,"ERROR149: Residue rate input=%g for band %d less than zero for cell %d (%s) in year %d.\n",
                 data[count],count % config->fertilizermap_size,
-                cell+config->startgrid,sprintcoord(line,&grid[cell].coord),yearr+landuse->residue_on_field.firstyear);
+                cell+config->startgrid,sprintcoord(line,&grid[cell].coord),
+                landuse->residue_on_field.fmt==SOCK ? year : yearr+landuse->residue_on_field.firstyear);
         return TRUE;
       }
       count-=config->fertilizermap_size;
