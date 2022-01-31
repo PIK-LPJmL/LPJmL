@@ -1052,7 +1052,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   for(cell=0;cell<config->ngridcell;cell++)
   {
     /* get soiltype of first stand (not stored in cell structure) */
-    if(grid[cell].standlist->n>0)
+    if(!grid[cell].skip && grid[cell].standlist->n>0)
     {
       stand=getstand(grid[cell].standlist,0);
       soiltype=stand->soil.par->type;
