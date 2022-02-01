@@ -73,7 +73,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
       if(totn > 0)
       {
         up_temp_f = nuptake_temp_fcn(soil->temp[l]);
-        NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin +totn/(totn+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))* up_temp_f * f_NCplant * (crop->ind.root.carbon*pft->nind)*rootdist_n[l]/1000; //Smith et al. Eq. C14-C15, Navail=totn
+        NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin+totn/(totn+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))*up_temp_f*f_NCplant*(crop->ind.root.carbon*pft->nind)*rootdist_n[l]/1000; //Smith et al. Eq. C14-C15, Navail=totn
 #ifdef DEBUG_N
       printf("layer %d NO3_up=%g\n",l,NO3_up);
 #endif

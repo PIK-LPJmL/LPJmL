@@ -45,7 +45,7 @@
   "min_c_bnf" : 20,          /* threshold C root content for BNF */
   "par_sink_limit" : 0.2,    /* Michaelis-Menten scaler of sink limitation */
   "q_ash" : 0.45,            /* fraction of nitrogen going to litter after fire */
-  "sapwood_recovery" : 0.3,  /* recovery of sapwood nitrogen */
+  "sapwood_recovery" : 0.2,  /* recovery of sapwood nitrogen */
   "T_m" : 15.0,              /* parameter in N uptake temperature function */
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
