@@ -150,11 +150,19 @@ static void openfile(Outputfile *output,const Cell grid[],
             else
             {
               header.order=CELLSEQ;
-              header.nstep=getnyear(config->outnames,config->outputvars[i].id);
+              if(config->outputvars[i].id==COUNTRY || config->outputvars[i].id==REGION)
+              {
+                header.nstep=1;
+                header.nyear=1;
+              }
+              else
+              {
+                header.nstep=getnyear(config->outnames,config->outputvars[i].id);
+                header.nyear=config->lastyear-config->outputyear+1;
+              }
               header.nbands=outputsize(config->outputvars[i].id,
                                        config->npft[GRASS]+config->npft[TREE],
                                        config->npft[CROP],config);
-              header.nyear=config->lastyear-config->outputyear+1;
               header.datatype=getoutputtype(config->outputvars[i].id,FALSE);
               fwriteheader(output->files[config->outputvars[i].id].fp.file,
                            &header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
