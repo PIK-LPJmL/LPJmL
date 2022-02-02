@@ -287,7 +287,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       runoff+=soil->w_fw[l];
       soil->w_fw[l]=0;
     }
-    if (fabs(soil->w[l])<epsilon)
+    if (soil->w[l]<epsilon)
     {
       runoff+=soil->w[l]*soil->whcs[l];
       soil->w[l]=0;
