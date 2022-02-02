@@ -22,10 +22,18 @@ void close_copan(Bool iserror,        /**< closing on error? */
   int token;
   if(isroot(*config))
   {
-    if(config->socket!=NULL)
+    if(config->socket!=NULL) /* already closed? */
     {
       token=(iserror) ? FAIL_DATA : END_DATA;
+#ifdef DEBUG_COPAN
+      printf("Token %s_DATA sending",(iserror) ? "FAIL" : "END");
+      fflush(stdout);
+#endif
       writeint_socket(config->socket,&token,1);
+#ifdef DEBUG_COPAN
+      printf(", done.\n");
+      fflush(stdout);
+#endif
       close_socket(config->socket);
     }
   }

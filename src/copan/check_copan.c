@@ -22,10 +22,23 @@ int check_copan(Config *config /**< LPJmL configuration */
   int status;
   if(isroot(*config))
   {
+#ifdef DEBUG_COPAN
+    printf("Token GET_STATUS sending");
+    fflush(stdout);
+#endif
     writeint_socket(config->socket,&token,1);
+#ifdef DEBUG_COPAN
+    printf(", done.\nGetting status");
+    fflush(stdout);
+#endif
     readint_socket(config->socket,&status,1);
+#ifdef DEBUG_COPAN
+    printf(", %d got.\n",status);
+    fflush(stdout);
+#endif
     if(status)
     {
+      /* error occurred, close socket */
       close_socket(config->socket);
       config->socket=NULL;
     }
