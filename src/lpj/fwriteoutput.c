@@ -1017,6 +1017,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(PREC_RES,1);
   writeoutputvar(NFIRE,1);
   writeoutputvar(FIREDI,ndate1);
+  writeoutputvar(FIREDURATION,1);
   writeoutputvar(FIREEMISSION_CO2,1);
   writeoutputvar(FIREEMISSION_CO,1);
   writeoutputvar(FIREEMISSION_CH4,1);

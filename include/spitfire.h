@@ -29,7 +29,7 @@ typedef struct
 
 /* Declaration of functions */
 
-extern Real area_burnt(Real,Real,Real,Real, int,const Pftlist *);
+extern Real area_burnt(Real *,Real,Real,Real,Real, int,const Pftlist *);
 extern Real deadfuel_consumption(const Litter *,Fuel *, Real);
 extern Real firedangerindex(Real,Real,const Pftlist *, Real, Real, int, Real);
 extern Real firemortality_tree(Pft *,const Fuel *,Livefuel *,Real,Real);

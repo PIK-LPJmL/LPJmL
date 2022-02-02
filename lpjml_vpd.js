@@ -147,6 +147,7 @@ ID                         Fmt                    filename
     { "id" : "swc2",             "file" : { "fmt" : "cdf", "name" : "output/mswc2.nc"}},
     { "id" : "firec",            "file" : { "fmt" : "cdf", "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output/mfirec.nc"}},
     { "id" : "firef",            "file" : { "fmt" : "cdf", "name" : "output/firef.nc"}},
+    { "id" : "fireduration",     "file" : { "fmt" : "cdf", "name" : "output/firedurat.nc"}},
     { "id" : "vegc",             "file" : { "fmt" : "cdf", "name" : "output/vegc.nc"}},
     { "id" : "soilc",            "file" : { "fmt" : "cdf", "name" : "output/soilc.nc"}},
     { "id" : "litc",             "file" : { "fmt" : "cdf", "name" : "output/litc.nc"}},

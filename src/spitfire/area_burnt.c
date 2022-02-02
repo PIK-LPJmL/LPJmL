@@ -14,12 +14,12 @@
 
 #include "lpj.h"
 
-Real area_burnt(Real fire_danger_index, Real num_fires, Real windsp_cover,
+Real area_burnt(Real *fire_durat,Real fire_danger_index, Real num_fires, Real windsp_cover,
                 Real ros_forward, int ntypes,const Pftlist *pftlist)
 {
   Real dbf,length_breath_ratio;
   Real lb_grass,lb_tree,base;
-  Real ros_backward, fire_durat;
+  Real ros_backward;
   Real *fpc_total; /* total grid FPC for PFTs */
   Real d_area_burnt;
 
@@ -48,14 +48,17 @@ Real area_burnt(Real fire_danger_index, Real num_fires, Real windsp_cover,
   }
 
   if(length_breath_ratio <= 0)
+  {
     d_area_burnt = 0;
+    *fire_durat=0;
+  }
   else
   {
     /* check the parameter value!!
      *  fire duration as a function of daily fire danger index
      */
-    fire_durat=241.0/(1.0+(240*exp(param.firedura*fire_danger_index)));
-    dbf = (ros_backward+ros_forward) * fire_durat;  /* in min , dbf in m*/
+    *fire_durat=241.0/(1.0+(240*exp(param.firedura*fire_danger_index)));
+    dbf = (ros_backward+ros_forward) * *fire_durat;  /* in min , dbf in m*/
     d_area_burnt = (num_fires * M_PI_4/length_breath_ratio * dbf*dbf)*1e-4;
   }
   return d_area_burnt;

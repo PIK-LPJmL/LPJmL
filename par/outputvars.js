@@ -149,6 +149,7 @@
   { "id" : PREC_RES, "name": "prec_res", "timestep" : "monthly", "var" : "prec_res", "descr" :  "reservoir precipitation", "unit" : "mm/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : NFIRE, "name": "nfire", "timestep" : "monthly", "var" : "nfire", "descr" :  "number of fires", "unit" : "", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREDI, "name": "firedi", "timestep" : "monthly", "var" : "firedi", "descr" :  "fire danger index", "unit" : "", "scale" : 1.0, "offset" : 0.0},
+  { "id" : FIREDURATION, "name": "fireduration", "timestep" : "monthly", "var" : "fireduration", "descr" :  "fire duration", "unit" : "h", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREEMISSION_CO2, "name": "fireemission_co2", "timestep" : "monthly", "var" : "co2_emission", "descr" :  "CO2 fire emission", "unit" : "g/m2/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREEMISSION_CO, "name": "fireemission_co", "timestep" : "monthly", "var" : "co_emission", "descr" :  "CO fire emission", "unit" : "g/m2/month", "scale" : 1.0, "offset" : 0.0},
   { "id" : FIREEMISSION_CH4, "name": "fireemission_ch4", "timestep" : "monthly", "var" : "ch4_emission", "descr" :  "CH4 fire emission", "unit" : "g/m2/month", "scale" : 1.0, "offset" : 0.0},

@@ -30,6 +30,7 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   Real fire_danger_index,human_ignition,num_fires,windsp_cover,ros_forward;
   Real burnt_area,fire_frac;
   Real fuel_consump;
+  Real fireduration;
   Stocks deadfuel_consump,livefuel_consump,livefuel_consump_pft;
   Real surface_fi;
   Stocks total_fire;
@@ -91,7 +92,10 @@ void dailyfire(Stand *stand,            /**< pointer to stand */
   if (config->prescribe_burntarea)
     burnt_area = climate->burntarea;
   else
-    burnt_area = area_burnt(fire_danger_index, num_fires, windsp_cover, ros_forward, config->ntypes, &stand->pftlist);
+  {
+    burnt_area = area_burnt(&fireduration,fire_danger_index, num_fires, windsp_cover, ros_forward, config->ntypes, &stand->pftlist);
+    getoutput(output,FIREDURATION,config)+=fireduration;
+  }
   fire_frac=burnt_area*1e4 / (stand->cell->coord.area * stand->frac);  /*in m2*/
   if(fire_frac > 1.0)
   {
