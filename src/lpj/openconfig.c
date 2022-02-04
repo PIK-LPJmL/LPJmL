@@ -76,7 +76,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     config->restartdir=strdup(pos);
     checkptr(config->restartdir);
   }
-  env_options=getenv(LPJOUTPUTMETHOD);
   config->param_out=FALSE;
   config->scan_verbose=ERR; /* NO_ERR would suppress also error messages */
   pos=getenv(LPJWAIT);
@@ -158,31 +157,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   }
 #endif
 
-  if(env_options==NULL)
-#ifdef USE_MPI
-    config->outputmethod=LPJ_GATHER;
-#else
-    config->outputmethod=LPJ_FILES;
-#endif
-#ifdef USE_MPI
-  else if(!strcmp(env_options,"mpi2"))
-    config->outputmethod=LPJ_MPI2;
-  else if(!strcmp(env_options,"gather"))
-    config->outputmethod=LPJ_GATHER;
-#else
-  else if(!strcmp(env_options,"write"))
-    config->outputmethod=LPJ_FILES;
-#endif
-  else
-  {
-    if(isroot(*config))
-    {
-      fprintf(stderr,"ERROR163: Invalid output method '%s'.\n",env_options);
-      if(usage!=NULL)
-        fprintf(stderr,usage,(*argv)[0]);
-    }
-    return NULL;
-  }
   env_options=getenv(LPJOPTIONS);
   options=newvec(char *,(env_options==NULL) ? *argc : *argc+1);
   if(options==NULL)
@@ -407,43 +381,6 @@ FILE *openconfig(Config *config,      /**< configuration struct */
         /* enable floating point exceptions, core file will be generated */
         enablefpe();
 #endif
-      else if(!strcmp((*argv)[i],"-output"))
-      {
-        if(i==*argc-1)
-        {
-          if(isroot(*config))
-          {
-            fprintf(stderr,
-                    "ERROR164: Argument missing for '-output' option.\n");
-            if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
-          }
-          free(options);
-          return NULL;
-        }
-#ifdef USE_MPI
-        else if(!strcmp((*argv)[i+1],"mpi2"))
-          config->outputmethod=LPJ_MPI2;
-        else if(!strcmp((*argv)[i+1],"gather"))
-          config->outputmethod=LPJ_GATHER;
-#else
-        else if(!strcmp((*argv)[i+1],"write"))
-          config->outputmethod=LPJ_FILES;
-#endif
-        else
-        {
-          if(isroot(*config))
-          {
-            fprintf(stderr,"ERROR163: Invalid output method '%s'.\n",
-                    (*argv)[i+1]);
-            if(usage!=NULL)
-              fprintf(stderr,usage,(*argv)[0]);
-          }
-          free(options);
-          return NULL;
-        }
-        i++;
-      }
       else
       {
         if(isroot(*config))

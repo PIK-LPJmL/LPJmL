@@ -20,9 +20,6 @@ int writeregioncode(Outputfile *output, /**< output file array */
                     const Config *config /**< LPJmL configuration*/
                    )                     /** \return number of region codes written */
 {
-#ifdef USE_MPI
-  MPI_Status status;
-#endif
   short *vec;
   int cell,count;
   Bool rc;
@@ -41,39 +38,30 @@ int writeregioncode(Outputfile *output, /**< output file array */
     if(!grid[cell].skip)
       vec[count++]=(short)grid[cell].ml.manage.regpar->id;
 #ifdef USE_MPI
-  switch(output->method)
-  {
-    case LPJ_MPI2:
-      MPI_File_write_at(output->files[index].fp.mpi_file,config->offset,vec,
-                        count,MPI_SHORT,&status);
-      break;
-    case LPJ_GATHER:
-      if(output->files[index].isopen)
-        switch(output->files[index].fmt)
-        {
-          case RAW: case CLM:
-            mpi_write(output->files[index].fp.file,vec,MPI_SHORT,config->total,
-                      output->counts,output->offsets,config->rank,config->comm);
-            break;
-          case TXT:
-            mpi_write_txt(output->files[index].fp.file,vec,MPI_SHORT,config->total,
-                          output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
-            break;
-          case CDF:
-            mpi_write_netcdf(&output->files[index].fp.cdf,vec,MPI_SHORT,config->total,
-                             NO_TIME,
-                             output->counts,output->offsets,config->rank,config->comm);
-            break;
-        }
-      if(output->files[index].issocket)
-      {
-        if(isroot(*config))
-          send_token_copan(PUT_DATA,index,config);
-        mpi_write_socket(config->socket,vec,MPI_SHORT,config->total,
+  if(output->files[index].isopen)
+    switch(output->files[index].fmt)
+    {
+      case RAW: case CLM:
+        mpi_write(output->files[index].fp.file,vec,MPI_SHORT,config->total,
+                  output->counts,output->offsets,config->rank,config->comm);
+        break;
+      case TXT:
+        mpi_write_txt(output->files[index].fp.file,vec,MPI_SHORT,config->total,
+                      output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+        break;
+      case CDF:
+        mpi_write_netcdf(&output->files[index].fp.cdf,vec,MPI_SHORT,config->total,
+                         NO_TIME,
                          output->counts,output->offsets,config->rank,config->comm);
-      }
-      break;
-  } /* of 'switch' */
+        break;
+    }
+  if(output->files[index].issocket)
+  {
+    if(isroot(*config))
+      send_token_copan(PUT_DATA,index,config);
+    mpi_write_socket(config->socket,vec,MPI_SHORT,config->total,
+                     output->counts,output->offsets,config->rank,config->comm);
+  }
 #else
   if(output->files[index].isopen)
     switch(output->files[index].fmt)

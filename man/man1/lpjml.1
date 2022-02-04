@@ -3,12 +3,12 @@
 lpj, lpjml \- Dynamic global vegetation model with managed land and river routing
 .SH SYNOPSIS
 .B lpjml
-[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-copan host[:port]] [\-wait time] [\-output {write|gather|mpi2}] [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-copan host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
 
 .B lpj
-[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-copan host[:port]] [\-wait time] [\-output {write|gather|mpi2} [\-outpath \fIdir\fP]
+[\-h] [\-l] [\-v] [-vv] [-param] [-pp cmd] [-fpe] [-image host[:inport[,outport]]] [-copan host[:port]] [\-wait time] [\-outpath \fIdir\fP]
 [\-inpath \fIdir\fP] [\-restartpath \fIdir\fP]
 [[\-Dmacro[=value]] [\-I\fIdir\fP] ...] [\fIfilename\fP]
 .SH DESCRIPTION
@@ -52,10 +52,6 @@ set host where the COPAN model is running. Default is localhost. Port is the por
 .TP
 \-wait time
 set time to wait for connection to COPAN/IMAGE model. Time is measured in seconds.
-.TP
-\-output {gather|mpi2}
-use the given output method to write data to disk or to a output channel. Valid output methods are write,
-gather, mpi2. The default output method for the MPI version is gather sending all output to the root task, while the default method is write for the sequential version of the code. Method mpi2 uses MPI-2 parallel file functions.The mpi2 and gather output methods are only valid for the MPI version of the code.
 .TP
 \-outpath \fIdir\fP
 set the output directory path. The path is added to the output filenames if they do not contain an absolute path.

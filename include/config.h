@@ -175,7 +175,6 @@ struct config
   int compress;           /**< compress NetCDF output (0: no compression) */
   float missing_value;    /**< Missing value in NetCDF files */
   Variable *outnames;
-  Outputmethod outputmethod;
 #ifdef USE_MPI
   MPI_Comm comm; /**< MPI communicator */
   int offset;

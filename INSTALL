@@ -220,8 +220,6 @@ LPJRESTARTPATH - Path append to the restart filenames. Only done for filenames
 LPJOPTIONS     - cpp runtime options for LPJmL
 LPJOUTPATH     - Path appended to the output filenames. Only done for filenames
                  without absolute path.
-LPJOUTPUT      - Default method for generating output files. Valid values
-                 are write, mpi2, gather, and socket.
 
 Create output and restart directory:
 
@@ -286,9 +284,6 @@ The following runtime options are defined:
                     available for the IMAGE version
 -copan host[:port]- set host and port where the COPAN model is running
 -wait time        - set time to wait for connection to IMAGE/COPAN model
--output method    - Method for generating output files. Valid values for method
-                    are mpi2, gather. Methods mpi2 and
-                    gather are only available for the MPI version
 -inpath dir       - input directory path
 -outpath dir      - output directory path
 -restartpath dir  - restart directory path

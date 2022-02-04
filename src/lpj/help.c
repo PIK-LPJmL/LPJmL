@@ -26,18 +26,10 @@
 #else
 #define IMAGE_OPT ""
 #endif
-#ifdef USE_MPI
-#define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-param] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
-                "       [-copan host[:port]] [-wait time]\n"\
-                "       [-output {gather|mpi2}]\n"\
-                "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
-                "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
-#else
 #define USAGE "\nUsage: %s [-h] [-l] [-v] [-vv] [-param] [-pp cmd] " FPE_OPT "\n" IMAGE_OPT\
                 "       [-copan host[:port]] [-wait time]\n"\
                 "       [-outpath dir] [-inpath dir] [-restartpath dir]\n"\
                 "       [[-Dmacro[=value]] [-Idir] ...] [filename]\n"
-#endif
 
 char *lpj_usage=USAGE;
 
@@ -78,10 +70,6 @@ void help(const char *progname, /**< program filename */
 #endif
           "-copan host[:port] set host and port where COPAN model is running\n"
           "-wait time         time to wait for connection to COPAN/IMAGE model (sec)\n"
-#ifdef USE_MPI
-          "-output method     output method. Must be gather or mpi2\n"
-          "                   Default is gather.\n"
-#endif
           "-outpath dir       directory appended to output filenames\n"
           "-inpath dir        directory appended to input filenames\n"
           "-restartpath dir   directory appended to restart filename\n"

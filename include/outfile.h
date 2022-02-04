@@ -43,7 +43,6 @@ typedef struct
   int *counts;         /**< sizes for MPI_Gatherv */
   int *offsets;        /**< offsets for MPI_Gatherv */
 #endif
-  Outputmethod method;
   File *files;
   int n;          /**< size of File array */
   Coord_array *index;

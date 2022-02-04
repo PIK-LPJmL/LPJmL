@@ -48,36 +48,22 @@ void fcloseoutput(Outputfile *output,  /**< Output file array */
     if(output->files[i].isopen)  /* output file is open? */
     {
 #ifdef USE_MPI
-      switch(output->method)
+      if(isroot(*config) && !output->files[i].oneyear)
       {
-        case LPJ_MPI2:
-          MPI_File_close(&output->files[i].fp.mpi_file);
-          if(output->files[i].compress)
-          {
-            MPI_Barrier(config->comm);
-            if(isroot(*config))
-              compress(output->files[i].filename,config->compress_cmd);
-          }
-          break;
-        case LPJ_GATHER:
-          if(isroot(*config) && !output->files[i].oneyear)
-          {
-            switch(output->files[i].fmt)
-            {
-              case RAW: case TXT:
-                fclose(output->files[i].fp.file);
-                break;
-              case CDF:
-                close_netcdf(&output->files[i].fp.cdf);
-                break;
-            }
-            if(output->files[i].compress)
-              compress(output->files[i].filename,config->compress_cmd);
-          }
-          break;
-      } /* of switch */
+        switch(output->files[i].fmt)
+        {
+          case RAW: case TXT:
+            fclose(output->files[i].fp.file);
+            break;
+          case CDF:
+            close_netcdf(&output->files[i].fp.cdf);
+            break;
+        }
+        if(output->files[i].compress)
+          compress(output->files[i].filename,config->compress_cmd);
+      }
 #else
-      if(output->method==LPJ_FILES && !output->files[i].oneyear)
+      if(!output->files[i].oneyear)
       {
          switch(output->files[i].fmt)
          {
@@ -94,11 +80,8 @@ void fcloseoutput(Outputfile *output,  /**< Output file array */
 #endif
     }
 #ifdef USE_MPI
-  if(output->method!=LPJ_MPI2)
-  {
-    free(output->counts);
-    free(output->offsets);
-  }
+  free(output->counts);
+  free(output->offsets);
 #endif
   free(output->files);
   freecoordarray(output->index);

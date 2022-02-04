@@ -119,7 +119,6 @@ typedef struct config Config; /* forward declaration of stand */
 #define LPJINPUT "LPJINPATH"         /* path for input files */
 #define LPJOUTPUT "LPJOUTPATH"       /* path for output files */
 #define LPJRESTART "LPJRESTARTPATH"  /* path for restart file */
-#define LPJOUTPUTMETHOD "LPJOUTPUT"  /* default output method */
 
 /* Declaration of variables */
 

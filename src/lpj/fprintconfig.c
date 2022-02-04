@@ -222,7 +222,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   String s;
   Item *item;
   int len;
-  char *method[]={"write","MPI-2","gathered","socket"};
   int i,count=0,width,width_unit,index;
   Bool isnetcdf;
   fputs("==============================================================================\n",file);
@@ -647,11 +646,9 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     }
     fprintf(file,"Number of output files:       %d\n"
                  "Output written in year:       %d\n"
-                 "Byte order in output files:   %s\n"
-                 "Output method:                %s",
+                 "Byte order in output files:   %s\n",
             config->n_out-config->copan_out,config->outputyear,
-            bigendian() ? "big endian" : "little endian",
-            method[config->outputmethod]);
+            bigendian() ? "big endian" : "little endian");
     fputc('\n',file);
     isnetcdf=FALSE;
     for(i=0;i<config->n_out;i++)

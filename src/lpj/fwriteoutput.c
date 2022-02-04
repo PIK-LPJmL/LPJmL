@@ -121,55 +121,42 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
 {
   Real scale;
   int i,offset;
-#ifdef USE_MPI
-  MPI_Status status;
-#endif
   scale=getscale(date,ndata,(config->outnames[index].timestep==ANNUAL) ? 1 : config->outnames[index].timestep,config->outnames[index].time);
   for(i=0;i<config->count;i++)
     data[i]=(float)(config->outnames[index].scale*scale*data[i]+config->outnames[index].offset);
 #ifdef USE_MPI
-  switch(output->method)
-  {
-    case LPJ_MPI2:
-      MPI_File_write_at(output->files[index].fp.mpi_file,
-         ((year-config->outputyear)*ndata+date)*config->total+config->offset,data,config->count,
-                        MPI_FLOAT,&status);
-      break;
-    case LPJ_GATHER:
-      if(output->files[index].isopen)
-        switch(output->files[index].fmt)
+  if(output->files[index].isopen)
+    switch(output->files[index].fmt)
+    {
+      case RAW: case CLM:
+        mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
+                  output->counts,output->offsets,config->rank,config->comm);
+        break;
+      case TXT:
+        mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
+                  output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+        break;
+      case CDF:
+        if(output->files[index].oneyear)
         {
-          case RAW: case CLM:
-            mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                      output->counts,output->offsets,config->rank,config->comm);
-            break;
-          case TXT:
-            mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                          output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
-            break;
-          case CDF:
-            if(output->files[index].oneyear)
-            {
-              if(config->outnames[index].timestep==ANNUAL)
-                offset=NO_TIME;
-              else
-                offset=date;
-            }
-            else
-              offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-            mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->total,
-                             offset,
-                             output->counts,output->offsets,config->rank,config->comm);
-            break;
+          if(config->outnames[index].timestep==ANNUAL)
+            offset=NO_TIME;
+          else
+            offset=date;
         }
-      if(output->files[index].issocket)
-      {
-        send_output_copan(index,year,date,config);
-        mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
+        else
+          offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
+        mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->total,
+                         offset,
                          output->counts,output->offsets,config->rank,config->comm);
-      }
-      break;
-  } /* of switch */
+        break;
+    }
+  if(output->files[index].issocket)
+  {
+    send_output_copan(index,year,date,config);
+    mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
+                     output->counts,output->offsets,config->rank,config->comm);
+  }
 #else
   if(output->files[index].isopen)
     switch(output->files[index].fmt)
@@ -211,49 +198,38 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
 {
   int offset;
 #ifdef USE_MPI
-  MPI_Status status;
-  switch(output->method)
-  {
-    case LPJ_MPI2:
-      MPI_File_write_at(output->files[index].fp.mpi_file,
-         ((year-config->outputyear)*ndata+date)*config->total+config->offset,data,config->count,
-                        MPI_SHORT,&status);
-      break;
-    case LPJ_GATHER:
-      if(output->files[index].isopen)
-        switch(output->files[index].fmt)
+  if(output->files[index].isopen)
+    switch(output->files[index].fmt)
+    {
+      case RAW: case CLM:
+        mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
+                  output->counts,output->offsets,config->rank,config->comm);
+        break;
+      case TXT:
+        mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
+                      output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+        break;
+      case CDF:
+        if(output->files[index].oneyear)
         {
-          case RAW: case CLM:
-            mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                      output->counts,output->offsets,config->rank,config->comm);
-            break;
-          case TXT:
-            mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                          output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
-            break;
-          case CDF:
-            if(output->files[index].oneyear)
-            {
-              if(config->outnames[index].timestep==ANNUAL)
-                offset=NO_TIME;
-              else
-                offset=date;
-            }
-            else
-              offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-            mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,config->total,
-                             offset,
-                             output->counts,output->offsets,config->rank,config->comm);
-            break;
+          if(config->outnames[index].timestep==ANNUAL)
+            offset=NO_TIME;
+          else
+            offset=date;
         }
-      if(output->files[index].issocket)
-      {
-        send_output_copan(index,year,date,config);
-        mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
+        else
+          offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
+        mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,config->total,
+                         offset,
                          output->counts,output->offsets,config->rank,config->comm);
-      }
-      break;
-  } /* of switch */
+        break;
+    }
+  if(output->files[index].issocket)
+  {
+    send_output_copan(index,year,date,config);
+    mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
+                     output->counts,output->offsets,config->rank,config->comm);
+  }
 #else
   int i;
   if(output->files[index].isopen)
@@ -297,61 +273,50 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
   int i,offset;
 #ifdef USE_MPI
   int *counts,*offsets;
-  MPI_Status status;
 #endif
   scale=getscale(date,ndata,(config->outnames[index].timestep==ANNUAL) ? 1 : config->outnames[index].timestep,config->outnames[index].time);
   for(i=0;i<config->ngridcell;i++)
     data[i]=(float)(config->outnames[index].scale*scale*data[i]+config->outnames[index].offset);
 #ifdef USE_MPI
-  switch(output->method)
-  {
-    case LPJ_MPI2:
-      MPI_File_write_at(output->files[index].fp.mpi_file,
-        ((year-config->outputyear)*ndata+date)*config->nall+config->offset,data,config->ngridcell,
-                        MPI_FLOAT,&status);
-      break;
-    case LPJ_GATHER:
-      counts=newvec(int,config->ntask);
-      check(counts);
-      offsets=newvec(int,config->ntask);
-      check(offsets);
-      getcounts(counts,offsets,config->nall,1,config->ntask);
-      if(output->files[index].isopen)
-        switch(output->files[index].fmt)
+  counts=newvec(int,config->ntask);
+  check(counts);
+  offsets=newvec(int,config->ntask);
+  check(offsets);
+  getcounts(counts,offsets,config->nall,1,config->ntask);
+  if(output->files[index].isopen)
+    switch(output->files[index].fmt)
+    {
+      case RAW: case CLM:
+        mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
+                  offsets,config->rank,config->comm);
+        break;
+      case TXT:
+        mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
+                      offsets,config->rank,config->csv_delimit,config->comm);
+        break;
+      case CDF:
+        if(output->files[index].oneyear)
         {
-          case RAW: case CLM:
-            mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
-                      offsets,config->rank,config->comm);
-            break;
-          case TXT:
-            mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
-                          offsets,config->rank,config->csv_delimit,config->comm);
-            break;
-          case CDF:
-            if(output->files[index].oneyear)
-            {
-              if(config->outnames[index].timestep==ANNUAL)
-                offset=NO_TIME;
-              else
-                offset=date;
-            }
-            else
-              offset=(year-config->outputyear)*ndata+date;
-            mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->nall,
-                             offset,
-                             counts,offsets,config->rank,config->comm);
-            break;
+          if(config->outnames[index].timestep==ANNUAL)
+            offset=NO_TIME;
+          else
+            offset=date;
         }
-      if(output->files[index].issocket)
-      {
-        send_output_copan(index,year,date,config);
-        mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
-                         offsets,config->rank,config->comm);
-      }
-      free(counts);
-      free(offsets);
-      break;
-  } /* of switch */
+        else
+          offset=(year-config->outputyear)*ndata+date;
+        mpi_write_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,config->nall,
+                         offset,
+                         counts,offsets,config->rank,config->comm);
+        break;
+    }
+  if(output->files[index].issocket)
+  {
+    send_output_copan(index,year,date,config);
+    mpi_write_socket(config->socket,data,MPI_FLOAT,config->nall,counts,
+                     offsets,config->rank,config->comm);
+  }
+  free(counts);
+  free(offsets);
 #else
   if(output->files[index].isopen)
     switch(output->files[index].fmt)
@@ -392,55 +357,42 @@ static void writepft(Outputfile *output,int index,float *data,int year,
 {
   Real scale;
   int i,offset;
-#ifdef USE_MPI
-  MPI_Status status;
-#endif
   scale=getscale(date,ndata,(config->outnames[index].timestep==ANNUAL) ? 1 : config->outnames[index].timestep,config->outnames[index].time);
   for(i=0;i<config->count;i++)
     data[i]=(float)(config->outnames[index].scale*scale*data[i]+config->outnames[index].offset);
 #ifdef USE_MPI
-  switch(output->method)
-  {
-    case LPJ_MPI2:
-      MPI_File_write_at(output->files[index].fp.mpi_file,
-                        ((year-config->outputyear)*ndata*nlayer+date*nlayer+layer)*config->total+config->offset,
-                        data,config->count,MPI_FLOAT,&status);
-      break;
-    case LPJ_GATHER:
-      if(output->files[index].isopen)
-        switch(output->files[index].fmt)
+  if(output->files[index].isopen)
+    switch(output->files[index].fmt)
+    {
+      case RAW: case CLM:
+        mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
+                  output->counts,output->offsets,config->rank,config->comm);
+        break;
+      case TXT:
+        mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
+                      output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+        break;
+      case CDF:
+        if(output->files[index].oneyear)
         {
-          case RAW: case CLM:
-            mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                      output->counts,output->offsets,config->rank,config->comm);
-            break;
-          case TXT:
-            mpi_write_txt(output->files[index].fp.file,data,MPI_FLOAT,config->total,
-                          output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
-            break;
-          case CDF:
-            if(output->files[index].oneyear)
-            {
-              if(config->outnames[index].timestep==ANNUAL)
-                offset=NO_TIME;
-              else
-                offset=date;
-            }
-            else
-              offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
-            mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,
-                                 config->total,offset,layer,
-                                 output->counts,output->offsets,config->rank,
-                                 config->comm);
-            break;
+          if(config->outnames[index].timestep==ANNUAL)
+            offset=NO_TIME;
+          else
+            offset=date;
         }
-      if(output->files[index].issocket)
-      {
-        mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
-                         output->counts,output->offsets,config->rank,config->comm);
-      }
-      break;
-  } /* of switch */
+        else
+          offset=(config->outnames[index].timestep>0) ? (year-config->outputyear)/config->outnames[index].timestep : (year-config->outputyear)*ndata+date;
+        mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_FLOAT,
+                             config->total,offset,layer,
+                             output->counts,output->offsets,config->rank,
+                             config->comm);
+        break;
+    }
+  if(output->files[index].issocket)
+  {
+    mpi_write_socket(config->socket,data,MPI_FLOAT,config->total,
+                     output->counts,output->offsets,config->rank,config->comm);
+  }
 #else
   if(output->files[index].isopen)
     switch(output->files[index].fmt)
@@ -477,52 +429,39 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
                           int date,int ndata,int layer,int nlayer,const Config *config)
 {
   int i,offset;
-#ifdef USE_MPI
-  MPI_Status status;
-#endif
   for(i=0;i<config->count;i++)
     data[i]=(short)(config->outnames[index].scale*data[i]+config->outnames[index].offset);
 #ifdef USE_MPI
-  switch(output->method)
-  {
-    case LPJ_MPI2:
-      MPI_File_write_at(output->files[index].fp.mpi_file,
-                        ((year-config->outputyear)*ndata*nlayer+date*nlayer+layer)*config->total+config->offset,
-                        data,config->count,MPI_SHORT,&status);
-      break;
-    case LPJ_GATHER:
-      if(output->files[index].isopen)
-        switch(output->files[index].fmt)
+  if(output->files[index].isopen)
+    switch(output->files[index].fmt)
+    {
+      case RAW: case CLM:
+        mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
+                  output->counts,output->offsets,config->rank,config->comm);
+        break;
+      case TXT:
+        mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
+                      output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+        break;
+      case CDF:
+        if(output->files[index].oneyear)
         {
-          case RAW: case CLM:
-            mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                      output->counts,output->offsets,config->rank,config->comm);
-            break;
-          case TXT:
-            mpi_write_txt(output->files[index].fp.file,data,MPI_SHORT,config->total,
-                          output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
-            break;
-          case CDF:
-            if(output->files[index].oneyear)
-            {
-              if(config->outnames[index].timestep==ANNUAL)
-                offset=NO_TIME;
-              else
-                offset=date;
-            }
-            else
-              offset=(year-config->outputyear)*ndata+date;
-            mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,
-                                 config->total,offset,layer,
-                                 output->counts,output->offsets,config->rank,
-                                 config->comm);
-            break;
+          if(config->outnames[index].timestep==ANNUAL)
+            offset=NO_TIME;
+          else
+            offset=date;
         }
-      if(output->files[index].issocket)
-        mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
-                         output->counts,output->offsets,config->rank,config->comm);
-      break;
-    } /* of switch */
+        else
+          offset=(year-config->outputyear)*ndata+date;
+        mpi_write_pft_netcdf(&output->files[index].fp.cdf,data,MPI_SHORT,
+                             config->total,offset,layer,
+                             output->counts,output->offsets,config->rank,
+                             config->comm);
+        break;
+    }
+  if(output->files[index].issocket)
+    mpi_write_socket(config->socket,data,MPI_SHORT,config->total,
+                     output->counts,output->offsets,config->rank,config->comm);
 #else
   if(output->files[index].isopen)
     switch(output->files[index].fmt)
