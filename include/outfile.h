@@ -22,16 +22,13 @@
 typedef struct
 {
   Bool isopen;       /**< file is open for output (TRUE/FALSE) */
-  Bool issocket;
+  Bool issocket;     /**< socket stream is open */
   int fmt;           /**< file format (TXT/RAW/CDF) */
   Bool oneyear;      /**< separate output files for each year (TRUE/FALSE) */
   Bool compress;     /**< compress file after write (TRUE/FALSE) */
   const char *filename;
   union
   { 
-#ifdef USE_MPI
-    MPI_File mpi_file; /**< MPI-2 file descriptor */
-#endif
     FILE *file;        /**< file pointer */
     Netcdf cdf;
   } fp;

@@ -39,7 +39,7 @@
       for(cell=0;cell<config->ngridcell;cell++)\
         if(!grid[cell].skip)\
           vec[count++]=(float)(grid[cell].output.data[config->outputmap[index]+i]*scale);\
-      writepft(output,index,vec,year,date,ndata,i,config->outputsize[index],config);\
+      writepft(output,index,vec,year,date,ndata,i,config);\
     }\
   }
 
@@ -54,7 +54,7 @@
       for(cell=0;cell<config->ngridcell;cell++)\
         if(!grid[cell].skip)\
           svec[count++]=(short)(grid[cell].output.data[config->outputmap[index]+i]);\
-      writeshortpft(output,index,svec,year,date,ndata,i,config->outputsize[index],config);\
+      writeshortpft(output,index,svec,year,date,ndata,i,config);\
     }\
     free(svec);\
   }
@@ -353,7 +353,7 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
 } /* of 'writealldata' */
 
 static void writepft(Outputfile *output,int index,float *data,int year,
-                     int date,int ndata,int layer,int nlayer,const Config *config)
+                     int date,int ndata,int layer,const Config *config)
 {
   Real scale;
   int i,offset;
@@ -426,7 +426,7 @@ static void writepft(Outputfile *output,int index,float *data,int year,
 } /* of 'writepft' */
 
 static void writeshortpft(Outputfile *output,int index,short *data,int year,
-                          int date,int ndata,int layer,int nlayer,const Config *config)
+                          int date,int ndata,int layer,const Config *config)
 {
   int i,offset;
   for(i=0;i<config->count;i++)
@@ -1107,7 +1107,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
             getoutputindex(&grid[cell].output,PFT_GCGP,i,config)=-9;
           vec[count++]=(float)getoutputindex(&grid[cell].output,PFT_GCGP,i,config);
         }
-      writepft(output,PFT_GCGP,vec,year,date,ndata,i,nnat+nirrig,config);
+      writepft(output,PFT_GCGP,vec,year,date,ndata,i,config);
     }
   }
   writeoutputarray(PFT_HARVESTC,1);

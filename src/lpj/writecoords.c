@@ -33,7 +33,6 @@ int writecoords(Outputfile *output,  /**< output struct */
   Intcoord *dst=NULL;
   Floatcoord *fdst=NULL;
   MPI_Datatype type;
-  MPI_Status status;
   int *offsets,*counts;
 #endif
   Bool rc;
