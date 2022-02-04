@@ -133,6 +133,7 @@
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
     { "id" : "grid",             "file" : { "fmt" : "raw", "name" : "output/grid.bin" }},
+    { "id" : "grid",             "file" : { "fmt" : "sock" }},
     { "id" : "fpc",              "file" : { "fmt" : "raw", "name" : "output/fpc.bin" }},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
     { "id" : "npp",              "file" : { "fmt" : "raw", "name" : "output/mnpp.bin"}},
@@ -198,6 +199,7 @@ ID                               Fmt                        filename
     { "id" : "wateramount",      "file" : { "fmt" : "raw", "name" : "output/mwateramount.bin"}},
     { "id" : "harvestc",         "file" : { "fmt" : "raw", "name" : "output/flux_harvest.bin"}},
     { "id" : "sdate",            "file" : { "fmt" : "raw", "name" : "output/sdate.bin"}},
+    { "id" : "pft_harvestc",     "file" : { "fmt" : "raw", "name" : mkstr(output/pft_harvest.SUFFIX)}},
     { "id" : "pft_harvestc",     "file" : { "fmt" : "sock" }},
     { "id" : "cftfrac",          "file" : { "fmt" : "raw", "name" : "output/cftfrac.bin"}},
     { "id" : "seasonality",      "file" : { "fmt" : "raw", "name" : "output/seasonality.bin"}},

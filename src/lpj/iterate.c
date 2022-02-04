@@ -293,14 +293,11 @@ int iterate(Outputfile *output, /**< Output file data */
     {
       /* output of total carbon flux and water on stdout on root task */
       printflux(flux,cflux_total,year,config);
-      if(isopen(output,GLOBALFLUX))
-      {
-        if(output->files[GLOBALFLUX].fmt==TXT)
-          fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,
-                        config->outnames[GLOBALFLUX].scale,year,config);
-        if(output->files[GLOBALFLUX].issocket)
-          send_flux_copan(&flux,config->outnames[GLOBALFLUX].scale,year,config);
-      }
+      if(output->files[GLOBALFLUX].isopen)
+        fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,
+                      config->outnames[GLOBALFLUX].scale,year,config);
+      if(output->files[GLOBALFLUX].issocket)
+        send_flux_copan(&flux,config->outnames[GLOBALFLUX].scale,year,config);
       fflush(stdout); /* force output to console */
 #ifdef SAFE
       check_balance(flux,year,config);
