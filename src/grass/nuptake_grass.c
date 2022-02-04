@@ -59,7 +59,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   f_NCplant = min(max(((NCplant-pft->par->ncleaf.high)/(pft->par->ncleaf.low-pft->par->ncleaf.high)),0),1);
   /* reducing uptake according to availability */
   nsum=0;
-  NC_leaf=(grass->ind.leaf.nitrogen+pft->bm_inc.nitrogen*grass->falloc.leaf)/(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf);
+  NC_leaf=(grass->ind.leaf.nitrogen-grass->turn.leaf.nitrogen+pft->bm_inc.nitrogen*grass->falloc.leaf)/(grass->ind.leaf.carbon-grass->turn.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf);
   if(NC_leaf<(pft->par->ncleaf.high*(1+pft->par->knstore)))
     forrootsoillayer(l)
     {
@@ -70,7 +70,8 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
       {
         /*Thornley 1991*/
         up_temp_f = nuptake_temp_fcn(soil->temp[l]);
-        NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin+totn/(totn+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))* up_temp_f * f_NCplant * (grass->ind.root.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.root)*rootdist_n[l]/1000;
+        NO3_up = 2*pft->par->vmax_up*(pft->par->kNmin+totn/(totn+pft->par->KNmin*soil->wsat[l]*soildepth[l]/1000))* up_temp_f*
+            f_NCplant * (grass->ind.root.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.root-grass->turn_litt.root.nitrogen)*rootdist_n[l]/1000;
         /* reducing uptake according to availability */
         if(NO3_up>totn)
           NO3_up=totn;
@@ -82,8 +83,8 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     n_uptake=0;
   else
   {
-    if (n_uptake>*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen))
-      n_uptake=*n_plant_demand-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen);
+    if (n_uptake>*n_plant_demand-(vegn_sum_grass(pft)-grass->turn_litt.root.nitrogen-grass->turn_litt.leaf.nitrogen+pft->bm_inc.nitrogen))
+      n_uptake=*n_plant_demand-(vegn_sum_grass(pft)-grass->turn_litt.root.nitrogen-grass->turn_litt.leaf.nitrogen+pft->bm_inc.nitrogen);
     if(n_uptake<=0)
       n_uptake=0;
     else
@@ -134,18 +135,19 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     }
   }
   else
-    if(*n_plant_demand/(1+pft->par->knstore)>vegn_sum_grass(pft)+pft->bm_inc.nitrogen)
+    if(*n_plant_demand/(1+pft->par->knstore)>(vegn_sum_grass(pft)-grass->turn_litt.root.nitrogen-grass->turn_litt.leaf.nitrogen+pft->bm_inc.nitrogen))
     {
       //*n_plant_demand=vegn_sum_grass(pft)+pft->bm_inc.nitrogen;  WHY?
       NC_actual=(vegn_sum_grass(pft)+pft->bm_inc.nitrogen)/(vegc_sum_grass(pft)+pft->bm_inc.carbon);
-      NC_leaf=(grass->ind.leaf.nitrogen+pft->bm_inc.nitrogen*grass->falloc.leaf)/(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf);
+      NC_leaf=(grass->ind.leaf.nitrogen-grass->turn_litt.leaf.nitrogen+pft->bm_inc.nitrogen*grass->falloc.leaf)/(grass->ind.leaf.carbon-grass->turn_litt.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf);
       if(NC_leaf< pft->par->ncleaf.low)
         NC_leaf=pft->par->ncleaf.low;
       else if (NC_leaf>pft->par->ncleaf.high)
         NC_leaf=pft->par->ncleaf.high;
-      *ndemand_leaf=(grass->ind.leaf.nitrogen*pft->nind+pft->bm_inc.nitrogen*grass->falloc.leaf);
+      *ndemand_leaf=grass->ind.leaf.nitrogen*pft->nind+pft->bm_inc.nitrogen*grass->falloc.leaf-grass->turn_litt.leaf.nitrogen;
+      *ndemand_leaf=max(grass->ind.leaf.nitrogen*pft->nind-grass->turn_litt.leaf.nitrogen,*ndemand_leaf);
       //*ndemand_leaf=(vegn_sum_grass(pft)-grass->ind.root.nitrogen*pft->nind+pft->bm_inc.nitrogen)-NC_leaf*(grass->excess_carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.root/grasspar->ratio);
-      *n_plant_demand=*ndemand_leaf+(grass->ind.root.nitrogen)*pft->nind+NC_leaf*(grass->excess_carbon*pft->nind+pft->bm_inc.carbon)*(grass->falloc.root/grasspar->ratio);
+      *n_plant_demand=*ndemand_leaf+(grass->ind.root.nitrogen-grass->turn.root.nitrogen)*pft->nind+NC_leaf*(grass->excess_carbon*pft->nind+pft->bm_inc.carbon)*(grass->falloc.root/grasspar->ratio);
        //printf("in NUPTAKE PFT: %s ndemand_to = %g ndemand_leaf %g nc_ratio %g nc_leaf %g \n",pft->par->name,*n_plant_demand,*ndemand_leaf,NC_actual,NC_leaf);
    }
 
@@ -163,11 +165,11 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     break;
   case BIOMASS_GRASS:
     getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=n_uptake; /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
-    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=max(0,ndemand_all-(vegn_sum_grass(pft)+pft->bm_inc.carbon))/365; /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
+    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+rbgrass(ncft)+data->irrigation*nirrig,config)+=max(0,ndemand_all-(vegn_sum_grass(pft)-grass->turn_litt.root.nitrogen-grass->turn_litt.leaf.nitrogen+pft->bm_inc.carbon))/365; /* *stand->cell->ml.landfrac[data->irrigation].biomass_grass; */
     break;
   case AGRICULTURE_GRASS:
     getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=n_uptake; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
-    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=max(0,ndemand_all-(vegn_sum_grass(pft)+pft->bm_inc.carbon))/365; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
+    getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,nnat+data->pft_id-npft+config->nagtree+agtree(ncft,config->nwptype)+data->irrigation*nirrig,config)+=max(0,ndemand_all-(vegn_sum_grass(pft)-grass->turn_litt.root.nitrogen-grass->turn_litt.leaf.nitrogen+pft->bm_inc.carbon))/365; /* stand->cell->ml.landfrac[data->irrigation].biomass_tree; */
     break;
   case GRASSLAND:
     getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,nnat+rothers(ncft)+data->irrigation*nirrig,config)+=n_uptake;/*pft->stand->cell->ml.landfrac[data->irrigation].grass[0];*/
@@ -177,6 +179,6 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     break;
   } /* of 'switch' */
   pft->stand->cell->balance.n_uptake+=n_uptake*pft->stand->frac;
-  pft->stand->cell->balance.n_demand+=max(0,(ndemand_all-(vegn_sum_grass(pft)+pft->bm_inc.nitrogen)))*pft->stand->frac/365;
+  pft->stand->cell->balance.n_demand+=max(0,(ndemand_all-(vegn_sum_grass(pft)-grass->turn_litt.root.nitrogen-grass->turn_litt.leaf.nitrogen+pft->bm_inc.nitrogen)))*pft->stand->frac/365;
   return n_uptake;
 } /* of 'nuptake_grass' */

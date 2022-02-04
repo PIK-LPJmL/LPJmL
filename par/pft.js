@@ -39,9 +39,9 @@
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
 #ifdef WITH_SPITFIRE
-#define MORT_MAX 0.02
+#define MORT_MAX 0.01
 #else
-#define MORT_MAX 0.02
+#define MORT_MAX 0.01
 #endif
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.3      /* fraction of N not recovered before turnover */
