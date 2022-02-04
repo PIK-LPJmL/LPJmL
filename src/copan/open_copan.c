@@ -51,6 +51,7 @@ Bool open_copan(Config *config /**< LPJmL configuration */
 #ifndef _WIN32
     if(config->wait)
     {
+      /* disable alarm handler */
       alarm(0);
       signal(SIGALRM,SIG_DFL);
     }
@@ -62,7 +63,12 @@ Bool open_copan(Config *config /**< LPJmL configuration */
 #endif
     /* send coupler version */
     writeint_socket(config->socket,&version,1);
-    /* send total number of cells */
+    if(version==4)
+    {
+      /* send total number of cells */
+      writeint_socket(config->socket,&config->nall,1);
+    }
+    /* send number of cells with valid soil code */
     writeint_socket(config->socket,&config->total,1);
     /* send number of input and output streams */
     writeint_socket(config->socket,&config->copan_in,1);

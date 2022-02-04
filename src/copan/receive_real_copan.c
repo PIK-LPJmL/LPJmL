@@ -21,44 +21,15 @@ Bool receive_real_copan(int index,           /**< index of input file */
                         const Config *config /**< LPJmL configuration */
                        )                     /** \return TRUE on error */
 {
-#ifdef USE_MPI
-  int *counts;
-  int *offsets;
-#endif
   float *f;
   int i;
   f=newvec(float,config->ngridcell*size);
   check(f);
-  if(isroot(*config))
-  {
-    /* send token and year */
-    send_token_copan(GET_DATA,index,config);
-    writeint_socket(config->socket,&year,1);
-  }
-#ifdef USE_MPI
-  counts=newvec(int,config->ntask);
-  check(counts);
-  offsets=newvec(int,config->ntask);
-  check(offsets);
-
-  getcounts(counts,offsets,config->nall,size,config->ntask);
-  if(mpi_read_socket(config->socket,f,MPI_FLOAT,config->nall*size,
-                     counts,offsets,config->rank,config->comm))
-  {
-    free(f);
-    free(offsets);
-    free(counts);
-    return TRUE;
-  }
-  free(offsets);
-  free(counts);
-#else
-  if(readfloat_socket(config->socket,f,config->nall*size))
+  if(receive_copan(index,f,LPJ_FLOAT,size,year,config))
   {
     free(f);
     return TRUE;
   }
-#endif
   for(i=0;i<config->ngridcell*size;i++)
     data[i]=f[i];
   free(f);

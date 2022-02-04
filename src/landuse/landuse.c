@@ -97,24 +97,14 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   }
   else if(config->landuse_filename.fmt==SOCK)
   {
-    if(isroot(*config))
-    {
-      send_token_copan(GET_DATA_SIZE,config->landuse_filename.id,config);
-      landuse->landuse.id=config->landuse_filename.id;
-      header.datatype=LPJ_FLOAT;
-      writeint_socket(config->socket,&header.datatype,1);
-      readint_socket(config->socket,&header.nbands,1);
-    }
-#ifdef USE_MPI
-    MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
-#endif
-    if(header.nbands==COPAN_ERR)
+    if(openinput_copan(config->landuse_filename.id,LPJ_FLOAT,config->nall,&header.nbands,config))
     {
       if(isroot(*config))
         fputs("ERROR147: Cannot initialize landuse data socket stream.\n",stderr);
       free(landuse);
       return NULL;
     }
+    landuse->landuse.id=config->landuse_filename.id;
     landuse->landuse.var_len=header.nbands;
   }
   else
@@ -316,18 +306,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     }
     else if(config->fertilizer_nr_filename.fmt==SOCK)
     {
-      if(isroot(*config))
-      {
-        send_token_copan(GET_DATA_SIZE,config->fertilizer_nr_filename.id,config);
-        landuse->fertilizer_nr.id=config->fertilizer_nr_filename.id;
-        header.datatype=LPJ_FLOAT;
-        writeint_socket(config->socket,&header.datatype,1);
-        readint_socket(config->socket,&header.nbands,1);
-      }
-#ifdef USE_MPI
-      MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
-#endif
-      if(header.nbands==COPAN_ERR)
+      if(openinput_copan(config->fertilizer_nr_filename.id,LPJ_FLOAT,config->nall,&header.nbands,config))
       {
         if(isroot(*config))
           fputs("ERROR147: Cannot initialize fertilizer data socket stream.\n",stderr);
@@ -339,6 +318,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         free(landuse);
         return NULL;
       }
+      landuse->fertilizer_nr.id=config->fertilizer_nr_filename.id;
       landuse->fertilizer_nr.var_len=header.nbands;
     }
     else
@@ -419,18 +399,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     }
     else if(config->manure_nr_filename.fmt==SOCK)
     {
-      if(isroot(*config))
-      {
-        send_token_copan(GET_DATA_SIZE,config->manure_nr_filename.id,config);
-        landuse->manure_nr.id=config->manure_nr_filename.id;
-        header.datatype=LPJ_FLOAT;
-        writeint_socket(config->socket,&header.datatype,1);
-        readint_socket(config->socket,&header.nbands,1);
-      }
-#ifdef USE_MPI
-      MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
-#endif
-      if(header.nbands==COPAN_ERR)
+      if(openinput_copan(config->manure_nr_filename.id,LPJ_FLOAT,config->nall,&header.nbands,config))
       {
         if(isroot(*config))
           fputs("ERROR147: Cannot initialize manure data socket stream.\n",stderr);
@@ -444,6 +413,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         free(landuse);
         return NULL;
       }
+      landuse->manure_nr.id=config->manure_nr_filename.id;
       landuse->manure_nr.var_len=header.nbands;
     }
     else
@@ -529,18 +499,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     }
     else if(config->with_tillage_filename.fmt==SOCK)
     {
-      if(isroot(*config))
-      {
-        send_token_copan(GET_DATA_SIZE,config->with_tillage_filename.id,config);
-        landuse->with_tillage.id=config->with_tillage_filename.id;
-        header.datatype=LPJ_INT;
-        writeint_socket(config->socket,&header.datatype,1);
-        readint_socket(config->socket,&header.nbands,1);
-      }
-#ifdef USE_MPI
-      MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
-#endif
-      if(header.nbands==COPAN_ERR)
+      if(openinput_copan(config->with_tillage_filename.id,LPJ_INT,config->nall,&header.nbands,config))
       {
         if(isroot(*config))
           fputs("ERROR147: Cannot initialize tillage data socket stream.\n",stderr);
@@ -556,6 +515,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         free(landuse);
         return NULL;
       }
+      landuse->with_tillage.id=config->with_tillage_filename.id;
       landuse->with_tillage.var_len=header.nbands;
     }
     else
@@ -648,18 +608,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
     }
     else if(config->residue_data_filename.fmt==SOCK)
     {
-      if(isroot(*config))
-      {
-        send_token_copan(GET_DATA_SIZE,config->residue_data_filename.id,config);
-        landuse->residue_on_field.id=config->residue_data_filename.id;
-        header.datatype=LPJ_FLOAT;
-        writeint_socket(config->socket,&header.datatype,1);
-        readint_socket(config->socket,&header.nbands,1);
-      }
-#ifdef USE_MPI
-      MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
-#endif
-      if(header.nbands==COPAN_ERR)
+      if(openinput_copan(config->residue_data_filename.id,LPJ_FLOAT,config->nall,&header.nbands,config))
       {
         if(isroot(*config))
           fputs("ERROR147: Cannot initialize residue data socket stream.\n",stderr);
@@ -677,7 +626,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         free(landuse);
         return NULL;
       }
-
+      landuse->residue_on_field.id=config->residue_data_filename.id;
       landuse->residue_on_field.var_len=header.nbands;
     }
     else

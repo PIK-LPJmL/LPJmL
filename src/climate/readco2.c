@@ -25,7 +25,6 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
   int yr,yr_old,size;
   Bool iseof;
   Verbosity verbose;
-  Type type;
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   file.isjson=FALSE;
   if(filename->fmt==FMS || filename->fmt==SOCK)
@@ -35,23 +34,9 @@ Bool readco2(Co2data *co2,             /**< pointer to co2 data */
     co2->firstyear=0;
     if(filename->fmt==SOCK)
     {
-      if(isroot(*config))
-      {
-        send_token_copan(GET_DATA_SIZE,filename->id,config);
-        type=LPJ_FLOAT;
-        co2->id=filename->id;
-        writeint_socket(config->socket,&type,1);
-        readint_socket(config->socket,&size,1);
-      }
-#ifdef USE_MPI
-      MPI_Bcast(&size,1,MPI_INT,0,config->comm);
-#endif
-      if(size==COPAN_ERR)
-      {
-        if(verbose)
-          fputs("ERROR149: Cannot initialize socket stream.\n",stderr);
+      if(openinput_copan(filename->id,LPJ_FLOAT,0,&size,config))
         return TRUE;
-      }
+      co2->id=filename->id;
       if(size!=1)
       {
         if(verbose)

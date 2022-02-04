@@ -28,7 +28,6 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   int last,version,nbands;
   char *s;
   size_t offset,filesize;
-  Type type;
   file->fmt=filename->fmt;
   if(filename->fmt==FMS)
   {
@@ -38,17 +37,8 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   }
   if(filename->fmt==SOCK)
   {
-    if(isroot(*config))
-    {
-      send_token_copan(GET_DATA_SIZE,filename->id,config);
-      type=LPJ_FLOAT;
-      writeint_socket(config->socket,&type,1);
-      readint_socket(config->socket,&nbands,1);
-    }
-    file->id=filename->id;
-#ifdef USE_MPI
-    MPI_Bcast(&nbands,1,MPI_INT,0,config->comm);
-#endif
+    if(openinput_copan(filename->id,LPJ_FLOAT,config->nall,&nbands,config))
+      return TRUE;
     if(nbands==NDAYYEAR)
     {
       file->time_step=DAY;
@@ -59,12 +49,6 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       file->time_step=MONTH;
       file->n=NMONTH*config->ngridcell;
     }
-    else if(nbands==COPAN_ERR)
-    {
-      if(isroot(*config))
-        fputs("ERROOR217: Cannot initialize socket stream.\n",stderr);
-      return TRUE;
-    }
     else
     {
       if(isroot(*config))
@@ -72,6 +56,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
                 nbands);
       return TRUE;
     }
+    file->id=filename->id;
     file->firstyear=config->firstyear;
     return FALSE;
   }

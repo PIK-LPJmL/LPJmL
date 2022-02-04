@@ -22,11 +22,15 @@ Bool send_flux_copan(const Flux *flux,    /**< Carbon and water fluxes */
                      const Config *config /**< LPJ configuration */
                     )                     /** \return TRUE on error */
 {
+  int date=0;
   float *vec;
   size_t i;
   Bool rc;
   send_token_copan(PUT_DATA,GLOBALFLUX,config);
   writeint_socket(config->socket,&year,1);
+#if COPAN_COUPLER_VERSION == 4
+  writeint_socket(config->socket,&date,1);
+#endif
   vec=newvec(float,sizeof(Flux)/sizeof(Real));
   check(vec);
   for(i=0;i<sizeof(Flux)/sizeof(Real);i++)

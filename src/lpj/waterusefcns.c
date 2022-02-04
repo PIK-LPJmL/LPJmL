@@ -47,24 +47,12 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
   }
   else if(filename->fmt==SOCK)
   {
-    if(isroot(*config))
+    if(openinput_copan(filename->id,LPJ_FLOAT,config->nall,&header.nbands,config))
     {
-      send_token_copan(GET_DATA_SIZE,filename->id,config);
-      wateruse->file.id=filename->id;
-      header.datatype=LPJ_FLOAT;
-      writeint_socket(config->socket,&header.datatype,1);
-      readint_socket(config->socket,&header.nbands,1);
-    }
-#ifdef USE_MPI
-    MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
-#endif
-    if(header.nbands==COPAN_ERR)
-    {
-      if(isroot(*config))
-        fputs("ERROR218: Socket stream for wateruse cannot be initialized.\n",stderr);
       free(wateruse);
       return NULL;
     }
+    wateruse->file.id=filename->id;
     if(header.nbands!=1)
     {
       if(isroot(*config))

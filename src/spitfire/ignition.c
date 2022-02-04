@@ -48,21 +48,8 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
   }
   else if(config->human_ignition_filename.fmt==SOCK)
   {
-    if(isroot(*config))
+    if(openinput_copan(config->human_ignition_filename.id,LPJ_FLOAT,config->nall,&header.nbands,config))
     {
-      send_token_copan(GET_DATA_SIZE,config->human_ignition_filename.id,config);
-      ignition->file.id=config->human_ignition_filename.id;
-      header.datatype=LPJ_FLOAT;
-      writeint_socket(config->socket,&header.datatype,1);
-      readint_socket(config->socket,&header.nbands,1);
-    }
-#ifdef USE_MPI
-    MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
-#endif
-    if(header.nbands==COPAN_ERR)
-    {
-      if(isroot(*config))
-        fputs("ERROR218: Cannot initialize ignition data socket stream.\n",stderr);
       free(ignition);
       return NULL;
     }
@@ -74,6 +61,7 @@ Human_ignition inithumanignition(const Config *config /**< LPJ configuration */
       free(ignition);
       return NULL;
     }
+    ignition->file.id=config->human_ignition_filename.id;
     ignition->file.var_len=header.nbands;
   }
   else

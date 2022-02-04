@@ -33,7 +33,7 @@ int check_copan(Config *config /**< LPJmL configuration */
 #endif
     readint_socket(config->socket,&status,1);
 #ifdef DEBUG_COPAN
-    printf(", %d got.\n",status);
+    printf(", %d received.\n",status);
     fflush(stdout);
 #endif
     if(status)

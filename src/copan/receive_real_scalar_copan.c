@@ -14,14 +14,27 @@
 
 #include "lpj.h"
 
-Bool receive_real_scalar_copan(Real *data,int size,const Config *config)
+Bool receive_real_scalar_copan(Real *data,          /**< data read from socket */
+                               int size,            /**< size of data array */
+                               const Config *config /**< LPJmL configuration */
+                              )                     /** \return TRUE on error */
 {
   float *f;
   int i;
   f=newvec(float,size);
   check(f);
   if(isroot(*config))
+  {
+#ifdef DEBUG_COPAN
+    printf("Receiving %d floats",size);
+    fflush(stdout);
+#endif
     readfloat_socket(config->socket,f,size);
+#ifdef DEBUG_COPAN
+    printf(", done.\n");
+    fflush(stdout);
+#endif
+  }
 #ifdef USE_MPI
   MPI_Bcast(f,size,MPI_FLOAT,0,config->comm);
 #endif

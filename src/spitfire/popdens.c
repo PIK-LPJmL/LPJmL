@@ -51,21 +51,8 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
   }
   else if(config->popdens_filename.fmt==SOCK)
   {
-    if(isroot(*config))
+    if(openinput_copan(config->popdens_filename.id,LPJ_FLOAT,config->nall,&header.nbands,config))
     {
-      send_token_copan(GET_DATA_SIZE,config->popdens_filename.id,config);
-      popdens->file.id=config->popdens_filename.id;
-      header.datatype=LPJ_FLOAT;
-      writeint_socket(config->socket,&header.datatype,1);
-      readint_socket(config->socket,&header.nbands,1);
-    }
-#ifdef USE_MPI
-    MPI_Bcast(&header.nbands,1,MPI_INT,0,config->comm);
-#endif
-    if(header.nbands==COPAN_ERR)
-    {
-      if(isroot(*config))
-        fputs("ERROR218: Cannot initialize population density socket stream.\n",stderr);
       free(popdens);
       return NULL;
     }
@@ -77,6 +64,7 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
       free(popdens);
       return NULL;
     }
+    popdens->file.id=config->popdens_filename.id;
     popdens->file.var_len=header.nbands;
   }
   else

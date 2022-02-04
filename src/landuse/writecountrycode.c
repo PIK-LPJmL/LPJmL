@@ -48,31 +48,33 @@ int writecountrycode(Outputfile *output,  /**< output file array */
                         count,MPI_SHORT,&status);
       break;
     case LPJ_GATHER:
-      switch(output->files[index].fmt)
+      if(output->files[index].isopen)
+        switch(output->files[index].fmt)
+        {
+          case RAW: case CLM:
+            mpi_write(output->files[index].fp.file,vec,MPI_SHORT,config->total,
+                      output->counts,output->offsets,config->rank,config->comm);
+            break;
+          case TXT:
+            mpi_write_txt(output->files[index].fp.file,vec,MPI_SHORT,config->total,
+                          output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
+            break;
+          case CDF:
+            mpi_write_netcdf(&output->files[index].fp.cdf,vec,MPI_SHORT,config->total,
+                             NO_TIME,
+                             output->counts,output->offsets,config->rank,config->comm);
+            break;
+        }
+      if(output->files[index].issocket)
       {
-        case RAW: case CLM:
-          mpi_write(output->files[index].fp.file,vec,MPI_SHORT,config->total,
-                    output->counts,output->offsets,config->rank,config->comm);
-          break;
-        case TXT:
-          mpi_write_txt(output->files[index].fp.file,vec,MPI_SHORT,config->total,
-                        output->counts,output->offsets,config->rank,config->csv_delimit,config->comm);
-          break;
-        case SOCK:
-          if(isroot(*config))
-            send_token_copan(PUT_DATA,index,config);
-          mpi_write_socket(config->socket,vec,MPI_SHORT,config->total,
-                           output->counts,output->offsets,config->rank,config->comm);
-          break;
-        case CDF:
-          mpi_write_netcdf(&output->files[index].fp.cdf,vec,MPI_SHORT,config->total,
-                           NO_TIME,
-                           output->counts,output->offsets,config->rank,config->comm);
-          break;
+        if(isroot(*config))
+          send_token_copan(PUT_DATA,index,config);
+        mpi_write_socket(config->socket,vec,MPI_SHORT,config->total,
+                         output->counts,output->offsets,config->rank,config->comm);
       }
   } /* of 'switch' */
 #else
-  if(output->method==LPJ_FILES)
+  if(output->files[index].isopen)
     switch(output->files[index].fmt)
     {
       case RAW: case CLM:
@@ -84,14 +86,15 @@ int writecountrycode(Outputfile *output,  /**< output file array */
           fprintf(output->files[index].fp.file,"%d%c",vec[cell],config->csv_delimit);
         fprintf(output->files[index].fp.file,"%d\n",vec[count-1]);
         break;
-      case SOCK:
-        send_token_copan(PUT_DATA,index,config);
-        writeshort_socket(config->socket,vec,count);
-        break;
       case CDF:
         write_short_netcdf(&output->files[index].fp.cdf,vec,NO_TIME,count);
         break;
     }
+  if(output->files[index].issocket)
+  {
+    send_token_copan(PUT_DATA,index,config);
+    writeshort_socket(config->socket,vec,count);
+  }
 #endif
   free(vec);
   return count;

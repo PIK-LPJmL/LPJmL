@@ -130,6 +130,6 @@ extern int mpi_write_txt(FILE *,void *,MPI_Datatype,int,int *,
 
 /* Definition of macros */
 
-#define isopen(output,index) output->files[index].isopen
+#define isopen(output,index) (output->files[index].isopen || output->files[index].issocket)
 
 #endif

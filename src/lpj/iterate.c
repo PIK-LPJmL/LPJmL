@@ -298,7 +298,7 @@ int iterate(Outputfile *output, /**< Output file data */
         if(output->files[GLOBALFLUX].fmt==TXT)
           fprintcsvflux(output->files[GLOBALFLUX].fp.file,flux,cflux_total,
                         config->outnames[GLOBALFLUX].scale,year,config);
-        else
+        if(output->files[GLOBALFLUX].issocket)
           send_flux_copan(&flux,config->outnames[GLOBALFLUX].scale,year,config);
       }
       fflush(stdout); /* force output to console */

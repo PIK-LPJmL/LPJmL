@@ -44,10 +44,15 @@
 extern Bool open_copan(Config *);
 extern int check_copan(Config *);
 extern void close_copan(Bool,const Config *);
+extern Bool receive_copan(int,void *,Type,int,int,const Config *);
 extern Bool receive_real_copan(int,Real *,int,int,const Config *);
 extern Bool receive_real_scalar_copan(Real *,int,const Config *);
-extern Bool receive_int_copan(int,int *,int,int,const Config *);
 extern Bool send_flux_copan(const Flux *,Real,int,const Config *);
 extern Bool send_token_copan(int,int,const Config *);
+extern Bool openinput_copan(int,Type,int,int *,const Config *);
+extern Bool openoutput_copan(int,int,int,int,Type,const Config *);
+extern void send_output_copan(int,int,int,const Config *);
+
+#define receive_int_copan(index,data,size,year,config) receive_copan(index,data,LPJ_INT,size,year,config)
 
 #endif /* COPAN_H */

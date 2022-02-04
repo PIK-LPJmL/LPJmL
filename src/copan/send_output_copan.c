@@ -1,8 +1,9 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**           r  e  c  e  i  v  e  _  i  n  t  _  c  o  p  a  n  .  c              \n**/
+/**            s  e  n  d  _  o  u  t  p  u  t  _  c  o  p  a  n  .  c             \n**/
 /**                                                                                \n**/
 /**     extension of LPJ to couple LPJ online with COPAN                           \n**/
+/**     Send output stream header to COPAN model                                   \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,41 +15,18 @@
 
 #include "lpj.h"
 
-Bool receive_int_copan(int index,           /**< index of input file */
-                       int data[],          /**< data received from socket */
-                       int size,            /**< number of items per cell */
-                       int year,            /**< year (AD) */
+void send_output_copan(int index,           /**< index of output stream */
+                       int year,            /**< year */
+                       int step,            /**< time step within year */
                        const Config *config /**< LPJmL configuration */
-                      )                     /** \return TRUE on error */
+                      )
 {
-#ifdef USE_MPI
-  int *counts;
-  int *offsets;
-#endif
   if(isroot(*config))
   {
-    send_token_copan(GET_DATA,index,config);
+    send_token_copan(PUT_DATA,index,config);
     writeint_socket(config->socket,&year,1);
-  }
-#ifdef USE_MPI
-  counts=newvec(int,config->ntask);
-  check(counts);
-  offsets=newvec(int,config->ntask);
-  check(offsets);
-
-  getcounts(counts,offsets,config->nall,size,config->ntask);
-  if(mpi_read_socket(config->socket,data,MPI_INT,config->nall*size,
-                     counts,offsets,config->rank,config->comm))
-  {
-    free(offsets);
-    free(counts);
-    return TRUE;
-  }
-  free(offsets);
-  free(counts);
-#else
-  if(readint_socket(config->socket,data,config->nall*size))
-    return TRUE;
+#if COPAN_COUPLER_VERSION == 4
+    writeint_socket(config->socket,&step,1);
 #endif
-  return FALSE;
-} /* of 'receive_int_copan' */
+  }
+} /* of 'send_output_copan' */

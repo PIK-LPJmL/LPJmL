@@ -63,7 +63,7 @@ int writecoords(Outputfile *output,  /**< output struct */
       rc=FALSE;
     }
   }
-  else
+  if(output->files[index].fmt!=CDF || output->files[index].issocket)
   {
     if(config->float_grid)
     {
@@ -128,7 +128,7 @@ int writecoords(Outputfile *output,  /**< output struct */
       }
       break;
     case LPJ_GATHER:
-      if(output->method==LPJ_GATHER && output->files[index].fmt==CDF)
+      if(output->files[index].isopen && output->files[index].fmt==CDF)
       {
         rc=FALSE;
         counts=newvec(int,config->ntask);
@@ -158,7 +158,7 @@ int writecoords(Outputfile *output,  /**< output struct */
         free(offsets);
         free(soilcode);
       }
-      else
+      if(output->files[index].issocket || output->files[index].fmt!=CDF)
       {
         if(config->float_grid)
         {
@@ -186,23 +186,25 @@ int writecoords(Outputfile *output,  /**< output struct */
           MPI_Type_free(&type);
           if(isroot(*config))
           {
-            switch(output->files[index].fmt)
+            if(output->files[index].isopen)
+              switch(output->files[index].fmt)
+              {
+                case RAW: case CLM:
+                  if(fwrite(fdst,sizeof(Floatcoord),config->total,output->files[index].fp.file)!=config->total)
+                    fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+                  break;
+                case TXT:
+                  for(cell=0;cell<config->total-1;cell++)
+                    fprintf(output->files[index].fp.file,"%g%c%g%c",
+                            fdst[cell].lon,config->csv_delimit,fdst[cell].lat,config->csv_delimit);
+                  fprintf(output->files[index].fp.file,"%g%c%g\n",
+                          fdst[config->total-1].lon,config->csv_delimit,fdst[config->total-1].lat);
+                  break;
+              }
+            if(output->files[index].issocket)
             {
-              case RAW: case CLM:
-                if(fwrite(fdst,sizeof(Floatcoord),config->total,output->files[index].fp.file)!=config->total)
-                  fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-                break;
-              case SOCK:
-                send_token_copan(PUT_DATA,index,config);
-                writefloat_socket(config->socket,fdst,config->total*2);
-                break;
-              case TXT:
-                for(cell=0;cell<config->total-1;cell++)
-                  fprintf(output->files[index].fp.file,"%g%c%g%c",
-                          fdst[cell].lon,config->csv_delimit,fdst[cell].lat,config->csv_delimit);
-                fprintf(output->files[index].fp.file,"%g%c%g\n",
-                        fdst[config->total-1].lon,config->csv_delimit,fdst[config->total-1].lat);
-                break;
+              send_token_copan(PUT_DATA,index,config);
+              writefloat_socket(config->socket,fdst,config->total*2);
             }
             free(fdst);
           }
@@ -234,23 +236,25 @@ int writecoords(Outputfile *output,  /**< output struct */
           MPI_Type_free(&type);
           if(isroot(*config))
           {
-            switch(output->files[index].fmt)
+            if(output->files[index].isopen)
+              switch(output->files[index].fmt)
+              {
+                case RAW: case CLM:
+                  if(fwrite(dst,sizeof(Intcoord),config->total,output->files[index].fp.file)!=config->total)
+                    fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+                  break;
+                case TXT:
+                  for(cell=0;cell<config->total-1;cell++)
+                    fprintf(output->files[index].fp.file,"%g%c%g%c",
+                            dst[cell].lon*0.01,config->csv_delimit,dst[cell].lat*0.01,config->csv_delimit);
+                  fprintf(output->files[index].fp.file,"%g%c%g\n",
+                          dst[config->total-1].lon*0.01,config->csv_delimit,dst[config->total-1].lat*0.01);
+                  break;
+              }
+            if(output->files[index].issocket)
             {
-              case RAW: case CLM:
-                if(fwrite(dst,sizeof(Intcoord),config->total,output->files[index].fp.file)!=config->total)
-                  fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-                break;
-              case SOCK:
-                send_token_copan(PUT_DATA,index,config);
-                writeshort_socket(config->socket,dst,config->total*2);
-                break;
-              case TXT:
-                for(cell=0;cell<config->total-1;cell++)
-                  fprintf(output->files[index].fp.file,"%g%c%g%c",
-                          dst[cell].lon*0.01,config->csv_delimit,dst[cell].lat*0.01,config->csv_delimit);
-                fprintf(output->files[index].fp.file,"%g%c%g\n",
-                        dst[config->total-1].lon*0.01,config->csv_delimit,dst[config->total-1].lat*0.01);
-                break;
+              send_token_copan(PUT_DATA,index,config);
+              writeshort_socket(config->socket,dst,config->total*2);
             }
             free(dst);
           }
@@ -263,55 +267,65 @@ int writecoords(Outputfile *output,  /**< output struct */
   if(output->method==LPJ_FILES)
   {
     if(config->float_grid)
-      switch(output->files[index].fmt)
+    {
+      if(output->files[index].isopen)
+        switch(output->files[index].fmt)
+        {
+          case RAW: case CLM:
+            if(fwrite(fvec,sizeof(Floatcoord),count,output->files[index].fp.file)!=count)
+              fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+            free(fvec);
+            break;
+          case TXT:
+            for(cell=0;cell<count-1;cell++)
+              fprintf(output->files[index].fp.file,"%g%c%g%c",
+                      fvec[cell].lon,config->csv_delimit,fvec[cell].lat*0.01,config->csv_delimit);
+            fprintf(output->files[index].fp.file,"%g%c%g\n",
+                    fvec[count-1].lon,config->csv_delimit,fvec[count-1].lat);
+            free(fvec);
+            break;
+          case CDF:
+            write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
+            free(soilcode);
+            break;
+        }
+      if(output->files[index].issocket)
       {
-        case RAW: case CLM:
-          if(fwrite(fvec,sizeof(Floatcoord),count,output->files[index].fp.file)!=count)
-            fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-          free(fvec);
-          break;
-        case TXT:
-          for(cell=0;cell<count-1;cell++)
-            fprintf(output->files[index].fp.file,"%g%c%g%c",
-                    fvec[cell].lon,config->csv_delimit,fvec[cell].lat*0.01,config->csv_delimit);
-          fprintf(output->files[index].fp.file,"%g%c%g\n",
-                  fvec[count-1].lon,config->csv_delimit,fvec[count-1].lat);
-          free(fvec);
-          break;
-        case SOCK:
-          send_token_copan(PUT_DATA,index,config);
-          writefloat_socket(config->socket,fvec,count*2);
-          break;
-        case CDF:
-          write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
-          free(soilcode);
-          break;
+        send_token_copan(PUT_DATA,index,config);
+        writefloat_socket(config->socket,fvec,count*2);
+        free(fvec);
       }
+    }
     else
-      switch(output->files[index].fmt)
-      {
-        case RAW: case CLM:
-          if(fwrite(vec,sizeof(Intcoord),count,output->files[index].fp.file)!=count)
-            fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
-          free(vec);
-          break;
-        case TXT:
-          for(cell=0;cell<count-1;cell++)
-            fprintf(output->files[index].fp.file,"%g%c%g%c",
-                    vec[cell].lon*0.01,config->csv_delimit,vec[cell].lat*0.01,config->csv_delimit);
-          fprintf(output->files[index].fp.file,"%g%c%g\n",
-                  vec[count-1].lon*0.01,config->csv_delimit,vec[count-1].lat*0.01);
-          free(vec);
-          break;
-        case SOCK:
+    {
+      if(output->files[index].isopen)
+        switch(output->files[index].fmt)
+        {
+          case RAW: case CLM:
+            if(fwrite(vec,sizeof(Intcoord),count,output->files[index].fp.file)!=count)
+              fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
+            free(vec);
+            break;
+          case TXT:
+            for(cell=0;cell<count-1;cell++)
+              fprintf(output->files[index].fp.file,"%g%c%g%c",
+                      vec[cell].lon*0.01,config->csv_delimit,vec[cell].lat*0.01,config->csv_delimit);
+            fprintf(output->files[index].fp.file,"%g%c%g\n",
+                    vec[count-1].lon*0.01,config->csv_delimit,vec[count-1].lat*0.01);
+            free(vec);
+            break;
+          case CDF:
+            write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
+            free(soilcode);
+            break;
+        }
+        if(output->files[index].issocket)
+        {
           send_token_copan(PUT_DATA,index,config);
           writeshort_socket(config->socket,vec,count*2);
-          break;
-        case CDF:
-          write_short_netcdf(&output->files[index].fp.cdf,soilcode,NO_TIME,config->nall);
-          free(soilcode);
-          break;
-      }
+          free(vec);
+        }
+    }
   }
 #endif
   return count;

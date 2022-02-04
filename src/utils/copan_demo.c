@@ -19,6 +19,7 @@
 #define USAGE "Usage: %s [-port n] [-wait n]\n"
 
 #define LANDUSE_NBANDS 64
+#define FERTILIZER_NBANDS 32
 
 static Bool readdata(Socket *socket,int ncell,int day,int count[],Type type[])
 {
@@ -134,6 +135,7 @@ int main(int argc,char **argv)
 {
   Socket *socket;
   float *landuse;
+  float *fertilizer;
   short *country,*region;
   char *endptr;
   float co2;
@@ -153,7 +155,6 @@ int main(int argc,char **argv)
   {
     float lon,lat;
   } *fcoords;
-  Bool islanduse=FALSE;
   port=DEFAULT_COPAN_PORT;
   wait=0;
   progname=strippath(argv[0]);
@@ -245,6 +246,7 @@ int main(int argc,char **argv)
          "Number of output streams: %d\n",
          n_in,n_out);
   /* Send number of items per cell for each input data stream */
+  landuse=fertilizer=NULL;
   for(i=0;i<n_in;i++)
   {
     readint_socket(socket,&token,1);
@@ -285,7 +287,15 @@ int main(int argc,char **argv)
           printallocerr("landuse");
           index=COPAN_ERR;
         }
-        islanduse=TRUE;
+        break;
+      case FERTILIZER_DATA:
+        index=FERTILIZER_NBANDS;
+        fertilizer=newvec(float,ncell*FERTILIZER_NBANDS);
+        if(fertilizer==NULL)
+        {
+          printallocerr("fertilizer");
+          index=COPAN_ERR;
+        }
         break;
       case CO2_DATA:
         index=1;
@@ -384,7 +394,7 @@ int main(int argc,char **argv)
     fprintf(stderr,"Token %d is not GET_STATUS.\n",token);
     return EXIT_FAILURE;
   }
-  if(islanduse)
+  if(landuse!=NULL)
     token=COPAN_OK;
   else
   {
@@ -488,6 +498,11 @@ int main(int argc,char **argv)
           for(j=0;j<ncell*LANDUSE_NBANDS;j++)
             landuse[j]=0.001;
           writefloat_socket(socket,landuse,ncell*LANDUSE_NBANDS);
+          break;
+        case FERTILIZER_DATA:
+          for(j=0;j<ncell*FERTILIZER_NBANDS;j++)
+            fertilizer[j]=1;
+          writefloat_socket(socket,fertilizer,ncell*FERTILIZER_NBANDS);
           break;
         case CO2_DATA:
           co2=288.0;

@@ -198,7 +198,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
 #ifdef USE_MPI
   int count;
 #endif
-  int status;
+  int ncell;
   char *filename;
   Outputfile *output;
   output=new(Outputfile);
@@ -209,7 +209,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
   output->n=n;
   output->index=output->index_all=NULL; 
   for(i=0;i<n;i++)
-    output->files[i].isopen=FALSE;
+    output->files[i].isopen=output->files[i].issocket=FALSE;
 #ifdef USE_MPI
   if(output->method!=LPJ_MPI2)
   {
@@ -273,29 +273,29 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
       case LPJ_GATHER:
         if(config->outputvars[i].filename.fmt==SOCK)
         {
-          output->files[config->outputvars[i].id].isopen=TRUE;
-          output->files[config->outputvars[i].id].fmt=SOCK;
+          if(!output->files[config->outputvars[i].id].isopen);
+            output->files[config->outputvars[i].id].fmt=SOCK;
+          output->files[config->outputvars[i].id].issocket=TRUE;
           if(isroot(*config))
           {
-            send_token_copan(PUT_DATA_SIZE,config->outputvars[i].id,config);
-            size=getnyear(config->outnames,config->outputvars[i].id);
-            writeint_socket(config->socket,&size,1);
+            if(config->outputvars[i].id==GLOBALFLUX)
+              ncell=0;
+            else
+              ncell=(config->outputvars[i].id==ADISCHARGE) ? config->nall : config->total;
             if(config->outputvars[i].id==GLOBALFLUX)
               size=sizeof(Flux)/sizeof(Real);
             else
               size=outputsize(config->outputvars[i].id,
                               config->npft[GRASS]+config->npft[TREE],
                               config->npft[CROP],config);
-            writeint_socket(config->socket,&size,1);
-            size=getoutputtype(config->outputvars[i].id,config->float_grid);
-            writeint_socket(config->socket,&size,1);
-            readint_socket(config->socket,&status,1);
-            if(status!=COPAN_OK)
+            if(openoutput_copan(config->outputvars[i].id,ncell,getnyear(config->outnames,config->outputvars[i].id),size,getoutputtype(config->outputvars[i].id,config->float_grid),config))
             {
-              output->files[config->outputvars[i].id].isopen=FALSE;
+              output->files[config->outputvars[i].id].issocket=FALSE;
               fprintf(stderr,"ERROR100: Cannot open socket stream for output '%s'.\n",
                       config->outnames[config->outputvars[i].id].name);
             }
+            MPI_Bcast(&output->files[config->outputvars[i].id].issocket,1,MPI_INT,
+                      0,config->comm);
           }
         }
         else
@@ -310,24 +310,22 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
       case LPJ_FILES:
         if(config->outputvars[i].filename.fmt==SOCK)
         {
-          output->files[config->outputvars[i].id].isopen=TRUE;
-          output->files[config->outputvars[i].id].fmt=SOCK;
-          send_token_copan(PUT_DATA_SIZE,config->outputvars[i].id,config);
-          size=getnyear(config->outnames,config->outputvars[i].id);
-          writeint_socket(config->socket,&size,1);
+          if(!output->files[config->outputvars[i].id].isopen);
+            output->files[config->outputvars[i].id].fmt=SOCK;
+          output->files[config->outputvars[i].id].issocket=TRUE;
+          if(config->outputvars[i].id==GLOBALFLUX)
+            ncell=0;
+          else
+            ncell=(config->outputvars[i].id==ADISCHARGE) ? config->nall : config->total;
           if(config->outputvars[i].id==GLOBALFLUX)
             size=sizeof(Flux)/sizeof(Real);
           else
             size=outputsize(config->outputvars[i].id,
                             config->npft[GRASS]+config->npft[TREE],
                             config->npft[CROP],config);
-          writeint_socket(config->socket,&size,1);
-          size=getoutputtype(config->outputvars[i].id,config->float_grid);
-          writeint_socket(config->socket,&size,1);
-          readint_socket(config->socket,&status,1);
-          if(status!=COPAN_OK)
+          if(openoutput_copan(config->outputvars[i].id,ncell,getnyear(config->outnames,config->outputvars[i].id),size,getoutputtype(config->outputvars[i].id,config->float_grid),config))
           {
-            output->files[config->outputvars[i].id].isopen=FALSE;
+            output->files[config->outputvars[i].id].issocket=FALSE;
             fprintf(stderr,"ERROR100: Cannot open socket stream for output '%s'.\n",
                     config->outnames[config->outputvars[i].id].name);
           }
