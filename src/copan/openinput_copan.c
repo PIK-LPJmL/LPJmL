@@ -22,7 +22,6 @@ Bool openinput_copan(int id,              /**< id of input stream */
                      const Config *config /**< LPJmL configuration */
                     )                     /** \return TRUE on error */
 {
-  int ncell_in;
   if(isroot(*config))
   {
     send_token_copan(GET_DATA_SIZE,id,config);
@@ -32,34 +31,33 @@ Bool openinput_copan(int id,              /**< id of input stream */
 #endif
     writeint_socket(config->socket,&type,1);
 #ifdef DEBUG_COPAN
-    printf(", done.\nReceiving ncell, nbands");
+    printf(", done.\n");
     fflush(stdout);
 #endif
 #if COPAN_COUPLER_VERSION == 4
-    readint_socket(config->socket,&ncell_in,1);
+#ifdef DEBUG_COPAN
+    printf("Sending ncell=%d",ncell);
+#endif
+    writeint_socket(config->socket,&ncell,1);
+#ifdef DEBUG_COPAN
+    printf(", done.\n");
+    fflush(stdout);
+#endif
+#endif
+#ifdef DEBUG_COPAN
+    printf("Receiving nbands");
+    fflush(stdout);
 #endif
     readint_socket(config->socket,nbands,1);
 #ifdef DEBUG_COPAN
-    printf(", %d, %d received.\n",ncell_in,*nbands);
+    printf(", %d, received.\n",*nbands);
     fflush(stdout);
 #endif
   }
 #ifdef USE_MPI
-#if COPAN_COUPLER_VERSION == 4
-  MPI_Bcast(&ncell_in,1,MPI_INT,0,config->comm);
-#endif
   MPI_Bcast(nbands,1,MPI_INT,0,config->comm);
 #endif
   if(isroot(*config) && *nbands==COPAN_ERR)
     fputs("ERROR311: Cannot open input socket stream.\n",stderr);
-#if COPAN_COUPLER_VERSION == 4
-  if(ncell_in!=ncell)
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERRO312: Invalid number of cells %d in input stream, must be %d.\n",
-              ncell_in,ncell);
-    return TRUE;
-  }
-#endif
   return *nbands==COPAN_ERR;
 } /* of 'openinput_copan' */

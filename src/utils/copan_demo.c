@@ -16,35 +16,28 @@
 
 #define COPANDEMO_VERSION "0.9.003"
 
-#define USAGE "Usage: %s [-port n] [-wait n]\n"
+#define USAGE "Usage: %s [-port n] [-wait n] [landusefile]\n"
+
+#define DFLT_FILENAME "/p/projects/lpjml/input/historical/input_VERSION2/cft1700_2005_irrigation_systems_64bands.bin"
 
 #define LANDUSE_NBANDS 64
 #define FERTILIZER_NBANDS 32
 
-static Bool readdata(Socket *socket,int ncell,int day,int count[],Type type[])
+static Bool readdata(Socket *socket,int day,int sizes[],int count[],Type type[])
 {
-  int token;
+  Token token;
   int index;
-  int year;
+  int year,step;
   int j,k;
   float *data;
   short *sdata;
-  readint_socket(socket,&token,1);
+  if(receive_token_copan(socket,&token,&index))
+    return TRUE;
   if(token==END_DATA)
     return TRUE;
-  if(token==FAIL_DATA)
-  {
-    fprintf(stderr,"LPJml stopped with error.\n");
-    return TRUE;
-  }
   if(token!=PUT_DATA)
   {
-    fprintf(stderr,"Token for output data=%d is not PUT_DATA.\n",token);
-    return TRUE;
-  }
-  if(readint_socket(socket,&index,1))
-  {
-    fprintf(stderr,"Error reading index of output\n");
+    fprintf(stderr,"Token for output data=%s is not PUT_DATA.\n",token_names[token]);
     return TRUE;
   }
   if(index<0 || index>=NOUT)
@@ -58,7 +51,10 @@ static Bool readdata(Socket *socket,int ncell,int day,int count[],Type type[])
     return TRUE;
   }
   readint_socket(socket,&year,1);
-  if(index==GLOBALFLUX)
+#if COPAN_COUPLER_VERSION == 4
+  readint_socket(socket,&step,1);
+#endif
+  if(sizes[index]==0)
   {
     data=newvec(float,count[index]);
     check(data);
@@ -73,13 +69,13 @@ static Bool readdata(Socket *socket,int ncell,int day,int count[],Type type[])
   {
     if(type[index]==LPJ_SHORT)
     {
-      sdata=newvec(short,ncell);
+      sdata=newvec(short,sizes[index]);
       check(sdata);
       for(j=0;j<count[index];j++)
       {
-        readshort_socket(socket,sdata,ncell);
+        readshort_socket(socket,sdata,sizes[index]);
         printf("%d/%d %d[%d]:",day,year,index,j);
-        for(k=0;k<ncell;k++)
+        for(k=0;k<sizes[index];k++)
           printf(" %d",sdata[k]);
         printf("\n");
       }
@@ -87,13 +83,13 @@ static Bool readdata(Socket *socket,int ncell,int day,int count[],Type type[])
     }
     else
     {
-      data=newvec(float,ncell);
+      data=newvec(float,sizes[index]);
       check(data);
       for(j=0;j<count[index];j++)
       {
-        readfloat_socket(socket,data,ncell);
+        readfloat_socket(socket,data,sizes[index]);
         printf("%d/%d %d[%d]:",day,year,index,j);
-        for(k=0;k<ncell;k++)
+        for(k=0;k<sizes[index];k++)
           printf(" %g",data[k]);
         printf("\n");
       }
@@ -103,7 +99,7 @@ static Bool readdata(Socket *socket,int ncell,int day,int count[],Type type[])
   return FALSE;
 } /* of 'readdata' */
 
-static Bool readyeardata(Socket *socket,int ncell,int nday_out,int nmonth_out,int n_out,int counts[],Type type[])
+static Bool readyeardata(Socket *socket,int nday_out,int nmonth_out,int n_out,int sizes[],int counts[],Type type[])
 {
   int month;
   int day,dayofyear;
@@ -115,24 +111,26 @@ static Bool readyeardata(Socket *socket,int ncell,int nday_out,int nmonth_out,in
     for(day=0;day<ndaymonth[month];day++)
     {
       for(i=0;i<nday_out;i++)
-        if(readdata(socket,ncell,dayofyear,counts,type))
+        if(readdata(socket,dayofyear,sizes,counts,type))
           return TRUE;
       dayofyear++;
     }
     /* read monthly data */
     for(i=0;i<nmonth_out;i++)
-      if(readdata(socket,ncell,dayofyear-1,counts,type))
+      if(readdata(socket,dayofyear-1,sizes,counts,type))
         return TRUE;
   }
   /* read annual data */
   for(i=0;i<n_out-nday_out-nmonth_out;i++)
-    if(readdata(socket,ncell,NDAYYEAR,counts,type))
+    if(readdata(socket,NDAYYEAR,sizes,counts,type))
       return TRUE;
   return FALSE;
 } /* of 'readyeardata' */
 
 int main(int argc,char **argv)
 {
+  FILE *file;
+  Header header;
   Socket *socket;
   float *landuse;
   float *fertilizer;
@@ -140,17 +138,26 @@ int main(int argc,char **argv)
   char *endptr;
   float co2;
   Intcoord *coords;
+  int sizes[NOUT];
   int count[NOUT];
   int nstep[NOUT];
   Type type[NOUT];
+  int sizes_in[N_IN];
   Type type_in[N_IN];
+  Type datatype;
   int port;
   int nmonth_out;
   int nday_out;
+  int nbands;
+  int firstgrid;
+  int ncell_in;
+  Bool swap;
   String line;
   const char *progname;
   const char *title[4];
-  int i,j,token,n_out,n_in,ncell,index,year,version,n_out_1,n_err,wait;
+  char *filename;
+  Token token;
+  int i,j,n_out,n_in,ncell,index,year,version,n_out_1,n_err,wait;
   struct coord
   {
     float lon,lat;
@@ -158,6 +165,7 @@ int main(int argc,char **argv)
   port=DEFAULT_COPAN_PORT;
   wait=0;
   progname=strippath(argv[0]);
+  filename=DFLT_FILENAME;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
@@ -212,6 +220,8 @@ int main(int argc,char **argv)
     }
     else
       break;
+  if(i<argc)
+    filename=argv[i];
   snprintf(line,STRING_LEN,
            "%s C Version %s (" __DATE__ ")",progname,COPANDEMO_VERSION);
   title[0]=line;
@@ -224,20 +234,29 @@ int main(int argc,char **argv)
   else
     printf("Waiting for LPJmL model...\n");
   /* Establish the connection */
-  socket=opentdt_socket(port,wait);
+  socket=connect_copan(port,wait);
   if(socket==NULL)
+    return EXIT_FAILURE;
+#if COPAN_COUPLER_VERSION == 4
+  if(receive_token_copan(socket,&token,&index))
   {
-    fprintf(stderr,"Error opening communication channel at port %d.\n",
-            port);
     return EXIT_FAILURE;
   }
-  /* Get protocol version */
-  readint_socket(socket,&version,1);
-  if(version!=COPAN_COUPLER_VERSION)
+  if(token!=PUT_INIT_DATA)
   {
-    fprintf(stderr,"Unsupported coupler version %d.\n",version);
+    fprintf(stderr,"Unexpected token %s received, must be PUT_INIT_DATA.\n",
+            token_names[token]);
+    close_socket(socket);
     return EXIT_FAILURE;
   }
+  readint_socket(socket,(int *)&datatype,1);
+  readint_socket(socket,&firstgrid,1);
+  readint_socket(socket,&ncell_in,1);
+  printf("Index of first cell: %d\n",firstgrid);
+  printf("Total number of cells: %d\n",ncell_in);
+#else
+  firstgrid=0;
+#endif
   readint_socket(socket,&ncell,1);
   printf("Number of cells: %d\n",ncell);
   readint_socket(socket,&n_in,1);
@@ -249,25 +268,13 @@ int main(int argc,char **argv)
   landuse=fertilizer=NULL;
   for(i=0;i<n_in;i++)
   {
-    readint_socket(socket,&token,1);
-    if(token==END_DATA)
-    {
-      fprintf(stderr,"Unexpected end token received.\n");
-      close_socket(socket);
+    if(receive_token_copan(socket,&token,&index))
       return EXIT_FAILURE;
-    }
-    if(token==FAIL_DATA)
-    {
-      fprintf(stderr,"LPJmL stopped with error.\n");
-      close_socket(socket);
-      return EXIT_FAILURE;
-    }
     if(token!=GET_DATA_SIZE)
     {
-      fprintf(stderr,"Token=%d is not GET_DATA_SIZE.\n",token);
+      fprintf(stderr,"Token=%s is not GET_DATA_SIZE.\n",token_names[token]);
       return EXIT_FAILURE;
     }
-    readint_socket(socket,&index,1);
     if(index<0 || index>=N_IN)
     {
       fprintf(stderr,"Invalid index %d of input, must be in [0,%d].\n",index,N_IN-1);
@@ -277,36 +284,55 @@ int main(int argc,char **argv)
       return EXIT_FAILURE;
     }
     readint_socket(socket,(int *)(type_in+index),1);
+#if COPAN_COUPLER_VERSION == 4
+    readint_socket(socket,sizes_in+index,1);
+#else
+    sizes_in[index]=ncell;
+#endif
     switch(index)
     {
       case LANDUSE_DATA:
-        index=LANDUSE_NBANDS;
-        landuse=newvec(float,ncell*LANDUSE_NBANDS);
+        file=fopen(filename,"rb");
+        if(file==NULL)
+        {
+          fprintf(stderr,"Error opening landuse file: %s.\n",strerror(errno));
+          nbands=COPAN_ERR;
+          break;
+        }
+        version=READ_VERSION;
+        if(freadheader(file,&header,&swap,LPJ_LANDUSE_HEADER,&version,TRUE))
+        {
+          fprintf(stderr,"Error reading header.\n");
+          nbands=COPAN_ERR;
+          break;
+        }
+        nbands=header.nbands;
+        landuse=newvec(float,sizes_in[index]*nbands);
         if(landuse==NULL)
         {
           printallocerr("landuse");
-          index=COPAN_ERR;
+          nbands=COPAN_ERR;
         }
         break;
       case FERTILIZER_DATA:
-        index=FERTILIZER_NBANDS;
-        fertilizer=newvec(float,ncell*FERTILIZER_NBANDS);
+        nbands=FERTILIZER_NBANDS;
+        fertilizer=newvec(float,sizes_in[index]*FERTILIZER_NBANDS);
         if(fertilizer==NULL)
         {
           printallocerr("fertilizer");
-          index=COPAN_ERR;
+          nbands=COPAN_ERR;
         }
         break;
       case CO2_DATA:
-        index=1;
+        nbands=1;
         break;
       default:
         fprintf(stderr,"Unsupported index %d of input\n",index);
-        index=COPAN_ERR;
+        nbands=COPAN_ERR;
     }
     /* send number of bands */
-    writeint_socket(socket,&index,1);
-    if(index==COPAN_ERR)
+    writeint_socket(socket,&nbands,1);
+    if(nbands==COPAN_ERR)
       return EXIT_FAILURE;
   }
   /* Get number of items per cell for each output data stream */
@@ -318,28 +344,26 @@ int main(int argc,char **argv)
   n_err=0;
   for(i=0;i<n_out;i++)
   {
-    readint_socket(socket,&token,1);
+    if(receive_token_copan(socket,&token,&index))
+      return EXIT_FAILURE;
     if(token==END_DATA)
     {
       fprintf(stderr,"Unexpected end token received.\n");
       close_socket(socket);
       return EXIT_FAILURE;
     }
-    if(token==FAIL_DATA)
+    if(token!=PUT_DATA_SIZE)
     {
-      fprintf(stderr,"LPJmL stopped with error.\n");
+      fprintf(stderr,"Token=%s is not PUT_DATA_SIZE.\n",token_names[token]);
       close_socket(socket);
       return EXIT_FAILURE;
     }
-    if(token!=PUT_DATA_SIZE)
-    {
-      fprintf(stderr,"Token=%d is not PUT_DATA_SIZE.\n",token);
-      return EXIT_FAILURE;
-    }
-    readint_socket(socket,&index,1);
     if(index<0 || index>=NOUT)
     {
-      fprintf(stderr,"Invalid index %d of output, must be in[0,%d].\n",index,NOUT-1);
+      fprintf(stderr,"Invalid index %d of output, must be in [0,%d].\n",index,NOUT-1);
+#if COPAN_COUPLER_VERSION == 4
+      readint_socket(socket,&index,1);
+#endif
       readint_socket(socket,&index,1);
       readint_socket(socket,&index,1);
       readint_socket(socket,&index,1);
@@ -348,6 +372,15 @@ int main(int argc,char **argv)
       n_err++;
       continue;
     }
+#if COPAN_COUPLER_VERSION == 4
+    /* get number of cells per year for output */
+    readint_socket(socket,sizes+index,1);
+#else
+    if(index==GLOBALFLUX)
+      sizes[index]=0;
+    else
+      sizes[index]=ncell;
+#endif
     /* get number of steps per year for output */
     readint_socket(socket,nstep+index,1);
     /* get number of bands for output */
@@ -376,34 +409,31 @@ int main(int argc,char **argv)
     }
     writeint_socket(socket,&index,1);
   }
-  readint_socket(socket,&token,1);
+  if(receive_token_copan(socket,&token,&index))
+    return EXIT_FAILURE;
   if(token==END_DATA)
   {
     fprintf(stderr,"Unexpected end token received.\n");
     close_socket(socket);
     return EXIT_FAILURE;
   }
-  if(token==FAIL_DATA)
+  if(token!=GET_STATUS)
   {
-    fprintf(stderr,"LPJmL stopped with error.\n");
+    fprintf(stderr,"Token %s is not GET_STATUS.\n",token_names[token]);
     close_socket(socket);
     return EXIT_FAILURE;
   }
-  if(token!=GET_STATUS)
-  {
-    fprintf(stderr,"Token %d is not GET_STATUS.\n",token);
-    return EXIT_FAILURE;
-  }
   if(landuse!=NULL)
-    token=COPAN_OK;
+    index=COPAN_OK;
   else
   {
-    token=COPAN_ERR;
-    writeint_socket(socket,&token,1);
+    index=COPAN_ERR;
+    writeint_socket(socket,&index,1);
     fprintf(stderr,"Landuse output is missing from LPJmL.\n");
+    close_socket(socket);
     return EXIT_FAILURE;
   }
-  writeint_socket(socket,&token,1);
+  writeint_socket(socket,&index,1);
   n_out-=n_err;
   /* read all static non time dependent outputs */
   region=country=NULL;
@@ -411,15 +441,11 @@ int main(int argc,char **argv)
   fcoords=NULL;
   for(i=0;i<n_out_1;i++)
   {
-    readint_socket(socket,&token,1);
+    if(receive_token_copan(socket,&token,&index))
+      return EXIT_FAILURE;
     if(token!=PUT_DATA)
     {
-      fprintf(stderr,"Token for output data=%d is not PUT_DATA.\n",token);
-      return EXIT_FAILURE;
-    }
-    if(readint_socket(socket,&index,1))
-    {
-      fprintf(stderr,"Error reading index of output.\n");
+      fprintf(stderr,"Token for output data=%s is not PUT_DATA.\n",token_names[token]);
       return EXIT_FAILURE;
     }
     switch(index)
@@ -427,32 +453,32 @@ int main(int argc,char **argv)
       case GRID:
         if(type[GRID]==LPJ_SHORT)
         {
-          coords=newvec(Intcoord,ncell);
+          coords=newvec(Intcoord,sizes[index]);
           check(coords);
-          readshort_socket(socket,(short *)coords,ncell*2);
+          readshort_socket(socket,(short *)coords,sizes[index]*2);
           printf("Grid:\n");
-          for(j=0;j<ncell;j++)
+          for(j=0;j<sizes[index];j++)
             printf("%g %g\n",coords[j].lat*.01,coords[j].lon*.01);
         }
         else
         {
-          fcoords=newvec(struct coord,ncell);
+          fcoords=newvec(struct coord,sizes[index]);
           check(fcoords);
-          readfloat_socket(socket,(float *)fcoords,ncell*2);
+          readfloat_socket(socket,(float *)fcoords,sizes[index]*2);
           printf("Grid:\n");
-          for(j=0;j<ncell;j++)
+          for(j=0;j<sizes[index];j++)
             printf("%g %g\n",fcoords[j].lat,fcoords[j].lon);
         }
         break;
       case COUNTRY:
-        country=newvec(short,ncell);
+        country=newvec(short,sizes[index]);
         check(country);
-        readshort_socket(socket,country,ncell);
+        readshort_socket(socket,country,sizes[index]);
         break;
       case REGION:
-        region=newvec(short,ncell);
+        region=newvec(short,sizes[index]);
         check(region);
-        readshort_socket(socket,region,ncell);
+        readshort_socket(socket,region,sizes[index]);
         break;
       default:
         fprintf(stderr,"Unsupported index %d of output.\n",index);
@@ -467,42 +493,34 @@ int main(int argc,char **argv)
     /* send input to LPJmL */
     for(i=0;i<n_in;i++)
     {
-      readint_socket(socket,&token,1);
+      if(receive_token_copan(socket,&token,&index))
+        return EXIT_FAILURE;
       if(token==END_DATA) /* Did we receive end token? */
         break;
-      if(token==FAIL_DATA)
-      {
-        fprintf(stderr,"LPJmL stopped with error.\n");
-        close_socket(socket);
-        return EXIT_FAILURE;
-      }
       if(token!=GET_DATA)
       {
-        fprintf(stderr,"Token for input data=%d is not GET_DATA.\n",token);
-        return EXIT_FAILURE;
-      }
-      if(readint_socket(socket,&index,1))
-      {
-        fprintf(stderr,"Error reading index of input.\n");
+        fprintf(stderr,"Token for input data=%s is not GET_DATA.\n",token_names[token]);
+        close_socket(socket);
         return EXIT_FAILURE;
       }
       if(index<0 || index>=N_IN)
       {
         fprintf(stderr,"Invalid index %d of input.\n",index);
+        close_socket(socket);
         return EXIT_FAILURE;
       }
       readint_socket(socket,&year,1);
       switch(index)
       {
         case LANDUSE_DATA:
-          for(j=0;j<ncell*LANDUSE_NBANDS;j++)
-            landuse[j]=0.001;
-          writefloat_socket(socket,landuse,ncell*LANDUSE_NBANDS);
+          fseek(file,headersize(LPJ_LANDUSE_HEADER,version)+((year-header.firstyear)*header.ncell*header.nbands+firstgrid*header.nbands)*typesizes[header.datatype],SEEK_SET);
+          readfloatvec(file,landuse,header.scalar,sizes_in[index]*header.nbands,swap,header.datatype);
+          writefloat_socket(socket,landuse,sizes_in[index]*header.nbands);
           break;
         case FERTILIZER_DATA:
-          for(j=0;j<ncell*FERTILIZER_NBANDS;j++)
+          for(j=0;j<sizes_in[index]*FERTILIZER_NBANDS;j++)
             fertilizer[j]=1;
-          writefloat_socket(socket,fertilizer,ncell*FERTILIZER_NBANDS);
+          writefloat_socket(socket,fertilizer,sizes_in[index]*FERTILIZER_NBANDS);
           break;
         case CO2_DATA:
           co2=288.0;
@@ -510,13 +528,14 @@ int main(int argc,char **argv)
           break;
         default:
           fprintf(stderr,"Unsupported index %d of input.\n",index);
+          close_socket(socket);
           return EXIT_FAILURE;
       }
     }
     if(token==END_DATA) /* Did we receive end token? */
       break;
     /* get output from LPJmL */
-    if(readyeardata(socket,ncell,nday_out,nmonth_out,n_out,count,type))
+    if(readyeardata(socket,nday_out,nmonth_out,n_out,sizes,count,type))
       break;
   } /* of for(;;) */
   printf("End of communication.\n");

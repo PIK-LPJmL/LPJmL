@@ -21,7 +21,7 @@ OBJS    = cru2clm.$O cvrtsoil.$O grid2clm.$O cfts26_lu2clm.$O drainage.$O\
           txt2clm.$O water_use_input.$O catclm.$O asc2clm.$O\
           lpjprint.$O lpjcat.$O cat2bsq.$O grd2bsq.$O cft2clm.$O txt2grid.$O\
           printdrain.$O lpjcheck.$O printclm.$O cdf2bin.$O country2cdf.$O\
-          printharvest.$O printreservoir.$O lpjserver.$O setclm.$O getcountry.$O\
+          printharvest.$O printreservoir.$O setclm.$O getcountry.$O\
           regridclm.$O regridsoil.$O cdf2coord.$O cdf2soil.$O lpjfiles.$O\
           joingrid.$O clm2cdf.$O cdf2clm.$O bin2cdf.$O adddrain.$O\
           getcellindex.$O copyheader.$O addheader.$O mathclm.$O cutclm.$O\
@@ -35,7 +35,7 @@ SRC    = cru2clm.c cvrtsoil.c grid2clm.c cfts26_lu2clm.c drainage.c\
           txt2clm.c water_use_input.c catclm.c cdf2coord.c country2cdf.c\
           lpjprint.c lpjcat.c cat2bsq.c grd2bsq.c cft2clm.c regridsoil.c\
           printdrain.c lpjcheck.c printclm.c printharvest.c binsum.c\
-          printreservoir.c lpjserver.c setclm.c getcountry.c regridclm.c\
+          printreservoir.c setclm.c getcountry.c regridclm.c\
           cdf2soil.c lpjfiles.c asc2clm.c joingrid.c clm2cdf.c\
           cdf2clm.c bin2cdf.c adddrain.c txt2grid.c getcellindex.c\
           copyheader.c addheader.c mathclm.c cutclm.c cdf2bin.c cvrtclm.c\
@@ -67,7 +67,7 @@ LPJLIBS = $(LIBDIR)/liblpj.$A $(LIBDIR)/libtree.$A\
           $(LIBDIR)/liblpj.$A $(LIBDIR)/libnum.$A\
           $(LIBDIR)/libgrass.$A $(LIBDIR)/libtree.$A\
           $(LIBDIR)/libspitfire.$A $(LIBDIR)/libsoil.$A\
-          $(LIBDIR)/libcdf.$A $(LIBDIR)/libtools.$A 
+          $(LIBDIR)/libcdf.$A $(LIBDIR)/libtools.$A $(LIBDIR)/libcopan.$A
 
 all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/river_sections_input_grid$E $(BIN)/river_sections_input_soil$E\
@@ -202,10 +202,6 @@ $(BIN)/mergeclm$E: mergeclm.$O $(LIBDIR)/libtools.$A
 
 $(BIN)/catclm$E: catclm.$O $(LIBDIR)/libtools.$A
 	$(LINK) $(LNOPTS)$(BIN)/catclm$E catclm.$O $(LIBDIR)/libtools.$A
-
-$(BIN)/lpjserver$E: lpjserver.$O $(LIBDIR)/libsocket.$A $(LPJLIBS)
-	$(LINK) $(LNOPTS)$(BIN)/lpjserver$E lpjserver.$O $(LPJLIBS)\
-	        $(LIBDIR)/libsocket.$A $(LIBS) 
 
 $(BIN)/copan_demo$E: copan_demo.$O $(LIBDIR)/libsocket.$A $(LPJLIBS)
 	$(LINK) $(LNOPTS)$(BIN)/copan_demo$E copan_demo.$O $(LPJLIBS)\

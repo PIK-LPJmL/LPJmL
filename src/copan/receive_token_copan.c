@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**               s  e  n  d  _  t  o  k  e  n  _  c  o  p  a  n  .  c             \n**/
+/**        r  e  c  e  i  v  e    _  t  o  k  e  n  _  c  o  p  a  n  .  c         \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function writes token into socket                                          \n**/
+/**     Function receives token from socket                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -13,32 +13,45 @@
 /** Contact: https://github.com/PIK-LPJmL/LPJmL                                    \n**/
 /**                                                                                \n**/
 /**************************************************************************************/
-
 #include "lpj.h"
 
-char *token_names[]={"GET_DATA","PUT_DATA","GET_DATA_SIZE","PUT_DATA_SIZE",
-                     "END_DATA","GET_STATUS","FAIL_DATA","PUT_INIT_DATA"};
-
-Bool send_token_copan(Token token,         /**< Token (GET_DATA,PUT_DATA, ...) */
-                      int index,           /**< index for in- or output stream */
-                      const Config *config /**< LPJ configuration */
-                     )                     /** \return TRUE on error */
+Bool receive_token_copan(Socket *socket, /**< pointer to open socket */
+                         Token *token,   /**< token received */
+                         int *index      /**< index received */
+                        )                /** \return TRUE on error */
 {
-  Bool rc;
-  if(token<0 || token>PUT_INIT_DATA)
+#ifdef DEBUG_COPAN
+  printf("Receiving token");
+  fflush(stdout);
+#endif
+  readint_socket(socket,(int *)token,1);
+  if(*token<0 || *token>PUT_INIT_DATA)
   {
-    fprintf(stderr,"ERROR310: Invalid token %d.\n",(int)token);
-    return  TRUE;
+    fprintf(stderr,"Invalid token %d.\n",(int)*token);
+    close_socket(socket);
+    return TRUE;
   }
 #ifdef DEBUG_COPAN
-  printf("Token %s, index %d sending",token_names[token],index);
+  printf(", token %s received.\n",token_names[*token]);
   fflush(stdout);
 #endif
-  writeint_socket(config->socket,&token,1);
-  rc=writeint_socket(config->socket,&index,1);
+  if(*token==FAIL_DATA)
+  {
+    fprintf(stderr,"LPJmL stopped with error.\n");
+    close_socket(socket);
+    return TRUE;
+  }
+  if(*token!=END_DATA && *token!=GET_STATUS) 
+  {
 #ifdef DEBUG_COPAN
-  printf(", done.\n");
-  fflush(stdout);
+    printf("Receiving index");
+    fflush(stdout);
 #endif
-  return rc;
-} /* of 'send_token_copan' */
+    readint_socket(socket,index,1);
+#ifdef DEBUG_COPAN
+    printf(", index %d received.\n",*index);
+    fflush(stdout);
+#endif
+  }
+  return FALSE;
+} /* of 'receive_token_copan' */

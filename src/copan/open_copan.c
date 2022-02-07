@@ -33,6 +33,7 @@ Bool open_copan(Config *config /**< LPJmL configuration */
                )               /** \return TRUE on error */
 {
   int version=COPAN_COUPLER_VERSION;
+  Type type=LPJ_INT;
   if(isroot(*config))
   {
 
@@ -65,6 +66,19 @@ Bool open_copan(Config *config /**< LPJmL configuration */
     writeint_socket(config->socket,&version,1);
     if(version==4)
     {
+      readint_socket(config->socket,&version,1);
+      if(version!=COPAN_COUPLER_VERSION)
+      {
+        fprintf(stderr,"ERROR312: Invalid coupler version %d received from COPAN, must be %d.\n",
+                version,COPAN_COUPLER_VERSION);
+        close_socket(config->socket);
+        return TRUE;
+      }
+      /* send 5 integer values */
+      send_token_copan(PUT_INIT_DATA,5,config);
+      writeint_socket(config->socket,&type,1);
+      /* send first index of cell */
+      writeint_socket(config->socket,&config->firstgrid,1);
       /* send total number of cells */
       writeint_socket(config->socket,&config->nall,1);
     }

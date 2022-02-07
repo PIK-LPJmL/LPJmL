@@ -31,24 +31,33 @@
 
 /* List of tokens */
 
-#define GET_DATA 0      /* Receiving data from COPAN */
-#define PUT_DATA 1      /* Sending data to COPAN */
-#define GET_DATA_SIZE 2 /* Receiving data size from COPAN */
-#define PUT_DATA_SIZE 3 /* Sending data size to COPAN */
-#define END_DATA 4      /* Ending communication */
-#define GET_STATUS 5    /* Check status of COPAN */
-#define FAIL_DATA 6     /* Ending communication on error */
+typedef enum
+{
+  GET_DATA,      /* Receiving data from COPAN */
+  PUT_DATA,      /* Sending data to COPAN */
+  GET_DATA_SIZE, /* Receiving data size from COPAN */
+  PUT_DATA_SIZE, /* Sending data size to COPAN */
+  END_DATA,      /* Ending communication */
+  GET_STATUS,    /* Check status of COPAN */
+  FAIL_DATA,     /* Ending communication on error */
+  PUT_INIT_DATA  /* Send init data to COPAN */
+} Token;
+
+
+extern char *token_names[];
 
 /* Declaration of functions */
 
 extern Bool open_copan(Config *);
+extern Socket *connect_copan(int,int);
 extern int check_copan(Config *);
 extern void close_copan(Bool,const Config *);
 extern Bool receive_copan(int,void *,Type,int,int,const Config *);
 extern Bool receive_real_copan(int,Real *,int,int,const Config *);
 extern Bool receive_real_scalar_copan(Real *,int,const Config *);
 extern Bool send_flux_copan(const Flux *,Real,int,const Config *);
-extern Bool send_token_copan(int,int,const Config *);
+extern Bool send_token_copan(Token,int,const Config *);
+extern Bool receive_token_copan(Socket *,Token *,int *);
 extern Bool openinput_copan(int,Type,int,int *,const Config *);
 extern Bool openoutput_copan(int,int,int,int,Type,const Config *);
 extern void send_output_copan(int,int,int,const Config *);
