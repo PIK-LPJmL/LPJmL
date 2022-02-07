@@ -35,4 +35,3 @@ LINKMAIN= icc
 LINK	= icc
 MKDIR	= mkdir -p
 SLASH	= /
-VIEWPRG	= lpjserver

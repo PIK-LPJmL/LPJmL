@@ -80,7 +80,7 @@ all: $(BIN)/cru2clm$E $(BIN)/grid2clm$E $(BIN)/cfts26_lu2clm$E\
      $(BIN)/water_use_input$E $(BIN)/getcountry$E $(BIN)/clm2cdf$E\
      $(BIN)/cft2clm$E $(BIN)/printdrain$E $(BIN)/lpjcheck$E\
      $(BIN)/printreservoir$E $(BIN)/regridclm$E $(BIN)/asc2clm$E\
-     $(BIN)/$(VIEWPRG)$E $(BIN)/catclm$E $(BIN)/printclm$E $(BIN)/joingrid$E\
+     $(BIN)/catclm$E $(BIN)/printclm$E $(BIN)/joingrid$E\
      $(BIN)/printharvest$E $(BIN)/lpjprint$E $(BIN)/regridsoil$E\
      $(BIN)/cdf2clm$E $(BIN)/bin2cdf$E $(BIN)/adddrain$E $(BIN)/txt2grid$E\
      $(BIN)/getcellindex$E $(BIN)/copyheader$E $(BIN)/addheader$E\
@@ -97,7 +97,7 @@ clean:
             river_sections_input_countrycode$E txt2clm$E catclm$E cdf2coord$E\
             lpjcat$E cat2bsq$E grd2bsq$E lpjprint$E printclm$E arr2clm$E\
             cvrtsoil$E river_sections_input_irrig$E water_use_input$E\
-            cft2clm$E printdrain$E lpjcheck$E $(VIEWPRG)$E printharvest$E\
+            cft2clm$E printdrain$E lpjcheck$E printharvest$E\
             printreservoir$E setclm$E getcountry$E regridclm$E regridsoil$E\
             cdf2soil$E lpjfiles$E asc2clm$E joingrid$E clm2cdf$E\
             cdf2clm$E bin2cdf$E adddrain$E txt2grid$E getcellindex$E\
