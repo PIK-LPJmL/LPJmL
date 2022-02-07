@@ -20,9 +20,33 @@ Bool receive_real_scalar_copan(Real *data,          /**< data read from socket *
                               )                     /** \return TRUE on error */
 {
   float *f;
-  int i;
+  int i,rc;
   f=newvec(float,size);
   check(f);
+  if(isroot(*config))
+  {
+#if COPAN_COUPLER_VERSION == 4
+#ifdef DEBUG_COPAN
+    printf("Receiving status");
+    fflush(stdout);
+#endif
+    readint_socket(config->socket,&rc,1);
+#ifdef DEBUG_COPAN
+    printf(",%d received.\n",rc);
+    fflush(stdout);
+#endif
+    if(rc!=COPAN_OK)
+      fprintf(stderr,"ERROR312: Cannot receive data from socket.\n");
+#endif
+  }
+#if COPAN_COUPLER_VERSION == 4
+    readint_socket(config->socket,&rc,1);
+#ifdef USE_MPI
+  MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
+#endif
+  if(rc!=COPAN_OK)
+    return TRUE;
+#endif
   if(isroot(*config))
   {
 #ifdef DEBUG_COPAN

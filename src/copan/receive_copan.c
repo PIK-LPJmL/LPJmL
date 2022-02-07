@@ -30,18 +30,48 @@ Bool receive_copan(int index,           /**< index of input file */
 #ifdef USE_MPI
   int *counts;
   int *offsets;
-#else
-  int rc;
 #endif
+  int rc;
   if(isroot(*config))
   {
     send_token_copan(GET_DATA,index,config);
-    writeint_socket(config->socket,&year,1);
 #ifdef DEBUG_COPAN
-    printf("Receiving %d %s values",config->nall*size,typenames[type]);
+    printf("Sending year %d",year);
     fflush(stdout);
 #endif
+    writeint_socket(config->socket,&year,1);
+#ifdef DEBUG_COPAN
+    printf(", done.\n");
+    fflush(stdout);
+#endif
+#if COPAN_COUPLER_VERSION == 4
+#ifdef DEBUG_COPAN
+    printf("Receiving status");
+    fflush(stdout);
+#endif
+    readint_socket(config->socket,&rc,1);
+#ifdef DEBUG_COPAN
+    printf(", %d received.\n",rc);
+    fflush(stdout);
+#endif
+    if(rc!=COPAN_OK)
+      fprintf(stderr,"ERROR312: Cannot receive data from socket.\n");
+#endif
   }
+#if COPAN_COUPLER_VERSION == 4
+#ifdef USE_MPI
+  MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
+#endif
+  if(rc!=COPAN_OK)
+    return TRUE;
+#endif
+#ifdef DEBUG_COPAN
+  if(isroot(*config))
+  {
+    printf("Receiving %d %s values",config->nall*size,typenames[type]);
+    fflush(stdout);
+  }
+#endif
 #ifdef USE_MPI
   counts=newvec(int,config->ntask);
   check(counts);

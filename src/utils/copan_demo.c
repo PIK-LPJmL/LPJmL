@@ -151,6 +151,7 @@ int main(int argc,char **argv)
   int nbands;
   int firstgrid;
   int ncell_in;
+  int status;
   Bool swap;
   String line;
   const char *progname;
@@ -240,6 +241,7 @@ int main(int argc,char **argv)
 #if COPAN_COUPLER_VERSION == 4
   if(receive_token_copan(socket,&token,&index))
   {
+    close_socket(socket);
     return EXIT_FAILURE;
   }
   if(token!=PUT_INIT_DATA)
@@ -269,7 +271,10 @@ int main(int argc,char **argv)
   for(i=0;i<n_in;i++)
   {
     if(receive_token_copan(socket,&token,&index))
+    {
+      close_socket(socket);
       return EXIT_FAILURE;
+    }
     if(token!=GET_DATA_SIZE)
     {
       fprintf(stderr,"Token=%s is not GET_DATA_SIZE.\n",token_names[token]);
@@ -295,14 +300,14 @@ int main(int argc,char **argv)
         file=fopen(filename,"rb");
         if(file==NULL)
         {
-          fprintf(stderr,"Error opening landuse file: %s.\n",strerror(errno));
+          fprintf(stderr,"Error opening landuse file '%s': %s.\n",filename,strerror(errno));
           nbands=COPAN_ERR;
           break;
         }
         version=READ_VERSION;
         if(freadheader(file,&header,&swap,LPJ_LANDUSE_HEADER,&version,TRUE))
         {
-          fprintf(stderr,"Error reading header.\n");
+          fprintf(stderr,"Error reading header of landuse file '%s'.\n",filename);
           nbands=COPAN_ERR;
           break;
         }
@@ -345,7 +350,10 @@ int main(int argc,char **argv)
   for(i=0;i<n_out;i++)
   {
     if(receive_token_copan(socket,&token,&index))
+    {
+      close_socket(socket);
       return EXIT_FAILURE;
+    }
     if(token==END_DATA)
     {
       fprintf(stderr,"Unexpected end token received.\n");
@@ -410,7 +418,10 @@ int main(int argc,char **argv)
     writeint_socket(socket,&index,1);
   }
   if(receive_token_copan(socket,&token,&index))
+  {
+    close_socket(socket);
     return EXIT_FAILURE;
+  }
   if(token==END_DATA)
   {
     fprintf(stderr,"Unexpected end token received.\n");
@@ -442,7 +453,10 @@ int main(int argc,char **argv)
   for(i=0;i<n_out_1;i++)
   {
     if(receive_token_copan(socket,&token,&index))
+    {
+      close_socket(socket);
       return EXIT_FAILURE;
+    }
     if(token!=PUT_DATA)
     {
       fprintf(stderr,"Token for output data=%s is not PUT_DATA.\n",token_names[token]);
@@ -494,7 +508,10 @@ int main(int argc,char **argv)
     for(i=0;i<n_in;i++)
     {
       if(receive_token_copan(socket,&token,&index))
+      {
+        close_socket(socket);
         return EXIT_FAILURE;
+      }
       if(token==END_DATA) /* Did we receive end token? */
         break;
       if(token!=GET_DATA)
@@ -514,19 +531,48 @@ int main(int argc,char **argv)
       {
         case LANDUSE_DATA:
           fseek(file,headersize(LPJ_LANDUSE_HEADER,version)+((year-header.firstyear)*header.ncell*header.nbands+firstgrid*header.nbands)*typesizes[header.datatype],SEEK_SET);
-          readfloatvec(file,landuse,header.scalar,sizes_in[index]*header.nbands,swap,header.datatype);
-          writefloat_socket(socket,landuse,sizes_in[index]*header.nbands);
+          if(readfloatvec(file,landuse,header.scalar,sizes_in[index]*header.nbands,swap,header.datatype))
+          {
+            fprintf(stderr,"Error reading landuse file '%s': %s.\n",filename,strerror(errno));
+#if COPAN_COUPLER_VERSION == 4
+            status=COPAN_ERR;
+            writeint_socket(socket,&status,1);
+#else
+            close_socket(socket);
+            return EXIT_FAILURE;
+#endif
+          }
+          else
+          {
+#if COPAN_COUPLER_VERSION == 4
+            status=COPAN_OK;
+            writeint_socket(socket,&status,1);
+#endif
+            writefloat_socket(socket,landuse,sizes_in[index]*header.nbands);
+          }
           break;
         case FERTILIZER_DATA:
           for(j=0;j<sizes_in[index]*FERTILIZER_NBANDS;j++)
             fertilizer[j]=1;
+#if COPAN_COUPLER_VERSION == 4
+          status=COPAN_OK;
+          writeint_socket(socket,&status,1);
+#endif
           writefloat_socket(socket,fertilizer,sizes_in[index]*FERTILIZER_NBANDS);
           break;
         case CO2_DATA:
           co2=288.0;
+#if COPAN_COUPLER_VERSION == 4
+          status=COPAN_OK;
+          writeint_socket(socket,&status,1);
+#endif
           writefloat_socket(socket,&co2,1);
           break;
         default:
+#if COPAN_COUPLER_VERSION == 4
+          status=COPAN_ERR;
+          writeint_socket(socket,&status,1);
+#endif
           fprintf(stderr,"Unsupported index %d of input.\n",index);
           close_socket(socket);
           return EXIT_FAILURE;

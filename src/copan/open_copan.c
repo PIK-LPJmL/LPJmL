@@ -71,7 +71,6 @@ Bool open_copan(Config *config /**< LPJmL configuration */
       {
         fprintf(stderr,"ERROR312: Invalid coupler version %d received from COPAN, must be %d.\n",
                 version,COPAN_COUPLER_VERSION);
-        close_socket(config->socket);
         return TRUE;
       }
       /* send 5 integer values */

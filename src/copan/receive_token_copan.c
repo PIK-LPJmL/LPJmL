@@ -28,7 +28,6 @@ Bool receive_token_copan(Socket *socket, /**< pointer to open socket */
   if(*token<0 || *token>PUT_INIT_DATA)
   {
     fprintf(stderr,"Invalid token %d.\n",(int)*token);
-    close_socket(socket);
     return TRUE;
   }
 #ifdef DEBUG_COPAN
@@ -38,7 +37,6 @@ Bool receive_token_copan(Socket *socket, /**< pointer to open socket */
   if(*token==FAIL_DATA)
   {
     fprintf(stderr,"LPJmL stopped with error.\n");
-    close_socket(socket);
     return TRUE;
   }
   if(*token!=END_DATA && *token!=GET_STATUS) 
