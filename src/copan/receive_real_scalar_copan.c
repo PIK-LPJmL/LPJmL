@@ -14,8 +14,10 @@
 
 #include "lpj.h"
 
-Bool receive_real_scalar_copan(Real *data,          /**< data read from socket */
+Bool receive_real_scalar_copan(int index,           /**< index of input stream */
+                               Real *data,          /**< data read from socket */
                                int size,            /**< size of data array */
+                               int year,            /**< year */
                                const Config *config /**< LPJmL configuration */
                               )                     /** \return TRUE on error */
 {
@@ -25,6 +27,8 @@ Bool receive_real_scalar_copan(Real *data,          /**< data read from socket *
   check(f);
   if(isroot(*config))
   {
+    send_token_copan(GET_DATA,index,config);
+    writeint_socket(config->socket,&year,1);
 #if COPAN_COUPLER_VERSION == 4
 #ifdef DEBUG_COPAN
     printf("Receiving status");
@@ -40,7 +44,6 @@ Bool receive_real_scalar_copan(Real *data,          /**< data read from socket *
 #endif
   }
 #if COPAN_COUPLER_VERSION == 4
-    readint_socket(config->socket,&rc,1);
 #ifdef USE_MPI
   MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
 #endif

@@ -520,13 +520,19 @@ int main(int argc,char **argv)
         close_socket(socket);
         return EXIT_FAILURE;
       }
+      readint_socket(socket,&year,1);
       if(index<0 || index>=N_IN)
       {
         fprintf(stderr,"Invalid index %d of input.\n",index);
+#if COPAN_COUPLER_VERSION == 4
+        status=COPAN_ERR;
+        writeint_socket(socket,&status,1);
+#else
         close_socket(socket);
         return EXIT_FAILURE;
+#endif
       }
-      readint_socket(socket,&year,1);
+      else
       switch(index)
       {
         case LANDUSE_DATA:
@@ -569,13 +575,14 @@ int main(int argc,char **argv)
           writefloat_socket(socket,&co2,1);
           break;
         default:
+          fprintf(stderr,"Unsupported index %d of input.\n",index);
 #if COPAN_COUPLER_VERSION == 4
           status=COPAN_ERR;
           writeint_socket(socket,&status,1);
-#endif
-          fprintf(stderr,"Unsupported index %d of input.\n",index);
+#else
           close_socket(socket);
           return EXIT_FAILURE;
+#endif
       }
     }
     if(token==END_DATA) /* Did we receive end token? */

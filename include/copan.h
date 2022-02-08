@@ -54,7 +54,7 @@ extern int check_copan(Config *);
 extern void close_copan(Bool,const Config *);
 extern Bool receive_copan(int,void *,Type,int,int,const Config *);
 extern Bool receive_real_copan(int,Real *,int,int,const Config *);
-extern Bool receive_real_scalar_copan(Real *,int,const Config *);
+extern Bool receive_real_scalar_copan(int,Real *,int,int,const Config *);
 extern Bool send_flux_copan(const Flux *,Real,int,const Config *);
 extern Bool send_token_copan(Token,int,const Config *);
 extern Bool receive_token_copan(Socket *,Token *,int *);
