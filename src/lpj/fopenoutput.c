@@ -251,6 +251,8 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
           ncell=(config->outputvars[i].id==ADISCHARGE) ? config->nall : config->total;
         if(config->outputvars[i].id==GLOBALFLUX)
           size=sizeof(Flux)/sizeof(Real);
+        else if(config->outputvars[i].id==GRID)
+          size=2;
         else
           size=outputsize(config->outputvars[i].id,
                           config->npft[GRASS]+config->npft[TREE],
