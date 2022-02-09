@@ -39,14 +39,15 @@
 #define REPROD_COST 0.1 /* reproduction cost */
 #define K_EST 0.12 /* maximum overall sapling establishment rate (indiv/m2) */
 #ifdef WITH_SPITFIRE
-#define MORT_MAX 0.01
+#define MORT_MAX 0.03
 #else
-#define MORT_MAX 0.01
+#define MORT_MAX 0.03
 #endif
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.3      /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV 0.9   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_GR 0.5   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_EV_BR 0.7   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_EV 0.8   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_GR 0.3   /* fraction of N not recovered before turnover */
 #define ALPHAA_NITROGEN 0.5  /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
@@ -81,7 +82,7 @@
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
-    "beta_root" : 0.932,    /* beta_root original 0.962*/
+    "beta_root" : 0.952,    /* beta_root original 0.962*/
     "minwscal" : 0.0,       /* minwscal 3*/
     "gmin"  : 1.6,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
@@ -150,7 +151,7 @@
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
     "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+    "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
     "leaftype" : "broadleaved",  /* leaftype */
@@ -419,7 +420,7 @@
     },
     "tmax" :
     {
-      "slope" : 0.98,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "slope" : 1.6,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
       "base" : 41.12,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },

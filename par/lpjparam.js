@@ -38,7 +38,7 @@
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
   "temp_response" : 56.02,   /* Parameter in temperature response function */
   "percthres" : 1.0,
-  "k_2": 0.02,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
+  "k_2": 0.01,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
   "p" : 25,                  /* Haxeltine & Prentice regression coefficient */
   "n0" : 7.15,               /* Haxeltine & Prentice regression coefficient */
   "k_temp" : 0.02,           /* factor of temperature dependence of nitrogen demand for Rubisco activity */
@@ -50,7 +50,7 @@
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
   "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */
-  "k_mort" : 0.3,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
   "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
   "residue_cn": 20,         /* CN ratio of prescribed residues */
