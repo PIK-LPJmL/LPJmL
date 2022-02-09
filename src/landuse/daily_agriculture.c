@@ -228,7 +228,10 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         if(config->double_harvest)
         {
           crop=pft->data;
-          crop->dh->irrig_apply+=irrig_apply;
+          if(config->pft_output_scaled)
+            crop->dh->irrig_apply+=irrig_apply*stand->frac;
+          else
+            crop->dh->irrig_apply+=irrig_apply;
         }
         else
         {
