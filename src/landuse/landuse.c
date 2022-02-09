@@ -892,7 +892,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   for(cell=0;cell<config->ngridcell;cell++)
   {
     /* get soiltype of first stand (not stored in cell structure) */
-    if(grid[cell].standlist->n>0)
+    if(!grid[cell].skip && grid[cell].standlist->n>0)
     {
       stand=getstand(grid[cell].standlist,0);
       soiltype=stand->soil.par->type;
@@ -1417,7 +1417,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
           grid[cell].ml.fertilizer_nr[i].biomass_tree=param.fertilizer_rate;
           grid[cell].ml.manure_nr[i].biomass_grass=param.manure_rate;
           grid[cell].ml.manure_nr[i].biomass_tree=param.manure_rate;
-          grid[cell].ml.fertilizer_nr[i].woodplantation=param.manure_rate;
+          grid[cell].ml.fertilizer_nr[i].woodplantation=param.fertilizer_rate;
           grid[cell].ml.manure_nr[i].woodplantation=param.manure_rate;
         }
       }

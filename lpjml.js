@@ -198,7 +198,7 @@ ID                               Fmt                        filename
     { "id" : "pft_chawo",        "file" : { "fmt" : "raw", "name" : "output2/pft_chawo.bin"}},
     { "id" : "pft_nhawo",        "file" : { "fmt" : "raw", "name" : "output2/pft_nhawo.bin"}},
 #ifdef WITH_SPITFIRE
-    { "id" : "firec",            "file" : { "fmt" : "raw", "timestep" : "monthly" : "unit" : "gC/m2/month", "name" : "output2/mfirec.bin"}},
+    { "id" : "firec",            "file" : { "fmt" : "raw", "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output2/mfirec.bin"}},
     { "id" : "nfire",            "file" : { "fmt" : "raw", "name" : "output2/mnfire.bin"}},
     { "id" : "burntarea",        "file" : { "fmt" : "raw", "name" : "output2/mburnt_area.bin"}},
 #else
