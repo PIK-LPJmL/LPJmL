@@ -302,6 +302,8 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
         free(climate);
         return NULL;
       }
+      if(climate->firstyear<climate->file_ignition.firstyear)
+        climate->firstyear=climate->file_ignition.firstyear;
       climate->data.lightning=NULL;
     }
     else
