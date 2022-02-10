@@ -235,8 +235,11 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
         tinc_ind.root.carbon=0.0;
       else
         tinc_ind.root.carbon=(tinc_ind.leaf.carbon+tree->ind.leaf.carbon)/lmtorm-tree->ind.root.carbon; 
-      if(tinc_ind.root.carbon>bm_inc_ind.carbon)
-        tinc_ind.root.carbon=bm_inc_ind.carbon;
+      if(tinc_ind.root.carbon+tinc_ind.leaf.carbon>bm_inc_ind.carbon)
+      {
+        tinc_ind.root.carbon=bm_inc_ind.carbon*tinc_ind.root.carbon/(tinc_ind.root.carbon+tinc_ind.leaf.carbon);
+        tinc_ind.leaf.carbon=bm_inc_ind.carbon*tinc_ind.leaf.carbon/(tinc_ind.root.carbon+tinc_ind.leaf.carbon);
+      }
       tinc_ind.sapwood.carbon=bm_inc_ind.carbon-tinc_ind.leaf.carbon-tinc_ind.root.carbon;
     }
     else 
