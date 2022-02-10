@@ -93,8 +93,8 @@ Stocks turnover_grass(Litter *litter, /**< Litter pool */
     update_fbd_tree(litter,pft->par->fuelbulkdensity,gturn.leaf.carbon*pft->nind-grass->turn_litt.leaf.carbon,0);
     litter->item[pft->litter].bg.carbon+=gturn.root.carbon*pft->nind-grass->turn_litt.root.carbon;
     litter->item[pft->litter].bg.nitrogen+=gturn.root.nitrogen*pft->nind-grass->turn_litt.root.nitrogen;
-    grass->turn.root.carbon=grass->turn_litt.root.carbon=grass->turn.leaf.carbon=0.0;
-    grass->turn.root.nitrogen=grass->turn_litt.root.nitrogen=grass->turn.leaf.nitrogen=0.0;
+    grass->turn.root.carbon=grass->turn_litt.root.carbon=grass->turn.leaf.carbon=grass->turn_litt.leaf.carbon=0.0;
+    grass->turn.root.nitrogen=grass->turn_litt.root.nitrogen=grass->turn.leaf.nitrogen=grass->turn_litt.leaf.nitrogen=0.0;
   }
   else
   {
