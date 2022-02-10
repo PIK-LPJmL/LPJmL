@@ -112,7 +112,11 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
         update_fbd_grass(litter,pft->par->fuelbulkdensity,-inc_ind.leaf.carbon*pft->nind);
       }
       else
+      {
+        if(inc_ind.leaf.carbon>bm_inc_ind.carbon)
+          inc_ind.leaf.carbon=bm_inc_ind.carbon;
         inc_ind.root.carbon=bm_inc_ind.carbon-inc_ind.leaf.carbon;
+      }
     }
   }
   if(bm_inc_ind.carbon>0 && inc_ind.leaf.carbon>0 && inc_ind.root.carbon>0)
