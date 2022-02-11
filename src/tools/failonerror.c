@@ -46,8 +46,8 @@ void failonerror(const Config *config, /**< LPJmL configuration */
       else
         fprintf(stderr,"ERROR%03d: %s on %d tasks, program terminated unsuccessfully.\n",errorcode,msg,sum);
     }
-    if(config->sim_id==LPJML_COPAN)
-      close_copan(TRUE,config);
+    if(config->coupled_model!=NULL)
+      close_copan(errorcode,config);
     exit(errorcode);     /* exit */
   }
 } /* of 'failonerror' */

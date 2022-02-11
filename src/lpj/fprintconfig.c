@@ -601,15 +601,15 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
             config->image_outport,config->wait);
 
 #else
-  if(config->sim_id==LPJML_COPAN)
+  if(config->coupled_model!=NULL)
   {
-    fprintf(file,"Coupled to COPAN model running on host %s using port %d.\n",
-            config->copan_host,config->copan_port);
+    fprintf(file,"Coupled to %s model running on host %s using port %d.\n",
+            config->coupled_model,config->copan_host,config->copan_port);
     if(config->wait)
       fprintf(file,"Time to wait for connection: %5d sec\n",config->wait);
-    fprintf(file,"Number of inputs from COPAN: %5d\n"
-            "Number of outputs to COPAN:  %5d\n",
-            config->copan_in,config->copan_out);
+    fprintf(file,"Number of inputs from %s: %5d\n"
+            "Number of outputs to %s:  %5d\n",
+            config->coupled_model,config->copan_in,config->coupled_model,config->copan_out);
   }
 #endif
 

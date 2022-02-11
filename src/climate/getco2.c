@@ -17,7 +17,7 @@
 #include "lpj.h"
 
 Bool getco2(const Climate *climate, /**< Pointer to climate data */
-            Real *pco2,             /** atmospheric CO2 (ppm) */
+            Real *pco2,             /**< atmospheric CO2 (ppm) */
             int year,               /**< year (AD) */
             const Config *config    /**< LPJmL configuration */
            )                        /** \return TRUE on error */

@@ -29,8 +29,9 @@
 /*===================================================================*/
 
   "sim_name" : "LPJmL run coupled to COPAN", /* Simulation description */
-  "sim_id"   : "lpjml_copan",     /* LPJML Simulation type with managed land use */
+  "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
   "version"  : "5.3",       /* LPJmL version expected */
+  "coupled_model" : "COPAN", /* LPJmL coupled to COPAN */
   "random_prec" : true,     /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: "cloudiness", "radiation", "radiation_swonly", "radiation_lwdown" */

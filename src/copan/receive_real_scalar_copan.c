@@ -22,49 +22,14 @@ Bool receive_real_scalar_copan(int index,           /**< index of input stream *
                               )                     /** \return TRUE on error */
 {
   float *f;
-  int i,rc;
+  int i;
   f=newvec(float,size);
   check(f);
-  if(isroot(*config))
+  if(receive_scalar_copan(index,f,LPJ_FLOAT,size,year,config))
   {
-    send_token_copan(GET_DATA,index,config);
-    writeint_socket(config->socket,&year,1);
-#if COPAN_COUPLER_VERSION == 4
-#ifdef DEBUG_COPAN
-    printf("Receiving status");
-    fflush(stdout);
-#endif
-    readint_socket(config->socket,&rc,1);
-#ifdef DEBUG_COPAN
-    printf(",%d received.\n",rc);
-    fflush(stdout);
-#endif
-    if(rc!=COPAN_OK)
-      fprintf(stderr,"ERROR312: Cannot receive data from socket.\n");
-#endif
-  }
-#if COPAN_COUPLER_VERSION == 4
-#ifdef USE_MPI
-  MPI_Bcast(&rc,1,MPI_INT,0,config->comm);
-#endif
-  if(rc!=COPAN_OK)
+    free(f);
     return TRUE;
-#endif
-  if(isroot(*config))
-  {
-#ifdef DEBUG_COPAN
-    printf("Receiving %d floats",size);
-    fflush(stdout);
-#endif
-    readfloat_socket(config->socket,f,size);
-#ifdef DEBUG_COPAN
-    printf(", done.\n");
-    fflush(stdout);
-#endif
   }
-#ifdef USE_MPI
-  MPI_Bcast(f,size,MPI_FLOAT,0,config->comm);
-#endif
   for(i=0;i<size;i++)
     data[i]=f[i];
   free(f);

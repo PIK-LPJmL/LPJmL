@@ -38,7 +38,7 @@ Bool open_copan(Config *config /**< LPJmL configuration */
   {
 
     /* Establish the TDT connection */
-    printf("Connecting to COPAN model...\n");
+    printf("Connecting to %s model...\n",config->coupled_model);
     fflush(stdout);
     if(config->wait)
     {
@@ -64,13 +64,14 @@ Bool open_copan(Config *config /**< LPJmL configuration */
 #endif
     /* send coupler version */
     writeint_socket(config->socket,&version,1);
-    if(version==4)
+    if(version>3)
     {
+      /* receive version from COPAN */
       readint_socket(config->socket,&version,1);
       if(version!=COPAN_COUPLER_VERSION)
       {
-        fprintf(stderr,"ERROR312: Invalid coupler version %d received from COPAN, must be %d.\n",
-                version,COPAN_COUPLER_VERSION);
+        fprintf(stderr,"ERROR312: Invalid coupler version %d received from %s, must be %d.\n",
+                version,config->coupled_model,COPAN_COUPLER_VERSION);
         return TRUE;
       }
       /* send 5 integer values */

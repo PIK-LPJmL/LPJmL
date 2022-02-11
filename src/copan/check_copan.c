@@ -18,17 +18,12 @@
 int check_copan(Config *config /**< LPJmL configuration */
                )               /** \return error code from COPAN */
 {
-  int token=GET_STATUS;
   int status;
   if(isroot(*config))
   {
+    send_token_copan(GET_STATUS,0,config);
 #ifdef DEBUG_COPAN
-    printf("Token GET_STATUS sending");
-    fflush(stdout);
-#endif
-    writeint_socket(config->socket,&token,1);
-#ifdef DEBUG_COPAN
-    printf(", done.\nGetting status");
+    printf("Getting status");
     fflush(stdout);
 #endif
     readint_socket(config->socket,&status,1);

@@ -364,8 +364,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
                            config->outnames[config->outputvars[i].id].descr,
                            config->outnames[config->outputvars[i].id].unit,
                            getoutputtype(config->outputvars[i].id,FALSE),
-                           getnyear(config->outnames,config->outputvars[i].id),year,
-                               output->index,config);
+                           getnyear(config->outnames,config->outputvars[i].id),year,output->index,config);
 
         }
      }

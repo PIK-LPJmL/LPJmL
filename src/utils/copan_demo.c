@@ -395,26 +395,27 @@ int main(int argc,char **argv)
     readint_socket(socket,count+index,1);
     readint_socket(socket,(int *)(type+index),1);
     /* check for static output */
-    if(index==GRID || index==COUNTRY || index==REGION)
+    if(nstep[index]==0)
       n_out_1++;
-    switch(nstep[index])
-    {
-      case NMONTH:
-        nmonth_out++;
-        index=COPAN_OK;
-        break;
-      case NDAYYEAR:
-        nday_out++;
-        index=COPAN_OK;
-        break;
-      case 0 : case 1:
-        index=COPAN_OK;
-        break;
-      default:
-        index=COPAN_ERR;
-        n_err++;
-        fprintf(stderr,"Invalid number of steps %d for index %d, must be 1, 12, or 365.\n",nstep[index],index);
-    }
+    else
+      switch(nstep[index])
+      {
+        case NMONTH:
+          nmonth_out++;
+          index=COPAN_OK;
+          break;
+        case NDAYYEAR:
+          nday_out++;
+          index=COPAN_OK;
+          break;
+        case 1:
+          index=COPAN_OK;
+          break;
+        default:
+          index=COPAN_ERR;
+          n_err++;
+          fprintf(stderr,"Invalid number of steps %d for index %d, must be 1, 12, or 365.\n",nstep[index],index);
+      }
     writeint_socket(socket,&index,1);
   }
   if(receive_token_copan(socket,&token,&index))
@@ -459,6 +460,7 @@ int main(int argc,char **argv)
     }
     if(token!=PUT_DATA)
     {
+      close_socket(socket);
       fprintf(stderr,"Token for output data=%s is not PUT_DATA.\n",token_names[token]);
       return EXIT_FAILURE;
     }
@@ -536,6 +538,10 @@ int main(int argc,char **argv)
       switch(index)
       {
         case LANDUSE_DATA:
+          if(year<header.firstyear)
+            year=header.firstyear;
+          else if(year>=header.firstyear+header.nyear)
+            year=header.firstyear+header.nyear-1;
           fseek(file,headersize(LPJ_LANDUSE_HEADER,version)+((year-header.firstyear)*header.ncell*header.nbands+firstgrid*header.nbands)*typesizes[header.datatype],SEEK_SET);
           if(readfloatvec(file,landuse,header.scalar,sizes_in[index]*header.nbands,swap,header.datatype))
           {
@@ -553,6 +559,15 @@ int main(int argc,char **argv)
 #if COPAN_COUPLER_VERSION == 4
             status=COPAN_OK;
             writeint_socket(socket,&status,1);
+#endif
+#ifdef DEBUG
+            for(i=0;i<sizes_in[index];i++)
+            {
+              printf("cell %d:",i);
+              for(j=0;j<header.nbands;j++)
+                printf(" %g",landuse[i*header.nbands+j]);
+              printf("\n");
+            }
 #endif
             writefloat_socket(socket,landuse,sizes_in[index]*header.nbands);
           }

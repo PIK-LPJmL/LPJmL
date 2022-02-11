@@ -28,14 +28,21 @@ Bool send_token_copan(Token token,         /**< Token (GET_DATA,PUT_DATA, ...) *
   if(token<0 || token>PUT_INIT_DATA)
   {
     fprintf(stderr,"ERROR310: Invalid token %d.\n",(int)token);
-    return  TRUE;
+    return TRUE;
   }
 #ifdef DEBUG_COPAN
   printf("Token %s, index %d sending",token_names[token],index);
   fflush(stdout);
 #endif
   writeint_socket(config->socket,&token,1);
-  rc=writeint_socket(config->socket,&index,1);
+#if COPAN_COUPLER_VERSION == 4
+  if(token!=END_DATA && token!=GET_STATUS)
+#else
+  if(token!=END_DATA && token!=FAIL_DATA && token!=GET_STATUS)
+#endif
+    rc=writeint_socket(config->socket,&index,1);
+  else
+    rc=FALSE;
 #ifdef DEBUG_COPAN
   printf(", done.\n");
   fflush(stdout);

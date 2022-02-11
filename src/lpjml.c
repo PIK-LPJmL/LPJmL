@@ -96,6 +96,7 @@ int main(int argc,char **argv)
   Input input;        /* input data */
   time_t tstart,tend,tbegin,tfinal;   /* variables for timing */
   Standtype standtype[NSTANDTYPES];
+  String s;
   Config config;         /* LPJ configuration */
 
   /* Create array of functions, uses the typedef of Pfttype in config.h */
@@ -204,10 +205,11 @@ int main(int argc,char **argv)
   /* Allocation and initialization of grid */
   rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
-  if(config.sim_id==LPJML_COPAN)
+  if(config.coupled_model!=NULL)
   {
     rc=open_copan(&config);
-    failonerror(&config,rc,OPEN_COPAN_ERR,"Cannot open COPAN coupler");
+    snprintf(s,STRING_LEN,"Cannot couple to %s model",config.coupled_model);
+    failonerror(&config,rc,OPEN_COPAN_ERR,s);
   }
   rc=initinput(&input,grid,config.npft[GRASS]+config.npft[TREE],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
@@ -222,10 +224,11 @@ int main(int argc,char **argv)
   rc=initoutput(output,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of output data failed");
-  if(config.sim_id==LPJML_COPAN)
+  if(config.coupled_model!=NULL)
   {
     rc=check_copan(&config);
-    failonerror(&config,rc,OPEN_COPAN_ERR,"Cannot initialize COPAN coupler");
+    snprintf(s,STRING_LEN,"Cannot initialize %s model",config.coupled_model);
+    failonerror(&config,rc,OPEN_COPAN_ERR,s);
   }
   if(isopen(output,GRID))
     writecoords(output,GRID,grid,&config);
@@ -261,7 +264,7 @@ int main(int argc,char **argv)
   if(config.sim_id==LPJML_IMAGE)
     close_image(&config);
 #endif
-  if(config.sim_id==LPJML_COPAN)
+  if(config.coupled_model!=NULL)
     close_copan(year<=config.lastyear,&config);
   freeconfig(&config);
 #ifdef USE_MPI

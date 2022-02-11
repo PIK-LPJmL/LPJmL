@@ -36,7 +36,21 @@ Bool receive_token_copan(Socket *socket, /**< pointer to open socket */
 #endif
   if(*token==FAIL_DATA)
   {
+#if COPAN_COUPLER_VERSION == 4
+    /* get LPJmL error code */
+#ifdef DEBUG_COPAN
+    printf("Receiving error code");
+    fflush(stdout);
+#endif
+    readint_socket(socket,index,1);
+#ifdef DEBUG_COPAN
+    printf(", %d received.\n",*index);
+    fflush(stdout);
+#endif
+    fprintf(stderr,"LPJmL stopped with error %d.\n",*index);
+#else
     fprintf(stderr,"LPJmL stopped with error.\n");
+#endif
     return TRUE;
   }
   if(*token!=END_DATA && *token!=GET_STATUS) 

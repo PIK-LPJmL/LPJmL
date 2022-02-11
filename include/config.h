@@ -103,6 +103,7 @@ struct config
 #endif
   int wait;               /**< time to wait for connection (sec) */
   char *sim_name;         /**< Desciption of LPJ simulation */
+  char *coupled_model;    /**< name of coupled model or NULL */
   int sim_id;             /**< Simulation type */
   int *npft;              /**< number of PFTs in each PFT class */
   int nbiomass;           /**< number of biomass PFTs */
