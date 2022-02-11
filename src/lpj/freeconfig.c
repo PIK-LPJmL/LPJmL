@@ -139,6 +139,8 @@ void freeconfig(Config *config /**< LPJmL configuration */
       freefilename(&config->sowing_cotton_ir_filename);
       freefilename(&config->harvest_cotton_ir_filename);
     }
+    if(config->sdate_option==PRESCRIBED_SDATE)
+      freefilename(&config->sdate_filename);
   }
   if(config->with_nitrogen)
   {
