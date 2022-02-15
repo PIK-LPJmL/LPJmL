@@ -182,7 +182,7 @@ typedef struct Pft
     void (*fprintpar)(FILE *,const struct Pftpar *,const Config *);
     //void (*output_daily)(Daily_outputs *,const struct Pft *);
     void (*turnover_monthly)(Litter *,struct Pft *,const Config *);
-    void (*turnover_daily)(Litter *,struct Pft *,Real,Bool,const Config *);
+    void (*turnover_daily)(Litter *,struct Pft *,Real,int,Bool,const Config *);
     Stocks (*livefuel_consumption)(Litter *,struct Pft *,const Fuel *,
                                    Livefuel *,Bool *,Real,Real,const Config *);
     Bool (*annual)(Stand *,struct Pft *,Real *,Bool,const Config *);
@@ -291,7 +291,7 @@ extern Stocks timber_harvest(Pft *,Soil *,Poolpar,Real,Real,Real *,Stocks *,cons
 
 #define fpar(pft) pft->par->fpar(pft)
 #define turnover_monthly(litter,pft,config) pft->par->turnover_monthly(litter,pft,config)
-#define turnover_daily(litter,pft,temp,isdaily,config) pft->par->turnover_daily(litter,pft,temp,isdaily,config)
+#define turnover_daily(litter,pft,temp,day,isdaily,config) pft->par->turnover_daily(litter,pft,temp,day,isdaily,config)
 #define alphaa(pft,with_nitrogen,lai_opt) pft->par->alphaa_manage(pft,with_nitrogen,lai_opt)
 #define npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen) pft->par->npp(pft,gtemp_air,gtemp_soil,assim,with_nitrogen)
 #define leaf_phenology(pft,temp,day,isdaily,config) pft->par->leaf_phenology(pft,temp,day,isdaily,config)

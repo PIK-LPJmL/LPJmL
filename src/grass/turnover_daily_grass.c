@@ -18,6 +18,7 @@
 void turnover_daily_grass(Litter *litter,
                           Pft *pft,
                           Real UNUSED(temp),
+                          int UNUSED(day),
                           Bool UNUSED(isdaily),
                           const Config *config /**< LPJmL configuration*/
                          )
