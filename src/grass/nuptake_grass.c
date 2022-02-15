@@ -139,7 +139,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
     {
       //*n_plant_demand=vegn_sum_grass(pft)+pft->bm_inc.nitrogen;  WHY?
       NC_actual=(vegn_sum_grass(pft)+pft->bm_inc.nitrogen)/(vegc_sum_grass(pft)+pft->bm_inc.carbon);
-      NC_leaf=(grass->ind.leaf.nitrogen-grass->turn_litt.leaf.nitrogen+pft->bm_inc.nitrogen*grass->falloc.leaf)/(grass->ind.leaf.carbon-grass->turn_litt.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf);
+      NC_leaf=(grass->ind.leaf.nitrogen-grass->turn.leaf.nitrogen+pft->bm_inc.nitrogen*grass->falloc.leaf/pft->nind)/(grass->ind.leaf.carbon-grass->turn.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf/pft->nind);
       if(NC_leaf< pft->par->ncleaf.low)
         NC_leaf=pft->par->ncleaf.low;
       else if (NC_leaf>pft->par->ncleaf.high)
