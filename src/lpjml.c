@@ -205,7 +205,7 @@ int main(int argc,char **argv)
   /* Allocation and initialization of grid */
   rc=((grid=newgrid(&config,standtype,NSTANDTYPES,config.npft[GRASS]+config.npft[TREE],config.npft[CROP]))==NULL);
   failonerror(&config,rc,INIT_GRID_ERR,"Initialization of LPJ grid failed");
-  if(config.coupled_model!=NULL)
+  if(iscoupled(config))
   {
     rc=open_copan(&config);
     snprintf(s,STRING_LEN,"Cannot couple to %s model",config.coupled_model);
@@ -224,7 +224,7 @@ int main(int argc,char **argv)
   rc=initoutput(output,grid,config.npft[GRASS]+config.npft[TREE],config.npft[CROP],&config);
   failonerror(&config,rc,INIT_INPUT_ERR,
               "Initialization of output data failed");
-  if(config.coupled_model!=NULL)
+  if(iscoupled(config))
   {
     rc=check_copan(&config);
     snprintf(s,STRING_LEN,"Cannot initialize %s model",config.coupled_model);
@@ -264,7 +264,7 @@ int main(int argc,char **argv)
   if(config.sim_id==LPJML_IMAGE)
     close_image(&config);
 #endif
-  if(config.coupled_model!=NULL)
+  if(iscoupled(config))
     close_copan(year<=config.lastyear,&config);
   freeconfig(&config);
 #ifdef USE_MPI

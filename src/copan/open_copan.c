@@ -19,14 +19,17 @@
 #endif
 #include "lpj.h"
 
+
+static char *coupled_model;
+
 static void handler(int UNUSED(num))
 {
-  fail(SOCKET_ERR,FALSE,"Channel to COPAN is broken");
+  fail(SOCKET_ERR,FALSE,"Channel to %s is broken",coupled_model);
 } /* of 'handler' */
 
 static void alarmhandler(int UNUSED(num))
 {
-  fail(OPEN_COPAN_ERR,FALSE,"Timeout in COPAN connection");
+  fail(OPEN_COPAN_ERR,FALSE,"Timeout in connection to %s",coupled_model);
 } /* of 'alarmhandler' */
 
 Bool open_copan(Config *config /**< LPJmL configuration */
@@ -39,6 +42,7 @@ Bool open_copan(Config *config /**< LPJmL configuration */
 
     /* Establish the TDT connection */
     printf("Connecting to %s model...\n",config->coupled_model);
+    coupled_model=config->coupled_model;
     fflush(stdout);
     if(config->wait)
     {

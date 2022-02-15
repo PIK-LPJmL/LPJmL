@@ -601,7 +601,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
             config->image_outport,config->wait);
 
 #else
-  if(config->coupled_model!=NULL)
+  if(iscoupled(*config))
   {
     fprintf(file,"Coupled to %s model running on host %s using port %d.\n",
             config->coupled_model,config->copan_host,config->copan_port);

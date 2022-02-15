@@ -307,6 +307,7 @@ extern size_t getsize(int,const Config *);
 #define ischeckpointrestart(config) ((config)->checkpoint_restart_filename!=NULL)
 #define iswriterestart(config) ((config)->write_restart_filename!=NULL)
 #define isreadrestart(config) ((config)->restart_filename!=NULL)
+#define iscoupled(config) ((config).coupled_model!=NULL)
 #ifdef USE_MPI
 #define isroot(config) ((config).rank==0)
 #else

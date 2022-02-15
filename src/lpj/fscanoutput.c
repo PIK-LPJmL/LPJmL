@@ -200,7 +200,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
                 config->outputvars[count].filename.name);
       return TRUE;
     }
-    else if(config->outputvars[count].filename.fmt==SOCK && config->coupled_model==NULL)
+    else if(config->outputvars[count].filename.fmt==SOCK && !iscoupled(*config))
     {
       if(verbosity)
         fprintf(stderr,"ERROR223: File format 'sock' not allowed without model coupling for '%s' output.\n",
@@ -212,7 +212,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       if(flag>=D_LAI && flag<=D_PET)
         isdaily=TRUE;
       config->outputvars[count].id=flag;
-      if(flag==GLOBALFLUX && config->outputvars[count].filename.fmt!=TXT && config->outputvars[count].filename.fmt!=SOCK && config->coupled_model==NULL)
+      if(flag==GLOBALFLUX && config->outputvars[count].filename.fmt!=TXT && config->outputvars[count].filename.fmt!=SOCK && !iscoupled(*config))
       {
         if(verbosity)
          fprintf(stderr,"ERROR224: Invalid format '%s' for 'globalflux' output, only 'txt' allowed.\n",

@@ -55,14 +55,18 @@ extern void close_copan(Bool,const Config *);
 extern Bool receive_copan(int,void *,Type,int,int,const Config *);
 extern Bool receive_real_copan(int,Real *,int,int,const Config *);
 extern Bool receive_scalar_copan(int,void *,Type,int,int,const Config *);
+extern Bool send_scalar_copan(int,const void *,Type,int,int,const Config *);
 extern Bool receive_real_scalar_copan(int,Real *,int,int,const Config *);
-extern Bool send_flux_copan(const Flux *,Real,int,const Config *);
+extern Bool send_real_scalar_copan(int,const Real *,int,Real,int,const Config *);
 extern Bool send_token_copan(Token,int,const Config *);
 extern Bool receive_token_copan(Socket *,Token *,int *);
 extern Bool openinput_copan(int,Type,int,int *,const Config *);
 extern Bool openoutput_copan(int,int,int,int,Type,const Config *);
 extern void send_output_copan(int,int,int,const Config *);
 
+/* Definitions of macros */
+
 #define receive_int_copan(index,data,size,year,config) receive_copan(index,data,LPJ_INT,size,year,config)
+#define send_flux_copan(flux,scalar,year,config) send_real_scalar_copan(GLOBALFLUX,(Real *)flux,sizeof(Flux)/sizeof(Real),scalar,year,config)
 
 #endif /* COPAN_H */

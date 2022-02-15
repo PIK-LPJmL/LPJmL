@@ -15,6 +15,10 @@
 
 #include "lpj.h"
 
+#ifndef _WIN32
+#include <signal.h>
+#endif
+
 void close_copan(Bool errorcode,        /**< error code (0= no error) */
                  const Config *config /**< LPJmL configuration */
                 )
@@ -25,6 +29,9 @@ void close_copan(Bool errorcode,        /**< error code (0= no error) */
     {
       send_token_copan((errorcode) ? FAIL_DATA : END_DATA,errorcode,config);
       close_socket(config->socket);
+#ifndef _WIN32
+      signal(SIGPIPE,SIG_DFL);
+#endif
     }
   }
 } /* of 'close_copan' */

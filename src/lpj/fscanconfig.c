@@ -188,6 +188,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     if(!isnull(file,"coupled_model"))
     {
       fscanname(file,name,"coupled_model");
+      if(config->sim_id==LPJML_IMAGE)
+      {
+        if(verbose)
+          fprintf(stderr,"ERROR123: Coupling to '%s' model not allowed with image coupling enabled.\n",
+                  name);
+        return TRUE;
+      }
       config->coupled_model=strdup(name);
       checkptr(name);
     }
