@@ -73,6 +73,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   Bool isphen;
   Grassland *data;
   Pftgrass *grass;
+  Pftgrasspar *grasspar;
   Real hfrac=0.5;
   Real cleaf=0.0;
   Real cleaf_max=0.0;
@@ -307,6 +308,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
       foreachpft(pft,p,&stand->pftlist)
       {
         grass=pft->data;
+        grasspar=getpftpar(pft,data);
         if (pft->bm_inc.carbon > 5.0|| (grass->ind.leaf.carbon*pft->nind) > param.allocation_threshold|| day==NDAYYEAR)
         {
           turnover_grass(&stand->soil.litter,pft,(Real)grass->growing_days/NDAYYEAR,config);
@@ -324,6 +326,16 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
          }
          else
          {
+           grass->turn.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR;
+           grass->turn.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR;
+           grass->turn_litt.leaf.carbon+=grass->ind.leaf.carbon*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+           grass->turn_litt.leaf.nitrogen+=grass->ind.leaf.nitrogen*grasspar->turnover.leaf/NDAYYEAR*pft->nind;
+
+           grass->turn.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR;
+           grass->turn.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR;
+           grass->turn_litt.root.carbon+=grass->ind.root.carbon*grasspar->turnover.root/NDAYYEAR*pft->nind;
+           grass->turn_litt.root.nitrogen+=grass->ind.root.nitrogen*grasspar->turnover.root/NDAYYEAR*pft->nind;
+
            grass->growing_days++;
            fpc_inc[p]=0;
          }
