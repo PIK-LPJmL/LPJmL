@@ -263,7 +263,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       return TRUE;
     }
     fscanpftreal(verb,&item,&pft->lmro_offset,pft->name,"lmro_offset");
-    if(pft->lmro_offset<0 && pft->lmro_offset>=1)
+    if(pft->lmro_offset<0 || pft->lmro_offset>=1)
     {
       if(verb)
         fprintf(stderr,"ERROR234: Parameter 'lmro_offset'=%g must be non-negative and less than 1 for PFT '%s'.\n",
