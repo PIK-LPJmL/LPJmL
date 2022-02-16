@@ -143,25 +143,9 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
         NC_leaf=pft->par->ncleaf.low;
       else if (NC_leaf>pft->par->ncleaf.high)
         NC_leaf=pft->par->ncleaf.high;
-      /**ndemand_leaf=(vegn_sum_tree(pft)-(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen+tree->ind.root.nitrogen)*pft->nind+pft->bm_inc.nitrogen)-
-            NC_leaf*(pft->bm_inc.carbon*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood));*/
-     // *ndemand_leaf=vegn_sum_tree(pft)-(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen+tree->ind.root.nitrogen)*pft->nind+pft->bm_inc.nitrogen*tree->falloc.leaf;
       *ndemand_leaf=tree->ind.leaf.nitrogen*pft->nind+pft->bm_inc.nitrogen*tree->falloc.leaf-tree->turn_litt.leaf.nitrogen;
       *ndemand_leaf=max(tree->ind.leaf.nitrogen*pft->nind-tree->turn_litt.leaf.nitrogen,*ndemand_leaf);
-      /*N das für excess und bm inc für Wurzeln (und sapwood)  angefordert wurde.
-      Jetzt aber mit NC_leaf das wirklich möglich ist, statt dem aus dem N demand.*/
-    // *ndemand_leaf=(tree->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*tree->falloc.leaf)*NC_leaf;
-      //*ndemand_leaf=(tree->ind.leaf.carbon*pft->nind)*NC_leaf;
-
- /*     *ndemand_leaf=vegn_sum_tree(pft)-(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen+tree->ind.root.nitrogen)*pft->nind+pft->bm_inc.nitrogen-
-            NC_leaf*(pft->bm_inc.carbon*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood));
-*/
-     *n_plant_demand=*ndemand_leaf+(tree->ind.root.nitrogen+tree->ind.sapwood.nitrogen-tree->turn.root.nitrogen)*pft->nind+NC_leaf*(tree->excess_carbon*pft->nind+pft->bm_inc.carbon)*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood);
-/*
-     printf("in NUPTAKE PFT: %s ndemand_to = %g ndemand_leaf %g ndemand_leaf minus  %g  nc_ratio %g nc_leaf %g \n",pft->par->name,*n_plant_demand,*ndemand_leaf,
-           vegn_sum_tree(pft)-(tree->ind.heartwood.nitrogen+tree->ind.sapwood.nitrogen+tree->ind.root.nitrogen)*pft->nind+pft->bm_inc.nitrogen-
-                    NC_leaf*(pft->bm_inc.carbon*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood)),NC_actual,NC_leaf);
-*/
+      *n_plant_demand=*ndemand_leaf+(tree->ind.root.nitrogen+tree->ind.sapwood.nitrogen-tree->turn.root.nitrogen)*pft->nind+NC_leaf*(tree->excess_carbon*pft->nind+pft->bm_inc.carbon)*(tree->falloc.root/treepar->ratio.root+tree->falloc.sapwood/treepar->ratio.sapwood);
     }
 
     if(ndemand_leaf_opt<epsilon)
