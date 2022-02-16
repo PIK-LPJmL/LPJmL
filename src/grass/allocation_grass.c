@@ -16,7 +16,6 @@
 
 #include "lpj.h"
 #include "grass.h"
-#define lmtorm_offset 0.5
 
 Bool allocation_grass(Litter *litter,   /**< litter pool */
                       Pft *pft,         /**< pointer to PFT */
@@ -50,16 +49,13 @@ Bool allocation_grass(Litter *litter,   /**< litter pool */
   {
     vscal=(config->with_nitrogen) ? min(1,pft->vscal/growing_days) : 1;
     wscal=pft->wscal_mean/growing_days;
-    //vscal=1; //pft->wscal_mean=1;
-    //lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/growing_days);
-    lmtorm=getpftpar(pft,lmro_ratio)*(lmtorm_offset+(1-lmtorm_offset)*min(vscal,wscal));
+    lmtorm=getpftpar(pft,lmro_ratio)*(getpftpar(pft,lmro_offset)+(1-getpftpar(pft,lmro_offset))*min(vscal,wscal));
   }
   else
   {
     vscal=(config->with_nitrogen) ? min(1,pft->vscal/NDAYYEAR) : 1;
     wscal=pft->wscal_mean/NDAYYEAR;
-     //lmtorm=getpftpar(pft,lmro_ratio)* (1- exp(-min(vscal,wscal))+0.3678794);
-    lmtorm=getpftpar(pft,lmro_ratio)*(lmtorm_offset+(1-lmtorm_offset)*min(vscal,wscal));
+    lmtorm=getpftpar(pft,lmro_ratio)*(getpftpar(pft,lmro_offset)+(1-getpftpar(pft,lmro_offset))*min(vscal,wscal));
   }
 
   pft->wscal_mean=pft->vscal=0;

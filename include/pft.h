@@ -105,6 +105,8 @@ typedef struct Pft
     Real longevity;             /**< leaf longevity (10) */
     Real lmro_ratio;            /**< leaf to root ratio under non-water stressed
                                    conditions (18) */
+    Real lmro_offset;           /**< leaf to root ratio offsetfraction under water/nitrogen stressed
+                                   conditions  */
     Real ramp;                  /**< number of GDDs to attain full leaf cover
                                    (par19) */
     Real gdd5min;               /**< PFT-specific minimum GDD(30) */
