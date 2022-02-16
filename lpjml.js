@@ -198,7 +198,7 @@ ID                               Fmt                        filename
     { "id" : "pft_chawo",        "file" : { "fmt" : "raw", "name" : "output/pft_chawo.bin"}},
     { "id" : "pft_nhawo",        "file" : { "fmt" : "raw", "name" : "output/pft_nhawo.bin"}},
 #ifdef WITH_SPITFIRE
-    { "id" : "firec",            "file" : { "fmt" : "raw", "timestep" : "monthly", "unit" : "gC/m2/month", "name" : "output/mfirec.bin"}},
+    { "id" : "firec",            "file" : { "fmt" : "raw", "timestep" : "monthly" , "unit" : "gC/m2/month", "name" : "output/mfirec.bin"}},
     { "id" : "nfire",            "file" : { "fmt" : "raw", "name" : "output/mnfire.bin"}},
     { "id" : "burntarea",        "file" : { "fmt" : "raw", "name" : "output/mburnt_area.bin"}},
 #else
@@ -252,12 +252,12 @@ ID                               Fmt                        filename
 
 #ifndef FROM_RESTART
 
-  "nspinup" : 30000,  /* spinup years */
+  "nspinup" : 10000,  /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr) */
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
   "restart" :  false, /* start from restart file */
-  "outputyear" : -28099,
+  "outputyear" : -8099,
   "write_restart" : true, /* create restart file: the last year of simulation=restart-year */
   "write_restart_filename" : "restart/restart_1840_nv_stdfire.lpj", /* filename of restart file */
   "restart_year": 1840 /* write restart at year */

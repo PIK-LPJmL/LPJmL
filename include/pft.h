@@ -105,6 +105,8 @@ typedef struct Pft
     Real longevity;             /**< leaf longevity (10) */
     Real lmro_ratio;            /**< leaf to root ratio under non-water stressed
                                    conditions (18) */
+    Real lmro_offset;           /**< leaf to root ratio offsetfraction under water/nitrogen stressed
+                                   conditions  */
     Real ramp;                  /**< number of GDDs to attain full leaf cover
                                    (par19) */
     Real gdd5min;               /**< PFT-specific minimum GDD(30) */
@@ -263,7 +265,7 @@ extern void freepftnames(char **,int,int,int,const Config *);
 extern int getnculttype(const Pftpar [],int,int);
 extern int getngrassnat(const Pftpar [],int);
 extern void phenology_gsi(Pft *, Real, Real, int,Bool,const Config *);
-extern Real nitrogen_stress(Pft *,Real,Real,int,int,const Config *);
+extern Real nitrogen_stress(Pft *,Real,Real,Real [LASTLAYER],Real,int,int,const Config *);
 extern Real f_lai(Real);
 extern int findpftname(const char *,const Pftpar[],int);
 extern Bool findcftmap(const char *,const Pftpar[],const int[],int);

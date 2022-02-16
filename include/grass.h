@@ -46,6 +46,7 @@ typedef struct
 typedef struct
 {
   Grassphys turn;
+  Grassphys turn_litt;
   Real max_leaf;
   Real excess_carbon;
   Grassphys ind;
