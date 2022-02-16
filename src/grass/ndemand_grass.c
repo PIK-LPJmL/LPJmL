@@ -32,16 +32,14 @@ Real ndemand_grass(const Pft *pft,    /**< pointer to PFT */
   //*ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft))) +param.n0*0.001*(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf)*pft->nind;
   //*ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft))) +pft->par->ncleaf.low*(grass->ind.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf)*pft->nind;
   //*ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft)))+pft->par->ncleaf.low*(grass->ind.leaf.carbon)*pft->nind;
-  *ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft)))+pft->par->ncleaf.median*(grass->ind.leaf.carbon)*pft->nind;
+  *ndemand_leaf=((daylength==0) ? 0: param.p*0.02314815*vmax/daylength*exp(-param.k_temp*(temp-25))*f_lai(lai_grass(pft)))+pft->par->ncleaf.median*(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf-grass->turn_litt.leaf.nitrogen);
   
-  nc_ratio=*ndemand_leaf/(grass->ind.leaf.carbon*pft->nind+pft->bm_inc.carbon*grass->falloc.leaf);
+  nc_ratio=(grass->ind.leaf.nitrogen-grass->turn.leaf.nitrogen+pft->bm_inc.nitrogen*grass->falloc.leaf/pft->nind)/(grass->ind.leaf.carbon-grass->turn.leaf.carbon+pft->bm_inc.carbon*grass->falloc.leaf/pft->nind);
   if(nc_ratio>pft->par->ncleaf.high)
     nc_ratio=pft->par->ncleaf.high;
   else if(nc_ratio<pft->par->ncleaf.low)
     nc_ratio=pft->par->ncleaf.low;
-  ndemand_tot=*ndemand_leaf+grass->ind.root.nitrogen*pft->nind+nc_ratio*
-    (grass->excess_carbon*pft->nind+pft->bm_inc.carbon)*grass->falloc.root/grasspar->ratio; 
-  //ndemand_tot=*ndemand_leaf+grass->ind.root.nitrogen*pft->nind;
+  ndemand_tot=*ndemand_leaf+(grass->ind.root.nitrogen-grass->turn.root.nitrogen)*pft->nind+nc_ratio*(grass->excess_carbon*pft->nind+pft->bm_inc.carbon)*grass->falloc.root/grasspar->ratio;
 
   /* unclear to me: setaside NPP seems to go to natural grass pft_npp -- should we do the same for Ndemand? */
   return ndemand_tot;

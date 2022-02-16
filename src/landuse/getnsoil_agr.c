@@ -36,6 +36,6 @@ void getnsoil_agr(Real *norg_soil_agr, /**< [out] soil organic N in agriculture 
         *nmin_soil_agr+=(stand->soil.NO3[l]+stand->soil.NH4[l])*stand->frac;
       }
       foreachpft(pft,p,&stand->pftlist)
-        *nveg_soil_agr+=vegn_sum(pft)*stand->frac;
+        *nveg_soil_agr+=(vegn_sum(pft)+pft->bm_inc.nitrogen)*stand->frac;
     }
 } /* of 'getnsoil_agr' */

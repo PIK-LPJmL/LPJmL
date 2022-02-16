@@ -137,7 +137,7 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
   Pfttree *tree;
   Pfttreepar *treepar;
   Data data;
-  Real vscal;
+  Real vscal,wscal;
   Real csapwood,croot,cleaf,a,b,c,nitrogen_before;
   tree=pft->data;
   /* add excess carbon from last year to bm_inc to have this allocated now */
@@ -154,13 +154,15 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
   }
   if(!strcmp(pft->par->name,"cotton"))
   {
+    wscal=pft->wscal_mean/(Real)pft->stand->growing_days;
     vscal=(config->with_nitrogen) ? min(1,pft->vscal/(Real)pft->stand->growing_days) : 1;
-    lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/(Real)pft->stand->growing_days);
+    lmtorm=getpftpar(pft,lmro_ratio)*(getpftpar(pft,lmro_offset)+(1-getpftpar(pft,lmro_offset))*min(vscal,wscal));
   }
   else
   {
     vscal=(config->with_nitrogen) ? min(1,pft->vscal/NDAYYEAR) : 1;
-    lmtorm=getpftpar(pft,lmro_ratio)*min(vscal,pft->wscal_mean/NDAYYEAR);
+    wscal=pft->wscal_mean/NDAYYEAR;
+    lmtorm=getpftpar(pft,lmro_ratio)*(getpftpar(pft,lmro_offset)+(1-getpftpar(pft,lmro_offset))*min(vscal,wscal));
   }
   bm_inc_ind.carbon=pft->bm_inc.carbon/pft->nind;
   bm_inc_ind.nitrogen=pft->bm_inc.nitrogen/pft->nind;
@@ -230,6 +232,11 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
         tinc_ind.root.carbon=0.0;
       else
         tinc_ind.root.carbon=(tinc_ind.leaf.carbon+tree->ind.leaf.carbon)/lmtorm-tree->ind.root.carbon; 
+      if(bm_inc_ind.carbon>0 && tinc_ind.root.carbon+tinc_ind.leaf.carbon>bm_inc_ind.carbon)
+      {
+        tinc_ind.root.carbon=bm_inc_ind.carbon*tinc_ind.root.carbon/(tinc_ind.root.carbon+tinc_ind.leaf.carbon);
+        tinc_ind.leaf.carbon=bm_inc_ind.carbon*tinc_ind.leaf.carbon/(tinc_ind.root.carbon+tinc_ind.leaf.carbon);
+      }
       tinc_ind.sapwood.carbon=bm_inc_ind.carbon-tinc_ind.leaf.carbon-tinc_ind.root.carbon;
     }
     else 

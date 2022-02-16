@@ -45,7 +45,9 @@
 #endif
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.3      /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_EV_BR 0.7   /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV 0.8   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_GR 0.3   /* fraction of N not recovered before turnover */
 #define ALPHAA_NITROGEN 0.5  /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
@@ -80,7 +82,7 @@
     "cultivation_type" : "none", /* cultivation_type */
     "nfixing" : false,           /* no N fixing */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
-    "beta_root" : 0.932,    /* beta_root original 0.962*/
+    "beta_root" : 0.952,    /* beta_root original 0.962*/
     "minwscal" : 0.0,       /* minwscal 3*/
     "gmin"  : 1.6,          /* gmin 4*/
     "respcoeff" : 0.2,      /* respcoeff 5*/
@@ -89,6 +91,7 @@
     "longevity" : 1.6,      /* leaf longevity 10*/
     "sla" : 0.01986,         /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -148,8 +151,8 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
     "leaftype" : "broadleaved",  /* leaftype */
@@ -191,6 +194,7 @@
     "longevity" : 0.5,      /* leaf longevity 10*/
     "sla" : 0.03233,         /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -250,7 +254,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 2.0,  /* roughness length */
@@ -293,6 +297,7 @@
     "longevity" : 4.0,      /* leaf longevity 10*/
     "sla" : 0.01049,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 900.0,      /* gdd5min 30*/
@@ -352,7 +357,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
@@ -395,6 +400,7 @@
     "longevity" : 1.6,      /* leaf longevity 10*/
     "sla" : 0.01986,         /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 1200.0,     /* gdd5min 30*/
@@ -418,7 +424,7 @@
     },
     "tmax" :
     {
-      "slope" : 0.98,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "slope" : 1.6,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
       "base" : 41.12,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
@@ -454,7 +460,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
@@ -497,6 +503,7 @@
     "longevity" : 0.45,     /* leaf longevity 10*/
     "sla" : 0.03233,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 300.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 1200.0,     /* gdd5min 30*/
@@ -556,7 +563,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
@@ -601,6 +608,7 @@
     "longevity" : 4.0,      /* leaf longevity 10*/
     "sla" : 0.01049,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 600.0,      /* gdd5min 30*/
@@ -703,6 +711,7 @@
     "longevity" : 0.5,      /* leaf longevity 10*/
     "sla" : 0.03233,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 200.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 350.0,      /* gdd5min 30*/
@@ -807,6 +816,7 @@
     "longevity" : 0.65,     /* leaf longevity 10*/
     "sla" : 0.02118,        /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 200.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 350.0,      /* gdd5min 30*/
@@ -911,6 +921,7 @@
     "longevity" : 0.4,      /* leaf longevity 10*/
     "sla" : 0.040373,        /* specific leaf area */
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.1,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -970,8 +981,8 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
@@ -996,6 +1007,7 @@
     "longevity" : 0.35,     /* leaf longevity 10*/
     "sla" : 0.042242,        /* specific leaf area */
     "lmro_ratio" : 0.8,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.1,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1055,8 +1067,8 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
@@ -1081,6 +1093,7 @@
     "longevity" : 0.35,     /* leaf longevity 10*/
     "sla" : 0.042242,        /* specific leaf area */
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.1,     /* lai_sapl 21*/
     "gdd5min" : 0.01,       /* gdd5min 30*/
@@ -1140,8 +1153,8 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "knstore" : 0.05,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
@@ -1165,6 +1178,7 @@
     "resist" : 1.0,         /* resist 8*/
     "longevity" : 2.0,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.6,       /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1224,7 +1238,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4, /* windspeed dampening */
     "roughness_length" : 1.0,/* roughness length */
@@ -1268,6 +1282,7 @@
     "resist" : 0.95,        /* resist 8*/
     "longevity" : 0.45,     /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 300.0,          /* ramp 19*/
     "lai_sapl" : 1.6,       /* lai_sapl 2.1, larger sapling used for plantations, original value 1.5  */
     "gdd5min" : 300.0,      /* gdd5min 30*/
@@ -1327,7 +1342,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "median" : CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.15,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
@@ -1373,6 +1388,7 @@
     "resist" : 1.0,         /* resist 8*/
     "longevity" : 0.25,     /* leaf longevity 10*/
     "lmro_ratio" : 0.75,   /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1432,8 +1448,8 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
+    "fn_turnover" : FN_TURNOVER_GR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,/* windspeed dampening */
     "roughness_length" : 0.03,  /* roughness length */
     "turnover" : {"leaf" : 1.0, "root" : 2.0}, /* turnover leaf  root 9 12*/
@@ -1457,6 +1473,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.0001,    /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1516,7 +1533,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03, /* roughness length */
@@ -1567,6 +1584,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.33,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1626,7 +1644,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -1677,6 +1695,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.33,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1736,7 +1755,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,  /* windspeed dampening */
     "roughness_length" : 0.03,    /* roughness length */
@@ -1787,6 +1806,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1846,7 +1866,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -1897,6 +1917,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1956,7 +1977,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -2007,6 +2028,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2066,7 +2088,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6,   /* windspeed dampening */
     "roughness_length" : 0.03,     /* roughness length */
@@ -2117,6 +2139,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2176,7 +2199,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -2227,6 +2250,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.33,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2286,7 +2310,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -2337,6 +2361,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.66,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2396,7 +2421,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -2447,6 +2472,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2506,7 +2532,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -2557,6 +2583,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.41,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2616,7 +2643,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
@@ -2667,6 +2694,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.66,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2726,7 +2754,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": 14.3, "median" : CN_CROPS_MEAN, "high" : 58.8},  /* cnleaf min max, White et al. 2000 doi: 10.1175/1087-3562(2000)004<0003:PASAOT>2.0.CO;2*/
-    "knstore" : 0.3,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.6, /* windspeed dampening */
     "roughness_length" : 0.03,   /* roughness length */
