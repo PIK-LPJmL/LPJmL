@@ -262,7 +262,14 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
                 pft->lmro_ratio,pft->name);
       return TRUE;
     }
-    fscanpftreal01(verb,&item,&pft->lmro_offset,pft->name,"lmro_offset");
+    fscanpftreal(verb,&item,&pft->lmro_offset,pft->name,"lmro_offset");
+    if(pft->lmro_offset<0 && pft->lmro_offset>=1)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR234: Parameter 'lmro_offset'=%g must be non-negative and less than 1 for PFT '%s'.\n",
+                pft->lmro_offset,pft->name);
+      return TRUE;
+    }
     fscanpftreal(verb,&item,&pft->ramp,pft->name,"ramp");
     if(pft->ramp<=0)
     {
