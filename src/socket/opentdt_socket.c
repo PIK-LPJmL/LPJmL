@@ -35,7 +35,6 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
 {
   Socket *sock;
   struct sockaddr_in name;
-  struct sockaddr fsin;
   int known_int,array,opt=TRUE;
   char check='1';
   fd_set rfds;
@@ -120,7 +119,7 @@ Socket *opentdt_socket(int port, /* port of TCP/IP connection */
     fputs("ERROR304: Cannot allocate memory for socket.\n",stderr);
     return NULL;
   }
-  sock->channel=accept(my_socket,&fsin,&len);
+  sock->channel=accept(my_socket,NULL,NULL);
   if(isinvalid_socket(sock->channel))
   {
 #ifdef _WIN32
