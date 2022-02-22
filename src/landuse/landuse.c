@@ -1279,6 +1279,8 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       grid[cell].ml.landfrac[0].woodplantation=0;
       grid[cell].ml.landfrac[1].woodplantation=0;
     }
+    /* recommpute sum after scaling fraction */
+    sum=landfrac_sum(grid[cell].ml.landfrac,ncft,config->nagtree,FALSE)+landfrac_sum(grid[cell].ml.landfrac,ncft,config->nagtree,TRUE);
 
     if(sum>1.00001)
     {

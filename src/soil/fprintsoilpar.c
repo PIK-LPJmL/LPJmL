@@ -31,7 +31,7 @@ void fprintsoilpar(FILE *file,              /**< pointer to ASCII file */
     fprintf(file," %g",fbd_fac[i]);
   fputs("\nName               %sand  %silt %clay hsg tdiff0 tdiff15 tdiff100 condpwp cond100 cond100ice",file);
   if(with_nitrogen)
-    fputs(" a_denit b_denit c_denit d_denit anion_excl cn_ratio",file);
+    fputs(" a_nit   b_nit   c_nit   d_nit   anion_excl cn_ratio",file);
   fputs("\n------------------ ------ ----- ----- --- ------ ------- -------- ------- ------- ----------",file);
   if(with_nitrogen)
     fputs(" ------- ------- ------- ------- ---------- --------\n",file);
