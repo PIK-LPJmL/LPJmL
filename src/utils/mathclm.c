@@ -524,7 +524,7 @@ int main(int argc,char **argv)
               for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=data1[k]-data2[k];
               break;
-          case MUL:
+            case MUL:
               for(k=0;k<header1.nbands*header1.nstep;k++)
                 data3[k]=data1[k]*data2[k];
               break;

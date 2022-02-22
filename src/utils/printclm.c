@@ -78,7 +78,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     }
     if(version>2)
       type=header.datatype;
-    else 
+    else
       header.datatype=type;
     if(nbands!=-1)
       header.nbands=nbands;
@@ -107,7 +107,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
         printf("Land use:\t\t%s\n"
                "River routing:\t\t%s\n"
                "Fixed sowing date:\t%s\n"
-               "Prescribed PHU:\t\t%s\n" 
+               "Prescribed PHU:\t\t%s\n"
                "Double harvest:\t\t%s\n",
                bool2str(restartheader.landuse),
                bool2str(restartheader.river_routing),
@@ -133,13 +133,15 @@ static void printclm(const char *filename,int output,int nbands,int version,
       type=LPJ_FLOAT;
     size=getfilesizep(file)-headersize(id,version)-sizeof(int)*header.ncell;
     if(size!=(long long)typesizes[type]*header.ncell*header.nbands*header.nstep*header.nyear)
-      fputs("Warning: file length does not match header.\n",stderr);
+      fprintf(stderr,"Warning: File length does not match header, differs by %lld bytes.\n",
+              llabs(size-(long long)typesizes[type]*header.ncell*header.nbands*header.nstep*header.nyear));
   }
   else if(!isrestart && !isreservoir && !ismeta)
   {
     size=getfilesizep(file)-headersize(id,version);
     if(size!=typesizes[type]*header.ncell*header.nbands*header.nyear*header.nstep)
-      fputs("Warning: file length does not match header.\n",stderr);
+      fprintf(stderr,"Warning: File length does not match header, differs by %lld bytes.\n",
+              llabs(size-(long long)typesizes[type]*header.ncell*header.nbands*header.nstep*header.nyear));
   }
   if((output & NO_DATA)==0)
   {
