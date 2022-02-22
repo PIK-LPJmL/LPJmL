@@ -39,7 +39,7 @@ void check_balance(Flux flux,           /**< global carbon and water fluxes */
 #ifdef NO_FAIL_BALANCE
     fprintf(stderr,"ERROR030: "
 #else
-    fail(INVALID_WATER_BALANCE_ERR,FALSE,
+    fail(GLOBAL_WATER_BALANCE_ERR,FALSE,
 #endif
          "Global water balance not closed in year %d: diff=%.5g(%.5g), prec=%.5g, wd_unsustainable=%.5g, vapour_flux=%.5g, discharge=%.5g, delta_storage=%.5g, excess_water=%.5g"
 #ifdef NO_FAIL_BALANCE
