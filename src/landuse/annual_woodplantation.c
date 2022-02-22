@@ -277,7 +277,7 @@ Bool annual_woodplantation(Stand *stand,         /**< Pointer to stand */
     foreachpft(pft,p,&stand->pftlist)
     {
       getoutputindex(&stand->cell->output,PFT_VEGC,getnnat(npft,config)+index,config)+=vegc_sum(pft);
-      getoutputindex(&stand->cell->output,PFT_VEGN,getnnat(npft,config)+index,config)+=vegn_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGN,getnnat(npft,config)+index,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
     }
   }
   return FALSE;

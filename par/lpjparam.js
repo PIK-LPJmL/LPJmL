@@ -16,7 +16,7 @@
 {
   "k_litter10" : 0.3,        /* 0.3 k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
-  "init_soiln" : { "fast" : 5500.0, "slow":  5500.0}, /* initial fast and slow soil nitrogen (gN/m2) 5500*/
+  "init_soiln" : { "fast" : 3500.0, "slow":  3500.0}, /* initial fast and slow soil nitrogen (gN/m2) */
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
   "soil_infil" : 2.0,        /* default soil infiltration */
@@ -42,14 +42,14 @@
   "fpc_tree_max" : 0.95,     /* maximum foliage projective cover for trees */
   "temp_response" : 56.02,   /* Parameter in temperature response function */
   "percthres" : 1.0,
-  "k_2": 0.02,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
+  "k_2": 0.01,               /* k_2, fraction of nitrified N lost as N20 flux Parton, 2001*/
   "p" : 25,                  /* Haxeltine & Prentice regression coefficient */
   "n0" : 7.15,               /* Haxeltine & Prentice regression coefficient */
   "k_temp" : 0.02,           /* factor of temperature dependence of nitrogen demand for Rubisco activity */
   "min_c_bnf" : 20,          /* threshold C root content for BNF */
   "par_sink_limit" : 0.2,    /* Michaelis-Menten scaler of sink limitation */
   "q_ash" : 0.45,            /* fraction of nitrogen going to litter after fire */
-  "sapwood_recovery" : 0.3,  /* recovery of sapwood nitrogen */
+  "sapwood_recovery" : 0.2,  /* recovery of sapwood nitrogen */
   "T_m" : 15.0,              /* parameter in N uptake temperature function */
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */

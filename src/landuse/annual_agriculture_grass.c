@@ -115,7 +115,7 @@ Bool annual_agriculture_grass(Stand* stand,         /**< Pointer to stand */
   {
     grass=pft->data;
     getoutputindex(&stand->cell->output,PFT_VEGC,nnat+index,config)+=vegc_sum(pft);
-    getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index,config)+=vegn_sum(pft);
+    getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
     getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index,config)+=grass->ind.root.carbon;
     getoutputindex(&stand->cell->output,PFT_NROOT,nnat+index,config)+=grass->ind.root.nitrogen;
     getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+index,config)+=grass->ind.leaf.carbon;

@@ -117,8 +117,8 @@ Bool annual_grassland(Stand *stand,         /**< Pointer to stand */
     }
     if(isannual(PFT_VEGN,config))
     {
-      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegn_sum(pft);
-      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegn_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+rothers(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
+      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+rmgrass(ncft)+grassland->irrigation.irrigation*nirrig,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
     }
     if(isannual(PFT_CROOT,config))
     {

@@ -28,6 +28,9 @@ void mix_veg_grass(Pft *pft,Real scaler)
   grass->turn.root.nitrogen*=scaler;
   grass->turn.leaf.carbon*=scaler;
   grass->turn.leaf.nitrogen*=scaler;
+  grass->turn_litt.leaf.carbon*=scaler;
+  grass->turn_litt.leaf.nitrogen*=scaler;
+  //pft->nind*=scaler;  only if nind is really used TODO rm root and leaf carbon/nitrogen turn.leaf here
 
   pft->bm_inc.carbon*=scaler;
   pft->bm_inc.nitrogen*=scaler;

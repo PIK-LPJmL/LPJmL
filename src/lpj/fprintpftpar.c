@@ -44,6 +44,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                "longevity:\t%g (yr)\n"
                "SLA:\t\t%g (m2/gC)\n"
                "lmro ratio:\t%g\n"
+               "lmro offset:\t%g\n"
                "ramp:\t\t%g\n"
                "LAI sapl:\t%g\n"
                "gdd5min:\t%g\n"
@@ -77,7 +78,7 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
           pftpar->beta_root,
           pftpar->minwscal,pftpar->gmin,pftpar->respcoeff,pftpar->nmax,
           pftpar->resist,
-          pftpar->longevity,pftpar->sla,pftpar->lmro_ratio,1.0/pftpar->ramp,
+          pftpar->longevity,pftpar->sla,pftpar->lmro_ratio,pftpar->lmro_offset,1.0/pftpar->ramp,
           pftpar->lai_sapl,pftpar->gdd5min,
           pftpar->twmax,pftpar->twmax_daily,pftpar->gddbase,pftpar->min_temprange,
           pftpar->emax,pftpar->intc,

@@ -32,7 +32,7 @@
 #define SNOWLAYER NSOILLAYER
 
 #define soil_equil_year (param.veg_equil_year+1320)
-#define cshift_year 240
+#define cshift_year 300
 #define snow_skin_depth 40.0 /* snow skin layer depth (mm water equivalent)*/
 #define c_water 4.2e6 /* J/m3/K */
 #define c_ice   2.1e6 /* J/m3/K */
@@ -332,5 +332,4 @@ extern void pedotransfer(Stand *, Real *, Real *,Real);
 #define f_NH4(nh4) (1-exp(-0.0105*(nh4))) /* Parton et al 1996 */
 #define getV(soil,l) (((soil)->wsats[l] - ((soil)->w[l] * (soil)->whcs[l] + (soil)->ice_depth[l] + (soil)->ice_fw[l] + (soil)->wpwps[l] + (soil)->w_fw[l])) / soildepth[l]) /*soil air content (m3 air/m3 soil)*/
 #define getsoilmoist(soil,l) (((soil)->w[l] * (soil)->whcs[l] + ((soil)->wpwps[l] * (1 - (soil)->ice_pwp[l])) + (soil)->w_fw[l]) / (soil)->wsats[l])
-
 #endif /* SOIL_H */

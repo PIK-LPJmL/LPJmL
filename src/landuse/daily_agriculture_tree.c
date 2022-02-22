@@ -90,7 +90,6 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
   evap=evap_blue=cover_stand=intercep_stand=intercep_stand_blue=runoff=return_flow_b=wet_all=intercept=sprink_interc=rainmelt=irrig_apply=0.0;
   if(!strcmp(config->pftpar[data->irrigation.pft_id].name,"cotton") && day==stand->cell->ml.sowing_day_cotton[data->irrigation.irrigation])
   {
-    //printf("day=%d, sowing %d\n",day,data->irrigation);
     pft=addpft(stand,config->pftpar+data->irrigation.pft_id,year,0,config);
     flux_estab=establishment(pft,0,0,1);
     getoutput(output,FLUX_ESTABC,config)+=flux_estab.carbon*stand->frac;
@@ -236,7 +235,6 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
     //if(istree(pft) && pft->par->id!=TEA && npp>0 && stand->age>treepar->rotation)
     if(istree(pft) && strcmp(pft->par->name,"tea") && npp>0)
     {
-      //printf("%s %g %g NPP\n",pft->par->name,pft->gdd,npp);
       treepar=pft->par->data;
       tree=pft->data;
       switch(pft->par->phenology)
@@ -249,7 +247,6 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
               if(tree->boll_age<45)
                 tree->boll_age++;
               cnratio_fruit=0.0054*tree->boll_age*tree->boll_age-0.3984*tree->boll_age+9.4091;
-              //printf("cnratio(%d)=%g\n",cnratio_fruit,tree->boll_age);
             }
             else
               cnratio_fruit=treepar->cnratio_fruit;
@@ -274,7 +271,6 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
 #endif
             tree->fruit.carbon+=treepar->harvest_ratio*npp;
             tree->fruit.nitrogen+=treepar->harvest_ratio*npp/treepar->cnratio_fruit;
-            //printf("%s %g fruit\n",pft->par->name,tree->fruit.carbon);
             pft->bm_inc.carbon-=treepar->harvest_ratio*npp;
             pft->bm_inc.nitrogen-=treepar->harvest_ratio*npp/treepar->cnratio_fruit;
           }
@@ -398,7 +394,7 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
       stand->cell->output.dcflux+=yield.carbon*stand->frac;
       annual_tree(stand,pft,&fpc_inc,climate->isdailytemp,config);
       getoutputindex(&stand->cell->output,PFT_VEGC,nnat+index,config)+=vegc_sum(pft);
-      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index,config)+=vegn_sum(pft);
+      getoutputindex(&stand->cell->output,PFT_VEGN,nnat+index,config)+=vegn_sum(pft)+pft->bm_inc.nitrogen;
       getoutputindex(&stand->cell->output,PFT_CROOT,nnat+index,config)+=tree->ind.root.carbon;
       getoutputindex(&stand->cell->output,PFT_NROOT,nnat+index,config)+=tree->ind.root.nitrogen;
       getoutputindex(&stand->cell->output,PFT_CLEAF,nnat+index,config)+=tree->ind.leaf.carbon;
