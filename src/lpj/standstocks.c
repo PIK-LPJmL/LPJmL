@@ -26,7 +26,9 @@ Stocks standstocks(const Stand *stand /**< pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     tot.carbon+=vegc_sum(pft); /* sum up carbon in PFTs */
-    tot.nitrogen+=vegn_sum(pft); /* sum up nitrogen in PFTs */
+    tot.nitrogen+=vegn_sum(pft)+pft->bm_inc.nitrogen; /* sum up nitrogen in PFTs */
+    if(pft->par->cultivation_type==ANNUAL_CROP)
+      tot.nitrogen-=pft->bm_inc.nitrogen;
   }
   return tot;
 } /* of 'standstocks' */

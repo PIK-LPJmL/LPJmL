@@ -941,8 +941,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   else
   {
     config->restart_filename=NULL;
-    fscanbool2(file,&config->equilsoil,"equilsoil");
   }
+  fscanbool2(file,&config->equilsoil,"equilsoil");
   if(iskeydefined(file,"checkpoint_filename"))
   {
     fscanname(file,name,"checkpoint_filename");
