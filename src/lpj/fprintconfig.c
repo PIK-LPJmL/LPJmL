@@ -166,6 +166,8 @@ static size_t isnetcdfinput(const Config *config)
     width=max(width,strlen(config->aquifer_filename.var));
   if(config->wateruse_wd_filename.name!=NULL && config->wateruse_wd_filename.fmt==CDF)
     width=max(width,strlen(config->wateruse_wd_filename.var));
+  if(config->aquifer_irrig==AQUIFER_IRRIG && config->aquifer_filename.fmt==CDF)
+    width=max(width,strlen(config->aquifer_filename.var));
 #endif
   if(width)
     width=max(width,strlen("Varname"));
