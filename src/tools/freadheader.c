@@ -41,7 +41,11 @@ Bool freadheader(FILE *file,     /**< file pointer of binary file */
   if(strcmp(buffer,headername))
   {
     if(isout)
-      fprintf(stderr,"ERROR239: Header id '%s' does not match '%s'.\n",buffer,headername);
+    {
+      fputs("ERROR239: Header id '",stderr);
+      fputprintable(stderr,buffer);
+      fprintf(stderr,"' does not match '%s'.\n",headername);
+    }
     free(buffer);
     return TRUE;
   }
