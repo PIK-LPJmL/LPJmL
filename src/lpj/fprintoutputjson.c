@@ -31,7 +31,7 @@ Bool fprintoutputjson(int i,int year,const Config *config)
     snprintf(s,STRING_LEN,config->outputvars[i].filename.name,year);
     filename=s;
   }
-  else 
+  else
     filename=config->outputvars[i].filename.name;
   /* create filename for JSON metafile */
   json_filename=malloc(strlen(filename)+strlen(SUFFIX)+1);
@@ -50,6 +50,8 @@ Bool fprintoutputjson(int i,int year,const Config *config)
     return TRUE;
   }
   fprintf(file,"{\n");
+  fprintf(file,"  \"sim_name\" : \"%s\",\n",config->sim_name);
+  fprintf(file,"  \"source\" : \"LPJmL C Version " LPJ_VERSION"\",\n");
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
   fprintf(file,"  \"ncell\" : %d,\n",(config->outputvars[i].id==ADISCHARGE) ? config->nall : config->total);
   fprintf(file,"  \"cellsize\" : [%f,%f],\n",config->resolution.lon,config->resolution.lat);
@@ -107,4 +109,4 @@ Bool fprintoutputjson(int i,int year,const Config *config)
   fclose(file);
   free(json_filename);
   return FALSE;
-} /* of 'fprintoutputjson' */ 
+} /* of 'fprintoutputjson' */
