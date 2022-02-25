@@ -64,7 +64,7 @@ void fcloseoutput(Outputfile *output,  /**< Output file array */
           {
             switch(output->files[i].fmt)
             {
-              case RAW: case TXT:
+              case RAW: case TXT: case CLM: case META:
                 fclose(output->files[i].fp.file);
                 break;
               case CDF:
@@ -81,7 +81,7 @@ void fcloseoutput(Outputfile *output,  /**< Output file array */
       {
          switch(output->files[i].fmt)
          {
-           case RAW: case TXT: case CLM:
+           case RAW: case TXT: case CLM: case META:
              fclose(output->files[i].fp.file);
              break;
            case CDF:

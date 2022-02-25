@@ -138,7 +138,7 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
     case LPJ_GATHER:
       switch(output->files[index].fmt)
       {
-        case RAW: case CLM:
+        case RAW: case CLM: case META:
           mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
                     output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -173,7 +173,7 @@ static void writedata(Outputfile *output,int index,float data[],int year,int dat
   if(output->method==LPJ_FILES)
     switch(output->files[index].fmt)
     {
-      case RAW: case CLM:
+      case RAW: case CLM: case META:
         if(fwrite(data,sizeof(float),config->count,output->files[index].fp.file)!=config->count)
           fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
         break;
@@ -221,7 +221,7 @@ static void writeshortdata(Outputfile *output,int index,short data[],int year,in
     case LPJ_GATHER:
       switch(output->files[index].fmt)
       {
-        case RAW: case CLM:
+        case RAW: case CLM: case META:
           mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
                     output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -316,7 +316,7 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
       getcounts(counts,offsets,config->nall,1,config->ntask);
       switch(output->files[index].fmt)
       {
-        case RAW: case CLM:
+        case RAW: case CLM: case META:
           mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->nall,counts,
                     offsets,config->rank,config->comm);
           break;
@@ -360,7 +360,7 @@ static void writealldata(Outputfile *output,int index,float data[],int year,int 
   if(output->method==LPJ_FILES)
     switch(output->files[index].fmt)
     {
-      case RAW: case CLM:
+      case RAW: case CLM: case META:
         fwrite(data,sizeof(float),config->ngridcell,output->files[index].fp.file);
         break;
       case TXT:
@@ -413,7 +413,7 @@ static void writepft(Outputfile *output,int index,float *data,int year,
     case LPJ_GATHER:
       switch(output->files[index].fmt)
       {
-        case RAW: case CLM:
+        case RAW: case CLM: case META:
           mpi_write(output->files[index].fp.file,data,MPI_FLOAT,config->total,
                     output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -454,7 +454,7 @@ static void writepft(Outputfile *output,int index,float *data,int year,
   else
     switch(output->files[index].fmt)
     {
-      case RAW: case CLM:
+      case RAW: case CLM: case META:
         if(fwrite(data,sizeof(float),config->count,output->files[index].fp.file)!=config->count)
           fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
         break;
@@ -500,7 +500,7 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
     case LPJ_GATHER:
       switch(output->files[index].fmt)
       {
-        case RAW: case CLM:
+        case RAW: case CLM: case META:
           mpi_write(output->files[index].fp.file,data,MPI_SHORT,config->total,
                     output->counts,output->offsets,config->rank,config->comm);
           break;
@@ -541,7 +541,7 @@ static void writeshortpft(Outputfile *output,int index,short *data,int year,
   else
     switch(output->files[index].fmt)
     {
-      case RAW: case CLM:
+      case RAW: case CLM: case META:
         if(fwrite(data,sizeof(short),config->count,output->files[index].fp.file)!=config->count)
           fprintf(stderr,"ERROR204: Cannot write output: %s.\n",strerror(errno));
         break;

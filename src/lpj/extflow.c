@@ -114,6 +114,19 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
     free(extflow);
     return NULL;
   }
+  if(version==4)
+  {
+    if(header.nbands>1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR154: Number of bands=%d in '%s' is not 1.\n",
+                header.nbands,config->extflow_filename.name);
+      fclose(extflow->file);
+      free(extflow);
+      return NULL;
+    }
+    header.nbands=header.nstep;
+  }
   if(isroot(*config) && config->extflow_filename.fmt!=META && getfilesizep(extflow->file)!=sizeof(int)*header.ncell+headersize(LPJEXTFLOW_HEADER,version)+typesizes[extflow->datatype]*header.ncell*header.nbands*header.nyear)
     fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->extflow_filename.name);
   if(header.ncell==0)

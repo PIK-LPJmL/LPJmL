@@ -142,6 +142,7 @@ static void openfile(Outputfile *output,const Cell grid[],
                 header.scalar=0.01;
               }
               header.nbands=2;
+              header.nstep=1;
               header.nyear=1;
               header.order=CELLYEAR;
               fwriteheader(output->files[config->outputvars[i].id].fp.file,
@@ -170,7 +171,7 @@ static void openfile(Outputfile *output,const Cell grid[],
           }
         }
         break;
-      case RAW:
+      case RAW: case META:
         if(config->ischeckpoint && config->outputvars[i].id!=GRID  && config->outputvars[i].id!=COUNTRY && config->outputvars[i].id!=REGION)
         {
           if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"r+b"))==NULL)
@@ -187,6 +188,11 @@ static void openfile(Outputfile *output,const Cell grid[],
         }
         else
         {
+          if(config->outputvars[i].filename.fmt==META)
+          {
+            if(fprintoutputjson(i,config))
+              break;
+          }
           if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
             printfcreateerr(config->outputvars[i].filename.name);
           else
@@ -385,7 +391,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
             }
             break;
 
-          case RAW:
+          case RAW: case META:
             if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
             {
               printfcreateerr(filename);
