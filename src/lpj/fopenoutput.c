@@ -190,7 +190,7 @@ static void openfile(Outputfile *output,const Cell grid[],
         {
           if(config->outputvars[i].filename.fmt==META)
           {
-            if(fprintoutputjson(i,config))
+            if(fprintoutputjson(i,0,config))
               break;
           }
           if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
@@ -392,6 +392,11 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
             break;
 
           case RAW: case META:
+            if(config->outputvars[i].filename.fmt==META)
+            {
+              if(fprintoutputjson(i,year,config))
+                break;
+            }
             if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
             {
               printfcreateerr(filename);
