@@ -206,6 +206,12 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
           fprintf(stderr,"ERROR223: File format CLM2 is not supported for output file '%s'.\n",
                   config->outputvars[count].filename.name);
       }
+      else if(config->outputvars[count].filename.fmt==META)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR223: File format META is not supported for output file '%s'.\n",
+                  config->outputvars[count].filename.name);
+      }
       else
       {
         if(flag>=D_LAI && flag<=D_PET)

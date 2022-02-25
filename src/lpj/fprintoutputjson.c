@@ -105,6 +105,8 @@ Bool fprintoutputjson(int i,int year,const Config *config)
     fprintf(file,"  \"order\" : \"cellseq\",\n");
   }
   fprintf(file,"  \"bigendian\" : %s,\n",bool2str(bigendian()));
+  if(config->outputvars[i].filename.fmt==CLM)
+    fprintf(file,"  \"offset\" : %d,\n",config->outputvars[i].id==GRID ? (int)headersize(LPJGRID_HEADER,LPJGRID_VERSION) : (int)headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION));
   fprintf(file,"  \"filename\" : \"%s\"\n",filename);
   fprintf(file,"}\n");
   fclose(file);

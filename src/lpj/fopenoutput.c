@@ -95,6 +95,9 @@ static void openfile(Outputfile *output,const Cell grid[],
     }
   }
   else if(isroot(*config) && !config->outputvars[i].oneyear)
+  {
+    if(config->outputvars[i].filename.meta)
+      fprintoutputjson(i,0,config);
     switch(config->outputvars[i].filename.fmt)
     {
        case CLM:
@@ -171,7 +174,7 @@ static void openfile(Outputfile *output,const Cell grid[],
           }
         }
         break;
-      case RAW: case META:
+      case RAW:
         if(config->ischeckpoint && config->outputvars[i].id!=GRID  && config->outputvars[i].id!=COUNTRY && config->outputvars[i].id!=REGION)
         {
           if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"r+b"))==NULL)
@@ -188,11 +191,6 @@ static void openfile(Outputfile *output,const Cell grid[],
         }
         else
         {
-          if(config->outputvars[i].filename.fmt==META)
-          {
-            if(fprintoutputjson(i,0,config))
-              break;
-          }
           if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
             printfcreateerr(config->outputvars[i].filename.name);
           else
@@ -206,6 +204,7 @@ static void openfile(Outputfile *output,const Cell grid[],
           output->files[config->outputvars[i].id].isopen=TRUE;
         break;
     }
+  }
   output->files[config->outputvars[i].id].oneyear=config->outputvars[i].oneyear;
 } /* of 'openfile' */
 
@@ -358,6 +357,8 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
       if(isroot(*config))
       {
         snprintf(filename,STRING_LEN,config->outputvars[i].filename.name,year);
+        if(config->outputvars[i].filename.meta)
+          fprintoutputjson(i,year,config);
         switch(config->outputvars[i].filename.fmt)
         {
           case CLM:
@@ -391,12 +392,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
             }
             break;
 
-          case RAW: case META:
-            if(config->outputvars[i].filename.fmt==META)
-            {
-              if(fprintoutputjson(i,year,config))
-                break;
-            }
+          case RAW:
             if((output->files[config->outputvars[i].id].fp.file=fopen(filename,"wb"))==NULL)
             {
               printfcreateerr(filename);

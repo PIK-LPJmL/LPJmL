@@ -33,6 +33,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     return TRUE;
   if(fscankeywords(&f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
     return TRUE;
+  filename->meta=FALSE;
   if(filename->fmt==FMS)
   {
     filename->var=NULL;
@@ -121,26 +122,6 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       filename->isscale=FALSE;
     filename->time=NULL;
   }
-  if(iskeydefined(&f,"unit"))
-  {
-    if(fscanstring(&f,name,"unit",FALSE,verb))
-    {
-      if(verb)
-        readstringerr("unit");
-      return TRUE;
-    }
-    else
-    {
-      filename->unit=strdup(name);
-      if(filename->unit==NULL)
-      {
-        printallocerr("unit");
-        return TRUE;
-      }
-    }
-  }
-  else
-    filename->unit=NULL;
   if(fscanstring(&f,name,"name",FALSE,verb))
   {
     if(verb)
@@ -154,6 +135,14 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     printallocerr("name");
     free(filename->var);
     return TRUE;
+  }
+  if(iskeydefined(&f,"metafile"))
+  {
+    if(fscanbool(&f,&filename->meta,"metafile",FALSE,verb))
+    {
+      free(filename->var);
+      return TRUE;
+    }
   }
   if(iskeydefined(&f,"unit"))
   {

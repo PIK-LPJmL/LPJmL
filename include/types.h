@@ -82,6 +82,7 @@ typedef struct
   Bool isscale; /* scale factor defined? */
   int timestep; /* time step for output (ANNUAL,MONTHLY,DAILY) */
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
+  Bool meta; /* meta file output enabled */
 } Filename;
 
 typedef struct
