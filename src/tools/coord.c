@@ -190,6 +190,12 @@ int numcoord(const Coordfile coordfile /**< open coord file */
   return coordfile->n;
 } /* of 'numcoord' */
 
+int getfirstcoord(const Coordfile coordfile /**< open coord file */
+                 )                          /** \return first index of coords in file */
+{
+  return coordfile->first;
+} /* of 'getfirstcoord' */
+
 void closecoord(Coordfile coordfile /**< coord file to be closed */
                )
 {

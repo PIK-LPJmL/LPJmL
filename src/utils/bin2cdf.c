@@ -357,6 +357,9 @@ int main(int argc,char **argv)
   Bool swap,ispft,isshort,isglobal,floatgrid,isclm;
   float cellsize,fcoord[2];
   char *units,*descr,*endptr,*cmdline;
+  Filename coord_filename;
+  float cellsize_lon,cellsize_lat;
+  Coordfile coordfile;
   units=descr=NULL;
   compress=0;
   swap=isglobal=FALSE;
@@ -489,43 +492,72 @@ int main(int argc,char **argv)
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
-  file=fopen(argv[iarg+1],"rb");
-  if(file==NULL)
+  if(isclm)
   {
-    fprintf(stderr,"Error opening grid file '%s': %s.\n",argv[iarg+1],
-            strerror(errno));
-    return EXIT_FAILURE;
-  }
-  if(floatgrid)
-    ngrid=getfilesizep(file)/sizeof(float)/2;
-  else
-    ngrid=getfilesizep(file)/sizeof(short)/2;
-  if(ngrid==0)
-  {
-     fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg+1]);
-     return EXIT_FAILURE;
-  }
-  grid=newvec(Coord,ngrid);
-  if(grid==NULL)
-  {
-    printallocerr("grid");
-    return EXIT_FAILURE;
-  }
-  if(floatgrid)
-    for(i=0;i<ngrid;i++)
+    coord_filename.name=argv[iarg+1];
+    coord_filename.fmt=CLM;
+    coordfile=opencoord(&coord_filename,TRUE);
+    if(coordfile==NULL)
+      return EXIT_FAILURE;
+    grid=newvec(Coord,numcoord(coordfile));
+    if(grid==NULL)
     {
-      freadfloat(fcoord,2,swap,file);
-      grid[i].lon=fcoord[0];
-      grid[i].lat=fcoord[1];
+      printallocerr("grid");
+      return EXIT_FAILURE;
     }
-  else
-    for(i=0;i<ngrid;i++)
+    ngrid=numcoord(coordfile);
+    if(ngrid==0)
     {
-      readintcoord(file,&intcoord,swap);
-      grid[i].lat=intcoord.lat*0.01;
-      grid[i].lon=intcoord.lon*0.01;
+      fprintf(stderr,"Number of cells is zero in '%s'.\n",argv[iarg+1]);
+      return EXIT_FAILURE;
     }
-  fclose(file);
+    getcellsizecoord(&cellsize_lon,&cellsize_lat,coordfile);
+    res.lat=cellsize_lat;
+    res.lon=cellsize_lon;
+    for(j=0;j<numcoord(coordfile);j++)
+      readcoord(coordfile,grid+j,&res);
+    closecoord(coordfile);
+  }
+  else
+  {
+    file=fopen(argv[iarg+1],"rb");
+    if(file==NULL)
+    {
+      fprintf(stderr,"Error opening grid file '%s': %s.\n",argv[iarg+1],
+              strerror(errno));
+      return EXIT_FAILURE;
+    }
+    if(floatgrid)
+      ngrid=getfilesizep(file)/sizeof(float)/2;
+    else
+      ngrid=getfilesizep(file)/sizeof(short)/2;
+    if(ngrid==0)
+    {
+       fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg+1]);
+       return EXIT_FAILURE;
+    }
+    grid=newvec(Coord,ngrid);
+    if(grid==NULL)
+    {
+      printallocerr("grid");
+      return EXIT_FAILURE;
+    }
+    if(floatgrid)
+      for(i=0;i<ngrid;i++)
+      {
+        freadfloat(fcoord,2,swap,file);
+        grid[i].lon=fcoord[0];
+        grid[i].lat=fcoord[1];
+      }
+    else
+      for(i=0;i<ngrid;i++)
+      {
+        readintcoord(file,&intcoord,swap);
+        grid[i].lat=intcoord.lat*0.01;
+        grid[i].lon=intcoord.lon*0.01;
+      }
+    fclose(file);
+  }
   file=fopen(argv[iarg+2],"rb");
   if(file==NULL)
   {
@@ -534,6 +566,7 @@ int main(int argc,char **argv)
   }
   if(isclm)
   {
+    version=READ_VERSION;
     if(freadheader(file,&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
     {
       fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
@@ -560,6 +593,12 @@ int main(int argc,char **argv)
     {
       fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
               version,argv[iarg+2],CLM_MAX_VERSION+1);
+      return EXIT_FAILURE;
+    }
+    if(header.cellsize_lat!=res.lat || header.cellsize_lon!=res.lon)
+    {
+      fprintf(stderr,"Resolution (%g,%g) in '%s' does not match (%g,%g) in grid file.\n",
+              header.cellsize_lon,header.cellsize_lat,argv[iarg+2],res.lon,res.lat);
       return EXIT_FAILURE;
     }
     if(header.order!=CELLSEQ)
