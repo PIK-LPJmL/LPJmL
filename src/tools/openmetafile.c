@@ -28,9 +28,173 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
+#ifdef USE_JSON
+#include <json-c/json.h>
+#endif
 #include "lpj.h"
 
 const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
+
+#define LINE_LEN 1024
+
+#ifdef USE_JSON
+
+ char *parse_json(LPJfile *lpjfile,char *s,Header *header,size_t *offset,Bool *swap,Verbosity verbosity)
+{
+  FILE *file;
+  String filename;
+  char line[LINE_LEN];
+  enum json_tokener_error json_error;
+  struct json_tokener *tok;
+  Real cellsize[2];
+  Bool endian;
+  file=lpjfile->file.file;
+  lpjfile->isjson=TRUE;     /* yes, we have to parse it */
+  tok=json_tokener_new();
+  lpjfile->file.obj=json_tokener_parse_ex(tok,s,strlen(s));
+  while(!fscanline(file,line,LINE_LEN,verbosity))  /* read line from file */
+  {
+    lpjfile->file.obj=json_tokener_parse_ex(tok,line,strlen(line));
+    json_error=json_tokener_get_error(tok);
+    if(json_error!=json_tokener_continue)
+      break;
+  }
+  json_tokener_free(tok);
+  if(json_error!=json_tokener_success)
+  {
+    if(verbosity)
+    {
+      fprintf(stderr,"ERROR228: Cannot parse json file '%s' in line %d, %s:\n",
+              getfilename(),getlinecount()-1,(json_error==json_tokener_continue) ? "missing closing '}'" : json_tokener_error_desc(json_error));
+      if(json_error!=json_tokener_continue)
+        fprintf(stderr,"%s:%d:%s",getfilename(),getlinecount()-1,line);
+    }
+    json_object_put(lpjfile->file.obj);
+    lpjfile->file.file=file;
+    return NULL;
+  }
+  if(iskeydefined(lpjfile,"firstcell"))
+  {
+    if(fscanint(lpjfile,&header->firstcell,"firstcell",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"ncell"))
+  {
+    if(fscanint(lpjfile,&header->ncell,"ncell",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"firstyear"))
+  {
+    if(fscanint(lpjfile,&header->firstyear,"firstyear",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"nyear"))
+  {
+    if(fscanint(lpjfile,&header->nyear,"nyear",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"nstep"))
+  {
+    if(fscanint(lpjfile,&header->nstep,"nstep",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"nbands"))
+  {
+    if(fscanint(lpjfile,&header->nbands,"nbands",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"order"))
+  {
+    if(fscankeywords(lpjfile,&header->order,"order",ordernames,4,FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"offset"))
+  {
+    if(fscansize(lpjfile,offset,"offset",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"bigendian"))
+  {
+    if(fscanbool(lpjfile,&endian,"bigendian",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+    *swap=(endian) ? !bigendian() : bigendian();
+  }
+  if(iskeydefined(lpjfile,"scaling"))
+  {
+    if(fscanfloat(lpjfile,&header->scalar,"scaling",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"datatype"))
+  {
+    if(fscankeywords(lpjfile,&header->datatype,"datatype",typenames,5,FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"cellsize"))
+  {
+    if(fscanrealarray(lpjfile,cellsize,2,"cellsize",verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+    header->cellsize_lon=cellsize[0];
+    header->cellsize_lat=cellsize[1];
+  }
+  if(fscanstring(lpjfile,filename,"filename",FALSE,verbosity))
+  {
+    json_object_put(lpjfile->file.obj);
+    lpjfile->file.file=file;
+    return NULL;
+  }
+  json_object_put(lpjfile->file.obj);
+  lpjfile->file.file=file;
+  return strdup(filename);
+}
+#endif
 
 FILE *openmetafile(Header *header, /**< pointer to file header */
                    Bool *swap, /**< byte order has to be changed (TRUE/FALSE) */
@@ -58,7 +222,21 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
   *offset=0;
   name=NULL;
   while(!fscantoken(file.file.file,key))
-    if(!strcmp(key,"firstcell"))
+    if(!strcmp(key,"{"))
+    {
+#ifdef USE_JSON
+      name=parse_json(&file,key,header,offset,swap,isout ? ERR : NO_ERR);
+      break;
+#else
+      if(isout)
+        printf(stderr,"ERROR229: JSON format not supported for metafile '%s' in this version of LPJmL.\n",
+               filename);
+      free(name);
+      fclose(file.file.file);
+      return NULL;
+#endif
+    }
+    else if(!strcmp(key,"firstcell"))
     {
       if(fscanint(&file,&header->firstcell,"firstcell",FALSE,isout ? ERR : NO_ERR))
       {
