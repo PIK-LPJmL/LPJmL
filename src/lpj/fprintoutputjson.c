@@ -104,6 +104,7 @@ Bool fprintoutputjson(int i,int year,const Config *config)
     fprintf(file,"  \"scaling\" : 1.0,\n");
     fprintf(file,"  \"order\" : \"cellseq\",\n");
   }
+  fprintf(file,"  \"bigendian\" : %s,\n",bool2str(bigendian()));
   fprintf(file,"  \"filename\" : \"%s\"\n",filename);
   fprintf(file,"}\n");
   fclose(file);
