@@ -51,8 +51,6 @@
 
 const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
 
-#define LINE_LEN 1024
-
 #ifdef USE_JSON
 
 char *parse_json(LPJfile *lpjfile,   /**< pointer to JSON file */
@@ -71,7 +69,7 @@ char *parse_json(LPJfile *lpjfile,   /**< pointer to JSON file */
   Real cellsize[2];
   Bool endian;
   file=lpjfile->file.file;
-  lpjfile->isjson=TRUE;     /* yes, we have to parse it */
+  lpjfile->isjson=TRUE;     /* enable JSON parsing */
   tok=json_tokener_new();
   lpjfile->file.obj=json_tokener_parse_ex(tok,s,strlen(s));
   while((line=fscanline(file))!=NULL)  /* read line from file */
@@ -92,7 +90,7 @@ char *parse_json(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(json_error!=json_tokener_continue)
         fprintf(stderr,"%s:%d:%s",getfilename(),getlinecount()-1,line);
     }
-    free(line); 
+    free(line);
     json_object_put(lpjfile->file.obj);
     lpjfile->file.file=file;
     return NULL;

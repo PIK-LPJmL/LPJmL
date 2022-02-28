@@ -16,6 +16,8 @@
 
 #include "lpj.h"
 
+#define LINE_LEN 80  /* line length of JSON file */
+
 Bool fprintoutputjson(int index,           /**< index in outputvars array */
                       int year,            /**< year one-year output is written */
                       const Config *config /**< LPJmL configuration */
@@ -27,7 +29,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   char *filename;
   char *json_filename;
   char **pftnames;
-  int p,nbands;
+  int p,nbands,len;
   if(config->outputvars[index].oneyear)
   {
     snprintf(s,STRING_LEN,config->outputvars[index].filename.name,year);
@@ -89,12 +91,17 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
        printallocerr("pftnames");
      else
      {
-       fprintf(file,"  \"pft\" : [");
+       len=fprintf(file,"  \"pft\" : [");
        for(p=0;p<nbands;p++)
        {
          if(p)
-           fprintf(file,",");
-         fprintf(file,"\"%s\"",pftnames[p]);
+           len+=fprintf(file,",");
+         if(len>LINE_LEN)
+         {
+           fputs("\n           ",file);
+           len=11;
+         }
+         len+=fprintf(file,"\"%s\"",pftnames[p]);
        }
        fprintf(file,"],\n");
        freepftnames(pftnames,config->outputvars[index].id,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);

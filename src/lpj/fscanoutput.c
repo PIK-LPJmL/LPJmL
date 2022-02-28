@@ -139,7 +139,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
   }
   if(fscanstring(file,name,"json_suffix",FALSE,verbosity))
-     return TRUE;
+    return TRUE;
   config->json_suffix=strdup(name);
   checkptr(config->json_suffix);
   isdaily=FALSE;

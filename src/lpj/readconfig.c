@@ -65,7 +65,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
     closeconfig(&lpjfile);
     return TRUE;
   }
-  if(!strcmp(s,"{")) /* check whether file is in JSON format */
+  if(s[0]=='{') /* check whether file is in JSON format */
   {
 #ifdef USE_JSON
     lpjfile.isjson=TRUE;     /* yes, we have to parse it */

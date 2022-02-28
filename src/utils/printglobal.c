@@ -188,7 +188,6 @@ int main(int argc,char **argv)
       {
         fprintf(stderr,"Error reading header in '%s.\n",argv[i]);
         return EXIT_FAILURE;
-    
       }
       nyear=header.nyear;
       nbands=header.nbands;
