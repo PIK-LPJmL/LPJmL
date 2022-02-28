@@ -20,6 +20,22 @@
 /**     offset 0                                                                   \n**/
 /**     datatype short                                                             \n**/
 /**                                                                                \n**/
+/**     JSON file format is also supported:                                        \n**/
+/**                                                                                \n**/
+/**     {                                                                          \n**/
+/**       "filename : "inputfile.bin",                                             \n**/
+/**       "firstyear" : 1901,                                                      \n**/
+/**       "nyear" :  109,                                                          \n**/
+/**       "nbands" :  12,                                                          \n**/
+/**       "bigendian" :  false,                                                    \n**/
+/**       "firstcell" :  0,                                                        \n**/
+/**       "ncell" :  67420,                                                        \n**/
+/**       "scaling" :  0.1,                                                        \n**/
+/**       "cellsize" :  [0.5,0.5],                                                 \n**/
+/**       "offset" :  0,                                                           \n**/
+/**       "datatype" :  "short"                                                    \n**/
+/**     }                                                                          \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -39,7 +55,13 @@ const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
 
 #ifdef USE_JSON
 
- char *parse_json(LPJfile *lpjfile,char *s,Header *header,size_t *offset,Bool *swap,Verbosity verbosity)
+char *parse_json(LPJfile *lpjfile,   /**< pointer to JSON file */
+                 char *s,            /**< first string of JSON file */
+                 Header *header,     /**< pointer to file header */
+                 size_t *offset,     /**< offset in binary file */
+                 Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
+                 Verbosity verbosity /**< verbosity level */
+                )                    /** \return filename of binary file or NULL */
 {
   FILE *file;
   String filename;
@@ -99,6 +121,16 @@ const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
       lpjfile->file.file=file;
       return NULL;
     }
+  }
+  if(iskeydefined(lpjfile,"lastyear"))
+  {
+    if(fscanint(lpjfile,&header->nyear,"lastyear",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+    header->nyear-=header->firstyear-1;
   }
   if(iskeydefined(lpjfile,"nyear"))
   {
@@ -166,7 +198,7 @@ const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
   }
   if(iskeydefined(lpjfile,"datatype"))
   {
-    if(fscankeywords(lpjfile,&header->datatype,"datatype",typenames,5,FALSE,verbosity))
+    if(fscankeywords(lpjfile,(int *)&header->datatype,"datatype",typenames,5,FALSE,verbosity))
     {
       json_object_put(lpjfile->file.obj);
       lpjfile->file.file=file;
@@ -181,8 +213,8 @@ const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
       lpjfile->file.file=file;
       return NULL;
     }
-    header->cellsize_lon=cellsize[0];
-    header->cellsize_lat=cellsize[1];
+    header->cellsize_lon=(float)cellsize[0];
+    header->cellsize_lat=(float)cellsize[1];
   }
   if(fscanstring(lpjfile,filename,"filename",FALSE,verbosity))
   {
@@ -222,7 +254,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
   *offset=0;
   name=NULL;
   while(!fscantoken(file.file.file,key))
-    if(!strcmp(key,"{"))
+    if(key[0]=='{')
     {
 #ifdef USE_JSON
       name=parse_json(&file,key,header,offset,swap,isout ? ERR : NO_ERR);
@@ -265,7 +297,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"lastyear"))
     {
-      if(fscanint(&file,&header->nyear,"firstyear",FALSE,isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->nyear,"lastyear",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);

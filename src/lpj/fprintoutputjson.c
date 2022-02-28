@@ -23,6 +23,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
 {
   FILE *file;
   String s;
+  char *name;
   char *filename;
   char *json_filename;
   char **pftnames;
@@ -30,22 +31,31 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   if(config->outputvars[index].oneyear)
   {
     snprintf(s,STRING_LEN,config->outputvars[index].filename.name,year);
-    filename=s;
+    name=s;
   }
   else
-    filename=config->outputvars[index].filename.name;
-  /* create filename for JSON metafile */
-  json_filename=malloc(strlen(filename)+strlen(config->json_suffix)+1);
+    name=config->outputvars[index].filename.name;
+  json_filename=malloc(strlen(name)+strlen(config->json_suffix)+1);
   if(json_filename==NULL)
   {
     printallocerr("json_filename");
     return TRUE;
   }
-  strcat(strcpy(json_filename,filename),config->json_suffix);
+  strcat(strcpy(json_filename,name),config->json_suffix);
+  /* add absolute path to binary file if missing */
+  filename=addpath(name,getdir());
+  if(filename==NULL)
+  {
+    free(json_filename);
+    printallocerr("filename");
+    return TRUE;
+  }
+  /* create filename for JSON metafile */
   /* create metafile */
   file=fopen(json_filename,"w");
   if(file==NULL)
   {
+    free(filename);
     printfcreateerr(json_filename);
     free(json_filename);
     return TRUE;
@@ -53,6 +63,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"{\n");
   fprintf(file,"  \"sim_name\" : \"%s\",\n",config->sim_name);
   fprintf(file,"  \"source\" : \"LPJmL C Version " LPJ_VERSION"\",\n");
+  fprintf(file,"  \"history\" : \"%s\",\n",config->arglist);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
   fprintf(file,"  \"ncell\" : %d,\n",(config->outputvars[index].id==ADISCHARGE) ? config->nall : config->total);
   fprintf(file,"  \"cellsize\" : [%f,%f],\n",config->resolution.lon,config->resolution.lat);
@@ -101,24 +112,27 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
     fprintf(file,"\"%s\",\n",config->outnames[config->outputvars[index].id].unit);
   fprintf(file,"  \"firstyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear);
   fprintf(file,"  \"nyear\" : %d,\n",(config->outputvars[index].oneyear || config->outputvars[index].id==GRID || config->outputvars[index].id==COUNTRY || config->outputvars[index].id==REGION) ? 1 : config->lastyear-config->outputyear+1);
+  fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(config->outputvars[index].id,config->float_grid)]);
   if(config->outputvars[index].id==GRID)
   {
-    fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[config->float_grid ? LPJ_FLOAT : LPJ_SHORT]);
     fprintf(file,"  \"scaling\" : 0.01,\n");
     fprintf(file,"  \"order\" : \"cellyear\",\n");
   }
   else
   {
-    fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(config->outputvars[index].id,FALSE)]);
     fprintf(file,"  \"scaling\" : 1.0,\n");
     fprintf(file,"  \"order\" : \"cellseq\",\n");
   }
   fprintf(file,"  \"bigendian\" : %s,\n",bool2str(bigendian()));
   if(config->outputvars[index].filename.fmt==CLM)
     fprintf(file,"  \"offset\" : %d,\n",config->outputvars[index].id==GRID ? (int)headersize(LPJGRID_HEADER,LPJGRID_VERSION) : (int)headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION));
+  fprintf(file,"  \"format\" : \"%s\",\n",fmt[config->outputvars[index].filename.fmt]);
+  if(config->outputvars[index].filename.fmt==CLM)
+    fprintf(file,"  \"version\" : %d,\n",config->outputvars[index].id==GRID ? LPJGRID_VERSION : LPJOUTPUT_VERSION);
   fprintf(file,"  \"filename\" : \"%s\"\n",filename);
   fprintf(file,"}\n");
   fclose(file);
   free(json_filename);
+  free(filename);
   return FALSE;
 } /* of 'fprintoutputjson' */
