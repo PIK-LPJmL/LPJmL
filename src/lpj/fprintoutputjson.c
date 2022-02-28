@@ -68,6 +68,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"ncell\" : %d,\n",(config->outputvars[index].id==ADISCHARGE) ? config->nall : config->total);
   fprintf(file,"  \"cellsize\" : [%f,%f],\n",config->resolution.lon,config->resolution.lat);
   fprintf(file,"  \"nstep\" : %d,\n",max(1,getnyear(config->outnames,config->outputvars[index].id)));
+  fprintf(file,"  \"timestep\" : %d,\n",max(1,config->outputvars[index].filename.timestep));
   nbands=outputsize(config->outputvars[index].id,
                     config->npft[GRASS]+config->npft[TREE],
                     config->npft[CROP],config);
