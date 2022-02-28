@@ -682,7 +682,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
               typenames[getoutputtype(config->outputvars[index].id,config->float_grid)],
               sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep),outputsize(config->outputvars[index].id,npft,ncft,config));
       printoutname(file,config->outputvars[index].filename.name,config->outputvars[index].oneyear,config);
-      if(config->outputvars[index].filename.meta)
+      if(config->outputvars[index].filename.fmt!=CDF && config->outputvars[index].filename.meta)
         fprintf(file," + %s",config->json_suffix);
       putc('\n',file);
     }
