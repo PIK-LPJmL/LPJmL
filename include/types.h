@@ -118,7 +118,7 @@ extern Bool iskeydefined(const LPJfile *,const char *);
 extern Bool isboolean(const LPJfile *,const char *);
 extern Bool isint(const LPJfile *,const char *);
 extern Bool isstring(const LPJfile *,const char *);
-extern Bool fscanline(FILE *,char [],int,Verbosity);
+extern char *fscanline(FILE *);
 extern Bool fscantoken(FILE *,String);
 extern Bool fscankeywords(LPJfile *,int *,const char *,const char *const *,
                           int,Bool,Verbosity);

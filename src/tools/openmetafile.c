@@ -65,7 +65,7 @@ char *parse_json(LPJfile *lpjfile,   /**< pointer to JSON file */
 {
   FILE *file;
   String filename;
-  char line[LINE_LEN];
+  char *line;
   enum json_tokener_error json_error;
   struct json_tokener *tok;
   Real cellsize[2];
@@ -74,12 +74,13 @@ char *parse_json(LPJfile *lpjfile,   /**< pointer to JSON file */
   lpjfile->isjson=TRUE;     /* yes, we have to parse it */
   tok=json_tokener_new();
   lpjfile->file.obj=json_tokener_parse_ex(tok,s,strlen(s));
-  while(!fscanline(file,line,LINE_LEN,verbosity))  /* read line from file */
+  while((line=fscanline(file))!=NULL)  /* read line from file */
   {
     lpjfile->file.obj=json_tokener_parse_ex(tok,line,strlen(line));
     json_error=json_tokener_get_error(tok);
     if(json_error!=json_tokener_continue)
       break;
+    free(line);
   }
   json_tokener_free(tok);
   if(json_error!=json_tokener_success)
@@ -91,10 +92,12 @@ char *parse_json(LPJfile *lpjfile,   /**< pointer to JSON file */
       if(json_error!=json_tokener_continue)
         fprintf(stderr,"%s:%d:%s",getfilename(),getlinecount()-1,line);
     }
+    free(line); 
     json_object_put(lpjfile->file.obj);
     lpjfile->file.file=file;
     return NULL;
   }
+  free(line);
   if(iskeydefined(lpjfile,"firstcell"))
   {
     if(fscanint(lpjfile,&header->firstcell,"firstcell",FALSE,verbosity))

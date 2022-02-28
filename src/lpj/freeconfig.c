@@ -84,7 +84,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   if(config->wet_filename.name!=NULL)
     freefilename(&config->wet_filename);
   for(i=0;i<config->n_out;i++)
-    free(config->outputvars[i].filename.name);
+    freefilename(&config->outputvars[i].filename);
   free(config->outputvars);
   free(config->restart_filename);
   free(config->checkpoint_restart_filename);

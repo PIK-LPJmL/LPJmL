@@ -35,6 +35,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   }
   else
     name=config->outputvars[index].filename.name;
+  /* create filename for JSON metafile */
   json_filename=malloc(strlen(name)+strlen(config->json_suffix)+1);
   if(json_filename==NULL)
   {
@@ -50,7 +51,6 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
     printallocerr("filename");
     return TRUE;
   }
-  /* create filename for JSON metafile */
   /* create metafile */
   file=fopen(json_filename,"w");
   if(file==NULL)
@@ -127,6 +127,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"bigendian\" : %s,\n",bool2str(bigendian()));
   if(config->outputvars[index].filename.fmt==CLM)
     fprintf(file,"  \"offset\" : %d,\n",config->outputvars[index].id==GRID ? (int)headersize(LPJGRID_HEADER,LPJGRID_VERSION) : (int)headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION));
+  else if(config->outputvars[index].filename.fmt==TXT)
+    fprintf(file,"  \"delimiter\" : \"%c\",\n",config->csv_delimit);
   fprintf(file,"  \"format\" : \"%s\",\n",fmt[config->outputvars[index].filename.fmt]);
   if(config->outputvars[index].filename.fmt==CLM)
     fprintf(file,"  \"version\" : %d,\n",config->outputvars[index].id==GRID ? LPJGRID_VERSION : LPJOUTPUT_VERSION);

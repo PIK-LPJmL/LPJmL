@@ -96,7 +96,7 @@ static void openfile(Outputfile *output,const Cell grid[],
   }
   else if(isroot(*config) && !config->outputvars[i].oneyear)
   {
-    if(config->outputvars[i].filename.meta)
+    if(!config->ischeckpoint && config->outputvars[i].filename.meta)
       fprintoutputjson(i,0,config);
     switch(config->outputvars[i].filename.fmt)
     {
