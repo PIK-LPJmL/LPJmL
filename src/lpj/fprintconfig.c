@@ -683,7 +683,7 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
               sprinttimestep(s,config->outnames[config->outputvars[index].id].timestep),outputsize(config->outputvars[index].id,npft,ncft,config));
       printoutname(file,config->outputvars[index].filename.name,config->outputvars[index].oneyear,config);
       if(config->outputvars[index].filename.meta)
-        fputs(" + .json",file);
+        fprintf(file," + %s",config->json_suffix);
       putc('\n',file);
     }
     free(item);

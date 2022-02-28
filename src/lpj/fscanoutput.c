@@ -102,6 +102,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     config->n_out=0;
     config->crop_index=-1;
     config->crop_irrigation=-1;
+    config->json_suffix=NULL;
     return FALSE;
   }
   if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))
@@ -137,6 +138,10 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   {
     fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
   }
+  if(fscanstring(file,name,"json_suffix",FALSE,verbosity))
+     return TRUE;
+  config->json_suffix=strdup(name);
+  checkptr(config->json_suffix);
   isdaily=FALSE;
   while(count<=nout_max && index<size)
   {

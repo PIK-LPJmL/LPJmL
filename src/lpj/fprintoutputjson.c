@@ -16,9 +16,10 @@
 
 #include "lpj.h"
 
-#define SUFFIX ".json" /* file suffix for JSON file */
-
-Bool fprintoutputjson(int i,int year,const Config *config)
+Bool fprintoutputjson(int index,           /**< index in outputvars array */
+                      int year,            /**< year one-year output is written */
+                      const Config *config /**< LPJmL configuration */
+                     )                     /** \return TRUE on error */
 {
   FILE *file;
   String s;
@@ -26,21 +27,21 @@ Bool fprintoutputjson(int i,int year,const Config *config)
   char *json_filename;
   char **pftnames;
   int p,nbands;
-  if(config->outputvars[i].oneyear)
+  if(config->outputvars[index].oneyear)
   {
-    snprintf(s,STRING_LEN,config->outputvars[i].filename.name,year);
+    snprintf(s,STRING_LEN,config->outputvars[index].filename.name,year);
     filename=s;
   }
   else
-    filename=config->outputvars[i].filename.name;
+    filename=config->outputvars[index].filename.name;
   /* create filename for JSON metafile */
-  json_filename=malloc(strlen(filename)+strlen(SUFFIX)+1);
+  json_filename=malloc(strlen(filename)+strlen(config->json_suffix)+1);
   if(json_filename==NULL)
   {
     printallocerr("json_filename");
     return TRUE;
   }
-  strcat(strcpy(json_filename,filename),SUFFIX);
+  strcat(strcpy(json_filename,filename),config->json_suffix);
   /* create metafile */
   file=fopen(json_filename,"w");
   if(file==NULL)
@@ -53,16 +54,16 @@ Bool fprintoutputjson(int i,int year,const Config *config)
   fprintf(file,"  \"sim_name\" : \"%s\",\n",config->sim_name);
   fprintf(file,"  \"source\" : \"LPJmL C Version " LPJ_VERSION"\",\n");
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
-  fprintf(file,"  \"ncell\" : %d,\n",(config->outputvars[i].id==ADISCHARGE) ? config->nall : config->total);
+  fprintf(file,"  \"ncell\" : %d,\n",(config->outputvars[index].id==ADISCHARGE) ? config->nall : config->total);
   fprintf(file,"  \"cellsize\" : [%f,%f],\n",config->resolution.lon,config->resolution.lat);
-  fprintf(file,"  \"nstep\" : %d,\n",max(1,getnyear(config->outnames,config->outputvars[i].id)));
-  nbands=outputsize(config->outputvars[i].id,
+  fprintf(file,"  \"nstep\" : %d,\n",max(1,getnyear(config->outnames,config->outputvars[index].id)));
+  nbands=outputsize(config->outputvars[index].id,
                     config->npft[GRASS]+config->npft[TREE],
                     config->npft[CROP],config);
-  fprintf(file,"  \"nbands\" : %d,\n",config->outputvars[i].id==GRID ? 2 : nbands);
+  fprintf(file,"  \"nbands\" : %d,\n",config->outputvars[index].id==GRID ? 2 : nbands);
   if(nbands>1)
   {
-   if(issoil(config->outputvars[i].id))
+   if(issoil(config->outputvars[index].id))
    {
      fprintf(file,"  \"layer\" : [0.0,");
      for(p=1;p<nbands;p++)
@@ -71,28 +72,36 @@ Bool fprintoutputjson(int i,int year,const Config *config)
    }
    else
    {
-     pftnames=createpftnames(config->outputvars[i].id,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
+     pftnames=createpftnames(config->outputvars[index].id,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
      if(pftnames==NULL)
-     {
        printallocerr("pftnames");
-       return TRUE;
-     }
-     fprintf(file,"  \"pft\" : [");
-     for(p=0;p<nbands;p++)
+     else
      {
-       if(p)
-         fprintf(file,",");
-       fprintf(file,"\"%s\"",pftnames[p]);
+       fprintf(file,"  \"pft\" : [");
+       for(p=0;p<nbands;p++)
+       {
+         if(p)
+           fprintf(file,",");
+         fprintf(file,"\"%s\"",pftnames[p]);
+       }
+       fprintf(file,"],\n");
+       freepftnames(pftnames,config->outputvars[index].id,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
      }
-     fprintf(file,"],\n");
-     freepftnames(pftnames,config->outputvars[i].id,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
    }
   }
-  fprintf(file,"  \"descr\" : \"%s\",\n",(config->outnames[config->outputvars[i].id].descr==NULL) ? "null" : config->outnames[config->outputvars[i].id].descr);
-  fprintf(file,"  \"unit\" : \"%s\",\n",(config->outnames[config->outputvars[i].id].unit==NULL) ? "null" : config->outnames[config->outputvars[i].id].unit);
-  fprintf(file,"  \"firstyear\" : %d,\n",config->outputvars[i].oneyear ? year : config->outputyear);
-  fprintf(file,"  \"nyear\" : %d,\n",(config->outputvars[i].oneyear || config->outputvars[i].id==GRID || config->outputvars[i].id==COUNTRY || config->outputvars[i].id==REGION) ? 1 : config->lastyear-config->outputyear+1);
-  if(config->outputvars[i].id==GRID)
+  fprintf(file,"  \"descr\" : ");
+  if(config->outnames[config->outputvars[index].id].descr==NULL)
+    fprintf(file,"null,\n");
+  else
+    fprintf(file,"\"%s\",\n",config->outnames[config->outputvars[index].id].descr);
+  fprintf(file,"  \"unit\" : ");
+  if(config->outnames[config->outputvars[index].id].unit==NULL)
+    fprintf(file,"null,\n");
+  else
+    fprintf(file,"\"%s\",\n",config->outnames[config->outputvars[index].id].unit);
+  fprintf(file,"  \"firstyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear);
+  fprintf(file,"  \"nyear\" : %d,\n",(config->outputvars[index].oneyear || config->outputvars[index].id==GRID || config->outputvars[index].id==COUNTRY || config->outputvars[index].id==REGION) ? 1 : config->lastyear-config->outputyear+1);
+  if(config->outputvars[index].id==GRID)
   {
     fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[config->float_grid ? LPJ_FLOAT : LPJ_SHORT]);
     fprintf(file,"  \"scaling\" : 0.01,\n");
@@ -100,13 +109,13 @@ Bool fprintoutputjson(int i,int year,const Config *config)
   }
   else
   {
-    fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(config->outputvars[i].id,FALSE)]);
+    fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(config->outputvars[index].id,FALSE)]);
     fprintf(file,"  \"scaling\" : 1.0,\n");
     fprintf(file,"  \"order\" : \"cellseq\",\n");
   }
   fprintf(file,"  \"bigendian\" : %s,\n",bool2str(bigendian()));
-  if(config->outputvars[i].filename.fmt==CLM)
-    fprintf(file,"  \"offset\" : %d,\n",config->outputvars[i].id==GRID ? (int)headersize(LPJGRID_HEADER,LPJGRID_VERSION) : (int)headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION));
+  if(config->outputvars[index].filename.fmt==CLM)
+    fprintf(file,"  \"offset\" : %d,\n",config->outputvars[index].id==GRID ? (int)headersize(LPJGRID_HEADER,LPJGRID_VERSION) : (int)headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION));
   fprintf(file,"  \"filename\" : \"%s\"\n",filename);
   fprintf(file,"}\n");
   fclose(file);
