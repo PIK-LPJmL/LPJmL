@@ -37,7 +37,7 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
   initscan(filename);
   name=NULL;
   while(!fscantoken(file.file.file,key))
-    if(!strcmp(key,"{"))
+    if(key[0]=='{')
     {
 #ifdef USE_JSON
       name=parse_json(&file,key,&header,&offset,&swap,isout ? ERR : NO_ERR);

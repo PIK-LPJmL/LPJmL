@@ -23,7 +23,7 @@
 /**     JSON file format is also supported:                                        \n**/
 /**                                                                                \n**/
 /**     {                                                                          \n**/
-/**       "filename : "inputfile.bin",                                             \n**/
+/**       "filename" : "inputfile.bin",                                            \n**/
 /**       "firstyear" : 1901,                                                      \n**/
 /**       "nyear" :  109,                                                          \n**/
 /**       "nbands" :  12,                                                          \n**/
