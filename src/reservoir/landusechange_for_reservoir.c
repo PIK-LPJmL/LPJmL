@@ -96,7 +96,7 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
         {
           /* remove all vegetation on irrigated setaside */
           cutpfts(setasidestand_ir,config);
-          mixsetaside(setasidestand,setasidestand_ir,intercrop);
+          mixsetaside(setasidestand,setasidestand_ir,intercrop,year,config);
           delstand(cell->standlist,s2);
         }
         else{
@@ -105,7 +105,7 @@ static Real from_setaside_for_reservoir(Cell *cell,          /**< pointer to cel
           cutstand->frac=difffrac-setasidestand->frac;
           reclaim_land(setasidestand_ir,cutstand,cell,config->istimber,npft+ncft,config);
           setasidestand_ir->frac-=difffrac-setasidestand->frac;
-          mixsetaside(setasidestand,cutstand,intercrop);
+          mixsetaside(setasidestand,cutstand,intercrop,year,config);
           delstand(cell->standlist,pos);
         }
       }
