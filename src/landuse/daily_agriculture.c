@@ -141,7 +141,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
     if(!isannual(PFT_CROOT,config))
       getoutputindex(output,PFT_CROOT,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=crop->ind.root.carbon;
     if(!isannual(PFT_VEGN,config))
-      getoutputindex(output,PFT_VEGN,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=vegn_sum(pft);
+      getoutputindex(output,PFT_VEGN,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=vegn_sum(pft)+pft->bm_inc.nitrogen;
     if(!isannual(PFT_VEGC,config))
       getoutputindex(output,PFT_VEGC,nnat+pft->par->id-npft+data->irrigation*nirrig,config)=vegc_sum(pft);
 
@@ -228,7 +228,10 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
         if(config->double_harvest)
         {
           crop=pft->data;
-          crop->dh->irrig_apply+=irrig_apply;
+          if(config->pft_output_scaled)
+            crop->dh->irrig_apply+=irrig_apply*stand->frac;
+          else
+            crop->dh->irrig_apply+=irrig_apply;
         }
         else
         {

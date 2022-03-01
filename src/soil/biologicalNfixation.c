@@ -30,12 +30,14 @@ Real biologicalnfixation(const Stand *stand /**< pointer to stand */
     {
       case TREE:
         tree=pft->data;
-        if(tree->ind.root.carbon>param.min_c_bnf)
+        if(tree->ind.root.carbon>param.min_c_bnf &&
+            ((tree->ind.leaf.nitrogen+pft->bm_inc.nitrogen/pft->nind*tree->falloc.leaf)/(tree->ind.leaf.carbon+pft->bm_inc.carbon/pft->nind*tree->falloc.leaf)<(pft->par->ncleaf.high)))
           bnf+=max(0,(0.0234*stand->cell->climbuf.aetp_mean-0.172)/10/NDAYYEAR)*pft->fpc;
         break;
       case GRASS:
         grass=pft->data;
-        if(grass->ind.root.carbon>param.min_c_bnf)
+        if(grass->ind.root.carbon>param.min_c_bnf &&
+          ((grass->ind.leaf.nitrogen+pft->bm_inc.nitrogen/pft->nind*grass->falloc.leaf)/(grass->ind.leaf.carbon+pft->bm_inc.carbon/pft->nind*grass->falloc.leaf)<(pft->par->ncleaf.high)))
           bnf+=max(0,(0.0234*stand->cell->climbuf.aetp_mean-0.172)/10/NDAYYEAR)*pft->fpc;
         break;
         // N fixation for crops now in n_uptake_crop.c

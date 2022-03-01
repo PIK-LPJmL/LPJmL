@@ -24,6 +24,7 @@ Bool fwrite_grass(FILE *file,    /**< pointer to binary file */
   const Pftgrass *grass;
   grass=pft->data;
   fwrite(&grass->turn,sizeof(Grassphys),1,file);
+  fwrite(&grass->turn_litt,sizeof(Grassphys),1,file);
   fwrite(&grass->max_leaf,sizeof(Real),1,file);
   fwrite(&grass->excess_carbon,sizeof(Real),1,file);
   fwrite(&grass->ind,sizeof(Grassphys),1,file);

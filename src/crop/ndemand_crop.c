@@ -30,7 +30,7 @@ Real ndemand_crop(const Pft *pft,     /**< pointer to PFT */
   croppar=pft->par->data;
   //*ndemand_leaf=((daylength==0) ? 0 : param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_crop(pft)))+param.n0*0.001*crop->ind.leaf.carbon;
   //*ndemand_leaf=((daylength==0) ? 0 : param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_crop(pft)))+pft->par->ncleaf.low*crop->ind.leaf.carbon;
-  *ndemand_leaf=((daylength==0) ? 0 : param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_crop(pft)))+pft->par->ncleaf.median*crop->ind.leaf.carbon;
+  *ndemand_leaf=((daylength==0) ? 0 : param.p*0.02314815/daylength*vmax*exp(-param.k_temp*(temp-25))*f_lai(lai_crop(pft)))+pft->par->ncleaf.median*crop->ind.leaf.carbon*pft->nind;
   if(crop->ind.leaf.carbon>0)
     nc_ratio=*ndemand_leaf/crop->ind.leaf.carbon;
   else
@@ -39,7 +39,7 @@ Real ndemand_crop(const Pft *pft,     /**< pointer to PFT */
     nc_ratio=pft->par->ncleaf.high;
   else if(nc_ratio<pft->par->ncleaf.low)
     nc_ratio=pft->par->ncleaf.low;
-  ndemand_tot=*ndemand_leaf+nc_ratio*(crop->ind.root.carbon/croppar->ratio.root+crop->ind.pool.carbon/croppar->ratio.pool+crop->ind.so.carbon/croppar->ratio.so);
+  ndemand_tot=*ndemand_leaf+nc_ratio*(crop->ind.root.carbon/croppar->ratio.root+crop->ind.pool.carbon/croppar->ratio.pool+crop->ind.so.carbon/croppar->ratio.so)*pft->nind;
   /* as long as bm_inc is equal to total biomass, this is fine */
   return ndemand_tot;
 } /* of 'ndemand_crop' */

@@ -28,7 +28,6 @@ void adjust_grass(Litter * UNUSED(litter), /**< pointer to litter */
     fpc_grass(pft);
     fpc_end=pft->fpc-(grass_fpc-fpc_max)*pft->fpc/grass_fpc;
     pft->fpc = fpc_end;
-    //printf("PFT:%s fpc_obs=%g fpc=%g\n",pft->par->name, pft->fpc_obs, pft->fpc);
   }
 } /* of 'adjust_grass' */
 

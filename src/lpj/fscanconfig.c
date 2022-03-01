@@ -75,7 +75,7 @@ static Bool readclimatefilename(LPJfile *file,Filename *name,const char *key,con
   if(!isfms && name->fmt==FMS)
   {
     if(verbose)
-      fprintf(stderr,"ERROR197: FMS coupler not allowed for input '%s'.\n",name->name);
+      fprintf(stderr,"ERROR197: FMS coupler not allowed for input '%s'.\n",key);
     return TRUE;
   }
   if(name->fmt==TXT)
@@ -948,8 +948,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   else
   {
     config->restart_filename=NULL;
-    fscanbool2(file,&config->equilsoil,"equilsoil");
   }
+  fscanbool2(file,&config->equilsoil,"equilsoil");
   if(iskeydefined(file,"checkpoint_filename"))
   {
     fscanname(file,name,"checkpoint_filename");

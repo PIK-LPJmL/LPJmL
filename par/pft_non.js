@@ -48,6 +48,7 @@
 #define K_LATOSA 4e3      /* leaf area to sapwood area */
 #define BC3 0.015         /*leaf respiration as fraction of Vmax for C3 plants */
 #define BC4 0.035         /* leaf respiration as fraction of Vmax for C4 plants */
+#define LMTORM_OFFSET 0.5
 
 "pftpar" :
 [
@@ -66,6 +67,7 @@
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 1.6,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -160,6 +162,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -254,6 +257,7 @@
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 4.0,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 900.0,      /* gdd5min 30*/
@@ -348,6 +352,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 1.6,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 1200.0,     /* gdd5min 30*/
@@ -442,6 +447,7 @@
     "resist" : 0.3,         /* resist 8*/
     "longevity" : 0.45,     /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 300.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 1200.0,     /* gdd5min 30*/
@@ -538,6 +544,7 @@
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 4.0,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 600.0,      /* gdd5min 30*/
@@ -632,6 +639,7 @@
     "resist" : 0.3,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 200.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 350.0,      /* gdd5min 30*/
@@ -728,6 +736,7 @@
     "resist" : 0.12,        /* resist 8*/
     "longevity" : 0.65,     /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 200.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 350.0,      /* gdd5min 30*/
@@ -824,6 +833,7 @@
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.4,      /* leaf longevity 10*/
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -901,6 +911,7 @@
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.35,     /* leaf longevity 10*/
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -979,6 +990,7 @@
     "resist" : 0.01,        /* resist 8*/
     "longevity" : 0.35,     /* leaf longevity 10*/
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.01,       /* gdd5min 30*/
@@ -1056,6 +1068,7 @@
     "resist" : 1.0,         /* resist 8*/
     "longevity" : 2.0,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.6,       /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1152,6 +1165,7 @@
     "resist" : 0.95,        /* resist 8*/
     "longevity" : 0.45,     /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 300.0,          /* ramp 19*/
     "lai_sapl" : 1.6,       /* lai_sapl 2.1, larger sapling used for plantations, original value 1.5  */
     "gdd5min" : 300.0,      /* gdd5min 30*/
@@ -1250,6 +1264,7 @@
     "resist" : 1.0,         /* resist 8*/
     "longevity" : 0.25,     /* leaf longevity 10*/
     "lmro_ratio" : 0.75,   /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1327,6 +1342,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.0001,    /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1430,6 +1446,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.33,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1533,6 +1550,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.33,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1636,6 +1654,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1739,6 +1758,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1842,6 +1862,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1945,6 +1966,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2048,6 +2070,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.33,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2151,6 +2174,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.66,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2254,6 +2278,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2357,6 +2382,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.41,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -2460,6 +2486,7 @@
     "resist" : 0.5,         /* resist 8*/
     "longevity" : 0.66,     /* leaf longevity 10*/
     "lmro_ratio" : 1.5,     /* lmro_ratio 18*/
+    "lmro_offset" : LMTORM_OFFSET,
     "ramp" : 500.0,          /* ramp 19*/
     "lai_sapl" : 0.001,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
