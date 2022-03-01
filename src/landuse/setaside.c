@@ -17,7 +17,7 @@
 #include "tree.h"
 #include "agriculture.h"
 
-void mixsoil(Stand *stand1,const Stand *stand2)
+void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
 {
   int l,index,i;
   Real water1,water2;
@@ -163,7 +163,8 @@ void mixsoil(Stand *stand1,const Stand *stand2)
     mixpool(stand1->soil.df_tillage[l],stand2->soil.df_tillage[l],stand1->frac,stand2->frac);
 
   updatelitterproperties(stand1,stand1->frac+stand2->frac);
-  pedotransfer(stand1,NULL,NULL,stand1->frac+stand2->frac);
+  if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
+    pedotransfer(stand1,NULL,NULL,stand1->frac+stand2->frac);
   //pedotransfer(stand1,absolute_water1,absolute_ice1,stand1->frac+stand2->frac);
   /* bedrock needs to be mixed seperately */
   stand1->soil.w[BOTTOMLAYER]=(stand1->soil.w[BOTTOMLAYER]*stand1->soil.whcs[BOTTOMLAYER]*stand1->frac+stand2->soil.w[BOTTOMLAYER]*stand2->soil.whcs[BOTTOMLAYER]*stand2->frac)/(stand1->frac+stand2->frac);
@@ -206,13 +207,13 @@ void mixsoil(Stand *stand1,const Stand *stand2)
 #endif
 } /* of 'mixsoil' */
 
-void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop)
+void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,const Config *config)
 {
   /*assumes that all vegetation carbon pools are zero after harvest*/
   int p;
   Pft *pft;
 
-  mixsoil(setasidestand,cropstand);
+  mixsoil(setasidestand,cropstand,year,config);
 
   if(intercrop)
   {
@@ -245,7 +246,7 @@ Bool setaside(Cell *cell,          /**< Pointer to LPJ cell */
   s=findlandusetype(cell->standlist,irrig? SETASIDE_IR : SETASIDE_RF);
   if(s!=NOT_FOUND)
   {
-    mixsetaside(getstand(cell->standlist,s),cropstand,intercrop);
+    mixsetaside(getstand(cell->standlist,s),cropstand,intercrop,year,config);
     return TRUE;
   }
   else

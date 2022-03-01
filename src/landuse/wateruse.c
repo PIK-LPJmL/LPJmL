@@ -81,6 +81,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
       grid[cell].discharge.withdrawal-=grid[cell].discharge.waterdeficit;
 #ifdef IMAGE
       getoutput(&grid[cell].output,WATERUSE_HIL,config) += grid[cell].discharge.wateruse_fraction*grid[cell].discharge.waterdeficit;// wateruse fraction
+      grid[cell].balance.awateruse_hil += grid[cell].discharge.wateruse_fraction*grid[cell].discharge.waterdeficit;// wateruse fraction
       grid[cell].discharge.dmass_lake += (1 - grid[cell].discharge.wateruse_fraction)*grid[cell].discharge.waterdeficit;//return flow
       grid[cell].discharge.mfin += (1 - grid[cell].discharge.wateruse_fraction)*grid[cell].discharge.waterdeficit;//return flow
 #else
@@ -101,6 +102,7 @@ void wateruse(Cell *grid,          /**< LPJ grid */
       {
         grid[cell].discharge.waterdeficit-=(grid[cell].discharge.withdrawal-grid[cell].discharge.gir);
         getoutput(&grid[cell].output,WATERUSE_HIL,config)+=grid[cell].discharge.wateruse_fraction*(grid[cell].discharge.withdrawal-grid[cell].discharge.gir);
+        grid[cell].balance.awateruse_hil+=grid[cell].discharge.wateruse_fraction*(grid[cell].discharge.withdrawal-grid[cell].discharge.gir);
         grid[cell].discharge.withdrawal-=(grid[cell].discharge.withdrawal-grid[cell].discharge.gir);
       }
       else

@@ -27,6 +27,10 @@
 
 //#define DAILY_OUTPUT  /* enables daily output */
 
+#ifndef MODEL
+#define MODEL HadGEM2-ES
+#endif
+
 {   /* LPJmL configuration in JSON format */
 
 /*===================================================================*/
@@ -45,45 +49,65 @@
   "new_trf" : false,        /* new transpiration reduction function disabled */
   "river_routing" : true,
   "permafrost" : true,
-  "with_nitrogen" : "lim_nitrogen", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
+  "johansen" : true,
+  "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
+  "with_nitrogen" : "lim", /* other options: NO_NITROGEN, LIM_NITROGEN, UNLIM_NITROGEN */
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : true,
   "fix_climate" : false,
+  "fix_landuse" : false,
   "shuffle_climate" : true,
   "const_deposition" : false,
 #ifdef FROM_RESTART
   "new_seed" : false,
   "equilsoil" :  false,
   "population" : false,
-  "landuse" : "landuse", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
+  "landuse" : "yes", /* other options: NO_LANDUSE, LANDUSE, CONST_LANDUSE, ALL_CROPS */
   "landuse_year_const" : 2000, /* set landuse year for CONST_LANDUSE case */
   "reservoir" : true,
-  "wateruse" : "all_wateruse",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
+  "wateruse" : "all",  /* other options: NO_WATERUSE, WATERUSE, ALL_WATERUSE */
 #else
   "equilsoil" :  true,
   "population" : false,
-  "landuse" : "no_landuse",
+  "landuse" : "no",
   "reservoir" : false,
-  "wateruse" : "no_wateruse",
+  "wateruse" : "no",
 #endif
   "prescribe_burntarea" : false,
   "prescribe_landcover" : "no_landcover", /* NO_LANDCOVER, LANDCOVERFPC, LANDCOVEREST */
   "sowing_date_option" : "fixed_sdate",   /* NO_FIXED_SDATE, FIXED_SDATE, PRESCRIBED_SDATE */
   "sdate_fixyear" : 1970,               /* year in which sowing dates shall be fixed */
   "intercrop" : true,                   /* intercrops on setaside */
-  "remove_residuals" : false,           /* remove residuals */
+  "residue_treatment" : "fixed_residue_remove", /* residue options: READ_RESIDUE_DATA, NO_RESIDUE_REMOVE, FIXED_RESIDUE_REMOVE (uses param residues_in_soil) */
   "residues_fire" : false,              /* fire in residuals */
-  "irrigation" : "lim_irrigation",        /* NO_IRRIGATION, LIM_IRRIGATION, POT_IRRIGATION, ALL_IRRIGATION */
-  "laimax_interpolate" : "laimax_par",    /* laimax values from manage parameter file, */
-                                        /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE, LAIMAX_PAR  */
+  "irrigation" : "lim",                 /* other options: "no", "lim", "pot", "all" */
+  "laimax_interpolate" : "laimax_par",  /* laimax values from manage parameter file, */
+                                        /* other options: LAIMAX_CFT, CONST_LAI_MAX, LAIMAX_INTERPOLATE */
+  "tillage_type" : "all",               /* Options: "all" (all agr. cells tilled), "no" (no cells tilled) and "read" (tillage dataset used) */
+  "till_startyear" : 1850,              /* year in which tillage should start */
+  "black_fallow" : false,               /* simulation with black fallow on PNV */
+  "pft_residue" : "temperate cereals",
+  "no_ndeposition" : false,             /* turn off atmospheric N deposition */
   "rw_manage" : false,                  /* rain water management */
   "laimax" : 5,                         /* maximum LAI for CONST_LAI_MAX */
-  "fertilizer_input" : true,            /* enable fertilizer input */
+  "fertilizer_input" : "yes",           /* enable fertilizer input, other options: "no", "yes", "auto" */
+  "manure_input" : true,                /* enable manure input */
+  "fix_fertilization" : false,          /* fix fertilizer input */
+  "others_to_crop" : true,              /* move PFT type others into PFT crop, cft_tropic for tropical,  cft_temp for temperate */
+  "grazing" : "default",                /* default grazing type, other options : "default", "mowing", "ext", "int", "none" */
+  "cft_temp" : "temperate cereals",
+  "cft_tropic" : "maize",
+  "grassonly" : false,                  /* set all cropland including others to zero but keep managed grasslands */
   "istimber" : true,
-  "others_to_crop" : true,
-  "crop_resp_fix" : false,
   "grassland_fixed_pft" : false,
   "grass_harvest_options" : false,
+  "mowing_days" : [152, 335],          /* Mowing days for grassland if grass harvest options are ser */
+  "crop_resp_fix" : false,             /* variable C:N ratio for crop respiration */
+                                       /* for MAgPIE runs, turn off dynamic C:N ratio dependent respiration,
+                                          which reduces yields at high N inputs */
+  "crop_phu_option" : "new",
+  "cropsheatfrost" : false,
+  "double_harvest" : true,
 
 /*===================================================================*/
 /*  II. Input parameter section                                      */

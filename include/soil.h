@@ -135,6 +135,9 @@ typedef struct
   char *name; /**< soil name */
   Real Ks;    /**< hydraulic conductivity (mm/h)*/
   Real Sf;    /**< Suction head (mm)*/
+  Real wpwp;  /**< relative water content at wilting point */
+  Real wfc;   /**< relative water content at field capacity */
+  Real wsat;  /**< relative water content at saturation */
   Real sand;  /**< fraction of sand content in soil texture*/
   Real silt;  /**< fraction of silt content in soil texture*/
   Real clay;  /**< fraction of clay content in soil texture*/
@@ -212,7 +215,7 @@ extern void convert_water(Soil*,int,Real*);
 extern void copysoil(Soil *,const Soil *, int);
 extern int findlitter(const Litter *,const struct Pftpar *);
 extern Real fire_prob(const Litter *,Real);
-extern unsigned int fscansoilpar(LPJfile *,Soilpar **,int,Verbosity);
+extern unsigned int fscansoilpar(LPJfile *,Soilpar **,int,int,Verbosity);
 extern int *fscansoilmap(LPJfile *,int *,const Config *);
 extern Bool fscanpoolpar(LPJfile *,Poolpar *,const char *,Verbosity);
 extern Bool freadlitter(FILE *,Litter *,const struct Pftpar *,int,Bool);
@@ -222,7 +225,7 @@ extern void freesoil(Soil *);
 extern void freelitter(Litter *);
 extern void freesoilpar(Soilpar [],int);
 extern void fprintlitter(FILE *,const Litter *,int);
-extern void fprintsoilpar(FILE *,const Soilpar [],int,int);
+extern void fprintsoilpar(FILE *,const Soilpar [],int,int,int);
 extern void fprintsoil(FILE *,const Soil *,const struct Pftpar *,int,int);
 extern FILE *fopensoilcode(const Filename *,Bool *,size_t *,Type *,unsigned int,Bool);
 extern Bool fwritesoil(FILE *,const Soil *,int);
@@ -230,7 +233,7 @@ extern Bool fwritelitter(FILE *,const Litter *);
 extern void getlag(Soil *,int);
 extern int getnsoilcode(const Filename *,unsigned int,Bool);
 extern Soilstate getstate(Real *); /*temperature above/below/at T_zero?*/
-extern Bool initsoil(Stand *soil,const Soilpar *, int,Bool);
+extern Bool initsoil(Stand *soil,const Soilpar *, int,int,Bool);
 extern Real litter_ag_sum(const Litter *);
 extern Real litter_ag_sum_n(const Litter *);
 extern Real litter_agsub_sum(const Litter *);
@@ -271,6 +274,7 @@ extern Stocks checklitter(Litter *);
 extern Real getwr(const Soil *,const Real []);
 extern void updatelitterproperties(Stand *,Real);
 extern void pedotransfer(Stand *, Real *, Real *,Real);
+extern void soilpar_output(Cell *,const Config *);
 
 /* Definition of macros */
 

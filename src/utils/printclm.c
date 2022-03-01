@@ -304,7 +304,8 @@ static void printclm(const char *filename,int output,int nbands,int version,
             }
             fseek(file,typesizes[type]*(header.ncell-last-first+header.firstcell),SEEK_CUR);
           }
-        free(index);
+        if(header.order==CELLINDEX)
+          free(index);
       }
       else
         for(year=start;year<=stop;year++)

@@ -174,6 +174,8 @@ static size_t isnetcdfinput(const Config *config)
     width=max(width,strlen(config->aquifer_filename.var));
   if(config->wateruse_wd_filename.name!=NULL && config->wateruse_wd_filename.fmt==CDF)
     width=max(width,strlen(config->wateruse_wd_filename.var));
+  if(config->aquifer_irrig==AQUIFER_IRRIG && config->aquifer_filename.fmt==CDF)
+    width=max(width,strlen(config->aquifer_filename.var));
 #endif
   if(width)
     width=max(width,strlen("Varname"));
@@ -405,6 +407,19 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len=fputstring(file,len,", ",78);
       count++;
       len=fputstring(file,len,"prescribed sowing date",78);
+    }
+    if(config->soilpar_option==FIXED_SOILPAR)
+    {
+      len=fputstring(file,len,", ",78);
+      count++;
+      snprintf(s,STRING_LEN,"fixed soil parameter after %d",config->soilpar_fixyear);
+      len=fputstring(file,len,s,78);
+    }
+    else if(config->soilpar_option==PRESCRIBED_SOILPAR)
+    {
+      len=fputstring(file,len,", ",78);
+      count++;
+      len=fputstring(file,len,"prescribed soil parameter",78);
     }
     if(config->grassharvest_filename.name==NULL)
     {

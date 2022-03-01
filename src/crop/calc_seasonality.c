@@ -60,7 +60,7 @@ void calc_seasonality(Cell *grid,          /**< cell grid array */
       for (n=0;n<NMONTH;n++) /*just need a monthly loop*/
       {
         mtemp20kelvin[n]= grid[cell].climbuf.mtemp20[n]+273.15; /*convert deg C to Kelvin*/
-        p_pet20[n]      = (grid[cell].climbuf.mpet20[n] > 0) ? grid[cell].climbuf.mprec20[n]/grid[cell].climbuf.mpet20[n] : 0; /*calculate P/PET ratio if monthly PET is above zero*/
+        p_pet20[n]      = (grid[cell].climbuf.mpet20[n] > epsilon) ? grid[cell].climbuf.mprec20[n]/grid[cell].climbuf.mpet20[n] : 0; /*calculate P/PET ratio if monthly PET is above zero*/
       }
       var_temp=variation_coefficient(mtemp20kelvin,NMONTH);
       var_prec=variation_coefficient(grid[cell].climbuf.mprec20,NMONTH);

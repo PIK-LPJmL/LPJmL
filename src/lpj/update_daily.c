@@ -123,7 +123,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       if(config->till_fallow)
       {
         tillage(&stand->soil,param.residue_frac);
-        pedotransfer(stand,NULL,NULL,stand->frac);
+        if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
+          pedotransfer(stand,NULL,NULL,stand->frac);
         updatelitterproperties(stand,stand->frac);
       }
     }
@@ -182,7 +183,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutputindex(&cell->output,SOILTEMP,l,config)+=stand->soil.temp[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
     /* update soil and litter properties to account for all changes since last call of littersom */
-    pedotransfer(stand,NULL,NULL,stand->frac);
+    if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
+      pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
 
     if(stand->type->landusetype==NATURAL)
@@ -235,7 +237,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
 
     /* update soil and litter properties to account for all changes from littersom */
-    pedotransfer(stand,NULL,NULL,stand->frac);
+    if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
+      pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
 
     /*monthly rh for agricutural stands*/
@@ -485,6 +488,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #ifdef SAFE
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);
 #endif
+  soilpar_output(cell,config);
   /* Establishment fluxes are area weighted in subroutines */
   getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon;
   getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen;
