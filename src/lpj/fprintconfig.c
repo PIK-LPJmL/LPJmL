@@ -295,6 +295,19 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     len=printsim(file,len,&count,"new phenology");
   if(config->new_trf)
     len=printsim(file,len,&count,"new transpiration reduction function");
+  if(config->soilpar_option==FIXED_SOILPAR)
+  {
+    len=fputstring(file,len,", ",78);
+    count++;
+    snprintf(s,STRING_LEN,"fixed soil parameter after %d",config->soilpar_fixyear);
+    len=fputstring(file,len,s,78);
+  }
+  else if(config->soilpar_option==PRESCRIBED_SOILPAR)
+  {
+    len=fputstring(file,len,", ",78);
+    count++;
+    len=fputstring(file,len,"prescribed soil parameter",78);
+  }
   if(config->withlanduse)
   {
     switch(config->withlanduse)
@@ -397,19 +410,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
       len=fputstring(file,len,", ",78);
       count++;
       len=fputstring(file,len,"prescribed sowing date",78);
-    }
-    if(config->soilpar_option==FIXED_SOILPAR)
-    {
-      len=fputstring(file,len,", ",78);
-      count++;
-      snprintf(s,STRING_LEN,"fixed soil parameter after %d",config->soilpar_fixyear);
-      len=fputstring(file,len,s,78);
-    }
-    else if(config->soilpar_option==PRESCRIBED_SOILPAR)
-    {
-      len=fputstring(file,len,", ",78);
-      count++;
-      len=fputstring(file,len,"prescribed soil parameter",78);
     }
     if(config->grassharvest_filename.name==NULL)
     {
