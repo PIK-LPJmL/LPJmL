@@ -123,7 +123,10 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(config->outputvars[index].id,config->float_grid)]);
   if(config->outputvars[index].id==GRID)
   {
-    fprintf(file,"  \"scaling\" : 0.01,\n");
+    if(config->float_grid)
+      fprintf(file,"  \"scaling\" : 1.0,\n");
+    else
+      fprintf(file,"  \"scaling\" : 0.01,\n");
     fprintf(file,"  \"order\" : \"cellyear\",\n");
   }
   else
@@ -133,7 +136,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   }
   fprintf(file,"  \"bigendian\" : %s,\n",bool2str(bigendian()));
   if(config->outputvars[index].filename.fmt==CLM)
-    fprintf(file,"  \"offset\" : %d,\n",config->outputvars[index].id==GRID ? (int)headersize(LPJGRID_HEADER,LPJGRID_VERSION) : (int)headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION));
+    fprintf(file,"  \"offset\" : %zu,\n",config->outputvars[index].id==GRID ? headersize(LPJGRID_HEADER,LPJGRID_VERSION) : headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION));
   else if(config->outputvars[index].filename.fmt==TXT)
     fprintf(file,"  \"delimiter\" : \"%c\",\n",config->csv_delimit);
   fprintf(file,"  \"format\" : \"%s\",\n",fmt[config->outputvars[index].filename.fmt]);
