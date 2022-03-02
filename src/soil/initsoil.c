@@ -117,6 +117,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
     soil->bulkdens[BOTTOMLAYER]=(1-soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER])*MINERALDENS;
     soil->k_dry[BOTTOMLAYER]=0.039*pow(soil->wsats[BOTTOMLAYER]/soildepth[BOTTOMLAYER],-2.2);
     soil->beta_soil[BOTTOMLAYER]=-2.655/log10(soilpar->wfc/soilpar->wsat);
+    soil->Ks[BOTTOMLAYER] = soilpar->Ks;
   }
   else
   {
