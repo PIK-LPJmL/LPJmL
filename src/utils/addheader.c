@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n]\n       [-firstcell n] [-nbands n] [-order n] [-version n] [-cellsize s]\n       [-scale s] [-id s] [-type {byte|short|int|float|double}] binfile clmfile\n"
+#define USAGE "Usage: %s [-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n]\n       [-firstcell n] [-nbands n] [-nstep n] [-order n] [-version n] [-cellsize s]\n       [-scale s] [-id s] [-type {byte|short|int|float|double}] binfile clmfile\n"
 
 #define BUFSIZE (1024*1024) /* size of read buffer */
 
@@ -41,6 +41,7 @@ int main(int argc,char **argv)
   header.firstcell=0;
   header.nyear=109;
   header.nbands=12;
+  header.nstep=1;
   header.order=CELLYEAR;
   header.scalar=1;
   header.datatype=LPJ_SHORT;
@@ -156,6 +157,25 @@ int main(int argc,char **argv)
         if(header.nbands<=0)
         {
           fputs("Number of bands less than one.\n",stderr);
+          return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[index],"-nstep"))
+      {
+        if(index==argc-1)
+        {
+          fprintf(stderr,"Argument missing for option '-nstep'.\n");
+          return EXIT_FAILURE;
+        }
+        header.nstep=strtol(argv[++index],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid number '%s' for option '-nstep'.\n",argv[index]);
+          return EXIT_FAILURE;
+        }
+        if(header.nstep<=0)
+        {
+          fputs("Number of steps less than one.\n",stderr);
           return EXIT_FAILURE;
         }
       }
@@ -287,10 +307,10 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   }
   filesize=getfilesizep(infile);
-  if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+(long long)header.ncell*header.nbands*header.nyear*len) ||
-    (header.order!=CELLINDEX && filesize!=(long long)header.ncell*header.nbands*header.nyear*len))
+  if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+(long long)header.ncell*header.nbands*header.nstep*header.nyear*len) ||
+    (header.order!=CELLINDEX && filesize!=(long long)header.ncell*header.nbands*header.nstep*header.nyear*len))
   {
-     fprintf(stderr,"Error: File size of '%s' does not match nyear*nbands*ncell*%d.\n",argv[index],(int)len);
+     fprintf(stderr,"Error: File size of '%s' does not match nyear*nbands*nstep*ncell*%d.\n",argv[index],(int)len);
      fclose(infile);
      return EXIT_FAILURE;
   }

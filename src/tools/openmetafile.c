@@ -20,6 +20,22 @@
 /**     offset 0                                                                   \n**/
 /**     datatype short                                                             \n**/
 /**                                                                                \n**/
+/**     JSON file format is also supported:                                        \n**/
+/**                                                                                \n**/
+/**     {                                                                          \n**/
+/**       "filename" : "inputfile.bin",                                            \n**/
+/**       "firstyear" : 1901,                                                      \n**/
+/**       "nyear" :  109,                                                          \n**/
+/**       "nbands" :  12,                                                          \n**/
+/**       "bigendian" :  false,                                                    \n**/
+/**       "firstcell" :  0,                                                        \n**/
+/**       "ncell" :  67420,                                                        \n**/
+/**       "scaling" :  0.1,                                                        \n**/
+/**       "cellsize" :  [0.5,0.5],                                                 \n**/
+/**       "offset" :  0,                                                           \n**/
+/**       "datatype" :  "short"                                                    \n**/
+/**     }                                                                          \n**/
+/**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -28,9 +44,190 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
+#ifdef USE_JSON
+#include <json-c/json.h>
+#endif
 #include "lpj.h"
 
 const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
+
+#ifdef USE_JSON
+
+char *parse_json(LPJfile *lpjfile,   /**< pointer to JSON file */
+                 char *s,            /**< first string of JSON file */
+                 Header *header,     /**< pointer to file header */
+                 size_t *offset,     /**< offset in binary file */
+                 Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
+                 Verbosity verbosity /**< verbosity level */
+                )                    /** \return filename of binary file or NULL */
+{
+  FILE *file;
+  String filename;
+  char *line;
+  enum json_tokener_error json_error;
+  struct json_tokener *tok;
+  Real cellsize[2];
+  Bool endian;
+  file=lpjfile->file.file;
+  lpjfile->isjson=TRUE;     /* enable JSON parsing */
+  tok=json_tokener_new();
+  lpjfile->file.obj=json_tokener_parse_ex(tok,s,strlen(s));
+  while((line=fscanline(file))!=NULL)  /* read line from file */
+  {
+    lpjfile->file.obj=json_tokener_parse_ex(tok,line,strlen(line));
+    json_error=json_tokener_get_error(tok);
+    if(json_error!=json_tokener_continue)
+      break;
+    free(line);
+  }
+  json_tokener_free(tok);
+  if(json_error!=json_tokener_success)
+  {
+    if(verbosity)
+    {
+      fprintf(stderr,"ERROR228: Cannot parse json file '%s' in line %d, %s:\n",
+              getfilename(),getlinecount()-1,(json_error==json_tokener_continue) ? "missing closing '}'" : json_tokener_error_desc(json_error));
+      if(json_error!=json_tokener_continue)
+        fprintf(stderr,"%s:%d:%s",getfilename(),getlinecount()-1,line);
+    }
+    free(line);
+    json_object_put(lpjfile->file.obj);
+    lpjfile->file.file=file;
+    return NULL;
+  }
+  free(line);
+  if(iskeydefined(lpjfile,"firstcell"))
+  {
+    if(fscanint(lpjfile,&header->firstcell,"firstcell",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"ncell"))
+  {
+    if(fscanint(lpjfile,&header->ncell,"ncell",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"firstyear"))
+  {
+    if(fscanint(lpjfile,&header->firstyear,"firstyear",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"lastyear"))
+  {
+    if(fscanint(lpjfile,&header->nyear,"lastyear",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+    header->nyear-=header->firstyear-1;
+  }
+  if(iskeydefined(lpjfile,"nyear"))
+  {
+    if(fscanint(lpjfile,&header->nyear,"nyear",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"nstep"))
+  {
+    if(fscanint(lpjfile,&header->nstep,"nstep",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"nbands"))
+  {
+    if(fscanint(lpjfile,&header->nbands,"nbands",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"order"))
+  {
+    if(fscankeywords(lpjfile,&header->order,"order",ordernames,4,FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"offset"))
+  {
+    if(fscansize(lpjfile,offset,"offset",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"bigendian"))
+  {
+    if(fscanbool(lpjfile,&endian,"bigendian",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+    *swap=(endian) ? !bigendian() : bigendian();
+  }
+  if(iskeydefined(lpjfile,"scaling"))
+  {
+    if(fscanfloat(lpjfile,&header->scalar,"scaling",FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"datatype"))
+  {
+    if(fscankeywords(lpjfile,(int *)&header->datatype,"datatype",typenames,5,FALSE,verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+  }
+  if(iskeydefined(lpjfile,"cellsize"))
+  {
+    if(fscanrealarray(lpjfile,cellsize,2,"cellsize",verbosity))
+    {
+      json_object_put(lpjfile->file.obj);
+      lpjfile->file.file=file;
+      return NULL;
+    }
+    header->cellsize_lon=(float)cellsize[0];
+    header->cellsize_lat=(float)cellsize[1];
+  }
+  if(fscanstring(lpjfile,filename,"filename",FALSE,verbosity))
+  {
+    json_object_put(lpjfile->file.obj);
+    lpjfile->file.file=file;
+    return NULL;
+  }
+  json_object_put(lpjfile->file.obj);
+  lpjfile->file.file=file;
+  return strdup(filename);
+}
+#endif
 
 FILE *openmetafile(Header *header, /**< pointer to file header */
                    Bool *swap, /**< byte order has to be changed (TRUE/FALSE) */
@@ -58,7 +255,21 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
   *offset=0;
   name=NULL;
   while(!fscantoken(file.file.file,key))
-    if(!strcmp(key,"firstcell"))
+    if(key[0]=='{')
+    {
+#ifdef USE_JSON
+      name=parse_json(&file,key,header,offset,swap,isout ? ERR : NO_ERR);
+      break;
+#else
+      if(isout)
+        printf(stderr,"ERROR229: JSON format not supported for metafile '%s' in this version of LPJmL.\n",
+               filename);
+      free(name);
+      fclose(file.file.file);
+      return NULL;
+#endif
+    }
+    else if(!strcmp(key,"firstcell"))
     {
       if(fscanint(&file,&header->firstcell,"firstcell",FALSE,isout ? ERR : NO_ERR))
       {
@@ -87,7 +298,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     }
     else if(!strcmp(key,"lastyear"))
     {
-      if(fscanint(&file,&header->nyear,"firstyear",FALSE,isout ? ERR : NO_ERR))
+      if(fscanint(&file,&header->nyear,"lastyear",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);
@@ -107,6 +318,15 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     else if(!strcmp(key,"nbands"))
     {
       if(fscanint(&file,&header->nbands,"nbands",FALSE,isout ? ERR : NO_ERR))
+      {
+        free(name);
+        fclose(file.file.file);
+        return NULL;
+      }
+    }
+    else if(!strcmp(key,"nstep"))
+    {
+      if(fscanint(&file,&header->nstep,"nstep",FALSE,isout ? ERR : NO_ERR))
       {
         free(name);
         fclose(file.file.file);
@@ -285,7 +505,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
   /* check file size of binary file */
   if(isout && data!=NULL)
   {
-    if((header->order==CELLINDEX  && getfilesizep(data)!=sizeof(int)*header->ncell+typesizes[header->datatype]*header->ncell*header->nbands*header->nyear+*offset) || (header->order!=CELLINDEX && getfilesizep(data)!=typesizes[header->datatype]*header->ncell*header->nbands*header->nyear+*offset))
+    if((header->order==CELLINDEX  && getfilesizep(data)!=sizeof(int)*header->ncell+typesizes[header->datatype]*header->ncell*header->nbands*header->nstep*header->nyear+*offset) || (header->order!=CELLINDEX && getfilesizep(data)!=typesizes[header->datatype]*header->ncell*header->nbands*header->nyear*header->nstep+*offset))
       fprintf(stderr,"WARNING032: File size of '%s' does not match settings in description file '%s'.\n",name,filename);
   }
   free(name);

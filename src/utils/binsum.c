@@ -14,17 +14,18 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-nitem n] [-nsum n] [-month|day] [-swap] [-mean] gridfile binfile sumfile\n"
+#define USAGE "Usage: %s [-clm] [-nitem n] [-nsum n] [-month|day] [-swap] [-mean] [gridfile] binfile sumfile\n"
 
 int main(int argc,char **argv)
 {
   FILE *file,*out;
   float *data;
   float *data_sum;
-  int i,j,ngrid,iarg,nitem,nsum,nyear;
+  int i,j,ngrid,iarg,nitem,nsum,nyear,version;
   char *endptr;
-  Bool swap,mean;
-  swap=mean=FALSE;
+  Header header;
+  Bool swap,mean,isclm;
+  swap=mean=isclm=FALSE;
   nitem=1;
   nsum=NMONTH;
   for(iarg=1;iarg<argc;iarg++)
@@ -32,6 +33,8 @@ int main(int argc,char **argv)
     {
       if(!strcmp(argv[iarg],"-swap"))
         swap=TRUE;
+      else if(!strcmp(argv[iarg],"-clm"))
+        isclm=TRUE;
       else if(!strcmp(argv[iarg],"-mean"))
         mean=TRUE;
       else if(!strcmp(argv[iarg],"-nitem"))
@@ -87,41 +90,64 @@ int main(int argc,char **argv)
     }
     else
       break;
-  if(argc<iarg+3)
+  if(argc<iarg+((isclm) ? 2 : 3))
   {
     fprintf(stderr,"Error: Missing argument(s).\n"
             USAGE,argv[0]);
     return EXIT_FAILURE;
   }
+  if(!isclm)
+  {
+    file=fopen(argv[iarg],"rb");
+    if(file==NULL)
+    {
+      fprintf(stderr,"Error opening grid file '%s': %s.\n",argv[iarg],
+              strerror(errno));
+      return EXIT_FAILURE;
+    }
+    ngrid=getfilesizep(file)/sizeof(short)/2;
+    if(ngrid==0)
+    {
+       fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg]);
+       return EXIT_FAILURE;
+    }
+    fclose(file);
+    iarg++;
+  }
   file=fopen(argv[iarg],"rb");
   if(file==NULL)
   {
-    fprintf(stderr,"Error opening grid file '%s': %s.\n",argv[iarg],
-            strerror(errno));
+    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg],strerror(errno));
     return EXIT_FAILURE;
   }
-  ngrid=getfilesizep(file)/sizeof(short)/2;
-  if(ngrid==0)
-  {
-     fprintf(stderr,"Error: Number of grid cells in '%s' is zero.\n",argv[iarg]);
-     return EXIT_FAILURE;
-  }
-  fclose(file);
-  file=fopen(argv[iarg+1],"rb");
-  if(file==NULL)
-  {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+1],strerror(errno));
-    return EXIT_FAILURE;
-  }
-  out=fopen(argv[iarg+2],"wb");
+  out=fopen(argv[iarg+1],"wb");
   if(out==NULL)
   {
-    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+2],strerror(errno));
+    fprintf(stderr,"Error creating '%s': %s.\n",argv[iarg+1],strerror(errno));
     return EXIT_FAILURE;
   }
-  nyear=getfilesizep(file)/sizeof(float)/ngrid/nitem;
-  if(getfilesizep(file) % (sizeof(float)*ngrid*nitem))
-    fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg+1],nitem,ngrid);
+  if(isclm)
+  {
+    version=READ_VERSION;
+    if(freadheader(file,&header,&swap,LPJOUTPUT_HEADER,&version,TRUE))
+    {
+      return EXIT_FAILURE;
+    }
+    ngrid=header.ncell;
+    nsum=header.nstep;
+    nyear=header.nyear*nsum;
+    nitem=header.nbands;
+    if(getfilesizep(file)!=headersize(LPJOUTPUT_HEADER,version)+typesizes[header.datatype]*header.nyear*header.nstep*header.nbands*header.ncell)
+      fprintf(stderr,"Warning: file size of '%s' does not match header.\n",argv[iarg]);
+    header.nstep=1;
+    fwriteheader(out,&header,LPJOUTPUT_HEADER,version);
+  }
+  else
+  {
+    nyear=getfilesizep(file)/sizeof(float)/ngrid/nitem;
+    if(getfilesizep(file) % (sizeof(float)*ngrid*nitem))
+      fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg],nitem,ngrid);
+  }
   data=newvec(float,ngrid*nitem);
   if(data==NULL)
   {

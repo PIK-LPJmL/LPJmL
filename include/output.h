@@ -119,6 +119,7 @@ extern void fwriteoutputdata(FILE *,const Output *,const Config *);
 extern Bool freadoutputdata(FILE *,Output *,Bool,Config *);
 extern Bool isannual(int,const Config *);
 extern int outputindex(int,int,const Config *);
+extern Bool fprintoutputjson(int,int,const Config *);
 #ifdef USE_MPI
 extern int mpi_write(FILE *,void *,MPI_Datatype,int,int *,
                      int *,int,MPI_Comm);

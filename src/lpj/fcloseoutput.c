@@ -47,7 +47,6 @@ void fcloseoutput(Outputfile *output,  /**< Output file array */
   for(i=0;i<output->n;i++)
     if(output->files[i].isopen)  /* output file is open? */
     {
-#ifdef USE_MPI
       if(isroot(*config) && !output->files[i].oneyear)
       {
         switch(output->files[i].fmt)
@@ -62,22 +61,6 @@ void fcloseoutput(Outputfile *output,  /**< Output file array */
         if(output->files[i].compress)
           compress(output->files[i].filename,config->compress_cmd);
       }
-#else
-      if(!output->files[i].oneyear)
-      {
-         switch(output->files[i].fmt)
-         {
-           case RAW: case TXT: case CLM:
-             fclose(output->files[i].fp.file);
-             break;
-           case CDF:
-             close_netcdf(&output->files[i].fp.cdf);
-             break;
-         } /* of switch */
-         if(output->files[i].compress)
-           compress(output->files[i].filename,config->compress_cmd);
-      }
-#endif
     }
 #ifdef USE_MPI
   free(output->counts);

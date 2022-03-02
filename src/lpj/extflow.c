@@ -42,7 +42,7 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
     return NULL;
   if(config->extflow_filename.fmt==META)
   {
-    version=4;
+    version=CLM_MAX_VERSION+1;
     /* set default values for header */
     header.order=CELLINDEX;
     header.firstyear=config->firstyear;
@@ -50,6 +50,7 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
     header.firstcell=0;
     header.ncell=0;
     header.nbands=NDAYYEAR;
+    header.nstep=1;
     header.scalar=1;
     header.datatype=LPJ_FLOAT;
     header.cellsize_lon=(float)config->resolution.lon;
@@ -112,6 +113,19 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
     fclose(extflow->file);
     free(extflow);
     return NULL;
+  }
+  if(version==4)
+  {
+    if(header.nbands>1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR154: Number of bands=%d in '%s' is not 1.\n",
+                header.nbands,config->extflow_filename.name);
+      fclose(extflow->file);
+      free(extflow);
+      return NULL;
+    }
+    header.nbands=header.nstep;
   }
   if(isroot(*config) && config->extflow_filename.fmt!=META && getfilesizep(extflow->file)!=sizeof(int)*header.ncell+headersize(LPJEXTFLOW_HEADER,version)+typesizes[extflow->datatype]*header.ncell*header.nbands*header.nyear)
     fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->extflow_filename.name);

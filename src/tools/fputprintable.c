@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**                   f  p  u  t  p  r  i  n  t  a  b  l  e  .  c                  \n**/
 /**                                                                                \n**/
-/**     Function prints only printable characters to text file                     \n**/
+/**     Function prints only printable characters or '?' to text file              \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -23,8 +23,7 @@ void fputprintable(FILE *file,      /**< pointer to text file */
 {
   while(*line!='\0')
   {
-    if(isprint(*line))
-      fputc(*line,file);
+    fputc(isprint(*line) ? *line : '?',file);
     line++;
   }
 } /* of 'fputprintable' */ 

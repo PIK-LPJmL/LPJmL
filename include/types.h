@@ -83,6 +83,7 @@ typedef struct
   int timestep; /* time step for output (ANNUAL,MONTHLY,DAILY) */
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
   int id;     /* id for input socket */
+  Bool meta; /* meta file output enabled */
 } Filename;
 
 typedef struct
@@ -118,7 +119,7 @@ extern Bool iskeydefined(const LPJfile *,const char *);
 extern Bool isboolean(const LPJfile *,const char *);
 extern Bool isint(const LPJfile *,const char *);
 extern Bool isstring(const LPJfile *,const char *);
-extern Bool fscanline(FILE *,char [],int,Verbosity);
+extern char *fscanline(FILE *);
 extern Bool fscantoken(FILE *,String);
 extern Bool fscankeywords(LPJfile *,int *,const char *,const char *const *,
                           int,Bool,Verbosity);

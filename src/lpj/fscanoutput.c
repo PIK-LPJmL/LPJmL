@@ -102,6 +102,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     config->n_out=0;
     config->crop_index=-1;
     config->crop_irrigation=-1;
+    config->json_suffix=NULL;
     return FALSE;
   }
   if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))
@@ -139,6 +140,10 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   {
     fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
   }
+  if(fscanstring(file,name,"json_suffix",FALSE,verbosity))
+    return TRUE;
+  config->json_suffix=strdup(name);
+  checkptr(config->json_suffix);
   isdaily=FALSE;
   for(index=0;index<size;index++)
   {
@@ -265,6 +270,12 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       {
         if(verbosity)
           fprintf(stderr,"ERROR225: One year output not allowed for grid, globalflux, country or region.\n");
+      }
+      else if(config->outputvars[count].filename.fmt==META)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR223: File format META is not supported for output file '%s'.\n",
+                  config->outputvars[count].filename.name);
       }
       else
       {

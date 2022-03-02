@@ -97,6 +97,15 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
     wateruse->file.var_len=header.nbands;
     wateruse->file.size=header.ncell*typesizes[wateruse->file.datatype];
     wateruse->file.scalar=(version<=1) ? 1000 : header.scalar;
+    if(header.nstep!=1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR218: Number of steps=%d in wateruse file '%s' is not 1.\n",
+                header.nstep,config->wateruse_filename.name);
+      closeclimatefile(&wateruse->file,isroot(*config));
+      free(wateruse);
+      return NULL;
+    }
   }
   if(wateruse->file.var_len!=1)
   {

@@ -1,13 +1,16 @@
-.TH cvrtclm 1  "November 26, 2018" "version 1.0.001" "USER COMMANDS"
+.TH cvrtclm 1  "January 17, 2021" "version 1.0.001" "USER COMMANDS"
 .SH NAME
-cvrtclm \- convert version of clm file to latest version 3
+cvrtclm \- convert version of clm file to version 3 or 4
 .SH SYNOPSIS
 .B cvtrclm
-[\-type {byte|short|int|float|double}] [\-scale s] [\-cellsize size]
+[\-4] [\-type {byte|short|int|float|double}] [\-scale s] [\-cellsize size] [\-swapnstep]
 .I infile outfile 
 .SH DESCRIPTION
-Program converts clm file into clm file with version 3. For version 1 file cellsize and scaling factor have to be specified, if they differ from default values. For version 2 type has to be specified if different from short.
+Program converts clm file into clm file with version 3 or 4. For version 1 file cellsize and scaling factor have to be specified, if they differ from default values. For version 2 type has to be specified if different from short.
 .SH OPTIONS
+.TP
+\-4
+Convert to version 4 clm file, default is 3.
 .TP
 \-type {byte|short|int|float|double}
 Set type of data in header, default is short
@@ -17,6 +20,9 @@ set scaling factor in header, default is 1.
 .TP
 \-cellsize size
 set cell size in header, default is 0.5.
+.TP
+\-swapnstep
+Swap nbands for nstep for version 4 clm files.
 .TP
 .I infile    
 filename of clm file to convert

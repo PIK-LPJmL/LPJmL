@@ -96,6 +96,15 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
            fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->popdens_filename.name);
       }
     }
+    if(header.nstep!=1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR218: Number of steps=%d in population density file '%s' is not 1.\n",
+                header.nstep,config->popdens_filename.name);
+      closeclimatefile(&popdens->file,isroot(*config));
+      free(popdens);
+      return NULL;
+    }
   }
   if(popdens->file.var_len>1)
   {

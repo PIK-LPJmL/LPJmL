@@ -83,6 +83,15 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
     landcover->file.offset=(config->startgrid-header.firstcell)*header.nbands*
                            typesizes[landcover->file.datatype]+headersize(headername,version)+offset;
     len=landcover->file.n;
+    if(header.nstep!=1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR225: Number of steps=%d in landcover file '%s' is not 1\n",
+                header.nstep,config->landcover_filename.name);
+      closeclimatefile(&landcover->file,isroot(*config));
+      free(landcover);
+      return NULL;
+    }
   }
   if(landcover->file.var_len!=getnnat(npft,config))
   {
