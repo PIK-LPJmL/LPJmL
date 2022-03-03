@@ -775,7 +775,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           n=addstand(&natural_stand,grid+i);
           stand=getstand(grid[i].standlist,n-1);
           stand->frac=1-grid[i].lakefrac;
-          if(initsoil(stand,config->soilpar+soil_id,npft+ncft,config->with_nitrogen))
+          if(initsoil(stand,config->soilpar+soil_id,npft+ncft,config->soilpar_option,config->with_nitrogen))
             return NULL;
           for(l=0;l<FRACGLAYER;l++)
             stand->frac_g[l]=1.0;

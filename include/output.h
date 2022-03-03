@@ -19,7 +19,8 @@
 
 /* Definition of datatypes */
 
-#define issoil(index) (index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC || \
+#define DEFAULT_PORT 2222 /* default port for socket connection */
+#define issoil(index) (index==WHC_NAT || index==WHC_GRASS || index==WHC_AGR || index==SOILC_LAYER || index == SOILC_AGR_LAYER || index==SOILN_LAYER || index==SOILNO3_LAYER || index==SOILNH4_LAYER || index==SOILTEMP || index==SWC || \
                        index==RESPONSE_LAYER_AGR || index==RESPONSE_LAYER_NV || index==CSHIFT_FAST_NV || index==CSHIFT_SLOW_NV || index == SOILC_AGR_LAYER || index==PERC)
 
 #define getoutput(output,index,config) (output)->data[(config)->outputmap[index]]
