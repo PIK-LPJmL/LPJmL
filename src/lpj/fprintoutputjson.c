@@ -25,7 +25,6 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
 {
   FILE *file;
   String s;
-  char *name;
   char *filename;
   char *json_filename;
   char **pftnames;
@@ -33,31 +32,23 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   if(config->outputvars[index].oneyear)
   {
     snprintf(s,STRING_LEN,config->outputvars[index].filename.name,year);
-    name=s;
+    filename=s;
   }
   else
-    name=config->outputvars[index].filename.name;
+    filename=config->outputvars[index].filename.name;
   /* create filename for JSON metafile */
-  json_filename=malloc(strlen(name)+strlen(config->json_suffix)+1);
+  json_filename=malloc(strlen(filename)+strlen(config->json_suffix)+1);
   if(json_filename==NULL)
   {
     printallocerr("json_filename");
     return TRUE;
   }
-  strcat(strcpy(json_filename,name),config->json_suffix);
+  strcat(strcpy(json_filename,filename),config->json_suffix);
   /* add absolute path to binary file if missing */
-  filename=addpath(name,getdir());
-  if(filename==NULL)
-  {
-    free(json_filename);
-    printallocerr("filename");
-    return TRUE;
-  }
   /* create metafile */
   file=fopen(json_filename,"w");
   if(file==NULL)
   {
-    free(filename);
     printfcreateerr(json_filename);
     free(json_filename);
     return TRUE;
@@ -118,11 +109,16 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
     fprintf(file,"null,\n");
   else
     fprintf(file,"\"%s\",\n",config->outnames[config->outputvars[index].id].unit);
-  fprintf(file,"  \"firstyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear);
   if(config->outputvars[index].id==GRID || config->outputvars[index].id==COUNTRY || config->outputvars[index].id==REGION)
+  {
+    fprintf(file,"  \"firstyear\" : %d,\n",config->outputyear);
     fprintf(file,"  \"lastyear\" : %d,\n",config->outputyear);
+  }
   else
+  {
+    fprintf(file,"  \"firstyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear+max(1,config->outnames[config->outputvars[index].id].timestep)/2);
     fprintf(file,"  \"lastyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->lastyear);
+  }
   fprintf(file,"  \"nyear\" : %d,\n",(config->outputvars[index].oneyear || config->outputvars[index].id==GRID || config->outputvars[index].id==COUNTRY || config->outputvars[index].id==REGION) ? 1 : (config->lastyear-config->outputyear+1)/max(1,config->outnames[config->outputvars[index].id].timestep));
   fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(config->outputvars[index].id,config->float_grid)]);
   if(config->outputvars[index].id==GRID)
@@ -146,10 +142,9 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"format\" : \"%s\",\n",fmt[config->outputvars[index].filename.fmt]);
   if(config->outputvars[index].filename.fmt==CLM)
     fprintf(file,"  \"version\" : %d,\n",config->outputvars[index].id==GRID ? LPJGRID_VERSION : LPJOUTPUT_VERSION);
-  fprintf(file,"  \"filename\" : \"%s\"\n",filename);
+  fprintf(file,"  \"filename\" : \"%s\"\n",strippath(filename));
   fprintf(file,"}\n");
   fclose(file);
   free(json_filename);
-  free(filename);
   return FALSE;
 } /* of 'fprintoutputjson' */
