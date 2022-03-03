@@ -23,7 +23,6 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
   LPJfile file;
   String key,value;
   char *name,*path,*fullname;
-  Header header;
   size_t offset;
   Bool swap;
   file.isjson=FALSE;
@@ -40,7 +39,7 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
     if(key[0]=='{')
     {
 #ifdef USE_JSON
-      name=parse_json(&file,key,&header,&offset,&swap,isout ? ERR : NO_ERR);
+      name=parse_json_metafile(&file,key,NULL,&offset,&swap,isout ? ERR : NO_ERR);
       break;
 #else
       if(isout)

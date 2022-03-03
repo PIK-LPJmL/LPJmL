@@ -300,6 +300,7 @@ extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);
 extern size_t getsize(int,const Config *);
+extern void closeconfig(LPJfile *);
 
 /* Definition of macros */
 

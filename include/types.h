@@ -169,6 +169,7 @@ extern Bool fscaninteof(FILE *,int *,const char *,Bool *,Bool);
 extern char *sprinttimestep(String,int);
 extern Bool fscantimestep(LPJfile *,int *,Verbosity);
 extern char *getrealfilename(const Filename *);
+extern Bool parse_json(FILE *,LPJfile *,char *,Verbosity);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

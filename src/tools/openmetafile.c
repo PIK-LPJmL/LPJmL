@@ -44,136 +44,141 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#ifdef USE_JSON
-#include <json-c/json.h>
-#endif
 #include "lpj.h"
 
 const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
 
 #ifdef USE_JSON
 
-char *parse_json(LPJfile *lpjfile,   /**< pointer to JSON file */
-                 char *s,            /**< first string of JSON file */
-                 Header *header,     /**< pointer to file header */
-                 size_t *offset,     /**< offset in binary file */
-                 Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
-                 Verbosity verbosity /**< verbosity level */
-                )                    /** \return filename of binary file or NULL */
+char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
+                          char *s,            /**< first string of JSON file */
+                          Header *header,     /**< pointer to file header */
+                          size_t *offset,     /**< offset in binary file */
+                          Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
+                          Verbosity verbosity /**< verbosity level */
+                         )                    /** \return filename of binary file or NULL */
 {
   FILE *file;
   String filename;
-  char *line;
-  enum json_tokener_error json_error;
-  struct json_tokener *tok;
   Real cellsize[2];
   Bool endian;
   file=lpjfile->file.file;
-  lpjfile->isjson=TRUE;     /* enable JSON parsing */
-  tok=json_tokener_new();
-  lpjfile->file.obj=json_tokener_parse_ex(tok,s,strlen(s));
-  while((line=fscanline(file))!=NULL)  /* read line from file */
+  if(parse_json(file,lpjfile,s,verbosity))
   {
-    lpjfile->file.obj=json_tokener_parse_ex(tok,line,strlen(line));
-    json_error=json_tokener_get_error(tok);
-    if(json_error!=json_tokener_continue)
-      break;
-    free(line);
-  }
-  json_tokener_free(tok);
-  if(json_error!=json_tokener_success)
-  {
-    if(verbosity)
-    {
-      fprintf(stderr,"ERROR228: Cannot parse json file '%s' in line %d, %s:\n",
-              getfilename(),getlinecount()-1,(json_error==json_tokener_continue) ? "missing closing '}'" : json_tokener_error_desc(json_error));
-      if(json_error!=json_tokener_continue)
-        fprintf(stderr,"%s:%d:%s",getfilename(),getlinecount()-1,line);
-    }
-    free(line);
-    json_object_put(lpjfile->file.obj);
+    closeconfig(lpjfile);
     lpjfile->file.file=file;
     return NULL;
   }
-  free(line);
-  if(iskeydefined(lpjfile,"firstcell"))
+  if(header!=NULL)
   {
-    if(fscanint(lpjfile,&header->firstcell,"firstcell",FALSE,verbosity))
+    if(iskeydefined(lpjfile,"firstcell"))
     {
-      json_object_put(lpjfile->file.obj);
-      lpjfile->file.file=file;
-      return NULL;
+      if(fscanint(lpjfile,&header->firstcell,"firstcell",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
     }
-  }
-  if(iskeydefined(lpjfile,"ncell"))
-  {
-    if(fscanint(lpjfile,&header->ncell,"ncell",FALSE,verbosity))
+    if(iskeydefined(lpjfile,"ncell"))
     {
-      json_object_put(lpjfile->file.obj);
-      lpjfile->file.file=file;
-      return NULL;
+      if(fscanint(lpjfile,&header->ncell,"ncell",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
     }
-  }
-  if(iskeydefined(lpjfile,"firstyear"))
-  {
-    if(fscanint(lpjfile,&header->firstyear,"firstyear",FALSE,verbosity))
+    if(iskeydefined(lpjfile,"firstyear"))
     {
-      json_object_put(lpjfile->file.obj);
-      lpjfile->file.file=file;
-      return NULL;
+      if(fscanint(lpjfile,&header->firstyear,"firstyear",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
     }
-  }
-  if(iskeydefined(lpjfile,"lastyear"))
-  {
-    if(fscanint(lpjfile,&header->nyear,"lastyear",FALSE,verbosity))
+    if(iskeydefined(lpjfile,"lastyear"))
     {
-      json_object_put(lpjfile->file.obj);
-      lpjfile->file.file=file;
-      return NULL;
+      if(fscanint(lpjfile,&header->nyear,"lastyear",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+      header->nyear-=header->firstyear-1;
     }
-    header->nyear-=header->firstyear-1;
-  }
-  if(iskeydefined(lpjfile,"nyear"))
-  {
-    if(fscanint(lpjfile,&header->nyear,"nyear",FALSE,verbosity))
+    if(iskeydefined(lpjfile,"nyear"))
     {
-      json_object_put(lpjfile->file.obj);
-      lpjfile->file.file=file;
-      return NULL;
+      if(fscanint(lpjfile,&header->nyear,"nyear",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
     }
-  }
-  if(iskeydefined(lpjfile,"nstep"))
-  {
-    if(fscanint(lpjfile,&header->nstep,"nstep",FALSE,verbosity))
+    if(iskeydefined(lpjfile,"nstep"))
     {
-      json_object_put(lpjfile->file.obj);
-      lpjfile->file.file=file;
-      return NULL;
+      if(fscanint(lpjfile,&header->nstep,"nstep",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
     }
-  }
-  if(iskeydefined(lpjfile,"nbands"))
-  {
-    if(fscanint(lpjfile,&header->nbands,"nbands",FALSE,verbosity))
+    if(iskeydefined(lpjfile,"nbands"))
     {
-      json_object_put(lpjfile->file.obj);
-      lpjfile->file.file=file;
-      return NULL;
+      if(fscanint(lpjfile,&header->nbands,"nbands",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
     }
-  }
-  if(iskeydefined(lpjfile,"order"))
-  {
-    if(fscankeywords(lpjfile,&header->order,"order",ordernames,4,FALSE,verbosity))
+    if(iskeydefined(lpjfile,"order"))
     {
-      json_object_put(lpjfile->file.obj);
-      lpjfile->file.file=file;
-      return NULL;
+      if(fscankeywords(lpjfile,&header->order,"order",ordernames,4,FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
     }
-  }
+    if(iskeydefined(lpjfile,"scaling"))
+    {
+      if(fscanfloat(lpjfile,&header->scalar,"scaling",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
+    if(iskeydefined(lpjfile,"datatype"))
+    {
+      if(fscankeywords(lpjfile,(int *)&header->datatype,"datatype",typenames,5,FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
+    if(iskeydefined(lpjfile,"cellsize"))
+    {
+      if(fscanrealarray(lpjfile,cellsize,2,"cellsize",verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+      header->cellsize_lon=(float)cellsize[0];
+      header->cellsize_lat=(float)cellsize[1];
+    }
+  } /* of if(header!=NULL) */
   if(iskeydefined(lpjfile,"offset"))
   {
     if(fscansize(lpjfile,offset,"offset",FALSE,verbosity))
     {
-      json_object_put(lpjfile->file.obj);
+      closeconfig(lpjfile);
       lpjfile->file.file=file;
       return NULL;
     }
@@ -182,48 +187,19 @@ char *parse_json(LPJfile *lpjfile,   /**< pointer to JSON file */
   {
     if(fscanbool(lpjfile,&endian,"bigendian",FALSE,verbosity))
     {
-      json_object_put(lpjfile->file.obj);
+      closeconfig(lpjfile);
       lpjfile->file.file=file;
       return NULL;
     }
     *swap=(endian) ? !bigendian() : bigendian();
   }
-  if(iskeydefined(lpjfile,"scaling"))
-  {
-    if(fscanfloat(lpjfile,&header->scalar,"scaling",FALSE,verbosity))
-    {
-      json_object_put(lpjfile->file.obj);
-      lpjfile->file.file=file;
-      return NULL;
-    }
-  }
-  if(iskeydefined(lpjfile,"datatype"))
-  {
-    if(fscankeywords(lpjfile,(int *)&header->datatype,"datatype",typenames,5,FALSE,verbosity))
-    {
-      json_object_put(lpjfile->file.obj);
-      lpjfile->file.file=file;
-      return NULL;
-    }
-  }
-  if(iskeydefined(lpjfile,"cellsize"))
-  {
-    if(fscanrealarray(lpjfile,cellsize,2,"cellsize",verbosity))
-    {
-      json_object_put(lpjfile->file.obj);
-      lpjfile->file.file=file;
-      return NULL;
-    }
-    header->cellsize_lon=(float)cellsize[0];
-    header->cellsize_lat=(float)cellsize[1];
-  }
   if(fscanstring(lpjfile,filename,"filename",FALSE,verbosity))
   {
-    json_object_put(lpjfile->file.obj);
+    closeconfig(lpjfile);
     lpjfile->file.file=file;
     return NULL;
   }
-  json_object_put(lpjfile->file.obj);
+  closeconfig(lpjfile);
   lpjfile->file.file=file;
   return strdup(filename);
 }
@@ -258,7 +234,7 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     if(key[0]=='{')
     {
 #ifdef USE_JSON
-      name=parse_json(&file,key,header,offset,swap,isout ? ERR : NO_ERR);
+      name=parse_json_metafile(&file,key,header,offset,swap,isout ? ERR : NO_ERR);
       break;
 #else
       if(isout)
