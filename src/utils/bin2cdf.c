@@ -21,7 +21,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-clm] [-floatgrid] [-firstyear y] [-nitem n] [-cellsize size] [-ispft] [-swap]\n       [-global] [-short] [-compress level] [-units u] [-descr d] varname gridfile\n       binfile netcdffile\n"
+#define USAGE "Usage: %s [-clm] [-floatgrid] [-firstyear y] [-nbands n] [-nstep n] [-cellsize size] [-swap]\n       [-global] [-short] [-compress level] [-units u] [-descr d] varname gridfile\n       binfile netcdffile\n"
 
 typedef struct
 {
@@ -406,11 +406,11 @@ int main(int argc,char **argv)
         }
         descr=argv[++iarg];
       }
-      else if(!strcmp(argv[iarg],"-nitem"))
+      else if(!strcmp(argv[iarg],"-nbands"))
       {
         if(iarg==argc-1)
         {
-          fprintf(stderr,"Error: Missing argument after option '-nitem'.\n"
+          fprintf(stderr,"Error: Missing argument after option '-nbands'.\n"
                   USAGE,argv[0]);
           return EXIT_FAILURE;
         }
@@ -423,6 +423,26 @@ int main(int argc,char **argv)
         if(header.nbands<=0)
         {
           fputs("Error: Number of bands must be greater than zero.\n",stderr);
+          return EXIT_FAILURE;
+        }
+      }
+      else if(!strcmp(argv[iarg],"-nstep"))
+      {
+        if(iarg==argc-1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-nstep'.\n"
+                  USAGE,argv[0]);
+          return EXIT_FAILURE;
+        }
+        header.nstep=strtol(argv[++iarg],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Error: Invalid number '%s' for option '-nstep'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(header.nstep!=1 && header.nstep!=NMONTH && header.nstep!=NDAYYEAR)
+        {
+          fprintf(stderr,"Error: Number of steps=%d must be 1, 12, or 365.\n",header.nstep);
           return EXIT_FAILURE;
         }
       }
@@ -481,11 +501,6 @@ int main(int argc,char **argv)
     }
     else
       break;
-  if(!ispft)
-  {
-    header.nstep=header.nbands;
-    header.nbands=1;
-  }
   if(argc<iarg+4)
   {
     fprintf(stderr,"Error: Missing argument(s).\n"
@@ -613,17 +628,19 @@ int main(int argc,char **argv)
   }
   else
   {
+    if(header.nbands>1)
+      ispft=TRUE;
     if(isshort)
     {
       header.nyear=getfilesizep(file)/sizeof(short)/ngrid/header.nbands/header.nstep;
       if(getfilesizep(file) % (sizeof(short)*ngrid*header.nbands*header.nstep))
-        fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg+2],header.nbands*header.nstep,ngrid);
+        fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d, steps %d and number of cells %d.\n",argv[iarg+2],header.nbands,header.nstep,ngrid);
     }
     else
     {
       header.nyear=getfilesizep(file)/sizeof(float)/ngrid/header.nbands/header.nstep;
       if(getfilesizep(file) % (sizeof(float)*ngrid*header.nbands*header.nstep))
-        fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d and number of cells %d.\n",argv[iarg+2],header.nbands*header.nstep,ngrid);
+        fprintf(stderr,"Warning: file size of '%s' is not multiple of bands %d, steps %d  and number of cells %d.\n",argv[iarg+2],header.nbands,header.nstep,ngrid);
     }
   }
   index=createindex(grid,ngrid,res,isglobal);

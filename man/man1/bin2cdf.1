@@ -3,7 +3,7 @@
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-clm] [\-floatgrid] [\-cellsize size] [\-compress level] [\-descr d] [\-units u] [-global] {-swap] [\-short] [\-nitem n} [\-ispft] [\-firstyear y]
+[\-clm] [\-floatgrid] [\-cellsize size] [\-compress level] [\-descr d] [\-units u] [-global] {-swap] [\-short] [\-nbands n} [\nstep n] [\-ispft] [\-firstyear y]
 .I varname gridfile binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
@@ -36,8 +36,11 @@ change byte order in binary file
 \-short 
 Data type of output is short, default is float
 .TP
-\-nitem n
-set number of output per year or number of PFTs if -ispft option is set.
+\-nstep n
+set number of outputs per year, default is one
+.TP
+\-nbands n
+set number of PFTs or layers, default is one
 .TP
 \-ispft
 output is PFT specific. 

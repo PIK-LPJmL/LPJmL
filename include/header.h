@@ -147,7 +147,7 @@ extern FILE *openinputfile(Header *, Bool *,const Filename *,
 extern FILE *openmetafile(Header *, Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
-extern char *parse_json(LPJfile *,char *,Header *,size_t *,Bool *,Verbosity);
+extern char *parse_json_metafile(LPJfile *,char *,Header *,size_t *,Bool *,Verbosity);
 
 /* Definition of macros */
 
