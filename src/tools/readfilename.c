@@ -34,7 +34,6 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     return TRUE;
   if(fscankeywords(&f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
     return TRUE;
-  filename->meta=FALSE;
   if(filename->fmt==FMS)
   {
     filename->timestep=NOT_FOUND;
@@ -153,6 +152,22 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     {
       if(fscanbool(&f,&filename->meta,"metafile",FALSE,verb))
       {
+        free(filename->var);
+        return TRUE;
+      }
+    }
+    if(iskeydefined(&f,"version"))
+    {
+      if(fscanint(&f,&filename->version,"version",FALSE,verb))
+      {
+        free(filename->var);
+        return TRUE;
+      }
+      if(filename->version<1 || filename->version>CLM_MAX_VERSION)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR229: Invalid version %d, must be in [1,%d].\n",
+                  filename->version,CLM_MAX_VERSION);
         free(filename->var);
         return TRUE;
       }

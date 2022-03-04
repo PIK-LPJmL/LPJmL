@@ -405,6 +405,13 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     free(options);
     return NULL;
   }
+  else if(isdir(config->filename))
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR241: File '%s' is a directory, must be a file.\n",config->filename);
+    free(options);
+    return NULL;
+  }
   /* adjust argc and argv */
   *argv+=i;
   *argc-=i;

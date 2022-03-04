@@ -143,6 +143,7 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
         lpjfile->file.file=file;
         return NULL;
       }
+      header->order++;
     }
     if(iskeydefined(lpjfile,"scaling"))
     {

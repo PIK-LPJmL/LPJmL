@@ -84,6 +84,7 @@ typedef struct
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
   int id;     /* id for input socket */
   Bool meta; /* meta file output enabled */
+  int version; /* version of clm file */
 } Filename;
 
 typedef struct
@@ -171,6 +172,7 @@ extern char *sprinttimestep(String,int);
 extern Bool fscantimestep(LPJfile *,int *,Verbosity);
 extern char *getrealfilename(const Filename *);
 extern Bool parse_json(FILE *,LPJfile *,char *,Verbosity);
+extern Bool isdir(const char *);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif
