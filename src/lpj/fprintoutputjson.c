@@ -136,12 +136,12 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   }
   fprintf(file,"  \"bigendian\" : %s,\n",bool2str(bigendian()));
   if(config->outputvars[index].filename.fmt==CLM)
-    fprintf(file,"  \"offset\" : %zu,\n",config->outputvars[index].id==GRID ? headersize(LPJGRID_HEADER,LPJGRID_VERSION) : headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION));
+    fprintf(file,"  \"offset\" : %zu,\n",config->outputvars[index].id==GRID ? headersize(LPJGRID_HEADER,config->outputvars[index].filename.version) : headersize(LPJOUTPUT_HEADER,config->outputvars[index].filename.version));
   else if(config->outputvars[index].filename.fmt==TXT)
     fprintf(file,"  \"delimiter\" : \"%c\",\n",config->csv_delimit);
   fprintf(file,"  \"format\" : \"%s\",\n",fmt[config->outputvars[index].filename.fmt]);
   if(config->outputvars[index].filename.fmt==CLM)
-    fprintf(file,"  \"version\" : %d,\n",config->outputvars[index].id==GRID ? LPJGRID_VERSION : LPJOUTPUT_VERSION);
+    fprintf(file,"  \"version\" : %d,\n",config->outputvars[index].filename.version);
   fprintf(file,"  \"filename\" : \"%s\"\n",strippath(filename));
   fprintf(file,"}\n");
   fclose(file);

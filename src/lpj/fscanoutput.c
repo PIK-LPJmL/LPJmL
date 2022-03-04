@@ -173,6 +173,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     }
     else
     {
+      config->outputvars[count].filename.version=(flag==GRID) ? LPJGRID_VERSION : LPJOUTPUT_VERSION;
       if(readfilename(&item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,verbosity))
       {
         if(verbosity)

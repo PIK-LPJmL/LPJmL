@@ -83,6 +83,7 @@ typedef struct
   int timestep; /* time step for output (ANNUAL,MONTHLY,DAILY) */
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
   Bool meta; /* meta file output enabled */
+  int version; /* version of clm file */
 } Filename;
 
 typedef struct

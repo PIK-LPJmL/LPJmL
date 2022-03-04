@@ -144,6 +144,23 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       return TRUE;
     }
   }
+  if(iskeydefined(&f,"version"))
+  {
+    if(fscanint(&f,&filename->version,"version",FALSE,verb))
+    {
+      free(filename->var);
+      return TRUE;
+    }
+    if(filename->version<1 || filename->version>CLM_MAX_VERSION)
+    {
+      if(verb)
+       fprintf(stderr,"ERROR229: Invalid version %d, must be in [1,%d].\n",
+               filename->version,CLM_MAX_VERSION);
+      free(filename->var);
+      return TRUE;
+    }
+
+  }
   if(iskeydefined(&f,"unit"))
   {
     if(fscanstring(&f,name,"unit",FALSE,verb))

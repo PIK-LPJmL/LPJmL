@@ -111,12 +111,12 @@ static void openfile(Outputfile *output,const Cell grid[],
             if(config->checkpointyear>=config->outputyear)
             {
               fseek(output->files[config->outputvars[i].id].fp.file,
-                    headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION)+
+                    headersize(LPJOUTPUT_HEADER,config->outputvars[i].filename.version)+
                     getsize(i,config)*(config->checkpointyear-config->outputyear+1),SEEK_SET);
             }
             else
               fseek(output->files[config->outputvars[i].id].fp.file,
-                    headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION),SEEK_SET);
+                    headersize(LPJOUTPUT_HEADER,config->outputvars[i].filename.version),SEEK_SET);
           }
         }
         else
@@ -149,7 +149,7 @@ static void openfile(Outputfile *output,const Cell grid[],
               header.nyear=1;
               header.order=CELLYEAR;
               fwriteheader(output->files[config->outputvars[i].id].fp.file,
-                           &header,LPJGRID_HEADER,LPJGRID_VERSION);
+                           &header,LPJGRID_HEADER,config->outputvars[i].filename.version);
             }
             else
             {
@@ -169,7 +169,7 @@ static void openfile(Outputfile *output,const Cell grid[],
                                        config->npft[CROP],config);
               header.datatype=getoutputtype(config->outputvars[i].id,FALSE);
               fwriteheader(output->files[config->outputvars[i].id].fp.file,
-                           &header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
+                           &header,LPJOUTPUT_HEADER,config->outputvars[i].filename.version);
             }
           }
         }
@@ -387,7 +387,7 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
               else
                 header.datatype=LPJ_FLOAT;
               fwriteheader(output->files[config->outputvars[i].id].fp.file,
-                           &header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
+                           &header,LPJOUTPUT_HEADER,config->outputvars[i].filename.version);
 
             }
             break;
