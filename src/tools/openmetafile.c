@@ -439,7 +439,11 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     else
     {
       if(isout)
-        fprintf(stderr,"ERROR222: Invalid key word '%s' in line %d of '%s'.\n",key,getlinecount(),filename);
+      {
+        fputs("ERROR222: Invalid key word '",stderr);
+        fputprintable(stderr,key);
+        fprintf(stderr,"' in line %d of '%s'.\n",getlinecount(),filename);
+      }
       free(name);
       fclose(file.file.file);
       return NULL;

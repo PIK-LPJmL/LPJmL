@@ -81,7 +81,9 @@ Bool fscanfloat(LPJfile *file,    /**< pointer to LPJ file */
         line[strlen(line)-1]='\0';
       else
         line[0]='\0';
-      fprintf(stderr,"          '%s%s'\n           ",token,line);
+      fputs("          '",stderr);
+      fputprintable(stderr,token);
+      fprintf(stderr,"%s'\n           ",line);
       frepeatch(stderr,'^',strlen(token));
       fputc('\n',stderr);
     }
