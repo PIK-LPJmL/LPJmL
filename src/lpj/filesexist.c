@@ -15,12 +15,7 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <sys/stat.h>
 #include "lpj.h"
-
-#ifndef S_ISDIR /* macro is not defined on Windows */
-#define S_ISDIR(a) (a & _S_IFDIR)
-#endif
 
 static int checksoilcode(const Config *config)
 {
@@ -277,14 +272,13 @@ static int checksoilfile(Config *config,const Filename *filename)
 
 static int checkdir(const char *path)
 {
-  struct stat filestat;
-  if(stat(path,&filestat))
+  if(getfilesize(path)==-1)
   {
     fprintf(stderr,"ERROR100: Directory '%s' cannot be openend: %s.\n",path,
             strerror(errno));
     return 1;
   }
-  else if(!S_ISDIR(filestat.st_mode))
+  else if(!isdir(path))
   {
     fprintf(stderr,"ERROR241: '%s' is not a directory.\n",path);
     return 1;
