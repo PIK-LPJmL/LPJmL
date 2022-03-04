@@ -33,7 +33,6 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     return TRUE;
   if(fscankeywords(&f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
     return TRUE;
-  filename->meta=FALSE;
   if(filename->fmt==FMS)
   {
     filename->var=NULL;

@@ -63,8 +63,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
                 )                /** \return TRUE on error */
 {
   LPJfile arr,item;
-  int count,flag,size,index,ntotpft;
-  Bool isdaily;
+  int count,flag,size,index,ntotpft,version;
+  Bool isdaily,metafile;
   String outpath,name;
   Verbosity verbosity;
   verbosity=isroot(*config) ? config->scan_verbose : NO_ERR;
@@ -109,6 +109,22 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   {
     config->n_out=0;
     return file->isjson;
+  }
+  metafile=FALSE;
+  if(fscanbool(file,&metafile,"output_metafile",TRUE,verbosity))
+    return TRUE;
+  version=0;
+  if(iskeydefined(file,"output_version"))
+  {
+    if(fscanint(file,&version,"output_version",FALSE,verbosity))
+      return TRUE;
+    if(version<1 || version>CLM_MAX_VERSION)
+    {
+      if(verbosity)
+        fprintf(stderr,"ERROR229: Invalid version %d, must be in [1,%d].\n",
+                version,CLM_MAX_VERSION);
+      return TRUE;
+    }
   }
   config->global_netcdf=FALSE;
   if(iskeydefined(file,"global_netcdf"))
@@ -173,7 +189,11 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     }
     else
     {
-      config->outputvars[count].filename.version=(flag==GRID) ? LPJGRID_VERSION : LPJOUTPUT_VERSION;
+      config->outputvars[count].filename.meta=metafile;
+      if(version>0)
+        config->outputvars[count].filename.version=version;
+      else
+        config->outputvars[count].filename.version=(flag==GRID) ? LPJGRID_VERSION : LPJOUTPUT_VERSION;
       if(readfilename(&item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,verbosity))
       {
         if(verbosity)
