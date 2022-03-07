@@ -45,6 +45,7 @@
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
+  "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "no", /* other options: "no", "lim", "unlim" */
   "dynamic_CH4" : false,
   "anomaly" : false,

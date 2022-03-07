@@ -43,6 +43,7 @@ Real fbd_fac[NFUELCLASS];
 
 unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
                           Soilpar **soilpar, /**< Pointer to Soilpar array */
+                          int soilpar_option,/**< soil parameter option */
                           int with_nitrogen, /**< nitrogen cycled enabled? */
                           Verbosity verb     /**< verbosity level (NO_ERR,ERR,VERB) */
                          )                   /** \return number of elements in array */
@@ -118,6 +119,40 @@ unsigned int fscansoilpar(LPJfile *file,     /**< pointer to LPJ file */
     soil->type=id;
     fscanreal2(verb,&item,&soil->Ks,soil->name,"Ks");
     fscanreal2(verb,&item,&soil->Sf,soil->name,"Sf");
+    if(soilpar_option==PRESCRIBED_SOILPAR)
+    {
+      fscanreal2(verb,&item,&soil->wpwp,soil->name,"w_pwp");
+      fscanreal2(verb,&item,&soil->wfc,soil->name,"w_fc");
+      if(soil->wfc<=0 || soil->wfc>1)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR215: wfc=%g not in (0,1] for soil type '%s'.\n",
+                  soil->wfc,soil->name);
+        return 0;
+      }
+      if(soil->wfc-soil->wpwp<0)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR213: whc=%g<0 for soil type '%s', wfc=%g, wpwp=%g\n",
+                  soil->wfc-soil->wpwp,soil->name,soil->wfc,soil->wpwp);
+        return 0;
+      }
+      fscanreal2(verb,&item,&soil->wsat,soil->name,"w_sat");
+      if(soil->wsat<=0 || soil->wsat>1)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR220: wsat=%g not in (0,1] for soil type '%s'.\n",
+                  soil->wsat,soil->name);
+        return 0;
+      }
+      if(soil->wsat<=soil->wfc)
+      {
+        if(verb)
+          fprintf(stderr,"ERROR216: wsat=%g <= wfc=%g for soil type '%s'.\n",
+                  soil->wsat,soil->wfc,soil->name);
+        return 0;
+      }
+    }
     fscanreal2(verb,&item,&soil->sand,soil->name,"sand");
     fscanreal2(verb,&item,&soil->silt,soil->name,"silt");
     fscanreal2(verb,&item,&soil->clay,soil->name,"clay");
