@@ -37,6 +37,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
+  List *map=NULL;
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;
@@ -49,7 +50,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     header.nstep=1;
     header.datatype=type;
     header.order=CELLYEAR;
-    file=openmetafile(&header,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return;
     if(fseek(file,offset,SEEK_CUR))
@@ -99,6 +100,13 @@ static void printclm(const char *filename,int output,int nbands,int version,
       printf((swap) ? "Big endian" : "Little endian");
     putchar('\n');
     printheader(&header);
+    if(map!=NULL)
+    {
+      printf("Map: ");
+      printmap(map);
+      printf("\n");
+      freemap(map);
+    }
     if(isrestart)
     {
       if(RESTART_VERSION==version)

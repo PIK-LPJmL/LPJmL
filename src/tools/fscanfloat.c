@@ -20,7 +20,6 @@
 #ifdef USE_JSON
 #include <json-c/json.h>
 #endif
-
 #include "types.h"
 
 Bool fscanfloat(LPJfile *file,    /**< pointer to LPJ file */

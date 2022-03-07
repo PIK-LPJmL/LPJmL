@@ -217,6 +217,7 @@ extern int findlitter(const Litter *,const struct Pftpar *);
 extern Real fire_prob(const Litter *,Real);
 extern unsigned int fscansoilpar(LPJfile *,Soilpar **,int,int,Verbosity);
 extern int *fscansoilmap(LPJfile *,int *,const Config *);
+extern int *defaultsoilmap(int *,const Config *);
 extern Bool fscanpoolpar(LPJfile *,Poolpar *,const char *,Verbosity);
 extern Bool freadlitter(FILE *,Litter *,const struct Pftpar *,int,Bool);
 extern Bool freadsoil(FILE *,Soil *,const Soilpar *,const struct Pftpar *,int,Bool);
@@ -227,7 +228,8 @@ extern void freesoilpar(Soilpar [],int);
 extern void fprintlitter(FILE *,const Litter *,int);
 extern void fprintsoilpar(FILE *,const Soilpar [],int,int,int);
 extern void fprintsoil(FILE *,const Soil *,const struct Pftpar *,int,int);
-extern FILE *fopensoilcode(const Filename *,Bool *,size_t *,Type *,unsigned int,Bool);
+extern FILE *fopensoilcode(const Filename *,List **,Bool *,size_t *,Type *,unsigned int,Bool);
+extern int *getsoilmap(List *,const Config *);
 extern Bool fwritesoil(FILE *,const Soil *,int);
 extern Bool fwritelitter(FILE *,const Litter *);
 extern void getlag(Soil *,int);
@@ -275,6 +277,8 @@ extern Real getwr(const Soil *,const Real []);
 extern void updatelitterproperties(Stand *,Real);
 extern void pedotransfer(Stand *, Real *, Real *,Real);
 extern void soilpar_output(Cell *,const Config *);
+extern int findsoilid(const char *,const Soilpar *,int);
+extern void cmpsoilmap(const int*,int,const Config *);
 
 /* Definition of macros */
 

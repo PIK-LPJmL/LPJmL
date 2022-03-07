@@ -43,7 +43,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
     header->cellsize_lon=(float)config->resolution.lon;
     header->cellsize_lat=(float)config->resolution.lat;
     /* open description file */
-    file=openmetafile(header,swap,offset,filename->name,isroot(*config));
+    file=openmetafile(header,NULL,swap,offset,filename->name,isroot(*config));
     if(file==NULL)
     {
       if(isroot(*config))

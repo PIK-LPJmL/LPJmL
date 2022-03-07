@@ -35,7 +35,7 @@ int open_netcdf(const char *filename,int *ncid,Bool *isopen)
   int i,rc;
   Item *item;
   if(list==NULL)
-    list=newlist();
+    list=newlist(0);
   else
   {
     for(i=0;i<getlistlen(list);i++)
