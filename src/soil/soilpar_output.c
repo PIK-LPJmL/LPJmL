@@ -38,7 +38,7 @@ void soilpar_output(Cell *cell,          /**< pointer to cell */
         foreachsoillayer(l)
           getoutputindex(&cell->output,WHC_GRASS,l,config)+=stand->soil.whc[l];
         break;
-      case AGRICULTURE:
+      case AGRICULTURE: case SETASIDE_RF: case SETASIDE_IR:
         foreachsoillayer(l)
           whc[l]+=stand->soil.whc[l]*stand->frac;
         frac_agr+=stand->frac;
