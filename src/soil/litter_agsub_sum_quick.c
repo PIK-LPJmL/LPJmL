@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                  u p d a t e _ f b d _ g r a s s . c                           \n**/
+/**     l  i  t  t  e  r  _  a  g  _  s  u  m  _  q  u  i  c  k  .  c              \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
+/**     Function computes sum of all above-ground litter pools                     \n**/
 /**                                                                                \n**/
-/**     Kirsten Thonicke                                                           \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
 /** This file is part of LPJmL and licensed under GNU AGPL Version 3               \n**/
@@ -15,29 +15,17 @@
 
 #include "lpj.h"
 
-void update_fbd_grass(Litter* litter,Real fuelbulkdensity,Real carbon)
+Real litter_agsub_sum_quick(const Litter *litter /**< pointer to litter data */
+                        )                     /** \return aboveground fast litter (gC/m2) */
 {
-  Real ratio,fuel;
-  if(carbon<=0)
-    return; /* no change in fbd, if carbon is lost */
-  if(param.bioturbate==1)
-    fuel=litter_agsub_grass(litter);
-  else
-    fuel=litter_ag_grass(litter);
-
-  if(fuel>carbon)
+  int i,l;
+  Real sum;
+  sum=0;
+  for(l=0;l<litter->n;l++)
   {
-    ratio = carbon/fuel;
-    litter->avg_fbd[NFUELCLASS]=litter->avg_fbd[NFUELCLASS]*(1-ratio)
-                                +fuelbulkdensity*ratio;
+    sum+=litter->item[l].agsub.leaf.carbon;
+    for(i=0;i<NFUELCLASS-1;i++)
+      sum+=litter->item[l].ag.wood[i].carbon;
   }
-  else if(fuel>1e-8)
-    litter->avg_fbd[NFUELCLASS]=fuelbulkdensity;
-  else
-    litter->avg_fbd[NFUELCLASS]=0;
-  if (litter->avg_fbd[NFUELCLASS] < 0 || litter->avg_fbd[NFUELCLASS] > 30){
-    printf("litter->avg_fbd=%.5f carbon=%.5f litter= %.5f fuelclass=%d\n",
-           litter->avg_fbd[NFUELCLASS],carbon,fuel,NFUELCLASS);
-    fflush(stdout);
-  }
-} /* of 'update_fbd_grass' */
+  return sum;
+} /* of 'litter_ag_sum_quick' */

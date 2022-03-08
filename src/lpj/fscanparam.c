@@ -112,14 +112,7 @@ Bool fscanparam(LPJfile *file,       /**< File pointer to text file */
   fscanparamreal(&f,&param.kc25,"kc25");
   fscanparamreal01(&f,&param.atmfrac,"atmfrac");
   fscanparamreal01(&f,&param.fastfrac,"fastfrac");
-  fscanparamreal(&f,&param.bioturbate,"bioturbate");
-  if(param.bioturbate<0 || param.bioturbate>=1)
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR234: Parameter 'bioturbate'=%g must be in [0,1).\n",
-              param.bioturbate);
-    return TRUE;
-  }
+  fscanparamreal01(&f,&param.bioturbate,"bioturbate");
   param.bioturbate= 1-pow(1-param.bioturbate,1./NDAYYEAR);
   fscanparamint(&f,&param.veg_equil_year,"veg_equil_year");
   fscanparamreal(&f,&param.k_mort,"k_mort");

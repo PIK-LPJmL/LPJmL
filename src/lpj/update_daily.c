@@ -89,13 +89,6 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 
   foreachstand(stand,s,cell->standlist)
   {
-    for(l=0;l<stand->soil.litter.n;l++)
-    {
-      stand->soil.litter.item[l].agsub.leaf.carbon += stand->soil.litter.item[l].ag.leaf.carbon*param.bioturbate;
-      stand->soil.litter.item[l].ag.leaf.carbon *= (1 - param.bioturbate);
-      stand->soil.litter.item[l].agsub.leaf.nitrogen += stand->soil.litter.item[l].ag.leaf.nitrogen*param.bioturbate;
-      stand->soil.litter.item[l].ag.leaf.nitrogen *= (1 - param.bioturbate);
-    }
 
     if(stand->type->landusetype==NATURAL && config->black_fallow && (day==152 || day==335))
     {
@@ -183,6 +176,18 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       getoutputindex(&cell->output,SOILTEMP,l,config)+=stand->soil.temp[l]*stand->frac*(1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
     /* update soil and litter properties to account for all changes since last call of littersom */
+    for(l=0;l<stand->soil.litter.n;l++)
+    {
+      stand->soil.litter.item[l].agsub.leaf.carbon += stand->soil.litter.item[l].ag.leaf.carbon*param.bioturbate;
+      stand->soil.litter.item[l].ag.leaf.carbon *= (1 - param.bioturbate);
+      stand->soil.litter.item[l].agsub.leaf.nitrogen += stand->soil.litter.item[l].ag.leaf.nitrogen*param.bioturbate;
+      stand->soil.litter.item[l].ag.leaf.nitrogen *= (1 - param.bioturbate);
+    }
+    if(param.bioturbate<1)
+    {
+      stand->soil.litter.avg_fbd[0]*=(1-param.bioturbate);
+      stand->soil.litter.avg_fbd[NFUELCLASS]*=(1-param.bioturbate);
+    }
     if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
       pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
