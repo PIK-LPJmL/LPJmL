@@ -121,7 +121,7 @@ struct config
   int nwft;               /**< numer of WFTs */
   int ngrass;             /**< number of grass PFTs not biomass */
   int nwptype;
-  unsigned int nsoil;     /**< number of soil types */
+  int nsoil;              /**< number of soil types */
   Soilpar *soilpar;       /**< Soil parameter array */
   int ncountries;         /**< number of countries */
   Countrypar *countrypar; /**< country parameter array */
