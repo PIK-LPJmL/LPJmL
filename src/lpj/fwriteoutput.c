@@ -1005,6 +1005,9 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
   writeoutputvar(INTERC_B,1);
   writeoutputarray(WHC_NAT,ndate1);
   writeoutputarray(WHC_GRASS,ndate1);
+  writeoutputarray(KS_AGR,ndate1);
+  writeoutputarray(KS_NAT,ndate1);
+  writeoutputarray(KS_GRASS,ndate1);
   writeoutputarray(WHC_AGR,ndate1);
   writeoutputarray(SWC,ndate1);
   writeoutputvar(SWC1,ndate1);

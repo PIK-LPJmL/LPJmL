@@ -148,7 +148,7 @@ void fprintparam(FILE *file,    /**< pointer to text file */
     fprintf(file,"Phen limit:\t%g\n",param.phen_limit);
   }
   fputs("Soil parameter\n",file);
-  fprintsoilpar(file,config->soilpar,config->nsoil,config->soilpar_option,config->with_nitrogen);
+  fprintsoilpar(file,config);
   fputs("PFT parameter\n",file);
   if(config->withlanduse!=NO_LANDUSE)
   {
