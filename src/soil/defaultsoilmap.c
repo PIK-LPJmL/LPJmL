@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                          l  i  s  t  .  h                                      \n**/
+/**               d  e  f  a  u  l  t  s  o  i  l  m  a  p  .  c                   \n**/
 /**                                                                                \n**/
-/**     C implementation of a resizeable array                                     \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function sets default 1:1 soil map from LPJ configuration file             \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,29 +14,23 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#ifndef LIST_H /* Already included? */
-#define LIST_H
+#include "lpj.h"
 
-/* Definition of datatypes */
-
-typedef struct
+int *defaultsoilmap(int *size,           /**< size of soil map array */
+                    const Config *config /**< LPJ configuration */
+                   )                     /** \return soil map array or NULL on error */
 {
-  void **data; /* array of pointers to data */
-  int n;       /* Length of list */
-} List;
-
-/* Declaration of functions */
-
-extern List *newlist(int);
-extern int addlistitem(List *,void *);
-extern int dellistitem(List *,int);
-extern void freelist(List *);
-
-/* Definition of macros */
-
-#define foreachlistitem(i,list) for(i=0;i<(list)->n;i++)
-#define getlistitem(list,index) (list)->data[index]
-#define isempty(list) ((list)->n==0)
-#define getlistlen(list) (list)->n
-
-#endif
+  int s,*soilmap;
+  if(isroot(*config))
+    fprintf(stderr,"WARNING011: Map 'soilmap' not found, default 1:1 mapping assumed.\n");
+  *size=config->nsoil+1;
+  soilmap=newvec(int,*size);
+  if(soilmap==NULL)
+  {
+    printallocerr("soilmap");
+    return NULL;
+  }
+  for(s=0;s<=config->nsoil;s++)
+    soilmap[s]=s;
+  return soilmap;
+} /* of 'defaultsoilmap' */

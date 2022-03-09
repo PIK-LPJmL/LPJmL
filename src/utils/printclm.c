@@ -14,13 +14,35 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-scale] [-longheader] [-type {byte|short|int|float|double}]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
+#define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
 #define NO_HEADER 1
 #define NO_DATA 2
 #define NO_TEXT 4
 
+static void printjson(const char *filename,const Header *header,const char *id,Bool swap,int version)
+{
+  printf("{\n"
+         "  \"filename\" : \"%s\",\n",strippath(filename));
+  printf("  \"firstcell\" : %d,\n",header->firstcell);
+  printf("  \"ncell\" : %d,\n",header->ncell);
+  printf("  \"cellsize\" : [%f,%f],\n",header->cellsize_lon,header->cellsize_lat);
+  printf("  \"firstyear\" : %d,\n",header->firstyear);
+  printf("  \"lastyear\" : %d,\n",header->firstyear+header->nyear-1);
+  printf("  \"nyear\" : %d,\n",header->nyear);
+  printf("  \"nstep\" : %d,\n",header->nstep);
+  printf("  \"nbands\" : %d,\n",header->nbands);
+  printf("  \"scaling\" : %f,\n",header->scalar);
+  printf("  \"datatype\" : \"%s\",\n",typenames[header->datatype]);
+  printf("  \"format\" : \"clm\",\n");
+  printf("  \"order\" : \"%s\",\n",ordernames[max(0,header->order-1)]);
+  printf("  \"version\" : %d,\n",version);
+  printf("  \"bigendian\" : %s,\n",bool2str((!swap && bigendian()) || (swap && !bigendian())));
+  printf("  \"offset\" : %zu\n",headersize(id,version));
+  printf("}\n");
+} /* of 'printjson' */
+
 static void printclm(const char *filename,int output,int nbands,int version,
-                     int start,int stop,int first,int last,Type type,Bool ismeta,Bool isscale)
+                     int start,int stop,int first,int last,Type type,Bool ismeta,Bool isscale,Bool isjon)
 {
   FILE *file;
   time_t mod_date;
@@ -37,6 +59,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
   Bool swap,isrestart,isreservoir;
   size_t offset;
   Reservoir reservoir;
+  List *map=NULL;
   if(ismeta)
   {
     isrestart=isreservoir=FALSE;
@@ -49,7 +72,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     header.nstep=1;
     header.datatype=type;
     header.order=CELLYEAR;
-    file=openmetafile(&header,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return;
     if(fseek(file,offset,SEEK_CUR))
@@ -85,6 +108,11 @@ static void printclm(const char *filename,int output,int nbands,int version,
     isrestart=(!strcmp(id,RESTART_HEADER));
     isreservoir=(!strcmp(id,LPJRESERVOIR_HEADER));
   }
+  if(isjon)
+  {
+    printjson(filename,&header,id,swap,version);
+    return;
+  }
   if((output & NO_HEADER)==0)
   {
     mod_date=getfiledate(filename);
@@ -99,6 +127,13 @@ static void printclm(const char *filename,int output,int nbands,int version,
       printf((swap) ? "Big endian" : "Little endian");
     putchar('\n');
     printheader(&header);
+    if(map!=NULL)
+    {
+      printf("Map: ");
+      printmap(map);
+      printf("\n");
+      freemap(map);
+    }
     if(isrestart)
     {
       if(RESTART_VERSION==version)
@@ -404,13 +439,14 @@ int main(int argc,char **argv)
   char *endptr;
   Bool ismeta;
   Bool isscale;
+  Bool isjson;
   progname=strippath(argv[0]);
   output=0;
   first=0;
   start=stop=last=INT_MAX;
   type=LPJ_SHORT;
   nbands=-1;
-  ismeta=isscale=FALSE;
+  ismeta=isscale=isjson=FALSE;
   version=READ_VERSION;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
@@ -421,6 +457,8 @@ int main(int argc,char **argv)
         output|=NO_DATA;
       else if(!strcmp(argv[i],"-text"))
         output|=NO_HEADER|NO_TEXT;
+      else if(!strcmp(argv[i],"-json"))
+        isjson=TRUE;
       else if(!strcmp(argv[i],"-longheader"))
         version=2;
       else if(!strcmp(argv[i],"-metafile"))
@@ -550,7 +588,7 @@ int main(int argc,char **argv)
   {
     if(argc>1)
       printf("Filename:\t%s\n",argv[i]);
-    printclm(argv[i],output,nbands,version,start,stop,first,last,type,ismeta,isscale);
+    printclm(argv[i],output,nbands,version,start,stop,first,last,type,ismeta,isscale,isjson);
   }
   return EXIT_SUCCESS;
 } /* of 'main' */

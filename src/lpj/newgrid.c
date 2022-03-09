@@ -757,7 +757,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
         grid[i].skip=FALSE;
-        grid[i].standlist=newlist();
+        grid[i].standlist=newlist(0);
         checkptr(grid[i].standlist);
         grid[i].gdd=newgdd(npft);
         checkptr(grid[i].gdd);

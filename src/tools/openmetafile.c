@@ -48,11 +48,34 @@
 
 const char *ordernames[]={"cellyear","yearcell","cellindex","cellseq"};
 
-#ifdef USE_JSON
+void fprintmap(FILE *file,List *map)
+{
+  int i;
+  fputc('[',file);
+  foreachlistitem(i,map)
+  {
+    if(getlistitem(map,i)==NULL)
+      fputs("null",file);
+    else
+      fprintf(file,"\"%s\"",(char *)getlistitem(map,i));
+    if(i<getlistlen(map)-1)
+      fputc(',',file);
+  }
+  fputc(']',file);
+} /* of 'fprintmap' */
+
+void freemap(List *map)
+{
+  int i;
+  foreachlistitem(i,map)
+    free(getlistitem(map,i));
+  freelist(map);
+} /* of 'freemap' */
 
 char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                           char *s,            /**< first string of JSON file */
                           Header *header,     /**< pointer to file header */
+                          List **map,         /**< map from json file or NULL */
                           size_t *offset,     /**< offset in binary file */
                           Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
                           Verbosity verbosity /**< verbosity level */
@@ -68,6 +91,13 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
     closeconfig(lpjfile);
     lpjfile->file.file=file;
     return NULL;
+  }
+  if(map!=NULL)
+  {
+    if(iskeydefined(lpjfile,"map"))
+      *map=fscanstringarray(lpjfile,"map",verbosity);
+    else
+      *map=NULL;
   }
   if(header!=NULL)
   {
@@ -203,15 +233,15 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
   closeconfig(lpjfile);
   lpjfile->file.file=file;
   return strdup(filename);
-}
-#endif
+} /* of 'parse_json_metafile' */
 
-FILE *openmetafile(Header *header, /**< pointer to file header */
-                   Bool *swap, /**< byte order has to be changed (TRUE/FALSE) */
-                   size_t *offset, /**< offset in binary file */
+FILE *openmetafile(Header *header,       /**< pointer to file header */
+                   List **map,           /**< map from json file or NULL */
+                   Bool *swap,           /**< byte order has to be changed (TRUE/FALSE) */
+                   size_t *offset,       /**< offset in binary file */
                    const char *filename, /**< file name */
-                   Bool isout /**< error output (TRUE/FALSE) */
-                  )           /** \return file pointer to open file or NULL */
+                   Bool isout            /**< error output (TRUE/FALSE) */
+                  )                      /** \return file pointer to open file or NULL */
 {
   LPJfile file;
   FILE *data;
@@ -231,11 +261,13 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
   *swap=FALSE;
   *offset=0;
   name=NULL;
+  if(map!=NULL)
+    *map=NULL;
   while(!fscantoken(file.file.file,key))
     if(key[0]=='{')
     {
 #ifdef USE_JSON
-      name=parse_json_metafile(&file,key,header,offset,swap,isout ? ERR : NO_ERR);
+      name=parse_json_metafile(&file,key,header,map,offset,swap,isout ? ERR : NO_ERR);
       break;
 #else
       if(isout)
@@ -439,7 +471,11 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
     else
     {
       if(isout)
-        fprintf(stderr,"ERROR222: Invalid key word '%s' in line %d of '%s'.\n",key,getlinecount(),filename);
+      {
+        fputs("ERROR222: Invalid key word '",stderr);
+        fputprintable(stderr,key);
+        fprintf(stderr,"' in line %d of '%s'.\n",getlinecount(),filename);
+      }
       free(name);
       fclose(file.file.file);
       return NULL;
@@ -453,28 +489,43 @@ FILE *openmetafile(Header *header, /**< pointer to file header */
   }
   if(name[0]=='^')
   {
-     /* if filename starts with a '^' then path of description file is added to filename */
-     path=getpath(filename);
-     if(path==NULL)
-     {
-       printallocerr("path");
-       free(name);
-       return NULL;
-     }
-     fullname=malloc(strlen(path)+strlen(name)+1);
-     if(fullname==NULL)
-     {
-       printallocerr("name");
-       free(path);
-       free(name);
-       return NULL;
-     }
-     strcpy(fullname,path);
-     strcat(fullname,"/");
-     strcat(fullname,name+1);
-     free(name);
+    /* if filename starts with a '^' then path of description file is added to filename */
+    path=getpath(filename);
+    if(path==NULL)
+    {
+      printallocerr("path");
+      free(name);
+      return NULL;
+    }
+    fullname=malloc(strlen(path)+strlen(name)+1);
+    if(fullname==NULL)
+    {
+      printallocerr("name");
+      free(path);
+      free(name);
+      return NULL;
+    }
+    strcpy(fullname,path);
+    strcat(fullname,"/");
+    strcat(fullname,name+1);
+    free(name);
+    free(path);
+    name=fullname;
+  }
+  else
+  {
+    path=getpath(filename);
+    fullname=addpath(name,path);
+    if(fullname==NULL)
+    {
+     printallocerr("name");
      free(path);
-     name=fullname;
+     free(name);
+     return NULL;
+    }
+    free(name);
+    free(path);
+    name=fullname;
   }
   /* open data file */
   if((data=fopen(name,"rb"))==NULL  && isout)

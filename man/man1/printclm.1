@@ -1,9 +1,9 @@
-.TH printclm 1  "May 10, 2016" "version 1.0.001" "USER COMMANDS"
+.TH printclm 1  "March 7, 2022" "version 1.0.001" "USER COMMANDS"
 .SH NAME
 printclm, printheader \- Print contents of clm files for LPJmL                   
 .SH SYNOPSIS
 .B printclm
-[-metafile] [-header] [-data] [-text] [-scale] [-longheader] [-type {byte|short|int|float|double}] [\-nbands n] [\-start s] [\-end e] [\-first f] [\-last l] \fIclmfile\fP ...
+[-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}] [\-nbands n] [\-start s] [\-end e] [\-first f] [\-last l] \fIclmfile\fP ...
 
 .B printheader
 \fIclmfile\fP ...
@@ -22,6 +22,9 @@ Print without data
 .TP
 -text
 Print data only
+.TP
+-json
+Print header in JSON format only
 .TP
 -scale
 Scale data with scale factor defined in header

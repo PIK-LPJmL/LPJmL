@@ -1369,13 +1369,13 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
       //        sum,soiltype,grid[cell].coord.lon,grid[cell].coord.lat, cell+config->startgrid,yearl+landuse->landuse.firstyear);
       for(j=0; j<ncft; j++)
       {
-        grid[cell].ml.landfrac[0].crop[j]/=sum;
-        grid[cell].ml.landfrac[1].crop[j]/=sum;
+        grid[cell].ml.landfrac[0].crop[j]=0;
+        grid[cell].ml.landfrac[1].crop[j]=0;
       }
       for(j=0; j<config->nagtree; j++)
       {
-        grid[cell].ml.landfrac[0].ag_tree[j]/=sum;
-        grid[cell].ml.landfrac[1].ag_tree[j]/=sum;
+        grid[cell].ml.landfrac[0].ag_tree[j]=0;
+        grid[cell].ml.landfrac[1].ag_tree[j]=0;
       }
       for(j=0; j<NGRASS; j++)
       {

@@ -19,7 +19,6 @@
 #include <json-c/json.h>
 #include "lpj.h"
 
-
 Bool parse_json(FILE *file,         /**< pointer to JSON file */
                 LPJfile *lpjfile,   /**< pointer to JSON  object */
                 char *s,            /**< first string of JSON file */
