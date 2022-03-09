@@ -80,7 +80,8 @@ Stocks cultivate(Cell *cell,           /**< cell pointer */
   {
     tillage(&cropstand->soil,param.residue_frac);
     updatelitterproperties(cropstand,cropstand->frac);
-    pedotransfer(cropstand,NULL,NULL,cropstand->frac);
+    if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
+      pedotransfer(cropstand,NULL,NULL,cropstand->frac);
   }
   data=cropstand->data;
   data->irrigation= (config->irrig_scenario==ALL_IRRIGATION) || irrigation;
