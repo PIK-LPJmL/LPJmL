@@ -480,7 +480,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       fputs("ERROR230: Cannot read LPJ parameter 'param'.\n",stderr);
     return TRUE;
   }
-  if((config->nsoil=fscansoilpar(file,&config->soilpar,config->soilpar_option,config->with_nitrogen,verbose))==0)
+  if(fscansoilpar(file,config))
   {
     if(verbose)
       fputs("ERROR230: Cannot read soil parameter 'soilpar'.\n",stderr);

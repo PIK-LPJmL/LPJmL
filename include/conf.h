@@ -116,7 +116,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 349            /* number of output files */
+#define NOUT 352            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -483,6 +483,9 @@
 #define WHC_NAT 346
 #define WHC_GRASS 347
 #define WHC_AGR 348
+#define KS_NAT 349
+#define KS_GRASS 350
+#define KS_AGR 351
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 #define RANDOM_SEED 0
