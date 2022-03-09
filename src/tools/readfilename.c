@@ -131,6 +131,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
         return TRUE;
     }
     filename->name=NULL;
+    filename->meta=FALSE;
   }
   else
   {
