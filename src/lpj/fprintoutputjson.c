@@ -72,7 +72,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   {
    if(issoil(config->outputvars[index].id))
    {
-     fprintf(file,"  \"layer\" : [0.0,");
+     fprintf(file,"  \"layer\" : [0.0");
      for(p=1;p<nbands;p++)
        fprintf(file,",%f",layerbound[p-1]);
      fprintf(file,"],\n");
