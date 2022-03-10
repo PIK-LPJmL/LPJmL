@@ -57,6 +57,7 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"sim_name\" : \"%s\",\n",config->sim_name);
   fprintf(file,"  \"source\" : \"LPJmL C Version " LPJ_VERSION"\",\n");
   fprintf(file,"  \"history\" : \"%s\",\n",config->arglist);
+  fprintf(file,"  \"variable\" : \"%s\",\n",config->outnames[config->outputvars[index].id].name);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
   fprintf(file,"  \"ncell\" : %d,\n",(config->outputvars[index].id==ADISCHARGE) ? config->nall : config->total);
   fprintf(file,"  \"cellsize_lon\" : %f,\n",config->resolution.lon);
