@@ -84,7 +84,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
 {
   FILE *file;
   String filename;
-  Real cellsize[2];
   Bool endian;
   file=lpjfile->file.file;
   if(parse_json(file,lpjfile,s,verbosity))
