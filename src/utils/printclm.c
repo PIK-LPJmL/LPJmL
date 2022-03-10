@@ -25,13 +25,14 @@ static void printjson(const char *filename,const Header *header,const char *id,B
          "  \"filename\" : \"%s\",\n",strippath(filename));
   printf("  \"firstcell\" : %d,\n",header->firstcell);
   printf("  \"ncell\" : %d,\n",header->ncell);
-  printf("  \"cellsize\" : [%f,%f],\n",header->cellsize_lon,header->cellsize_lat);
+  printf("  \"cellsize_lon\" : %f,\n",header->cellsize_lon);
+  printf("  \"cellsize_lat\" : %f,\n",header->cellsize_lat);
   printf("  \"firstyear\" : %d,\n",header->firstyear);
   printf("  \"lastyear\" : %d,\n",header->firstyear+header->nyear-1);
   printf("  \"nyear\" : %d,\n",header->nyear);
   printf("  \"nstep\" : %d,\n",header->nstep);
   printf("  \"nbands\" : %d,\n",header->nbands);
-  printf("  \"scaling\" : %f,\n",header->scalar);
+  printf("  \"scalar\" : %f,\n",header->scalar);
   printf("  \"datatype\" : \"%s\",\n",typenames[header->datatype]);
   printf("  \"format\" : \"clm\",\n");
   printf("  \"order\" : \"%s\",\n",ordernames[max(0,header->order-1)]);

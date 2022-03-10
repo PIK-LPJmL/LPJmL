@@ -30,8 +30,9 @@
 /**       "bigendian" :  false,                                                    \n**/
 /**       "firstcell" :  0,                                                        \n**/
 /**       "ncell" :  67420,                                                        \n**/
-/**       "scaling" :  0.1,                                                        \n**/
-/**       "cellsize" :  [0.5,0.5],                                                 \n**/
+/**       "scalar" :  0.1,                                                         \n**/
+/**       "cellsize_lon" :  0.5,                                                   \n**/
+/**       "cellsize_lat" :  0.5,                                                   \n**/
 /**       "offset" :  0,                                                           \n**/
 /**       "datatype" :  "short"                                                    \n**/
 /**     }                                                                          \n**/
@@ -175,9 +176,9 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       }
       header->order++;
     }
-    if(iskeydefined(lpjfile,"scaling"))
+    if(iskeydefined(lpjfile,"scalar"))
     {
-      if(fscanfloat(lpjfile,&header->scalar,"scaling",FALSE,verbosity))
+      if(fscanfloat(lpjfile,&header->scalar,"scalar",FALSE,verbosity))
       {
         closeconfig(lpjfile);
         lpjfile->file.file=file;
@@ -193,16 +194,23 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
         return NULL;
       }
     }
-    if(iskeydefined(lpjfile,"cellsize"))
+    if(iskeydefined(lpjfile,"cellsize_lon"))
     {
-      if(fscanrealarray(lpjfile,cellsize,2,"cellsize",verbosity))
+      if(fscanfloat(lpjfile,&header->cellsize_lon,"cellsize_lon",FALSE,verbosity))
       {
         closeconfig(lpjfile);
         lpjfile->file.file=file;
         return NULL;
       }
-      header->cellsize_lon=(float)cellsize[0];
-      header->cellsize_lat=(float)cellsize[1];
+    }
+    if(iskeydefined(lpjfile,"cellsize_lat"))
+    {
+      if(fscanfloat(lpjfile,&header->cellsize_lat,"cellsize_lat",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
     }
   } /* of if(header!=NULL) */
   if(iskeydefined(lpjfile,"offset"))

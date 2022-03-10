@@ -59,7 +59,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   fprintf(file,"  \"history\" : \"%s\",\n",config->arglist);
   fprintf(file,"  \"firstcell\" : %d,\n",config->firstgrid);
   fprintf(file,"  \"ncell\" : %d,\n",(config->outputvars[index].id==ADISCHARGE) ? config->nall : config->total);
-  fprintf(file,"  \"cellsize\" : [%f,%f],\n",config->resolution.lon,config->resolution.lat);
+  fprintf(file,"  \"cellsize_lon\" : %f,\n",config->resolution.lon);
+  fprintf(file,"  \"cellsize_lat\" : %f,\n",config->resolution.lat);
   fprintf(file,"  \"nstep\" : %d,\n",max(1,getnyear(config->outnames,config->outputvars[index].id)));
   fprintf(file,"  \"timestep\" : %d,\n",max(1,config->outputvars[index].filename.timestep));
   nbands=outputsize(config->outputvars[index].id,
@@ -79,17 +80,17 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
    {
      pftnames=createpftnames(config->outputvars[index].id,config->npft[GRASS]+config->npft[TREE],config->npft[CROP],config);
      if(pftnames==NULL)
-       printallocerr("pftnames");
+       printallocerr("band_names");
      else
      {
-       len=fprintf(file,"  \"pft\" : [");
+       len=fprintf(file,"  \"band_names\" : [");
        for(p=0;p<nbands;p++)
        {
          if(p)
            len+=fprintf(file,",");
          if(len>LINE_LEN)
          {
-           fputs("\n           ",file);
+           fputs("\n                  ",file);
            len=11;
          }
          len+=fprintf(file,"\"%s\"",pftnames[p]);
@@ -124,14 +125,14 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   if(config->outputvars[index].id==GRID)
   {
     if(config->float_grid)
-      fprintf(file,"  \"scaling\" : 1.0,\n");
+      fprintf(file,"  \"scalar\" : 1.0,\n");
     else
-      fprintf(file,"  \"scaling\" : 0.01,\n");
+      fprintf(file,"  \"scalar\" : 0.01,\n");
     fprintf(file,"  \"order\" : \"cellyear\",\n");
   }
   else
   {
-    fprintf(file,"  \"scaling\" : 1.0,\n");
+    fprintf(file,"  \"scalar\" : 1.0,\n");
     fprintf(file,"  \"order\" : \"cellseq\",\n");
   }
   fprintf(file,"  \"bigendian\" : %s,\n",bool2str(bigendian()));
