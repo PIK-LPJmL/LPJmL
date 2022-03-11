@@ -42,6 +42,7 @@ int main(int argc,char **argv)
   header.nyear=109;
   header.nbands=12;
   header.nstep=1;
+  header.timestep=1;
   header.order=CELLYEAR;
   header.scalar=1;
   header.datatype=LPJ_SHORT;

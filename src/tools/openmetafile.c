@@ -156,6 +156,24 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
         return NULL;
       }
     }
+    if(iskeydefined(lpjfile,"timestep"))
+    {
+      if(fscanint(lpjfile,&header->timestep,"timestep",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+      if(header->timestep<1)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR221: Invalid time step %d, must be >0.\n",
+                  header->timestep);
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
     if(iskeydefined(lpjfile,"nbands"))
     {
       if(fscanint(lpjfile,&header->nbands,"nbands",FALSE,verbosity))
@@ -344,6 +362,24 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
     {
       if(fscanint(&file,&header->nstep,"nstep",FALSE,isout ? ERR : NO_ERR))
       {
+        free(name);
+        fclose(file.file.file);
+        return NULL;
+      }
+    }
+    else if(!strcmp(key,"timestep"))
+    {
+      if(fscanint(&file,&header->timestep,"timestep",FALSE,isout ? ERR : NO_ERR))
+      {
+        free(name);
+        fclose(file.file.file);
+        return NULL;
+      }
+      if(header->timestep<1)
+      {
+        if(isout)
+          fprintf(stderr,"ERROR221: Invalid time step %d in '%s', must be >0.\n",
+                  header->timestep,filename);
         free(name);
         fclose(file.file.file);
         return NULL;

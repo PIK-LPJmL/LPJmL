@@ -86,6 +86,7 @@ typedef struct
   float cellsize_lat; /**< latitude cellsize in deg */
   Type datatype;      /**< data type in file */
   int nstep;          /**< time steps per year (1/12/365) */
+  int timestep;       /**< time steps (yrs) */
 } Header;
 
 typedef struct

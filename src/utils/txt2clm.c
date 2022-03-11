@@ -36,6 +36,7 @@ int main(int argc,char **argv)
   header.firstyear=1901;
   header.nbands=12;
   header.nstep=1;
+  header.timestep=1;
   header.firstcell=0;
   header.ncell=67420;
   multiplier=1;

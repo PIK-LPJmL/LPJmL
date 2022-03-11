@@ -84,6 +84,15 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
       free(popdens);
       return NULL;
     }
+    if(header.timestep!=1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR218: Time step=%d in population density file '%s' is not 1.\n",
+                header.timestep,config->popdens_filename.name);
+      closeclimatefile(&popdens->file,isroot(*config));
+      free(popdens);
+      return NULL;
+    }
   }
   if(popdens->file.var_len>1)
   {

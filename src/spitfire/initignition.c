@@ -74,6 +74,14 @@ Bool initignition(Cell grid[],         /* LPJ grid */
         fclose(file);
         return TRUE;
       }
+      if(header.timestep!=1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR218: Time step=%d in human ignition file '%s' is not 1.\n",
+                  header.timestep,config->human_ignition_filename.name);
+        fclose(file);
+        return TRUE;
+      }
     }
     if(fseek(file,(config->startgrid-header.firstcell)*typesizes[header.datatype]+offset,SEEK_CUR))
     {

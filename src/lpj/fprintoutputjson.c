@@ -118,8 +118,8 @@ Bool fprintoutputjson(int index,           /**< index in outputvars array */
   }
   else
   {
-    fprintf(file,"  \"firstyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear+max(1,config->outnames[config->outputvars[index].id].timestep)/2);
-    fprintf(file,"  \"lastyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->lastyear);
+    fprintf(file,"  \"firstyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear+max(1,config->outnames[config->outputvars[index].id].timestep)-1);
+    fprintf(file,"  \"lastyear\" : %d,\n",config->outputvars[index].oneyear ? year : config->outputyear+max(1,config->outnames[config->outputvars[index].id].timestep)-1+((config->lastyear-config->outputyear+1)/max(1,config->outnames[config->outputvars[index].id].timestep)-1)*max(1,config->outnames[config->outputvars[index].id].timestep));
   }
   fprintf(file,"  \"nyear\" : %d,\n",(config->outputvars[index].oneyear || config->outputvars[index].id==GRID || config->outputvars[index].id==COUNTRY || config->outputvars[index].id==REGION) ? 1 : (config->lastyear-config->outputyear+1)/max(1,config->outnames[config->outputvars[index].id].timestep));
   fprintf(file,"  \"datatype\" : \"%s\",\n",typenames[getoutputtype(config->outputvars[index].id,config->float_grid)]);

@@ -32,6 +32,7 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
     header.datatype=LPJ_SHORT;
     header.nbands=2;
     header.nstep=1;
+    header.timestep=1;
     header.firstcell=0;
     header.ncell=0;
     header.nyear=1;
@@ -52,6 +53,14 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
       if(isout)
         fprintf(stderr,"ERROR218: Number of steps=%d in description file '%s' is not 1.\n",
                 header.nstep,filename->name);
+      fclose(file);
+      return NULL;
+    }
+    if(header.timestep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR218: Time step=%d in description file '%s' is not 1.\n",
+                header.timestep,filename->name);
       fclose(file);
       return NULL;
     }
@@ -95,6 +104,14 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
       if(isout)
         fprintf(stderr,"ERROR218: Number of steps=%d in countrycode file '%s' is not 1.\n",
                 header.nstep,filename->name);
+      fclose(file);
+      return NULL;
+    }
+    if(header.timestep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR218: Time step=%d in countrycode file '%s' is not 1.\n",
+                header.timestep,filename->name);
       fclose(file);
       return NULL;
     }

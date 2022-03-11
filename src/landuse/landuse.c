@@ -137,6 +137,15 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       free(landuse);
       return NULL;
     }
+    if(header.timestep!=1)
+    {
+      closeclimatefile(&landuse->landuse,isroot(*config));
+      if(isroot(*config))
+        fprintf(stderr,"ERROR147: Invalid time step=%d in landuse data file, must be 1.\n",
+                header.timestep);
+      free(landuse);
+      return NULL;
+    }
   }
   if(landuse->landuse.var_len!=2*config->landusemap_size && landuse->landuse.var_len!=4*config->landusemap_size)
   {
@@ -204,6 +213,16 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         if(isroot(*config))
           fprintf(stderr,"ERROR147: Invalid number of steps=%d in sowing date file, must be 1.\n",
                   header.nstep);
+        free(landuse);
+        return NULL;
+      }
+      if(header.timestep!=1)
+      {
+        closeclimatefile(&landuse->landuse,isroot(*config));
+        closeclimatefile(&landuse->sdate,isroot(*config));
+        if(isroot(*config))
+          fprintf(stderr,"ERROR147: Invalid time step=%d in sowing date file, must be 1.\n",
+                  header.timestep);
         free(landuse);
         return NULL;
       }
@@ -288,6 +307,18 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         free(landuse);
         return NULL;
       }
+      if(header.timestep!=1)
+      {
+        closeclimatefile(&landuse->crop_phu,isroot(*config));
+        if(isroot(*config))
+          fprintf(stderr,"ERROR147: Invalid time step=%d in crop phu data file, must be 1.\n",
+                  header.timestep);
+        closeclimatefile(&landuse->landuse,isroot(*config));
+        if(config->sdate_option==PRESCRIBED_SDATE)
+          closeclimatefile(&landuse->sdate,isroot(*config));
+        free(landuse);
+        return NULL;
+      }
     }
     if(landuse->crop_phu.var_len!=2*config->cftmap_size)
     {
@@ -365,6 +396,20 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         if(isroot(*config))
           fprintf(stderr,"ERROR147: Invalid number of steps=%d in fertilizer data file, must be 1.\n",
                   header.nstep);
+        closeclimatefile(&landuse->landuse,isroot(*config));
+        if(config->sdate_option==PRESCRIBED_SDATE)
+          closeclimatefile(&landuse->sdate,isroot(*config));
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+          closeclimatefile(&landuse->crop_phu,isroot(*config));
+        free(landuse);
+        return NULL;
+      }
+      if(header.timestep!=1)
+      {
+        closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
+        if(isroot(*config))
+          fprintf(stderr,"ERROR147: Invalid time step=%d in fertilizer data file, must be 1.\n",
+                  header.timestep);
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
@@ -466,6 +511,21 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         free(landuse);
         return NULL;
       }
+      if(header.timestep!=1)
+      {
+        closeclimatefile(&landuse->manure_nr,isroot(*config));
+        if(isroot(*config))
+          fprintf(stderr,"ERROR147: Invalid time step=%d in manure data file, must be 1.\n",
+                  header.timestep);
+        closeclimatefile(&landuse->landuse,isroot(*config));
+        if(config->sdate_option==PRESCRIBED_SDATE)
+          closeclimatefile(&landuse->sdate,isroot(*config));
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+          closeclimatefile(&landuse->crop_phu,isroot(*config));
+        if(config->fertilizer_input==FERTILIZER)
+          closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
+        free(landuse);
+      }
     }
     if(landuse->manure_nr.var_len!=2*config->fertilizermap_size)
     {
@@ -554,6 +614,24 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         if(isroot(*config))
           fprintf(stderr,"ERROR147: Invalid number of steps=%d in tillage type file, must be 1.\n",
                   header.nstep);
+        closeclimatefile(&landuse->landuse,isroot(*config));
+        if(config->sdate_option==PRESCRIBED_SDATE)
+          closeclimatefile(&landuse->sdate,isroot(*config));
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+          closeclimatefile(&landuse->crop_phu,isroot(*config));
+        if(config->fertilizer_input==FERTILIZER)
+          closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
+        if(config->manure_input)
+          closeclimatefile(&landuse->manure_nr,isroot(*config));
+        free(landuse);
+        return NULL;
+      }
+      if(header.timestep!=1)
+      {
+        closeclimatefile(&landuse->with_tillage,isroot(*config));
+        if(isroot(*config))
+          fprintf(stderr,"ERROR147: Invalid time step=%d in tillage type file, must be 1.\n",
+                  header.timestep);
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
@@ -661,6 +739,26 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
         if(isroot(*config))
           fprintf(stderr,"ERROR147: Invalid number of steps=%d in residue extraction data file, must be 1.\n",
                   header.nstep);
+        closeclimatefile(&landuse->landuse,isroot(*config));
+        if(config->sdate_option==PRESCRIBED_SDATE)
+          closeclimatefile(&landuse->sdate,isroot(*config));
+        if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
+          closeclimatefile(&landuse->crop_phu,isroot(*config));
+        if(config->fertilizer_input==FERTILIZER)
+          closeclimatefile(&landuse->fertilizer_nr,isroot(*config));
+        if(config->manure_input)
+          closeclimatefile(&landuse->manure_nr,isroot(*config));
+        if(config->tillage_type==READ_TILLAGE)
+          closeclimatefile(&landuse->with_tillage,isroot(*config));
+        free(landuse);
+        return NULL;
+      }
+      if(header.timestep!=1)
+      {
+        closeclimatefile(&landuse->residue_on_field,isroot(*config));
+        if(isroot(*config))
+          fprintf(stderr,"ERROR147: Invalid time step=%d in residue extraction data file, must be 1.\n",
+                  header.timestep);
         closeclimatefile(&landuse->landuse,isroot(*config));
         if(config->sdate_option==PRESCRIBED_SDATE)
           closeclimatefile(&landuse->sdate,isroot(*config));
