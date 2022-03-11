@@ -21,8 +21,7 @@
 Bool initsoil(Stand *stand,           /**< Pointer to stand data */
               const Soilpar *soilpar, /**< soil parameter array */
               int ntotpft,            /**< number of PFT including crops*/
-              int soilpar_option,     /**< soil parameter option */
-              Bool with_nitrogen      /**< nitrogen cycle enabled? (TRUE/FALSE) */
+              const Config *config    /**< LPJmL configuration */
              )                        /** \return TRUE on error */
 {
   Soil *soil;
@@ -32,7 +31,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   forrootsoillayer(l)
   {
     soil->pool[l].fast.carbon=soil->pool[l].slow.carbon=soil->k_mean[l].fast=soil->k_mean[l].slow=0.0;
-    if(!with_nitrogen || soilpar->type==ROCK || soilpar->type==ICE)
+    if(!config->with_nitrogen || soilpar->type==ROCK || soilpar->type==ICE)
       soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=soil->NH4[l]=soil->NO3[l]=0.0;
     else
     {
@@ -88,7 +87,7 @@ Bool initsoil(Stand *stand,           /**< Pointer to stand data */
   soil->snowheight=soil->snowfraction=soil->rw_buffer=0;
   for(l=0;l<NTILLLAYER;l++)
     soil->df_tillage[l]=1.0;
-  if(soilpar_option==PRESCRIBED_SOILPAR)
+  if(config->soilpar_option==PRESCRIBED_SOILPAR)
   {
     for(l=0;l<LASTLAYER;l++)
     {

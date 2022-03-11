@@ -119,7 +119,7 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
         if(soilmap[s]<0 || soilmap[s]>=config->nsoil)
         {
           if(verbose)
-            fprintf(stderr,"ERROR254: Invalid soil type %d in 'soilmap', must be in [0,%u].\n",
+            fprintf(stderr,"ERROR254: Invalid soil type %d in 'soilmap', must be in [0,%d].\n",
                     soilmap[s],config->nsoil-1);
           free(soilmap);
           free(undef);
