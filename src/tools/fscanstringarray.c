@@ -20,9 +20,7 @@
 #ifdef USE_JSON
 #include <json-c/json.h>
 #endif
-#include "list.h"
-#include "types.h"
-#include "errmsg.h"
+#include "lpj.h"
 
 List *fscanstringarray(LPJfile *file,   /**< pointer to LPJ file */
                         const char *key, /**< name of array */
