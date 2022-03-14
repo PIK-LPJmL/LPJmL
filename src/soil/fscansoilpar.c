@@ -48,7 +48,7 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
   LPJfile *arr,*item;
   int id;
   int l,n;
-  String s;
+  const char *s;
   Soilpar *soil;
   Verbosity verb;
   verb=(isroot(*config)) ? config->scan_verbose : NO_ERR;
@@ -108,7 +108,8 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
         fprintf(stderr,"ERROR177: Soil type=%d has been already defined in fscansoilpar().\n",id);
       return TRUE;
     }
-    if(fscanstring(item,s,"name",FALSE,verb))
+    s=fscanstring(item,NULL,"name",verb);
+    if(s==NULL)
     {
       if(verb)
         readstringerr("name");

@@ -28,7 +28,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
                  )                    /** \return TRUE on error */
 {
   LPJfile *f;
-  String name;
+  const char *name;
   f=fscanstruct(file,key,verb);
   if(f==NULL)
     return TRUE;
@@ -44,7 +44,8 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   }
   if(isvar && filename->fmt==CDF)
   {
-    if(fscanstring(f,name,"var",FALSE,verb))
+    name=fscanstring(f,NULL,"var",verb);
+    if(name==NULL)
     {
       if(verb)
         readstringerr("variable");
@@ -61,7 +62,8 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     }
     if(iskeydefined(f,"time"))
     {
-      if(fscanstring(f,name,"time",FALSE,verb))
+      name=fscanstring(f,NULL,"time",verb);
+      if(name==NULL)
       {
         if(verb)
           readstringerr("time");
@@ -84,7 +86,8 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   {
     if(iskeydefined(f,"var"))
     {
-      if(fscanstring(f,name,"var",FALSE,verb))
+      name=fscanstring(f,NULL,"var",verb);
+      if(name==NULL)
       {
         if(verb)
           readstringerr("variable");
@@ -122,7 +125,8 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       filename->isscale=FALSE;
     filename->time=NULL;
   }
-  if(fscanstring(f,name,"name",FALSE,verb))
+  name=fscanstring(f,NULL,"name",verb);
+  if(name==NULL)
   {
     if(verb)
       readstringerr("filename");
@@ -163,7 +167,8 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   }
   if(iskeydefined(f,"unit"))
   {
-    if(fscanstring(f,name,"unit",FALSE,verb))
+    name=fscanstring(f,NULL,"unit",verb);
+    if(name==NULL)
     {
       if(verb)
         readstringerr("unit");

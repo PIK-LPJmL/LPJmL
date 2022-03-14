@@ -65,14 +65,16 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   LPJfile *arr,*item;
   int count,flag,size,index,ntotpft,version;
   Bool isdaily,metafile;
-  String outpath,name;
+  const char *outpath,*name;
   Verbosity verbosity;
   verbosity=isroot(*config) ? config->scan_verbose : NO_ERR;
-  if(fscanstring(file,name,"compress_cmd",FALSE,verbosity))
+  name=fscanstring(file,NULL,"compress_cmd",verbosity);
+  if(name==NULL)
     return TRUE;
   config->compress_cmd=strdup(name);
   checkptr(config->compress_cmd);
-  if(fscanstring(file,name,"compress_suffix",FALSE,verbosity))
+  name=fscanstring(file,NULL,"compress_suffix",verbosity);
+  if(name==NULL)
     return TRUE;
   config->compress_suffix=strdup(name);
   checkptr(config->compress_suffix);
@@ -82,7 +84,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
       fprintf(stderr,"ERROR251: Suffix '%s' must start with '.'.\n",config->compress_suffix);
     return TRUE;
   }
-  if(fscanstring(file,name,"csv_delimit",FALSE,verbosity))
+  name=fscanstring(file,NULL,"csv_delimit",verbosity);
+  if(name==NULL)
     return TRUE;
   if(strlen(name)!=1)
   {
@@ -141,7 +144,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   }
   if(iskeydefined(file,"outpath"))
   {
-    if(fscanstring(file,outpath,"outpath",FALSE,verbosity))
+    outpath=fscanstring(file,NULL,"outpath",verbosity);
+    if(outpath==NULL)
       return TRUE;
     free(config->outputdir);
     config->outputdir=strdup(outpath);
@@ -155,7 +159,8 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   {
     fscanint2(file,&config->pft_output_scaled,"pft_output_scaled");
   }
-  if(fscanstring(file,name,"json_suffix",FALSE,verbosity))
+  name=fscanstring(file,NULL,"json_suffix",verbosity);
+  if(name==NULL)
     return TRUE;
   config->json_suffix=strdup(name);
   checkptr(config->json_suffix);
@@ -165,7 +170,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     item=fscanarrayindex(arr,index,verbosity);
     if(isstring(item,"id"))
     {
-      fscanstring(item,name,"id",FALSE,verbosity);
+      name=fscanstring(item,NULL,"id",verbosity);
       flag=findid(name,config->outnames,nout_max);
       if(flag==NOT_FOUND)
       {
@@ -307,7 +312,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     ntotpft=config->npft[GRASS]+config->npft[TREE]+config->npft[CROP];
     if(isstring(file,"crop_index"))
     {
-      fscanstring(file,name,"crop_index",FALSE,verbosity);
+      name=fscanstring(file,NULL,"crop_index",verbosity);
       config->crop_index=findpftid(name,config->pftpar,ntotpft);
       if(config->crop_index==NOT_FOUND)
       {

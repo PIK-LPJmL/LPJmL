@@ -98,7 +98,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
 {
   int n,l,count;
   LPJfile *arr,*item,*subitem;
-  String s;
+  const char *s;
   Pftpar *pft;
   Real totalroots;
   Cnratio cnratio;
@@ -136,7 +136,8 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
     pft->id=n;
 
     /* Read pft->name */
-    if(fscanstring(item,s,"name",FALSE,verb))
+    s=fscanstring(item,NULL,"name",verb);
+    if(s==NULL)
     {
       if(verb)
         readstringerr("name");

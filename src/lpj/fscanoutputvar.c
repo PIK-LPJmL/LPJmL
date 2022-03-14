@@ -22,7 +22,7 @@
     if(verb) fprintf(stderr,"ERROR229: Cannot read float '%s' for output '%s'.\n",name,out);\
     return NULL;}
 #define fscanname(file,var,name,out) {              \
-    if(fscanstring(file,var,name,FALSE,verb)) {                 \
+    if((var=fscanstring(file,NULL,name,verb))==NULL) {                 \
     if(verb) fprintf(stderr,"ERROR229: Cannot read string '%s' for output '%s'.\n",name,out==NULL ? "N/A" : out);\
       return NULL;                              \
     }                                              \
@@ -36,7 +36,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
                         )               /** \return TRUE on error */
 {
   LPJfile *arr,*item;
-  String name;
+  const char *name;
   Variable *outnames;
   int index,i,size;
   if (verb>=VERB) puts("// Output parameters");
@@ -57,7 +57,8 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
   {
     item=fscanarrayindex(arr,i,verb);
     fscanint2(item,&index,"id");
-    if(fscanstring(item,name,"name",FALSE,verb))
+    name=fscanstring(item,NULL,"name",verb);
+    if(name==NULL)
     {
       if(verb)
         fprintf(stderr,"ERROR233: No name defined for output index %d.\n",index);

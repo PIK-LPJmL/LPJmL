@@ -39,7 +39,7 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
 {
   LPJfile *arr,*item;
   int nregions,n,id;
-  String s;
+  const char *s;
   Regionpar *region;
   if (verb>=VERB) puts("// Region parameters");
   arr=fscanarray(file,&nregions,"regionpar",verb);
@@ -71,7 +71,8 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
                 "ERROR179: Region number=%d has been already defined in fscanregionpar().\n",id);
       return 0;
     }
-    if(fscanstring(item,s,"name",FALSE,verb))
+    s=fscanstring(item,NULL,"name",verb);
+    if(s==NULL)
     {
       if(verb)
         readstringerr("name");

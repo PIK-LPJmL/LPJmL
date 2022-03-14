@@ -213,13 +213,11 @@ Bool fscantoken(FILE *file, /**< file pointer of a text file         */
   return FALSE;
 } /* of 'fscantoken' */
 
-Bool fscanstring(LPJfile *file,     /**< pointer to  a LPJ file         */
-                 String s,          /**< pointer to a char array of dimension
-                                         STRING_LEN+1                        */
-                 const char *name,  /**< name of string or NULL        */
-                 Bool with_default, /**< allow default value */
-                 Verbosity verb     /**< enable error output */
-                )                   /** \return TRUE on error                */
+const char *fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
+                  const char *dflt,    /**< pointer to a string or NULL */
+                  const char *name,    /**< name of string or NULL        */
+                  Verbosity verb       /**< enable error output */
+                )                      /** \return string or NULL  on error */
 {
   const char *str;
   struct json_object *item;
@@ -229,17 +227,17 @@ Bool fscanstring(LPJfile *file,     /**< pointer to  a LPJ file         */
   {
     if(!json_object_object_get_ex(file,name,&item))
     {
-      if(with_default)
+      if(dflt!=NULL)
       {
         if(verb)
-          fprintf(stderr,"WARNING027: Name '%s' for string not found, set to '%s'.\n",name,s);
-        return FALSE;
+          fprintf(stderr,"WARNING027: Name '%s' for string not found, set to '%s'.\n",name,dflt);
+        return dflt;
       }
       else
       {
         if(verb)
           fprintf(stderr,"ERROR225: Name '%s' for string not found.\n",name);
-        return TRUE;
+        return NULL;
       }
     }
   }
@@ -247,14 +245,10 @@ Bool fscanstring(LPJfile *file,     /**< pointer to  a LPJ file         */
   {
     if(verb)
       fprintf(stderr,"ERROR226: Type of '%s' is not string.\n",(name==NULL) ? "N/A" : name);
-    return TRUE;
+    return NULL;
   }
   str=json_object_get_string(item);
-  if(strlen(str)>STRING_LEN && verb)
-    fprintf(stderr,"ERROR103: String too long for name '%s', truncated.\n",(name==NULL) ? "N/A" : name);
-  strncpy(s,str,STRING_LEN);
-  s[STRING_LEN]='\0';
   if (verb >= VERB)
-    printf("\"%s\" : \"%s\"\n",(name==NULL) ? "N/A" : name,s);
-  return FALSE;
+    printf("\"%s\" : \"%s\"\n",(name==NULL) ? "N/A" : name,str);
+  return str;
 } /* of 'fscanstring' */

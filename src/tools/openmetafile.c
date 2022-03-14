@@ -67,7 +67,8 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
                          )                    /** \return filename of binary file or NULL */
 {
   LPJfile *lpjfile;
-  String filename;
+  const char *filename;
+  char *ret;
   Bool endian;
   lpjfile=parse_json(file,verbosity);
   if(lpjfile==NULL)
@@ -213,13 +214,15 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     }
     *swap=(endian) ? !bigendian() : bigendian();
   }
-  if(fscanstring(lpjfile,filename,"filename",FALSE,verbosity))
+  filename=fscanstring(lpjfile,NULL,"filename",verbosity);
+  if(filename==NULL)
   {
     closeconfig(lpjfile);
     return NULL;
   }
+  ret=strdup(filename);
   closeconfig(lpjfile);
-  return strdup(filename);
+  return ret;
 } /* of 'parse_json_metafile' */
 
 FILE *openmetafile(Header *header,       /**< pointer to file header */

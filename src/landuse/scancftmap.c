@@ -55,7 +55,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
   LPJfile *array,*item;
   int *cftmap;
   Verbosity verbose;
-  String s;
+  const char *s;
   int cft;
   Bool first=TRUE;
   if(iskeydefined(file,name))
@@ -98,7 +98,8 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
         free(cftmap);
         return NULL;
       }
-      if(fscanstring(item,s,NULL,FALSE,verbose))
+      s=fscanstring(item,NULL,NULL,verbose);
+      if(s==NULL)
       {
         free(cftmap);
         return NULL;

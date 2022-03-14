@@ -21,6 +21,7 @@ LPJfile *parse_json(FILE *file,         /**< pointer to JSON text file */
                     Verbosity verbosity /**< verbosity level */
                    )                    /** \return pointer to parsed object or NULL on error */
 {
+  Bool not_first=TRUE;
   LPJfile *lpjfile;
   char *line;
   enum json_tokener_error json_error;
@@ -28,6 +29,22 @@ LPJfile *parse_json(FILE *file,         /**< pointer to JSON text file */
   tok=json_tokener_new();
   while((line=fscanline(file))!=NULL)  /* read line from file */
   {
+    if(not_first)
+    {
+      /* check, whether file is a json file */
+      if(line[0]!='{')
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR228: JSON file '%s' does not start with opening '{' in line %d.\n",
+                  getfilename(),getlinecount()-1);
+        free(line);
+        json_tokener_free(tok);
+        json_object_put(lpjfile);
+        return NULL;
+      }
+      else
+        not_first=FALSE;
+    }
     lpjfile=json_tokener_parse_ex(tok,line,strlen(line));
     json_error=json_tokener_get_error(tok);
     if(json_error!=json_tokener_continue)
@@ -39,7 +56,7 @@ LPJfile *parse_json(FILE *file,         /**< pointer to JSON text file */
   {
     if(verbosity)
     {
-      fprintf(stderr,"ERROR228: Cannot parse json file '%s' in line %d, %s:\n",
+      fprintf(stderr,"ERROR228: Cannot parse JSON file '%s' in line %d, %s:\n",
               getfilename(),getlinecount()-1,(json_error==json_tokener_continue) ? "missing closing '}'" : json_tokener_error_desc(json_error));
       if(json_error!=json_tokener_continue)
         fprintf(stderr,"%s:%d:%s",getfilename(),getlinecount()-1,line);

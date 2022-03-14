@@ -37,7 +37,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
   LPJfile *arr,*item;
   int i,ncountries,n,id,*cftmap,cftmap_size;
   Real *laimax_cft;
-  String s;
+  const char *s;
   Countrypar *country;
   ncountries = 1;
   if (verb>=VERB) puts("// Country parameters");
@@ -94,7 +94,8 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
         free(cftmap);
       return 0;
     }
-    if(fscanstring(item,s,"name",FALSE,verb))  /*reads country name*/
+    s=fscanstring(item,NULL,"name",verb);  /*reads country name*/
+    if(s==NULL)
     {
       if(verb)
         readstringerr("name");

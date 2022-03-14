@@ -20,7 +20,7 @@
 #define fscanreal2(file,var,name) if(fscanreal(file,var,name,FALSE,verbose)) return TRUE;
 #define fscanbool2(file,var,name) if(fscanbool(file,var,name,FALSE,verbose)) return TRUE;
 #define fscanname(file,var,name) {              \
-    if(fscanstring(file,var,name,FALSE,verbose)) {                 \
+    if((var=fscanstring(file,NULL,name,verbose))==NULL) {                 \
       if(verbose) readstringerr(name);  \
       return TRUE;                              \
     }                                              \
@@ -124,7 +124,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                  int nout_max       /**< maximum number of output files */
                 )                   /** \return TRUE on error */
  {
-  String name;
+  const char *name;
   LPJfile *input;
   int restart,endgrid,israndom,grassfix,grassharvest;
   Verbosity verbose;
@@ -153,7 +153,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->seed_start=RANDOM_SEED;
   if(isstring(file,"random_seed"))
   {
-    fscanstring(file,name,"random_seed",FALSE,verbose);
+    name=fscanstring(file,NULL,"random_seed",verbose);
     if(!strcmp(name,"random_seed"))
       config->seed_start=RANDOM_SEED;
     else
@@ -459,7 +459,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->iscotton=findpftname("cotton",config->pftpar+config->npft[GRASS]+config->npft[TREE]-config->nagtree,config->nagtree)!=NOT_FOUND;
   if(config->others_to_crop)
   {
-    if(fscanstring(file,name,"cft_temp",FALSE,verbose))
+    name=fscanstring(file,NULL,"cft_temp",verbose);
+    if(name==NULL)
       return TRUE;
     config->cft_temp=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
     if(config->cft_temp==NOT_FOUND)
@@ -472,7 +473,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       }
       return TRUE;
     }
-    if(fscanstring(file,name,"cft_tropic",FALSE,verbose))
+    name=fscanstring(file,NULL,"cft_tropic",verbose);
+    if(name==NULL)
       return TRUE;
     config->cft_tropic=findpftname(name,config->pftpar+config->npft[GRASS]+config->npft[TREE],config->npft[CROP]);
     if(config->cft_tropic==NOT_FOUND)
@@ -488,7 +490,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->black_fallow && config->prescribe_residues)
   {
-    if(fscanstring(file,name,"residue_pft",FALSE,verbose))
+    name=fscanstring(file,NULL,"residue_pft",verbose);
+    if(name==NULL)
       return TRUE;
     config->pft_residue=findpftname(name,config->pftpar,config->npft[GRASS]+config->npft[TREE]+config->npft[CROP]);
     if(config->pft_residue==NOT_FOUND)
@@ -568,7 +571,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(iskeydefined(file,"inpath"))
   {
-    if(fscanstring(file,name,"inpath",FALSE,verbose))
+    name=fscanstring(file,NULL,"inpath",verbose);
+    if(name==NULL)
       return TRUE;
     free(config->inputdir);
     config->inputdir=strdup(name);
@@ -827,7 +831,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if (verbose>=VERB) puts("// V. run settings");
   if(iskeydefined(file,"restartpath"))
   {
-    if(fscanstring(file,name,"restartpath",FALSE,verbose))
+    name=fscanstring(file,NULL,"restartpath",verbose);
+    if(name==NULL)
       return TRUE;
     free(config->restartdir);
     config->restartdir=strdup(name);
@@ -836,7 +841,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->startgrid=ALL; /* set default value */
   if(isstring(file,"startgrid"))
   {
-    fscanstring(file,name,"startgrid",FALSE,verbose);
+    name=fscanstring(file,NULL,"startgrid",verbose);
     if(!strcmp(name,"all"))
       config->startgrid=ALL;
     else

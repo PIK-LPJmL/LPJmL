@@ -36,7 +36,7 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
   Bool *undef;
   int s,*soilmap;
   LPJfile *array,*item;
-  String name;
+  const char *name;
   Verbosity verbose;
   Bool first;
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
@@ -76,7 +76,8 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
       }
       if(isstring(item,NULL))
       {
-        if(fscanstring(item,name,NULL,FALSE,verbose))
+        name=fscanstring(item,NULL,NULL,verbose);
+        if(name==NULL)
         {
           free(soilmap);
           free(undef);

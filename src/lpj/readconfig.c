@@ -30,7 +30,7 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
 {
   FILE *file;
   LPJfile *lpjfile;
-  String s;
+  const char *s;
   Verbosity verbosity;
   const char *sim_id[]={"lpj","lpjml","lpjml_image","lpjml_fms"};
   config->arglist=catstrvec(*argv,*argc); /* store command line in arglist */
@@ -42,7 +42,8 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   pclose(file);
   if(lpjfile==NULL)
     return TRUE;
-  if(fscanstring(lpjfile,s,"sim_name",FALSE,verbosity))
+  s=fscanstring(lpjfile,NULL,"sim_name",verbosity);
+  if(s==NULL)
   {
     if(verbosity)
       fputs("ERROR121: Cannot read simulation name.\n",stderr);
@@ -58,7 +59,8 @@ Bool readconfig(Config *config,        /**< LPJ configuration */
   }
   if(iskeydefined(lpjfile,"version"))
   {
-    if(fscanstring(lpjfile,s,"version",FALSE,verbosity))
+    s=fscanstring(lpjfile,NULL,"version",verbosity);
+    if(s==NULL)
     {
       if(verbosity)
         fputs("ERROR121: Cannot read version.\n",stderr);
