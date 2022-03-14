@@ -92,6 +92,16 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
       free(landcover);
       return NULL;
     }
+    if(header.timestep!=1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR225: Time step%d in landcover file '%s' is not 1\n",
+                header.timestep,config->landcover_filename.name);
+      closeclimatefile(&landcover->file,isroot(*config));
+      free(landcover);
+      return NULL;
+    }
+
   }
   if(landcover->file.var_len!=getnnat(npft,config))
   {

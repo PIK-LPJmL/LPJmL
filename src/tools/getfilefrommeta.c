@@ -101,6 +101,21 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
      free(path);
      name=fullname;
   }
+  else
+  {
+    path=getpath(filename);
+    fullname=addpath(name,path);
+    if(fullname==NULL)
+    {
+     printallocerr("name");
+     free(path);
+     free(name);
+     return NULL;
+    }
+    free(name);
+    free(path);
+    name=fullname;
+  }
   return name;
 } /* of 'getfilefrommeta' */
 

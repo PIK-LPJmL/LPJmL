@@ -326,7 +326,7 @@ Bool fscanstring(LPJfile *file,     /**< pointer to  a LPJ file         */
       }
     }
   }
-  else
+  else if(c!=EOF)
   {
     s[0]=(char)c;
     len=1;
@@ -364,6 +364,8 @@ Bool fscanstring(LPJfile *file,     /**< pointer to  a LPJ file         */
       printf("\"%s\" : \"%s\"\n",name,s);
     return FALSE;
   }
+  else
+    len=0;
   if(c==EOF && verb)
     fprintf(stderr,"ERROR103: EOF reached reading string in line %d of '%s'.\n",line_count,incfile);
   s[len]='\0';  /* terminate string */

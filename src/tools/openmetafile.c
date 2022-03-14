@@ -30,8 +30,9 @@
 /**       "bigendian" :  false,                                                    \n**/
 /**       "firstcell" :  0,                                                        \n**/
 /**       "ncell" :  67420,                                                        \n**/
-/**       "scaling" :  0.1,                                                        \n**/
-/**       "cellsize" :  [0.5,0.5],                                                 \n**/
+/**       "scalar" :  0.1,                                                         \n**/
+/**       "cellsize_lon" :  0.5,                                                   \n**/
+/**       "cellsize_lat" :  0.5,                                                   \n**/
 /**       "offset" :  0,                                                           \n**/
 /**       "datatype" :  "short"                                                    \n**/
 /**     }                                                                          \n**/
@@ -83,7 +84,6 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
 {
   FILE *file;
   String filename;
-  Real cellsize[2];
   Bool endian;
   file=lpjfile->file.file;
   if(parse_json(file,lpjfile,s,verbosity))
@@ -156,6 +156,24 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
         return NULL;
       }
     }
+    if(iskeydefined(lpjfile,"timestep"))
+    {
+      if(fscanint(lpjfile,&header->timestep,"timestep",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+      if(header->timestep<1)
+      {
+        if(verbosity)
+          fprintf(stderr,"ERROR221: Invalid time step %d, must be >0.\n",
+                  header->timestep);
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
+    }
     if(iskeydefined(lpjfile,"nbands"))
     {
       if(fscanint(lpjfile,&header->nbands,"nbands",FALSE,verbosity))
@@ -175,9 +193,9 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
       }
       header->order++;
     }
-    if(iskeydefined(lpjfile,"scaling"))
+    if(iskeydefined(lpjfile,"scalar"))
     {
-      if(fscanfloat(lpjfile,&header->scalar,"scaling",FALSE,verbosity))
+      if(fscanfloat(lpjfile,&header->scalar,"scalar",FALSE,verbosity))
       {
         closeconfig(lpjfile);
         lpjfile->file.file=file;
@@ -193,16 +211,23 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
         return NULL;
       }
     }
-    if(iskeydefined(lpjfile,"cellsize"))
+    if(iskeydefined(lpjfile,"cellsize_lon"))
     {
-      if(fscanrealarray(lpjfile,cellsize,2,"cellsize",verbosity))
+      if(fscanfloat(lpjfile,&header->cellsize_lon,"cellsize_lon",FALSE,verbosity))
       {
         closeconfig(lpjfile);
         lpjfile->file.file=file;
         return NULL;
       }
-      header->cellsize_lon=(float)cellsize[0];
-      header->cellsize_lat=(float)cellsize[1];
+    }
+    if(iskeydefined(lpjfile,"cellsize_lat"))
+    {
+      if(fscanfloat(lpjfile,&header->cellsize_lat,"cellsize_lat",FALSE,verbosity))
+      {
+        closeconfig(lpjfile);
+        lpjfile->file.file=file;
+        return NULL;
+      }
     }
   } /* of if(header!=NULL) */
   if(iskeydefined(lpjfile,"offset"))
@@ -337,6 +362,24 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
     {
       if(fscanint(&file,&header->nstep,"nstep",FALSE,isout ? ERR : NO_ERR))
       {
+        free(name);
+        fclose(file.file.file);
+        return NULL;
+      }
+    }
+    else if(!strcmp(key,"timestep"))
+    {
+      if(fscanint(&file,&header->timestep,"timestep",FALSE,isout ? ERR : NO_ERR))
+      {
+        free(name);
+        fclose(file.file.file);
+        return NULL;
+      }
+      if(header->timestep<1)
+      {
+        if(isout)
+          fprintf(stderr,"ERROR221: Invalid time step %d in '%s', must be >0.\n",
+                  header->timestep,filename);
         free(name);
         fclose(file.file.file);
         return NULL;

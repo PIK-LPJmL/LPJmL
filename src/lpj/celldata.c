@@ -195,6 +195,14 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         free(celldata);
         return NULL;
       }
+      if(header.timestep!=1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR218: Invalid time  step %d in '%s', must be 1.\n",
+                  header.timestep,config->soilph_filename.name);
+        free(celldata);
+        return NULL;
+      }
       if(isroot(*config) && config->soilph_filename.fmt!=META)
       {
          filesize=getfilesizep(celldata->soilph.bin.file)-headersize(headername,version)-celldata->soilph.bin.offset;

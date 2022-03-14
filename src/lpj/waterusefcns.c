@@ -106,6 +106,15 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
       free(wateruse);
       return NULL;
     }
+    if(header.timestep!=1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR218: Time step=%d in wateruse file '%s' is not 1.\n",
+                header.timestep,config->wateruse_filename.name);
+      closeclimatefile(&wateruse->file,isroot(*config));
+      free(wateruse);
+      return NULL;
+    }
   }
   if(wateruse->file.var_len!=1)
   {

@@ -132,6 +132,11 @@ int main(int argc,char **argv)
     fprintf(stderr,"Invalid number of steps=%d in '%s', must be 1.\n",header.nstep,argv[3]);
     return EXIT_FAILURE;
   }
+  if(header.timestep!=1)
+  {
+    fprintf(stderr,"Invalid time step=%d in '%s', must be 1.\n",header.timestep,argv[3]);
+    return EXIT_FAILURE;
+  }
   if(data_version>2 && header.datatype!=LPJ_INT)
   {
     fprintf(stderr,"Invalid datatype %s in '%s', muste bei int.\n",typenames[header.datatype],argv[3]);

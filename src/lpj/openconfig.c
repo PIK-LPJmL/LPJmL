@@ -412,6 +412,13 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     free(options);
     return NULL;
   }
+  else if(getfilesize(config->filename)==0)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR242: File '%s' is empty.\n",config->filename);
+    free(options);
+    return NULL;
+  }
   /* adjust argc and argv */
   *argv+=i;
   *argc-=i;

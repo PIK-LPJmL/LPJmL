@@ -38,6 +38,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
     header->ncell=config->nall;
     header->nbands=1;
     header->nstep=1;
+    header->timestep=1;
     header->scalar=1;
     header->datatype=LPJ_SHORT;
     header->cellsize_lon=(float)config->resolution.lon;
@@ -99,6 +100,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
     header->ncell=config->nall;
     header->nbands=1;
     header->nstep=1;
+    header->timestep=1;
     header->scalar=1;
     header->datatype=LPJ_SHORT;
     *version=0;

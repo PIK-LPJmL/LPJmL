@@ -94,6 +94,7 @@ Bool freadanyheader(FILE *file,        /**< file pointer of binary file */
       header->scalar=1;           /* and scaling factor */
       header->datatype=LPJ_SHORT; /* and datatype */
       header->nstep=1;
+      header->timestep=1;
       break;
     case 2:
       if(fread(header,sizeof(Header2),1,file)!=1)
@@ -104,6 +105,7 @@ Bool freadanyheader(FILE *file,        /**< file pointer of binary file */
       }
       header->datatype=LPJ_SHORT; /* set default datatype */
       header->nstep=1;
+      header->timestep=1;
       break;
     case 4:
       if(fread(header,sizeof(Header),1,file)!=1)
@@ -121,6 +123,7 @@ Bool freadanyheader(FILE *file,        /**< file pointer of binary file */
         return TRUE;
       }
       header->nstep=1;
+      header->timestep=1;
   } /* of switch */
   if(*swap) /* is data in different byte order? */
   {
@@ -145,7 +148,10 @@ Bool freadanyheader(FILE *file,        /**< file pointer of binary file */
       header->datatype=(Type)swapint(header->datatype);
     }
     if(*version==4)
+    {
       header->nstep=swapint(header->nstep);
+      header->timestep=swapint(header->timestep);
+    }
   }
   if(*version<3)
     header->cellsize_lat=header->cellsize_lon;

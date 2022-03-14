@@ -25,13 +25,15 @@ static void printjson(const char *filename,const Header *header,const char *id,B
          "  \"filename\" : \"%s\",\n",strippath(filename));
   printf("  \"firstcell\" : %d,\n",header->firstcell);
   printf("  \"ncell\" : %d,\n",header->ncell);
-  printf("  \"cellsize\" : [%f,%f],\n",header->cellsize_lon,header->cellsize_lat);
+  printf("  \"cellsize_lon\" : %f,\n",header->cellsize_lon);
+  printf("  \"cellsize_lat\" : %f,\n",header->cellsize_lat);
   printf("  \"firstyear\" : %d,\n",header->firstyear);
-  printf("  \"lastyear\" : %d,\n",header->firstyear+header->nyear-1);
+  printf("  \"lastyear\" : %d,\n",header->firstyear+(header->nyear-1)*header->timestep);
   printf("  \"nyear\" : %d,\n",header->nyear);
   printf("  \"nstep\" : %d,\n",header->nstep);
+  printf("  \"timestep\" : %d,\n",header->timestep);
   printf("  \"nbands\" : %d,\n",header->nbands);
-  printf("  \"scaling\" : %f,\n",header->scalar);
+  printf("  \"scalar\" : %f,\n",header->scalar);
   printf("  \"datatype\" : \"%s\",\n",typenames[header->datatype]);
   printf("  \"format\" : \"clm\",\n");
   printf("  \"order\" : \"%s\",\n",ordernames[max(0,header->order-1)]);
@@ -70,6 +72,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     header.nyear=1;
     header.nbands=(nbands==-1)  ? 1 : nbands;
     header.nstep=1;
+    header.timestep=1;
     header.datatype=type;
     header.order=CELLYEAR;
     file=openmetafile(&header,&map,&swap,&offset,filename,TRUE);

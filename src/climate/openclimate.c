@@ -156,6 +156,14 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     fclose(file->file);
     return TRUE;
   }
+  if(header.timestep!=1)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR127: Invalid time step %d in '%s', must be 1.\n",
+              header.timestep,filename->name);
+    fclose(file->file);
+    return TRUE;
+  }
   if(filename->fmt==META || (filename->fmt==CLM && version==4))
   {
     if(header.nbands>1)

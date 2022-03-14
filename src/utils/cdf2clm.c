@@ -467,6 +467,7 @@ int main(int argc,char **argv)
   header.scalar=scale;
   header.order=CELLYEAR;
   header.firstcell=0;
+  header.timestep=1;
   header.datatype=(isfloat) ? LPJ_FLOAT : LPJ_SHORT;
   file=fopen(outname,"wb");
   if(file==NULL)

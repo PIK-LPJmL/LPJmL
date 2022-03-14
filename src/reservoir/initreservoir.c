@@ -75,6 +75,14 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
       fclose(file);
       return TRUE;
     }
+    if(header.timestep!=1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR218: Time step=%d in elevation data file '%s' is not 1.\n",
+                header.timestep,config->elevation_filename.name);
+      fclose(file);
+      return TRUE;
+    }
     if(isroot(*config) && config->elevation_filename.fmt!=META)
     {
       filesize=getfilesizep(file)-headersize(headername,version)-offset;
@@ -124,11 +132,19 @@ static Bool initreservoir2(Cell grid[],   /**< LPJ grid */
     fclose(file);
     return TRUE;
   }
-   if(header.nstep!=1)
+  if(header.nstep!=1)
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR218: Number of steps=%d in reservoir data file '%s' is not 1.\n",
               header.nstep,config->reservoir_filename.name);
+    fclose(file);
+    return TRUE;
+  }
+  if(header.timestep!=1)
+  {
+    if(isroot(*config))
+      fprintf(stderr,"ERROR218: Time step=%d in reservoir data file '%s' is not 1.\n",
+              header.timestep,config->reservoir_filename.name);
     fclose(file);
     return TRUE;
   }

@@ -51,6 +51,7 @@ Extflow initextflow(const Config *config /**< LPJmL configuration */
     header.ncell=0;
     header.nbands=NDAYYEAR;
     header.nstep=1;
+    header.timestep=1;
     header.scalar=1;
     header.datatype=LPJ_FLOAT;
     header.cellsize_lon=(float)config->resolution.lon;
