@@ -45,7 +45,7 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
                   Config *config /**< LPJmL configuration */
                  )               /** \return TRUE on error */
 {
-  LPJfile arr,item;
+  LPJfile *arr,*item;
   int id;
   int l,n;
   String s;
@@ -75,7 +75,8 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
   }
   if(fscanrealarray(file,fbd_fac,NFUELCLASS,"fbd_fac",verb))
     return TRUE;
-  if(fscanarray(file,&arr,&config->nsoil,TRUE,"soilpar",verb))
+  arr=fscanarray(file,&config->nsoil,"soilpar",verb);
+  if(arr==NULL)
     return TRUE;
   if(config->nsoil<1)
   {
@@ -90,9 +91,9 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
     config->soilpar[n].type=UNDEF;
   for(n=0;n<config->nsoil;n++)
   {
-    fscanarrayindex(&arr,&item,n,verb);
+    item=fscanarrayindex(arr,n,verb);
     id=n;
-    if(fscanint(&item,&id,"id",TRUE,verb))
+    if(fscanint(item,&id,"id",TRUE,verb))
       return TRUE;
     if(id<0 || id>=config->nsoil)
     {
@@ -107,7 +108,7 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
         fprintf(stderr,"ERROR177: Soil type=%d has been already defined in fscansoilpar().\n",id);
       return TRUE;
     }
-    if(fscanstring(&item,s,"name",FALSE,verb))
+    if(fscanstring(item,s,"name",FALSE,verb))
     {
       if(verb)
         readstringerr("name");
@@ -116,12 +117,12 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
     soil->name=strdup(s);
     checkptr(soil->name);
     soil->type=id;
-    fscanreal2(verb,&item,&soil->Sf,soil->name,"Sf");
+    fscanreal2(verb,item,&soil->Sf,soil->name,"Sf");
     if(config->soilpar_option==PRESCRIBED_SOILPAR)
     {
-      fscanreal2(verb,&item,&soil->Ks,soil->name,"Ks");
-      fscanreal2(verb,&item,&soil->wpwp,soil->name,"w_pwp");
-      fscanreal2(verb,&item,&soil->wfc,soil->name,"w_fc");
+      fscanreal2(verb,item,&soil->Ks,soil->name,"Ks");
+      fscanreal2(verb,item,&soil->wpwp,soil->name,"w_pwp");
+      fscanreal2(verb,item,&soil->wfc,soil->name,"w_fc");
       if(soil->wfc<=0 || soil->wfc>1)
       {
         if(verb)
@@ -136,7 +137,7 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
                   soil->wfc-soil->wpwp,soil->name,soil->wfc,soil->wpwp);
         return TRUE;
       }
-      fscanreal2(verb,&item,&soil->wsat,soil->name,"w_sat");
+      fscanreal2(verb,item,&soil->wsat,soil->name,"w_sat");
       if(soil->wsat<=0 || soil->wsat>1)
       {
         if(verb)
@@ -152,9 +153,9 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
         return TRUE;
       }
     }
-    fscanreal2(verb,&item,&soil->sand,soil->name,"sand");
-    fscanreal2(verb,&item,&soil->silt,soil->name,"silt");
-    fscanreal2(verb,&item,&soil->clay,soil->name,"clay");
+    fscanreal2(verb,item,&soil->sand,soil->name,"sand");
+    fscanreal2(verb,item,&soil->silt,soil->name,"silt");
+    fscanreal2(verb,item,&soil->clay,soil->name,"clay");
     if(fabs(soil->sand+soil->silt+soil->clay-1)>epsilon)
     {
       if(verb)
@@ -162,7 +163,7 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
                 soil->sand+soil->silt+soil->clay,soil->name);
       return TRUE;
     }
-    fscanint2(verb,&item,&soil->hsg,soil->name,"hsg");
+    fscanint2(verb,item,&soil->hsg,soil->name,"hsg");
     if(soil->hsg<1 || soil->hsg>NHSG)
     {
       if(verb)
@@ -170,19 +171,19 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
                 soil->hsg,soil->name,NHSG);
       return TRUE;
     }
-    fscanreal2(verb,&item,&soil->tdiff_0,soil->name,"tdiff_0");
-    fscanreal2(verb,&item,&soil->tdiff_15,soil->name,"tdiff_15");
-    fscanreal2(verb,&item,&soil->tdiff_100,soil->name,"tdiff_100");
-    fscanreal2(verb,&item,&soil->tcond_pwp,soil->name,"cond_pwp");
-    fscanreal2(verb,&item,&soil->tcond_100,soil->name,"cond_100");
-    fscanreal2(verb,&item,&soil->tcond_100_ice,soil->name,"cond_100_ice");
+    fscanreal2(verb,item,&soil->tdiff_0,soil->name,"tdiff_0");
+    fscanreal2(verb,item,&soil->tdiff_15,soil->name,"tdiff_15");
+    fscanreal2(verb,item,&soil->tdiff_100,soil->name,"tdiff_100");
+    fscanreal2(verb,item,&soil->tcond_pwp,soil->name,"cond_pwp");
+    fscanreal2(verb,item,&soil->tcond_100,soil->name,"cond_100");
+    fscanreal2(verb,item,&soil->tcond_100_ice,soil->name,"cond_100_ice");
     if(config->with_nitrogen)
     {
-      fscanreal2(verb,&item,&soil->anion_excl,soil->name,"anion_excl");
-      fscanreal2(verb,&item,&soil->a_nit,soil->name,"a_nit");
-      fscanreal2(verb,&item,&soil->b_nit,soil->name,"b_nit");
-      fscanreal2(verb,&item,&soil->c_nit,soil->name,"c_nit");
-      fscanreal2(verb,&item,&soil->d_nit,soil->name,"d_nit");
+      fscanreal2(verb,item,&soil->anion_excl,soil->name,"anion_excl");
+      fscanreal2(verb,item,&soil->a_nit,soil->name,"a_nit");
+      fscanreal2(verb,item,&soil->b_nit,soil->name,"b_nit");
+      fscanreal2(verb,item,&soil->c_nit,soil->name,"c_nit");
+      fscanreal2(verb,item,&soil->d_nit,soil->name,"d_nit");
       soil->m_nit=soil->a_nit-soil->c_nit;
       if(soil->m_nit==0)
       {
@@ -193,7 +194,7 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
       }
       soil->z_nit=soil->d_nit*(soil->b_nit-soil->a_nit)/(soil->a_nit-soil->c_nit);
       soil->n_nit=soil->a_nit-soil->b_nit;
-      fscanreal2(verb,&item,&soil->cn_ratio,soil->name,"cn_ratio");
+      fscanreal2(verb,item,&soil->cn_ratio,soil->name,"cn_ratio");
       if(soil->cn_ratio<=0)
       {
         if(verb)

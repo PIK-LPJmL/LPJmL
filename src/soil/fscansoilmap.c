@@ -35,14 +35,15 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
 {
   Bool *undef;
   int s,*soilmap;
-  LPJfile array,item;
+  LPJfile *array,*item;
   String name;
   Verbosity verbose;
   Bool first;
   verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
   if(iskeydefined(file,"soilmap"))
   {
-    if(fscanarray(file,&array,size,FALSE,"soilmap",verbose))
+    array=fscanarray(file,size,"soilmap",verbose);
+    if(array==NULL)
       return NULL;
     if(*size==0)
     {
@@ -67,15 +68,15 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
       undef[s]=TRUE;
     for(s=0;s<*size;s++)
     {
-      fscanarrayindex(&array,&item,s,verbose);
-      if(isnull(&item))
+      item=fscanarrayindex(array,s,verbose);
+      if(isnull(item))
       {
         soilmap[s]=0;
         continue;
       }
-      if(isstring(&item,NULL))
+      if(isstring(item,NULL))
       {
-        if(fscanstring(&item,name,NULL,FALSE,verbose))
+        if(fscanstring(item,name,NULL,FALSE,verbose))
         {
           free(soilmap);
           free(undef);
@@ -102,7 +103,7 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
       }
       else
       {
-        if(!isint(&item,NULL))
+        if(!isint(item,NULL))
         {
           if(verbose)
             fprintf(stderr,"ERROR226: Invalid datatype of element %d in 'soilmap', must be string or int.\n",s+1);
@@ -110,7 +111,7 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
           free(undef);
           return NULL;
         }
-        if(fscanint(&item,soilmap+s,NULL,FALSE,verbose))
+        if(fscanint(item,soilmap+s,NULL,FALSE,verbose))
         {
           free(soilmap);
           free(undef);

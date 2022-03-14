@@ -34,7 +34,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
                     const Config *config     /**< LPJmL configuration */
                    )                         /** \return number of elements in array */
 {
-  LPJfile arr,item;
+  LPJfile *arr,*item;
   int i,ncountries,n,id,*cftmap,cftmap_size;
   Real *laimax_cft;
   String s;
@@ -55,7 +55,8 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
       return 0;
     }
   }
-  if(fscanarray(file,&arr,&ncountries,TRUE,"countrypar",verb))
+  arr=fscanarray(file,&ncountries,"countrypar",verb);
+  if(arr==NULL)
   {
     if(ncft)
       free(cftmap);
@@ -67,8 +68,8 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
    (*countrypar)[n].id=UNDEF;
   for(n=0;n<ncountries;n++)
   {
-    fscanarrayindex(&arr,&item,n,verb);
-    if(fscanint(&item,&id,"id",FALSE,verb))
+    item=fscanarrayindex(arr,n,verb);
+    if(fscanint(item,&id,"id",FALSE,verb))
     {
       if(ncft)
         free(cftmap);
@@ -93,7 +94,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
         free(cftmap);
       return 0;
     }
-    if(fscanstring(&item,s,"name",FALSE,verb))  /*reads country name*/
+    if(fscanstring(item,s,"name",FALSE,verb))  /*reads country name*/
     {
       if(verb)
         readstringerr("name");
@@ -111,7 +112,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
       checkptr(country->laimax_cft);
       laimax_cft=newvec(Real,ncft);
       checkptr(laimax_cft);
-      if(fscanrealarray(&item,laimax_cft,ncft,"laimax",verb))
+      if(fscanrealarray(item,laimax_cft,ncft,"laimax",verb))
       {
         if(verb)
           fprintf(stderr,"ERROR102: Cannot read array 'laimax' for country '%s'.\n",country->name);  
@@ -129,10 +130,10 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
     else
     {
       country->laimax_cft=NULL;
-      fscanreal2(verb,&item,&country->laimax_tempcer,"laimax_tempcer",country->name);
-      fscanreal2(verb,&item,&country->laimax_maize,"laimax_maize",country->name);
+      fscanreal2(verb,item,&country->laimax_tempcer,"laimax_tempcer",country->name);
+      fscanreal2(verb,item,&country->laimax_maize,"laimax_maize",country->name);
     }
-    if(fscankeywords(&item,(int *)&country->default_irrig_system,"default_irrig_system",irrigsys,4,FALSE,verb))
+    if(fscankeywords(item,(int *)&country->default_irrig_system,"default_irrig_system",irrigsys,4,FALSE,verb))
     {
       if(verb)
         fprintf(stderr,"ERROR215: Invalid value for irrigation system for country '%s'.\n",country->name);

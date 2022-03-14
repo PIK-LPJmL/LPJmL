@@ -37,12 +37,13 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
                    Verbosity verb         /**< verbosity level (NO_ERR,ERR,VERB) */
                   )                       /** \return number of elements in array */
 {
-  LPJfile arr,item;
+  LPJfile *arr,*item;
   int nregions,n,id;
   String s;
   Regionpar *region;
   if (verb>=VERB) puts("// Region parameters");
-  if(fscanarray(file,&arr,&nregions,TRUE,"regionpar",verb))
+  arr=fscanarray(file,&nregions,"regionpar",verb);
+  if(arr==NULL)
     return 0;
 
   *regionpar=newvec(Regionpar,nregions);
@@ -51,8 +52,8 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
     (*regionpar)[n].id=UNDEF;
   for(n=0;n<nregions;n++)
   {
-    fscanarrayindex(&arr,&item,n,verb);
-    if(fscanint(&item,&id,"id",FALSE,verb))
+    item=fscanarrayindex(arr,n,verb);
+    if(fscanint(item,&id,"id",FALSE,verb))
       return 0;
     if(id<0 || id>=nregions)
     {
@@ -70,7 +71,7 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
                 "ERROR179: Region number=%d has been already defined in fscanregionpar().\n",id);
       return 0;
     }
-    if(fscanstring(&item,s,"name",FALSE,verb))
+    if(fscanstring(item,s,"name",FALSE,verb))
     {
       if(verb)
         readstringerr("name");
@@ -79,9 +80,9 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
     region->name=strdup(s);
     checkptr(region->name);
     region->id=id;
-    fscanreal012(verb,&item,&region->fuelratio,"fuelratio",region->name);
-    fscanreal012(verb,&item,&region->bifratio,"bifratio",region->name);
-    fscanreal2(verb,&item,&region->woodconsum,"woodconsum",region->name);
+    fscanreal012(verb,item,&region->fuelratio,"fuelratio",region->name);
+    fscanreal012(verb,item,&region->bifratio,"bifratio",region->name);
+    fscanreal2(verb,item,&region->woodconsum,"woodconsum",region->name);
 
   } /* of 'for(n=0;...)' */
   return n;

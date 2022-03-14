@@ -18,20 +18,21 @@
 
 Bool fscanemissionfactor(LPJfile *file,Tracegas *emissionfactor,const char *key,Verbosity verb)
 {
-  LPJfile f;
-  if(fscanstruct(file,&f,key,verb))
+  LPJfile *f;
+  f=fscanstruct(file,key,verb);
+  if(f==NULL)
     return TRUE;
-  if(fscanreal(&f,&emissionfactor->co2,"co2",FALSE,verb))
+  if(fscanreal(f,&emissionfactor->co2,"co2",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&emissionfactor->co,"co",FALSE,verb))
+  if(fscanreal(f,&emissionfactor->co,"co",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&emissionfactor->ch4,"ch4",FALSE,verb))
+  if(fscanreal(f,&emissionfactor->ch4,"ch4",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&emissionfactor->voc,"voc",FALSE,verb))
+  if(fscanreal(f,&emissionfactor->voc,"voc",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&emissionfactor->tpm,"tpm",FALSE,verb))
+  if(fscanreal(f,&emissionfactor->tpm,"tpm",FALSE,verb))
     return TRUE;
-  if(fscanreal(&f,&emissionfactor->nox,"nox",FALSE,verb))
+  if(fscanreal(f,&emissionfactor->nox,"nox",FALSE,verb))
     return TRUE;
   emissionfactor->co2*=1e-3;
   emissionfactor->co*=1e-3;

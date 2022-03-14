@@ -62,7 +62,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
                  int nout_max    /**< maximum number of output files */
                 )                /** \return TRUE on error */
 {
-  LPJfile arr,item;
+  LPJfile *arr,*item;
   int count,flag,size,index,ntotpft,version;
   Bool isdaily,metafile;
   String outpath,name;
@@ -96,7 +96,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   count=index=0;
   config->withdailyoutput=FALSE;
   size=nout_max;
-  if(file->isjson && !iskeydefined(file,"output"))
+  if(!iskeydefined(file,"output"))
   {
     config->pft_output_scaled=FALSE;
     config->n_out=0;
@@ -105,10 +105,11 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     config->json_suffix=NULL;
     return FALSE;
   }
-  if(fscanarray(file,&arr,&size,FALSE,"output",verbosity))
+  arr=fscanarray(file,&size,"output",verbosity);
+  if(arr==NULL)
   {
     config->n_out=0;
-    return file->isjson;
+    return TRUE;
   }
   metafile=FALSE;
   if(fscanbool(file,&metafile,"output_metafile",TRUE,verbosity))
@@ -161,10 +162,10 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   isdaily=FALSE;
   while(count<=nout_max && index<size)
   {
-    fscanarrayindex(&arr,&item,index,verbosity);
-    if(isstring(&item,"id"))
+    item=fscanarrayindex(arr,index,verbosity);
+    if(isstring(item,"id"))
     {
-      fscanstring(&item,name,"id",FALSE,verbosity);
+      fscanstring(item,name,"id",FALSE,verbosity);
       flag=findid(name,config->outnames,nout_max);
       if(flag==NOT_FOUND)
       {
@@ -176,7 +177,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
     }
     else
     {
-      fscanint2(&item,&flag,"id");
+      fscanint2(item,&flag,"id");
     }
     if(flag==END)  /* end marker read? */
       break;
@@ -194,7 +195,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         config->outputvars[count].filename.version=version;
       else
         config->outputvars[count].filename.version=(flag==GRID) ? LPJGRID_VERSION : LPJOUTPUT_VERSION;
-      if(readfilename(&item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,verbosity))
+      if(readfilename(item,&config->outputvars[count].filename,"file",config->outputdir,FALSE,verbosity))
       {
         if(verbosity)
           fprintf(stderr,"ERROR231: Cannot read filename for output '%s'.\n",

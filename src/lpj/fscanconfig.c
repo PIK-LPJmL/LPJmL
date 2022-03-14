@@ -125,7 +125,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
                 )                   /** \return TRUE on error */
  {
   String name;
-  LPJfile input;
+  LPJfile *input;
   int restart,endgrid,israndom,grassfix,grassharvest;
   Verbosity verbose;
   const char *landuse[]={"no","yes","const","all_crops","only_crops"};
@@ -574,12 +574,13 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->inputdir=strdup(name);
     checkptr(config->inputdir);
   }
-  if(fscanstruct(file,&input,"input",verbose))
+  input=fscanstruct(file,"input",verbose);
+  if(input==NULL)
     return TRUE;
-  scanclimatefilename(&input,&config->soil_filename,config->inputdir,FALSE,"soil");
+  scanclimatefilename(input,&config->soil_filename,config->inputdir,FALSE,"soil");
   if(config->soil_filename.fmt!=CDF)
   {
-    scanfilename(&input,&config->coord_filename,config->inputdir,"coord");
+    scanfilename(input,&config->coord_filename,config->inputdir,"coord");
   }
   if(config->withlanduse!=NO_LANDUSE)
   {
@@ -600,44 +601,44 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(config->cftmap==NULL)
         return TRUE;
     }
-    scanclimatefilename(&input,&config->countrycode_filename,config->inputdir,FALSE,"countrycode");
+    scanclimatefilename(input,&config->countrycode_filename,config->inputdir,FALSE,"countrycode");
     if(config->countrycode_filename.fmt==CDF)
     {
-      scanclimatefilename(&input,&config->regioncode_filename,config->inputdir,FALSE,"regioncode");
+      scanclimatefilename(input,&config->regioncode_filename,config->inputdir,FALSE,"regioncode");
     }
-    scanclimatefilename(&input,&config->landuse_filename,config->inputdir,FALSE,"landuse");
+    scanclimatefilename(input,&config->landuse_filename,config->inputdir,FALSE,"landuse");
     if(config->iscotton)
     {
-      scanclimatefilename(&input,&config->sowing_cotton_rf_filename,config->inputdir,FALSE,"sowing_ag_tree_rf");
-      scanclimatefilename(&input,&config->harvest_cotton_rf_filename,config->inputdir,FALSE,"harvest_ag_tree_rf");
-      scanclimatefilename(&input,&config->sowing_cotton_ir_filename,config->inputdir,FALSE,"sowing_ag_tree_ir");
-      scanclimatefilename(&input,&config->harvest_cotton_ir_filename,config->inputdir,FALSE,"harvest_ag_tree_ir");
+      scanclimatefilename(input,&config->sowing_cotton_rf_filename,config->inputdir,FALSE,"sowing_ag_tree_rf");
+      scanclimatefilename(input,&config->harvest_cotton_rf_filename,config->inputdir,FALSE,"harvest_ag_tree_rf");
+      scanclimatefilename(input,&config->sowing_cotton_ir_filename,config->inputdir,FALSE,"sowing_ag_tree_ir");
+      scanclimatefilename(input,&config->harvest_cotton_ir_filename,config->inputdir,FALSE,"harvest_ag_tree_ir");
     }
     if(config->sdate_option==PRESCRIBED_SDATE)
     {
-      scanclimatefilename(&input,&config->sdate_filename,config->inputdir,FALSE,"sdate");
+      scanclimatefilename(input,&config->sdate_filename,config->inputdir,FALSE,"sdate");
     }
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
     {
-      scanclimatefilename(&input,&config->crop_phu_filename,config->inputdir,FALSE,"crop_phu");
+      scanclimatefilename(input,&config->crop_phu_filename,config->inputdir,FALSE,"crop_phu");
     }
     if(config->with_nitrogen && config->fertilizer_input==FERTILIZER)
-      scanclimatefilename(&input,&config->fertilizer_nr_filename,config->inputdir,FALSE,"fertilizer_nr");
+      scanclimatefilename(input,&config->fertilizer_nr_filename,config->inputdir,FALSE,"fertilizer_nr");
     if (config->with_nitrogen && config->manure_input)
-      scanclimatefilename(&input,&config->manure_nr_filename,config->inputdir,FALSE,"manure_nr");
+      scanclimatefilename(input,&config->manure_nr_filename,config->inputdir,FALSE,"manure_nr");
     if (config->tillage_type==READ_TILLAGE)
-      scanclimatefilename(&input,&config->with_tillage_filename,config->inputdir,FALSE,"with_tillage");
+      scanclimatefilename(input,&config->with_tillage_filename,config->inputdir,FALSE,"with_tillage");
     if (config->residue_treatment == READ_RESIDUE_DATA)
-      scanclimatefilename(&input,&config->residue_data_filename,config->inputdir,FALSE,"residue_on_field");
+      scanclimatefilename(input,&config->residue_data_filename,config->inputdir,FALSE,"residue_on_field");
     if(grassfix == GRASS_FIXED_PFT)
     {
-      scanclimatefilename(&input,&config->grassfix_filename,config->inputdir,FALSE,"grassland_fixed_pft");
+      scanclimatefilename(input,&config->grassfix_filename,config->inputdir,FALSE,"grassland_fixed_pft");
     }
     else
       config->grassfix_filename.name = NULL;
     if(grassharvest)
     {
-      scanclimatefilename(&input,&config->grassharvest_filename,config->inputdir,FALSE,"grass_harvest_options");
+      scanclimatefilename(input,&config->grassharvest_filename,config->inputdir,FALSE,"grass_harvest_options");
     }
     else
       config->grassharvest_filename.name = NULL;
@@ -649,15 +650,15 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   }
   if(config->river_routing)
   {
-    scanclimatefilename(&input,&config->lakes_filename,config->inputdir,FALSE,"lakes");
-    scanclimatefilename(&input,&config->drainage_filename,config->inputdir,FALSE,"drainage");
+    scanclimatefilename(input,&config->lakes_filename,config->inputdir,FALSE,"lakes");
+    scanclimatefilename(input,&config->drainage_filename,config->inputdir,FALSE,"drainage");
     if(config->drainage_filename.fmt==CDF)
     {
-      scanclimatefilename(&input,&config->river_filename,config->inputdir,FALSE,"river");
+      scanclimatefilename(input,&config->river_filename,config->inputdir,FALSE,"river");
     }
     if(config->extflow)
     {
-      scanclimatefilename(&input,&config->extflow_filename,config->inputdir,FALSE,"extflow");
+      scanclimatefilename(input,&config->extflow_filename,config->inputdir,FALSE,"extflow");
       if(config->extflow_filename.fmt!=META && config->extflow_filename.fmt!=CLM && config->extflow_filename.fmt!=CLM2)
       {
         if(isroot(*config))
@@ -668,11 +669,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->withlanduse!=NO_LANDUSE)
     {
-      scanclimatefilename(&input,&config->neighb_irrig_filename,config->inputdir,FALSE,"neighb_irrig");
+      scanclimatefilename(input,&config->neighb_irrig_filename,config->inputdir,FALSE,"neighb_irrig");
       if(config->reservoir)
       {
-        scanclimatefilename(&input,&config->elevation_filename,config->inputdir,FALSE,"elevation");
-        scanfilename(&input,&config->reservoir_filename,config->inputdir,"reservoir");
+        scanclimatefilename(input,&config->elevation_filename,config->inputdir,FALSE,"elevation");
+        scanfilename(input,&config->reservoir_filename,config->inputdir,"reservoir");
       }
 #ifdef IMAGE
       if(config->aquifer_irrig==AQUIFER_IRRIG)
@@ -680,23 +681,23 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 #endif
     }
   }
-  scanclimatefilename(&input,&config->temp_filename,config->inputdir,config->sim_id==LPJML_FMS,"temp");
-  scanclimatefilename(&input,&config->prec_filename,config->inputdir,config->sim_id==LPJML_FMS,"prec");
+  scanclimatefilename(input,&config->temp_filename,config->inputdir,config->sim_id==LPJML_FMS,"temp");
+  scanclimatefilename(input,&config->prec_filename,config->inputdir,config->sim_id==LPJML_FMS,"prec");
   switch(config->with_radiation)
   {
     case RADIATION:
-      scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwnet");
-      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
+      scanclimatefilename(input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwnet");
+      scanclimatefilename(input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
       break;
     case RADIATION_LWDOWN:
-      scanclimatefilename(&input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwdown");
-      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
+      scanclimatefilename(input,&config->lwnet_filename,config->inputdir,config->sim_id==LPJML_FMS,"lwdown");
+      scanclimatefilename(input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
       break;
     case CLOUDINESS:
-      scanclimatefilename(&input,&config->cloud_filename,config->inputdir,config->sim_id==LPJML_FMS,"cloud");
+      scanclimatefilename(input,&config->cloud_filename,config->inputdir,config->sim_id==LPJML_FMS,"cloud");
       break;
     case RADIATION_SWONLY:
-      scanclimatefilename(&input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
+      scanclimatefilename(input,&config->swdown_filename,config->inputdir,config->sim_id==LPJML_FMS,"swdown");
       break;
     default:
       if(verbose)
@@ -707,55 +708,55 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   {
     if(config->with_nitrogen!=UNLIM_NITROGEN && !config->no_ndeposition)
     {
-      scanclimatefilename(&input,&config->no3deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"no3deposition");
-      scanclimatefilename(&input,&config->nh4deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"nh4deposition");
+      scanclimatefilename(input,&config->no3deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"no3deposition");
+      scanclimatefilename(input,&config->nh4deposition_filename,config->inputdir,config->sim_id==LPJML_FMS,"nh4deposition");
     }
     else
       config->no3deposition_filename.name=config->nh4deposition_filename.name=NULL;
-    scanclimatefilename(&input,&config->soilph_filename,config->inputdir,config->sim_id==LPJML_FMS,"soilpH");
+    scanclimatefilename(input,&config->soilph_filename,config->inputdir,config->sim_id==LPJML_FMS,"soilpH");
   }
   else
     config->no3deposition_filename.name=config->nh4deposition_filename.name=config->soilph_filename.name=NULL;
   if((config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX) && config->fdi==WVPD_INDEX)
   {
-    scanclimatefilename(&input,&config->humid_filename,config->inputdir,config->sim_id==LPJML_FMS,"humid");
+    scanclimatefilename(input,&config->humid_filename,config->inputdir,config->sim_id==LPJML_FMS,"humid");
   }
   if(config->with_nitrogen || config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    scanclimatefilename(&input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,"wind");
+    scanclimatefilename(input,&config->wind_filename,config->inputdir,config->sim_id==LPJML_FMS,"wind");
   }
   if(config->fire==SPITFIRE_TMAX || config->cropsheatfrost)
   {
-    scanclimatefilename(&input,&config->tmin_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmin");
-    scanclimatefilename(&input,&config->tmax_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmax");
+    scanclimatefilename(input,&config->tmin_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmin");
+    scanclimatefilename(input,&config->tmax_filename,config->inputdir,config->sim_id==LPJML_FMS,"tmax");
   }
   else
     config->tmax_filename.name=config->tmin_filename.name=NULL;
   if(config->fire==SPITFIRE)
   {
-    scanclimatefilename(&input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,"tamp");
+    scanclimatefilename(input,&config->tamp_filename,config->inputdir,config->sim_id==LPJML_FMS,"tamp");
   }
   else
     config->tamp_filename.name=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX)
   {
-    scanclimatefilename(&input,&config->lightning_filename,config->inputdir,FALSE,"lightning");
-    scanclimatefilename(&input,&config->human_ignition_filename,
+    scanclimatefilename(input,&config->lightning_filename,config->inputdir,FALSE,"lightning");
+    scanclimatefilename(input,&config->human_ignition_filename,
                         config->inputdir,FALSE,"human_ignition");
   }
   if(config->ispopulation)
   {
-    scanclimatefilename(&input,&config->popdens_filename,config->inputdir,FALSE,"popdens");
+    scanclimatefilename(input,&config->popdens_filename,config->inputdir,FALSE,"popdens");
   }
   if(config->prescribe_burntarea)
   {
-    scanclimatefilename(&input,&config->burntarea_filename,config->inputdir,FALSE,"burntarea");
+    scanclimatefilename(input,&config->burntarea_filename,config->inputdir,FALSE,"burntarea");
   }
   if(config->prescribe_landcover!=NO_LANDCOVER)
   {
-    scanclimatefilename(&input,&config->landcover_filename,config->inputdir,FALSE,"landcover");
+    scanclimatefilename(input,&config->landcover_filename,config->inputdir,FALSE,"landcover");
   }
-  if(readfilename(&input,&config->co2_filename,"co2",config->inputdir,FALSE,verbose))
+  if(readfilename(input,&config->co2_filename,"co2",config->inputdir,FALSE,verbose))
   {
     if(verbose)
       fputs("ERROR209: Cannot read filename for 'co2' input.\n",stderr);
@@ -771,7 +772,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
 
   if(israndom==RANDOM_PREC)
   {
-    scanclimatefilename(&input,&config->wet_filename,config->inputdir,config->sim_id==LPJML_FMS,"wetdays");
+    scanclimatefilename(input,&config->wet_filename,config->inputdir,config->sim_id==LPJML_FMS,"wetdays");
   }
 #if defined IMAGE && defined COUPLED
   else if(config->sim_id==LPJML_IMAGE)
@@ -785,9 +786,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     config->wet_filename.name=NULL;
   if(config->wateruse)
   {
-    scanclimatefilename(&input,&config->wateruse_filename,config->inputdir,FALSE,"wateruse");
+    scanclimatefilename(input,&config->wateruse_filename,config->inputdir,FALSE,"wateruse");
 #ifdef IMAGE
-    scanclimatefilename(&input,&config->wateruse_wd_filename,config->inputdir,FALSE,"wateruse_wd");
+    scanclimatefilename(input,&config->wateruse_wd_filename,config->inputdir,FALSE,"wateruse_wd");
 #endif
   }
   else
@@ -801,9 +802,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   if(config->sim_id==LPJML_IMAGE)
   {
     /* reading IMAGE-coupling specific information */
-    scanclimatefilename(&input,&config->temp_var_filename,config->inputdir,FALSE,"temp_var");
-    scanclimatefilename(&input,&config->prec_var_filename,config->inputdir,FALSE,"prec_var");
-    scanclimatefilename(&input,&config->prodpool_init_filename,config->inputdir,FALSE,"prodpool_init");
+    scanclimatefilename(input,&config->temp_var_filename,config->inputdir,FALSE,"temp_var");
+    scanclimatefilename(input,&config->prec_var_filename,config->inputdir,FALSE,"prec_var");
+    scanclimatefilename(input,&config->prodpool_init_filename,config->inputdir,FALSE,"prodpool_init");
   }
 #endif
 

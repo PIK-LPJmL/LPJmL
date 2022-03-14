@@ -18,17 +18,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#ifdef USE_JSON
 #include <json-c/json.h>
-#endif
 #include "types.h"
 
 Bool isnull(const LPJfile *file /**< pointer to a LPJ file             */
            )                    /** \return TRUE if JSON object is null */
 {
-#ifdef USE_JSON
-  return json_object_get_type(file->file.obj)==json_type_null;
-#else
-  return FALSE;
-#endif
+  return json_object_get_type(file)==json_type_null;
 } /* of 'isnull' */

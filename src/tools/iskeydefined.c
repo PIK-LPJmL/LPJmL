@@ -17,18 +17,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#ifdef USE_JSON
 #include <json-c/json.h>
-#endif
 #include "types.h"
 
 Bool iskeydefined(const LPJfile *file, /**< pointer to LPJ file */
                   const char *name     /**< variable name */
                  )                     /** \return TRUE if variable name exists */ 
 {
-#ifdef USE_JSON
-  return (file->isjson && json_object_object_get_ex(file->file.obj,name,NULL));
-#else
-  return FALSE; /* feature is not supported for old '*.conf' files */
-#endif
+  return (json_object_object_get_ex(file,name,NULL));
 } /* of 'iskeydefined' */

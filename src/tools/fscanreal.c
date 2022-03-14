@@ -18,9 +18,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#ifdef USE_JSON
 #include <json-c/json.h>
-#endif
 #include "types.h"
 
 Bool fscanreal(LPJfile *file,    /**< pointer to a LPJ file             */
@@ -30,47 +28,49 @@ Bool fscanreal(LPJfile *file,    /**< pointer to a LPJ file             */
                Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
               )                  /** \return TRUE on error              */
 {
+  struct json_object *item;
+  if(!json_object_object_get_ex(file,name,&item))
+  {
+    if(with_default)
+    {
+      if(verb)
+        fprintf(stderr,"WARNING027: Name '%s' for real not found, set to %g.\n",name,*val);
+        return FALSE;
+    }
+    else
+    {
+      if(verb)
+        fprintf(stderr,"ERROR225: Name '%s' for real not found.\n",name);
+      return TRUE;
+    }
+  }
+  if(json_object_get_type(item)!=json_type_double)
+  {
+    if(json_object_get_type(item)!=json_type_int)
+    {
+      if(verb)
+        fprintf(stderr,"ERROR226: Type of '%s' is not real.\n",name);
+      return TRUE;
+    }
+    *val=json_object_get_int(item);
+  }
+  else
+    *val=json_object_get_double(item);
+  if (verb >= VERB)
+    printf("\"%s\" : %g\n",name,*val);
+  return FALSE;
+}
+Bool ffscanreal(FILE *file,    /**< pointer to a LPJ file             */
+               Real *val,        /**< real value read from file         */
+               const char *name, /**< name of variable                  */
+               Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
+              )                  /** \return TRUE on error              */
+{
   double x;
   Bool rc;
   String line,token;
   char *ptr;
-#ifdef USE_JSON
-  struct json_object *item;
-  if(file->isjson)
-  {
-    if(!json_object_object_get_ex(file->file.obj,name,&item))
-    {
-      if(with_default)
-      {
-        if(verb)
-          fprintf(stderr,"WARNING027: Name '%s' for real not found, set to %g.\n",name,*val);
-        return FALSE;
-      }
-      else
-      {
-        if(verb)
-          fprintf(stderr,"ERROR225: Name '%s' for real not found.\n",name);
-        return TRUE;
-      }
-    }
-    if(json_object_get_type(item)!=json_type_double)
-    {
-      if(json_object_get_type(item)!=json_type_int)
-      {
-        if(verb)
-          fprintf(stderr,"ERROR226: Type of '%s' is not real.\n",name);
-        return TRUE;
-      }
-      *val=json_object_get_int(item);
-    }
-    else
-      *val=json_object_get_double(item);
-    if (verb >= VERB)
-      printf("\"%s\" : %g\n",name,*val);
-    return FALSE;
-  }
-#endif
-  rc=fscantoken(file->file.file,token);
+  rc=fscantoken(file,token);
   if(!rc)
   {
      x=strtod(token,&ptr);
@@ -86,7 +86,7 @@ Bool fscanreal(LPJfile *file,    /**< pointer to a LPJ file             */
       {
         fputs("read:\n",stderr);
 
-        if(fgets(line,STRING_LEN,file->file.file)!=NULL)
+        if(fgets(line,STRING_LEN,file)!=NULL)
           line[strlen(line)-1]='\0';
         else
           line[0]='\0';

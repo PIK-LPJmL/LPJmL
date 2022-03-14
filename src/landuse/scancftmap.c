@@ -52,7 +52,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
                )                     /** \return CFT map array or NULL on error */
 {
   Bool *undef;
-  LPJfile array,item;
+  LPJfile *array,*item;
   int *cftmap;
   Verbosity verbose;
   String s;
@@ -61,7 +61,8 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
   if(iskeydefined(file,name))
   {
     verbose=(isroot(*config)) ? config->scan_verbose : NO_ERR;
-    if(fscanarray(file,&array,size,FALSE,name,verbose))
+    array=fscanarray(file,size,name,verbose);
+    if(array==NULL)
       return NULL;
     cftmap=newvec(int,*size);
     if(cftmap==NULL)
@@ -83,13 +84,13 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
         undef[cft]=TRUE;
     for(cft=0;cft<*size;cft++)
     {
-      fscanarrayindex(&array,&item,cft,verbose);
-      if(isnull(&item))
+      item=fscanarrayindex(array,cft,verbose);
+      if(isnull(item))
       {
         cftmap[cft]=NOT_FOUND;
         continue;
       }
-      if(!isstring(&item,NULL))
+      if(!isstring(item,NULL))
       {
         if(verbose)
           fprintf(stderr,"ERROR226: Datatype of element %d in map '%s' is not of type string.\n",
@@ -97,7 +98,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
         free(cftmap);
         return NULL;
       }
-      if(fscanstring(&item,s,NULL,FALSE,verbose))
+      if(fscanstring(item,s,NULL,FALSE,verbose))
       {
         free(cftmap);
         return NULL;

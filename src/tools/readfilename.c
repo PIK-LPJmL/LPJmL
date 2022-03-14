@@ -27,11 +27,12 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
                   Verbosity verb      /**< verbosity level (NO_ERR,ERR,VERB) */
                  )                    /** \return TRUE on error */
 {
-  LPJfile f;
+  LPJfile *f;
   String name;
-  if(fscanstruct(file,&f,key,verb))
+  f=fscanstruct(file,key,verb);
+  if(f==NULL)
     return TRUE;
-  if(fscankeywords(&f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
+  if(fscankeywords(f,&filename->fmt,"fmt",fmt,N_FMT,FALSE,verb))
     return TRUE;
   if(filename->fmt==FMS)
   {
@@ -43,7 +44,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   }
   if(isvar && filename->fmt==CDF)
   {
-    if(fscanstring(&f,name,"var",FALSE,verb))
+    if(fscanstring(f,name,"var",FALSE,verb))
     {
       if(verb)
         readstringerr("variable");
@@ -58,9 +59,9 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
         return TRUE;
       }
     }
-    if(iskeydefined(&f,"time"))
+    if(iskeydefined(f,"time"))
     {
-      if(fscanstring(&f,name,"time",FALSE,verb))
+      if(fscanstring(f,name,"time",FALSE,verb))
       {
         if(verb)
           readstringerr("time");
@@ -81,9 +82,9 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   }
   else
   {
-    if(iskeydefined(&f,"var"))
+    if(iskeydefined(f,"var"))
     {
-      if(fscanstring(&f,name,"var",FALSE,verb))
+      if(fscanstring(f,name,"var",FALSE,verb))
       {
         if(verb)
           readstringerr("variable");
@@ -101,10 +102,10 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     }
     else
       filename->var=NULL;
-    if(iskeydefined(&f,"scale"))
+    if(iskeydefined(f,"scale"))
     {
       filename->isscale=TRUE;
-      if(fscanreal(&f,&filename->scale,"scale",FALSE,verb))
+      if(fscanreal(f,&filename->scale,"scale",FALSE,verb))
       {
         if(verb)
           readstringerr("scale");
@@ -121,7 +122,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       filename->isscale=FALSE;
     filename->time=NULL;
   }
-  if(fscanstring(&f,name,"name",FALSE,verb))
+  if(fscanstring(f,name,"name",FALSE,verb))
   {
     if(verb)
       readstringerr("filename");
@@ -135,17 +136,17 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     free(filename->var);
     return TRUE;
   }
-  if(iskeydefined(&f,"metafile"))
+  if(iskeydefined(f,"metafile"))
   {
-    if(fscanbool(&f,&filename->meta,"metafile",FALSE,verb))
+    if(fscanbool(f,&filename->meta,"metafile",FALSE,verb))
     {
       free(filename->var);
       return TRUE;
     }
   }
-  if(iskeydefined(&f,"version"))
+  if(iskeydefined(f,"version"))
   {
-    if(fscanint(&f,&filename->version,"version",FALSE,verb))
+    if(fscanint(f,&filename->version,"version",FALSE,verb))
     {
       free(filename->var);
       return TRUE;
@@ -160,9 +161,9 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     }
 
   }
-  if(iskeydefined(&f,"unit"))
+  if(iskeydefined(f,"unit"))
   {
-    if(fscanstring(&f,name,"unit",FALSE,verb))
+    if(fscanstring(f,name,"unit",FALSE,verb))
     {
       if(verb)
         readstringerr("unit");
@@ -180,9 +181,9 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   }
   else
     filename->unit=NULL;
-  if(iskeydefined(&f,"timestep"))
+  if(iskeydefined(f,"timestep"))
   {
-    if(fscantimestep(&f,&filename->timestep,verb))
+    if(fscantimestep(f,&filename->timestep,verb))
     {
       if(verb)
         fputs("ERROR229: Cannot read int 'timestep'.\n",stderr);
