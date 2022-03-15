@@ -371,9 +371,17 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
       pft->ncleaf.median=1/cnratio.median;
       pft->ncleaf.low=1/cnratio.high;
       pft->ncleaf.high=1/cnratio.low;
+    
+      fscanpftlimit(verb,&item,&pft->temp_bnf_lim,pft->name,"temp_bnf_lim");
+      fscanpftlimit(verb,&item,&pft->temp_bnf_opt,pft->name,"temp_bnf_opt");
+      fscanpftlimit(verb,&item,&pft->swc_bnf,pft->name,"swc_bnf");
+      fscanpftrealarray(verb,&item,pft->phi_bnf,2,pft->name,"phi_bnf");
+      fscanreal(verb,&item,&pft->nfixpot,pft->name,"nfixpot");
+      fscanreal(verb,&item,&pft->maxbnfcost,pft->name,"maxbnfcost");
     }
     else
       pft->fn_turnover=0;
+    
     fscanpftreal(verb,&item,&pft->windspeed,pft->name,"windspeed_dampening");
     fscanpftreal(verb,&item,&pft->roughness,pft->name,
                  "roughness_length");

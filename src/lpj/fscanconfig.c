@@ -238,6 +238,7 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->black_fallow=FALSE;
   config->double_harvest=FALSE;
   config->others_to_crop = FALSE;
+  config->ma_bnf = FALSE;
   config->soilpar_option=NO_FIXED_SOILPAR;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))
     return TRUE;
@@ -343,6 +344,8 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
       if(fscanbool(file,&config->residues_fire,"residues_fire",TRUE,verbose))
         return TRUE;
       if(fscanbool(file,&config->rw_manage,"rw_manage",TRUE,verbose))
+        return TRUE;
+      if(fscanbool(file,&config->ma_bnf,"ma_bnf",TRUE,verbose))
         return TRUE;
       if(fscankeywords(file,&config->laimax_interpolate,"laimax_interpolate",laimax_interpolate,4,FALSE,verbose))
         return TRUE;
