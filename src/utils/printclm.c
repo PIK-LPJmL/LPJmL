@@ -132,7 +132,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     printheader(&header);
     if(map!=NULL)
     {
-      printf("Map: ");
+      printf("%s: ",MAP_NAME);
       printmap(map);
       printf("\n");
       freemap(map);

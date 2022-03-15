@@ -28,8 +28,8 @@ int *getsoilmap(List *map,           /**< pointer to String array */
   if(isempty(map))
   {
     if(verbose)
-      fprintf(stderr,"ERROR255: Size of 'map' array in '%s' must not be zero.\n",
-             config->soil_filename.name);
+      fprintf(stderr,"ERROR255: Size of '%s' array in '%s' must not be zero.\n",
+              MAP_NAME,config->soil_filename.name);
     return NULL;
   }
   soilmap=newvec(int,getlistlen(map));
@@ -84,8 +84,8 @@ int *getsoilmap(List *map,           /**< pointer to String array */
       {
         if(first)
         {
-          fprintf(stderr,"WARNING036: 'map' not defined in '%s' for soil type",
-                  config->soil_filename.name);
+          fprintf(stderr,"WARNING036: '%s' not defined in '%s' for soil type",
+                  MAP_NAME,config->soil_filename.name);
           first=FALSE;
         }
         else
