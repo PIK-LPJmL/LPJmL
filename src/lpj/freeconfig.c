@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-static void freefilename(Filename *filename)
+void freefilename(Filename *filename)
 {
   free(filename->name);
   free(filename->var);
