@@ -19,6 +19,7 @@
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
   "soil_infil" : 2.0,        /* default soil infiltration */
+  "soil_infil_litter" : 2.0, /* soil infiltration intensification by litter cover*/
   "co2_p" : 278.0,           /* pre-industrial CO2 (ppmv) */
   "lgm_co2" : 180,           /* LGM CO2 (ppmv) */
   "ch4_p" :  801,            /* pre-industrial atmospheric CH4 (ppb) */
