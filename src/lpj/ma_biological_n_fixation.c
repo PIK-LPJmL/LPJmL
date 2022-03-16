@@ -23,6 +23,7 @@ Real ma_biological_n_fixation(Pft *pft,             /**< PFT */
   Real rootdist_n[LASTLAYER];
   Real bnf=0.0;
   Real npp_requ=0.0;
+  Real max_cost=0.0;
   int l;
   if(config->permafrost)
     getrootdist(rootdist_n,pft->par->rootdist,soil->mean_maxthaw);
@@ -35,10 +36,11 @@ Real ma_biological_n_fixation(Pft *pft,             /**< PFT */
   if(bnf > n_deficit)
     bnf = n_deficit;
   npp_requ = 6*bnf;
-  if(npp_requ > (pft->npp_bnf*pft->par->maxbnfcost))
+  max_cost = pft->npp_bnf*pft->par->maxbnfcost*(iscrop(pft) ? 1-((Pftcrop *)pft->data)->fphu : 1);
+  if(npp_requ > max_cost)
   {
-    npp_requ = pft->npp_bnf*pft->par->maxbnfcost;
-    bnf =  pft->npp_bnf*pft->par->maxbnfcost / 6;
+    npp_requ = max_cost;
+    bnf =  max_cost / 6;
   }
   pft->npp_bnf=npp_requ;//overwrite npp_bnf to contain npp required for bnf instead of assimilated npp
   return(bnf);
