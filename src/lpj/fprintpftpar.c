@@ -125,20 +125,23 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                  "CNleaf:\t\t%g %g %g\n"
                  "kNstore:\t%g\n"
                  "fN_turnover:\t%g\n"
-                 "N fixing:\t%s\n"
-                 "temp_bnf_lim:\t%g %g\n"
+                 "N fixing:\t%s\n",
+            pftpar->vmax_up,pftpar->kNmin,pftpar->KNmin,1/pftpar->ncleaf.high,
+            1/pftpar->ncleaf.median,1/pftpar->ncleaf.low,pftpar->knstore,
+            pftpar->fn_turnover,bool2str(pftpar->nfixing));
+  if(pftpar->nfixing)
+  {
+    fprintf(file,"temp_bnf_lim:\t%g %g\n"
                  "temp_bnf_opt:\t%g %g\n"
                  "swc_bnf:\t%g %g\n"
                  "phi_bnf:\t%g %g\n"
                  "nfixpot:\t%g\n"
                  "maxbnfcost:\t%g %g\n",
-            pftpar->vmax_up,pftpar->kNmin,pftpar->KNmin,1/pftpar->ncleaf.high,
-            1/pftpar->ncleaf.median,1/pftpar->ncleaf.low,pftpar->knstore,
-            pftpar->fn_turnover,bool2str(pftpar->nfixing),
             pftpar->temp_bnf_lim.low, pftpar->temp_bnf_lim.high,
             pftpar->temp_bnf_opt.low, pftpar->temp_bnf_opt.high,
             pftpar->swc_bnf.low, pftpar->swc_bnf.high,
             pftpar->phi_bnf[0], pftpar->phi_bnf[1], pftpar->nfixpot,
             pftpar->maxbnfcost);
+  }
   pftpar->fprintpar(file,pftpar,config); /* call type-specific print function */
 } /* of 'fprintpftpar' */

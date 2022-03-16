@@ -377,8 +377,8 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
         fscanpftlimit(verb,&item,&pft->temp_bnf_opt,pft->name,"temp_bnf_opt");
         fscanpftlimit(verb,&item,&pft->swc_bnf,pft->name,"swc_bnf");
         fscanpftrealarray(verb,&item,pft->phi_bnf,2,pft->name,"phi_bnf");
-        fscanreal(verb,&item,&pft->nfixpot,pft->name,"nfixpot");
-        fscanreal(verb,&item,&pft->maxbnfcost,pft->name,"maxbnfcost");
+        fscanpftreal(verb,&item,&pft->nfixpot,pft->name,"nfixpot");
+        fscanpftreal(verb,&item,&pft->maxbnfcost,pft->name,"maxbnfcost");
       }
     }
     else
