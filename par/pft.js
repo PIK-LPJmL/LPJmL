@@ -43,7 +43,7 @@
 #endif
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.3      /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV_BR 0.7   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_EV_BR 0.6   /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV 0.8   /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_GR 0.3   /* fraction of N not recovered before turnover */
 #define ALPHAA_NITROGEN 0.5  /* alphaa for simulations with nitrogen limitation */
@@ -363,7 +363,7 @@
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_EG_MN, "median" : CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
     "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
+    "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
     "ist_m" : -0.2,             /* inundation stress threshold [m] */
@@ -830,11 +830,11 @@
     "beta_root" : 0.955,     /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.3,          /* gmin 4*/
-    "respcoeff" : 1.2,      /* respcoeff 5*/
+    "respcoeff" : 0.8,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
-    "resist" : 0.15,        /* resist 8*/
+    "resist" : 0.2,        /* resist 8*/
     "longevity" : 0.65,     /* leaf longevity 10*/
-    "sla" : 0.02118,        /* specific leaf area */
+    "sla" : 0.01549,        /* specific leaf area 0.02118*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
     "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 200.0,          /* ramp 19*/
@@ -909,7 +909,7 @@
     "crownarea_max" : 20.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
     "aphen_min" : 10,
-    "aphen_max" : 200,
+    "aphen_max" : 245,
     "reprod_cost" : REPROD_COST, /* reproduction cost */
     "allom1" : ALLOM1,      /* allometry */
     "allom2" : ALLOM2,

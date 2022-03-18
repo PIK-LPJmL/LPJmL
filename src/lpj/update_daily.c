@@ -104,7 +104,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       stand->soil.litter.item[l].ag.leaf.nitrogen *= (1 - param.bioturbate);
     }
 
-    if(stand->type->landusetype==NATURAL && config->black_fallow && (day==152 || day==335))
+    if((stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND) && (config->black_fallow && (day==152 || day==335)))
     {
       if(config->prescribe_residues && param.residue_rate>0 && param.residue_pool<=0)
       {
@@ -225,7 +225,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
 
-    if(stand->type->landusetype==NATURAL)
+    if(stand->type->landusetype==NATURAL  || stand->type->landusetype==WETLAND)
       for(l=0;l<stand->soil.litter.n;l++)
       {
         litsum_old_nv[LEAF]+=stand->soil.litter.item[l].ag.leaf.carbon+stand->soil.litter.item[l].agsub.leaf.carbon+stand->soil.litter.item[l].bg.carbon;
@@ -247,7 +247,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,N2O_DENIT,config)+=hetres.nitrogen*stand->frac;
     cell->balance.n_outflux+=hetres.nitrogen*stand->frac;
 
-    if(stand->type->landusetype==NATURAL)
+    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
       for(l=0;l<stand->soil.litter.n;l++)
       {
         litsum_new_nv[LEAF]+=stand->soil.litter.item[l].ag.leaf.carbon+stand->soil.litter.item[l].agsub.leaf.carbon+stand->soil.litter.item[l].bg.carbon;
@@ -262,7 +262,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
           litsum_new_agr[WOOD]+=stand->soil.litter.item[l].ag.wood[i].carbon+stand->soil.litter.item[l].agsub.wood[i].carbon;
       }
 
-    if(stand->type->landusetype==NATURAL && config->black_fallow && config->prescribe_residues && param.residue_pool>0)
+    if((stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND) && config->black_fallow && config->prescribe_residues && param.residue_pool>0)
     {
       index=findlitter(&stand->soil.litter,config->pftpar+config->pft_residue);
       if(index==NOT_FOUND)
@@ -293,7 +293,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,N2O_NIT,config)+=hetres.nitrogen*stand->frac;
     cell->output.dcflux+=hetres.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
-    if (stand->type->landusetype == NATURAL)
+    if (stand->type->landusetype == NATURAL || stand->type->landusetype ==WETLAND )
     {
       cell->rh_nat += hetres.carbon*stand->frac;
     } /* if NATURAL */

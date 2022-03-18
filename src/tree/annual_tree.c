@@ -49,7 +49,7 @@ Bool annual_tree(Stand *stand,       /**< pointer to stand */
   {
     isdead=mortality_tree(&stand->soil.litter,pft,turnover_ind.carbon,
                           stand->cell->climbuf.temp_max,isdaily,config);
-  if (!(pft->stand->prescribe_landcover==LANDCOVERFPC && pft->stand->type->landusetype==NATURAL) &&
+  if (!(pft->stand->prescribe_landcover==LANDCOVERFPC && (pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==WETLAND)) &&
       !isdead)  /* still not dead? */
       isdead=!survive(pft->par,&stand->cell->climbuf);
   }

@@ -156,7 +156,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
     stand->cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*stand->frac;
     stand->cell->output.dcflux-=flux_estab.carbon*stand->frac;
 #if defined IMAGE && defined COUPLED
-    if(stand->type->landusetype==NATURAL)
+    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
       stand->cell->flux_estab_nat+=flux_estab.carbon*stand->frac;
 #endif
   }
@@ -172,7 +172,7 @@ Bool annual_natural(Stand *stand,         /**< Pointer to stand */
   foreachpft(pft,p,&stand->pftlist)
   {
     /* if land cover is prescribed: reduce FPC and Nind of PFT if observed value is exceeded */
-    if(stand->prescribe_landcover == LANDCOVERFPC && stand->type->landusetype==NATURAL)
+    if(stand->prescribe_landcover == LANDCOVERFPC && (stand->type->landusetype==NATURAL ||stand->type->landusetype==WETLAND))
     {
       fpc_obs = stand->cell->landcover[pft->par->id];
       /* correct prescribed observed FPC value by fraction of natural vegetation stand to reach prescribed value */

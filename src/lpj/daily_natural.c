@@ -177,7 +177,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     }
     output->dcflux-=npp*stand->frac;
 #if defined IMAGE && defined COUPLED
-    if(stand->type->landusetype==NATURAL)
+    if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
     {
       stand->cell->npp_nat+=npp*stand->frac;
     }
@@ -197,7 +197,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
     getoutput(output,WSCAL,config)      += pft->fpc * pft->wscal * stand->frac * (1.0/(1-stand->cell->lakefrac-stand->cell->ml.reservoirfrac));
 
 
-    if(pft->stand->type->landusetype==NATURAL)
+    if(pft->stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
     {
       if(config->pft_output_scaled)
         getoutputindex(output,PFT_NPP,pft->par->id,config)+=npp*stand->frac;
@@ -267,7 +267,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   if(stand->cell->ml.image_data!=NULL)
     stand->cell->ml.image_data->mevapotr[month] += transp + (evap + intercep_stand)*stand->frac;
 #endif
-  if(stand->type->landusetype==NATURAL)
+  if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
     foreachpft(pft, p, &stand->pftlist)
     {
       getoutputindex(output,NV_LAI,getpftpar(pft,id),config)+=actual_lai(pft);

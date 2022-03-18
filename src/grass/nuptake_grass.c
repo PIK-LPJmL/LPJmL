@@ -155,7 +155,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   n_uptake+=n_upfail;
   switch(pft->stand->type->landusetype)
   {
-  case NATURAL: case SETASIDE_RF: case SETASIDE_IR:
+  case NATURAL: case SETASIDE_RF: case SETASIDE_IR: case WETLAND:
     getoutputindex(&pft->stand->cell->output,PFT_NUPTAKE,pft->par->id,config)+=n_uptake;
     getoutputindex(&pft->stand->cell->output,PFT_NDEMAND,pft->par->id,config)+=max(0,ndemand_all-(vegn_sum_grass(pft)+pft->bm_inc.carbon))/365;
     break;

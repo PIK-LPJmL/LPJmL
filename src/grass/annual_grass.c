@@ -41,7 +41,7 @@ Bool annual_grass(Stand *stand,        /**< pointer to stand */
   if (pft->inun_count>pft->par->inun_dur)
     stress = pft->inun_count / pft->par->inun_dur;
   if (stress>3) isdead = TRUE;
-  if (!(pft->stand->prescribe_landcover==LANDCOVERFPC && pft->stand->type->landusetype==NATURAL) &&
+  if (!(pft->stand->prescribe_landcover==LANDCOVERFPC && (pft->stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)) &&
       !isdead)  /* still not dead? */
     isdead=!survive(pft->par,&stand->cell->climbuf);
 #ifdef CHECK_BALANCE

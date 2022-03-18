@@ -49,7 +49,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
           mort_max=pft->par->mort_max;
 
       /* switch off background mortality in case of prescribed land cover */
-      if (pft->stand->prescribe_landcover==LANDCOVERFPC && pft->stand->type->landusetype==NATURAL)
+      if (pft->stand->prescribe_landcover==LANDCOVERFPC && (pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==WETLAND))
           mort = 0.0;
       else if(tree->ind.leaf.carbon>0)
           mort=mort_max/(1+param.k_mort*bm_delta/tree->ind.leaf.carbon/pft->par->sla);
@@ -70,7 +70,7 @@ Bool mortality_tree(Litter *litter,   /**< Litter                              *
           pft->bm_inc.nitrogen*=(pft->nind-nind_kill)/pft->nind;
       pft->nind-=nind_kill;
       fpc_tree(pft);
-      if(pft->stand->type->landusetype==NATURAL)
+      if(pft->stand->type->landusetype==NATURAL || pft->stand->type->landusetype==WETLAND)
           getoutputindex(&pft->stand->cell->output,PFT_MORT,pft->par->id,config)+=min(mort,1);
   }
   return isneg_tree(pft);

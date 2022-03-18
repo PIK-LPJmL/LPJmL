@@ -327,7 +327,7 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
 #endif
       foreachstand(stand,s,grid[cell].standlist)
       {
-        if(stand->type->landusetype==NATURAL)
+        if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
         {
           biome_image[cell]=biome_classification(avgtemp(climate,cell),npp_image[cell],stand,npft);
         } /* if NATURAL */
@@ -396,7 +396,7 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
       natfrac=0.0;
       foreachstand(stand,s,grid[cell].standlist)
       {
-        if(stand->type->landusetype==NATURAL)
+        if(stand->type->landusetype==NATURAL || stand->type->landusetype==WETLAND)
         {
           foreachpft(pft,p,&stand->pftlist)
             switch(pft->par->type)
@@ -488,7 +488,7 @@ Bool send_image_data(const Cell grid[],      /**< LPJ grid */
       agrfrac=0.0;
       foreachstand(stand,s,grid[cell].standlist)
       {
-        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION)
+        if(stand->type->landusetype!=NATURAL && stand->type->landusetype!=WOODPLANTATION && stand->type->landusetype!=WETLAND)
         {
           foreachpft(pft,p,&stand->pftlist)
           switch(pft->par->type)

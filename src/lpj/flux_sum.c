@@ -71,6 +71,7 @@ Real flux_sum(Flux *flux_global,   /**< global carbon and water fluxes */
       flux.area_agr+=(grid[cell].ml.cropfrac_rf+grid[cell].ml.cropfrac_ir)*grid[cell].coord.area;
       foreachstand(stand,s,grid[cell].standlist)
       {
+        flux.litc+=(litter_ag_sum(&stand->soil.litter)+litter_agsub_sum(&stand->soil.litter))*stand->frac*grid[cell].coord.area;
         for (p = 0; p<stand->soil.litter.n; p++)
           flux.soilc+=stand->soil.litter.item[p].bg.carbon*stand->frac*grid[cell].coord.area;
         forrootsoillayer(l)

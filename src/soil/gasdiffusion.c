@@ -73,7 +73,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
       //fflush(stdout);
       V = 0;
     }
-    D_O2[l] = (D_O2_air*V + D_O2_water*soil_moist*soil->wsat[l]*BO2)*eta;  // Gleichung 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
+    D_O2[l]=(D_O2_air*V + D_O2_water*soil_moist*soil->wsat[l]*BO2)*eta;  // Gleichung 11 in Khvorostyanov part 1 diffusivity (m2 s-1)
     if (D_O2[l]>epsilon)
     {
       if (l == 0)
@@ -98,7 +98,7 @@ void gasdiffusion(Soil *soil,    /**< [inout] pointer to soil data */
       {
         dO2 = 0.5*(D_O2[l] + ((l == 0) ? D_O2[0] : D_O2[l - 1]))*timestep2sec(1.0, steps) / (soildepth[l] * soildepth[l] * 1e-6)
           *(O2_upper - soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000);
-        if (dO2>0 && (soil->O2[l - 1] - dO2*soildepth[l] * epsilon_O2[l] / 1000)<soil->O2[l] / soildepth[l] / epsilon_O2[l] * 1000 && l>0)
+        if(dO2>0 && (soil->O2[l-1]-dO2*soildepth[l]*epsilon_O2[l]/1000)<soil->O2[l]/soildepth[l]/epsilon_O2[l]*1000 && l>0)
         {
           soil->O2[l - 1] -= dO2*(soildepth[l - 1] * epsilon_O2[l - 1]) / (soildepth[l] * epsilon_O2[l])*(soildepth[l] * epsilon_O2[l]) / 1000;
           dO2 = dO2*(soildepth[l - 1] * epsilon_O2[l - 1]) / (soildepth[l] * epsilon_O2[l]);

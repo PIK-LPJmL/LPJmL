@@ -26,7 +26,7 @@ void turnover_daily_grass(Litter *litter,
   Pftgrass *grass;
   Pftgrasspar *grasspar;
   Output *output;
-  if(pft->stand->type->landusetype==NATURAL)
+  if(pft->stand->type->landusetype==NATURAL  || pft->stand->type->landusetype==WETLAND)
   {
     grass=pft->data;
     grasspar=pft->par->data;

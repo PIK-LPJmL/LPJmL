@@ -811,7 +811,7 @@ void fwriteoutput(Outputfile *output,  /**< output file array */
         {
           foreachstand(stand,s,grid[cell].standlist)
           /* if(stand->type->landusetype==NATURAL) */
-            getoutput(&grid[cell].output,LITC,config)+=litter_ag_sum(&stand->soil.litter)*stand->frac;
+            getoutput(&grid[cell].output,LITC,config)+=(litter_ag_sum(&stand->soil.litter) + litter_agsub_sum(&stand->soil.litter))*stand->frac;
         }
     }
     writeoutputvar(LITC,1);

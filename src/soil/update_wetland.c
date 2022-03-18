@@ -350,8 +350,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
       if (iswetland && wetstand->frac>0.001 && cell->slope>epsilon && (fabs(cell->slope_min - cell->slope_max)>epsilon))
       {
         lambda = 1 / cell->slope;
-        slope_max = log(1 - wetstand->frac - epsilon) / (-1 / lambda);
-        slope_max /= -(exp(-lambda*cell->slope_max) - exp(-lambda*cell->slope_min));
+        slope_max=log(1 - wetstand->frac - epsilon) / (-1 / lambda);
+        slope_max/=-(exp(-lambda*cell->slope_max) - exp(-lambda*cell->slope_min));
         if (slope_max<cell->slope_min)
         {
           slope_max = cell->slope_min;
