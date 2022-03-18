@@ -28,13 +28,13 @@ void fprintsoilpar(FILE *file,          /**< pointer to text file */
   for(i=0;i<NFUELCLASS;i++)
     fprintf(file," %g",fbd_fac[i]);
   fputs("\nName               %sand  %silt %clay ",file);
-  if(config-soilpar_option==PRESCRIBED_SOILPAR)
+  if(config->soilpar_option==PRESCRIBED_SOILPAR)
     fputs("w_pwp  w_fc  w_sat ",file);
   fputs("hsg tdiff0 tdiff15 tdiff100 condpwp cond100 cond100ice psi_sat b      efold ctimax",file);
   if(config->with_nitrogen)
     fputs(" a_nit   b_nit   c_nit   d_nit   anion_excl cn_ratio",file);
   fputs("\n------------------ ------ ----- -----",file);
-  if(soilpar_option==PRESCRIBED_SOILPAR)
+  if(config->soilpar_option==PRESCRIBED_SOILPAR)
     fputs(" ------ ----- -----",file);
   fputs(" --- ------ ------- -------- ------- ------- ---------- ------- ------ ----- ------",file);
   if(config->with_nitrogen)
