@@ -256,7 +256,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
           /*percolation*/
           if((soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)>epsilon/soil->whcs[l])
           {
-            HC=soil->par->Ks*pow(((soil->w[l]*soil->whcs[l]+inactive_water[l])/soil->wsats[l]),soil->beta_soil[l]);
+            HC=soil->Ks[l]*pow(((soil->w[l]*soil->whcs[l]+inactive_water[l])/soil->wsats[l]),soil->beta_soil[l]);
             TT=((soil->w[l]-1)*soil->whcs[l]+soil->ice_depth[l])/HC;
             perc=((soil->w[l]-1)*soil->whcs[l]+soil->ice_depth[l])*(1-exp(-24/TT));
             //printf("HC=%g,TT=%g,perc=%h\n",HC,TT,perc);

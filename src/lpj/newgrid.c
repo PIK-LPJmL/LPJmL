@@ -768,7 +768,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           stand->frac=1-grid[i].lakefrac;
           stand->Hag_Beta = grid[i].Hag_beta;
           stand->slope_mean = grid[i].slope;
-          if(initsoil(stand,config->soilpar+soil_id,npft+ncft,config->with_nitrogen))
+          if(initsoil(stand,config->soilpar+soil_id,npft+ncft,config))
             return NULL;
           for(l=0;l<FRACGLAYER;l++)
             stand->frac_g[l]=1.0;

@@ -16,10 +16,8 @@
 
 #include "lpj.h"
 
-void fprintsoilpar(FILE *file,              /**< pointer to ASCII file */
-                   const Soilpar soilpar[], /**< soil parameter array */
-                   int nsoil,               /**< number of soil types */
-                   int with_nitrogen        /**< with nitrogen cycle */
+void fprintsoilpar(FILE *file,          /**< pointer to text file */
+                   const Config *config /**< LPJmL configuration */
                   )
 {
   int i;
@@ -29,28 +27,42 @@ void fprintsoilpar(FILE *file,              /**< pointer to ASCII file */
   fputs(" (mm)\nfbd factors:\t",file);
   for(i=0;i<NFUELCLASS;i++)
     fprintf(file," %g",fbd_fac[i]);
-  fputs("\nName               %sand  %silt %clay hsg tdiff0 tdiff15 tdiff100 condpwp cond100 cond100ice psi_sat b      efold ctimax",file);
-  if(with_nitrogen)
+  fputs("\nName               %sand  %silt %clay ",file);
+  if(config-soilpar_option==PRESCRIBED_SOILPAR)
+    fputs("w_pwp  w_fc  w_sat ",file);
+  fputs("hsg tdiff0 tdiff15 tdiff100 condpwp cond100 cond100ice psi_sat b      efold ctimax",file);
+  if(config->with_nitrogen)
     fputs(" a_nit   b_nit   c_nit   d_nit   anion_excl cn_ratio",file);
-  fputs("\n------------------ ------ ----- ----- --- ------ ------- -------- ------- ------- ---------- ------- ------ ----- ------",file);
-  if(with_nitrogen)
+  fputs("\n------------------ ------ ----- -----",file);
+  if(soilpar_option==PRESCRIBED_SOILPAR)
+    fputs(" ------ ----- -----",file);
+  fputs(" --- ------ ------- -------- ------- ------- ---------- ------- ------ ----- ------",file);
+  if(config->with_nitrogen)
     fputs(" ------- ------- ------- ------- ---------- --------\n",file);
   else
     fputc('\n',file);
-  for(i=0;i<nsoil;i++)
+  for(i=0;i<config->nsoil;i++)
   {
-    fprintf(file,"%18s %6.2f %5.2f %5.2f %3d %6.3f %7.3f %8.3f %7.3f %7.3f %10.3f %7.3f %6.3f %5.2f %6.3f",
-            soilpar[i].name,soilpar[i].sand,soilpar[i].silt,soilpar[i].clay,
+    fprintf(file,"%18s %6.2f %5.2f %5.2f",
+            soilpar[i].name,soilpar[i].sand,soilpar[i].silt,soilpar[i].clay);
+    if(soilpar_option==PRESCRIBED_SOILPAR)
+      fprintf(file,"%6.2f %5.2f %5.2f",
+              soilpar[i].wpwp,soilpar[i].wfc,soilpar[i].wsat);
+    fprintf(file," %3d %6.3f %7.3f %8.3f %7.3f %7.3f %10.3f %7.3f %6.3f %5.2f %6.3f",
             soilpar[i].hsg+1,
             soilpar[i].tdiff_0,soilpar[i].tdiff_15,soilpar[i].tdiff_100,
             soilpar[i].tcond_pwp,soilpar[i].tcond_100,soilpar[i].tcond_100_ice,soilpar[i].psi_sat,soilpar[i].b,soilpar[i].efold,soilpar[i].ctimax);
-    if(with_nitrogen)
+    if(config->with_nitrogen)
       fprintf(file," %7.3f %7.3f %7.4f %7.3f %10.3f %8.1f",
-              soilpar[i].a_nit,soilpar[i].b_nit,soilpar[i].c_nit,soilpar[i].d_nit,soilpar[i].anion_excl,soilpar[i].cn_ratio);
+              config->soilpar[i].a_nit,config->soilpar[i].b_nit,config->soilpar[i].c_nit,
+              config->soilpar[i].d_nit,config->soilpar[i].anion_excl,config->soilpar[i].cn_ratio);
     fputc('\n',file);
   }
-  fputs("------------------ ------ ----- ----- --- ------ ------- -------- ------- ------- ---------- ------- ------ ----- ------",file);
-  if(with_nitrogen)
+  fputs("------------------ ------ ----- -----",file);
+  if(config->soilpar_option==PRESCRIBED_SOILPAR)
+    fputs(" ------ ----- -----",file);
+  fputs(" --- ------ ------- -------- ------- ------- ---------- ------- ------ ----- ------",file);
+  if(config->with_nitrogen)
     fputs(" ------- ------- ------- ------- ---------- --------",file);
   fputc('\n',file);
 } /* of 'fprintsoilpar' */

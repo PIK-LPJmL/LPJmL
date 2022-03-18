@@ -212,7 +212,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           frac = natstand->frac;
           //        modify soil C pools -> acrotelm C density mixture of wetland and non-wetland SOM
           natstand->frac = delta_wetland; // make mixsoil and mix_veg_stock work correctly
-          mixsoil(wetstand, natstand);
+          mixsoil(wetstand, natstand,year,config);
           pos = 0;
           foreachpft(pft, p, &wetstand->pftlist)
           {
@@ -288,7 +288,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           //        mix wetland soil carbon into non-wetland
           frac = wetstand->frac;
           wetstand->frac = -delta_wetland;  // trick to make mixsoil do it
-          mixsoil(natstand, wetstand);
+          mixsoil(natstand, wetstand,year,config);
           pos = 0;
           foreachpft(pft, p, &natstand->pftlist)
           {

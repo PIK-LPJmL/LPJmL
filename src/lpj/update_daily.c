@@ -130,7 +130,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
       if(config->till_fallow)
       {
         tillage(&stand->soil,param.residue_frac);
-        pedotransfer(stand,NULL,NULL,stand->frac);
+        if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
+          pedotransfer(stand,NULL,NULL,stand->frac);
         updatelitterproperties(stand,stand->frac);
       }
     }
@@ -220,7 +221,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
 #endif
 
     /* update soil and litter properties to account for all changes since last call of littersom */
-    pedotransfer(stand,NULL,NULL,stand->frac);
+    if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
+      pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
 
     if(stand->type->landusetype==NATURAL)
@@ -274,7 +276,8 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     }
 
     /* update soil and litter properties to account for all changes from littersom */
-    pedotransfer(stand,NULL,NULL,stand->frac);
+    if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
+      pedotransfer(stand,NULL,NULL,stand->frac);
     updatelitterproperties(stand,stand->frac);
 
     getoutput(&cell->output,CH4_EMISSIONS,config) += CH4_em*stand->frac;
@@ -553,7 +556,7 @@ void update_daily(Cell *cell,            /**< cell pointer           */
     getoutput(&cell->output,LAKEVOL,config)+=cell->discharge.dmass_lake;
   } /* of 'if(river_routing)' */
   getoutput(&cell->output,DAYLENGTH,config)+=daylength;
-
+  soilpar_output(cell,agrfrac,config);
   killstand(cell,npft, cell->ml.with_tillage,intercrop,year,config);
 #ifdef SAFE
   check_stand_fracs(cell,cell->lakefrac+cell->ml.reservoirfrac);

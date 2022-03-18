@@ -60,7 +60,8 @@ void deforest(Cell *cell,          /**< pointer to cell */
       /*force one tillage event on new stand upon cultivation after deforestation of natural land */
       tillage(&cutstand->soil, param.residue_frac);
       updatelitterproperties(cutstand,cutstand->frac);
-      pedotransfer(cutstand,NULL,NULL,cutstand->frac);
+      if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
+        pedotransfer(cutstand,NULL,NULL,cutstand->frac);
       if(difffrac+epsilon>=natstand->frac)
       {
         delstand(cell->standlist,s);
@@ -87,6 +88,7 @@ void deforest_for_timber(Cell *cell,     /**< pointer to cell */
                          Bool istimber,
                          int ncft,       /**< number of crop PFTs */
                          Real minnatfrac,
+                         int year,
                          const Config *config /**< LPJmL configuration */
                         )
 {
@@ -118,7 +120,7 @@ void deforest_for_timber(Cell *cell,     /**< pointer to cell */
       {
         /* only part of original natural stand is cut so merge natstand and cutstand */
         natstand->frac -= difffrac;
-        mixsoil(natstand, cutstand);
+        mixsoil(natstand, cutstand,year,config);
         foreachpft(pft, p, &natstand->pftlist)
           mix_veg(pft, natstand->frac / (natstand->frac + difffrac));  // PB + difffrac I presume...
         natstand->frac += cutstand->frac;
@@ -187,7 +189,7 @@ static void regrowth(Cell *cell, /* pointer to cell */
     if(s!=NOT_FOUND)
     {        /*mixing of natural vegetation with regrowth*/
       natstand=getstand(cell->standlist,s);
-      mixsoil(natstand,mixstand);
+      mixsoil(natstand,mixstand,year,config);
       foreachpft(pft,p,&natstand->pftlist)
         mix_veg(pft,natstand->frac/(natstand->frac-difffrac));
       natstand->frac+=mixstand->frac;
@@ -269,7 +271,7 @@ static void landexpansion(Cell *cell,            /* cell pointer */
 
     if(grassstand!=NULL)
     {
-      mixsoil(grassstand,mixstand);
+      mixsoil(grassstand,mixstand,year,config);
 #ifdef IMAGE
       data=grassstand->data;
       data->irrig_stor*=grassstand->frac/(grassstand->frac-difffrac);
@@ -471,7 +473,8 @@ static void grasslandreduction(Cell *cell,            /* cell pointer */
     /*force one tillage event on new stand upon cultivation of previous grassland */
     tillage(&cutstand->soil, param.residue_frac);
     updatelitterproperties(cutstand,cutstand->frac);
-    pedotransfer(cutstand,NULL,NULL,cutstand->frac);
+    if(config->soilpar_option==NO_FIXED_SOILPAR || (config->soilpar_option==FIXED_SOILPAR && year<config->soilpar_fixyear))
+      pedotransfer(cutstand,NULL,NULL,cutstand->frac);
     /* empty irrig stor and pay back conveyance losses that have been consumed by transport into irrig_stor, only evaporative conv. losses, drainage conv. losses already returned */
     cell->discharge.dmass_lake+=(data->irrig_stor+data->irrig_amount)*grassstand->cell->coord.area*difffrac;
     cell->balance.awater_flux-=(data->irrig_stor+data->irrig_amount)*difffrac;
@@ -814,7 +817,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
         if(movefrac+epsilon>=irrigstand->frac)/* move all */
         {
           cutpfts(irrigstand,config);
-          mixsetaside(getstand(cell->standlist,s),irrigstand,intercrop);
+          mixsetaside(getstand(cell->standlist,s),irrigstand,intercrop,year,config);
           delstand(cell->standlist,s2);
         }
         else
@@ -837,7 +840,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
         if(movefrac+epsilon>=stand->frac)/* move all */
         {
           cutpfts(stand,config);
-          mixsetaside(getstand(cell->standlist,s2),stand,intercrop);
+          mixsetaside(getstand(cell->standlist,s2),stand,intercrop,year,config);
           delstand(cell->standlist,s);
         }
         else
@@ -1008,7 +1011,7 @@ void landusechange(Cell *cell,          /**< pointer to cell */
         if(timberharvest>epsilon)
         {
           /* deforestation without conversion to agricultural land */
-          deforest_for_timber(cell,timberharvest,npft,config->istimber,ncft,minnatfrac_luc,config);
+          deforest_for_timber(cell,timberharvest,npft,config->istimber,ncft,minnatfrac_luc,year,config);
         }
         cell->ml.image_data->timber_frac=0.0;
       }

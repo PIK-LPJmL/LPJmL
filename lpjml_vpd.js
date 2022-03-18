@@ -32,7 +32,7 @@
 
   "sim_name" : "LPJmL run with SPITFIRE and VPD fire danger index", /* Simulation description */
   "sim_id"   : "lpjml",     /* LPJML Simulation type with managed land use */
-  "version"  : "5.3",       /* LPJmL version expected */
+  "version"  : "6.0",       /* LPJmL version expected */
   "random_prec" : false,    /* Random weather generator for precipitation enabled */
   "random_seed" : 2,        /* seed for random number generator */
   "radiation" : "radiation",/* other options: CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN */
@@ -45,7 +45,10 @@
   "extflow" : false,
   "permafrost" : true,
   "johansen" : true,
+  "soilpar_option" : "no_fixed_soilpar", /* other options "no_fixed_soilpar", "fixed_soilpar", "prescribed_soilpar" */
   "with_nitrogen" : "no", /* other options: "no", "lim", "unlim" */
+  "dynamic_CH4" : false,
+  "anomaly" : false,
   "store_climate" : true, /* store climate data in spin-up phase */
   "const_climate" : false,
   "shuffle_climate" : false,

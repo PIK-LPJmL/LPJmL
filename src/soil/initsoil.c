@@ -18,10 +18,10 @@
 
 #define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return TRUE;}
 
-Bool initsoil(Stand *stand,            /**< Pointer to stand data */
+Bool initsoil(Stand *stand,           /**< Pointer to stand data */
               const Soilpar *soilpar, /**< soil parameter array */
               int ntotpft,            /**< number of PFT including crops*/
-              Bool with_nitrogen      /**< nitrogen cycle enabled? (TRUE/FALSE) */
+              const Config *config    /**< LPJmL configuration */
              )                        /** \return TRUE on error */
 {
   Soil *soil;
@@ -32,7 +32,7 @@ Bool initsoil(Stand *stand,            /**< Pointer to stand data */
   forrootsoillayer(l)
   {
     soil->pool[l].fast.carbon=soil->pool[l].slow.carbon=soil->k_mean[l].fast=soil->k_mean[l].slow=0.0;
-    if(!with_nitrogen || soilpar->type==ROCK || soilpar->type==ICE)
+    if(!config->with_nitrogen || soilpar->type==ROCK || soilpar->type==ICE)
       soil->pool[l].slow.nitrogen=soil->pool[l].fast.nitrogen=soil->NH4[l]=soil->NO3[l]=0.0;
     else
     {
@@ -92,41 +92,64 @@ Bool initsoil(Stand *stand,            /**< Pointer to stand data */
   soil->snowdens = snowdens_first;
   for(l=0;l<NTILLLAYER;l++)
     soil->df_tillage[l]=1.0;
-  if(soil->par->type==ROCK)
+  if(config->soilpar_option==PRESCRIBED_SOILPAR)
   {
-    foreachsoillayer(l)
+    for(l=0;l<LASTLAYER;l++)
     {
-      soil->wsat[l] = 0.006;
-      soil->wpwp[l] = 0.0001;
-      soil->wfc[l] = 0.005;
-      soil->whc[l] = soil->wfc[l] - soil->wpwp[l];
-      soil->whcs[l] = soil->whc[l] * soildepth[l];
-      soil->wpwps[l] = soil->wpwp[l] * soildepth[l];
-      soil->wsats[l] = soil->wsat[l] * soildepth[l];
-      soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;
-      soil->k_dry[l] = 8.8;
-      soil->Ks[l] = 0.1;
-      soil->beta_soil[l] = -2.655 / log10(soil->wfc[l] / soil->wsat[l]);
+      soil->wfc[l]=soilpar->wfc;
+      soil->whc[l]=soilpar->wfc-soilpar->wpwp;
+      soil->whcs[l]=soil->whc[l]*soildepth[l];
+      soil->wpwps[l]=soilpar->wpwp*soildepth[l];
+      soil->wsat[l]=soilpar->wsat;
+      soil->wsats[l]=soilpar->wsat*soildepth[l];
+      soil->bulkdens[l]=(1-soilpar->wsat)*MINERALDENS;
+      soil->beta_soil[l]=-2.655/log10(soilpar->wfc/soilpar->wsat);
+      soil->Ks[l] = soilpar->Ks;
+      if(soilpar->type==ROCK)
+        soil->k_dry[l]=8.8;
+      else            //Johansen assumptions
+        soil->k_dry[l]=(0.135*soil->bulkdens[l]+64.7)/
+               (MINERALDENS-0.947*soil->bulkdens[l]);
     }
   }
   else
   {
-    foreachsoillayer(l)
+    if(soil->par->type==ROCK)
     {
-      soil->wsat[l] = 0.468;
-      soil->wpwp[l] = 0.284;
-      soil->wfc[l] = 0.398;
-      soil->whc[l] = soil->wfc[l]-soil->wpwp[l];
-      soil->whcs[l] = soil->wsat[l] * soildepth[l];
-      soil->wpwps[l] = soil->wpwp[l] * soildepth[l];
-      soil->wsats[l] = soil->wsat[l] * soildepth[l];
-      soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;
-      soil->k_dry[l] = (0.135*soil->bulkdens[l] + 64.7) / (MINERALDENS - 0.947*soil->bulkdens[l]);
-      soil->Ks[l] = 3.5;
+      foreachsoillayer(l)
+      {
+        soil->wsat[l] = 0.006;
+        soil->wpwp[l] = 0.0001;
+        soil->wfc[l] = 0.005;
+        soil->whc[l] = soil->wfc[l] - soil->wpwp[l];
+        soil->whcs[l] = soil->whc[l] * soildepth[l];
+        soil->wpwps[l] = soil->wpwp[l] * soildepth[l];
+        soil->wsats[l] = soil->wsat[l] * soildepth[l];
+        soil->bulkdens[l] = (1 - soil->wsats[l] / soildepth[l])*MINERALDENS;
+        soil->k_dry[l] = 8.8;
+        soil->Ks[l] = 0.1;
+        soil->beta_soil[l] = -2.655 / log10(soil->wfc[l] / soil->wsat[l]);
+      }
     }
-    pedotransfer(stand,NULL,NULL,stand->frac);
+    else
+    {
+      foreachsoillayer(l)
+      {
+        soil->wsat[l] = 0.468;
+        soil->wpwp[l] = 0.284;
+        soil->wfc[l] = 0.398;
+        soil->whc[l] = soil->wfc[l]-soil->wpwp[l];
+        soil->whcs[l] = soil->wsat[l] * soildepth[l];
+        soil->wpwps[l] = soil->wpwp[l] * soildepth[l];
+        soil->wsats[l] = soil->wsat[l] * soildepth[l];
+        soil->bulkdens[l] = (1 - soil->wsat[l])*MINERALDENS;
+        soil->k_dry[l] = (0.135*soil->bulkdens[l] + 64.7) / (MINERALDENS - 0.947*soil->bulkdens[l]);
+        soil->Ks[l] = 3.5;
+      }
+      pedotransfer(stand,NULL,NULL,stand->frac);
+    }
   }
-    /*assume last layer is bedrock in 6-layer version */
+  /*assume last layer is bedrock in 6-layer version */
   soil->wsat[BOTTOMLAYER] = 0.006;
   soil->wpwp[BOTTOMLAYER] = 0.001;
   soil->wfc[BOTTOMLAYER] = 0.003;

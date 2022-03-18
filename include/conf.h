@@ -29,6 +29,9 @@
 #define NO_FIXED_SDATE 0
 #define FIXED_SDATE 1
 #define PRESCRIBED_SDATE 2
+#define NO_FIXED_SOILPAR 0
+#define FIXED_SOILPAR 1
+#define PRESCRIBED_SOILPAR 2
 #define NO_IRRIGATION 0
 #define LIM_IRRIGATION 1
 #define POT_IRRIGATION 2
@@ -116,7 +119,7 @@
 #define NO_FERTILIZER 0
 #define FERTILIZER 1
 #define AUTO_FERTILIZER 2
-#define NOUT 363            /* number of output files */
+#define NOUT 369            /* number of output files */
 #define END -1              /* end marker for output files */
 #define GRIDBASED 1         /* pft-specific outputs scaled by stand->frac */
 #define PFTBASED 0          /* pft-specific outputs not scaled by stand->frac */
@@ -497,6 +500,12 @@
 #define LITBURNC 360
 #define RH 361
 #define PERC 362
+#define WHC_NAT 363
+#define WHC_GRASS 364
+#define WHC_AGR 365
+#define KS_NAT 366
+#define KS_GRASS 367
+#define KS_AGR 368
 #define PFT_GCGP_COUNT 0
 #define NDAY_MONTH 1
 
