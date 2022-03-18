@@ -362,8 +362,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           slope = (exp(lambda*-slope_max)*(-1 / lambda - slope_max)) - (exp(lambda*-cell->slope_min)*(-1 / lambda - cell->slope_min));  //calculation of the integral of the PDF to get  mean slope
           slope /= (-(exp(-lambda*slope_max) - (exp(-lambda*cell->slope_min))));                                                 //normalising the mean slope for a specific range
         }
-        wetstand->Hag_Beta = min(1, (0.09*log(slope + 0.1) + 0.22) / 0.43);
         wetstand->slope_mean = slope;
+        wetstand->Hag_Beta = min(1, (0.09*log(slope + 0.1) + 0.22) / 0.43);
 
         slope = exp(lambda*-cell->slope_max)*(-1 / lambda - cell->slope_max) - exp(lambda*-slope_max)*(-1 / lambda - slope_max);  //calculation of the integral of the PDF to get  mean slope
         slope /= -(exp(-lambda*cell->slope_max) - exp(-lambda*slope_max));                                                 //normalising the mean slope for a specific range

@@ -144,7 +144,7 @@
 /*
 ID                               Fmt                        filename
 -------------------------------- ------------------------- ----------------------------- */
-/*    { "id" : "grid",             "file" : { "fmt" : "cdf", "name" : "output/grid.nc" }},
+    { "id" : "grid",             "file" : { "fmt" : "cdf", "name" : "output/grid.nc" }},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux.csv"}},
     { "id" : "fpc",              "file" : { "fmt" : "cdf", "name" : "output/fpc.nc"}},
     { "id" : "npp",              "file" : { "fmt" : "cdf", "name" : "output/mnpp.nc"}},
@@ -238,11 +238,11 @@ ID                               Fmt                        filename
     { "id" : "prod_turnover",    "file" : { "fmt" : "cdf", "name" : "output/prod_turnover.nc"}},
     { "id" : "deforest_emis",    "file" : { "fmt" : "cdf", "name" : "output/deforest_emis.nc"}},
     { "id" : "conv_loss_evap",   "file" : { "fmt" : "cdf", "name" : "output/aconv_loss_evap.nc"}},
-    { "id" : "conv_loss_drain",  "file" : { "fmt" : "cdf", "name" : "output/aconv_loss_drain.nc"}}*/
-    { "id" : "soilc",            "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc2.nc"}},
-    { "id" : "soilc_slow",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_slow2.nc"}},
-    { "id" : "ch4_ebullition",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_ebullition2.nc"}},
-    { "id" : "ch4_plant_gas",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_plant_gras2.nc"}},
+    { "id" : "conv_loss_drain",  "file" : { "fmt" : "cdf", "name" : "output/aconv_loss_drain.nc"}},
+    { "id" : "soilc",            "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc.nc"}},
+    { "id" : "soilc_slow",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/soilc_slow.nc"}},
+    { "id" : "ch4_ebullition",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_ebullition.nc"}},
+    { "id" : "ch4_plant_gas",       "file" : { "fmt" : "cdf", "timestep" : 100, "name" : "output/ch4_plant_gras.nc"}},
     { "id" : "globalflux",       "file" : { "fmt" : "txt", "name" : "output/globalflux_spinup2.csv"}}
     
 /*------------------------------ ------------------------- ------------------------------- */
@@ -282,11 +282,11 @@ ID                               Fmt                        filename
 
 #else
 
-  "nspinup" : 17500,   /* spinup years */
+  "nspinup" : 5000,   /* spinup years */
   "nspinyear" : 30,  /* cycle length during spinup (yr)*/
   "firstyear": 1901, /* first year of simulation */
   "lastyear" : 1901, /* last year of simulation */
-  "outputyear": -15599, /* first year output is written  */
+  "outputyear": -3099, /* first year output is written  */
   "restart" :  true, /* start from restart file */
   "restart_filename" : "restart/restart_1840_nv_stdfire_1.lpj", /* filename of restart file */
   "write_restart" : true, /* create restart file */

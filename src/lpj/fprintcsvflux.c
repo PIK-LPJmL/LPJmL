@@ -26,6 +26,7 @@ void fprintcsvflux(FILE *file,          /**< Output file pointer */
 {
   char d;
   d=config->csv_delimit;
+  scale=1;
   if(year==config->firstyear-config->nspinup)
   {
     fprintf(file,"Year%cNEP%cGPP%cNPP%cRH%cestab%cnegc_fluxes",d,d,d,d,d,d);

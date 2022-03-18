@@ -130,43 +130,49 @@ void fprintsoil(FILE *file,           /**< pointer to text file */
   fputs("\nLitter:",file);
   fprintlitter(file,&soil->litter,with_nitrogen);
   fprintf(file,"\nmean maxthaw:\t%.2f (mm)\n",soil->mean_maxthaw);
-  fputs("Layer       ",file);
+  fputs("Layer                   ",file);
   for(l=0;l<NSOILLAYER+1;l++)
-    fprintf(file," %12d",l);
-  fputs("\n------------",file);
+    fprintf(file,"%12d",l);
+  fputs("\n---------------------",file);
   for(l=0;l<NSOILLAYER+1;l++)
     fputs(" ------------",file);
-  fputs("\nsoil-state  ",file);
+  fputs("\nsoil-state           ",file);
   foreachsoillayer(l)
     fprintf(file," %12s",soilstates[soil->state[l]]);    
-  fputs("\nWater       ",file);
+  fputs("\nWater                ",file);
   foreachsoillayer(l)
     fprintf(file," %12.2f",soil->w[l]);
-  fputs("\nfree Water  ",file);
+  fputs("\nfree Water           ",file);
   foreachsoillayer(l)
     fprintf(file," %12.2f",soil->w_fw[l]);
-  fputs("\nfree Pores  ", file);
+  fputs("\nSaturated            ", file);
   foreachsoillayer(l)
-    fprintf(file, " %12.2f", soil->wsats[l] - soil->whcs[l] - soil->wpwps[l]);
-  fputs("\nfree ice    ",file);
+    fprintf(file, " %12.2f", soil->wsat[l]);
+  fputs("\nPlant avail          ", file);
+  foreachsoillayer(l)
+    fprintf(file, " %12.2f", soil->whc[l]);
+  fputs("\nwilting point        ", file);
+  foreachsoillayer(l)
+    fprintf(file, " %12.2f", soil->wpwp[l]);
+  fputs("\nfree ice             ",file);
   foreachsoillayer(l)
     fprintf(file," %12.2f",soil->ice_fw[l]);
-  fputs("\nTemp        ",file);
+  fputs("\nTemp                 ",file);
   for(l=0;l<NSOILLAYER+1;l++)
     fprintf(file," %12.2f",soil->temp[l]);
-  fputs("\nMean annual Temp        ", file);
+  fputs("\nMean annual Temp     ", file);
   for (l = 0; l<NSOILLAYER + 1; l++)
-    fprintf(file, " %10.2f", soil->amean_temp[l]);
-  fputs("\nIce depth   ",file);
+    fprintf(file, " %12.2f", soil->amean_temp[l]);
+  fputs("\nIce depth            ",file);
   foreachsoillayer(l)
     fprintf(file," %12.2f",soil->ice_depth[l]);
-  fputs("\nFreeze depth",file);
+  fputs("\nFreeze depth         ",file);
   foreachsoillayer(l)
     fprintf(file," %12.1f",soil->freeze_depth[l]);
-  fputs("\nIce pwph    ",file);
+  fputs("\nIce pwph             ",file);
   foreachsoillayer(l)
     fprintf(file," %12.2f",soil->ice_pwp[l]);
-  fputs("\n------------",file);
+  fputs("\n---------------------",file);
   for(l=0;l<NSOILLAYER+1;l++)
     fputs(" ------------",file);
   fprintf(file,"\nSnowpack:\t%g (mm)\n",soil->snowpack);

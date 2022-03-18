@@ -351,6 +351,11 @@ Bool allocation_tree(Litter *litter,   /**< litter pool */
     }
     pft->bm_inc.nitrogen=bm_inc_ind.nitrogen*pft->nind;
   } /* of config->with_nitrogen */
+  if(tree->ind.leaf.carbon<=0 && tree->ind.root.carbon>0)   //QUICK-FIX very occasional it happens that leaf carbon is ZERO and a lot of carbon is in roots
+  {
+      tree->ind.leaf.carbon+=tree->ind.root.carbon/2;
+      tree->ind.root.carbon-=tree->ind.root.carbon/2;
+  }
   allometry_tree(pft);
   *fpc_inc=fpc_tree(pft);
   return isneg_tree(pft);

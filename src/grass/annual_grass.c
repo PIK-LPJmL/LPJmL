@@ -40,7 +40,7 @@ Bool annual_grass(Stand *stand,        /**< pointer to stand */
   stand->growing_days=0;
   if (pft->inun_count>pft->par->inun_dur)
     stress = pft->inun_count / pft->par->inun_dur;
-  if (stress>2) isdead = TRUE;
+  if (stress>3) isdead = TRUE;
   if (!(pft->stand->prescribe_landcover==LANDCOVERFPC && pft->stand->type->landusetype==NATURAL) &&
       !isdead)  /* still not dead? */
     isdead=!survive(pft->par,&stand->cell->climbuf);

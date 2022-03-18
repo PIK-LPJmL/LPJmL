@@ -87,12 +87,12 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     pft->inun_count--;
   if (pft->inun_count<0)
     pft->inun_count = 0;
-/*
+
   if(pft->inun_count>pft->par->inun_dur)
     istress=1;
   else
     istress=pft->inun_count/pft->par->inun_dur;
-*/
+
   pft->inun_stress+=istress/NDAYYEAR;
   wr=gpd=agd=*rd=layer=root_u=root_nu=aet_cor=0.0;
   aet_frac=1.;
@@ -222,11 +222,11 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
     {
       vmax=pft->vmax;
       gc_new=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
-                      pft->par->gmin*fpar(pft);
+                      pft->par->gmin*fpar(pft)*(1-istress);
       nitrogen_stress(pft,temp,daylength,aet_layer,(agd-*rd),npft,ncft,config);
 
       adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
-                           temp,data.apar,daylength,FALSE);
+                           temp,data.apar,daylength,FALSE)*(1-istress);
       gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                     pft->par->gmin*fpar(pft);
       demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;
@@ -241,7 +241,7 @@ Real water_stressed(Pft *pft,                  /**< [inout] pointer to PFT varia
         data.vmax=pft->vmax;
         lambda=bisect((Bisectfcn)fcn,0.02,lambda,&data,0,EPSILON,20,&iter);
         adtmm=photosynthesis(&agd,rd,&pft->vmax,data.path,lambda,data.tstress,data.b,data.co2,
-                             temp,data.apar,daylength,FALSE);
+                             temp,data.apar,daylength,FALSE)*(1-istress);
         gc=(1.6*adtmm/(ppm2bar(co2)*(1.0-lambda)*hour2sec(daylength)))+
                       pft->par->gmin*fpar(pft);
         demand=(gc>0) ? (1-*wet)*eeq*param.ALPHAM/(1+(param.GM*param.ALPHAM)/gc) :0;

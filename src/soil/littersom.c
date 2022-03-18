@@ -108,7 +108,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   Real epsilon_O2 = 0;
   Real oxid_frac = 0.5;  // Assume that 1/2 of the O2 is utilized by other electron acceptors (Wania etal.,2010)
 // IMPLEMENTATION OF THE EFFECTIVE CARBON CONCENTRATION
-  Real C_eff[NSOILLAYER];
+  Real C_eff[LASTLAYER];
   Real C_tot[LASTLAYER];
   Real K_v[NSOILLAYER][2];
   Real K_vdiff[LASTLAYER][3];
@@ -132,14 +132,14 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   decom_litter.carbon=decom_litter.nitrogen=soil_cflux=yedoma_flux=decom_sum.carbon=decom_sum.nitrogen=0.0;
   //CH4_air = p_s / R_gas / (airtemp + 273.15)*pch4*1e-6*WCH4;    /*g/m3 methane concentration*/
 
-  K_vdiff[0][0]=2./(midlayer[1]*(midlayer[1]+(midlayer[2]-midlayer[1])));
-  K_vdiff[0][1]=-2./(midlayer[1]*(midlayer[2]-midlayer[1]));
-  K_vdiff[0][2]=2./((midlayer[2]-midlayer[1])*(midlayer[1]+(midlayer[2]-midlayer[1])));
+  K_vdiff[0][0]=2./(midlayer[0]*(midlayer[0]+(midlayer[1]-midlayer[0])));
+  K_vdiff[0][1]=-2./(midlayer[0]*(midlayer[1]-midlayer[0]));
+  K_vdiff[0][2]=2./((midlayer[1]-midlayer[0])*(midlayer[0]+(midlayer[1]-midlayer[0])));
 
   foreachsoillayer(l)
   {
     response[l] = epsilon + epsilon;
-    if(l>0)
+    if(l>0 && l<LASTLAYER)
     {
       K_vdiff[l][0]=2./((midlayer[l]-midlayer[l-1])*((midlayer[l]-midlayer[l-1])+(midlayer[l+1]-midlayer[l])));
       K_vdiff[l][1]=-2./((midlayer[l]-midlayer[l-1])*((midlayer[l+1]-midlayer[l])));
@@ -165,57 +165,6 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
     }
   foreachsoillayer(l)
     soil_moist[l] = (soil->w[l] * soil->whcs[l] + soil->wpwps[l] + soil->w_fw[l]) / soil->wsats[l];
-
-
-  K_v[0][0]=KOVCON*(K_vdiff[0][0]*C_eff[0]+K_vdiff[0][1]*C_eff[0]+K_vdiff[0][2]*C_eff[1]);
-  if(K_v[0][0]>0)
-	if(C_eff[1]>C_eff[0]) {
-	  K_v[0][1]=-1;
-	 } else {
-	    K_v[0][1]=0;
-    }
-
-  for(l=1;l<LASTLAYER;l++)
-  {
-    if(layerbound[l]<=soil->maxthaw_depth){
-	    dKOVCON=KOVCON;
-    }else{
-        dKOVCON=0.0;
-    }
-    K_v[l][0]=dKOVCON*(K_vdiff[l][0]*C_eff[l-1]+ K_vdiff[l][1]*C_eff[l]+K_vdiff[l][2]*C_eff[l+1]);
-    if(K_v[l][0]>0) {
-	  if(C_eff[l+1]>C_eff[l])
-		K_v[l][1]=-1;
-    } else if (C_eff[l-1]>C_eff[l]) {
-    	K_v[l][1]=1;
-	} else {
-	  	K_v[l][1]=0;
-    }
-  }
-
-  K_v[LASTLAYER-1][0]=dKOVCON*(K_vdiff[LASTLAYER-1][0]*C_eff[LASTLAYER-2]+ K_vdiff[LASTLAYER-1][1]*C_eff[LASTLAYER-1]+K_vdiff[LASTLAYER-1][2]*C_eff[LASTLAYER-1]);
-
-  if(K_v[LASTLAYER-1][0]> 0.) {
-	  K_v[LASTLAYER-1][0]=1;
-  } else {
-	  K_v[LASTLAYER-1][0]=0;
-  }
-
-  for(l=(LASTLAYER-1);l==0;l--)
-  {
-    if(K_v[l][1] == 1) {
-  	    if((K_v[l][0]*(soildepth[l]/soildepth[l-1])) > (0.5*C_tot[l-1]))
-  	    	K_v[l][0]=(0.5*C_tot[l-1])*(soildepth[l-1]/soildepth[l]);
-
-			C_tot[l-1]-=(K_v[l][0]*(soildepth[l]/soildepth[l-1]));
-  	} else if (K_v[l][1] == -1) {
-  	    if((K_v[l][0]*(soildepth[l]/soildepth[l+1])) > (0.5*C_tot[l+1]))
-  	    	K_v[l][0]=(0.5*C_tot[l+1])*(soildepth[l+1]/soildepth[l]);
-    }
-  }
-
-
-
 
   /* forrootsoillayer(l)
   if(soil->O2[l]>1000 ||soil->O2[l]< 0  ){
@@ -511,7 +460,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
       decom_litter.nitrogen+=decom_sum.nitrogen;
       if (soil->wtable<=200 && gtemp_soil[0]>0 && soil->litter.item[p].bg.carbon>0)
       {
-        litter_flux = soil->litter.item[p].bg.carbon * param.k_litter10 / k_red_litter*gtemp_soil[0]; // * exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
+        litter_flux=soil->litter.item[p].bg.carbon*param.k_litter10/k_red_litter*gtemp_soil[0]; // * exp((-soil->O2[0] / soildepth[0] * 1000) / O2star);
         soil->litter.item[p].bg.carbon-=litter_flux;
         *methaneflux_litter+=litter_flux;
       }
@@ -731,7 +680,7 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
   //printf("vorher: TOTalCarbon: %.4f\n", soilstocks(soil).carbon);
 
   forrootsoillayer(l)
-    if(l>0 && l<NSOILLAYER)
+    if(l>0 && l<(NSOILLAYER-1))
     {
       if(soilall[l].carbon>epsilon && soilall[l+1].carbon>epsilon && soilall[l-1].carbon>epsilon)
 	  {
@@ -764,9 +713,12 @@ Stocks littersom(Stand *stand,                      /**< [inout] pointer to stan
 #ifdef CHECK_BALANCE
   end = soilstocks(soil);
   end.carbon+=soilmethane(soil);
-  if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter))>0.0001)
+  if (fabs(start.carbon - end.carbon - (flux.carbon + *methaneflux_litter))>0.0001){
     fprintf(stdout, "C-ERROR in littersom: iswetland: %d %.5f start:%.5f  ende:%.5f decomCO2: %g methane_em: %.5f\n", soil->iswetland, start.carbon - end.carbon - (flux.carbon + *methaneflux_litter), start.carbon, end.carbon, flux.carbon, *methaneflux_litter);
-  if (fabs(start.nitrogen - end.nitrogen - flux.nitrogen)>0.00001)
+    forrootsoillayer(l)
+      fprintf(stdout, "kv_1[%d]=%.5f kv_0[%d]=%.5f \n",l, K_v[l][1],l,K_v[l][0]);
+  }
+    if (fabs(start.nitrogen - end.nitrogen - flux.nitrogen)>0.00001)
     fprintf(stdout, "N-ERROR in littersom: iswetland: %d %.5f start:%.5f  end:%.5f decomCO2: %g\n", soil->iswetland, start.nitrogen - end.nitrogen - flux.nitrogen, start.nitrogen, end.nitrogen, flux.nitrogen);
 #endif
   return flux;

@@ -14,9 +14,9 @@
 
 "param" :
 {
-  "k_litter10" : 0.3,        /* 0.3 k_litter10  (1/yr) */
+  "k_litter10" : 0.5,        /* 0.3 k_litter10  (1/yr) */
   "k_soil10" : { "fast" : 0.03, "slow":  0.001}, /* fast, slow k_soil10  (1/yr) */
-  "init_soiln" : { "fast" : 3500.0, "slow":  3500.0}, /* initial fast and slow soil nitrogen (gN/m2) */
+  "init_soiln" : { "fast" : 3500.0, "slow":  3500.0}, /* initial fast and slow soil nitrogen (gN/m2) 5500*/
   "maxsnowpack": 20000.0,    /* max. snow pack (mm) */
   "soildepth_evap" : 300.0,  /* depth of sublayer at top of upper soil layer (mm) */
   "soil_infil" : 2.0,        /* default soil infiltration */
@@ -26,10 +26,10 @@
   "lgm_ch4" : 460,           /* Eemian (460) LGM (466) atmospheric CH4 (ppb) */
   "ch4_ip" : 1790,           /* initial  pre-industrial amount of atmospheric CH4 (ppb) */
   "k" : 0.0548,              /* k    k = 7.4e-7 * atomic_mass_C / atomic_mass_N * seconds_per_day = 0.0548 Sprugel et al. 1996, Eqn 7*/
-  "theta" : 0.8,             /* theta */
-  "alphac3" : 0.06,          /* alphac3 Intrinsic quantum efficiency of CO2 uptake in C3 plants 0.08 */
-  "alphac4" : 0.04,          /* alphac4 Intrinsic quantum efficiency of CO2 uptake in C4 plants 0.053*/
-  "r_growth" : 0.30,         /* r_growthgrowth respiration per unit NPP 0.25*/
+  "theta" : 0.9,             /* theta */
+  "alphac3" : 0.08,          /* alphac3 Intrinsic quantum efficiency of CO2 uptake in C3 plants 0.06 */
+  "alphac4" : 0.053,          /* alphac4 Intrinsic quantum efficiency of CO2 uptake in C4 plants 0.04 0.053*/
+  "r_growth" : 0.25,         /* r_growthgrowth respiration per unit NPP 0.3*/
   "GM" : 2.41,               /* GM empirical parameter in demand function */
   "ALPHAM" : 1.485,          /* ALPHAM Priestley-Taylor coefficient*/
   "ko25" : 3.0e4,            /* Michaelis constant for O2 (Pa) at 25 deg C */
@@ -54,7 +54,7 @@
   "T_0" : -25.0,             /* parameter in N uptake temperature function */
   "T_r" : 15.0,              /* parameter in N uptake temperature function */
   "lsuha" : 0.0,             /* livestock density applied for daily or rotational grazing on mangement grasslands */
-  "k_mort" : 0.2,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
+  "k_mort" : 0.35,            /* coefficient of growth efficiency in mortality equation (k_mort2) */
   "residue_rate": 200,       /* fixed residue rate in gC/m2/yr, ignored if <=0 and if pool >0  */
   "residue_pool" : 100,      /* fixed aboveground residue pool in gC/m2, ignored if <=0, overrules constant rate */
   "residue_cn": 20,         /* CN ratio of prescribed residues */

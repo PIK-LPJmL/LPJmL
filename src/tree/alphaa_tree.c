@@ -29,7 +29,7 @@ Real alphaa_tree(const Pft *pft,     /**< pointer to tree PFT */
        given N limitation*/
     if((tree->ind.leaf.carbon+tree->excess_carbon*tree->falloc.leaf)>10)
     {
-      scaler=tree->ind.leaf.nitrogen/(tree->ind.leaf.carbon+tree->excess_carbon*tree->falloc.leaf) /
+      scaler=tree->ind.leaf.nitrogen/(tree->ind.leaf.carbon+tree->excess_carbon*tree->falloc.leaf)/
              pft->par->ncleaf.low;
       if(scaler>1)
         scaler=1.0;
