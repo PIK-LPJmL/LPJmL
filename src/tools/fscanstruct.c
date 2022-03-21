@@ -35,7 +35,7 @@ LPJfile *fscanstruct(const LPJfile *file, /**< pointer to LPJ file              
   {
     if(verb)
       fprintf(stderr,"ERROR226: Type of '%s' is not an object.\n",name);
-    return TRUE;
+    return NULL;
   }
   return item;
 } /* of 'fscanstruct' */
