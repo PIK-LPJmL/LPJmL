@@ -21,7 +21,7 @@ LPJfile *parse_json(FILE *file,         /**< pointer to JSON text file */
                     Verbosity verbosity /**< verbosity level */
                    )                    /** \return pointer to parsed object or NULL on error */
 {
-  Bool not_first=TRUE;
+  Bool first=TRUE;
   LPJfile *lpjfile;
   char *line;
   enum json_tokener_error json_error;
@@ -29,21 +29,20 @@ LPJfile *parse_json(FILE *file,         /**< pointer to JSON text file */
   tok=json_tokener_new();
   while((line=fscanline(file))!=NULL)  /* read line from file */
   {
-    if(not_first)
+    if(first)
     {
       /* check, whether file is a json file */
       if(line[0]!='{')
       {
         if(verbosity)
-          fprintf(stderr,"ERROR228: JSON file '%s' does not start with opening '{' in line %d.\n",
+          fprintf(stderr,"ERROR248: JSON file '%s' does not start with opening '{' in line %d.\n",
                   getfilename(),getlinecount()-1);
         free(line);
         json_tokener_free(tok);
-        json_object_put(lpjfile);
         return NULL;
       }
       else
-        not_first=FALSE;
+        first=FALSE;
     }
     lpjfile=json_tokener_parse_ex(tok,line,strlen(line));
     json_error=json_tokener_get_error(tok);
@@ -52,6 +51,12 @@ LPJfile *parse_json(FILE *file,         /**< pointer to JSON text file */
     free(line);
   }
   json_tokener_free(tok);
+  if(first)
+  {
+    if(verbosity)
+      fprintf(stderr,"ERROR228: Unexpected end of file in '%s'.\n",getfilename());
+    return NULL;
+  }
   if(json_error!=json_tokener_success)
   {
     if(verbosity)
