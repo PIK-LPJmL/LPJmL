@@ -115,7 +115,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       if(soilmap==NULL)
       {
         if(isroot(*config))
-          fprintf(stderr,"ERROR249: Invalid soilmap in '%s'.\n",config->soil_filename.name);
+          fprintf(stderr,"ERROR250: Invalid soilmap in '%s'.\n",config->soil_filename.name);
       }
       else
       {
@@ -198,7 +198,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       if(header.timestep!=1)
       {
         if(isroot(*config))
-          fprintf(stderr,"ERROR218: Invalid time  step %d in '%s', must be 1.\n",
+          fprintf(stderr,"ERROR218: Invalid time step %d in '%s', must be 1.\n",
                   header.timestep,config->soilph_filename.name);
         free(celldata);
         return NULL;

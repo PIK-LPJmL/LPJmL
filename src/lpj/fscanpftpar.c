@@ -131,7 +131,7 @@ Bool fscanpftpar(LPJfile *file,       /**< pointer to LPJ file */
   isbiomass=isagtree=iscrop=iswp=FALSE;
   for(n=0;n<count;n++)
   {
-    item=fscanarrayindex(arr,n,verb);
+    item=fscanarrayindex(arr,n);
     pft=config->pftpar+n;
     pft->id=n;
 

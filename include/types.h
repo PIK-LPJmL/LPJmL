@@ -105,7 +105,7 @@ extern Bool fscanrealarray(LPJfile *,Real *,int,const char *,Verbosity);
 extern const char *fscanstring(LPJfile *,const char *,const char *,Verbosity);
 extern LPJfile *fscanstruct(const LPJfile *,const char *,Verbosity);
 extern LPJfile *fscanarray(LPJfile *,int *,const char *,Verbosity);
-extern LPJfile *fscanarrayindex(const LPJfile *,int,Verbosity);
+extern LPJfile *fscanarrayindex(const LPJfile *,int);
 extern Bool iskeydefined(const LPJfile *,const char *);
 extern Bool isboolean(const LPJfile *,const char *);
 extern Bool isint(const LPJfile *,const char *);

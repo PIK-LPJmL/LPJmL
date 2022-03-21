@@ -26,7 +26,7 @@ Bool isboolean(const LPJfile *file, /**< pointer to LPJ file */
 {
   struct json_object *item;
   if(name==NULL)
-   return (json_object_get_type(file)==json_type_boolean);
+    return (json_object_get_type(file)==json_type_boolean);
   if(!json_object_object_get_ex(file,name,&item))
     return FALSE;
   return (json_object_get_type(item)==json_type_boolean);

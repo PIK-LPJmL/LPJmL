@@ -51,7 +51,7 @@ int fscantreedens(LPJfile *file,          /**< pointer to LPJ file */
     return 0;
   for(n=0;n<size;n++)
   {
-    item=fscanarrayindex(arr,n,verb);
+    item=fscanarrayindex(arr,n);
     if(fscanint(item,&id,"id",FALSE,verb))
     {
       free(cftmap);

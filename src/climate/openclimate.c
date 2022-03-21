@@ -25,7 +25,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
 {
   Header header;
   String headername;
-  int last,version;
+  int last,version,count;
   char *s;
   size_t offset,filesize;
   file->fmt=filename->fmt;
@@ -53,9 +53,12 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
       }
       if(isroot(*config))
       {
-        s=malloc(strlen(file->filename)+12);
+        count=snprintf(NULL,0,file->filename,file->firstyear);
+        if(count==-1)
+          return TRUE;
+        s=malloc(count+1);
         check(s);
-        sprintf(s,file->filename,file->firstyear);
+        snprintf(s,count+1,file->filename,file->firstyear);
         openclimate_netcdf(file,s,filename->time,filename->var,filename->unit,units,config);
         free(s);
       }

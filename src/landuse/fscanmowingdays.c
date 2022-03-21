@@ -37,7 +37,7 @@ Bool fscanmowingdays(LPJfile *file, /**< pointer to LPJ configuration file */
     }
     for(i=0;i<config->mowingdays_size;i++)
     {
-      item=fscanarrayindex(array,i,verbose);
+      item=fscanarrayindex(array,i);
       if(fscanint(item,config->mowingdays+i,NULL,FALSE,verbose))
       {
         free(config->mowingdays);

@@ -167,7 +167,7 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
   isdaily=FALSE;
   while(count<=nout_max && index<size)
   {
-    item=fscanarrayindex(arr,index,verbosity);
+    item=fscanarrayindex(arr,index);
     if(isstring(item,"id"))
     {
       name=fscanstring(item,NULL,"id",verbosity);

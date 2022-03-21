@@ -4,8 +4,8 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions opens JSON desription file and opens specified binary            \n**/
-/**     file. Description file has the following format:                           \n**/
+/**     Functions opens JSON desription file and returns filename of specified     \n**/
+/**     binary file. Description file has the following format:                    \n**/
 /**                                                                                \n**/
 /**     {                                                                          \n**/
 /**       "filename" : "inputfile.bin",                                            \n**/

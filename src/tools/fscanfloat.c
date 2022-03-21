@@ -39,14 +39,14 @@ Bool fscanfloat(LPJfile *file,    /**< pointer to LPJ file */
     else
     {
       if(verb)
-        fprintf(stderr,"ERROR225: Name '%s' for real not found.\n",name);
+        fprintf(stderr,"ERROR225: Name '%s' for float not found.\n",name);
       return TRUE;
     }
   }
   if(json_object_get_type(item)!=json_type_double)
   {
     if(verb)
-      fprintf(stderr,"ERROR226: Type of '%s' is not real.\n",name);
+      fprintf(stderr,"ERROR226: Type of '%s' is not float.\n",name);
     return TRUE;
   }
   *value=(float)json_object_get_double(item);

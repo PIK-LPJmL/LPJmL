@@ -52,7 +52,7 @@ int fscanregionpar(LPJfile *file,         /**< pointer to LPJ file */
     (*regionpar)[n].id=UNDEF;
   for(n=0;n<nregions;n++)
   {
-    item=fscanarrayindex(arr,n,verb);
+    item=fscanarrayindex(arr,n);
     if(fscanint(item,&id,"id",FALSE,verb))
       return 0;
     if(id<0 || id>=nregions)

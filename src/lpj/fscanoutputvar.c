@@ -55,7 +55,7 @@ Variable *fscanoutputvar(LPJfile *file, /**< pointer to LPJ file */
     outnames[i].name=NULL;
   for(i=0;i<size;i++)
   {
-    item=fscanarrayindex(arr,i,verb);
+    item=fscanarrayindex(arr,i);
     fscanint2(item,&index,"id");
     name=fscanstring(item,NULL,"name",verb);
     if(name==NULL)

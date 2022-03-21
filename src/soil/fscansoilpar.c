@@ -91,7 +91,7 @@ Bool fscansoilpar(LPJfile *file, /**< pointer to LPJ file */
     config->soilpar[n].type=UNDEF;
   for(n=0;n<config->nsoil;n++)
   {
-    item=fscanarrayindex(arr,n,verb);
+    item=fscanarrayindex(arr,n);
     id=n;
     if(fscanint(item,&id,"id",TRUE,verb))
       return TRUE;

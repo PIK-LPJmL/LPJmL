@@ -68,7 +68,7 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
       undef[s]=TRUE;
     for(s=0;s<*size;s++)
     {
-      item=fscanarrayindex(array,s,verbose);
+      item=fscanarrayindex(array,s);
       if(isnull(item))
       {
         soilmap[s]=0;

@@ -22,8 +22,7 @@
 #include "types.h"
 
 LPJfile *fscanarrayindex(const LPJfile *file, /**< pointer to a LPJ file */
-                         int index,           /**< index in array */
-                         Verbosity verb       /**< verbosity level (NO_ERR,ERR,VERB) */
+                         int index            /**< index in array */
                         )                     /** \return array element or NULL on error */
 {
   return json_object_array_get_idx(file,index);

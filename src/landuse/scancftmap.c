@@ -84,7 +84,7 @@ int *scancftmap(LPJfile *file,       /**< pointer to LPJ config file */
         undef[cft]=TRUE;
     for(cft=0;cft<*size;cft++)
     {
-      item=fscanarrayindex(array,cft,verbose);
+      item=fscanarrayindex(array,cft);
       if(isnull(item))
       {
         cftmap[cft]=NOT_FOUND;

@@ -213,11 +213,11 @@ Bool fscantoken(FILE *file, /**< file pointer of a text file         */
   return FALSE;
 } /* of 'fscantoken' */
 
-const char *fscanstring(LPJfile *file, /**< pointer to  a LPJ file         */
-                  const char *dflt,    /**< pointer to a string or NULL */
-                  const char *name,    /**< name of string or NULL        */
-                  Verbosity verb       /**< enable error output */
-                )                      /** \return string or NULL  on error */
+const char *fscanstring(LPJfile *file,    /**< pointer to  a LPJ file         */
+                        const char *dflt, /**< pointer to a string or NULL */
+                        const char *name, /**< name of string or NULL        */
+                        Verbosity verb    /**< enable error output */
+                      )                   /** \return string or NULL on error */
 {
   const char *str;
   struct json_object *item;

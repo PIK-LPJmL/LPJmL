@@ -68,7 +68,7 @@ int fscancountrypar(LPJfile *file,           /**< pointer to LPJ file */
    (*countrypar)[n].id=UNDEF;
   for(n=0;n<ncountries;n++)
   {
-    item=fscanarrayindex(arr,n,verb);
+    item=fscanarrayindex(arr,n);
     if(fscanint(item,&id,"id",FALSE,verb))
     {
       if(ncft)
