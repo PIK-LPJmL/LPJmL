@@ -62,6 +62,8 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
 
     return file;
   }
+  if(map!=NULL)
+    *map=NULL;
   file=fopen(filename->name,"rb");
   if(file==NULL)
   {
