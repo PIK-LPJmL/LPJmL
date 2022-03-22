@@ -308,6 +308,8 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     count++;
     len=fputstring(file,len,"prescribed soil parameter",78);
   }
+  if(config->ma_bnf)
+      len=printsim(file,len,&count,"Ma et al., 2022 BNF, ");
   if(config->withlanduse)
   {
     switch(config->withlanduse)
@@ -328,8 +330,6 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
     } /* of switch */
     if(config->rw_manage)
       len=printsim(file,len,&count,"rainwater management, ");
-    if(config->ma_bnf)
-      len=printsim(file,len,&count,"Ma et al., 2022 BNF, ");
     len=fputstring(file,len,irrig[config->irrig_scenario],78);
     len=fputstring(file,len," irrigation",78);
     if(config->fix_fertilization)
