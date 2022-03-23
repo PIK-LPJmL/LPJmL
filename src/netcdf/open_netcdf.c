@@ -92,6 +92,7 @@ void free_netcdf(int ncid)
         if(item->count==0) /* last open file? */
         {
           free(item->filename);
+          free(item);
           nc_close(ncid);
           dellistitem(list,i);
         }

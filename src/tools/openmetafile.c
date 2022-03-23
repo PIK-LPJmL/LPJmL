@@ -75,8 +75,8 @@ char *parse_json_metafile(FILE *file,         /**< pointer to JSON file */
     return NULL;
   if(map!=NULL)
   {
-    if(iskeydefined(lpjfile,"map"))
-      *map=fscanstringarray(lpjfile,"map",verbosity);
+    if(iskeydefined(lpjfile,MAP_NAME))
+      *map=fscanstringarray(lpjfile,MAP_NAME,verbosity);
     else
       *map=NULL;
   }

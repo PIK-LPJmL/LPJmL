@@ -67,7 +67,8 @@
 #define CELLINDEX 3
 #define CELLSEQ 4
 #define READ_VERSION -1
-#define CLM_MAX_VERSION 4  /* highest version for clm files supported */
+#define CLM_MAX_VERSION 4  /**< highest version for clm files supported */
+#define MAP_NAME "map"     /**< name of map in JSON files */
 
 extern const char *ordernames[];
 

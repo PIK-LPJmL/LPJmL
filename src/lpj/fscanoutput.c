@@ -213,36 +213,42 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
           fprintf(stderr,
                   "ERROR161: Invalid value=%d for index of output file '%s', must be in [0,%d].\n",
                   flag,config->outputvars[count].filename.name,nout_max-1);
+        freefilename(&config->outputvars[count].filename);
       }
       else if(isopenoutput(flag,config->outputvars,count))
       {
         if(verbosity)
           fprintf(stderr,"WARNING006: Output file for '%s' is opened twice, will be ignored.\n",
                 config->outnames[flag].name);
+        freefilename(&config->outputvars[count].filename);
       }
       else if(outputsize(flag,npft,ncft,config)==0)
       {
         if(verbosity)
           fprintf(stderr,"WARNING006: Number of bands in output file for '%s' is zero, will be ignored.\n",
                 config->outnames[flag].name);
+        freefilename(&config->outputvars[count].filename);
       }
       else if(!config->with_nitrogen && isnitrogen_output(flag))
       {
         if(verbosity)
           fprintf(stderr,"WARNING006: Output file for '%s' is nitrogen output but nitrogen is not enabled, will be ignored.\n",
                 config->outnames[flag].name);
+        freefilename(&config->outputvars[count].filename);
       }
       else if(config->outputvars[count].filename.fmt==CLM2)
       {
         if(verbosity)
           fprintf(stderr,"ERROR223: File format CLM2 is not supported for output file '%s'.\n",
                   config->outputvars[count].filename.name);
+        freefilename(&config->outputvars[count].filename);
       }
       else if(config->outputvars[count].filename.fmt==META)
       {
         if(verbosity)
           fprintf(stderr,"ERROR223: File format META is not supported for output file '%s'.\n",
                   config->outputvars[count].filename.name);
+        freefilename(&config->outputvars[count].filename);
       }
       else
       {

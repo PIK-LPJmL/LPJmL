@@ -89,7 +89,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
       freewater+=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]-1)*soil->whcs[l];
   }
 
-  soil_infil *= (1 + soil->litter.agtop_cover*2); /*soil_infil is scaled between 2 and 6, based on Jaegermeyr et al. 2016*/
+  soil_infil *= (1 + soil->litter.agtop_cover*param.soil_infil_litter); /*soil_infil is scaled between 2 and 6, based on Jaegermeyr et al. 2016*/
   while(infil > epsilon || freewater > epsilon)
   {
     NO3perc_ly=0;
