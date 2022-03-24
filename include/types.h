@@ -159,6 +159,7 @@ extern Bool readfloatvec(FILE *,float *,float,size_t,Bool,Type);
 extern Bool readintvec(FILE *,int *,size_t,Bool,Type);
 extern Bool readuintvec(FILE *,unsigned int *,size_t,Bool,Type);
 extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Bool,Verbosity);
+extern void freefilename(Filename *);
 extern void **newmat(size_t,int,int);
 extern void freemat(void **);
 extern char *catstrvec(const char * const *,int);

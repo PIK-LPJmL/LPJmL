@@ -286,17 +286,20 @@ Bool fscanoutput(LPJfile *file,  /**< pointer to LPJ file */
         if(verbosity)
           fprintf(stderr,"ERROR224: Invalid format specifier in filename '%s'.\n",
                   config->outputvars[count].filename.name);
+        freefilename(&config->outputvars[count].filename);
       }
       else if(config->outputvars[count].oneyear && (flag==GRID || flag==COUNTRY || flag==REGION || flag==GLOBALFLUX))
       {
         if(verbosity)
           fprintf(stderr,"ERROR225: One year output not allowed for grid, globalflux, country or region.\n");
+        freefilename(&config->outputvars[count].filename);
       }
       else if(config->outputvars[count].filename.fmt==META)
       {
         if(verbosity)
           fprintf(stderr,"ERROR223: File format META is not supported for output file '%s'.\n",
                   config->outputvars[count].filename.name);
+        freefilename(&config->outputvars[count].filename);
       }
       else
       {
