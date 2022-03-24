@@ -29,7 +29,7 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
   FILE *file;
   if(filename->fmt==META)
   {
-    *version=4;
+    *version=CLM_MAX_VERSION+1;
     /* set default values for header */
     header->order=CELLYEAR;
     header->firstyear=config->firstyear;
@@ -37,12 +37,14 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
     header->firstcell=0;
     header->ncell=config->nall;
     header->nbands=1;
+    header->nstep=1;
+    header->timestep=1;
     header->scalar=1;
     header->datatype=LPJ_SHORT;
     header->cellsize_lon=(float)config->resolution.lon;
     header->cellsize_lat=(float)config->resolution.lat;
     /* open description file */
-    file=openmetafile(header,swap,offset,filename->name,isroot(*config));
+    file=openmetafile(header,NULL,swap,offset,filename->name,isroot(*config));
     if(file==NULL)
     {
       if(isroot(*config))
@@ -97,6 +99,8 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
     header->firstcell=0;
     header->ncell=config->nall;
     header->nbands=1;
+    header->nstep=1;
+    header->timestep=1;
     header->scalar=1;
     header->datatype=LPJ_SHORT;
     *version=0;
@@ -129,6 +133,14 @@ FILE *openinputfile(Header *header, /**< pointer to file header */
         fclose(file);
         return NULL;
       }
+    }
+    if(*version>CLM_MAX_VERSION)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR154: Unsupported version %d in '%s', must be less than %d.\n",
+                *version,filename->name,CLM_MAX_VERSION+1);
+      fclose(file);
+      return NULL;
     }
     if(header->firstyear>config->firstyear)
       if(isyear && isroot(*config))
