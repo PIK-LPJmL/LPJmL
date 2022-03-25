@@ -43,15 +43,16 @@ void fprintsoilpar(FILE *file,          /**< pointer to text file */
     fputc('\n',file);
   for(i=0;i<config->nsoil;i++)
   {
-    fprintf(file,"%18s %6.2f %5.2f %5.2f",
-            soilpar[i].name,soilpar[i].sand,soilpar[i].silt,soilpar[i].clay);
-    if(soilpar_option==PRESCRIBED_SOILPAR)
+    fprintf(file,"%-18s %6.2f %5.2f %5.2f",
+            config->soilpar[i].name,config->soilpar[i].sand,config->soilpar[i].silt,config->soilpar[i].clay);
+    if(config->soilpar_option==PRESCRIBED_SOILPAR)
       fprintf(file,"%6.2f %5.2f %5.2f",
-              soilpar[i].wpwp,soilpar[i].wfc,soilpar[i].wsat);
+              config->soilpar[i].wpwp,config->soilpar[i].wfc,config->soilpar[i].wsat);
     fprintf(file," %3d %6.3f %7.3f %8.3f %7.3f %7.3f %10.3f %7.3f %6.3f %5.2f %6.3f",
-            soilpar[i].hsg+1,
-            soilpar[i].tdiff_0,soilpar[i].tdiff_15,soilpar[i].tdiff_100,
-            soilpar[i].tcond_pwp,soilpar[i].tcond_100,soilpar[i].tcond_100_ice,soilpar[i].psi_sat,soilpar[i].b,soilpar[i].efold,soilpar[i].ctimax);
+            config->soilpar[i].hsg+1,
+            config->soilpar[i].tdiff_0,config->soilpar[i].tdiff_15,config->soilpar[i].tdiff_100,
+            config->soilpar[i].tcond_pwp,config->soilpar[i].tcond_100,config->soilpar[i].tcond_100_ice,
+            config->soilpar[i].psi_sat,config->soilpar[i].b,config->soilpar[i].efold,config->soilpar[i].ctimax);
     if(config->with_nitrogen)
       fprintf(file," %7.3f %7.3f %7.4f %7.3f %10.3f %8.1f",
               config->soilpar[i].a_nit,config->soilpar[i].b_nit,config->soilpar[i].c_nit,
