@@ -16,10 +16,10 @@
 
 #include "lpj.h"
 
-static int findsoilid(const char *name,       /**< name of soil type to find in array */
-                      const Soilpar *soilpar, /**< soil parameter array */
-                      int nsoil               /**< size of soil parameter array */
-                     )                        /** \return index in PFT array or NOT_FOUND */
+int findsoilid(const char *name,       /**< name of soil type to find in array */
+               const Soilpar *soilpar, /**< soil parameter array */
+               int nsoil               /**< size of soil parameter array */
+              )                        /** \return index in PFT array or NOT_FOUND */
 {
   int s;
   for(s=0;s<nsoil;s++)
@@ -151,18 +151,9 @@ int *fscansoilmap(LPJfile *file,       /**< pointer to LPJ config file */
   }
   else
   {
-    /* set default soil map if array is not defined */
     if(verbose)
-      fprintf(stderr,"WARNING011: Map 'soilmap' not found, default 1:1 mapping assumed.\n");
-    *size=config->nsoil+1;
-    soilmap=newvec(int,*size);
-    if(soilmap==NULL)
-    {
-      printallocerr("soilmap");
-      return NULL;
-    }
-    for(s=0;s<=config->nsoil;s++)
-      soilmap[s]=s;
+      fprintf(stderr,"ERROR255: Map 'soilmap' not found.\n");
+    soilmap=NULL;
   }
   return soilmap;
 } /* of 'fscansoilmap' */

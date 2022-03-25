@@ -15,14 +15,9 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <sys/stat.h>
 #include "lpj.h"
 
-#ifndef S_ISDIR /* macro is not defined on Windows */
-#define S_ISDIR(a) (a & _S_IFDIR)
-#endif
-
-static int checksoilcode(const Config *config)
+static int checksoilcode(Config *config)
 {
   FILE *file;
   Bool swap;
@@ -32,12 +27,33 @@ static int checksoilcode(const Config *config)
   int cell,ncell;
   unsigned int i,soilcode;
   char *name;
+  List *map;
+  int *soilmap;
   if(config->soil_filename.fmt!=CDF)
   {
-    file=fopensoilcode(&config->soil_filename,&swap,&offset,&type,config->nsoil,TRUE);
+    file=fopensoilcode(&config->soil_filename,&map,&swap,&offset,&type,config->nsoil,TRUE);
     if(file==NULL)
       return 1;
     ncell=getnsoilcode(&config->soil_filename,config->nsoil,TRUE);
+    if(map!=NULL)
+    {
+      soilmap=getsoilmap(map,config);
+      if(soilmap!=NULL)
+      {
+        if(config->soilmap!=NULL)
+          cmpsoilmap(soilmap,getlistlen(map),config);
+        free(config->soilmap);
+        config->soilmap=soilmap;
+        config->soilmap_size=getlistlen(map);
+      }
+      freemap(map);
+    }
+    if(config->soilmap==NULL)
+    {
+      config->soilmap=defaultsoilmap(&config->soilmap_size,config);
+      if(config->soilmap==NULL)
+        return 0;
+    }
     exist=newvec(Bool,config->soilmap_size);
     if(exist==NULL)
     {
@@ -232,14 +248,14 @@ static int checkclmfile(const Config *config,const Filename *filename,const char
         fprintf(stderr,"ERROR237: First year=%d in '%s' is greater than first simulation year %d.\n",header.firstyear,filename->name,config->firstyear);
         return 1;
       }
-      if(!config->fix_climate && header.firstyear+header.nyear*delta_year-1<config->lastyear)
+      if(!config->fix_climate && header.firstyear+(header.nyear-1)*delta_year<config->lastyear)
       {
-        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear*delta_year-1,filename->name,config->lastyear);
+        fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+(header.nyear-1)*delta_year,filename->name,config->lastyear);
         return 1;
       }
-        else if(config->fix_climate && header.firstyear+header.nyear*delta_year-1<config->fix_climate_year+config->fix_climate_cycle/2)
+        else if(config->fix_climate && header.firstyear+(header.nyear-1)*delta_year<config->fix_climate_year+config->fix_climate_cycle/2)
         {
-          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+header.nyear*delta_year-1,filename->name,config->fix_climate_year+config->fix_climate_cycle/2);
+          fprintf(stderr,"ERROR237: Last year=%d in '%s' is less than last simulation year %d.\n",header.firstyear+(header.nyear-1)*delta_year,filename->name,config->fix_climate_year+config->fix_climate_cycle/2);
           return 1;
         }
     }
@@ -277,14 +293,13 @@ static int checksoilfile(Config *config,const Filename *filename)
 
 static int checkdir(const char *path)
 {
-  struct stat filestat;
-  if(stat(path,&filestat))
+  if(getfilesize(path)==-1)
   {
     fprintf(stderr,"ERROR100: Directory '%s' cannot be openend: %s.\n",path,
             strerror(errno));
     return 1;
   }
-  else if(!S_ISDIR(filestat.st_mode))
+  else if(!isdir(path))
   {
     fprintf(stderr,"ERROR241: '%s' is not a directory.\n",path);
     return 1;

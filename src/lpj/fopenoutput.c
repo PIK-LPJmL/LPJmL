@@ -95,6 +95,9 @@ static void openfile(Outputfile *output,const Cell grid[],
     }
   }
   else if(isroot(*config) && !config->outputvars[i].oneyear)
+  {
+    if(!config->ischeckpoint && config->outputvars[i].filename.meta)
+      fprintoutputjson(i,0,config);
     switch(config->outputvars[i].filename.fmt)
     {
        case CLM:
@@ -108,12 +111,12 @@ static void openfile(Outputfile *output,const Cell grid[],
             if(config->checkpointyear>=config->outputyear)
             {
               fseek(output->files[config->outputvars[i].id].fp.file,
-                    headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION)+
+                    headersize(LPJOUTPUT_HEADER,config->outputvars[i].filename.version)+
                     getsize(i,config)*(config->checkpointyear-config->outputyear+1),SEEK_SET);
             }
             else
               fseek(output->files[config->outputvars[i].id].fp.file,
-                    headersize(LPJOUTPUT_HEADER,LPJOUTPUT_VERSION),SEEK_SET);
+                    headersize(LPJOUTPUT_HEADER,config->outputvars[i].filename.version),SEEK_SET);
           }
         }
         else
@@ -142,22 +145,35 @@ static void openfile(Outputfile *output,const Cell grid[],
                 header.scalar=0.01;
               }
               header.nbands=2;
+              header.nstep=1;
+              header.timestep=1;
               header.nyear=1;
               header.order=CELLYEAR;
               fwriteheader(output->files[config->outputvars[i].id].fp.file,
-                           &header,LPJGRID_HEADER,LPJGRID_VERSION);
+                           &header,LPJGRID_HEADER,config->outputvars[i].filename.version);
             }
             else
             {
               header.order=CELLSEQ;
-              header.nbands=getnyear(config->outnames,config->outputvars[i].id);
-              header.nbands*=outputsize(config->outputvars[i].id,
-                                        config->npft[GRASS]+config->npft[TREE],
-                                        config->npft[CROP],config);
-              header.nyear=config->lastyear-config->outputyear+1;
+              if(config->outputvars[i].id==COUNTRY || config->outputvars[i].id==REGION)
+              {
+                header.nstep=1;
+                header.timestep=1;
+                header.nyear=1;
+              }
+              else
+              {
+                header.nstep=getnyear(config->outnames,config->outputvars[i].id);
+                header.timestep=max(1,config->outnames[config->outputvars[i].id].timestep);
+                header.nyear=(config->lastyear-config->outputyear+1)/header.timestep;
+                header.firstyear=config->outputyear+header.timestep-1;
+              }
+              header.nbands=outputsize(config->outputvars[i].id,
+                                       config->npft[GRASS]+config->npft[TREE],
+                                       config->npft[CROP],config);
               header.datatype=getoutputtype(config->outputvars[i].id,FALSE);
               fwriteheader(output->files[config->outputvars[i].id].fp.file,
-                           &header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
+                           &header,LPJOUTPUT_HEADER,config->outputvars[i].filename.version);
             }
           }
         }
@@ -192,6 +208,7 @@ static void openfile(Outputfile *output,const Cell grid[],
           output->files[config->outputvars[i].id].isopen=TRUE;
         break;
     }
+  }
   output->files[config->outputvars[i].id].oneyear=config->outputvars[i].oneyear;
 } /* of 'openfile' */
 
@@ -344,6 +361,8 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
       if(isroot(*config))
       {
         snprintf(filename,STRING_LEN,config->outputvars[i].filename.name,year);
+        if(config->outputvars[i].filename.meta)
+          fprintoutputjson(i,year,config);
         switch(config->outputvars[i].filename.fmt)
         {
           case CLM:
@@ -363,17 +382,17 @@ void openoutput_yearly(Outputfile *output,int year,const Config *config)
               header.cellsize_lat=(float)config->resolution.lat;
               header.scalar=1;
               header.order=CELLSEQ;
-              header.nbands=getnyear(config->outnames,config->outputvars[i].id);
-              if(header.nbands==1)
-                header.nbands=outputsize(config->outputvars[i].id,
-                                         config->npft[GRASS]+config->npft[TREE],
-                                         config->npft[CROP],config);
+              header.timestep=1;
+              header.nstep=getnyear(config->outnames,config->outputvars[i].id);
+              header.nbands=outputsize(config->outputvars[i].id,
+                                       config->npft[GRASS]+config->npft[TREE],
+                                       config->npft[CROP],config);
               if(config->outputvars[i].id==SDATE || config->outputvars[i].id==HDATE || config->outputvars[i].id==SEASONALITY)
                 header.datatype=LPJ_SHORT;
               else
                 header.datatype=LPJ_FLOAT;
               fwriteheader(output->files[config->outputvars[i].id].fp.file,
-                           &header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
+                           &header,LPJOUTPUT_HEADER,config->outputvars[i].filename.version);
 
             }
             break;

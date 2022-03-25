@@ -14,18 +14,29 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "types.h"
 #include "errmsg.h"
 #include "list.h"
+#include "types.h"
 
-List *newlist(void) /** \return pointer to empty list */
+List *newlist(int size /**< size of list */
+             )         /** \return pointer to list of size size */
 {
   List *list;
   list=(List *)malloc(sizeof(List));
   if(list==NULL)
     return NULL;
-  list->n=0;
-  list->data=NULL;
+  list->n=size;
+  if(size==0)
+    list->data=NULL;
+  else
+  {
+    list->data=malloc(size*sizeof(void *));
+    if(list->data==NULL)
+    {
+      free(list);
+      list=NULL;
+    }
+  }
   return list;
 } /* of 'newlist' */
 
@@ -49,9 +60,9 @@ int dellistitem(List *list, /**< pointer to list */
   /* does not check for empty list or index out of range if SAFE not defined */
 #ifdef SAFE
   if(isempty(list))
-    fail(IS_EMPTY_ERR,TRUE,"list is empty in dellistitem!\n");
+    fail(IS_EMPTY_ERR,TRUE,"list is empty in dellistitem()");
   if(index<0 || index>=list->n)
-    fail(OUT_OF_RANGE_ERR,TRUE,"index=%d out of range in dellistitem\n",index);
+    fail(OUT_OF_RANGE_ERR,TRUE,"index=%d out of range in dellistitem()",index);
 #endif
   list->n--;
   list->data[index]=list->data[list->n];

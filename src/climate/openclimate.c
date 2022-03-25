@@ -20,6 +20,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
                  const Filename *filename, /**< file name and format */
                  const char *units,        /**< units in NetCDF file or NULL */
                  Type datatype,            /**< data type in binary file */
+                 int delta_year,           /**< time step (yrs) */
                  const Config *config      /**< LPJ configuration */
                 )                          /** \return TRUE on error */
 {
@@ -131,7 +132,35 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
     fclose(file->file);
     return TRUE;
   }
-  if(filename->fmt!=RAW && header.nbands!=NMONTH && header.nbands!=NDAYYEAR)
+  if(filename->fmt==META || (filename->fmt==CLM && version==4))
+  {
+    if(header.timestep!=delta_year)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR127: Invalid time step %d in '%s', must be %d.\n",
+                header.timestep,filename->name,delta_year);
+      fclose(file->file);
+      return TRUE;
+    }
+    if(header.nbands>1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR127: Invalid number of bands %d for step=%d in '%s', must be 1.\n",
+                header.nbands,header.nstep,filename->name);
+      fclose(file->file);
+      return TRUE;
+    }
+    if(header.nstep!=NMONTH && header.nstep!=NDAYYEAR)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR127: Invalid number of steps %d in '%s', must be 12 or 365.\n",
+                header.nstep,filename->name);
+      fclose(file->file);
+      return TRUE;
+    }
+    header.nbands=header.nstep;
+  }
+  else if(filename->fmt!=RAW && header.nbands!=NMONTH && header.nbands!=NDAYYEAR)
   {
     if(isroot(*config))
       fprintf(stderr,"ERROR127: Invalid number of bands %d in '%s', must be 12 or 365.\n",

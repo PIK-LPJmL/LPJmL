@@ -31,11 +31,13 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
     header.scalar=1;
     header.datatype=LPJ_SHORT;
     header.nbands=2;
+    header.nstep=1;
+    header.timestep=1;
     header.firstcell=0;
     header.ncell=0;
     header.nyear=1;
     header.cellsize_lon=header.cellsize_lat=0.5;
-    file=openmetafile(&header,swap,&h_offset,filename->name,isout);
+    file=openmetafile(&header,NULL,swap,&h_offset,filename->name,isout);
     if(file==NULL)
       return NULL;
     if(header.nbands!=2)
@@ -43,6 +45,22 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
       if(isout)
         fprintf(stderr,"ERROR218: Number of bands=%d in description file '%s' is not 2.\n",
                 header.nbands,filename->name);
+      fclose(file);
+      return NULL;
+    }
+    if(header.nstep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR218: Number of steps=%d in description file '%s' is not 1.\n",
+                header.nstep,filename->name);
+      fclose(file);
+      return NULL;
+    }
+    if(header.timestep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR218: Time step=%d in description file '%s' is not 1.\n",
+                header.timestep,filename->name);
       fclose(file);
       return NULL;
     }
@@ -70,7 +88,7 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
     {
       if(isout)
         fprintf(stderr,"ERROR154: Invalid header in '%s'.\n",filename->name);
-      fclose(file);                                                       
+      fclose(file);
       return NULL;
     }
     if(header.nbands!=2)
@@ -78,7 +96,23 @@ FILE *opencountrycode(const Filename *filename, /**< filename */
       if(isout)
         fprintf(stderr,"ERROR218: Number of bands=%d in countrycode file '%s' is not 2.\n",
                 header.nbands,filename->name);
-      fclose(file);                                                       
+      fclose(file);
+      return NULL;
+    }
+    if(header.nstep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR218: Number of steps=%d in countrycode file '%s' is not 1.\n",
+                header.nstep,filename->name);
+      fclose(file);
+      return NULL;
+    }
+    if(header.timestep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR218: Time step=%d in countrycode file '%s' is not 1.\n",
+                header.timestep,filename->name);
+      fclose(file);
       return NULL;
     }
     *type=header.datatype;

@@ -59,31 +59,21 @@ Standlist freadstandlist(FILE *file,            /**< File pointer to binary file
                         ) /** \return allocated stand list or NULL */
 {
   /* Function reads stand list from file */
-  int s;
+  int s,n;
   Standlist standlist;
   /* Read number of stands */
-  standlist=new(List);
+  if(freadint1(&n,swap,file)!=1)
+    return NULL;
+  standlist=newlist(n);
   if(standlist==NULL)
   {
     printallocerr("standlist");
     return NULL;
   }
-  if(freadint1(&standlist->n,swap,file)!=1)
-  {
-    free(standlist);
-    return NULL;
-  }
-  standlist->data=newvec(void *,standlist->n);
-  if(standlist->data==NULL)
-  {
-    printallocerr("standlist");
-    free(standlist);
-    return NULL;
-  }
   /* Read all stand data */
   for(s=0;s<standlist->n;s++)
-    if((standlist->data[s]=freadstand(file,cell,pftpar,ntotpft,soilpar,
-                                      standtype,nstand,double_harvest,swap))==NULL)
+    if((getlistitem(standlist,s)=freadstand(file,cell,pftpar,ntotpft,soilpar,
+                                            standtype,nstand,double_harvest,swap))==NULL)
       return NULL;
   return standlist;
 } /* of 'freadstandlist' */

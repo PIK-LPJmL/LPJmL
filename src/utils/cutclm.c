@@ -72,19 +72,25 @@ int main(int argc,char **argv)
             argv[index+1]);
     return EXIT_FAILURE;
   }
+  if(version>CLM_MAX_VERSION)
+  {
+    fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+            version,argv[index+1],CLM_MAX_VERSION+1);
+    return EXIT_FAILURE;
+  }
   if(version==3)
     size=typesizes[header.datatype];
   else
   {
     filesize=getfilesizep(file);
-    size=(filesize-headersize(id,version))/header.ncell/header.nbands/header.nyear;
+    size=(filesize-headersize(id,version))/header.ncell/header.nbands/header.nyear/header.nstep;
     printf("Size of data: %Ld bytes\n",size);
     if(size!=1 && size!=2 && size!=4 && size!=8)
     {
       fprintf(stderr,"Invalid size of data=%Ld.\n",size);
       return EXIT_FAILURE;
     }
-    if((filesize-headersize(id,version)) % ((long long)header.ncell*header.nbands*header.nyear)!=0)
+    if((filesize-headersize(id,version)) % ((long long)header.ncell*header.nbands*header.nyear*header.nstep)!=0)
       fprintf(stderr,"Warning: file size of '%s' is not multiple of ncell*nbands*nyear.\n",argv[index+1]);
   }
   if(year<header.firstyear || year>=header.firstyear+header.nyear)
@@ -103,7 +109,7 @@ int main(int argc,char **argv)
     header.nyear=year-header.firstyear+1;
   else
   {
-    if(fseek(file,size*(year-header.firstyear)*header.nbands*header.ncell,SEEK_CUR))
+    if(fseek(file,size*(year-header.firstyear)*header.nbands*header.nstep*header.ncell,SEEK_CUR))
     {
       fprintf(stderr,"Error seeking in '%s' to year %d.\n",argv[index+1],year);
       return EXIT_FAILURE;
@@ -115,7 +121,7 @@ int main(int argc,char **argv)
   switch(size)
   {
     case 1:
-      for(i=0;i<header.nyear*header.nbands*header.ncell;i++)
+      for(i=0;i<header.nyear*header.nbands*header.nstep*header.ncell;i++)
       {
         if(fread(&bdata,1,1,file)!=1)
         {
@@ -126,7 +132,7 @@ int main(int argc,char **argv)
       }
       break;
     case 2:
-      for(i=0;i<header.nyear*header.nbands*header.ncell;i++)
+      for(i=0;i<header.nyear*header.nbands*header.nstep*header.ncell;i++)
       {
         if(freadshort(&sdata,1,swap,file)!=1)
         {
@@ -137,7 +143,7 @@ int main(int argc,char **argv)
       }
       break;
     case 4:
-      for(i=0;i<header.nyear*header.nbands*header.ncell;i++)
+      for(i=0;i<header.nyear*header.nbands*header.nstep*header.ncell;i++)
       {
         if(freadint(&idata,1,swap,file)!=1)
         {
@@ -148,7 +154,7 @@ int main(int argc,char **argv)
       }
       break;
     case 8:
-      for(i=0;i<header.nyear*header.nbands*header.ncell;i++)
+      for(i=0;i<header.nyear*header.nbands*header.nstep*header.ncell;i++)
       {
         if(freadlong(&ldata,1,swap,file)!=1)
         {

@@ -71,6 +71,8 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
 {
   Celldata celldata;
   Header header;
+  List *map;
+  int *soilmap;
   String headername;
   int version;
   float lon,lat;
@@ -113,6 +115,7 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
 
     /* Open soiltype file */
     celldata->soil.bin.file=fopensoilcode(&config->soil_filename,
+                                          &map,
                                           &celldata->soil.bin.swap,
                                           &celldata->soil.bin.offset,
                                           &celldata->soil.bin.type,config->nsoil,
@@ -122,6 +125,30 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
       closecoord(celldata->soil.bin.file_coord);
       free(celldata);
       return NULL;
+    }
+    if(map!=NULL)
+    {
+      soilmap=getsoilmap(map,config);
+      if(soilmap==NULL)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR249: Invalid soilmap in '%s'.\n",config->soil_filename.name);
+      }
+      else
+      {
+        if(isroot(*config) && config->soilmap!=NULL)
+           cmpsoilmap(soilmap,getlistlen(map),config);
+        free(config->soilmap);
+        config->soilmap=soilmap;
+        config->soilmap_size=getlistlen(map);
+      }
+      freemap(map);
+    }
+    if(config->soilmap==NULL)
+    {
+      config->soilmap=defaultsoilmap(&config->soilmap_size,config);
+      if(config->soilmap==NULL)
+        return NULL;
     }
   }
   celldata->kbf.fmt = config->kbf_filename.fmt;
@@ -224,6 +251,22 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
         if(isroot(*config))
           fprintf(stderr,"ERROR218: Invalid number of bands %d in '%s', must be 1.\n",
                   header.nbands,config->soilph_filename.name);
+        free(celldata);
+        return NULL;
+      }
+      if(header.nstep!=1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR218: Invalid number of steps %d in '%s', must be 1.\n",
+                  header.nstep,config->soilph_filename.name);
+        free(celldata);
+        return NULL;
+      }
+      if(header.timestep!=1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR218: Invalid time  step %d in '%s', must be 1.\n",
+                  header.timestep,config->soilph_filename.name);
         free(celldata);
         return NULL;
       }

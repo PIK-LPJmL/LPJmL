@@ -29,6 +29,7 @@
 "layer_index" : "layer", /* name of index variable for soil layer output */
 "compress_cmd" : "gzip -f", /* command for compression of output files */
 "compress_suffix" : ".gz",  /* file suffix for compressed output files */
+"json_suffix" : ".json",    /* file suffix for JSON metafiles */
 "csv_delimit" : ",",        /* delimiter for CSV files */
 
 "outputvar" :
