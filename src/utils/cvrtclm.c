@@ -14,7 +14,7 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-4] [-scale s] [-type {byte|short|int|float|double}] [-cellsize size] [-swapnstep] infile outfile\n"
+#define USAGE "Usage: %s [-4] [-scale s] [-type {byte|short|int|float|double}] [-timestep n] [-cellsize size] [-swapnstep] infile outfile\n"
 
 #define BUFSIZE (1024*1024) /* size of read buffer */
 
@@ -22,7 +22,7 @@ int main(int argc,char **argv)
 {
   FILE *infile,*outfile;
   Header header;
-  int version,new_version;
+  int version,new_version,timestep;
   String id;
   const char *progname;
   char *endptr;
@@ -39,6 +39,7 @@ int main(int argc,char **argv)
   cellsize=0.5;
   new_version=3;
   swapnstep=FALSE;
+  timestep=1;
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -101,6 +102,25 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
       }
+      else if(!strcmp(argv[iarg],"-timestep"))
+      {
+        if(iarg==argc-1)
+        {
+          fprintf(stderr,"Argument missing for option '-timestep'.\n");
+          return EXIT_FAILURE;
+        }
+        timestep=(float)strtol(argv[++iarg],&endptr,10);
+        if(*endptr!='\0')
+        {
+          fprintf(stderr,"Invalid number '%s' for option '-timestep'.\n",argv[iarg]);
+          return EXIT_FAILURE;
+        }
+        if(timestep<=0)
+        {
+          fputs("Time step less than or equal to zero.\n",stderr);
+          return EXIT_FAILURE;
+        }
+      }
       else
       {
         fprintf(stderr,"Invalid option '%s'.\n"
@@ -145,6 +165,7 @@ int main(int argc,char **argv)
      header.nstep=header.nbands;
      header.nbands=1;
   }
+  header.timestep=timestep;
   filesize=getfilesizep(infile);
   if((header.order==CELLINDEX && filesize!=sizeof(int)*header.ncell+(long long)header.ncell*header.nbands*header.nstep*header.nyear*typesizes[header.datatype]+headersize(id,version)) ||
      (header.order!=CELLINDEX && filesize!=(long long)header.ncell*header.nbands*header.nstep*header.nyear*typesizes[header.datatype]+headersize(id,version)))
