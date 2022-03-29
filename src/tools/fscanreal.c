@@ -35,7 +35,7 @@ Bool fscanreal(LPJfile *file,    /**< pointer to a LPJ file             */
     {
       if(verb)
         fprintf(stderr,"WARNING027: Name '%s' for real not found, set to %g.\n",name,*val);
-        return FALSE;
+      return FALSE;
     }
     else
     {
@@ -59,12 +59,13 @@ Bool fscanreal(LPJfile *file,    /**< pointer to a LPJ file             */
   if (verb >= VERB)
     printf("\"%s\" : %g\n",name,*val);
   return FALSE;
-}
-Bool ffscanreal(FILE *file,    /**< pointer to a LPJ file             */
-               Real *val,        /**< real value read from file         */
-               const char *name, /**< name of variable                  */
-               Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
-              )                  /** \return TRUE on error              */
+} /* of 'fscanreal' */
+
+Bool ffscanreal(FILE *file,       /**< pointer to text file              */
+                Real *val,        /**< real value read from file         */
+                const char *name, /**< name of variable                  */
+                Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
+               )                  /** \return TRUE on error              */
 {
   double x;
   Bool rc;
@@ -80,8 +81,8 @@ Bool ffscanreal(FILE *file,    /**< pointer to a LPJ file             */
   {
     if(verb)
     {
-      fprintf(stderr,"ERROR101: Cannot read int '%s' in line %d of '%s', ",
-            name,getlinecount(),getfilename());
+      fprintf(stderr,"ERROR101: Cannot read real '%s' in line %d of '%s', ",
+              name,getlinecount(),getfilename());
       if(strlen(token)>0)
       {
         fputs("read:\n",stderr);
@@ -105,4 +106,4 @@ Bool ffscanreal(FILE *file,    /**< pointer to a LPJ file             */
   if (verb >= VERB)
     printf("\"%s\" : %g\n",name,*val);
   return FALSE;  /* no error */
-} /* of 'fscanreal' */
+} /* of 'ffscanreal' */

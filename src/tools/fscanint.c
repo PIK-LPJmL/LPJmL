@@ -43,7 +43,7 @@ Bool fscanint(LPJfile *file,    /**< pointer to LPJ file */
       else
       {
         if(verb)
-           fprintf(stderr,"ERROR225: Name '%s' for int not found.\n",name);
+          fprintf(stderr,"ERROR225: Name '%s' for int not found.\n",name);
         return TRUE;
       }
     }
@@ -58,12 +58,13 @@ Bool fscanint(LPJfile *file,    /**< pointer to LPJ file */
   if (verb >= VERB)
     printf("\"%s\" : %d\n", name, *value);
   return FALSE;
-}
-Bool ffscanint(FILE *file,    /**< pointer to LPJ file */
+} /* of 'fscanint' */
+
+Bool ffscanint(FILE *file,       /**< pointer to text file */
                int *value,       /**< integer to be read from file */
                const char *name, /**< variable name */
-               Verbosity verb /**< verbosity level (NO_ERR,ERR,VERB) */
-              )                /** \return TRUE on error */
+               Verbosity verb    /**< verbosity level (NO_ERR,ERR,VERB) */
+              )                  /** \return TRUE on error */
 {
   String line,token;
   char *ptr;
