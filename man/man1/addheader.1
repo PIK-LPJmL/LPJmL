@@ -3,7 +3,7 @@
 addheader \- Add clm header to binary file
 .SH SYNOPSIS
 .B addheader
-[-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n] [-firstcell n] [-nbands n] [-order n] [-version n] [-cellsize s] [-scale s] [-id s] [-type {byte|short|int|float|double}] \fIbinfile\fP \fIclmfile\fP
+[-swap] [-nyear n] [-firstyear n] [-lastyear n] [-ncell n] [-firstcell n] [-nbands n] [-nstep n ] [-order n] [-version n] [-cellsize s] [-scale s] [-id s] [-type {byte|short|int|float|double}] \fIbinfile\fP \fIclmfile\fP
 .SH DESCRIPTION
 Program adds clm header to raw  binary file for LPJmL.
 .SH OPTIONS
@@ -28,6 +28,9 @@ Set index of first cell, default is 0
 .TP
 -nbands n
 Set number of bands, default is 12
+.TP
+-nstep n
+Set number of steps, default is 1
 .TP
 -order n
 Set order of data, default is 0

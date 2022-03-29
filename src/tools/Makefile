@@ -33,7 +33,8 @@ OBJS    = swap.$O freadheader.$O coord.$O openinputfile.$O\
           fscanarray.$O fscanarrayindex.$O fscanbool.$O iskeydefined.$O\
           isboolean.$O fscanreal01.$O fscankeywords.$O isstring.$O\
           sprinttimestep.$O fscantimestep.$O isnull.$O fwriterestartheader.$O\
-          getfilefrommeta.$O isint.$O
+          getfilefrommeta.$O isint.$O parse_json.$O closeconfig.$O isdir.$O\
+          fscanstringarray.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib

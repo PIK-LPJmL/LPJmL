@@ -467,6 +467,7 @@ int main(int argc,char **argv)
   header.scalar=scale;
   header.order=CELLYEAR;
   header.firstcell=0;
+  header.timestep=1;
   header.datatype=(isfloat) ? LPJ_FLOAT : LPJ_SHORT;
   file=fopen(outname,"wb");
   if(file==NULL)
@@ -490,16 +491,19 @@ int main(int argc,char **argv)
       switch(climate.time_step)
       {
         case DAY:
-          header.nbands=NDAYYEAR*climate.var_len;
+          header.nstep=NDAYYEAR;
+          header.nbands=climate.var_len;
           if(verbose)
             printf("daily");
           break;
         case MONTH:
-          header.nbands=NMONTH*climate.var_len;
+          header.nstep=NMONTH;
+          header.nbands=climate.var_len;
           if(verbose)
             printf("monthly");
           break;
         case YEAR: case MISSING_TIME:
+          header.nstep=1;
           header.nbands=climate.var_len;
           if(verbose)
             printf((climate.time_step==YEAR) ? "yearly" : "no");
@@ -513,7 +517,7 @@ int main(int argc,char **argv)
         else
           printf("\n");
       }
-      data=newvec(float,config.ngridcell*header.nbands);
+      data=newvec(float,config.ngridcell*header.nbands*header.nstep);
       if(data==NULL)
       {
         printallocerr("data");
@@ -521,7 +525,7 @@ int main(int argc,char **argv)
       }
       if(!isfloat)
       {
-        s=newvec(short,config.ngridcell*header.nbands);
+        s=newvec(short,config.ngridcell*header.nbands*header.nstep);
         if(s==NULL)
         {
           printallocerr("short");
@@ -558,7 +562,7 @@ int main(int argc,char **argv)
       }
       if(isfloat)
       {
-        if(fwrite(data,sizeof(float),config.ngridcell*header.nbands,file)!=config.ngridcell*header.nbands)
+        if(fwrite(data,sizeof(float),config.ngridcell*header.nbands*header.nstep,file)!=config.ngridcell*header.nbands*header.nstep)
         {
           fprintf(stderr,"Error writing data in '%s' in year %d.\n",outname,year+climate.firstyear);
           return EXIT_FAILURE;
@@ -566,17 +570,17 @@ int main(int argc,char **argv)
       }
       else
       {
-        for(k=0;k<config.ngridcell*header.nbands;k++)
+        for(k=0;k<config.ngridcell*header.nbands*header.nstep;k++)
         {
           if(round(data[k]/scale)<SHRT_MIN || round(data[k]/scale)>SHRT_MAX)
           {
-            fprintf(stderr,"WARNING: Data overflow for cell %d ",k/header.nbands);
-            fprintcoord(stderr,coords+k/header.nbands);
-            fprintf(stderr,") at %s %d in %d.\n",isdaily(climate) ? "day" : "month",(k % header.nbands)+1,climate.firstyear+year);
+            fprintf(stderr,"WARNING: Data overflow for cell %d ",k/header.nbands/header.nbands);
+            fprintcoord(stderr,coords+k/header.nbands/header.nbands);
+            fprintf(stderr,") at %s %d in %d.\n",isdaily(climate) ? "day" : "month",(k % (header.nbands*header.nbands))+1,climate.firstyear+year);
           }
           s[k]=(short)round(data[k]/scale);
         }
-        if(fwrite(s,sizeof(short),config.ngridcell*header.nbands,file)!=config.ngridcell*header.nbands)
+        if(fwrite(s,sizeof(short),config.ngridcell*header.nbands*header.nstep,file)!=config.ngridcell*header.nbands*header.nstep)
         {
           fprintf(stderr,"Error writing data in '%s' in year %d.\n",outname,year+climate.firstyear);
           return EXIT_FAILURE;
@@ -587,6 +591,8 @@ int main(int argc,char **argv)
     nc_close(climate.ncid);
   }
   rewind(file);
+  if(version<4)
+    header.nbands*=header.nstep;
   fwriteheader(file,&header,id,version);
   fclose(file);
   return EXIT_SUCCESS;

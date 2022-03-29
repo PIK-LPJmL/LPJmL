@@ -82,6 +82,8 @@ typedef struct
   Bool isscale; /* scale factor defined? */
   int timestep; /* time step for output (ANNUAL,MONTHLY,DAILY) */
   int fmt;    /* format (TXT/RAW/CLM/CDF) */
+  Bool meta; /* meta file output enabled */
+  int version; /* version of clm file */
 } Filename;
 
 typedef struct
@@ -117,7 +119,7 @@ extern Bool iskeydefined(const LPJfile *,const char *);
 extern Bool isboolean(const LPJfile *,const char *);
 extern Bool isint(const LPJfile *,const char *);
 extern Bool isstring(const LPJfile *,const char *);
-extern Bool fscanline(FILE *,char [],int,Verbosity);
+extern char *fscanline(FILE *);
 extern Bool fscantoken(FILE *,String);
 extern Bool fscankeywords(LPJfile *,int *,const char *,const char *const *,
                           int,Bool,Verbosity);
@@ -156,6 +158,7 @@ extern Bool readfloatvec(FILE *,float *,float,size_t,Bool,Type);
 extern Bool readintvec(FILE *,int *,size_t,Bool,Type);
 extern Bool readuintvec(FILE *,unsigned int *,size_t,Bool,Type);
 extern Bool readfilename(LPJfile *,Filename *,const char *,const char *,Bool,Verbosity);
+extern void freefilename(Filename *);
 extern void **newmat(size_t,int,int);
 extern void freemat(void **);
 extern char *catstrvec(const char * const *,int);
@@ -168,6 +171,8 @@ extern Bool fscaninteof(FILE *,int *,const char *,Bool *,Bool);
 extern char *sprinttimestep(String,int);
 extern Bool fscantimestep(LPJfile *,int *,Verbosity);
 extern char *getrealfilename(const Filename *);
+extern Bool parse_json(FILE *,LPJfile *,char *,Verbosity);
+extern Bool isdir(const char *);
 #ifdef WITH_FPE
 extern void enablefpe(void);
 #endif

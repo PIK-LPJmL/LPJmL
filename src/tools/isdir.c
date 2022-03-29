@@ -1,8 +1,8 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                   f  p  u  t  p  r  i  n  t  a  b  l  e  .  c                  \n**/
+/**                    i  s  d  i  r  .  c                                         \n**/
 /**                                                                                \n**/
-/**     Function prints only printable characters or '?' to text file              \n**/
+/**     Function determines whether file is a directory                            \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -12,18 +12,21 @@
 /**                                                                                \n**/
 /**************************************************************************************/
 
-#include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
+#include <stdio.h>
+#include <sys/stat.h>
 #include "types.h"
 
-void fputprintable(FILE *file,      /**< pointer to text file */
-                   const char *line /**< string to be print */
-                  )
+#ifndef S_ISDIR /* macro is not defined on Windows */
+#define S_ISDIR(a) (a & _S_IFDIR)
+#endif
+
+Bool isdir(const char *name /**< filename */
+          )                 /** \return name is a directory (TRUE/FALSE) */
 {
-  while(*line!='\0')
-  {
-    fputc(isprint(*line) ? *line : '?',file);
-    line++;
-  }
-} /* of 'fputprintable' */ 
+  struct stat filestat;
+  if(stat(name,&filestat))
+    return FALSE;
+  return S_ISDIR(filestat.st_mode);
+} /* of 'isdir' */
+

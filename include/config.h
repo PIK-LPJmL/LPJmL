@@ -248,6 +248,7 @@ struct config
   int irrig_scenario;       /**< irrigation scenario (NO:0, LIM:1, POT:2, ALL:3, IRRIG on RAINFED: 4) */
   Bool rw_manage;           /**< rain-water management enabled: reduced soil evaporation + rain-water harvesting */
   Bool pft_output_scaled;   /**< PFT output grid scaled */
+  char *json_suffix;        /**< suffix for JSON metafiles */
   int with_radiation;       /**< input of radiation components (CLOUDINESS, RADIATION, RADIATION_SWONLY, RADIATION_LWDOWN) */
   Bool prescribe_burntarea;	/**< use input to prescribe burnt area to SPITFIRE? */
   int prescribe_landcover; /**< use input to prescribe land cover ? */
@@ -300,6 +301,7 @@ extern void fprintfiles(FILE *,Bool,Bool,const Config *);
 extern Bool getextension(Extension *,const Config *);
 extern void fprintincludes(FILE *,const char *,int,char **);
 extern size_t getsize(int,const Config *);
+extern void closeconfig(LPJfile *);
 
 /* Definition of macros */
 

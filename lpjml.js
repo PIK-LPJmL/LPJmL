@@ -128,7 +128,8 @@
 #define SUFFIX pft.bin
 #endif
 
-  "float_grid" : false, /* set datatype of grid file to float (TRUE/FALSE) */
+  "output_metafile" : false, /* no json metafile created */
+  "float_grid" : false,      /* set datatype of grid file to float (TRUE/FALSE) */
 
 #define mkstr(s) xstr(s) /* putting string in quotation marks */
 #define xstr(s) #s

@@ -48,7 +48,8 @@ OBJS    = update_daily.$O update_annual.$O init_annual.$O\
           f_lai.$O getsize.$O fprintoutputvar.$O isdailyoutput_natural.$O\
           getngrassnat.$O fscancnratio.$O isnitrogen_output.$O initoutputdata.$O\
           fprintcsvflux.$O extflow.$O f_temp_bnf.$O f_water_bnf.$O\
-          ma_biological_n_fixation.$O
+          ma_biological_n_fixation.$O fprintcsvflux.$O extflow.$O\
+          fprintoutputjson.$O
 
 INC     = ../../include
 LIBDIR  = ../../lib
@@ -73,7 +74,7 @@ $(LIBDIR)/$(LIB): $(OBJS)
 $(OBJS): $(HDRS)
 
 .c.$O: 
-	$(CC) $(CFLAGS) -I$(INC) $(JSON_INC) -c $*.c
+	$(CC) $(CFLAGS) -I$(INC) -c $*.c
 
 clean: 
 	$(RM) $(RMFLAGS) $(OBJS)

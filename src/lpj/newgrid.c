@@ -154,6 +154,14 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           free(celldata);
           return NULL;
         }
+        if(header.nstep!=1)
+        {
+          if(isroot(*config))
+            fprintf(stderr,"ERROR218: Invalid number of steps %d in '%s', must be 1.\n",
+                  header.nstep,config->grassfix_filename.name);
+          free(celldata);
+          return NULL;
+        }
         if(isroot(*config) && config->grassfix_filename.fmt!=META)
         {
           filesize=getfilesizep(grassfix_file.bin.file)-headersize(headername,version)-grassfix_file.bin.offset;
@@ -216,6 +224,14 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
           if(isroot(*config))
             fprintf(stderr,"ERROR218: Invalid number of bands %d in '%s', must be 1.\n",
                   header.nbands,config->grassharvest_filename.name);
+          free(celldata);
+          return NULL;
+        }
+        if(header.nstep!=1)
+        {
+          if(isroot(*config))
+            fprintf(stderr,"ERROR218: Invalid number of steps %d in '%s', must be 1.\n",
+                  header.nstep,config->grassharvest_filename.name);
           free(celldata);
           return NULL;
         }
@@ -300,6 +316,14 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
         if(isroot(*config))
           fprintf(stderr,"ERROR218: Invalid number of bands %d in '%s', must be 1.\n",
                   header.nbands,config->lakes_filename.name);
+        free(celldata);
+        return NULL;
+      }
+      if(header.nstep!=1)
+      {
+        if(isroot(*config))
+          fprintf(stderr,"ERROR218: Invalid number of steps %d in '%s', must be 1.\n",
+                  header.nstep,config->lakes_filename.name);
         free(celldata);
         return NULL;
       }
@@ -733,7 +757,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       {
         setseed(grid[i].seed,config->seed_start+(i+config->startgrid)*36363);
         grid[i].skip=FALSE;
-        grid[i].standlist=newlist();
+        grid[i].standlist=newlist(0);
         checkptr(grid[i].standlist);
         grid[i].gdd=newgdd(npft);
         checkptr(grid[i].gdd);

@@ -143,7 +143,7 @@ void fprintincludes(FILE *out,                 /**< pointer to text file */
   }
   initscan(filename);
   free(options);
-  list=newlist();
+  list=newlist(0);
   while(!fscantoken(file,token))
   {
     incfilename=getfilename();

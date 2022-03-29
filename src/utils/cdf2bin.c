@@ -231,6 +231,7 @@ int main(int argc,char **argv)
   int i,j;
   float cellsize_lon,cellsize_lat;
   Bool swap,verbose,isclm,isbyte;
+  Header header;
   isbyte=swap=verbose=isclm=FALSE;
   units=NULL;
   var=NULL;
@@ -337,6 +338,10 @@ int main(int argc,char **argv)
     config.resolution.lon=cellsize_lon;
     for(j=0;j<numcoord(coordfile);j++)
       readcoord(coordfile,grid+j,&config.resolution);
+    header.ncell=config.ngridcell;
+    header.cellsize_lat=config.resolution.lat;
+    header.cellsize_lon=config.resolution.lon;
+    header.firstcell=getfirstcoord(coordfile);
     closecoord(coordfile);
   }
   else
@@ -387,12 +392,56 @@ int main(int argc,char **argv)
       fprintf(stderr,"Error opening '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
+    if(isclm)
+    {
+      if(j==i+1)
+      {
+        header.firstyear=data.firstyear;
+        header.nyear=data.nyear;
+        header.datatype=data.datatype;
+        header.nbands=data.var_len;
+        header.order=CELLSEQ;
+        header.scalar=1;
+        switch(data.time_step)
+        {
+          case DAY:
+            header.nstep=NDAYYEAR;
+            break;
+          case MONTH:
+            header.nstep=NMONTH;
+            break;
+          case YEAR: case MISSING_TIME:
+            header.nstep=1;
+            break;
+        }
+        fwriteheader(file,&header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
+      }
+      else
+      {
+        if(data.firstyear!=header.firstyear+header.nyear)
+        {
+          fprintf(stderr,"First year %d in '%s' is not %d.\n",data.firstyear,argv[j],header.firstyear+header.nyear);
+          return EXIT_FAILURE;
+        }
+        if(data.var_len!=header.nbands)
+        {
+          fprintf(stderr,"Number of bands %d in '%s' is not %d.\n",(int)data.var_len,argv[j],header.nbands);
+          return EXIT_FAILURE;
+        }
+        header.nyear+=data.nyear;
+      }
+    }
     if(readdata(&data,file,grid,isbyte,&config))
     {
       fprintf(stderr,"Error reading '%s'.\n",argv[j]);
       return EXIT_FAILURE;
     }
     nc_close(data.ncid);
+  }
+  if(isclm)
+  {
+    rewind(file);
+    fwriteheader(file,&header,LPJOUTPUT_HEADER,LPJOUTPUT_VERSION);
   }
   fclose(file);
   return EXIT_SUCCESS;

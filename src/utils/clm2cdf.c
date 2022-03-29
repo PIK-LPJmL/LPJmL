@@ -566,11 +566,43 @@ int main(int argc,char **argv)
       fclose(file);
       return EXIT_FAILURE;
     }
+    if(version>CLM_MAX_VERSION)
+    {
+      fprintf(stderr,"Error: Unsupported version %d in '%s', must be less than %d.\n",
+              version,argv[iarg+2],CLM_MAX_VERSION+1);
+      fclose(file);
+      return EXIT_FAILURE;
+    }
+    if(header.order!=CELLYEAR)
+    {
+      fprintf(stderr,"Error: Order in '%s' must be cellyear, order ",argv[iarg+2]);
+      if(header.order>0 || header.order<=CELLSEQ)
+        fprintf(stderr,"%s",ordernames[header.order-1]);
+      else
+        fprintf(stderr,"%d",header.order);
+      fprintf(stderr," is not supported.\n.");
+    }
     if(version==1)
       header.scalar=scale;
     if(version<3)
       header.datatype=(istype)  ? type  : LPJ_SHORT;
     filesize=getfilesizep(file)-headersize(headername,version);
+    if(version==4)
+    {
+      if(header.nstep==1 && header.nbands>1)
+        landuse=TRUE;
+      else if(header.nstep>1)
+      {
+        if(header.nbands>1)
+        {
+          fprintf(stderr,"Error: Number of bands %d and number of steps %d >1 in '%s' not supported.\n",
+                  header.nbands,header.nstep,argv[iarg+2]);
+          fclose(file);
+          return EXIT_FAILURE;
+        }
+        header.nbands=header.nstep;
+      }
+    }
     if(filesize!=(long long)header.nyear*header.ncell*header.nbands*typesizes[header.datatype])
       fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+2]);
 
