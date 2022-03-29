@@ -145,6 +145,8 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
        getoutput(&pft->stand->cell->output,BNF,config)+=n_fixed*pft->stand->frac;
        pft->stand->cell->balance.n_influx+=n_fixed*pft->stand->frac;
     }
+    else
+      pft->npp_bnf=0.0;
     if(*n_plant_demand/(1+pft->par->knstore)>(vegn_sum_grass(pft)-grass->turn_litt.root.nitrogen-grass->turn_litt.leaf.nitrogen+pft->bm_inc.nitrogen))
     {
       NC_actual=(vegn_sum_grass(pft)+pft->bm_inc.nitrogen)/(vegc_sum_grass(pft)+pft->bm_inc.carbon);

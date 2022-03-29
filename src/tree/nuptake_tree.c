@@ -145,6 +145,8 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
        getoutput(&pft->stand->cell->output,BNF,config)+=n_fixed*pft->stand->frac;
        pft->stand->cell->balance.n_influx+=n_fixed*pft->stand->frac;
     }
+    else
+      pft->npp_bnf=0.0;
     if(*n_plant_demand/(1+pft->par->knstore)>(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))   /*HERE RECALCULATION OF N-demand TO N-supply*/
     {
       NC_actual=(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind)/(vegc_sum_tree(pft)+pft->bm_inc.carbon-tree->ind.heartwood.carbon*pft->nind);

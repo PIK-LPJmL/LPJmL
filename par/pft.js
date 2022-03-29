@@ -78,7 +78,7 @@
 #define SWC_BNF_HIGH 0.5
 #define PHI_BNF_1 0.0
 #define PHI_BNF_2 2.0
-#define MAXBNFCOST 0.5
+#define MAXBNFCOST 0.25
 
 
 "pftpar" :
