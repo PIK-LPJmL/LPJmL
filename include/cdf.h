@@ -63,6 +63,7 @@ typedef struct
   long long size;   /**< size of dataset for each year in bytes */
   int nyear;        /**< number of years of climate data */
   Time time_step;   /**< time steps (DAY/MONTH/YEAR) */
+  int delta_year;   /**< time step for yearly output (yrs) */
   Bool ready;       /**< data was already averaged */
   Bool swap;        /**< byte order has to be changed (TRUE/FALSE) */
   FILE *file;       /**< file pointer */

@@ -32,6 +32,7 @@ typedef struct
 
 static Cdf *create_cdf(const char *filename,
                        List *map,
+                       const char *map_name,
                        const char *cmdline,
                        const char *name,
                        const char *units,
@@ -201,7 +202,7 @@ static Cdf *create_cdf(const char *filename,
        dim2[0]=pft_dim_id;
     else
     {
-    rc=nc_def_dim(cdf->ncid,"band_names",getlistlen(map),&map_dim_id);
+    rc=nc_def_dim(cdf->ncid,map_name,getlistlen(map),&map_dim_id);
     error(rc);
     dim2[0]=map_dim_id;
     }
@@ -421,7 +422,7 @@ int main(int argc,char **argv)
   floatgrid=FALSE;
   isclm=FALSE;
   ismeta=FALSE;
-  map_name="band_names";
+  map_name=BAND_NAMES;
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
     {
@@ -745,7 +746,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   free(grid);
   cmdline=catstrvec(argv,argc);
-  cdf=create_cdf(argv[iarg+3],map,cmdline,argv[iarg],units,descr,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,ispft,compress,index);
+  cdf=create_cdf(argv[iarg+3],map,map_name,cmdline,argv[iarg],units,descr,(isshort) ? LPJ_SHORT : LPJ_FLOAT,header,ispft,compress,index);
   free(cmdline);
   if(cdf==NULL)
     return EXIT_FAILURE;

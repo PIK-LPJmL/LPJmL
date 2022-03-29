@@ -69,6 +69,7 @@
 #define READ_VERSION -1
 #define CLM_MAX_VERSION 4  /**< highest version for clm files supported */
 #define MAP_NAME "map"     /**< name of map in JSON files */
+#define BAND_NAMES "band_names" /**< name of band string array in JSON metafiles */
 
 extern const char *ordernames[];
 
@@ -153,7 +154,7 @@ extern char *parse_json_metafile(LPJfile *,char *,Header *,List **,size_t *,Bool
 extern List *fscanstringarray(LPJfile *,const char *,Verbosity);
 extern void freemap(List *);
 extern void fprintmap(FILE *,List *);
-extern void fprintjson(FILE *,const char *,const char *,const Header *,List *,const char *,const char *,Bool,int);
+extern void fprintjson(FILE *,const char *,const char *,const Header *,List *,const char *,int,const char *,Bool,int);
 
 /* Definition of macros */
 

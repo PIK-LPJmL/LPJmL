@@ -103,6 +103,10 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
           return TRUE;
         }
         file->firstyear=time[0];
+        if(time_len>1)
+          file->delta_year=time[1]-time[0];
+        else
+          file->delta_year=1;
         free(time);
       }
       else if(!strcmp("day as %Y%m%d.%f",s))
@@ -180,6 +184,10 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
         {
           file->time_step=YEAR;
           file->firstyear+=time[0];
+          if(time_len>1)
+            file->delta_year=time[1]-time[0];
+          else
+            file->delta_year=1;
         }
         else if(!strcmp(name,"days"))
         {

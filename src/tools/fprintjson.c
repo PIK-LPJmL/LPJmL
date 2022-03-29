@@ -24,6 +24,7 @@ void fprintjson(FILE *file,           /**< pointer to text file */
                 const Header *header, /**< file header */
                 List *map,            /**< pointer to string array or NULL */
                 const char *map_name, /**< Name of string array or NULL */
+                int format,           /**< file format (RAW/CLM) */
                 const char *id,       /**< Id of clm file */
                 Bool swap,            /**< byte order has to be swapped (TRUE/FALSE) */
                 int version           /**< version of clm file */
@@ -63,10 +64,14 @@ void fprintjson(FILE *file,           /**< pointer to text file */
     }
     fputs("],\n",file);
   }
-  fprintf(file,"  \"format\" : \"clm\",\n");
+  if(format>=0 && format<N_FMT)
+    fprintf(file,"  \"format\" : \"%s\",\n",fmt[format]);
   fprintf(file,"  \"order\" : \"%s\",\n",ordernames[max(0,header->order-1)]);
-  fprintf(file,"  \"version\" : %d,\n",version);
-  fprintf(file,"  \"bigendian\" : %s,\n",bool2str((!swap && bigendian()) || (swap && !bigendian())));
-  fprintf(file,"  \"offset\" : %zu\n",headersize(id,version));
+  if(format==CLM || format==CLM2)
+  {
+    fprintf(file,"  \"version\" : %d,\n",version);
+    fprintf(file,"  \"offset\" : %zu,\n",headersize(id,version));
+  }
+  fprintf(file,"  \"bigendian\" : %s\n",bool2str((!swap && bigendian()) || (swap && !bigendian())));
   fprintf(file,"}\n");
 } /* of 'fprintjson' */
