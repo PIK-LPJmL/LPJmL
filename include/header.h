@@ -51,7 +51,7 @@
 #define LPJ_LAKEFRAC_HEADER "LPJLAKE"
 #define LPJ_LAKEFRAC_VERSION 3
 #define LPJOUTPUT_HEADER "LPJ_OUT"
-#define LPJOUTPUT_VERSION 3
+#define LPJOUTPUT_VERSION 4
 #define LPJ_LANDCOVER_HEADER "LPJLCOV"
 #define LPJ_LANDCOVER_VERSION 3
 #define LPJ_FERTILIZER_HEADER "LPJFERT"
@@ -67,6 +67,8 @@
 #define CELLINDEX 3
 #define CELLSEQ 4
 #define READ_VERSION -1
+#define CLM_MAX_VERSION 4  /**< highest version for clm files supported */
+#define MAP_NAME "map"     /**< name of map in JSON files */
 
 extern const char *ordernames[];
 
@@ -84,7 +86,23 @@ typedef struct
   float scalar;       /**< conversion factor*/
   float cellsize_lat; /**< latitude cellsize in deg */
   Type datatype;      /**< data type in file */
+  int nstep;          /**< time steps per year (1/12/365) */
+  int timestep;       /**< time steps (yrs) */
 } Header;
+
+typedef struct
+{
+  int order;          /**< order of data items , either CELLYEAR,YEARCELL or CELLINDEX */
+  int firstyear;      /**< first year for data */
+  int nyear;          /**< number of years */
+  int firstcell;      /**< index of first data item */
+  int ncell;          /**< number of data item per year */
+  int nbands;         /**< number of data elements per cell */
+  float cellsize_lon; /**< longitude cellsize in deg */
+  float scalar;       /**< conversion factor*/
+  float cellsize_lat; /**< latitude cellsize in deg */
+  Type datatype;      /**< data type in file */
+} Header3;
 
 typedef struct
 {
@@ -128,13 +146,18 @@ extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
 extern size_t headersize(const char *,int);
 extern FILE *openinputfile(Header *, Bool *,const Filename *,
                            String, int *,size_t *,Bool,const Config *);
-extern FILE *openmetafile(Header *, Bool *,size_t *,const char *,Bool);
+extern FILE *openmetafile(Header *,List **, Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
+extern char *parse_json_metafile(LPJfile *,char *,Header *,List **,size_t *,Bool *,Verbosity);
+extern List *fscanstringarray(LPJfile *,const char *,Verbosity);
+extern void freemap(List *);
+extern void fprintmap(FILE *,List *);
 
 /* Definition of macros */
 
 #define printheader(header) fprintheader(stdout,header)
+#define printmap(map) fprintmap(stdout,map)
 #define restartsize() (5*sizeof(int)+sizeof(Seed)) /* size of Restartheader without padding */
 
 #endif

@@ -17,6 +17,7 @@
 #include "lpj.h"
 
 FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file */
+                    List **map,               /**< soilmap array or NULL */
                     Bool *swap,           /**< byte order has to be changed */
                     size_t *offset,       /**< offset in binary file */
                     Type *type,           /**< data type in soilcode file */
@@ -32,12 +33,13 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
     header.scalar=1;
     header.order=CELLYEAR;
     header.nbands=1;
+    header.nstep=1;
     header.datatype=LPJ_BYTE;
     header.firstcell=0;
     header.ncell=0;
     header.nyear=1;
     header.cellsize_lon=header.cellsize_lat=0.5;
-    file=openmetafile(&header,swap,offset,filename->name,isout);
+    file=openmetafile(&header,map,swap,offset,filename->name,isout);
     if(file==NULL)
       return file;
     *type=header.datatype;
@@ -49,8 +51,19 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
       fclose(file);
       return NULL;
     }
+    if(header.nstep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR127: Invalid number of steps %d in '%s', must be 1.\n",
+                header.nstep,filename->name);
+      fclose(file);
+      return NULL;
+    }
+
     return file;
   }
+  if(map!=NULL)
+    *map=NULL;
   file=fopen(filename->name,"rb");
   if(file==NULL)
   {
@@ -95,6 +108,14 @@ FILE *fopensoilcode(const Filename *filename, /**< filename  of soil code file *
       if(isout)
         fprintf(stderr,"ERROR127: Invalid number of bands %d in '%s', must be 1.\n",
                 header.nbands,filename->name);
+      fclose(file);
+      return NULL;
+    }
+    if(header.nstep!=1)
+    {
+      if(isout)
+        fprintf(stderr,"ERROR127: Invalid number of steps %d in '%s', must be 1.\n",
+                header.nstep,filename->name);
       fclose(file);
       return NULL;
     }

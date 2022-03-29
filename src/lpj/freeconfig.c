@@ -16,7 +16,7 @@
 
 #include "lpj.h"
 
-static void freefilename(Filename *filename)
+void freefilename(Filename *filename)
 {
   free(filename->name);
   free(filename->var);
@@ -40,6 +40,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   free(config->sim_name);
   free(config->pft_index);
   free(config->layer_index);
+  free(config->json_suffix);
   if(config->river_routing)
   {
     freefilename(&config->drainage_filename);
@@ -83,7 +84,7 @@ void freeconfig(Config *config /**< LPJmL configuration */
   if(config->wet_filename.name!=NULL)
     freefilename(&config->wet_filename);
   for(i=0;i<config->n_out;i++)
-    free(config->outputvars[i].filename.name);
+    freefilename(&config->outputvars[i].filename);
   free(config->outputvars);
   free(config->restart_filename);
   free(config->checkpoint_restart_filename);

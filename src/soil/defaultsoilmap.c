@@ -1,8 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                     h  e  a  d  e  r  s  i  z  e  .  c                         \n**/
+/**               d  e  f  a  u  l  t  s  o  i  l  m  a  p  .  c                   \n**/
 /**                                                                                \n**/
-/**     Function gets header size                                                  \n**/
+/**     C implementation of LPJmL                                                  \n**/
+/**                                                                                \n**/
+/**     Function sets default 1:1 soil map from LPJ configuration file             \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -14,24 +16,21 @@
 
 #include "lpj.h"
 
-const size_t typesizes[]={1,sizeof(short),sizeof(int),sizeof(float),sizeof(double)};
-const char *typenames[]={"byte","short","int","float","double"};
-
-size_t headersize(const char *headername, /**< header string in CLM file */
-                  int version             /**< version of CLM file */
-                 )                        /** \return header size in bytes */
+int *defaultsoilmap(int *size,           /**< size of soil map array */
+                    const Config *config /**< LPJ configuration */
+                   )                     /** \return soil map array or NULL on error */
 {
-  switch(version)
+  int s,*soilmap;
+  if(isroot(*config))
+    fprintf(stderr,"WARNING011: Map 'soilmap' not found, default 1:1 mapping assumed.\n");
+  *size=config->nsoil+1;
+  soilmap=newvec(int,*size);
+  if(soilmap==NULL)
   {
-    case 0: case CLM_MAX_VERSION+1:
-      return 0; /* version=0 -> no header */
-    case 1:
-      return sizeof(int)+strlen(headername)+sizeof(Header_old);
-    case 2:
-      return sizeof(int)+strlen(headername)+sizeof(Header2);
-    case 4:
-      return sizeof(int)+strlen(headername)+sizeof(Header);
-    default:
-      return sizeof(int)+strlen(headername)+sizeof(Header3);
+    printallocerr("soilmap");
+    return NULL;
   }
-} /* of 'headersize' */
+  for(s=0;s<=config->nsoil;s++)
+    soilmap[s]=s;
+  return soilmap;
+} /* of 'defaultsoilmap' */
