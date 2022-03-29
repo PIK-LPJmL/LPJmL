@@ -36,11 +36,32 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
   if(filename->fmt==FMS)
   {
     filename->var=NULL;
+    filename->map=NULL;
     filename->name=NULL;
     filename->time=NULL;
     filename->unit=NULL;
     return FALSE;
   }
+  if(iskeydefined(&f,"map"))
+  {
+    if(fscanstring(&f,name,"map",FALSE,verb))
+    {
+      if(verb)
+        readstringerr("map");
+      return TRUE;
+    }
+    else
+    {
+      filename->map=strdup(name);
+      if(filename->map==NULL)
+      {
+        printallocerr("map");
+        return TRUE;
+      }
+    }
+  }
+  else
+    filename->map=NULL;
   if(isvar && filename->fmt==CDF)
   {
     if(fscanstring(&f,name,"var",FALSE,verb))

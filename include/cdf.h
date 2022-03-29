@@ -29,6 +29,7 @@
 #define LAT_DIM_NAME "latitude"
 #define TIME_DIM_NAME "time"
 #define YEARS_NAME "Years"
+#define NULL_NAME "(null)"
 
 typedef enum { ONEFILE,CREATE,APPEND,CLOSE} State_nc;
 

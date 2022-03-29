@@ -146,13 +146,14 @@ extern Bool freadanyheader(FILE *,Header *,Bool *,String,int *,Bool);
 extern size_t headersize(const char *,int);
 extern FILE *openinputfile(Header *, Bool *,const Filename *,
                            String, int *,size_t *,Bool,const Config *);
-extern FILE *openmetafile(Header *,List **, Bool *,size_t *,const char *,Bool);
+extern FILE *openmetafile(Header *,List **,const char *,Bool *,size_t *,const char *,Bool);
 extern char *getfilefrommeta(const char *,Bool);
 extern void fprintheader(FILE *,const Header *);
 extern char *parse_json_metafile(LPJfile *,char *,Header *,List **,size_t *,Bool *,Verbosity);
 extern List *fscanstringarray(LPJfile *,const char *,Verbosity);
 extern void freemap(List *);
 extern void fprintmap(FILE *,List *);
+extern void fprintjson(FILE *,const char *,const char *,const Header *,List *,const char *,const char *,Bool,int);
 
 /* Definition of macros */
 
