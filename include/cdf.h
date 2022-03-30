@@ -57,6 +57,7 @@ typedef struct cdf
 
 typedef struct
 {
+  Bool isopen;      /**< file is open (TRUE/FALSE) */
   int firstyear;    /**< first year of climate data (AD) */
   int n;            /**< number of grid cell data to be read */
   long long offset; /**< file offset in bytes */

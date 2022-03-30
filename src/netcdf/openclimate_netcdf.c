@@ -38,6 +38,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   double *date;
   size_t len,time_len;
   Bool isopen,isdim;
+  file->isopen=FALSE;
   if(filename==NULL || file==NULL)
     return TRUE;
   rc=open_netcdf(filename,&file->ncid,&isopen);
@@ -384,6 +385,7 @@ Bool openclimate_netcdf(Climatefile *file,    /**< climate data file */
   }
   else
     file->var_len=1;
+  file->isopen=TRUE;
   return FALSE;
 #else
   fputs("ERROR401: NetCDF input is not supported by this version of LPJmL.\n",stderr);

@@ -38,6 +38,7 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
   if(popdens==NULL)
     return NULL;
   popdens->file.fmt=config->popdens_filename.fmt;
+  popdens->file.isopen=FALSE;
   if(config->popdens_filename.fmt==CDF)
   {
     if(opendata_netcdf(&popdens->file,&config->popdens_filename,"km-2",config))
@@ -56,7 +57,7 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
       free(popdens);
       return NULL;
     }
-
+    popdens->file.isopen=TRUE;
     popdens->file.firstyear=header.firstyear;
     popdens->file.size=header.ncell*typesizes[header.datatype];
     popdens->file.scalar=header.scalar;

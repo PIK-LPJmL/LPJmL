@@ -36,6 +36,7 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
     printallocerr("wateruse");
     return NULL;
   }
+  wateruse->file.isopen=FALSE;
   wateruse->file.fmt=filename->fmt;
   if(filename->fmt==CDF)
   { 
@@ -55,6 +56,7 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
       free(wateruse);
       return NULL;
     }
+    wateruse->file.isopen=TRUE;
     wateruse->file.firstyear=header.firstyear;
     wateruse->file.nyear=header.nyear;
     if(config->wateruse_filename.fmt==RAW)

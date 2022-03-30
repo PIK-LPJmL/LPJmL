@@ -39,6 +39,7 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
     return NULL;
   }
   landcover->file.fmt=config->landcover_filename.fmt;
+  landcover->file.isopen=FALSE;
   if(config->landcover_filename.fmt==CDF)
   {
     if(opendata_netcdf(&landcover->file,&config->landcover_filename,"1",config))
@@ -58,6 +59,7 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
       free(landcover);
       return NULL;
     }
+    landcover->file.isopen=TRUE;
     if(version<2)
       landcover->file.scalar=0.01;
     else

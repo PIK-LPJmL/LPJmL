@@ -717,49 +717,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   /* Initialize yearly prescribed sdate */
   if(config->sdate_option==PRESCRIBED_SDATE)
   {
-    yearsdate-=landuse->sdate.firstyear;
-    if(yearsdate>=landuse->sdate.nyear)
-      yearsdate=landuse->sdate.nyear-1; /* use last year sdate */
-    else if(yearsdate<0)
-      yearsdate=0;                        /* use first year sdate */
-
-    dates=newvec(int,config->ngridcell*landuse->sdate.var_len);
+    dates=readintdata(&landuse->sdate,grid,"sowing dates",yearsdate,config);
     if(dates==NULL)
-    {
-      printallocerr("dates");
       return TRUE;
-    }
-    if(landuse->sdate.fmt==CDF)
-    {
-      if(readintdata_netcdf(&landuse->sdate,dates,grid,yearsdate,config))
-      {
-        fprintf(stderr,
-                "ERROR149: Cannot read sowing dates of year %d in getlanduse().\n",
-                yearsdate+landuse->sdate.firstyear);
-        fflush(stderr);
-        free(dates);
-        return TRUE;
-      }
-    }
-    else
-    {
-      if(fseek(landuse->sdate.file,(long long)yearsdate*landuse->sdate.size+landuse->sdate.offset,SEEK_SET))
-      {
-        fprintf(stderr,
-                "ERROR148: Cannot seek sowing dates to year %d in getlanduse().\n",
-                yearsdate+landuse->sdate.firstyear);
-        free(dates);
-        return TRUE;
-      }
-      if(readintvec(landuse->sdate.file,dates,landuse->sdate.n,landuse->sdate.swap,landuse->sdate.datatype))
-      {
-        fprintf(stderr,
-                "ERROR149: Cannot read sowing dates of year %d in getlanduse().\n",
-                yearsdate+landuse->sdate.firstyear);
-        free(dates);
-        return TRUE;
-      }
-    }
     count=0;
     for(cell=0;cell<config->ngridcell;cell++)
       if(!grid[cell].skip)
@@ -784,49 +744,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
   {
     /* assigning crop phus data */
-    yearphu-=landuse->crop_phu.firstyear;
-    if(yearphu>=landuse->crop_phu.nyear)
-      yearphu=landuse->crop_phu.nyear-1; /* use last year sdate */
-    else if(yearphu<0)
-      yearphu=0;                        /* use first year sdate */
-
-    data=newvec(Real,config->ngridcell*landuse->crop_phu.var_len);
+    data=readdata(&landuse->crop_phu,grid,"crop phus",yearphu,config);
     if(data==NULL)
-    {
-      printallocerr("data");
       return TRUE;
-     }
-    if(landuse->crop_phu.fmt==CDF)
-    {
-      if(readdata_netcdf(&landuse->crop_phu,data,grid,yearphu,config))
-      {
-        fprintf(stderr,
-                "ERROR149: Cannot read crop phus of year %d in getlanduse().\n",
-                yearphu+landuse->crop_phu.firstyear);
-        free(data);
-        fflush(stderr);
-        return TRUE;
-      }
-    }
-    else
-    {
-      if(fseek(landuse->crop_phu.file,(long long)yearphu*landuse->crop_phu.size+landuse->crop_phu.offset,SEEK_SET))
-      {
-        fprintf(stderr,
-                "ERROR148: Cannot seek crop phus to year %d in getlanduse().\n",
-                yearphu+landuse->crop_phu.firstyear);
-        free(data);
-        return TRUE;
-      }
-      if(readrealvec(landuse->crop_phu.file,data,0,landuse->crop_phu.scalar,landuse->crop_phu.n,landuse->crop_phu.swap,landuse->crop_phu.datatype))
-      {
-        fprintf(stderr,
-                "ERROR149: Cannot read crop phus of year %d in getlanduse().\n",
-                yearphu+landuse->crop_phu.firstyear);
-        free(data);
-        return TRUE;
-      }
-    }
     count=0;
     for(cell=0; cell<config->ngridcell; cell++)
       if(!grid[cell].skip)
@@ -848,51 +768,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
         count+=2*ncft;
     free(data);
   } /* end crop_phu*/
-
-  yearl-=landuse->landuse.firstyear;
-  if(yearl>=landuse->landuse.nyear)
-    yearl=landuse->landuse.nyear-1;
-  else if(yearl<0)
-    yearl=0;
-  data=newvec(Real,config->ngridcell*landuse->landuse.var_len);
+  data=readdata(&landuse->landuse,grid,"landuse",yearl,config);
   if(data==NULL)
-  {
-    printallocerr("data");
     return TRUE;
-  }
-  if(landuse->landuse.fmt==CDF)
-  {
-    if(readdata_netcdf(&landuse->landuse,data,grid,yearl,config))
-    {
-      fprintf(stderr,
-              "ERROR149: Cannot read landuse of year %d in getlanduse().\n",
-              yearl+landuse->landuse.firstyear);
-      fflush(stderr);
-      free(data);
-      return TRUE;
-    }
-  }
-  else
-  {
-    if(fseek(landuse->landuse.file,(long long)yearl*landuse->landuse.size+landuse->landuse.offset,SEEK_SET))
-    {
-      fprintf(stderr,
-              "ERROR148: Cannot seek landuse to year %d in getlanduse().\n",
-              yearl + landuse->landuse.firstyear);
-      fflush(stderr);
-      free(data);
-      return TRUE;
-    }
-    if(readrealvec(landuse->landuse.file,data,0,landuse->landuse.scalar,landuse->landuse.n,landuse->landuse.swap,landuse->landuse.datatype))
-    {
-      fprintf(stderr,
-              "ERROR149: Cannot read landuse of year %d in getlanduse().\n",
-              yearl + landuse->landuse.firstyear);
-      fflush(stderr);
-      free(data);
-      return TRUE;
-    }
-  }
   count=0;
 
   for(cell=0;cell<config->ngridcell;cell++)
@@ -1267,51 +1145,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     if(config->fertilizer_input==FERTILIZER)
     {
       /* assigning fertilizer Nr data */
-      yearf-=landuse->fertilizer_nr.firstyear;
-      if(yearf>=landuse->fertilizer_nr.nyear)
-        yearf=landuse->fertilizer_nr.nyear-1;
-      else if(yearf<0)
-        yearf=0;
-      data=newvec(Real,config->ngridcell*landuse->fertilizer_nr.var_len);
+      data=readdata(&landuse->fertilizer_nr,grid,"fertilizer",yearf,config);
       if(data==NULL)
-      {
-        printallocerr("data");
         return TRUE;
-      }
-      if(landuse->fertilizer_nr.fmt==CDF)
-      {
-        if(readdata_netcdf(&landuse->fertilizer_nr,data,grid,yearf,config))
-        {
-          fprintf(stderr,
-                  "ERROR149: Cannot read fertilizer of year %d in getlanduse().\n",
-                  yearf+landuse->fertilizer_nr.firstyear);
-          fflush(stderr);
-          free(data);
-          return TRUE;
-        }
-      }
-      else
-      {
-        if(fseek(landuse->fertilizer_nr.file,(long long)yearf*landuse->fertilizer_nr.size+landuse->fertilizer_nr.offset,SEEK_SET))
-        {
-          fprintf(stderr,
-                  "ERROR148: Cannot seek fertilizer Nr to year %d in getlanduse().\n",
-                  yearf+landuse->fertilizer_nr.firstyear);
-          fflush(stderr);
-          free(data);
-          return TRUE;
-        }
-        if(readrealvec(landuse->fertilizer_nr.file,data,0,landuse->fertilizer_nr.scalar,landuse->fertilizer_nr.n,
-                       landuse->fertilizer_nr.swap,landuse->fertilizer_nr.datatype))
-        {
-          fprintf(stderr,
-                  "ERROR149: Cannot read fertilizer Nr of year %d in getlanduse().\n",
-                  yearf+landuse->fertilizer_nr.firstyear);
-          fflush(stderr);
-          free(data);
-          return TRUE;
-        }
-      }
       count=0;
 
       /* do changes here for the fertilization*/
@@ -1335,51 +1171,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     if(config->manure_input)
     {
       /* assigning manure fertilizer nr data */
-      yearm-=landuse->manure_nr.firstyear;
-      if(yearm>=landuse->manure_nr.nyear)
-        yearm=landuse->manure_nr.nyear-1;
-      else if(yearm<0)
-        yearm=0;
-      data=newvec(Real,config->ngridcell*landuse->manure_nr.var_len);
+      data=readdata(&landuse->manure_nr,grid,"manure",yearm,config);
       if(data==NULL)
-      {
-        printallocerr("data");
         return TRUE;
-      }
-      if(landuse->manure_nr.fmt==CDF)
-      {
-        if(readdata_netcdf(&landuse->manure_nr,data,grid,yearm,config))
-        {
-          fprintf(stderr,
-            "ERROR149: Cannot read manure fertilizer of year %d in getlanduse().\n",
-            yearm+landuse->manure_nr.firstyear);
-          fflush(stderr);
-          free(data);
-          return TRUE;
-        }
-      }
-      else
-      {
-        if(fseek(landuse->manure_nr.file,(long long)yearm*landuse->manure_nr.size+landuse->manure_nr.offset,SEEK_SET))
-        {
-          fprintf(stderr,
-                  "ERROR148: Cannot seek manure fertilizer to year %d in getlanduse().\n",
-                  yearm+landuse->manure_nr.firstyear);
-          fflush(stderr);
-          free(data);
-          return TRUE;
-        }
-        if(readrealvec(landuse->manure_nr.file,data,0,landuse->manure_nr.scalar,landuse->manure_nr.n,
-                       landuse->manure_nr.swap,landuse->manure_nr.datatype))
-        {
-          fprintf(stderr,
-                  "ERROR149: Cannot read manure fertilizer of year %d in getlanduse().\n",
-                  yearm+landuse->manure_nr.firstyear);
-          fflush(stderr);
-          free(data);
-          return TRUE;
-        }
-      }
       count=0;
 
       /* do changes here for the manure*/
@@ -1436,48 +1230,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   if(config->tillage_type==READ_TILLAGE)
   {
     /* read in tillage data */
-    yeart-=landuse->with_tillage.firstyear;
-    if(yeart>=landuse->with_tillage.nyear)
-      yeart=landuse->with_tillage.nyear-1;
-    else if(yeart<0)
-      yeart=0;
-    dates=newvec(int,config->ngridcell*landuse->with_tillage.var_len);
+    dates=readintdata(&landuse->with_tillage,grid,"tillage types",yeart,config);
     if(dates==NULL)
-    {
-      printallocerr("dates");
       return TRUE;
-    }
-    if(landuse->with_tillage.fmt==CDF)
-    {
-      if(readintdata_netcdf(&landuse->with_tillage,dates,grid,yeart,config))
-      {
-        fprintf(stderr,
-                "ERROR149: Cannot read tillage types of year %d in getlanduse().\n",
-                yeart+landuse->with_tillage.firstyear);
-        free(dates);
-        fflush(stderr);
-        return TRUE;
-      }
-    }
-    else
-    {
-      if(fseek(landuse->with_tillage.file,(long long)yeart*landuse->with_tillage.size+landuse->with_tillage.offset,SEEK_SET))
-      {
-        fprintf(stderr,
-                "ERROR148: Cannot seek tillage types to year %d in getlanduse().\n",
-                yeart+landuse->with_tillage.firstyear);
-        free(dates);
-        return TRUE;
-      }
-      if(readintvec(landuse->with_tillage.file,dates,landuse->with_tillage.n,landuse->with_tillage.swap,landuse->with_tillage.datatype))
-      {
-        fprintf(stderr,
-                "ERROR149: Cannot read tillage types of year %d in getlanduse().\n",
-                yeart+landuse->with_tillage.firstyear);
-        free(dates);
-        return TRUE;
-      }
-    }
     count=0;
     for(cell=0; cell<config->ngridcell; cell++)
       if(!grid[cell].skip)
@@ -1495,51 +1250,9 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   if(config->residue_treatment==READ_RESIDUE_DATA)
   {
     /* assigning residue extraction data */
-    yearr-=landuse->residue_on_field.firstyear;
-    if(yearr>=landuse->residue_on_field.nyear)
-      yearr=landuse->residue_on_field.nyear-1;
-    else if(yearr<0)
-      yearr=0;
-    data=newvec(Real,config->ngridcell*landuse->residue_on_field.var_len);
+    data=readdata(&landuse->residue_on_field,grid,"residue extraction",yearr,config);
     if(data==NULL)
-    {
-      printallocerr("data");
       return TRUE;
-    }
-    if(landuse->residue_on_field.fmt==CDF)
-    {
-      if(readdata_netcdf(&landuse->residue_on_field,data,grid,yearr,config))
-      {
-        fprintf(stderr,
-                "ERROR149: Cannot read residue extraction of year %d in getlanduse().\n",
-                yearr+landuse->residue_on_field.firstyear);
-        fflush(stderr);
-        free(data);
-        return TRUE;
-      }
-    }
-    else
-    {
-      if(fseek(landuse->residue_on_field.file,(long long)yearr*landuse->residue_on_field.size+landuse->residue_on_field.offset,SEEK_SET))
-      {
-        fprintf(stderr,
-                "ERROR148: Cannot seek residue extraction to year %d in getlanduse().\n",
-                yearr+landuse->residue_on_field.firstyear);
-        fflush(stderr);
-        free(data);
-        return TRUE;
-      }
-      if(readrealvec(landuse->residue_on_field.file,data,0,landuse->residue_on_field.scalar,landuse->residue_on_field.n,
-                     landuse->residue_on_field.swap,landuse->residue_on_field.datatype))
-      {
-        fprintf(stderr,
-                "ERROR149: Cannot read residue extraction of year %d in getlanduse().\n",
-                yearr+landuse->residue_on_field.firstyear);
-        fflush(stderr);
-        free(data);
-        return TRUE;
-      }
-    }
     count=0;
 
     /* do changes for residue rate left on field*/

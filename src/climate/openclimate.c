@@ -194,5 +194,6 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   file->time_step=(header.nbands==NDAYYEAR) ? DAY : MONTH;
   file->size=header.ncell*header.nbands*typesizes[file->datatype];
   file->n=header.nbands*config->ngridcell;
+  file->isopen=TRUE;
   return FALSE;
 } /* of 'openclimate' */

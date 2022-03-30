@@ -129,5 +129,7 @@ extern Bool readclimate(Climatefile *,Real *,Real,Real,const Cell *,int,
 extern Bool checkvalidclimate(Climate *,Cell *,Config *);
 extern Bool readco2(Co2data *,const Filename *,Bool);
 extern void radiation(Real *, Real *,Real *,Real,int,Dailyclimate *,Real,int);
+extern Real *readdata(Climatefile *,const Cell [],const char *,int,const Config *);
+extern int *readintdata(Climatefile *,const Cell [],const char *,int,const Config *);
 
 #endif
