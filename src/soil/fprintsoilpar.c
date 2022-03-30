@@ -46,8 +46,8 @@ void fprintsoilpar(FILE *file,          /**< pointer to text file */
     fprintf(file,"%-18s %6.2f %5.2f %5.2f",
             config->soilpar[i].name,config->soilpar[i].sand,config->soilpar[i].silt,config->soilpar[i].clay);
     if(config->soilpar_option==PRESCRIBED_SOILPAR)
-      fprintf(file,"%6.2f %5.2f %5.2f",
-              config->soilpar[i].wpwp,config->soilpar[i].wfc,config->soilpar[i].wsat);
+      fprintf(file,"%6.2f %6.3f %5.3f %5.3f",
+          config->soilpar[i].Ks,config->soilpar[i].wpwp,config->soilpar[i].wfc,config->soilpar[i].wsat);
     fprintf(file," %3d %6.3f %7.3f %8.3f %7.3f %7.3f %10.3f %7.3f %6.3f %5.2f %6.3f",
             config->soilpar[i].hsg+1,
             config->soilpar[i].tdiff_0,config->soilpar[i].tdiff_15,config->soilpar[i].tdiff_100,
