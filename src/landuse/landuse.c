@@ -342,7 +342,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       }
       else
       {
-        landuse->fertilizer_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
+        landuse->fertilizer_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version)+offset;
         if(isroot(*config) && config->fertilizer_nr_filename.fmt!=META)
         {
           filesize=getfilesizep(landuse->fertilizer_nr.file)-headersize(headername,version)-offset;
@@ -416,7 +416,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       }
       else
       {
-        landuse->manure_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
+        landuse->manure_nr.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version)+offset;
         if(isroot(*config) && config->manure_nr_filename.fmt!=META)
         {
           filesize=getfilesizep(landuse->manure_nr.file)-headersize(headername,version)-offset;
@@ -489,7 +489,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       }
       else
       {
-        landuse->with_tillage.offset=(config->startgrid-header.firstcell)*header.nbands*sizeof(short)+headersize(headername,version);
+        landuse->with_tillage.offset=(config->startgrid-header.firstcell)*header.nbands*sizeof(short)+headersize(headername,version)+offset;
         if(isroot(*config) && config->with_tillage_filename.fmt!=META)
         {
           filesize=getfilesizep(landuse->with_tillage.file)-headersize(headername,version)-offset;
@@ -563,7 +563,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
       }
       else
       {
-        landuse->residue_on_field.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version);
+        landuse->residue_on_field.offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[header.datatype]+headersize(headername,version)+offset;
         if(isroot(*config) && config->residue_data_filename.fmt!=META)
         {
           filesize=getfilesizep(landuse->residue_on_field.file)-headersize(headername,version)-offset;
