@@ -399,7 +399,6 @@ int main(int argc,char **argv)
     {
       if(j==i+1)
       {
-        header.ncell=config.ngridcell;
         header.firstyear=data.firstyear;
         header.nyear=data.nyear;
         header.datatype=data.datatype;
