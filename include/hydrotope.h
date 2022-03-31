@@ -70,7 +70,6 @@ typedef struct
   Real wetland_wtable_max;
   Real wetland_wtable_mean;
 
-  Real permafrost_modifier;
 } Hydrotope;
 
 /* Declaration of global variable */

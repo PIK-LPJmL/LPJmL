@@ -1,6 +1,6 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**       i  n  f  i  l  _  p  e  r  c  _  r  a  i  n  .  c                        \n**/
+/**                i  n  f  i  l  _  p  e  r  c  .  c                              \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
@@ -37,7 +37,7 @@ static int findwtlayer(const Soil *soil)
   return jwt;
 } /* of 'findwtlayer' */
 
-Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
+Real infil_perc(Stand *stand,        /**< Stand pointer */
                      Real infil,          /**< rainfall + melting water - interception_stand (mm) + rw_irrig */
                      Real *return_flow_b, /**< blue water return flow (mm) */
                      int npft,            /**< number of natural PFTs */
@@ -74,7 +74,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   Irrigation *data_irrig;
   Pftcrop *crop;
   Real S;                  /*aquifer specific yield (-)*/
-  Real Theta_ice, k_perch_max, frost_depth;
+  Real Theta_ice, k_perch_max, frost_depth,soildepth_irrig,deficit;
   Real icefrac[NSOILLAYER];
   Real s_node = 0;                                                //soil wetness
   Real s1, vol_eq, tempi, temp0, voleq1, fff,ka;
@@ -353,6 +353,19 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
         fail(NEGATIVE_SOIL_NO3_ERR,TRUE,"infil_prec_rain: Cell(%s) NO3=%g<0 in layer %d",sprintcoord(line,&stand->cell->coord),soil->NO3[l],l);
 #endif
 
+  /* evaluate soil water deficit in upper 50cm (irrigation depth) after irrigation event */
+  soildepth_irrig=SOILDEPTH_IRRIG;
+  l=0;
+  deficit=0.0;
+  do
+  {
+    if (stand->soil.freeze_depth[l]< soildepth[l])
+      deficit+=max(0,(1-stand->soil.w[l]-stand->soil.ice_depth[l]/stand->soil.whcs[l])*stand->soil.whcs[l]*min(1,soildepth_irrig/soildepth[l])*(1-stand->soil.freeze_depth[l]/soildepth[l]));
+    l++;
+  }while((soildepth_irrig-=soildepth[l-1])>0);
+
+  getoutput(&stand->cell->output,UNMET_DEMAND,config)+=deficit; /* daily irrigation deficit in mm*/
+
   /* Rainwater Harvesting: store part of surface runoff for supplementary irrigation */
   if(config->rw_manage && ((stand->type->landusetype==AGRICULTURE && !data_irrig->irrigation) || stand->type->landusetype==SETASIDE_RF))
   {
@@ -575,7 +588,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
   // perched water table of frozen soil
   // water table above frost table
 
-  q_perch_max = 1e-5 * sin(stand->slope_mean*M_PI/180);                          //specify maximum drainage rate mm/d
+  q_perch_max = 1e-5 * sin(stand->slope_mean*3.6*M_PI/180);                          //specify maximum drainage rate mm/d
   frost_depth=layerbound[icet]-soil->freeze_depth[icet];
 
   if(frost_depth<layerbound[BOTTOMLAYER-1])
@@ -686,7 +699,7 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
     if(jwt>=(BOTTOMLAYER-1))
       depthsum=layerbound[BOTTOMLAYER-1];
     Theta_ice=pow(10,(-OMEGA*(icesum/depthsum)));                                               // OMEGA of 6 gives a high impact on low ice fractions (0.1 -> 0.2511886)
-    rsub_top_max=50*sin(stand->slope_mean*M_PI/180);     //*sin(stand->slope_mean*M_PI/180);            // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1
+    rsub_top_max=50*sin(stand->slope_mean*3.6*M_PI/180);                                        // 20 mm day-1 suggested by Karpouzas etal, 2006, Christen etal, 2006 ->50 mm day-1
     rsub_top=Theta_ice*rsub_top_max*exp(-fff*soil->wtable/1000);
     rsub_top=min(rsub_top,active_wa);
     //rsub_top=max(0,rsub_top-outflux-lat_runoff_last);
@@ -950,4 +963,4 @@ Real infil_perc_rain(Stand *stand,        /**< Stand pointer */
    }
    else
     return runoff_surface+runoff_out+drain_perched_out+rsub_top;
-} /* of 'infil_perc_rain' */
+} /* of 'infil_perc' */

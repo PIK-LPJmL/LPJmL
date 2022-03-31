@@ -126,7 +126,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   /* soil inflow: infiltration and percolation */
   if (stand->type->landusetype!=WETLAND || stand->frac<0.001)
   {
-    runoff+=infil_perc_rain(stand,climate->prec+melt-intercep_stand,&return_flow_b,npft,ncft,config);
+    runoff+=infil_perc(stand,climate->prec+melt-intercep_stand,&return_flow_b,npft,ncft,config);
     if (stand->type->landusetype==WETLAND)
     {
       runoff+= stand->cell->lateral_water/stand->frac;
@@ -135,7 +135,7 @@ Real daily_natural(Stand *stand,                /**< [inout] stand pointer */
   }
   else
   {
-    runoff+= infil_perc_rain(stand,climate->prec+stand->cell->lateral_water/stand->frac+melt-intercep_stand,&return_flow_b,npft,ncft,config);
+    runoff+= infil_perc(stand,climate->prec+stand->cell->lateral_water/stand->frac+melt-intercep_stand,&return_flow_b,npft,ncft,config);
     stand->cell->lateral_water=0;
   }
 #ifdef PERMUTE

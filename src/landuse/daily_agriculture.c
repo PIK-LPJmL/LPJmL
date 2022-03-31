@@ -259,6 +259,7 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
 
   irrig_apply-=intercep_stand_blue;
   rainmelt-=(intercep_stand-intercep_stand_blue);
+  irrig_apply=max(0,irrig_apply);
 
   /* rain-water harvesting*/
   if(!data->irrigation && config->rw_manage && rainmelt<5)
@@ -267,13 +268,12 @@ Real daily_agriculture(Stand *stand,                /**< [inout] stand pointer *
   /* INFILTRATION and PERCOLATION */
   if(irrig_apply>epsilon)
   {
-    //runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
     pft=getpft(&stand->pftlist,0);
     getoutputindex(output,CFT_IRRIG_EVENTS,pft->par->id-npft+data->irrigation*nirrig,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);
+  runoff+=infil_perc(stand,rainmelt+rw_apply+irrig_apply,&return_flow_b,npft,ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {

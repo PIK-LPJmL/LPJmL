@@ -183,6 +183,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   }
   irrig_apply-=intercep_stand_blue;
   rainmelt-=(intercep_stand-intercep_stand_blue);
+  irrig_apply=max(0,irrig_apply);
 
   /* rain-water harvesting*/
   if(!data->irrigation.irrigation && config->rw_manage && rainmelt<5)
@@ -191,13 +192,12 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
   /* soil inflow: infiltration and percolation */
   if(irrig_apply>epsilon)
   {
-    //runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,npft,ncft,config);
     /* count irrigation events*/
     getoutputindex(output,CFT_IRRIG_EVENTS,rothers(ncft)+index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
     getoutputindex(output,CFT_IRRIG_EVENTS,rmgrass(ncft)+index,config)++; /* id is consecutively counted over natural pfts, biomass, and the cfts; ids for cfts are from 12-23, that is why npft (=12) is distracted from id */
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt+irrig_apply,&return_flow_b,npft,ncft,config);
+  runoff+=infil_perc(stand,rainmelt+irrig_apply,&return_flow_b,npft,ncft,config);
 
   isphen = FALSE;
 #ifdef PERMUTE

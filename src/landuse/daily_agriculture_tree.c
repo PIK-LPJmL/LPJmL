@@ -191,16 +191,16 @@ Real daily_agriculture_tree(Stand *stand,                /**< stand pointer */
 
   irrig_apply-=intercep_stand_blue;
   rainmelt-=(intercep_stand-intercep_stand_blue);
+  irrig_apply=max(0,irrig_apply);
 
   /* soil inflow: infiltration and percolation */
   if(irrig_apply>epsilon)
   {
-      //runoff+=infil_perc_irr(stand,irrig_apply,&return_flow_b,npft,ncft,config);
       /* count irrigation events*/
       getoutputindex(output,CFT_IRRIG_EVENTS,index,config)++;
   }
 
-  runoff+=infil_perc_rain(stand,rainmelt+irrig_apply,&return_flow_b,npft,ncft,config);
+  runoff+=infil_perc(stand,rainmelt+irrig_apply,&return_flow_b,npft,ncft,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {

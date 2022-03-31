@@ -111,7 +111,7 @@ Real daily_setaside(Stand *stand, /**< stand pointer */
   rainmelt=climate->prec+melt;
   if(rainmelt<0)
     rainmelt=0.0;
-  runoff+=infil_perc_rain(stand,rainmelt-intercep_stand,&return_flow_b,config);
+  runoff+=infil_perc(stand,rainmelt-intercep_stand,&return_flow_b,config);
 
   foreachpft(pft,p,&stand->pftlist)
   {
