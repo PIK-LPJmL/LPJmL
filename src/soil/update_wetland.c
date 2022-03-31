@@ -30,10 +30,10 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
   Pft *pft, *wetpft;
   int p, l;
   int s, pos;
-  int wetlandstandnum;
+  int wetlandstandnum,natstandnum;
   int *position;
   Bool *present;
-  Real wetlandarea_old, wetlandarea_new, delta_wetland;
+  Real wetlandarea_old, wetlandarea_new, delta_wetland,delta,natstandarea;
   Stand *natstand, *wetstand;
   Real tmp, slope, slope_max;
   Real wtable_use, lambda;
@@ -63,25 +63,29 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
     start.nitrogen+=st.nitrogen*stand->frac;
   }
 #endif
-  wetlandstandnum = NOT_FOUND;
+  wetlandstandnum =natstandnum= NOT_FOUND;
   wetlandarea_old = wetlandarea_new = 0.;
   iswetland_change = iswetland = FALSE;
   s = findlandusetype(cell->standlist, NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
-  if(s==NOT_FOUND)
-    return;
-  natstand = getstand(cell->standlist, s);
+  if(s!=NOT_FOUND) {
+    natstand = getstand(cell->standlist,s);
+    natstandnum=s;
+    natstandarea=natstand->frac;
+  }
   s = findlandusetype(cell->standlist, WETLAND);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
   if (s != NOT_FOUND) 
   {
     wetstand = getstand(cell->standlist, s);
     iswetland = TRUE;
+    wetlandarea_old=wetstand->frac;
+    wetlandstandnum=s;
   }
 
   //  modify this to use wtable wanted -> wtable_mean
   wtable_use = cell->hydrotopes.wtable_mean;        /*mean over stands, NEXT try should cell->hydrotopes.wtable_mean*/
   if (wtable_use>0) wtable_use = 0;
 
-  if (!cell->hydrotopes.skip_cell && wtable_use >= -4.5)
+  if (!cell->hydrotopes.skip_cell && wtable_use >= -4.5 && natstandnum!=NOT_FOUND)
   {
     // -----------------------------------------------------------------------------------------------
     //  determine wetland area
@@ -102,7 +106,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
 
     //p_min_max = gammp(cell->hydrotopes.cti_phi,((cti_min_max - cell->hydrotopes.cti_mu) / cell->hydrotopes.cti_chi));
 
-    wetlandarea_old = cell->hydrotopes.wetland_area;
+    //wetlandarea_old = cell->hydrotopes.wetland_area;
     wetlandarea_new = (p_max - p_min)*(1-cell->lakefrac);
 
     if (wetlandarea_new > 0.)
@@ -181,7 +185,12 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             check(wetstand->soil.c_shift[l]);
           }
           frac = natstand->frac;
-          wetstand->frac = wetlandarea_new;
+          delta=delta_wetland;
+          if(frac<wetlandarea_new)
+            wetstand->frac = frac;
+          else
+            wetstand->frac = wetlandarea_new;
+          delta_wetland=wetstand->frac-wetlandarea_old;
           wetstand->Hag_Beta = natstand->Hag_Beta;
           wetstand->slope_mean = natstand->slope_mean;
           wetstand->type = &wetland_stand;
@@ -203,6 +212,8 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             mix_veg_stock(wetpft, pft, wetstand->frac, natstand->frac);
           }
           natstand->frac = frac - delta_wetland;
+          if(natstand->frac<0) natstand->frac=0;      //SHOULD NOT OCCUR
+          check_stand_fracs(cell->standlist,cell->lakefrac+cell->ml.reservoirfrac);
         }
         else
         {
@@ -242,8 +253,15 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           foreachpft(pft, p, &wetstand->pftlist)
             if(!present[pft->par->id])
               mix_veg(pft,wetstand->frac/(wetstand->frac+natstand->frac));
-          wetstand->frac = wetlandarea_new;
-          natstand->frac = frac - delta_wetland;
+          delta=delta_wetland;
+          if(frac<wetlandarea_new)
+            wetstand->frac = frac;
+          else
+            wetstand->frac = wetlandarea_new;
+          delta_wetland=wetstand->frac-wetlandarea_old;
+          natstand->frac = frac-delta_wetland;
+          if(natstand->frac<0) natstand->frac=0;      //SHOULD NOT OCCUR
+          check_stand_fracs(cell->standlist,cell->lakefrac+cell->ml.reservoirfrac);
 
           //        make sure there is no C in slow pool
           forrootsoillayer(l)
@@ -253,6 +271,15 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
             wetstand->soil.pool[l].slow.carbon=wetstand->soil.pool[l].slow.nitrogen=0.;
 
           } /* of forrootsoillayer */
+        }
+
+
+        if(natstand->frac <= 0.)
+        {
+  //       remove stand
+           printf("DELETE NATURAL STAND\n");
+           delstand(cell->standlist,natstandnum);
+           natstandnum = NOT_FOUND;
         }
 
 #ifdef CHECK_BALANCE
@@ -346,12 +373,15 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         wetstand = getstand(cell->standlist, s);
         iswetland = TRUE;
       }
-      slope = cell->slope_min;
-      if (iswetland && wetstand->frac>0.001 && cell->slope>epsilon && (fabs(cell->slope_min - cell->slope_max)>epsilon))
+      if(cell->slope>0)
+        lambda=1/cell->slope;
+      else
+        lambda=1000;
+      slope=cell->slope_min;
+      if (iswetland && (fabs(cell->slope_min - cell->slope_max)>epsilon))
       {
-        lambda = 1 / cell->slope;
-        slope_max=log(1 - wetstand->frac - epsilon) / (-1 / lambda);
-        slope_max/=-(exp(-lambda*cell->slope_max) - exp(-lambda*cell->slope_min));
+        slope_max=log(1 - wetstand->frac - epsilon)/(-lambda);
+        if(slope_max>cell->slope_max) slope_max=cell->slope_max;
         if (slope_max<cell->slope_min)
         {
           slope_max = cell->slope_min;
@@ -360,19 +390,31 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         else
         {
           slope = (exp(lambda*-slope_max)*(-1 / lambda - slope_max)) - (exp(lambda*-cell->slope_min)*(-1 / lambda - cell->slope_min));  //calculation of the integral of the PDF to get  mean slope
-          slope /= (-(exp(-lambda*slope_max) - (exp(-lambda*cell->slope_min))));                                                 //normalising the mean slope for a specific range
+          //slope /= (-(exp(-lambda*slope_max) - (exp(-lambda*cell->slope_min))));                                                 //normalising the mean slope for a specific range
         }
+        if(cell->slope<slope)
+           slope=cell->slope;
         wetstand->slope_mean = slope;
         wetstand->Hag_Beta = min(1, (0.09*log(slope + 0.1) + 0.22) / 0.43);
 
-        slope = exp(lambda*-cell->slope_max)*(-1 / lambda - cell->slope_max) - exp(lambda*-slope_max)*(-1 / lambda - slope_max);  //calculation of the integral of the PDF to get  mean slope
-        slope /= -(exp(-lambda*cell->slope_max) - exp(-lambda*slope_max));                                                 //normalising the mean slope for a specific range
-        natstand->Hag_Beta = min(1, (0.06*log(slope + 0.1) + 0.22) / 0.43);
-        natstand->slope_mean = slope;
-      }
-      //else
-       // natstand->Hag_Beta = min(1, (0.06*log(cell->slope + 0.1) + 0.22) / 0.43);
+        s=findlandusetype(cell->standlist,NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
+        if(s!=NOT_FOUND) {
+          natstand = getstand(cell->standlist,s);
 
+          slope=exp(lambda*-cell->slope_max)*(-1/lambda-cell->slope_max)- exp(lambda*-slope_max)*(-1/lambda-slope_max);  //calculation of the integral of the PDF to get  mean slope
+          slope/=-(exp(-lambda*cell->slope_max)-exp(-lambda*slope_max));                                                 //normalising the mean slope for a specific range
+          natstand->Hag_Beta=min(1,(0.06*log(slope+0.1)+0.22)/0.43);
+          natstand->slope_mean=slope;
+        }
+      }
+      else
+      {
+        s=findlandusetype(cell->standlist,NATURAL);            /*COULD BE AGRICULTURE AS WELL BUT NOT YET*/
+        if(s!=NOT_FOUND) {
+          natstand = getstand(cell->standlist,s);
+          natstand->Hag_Beta=min(1,(0.06*log(cell->slope+0.1)+0.22)/0.43);
+        }
+      }
     }
   } /* of' if cell->hydrotopes.skip_cell*/
 

@@ -21,6 +21,7 @@
 #include "biomass_grass.h"
 #include "biomass_tree.h"
 #include "woodplantation.h"
+#include "wetland.h"
 
 typedef enum {PASTURE=1, BIOMASS_TREE_PLANTATION, BIOMASS_GRASS_PLANTATION, AGRICULTURE_TREE_PLANTATION, WOOD_PLANTATION } Cultivation_type;
 
@@ -42,9 +43,10 @@ void deforest(Cell *cell,          /**< pointer to cell */
               const Config *config /**< LPJmL configuration */
              )
 {
-  int s,pos;
-  Stand *natstand,*cutstand;
+  int s,w,pos;
+  Stand *natstand,*cutstand, *wetstand;
   s=findlandusetype(cell->standlist,NATURAL);
+  w=findlandusetype(cell->standlist,WETLAND);
   if(s!=NOT_FOUND)
   {
     natstand=getstand(cell->standlist,s);
@@ -77,8 +79,30 @@ void deforest(Cell *cell,          /**< pointer to cell */
       }
     }
   }
+  else if(w!=NOT_FOUND)
+  {
+    pos=addstand(&wetland_stand,cell)-1;
+    wetstand=getstand(cell->standlist,w);
+    cutstand=getstand(cell->standlist,pos);
+    if(difffrac+epsilon>=wetstand->frac)
+      difffrac=wetstand->frac;
+    cutstand->frac=difffrac;
+    reclaim_land(wetstand,cutstand,cell,config->istimber,npft+ncft,config);
+    if(difffrac+epsilon>=natstand->frac)
+    {
+      delstand(cell->standlist,w);
+      pos=w;
+    }
+    else
+      wetstand->frac-=difffrac;
+    if(!timberharvest)
+    {
+      if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,irrig,year,config))
+        delstand(cell->standlist,pos);
+    }
+  }
   else
-    fail(NO_NATURAL_STAND_ERR,TRUE,"No natural stand for deforest, difffrac=%g",difffrac);
+    fail(NO_NATURAL_STAND_ERR,TRUE,"No natural stand or wetland for deforest, difffrac=%g",difffrac);
 } /* of 'deforest' */
 
 #ifdef IMAGE
@@ -106,7 +130,7 @@ void deforest_for_timber(Cell *cell,     /**< pointer to cell */
       cutstand = getstand(cell->standlist, pos);
       cutstand->frac = difffrac;
 
-      reclaim_land(natstand, cutstand, cell, istimber, npft + ncft,config);
+      reclaim_land(natstand, cutstand, cell, config->istimber, npft + ncft,config);
 
       /* merge natstand and cutstand following procedures in regrowth */
       if (difffrac + epsilon >= natstand->frac)
