@@ -26,11 +26,8 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
                         const Config *config /**< LPJmL configuration */
                        )                     /** \return landcover data or NULL */
 {
-  Header header;
   Landcover landcover;
-  String headername;
-  size_t offset,filesize;
-  int i,version,len;
+  int i,len;
   
   landcover=new(struct landcover);
   if(landcover==NULL)
@@ -38,82 +35,12 @@ Landcover initlandcover(int npft,            /**< number of natural PFTs */
     printallocerr("landcover");
     return NULL;
   }
-  landcover->file.fmt=config->landcover_filename.fmt;
-  landcover->file.isopen=FALSE;
-  if(config->landcover_filename.fmt==CDF)
+  if(opendata(&landcover->file,&config->landcover_filename,"landcover","1",LPJ_SHORT,0.01,getnnat(npft,config),TRUE,config))
   {
-    if(opendata_netcdf(&landcover->file,&config->landcover_filename,"1",config))
-    {
-      free(landcover);
-      return NULL;
-    }
-    len=landcover->file.var_len*config->ngridcell;
-  }
-  else
-  {
-    if((landcover->file.file=openinputfile(&header,&landcover->file.swap,
-                                           &config->landcover_filename,headername,
-                                           &version,&offset,TRUE,config))==NULL)
-
-    {
-      free(landcover);
-      return NULL;
-    }
-    landcover->file.isopen=TRUE;
-    if(version<2)
-      landcover->file.scalar=0.01;
-    else
-      landcover->file.scalar=header.scalar;
-    landcover->file.firstyear=header.firstyear;
-    landcover->file.nyear=header.nyear;
-    if(config->landcover_filename.fmt==RAW)
-      header.nbands=getnnat(npft,config);
-    if(version<=2)
-      landcover->file.datatype=LPJ_SHORT;
-    else
-      landcover->file.datatype=header.datatype;
-    if(isroot(*config) && config->landcover_filename.fmt!=META)
-    {
-       filesize=getfilesizep(landcover->file.file)-headersize(headername,version)-offset;
-       if(filesize!=typesizes[landcover->file.datatype]*header.nyear*header.nbands*header.ncell)
-         fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->landcover_filename.name);
-    }
-
-    landcover->file.var_len=header.nbands;
-    landcover->file.size=header.ncell*header.nbands*typesizes[landcover->file.datatype];
-    landcover->file.n=header.nbands*config->ngridcell;
-    landcover->file.offset=(config->startgrid-header.firstcell)*header.nbands*
-                           typesizes[landcover->file.datatype]+headersize(headername,version)+offset;
-    len=landcover->file.n;
-    if(header.nstep!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR225: Number of steps=%d in landcover file '%s' is not 1\n",
-                header.nstep,config->landcover_filename.name);
-      closeclimatefile(&landcover->file,isroot(*config));
-      free(landcover);
-      return NULL;
-    }
-    if(header.timestep!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR225: Time step%d in landcover file '%s' is not 1\n",
-                header.timestep,config->landcover_filename.name);
-      closeclimatefile(&landcover->file,isroot(*config));
-      free(landcover);
-      return NULL;
-    }
-
-  }
-  if(landcover->file.var_len!=getnnat(npft,config))
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR225: Number of bands=%zu in landcover file '%s' is not %d\n",
-              landcover->file.var_len,config->landcover_filename.name,getnnat(npft,config));
-    closeclimatefile(&landcover->file,isroot(*config));
     free(landcover);
     return NULL;
   }
+  len=config->ngridcell*landcover->file.var_len;
   if((landcover->frac=newvec(Real,len))==NULL)
   {
     printallocerr("frac");

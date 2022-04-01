@@ -67,7 +67,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
     if(fscanstring(&f,name,"var",FALSE,verb))
     {
       if(verb)
-        readstringerr("variable");
+        readstringerr("var");
       return TRUE;
     }
     else
@@ -75,7 +75,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       filename->var=strdup(name);
       if(filename->var==NULL)
       {
-        printallocerr("variable");
+        printallocerr("var");
         return TRUE;
       }
     }
@@ -107,7 +107,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
       if(fscanstring(&f,name,"var",FALSE,verb))
       {
         if(verb)
-          readstringerr("variable");
+          readstringerr("var");
         return TRUE;
       }
       else
@@ -115,7 +115,7 @@ Bool readfilename(LPJfile *file,      /**< pointer to text file read */
         filename->var=strdup(name);
         if(filename->var==NULL)
         {
-          printallocerr("variable");
+          printallocerr("var");
           return TRUE;
         }
       }

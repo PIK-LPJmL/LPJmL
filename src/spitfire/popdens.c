@@ -26,81 +26,16 @@ Popdens initpopdens(const Config *config /**< LPJ configuration */
                    )                     /** \return pointer to population
                                             struct or NULL */
 {
-  Header header;
   Popdens popdens;
-  String headername;
-  int i,version;
-  size_t offset,filesize;
+  int i;
 
   if(config->popdens_filename.name==NULL)
     return NULL;
   popdens=new(struct popdens);
   if(popdens==NULL)
     return NULL;
-  popdens->file.fmt=config->popdens_filename.fmt;
-  popdens->file.isopen=FALSE;
-  if(config->popdens_filename.fmt==CDF)
+  if(opendata(&popdens->file,&config->popdens_filename,"population density","km-2",LPJ_SHORT,1.0,1,TRUE,config))
   {
-    if(opendata_netcdf(&popdens->file,&config->popdens_filename,"km-2",config))
-    {
-      free(popdens);
-      return NULL;
-    }
-  }
-  else
-  {
-    if((popdens->file.file=openinputfile(&header,&popdens->file.swap,
-                                         &config->popdens_filename,
-                                         headername,
-                                         &version,&offset,TRUE,config))==NULL)
-    {
-      free(popdens);
-      return NULL;
-    }
-    popdens->file.isopen=TRUE;
-    popdens->file.firstyear=header.firstyear;
-    popdens->file.size=header.ncell*typesizes[header.datatype];
-    popdens->file.scalar=header.scalar;
-    popdens->file.datatype=header.datatype;
-    popdens->file.nyear=header.nyear;
-    popdens->file.var_len=header.nbands;
-    if(config->popdens_filename.fmt==RAW)
-      popdens->file.offset=config->startgrid*sizeof(short);
-    else
-    {
-      popdens->file.offset=(config->startgrid-header.firstcell)*typesizes[header.datatype]+headersize(headername,version)+offset;
-      if(isroot(*config) && config->popdens_filename.fmt!=META)
-      {
-         filesize=getfilesizep(popdens->file.file)-headersize(headername,version)-offset;
-         if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->popdens_filename.name);
-      }
-    }
-    if(header.nstep!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR218: Number of steps=%d in population density file '%s' is not 1.\n",
-                header.nstep,config->popdens_filename.name);
-      closeclimatefile(&popdens->file,isroot(*config));
-      free(popdens);
-      return NULL;
-    }
-    if(header.timestep!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR218: Time step=%d in population density file '%s' is not 1.\n",
-                header.timestep,config->popdens_filename.name);
-      closeclimatefile(&popdens->file,isroot(*config));
-      free(popdens);
-      return NULL;
-    }
-  }
-  if(popdens->file.var_len>1)
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR218: Number of bands=%zu in population density file '%s' is not 1.\n",
-              popdens->file.var_len,config->popdens_filename.name);
-    closeclimatefile(&popdens->file,isroot(*config));
     free(popdens);
     return NULL;
   }

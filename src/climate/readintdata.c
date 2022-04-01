@@ -39,8 +39,7 @@ int *readintdata(Climatefile *file,   /**< Pointer to data file */
   {
     if(readintdata_netcdf(file,data,grid,year,config))
     {
-      fprintf(stderr,
-              "ERROR149: Cannot read %s of year %d in readintdata().\n",
+      fprintf(stderr,"ERROR149: Cannot read %s of year %d in readintdata().\n",
                name,year+file->firstyear);
       fflush(stderr);
       free(data);
@@ -51,8 +50,7 @@ int *readintdata(Climatefile *file,   /**< Pointer to data file */
   {
     if(fseek(file->file,(long long)year*file->size+file->offset,SEEK_SET))
     {
-      fprintf(stderr,
-              "ERROR148: Cannot seek %s to year %d in readintdata().\n",
+      fprintf(stderr,"ERROR148: Cannot seek %s to year %d in readintdata().\n",
               name,year+file->firstyear);
       fflush(stderr);
       free(data);
@@ -60,8 +58,7 @@ int *readintdata(Climatefile *file,   /**< Pointer to data file */
     }
     if(readintvec(file->file,data,file->n,file->swap,file->datatype))
     {
-      fprintf(stderr,
-              "ERROR149: Cannot read %s of year %d in readintdata().\n",
+      fprintf(stderr,"ERROR149: Cannot read %s of year %d in readintdata().\n",
               name,year+file->firstyear);
       fflush(stderr);
       free(data);

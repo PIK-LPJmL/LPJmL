@@ -39,8 +39,7 @@ Real *readdata(Climatefile *file,   /**< Pointer to data file */
   {
     if(readdata_netcdf(file,data,grid,year,config))
     {
-      fprintf(stderr,
-              "ERROR149: Cannot read %s of year %d in readdata().\n",
+      fprintf(stderr,"ERROR149: Cannot read %s of year %d in readdata().\n",
                name,year+file->firstyear);
       fflush(stderr);
       free(data);
@@ -61,8 +60,7 @@ Real *readdata(Climatefile *file,   /**< Pointer to data file */
     if(readrealvec(file->file,data,0,file->scalar,file->n,
                    file->swap,file->datatype))
     {
-      fprintf(stderr,
-              "ERROR149: Cannot read %s of year %d in readdata().\n",
+      fprintf(stderr,"ERROR149: Cannot read %s of year %d in readdata().\n",
               name,year+file->firstyear);
       fflush(stderr);
       free(data);

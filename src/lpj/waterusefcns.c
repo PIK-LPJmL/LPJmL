@@ -26,87 +26,14 @@ Wateruse initwateruse(const Filename *filename, /**< filename of wateruse file *
                      )
 {
   Wateruse wateruse;
-  Header header;
-  String headername;
-  int version;
-  size_t offset,filesize;
   wateruse=new(struct wateruse);
   if(wateruse==NULL)
   {
     printallocerr("wateruse");
     return NULL;
   }
-  wateruse->file.isopen=FALSE;
-  wateruse->file.fmt=filename->fmt;
-  if(filename->fmt==CDF)
-  { 
-    if(opendata_netcdf(&wateruse->file,filename,NULL,config))
-    {
-      free(wateruse);
-      return NULL;
-    }
-  }
-  else
+  if(opendata(&wateruse->file,filename,"wateruse",NULL,LPJ_INT,1000.0,1,TRUE,config))
   {
-    if((wateruse->file.file=openinputfile(&header,&wateruse->file.swap,
-                                          filename,
-                                          headername,
-                                          &version,&offset,TRUE,config))==NULL)
-    {
-      free(wateruse);
-      return NULL;
-    }
-    wateruse->file.isopen=TRUE;
-    wateruse->file.firstyear=header.firstyear;
-    wateruse->file.nyear=header.nyear;
-    if(config->wateruse_filename.fmt==RAW)
-    {
-      wateruse->file.datatype=LPJ_INT;
-      wateruse->file.offset=sizeof(int)*config->startgrid;
-    }
-    else
-    {
-      if(version>2)
-        wateruse->file.datatype=header.datatype;
-      else
-        wateruse->file.datatype=LPJ_INT;
-      wateruse->file.offset=headersize(headername,version)+typesizes[wateruse->file.datatype]*(config->startgrid-header.firstcell)+offset;
-      if(isroot(*config))
-      {
-         filesize=getfilesizep(wateruse->file.file)-headersize(headername,version)-offset;
-         if(filesize!=typesizes[wateruse->file.datatype]*header.nyear*header.nbands*header.ncell)
-           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
-      }
-    }
-    wateruse->file.var_len=header.nbands;
-    wateruse->file.size=header.ncell*typesizes[wateruse->file.datatype];
-    wateruse->file.scalar=(version<=1) ? 1000 : header.scalar;
-    if(header.nstep!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR218: Number of steps=%d in wateruse file '%s' is not 1.\n",
-                header.nstep,config->wateruse_filename.name);
-      closeclimatefile(&wateruse->file,isroot(*config));
-      free(wateruse);
-      return NULL;
-    }
-    if(header.timestep!=1)
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR218: Time step=%d in wateruse file '%s' is not 1.\n",
-                header.timestep,config->wateruse_filename.name);
-      closeclimatefile(&wateruse->file,isroot(*config));
-      free(wateruse);
-      return NULL;
-    }
-  }
-  if(wateruse->file.var_len!=1)
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR218: Number of bands=%zu in wateruse file '%s' is not 1.\n",
-              wateruse->file.var_len,config->wateruse_filename.name);
-
-    closeclimatefile(&wateruse->file,isroot(*config));
     free(wateruse);
     return NULL;
   }
@@ -130,44 +57,7 @@ static Real *readwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
       year=wateruse->file.firstyear+wateruse->file.nyear-1;
   }
   if(year>=wateruse->file.firstyear && year<wateruse->file.firstyear+wateruse->file.nyear)
-  {
-    if(wateruse->file.fmt==CDF)
-    {
-      data=newvec(Real,config->ngridcell);
-      if(data==NULL)
-      {
-        printallocerr("data");
-        return NULL;
-      }
-      if(readdata_netcdf(&wateruse->file,data,grid,year,config))
-      {
-        free(data);
-        return NULL;
-      }
-    }
-    else
-    {
-      if(fseek(wateruse->file.file,
-               wateruse->file.offset+wateruse->file.size*(year-wateruse->file.firstyear),
-               SEEK_SET))
-      {
-        fprintf(stderr,"ERROR150: Cannot seek file to year %d in wateruse().\n",year);
-        return NULL;
-      } 
-      data=newvec(Real,config->ngridcell);
-      if(data==NULL)
-      {
-        printallocerr("data");
-        return NULL;
-      }
-      if(readrealvec(wateruse->file.file,data,0,wateruse->file.scalar,config->ngridcell,wateruse->file.swap,wateruse->file.datatype))
-      {
-        fprintf(stderr,"ERROR151: Cannot read wateruse for year %d.\n",year);
-        free(data);
-        return NULL;
-      } 
-    }
-  }
+    data=readdata(&wateruse->file,grid,"wateruse",year,config);
   else 
   {
     data=newvec(Real,config->ngridcell);
