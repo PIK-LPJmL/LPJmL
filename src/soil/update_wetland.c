@@ -213,7 +213,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           }
           natstand->frac = frac - delta_wetland;
           if(natstand->frac<0) natstand->frac=0;      //SHOULD NOT OCCUR
-          check_stand_fracs(cell->standlist,cell->lakefrac+cell->ml.reservoirfrac);
         }
         else
         {
@@ -261,7 +260,6 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
           delta_wetland=wetstand->frac-wetlandarea_old;
           natstand->frac = frac-delta_wetland;
           if(natstand->frac<0) natstand->frac=0;      //SHOULD NOT OCCUR
-          check_stand_fracs(cell->standlist,cell->lakefrac+cell->ml.reservoirfrac);
 
           //        make sure there is no C in slow pool
           forrootsoillayer(l)
@@ -294,6 +292,7 @@ void update_wetland(Cell *cell,          /**< pointer to cell */
         if (fabs(start.nitrogen - end.nitrogen)>0.001)
           fprintf(stdout, "N-ERROR in update wetland 1: %g start:%g  ende:%g \n", start.nitrogen - end.nitrogen, start.nitrogen, end.nitrogen);
 #endif
+        check_stand_fracs(cell->standlist,cell->lakefrac+cell->ml.reservoirfrac);
 
       }
       // -----------------------------------------------------------------------------------------------

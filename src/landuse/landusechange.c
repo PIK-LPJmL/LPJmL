@@ -66,11 +66,15 @@ void deforest(Cell *cell,          /**< pointer to cell */
         pedotransfer(cutstand,NULL,NULL,cutstand->frac);
       if(difffrac+epsilon>=natstand->frac)
       {
+        difffrac-=natstand->frac;
         delstand(cell->standlist,s);
         pos=s;
       }
       else
+      {
         natstand->frac-=difffrac;
+        difffrac=0;
+      }
       if(!timberharvest)
       {
         /* stand was already tilled, so put FALSE to tillage argument */
@@ -79,7 +83,7 @@ void deforest(Cell *cell,          /**< pointer to cell */
       }
     }
   }
-  else if(w!=NOT_FOUND)
+  if(w!=NOT_FOUND && difffrac>0)
   {
     pos=addstand(&wetland_stand,cell)-1;
     wetstand=getstand(cell->standlist,w);
@@ -87,21 +91,27 @@ void deforest(Cell *cell,          /**< pointer to cell */
     if(difffrac+epsilon>=wetstand->frac)
       difffrac=wetstand->frac;
     cutstand->frac=difffrac;
+
     reclaim_land(wetstand,cutstand,cell,config->istimber,npft+ncft,config);
-    if(difffrac+epsilon>=natstand->frac)
+    if(difffrac+epsilon>=wetstand->frac)
     {
+      difffrac-=wetstand->frac;
       delstand(cell->standlist,w);
       pos=w;
+      cell->hydrotopes.wetland_area=cell->hydrotopes.wetland_area_runmean=0;
     }
     else
+    {
       wetstand->frac-=difffrac;
+      difffrac=0;
+    }
     if(!timberharvest)
     {
       if(setaside(cell,getstand(cell->standlist,pos),FALSE,intercrop,npft,irrig,year,config))
         delstand(cell->standlist,pos);
     }
   }
-  else
+  if(s==NOT_FOUND && w==NOT_FOUND)
     fail(NO_NATURAL_STAND_ERR,TRUE,"No natural stand or wetland for deforest, difffrac=%g",difffrac);
 } /* of 'deforest' */
 
