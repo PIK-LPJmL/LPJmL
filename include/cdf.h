@@ -103,15 +103,13 @@ typedef struct coord_netcdf *Coord_netcdf;
 
 typedef struct input_netcdf *Input_netcdf;
 
-typedef union
+typedef struct
 {
-  struct
-  {
-    Bool swap;     /**< byte order has to be changed */
-    size_t offset; /**< offset in binary file */
-    Type type;     /**< data type in binary file */
-    FILE *file;
-  } bin;
+  int fmt;       /**< format (RAW/CLM/CDF) */
+  Bool swap;     /**< byte order has to be changed */
+  Type type;     /**< data type in binary file */
+  Real scalar;   /**< scaling factore */
+  FILE *file;    /**< pointer to binary file */
   Input_netcdf cdf;
 } Infile;
 
@@ -176,7 +174,7 @@ extern Type getinputtype_netcdf(const Input_netcdf);
 extern Bool getlatlon_netcdf(Climatefile *,const char *,const Config *);
 extern Bool getvar_netcdf(Climatefile *,const char *,const char *,const char *,
                           const char *,const Config *);
-extern void closeinput(Infile,int);
+extern void closeinput(Infile *);
 extern int open_netcdf(const char *,int *,Bool *);
 extern void free_netcdf(int);
 extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);

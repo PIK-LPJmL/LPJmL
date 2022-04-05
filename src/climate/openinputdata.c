@@ -1,10 +1,10 @@
 /**************************************************************************************/
 /**                                                                                \n**/
-/**                           o  p  e  n  d  a  t  a  .  c                         \n**/
+/**                  o  p  e  n  i  n  p  u  t  d  a  t  a  .  c                   \n**/
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Function opens data file                                                   \n**/
+/**     Function opens static input data file                                      \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -16,14 +16,12 @@
 
 #include "lpj.h"
 
-Bool opendata(Climatefile *file,        /**< pointer to file */
+Bool openinputdata(Infile *file,        /**< pointer to file */ 
               const Filename *filename, /**< filename */
               const char *name,         /**< name of data */
               const char *unit,         /**< unit or NULL */
               Type datatype,            /**< datatype for version 2 files */
-              Real scalar,              /**< scalar for version 1 files */
-              int nbands,               /**< number of bands */
-              Bool ischeck,             /**< check number of bands (TRUE/FALSE) */
+              Real scalar,              /**< scalar for version 1 files */ 
               const Config *config      /**< LPJ configuration */
              )                          /** \return TRUE on error */
 {
@@ -34,7 +32,8 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
   file->fmt=filename->fmt;
   if(file->fmt==CDF)
   {
-    if(opendata_netcdf(file,filename,unit,config))
+    file->cdf=openinput_netcdf(filename,unit,0,config);
+    if(file->cdf==NULL)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open %s data file.\n",name);
@@ -45,42 +44,37 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
   {
     if((file->file=openinputfile(&header,&file->swap,
                                  filename,headername,
-                                 &version,&offset,TRUE,config))==NULL)
+                                 &version,&offset,FALSE,config))==NULL)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR236: Cannot open %s data file.\n",name);
       return TRUE;
     }
-    file->isopen=TRUE;
     if(file->fmt==RAW)
     {
-      header.nbands=nbands;
-      file->datatype=datatype;
-      file->offset=config->startgrid*header.nbands*typesizes[datatype];
+      header.nbands=1;
+      header.nyear=1;
+      file->type=datatype;
+      offset=config->startgrid*header.nbands*typesizes[datatype];
     }
     else
     {
-      file->datatype=(version<=2) ? datatype : header.datatype;
-      file->offset=(config->startgrid-header.firstcell)*header.nbands*typesizes[file->datatype]+headersize(headername,version)+offset;
+      file->type=(version<=2) ? datatype : header.datatype;
       if(isroot(*config) && filename->fmt!=META)
       {
         filesize=getfilesizep(file->file)-headersize(headername,version)-offset;
-        if(filesize!=typesizes[file->datatype]*header.nyear*header.nbands*header.ncell)
+        if(filesize!=typesizes[file->type]*header.nyear*header.nbands*header.ncell)
           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
       }
+      offset+=(config->startgrid-header.firstcell)*header.nbands*typesizes[file->type]+headersize(headername,version);
     }
-    file->firstyear=header.firstyear;
-    file->nyear=header.nyear;
-    file->size=header.ncell*header.nbands*typesizes[file->datatype];
-    file->n=config->ngridcell*header.nbands;
-    file->var_len=header.nbands;
     file->scalar=(version<=1) ? scalar : header.scalar;
     if(header.nstep!=1)
     {
       if(isroot(*config))
         fprintf(stderr,"ERROR147: Invalid number of steps=%d in %s data file '%s', must be 1.\n",
                 header.nstep,name,filename->name);
-      closeclimatefile(file,isroot(*config));
+      closeinput(file);
       return TRUE;
     }
     if(header.timestep!=1)
@@ -88,17 +82,24 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
       if(isroot(*config))
         fprintf(stderr,"ERROR147: Invalid time step=%d in %s data file '%s', must be 1.\n",
                 header.timestep,name,filename->name);
-      closeclimatefile(file,isroot(*config));
+      closeinput(file);
+      return TRUE;
+    }
+    if(header.nbands!=1)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR147: Invalid number of bands=%d in %s data file '%s', must be 1.\n",
+               header.nbands,name,filename->name);
+      closeinput(file);
+      return TRUE;
+    }
+    if(fseek(file->file,offset,SEEK_SET))
+    {
+      fprintf(stderr,"ERROR108: Cannot seek in %s file to position %d.\n",
+              name,config->startgrid);
+      closeinput(file);
       return TRUE;
     }
   }
-  if(ischeck && file->var_len!=nbands)
-  {
-    if(isroot(*config))
-      fprintf(stderr,"ERROR147: Invalid number of bands=%zu in %s data file '%s', must be %d.\n",
-             file->var_len,name,filename->name,nbands);
-    closeclimatefile(file,isroot(*config));
-    return TRUE;
-  }
   return FALSE;
-} /* of 'opendata' */
+} /* of 'openinputdata' */

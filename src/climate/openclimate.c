@@ -172,10 +172,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   file->firstyear=header.firstyear;
   file->scalar=(version<=1) ? scalar : header.scalar;
   file->nyear=header.nyear;
-  if(file->version<=2)
-    file->datatype=datatype;
-  else
-    file->datatype=header.datatype;
+  file->datatype=(file->version<=2) ? datatype : header.datatype;
   if(filename->fmt==RAW)
   {
     header.nbands=12;

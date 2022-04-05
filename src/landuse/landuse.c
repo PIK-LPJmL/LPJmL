@@ -305,7 +305,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
   {
     /* assigning crop phus data */
-    data=readdata(&landuse->crop_phu,grid,"crop phus",yearphu,config);
+    data=readdata(&landuse->crop_phu,NULL,grid,"crop phus",yearphu,config);
     if(data==NULL)
       return TRUE;
     count=0;
@@ -330,7 +330,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     free(data);
   } /* end crop_phu*/
   /* read landuse data */
-  data=readdata(&landuse->landuse,grid,"landuse",yearl,config);
+  data=readdata(&landuse->landuse,NULL,grid,"landuse",yearl,config);
   if(data==NULL)
     return TRUE;
   count=0;
@@ -707,7 +707,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     if(config->fertilizer_input==FERTILIZER)
     {
       /* assigning fertilizer Nr data */
-      data=readdata(&landuse->fertilizer_nr,grid,"fertilizer",yearf,config);
+      data=readdata(&landuse->fertilizer_nr,NULL,grid,"fertilizer",yearf,config);
       if(data==NULL)
         return TRUE;
       count=0;
@@ -733,7 +733,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
     if(config->manure_input)
     {
       /* assigning manure fertilizer nr data */
-      data=readdata(&landuse->manure_nr,grid,"manure",yearm,config);
+      data=readdata(&landuse->manure_nr,NULL,grid,"manure",yearm,config);
       if(data==NULL)
         return TRUE;
       count=0;
@@ -811,7 +811,7 @@ Bool getlanduse(Landuse landuse,     /**< Pointer to landuse data */
   if(config->residue_treatment==READ_RESIDUE_DATA)
   {
     /* assigning residue extraction data */
-    data=readdata(&landuse->residue_on_field,grid,"residue extraction",yearr,config);
+    data=readdata(&landuse->residue_on_field,NULL,grid,"residue extraction",yearr,config);
     if(data==NULL)
       return TRUE;
     count=0;
@@ -845,7 +845,7 @@ Bool getintercrop(const Landuse landuse /**< pointer to landuse data */
 
 void freelanduse(Landuse landuse,     /**< pointer to landuse data */
                  const Config *config /**< LPJmL configuration */
-)
+                )
 {
   if(landuse!=NULL)
   {

@@ -57,8 +57,8 @@ static Real *readwateruse(Wateruse wateruse,   /**< Pointer to wateruse data */
       year=wateruse->file.firstyear+wateruse->file.nyear-1;
   }
   if(year>=wateruse->file.firstyear && year<wateruse->file.firstyear+wateruse->file.nyear)
-    data=readdata(&wateruse->file,grid,"wateruse",year,config);
-  else 
+    data=readdata(&wateruse->file,NULL,grid,"wateruse",year,config);
+  else
   {
     data=newvec(Real,config->ngridcell);
     if(data==NULL)

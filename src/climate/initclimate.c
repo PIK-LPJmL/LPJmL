@@ -354,34 +354,15 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
       freeclimate(climate,isroot(*config));
       return NULL;
     }
-    if(climate->file_lightning.fmt==CDF)
+    if(readclimate(&climate->file_lightning,climate->data.lightning,0,climate->file_lightning.scalar,grid,climate->file_lightning.firstyear,config))
     {
-      if(readclimate_netcdf(&climate->file_lightning,climate->data.lightning,grid,0,config))
-      {
-        freeclimate(climate,isroot(*config));
-        return NULL;
-      }
+      name=getrealfilename(&config->lightning_filename);
+      fprintf(stderr,"ERROR192: Cannot read lightning from '%s'.\n",name);
+      free(name);
+      freeclimate(climate,isroot(*config));
+      return NULL;
     }
-    else
-    {
-      if(fseek(climate->file_lightning.file,climate->file_lightning.offset,SEEK_SET))
-      {
-        name=getrealfilename(&config->lightning_filename);
-        fprintf(stderr,"ERROR191: Cannot seek lightning in '%s'.\n",name);
-        free(name);
-        freeclimate(climate,isroot(*config));
-        return NULL;
-      }
-      if(readrealvec(climate->file_lightning.file,climate->data.lightning,0,climate->file_lightning.scalar,climate->file_lightning.n,climate->file_lightning.swap,climate->file_lightning.datatype))
-      {
-        name=getrealfilename(&config->lightning_filename);
-        fprintf(stderr,"ERROR192: Cannot read lightning from '%s'.\n",name);
-        free(name);
-        freeclimate(climate,isroot(*config));
-        return NULL;
-      }
-      closeclimatefile(&climate->file_lightning,isroot(*config));
-    }
+    closeclimatefile(&climate->file_lightning,isroot(*config));
   }
   if(config->with_radiation)
   {

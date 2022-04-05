@@ -17,32 +17,41 @@
 #include "lpj.h"
 
 Real *readdata(Climatefile *file,   /**< Pointer to data file */
+               Real *data,          /**< pointer to data vector or NULL */
                const Cell grid[],   /**< LPJ grid */
-               const char *name,    /**< name of data data */
+               const char *name,    /**< name of data */
                int year,            /**< year (AD) */
                const Config *config /**< LPJ configuration */
               )                     /** \return data or NULL on error */
 {
-  Real *data;
+  Bool isalloc;
   year-=file->firstyear;
   if(year>=file->nyear)
     year=file->nyear-1;
   else if(year<0)
     year=0;
-  data=newvec(Real,config->ngridcell*file->var_len);
   if(data==NULL)
   {
-    printallocerr("data");
-    return NULL;
+    /* data is null, allocate data */
+    data=newvec(Real,config->ngridcell*file->var_len);
+    if(data==NULL)
+    {
+      printallocerr("data");
+      return NULL;
+    }
+    isalloc=TRUE;
   }
+  else
+    isalloc=FALSE;
   if(file->fmt==CDF)
   {
     if(readdata_netcdf(file,data,grid,year,config))
     {
       fprintf(stderr,"ERROR149: Cannot read %s of year %d in readdata().\n",
-               name,year+file->firstyear);
+              name,year+file->firstyear);
       fflush(stderr);
-      free(data);
+      if(isalloc)
+        free(data);
       return NULL;
     }
   }
@@ -50,11 +59,11 @@ Real *readdata(Climatefile *file,   /**< Pointer to data file */
   {
     if(fseek(file->file,(long long)year*file->size+file->offset,SEEK_SET))
     {
-      fprintf(stderr,
-              "ERROR148: Cannot seek %s to year %d in readdata().\n",
+      fprintf(stderr,"ERROR148: Cannot seek %s to year %d in readdata().\n",
               name,year+file->firstyear);
       fflush(stderr);
-      free(data);
+      if(isalloc)
+        free(data);
       return NULL;
     }
     if(readrealvec(file->file,data,0,file->scalar,file->n,
@@ -63,7 +72,8 @@ Real *readdata(Climatefile *file,   /**< Pointer to data file */
       fprintf(stderr,"ERROR149: Cannot read %s of year %d in readdata().\n",
               name,year+file->firstyear);
       fflush(stderr);
-      free(data);
+      if(isalloc)
+        free(data);
       return NULL;
     }
   }
