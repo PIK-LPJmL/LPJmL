@@ -36,6 +36,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   Real autofert_n;
   Real n_uptake=0;
   Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
+  Real fixed_n=0;
   Real rootdist_n[LASTLAYER];
   Irrigation *data;
   int l,nnat,nirrig;
