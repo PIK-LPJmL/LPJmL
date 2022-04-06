@@ -239,6 +239,9 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
   config->double_harvest=FALSE;
   config->others_to_crop = FALSE;
   config->soilpar_option=NO_FIXED_SOILPAR;
+  config->nfix_setaside=FALSE;
+  if(fscanbool(file,&config->nfix_setaside,"nfix_setaside",TRUE,verbose))
+    return TRUE;
   if(fscankeywords(file,&config->soilpar_option,"soilpar_option",soilpar_option,3,TRUE,verbose))
     return TRUE;
   if(config->soilpar_option==FIXED_SOILPAR)

@@ -110,11 +110,13 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
       }
     }
   }
-  if (pft->stand->type->landusetype ==  SETASIDE_RF || pft->stand->type->landusetype == SETASIDE_IR)
+  if (pft->stand->type->landusetype ==  SETASIDE_RF || pft->stand->type->landusetype == SETASIDE_IR
+    && config->nfix_setaside
+    && *n_plant_demand / (1 + pft->par->knstore) > (vegn_sum_grass(pft) - grass->turn_litt.root.nitrogen - grass->turn_litt.leaf.nitrogen + pft->bm_inc.nitrogen))
   {
-    fixed_n = *n_plant_demand - pft->bm_inc.nitrogen;
+    fixed_n = *n_plant_demand / (1 + pft->par->knstore) - (vegn_sum_grass(pft) - grass->turn_litt.root.nitrogen-grass->turn_litt.leaf.nitrogen + pft->bm_inc.nitrogen);
     n_uptake += fixed_n;
-    pft->bm_inc.nitrogen = *n_plant_demand;
+    pft->bm_inc.nitrogen += fixed_n;
     getoutput(&pft->stand->cell->output,BNF,config) += fixed_n*pft->stand->frac;
     pft->stand->cell->balance.n_influx += fixed_n*pft->stand->frac;
     getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;

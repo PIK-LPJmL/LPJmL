@@ -129,7 +129,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   if(*n_plant_demand > pft->bm_inc.nitrogen)
   {
     /* no N limitation for N-fixing crops */
-    if (pft->par->nfixing)
+    if (pft->par->nfixing)  
     {
       fixed_n = *n_plant_demand - pft->bm_inc.nitrogen;
       n_uptake += fixed_n;
