@@ -111,7 +111,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
       }
     }
   }
-  if (pft->stand->type->landusetype ==  SETASIDE_RF || pft->stand->type->landusetype == SETASIDE_IR
+  if (pft->stand->type->landusetype == SETASIDE_RF || pft->stand->type->landusetype == SETASIDE_IR
     && config->nfix_setaside
     && *n_plant_demand / (1 + pft->par->knstore) > (vegn_sum_grass(pft) - grass->turn_litt.root.nitrogen - grass->turn_litt.leaf.nitrogen + pft->bm_inc.nitrogen))
   {
