@@ -29,6 +29,7 @@
 #define LAT_DIM_NAME "latitude"
 #define TIME_DIM_NAME "time"
 #define YEARS_NAME "Years"
+#define NULL_NAME "(null)"
 
 typedef enum { ONEFILE,CREATE,APPEND,CLOSE} State_nc;
 
@@ -56,12 +57,14 @@ typedef struct cdf
 
 typedef struct
 {
+  Bool isopen;      /**< file is open (TRUE/FALSE) */
   int firstyear;    /**< first year of climate data (AD) */
   int n;            /**< number of grid cell data to be read */
   long long offset; /**< file offset in bytes */
   long long size;   /**< size of dataset for each year in bytes */
   int nyear;        /**< number of years of climate data */
   Time time_step;   /**< time steps (DAY/MONTH/YEAR) */
+  int delta_year;   /**< time step for yearly output (yrs) */
   Bool ready;       /**< data was already averaged */
   Bool swap;        /**< byte order has to be changed (TRUE/FALSE) */
   FILE *file;       /**< file pointer */
@@ -101,15 +104,13 @@ typedef struct coord_netcdf *Coord_netcdf;
 
 typedef struct input_netcdf *Input_netcdf;
 
-typedef union
+typedef struct
 {
-  struct
-  {
-    Bool swap;     /**< byte order has to be changed */
-    size_t offset; /**< offset in binary file */
-    Type type;     /**< data type in binary file */
-    FILE *file;
-  } bin;
+  int fmt;       /**< format (RAW/CLM/CDF) */
+  Bool swap;     /**< byte order has to be changed */
+  Type type;     /**< data type in binary file */
+  Real scalar;   /**< scaling factor */
+  FILE *file;    /**< pointer to binary file */
   Input_netcdf cdf;
 } Infile;
 
@@ -174,7 +175,7 @@ extern Type getinputtype_netcdf(const Input_netcdf);
 extern Bool getlatlon_netcdf(Climatefile *,const char *,const Config *);
 extern Bool getvar_netcdf(Climatefile *,const char *,const char *,const char *,
                           const char *,const Config *);
-extern void closeinput(Infile,int);
+extern void closeinput(Infile *);
 extern int open_netcdf(const char *,int *,Bool *);
 extern void free_netcdf(int);
 extern Bool checkcoord(const size_t *,int,const Coord *,const Climatefile *);

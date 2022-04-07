@@ -256,7 +256,7 @@ Outputfile *fopenoutput(const Cell grid[],   /**< LPJ grid */
     output->files[config->outputvars[i].id].filename=config->outputvars[i].filename.name;
     if(config->outputvars[i].filename.fmt==SOCK)
     {
-      if(!output->files[config->outputvars[i].id].isopen);
+      if(!output->files[config->outputvars[i].id].isopen)
         output->files[config->outputvars[i].id].fmt=SOCK;
       output->files[config->outputvars[i].id].issocket=TRUE;
       if(isroot(*config))

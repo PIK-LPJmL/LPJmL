@@ -20,6 +20,7 @@ void freefilename(Filename *filename)
 {
   free(filename->name);
   free(filename->var);
+  free(filename->map);
   free(filename->unit);
   free(filename->time);
 } /* of 'freefilename' */

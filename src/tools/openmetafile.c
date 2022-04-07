@@ -77,6 +77,7 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
                           char *s,            /**< first string of JSON file */
                           Header *header,     /**< pointer to file header */
                           List **map,         /**< map from json file or NULL */
+                          const char *map_name, /**< name of map or NULL */
                           size_t *offset,     /**< offset in binary file */
                           Bool *swap,         /**< byte order has to be changed (TRUE/FALSE) */
                           Verbosity verbosity /**< verbosity level */
@@ -94,8 +95,8 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
   }
   if(map!=NULL)
   {
-    if(iskeydefined(lpjfile,MAP_NAME))
-      *map=fscanstringarray(lpjfile,MAP_NAME,verbosity);
+    if(iskeydefined(lpjfile,(map_name==NULL) ? MAP_NAME : map_name))
+      *map=fscanstringarray(lpjfile,(map_name==NULL) ? MAP_NAME : map_name,verbosity);
     else
       *map=NULL;
   }
@@ -262,6 +263,7 @@ char *parse_json_metafile(LPJfile *lpjfile,   /**< pointer to JSON file */
 
 FILE *openmetafile(Header *header,       /**< pointer to file header */
                    List **map,           /**< map from json file or NULL */
+                   const char *map_name, /**< name of map or NULL */
                    Bool *swap,           /**< byte order has to be changed (TRUE/FALSE) */
                    size_t *offset,       /**< offset in binary file */
                    const char *filename, /**< file name */
@@ -292,7 +294,7 @@ FILE *openmetafile(Header *header,       /**< pointer to file header */
     if(key[0]=='{')
     {
 #ifdef USE_JSON
-      name=parse_json_metafile(&file,key,header,map,offset,swap,isout ? ERR : NO_ERR);
+      name=parse_json_metafile(&file,key,header,map,map_name,offset,swap,isout ? ERR : NO_ERR);
       break;
 #else
       if(isout)

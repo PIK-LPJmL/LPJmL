@@ -20,6 +20,7 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
                  const Filename *filename, /**< file name and format */
                  const char *units,        /**< units in NetCDF file or NULL */
                  Type datatype,            /**< data type in binary file */
+                 Real scalar,              /**< scaling factor */
                  const Config *config      /**< LPJ configuration */
                 )                          /** \return TRUE on error */
 {
@@ -194,12 +195,9 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   }
   file->version=version;
   file->firstyear=header.firstyear;
-  file->scalar=header.scalar;
+  file->scalar=(version<=1) ? scalar : header.scalar;
   file->nyear=header.nyear;
-  if(file->version<=2)
-    file->datatype=datatype;
-  else
-    file->datatype=header.datatype;
+  file->datatype=(file->version<=2) ? datatype : header.datatype;
   if(filename->fmt==RAW)
   {
     header.nbands=12;
@@ -219,5 +217,6 @@ Bool openclimate(Climatefile *file,        /**< pointer to climate file */
   file->time_step=(header.nbands==NDAYYEAR) ? DAY : MONTH;
   file->size=header.ncell*header.nbands*typesizes[file->datatype];
   file->n=header.nbands*config->ngridcell;
+  file->isopen=TRUE;
   return FALSE;
 } /* of 'openclimate' */

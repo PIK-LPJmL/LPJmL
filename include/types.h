@@ -78,6 +78,7 @@ typedef struct
   char *time; /* name of time variable or NULL */
   char *var;  /* name of variable in NetCDF file or NULL */
   char *unit; /* units of variable in NetCDF file or NULL */
+  char *map;  /* name of map in NetCDF file */
   Real scale; /* scale factor for output */
   Bool isscale; /* scale factor defined? */
   int timestep; /* time step for output (ANNUAL,MONTHLY,DAILY) */
