@@ -19,7 +19,7 @@
 
 /* Definition of constants */
 
-#define COPAN_COUPLER_VERSION 4        /* Protocol version */
+#define COPAN_COUPLER_VERSION 3        /* Protocol version */
 #define LPJCOPAN "LPJCOPAN"            /* Environment variable for COPAN coupler */
 #define LPJWAIT "LPJWAIT"              /* Time to wait for connection */
 #define DEFAULT_COPAN_HOST "localhost" /* Default host for COPAN model */
