@@ -16,14 +16,14 @@
 
 #include "lpj.h"
 
-Bool openinputdata(Infile *file,        /**< pointer to file */ 
-              const Filename *filename, /**< filename */
-              const char *name,         /**< name of data */
-              const char *unit,         /**< unit or NULL */
-              Type datatype,            /**< datatype for version 2 files */
-              Real scalar,              /**< scalar for version 1 files */ 
-              const Config *config      /**< LPJ configuration */
-             )                          /** \return TRUE on error */
+Bool openinputdata(Infile *file,             /**< pointer to file */
+                   const Filename *filename, /**< filename */
+                   const char *name,         /**< name of data */
+                   const char *unit,         /**< unit or NULL */
+                   Type datatype,            /**< datatype for version 2 files */
+                   Real scalar,              /**< scalar for version 1 files */
+                   const Config *config      /**< LPJ configuration */
+                  )                          /** \return TRUE on error */
 {
   Header header;
   String headername;
@@ -63,7 +63,7 @@ Bool openinputdata(Infile *file,        /**< pointer to file */
       if(isroot(*config) && filename->fmt!=META)
       {
         filesize=getfilesizep(file->file)-headersize(headername,version)-offset;
-        if(filesize!=typesizes[file->type]*header.nyear*header.nbands*header.ncell)
+        if(filesize!=typesizes[file->type]*header.nyear*header.nbands*header.ncell*header.nstep)
           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
       }
       offset+=(config->startgrid-header.firstcell)*header.nbands*typesizes[file->type]+headersize(headername,version);
@@ -77,13 +77,11 @@ Bool openinputdata(Infile *file,        /**< pointer to file */
       closeinput(file);
       return TRUE;
     }
-    if(header.timestep!=1)
+    if(header.nyear!=1)
     {
       if(isroot(*config))
-        fprintf(stderr,"ERROR147: Invalid time step=%d in %s data file '%s', must be 1.\n",
-                header.timestep,name,filename->name);
-      closeinput(file);
-      return TRUE;
+        fprintf(stderr,"WARNING038: Number of years=%d in %s data file '%s' greater than 1, only first year read.\n",
+                header.nyear,name,filename->name);
     }
     if(header.nbands!=1)
     {

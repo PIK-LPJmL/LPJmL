@@ -65,7 +65,7 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
       if(isroot(*config) && filename->fmt!=META)
       {
         filesize=getfilesizep(file->file)-headersize(headername,version)-offset;
-        if(filesize!=typesizes[file->datatype]*header.nyear*header.nbands*header.ncell)
+        if(filesize!=typesizes[file->datatype]*header.nyear*header.nbands*header.ncell*header.nstep)
           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",filename->name);
       }
     }

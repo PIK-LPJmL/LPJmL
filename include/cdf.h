@@ -108,7 +108,7 @@ typedef struct
   int fmt;       /**< format (RAW/CLM/CDF) */
   Bool swap;     /**< byte order has to be changed */
   Type type;     /**< data type in binary file */
-  Real scalar;   /**< scaling factore */
+  Real scalar;   /**< scaling factor */
   FILE *file;    /**< pointer to binary file */
   Input_netcdf cdf;
 } Infile;

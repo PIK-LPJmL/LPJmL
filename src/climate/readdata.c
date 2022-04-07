@@ -42,7 +42,7 @@ Real *readdata(Climatefile *file,   /**< Pointer to data file */
     isalloc=TRUE;
   }
   else
-    isalloc=FALSE;
+    isalloc=FALSE; /* allocation is not necessary */
   if(file->fmt==CDF)
   {
     if(readdata_netcdf(file,data,grid,year,config))
