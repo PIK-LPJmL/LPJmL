@@ -106,7 +106,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->sdate_option==PRESCRIBED_SDATE)
   {
     /* open sdate input data */
-    if(opendata(&landuse->sdate,&config->sdate_filename,"sowing",NULL,LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
+    if(opendata(&landuse->sdate,&config->sdate_filename,"sowing",NULL,(config->sdate_filename.fmt==SOCK) ? LPJ_INT : LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;
@@ -118,7 +118,7 @@ Landuse initlanduse(const Config *config /**< LPJ configuration */
   if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
   {
     /* open sdate input data */
-    if(opendata(&landuse->crop_phu,&config->crop_phu_filename,"crop phu",NULL,LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
+    if(opendata(&landuse->crop_phu,&config->crop_phu_filename,"crop phu",NULL,(config->crop_phu_filename.fmt==SOCK) ? LPJ_FLOAT : LPJ_SHORT,1.0,2*config->cftmap_size,TRUE,config))
     {
       freelanduse(landuse,config);
       return NULL;

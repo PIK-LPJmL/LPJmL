@@ -25,7 +25,7 @@ Real *readdata(Climatefile *file,   /**< Pointer to data file */
               )                     /** \return data or NULL on error */
 {
   Bool isalloc;
-  
+
   if(file->fmt!=SOCK)
   {
     year-=file->firstyear;

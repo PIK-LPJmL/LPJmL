@@ -670,11 +670,11 @@ Bool fscanconfig(Config *config,    /**< LPJ configuration */
     }
     if(config->sdate_option==PRESCRIBED_SDATE)
     {
-      scanclimatefilename(&input,&config->sdate_filename,FALSE,FALSE,"sdate");
+      scanclimatefilename(&input,&config->sdate_filename,FALSE,TRUE,"sdate");
     }
     if(config->crop_phu_option==PRESCRIBED_CROP_PHU)
     {
-      scanclimatefilename(&input,&config->crop_phu_filename,FALSE,FALSE,"crop_phu");
+      scanclimatefilename(&input,&config->crop_phu_filename,FALSE,TRUE,"crop_phu");
     }
     if(config->with_nitrogen && config->fertilizer_input==FERTILIZER)
       scanclimatefilename(&input,&config->fertilizer_nr_filename,FALSE,TRUE,"fertilizer_nr");
