@@ -65,9 +65,7 @@ Bool readlandcover(Landcover landcover, /**< landcover data */
                    const Config *config /**< LPJmL configuration */
                   )                     /** \return TRUE on error */
 {
-  if(readdata(&landcover->file,landcover->frac,grid,"landcover",year,config)==NULL)
-    return TRUE;
-  return FALSE;
+  return (readdata(&landcover->file,landcover->frac,grid,"landcover",year,config)==NULL);
 } /* of 'readlandcover */
 
 Real *getlandcover(Landcover landcover, /**< landcover data */

@@ -68,9 +68,7 @@ Bool readpopdens(Popdens popdens,     /**< pointer to population data */
                  const Config *config /**< LPJ configuration */
                 )                     /** \return TRUE on error */
 {
-  if(readdata(&popdens->file,popdens->npopdens,grid,"population density",year,config)==NULL)
-    return TRUE;
-  return FALSE;
+  return (readdata(&popdens->file,popdens->npopdens,grid,"population density",year,config)==NULL);
 } /* of 'readpopdens' */
 
 Real getpopdens(const Popdens popdens,int cell)
