@@ -57,7 +57,7 @@ int *readintdata(Climatefile *file,   /**< Pointer to data file */
               name,year);
       fflush(stderr);
       free(data);
-      return TRUE;
+      return NULL;
     }
   }
   else
