@@ -53,6 +53,8 @@ Bool readintinputdata(Infile *file,            /**< Pointer to data file */
       free(name);
       return TRUE;
     }
+    if(ismissing!=NULL)
+      *ismissing=FALSE;
   }
   return FALSE;
 } /* of 'readintinputdata' */
