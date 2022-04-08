@@ -186,6 +186,7 @@ static Cell *newgrid2(Config *config,          /* Pointer to LPJ configuration *
       if(config->grassharvest_filename.name!=NULL)
          closeinput(&grassharvest_file);
       return NULL;
+    }
   }
 #endif
 
