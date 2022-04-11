@@ -80,12 +80,12 @@ static Bool checkinput(const size_t *offsets,const Coord *coord,const Input_netc
   return FALSE;
 } /* of 'checkinput' */
 
-void closeinput(Infile file,int fmt)
+void closeinput(Infile *file)
 {
-  if(fmt==CDF)
-    closeinput_netcdf(file.cdf);
+  if(file->fmt==CDF)
+    closeinput_netcdf(file->cdf);
   else
-    fclose(file.bin.file);
+    fclose(file->file);
 } /* of 'closeinput' */
 
 Input_netcdf dupinput_netcdf(const Input_netcdf input)

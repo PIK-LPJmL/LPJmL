@@ -20,7 +20,7 @@
 #define error(rc) if(rc) {free(lon);free(lat);free(year);fprintf(stderr,"ERROR427: Cannot write '%s': %s.\n",filename,nc_strerror(rc)); nc_close(cdf->ncid); free(cdf);return NULL;}
 
 #define MISSING_VALUE -9999.99
-#define USAGE "Usage: %s [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-descr d] name gridfile clmfile netcdffile\n"
+#define USAGE "Usage: %s [-scale s] [-longheader] [-global] [-cellsize size] [-byte] [-int] [-float]\n       [-metafile] [-raw] [-nbands n] [-landuse] [-notime] [-compress level] [-units u]\n       [-map name] [-descr d] name gridfile clmfile netcdffile\n"
 
 typedef struct
 {
@@ -30,6 +30,7 @@ typedef struct
 } Cdf;
 
 static Cdf *create_cdf(const char *filename,
+                       List *map,
                        const char *name,
                        const char *units,
                        const char *descr,
@@ -43,12 +44,14 @@ static Cdf *create_cdf(const char *filename,
 {
   Cdf *cdf;
   float *lon,*lat,miss=MISSING_VALUE;
-  int *year,i,j,rc,dim[4],imiss=MISSING_VALUE_INT;
+  int *year,i,j,rc,dim[4],imiss=MISSING_VALUE_INT,varid;
   String s;
   time_t t;
-  int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id;
+  size_t offset[2],count[2];
+  int time_var_id,lat_var_id,lon_var_id,time_dim_id,lat_dim_id,lon_dim_id,map_dim_id,len_dim_id;
   int landuse_dim_id;
   int index;
+  int len;
   cdf=new(Cdf);
   lon=newvec(float,array->nlon);
   if(lon==NULL)
@@ -183,6 +186,23 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_put_att_text(cdf->ncid, lat_var_id,"axis",strlen("Y"),"Y");
   error(rc);
+  if(map!=NULL)
+  {
+    len=0;
+    for(i=0;i<getlistlen(map);i++)
+      if(getlistitem(map,i)==NULL)
+        len=max(len,strlen(NULL_NAME));
+      else
+        len=max(len,strlen(getlistitem(map,i)));
+    rc=nc_def_dim(cdf->ncid,"len",len+1,&len_dim_id);
+    error(rc);
+    rc=nc_def_dim(cdf->ncid,MAP_NAME,getlistlen(map),&map_dim_id);
+    error(rc);
+    dim[0]=map_dim_id;
+    dim[1]=len_dim_id;
+    rc=nc_def_var(cdf->ncid,MAP_NAME,NC_CHAR,2,dim,&varid);
+    error(rc);
+  }
   if(notime)
     index=0;
   else
@@ -247,6 +267,26 @@ static Cdf *create_cdf(const char *filename,
   error(rc);
   rc=nc_put_var_float(cdf->ncid,lon_var_id,lon);
   error(rc);
+  if(map!=NULL)
+  {
+    offset[1]=0;
+    count[0]=1;
+    for(i=0;i<getlistlen(map);i++)
+    {
+      offset[0]=i;
+      if(getlistitem(map,i)==NULL)
+      {
+        count[1]=strlen(NULL_NAME)+1;
+        rc=nc_put_vara_text(cdf->ncid,varid,offset,count,NULL_NAME);
+      }
+      else
+      {
+        count[1]=strlen(getlistitem(map,i))+1;
+        rc=nc_put_vara_text(cdf->ncid,varid,offset,count,getlistitem(map,i));
+      }
+      error(rc);
+    }
+  }
   free(lat);
   free(lon);
   return cdf;
@@ -379,11 +419,14 @@ int main(int argc,char **argv)
   String headername;
   float *data;
   Type type;
+  size_t offset;
+  List *map=NULL;
   int i,j,k,ngrid,version,iarg,compress,nbands,setversion;
-  Bool swap,landuse,notime,isglobal,istype,israw;
+  Bool swap,landuse,notime,isglobal,istype,israw,ismeta;
   float *f,scale,cellsize_lon,cellsize_lat;
   int *idata,*iarr;
   char *units,*descr,*endptr,*arglist;
+  char *map_name;
   const char *progname;
   Filename filename;
   size_t filesize;
@@ -396,8 +439,10 @@ int main(int argc,char **argv)
   notime=FALSE;
   isglobal=FALSE;
   israw=FALSE;
+  ismeta=FALSE;
   nbands=1;
   setversion=READ_VERSION;
+  map_name=MAP_NAME;
   progname=strippath(argv[0]);
   for(iarg=1;iarg<argc;iarg++)
     if(argv[iarg][0]=='-')
@@ -418,6 +463,8 @@ int main(int argc,char **argv)
         setversion=2;
       else if(!strcmp(argv[iarg],"-raw"))
         israw=TRUE;
+      else if(!strcmp(argv[iarg],"-metafile"))
+        ismeta=TRUE;
       else if(!strcmp(argv[iarg],"-int"))
       {
         istype=TRUE;
@@ -446,6 +493,16 @@ int main(int argc,char **argv)
           return EXIT_FAILURE;
         }
         descr=argv[++iarg];
+      }
+      else if(!strcmp(argv[iarg],"-map"))
+      {
+        if(argc==iarg+1)
+        {
+          fprintf(stderr,"Error: Missing argument after option '-map'.\n"
+                 USAGE,progname);
+          return EXIT_FAILURE;
+        }
+        map_name=argv[++iarg];
       }
       else if(!strcmp(argv[iarg],"-scale"))
       {
@@ -551,14 +608,57 @@ int main(int argc,char **argv)
   for(i=0;i<numcoord(coordfile);i++)
     readcoord(coordfile,grid+i,&res);
   closecoord(coordfile);
-  file=fopen(argv[iarg+2],"rb");
-  if(file==NULL)
+  if(ismeta)
   {
-    fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
-    return EXIT_FAILURE;
+    header.cellsize_lon=header.cellsize_lat=0.5;
+    header.firstyear=1901;
+    header.firstcell=0;
+    header.nyear=1;
+    header.nbands=nbands;
+    header.nstep=1;
+    header.datatype=type;
+    header.order=CELLYEAR;
+
+    file=openmetafile(&header,&map,map_name,&swap,&offset,argv[iarg+2],TRUE);
+    if(file==NULL)
+      return EXIT_FAILURE;
+    if(fseek(file,offset,SEEK_CUR))
+    {
+      fprintf(stderr,"Error seeking in '%s' to offset %lu.\n",argv[iarg+2],offset);
+      fclose(file);
+      return EXIT_FAILURE;
+    }
+  }
+  else
+  {
+    file=fopen(argv[iarg+2],"rb");
+    if(file==NULL)
+    {
+      fprintf(stderr,"Error opening '%s': %s.\n",argv[iarg+2],strerror(errno));
+      return EXIT_FAILURE;
+    }
   }
   if(!israw)
   {
+    if(ismeta)
+    {
+      version=4;
+      if(header.nstep==1 && header.nbands>1)
+        landuse=TRUE;
+      else if(header.nstep>1)
+      {
+        if(header.nbands>1)
+        {
+          fprintf(stderr,"Error: Number of bands %d and number of steps %d >1 in '%s' not supported.\n",
+                  header.nbands,header.nstep,argv[iarg+2]);
+          fclose(file);
+          return EXIT_FAILURE;
+        }
+        header.nbands=header.nstep;
+      }
+    }
+    else
+    {
     version=setversion;
     if(freadanyheader(file,&header,&swap,headername,&version,TRUE))
     {
@@ -572,15 +672,6 @@ int main(int argc,char **argv)
               version,argv[iarg+2],CLM_MAX_VERSION+1);
       fclose(file);
       return EXIT_FAILURE;
-    }
-    if(header.order!=CELLYEAR)
-    {
-      fprintf(stderr,"Error: Order in '%s' must be cellyear, order ",argv[iarg+2]);
-      if(header.order>0 || header.order<=CELLSEQ)
-        fprintf(stderr,"%s",ordernames[header.order-1]);
-      else
-        fprintf(stderr,"%d",header.order);
-      fprintf(stderr," is not supported.\n.");
     }
     if(version==1)
       header.scalar=scale;
@@ -605,7 +696,16 @@ int main(int argc,char **argv)
     }
     if(filesize!=(long long)header.nyear*header.ncell*header.nbands*typesizes[header.datatype])
       fprintf(stderr,"Warning: File size of '%s' does not match nbands*ncell*nyear.\n",argv[iarg+2]);
-
+    }
+    if(header.order!=CELLYEAR)
+    {
+      fprintf(stderr,"Error: Order in '%s' must be cellyear, order ",argv[iarg+2]);
+      if(header.order>0 || header.order<=CELLSEQ)
+        fprintf(stderr,"%s",ordernames[header.order-1]);
+      else
+        fprintf(stderr,"%d",header.order);
+      fprintf(stderr," is not supported.\n.");
+    }
     if(notime && (header.nyear>1 || (!landuse && header.nbands>1)))
     {
       fprintf(stderr,"No time axis set, but number of time steps>1 in '%s'.\n",
@@ -658,7 +758,7 @@ int main(int argc,char **argv)
     return EXIT_FAILURE;
   free(grid);
   arglist=catstrvec(argv,argc);
-  cdf=create_cdf(argv[iarg+3],argv[iarg],units,descr,arglist,&header,compress,landuse,notime,(header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1,index);
+  cdf=create_cdf(argv[iarg+3],map,argv[iarg],units,descr,arglist,&header,compress,landuse,notime,(header.datatype==LPJ_INT || header.datatype==LPJ_BYTE) && header.scalar==1,index);
   free(arglist);
   if(cdf==NULL)
     return EXIT_FAILURE;

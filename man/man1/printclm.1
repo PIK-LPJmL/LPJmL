@@ -3,7 +3,7 @@
 printclm, printheader \- Print contents of clm files for LPJmL                   
 .SH SYNOPSIS
 .B printclm
-[-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}] [\-nbands n] [\-start s] [\-end e] [\-first f] [\-last l] \fIclmfile\fP ...
+[-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}] [\-map name] [\-nbands n] [\-start s] [\-end e] [\-first f] [\-last l] \fIclmfile\fP ...
 
 .B printheader
 \fIclmfile\fP ...
@@ -37,6 +37,9 @@ Set datatype of clm file. Default is short.
 .TP
 -nbands n
 Set number  of bands to n ignoring value in file header.
+.TP
+-map name
+Name of map in JSON metafile, default is "map".
 .TP
 -start s
 Start output of data at year s.
