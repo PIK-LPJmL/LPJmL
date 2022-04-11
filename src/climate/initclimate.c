@@ -153,8 +153,6 @@ Climate *initclimate(const Cell grid[],   /**< LPJ grid */
     if(climate->firstyear<climate->file_nh4deposition.firstyear)
       climate->firstyear=climate->file_nh4deposition.firstyear;
   }
-  else
-    climate->data.no3deposition=climate->data.nh4deposition=NULL;
   if(config->fire==SPITFIRE || config->fire==SPITFIRE_TMAX || config->with_nitrogen)
   {
     if(openclimate(&climate->file_wind,&config->wind_filename,"m/s",LPJ_SHORT,0.001,config))
