@@ -25,6 +25,7 @@ Bool openinputdata(Infile *file,             /**< pointer to file */
                    const Config *config      /**< LPJ configuration */
                   )                          /** \return TRUE on error */
 {
+  char *realname;
   Header header;
   String headername;
   int version;
@@ -93,8 +94,10 @@ Bool openinputdata(Infile *file,             /**< pointer to file */
     }
     if(fseek(file->file,offset,SEEK_SET))
     {
-      fprintf(stderr,"ERROR108: Cannot seek in %s file to position %d.\n",
-              name,config->startgrid);
+      realname=getrealfilename(filename);
+      fprintf(stderr,"ERROR108: Cannot seek in %s file '%s' to position %d.\n",
+              name,realname,config->startgrid);
+      free(realname);
       closeinput(file);
       return TRUE;
     }
