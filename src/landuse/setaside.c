@@ -214,7 +214,7 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,c
   Pft *pft, *pft2;
   Pftgrass *grass, *grass2;
   Bool found;
-  mixsoil(setasidestand,cropstand);
+  mixsoil(setasidestand, cropstand, year, config);
   if(intercrop)
   {
     if (isempty(&cropstand->pftlist)) /* should not happen as establishment of cover crops now happens on all stands after tillage */
@@ -270,7 +270,7 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,c
         if(pft->par->type==GRASS)
         {
           grass = pft->data;
-          pos=addpft(setasidestand, pft->par, 0, 0);
+          pos=addpft(setasidestand, config->pftpar+p, year, 0);
           pft2=getpft(&setasidestand->pftlist,pos-1);
           grass2=pft2->data;
           grass2->ind.leaf.carbon = weightedaverage(grass->ind.leaf.carbon, 0, cropstand->frac, setasidestand->frac);
@@ -323,7 +323,7 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
       if(establish(cell->gdd[p],config->pftpar+p,&cell->climbuf) &&
          config->pftpar[p].type==GRASS && config->pftpar[p].cultivation_type==NONE)
       {
-        addpft(cropstand,config->pftpar+p,year,0,config->with_nitrogen,config->double_harvest);
+        addpft(cropstand,config->pftpar+p,year,0,config);
         n_est++;
       }
     }
