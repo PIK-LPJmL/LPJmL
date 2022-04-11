@@ -299,7 +299,7 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
               Bool intercrop,        /**< intercropping possible (TRUE/FALSE) */
               int npft,              /**< number of natural PFTs */
               Bool irrig,            /**< irrigated stand (TRUE/FALSE) */
-              int year               /**< simulation year */
+              int year,               /**< simulation year */
               const Config *config /**< LPJmL configuration */
              )                     /** \return stand has to be killed (TRUE/FALSE) */
 {
