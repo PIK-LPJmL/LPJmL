@@ -343,9 +343,9 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
         cropstand->soil.litter.item->ag.leaf.carbon = 0;
         if (cropstand->soil.litter.item->agsub.leaf.carbon < 0)
        {
-	flux_estab.carbon -= cropstand->soil.litter.item->agsub.leaf.carbon;
+        flux_estab.carbon -= cropstand->soil.litter.item->agsub.leaf.carbon;
         cropstand->soil.litter.item->agsub.leaf.carbon = 0;
-        }	
+        }
       }
       
       cropstand->soil.litter.item->ag.leaf.nitrogen -= stocks.nitrogen;
@@ -355,13 +355,16 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
         cropstand->soil.litter.item->ag.leaf.nitrogen = 0;
         if (cropstand->soil.litter.item->agsub.leaf.nitrogen < 0)
         {
-	flux_estab.nitrogen -= cropstand->soil.litter.item->agsub.leaf.nitrogen;
+        flux_estab.nitrogen -= cropstand->soil.litter.item->agsub.leaf.nitrogen;
         cropstand->soil.litter.item->agsub.leaf.nitrogen = 0;
         }
        } 
     }
-    cell->output.flux_estab.carbon += flux_estab.carbon*cropstand->frac;
-    cell->output.flux_estab.nitrogen += flux_estab.nitrogen*cropstand->frac;
+    getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*cropstand->frac;
+    getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*cropstand->frac;
+    cell->balance.flux_estab.carbon+=flux_estab.carbon*cropstand->frac;
+    cell->balance.flux_estab.nitrogen+=flux_estab.nitrogen*cropstand->frac;
+
   }
 
 
