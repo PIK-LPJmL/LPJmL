@@ -23,7 +23,7 @@
 #define LANDUSE_NBANDS 64
 #define FERTILIZER_NBANDS 32
 
-static Bool readdata(Socket *socket,int day,int sizes[],int count[],Type type[])
+static Bool readsocket(Socket *socket,int day,int sizes[],int count[],Type type[])
 {
   Token token;
   int index;
@@ -97,7 +97,7 @@ static Bool readdata(Socket *socket,int day,int sizes[],int count[],Type type[])
     }
   }
   return FALSE;
-} /* of 'readdata' */
+} /* of 'readsocket' */
 
 static Bool readyeardata(Socket *socket,int nday_out,int nmonth_out,int n_out,int sizes[],int counts[],Type type[])
 {
@@ -111,18 +111,18 @@ static Bool readyeardata(Socket *socket,int nday_out,int nmonth_out,int n_out,in
     for(day=0;day<ndaymonth[month];day++)
     {
       for(i=0;i<nday_out;i++)
-        if(readdata(socket,dayofyear,sizes,counts,type))
+        if(readsocket(socket,dayofyear,sizes,counts,type))
           return TRUE;
       dayofyear++;
     }
     /* read monthly data */
     for(i=0;i<nmonth_out;i++)
-      if(readdata(socket,dayofyear-1,sizes,counts,type))
+      if(readsocket(socket,dayofyear-1,sizes,counts,type))
         return TRUE;
   }
   /* read annual data */
   for(i=0;i<n_out-nday_out-nmonth_out;i++)
-    if(readdata(socket,NDAYYEAR,sizes,counts,type))
+    if(readsocket(socket,NDAYYEAR,sizes,counts,type))
       return TRUE;
   return FALSE;
 } /* of 'readyeardata' */
