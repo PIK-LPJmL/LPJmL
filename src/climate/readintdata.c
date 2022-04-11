@@ -4,7 +4,7 @@
 /**                                                                                \n**/
 /**     C implementation of LPJmL                                                  \n**/
 /**                                                                                \n**/
-/**     Functions reads integer data from clm or NetCDF file                       \n**/
+/**     Functions reads integer data from sockt, clm or NetCDF file                \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
 /** authors, and contributors see AUTHORS file                                     \n**/
@@ -24,37 +24,35 @@ int *readintdata(Climatefile *file,   /**< Pointer to data file */
                 )                     /** \return data or NULL on error */
 {
   int *data;
-  if(file->fmt!=SOCK)
-  {
-    year-=file->firstyear;
-    if(year>=file->nyear)
-      year=file->nyear-1;
-    else if(year<0)
-      year=0;
-  }
   data=newvec(int,config->ngridcell*file->var_len);
   if(data==NULL)
   {
     printallocerr("data");
     return NULL;
   }
-  if(file->fmt==CDF)
-  {
-    if(readintdata_netcdf(file,data,grid,year,config))
-    {
-      fprintf(stderr,"ERROR149: Cannot read %s of year %d in readintdata().\n",
-               name,year+file->firstyear);
-      fflush(stderr);
-      free(data);
-      return NULL;
-    }
-  }
-  else if(file->fmt==SOCK)
+  if(file->fmt==SOCK)
   {
     if(receive_int_copan(file->id,data,file->var_len,year,config))
     {
       fprintf(stderr,"ERROR149: Cannot receive %s of year %d in readintdata().\n",
               name,year);
+      fflush(stderr);
+      free(data);
+      return NULL;
+    }
+    return data;
+  }
+  year-=file->firstyear;
+  if(year>=file->nyear)
+    year=file->nyear-1;
+  else if(year<0)
+    year=0;
+  if(file->fmt==CDF)
+  {
+    if(readintdata_netcdf(file,data,grid,year,config))
+    {
+      fprintf(stderr,"ERROR149: Cannot read %s of year %d in readintdata().\n",
+              name,year+file->firstyear);
       fflush(stderr);
       free(data);
       return NULL;
