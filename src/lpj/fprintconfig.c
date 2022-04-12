@@ -201,10 +201,10 @@ static void printinputfile(FILE *file,const char *descr,const Filename *filename
                            int width)
 {
   if(width)
-    fprintf(file,"%-11s %-4s %-*s %s\n",descr,fmt[filename->fmt],
+    fprintf(file,"%-12s %-4s %-*s %s\n",descr,fmt[filename->fmt],
             width,notnull(filename->var),notnull(filename->name));
   else
-    fprintf(file,"%-11s %-4s %s\n",descr,fmt[filename->fmt],
+    fprintf(file,"%-12s %-4s %s\n",descr,fmt[filename->fmt],
             notnull(filename->name));
 } /* of 'printinputfile' */
 
@@ -464,16 +464,16 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
   fputs("Input files:\n",file);
   if(width)
   {
-    fprintf(file,"Variable    Fmt  %-*s Filename\n"
-          "----------- ---- ",width,"Varname");
+    fprintf(file,"Variable     Fmt  %-*s Filename\n"
+          "------------ ---- ",width,"Varname");
     frepeatch(file,'-',width);
     fputc(' ',file);
-    frepeatch(file,'-',79-19-width);
+    frepeatch(file,'-',79-20-width);
     fputc('\n',file);
   }
   else
-    fputs("Variable    Fmt  Filename\n"
-          "----------- ---- --------------------------------------------------------------\n",file);
+    fputs("Variable     Fmt  Filename\n"
+          "------------ ---- -------------------------------------------------------------\n",file);
   printinputfile(file,"soil",&config->soil_filename,width);
   if(config->soil_filename.fmt!=CDF)
     printinputfile(file,"coord",&config->coord_filename,width);
@@ -588,14 +588,14 @@ void fprintconfig(FILE *file,          /**< File pointer to text output file */
 #endif
   if(width)
   {
-    fputs("----------- ---- ",file);
+    fputs("------------ ---- ",file);
     frepeatch(file,'-',width);
     fputc(' ',file);
-    frepeatch(file,'-',79-19-width);
+    frepeatch(file,'-',79-20-width);
     fputc('\n',file);
   }
   else
-    fputs("----------- ---- --------------------------------------------------------------\n",file);
+    fputs("------------ ---- -------------------------------------------------------------\n",file);
   if(config->param_out)
     fprintparam(file,npft,ncft,config);
   if(iswriterestart(config))
