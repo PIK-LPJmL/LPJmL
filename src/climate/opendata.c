@@ -32,16 +32,7 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
   int version;
   size_t offset,filesize;
   file->fmt=filename->fmt;
-  if(file->fmt==CDF)
-  {
-    if(opendata_netcdf(file,filename,unit,config))
-    {
-      if(isroot(*config))
-        fprintf(stderr,"ERROR236: Cannot open %s data file.\n",name);
-      return TRUE;
-    }
-  }
-  else if(file->fmt==SOCK)
+  if(file->fmt==SOCK)
   {
     if(openinput_copan(filename->id,datatype,config->nall,&header.nbands,config))
     {
@@ -52,6 +43,23 @@ Bool opendata(Climatefile *file,        /**< pointer to file */
     file->id=filename->id;
     file->var_len=header.nbands;
     file->datatype=datatype;
+    if(ischeck && file->var_len!=nbands)
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR147: Invalid number of bands=%zu in %s socket stream, must be %d.\n",
+                file->var_len,name,nbands);
+      return TRUE;
+    }
+    return FALSE;
+  }
+  if(file->fmt==CDF)
+  {
+    if(opendata_netcdf(file,filename,unit,config))
+    {
+      if(isroot(*config))
+        fprintf(stderr,"ERROR236: Cannot open %s data file.\n",name);
+      return TRUE;
+    }
   }
   else
   {
