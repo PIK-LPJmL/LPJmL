@@ -270,7 +270,7 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,c
         if(pft->par->type==GRASS)
         {
           grass = pft->data;
-          pos=addpft(setasidestand, config->pftpar+p, year, 0, config);
+          pos=addpft(setasidestand, pft->par, year, 0, config);
           pft2=getpft(&setasidestand->pftlist,pos-1);
           grass2=pft2->data;
           grass2->ind.leaf.carbon = weightedaverage(grass->ind.leaf.carbon, 0, cropstand->frac, setasidestand->frac);
