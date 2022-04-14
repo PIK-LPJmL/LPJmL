@@ -14,37 +14,13 @@
 
 #include "lpj.h"
 
-#define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}]\n       [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
+#define USAGE "Usage: %s [-metafile] [-header] [-data] [-text] [-json] [-scale] [-longheader] [-type {byte|short|int|float|double}]\n       [-map name] [-nbands n] [-start s] [-end e] [-first f] [-last l] filename ...\n"
 #define NO_HEADER 1
 #define NO_DATA 2
 #define NO_TEXT 4
 
-static void printjson(const char *filename,const Header *header,const char *id,Bool swap,int version)
-{
-  printf("{\n"
-         "  \"filename\" : \"%s\",\n",strippath(filename));
-  printf("  \"firstcell\" : %d,\n",header->firstcell);
-  printf("  \"ncell\" : %d,\n",header->ncell);
-  printf("  \"cellsize_lon\" : %f,\n",header->cellsize_lon);
-  printf("  \"cellsize_lat\" : %f,\n",header->cellsize_lat);
-  printf("  \"firstyear\" : %d,\n",header->firstyear);
-  printf("  \"lastyear\" : %d,\n",header->firstyear+(header->nyear-1)*header->timestep);
-  printf("  \"nyear\" : %d,\n",header->nyear);
-  printf("  \"nstep\" : %d,\n",header->nstep);
-  printf("  \"timestep\" : %d,\n",header->timestep);
-  printf("  \"nbands\" : %d,\n",header->nbands);
-  printf("  \"scalar\" : %f,\n",header->scalar);
-  printf("  \"datatype\" : \"%s\",\n",typenames[header->datatype]);
-  printf("  \"format\" : \"clm\",\n");
-  printf("  \"order\" : \"%s\",\n",ordernames[max(0,header->order-1)]);
-  printf("  \"version\" : %d,\n",version);
-  printf("  \"bigendian\" : %s,\n",bool2str((!swap && bigendian()) || (swap && !bigendian())));
-  printf("  \"offset\" : %zu\n",headersize(id,version));
-  printf("}\n");
-} /* of 'printjson' */
-
 static void printclm(const char *filename,int output,int nbands,int version,
-                     int start,int stop,int first,int last,Type type,Bool ismeta,Bool isscale,Bool isjon)
+                     int start,int stop,int first,int last,Type type,Bool ismeta,const char *map_name,Bool isscale,Bool isjon)
 {
   FILE *file;
   time_t mod_date;
@@ -75,7 +51,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     header.timestep=1;
     header.datatype=type;
     header.order=CELLYEAR;
-    file=openmetafile(&header,&map,&swap,&offset,filename,TRUE);
+    file=openmetafile(&header,&map,map_name,&swap,&offset,filename,TRUE);
     if(file==NULL)
       return;
     if(fseek(file,offset,SEEK_CUR))
@@ -113,7 +89,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
   }
   if(isjon)
   {
-    printjson(filename,&header,id,swap,version);
+    fprintjson(stdout,filename,NULL,&header,NULL,NULL,CLM,id,swap,version);
     return;
   }
   if((output & NO_HEADER)==0)
@@ -132,7 +108,7 @@ static void printclm(const char *filename,int output,int nbands,int version,
     printheader(&header);
     if(map!=NULL)
     {
-      printf("%s: ",MAP_NAME);
+      printf("%s: ",map_name);
       printmap(map);
       printf("\n");
       freemap(map);
@@ -440,6 +416,7 @@ int main(int argc,char **argv)
   Type type;
   const char *progname;
   char *endptr;
+  char *map_name;
   Bool ismeta;
   Bool isscale;
   Bool isjson;
@@ -451,6 +428,7 @@ int main(int argc,char **argv)
   nbands=-1;
   ismeta=isscale=isjson=FALSE;
   version=READ_VERSION;
+  map_name=MAP_NAME;
   for(i=1;i<argc;i++)
     if(argv[i][0]=='-')
     {
@@ -468,6 +446,16 @@ int main(int argc,char **argv)
         ismeta=TRUE;
       else if(!strcmp(argv[i],"-scale"))
         isscale=TRUE;
+      else if(!strcmp(argv[i],"-map"))
+      {
+        if(argc-1==i)
+        {
+          fprintf(stderr,"Argument missing for option '-map'.\n"
+                  USAGE,progname);
+          return EXIT_FAILURE;
+        }
+        map_name=argv[++i];
+      }
       else if(!strcmp(argv[i],"-first"))
       {
         if(argc-1==i)
@@ -591,7 +579,7 @@ int main(int argc,char **argv)
   {
     if(argc>1)
       printf("Filename:\t%s\n",argv[i]);
-    printclm(argv[i],output,nbands,version,start,stop,first,last,type,ismeta,isscale,isjson);
+    printclm(argv[i],output,nbands,version,start,stop,first,last,type,ismeta,map_name,isscale,isjson);
   }
   return EXIT_SUCCESS;
 } /* of 'main' */

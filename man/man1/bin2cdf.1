@@ -3,7 +3,7 @@
 bin2cdf \- convert binary output files into NetCDF files
 .SH SYNOPSIS
 .B bin2cdf
-[\-clm] [\-floatgrid] [\-cellsize size] [\-compress level] [\-descr d] [\-units u] [-global] {-swap] [\-short] [\-nbands n} [\nstep n] [\-ispft] [\-firstyear y]
+[\-clm] [\-floatgrid] [\-cellsize size] [\-compress level] [\-descr d] [\-units u] [-global] {-swap] [\-short] [\-nbands n} [\nstep n] [\-ispft] [\-firstyear y] [\-metafile] [\-map name]
 .I varname gridfile binfile netcdffile
 .SH DESCRIPTION
 Program converts binary output files into NetCDF file.
@@ -46,7 +46,13 @@ set number of PFTs or layers, default is one
 output is PFT specific. 
 .TP
 \-firstyear
-set first year in NetCDF file. Default is 1901. 
+set first year in NetCDF file. Default is 1901.
+.TP
+\-metafile
+set the innput format to metafile instead of CLM
+.TP
+\-map name
+name of map in JSON metafile, default is "band_names"
 .TP
 varname
 variable name in NetCDF file

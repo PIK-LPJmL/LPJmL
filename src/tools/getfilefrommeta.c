@@ -39,7 +39,7 @@ char *getfilefrommeta(const char *filename, /**< name of metafile */
     if(key[0]=='{')
     {
 #ifdef USE_JSON
-      name=parse_json_metafile(&file,key,NULL,NULL,&offset,&swap,isout ? ERR : NO_ERR);
+      name=parse_json_metafile(&file,key,NULL,NULL,NULL,&offset,&swap,isout ? ERR : NO_ERR);
       break;
 #else
       if(isout)

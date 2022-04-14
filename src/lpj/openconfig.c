@@ -492,6 +492,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
   else
   { /* yes, include LPJROOT directory in search path for includes */
     lpjinc=malloc(strlen(lpjpath)+3);
+    checkptr(lpjinc);
     options[dcount++]=strcat(strcpy(lpjinc,"-I"),lpjpath);
     len+=strlen(lpjinc)+1;
   }
@@ -508,6 +509,7 @@ FILE *openconfig(Config *config,      /**< configuration struct */
     len+=strlen(" 2>/dev/null");
 #endif
   cmd=malloc(strlen(config->filename)+len+1);
+  checkptr(cmd);
   strcat(strcpy(cmd,filter)," ");
   /* concatenate options for cpp command */
   for(i=0;i<dcount;i++)

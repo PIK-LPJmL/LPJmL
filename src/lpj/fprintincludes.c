@@ -31,6 +31,8 @@ static int findname(List *list,const char *s)
   return NOT_FOUND;
 } /* of 'findname' */
 
+#define checkptr(ptr) if(ptr==NULL) { printallocerr(#ptr); return; }
+
 void fprintincludes(FILE *out,                 /**< pointer to text file */
                     const char *dflt_filename, /**< default name of configuration file */
                     int argc,                  /**< number of arguments */
@@ -57,7 +59,7 @@ void fprintincludes(FILE *out,                 /**< pointer to text file */
     iscpp=FALSE;
   env_options=getenv(LPJOPTIONS);
   options=newvec(char *,(env_options==NULL) ? argc : argc+1);
-  check(options);
+  checkptr(options);
   dcount=0;
   len=1;
   /* parse command line arguments */
@@ -112,6 +114,7 @@ void fprintincludes(FILE *out,                 /**< pointer to text file */
   else
   { /* yes, include LPJROOT directory in search path for includes */
     lpjinc=malloc(strlen(lpjpath)+3);
+    checkptr(lpjinc);
     options[dcount++]=strcat(strcpy(lpjinc,"-I"),lpjpath);
     len+=strlen(lpjinc)+1;
   }
@@ -122,6 +125,7 @@ void fprintincludes(FILE *out,                 /**< pointer to text file */
   }
   len+=strlen(filter);
   cmd=malloc(strlen(filename)+len+1);
+  checkptr(cmd);
   strcat(strcpy(cmd,filter)," ");
   /* concatenate options for cpp command */
   for(i=0;i<dcount;i++)

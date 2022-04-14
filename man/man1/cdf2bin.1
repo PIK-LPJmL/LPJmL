@@ -1,9 +1,9 @@
-.TH cdf2clm 1  "January 29, 2021" "version 1.0.001" "USER COMMANDS"
+.TH cdf2bin 1  "March 29, 2022" "version 1.0.001" "USER COMMANDS"
 .SH NAME
 cdf2bin \- convert NetCDF files into raw binary data
 .SH SYNOPSIS
 .B cdf2bin
-[\-v] [\-swap] [\-units u] [\-var name] [\-clm] [\-byte] [\-cellsize size [\-o binfile]
+[\-v] [\-swap] [\-units u] [\-var name] [\-clm] [\-byte] [\-cellsize size [\-json] [\-o binfile]
 gridfile netcdffile ...
 .SH DESCRIPTION
 Program converts NetCDF output data into raw binary output data.
@@ -28,6 +28,9 @@ output data is converted to byte
 .TP
 \-cellsize size
 cell size in grid file, default is 0.5
+.TP
+\-json
+JSON metafile is created with suffix '-json'.
 .TP
 \-o binfile
 filename of raw binary data file written. Default is out.bin
@@ -57,4 +60,4 @@ For authors and contributors see AUTHORS file
 (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file
 
 .SH SEE ALSO
-bin2cdf(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)
+bin2cdf(1), cdf2clm(1), country2cdf(1), regridlpj(1), lpjml(1), txt2clm(1), cru2clm(1), clm(5)

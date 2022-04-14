@@ -34,32 +34,16 @@ struct celldata
     } bin;
     Coord_netcdf cdf;
   } soil;
-  int soilph_fmt;
-  union
-  {
-    struct
-    {
-      Bool swap;
-      size_t offset;
-      float scalar;
-      Type type;
-      FILE *file;
-    } bin;
-    Input_netcdf cdf;
-  } soilph;
+  Infile soilph;
 };
 
 Celldata opencelldata(Config *config /**< LPJmL configuration */
                      )               /** \return pointer to cell data or NULL */
 {
   Celldata celldata;
-  Header header;
   List *map;
   int *soilmap;
-  String headername;
-  int version;
   float lon,lat;
-  size_t filesize;
   celldata=new(struct celldata);
   if(celldata==NULL)
     return NULL;
@@ -136,82 +120,19 @@ Celldata opencelldata(Config *config /**< LPJmL configuration */
   }
   if(config->with_nitrogen)
   {
-    celldata->soilph_fmt=config->soilph_filename.fmt;
     celldata->with_nitrogen=TRUE;
-    if(config->soilph_filename.fmt==CDF)
+    if(openinputdata(&celldata->soilph,&config->soilph_filename,"soilph",NULL,LPJ_SHORT,0.01,config))
     {
-      celldata->soilph.cdf=openinput_netcdf(&config->soilph_filename,
-                                            NULL,0,config);
-      if(celldata->soilph.cdf==NULL)
-      {
-        if(config->soil_filename.fmt==CDF)
-          closecoord_netcdf(celldata->soil.cdf);
-        else
-        {
-          closecoord(celldata->soil.bin.file_coord);
-          fclose(celldata->soil.bin.file);
-        }
-        free(celldata);
-        return NULL;
-      }
-    }
-    else
-    {
-      celldata->soilph.bin.file=openinputfile(&header,&celldata->soilph.bin.swap,
-                                              &config->soilph_filename,
-                                              headername,
-                                              &version,&celldata->soilph.bin.offset,FALSE,config);
-      if(celldata->soilph.bin.file==NULL)
-      {
-        if(config->soil_filename.fmt==CDF)
-          closecoord_netcdf(celldata->soil.cdf);
-        else
-        {
-          closecoord(celldata->soil.bin.file_coord);
-          fclose(celldata->soil.bin.file);
-        }
-        free(celldata);
-        return NULL;
-      }
-      if(config->soilph_filename.fmt==RAW)
-        header.nyear=1;
-      if(version<2)
-        celldata->soilph.bin.scalar=0.01;
+      if(config->soil_filename.fmt==CDF)
+        closecoord_netcdf(celldata->soil.cdf);
       else
-        celldata->soilph.bin.scalar=header.scalar;
-      if(header.nbands!=1)
       {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR218: Invalid number of bands %d in '%s', must be 1.\n",
-                  header.nbands,config->soilph_filename.name);
-        free(celldata);
-        return NULL;
+        closecoord(celldata->soil.bin.file_coord);
+        fclose(celldata->soil.bin.file);
       }
-      if(header.nstep!=1)
-      {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR218: Invalid number of steps %d in '%s', must be 1.\n",
-                  header.nstep,config->soilph_filename.name);
-        free(celldata);
-        return NULL;
-      }
-      if(header.timestep!=1)
-      {
-        if(isroot(*config))
-          fprintf(stderr,"ERROR218: Invalid time  step %d in '%s', must be 1.\n",
-                  header.timestep,config->soilph_filename.name);
-        free(celldata);
-        return NULL;
-      }
-      if(isroot(*config) && config->soilph_filename.fmt!=META)
-      {
-         filesize=getfilesizep(celldata->soilph.bin.file)-headersize(headername,version)-celldata->soilph.bin.offset;
-         if(filesize!=typesizes[header.datatype]*header.nyear*header.nbands*header.ncell)
-           fprintf(stderr,"WARNING032: File size of '%s' does not match nyear*ncell*nbands.\n",config->soilph_filename.name);
-      }
-      celldata->soilph.bin.type=header.datatype;
+      free(celldata);
+      return NULL;
     }
-
   }
   else
     celldata->with_nitrogen=FALSE;
@@ -249,19 +170,6 @@ Bool seekcelldata(Celldata celldata, /**< pointer to celldata */
               startgrid);
       return TRUE;
     }
-  }
-  if(celldata->with_nitrogen)
-  {
-    if(celldata->soilph_fmt!=CDF &&
-       fseek(celldata->soilph.bin.file,startgrid*typesizes[celldata->soilph.bin.type],SEEK_CUR))
-    {
-      /* seeking to position of first grid cell failed */
-      fprintf(stderr,
-              "ERROR107: Cannot seek in soilpH file to position %d.\n",
-              startgrid);
-      return TRUE;
-    }
-
   }
   return FALSE;
 } /* of 'seekcelldata' */
@@ -311,32 +219,14 @@ Bool readcelldata(Celldata celldata, /**< pointer to celldata */
   {
     name=getrealfilename(&config->soil_filename);
     fprintf(stderr,"ERROR250: Invalid soilcode %u of cell %d in '%s', must be in [0,%d].\n",
-            *soilcode,cell,name,config->soilmap_size-1);
+            *soilcode,cell+config->startgrid,name,config->soilmap_size-1);
     free(name);
     return TRUE;
   }
   if(config->with_nitrogen)
   {
-    if(celldata->soilph_fmt==CDF)
-    {
-      if(readinput_netcdf(celldata->soilph.cdf,soil_ph,coord))
-      {
-        fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                config->soilph_filename.name,cell+config->startgrid);
-        return TRUE;
-      }
-    }
-    else
-    {
-      if(readrealvec(celldata->soilph.bin.file,soil_ph,0,celldata->soilph.bin.scalar,1,celldata->soilph.bin.swap,celldata->soilph.bin.type))
-      {
-        name=getrealfilename(&config->soilph_filename);
-        fprintf(stderr,"ERROR190: Unexpected end of file in '%s' for cell %d.\n",
-                name,cell+config->startgrid);
-        free(name);
-        return TRUE;
-      }
-    }
+    if(readinputdata(&celldata->soilph,soil_ph,coord,cell+config->startgrid,&config->soilph_filename))
+      return TRUE;
   }
   return FALSE;
 } /* of 'readcelldata' */
@@ -352,11 +242,6 @@ void closecelldata(Celldata celldata /**< pointer to celldata */
     fclose(celldata->soil.bin.file);
   }
   if(celldata->with_nitrogen)
-  {
-    if(celldata->soilph_fmt==CDF)
-      closeinput_netcdf(celldata->soilph.cdf);
-    else
-      fclose(celldata->soilph.bin.file);
-  }
+    closeinput(&celldata->soilph);
   free(celldata);
 } /* of 'closecelldata' */
