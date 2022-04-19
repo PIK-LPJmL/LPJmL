@@ -210,7 +210,7 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
 void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,const Config *config)
 {
   /*assumes that all vegetation carbon pools are zero after harvest*/
-  int p, p2,pos;
+  int p, p2;
   Pft *pft, *pft2;
   Pftgrass *grass, *grass2;
   Bool found;
@@ -240,10 +240,14 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,c
               grass->ind.root.carbon = weightedaverage(grass->ind.root.carbon, grass2->ind.root.carbon, setasidestand->frac, cropstand->frac);
               grass->turn.root.carbon = weightedaverage(grass->turn.root.carbon, grass2->turn.root.carbon, setasidestand->frac, cropstand->frac);
               grass->turn.leaf.carbon = weightedaverage(grass->turn.leaf.carbon, grass2->turn.leaf.carbon, setasidestand->frac, cropstand->frac);
+              grass->turn_litt.leaf.carbon = weightedaverage(grass->turn_litt.leaf.carbon, grass2->turn_litt.leaf.carbon, setasidestand->frac, cropstand->frac);
+              grass->turn_litt.root.carbon = weightedaverage(grass->turn_litt.root.carbon, grass2->turn_litt.root.carbon, setasidestand->frac, cropstand->frac);
               grass->ind.leaf.nitrogen = weightedaverage(grass->ind.leaf.nitrogen, grass2->ind.leaf.nitrogen, setasidestand->frac, cropstand->frac);
               grass->ind.root.nitrogen = weightedaverage(grass->ind.root.nitrogen, grass2->ind.root.nitrogen, setasidestand->frac, cropstand->frac);
               grass->turn.root.nitrogen = weightedaverage(grass->turn.root.nitrogen, grass2->turn.root.nitrogen, setasidestand->frac, cropstand->frac);
               grass->turn.leaf.nitrogen = weightedaverage(grass->turn.leaf.nitrogen, grass2->turn.leaf.nitrogen, setasidestand->frac, cropstand->frac);
+              grass->turn_litt.leaf.nitrogen = weightedaverage(grass->turn_litt.leaf.nitrogen, grass2->turn_litt.leaf.nitrogen, setasidestand->frac, cropstand->frac);
+              grass->turn_litt.root.nitrogen = weightedaverage(grass->turn_litt.root.nitrogen, grass2->turn_litt.root.nitrogen, setasidestand->frac, cropstand->frac);
               pft->bm_inc.carbon = weightedaverage(pft->bm_inc.carbon, pft2->bm_inc.carbon, setasidestand->frac, cropstand->frac);
               pft->bm_inc.nitrogen = weightedaverage(pft->bm_inc.nitrogen, pft2->bm_inc.nitrogen, setasidestand->frac, cropstand->frac);
               delpft(&cropstand->pftlist, p2);
@@ -256,10 +260,14 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,c
             grass->ind.root.carbon = weightedaverage(grass->ind.root.carbon, 0, setasidestand->frac, cropstand->frac);
             grass->turn.root.carbon = weightedaverage(grass->turn.root.carbon, 0, setasidestand->frac, cropstand->frac);
             grass->turn.leaf.carbon = weightedaverage(grass->turn.leaf.carbon, 0, setasidestand->frac, cropstand->frac);
+            grass->turn_litt.root.carbon = weightedaverage(grass->turn_litt.root.carbon, 0, setasidestand->frac, cropstand->frac);
+            grass->turn_litt.leaf.carbon = weightedaverage(grass->turn_litt.leaf.carbon, 0, setasidestand->frac, cropstand->frac);
             grass->ind.leaf.nitrogen = weightedaverage(grass->ind.leaf.nitrogen, 0, setasidestand->frac, cropstand->frac);
             grass->ind.root.nitrogen = weightedaverage(grass->ind.root.nitrogen, 0, setasidestand->frac, cropstand->frac);
             grass->turn.root.nitrogen = weightedaverage(grass->turn.root.nitrogen, 0, setasidestand->frac, cropstand->frac);
             grass->turn.leaf.nitrogen = weightedaverage(grass->turn.leaf.nitrogen, 0, setasidestand->frac, cropstand->frac);
+            grass->turn_litt.root.nitrogen = weightedaverage(grass->turn_litt.root.nitrogen, 0, setasidestand->frac, cropstand->frac);
+            grass->turn_litt.leaf.nitrogen = weightedaverage(grass->turn_litt.leaf.nitrogen, 0, setasidestand->frac, cropstand->frac);
             pft->bm_inc.carbon = weightedaverage(pft->bm_inc.carbon, 0, setasidestand->frac, cropstand->frac);
             pft->bm_inc.nitrogen = weightedaverage(pft->bm_inc.nitrogen, 0, setasidestand->frac, cropstand->frac);
           }
@@ -270,24 +278,26 @@ void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,c
         if(pft->par->type==GRASS)
         {
           grass = pft->data;
-          pos=addpft(setasidestand, pft->par, year, 0, config);
-          pft2=getpft(&setasidestand->pftlist,pos-1);
+          pft2=addpft(setasidestand, pft->par, year, 0, config);
           grass2=pft2->data;
           grass2->ind.leaf.carbon = weightedaverage(grass->ind.leaf.carbon, 0, cropstand->frac, setasidestand->frac);
           grass2->ind.root.carbon = weightedaverage(grass->ind.root.carbon, 0, cropstand->frac, setasidestand->frac);
           grass2->turn.root.carbon = weightedaverage(grass->turn.root.carbon, 0, cropstand->frac, setasidestand->frac);
           grass2->turn.leaf.carbon = weightedaverage(grass->turn.leaf.carbon, 0, cropstand->frac, setasidestand->frac);
+          grass2->turn_litt.root.carbon = weightedaverage(grass->turn_litt.root.carbon, 0, cropstand->frac, setasidestand->frac);
+          grass2->turn_litt.leaf.carbon = weightedaverage(grass->turn_litt.leaf.carbon, 0, cropstand->frac, setasidestand->frac);
           grass2->ind.leaf.nitrogen = weightedaverage(grass->ind.leaf.nitrogen, 0, cropstand->frac, setasidestand->frac);
           grass2->ind.root.nitrogen = weightedaverage(grass->ind.root.nitrogen, 0, cropstand->frac, setasidestand->frac);
           grass2->turn.root.nitrogen = weightedaverage(grass->turn.root.nitrogen, 0, cropstand->frac, setasidestand->frac);
           grass2->turn.leaf.nitrogen = weightedaverage(grass->turn.leaf.nitrogen, 0, cropstand->frac, setasidestand->frac);
+          grass2->turn_litt.root.nitrogen = weightedaverage(grass->turn_litt.root.nitrogen, 0, cropstand->frac, setasidestand->frac);
+          grass2->turn_litt.leaf.nitrogen = weightedaverage(grass->turn_litt.leaf.nitrogen, 0, cropstand->frac, setasidestand->frac);
           pft2->bm_inc.carbon = weightedaverage(pft->bm_inc.carbon, 0, cropstand->frac, setasidestand->frac);
           pft2->bm_inc.nitrogen = weightedaverage(pft->bm_inc.nitrogen, 0, cropstand->frac, setasidestand->frac);
           delpft(&cropstand->pftlist, p);
           p--; /* adjust loop variable */
         }
       }
-
     }
   }
   setasidestand->frac+=cropstand->frac;
@@ -342,8 +352,8 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
         cropstand->soil.litter.item->agsub.leaf.carbon += cropstand->soil.litter.item->ag.leaf.carbon;
         cropstand->soil.litter.item->ag.leaf.carbon = 0;
         if (cropstand->soil.litter.item->agsub.leaf.carbon < 0)
-       {
-        flux_estab.carbon -= cropstand->soil.litter.item->agsub.leaf.carbon;
+        {
+        flux_estab.carbon += cropstand->soil.litter.item->agsub.leaf.carbon;
         cropstand->soil.litter.item->agsub.leaf.carbon = 0;
         }
       }
@@ -355,10 +365,10 @@ Bool setaside(Cell *cell,            /**< Pointer to LPJ cell */
         cropstand->soil.litter.item->ag.leaf.nitrogen = 0;
         if (cropstand->soil.litter.item->agsub.leaf.nitrogen < 0)
         {
-        flux_estab.nitrogen -= cropstand->soil.litter.item->agsub.leaf.nitrogen;
+        flux_estab.nitrogen += cropstand->soil.litter.item->agsub.leaf.nitrogen;
         cropstand->soil.litter.item->agsub.leaf.nitrogen = 0;
         }
-       } 
+      }
     }
     getoutput(&cell->output,FLUX_ESTABC,config)+=flux_estab.carbon*cropstand->frac;
     getoutput(&cell->output,FLUX_ESTABN,config)+=flux_estab.nitrogen*cropstand->frac;
