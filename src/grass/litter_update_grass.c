@@ -25,7 +25,7 @@ void litter_update_grass(Litter *litter, /**< Litter pool */
   Output *output;
   grass=pft->data;
   output=&pft->stand->cell->output; 
-   if(pft->stand->type->landusetype!=GRASSLAND && pft->stand->type->landusetype!=BIOMASS_GRASS)
+   if(pft->stand->type->landusetype!=GRASSLAND && pft->stand->type->landusetype!=BIOMASS_GRASS && pft->stand->type->landusetype!=SETASIDE_IR && pft->stand->type->landusetype!=SETASIDE_RF)
   {
     grass->ind.leaf.carbon-= grass->turn.leaf.carbon;
     grass->ind.root.carbon-= grass->turn.root.carbon;
