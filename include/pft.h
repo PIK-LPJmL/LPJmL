@@ -277,8 +277,6 @@ extern Real f_lai(Real);
 extern int findpftname(const char *,const Pftpar[],int);
 extern Bool findcftmap(const char *,const Pftpar[],const int[],int);
 extern void fprintpftnames(FILE *,const Pftpar[],int);
-extern Real f_temp_bnf(Pft *,Real);
-extern Real f_water_bnf(Pft *,Real);
 extern Real ma_biological_n_fixation(Pft *,Soil *,Real,const Config *);
 
 

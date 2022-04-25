@@ -14,6 +14,38 @@
 
 #include "lpj.h"
 
+
+static Real f_temp_bnf(Pft *pft,             /**< PFT */
+                Real temp            /**< soil temperature (deg C) */
+               )                      /** \return soil temperature dependent reduction of BNF */
+{
+  Real f_temp=0.0;
+  if(temp < pft->par->temp_bnf_lim.low || temp > pft->par->temp_bnf_lim.high)
+    f_temp = 0.0;
+  if(temp >= pft->par->temp_bnf_lim.low && temp < pft->par->temp_bnf_opt.low)
+    f_temp = (temp-pft->par->temp_bnf_lim.low)/(pft->par->temp_bnf_opt.low-pft->par->temp_bnf_lim.low);
+  if(temp >= pft->par->temp_bnf_opt.low && temp <= pft->par->temp_bnf_opt.high)
+    f_temp = 1.0;
+  if(temp > pft->par->temp_bnf_opt.high && temp <= pft->par->temp_bnf_lim.high)
+    f_temp = (pft->par->temp_bnf_lim.high-temp)/(pft->par->temp_bnf_lim.high-pft->par->temp_bnf_opt.high);
+  return(f_temp);
+}
+
+static Real f_water_bnf(Pft *pft,             /**< PFT */
+               Real swc             /**< relative soil water content (-) */
+              )                      /** \return soil water dependent reduction of BNF */
+{
+  Real f_water=0.0;
+  if(swc <= pft->par->swc_bnf.low)
+    f_water = 0;
+  if(swc > pft->par->swc_bnf.low && swc < pft->par->swc_bnf.high)
+    f_water = pft->par->phi_bnf[0]+pft->par->phi_bnf[1]*swc;
+  if(swc >= pft->par->swc_bnf.high)
+    f_water = 1.0;
+return(f_water);
+}
+
+
 Real ma_biological_n_fixation(Pft *pft,             /**< PFT */
                               Soil *soil,           /**< Soil */
                               Real n_deficit,       /**< nitrogen deficit of today */
