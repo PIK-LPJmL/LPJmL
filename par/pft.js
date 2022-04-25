@@ -2,7 +2,7 @@
 /**                                                                                \n**/
 /**              p  f  t  .  j  s                                                  \n**/
 /**                                                                                \n**/
-/**  PFT and CFT parameter file for LPJmL version 5.2.002                          \n**/
+/**  PFT and CFT parameter file for LPJmL version 5.3.001                          \n**/
 /**  CFTs parameters must be put after PFTs                                        \n**/
 /**                                                                                \n**/
 /** (C) Potsdam Institute for Climate Impact Research (PIK), see COPYRIGHT file    \n**/
@@ -45,9 +45,9 @@
 #endif
 #define MORT_MAX_GRASS 0.00
 #define FN_TURNOVER 0.3      /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_EV_BR 0.6   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_EV_BR 0.7   /* fraction of N not recovered before turnover */
 #define FN_TURNOVER_EV 0.8   /* fraction of N not recovered before turnover */
-#define FN_TURNOVER_GR 0.5   /* fraction of N not recovered before turnover */
+#define FN_TURNOVER_GR 0.3   /* fraction of N not recovered before turnover */
 #define ALPHAA_NITROGEN 0.5  /* alphaa for simulations with nitrogen limitation */
 #define RATIO_SAPW 13.5 /* relative C:N ratio of sapwood */
 #define CN_BL_EG_MX 46.2
@@ -91,7 +91,7 @@
     "longevity" : 1.6,      /* leaf longevity 10*/
     "sla" : 0.01986,         /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : 0.3,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -109,26 +109,26 @@
     "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 1.0071496097144,       /* new phenology: slope of cold-temperature limiting function */
-      "base" : 10.0854259582196,         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "slope" : 1.01,       /* new phenology: slope of cold-temperature limiting function */
+      "base" : 8.3,         /* new phenology: inflection point of cold-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
-      "slope" : 2.55597196862871,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
-      "base" : 53.740206075803,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "slope" : 1.86,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 38.64,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
-      "slope" : 101.669385071174,      /* new phenology: slope of light limiting function */
-      "base" : 48.7014423720913,       /* new phenology: inflection point of light limiting function (Wm-2) */
+      "slope" : 77.17,      /* new phenology: slope of light limiting function */
+      "base" : 55.53,       /* new phenology: inflection point of light limiting function (Wm-2) */
       "tau" : 0.52          /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
-      "slope" : 4.4377688952901,       /* new phenology: slope of water limiting function */
-      "base": 8.84836649108247,        /* new phenology: inflection point of water limiting function (% water availability)  */
+      "slope" : 5.14,       /* new phenology: slope of water limiting function */
+      "base": 4.997,        /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.44          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -194,7 +194,7 @@
     "longevity" : 0.5,      /* leaf longevity 10*/
     "sla" : 0.03233,         /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : 0.3,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -212,26 +212,26 @@
     "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 0.156258955089324,       /* new phenology: slope of cold-temperature limiting function */
-      "base" : 11.9567515866647,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
-      "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
+      "slope" : 0.24,       /* new phenology: slope of cold-temperature limiting function */
+      "base" : 7.66,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "tau" : 0.1           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
-      "slope" : 1.95063781543183,      /* new phenology: slope of warm-temperature limiting function tmax_sl */
-      "base" : 36.647084697552,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
-      "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
+      "slope" : 1.625,      /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 38.64,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "tau" : 0.1           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
-      "slope" : 20.456669827116,         /* new phenology: slope of light limiting function */
-      "base" : -8.30891864273398,       /* new phenology: inflection point of light limiting function (Wm-2) */
-      "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
+      "slope" : 23,         /* new phenology: slope of light limiting function */
+      "base" : 13.01,       /* new phenology: inflection point of light limiting function (Wm-2) */
+      "tau" : 0.1           /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
-      "slope" : 7.70814652482444,       /* new phenology: slope of water limiting function */
-      "base" : 11.9926960110902,       /* new phenology: inflection point of water limiting function (% water availability)  */
+      "slope" : 7.97,       /* new phenology: slope of water limiting function */
+      "base" : 22.21,       /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.1348        /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -297,7 +297,7 @@
     "longevity" : 4.0,      /* leaf longevity 10*/
     "sla" : 0.01049,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : 0.3,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 900.0,      /* gdd5min 30*/
@@ -315,27 +315,27 @@
     "lightextcoeff" : 0.4,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 0.0701846401056082,     /* new phenology: slope of cold-temperature limiting function */
-      "base" : -8.88034917831802,      /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "slope" : 0.2172,     /* new phenology: slope of cold-temperature limiting function */
+      "base" : -7.813,      /* new phenology: inflection point of cold-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
-      "slope" : 2.73956347158074,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
-      "base" : 42.4072618363778,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "slope" : 1.83,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 35.26,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
-      "slope" : 14.8840081843811,         /* new phenology: slope of light limiting function */
-      "base" : -3.97583959350718,       /* new phenology: inflection point of light limiting function (Wm-2) */
+      "slope" : 20,         /* new phenology: slope of light limiting function */
+      "base" : 4.872,       /* new phenology: inflection point of light limiting function (Wm-2) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
-      "slope" : 2.59273373172191,          /* new phenology: slope of water limiting function */
-      "base" : 1.41370676399487,       /* new phenology: inflection point of water limiting function (% water availability)  */
-      "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
+      "slope" : 5,          /* new phenology: slope of water limiting function */
+      "base" : 8.613,       /* new phenology: inflection point of water limiting function (% water availability)  */
+      "tau" : 0.7           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "evergreen",/* phenology */
@@ -400,7 +400,7 @@
     "longevity" : 1.6,      /* leaf longevity 10*/
     "sla" : 0.01986,         /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : 0.2,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 1200.0,     /* gdd5min 30*/
@@ -418,27 +418,27 @@
     "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 0.471387151517345,       /* new phenology: slope of cold-temperature limiting function */
-      "base" : 0.996214615399525,     /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "slope" : 0.55,       /* new phenology: slope of cold-temperature limiting function */
+      "base" : -0.6297,     /* new phenology: inflection point of cold-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
-      "slope" : 1.11043388843154,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
-      "base" : 28.466960769486,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "slope" : 1.6,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 41.12,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
-      "slope" : 11.2261103954557,      /* new phenology: slope of light limiting function */
-      "base" : 44.0065149977233,       /* new phenology: inflection point of light limiting function (Wm-2) */
+      "slope" : 18.83,      /* new phenology: slope of light limiting function */
+      "base" : 39.32,       /* new phenology: inflection point of light limiting function (Wm-2) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
-      "slope" : 3.85881991273209,          /* new phenology: slope of water limiting function */
-      "base" : -0.663264591729479,       /* new phenology: inflection point of water limiting function (% water availability)  */
-      "tau" : 0.8          /* new phenology: change rate of actual to previous day water limiting function */
+      "slope" : 5,          /* new phenology: slope of water limiting function */
+      "base" : 8.821,       /* new phenology: inflection point of water limiting function (% water availability)  */
+      "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "evergreen",/* phenology */
@@ -461,7 +461,7 @@
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_EG_MN, "median" : CN_BL_EG_MD, "high" : CN_BL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
     "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
-    "fn_turnover" : FN_TURNOVER_EV_BR, /* fraction of N not recovered before turnover */
+    "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
     "leaftype" : "broadleaved",/* leaftype */
@@ -503,7 +503,7 @@
     "longevity" : 0.45,     /* leaf longevity 10*/
     "sla" : 0.03233,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : 0.0,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 300.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 1200.0,     /* gdd5min 30*/
@@ -521,26 +521,26 @@
     "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 0.255192481793058,     /* new phenology: slope of cold-temperature limiting function */
-      "base" : 10.1160036934367,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "slope" : 0.2591,     /* new phenology: slope of cold-temperature limiting function */
+      "base" : 5.69,        /* new phenology: inflection point of cold-temperature limiting function (deg C), originally 13.69 from Forkel etal. */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
-      "slope" : 1.70287785801676,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
-      "base" : 24.2310386106341,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "slope" : 1.74,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 41.51,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
-      "slope" : 71.6219528477216,         /* new phenology: slope of light limiting function */
-      "base" : 36.9074419267852,       /* new phenology: inflection point of light limiting function (Wm-2) */
+      "slope" : 58,         /* new phenology: slope of light limiting function */
+      "base" : 59.78,       /* new phenology: inflection point of light limiting function (Wm-2) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
-      "slope" : 7.48616301553402,       /* new phenology: slope of water limiting function */
-      "base" : 35.0379415899445,       /* new phenology: inflection point of water limiting function (% water availability)  */
+      "slope" : 5.24,       /* new phenology: slope of water limiting function */
+      "base" : 20.96,       /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -608,7 +608,7 @@
     "longevity" : 4.0,      /* leaf longevity 10*/
     "sla" : 0.01049,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : 0.2,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 600.0,      /* gdd5min 30*/
@@ -616,7 +616,7 @@
     "twmax_daily" : 25.0,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : -1000.0, /* min_temprange 34*/
-    "emax": 7.0, //7.0,            /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.18,   /* albedo of green leaves */
@@ -626,26 +626,26 @@
     "lightextcoeff" : 0.4,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 0.0474954110307359,     /* new phenology: slope of cold-temperature limiting function */
-      "base" : -10.0431592834277,      /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "slope" : 0.1008,     /* new phenology: slope of cold-temperature limiting function */
+      "base" : -7.516,      /* new phenology: inflection point of cold-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
-      "slope" : 0.379107281781612,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
-      "base" : 35.2297628998076,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "slope" : 0.24,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 27.32,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
-      "slope" : 15.1563602384104,         /* new phenology: slope of light limiting function */
-      "base" : -25.2703905005981,        /* new phenology: inflection point of light limiting function (Wm-2) */
+      "slope" : 14,         /* new phenology: slope of light limiting function */
+      "base" : 3.04,        /* new phenology: inflection point of light limiting function (Wm-2) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
-      "slope" : 6.71270949351435,          /* new phenology: slope of water limiting function */
-      "base" : -3.21025280672709,    /* new phenology: inflection point of water limiting function (% water availability)  */
+      "slope" : 5,          /* new phenology: slope of water limiting function */
+      "base" : 0.007695,    /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -654,7 +654,7 @@
     "temp_co2" : { "low" : -4.0, "high" : 38.0 }, /* lower and upper temperature limit for co2 (deg C) 24 27*/
     "temp_photos" : { "low" : 15.0, "high" : 25.0},/* lower and upper limit of temperature optimum for photosynthesis(deg C) 25 26*/
     "b":  BC3, /* leaf respiration as fraction of Vmax for C3 plants */
-    "temp" : { "low" : -38.5, "high" : -2.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
+    "temp" : { "low" : -32.5, "high" : -2.0}, /* lower and upper coldest monthly mean temperature(deg C) 28 29*/
     "soc_k" : 0.28670,     /* shape factor for soil organic matter vertical distribution*/
     "alpha_fuelp" : 0.0000667, /* scaling factor nesterov fire danger index */
     "vpd_par" : 6, /*scaling factor vpd fire danger index*/
@@ -668,7 +668,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_EG_MN, "median": CN_NL_EG_MD, "high" : CN_NL_EG_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER_EV, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0, /* roughness length */
@@ -705,13 +705,13 @@
     "beta_root" : 0.955,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.8,          /* gmin 4*/
-    "respcoeff" : 0.8,      /* respcoeff 5*/
+    "respcoeff" : 1.2,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
     "resist" : 0.3,         /* resist 8*/
     "longevity" : 0.5,      /* leaf longevity 10*/
     "sla" : 0.03233,          /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : 0.2,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 200.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 350.0,      /* gdd5min 30*/
@@ -729,27 +729,27 @@
     "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 0.100884673213271,     /* new phenology: slope of cold-temperature limiting function */
-      "base" : 0.112455566756393,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "slope" : 0.2153,     /* new phenology: slope of cold-temperature limiting function */
+      "base" : 2.045,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
-      "slope" : 2.59667754606071,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
-      "base" : 36.914200858564,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "slope" : 1.74,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 41.51,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
-      "slope" : 52.3769783510148,         /* new phenology: slope of light limiting function */
-      "base" : 59.9824164749087,       /* new phenology: inflection point of light limiting function (Wm-2) */
+      "slope" : 58,         /* new phenology: slope of light limiting function */
+      "base" : 59.78,       /* new phenology: inflection point of light limiting function (Wm-2) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
-      "slope" : 7.38554807686261,       /* new phenology: slope of water limiting function */
-      "base" : 25.7633080862941,       /* new phenology: inflection point of water limiting function (% water availability)  */
-      "tau" : 0.8           /* new phenology: change rate of actual to previous day water limiting function */
+      "slope" : 5.24,       /* new phenology: slope of water limiting function */
+      "base" : 20.96,       /* new phenology: inflection point of water limiting function (% water availability)  */
+      "tau" : 0.7           /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
     "phenology" : "summergreen",/* phenology */
@@ -771,7 +771,7 @@
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_BL_DC_MN, "median": CN_BL_DC_MD, "high" : CN_BL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
@@ -810,13 +810,13 @@
     "beta_root" : 0.955,     /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
     "gmin"  : 0.3,          /* gmin 4*/
-    "respcoeff" : 0.8,      /* respcoeff 5*/
+    "respcoeff" : 1.2,      /* respcoeff 5*/
     "nmax" : 100.0,          /* nmax 7*/
-    "resist" : 0.2,        /* resist 8*/
+    "resist" : 0.12,        /* resist 8*/
     "longevity" : 0.65,     /* leaf longevity 10*/
-    "sla" : 0.02118,        /* specific leaf area 0.02118*/
+    "sla" : 0.02118,        /* specific leaf area */
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : 0.2,     /* lmro_offset*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 200.0,          /* ramp 19*/
     "lai_sapl" : 1.500,     /* lai_sapl 21*/
     "gdd5min" : 350.0,      /* gdd5min 30*/
@@ -824,7 +824,7 @@
     "twmax_daily" : 25.0,    /* twmax_daily 31*/
     "gddbase" : 5.0,        /* gddbase (deg C) 33*/
     "min_temprange" : 30.0,  /* min_temprange 34*/
-    "emax": 7.0,             /* emax 35*/
+    "emax": 5.0, //7.0,            /* emax 35*/
     "intc" : 0.06,          /* intc 36*/
     "alphaa" : ALPHAA_NITROGEN, /* alphaa, fraction of PAR assimilated at ecosystem level, relative to leaf level */
     "albedo_leaf" : 0.12,   /* albedo of green leaves */
@@ -834,26 +834,26 @@
     "lightextcoeff" : 0.6,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 0.083700979282445,       /* new phenology: slope of cold-temperature limiting function */
-      "base" : -8.69171116306266,      /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "slope" : 0.21,       /* new phenology: slope of cold-temperature limiting function 0.15 */
+      "base" : -4.165,      /* new phenology: inflection point of cold-temperature limiting function (deg C) -4.165*/
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
-      "slope" : 0.567196327980938,        /* new phenology: slope of warm-temperature limiting function tmax_sl */
-      "base" : 31.7883061463835,         /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "slope" : 1.24,        /* new phenology: slope of warm-temperature limiting function tmax_sl 0.24*/
+      "base" : 44.6,         /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2            /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
-      "slope" : 103.451292339973,          /* new phenology: slope of light limiting function */
-      "base" : 146.83037956947,        /* new phenology: inflection point of light limiting function (Wm-2) */
+      "slope" : 58,          /* new phenology: slope of light limiting function 95 */
+      "base" : 59.78,        /* new phenology: inflection point of light limiting function (Wm-2)130.1  */
       "tau" : 0.2            /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
-      "slope" : 4.1995126561878,           /* new phenology: slope of water limiting function */
-      "base" : -1.5620654180101,        /* new phenology: inflection point of water limiting function (% water availability)  */
+      "slope" : 5,           /* new phenology: slope of water limiting function */
+      "base" : 2.344,        /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.8            /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX,  /* asymptotic maximum mortality rate (1/year) */
@@ -872,11 +872,11 @@
     "flam" : FLAM_TREE,     /* flam */
     "k_litter10" : { "leaf" : 0.76, "wood" : 0.041 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1.97, /* Q10_wood */
-    "vmax_up" : 3.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
+    "vmax_up" : 2.8,              /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.48,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_NL_DC_MN, "median": CN_NL_DC_MD, "high" : CN_NL_DC_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
-    "knstore" : 0.2,       /* knstore, Smith et al. 2014 */
+    "knstore" : 0.1,       /* knstore, Smith et al. 2014 */
     "fn_turnover" : FN_TURNOVER, /* fraction of N not recovered before turnover */
     "windspeed_dampening" : 0.4,  /* windspeed dampening */
     "roughness_length" : 1.0,     /* roughness length */
@@ -886,8 +886,8 @@
     "ratio" : {"sapwood" :  RATIO_SAPW, "root" :  1.16}, /* relative C:N ratio of sapwood and root, Friend et al. 1997, Ecological Modeling, Table 4*/
     "crownarea_max" : 20.0, /* crownarea_max 20*/
     "wood_sapl" : 1.2,      /* sapwood sapling 22*/
-    "aphen_min" : 60,
-    "aphen_max" : 245,
+    "aphen_min" : 10,
+    "aphen_max" : 200,
     "reprod_cost" : REPROD_COST, /* reproduction cost */
     "allom1" : ALLOM1,      /* allometry */
     "allom2" : ALLOM2,
@@ -939,26 +939,26 @@
     "lightextcoeff" : 0.4,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 0.885748051312012,       /* new phenology: slope of cold-temperature limiting function */
-      "base" : 8.05195488176085,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "slope" : 0.91,       /* new phenology: slope of cold-temperature limiting function */
+      "base" : 6.418,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
-      "slope" : 2.33033178689735,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
-      "base" : 25.2285834890445,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "slope" : 1.47,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 29.16,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
-      "slope" : 48.5161748668213,      /* new phenology: slope of light limiting function */
-      "base" : 68.7733459985521,        /* new phenology: inflection point of light limiting function (Wm-2) */
+      "slope" : 64.23,      /* new phenology: slope of light limiting function */
+      "base" : 69.9,        /* new phenology: inflection point of light limiting function (Wm-2) */
       "tau" : 0.4           /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
-      "slope" : 1.31388791538121,        /* new phenology: slope of water limiting function */
-      "base" : 45.9132742691075,       /* new phenology: inflection point of water limiting function (% water availability)  */
+      "slope" : 0.1,        /* new phenology: slope of water limiting function */
+      "base" : 41.72,       /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.17          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
@@ -977,7 +977,7 @@
     "flam" : FLAM_GRASS,     /* flam */
     "k_litter10" : { "leaf" : 0.97, "wood" : 0.97 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1.0, /* Q10_wood */
-    "vmax_up" : 3.8,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
+    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC4_MN, "median" : CN_GC4_MD, "high" : CN_GC4_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
@@ -1007,7 +1007,7 @@
     "longevity" : 0.35,     /* leaf longevity 10*/
     "sla" : 0.042242,        /* specific leaf area */
     "lmro_ratio" : 0.8,     /* lmro_ratio 18*/
-    "lmro_offset" : 0.3,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.1,     /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1025,26 +1025,26 @@
     "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 0.191185984896793,     /* new phenology: slope of cold-temperature limiting function */
-      "base" : 8.32108118024876,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "slope" : 0.3111,     /* new phenology: slope of cold-temperature limiting function */
+      "base" : 4.979,       /* new phenology: inflection point of cold-temperature limiting function (deg C) */
       "tau" : 0.01011       /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
-      "slope" : 0.506857503018607,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
-      "base" : 35.431278313074,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "slope" : 0.24,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 32.04,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
-      "slope" : 15.6901235227705,         /* new phenology: slope of light limiting function */
-      "base" : 70.4103562429981,       /* new phenology: inflection point of light limiting function (Wm-2) */
-      "tau" : 0.22         /* new phenology: change rate of actual to previous day light limiting function */
+      "slope" : 23,         /* new phenology: slope of light limiting function */
+      "base" : 75.94,       /* new phenology: inflection point of light limiting function (Wm-2) */
+      "tau" : 0.22          /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
-      "slope" : 2.27833479903766,     /* new phenology: slope of water limiting function */
-      "base" : 48.4034535770401,       /* new phenology: inflection point of water limiting function (% water availability)  */
+      "slope" : 0.5222,     /* new phenology: slope of water limiting function */
+      "base" : 53.07,       /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.01001       /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
@@ -1063,7 +1063,7 @@
     "flam" : FLAM_GRASS,     /* flam */
     "k_litter10" : { "leaf" : 1.2, "wood" : 1.2 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1.0, /* Q10_wood */
-    "vmax_up" : 3.8,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
+    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
@@ -1093,7 +1093,7 @@
     "longevity" : 0.35,     /* leaf longevity 10*/
     "sla" : 0.042242,        /* specific leaf area */
     "lmro_ratio" : 0.6,     /* lmro_ratio 18*/
-    "lmro_offset" : 0.3,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 100.0,          /* ramp 19*/
     "lai_sapl" : 0.1,     /* lai_sapl 21*/
     "gdd5min" : 0.01,       /* gdd5min 30*/
@@ -1111,26 +1111,26 @@
     "lightextcoeff" : 0.5,  /* lightextcoeff, light extinction coeffcient in Lambert-Beer equation */
     "tmin" :
     {
-      "slope" : 0.103298696925389,       /* new phenology: slope of cold-temperature limiting function */
-      "base" : -0.574033941205038,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
+      "slope" : 0.13,       /* new phenology: slope of cold-temperature limiting function */
+      "base" : 2.79,        /* new phenology: inflection point of cold-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day cold-temperature limiting fct */
     },
     "tmax" :
     {
-      "slope" : 0.356743864958491,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
-      "base" : 8.52347968890153,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
+      "slope" : 0.24,       /* new phenology: slope of warm-temperature limiting function tmax_sl */
+      "base" : 26.12,       /* new phenology: inflection point of warm-temperature limiting function (deg C) */
       "tau" : 0.2           /* new phenology: change rate of actual to previous day warm-temperature limiting fct */
     },
     "light" :
     {
-      "slope" : 7.55214819596266,         /* new phenology: slope of light limiting function */
-      "base" : 67.0033682745494,          /* new phenology: inflection point of light limiting function (Wm-2) */
+      "slope" : 23,         /* new phenology: slope of light limiting function */
+      "base" : 50,          /* new phenology: inflection point of light limiting function (Wm-2) */
       "tau" : 0.38          /* new phenology: change rate of actual to previous day light limiting function */
     },
     "wscal" :
     {
-      "slope" : 1.72578480216307,       /* new phenology: slope of water limiting function */
-      "base" : -16.2680108730414,           /* new phenology: inflection point of water limiting function (% water availability)  */
+      "slope" : 0.88,       /* new phenology: slope of water limiting function */
+      "base" : 1,           /* new phenology: inflection point of water limiting function (% water availability)  */
       "tau" : 0.94          /* new phenology: change rate of actual to previous day water limiting function */
     },
     "mort_max" : MORT_MAX_GRASS,  /* asymptotic maximum mortality rate (1/year) */
@@ -1149,7 +1149,7 @@
     "flam" : FLAM_GRASS,     /* flam */
     "k_litter10" : { "leaf" : 1.2, "wood" : 1.2 }, /* K_LITTER10 turnover rate after Brovkin etal 2012*/
     "k_litter10_q10_wood" : 1.0, /* Q10_wood */
-    "vmax_up" : 3.8,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
+    "vmax_up" : 5.51,             /* vmax_up, Maximum N uptake capacity per unit fine root mass, Smith et al. 2014 */
     "kNmin": 0.05,                /* kNmin, Rate of N uptake not associated with Michaelis-Menten Kinetics, Zaehle&Friend 2000 */
     "KNmin" : 1.19,               /* KNmin, Half saturation concentration of fine root N uptake, Smith et al. 2014 */
     "cnratio_leaf": {"low": CN_GC3_MN, "median" : CN_GC3_MD, "high" : CN_GC3_MX}, /* 10.7 79.4 cnleaf min max, based on TRY data, prepared by Boris Sakschewski */
@@ -1178,7 +1178,7 @@
     "resist" : 1.0,         /* resist 8*/
     "longevity" : 2.0,      /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : 0.3,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 1000.0,         /* ramp 19*/
     "lai_sapl" : 1.6,       /* lai_sapl 21*/
     "gdd5min" : 0.0,        /* gdd5min 30*/
@@ -1282,7 +1282,7 @@
     "resist" : 0.95,        /* resist 8*/
     "longevity" : 0.45,     /* leaf longevity 10*/
     "lmro_ratio" : 1.0,     /* lmro_ratio 18*/
-    "lmro_offset" : 0.3,     /* lmro_ratio 18*/
+    "lmro_offset" : 0.5,     /* lmro_ratio 18*/
     "ramp" : 300.0,          /* ramp 19*/
     "lai_sapl" : 1.6,       /* lai_sapl 2.1, larger sapling used for plantations, original value 1.5  */
     "gdd5min" : 300.0,      /* gdd5min 30*/
