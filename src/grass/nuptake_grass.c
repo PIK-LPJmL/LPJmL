@@ -65,7 +65,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
   if(NC_leaf<(pft->par->ncleaf.high*(1+pft->par->knstore)))
     forrootsoillayer(l)
     {
-      wscaler=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->whcs[l])) : 0;
+      wscaler=soil->w[l]>epsilon ? 1 : 0;
       totn=(soil->NO3[l]+soil->NH4[l])*wscaler;
       if(totn>0)
       {
