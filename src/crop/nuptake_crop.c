@@ -38,6 +38,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   Real n_uptake=0;
   Real n_upfail=0; /**< track n_uptake that is not available from soil for output reporting */
   Real fixed_n=0;
+  Real n_deficit=0.0;
   Real autofert_n=0;
   Real rootdist_n[LASTLAYER];
   int l,nirrig;
@@ -68,7 +69,7 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
   if((crop->ind.leaf.nitrogen/crop->ind.leaf.carbon)<(pft->par->ncleaf.high*(1+pft->par->knstore)))
     forrootsoillayer(l)
     {
-      wscaler=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->whcs[l])) : 0;
+      wscaler=soil->w[l]>epsilon ? 1 : 0;
       totn=(soil->NO3[l]+soil->NH4[l])*wscaler;
       if(totn > 0)
       {
@@ -131,13 +132,31 @@ Real nuptake_crop(Pft *pft,             /**< pointer to PFT data */
     /* no N limitation for N-fixing crops */
     if (pft->par->nfixing)
     {
-      fixed_n = *n_plant_demand - pft->bm_inc.nitrogen;
-      n_uptake += fixed_n;
-      pft->bm_inc.nitrogen = *n_plant_demand;
-      getoutput(&pft->stand->cell->output,BNF,config) += fixed_n*pft->stand->frac;
-      pft->stand->cell->balance.n_influx += fixed_n*pft->stand->frac;
-      getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
-      pft->vscal = 1;
+      if(!config->ma_bnf)
+      {
+        fixed_n = *n_plant_demand - pft->bm_inc.nitrogen;
+        n_uptake += fixed_n;
+        pft->bm_inc.nitrogen = *n_plant_demand;
+        getoutput(&pft->stand->cell->output,BNF,config) += fixed_n*pft->stand->frac;
+        pft->stand->cell->balance.n_influx += fixed_n*pft->stand->frac;
+        getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
+        pft->vscal = 1;
+      }
+      if(config->ma_bnf)
+      {
+        n_deficit = *n_plant_demand-pft->bm_inc.nitrogen;
+        if(n_deficit>0 && pft->npp_bnf>0)
+        {
+          fixed_n=ma_biological_n_fixation(pft, soil, n_deficit, config);
+          pft->bm_inc.nitrogen+=fixed_n;
+          getoutput(&pft->stand->cell->output,BNF,config)+=fixed_n*pft->stand->frac;
+          pft->stand->cell->balance.n_influx+=fixed_n*pft->stand->frac;
+          getoutput(&pft->stand->cell->output,BNF_AGR,config) += fixed_n*pft->stand->frac;
+        }
+        else
+          pft->npp_bnf=0.0;
+
+      }
     }
     else
     {
