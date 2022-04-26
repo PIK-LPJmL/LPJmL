@@ -136,12 +136,14 @@ void fprintpftpar(FILE *file,           /**< pointer to text file */
                  "swc_bnf:\t%g %g\n"
                  "phi_bnf:\t%g %g\n"
                  "nfixpot:\t%g\n"
-                 "maxbnfcost:\t%g %g\n",
+                 "maxbnfcost:\t%g %g\n"
+                 "bnf_cost:\t%g %g\n"
+                 ,
             pftpar->temp_bnf_lim.low, pftpar->temp_bnf_lim.high,
             pftpar->temp_bnf_opt.low, pftpar->temp_bnf_opt.high,
             pftpar->swc_bnf.low, pftpar->swc_bnf.high,
             pftpar->phi_bnf[0], pftpar->phi_bnf[1], pftpar->nfixpot,
-            pftpar->maxbnfcost);
+            pftpar->maxbnfcost,pftpar->bnf_cost);
   }
   pftpar->fprintpar(file,pftpar,config); /* call type-specific print function */
 } /* of 'fprintpftpar' */

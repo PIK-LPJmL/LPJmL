@@ -152,6 +152,7 @@ typedef struct Pft
     Real phi_bnf[2];
     Real nfixpot;
     Real maxbnfcost;
+    Real bnf_cost;
     Real windspeed;             /**< windspeed dampening */
     Real roughness;             /**< roughness length */
     Real alpha_fuelp;           /**< scaling factor for Nesterov fire danger index */

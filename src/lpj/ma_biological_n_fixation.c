@@ -67,12 +67,12 @@ Real ma_biological_n_fixation(Pft *pft,             /**< PFT */
     bnf+=pft->par->nfixpot*rootdist_n[l]*f_temp_bnf(pft, soil->temp[l])*f_water_bnf(pft, soil->w[l]);
   if(bnf > n_deficit)
     bnf = n_deficit;
-  npp_requ = 6*bnf;
+  npp_requ = pft->par->bnf_cost*bnf;
   max_cost = pft->npp_bnf*pft->par->maxbnfcost*(iscrop(pft) ? 1-((Pftcrop *)pft->data)->fphu : 1);
   if(npp_requ > max_cost)
   {
     npp_requ = max_cost;
-    bnf =  max_cost / 6;
+    bnf =  max_cost / pft->par->bnf_cost;
   }
   pft->npp_bnf=npp_requ;//overwrite npp_bnf to contain npp required for bnf instead of assimilated npp
   return(bnf);
