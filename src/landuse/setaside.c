@@ -210,7 +210,7 @@ void mixsoil(Stand *stand1,const Stand *stand2,int year,const Config *config)
 void mixsetaside(Stand *setasidestand,Stand *cropstand,Bool intercrop,int year,const Config *config)
 {
   /*assumes that all vegetation carbon pools are zero after harvest*/
-  int p, p2,pos;
+  int p, p2;
   Pft *pft, *pft2;
   Pftgrass *grass, *grass2;
   Bool found;
