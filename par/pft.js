@@ -89,7 +89,7 @@
     "name" : "tropical broadleaved evergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.952,    /* beta_root original 0.962*/
     "minwscal" : 0.0,       /* minwscal 3*/
@@ -199,7 +199,7 @@
     "name" : "tropical broadleaved raingreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.981,    /* beta_root  original 0.962*/
     "minwscal" : 0.35,      /* minwscal 3*/
@@ -309,7 +309,7 @@
     "name": "temperate needleleaved evergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.976,    /* beta_root 1 */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -419,7 +419,7 @@
     "name" : "temperate broadleaved evergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.964,    /* beta_root 1 */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -529,7 +529,7 @@
     "name" : "temperate broadleaved summergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -641,7 +641,7 @@
     "name" : "boreal needleleaved evergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.955,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -751,7 +751,7 @@
     "name" : "boreal broadleaved summergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.955,    /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -863,7 +863,7 @@
     "name" : "boreal needleleaved summergreen tree",
     "type" : "tree",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.955,     /* beta_root original 0.943*/
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -975,7 +975,7 @@
     "name" : "Tropical C4 grass",
     "type" : "grass",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1068,7 +1068,7 @@
     "name" : "Temperate C3 grass",
     "type" : "grass",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1161,7 +1161,7 @@
     "name" : "Polar C3 grass",
     "type" : "grass",
     "cultivation_type" : "none", /* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.943,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1254,7 +1254,7 @@
     "name" : "bioenergy tropical tree",
     "type" : "tree",
     "cultivation_type" : "biomass",/* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.975,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -1358,7 +1358,7 @@
     "name" : "bioenergy temperate tree",
     "type" : "tree",
     "cultivation_type" : "biomass",/* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [30.0, 55.0, 70.0, 77.0], /* curve number */
     "beta_root" : 0.966,    /* beta_root */
     "minwscal" : 0.00,      /* minwscal 3*/
@@ -1471,7 +1471,7 @@
     "name" : "bioenergy C4 grass",
     "type" : "grass",
     "cultivation_type" : "biomass", /* cultivation_type */
-    "nfixing" : true,           /* no N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [39.0, 61.0, 74.0, 80.0], /* curve number */
     "beta_root" : 0.972,    /* beta_root */
     "minwscal" : 0.20,      /* minwscal 3*/
@@ -1563,7 +1563,7 @@
     "name" : "temperate cereals",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1674,7 +1674,7 @@
     "name" : "rice",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1785,7 +1785,7 @@
     "name" : "maize",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -1896,7 +1896,7 @@
     "name" : "tropical cereals",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2007,7 +2007,7 @@
     "name" : "pulses",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : true,           /* N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2125,7 +2125,7 @@
     "name": "temperate roots",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2236,7 +2236,7 @@
     "name" : "tropical roots", /* re-parameterized as Cassava, 14.12.2009 KW */
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2347,7 +2347,7 @@
     "name" : "oil crops sunflower",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.3,       /* minwscal 3*/
@@ -2458,7 +2458,7 @@
     "name" : "oil crops soybean",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : true,           /* N fixing */
+    "nfixing" : true,           /* N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2576,7 +2576,7 @@
     "name": "oil crops groundnut",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2687,7 +2687,7 @@
     "name" : "oil crops rapeseed",
     "type" : "crop",
     "cultivation_type" : "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
@@ -2798,7 +2798,7 @@
     "name" : "sugarcane",
     "type" : "crop",
     "cultivation_type": "annual crop", /* cultivation_type */
-    "nfixing" : false,           /* no N fixing */
+    "nfixing" : false,           /* No N fixing in Ma et al., 2022 appraoch */
     "cn" : [60.0, 72.0, 80.0, 84.0], /* curve number */
     "beta_root" : 0.969,    /* beta_root */
     "minwscal" : 0.30,      /* minwscal 3*/
