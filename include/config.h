@@ -147,7 +147,7 @@ struct config
   Bool float_grid;        /**< enable float datatype for binary grid file */
   Bool landuse_restart;   /**< land use enabled in restart file */
   Bool double_harvest;
-  Bool nfix_setaside;     /**< allow for nfixation of setaside grass */
+  Bool bnf_setaside;     /**< allow for nfixation of setaside grass */
   int wateruse;           /**< enable wateruse (NO_WATERUSE, WATERUSE, ALL_WATERUSE) */
   int sdate_option_restart;     /**< sdate option in restart file */
   int crop_option_restart;      /**< crop option in restart file */
@@ -255,6 +255,7 @@ struct config
   int prescribe_landcover; /**< use input to prescribe land cover ? */
   int* mowingdays;         /**< mowing days for grassland */
   int mowingdays_size;     /**< size of mowing days array */
+  Bool ma_bnf;             /**< biological nitrogen fixation folowing Ma et al., 2022 */
   Seed seed;
 #ifdef IMAGE
   int start_imagecoupling; /**< year in which coupling to IMAGE starts

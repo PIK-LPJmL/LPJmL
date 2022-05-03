@@ -42,6 +42,8 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   int l,nnat,nirrig;
   Irrigation *data;
   Real rootdist_n[LASTLAYER];
+  Real n_deficit=0.0;
+  Real n_fixed=0.0;
   soil=&pft->stand->soil;
   ndemand_all=*n_plant_demand;
   if(config->permafrost)
@@ -62,7 +64,7 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   if(NC_leaf<(pft->par->ncleaf.high*(1+pft->par->knstore)))
     forrootsoillayer(l)
     {
-      wscaler=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->whcs[l])) : 0;
+      wscaler=soil->w[l]>epsilon ? 1 : 0;
       totn=(soil->NO3[l]+soil->NH4[l])*wscaler;
       if(totn>0)
       {
@@ -135,6 +137,16 @@ Real nuptake_tree(Pft *pft,             /**< pointer to PFT data */
   }
   else
   {
+    n_deficit = *n_plant_demand/(1+pft->par->knstore)-(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind);
+    if(n_deficit>0 && pft->npp_bnf>0)
+    {
+       n_fixed=ma_biological_n_fixation(pft, soil, n_deficit, config);
+       pft->bm_inc.nitrogen+=n_fixed;
+       getoutput(&pft->stand->cell->output,BNF,config)+=n_fixed*pft->stand->frac;
+       pft->stand->cell->balance.n_influx+=n_fixed*pft->stand->frac;
+    }
+    else
+      pft->npp_bnf=0.0;
     if(*n_plant_demand/(1+pft->par->knstore)>(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind))   /*HERE RECALCULATION OF N-demand TO N-supply*/
     {
       NC_actual=(vegn_sum_tree(pft)+pft->bm_inc.nitrogen-tree->ind.heartwood.nitrogen*pft->nind)/(vegc_sum_tree(pft)+pft->bm_inc.carbon-tree->ind.heartwood.carbon*pft->nind);

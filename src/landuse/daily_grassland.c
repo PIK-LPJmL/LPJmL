@@ -238,7 +238,7 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         getoutputindex(output,PFT_GCGP,nnat+rmgrass(ncft)+index,config)+=gcgp;
       }
     }
-    npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd,config->with_nitrogen);
+    npp=npp_grass(pft,gtemp_air,gtemp_soil,gpp-rd-pft->npp_bnf,config->with_nitrogen);
     getoutput(output,NPP,config)+=npp*stand->frac;
 #if defined IMAGE && defined COUPLED
     stand->cell->npp_grass+=npp*stand->frac;
@@ -289,9 +289,10 @@ Real daily_grassland(Stand *stand,                /**< stand pointer */
         getoutput(output,D_NLEAF,config)+= grass->ind.leaf.nitrogen;
 
         getoutput(output,D_RD,config) += rd;
-        getoutput(output,D_ASSIM,config) += gpp-rd;
+        getoutput(output,D_ASSIM,config) += gpp-rd-pft->npp_bnf;
       }
     }
+    pft->npp_bnf=0.0;
   }
   free(gp_pft);
   /* calculate water balance */
