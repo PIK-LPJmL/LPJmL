@@ -94,7 +94,7 @@ Real nuptake_grass(Pft *pft,             /**< pointer to PFT data */
       pft->bm_inc.nitrogen+=n_uptake;
       forrootsoillayer(l)
       {
-        wscaler=(soil->w[l]+soil->ice_depth[l]/soil->whcs[l]>0) ? (soil->w[l]/(soil->w[l]+soil->ice_depth[l]/soil->whcs[l])) : 0;
+        wscaler=soil->w[l]>epsilon ? 1 : 0;
         soil->NO3[l]-=soil->NO3[l]*wscaler*rootdist_n[l]*n_uptake/nsum;
         if(soil->NO3[l]<0)
         {
